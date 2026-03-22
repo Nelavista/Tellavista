@@ -2269,15 +2269,54 @@ def api_get_videos():
     videos = query.all()
     return jsonify([v.to_dict() for v in videos])
 
+import os
+from flask import jsonify
+from werkzeug.exceptions import NotFound
+
 @app.route('/api/videos/<int:video_id>', methods=['DELETE'])
 @login_required
 def delete_video(video_id):
-    if session['user']['username'] != 'admin':
+    # ---------- 1. ADMIN AUTH (safe check) ----------
+    if not session.get('user') or session['user'].get('username') != 'admin':
         return jsonify({'error': 'Unauthorized'}), 403
-    video = Video.query.get_or_404(video_id)
-    db.session.delete(video)
-    db.session.commit()
-    return jsonify({'success': True})
+
+    try:
+        # ---------- 2. GET VIDEO OR 404 ----------
+        video = Video.query.get_or_404(video_id)
+
+        # ---------- 3. DELETE FILE IF IT'S AN UPLOADED VIDEO ----------
+        if video.video_url and not ('youtube.com' in video.video_url or 'youtu.be' in video.video_url):
+            try:
+                # video.video_url looks like '/static/uploads/filename.mp4'
+                # Remove leading slash to get relative path inside app.root_path
+                file_path = os.path.join(app.root_path, video.video_url.lstrip('/'))
+                if os.path.exists(file_path):
+                    os.remove(file_path)
+                    app.logger.info(f"Deleted file: {file_path}")
+                else:
+                    app.logger.warning(f"File not found: {file_path}")
+            except Exception as e:
+                app.logger.error(f"File deletion error for {video.video_url}: {e}")
+                # Continue with DB deletion even if file deletion fails
+
+        # ---------- 4. DELETE FROM DATABASE ----------
+        db.session.delete(video)
+        db.session.commit()
+
+        # ---------- 5. LOG SUCCESS ----------
+        app.logger.info(f"Admin deleted video ID {video_id} (type: {'upload' if 'static/uploads' in video.video_url else 'YouTube'})")
+
+        # ---------- 6. RETURN CLEAN RESPONSE ----------
+        return jsonify({'success': True, 'deleted_id': video_id})
+
+    except NotFound:
+        # 404 already handled by get_or_404, but catch if needed
+        return jsonify({'error': 'Video not found'}), 404
+    except Exception as e:
+        # ---------- 7. ROLLBACK AND LOG ERROR ----------
+        db.session.rollback()
+        app.logger.error(f"Delete failed for video {video_id}: {e}", exc_info=True)
+        return jsonify({'error': 'Delete failed'}), 500
 
 @app.route('/api/courses')
 @login_required
@@ -2543,7 +2582,6 @@ def math101():
     return render_template("mat101.html")
 
 @app.route('/reels', methods=['GET'])
-@login_required
 def reels():
     """Render educational reels/videos page."""
     categories = ["Tech", "Motivation", "Islamic", "AI"]

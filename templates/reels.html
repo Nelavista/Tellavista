@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
     <title>Nelavista · TikTok style reels</title>
     <style>
         * {
@@ -271,6 +271,7 @@
             aspect-ratio: 9 / 16;
             max-height: 100vh;
             width: auto;
+            position: relative;
         }
 
         .reel-media video,
@@ -280,10 +281,40 @@
             object-fit: cover;
             background: #000;
             border: none;
+            image-rendering: auto;
         }
 
         .reel-media iframe {
             pointer-events: auto;
+        }
+
+        /* Loading overlay for videos */
+        .video-loading {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 5;
+            transition: opacity 0.2s ease;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
 
         .video-overlay-right {
@@ -546,21 +577,6 @@
             border: 1px solid #555;
         }
 
-        .spinner {
-            display: inline-block;
-            width: 16px;
-            height: 16px;
-            border: 2px solid rgba(0,0,0,0.1);
-            border-radius: 50%;
-            border-top-color: #000;
-            animation: spin 0.6s linear infinite;
-            margin-right: 8px;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
         .hidden {
             display: none !important;
         }
@@ -715,13 +731,12 @@
             let currentTab = 'uploaded';
             let isAdmin = false;
             let uploadedVideos = [];
-            let youtubeReels = [];          // backend YouTube videos (preserved but not shown in new YouTube tab)
-            let youtubeSearchResults = [];   // temporary array for course videos
+            let youtubeReels = [];
+            let youtubeSearchResults = [];
             let searchFilters = { course: '', level: '', semester: '' };
             
-            // Local state for search results likes/views (persist only in memory)
-            let localLikes = new Map();      // id -> likes count
-            let localViews = new Map();      // id -> views count
+            let localLikes = new Map();
+            let localViews = new Map();
             
             // ---------- AUDIO CONTROL STATE ----------
             let userInteracted = false;
@@ -771,7 +786,6 @@
                 }));
             }
             
-            // ---------- Helper functions (unchanged) ----------
             function formatNumber(num) {
                 if (num >= 1e6) return (num/1e6).toFixed(1)+'M';
                 if (num >= 1e3) return (num/1e3).toFixed(1)+'k';
@@ -785,6 +799,7 @@
             
             function getYouTubeIframe(url) {
                 const embed = getYouTubeEmbed(url);
+                // Add playsinline and mute for Safari autoplay
                 return `${embed}?enablejsapi=1&autoplay=1&mute=1&playsinline=1`;
             }
             
@@ -809,7 +824,10 @@
                 const media = reelElement.querySelector('video') || reelElement.querySelector('iframe');
                 if (!media) return;
                 if (!isActive) {
-                    if (media.tagName === 'VIDEO') { media.pause(); media.muted = true; }
+                    if (media.tagName === 'VIDEO') { 
+                        media.pause(); 
+                        media.muted = true; 
+                    }
                     else if (media.tagName === 'IFRAME' && media.src.includes('youtube.com/embed/')) {
                         sendYouTubeCommand(media, 'pauseVideo');
                         sendYouTubeCommand(media, 'mute');
@@ -864,15 +882,28 @@
                 } catch (err) { console.error('View increment failed', err); }
             }
             
+            // Improved IntersectionObserver with stricter visibility and pausing
             let observer;
             function initIntersectionObserver() {
                 if (observer) observer.disconnect();
                 observer = new IntersectionObserver((entries) => {
                     let highestRatioEntry = null, maxRatio = 0;
                     for (const entry of entries) {
+                        const reel = entry.target;
                         if (entry.isIntersecting && entry.intersectionRatio > maxRatio) {
                             maxRatio = entry.intersectionRatio;
                             highestRatioEntry = entry;
+                        }
+                        // Pause videos that are not visible enough
+                        if (!entry.isIntersecting || entry.intersectionRatio < 0.3) {
+                            const media = reel.querySelector('video') || reel.querySelector('iframe');
+                            if (media) {
+                                if (media.tagName === 'VIDEO') {
+                                    media.pause();
+                                } else if (media.tagName === 'IFRAME' && media.src.includes('youtube.com/embed/')) {
+                                    sendYouTubeCommand(media, 'pauseVideo');
+                                }
+                            }
                         }
                     }
                     if (highestRatioEntry && highestRatioEntry.intersectionRatio >= 0.7) {
@@ -882,9 +913,12 @@
                     } else if (activeReelElement) {
                         const rect = activeReelElement.getBoundingClientRect();
                         const isVisible = rect.top < window.innerHeight && rect.bottom > 0;
-                        if (!isVisible) { applyAudioToReel(activeReelElement, false); activeReelElement = null; }
+                        if (!isVisible) { 
+                            applyAudioToReel(activeReelElement, false); 
+                            activeReelElement = null; 
+                        }
                     }
-                }, { threshold: 0.7 });
+                }, { threshold: [0.3, 0.7] });
                 document.querySelectorAll('.reel-item').forEach(item => observer.observe(item));
             }
             
@@ -895,6 +929,21 @@
             }
             document.addEventListener('touchstart', onFirstUserInteraction, { once: true, passive: true });
             document.addEventListener('click', onFirstUserInteraction, { once: true });
+            
+            // Loading overlay helpers
+            function addLoadingOverlay(reelMediaDiv) {
+                if (reelMediaDiv.querySelector('.video-loading')) return;
+                const loadingDiv = document.createElement('div');
+                loadingDiv.className = 'video-loading';
+                loadingDiv.innerHTML = '<div class="spinner"></div>';
+                reelMediaDiv.appendChild(loadingDiv);
+                return loadingDiv;
+            }
+            
+            function removeLoadingOverlay(reelMediaDiv) {
+                const loading = reelMediaDiv.querySelector('.video-loading');
+                if (loading) loading.remove();
+            }
             
             // ---------- RENDER LOGIC ----------
             function renderReel() {
@@ -914,7 +963,8 @@
                     let html = '';
                     items.forEach((item, idx) => {
                         const mediaUrl = item.video_url;
-                        const mediaTag = `<video src="${mediaUrl}" playsinline autoplay loop preload="metadata" muted></video>`;
+                        // Add playsinline, webkit-playsinline, preload=metadata, muted, loop
+                        const mediaTag = `<video src="${mediaUrl}" playsinline webkit-playsinline loop preload="metadata" muted></video>`;
                         const deleteBtn = (isAdmin) ? `<div class="delete-overlay"><button class="delete-btn" onclick="deleteVideo('${item.id}', event)">🗑️ Delete</button></div>` : '';
                         html += `<div class="reel-item" data-id="${item.id}" data-type="uploaded" data-index="${idx}" data-source="backend">
                             <div class="reel-media">${mediaTag}</div>
@@ -933,6 +983,18 @@
                     });
                     reelContainer.innerHTML = html;
                     attachReelListeners();
+                    // Add loading overlay for each video until loadeddata
+                    document.querySelectorAll('.reel-item video').forEach(video => {
+                        const reelMedia = video.closest('.reel-media');
+                        const loadingDiv = addLoadingOverlay(reelMedia);
+                        video.addEventListener('loadeddata', () => {
+                            removeLoadingOverlay(reelMedia);
+                        }, { once: true });
+                        // Fallback: remove after 3s if still loading
+                        setTimeout(() => {
+                            if (reelMedia.querySelector('.video-loading')) removeLoadingOverlay(reelMedia);
+                        }, 3000);
+                    });
                     viewCountedSet.clear();
                     activeReelElement = null;
                     initIntersectionObserver();
@@ -945,7 +1007,7 @@
                     let html = '';
                     youtubeSearchResults.forEach((item, idx) => {
                         const iframeSrc = getYouTubeIframe(item.video_url);
-                        const mediaTag = `<iframe src="${iframeSrc}" frameborder="0" allowfullscreen loading="lazy"></iframe>`;
+                        const mediaTag = `<iframe src="${iframeSrc}" frameborder="0" allowfullscreen loading="lazy" allow="autoplay; encrypted-media" style="pointer-events: auto;"></iframe>`;
                         const likesCount = localLikes.get(item.id) !== undefined ? localLikes.get(item.id) : (item.likes || 0);
                         const viewsCount = localViews.get(item.id) !== undefined ? localViews.get(item.id) : (item.views || 0);
                         html += `<div class="reel-item" data-id="${item.id}" data-type="youtube-course" data-source="course">
@@ -969,7 +1031,7 @@
                     initIntersectionObserver();
                     updateAllMuteButtons();
                 } else {
-                    // Show course selection UI (no reset button)
+                    // Show course selection UI
                     let courseOptions = uniqueCourses.map(c => `<option value="${c.replace(/"/g, '&quot;')}">${c}</option>`).join('');
                     reelContainer.innerHTML = `
                         <div class="youtube-course-panel">

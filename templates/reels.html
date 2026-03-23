@@ -317,6 +317,42 @@
             to { transform: rotate(360deg); }
         }
 
+        /* New styles for play overlay and transport buttons */
+        .play-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            cursor: pointer;
+            transition: opacity 0.2s ease;
+            backdrop-filter: blur(4px);
+        }
+        .play-overlay.hidden {
+            display: none;
+        }
+        .play-icon {
+            font-size: 4rem;
+            color: white;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            background: rgba(0,0,0,0.5);
+            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s;
+        }
+        .play-overlay:active .play-icon {
+            transform: scale(0.9);
+        }
+
         .video-overlay-right {
             position: absolute;
             right: 12px;
@@ -328,6 +364,37 @@
             z-index: 20;
             color: white;
             text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        /* New transport buttons container (horizontal, positioned left side) */
+        .transport-controls {
+            position: absolute;
+            left: 12px;
+            bottom: 120px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            z-index: 20;
+        }
+        .transport-btn {
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            width: 48px;
+            height: 48px;
+            border-radius: 30px;
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+        .transport-btn:active {
+            transform: scale(0.95);
+            background: rgba(0,0,0,0.8);
         }
 
         .overlay-btn {
@@ -682,9 +749,12 @@
         </div>
     </div>
 
+    <!-- YouTube IFrame API -->
+    <script src="https://www.youtube.com/iframe_api"></script>
+
     <script>
         (function() {
-            // ---------- PRELOADED COURSE VIDEOS (from user data) ----------
+            // ---------- PRELOADED COURSE VIDEOS ----------
             const courseVideosData = [
                 {"course": "Accountancy", "caption": "Financial Statements Basics", "video_url": "https://youtu.be/fb7YCVR5fIU?si=XWozkxGoBV2HP2HW"},
                 {"course": "Accountancy", "caption": "Management Accounting Overview", "video_url": "https://youtu.be/qISkyoiGHcI?si=BKRnkFfl-fqKXgLG"},
@@ -724,7 +794,6 @@
                 {"course": "Computer Science", "caption": "Intro to Python 🔥", "video_url": "https://youtu.be/XKHEtdqhLK8?si=6wwK4EPdr9_A6L9w"}
             ];
 
-            // Extract unique course names
             const uniqueCourses = [...new Map(courseVideosData.map(v => [v.course, v.course])).values()].sort();
 
             // ---------- STATE ----------
@@ -743,6 +812,41 @@
             let activeReelElement = null;
             let viewCountedSet = new Set();
             let isManuallyUnmuted = false;
+
+            // YouTube Player instances
+            let ytPlayers = new Map(); // key: iframe id, value: YT.Player
+            let ytReady = false;
+            let ytQueue = [];
+
+            function onYouTubeIframeAPIReady() {
+                ytReady = true;
+                ytQueue.forEach(id => initYouTubePlayer(id));
+                ytQueue = [];
+            }
+            window.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady;
+
+            function initYouTubePlayer(iframeId) {
+                const iframe = document.getElementById(iframeId);
+                if (!iframe) return;
+                // Create YT.Player for this iframe
+                const player = new YT.Player(iframeId, {
+                    events: {
+                        onReady: (event) => {
+                            // Initially mute and set volume based on global state
+                            if (!isManuallyUnmuted) event.target.mute();
+                            else event.target.unMute();
+                            // Do NOT autoplay
+                        }
+                    }
+                });
+                ytPlayers.set(iframeId, player);
+            }
+
+            // Helper to get YouTube embed URL without autoplay
+            function getYouTubeEmbedNoAuto(url) {
+                const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]+)/);
+                return match ? `https://www.youtube.com/embed/${match[1]}?enablejsapi=1&playsinline=1` : url;
+            }
 
             // ---------- DOM elements ----------
             const reelContainer = document.getElementById('reel-container');
@@ -770,7 +874,7 @@
                 }
             }
             
-            // ---------- Helper: get course videos ----------
+            // Helper: get course videos
             function getCourseVideos(courseName) {
                 return courseVideosData.filter(v => v.course === courseName).map((v, idx) => ({
                     id: `course_${courseName.replace(/\s/g, '_')}_${idx}`,
@@ -792,21 +896,72 @@
                 return num;
             }
             
-            function getYouTubeEmbed(url) {
-                const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]+)/);
-                return match ? `https://www.youtube.com/embed/${match[1]}` : url;
+            // New: forward/backward functions
+            function seekVideo(reel, delta) {
+                const video = reel.querySelector('video');
+                if (video) {
+                    let newTime = video.currentTime + delta;
+                    newTime = Math.max(0, Math.min(video.duration, newTime));
+                    video.currentTime = newTime;
+                    // Vibration if supported
+                    if (navigator.vibrate) navigator.vibrate(50);
+                    return;
+                }
+                const iframe = reel.querySelector('iframe');
+                if (iframe && iframe.id) {
+                    const player = ytPlayers.get(iframe.id);
+                    if (player && typeof player.seekTo === 'function') {
+                        player.getCurrentTime().then(current => {
+                            let newTime = current + delta;
+                            newTime = Math.max(0, newTime);
+                            player.seekTo(newTime, true);
+                            if (navigator.vibrate) navigator.vibrate(50);
+                        }).catch(() => {
+                            // fallback
+                            player.seekTo(delta > 0 ? 10 : 0, true);
+                            if (navigator.vibrate) navigator.vibrate(50);
+                        });
+                    }
+                }
             }
-            
-            function getYouTubeIframe(url) {
-                const embed = getYouTubeEmbed(url);
-                // Add playsinline and mute for Safari autoplay
-                return `${embed}?enablejsapi=1&autoplay=1&mute=1&playsinline=1`;
+
+            function resetReelPlayState(reel) {
+                // Pause video/YouTube
+                const video = reel.querySelector('video');
+                const iframe = reel.querySelector('iframe');
+                const playOverlay = reel.querySelector('.play-overlay');
+                if (video) {
+                    video.pause();
+                } else if (iframe && iframe.id) {
+                    const player = ytPlayers.get(iframe.id);
+                    if (player && player.pauseVideo) player.pauseVideo();
+                }
+                // Show play overlay
+                if (playOverlay) playOverlay.classList.remove('hidden');
             }
-            
-            function sendYouTubeCommand(iframe, command) {
-                if (!iframe || !iframe.contentWindow) return;
-                const message = JSON.stringify({ event: 'command', func: command, args: '' });
-                iframe.contentWindow.postMessage(message, '*');
+
+            function playReelFromTap(reel) {
+                const video = reel.querySelector('video');
+                const iframe = reel.querySelector('iframe');
+                const playOverlay = reel.querySelector('.play-overlay');
+                if (video) {
+                    video.play().catch(e => console.log('play error', e));
+                    // Apply mute state
+                    video.muted = !isManuallyUnmuted;
+                } else if (iframe && iframe.id) {
+                    const player = ytPlayers.get(iframe.id);
+                    if (player && player.playVideo) {
+                        player.playVideo();
+                        if (isManuallyUnmuted) player.unMute();
+                        else player.mute();
+                    }
+                }
+                // Hide overlay
+                if (playOverlay) playOverlay.classList.add('hidden');
+                // Optional: first user interaction for audio
+                if (!userInteracted) {
+                    userInteracted = true;
+                }
             }
             
             function updateMuteButtonIcon(reelElement) {
@@ -821,26 +976,36 @@
             
             function applyAudioToReel(reelElement, isActive) {
                 if (!reelElement) return;
-                const media = reelElement.querySelector('video') || reelElement.querySelector('iframe');
-                if (!media) return;
+                const video = reelElement.querySelector('video');
+                const iframe = reelElement.querySelector('iframe');
+                const playOverlay = reelElement.querySelector('.play-overlay');
+                const isPlayVisible = playOverlay && !playOverlay.classList.contains('hidden');
+                
                 if (!isActive) {
-                    if (media.tagName === 'VIDEO') { 
-                        media.pause(); 
-                        media.muted = true; 
-                    }
-                    else if (media.tagName === 'IFRAME' && media.src.includes('youtube.com/embed/')) {
-                        sendYouTubeCommand(media, 'pauseVideo');
-                        sendYouTubeCommand(media, 'mute');
+                    // Inactive: pause and show play overlay
+                    if (video) {
+                        video.pause();
+                        if (playOverlay) playOverlay.classList.remove('hidden');
+                    } else if (iframe && iframe.id) {
+                        const player = ytPlayers.get(iframe.id);
+                        if (player && player.pauseVideo) player.pauseVideo();
+                        if (playOverlay) playOverlay.classList.remove('hidden');
                     }
                     return;
                 }
-                const shouldBeUnmuted = userInteracted && isManuallyUnmuted;
-                if (media.tagName === 'VIDEO') {
-                    media.muted = !shouldBeUnmuted;
-                    media.play().catch(e => console.log('video play', e));
-                } else if (media.tagName === 'IFRAME' && media.src.includes('youtube.com/embed/')) {
-                    sendYouTubeCommand(media, 'playVideo');
-                    shouldBeUnmuted ? sendYouTubeCommand(media, 'unMute') : sendYouTubeCommand(media, 'mute');
+                // Active: only auto-play if user has already tapped (overlay hidden)
+                if (!isPlayVisible) {
+                    if (video) {
+                        video.play().catch(e => console.log('play error', e));
+                        video.muted = !isManuallyUnmuted;
+                    } else if (iframe && iframe.id) {
+                        const player = ytPlayers.get(iframe.id);
+                        if (player && player.playVideo) {
+                            player.playVideo();
+                            if (isManuallyUnmuted) player.unMute();
+                            else player.mute();
+                        }
+                    }
                 }
             }
             
@@ -882,7 +1047,7 @@
                 } catch (err) { console.error('View increment failed', err); }
             }
             
-            // Improved IntersectionObserver with stricter visibility and pausing
+            // Improved IntersectionObserver with reset on scroll away
             let observer;
             function initIntersectionObserver() {
                 if (observer) observer.disconnect();
@@ -894,16 +1059,9 @@
                             maxRatio = entry.intersectionRatio;
                             highestRatioEntry = entry;
                         }
-                        // Pause videos that are not visible enough
+                        // If not visible enough, pause and show overlay
                         if (!entry.isIntersecting || entry.intersectionRatio < 0.3) {
-                            const media = reel.querySelector('video') || reel.querySelector('iframe');
-                            if (media) {
-                                if (media.tagName === 'VIDEO') {
-                                    media.pause();
-                                } else if (media.tagName === 'IFRAME' && media.src.includes('youtube.com/embed/')) {
-                                    sendYouTubeCommand(media, 'pauseVideo');
-                                }
-                            }
+                            resetReelPlayState(reel);
                         }
                     }
                     if (highestRatioEntry && highestRatioEntry.intersectionRatio >= 0.7) {
@@ -945,7 +1103,7 @@
                 if (loading) loading.remove();
             }
             
-            // ---------- RENDER LOGIC ----------
+            // ---------- RENDER LOGIC (modified to include play overlay and transport buttons) ----------
             function renderReel() {
                 if (currentTab === 'uploaded') {
                     let items = uploadedVideos.filter(v => {
@@ -963,12 +1121,18 @@
                     let html = '';
                     items.forEach((item, idx) => {
                         const mediaUrl = item.video_url;
-                        // Add playsinline, webkit-playsinline, preload=metadata, muted, loop
                         const mediaTag = `<video src="${mediaUrl}" playsinline webkit-playsinline loop preload="metadata" muted></video>`;
                         const deleteBtn = (isAdmin) ? `<div class="delete-overlay"><button class="delete-btn" onclick="deleteVideo('${item.id}', event)">🗑️ Delete</button></div>` : '';
                         html += `<div class="reel-item" data-id="${item.id}" data-type="uploaded" data-index="${idx}" data-source="backend">
-                            <div class="reel-media">${mediaTag}</div>
+                            <div class="reel-media">
+                                ${mediaTag}
+                                <div class="play-overlay"><div class="play-icon">▶️</div></div>
+                            </div>
                             ${deleteBtn}
+                            <div class="transport-controls">
+                                <button class="transport-btn" data-seek="-5">⏪</button>
+                                <button class="transport-btn" data-seek="5">⏩</button>
+                            </div>
                             <div class="video-info-bottom">
                                 <div class="creator-name">@${item.creator_name || item.username || 'anonymous'}</div>
                                 <div class="caption">${item.caption || ''}</div>
@@ -983,17 +1147,24 @@
                     });
                     reelContainer.innerHTML = html;
                     attachReelListeners();
-                    // Add loading overlay for each video until loadeddata
+                    // Add loading overlay and tap-to-play
                     document.querySelectorAll('.reel-item video').forEach(video => {
                         const reelMedia = video.closest('.reel-media');
                         const loadingDiv = addLoadingOverlay(reelMedia);
                         video.addEventListener('loadeddata', () => {
                             removeLoadingOverlay(reelMedia);
                         }, { once: true });
-                        // Fallback: remove after 3s if still loading
                         setTimeout(() => {
                             if (reelMedia.querySelector('.video-loading')) removeLoadingOverlay(reelMedia);
                         }, 3000);
+                    });
+                    // Attach tap-to-play on overlay
+                    document.querySelectorAll('.play-overlay').forEach(overlay => {
+                        overlay.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            const reel = overlay.closest('.reel-item');
+                            playReelFromTap(reel);
+                        });
                     });
                     viewCountedSet.clear();
                     activeReelElement = null;
@@ -1002,16 +1173,24 @@
                     return;
                 }
                 
-                // YOUTUBE TAB: show course selector or results
+                // YOUTUBE TAB
                 if (youtubeSearchResults.length > 0) {
                     let html = '';
                     youtubeSearchResults.forEach((item, idx) => {
-                        const iframeSrc = getYouTubeIframe(item.video_url);
-                        const mediaTag = `<iframe src="${iframeSrc}" frameborder="0" allowfullscreen loading="lazy" allow="autoplay; encrypted-media" style="pointer-events: auto;"></iframe>`;
+                        const iframeSrc = getYouTubeEmbedNoAuto(item.video_url);
+                        const iframeId = `yt-${item.id}-${Date.now()}-${idx}`;
+                        const mediaTag = `<iframe id="${iframeId}" src="${iframeSrc}" frameborder="0" allowfullscreen loading="lazy" allow="autoplay; encrypted-media" style="pointer-events: auto;"></iframe>`;
                         const likesCount = localLikes.get(item.id) !== undefined ? localLikes.get(item.id) : (item.likes || 0);
                         const viewsCount = localViews.get(item.id) !== undefined ? localViews.get(item.id) : (item.views || 0);
                         html += `<div class="reel-item" data-id="${item.id}" data-type="youtube-course" data-source="course">
-                            <div class="reel-media">${mediaTag}</div>
+                            <div class="reel-media">
+                                ${mediaTag}
+                                <div class="play-overlay"><div class="play-icon">▶️</div></div>
+                            </div>
+                            <div class="transport-controls">
+                                <button class="transport-btn" data-seek="-5">⏪</button>
+                                <button class="transport-btn" data-seek="5">⏩</button>
+                            </div>
                             <div class="video-info-bottom">
                                 <div class="creator-name">🎬 ${item.creator_name}</div>
                                 <div class="caption">${item.caption}</div>
@@ -1025,13 +1204,26 @@
                         </div>`;
                     });
                     reelContainer.innerHTML = html;
+                    // Initialize YouTube players
+                    document.querySelectorAll('iframe[id^="yt-"]').forEach(iframe => {
+                        if (ytReady) initYouTubePlayer(iframe.id);
+                        else ytQueue.push(iframe.id);
+                    });
                     attachReelListeners();
+                    // Attach tap-to-play
+                    document.querySelectorAll('.play-overlay').forEach(overlay => {
+                        overlay.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            const reel = overlay.closest('.reel-item');
+                            playReelFromTap(reel);
+                        });
+                    });
                     viewCountedSet.clear();
                     activeReelElement = null;
                     initIntersectionObserver();
                     updateAllMuteButtons();
                 } else {
-                    // Show course selection UI
+                    // Course selection UI
                     let courseOptions = uniqueCourses.map(c => `<option value="${c.replace(/"/g, '&quot;')}">${c}</option>`).join('');
                     reelContainer.innerHTML = `
                         <div class="youtube-course-panel">
@@ -1087,9 +1279,17 @@
                 document.querySelectorAll('.mute-btn').forEach(btn => {
                     btn.addEventListener('click', (e) => { e.stopPropagation(); toggleManualMute(); });
                 });
+                document.querySelectorAll('.transport-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const delta = parseInt(btn.dataset.seek, 10);
+                        const reel = btn.closest('.reel-item');
+                        if (reel) seekVideo(reel, delta);
+                    });
+                });
             }
             
-            // ---------- Admin delete, search modal, upload handlers ----------
+            // ---------- Admin delete, search modal, upload handlers (unchanged except for ensuring compatibility) ----------
             window.deleteVideo = async function(id, e) {
                 e.stopPropagation();
                 if (!isAdmin) return;

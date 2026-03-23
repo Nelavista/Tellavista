@@ -125,12 +125,14 @@
             font-weight: 600;
         }
 
+        /* Global filter bar (only shown on Uploaded tab) */
         #search-bar-container {
             position: fixed;
             top: 116px;
             left: 16px;
             right: 16px;
             z-index: 998;
+            transition: opacity 0.2s;
         }
 
         .search-bar {
@@ -165,6 +167,69 @@
             opacity: 0.7;
         }
 
+        /* YouTube course selector UI (inside reel container) */
+        .youtube-course-panel {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            background: #000;
+            text-align: center;
+        }
+
+        .course-selector-box {
+            width: 100%;
+            max-width: 400px;
+            background: #1a1a1a;
+            border-radius: 48px;
+            border: 1px solid #333;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .course-selector-box select {
+            width: 100%;
+            padding: 14px;
+            background: #2a2a2a;
+            border: 1px solid #444;
+            border-radius: 30px;
+            color: white;
+            font-size: 1rem;
+            margin-bottom: 16px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .course-selector-box button {
+            width: 100%;
+            background: white;
+            border: none;
+            border-radius: 40px;
+            padding: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            color: black;
+            transition: 0.2s;
+        }
+
+        .course-selector-box button:active {
+            transform: scale(0.96);
+        }
+
+        .search-prompt-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            opacity: 0.7;
+        }
+
+        .search-prompt-text {
+            color: #aaa;
+            font-size: 1rem;
+            margin-top: 12px;
+        }
+
         #reel-container {
             position: fixed;
             top: 176px;
@@ -177,6 +242,11 @@
             -webkit-overflow-scrolling: touch;
             padding: 0;
             background: black;
+        }
+
+        /* When YouTube tab active, reel-container starts at top bar (since filter hidden) */
+        body.youtube-tab-active #reel-container {
+            top: 116px;
         }
 
         .reel-item {
@@ -252,11 +322,6 @@
 
         .overlay-btn.liked {
             color: #ff4d6d;
-        }
-
-        /* mute button specific - consistent with overlay-btn */
-        .mute-btn {
-            font-size: 1.8rem;
         }
 
         .delete-overlay {
@@ -519,7 +584,7 @@
     <div id="search-bar-container">
         <div class="search-bar" onclick="openSearchModal()">
             <span class="search-icon">🔍</span>
-            <span class="placeholder">Search videos...</span>
+            <span class="placeholder">Filter videos...</span>
         </div>
     </div>
 
@@ -555,7 +620,13 @@
                         <option value="Physics">Physics</option>
                         <option value="Mathematics">Mathematics</option>
                     </select>
-                    <input type="text" id="videoLevel" placeholder="Level (e.g. 100) *">
+                    <select id="videoLevel">
+                        <option value="">Select Level *</option>
+                        <option value="100">100 Level</option>
+                        <option value="200">200 Level</option>
+                        <option value="300">300 Level</option>
+                        <option value="400">400 Level</option>
+                    </select>
                     <select id="videoSemester">
                         <option value="">Select Semester</option>
                         <option value="First Semester">First Semester</option>
@@ -574,7 +645,13 @@
                         <option value="Physics">Physics</option>
                         <option value="Mathematics">Mathematics</option>
                     </select>
-                    <input type="text" id="ytLevel" placeholder="Level (optional)" value="100">
+                    <select id="ytLevel">
+                        <option value="">Level (optional)</option>
+                        <option value="100">100 Level</option>
+                        <option value="200">200 Level</option>
+                        <option value="300">300 Level</option>
+                        <option value="400">400 Level</option>
+                    </select>
                     <select id="ytSemester">
                         <option value="">Select Semester</option>
                         <option value="First Semester">First Semester</option>
@@ -591,20 +668,66 @@
 
     <script>
         (function() {
+            // ---------- PRELOADED COURSE VIDEOS (from user data) ----------
+            const courseVideosData = [
+                {"course": "Accountancy", "caption": "Financial Statements Basics", "video_url": "https://youtu.be/fb7YCVR5fIU?si=XWozkxGoBV2HP2HW"},
+                {"course": "Accountancy", "caption": "Management Accounting Overview", "video_url": "https://youtu.be/qISkyoiGHcI?si=BKRnkFfl-fqKXgLG"},
+                {"course": "Accountancy", "caption": "Auditing Principles", "video_url": "https://youtu.be/27gabbJQZqc?si=rsOLmkD2QXOoxSoi"},
+                {"course": "Accountancy", "caption": "Taxation Fundamentals", "video_url": "https://youtu.be/Cox8rLXYAGQ?si=CvKUaPuPJOxPb6cr"},
+                {"course": "Accountancy", "caption": "Learn Accounting in under 5 hours", "video_url": "https://youtu.be/gPBhGkBN30s?si=bUYfaccZPlBni3aZ"},
+                {"course": "Accounting", "caption": "Basics of Double Entry", "video_url": "https://youtu.be/cjO8qHM5Wjg?si=P0hcqm9x-wjmXpN3"},
+                {"course": "Accounting", "caption": "Trail Balance Explained", "video_url": "https://youtu.be/3_PfoTzSCQE?si=SGRI7KVJ6ZC3iJe7"},
+                {"course": "Accounting", "caption": "Financial Analysis Techniques", "video_url": "https://youtu.be/g2wEFJ7upNs?si=ht44vAply2f7b-P0"},
+                {"course": "Accounting", "caption": "Cost Accounting Overview", "video_url": "https://youtu.be/a5D3Iopi0-4?si=vXOVFcV1NqPGt6Tk"},
+                {"course": "Accounting", "caption": "Budgeting and Forecasting", "video_url": "https://youtu.be/GjxhDo9luh8?si=BXn4Z5J-RdKJdBoP"},
+                {"course": "Agriculture", "caption": "Introduction to Agriculture", "video_url": "https://youtu.be/1FLcijYWHZQ?si=B6iWcOVNXYCDWsKR"},
+                {"course": "Agriculture", "caption": "Crop Production Techniques", "video_url": "https://youtu.be/j4-0rNhxoKs?si=XaUcN8zOq1EtkVbX"},
+                {"course": "Agriculture", "caption": "Soil Fertility Management", "video_url": "https://youtu.be/TjbxOEEOCh0?si=grkiA5OewbgtFF78"},
+                {"course": "Agriculture", "caption": "Livestock Management", "video_url": "https://youtu.be/TjbxOEEOCh0?si=Jr_UpYvei_oieZxz"},
+                {"course": "Agriculture", "caption": "Agricultural Economics", "video_url": "https://youtu.be/fbOiwV3gBLg?si=f8HcQW1xdOEfQXEy"},
+                {"course": "Arabic Studies", "caption": "Arabic Language Basics", "video_url": "https://youtu.be/X1mC1XY65Kc?si=gIIUVXBrseXau1Tj"},
+                {"course": "Arabic Studies", "caption": "Arabic Grammar Essentials", "video_url": "https://youtu.be/CKD1O4tKZUA?si=JwH8Hb090aZTAI7n"},
+                {"course": "Arabic Studies", "caption": "Conversational Arabic", "video_url": "https://youtu.be/dinQIb4ZFXY?si=eGF1Vhsdwm8imJ3Y"},
+                {"course": "Arabic Studies", "caption": "Arabic Poetry Introduction", "video_url": "https://youtu.be/ZmjK5cu81RA?si=XnRGefNNXTCws278"},
+                {"course": "Arabic Studies", "caption": "Arabic Writing Skills", "video_url": "https://youtu.be/b_WdZCrKr3k?si=pYe0F4bLx8FiT8HT"},
+                {"course": "Banking and Finance", "caption": "Banking Systems Overview", "video_url": "https://youtu.be/fTTGALaRZoc?si=ThB2kkYTd_iIhFX1"},
+                {"course": "Banking and Finance", "caption": "Financial Markets Basics", "video_url": "https://youtu.be/UOwi7MBSfhk?si=XSyvxPRp4mEQx2OH"},
+                {"course": "Banking and Finance", "caption": "Loan and Credit Management", "video_url": "https://youtu.be/f3VgVOgAUoE?si=JwfSWSogIZeIMpY8"},
+                {"course": "Banking and Finance", "caption": "Investment Banking Intro", "video_url": "https://youtu.be/-PkN15TtFnc?si=xgcAoZBAdge-PBjb"},
+                {"course": "Banking and Finance", "caption": "Risk Management in Banking", "video_url": "https://youtu.be/BLAEuVSAlVM?si=hubXYQaexc2Iizjd"},
+                {"course": "Biochemistry", "caption": "Introduction to Biochemistry", "video_url": "https://youtu.be/CHJsaq2lNjU?si=owCTFJffO4MyBtPB"},
+                {"course": "Biochemistry", "caption": "Enzymes and their Functions", "video_url": "https://youtu.be/ozdO1mLXBQE?si=Xj6z5vY8rAgRMdA_"},
+                {"course": "Biochemistry", "caption": "Metabolism Basics", "video_url": "https://youtu.be/onDQ9KgDSVw?si=4IKHj5VVJoahw51B"},
+                {"course": "Biochemistry", "caption": "Protein Synthesis", "video_url": "https://youtu.be/8wAwLwJAGHs?si=vDuhcZbjQ0nNyhoL"},
+                {"course": "Biochemistry", "caption": "Biochemical Techniques", "video_url": "https://youtu.be/lDWL_EEhReo?si=F4nhulNv3l0nxRcA"},
+                {"course": "Botany", "caption": "Plant Classification", "video_url": "https://youtu.be/SAM5mcHkSxU?si=P1cX_dbg0pGJFDBB"},
+                {"course": "Botany", "caption": "Photosynthesis Process", "video_url": "https://youtu.be/-ZRsLhaukn8?si=CfNMcb-tVWwq6-be"},
+                {"course": "Botany", "caption": "Plant Anatomy", "video_url": "https://youtu.be/pvVvCt6Kdp8?si=3ubgF8WibXgzFLcI"},
+                {"course": "Botany", "caption": "Plant Reproduction", "video_url": "https://youtu.be/h077JEQ8w6g?si=O5vHjcnuPetMLbCo"},
+                {"course": "Botany", "caption": "Ecology and Environment", "video_url": "https://youtu.be/fxVGiq1kggg?si=ESD-BALtjmX0Qxcb"},
+                {"course": "Computer Science", "caption": "Intro to Python 🔥", "video_url": "https://youtu.be/XKHEtdqhLK8?si=6wwK4EPdr9_A6L9w"}
+            ];
+
+            // Extract unique course names
+            const uniqueCourses = [...new Map(courseVideosData.map(v => [v.course, v.course])).values()].sort();
+
             // ---------- STATE ----------
             let currentTab = 'uploaded';
             let isAdmin = false;
             let uploadedVideos = [];
-            let youtubeReels = [];
+            let youtubeReels = [];          // backend YouTube videos (preserved but not shown in new YouTube tab)
+            let youtubeSearchResults = [];   // temporary array for course videos
             let searchFilters = { course: '', level: '', semester: '' };
             
-            // ---------- AUDIO CONTROL STATE ----------
-            let userInteracted = false;          // user tapped -> allow unmuted sound for active reel only
-            let activeReelElement = null;         // DOM element of the currently active reel
-            let viewCountedSet = new Set();        // track which reels already counted view
+            // Local state for search results likes/views (persist only in memory)
+            let localLikes = new Map();      // id -> likes count
+            let localViews = new Map();      // id -> views count
             
-            // NEW: global manual mute/unmute flag (default muted = false)
-            let isManuallyUnmuted = false;         // true = user wants sound ON (unmuted), false = muted
+            // ---------- AUDIO CONTROL STATE ----------
+            let userInteracted = false;
+            let activeReelElement = null;
+            let viewCountedSet = new Set();
+            let isManuallyUnmuted = false;
 
             // ---------- DOM elements ----------
             const reelContainer = document.getElementById('reel-container');
@@ -618,241 +741,165 @@
             const fileFields = document.getElementById('fileUploadFields');
             const youtubeFields = document.getElementById('youtubeUploadFields');
             const publishBtn = document.getElementById('publishBtn');
-
+            const searchBarContainer = document.getElementById('search-bar-container');
+            
             let currentUploadType = 'file';
 
-            function setRequiredAttributes() {
-                document.querySelectorAll('#fileUploadFields input, #fileUploadFields select, #youtubeUploadFields input, #youtubeUploadFields select').forEach(el => el.required = false);
-                if (currentUploadType === 'file') {
-                    fileFields.classList.remove('hidden');
-                    youtubeFields.classList.add('hidden');
-                    document.getElementById('videoTitle').required = true;
-                    document.getElementById('videoCourse').required = true;
-                    document.getElementById('videoLevel').required = true;
-                    document.getElementById('videoSemester').required = true;
-                    document.getElementById('videoCreator').required = true;
-                    document.getElementById('videoFile').required = true;
+            function updateGlobalFilterVisibility() {
+                if (currentTab === 'uploaded') {
+                    searchBarContainer.style.display = 'block';
+                    document.body.classList.remove('youtube-tab-active');
                 } else {
-                    fileFields.classList.add('hidden');
-                    youtubeFields.classList.remove('hidden');
-                    document.getElementById('ytTitle').required = true;
-                    document.getElementById('ytCourse').required = true;
-                    document.getElementById('ytLevel').required = false;
-                    document.getElementById('ytSemester').required = true;
-                    document.getElementById('ytCreator').required = true;
-                    document.getElementById('ytLink').required = true;
+                    searchBarContainer.style.display = 'none';
+                    document.body.classList.add('youtube-tab-active');
                 }
             }
-
-            document.querySelectorAll('.toggle-option').forEach(opt => {
-                opt.addEventListener('click', () => {
-                    document.querySelectorAll('.toggle-option').forEach(o => o.classList.remove('active'));
-                    opt.classList.add('active');
-                    currentUploadType = opt.dataset.type;
-                    setRequiredAttributes();
-                });
-            });
-            setRequiredAttributes();
-
+            
+            // ---------- Helper: get course videos ----------
+            function getCourseVideos(courseName) {
+                return courseVideosData.filter(v => v.course === courseName).map((v, idx) => ({
+                    id: `course_${courseName.replace(/\s/g, '_')}_${idx}`,
+                    video_url: v.video_url,
+                    creator_name: "Educational Channel",
+                    caption: v.caption,
+                    course: v.course,
+                    level: "",
+                    semester: "",
+                    likes: localLikes.get(`course_${courseName.replace(/\s/g, '_')}_${idx}`) || 0,
+                    views: localViews.get(`course_${courseName.replace(/\s/g, '_')}_${idx}`) || 0,
+                    source: 'course'
+                }));
+            }
+            
+            // ---------- Helper functions (unchanged) ----------
             function formatNumber(num) {
                 if (num >= 1e6) return (num/1e6).toFixed(1)+'M';
                 if (num >= 1e3) return (num/1e3).toFixed(1)+'k';
                 return num;
             }
-
+            
             function getYouTubeEmbed(url) {
                 const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]+)/);
                 return match ? `https://www.youtube.com/embed/${match[1]}` : url;
             }
-
+            
             function getYouTubeIframe(url) {
                 const embed = getYouTubeEmbed(url);
                 return `${embed}?enablejsapi=1&autoplay=1&mute=1&playsinline=1`;
             }
-
-            // ---------- HELPER: send postMessage to YouTube iframe ----------
+            
             function sendYouTubeCommand(iframe, command) {
                 if (!iframe || !iframe.contentWindow) return;
-                const message = JSON.stringify({
-                    event: 'command',
-                    func: command,
-                    args: ''
-                });
+                const message = JSON.stringify({ event: 'command', func: command, args: '' });
                 iframe.contentWindow.postMessage(message, '*');
             }
-
-            // ---------- Update mute button icon for a specific reel (or all if reel not given) ----------
+            
             function updateMuteButtonIcon(reelElement) {
                 if (!reelElement) return;
                 const muteBtn = reelElement.querySelector('.mute-btn');
-                if (muteBtn) {
-                    muteBtn.textContent = isManuallyUnmuted ? '🔊' : '🔇';
-                }
+                if (muteBtn) muteBtn.textContent = isManuallyUnmuted ? '🔊' : '🔇';
             }
-
+            
             function updateAllMuteButtons() {
-                document.querySelectorAll('.reel-item').forEach(reel => {
-                    updateMuteButtonIcon(reel);
-                });
+                document.querySelectorAll('.reel-item').forEach(reel => updateMuteButtonIcon(reel));
             }
-
-            // ---------- CORE AUDIO LOGIC: apply state to a single reel (respects userInteracted + manual flag) ----------
+            
             function applyAudioToReel(reelElement, isActive) {
                 if (!reelElement) return;
                 const media = reelElement.querySelector('video') || reelElement.querySelector('iframe');
                 if (!media) return;
-
-                // For inactive: always mute + pause
                 if (!isActive) {
-                    if (media.tagName === 'VIDEO') {
-                        media.pause();
-                        media.muted = true;
-                    } else if (media.tagName === 'IFRAME' && media.src.includes('youtube.com/embed/')) {
+                    if (media.tagName === 'VIDEO') { media.pause(); media.muted = true; }
+                    else if (media.tagName === 'IFRAME' && media.src.includes('youtube.com/embed/')) {
                         sendYouTubeCommand(media, 'pauseVideo');
                         sendYouTubeCommand(media, 'mute');
                     }
                     return;
                 }
-
-                // ACTIVE REEL: decide mute/unmute based on userInteracted and manual flag
                 const shouldBeUnmuted = userInteracted && isManuallyUnmuted;
-                
                 if (media.tagName === 'VIDEO') {
                     media.muted = !shouldBeUnmuted;
                     media.play().catch(e => console.log('video play', e));
-                } 
-                else if (media.tagName === 'IFRAME' && media.src.includes('youtube.com/embed/')) {
+                } else if (media.tagName === 'IFRAME' && media.src.includes('youtube.com/embed/')) {
                     sendYouTubeCommand(media, 'playVideo');
-                    if (shouldBeUnmuted) {
-                        sendYouTubeCommand(media, 'unMute');
-                    } else {
-                        sendYouTubeCommand(media, 'mute');
-                    }
+                    shouldBeUnmuted ? sendYouTubeCommand(media, 'unMute') : sendYouTubeCommand(media, 'mute');
                 }
             }
-
-            // ---------- switch active reel: pause/mute old, play/unmute new ----------
+            
             function setActiveReel(newReelElement) {
                 if (activeReelElement === newReelElement) return;
-                
-                // Deactivate old
-                if (activeReelElement) {
-                    applyAudioToReel(activeReelElement, false);
-                }
-                
-                // Activate new
+                if (activeReelElement) applyAudioToReel(activeReelElement, false);
                 activeReelElement = newReelElement;
                 if (activeReelElement) {
                     applyAudioToReel(activeReelElement, true);
-                    // ensure mute button icon on active reel reflects global flag (all buttons already consistent)
                     updateMuteButtonIcon(activeReelElement);
                 }
             }
-
-            // ---------- MANUAL MUTE TOGGLE (called from button click) ----------
+            
             function toggleManualMute() {
-                // First interaction unlocks browser autoplay restrictions
-                if (!userInteracted) {
-                    userInteracted = true;
-                }
-                // Toggle global manual flag
+                if (!userInteracted) userInteracted = true;
                 isManuallyUnmuted = !isManuallyUnmuted;
-                // Update all mute button icons
                 updateAllMuteButtons();
-                // Apply new audio state to the currently active reel
-                if (activeReelElement) {
-                    applyAudioToReel(activeReelElement, true);
-                }
+                if (activeReelElement) applyAudioToReel(activeReelElement, true);
             }
-
-            // ---------- Count view (once per reel) ----------
+            
             async function countViewForReel(reelElement) {
                 const id = reelElement.dataset.id;
-                if (!id || viewCountedSet.has(id)) return;
+                const source = reelElement.dataset.source;
+                if (!id) return;
+                if (source === 'course') {
+                    if (localViews.has(id)) localViews.set(id, localViews.get(id) + 1);
+                    else localViews.set(id, 1);
+                    const viewsSpan = reelElement.querySelector('.overlay-btn:last-child span');
+                    if (viewsSpan) viewsSpan.textContent = formatNumber(localViews.get(id));
+                    return;
+                }
+                if (viewCountedSet.has(id)) return;
                 viewCountedSet.add(id);
                 try {
                     const res = await fetch(`/api/videos/${id}/view`, { method: 'POST', credentials: 'include' });
                     const data = await res.json();
                     const viewsSpan = reelElement.querySelector('.overlay-btn:last-child span');
                     if (viewsSpan) viewsSpan.textContent = formatNumber(data.views);
-                } catch (err) {
-                    console.error('View increment failed', err);
-                }
+                } catch (err) { console.error('View increment failed', err); }
             }
-
-            // ---------- Intersection Observer (threshold 0.7, snap to active) ----------
+            
             let observer;
             function initIntersectionObserver() {
                 if (observer) observer.disconnect();
-                
                 observer = new IntersectionObserver((entries) => {
-                    let highestRatioEntry = null;
-                    let maxRatio = 0;
-                    
+                    let highestRatioEntry = null, maxRatio = 0;
                     for (const entry of entries) {
                         if (entry.isIntersecting && entry.intersectionRatio > maxRatio) {
                             maxRatio = entry.intersectionRatio;
                             highestRatioEntry = entry;
                         }
                     }
-                    
                     if (highestRatioEntry && highestRatioEntry.intersectionRatio >= 0.7) {
                         const targetReel = highestRatioEntry.target;
                         countViewForReel(targetReel);
                         setActiveReel(targetReel);
-                    } else {
-                        if (activeReelElement) {
-                            const rect = activeReelElement.getBoundingClientRect();
-                            const isVisible = rect.top < window.innerHeight && rect.bottom > 0;
-                            if (!isVisible) {
-                                applyAudioToReel(activeReelElement, false);
-                                activeReelElement = null;
-                            }
-                        }
+                    } else if (activeReelElement) {
+                        const rect = activeReelElement.getBoundingClientRect();
+                        const isVisible = rect.top < window.innerHeight && rect.bottom > 0;
+                        if (!isVisible) { applyAudioToReel(activeReelElement, false); activeReelElement = null; }
                     }
                 }, { threshold: 0.7 });
-                
                 document.querySelectorAll('.reel-item').forEach(item => observer.observe(item));
             }
-
-            // ---------- First user interaction (tap/click) enables sound based on manual flag ----------
+            
             function onFirstUserInteraction() {
                 if (userInteracted) return;
                 userInteracted = true;
-                // re-apply audio to active reel with updated userInteracted flag
-                if (activeReelElement) {
-                    applyAudioToReel(activeReelElement, true);
-                } else {
-                    // fallback: find most visible reel
-                    const reels = Array.from(document.querySelectorAll('.reel-item'));
-                    let bestReel = null;
-                    let bestRatio = 0;
-                    for (const reel of reels) {
-                        const rect = reel.getBoundingClientRect();
-                        const visibleHeight = Math.min(rect.bottom, window.innerHeight) - Math.max(rect.top, 0);
-                        const ratio = visibleHeight / rect.height;
-                        if (ratio > bestRatio) {
-                            bestRatio = ratio;
-                            bestReel = reel;
-                        }
-                    }
-                    if (bestReel && bestRatio >= 0.7) {
-                        setActiveReel(bestReel);
-                        countViewForReel(bestReel);
-                    } else if (bestReel) {
-                        setActiveReel(bestReel);
-                    }
-                }
+                if (activeReelElement) applyAudioToReel(activeReelElement, true);
             }
-
             document.addEventListener('touchstart', onFirstUserInteraction, { once: true, passive: true });
             document.addEventListener('click', onFirstUserInteraction, { once: true });
             
-            // ---------- Re-render logic with mute button added ----------
+            // ---------- RENDER LOGIC ----------
             function renderReel() {
-                let items = [];
                 if (currentTab === 'uploaded') {
-                    items = uploadedVideos.filter(v => {
+                    let items = uploadedVideos.filter(v => {
                         if (searchFilters.course && v.course !== searchFilters.course) return false;
                         if (searchFilters.level && v.level !== searchFilters.level) return false;
                         if (searchFilters.semester && v.semester !== searchFilters.semester) return false;
@@ -860,46 +907,17 @@
                     });
                     if (items.length === 0) {
                         reelContainer.innerHTML = `<div class="empty-reel">📤 No uploaded videos yet. Be the first to upload.</div>`;
-                        activeReelElement = null;
-                        viewCountedSet.clear();
+                        activeReelElement = null; viewCountedSet.clear();
                         if (observer) observer.disconnect();
                         return;
                     }
-                } else {
-                    items = youtubeReels.filter(v => {
-                        if (searchFilters.course && v.course !== searchFilters.course) return false;
-                        if (searchFilters.level && v.level !== searchFilters.level) return false;
-                        if (searchFilters.semester && v.semester !== searchFilters.semester) return false;
-                        return true;
-                    });
-                    if (items.length === 0) {
-                        reelContainer.innerHTML = `<div class="empty-reel">😕 No YouTube videos found</div>`;
-                        activeReelElement = null;
-                        viewCountedSet.clear();
-                        if (observer) observer.disconnect();
-                        return;
-                    }
-                }
-                
-                let html = '';
-                items.forEach((item, idx) => {
-                    const isUploaded = currentTab === 'uploaded';
-                    const mediaUrl = isUploaded ? item.video_url : getYouTubeIframe(item.video_url);
-                    const mediaTag = isUploaded 
-                        ? `<video src="${mediaUrl}" playsinline autoplay loop preload="metadata" muted></video>`
-                        : `<iframe src="${mediaUrl}" frameborder="0" allowfullscreen loading="lazy"></iframe>`;
-                    
-                    const deleteBtn = (isAdmin && isUploaded) ? `
-                        <div class="delete-overlay">
-                            <button class="delete-btn" onclick="deleteVideo('${item.id}', event)">🗑️ Delete</button>
-                        </div>` : '';
-                    
-                    // NEW: mute/unmute button added inside .video-overlay-right
-                    html += `
-                        <div class="reel-item" data-id="${item.id}" data-type="${currentTab}" data-index="${idx}">
-                            <div class="reel-media">
-                                ${mediaTag}
-                            </div>
+                    let html = '';
+                    items.forEach((item, idx) => {
+                        const mediaUrl = item.video_url;
+                        const mediaTag = `<video src="${mediaUrl}" playsinline autoplay loop preload="metadata" muted></video>`;
+                        const deleteBtn = (isAdmin) ? `<div class="delete-overlay"><button class="delete-btn" onclick="deleteVideo('${item.id}', event)">🗑️ Delete</button></div>` : '';
+                        html += `<div class="reel-item" data-id="${item.id}" data-type="uploaded" data-index="${idx}" data-source="backend">
+                            <div class="reel-media">${mediaTag}</div>
                             ${deleteBtn}
                             <div class="video-info-bottom">
                                 <div class="creator-name">@${item.creator_name || item.username || 'anonymous'}</div>
@@ -908,54 +926,108 @@
                             </div>
                             <div class="video-overlay-right">
                                 <button class="overlay-btn mute-btn">${isManuallyUnmuted ? '🔊' : '🔇'}</button>
-                                <button class="overlay-btn like-btn" data-id="${item.id}">
-                                    ❤️ <span class="like-count">${formatNumber(item.likes || 0)}</span>
-                                </button>
-                                <div class="overlay-btn">
-                                    👁️ <span>${formatNumber(item.views || 0)}</span>
-                                </div>
+                                <button class="overlay-btn like-btn" data-id="${item.id}">❤️ <span class="like-count">${formatNumber(item.likes || 0)}</span></button>
+                                <div class="overlay-btn">👁️ <span>${formatNumber(item.views || 0)}</span></div>
                             </div>
+                        </div>`;
+                    });
+                    reelContainer.innerHTML = html;
+                    attachReelListeners();
+                    viewCountedSet.clear();
+                    activeReelElement = null;
+                    initIntersectionObserver();
+                    updateAllMuteButtons();
+                    return;
+                }
+                
+                // YOUTUBE TAB: show course selector or results
+                if (youtubeSearchResults.length > 0) {
+                    let html = '';
+                    youtubeSearchResults.forEach((item, idx) => {
+                        const iframeSrc = getYouTubeIframe(item.video_url);
+                        const mediaTag = `<iframe src="${iframeSrc}" frameborder="0" allowfullscreen loading="lazy"></iframe>`;
+                        const likesCount = localLikes.get(item.id) !== undefined ? localLikes.get(item.id) : (item.likes || 0);
+                        const viewsCount = localViews.get(item.id) !== undefined ? localViews.get(item.id) : (item.views || 0);
+                        html += `<div class="reel-item" data-id="${item.id}" data-type="youtube-course" data-source="course">
+                            <div class="reel-media">${mediaTag}</div>
+                            <div class="video-info-bottom">
+                                <div class="creator-name">🎬 ${item.creator_name}</div>
+                                <div class="caption">${item.caption}</div>
+                                <div><span class="badge">${item.course}</span></div>
+                            </div>
+                            <div class="video-overlay-right">
+                                <button class="overlay-btn mute-btn">${isManuallyUnmuted ? '🔊' : '🔇'}</button>
+                                <button class="overlay-btn like-btn" data-id="${item.id}">❤️ <span class="like-count">${formatNumber(likesCount)}</span></button>
+                                <div class="overlay-btn">👁️ <span>${formatNumber(viewsCount)}</span></div>
+                            </div>
+                        </div>`;
+                    });
+                    reelContainer.innerHTML = html;
+                    attachReelListeners();
+                    viewCountedSet.clear();
+                    activeReelElement = null;
+                    initIntersectionObserver();
+                    updateAllMuteButtons();
+                } else {
+                    // Show course selection UI (no reset button)
+                    let courseOptions = uniqueCourses.map(c => `<option value="${c.replace(/"/g, '&quot;')}">${c}</option>`).join('');
+                    reelContainer.innerHTML = `
+                        <div class="youtube-course-panel">
+                            <div class="search-prompt-icon">📚🎓</div>
+                            <div class="course-selector-box">
+                                <select id="courseSelect">
+                                    <option value="">-- Select a course --</option>
+                                    ${courseOptions}
+                                </select>
+                                <button id="loadCourseBtn">Load Videos</button>
+                            </div>
+                            <div class="search-prompt-text">Choose a course to watch educational reels</div>
                         </div>
                     `;
-                });
-                
-                reelContainer.innerHTML = html;
-                attachReelListeners();
-                viewCountedSet.clear();
-                activeReelElement = null;
-                initIntersectionObserver();
-                // ensure all mute buttons have the correct icon after render
-                updateAllMuteButtons();
+                    const courseSelect = document.getElementById('courseSelect');
+                    const loadBtn = document.getElementById('loadCourseBtn');
+                    if (loadBtn && courseSelect) {
+                        loadBtn.addEventListener('click', () => {
+                            const selected = courseSelect.value;
+                            if (!selected) return;
+                            youtubeSearchResults = getCourseVideos(selected);
+                            renderReel();
+                        });
+                    }
+                    if (observer) observer.disconnect();
+                    activeReelElement = null;
+                }
             }
             
-            // ---------- Attach like + mute button listeners ----------
             function attachReelListeners() {
-                // Like buttons
                 document.querySelectorAll('.like-btn').forEach(btn => {
                     btn.addEventListener('click', async (e) => {
                         e.stopPropagation();
                         const id = btn.dataset.id;
+                        const reelDiv = btn.closest('.reel-item');
+                        const source = reelDiv?.dataset.source;
+                        if (source === 'course') {
+                            let currentLikes = localLikes.get(id) || 0;
+                            currentLikes++;
+                            localLikes.set(id, currentLikes);
+                            btn.querySelector('.like-count').textContent = formatNumber(currentLikes);
+                            btn.classList.add('liked');
+                            return;
+                        }
                         try {
                             const res = await fetch(`/api/videos/${id}/like`, { method: 'POST', credentials: 'include' });
                             const data = await res.json();
                             btn.querySelector('.like-count').textContent = formatNumber(data.likes);
                             btn.classList.add('liked');
-                        } catch (err) {
-                            console.error('Like failed', err);
-                        }
+                        } catch (err) { console.error('Like failed', err); }
                     });
                 });
-                
-                // NEW: Mute button listeners (toggle ONLY active reel, but we use global state)
                 document.querySelectorAll('.mute-btn').forEach(btn => {
-                    btn.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        toggleManualMute();
-                    });
+                    btn.addEventListener('click', (e) => { e.stopPropagation(); toggleManualMute(); });
                 });
             }
             
-            // ---------- Delete (admin) ----------
+            // ---------- Admin delete, search modal, upload handlers ----------
             window.deleteVideo = async function(id, e) {
                 e.stopPropagation();
                 if (!isAdmin) return;
@@ -966,79 +1038,45 @@
                         uploadedVideos = uploadedVideos.filter(v => v.id != id);
                         youtubeReels = youtubeReels.filter(v => v.id != id);
                         renderReel();
-                    } else {
-                        alert('Delete failed. Are you admin?');
-                    }
-                } catch (err) {
-                    alert('Error deleting video');
-                }
+                    } else alert('Delete failed. Are you admin?');
+                } catch (err) { alert('Error deleting video'); }
             };
             
-            // ---------- Search modal (unchanged) ----------
             window.openSearchModal = function() {
-                let html = `
-                    <div class="filter-group">
-                        <label>Course</label>
-                        <select id="modalCourse" class="filter-select">
-                            <option value="">All Courses</option>
-                            <option value="Biochemistry">Biochemistry</option>
-                            <option value="Computer Science">Computer Science</option>
-                            <option value="Physics">Physics</option>
-                            <option value="Mathematics">Mathematics</option>
-                        </select>
-                    </div>
-                    <div class="filter-group">
-                        <label>Level</label>
-                        <select id="modalLevel" class="filter-select">
-                            <option value="">All Levels</option>
-                            <option value="100">100</option>
-                            <option value="200">200</option>
-                            <option value="300">300</option>
-                            <option value="400">400</option>
-                        </select>
-                    </div>
-                    <div class="filter-group">
-                        <label>Semester</label>
-                        <select id="modalSemester" class="filter-select">
-                            <option value="">All Semesters</option>
-                            <option value="First Semester">First Semester</option>
-                            <option value="Second Semester">Second Semester</option>
-                        </select>
-                    </div>
-                    <div class="modal-actions">
-                        <button class="btn-primary" id="applySearchBtn">Apply</button>
-                        <button class="btn-secondary" id="resetSearchBtn">Reset</button>
-                    </div>
-                `;
+                let html = `<div class="filter-group"><label>Course</label><select id="modalCourse" class="filter-select"><option value="">All Courses</option><option value="Biochemistry">Biochemistry</option><option value="Computer Science">Computer Science</option><option value="Physics">Physics</option><option value="Mathematics">Mathematics</option></select></div>
+                    <div class="filter-group"><label>Level</label><select id="modalLevel" class="filter-select"><option value="">All Levels</option><option value="100">100</option><option value="200">200</option><option value="300">300</option><option value="400">400</option></select></div>
+                    <div class="filter-group"><label>Semester</label><select id="modalSemester" class="filter-select"><option value="">All Semesters</option><option value="First Semester">First Semester</option><option value="Second Semester">Second Semester</option></select></div>
+                    <div class="modal-actions"><button class="btn-primary" id="applySearchBtn">Apply</button><button class="btn-secondary" id="resetSearchBtn">Reset</button></div>`;
                 searchModalBody.innerHTML = html;
                 searchModal.classList.add('show');
-                
                 document.getElementById('applySearchBtn').addEventListener('click', () => {
-                    const course = document.getElementById('modalCourse')?.value || '';
-                    const level = document.getElementById('modalLevel')?.value || '';
-                    const semester = document.getElementById('modalSemester')?.value || '';
-                    searchFilters = { course, level, semester };
+                    searchFilters = { course: document.getElementById('modalCourse')?.value || '', level: document.getElementById('modalLevel')?.value || '', semester: document.getElementById('modalSemester')?.value || '' };
                     renderReel();
                     closeSearchModal();
                 });
-                
-                document.getElementById('resetSearchBtn')?.addEventListener('click', () => {
-                    searchFilters = { course: '', level: '', semester: '' };
-                    renderReel();
-                    closeSearchModal();
-                });
+                document.getElementById('resetSearchBtn')?.addEventListener('click', () => { searchFilters = { course: '', level: '', semester: '' }; renderReel(); closeSearchModal(); });
             };
             window.closeSearchModal = () => searchModal.classList.remove('show');
-            
-            // ---------- Upload modal (unchanged) ----------
             window.openUploadModal = () => uploadModal.classList.add('show');
-            window.closeUploadModal = () => {
-                uploadModal.classList.remove('show');
-                document.getElementById('uploadForm').reset();
-                setRequiredAttributes();
-            };
+            window.closeUploadModal = () => { uploadModal.classList.remove('show'); document.getElementById('uploadForm').reset(); setRequiredAttributes(); };
             
-            // ---------- Handle upload (unchanged) ----------
+            function setRequiredAttributes() {
+                document.querySelectorAll('#fileUploadFields input, #fileUploadFields select, #youtubeUploadFields input, #youtubeUploadFields select').forEach(el => el.required = false);
+                if (currentUploadType === 'file') {
+                    fileFields.classList.remove('hidden'); youtubeFields.classList.add('hidden');
+                    ['videoTitle','videoCourse','videoLevel','videoSemester','videoCreator','videoFile'].forEach(id => document.getElementById(id).required = true);
+                } else {
+                    fileFields.classList.add('hidden'); youtubeFields.classList.remove('hidden');
+                    ['ytTitle','ytCourse','ytSemester','ytCreator','ytLink'].forEach(id => document.getElementById(id).required = true);
+                    document.getElementById('ytLevel').required = false;
+                }
+            }
+            document.querySelectorAll('.toggle-option').forEach(opt => opt.addEventListener('click', () => {
+                document.querySelectorAll('.toggle-option').forEach(o => o.classList.remove('active'));
+                opt.classList.add('active'); currentUploadType = opt.dataset.type; setRequiredAttributes();
+            }));
+            setRequiredAttributes();
+            
             window.handleUpload = async function(e) {
                 e.preventDefault();
                 if (currentUploadType === 'file') {
@@ -1048,126 +1086,50 @@
                     const semester = document.getElementById('videoSemester').value;
                     const creator = document.getElementById('videoCreator').value.trim();
                     const file = document.getElementById('videoFile').files[0];
-                    if (!title || !course || !level || !semester || !creator || !file) {
-                        alert('Please fill all fields and select a file');
-                        return;
-                    }
+                    if (!title || !course || !level || !semester || !creator || !file) { alert('Please fill all fields and select a file'); return; }
                     const formData = new FormData();
-                    formData.append('creator_name', creator);
-                    formData.append('department', 'General');
-                    formData.append('course', course);
-                    formData.append('level', level);
-                    formData.append('semester', semester);
-                    formData.append('caption', title);
-                    formData.append('bank_name', 'Demo Bank');
-                    formData.append('account_number', '0000000000');
+                    formData.append('creator_name', creator); formData.append('department', 'General'); formData.append('course', course); formData.append('level', level);
+                    formData.append('semester', semester); formData.append('caption', title); formData.append('bank_name', 'Demo Bank'); formData.append('account_number', '0000000000');
                     formData.append('video', file);
-                    publishBtn.disabled = true;
-                    publishBtn.innerHTML = '<span class="spinner"></span> Uploading...';
+                    publishBtn.disabled = true; publishBtn.innerHTML = '<span class="spinner"></span> Uploading...';
                     try {
                         const res = await fetch('/video-upload', { method: 'POST', body: formData, credentials: 'include' });
-                        const responseText = await res.text();
-                        if (res.redirected && res.url.includes('/videos')) {
-                            alert('✅ Video uploaded successfully!');
-                            setTimeout(() => fetchVideos(), 500);
-                        } else {
-                            let errorMsg = 'Upload failed.';
-                            const flashMatch = responseText.match(/<div[^>]*class=["'][^"']*flash[^"']*["'][^>]*>([\s\S]*?)<\/div>/i);
-                            if (flashMatch && flashMatch[1]) errorMsg = flashMatch[1].replace(/<[^>]*>/g, '').trim();
-                            alert(errorMsg);
-                        }
-                    } catch (err) {
-                        alert('Network error: ' + err.message);
-                    } finally {
-                        publishBtn.disabled = false;
-                        publishBtn.innerHTML = '🚀 Publish';
-                        closeUploadModal();
-                    }
+                        if (res.redirected && res.url.includes('/videos')) { alert('✅ Video uploaded successfully!'); setTimeout(() => fetchVideos(), 500); }
+                        else alert('Upload failed.');
+                    } catch (err) { alert('Network error: ' + err.message); } finally { publishBtn.disabled = false; publishBtn.innerHTML = '🚀 Publish'; closeUploadModal(); }
                 } else {
-                    const title = document.getElementById('ytTitle').value.trim();
-                    const course = document.getElementById('ytCourse').value;
-                    const level = document.getElementById('ytLevel').value.trim() || '100';
-                    const semester = document.getElementById('ytSemester').value;
-                    const creator = document.getElementById('ytCreator').value.trim();
-                    const link = document.getElementById('ytLink').value.trim();
-                    if (!title || !course || !semester || !creator || !link) {
-                        alert('Please fill all required fields and enter a YouTube link');
-                        return;
-                    }
-                    if (!link.includes('youtube.com') && !link.includes('youtu.be')) {
-                        alert('Enter a valid YouTube link');
-                        return;
-                    }
-                    const payload = {
-                        creator_name: creator,
-                        course: course,
-                        level: level,
-                        semester: semester,
-                        caption: title,
-                        video_url: link,
-                        department: 'General',
-                        bank_name: 'Demo Bank',
-                        account_number: '0000000000'
-                    };
-                    publishBtn.disabled = true;
-                    publishBtn.innerHTML = '<span class="spinner"></span> Publishing...';
+                    const title = document.getElementById('ytTitle').value.trim(), course = document.getElementById('ytCourse').value, level = document.getElementById('ytLevel').value.trim() || '100', semester = document.getElementById('ytSemester').value, creator = document.getElementById('ytCreator').value.trim(), link = document.getElementById('ytLink').value.trim();
+                    if (!title || !course || !semester || !creator || !link) { alert('Please fill all required fields and enter a YouTube link'); return; }
+                    const payload = { creator_name: creator, course, level, semester, caption: title, video_url: link, department: 'General', bank_name: 'Demo Bank', account_number: '0000000000' };
+                    publishBtn.disabled = true; publishBtn.innerHTML = '<span class="spinner"></span> Publishing...';
                     try {
-                        const res = await fetch('/api/videos/youtube', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(payload),
-                            credentials: 'include'
-                        });
-                        const data = await res.json();
-                        if (res.ok) {
-                            alert('✅ YouTube link added!');
-                            fetchVideos();
-                        } else {
-                            alert('Failed: ' + (data.error || 'Unknown error'));
-                        }
-                    } catch (err) {
-                        alert('Network error: ' + err.message);
-                    } finally {
-                        publishBtn.disabled = false;
-                        publishBtn.innerHTML = '🚀 Publish';
-                        closeUploadModal();
-                    }
+                        const res = await fetch('/api/videos/youtube', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload), credentials: 'include' });
+                        if (res.ok) { alert('✅ YouTube link added!'); fetchVideos(); } else alert('Failed to add YouTube link');
+                    } catch (err) { alert('Network error: ' + err.message); } finally { publishBtn.disabled = false; publishBtn.innerHTML = '🚀 Publish'; closeUploadModal(); }
                 }
             };
             
-            // ---------- Tab switching ----------
             window.switchTab = function(tab) {
                 currentTab = tab;
                 if (tab === 'uploaded') {
-                    tabUploaded.classList.add('active');
-                    tabYoutube.classList.remove('active');
+                    tabUploaded.classList.add('active'); tabYoutube.classList.remove('active');
+                    searchFilters = { course: '', level: '', semester: '' };
+                    youtubeSearchResults = [];
                 } else {
-                    tabYoutube.classList.add('active');
-                    tabUploaded.classList.remove('active');
+                    tabYoutube.classList.add('active'); tabUploaded.classList.remove('active');
+                    youtubeSearchResults = [];
+                    searchFilters = { course: '', level: '', semester: '' };
                 }
-                searchFilters = { course: '', level: '', semester: '' };
+                updateGlobalFilterVisibility();
                 renderReel();
             };
             
-            // ---------- Admin toggle ----------
             window.toggleAdmin = function() {
-                if (!isAdmin) {
-                    const pwd = prompt('Enter admin password:');
-                    if (pwd === 'admin123') {
-                        isAdmin = true;
-                        adminBtn.classList.add('admin-active');
-                        renderReel();
-                    } else alert('Wrong');
-                } else {
-                    isAdmin = false;
-                    adminBtn.classList.remove('admin-active');
-                    renderReel();
-                }
+                if (!isAdmin) { const pwd = prompt('Enter admin password:'); if (pwd === 'admin123') { isAdmin = true; adminBtn.classList.add('admin-active'); renderReel(); } else alert('Wrong'); }
+                else { isAdmin = false; adminBtn.classList.remove('admin-active'); renderReel(); }
             };
-            
             window.goBack = () => window.history.back();
             
-            // ---------- Fetch videos from backend ----------
             async function fetchVideos() {
                 try {
                     const response = await fetch('/api/videos', { credentials: 'include' });
@@ -1176,13 +1138,10 @@
                     uploadedVideos = videos.filter(v => !v.video_url.includes('youtube.com') && !v.video_url.includes('youtu.be'));
                     youtubeReels = videos.filter(v => v.video_url.includes('youtube.com') || v.video_url.includes('youtu.be'));
                     renderReel();
-                } catch (err) {
-                    console.error(err);
-                    reelContainer.innerHTML = `<div class="empty-reel">⚠️ Could not load videos.</div>`;
-                }
+                } catch (err) { console.error(err); reelContainer.innerHTML = `<div class="empty-reel">⚠️ Could not load videos.</div>`; }
             }
-            
             fetchVideos();
+            updateGlobalFilterVisibility();
         })();
     </script>
 </body>

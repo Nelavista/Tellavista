@@ -214,6 +214,26 @@
             animation: fadeInUp 0.7s ease-out 0.5s forwards;
         }
 
+        /* ===== PROFILE INFO BANNER ===== */
+        .profile-info {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 0.8rem 1rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            border: 1px solid var(--border-dark);
+            opacity: 0;
+            animation: fadeInUp 0.6s ease-out 0.55s forwards;
+        }
+        .profile-info p {
+            font-size: 0.95rem;
+            color: #e0e0e0;
+        }
+        .profile-info strong {
+            color: white;
+            font-weight: 600;
+        }
+
         /* ===== SELECTION SECTION ===== */
         .selection-section {
             background: var(--card-dark);
@@ -803,7 +823,8 @@
                 </div>
                 <div class="form-group">
                     <label>Your Name / Author *</label>
-                    <input type="text" id="materialAuthor" required placeholder="e.g. Dr. Adebayo">
+                    <!-- Nelavista Profile Integration: Auto-fill uploader's name -->
+                    <input type="text" id="materialAuthor" required placeholder="e.g. Dr. Adebayo" value="{{ user.name }}">
                 </div>
                 <div class="form-group">
                     <label>Description (optional)</label>
@@ -822,7 +843,12 @@
     <div class="cbt-container">
         <div class="header-section">
             <h1 class="header-title">Study Materials</h1>
-            <p class="header-subtitle">Select course, level, and semester to view all materials</p>
+            <p class="header-subtitle">Select semester to view materials for your course</p>
+        </div>
+
+        <!-- Nelavista Profile Integration: Display user's department and level -->
+        <div class="profile-info">
+            <p>📚 Showing materials for <strong>{{ user.department }}</strong> • <strong>{{ user.level }} Level</strong></p>
         </div>
 
         <div class="selection-section" id="selectionSection">
@@ -904,7 +930,7 @@
             <div class="no-materials-title">No Materials Found</div>
             <div class="no-materials-subtitle">
                 No study materials available for the selected semester.<br>
-                Please try another course, level, or semester combination.
+                Please try another semester combination.
             </div>
             <button class="start-btn" onclick="goBackToSelection()">Select Another Semester</button>
         </div>
@@ -919,6 +945,13 @@
             materials: []
         };
         let isAdmin = false;
+
+        // Nelavista Profile Integration: Prepopulate state with user's department and level
+        const userDepartment = "{{ user.department }}";
+        const userLevel = "{{ user.level }}";
+        // Ensure level is numeric (strip "Level" if present)
+        let userLevelNum = userLevel.toString().replace(/[^0-9]/g, '');
+        if (userLevelNum === "") userLevelNum = "100"; // fallback
 
         // ===== STATIC MATERIALS DATABASE (from CBT version) =====
         const staticMaterials = [
@@ -1153,7 +1186,52 @@
         // ===== INIT =====
         document.addEventListener('DOMContentLoaded', () => {
             setupEventListeners();
-            updateOpenMaterialsButton();
+
+            // Nelavista Profile Integration: Prepopulate course and level selects with user data
+            const courseSelect = document.getElementById('courseSelect');
+            const levelSelect = document.getElementById('levelSelect');
+
+            // Set course if it exists in options
+            if (userDepartment) {
+                let optionExists = false;
+                for (let i = 0; i < courseSelect.options.length; i++) {
+                    if (courseSelect.options[i].value === userDepartment) {
+                        optionExists = true;
+                        break;
+                    }
+                }
+                if (optionExists) {
+                    courseSelect.value = userDepartment;
+                    materialsState.course = userDepartment;
+                } else {
+                    console.warn(`Course "${userDepartment}" not available in list.`);
+                }
+            }
+
+            // Set level if it exists in options
+            if (userLevelNum) {
+                let optionExists = false;
+                for (let i = 0; i < levelSelect.options.length; i++) {
+                    if (levelSelect.options[i].value === userLevelNum) {
+                        optionExists = true;
+                        break;
+                    }
+                }
+                if (optionExists) {
+                    levelSelect.value = userLevelNum;
+                    materialsState.level = userLevelNum;
+                } else {
+                    console.warn(`Level "${userLevelNum}" not available in list.`);
+                }
+            }
+
+            // If both are set, update semester dropdown (enable it and populate)
+            if (materialsState.course && materialsState.level) {
+                updateSemesterDropdown();
+                // Enable the "Open Materials" button only when semester is selected
+                // (We don't auto-select semester; user must choose)
+                updateOpenMaterialsButton();
+            }
         });
 
         function setupEventListeners() {
@@ -1324,6 +1402,8 @@
             document.getElementById('uploadModal').classList.add('show');
             document.getElementById('uploadForm').reset();
             document.getElementById('fileError').style.display = 'none';
+            // Nelavista Profile Integration: Re-fill author name in case of reset
+            document.getElementById('materialAuthor').value = "{{ user.name }}";
         }
         function closeUploadModal() {
             document.getElementById('uploadModal').classList.remove('show');

@@ -1,8 +1,9 @@
 import os
 import requests
 from bs4 import BeautifulSoup
-from flask import Blueprint, render_template, request, jsonify, session
+from flask import Blueprint, render_template, request, jsonify, session, flash, redirect, url_for
 from utils.helpers import login_required, is_academic_book
+from models import User                     # <-- added missing import
 from config import OPENROUTER_API_KEY
 
 materials_bp = Blueprint('materials', __name__)
@@ -36,13 +37,17 @@ def save_memory():
     session['language'] = request.form.get('language')
     session['notifications'] = 'notifications' in request.form
     flash('Settings saved!')
-    return redirect('/settings')
+    return redirect(url_for('materials.settings'))   # fixed redirect
 
 @materials_bp.route('/materials')
 @login_required
 def materials():
     username = session['user']['username']
     user = User.query.filter_by(username=username).first()
+    if not user:
+        flash('User not found. Please log in again.')
+        return redirect(url_for('auth.login'))
+
     all_courses = ["Python", "Data Science", "AI Basics", "Math", "Physics"]
     selected_course = request.args.get("course")
     materials_list = []
@@ -53,6 +58,7 @@ def materials():
         ]
     return render_template("materials.html", courses=all_courses, selected_course=selected_course, materials=materials_list, user=user)
 
+# ========== REMAINING ROUTES (unchanged) ==========
 @materials_bp.route('/api/materials')
 def get_study_materials():
     query = request.args.get("q", "python")

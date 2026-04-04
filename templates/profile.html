@@ -1,165 +1,530 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>{{ username }}'s Profile | Tellavista</title>
-  <style>
-    :root {
-      --primary-color: #000000;
-      --primary-hover: #333333;
-      --secondary-color: #4d4d4d;
-      --text-dark: #000000;
-      --text-medium: #555;
-      --bg-color: #ffffff;
-      --card-color: #f7f7f7;
-      --shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
-      --radius: 14px;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Complete Your Profile | Nelavista</title>
+    <style>
+        /* ===== CSS VARIABLES & RESET ===== */
+        :root {
+            --primary-color: #000000;
+            --primary-dark: #333333;
+            --light-bg: #ffffff;
+            --dark-bg: #000000;
+            --card-light: #ffffff;
+            --card-dark: #0a0a0a;
+            --text-light: #000000;
+            --text-dark: #ffffff;
+            --input-bg: #0a0a0a;
+            --border-light: rgba(0, 0, 0, 0.1);
+            --border-dark: rgba(255, 255, 255, 0.1);
+            --gradient-start: #ffffff;
+            --gradient-end: #888888;
+            --accent-color: #1a1a1a;
+        }
 
-    * {
-      box-sizing: border-box;
-    }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
 
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: var(--bg-color);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 1rem;
-      min-height: 100vh;
-      margin: 0;
-    }
+        body {
+            background: var(--dark-bg);
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+            padding: 0 20px;
+            opacity: 0;
+            animation: fadeIn 0.6s ease-out forwards;
+            animation-delay: 0.1s;
+        }
 
-    .profile-container {
-      background-color: var(--card-color);
-      padding: 2rem;
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      max-width: 500px;
-      width: 100%;
-      text-align: center;
-    }
+        /* ===== TOP BAR ===== */
+        #top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            z-index: 1002;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            opacity: 0;
+            animation: fadeInDown 0.5s ease-out 0.2s forwards;
+        }
 
-    h1 {
-      color: var(--text-dark);
-      font-size: 1.8rem;
-      margin-bottom: 0.4rem;
-    }
+        #back-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
 
-    .profile-subtitle {
-      color: var(--text-medium);
-      font-size: 1rem;
-      margin-bottom: 1.8rem;
-    }
+        #back-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(-2px);
+        }
 
-    .profile-details {
-      text-align: left;
-      background-color: #eeeeee;
-      padding: 1rem;
-      border-radius: 10px;
-      margin-bottom: 2rem;
-    }
+        #top-bar-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
 
-    .detail-item {
-      margin-bottom: 1rem;
-    }
+        /* ===== ANIMATIONS ===== */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
 
-    .detail-label {
-      font-weight: 600;
-      color: var(--text-dark);
-      display: block;
-      margin-bottom: 0.3rem;
-    }
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
-    .btn-group {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.7rem;
-      justify-content: center;
-    }
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
-    .btn {
-      padding: 0.65rem 1.4rem;
-      font-size: 0.95rem;
-      border: none;
-      border-radius: 8px;
-      text-decoration: none;
-      font-weight: 600;
-      transition: 0.3s ease;
-      cursor: pointer;
-    }
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
 
-    .btn-primary {
-      background-color: var(--primary-color);
-      color: white;
-    }
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
-    .btn-primary:hover {
-      background-color: var(--primary-hover);
-      transform: translateY(-2px);
-    }
+        /* ===== MAIN CONTAINER ===== */
+        .profile-container {
+            width: 100%;
+            max-width: 700px;
+            margin-top: 80px;
+            opacity: 0;
+            animation: fadeInUp 0.7s ease-out 0.3s forwards;
+        }
 
-    .btn-secondary {
-      background-color: var(--secondary-color);
-      color: white;
-    }
+        /* ===== HEADER SECTION ===== */
+        .header-section {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
 
-    .btn-secondary:hover {
-      opacity: 0.9;
-      transform: translateY(-2px);
-    }
+        .header-title {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+            opacity: 0;
+            animation: fadeInUp 0.7s ease-out 0.4s forwards;
+        }
 
-    @media (max-width: 480px) {
-      .profile-container {
-        padding: 1.5rem 1.2rem;
-      }
+        .header-subtitle {
+            color: #a0a0a0;
+            font-size: 1rem;
+            line-height: 1.5;
+            max-width: 500px;
+            margin: 0 auto;
+            opacity: 0;
+            animation: fadeInUp 0.7s ease-out 0.5s forwards;
+        }
 
-      h1 {
-        font-size: 1.5rem;
-      }
+        /* ===== FORM CARD ===== */
+        .form-card {
+            background: var(--card-dark);
+            border: 1px solid var(--border-dark);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            opacity: 0;
+            animation: fadeInUp 0.7s ease-out 0.6s forwards;
+        }
 
-      .btn-group {
-        flex-direction: column;
-      }
+        .input-group {
+            margin-bottom: 1.8rem;
+            opacity: 0;
+            animation: slideIn 0.6s ease-out forwards;
+        }
 
-      .btn {
-        width: 100%;
-        text-align: center;
-      }
-    }
-  </style>
+        .input-group:nth-child(1) { animation-delay: 0.6s; }
+        .input-group:nth-child(2) { animation-delay: 0.7s; }
+        .input-group:nth-child(3) { animation-delay: 0.8s; }
+        .input-group:nth-child(4) { animation-delay: 0.9s; }
+        .input-group:nth-child(5) { animation-delay: 1.0s; }
+
+        .input-label {
+            display: block;
+            margin-bottom: 0.7rem;
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: #e0e0e0;
+        }
+
+        .input-wrapper {
+            position: relative;
+            background: var(--input-bg);
+            border-radius: 12px;
+            border: 1px solid var(--border-dark);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .input-wrapper:focus-within {
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .styled-input {
+            width: 100%;
+            padding: 1rem 1.2rem;
+            background: var(--input-bg);
+            border: none;
+            outline: none;
+            font-size: 1rem;
+            color: #ffffff;
+            border-radius: 12px;
+        }
+
+        .styled-input::placeholder {
+            color: #888888;
+        }
+
+        select.styled-input {
+            appearance: none;
+            -webkit-appearance: none;
+            background: var(--input-bg);
+            cursor: pointer;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            flex-direction: column;
+        }
+
+        .save-btn, .dashboard-btn {
+            width: 100%;
+            padding: 1rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .save-btn {
+            background: var(--primary-color);
+            color: white;
+            opacity: 0;
+            animation: fadeInUp 0.6s ease-out 1.1s forwards;
+        }
+
+        .save-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        .save-btn:active {
+            transform: translateY(0);
+        }
+
+        .dashboard-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid var(--border-dark);
+            opacity: 0;
+            animation: fadeInUp 0.6s ease-out 1.2s forwards;
+        }
+
+        .dashboard-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* ===== FLASH MESSAGES ===== */
+        .flash-messages {
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            animation: fadeInUp 0.5s ease-out 0.5s forwards;
+        }
+        .flash-message {
+            background: rgba(255, 255, 255, 0.1);
+            border-left: 4px solid #4caf50;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            color: #e0e0e0;
+        }
+        .flash-message.error {
+            border-left-color: #f44336;
+        }
+        .flash-message.warning {
+            border-left-color: #ff9800;
+        }
+
+        /* ===== SCROLLBAR ===== */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            transition: background 0.3s ease;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            body {
+                padding: 0 16px;
+                padding-top: 70px;
+            }
+            .profile-container {
+                margin-top: 70px;
+            }
+            .header-title {
+                font-size: 1.6rem;
+            }
+            .header-subtitle {
+                font-size: 0.95rem;
+            }
+            .form-card {
+                padding: 1.5rem;
+                border-radius: 12px;
+            }
+            .styled-input {
+                padding: 0.9rem 1rem;
+                font-size: 0.95rem;
+            }
+            .action-buttons {
+                gap: 0.8rem;
+            }
+        }
+        @media (max-width: 480px) {
+            .header-title {
+                font-size: 1.4rem;
+            }
+            .form-card {
+                padding: 1.2rem;
+                border-radius: 10px;
+            }
+        }
+    </style>
 </head>
 <body>
-  <div class="profile-container">
-    <h1>Welcome, 👋 {{ username }}</h1>
-    <p class="profile-subtitle">Your personal Tellavista profile</p>
-
-    <div class="profile-details">
-      <div class="detail-item">
-        <span class="detail-label">📧 Email:</span>
-        {{ email }}
-      </div>
-      <div class="detail-item">
-        <span class="detail-label">🗓️ Joined On:</span>
-        {{ joined_on }}
-      </div>
-      <div class="detail-item">
-        <span class="detail-label">🌐 Preferred Language:</span>
-        {{ preferred_language }}
-      </div>
-      <div class="detail-item">
-        <span class="detail-label">⏰ Last Login:</span>
-        {{ last_login }}
-      </div>
+    <div id="top-bar">
+        <button id="back-btn" onclick="goBack()">←</button>
+        <div id="top-bar-title">📝 Complete Profile</div>
+        <div style="width: 40px;"></div>
     </div>
 
-    <div class="btn-group">
-      <a href="/edit-profile" class="btn btn-primary">Edit Profile</a>
-      <a href="/login" class="btn btn-primary">Login</a>
-      <a href="/" class="btn btn-secondary">🏠 Home</a>
+    <div class="profile-container">
+        <div class="header-section">
+            <h1 class="header-title">Complete Your Academic Profile</h1>
+            <p class="header-subtitle">This helps Nelavista personalize your learning experience.</p>
+        </div>
+
+        <!-- Flash messages -->
+        <div class="flash-messages" id="flashMessages">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="flash-message {% if category %} {{ category }} {% endif %}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+        </div>
+
+        <div class="form-card">
+            <form method="POST" action="/profile">
+                <div class="input-group">
+                    <label class="input-label">Full Name</label>
+                    <div class="input-wrapper">
+                        <input type="text" name="name" class="styled-input" value="{{ user.name }}" placeholder="e.g. John A. Doe">
+                    </div>
+                </div>
+
+                <!-- University dropdown -->
+                <div class="input-group">
+                    <label class="input-label">University</label>
+                    <div class="input-wrapper">
+                        <select name="university" class="styled-input">
+                            <option value="">Select University</option>
+                            <option value="Lagos State University" {% if user.university == "Lagos State University" %}selected{% endif %}>Lagos State University</option>
+                            <option value="University of Lagos" {% if user.university == "University of Lagos" %}selected{% endif %}>University of Lagos</option>
+                            <option value="University of Ibadan" {% if user.university == "University of Ibadan" %}selected{% endif %}>University of Ibadan</option>
+                            <option value="Obafemi Awolowo University" {% if user.university == "Obafemi Awolowo University" %}selected{% endif %}>Obafemi Awolowo University</option>
+                            <option value="Ahmadu Bello University" {% if user.university == "Ahmadu Bello University" %}selected{% endif %}>Ahmadu Bello University</option>
+                            <option value="University of Nigeria, Nsukka" {% if user.university == "University of Nigeria, Nsukka" %}selected{% endif %}>University of Nigeria, Nsukka</option>
+                            <option value="Covenant University" {% if user.university == "Covenant University" %}selected{% endif %}>Covenant University</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Faculty dropdown -->
+                <div class="input-group">
+                    <label class="input-label">Faculty</label>
+                    <div class="input-wrapper">
+                        <select name="faculty" class="styled-input">
+                            <option value="">Select Faculty</option>
+                            <option value="Science" {% if user.faculty == "Science" %}selected{% endif %}>Science</option>
+                            <option value="Engineering" {% if user.faculty == "Engineering" %}selected{% endif %}>Engineering</option>
+                            <option value="Social Sciences" {% if user.faculty == "Social Sciences" %}selected{% endif %}>Social Sciences</option>
+                            <option value="Arts" {% if user.faculty == "Arts" %}selected{% endif %}>Arts</option>
+                            <option value="Education" {% if user.faculty == "Education" %}selected{% endif %}>Education</option>
+                            <option value="Management Sciences" {% if user.faculty == "Management Sciences" %}selected{% endif %}>Management Sciences</option>
+                            <option value="Law" {% if user.faculty == "Law" %}selected{% endif %}>Law</option>
+                            <option value="Pharmacy" {% if user.faculty == "Pharmacy" %}selected{% endif %}>Pharmacy</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Department dropdown (expanded) -->
+                <div class="input-group">
+                    <label class="input-label">Department</label>
+                    <div class="input-wrapper">
+                        <select name="department" class="styled-input">
+                            <option value="">Select Department</option>
+                            <option value="Mathematics" {% if user.department == "Mathematics" %}selected{% endif %}>Mathematics</option>
+                            <option value="Computer Science" {% if user.department == "Computer Science" %}selected{% endif %}>Computer Science</option>
+                            <option value="Physics" {% if user.department == "Physics" %}selected{% endif %}>Physics</option>
+                            <option value="Chemistry" {% if user.department == "Chemistry" %}selected{% endif %}>Chemistry</option>
+                            <option value="Biology" {% if user.department == "Biology" %}selected{% endif %}>Biology</option>
+                            <option value="Statistics" {% if user.department == "Statistics" %}selected{% endif %}>Statistics</option>
+                            <option value="Economics" {% if user.department == "Economics" %}selected{% endif %}>Economics</option>
+                            <option value="Mass Communication" {% if user.department == "Mass Communication" %}selected{% endif %}>Mass Communication</option>
+                            <option value="Accounting" {% if user.department == "Accounting" %}selected{% endif %}>Accounting</option>
+                            <option value="Business Administration" {% if user.department == "Business Administration" %}selected{% endif %}>Business Administration</option>
+                            <option value="English" {% if user.department == "English" %}selected{% endif %}>English</option>
+                            <option value="History" {% if user.department == "History" %}selected{% endif %}>History</option>
+                            <option value="Political Science" {% if user.department == "Political Science" %}selected{% endif %}>Political Science</option>
+                            <option value="Psychology" {% if user.department == "Psychology" %}selected{% endif %}>Psychology</option>
+                            <option value="Sociology" {% if user.department == "Sociology" %}selected{% endif %}>Sociology</option>
+                            <option value="Microbiology" {% if user.department == "Microbiology" %}selected{% endif %}>Microbiology</option>
+                            <option value="Biochemistry" {% if user.department == "Biochemistry" %}selected{% endif %}>Biochemistry</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Level dropdown -->
+                <div class="input-group">
+                    <label class="input-label">Level</label>
+                    <div class="input-wrapper">
+                        <select name="level" class="styled-input">
+                            <option value="">Select Level</option>
+                            <option value="100 Level" {% if user.user_level == "100 Level" %}selected{% endif %}>100 Level</option>
+                            <option value="200 Level" {% if user.user_level == "200 Level" %}selected{% endif %}>200 Level</option>
+                            <option value="300 Level" {% if user.user_level == "300 Level" %}selected{% endif %}>300 Level</option>
+                            <option value="400 Level" {% if user.user_level == "400 Level" %}selected{% endif %}>400 Level</option>
+                            <option value="500 Level" {% if user.user_level == "500 Level" %}selected{% endif %}>500 Level</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button type="submit" class="save-btn">💾 Save Profile</button>
+                    <a href="/dashboard" class="dashboard-btn">🏠 Go to Dashboard</a>
+                </div>
+            </form>
+        </div>
     </div>
-  </div>
+
+    <script>
+        // Simple back button (go to previous page)
+        function goBack() {
+            document.body.style.opacity = '0';
+            document.body.style.transform = 'translateX(20px)';
+            document.body.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+            setTimeout(() => window.history.back(), 300);
+        }
+
+        // Auto-hide flash messages after 5 seconds
+        setTimeout(() => {
+            const flashes = document.querySelectorAll('.flash-message');
+            flashes.forEach(flash => {
+                flash.style.transition = 'opacity 0.5s ease';
+                flash.style.opacity = '0';
+                setTimeout(() => flash.remove(), 500);
+            });
+        }, 5000);
+
+        // Re-animate on page refresh
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden) {
+                document.body.style.animation = 'none';
+                setTimeout(() => document.body.style.animation = 'fadeIn 0.6s ease-out forwards', 10);
+            }
+        });
+
+        // Keyboard shortcut: Escape to go back
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') goBack();
+        });
+    </script>
 </body>
 </html>

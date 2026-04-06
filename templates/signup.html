@@ -1,368 +1,389 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <title>Sign Up</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Create Your Nelavista Account</title>
     <style>
-    /* ===== CSS VARIABLES & RESET ===== */
-    :root {
-      --primary-color: #000000;
-      --primary-dark: #333333;
-      --light-bg: #ffffff;
-      --dark-bg: #000000;
-      --card-light: #ffffff;
-      --card-dark: #0a0a0a;
-      --text-light: #000000;
-      --text-dark: #ffffff;
-      --input-bg: #0a0a0a;
-      --border-light: rgba(0, 0, 0, 0.1);
-      --border-dark: rgba(255, 255, 255, 0.1);
-      --gradient-start: #ffffff;
-      --gradient-end: #888888;
-      --success-color: rgba(255, 255, 255, 0.1);
-      --error-color: rgba(255, 100, 100, 0.2);
-    }
+        /* ===== CSS VARIABLES & RESET ===== */
+        :root {
+            --primary-color: #000000;
+            --primary-dark: #333333;
+            --light-bg: #ffffff;
+            --dark-bg: #000000;
+            --card-light: #ffffff;
+            --card-dark: #0a0a0a;
+            --text-light: #000000;
+            --text-dark: #ffffff;
+            --input-bg: #0a0a0a;
+            --border-light: rgba(0, 0, 0, 0.1);
+            --border-dark: rgba(255, 255, 255, 0.1);
+            --gradient-start: #ffffff;
+            --gradient-end: #888888;
+            --success-color: rgba(255, 255, 255, 0.1);
+            --error-color: rgba(255, 100, 100, 0.2);
+        }
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-      -webkit-tap-highlight-color: transparent;
-    }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
 
-    body {
-      background: var(--dark-bg);
-      color: var(--text-dark);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      overflow-x: hidden;
-      padding: 20px;
-      opacity: 0;
-      animation: fadeIn 0.6s ease-out forwards;
-      animation-delay: 0.1s;
-    }
+        body {
+            background: var(--dark-bg);
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+            padding: 20px;
+            opacity: 0;
+            animation: fadeIn 0.6s ease-out forwards;
+            animation-delay: 0.1s;
+        }
 
-    /* ===== ANIMATIONS ===== */
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-      }
-      to {
-        opacity: 1;
-      }
-    }
+        /* ===== ANIMATIONS ===== */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
 
-    @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(15px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
-    @keyframes slideIn {
-      from {
-        opacity: 0;
-        transform: translateX(-20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateX(0);
-      }
-    }
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
 
-    @keyframes subtlePulse {
-      0%, 100% {
-        opacity: 1;
-      }
-      50% {
-        opacity: 0.9;
-      }
-    }
+        /* ===== LOGO SECTION ===== */
+        .logo-section {
+            text-align: center;
+            margin-bottom: 2rem;
+            animation: fadeInUp 0.7s ease-out forwards;
+            opacity: 0;
+        }
 
-    /* ===== LOGO SECTION ===== */
-    .logo-section {
-      text-align: center;
-      margin-bottom: 3rem;
-      animation: fadeInUp 0.7s ease-out forwards;
-      opacity: 0;
-    }
+        .logo {
+            font-size: 2.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.5px;
+        }
 
-    .logo {
-      font-size: 2.8rem;
-      font-weight: 700;
-      background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      margin-bottom: 0.5rem;
-      letter-spacing: -0.5px;
-    }
+        .tagline {
+            color: #a0a0a0;
+            font-size: 1rem;
+            max-width: 500px;
+            line-height: 1.5;
+            animation: fadeInUp 0.7s ease-out 0.1s forwards;
+            opacity: 0;
+        }
 
-    .tagline {
-      color: #a0a0a0;
-      font-size: 1.1rem;
-      max-width: 500px;
-      line-height: 1.5;
-      animation: fadeInUp 0.7s ease-out 0.1s forwards;
-      opacity: 0;
-    }
+        /* ===== SIGNUP CONTAINER ===== */
+        .signup-container {
+            background: var(--card-dark);
+            padding: 2rem 1.8rem;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 480px;
+            border: 1px solid var(--border-dark);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            transform: translateY(10px);
+            animation: fadeInUp 0.7s ease-out 0.2s forwards;
+        }
 
-    /* ===== SIGNUP CONTAINER ===== */
-    .signup-container {
-      background: var(--card-dark);
-      padding: 2.5rem 2rem;
-      border-radius: 16px;
-      width: 100%;
-      max-width: 420px;
-      border: 1px solid var(--border-dark);
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-      opacity: 0;
-      transform: translateY(10px);
-      animation: fadeInUp 0.7s ease-out 0.2s forwards;
-    }
+        .signup-container h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
+            opacity: 0;
+            animation: fadeInUp 0.6s ease-out 0.3s forwards;
+        }
 
-    .signup-container h1 {
-      font-size: 1.8rem;
-      font-weight: 600;
-      margin-bottom: 0.5rem;
-      color: var(--text-dark);
-      opacity: 0;
-      animation: fadeInUp 0.6s ease-out 0.3s forwards;
-    }
+        .subtitle {
+            color: #a0a0a0;
+            font-size: 0.95rem;
+            margin-bottom: 2rem;
+            opacity: 0;
+            animation: fadeInUp 0.6s ease-out 0.4s forwards;
+        }
 
-    .subtitle {
-      color: #a0a0a0;
-      font-size: 0.95rem;
-      margin-bottom: 2rem;
-      opacity: 0;
-      animation: fadeInUp 0.6s ease-out 0.4s forwards;
-    }
+        /* ===== SECTION HEADERS ===== */
+        .section-header {
+            margin: 1.5rem 0 1rem 0;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-dark);
+        }
+        .section-header h2 {
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+        .section-header:first-of-type {
+            margin-top: 0;
+        }
 
-    /* ===== FORM STYLES ===== */
-    form {
-      opacity: 0;
-      animation: fadeInUp 0.6s ease-out 0.5s forwards;
-    }
+        /* ===== FORM STYLES ===== */
+        form {
+            opacity: 0;
+            animation: fadeInUp 0.6s ease-out 0.5s forwards;
+        }
 
-    .form-group {
-      margin-bottom: 1.8rem;
-      position: relative;
-      opacity: 0;
-      animation: slideIn 0.6s ease-out forwards;
-    }
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+            opacity: 0;
+            animation: slideIn 0.6s ease-out forwards;
+        }
 
-    .form-group:nth-child(1) {
-      animation-delay: 0.5s;
-    }
+        /* staggered animations for account section */
+        .account-group:nth-child(1) { animation-delay: 0.5s; }
+        .account-group:nth-child(2) { animation-delay: 0.6s; }
+        .account-group:nth-child(3) { animation-delay: 0.65s; }
+        /* student section groups */
+        .student-group:nth-child(1) { animation-delay: 0.7s; }
+        .student-group:nth-child(2) { animation-delay: 0.75s; }
+        .student-group:nth-child(3) { animation-delay: 0.8s; }
+        .student-group:nth-child(4) { animation-delay: 0.85s; }
+        .student-group:nth-child(5) { animation-delay: 0.9s; }
 
-    .form-group:nth-child(2) {
-      animation-delay: 0.6s;
-    }
+        label {
+            display: block;
+            margin-bottom: 0.6rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #e0e0e0;
+            transition: color 0.3s ease;
+        }
 
-    .form-group:nth-child(3) {
-      animation-delay: 0.7s;
-    }
+        .input-wrapper {
+            position: relative;
+            background: var(--input-bg);
+            border-radius: 12px;
+            border: 1px solid var(--border-dark);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            will-change: transform, border-color;
+        }
 
-    label {
-      display: block;
-      margin-bottom: 0.7rem;
-      font-size: 0.95rem;
-      font-weight: 500;
-      color: #e0e0e0;
-      transition: color 0.3s ease;
-    }
+        .input-wrapper:focus-within {
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
 
-    .input-wrapper {
-      position: relative;
-      background: var(--input-bg);
-      border-radius: 12px;
-      border: 1px solid var(--border-dark);
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      will-change: transform, border-color;
-    }
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        select {
+            width: 100%;
+            padding: 0.9rem 1rem;
+            background: none;
+            border: none;
+            outline: none;
+            font-size: 1rem;
+            color: var(--text-dark);
+            transition: opacity 0.3s ease;
+        }
 
-    .input-wrapper:focus-within {
-      border-color: rgba(255, 255, 255, 0.3);
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    }
+        select {
+            appearance: none;
+            -webkit-appearance: none;
+            background: var(--input-bg);
+            cursor: pointer;
+        }
 
-    input[type="text"],
-    input[type="email"],
-    input[type="password"] {
-      width: 100%;
-      padding: 1rem 1.2rem;
-      background: none;
-      border: none;
-      outline: none;
-      font-size: 1rem;
-      color: var(--text-dark);
-      transition: opacity 0.3s ease;
-    }
+        input::placeholder {
+            color: #888;
+            transition: opacity 0.3s ease;
+        }
 
-    input::placeholder {
-      color: #888;
-      transition: opacity 0.3s ease;
-    }
+        .password-hint {
+            color: #a0a0a0;
+            font-size: 0.8rem;
+            margin-top: 0.4rem;
+            padding-left: 0.5rem;
+        }
 
-    /* ===== PASSWORD HINT ===== */
-    .password-hint {
-      color: #a0a0a0;
-      font-size: 0.85rem;
-      margin-top: 0.5rem;
-      padding-left: 0.5rem;
-    }
+        /* ===== BUTTON STYLES ===== */
+        .submit-btn {
+            width: 100%;
+            padding: 1rem;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-top: 1.5rem;
+            opacity: 0;
+            animation: fadeInUp 0.6s ease-out 1.2s forwards;
+            will-change: transform, opacity;
+        }
 
-    /* ===== BUTTON STYLES ===== */
-    .submit-btn {
-      width: 100%;
-      padding: 1rem;
-      background: var(--primary-color);
-      color: white;
-      border: none;
-      border-radius: 12px;
-      font-size: 1rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      margin-top: 1rem;
-      opacity: 0;
-      animation: fadeInUp 0.6s ease-out 0.8s forwards;
-      will-change: transform, opacity;
-    }
+        .submit-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
 
-    .submit-btn:hover {
-      opacity: 0.9;
-      transform: translateY(-1px);
-    }
+        .submit-btn:active {
+            transform: translateY(0);
+        }
 
-    .submit-btn:active {
-      transform: translateY(0);
-    }
+        /* ===== LINK STYLES ===== */
+        .link-section {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border-dark);
+            opacity: 0;
+            animation: fadeInUp 0.6s ease-out 1.3s forwards;
+        }
 
-    /* ===== LINK STYLES ===== */
-    .link-section {
-      text-align: center;
-      margin-top: 2rem;
-      padding-top: 1.5rem;
-      border-top: 1px solid var(--border-dark);
-      opacity: 0;
-      animation: fadeInUp 0.6s ease-out 0.9s forwards;
-    }
+        .link-section p {
+            color: #a0a0a0;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
 
-    .link-section p {
-      color: #a0a0a0;
-      font-size: 0.95rem;
-      margin-bottom: 0.5rem;
-    }
+        .link-section a {
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 500;
+            transition: opacity 0.3s ease;
+            position: relative;
+        }
 
-    .link-section a {
-      color: #ffffff;
-      text-decoration: none;
-      font-weight: 500;
-      transition: opacity 0.3s ease;
-      position: relative;
-    }
+        .link-section a::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: #ffffff;
+            transition: width 0.3s ease;
+        }
 
-    .link-section a::after {
-      content: '';
-      position: absolute;
-      bottom: -2px;
-      left: 0;
-      width: 0;
-      height: 1px;
-      background: #ffffff;
-      transition: width 0.3s ease;
-    }
+        .link-section a:hover::after {
+            width: 100%;
+        }
 
-    .link-section a:hover::after {
-      width: 100%;
-    }
+        /* ===== RESPONSIVE DESIGN ===== */
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+                justify-content: flex-start;
+                padding-top: 2rem;
+            }
 
-    /* ===== RESPONSIVE DESIGN ===== */
-    @media (max-width: 768px) {
-      body {
-        padding: 1rem;
-        justify-content: flex-start;
-        padding-top: 3rem;
-      }
+            .logo {
+                font-size: 2.5rem;
+            }
 
-      .logo {
-        font-size: 2.5rem;
-      }
+            .tagline {
+                font-size: 0.95rem;
+                padding: 0 1rem;
+            }
 
-      .tagline {
-        font-size: 1rem;
-        padding: 0 1rem;
-      }
+            .signup-container {
+                padding: 1.8rem 1.2rem;
+                margin: 0;
+                max-width: 100%;
+                border-radius: 12px;
+            }
 
-      .signup-container {
-        padding: 2rem 1.5rem;
-        margin: 0;
-        max-width: 100%;
-        border-radius: 12px;
-      }
+            input,
+            button,
+            select {
+                font-size: 16px;
+                min-height: 44px;
+            }
 
-      input,
-      button {
-        font-size: 16px;
-        min-height: 44px;
-      }
+            .input-wrapper {
+                border-radius: 10px;
+            }
 
-      .input-wrapper {
-        border-radius: 10px;
-      }
+            input[type="text"],
+            input[type="email"],
+            input[type="password"],
+            select {
+                padding: 0.8rem 0.9rem;
+            }
 
-      input[type="text"],
-      input[type="email"],
-      input[type="password"] {
-        padding: 0.9rem 1rem;
-      }
+            .submit-btn {
+                padding: 0.9rem;
+                border-radius: 10px;
+            }
+        }
 
-      .submit-btn {
-        padding: 0.9rem;
-        border-radius: 10px;
-      }
-    }
+        @media (max-width: 480px) {
+            .logo {
+                font-size: 2.2rem;
+            }
 
-    @media (max-width: 480px) {
-      .logo {
-        font-size: 2.2rem;
-      }
+            .signup-container {
+                padding: 1.5rem 1rem;
+                border-radius: 10px;
+            }
 
-      .signup-container {
-        padding: 1.8rem 1.2rem;
-        border-radius: 10px;
-      }
+            .signup-container h1 {
+                font-size: 1.6rem;
+            }
 
-      .signup-container h1 {
-        font-size: 1.6rem;
-      }
-    }
+            .section-header h2 {
+                font-size: 1.1rem;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="logo-section">
         <div class="logo">Nelavista</div>
-        <div class="tagline">Start your AI learning journey</div>
+        <div class="tagline">Your AI-powered learning companion</div>
     </div>
 
     <div class="signup-container">
-        <h1>Create Your Account</h1>
-        <p class="subtitle">Join our community of learners</p>
-        
-        <form method="POST" action="{{ url_for('signup') }}" autocomplete="off">
-            <div class="form-group">
+        <h1>Create Your Nelavista Account</h1>
+        <p class="subtitle">Tell us about your school so Nelavista can personalize your learning.</p>
+
+        <form method="POST" action="/signup" autocomplete="off">
+            <!-- ===== ACCOUNT DETAILS SECTION ===== -->
+            <div class="section-header">
+                <h2>Account Details</h2>
+            </div>
+
+            <div class="form-group account-group">
                 <label for="username">Username</label>
                 <div class="input-wrapper">
                     <input 
@@ -372,26 +393,25 @@
                         required 
                         placeholder="Choose a username"
                         autocapitalize="none"
-                        maxlength="30"
                     />
                 </div>
             </div>
-            
-            <div class="form-group">
-                <label for="email">Email</label>
+
+            <div class="form-group account-group">
+                <label for="email">Email Address</label>
                 <div class="input-wrapper">
                     <input 
                         type="email" 
                         id="email" 
                         name="email" 
                         required 
-                        placeholder="Enter your email"
+                        placeholder="you@example.com"
                         autocapitalize="none"
                     />
                 </div>
             </div>
-            
-            <div class="form-group">
+
+            <div class="form-group account-group">
                 <label for="password">Password</label>
                 <div class="input-wrapper">
                     <input 
@@ -406,37 +426,127 @@
                 <div class="password-hint">At least 8 characters</div>
             </div>
 
+            <!-- ===== STUDENT ACADEMIC PROFILE SECTION ===== -->
+            <div class="section-header">
+                <h2>Student Academic Profile</h2>
+            </div>
+
+            <div class="form-group student-group">
+                <label for="name">Full Name</label>
+                <div class="input-wrapper">
+                    <input 
+                        type="text" 
+                        id="name" 
+                        name="name" 
+                        required 
+                        placeholder="e.g. John A. Doe"
+                    />
+                </div>
+            </div>
+
+            <div class="form-group student-group">
+                <label for="university">University</label>
+                <div class="input-wrapper">
+                    <select id="university" name="university" required class="styled-select">
+                        <option value="">Select University</option>
+                        <option value="Lagos State University">Lagos State University</option>
+                        <option value="University of Lagos">University of Lagos</option>
+                        <option value="University of Ibadan">University of Ibadan</option>
+                        <option value="Obafemi Awolowo University">Obafemi Awolowo University</option>
+                        <option value="Ahmadu Bello University">Ahmadu Bello University</option>
+                        <option value="University of Nigeria, Nsukka">University of Nigeria, Nsukka</option>
+                        <option value="Covenant University">Covenant University</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group student-group">
+                <label for="faculty">Faculty</label>
+                <div class="input-wrapper">
+                    <select id="faculty" name="faculty" required class="styled-select">
+                        <option value="">Select Faculty</option>
+                        <option value="Science">Science</option>
+                        <option value="Engineering">Engineering</option>
+                        <option value="Social Sciences">Social Sciences</option>
+                        <option value="Arts">Arts</option>
+                        <option value="Education">Education</option>
+                        <option value="Management Sciences">Management Sciences</option>
+                        <option value="Law">Law</option>
+                        <option value="Pharmacy">Pharmacy</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group student-group">
+                <label for="department">Department</label>
+                <div class="input-wrapper">
+                    <select id="department" name="department" required class="styled-select">
+                        <option value="">Select Department</option>
+                        <option value="Mathematics">Mathematics</option>
+                        <option value="Computer Science">Computer Science</option>
+                        <option value="Physics">Physics</option>
+                        <option value="Chemistry">Chemistry</option>
+                        <option value="Biology">Biology</option>
+                        <option value="Statistics">Statistics</option>
+                        <option value="Economics">Economics</option>
+                        <option value="Mass Communication">Mass Communication</option>
+                        <option value="Accounting">Accounting</option>
+                        <option value="Business Administration">Business Administration</option>
+                        <option value="English">English</option>
+                        <option value="History">History</option>
+                        <option value="Political Science">Political Science</option>
+                        <option value="Psychology">Psychology</option>
+                        <option value="Sociology">Sociology</option>
+                        <option value="Microbiology">Microbiology</option>
+                        <option value="Biochemistry">Biochemistry</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group student-group">
+                <label for="level">Level</label>
+                <div class="input-wrapper">
+                    <select id="level" name="level" required class="styled-select">
+                        <option value="">Select Level</option>
+                        <option value="100 Level">100 Level</option>
+                        <option value="200 Level">200 Level</option>
+                        <option value="300 Level">300 Level</option>
+                        <option value="400 Level">400 Level</option>
+                        <option value="500 Level">500 Level</option>
+                    </select>
+                </div>
+            </div>
+
             <button type="submit" class="submit-btn">Create Account</button>
         </form>
-        
+
         <div class="link-section">
-            <p>Already have an account? <a href="/login">Login here</a></p>
+            <p>Already have an account? <a href="/login">Log in</a></p>
         </div>
     </div>
 
     <script>
-    // Only for UI animations - NO validation logic
-    document.addEventListener('DOMContentLoaded', function() {
-        // Simple input focus effect
-        const inputs = document.querySelectorAll('input');
-        inputs.forEach(input => {
-            input.addEventListener('focus', function() {
-                const wrapper = this.closest('.input-wrapper');
-                if (wrapper) {
-                    wrapper.style.borderColor = 'rgba(255, 255, 255, 0.3)';
-                    wrapper.style.transform = 'translateY(-1px)';
-                }
-            });
-            
-            input.addEventListener('blur', function() {
-                const wrapper = this.closest('.input-wrapper');
-                if (wrapper) {
-                    wrapper.style.borderColor = 'rgba(255, 255, 255, 0.1)';
-                    wrapper.style.transform = 'translateY(0)';
-                }
+        // UI enhancement: focus animation for input wrappers
+        document.addEventListener('DOMContentLoaded', function() {
+            const inputs = document.querySelectorAll('input, select');
+            inputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    const wrapper = this.closest('.input-wrapper');
+                    if (wrapper) {
+                        wrapper.style.borderColor = 'rgba(255, 255, 255, 0.3)';
+                        wrapper.style.transform = 'translateY(-1px)';
+                    }
+                });
+                
+                input.addEventListener('blur', function() {
+                    const wrapper = this.closest('.input-wrapper');
+                    if (wrapper) {
+                        wrapper.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+                        wrapper.style.transform = 'translateY(0)';
+                    }
+                });
             });
         });
-    });
     </script>
 </body>
 </html>

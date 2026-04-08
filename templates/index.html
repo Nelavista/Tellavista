@@ -13,42 +13,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Nelavista - AI Educational Companion</title>
 
-  <!-- MathJax for LaTeX rendering in chat -->
   <script>
     window.MathJax = {
       tex: {
         inlineMath: [['$', '$'], ['\\(', '\\)']],
         displayMath: [['$$', '$$'], ['\\[', '\\]']]
       },
-      options: {
-        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
-      },
+      options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre'] },
       svg: { fontCache: 'global' }
     };
   </script>
   <script id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 
   <style>
-    /* ===== RESET & GLOBAL ===== */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
 
-    body {
-      background: #111827;
-      color: #e5e7eb;
-      transition: background 0.3s, color 0.3s;
-      overflow-x: hidden;
-    }
+    body { background: #111827; color: #e5e7eb; transition: background 0.3s, color 0.3s; overflow-x: hidden; }
 
-    /* Light mode overrides (preserve existing toggle) */
-    body.light-mode {
-      background: #f3f4f6;
-      color: #111827;
-    }
+    body.light-mode { background: #f3f4f6; color: #111827; }
     body.light-mode .dashboard-main { background: #f3f4f6; }
     body.light-mode .card { background: #ffffff; color: #111827; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
     body.light-mode .sidebar { background: #ffffff; border-right: 1px solid #e5e7eb; }
@@ -66,663 +48,200 @@
     body.light-mode .message.ai .message-content { background: #e5e7eb; color: #111827; }
     body.light-mode .typing-indicator { background: #e5e7eb; }
     body.light-mode .typing-dots span { background: #111827; }
+    body.light-mode .tool-card { background: #ffffff; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+    body.light-mode .tool-card:hover { box-shadow: 0 8px 24px rgba(59,130,246,0.15); }
+    body.light-mode .nav-label { color: #9ca3af; }
+    body.light-mode .sidebar-header { border-bottom: 1px solid #e5e7eb; }
+    body.light-mode .sidebar-footer { border-top: 1px solid #e5e7eb; }
 
-    /* ===== LAYOUT: SIDEBAR + MAIN ===== */
-    .app-wrapper {
-      display: flex;
-      min-height: 100vh;
-    }
+    .app-wrapper { display: flex; min-height: 100vh; }
 
-    /* SIDEBAR (fixed left, slide-in on mobile) */
+    /* ===== SIDEBAR ===== */
     .sidebar {
-      position: fixed;
-      top: 0;
-      left: -260px;
-      width: 260px;
-      height: 100vh;
-      background: #0d1117;
-      z-index: 1003;
+      position: fixed; top: 0; left: -260px; width: 260px; height: 100vh;
+      background: #0d1117; z-index: 1003;
       transition: left 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      overflow-y: auto;
-      border-right: 1px solid #1f2a3e;
+      display: flex; flex-direction: column; justify-content: space-between;
+      overflow-y: auto; border-right: 1px solid #1f2a3e;
       box-shadow: 2px 0 12px rgba(0,0,0,0.3);
     }
     body.light-mode .sidebar { background: #ffffff; }
+    .sidebar.active { left: 0; }
 
-    .sidebar.active {
-      left: 0;
-    }
-
-    .sidebar-header {
-      padding: 24px 20px;
-      border-bottom: 1px solid #1f2a3e;
-    }
+    .sidebar-header { padding: 24px 20px; border-bottom: 1px solid #1f2a3e; }
     .sidebar-logo {
-      font-size: 1.6rem;
-      font-weight: 700;
+      font-size: 1.6rem; font-weight: 700;
       background: linear-gradient(135deg, #3b82f6, #60a5fa);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      letter-spacing: -0.3px;
+      -webkit-background-clip: text; background-clip: text;
+      color: transparent; letter-spacing: -0.3px;
     }
-    .sidebar-nav {
-      flex: 1;
-      padding: 20px 0 20px 0;
-    }
-    .nav-group {
-      margin-bottom: 24px;
-    }
+
+    .sidebar-nav { flex: 1; padding: 16px 0; }
+    .nav-group { margin-bottom: 20px; }
     .nav-label {
-      font-size: 0.7rem;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      padding: 0 20px 8px 20px;
-      color: #6b7280;
-      font-weight: 600;
+      font-size: 0.68rem; text-transform: uppercase; letter-spacing: 1.2px;
+      padding: 0 20px 8px 20px; color: #6b7280; font-weight: 700;
     }
+
     .sidebar a {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 10px 20px;
-      color: #c9d1d9;
-      text-decoration: none;
-      font-size: 0.9rem;
-      transition: all 0.2s;
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 20px; color: #c9d1d9; text-decoration: none;
+      font-size: 0.9rem; transition: all 0.2s;
       border-left: 3px solid transparent;
     }
-    .sidebar a:hover {
-      background: #1a2538;
-      color: #3b82f6;
-      border-left-color: #3b82f6;
-    }
-    .sidebar-footer {
-      padding: 20px;
-      border-top: 1px solid #1f2a3e;
-    }
+    .sidebar a:hover { background: #1a2538; color: #3b82f6; border-left-color: #3b82f6; }
+    .sidebar a.active-link { background: #1a2538; color: #3b82f6; border-left-color: #3b82f6; }
 
-    /* MAIN CONTENT AREA */
-    .main-content {
-      flex: 1;
-      margin-left: 0;
-      transition: margin-left 0.2s;
-      width: 100%;
-    }
-    /* Desktop: sidebar fixed visible */
+    .sidebar-footer { padding: 16px 20px; border-top: 1px solid #1f2a3e; }
+    .sidebar-footer a { color: #ef4444 !important; }
+    .sidebar-footer a:hover { background: rgba(239,68,68,0.08) !important; color: #ef4444 !important; border-left-color: #ef4444 !important; }
+
+    /* ===== MAIN CONTENT ===== */
+    .main-content { flex: 1; margin-left: 0; transition: margin-left 0.2s; width: 100%; }
+
     @media (min-width: 1024px) {
-      .sidebar {
-        left: 0 !important;
-        transform: none;
-      }
-      .main-content {
-        margin-left: 260px;
-      }
-      #menu-toggle {
-        display: none !important;
-      }
+      .sidebar { left: 0 !important; }
+      .main-content { margin-left: 260px; }
+      #menu-toggle { display: none !important; }
     }
     @media (max-width: 1023px) {
-      .sidebar:not(.active) {
-        left: -260px;
-      }
-      .main-content {
-        margin-left: 0;
-      }
+      .sidebar:not(.active) { left: -260px; }
+      .main-content { margin-left: 0; }
     }
 
-    /* TOP BAR (hamburger + theme) */
+    /* ===== TOP BAR ===== */
     .top-bar {
-      position: sticky;
-      top: 0;
+      position: sticky; top: 0;
       background: rgba(17, 24, 39, 0.95);
       backdrop-filter: blur(10px);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 12px 20px;
-      border-bottom: 1px solid #1f2a3e;
-      z-index: 1002;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 20px; border-bottom: 1px solid #1f2a3e; z-index: 1002;
     }
     .top-bar button {
-      background: #1f2a3e;
-      border: none;
-      width: 38px;
-      height: 38px;
-      border-radius: 12px;
-      font-size: 1.2rem;
-      cursor: pointer;
-      color: white;
-      transition: 0.2s;
+      background: #1f2a3e; border: none; width: 38px; height: 38px;
+      border-radius: 12px; font-size: 1.2rem; cursor: pointer;
+      color: white; transition: 0.2s;
     }
     .top-bar button:hover { background: #2d3a52; }
 
-    /* Dashboard screens */
+    /* ===== DASHBOARD ===== */
     .dashboard-view {
-      padding: 24px 28px;
-      max-width: 1400px;
-      margin: 0 auto;
+      padding: 24px 28px; max-width: 1400px; margin: 0 auto;
       transition: opacity 0.3s ease, transform 0.3s ease;
+      padding-bottom: 120px;
     }
-    .dashboard-view.hidden {
-      display: none;
-    }
-    .greeting h1 {
-      font-size: 1.9rem;
-      font-weight: 700;
-      margin-bottom: 6px;
-    }
-    .greeting p {
-      color: #9ca3af;
-    }
+    .dashboard-view.hidden { display: none; }
+
+    .greeting h1 { font-size: 1.9rem; font-weight: 700; margin-bottom: 6px; }
+    .greeting p { color: #9ca3af; }
     body.light-mode .greeting p { color: #4b5563; }
 
-    /* Cards row */
-    .cards-row {
-      display: flex;
-      gap: 24px;
-      margin: 28px 0 32px;
-      flex-wrap: wrap;
-    }
-    .stat-card {
-      flex: 2;
-      background: #1a2235;
-      border-radius: 24px;
-      padding: 20px 24px;
-      transition: transform 0.2s;
-    }
-    .ai-card {
-      flex: 1.2;
-      background: #3b82f6;
-      border-radius: 24px;
-      padding: 20px 24px;
-      color: white;
-    }
-    .stat-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 12px;
-    }
+    .cards-row { display: flex; gap: 24px; margin: 28px 0 32px; flex-wrap: wrap; }
+    .stat-card { flex: 2; background: #1a2235; border-radius: 24px; padding: 20px 24px; }
+    .ai-card { flex: 1.2; background: #3b82f6; border-radius: 24px; padding: 20px 24px; color: white; }
+    .stat-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
     .stat-header span:first-child { font-weight: 600; font-size: 0.8rem; letter-spacing: 1px; color: #9ca3af; }
     .live-badge { background: #10b981; padding: 4px 10px; border-radius: 40px; font-size: 0.7rem; font-weight: 600; }
     .stat-number { font-size: 2.8rem; font-weight: 800; margin: 8px 0 16px; }
-    .bar-chart {
-      display: flex;
-      align-items: flex-end;
-      gap: 12px;
-      margin-top: 20px;
-      height: 100px;
-    }
-    .bar-item {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 6px;
-      font-size: 0.7rem;
-    }
-    .bar {
-      width: 100%;
-      background: #3b82f6;
-      border-radius: 8px;
-      transition: height 0.3s;
-      min-height: 4px;
-    }
-    body.light-mode .bar { background: #3b82f6; opacity: 0.8; }
+    .bar-chart { display: flex; align-items: flex-end; gap: 12px; margin-top: 20px; height: 100px; }
+    .bar-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 0.7rem; }
+    .bar { width: 100%; background: #3b82f6; border-radius: 8px; transition: height 0.3s; min-height: 4px; }
     .ai-card h3 { font-size: 1.5rem; margin: 8px 0; }
     .ai-card p { opacity: 0.9; margin-bottom: 20px; }
-    .ai-btn {
-      background: white;
-      color: #3b82f6;
-      border: none;
-      padding: 10px 18px;
-      border-radius: 40px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: 0.2s;
-    }
+    .ai-btn { background: white; color: #3b82f6; border: none; padding: 10px 18px; border-radius: 40px; font-weight: 600; cursor: pointer; transition: 0.2s; }
     .ai-btn:hover { transform: scale(0.97); background: #f0f4ff; }
 
-    /* Section headers */
-    .section-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      margin: 32px 0 20px 0;
-    }
+    .section-header { display: flex; justify-content: space-between; align-items: baseline; margin: 32px 0 20px 0; }
     .section-header h2 { font-size: 1.4rem; font-weight: 600; }
     .view-link { color: #3b82f6; text-decoration: none; font-size: 0.85rem; }
 
-    /* Course cards row */
-    .courses-grid {
-      display: flex;
-      gap: 20px;
-      flex-wrap: wrap;
-    }
-    .course-card {
-      background: #1a2235;
-      border-radius: 20px;
-      padding: 18px;
-      flex: 1;
-      min-width: 200px;
-      transition: all 0.2s;
-    }
-    .badge {
-      display: inline-block;
-      padding: 4px 12px;
-      border-radius: 40px;
-      font-size: 0.7rem;
-      font-weight: 600;
-      margin-bottom: 12px;
-    }
+    .courses-grid { display: flex; gap: 20px; flex-wrap: wrap; }
+    .course-card { background: #1a2235; border-radius: 20px; padding: 18px; flex: 1; min-width: 200px; transition: all 0.2s; }
+    .badge { display: inline-block; padding: 4px 12px; border-radius: 40px; font-size: 0.7rem; font-weight: 600; margin-bottom: 12px; }
     .badge.core { background: #14b8a6; color: white; }
     .badge.elective { background: #f97316; color: white; }
     .course-title { font-weight: 700; font-size: 1.1rem; margin-bottom: 6px; }
     .course-sub { font-size: 0.8rem; color: #9ca3af; margin: 6px 0 12px; }
-    .progress-bar {
-      background: #2d3a52;
-      border-radius: 20px;
-      height: 6px;
-      width: 100%;
-      margin: 12px 0 6px;
-    }
-    .progress-fill {
-      background: #3b82f6;
-      width: 0%;
-      height: 6px;
-      border-radius: 20px;
-    }
+    .progress-bar { background: #2d3a52; border-radius: 20px; height: 6px; width: 100%; margin: 12px 0 6px; }
+    .progress-fill { background: #3b82f6; width: 0%; height: 6px; border-radius: 20px; }
     .progress-text { font-size: 0.7rem; text-align: right; }
 
-    /* Upcoming exams */
-    .exam-item {
-      background: #1a2235;
-      border-radius: 20px;
-      padding: 16px 20px;
-      display: flex;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 16px;
-      justify-content: space-between;
-      margin-bottom: 12px;
-    }
-    .exam-date {
-      background: #0f172a;
-      border-radius: 16px;
-      padding: 8px 12px;
-      text-align: center;
-      min-width: 70px;
-    }
+    .exam-item { background: #1a2235; border-radius: 20px; padding: 16px 20px; display: flex; align-items: center; flex-wrap: wrap; gap: 16px; justify-content: space-between; margin-bottom: 12px; }
+    .exam-date { background: #0f172a; border-radius: 16px; padding: 8px 12px; text-align: center; min-width: 70px; }
     .exam-month { font-size: 0.7rem; text-transform: uppercase; }
     .exam-day { font-size: 1.6rem; font-weight: 800; line-height: 1; }
     .exam-info { flex: 2; }
     .exam-title { font-weight: 700; font-size: 1rem; }
-    .practice-btn {
-      background: #3b82f6;
-      border: none;
-      color: white;
-      padding: 8px 16px;
-      border-radius: 40px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: 0.2s;
-    }
+    .practice-btn { background: #3b82f6; border: none; color: white; padding: 8px 16px; border-radius: 40px; font-weight: 500; cursor: pointer; transition: 0.2s; }
     .practice-btn:hover { background: #2563eb; }
-    .no-exams-msg {
-      text-align: center;
-      padding: 40px 20px;
-      background: #1a2235;
-      border-radius: 20px;
-      margin-bottom: 12px;
-    }
+    .no-exams-msg { text-align: center; padding: 40px 20px; background: #1a2235; border-radius: 20px; margin-bottom: 12px; }
 
-    /* ===== QUICK ACTIONS SECTION — HORIZONTAL SCROLL ===== */
-    .quick-actions-section {
-      margin: 40px 0 24px;
-    }
-    .quick-header {
-      margin-bottom: 16px;
-    }
-    .quick-header h2 {
-      font-size: 1.4rem;
-      font-weight: 600;
-      margin-bottom: 4px;
-    }
-    .swipe-hint {
-      font-size: 0.7rem;
-      font-style: italic;
-      color: #9ca3af;
-      display: none;
-    }
-    @media (max-width: 768px) {
-      .swipe-hint {
-        display: block;
-      }
-    }
-    .quick-actions-scroll {
-      display: flex;
-      gap: 20px;
-      overflow-x: auto;
-      scroll-snap-type: x mandatory;
-      padding-bottom: 12px;
-      cursor: grab;
-      scrollbar-width: none;
-      -ms-overflow-style: none;
-    }
-    .quick-actions-scroll::-webkit-scrollbar {
-      display: none;
-    }
-    .quick-action-card {
-      flex: 0 0 160px;
-      height: 180px;
-      border-radius: 24px;
-      padding: 20px 12px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      cursor: pointer;
-      transition: all 0.25s ease;
-      position: relative;
-      overflow: hidden;
-      backdrop-filter: blur(2px);
-      scroll-snap-align: start;
-    }
-    @media (min-width: 1024px) {
-      .quick-action-card {
-        flex: 0 0 190px;
-      }
-    }
-    /* Shimmer overlay */
-    .quick-action-card::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(115deg, transparent 0%, rgba(255,255,255,0.12) 40%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0.08) 60%, transparent 100%);
-      background-size: 200% 100%;
-      animation: shimmer 3s infinite linear;
-      pointer-events: none;
-      border-radius: 24px;
-    }
-    @keyframes shimmer {
-      0% { background-position: -200% center; }
-      100% { background-position: 200% center; }
-    }
-    .qa-icon {
-      font-size: 48px;
-      margin-bottom: 12px;
-      filter: drop-shadow(0 4px 6px rgba(0,0,0,0.2));
-    }
-    .qa-label {
-      font-weight: 800;
-      font-size: 0.9rem;
-      margin-bottom: 6px;
-      color: white;
-      text-shadow: 0 1px 2px rgba(0,0,0,0.2);
-      letter-spacing: -0.2px;
-    }
-    .qa-desc {
-      font-size: 0.7rem;
-      opacity: 0.85;
-      color: rgba(255,255,255,0.9);
-      font-weight: 500;
-    }
-    /* Hover & active effects */
-    .quick-action-card:hover {
-      transform: translateY(-4px);
-    }
-    .quick-action-card:active {
-      transform: scale(0.97);
-      transition: transform 0.1s ease;
-    }
-    /* Individual gradient backgrounds + matching glows */
-    .qa-purple {
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      box-shadow: 0 8px 20px rgba(102, 126, 234, 0.45);
-    }
-    .qa-pink {
-      background: linear-gradient(135deg, #f093fb, #f5576c);
-      box-shadow: 0 8px 20px rgba(245, 87, 108, 0.45);
-    }
-    .qa-cyan {
-      background: linear-gradient(135deg, #4facfe, #00f2fe);
-      box-shadow: 0 8px 20px rgba(79, 172, 254, 0.45);
-    }
-    .qa-green {
-      background: linear-gradient(135deg, #43e97b, #38f9d7);
-      box-shadow: 0 8px 20px rgba(67, 233, 123, 0.45);
-    }
-    .qa-orange {
-      background: linear-gradient(135deg, #fa709a, #fee140);
-      box-shadow: 0 8px 20px rgba(254, 225, 64, 0.35);
-    }
-    .qa-lavender {
-      background: linear-gradient(135deg, #a18cd1, #fbc2eb);
-      box-shadow: 0 8px 20px rgba(161, 140, 209, 0.45);
-    }
-    .quick-action-card:hover {
-      box-shadow: 0 12px 28px rgba(0,0,0,0.25);
-    }
-    /* Light mode adjustments for quick actions */
-    body.light-mode .quick-action-card .qa-label,
-    body.light-mode .quick-action-card .qa-desc {
-      text-shadow: none;
-    }
+    /* ===== FEATURED TOOLS ===== */
+    .featured-tools-section { margin: 40px 0 24px; }
+    .swipe-hint { font-size: 0.7rem; font-style: italic; color: #9ca3af; display: none; margin-top: 4px; }
+    @media (max-width: 768px) { .swipe-hint { display: block; } }
 
-    /* ===== FEATURED TOOLS SECTION (NEW) ===== */
-    .featured-tools-section {
-      margin: 40px 0 24px;
-    }
     .featured-tools-scroll {
-      display: flex;
-      gap: 16px;
-      overflow-x: auto;
-      scroll-snap-type: x mandatory;
-      padding-bottom: 12px;
-      cursor: grab;
-      scrollbar-width: none;
-      -ms-overflow-style: none;
+      display: flex; gap: 16px; overflow-x: auto;
+      scroll-snap-type: x mandatory; padding-bottom: 12px;
+      cursor: grab; scrollbar-width: none; -ms-overflow-style: none;
     }
-    .featured-tools-scroll::-webkit-scrollbar {
-      display: none;
-    }
+    .featured-tools-scroll::-webkit-scrollbar { display: none; }
+
     .tool-card {
-      flex: 0 0 200px;
-      background: #1a2235;
-      border-radius: 20px;
-      padding: 20px;
-      min-height: 140px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      cursor: pointer;
-      transition: all 0.25s ease;
-      scroll-snap-align: start;
+      flex: 0 0 180px; background: #1a2235; border-radius: 20px; padding: 20px;
+      min-height: 140px; display: flex; flex-direction: column;
+      justify-content: space-between; cursor: pointer;
+      transition: all 0.25s ease; scroll-snap-align: start;
       border: 1px solid transparent;
     }
-    .tool-card:hover {
-      transform: translateY(-3px);
-      border: 1px solid rgba(59,130,246,0.3);
-      box-shadow: 0 8px 24px rgba(59,130,246,0.1);
-    }
-    .tool-card:active {
-      transform: scale(0.97);
-    }
-    .tool-icon-circle {
-      width: 44px;
-      height: 44px;
-      border-radius: 14px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 22px;
-      margin-bottom: 16px;
-    }
-    .tool-card-title {
-      font-weight: 700;
-      font-size: 0.95rem;
-      margin-bottom: 4px;
-    }
-    .tool-card-sub {
-      font-size: 0.75rem;
-      color: #9ca3af;
-    }
-    body.light-mode .tool-card {
-      background: #ffffff;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-    }
-    body.light-mode .tool-card:hover {
-      box-shadow: 0 8px 24px rgba(59,130,246,0.15);
-    }
+    .tool-card:hover { transform: translateY(-3px); border: 1px solid rgba(59,130,246,0.3); box-shadow: 0 8px 24px rgba(59,130,246,0.1); }
+    .tool-card:active { transform: scale(0.97); }
+    .tool-icon-circle { width: 44px; height: 44px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 22px; margin-bottom: 16px; }
+    .tool-card-title { font-weight: 700; font-size: 0.95rem; margin-bottom: 4px; }
+    .tool-card-sub { font-size: 0.75rem; color: #9ca3af; }
 
-    /* CHAT CONTAINER (exact preserved logic) */
+    /* ===== CHAT ===== */
     .chat-container {
-      display: none;
-      flex-direction: column;
-      height: calc(100vh - 60px);
-      margin-top: 0px;
-      position: relative;
-      max-width: 900px;
-      margin-left: auto;
-      margin-right: auto;
-      width: 100%;
-      opacity: 0;
-      animation: fadeIn 0.3s forwards;
+      display: none; flex-direction: column;
+      height: calc(100vh - 60px); position: relative;
+      max-width: 900px; margin-left: auto; margin-right: auto;
+      width: 100%; opacity: 0; animation: fadeIn 0.3s forwards;
       padding-bottom: 80px;
     }
-    .chat-container.active {
-      display: flex;
-    }
-    .messages {
-      flex: 1;
-      overflow-y: auto;
-      padding: 20px;
-      padding-bottom: 100px;
-      scroll-behavior: smooth;
-    }
-    .message {
-      margin: 16px 0;
-      animation: messageAppear 0.4s ease-out;
-      display: block;
-    }
-    .message-content {
-      display: inline-block;
-      max-width: 85%;
-      padding: 12px 16px;
-      border-radius: 18px;
-      line-height: 1.5;
-      word-wrap: break-word;
-    }
-    .message.user .message-content {
-      background: #1e293b;
-      border-bottom-right-radius: 4px;
-      float: right;
-      clear: both;
-    }
-    .message.ai .message-content {
-      background: #1f2a3e;
-      border-bottom-left-radius: 4px;
-      float: left;
-      clear: both;
-    }
+    .chat-container.active { display: flex; }
+    .messages { flex: 1; overflow-y: auto; padding: 20px; padding-bottom: 100px; scroll-behavior: smooth; }
+    .message { margin: 16px 0; animation: messageAppear 0.4s ease-out; display: block; }
+    .message-content { display: inline-block; max-width: 85%; padding: 12px 16px; border-radius: 18px; line-height: 1.5; word-wrap: break-word; }
+    .message.user .message-content { background: #1e293b; border-bottom-right-radius: 4px; float: right; clear: both; }
+    .message.ai .message-content { background: #1f2a3e; border-bottom-left-radius: 4px; float: left; clear: both; }
     .message::after { content: ""; display: table; clear: both; }
-    .typing-indicator {
-      display: inline-block;
-      padding: 12px 16px;
-      background: #1f2a3e;
-      border-radius: 18px;
-      float: left;
-      clear: both;
-    }
+    .typing-indicator { display: inline-block; padding: 12px 16px; background: #1f2a3e; border-radius: 18px; float: left; clear: both; }
     .typing-dots { display: flex; gap: 4px; }
-    .typing-dots span {
-      width: 8px;
-      height: 8px;
-      background: #9ca3af;
-      border-radius: 50%;
-      animation: typingPulse 1.4s infinite;
-    }
+    .typing-dots span { width: 8px; height: 8px; background: #9ca3af; border-radius: 50%; animation: typingPulse 1.4s infinite; }
     @keyframes typingPulse { 0%,100%{opacity:0.3} 50%{opacity:1} }
-    @keyframes messageAppear { from { opacity:0; transform: translateY(6px);} to { opacity:1; transform: translateY(0);} }
-    @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+    @keyframes messageAppear { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes fadeIn { from{opacity:0} to{opacity:1} }
 
-    /* INPUT AREA (fixed bottom, same as original) */
+    /* ===== INPUT AREA ===== */
     .input-area {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
+      position: fixed; bottom: 0; left: 0; right: 0;
       padding: 16px 20px 24px;
       background: rgba(17, 24, 39, 0.96);
       backdrop-filter: blur(12px);
-      border-top: 1px solid #1f2a3e;
-      z-index: 1001;
+      border-top: 1px solid #1f2a3e; z-index: 1001;
     }
-    .input-wrapper {
-      max-width: 900px;
-      margin: 0 auto;
-      background: #1e293b;
-      border-radius: 32px;
-      padding: 6px 12px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .input-wrapper input {
-      flex: 1;
-      background: none;
-      border: none;
-      color: white;
-      padding: 12px 8px;
-      font-size: 0.95rem;
-      outline: none;
-    }
-    .attachment-icon, .voice-icon {
-      background: none;
-      border: none;
-      color: #9ca3af;
-      font-size: 1.2rem;
-      cursor: pointer;
-      padding: 8px;
-      border-radius: 50%;
-      transition: 0.2s;
-    }
-    .send-btn {
-      background: #3b82f6;
-      border: none;
-      width: 38px;
-      height: 38px;
-      border-radius: 40px;
-      color: white;
-      cursor: pointer;
-      font-size: 1.1rem;
-    }
-    .attachment-container {
-      max-width: 900px;
-      margin: 0 auto 10px;
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-    /* Overlay for sidebar mobile */
-    .overlay {
-      position: fixed;
-      top:0; left:0; right:0; bottom:0;
-      background: rgba(0,0,0,0.6);
-      z-index: 1002;
-      display: none;
-    }
+    .input-wrapper { max-width: 900px; margin: 0 auto; background: #1e293b; border-radius: 32px; padding: 6px 12px; display: flex; align-items: center; gap: 6px; }
+    .input-wrapper input { flex: 1; background: none; border: none; color: white; padding: 12px 8px; font-size: 0.95rem; outline: none; }
+    .attachment-icon, .voice-icon { background: none; border: none; color: #9ca3af; font-size: 1.2rem; cursor: pointer; padding: 8px; border-radius: 50%; transition: 0.2s; }
+    .send-btn { background: #3b82f6; border: none; width: 38px; height: 38px; border-radius: 40px; color: white; cursor: pointer; font-size: 1.1rem; }
+    .attachment-container { max-width: 900px; margin: 0 auto 10px; display: flex; gap: 8px; flex-wrap: wrap; }
+
+    .overlay { position: fixed; top:0; left:0; right:0; bottom:0; background: rgba(0,0,0,0.6); z-index: 1002; display: none; }
     .overlay.active { display: block; }
+
     @media (max-width: 768px) {
-      .dashboard-view { padding: 16px; }
+      .dashboard-view { padding: 16px; padding-bottom: 120px; }
       .cards-row { flex-direction: column; }
       .courses-grid { flex-direction: column; }
       .exam-item { flex-direction: column; align-items: flex-start; }
@@ -732,36 +251,46 @@
 </head>
 <body>
 <div class="app-wrapper">
-  <!-- SIDEBAR (left) — includes all requested links -->
+
+  <!-- ===== SIDEBAR ===== -->
   <div class="sidebar" id="side-menu">
     <div>
       <div class="sidebar-header">
         <div class="sidebar-logo">Nelavista</div>
       </div>
       <div class="sidebar-nav">
+
         <div class="nav-group">
           <div class="nav-label">MAIN MENU</div>
           <a href="/profile">👤 Profile</a>
-          <a href="/CBT">📝 CBT Test</a>
+          <a href="/ai" id="talkNavLink">🤖 Chat with Nela</a>
         </div>
+
         <div class="nav-group">
           <div class="nav-label">LEARNING TOOLS</div>
-          <a href="/analyze">📊 Analyze Materials</a>
           <a href="/materials">📚 Study Materials</a>
-          <a href="/mat101">🎬 Campus Videos</a>
-          <a href="/campus-map">🗺️ Lasu Map</a>
+          <a href="/CBT">📝 Mock Exam</a>
+          <a href="/analyze">📊 Analyze Materials</a>
         </div>
+
+        <div class="nav-group">
+          <div class="nav-label">CAMPUS TOOLS</div>
+          <a href="/reels">🎬 Campus Videos</a>
+          <a href="/campus-map">🗺️ Campus Map</a>
+        </div>
+
         <div class="nav-group">
           <div class="nav-label">CONNECT</div>
-          <a href="/talk-to-nelavista" id="talkNavLink">🤖 Talk to Nelavista</a>
           <a href="/live-meeting">📡 Live Meeting</a>
         </div>
+
         <div class="nav-group">
           <div class="nav-label">OTHER</div>
           <a href="/about">ℹ️ About</a>
           <a href="/settings">⚙️ Settings</a>
           <a href="/privacy-policy">🔒 Privacy Policy</a>
         </div>
+
       </div>
     </div>
     <div class="sidebar-footer">
@@ -772,18 +301,17 @@
   <!-- Overlay -->
   <div id="overlay" class="overlay" onclick="closeMenu()"></div>
 
-  <!-- MAIN CONTENT + CHAT -->
+  <!-- ===== MAIN CONTENT ===== -->
   <div class="main-content">
     <div class="top-bar">
       <button id="menu-toggle" onclick="toggleMenu()">☰</button>
       <button id="theme-toggle" onclick="toggleTheme()">🌙</button>
     </div>
 
-    <!-- DASHBOARD VIEW (landing) -->
+    <!-- DASHBOARD VIEW -->
     <div id="dashboardView" class="dashboard-view">
       <div class="greeting">
         <h1 id="greetingText">Hello, {{ first_name }}</h1>
-        <!-- FIXED: greeting subtitle now uses exam_count from backend -->
         <p id="greetingSubtitle">
           {% if exam_count > 0 %}
             You have {{ exam_count }} exam{{ 's' if exam_count > 1 else '' }} coming up. Stay focused! 🎯
@@ -795,11 +323,12 @@
 
       <div class="cards-row">
         <div class="stat-card">
-          <div class="stat-header"><span>STUDY ANALYTICS</span><span class="live-badge">● LIVE TRACKING</span></div>
-          <div class="stat-number">0 Hours this week</div>
-          <div class="bar-chart" id="barChart">
-            <!-- bars will be dynamically rendered -->
+          <div class="stat-header">
+            <span>STUDY ANALYTICS</span>
+            <span class="live-badge">● LIVE TRACKING</span>
           </div>
+          <div class="stat-number">0 Hours this week</div>
+          <div class="bar-chart" id="barChart"></div>
         </div>
         <div class="ai-card">
           <span>🤖📘</span>
@@ -813,68 +342,58 @@
         <h2>Active Courses</h2>
         <a href="/materials" class="view-link">View All →</a>
       </div>
-      <div class="courses-grid" id="coursesGrid">
-        <!-- Dynamic courses will load here -->
-      </div>
+      <div class="courses-grid" id="coursesGrid"></div>
 
-      <!-- NEW: Featured Tools Section (horizontal scroll) -->
+      <!-- Featured Tools -->
       <div class="featured-tools-section">
         <div class="section-header" style="margin-bottom: 16px;">
           <div>
             <h2>Featured Tools</h2>
-            <p class="swipe-hint" style="display: none; margin-top: 4px;">Swipe to explore →</p>
+            <p class="swipe-hint">Swipe to explore →</p>
           </div>
         </div>
         <div class="featured-tools-scroll">
-          <!-- 1. Profile -->
           <div class="tool-card" onclick="window.location.href='/profile'">
-            <div class="tool-icon-circle" style="background: #3b82f6;">👤</div>
+            <div class="tool-icon-circle" style="background:#3b82f6;">👤</div>
             <div><div class="tool-card-title">My Profile</div><div class="tool-card-sub">View your details</div></div>
           </div>
-          <!-- 2. CBT Test -->
-          <div class="tool-card" onclick="window.location.href='/CBT'">
-            <div class="tool-icon-circle" style="background: #10b981;">📝</div>
-            <div><div class="tool-card-title">CBT Practice</div><div class="tool-card-sub">Test your knowledge</div></div>
+          <div class="tool-card" onclick="enterChatMode()">
+            <div class="tool-icon-circle" style="background:#6366f1;">🤖</div>
+            <div><div class="tool-card-title">Chat with Nela</div><div class="tool-card-sub">AI companion</div></div>
           </div>
-          <!-- 3. Analyze Materials -->
-          <div class="tool-card" onclick="window.location.href='/analyze'">
-            <div class="tool-icon-circle" style="background: #f59e0b;">📊</div>
-            <div><div class="tool-card-title">Analyze Materials</div><div class="tool-card-sub">AI-powered insights</div></div>
-          </div>
-          <!-- 4. Study Materials -->
           <div class="tool-card" onclick="window.location.href='/materials'">
-            <div class="tool-icon-circle" style="background: #8b5cf6;">📚</div>
+            <div class="tool-icon-circle" style="background:#8b5cf6;">📚</div>
             <div><div class="tool-card-title">Study Materials</div><div class="tool-card-sub">Browse resources</div></div>
           </div>
-          <!-- 5. Campus Videos -->
-          <div class="tool-card" onclick="window.location.href='/mat101'">
-            <div class="tool-icon-circle" style="background: #ef4444;">🎬</div>
+          <div class="tool-card" onclick="window.location.href='/CBT'">
+            <div class="tool-icon-circle" style="background:#10b981;">📝</div>
+            <div><div class="tool-card-title">Mock Exam</div><div class="tool-card-sub">Test your knowledge</div></div>
+          </div>
+          <div class="tool-card" onclick="window.location.href='/analyze'">
+            <div class="tool-icon-circle" style="background:#f59e0b;">📊</div>
+            <div><div class="tool-card-title">Analyze Materials</div><div class="tool-card-sub">AI-powered insights</div></div>
+          </div>
+          <div class="tool-card" onclick="window.location.href='/reels'">
+            <div class="tool-icon-circle" style="background:#ef4444;">🎬</div>
             <div><div class="tool-card-title">Campus Videos</div><div class="tool-card-sub">Video lectures</div></div>
           </div>
-          <!-- 6. Lasu Map -->
           <div class="tool-card" onclick="window.location.href='/campus-map'">
-            <div class="tool-icon-circle" style="background: #14b8a6;">🗺️</div>
-            <div><div class="tool-card-title">Lasu Map</div><div class="tool-card-sub">Navigate campus</div></div>
+            <div class="tool-icon-circle" style="background:#14b8a6;">🗺️</div>
+            <div><div class="tool-card-title">Campus Map</div><div class="tool-card-sub">Navigate campus</div></div>
           </div>
-          <!-- 7. Talk to Nelavista -->
-          <div class="tool-card" onclick="enterChatMode()">
-            <div class="tool-icon-circle" style="background: #6366f1;">🤖</div>
-            <div><div class="tool-card-title">Talk to Nelavista</div><div class="tool-card-sub">AI companion</div></div>
-          </div>
-          <!-- 8. Live Meeting -->
           <div class="tool-card" onclick="window.location.href='/live-meeting'">
-            <div class="tool-icon-circle" style="background: #f97316;">📡</div>
+            <div class="tool-icon-circle" style="background:#f97316;">📡</div>
             <div><div class="tool-card-title">Live Meeting</div><div class="tool-card-sub">Join live sessions</div></div>
           </div>
         </div>
       </div>
 
-      <!-- Upcoming Exams section -->
+      <!-- Upcoming Exams -->
       <div class="section-header">
         <h2>Upcoming Exams</h2>
         <button class="view-link" style="background:none;border:1px solid #3b82f6;color:#3b82f6;padding:6px 14px;border-radius:20px;cursor:pointer;font-size:0.8rem;" onclick="showAddExamForm()">+ Add Exam</button>
       </div>
-      <div id="addExamForm" style="display:none; background:#1a2235; border-radius:16px; padding:16px; margin-bottom:16px;">
+      <div id="addExamForm" style="display:none;background:#1a2235;border-radius:16px;padding:16px;margin-bottom:16px;">
         <input id="examCourse" placeholder="Course name" style="width:100%;background:#0f172a;border:1px solid #2d3a52;color:white;padding:10px 14px;border-radius:10px;margin-bottom:10px;outline:none;font-size:0.9rem;">
         <input id="examDate" type="date" style="width:100%;background:#0f172a;border:1px solid #2d3a52;color:white;padding:10px 14px;border-radius:10px;margin-bottom:10px;outline:none;font-size:0.9rem;">
         <input id="examDuration" placeholder="Duration e.g. 2 hours · 50 MCQs" style="width:100%;background:#0f172a;border:1px solid #2d3a52;color:white;padding:10px 14px;border-radius:10px;margin-bottom:14px;outline:none;font-size:0.9rem;">
@@ -883,17 +402,17 @@
       <div id="examsContainer"></div>
     </div>
 
-    <!-- CHAT CONTAINER (preserved original structure) -->
+    <!-- CHAT CONTAINER -->
     <div class="chat-container" id="chatContainer">
       <div class="messages" id="messages"></div>
-      <div class="attachment-container" id="attachmentContainer" style="display: none;"></div>
+      <div class="attachment-container" id="attachmentContainer" style="display:none;"></div>
     </div>
 
-    <!-- INPUT AREA (fixed bottom) -->
+    <!-- INPUT AREA -->
     <div class="input-area">
       <div class="input-wrapper">
         <button class="attachment-icon" onclick="document.getElementById('fileInput').click()">📎</button>
-        <input type="file" id="fileInput" style="display: none;" accept=".pdf,.png,.jpg,.jpeg,.gif" onchange="handleFileSelect(this.files)" multiple>
+        <input type="file" id="fileInput" style="display:none;" accept=".pdf,.png,.jpg,.jpeg,.gif" onchange="handleFileSelect(this.files)" multiple>
         <button class="voice-icon" onclick="toggleVoiceInput()">🎤</button>
         <input type="text" id="chatInput" placeholder="Ask anything about your studies..." onkeypress="handleKeyPress(event)" />
         <button class="send-btn" id="sendButton" onclick="sendMessage()">➤</button>
@@ -903,7 +422,6 @@
 </div>
 
 <script>
-  // ==================== GLOBAL STATE (preserved) ====================
   const state = {
     isChatMode: false,
     messages: [],
@@ -914,14 +432,12 @@
     isLoading: false
   };
 
-  // ==================== NEW DASHBOARD FUNCTIONS ====================
   function setGreeting() {
     const hour = new Date().getHours();
     let greeting = 'Good morning';
     if (hour >= 12 && hour < 17) greeting = 'Good afternoon';
     else if (hour >= 17 && hour < 21) greeting = 'Good evening';
     else if (hour >= 21 || hour < 5) greeting = 'Good night';
-    
     const firstName = "{{ first_name }}";
     document.getElementById('greetingText').textContent = `${greeting}, ${firstName}`;
   }
@@ -932,8 +448,7 @@
       const data = await res.json();
       const days = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
       const values = days.map(d => data.days[d] || 0);
-      const total = data.total;
-      document.querySelector('.stat-number').textContent = `${total} Hours this week`;
+      document.querySelector('.stat-number').textContent = `${data.total} Hours this week`;
       renderBarChart(values);
     } catch(e) {
       renderBarChart([0,0,0,0,0,0,0]);
@@ -943,7 +458,7 @@
   function renderBarChart(values) {
     const container = document.getElementById('barChart');
     if (!container) return;
-    const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    const days = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
     const maxVal = Math.max(...values, 1);
     container.innerHTML = '';
     days.forEach((day, idx) => {
@@ -983,42 +498,40 @@
   }
 
   async function loadExams() {
-    const res = await fetch('/api/exams');
-    const data = await res.json();
-    const container = document.getElementById('examsContainer');
-    
-    // Dynamic greeting subtitle - keep this as a fallback/refresh
-    const upcomingCount = data.exams.filter(e => new Date(e.date) >= new Date()).length;
-    if (upcomingCount > 0) {
-      document.getElementById('greetingSubtitle').textContent = `You have ${upcomingCount} exam${upcomingCount > 1 ? 's' : ''} coming up. Stay focused! 🎯`;
-    } else if (data.exams.length === 0) {
-      document.getElementById('greetingSubtitle').textContent = "Add your exam dates to get personalized reminders.";
-    } else {
-      document.getElementById('greetingSubtitle').textContent = "You're all caught up. Keep studying! 📚";
-    }
-
-    if (data.exams.length === 0) {
-      container.innerHTML = `
-        <div class="no-exams-msg">
-          <p>📅 No exams scheduled yet.</p>
-          <p style="color:#9ca3af;font-size:0.85rem;margin-top:6px;">Add your exam dates to track preparation and get timely reminders.</p>
-          <button class="practice-btn" style="margin-top:14px;" onclick="showAddExamForm()">+ Add Exam Date</button>
-        </div>`;
-      return;
-    }
-
-    container.innerHTML = '';
-    data.exams.forEach(exam => {
-      const d = new Date(exam.date);
-      const month = d.toLocaleString('default', {month: 'short'}).toUpperCase();
-      const day = d.getDate();
-      container.innerHTML += `
-        <div class="exam-item">
-          <div class="exam-date"><div class="exam-month">${month}</div><div class="exam-day">${day}</div></div>
-          <div class="exam-info"><div class="exam-title">${exam.course}</div><div class="course-sub">${exam.duration || 'Tap to practice'}</div></div>
-          <button class="practice-btn" onclick="window.location.href='/CBT'">Start Practice →</button>
-        </div>`;
-    });
+    try {
+      const res = await fetch('/api/exams');
+      const data = await res.json();
+      const container = document.getElementById('examsContainer');
+      const upcomingCount = data.exams.filter(e => new Date(e.date) >= new Date()).length;
+      if (upcomingCount > 0) {
+        document.getElementById('greetingSubtitle').textContent = `You have ${upcomingCount} exam${upcomingCount > 1 ? 's' : ''} coming up. Stay focused! 🎯`;
+      } else if (data.exams.length === 0) {
+        document.getElementById('greetingSubtitle').textContent = "Add your exam dates to get personalized reminders.";
+      } else {
+        document.getElementById('greetingSubtitle').textContent = "You're all caught up. Keep studying! 📚";
+      }
+      if (data.exams.length === 0) {
+        container.innerHTML = `
+          <div class="no-exams-msg">
+            <p>📅 No exams scheduled yet.</p>
+            <p style="color:#9ca3af;font-size:0.85rem;margin-top:6px;">Add your exam dates to track preparation and get timely reminders.</p>
+            <button class="practice-btn" style="margin-top:14px;" onclick="showAddExamForm()">+ Add Exam Date</button>
+          </div>`;
+        return;
+      }
+      container.innerHTML = '';
+      data.exams.forEach(exam => {
+        const d = new Date(exam.date);
+        const month = d.toLocaleString('default', {month:'short'}).toUpperCase();
+        const day = d.getDate();
+        container.innerHTML += `
+          <div class="exam-item">
+            <div class="exam-date"><div class="exam-month">${month}</div><div class="exam-day">${day}</div></div>
+            <div class="exam-info"><div class="exam-title">${exam.course}</div><div class="course-sub">${exam.duration || 'Tap to practice'}</div></div>
+            <button class="practice-btn" onclick="window.location.href='/CBT'">Start Practice →</button>
+          </div>`;
+      });
+    } catch(e) { console.error('Failed to load exams', e); }
   }
 
   async function loadCourses() {
@@ -1027,7 +540,7 @@
       const res = await fetch('/api/user-courses');
       const data = await res.json();
       if (!data.courses || data.courses.length === 0) {
-        grid.innerHTML = `<div style="color:#9ca3af;padding:20px 0;">No courses found for your level. <a href="/materials" style="color:#3b82f6;">Browse materials →</a></div>`;
+        grid.innerHTML = `<div style="color:#9ca3af;padding:20px 0;">No courses found. <a href="/materials" style="color:#3b82f6;">Browse materials →</a></div>`;
         return;
       }
       grid.innerHTML = '';
@@ -1046,21 +559,20 @@
     }
   }
 
-  // ==================== CORE EXISTING FUNCTIONS (fully preserved) ====================
-  function toggleMenu() { 
-    document.getElementById('side-menu').classList.toggle('active'); 
+  function toggleMenu() {
+    document.getElementById('side-menu').classList.toggle('active');
     document.getElementById('overlay').classList.toggle('active');
-    if(document.getElementById('side-menu').classList.contains('active')) document.body.style.overflow = 'hidden';
+    if (document.getElementById('side-menu').classList.contains('active')) document.body.style.overflow = 'hidden';
     else document.body.style.overflow = '';
   }
-  function closeMenu() { 
-    document.getElementById('side-menu').classList.remove('active'); 
+  function closeMenu() {
+    document.getElementById('side-menu').classList.remove('active');
     document.getElementById('overlay').classList.remove('active');
     document.body.style.overflow = '';
   }
   function toggleTheme() {
     const isDark = document.body.classList.contains('dark-mode');
-    if(isDark) { document.body.classList.remove('dark-mode'); document.body.classList.add('light-mode'); state.theme = 'light'; document.getElementById('theme-toggle').textContent = '☀️'; }
+    if (isDark) { document.body.classList.remove('dark-mode'); document.body.classList.add('light-mode'); state.theme = 'light'; document.getElementById('theme-toggle').textContent = '☀️'; }
     else { document.body.classList.remove('light-mode'); document.body.classList.add('dark-mode'); state.theme = 'dark'; document.getElementById('theme-toggle').textContent = '🌙'; }
     localStorage.setItem('theme', state.theme);
   }
@@ -1069,7 +581,8 @@
       state.isChatMode = true;
       const dashboard = document.getElementById('dashboardView');
       const chatContainer = document.getElementById('chatContainer');
-      dashboard.style.opacity = '0'; dashboard.style.transform = 'translateY(-8px)';
+      dashboard.style.opacity = '0';
+      dashboard.style.transform = 'translateY(-8px)';
       setTimeout(() => { dashboard.classList.add('hidden'); dashboard.style.opacity = ''; }, 300);
       chatContainer.classList.add('active');
       setTimeout(() => { document.getElementById('chatInput').focus(); scrollMessagesToBottom(); }, 100);
@@ -1077,36 +590,40 @@
   }
   function addMessage(text, sender) {
     const messagesDiv = document.getElementById('messages');
-    const typingInd = messagesDiv.querySelector('.typing-indicator');
-    if(typingInd) typingInd.remove();
-    const msgDiv = document.createElement('div'); msgDiv.className = `message ${sender}`;
-    const contentDiv = document.createElement('div'); contentDiv.className = 'message-content';
+    messagesDiv.querySelector('.typing-indicator')?.remove();
+    const msgDiv = document.createElement('div');
+    msgDiv.className = `message ${sender}`;
+    const contentDiv = document.createElement('div');
+    contentDiv.className = 'message-content';
     contentDiv.innerHTML = text.replace(/\n/g, '<br>');
-    msgDiv.appendChild(contentDiv); messagesDiv.appendChild(msgDiv);
+    msgDiv.appendChild(contentDiv);
+    messagesDiv.appendChild(msgDiv);
     state.messages.push({ text, sender, timestamp: Date.now() });
     scrollMessagesToBottom();
     renderMathInElement(msgDiv);
   }
-  function renderMathInElement(element) { if(window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise([element]).catch(e=>console.log); }
+  function renderMathInElement(element) { if (window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise([element]).catch(e => console.log(e)); }
   function showTypingIndicator() {
     const messagesDiv = document.getElementById('messages');
-    const existing = messagesDiv.querySelector('.typing-indicator');
-    if(existing) existing.remove();
-    const typingDiv = document.createElement('div'); typingDiv.className = 'typing-indicator';
+    messagesDiv.querySelector('.typing-indicator')?.remove();
+    const typingDiv = document.createElement('div');
+    typingDiv.className = 'typing-indicator';
     typingDiv.innerHTML = '<div class="typing-dots"><span></span><span></span><span></span></div>';
-    messagesDiv.appendChild(typingDiv); scrollMessagesToBottom();
+    messagesDiv.appendChild(typingDiv);
+    scrollMessagesToBottom();
     state.isLoading = true;
   }
-  function scrollMessagesToBottom() { const m = document.getElementById('messages'); if(m) m.scrollTop = m.scrollHeight; }
+  function scrollMessagesToBottom() { const m = document.getElementById('messages'); if (m) m.scrollTop = m.scrollHeight; }
   function updateSendButton() { const btn = document.getElementById('sendButton'); const inp = document.getElementById('chatInput'); btn.disabled = (inp.value.trim() === '' && state.pendingAttachments.length === 0); }
-  function handleKeyPress(e) { if(e.key === 'Enter') sendMessage(); }
+  function handleKeyPress(e) { if (e.key === 'Enter') sendMessage(); }
   async function sendToBackend(message, attachments) {
     try {
-      const formData = new FormData(); formData.append('message', message);
+      const formData = new FormData();
+      formData.append('message', message);
       attachments.forEach(att => formData.append('files', att.file));
       showTypingIndicator();
       const response = await fetch('/ask_with_files', { method: 'POST', body: formData });
-      if(!response.ok) throw new Error('Server error');
+      if (!response.ok) throw new Error('Server error');
       const data = await response.json();
       document.querySelector('.typing-indicator')?.remove();
       state.isLoading = false;
@@ -1114,59 +631,93 @@
     } catch(err) {
       document.querySelector('.typing-indicator')?.remove();
       state.isLoading = false;
-      addMessage("Sorry, I encountered an error while processing your request. Please try again.", 'ai');
+      addMessage("Sorry, I encountered an error. Please try again.", 'ai');
     }
   }
   async function sendMessage() {
-    if(state.isLoading) return;
-    const input = document.getElementById('chatInput'); const text = input.value.trim();
-    if(text === '' && state.pendingAttachments.length === 0) return;
-    if(!state.isChatMode) enterChatMode();
-    if(text) addMessage(text, 'user');
+    if (state.isLoading) return;
+    const input = document.getElementById('chatInput');
+    const text = input.value.trim();
+    if (text === '' && state.pendingAttachments.length === 0) return;
+    if (!state.isChatMode) enterChatMode();
+    if (text) addMessage(text, 'user');
     const attachmentsToSend = [...state.pendingAttachments];
-    if(attachmentsToSend.length) addMessage(`📎 Sent ${attachmentsToSend.length} file(s): ${attachmentsToSend.map(f=>f.name).join(', ')}`, 'user');
-    input.value = ''; updateSendButton();
+    if (attachmentsToSend.length) addMessage(`📎 Sent ${attachmentsToSend.length} file(s): ${attachmentsToSend.map(f => f.name).join(', ')}`, 'user');
+    input.value = '';
+    updateSendButton();
     await sendToBackend(text, attachmentsToSend);
-    state.pendingAttachments = []; const attachContainer = document.getElementById('attachmentContainer'); attachContainer.style.display = 'none'; attachContainer.innerHTML = '';
+    state.pendingAttachments = [];
+    const attachContainer = document.getElementById('attachmentContainer');
+    attachContainer.style.display = 'none';
+    attachContainer.innerHTML = '';
     input.focus();
   }
-  function handleFileSelect(files) { if(!files.length) return; const file = files[0]; if(file.size>16*1024*1024) { alert('File too large'); return; } state.pendingAttachments.push({ id:'att_'+Date.now(), file, name:file.name, size:file.size, type:file.type }); renderAttachmentPreview(); document.getElementById('attachmentContainer').style.display = 'flex'; updateSendButton(); if(!state.isChatMode) enterChatMode(); }
-  function renderAttachmentPreview() { const cont = document.getElementById('attachmentContainer'); cont.innerHTML = ''; state.pendingAttachments.forEach(att=>{ const div = document.createElement('div'); div.className='attachment-preview'; div.innerHTML = `<span>${att.type==='application/pdf'?'📄':'🖼️'}</span> <span>${att.name}</span> <button class="attachment-remove" onclick="removeAttachment('${att.id}')">✕</button>`; cont.appendChild(div); }); }
-  function removeAttachment(id) { state.pendingAttachments = state.pendingAttachments.filter(a=>a.id !== id); renderAttachmentPreview(); if(!state.pendingAttachments.length) document.getElementById('attachmentContainer').style.display = 'none'; updateSendButton(); }
-  function toggleVoiceInput() { if (!('webkitSpeechRecognition' in window)) { alert('Voice not supported'); return; } const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition; state.recognition = new SpeechRecognition(); state.recognition.lang = 'en-US'; state.recognition.onresult = (e) => { document.getElementById('chatInput').value = e.results[0][0].transcript; updateSendButton(); }; state.recognition.start(); }
+  function handleFileSelect(files) {
+    if (!files.length) return;
+    const file = files[0];
+    if (file.size > 16 * 1024 * 1024) { alert('File too large'); return; }
+    state.pendingAttachments.push({ id: 'att_' + Date.now(), file, name: file.name, size: file.size, type: file.type });
+    renderAttachmentPreview();
+    document.getElementById('attachmentContainer').style.display = 'flex';
+    updateSendButton();
+    if (!state.isChatMode) enterChatMode();
+  }
+  function renderAttachmentPreview() {
+    const cont = document.getElementById('attachmentContainer');
+    cont.innerHTML = '';
+    state.pendingAttachments.forEach(att => {
+      const div = document.createElement('div');
+      div.className = 'attachment-preview';
+      div.innerHTML = `<span>${att.type === 'application/pdf' ? '📄' : '🖼️'}</span> <span>${att.name}</span> <button class="attachment-remove" onclick="removeAttachment('${att.id}')">✕</button>`;
+      cont.appendChild(div);
+    });
+  }
+  function removeAttachment(id) {
+    state.pendingAttachments = state.pendingAttachments.filter(a => a.id !== id);
+    renderAttachmentPreview();
+    if (!state.pendingAttachments.length) document.getElementById('attachmentContainer').style.display = 'none';
+    updateSendButton();
+  }
+  function toggleVoiceInput() {
+    if (!('webkitSpeechRecognition' in window)) { alert('Voice not supported'); return; }
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    state.recognition = new SR();
+    state.recognition.lang = 'en-US';
+    state.recognition.onresult = (e) => { document.getElementById('chatInput').value = e.results[0][0].transcript; updateSendButton(); };
+    state.recognition.start();
+  }
 
-  function handleChipClick(type) { if(type==='ai') enterChatMode(); else if(type==='cbt') window.location.href='/CBT'; else if(type==='materials') window.location.href='/materials'; }
-  
+  // Event listeners
   document.getElementById('chatWithAiBtn')?.addEventListener('click', () => enterChatMode());
-  document.getElementById('talkNavLink')?.addEventListener('click', (e) => { e.preventDefault(); enterChatMode(); });
-  document.getElementById('chatInput')?.addEventListener('focus', () => { if(!state.isChatMode) enterChatMode(); });
+  document.getElementById('talkNavLink')?.addEventListener('click', (e) => { e.preventDefault(); closeMenu(); enterChatMode(); });
+  document.getElementById('chatInput')?.addEventListener('focus', () => { if (!state.isChatMode) enterChatMode(); });
   document.getElementById('chatInput')?.addEventListener('input', updateSendButton);
-  
-  if(state.theme === 'light') { document.body.classList.add('light-mode'); document.getElementById('theme-toggle').textContent = '☀️'; }
+
+  // Theme init
+  if (state.theme === 'light') { document.body.classList.add('light-mode'); document.getElementById('theme-toggle').textContent = '☀️'; }
   else { document.body.classList.add('dark-mode'); document.getElementById('theme-toggle').textContent = '🌙'; }
-  
-  // Initialize everything on load
+
+  // Init
   setGreeting();
   loadStudyStats();
   loadExams();
   loadCourses();
 
-  // Track active time every 60 seconds
   setInterval(() => {
     if (!document.hidden) {
-      fetch('/api/track-session', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({seconds: 60})
-      });
+      fetch('/api/track-session', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({seconds: 60}) });
     }
   }, 60000);
-
-  // Refresh stats every 5 minutes
   setInterval(loadStudyStats, 300000);
-  
-  setTimeout(() => { if(state.messages.length===0 && !state.isChatMode) addMessage("👋 Welcome to Nelavista! I'm your AI educational companion. Ask me anything about your studies.", 'ai'); }, 800);
-  window.addEventListener('beforeunload', () => { if(state.messages.length) localStorage.setItem('nelavista_chat_history', JSON.stringify(state.messages)); });
+
+  setTimeout(() => {
+    if (state.messages.length === 0 && !state.isChatMode)
+      addMessage("👋 Welcome to Nelavista! I'm your AI educational companion. Ask me anything about your studies.", 'ai');
+  }, 800);
+
+  window.addEventListener('beforeunload', () => {
+    if (state.messages.length) localStorage.setItem('nelavista_chat_history', JSON.stringify(state.messages));
+  });
 </script>
 </body>
 </html>

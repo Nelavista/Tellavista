@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Pending Materials</title>
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Inter',system-ui,sans-serif; }
+        body { background:#0d1117; color:#e6edf3; padding:20px; }
+        .container { max-width:1200px; margin:0 auto; }
+        h1 { font-size:1.8rem; margin-bottom:20px; }
+        .back-btn { background:#21262d; border:1px solid #30363d; color:#8b949e; padding:8px 16px; border-radius:8px; text-decoration:none; display:inline-block; margin-bottom:20px; }
+        .back-btn:hover { border-color:#58a6ff; color:#58a6ff; }
+        .material-card { background:#161b22; border:1px solid #21262d; border-radius:12px; padding:20px; margin-bottom:16px; }
+        .material-title { font-size:1.1rem; font-weight:600; margin-bottom:10px; }
+        .material-meta { font-size:0.85rem; color:#8b949e; margin-bottom:12px; }
+        .material-meta span { margin-right:16px; }
+        .actions { display:flex; gap:10px; }
+        .approve-btn { background:#22c55e; border:none; padding:10px 20px; border-radius:8px; color:#fff; font-weight:600; cursor:pointer; }
+        .approve-btn:hover { background:#16a34a; }
+        .reject-btn { background:#ef4444; border:none; padding:10px 20px; border-radius:8px; color:#fff; font-weight:600; cursor:pointer; }
+        .reject-btn:hover { background:#dc2626; }
+        .view-btn { background:#3b82f6; border:none; padding:10px 20px; border-radius:8px; color:#fff; font-weight:600; cursor:pointer; text-decoration:none; display:inline-block; }
+        .view-btn:hover { background:#2563eb; }
+        .empty { text-align:center; padding:60px 20px; color:#6e7681; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/dashboard" class="back-btn">← Back to Dashboard</a>
+        
+        <h1>📋 Pending Materials ({{ pending|length }})</h1>
+        
+        {% if not pending %}
+        <div class="empty">
+            <div style="font-size:3rem; margin-bottom:10px;">✨</div>
+            <div>No pending materials to review</div>
+        </div>
+        {% else %}
+        
+        {% for material in pending %}
+        <div class="material-card" id="material-{{ material.id }}">
+            <div class="material-title">{{ material.title }}</div>
+            <div class="material-meta">
+                <span>📚 {{ material.department }}</span>
+                <span>📊 {{ material.level }} Level</span>
+                <span>📅 {{ material.semester }}</span>
+                <span>🔖 {{ material.course_type }}</span>
+                <span>👤 {{ material.uploaded_by }}</span>
+            </div>
+            {% if material.next_topic %}
+            <div style="font-size:0.85rem; color:#8b949e; margin-bottom:12px;">{{ material.next_topic }}</div>
+            {% endif %}
+            <div class="actions">
+                <a href="{{ material.file_url }}" target="_blank" class="view-btn">👁️ View PDF</a>
+                <button class="approve-btn" onclick="approveMaterial({{ material.id }})">✅ Approve</button>
+                <button class="reject-btn" onclick="rejectMaterial({{ material.id }})">❌ Reject & Delete</button>
+            </div>
+        </div>
+        {% endfor %}
+        
+        {% endif %}
+    </div>
+
+    <script>
+        async function approveMaterial(id) {
+            if (!confirm('Approve this material?')) return;
+            try {
+                const res = await fetch(`/admin/materials/approve/${id}`, { method: 'POST' });
+                const data = await res.json();
+                if (data.success) {
+                    document.getElementById(`material-${id}`).remove();
+                    alert('Material approved!');
+                    if (document.querySelectorAll('.material-card').length === 0) {
+                        location.reload();
+                    }
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            } catch(e) {
+                alert('Error: ' + e.message);
+            }
+        }
+
+        async function rejectMaterial(id) {
+            if (!confirm('Reject and DELETE this material permanently? This cannot be undone.')) return;
+            try {
+                const res = await fetch(`/admin/materials/reject/${id}`, { method: 'DELETE' });
+                const data = await res.json();
+                if (data.success) {
+                    document.getElementById(`material-${id}`).remove();
+                    alert('Material rejected and deleted');
+                    if (document.querySelectorAll('.material-card').length === 0) {
+                        location.reload();
+                    }
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            } catch(e) {
+                alert('Error: ' + e.message);
+            }
+        }
+    </script>
+</body>
+</html>

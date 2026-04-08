@@ -2,86 +2,153 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <title>Create Your Nelavista Account</title>
+    
+    <!-- Premium fonts & icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
-        /* ===== CSS VARIABLES & RESET ===== */
+        /* ----- DESIGN TOKENS (dark academic + electric blue/teal) ----- */
         :root {
-            --primary-color: #000000;
-            --primary-dark: #333333;
-            --light-bg: #ffffff;
-            --dark-bg: #000000;
-            --card-light: #ffffff;
-            --card-dark: #0a0a0a;
-            --text-light: #000000;
-            --text-dark: #ffffff;
-            --input-bg: #0a0a0a;
-            --border-light: rgba(0, 0, 0, 0.1);
-            --border-dark: rgba(255, 255, 255, 0.1);
-            --gradient-start: #ffffff;
-            --gradient-end: #888888;
-            --success-color: rgba(255, 255, 255, 0.1);
-            --error-color: rgba(255, 100, 100, 0.2);
+            --bg-deep: #0b0e14;
+            --bg-surface: #161b22;
+            --border-premium: #30363d;
+            --text-primary: #f0f3f8;
+            --text-secondary: #b9c3d1;
+            --accent-blue: #00d1ff;
+            --accent-teal: #20c997;
+            --gradient-blue: linear-gradient(135deg, #00d1ff, #007bff);
+            --shadow-soft: 0 8px 24px rgba(0, 0, 0, 0.25);
+            --shadow-glow: 0 0 30px rgba(0, 209, 255, 0.08);
+            --transition-smooth: all 0.25s cubic-bezier(0.2, 0, 0, 1);
+            --radius-card: 20px;
+            --radius-input: 14px;
+            --radius-button: 12px;
+        }
+
+        /* Light theme overrides */
+        body.light-theme {
+            --bg-deep: #f5f7fa;
+            --bg-surface: #ffffff;
+            --border-premium: #e2e8f0;
+            --text-primary: #1e293b;
+            --text-secondary: #475569;
+            --accent-blue: #0284c7;
+            --accent-teal: #0d9488;
+            --gradient-blue: linear-gradient(135deg, #0284c7, #0ea5e9);
+            --shadow-soft: 0 8px 24px rgba(0, 0, 0, 0.06);
+            --shadow-glow: 0 0 30px rgba(2, 132, 199, 0.05);
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            background: var(--dark-bg);
-            color: var(--text-dark);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg-deep);
+            color: var(--text-primary);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
-            overflow-x: hidden;
             padding: 20px;
+            overflow-x: hidden;
             opacity: 0;
             animation: fadeIn 0.6s ease-out forwards;
             animation-delay: 0.1s;
+            line-height: 1.5;
         }
 
-        /* ===== ANIMATIONS ===== */
+        /* ----- GLASSMORPHISM TOP BAR (consistent with landing) ----- */
+        #top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 64px;
+            background: rgba(11, 14, 20, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            z-index: 1002;
+            border-bottom: 1px solid var(--border-premium);
+        }
+
+        body.light-theme #top-bar {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(12px);
+        }
+
+        .brand-logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ffffff, #a0c0ff);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.02em;
+        }
+
+        body.light-theme .brand-logo {
+            background: linear-gradient(135deg, #0f172a, #0284c7);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        #theme-toggle {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            background: transparent;
+            border: 1px solid var(--border-premium);
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: var(--transition-smooth);
+        }
+
+        #theme-toggle:hover {
+            background: rgba(255,255,255,0.05);
+            border-color: var(--accent-teal);
+        }
+
+        /* Spacer for fixed header */
+        .header-spacer {
+            height: 64px;
+            width: 100%;
+        }
+
+        /* ----- ANIMATIONS (soft, staggered) ----- */
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
         }
 
         @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(15px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateX(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        /* ===== LOGO SECTION ===== */
+        /* ----- LOGO SECTION (centered below header) ----- */
         .logo-section {
             text-align: center;
-            margin-bottom: 2rem;
+            margin: 16px 0 24px;
             animation: fadeInUp 0.7s ease-out forwards;
             opacity: 0;
         }
@@ -89,16 +156,23 @@
         .logo {
             font-size: 2.8rem;
             font-weight: 700;
-            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            background: linear-gradient(135deg, #ffffff, #a0c0ff);
+            background-clip: text;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            background-clip: text;
             margin-bottom: 0.5rem;
-            letter-spacing: -0.5px;
+            letter-spacing: -0.02em;
+        }
+
+        body.light-theme .logo {
+            background: linear-gradient(135deg, #0f172a, #0284c7);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .tagline {
-            color: #a0a0a0;
+            color: var(--text-secondary);
             font-size: 1rem;
             max-width: 500px;
             line-height: 1.5;
@@ -106,70 +180,84 @@
             opacity: 0;
         }
 
-        /* ===== SIGNUP CONTAINER ===== */
+        /* ----- SIGNUP CARD (soft surface, premium borders) ----- */
         .signup-container {
-            background: var(--card-dark);
-            padding: 2rem 1.8rem;
-            border-radius: 16px;
+            background: var(--bg-surface);
+            padding: 2.5rem 2.2rem;
+            border-radius: var(--radius-card);
             width: 100%;
-            max-width: 480px;
-            border: 1px solid var(--border-dark);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            max-width: 520px;
+            border: 1px solid var(--border-premium);
+            box-shadow: var(--shadow-soft), var(--shadow-glow);
             opacity: 0;
             transform: translateY(10px);
             animation: fadeInUp 0.7s ease-out 0.2s forwards;
+            margin-bottom: 32px;
+            transition: var(--transition-smooth);
         }
 
         .signup-container h1 {
-            font-size: 1.8rem;
+            font-size: 1.9rem;
             font-weight: 600;
             margin-bottom: 0.5rem;
-            color: var(--text-dark);
+            color: var(--text-primary);
+            letter-spacing: -0.02em;
             opacity: 0;
             animation: fadeInUp 0.6s ease-out 0.3s forwards;
         }
 
         .subtitle {
-            color: #a0a0a0;
+            color: var(--text-secondary);
             font-size: 0.95rem;
             margin-bottom: 2rem;
             opacity: 0;
             animation: fadeInUp 0.6s ease-out 0.4s forwards;
         }
 
-        /* ===== SECTION HEADERS ===== */
+        /* ----- SECTION HEADERS (subtle with teal accent) ----- */
         .section-header {
-            margin: 1.5rem 0 1rem 0;
-            padding-bottom: 0.5rem;
-            border-bottom: 1px solid var(--border-dark);
-        }
-        .section-header h2 {
-            font-size: 1.2rem;
-            font-weight: 500;
-            color: var(--text-dark);
-        }
-        .section-header:first-of-type {
-            margin-top: 0;
+            margin: 1.8rem 0 1.2rem 0;
+            padding-bottom: 0.6rem;
+            border-bottom: 1px solid var(--border-premium);
         }
 
-        /* ===== FORM STYLES ===== */
+        .section-header h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            letter-spacing: -0.01em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-header h2 i {
+            color: var(--accent-teal);
+            font-size: 1.2rem;
+        }
+
+        /* ----- FORM STYLES (soft, spacious) ----- */
         form {
             opacity: 0;
             animation: fadeInUp 0.6s ease-out 0.5s forwards;
         }
 
         .form-group {
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.6rem;
             position: relative;
             opacity: 0;
             animation: slideIn 0.6s ease-out forwards;
         }
 
-        /* staggered animations for account section */
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-12px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* Staggered animation delays */
         .account-group:nth-child(1) { animation-delay: 0.5s; }
         .account-group:nth-child(2) { animation-delay: 0.6s; }
         .account-group:nth-child(3) { animation-delay: 0.65s; }
-        /* student section groups */
         .student-group:nth-child(1) { animation-delay: 0.7s; }
         .student-group:nth-child(2) { animation-delay: 0.75s; }
         .student-group:nth-child(3) { animation-delay: 0.8s; }
@@ -181,23 +269,27 @@
             margin-bottom: 0.6rem;
             font-size: 0.9rem;
             font-weight: 500;
-            color: #e0e0e0;
-            transition: color 0.3s ease;
+            color: var(--text-primary);
+            transition: color 0.2s;
         }
 
         .input-wrapper {
             position: relative;
-            background: var(--input-bg);
-            border-radius: 12px;
-            border: 1px solid var(--border-dark);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            will-change: transform, border-color;
+            background: var(--bg-deep);
+            border-radius: var(--radius-input);
+            border: 1px solid var(--border-premium);
+            transition: var(--transition-smooth);
+            will-change: transform, border-color, box-shadow;
         }
 
         .input-wrapper:focus-within {
-            border-color: rgba(255, 255, 255, 0.3);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            border-color: var(--accent-blue);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 209, 255, 0.12);
+        }
+
+        body.light-theme .input-wrapper:focus-within {
+            box-shadow: 0 8px 20px rgba(2, 132, 199, 0.08);
         }
 
         input[type="text"],
@@ -205,182 +297,191 @@
         input[type="password"],
         select {
             width: 100%;
-            padding: 0.9rem 1rem;
-            background: none;
+            padding: 0.9rem 1.1rem;
+            background: transparent;
             border: none;
             outline: none;
             font-size: 1rem;
-            color: var(--text-dark);
-            transition: opacity 0.3s ease;
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            transition: opacity 0.2s;
         }
 
         select {
             appearance: none;
             -webkit-appearance: none;
-            background: var(--input-bg);
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23b9c3d1' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1rem;
             cursor: pointer;
+        }
+
+        body.light-theme select {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
         }
 
         input::placeholder {
-            color: #888;
-            transition: opacity 0.3s ease;
+            color: var(--text-secondary);
+            opacity: 0.6;
+            font-weight: 400;
         }
 
         .password-hint {
-            color: #a0a0a0;
+            color: var(--text-secondary);
             font-size: 0.8rem;
-            margin-top: 0.4rem;
-            padding-left: 0.5rem;
+            margin-top: 0.5rem;
+            padding-left: 0.3rem;
+            opacity: 0.8;
         }
 
-        /* ===== BUTTON STYLES ===== */
+        /* ----- PRIMARY CTA – BLUE GRADIENT (soft) ----- */
         .submit-btn {
             width: 100%;
             padding: 1rem;
-            background: var(--primary-color);
+            background: var(--gradient-blue);
             color: white;
             border: none;
-            border-radius: 12px;
+            border-radius: var(--radius-button);
             font-size: 1rem;
-            font-weight: 500;
+            font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            margin-top: 1.5rem;
+            transition: var(--transition-smooth);
+            margin-top: 2rem;
             opacity: 0;
             animation: fadeInUp 0.6s ease-out 1.2s forwards;
-            will-change: transform, opacity;
+            will-change: transform, box-shadow;
+            box-shadow: 0 6px 14px rgba(0, 123, 255, 0.25);
+            letter-spacing: -0.01em;
         }
 
         .submit-btn:hover {
-            opacity: 0.9;
-            transform: translateY(-1px);
+            transform: translateY(-3px);
+            box-shadow: 0 14px 28px rgba(0, 123, 255, 0.35);
+            background: linear-gradient(135deg, #1ad9ff, #0088ff);
         }
 
         .submit-btn:active {
             transform: translateY(0);
+            box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
         }
 
-        /* ===== LINK STYLES ===== */
+        /* ----- LINK SECTION (soft divider) ----- */
         .link-section {
             text-align: center;
             margin-top: 2rem;
-            padding-top: 1.5rem;
-            border-top: 1px solid var(--border-dark);
+            padding-top: 1.8rem;
+            border-top: 1px solid var(--border-premium);
             opacity: 0;
             animation: fadeInUp 0.6s ease-out 1.3s forwards;
         }
 
         .link-section p {
-            color: #a0a0a0;
-            font-size: 0.9rem;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
             margin-bottom: 0.5rem;
         }
 
         .link-section a {
-            color: #ffffff;
+            color: var(--accent-blue);
             text-decoration: none;
-            font-weight: 500;
-            transition: opacity 0.3s ease;
-            position: relative;
+            font-weight: 600;
+            transition: var(--transition-smooth);
+            border-bottom: 1px solid rgba(0, 209, 255, 0.3);
+            padding-bottom: 2px;
         }
 
-        .link-section a::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 0;
-            width: 0;
-            height: 1px;
-            background: #ffffff;
-            transition: width 0.3s ease;
+        .link-section a:hover {
+            color: var(--accent-teal);
+            border-bottom-color: var(--accent-teal);
         }
 
-        .link-section a:hover::after {
-            width: 100%;
-        }
-
-        /* ===== RESPONSIVE DESIGN ===== */
+        /* ----- RESPONSIVE & SOFT TOUCHES ----- */
         @media (max-width: 768px) {
             body {
-                padding: 1rem;
+                padding: 0;
                 justify-content: flex-start;
-                padding-top: 2rem;
+            }
+
+            .header-spacer {
+                height: 64px;
+            }
+
+            .logo-section {
+                margin-top: 8px;
             }
 
             .logo {
-                font-size: 2.5rem;
-            }
-
-            .tagline {
-                font-size: 0.95rem;
-                padding: 0 1rem;
+                font-size: 2.4rem;
             }
 
             .signup-container {
-                padding: 1.8rem 1.2rem;
-                margin: 0;
+                padding: 2rem 1.5rem;
+                margin: 0 12px 24px;
                 max-width: 100%;
-                border-radius: 12px;
+                border-radius: 18px;
             }
 
-            input,
-            button,
-            select {
-                font-size: 16px;
-                min-height: 44px;
+            .signup-container h1 {
+                font-size: 1.7rem;
             }
 
-            .input-wrapper {
-                border-radius: 10px;
-            }
-
-            input[type="text"],
-            input[type="email"],
-            input[type="password"],
-            select {
-                padding: 0.8rem 0.9rem;
-            }
-
-            .submit-btn {
-                padding: 0.9rem;
-                border-radius: 10px;
+            input, select, .submit-btn {
+                font-size: 16px; /* Prevents zoom on iOS */
             }
         }
 
         @media (max-width: 480px) {
             .logo {
-                font-size: 2.2rem;
+                font-size: 2rem;
             }
 
             .signup-container {
-                padding: 1.5rem 1rem;
-                border-radius: 10px;
-            }
-
-            .signup-container h1 {
-                font-size: 1.6rem;
+                padding: 1.8rem 1.2rem;
+                border-radius: 16px;
             }
 
             .section-header h2 {
-                font-size: 1.1rem;
+                font-size: 1.15rem;
             }
+
+            .input-wrapper {
+                border-radius: 12px;
+            }
+        }
+
+        /* Misc softness */
+        button, input, select {
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        i, .ri, .fas {
+            font-style: normal;
         }
     </style>
 </head>
 <body>
+    <!-- GLASS TOP BAR with theme toggle (consistent with landing) -->
+    <header id="top-bar">
+        <div></div> <!-- empty for balance -->
+        <div class="brand-logo">Nelavista</div>
+        <button id="theme-toggle" aria-label="Toggle theme">🌙</button>
+    </header>
+    <div class="header-spacer"></div>
+
     <div class="logo-section">
         <div class="logo">Nelavista</div>
-        <div class="tagline">Your AI-powered learning companion</div>
+        <div class="tagline">Your AI‑powered learning companion</div>
     </div>
 
     <div class="signup-container">
-        <h1>Create Your Nelavista Account</h1>
+        <h1>Create your account</h1>
         <p class="subtitle">Tell us about your school so Nelavista can personalize your learning.</p>
 
         <form method="POST" action="/signup" autocomplete="off">
-            <!-- ===== ACCOUNT DETAILS SECTION ===== -->
+            <!-- Account Details -->
             <div class="section-header">
-                <h2>Account Details</h2>
+                <h2><i class="ri-user-settings-line"></i> Account Details</h2>
             </div>
 
             <div class="form-group account-group">
@@ -426,9 +527,9 @@
                 <div class="password-hint">At least 8 characters</div>
             </div>
 
-            <!-- ===== STUDENT ACADEMIC PROFILE SECTION ===== -->
+            <!-- Academic Profile -->
             <div class="section-header">
-                <h2>Student Academic Profile</h2>
+                <h2><i class="ri-book-open-line"></i> Academic Profile</h2>
             </div>
 
             <div class="form-group student-group">
@@ -447,7 +548,7 @@
             <div class="form-group student-group">
                 <label for="university">University</label>
                 <div class="input-wrapper">
-                    <select id="university" name="university" required class="styled-select">
+                    <select id="university" name="university" required>
                         <option value="">Select University</option>
                         <option value="Lagos State University">Lagos State University</option>
                         <option value="University of Lagos">University of Lagos</option>
@@ -463,7 +564,7 @@
             <div class="form-group student-group">
                 <label for="faculty">Faculty</label>
                 <div class="input-wrapper">
-                    <select id="faculty" name="faculty" required class="styled-select">
+                    <select id="faculty" name="faculty" required>
                         <option value="">Select Faculty</option>
                         <option value="Science">Science</option>
                         <option value="Engineering">Engineering</option>
@@ -480,7 +581,7 @@
             <div class="form-group student-group">
                 <label for="department">Department</label>
                 <div class="input-wrapper">
-                    <select id="department" name="department" required class="styled-select">
+                    <select id="department" name="department" required>
                         <option value="">Select Department</option>
                         <option value="Mathematics">Mathematics</option>
                         <option value="Computer Science">Computer Science</option>
@@ -506,7 +607,7 @@
             <div class="form-group student-group">
                 <label for="level">Level</label>
                 <div class="input-wrapper">
-                    <select id="level" name="level" required class="styled-select">
+                    <select id="level" name="level" required>
                         <option value="">Select Level</option>
                         <option value="100 Level">100 Level</option>
                         <option value="200 Level">200 Level</option>
@@ -517,7 +618,7 @@
                 </div>
             </div>
 
-            <button type="submit" class="submit-btn">Create Account</button>
+            <button type="submit" class="submit-btn">Create Account →</button>
         </form>
 
         <div class="link-section">
@@ -526,22 +627,55 @@
     </div>
 
     <script>
-        // UI enhancement: focus animation for input wrappers
+        // ----- THEME TOGGLE (Dark / Light) with localStorage -----
+        (function() {
+            const themeToggle = document.getElementById('theme-toggle');
+            const body = document.body;
+
+            const storedTheme = localStorage.getItem('theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            let currentTheme = storedTheme || (prefersDark ? 'dark' : 'light');
+
+            function applyTheme(theme) {
+                if (theme === 'light') {
+                    body.classList.add('light-theme');
+                    themeToggle.textContent = '☀️';  // sun = light active
+                } else {
+                    body.classList.remove('light-theme');
+                    themeToggle.textContent = '🌙';  // moon = dark active
+                }
+                localStorage.setItem('theme', theme);
+            }
+
+            applyTheme(currentTheme);
+
+            themeToggle.addEventListener('click', () => {
+                currentTheme = body.classList.contains('light-theme') ? 'dark' : 'light';
+                applyTheme(currentTheme);
+            });
+
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+                if (!localStorage.getItem('theme')) {
+                    applyTheme(e.matches ? 'dark' : 'light');
+                }
+            });
+        })();
+
+        // ----- SOFT INTERACTION: enhance focus / blur feedback -----
         document.addEventListener('DOMContentLoaded', function() {
             const inputs = document.querySelectorAll('input, select');
             inputs.forEach(input => {
                 input.addEventListener('focus', function() {
                     const wrapper = this.closest('.input-wrapper');
                     if (wrapper) {
-                        wrapper.style.borderColor = 'rgba(255, 255, 255, 0.3)';
-                        wrapper.style.transform = 'translateY(-1px)';
+                        wrapper.style.borderColor = 'var(--accent-blue)';
+                        wrapper.style.transform = 'translateY(-2px)';
                     }
                 });
-                
                 input.addEventListener('blur', function() {
                     const wrapper = this.closest('.input-wrapper');
                     if (wrapper) {
-                        wrapper.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+                        wrapper.style.borderColor = 'var(--border-premium)';
                         wrapper.style.transform = 'translateY(0)';
                     }
                 });

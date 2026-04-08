@@ -3,99 +3,157 @@
 <head>
   <meta charset="UTF-8" />
   <title>Login - Nelavista</title>
-  <!-- Android WebView specific meta tags -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
-  
-  <!-- Style Section - Redesigned to match index.html -->
+
+  <!-- Premium fonts & icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
   <style>
-    /* ===== CSS VARIABLES & RESET ===== */
+    /* ----- DESIGN TOKENS (dark academic + electric blue/teal) ----- */
     :root {
-      --primary-color: #000000;
-      --primary-dark: #333333;
-      --light-bg: #ffffff;
-      --dark-bg: #000000;
-      --card-light: #ffffff;
-      --card-dark: #0a0a0a;
-      --text-light: #000000;
-      --text-dark: #ffffff;
-      --input-bg: #0a0a0a;
-      --border-light: rgba(0, 0, 0, 0.1);
-      --border-dark: rgba(255, 255, 255, 0.1);
-      --gradient-start: #ffffff;
-      --gradient-end: #888888;
+      --bg-deep: #0b0e14;
+      --bg-surface: #161b22;
+      --border-premium: #30363d;
+      --text-primary: #f0f3f8;
+      --text-secondary: #b9c3d1;
+      --accent-blue: #00d1ff;
+      --accent-teal: #20c997;
+      --gradient-blue: linear-gradient(135deg, #00d1ff, #007bff);
+      --shadow-soft: 0 8px 24px rgba(0, 0, 0, 0.25);
+      --shadow-glow: 0 0 30px rgba(0, 209, 255, 0.08);
+      --transition-smooth: all 0.25s cubic-bezier(0.2, 0, 0, 1);
+      --radius-card: 20px;
+      --radius-input: 14px;
+      --radius-button: 12px;
+    }
+
+    /* Light theme overrides */
+    body.light-theme {
+      --bg-deep: #f5f7fa;
+      --bg-surface: #ffffff;
+      --border-premium: #e2e8f0;
+      --text-primary: #1e293b;
+      --text-secondary: #475569;
+      --accent-blue: #0284c7;
+      --accent-teal: #0d9488;
+      --gradient-blue: linear-gradient(135deg, #0284c7, #0ea5e9);
+      --shadow-soft: 0 8px 24px rgba(0, 0, 0, 0.06);
+      --shadow-glow: 0 0 30px rgba(2, 132, 199, 0.05);
     }
 
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-      -webkit-tap-highlight-color: transparent;
     }
 
     body {
-      background: var(--dark-bg);
-      color: var(--text-dark);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg-deep);
+      color: var(--text-primary);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-      justify-content: center;
       align-items: center;
-      overflow-x: hidden;
       padding: 20px;
+      overflow-x: hidden;
       opacity: 0;
       animation: fadeIn 0.6s ease-out forwards;
       animation-delay: 0.1s;
+      line-height: 1.5;
     }
 
-    /* ===== ANIMATIONS ===== */
+    /* ----- GLASSMORPHISM TOP BAR (consistent across pages) ----- */
+    #top-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 64px;
+      background: rgba(11, 14, 20, 0.8);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      z-index: 1002;
+      border-bottom: 1px solid var(--border-premium);
+    }
+
+    body.light-theme #top-bar {
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(12px);
+    }
+
+    .brand-logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #ffffff, #a0c0ff);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.02em;
+    }
+
+    body.light-theme .brand-logo {
+      background: linear-gradient(135deg, #0f172a, #0284c7);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    #theme-toggle {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      background: transparent;
+      border: 1px solid var(--border-premium);
+      color: var(--text-primary);
+      cursor: pointer;
+      transition: var(--transition-smooth);
+    }
+
+    #theme-toggle:hover {
+      background: rgba(255,255,255,0.05);
+      border-color: var(--accent-teal);
+    }
+
+    /* Spacer for fixed header */
+    .header-spacer {
+      height: 64px;
+      width: 100%;
+    }
+
+    /* ----- ANIMATIONS (soft, staggered) ----- */
     @keyframes fadeIn {
-      from {
-        opacity: 0;
-      }
-      to {
-        opacity: 1;
-      }
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
 
     @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(15px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    @keyframes slideIn {
-      from {
-        opacity: 0;
-        transform: translateX(-20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateX(0);
-      }
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     @keyframes subtlePulse {
-      0%, 100% {
-        opacity: 1;
-      }
-      50% {
-        opacity: 0.9;
-      }
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.8; }
     }
 
-    /* ===== LOGO SECTION ===== */
+    /* ----- LOGO SECTION (centered below header) ----- */
     .logo-section {
       text-align: center;
-      margin-bottom: 3rem;
+      margin: 16px 0 24px;
       animation: fadeInUp 0.7s ease-out forwards;
       opacity: 0;
     }
@@ -103,55 +161,88 @@
     .logo {
       font-size: 2.8rem;
       font-weight: 700;
-      background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+      background: linear-gradient(135deg, #ffffff, #a0c0ff);
+      background-clip: text;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      background-clip: text;
       margin-bottom: 0.5rem;
-      letter-spacing: -0.5px;
+      letter-spacing: -0.02em;
+    }
+
+    body.light-theme .logo {
+      background: linear-gradient(135deg, #0f172a, #0284c7);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
     .tagline {
-      color: #a0a0a0;
-      font-size: 1.1rem;
+      color: var(--text-secondary);
+      font-size: 1rem;
       max-width: 500px;
       line-height: 1.5;
       animation: fadeInUp 0.7s ease-out 0.1s forwards;
       opacity: 0;
     }
 
-    /* ===== LOGIN CONTAINER ===== */
+    /* ----- LOGIN CARD (soft surface, premium borders) ----- */
     .login-container {
-      background: var(--card-dark);
-      padding: 2.5rem 2rem;
-      border-radius: 16px;
+      background: var(--bg-surface);
+      padding: 2.5rem 2.2rem;
+      border-radius: var(--radius-card);
       width: 100%;
-      max-width: 400px;
-      border: 1px solid var(--border-dark);
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      max-width: 440px;
+      border: 1px solid var(--border-premium);
+      box-shadow: var(--shadow-soft), var(--shadow-glow);
       opacity: 0;
       transform: translateY(10px);
       animation: fadeInUp 0.7s ease-out 0.2s forwards;
+      margin-bottom: 32px;
+      transition: var(--transition-smooth);
     }
 
     .login-container h1 {
-      font-size: 1.8rem;
+      font-size: 1.9rem;
       font-weight: 600;
       margin-bottom: 0.5rem;
-      color: var(--text-dark);
+      color: var(--text-primary);
+      letter-spacing: -0.02em;
       opacity: 0;
       animation: fadeInUp 0.6s ease-out 0.3s forwards;
     }
 
     .subtitle {
-      color: #a0a0a0;
+      color: var(--text-secondary);
       font-size: 0.95rem;
       margin-bottom: 2rem;
       opacity: 0;
       animation: fadeInUp 0.6s ease-out 0.4s forwards;
     }
 
-    /* ===== FORM STYLES ===== */
+    /* ----- FLASH MESSAGES (soft, teal accent) ----- */
+    .flashes {
+      list-style: none;
+      padding: 0;
+      margin-bottom: 1.8rem;
+      opacity: 0;
+      animation: fadeInUp 0.6s ease-out 0.45s forwards;
+    }
+
+    .flashes li {
+      background: rgba(32, 201, 151, 0.12);
+      color: var(--text-primary);
+      padding: 0.9rem 1.2rem;
+      margin-bottom: 0.8rem;
+      border-radius: var(--radius-input);
+      font-size: 0.95rem;
+      font-weight: 500;
+      text-align: center;
+      border: 1px solid rgba(32, 201, 151, 0.3);
+      animation: subtlePulse 3s ease-in-out infinite;
+      backdrop-filter: blur(4px);
+    }
+
+    /* ----- FORM STYLES (soft, spacious) ----- */
     form {
       opacity: 0;
       animation: fadeInUp 0.6s ease-out 0.5s forwards;
@@ -164,264 +255,232 @@
       animation: slideIn 0.6s ease-out forwards;
     }
 
-    .form-group:nth-child(1) {
-      animation-delay: 0.5s;
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(-12px); }
+      to { opacity: 1; transform: translateX(0); }
     }
 
-    .form-group:nth-child(2) {
-      animation-delay: 0.6s;
-    }
+    .form-group:nth-child(1) { animation-delay: 0.5s; }
+    .form-group:nth-child(2) { animation-delay: 0.6s; }
 
     label {
       display: block;
-      margin-bottom: 0.7rem;
-      font-size: 0.95rem;
+      margin-bottom: 0.6rem;
+      font-size: 0.9rem;
       font-weight: 500;
-      color: #e0e0e0;
-      transition: color 0.3s ease;
+      color: var(--text-primary);
+      transition: color 0.2s;
     }
 
     .input-wrapper {
       position: relative;
-      background: var(--input-bg);
-      border-radius: 12px;
-      border: 1px solid var(--border-dark);
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      will-change: transform, border-color;
+      background: var(--bg-deep);
+      border-radius: var(--radius-input);
+      border: 1px solid var(--border-premium);
+      transition: var(--transition-smooth);
+      will-change: transform, border-color, box-shadow;
     }
 
     .input-wrapper:focus-within {
-      border-color: rgba(255, 255, 255, 0.3);
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      border-color: var(--accent-blue);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0, 209, 255, 0.12);
+    }
+
+    body.light-theme .input-wrapper:focus-within {
+      box-shadow: 0 8px 20px rgba(2, 132, 199, 0.08);
     }
 
     input[type="text"],
     input[type="password"] {
       width: 100%;
-      padding: 1rem 1.2rem;
-      background: none;
+      padding: 0.95rem 1.1rem;
+      background: transparent;
       border: none;
       outline: none;
       font-size: 1rem;
-      color: var(--text-dark);
-      transition: opacity 0.3s ease;
+      color: var(--text-primary);
+      font-family: 'Inter', sans-serif;
+      transition: opacity 0.2s;
     }
 
     input::placeholder {
-      color: #888;
-      transition: opacity 0.3s ease;
+      color: var(--text-secondary);
+      opacity: 0.6;
+      font-weight: 400;
     }
 
-    /* ===== BUTTON STYLES ===== */
+    /* ----- PRIMARY CTA – BLUE GRADIENT (soft) ----- */
     .submit-btn {
       width: 100%;
       padding: 1rem;
-      background: var(--primary-color);
+      background: var(--gradient-blue);
       color: white;
       border: none;
-      border-radius: 12px;
+      border-radius: var(--radius-button);
       font-size: 1rem;
-      font-weight: 500;
+      font-weight: 600;
       cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: var(--transition-smooth);
       margin-top: 0.5rem;
       opacity: 0;
       animation: fadeInUp 0.6s ease-out 0.7s forwards;
-      will-change: transform, opacity;
+      will-change: transform, box-shadow;
+      box-shadow: 0 6px 14px rgba(0, 123, 255, 0.25);
+      letter-spacing: -0.01em;
     }
 
     .submit-btn:hover:not(:disabled) {
-      opacity: 0.9;
-      transform: translateY(-1px);
+      transform: translateY(-3px);
+      box-shadow: 0 14px 28px rgba(0, 123, 255, 0.35);
+      background: linear-gradient(135deg, #1ad9ff, #0088ff);
     }
 
     .submit-btn:active:not(:disabled) {
       transform: translateY(0);
+      box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
     }
 
     .submit-btn:disabled {
-      opacity: 0.5;
+      opacity: 0.6;
       cursor: not-allowed;
     }
 
-    /* ===== LINK STYLES ===== */
-    .link-section {
-      text-align: center;
-      margin-top: 2rem;
-      padding-top: 1.5rem;
-      border-top: 1px solid var(--border-dark);
-      opacity: 0;
-      animation: fadeInUp 0.6s ease-out 0.8s forwards;
-    }
-
-    .link-section p {
-      color: #a0a0a0;
-      font-size: 0.95rem;
-      margin-bottom: 0.5rem;
-    }
-
-    .link-section a {
-      color: #ffffff;
-      text-decoration: none;
-      font-weight: 500;
-      transition: opacity 0.3s ease;
+    /* Loading spinner */
+    .submit-btn.loading {
       position: relative;
+      color: transparent;
     }
 
-    .link-section a::after {
-      content: '';
-      position: absolute;
-      bottom: -2px;
-      left: 0;
-      width: 0;
-      height: 1px;
-      background: #ffffff;
-      transition: width 0.3s ease;
-    }
-
-    .link-section a:hover::after {
-      width: 100%;
-    }
-
-    /* ===== FLASH MESSAGES ===== */
-    .flashes {
-      list-style: none;
-      padding: 0;
-      margin-bottom: 1.5rem;
-      opacity: 0;
-      animation: fadeInUp 0.6s ease-out forwards;
-    }
-
-    .flashes li {
-      background: rgba(255, 255, 255, 0.1);
-      color: white;
-      padding: 1rem 1.2rem;
-      margin-bottom: 0.8rem;
-      border-radius: 12px;
-      font-size: 0.95rem;
-      font-weight: 500;
-      text-align: center;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      animation: subtlePulse 2s ease-in-out infinite;
-    }
-
-    /* ===== LOADING STATE ===== */
-    .loading {
-      position: relative;
-      pointer-events: none;
-    }
-
-    .loading::after {
+    .submit-btn.loading::after {
       content: '';
       position: absolute;
       top: 50%;
       left: 50%;
-      width: 20px;
-      height: 20px;
-      margin: -10px 0 0 -10px;
-      border: 2px solid transparent;
+      width: 22px;
+      height: 22px;
+      margin: -11px 0 0 -11px;
+      border: 2px solid rgba(255,255,255,0.3);
       border-top-color: white;
       border-radius: 50%;
       animation: spin 0.8s linear infinite;
     }
 
     @keyframes spin {
-      to {
-        transform: rotate(360deg);
-      }
+      to { transform: rotate(360deg); }
     }
 
-    /* ===== SCROLLBAR ===== */
-    ::-webkit-scrollbar {
-      width: 6px;
+    /* ----- LINK SECTION (soft divider) ----- */
+    .link-section {
+      text-align: center;
+      margin-top: 2rem;
+      padding-top: 1.8rem;
+      border-top: 1px solid var(--border-premium);
+      opacity: 0;
+      animation: fadeInUp 0.6s ease-out 0.8s forwards;
     }
 
-    ::-webkit-scrollbar-track {
-      background: transparent;
+    .link-section p {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      margin-bottom: 0.5rem;
     }
 
-    ::-webkit-scrollbar-thumb {
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 3px;
-      transition: background 0.3s ease;
+    .link-section a {
+      color: var(--accent-blue);
+      text-decoration: none;
+      font-weight: 600;
+      transition: var(--transition-smooth);
+      border-bottom: 1px solid rgba(0, 209, 255, 0.3);
+      padding-bottom: 2px;
     }
 
-    ::-webkit-scrollbar-thumb:hover {
-      background: rgba(255, 255, 255, 0.2);
+    .link-section a:hover {
+      color: var(--accent-teal);
+      border-bottom-color: var(--accent-teal);
     }
 
-    /* ===== RESPONSIVE DESIGN ===== */
+    /* ----- RESPONSIVE & SOFT TOUCHES ----- */
     @media (max-width: 768px) {
       body {
-        padding: 1rem;
+        padding: 0;
         justify-content: flex-start;
-        padding-top: 3rem;
+      }
+
+      .header-spacer {
+        height: 64px;
+      }
+
+      .logo-section {
+        margin-top: 8px;
       }
 
       .logo {
-        font-size: 2.5rem;
-      }
-
-      .tagline {
-        font-size: 1rem;
-        padding: 0 1rem;
+        font-size: 2.4rem;
       }
 
       .login-container {
         padding: 2rem 1.5rem;
-        margin: 0;
+        margin: 0 12px 24px;
         max-width: 100%;
-        border-radius: 12px;
+        border-radius: 18px;
       }
 
-      input,
-      button {
-        font-size: 16px; /* Prevent zoom on focus in iOS */
-        min-height: 44px; /* Better touch targets */
+      .login-container h1 {
+        font-size: 1.7rem;
       }
 
-      .input-wrapper {
-        border-radius: 10px;
-      }
-
-      input[type="text"],
-      input[type="password"] {
-        padding: 0.9rem 1rem;
-      }
-
-      .submit-btn {
-        padding: 0.9rem;
-        border-radius: 10px;
+      input, .submit-btn {
+        font-size: 16px; /* Prevents zoom on iOS */
       }
     }
 
     @media (max-width: 480px) {
       .logo {
-        font-size: 2.2rem;
+        font-size: 2rem;
       }
 
       .login-container {
         padding: 1.8rem 1.2rem;
-        border-radius: 10px;
+        border-radius: 16px;
       }
+    }
 
-      .login-container h1 {
-        font-size: 1.6rem;
-      }
+    /* Misc */
+    button, input {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    i, .ri, .fas {
+      font-style: normal;
+    }
+
+    /* Shake animation for validation */
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
+      20%, 40%, 60%, 80% { transform: translateX(4px); }
     }
   </style>
 </head>
 <body>
+  <!-- GLASS TOP BAR with theme toggle -->
+  <header id="top-bar">
+    <div></div>
+    <div class="brand-logo">Nelavista</div>
+    <button id="theme-toggle" aria-label="Toggle theme">🌙</button>
+  </header>
+  <div class="header-spacer"></div>
+
   <div class="logo-section">
     <div class="logo">Nelavista</div>
-    <div class="tagline">Your AI Educational Companion</div>
+    <div class="tagline">Your AI‑powered learning companion</div>
   </div>
 
   <div class="login-container">
-    <h1>Welcome Back</h1>
+    <h1>Welcome back</h1>
     <p class="subtitle">Continue your learning journey</p>
-    
+
     {% with messages = get_flashed_messages() %}
       {% if messages %}
         <ul class="flashes">
@@ -431,7 +490,7 @@
         </ul>
       {% endif %}
     {% endwith %}
-    
+
     <form method="POST" action="/login" autocomplete="off" id="loginForm">
       <div class="form-group">
         <label for="username_or_email">Username or Email</label>
@@ -460,108 +519,121 @@
           />
         </div>
       </div>
-      <button type="submit" class="submit-btn" id="submitBtn">Login</button>
+      <button type="submit" class="submit-btn" id="submitBtn">Log in →</button>
     </form>
-    
+
     <div class="link-section">
       <p>Don't have an account? <a href="/signup">Sign up here</a></p>
     </div>
   </div>
 
   <script>
-    // Initialize animations and interactions
+    // ----- THEME TOGGLE (Dark / Light) with localStorage -----
+    (function() {
+      const themeToggle = document.getElementById('theme-toggle');
+      const body = document.body;
+
+      const storedTheme = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      let currentTheme = storedTheme || (prefersDark ? 'dark' : 'light');
+
+      function applyTheme(theme) {
+        if (theme === 'light') {
+          body.classList.add('light-theme');
+          themeToggle.textContent = '☀️';
+        } else {
+          body.classList.remove('light-theme');
+          themeToggle.textContent = '🌙';
+        }
+        localStorage.setItem('theme', theme);
+      }
+
+      applyTheme(currentTheme);
+
+      themeToggle.addEventListener('click', () => {
+        currentTheme = body.classList.contains('light-theme') ? 'dark' : 'light';
+        applyTheme(currentTheme);
+      });
+
+      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+        if (!localStorage.getItem('theme')) {
+          applyTheme(e.matches ? 'dark' : 'light');
+        }
+      });
+    })();
+
+    // ----- FORM INTERACTIONS & VALIDATION (soft feedback) -----
     document.addEventListener('DOMContentLoaded', function() {
-      // Form submission handling
       const form = document.getElementById('loginForm');
       const submitBtn = document.getElementById('submitBtn');
-      
+      const inputs = document.querySelectorAll('input');
+
+      // Soft focus/blur effects
+      inputs.forEach(input => {
+        input.addEventListener('focus', function() {
+          const wrapper = this.closest('.input-wrapper');
+          if (wrapper) {
+            wrapper.style.borderColor = 'var(--accent-blue)';
+            wrapper.style.transform = 'translateY(-2px)';
+          }
+          const label = this.closest('.form-group')?.querySelector('label');
+          if (label) label.style.color = 'var(--accent-blue)';
+        });
+
+        input.addEventListener('blur', function() {
+          const wrapper = this.closest('.input-wrapper');
+          if (wrapper) {
+            wrapper.style.borderColor = 'var(--border-premium)';
+            wrapper.style.transform = 'translateY(0)';
+          }
+          const label = this.closest('.form-group')?.querySelector('label');
+          if (label) label.style.color = 'var(--text-primary)';
+        });
+      });
+
+      // Form submission with loading state
       form.addEventListener('submit', function(e) {
-        // Basic validation
         const username = document.getElementById('username_or_email').value.trim();
         const password = document.getElementById('password').value;
-        
+
         if (!username || !password) {
           e.preventDefault();
-          // Gentle shake animation for empty fields
-          const inputs = document.querySelectorAll('input[required]');
+          // Gentle shake for empty fields
           inputs.forEach(input => {
             if (!input.value.trim()) {
-              input.parentElement.style.animation = 'none';
-              setTimeout(() => {
-                input.parentElement.style.animation = 'slideIn 0.6s ease-out, shake 0.5s ease-in-out';
-              }, 10);
+              const wrapper = input.closest('.input-wrapper');
+              if (wrapper) {
+                wrapper.style.animation = 'none';
+                setTimeout(() => {
+                  wrapper.style.animation = 'shake 0.5s ease-in-out';
+                }, 10);
+              }
             }
           });
           return;
         }
-        
+
         // Add loading state
         submitBtn.classList.add('loading');
-        submitBtn.innerHTML = '';
         submitBtn.disabled = true;
+        // Keep button text visible (CSS handles spinner overlay)
       });
-
-      // Input focus effects
-      const inputs = document.querySelectorAll('input');
-      inputs.forEach(input => {
-        input.addEventListener('focus', function() {
-          this.parentElement.style.borderColor = 'rgba(255, 255, 255, 0.3)';
-          this.parentElement.style.transform = 'translateY(-1px)';
-        });
-        
-        input.addEventListener('blur', function() {
-          this.parentElement.style.borderColor = 'rgba(255, 255, 255, 0.1)';
-          this.parentElement.style.transform = 'translateY(0)';
-        });
-        
-        // Auto-animate label on input
-        input.addEventListener('input', function() {
-          const label = this.closest('.form-group').querySelector('label');
-          if (this.value) {
-            label.style.color = '#ffffff';
-          } else {
-            label.style.color = '#e0e0e0';
-          }
-        });
-      });
-
-      // Add shake animation for validation
-      const style = document.createElement('style');
-      style.textContent = `
-        @keyframes shake {
-          0%, 100% { transform: translateX(0); }
-          10%, 30%, 50%, 70%, 90% { transform: translateX(-3px); }
-          20%, 40%, 60%, 80% { transform: translateX(3px); }
-        }
-      `;
-      document.head.appendChild(style);
-
-      // Handle Android WebView specific behavior
-      if (/Android/.test(navigator.userAgent)) {
-        // Prevent default behaviors
-        document.addEventListener('touchstart', function(e) {
-          if (e.target.tagName === 'INPUT') {
-            e.target.style.backgroundColor = 'transparent';
-          }
-        }, { passive: true });
-        
-        // Better scrolling behavior
-        document.body.style.webkitOverflowScrolling = 'touch';
-      }
 
       // Auto-focus first input on load
       setTimeout(() => {
         const firstInput = document.querySelector('input[type="text"]');
-        if (firstInput) {
-          firstInput.focus();
-        }
+        if (firstInput) firstInput.focus();
       }, 800);
+
+      // Handle Android WebView
+      if (/Android/.test(navigator.userAgent)) {
+        document.body.style.webkitOverflowScrolling = 'touch';
+      }
     });
 
-    // Handle page visibility for better Android experience
+    // Page visibility (refresh animations)
     document.addEventListener('visibilitychange', function() {
       if (!document.hidden) {
-        // Page became visible again, refresh any animations
         document.body.style.animation = 'none';
         setTimeout(() => {
           document.body.style.animation = 'fadeIn 0.6s ease-out forwards';

@@ -13,13 +13,28 @@ def profile():
     if not user:
         flash('User not found. Please log in again.')
         return redirect(url_for('auth.login'))
+
     if request.method == 'POST':
         user.name = request.form.get('name', '').strip() or None
         user.university = request.form.get('university', '').strip() or None
         user.faculty = request.form.get('faculty', '').strip() or None
         user.department = request.form.get('department', '').strip() or None
-        user.level = request.form.get('level', '').strip() or None
+
+        level = request.form.get('user_level') or request.form.get('level', '')
+        user.level = level.strip() or None
+
+        user.semester = request.form.get('semester', '').strip() or None
+
         db.session.commit()
+
+        if session.get('user'):
+            session['user']['name'] = user.name
+            session['user']['username'] = user.username
+            session['user']['semester'] = user.semester
+            session['user']['level'] = user.level
+            session.modified = True
+
         flash('Profile updated successfully!', 'success')
         return redirect(url_for('profile.profile'))
+
     return render_template('profile.html', user=user)

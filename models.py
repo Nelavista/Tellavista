@@ -2,25 +2,20 @@ from datetime import datetime
 import json
 from extensions import db
 
-# ============================================
-# Database Models
-# ============================================
 class User(db.Model):
-    """User model for authentication and user management."""
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(150), unique=True, nullable=False)
     email = db.Column(db.String(150), unique=True, nullable=False)
     password_hash = db.Column(db.String(200), nullable=False)
-    user_level = db.Column(db.Integer, default=1)  # was 'level'
+    user_level = db.Column(db.Integer, default=1)
     joined_on = db.Column(db.DateTime, default=datetime.utcnow)
     last_login = db.Column(db.DateTime)
-
-    # Nelavista Student Profile fields
     name = db.Column(db.String(100))
     university = db.Column(db.String(150))
     faculty = db.Column(db.String(150))
     department = db.Column(db.String(150))
-    level = db.Column(db.String(50))  # academic level
+    level = db.Column(db.String(50))
+    semester = db.Column(db.String(20))
 
     def set_password(self, password):
         from werkzeug.security import generate_password_hash
@@ -32,7 +27,6 @@ class User(db.Model):
 
 
 class UserQuestions(db.Model):
-    """Model for storing user questions and AI responses (memory system)."""
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(150), nullable=False, index=True)
     question = db.Column(db.Text, nullable=False)
@@ -42,14 +36,13 @@ class UserQuestions(db.Model):
 
 
 class UserProfile(db.Model):
-    """Model for storing user preferences and learning styles."""
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(150), unique=True, nullable=False)
     level = db.Column(db.String(50))
     department = db.Column(db.String(100))
-    traits = db.Column(db.Text)  # JSON string
+    traits = db.Column(db.Text)
     explanation_style = db.Column(db.String(50))
-    focus_areas = db.Column(db.Text)  # JSON string
+    focus_areas = db.Column(db.Text)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     def to_dict(self):
@@ -64,7 +57,6 @@ class UserProfile(db.Model):
 
 
 class Room(db.Model):
-    """Model for live meeting rooms."""
     id = db.Column(db.String(32), primary_key=True)
     teacher_id = db.Column(db.String(120))
     teacher_name = db.Column(db.String(80))
@@ -102,6 +94,56 @@ class Video(db.Model):
             'video_url': self.video_url,
             'views': self.views,
             'likes': self.likes,
+            'created_at': self.created_at.isoformat() if self.created_at else None,
+            'is_approved': self.is_approved
+        }
+
+
+class Material(db.Model):
+    __tablename__ = 'materials'
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(200), nullable=False)
+
+    # ── core classification ──────────────────────────────────────────────────
+    department = db.Column(db.String(150), nullable=False)   # e.g. "Computer Science"
+    level = db.Column(db.String(50), nullable=False)         # e.g. "200"
+    semester = db.Column(db.String(20), nullable=False)      # "First Semester" / "Second Semester"
+
+    # ── authorship / description ─────────────────────────────────────────────
+    author = db.Column(db.String(200))
+    description = db.Column(db.Text)
+    license = db.Column(db.String(100), default='Student Upload')
+
+    # ── file storage ─────────────────────────────────────────────────────────
+    file_url = db.Column(db.String(500))                     # Cloudinary secure URL
+    cloudinary_public_id = db.Column(db.String(300))
+
+    # ── misc ─────────────────────────────────────────────────────────────────
+    course_type = db.Column(db.String(20), default='CORE')   # Stores course code like "CSC221", "BIO101"
+    next_topic = db.Column(db.String(200))
+    progress = db.Column(db.Integer, default=0)
+    views = db.Column(db.Integer, default=0)
+    downloads = db.Column(db.Integer, default=0)
+    uploaded_by = db.Column(db.String(150))                  # username of uploader
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    is_approved = db.Column(db.Boolean, default=True)
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'title': self.title,
+            'department': self.department,
+            'level': self.level,
+            'semester': self.semester,
+            'course_code': self.course_type,  # Map course_type to course_code for frontend compatibility
+            'author': self.author,
+            'description': self.description,
+            'license': self.license or 'Student Upload',
+            'file_url': self.file_url,
+            'course_type': self.course_type,
+            'views': self.views or 0,
+            'downloads': self.downloads or 0,
+            'uploaded_by': self.uploaded_by,
             'created_at': self.created_at.isoformat() if self.created_at else None,
             'is_approved': self.is_approved
         }

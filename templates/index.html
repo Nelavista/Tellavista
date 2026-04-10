@@ -719,5 +719,11 @@
     if (state.messages.length) localStorage.setItem('nelavista_chat_history', JSON.stringify(state.messages));
   });
 </script>
+
+<!-- Profile Completion Modal Overlay (Conditional) -->
+{% if show_profile_modal %}
+  {% include 'profile_completion_modal.html' %}
+{% endif %}
+
 </body>
 </html>

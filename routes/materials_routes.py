@@ -4,10 +4,28 @@ import cloudinary.uploader
 import requests
 from bs4 import BeautifulSoup
 from flask import Blueprint, render_template, request, jsonify, session, flash, redirect, url_for
+from utils.helpers import login_required, is_academic_book, check_profile_complete
 from utils.helpers import login_required, is_academic_book
 from models import User, Material
 from extensions import db
 from config import OPENROUTER_API_KEY
+
+
+# ===== PROFILE COMPLETION HELPER FUNCTION =====
+def check_profile_complete(user):
+    """
+    Check if user has completed their profile.
+    Returns True if profile is complete, False otherwise.
+    """
+    required_fields = ['name', 'university', 'faculty', 'department', 'level', 'semester']
+    
+    for field in required_fields:
+        value = getattr(user, field, None)
+        if not value or str(value).strip() == '':
+            return False
+    
+    return True
+
 
 # ===== CLOUDINARY CONFIG =====
 # Add these 3 lines to your .env file:
@@ -22,6 +40,85 @@ cloudinary.config(
 )
 
 materials_bp = Blueprint('materials', __name__)
+
+
+# ===== ENFORCE PROFILE COMPLETION SITE-WIDE =====
+@materials_bp.before_app_request
+def enforce_profile_completion():
+    # Skip for static files, login/logout, dashboard, and the completion endpoint itself
+    if request.endpoint in ('auth.login', 'auth.logout', 'dashboard.dashboard',
+                            'materials.complete_profile', 'static'):
+        return None
+
+    # Get user from session
+    if 'user' not in session:
+        return None
+
+    username = session['user']['username']
+    user = User.query.filter_by(username=username).first()
+    if user and not check_profile_complete(user):
+        # Redirect to dashboard; the modal will appear there
+        return redirect(url_for('dashboard.dashboard'))
+
+
+# ===== PROFILE COMPLETION ROUTE =====
+@materials_bp.route('/complete-profile', methods=['GET', 'POST'])
+@login_required
+def complete_profile():
+    """
+    Route to handle profile completion modal.
+    GET: Display the modal (fallback)
+    POST: Process the form submission
+    """
+    username = session['user']['username']
+    user = User.query.filter_by(username=username).first()
+    
+    if not user:
+        flash('User not found. Please log in again.')
+        return redirect(url_for('auth.login'))
+    
+    # If profile is already complete, redirect to dashboard
+    if check_profile_complete(user):
+        return redirect(url_for('dashboard.dashboard'))
+    
+    if request.method == 'POST':
+        try:
+            # Get form data
+            name = request.form.get('name', '').strip()
+            university = request.form.get('university', '').strip()
+            faculty = request.form.get('faculty', '').strip()
+            department = request.form.get('department', '').strip()
+            user_level = request.form.get('user_level', '').strip()
+            semester = request.form.get('semester', '').strip()
+            
+            # Validate all fields are filled
+            if not all([name, university, faculty, department, user_level, semester]):
+                flash('Please fill in all required fields.', 'error')
+                return render_template('profile_completion_modal.html', user=user)
+            
+            # Update user profile
+            user.name = name
+            user.university = university
+            user.faculty = faculty
+            user.department = department
+            user.level = user_level
+            user.semester = semester
+            
+            # Commit to database
+            db.session.commit()
+            
+            flash('Profile completed successfully! Welcome to Nelavista 🎉', 'success')
+            
+            # Redirect to dashboard
+            return redirect(url_for('dashboard.dashboard'))
+            
+        except Exception as e:
+            db.session.rollback()
+            flash(f'An error occurred: {str(e)}', 'error')
+            return render_template('profile_completion_modal.html', user=user)
+    
+    # GET request - show the modal (fallback)
+    return render_template('profile_completion_modal.html', user=user)
 
 
 @materials_bp.route('/about')
@@ -69,6 +166,8 @@ def materials():
     if not user:
         flash('User not found. Please log in again.')
         return redirect(url_for('auth.login'))
+    
+    # Profile completeness is now handled by before_request
     return render_template("materials.html", user=user)
 
 
@@ -228,7 +327,7 @@ def admin_materials():
     # Only allow admins (user_level >= 5) - convert to int for comparison
     if not user or int(user.user_level or 0) < 5:
         flash('Unauthorized access')
-        return redirect(url_for('dashboard.index'))
+        return redirect(url_for('dashboard.dashboard'))
     
     # Get all pending materials - order by id instead of created_at
     pending = Material.query.filter_by(is_approved=False).order_by(Material.id.desc()).all()
@@ -487,6 +586,8 @@ def CBT():
     if not user:
         flash('User not found. Please log in again.')
         return redirect(url_for('auth.login'))
+    
+    # Profile completeness is now handled by before_request
     
     # Get topics and questions (existing logic)
     topics = ["Python", "Hadith", "AI", "Math"]

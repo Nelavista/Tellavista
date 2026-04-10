@@ -27,7 +27,8 @@ def signup():
             flash('Username or email already exists.')
             return redirect(url_for('auth.signup'))
 
-        user = User(username=username, email=email, name=name, university=university, faculty=faculty, department=department, level=level)
+        user = User(username=username, email=email, name=name, university=university,
+                    faculty=faculty, department=department, level=level)
         user.set_password(password)
         db.session.add(user)
         db.session.commit()
@@ -61,6 +62,7 @@ def login():
                 'last_login': user.last_login.strftime('%Y-%m-%d %H:%M:%S')
             }
             flash('Logged in successfully!')
+            # Always go to dashboard – profile check happens there
             return redirect(url_for('dashboard.dashboard'))
         else:
             flash('Invalid credentials.')

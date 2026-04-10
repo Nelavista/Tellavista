@@ -53,6 +53,18 @@ def cleanup_old_files():
     except Exception as e:
         debug_print(f"⚠️ Cleanup error: {e}")
 
+def check_profile_complete(user):
+    """
+    Check if user has completed their profile.
+    Returns True if profile is complete, False otherwise.
+    """
+    required_fields = ['name', 'university', 'faculty', 'department', 'level', 'semester']
+    for field in required_fields:
+        value = getattr(user, field, None)
+        if not value or str(value).strip() == '':
+            return False
+    return True
+    
 def encode_image_to_base64(file):
     try:
         file.seek(0)

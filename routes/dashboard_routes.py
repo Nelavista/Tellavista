@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, redirect, url_for, session, flash, jsonify, request
 from utils.helpers import login_required
+from utils.helpers import login_required, check_profile_complete
 from models import User, Material
 from extensions import db
 from datetime import datetime
@@ -137,7 +138,6 @@ def landing():
         return redirect(url_for('dashboard.dashboard'))
     return render_template('landing.html')
 
-
 @dashboard_bp.route('/dashboard')
 @login_required
 def dashboard():
@@ -146,9 +146,12 @@ def dashboard():
         return redirect(url_for('auth.login'))
 
     user = User.query.filter_by(username=user_data['username']).first()
-    if user and not user.department:
-        flash('Please complete your academic profile to continue.', 'warning')
-        return redirect(url_for('profile.profile'))
+    if not user:
+        flash('User not found. Please log in again.')
+        return redirect(url_for('auth.login'))
+
+    # Determine if profile completion modal should be shown
+    show_profile_modal = not check_profile_complete(user)
 
     if user and user.name:
         first_name = user.name.strip().split()[0]
@@ -163,11 +166,11 @@ def dashboard():
     ]
     exam_count = len(upcoming)
 
-    return render_template('index.html',
+    return render_template('dashboard.html',
                            user=user_data,
                            first_name=first_name,
-                           exam_count=exam_count)
-
+                           exam_count=exam_count,
+                           show_profile_modal=show_profile_modal)
 
 @dashboard_bp.route('/api/track-session', methods=['POST'])
 @login_required

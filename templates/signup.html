@@ -145,6 +145,11 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
+        @keyframes subtlePulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
         /* ----- LOGO SECTION (centered below header) ----- */
         .logo-section {
             text-align: center;
@@ -186,7 +191,7 @@
             padding: 2.5rem 2.2rem;
             border-radius: var(--radius-card);
             width: 100%;
-            max-width: 520px;
+            max-width: 480px;
             border: 1px solid var(--border-premium);
             box-shadow: var(--shadow-soft), var(--shadow-glow);
             opacity: 0;
@@ -214,9 +219,37 @@
             animation: fadeInUp 0.6s ease-out 0.4s forwards;
         }
 
+        /* ----- FLASH MESSAGES (soft, teal accent) ----- */
+        .flashes {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 1.8rem;
+            opacity: 0;
+            animation: fadeInUp 0.6s ease-out 0.45s forwards;
+        }
+
+        .flashes li {
+            background: rgba(32, 201, 151, 0.12);
+            color: var(--text-primary);
+            padding: 0.9rem 1.2rem;
+            margin-bottom: 0.8rem;
+            border-radius: var(--radius-input);
+            font-size: 0.95rem;
+            font-weight: 500;
+            text-align: center;
+            border: 1px solid rgba(32, 201, 151, 0.3);
+            animation: subtlePulse 3s ease-in-out infinite;
+            backdrop-filter: blur(4px);
+        }
+
+        .flashes li.error {
+            background: rgba(220, 53, 69, 0.12);
+            border-color: rgba(220, 53, 69, 0.3);
+        }
+
         /* ----- SECTION HEADERS (subtle with teal accent) ----- */
         .section-header {
-            margin: 1.8rem 0 1.2rem 0;
+            margin: 0 0 1.2rem 0;
             padding-bottom: 0.6rem;
             border-bottom: 1px solid var(--border-premium);
         }
@@ -258,11 +291,6 @@
         .account-group:nth-child(1) { animation-delay: 0.5s; }
         .account-group:nth-child(2) { animation-delay: 0.6s; }
         .account-group:nth-child(3) { animation-delay: 0.65s; }
-        .student-group:nth-child(1) { animation-delay: 0.7s; }
-        .student-group:nth-child(2) { animation-delay: 0.75s; }
-        .student-group:nth-child(3) { animation-delay: 0.8s; }
-        .student-group:nth-child(4) { animation-delay: 0.85s; }
-        .student-group:nth-child(5) { animation-delay: 0.9s; }
 
         label {
             display: block;
@@ -294,8 +322,7 @@
 
         input[type="text"],
         input[type="email"],
-        input[type="password"],
-        select {
+        input[type="password"] {
             width: 100%;
             padding: 0.9rem 1.1rem;
             background: transparent;
@@ -305,20 +332,6 @@
             color: var(--text-primary);
             font-family: 'Inter', sans-serif;
             transition: opacity 0.2s;
-        }
-
-        select {
-            appearance: none;
-            -webkit-appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23b9c3d1' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 1rem center;
-            background-size: 1rem;
-            cursor: pointer;
-        }
-
-        body.light-theme select {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
         }
 
         input::placeholder {
@@ -347,9 +360,9 @@
             font-weight: 600;
             cursor: pointer;
             transition: var(--transition-smooth);
-            margin-top: 2rem;
+            margin-top: 0.5rem;
             opacity: 0;
-            animation: fadeInUp 0.6s ease-out 1.2s forwards;
+            animation: fadeInUp 0.6s ease-out 0.8s forwards;
             will-change: transform, box-shadow;
             box-shadow: 0 6px 14px rgba(0, 123, 255, 0.25);
             letter-spacing: -0.01em;
@@ -373,7 +386,7 @@
             padding-top: 1.8rem;
             border-top: 1px solid var(--border-premium);
             opacity: 0;
-            animation: fadeInUp 0.6s ease-out 1.3s forwards;
+            animation: fadeInUp 0.6s ease-out 0.9s forwards;
         }
 
         .link-section p {
@@ -426,7 +439,7 @@
                 font-size: 1.7rem;
             }
 
-            input, select, .submit-btn {
+            input, .submit-btn {
                 font-size: 16px; /* Prevents zoom on iOS */
             }
         }
@@ -451,7 +464,7 @@
         }
 
         /* Misc softness */
-        button, input, select {
+        button, input {
             -webkit-tap-highlight-color: transparent;
         }
 
@@ -476,9 +489,20 @@
 
     <div class="signup-container">
         <h1>Create your account</h1>
-        <p class="subtitle">Tell us about your school so Nelavista can personalize your learning.</p>
+        <p class="subtitle">Join Nelavista and start your learning journey today.</p>
 
-        <form method="POST" action="/signup" autocomplete="off">
+        <!-- FLASH MESSAGES -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <ul class="flashes">
+                    {% for category, message in messages %}
+                        <li class="{{ category }}">{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+
+        <form method="POST" action="{{ url_for('auth.signup') }}" autocomplete="off">
             <!-- Account Details -->
             <div class="section-header">
                 <h2><i class="ri-user-settings-line"></i> Account Details</h2>
@@ -494,6 +518,7 @@
                         required 
                         placeholder="Choose a username"
                         autocapitalize="none"
+                        value="{{ request.form.username if request.form.username }}"
                     />
                 </div>
             </div>
@@ -508,6 +533,7 @@
                         required 
                         placeholder="you@example.com"
                         autocapitalize="none"
+                        value="{{ request.form.email if request.form.email }}"
                     />
                 </div>
             </div>
@@ -527,102 +553,11 @@
                 <div class="password-hint">At least 8 characters</div>
             </div>
 
-            <!-- Academic Profile -->
-            <div class="section-header">
-                <h2><i class="ri-book-open-line"></i> Academic Profile</h2>
-            </div>
-
-            <div class="form-group student-group">
-                <label for="name">Full Name</label>
-                <div class="input-wrapper">
-                    <input 
-                        type="text" 
-                        id="name" 
-                        name="name" 
-                        required 
-                        placeholder="e.g. John A. Doe"
-                    />
-                </div>
-            </div>
-
-            <div class="form-group student-group">
-                <label for="university">University</label>
-                <div class="input-wrapper">
-                    <select id="university" name="university" required>
-                        <option value="">Select University</option>
-                        <option value="Lagos State University">Lagos State University</option>
-                        <option value="University of Lagos">University of Lagos</option>
-                        <option value="University of Ibadan">University of Ibadan</option>
-                        <option value="Obafemi Awolowo University">Obafemi Awolowo University</option>
-                        <option value="Ahmadu Bello University">Ahmadu Bello University</option>
-                        <option value="University of Nigeria, Nsukka">University of Nigeria, Nsukka</option>
-                        <option value="Covenant University">Covenant University</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="form-group student-group">
-                <label for="faculty">Faculty</label>
-                <div class="input-wrapper">
-                    <select id="faculty" name="faculty" required>
-                        <option value="">Select Faculty</option>
-                        <option value="Science">Science</option>
-                        <option value="Engineering">Engineering</option>
-                        <option value="Social Sciences">Social Sciences</option>
-                        <option value="Arts">Arts</option>
-                        <option value="Education">Education</option>
-                        <option value="Management Sciences">Management Sciences</option>
-                        <option value="Law">Law</option>
-                        <option value="Pharmacy">Pharmacy</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="form-group student-group">
-                <label for="department">Department</label>
-                <div class="input-wrapper">
-                    <select id="department" name="department" required>
-                        <option value="">Select Department</option>
-                        <option value="Mathematics">Mathematics</option>
-                        <option value="Computer Science">Computer Science</option>
-                        <option value="Physics">Physics</option>
-                        <option value="Chemistry">Chemistry</option>
-                        <option value="Biology">Biology</option>
-                        <option value="Statistics">Statistics</option>
-                        <option value="Economics">Economics</option>
-                        <option value="Mass Communication">Mass Communication</option>
-                        <option value="Accounting">Accounting</option>
-                        <option value="Business Administration">Business Administration</option>
-                        <option value="English">English</option>
-                        <option value="History">History</option>
-                        <option value="Political Science">Political Science</option>
-                        <option value="Psychology">Psychology</option>
-                        <option value="Sociology">Sociology</option>
-                        <option value="Microbiology">Microbiology</option>
-                        <option value="Biochemistry">Biochemistry</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="form-group student-group">
-                <label for="level">Level</label>
-                <div class="input-wrapper">
-                    <select id="level" name="level" required>
-                        <option value="">Select Level</option>
-                        <option value="100 Level">100 Level</option>
-                        <option value="200 Level">200 Level</option>
-                        <option value="300 Level">300 Level</option>
-                        <option value="400 Level">400 Level</option>
-                        <option value="500 Level">500 Level</option>
-                    </select>
-                </div>
-            </div>
-
             <button type="submit" class="submit-btn">Create Account →</button>
         </form>
 
         <div class="link-section">
-            <p>Already have an account? <a href="/login">Log in</a></p>
+            <p>Already have an account? <a href="{{ url_for('auth.login') }}">Log in</a></p>
         </div>
     </div>
 
@@ -663,7 +598,7 @@
 
         // ----- SOFT INTERACTION: enhance focus / blur feedback -----
         document.addEventListener('DOMContentLoaded', function() {
-            const inputs = document.querySelectorAll('input, select');
+            const inputs = document.querySelectorAll('input');
             inputs.forEach(input => {
                 input.addEventListener('focus', function() {
                     const wrapper = this.closest('.input-wrapper');

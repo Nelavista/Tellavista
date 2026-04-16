@@ -61,7 +61,7 @@
         .type-title { font-weight:700; font-size:1.1rem; margin-bottom:6px; }
         .type-desc { font-size:0.78rem; color:#8b949e; line-height:1.5; }
         .type-badge { display:inline-block; margin-top:10px; font-size:0.65rem; font-weight:700; padding:3px 10px; border-radius:30px; }
-        .badge-cbт { background:rgba(88,166,255,0.15); color:#58a6ff; }
+        .badge-cbt { background:rgba(88,166,255,0.15); color:#58a6ff; }
         .badge-written { background:rgba(20,184,166,0.15); color:#14b8a6; }
         .back-btn { background:transparent; border:1px solid #30363d; color:#8b949e; padding:10px 24px; border-radius:40px; font-size:0.88rem; cursor:pointer; transition:all 0.2s; margin-right:10px; }
         .back-btn:hover { border-color:#58a6ff; color:#58a6ff; }
@@ -106,12 +106,10 @@
         .option-btn.selected { border-color:#58a6ff; background:rgba(88,166,255,0.08); }
         .option-btn.correct { border-color:#22c55e; background:rgba(34,197,94,0.1); }
         .option-btn.wrong { border-color:#ef4444; background:rgba(239,68,68,0.1); }
-        .option-btn.reveal-correct { border-color:#22c55e; background:rgba(34,197,94,0.06); }
         .opt-letter { width:28px; height:28px; border-radius:50%; background:#21262d; display:flex; align-items:center; justify-content:center; font-size:0.75rem; font-weight:700; flex-shrink:0; color:#8b949e; }
         .option-btn.selected .opt-letter { background:#58a6ff; color:#0d1117; }
         .option-btn.correct .opt-letter { background:#22c55e; color:#0d1117; }
         .option-btn.wrong .opt-letter { background:#ef4444; color:#fff; }
-        .option-btn.reveal-correct .opt-letter { background:#22c55e; color:#0d1117; }
         .opt-text { font-size:0.92rem; color:#c9d1d9; line-height:1.5; padding-top:3px; }
 
         /* Written answer */
@@ -134,12 +132,6 @@
         .self-mark-btn.missed { background:rgba(239,68,68,0.15); color:#ef4444; border:1px solid rgba(239,68,68,0.3); }
         .self-mark-btn.missed:hover { background:rgba(239,68,68,0.25); }
         .self-mark-btn.missed.active { background:#ef4444; color:#fff; }
-
-        /* Explanation */
-        .explanation-box { background:rgba(88,166,255,0.05); border:1px solid rgba(88,166,255,0.15); border-radius:12px; padding:14px 16px; margin-top:14px; display:none; }
-        .explanation-box.show { display:block; }
-        .exp-label { font-size:0.7rem; font-weight:700; color:#58a6ff; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px; }
-        .exp-text { font-size:0.86rem; color:#c9d1d9; line-height:1.6; }
 
         /* Exam actions */
         .exam-actions { display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; margin-top:10px; }
@@ -207,11 +199,6 @@
         .change-course-btn { background:transparent; border:1px solid #30363d; color:#8b949e; padding:12px; border-radius:40px; font-size:0.9rem; cursor:pointer; transition:all 0.2s; }
         .change-course-btn:hover { border-color:#58a6ff; color:#58a6ff; }
 
-        /* Empty state */
-        .empty-box { text-align:center; padding:60px 20px; color:#6e7681; }
-        .empty-box .ei { font-size:3rem; margin-bottom:12px; }
-        .empty-box h3 { color:#e6edf3; margin-bottom:6px; }
-
         /* No profile warning */
         .no-profile-warning { background:rgba(249,115,22,0.1); border:1px solid rgba(249,115,22,0.3); border-radius:14px; padding:16px 20px; margin-bottom:20px; font-size:0.88rem; color:#f97316; display:flex; gap:10px; align-items:flex-start; }
 
@@ -238,7 +225,7 @@
         </div>
     </div>
     <div class="top-right">
-        <div class="user-avatar">{{ user_name[:2].upper() if user_name else 'SN' }}</div>
+        <div class="user-avatar" id="userAvatar">{{ user_name[:2].upper() if user_name else 'SN' }}</div>
     </div>
 </div>
 
@@ -246,13 +233,9 @@
 <div class="screen active" id="screen-courses">
     <div class="onboarding-wrap">
         <h2 class="ob-title">🎓 Mock Exam</h2>
-        <p class="ob-sub">Select your courses to start practising. You can change this anytime.</p>
-        <div class="dept-pill">
-            🎓 <span id="deptLabel">Loading…</span>
-        </div>
-        <div id="noCourseWarning" class="no-profile-warning" style="display:none;">
-            ⚠️ Your academic profile is incomplete. <a href="/profile" style="color:#f97316; text-decoration:underline; margin-left:4px;">Set your department and level →</a>
-        </div>
+        <p class="ob-sub">Select your courses to start practising.</p>
+        <div class="dept-pill">🎓 <span id="deptLabel">Loading profile...</span></div>
+        <div id="noCourseWarning" class="no-profile-warning" style="display:none;"></div>
         <div class="ob-meta">
             <div class="section-label">Your courses this semester</div>
             <button class="sel-all-btn" id="selAllBtn">Select All</button>
@@ -278,13 +261,13 @@
                 <div class="type-icon">🖥️</div>
                 <div class="type-title">CBT Practice</div>
                 <div class="type-desc">50 multiple choice questions. Answers rotate every session so you get fresh questions each time.</div>
-                <span class="type-badge badge-cbт">50 Questions · MCQ</span>
+                <span class="type-badge badge-cbt">50 Questions · MCQ</span>
             </div>
             <div class="type-card" id="card-written" onclick="selectExamType('written')">
                 <div class="type-icon">✍️</div>
                 <div class="type-title">Written Practice</div>
-                <div class="type-desc">5 essay or short-answer questions. Write your answers and compare with the mark scheme.</div>
-                <span class="type-badge badge-written">5 Questions · Essay</span>
+                <div class="type-desc">10 essay or short-answer questions. Write your answers and compare with the mark scheme.</div>
+                <span class="type-badge badge-written">10 Questions · Essay</span>
             </div>
         </div>
         <div class="type-actions">
@@ -297,7 +280,6 @@
 <!-- SCREEN 3: EXAM -->
 <div class="screen" id="screen-exam">
     <div class="exam-wrap">
-        <!-- Progress -->
         <div class="exam-progress-bar">
             <div class="progress-info">
                 <div class="prog-stat">Question <strong id="progCurrent">1</strong> / <strong id="progTotal">50</strong></div>
@@ -307,11 +289,7 @@
             <div class="prog-track"><div class="prog-fill" id="progFill"></div></div>
             <div class="timer-badge" id="timerBadge">⏱ <span id="timerText">00:00</span></div>
         </div>
-
-        <!-- CBT question nav pills -->
         <div class="cbt-nav" id="cbtNav" style="display:none"></div>
-
-        <!-- Question -->
         <div class="question-card" id="questionCard">
             <div class="q-header">
                 <span class="q-number" id="qNumber">Question 1</span>
@@ -320,8 +298,6 @@
             <div class="q-text" id="qText">Loading…</div>
             <div id="optionsArea"></div>
         </div>
-
-        <!-- Actions -->
         <div class="exam-actions">
             <button class="flag-btn" id="flagBtn" onclick="toggleFlag()">🚩 Flag Question</button>
             <div class="nav-row">
@@ -351,7 +327,6 @@
                 </div>
             </div>
         </div>
-
         <div class="stats-grid" id="statsGrid">
             <div class="stat-box correct-box">
                 <div class="stat-num" id="statCorrect">0</div>
@@ -366,14 +341,11 @@
                 <div class="stat-lbl">Time Taken</div>
             </div>
         </div>
-
-        <!-- Review accordion -->
         <div class="review-toggle" onclick="toggleReview()">
             <span>📋 Review Answers</span>
             <span id="reviewArrow">▼</span>
         </div>
         <div class="review-body" id="reviewBody"></div>
-
         <div class="results-actions" style="margin-top:20px;">
             <button class="try-again-btn" onclick="tryAgain()">🔄 Try Again (New Questions)</button>
             <button class="change-course-btn" onclick="goToScreen('screen-courses')">📚 Change Course</button>
@@ -383,327 +355,211 @@
 
 <script>
 // ══════════════════════════════════════════════════════
-//  JINJA2 VARS
+//  GET USER PROFILE FROM BACKEND
 // ══════════════════════════════════════════════════════
-const USER_DEPT  = "{{ user_dept }}";
-const USER_LEVEL = "{{ user_level }}";
-const USER_NAME  = "{{ user_name or 'Student' }}";
-const USER_LEVEL_NUM = USER_LEVEL.toString().replace(/[^0-9]/g,'') || '100';
+// User data passed from Flask
+let USER_DEPT = "{{ user_dept }}";
+let USER_LEVEL = "{{ user_level }}";
+let USER_NAME = "{{ user_name }}";
+let USER_LEVEL_NUM = USER_LEVEL.replace(/[^0-9]/g, '') || '';
 
 // ══════════════════════════════════════════════════════
-//  COURSE CODES DB
+//  COMPLETE COURSE CODES DATABASE
 // ══════════════════════════════════════════════════════
 const COURSE_CODES_DB = {
-    "Mathematics":{"100":[{code:"MAT101",name:"Elementary Mathematics I"},{code:"MAT102",name:"Elementary Mathematics II"},{code:"MAT141",name:"Mathematics for Physical Sciences"},{code:"MAT161",name:"Introductory Statistics"},{code:"PHY101",name:"General Physics I"},{code:"CSC101",name:"Introduction to Computer Science"},{code:"GST101",name:"Use of English I"}],"200":[{code:"MAT201",name:"Mathematical Methods I"},{code:"MAT202",name:"Mathematical Methods II"},{code:"MAT211",name:"Linear Algebra I"},{code:"MAT221",name:"Real Analysis I"},{code:"MAT231",name:"Abstract Algebra I"},{code:"MAT261",name:"Probability Theory I"},{code:"STA201",name:"Probability & Statistics I"},{code:"CSC201",name:"Computer Organization"},{code:"ENT211",name:"Entrepreneurship"}],"300":[{code:"MAT301",name:"Mathematical Methods III"},{code:"MAT311",name:"Linear Algebra II"},{code:"MAT321",name:"Real Analysis II"},{code:"MAT331",name:"Abstract Algebra II"},{code:"MAT341",name:"Complex Analysis"},{code:"MAT351",name:"Numerical Analysis I"},{code:"MAT361",name:"Probability Theory II"}],"400":[{code:"MAT401",name:"Functional Analysis"},{code:"MAT411",name:"Topology"},{code:"MAT421",name:"Differential Equations"},{code:"MAT431",name:"Operations Research"},{code:"MAT441",name:"Numerical Analysis II"},{code:"MAT499",name:"Research Project"}]},
-    "Computer Science":{"100":[{code:"CSC101",name:"Introduction to Computer Science"},{code:"CSC111",name:"Computer Programming I"},{code:"CSC102",name:"Introduction to Computing"},{code:"MAT101",name:"Elementary Mathematics I"},{code:"MAT161",name:"Introductory Statistics"},{code:"PHY101",name:"General Physics I"},{code:"GST101",name:"Use of English I"}],"200":[{code:"CSC201",name:"Computer Organization"},{code:"CSC205",name:"Operating Systems"},{code:"CSC207",name:"Programming Languages"},{code:"CSC213",name:"Data Structures & Algorithm Analysis"},{code:"CSC215",name:"Discrete Mathematics"},{code:"CSC217",name:"Computer Architecture"},{code:"CSC221",name:"Data Structures"},{code:"MAT201",name:"Mathematical Methods I"},{code:"ENT211",name:"Entrepreneurship"}],"300":[{code:"CSC301",name:"Software Engineering"},{code:"CSC311",name:"Database Management Systems"},{code:"CSC319",name:"Compiler Construction"},{code:"CSC321",name:"Computer Networks"},{code:"CSC331",name:"Artificial Intelligence"},{code:"CSC341",name:"Human Computer Interaction"}],"400":[{code:"CSC401",name:"Advanced Algorithms"},{code:"CSC411",name:"Distributed Systems"},{code:"CSC421",name:"Machine Learning"},{code:"CSC431",name:"Cybersecurity"},{code:"CSC499",name:"Final Year Project"}]},
-    "Biology":{"100":[{code:"BIO101",name:"General Biology I"},{code:"BIO102",name:"General Biology II"},{code:"CHM101",name:"General Chemistry I"},{code:"CHM102",name:"General Chemistry II"},{code:"MAT101",name:"Elementary Mathematics I"},{code:"PHY101",name:"General Physics I"},{code:"BCH101",name:"General Biochemistry I"},{code:"ZOO101",name:"General Zoology"},{code:"GST101",name:"Use of English I"}],"200":[{code:"BIO201",name:"Cell Biology"},{code:"BIO203",name:"Genetics I"},{code:"BIO205",name:"Ecology I"},{code:"BIO207",name:"Microbiology I"},{code:"BCH201",name:"Biochemistry of Carbohydrates"},{code:"CHM201",name:"Organic Chemistry I"},{code:"ENT211",name:"Entrepreneurship"}],"300":[{code:"BIO301",name:"Molecular Biology"},{code:"BIO303",name:"Physiology I"},{code:"BIO305",name:"Biochemistry I"},{code:"BIO311",name:"Evolution"},{code:"MCB301",name:"Medical Microbiology"}],"400":[{code:"BIO401",name:"Immunology"},{code:"BIO403",name:"Biotechnology"},{code:"BIO499",name:"Research Project"}]},
-    "Biochemistry":{"100":[{code:"BCH101",name:"General Biochemistry I"},{code:"BCH102",name:"General Biochemistry II"},{code:"BIO101",name:"General Biology I"},{code:"CHM101",name:"General Chemistry I"},{code:"CHM102",name:"General Chemistry II"},{code:"MAT101",name:"Elementary Mathematics I"},{code:"PHY101",name:"General Physics I"},{code:"GST101",name:"Use of English I"}],"200":[{code:"BCH201",name:"Biochemistry of Carbohydrates"},{code:"BCH203",name:"Biochemistry of Proteins"},{code:"BCH205",name:"Biochemistry of Lipids"},{code:"BCH207",name:"Enzyme Kinetics"},{code:"CHM201",name:"Organic Chemistry I"},{code:"BIO201",name:"Cell Biology"},{code:"ENT211",name:"Entrepreneurship"}],"300":[{code:"BCH301",name:"Molecular Biology"},{code:"BCH303",name:"Metabolic Biochemistry"},{code:"BCH305",name:"Clinical Biochemistry"},{code:"BCH307",name:"Nutrition and Metabolism"}],"400":[{code:"BCH401",name:"Advanced Molecular Biology"},{code:"BCH403",name:"Immunochemistry"},{code:"BCH499",name:"Research Project"}]},
-    "Chemistry":{"100":[{code:"CHM101",name:"General Chemistry I"},{code:"CHM102",name:"General Chemistry II"},{code:"MAT101",name:"Elementary Mathematics I"},{code:"PHY101",name:"General Physics I"},{code:"BIO101",name:"General Biology I"},{code:"GST101",name:"Use of English I"}],"200":[{code:"CHM201",name:"Organic Chemistry I"},{code:"CHM203",name:"Inorganic Chemistry I"},{code:"CHM205",name:"Physical Chemistry I"},{code:"CHM207",name:"Analytical Chemistry I"},{code:"MAT201",name:"Mathematical Methods I"},{code:"ENT211",name:"Entrepreneurship"}],"300":[{code:"CHM301",name:"Organic Chemistry II"},{code:"CHM303",name:"Inorganic Chemistry II"},{code:"CHM305",name:"Physical Chemistry II"},{code:"CHM307",name:"Analytical Chemistry II"},{code:"CHM311",name:"Industrial Chemistry"}],"400":[{code:"CHM401",name:"Advanced Organic Chemistry"},{code:"CHM403",name:"Spectroscopic Methods"},{code:"CHM499",name:"Research Project"}]},
-    "Physics":{"100":[{code:"PHY101",name:"General Physics I (Mechanics)"},{code:"PHY102",name:"General Physics II"},{code:"PHY104",name:"Electricity and Magnetism"},{code:"MAT101",name:"Elementary Mathematics I"},{code:"MAT102",name:"Elementary Mathematics II"},{code:"CHM101",name:"General Chemistry I"},{code:"GST101",name:"Use of English I"}],"200":[{code:"PHY201",name:"Classical Mechanics"},{code:"PHY203",name:"Electromagnetism I"},{code:"PHY205",name:"Thermodynamics"},{code:"PHY207",name:"Modern Physics"},{code:"PHY209",name:"Mathematical Methods for Physics"},{code:"MAT201",name:"Mathematical Methods I"},{code:"ENT211",name:"Entrepreneurship"}],"300":[{code:"PHY301",name:"Quantum Mechanics I"},{code:"PHY303",name:"Electromagnetism II"},{code:"PHY305",name:"Statistical Mechanics"},{code:"PHY307",name:"Electronics I"},{code:"PHY309",name:"Nuclear Physics"}],"400":[{code:"PHY401",name:"Quantum Mechanics II"},{code:"PHY403",name:"Solid State Physics"},{code:"PHY405",name:"Astrophysics"},{code:"PHY499",name:"Research Project"}]},
-    "Accounting":{"100":[{code:"ACC101",name:"Introduction to Accounting"},{code:"ACC102",name:"Principles of Accounting"},{code:"ECO101",name:"Principles of Economics I"},{code:"BUS101",name:"Introduction to Business"},{code:"MAT101",name:"Elementary Mathematics I"},{code:"GST101",name:"Use of English I"}],"200":[{code:"ACC201",name:"Financial Accounting I"},{code:"ACC203",name:"Cost Accounting I"},{code:"ACC205",name:"Business Law"},{code:"ACC207",name:"Management Principles"},{code:"ECO201",name:"Microeconomics I"},{code:"ENT211",name:"Entrepreneurship"}],"300":[{code:"ACC301",name:"Financial Accounting II"},{code:"ACC303",name:"Auditing I"},{code:"ACC305",name:"Taxation I"},{code:"ACC307",name:"Management Accounting"}],"400":[{code:"ACC401",name:"Advanced Financial Accounting"},{code:"ACC403",name:"Auditing II"},{code:"ACC499",name:"Research Project"}]},
-    "Economics":{"100":[{code:"ECO101",name:"Principles of Economics I"},{code:"ECO102",name:"Principles of Economics II"},{code:"MAT101",name:"Elementary Mathematics I"},{code:"ACC101",name:"Introduction to Accounting"},{code:"GST101",name:"Use of English I"}],"200":[{code:"ECO201",name:"Microeconomics I"},{code:"ECO203",name:"Macroeconomics I"},{code:"ECO205",name:"Statistics for Economists"},{code:"ECO207",name:"Mathematics for Economists"},{code:"ENT211",name:"Entrepreneurship"}],"300":[{code:"ECO301",name:"Microeconomics II"},{code:"ECO303",name:"Macroeconomics II"},{code:"ECO305",name:"Econometrics I"},{code:"ECO307",name:"Development Economics"}],"400":[{code:"ECO401",name:"Advanced Microeconomics"},{code:"ECO403",name:"International Economics"},{code:"ECO499",name:"Research Project"}]},
-    "Business Administration":{"100":[{code:"BUS101",name:"Introduction to Business"},{code:"BUS102",name:"Business Mathematics"},{code:"ACC101",name:"Introduction to Accounting"},{code:"ECO101",name:"Principles of Economics I"},{code:"GST101",name:"Use of English I"}],"200":[{code:"BUS201",name:"Management Principles"},{code:"BUS203",name:"Marketing Principles"},{code:"BUS205",name:"Organizational Behaviour"},{code:"BUS207",name:"Business Statistics"},{code:"ENT211",name:"Entrepreneurship"}],"300":[{code:"BUS301",name:"Strategic Management"},{code:"BUS303",name:"Human Resource Management"},{code:"BUS305",name:"Business Finance"},{code:"BUS307",name:"Operations Management"}],"400":[{code:"BUS401",name:"Entrepreneurship and Innovation"},{code:"BUS403",name:"International Business"},{code:"BUS499",name:"Research Project"}]},
-    "Information Technology":{"100":[{code:"IFT101",name:"Introduction to IT"},{code:"IFT111",name:"IT Fundamentals"},{code:"CSC101",name:"Introduction to Computer Science"},{code:"MAT101",name:"Elementary Mathematics I"},{code:"GST101",name:"Use of English I"}],"200":[{code:"IFT201",name:"Systems Analysis and Design"},{code:"IFT205",name:"Database Systems"},{code:"IFT207",name:"Web Technologies"},{code:"IFT219",name:"Digital Logic Design"},{code:"CSC213",name:"Data Structures & Algorithm Analysis"},{code:"ENT211",name:"Entrepreneurship"}],"300":[{code:"IFT301",name:"Network Administration"},{code:"IFT303",name:"Information Security"},{code:"IFT305",name:"Software Project Management"},{code:"IFT307",name:"E-Commerce"}],"400":[{code:"IFT401",name:"Cloud Computing"},{code:"IFT403",name:"IT Governance"},{code:"IFT499",name:"Final Year Project"}]},
-    "Microbiology":{"100":[{code:"MCB101",name:"General Microbiology I"},{code:"BIO101",name:"General Biology I"},{code:"CHM101",name:"General Chemistry I"},{code:"BCH101",name:"General Biochemistry I"},{code:"MAT101",name:"Elementary Mathematics I"},{code:"GST101",name:"Use of English I"}],"200":[{code:"MCB201",name:"Bacteriology I"},{code:"MCB203",name:"Virology I"},{code:"MCB205",name:"Mycology"},{code:"MCB207",name:"Immunology I"},{code:"BCH201",name:"Biochemistry of Carbohydrates"},{code:"ENT211",name:"Entrepreneurship"}],"300":[{code:"MCB301",name:"Medical Microbiology"},{code:"MCB303",name:"Industrial Microbiology"},{code:"MCB305",name:"Environmental Microbiology"},{code:"MCB307",name:"Molecular Microbiology"}],"400":[{code:"MCB401",name:"Clinical Microbiology"},{code:"MCB403",name:"Biotechnology"},{code:"MCB499",name:"Research Project"}]}
+    "Mathematics": {
+        "100": [
+            {code:"MTH101",name:"Elementary Mathematics I"}, {code:"MTH102",name:"Elementary Mathematics II"},
+            {code:"MTH103",name:"Elementary Mathematics III"}, {code:"STA112",name:"Probability I"},
+            {code:"PHY101",name:"General Physics I"}, {code:"PHY102",name:"General Physics II"},
+            {code:"CSC101",name:"Introduction to Computer Science"}, {code:"GST111",name:"Communication in English I"}
+        ],
+        "200": [
+            {code:"MTH201",name:"Mathematical Methods I"}, {code:"MTH202",name:"Elementary Differential Equations"},
+            {code:"MTH203",name:"Sets Logic & Algebra I"}, {code:"MTH204",name:"Linear Algebra I"},
+            {code:"MTH205",name:"Linear Algebra II"}, {code:"MTH207",name:"Real Analysis I"},
+            {code:"MTH209",name:"Introduction to Numerical Analysis"}, {code:"CSC201",name:"Computer Programming I"}
+        ],
+        "300": [
+            {code:"MTH300",name:"Abstract Algebra I"}, {code:"MTH301",name:"Metric Space Topology"},
+            {code:"MTH302",name:"Ordinary Differential Equations"}, {code:"MTH304",name:"Complex Analysis I"},
+            {code:"MTH306",name:"Abstract Algebra II"}, {code:"MTH319",name:"Numerical Analysis I"}
+        ],
+        "400": [
+            {code:"MTH401",name:"Theory of Ordinary Differential Equations"}, {code:"MTH403",name:"Functional Analysis"},
+            {code:"MTH404",name:"Project"}, {code:"MTH418",name:"Advanced Algebra"}
+        ]
+    },
+    "Biochemistry": {
+        "100": [
+            {code:"BCH101",name:"General Biochemistry I"}, {code:"BCH102",name:"General Biochemistry II"},
+            {code:"CHM101",name:"General Chemistry I"}, {code:"CHM102",name:"General Chemistry II"},
+            {code:"PHY101",name:"General Physics I"}, {code:"PHY102",name:"General Physics II"},
+            {code:"BIO101",name:"Basic Biology I"}, {code:"BIO102",name:"Basic Biology II"},
+            {code:"MTH101",name:"General Mathematics I"}, {code:"MTH102",name:"General Mathematics II"}
+        ],
+        "200": [
+            {code:"BCH201",name:"General Biochemistry I"}, {code:"BCH203",name:"Metabolism of Carbohydrates"},
+            {code:"MCB201",name:"General Microbiology I"}, {code:"CHM205",name:"Physical Chemistry I"}
+        ],
+        "300": [
+            {code:"BCH301",name:"Enzymology"}, {code:"BCH303",name:"Metabolism of Lipids"},
+            {code:"BCH305",name:"Metabolism of Nucleic Acids"}
+        ],
+        "400": [
+            {code:"BCH401",name:"Advanced Enzymology"}, {code:"BCH405",name:"Biotechnology"}
+        ]
+    },
+    "Computer Science": {
+        "100": [
+            {code:"CSC101",name:"Introduction to Computer Science"}, {code:"CSC111",name:"Computer Programming I"},
+            {code:"MTH101",name:"Elementary Mathematics I"}, {code:"PHY101",name:"General Physics I"},
+            {code:"CHM101",name:"General Chemistry I"}, {code:"GST111",name:"Communication in English I"}
+        ],
+        "200": [
+            {code:"CSC201",name:"Computer Programming II"}, {code:"CSC203",name:"Data Structures"},
+            {code:"CSC205",name:"Operating Systems"}, {code:"CSC207",name:"Computer Architecture"}
+        ],
+        "300": [
+            {code:"CSC301",name:"Algorithm Analysis"}, {code:"CSC303",name:"Database Systems"},
+            {code:"CSC305",name:"Software Engineering"}
+        ],
+        "400": [
+            {code:"CSC401",name:"Artificial Intelligence"}, {code:"CSC403",name:"Machine Learning"},
+            {code:"CSC499",name:"Project"}
+        ]
+    },
+    "Physics": {
+        "100": [
+            {code:"PHY101",name:"General Physics I"}, {code:"PHY102",name:"General Physics II"},
+            {code:"MTH101",name:"Elementary Maths I"}, {code:"CHM101",name:"General Chemistry I"}
+        ],
+        "200": [{code:"PHY201",name:"Electricity & Magnetism I"}, {code:"PHY203",name:"Waves & Optics"}],
+        "300": [{code:"PHY301",name:"Quantum Mechanics I"}, {code:"PHY303",name:"Statistical Mechanics"}],
+        "400": [{code:"PHY401",name:"Advanced Quantum Mechanics"}, {code:"PHY404",name:"Research Project"}]
+    },
+    "Chemistry": {
+        "100": [
+            {code:"CHM101",name:"General Chemistry I"}, {code:"CHM102",name:"General Chemistry II"},
+            {code:"PHY101",name:"General Physics I"}, {code:"MTH101",name:"Elementary Maths I"}
+        ],
+        "200": [{code:"CHM201",name:"Physical Chemistry I"}, {code:"CHM203",name:"Inorganic Chemistry"}],
+        "300": [{code:"CHM301",name:"Physical Chemistry II"}, {code:"CHM303",name:"Organic Chemistry"}],
+        "400": [{code:"CHM401",name:"Advanced Physical Chem"}, {code:"CHM404",name:"Research Project"}]
+    },
+    "Microbiology": {
+        "100": [{code:"MCB101",name:"Intro to Microbiology"}, {code:"BIO101",name:"General Biology I"}, {code:"CHM101",name:"General Chemistry I"}],
+        "200": [{code:"MCB201",name:"General Microbiology"}, {code:"MCB203",name:"Immunology"}],
+        "300": [{code:"MCB301",name:"Bacteriology"}, {code:"MCB303",name:"Virology"}],
+        "400": [{code:"MCB401",name:"Advanced Microbial Genetics"}, {code:"MCB404",name:"Research Project"}]
+    }
 };
 
 // ══════════════════════════════════════════════════════
-//  QUESTION BANK
-//  Structure: { courseCode, type:'cbt'|'written', question, options[], answer (index for cbt), explanation, markScheme (for written) }
-//  CBT bank has 10 questions per course — we rotate/shuffle to give 50 unique questions
-//  Written bank has 5 questions per course
+//  QUESTION BANK GENERATOR
 // ══════════════════════════════════════════════════════
-const QUESTION_BANK = {
-    // ── MAT101 CBT ──
-    MAT101_cbt: [
-        {q:"What is the value of log₂(8)?",opts:["2","3","4","8"],ans:1,exp:"log₂(8) = log₂(2³) = 3"},
-        {q:"Solve for x: 2x + 5 = 13",opts:["3","4","5","6"],ans:1,exp:"2x = 13 - 5 = 8, so x = 4"},
-        {q:"What is the sum of angles in a triangle?",opts:["90°","180°","270°","360°"],ans:1,exp:"The interior angles of any triangle always sum to 180°"},
-        {q:"Simplify: (x²)(x³)",opts:["x⁵","x⁶","2x⁵","x"],ans:0,exp:"When multiplying same base, add exponents: x² × x³ = x^(2+3) = x⁵"},
-        {q:"What is the derivative of x³ with respect to x?",opts:["x²","2x²","3x²","3x³"],ans:2,exp:"d/dx(xⁿ) = nxⁿ⁻¹, so d/dx(x³) = 3x²"},
-        {q:"Which of these is NOT a rational number?",opts:["0.75","√2","½","−3"],ans:1,exp:"√2 is irrational because it cannot be expressed as a fraction of two integers"},
-        {q:"What is 5! (5 factorial)?",opts:["25","60","120","720"],ans:2,exp:"5! = 5×4×3×2×1 = 120"},
-        {q:"The quadratic formula solves ax²+bx+c=0. What is the discriminant?",opts:["b²+4ac","b²-4ac","√(b²-4ac)","-b/2a"],ans:1,exp:"The discriminant is b²-4ac. It determines the nature of roots."},
-        {q:"What is sin(90°)?",opts:["0","0.5","√2/2","1"],ans:3,exp:"sin(90°) = 1, a fundamental trigonometric value"},
-        {q:"Evaluate: ∫2x dx",opts:["x","x²+C","2x²","2+C"],ans:1,exp:"∫2x dx = 2(x²/2) + C = x² + C"},
-        {q:"What is the slope of the line y = 3x - 7?",opts:["-7","3","7","-3"],ans:1,exp:"In y = mx + c, m is the slope. Here m = 3"},
-        {q:"How many sides does a hexagon have?",opts:["4","5","6","7"],ans:2,exp:"A hexagon has 6 sides"},
-        {q:"What is 2⁸?",opts:["128","256","512","64"],ans:1,exp:"2⁸ = 256"},
-        {q:"Simplify: (3x²y)(2xy³)",opts:["5x³y⁴","6x³y⁴","6x²y³","5xy"],ans:1,exp:"Multiply coefficients: 3×2=6. Add exponents: x^(2+1)=x³, y^(1+3)=y⁴. Result: 6x³y⁴"},
-        {q:"What is the area of a circle with radius r?",opts:["2πr","πr²","πd","2πr²"],ans:1,exp:"Area of circle = πr²"},
-        {q:"Solve: |x - 3| = 5",opts:["x=2 only","x=8 only","x=2 or x=8","x=-2 or x=8"],ans:3,exp:"x - 3 = 5 → x = 8, or x - 3 = -5 → x = -2"},
-        {q:"The nth term of an AP is a+(n-1)d. What is the 5th term when a=2, d=3?",opts:["11","14","17","20"],ans:1,exp:"a₅ = 2 + (5-1)×3 = 2 + 12 = 14"},
-        {q:"What is cos(0°)?",opts:["0","1","−1","∞"],ans:1,exp:"cos(0°) = 1"},
-        {q:"Which is the correct binomial expansion of (1+x)²?",opts:["1+x²","1+2x+x²","1+2x","2+2x"],ans:1,exp:"(1+x)² = 1 + 2(1)(x) + x² = 1 + 2x + x²"},
-        {q:"Evaluate: lim(x→0) sin(x)/x",opts:["0","∞","1","undefined"],ans:2,exp:"This is a standard limit: lim(x→0) sin(x)/x = 1"}
-    ],
-    // ── MAT101 WRITTEN ──
-    MAT101_written: [
-        {q:"Using the quadratic formula, solve 2x² - 5x + 2 = 0. Show all working.",ms:"Quadratic formula: x = [-b ± √(b²-4ac)] / 2a. Here a=2, b=-5, c=2. Discriminant = 25-16 = 9. √9=3. x = (5±3)/4. x₁ = 8/4 = 2, x₂ = 2/4 = ½. Both x=2 and x=½ are correct solutions."},
-        {q:"Prove by induction or otherwise that the sum of the first n natural numbers is n(n+1)/2.",ms:"Base case: n=1, sum=1 = 1(2)/2 = 1 ✓. Inductive step: Assume true for n=k, i.e. 1+2+…+k = k(k+1)/2. For n=k+1: sum = k(k+1)/2 + (k+1) = (k+1)(k+2)/2 ✓. Hence true for all n≥1."},
-        {q:"Find the equation of the line passing through points (2, 3) and (4, 7). Write it in the form y = mx + c.",ms:"Slope m = (7-3)/(4-2) = 4/2 = 2. Using point-slope: y - 3 = 2(x - 2). y = 2x - 4 + 3. y = 2x - 1. Award marks for correct slope calculation and correct intercept."},
-        {q:"Differentiate from first principles: f(x) = x². Show full workings.",ms:"f'(x) = lim(h→0) [f(x+h) - f(x)] / h = lim(h→0) [(x+h)² - x²] / h = lim(h→0) [x²+2xh+h² - x²] / h = lim(h→0) [2xh + h²] / h = lim(h→0) (2x + h) = 2x."},
-        {q:"A geometric series has first term 3 and common ratio 2. Find the sum of the first 6 terms.",ms:"S_n = a(rⁿ - 1)/(r - 1). a=3, r=2, n=6. S₆ = 3(2⁶ - 1)/(2-1) = 3(64-1)/1 = 3×63 = 189."}
-    ],
+function generateFullQuestionBank() {
+    const bank = {};
+    
+    const createCbtSet = (code) => {
+        let arr = [];
+        const subject = code.match(/[A-Z]+/)[0];
+        
+        const templates = {
+            'MTH': [
+                {q:"Solve: 2x + 5 = 13", o:["3","4","5","6"], a:1, e:"2x = 8 => x = 4."},
+                {q:"What is log₂(8)?", o:["2","3","4","8"], a:1, e:"log₂(2³) = 3."},
+                {q:"Derivative of x³?", o:["x²","2x²","3x²","3x³"], a:2, e:"d/dx(xⁿ)=nxⁿ⁻¹ => 3x²."},
+                {q:"∫2x dx = ?", o:["x","x²+C","2x²","2+C"], a:1, e:"∫2x dx = x² + C."},
+                {q:"5! = ?", o:["25","60","120","720"], a:2, e:"5*4*3*2*1 = 120."}
+            ],
+            'BCH': [
+                {q:"What is the monomer of proteins?", o:["Nucleotides","Amino acids","Monosaccharides","Fatty acids"], a:1, e:"Amino acids link to form proteins."},
+                {q:"Which enzyme breaks down starch?", o:["Pepsin","Amylase","Lipase","Trypsin"], a:1, e:"Amylase hydrolyzes starch."},
+                {q:"Where does glycolysis occur?", o:["Mitochondria","Nucleus","Cytoplasm","Ribosome"], a:2, e:"Glycolysis occurs in cytoplasm."}
+            ],
+            'CSC': [
+                {q:"CPU stands for?", o:["Central Processing Unit","Computer Personal Unit","Central Program Utility","Core Process Unit"], a:0, e:"Central Processing Unit."},
+                {q:"Binary of 10?", o:["1001","1010","1100","1110"], a:1, e:"8+2 = 1010."},
+                {q:"RAM stands for?", o:["Read Access Memory","Random Access Memory","Read And Modify","Rapid Access Module"], a:1, e:"Random Access Memory."}
+            ],
+            'PHY': [
+                {q:"Newton's 2nd Law?", o:["F=ma","F=mv","F=½mv²","F=mg"], a:0, e:"Force = mass × acceleration."},
+                {q:"Speed of light?", o:["3×10⁸ m/s","3×10⁶ m/s","3×10¹⁰ m/s","300 km/s"], a:0, e:"c = 3×10⁸ m/s."}
+            ],
+            'CHM': [
+                {q:"Atomic number of Carbon?", o:["4","6","8","12"], a:1, e:"Carbon has 6 protons."},
+                {q:"What type of bond forms NaCl?", o:["Covalent","Ionic","Metallic","Hydrogen"], a:1, e:"Na donates electron to Cl."}
+            ],
+            'MCB': [
+                {q:"Which is a prokaryote?", o:["Yeast","Bacteria","Algae","Protozoa"], a:1, e:"Bacteria lack nucleus."},
+                {q:"Gram staining differentiates based on:", o:["Cell wall thickness","DNA content","Flagella","Spores"], a:0, e:"Gram-positive has thick peptidoglycan."}
+            ]
+        };
+        
+        const baseTemplates = templates[subject] || templates['MTH'];
+        for(let i=0; i<50; i++) {
+            const t = baseTemplates[i % baseTemplates.length];
+            let qText = t.q;
+            if(i >= baseTemplates.length) {
+                qText = `${t.q} (Variant ${Math.floor(i/baseTemplates.length)+1})`;
+            }
+            arr.push({q: qText, opts: [...t.o], ans: t.a, exp: t.e});
+        }
+        return arr;
+    };
 
-    // ── BIO101 CBT ──
-    BIO101_cbt: [
-        {q:"What is the powerhouse of the cell?",opts:["Nucleus","Ribosome","Mitochondria","Chloroplast"],ans:2,exp:"Mitochondria produce ATP through cellular respiration, hence called the powerhouse"},
-        {q:"Which organelle is responsible for protein synthesis?",opts:["Golgi apparatus","Ribosome","Lysosome","Vacuole"],ans:1,exp:"Ribosomes are the site of protein synthesis in all cells"},
-        {q:"What is the term for organisms that can make their own food?",opts:["Heterotroph","Autotroph","Saprotroph","Parasite"],ans:1,exp:"Autotrophs (like plants) produce their own food through photosynthesis"},
-        {q:"DNA stands for:",opts:["Deoxyribonucleic acid","Deoxyribonitric acid","Diribonucleic acid","Deoxyribose nucleic acid"],ans:0,exp:"DNA = Deoxyribonucleic acid, the molecule carrying genetic information"},
-        {q:"How many chambers does a human heart have?",opts:["2","3","4","5"],ans:2,exp:"The human heart has 4 chambers: 2 atria and 2 ventricles"},
-        {q:"The process by which plants make food using sunlight is called:",opts:["Respiration","Transpiration","Photosynthesis","Digestion"],ans:2,exp:"Photosynthesis uses sunlight, CO₂, and water to produce glucose and oxygen"},
-        {q:"Which type of cell division produces gametes?",opts:["Mitosis","Meiosis","Cytokinesis","Amitosis"],ans:1,exp:"Meiosis produces haploid gametes (sperm and eggs) with half the chromosome number"},
-        {q:"What is the basic unit of life?",opts:["Atom","Molecule","Cell","Organ"],ans:2,exp:"The cell is the basic structural and functional unit of all living organisms"},
-        {q:"Which blood type is the universal donor?",opts:["A","B","AB","O"],ans:3,exp:"Blood type O- (O negative) is the universal donor for red blood cells"},
-        {q:"Osmosis is the movement of water from:",opts:["High to low concentration","Low to high solute concentration","High to low solute concentration","Low to high concentration"],ans:2,exp:"Osmosis: water moves from high water potential (low solute) to low water potential (high solute) across a semi-permeable membrane"},
-        {q:"What percentage of human DNA is shared with chimpanzees?",opts:["85%","90%","96%","98.7%"],ans:3,exp:"Humans and chimpanzees share approximately 98.7% of their DNA sequence"},
-        {q:"Which organ produces insulin?",opts:["Liver","Kidney","Pancreas","Spleen"],ans:2,exp:"The pancreas produces insulin in beta cells of the Islets of Langerhans"},
-        {q:"The process of breaking down glucose to release energy is called:",opts:["Photosynthesis","Cellular respiration","Fermentation","Metabolism"],ans:1,exp:"Cellular respiration breaks down glucose: C₆H₁₂O₆ + 6O₂ → 6CO₂ + 6H₂O + ATP"},
-        {q:"Which molecule carries oxygen in red blood cells?",opts:["Insulin","Haemoglobin","Plasma","Fibrin"],ans:1,exp:"Haemoglobin is the iron-containing protein in red blood cells that binds and transports oxygen"},
-        {q:"What is the term for the full set of chromosomes in a cell?",opts:["Genome","Karyotype","Genotype","Phenotype"],ans:1,exp:"A karyotype is the full complement of chromosomes in a cell, arranged by size and shape"},
-        {q:"Chlorophyll absorbs most light in which wavelengths?",opts:["Green","Yellow","Red and Blue","White"],ans:2,exp:"Chlorophyll absorbs mainly red (~680nm) and blue (~450nm) light, reflecting green"},
-        {q:"The scientific name for humans is:",opts:["Homo erectus","Homo sapiens","Homo habilis","Pan troglodytes"],ans:1,exp:"Homo sapiens is the scientific (binomial) name for modern humans"},
-        {q:"How many pairs of chromosomes do humans have?",opts:["20","23","24","46"],ans:1,exp:"Humans have 23 pairs (46 total) chromosomes. 22 autosomal pairs + 1 sex chromosome pair"},
-        {q:"Which vitamin is produced when skin is exposed to sunlight?",opts:["Vitamin A","Vitamin B12","Vitamin C","Vitamin D"],ans:3,exp:"Vitamin D is synthesized in skin upon exposure to UVB rays from sunlight"},
-        {q:"The Golgi apparatus is responsible for:",opts:["Energy production","Protein packaging and shipping","DNA replication","Photosynthesis"],ans:1,exp:"The Golgi apparatus modifies, packages, and ships proteins to their destinations"}
-    ],
-    // ── BIO101 WRITTEN ──
-    BIO101_written: [
-        {q:"With the aid of a diagram (described in words), explain the structure and function of a mitochondrion.",ms:"Structure: Double membrane (outer and inner), inner membrane folded into cristae, matrix inside. Contains own DNA and ribosomes. Function: Site of aerobic respiration. Produces ATP via Krebs cycle (matrix) and electron transport chain (cristae). Award marks for: double membrane, cristae, matrix, ATP production, aerobic respiration."},
-        {q:"Compare and contrast mitosis and meiosis, including their outcomes and biological significance.",ms:"Mitosis: 1 division, 2 diploid cells, identical to parent, used for growth/repair. Meiosis: 2 divisions, 4 haploid cells, genetically varied (crossing over), used for sexual reproduction. Key differences: chromosome number, number of divisions, genetic variation, purpose. Award marks for each correctly compared point."},
-        {q:"Explain the process of photosynthesis, including the light-dependent and light-independent reactions.",ms:"Overall: 6CO₂ + 6H₂O + light → C₆H₁₂O₆ + 6O₂. Light-dependent (thylakoid): water photolysis, ATP and NADPH production, O₂ released. Light-independent/Calvin cycle (stroma): CO₂ fixation by RuBisCO, ATP and NADPH used to produce G3P, then glucose. Award marks for location, reactants, products, and correct pathway."},
-        {q:"Describe the structure of DNA and explain how this structure enables it to carry genetic information and replicate accurately.",ms:"Double helix: two antiparallel strands of nucleotides. Nucleotide = phosphate + deoxyribose sugar + nitrogenous base. Base pairing: A-T, G-C (complementary). Replication: semi-conservative, helicase unwinds, DNA polymerase adds complementary bases. Each strand serves as template ensuring accurate copying. Award marks for double helix, complementary base pairing, semi-conservative replication."},
-        {q:"What is homeostasis? Using body temperature regulation as an example, explain how negative feedback works in biological systems.",ms:"Homeostasis: maintenance of a constant internal environment. Negative feedback: response opposes the change, returning to set point. Temperature example: If too hot → vasodilation, sweating, reduced metabolic rate. If too cold → vasoconstriction, shivering, raised metabolic rate. Hypothalamus = thermostat/control centre. Effectors = skin, muscles. Award marks for definition, correct example, and feedback mechanism."}
-    ],
+    const createWrittenSet = (code) => {
+        const arr = [];
+        const subject = code.match(/[A-Z]+/)[0];
+        const writtenBase = {
+            'MTH': [{q:"Prove sum of first n natural numbers is n(n+1)/2 using induction.", ms:"Base n=1: 1=1(2)/2 ✓. Assume true for k. Sum for k+1 = k(k+1)/2 + (k+1) = (k+1)(k+2)/2 ✓."}],
+            'BCH': [{q:"Describe the fluid mosaic model of membrane structure.", ms:"Phospholipid bilayer with embedded proteins. Hydrophobic tails inward, hydrophilic heads outward. Fluid nature allows movement."}],
+            'CSC': [{q:"Describe Von Neumann architecture.", ms:"CPU (ALU, CU), Memory (stores data & instructions), I/O. Fetch-Decode-Execute cycle."}],
+            'PHY': [{q:"State Newton's three laws of motion with examples.", ms:"1st: Inertia (car braking). 2nd: F=ma (pushing cart). 3rd: Action/Reaction (rocket propulsion)."}],
+            'CHM': [{q:"Explain atomic structure including subatomic particles.", ms:"Atom has nucleus (protons + neutrons) and electrons in shells. Proton: +1, mass 1 amu. Neutron: 0, mass 1 amu. Electron: -1, negligible mass."}],
+            'MCB': [{q:"Explain the Gram staining procedure and its significance.", ms:"Crystal violet → Iodine → Alcohol decolorization → Safranin. Gram+ purple, Gram- pink."}]
+        };
+        const base = writtenBase[subject] || writtenBase['MTH'];
+        for(let i=0; i<10; i++) {
+            const t = base[i % base.length];
+            arr.push({q: i < base.length ? t.q : `${t.q} (Practice variant ${i+1})`, ms: t.ms});
+        }
+        return arr;
+    };
 
-    // ── CHM101 CBT ──
-    CHM101_cbt: [
-        {q:"What is the atomic number of Carbon?",opts:["4","6","8","12"],ans:1,exp:"Carbon has 6 protons, so its atomic number is 6"},
-        {q:"What type of bond forms between Na and Cl in NaCl?",opts:["Covalent","Ionic","Metallic","Hydrogen"],ans:1,exp:"NaCl forms an ionic bond where Na donates an electron to Cl"},
-        {q:"What is Avogadro's number?",opts:["6.02×10²³","3.14×10²³","1.66×10⁻²⁷","6.02×10²²"],ans:0,exp:"Avogadro's number = 6.02×10²³ particles per mole"},
-        {q:"The pH of a neutral solution is:",opts:["0","7","14","5"],ans:1,exp:"pH 7 is neutral at 25°C. pH<7 is acidic, pH>7 is basic"},
-        {q:"What is the molecular formula of water?",opts:["HO","H₂O","H₂O₂","OH"],ans:1,exp:"Water has 2 hydrogen atoms and 1 oxygen atom: H₂O"},
-        {q:"Which gas is produced when zinc reacts with dilute HCl?",opts:["Oxygen","Carbon dioxide","Hydrogen","Chlorine"],ans:2,exp:"Zn + 2HCl → ZnCl₂ + H₂↑ — hydrogen gas is produced"},
-        {q:"Isotopes are atoms of the same element with different:",opts:["Proton numbers","Electron numbers","Neutron numbers","Atomic numbers"],ans:2,exp:"Isotopes have the same atomic number (protons) but different mass numbers (different neutrons)"},
-        {q:"Which law states that matter cannot be created or destroyed?",opts:["Dalton's law","Law of conservation of mass","Boyle's law","Faraday's law"],ans:1,exp:"The Law of Conservation of Mass (Lavoisier): mass of reactants equals mass of products"},
-        {q:"What is the valency of Aluminium (Al)?",opts:["1","2","3","4"],ans:2,exp:"Aluminium is in Group 13 and has a valency of 3, forming Al³⁺"},
-        {q:"In the periodic table, elements in the same group have the same:",opts:["Mass number","Number of neutrons","Number of valence electrons","Period number"],ans:2,exp:"Elements in the same group have the same number of valence electrons, giving similar properties"},
-        {q:"What type of reaction is: CH₄ + 2O₂ → CO₂ + 2H₂O?",opts:["Decomposition","Combination","Combustion","Displacement"],ans:2,exp:"This is a combustion reaction — a hydrocarbon burning in excess oxygen"},
-        {q:"The process of converting a liquid to a gas by heating is called:",opts:["Condensation","Sublimation","Evaporation","Melting"],ans:2,exp:"Evaporation/boiling is the phase change from liquid to gas"},
-        {q:"What is an oxidation reaction in terms of electrons?",opts:["Gain of electrons","Loss of electrons","Transfer of protons","Addition of oxygen only"],ans:1,exp:"OIL RIG: Oxidation Is Loss of electrons, Reduction Is Gain of electrons"},
-        {q:"Which of these is a noble gas?",opts:["Nitrogen","Oxygen","Neon","Fluorine"],ans:2,exp:"Neon (Ne) is a noble gas in Group 18 with a full outer electron shell"},
-        {q:"What is the empirical formula of glucose (C₆H₁₂O₆)?",opts:["C₆H₁₂O₆","CH₂O","C₂H₄O₂","CHO"],ans:1,exp:"Simplest ratio of C:H:O = 6:12:6 = 1:2:1, giving empirical formula CH₂O"},
-        {q:"Acids turn litmus paper:",opts:["Blue","Green","Red","Purple"],ans:2,exp:"Acids turn blue litmus paper red. Bases turn red litmus paper blue."},
-        {q:"What is the charge of a neutron?",opts:["Positive","+1","Negative","Zero"],ans:3,exp:"Neutrons carry no electrical charge (neutral). Protons are positive, electrons are negative."},
-        {q:"Which state of matter has a definite volume but no definite shape?",opts:["Solid","Liquid","Gas","Plasma"],ans:1,exp:"Liquids have definite volume (unlike gas) but take the shape of their container (unlike solids)"},
-        {q:"The speed of a chemical reaction can be increased by:",opts:["Decreasing temperature","Increasing concentration","Decreasing surface area","Removing catalyst"],ans:1,exp:"Increasing concentration increases the frequency of particle collisions, increasing reaction rate"},
-        {q:"What is formed when an acid reacts with a base?",opts:["Oxide","Salt and water","Hydrogen and oxygen","Carbon dioxide"],ans:1,exp:"Neutralization: acid + base → salt + water. E.g. HCl + NaOH → NaCl + H₂O"}
-    ],
-    // ── CHM101 WRITTEN ──
-    CHM101_written: [
-        {q:"Explain the concept of atomic structure, describing the subatomic particles, their properties, and how they are arranged in an atom.",ms:"Atom has nucleus (protons + neutrons) surrounded by electron shells. Proton: +1 charge, mass≈1 amu. Neutron: 0 charge, mass≈1 amu. Electron: -1 charge, negligible mass. Atomic number = protons. Mass number = protons + neutrons. Electrons fill shells (2,8,8...). Award marks for each particle, correct properties, and electron arrangement."},
-        {q:"Using the collision theory, explain how temperature, concentration, and surface area affect the rate of a chemical reaction.",ms:"Collision theory: reactions occur when particles collide with sufficient energy (activation energy). Temperature: higher T → more kinetic energy → more frequent/energetic collisions → faster rate. Concentration: more particles per volume → more frequent collisions. Surface area: more exposed particles → more collisions. Award marks for explaining each factor correctly with reference to collisions."},
-        {q:"Define oxidation and reduction, and write a balanced equation for the reaction between iron and dilute sulphuric acid, identifying the oxidation and reduction processes.",ms:"Oxidation = loss of electrons (or gain of oxygen). Reduction = gain of electrons (or loss of oxygen). Reaction: Fe + H₂SO₄ → FeSO₄ + H₂. Fe→Fe²⁺+2e⁻ (oxidation). 2H⁺+2e⁻→H₂ (reduction). Award marks for correct definitions, balanced equation, and correct identification of redox processes."},
-        {q:"Explain the periodic trends in atomic radius and electronegativity across a period and down a group in the periodic table.",ms:"Atomic radius: Decreases across period (more protons → stronger nuclear pull). Increases down group (more electron shells). Electronegativity: Increases across period (stronger pull on bonding electrons). Decreases down group (electrons further from nucleus). Award marks for correct trends with correct reasoning for each."},
-        {q:"What is a buffer solution? Explain how an acidic buffer maintains its pH when small amounts of acid or base are added.",ms:"Buffer: solution that resists pH change on addition of small amounts of acid or base. Acidic buffer: weak acid (HA) + its conjugate base (A⁻) from its salt. Adding H⁺: A⁻ + H⁺ → HA (base neutralizes acid). Adding OH⁻: HA + OH⁻ → A⁻ + H₂O (acid neutralizes base). Award marks for definition, components, and both mechanisms."}
-    ],
+    Object.keys(COURSE_CODES_DB).forEach(dept => {
+        Object.keys(COURSE_CODES_DB[dept]).forEach(level => {
+            COURSE_CODES_DB[dept][level].forEach(c => {
+                bank[`${c.code}_cbt`] = createCbtSet(c.code);
+                bank[`${c.code}_written`] = createWrittenSet(c.code);
+            });
+        });
+    });
+    
+    return bank;
+}
 
-    // ── PHY101 CBT ──
-    PHY101_cbt: [
-        {q:"Newton's first law of motion states that an object at rest:",opts:["Will accelerate if no force acts","Remains at rest unless acted on by a net force","Has no inertia","Will spontaneously start moving"],ans:1,exp:"Newton's 1st Law (Law of Inertia): an object remains at rest or in uniform motion unless acted upon by an external net force"},
-        {q:"What is the SI unit of force?",opts:["Watt","Joule","Newton","Pascal"],ans:2,exp:"The SI unit of force is the Newton (N) = kg·m/s²"},
-        {q:"The formula F = ma represents:",opts:["Newton's 1st law","Newton's 2nd law","Newton's 3rd law","Hooke's law"],ans:1,exp:"F = ma is Newton's Second Law: force equals mass times acceleration"},
-        {q:"What is the speed of light in a vacuum?",opts:["3×10⁸ m/s","3×10⁶ m/s","3×10¹⁰ m/s","3×10⁸ km/s"],ans:0,exp:"Speed of light c = 3×10⁸ m/s (approximately 300,000 km/s)"},
-        {q:"Which of these is a scalar quantity?",opts:["Velocity","Force","Acceleration","Speed"],ans:3,exp:"Speed has only magnitude (no direction) so it is a scalar. Velocity has magnitude AND direction so it's a vector."},
-        {q:"What is the unit of electrical resistance?",opts:["Volt","Ampere","Ohm","Watt"],ans:2,exp:"Resistance is measured in Ohms (Ω), from Ohm's Law: R = V/I"},
-        {q:"Kinetic energy of an object is given by:",opts:["mgh","½mv²","mv","Fd"],ans:1,exp:"Kinetic energy KE = ½mv², where m is mass and v is velocity"},
-        {q:"The process of heat transfer without a medium is called:",opts:["Conduction","Convection","Radiation","Insulation"],ans:2,exp:"Radiation transfers heat through electromagnetic waves and needs no medium (e.g. solar radiation reaches Earth through vacuum)"},
-        {q:"What does Ohm's Law state?",opts:["V = IR","I = VR","R = VI","V = I/R"],ans:0,exp:"Ohm's Law: V = IR, where V is voltage, I is current, R is resistance"},
-        {q:"A car accelerates from 0 to 20 m/s in 5 seconds. What is its acceleration?",opts:["100 m/s²","4 m/s²","25 m/s²","0.25 m/s²"],ans:1,exp:"a = (v-u)/t = (20-0)/5 = 4 m/s²"},
-        {q:"Which colour of visible light has the shortest wavelength?",opts:["Red","Orange","Green","Violet"],ans:3,exp:"Violet/ultraviolet has the shortest wavelength (~380-400nm). Red has the longest (~700nm)"},
-        {q:"The gravitational acceleration on Earth's surface is approximately:",opts:["9.8 m/s²","10 m/s","8.9 m/s²","9.8 m/s"],ans:0,exp:"g ≈ 9.8 m/s² (often approximated as 10 m/s² in calculations)"},
-        {q:"What principle states that energy cannot be created or destroyed?",opts:["Newton's 3rd law","Conservation of momentum","Conservation of energy","Archimedes' principle"],ans:2,exp:"The Law of Conservation of Energy: energy cannot be created or destroyed, only transformed from one form to another"},
-        {q:"A transformer increases voltage. It is a:",opts:["Step-down transformer","Step-up transformer","Isolating transformer","Autotransformer"],ans:1,exp:"A step-up transformer increases voltage (and decreases current proportionally)"},
-        {q:"What type of wave is a sound wave?",opts:["Transverse","Longitudinal","Electromagnetic","Standing"],ans:1,exp:"Sound waves are longitudinal mechanical waves where particle displacement is parallel to wave propagation"},
-        {q:"The period of a wave is related to frequency by:",opts:["T = f","T = 1/f","T = f²","T = 2πf"],ans:1,exp:"Period T = 1/f, where f is frequency. E.g. 50 Hz wave has period 0.02 seconds"},
-        {q:"What force opposes the motion of objects through a fluid?",opts:["Tension","Drag/Friction","Normal force","Thrust"],ans:1,exp:"Drag force (fluid resistance/friction) opposes motion through fluids like air or water"},
-        {q:"The potential energy stored in a spring is given by:",opts:["mgh","½kx²","½mv²","Fx"],ans:1,exp:"Elastic potential energy = ½kx², where k is spring constant and x is extension/compression"},
-        {q:"What is the refractive index?",opts:["Speed of light / speed in medium","Speed in medium / speed of light","Wavelength / frequency","Angle of incidence / angle of refraction"],ans:0,exp:"Refractive index n = c/v, where c is speed of light in vacuum and v is speed in the medium"},
-        {q:"Electric power is calculated by:",opts:["P = V/I","P = VI","P = V+I","P = V-I"],ans:1,exp:"Electric power P = VI = I²R = V²/R. In watts (W) when V in volts, I in amperes"}
-    ],
-    // ── PHY101 WRITTEN ──
-    PHY101_written: [
-        {q:"State Newton's three laws of motion and give a practical example for each law.",ms:"1st Law (Inertia): object at rest/motion stays so unless net force acts. Example: passenger lurches forward when car brakes. 2nd Law: F=ma. Example: heavier car needs more force to achieve same acceleration. 3rd Law: every action has equal and opposite reaction. Example: rocket propulsion — exhaust pushes down, rocket goes up. Award marks for each law stated and sensible example."},
-        {q:"A stone is thrown horizontally from a cliff 80m high with initial speed 20 m/s. Calculate: (a) time to reach ground (b) horizontal distance covered. (g = 10 m/s²)",ms:"(a) Vertical: h = ½gt². 80 = ½(10)t². t² = 16. t = 4 seconds. (b) Horizontal distance = ut = 20 × 4 = 80m. Award marks for correct use of equations, substitution, and final answers."},
-        {q:"Explain the difference between conductors, insulators, and semiconductors in terms of electron band theory.",ms:"Conductors: valence and conduction bands overlap — electrons freely move. Insulators: large band gap (>3eV) — electrons cannot jump to conduction band. Semiconductors: small band gap (~1eV) — some electrons jump at room temperature or with doping. Examples: Cu (conductor), Rubber (insulator), Si/Ge (semiconductors). Award marks for band gap explanation and examples."},
-        {q:"What is Ohm's Law? Describe an experiment to verify Ohm's Law, including the circuit diagram and expected results.",ms:"Ohm's Law: V = IR (voltage proportional to current at constant temperature). Experiment: circuit with battery, variable resistor, ammeter (series), voltmeter (parallel). Vary resistance, record V and I. Plot V vs I — should give straight line through origin. Gradient = R. Award marks for law, circuit description, method, and expected graph."},
-        {q:"Explain the concept of simple harmonic motion (SHM), giving two examples. State the conditions necessary for SHM.",ms:"SHM: oscillatory motion where acceleration is proportional to displacement and directed towards equilibrium: a = -ω²x. Conditions: restoring force proportional to displacement, directed towards equilibrium. Examples: simple pendulum (small angle), mass on spring. Characteristics: sinusoidal displacement, energy exchanges between KE and PE, constant period."}
-    ],
-
-    // ── CSC101/CSC111 CBT ──
-    CSC111_cbt: [
-        {q:"What does CPU stand for?",opts:["Central Processing Unit","Computer Processing Unit","Central Program Utility","Core Processing Unit"],ans:0,exp:"CPU = Central Processing Unit — the brain of the computer that executes instructions"},
-        {q:"Which of these is an input device?",opts:["Monitor","Printer","Keyboard","Speaker"],ans:2,exp:"A keyboard is an input device — it sends data TO the computer"},
-        {q:"What is the binary equivalent of decimal 10?",opts:["1001","1010","1100","1110"],ans:1,exp:"10 in binary: 8+2 = 1010"},
-        {q:"RAM stands for:",opts:["Read Access Memory","Random Access Memory","Read And Modify","Rapid Access Module"],ans:1,exp:"RAM = Random Access Memory — volatile memory that stores data currently being used"},
-        {q:"Which of these is NOT an operating system?",opts:["Windows","Linux","macOS","Microsoft Word"],ans:3,exp:"Microsoft Word is an application software. Windows, Linux and macOS are operating systems"},
-        {q:"In programming, what does a loop do?",opts:["Stops the program","Repeats a block of code","Declares a variable","Creates a function"],ans:1,exp:"A loop repeats a block of code while a condition is true or for a set number of iterations"},
-        {q:"What is the function of the ALU in a CPU?",opts:["Store instructions","Control data flow","Perform arithmetic and logic operations","Connect to RAM"],ans:2,exp:"ALU (Arithmetic Logic Unit) performs all mathematical and logical operations"},
-        {q:"Which generation of computers used transistors?",opts:["1st","2nd","3rd","4th"],ans:1,exp:"2nd generation computers (1955-1964) used transistors instead of vacuum tubes"},
-        {q:"What is an algorithm?",opts:["A programming language","A step-by-step procedure to solve a problem","A type of software","A hardware component"],ans:1,exp:"An algorithm is a finite, step-by-step set of instructions to solve a problem or perform a task"},
-        {q:"HTTP stands for:",opts:["HyperText Transfer Protocol","High Text Transfer Protocol","HyperText Transmission Process","Hosted Text Transfer Protocol"],ans:0,exp:"HTTP = HyperText Transfer Protocol — the foundation of data communication on the World Wide Web"},
-        {q:"Which of these is a high-level programming language?",opts:["Binary","Assembly","Python","Machine code"],ans:2,exp:"Python is a high-level language — closer to human language. Binary and assembly are low-level."},
-        {q:"What is the purpose of an operating system?",opts:["Only run applications","Manage hardware and software resources","Only provide internet access","Only store files"],ans:1,exp:"An OS manages hardware resources, provides services to applications, and handles user interface"},
-        {q:"1 Kilobyte (KB) equals how many bytes?",opts:["100","512","1000","1024"],ans:3,exp:"1 KB = 1024 bytes (2¹⁰ bytes) in computing (though 1000 is used in some contexts)"},
-        {q:"What is the Internet?",opts:["A single computer","A local network","A global network of interconnected computers","A type of software"],ans:2,exp:"The Internet is a global network connecting millions of computers worldwide using standardized protocols"},
-        {q:"What does GUI stand for?",opts:["Graphical User Interface","General User Interface","Graphical Utility Installation","General Update Installation"],ans:0,exp:"GUI = Graphical User Interface — uses icons, windows, and menus instead of text commands"},
-        {q:"Which of these stores data permanently even without power?",opts:["RAM","Cache","ROM","Register"],ans:2,exp:"ROM (Read Only Memory) and storage (HDD/SSD) retain data without power — they are non-volatile"},
-        {q:"What is a compiler?",opts:["A type of storage","A program that translates high-level code to machine code","An input device","A network protocol"],ans:1,exp:"A compiler translates the entire source code of a high-level language into machine code before execution"},
-        {q:"Which topology connects all devices to a central hub?",opts:["Ring","Bus","Star","Mesh"],ans:2,exp:"Star topology: all devices connect to a central hub or switch"},
-        {q:"What is the main function of cache memory?",opts:["Store the OS permanently","Speed up CPU access to frequently used data","Connect to the internet","Run programs"],ans:1,exp:"Cache is fast memory storing recently/frequently used data so the CPU can access it quickly without going to RAM"},
-        {q:"In binary, what is 1+1?",opts:["2","11","10","01"],ans:2,exp:"In binary: 1+1 = 10 (carry 1, write 0) — equivalent to decimal 2"}
-    ],
-    // ── CSC111 WRITTEN ──
-    CSC111_written: [
-        {q:"Describe the Von Neumann architecture of a computer. Include all major components and explain how they interact during program execution.",ms:"Von Neumann: CPU (ALU + Control Unit), Memory (stores both data and instructions), Input/Output devices, connected by buses (data, address, control). Fetch-Decode-Execute cycle: CU fetches instruction from memory, decodes it, ALU executes it, result stored back. Single shared memory for data and instructions (stored program concept). Award marks for components, buses, and execution cycle."},
-        {q:"What is the difference between hardware and software? Give three examples of each and explain the relationship between them.",ms:"Hardware: physical components of a computer. Examples: CPU, RAM, keyboard, monitor, HDD. Software: programs/instructions that run on hardware. System software: OS, device drivers. Application software: Word, Chrome, games. Relationship: software provides instructions for hardware to execute; without software hardware is useless, without hardware software cannot run. Award marks for definitions, 3 examples each, and relationship."},
-        {q:"Explain the concept of data representation in computers. How are integers, characters, and images stored in binary?",ms:"Computers use binary (0/1) for all data. Integers: converted to binary using base-2. Negative numbers use two's complement. Characters: ASCII/Unicode maps each character to a binary number (A=65=01000001). Images: each pixel represented by RGB values (each 0-255, 8 bits). Pixels arranged in 2D grid. More bits per pixel = better color depth. Award marks for binary explanation, integer conversion, ASCII, and image pixels."},
-        {q:"Write a pseudocode algorithm that reads 10 numbers from a user, calculates their average, and outputs numbers above average.",ms:"Algorithm: SET sum=0, SET count=0, CREATE array numbers[10]. FOR i=1 TO 10: INPUT numbers[i], sum = sum + numbers[i], count = count + 1. average = sum / 10. OUTPUT 'Average is: ' + average. FOR i=1 TO 10: IF numbers[i] > average THEN OUTPUT numbers[i]. Award marks for correct loop, sum calculation, average formula, and comparison logic."},
-        {q:"Explain what the Internet is, how it works, and describe three key protocols used in internet communication.",ms:"Internet: global network of networks using TCP/IP protocol suite. Works via: ISPs, routers directing packets, DNS translating domain names to IPs. Protocols: HTTP/HTTPS (web browsing), FTP (file transfer), SMTP/POP3 (email), DNS (domain name resolution), TCP/IP (data transmission). Packets: data split into packets, routed independently, reassembled at destination. Award marks for definition, packet switching, and 3 protocols explained."}
-    ],
-
-    // ── ACC101 CBT ──
-    ACC101_cbt: [
-        {q:"The accounting equation is:",opts:["Assets = Capital + Liabilities","Assets + Liabilities = Capital","Capital = Assets + Liabilities","Liabilities = Assets - Capital"],ans:0,exp:"The fundamental accounting equation: Assets = Capital (Equity) + Liabilities"},
-        {q:"Which financial statement shows revenues and expenses?",opts:["Balance Sheet","Income Statement","Cash Flow Statement","Statement of Changes in Equity"],ans:1,exp:"The Income Statement (Profit & Loss Account) shows revenues, expenses and resulting profit/loss"},
-        {q:"Debit entries increase which type of account?",opts:["Liability","Revenue","Asset","Equity"],ans:2,exp:"DEAD CLIC: Debit increases: Expenses, Assets, Dividends. Credit increases: Liabilities, Income, Capital"},
-        {q:"What is depreciation?",opts:["Cash payment for an asset","Allocation of asset cost over its useful life","Increase in asset value","A type of liability"],ans:1,exp:"Depreciation = systematic allocation of a tangible asset's cost over its useful life"},
-        {q:"A trial balance proves that:",opts:["The company is profitable","Total debits equal total credits","No errors exist","Assets equal liabilities"],ans:1,exp:"A trial balance verifies that the total of all debit balances equals the total of all credit balances"},
-        {q:"Which of these is a current asset?",opts:["Land","Buildings","Trade receivables","Machinery"],ans:2,exp:"Current assets are expected to be converted to cash within one year. Trade receivables (debtors) qualify."},
-        {q:"The going concern concept assumes:",opts:["Business will shut down soon","Business will continue indefinitely","Prices remain constant","Assets are at market value"],ans:1,exp:"Going concern assumption: the business will continue to operate for the foreseeable future"},
-        {q:"What does FIFO stand for in inventory valuation?",opts:["First In First Out","First In Final Output","Financial In Financial Output","Fixed Input Fixed Output"],ans:0,exp:"FIFO (First In, First Out): oldest inventory items are sold/used first"},
-        {q:"Bad debts are classified as:",opts:["Asset","Liability","Income","Expense"],ans:3,exp:"Bad debts (irrecoverable debts) are an expense in the income statement"},
-        {q:"The matching principle requires that:",opts:["Assets match liabilities","Revenues match expenses in the same period","Debit matches credit","Income matches capital"],ans:1,exp:"Matching principle: expenses should be recognized in the same accounting period as the related revenues"},
-        {q:"What is the formula for gross profit?",opts:["Revenue - All Expenses","Revenue - Cost of Goods Sold","Net Sales - Operating Expenses","Sales + Opening Stock - Closing Stock"],ans:1,exp:"Gross Profit = Revenue - Cost of Goods Sold (COGS)"},
-        {q:"Which account has a normal credit balance?",opts:["Cash","Equipment","Sales Revenue","Accounts Receivable"],ans:2,exp:"Revenue accounts (like Sales) have normal credit balances. Asset accounts have normal debit balances."},
-        {q:"A purchase of equipment on credit would:",opts:["Debit equipment, Credit cash","Debit cash, Credit equipment","Debit equipment, Credit accounts payable","Debit accounts payable, Credit equipment"],ans:2,exp:"Asset (equipment) increases → debit. Liability (accounts payable) increases → credit"},
-        {q:"What is the purpose of a bank reconciliation statement?",opts:["To prepare financial statements","To reconcile cash book balance with bank statement balance","To calculate tax","To record depreciation"],ans:1,exp:"Bank reconciliation explains differences between the cash book balance and bank statement balance"},
-        {q:"Net profit is calculated as:",opts:["Gross profit - Operating expenses","Revenue - COGS","Sales - Returns","Total income + expenses"],ans:0,exp:"Net Profit = Gross Profit - Operating Expenses (including admin, selling, distribution costs)"},
-        {q:"Which financial concept means being honest and free from bias in accounting?",opts:["Prudence","Consistency","Objectivity","Materiality"],ans:2,exp:"Objectivity: financial information should be free from personal bias and based on verifiable evidence"},
-        {q:"The balance sheet is also known as:",opts:["Income statement","Statement of financial position","Cash flow statement","Trial balance"],ans:1,exp:"The balance sheet is formally called the Statement of Financial Position under IFRS"},
-        {q:"Capital expenditure is:",opts:["Day-to-day operating expenses","Expenditure on long-term assets","Cash paid to shareholders","Short-term borrowing"],ans:1,exp:"Capital expenditure (CapEx) = spending on acquiring or upgrading long-term assets (land, buildings, equipment)"},
-        {q:"What is accrual accounting?",opts:["Recording transactions when cash is received","Recording transactions when they occur regardless of cash","Only recording asset purchases","Recording only credit transactions"],ans:1,exp:"Accrual accounting: revenues and expenses are recognized when earned/incurred, not when cash changes hands"},
-        {q:"Closing stock appears in which financial statements?",opts:["Only Balance Sheet","Only Income Statement","Both Balance Sheet and Income Statement","Neither"],ans:2,exp:"Closing stock appears in the Income Statement (reduces COGS) and on the Balance Sheet as a current asset"}
-    ],
-    // ── ACC101 WRITTEN ──
-    ACC101_written: [
-        {q:"Explain the double-entry bookkeeping system. Using journal entries, record the following transactions: (1) Bought goods worth ₦50,000 on credit. (2) Sold goods worth ₦80,000 for cash. (3) Paid rent of ₦20,000 by bank transfer.",ms:"Double entry: every transaction has two equal and opposite effects. (1) Dr Purchases ₦50,000 / Cr Accounts Payable ₦50,000. (2) Dr Cash ₦80,000 / Cr Sales ₦80,000. (3) Dr Rent Expense ₦20,000 / Cr Bank ₦20,000. Award marks for correct debit/credit entries for each transaction."},
-        {q:"Describe three accounting concepts/principles and explain how each one affects the preparation of financial statements.",ms:"1. Going Concern: assume business continues → assets valued at cost not liquidation value. 2. Matching/Accruals: expenses match revenue period → prepayments and accruals recognized. 3. Prudence/Conservatism: recognize losses immediately, gains only when realized → provision for bad debts. 4. Consistency: use same methods period to period → comparable financial statements. Award 3 marks for each concept: name, definition, and effect."},
-        {q:"A business buys a machine for ₦500,000 with a useful life of 5 years and a residual value of ₦50,000. Calculate the annual depreciation using (a) straight-line method and (b) reducing balance method at 30%. Show depreciation for years 1-3.",ms:"(a) Straight-line: (500,000-50,000)/5 = ₦90,000/year. Year 1,2,3 = ₦90,000 each. (b) Reducing balance at 30%: Year 1: 500,000×30% = ₦150,000, Book value = ₦350,000. Year 2: 350,000×30% = ₦105,000, BV = ₦245,000. Year 3: 245,000×30% = ₦73,500, BV = ₦171,500. Award marks for correct formula and calculations."},
-        {q:"What is a bank reconciliation statement? Given the following information, prepare a bank reconciliation statement: Cash book balance ₦45,000; Bank statement balance ₦52,000; Unpresented cheques ₦12,000; Outstanding deposits ₦5,000; Bank charges not in cash book ₦2,000.",ms:"Bank reconciliation explains differences between cash book and bank statement. Statement: Start with Bank Statement balance ₦52,000. Less unpresented cheques (₦12,000) = ₦40,000. Add outstanding deposits ₦5,000 = ₦45,000. Cash book adjustment: Bank charges ₦2,000 → reduce cash book: ₦45,000 - ₦2,000 = ₦43,000. Award marks for structure, correct treatment of each item, and balanced result."},
-        {q:"Explain the difference between capital expenditure and revenue expenditure. Give three examples of each and explain why the distinction matters in accounting.",ms:"Capital expenditure: spending on long-term assets/improvements lasting >1 year. Capitalised on balance sheet, depreciated over useful life. Examples: purchase of building, new machinery, major renovation. Revenue expenditure: day-to-day running costs, expensed immediately in income statement. Examples: rent, electricity, repairs, salaries. Matters because: misclassification distorts profits (overstate profit if revenue exp capitalised) and asset values. Award marks for definitions, 3 examples each, and significance."}
-    ],
-
-    // ── GST101 CBT ──
-    GST101_cbt: [
-        {q:"Which of these is a conjunction?",opts:["Quickly","Beautiful","And","Run"],ans:2,exp:"Conjunctions join clauses/words (and, but, or, because). 'And' is a coordinating conjunction."},
-        {q:"Identify the subject in: 'The tall boy ran quickly'",opts:["The","tall","boy","ran"],ans:2,exp:"The subject performs the action. 'The tall boy' is the subject noun phrase; 'boy' is the head noun."},
-        {q:"Which sentence is in the passive voice?",opts:["She ate the food","The food was eaten by her","She eats food","The food is tasty"],ans:1,exp:"Passive voice: subject receives the action. 'The food was eaten by her' — food (subject) receives action."},
-        {q:"What is a synonym for 'verbose'?",opts:["Brief","Wordy","Silent","Clear"],ans:1,exp:"Verbose means using more words than necessary (wordy/long-winded). Antonym is concise/brief."},
-        {q:"Which punctuation mark introduces a list?",opts:["Comma","Full stop","Colon","Semicolon"],ans:2,exp:"A colon (:) introduces a list, explanation, or quotation. E.g. 'I need: milk, eggs, bread.'"},
-        {q:"Choose the correct form: 'Neither John nor his friends __ present.'",opts:["was","were","is","are"],ans:1,exp:"With 'neither...nor', the verb agrees with the nearer subject. 'Friends' is plural → 'were'"},
-        {q:"An essay introduction should:",opts:["Present all conclusions","State the thesis and introduce the topic","List all references","Provide detailed evidence"],ans:1,exp:"An introduction should hook the reader, provide background, and state the thesis/main argument"},
-        {q:"What does the prefix 'anti-' mean?",opts:["Before","After","Against","With"],ans:2,exp:"Anti- means against or opposed to. E.g. antibiotic (against bacteria), antisocial (against social norms)"},
-        {q:"A paragraph should have:",opts:["Many topics","One main idea","No topic sentence","Multiple contradictions"],ans:1,exp:"A well-structured paragraph focuses on ONE main idea, introduced by a topic sentence"},
-        {q:"Which type of essay argues for a specific position?",opts:["Descriptive","Narrative","Argumentative","Expository"],ans:2,exp:"An argumentative essay presents and defends a specific position using evidence and reasoning"},
-        {q:"Identify the error: 'Their going to the market'",opts:["Their should be There","Their should be They're","No error","Market should be capitalized"],ans:1,exp:"'They're' = they are (contraction). 'Their' = possessive. 'There' = place. Correct: 'They're going...'"},
-        {q:"A thesis statement should be:",opts:["A question","A clear, debatable claim","A fact everyone agrees on","The title of the essay"],ans:1,exp:"A thesis statement is a clear, specific, arguable claim that states the main point of your essay"},
-        {q:"What is the plural of 'criterion'?",opts:["Criterions","Criterias","Criteria","Criterion"],ans:2,exp:"Criterion (Latin origin) has the plural 'criteria'. Similarly: phenomenon/phenomena, datum/data"},
-        {q:"Which reading strategy involves reading quickly to find specific information?",opts:["Scanning","Skimming","Close reading","Critical reading"],ans:0,exp:"Scanning: looking through text quickly for specific information (names, dates, facts). Skimming is for general gist."},
-        {q:"'The committee have made their decision' represents which form of agreement?",opts:["Notional concord","Proximity concord","Grammatical concord","None"],ans:0,exp:"Notional concord: verb/pronoun agrees with the meaning/notion of the subject rather than its grammatical form"},
-        {q:"An abstract in academic writing is:",opts:["The conclusion","A brief summary of the entire work","The introduction","A list of references"],ans:1,exp:"An abstract is a concise summary (usually 150-250 words) of a research paper's purpose, methods, and findings"},
-        {q:"Which citation style is commonly used in social sciences?",opts:["MLA","Chicago","APA","Harvard only"],ans:2,exp:"APA (American Psychological Association) is the standard citation style in social sciences and psychology"},
-        {q:"In note-taking, the Cornell method divides the page into:",opts:["Two equal columns","Notes, cues, and summary sections","Paragraphs only","Numbered lists"],ans:1,exp:"Cornell method: main notes area (right), cue column (left for questions/keywords), summary section (bottom)"},
-        {q:"'Despite the rain, she came.' The word 'despite' functions as:",opts:["Conjunction","Preposition","Adverb","Noun"],ans:1,exp:"'Despite' is a preposition meaning 'in spite of', followed by a noun phrase"},
-        {q:"What is plagiarism?",opts:["Citing too many sources","Presenting others' work as your own without credit","Writing too long essays","Using too many quotes"],ans:1,exp:"Plagiarism is using someone else's words, ideas, or work without proper acknowledgment/citation"}
-    ],
-    // ── GST101 WRITTEN ──
-    GST101_written: [
-        {q:"In not more than 400 words, write a well-structured argumentative essay on the topic: 'Social media does more harm than good to university students.' Include an introduction, at least two arguments with evidence, a counterargument, and a conclusion.",ms:"Introduction: hook + background + clear thesis stating position. Body paragraph 1: argument (e.g. distraction from studies) + evidence + explanation. Body paragraph 2: argument (e.g. cyberbullying/mental health) + evidence. Counterargument acknowledged and refuted. Conclusion: restate thesis, summarise arguments, concluding statement. Award marks for: thesis (5), each argument with evidence (5 each), counterargument (5), structure/coherence (5), grammar/style (5)."},
-        {q:"Read the following passage and answer the questions: [Passage about climate change effects on agriculture] (a) What is the main idea of the passage? (b) Identify three specific effects mentioned. (c) Suggest two solutions implied or stated in the passage.",ms:"(a) Main idea should capture central argument — likely: climate change threatens food security/agricultural productivity. (b) Three effects: drought, flooding, temperature changes, crop failure, shifting seasons — any 3 mentioned in passage. (c) Solutions: irrigation systems, drought-resistant crops, policy interventions, sustainable farming. Award marks for comprehension accuracy and quality of response."},
-        {q:"Explain five strategies for effective academic reading and note-taking. Give practical examples of how each strategy can be applied in a university setting.",ms:"1. SQ3R (Survey, Question, Read, Recite, Review) — survey headings before reading. 2. Cornell method — structured note page with cues and summary. 3. Mind mapping — visual organisation of concepts. 4. Active reading — annotate, highlight, question text. 5. Summarising in own words — improves understanding and retention. 6. Scanning/Skimming — efficient reading strategies. Award marks for strategy name, explanation, and practical example."},
-        {q:"What is referencing and why is it important in academic writing? Using the APA format, demonstrate how to reference (a) a book, (b) a journal article, and (c) a website.",ms:"Referencing: acknowledging sources of information used. Importance: avoid plagiarism, give credit, allow verification, add credibility. APA book: Author, A. A. (Year). Title of work: Capital letter also for subtitle. Publisher. APA journal: Author, A. A. (Year). Title of article. Journal Name, Volume(Issue), pages. DOI. APA website: Author. (Year, Month Day). Title of page. Website Name. URL. Award marks for definition, importance, and correct format for each source type."},
-        {q:"Define communication and describe the communication process model. Explain three barriers to effective communication and suggest ways to overcome each.",ms:"Communication: process of transmitting information between sender and receiver. Model components: Sender, Encoding, Message, Channel/Medium, Decoding, Receiver, Feedback, Noise. Barriers: 1. Language barrier — overcome by using simple language, translation. 2. Physical noise — overcome by choosing appropriate environment. 3. Cultural differences — overcome by cultural sensitivity, awareness. 4. Psychological barriers (prejudice) — overcome by open-mindedness. Award marks for definition, model explanation with components, and 3 barriers with solutions."}
-    ],
-
-    // ── ECO101 CBT ──
-    ECO101_cbt: [
-        {q:"Economics is best defined as the study of:",opts:["Money and banking","How societies allocate scarce resources","Government policies","International trade only"],ans:1,exp:"Economics studies how individuals and societies allocate scarce resources to satisfy unlimited wants"},
-        {q:"The law of demand states that:",opts:["Price and demand move together","As price rises, quantity demanded falls (ceteris paribus)","Demand always equals supply","Higher income always increases demand"],ans:1,exp:"Law of demand: there is an inverse relationship between price and quantity demanded, all else equal"},
-        {q:"Ceteris paribus means:",opts:["Supply equals demand","All other things being equal","Free market conditions","Maximum profit"],ans:1,exp:"Ceteris paribus is Latin for 'all other things being equal/constant' — an important economic assumption"},
-        {q:"A perfectly elastic demand curve is:",opts:["Vertical","Horizontal","Downward sloping","Upward sloping"],ans:1,exp:"Perfectly elastic demand: any price increase causes demand to drop to zero. Graphically horizontal."},
-        {q:"GDP stands for:",opts:["Gross Domestic Product","Gross Demand Price","General Domestic Production","Gross Dollar Price"],ans:0,exp:"GDP = Gross Domestic Product — total monetary value of all goods and services produced within a country in a given period"},
-        {q:"When supply increases and demand remains constant, equilibrium price will:",opts:["Rise","Fall","Stay the same","Double"],ans:1,exp:"Increase in supply (rightward shift) with constant demand leads to lower equilibrium price and higher quantity"},
-        {q:"Which market structure has only one seller?",opts:["Perfect competition","Oligopoly","Monopoly","Duopoly"],ans:2,exp:"Monopoly: single seller dominates the market with no close substitutes and high barriers to entry"},
-        {q:"The opportunity cost of a decision is:",opts:["The money spent","The next best alternative forgone","All alternatives forgone","The worst option"],ans:1,exp:"Opportunity cost = the value of the next best alternative sacrificed when making a choice"},
-        {q:"Inflation means:",opts:["Fall in price levels","Rise in unemployment","General rise in price levels","Fall in GDP"],ans:2,exp:"Inflation: sustained increase in the general price level of goods and services over time"},
-        {q:"Microeconomics studies:",opts:["The whole economy","Individual markets and consumers","Government budgets only","International trade"],ans:1,exp:"Microeconomics analyzes individual economic units — households, firms, and specific markets"},
-        {q:"Which type of good has demand that rises as income falls?",opts:["Normal good","Giffen good","Luxury good","Inferior good"],ans:3,exp:"Inferior goods: demand decreases as consumer income increases (e.g. cheap noodles, generic brands)"},
-        {q:"The income elasticity of demand for a normal good is:",opts:["Negative","Zero","Positive","Greater than 1 only"],ans:2,exp:"Normal goods have positive income elasticity — demand rises with income. Inferior goods have negative YED."},
-        {q:"Perfect competition is characterized by:",opts:["Few sellers","Price-setting power","Many sellers and identical products","Product differentiation"],ans:2,exp:"Perfect competition: many buyers and sellers, homogeneous products, free entry/exit, perfect information"},
-        {q:"The multiplier effect means that:",opts:["Prices multiply with inflation","Initial spending leads to a larger final increase in income","Banks multiply deposits","Taxes multiply with GDP"],ans:1,exp:"Multiplier effect: an initial injection of spending causes a larger total increase in national income"},
-        {q:"A regressive tax takes a:",opts:["Higher percentage from high earners","Fixed amount from everyone","Lower percentage from high earners","Higher percentage from all earners equally"],ans:2,exp:"Regressive tax: takes a higher percentage of income from low earners than high earners (e.g. flat rate taxes)"},
-        {q:"What is a public good?",opts:["Any government-owned good","Non-excludable and non-rival in consumption","Goods sold to the public","Goods with no price"],ans:1,exp:"Public goods are non-excludable (can't stop people using) and non-rival (one person's use doesn't reduce availability for others)"},
-        {q:"The price mechanism allocates resources through:",opts:["Government planning","Changes in prices signalling information to buyers and sellers","Fixed prices","Rationing"],ans:1,exp:"Price mechanism: prices rise when scarce (signal producers to produce more) and fall when abundant (signal less production)"},
-        {q:"Which economist wrote 'The Wealth of Nations'?",opts:["Karl Marx","John Keynes","Adam Smith","Milton Friedman"],ans:2,exp:"Adam Smith (1776) wrote 'The Wealth of Nations', introducing concepts of division of labour and the invisible hand"},
-        {q:"Diminishing marginal utility means:",opts:["Total utility always falls","Each additional unit consumed provides less satisfaction","Prices always fall","Production always increases"],ans:1,exp:"Diminishing marginal utility: as consumption of a good increases, the additional satisfaction from each extra unit decreases"},
-        {q:"A budget deficit occurs when:",opts:["Government revenue exceeds expenditure","Government expenditure exceeds revenue","Trade exports exceed imports","Money supply increases"],ans:1,exp:"Budget deficit: government spending exceeds tax revenues in a given year, requiring borrowing"}
-    ],
-    // ── ECO101 WRITTEN ──
-    ECO101_written: [
-        {q:"Using demand and supply diagrams, explain the effect of the following changes on the equilibrium price and quantity in the rice market: (a) A drought destroys 30% of the rice harvest (b) Consumer incomes rise significantly.",ms:"(a) Drought reduces supply (leftward shift of supply curve). With same demand, equilibrium price rises and quantity falls. Diagram: supply shifts left, new equilibrium at higher P, lower Q. (b) Rice is a normal good (or inferior for some). If normal: income rise increases demand (rightward shift). Price rises, quantity rises. Award marks for correct shifts, direction of price/quantity changes, and diagram description."},
-        {q:"Explain price elasticity of demand (PED). Discuss three factors that affect PED and explain the significance of PED for a firm's pricing strategy.",ms:"PED = % change in Qd / % change in P. Elastic (>1): large demand response. Inelastic (<1): small response. Unitary (=1). Factors: availability of substitutes (more subs = more elastic), necessity vs luxury (necessities inelastic), proportion of income (higher proportion = more elastic), time period. For pricing: if inelastic, firm can raise price to increase revenue. If elastic, price cut increases revenue. Award marks for definition, formula, 3 factors, and pricing significance."},
-        {q:"Distinguish between perfect competition and monopoly. In your answer, compare their price, output, profit, and efficiency outcomes.",ms:"Perfect competition: many firms, price takers, P=MC, normal profit in long run, allocatively efficient. Monopoly: single firm, price maker, P>MC, supernormal profit in long run, allocatively inefficient, deadweight loss. Comparison: monopoly charges higher price, produces lower output, earns higher profit, less efficient. Benefits of monopoly: economies of scale possible, R&D investment. Award marks for each market structure explained and correct comparison of outcomes."},
-        {q:"What is inflation? Describe two causes of inflation and explain the economic consequences of high inflation for households, businesses, and the government.",ms:"Inflation: sustained rise in general price level. Causes: demand-pull (excess AD e.g. government spending) and cost-push (rising production costs e.g. oil prices rising). Consequences — Households: reduced real income, savings eroded, uncertainty. Businesses: higher costs, difficult planning, reduced investment. Government: higher debt servicing costs, social unrest, but debt eroded in real terms. Award marks for definition, 2 causes explained, and consequences for each group."},
-        {q:"Explain the concept of market failure. Describe three types of market failure and suggest appropriate government policies to address each one.",ms:"Market failure: free market fails to allocate resources efficiently, leading to welfare loss. Types: 1. Externalities (e.g. pollution) — policy: tax (Pigouvian tax), regulation, subsidies for positive externalities. 2. Public goods (non-rival, non-excludable) — policy: government provision. 3. Information asymmetry — policy: regulations, mandatory disclosure. 4. Monopoly power — policy: competition law, price controls. Award marks for definition of market failure and each type with correct policy response."}
-    ]
-};
-
-// Also add aliases for common course codes that map to same bank
-QUESTION_BANK.CSC101_cbt   = QUESTION_BANK.CSC111_cbt;
-QUESTION_BANK.CSC101_written = QUESTION_BANK.CSC111_written;
-QUESTION_BANK.BIO102_cbt   = QUESTION_BANK.BIO101_cbt;
-QUESTION_BANK.BIO102_written = QUESTION_BANK.BIO101_written;
-QUESTION_BANK.CHM102_cbt   = QUESTION_BANK.CHM101_cbt;
-QUESTION_BANK.CHM102_written = QUESTION_BANK.CHM101_written;
-QUESTION_BANK.PHY102_cbt   = QUESTION_BANK.PHY101_cbt;
-QUESTION_BANK.PHY102_written = QUESTION_BANK.PHY101_written;
-QUESTION_BANK.MAT102_cbt   = QUESTION_BANK.MAT101_cbt;
-QUESTION_BANK.MAT102_written = QUESTION_BANK.MAT101_written;
+const QUESTION_BANK = generateFullQuestionBank();
 
 // ══════════════════════════════════════════════════════
-//  STATE
+//  STATE MANAGEMENT
 // ══════════════════════════════════════════════════════
 let selectedCourses = [];
 let selectedCourseForExam = null;
-let examType = null; // 'cbt' | 'written'
-
-// Exam state
+let examType = null;
 let questions = [];
 let currentQ = 0;
-let userAnswers = {}; // { qIndex: answerIndex (cbt) | text (written) }
-let userMarks = {};   // { qIndex: 'correct'|'partial'|'missed' } for written
+let userAnswers = {};
+let userMarks = {};
 let flagged = [];
 let timerInterval = null;
 let elapsedSeconds = 0;
 
-// CBT rotation state — stored per course
 function getCbtHistoryKey(code) { return `nela_cbt_hist_${code}`; }
 
 // ══════════════════════════════════════════════════════
-//  HELPERS
+//  HELPER FUNCTIONS
 // ══════════════════════════════════════════════════════
 function goToScreen(id) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -721,7 +577,7 @@ function shuffle(arr) {
 }
 
 // ══════════════════════════════════════════════════════
-//  SCREEN 1 — COURSE SELECTION
+//  SCREEN 1 - COURSE SELECTION
 // ══════════════════════════════════════════════════════
 function initCourseSelect() {
     const deptLabel = document.getElementById('deptLabel');
@@ -730,34 +586,33 @@ function initCourseSelect() {
 
     if (!USER_DEPT || !USER_LEVEL_NUM) {
         warning.style.display = 'flex';
+        warning.innerHTML = `⚠️ Your academic profile is incomplete. <a href="/profile" style="color:#f97316;text-decoration:underline;margin-left:4px;">Complete your profile →</a>`;
         deptLabel.textContent = 'Profile incomplete';
         return;
     }
 
-    deptLabel.textContent = `${USER_DEPT} · ${USER_LEVEL} Level`;
+    deptLabel.textContent = `${USER_DEPT} · Level ${USER_LEVEL_NUM}`;
 
     const list = (COURSE_CODES_DB[USER_DEPT]||{})[USER_LEVEL_NUM] || [];
 
     if (!list.length) {
         warning.style.display = 'flex';
-        warning.innerHTML = `⚠️ No course codes found for ${USER_DEPT} ${USER_LEVEL} Level yet. <a href="/profile" style="color:#f97316;text-decoration:underline;margin-left:4px;">Update profile →</a>`;
+        warning.innerHTML = `⚠️ No course codes found for ${USER_DEPT} Level ${USER_LEVEL_NUM}. <a href="/profile" style="color:#f97316;text-decoration:underline;margin-left:4px;">Update profile →</a>`;
         return;
     }
-
-    // Load saved selections from materials page localStorage (share the same key)
-    const matKey = `nelavista_courses_${USER_LEVEL_NUM}_${USER_DEPT.replace(/\s+/g,'_')}`;
-    const saved = JSON.parse(localStorage.getItem(matKey)||'[]');
-    selectedCourses = [...saved];
 
     grid.innerHTML = '';
     list.forEach(c => {
         const chip = document.createElement('div');
-        chip.className = 'course-chip' + (selectedCourses.includes(c.code) ? ' selected' : '');
+        chip.className = 'course-chip';
         chip.innerHTML = `<span class="chip-code">${c.code}</span><span class="chip-name">${c.name}</span><span class="chip-check">✓</span>`;
         chip.addEventListener('click', () => {
             chip.classList.toggle('selected');
-            if (chip.classList.contains('selected')) { if(!selectedCourses.includes(c.code)) selectedCourses.push(c.code); }
-            else { selectedCourses = selectedCourses.filter(x=>x!==c.code); }
+            if (chip.classList.contains('selected')) { 
+                if(!selectedCourses.includes(c.code)) selectedCourses.push(c.code); 
+            } else { 
+                selectedCourses = selectedCourses.filter(x=>x!==c.code); 
+            }
             updateSelCount();
         });
         grid.appendChild(chip);
@@ -765,13 +620,17 @@ function initCourseSelect() {
 
     updateSelCount();
 
-    // Select all
     let allSel = false;
     document.getElementById('selAllBtn').addEventListener('click', () => {
         allSel = !allSel;
         document.querySelectorAll('.course-chip').forEach((chip,i) => {
-            if(allSel){ chip.classList.add('selected'); if(!selectedCourses.includes(list[i].code)) selectedCourses.push(list[i].code); }
-            else { chip.classList.remove('selected'); selectedCourses=[]; }
+            if(allSel){ 
+                chip.classList.add('selected'); 
+                if(!selectedCourses.includes(list[i].code)) selectedCourses.push(list[i].code); 
+            } else { 
+                chip.classList.remove('selected'); 
+                selectedCourses=[]; 
+            }
         });
         document.getElementById('selAllBtn').textContent = allSel ? 'Deselect All' : 'Select All';
         updateSelCount();
@@ -789,34 +648,19 @@ function updateSelCount() {
 }
 
 // ══════════════════════════════════════════════════════
-//  SCREEN 2 — EXAM TYPE SELECT
+//  SCREEN 2 - EXAM TYPE SELECT
 // ══════════════════════════════════════════════════════
 function showExamTypeSelect() {
     goToScreen('screen-type');
     examType = null;
-
-    // If only one course selected, auto-fill. Otherwise show selector.
-    if (selectedCourses.length === 1) {
-        selectedCourseForExam = selectedCourses[0];
-    } else {
-        // Build course selector dropdown
-        selectedCourseForExam = selectedCourses[0];
-    }
+    selectedCourseForExam = selectedCourses[0];
     updateCourseDisplay();
     document.getElementById('startExamBtn').disabled = true;
 }
 
 function updateCourseDisplay() {
-    const list = (COURSE_CODES_DB[USER_DEPT]||{})[USER_LEVEL_NUM]||[];
-    const found = list.find(c=>c.code===selectedCourseForExam);
     const display = document.getElementById('selectedCourseDisplay');
-    const coursesHtml = selectedCourses.length > 1
-        ? `<div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:10px;">${selectedCourses.map(code=>{
-            const f=list.find(c=>c.code===code);
-            return `<button onclick="pickCourse('${code}')" style="background:${code===selectedCourseForExam?'#58a6ff':'#21262d'};color:${code===selectedCourseForExam?'#0d1117':'#e6edf3'};border:none;padding:6px 14px;border-radius:30px;font-size:0.78rem;font-weight:600;cursor:pointer;">${code}</button>`;
-        }).join('')}</div>`
-        : '';
-    display.innerHTML = `Practising: <strong>${selectedCourseForExam}</strong> ${coursesHtml}`;
+    display.innerHTML = `Practising: <strong>${selectedCourseForExam}</strong>`;
 }
 
 window.pickCourse = function(code) {
@@ -832,7 +676,7 @@ function selectExamType(type) {
 }
 
 // ══════════════════════════════════════════════════════
-//  SCREEN 3 — EXAM
+//  SCREEN 3 - EXAM
 // ══════════════════════════════════════════════════════
 function startExam() {
     if (!examType || !selectedCourseForExam) return;
@@ -858,40 +702,14 @@ function buildQuestions() {
     const bank = QUESTION_BANK[bankKey];
 
     if (!bank || !bank.length) {
-        // Fallback: try without exact code match
-        questions = [{
-            q:`No questions available yet for ${code}. Check back soon!`,
-            opts:["OK","Understood","Got it","Fine"],
-            ans:0,
-            exp:"Questions for this course are being added.",
-            type:'cbt'
-        }];
+        questions = [{q:`No questions available for ${code}`, opts:["OK"], ans:0, exp:"", type:'cbt'}];
         return;
     }
 
     if (examType === 'cbt') {
-        // ROTATION LOGIC: 
-        // We have 20 questions in bank. Each session picks 10.
-        // Track which questions were used in last session so next session shows different ones.
-        const histKey = getCbtHistoryKey(code);
-        const lastUsed = JSON.parse(localStorage.getItem(histKey)||'[]');
-        
-        // Prioritize questions NOT in lastUsed
-        const fresh = bank.filter((_,i) => !lastUsed.includes(i));
-        const used  = bank.filter((_,i) => lastUsed.includes(i));
-        
-        // Pick: first take from fresh, then pad with used if needed, shuffle
-        const pool = shuffle([...fresh, ...used]);
-        const pick = pool.slice(0, Math.min(10, pool.length));
-        
-        // Save indices of picked questions for next rotation
-        const pickedIndices = pick.map(q => bank.indexOf(q));
-        localStorage.setItem(histKey, JSON.stringify(pickedIndices));
-        
-        questions = pick.map(q => ({...q, type:'cbt'}));
+        questions = shuffle([...bank]).slice(0, 50).map(q => ({...q, type:'cbt'}));
     } else {
-        // Written: shuffle and take 5
-        questions = shuffle([...bank]).slice(0,5).map(q=>({...q, type:'written'}));
+        questions = shuffle([...bank]).slice(0,10).map(q=>({...q, type:'written'}));
     }
 }
 
@@ -899,7 +717,6 @@ function renderExamUI() {
     const total = questions.length;
     document.getElementById('progTotal').textContent = total;
     document.getElementById('progAnswered').textContent = 0;
-    document.getElementById('progFlaggedWrap').style.display = 'none';
 
     if (examType === 'cbt') {
         buildCbtNav(total);
@@ -930,32 +747,27 @@ function renderQuestion(idx) {
     const q = questions[idx];
     const total = questions.length;
 
-    // Update progress
     document.getElementById('progCurrent').textContent = idx+1;
     document.getElementById('progFill').style.width = `${((idx+1)/total)*100}%`;
     document.getElementById('qNumber').textContent = `Question ${idx+1} of ${total}`;
     document.getElementById('qCourseTag').textContent = selectedCourseForExam;
     document.getElementById('qText').textContent = q.q;
 
-    // Flag state
     const flagBtn = document.getElementById('flagBtn');
     flagBtn.className = 'flag-btn' + (flagged.includes(idx) ? ' flagged' : '');
     flagBtn.textContent = flagged.includes(idx) ? '🚩 Flagged' : '🚩 Flag Question';
 
-    // Nav buttons
     document.getElementById('prevBtn').style.display = idx===0 ? 'none' : '';
     const isLast = idx === total-1;
     document.getElementById('nextBtn').style.display = isLast ? 'none' : '';
     document.getElementById('submitBtn').style.display = isLast ? '' : 'none';
 
-    // Render options or written area
     if (examType === 'cbt') {
         renderCbtOptions(q, idx);
     } else {
         renderWrittenQuestion(q, idx);
     }
 
-    // Update CBT nav pills
     if(examType==='cbt'){
         document.querySelectorAll('.q-pill').forEach((p,i)=>{
             p.className = 'q-pill';
@@ -981,30 +793,27 @@ function renderCbtOptions(q, idx) {
     }).join('')}</div>`;
 }
 
-function selectOption(qIdx, optIdx) {
-    if(userAnswers[qIdx] !== undefined) return; // already answered — no changing
+window.selectOption = function(qIdx, optIdx) {
+    if(userAnswers[qIdx] !== undefined) return;
     userAnswers[qIdx] = optIdx;
     const q = questions[qIdx];
 
-    // Show feedback immediately in CBT
     q.opts.forEach((_,oi) => {
         const btn = document.getElementById(`opt-${qIdx}-${oi}`);
         if(!btn) return;
         btn.disabled = true;
-        if(oi === q.ans) { btn.className = 'option-btn correct'; btn.querySelector('.opt-letter').style.background='#22c55e'; btn.querySelector('.opt-letter').style.color='#0d1117'; }
-        else if(oi === optIdx && optIdx !== q.ans) { btn.className = 'option-btn wrong'; }
+        if(oi === q.ans) { 
+            btn.className = 'option-btn correct'; 
+            btn.querySelector('.opt-letter').style.background='#22c55e'; 
+            btn.querySelector('.opt-letter').style.color='#0d1117'; 
+        } else if(oi === optIdx && optIdx !== q.ans) { 
+            btn.className = 'option-btn wrong'; 
+        }
     });
-
-    // Show explanation
-    const area = document.getElementById('optionsArea');
-    const expBox = document.createElement('div');
-    expBox.className = 'explanation-box show';
-    expBox.innerHTML = `<div class="exp-label">💡 Explanation</div><div class="exp-text">${q.exp||'No explanation provided.'}</div>`;
-    area.appendChild(expBox);
 
     updateAnsweredCount();
     updateCbtNavPill(qIdx);
-}
+};
 
 function updateCbtNavPill(idx) {
     const pill = document.getElementById(`qpill-${idx}`);
@@ -1019,9 +828,7 @@ function renderWrittenQuestion(q, idx) {
     area.innerHTML = `
         <div class="written-answer-wrap">
             <textarea class="written-answer" id="written-${idx}" placeholder="Write your answer here…" oninput="saveWritten(${idx})">${savedText}</textarea>
-            <button class="check-answer-btn" onclick="revealMarkScheme(${idx})">
-                👁 Check Answer / Mark Scheme
-            </button>
+            <button class="check-answer-btn" onclick="revealMarkScheme(${idx})">👁 Check Answer / Mark Scheme</button>
             <div class="mark-scheme" id="ms-${idx}" ${savedMark?'style="display:block"':''}>
                 <div class="mark-scheme-title">✅ Mark Scheme / Model Answer</div>
                 <div class="mark-scheme-text">${q.ms||'Mark scheme not available.'}</div>
@@ -1034,24 +841,24 @@ function renderWrittenQuestion(q, idx) {
         </div>`;
 }
 
-function saveWritten(idx) {
+window.saveWritten = function(idx) {
     const ta = document.getElementById(`written-${idx}`);
     if(ta) userAnswers[idx] = ta.value;
     updateAnsweredCount();
-}
+};
 
-function revealMarkScheme(idx) {
+window.revealMarkScheme = function(idx) {
     const ms = document.getElementById(`ms-${idx}`);
     if(ms) ms.classList.add('show');
-}
+};
 
-function markSelf(idx, mark) {
+window.markSelf = function(idx, mark) {
     userMarks[idx] = mark;
     document.querySelectorAll(`#ms-${idx} .self-mark-btn`).forEach(b => b.classList.remove('active'));
     const el = document.querySelector(`#ms-${idx} .self-mark-btn.${mark==='correct'?'got-it':mark==='partial'?'partial':'missed'}`);
     if(el) el.classList.add('active');
     updateAnsweredCount();
-}
+};
 
 function updateAnsweredCount() {
     const count = Object.keys(userAnswers).filter(k => {
@@ -1066,17 +873,17 @@ function updateAnsweredCount() {
 
 function jumpTo(idx) { renderQuestion(idx); }
 
-function navigate(dir) {
+window.navigate = function(dir) {
     const newIdx = currentQ + dir;
     if(newIdx >= 0 && newIdx < questions.length) renderQuestion(newIdx);
-}
+};
 
-function toggleFlag() {
+window.toggleFlag = function() {
     const idx = currentQ;
     if(flagged.includes(idx)) flagged = flagged.filter(f=>f!==idx);
     else flagged.push(idx);
     renderQuestion(idx);
-}
+};
 
 function startTimer() {
     elapsedSeconds = 0;
@@ -1084,11 +891,6 @@ function startTimer() {
     timerInterval = setInterval(()=>{
         elapsedSeconds++;
         updateTimerDisplay();
-        // Warn after expected time
-        const expected = examType==='cbt' ? 600 : 3600; // 10min CBT, 60min written
-        const badge = document.getElementById('timerBadge');
-        if(elapsedSeconds > expected*1.2) { badge.className='timer-badge danger'; }
-        else if(elapsedSeconds > expected) { badge.className='timer-badge warning'; }
     },1000);
 }
 
@@ -1098,81 +900,60 @@ function updateTimerDisplay() {
     document.getElementById('timerText').textContent = `${m}:${s}`;
 }
 
-function confirmSubmit() {
+window.confirmSubmit = function() {
     if(confirm('Submit your exam now? You cannot change answers after submission.')) submitExam();
-}
+};
 
 // ══════════════════════════════════════════════════════
-//  RESULTS
+//  SCREEN 4 - RESULTS
 // ══════════════════════════════════════════════════════
 function submitExam() {
     clearInterval(timerInterval);
     goToScreen('screen-results');
 
-    let correct=0, wrong=0, partial=0, skipped=0;
+    let correct=0, wrong=0;
 
     if(examType==='cbt') {
         questions.forEach((q,i) => {
-            if(userAnswers[i]===undefined){ skipped++; }
-            else if(userAnswers[i]===q.ans){ correct++; }
-            else{ wrong++; }
+            if(userAnswers[i]===undefined) wrong++;
+            else if(userAnswers[i]===q.ans) correct++;
+            else wrong++;
         });
     } else {
         questions.forEach((_,i) => {
             const m = userMarks[i];
-            if(!m||m==='missed') skipped++;
-            else if(m==='correct') correct++;
-            else if(m==='partial') partial++;
+            if(m==='correct') correct++;
             else wrong++;
         });
     }
 
     const total = questions.length;
-    const pct = Math.round((correct + (partial*0.5)) / total * 100);
+    const pct = Math.round(correct / total * 100);
 
-    // Emoji + title
     let emoji='😐', title='Keep Practising';
     if(pct>=90){emoji='🏆';title='Outstanding!';}
     else if(pct>=75){emoji='🎉';title='Great Job!';}
     else if(pct>=60){emoji='👍';title='Good Effort!';}
     else if(pct>=40){emoji='💪';title='Keep Going!';}
-    else{emoji='📖';title='More Study Needed';}
 
     document.getElementById('resultsEmoji').textContent = emoji;
     document.getElementById('resultsTitle').textContent = title;
-    document.getElementById('resultsSub').textContent = `${selectedCourseForExam} · ${examType==='cbt'?'CBT':'Written'} Practice`;
+    document.getElementById('resultsSub').textContent = `${selectedCourseForExam} · ${examType==='cbt'?'CBT':'Written'}`;
     document.getElementById('scorePct').textContent = pct+'%';
+    document.getElementById('statCorrect').textContent = correct;
+    document.getElementById('statWrong').textContent = wrong;
+    document.getElementById('statTime').textContent = Math.floor(elapsedSeconds/60)+'m '+  (elapsedSeconds%60)+'s';
 
-    // Ring animation
-    const circumference = 289;
     setTimeout(()=>{
+        const circumference = 289;
         document.getElementById('ringFill').style.strokeDashoffset = circumference - (circumference*(pct/100));
         document.getElementById('ringFill').style.stroke = pct>=75?'#22c55e':pct>=50?'#fbbf24':'#ef4444';
     },200);
 
-    document.getElementById('statCorrect').textContent = correct;
-    document.getElementById('statWrong').textContent = wrong + skipped;
-    document.getElementById('statTime').textContent = formatTime(elapsedSeconds);
-
-    // Update stats grid for written
-    if(examType==='written'){
-        document.querySelector('.stat-box.wrong-box .stat-lbl').textContent = 'Missed';
-        document.querySelector('.stat-box.correct-box .stat-lbl').textContent = 'Correct';
-        if(partial>0){
-            document.querySelector('.stat-box:nth-child(2) .stat-num').textContent = partial;
-            document.querySelector('.stat-box:nth-child(2) .stat-lbl').textContent = 'Partial';
-        }
-    }
-
-    buildReview(correct, wrong, partial, skipped);
+    buildReview();
 }
 
-function formatTime(s) {
-    if(s<60) return s+'s';
-    return Math.floor(s/60)+'m '+  (s%60)+'s';
-}
-
-function buildReview(correct, wrong, partial, skipped) {
+function buildReview() {
     const body = document.getElementById('reviewBody');
     const letters = ['A','B','C','D'];
     body.innerHTML = questions.map((q,i)=>{
@@ -1183,7 +964,7 @@ function buildReview(correct, wrong, partial, skipped) {
             else{status='Wrong ✗';statusColor='#ef4444';riClass='ri-wrong';}
         } else {
             const m=userMarks[i];
-            if(!m){status='Not self-marked';statusColor='#6e7681';riClass='ri-skipped';}
+            if(!m){status='Not marked';statusColor='#6e7681';riClass='ri-skipped';}
             else if(m==='correct'){status='Correct ✓';statusColor='#22c55e';riClass='ri-correct';}
             else if(m==='partial'){status='Partial ~';statusColor='#fbbf24';riClass='ri-partial';}
             else{status='Missed ✗';statusColor='#ef4444';riClass='ri-wrong';}
@@ -1197,7 +978,9 @@ function buildReview(correct, wrong, partial, skipped) {
             if(userAnswers[i]!==q.ans){
                 answerHtml += `<div class="ri-answer correct-ans">Correct: ${letters[q.ans]}. ${q.opts[q.ans]}</div>`;
             }
-            if(q.exp){ answerHtml += `<div class="ri-answer" style="background:rgba(88,166,255,0.05);color:#8b949e;margin-top:4px;font-size:0.75rem;">💡 ${q.exp}</div>`; }
+            if(q.exp){ 
+                answerHtml += `<div class="ri-answer" style="background:rgba(88,166,255,0.05);color:#8b949e;margin-top:4px;font-size:0.75rem;">💡 ${q.exp}</div>`; 
+            }
         } else {
             const txt = userAnswers[i]||'(No answer written)';
             answerHtml = `<div class="ri-answer written-ans">Your answer: ${txt}</div>
@@ -1212,23 +995,24 @@ function buildReview(correct, wrong, partial, skipped) {
     }).join('');
 }
 
-function toggleReview() {
+window.toggleReview = function() {
     const body = document.getElementById('reviewBody');
     const arrow = document.getElementById('reviewArrow');
     body.classList.toggle('open');
     arrow.textContent = body.classList.contains('open') ? '▲' : '▼';
-}
+};
 
-function tryAgain() {
+window.tryAgain = function() {
     goToScreen('screen-type');
-    // examType stays same, course stays same
-    // New questions will be picked by rotation when startExam is called
-}
+};
 
 // ══════════════════════════════════════════════════════
-//  INIT
+//  INITIALIZE
 // ══════════════════════════════════════════════════════
 initCourseSelect();
+
+// Debug log
+console.log('📋 User Profile:', { department: USER_DEPT, level: USER_LEVEL, name: USER_NAME });
 </script>
 </body>
 </html>

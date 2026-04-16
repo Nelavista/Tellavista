@@ -141,8 +141,9 @@
     .ai-card { flex: 1.2; background: #3b82f6; border-radius: 24px; padding: 20px 24px; color: white; }
     .stat-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
     .stat-header span:first-child { font-weight: 600; font-size: 0.8rem; letter-spacing: 1px; color: #9ca3af; }
-    .live-badge { background: #10b981; padding: 4px 10px; border-radius: 40px; font-size: 0.7rem; font-weight: 600; }
-    .stat-number { font-size: 2.8rem; font-weight: 800; margin: 8px 0 16px; }
+    .live-badge { background: #10b981; padding: 4px 10px; border-radius: 40px; font-size: 0.7rem; font-weight: 600; transition: opacity 0.3s; }
+    .stat-number { font-size: 2.8rem; font-weight: 800; margin: 8px 0 8px; }
+    .today-total { font-size: 0.9rem; color: #9ca3af; margin-bottom: 12px; }
     .bar-chart { display: flex; align-items: flex-end; gap: 12px; margin-top: 20px; height: 100px; }
     .bar-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 0.7rem; }
     .bar { width: 100%; background: #3b82f6; border-radius: 8px; transition: height 0.3s; min-height: 4px; }
@@ -236,6 +237,8 @@
     .attachment-icon, .voice-icon { background: none; border: none; color: #9ca3af; font-size: 1.2rem; cursor: pointer; padding: 8px; border-radius: 50%; transition: 0.2s; }
     .send-btn { background: #3b82f6; border: none; width: 38px; height: 38px; border-radius: 40px; color: white; cursor: pointer; font-size: 1.1rem; }
     .attachment-container { max-width: 900px; margin: 0 auto 10px; display: flex; gap: 8px; flex-wrap: wrap; }
+    .attachment-preview { background: #1e293b; border-radius: 12px; padding: 8px 12px; display: flex; align-items: center; gap: 8px; font-size: 0.85rem; }
+    .attachment-remove { background: none; border: none; color: #ef4444; cursor: pointer; font-size: 1rem; padding: 2px 6px; }
 
     .overlay { position: fixed; top:0; left:0; right:0; bottom:0; background: rgba(0,0,0,0.6); z-index: 1002; display: none; }
     .overlay.active { display: block; }
@@ -325,9 +328,10 @@
         <div class="stat-card">
           <div class="stat-header">
             <span>STUDY ANALYTICS</span>
-            <span class="live-badge">● LIVE TRACKING</span>
+            <span class="live-badge" id="liveBadge">● LIVE TRACKING</span>
           </div>
-          <div class="stat-number">0 Hours this week</div>
+          <div class="stat-number" id="weeklyTotal">Loading...</div>
+          <div class="today-total" id="todayTotal">📅 Today: Loading...</div>
           <div class="bar-chart" id="barChart"></div>
         </div>
         <div class="ai-card">
@@ -445,12 +449,41 @@
   async function loadStudyStats() {
     try {
       const res = await fetch('/api/study-stats');
+      if (!res.ok) throw new Error('Failed to fetch study stats');
+      
       const data = await res.json();
       const days = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
       const values = days.map(d => data.days[d] || 0);
-      document.querySelector('.stat-number').textContent = `${data.total} Hours this week`;
+      
+      // Update weekly total
+      const totalHours = data.total || 0;
+      document.getElementById('weeklyTotal').textContent = `${totalHours} Hours this week`;
+      
+      // Get today's hours
+      const today = new Date().toLocaleString('en-US', { weekday: 'short' });
+      const todayHours = data.days[today] || 0;
+      document.getElementById('todayTotal').textContent = `📅 Today: ${todayHours} hours`;
+      
+      // Update live badge
+      const liveBadge = document.getElementById('liveBadge');
+      if (liveBadge) {
+        liveBadge.innerHTML = '● LIVE TRACKING';
+        liveBadge.style.opacity = '1';
+      }
+      
       renderBarChart(values);
+      console.log('Study stats updated:', totalHours, 'hours this week,', todayHours, 'hours today');
     } catch(e) {
+      console.error('Failed to load study stats:', e);
+      document.getElementById('weeklyTotal').textContent = '0 Hours this week';
+      document.getElementById('todayTotal').textContent = '📅 Today: 0 hours';
+      
+      const liveBadge = document.getElementById('liveBadge');
+      if (liveBadge) {
+        liveBadge.innerHTML = '○ RECONNECTING...';
+        liveBadge.style.opacity = '0.7';
+      }
+      
       renderBarChart([0,0,0,0,0,0,0]);
     }
   }
@@ -485,16 +518,21 @@
     const date = document.getElementById('examDate').value;
     const duration = document.getElementById('examDuration').value.trim();
     if (!course || !date) return alert('Please fill in course name and date.');
-    await fetch('/api/exams', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({course, date, duration})
-    });
-    document.getElementById('examCourse').value = '';
-    document.getElementById('examDate').value = '';
-    document.getElementById('examDuration').value = '';
-    document.getElementById('addExamForm').style.display = 'none';
-    loadExams();
+    
+    try {
+      await fetch('/api/exams', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({course, date, duration})
+      });
+      document.getElementById('examCourse').value = '';
+      document.getElementById('examDate').value = '';
+      document.getElementById('examDuration').value = '';
+      document.getElementById('addExamForm').style.display = 'none';
+      loadExams();
+    } catch(e) {
+      alert('Failed to save exam. Please try again.');
+    }
   }
 
   async function loadExams() {
@@ -503,6 +541,7 @@
       const data = await res.json();
       const container = document.getElementById('examsContainer');
       const upcomingCount = data.exams.filter(e => new Date(e.date) >= new Date()).length;
+      
       if (upcomingCount > 0) {
         document.getElementById('greetingSubtitle').textContent = `You have ${upcomingCount} exam${upcomingCount > 1 ? 's' : ''} coming up. Stay focused! 🎯`;
       } else if (data.exams.length === 0) {
@@ -510,6 +549,7 @@
       } else {
         document.getElementById('greetingSubtitle').textContent = "You're all caught up. Keep studying! 📚";
       }
+      
       if (data.exams.length === 0) {
         container.innerHTML = `
           <div class="no-exams-msg">
@@ -519,8 +559,9 @@
           </div>`;
         return;
       }
+      
       container.innerHTML = '';
-      data.exams.forEach(exam => {
+      data.exams.sort((a, b) => new Date(a.date) - new Date(b.date)).forEach(exam => {
         const d = new Date(exam.date);
         const month = d.toLocaleString('default', {month:'short'}).toUpperCase();
         const day = d.getDate();
@@ -531,7 +572,9 @@
             <button class="practice-btn" onclick="window.location.href='/CBT'">Start Practice →</button>
           </div>`;
       });
-    } catch(e) { console.error('Failed to load exams', e); }
+    } catch(e) { 
+      console.error('Failed to load exams', e); 
+    }
   }
 
   async function loadCourses() {
@@ -547,7 +590,7 @@
       data.courses.forEach(course => {
         grid.innerHTML += `
           <div class="course-card">
-            <span class="badge ${course.type === 'CORE' ? 'core' : 'elective'}">${course.type}</span>
+            <span class="badge ${course.type === 'CORE' ? 'core' : 'elective'}">${course.type || 'CORE'}</span>
             <div class="course-title">${course.name}</div>
             <div class="course-sub">Next: ${course.next_topic || 'Continue studying'}</div>
             <div class="progress-bar"><div class="progress-fill" style="width:${course.progress || 0}%"></div></div>
@@ -565,17 +608,29 @@
     if (document.getElementById('side-menu').classList.contains('active')) document.body.style.overflow = 'hidden';
     else document.body.style.overflow = '';
   }
+  
   function closeMenu() {
     document.getElementById('side-menu').classList.remove('active');
     document.getElementById('overlay').classList.remove('active');
     document.body.style.overflow = '';
   }
+  
   function toggleTheme() {
     const isDark = document.body.classList.contains('dark-mode');
-    if (isDark) { document.body.classList.remove('dark-mode'); document.body.classList.add('light-mode'); state.theme = 'light'; document.getElementById('theme-toggle').textContent = '☀️'; }
-    else { document.body.classList.remove('light-mode'); document.body.classList.add('dark-mode'); state.theme = 'dark'; document.getElementById('theme-toggle').textContent = '🌙'; }
+    if (isDark) { 
+      document.body.classList.remove('dark-mode'); 
+      document.body.classList.add('light-mode'); 
+      state.theme = 'light'; 
+      document.getElementById('theme-toggle').textContent = '☀️'; 
+    } else { 
+      document.body.classList.remove('light-mode'); 
+      document.body.classList.add('dark-mode'); 
+      state.theme = 'dark'; 
+      document.getElementById('theme-toggle').textContent = '🌙'; 
+    }
     localStorage.setItem('theme', state.theme);
   }
+  
   function enterChatMode() {
     if (!state.isChatMode) {
       state.isChatMode = true;
@@ -588,6 +643,7 @@
       setTimeout(() => { document.getElementById('chatInput').focus(); scrollMessagesToBottom(); }, 100);
     }
   }
+  
   function addMessage(text, sender) {
     const messagesDiv = document.getElementById('messages');
     messagesDiv.querySelector('.typing-indicator')?.remove();
@@ -602,7 +658,13 @@
     scrollMessagesToBottom();
     renderMathInElement(msgDiv);
   }
-  function renderMathInElement(element) { if (window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise([element]).catch(e => console.log(e)); }
+  
+  function renderMathInElement(element) { 
+    if (window.MathJax && MathJax.typesetPromise) {
+      MathJax.typesetPromise([element]).catch(e => console.log(e));
+    }
+  }
+  
   function showTypingIndicator() {
     const messagesDiv = document.getElementById('messages');
     messagesDiv.querySelector('.typing-indicator')?.remove();
@@ -613,9 +675,22 @@
     scrollMessagesToBottom();
     state.isLoading = true;
   }
-  function scrollMessagesToBottom() { const m = document.getElementById('messages'); if (m) m.scrollTop = m.scrollHeight; }
-  function updateSendButton() { const btn = document.getElementById('sendButton'); const inp = document.getElementById('chatInput'); btn.disabled = (inp.value.trim() === '' && state.pendingAttachments.length === 0); }
-  function handleKeyPress(e) { if (e.key === 'Enter') sendMessage(); }
+  
+  function scrollMessagesToBottom() { 
+    const m = document.getElementById('messages'); 
+    if (m) m.scrollTop = m.scrollHeight; 
+  }
+  
+  function updateSendButton() { 
+    const btn = document.getElementById('sendButton'); 
+    const inp = document.getElementById('chatInput'); 
+    btn.disabled = (inp.value.trim() === '' && state.pendingAttachments.length === 0); 
+  }
+  
+  function handleKeyPress(e) { 
+    if (e.key === 'Enter') sendMessage(); 
+  }
+  
   async function sendToBackend(message, attachments) {
     try {
       const formData = new FormData();
@@ -634,6 +709,7 @@
       addMessage("Sorry, I encountered an error. Please try again.", 'ai');
     }
   }
+  
   async function sendMessage() {
     if (state.isLoading) return;
     const input = document.getElementById('chatInput');
@@ -642,7 +718,9 @@
     if (!state.isChatMode) enterChatMode();
     if (text) addMessage(text, 'user');
     const attachmentsToSend = [...state.pendingAttachments];
-    if (attachmentsToSend.length) addMessage(`📎 Sent ${attachmentsToSend.length} file(s): ${attachmentsToSend.map(f => f.name).join(', ')}`, 'user');
+    if (attachmentsToSend.length) {
+      addMessage(`📎 Sent ${attachmentsToSend.length} file(s): ${attachmentsToSend.map(f => f.name).join(', ')}`, 'user');
+    }
     input.value = '';
     updateSendButton();
     await sendToBackend(text, attachmentsToSend);
@@ -652,16 +730,18 @@
     attachContainer.innerHTML = '';
     input.focus();
   }
+  
   function handleFileSelect(files) {
     if (!files.length) return;
     const file = files[0];
-    if (file.size > 16 * 1024 * 1024) { alert('File too large'); return; }
+    if (file.size > 16 * 1024 * 1024) { alert('File too large (max 16MB)'); return; }
     state.pendingAttachments.push({ id: 'att_' + Date.now(), file, name: file.name, size: file.size, type: file.type });
     renderAttachmentPreview();
     document.getElementById('attachmentContainer').style.display = 'flex';
     updateSendButton();
     if (!state.isChatMode) enterChatMode();
   }
+  
   function renderAttachmentPreview() {
     const cont = document.getElementById('attachmentContainer');
     cont.innerHTML = '';
@@ -672,19 +752,60 @@
       cont.appendChild(div);
     });
   }
+  
   function removeAttachment(id) {
     state.pendingAttachments = state.pendingAttachments.filter(a => a.id !== id);
     renderAttachmentPreview();
     if (!state.pendingAttachments.length) document.getElementById('attachmentContainer').style.display = 'none';
     updateSendButton();
   }
+  
   function toggleVoiceInput() {
     if (!('webkitSpeechRecognition' in window)) { alert('Voice not supported'); return; }
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
     state.recognition = new SR();
     state.recognition.lang = 'en-US';
-    state.recognition.onresult = (e) => { document.getElementById('chatInput').value = e.results[0][0].transcript; updateSendButton(); };
+    state.recognition.onresult = (e) => { 
+      document.getElementById('chatInput').value = e.results[0][0].transcript; 
+      updateSendButton(); 
+    };
     state.recognition.start();
+  }
+
+  // ===== INITIALIZATION =====
+  async function initializeDashboard() {
+    // Show loading state
+    document.getElementById('weeklyTotal').textContent = 'Loading...';
+    document.getElementById('todayTotal').textContent = '📅 Today: Loading...';
+    
+    // Load all data in parallel
+    await Promise.all([
+      loadStudyStats(),
+      loadExams(),
+      loadCourses()
+    ]);
+    
+    // Load any saved chat history
+    const savedChat = localStorage.getItem('nelavista_chat_history');
+    if (savedChat) {
+      try {
+        const messages = JSON.parse(savedChat);
+        state.messages = messages;
+        if (state.isChatMode) {
+          messages.forEach(msg => addMessage(msg.text, msg.sender));
+        }
+      } catch(e) {
+        console.error('Failed to load chat history', e);
+      }
+    }
+    
+    // Show welcome message if no chat history
+    setTimeout(() => {
+      if (state.messages.length === 0 && !state.isChatMode) {
+        const firstName = "{{ first_name }}";
+        addMessage(`👋 Welcome back to Nelavista, ${firstName}! I'm your AI educational companion. Your study progress has been saved. Ask me anything about your studies.`, 'ai');
+      }
+    }, 800);
   }
 
   // Event listeners
@@ -694,29 +815,57 @@
   document.getElementById('chatInput')?.addEventListener('input', updateSendButton);
 
   // Theme init
-  if (state.theme === 'light') { document.body.classList.add('light-mode'); document.getElementById('theme-toggle').textContent = '☀️'; }
-  else { document.body.classList.add('dark-mode'); document.getElementById('theme-toggle').textContent = '🌙'; }
+  if (state.theme === 'light') { 
+    document.body.classList.add('light-mode'); 
+    document.getElementById('theme-toggle').textContent = '☀️'; 
+  } else { 
+    document.body.classList.add('dark-mode'); 
+    document.getElementById('theme-toggle').textContent = '🌙'; 
+  }
 
-  // Init
+  // Set greeting and start initialization
   setGreeting();
-  loadStudyStats();
-  loadExams();
-  loadCourses();
+  initializeDashboard();
 
+  // Track session every minute when tab is active
   setInterval(() => {
     if (!document.hidden) {
-      fetch('/api/track-session', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({seconds: 60}) });
+      fetch('/api/track-session', { 
+        method: 'POST', 
+        headers: {'Content-Type': 'application/json'}, 
+        body: JSON.stringify({seconds: 60}) 
+      })
+      .then(res => res.json())
+      .then(data => {
+        console.log('Session tracked:', data.total_hours, 'hours total today');
+        // Refresh stats after tracking
+        loadStudyStats();
+      })
+      .catch(err => console.error('Failed to track session:', err));
     }
   }, 60000);
-  setInterval(loadStudyStats, 300000);
 
-  setTimeout(() => {
-    if (state.messages.length === 0 && !state.isChatMode)
-      addMessage("👋 Welcome to Nelavista! I'm your AI educational companion. Ask me anything about your studies.", 'ai');
-  }, 800);
+  // Refresh study stats every 5 minutes
+  setInterval(() => {
+    if (!document.hidden) {
+      loadStudyStats();
+    }
+  }, 300000);
 
+  // Handle page visibility changes
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) {
+      // Refresh data when tab becomes visible again
+      loadStudyStats();
+      loadExams();
+    }
+  });
+
+  // Save chat history before unload
   window.addEventListener('beforeunload', () => {
-    if (state.messages.length) localStorage.setItem('nelavista_chat_history', JSON.stringify(state.messages));
+    if (state.messages.length) {
+      localStorage.setItem('nelavista_chat_history', JSON.stringify(state.messages));
+    }
   });
 </script>
 

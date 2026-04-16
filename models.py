@@ -147,3 +147,50 @@ class Material(db.Model):
             'created_at': self.created_at.isoformat() if self.created_at else None,
             'is_approved': self.is_approved
         }
+
+
+# ===== NEW: Study Session Tracking =====
+class StudySession(db.Model):
+    __tablename__ = 'study_sessions'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    date = db.Column(db.Date, nullable=False)
+    seconds = db.Column(db.Integer, default=0)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    # Relationship
+    user = db.relationship('User', backref=db.backref('study_sessions', lazy=True))
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'user_id': self.user_id,
+            'date': self.date.isoformat() if self.date else None,
+            'seconds': self.seconds,
+            'hours': round(self.seconds / 3600, 1)
+        }
+
+
+# ===== NEW: Exam Tracking =====
+class Exam(db.Model):
+    __tablename__ = 'exams'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    course = db.Column(db.String(200), nullable=False)
+    date = db.Column(db.Date, nullable=False)
+    duration = db.Column(db.String(100))
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    # Relationship
+    user = db.relationship('User', backref=db.backref('exams', lazy=True))
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'course': self.course,
+            'date': self.date.isoformat() if self.date else None,
+            'duration': self.duration
+        }

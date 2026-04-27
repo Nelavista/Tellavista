@@ -35,6 +35,10 @@ cloudinary.config(
     secure=True
 )
 
+# ===== GOOGLE CUSTOM SEARCH CONFIG =====
+GOOGLE_API_KEY = os.environ.get('GOOGLE_CUSTOM_SEARCH_API_KEY')
+GOOGLE_SEARCH_ENGINE_ID = os.environ.get('GOOGLE_SEARCH_ENGINE_ID')
+
 materials_bp = Blueprint('materials', __name__)
 
 
@@ -55,6 +59,207 @@ def enforce_profile_completion():
     if user and not check_profile_complete(user):
         # Redirect to dashboard; the modal will appear there
         return redirect(url_for('dashboard.dashboard'))
+
+
+# ===== GOOGLE CUSTOM SEARCH FUNCTION =====
+def search_google_pdfs(course_code, max_results=10):
+    """
+    Search Google Custom Search API for PDF materials related to a course code.
+    Returns list of dicts with title, url, snippet.
+    """
+    if not GOOGLE_API_KEY or not GOOGLE_SEARCH_ENGINE_ID:
+        print("[WARNING] Google API credentials not configured")
+        return []
+    
+    # Try multiple query variations for better results
+    queries = [
+        f'{course_code} lecture notes filetype:pdf',
+        f'{course_code} past questions filetype:pdf',
+        f'{course_code} study material filetype:pdf'
+    ]
+    
+    all_results = []
+    seen_urls = set()
+    
+    for query in queries[:2]:  # Limit to 2 queries to stay within free tier
+        try:
+            url = "https://www.googleapis.com/customsearch/v1"
+            params = {
+                'key': GOOGLE_API_KEY,
+                'cx': GOOGLE_SEARCH_ENGINE_ID,
+                'q': query,
+                'num': min(max_results, 10),
+                'fileType': 'pdf'
+            }
+            
+            response = requests.get(url, params=params, timeout=10)
+            if response.status_code == 200:
+                data = response.json()
+                items = data.get('items', [])
+                
+                for item in items:
+                    pdf_url = item.get('link', '')
+                    if pdf_url and pdf_url not in seen_urls:
+                        seen_urls.add(pdf_url)
+                        all_results.append({
+                            'title': item.get('title', f'{course_code} Material'),
+                            'url': pdf_url,
+                            'snippet': item.get('snippet', '')
+                        })
+            else:
+                print(f"[ERROR] Google API error: {response.status_code} - {response.text[:200]}")
+                
+        except Exception as e:
+            print(f"[ERROR] Google search exception: {str(e)}")
+            continue
+    
+    return all_results[:max_results]
+
+
+# ===== FETCH GOOGLE MATERIALS FOR A COURSE CODE =====
+@materials_bp.route('/api/fetch-google-materials/<course_code>')
+@login_required
+def fetch_google_materials(course_code):
+    """
+    Fetch materials from Google Custom Search for a specific course code.
+    Caches results in database to avoid repeated API calls.
+    """
+    try:
+        course_code = course_code.upper().strip()
+        
+        # Check if we already have cached Google materials for this course code
+        cached = Material.query.filter_by(
+            course_code=course_code,
+            source='google_auto',
+            is_approved=True
+        ).all()
+        
+        if cached:
+            return jsonify({
+                'success': True,
+                'materials': [m.to_dict() for m in cached],
+                'cached': True
+            })
+        
+        # No cached results - fetch from Google
+        results = search_google_pdfs(course_code, max_results=8)
+        
+        if not results:
+            return jsonify({
+                'success': True,
+                'materials': [],
+                'message': 'No PDF materials found for this course code'
+            })
+        
+        # Save results to database
+        saved_materials = []
+        for r in results:
+            # Check if this URL already exists
+            existing = Material.query.filter_by(
+                external_url=r['url'],
+                source='google_auto'
+            ).first()
+            
+            if existing:
+                saved_materials.append(existing)
+                continue
+            
+            new_material = Material(
+                title=r['title'][:200],  # Truncate to fit DB
+                course_code=course_code,
+                external_url=r['url'],
+                source='google_auto',
+                is_approved=True,  # Auto-approve Google results
+                uploaded_by='Google Search',
+                department='General',  # Can be updated later
+                level='100',  # Default, can be refined
+                semester='First Semester'
+            )
+            db.session.add(new_material)
+            saved_materials.append(new_material)
+        
+        db.session.commit()
+        
+        return jsonify({
+            'success': True,
+            'materials': [m.to_dict() for m in saved_materials],
+            'cached': False,
+            'count': len(saved_materials)
+        })
+        
+    except Exception as e:
+        db.session.rollback()
+        print(f"[ERROR] fetch_google_materials: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+
+# ===== BATCH FETCH GOOGLE MATERIALS FOR MULTIPLE COURSES =====
+@materials_bp.route('/api/fetch-google-materials-batch', methods=['POST'])
+@login_required
+def fetch_google_materials_batch():
+    """
+    Fetch Google materials for multiple course codes at once.
+    Expects JSON: {'course_codes': ['MAT101', 'CSC111', ...]}
+    """
+    try:
+        data = request.get_json()
+        course_codes = data.get('course_codes', [])
+        
+        if not course_codes:
+            return jsonify({'error': 'No course codes provided'}), 400
+        
+        all_materials = []
+        
+        for code in course_codes[:5]:  # Limit to 5 courses per batch request
+            code = code.upper().strip()
+            
+            # Check cache first
+            cached = Material.query.filter_by(
+                course_code=code,
+                source='google_auto',
+                is_approved=True
+            ).all()
+            
+            if cached:
+                all_materials.extend([m.to_dict() for m in cached])
+            else:
+                # Fetch and save
+                results = search_google_pdfs(code, max_results=5)
+                for r in results:
+                    existing = Material.query.filter_by(
+                        external_url=r['url'],
+                        source='google_auto'
+                    ).first()
+                    
+                    if not existing:
+                        new_material = Material(
+                            title=r['title'][:200],
+                            course_code=code,
+                            external_url=r['url'],
+                            source='google_auto',
+                            is_approved=True,
+                            uploaded_by='Google Search',
+                            department='General',
+                            level='100',
+                            semester='First Semester'
+                        )
+                        db.session.add(new_material)
+                        all_materials.append(new_material.to_dict())
+                    else:
+                        all_materials.append(existing.to_dict())
+                
+                db.session.commit()
+        
+        return jsonify({
+            'success': True,
+            'materials': all_materials,
+            'count': len(all_materials)
+        })
+        
+    except Exception as e:
+        db.session.rollback()
+        print(f"[ERROR] fetch_google_materials_batch: {str(e)}")
+        return jsonify({'error': str(e)}), 500
 
 
 # ===== PROFILE COMPLETION ROUTE =====
@@ -220,6 +425,7 @@ def upload_material():
             next_topic=description if description else None,
             file_url=cloudinary_url,
             uploaded_by=author,
+            source='uploaded',  # Set source as uploaded
             is_approved=False
         )
         db.session.add(new_material)
@@ -256,7 +462,7 @@ def fetch_materials():
         if semester:
             query = query.filter_by(semester=semester)
         
-        # Order by id descending (since created_at might not exist)
+        # Order by id descending
         results = query.order_by(Material.id.desc()).all()
 
         return jsonify({
@@ -284,8 +490,8 @@ def delete_material_api(material_id):
         if not material:
             return jsonify({'error': 'Material not found'}), 404
 
-        # Try to delete from Cloudinary as well
-        if material.file_url:
+        # Try to delete from Cloudinary if it's an uploaded file
+        if material.file_url and material.source == 'uploaded':
             try:
                 parts = material.file_url.split('/upload/')
                 if len(parts) == 2:
@@ -315,12 +521,12 @@ def admin_materials():
     username = session['user']['username']
     user = User.query.filter_by(username=username).first()
     
-    # Only allow admins (user_level >= 5) - convert to int for comparison
+    # Only allow admins (user_level >= 5)
     if not user or int(user.user_level or 0) < 5:
         flash('Unauthorized access')
         return redirect(url_for('dashboard.dashboard'))
     
-    # Get all pending materials - order by id instead of created_at
+    # Get all pending materials
     pending = Material.query.filter_by(is_approved=False).order_by(Material.id.desc()).all()
     
     return render_template('admin_materials.html', pending=pending, user=user)
@@ -332,7 +538,6 @@ def approve_material(material_id):
     username = session['user']['username']
     user = User.query.filter_by(username=username).first()
     
-    # Convert user_level to int for comparison
     if not user or int(user.user_level or 0) < 5:
         return jsonify({'error': 'Unauthorized'}), 403
     
@@ -352,7 +557,6 @@ def reject_material(material_id):
     username = session['user']['username']
     user = User.query.filter_by(username=username).first()
     
-    # Convert user_level to int for comparison
     if not user or int(user.user_level or 0) < 5:
         return jsonify({'error': 'Unauthorized'}), 403
     
@@ -361,7 +565,7 @@ def reject_material(material_id):
         return jsonify({'error': 'Material not found'}), 404
     
     # Delete from Cloudinary if needed
-    if material.file_url:
+    if material.file_url and material.source == 'uploaded':
         try:
             parts = material.file_url.split('/upload/')
             if len(parts) == 2:
@@ -401,7 +605,7 @@ def debug_check_admin():
     })
 
 
-# ===== NEW: STUDY SESSION TRACKING =====
+# ===== STUDY SESSION TRACKING =====
 @materials_bp.route('/api/track-session', methods=['POST'])
 @login_required
 def track_session():
@@ -446,7 +650,7 @@ def track_session():
         return jsonify({'error': str(e)}), 500
 
 
-# ===== NEW: GET STUDY STATISTICS =====
+# ===== GET STUDY STATISTICS =====
 @materials_bp.route('/api/study-stats', methods=['GET'])
 @login_required
 def get_study_stats():
@@ -493,7 +697,7 @@ def get_study_stats():
         return jsonify({'error': str(e)}), 500
 
 
-# ===== NEW: EXAM MANAGEMENT =====
+# ===== EXAM MANAGEMENT =====
 @materials_bp.route('/api/exams', methods=['GET', 'POST'])
 @login_required
 def manage_exams():
@@ -546,7 +750,7 @@ def manage_exams():
             return jsonify({'error': str(e)}), 500
 
 
-# ===== NEW: USER COURSES =====
+# ===== USER COURSES =====
 @materials_bp.route('/api/user-courses')
 @login_required
 def get_user_courses():
@@ -606,7 +810,7 @@ def get_user_courses():
         return jsonify({'error': str(e)}), 500
 
 
-# ========== REMAINING ROUTES (unchanged) ==========
+# ========== REMAINING ROUTES ==========
 
 @materials_bp.route('/api/materials')
 def get_study_materials():

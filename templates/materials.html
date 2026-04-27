@@ -42,19 +42,34 @@
         .filter-pill.active { background:#58a6ff; color:#fff; }
         .filter-pill:hover:not(.active) { background:#30363d; color:#e6edf3; }
 
+        /* ===== GOOGLE SEARCH STATUS ===== */
+        .google-status { display:flex; align-items:center; gap:8px; margin-bottom:12px; padding:8px 16px; background:#161b22; border-radius:40px; border:1px solid #30363d; }
+        .google-status .status-icon { font-size:14px; }
+        .google-status .status-text { font-size:0.8rem; color:#8b949e; }
+        .google-status.loading .status-text { color:#58a6ff; }
+        .google-status.success .status-icon { color:#14b8a6; }
+        .refresh-google-btn { margin-left:auto; background:transparent; border:1px solid #30363d; color:#8b949e; padding:4px 12px; border-radius:30px; font-size:0.7rem; cursor:pointer; transition:all 0.2s; }
+        .refresh-google-btn:hover { border-color:#58a6ff; color:#58a6ff; }
+        .refresh-google-btn:disabled { opacity:0.5; cursor:not-allowed; }
+
         /* ===== MATERIALS GRID ===== */
         .materials-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; }
         @media(max-width:1024px){ .materials-grid { grid-template-columns:repeat(2,1fr); } }
         @media(max-width:640px){ .materials-grid { grid-template-columns:1fr; } }
 
-        .material-card { background:#161b22; border:1px solid #21262d; border-radius:16px; padding:18px; display:flex; flex-direction:column; cursor:pointer; transition:all 0.2s; }
+        .material-card { background:#161b22; border:1px solid #21262d; border-radius:16px; padding:18px; display:flex; flex-direction:column; cursor:pointer; transition:all 0.2s; position:relative; }
         .material-card:hover { border-color:#58a6ff; box-shadow:0 6px 20px rgba(88,166,255,0.08); transform:translateY(-2px); }
+        .material-card.google-source { border-left:3px solid #14b8a6; }
         .card-top { display:flex; gap:12px; align-items:flex-start; margin-bottom:10px; }
         .material-icon { font-size:26px; flex-shrink:0; }
         .material-title { font-weight:600; font-size:0.95rem; line-height:1.45; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
         .dept-tag { font-size:0.72rem; color:#58a6ff; background:rgba(88,166,255,0.1); padding:3px 10px; border-radius:30px; display:inline-block; margin-bottom:10px; width:fit-content; }
         .meta-row { display:flex; justify-content:space-between; font-size:0.68rem; color:#6e7681; margin-bottom:10px; }
         .badge { font-size:0.62rem; font-weight:700; padding:3px 8px; border-radius:30px; display:inline-block; width:fit-content; letter-spacing:0.3px; }
+        .source-badge { font-size:0.6rem; font-weight:600; padding:2px 8px; border-radius:30px; display:inline-flex; align-items:center; gap:4px; margin-left:8px; }
+        .source-badge.web { background:rgba(20,184,166,0.15); color:#14b8a6; border:1px solid rgba(20,184,166,0.3); }
+        .source-badge.uploaded { background:rgba(88,166,255,0.15); color:#58a6ff; border:1px solid rgba(88,166,255,0.3); }
+        .source-badge.static { background:rgba(107,114,128,0.15); color:#8b949e; border:1px solid rgba(107,114,128,0.3); }
         .card-bottom { display:flex; justify-content:space-between; align-items:center; margin-top:auto; padding-top:12px; border-top:1px solid #21262d; }
         .pdf-label { font-size:0.68rem; color:#6e7681; }
         .card-icons { display:flex; gap:14px; }
@@ -96,6 +111,44 @@
         .fab { position:fixed; bottom:28px; right:24px; background:#14b8a6; width:54px; height:54px; border-radius:50%; border:none; font-size:26px; cursor:pointer; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 16px rgba(20,184,166,0.35); z-index:100; transition:transform 0.15s; }
         .fab:hover { transform:scale(1.04); }
 
+        /* ===== PDF VIEWER MODAL ===== */
+        .viewer-modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.95); backdrop-filter:blur(8px); z-index:4000; }
+        .viewer-modal.show { display:flex; flex-direction:column; }
+        .viewer-header { display:flex; justify-content:space-between; align-items:center; padding:16px 24px; background:#161b22; border-bottom:1px solid #30363d; }
+        .viewer-title { font-size:1rem; font-weight:600; color:#e6edf3; max-width:70%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+        .viewer-actions { display:flex; gap:16px; }
+        .viewer-btn { background:transparent; border:none; color:#8b949e; font-size:18px; cursor:pointer; padding:8px; border-radius:8px; transition:all 0.2s; }
+        .viewer-btn:hover { background:#21262d; color:#e6edf3; }
+
+        /* ===== PDF LOADING STATE ===== */
+        .viewer-content { flex:1; position:relative; display:flex; align-items:center; justify-content:center; }
+        .viewer-frame { position:absolute; width:100%; height:100%; border:none; opacity:0; transition:opacity 0.4s ease-in; }
+        .viewer-frame.loaded { opacity:1; }
+
+        .pdf-loader { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; background:#0d1117; pointer-events:none; opacity:1; transition:opacity 0.4s ease-out; }
+        .pdf-loader.hidden { opacity:0; }
+
+        .skeleton-container { width:90%; max-width:800px; }
+        .skeleton-header { height:12px; background:linear-gradient(90deg, #21262d 25%, #30363d 50%, #21262d 75%); background-size:200% 100%; animation:shimmer 1.5s infinite; border-radius:6px; margin-bottom:24px; width:60%; }
+        .skeleton-line { height:8px; background:linear-gradient(90deg, #21262d 25%, #30363d 50%, #21262d 75%); background-size:200% 100%; animation:shimmer 1.5s infinite; border-radius:4px; margin-bottom:12px; }
+        .skeleton-line:nth-child(2) { width:95%; }
+        .skeleton-line:nth-child(3) { width:88%; }
+        .skeleton-line:nth-child(4) { width:92%; }
+        .skeleton-line:nth-child(5) { width:78%; }
+        .skeleton-line:nth-child(6) { width:85%; }
+
+        .loader-text { margin-top:32px; color:#58a6ff; font-size:0.9rem; font-weight:500; display:flex; align-items:center; gap:10px; }
+        .loader-spinner { width:16px; height:16px; border:2px solid #30363d; border-top-color:#58a6ff; border-radius:50%; animation:spin 0.8s linear infinite; }
+
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        @keyframes spin { to { transform:rotate(360deg); } }
+
+        .viewer-footer { padding:12px 24px; background:#161b22; border-top:1px solid #30363d; display:flex; justify-content:center; }
+        .viewer-source-badge { display:flex; align-items:center; gap:6px; font-size:0.75rem; }
+
         /* ===== UPLOAD MODAL ===== */
         .modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); backdrop-filter:blur(6px); z-index:3000; align-items:center; justify-content:center; }
         .modal.show { display:flex; }
@@ -113,6 +166,9 @@
         .upload-progress { display:none; background:#21262d; border-radius:4px; overflow:hidden; margin:8px 0; }
         .upload-progress-fill { width:0%; height:4px; background:#58a6ff; transition:width 0.3s; }
 
+        /* ===== LOADING SPINNER ===== */
+        .loading-spinner { display:inline-block; width:14px; height:14px; border:2px solid #30363d; border-top-color:#58a6ff; border-radius:50%; animation:spin 0.8s linear infinite; }
+
         @media(max-width:600px) {
             .top-bar { flex-direction:column; align-items:stretch; }
             .left-area { justify-content:space-between; }
@@ -123,6 +179,40 @@
     </style>
 </head>
 <body>
+
+<!-- PDF Viewer Modal -->
+<div id="pdfViewerModal" class="viewer-modal">
+    <div class="viewer-header">
+        <span class="viewer-title" id="viewerTitle">Document Title</span>
+        <div class="viewer-actions">
+            <button class="viewer-btn" onclick="downloadCurrentMaterial()" title="Download">⬇️</button>
+            <button class="viewer-btn" onclick="closePdfViewer()" title="Close">✕</button>
+        </div>
+    </div>
+    <div class="viewer-content">
+        <!-- Loading skeleton -->
+        <div class="pdf-loader" id="pdfLoader">
+            <div class="skeleton-container">
+                <div class="skeleton-header"></div>
+                <div class="skeleton-line"></div>
+                <div class="skeleton-line"></div>
+                <div class="skeleton-line"></div>
+                <div class="skeleton-line"></div>
+                <div class="skeleton-line"></div>
+                <div class="skeleton-line"></div>
+            </div>
+            <div class="loader-text">
+                <div class="loader-spinner"></div>
+                <span>Loading PDF...</span>
+            </div>
+        </div>
+        <!-- PDF iframe -->
+        <iframe id="pdfViewerFrame" class="viewer-frame"></iframe>
+    </div>
+    <div class="viewer-footer">
+        <div class="viewer-source-badge" id="viewerSourceBadge"></div>
+    </div>
+</div>
 
 <!-- onboarding renders here -->
 <div id="onboardingRoot"></div>
@@ -152,6 +242,14 @@
         <div class="hero-section">
             <h1 class="hero-title">Find your next breakthrough.</h1>
             <p class="hero-sub">Search through thousands of peer-reviewed notes, textbooks, and archived exam materials.</p>
+            
+            <!-- Google Search Status -->
+            <div class="google-status" id="googleStatus">
+                <span class="status-icon">🌐</span>
+                <span class="status-text" id="googleStatusText">Ready to search web for materials</span>
+                <button class="refresh-google-btn" id="refreshGoogleBtn" onclick="fetchGoogleMaterials()">🔄 Refresh</button>
+            </div>
+            
             <div class="search-wrapper">
                 <span class="search-icon">🔍</span>
                 <input type="text" id="searchInput" placeholder="Search materials, faculty, or topics…">
@@ -223,6 +321,7 @@ const userDepartment = "{{ user.department or '' }}";
 const userLevel      = "{{ user.level or '' }}";
 const userName       = "{{ user.name or 'Student' }}";
 const userLevelNum   = userLevel.toString().replace(/[^0-9]/g, '') || '100';
+const userSemester   = "{{ user.semester or '' }}";
 
 // ============================================================
 //  STORAGE KEY — unique per student level + department
@@ -233,66 +332,665 @@ function getStorageKey() {
 
 // ============================================================
 //  COURSE CODES DATABASE
-//  KEY RULE: for each level, include ALL courses that students
-//  at that level typically take regardless of department.
-//  This is because a Biology student also takes MAT101, CHM101 etc.
 // ============================================================
 const COURSE_CODES_DB = {
-    "Mathematics": {
+    "Biochemistry": {
         "100": [
-            { code:"MAT101", name:"Elementary Mathematics I" },
-            { code:"MAT102", name:"Elementary Mathematics II" },
-            { code:"MAT141", name:"Mathematics for Physical Sciences" },
-            { code:"MAT161", name:"Introductory Statistics" },
-            { code:"GST101", name:"Use of English I" },
-            { code:"GST102", name:"Use of English II" },
-            { code:"CSC101", name:"Introduction to Computer Science" }
+            { code:"CHM101", name:"General Chemistry I" },
+            { code:"CHM107", name:"Experimental Chemistry I" },
+            { code:"PHY101", name:"General Physics I" },
+            { code:"PHY107", name:"Experimental Physics I" },
+            { code:"BIO101", name:"Basic Biology I" },
+            { code:"BIO107", name:"Experimental Biology I" },
+            { code:"MTH101", name:"General Mathematics I" },
+            { code:"CIT111", name:"Introduction to ICT" },
+            { code:"FRN221", name:"Basic French" },
+            { code:"GNS101", name:"Use of English I" },
+            { code:"LIB101", name:"Use of Library" },
+            { code:"CHM102", name:"General Chemistry II" },
+            { code:"CHM108", name:"Experimental Chemistry II" },
+            { code:"PHY102", name:"General Physics II" },
+            { code:"PHY108", name:"Experimental Physics II" },
+            { code:"BIO102", name:"Basic Biology II" },
+            { code:"BIO108", name:"Experimental Biology II" },
+            { code:"MTH102", name:"General Mathematics II" },
+            { code:"CIT112", name:"Intro to Computer Programming" },
+            { code:"FRN222", name:"French for Specific Purposes" },
+            { code:"GNS102", name:"Use of English II" }
         ],
         "200": [
-            { code:"MAT201", name:"Mathematical Methods I" },
-            { code:"MAT202", name:"Mathematical Methods II" },
-            { code:"MAT211", name:"Linear Algebra I" },
-            { code:"MAT221", name:"Real Analysis I" },
-            { code:"MAT231", name:"Abstract Algebra I" },
-            { code:"MAT261", name:"Probability Theory I" },
-            { code:"CSC201", name:"Computer Organization" },
-            { code:"STA201", name:"Probability & Statistics I" },
+            { code:"BCH201", name:"General Biochemistry I" },
+            { code:"BCH203", name:"Metabolism of Carbohydrates" },
+            { code:"MCB201", name:"General Microbiology I" },
+            { code:"BIO203", name:"Introductory Genetics" },
+            { code:"CHM205", name:"Physical Chemistry I" },
+            { code:"CHM207", name:"Inorganic Chemistry I" },
+            { code:"CHM291", name:"Experimental Physical/Inorganic Chemistry" },
+            { code:"GNS201", name:"Nigerian Peoples and Culture" },
+            { code:"CIT201", name:"Structured Programming" },
+            { code:"BCH202", name:"General Biochemistry II" },
+            { code:"BCH204", name:"Biochemical Methods" },
+            { code:"BCH206", name:"Food & Nutritional Biochemistry" },
+            { code:"BIO202", name:"Biological Techniques" },
+            { code:"CHM208", name:"Physical Chemistry II" },
+            { code:"CHM202", name:"Organic Chemistry I" },
+            { code:"CHM292", name:"Experimental Physical/Organic Chemistry" },
+            { code:"GNS202", name:"Osun Peoples and Culture" },
+            { code:"GNS302", name:"Intro to Logic and Philosophy" }
+        ],
+        "300": [
+            { code:"BCH301", name:"Enzymology" },
+            { code:"BCH303", name:"Metabolism of Lipids" },
+            { code:"BCH305", name:"Metabolism of Nucleic Acids" },
+            { code:"BCH307", name:"Metabolism of Amino Acids & Protein" },
+            { code:"BCH309", name:"Membrane Biochemistry" },
+            { code:"BCH391", name:"General Biochemical Methods" },
+            { code:"CHM303", name:"Organic Chemistry II" },
+            { code:"STA201", name:"Statistics for Biological Students" },
+            { code:"CHM401", name:"Instrumental Analytical Methods" },
+            { code:"GNS301", name:"Entrepreneurial Skill Development" },
+            { code:"BCH399", name:"Industrial Attachment (SIWES)" }
+        ],
+        "400": [
+            { code:"BCH401", name:"Advanced Enzymology" },
+            { code:"BCH403", name:"Tissue Biochemistry" },
+            { code:"BCH405", name:"Biotechnology & Genetic Engineering" },
+            { code:"BCH407", name:"Plant Biochemistry" },
+            { code:"BCH409", name:"Seminar in Biochemistry" },
+            { code:"BCH411", name:"Pharmacological Biochemistry & Toxicology" },
+            { code:"BCH413", name:"Bioenergetics" },
+            { code:"MCB305", name:"Microbial Genetics/Molecular Biology" },
+            { code:"MCB401", name:"Immunology & Immunochemistry" },
+            { code:"BCH417", name:"Biochemistry of Parasites" },
+            { code:"BCH402", name:"Biosynthesis of Macromolecules" },
+            { code:"BCH404", name:"Bioinorganic Chemistry" },
+            { code:"BCH406", name:"Metabolic Regulations" },
+            { code:"BCH408", name:"Biochemical Reasoning" },
+            { code:"BCH412", name:"Industrial Biochemistry" },
+            { code:"MCB408", name:"Microbial Physiology & Metabolism" },
+            { code:"BCH499", name:"Research Project" },
+            { code:"BCH492", name:"Advanced Biochemical Methods" },
+            { code:"BCH414", name:"Clinical and Forensic Biochemistry" }
+        ]
+    },
+    "Mathematics": {
+        "100": [
+            { code:"GST111", name:"Communication in English I" },
+            { code:"GST112", name:"Logic, Philosophy & Human Existence" },
+            { code:"GST113", name:"Nigerian Peoples & Culture" },
+            { code:"GST114", name:"Valuing the Teaching Profession I" },
+            { code:"GST115", name:"Lagos & Its Environs" },
+            { code:"GST116", name:"Intro to Yoruba Language & Culture" },
+            { code:"BIO101", name:"General Biology I" },
+            { code:"CHM101", name:"General Chemistry I" },
+            { code:"CSC101", name:"Intro to Computer Science" },
+            { code:"MTH101", name:"Elementary Mathematics I" },
+            { code:"MTH103", name:"Elementary Mathematics III" },
+            { code:"PHY101", name:"General Physics I" },
+            { code:"PHY107", name:"General Practical Physics I" },
+            { code:"GST121", name:"Use of Library Skills & ICT" },
+            { code:"GST122", name:"Communication in English II" },
+            { code:"GST125", name:"Contemporary Health Issues" },
+            { code:"GST126", name:"Communication in Arabic" },
+            { code:"MTH102", name:"Elementary Mathematics II" },
+            { code:"PHY102", name:"General Physics II" },
+            { code:"PHY108", name:"General Practical Physics II" },
+            { code:"STA112", name:"Probability I" },
+            { code:"CSC102", name:"Intro to Problem Solving" }
+        ],
+        "200": [
+            { code:"CSC201", name:"Computer Programming I" },
+            { code:"GST211", name:"Environment & Sustainable Development" },
+            { code:"GST212", name:"Application of Computer" },
+            { code:"GST214", name:"Valuing the Teaching Profession II" },
+            { code:"MTH201", name:"Mathematical Methods I" },
+            { code:"MTH203", name:"Sets Logic & Algebra I" },
+            { code:"MTH204", name:"Linear Algebra I" },
+            { code:"MTH207", name:"Real Analysis I" },
+            { code:"MTH209", name:"Intro to Numerical Analysis" },
+            { code:"MTH299", name:"Industrial Training I (12 Weeks)" },
+            { code:"PHY201", name:"General Physics III" },
+            { code:"CSC202", name:"Computer Programming II" },
+            { code:"GST222", name:"Peace & Conflict Resolution" },
+            { code:"GST223", name:"Intro to Entrepreneurship" },
+            { code:"GST224", name:"Leadership Skills" },
+            { code:"GST225", name:"Yoruba Grammar & Communication" },
+            { code:"GST226", name:"Land Use & General Agriculture" },
+            { code:"ENT221", name:"Intro to Entrepreneurship" },
+            { code:"MTH202", name:"Elementary Differential Equations" },
+            { code:"MTH205", name:"Linear Algebra II" },
+            { code:"MTH210", name:"Vector Analysis" },
+            { code:"PHY202", name:"Intro to Electric Circuits & Electronics" }
+        ],
+        "300": [
+            { code:"GST311", name:"Entrepreneurship" },
+            { code:"MTH301", name:"Metric Space Topology" },
+            { code:"MTH303", name:"Vector & Tensor Analysis" },
+            { code:"MTH304", name:"Complex Analysis I" },
+            { code:"MTH307", name:"Real Analysis II" },
+            { code:"MTH311", name:"Theory of Modules" },
+            { code:"MTH399", name:"Industrial Attachment II (12 Weeks)" },
+            { code:"MTH309", name:"Discrete Mathematics" },
+            { code:"MTH313", name:"Geometry" },
+            { code:"MTH319", name:"Numerical Analysis I" },
+            { code:"STA311", name:"Probability III" },
+            { code:"ENT321", name:"Entrepreneurship & Business Management" },
+            { code:"MTH300", name:"Abstract Algebra I" },
+            { code:"MTH302", name:"Ordinary Differential Equations" },
+            { code:"MTH305", name:"Complex Analysis II" },
+            { code:"MTH306", name:"Abstract Algebra II" },
+            { code:"MTH308", name:"Intro to Mathematical Modelling" },
+            { code:"MTH310", name:"Mathematical Methods II" },
+            { code:"MTH320", name:"Computational Techniques in Mathematics" },
+            { code:"MTH312", name:"Optimization Theory" },
+            { code:"MTH314", name:"Analytical Dynamics I" },
+            { code:"MTH316", name:"Intro to Operations Research" },
+            { code:"STA312", name:"Distribution Theory I" }
+        ],
+        "400": [
+            { code:"MTH401", name:"Theory of Ordinary Differential Equations" },
+            { code:"MTH403", name:"Functional Analysis" },
+            { code:"MTH405", name:"General Topology" },
+            { code:"MTH419", name:"Complex Analysis" },
+            { code:"MTH407", name:"Mathematical Methods III" },
+            { code:"MTH409", name:"General Relativity" },
+            { code:"MTH411", name:"Analytical Dynamics II" },
+            { code:"ENT421", name:"Investment Marketing & Management" },
+            { code:"MTH402", name:"Theory of Partial Differential Equations" },
+            { code:"MTH404", name:"Project" },
+            { code:"MTH406", name:"Lebesgue Measure & Integration" },
+            { code:"MTH418", name:"Advanced Algebra" },
+            { code:"MTH408", name:"Quantum Mechanics I" },
+            { code:"MTH410", name:"Electromagnetism" }
+        ]
+    },
+    "Botany": {
+        "100": [
+            { code:"GST111", name:"Communication in English I" },
+            { code:"GST112", name:"Logic, Philosophy & Human Existence" },
+            { code:"GST113", name:"Nigerian Peoples & Culture" },
+            { code:"GST114", name:"Valuing the Teaching Profession I" },
+            { code:"GST115", name:"Lagos & Its Environs" },
+            { code:"GST116", name:"Intro to Yoruba Language & Culture" },
+            { code:"BIO101", name:"General Biology I" },
+            { code:"CHM101", name:"General Chemistry I" },
+            { code:"CSC101", name:"Intro to Computer Science" },
+            { code:"MTH101", name:"Elementary Mathematics I" },
+            { code:"PHY101", name:"General Physics I" },
+            { code:"PHY107", name:"General Practical Physics I" },
+            { code:"GST121", name:"Use of Library Skills & ICT" },
+            { code:"GST122", name:"Communication in English II" },
+            { code:"GST125", name:"Contemporary Health Issues" },
+            { code:"GST126", name:"Communication in Arabic" },
+            { code:"BIO102", name:"General Biology II" },
+            { code:"BOT101", name:"Diversity of Plants" },
+            { code:"BOT103", name:"Basic Botanical Nomenclature" },
+            { code:"CHM102", name:"General Chemistry II" },
+            { code:"MTH102", name:"Elementary Mathematics II" },
+            { code:"PHY102", name:"General Physics II" },
+            { code:"PHY108", name:"General Practical Physics II" }
+        ],
+        "200": [
+            { code:"GST211", name:"Environment & Sustainable Development" },
+            { code:"GST212", name:"Application of Computer" },
+            { code:"GST214", name:"Valuing the Teaching Profession II" },
+            { code:"BOT201", name:"Seedless Plants (Cryptogams)" },
+            { code:"BOT203", name:"Plant Morphology" },
+            { code:"BOT205", name:"Introductory Plant Physiology" },
+            { code:"BOT207", name:"General Ecology" },
+            { code:"STA211", name:"Statistics for Biological Sciences" },
+            { code:"GST222", name:"Peace & Conflict Resolution" },
+            { code:"GST223", name:"Intro to Entrepreneurship" },
+            { code:"GST224", name:"Leadership Skills" },
+            { code:"GST225", name:"Yoruba Grammar & Communication" },
+            { code:"GST226", name:"Land Use & General Agriculture" },
+            { code:"BOT202", name:"Seed Plants (Spermatophyta)" },
+            { code:"BOT204", name:"Plant Anatomy" },
+            { code:"BOT206", name:"Plant Taxonomy" },
+            { code:"BOT208", name:"Biological Techniques" }
+        ],
+        "300": [
+            { code:"GST311", name:"Entrepreneurship" },
+            { code:"BOT301", name:"Plant Ecology & Field Course I" },
+            { code:"BOT303", name:"Algae (Phycology)" },
+            { code:"BOT305", name:"Mycology I" },
+            { code:"BOT307", name:"Plant Physiology I" },
+            { code:"BOT309", name:"Plant Taxonomy I" },
+            { code:"BOT311", name:"Biostatistics" },
+            { code:"ENT321", name:"Entrepreneurship & Business Management" },
+            { code:"BOT302", name:"Bryophyta & Pteridophyta" },
+            { code:"BOT304", name:"Gymnosperms" },
+            { code:"BOT306", name:"Plant Cytogenetics" },
+            { code:"BOT308", name:"Plant Pathology I" },
+            { code:"BOT310", name:"Economic Botany" },
+            { code:"BOT399", name:"SIWES / Industrial Training (12 weeks)" }
+        ],
+        "400": [
+            { code:"BOT401", name:"Plant Breeding" },
+            { code:"BOT403", name:"Population Ecology" },
+            { code:"BOT405", name:"Mycology II" },
+            { code:"BOT407", name:"Limnology" },
+            { code:"BOT409", name:"Evolution" },
+            { code:"BOT411", name:"Plant Pathology II" },
+            { code:"BOT413", name:"Seminar" },
+            { code:"ENT421", name:"Investment Marketing & Management" },
+            { code:"BOT402", name:"Soil Science" },
+            { code:"BOT404", name:"Development of Natural Resources & Afforestation" },
+            { code:"BOT406", name:"Comparative Plant Anatomy" },
+            { code:"BOT408", name:"Plant Physiology II / Tissue Culture" },
+            { code:"BOT410", name:"Molecular Biology / Biotechnology" },
+            { code:"BOT412", name:"Research Project" }
+        ]
+    },
+    "Chemistry": {
+        "100": [
+            { code:"GST111", name:"Communication in English I" },
+            { code:"GST112", name:"Logic, Philosophy & Human Existence" },
+            { code:"GST113", name:"Nigerian Peoples & Culture" },
+            { code:"GST114", name:"Valuing the Teaching Profession I" },
+            { code:"GST115", name:"Lagos & Its Environs" },
+            { code:"GST116", name:"Intro to Yoruba Language & Culture" },
+            { code:"CHM101", name:"General Chemistry I" },
+            { code:"CHM103", name:"General Chemistry Practical I" },
+            { code:"BIO101", name:"General Biology I" },
+            { code:"MTH101", name:"Elementary Mathematics I" },
+            { code:"PHY101", name:"General Physics I" },
+            { code:"PHY107", name:"General Practical Physics I" },
+            { code:"GST121", name:"Use of Library Skills & ICT" },
+            { code:"GST122", name:"Communication in English II" },
+            { code:"GST125", name:"Contemporary Health Issues" },
+            { code:"GST126", name:"Communication in Arabic" },
+            { code:"CHM102", name:"General Chemistry II" },
+            { code:"CHM104", name:"General Chemistry Practical II" },
+            { code:"BIO102", name:"General Biology II" },
+            { code:"MTH102", name:"Elementary Mathematics II" },
+            { code:"PHY102", name:"General Physics II" },
+            { code:"PHY108", name:"General Practical Physics II" }
+        ],
+        "200": [
+            { code:"GST211", name:"Environment & Sustainable Development" },
+            { code:"GST212", name:"Application of Computer" },
+            { code:"GST214", name:"Valuing the Teaching Profession II" },
+            { code:"CHM201", name:"Physical Chemistry I" },
+            { code:"CHM203", name:"Inorganic Chemistry I" },
+            { code:"CHM205", name:"Organic Chemistry I" },
+            { code:"CHM207", name:"Analytical Chemistry I" },
+            { code:"CHM209", name:"Chemistry Practical I" },
+            { code:"GST222", name:"Peace & Conflict Resolution" },
+            { code:"GST223", name:"Intro to Entrepreneurship" },
+            { code:"GST224", name:"Leadership Skills" },
+            { code:"GST225", name:"Yoruba Grammar & Communication" },
+            { code:"GST226", name:"Land Use & General Agriculture" },
+            { code:"CHM202", name:"Physical Chemistry II" },
+            { code:"CHM204", name:"Inorganic Chemistry II" },
+            { code:"CHM206", name:"Organic Chemistry II" },
+            { code:"CHM208", name:"Analytical Chemistry II" },
+            { code:"CHM210", name:"Chemistry Practical II" }
+        ],
+        "300": [
+            { code:"GST311", name:"Entrepreneurship" },
+            { code:"CHM301", name:"Physical Chemistry III" },
+            { code:"CHM303", name:"Inorganic Chemistry III" },
+            { code:"CHM305", name:"Organic Chemistry III" },
+            { code:"CHM307", name:"Analytical Chemistry III" },
+            { code:"CHM309", name:"Instrumental Methods of Analysis" },
+            { code:"CHM311", name:"Chemistry Practical III" },
+            { code:"ENT321", name:"Entrepreneurship & Business Management" },
+            { code:"CHM302", name:"Chemical Thermodynamics" },
+            { code:"CHM304", name:"Coordination Chemistry" },
+            { code:"CHM306", name:"Organic Reaction Mechanisms" },
+            { code:"CHM308", name:"Electrochemistry" },
+            { code:"CHM310", name:"Industrial Chemistry" },
+            { code:"CHM399", name:"SIWES / Industrial Training (12 weeks)" }
+        ],
+        "400": [
+            { code:"CHM401", name:"Advanced Physical Chemistry" },
+            { code:"CHM403", name:"Advanced Inorganic Chemistry" },
+            { code:"CHM405", name:"Advanced Organic Chemistry" },
+            { code:"CHM407", name:"Advanced Analytical Chemistry" },
+            { code:"CHM409", name:"Environmental Chemistry" },
+            { code:"CHM411", name:"Seminar" },
+            { code:"ENT421", name:"Investment Marketing & Management" },
+            { code:"CHM402", name:"Chemical Kinetics" },
+            { code:"CHM404", name:"Research Project" },
+            { code:"CHM406", name:"Polymer Chemistry" },
+            { code:"CHM408", name:"Medicinal Chemistry" },
+            { code:"CHM410", name:"Spectroscopy" }
+        ]
+    },
+    "Fisheries": {
+        "100": [
+            { code:"GST111", name:"Communication in English I" },
+            { code:"GST112", name:"Logic, Philosophy & Human Existence" },
+            { code:"GST113", name:"Nigerian Peoples & Culture" },
+            { code:"GST114", name:"Valuing the Teaching Profession I" },
+            { code:"GST115", name:"Lagos & Its Environs" },
+            { code:"GST116", name:"Intro to Yoruba Language & Culture" },
+            { code:"BIO101", name:"General Biology I" },
+            { code:"CHM101", name:"General Chemistry I" },
+            { code:"FIS101", name:"Introduction to Fisheries" },
+            { code:"MTH101", name:"Elementary Mathematics I" },
+            { code:"PHY101", name:"General Physics I" },
+            { code:"PHY107", name:"General Practical Physics I" },
+            { code:"GST121", name:"Use of Library Skills & ICT" },
+            { code:"GST122", name:"Communication in English II" },
+            { code:"GST125", name:"Contemporary Health Issues" },
+            { code:"GST126", name:"Communication in Arabic" },
+            { code:"BIO102", name:"General Biology II" },
+            { code:"CHM102", name:"General Chemistry II" },
+            { code:"FIS102", name:"Introduction to Aquatic Ecology" },
+            { code:"MTH102", name:"Elementary Mathematics II" },
+            { code:"PHY102", name:"General Physics II" },
+            { code:"PHY108", name:"General Practical Physics II" }
+        ],
+        "200": [
+            { code:"GST211", name:"Environment & Sustainable Development" },
+            { code:"GST212", name:"Application of Computer" },
+            { code:"GST214", name:"Valuing the Teaching Profession II" },
+            { code:"FIS201", name:"General Ichthyology" },
+            { code:"FIS203", name:"Fisheries Biology" },
+            { code:"FIS205", name:"Principles of Aquaculture" },
+            { code:"FIS207", name:"Fisheries Statistics" },
+            { code:"STA211", name:"Statistics for Biological Sciences" },
+            { code:"GST222", name:"Peace & Conflict Resolution" },
+            { code:"GST223", name:"Intro to Entrepreneurship" },
+            { code:"GST224", name:"Leadership Skills" },
+            { code:"GST225", name:"Yoruba Grammar & Communication" },
+            { code:"GST226", name:"Land Use & General Agriculture" },
+            { code:"FIS202", name:"Limnology" },
+            { code:"FIS204", name:"Fish Nutrition" },
+            { code:"FIS206", name:"Fish Genetics & Breeding" },
+            { code:"FIS208", name:"Fishing Gear Technology" }
+        ],
+        "300": [
+            { code:"GST311", name:"Entrepreneurship" },
+            { code:"FIS301", name:"Fish Physiology" },
+            { code:"FIS303", name:"Fish Pathology & Parasitology" },
+            { code:"FIS305", name:"Fisheries Management" },
+            { code:"FIS307", name:"Aquaculture Systems & Pond Management" },
+            { code:"FIS309", name:"Fish Processing & Preservation" },
+            { code:"FIS311", name:"Fisheries Economics" },
+            { code:"ENT321", name:"Entrepreneurship & Business Management" },
+            { code:"FIS302", name:"Marine Fisheries" },
+            { code:"FIS304", name:"Inland Fisheries" },
+            { code:"FIS306", name:"Fish Hatchery Management" },
+            { code:"FIS308", name:"Environmental Impact of Fisheries" },
+            { code:"FIS399", name:"SIWES / Industrial Training (12 weeks)" }
+        ],
+        "400": [
+            { code:"FIS401", name:"Advanced Aquaculture" },
+            { code:"FIS403", name:"Fish Stock Assessment" },
+            { code:"FIS405", name:"Fisheries Policy & Legislation" },
+            { code:"FIS407", name:"Integrated Fish Farming" },
+            { code:"FIS409", name:"Seminar" },
+            { code:"ENT421", name:"Investment Marketing & Management" },
+            { code:"FIS402", name:"Fisheries Extension & Rural Development" },
+            { code:"FIS404", name:"Research Project" },
+            { code:"FIS406", name:"Aquatic Pollution & Toxicology" },
+            { code:"FIS408", name:"Sustainable Fisheries Management" }
+        ]
+    },
+    "Microbiology": {
+        "100": [
+            { code:"GST111", name:"Communication in English I" },
+            { code:"GST112", name:"Logic, Philosophy & Human Existence" },
+            { code:"GST113", name:"Nigerian Peoples & Culture" },
+            { code:"GST114", name:"Valuing the Teaching Profession I" },
+            { code:"GST115", name:"Lagos & Its Environs" },
+            { code:"GST116", name:"Intro to Yoruba Language & Culture" },
+            { code:"BIO101", name:"General Biology I" },
+            { code:"CHM101", name:"General Chemistry I" },
+            { code:"MCB101", name:"Introduction to Microbiology" },
+            { code:"MTH101", name:"Elementary Mathematics I" },
+            { code:"PHY101", name:"General Physics I" },
+            { code:"PHY107", name:"General Practical Physics I" },
+            { code:"GST121", name:"Use of Library Skills & ICT" },
+            { code:"GST122", name:"Communication in English II" },
+            { code:"GST125", name:"Contemporary Health Issues" },
+            { code:"GST126", name:"Communication in Arabic" },
+            { code:"BIO102", name:"General Biology II" },
+            { code:"CHM102", name:"General Chemistry II" },
+            { code:"MCB102", name:"Microbial Diversity" },
+            { code:"MTH102", name:"Elementary Mathematics II" },
+            { code:"PHY102", name:"General Physics II" },
+            { code:"PHY108", name:"General Practical Physics II" }
+        ],
+        "200": [
+            { code:"GST211", name:"Environment & Sustainable Development" },
+            { code:"GST212", name:"Application of Computer" },
+            { code:"GST214", name:"Valuing the Teaching Profession II" },
+            { code:"MCB201", name:"General Microbiology" },
+            { code:"MCB203", name:"Microbial Morphology & Physiology" },
+            { code:"MCB205", name:"Microbial Genetics" },
+            { code:"MCB207", name:"Microbial Ecology" },
+            { code:"STA211", name:"Statistics for Biological Sciences" },
+            { code:"GST222", name:"Peace & Conflict Resolution" },
+            { code:"GST223", name:"Intro to Entrepreneurship" },
+            { code:"GST224", name:"Leadership Skills" },
+            { code:"GST225", name:"Yoruba Grammar & Communication" },
+            { code:"GST226", name:"Land Use & General Agriculture" },
+            { code:"MCB202", name:"Immunology" },
+            { code:"MCB204", name:"Medical Microbiology" },
+            { code:"MCB206", name:"Industrial Microbiology" },
+            { code:"MCB208", name:"Microbiology Practical I" }
+        ],
+        "300": [
+            { code:"GST311", name:"Entrepreneurship" },
+            { code:"MCB301", name:"Bacteriology" },
+            { code:"MCB303", name:"Virology" },
+            { code:"MCB305", name:"Mycology" },
+            { code:"MCB307", name:"Microbial Biochemistry" },
+            { code:"MCB309", name:"Food & Dairy Microbiology" },
+            { code:"MCB311", name:"Microbiology Practical II" },
+            { code:"ENT321", name:"Entrepreneurship & Business Management" },
+            { code:"MCB302", name:"Environmental Microbiology" },
+            { code:"MCB304", name:"Molecular Biology" },
+            { code:"MCB306", name:"Public Health Microbiology" },
+            { code:"MCB308", name:"Waste Management & Bioremediation" },
+            { code:"MCB399", name:"SIWES / Industrial Training (12 weeks)" }
+        ],
+        "400": [
+            { code:"MCB401", name:"Advanced Microbial Genetics" },
+            { code:"MCB403", name:"Pharmaceutical Microbiology" },
+            { code:"MCB405", name:"Microbial Biotechnology" },
+            { code:"MCB407", name:"Epidemiology" },
+            { code:"MCB409", name:"Seminar" },
+            { code:"ENT421", name:"Investment Marketing & Management" },
+            { code:"MCB402", name:"Clinical Microbiology" },
+            { code:"MCB404", name:"Research Project" },
+            { code:"MCB406", name:"Industrial Fermentation Technology" },
+            { code:"MCB408", name:"Advanced Immunology" }
+        ]
+    },
+    "Physics": {
+        "100": [
+            { code:"GST111", name:"Communication in English I" },
+            { code:"GST112", name:"Logic, Philosophy & Human Existence" },
+            { code:"GST113", name:"Nigerian Peoples & Culture" },
+            { code:"GST114", name:"Valuing the Teaching Profession I" },
+            { code:"GST115", name:"Lagos & Its Environs" },
+            { code:"GST116", name:"Intro to Yoruba Language & Culture" },
+            { code:"PHY101", name:"General Physics I" },
+            { code:"PHY103", name:"Mechanics & Properties of Matter" },
+            { code:"PHY107", name:"General Practical Physics I" },
+            { code:"MTH101", name:"Elementary Mathematics I" },
+            { code:"MTH103", name:"Elementary Mathematics III" },
+            { code:"CHM101", name:"General Chemistry I" },
+            { code:"GST121", name:"Use of Library Skills & ICT" },
+            { code:"GST122", name:"Communication in English II" },
+            { code:"GST125", name:"Contemporary Health Issues" },
+            { code:"GST126", name:"Communication in Arabic" },
+            { code:"PHY102", name:"General Physics II" },
+            { code:"PHY104", name:"Heat & Thermodynamics" },
+            { code:"PHY108", name:"General Practical Physics II" },
+            { code:"MTH102", name:"Elementary Mathematics II" },
+            { code:"STA112", name:"Probability I" }
+        ],
+        "200": [
+            { code:"GST211", name:"Environment & Sustainable Development" },
+            { code:"GST212", name:"Application of Computer" },
+            { code:"GST214", name:"Valuing the Teaching Profession II" },
+            { code:"PHY201", name:"Electricity & Magnetism I" },
+            { code:"PHY203", name:"Waves & Optics I" },
+            { code:"PHY205", name:"Classical Mechanics I" },
+            { code:"MTH201", name:"Mathematical Methods I" },
+            { code:"MTH207", name:"Real Analysis I" },
+            { code:"GST222", name:"Peace & Conflict Resolution" },
+            { code:"GST223", name:"Intro to Entrepreneurship" },
+            { code:"GST224", name:"Leadership Skills" },
+            { code:"GST225", name:"Yoruba Grammar & Communication" },
+            { code:"GST226", name:"Land Use & General Agriculture" },
+            { code:"PHY202", name:"Electricity & Magnetism II" },
+            { code:"PHY204", name:"Waves & Optics II" },
+            { code:"PHY206", name:"Modern Physics I" },
+            { code:"PHY208", name:"Electronics I" }
+        ],
+        "300": [
+            { code:"GST311", name:"Entrepreneurship" },
+            { code:"PHY301", name:"Quantum Mechanics I" },
+            { code:"PHY303", name:"Statistical Mechanics" },
+            { code:"PHY305", name:"Solid State Physics" },
+            { code:"PHY307", name:"Electronics II" },
+            { code:"PHY309", name:"Nuclear Physics" },
+            { code:"PHY311", name:"Experimental Physics I" },
+            { code:"ENT321", name:"Entrepreneurship & Business Management" },
+            { code:"PHY302", name:"Quantum Mechanics II" },
+            { code:"PHY304", name:"Electromagnetic Theory" },
+            { code:"PHY306", name:"Atomic & Molecular Physics" },
+            { code:"PHY308", name:"Optics & Lasers" },
+            { code:"PHY399", name:"SIWES / Industrial Training (12 weeks)" }
+        ],
+        "400": [
+            { code:"PHY401", name:"Advanced Quantum Mechanics" },
+            { code:"PHY403", name:"Advanced Solid State Physics" },
+            { code:"PHY405", name:"Plasma Physics" },
+            { code:"PHY407", name:"Computational Physics" },
+            { code:"PHY409", name:"Seminar" },
+            { code:"ENT421", name:"Investment Marketing & Management" },
+            { code:"PHY402", name:"General Relativity" },
+            { code:"PHY404", name:"Research Project" },
+            { code:"PHY406", name:"Renewable Energy Physics" },
+            { code:"PHY408", name:"Advanced Electronics" }
+        ]
+    },
+    "Science Laboratory Technology": {
+        "100": [
+            { code:"GST111", name:"Communication in English I" },
+            { code:"GST112", name:"Logic, Philosophy & Human Existence" },
+            { code:"GST113", name:"Nigerian Peoples & Culture" },
+            { code:"GST114", name:"Valuing the Teaching Profession I" },
+            { code:"GST115", name:"Lagos & Its Environs" },
+            { code:"GST116", name:"Intro to Yoruba Language & Culture" },
+            { code:"SLT101", name:"Intro to Science Laboratory Technology" },
+            { code:"BIO101", name:"General Biology I" },
+            { code:"CHM101", name:"General Chemistry I" },
+            { code:"PHY101", name:"General Physics I" },
+            { code:"MTH101", name:"Elementary Mathematics I" },
+            { code:"GST121", name:"Use of Library Skills & ICT" },
+            { code:"GST122", name:"Communication in English II" },
+            { code:"GST125", name:"Contemporary Health Issues" },
+            { code:"GST126", name:"Communication in Arabic" },
+            { code:"SLT102", name:"Laboratory Safety & Management" },
+            { code:"BIO102", name:"General Biology II" },
+            { code:"CHM102", name:"General Chemistry II" },
+            { code:"PHY102", name:"General Physics II" },
+            { code:"MTH102", name:"Elementary Mathematics II" },
+            { code:"PHY108", name:"General Practical Physics II" }
+        ],
+        "200": [
+            { code:"GST211", name:"Environment & Sustainable Development" },
+            { code:"GST212", name:"Application of Computer" },
+            { code:"GST214", name:"Valuing the Teaching Profession II" },
+            { code:"SLT201", name:"Laboratory Techniques I" },
+            { code:"SLT203", name:"Basic Instrumentation" },
+            { code:"SLT205", name:"Chemical Laboratory Technology" },
+            { code:"SLT207", name:"Biological Laboratory Technology" },
+            { code:"STA211", name:"Statistics for Biological Sciences" },
+            { code:"GST222", name:"Peace & Conflict Resolution" },
+            { code:"GST223", name:"Intro to Entrepreneurship" },
+            { code:"GST224", name:"Leadership Skills" },
+            { code:"GST225", name:"Yoruba Grammar & Communication" },
+            { code:"GST226", name:"Land Use & General Agriculture" },
+            { code:"SLT202", name:"Laboratory Techniques II" },
+            { code:"SLT204", name:"Physics Laboratory Technology" },
+            { code:"SLT206", name:"Quality Control & Assurance" },
+            { code:"SLT208", name:"Laboratory Management & Ethics" }
+        ],
+        "300": [
+            { code:"GST311", name:"Entrepreneurship" },
+            { code:"SLT301", name:"Advanced Laboratory Techniques" },
+            { code:"SLT303", name:"Instrument Maintenance & Calibration" },
+            { code:"SLT305", name:"Industrial & Environmental Analysis" },
+            { code:"SLT307", name:"Research Methods in SLT" },
+            { code:"SLT309", name:"Applied Microbiology for Technologists" },
+            { code:"ENT321", name:"Entrepreneurship & Business Management" },
+            { code:"SLT302", name:"Laboratory Automation & ICT" },
+            { code:"SLT304", name:"Analytical Instrumentation" },
+            { code:"SLT306", name:"Industrial Safety & Environmental Protection" },
+            { code:"SLT399", name:"SIWES / Industrial Training (12 weeks)" }
+        ],
+        "400": [
+            { code:"SLT401", name:"Advanced Analytical Techniques" },
+            { code:"SLT403", name:"Laboratory Quality Systems (ISO & GLP)" },
+            { code:"SLT405", name:"Environmental & Industrial Laboratory Practice" },
+            { code:"SLT407", name:"Seminar" },
+            { code:"ENT421", name:"Investment Marketing & Management" },
+            { code:"SLT402", name:"Laboratory Design & Management" },
+            { code:"SLT404", name:"Research Project" },
+            { code:"SLT406", name:"Forensic & Diagnostic Laboratory Techniques" }
+        ]
+    },
+    "Biology": {
+        "100": [
+            { code:"BIO101", name:"General Biology I" },
+            { code:"BIO107", name:"Experimental Biology I" },
+            { code:"CHM101", name:"General Chemistry I" },
+            { code:"CHM107", name:"Experimental Chemistry I" },
+            { code:"PHY101", name:"General Physics I" },
+            { code:"PHY107", name:"Experimental Physics I" },
+            { code:"MTH101", name:"General Mathematics I" },
+            { code:"GNS101", name:"Use of English I" },
+            { code:"GNS102", name:"Use of English II" }
+        ],
+        "200": [
+            { code:"BIO201", name:"Cell Biology" },
+            { code:"BIO203", name:"Introductory Genetics" },
+            { code:"BIO202", name:"Biological Techniques" },
+            { code:"MCB201", name:"General Microbiology I" },
+            { code:"CHM201", name:"Organic Chemistry I" },
+            { code:"CHM202", name:"Physical Chemistry" },
             { code:"ENT211", name:"Entrepreneurship" }
         ],
         "300": [
-            { code:"MAT301", name:"Mathematical Methods III" },
-            { code:"MAT311", name:"Linear Algebra II" },
-            { code:"MAT321", name:"Real Analysis II" },
-            { code:"MAT331", name:"Abstract Algebra II" },
-            { code:"MAT341", name:"Complex Analysis" },
-            { code:"MAT351", name:"Numerical Analysis I" },
-            { code:"MAT361", name:"Probability Theory II" }
+            { code:"BIO301", name:"Molecular Biology" },
+            { code:"BIO303", name:"Physiology" },
+            { code:"BIO305", name:"Ecology" },
+            { code:"BCH301", name:"Enzymology" },
+            { code:"MCB301", name:"Medical Microbiology" },
+            { code:"BIO399", name:"SIWES" }
         ],
         "400": [
-            { code:"MAT401", name:"Functional Analysis" },
-            { code:"MAT411", name:"Topology" },
-            { code:"MAT421", name:"Differential Equations" },
-            { code:"MAT431", name:"Operations Research" },
-            { code:"MAT441", name:"Numerical Analysis II" },
-            { code:"MAT499", name:"Research Project" }
+            { code:"BIO401", name:"Immunology" },
+            { code:"BIO403", name:"Biotechnology" },
+            { code:"BIO405", name:"Evolution" },
+            { code:"BIO407", name:"Seminar" },
+            { code:"BIO499", name:"Research Project" }
         ]
     },
     "Computer Science": {
         "100": [
             { code:"CSC101", name:"Introduction to Computer Science" },
-            { code:"CSC111", name:"Computer Programming I" },
             { code:"CSC102", name:"Introduction to Computing" },
             { code:"MAT101", name:"Elementary Mathematics I" },
             { code:"MAT161", name:"Introductory Statistics" },
+            { code:"PHY101", name:"General Physics I" },
             { code:"GST101", name:"Use of English I" }
         ],
         "200": [
             { code:"CSC201", name:"Computer Organization" },
             { code:"CSC205", name:"Operating Systems" },
-            { code:"CSC207", name:"Programming Languages" },
             { code:"CSC213", name:"Data Structures & Algorithm Analysis" },
             { code:"CSC215", name:"Discrete Mathematics" },
-            { code:"CSC217", name:"Computer Architecture" },
             { code:"CSC221", name:"Data Structures" },
             { code:"ENT211", name:"Entrepreneurship" },
             { code:"MAT201", name:"Mathematical Methods I" }
@@ -311,135 +1009,6 @@ const COURSE_CODES_DB = {
             { code:"CSC421", name:"Machine Learning" },
             { code:"CSC431", name:"Cybersecurity" },
             { code:"CSC499", name:"Final Year Project" }
-        ]
-    },
-    "Biology": {
-        "100": [
-            { code:"BIO101", name:"General Biology I" },
-            { code:"BIO102", name:"General Biology II" },
-            { code:"CHM101", name:"General Chemistry I" },
-            { code:"CHM102", name:"General Chemistry II" },
-            { code:"MAT101", name:"Elementary Mathematics I" },
-            { code:"PHY101", name:"General Physics I" },
-            { code:"GST101", name:"Use of English I" },
-            { code:"BCH101", name:"General Biochemistry I" },
-            { code:"ZOO101", name:"General Zoology" }
-        ],
-        "200": [
-            { code:"BIO201", name:"Cell Biology" },
-            { code:"BIO203", name:"Genetics I" },
-            { code:"BIO205", name:"Ecology I" },
-            { code:"BIO207", name:"Microbiology I" },
-            { code:"BCH201", name:"Biochemistry of Carbohydrates" },
-            { code:"CHM201", name:"Organic Chemistry I" },
-            { code:"ENT211", name:"Entrepreneurship" }
-        ],
-        "300": [
-            { code:"BIO301", name:"Molecular Biology" },
-            { code:"BIO303", name:"Physiology I" },
-            { code:"BIO305", name:"Biochemistry I" },
-            { code:"BIO311", name:"Evolution" },
-            { code:"MCB301", name:"Medical Microbiology" }
-        ],
-        "400": [
-            { code:"BIO401", name:"Immunology" },
-            { code:"BIO403", name:"Biotechnology" },
-            { code:"BIO499", name:"Research Project" }
-        ]
-    },
-    "Biochemistry": {
-        "100": [
-            { code:"BCH101", name:"General Biochemistry I" },
-            { code:"BCH102", name:"General Biochemistry II" },
-            { code:"BIO101", name:"General Biology I" },
-            { code:"CHM101", name:"General Chemistry I" },
-            { code:"CHM102", name:"General Chemistry II" },
-            { code:"MAT101", name:"Elementary Mathematics I" },
-            { code:"PHY101", name:"General Physics I" },
-            { code:"GST101", name:"Use of English I" }
-        ],
-        "200": [
-            { code:"BCH201", name:"Biochemistry of Carbohydrates" },
-            { code:"BCH203", name:"Biochemistry of Proteins" },
-            { code:"BCH205", name:"Biochemistry of Lipids" },
-            { code:"BCH207", name:"Enzyme Kinetics" },
-            { code:"CHM201", name:"Organic Chemistry I" },
-            { code:"BIO201", name:"Cell Biology" },
-            { code:"ENT211", name:"Entrepreneurship" }
-        ],
-        "300": [
-            { code:"BCH301", name:"Molecular Biology" },
-            { code:"BCH303", name:"Metabolic Biochemistry" },
-            { code:"BCH305", name:"Clinical Biochemistry" },
-            { code:"BCH307", name:"Nutrition and Metabolism" }
-        ],
-        "400": [
-            { code:"BCH401", name:"Advanced Molecular Biology" },
-            { code:"BCH403", name:"Immunochemistry" },
-            { code:"BCH499", name:"Research Project" }
-        ]
-    },
-    "Chemistry": {
-        "100": [
-            { code:"CHM101", name:"General Chemistry I" },
-            { code:"CHM102", name:"General Chemistry II" },
-            { code:"MAT101", name:"Elementary Mathematics I" },
-            { code:"PHY101", name:"General Physics I" },
-            { code:"BIO101", name:"General Biology I" },
-            { code:"GST101", name:"Use of English I" }
-        ],
-        "200": [
-            { code:"CHM201", name:"Organic Chemistry I" },
-            { code:"CHM203", name:"Inorganic Chemistry I" },
-            { code:"CHM205", name:"Physical Chemistry I" },
-            { code:"CHM207", name:"Analytical Chemistry I" },
-            { code:"MAT201", name:"Mathematical Methods I" },
-            { code:"ENT211", name:"Entrepreneurship" }
-        ],
-        "300": [
-            { code:"CHM301", name:"Organic Chemistry II" },
-            { code:"CHM303", name:"Inorganic Chemistry II" },
-            { code:"CHM305", name:"Physical Chemistry II" },
-            { code:"CHM307", name:"Analytical Chemistry II" },
-            { code:"CHM311", name:"Industrial Chemistry" }
-        ],
-        "400": [
-            { code:"CHM401", name:"Advanced Organic Chemistry" },
-            { code:"CHM403", name:"Spectroscopic Methods" },
-            { code:"CHM499", name:"Research Project" }
-        ]
-    },
-    "Physics": {
-        "100": [
-            { code:"PHY101", name:"General Physics I (Mechanics)" },
-            { code:"PHY102", name:"General Physics II" },
-            { code:"PHY104", name:"Electricity and Magnetism" },
-            { code:"MAT101", name:"Elementary Mathematics I" },
-            { code:"MAT102", name:"Elementary Mathematics II" },
-            { code:"CHM101", name:"General Chemistry I" },
-            { code:"GST101", name:"Use of English I" }
-        ],
-        "200": [
-            { code:"PHY201", name:"Classical Mechanics" },
-            { code:"PHY203", name:"Electromagnetism I" },
-            { code:"PHY205", name:"Thermodynamics" },
-            { code:"PHY207", name:"Modern Physics" },
-            { code:"PHY209", name:"Mathematical Methods for Physics" },
-            { code:"MAT201", name:"Mathematical Methods I" },
-            { code:"ENT211", name:"Entrepreneurship" }
-        ],
-        "300": [
-            { code:"PHY301", name:"Quantum Mechanics I" },
-            { code:"PHY303", name:"Electromagnetism II" },
-            { code:"PHY305", name:"Statistical Mechanics" },
-            { code:"PHY307", name:"Electronics I" },
-            { code:"PHY309", name:"Nuclear Physics" }
-        ],
-        "400": [
-            { code:"PHY401", name:"Quantum Mechanics II" },
-            { code:"PHY403", name:"Solid State Physics" },
-            { code:"PHY405", name:"Astrophysics" },
-            { code:"PHY499", name:"Research Project" }
         ]
     },
     "Accounting": {
@@ -471,300 +1040,138 @@ const COURSE_CODES_DB = {
             { code:"ACC499", name:"Research Project" }
         ]
     },
-    "Economics": {
+    "Agriculture": {
         "100": [
-            { code:"ECO101", name:"Principles of Economics I" },
-            { code:"ECO102", name:"Principles of Economics II" },
+            { code:"AGR101", name:"Introduction to Agriculture" },
+            { code:"BIO101", name:"General Biology I" },
+            { code:"CHM101", name:"General Chemistry I" },
             { code:"MAT101", name:"Elementary Mathematics I" },
-            { code:"ACC101", name:"Introduction to Accounting" },
             { code:"GST101", name:"Use of English I" }
         ],
         "200": [
-            { code:"ECO201", name:"Microeconomics I" },
-            { code:"ECO203", name:"Macroeconomics I" },
-            { code:"ECO205", name:"Statistics for Economists" },
-            { code:"ECO207", name:"Mathematics for Economists" },
+            { code:"AGR201", name:"Crop Production" },
+            { code:"AGR203", name:"Animal Husbandry" },
+            { code:"AGR205", name:"Soil Science" },
             { code:"ENT211", name:"Entrepreneurship" }
         ],
         "300": [
-            { code:"ECO301", name:"Microeconomics II" },
-            { code:"ECO303", name:"Macroeconomics II" },
-            { code:"ECO305", name:"Econometrics I" },
-            { code:"ECO307", name:"Development Economics" }
+            { code:"AGR301", name:"Agricultural Economics" },
+            { code:"AGR303", name:"Farm Management" },
+            { code:"AGR399", name:"SIWES" }
         ],
         "400": [
-            { code:"ECO401", name:"Advanced Microeconomics" },
-            { code:"ECO403", name:"International Economics" },
-            { code:"ECO499", name:"Research Project" }
-        ]
-    },
-    "Mass Communication": {
-        "100": [
-            { code:"MAC101", name:"Introduction to Mass Communication" },
-            { code:"MAC102", name:"Introduction to Journalism" },
-            { code:"GST101", name:"Use of English I" },
-            { code:"SOC101", name:"Introduction to Sociology" }
-        ],
-        "200": [
-            { code:"MAC201", name:"Reporting and Writing I" },
-            { code:"MAC203", name:"Media and Society" },
-            { code:"MAC205", name:"Broadcast Journalism" },
-            { code:"MAC207", name:"Public Relations" },
-            { code:"ENT211", name:"Entrepreneurship" }
-        ],
-        "300": [
-            { code:"MAC301", name:"Media Law and Ethics" },
-            { code:"MAC303", name:"Advertising" },
-            { code:"MAC305", name:"Media Management" },
-            { code:"MAC307", name:"Television Production" }
-        ],
-        "400": [
-            { code:"MAC401", name:"Development Communication" },
-            { code:"MAC403", name:"New Media and Digital Journalism" },
-            { code:"MAC499", name:"Research Project" }
+            { code:"AGR401", name:"Agricultural Extension" },
+            { code:"AGR403", name:"Agricultural Policy" },
+            { code:"AGR499", name:"Research Project" }
         ]
     },
     "Business Administration": {
         "100": [
             { code:"BUS101", name:"Introduction to Business" },
-            { code:"BUS102", name:"Business Mathematics" },
-            { code:"ACC101", name:"Introduction to Accounting" },
             { code:"ECO101", name:"Principles of Economics I" },
+            { code:"ACC101", name:"Introduction to Accounting" },
+            { code:"MAT101", name:"Elementary Mathematics I" },
             { code:"GST101", name:"Use of English I" }
         ],
         "200": [
-            { code:"BUS201", name:"Management Principles" },
-            { code:"BUS203", name:"Marketing Principles" },
-            { code:"BUS205", name:"Organizational Behaviour" },
-            { code:"BUS207", name:"Business Statistics" },
+            { code:"BUS201", name:"Principles of Management" },
+            { code:"BUS203", name:"Business Communication" },
+            { code:"ECO201", name:"Microeconomics I" },
+            { code:"ACC201", name:"Financial Accounting I" },
             { code:"ENT211", name:"Entrepreneurship" }
         ],
         "300": [
-            { code:"BUS301", name:"Strategic Management" },
-            { code:"BUS303", name:"Human Resource Management" },
-            { code:"BUS305", name:"Business Finance" },
-            { code:"BUS307", name:"Operations Management" }
+            { code:"BUS301", name:"Human Resource Management" },
+            { code:"BUS303", name:"Marketing Management" },
+            { code:"BUS305", name:"Business Finance" }
         ],
         "400": [
-            { code:"BUS401", name:"Entrepreneurship and Innovation" },
+            { code:"BUS401", name:"Strategic Management" },
             { code:"BUS403", name:"International Business" },
             { code:"BUS499", name:"Research Project" }
         ]
     },
     "Information Technology": {
         "100": [
-            { code:"IFT101", name:"Introduction to IT" },
-            { code:"IFT111", name:"IT Fundamentals" },
             { code:"CSC101", name:"Introduction to Computer Science" },
+            { code:"CSC102", name:"Introduction to Computing" },
             { code:"MAT101", name:"Elementary Mathematics I" },
             { code:"GST101", name:"Use of English I" }
         ],
         "200": [
-            { code:"IFT201", name:"Systems Analysis and Design" },
-            { code:"IFT205", name:"Database Systems" },
-            { code:"IFT207", name:"Web Technologies" },
-            { code:"IFT219", name:"Digital Logic Design" },
-            { code:"CSC213", name:"Data Structures & Algorithm Analysis" },
+            { code:"CSC201", name:"Computer Organization" },
+            { code:"CSC205", name:"Operating Systems" },
+            { code:"CSC213", name:"Data Structures" },
             { code:"ENT211", name:"Entrepreneurship" }
         ],
         "300": [
-            { code:"IFT301", name:"Network Administration" },
-            { code:"IFT303", name:"Information Security" },
-            { code:"IFT305", name:"Software Project Management" },
-            { code:"IFT307", name:"E-Commerce" }
+            { code:"CSC301", name:"Software Engineering" },
+            { code:"CSC311", name:"Database Management Systems" },
+            { code:"CSC321", name:"Computer Networks" }
         ],
         "400": [
-            { code:"IFT401", name:"Cloud Computing" },
-            { code:"IFT403", name:"IT Governance" },
-            { code:"IFT499", name:"Final Year Project" }
+            { code:"CSC401", name:"IT Project Management" },
+            { code:"CSC411", name:"Information Security" },
+            { code:"CSC499", name:"Final Year Project" }
         ]
     },
-    "Microbiology": {
+    "Zoology": {
         "100": [
-            { code:"MCB101", name:"General Microbiology I" },
+            { code:"ZOO101", name:"General Zoology" },
             { code:"BIO101", name:"General Biology I" },
             { code:"CHM101", name:"General Chemistry I" },
-            { code:"BCH101", name:"General Biochemistry I" },
             { code:"MAT101", name:"Elementary Mathematics I" },
             { code:"GST101", name:"Use of English I" }
         ],
         "200": [
-            { code:"MCB201", name:"Bacteriology I" },
-            { code:"MCB203", name:"Virology I" },
-            { code:"MCB205", name:"Mycology" },
-            { code:"MCB207", name:"Immunology I" },
-            { code:"BCH201", name:"Biochemistry of Carbohydrates" },
+            { code:"ZOO201", name:"Invertebrate Zoology" },
+            { code:"ZOO203", name:"Vertebrate Zoology" },
+            { code:"BIO201", name:"Cell Biology" },
             { code:"ENT211", name:"Entrepreneurship" }
         ],
         "300": [
-            { code:"MCB301", name:"Medical Microbiology" },
-            { code:"MCB303", name:"Industrial Microbiology" },
-            { code:"MCB305", name:"Environmental Microbiology" },
-            { code:"MCB307", name:"Molecular Microbiology" }
+            { code:"ZOO301", name:"Animal Physiology" },
+            { code:"ZOO303", name:"Entomology" },
+            { code:"ZOO399", name:"SIWES" }
         ],
         "400": [
-            { code:"MCB401", name:"Clinical Microbiology" },
-            { code:"MCB403", name:"Biotechnology" },
-            { code:"MCB499", name:"Research Project" }
+            { code:"ZOO401", name:"Applied Zoology" },
+            { code:"ZOO403", name:"Wildlife Management" },
+            { code:"ZOO499", name:"Research Project" }
         ]
     },
-    "Statistics": {
+    "Entrepreneurship": {
         "100": [
-            { code:"STA101", name:"Introduction to Statistics" },
-            { code:"MAT101", name:"Elementary Mathematics I" },
-            { code:"MAT161", name:"Introductory Statistics" },
-            { code:"CSC101", name:"Introduction to Computer Science" },
+            { code:"ENT101", name:"Introduction to Entrepreneurship" },
+            { code:"BUS101", name:"Introduction to Business" },
             { code:"GST101", name:"Use of English I" }
         ],
         "200": [
-            { code:"STA201", name:"Probability & Statistics I" },
-            { code:"STA203", name:"Statistical Inference I" },
-            { code:"STA205", name:"Regression Analysis" },
-            { code:"MAT201", name:"Mathematical Methods I" },
-            { code:"ENT211", name:"Entrepreneurship" }
+            { code:"ENT211", name:"Entrepreneurship" },
+            { code:"BUS201", name:"Principles of Management" },
+            { code:"ACC201", name:"Financial Accounting I" }
         ],
         "300": [
-            { code:"STA301", name:"Statistical Computing" },
-            { code:"STA303", name:"Experimental Design" },
-            { code:"STA305", name:"Time Series Analysis" }
+            { code:"ENT321", name:"Entrepreneurship & Business Management" },
+            { code:"BUS301", name:"Human Resource Management" }
         ],
         "400": [
-            { code:"STA401", name:"Advanced Statistical Methods" },
-            { code:"STA499", name:"Research Project" }
-        ]
-    },
-    "Psychology": {
-        "100": [
-            { code:"PSY101", name:"Introduction to Psychology" },
-            { code:"SOC101", name:"Introduction to Sociology" },
-            { code:"GST101", name:"Use of English I" }
-        ],
-        "200": [
-            { code:"PSY201", name:"Developmental Psychology" },
-            { code:"PSY203", name:"Social Psychology" },
-            { code:"PSY205", name:"Abnormal Psychology" },
-            { code:"ENT211", name:"Entrepreneurship" }
-        ],
-        "300": [
-            { code:"PSY301", name:"Counselling Psychology" },
-            { code:"PSY303", name:"Industrial Psychology" },
-            { code:"PSY305", name:"Research Methods" }
-        ],
-        "400": [
-            { code:"PSY401", name:"Clinical Psychology" },
-            { code:"PSY499", name:"Research Project" }
+            { code:"ENT421", name:"Investment Marketing & Management" },
+            { code:"BUS401", name:"Strategic Management" },
+            { code:"ENT499", name:"Research Project" }
         ]
     }
 };
 
 // ============================================================
-//  STATIC MATERIALS (FULL DATA)
+//  STATIC MATERIALS
 // ============================================================
 const staticMaterials = [
-    { title:"BCH 101 - Lipids of Biological Importance", author:"Unknown", license:"Educational Use", link:"static/materials/Lipids-of-Biological-Importance.pdf", course:"Biochemistry", level:"100", semester:"First Semester", courseCode:"BCH101", isStatic:true },
-    { title:"BCH 101 – Carbohydrates", author:"ADEYEMO, ADESEGUN GIDEON", license:"Educational Use", link:"static/materials/BCH-101-Carbohydrate.pdf", course:"Biochemistry", level:"100", semester:"First Semester", courseCode:"BCH101", isStatic:true },
-    { title:"BCH 101 – Amino Acids and Proteins", author:"Adeyemo, Adesegun Gideon", license:"Educational Use", link:"static/materials/BCH-101-Amino-Acids-and-Proteins.pdf", course:"Biochemistry", level:"100", semester:"First Semester", courseCode:"BCH101", isStatic:true },
-    { title:"BCH 101 – Macromolecules", author:"Unknown", license:"Educational Use", link:"static/materials/BCH-101-Macromolecules.pdf", course:"Biochemistry", level:"100", semester:"First Semester", courseCode:"BCH101", isStatic:true },
-    { title:"BCH 101 OER – Past Questions", author:"Open Educational Resource", license:"OER", link:"static/materials/BCH-101-OER-Past-Questions.pdf", course:"Biochemistry", level:"100", semester:"First Semester", courseCode:"BCH101", isStatic:true },
-    { title:"BCH 101 – Brief History of Biochemistry", author:"Hikmet Geckil", license:"Educational Use", link:"static/materials/BCH-101-Brief-History-of-Biochemistry.pdf", course:"Biochemistry", level:"100", semester:"First Semester", courseCode:"BCH101", isStatic:true },
-    { title:"BCH 101 – Multiple Choice Questions", author:"RSM", license:"Educational Use", link:"static/materials/BCH-101-Multiple-Choice-Questions.pdf", course:"Biochemistry", level:"100", semester:"First Semester", courseCode:"BCH101", isStatic:true },
-    { title:"History of Biochemistry", author:"Unknown", license:"Educational Use", link:"static/materials/History-of-Biochemistry.pdf", course:"Biochemistry", level:"100", semester:"First Semester", courseCode:"BCH101", isStatic:true },
-    { title:"MAT 101 OER – Likely Exam Questions", author:"Sir Temi", license:"OER", link:"static/materials/MAT-101-OER.pdf", course:"Mathematics", level:"100", semester:"First Semester", courseCode:"MAT101", isStatic:true },
-    { title:"MAT 101 – Questions (DML & Adebanjo)", author:"DML & Adebanjo", license:"Educational Use", link:"static/materials/MAT-101-Questions-DML-and-Adebanjo-2.pdf", course:"Mathematics", level:"100", semester:"First Semester", courseCode:"MAT101", isStatic:true },
-    { title:"MAT 101 – Elementary Mathematics I (Lecture 1)", author:"Dr. Akinwale Lewis Olutimo", license:"LASU Academic Material", link:"static/materials/lasu/mathematics/1768303502_online_aspect_mat101_lesson_1.pdf", course:"Mathematics", level:"100", semester:"First Semester", courseCode:"MAT101", isStatic:true },
-    { title:"MAT 101 – Lecture 2: Theory of Quadratic Equations", author:"Dr. Akinwale Lewis Olutimo", license:"LASU Academic Material", link:"static/materials/lasu/mathematics/MAT-101-Lecture-2-Theory-of-Quadratic-Equations.pdf", course:"Mathematics", level:"100", semester:"First Semester", courseCode:"MAT101", isStatic:true },
-    { title:"MAT 101 – Lecture 3: Indices and Logarithms", author:"Dr. Akinwale Lewis Olutimo", license:"LASU Academic Material", link:"static/materials/lasu/mathematics/MAT-101-Lecture-3-Indices-and-Logarithms.pdf", course:"Mathematics", level:"100", semester:"First Semester", courseCode:"MAT101", isStatic:true },
-    { title:"PHY 101 OER", author:"Sola Royal", license:"lasuoer.online", link:"static/materials/PHY-101-OER-Sola-Royal.pdf", course:"Physics", level:"100", semester:"First Semester", courseCode:"PHY101", isStatic:true },
-    { title:"CSC 102 – Introduction to Computing Concepts", author:"Prof. Aribisala & Dr. Zubair Adam", license:"Educational Use", link:"static/materials/CSC-102-Introduction-to-Computing-Concepts.pdf", course:"Computer Science", level:"100", semester:"Second Semester", courseCode:"CSC102", isStatic:true },
-    { title:"BIO 101 – Levels of Biological Organization", author:"Alafia, A. O.", license:"Educational Use", link:"static/materials/BIO-101-Levels-of-Biological-Organization-and-Classification.pdf", course:"Biology", level:"100", semester:"First Semester", courseCode:"BIO101", isStatic:true },
-    { title:"BIO 101 – Biomolecules: Carbohydrates and Lipids", author:"Adu, Oluwatosin B.", license:"Educational Use", link:"static/materials/BIO-101-Biomolecules-Carbohydrates-and-Lipids.pdf", course:"Biology", level:"100", semester:"First Semester", courseCode:"BIO101", isStatic:true },
-    { title:"BIO 101 – Biomolecules: Proteins and Nucleic Acids", author:"Adu, Oluwatosin B.", license:"Educational Use", link:"static/materials/BIO-101-Biomolecules-Proteins-and-Nucleic-Acids.pdf", course:"Biology", level:"100", semester:"First Semester", courseCode:"BIO101", isStatic:true },
-    { title:"BIO 101 – Gametogenesis", author:"Osinaike, T. S.", license:"Educational Use", link:"static/materials/BIO-101-Gametogenesis.pdf", course:"Biology", level:"100", semester:"First Semester", courseCode:"BIO101", isStatic:true },
-    { title:"BIO 101 – Microscopy", author:"Dr. Bola Oyefolu", license:"Educational Use", link:"static/materials/BIO-101-Microscopy.pdf", course:"Biology", level:"100", semester:"First Semester", courseCode:"BIO101", isStatic:true },
-    { title:"BIO 101 – Cell Structure and Function of Organelles", author:"Unknown", license:"Educational Use", link:"static/materials/BIO-101-Cell-Structure-and-Function-of-Organelles.pdf", course:"Biology", level:"100", semester:"First Semester", courseCode:"BIO101", isStatic:true },
-    { title:"CHM 101 – Oxidation and Reduction", author:"Unknown", license:"Educational Use", link:"static/materials/CHM-101-Oxidation-and-Reduction.pdf", course:"Chemistry", level:"100", semester:"First Semester", courseCode:"CHM101", isStatic:true },
-    { title:"CHM 101 – Acids and Bases", author:"Onwordi, C. T. (Ph.D)", license:"Educational Use", link:"static/materials/CHM-101-Acids-and-Bases.pdf", course:"Chemistry", level:"100", semester:"First Semester", courseCode:"CHM101", isStatic:true },
-    { title:"CHM 101 – Atomic Theory Timeline", author:"Unknown", license:"Educational Use", link:"static/materials/CHM-101-Atomic-Theory-Timeline.pdf", course:"Chemistry", level:"100", semester:"First Semester", courseCode:"CHM101", isStatic:true },
-    { title:"CHM 101 – Redox Reactions and Introduction to Electrochemistry", author:"Prof. Olowu R. A.", license:"Educational Use", link:"static/materials/CHM-101-Redox-Reactions-and-Introduction-to-Electrochemistry.pdf", course:"Chemistry", level:"100", semester:"First Semester", courseCode:"CHM101", isStatic:true },
-    { title:"CHM 101 – Periodicity", author:"Unknown", license:"Educational Use", link:"static/materials/CHM-101-Periodicity.pdf", course:"Chemistry", level:"100", semester:"First Semester", courseCode:"CHM101", isStatic:true },
-    { title:"CHM 101 – Modern Electronic Theory of Atoms", author:"Prof. A. A. Adeniyi", license:"Educational Use", link:"static/materials/CHM-101-Modern-Electronic-Theory-of-Atoms.pdf", course:"Chemistry", level:"100", semester:"First Semester", courseCode:"CHM101", isStatic:true },
-    { title:"CHM 101 – Rates of Reactions", author:"Unknown", license:"Educational Use", link:"static/materials/CHM-101-Rates-of-Reactions.pdf", course:"Chemistry", level:"100", semester:"First Semester", courseCode:"CHM101", isStatic:true },
-    { title:"CHM 101 – Radioactivity", author:"Unknown", license:"Educational Use", link:"static/materials/CHM-101-Radioactivity.pdf", course:"Chemistry", level:"100", semester:"First Semester", courseCode:"CHM101", isStatic:true },
-    { title:"CHM 102 – Homework Practice Questions", author:"Unknown", license:"Educational Use", link:"static/materials/CHM-102-Homework-Practice-Questions.pdf", course:"Chemistry", level:"100", semester:"Second Semester", courseCode:"CHM102", isStatic:true },
-    { title:"Sure A in CHM 101 – Past Questions & Answers", author:"Unknown", license:"Educational Use", link:"static/materials/Sure-A-in-CHM-101-Past-Questions-and-Answers.pdf", course:"Chemistry", level:"100", semester:"First Semester", courseCode:"CHM101", isStatic:true },
-    { title:"PHY 104 – Electricity and Magnetism", author:"University of Abuja", license:"Educational Use", link:"static/materials/PHY-104-Electricity-and-Magnetism.pdf", course:"Physics", level:"100", semester:"Second Semester", courseCode:"PHY104", isStatic:true },
-    { title:"PHY 104 – Oscillation", author:"Unknown", license:"Educational Use", link:"static/materials/PHY-104-Oscillation.pdf", course:"Physics", level:"100", semester:"Second Semester", courseCode:"PHY104", isStatic:true },
-    { title:"Trigonometry", author:"Dr. Olaniyan", license:"LASU Academic Material", link:"static/materials/lasu/mathematics/Trigonometry.pdf", course:"Mathematics", level:"100", semester:"First Semester", courseCode:"MAT101", isStatic:true },
-    { title:"Indices, Surds and Logarithms", author:"Department of Mathematics", license:"LASU Academic Material", link:"static/materials/lasu/mathematics/Indices-Surds-and-Logarithms.pdf", course:"Mathematics", level:"100", semester:"First Semester", courseCode:"MAT101", isStatic:true },
-    { title:"Inequalities", author:"Dr. Olaniyan Adegoke", license:"LASU Academic Material", link:"static/materials/lasu/mathematics/Inequalities.pdf", course:"Mathematics", level:"100", semester:"First Semester", courseCode:"MAT101", isStatic:true },
-    { title:"Theory of Quadratic Equation", author:"Dr. Olaniyan Adegoke", license:"LASU Academic Material", link:"static/materials/lasu/mathematics/Theory-of-Quadratic-Equation.pdf", course:"Mathematics", level:"100", semester:"First Semester", courseCode:"MAT101", isStatic:true },
-    { title:"Sequence and Series", author:"Department of Mathematics, Lagos State University", license:"LASU Academic Material", link:"static/materials/lasu/mathematics/Sequence-and-Series.pdf", course:"Mathematics", level:"100", semester:"First Semester", courseCode:"MAT101", isStatic:true },
-    { title:"Binomial Expansion", author:"Dr. Olaniyan Adegoke", license:"LASU Academic Material", link:"static/materials/lasu/mathematics/Binomial-Expansion.pdf", course:"Mathematics", level:"100", semester:"First Semester", courseCode:"MAT101", isStatic:true },
-    { title:"MAT 161 – Descriptive Statistics (Lecture 1)", author:"Dr. Akinwale Lewis Olutimo", license:"LASU Academic Material", link:"static/materials/lasu/mat161/MAT-161-Descriptive-Statistics-Lecture-1.pdf", course:"Mathematics", level:"100", semester:"First Semester", courseCode:"MAT161", isStatic:true },
-    { title:"Financial Accounting", author:"OpenStax", license:"CC BY 4.0", link:"static/materials/accounting/Financial-Accounting.pdf", course:"Accounting", level:"100", semester:"First Semester", courseCode:"ACC101", isStatic:true },
-    { title:"Principles Of Accounting Vol 1", author:"Open Educational Resource", license:"CC BY 4.0", link:"static/materials/account/Principles-Of-Accounting-Vol-1.pdf", course:"Accounting", level:"100", semester:"First Semester", courseCode:"ACC101", isStatic:true },
-    { title:"Principles of Accounting Vol 2", author:"Open Educational Resource", license:"CC BY 4.0", link:"static/materials/account/Principles-Of-Accounting-Vol-2.pdf", course:"Accounting", level:"100", semester:"Second Semester", courseCode:"ACC102", isStatic:true },
-    { title:"Zoology Test", author:"Unknown", license:"Educational Use", link:"static/materials/Zoology-Test.pdf", course:"Zoology", level:"100", semester:"First Semester", courseCode:"ZOO101", isStatic:true },
-    { title:"ZOO 102 – Digestive System of Mammals", author:"Dr. O. O. Okwa", license:"Educational Use", link:"static/materials/ZOO-102-Digestive-System-of-Mammals.pdf", course:"Zoology", level:"100", semester:"Second Semester", courseCode:"ZOO102", isStatic:true },
-    { title:"PHY 101 – General Physics I", author:"Dr. Adewusi", license:"Educational Use", link:"static/materials/PHY-101-General-Physics-I-Dr-Adewusi.pdf", course:"Physics", level:"100", semester:"First Semester", courseCode:"PHY101", isStatic:true },
-    { title:"PHY 101 – Circular Motion", author:"Unknown", license:"Educational Use", link:"static/materials/PHY-101-Circular-Motion.pdf", course:"Physics", level:"100", semester:"First Semester", courseCode:"PHY101", isStatic:true },
-    { title:"PHY 101 – Mechanics and Properties of Matter", author:"Dr. S. O. Oseni", license:"Educational Use", link:"static/materials/PHY-101-Mechanics-and-Properties-of-Matter.pdf", course:"Physics", level:"100", semester:"First Semester", courseCode:"PHY101", isStatic:true },
-    { title:"PHY 101 – Circular and Oscillatory Motion", author:"Dr. A. O. Adewale", license:"Educational Use", link:"static/materials/PHY-101-Circular-and-Oscillatory-Motion.pdf", course:"Physics", level:"100", semester:"First Semester", courseCode:"PHY101", isStatic:true },
-    { title:"General Physics – Physics and Measurement", author:"Prof. Rashad Badran", license:"Educational Use", link:"static/materials/General-Physics-Physics-and-Measurement.pdf", course:"Physics", level:"100", semester:"First Semester", courseCode:"PHY101", isStatic:true },
-    { title:"MAT 141 – Mathematics", author:"Unknown", license:"Educational Use", link:"static/materials/MAT-141.pdf", course:"Mathematics", level:"100", semester:"First Semester", courseCode:"MAT141", isStatic:true },
-    { title:"MAT 101 – Practice Questions", author:"NoahLyMatics", license:"Educational Use", link:"static/materials/MAT-101-Practice-Questions-NoahLyMatics.pdf", course:"Mathematics", level:"100", semester:"First Semester", courseCode:"MAT101", isStatic:true },
-    { title:"MAT 101 – Questions", author:"Unknown", license:"Educational Use", link:"static/materials/MAT-101-Questions.pdf", course:"Mathematics", level:"100", semester:"First Semester", courseCode:"MAT101", isStatic:true },
-    { title:"Computer Questions and Answers – Basic to Advanced", author:"Unknown", license:"Educational Use", link:"static/materials/Computer-Questions-and-Answers-Basic-to-Advanced.pdf", course:"Computer Science", level:"100", semester:"First Semester", courseCode:"CSC101", isStatic:true },
-    { title:"CSC 111 – Past Questions", author:"DML", license:"Educational Use", link:"static/materials/CSC-111-Past-Questions-DML.pdf", course:"Computer Science", level:"100", semester:"First Semester", courseCode:"CSC111", isStatic:true },
-    { title:"CSC 101 – Introduction to Computing", author:"Dr. Zubair Adam", license:"Educational Use", link:"static/materials/CSC-101-Introduction-to-Computing-Lecture-3.pdf", course:"Computer Science", level:"100", semester:"First Semester", courseCode:"CSC101", isStatic:true },
-    { title:"CSC 111 – Introduction to Computer Science", author:"Unknown", license:"Educational Use", link:"static/materials/CSC-111-Introduction-to-Computer-Science.pdf", course:"Computer Science", level:"100", semester:"First Semester", courseCode:"CSC111", isStatic:true },
-    { title:"CSC 111 – Computer Hardware and Software", author:"Acethychlorine Community", license:"Educational Use", link:"static/materials/CSC-111-Computer-Hardware-and-Software.pdf", course:"Computer Science", level:"100", semester:"First Semester", courseCode:"CSC111", isStatic:true },
-    { title:"Principles of Financial Accounting", author:"Open Educational Resource", license:"CC BY 4.0", link:"static/materials/account/Principles-of-Financial-Accounting.pdf", course:"Accounting", level:"100", semester:"First Semester", courseCode:"ACC101", isStatic:true },
-    { title:"Training Manual for ORGANIC AGRICULTURE", author:"FAO", license:"FAO PDF", link:"static/materials/agriculture/Compilation_techniques_organic_agriculture_rev.pdf", course:"Agriculture", level:"100", semester:"First Semester", courseCode:"AGR101", isStatic:true },
-    { title:"Material II", author:"Computer Science Department", license:"All Rights Reserved", link:"static/materials/1769479673_material_ii.pdf", course:"Computer Science", level:"200", semester:"First Semester", courseCode:"CSC221", isStatic:true },
-    { title:"CISC and RISC", author:"Information Technology Department", license:"All Rights Reserved", link:"static/materials/IFT219-CISC-and-RISC.pdf", course:"Information Technology", level:"200", semester:"First Semester", courseCode:"IFT219", isStatic:true },
-    { title:"CSC 207 Test 2", author:"Computer Science Department", license:"All Rights Reserved", link:"static/materials/1769478686_csc_207_test_2.pdf", course:"Computer Science", level:"200", semester:"First Semester", courseCode:"CSC207", isStatic:true },
-    { title:"ENT 211 Compilation", author:"Entrepreneurship Department", license:"All Rights Reserved", link:"static/materials/1769479082_ent_211_compilation.pdf", course:"Entrepreneurship", level:"200", semester:"First Semester", courseCode:"ENT211", isStatic:true },
-    { title:"CSC 221 Course Content", author:"Computer Science Department", license:"All Rights Reserved", link:"static/materials/1769479515_csc_221_course_content.pdf", course:"Computer Science", level:"200", semester:"First Semester", courseCode:"CSC221", isStatic:true },
-    { title:"Data Structure I", author:"Computer Science Department", license:"All Rights Reserved", link:"static/materials/1769479567_data_structure_i.pdf", course:"Computer Science", level:"200", semester:"First Semester", courseCode:"CSC221", isStatic:true },
-    { title:"Data Structure II", author:"Computer Science Department", license:"All Rights Reserved", link:"static/materials/1769479600_data_structure_ii.pdf", course:"Computer Science", level:"200", semester:"First Semester", courseCode:"CSC221", isStatic:true },
-    { title:"CSC217 Lecture 1", author:"Computer Science Department", license:"All Rights Reserved", link:"static/materials/1769475988_217_lecture_1.pdf", course:"Computer Science", level:"200", semester:"First Semester", courseCode:"CSC217", isStatic:true },
-    { title:"CSC217 Lecture 2", author:"Computer Science Department", license:"All Rights Reserved", link:"static/materials/1769476027_217_lecture_2.pdf", course:"Computer Science", level:"200", semester:"First Semester", courseCode:"CSC217", isStatic:true },
-    { title:"CSC217 Lecture 3", author:"Computer Science Department", license:"All Rights Reserved", link:"static/materials/1769476056_217_lecture_3.pdf", course:"Computer Science", level:"200", semester:"First Semester", courseCode:"CSC217", isStatic:true },
-    { title:"CSC217 Lecture 4", author:"Computer Science Department", license:"All Rights Reserved", link:"static/materials/1769476087_217_lecture_4.pdf", course:"Computer Science", level:"200", semester:"First Semester", courseCode:"CSC217", isStatic:true },
-    { title:"CSC217 Key Points & Practice Questions", author:"Computer Science Department", license:"All Rights Reserved", link:"static/materials/1769476220_csc217_key_points_practice_questions.pdf", course:"Computer Science", level:"200", semester:"First Semester", courseCode:"CSC217", isStatic:true },
-    { title:"Lecture 1: Real-Valued Functions of a Real Variable", author:"Dr. Ashiribo Senapon WUSU", license:"All Rights Reserved", link:"static/materials/LASUmat_201_lesson_1.pdf", course:"Mathematics", level:"200", semester:"First Semester", courseCode:"MAT201", isStatic:true },
-    { title:"Lecture: Multiple Integrals", author:"Dr. Ashiribo Senapon WUSU", license:"All Rights Reserved", link:"static/materials/LASU_mat_201_lecture_10.pdf", course:"Mathematics", level:"200", semester:"First Semester", courseCode:"MAT201", isStatic:true },
-    { title:"Lecture 8: Increments, Differentials and Linear Approximations", author:"Dr. Ashiribo Senapon WUSU", license:"All Rights Reserved", link:"static/materials/LASU_mat_201_lecture_8.pdf", course:"Mathematics", level:"200", semester:"First Semester", courseCode:"MAT201", isStatic:true },
-    { title:"Lecture 7: Partial Derivatives and Applications", author:"Dr. Ashiribo Senapon WUSU", license:"All Rights Reserved", link:"static/materials/LASU_mat_201_lecture_7.pdf", course:"Mathematics", level:"200", semester:"First Semester", courseCode:"MAT201", isStatic:true },
-    { title:"Lecture 5: Taylor Series", author:"Dr. Ashiribo Senapon WUSU", license:"All Rights Reserved", link:"static/materials/LASU_mat_201_lecture_5.pdf", course:"Mathematics", level:"200", semester:"First Semester", courseCode:"MAT201", isStatic:true },
-    { title:"Lecture 4: Mean Value Theorem", author:"Dr. Ashiribo Senapon WUSU", license:"All Rights Reserved", link:"static/materials/LASUmat_201_lecture_4.pdf", course:"Mathematics", level:"200", semester:"First Semester", courseCode:"MAT201", isStatic:true },
-    { title:"Lecture 3: Applications of Differentiation and Integration", author:"Dr. Ashiribo Senapon WUSU", license:"All Rights Reserved", link:"static/materials/LASUmat_201_lecture_3.pdf", course:"Mathematics", level:"200", semester:"First Semester", courseCode:"MAT201", isStatic:true },
-    { title:"Lecture 2: Review of Differentiation and Integration", author:"Dr. Ashiribo Senapon WUSU", license:"All Rights Reserved", link:"static/materials/LASUmat_201_lecture_2.pdf", course:"Mathematics", level:"200", semester:"First Semester", courseCode:"MAT201", isStatic:true },
-    { title:"Operating System Note I", author:"Computer Science Department", license:"All Rights Reserved", link:"static/materials/1769477900_operating_system_note_i.pdf", course:"Computer Science", level:"200", semester:"First Semester", courseCode:"CSC205", isStatic:true },
-    { title:"Operating System", author:"Computer Science Department", license:"All Rights Reserved", link:"static/materials/1769477950_operating_system.pdf", course:"Computer Science", level:"200", semester:"First Semester", courseCode:"CSC205", isStatic:true },
-    { title:"CSC 207 Note 1", author:"Computer Science Department", license:"All Rights Reserved", link:"static/materials/1769478505_csc_207_note_1.pdf", course:"Computer Science", level:"200", semester:"First Semester", courseCode:"CSC207", isStatic:true },
-    { title:"IFT 219 Note I", author:"Information Technology Department", license:"All Rights Reserved", link:"static/materials/1769478514_ift_219_note_i.pdf", course:"Information Technology", level:"200", semester:"First Semester", courseCode:"IFT219", isStatic:true },
-    { title:"Hashing", author:"Computer Science Department", license:"All Rights Reserved", link:"static/materials/1769479631_hashing.pdf", course:"Computer Science", level:"200", semester:"First Semester", courseCode:"CSC221", isStatic:true },
-    { title:"Queues", author:"Computer Science Department", license:"All Rights Reserved", link:"static/materials/1769479735_queues.pdf", course:"Computer Science", level:"200", semester:"First Semester", courseCode:"CSC221", isStatic:true },
-    { title:"Stacks", author:"Computer Science Department", license:"All Rights Reserved", link:"static/materials/1769479771_stacks.pdf", course:"Computer Science", level:"200", semester:"First Semester", courseCode:"CSC221", isStatic:true },
-    { title:"Complexity Analysis of Algorithms", author:"Jordi Cortadella", license:"All Rights Reserved", link:"static/materials/complexity_analysis_of_algorithm.pdf", course:"Computer Science", level:"200", semester:"First Semester", courseCode:"CSC213", isStatic:true },
-    { title:"Trees I", author:"Computer Science Department", license:"All Rights Reserved", link:"static/materials/1769480131_trees_i.pdf", course:"Computer Science", level:"200", semester:"First Semester", courseCode:"CSC221", isStatic:true },
-    { title:"Trees III", author:"Computer Science Department", license:"All Rights Reserved", link:"static/materials/1769480347_trees_iii.pdf", course:"Computer Science", level:"200", semester:"First Semester", courseCode:"CSC221", isStatic:true },
-    { title:"Tree II", author:"Computer Science Department", license:"All Rights Reserved", link:"static/materials/1769480504_tree_ii.pdf", course:"Computer Science", level:"200", semester:"First Semester", courseCode:"CSC221", isStatic:true },
-    { title:"CSC 213 Note 1", author:"Computer Science Department", license:"All Rights Reserved", link:"static/materials/1769480768_csc_213_note_i.pdf", course:"Computer Science", level:"200", semester:"First Semester", courseCode:"CSC213", isStatic:true },
-    { title:"Complexity IV", author:"Computer Science Department", license:"All Rights Reserved", link:"static/materials/complexity_iv.pdf", course:"Computer Science", level:"200", semester:"First Semester", courseCode:"CSC213", isStatic:true },
-    { title:"Complexity III", author:"Computer Science Department", license:"All Rights Reserved", link:"static/materials/complexity_iii.pdf", course:"Computer Science", level:"200", semester:"First Semester", courseCode:"CSC213", isStatic:true },
-    { title:"Algorithm Design Techniques and Analysis", author:"M. H. Alsuwaiyel", license:"All Rights Reserved", link:"static/materials/algorithm_design_techniques_and_analysis.pdf", course:"Computer Science", level:"200", semester:"First Semester", courseCode:"CSC213", isStatic:true },
-    { title:"Genetics, Agriculture, and Biotechnology", author:"Walter Suza and Donald Lee", license:"CC BY-NC-SA 4.0", link:"static/materials/agriculture/Genetics-Agriculture-and-Biotechnology-1646343300.pdf", course:"Agriculture", level:"100", semester:"First Semester", courseCode:"AGR101", isStatic:true },
-    { title:"Plant Breeding Methods", author:"Walter R. Fehr and Walter P. Suza", license:"CC BY-NC 4.0", link:"static/materials/agriculture/Plant-Breeding-Methods-1724939423.pdf", course:"Agriculture", level:"100", semester:"First Semester", courseCode:"AGR101", isStatic:true },
-    { title:"Introduction to Business Administration", author:"Amit Shah et al.", license:"CC BY 4.0", link:"static/materials/businessadministation/Introduction-to-Business-Administration-1735836334.pdf", course:"Business Administration", level:"100", semester:"First Semester", courseCode:"BUS101", isStatic:true },
-    { title:"Business Fundamentals – 1st Edition", author:"Kerri Shields", license:"CC BY-NC-SA 4.0", link:"static/materials/businessadministation/Business-Fundamentals-1st-Edition-1760797243.pdf", course:"Business Administration", level:"100", semester:"First Semester", courseCode:"BUS101", isStatic:true },
-    { title:"Probability & Statistics for Engineers & Scientists (9th Edition)", author:"Ronald E. Walpole et al.", license:"Copyrighted", link:"static/materials/Probability-and-Statistics-for-Engineers-and-Scientists-9th-Edition.pdf", course:"Mathematics", level:"100", semester:"First Semester", courseCode:"MAT101", isStatic:true },
-    { title:"Macmillan Mathematical Guides – Introduction to Algebra", author:"Carol Whitehead", license:"Copyrighted", link:"static/materials/Macmillan-Mathematical-Guides-Introduction-to-Algebra.pdf", course:"Mathematics", level:"100", semester:"First Semester", courseCode:"MAT101", isStatic:true },
-    { title:"DBMS II – Transaction Processing (Unit 6)", author:"Prof. Firoz Sherasiya", license:"LASU Academic Material", link:"static/materials/lasu/dbms2/DBMS-II-Unit-6-Transaction-Management.pdf", course:"Computer Science", level:"200", semester:"First Semester", courseCode:"CSC201", isStatic:true },
-    { title:"Compiler Construction Note II", author:"Computer Science Department", license:"All Rights Reserved", link:"static/materials/1769476061_compiler_construction_note_ii.pdf", course:"Computer Science", level:"300", semester:"First Semester", courseCode:"CSC319", isStatic:true },
-    { title:"GLT 201 – Instrument Maintenance", author:"Science Laboratory Technology Dept", license:"All Rights Reserved", link:"static/materials/glt_practice_problems.pdf", course:"Science Laboratory Technology", level:"200", semester:"First Semester", courseCode:"GLT201", isStatic:true }
+    { title:"BCH 101 - Lipids of Biological Importance", author:"Unknown", license:"Educational Use", link:"static/materials/Lipids-of-Biological-Importance.pdf", course:"Biochemistry", level:"100", semester:"First Semester", courseCode:"BCH101", isStatic:true, source:'static' },
+    { title:"BCH 101 – Carbohydrates", author:"ADEYEMO, ADESEGUN GIDEON", license:"Educational Use", link:"static/materials/BCH-101-Carbohydrate.pdf", course:"Biochemistry", level:"100", semester:"First Semester", courseCode:"BCH101", isStatic:true, source:'static' },
+    { title:"BCH 101 – Amino Acids and Proteins", author:"Adeyemo, Adesegun Gideon", license:"Educational Use", link:"static/materials/BCH-101-Amino-Acids-and-Proteins.pdf", course:"Biochemistry", level:"100", semester:"First Semester", courseCode:"BCH101", isStatic:true, source:'static' },
+    { title:"MAT 101 OER – Likely Exam Questions", author:"Sir Temi", license:"OER", link:"static/materials/MAT-101-OER.pdf", course:"Mathematics", level:"100", semester:"First Semester", courseCode:"MAT101", isStatic:true, source:'static' },
+    { title:"CSC 102 – Introduction to Computing Concepts", author:"Prof. Aribisala & Dr. Zubair Adam", license:"Educational Use", link:"static/materials/CSC-102-Introduction-to-Computing-Concepts.pdf", course:"Computer Science", level:"100", semester:"Second Semester", courseCode:"CSC102", isStatic:true, source:'static' }
 ];
 
 // ============================================================
@@ -779,22 +1186,289 @@ function getBadge(title) {
     return { label:'STUDY MATERIAL', color:'#14b8a6' };
 }
 
+function getSourceBadge(source) {
+    const badges = {
+        'static': { label:'📁 ARCHIVED', class:'static' },
+        'uploaded': { label:'📤 UPLOADED', class:'uploaded' },
+        'google_auto': { label:'🌐 WEB SOURCE', class:'web' }
+    };
+    return badges[source] || { label:'📁 ARCHIVED', class:'static' };
+}
+
 // ============================================================
 //  STATE
 // ============================================================
 let selectedCourses = [];
 let uploadedMaterials = [];
+let googleMaterials = [];
 let currentFilter = 'all';
 let searchQuery = '';
+let isLoadingGoogle = false;
+let currentViewingMaterial = null;
 
 // ============================================================
-//  ONBOARDING — show ALL courses for this level + department
+//  GOOGLE MATERIALS FETCH
+// ============================================================
+async function fetchGoogleMaterials() {
+    if (!selectedCourses.length) {
+        updateGoogleStatus('No courses selected', 'idle');
+        return;
+    }
+    
+    isLoadingGoogle = true;
+    updateGoogleStatus('Searching web for materials...', 'loading');
+    document.getElementById('refreshGoogleBtn').disabled = true;
+    
+    try {
+        const response = await fetch('/api/fetch-google-materials-batch', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ course_codes: selectedCourses.slice(0, 5) })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            googleMaterials = (data.materials || []).map(m => ({
+                ...m,
+                isStatic: false,
+                source: 'google_auto',
+                link: m.external_url || m.file_url,
+                courseCode: m.course_code || '',
+                title: m.title || 'Untitled Material'
+            }));
+            
+            const cached = data.materials.every(m => data.cached !== false);
+            updateGoogleStatus(
+                `Found ${googleMaterials.length} web materials${cached ? ' (cached)' : ''}`,
+                'success'
+            );
+        } else {
+            updateGoogleStatus('No web materials found', 'idle');
+        }
+    } catch (error) {
+        console.error('Google fetch error:', error);
+        updateGoogleStatus('Search unavailable', 'error');
+    } finally {
+        isLoadingGoogle = false;
+        document.getElementById('refreshGoogleBtn').disabled = false;
+        renderLibrary();
+    }
+}
+
+function updateGoogleStatus(text, status) {
+    const statusEl = document.getElementById('googleStatus');
+    const textEl = document.getElementById('googleStatusText');
+    const iconEl = statusEl.querySelector('.status-icon');
+    
+    statusEl.className = 'google-status';
+    if (status === 'loading') {
+        statusEl.classList.add('loading');
+        iconEl.innerHTML = '<span class="loading-spinner"></span>';
+    } else if (status === 'success') {
+        statusEl.classList.add('success');
+        iconEl.textContent = '✅';
+    } else if (status === 'error') {
+        iconEl.textContent = '⚠️';
+    } else {
+        iconEl.textContent = '🌐';
+    }
+    
+    textEl.textContent = text;
+}
+
+// ============================================================
+//  FETCH UPLOADED MATERIALS FROM BACKEND
+// ============================================================
+async function fetchUploadedMaterials() {
+    try {
+        const res = await fetch('/api/fetch-materials?course=&level=&semester=');
+        if (res.ok) {
+            const data = await res.json();
+            uploadedMaterials = (data.materials || []).map(m => ({
+                ...m,
+                isStatic: false,
+                source: m.source || 'uploaded',
+                courseCode: m.course_code || '',
+                link: m.file_url || m.external_url || ''
+            }));
+        }
+    } catch(e) {
+        uploadedMaterials = [];
+    }
+}
+
+// ============================================================
+//  RENDER LIBRARY
+// ============================================================
+function getMaterialsToShow() {
+    const all = [...staticMaterials, ...uploadedMaterials, ...googleMaterials];
+    if (!selectedCourses.length) return all;
+    return all.filter(m => {
+        const matchesCourse = selectedCourses.includes(m.courseCode);
+        const matchesSemester = !userSemester || m.semester === userSemester;
+        return matchesCourse && matchesSemester;
+    });
+}
+
+function applySearchAndFilter(materials) {
+    let result = [...materials];
+    const seen = new Set();
+    result = result.filter(m => {
+        const key = m.link || m.id;
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+    });
+    if (currentFilter !== 'all') {
+        result = result.filter(m => getBadge(m.title).label === currentFilter);
+    }
+    if (searchQuery.trim()) {
+        const q = searchQuery.toLowerCase();
+        result = result.filter(m =>
+            (m.title || '').toLowerCase().includes(q) ||
+            (m.author || '').toLowerCase().includes(q) ||
+            (m.course || '').toLowerCase().includes(q) ||
+            (m.courseCode || '').toLowerCase().includes(q)
+        );
+    }
+    return result;
+}
+
+function renderLibrary() {
+    const base = getMaterialsToShow();
+    const final = applySearchAndFilter(base);
+    const grid = document.getElementById('materialsGrid');
+
+    if (!final.length) {
+        grid.innerHTML = `<div class="empty-state">✨ No materials found for your selection. Try another filter or <a href="#" style="color:#58a6ff;" onclick="document.getElementById('searchInput').value=''; searchQuery=''; renderLibrary();">clear search</a>.</div>`;
+        return;
+    }
+
+    grid.innerHTML = final.map(m => {
+        const badge = getBadge(m.title);
+        const sourceBadge = getSourceBadge(m.source);
+        const icon = badge.label === 'PAST QUESTIONS' ? '📝' : (badge.label === 'TEXTBOOK' ? '📚' : (badge.label === 'LECTURE NOTES' ? '📖' : '📘'));
+        const dept = m.course || m.department || 'General';
+        const safeLink = (m.link || '').replace(/'/g, "\\'");
+        const safeTitle = (m.title || 'Untitled').replace(/'/g, "\\'");
+        const isGoogle = m.source === 'google_auto';
+        
+        return `
+            <div class="material-card ${isGoogle ? 'google-source' : ''}" onclick='openMaterial(${JSON.stringify(m)})'>
+                <div class="card-top">
+                    <span class="material-icon">${icon}</span>
+                    <div class="material-title">${m.title || 'Untitled Material'}</div>
+                </div>
+                <div class="dept-tag">${dept}</div>
+                <div class="meta-row">
+                    <span>📄 PDF</span>
+                    <span>${m.courseCode || ''}</span>
+                </div>
+                <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
+                    <span class="badge" style="background:${badge.color}22; color:${badge.color}; border:1px solid ${badge.color}44;">${badge.label}</span>
+                    <span class="source-badge ${sourceBadge.class}">${sourceBadge.label}</span>
+                </div>
+                <div class="card-bottom">
+                    <span class="pdf-label">📌 ${m.author || m.uploaded_by || 'Unknown'}</span>
+                    <div class="card-icons">
+                        <span title="Bookmark">🔖</span>
+                        <span title="Download" onclick="event.stopPropagation(); downloadMaterial('${safeLink}','${safeTitle}')">⬇️</span>
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+// ============================================================
+//  PDF VIEWER
+// ============================================================
+function openMaterial(material) {
+    const link = material.link || material.file_url || material.external_url;
+    if (!link) return alert('File not available.');
+    
+    currentViewingMaterial = material;
+    
+    // Reset iframe and show loader
+    const iframe = document.getElementById('pdfViewerFrame');
+    const loader = document.getElementById('pdfLoader');
+    
+    iframe.classList.remove('loaded');
+    loader.classList.remove('hidden');
+    iframe.src = ''; // Clear previous
+    
+    // Set title and source badge
+    document.getElementById('viewerTitle').textContent = material.title || 'Document';
+    
+    const sourceBadge = getSourceBadge(material.source);
+    document.getElementById('viewerSourceBadge').innerHTML = `
+        <span class="source-badge ${sourceBadge.class}">${sourceBadge.label}</span>
+        <span style="color:#6e7681;">${material.courseCode || ''}</span>
+    `;
+    
+    // Show modal
+    document.getElementById('pdfViewerModal').classList.add('show');
+    
+    // Start loading PDF
+    setTimeout(() => {
+        if (material.source === 'google_auto' && link.startsWith('http')) {
+            const viewerUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(link)}&embedded=true`;
+            iframe.src = viewerUrl;
+        } else {
+            iframe.src = link;
+        }
+        
+        // Handle load event
+        iframe.onload = () => {
+            setTimeout(() => {
+                loader.classList.add('hidden');
+                iframe.classList.add('loaded');
+            }, 300);
+        };
+        
+        // Fallback timeout
+        setTimeout(() => {
+            if (!iframe.classList.contains('loaded')) {
+                loader.classList.add('hidden');
+                iframe.classList.add('loaded');
+            }
+        }, 5000);
+    }, 100);
+}
+
+function closePdfViewer() {
+    document.getElementById('pdfViewerModal').classList.remove('show');
+    const iframe = document.getElementById('pdfViewerFrame');
+    iframe.src = '';
+    iframe.classList.remove('loaded');
+    document.getElementById('pdfLoader').classList.remove('hidden');
+    currentViewingMaterial = null;
+}
+
+function downloadCurrentMaterial() {
+    if (currentViewingMaterial) {
+        const link = currentViewingMaterial.link || currentViewingMaterial.file_url || currentViewingMaterial.external_url;
+        downloadMaterial(link, currentViewingMaterial.title);
+    }
+}
+
+function downloadMaterial(link, title) {
+    if (!link) return alert('File not available.');
+    const a = document.createElement('a');
+    a.href = link;
+    a.download = (title || 'document').replace(/[^a-z0-9]/gi, '_') + '.pdf';
+    a.target = '_blank';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+}
+
+// ============================================================
+//  ONBOARDING
 // ============================================================
 function showOnboarding(preSelected) {
-    // Get course list for this department + level
     const courseList = (COURSE_CODES_DB[userDepartment] || {})[userLevelNum] || [];
-
-    // If no courses found in DB for this dept/level, show empty with note
     const hasCourses = courseList.length > 0;
 
     const root = document.getElementById('onboardingRoot');
@@ -848,7 +1522,6 @@ function showOnboarding(preSelected) {
         return;
     }
 
-    // Render course chips
     const grid = document.getElementById('coursesGrid');
     let tempSelected = preSelected ? [...preSelected] : [];
 
@@ -875,15 +1548,12 @@ function showOnboarding(preSelected) {
 
     updateCount();
 
-    // Select all button
     document.getElementById('selectAllBtn').addEventListener('click', () => {
         const allSelected = tempSelected.length === courseList.length;
         if (allSelected) {
-            // deselect all
             tempSelected = [];
             document.querySelectorAll('.course-chip').forEach(c => c.classList.remove('selected'));
         } else {
-            // select all
             tempSelected = courseList.map(c => c.code);
             document.querySelectorAll('.course-chip').forEach(c => c.classList.add('selected'));
         }
@@ -891,126 +1561,12 @@ function showOnboarding(preSelected) {
         updateCount();
     });
 
-    // Continue button
     document.getElementById('continueBtn').onclick = () => {
         if (tempSelected.length === 0) return;
         localStorage.setItem(getStorageKey(), JSON.stringify(tempSelected));
         document.getElementById('onboardingRoot').innerHTML = '';
         launchMainApp(tempSelected);
     };
-}
-
-// ============================================================
-//  FETCH UPLOADED MATERIALS FROM BACKEND
-// ============================================================
-async function fetchUploadedMaterials() {
-    try {
-        const res = await fetch('/api/fetch-materials?course=&level=&semester=');
-        if (res.ok) {
-            const data = await res.json();
-            uploadedMaterials = (data.materials || []).map(m => ({
-                ...m,
-                isStatic: false,
-                courseCode: m.course_code || '',
-                link: m.file_url || ''
-            }));
-        }
-    } catch(e) {
-        uploadedMaterials = [];
-    }
-}
-
-// ============================================================
-//  RENDER LIBRARY
-// ============================================================
-function getMaterialsToShow() {
-    const all = [...staticMaterials, ...uploadedMaterials];
-    
-    // If no courses selected, show everything
-    if (!selectedCourses.length) return all;
-    
-    // Get user's current semester from Jinja2 variable
-    const userSemester = "{{ user.semester or '' }}"; // e.g. "First Semester" or "Second Semester"
-    
-    // Filter by selected course codes AND semester
-    return all.filter(m => {
-        const matchesCourse = selectedCourses.includes(m.courseCode);
-        const matchesSemester = !userSemester || m.semester === userSemester;
-        return matchesCourse && matchesSemester;
-    });
-}
-
-function applySearchAndFilter(materials) {
-    let result = [...materials];
-    if (currentFilter !== 'all') {
-        result = result.filter(m => getBadge(m.title).label === currentFilter);
-    }
-    if (searchQuery.trim()) {
-        const q = searchQuery.toLowerCase();
-        result = result.filter(m =>
-            m.title.toLowerCase().includes(q) ||
-            (m.author || '').toLowerCase().includes(q) ||
-            (m.course || '').toLowerCase().includes(q) ||
-            (m.courseCode || '').toLowerCase().includes(q)
-        );
-    }
-    return result;
-}
-
-function renderLibrary() {
-    const base = getMaterialsToShow();
-    const final = applySearchAndFilter(base);
-    const grid = document.getElementById('materialsGrid');
-
-    if (!final.length) {
-        grid.innerHTML = `<div class="empty-state">✨ No materials found for your selection. Try another filter or <a href="#" style="color:#58a6ff;" onclick="document.getElementById('searchInput').value=''; searchQuery=''; renderLibrary();">clear search</a>.</div>`;
-        return;
-    }
-
-    grid.innerHTML = final.map(m => {
-        const badge = getBadge(m.title);
-        const icon = badge.label === 'PAST QUESTIONS' ? '📝' : (badge.label === 'TEXTBOOK' ? '📚' : (badge.label === 'LECTURE NOTES' ? '📖' : '📘'));
-        const dept = m.course || 'General';
-        const safeLink = (m.link || '').replace(/'/g, "\\'");
-        const safeTitle = m.title.replace(/'/g, "\\'");
-        return `
-            <div class="material-card" onclick="openMaterial('${safeLink}','${safeTitle}')">
-                <div class="card-top">
-                    <span class="material-icon">${icon}</span>
-                    <div class="material-title">${m.title}</div>
-                </div>
-                <div class="dept-tag">${dept}</div>
-                <div class="meta-row">
-                    <span>📄 PDF</span>
-                    <span>${m.courseCode || ''}</span>
-                </div>
-                <div class="badge" style="background:${badge.color}22; color:${badge.color}; border:1px solid ${badge.color}44;">${badge.label}</div>
-                <div class="card-bottom">
-                    <span class="pdf-label">📌 ${m.author || 'Unknown'}</span>
-                    <div class="card-icons">
-                        <span title="Bookmark">🔖</span>
-                        <span title="Download" onclick="event.stopPropagation(); downloadMaterial('${safeLink}','${safeTitle}')">⬇️</span>
-                    </div>
-                </div>
-            </div>
-        `;
-    }).join('');
-}
-
-function openMaterial(link, title) {
-    if (!link) return alert('File not available.');
-    window.open(link, '_blank');
-}
-
-function downloadMaterial(link, title) {
-    if (!link) return alert('File not available.');
-    const a = document.createElement('a');
-    a.href = link;
-    a.download = (title || 'document').replace(/[^a-z0-9]/gi, '_') + '.pdf';
-    a.target = '_blank';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
 }
 
 // ============================================================
@@ -1021,15 +1577,18 @@ async function launchMainApp(courses) {
     document.getElementById('mainApp').style.display = 'block';
 
     await fetchUploadedMaterials();
+    
+    if (selectedCourses.length > 0) {
+        fetchGoogleMaterials();
+    }
+    
     renderLibrary();
 
-    // Search
     document.getElementById('searchInput').addEventListener('input', e => {
         searchQuery = e.target.value;
         renderLibrary();
     });
 
-    // Filter pills
     document.querySelectorAll('.filter-pill').forEach(btn => {
         btn.addEventListener('click', () => {
             document.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
@@ -1039,25 +1598,25 @@ async function launchMainApp(courses) {
         });
     });
 
-    // Nav tabs
     document.querySelectorAll('.nav-tab').forEach(tab => {
         tab.addEventListener('click', () => {
             if (tab.dataset.tab !== 'library') alert('Coming soon!');
         });
     });
 
-    // Menu → dashboard
     document.getElementById('menuBtn').onclick = () => window.location.href = '/dashboard';
 
-    // Edit courses button
     document.getElementById('editCoursesBtn').onclick = () => {
         const saved = JSON.parse(localStorage.getItem(getStorageKey()) || '[]');
         document.getElementById('mainApp').style.display = 'none';
         showOnboarding(saved);
     };
 
-    // FAB upload
     document.getElementById('fabBtn').onclick = () => openUploadModal();
+    
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') closePdfViewer();
+    });
 }
 
 // ============================================================
@@ -1086,7 +1645,6 @@ async function handleUpload(e) {
     formData.append('description', document.getElementById('materialDesc').value);
 
     try {
-        // Fake progress
         let pct = 0;
         const interval = setInterval(() => { pct = Math.min(pct + 15, 85); progressFill.style.width = pct + '%'; }, 300);
 
@@ -1115,6 +1673,11 @@ async function handleUpload(e) {
 
 window.handleUpload = handleUpload;
 window.closeUploadModal = closeUploadModal;
+window.closePdfViewer = closePdfViewer;
+window.downloadCurrentMaterial = downloadCurrentMaterial;
+window.fetchGoogleMaterials = fetchGoogleMaterials;
+window.openMaterial = openMaterial;
+window.downloadMaterial = downloadMaterial;
 
 // ============================================================
 //  INIT
@@ -1122,7 +1685,6 @@ window.closeUploadModal = closeUploadModal;
 (function init() {
     const saved = localStorage.getItem(getStorageKey());
     if (saved === null) {
-        // First visit — show onboarding
         showOnboarding(null);
     } else {
         const parsed = JSON.parse(saved);

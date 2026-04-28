@@ -118,8 +118,13 @@ class Material(db.Model):
     file_url = db.Column(db.String(500))                     # Cloudinary secure URL
     cloudinary_public_id = db.Column(db.String(300))
 
+    # ── GOOGLE CUSTOM SEARCH INTEGRATION (NEW) ───────────────────────────────
+    external_url = db.Column(db.String(500))                 # Direct PDF link from Google search
+    source = db.Column(db.String(50), default='uploaded')    # 'static', 'uploaded', 'google_auto'
+    course_code = db.Column(db.String(20))                   # NEW: Actual course code column (MAT101, CSC111, etc.)
+
     # ── misc ─────────────────────────────────────────────────────────────────
-    course_type = db.Column(db.String(20), default='CORE')   # Stores course code like "CSC221", "BIO101"
+    course_type = db.Column(db.String(20), default='CORE')   # Stores course type like "CORE", "ELECTIVE"
     next_topic = db.Column(db.String(200))
     progress = db.Column(db.Integer, default=0)
     views = db.Column(db.Integer, default=0)
@@ -135,11 +140,13 @@ class Material(db.Model):
             'department': self.department,
             'level': self.level,
             'semester': self.semester,
-            'course_code': self.course_type,  # Map course_type to course_code for frontend compatibility
+            'course_code': self.course_code or self.course_type,  # Use course_code if available, fallback to course_type
             'author': self.author,
             'description': self.description,
             'license': self.license or 'Student Upload',
             'file_url': self.file_url,
+            'external_url': self.external_url,  # NEW: For Google-sourced PDFs
+            'source': self.source or 'uploaded',  # NEW: Material source identifier
             'course_type': self.course_type,
             'views': self.views or 0,
             'downloads': self.downloads or 0,
@@ -193,4 +200,30 @@ class Exam(db.Model):
             'course': self.course,
             'date': self.date.isoformat() if self.date else None,
             'duration': self.duration
+        }
+
+
+# ===== NEW: Google Search Cache (Optional - for tracking API usage) =====
+class GoogleSearchCache(db.Model):
+    """
+    Optional table to track Google API calls and cache search results.
+    Helps avoid duplicate API calls within a time window.
+    """
+    __tablename__ = 'google_search_cache'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    course_code = db.Column(db.String(20), nullable=False, index=True)
+    search_query = db.Column(db.String(500))
+    result_count = db.Column(db.Integer, default=0)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    expires_at = db.Column(db.DateTime)
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'course_code': self.course_code,
+            'search_query': self.search_query,
+            'result_count': self.result_count,
+            'created_at': self.created_at.isoformat() if self.created_at else None,
+            'expires_at': self.expires_at.isoformat() if self.expires_at else None
         }

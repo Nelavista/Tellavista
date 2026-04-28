@@ -1234,7 +1234,7 @@ async function fetchGoogleMaterials() {
                 isStatic: false,
                 source: 'google_auto',
                 link: m.external_url || m.file_url,
-                courseCode: m.course_code || '',
+                courseCode: m.course_type || m.course_code || '',
                 title: m.title || 'Untitled Material'
             }));
             
@@ -1289,7 +1289,7 @@ async function fetchUploadedMaterials() {
                 ...m,
                 isStatic: false,
                 source: m.source || 'uploaded',
-                courseCode: m.course_code || '',
+                courseCode: m.course_type || m.course_code || '',  // FIXED: Use course_type
                 link: m.file_url || m.external_url || ''
             }));
         }

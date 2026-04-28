@@ -909,7 +909,69 @@ def ai_materials():
         books = [{"error": "Failed to fetch books"}]
     return jsonify({"query": topic, "ai_explanation": explanation, "pdfs": pdfs, "books": books})
 
-
+# ===== FETCH MATERIALS BY COURSE CODES (for materials.html) =====
+@materials_bp.route('/api/materials/by-courses', methods=['GET'])
+@login_required
+def get_materials_by_courses():
+    """
+    Get materials filtered by course codes, level, semester, department
+    Used by materials.html frontend
+    """
+    try:
+        # Get query parameters
+        course_codes = request.args.getlist('courses[]')  # Array of course codes
+        level = request.args.get('level', '').strip()
+        semester = request.args.get('semester', '').strip()
+        department = request.args.get('department', '').strip()
+        
+        # Start with base query - only approved materials
+        query = Material.query.filter_by(is_approved=True)
+        
+        # Apply filters
+        if course_codes:
+            query = query.filter(Material.course_code.in_(course_codes))
+        
+        if level:
+            query = query.filter_by(level=level)
+        
+        if semester:
+            query = query.filter_by(semester=semester)
+        
+        if department:
+            query = query.filter_by(department=department)
+        
+        # Get materials ordered by newest first
+        materials = query.order_by(Material.id.desc()).all()
+        
+        # Convert to JSON
+        materials_data = []
+        for material in materials:
+            materials_data.append({
+                'id': material.id,
+                'title': material.title,
+                'course_code': material.course_code,
+                'department': material.department,
+                'level': material.level,
+                'semester': material.semester,
+                'file_url': material.file_url,
+                'external_url': material.external_url,
+                'source': material.source,
+                'uploaded_by': material.uploaded_by,
+                'created_at': material.created_at.isoformat() if material.created_at else None
+            })
+        
+        return jsonify({
+            'success': True,
+            'count': len(materials_data),
+            'materials': materials_data
+        })
+    
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+        
 @materials_bp.route("/mat101")
 def math101():
     return render_template("mat101.html")

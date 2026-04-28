@@ -927,9 +927,9 @@ def get_materials_by_courses():
         # Start with base query - only approved materials
         query = Material.query.filter_by(is_approved=True)
         
-        # Apply filters
+        # Apply filters - USING course_type instead of course_code
         if course_codes:
-            query = query.filter(Material.course_code.in_(course_codes))
+            query = query.filter(Material.course_type.in_(course_codes))
         
         if level:
             query = query.filter_by(level=level)
@@ -943,13 +943,13 @@ def get_materials_by_courses():
         # Get materials ordered by newest first
         materials = query.order_by(Material.id.desc()).all()
         
-        # Convert to JSON
+        # Convert to JSON - USING course_type
         materials_data = []
         for material in materials:
             materials_data.append({
                 'id': material.id,
                 'title': material.title,
-                'course_code': material.course_code,
+                'course_code': material.course_type,  # Map course_type to course_code for frontend
                 'department': material.department,
                 'level': material.level,
                 'semester': material.semester,

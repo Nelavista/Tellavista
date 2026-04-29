@@ -11,6 +11,7 @@ Course Coverage:
 - Botany (BOT 101)
 - Zoology (ZOO 101, 102)
 - Microbiology (MCB 101, 102)
+- Computer Science (CSC 101, 102)
 - General Studies (GST 101, 102, 111, 121, 122)
 
 Usage: python seed_100_level_science_500.py
@@ -183,6 +184,70 @@ SCIENCE_100_MATERIALS = {
             {"title": "PHY 104 - Problem Solving Guide", "url": "static/materials/PHY104_Problems.pdf", "source": "static"},
             {"title": "PHY 104 - Quick Revision", "url": "static/materials/PHY104_Revision.pdf", "source": "static"},
             {"title": "PHY 104 - Exam Preparation", "url": "static/materials/PHY104_Exam.pdf", "source": "static"},
+        ]
+    },
+
+    # ========== COMPUTER SCIENCE CSC 101 - Introduction to Computer Science ==========
+    "CSC101": {
+        "name": "Introduction to Computer Science",
+        "department": "Computer Science",
+        "level": "100",
+        "semester": "First Semester",
+        "materials": [
+            {"title": "CSC 101 - Fundamentals of Computer Science", "url": "static/materials/CSC101_Fundamentals.pdf", "source": "static"},
+            {"title": "CSC 101 - History of Computing", "url": "static/materials/CSC101_History.pdf", "source": "static"},
+            {"title": "CSC 101 - Computer Hardware Components", "url": "static/materials/CSC101_Hardware.pdf", "source": "static"},
+            {"title": "CSC 101 - Computer Software Basics", "url": "static/materials/CSC101_Software.pdf", "source": "static"},
+            {"title": "CSC 101 - Number Systems (Binary, Octal, Hex)", "url": "static/materials/CSC101_Number_Systems.pdf", "source": "static"},
+            {"title": "CSC 101 - Boolean Algebra and Logic Gates", "url": "static/materials/CSC101_Boolean_Algebra.pdf", "source": "static"},
+            {"title": "CSC 101 - Introduction to Algorithms", "url": "static/materials/CSC101_Algorithms.pdf", "source": "static"},
+            {"title": "CSC 101 - Flowcharts and Pseudocode", "url": "static/materials/CSC101_Flowcharts.pdf", "source": "static"},
+            {"title": "CSC 101 - Problem-Solving Techniques", "url": "static/materials/CSC101_Problem_Solving.pdf", "source": "static"},
+            {"title": "CSC 101 - Programming Paradigms Overview", "url": "static/materials/CSC101_Programming_Paradigms.pdf", "source": "static"},
+            {"title": "CSC 101 - Introduction to Python Programming", "url": "static/materials/CSC101_Python.pdf", "source": "static"},
+            {"title": "CSC 101 - Variables and Data Types", "url": "static/materials/CSC101_Data_Types.pdf", "source": "static"},
+            {"title": "CSC 101 - Control Structures (If-Else, Loops)", "url": "static/materials/CSC101_Control_Structures.pdf", "source": "static"},
+            {"title": "CSC 101 - Functions and Modular Programming", "url": "static/materials/CSC101_Functions.pdf", "source": "static"},
+            {"title": "CSC 101 - Arrays and Lists", "url": "static/materials/CSC101_Arrays.pdf", "source": "static"},
+            {"title": "CSC 101 - Introduction to Computer Networks", "url": "static/materials/CSC101_Networks.pdf", "source": "static"},
+            {"title": "CSC 101 - Internet and World Wide Web", "url": "static/materials/CSC101_Internet.pdf", "source": "static"},
+            {"title": "CSC 101 - Computer Ethics and Society", "url": "static/materials/CSC101_Ethics.pdf", "source": "static"},
+            {"title": "CSC 101 - Past Questions Compilation 2020-2024", "url": "static/materials/CSC101_Past_Questions.pdf", "source": "static"},
+            {"title": "CSC 101 - Complete Lecture Notes", "url": "static/materials/CSC101_Lecture_Notes.pdf", "source": "static"},
+            {"title": "CSC 101 - Practice Problems with Solutions", "url": "static/materials/CSC101_Practice.pdf", "source": "static"},
+            {"title": "CSC 101 - Quick Revision Guide", "url": "static/materials/CSC101_Revision.pdf", "source": "static"},
+            {"title": "CSC 101 - Exam Preparation Guide", "url": "static/materials/CSC101_Exam_Prep.pdf", "source": "static"},
+        ]
+    },
+
+    # ========== COMPUTER SCIENCE CSC 102 - Introduction to Problem Solving ==========
+    "CSC102": {
+        "name": "Introduction to Problem Solving",
+        "department": "Computer Science",
+        "level": "100",
+        "semester": "Second Semester",
+        "materials": [
+            {"title": "CSC 102 - Introduction to Computing Concepts", "url": "static/materials/CSC-102-Introduction-to-Computing-Concepts.pdf", "source": "static"},
+            {"title": "CSC 102 - Advanced Problem-Solving Strategies", "url": "static/materials/CSC102_Problem_Solving.pdf", "source": "static"},
+            {"title": "CSC 102 - Algorithm Design and Analysis", "url": "static/materials/CSC102_Algorithm_Design.pdf", "source": "static"},
+            {"title": "CSC 102 - Sorting and Searching Algorithms", "url": "static/materials/CSC102_Sorting_Searching.pdf", "source": "static"},
+            {"title": "CSC 102 - Recursion Fundamentals", "url": "static/materials/CSC102_Recursion.pdf", "source": "static"},
+            {"title": "CSC 102 - Data Structures Introduction", "url": "static/materials/CSC102_Data_Structures.pdf", "source": "static"},
+            {"title": "CSC 102 - Stacks and Queues", "url": "static/materials/CSC102_Stacks_Queues.pdf", "source": "static"},
+            {"title": "CSC 102 - Linked Lists", "url": "static/materials/CSC102_Linked_Lists.pdf", "source": "static"},
+            {"title": "CSC 102 - Trees and Graphs Basics", "url": "static/materials/CSC102_Trees_Graphs.pdf", "source": "static"},
+            {"title": "CSC 102 - Object-Oriented Programming Introduction", "url": "static/materials/CSC102_OOP.pdf", "source": "static"},
+            {"title": "CSC 102 - File Handling and I/O Operations", "url": "static/materials/CSC102_File_Handling.pdf", "source": "static"},
+            {"title": "CSC 102 - Error Handling and Debugging", "url": "static/materials/CSC102_Error_Handling.pdf", "source": "static"},
+            {"title": "CSC 102 - Software Development Life Cycle", "url": "static/materials/CSC102_SDLC.pdf", "source": "static"},
+            {"title": "CSC 102 - Database Concepts Introduction", "url": "static/materials/CSC102_Database.pdf", "source": "static"},
+            {"title": "CSC 102 - Web Development Basics (HTML/CSS)", "url": "static/materials/CSC102_Web_Dev.pdf", "source": "static"},
+            {"title": "CSC 102 - Programming Best Practices", "url": "static/materials/CSC102_Best_Practices.pdf", "source": "static"},
+            {"title": "CSC 102 - Past Questions 2020-2024", "url": "static/materials/CSC102_Past_Questions.pdf", "source": "static"},
+            {"title": "CSC 102 - Complete Lecture Notes", "url": "static/materials/CSC102_Lecture_Notes.pdf", "source": "static"},
+            {"title": "CSC 102 - Practice Problems and Solutions", "url": "static/materials/CSC102_Practice.pdf", "source": "static"},
+            {"title": "CSC 102 - Quick Revision Guide", "url": "static/materials/CSC102_Revision.pdf", "source": "static"},
+            {"title": "CSC 102 - Exam Preparation", "url": "static/materials/CSC102_Exam_Prep.pdf", "source": "static"},
         ]
     },
 

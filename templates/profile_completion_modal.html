@@ -12,335 +12,413 @@
             box-sizing: border-box;
         }
 
-```
-    body {
-        font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, sans-serif;
-    }
-
-    /* Modal Overlay - Full Screen Block */
-    .profile-modal-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(13, 17, 23, 0.97);
-        backdrop-filter: blur(8px);
-        z-index: 9999;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 20px;
-        animation: fadeIn 0.3s ease;
-    }
-
-    @keyframes fadeIn {
-        from { opacity: 0; }
-        to { opacity: 1; }
-    }
-
-    @keyframes slideUp {
-        from {
-            opacity: 0;
-            transform: translateY(30px) scale(0.95);
+        body {
+            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, sans-serif;
         }
-        to {
-            opacity: 1;
-            transform: translateY(0) scale(1);
+
+        /* Modal Overlay - Full Screen Block */
+        .profile-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(13, 17, 23, 0.97);
+            backdrop-filter: blur(8px);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            animation: fadeIn 0.3s ease;
         }
-    }
 
-    /* Modal Container */
-    .profile-modal-container {
-        background: #1a2235;
-        border-radius: 32px;
-        max-width: 500px;
-        width: 100%;
-        max-height: 90vh;
-        overflow-y: auto;
-        border: 1px solid #2d3a52;
-        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
-        animation: slideUp 0.4s ease;
-    }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
 
-    /* Custom Scrollbar */
-    .profile-modal-container::-webkit-scrollbar {
-        width: 6px;
-    }
-    .profile-modal-container::-webkit-scrollbar-track {
-        background: #0f172a;
-        border-radius: 10px;
-    }
-    .profile-modal-container::-webkit-scrollbar-thumb {
-        background: #3b82f6;
-        border-radius: 10px;
-    }
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
 
-    /* Header Section */
-    .modal-header {
-        padding: 32px 28px 24px;
-        text-align: center;
-        border-bottom: 1px solid #2d3a52;
-        background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(20, 184, 166, 0.1));
-    }
-
-    .modal-icon {
-        width: 80px;
-        height: 80px;
-        margin: 0 auto 20px;
-        background: linear-gradient(135deg, #3b82f6, #14b8a6);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 2.5rem;
-        box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
-        animation: pulse 2s infinite;
-    }
-
-    @keyframes pulse {
-        0%, 100% { transform: scale(1); }
-        50% { transform: scale(1.05); }
-    }
-
-    .modal-title {
-        font-size: 1.8rem;
-        font-weight: 700;
-        background: linear-gradient(135deg, #ffffff, #cbd5e1);
-        -webkit-background-clip: text;
-        background-clip: text;
-        color: transparent;
-        margin-bottom: 12px;
-        letter-spacing: -0.5px;
-    }
-
-    .modal-subtitle {
-        color: #9ca3af;
-        font-size: 0.95rem;
-        line-height: 1.6;
-        max-width: 400px;
-        margin: 0 auto;
-    }
-
-    /* Form Section */
-    .modal-body {
-        padding: 28px;
-    }
-
-    .form-group {
-        margin-bottom: 20px;
-    }
-
-    .form-label {
-        display: block;
-        margin-bottom: 8px;
-        font-size: 0.85rem;
-        font-weight: 600;
-        color: #9ca3af;
-        letter-spacing: 0.5px;
-        text-transform: uppercase;
-    }
-
-    .form-label .required {
-        color: #f97316;
-        margin-left: 2px;
-    }
-
-    .form-input,
-    .form-select {
-        width: 100%;
-        background: #0f172a;
-        border: 2px solid #2d3a52;
-        border-radius: 16px;
-        padding: 14px 18px;
-        font-size: 1rem;
-        color: #ffffff;
-        outline: none;
-        transition: all 0.2s ease;
-        font-family: inherit;
-    }
-
-    .form-input:focus,
-    .form-select:focus {
-        border-color: #3b82f6;
-        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
-        background: #0d1117;
-    }
-
-    .form-input::placeholder {
-        color: #6b7280;
-    }
-
-    .form-select {
-        cursor: pointer;
-        appearance: none;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-        background-repeat: no-repeat;
-        background-position: right 14px center;
-        padding-right: 45px;
-    }
-
-    .form-select option {
-        background: #0f172a;
-        color: #ffffff;
-        padding: 10px;
-    }
-
-    /* Submit Button */
-    .submit-btn {
-        width: 100%;
-        background: linear-gradient(135deg, #3b82f6, #2563eb);
-        border: none;
-        border-radius: 16px;
-        padding: 16px;
-        font-size: 1.05rem;
-        font-weight: 700;
-        color: white;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        margin-top: 8px;
-        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 10px;
-    }
-
-    .submit-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 16px rgba(59, 130, 246, 0.5);
-        background: linear-gradient(135deg, #2563eb, #1d4ed8);
-    }
-
-    .submit-btn:active {
-        transform: scale(0.98);
-    }
-
-    .submit-btn:disabled {
-        opacity: 0.6;
-        cursor: not-allowed;
-        transform: none;
-    }
-
-    /* Info Badge */
-    .info-badge {
-        background: rgba(249, 115, 22, 0.15);
-        border: 1px solid #f97316;
-        border-radius: 12px;
-        padding: 12px 16px;
-        margin-bottom: 24px;
-        display: flex;
-        align-items: flex-start;
-        gap: 10px;
-        font-size: 0.85rem;
-        color: #fbbf24;
-        line-height: 1.5;
-    }
-
-    .info-badge-icon {
-        font-size: 1.2rem;
-        flex-shrink: 0;
-        margin-top: 2px;
-    }
-
-    /* Progress Indicator */
-    .progress-bar {
-        height: 4px;
-        background: #2d3a52;
-        border-radius: 10px;
-        overflow: hidden;
-        margin-bottom: 24px;
-    }
-
-    .progress-fill {
-        height: 100%;
-        background: linear-gradient(90deg, #3b82f6, #14b8a6);
-        transition: width 0.3s ease;
-        width: 0%;
-    }
-
-    /* Error Message */
-    .error-message {
-        background: rgba(239, 68, 68, 0.1);
-        border: 1px solid #ef4444;
-        border-radius: 12px;
-        padding: 12px 16px;
-        margin-bottom: 20px;
-        color: #fca5a5;
-        font-size: 0.9rem;
-        display: none;
-        animation: shake 0.3s ease;
-    }
-
-    @keyframes shake {
-        0%, 100% { transform: translateX(0); }
-        25% { transform: translateX(-5px); }
-        75% { transform: translateX(5px); }
-    }
-
-    .error-message.show {
-        display: block;
-    }
-
-    /* Responsive */
-    @media (max-width: 550px) {
+        /* Modal Container */
         .profile-modal-container {
-            border-radius: 24px;
-            max-height: 95vh;
+            background: #1a2235;
+            border-radius: 32px;
+            max-width: 520px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 1px solid #2d3a52;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+            animation: slideUp 0.4s ease;
         }
 
+        /* Custom Scrollbar */
+        .profile-modal-container::-webkit-scrollbar {
+            width: 6px;
+        }
+        .profile-modal-container::-webkit-scrollbar-track {
+            background: #0f172a;
+            border-radius: 10px;
+        }
+        .profile-modal-container::-webkit-scrollbar-thumb {
+            background: #3b82f6;
+            border-radius: 10px;
+        }
+
+        /* Header Section */
         .modal-header {
-            padding: 24px 20px 20px;
+            padding: 32px 28px 24px;
+            text-align: center;
+            border-bottom: 1px solid #2d3a52;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(20, 184, 166, 0.1));
         }
 
         .modal-icon {
-            width: 70px;
-            height: 70px;
-            font-size: 2rem;
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background: linear-gradient(135deg, #3b82f6, #14b8a6);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
         }
 
         .modal-title {
-            font-size: 1.5rem;
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ffffff, #cbd5e1);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
         }
 
         .modal-subtitle {
-            font-size: 0.9rem;
+            color: #9ca3af;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            max-width: 400px;
+            margin: 0 auto;
         }
 
+        /* Form Section */
         .modal-body {
-            padding: 20px;
+            padding: 28px;
         }
 
         .form-group {
-            margin-bottom: 16px;
+            margin-bottom: 20px;
         }
-    }
 
-    /* Loading State */
-    .submit-btn .spinner {
-        display: none;
-        width: 20px;
-        height: 20px;
-        border: 2px solid rgba(255, 255, 255, 0.3);
-        border-top-color: white;
-        border-radius: 50%;
-        animation: spin 0.6s linear infinite;
-    }
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #9ca3af;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
 
-    .submit-btn.loading .spinner {
-        display: block;
-    }
+        .form-label .required {
+            color: #f97316;
+            margin-left: 2px;
+        }
 
-    .submit-btn.loading .btn-text {
-        display: none;
-    }
+        .form-input,
+        .form-select {
+            width: 100%;
+            background: #0f172a;
+            border: 2px solid #2d3a52;
+            border-radius: 16px;
+            padding: 14px 18px;
+            font-size: 1rem;
+            color: #ffffff;
+            outline: none;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
 
-    @keyframes spin {
-        to { transform: rotate(360deg); }
-    }
-</style>
-```
+        .form-input:focus,
+        .form-select:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+            background: #0d1117;
+        }
 
+        .form-input::placeholder {
+            color: #6b7280;
+        }
+
+        .form-select {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            padding-right: 45px;
+        }
+
+        .form-select option {
+            background: #0f172a;
+            color: #ffffff;
+            padding: 10px;
+        }
+
+        /* Info Badge */
+        .info-badge {
+            background: rgba(249, 115, 22, 0.15);
+            border: 1px solid #f97316;
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 0.85rem;
+            color: #fbbf24;
+            line-height: 1.5;
+        }
+
+        .info-badge-icon {
+            font-size: 1.2rem;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        /* Department Grid - Quick Select */
+        .dept-quick-select {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 8px;
+            margin-top: 8px;
+            max-height: 200px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+        .dept-quick-select::-webkit-scrollbar {
+            width: 4px;
+        }
+        .dept-quick-select::-webkit-scrollbar-track {
+            background: #0f172a;
+            border-radius: 6px;
+        }
+        .dept-quick-select::-webkit-scrollbar-thumb {
+            background: #3b82f6;
+            border-radius: 6px;
+        }
+        .dept-chip {
+            background: #0f172a;
+            border: 2px solid #2d3a52;
+            color: #9ca3af;
+            padding: 10px 14px;
+            border-radius: 14px;
+            cursor: pointer;
+            font-size: 0.82rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            text-align: center;
+            font-family: inherit;
+        }
+        .dept-chip:hover {
+            border-color: #3b82f6;
+            color: #60a5fa;
+            background: rgba(59, 130, 246, 0.1);
+        }
+        .dept-chip.selected {
+            background: #3b82f6;
+            border-color: #3b82f6;
+            color: white;
+        }
+        .dept-chip .dept-emoji {
+            display: block;
+            font-size: 1.3rem;
+            margin-bottom: 4px;
+        }
+        .dept-divider {
+            grid-column: 1 / -1;
+            color: #6b7280;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 8px 0 4px;
+            font-weight: 600;
+        }
+        .dept-preview {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 10px;
+            padding: 10px 14px;
+            margin-top: 10px;
+            font-size: 0.8rem;
+            color: #93c5fd;
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        .dept-preview.show {
+            display: block;
+        }
+        .dept-preview span {
+            font-weight: 600;
+            color: #60a5fa;
+        }
+
+        /* Submit Button */
+        .submit-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            border: none;
+            border-radius: 16px;
+            padding: 16px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 8px;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(59, 130, 246, 0.5);
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+        }
+
+        .submit-btn:active {
+            transform: scale(0.98);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Progress Indicator */
+        .progress-bar {
+            height: 4px;
+            background: #2d3a52;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3b82f6, #14b8a6);
+            transition: width 0.3s ease;
+            width: 0%;
+        }
+
+        /* Error Message */
+        .error-message {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid #ef4444;
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin-bottom: 20px;
+            color: #fca5a5;
+            font-size: 0.9rem;
+            display: none;
+            animation: shake 0.3s ease;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        /* Loading State */
+        .submit-btn .spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+        }
+
+        .submit-btn.loading .spinner {
+            display: block;
+        }
+
+        .submit-btn.loading .btn-text {
+            display: none;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 550px) {
+            .profile-modal-container {
+                border-radius: 24px;
+                max-height: 95vh;
+            }
+
+            .modal-header {
+                padding: 24px 20px 20px;
+            }
+
+            .modal-icon {
+                width: 70px;
+                height: 70px;
+                font-size: 2rem;
+            }
+
+            .modal-title {
+                font-size: 1.5rem;
+            }
+
+            .modal-subtitle {
+                font-size: 0.9rem;
+            }
+
+            .modal-body {
+                padding: 20px;
+            }
+
+            .form-group {
+                margin-bottom: 16px;
+            }
+
+            .dept-quick-select {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            }
+        }
+    </style>
 </head>
 <body>
 
@@ -349,165 +427,255 @@
 <div class="profile-modal-overlay" id="profileModal">
     <div class="profile-modal-container">
 
-```
-    <!-- Header -->
-    <div class="modal-header">
-        <div class="modal-icon">✨</div>
-        <h2 class="modal-title">Welcome to Nelavista!</h2>
-        <p class="modal-subtitle">
-            Before you dive in, let's set up your profile so we can personalize your academic experience.
-        </p>
-    </div>
-
-    <!-- Form Body -->
-    <div class="modal-body">
-        
-        <!-- Progress Bar -->
-        <div class="progress-bar">
-            <div class="progress-fill" id="progressFill"></div>
+        <!-- Header -->
+        <div class="modal-header">
+            <div class="modal-icon">✨</div>
+            <h2 class="modal-title">Welcome to Nelavista!</h2>
+            <p class="modal-subtitle">
+                Before you dive in, let's set up your profile so we can personalize your academic experience.
+            </p>
         </div>
 
-        <!-- Info Badge -->
-        <div class="info-badge">
-            <span class="info-badge-icon">ℹ️</span>
-            <span>All fields are required. This helps us recommend the right materials and connect you with your classmates.</span>
-        </div>
-
-        <!-- Error Message -->
-        <div class="error-message" id="errorMessage">
-            Please fill in all required fields before continuing.
-        </div>
-
-        <!-- Form -->
-        <form id="profileCompletionForm" method="POST" action="/complete-profile">
+        <!-- Form Body -->
+        <div class="modal-body">
             
-            <!-- Full Name -->
-            <div class="form-group">
-                <label class="form-label">
-                    Full Name <span class="required">*</span>
-                </label>
-                <input 
-                    type="text" 
-                    name="name" 
-                    class="form-input" 
-                    placeholder="e.g. Abdul Afeez Tella"
-                    required
-                    autocomplete="name"
-                >
+            <!-- Progress Bar -->
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
             </div>
 
-            <!-- University -->
-            <div class="form-group">
-                <label class="form-label">
-                    University <span class="required">*</span>
-                </label>
-                <select name="university" class="form-select" required>
-                    <option value="">Select your university</option>
-                    <option value="Lagos State University">Lagos State University</option>
-                    <option value="University of Lagos">University of Lagos</option>
-                    <option value="University of Ibadan">University of Ibadan</option>
-                    <option value="Obafemi Awolowo University">Obafemi Awolowo University</option>
-                    <option value="Ahmadu Bello University">Ahmadu Bello University</option>
-                    <option value="University of Nigeria, Nsukka">University of Nigeria, Nsukka</option>
-                    <option value="Covenant University">Covenant University</option>
-                    <option value="Other">Other</option>
-                </select>
+            <!-- Info Badge -->
+            <div class="info-badge">
+                <span class="info-badge-icon">ℹ️</span>
+                <span>All fields are required. This helps us recommend the right materials and connect you with your classmates. <strong>Choose from 8 LASU departments below!</strong></span>
             </div>
 
-            <!-- Faculty -->
-            <div class="form-group">
-                <label class="form-label">
-                    Faculty <span class="required">*</span>
-                </label>
-                <select name="faculty" class="form-select" required>
-                    <option value="">Select your faculty</option>
-                    <option value="Science">Science</option>
-                    <option value="Engineering">Engineering</option>
-                    <option value="Social Sciences">Social Sciences</option>
-                    <option value="Arts">Arts</option>
-                    <option value="Education">Education</option>
-                    <option value="Management Sciences">Management Sciences</option>
-                    <option value="Law">Law</option>
-                    <option value="Pharmacy">Pharmacy</option>
-                    <option value="Medicine">Medicine</option>
-                </select>
+            <!-- Error Message -->
+            <div class="error-message" id="errorMessage">
+                ⚠️ Please fill in all required fields before continuing.
             </div>
 
-            <!-- Department (Major Course) -->
-            <div class="form-group">
-                <label class="form-label">
-                    Major Course <span class="required">*</span>
-                </label>
-                <select name="department" class="form-select" required>
-                    <option value="">Select your department</option>
-                    <option value="Mathematics">Mathematics</option>
-                    <option value="Computer Science">Computer Science</option>
-                    <option value="Physics">Physics</option>
-                    <option value="Chemistry">Chemistry</option>
-                    <option value="Biology">Biology</option>
-                    <option value="Statistics">Statistics</option>
-                    <option value="Economics">Economics</option>
-                    <option value="Mass Communication">Mass Communication</option>
-                    <option value="Accounting">Accounting</option>
-                    <option value="Business Administration">Business Administration</option>
-                    <option value="English">English</option>
-                    <option value="History">History</option>
-                    <option value="Political Science">Political Science</option>
-                    <option value="Psychology">Psychology</option>
-                    <option value="Sociology">Sociology</option>
-                    <option value="Microbiology">Microbiology</option>
-                    <option value="Biochemistry">Biochemistry</option>
-                    <option value="Other">Other</option>
-                </select>
-            </div>
+            <!-- Form -->
+            <form id="profileCompletionForm" method="POST" action="/complete-profile">
+                
+                <!-- Full Name -->
+                <div class="form-group">
+                    <label class="form-label">
+                        Full Name <span class="required">*</span>
+                    </label>
+                    <input 
+                        type="text" 
+                        name="name" 
+                        class="form-input" 
+                        placeholder="e.g. Abdul Afeez Tella"
+                        required
+                        autocomplete="name"
+                    >
+                </div>
 
-            <!-- Academic Year (Level) -->
-            <div class="form-group">
-                <label class="form-label">
-                    Academic Year <span class="required">*</span>
-                </label>
-                <select name="user_level" class="form-select" required>
-                    <option value="">Select your level</option>
-                    <option value="100">100 Level (Freshman)</option>
-                    <option value="200">200 Level (Sophomore)</option>
-                    <option value="300">300 Level (Junior)</option>
-                    <option value="400">400 Level (Senior)</option>
-                    <option value="500">500 Level (Final Year)</option>
-                </select>
-            </div>
+                <!-- University -->
+                <div class="form-group">
+                    <label class="form-label">
+                        University <span class="required">*</span>
+                    </label>
+                    <select name="university" class="form-select" required>
+                        <option value="">Select your university</option>
+                        <option value="Lagos State University">Lagos State University (LASU)</option>
+                        <option value="University of Lagos">University of Lagos (UNILAG)</option>
+                        <option value="University of Ibadan">University of Ibadan (UI)</option>
+                        <option value="Obafemi Awolowo University">Obafemi Awolowo University (OAU)</option>
+                        <option value="Ahmadu Bello University">Ahmadu Bello University (ABU)</option>
+                        <option value="University of Nigeria, Nsukka">University of Nigeria, Nsukka (UNN)</option>
+                        <option value="Covenant University">Covenant University</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
 
-            <!-- Current Semester -->
-            <div class="form-group">
-                <label class="form-label">
-                    Current Semester <span class="required">*</span>
-                </label>
-                <select name="semester" class="form-select" required>
-                    <option value="">Select semester</option>
-                    <option value="First Semester">First Semester</option>
-                    <option value="Second Semester">Second Semester</option>
-                </select>
-            </div>
+                <!-- Faculty -->
+                <div class="form-group">
+                    <label class="form-label">
+                        Faculty <span class="required">*</span>
+                    </label>
+                    <select name="faculty" class="form-select" required>
+                        <option value="">Select your faculty</option>
+                        <option value="Science">🔬 Science</option>
+                        <option value="Engineering">⚙️ Engineering</option>
+                        <option value="Social Sciences">🌍 Social Sciences</option>
+                        <option value="Arts">🎨 Arts</option>
+                        <option value="Education">📚 Education</option>
+                        <option value="Management Sciences">💼 Management Sciences</option>
+                        <option value="Law">⚖️ Law</option>
+                        <option value="Pharmacy">💊 Pharmacy</option>
+                        <option value="Medicine">🏥 Medicine</option>
+                        <option value="Agriculture">🌾 Agriculture</option>
+                    </select>
+                </div>
 
-            <!-- Submit Button -->
-            <button type="submit" class="submit-btn" id="submitBtn">
-                <div class="spinner"></div>
-                <span class="btn-text">
-                    <span>🚀</span>
-                    <span>Complete Profile & Continue</span>
-                </span>
-            </button>
+                <!-- Department - Quick Select Grid -->
+                <div class="form-group">
+                    <label class="form-label">
+                        Major Course / Department <span class="required">*</span>
+                    </label>
+                    
+                    <!-- Hidden actual select for form submission -->
+                    <select name="department" id="departmentSelect" class="form-select" required style="display: none;">
+                        <option value="">Select your department</option>
+                    </select>
+                    
+                    <!-- Visual Department Grid -->
+                    <div class="dept-quick-select" id="deptQuickSelect">
+                        <!-- LASU Science Departments (with curriculum) -->
+                        <!-- Will be populated by JavaScript -->
+                    </div>
+                    
+                    <!-- Department Preview -->
+                    <div class="dept-preview" id="deptPreview">
+                        📘 <span id="deptPreviewName"></span> — Full LASU curriculum available (100L–400L)
+                    </div>
+                </div>
 
-        </form>
+                <!-- Academic Year (Level) -->
+                <div class="form-group">
+                    <label class="form-label">
+                        Academic Year <span class="required">*</span>
+                    </label>
+                    <select name="user_level" class="form-select" required>
+                        <option value="">Select your level</option>
+                        <option value="100">100 Level (Freshman Year)</option>
+                        <option value="200">200 Level (Sophomore Year)</option>
+                        <option value="300">300 Level (Junior Year)</option>
+                        <option value="400">400 Level (Senior Year)</option>
+                        <option value="500">500 Level (Final Year)</option>
+                    </select>
+                </div>
+
+                <!-- Current Semester -->
+                <div class="form-group">
+                    <label class="form-label">
+                        Current Semester <span class="required">*</span>
+                    </label>
+                    <select name="semester" class="form-select" required>
+                        <option value="">Select current semester</option>
+                        <option value="First Semester">First Semester (Harmattan)</option>
+                        <option value="Second Semester">Second Semester (Rain)</option>
+                    </select>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    <div class="spinner"></div>
+                    <span class="btn-text">
+                        <span>🚀</span>
+                        <span>Complete Profile & Continue</span>
+                    </span>
+                </button>
+
+            </form>
+
+        </div>
 
     </div>
-
-</div>
-```
-
 </div>
 
 <script>
-    // Progress tracking
+    // ===== LASU DEPARTMENTS WITH FULL CURRICULUM =====
+    const lasuDepartments = [
+        { value: "Biochemistry", label: "Biochemistry", emoji: "🧬", hasCurriculum: true, totalCourses: 42 },
+        { value: "Mathematics", label: "Mathematics", emoji: "📐", hasCurriculum: true, totalCourses: 48 },
+        { value: "Computer Science", label: "Computer Science", emoji: "💻", hasCurriculum: false, totalCourses: null },
+        { value: "Botany", label: "Botany", emoji: "🌿", hasCurriculum: true, totalCourses: 40 },
+        { value: "Chemistry", label: "Chemistry", emoji: "⚗️", hasCurriculum: true, totalCourses: 44 },
+        { value: "Fisheries", label: "Fisheries", emoji: "🐟", hasCurriculum: true, totalCourses: 38 },
+        { value: "Microbiology", label: "Microbiology", emoji: "🔬", hasCurriculum: true, totalCourses: 38 },
+        { value: "Physics", label: "Physics", emoji: "⚛️", hasCurriculum: true, totalCourses: 38 },
+        { value: "Biology", label: "Biology", emoji: "🧫", hasCurriculum: false, totalCourses: null },
+        { value: "SLT", label: "Science Lab Tech", emoji: "🧪", hasCurriculum: true, totalCourses: 36 }
+        
+    ];
+
+    // Other departments (no curriculum yet)
+    const otherDepartments = [
+        { value: "Statistics", label: "Statistics", emoji: "📊", hasCurriculum: false, totalCourses: null },
+        { value: "Economics", label: "Economics", emoji: "💰", hasCurriculum: false, totalCourses: null },
+        { value: "Mass Communication", label: "Mass Communication", emoji: "📡", hasCurriculum: false, totalCourses: null },
+        { value: "Accounting", label: "Accounting", emoji: "📋", hasCurriculum: false, totalCourses: null },
+        { value: "Business Administration", label: "Business Admin", emoji: "🏢", hasCurriculum: false, totalCourses: null },
+        { value: "English", label: "English", emoji: "📖", hasCurriculum: false, totalCourses: null },
+        { value: "History", label: "History", emoji: "🏛️", hasCurriculum: false, totalCourses: null },
+        { value: "Political Science", label: "Political Science", emoji: "🏛️", hasCurriculum: false, totalCourses: null },
+        { value: "Psychology", label: "Psychology", emoji: "🧠", hasCurriculum: false, totalCourses: null },
+        { value: "Sociology", label: "Sociology", emoji: "👥", hasCurriculum: false, totalCourses: null },
+        { value: "Other", label: "Other", emoji: "📚", hasCurriculum: false, totalCourses: null }
+    ];
+
+    // Populate department grid and hidden select
+    function populateDepartments() {
+        const grid = document.getElementById('deptQuickSelect');
+        const hiddenSelect = document.getElementById('departmentSelect');
+        
+        // Add LASU Science Departments section
+        let gridHTML = '<div class="dept-divider">📘 LASU Science (with full curriculum)</div>';
+        lasuDepartments.forEach(dept => {
+            gridHTML += `
+                <button type="button" class="dept-chip" data-value="${dept.value}" data-label="${dept.label}" data-emoji="${dept.emoji}" data-curriculum="${dept.hasCurriculum}" data-courses="${dept.totalCourses || ''}">
+                    <span class="dept-emoji">${dept.emoji}</span>
+                    ${dept.label}
+                    <span style="font-size:0.65rem;display:block;color:#14b8a6;">${dept.totalCourses} courses</span>
+                </button>`;
+        });
+        
+        // Add Other Departments section
+        gridHTML += '<div class="dept-divider">📚 Other Departments</div>';
+        otherDepartments.forEach(dept => {
+            gridHTML += `
+                <button type="button" class="dept-chip" data-value="${dept.value}" data-label="${dept.label}" data-emoji="${dept.emoji}" data-curriculum="${dept.hasCurriculum}">
+                    <span class="dept-emoji">${dept.emoji}</span>
+                    ${dept.label}
+                </button>`;
+        });
+        
+        grid.innerHTML = gridHTML;
+        
+        // Populate hidden select
+        let selectHTML = '<option value="">Select your department</option>';
+        const allDepts = [...lasuDepartments, ...otherDepartments];
+        allDepts.forEach(dept => {
+            selectHTML += `<option value="${dept.value}">${dept.label}</option>`;
+        });
+        hiddenSelect.innerHTML = selectHTML;
+        
+        // Add click handlers to chips
+        document.querySelectorAll('.dept-chip').forEach(chip => {
+            chip.addEventListener('click', function() {
+                // Remove selected from all chips
+                document.querySelectorAll('.dept-chip').forEach(c => c.classList.remove('selected'));
+                // Add selected to clicked chip
+                this.classList.add('selected');
+                
+                // Update hidden select
+                const value = this.dataset.value;
+                hiddenSelect.value = value;
+                
+                // Trigger change event for progress tracking
+                hiddenSelect.dispatchEvent(new Event('change'));
+                
+                // Show preview if curriculum available
+                const preview = document.getElementById('deptPreview');
+                const previewName = document.getElementById('deptPreviewName');
+                if (this.dataset.curriculum === 'true') {
+                    previewName.textContent = this.dataset.label;
+                    preview.classList.add('show');
+                } else {
+                    preview.classList.remove('show');
+                }
+                
+                // Scroll chip into view if needed
+                this.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            });
+        });
+    }
+
+    // ===== FORM LOGIC =====
     const form = document.getElementById('profileCompletionForm');
     const progressFill = document.getElementById('progressFill');
     const errorMessage = document.getElementById('errorMessage');
@@ -544,8 +712,19 @@
             if (input.value.trim() === '') {
                 allFilled = false;
                 input.style.borderColor = '#ef4444';
+                
+                // If hidden select is empty, highlight the grid
+                if (input.id === 'departmentSelect') {
+                    document.getElementById('deptQuickSelect').style.border = '2px solid #ef4444';
+                    document.getElementById('deptQuickSelect').style.borderRadius = '12px';
+                    document.getElementById('deptQuickSelect').style.padding = '8px';
+                }
             } else {
                 input.style.borderColor = '#2d3a52';
+                if (input.id === 'departmentSelect') {
+                    document.getElementById('deptQuickSelect').style.border = 'none';
+                    document.getElementById('deptQuickSelect').style.padding = '0';
+                }
             }
         });
 
@@ -553,11 +732,16 @@
             e.preventDefault();
             errorMessage.classList.add('show');
             
-            // Scroll to first empty field
+            // Find first empty field
             const firstEmpty = Array.from(inputs).find(input => input.value.trim() === '');
             if (firstEmpty) {
-                firstEmpty.focus();
-                firstEmpty.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                if (firstEmpty.id === 'departmentSelect') {
+                    // Scroll to department grid
+                    document.getElementById('deptQuickSelect').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                } else {
+                    firstEmpty.focus();
+                    firstEmpty.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
             }
 
             // Hide error after 4 seconds
@@ -582,7 +766,6 @@
     document.getElementById('profileModal').addEventListener('click', function(e) {
         if (e.target === this) {
             e.preventDefault();
-            // Optional: Add a gentle shake animation to indicate it can't be closed
             const container = document.querySelector('.profile-modal-container');
             container.style.animation = 'shake 0.3s ease';
             setTimeout(() => {
@@ -591,8 +774,17 @@
         }
     });
 
-    // Initialize progress on page load
+    // Initialize on page load
+    populateDepartments();
     updateProgress();
+
+    // Auto-select department if URL has prefill (optional)
+    const urlParams = new URLSearchParams(window.location.search);
+    const prefillDept = urlParams.get('department');
+    if (prefillDept) {
+        const chip = document.querySelector(`.dept-chip[data-value="${prefillDept}"]`);
+        if (chip) chip.click();
+    }
 </script>
 
 </body>

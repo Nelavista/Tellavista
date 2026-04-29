@@ -354,6 +354,129 @@
             .edit-avatar-btn { width: 32px; height: 32px; font-size: 0.8rem; }
             .badge-row { gap: 8px; }
         }
+
+        /* ===== CURRICULUM VIEW STYLES ===== */
+        .curriculum-view {
+            display: none;
+            padding-bottom: 100px;
+        }
+        .curriculum-view.active {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+        .profile-main.hidden {
+            display: none;
+        }
+        .back-btn {
+            background: #1a2235;
+            border: 1px solid #3b82f6;
+            color: #3b82f6;
+            padding: 8px 18px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin: 16px 0;
+            transition: all 0.2s;
+        }
+        .back-btn:hover { background: #3b82f6; color: white; }
+        .curriculum-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin: 8px 0 20px;
+            background: linear-gradient(135deg, #ffffff, #9ca3af);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .dept-selector {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+        .dept-chip {
+            background: #1a2235;
+            border: 1px solid #2d3a52;
+            color: #9ca3af;
+            padding: 8px 16px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        .dept-chip:hover {
+            border-color: #3b82f6;
+            color: #3b82f6;
+        }
+        .dept-chip.active {
+            background: #3b82f6;
+            border-color: #3b82f6;
+            color: white;
+        }
+        .level-heading {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin: 24px 0 12px;
+            color: #3b82f6;
+            border-bottom: 2px solid #1f2a3e;
+            padding-bottom: 8px;
+        }
+        .semester-heading {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin: 16px 0 10px;
+            color: #60a5fa;
+        }
+        .curriculum-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 16px;
+            font-size: 0.82rem;
+            background: #1a2235;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .curriculum-table th {
+            background: #0f172a;
+            color: #9ca3af;
+            padding: 10px 12px;
+            text-align: left;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .curriculum-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #1f2a3e;
+        }
+        .curriculum-table tr:last-child td {
+            border-bottom: none;
+        }
+        .curriculum-table .total-row {
+            font-weight: 700;
+            background: #0f172a;
+            color: #3b82f6;
+        }
+        .total-badge {
+            display: inline-block;
+            background: #3b82f6;
+            color: white;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+        .info-note {
+            background: rgba(59,130,246,0.1);
+            border: 1px solid rgba(59,130,246,0.3);
+            border-radius: 16px;
+            padding: 12px 16px;
+            margin: 20px 0;
+            font-size: 0.85rem;
+            color: #93c5fd;
+        }
     </style>
 </head>
 <body>
@@ -370,160 +493,184 @@
         </div>
     </div>
 
-    <div class="hero-section">
-        <div class="avatar-wrapper">
-            <div class="avatar" id="avatarInitials">
-                {{ user.name[:2].upper() if user.name else 'SN' }}
+    <!-- ===== PROFILE MAIN ===== -->
+    <div id="profileMain" class="profile-main">
+        <div class="hero-section">
+            <div class="avatar-wrapper">
+                <div class="avatar" id="avatarInitials">
+                    {{ user.name[:2].upper() if user.name else 'SN' }}
+                </div>
+                <div class="edit-avatar-btn" id="editAvatarBtn">✎</div>
             </div>
-            <div class="edit-avatar-btn" id="editAvatarBtn">✎</div>
+            <div class="hero-name" id="displayFullName">{{ user.name or 'Student Name' }}</div>
+            <div class="hero-subtitle">Undergraduate Student</div>
+            <div class="badge-row">
+                <div class="badge badge-active">
+                    <span class="green-dot"></span> ACTIVE SESSION
+                </div>
+                <div class="badge badge-faculty" id="facultyBadge">
+                    {{ user.faculty or 'Faculty' }}
+                </div>
+                <div class="badge badge-semester" id="semesterBadge">
+                    📅 {{ user.semester or 'Set Semester' }}
+                </div>
+            </div>
         </div>
-        <div class="hero-name" id="displayFullName">{{ user.name or 'Student Name' }}</div>
-        <div class="hero-subtitle">Undergraduate Student</div>
-        <div class="badge-row">
-            <div class="badge badge-active">
-                <span class="green-dot"></span> ACTIVE SESSION
+
+        <div class="cards-stack">
+            <div class="info-card">
+                <div class="card-icon blue-bg">🎓</div>
+                <div class="card-label">INSTITUTION</div>
+                <div class="card-value" id="uniValue">{{ user.university or 'Not specified' }}</div>
             </div>
-            <div class="badge badge-faculty" id="facultyBadge">
-                {{ user.faculty or 'Faculty' }}
+            <div class="info-card">
+                <div class="card-icon teal-bg">📐</div>
+                <div class="card-label">MAJOR COURSE</div>
+                <div class="card-value" id="deptValue">{{ user.department or 'Not set' }}</div>
             </div>
-            <div class="badge badge-semester" id="semesterBadge">
-                📅 {{ user.semester or 'Set Semester' }}
+            <div class="info-card">
+                <div class="card-icon orange-bg">📅</div>
+                <div class="card-label">ACADEMIC YEAR</div>
+                <div class="card-value" id="yearValue">
+                    {% if user.level %}
+                        {% if user.level == '100' %}1st Year / Freshman
+                        {% elif user.level == '200' %}2nd Year / Sophomore
+                        {% elif user.level == '300' %}3rd Year / Junior
+                        {% elif user.level == '400' %}4th Year / Senior
+                        {% elif user.level == '500' %}5th Year / Final Year
+                        {% else %}{{ user.level }}
+                        {% endif %}
+                    {% else %}Not set{% endif %}
+                </div>
             </div>
+            <div class="info-card">
+                <div class="card-icon purple-bg">📚</div>
+                <div class="card-label">CURRENT SEMESTER</div>
+                <div class="card-value" id="semesterValue">{{ user.semester or 'Not set' }}</div>
+            </div>
+            <!-- View Curriculum Card -->
+            <div class="info-card" id="viewCurriculumCard" style="cursor: pointer; border: 1px dashed #3b82f6;" onclick="showCurriculum()">
+                <div class="card-icon blue-bg">📘</div>
+                <div class="card-label">COURSE CURRICULUM</div>
+                <div class="card-value" style="font-size: 1rem; color: #60a5fa;">View LASU Department Curricula →</div>
+            </div>
+        </div>
+
+        <div class="flash-messages" id="flashMessages">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="flash-message {{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+        </div>
+
+        <div id="editForm" class="edit-form-wrapper" style="display: none;">
+            <form method="POST" action="/profile" id="profileForm">
+
+                <div class="form-group">
+                    <label class="form-label">Full Name</label>
+                    <input type="text" name="name" class="form-input"
+                        value="{{ user.name or '' }}" placeholder="e.g. Afeez Tella">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">University</label>
+                    <select name="university" class="form-select">
+                        <option value="">Select University</option>
+                        <option value="Lagos State University" {% if user.university == "Lagos State University" %}selected{% endif %}>Lagos State University</option>
+                        <option value="University of Lagos" {% if user.university == "University of Lagos" %}selected{% endif %}>University of Lagos</option>
+                        <option value="University of Ibadan" {% if user.university == "University of Ibadan" %}selected{% endif %}>University of Ibadan</option>
+                        <option value="Obafemi Awolowo University" {% if user.university == "Obafemi Awolowo University" %}selected{% endif %}>Obafemi Awolowo University</option>
+                        <option value="Ahmadu Bello University" {% if user.university == "Ahmadu Bello University" %}selected{% endif %}>Ahmadu Bello University</option>
+                        <option value="University of Nigeria, Nsukka" {% if user.university == "University of Nigeria, Nsukka" %}selected{% endif %}>University of Nigeria, Nsukka</option>
+                        <option value="Covenant University" {% if user.university == "Covenant University" %}selected{% endif %}>Covenant University</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Faculty</label>
+                    <select name="faculty" class="form-select">
+                        <option value="">Select Faculty</option>
+                        <option value="Science" {% if user.faculty == "Science" %}selected{% endif %}>Science</option>
+                        <option value="Engineering" {% if user.faculty == "Engineering" %}selected{% endif %}>Engineering</option>
+                        <option value="Social Sciences" {% if user.faculty == "Social Sciences" %}selected{% endif %}>Social Sciences</option>
+                        <option value="Arts" {% if user.faculty == "Arts" %}selected{% endif %}>Arts</option>
+                        <option value="Education" {% if user.faculty == "Education" %}selected{% endif %}>Education</option>
+                        <option value="Management Sciences" {% if user.faculty == "Management Sciences" %}selected{% endif %}>Management Sciences</option>
+                        <option value="Law" {% if user.faculty == "Law" %}selected{% endif %}>Law</option>
+                        <option value="Pharmacy" {% if user.faculty == "Pharmacy" %}selected{% endif %}>Pharmacy</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Department</label>
+                    <select name="department" class="form-select" id="deptSelect">
+                        <option value="">Select Department</option>
+                        <option value="Biochemistry" {% if user.department == "Biochemistry" %}selected{% endif %}>Biochemistry</option>
+                        <option value="Mathematics" {% if user.department == "Mathematics" %}selected{% endif %}>Mathematics</option>
+                        <option value="Botany" {% if user.department == "Botany" %}selected{% endif %}>Botany</option>
+                        <option value="Chemistry" {% if user.department == "Chemistry" %}selected{% endif %}>Chemistry</option>
+                        <option value="Fisheries" {% if user.department == "Fisheries" %}selected{% endif %}>Fisheries</option>
+                        <option value="Microbiology" {% if user.department == "Microbiology" %}selected{% endif %}>Microbiology</option>
+                        <option value="Physics" {% if user.department == "Physics" %}selected{% endif %}>Physics</option>
+                        <option value="Science Laboratory Technology" {% if user.department == "SLT" %}selected{% endif %}>Science Laboratory Technology (SLT)</option>
+                        <option value="Computer Science" {% if user.department == "Computer Science" %}selected{% endif %}>Computer Science</option>
+                        <option value="Statistics" {% if user.department == "Statistics" %}selected{% endif %}>Statistics</option>
+                        <option value="Economics" {% if user.department == "Economics" %}selected{% endif %}>Economics</option>
+                        <option value="Mass Communication" {% if user.department == "Mass Communication" %}selected{% endif %}>Mass Communication</option>
+                        <option value="Accounting" {% if user.department == "Accounting" %}selected{% endif %}>Accounting</option>
+                        <option value="Business Administration" {% if user.department == "Business Administration" %}selected{% endif %}>Business Administration</option>
+                        <option value="English" {% if user.department == "English" %}selected{% endif %}>English</option>
+                        <option value="History" {% if user.department == "History" %}selected{% endif %}>History</option>
+                        <option value="Political Science" {% if user.department == "Political Science" %}selected{% endif %}>Political Science</option>
+                        <option value="Psychology" {% if user.department == "Psychology" %}selected{% endif %}>Psychology</option>
+                        <option value="Sociology" {% if user.department == "Sociology" %}selected{% endif %}>Sociology</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Level</label>
+                    <select name="user_level" class="form-select">
+                        <option value="">Select Level</option>
+                        <option value="100" {% if user.level == "100" %}selected{% endif %}>100 Level</option>
+                        <option value="200" {% if user.level == "200" %}selected{% endif %}>200 Level</option>
+                        <option value="300" {% if user.level == "300" %}selected{% endif %}>300 Level</option>
+                        <option value="400" {% if user.level == "400" %}selected{% endif %}>400 Level</option>
+                        <option value="500" {% if user.level == "500" %}selected{% endif %}>500 Level</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Current Semester</label>
+                    <select name="semester" class="form-select" id="semesterSelect">
+                        <option value="">Select Semester</option>
+                        <option value="First Semester" {% if user.semester == "First Semester" %}selected{% endif %}>First Semester</option>
+                        <option value="Second Semester" {% if user.semester == "Second Semester" %}selected{% endif %}>Second Semester</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="save-btn-primary">💾 Save Profile</button>
+                <button type="button" id="cancelEditBtn" class="cancel-btn-text">Cancel</button>
+
+            </form>
         </div>
     </div>
 
-    <div class="cards-stack">
-        <div class="info-card">
-            <div class="card-icon blue-bg">🎓</div>
-            <div class="card-label">INSTITUTION</div>
-            <div class="card-value" id="uniValue">{{ user.university or 'Not specified' }}</div>
+    <!-- ===== CURRICULUM VIEW ===== -->
+    <div id="curriculumView" class="curriculum-view">
+        <button class="back-btn" onclick="hideCurriculum()">← Back to Profile</button>
+        <div class="curriculum-title" id="curriculumTitle">📘 LASU Course Curriculum</div>
+        
+        <div class="dept-selector" id="deptSelector"></div>
+        
+        <div class="info-note">
+            💡 Select your department above to view the complete course listing from 100 Level to 400 Level. 
+            Total units per semester are shown at the bottom of each table.
         </div>
-        <div class="info-card">
-            <div class="card-icon teal-bg">📐</div>
-            <div class="card-label">MAJOR COURSE</div>
-            <div class="card-value" id="deptValue">{{ user.department or 'Not set' }}</div>
-        </div>
-        <div class="info-card">
-            <div class="card-icon orange-bg">📅</div>
-            <div class="card-label">ACADEMIC YEAR</div>
-            <div class="card-value" id="yearValue">
-                {% if user.level %}
-                    {% if user.level == '100' %}1st Year / Freshman
-                    {% elif user.level == '200' %}2nd Year / Sophomore
-                    {% elif user.level == '300' %}3rd Year / Junior
-                    {% elif user.level == '400' %}4th Year / Senior
-                    {% elif user.level == '500' %}5th Year / Final Year
-                    {% else %}{{ user.level }}
-                    {% endif %}
-                {% else %}Not set{% endif %}
-            </div>
-        </div>
-        <div class="info-card">
-            <div class="card-icon purple-bg">📚</div>
-            <div class="card-label">CURRENT SEMESTER</div>
-            <div class="card-value" id="semesterValue">{{ user.semester or 'Not set' }}</div>
-        </div>
-    </div>
-
-    <div class="flash-messages" id="flashMessages">
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    <div class="flash-message {{ category }}">{{ message }}</div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
-    </div>
-
-    <div id="editForm" class="edit-form-wrapper" style="display: none;">
-        <form method="POST" action="/profile" id="profileForm">
-
-            <div class="form-group">
-                <label class="form-label">Full Name</label>
-                <input type="text" name="name" class="form-input"
-                    value="{{ user.name or '' }}" placeholder="e.g. Afeez Tella">
-            </div>
-
-            <div class="form-group">
-                <label class="form-label">University</label>
-                <select name="university" class="form-select">
-                    <option value="">Select University</option>
-                    <option value="Lagos State University" {% if user.university == "Lagos State University" %}selected{% endif %}>Lagos State University</option>
-                    <option value="University of Lagos" {% if user.university == "University of Lagos" %}selected{% endif %}>University of Lagos</option>
-                    <option value="University of Ibadan" {% if user.university == "University of Ibadan" %}selected{% endif %}>University of Ibadan</option>
-                    <option value="Obafemi Awolowo University" {% if user.university == "Obafemi Awolowo University" %}selected{% endif %}>Obafemi Awolowo University</option>
-                    <option value="Ahmadu Bello University" {% if user.university == "Ahmadu Bello University" %}selected{% endif %}>Ahmadu Bello University</option>
-                    <option value="University of Nigeria, Nsukka" {% if user.university == "University of Nigeria, Nsukka" %}selected{% endif %}>University of Nigeria, Nsukka</option>
-                    <option value="Covenant University" {% if user.university == "Covenant University" %}selected{% endif %}>Covenant University</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label class="form-label">Faculty</label>
-                <select name="faculty" class="form-select">
-                    <option value="">Select Faculty</option>
-                    <option value="Science" {% if user.faculty == "Science" %}selected{% endif %}>Science</option>
-                    <option value="Engineering" {% if user.faculty == "Engineering" %}selected{% endif %}>Engineering</option>
-                    <option value="Social Sciences" {% if user.faculty == "Social Sciences" %}selected{% endif %}>Social Sciences</option>
-                    <option value="Arts" {% if user.faculty == "Arts" %}selected{% endif %}>Arts</option>
-                    <option value="Education" {% if user.faculty == "Education" %}selected{% endif %}>Education</option>
-                    <option value="Management Sciences" {% if user.faculty == "Management Sciences" %}selected{% endif %}>Management Sciences</option>
-                    <option value="Law" {% if user.faculty == "Law" %}selected{% endif %}>Law</option>
-                    <option value="Pharmacy" {% if user.faculty == "Pharmacy" %}selected{% endif %}>Pharmacy</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label class="form-label">Department</label>
-                <select name="department" class="form-select">
-                    <option value="">Select Department</option>
-                    <option value="Mathematics" {% if user.department == "Mathematics" %}selected{% endif %}>Mathematics</option>
-                    <option value="Computer Science" {% if user.department == "Computer Science" %}selected{% endif %}>Computer Science</option>
-                    <option value="Physics" {% if user.department == "Physics" %}selected{% endif %}>Physics</option>
-                    <option value="Chemistry" {% if user.department == "Chemistry" %}selected{% endif %}>Chemistry</option>
-                    <option value="Biology" {% if user.department == "Biology" %}selected{% endif %}>Biology</option>
-                    <option value="Statistics" {% if user.department == "Statistics" %}selected{% endif %}>Statistics</option>
-                    <option value="Economics" {% if user.department == "Economics" %}selected{% endif %}>Economics</option>
-                    <option value="Mass Communication" {% if user.department == "Mass Communication" %}selected{% endif %}>Mass Communication</option>
-                    <option value="Accounting" {% if user.department == "Accounting" %}selected{% endif %}>Accounting</option>
-                    <option value="Business Administration" {% if user.department == "Business Administration" %}selected{% endif %}>Business Administration</option>
-                    <option value="English" {% if user.department == "English" %}selected{% endif %}>English</option>
-                    <option value="History" {% if user.department == "History" %}selected{% endif %}>History</option>
-                    <option value="Political Science" {% if user.department == "Political Science" %}selected{% endif %}>Political Science</option>
-                    <option value="Psychology" {% if user.department == "Psychology" %}selected{% endif %}>Psychology</option>
-                    <option value="Sociology" {% if user.department == "Sociology" %}selected{% endif %}>Sociology</option>
-                    <option value="Microbiology" {% if user.department == "Microbiology" %}selected{% endif %}>Microbiology</option>
-                    <option value="Biochemistry" {% if user.department == "Biochemistry" %}selected{% endif %}>Biochemistry</option>
-                </select>
-            </div>
-
-            <!-- UPDATED: Level values now match staticMaterials format ("100", "200" etc) -->
-            <div class="form-group">
-                <label class="form-label">Level</label>
-                <select name="user_level" class="form-select">
-                    <option value="">Select Level</option>
-                    <option value="100" {% if user.level == "100" %}selected{% endif %}>100 Level</option>
-                    <option value="200" {% if user.level == "200" %}selected{% endif %}>200 Level</option>
-                    <option value="300" {% if user.level == "300" %}selected{% endif %}>300 Level</option>
-                    <option value="400" {% if user.level == "400" %}selected{% endif %}>400 Level</option>
-                    <option value="500" {% if user.level == "500" %}selected{% endif %}>500 Level</option>
-                </select>
-            </div>
-
-            <!-- UPDATED: Semester values now match staticMaterials format -->
-            <div class="form-group">
-                <label class="form-label">Current Semester</label>
-                <select name="semester" class="form-select" id="semesterSelect">
-                    <option value="">Select Semester</option>
-                    <option value="First Semester" {% if user.semester == "First Semester" %}selected{% endif %}>First Semester</option>
-                    <option value="Second Semester" {% if user.semester == "Second Semester" %}selected{% endif %}>Second Semester</option>
-                </select>
-            </div>
-
-            <button type="submit" class="save-btn-primary">💾 Save Profile</button>
-            <button type="button" id="cancelEditBtn" class="cancel-btn-text">Cancel</button>
-
-        </form>
+        
+        <div id="curriculumContent"></div>
     </div>
 
 </div>
@@ -536,6 +683,822 @@
 </div>
 
 <script>
+    // ===== LASU CURRICULUM DATA =====
+    const lasuCurriculum = {
+        "Biochemistry": {
+            "100": {
+                first: [
+                    {code:"CHM 101",title:"General Chemistry I",units:3},
+                    {code:"CHM 107",title:"Experimental Chemistry I",units:1},
+                    {code:"PHY 101",title:"General Physics I",units:3},
+                    {code:"PHY 107",title:"Experimental Physics I",units:1},
+                    {code:"BIO 101",title:"Basic Biology I",units:3},
+                    {code:"BIO 107",title:"Experimental Biology I",units:1},
+                    {code:"MTH 101",title:"General Mathematics I",units:3},
+                    {code:"CIT 111",title:"Intro to ICT",units:2},
+                    {code:"FRN 221",title:"Basic French",units:2},
+                    {code:"GNS 101",title:"Use of English I",units:2},
+                    {code:"LIB 101",title:"Use of Library",units:1}
+                ],
+                second: [
+                    {code:"CHM 102",title:"General Chemistry II",units:3},
+                    {code:"CHM 108",title:"Experimental Chemistry II",units:1},
+                    {code:"PHY 102",title:"General Physics II",units:3},
+                    {code:"PHY 108",title:"Experimental Physics II",units:1},
+                    {code:"BIO 102",title:"Basic Biology II",units:3},
+                    {code:"BIO 108",title:"Experimental Biology II",units:1},
+                    {code:"MTH 102",title:"General Mathematics II",units:3},
+                    {code:"CIT 112",title:"Intro to Computer Programming",units:2},
+                    {code:"FRN 222",title:"French for Specific Purposes",units:2},
+                    {code:"GNS 102",title:"Use of English II",units:2}
+                ]
+            },
+            "200": {
+                first: [
+                    {code:"BCH 201",title:"General Biochemistry I",units:3},
+                    {code:"BCH 203",title:"Metabolism of Carbohydrates",units:2},
+                    {code:"MCB 201",title:"General Microbiology I",units:3},
+                    {code:"BIO 203",title:"Introductory Genetics",units:2},
+                    {code:"CHM 205",title:"Physical Chemistry I",units:2},
+                    {code:"CHM 207",title:"Inorganic Chemistry I",units:2},
+                    {code:"CHM 291",title:"Experimental Physical/Inorganic Chemistry",units:1},
+                    {code:"GNS 201",title:"Nigerian Peoples and Culture",units:2},
+                    {code:"CIT 201",title:"Structured Programming (Elective)",units:3}
+                ],
+                second: [
+                    {code:"BCH 202",title:"General Biochemistry II",units:3},
+                    {code:"BCH 204",title:"Biochemical Methods",units:2},
+                    {code:"BCH 206",title:"Food and Nutritional Biochemistry",units:3},
+                    {code:"BIO 202",title:"Biological Techniques",units:2},
+                    {code:"CHM 208",title:"Physical Chemistry II",units:2},
+                    {code:"CHM 202",title:"Organic Chemistry I",units:2},
+                    {code:"CHM 292",title:"Experimental Physical/Organic Chemistry",units:1},
+                    {code:"GNS 202",title:"Osun Peoples and Culture",units:2},
+                    {code:"GNS 302",title:"Intro to Logic and Philosophy",units:2}
+                ]
+            },
+            "300": {
+                first: [
+                    {code:"BCH 301",title:"Enzymology",units:2},
+                    {code:"BCH 303",title:"Metabolism of Lipids",units:2},
+                    {code:"BCH 305",title:"Metabolism of Nucleic Acids",units:2},
+                    {code:"BCH 307",title:"Metabolism of Amino Acids & Protein",units:2},
+                    {code:"BCH 309",title:"Membrane Biochemistry",units:1},
+                    {code:"BCH 391",title:"General Biochemical Methods",units:2},
+                    {code:"CHM 303",title:"Organic Chemistry II",units:2},
+                    {code:"STA 201",title:"Statistics for Agricultural & Biological Students",units:4},
+                    {code:"CHM 401",title:"Instrumental Analytical Methods",units:2},
+                    {code:"GNS 301",title:"Entrepreneurial Skill Development",units:2}
+                ],
+                second: [
+                    {code:"BCH 399",title:"Industrial Attachment (SIWES)",units:16}
+                ]
+            },
+            "400": {
+                first: [
+                    {code:"BCH 401",title:"Advanced Enzymology",units:2},
+                    {code:"BCH 403",title:"Tissue Biochemistry",units:1},
+                    {code:"BCH 405",title:"Biotechnology & Genetic Engineering",units:2},
+                    {code:"BCH 407",title:"Plant Biochemistry",units:2},
+                    {code:"BCH 409",title:"Seminar in Biochemistry",units:2},
+                    {code:"BCH 411",title:"Pharmacological Biochemistry and Toxicology",units:3},
+                    {code:"BCH 413",title:"Bioenergetics",units:1},
+                    {code:"MCB 305",title:"Microbial Genetics/Molecular Biology",units:3},
+                    {code:"MCB 401",title:"Immunology and Immunochemistry (Elective)",units:3}
+                ],
+                second: [
+                    {code:"BCH 402",title:"Biosynthesis of Macromolecules",units:1},
+                    {code:"BCH 404",title:"Bioinorganic Chemistry",units:1},
+                    {code:"BCH 406",title:"Metabolic Regulations",units:2},
+                    {code:"BCH 408",title:"Biochemical Reasoning",units:1},
+                    {code:"BCH 412",title:"Industrial Biochemistry",units:3},
+                    {code:"MCB 408",title:"Microbial Physiology & Metabolism",units:3},
+                    {code:"BCH 499",title:"Research Project",units:6},
+                    {code:"BCH 492",title:"Advanced Biochemical Methods (Elective)",units:2}
+                ]
+            }
+        },
+        "Mathematics": {
+            "100": {
+                first: [
+                    {code:"GST 111",title:"Communication in English I",units:2},
+                    {code:"GST 112",title:"Logic, Philosophy & Human Existence",units:2},
+                    {code:"GST 113",title:"Nigerian Peoples & Culture",units:2},
+                    {code:"GST 114",title:"Valuing the Teaching Profession I",units:1},
+                    {code:"GST 115",title:"Lagos & Its Environs",units:1},
+                    {code:"GST 116",title:"Intro to Yoruba Language & Culture",units:1},
+                    {code:"BIO 101",title:"General Biology I",units:3},
+                    {code:"CHM 101",title:"General Chemistry I",units:3},
+                    {code:"CSC 101",title:"Intro to Computer Science",units:3},
+                    {code:"MTH 101",title:"Elementary Mathematics I",units:3},
+                    {code:"MTH 103",title:"Elementary Mathematics III",units:3},
+                    {code:"PHY 101",title:"General Physics I",units:3},
+                    {code:"PHY 107",title:"General Practical Physics I",units:1}
+                ],
+                second: [
+                    {code:"GST 121",title:"Use of Library Skills & ICT",units:2},
+                    {code:"GST 122",title:"Communication in English II",units:2},
+                    {code:"GST 125",title:"Contemporary Health Issues",units:2},
+                    {code:"GST 126",title:"Communication in Arabic",units:1},
+                    {code:"MTH 102",title:"Elementary Mathematics II",units:3},
+                    {code:"PHY 102",title:"General Physics II",units:3},
+                    {code:"PHY 108",title:"General Practical Physics II",units:1},
+                    {code:"STA 112",title:"Probability I",units:4},
+                    {code:"CSC 102",title:"Intro to Problem Solving",units:3}
+                ]
+            },
+            "200": {
+                first: [
+                    {code:"CSC 201",title:"Computer Programming I",units:3},
+                    {code:"GST 211",title:"Environment & Sustainable Development",units:2},
+                    {code:"GST 212",title:"Application of Computer",units:2},
+                    {code:"GST 214",title:"Valuing the Teaching Profession II",units:1},
+                    {code:"MTH 201",title:"Mathematical Methods I",units:3},
+                    {code:"MTH 203",title:"Sets Logic & Algebra I",units:3},
+                    {code:"MTH 204",title:"Linear Algebra I",units:2},
+                    {code:"MTH 207",title:"Real Analysis I",units:3},
+                    {code:"MTH 209",title:"Intro to Numerical Analysis",units:3},
+                    {code:"MTH 299",title:"Industrial Training I (12 Weeks)",units:3},
+                    {code:"PHY 201",title:"General Physics III",units:3}
+                ],
+                second: [
+                    {code:"CSC 202",title:"Computer Programming II",units:3},
+                    {code:"GST 222",title:"Peace & Conflict Resolution",units:2},
+                    {code:"GST 223",title:"Intro to Entrepreneurship",units:2},
+                    {code:"GST 224",title:"Leadership Skills",units:2},
+                    {code:"GST 225",title:"Yoruba Grammar, Language & Communication",units:1},
+                    {code:"GST 226",title:"Land Use & General Agriculture",units:2},
+                    {code:"ENT 221",title:"Intro to Entrepreneurship",units:2},
+                    {code:"MTH 202",title:"Elementary Differential Equations",units:3},
+                    {code:"MTH 205",title:"Linear Algebra II",units:2},
+                    {code:"MTH 210",title:"Vector Analysis",units:2},
+                    {code:"PHY 202",title:"Intro to Electric Circuits & Electronics",units:3}
+                ]
+            },
+            "300": {
+                first: [
+                    {code:"GST 311",title:"Entrepreneurship",units:2},
+                    {code:"MTH 301",title:"Metric Space Topology",units:3},
+                    {code:"MTH 303",title:"Vector & Tensor Analysis",units:3},
+                    {code:"MTH 304",title:"Complex Analysis I",units:3},
+                    {code:"MTH 307",title:"Real Analysis II",units:3},
+                    {code:"MTH 311",title:"Theory of Modules",units:3},
+                    {code:"MTH 399",title:"Industrial Attachment II (12 Weeks)",units:3},
+                    {code:"MTH 309",title:"Discrete Mathematics",units:4},
+                    {code:"MTH 313",title:"Geometry",units:3},
+                    {code:"MTH 319",title:"Numerical Analysis I",units:3},
+                    {code:"STA 311",title:"Probability III",units:4}
+                ],
+                second: [
+                    {code:"ENT 321",title:"Entrepreneurship & Business Management",units:2},
+                    {code:"MTH 300",title:"Abstract Algebra I",units:3},
+                    {code:"MTH 302",title:"Ordinary Differential Equations",units:3},
+                    {code:"MTH 305",title:"Complex Analysis II",units:3},
+                    {code:"MTH 306",title:"Abstract Algebra II",units:3},
+                    {code:"MTH 308",title:"Intro to Mathematical Modelling",units:3},
+                    {code:"MTH 310",title:"Mathematical Methods II",units:3},
+                    {code:"MTH 320",title:"Computational Techniques in Mathematics",units:3},
+                    {code:"MTH 312",title:"Optimization Theory",units:4},
+                    {code:"MTH 314",title:"Analytical Dynamics I",units:3},
+                    {code:"MTH 316",title:"Intro to Operations Research",units:3},
+                    {code:"STA 312",title:"Distribution Theory I",units:3}
+                ]
+            },
+            "400": {
+                first: [
+                    {code:"MTH 401",title:"Theory of Ordinary Differential Equations",units:3},
+                    {code:"MTH 403",title:"Functional Analysis",units:3},
+                    {code:"MTH 405",title:"General Topology",units:3},
+                    {code:"MTH 419",title:"Complex Analysis",units:3},
+                    {code:"MTH 407",title:"Mathematical Methods III",units:3},
+                    {code:"MTH 409",title:"General Relativity",units:3},
+                    {code:"MTH 411",title:"Analytical Dynamics II",units:3}
+                ],
+                second: [
+                    {code:"ENT 421",title:"Investment Marketing & Management",units:2},
+                    {code:"MTH 402",title:"Theory of Partial Differential Equations",units:3},
+                    {code:"MTH 404",title:"Project",units:6},
+                    {code:"MTH 406",title:"Lebesgue Measure & Integration",units:3},
+                    {code:"MTH 418",title:"Advanced Algebra",units:3},
+                    {code:"MTH 408",title:"Quantum Mechanics I",units:3},
+                    {code:"MTH 410",title:"Electromagnetism",units:3}
+                ]
+            }
+        },
+        "Botany": {
+            "100": {
+                first: [
+                    {code:"GST 111",title:"Communication in English I",units:2},
+                    {code:"GST 112",title:"Logic, Philosophy & Human Existence",units:2},
+                    {code:"GST 113",title:"Nigerian Peoples & Culture",units:2},
+                    {code:"GST 114",title:"Valuing the Teaching Profession I",units:1},
+                    {code:"GST 115",title:"Lagos & Its Environs",units:1},
+                    {code:"GST 116",title:"Intro to Yoruba Language & Culture",units:1},
+                    {code:"BIO 101",title:"General Biology I",units:3},
+                    {code:"CHM 101",title:"General Chemistry I",units:3},
+                    {code:"CSC 101",title:"Intro to Computer Science",units:3},
+                    {code:"MTH 101",title:"Elementary Mathematics I",units:3},
+                    {code:"PHY 101",title:"General Physics I",units:3},
+                    {code:"PHY 107",title:"General Practical Physics I",units:1}
+                ],
+                second: [
+                    {code:"GST 121",title:"Use of Library Skills & ICT",units:2},
+                    {code:"GST 122",title:"Communication in English II",units:2},
+                    {code:"GST 125",title:"Contemporary Health Issues",units:2},
+                    {code:"GST 126",title:"Communication in Arabic",units:1},
+                    {code:"BIO 102",title:"General Biology II",units:3},
+                    {code:"BOT 101",title:"Diversity of Plants",units:3},
+                    {code:"BOT 103",title:"Basic Botanical Nomenclature",units:2},
+                    {code:"CHM 102",title:"General Chemistry II",units:3},
+                    {code:"MTH 102",title:"Elementary Mathematics II",units:3},
+                    {code:"PHY 102",title:"General Physics II",units:3},
+                    {code:"PHY 108",title:"General Practical Physics II",units:1}
+                ]
+            },
+            "200": {
+                first: [
+                    {code:"GST 211",title:"Environment & Sustainable Development",units:2},
+                    {code:"GST 212",title:"Application of Computer",units:2},
+                    {code:"GST 214",title:"Valuing the Teaching Profession II",units:1},
+                    {code:"BOT 201",title:"Seedless Plants (Cryptogams)",units:3},
+                    {code:"BOT 203",title:"Plant Morphology",units:3},
+                    {code:"BOT 205",title:"Introductory Plant Physiology",units:2},
+                    {code:"BOT 207",title:"General Ecology",units:3},
+                    {code:"STA 211",title:"Statistics for Biological Sciences",units:3}
+                ],
+                second: [
+                    {code:"GST 222",title:"Peace & Conflict Resolution",units:2},
+                    {code:"GST 223",title:"Intro to Entrepreneurship",units:2},
+                    {code:"GST 224",title:"Leadership Skills",units:2},
+                    {code:"GST 225",title:"Yoruba Grammar, Language & Communication",units:1},
+                    {code:"GST 226",title:"Land Use & General Agriculture",units:2},
+                    {code:"BOT 202",title:"Seed Plants (Spermatophyta)",units:3},
+                    {code:"BOT 204",title:"Plant Anatomy",units:3},
+                    {code:"BOT 206",title:"Plant Taxonomy",units:3},
+                    {code:"BOT 208",title:"Biological Techniques",units:3}
+                ]
+            },
+            "300": {
+                first: [
+                    {code:"GST 311",title:"Entrepreneurship",units:2},
+                    {code:"BOT 301",title:"Plant Ecology & Field Course I",units:3},
+                    {code:"BOT 303",title:"Algae (Phycology)",units:3},
+                    {code:"BOT 305",title:"Mycology I",units:3},
+                    {code:"BOT 307",title:"Plant Physiology I",units:3},
+                    {code:"BOT 309",title:"Plant Taxonomy I",units:3},
+                    {code:"BOT 311",title:"Biostatistics",units:3}
+                ],
+                second: [
+                    {code:"ENT 321",title:"Entrepreneurship & Business Management",units:2},
+                    {code:"BOT 302",title:"Bryophyta & Pteridophyta",units:3},
+                    {code:"BOT 304",title:"Gymnosperms",units:3},
+                    {code:"BOT 306",title:"Plant Cytogenetics",units:3},
+                    {code:"BOT 308",title:"Plant Pathology I",units:2},
+                    {code:"BOT 310",title:"Economic Botany",units:3},
+                    {code:"BOT 399",title:"SIWES / Industrial Training (12 weeks)",units:6}
+                ]
+            },
+            "400": {
+                first: [
+                    {code:"BOT 401",title:"Plant Breeding",units:3},
+                    {code:"BOT 403",title:"Population Ecology",units:3},
+                    {code:"BOT 405",title:"Mycology II",units:2},
+                    {code:"BOT 407",title:"Limnology",units:3},
+                    {code:"BOT 409",title:"Evolution",units:2},
+                    {code:"BOT 411",title:"Plant Pathology II",units:3},
+                    {code:"BOT 413",title:"Seminar",units:2}
+                ],
+                second: [
+                    {code:"ENT 421",title:"Investment Marketing & Management",units:2},
+                    {code:"BOT 402",title:"Soil Science",units:2},
+                    {code:"BOT 404",title:"Development of Natural Resources & Afforestation",units:3},
+                    {code:"BOT 406",title:"Comparative Plant Anatomy",units:3},
+                    {code:"BOT 408",title:"Plant Physiology II / Tissue Culture",units:3},
+                    {code:"BOT 410",title:"Molecular Biology / Biotechnology",units:2},
+                    {code:"BOT 412",title:"Research Project",units:6}
+                ]
+            }
+        },
+        "Chemistry": {
+            "100": {
+                first: [
+                    {code:"GST 111",title:"Communication in English I",units:2},
+                    {code:"GST 112",title:"Logic, Philosophy & Human Existence",units:2},
+                    {code:"GST 113",title:"Nigerian Peoples & Culture",units:2},
+                    {code:"GST 114",title:"Valuing the Teaching Profession I",units:1},
+                    {code:"GST 115",title:"Lagos & Its Environs",units:1},
+                    {code:"GST 116",title:"Intro to Yoruba Language & Culture",units:1},
+                    {code:"CHM 101",title:"General Chemistry I",units:3},
+                    {code:"CHM 103",title:"General Chemistry Practical I",units:1},
+                    {code:"BIO 101",title:"General Biology I",units:3},
+                    {code:"MTH 101",title:"Elementary Mathematics I",units:3},
+                    {code:"PHY 101",title:"General Physics I",units:3},
+                    {code:"PHY 107",title:"General Practical Physics I",units:1}
+                ],
+                second: [
+                    {code:"GST 121",title:"Use of Library Skills & ICT",units:2},
+                    {code:"GST 122",title:"Communication in English II",units:2},
+                    {code:"GST 125",title:"Contemporary Health Issues",units:2},
+                    {code:"GST 126",title:"Communication in Arabic",units:1},
+                    {code:"CHM 102",title:"General Chemistry II",units:3},
+                    {code:"CHM 104",title:"General Chemistry Practical II",units:1},
+                    {code:"BIO 102",title:"General Biology II",units:3},
+                    {code:"MTH 102",title:"Elementary Mathematics II",units:3},
+                    {code:"PHY 102",title:"General Physics II",units:3},
+                    {code:"PHY 108",title:"General Practical Physics II",units:1}
+                ]
+            },
+            "200": {
+                first: [
+                    {code:"GST 211",title:"Environment & Sustainable Development",units:2},
+                    {code:"GST 212",title:"Application of Computer",units:2},
+                    {code:"GST 214",title:"Valuing the Teaching Profession II",units:1},
+                    {code:"CHM 201",title:"Physical Chemistry I",units:3},
+                    {code:"CHM 203",title:"Inorganic Chemistry I",units:3},
+                    {code:"CHM 205",title:"Organic Chemistry I",units:3},
+                    {code:"CHM 207",title:"Analytical Chemistry I",units:3},
+                    {code:"CHM 209",title:"Chemistry Practical I",units:2}
+                ],
+                second: [
+                    {code:"GST 222",title:"Peace & Conflict Resolution",units:2},
+                    {code:"GST 223",title:"Intro to Entrepreneurship",units:2},
+                    {code:"GST 224",title:"Leadership Skills",units:2},
+                    {code:"GST 225",title:"Yoruba Grammar, Language & Communication",units:1},
+                    {code:"GST 226",title:"Land Use & General Agriculture",units:2},
+                    {code:"CHM 202",title:"Physical Chemistry II",units:3},
+                    {code:"CHM 204",title:"Inorganic Chemistry II",units:3},
+                    {code:"CHM 206",title:"Organic Chemistry II",units:3},
+                    {code:"CHM 208",title:"Analytical Chemistry II",units:3},
+                    {code:"CHM 210",title:"Chemistry Practical II",units:2}
+                ]
+            },
+            "300": {
+                first: [
+                    {code:"GST 311",title:"Entrepreneurship",units:2},
+                    {code:"CHM 301",title:"Physical Chemistry III",units:3},
+                    {code:"CHM 303",title:"Inorganic Chemistry III",units:3},
+                    {code:"CHM 305",title:"Organic Chemistry III",units:3},
+                    {code:"CHM 307",title:"Analytical Chemistry III",units:3},
+                    {code:"CHM 309",title:"Instrumental Methods of Analysis",units:3},
+                    {code:"CHM 311",title:"Chemistry Practical III",units:2}
+                ],
+                second: [
+                    {code:"ENT 321",title:"Entrepreneurship & Business Management",units:2},
+                    {code:"CHM 302",title:"Chemical Thermodynamics",units:3},
+                    {code:"CHM 304",title:"Coordination Chemistry",units:3},
+                    {code:"CHM 306",title:"Organic Reaction Mechanisms",units:3},
+                    {code:"CHM 308",title:"Electrochemistry",units:3},
+                    {code:"CHM 310",title:"Industrial Chemistry",units:3},
+                    {code:"CHM 399",title:"SIWES / Industrial Training (12 weeks)",units:6}
+                ]
+            },
+            "400": {
+                first: [
+                    {code:"CHM 401",title:"Advanced Physical Chemistry",units:3},
+                    {code:"CHM 403",title:"Advanced Inorganic Chemistry",units:3},
+                    {code:"CHM 405",title:"Advanced Organic Chemistry",units:3},
+                    {code:"CHM 407",title:"Advanced Analytical Chemistry",units:3},
+                    {code:"CHM 409",title:"Environmental Chemistry",units:2},
+                    {code:"CHM 411",title:"Seminar",units:2}
+                ],
+                second: [
+                    {code:"ENT 421",title:"Investment Marketing & Management",units:2},
+                    {code:"CHM 402",title:"Chemical Kinetics",units:3},
+                    {code:"CHM 404",title:"Research Project",units:6},
+                    {code:"CHM 406",title:"Polymer Chemistry",units:3},
+                    {code:"CHM 408",title:"Medicinal Chemistry",units:3},
+                    {code:"CHM 410",title:"Spectroscopy",units:3}
+                ]
+            }
+        },
+        "Fisheries": {
+            "100": {
+                first: [
+                    {code:"GST 111",title:"Communication in English I",units:2},
+                    {code:"GST 112",title:"Logic, Philosophy & Human Existence",units:2},
+                    {code:"GST 113",title:"Nigerian Peoples & Culture",units:2},
+                    {code:"GST 114",title:"Valuing the Teaching Profession I",units:1},
+                    {code:"GST 115",title:"Lagos & Its Environs",units:1},
+                    {code:"GST 116",title:"Intro to Yoruba Language & Culture",units:1},
+                    {code:"BIO 101",title:"General Biology I",units:3},
+                    {code:"CHM 101",title:"General Chemistry I",units:3},
+                    {code:"FIS 101",title:"Introduction to Fisheries",units:3},
+                    {code:"MTH 101",title:"Elementary Mathematics I",units:3},
+                    {code:"PHY 101",title:"General Physics I",units:3},
+                    {code:"PHY 107",title:"General Practical Physics I",units:1}
+                ],
+                second: [
+                    {code:"GST 121",title:"Use of Library Skills & ICT",units:2},
+                    {code:"GST 122",title:"Communication in English II",units:2},
+                    {code:"GST 125",title:"Contemporary Health Issues",units:2},
+                    {code:"GST 126",title:"Communication in Arabic",units:1},
+                    {code:"BIO 102",title:"General Biology II",units:3},
+                    {code:"CHM 102",title:"General Chemistry II",units:3},
+                    {code:"FIS 102",title:"Introduction to Aquatic Ecology",units:3},
+                    {code:"MTH 102",title:"Elementary Mathematics II",units:3},
+                    {code:"PHY 102",title:"General Physics II",units:3},
+                    {code:"PHY 108",title:"General Practical Physics II",units:1}
+                ]
+            },
+            "200": {
+                first: [
+                    {code:"GST 211",title:"Environment & Sustainable Development",units:2},
+                    {code:"GST 212",title:"Application of Computer",units:2},
+                    {code:"GST 214",title:"Valuing the Teaching Profession II",units:1},
+                    {code:"FIS 201",title:"General Ichthyology",units:3},
+                    {code:"FIS 203",title:"Fisheries Biology",units:3},
+                    {code:"FIS 205",title:"Principles of Aquaculture",units:3},
+                    {code:"FIS 207",title:"Fisheries Statistics",units:3},
+                    {code:"STA 211",title:"Statistics for Biological Sciences",units:3}
+                ],
+                second: [
+                    {code:"GST 222",title:"Peace & Conflict Resolution",units:2},
+                    {code:"GST 223",title:"Intro to Entrepreneurship",units:2},
+                    {code:"GST 224",title:"Leadership Skills",units:2},
+                    {code:"GST 225",title:"Yoruba Grammar, Language & Communication",units:1},
+                    {code:"GST 226",title:"Land Use & General Agriculture",units:2},
+                    {code:"FIS 202",title:"Limnology",units:3},
+                    {code:"FIS 204",title:"Fish Nutrition",units:3},
+                    {code:"FIS 206",title:"Fish Genetics & Breeding",units:3},
+                    {code:"FIS 208",title:"Fishing Gear Technology",units:3}
+                ]
+            },
+            "300": {
+                first: [
+                    {code:"GST 311",title:"Entrepreneurship",units:2},
+                    {code:"FIS 301",title:"Fish Physiology",units:3},
+                    {code:"FIS 303",title:"Fish Pathology & Parasitology",units:3},
+                    {code:"FIS 305",title:"Fisheries Management",units:3},
+                    {code:"FIS 307",title:"Aquaculture Systems & Pond Management",units:3},
+                    {code:"FIS 309",title:"Fish Processing & Preservation",units:3},
+                    {code:"FIS 311",title:"Fisheries Economics",units:3}
+                ],
+                second: [
+                    {code:"ENT 321",title:"Entrepreneurship & Business Management",units:2},
+                    {code:"FIS 302",title:"Marine Fisheries",units:3},
+                    {code:"FIS 304",title:"Inland Fisheries",units:3},
+                    {code:"FIS 306",title:"Fish Hatchery Management",units:3},
+                    {code:"FIS 308",title:"Environmental Impact of Fisheries",units:2},
+                    {code:"FIS 399",title:"SIWES / Industrial Training (12 weeks)",units:6}
+                ]
+            },
+            "400": {
+                first: [
+                    {code:"FIS 401",title:"Advanced Aquaculture",units:3},
+                    {code:"FIS 403",title:"Fish Stock Assessment",units:3},
+                    {code:"FIS 405",title:"Fisheries Policy & Legislation",units:2},
+                    {code:"FIS 407",title:"Integrated Fish Farming",units:3},
+                    {code:"FIS 409",title:"Seminar",units:2}
+                ],
+                second: [
+                    {code:"ENT 421",title:"Investment Marketing & Management",units:2},
+                    {code:"FIS 402",title:"Fisheries Extension & Rural Development",units:3},
+                    {code:"FIS 404",title:"Research Project",units:6},
+                    {code:"FIS 406",title:"Aquatic Pollution & Toxicology",units:3},
+                    {code:"FIS 408",title:"Sustainable Fisheries Management",units:3}
+                ]
+            }
+        },
+        "Microbiology": {
+            "100": {
+                first: [
+                    {code:"GST 111",title:"Communication in English I",units:2},
+                    {code:"GST 112",title:"Logic, Philosophy & Human Existence",units:2},
+                    {code:"GST 113",title:"Nigerian Peoples & Culture",units:2},
+                    {code:"GST 114",title:"Valuing the Teaching Profession I",units:1},
+                    {code:"GST 115",title:"Lagos & Its Environs",units:1},
+                    {code:"GST 116",title:"Intro to Yoruba Language & Culture",units:1},
+                    {code:"BIO 101",title:"General Biology I",units:3},
+                    {code:"CHM 101",title:"General Chemistry I",units:3},
+                    {code:"MCB 101",title:"Introduction to Microbiology",units:3},
+                    {code:"MTH 101",title:"Elementary Mathematics I",units:3},
+                    {code:"PHY 101",title:"General Physics I",units:3},
+                    {code:"PHY 107",title:"General Practical Physics I",units:1}
+                ],
+                second: [
+                    {code:"GST 121",title:"Use of Library Skills & ICT",units:2},
+                    {code:"GST 122",title:"Communication in English II",units:2},
+                    {code:"GST 125",title:"Contemporary Health Issues",units:2},
+                    {code:"GST 126",title:"Communication in Arabic",units:1},
+                    {code:"BIO 102",title:"General Biology II",units:3},
+                    {code:"CHM 102",title:"General Chemistry II",units:3},
+                    {code:"MCB 102",title:"Microbial Diversity",units:3},
+                    {code:"MTH 102",title:"Elementary Mathematics II",units:3},
+                    {code:"PHY 102",title:"General Physics II",units:3},
+                    {code:"PHY 108",title:"General Practical Physics II",units:1}
+                ]
+            },
+            "200": {
+                first: [
+                    {code:"GST 211",title:"Environment & Sustainable Development",units:2},
+                    {code:"GST 212",title:"Application of Computer",units:2},
+                    {code:"GST 214",title:"Valuing the Teaching Profession II",units:1},
+                    {code:"MCB 201",title:"General Microbiology",units:3},
+                    {code:"MCB 203",title:"Microbial Morphology & Physiology",units:3},
+                    {code:"MCB 205",title:"Microbial Genetics",units:3},
+                    {code:"MCB 207",title:"Microbial Ecology",units:3},
+                    {code:"STA 211",title:"Statistics for Biological Sciences",units:3}
+                ],
+                second: [
+                    {code:"GST 222",title:"Peace & Conflict Resolution",units:2},
+                    {code:"GST 223",title:"Intro to Entrepreneurship",units:2},
+                    {code:"GST 224",title:"Leadership Skills",units:2},
+                    {code:"GST 225",title:"Yoruba Grammar, Language & Communication",units:1},
+                    {code:"GST 226",title:"Land Use & General Agriculture",units:2},
+                    {code:"MCB 202",title:"Immunology",units:3},
+                    {code:"MCB 204",title:"Medical Microbiology",units:3},
+                    {code:"MCB 206",title:"Industrial Microbiology",units:3},
+                    {code:"MCB 208",title:"Microbiology Practical I",units:2}
+                ]
+            },
+            "300": {
+                first: [
+                    {code:"GST 311",title:"Entrepreneurship",units:2},
+                    {code:"MCB 301",title:"Bacteriology",units:3},
+                    {code:"MCB 303",title:"Virology",units:3},
+                    {code:"MCB 305",title:"Mycology",units:3},
+                    {code:"MCB 307",title:"Microbial Biochemistry",units:3},
+                    {code:"MCB 309",title:"Food & Dairy Microbiology",units:3},
+                    {code:"MCB 311",title:"Microbiology Practical II",units:2}
+                ],
+                second: [
+                    {code:"ENT 321",title:"Entrepreneurship & Business Management",units:2},
+                    {code:"MCB 302",title:"Environmental Microbiology",units:3},
+                    {code:"MCB 304",title:"Molecular Biology",units:3},
+                    {code:"MCB 306",title:"Public Health Microbiology",units:3},
+                    {code:"MCB 308",title:"Waste Management & Bioremediation",units:3},
+                    {code:"MCB 399",title:"SIWES / Industrial Training (12 weeks)",units:6}
+                ]
+            },
+            "400": {
+                first: [
+                    {code:"MCB 401",title:"Advanced Microbial Genetics",units:3},
+                    {code:"MCB 403",title:"Pharmaceutical Microbiology",units:3},
+                    {code:"MCB 405",title:"Microbial Biotechnology",units:3},
+                    {code:"MCB 407",title:"Epidemiology",units:2},
+                    {code:"MCB 409",title:"Seminar",units:2}
+                ],
+                second: [
+                    {code:"ENT 421",title:"Investment Marketing & Management",units:2},
+                    {code:"MCB 402",title:"Clinical Microbiology",units:3},
+                    {code:"MCB 404",title:"Research Project",units:6},
+                    {code:"MCB 406",title:"Industrial Fermentation Technology",units:3},
+                    {code:"MCB 408",title:"Advanced Immunology",units:3}
+                ]
+            }
+        },
+        "Physics": {
+            "100": {
+                first: [
+                    {code:"GST 111",title:"Communication in English I",units:2},
+                    {code:"GST 112",title:"Logic, Philosophy & Human Existence",units:2},
+                    {code:"GST 113",title:"Nigerian Peoples & Culture",units:2},
+                    {code:"GST 114",title:"Valuing the Teaching Profession I",units:1},
+                    {code:"GST 115",title:"Lagos & Its Environs",units:1},
+                    {code:"GST 116",title:"Intro to Yoruba Language & Culture",units:1},
+                    {code:"PHY 101",title:"General Physics I",units:3},
+                    {code:"PHY 103",title:"Mechanics & Properties of Matter",units:3},
+                    {code:"PHY 107",title:"General Practical Physics I",units:1},
+                    {code:"MTH 101",title:"Elementary Mathematics I",units:3},
+                    {code:"MTH 103",title:"Elementary Mathematics III",units:3},
+                    {code:"CHM 101",title:"General Chemistry I",units:3}
+                ],
+                second: [
+                    {code:"GST 121",title:"Use of Library Skills & ICT",units:2},
+                    {code:"GST 122",title:"Communication in English II",units:2},
+                    {code:"GST 125",title:"Contemporary Health Issues",units:2},
+                    {code:"GST 126",title:"Communication in Arabic",units:1},
+                    {code:"PHY 102",title:"General Physics II",units:3},
+                    {code:"PHY 104",title:"Heat & Thermodynamics",units:3},
+                    {code:"PHY 108",title:"General Practical Physics II",units:1},
+                    {code:"MTH 102",title:"Elementary Mathematics II",units:3},
+                    {code:"STA 112",title:"Probability I",units:4}
+                ]
+            },
+            "200": {
+                first: [
+                    {code:"GST 211",title:"Environment & Sustainable Development",units:2},
+                    {code:"GST 212",title:"Application of Computer",units:2},
+                    {code:"GST 214",title:"Valuing the Teaching Profession II",units:1},
+                    {code:"PHY 201",title:"Electricity & Magnetism I",units:3},
+                    {code:"PHY 203",title:"Waves & Optics I",units:3},
+                    {code:"PHY 205",title:"Classical Mechanics I",units:3},
+                    {code:"MTH 201",title:"Mathematical Methods I",units:3},
+                    {code:"MTH 207",title:"Real Analysis I",units:3}
+                ],
+                second: [
+                    {code:"GST 222",title:"Peace & Conflict Resolution",units:2},
+                    {code:"GST 223",title:"Intro to Entrepreneurship",units:2},
+                    {code:"GST 224",title:"Leadership Skills",units:2},
+                    {code:"GST 225",title:"Yoruba Grammar, Language & Communication",units:1},
+                    {code:"GST 226",title:"Land Use & General Agriculture",units:2},
+                    {code:"PHY 202",title:"Electricity & Magnetism II",units:3},
+                    {code:"PHY 204",title:"Waves & Optics II",units:3},
+                    {code:"PHY 206",title:"Modern Physics I",units:3},
+                    {code:"PHY 208",title:"Electronics I",units:3}
+                ]
+            },
+            "300": {
+                first: [
+                    {code:"GST 311",title:"Entrepreneurship",units:2},
+                    {code:"PHY 301",title:"Quantum Mechanics I",units:3},
+                    {code:"PHY 303",title:"Statistical Mechanics",units:3},
+                    {code:"PHY 305",title:"Solid State Physics",units:3},
+                    {code:"PHY 307",title:"Electronics II",units:3},
+                    {code:"PHY 309",title:"Nuclear Physics",units:3},
+                    {code:"PHY 311",title:"Experimental Physics I",units:2}
+                ],
+                second: [
+                    {code:"ENT 321",title:"Entrepreneurship & Business Management",units:2},
+                    {code:"PHY 302",title:"Quantum Mechanics II",units:3},
+                    {code:"PHY 304",title:"Electromagnetic Theory",units:3},
+                    {code:"PHY 306",title:"Atomic & Molecular Physics",units:3},
+                    {code:"PHY 308",title:"Optics & Lasers",units:3},
+                    {code:"PHY 399",title:"SIWES / Industrial Training (12 weeks)",units:6}
+                ]
+            },
+            "400": {
+                first: [
+                    {code:"PHY 401",title:"Advanced Quantum Mechanics",units:3},
+                    {code:"PHY 403",title:"Advanced Solid State Physics",units:3},
+                    {code:"PHY 405",title:"Plasma Physics",units:3},
+                    {code:"PHY 407",title:"Computational Physics",units:3},
+                    {code:"PHY 409",title:"Seminar",units:2}
+                ],
+                second: [
+                    {code:"ENT 421",title:"Investment Marketing & Management",units:2},
+                    {code:"PHY 402",title:"General Relativity",units:3},
+                    {code:"PHY 404",title:"Research Project",units:6},
+                    {code:"PHY 406",title:"Renewable Energy Physics",units:3},
+                    {code:"PHY 408",title:"Advanced Electronics",units:3}
+                ]
+            }
+        },
+        "SLT": {
+            "100": {
+                first: [
+                    {code:"GST 111",title:"Communication in English I",units:2},
+                    {code:"GST 112",title:"Logic, Philosophy & Human Existence",units:2},
+                    {code:"GST 113",title:"Nigerian Peoples & Culture",units:2},
+                    {code:"GST 114",title:"Valuing the Teaching Profession I",units:1},
+                    {code:"GST 115",title:"Lagos & Its Environs",units:1},
+                    {code:"GST 116",title:"Intro to Yoruba Language & Culture",units:1},
+                    {code:"SLT 101",title:"Introduction to Science Laboratory Technology",units:3},
+                    {code:"BIO 101",title:"General Biology I",units:3},
+                    {code:"CHM 101",title:"General Chemistry I",units:3},
+                    {code:"PHY 101",title:"General Physics I",units:3},
+                    {code:"MTH 101",title:"Elementary Mathematics I",units:3}
+                ],
+                second: [
+                    {code:"GST 121",title:"Use of Library Skills & ICT",units:2},
+                    {code:"GST 122",title:"Communication in English II",units:2},
+                    {code:"GST 125",title:"Contemporary Health Issues",units:2},
+                    {code:"GST 126",title:"Communication in Arabic",units:1},
+                    {code:"SLT 102",title:"Laboratory Safety & Management",units:2},
+                    {code:"BIO 102",title:"General Biology II",units:3},
+                    {code:"CHM 102",title:"General Chemistry II",units:3},
+                    {code:"PHY 102",title:"General Physics II",units:3},
+                    {code:"MTH 102",title:"Elementary Mathematics II",units:3},
+                    {code:"PHY 108",title:"General Practical Physics II",units:1}
+                ]
+            },
+            "200": {
+                first: [
+                    {code:"GST 211",title:"Environment & Sustainable Development",units:2},
+                    {code:"GST 212",title:"Application of Computer",units:2},
+                    {code:"GST 214",title:"Valuing the Teaching Profession II",units:1},
+                    {code:"SLT 201",title:"Laboratory Techniques I",units:3},
+                    {code:"SLT 203",title:"Basic Instrumentation",units:3},
+                    {code:"SLT 205",title:"Chemical Laboratory Technology",units:3},
+                    {code:"SLT 207",title:"Biological Laboratory Technology",units:3},
+                    {code:"STA 211",title:"Statistics for Biological Sciences",units:3}
+                ],
+                second: [
+                    {code:"GST 222",title:"Peace & Conflict Resolution",units:2},
+                    {code:"GST 223",title:"Intro to Entrepreneurship",units:2},
+                    {code:"GST 224",title:"Leadership Skills",units:2},
+                    {code:"GST 225",title:"Yoruba Grammar, Language & Communication",units:1},
+                    {code:"GST 226",title:"Land Use & General Agriculture",units:2},
+                    {code:"SLT 202",title:"Laboratory Techniques II",units:3},
+                    {code:"SLT 204",title:"Physics Laboratory Technology",units:3},
+                    {code:"SLT 206",title:"Quality Control & Assurance",units:3},
+                    {code:"SLT 208",title:"Laboratory Management & Ethics",units:2}
+                ]
+            },
+            "300": {
+                first: [
+                    {code:"GST 311",title:"Entrepreneurship",units:2},
+                    {code:"SLT 301",title:"Advanced Laboratory Techniques",units:3},
+                    {code:"SLT 303",title:"Instrument Maintenance & Calibration",units:3},
+                    {code:"SLT 305",title:"Industrial & Environmental Analysis",units:3},
+                    {code:"SLT 307",title:"Research Methods in SLT",units:3},
+                    {code:"SLT 309",title:"Applied Microbiology for Technologists",units:3}
+                ],
+                second: [
+                    {code:"ENT 321",title:"Entrepreneurship & Business Management",units:2},
+                    {code:"SLT 302",title:"Laboratory Automation & ICT",units:3},
+                    {code:"SLT 304",title:"Analytical Instrumentation",units:3},
+                    {code:"SLT 306",title:"Industrial Safety & Environmental Protection",units:3},
+                    {code:"SLT 399",title:"SIWES / Industrial Training (12 weeks)",units:6}
+                ]
+            },
+            "400": {
+                first: [
+                    {code:"SLT 401",title:"Advanced Analytical Techniques",units:3},
+                    {code:"SLT 403",title:"Laboratory Quality Systems (ISO & GLP)",units:3},
+                    {code:"SLT 405",title:"Environmental & Industrial Laboratory Practice",units:3},
+                    {code:"SLT 407",title:"Seminar",units:2}
+                ],
+                second: [
+                    {code:"ENT 421",title:"Investment Marketing & Management",units:2},
+                    {code:"SLT 402",title:"Laboratory Design & Management",units:3},
+                    {code:"SLT 404",title:"Research Project",units:6},
+                    {code:"SLT 406",title:"Forensic & Diagnostic Laboratory Techniques",units:3}
+                ]
+            }
+        }
+    };
+
+    // Department display names and their keys
+    const deptDisplayNames = {
+        "Biochemistry": "Biochemistry",
+        "Mathematics": "Mathematics",
+        "Botany": "Botany",
+        "Chemistry": "Chemistry",
+        "Fisheries": "Fisheries",
+        "Microbiology": "Microbiology",
+        "Physics": "Physics",
+        "SLT": "Science Lab Tech (SLT)"
+    };
+
+    let currentDept = "Biochemistry";
+
+    // ===== CURRICULUM FUNCTIONS =====
+    function showCurriculum(dept) {
+        if (dept) currentDept = dept;
+        document.getElementById('profileMain').classList.add('hidden');
+        document.getElementById('editForm').style.display = 'none';
+        const cv = document.getElementById('curriculumView');
+        cv.classList.add('active');
+        cv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        renderDeptSelector();
+        renderCurriculum(currentDept);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function hideCurriculum() {
+        document.getElementById('curriculumView').classList.remove('active');
+        document.getElementById('profileMain').classList.remove('hidden');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function renderDeptSelector() {
+        const container = document.getElementById('deptSelector');
+        let html = '';
+        for (const [key, display] of Object.entries(deptDisplayNames)) {
+            html += `<button class="dept-chip${key === currentDept ? ' active' : ''}" onclick="showCurriculum('${key}')">${display}</button>`;
+        }
+        container.innerHTML = html;
+    }
+
+    function renderCurriculum(deptKey) {
+        const data = lasuCurriculum[deptKey];
+        if (!data) {
+            document.getElementById('curriculumContent').innerHTML = '<p style="color:#9ca3af;">Curriculum data not available for this department.</p>';
+            return;
+        }
+        document.getElementById('curriculumTitle').textContent = `📘 B.Sc ${deptDisplayNames[deptKey]} — LASU Curriculum`;
+        
+        let html = '';
+        for (const [level, semesters] of Object.entries(data)) {
+            const firstTotal = semesters.first.reduce((sum, c) => sum + c.units, 0);
+            const secondTotal = semesters.second.reduce((sum, c) => sum + c.units, 0);
+            
+            html += `<div class="level-heading">${level} LEVEL</div>`;
+            
+            // First Semester
+            html += `<div class="semester-heading">📅 First Semester</div>`;
+            html += `<table class="curriculum-table"><thead><tr><th>Code</th><th>Course Title</th><th>Units</th></tr></thead><tbody>`;
+            semesters.first.forEach(c => {
+                html += `<tr><td style="font-weight:600;color:#60a5fa;">${c.code}</td><td>${c.title}</td><td>${c.units}</td></tr>`;
+            });
+            html += `<tr class="total-row"><td colspan="2">Total Units</td><td><span class="total-badge">${firstTotal} units</span></td></tr>`;
+            html += `</tbody></table>`;
+            
+            // Second Semester
+            html += `<div class="semester-heading">📅 Second Semester</div>`;
+            html += `<table class="curriculum-table"><thead><tr><th>Code</th><th>Course Title</th><th>Units</th></tr></thead><tbody>`;
+            semesters.second.forEach(c => {
+                html += `<tr><td style="font-weight:600;color:#60a5fa;">${c.code}</td><td>${c.title}</td><td>${c.units}</td></tr>`;
+            });
+            html += `<tr class="total-row"><td colspan="2">Total Units</td><td><span class="total-badge">${secondTotal} units</span></td></tr>`;
+            html += `</tbody></table>`;
+        }
+        
+        document.getElementById('curriculumContent').innerHTML = html;
+    }
+
+    // ===== PROFILE FUNCTIONS =====
     function getInitials(name) {
         if (!name || name.trim() === '') return 'SN';
         const parts = name.trim().split(' ');

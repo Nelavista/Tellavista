@@ -3,12 +3,312 @@ import cloudinary
 import cloudinary.uploader
 import requests
 from bs4 import BeautifulSoup
-from flask import Blueprint, render_template, request, jsonify, session, flash, redirect, url_for
+from flask import (Blueprint, render_template, request, jsonify, session, 
+                   flash, redirect, url_for, send_from_directory)
 from utils.helpers import login_required, is_academic_book, check_profile_complete
 from models import User, Material, StudySession, Exam
 from extensions import db
 from config import OPENROUTER_API_KEY
 from datetime import datetime, date, timedelta
+
+
+# ===== OPENSTAX MATERIALS DATABASE =====
+OPENSTAX_MATERIALS = {
+    # Biology
+    'BIO101': [
+        {
+            'title': 'Biology 2e - Introduction to Biology',
+            'url': 'https://openstax.org/books/biology-2e/pages/1-introduction',
+            'description': 'Comprehensive introduction to biological sciences'
+        },
+        {
+            'title': 'Biology 2e - Chemistry of Life',
+            'url': 'https://openstax.org/books/biology-2e/pages/2-introduction',
+            'description': 'Chemical foundations of biology'
+        },
+        {
+            'title': 'Biology 2e - Cell Structure and Function',
+            'url': 'https://openstax.org/books/biology-2e/pages/3-introduction',
+            'description': 'Understanding cellular organization'
+        }
+    ],
+    'BIO102': [
+        {
+            'title': 'Biology 2e - Genetics',
+            'url': 'https://openstax.org/books/biology-2e/pages/11-introduction',
+            'description': 'Principles of heredity and genetic variation'
+        },
+        {
+            'title': 'Biology 2e - Evolution and Diversity',
+            'url': 'https://openstax.org/books/biology-2e/pages/18-introduction',
+            'description': 'Theory of evolution and biological diversity'
+        }
+    ],
+    'BIO201': [
+        {
+            'title': 'Biology 2e - Animal Structure and Function',
+            'url': 'https://openstax.org/books/biology-2e/pages/33-introduction',
+            'description': 'Anatomy and physiology of animals'
+        }
+    ],
+    'BIO203': [
+        {
+            'title': 'Biology 2e - Genetics',
+            'url': 'https://openstax.org/books/biology-2e/pages/11-introduction',
+            'description': 'Introductory genetics principles'
+        }
+    ],
+    
+    # Chemistry
+    'CHM101': [
+        {
+            'title': 'Chemistry 2e - Essential Ideas',
+            'url': 'https://openstax.org/books/chemistry-2e/pages/1-introduction',
+            'description': 'Fundamental concepts in chemistry'
+        },
+        {
+            'title': 'Chemistry 2e - Atoms, Molecules, and Ions',
+            'url': 'https://openstax.org/books/chemistry-2e/pages/2-introduction',
+            'description': 'Basic chemical composition and structure'
+        },
+        {
+            'title': 'Chemistry 2e - Stoichiometry',
+            'url': 'https://openstax.org/books/chemistry-2e/pages/4-introduction',
+            'description': 'Chemical calculations and reactions'
+        }
+    ],
+    'CHM102': [
+        {
+            'title': 'Chemistry 2e - Thermochemistry',
+            'url': 'https://openstax.org/books/chemistry-2e/pages/5-introduction',
+            'description': 'Energy changes in chemical reactions'
+        },
+        {
+            'title': 'Chemistry 2e - Electronic Structure',
+            'url': 'https://openstax.org/books/chemistry-2e/pages/6-introduction',
+            'description': 'Atomic structure and electron configuration'
+        }
+    ],
+    'CHM201': [
+        {
+            'title': 'Chemistry 2e - Chemical Bonding',
+            'url': 'https://openstax.org/books/chemistry-2e/pages/7-introduction',
+            'description': 'Ionic and covalent bonding principles'
+        }
+    ],
+    'CHM205': [
+        {
+            'title': 'Chemistry 2e - Gases',
+            'url': 'https://openstax.org/books/chemistry-2e/pages/9-introduction',
+            'description': 'Gas laws and kinetic molecular theory'
+        }
+    ],
+    
+    # Physics
+    'PHY101': [
+        {
+            'title': 'University Physics Vol 1 - Mechanics',
+            'url': 'https://openstax.org/books/university-physics-volume-1/pages/1-introduction',
+            'description': 'Introduction to classical mechanics'
+        },
+        {
+            'title': 'University Physics Vol 1 - Motion Along a Straight Line',
+            'url': 'https://openstax.org/books/university-physics-volume-1/pages/3-introduction',
+            'description': 'Kinematics in one dimension'
+        },
+        {
+            'title': 'University Physics Vol 1 - Forces and Newton\'s Laws',
+            'url': 'https://openstax.org/books/university-physics-volume-1/pages/5-introduction',
+            'description': 'Newton\'s laws of motion'
+        }
+    ],
+    'PHY102': [
+        {
+            'title': 'University Physics Vol 1 - Work and Energy',
+            'url': 'https://openstax.org/books/university-physics-volume-1/pages/7-introduction',
+            'description': 'Energy conservation and work-energy theorem'
+        },
+        {
+            'title': 'University Physics Vol 2 - Electric Charges and Fields',
+            'url': 'https://openstax.org/books/university-physics-volume-2/pages/5-introduction',
+            'description': 'Introduction to electrostatics'
+        }
+    ],
+    'PHY201': [
+        {
+            'title': 'University Physics Vol 2 - Current and Resistance',
+            'url': 'https://openstax.org/books/university-physics-volume-2/pages/9-introduction',
+            'description': 'Electric current and circuit analysis'
+        }
+    ],
+    
+    # Mathematics
+    'MTH101': [
+        {
+            'title': 'College Algebra - Prerequisites',
+            'url': 'https://openstax.org/books/college-algebra-2e/pages/1-introduction-to-prerequisites',
+            'description': 'Algebraic foundations'
+        },
+        {
+            'title': 'College Algebra - Equations and Inequalities',
+            'url': 'https://openstax.org/books/college-algebra-2e/pages/2-introduction-to-equations-and-inequalities',
+            'description': 'Solving equations and inequalities'
+        }
+    ],
+    'MTH102': [
+        {
+            'title': 'College Algebra - Functions',
+            'url': 'https://openstax.org/books/college-algebra-2e/pages/3-introduction-to-functions',
+            'description': 'Introduction to functions and graphs'
+        },
+        {
+            'title': 'Calculus Vol 1 - Functions and Graphs',
+            'url': 'https://openstax.org/books/calculus-volume-1/pages/1-introduction',
+            'description': 'Preparation for calculus'
+        }
+    ],
+    'MTH201': [
+        {
+            'title': 'Calculus Vol 1 - Limits',
+            'url': 'https://openstax.org/books/calculus-volume-1/pages/2-introduction',
+            'description': 'Introduction to limits and continuity'
+        },
+        {
+            'title': 'Calculus Vol 1 - Derivatives',
+            'url': 'https://openstax.org/books/calculus-volume-1/pages/3-introduction',
+            'description': 'Differential calculus fundamentals'
+        }
+    ],
+    'MTH202': [
+        {
+            'title': 'Calculus Vol 1 - Integration',
+            'url': 'https://openstax.org/books/calculus-volume-1/pages/5-introduction',
+            'description': 'Integral calculus and applications'
+        }
+    ],
+    
+    # Biochemistry
+    'BCH201': [
+        {
+            'title': 'Biology 2e - Biological Macromolecules',
+            'url': 'https://openstax.org/books/biology-2e/pages/3-introduction',
+            'description': 'Proteins, carbohydrates, lipids, and nucleic acids'
+        },
+        {
+            'title': 'Chemistry 2e - Organic Chemistry',
+            'url': 'https://openstax.org/books/chemistry-2e/pages/20-introduction',
+            'description': 'Introduction to organic chemistry'
+        }
+    ],
+    'BCH202': [
+        {
+            'title': 'Biology 2e - Metabolism',
+            'url': 'https://openstax.org/books/biology-2e/pages/7-introduction',
+            'description': 'Cellular metabolism and energy'
+        }
+    ],
+    
+    # Computer Science
+    'CSC101': [
+        {
+            'title': 'Introduction to Python Programming',
+            'url': 'https://openstax.org/books/introduction-python-programming/pages/1-introduction',
+            'description': 'Python programming fundamentals'
+        }
+    ],
+    'CSC102': [
+        {
+            'title': 'Introduction to Python Programming - Data Structures',
+            'url': 'https://openstax.org/books/introduction-python-programming/pages/6-introduction',
+            'description': 'Python data structures and algorithms'
+        }
+    ],
+    
+    # Statistics
+    'STA112': [
+        {
+            'title': 'Introductory Statistics - Sampling and Data',
+            'url': 'https://openstax.org/books/introductory-statistics/pages/1-introduction',
+            'description': 'Statistical data collection and analysis'
+        },
+        {
+            'title': 'Introductory Statistics - Probability',
+            'url': 'https://openstax.org/books/introductory-statistics/pages/3-introduction',
+            'description': 'Probability theory fundamentals'
+        }
+    ],
+    'STA211': [
+        {
+            'title': 'Introductory Statistics - Discrete Random Variables',
+            'url': 'https://openstax.org/books/introductory-statistics/pages/4-introduction',
+            'description': 'Discrete probability distributions'
+        }
+    ],
+    
+    # Microbiology
+    'MCB101': [
+        {
+            'title': 'Microbiology - Introduction to Microbiology',
+            'url': 'https://openstax.org/books/microbiology/pages/1-introduction',
+            'description': 'Fundamentals of microbiology'
+        }
+    ],
+    'MCB201': [
+        {
+            'title': 'Microbiology - Microbial Metabolism',
+            'url': 'https://openstax.org/books/microbiology/pages/8-introduction',
+            'description': 'Bacterial metabolism and energy production'
+        }
+    ],
+    
+    # Accounting
+    'ACC101': [
+        {
+            'title': 'Principles of Accounting Vol 1 - Financial Accounting',
+            'url': 'https://openstax.org/books/principles-financial-accounting/pages/1-why-it-matters',
+            'description': 'Introduction to financial accounting'
+        }
+    ],
+    'ACC201': [
+        {
+            'title': 'Principles of Managerial Accounting',
+            'url': 'https://openstax.org/books/principles-managerial-accounting/pages/1-why-it-matters',
+            'description': 'Management accounting principles'
+        }
+    ],
+    
+    # Business
+    'BUS101': [
+        {
+            'title': 'Introduction to Business',
+            'url': 'https://openstax.org/books/introduction-business/pages/1-introduction',
+            'description': 'Business fundamentals and organization'
+        }
+    ],
+    'BUS201': [
+        {
+            'title': 'Principles of Management',
+            'url': 'https://openstax.org/books/principles-management/pages/1-introduction',
+            'description': 'Management theory and practice'
+        }
+    ],
+    
+    # Economics
+    'ECO101': [
+        {
+            'title': 'Principles of Economics 2e - Introduction',
+            'url': 'https://openstax.org/books/principles-economics-2e/pages/1-introduction',
+            'description': 'Economic principles and theory'
+        }
+    ],
+    'ECO201': [
+        {
+            'title': 'Principles of Microeconomics 2e',
+            'url': 'https://openstax.org/books/principles-microeconomics-2e/pages/1-introduction',
+            'description': 'Microeconomic analysis'
+        }
+    ]
+}
 
 
 # ===== PROFILE COMPLETION HELPER FUNCTION =====
@@ -42,12 +342,62 @@ GOOGLE_SEARCH_ENGINE_ID = os.environ.get('GOOGLE_SEARCH_ENGINE_ID')
 materials_bp = Blueprint('materials', __name__)
 
 
+# ==================== PWA ROUTES ====================
+@materials_bp.route('/manifest.json')
+def serve_manifest():
+    """Serve the PWA manifest with correct MIME type for installability."""
+    try:
+        return send_from_directory(
+            'static',
+            'manifest.json',
+            mimetype='application/manifest+json'
+        )
+    except Exception as e:
+        print(f"[ERROR] Serving manifest.json failed: {e}")
+        return jsonify({'error': 'Manifest not found'}), 404
+
+
+@materials_bp.route('/service-worker.js')
+def serve_service_worker():
+    """
+    Serve the service worker file with JavaScript MIME type.
+    Must be served from the root path to control the whole domain scope.
+    """
+    try:
+        return send_from_directory(
+            'static',
+            'service-worker.js',
+            mimetype='application/javascript'
+        )
+    except Exception as e:
+        print(f"[ERROR] Serving service-worker.js failed: {e}")
+        return jsonify({'error': 'Service worker not found'}), 404
+
+
+@materials_bp.route('/offline')
+def offline():
+    """Render the offline fallback page when the user has no internet connection."""
+    return render_template('offline.html')
+# ====================================================
+
+
 # ===== ENFORCE PROFILE COMPLETION SITE-WIDE =====
 @materials_bp.before_app_request
 def enforce_profile_completion():
-    # Skip for static files, login/logout, dashboard, and the completion endpoint itself
-    if request.endpoint in ('auth.login', 'auth.logout', 'dashboard.dashboard',
-                            'materials.complete_profile', 'static'):
+    """
+    Enforce profile completion across the entire application.
+    Exempts authentication, static files, PWA routes, and profile completion.
+    """
+    # Skip for static files, login/logout, dashboard, PWA routes, and the completion endpoint itself
+    exempt_endpoints = (
+        'auth.login', 'auth.logout', 'auth.register',
+        'dashboard.dashboard', 'dashboard.index',
+        'materials.complete_profile', 'static',
+        'materials.serve_manifest', 'materials.serve_service_worker',
+        'materials.offline', 'materials.about', 'materials.privacy_policy'
+    )
+    
+    if request.endpoint in exempt_endpoints:
         return None
 
     # Get user from session
@@ -116,89 +466,14 @@ def search_google_pdfs(course_code, max_results=10):
     return all_results[:max_results]
 
 
-# ===== FETCH GOOGLE MATERIALS FOR A COURSE CODE =====
-@materials_bp.route('/api/fetch-google-materials/<course_code>')
-@login_required
-def fetch_google_materials(course_code):
-    """
-    Fetch materials from Google Custom Search for a specific course code.
-    Caches results in database to avoid repeated API calls.
-    """
-    try:
-        course_code = course_code.upper().strip()
-        
-        # Check if we already have cached Google materials for this course code
-        cached = Material.query.filter_by(
-            course_code=course_code,
-            source='google_auto',
-            is_approved=True
-        ).all()
-        
-        if cached:
-            return jsonify({
-                'success': True,
-                'materials': [m.to_dict() for m in cached],
-                'cached': True
-            })
-        
-        # No cached results - fetch from Google
-        results = search_google_pdfs(course_code, max_results=8)
-        
-        if not results:
-            return jsonify({
-                'success': True,
-                'materials': [],
-                'message': 'No PDF materials found for this course code'
-            })
-        
-        # Save results to database
-        saved_materials = []
-        for r in results:
-            # Check if this URL already exists
-            existing = Material.query.filter_by(
-                external_url=r['url'],
-                source='google_auto'
-            ).first()
-            
-            if existing:
-                saved_materials.append(existing)
-                continue
-            
-            new_material = Material(
-                title=r['title'][:200],  # Truncate to fit DB
-                course_code=course_code,
-                external_url=r['url'],
-                source='google_auto',
-                is_approved=True,  # Auto-approve Google results
-                uploaded_by='Google Search',
-                department='General',  # Can be updated later
-                level='100',  # Default, can be refined
-                semester='First Semester'
-            )
-            db.session.add(new_material)
-            saved_materials.append(new_material)
-        
-        db.session.commit()
-        
-        return jsonify({
-            'success': True,
-            'materials': [m.to_dict() for m in saved_materials],
-            'cached': False,
-            'count': len(saved_materials)
-        })
-        
-    except Exception as e:
-        db.session.rollback()
-        print(f"[ERROR] fetch_google_materials: {str(e)}")
-        return jsonify({'error': str(e)}), 500
-
-
-# ===== BATCH FETCH GOOGLE MATERIALS FOR MULTIPLE COURSES =====
+# ===== FETCH OPENSTAX MATERIALS FOR MULTIPLE COURSES =====
 @materials_bp.route('/api/fetch-google-materials-batch', methods=['POST'])
 @login_required
 def fetch_google_materials_batch():
     """
-    Fetch Google materials for multiple course codes at once.
+    Fetch materials from OpenStax database AND Google Custom Search for multiple course codes.
+    Prioritizes OpenStax materials (free, high-quality textbooks).
+    Falls back to Google Custom Search for additional resources.
     Expects JSON: {'course_codes': ['MAT101', 'CSC111', ...]}
     """
     try:
@@ -209,11 +484,45 @@ def fetch_google_materials_batch():
             return jsonify({'error': 'No course codes provided'}), 400
         
         all_materials = []
+        seen_urls = set()
         
-        for code in course_codes[:5]:  # Limit to 5 courses per batch request
+        for code in course_codes[:10]:  # Process up to 10 courses
             code = code.upper().strip()
             
-            # Check cache first
+            # === STEP 1: Check OpenStax database first ===
+            openstax_resources = OPENSTAX_MATERIALS.get(code, [])
+            
+            if openstax_resources:
+                for resource in openstax_resources:
+                    # Check if this URL already exists in database
+                    existing = Material.query.filter_by(
+                        external_url=resource['url'],
+                        source='openstax'
+                    ).first()
+                    
+                    if existing:
+                        if existing.external_url not in seen_urls:
+                            seen_urls.add(existing.external_url)
+                            all_materials.append(existing.to_dict())
+                    else:
+                        # Create new material entry for OpenStax
+                        new_material = Material(
+                            title=resource['title'],
+                            course_type=code,
+                            external_url=resource['url'],
+                            source='openstax',
+                            is_approved=True,  # Auto-approve OpenStax materials
+                            uploaded_by='OpenStax',
+                            department='General',
+                            level='100',
+                            semester='First Semester',
+                            next_topic=resource.get('description', '')
+                        )
+                        db.session.add(new_material)
+                        all_materials.append(new_material.to_dict())
+                        seen_urls.add(resource['url'])
+            
+            # === STEP 2: Check cached Google materials ===
             cached = Material.query.filter_by(
                 course_code=code,
                 source='google_auto',
@@ -221,34 +530,41 @@ def fetch_google_materials_batch():
             ).all()
             
             if cached:
-                all_materials.extend([m.to_dict() for m in cached])
-            else:
-                # Fetch and save
+                for material in cached:
+                    if material.external_url and material.external_url not in seen_urls:
+                        seen_urls.add(material.external_url)
+                        all_materials.append(material.to_dict())
+            
+            # === STEP 3: If no OpenStax materials and no cache, fetch from Google ===
+            if not openstax_resources and not cached:
                 results = search_google_pdfs(code, max_results=5)
                 for r in results:
-                    existing = Material.query.filter_by(
-                        external_url=r['url'],
-                        source='google_auto'
-                    ).first()
-                    
-                    if not existing:
-                        new_material = Material(
-                            title=r['title'][:200],
-                            course_code=code,
+                    if r['url'] not in seen_urls:
+                        seen_urls.add(r['url'])
+                        
+                        existing = Material.query.filter_by(
                             external_url=r['url'],
-                            source='google_auto',
-                            is_approved=True,
-                            uploaded_by='Google Search',
-                            department='General',
-                            level='100',
-                            semester='First Semester'
-                        )
-                        db.session.add(new_material)
-                        all_materials.append(new_material.to_dict())
-                    else:
-                        all_materials.append(existing.to_dict())
-                
-                db.session.commit()
+                            source='google_auto'
+                        ).first()
+                        
+                        if not existing:
+                            new_material = Material(
+                                title=r['title'][:200],
+                                course_code=code,
+                                external_url=r['url'],
+                                source='google_auto',
+                                is_approved=True,
+                                uploaded_by='Google Search',
+                                department='General',
+                                level='100',
+                                semester='First Semester'
+                            )
+                            db.session.add(new_material)
+                            all_materials.append(new_material.to_dict())
+                        else:
+                            all_materials.append(existing.to_dict())
+        
+        db.session.commit()
         
         return jsonify({
             'success': True,
@@ -259,6 +575,98 @@ def fetch_google_materials_batch():
     except Exception as e:
         db.session.rollback()
         print(f"[ERROR] fetch_google_materials_batch: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+
+# ===== FETCH MATERIALS FOR A SINGLE COURSE (OpenStax + Google fallback) =====
+@materials_bp.route('/api/fetch-google-materials/<course_code>')
+@login_required
+def fetch_google_materials(course_code):
+    """
+    Fetch materials for a specific course code.
+    Tries OpenStax first, then Google Custom Search as fallback.
+    Caches results in database to avoid repeated lookups.
+    """
+    try:
+        course_code = course_code.upper().strip()
+        all_materials = []
+        
+        # Check OpenStax first
+        openstax_resources = OPENSTAX_MATERIALS.get(course_code, [])
+        
+        if openstax_resources:
+            for resource in openstax_resources:
+                existing = Material.query.filter_by(
+                    external_url=resource['url'],
+                    source='openstax'
+                ).first()
+                
+                if existing:
+                    all_materials.append(existing.to_dict())
+                else:
+                    new_material = Material(
+                        title=resource['title'],
+                        course_type=course_code,
+                        external_url=resource['url'],
+                        source='openstax',
+                        is_approved=True,
+                        uploaded_by='OpenStax',
+                        department='General',
+                        level='100',
+                        semester='First Semester',
+                        next_topic=resource.get('description', '')
+                    )
+                    db.session.add(new_material)
+                    all_materials.append(new_material.to_dict())
+        
+        # Check cached Google materials
+        cached = Material.query.filter_by(
+            course_code=course_code,
+            source='google_auto',
+            is_approved=True
+        ).all()
+        
+        if cached:
+            for material in cached:
+                all_materials.append(material.to_dict())
+        
+        # If no OpenStax and no cache, fetch from Google
+        if not openstax_resources and not cached:
+            results = search_google_pdfs(course_code, max_results=8)
+            for r in results:
+                existing = Material.query.filter_by(
+                    external_url=r['url'],
+                    source='google_auto'
+                ).first()
+                
+                if not existing:
+                    new_material = Material(
+                        title=r['title'][:200],
+                        course_code=course_code,
+                        external_url=r['url'],
+                        source='google_auto',
+                        is_approved=True,
+                        uploaded_by='Google Search',
+                        department='General',
+                        level='100',
+                        semester='First Semester'
+                    )
+                    db.session.add(new_material)
+                    all_materials.append(new_material.to_dict())
+                else:
+                    all_materials.append(existing.to_dict())
+        
+        db.session.commit()
+        
+        return jsonify({
+            'success': True,
+            'materials': all_materials,
+            'count': len(all_materials)
+        })
+        
+    except Exception as e:
+        db.session.rollback()
+        print(f"[ERROR] fetch_google_materials: {str(e)}")
         return jsonify({'error': str(e)}), 500
 
 
@@ -909,69 +1317,7 @@ def ai_materials():
         books = [{"error": "Failed to fetch books"}]
     return jsonify({"query": topic, "ai_explanation": explanation, "pdfs": pdfs, "books": books})
 
-# ===== FETCH MATERIALS BY COURSE CODES (for materials.html) =====
-@materials_bp.route('/api/materials/by-courses', methods=['GET'])
-@login_required
-def get_materials_by_courses():
-    """
-    Get materials filtered by course codes, level, semester, department
-    Used by materials.html frontend
-    """
-    try:
-        # Get query parameters
-        course_codes = request.args.getlist('courses[]')  # Array of course codes
-        level = request.args.get('level', '').strip()
-        semester = request.args.get('semester', '').strip()
-        department = request.args.get('department', '').strip()
-        
-        # Start with base query - only approved materials
-        query = Material.query.filter_by(is_approved=True)
-        
-        # Apply filters - USING course_type instead of course_code
-        if course_codes:
-            query = query.filter(Material.course_type.in_(course_codes))
-        
-        if level:
-            query = query.filter_by(level=level)
-        
-        if semester:
-            query = query.filter_by(semester=semester)
-        
-        if department:
-            query = query.filter_by(department=department)
-        
-        # Get materials ordered by newest first
-        materials = query.order_by(Material.id.desc()).all()
-        
-        # Convert to JSON - USING course_type
-        materials_data = []
-        for material in materials:
-            materials_data.append({
-                'id': material.id,
-                'title': material.title,
-                'course_code': material.course_type,  # Map course_type to course_code for frontend
-                'department': material.department,
-                'level': material.level,
-                'semester': material.semester,
-                'file_url': material.file_url,
-                'external_url': material.external_url,
-                'source': material.source,
-                'uploaded_by': material.uploaded_by,
-                'created_at': material.created_at.isoformat() if material.created_at else None
-            })
-        
-        return jsonify({
-            'success': True,
-            'count': len(materials_data),
-            'materials': materials_data
-        })
-    
-    except Exception as e:
-        return jsonify({
-            'success': False,
-            'error': str(e)
-        }), 500
-        
+
 @materials_bp.route("/mat101")
 def math101():
     return render_template("mat101.html")

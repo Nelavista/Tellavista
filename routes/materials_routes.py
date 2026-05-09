@@ -394,7 +394,8 @@ def enforce_profile_completion():
         'dashboard.dashboard', 'dashboard.index',
         'materials.complete_profile', 'static',
         'materials.serve_manifest', 'materials.serve_service_worker',
-        'materials.offline', 'materials.about', 'materials.privacy_policy'
+        'materials.offline', 'materials.about', 'materials.privacy_policy',
+        'materials.community_page'  # Added community page exemption
     )
     
     if request.endpoint in exempt_endpoints:
@@ -1450,3 +1451,339 @@ def ai_teach():
         return jsonify({"summary": summary})
     except Exception as e:
         return jsonify({"error": str(e)})
+
+
+# ============================================================
+# ===== COMMUNITY FEATURE ROUTES =====
+# ============================================================
+
+# Import Community models
+from models import Group, GroupMember, GroupMessage
+
+@materials_bp.route('/api/debug/create-test-group')
+@login_required
+def debug_create_test_group():
+    """Debug endpoint to test group creation"""
+    try:
+        username = session['user']['username']
+        user = User.query.filter_by(username=username).first()
+        
+        # Test direct SQL insert
+        from sqlalchemy import text
+        result = db.session.execute(
+            text("INSERT INTO groups (name, group_type, creator_id) VALUES ('TEST GROUP', 'study', :uid) RETURNING id"),
+            {'uid': user.id}
+        )
+        group_id = result.fetchone()[0]
+        db.session.commit()
+        
+        return jsonify({
+            'success': True,
+            'message': f'Test group {group_id} created via raw SQL'
+        })
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({
+            'success': False,
+            'error': str(e),
+            'error_type': type(e).__name__
+        }), 500
+
+@materials_bp.route('/community')
+@login_required
+def community_page():
+    return render_template('community.html')
+
+
+@materials_bp.route('/api/groups/create', methods=['POST'])
+@login_required
+def create_group():
+    try:
+        data = request.json
+        username = session['user']['username']
+        user = User.query.filter_by(username=username).first()
+        
+        if not user:
+            return jsonify({'success': False, 'error': 'User not found'}), 404
+        if not data or not data.get('name') or not data.get('type'):
+            return jsonify({'success': False, 'error': 'Name and type required'}), 400
+        
+        new_group = Group(
+            name=data['name'],
+            description=data.get('description', ''),
+            group_type=data['type'],
+            privacy=data.get('privacy', 'public'),
+            creator_id=user.id,
+            created_at=datetime.utcnow()
+        )
+        db.session.add(new_group)
+        db.session.flush()
+        
+        creator_member = GroupMember(
+            group_id=new_group.id,
+            user_id=user.id,
+            role='admin',
+            joined_at=datetime.utcnow()
+        )
+        db.session.add(creator_member)
+        db.session.commit()
+        
+        return jsonify({
+            'success': True,
+            'group': new_group.to_dict(),
+            'message': 'Group created successfully'
+        }), 201
+    except Exception as e:
+        db.session.rollback()
+        print(f"[ERROR] create_group: {str(e)}")
+        return jsonify({'success': False, 'error': 'Server error'}), 500
+
+
+@materials_bp.route('/api/groups/list', methods=['GET'])
+@login_required
+def list_groups():
+    try:
+        group_type = request.args.get('type', 'all')
+        search_query = request.args.get('search', '')
+        username = session['user']['username']
+        user = User.query.filter_by(username=username).first()
+        
+        if not user:
+            return jsonify({'success': False, 'error': 'User not found'}), 404
+        
+        user_memberships = GroupMember.query.filter_by(user_id=user.id).all()
+        user_group_ids = [gm.group_id for gm in user_memberships]
+        
+        if user_group_ids:
+            query = Group.query.filter(
+                (Group.privacy == 'public') | (Group.id.in_(user_group_ids))
+            )
+        else:
+            query = Group.query.filter(Group.privacy == 'public')
+        
+        if group_type != 'all':
+            query = query.filter(Group.group_type == group_type)
+        if search_query:
+            query = query.filter(
+                (Group.name.ilike(f'%{search_query}%')) | 
+                (Group.description.ilike(f'%{search_query}%'))
+            )
+        
+        groups = query.order_by(Group.created_at.desc()).all()
+        
+        groups_data = []
+        for group in groups:
+            member_count = GroupMember.query.filter_by(group_id=group.id).count()
+            groups_data.append({
+                'id': group.id,
+                'name': group.name,
+                'description': group.description or '',
+                'type': group.group_type,
+                'privacy': group.privacy,
+                'member_count': member_count,
+                'is_member': group.id in user_group_ids,
+                'created_at': group.created_at.isoformat() if group.created_at else None
+            })
+        
+        return jsonify({'success': True, 'groups': groups_data})
+    except Exception as e:
+        print(f"[ERROR] list_groups: {str(e)}")
+        return jsonify({'success': False, 'error': 'Server error'}), 500
+
+
+@materials_bp.route('/api/groups/<int:group_id>/join', methods=['POST'])
+@login_required
+def join_group(group_id):
+    try:
+        username = session['user']['username']
+        user = User.query.filter_by(username=username).first()
+        if not user:
+            return jsonify({'success': False, 'error': 'User not found'}), 404
+        
+        group = Group.query.get(group_id)
+        if not group:
+            return jsonify({'success': False, 'error': 'Group not found'}), 404
+        
+        existing = GroupMember.query.filter_by(group_id=group_id, user_id=user.id).first()
+        if existing:
+            return jsonify({'success': False, 'error': 'Already a member'}), 400
+        if group.privacy == 'private':
+            return jsonify({'success': False, 'error': 'Private group requires invite'}), 403
+        
+        new_member = GroupMember(group_id=group_id, user_id=user.id, role='member', joined_at=datetime.utcnow())
+        db.session.add(new_member)
+        db.session.commit()
+        
+        return jsonify({'success': True, 'message': 'Joined group successfully'})
+    except Exception as e:
+        db.session.rollback()
+        print(f"[ERROR] join_group: {str(e)}")
+        return jsonify({'success': False, 'error': 'Server error'}), 500
+
+
+@materials_bp.route('/api/groups/<int:group_id>/leave', methods=['POST'])
+@login_required
+def leave_group(group_id):
+    try:
+        username = session['user']['username']
+        user = User.query.filter_by(username=username).first()
+        if not user:
+            return jsonify({'success': False, 'error': 'User not found'}), 404
+        
+        membership = GroupMember.query.filter_by(group_id=group_id, user_id=user.id).first()
+        if not membership:
+            return jsonify({'success': False, 'error': 'Not a member'}), 400
+        
+        if membership.role == 'admin':
+            admin_count = GroupMember.query.filter_by(group_id=group_id, role='admin').count()
+            if admin_count <= 1:
+                return jsonify({'success': False, 'error': 'You are the only admin'}), 400
+        
+        db.session.delete(membership)
+        db.session.commit()
+        
+        return jsonify({'success': True, 'message': 'Left group successfully'})
+    except Exception as e:
+        db.session.rollback()
+        print(f"[ERROR] leave_group: {str(e)}")
+        return jsonify({'success': False, 'error': 'Server error'}), 500
+
+
+# FIXED: Group Info Route
+@materials_bp.route('/api/groups/<int:group_id>/info', methods=['GET'])
+@login_required
+def group_info(group_id):
+    """Get detailed group information"""
+    try:
+        username = session['user']['username']
+        user = User.query.filter_by(username=username).first()
+        if not user:
+            return jsonify({'success': False, 'error': 'User not found'}), 404
+        
+        group = Group.query.get(group_id)
+        if not group:
+            return jsonify({'success': False, 'error': 'Group not found'}), 404
+        
+        # Get ACCURATE member count
+        member_count = GroupMember.query.filter_by(group_id=group_id).count()
+        
+        membership = GroupMember.query.filter_by(group_id=group_id, user_id=user.id).first()
+        is_member = membership is not None
+        user_role = membership.role if membership else None
+        
+        return jsonify({
+            'success': True,
+            'group': {
+                'id': group.id,
+                'name': group.name,
+                'description': group.description or '',
+                'type': group.group_type,
+                'privacy': group.privacy,
+                'member_count': member_count,
+                'is_member': is_member,
+                'user_role': user_role,
+                'created_at': group.created_at.isoformat() if group.created_at else None
+            }
+        })
+    except Exception as e:
+        print(f"[ERROR] group_info: {str(e)}")
+        return jsonify({'success': False, 'error': 'Server error: ' + str(e)}), 500
+
+
+# FIXED: Get Group Messages Route
+@materials_bp.route('/api/groups/<int:group_id>/messages', methods=['GET'])
+@login_required
+def get_group_messages(group_id):
+    """Get messages for a group"""
+    try:
+        username = session['user']['username']
+        user = User.query.filter_by(username=username).first()
+        if not user:
+            return jsonify({'success': False, 'error': 'User not found'}), 404
+        
+        membership = GroupMember.query.filter_by(group_id=group_id, user_id=user.id).first()
+        if not membership:
+            return jsonify({'success': False, 'error': 'Not a member'}), 403
+        
+        limit = request.args.get('limit', 50, type=int)
+        
+        messages = GroupMessage.query.filter_by(group_id=group_id)\
+            .order_by(GroupMessage.created_at.asc())\
+            .limit(limit).all()
+        
+        messages_data = []
+        for msg in messages:
+            sender = User.query.get(msg.sender_id)
+            # Use name if available, otherwise username, otherwise Unknown
+            if sender and sender.name and sender.name.strip():
+                sender_name = sender.name.strip()
+            elif sender:
+                sender_name = sender.username
+            else:
+                sender_name = 'Unknown'
+            
+            messages_data.append({
+                'id': msg.id,
+                'sender_name': sender_name,
+                'sender_id': msg.sender_id,
+                'content': msg.content,
+                'message_type': msg.message_type,
+                'created_at': msg.created_at.isoformat() if msg.created_at else None
+            })
+        
+        return jsonify({'success': True, 'messages': messages_data})
+    except Exception as e:
+        print(f"[ERROR] get_group_messages: {str(e)}")
+        return jsonify({'success': False, 'error': 'Server error'}), 500
+
+
+# FIXED: Send Group Message Route
+@materials_bp.route('/api/groups/<int:group_id>/send', methods=['POST'])
+@login_required
+def send_group_message(group_id):
+    """Send a message to a group"""
+    try:
+        username = session['user']['username']
+        user = User.query.filter_by(username=username).first()
+        if not user:
+            return jsonify({'success': False, 'error': 'User not found'}), 404
+        
+        membership = GroupMember.query.filter_by(group_id=group_id, user_id=user.id).first()
+        if not membership:
+            return jsonify({'success': False, 'error': 'Not a member'}), 403
+        
+        data = request.json
+        if not data or not data.get('content'):
+            return jsonify({'success': False, 'error': 'Message content required'}), 400
+        
+        new_message = GroupMessage(
+            group_id=group_id,
+            sender_id=user.id,
+            content=data['content'].strip(),
+            message_type=data.get('type', 'text'),
+            created_at=datetime.utcnow()
+        )
+        db.session.add(new_message)
+        db.session.commit()
+        
+        # Get proper sender name
+        if user.name and user.name.strip():
+            sender_name = user.name.strip()
+        else:
+            sender_name = user.username
+        
+        return jsonify({
+            'success': True,
+            'message': {
+                'id': new_message.id,
+                'sender_name': sender_name,
+                'sender_id': user.id,
+                'content': new_message.content,
+                'message_type': new_message.message_type,
+                'created_at': new_message.created_at.isoformat()
+            }
+        })
+    except Exception as e:
+        db.session.rollback()
+        print(f"[ERROR] send_group_message: {str(e)}")
+        return jsonify({'success': False, 'error': 'Server error: ' + str(e)}), 500

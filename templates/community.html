@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Community - Nelavista</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+    body { background: #111827; color: #e5e7eb; min-height: 100vh; }
+
+    .top-bar {
+      position: sticky; top: 0; background: rgba(17, 24, 39, 0.95);
+      backdrop-filter: blur(10px); display: flex; align-items: center;
+      justify-content: space-between; padding: 12px 20px;
+      border-bottom: 1px solid #1f2a3e; z-index: 100;
+    }
+    .top-bar h1 { font-size: 1.4rem; font-weight: 700; }
+    .top-bar button {
+      background: #3b82f6; border: none; padding: 8px 16px;
+      border-radius: 40px; color: white; font-weight: 600;
+      cursor: pointer; transition: 0.2s; font-size: 0.9rem;
+    }
+    .top-bar button:hover { background: #2563eb; }
+
+    .community-container { display: flex; height: calc(100vh - 60px); }
+
+    .groups-sidebar {
+      width: 320px; background: #0d1117; border-right: 1px solid #1f2a3e;
+      display: flex; flex-direction: column; overflow: hidden;
+    }
+    .search-section { padding: 16px; border-bottom: 1px solid #1f2a3e; }
+    .search-wrapper {
+      background: #1a2235; border-radius: 12px; padding: 10px 14px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .search-wrapper input {
+      flex: 1; background: none; border: none; color: #e5e7eb;
+      outline: none; font-size: 0.9rem;
+    }
+    .search-wrapper input::placeholder { color: #6b7280; }
+
+    .filter-tabs {
+      display: flex; gap: 8px; padding: 12px 16px;
+      border-bottom: 1px solid #1f2a3e;
+    }
+    .filter-tab {
+      flex: 1; padding: 6px 12px; background: none;
+      border: 1px solid #2d3a52; border-radius: 8px;
+      color: #9ca3af; font-size: 0.8rem; cursor: pointer;
+      transition: 0.2s; font-weight: 500;
+    }
+    .filter-tab.active { background: #3b82f6; color: white; border-color: #3b82f6; }
+
+    .groups-list { flex: 1; overflow-y: auto; padding: 8px; }
+    .no-groups { text-align: center; padding: 40px 20px; color: #6b7280; cursor: pointer; }
+    .no-groups-icon { font-size: 3rem; margin-bottom: 12px; opacity: 0.3; }
+    .no-groups p { font-size: 0.9rem; margin-bottom: 4px; }
+    .loading-groups { text-align: center; padding: 40px 20px; color: #6b7280; }
+    .loading-spinner {
+      width: 32px; height: 32px; border: 3px solid #2d3a52;
+      border-top: 3px solid #3b82f6; border-radius: 50%;
+      animation: spin 0.8s linear infinite; margin: 0 auto 12px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .group-item {
+      background: #1a2235; border-radius: 12px; padding: 14px;
+      margin-bottom: 8px; cursor: pointer; transition: 0.2s;
+      border: 2px solid transparent;
+    }
+    .group-item:hover { background: #1f2a3e; }
+    .group-item.active { border-color: #3b82f6; background: #1f2a3e; }
+    .group-header { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+    .group-avatar {
+      width: 44px; height: 44px; border-radius: 12px;
+      background: linear-gradient(135deg, #3b82f6, #60a5fa);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem; font-weight: 700; color: white; flex-shrink: 0;
+    }
+    .group-info { flex: 1; min-width: 0; }
+    .group-name { font-weight: 600; font-size: 0.95rem; margin-bottom: 2px; word-break: break-word; }
+    .group-meta { font-size: 0.75rem; color: #9ca3af; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+    .group-type-badge {
+      display: inline-block; padding: 2px 8px; border-radius: 4px;
+      font-size: 0.65rem; font-weight: 600;
+    }
+    .badge-course { background: #14b8a6; color: white; }
+    .badge-study { background: #f97316; color: white; }
+    .badge-social { background: #8b5cf6; color: white; }
+    .group-description {
+      font-size: 0.8rem; color: #9ca3af; line-height: 1.4;
+      margin-top: 6px; word-break: break-word;
+    }
+
+    .chat-main { flex: 1; display: flex; flex-direction: column; background: #111827; }
+    .empty-state {
+      flex: 1; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      color: #6b7280; text-align: center; padding: 40px;
+    }
+    .empty-state-icon { font-size: 4rem; margin-bottom: 16px; opacity: 0.4; }
+    .empty-state h3 { font-size: 1.3rem; margin-bottom: 8px; color: #9ca3af; }
+    .empty-state p { font-size: 0.9rem; max-width: 400px; }
+
+    .chat-header {
+      display: none; padding: 16px 20px;
+      border-bottom: 1px solid #1f2a3e; background: #0d1117;
+    }
+    .chat-header.active { display: flex; justify-content: space-between; align-items: center; }
+    .chat-header-left { display: flex; align-items: center; gap: 12px; }
+    .chat-header-avatar {
+      width: 40px; height: 40px; border-radius: 10px;
+      background: linear-gradient(135deg, #3b82f6, #60a5fa);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; color: white; flex-shrink: 0;
+    }
+    .chat-header-info { min-width: 0; }
+    .chat-header-info h3 { font-size: 1rem; font-weight: 600; margin-bottom: 2px; word-break: break-word; }
+    .chat-header-info p { font-size: 0.75rem; color: #9ca3af; }
+    .chat-header-actions { display: flex; gap: 8px; align-items: center; }
+
+    .messages-area { flex: 1; overflow-y: auto; padding: 20px; display: none; }
+    .messages-area.active { display: block; }
+    .no-messages { text-align: center; padding: 60px 20px; color: #6b7280; }
+    .no-messages-icon { font-size: 2.5rem; margin-bottom: 8px; opacity: 0.4; }
+    .no-messages p { font-size: 0.9rem; }
+
+    .message-group { margin-bottom: 16px; display: flex; gap: 12px; }
+    .message-avatar {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.9rem; font-weight: 600; color: white; flex-shrink: 0;
+    }
+    .message-content-wrapper { flex: 1; min-width: 0; }
+    .message-sender {
+      font-weight: 600; font-size: 0.85rem; margin-bottom: 4px;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .message-time { font-size: 0.7rem; color: #6b7280; font-weight: 400; }
+    .message-text {
+      background: #1a2235; padding: 10px 14px; border-radius: 12px;
+      font-size: 0.9rem; line-height: 1.5; display: inline-block;
+      max-width: 100%; word-break: break-word;
+    }
+
+    .message-input-area {
+      display: none; padding: 16px 20px;
+      border-top: 1px solid #1f2a3e; background: #0d1117;
+    }
+    .message-input-area.active { display: block; }
+    .message-input-wrapper {
+      background: #1a2235; border-radius: 24px;
+      padding: 6px 12px; display: flex; align-items: center; gap: 8px;
+    }
+    .message-input-wrapper input {
+      flex: 1; background: none; border: none; color: #e5e7eb;
+      padding: 10px 8px; font-size: 0.9rem; outline: none;
+    }
+    .message-input-wrapper input::placeholder { color: #6b7280; }
+    .send-msg-btn {
+      background: #3b82f6; border: none; width: 36px; height: 36px;
+      border-radius: 50%; color: white; cursor: pointer; font-size: 1rem; transition: 0.2s;
+    }
+    .send-msg-btn:hover { background: #2563eb; }
+    .send-msg-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    .join-btn {
+      background: #3b82f6 !important; border: none !important; 
+      padding: 8px 20px !important; border-radius: 20px !important; 
+      color: white !important; font-weight: 600 !important;
+      cursor: pointer !important; transition: 0.2s !important; 
+      font-size: 0.85rem !important; width: auto !important; height: auto !important;
+      white-space: nowrap;
+    }
+    .join-btn:hover:not(:disabled) { background: #2563eb !important; }
+    .join-btn.joined { background: #10b981 !important; }
+    .join-btn.joined:hover:not(:disabled) { background: #059669 !important; }
+    .join-btn.admin { background: #f59e0b !important; }
+    .join-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .modal-overlay {
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.7); z-index: 1000;
+      display: none; align-items: center; justify-content: center;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal {
+      background: #1a2235; border-radius: 20px;
+      width: 90%; max-width: 500px; padding: 28px;
+      animation: modalSlide 0.3s ease-out;
+    }
+    @keyframes modalSlide { from{opacity:0;transform:translateY(-20px)} to{opacity:1;transform:translateY(0)} }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+    .modal-header h2 { font-size: 1.4rem; font-weight: 700; }
+    .modal-close { background: none; border: none; color: #9ca3af; font-size: 1.5rem; cursor: pointer; padding: 4px; }
+    .form-group { margin-bottom: 20px; }
+    .form-label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 8px; color: #d1d5db; }
+    .form-input, .form-textarea, .form-select {
+      width: 100%; background: #0d1117; border: 1px solid #2d3a52;
+      border-radius: 12px; padding: 12px 14px; color: #e5e7eb;
+      font-size: 0.9rem; outline: none; transition: 0.2s;
+    }
+    .form-input:focus, .form-textarea:focus, .form-select:focus { border-color: #3b82f6; }
+    .form-textarea { resize: vertical; min-height: 80px; font-family: inherit; }
+    .privacy-options { display: flex; gap: 12px; }
+    .privacy-option {
+      flex: 1; background: #0d1117; border: 2px solid #2d3a52;
+      border-radius: 12px; padding: 14px; cursor: pointer;
+      transition: 0.2s; text-align: center;
+    }
+    .privacy-option.selected { border-color: #3b82f6; background: rgba(59,130,246,0.1); }
+    .privacy-option-icon { font-size: 1.5rem; margin-bottom: 6px; }
+    .privacy-option-title { font-weight: 600; font-size: 0.9rem; margin-bottom: 4px; }
+    .privacy-option-desc { font-size: 0.75rem; color: #9ca3af; }
+    .modal-actions { display: flex; gap: 12px; margin-top: 28px; }
+    .modal-btn {
+      flex: 1; padding: 12px; border-radius: 12px;
+      font-weight: 600; cursor: pointer; transition: 0.2s;
+      border: none; font-size: 0.95rem;
+    }
+    .modal-btn-cancel { background: #2d3a52; color: #e5e7eb; }
+    .modal-btn-cancel:hover { background: #374151; }
+    .modal-btn-create { background: #3b82f6; color: white; }
+    .modal-btn-create:hover { background: #2563eb; }
+    .modal-btn-create:disabled { opacity: 0.5; cursor: not-allowed; }
+    .form-error { color: #ef4444; font-size: 0.75rem; margin-top: 6px; display: none; }
+    .form-error.active { display: block; }
+
+    .toast {
+      position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+      background: #10b981; color: white; padding: 12px 24px;
+      border-radius: 12px; font-weight: 600; font-size: 0.9rem;
+      z-index: 2000; animation: toastIn 0.3s ease-out, toastOut 0.3s ease-out 2.7s forwards;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+    .toast.error { background: #ef4444; }
+    @keyframes toastIn { from{opacity:0;transform:translateX(-50%) translateY(20px)} to{opacity:1;transform:translateX(-50%) translateY(0)} }
+    @keyframes toastOut { from{opacity:1} to{opacity:0} }
+
+    @media (max-width: 768px) {
+      .groups-sidebar { width: 100%; border-right: none; }
+      .chat-main { display: none; }
+      .groups-sidebar.hidden { display: none; }
+      .chat-main.active-mobile { display: flex; }
+      .chat-back-btn { display: block !important; background: none; border: none; color: #9ca3af; font-size: 1.2rem; cursor: pointer; padding: 4px 8px; }
+    }
+    .chat-back-btn { display: none; }
+  </style>
+</head>
+<body>
+  <div class="top-bar">
+    <h1>🏛️ Community</h1>
+    <button onclick="openCreateModal()">+ Create Group</button>
+  </div>
+
+  <div class="community-container">
+    <div class="groups-sidebar" id="groupsSidebar">
+      <div class="search-section">
+        <div class="search-wrapper">
+          <span>🔍</span>
+          <input type="text" placeholder="Search groups..." id="searchInput" oninput="debounceSearch()">
+        </div>
+      </div>
+      <div class="filter-tabs">
+        <button class="filter-tab active" onclick="filterGroups('all', this)">All</button>
+        <button class="filter-tab" onclick="filterGroups('course', this)">Courses</button>
+        <button class="filter-tab" onclick="filterGroups('study', this)">Study</button>
+        <button class="filter-tab" onclick="filterGroups('social', this)">Social</button>
+      </div>
+      <div class="groups-list" id="groupsList">
+        <div class="loading-groups" id="loadingGroups">
+          <div class="loading-spinner"></div>
+          <p>Loading groups...</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="chat-main" id="chatMain">
+      <div class="empty-state" id="emptyState">
+        <div class="empty-state-icon">💬</div>
+        <h3>Welcome to Community</h3>
+        <p>Select a group to start chatting, or create your own study group</p>
+      </div>
+      <div class="chat-header" id="chatHeader">
+        <div class="chat-header-left">
+          <button class="chat-back-btn" onclick="goBackToGroups()">←</button>
+          <div class="chat-header-avatar" id="chatAvatar">#</div>
+          <div class="chat-header-info">
+            <h3 id="chatGroupName">Group Name</h3>
+            <p id="chatGroupMeta">Loading...</p>
+          </div>
+        </div>
+        <div class="chat-header-actions">
+          <button class="join-btn" id="joinLeaveBtn" onclick="toggleMembership()">Join</button>
+        </div>
+      </div>
+      <div class="messages-area" id="messagesArea">
+        <div class="no-messages" id="noMessages">
+          <div class="no-messages-icon">💭</div>
+          <p>No messages yet. Start the conversation!</p>
+        </div>
+      </div>
+      <div class="message-input-area" id="messageInput">
+        <div class="message-input-wrapper">
+          <input type="text" placeholder="Type a message..." id="messageText" onkeypress="handleMessageKey(event)" autocomplete="off">
+          <button class="send-msg-btn" id="sendBtn" onclick="sendMessage()" disabled>➤</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="createModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2>Create New Group</h2>
+        <button class="modal-close" onclick="closeCreateModal()">×</button>
+      </div>
+      <form id="createGroupForm" onsubmit="handleCreateGroup(event)">
+        <div class="form-group">
+          <label class="form-label">Group Name</label>
+          <input type="text" class="form-input" id="groupName" placeholder="e.g., MTH 201 Study Group" required maxlength="100">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Group Type</label>
+          <select class="form-select" id="groupType" required>
+            <option value="">Select type</option>
+            <option value="course">Course</option>
+            <option value="study">Study Group</option>
+            <option value="social">Social</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Description</label>
+          <textarea class="form-textarea" id="groupDescription" placeholder="What's this group about?" maxlength="500"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Privacy</label>
+          <div class="privacy-options">
+            <div class="privacy-option selected" onclick="selectPrivacy('public', this)">
+              <div class="privacy-option-icon">🌍</div>
+              <div class="privacy-option-title">Public</div>
+              <div class="privacy-option-desc">Anyone can join</div>
+            </div>
+            <div class="privacy-option" onclick="selectPrivacy('private', this)">
+              <div class="privacy-option-icon">🔒</div>
+              <div class="privacy-option-title">Private</div>
+              <div class="privacy-option-desc">Invite only</div>
+            </div>
+          </div>
+        </div>
+        <p class="form-error" id="formError"></p>
+        <div class="modal-actions">
+          <button type="button" class="modal-btn modal-btn-cancel" onclick="closeCreateModal()">Cancel</button>
+          <button type="submit" class="modal-btn modal-btn-create" id="createBtn">Create Group</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // ===== STATE =====
+    let currentGroupId = null;
+    let currentGroupData = null;
+    let currentFilter = 'all';
+    let searchTimeout = null;
+    let selectedPrivacy = 'public';
+    let messagePollInterval = null;
+    let loadedMessageIds = new Set();
+
+    function showToast(message, isError = false) {
+      const existing = document.querySelector('.toast');
+      if (existing) existing.remove();
+      const toast = document.createElement('div');
+      toast.className = `toast ${isError ? 'error' : ''}`;
+      toast.textContent = message;
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 3000);
+    }
+
+    async function loadGroups(filter = 'all', search = '') {
+      const groupsList = document.getElementById('groupsList');
+      const loadingEl = document.getElementById('loadingGroups');
+      if (loadingEl) loadingEl.style.display = 'block';
+      try {
+        let url = `/api/groups/list?type=${filter}`;
+        if (search) url += `&search=${encodeURIComponent(search)}`;
+        const res = await fetch(url);
+        const data = await res.json();
+        if (!data.success) throw new Error(data.error || 'Failed');
+        renderGroups(data.groups);
+      } catch (err) {
+        console.error('Load groups error:', err);
+        groupsList.innerHTML = `<div class="no-groups" onclick="loadGroups('${filter}','${search}')"><div class="no-groups-icon">⚠️</div><p>Failed to load</p><p style="font-size:0.75rem;margin-top:4px;">Tap to retry</p></div>`;
+      }
+      if (loadingEl) loadingEl.style.display = 'none';
+    }
+
+    function renderGroups(groups) {
+      const groupsList = document.getElementById('groupsList');
+      if (!groups || groups.length === 0) {
+        groupsList.innerHTML = `<div class="no-groups"><div class="no-groups-icon">📭</div><p>No groups yet</p><p style="font-size:0.8rem;margin-top:4px;">Create the first group!</p></div>`;
+        return;
+      }
+      groupsList.innerHTML = groups.map(group => {
+        const initials = group.name.substring(0, 2).toUpperCase();
+        const badges = {course:{class:'badge-course',label:'Course'},study:{class:'badge-study',label:'Study'},social:{class:'badge-social',label:'Social'}};
+        const badge = badges[group.type] || badges.course;
+        return `<div class="group-item ${group.id===currentGroupId?'active':''}" onclick="openGroup(${group.id})" data-type="${group.type}">
+          <div class="group-header">
+            <div class="group-avatar">${esc(initials)}</div>
+            <div class="group-info">
+              <div class="group-name">${esc(group.name)}</div>
+              <div class="group-meta">
+                <span class="group-type-badge ${badge.class}">${badge.label}</span>
+                <span>•</span><span>${group.member_count||0} members</span>
+                ${group.is_member?'<span>•</span><span style="color:#10b981;">✓ Joined</span>':''}
+              </div>
+            </div>
+          </div>
+          ${group.description?`<div class="group-description">${esc(group.description.substring(0,80))}${group.description.length>80?'...':''}</div>`:''}
+        </div>`;
+      }).join('');
+      if (currentGroupId) {
+        const a = document.querySelector(`.group-item[onclick="openGroup(${currentGroupId})"]`);
+        if (a) a.classList.add('active');
+      }
+    }
+
+    function filterGroups(type, el) {
+      currentFilter = type;
+      document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+      if (el) el.classList.add('active');
+      loadGroups(type, document.getElementById('searchInput').value);
+    }
+
+    function debounceSearch() {
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(() => loadGroups(currentFilter, document.getElementById('searchInput').value), 400);
+    }
+
+    async function openGroup(groupId) {
+      if (messagePollInterval) clearInterval(messagePollInterval);
+      currentGroupId = groupId;
+      document.querySelectorAll('.group-item').forEach(g => g.classList.remove('active'));
+      const el = document.querySelector(`.group-item[onclick="openGroup(${groupId})"]`);
+      if (el) el.classList.add('active');
+      document.getElementById('emptyState').style.display = 'none';
+      document.getElementById('chatHeader').classList.add('active');
+      document.getElementById('messagesArea').classList.add('active');
+      try {
+        const res = await fetch(`/api/groups/${groupId}/info`);
+        const data = await res.json();
+        if (!data.success) throw new Error(data.error);
+        currentGroupData = data.group;
+        updateChatHeader(currentGroupData);
+        if (currentGroupData.is_member) {
+          document.getElementById('messageInput').classList.add('active');
+          await loadMessages(groupId);
+          messagePollInterval = setInterval(() => { if (currentGroupId === groupId) pollNewMessages(groupId); }, 3000);
+        } else {
+          document.getElementById('messageInput').classList.remove('active');
+          document.getElementById('messagesArea').querySelectorAll('.message-group').forEach(m => m.remove());
+          document.getElementById('noMessages').style.display = 'block';
+        }
+        if (window.innerWidth <= 768) {
+          document.getElementById('groupsSidebar').classList.add('hidden');
+          document.getElementById('chatMain').classList.add('active-mobile');
+        }
+      } catch (err) {
+        console.error('Open group error:', err);
+        showToast('Failed to load group', true);
+      }
+    }
+
+    function updateChatHeader(group) {
+      document.getElementById('chatAvatar').textContent = group.name.substring(0, 2).toUpperCase();
+      document.getElementById('chatGroupName').textContent = group.name;
+      document.getElementById('chatGroupMeta').textContent = `${group.member_count||0} members`;
+      const btn = document.getElementById('joinLeaveBtn');
+      btn.disabled = false;
+      if (group.is_member) {
+        btn.textContent = group.user_role === 'admin' ? 'Admin ✓' : 'Leave';
+        btn.className = 'join-btn ' + (group.user_role === 'admin' ? 'admin' : 'joined');
+      } else {
+        btn.textContent = 'Join';
+        btn.className = 'join-btn';
+      }
+    }
+
+    async function loadMessages(groupId) {
+      const area = document.getElementById('messagesArea');
+      const nm = document.getElementById('noMessages');
+      loadedMessageIds.clear();
+      try {
+        const res = await fetch(`/api/groups/${groupId}/messages`);
+        const data = await res.json();
+        if (!data.success) {
+          if (data.error && data.error.includes('Not a member')) {
+            area.querySelectorAll('.message-group').forEach(m => m.remove());
+            if (nm) nm.style.display = 'block';
+            return;
+          }
+          throw new Error(data.error);
+        }
+        area.querySelectorAll('.message-group').forEach(m => m.remove());
+        if (!data.messages || data.messages.length === 0) {
+          if (nm) nm.style.display = 'block';
+        } else {
+          if (nm) nm.style.display = 'none';
+          data.messages.forEach(msg => { appendMessage(msg, false); loadedMessageIds.add(msg.id); });
+        }
+        area.scrollTop = area.scrollHeight;
+      } catch (err) {
+        console.error('Load messages error:', err);
+      }
+    }
+
+    async function pollNewMessages(groupId) {
+      if (groupId !== currentGroupId) return;
+      try {
+        const res = await fetch(`/api/groups/${groupId}/messages?limit=30`);
+        const data = await res.json();
+        if (!data.success || !data.messages) return;
+        const newMsgs = data.messages.filter(m => !loadedMessageIds.has(m.id));
+        if (newMsgs.length > 0) {
+          document.getElementById('noMessages').style.display = 'none';
+          newMsgs.forEach(msg => { appendMessage(msg, true); loadedMessageIds.add(msg.id); });
+        }
+      } catch (err) {}
+    }
+
+    function appendMessage(msg, scroll) {
+      const area = document.getElementById('messagesArea');
+      document.getElementById('noMessages').style.display = 'none';
+      if (document.getElementById(`msg-${msg.id}`)) return;
+      const initials = (msg.sender_name || 'U').substring(0, 2).toUpperCase();
+      const time = msg.created_at ? fmtTime(msg.created_at) : '';
+      const div = document.createElement('div');
+      div.className = 'message-group';
+      div.id = `msg-${msg.id}`;
+      div.innerHTML = `<div class="message-avatar">${esc(initials)}</div>
+        <div class="message-content-wrapper">
+          <div class="message-sender">${esc(msg.sender_name||'User')}<span class="message-time">${time}</span></div>
+          <div class="message-text">${esc(msg.content)}</div>
+        </div>`;
+      area.appendChild(div);
+      if (scroll !== false) area.scrollTop = area.scrollHeight;
+    }
+
+    function fmtTime(ts) {
+      try {
+        const d = new Date(ts);
+        const now = new Date();
+        if (d.toDateString() === now.toDateString()) return d.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+        return d.toLocaleDateString([], {month:'short', day:'numeric'}) + ' ' + d.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+      } catch(e) { return ''; }
+    }
+
+    function goBackToGroups() {
+      if (messagePollInterval) clearInterval(messagePollInterval);
+      document.getElementById('emptyState').style.display = 'flex';
+      document.getElementById('chatHeader').classList.remove('active');
+      document.getElementById('messagesArea').classList.remove('active');
+      document.getElementById('messageInput').classList.remove('active');
+      document.getElementById('groupsSidebar').classList.remove('hidden');
+      document.getElementById('chatMain').classList.remove('active-mobile');
+      currentGroupId = null;
+      currentGroupData = null;
+      loadedMessageIds.clear();
+      document.querySelectorAll('.group-item').forEach(g => g.classList.remove('active'));
+      loadGroups(currentFilter, document.getElementById('searchInput').value);
+    }
+
+    function handleMessageKey(e) {
+      document.getElementById('sendBtn').disabled = !document.getElementById('messageText').value.trim();
+      if (e.key === 'Enter' && document.getElementById('messageText').value.trim()) sendMessage();
+    }
+
+    async function sendMessage() {
+      if (!currentGroupId || !currentGroupData || !currentGroupData.is_member) {
+        showToast('Join the group to send messages', true);
+        return;
+      }
+      const input = document.getElementById('messageText');
+      const text = input.value.trim();
+      if (!text) return;
+      const btn = document.getElementById('sendBtn');
+      btn.disabled = true;
+      input.value = '';
+      try {
+        const res = await fetch(`/api/groups/${currentGroupId}/send`, {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({content: text, type: 'text'})
+        });
+        const data = await res.json();
+        if (!data.success) throw new Error(data.error || 'Failed');
+        appendMessage(data.message, true);
+        loadedMessageIds.add(data.message.id);
+        input.focus();
+      } catch (err) {
+        console.error('Send error:', err);
+        showToast('Failed to send', true);
+        input.value = text;
+      } finally {
+        btn.disabled = false;
+        input.focus();
+      }
+    }
+
+    async function toggleMembership() {
+      if (!currentGroupId || !currentGroupData) return;
+      const btn = document.getElementById('joinLeaveBtn');
+      const isMember = currentGroupData.is_member;
+      const endpoint = isMember ? 'leave' : 'join';
+      btn.disabled = true;
+      btn.textContent = '...';
+      try {
+        const res = await fetch(`/api/groups/${currentGroupId}/${endpoint}`, {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'}
+        });
+        const data = await res.json();
+        if (!data.success) {
+          showToast(data.error || `Failed to ${endpoint}`, true);
+          btn.disabled = false;
+          updateChatHeader(currentGroupData);
+          return;
+        }
+        showToast(isMember ? 'Left group' : 'Joined group! 🎉');
+        const infoRes = await fetch(`/api/groups/${currentGroupId}/info`);
+        const infoData = await infoRes.json();
+        if (infoData.success) {
+          currentGroupData = infoData.group;
+          updateChatHeader(currentGroupData);
+          if (currentGroupData.is_member) {
+            document.getElementById('messageInput').classList.add('active');
+            await loadMessages(currentGroupId);
+            messagePollInterval = setInterval(() => { if (currentGroupId === currentGroupId) pollNewMessages(currentGroupId); }, 3000);
+          } else {
+            document.getElementById('messageInput').classList.remove('active');
+            document.getElementById('messagesArea').querySelectorAll('.message-group').forEach(m => m.remove());
+            document.getElementById('noMessages').style.display = 'block';
+          }
+        }
+        await loadGroups(currentFilter, document.getElementById('searchInput').value);
+      } catch (err) {
+        console.error('Toggle membership error:', err);
+        showToast(`Failed to ${endpoint}`, true);
+      } finally {
+        btn.disabled = false;
+        if (currentGroupData) updateChatHeader(currentGroupData);
+      }
+    }
+
+    async function handleCreateGroup(e) {
+      e.preventDefault();
+      const name = document.getElementById('groupName').value.trim();
+      const type = document.getElementById('groupType').value;
+      const description = document.getElementById('groupDescription').value.trim();
+      const errorEl = document.getElementById('formError');
+      const createBtn = document.getElementById('createBtn');
+      errorEl.classList.remove('active');
+      if (!name || !type) { errorEl.textContent = 'Fill all required fields'; errorEl.classList.add('active'); return; }
+      createBtn.disabled = true;
+      createBtn.textContent = 'Creating...';
+      try {
+        const res = await fetch('/api/groups/create', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({name, type, description, privacy: selectedPrivacy})
+        });
+        const data = await res.json();
+        if (!data.success) throw new Error(data.error || 'Failed');
+        showToast('Group created! 🎉');
+        closeCreateModal();
+        await loadGroups(currentFilter);
+        setTimeout(() => openGroup(data.group.id), 500);
+      } catch (err) {
+        errorEl.textContent = err.message;
+        errorEl.classList.add('active');
+      } finally {
+        createBtn.disabled = false;
+        createBtn.textContent = 'Create Group';
+      }
+    }
+
+    function openCreateModal() { document.getElementById('createModal').classList.add('active'); setTimeout(() => document.getElementById('groupName').focus(), 100); }
+    function closeCreateModal() { document.getElementById('createModal').classList.remove('active'); document.getElementById('createGroupForm').reset(); document.getElementById('formError').classList.remove('active'); document.getElementById('createBtn').disabled = false; document.getElementById('createBtn').textContent = 'Create Group'; selectPrivacy('public', document.querySelector('.privacy-option')); }
+    function selectPrivacy(type, el) { selectedPrivacy = type; document.querySelectorAll('.privacy-option').forEach(o => o.classList.remove('selected')); if (el) el.classList.add('selected'); }
+    function esc(s) { if (!s) return ''; const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+
+    document.getElementById('messageText').addEventListener('input', function() { document.getElementById('sendBtn').disabled = !this.value.trim(); });
+    loadGroups();
+    setInterval(() => { if (!document.hidden) loadGroups(currentFilter, document.getElementById('searchInput').value); }, 30000);
+    window.addEventListener('beforeunload', () => { if (messagePollInterval) clearInterval(messagePollInterval); });
+  </script>
+</body>
+</html>

@@ -472,3 +472,53 @@ Your final answer should be so clear and pleasant that a student would *want* to
         debug_print(f"Unhandled error in /ask: {e}")
         traceback.print_exc()
         return jsonify({"success": True, "answer": GRACEFUL_FALLBACK})
+        @ai_bp.route('/debug/test-ask', methods=['POST'])
+@login_required
+def test_ask():
+    import traceback
+    from config import OPENROUTER_API_KEY
+    
+    try:
+        message = "Hello, can you hear me?"  # Simple test message
+        username = session['user']['username']
+        user = User.query.filter_by(username=username).first()
+        
+        system_prompt = "You are a helpful tutor. Reply in one sentence."
+        
+        payload = {
+            "model": "openai/gpt-4o-mini",
+            "messages": [
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": message}
+            ],
+            "temperature": 0.5,
+            "max_tokens": 100
+        }
+        
+        headers = {
+            "Authorization": f"Bearer {OPENROUTER_API_KEY}",
+            "Content-Type": "application/json",
+            "HTTP-Referer": "https://nelavista.com"
+        }
+        
+        response = requests.post(
+            "https://openrouter.ai/api/v1/chat/completions",
+            headers=headers,
+            json=payload,
+            timeout=30
+        )
+        
+        return jsonify({
+            "success": True,
+            "status_code": response.status_code,
+            "key_valid": bool(OPENROUTER_API_KEY),
+            "key_prefix": OPENROUTER_API_KEY[:12] + "..." if OPENROUTER_API_KEY else "MISSING",
+            "response": response.json() if response.status_code == 200 else response.text[:300]
+        })
+    except Exception as e:
+        return jsonify({
+            "success": False,
+            "error": str(e),
+            "error_type": type(e).__name__,
+            "traceback": traceback.format_exc()
+        }), 500

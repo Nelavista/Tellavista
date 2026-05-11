@@ -1323,6 +1323,39 @@ def ai_materials():
 def math101():
     return render_template("mat101.html")
 
+@app.route('/debug/ai-check')
+def check_ai():
+    import os
+    from openai import OpenAI
+    
+    api_key = os.getenv('OPENAI_API_KEY') or os.getenv('OPENROUTER_API_KEY')
+    
+    if not api_key:
+        return {"error": "No API key found"}, 500
+    
+    try:
+        # If using OpenRouter
+        client = OpenAI(
+            base_url="https://openrouter.ai/api/v1",
+            api_key=api_key,
+            default_headers={"HTTP-Referer": "https://www.nelavista.com"}
+        )
+        
+        response = client.chat.completions.create(
+            model="openai/gpt-4",  # or whatever model you're using
+            messages=[{"role": "user", "content": "Say 'API works'"}],
+            max_tokens=10
+        )
+        
+        return {
+            "status": "working",
+            "response": response.choices[0].message.content
+        }
+    except Exception as e:
+        return {
+            "status": "error",
+            "error": str(e)
+        }, 500
 
 @materials_bp.route('/reels')
 def reels():

@@ -1323,7 +1323,7 @@ def ai_materials():
 def math101():
     return render_template("mat101.html")
 
-@app.route('/debug/ai-check')
+@materials_bp.route('/debug/ai-check')
 def check_ai():
     import os
     from openai import OpenAI

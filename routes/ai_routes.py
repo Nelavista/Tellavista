@@ -211,7 +211,7 @@ Teach clearly, patiently, and in a way students love to read and keep using. Eve
 - **Emphasise important terms** with `<strong>` or `<em>`.
 - **Explain each step in words** when solving problems, before or after showing the math.
 - **Use simple, relatable language**, but never sacrifice accuracy. Include real‑world examples or analogies when helpful.
-- **End with a short, encouraging conclusion** or a “next steps” suggestion to keep the student engaged.
+- **End with a short, encouraging conclusion** or a "next steps" suggestion to keep the student engaged.
 
 ## STRUCTURE (HTML)
 - `<h2>` for main sections.
@@ -242,13 +242,13 @@ Teach clearly, patiently, and in a way students love to read and keep using. Eve
 ## TONE
 - Warm, supportive, and enthusiastic.
 - Avoid being robotic or too formal.
-- Use phrases like “Let’s break this down”, “Think of it this way”, “You’ll often see this in…”.
+- Use phrases like "Let's break this down", "Think of it this way", "You'll often see this in…".
 - Sound like a real teacher who genuinely wants the student to understand.
 
 ## EXAMPLES
 **For a detailed topic (use heading):**
 > <h2>📘 Understanding Cellular Respiration</h2>
-> <p>That's an excellent question! Cellular respiration is how your cells turn food into energy – think of it as the cell's power plant. Let’s explore it step by step.</p>
+> <p>That's an excellent question! Cellular respiration is how your cells turn food into energy – think of it as the cell's power plant. Let's explore it step by step.</p>
 
 **For a simple introductory question (no heading):**
 > <p>Great question! I can help you with a wide range of university subjects – from Mathematics and Sciences to Computer Science, Social Sciences, Literature, and more. Just tell me what topic you'd like to explore, and we'll dive right in!</p>
@@ -290,8 +290,9 @@ Your final answer should be so clear and pleasant that a student would *want* to
                         break
                     else:
                         ai_response = None
+                        debug_print(f"API returned 200 but empty content, attempt {attempt+1}/{max_retries}")
                 else:
-                    debug_print(f"API returned {response.status_code}, retry {attempt+1}/{max_retries}")
+                    debug_print(f"API returned {response.status_code}: {response.text[:300]}, retry {attempt+1}/{max_retries}")
             except requests.exceptions.Timeout:
                 debug_print(f"Timeout on attempt {attempt+1}/{max_retries}")
                 if attempt == max_retries:
@@ -299,7 +300,8 @@ Your final answer should be so clear and pleasant that a student would *want* to
                 else:
                     time.sleep(retry_delay)
             except Exception as e:
-                debug_print(f"API error: {e}")
+                debug_print(f"API error (attempt {attempt+1}): {type(e).__name__}: {str(e)}")
+                traceback.print_exc()
                 if attempt == max_retries:
                     ai_response = None
                 else:
@@ -371,7 +373,7 @@ Teach clearly, patiently, and in a way students love to read and keep using. Eve
 - **Emphasise important terms** with `<strong>` or `<em>`.
 - **Explain each step in words** when solving problems, before or after showing the math.
 - **Use simple, relatable language**, but never sacrifice accuracy. Include real‑world examples or analogies when helpful.
-- **End with a short, encouraging conclusion** or a “next steps” suggestion to keep the student engaged.
+- **End with a short, encouraging conclusion** or a "next steps" suggestion to keep the student engaged.
 
 ## STRUCTURE (HTML)
 - `<h2>` for main sections.
@@ -402,12 +404,12 @@ Teach clearly, patiently, and in a way students love to read and keep using. Eve
 ## TONE
 - Warm, supportive, and enthusiastic.
 - Avoid being robotic or too formal.
-- Use phrases like “Let’s break this down”, “Think of it this way”, “You’ll often see this in…”.
+- Use phrases like "Let's break this down", "Think of it this way", "You'll often see this in…".
 - Sound like a real teacher who genuinely wants the student to understand.
 
 ## EXAMPLE OPENING
 > **<h2>📘 Understanding Cellular Respiration</h2>**
-> <p>That's an excellent question! Cellular respiration is how your cells turn food into energy – think of it as the cell's power plant. Let’s explore it step by step.</p>
+> <p>That's an excellent question! Cellular respiration is how your cells turn food into energy – think of it as the cell's power plant. Let's explore it step by step.</p>
 
 Your final answer should be so clear and pleasant that a student would *want* to read it and come back for more."""
 
@@ -438,8 +440,9 @@ Your final answer should be so clear and pleasant that a student would *want* to
                         break
                     else:
                         ai_response = None
+                        debug_print(f"API returned 200 but empty content, attempt {attempt+1}/{max_retries}")
                 else:
-                    debug_print(f"API returned {response.status_code}, retry {attempt+1}/{max_retries}")
+                    debug_print(f"API returned {response.status_code}: {response.text[:300]}, retry {attempt+1}/{max_retries}")
             except requests.exceptions.Timeout:
                 debug_print(f"Timeout on attempt {attempt+1}/{max_retries}")
                 if attempt == max_retries:
@@ -447,7 +450,8 @@ Your final answer should be so clear and pleasant that a student would *want* to
                 else:
                     time.sleep(retry_delay)
             except Exception as e:
-                debug_print(f"API error: {e}")
+                debug_print(f"API error (attempt {attempt+1}): {type(e).__name__}: {str(e)}")
+                traceback.print_exc()
                 if attempt == max_retries:
                     ai_response = None
                 else:
@@ -472,7 +476,8 @@ Your final answer should be so clear and pleasant that a student would *want* to
         debug_print(f"Unhandled error in /ask: {e}")
         traceback.print_exc()
         return jsonify({"success": True, "answer": GRACEFUL_FALLBACK})
-        @ai_bp.route('/debug/test-ask', methods=['POST'])
+
+@ai_bp.route('/debug/test-ask', methods=['POST'])
 @login_required
 def test_ask():
     import traceback

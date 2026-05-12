@@ -14,12 +14,12 @@
   <title>Nelavista - AI Educational Companion</title>
 
   <!-- ===== PWA META TAGS ===== -->
-  <!-- Primary PWA meta tags -->
   <meta name="theme-color" content="#00D9FF">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="Nelavista">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="description" content="The smarter way to study at Nigerian universities. AI-powered tools, CBT practice, study materials.">
   
   <!-- Manifest -->
   <link rel="manifest" href="/manifest.json">
@@ -53,6 +53,64 @@
       from { transform: translateY(-100%); opacity: 0; }
       to { transform: translateY(0); opacity: 1; }
     }
+    
+    /* ===== ONLINE/OFFLINE INDICATOR ===== */
+    @keyframes onlinePulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+    
+    .connection-status {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10001;
+      padding: 8px 20px;
+      border-radius: 40px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      display: none;
+      align-items: center;
+      gap: 8px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+    
+    .connection-status.online {
+      background: rgba(16, 185, 129, 0.9);
+      color: white;
+      display: flex;
+      animation: slideUp 0.3s ease;
+    }
+    
+    .connection-status.offline {
+      background: rgba(239, 68, 68, 0.9);
+      color: white;
+      display: flex;
+    }
+    
+    @keyframes slideUp {
+      from { transform: translateX(-50%) translateY(20px); opacity: 0; }
+      to { transform: translateX(-50%) translateY(0); opacity: 1; }
+    }
+    
+    .connection-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+    
+    .online .connection-dot {
+      background: #6ee7b7;
+      animation: onlinePulse 2s infinite;
+    }
+    
+    .offline .connection-dot {
+      background: #fca5a5;
+    }
+
     .nelavista-install-banner {
       position: fixed;
       top: 0;
@@ -120,6 +178,36 @@
       opacity: 0.7;
       line-height: 1;
       padding: 0 4px;
+    }
+
+    /* ===== UPDATE AVAILABLE BANNER ===== */
+    .update-banner {
+      position: fixed;
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10001;
+      background: #3b82f6;
+      color: white;
+      padding: 12px 24px;
+      border-radius: 40px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      box-shadow: 0 4px 20px rgba(59,130,246,0.4);
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      gap: 8px;
+      animation: slideUp 0.3s ease;
+    }
+    
+    .update-banner.show {
+      display: flex;
+    }
+    
+    .update-banner:hover {
+      background: #2563eb;
+      transform: translateX(-50%) translateY(-2px);
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
@@ -213,12 +301,35 @@
       display: flex; align-items: center; justify-content: space-between;
       padding: 12px 20px; border-bottom: 1px solid #1f2a3e; z-index: 1002;
     }
+    .top-bar-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
     .top-bar button {
       background: #1f2a3e; border: none; width: 38px; height: 38px;
       border-radius: 12px; font-size: 1.2rem; cursor: pointer;
       color: white; transition: 0.2s;
     }
     .top-bar button:hover { background: #2d3a52; }
+    
+    /* PWA install button in top bar */
+    .pwa-install-btn {
+      display: none;
+      background: linear-gradient(135deg, #00D9FF, #0099CC) !important;
+      font-size: 0.7rem !important;
+      font-weight: 600 !important;
+      padding: 6px 14px !important;
+      width: auto !important;
+      border-radius: 20px !important;
+      white-space: nowrap;
+      gap: 6px;
+    }
+    
+    .pwa-install-btn.show {
+      display: inline-flex;
+      align-items: center;
+    }
 
     /* ===== DASHBOARD ===== */
     .dashboard-view {
@@ -404,7 +515,12 @@
   <!-- ===== MAIN CONTENT ===== -->
   <div class="main-content">
     <div class="top-bar">
-      <button id="menu-toggle" onclick="toggleMenu()">☰</button>
+      <div class="top-bar-left">
+        <button id="menu-toggle" onclick="toggleMenu()">☰</button>
+        <button id="pwa-install-button" class="pwa-install-btn" onclick="triggerInstall()">
+          📲 Install App
+        </button>
+      </div>
       <button id="theme-toggle" onclick="toggleTheme()">🌙</button>
     </div>
 
@@ -487,9 +603,9 @@
             <div><div class="tool-card-title">Live Meeting</div><div class="tool-card-sub">Join live sessions</div></div>
           </div>
           <div class="tool-card" onclick="window.location.href='/community'">
-    <div class="tool-icon-circle" style="background:#ec4899;">💬</div>
-    <div><div class="tool-card-title">Community</div><div class="tool-card-sub">Join study groups</div></div>
-</div>
+            <div class="tool-icon-circle" style="background:#ec4899;">💬</div>
+            <div><div class="tool-card-title">Community</div><div class="tool-card-sub">Join study groups</div></div>
+          </div>
         </div>
       </div>
 
@@ -526,14 +642,43 @@
   </div>
 </div>
 
+<!-- Connection Status Indicator -->
+<div class="connection-status online" id="connectionStatus">
+  <span class="connection-dot"></span>
+  <span id="connectionText">Online</span>
+</div>
+
+<!-- Update Available Banner -->
+<div class="update-banner" id="updateBanner" onclick="updateApp()">
+  🔄 New version available — tap to update
+</div>
+
 <!-- ===== PWA INSTALL BANNER (injected by pwa-install.js) ===== -->
 
 <script>
-  // ===== SERVICE WORKER REGISTRATION =====
+  // ===== PWA: SERVICE WORKER REGISTRATION & MANAGEMENT =====
+  let deferredPrompt;
+  let serviceWorkerRegistration = null;
+  let isAppInstalled = false;
+  
+  // Check if app is installed
+  if (window.matchMedia('(display-mode: standalone)').matches) {
+    isAppInstalled = true;
+    console.log('📱 App running in standalone mode (installed)');
+  }
+
+  // Listen for install event from standalone mode
+  window.addEventListener('appinstalled', () => {
+    isAppInstalled = true;
+    console.log('✅ App installed successfully');
+    document.getElementById('pwa-install-button').classList.remove('show');
+  });
+
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('/service-worker.js')
         .then(reg => {
+          serviceWorkerRegistration = reg;
           console.log('✅ Service Worker registered:', reg.scope);
           
           // Check for updates
@@ -543,10 +688,14 @@
             
             newWorker.addEventListener('statechange', () => {
               if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                console.log('🆕 New content available - please refresh.');
+                console.log('🆕 New content available');
+                showUpdateBanner();
               }
             });
           });
+          
+          // Setup background sync for offline support
+          setupBackgroundSync(reg);
         })
         .catch(err => console.error('❌ Service Worker registration failed:', err));
     });
@@ -556,11 +705,230 @@
     navigator.serviceWorker.addEventListener('controllerchange', () => {
       if (refreshing) return;
       refreshing = true;
-      console.log('🔄 Service Worker updated, reloading page...');
+      console.log('🔄 Controller changed, reloading page...');
       window.location.reload();
+    });
+    
+    // Handle messages from service worker
+    navigator.serviceWorker.addEventListener('message', event => {
+      if (event.data && event.data.type === 'CACHES_CLEARED') {
+        console.log('🗑️ Caches cleared by service worker');
+      }
     });
   }
 
+  // Listen for install prompt
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    console.log('📲 Install prompt available');
+    
+    // Show install button in top bar
+    const installBtn = document.getElementById('pwa-install-button');
+    if (installBtn && !isAppInstalled) {
+      installBtn.classList.add('show');
+    }
+  });
+
+  // ===== ONLINE/OFFLINE DETECTION =====
+  const connectionStatus = document.getElementById('connectionStatus');
+  const connectionText = document.getElementById('connectionText');
+  
+  function updateOnlineStatus() {
+    const isOnline = navigator.onLine;
+    
+    if (isOnline) {
+      connectionStatus.className = 'connection-status online';
+      connectionText.textContent = 'Back online';
+      console.log('✅ App is online');
+      
+      // Hide status after 3 seconds
+      setTimeout(() => {
+        if (navigator.onLine) {
+          connectionStatus.style.display = 'none';
+        }
+      }, 3000);
+      
+      // Sync any offline data
+      syncOfflineProgress();
+    } else {
+      connectionStatus.className = 'connection-status offline';
+      connectionText.textContent = 'You are offline';
+      connectionStatus.style.display = 'flex';
+      console.log('⚠️ App is offline');
+    }
+  }
+  
+  window.addEventListener('online', updateOnlineStatus);
+  window.addEventListener('offline', updateOnlineStatus);
+  
+  // Initial check
+  updateOnlineStatus();
+  
+  // ===== BACKGROUND SYNC SETUP =====
+  async function setupBackgroundSync(registration) {
+    if ('sync' in registration) {
+      try {
+        await registration.sync.register('sync-study-progress');
+        console.log('✅ Background sync registered');
+      } catch (err) {
+        console.log('Background sync not supported:', err);
+      }
+    }
+    
+    // Periodic sync (if supported)
+    if ('periodicSync' in registration) {
+      try {
+        const status = await navigator.permissions.query({
+          name: 'periodic-background-sync',
+        });
+        if (status.state === 'granted') {
+          await registration.periodicSync.register('content-sync', {
+            minInterval: 12 * 60 * 60 * 1000, // 12 hours
+          });
+          console.log('✅ Periodic sync registered');
+        }
+      } catch (err) {
+        console.log('Periodic sync not supported:', err);
+      }
+    }
+  }
+  
+  // ===== SYNC OFFLINE PROGRESS =====
+  async function syncOfflineProgress() {
+    if (!navigator.onLine) return;
+    
+    try {
+      const openDB = indexedDB.open('NelavistaOffline', 1);
+      
+      openDB.onsuccess = async (event) => {
+        const db = event.target.result;
+        
+        if (db.objectStoreNames.contains('progress')) {
+          const transaction = db.transaction(['progress'], 'readonly');
+          const store = transaction.objectStore('progress');
+          const progress = await getAllFromStore(store);
+          
+          if (progress && progress.length > 0) {
+            console.log(`🔄 Syncing ${progress.length} offline sessions...`);
+            
+            try {
+              await fetch('/api/track-session', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ offline_sessions: progress })
+              });
+              
+              // Clear synced progress
+              const clearTransaction = db.transaction(['progress'], 'readwrite');
+              const clearStore = clearTransaction.objectStore('progress');
+              await clearStore.clear();
+              
+              console.log('✅ Offline progress synced');
+            } catch (err) {
+              console.error('Failed to sync offline progress:', err);
+            }
+          }
+        }
+      };
+    } catch (err) {
+      console.error('Failed to sync offline data:', err);
+    }
+  }
+  
+  function getAllFromStore(store) {
+    return new Promise((resolve, reject) => {
+      const request = store.getAll();
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+  }
+  
+  // ===== PUSH NOTIFICATIONS =====
+  async function requestNotificationPermission() {
+    if (!('Notification' in window)) {
+      console.log('Push notifications not supported');
+      return;
+    }
+    
+    const permission = await Notification.requestPermission();
+    
+    if (permission === 'granted') {
+      console.log('✅ Notification permission granted');
+      
+      // Subscribe to push notifications
+      if (serviceWorkerRegistration) {
+        try {
+          const subscription = await serviceWorkerRegistration.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: urlBase64ToUint8Array('YOUR_PUBLIC_VAPID_KEY')
+          });
+          
+          // Send subscription to your server
+          await fetch('/api/push-subscribe', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(subscription)
+          });
+          
+          console.log('✅ Push notification subscription saved');
+        } catch (err) {
+          console.error('Push subscription failed:', err);
+        }
+      }
+    }
+  }
+  
+  function urlBase64ToUint8Array(base64String) {
+    const padding = '='.repeat((4 - base64String.length % 4) % 4);
+    const base64 = (base64String + padding)
+      .replace(/\-/g, '+')
+      .replace(/_/g, '/');
+    const rawData = window.atob(base64);
+    const outputArray = new Uint8Array(rawData.length);
+    for (let i = 0; i < rawData.length; ++i) {
+      outputArray[i] = rawData.charCodeAt(i);
+    }
+    return outputArray;
+  }
+  
+  // Request notification permission after user interaction
+  document.addEventListener('click', function requestPermissionOnce() {
+    if (Notification.permission === 'default') {
+      requestNotificationPermission();
+    }
+    document.removeEventListener('click', requestPermissionOnce);
+  }, { once: true });
+  
+  // ===== UPDATE BANNER =====
+  function showUpdateBanner() {
+    const banner = document.getElementById('updateBanner');
+    banner.classList.add('show');
+  }
+  
+  function updateApp() {
+    if (serviceWorkerRegistration && serviceWorkerRegistration.waiting) {
+      serviceWorkerRegistration.waiting.postMessage({ type: 'SKIP_WAITING' });
+    }
+    document.getElementById('updateBanner').classList.remove('show');
+  }
+  
+  // ===== INSTALL FUNCTION =====
+  function triggerInstall() {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      
+      deferredPrompt.userChoice.then((choiceResult) => {
+        if (choiceResult.outcome === 'accepted') {
+          console.log('✅ User accepted install');
+          document.getElementById('pwa-install-button').classList.remove('show');
+        }
+        deferredPrompt = null;
+      });
+    }
+  }
+
+  // ===== APP STATE =====
   const state = {
     isChatMode: false,
     messages: [],
@@ -582,6 +950,12 @@
   }
 
   async function loadStudyStats() {
+    // Check if online
+    if (!navigator.onLine) {
+      loadOfflineStudyStats();
+      return;
+    }
+    
     try {
       const res = await fetch('/api/study-stats');
       if (!res.ok) throw new Error('Failed to fetch study stats');
@@ -590,16 +964,13 @@
       const days = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
       const values = days.map(d => data.days[d] || 0);
       
-      // Update weekly total
       const totalHours = data.total || 0;
       document.getElementById('weeklyTotal').textContent = `${totalHours} Hours this week`;
       
-      // Get today's hours
       const today = new Date().toLocaleString('en-US', { weekday: 'short' });
       const todayHours = data.days[today] || 0;
       document.getElementById('todayTotal').textContent = `📅 Today: ${todayHours} hours`;
       
-      // Update live badge
       const liveBadge = document.getElementById('liveBadge');
       if (liveBadge) {
         liveBadge.innerHTML = '● LIVE TRACKING';
@@ -610,17 +981,21 @@
       console.log('Study stats updated:', totalHours, 'hours this week,', todayHours, 'hours today');
     } catch(e) {
       console.error('Failed to load study stats:', e);
-      document.getElementById('weeklyTotal').textContent = '0 Hours this week';
-      document.getElementById('todayTotal').textContent = '📅 Today: 0 hours';
-      
-      const liveBadge = document.getElementById('liveBadge');
-      if (liveBadge) {
-        liveBadge.innerHTML = '○ RECONNECTING...';
-        liveBadge.style.opacity = '0.7';
-      }
-      
-      renderBarChart([0,0,0,0,0,0,0]);
+      loadOfflineStudyStats();
     }
+  }
+  
+  function loadOfflineStudyStats() {
+    document.getElementById('weeklyTotal').textContent = '0 Hours this week';
+    document.getElementById('todayTotal').textContent = '📅 Today: 0 hours';
+    
+    const liveBadge = document.getElementById('liveBadge');
+    if (liveBadge) {
+      liveBadge.innerHTML = '○ OFFLINE';
+      liveBadge.style.opacity = '0.7';
+    }
+    
+    renderBarChart([0,0,0,0,0,0,0]);
   }
 
   function renderBarChart(values) {
@@ -654,6 +1029,24 @@
     const duration = document.getElementById('examDuration').value.trim();
     if (!course || !date) return alert('Please fill in course name and date.');
     
+    if (!navigator.onLine) {
+      // Save exam locally when offline
+      queueOfflineAction({
+        url: '/api/exams',
+        method: 'POST',
+        body: JSON.stringify({course, date, duration}),
+        headers: {'Content-Type': 'application/json'}
+      });
+      
+      alert('Exam saved locally. Will sync when online.');
+      document.getElementById('examCourse').value = '';
+      document.getElementById('examDate').value = '';
+      document.getElementById('examDuration').value = '';
+      document.getElementById('addExamForm').style.display = 'none';
+      loadExams();
+      return;
+    }
+    
     try {
       await fetch('/api/exams', {
         method: 'POST',
@@ -669,8 +1062,42 @@
       alert('Failed to save exam. Please try again.');
     }
   }
+  
+  // ===== OFFLINE ACTION QUEUE =====
+  function queueOfflineAction(action) {
+    const openDB = indexedDB.open('NelavistaQueue', 1);
+    
+    openDB.onupgradeneeded = (event) => {
+      const db = event.target.result;
+      if (!db.objectStoreNames.contains('messages')) {
+        db.createObjectStore('messages', { keyPath: 'id', autoIncrement: true });
+      }
+    };
+    
+    openDB.onsuccess = (event) => {
+      const db = event.target.result;
+      const transaction = db.transaction(['messages'], 'readwrite');
+      const store = transaction.objectStore('messages');
+      store.add({
+        ...action,
+        timestamp: Date.now()
+      });
+      console.log('📦 Queued offline action:', action.url);
+    };
+  }
 
   async function loadExams() {
+    if (!navigator.onLine) {
+      // Load exams from cache/indexedDB when offline
+      const container = document.getElementById('examsContainer');
+      container.innerHTML = `
+        <div class="no-exams-msg">
+          <p>⚠️ You're offline</p>
+          <p style="color:#9ca3af;font-size:0.85rem;margin-top:6px;">Exam data will load when you're back online.</p>
+        </div>`;
+      return;
+    }
+    
     try {
       const res = await fetch('/api/exams');
       const data = await res.json();
@@ -714,6 +1141,12 @@
 
   async function loadCourses() {
     const grid = document.getElementById('coursesGrid');
+    
+    if (!navigator.onLine) {
+      grid.innerHTML = `<div style="color:#9ca3af;padding:20px 0;">⚠️ You're offline. Course data will load when online.</div>`;
+      return;
+    }
+    
     try {
       const res = await fetch('/api/user-courses');
       const data = await res.json();
@@ -764,6 +1197,12 @@
       document.getElementById('theme-toggle').textContent = '🌙'; 
     }
     localStorage.setItem('theme', state.theme);
+    
+    // Update theme-color meta for PWA
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) {
+      meta.content = state.theme === 'light' ? '#f3f4f6' : '#00D9FF';
+    }
   }
   
   function enterChatMode() {
@@ -827,6 +1266,13 @@
   }
   
   async function sendToBackend(message, attachments) {
+    if (!navigator.onLine) {
+      document.querySelector('.typing-indicator')?.remove();
+      state.isLoading = false;
+      addMessage("⚠️ You're offline. I can't process AI requests right now. Please try again when you're connected.", 'ai');
+      return;
+    }
+    
     try {
       const formData = new FormData();
       formData.append('message', message);
@@ -896,57 +1342,82 @@
   }
   
   function toggleVoiceInput() {
-    if (!('webkitSpeechRecognition' in window)) { alert('Voice not supported'); return; }
+    if (!('webkitSpeechRecognition' in window)) { 
+      alert('Voice recognition not supported in this browser'); 
+      return; 
+    }
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
     state.recognition = new SR();
     state.recognition.lang = 'en-US';
+    state.recognition.interimResults = false;
     state.recognition.onresult = (e) => { 
       document.getElementById('chatInput').value = e.results[0][0].transcript; 
       updateSendButton(); 
     };
+    state.recognition.onerror = (e) => {
+      console.error('Voice recognition error:', e.error);
+    };
     state.recognition.start();
+  }
+
+  // ===== SAVE OFFLINE STUDY SESSION =====
+  function saveOfflineStudySession() {
+    const openDB = indexedDB.open('NelavistaOffline', 1);
+    
+    openDB.onupgradeneeded = (event) => {
+      const db = event.target.result;
+      if (!db.objectStoreNames.contains('progress')) {
+        db.createObjectStore('progress', { keyPath: 'id', autoIncrement: true });
+      }
+    };
+    
+    openDB.onsuccess = (event) => {
+      const db = event.target.result;
+      const transaction = db.transaction(['progress'], 'readwrite');
+      const store = transaction.objectStore('progress');
+      store.add({
+        seconds: 60,
+        timestamp: Date.now(),
+        date: new Date().toISOString()
+      });
+    };
   }
 
   // ===== INITIALIZATION =====
   async function initializeDashboard() {
-    // Show loading state
     document.getElementById('weeklyTotal').textContent = 'Loading...';
     document.getElementById('todayTotal').textContent = '📅 Today: Loading...';
     
-    // Load all data in parallel
     await Promise.all([
       loadStudyStats(),
       loadExams(),
       loadCourses()
-    ]);
+    ]).catch(err => {
+      console.error('Dashboard initialization error:', err);
+    });
     
-    // Load any saved chat history
+    // Load saved chat history
     const savedChat = localStorage.getItem('nelavista_chat_history');
     if (savedChat) {
       try {
         const messages = JSON.parse(savedChat);
         state.messages = messages;
-        if (state.isChatMode) {
-          messages.forEach(msg => addMessage(msg.text, msg.sender));
-        }
       } catch(e) {
         console.error('Failed to load chat history', e);
       }
     }
-    
-    // Show welcome message if no chat history
-    setTimeout(() => {
-      if (state.messages.length === 0 && !state.isChatMode) {
-        const firstName = "{{ first_name }}";
-        addMessage(`👋 Welcome back to Nelavista, ${firstName}! I'm your AI educational companion. Your study progress has been saved. Ask me anything about your studies.`, 'ai');
-      }
-    }, 800);
   }
 
   // Event listeners
   document.getElementById('chatWithAiBtn')?.addEventListener('click', () => enterChatMode());
-  document.getElementById('talkNavLink')?.addEventListener('click', (e) => { e.preventDefault(); closeMenu(); enterChatMode(); });
-  document.getElementById('chatInput')?.addEventListener('focus', () => { if (!state.isChatMode) enterChatMode(); });
+  document.getElementById('talkNavLink')?.addEventListener('click', (e) => { 
+    e.preventDefault(); 
+    closeMenu(); 
+    enterChatMode(); 
+  });
+  document.getElementById('chatInput')?.addEventListener('focus', () => { 
+    if (!state.isChatMode) enterChatMode(); 
+  });
   document.getElementById('chatInput')?.addEventListener('input', updateSendButton);
 
   // Theme init
@@ -965,41 +1436,55 @@
   // Track session every minute when tab is active
   setInterval(() => {
     if (!document.hidden) {
-      fetch('/api/track-session', { 
-        method: 'POST', 
-        headers: {'Content-Type': 'application/json'}, 
-        body: JSON.stringify({seconds: 60}) 
-      })
-      .then(res => res.json())
-      .then(data => {
-        console.log('Session tracked:', data.total_hours, 'hours total today');
-        // Refresh stats after tracking
-        loadStudyStats();
-      })
-      .catch(err => console.error('Failed to track session:', err));
+      if (navigator.onLine) {
+        fetch('/api/track-session', { 
+          method: 'POST', 
+          headers: {'Content-Type': 'application/json'}, 
+          body: JSON.stringify({seconds: 60}) 
+        })
+        .then(res => res.json())
+        .then(data => {
+          console.log('Session tracked:', data.total_hours, 'hours total today');
+          loadStudyStats();
+        })
+        .catch(err => console.error('Failed to track session:', err));
+      } else {
+        // Save session offline
+        saveOfflineStudySession();
+        console.log('📦 Session saved offline');
+      }
     }
   }, 60000);
 
   // Refresh study stats every 5 minutes
   setInterval(() => {
-    if (!document.hidden) {
+    if (!document.hidden && navigator.onLine) {
       loadStudyStats();
     }
   }, 300000);
 
   // Handle page visibility changes
   document.addEventListener('visibilitychange', () => {
-    if (!document.hidden) {
-      // Refresh data when tab becomes visible again
+    if (!document.hidden && navigator.onLine) {
       loadStudyStats();
       loadExams();
+      syncOfflineProgress();
     }
   });
 
   // Save chat history before unload
   window.addEventListener('beforeunload', () => {
     if (state.messages.length) {
-      localStorage.setItem('nelavista_chat_history', JSON.stringify(state.messages));
+      localStorage.setItem('nelavista_chat_history', JSON.stringify(state.messages.slice(-50))); // Keep last 50 messages
+    }
+  });
+  
+  // Keyboard shortcut for chat
+  document.addEventListener('keydown', (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+      e.preventDefault();
+      enterChatMode();
+      document.getElementById('chatInput').focus();
     }
   });
 </script>

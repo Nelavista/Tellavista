@@ -1,7 +1,7 @@
 import os
 from flask import Flask, send_from_directory, render_template
 from config import DEBUG_MODE, SECRET_KEY, DATABASE_URL, MAX_CONTENT_LENGTH
-from extensions import db, socketio, mail
+from extensions import db, socketio
 from database import init_database, create_default_user, cleanup_stale_files
 from routes.auth_routes import auth_bp
 from routes.dashboard_routes import dashboard_bp

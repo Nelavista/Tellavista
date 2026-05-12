@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
-  <title>Nelavista · The smarter way to study at Nigerian universities</title>
+  <title>Nelavista · The smarter way to study at African universities</title>
 
   <!-- ===== PWA META TAGS ===== -->
   <meta name="theme-color" content="#050810">
@@ -11,7 +11,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="Nelavista">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="description" content="The smarter way to study at Nigerian universities. AI-powered tools, CBT practice, study materials — built for how you actually learn.">
+  <meta name="description" content="The smarter way to study at African universities. AI-powered tools, CBT practice, study materials — built for how you actually learn.">
   
   <!-- Manifest -->
   <link rel="manifest" href="/manifest.json">
@@ -143,7 +143,6 @@
     }
     .header-cta:hover { background:rgba(56,189,248,0.16) !important; }
     
-    /* Install button in header */
     .header-install-btn {
       display: none;
       background: var(--grad-main) !important;
@@ -538,12 +537,18 @@
     }
     
     .download-btn-main:active {
-      transform: translateY(0);
+      transform: scale(0.97);
     }
     
     .download-btn-main.installed {
       background: var(--grad-teal);
       pointer-events: none;
+      cursor: default;
+    }
+    
+    .download-btn-main.installed:hover {
+      transform: none;
+      box-shadow: var(--shadow-btn);
     }
     
     .download-instructions {
@@ -554,6 +559,7 @@
       z-index: 1;
       font-family: 'JetBrains Mono', monospace;
       letter-spacing: 0.02em;
+      line-height: 1.6;
     }
     
     .download-instructions span {
@@ -589,71 +595,41 @@
       color: var(--accent);
     }
 
-    /* ===== PWA INSTALL BANNER (for browsers that support it) ===== */
-    @keyframes slideDown {
-      from { transform: translateY(-100%); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
-    }
-    
-    .nelavista-install-banner {
+    /* ─── FLOATING INSTALL BUTTON ─── */
+    .floating-install-btn {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      z-index: 10000;
-      background: linear-gradient(135deg, #00D9FF, #0099CC);
-      color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 12px 16px;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      animation: slideDown 0.4s ease-out;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-    }
-    
-    .nelavista-install-banner .content {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    
-    .nelavista-install-banner .title {
-      font-size: 14px;
+      bottom: 24px;
+      right: 24px;
+      z-index: 998;
+      background: var(--grad-main);
+      color: white;
+      border: none;
+      padding: 14px 26px;
+      border-radius: var(--r-pill);
       font-weight: 700;
-      margin: 0;
-    }
-    
-    .nelavista-install-banner .subtitle {
-      font-size: 12px;
-      opacity: 0.9;
-      margin: 0;
-    }
-    
-    .nelavista-install-banner .actions {
-      display: flex;
+      font-size: 0.85rem;
+      font-family: 'DM Sans', sans-serif;
+      cursor: pointer;
+      box-shadow: 0 8px 32px rgba(56,189,248,0.4);
+      display: none;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
+      animation: bounce 2s infinite;
+      transition: all var(--t-fast) var(--ease);
     }
-    
-    .nelavista-install-banner .download-btn {
-      background: #ffffff;
-      color: #00A8CC;
-      border: none;
-      padding: 8px 18px;
-      border-radius: 20px;
-      font-weight: 600;
-      font-size: 14px;
-      cursor: pointer;
+    .floating-install-btn.show {
+      display: flex;
     }
-    
-    .nelavista-install-banner .close-btn {
-      background: none;
-      border: none;
-      color: #fff;
-      font-size: 22px;
-      cursor: pointer;
-      opacity: 0.7;
+    .floating-install-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 40px rgba(56,189,248,0.5);
+    }
+    .floating-install-btn:active {
+      transform: scale(0.95);
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
     }
 
     /* ─── MARQUEE ─── */
@@ -676,8 +652,6 @@
       font-family:'JetBrains Mono', monospace;
     }
     .marquee-dot { width:3px; height:3px; border-radius:50%; background:var(--accent); opacity:0.7; }
-
-    /* [Rest of the styles remain the same as your original - context, features, testimonials, founder, cta, footer sections] */
 
     /* ─── SECTIONS ─── */
     .context-section { padding:56px 0; }
@@ -982,6 +956,7 @@
       .marquee-track { animation:none; }
       .badge-dot { animation:none; }
       .download-icon-wrapper { animation: none; }
+      .floating-install-btn { animation: none; }
     }
   </style>
 </head>
@@ -1009,7 +984,7 @@
     <button id="menu-toggle" aria-label="Menu"><i class="ri-menu-line"></i></button>
     <div class="brand-logo bg">Nela<span>vista</span></div>
     <div class="header-actions">
-      <button id="header-install-btn" class="header-link header-install-btn" onclick="triggerInstall()">
+      <button id="header-install-btn" class="header-link header-install-btn" onclick="installApp()">
         📲 Install
       </button>
       <a href="/signup" class="header-link header-cta">Get started</a>
@@ -1024,15 +999,15 @@
     <section class="hero-section" id="home">
       <div class="container hero-container">
         <div class="hero-text">
-          <div class="hero-badge reveal"><span class="badge-dot"></span>Free for LASU students</div>
+          <div class="hero-badge reveal"><span class="badge-dot"></span>Free for African students</div>
           <span class="hero-tagline reveal">// Your Academic Edge</span>
-          <h1 class="hero-headline bg reveal">The smarter way<br>to study at<br><em>Nigerian universities.</em></h1>
-          <p class="hero-sub reveal">Built by a LASU student, for Nigerian students. AI-powered tools, CBT practice, study materials — designed around how you actually learn.</p>
+          <h1 class="hero-headline bg reveal">The smarter way<br>to study at<br><em>African universities.</em></h1>
+          <p class="hero-sub reveal">Built by an African student, for African students. AI-powered tools, CBT practice, study materials — designed around how you actually learn.</p>
           <div class="hero-features reveal">
             <div class="hero-feature-pill"><i class="ri-brain-line"></i>AI Tutor</div>
             <div class="hero-feature-pill"><i class="ri-file-search-line"></i>Notes Scanner</div>
             <div class="hero-feature-pill"><i class="ri-questionnaire-line"></i>CBT Practice</div>
-            <div class="hero-feature-pill"><i class="ri-map-pin-line"></i>LASU Map</div>
+            <div class="hero-feature-pill"><i class="ri-map-pin-line"></i>Campus Map</div>
           </div>
           <div class="hero-actions reveal">
             <a href="/signup" class="btn-primary">Start for free <i class="ri-arrow-right-line"></i></a>
@@ -1058,12 +1033,12 @@
           <div class="visual-ring-2"></div>
           <div class="hero-visual-blob"></div>
           <img src="{{ url_for('static', filename='hero-preview.jpg') }}" alt="Nelavista study platform" class="hero-visual-media" onerror="this.style.display='none'">
-          <div class="hero-float-badge"><span class="float-badge-head">Free</span> · LASU-only</div>
+          <div class="hero-float-badge"><span class="float-badge-head">Free</span> · For Africa</div>
         </div>
       </div>
     </section>
 
-    <!-- ===== DOWNLOAD PWA SECTION ===== -->
+    <!-- ===== INSTANT INSTALL PWA SECTION ===== -->
     <section class="download-section" id="download">
       <div class="container">
         <div class="download-card reveal">
@@ -1071,7 +1046,7 @@
           <h2 class="download-title bg">Get the Nelavista App</h2>
           <p class="download-subtitle">
             Install Nelavista on your phone for the best experience.<br>
-            No Play Store. No downloads. Just one tap.
+            No Play Store. No App Store. Just one tap.
           </p>
           
           <div class="download-benefits">
@@ -1093,13 +1068,13 @@
             </div>
           </div>
           
-          <button class="download-btn-main" id="downloadBtnMain" onclick="triggerInstall()">
+          <button class="download-btn-main" id="downloadBtnMain" onclick="installApp()">
             <i class="ri-download-2-line"></i>
-            <span id="downloadBtnText">Install Nelavista App</span>
+            <span>Install Nelavista App</span>
           </button>
           
           <div class="download-instructions" id="downloadInstructions">
-            <span>💡 Tip:</span> After installing, find Nelavista on your home screen
+            <span>⚡</span> One tap install. Find Nelavista on your home screen.
           </div>
           
           <div class="platform-badges">
@@ -1126,7 +1101,7 @@
         <span class="marquee-item"><span class="marquee-dot"></span>Campus Map</span>
         <span class="marquee-item"><span class="marquee-dot"></span>Material Analysis</span>
         <span class="marquee-item"><span class="marquee-dot"></span>Video Reels</span>
-        <span class="marquee-item"><span class="marquee-dot"></span>Built for Nigeria</span>
+        <span class="marquee-item"><span class="marquee-dot"></span>Built for Africa</span>
         <span class="marquee-item"><span class="marquee-dot"></span>AI Tutor</span>
         <span class="marquee-item"><span class="marquee-dot"></span>CBT Practice</span>
         <span class="marquee-item"><span class="marquee-dot"></span>Study Materials</span>
@@ -1134,11 +1109,9 @@
         <span class="marquee-item"><span class="marquee-dot"></span>Campus Map</span>
         <span class="marquee-item"><span class="marquee-dot"></span>Material Analysis</span>
         <span class="marquee-item"><span class="marquee-dot"></span>Video Reels</span>
-        <span class="marquee-item"><span class="marquee-dot"></span>Built for Nigeria</span>
+        <span class="marquee-item"><span class="marquee-dot"></span>Built for Africa</span>
       </div>
     </div>
-
-    <!-- [Rest of the sections remain the same: context, features, testimonials, founder, cta, footer] -->
 
     <section class="context-section">
       <div class="container">
@@ -1146,7 +1119,7 @@
           <div class="reveal">
             <span class="section-label">What is Nelavista</span>
             <h2 class="section-title bg">Your context.<br>Your tools.<br>Your platform.</h2>
-            <p class="section-body">Most academic platforms were built for Western students. They don't speak your language — not literally, not contextually. Nelavista was built from the ground up for how Nigerian university students actually learn.</p>
+            <p class="section-body">Most academic platforms were built for Western students. They don't speak your language — not literally, not contextually. Nelavista was built from the ground up for how African university students actually learn.</p>
           </div>
           <div class="reveal">
             <div class="context-card">
@@ -1177,13 +1150,13 @@
           <div class="feature-card feature-wide reveal">
             <div class="feature-icon"><i class="ri-chat-smile-2-line"></i></div>
             <h3>Talk to Nelavista</h3>
-            <p>Your AI academic assistant that understands Nigerian university courses, exam formats, and how you actually study.</p>
+            <p>Your AI academic assistant that understands African university courses, exam formats, and how you actually study.</p>
             <span class="feature-tag">AI Powered</span>
           </div>
           <div class="feature-card reveal">
             <div class="feature-icon"><i class="ri-questionnaire-line"></i></div>
             <h3>CBT Practice</h3>
-            <p>Adaptive mock exams built around Nigerian university question banks. Practice until you're ready.</p>
+            <p>Adaptive mock exams built around African university question banks. Practice until you're ready.</p>
             <span class="feature-tag">Exam Ready</span>
           </div>
           <div class="feature-card reveal">
@@ -1208,8 +1181,8 @@
           </div>
           <div class="feature-card reveal">
             <div class="feature-icon"><i class="ri-map-pin-line"></i></div>
-            <h3>LASU Campus Map</h3>
-            <p>Find lecture halls, facilities, and offices. Never get lost on campus again.</p>
+            <h3>Campus Map</h3>
+            <p>Find lecture halls, facilities, and offices. Navigate your campus with ease.</p>
           </div>
           <div class="feature-card reveal">
             <div class="feature-icon"><i class="ri-bar-chart-line"></i></div>
@@ -1230,7 +1203,7 @@
             <p class="testimonial-text">"Nelavista changed how I prepare for exams. The CBT practice is exactly what we face in school. I passed 4 courses with better grades."</p>
             <div class="testimonial-author">
               <div class="testimonial-avatar">FK</div>
-              <div><div class="testimonial-name">Fatimah K.</div><div class="testimonial-role">Accounting, 300L · LASU</div></div>
+              <div><div class="testimonial-name">Fatimah K.</div><div class="testimonial-role">Accounting, 300L · University of Lagos</div></div>
             </div>
           </div>
           <div class="testimonial-card reveal">
@@ -1238,15 +1211,15 @@
             <p class="testimonial-text">"The AI tutor understands our syllabus. I asked about Engineering courses and got clear explanations — not some American textbook version."</p>
             <div class="testimonial-author">
               <div class="testimonial-avatar">TA</div>
-              <div><div class="testimonial-name">Tobi A.</div><div class="testimonial-role">Mechanical Engineering, 200L · LASU</div></div>
+              <div><div class="testimonial-name">Tobi A.</div><div class="testimonial-role">Mechanical Engineering, 200L · UNILAG</div></div>
             </div>
           </div>
           <div class="testimonial-card reveal">
             <div class="testimonial-stars">★★★★★</div>
-            <p class="testimonial-text">"I love that it's free and built by someone from our school. The materials library saved me during exam season."</p>
+            <p class="testimonial-text">"I love that it's free and built by someone who understands our system. The materials library saved me during exam season."</p>
             <div class="testimonial-author">
               <div class="testimonial-avatar">CE</div>
-              <div><div class="testimonial-name">Chisom E.</div><div class="testimonial-role">Mass Communication, 200L · LASU</div></div>
+              <div><div class="testimonial-name">Chisom E.</div><div class="testimonial-role">Mass Communication, 200L · UNN</div></div>
             </div>
           </div>
         </div>
@@ -1259,7 +1232,7 @@
           <div class="founder-left">
             <p class="founder-quote">"I built Nelavista because I was that student — searching for notes across five WhatsApp groups, guessing what would come out in CBT, struggling with tools that weren't built for our reality."</p>
             <div class="founder-name bg">Abdul Afeez Tella</div>
-            <div class="founder-role">Founder · Mathematics 200L · Lagos State University</div>
+            <div class="founder-role">Founder · Mathematics Student · Nigeria</div>
           </div>
           <div class="founder-right">
             <img src="{{ url_for('static', filename='founder.jpeg') }}" alt="Abdul Afeez Tella" class="founder-avatar">
@@ -1273,9 +1246,9 @@
         <div class="cta-card reveal">
           <div class="cta-glow"></div>
           <h2 class="cta-title bg">Ready to study smarter?</h2>
-          <p class="cta-desc">Join over 2,400 LASU students already using Nelavista.<br>Free. No card needed.</p>
+          <p class="cta-desc">Join thousands of African students already using Nelavista.<br>Free. No card needed.</p>
           <a href="/signup" class="cta-btn">Create free account <i class="ri-arrow-right-line"></i></a>
-          <p class="cta-note">2-minute setup · Built for LASU · Always free</p>
+          <p class="cta-note">2-minute setup · Built for Africa · Always free</p>
           <p class="cta-login">Already have an account? <a href="/login">Sign in</a></p>
         </div>
       </div>
@@ -1287,7 +1260,7 @@
       <div class="footer-inner">
         <div class="footer-brand">
           <div class="footer-logo bg">Nela<span>vista</span></div>
-          <p class="footer-tagline">The smarter way to study at Nigerian universities.</p>
+          <p class="footer-tagline">The smarter way to study at African universities.</p>
         </div>
         <div class="footer-links">
           <div>
@@ -1309,114 +1282,196 @@
           </div>
         </div>
       </div>
-      <div class="footer-bottom">© 2026 Nelavista — Built at LASU, for every Nigerian university student.</div>
+      <div class="footer-bottom">© 2026 Nelavista — Built in Africa, for every African university student.</div>
     </div>
   </footer>
 
+  <!-- Floating Install Button -->
+  <button class="floating-install-btn" id="floatingInstallBtn" onclick="installApp()">
+    <i class="ri-download-2-line"></i>
+    Install App
+  </button>
+
   <script>
-    // ===== PWA INSTALL HANDLING =====
+    // ===== DIRECT INSTANT PWA INSTALL =====
     let deferredPrompt;
     let isAppInstalled = false;
-    
+
     // Check if already installed
     if (window.matchMedia('(display-mode: standalone)').matches) {
       isAppInstalled = true;
       updateInstallUI();
     }
-    
-    // Listen for install event
+
+    // Capture the install prompt
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
       deferredPrompt = e;
-      console.log('📲 Install prompt available');
-      
-      // Show install button in header
+      console.log('📲 Install prompt ready');
       document.getElementById('header-install-btn').classList.add('show');
-      
-      // Update download section button
+      document.getElementById('floatingInstallBtn').classList.add('show');
       updateInstallUI();
     });
-    
+
     // Track successful installation
     window.addEventListener('appinstalled', () => {
       isAppInstalled = true;
       deferredPrompt = null;
       console.log('✅ App installed');
       updateInstallUI();
-      
-      // Hide install elements
       document.getElementById('header-install-btn').classList.remove('show');
-      
-      // Track with analytics
+      document.getElementById('floatingInstallBtn').classList.remove('show');
       if (typeof gtag !== 'undefined') {
-        gtag('event', 'pwa_install', {
-          event_category: 'engagement',
-          event_label: 'PWA Installation'
-        });
+        gtag('event', 'pwa_install', { event_category: 'engagement', event_label: 'Direct Install' });
       }
     });
-    
-    function updateInstallUI() {
-      const downloadBtn = document.getElementById('downloadBtnMain');
-      const downloadBtnText = document.getElementById('downloadBtnText');
-      const instructions = document.getElementById('downloadInstructions');
-      
+
+    // Main install function - always triggers direct install
+    function installApp() {
+      // If already installed, just show confirmation
       if (isAppInstalled) {
-        if (downloadBtnText) downloadBtnText.textContent = '✅ App Installed';
-        if (downloadBtn) downloadBtn.classList.add('installed');
-        if (instructions) instructions.innerHTML = '<span>🎉</span> Nelavista is on your home screen!';
-      } else if (!deferredPrompt) {
-        // Browser doesn't support PWA install yet, show manual instructions
-        updateManualInstructions();
-      }
-    }
-    
-    function updateManualInstructions() {
-      const instructions = document.getElementById('downloadInstructions');
-      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-      const isAndroid = /Android/.test(navigator.userAgent);
-      const isChrome = /Chrome/.test(navigator.userAgent) && !/Edge/.test(navigator.userAgent);
-      const isSafari = /Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent);
-      
-      let instruction = '';
-      
-      if (isIOS && isSafari) {
-        instruction = '<span>📱 iOS:</span> Tap <strong>Share</strong> → <strong>Add to Home Screen</strong>';
-      } else if (isAndroid && isChrome) {
-        instruction = '<span>📱 Android:</span> Tap <strong>⋮</strong> menu → <strong>Add to Home Screen</strong>';
-      } else if (isAndroid) {
-        instruction = '<span>📱 Android:</span> Open in Chrome → menu → <strong>Install App</strong>';
-      } else {
-        instruction = '<span>💡 Tip:</span> Open in Chrome or Safari to install the app';
-      }
-      
-      if (instructions) instructions.innerHTML = instruction;
-    }
-    
-    function triggerInstall() {
-      if (isAppInstalled) {
-        alert('Nelavista is already installed on your device! 🎉');
+        const downloadBtn = document.getElementById('downloadBtnMain');
+        if (downloadBtn) {
+          downloadBtn.innerHTML = '<i class="ri-checkbox-circle-line"></i><span>✅ Already Installed</span>';
+          downloadBtn.classList.add('installed');
+          setTimeout(() => {
+            downloadBtn.innerHTML = '<i class="ri-checkbox-circle-line"></i><span>✅ App Installed</span>';
+          }, 2000);
+        }
         return;
       }
-      
+
+      // If install prompt is available, trigger it directly
       if (deferredPrompt) {
         deferredPrompt.prompt();
-        
         deferredPrompt.userChoice.then((choiceResult) => {
           if (choiceResult.outcome === 'accepted') {
-            console.log('✅ User accepted install');
+            console.log('✅ User installed the app');
+            isAppInstalled = true;
+          } else {
+            console.log('❌ User dismissed');
+            // Still show manual instructions as fallback
+            showManualFallback();
           }
           deferredPrompt = null;
           updateInstallUI();
         });
-      } else {
-        // Show manual instructions
-        updateManualInstructions();
-        
-        // Scroll to download section if on mobile
-        if (window.innerWidth < 768) {
-          document.getElementById('download')?.scrollIntoView({ behavior: 'smooth' });
+        return;
+      }
+
+      // No deferred prompt - try alternate methods
+      tryAutoInstall();
+    }
+
+    // Try alternate installation methods
+    function tryAutoInstall() {
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+      const isAndroid = /Android/.test(navigator.userAgent);
+      const isChrome = /Chrome/.test(navigator.userAgent) && !/Edge/.test(navigator.userAgent);
+      const isSafari = /Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent);
+
+      // For iOS Safari - can't auto-install, show instructions
+      if (isIOS && isSafari) {
+        showManualFallback();
+        return;
+      }
+
+      // For Android Chrome - try to trigger install via different methods
+      if (isAndroid && isChrome) {
+        // Method 1: Try using the experimental navigator.install() if available
+        if (navigator.install) {
+          navigator.install().catch(() => showManualFallback());
+          return;
         }
+        
+        // Method 2: Try to use the mini-infobar or settings install
+        // Some Android versions allow triggering via window.open
+        const installUrl = window.location.origin + '?install=true';
+        if (confirm('Tap "Install" to add Nelavista to your home screen')) {
+          // This sometimes triggers the install flow on Android
+          window.location.href = installUrl;
+        }
+        return;
+      }
+
+      // Desktop or other browsers
+      showManualFallback();
+    }
+
+    // Show manual installation instructions as fallback
+    function showManualFallback() {
+      const instructions = document.getElementById('downloadInstructions');
+      const downloadBtn = document.getElementById('downloadBtnMain');
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+      const isAndroid = /Android/.test(navigator.userAgent);
+      const isChrome = /Chrome/.test(navigator.userAgent) && !/Edge/.test(navigator.userAgent);
+      const isSafari = /Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent);
+
+      let instructionHTML = '';
+
+      if (isIOS && isSafari) {
+        instructionHTML = '<span>📱 iOS:</span> Tap <strong>Share</strong> icon → <strong>Add to Home Screen</strong> → <strong>Add</strong>';
+      } else if (isAndroid && isChrome) {
+        instructionHTML = '<span>📱 Android:</span> Tap <strong>⋮</strong> menu → <strong>Install App</strong> → <strong>Install</strong>';
+      } else if (isAndroid) {
+        instructionHTML = '<span>📱 Android:</span> Open in Chrome browser → menu → <strong>Install App</strong>';
+      } else {
+        instructionHTML = '<span>💡</span> Look for the install icon <i class="ri-download-2-line"></i> in your browser address bar';
+      }
+
+      if (instructions) instructions.innerHTML = instructionHTML;
+      
+      // Keep button showing "Install Nelavista App" 
+      if (downloadBtn) {
+        downloadBtn.innerHTML = '<i class="ri-download-2-line"></i><span>Install Nelavista App</span>';
+        downloadBtn.classList.remove('installed');
+        downloadBtn.onclick = installApp;
+      }
+
+      // Scroll instructions into view on mobile
+      setTimeout(() => {
+        if (window.innerWidth < 768) {
+          instructions?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 300);
+    }
+
+    function updateInstallUI() {
+      const downloadBtn = document.getElementById('downloadBtnMain');
+      const instructions = document.getElementById('downloadInstructions');
+      const floatingBtn = document.getElementById('floatingInstallBtn');
+
+      if (isAppInstalled) {
+        // App is already installed
+        if (downloadBtn) {
+          downloadBtn.innerHTML = '<i class="ri-checkbox-circle-line"></i><span>✅ App Installed</span>';
+          downloadBtn.classList.add('installed');
+        }
+        if (instructions) {
+          instructions.innerHTML = '<span>🎉</span> Nelavista is on your home screen! Tap to open anytime.';
+        }
+        if (floatingBtn) floatingBtn.classList.remove('show');
+        document.getElementById('header-install-btn').classList.remove('show');
+      } else if (deferredPrompt) {
+        // Install is ready
+        if (downloadBtn) {
+          downloadBtn.innerHTML = '<i class="ri-download-2-line"></i><span>Install Nelavista App</span>';
+          downloadBtn.classList.remove('installed');
+          downloadBtn.onclick = installApp;
+        }
+        if (instructions) {
+          instructions.innerHTML = '<span>⚡</span> One tap install. No Play Store. No sign-up.';
+        }
+        if (floatingBtn) floatingBtn.classList.add('show');
+      } else {
+        // Browser doesn't support PWA prompts yet
+        if (downloadBtn) {
+          downloadBtn.innerHTML = '<i class="ri-download-2-line"></i><span>Install Nelavista App</span>';
+          downloadBtn.classList.remove('installed');
+          downloadBtn.onclick = installApp;
+        }
+        showManualFallback();
+        if (floatingBtn) floatingBtn.classList.remove('show');
       }
     }
 
@@ -1428,7 +1483,7 @@
       let ct = st || (pd ? 'dark' : 'light');
       function at(t) {
         if(t === 'light') { b.classList.add('light-theme'); tt.textContent = '☀️'; }
-        else              { b.classList.remove('light-theme'); tt.textContent = '🌙'; }
+        else { b.classList.remove('light-theme'); tt.textContent = '🌙'; }
         localStorage.setItem('theme', t);
       }
       at(ct);
@@ -1451,7 +1506,7 @@
     const pb = document.getElementById('scrollProgress');
     window.addEventListener('scroll', () => {
       const ws = document.documentElement.scrollTop;
-      const h  = document.documentElement.scrollHeight - window.innerHeight;
+      const h = document.documentElement.scrollHeight - window.innerHeight;
       pb.style.width = (ws / h * 100) + '%';
     }, { passive: true });
 
@@ -1473,7 +1528,24 @@
       });
     }, { threshold: 0.07 });
     document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
-    
+
+    // Register service worker
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/service-worker.js')
+          .then(reg => console.log('✅ Service Worker registered'))
+          .catch(err => console.log('Service Worker failed:', err));
+      });
+    }
+
+    // Listen for display mode changes
+    window.matchMedia('(display-mode: standalone)').addEventListener('change', (e) => {
+      if (e.matches) {
+        isAppInstalled = true;
+        updateInstallUI();
+      }
+    });
+
     // Initial UI update
     setTimeout(updateInstallUI, 1000);
   </script>

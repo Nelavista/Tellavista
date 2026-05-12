@@ -1,45 +1,91 @@
 {
-  "name": "Nelavista - Academic Platform",
+  "name": "Nelavista - AI Educational Companion",
   "short_name": "Nelavista",
-  "description": "The smarter way to study at Nigerian universities. AI-powered tools, CBT practice, study materials.",
-  "theme_color": "#00D9FF",
-  "background_color": "#0A0A0A",
+  "description": "The smarter way to study at Nigerian universities",
+  "start_url": "/",
   "display": "standalone",
+  "background_color": "#050810",
+  "theme_color": "#00D9FF",
+  "orientation": "any",
   "scope": "/",
-  "start_url": "/?utm_source=homescreen",
+  "id": "nelavista-pwa-v1",
+  "categories": ["education", "productivity"],
   "icons": [
-    { "src": "/static/icons/nelavista-72x72.png",   "sizes": "72x72",   "type": "image/png" },
-    { "src": "/static/icons/nelavista-96x96.png",   "sizes": "96x96",   "type": "image/png" },
-    { "src": "/static/icons/nelavista-128x128.png", "sizes": "128x128", "type": "image/png" },
-    { "src": "/static/icons/nelavista-144x144.png", "sizes": "144x144", "type": "image/png" },
-    { "src": "/static/icons/nelavista-152x152.png", "sizes": "152x152", "type": "image/png" },
-    { "src": "/static/icons/nelavista-192x192.png", "sizes": "192x192", "type": "image/png" },
-    { "src": "/static/icons/nelavista-384x384.png", "sizes": "384x384", "type": "image/png" },
-    { "src": "/static/icons/nelavista-512x512.png", "sizes": "512x512", "type": "image/png" }
+    {
+      "src": "/static/icons/nelavista-72x72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/static/icons/nelavista-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/static/icons/nelavista-128x128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/static/icons/nelavista-144x144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/static/icons/nelavista-152x152.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/static/icons/nelavista-180x180.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/static/icons/nelavista-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/static/icons/nelavista-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
   ],
   "shortcuts": [
     {
       "name": "AI Tutor",
-      "short_name": "AI Tutor",
-      "description": "Get instant academic help from the Nelavista AI",
-      "url": "/ai-tutor?utm_source=shortcut",
-      "icons": [{ "src": "/static/icons/nelavista-96x96.png", "sizes": "96x96" }]
+      "short_name": "Chat",
+      "description": "Chat with Nelavista AI",
+      "url": "/ai",
+      "icons": [
+        {
+          "src": "/static/icons/nela-chat-96x96.png",
+          "sizes": "96x96"
+        }
+      ]
     },
     {
-      "name": "CBT Practice",
-      "short_name": "CBT Practice",
-      "description": "Prepare with computer-based tests",
-      "url": "/cbt-practice?utm_source=shortcut",
-      "icons": [{ "src": "/static/icons/nelavista-96x96.png", "sizes": "96x96" }]
+      "name": "Mock Exam",
+      "short_name": "CBT",
+      "description": "Practice with mock exams",
+      "url": "/CBT"
     },
     {
       "name": "Study Materials",
-      "short_name": "Study Materials",
-      "description": "Access lecture notes and resources",
-      "url": "/study-materials?utm_source=shortcut",
-      "icons": [{ "src": "/static/icons/nelavista-96x96.png", "sizes": "96x96" }]
+      "short_name": "Materials",
+      "description": "Browse study materials",
+      "url": "/materials"
     }
   ],
-  "categories": ["education", "productivity"],
-  "lang": "en-NG"
+  "related_applications": [],
+  "prefer_related_applications": false
 }

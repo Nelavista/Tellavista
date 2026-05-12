@@ -3,137 +3,109 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>You're Offline – Nelavista</title>
+  <title>Nelavista - Offline</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      background-color: #0A0A0A;
-      color: #ffffff;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #050810;
+      color: #eef2f7;
       display: flex;
-      justify-content: center;
       align-items: center;
-      height: 100vh;
-      text-align: center;
+      justify-content: center;
+      min-height: 100vh;
       padding: 20px;
     }
     .offline-container {
+      text-align: center;
       max-width: 400px;
     }
-    .icon-circle {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 90px;
-      height: 90px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #00D9FF, #0099CC);
-      margin-bottom: 30px;
+    .offline-icon {
+      font-size: 64px;
+      margin-bottom: 24px;
+      animation: float 3s ease-in-out infinite;
     }
-    .icon-circle svg {
-      width: 45px;
-      height: 45px;
-      fill: none;
-      stroke: white;
-      stroke-width: 2;
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
     }
     h1 {
-      font-size: 28px;
-      margin-bottom: 12px;
-      color: #00D9FF;
+      font-size: 1.8rem;
       font-weight: 700;
+      margin-bottom: 12px;
+      background: linear-gradient(135deg, #38bdf8, #2dd4bf);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
     p {
-      font-size: 16px;
-      line-height: 1.5;
-      opacity: 0.85;
-      margin-bottom: 30px;
+      color: #8fa8c8;
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+    .offline-features {
+      background: rgba(15, 24, 37, 0.8);
+      border: 1px solid #1c2a3a;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 24px;
+      text-align: left;
+    }
+    .offline-features h3 {
+      font-size: 0.9rem;
+      margin-bottom: 12px;
+      color: #38bdf8;
+    }
+    .offline-features ul {
+      list-style: none;
+    }
+    .offline-features li {
+      padding: 8px 0;
+      font-size: 0.85rem;
+      color: #8fa8c8;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .offline-features li:last-child {
+      border-bottom: none;
     }
     .retry-btn {
-      background: #00D9FF;
-      color: #0A0A0A;
+      display: inline-block;
+      background: linear-gradient(135deg, #38bdf8, #3b82f6);
+      color: white;
       border: none;
-      padding: 12px 28px;
-      border-radius: 25px;
-      font-size: 16px;
+      padding: 12px 32px;
+      border-radius: 12px;
+      font-size: 0.9rem;
       font-weight: 600;
       cursor: pointer;
-      transition: background 0.2s, transform 0.1s;
-      box-shadow: 0 4px 10px rgba(0,217,255,0.25);
+      text-decoration: none;
+      transition: transform 0.2s;
     }
-    .retry-btn:active {
-      transform: scale(0.96);
-      background: #00B8E0;
-    }
-    .reconnect-indicator {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      margin-top: 25px;
-      font-size: 13px;
-      opacity: 0.7;
-    }
-    .pulsing-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background-color: #00D9FF;
-      animation: pulse 1.5s infinite;
-    }
-    @keyframes pulse {
-      0% { opacity: 0.4; transform: scale(1); }
-      50% { opacity: 1; transform: scale(1.3); }
-      100% { opacity: 0.4; transform: scale(1); }
-    }
-    @media (prefers-color-scheme: light) {
-      body {
-        background-color: #f4f4f4;
-        color: #222;
-      }
-      h1 {
-        color: #007A99;
-      }
-      .retry-btn {
-        background: #007A99;
-        color: #fff;
-      }
+    .retry-btn:hover {
+      transform: translateY(-2px);
     }
   </style>
 </head>
 <body>
   <div class="offline-container">
-    <!-- Offline icon: circle with wifi slash -->
-    <div class="icon-circle">
-      <svg viewBox="0 0 24 24">
-        <path d="M5 2L2 5L12 15L22 5L19 2" stroke-linejoin="round" stroke-linecap="round"/>
-        <path d="M8 6L6 8" stroke-linecap="round"/>
-        <path d="M10 9L12 11L14 9" stroke-linecap="round"/>
-        <circle cx="12" cy="18" r="1" fill="white" stroke="none"/>
-      </svg>
+    <div class="offline-icon">📡</div>
+    <h1>You're Offline</h1>
+    <p>Don't worry! Nelavista still works offline. You can access previously viewed content.</p>
+    
+    <div class="offline-features">
+      <h3>Available Offline:</h3>
+      <ul>
+        <li>✅ Previously viewed study materials</li>
+        <li>✅ Cached course pages</li>
+        <li>✅ Downloaded resources</li>
+        <li>❌ AI Tutor (requires internet)</li>
+        <li>❌ Live Meetings (requires internet)</li>
+      </ul>
     </div>
-    <h1>You’re Offline</h1>
-    <p>It looks like your internet connection was lost. Please check your network and try again. Nelavista will automatically reload when you’re back online.</p>
-    <button class="retry-btn" onclick="location.reload()">Retry Connection</button>
-    <div class="reconnect-indicator">
-      <span class="pulsing-dot"></span>
-      <span>Attempting to reconnect…</span>
-    </div>
+    
+    <button class="retry-btn" onclick="location.reload()">
+      Try Again
+    </button>
   </div>
-
-  <script>
-    // Auto-reload when connection is restored
-    window.addEventListener('online', function() {
-      location.reload();
-    });
-    // If already online (edge case), go to homepage
-    if (navigator.onLine) {
-      window.location.href = '/';
-    }
-  </script>
 </body>
 </html>

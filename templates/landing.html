@@ -5,6 +5,28 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
   <title>Nelavista · The smarter way to study at Nigerian universities</title>
 
+  <!-- ===== PWA META TAGS ===== -->
+  <meta name="theme-color" content="#050810">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Nelavista">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="description" content="The smarter way to study at Nigerian universities. AI-powered tools, CBT practice, study materials — built for how you actually learn.">
+  
+  <!-- Manifest -->
+  <link rel="manifest" href="/manifest.json">
+  
+  <!-- Favicons -->
+  <link rel="icon" type="image/png" sizes="32x32" href="/static/icons/nelavista-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/static/icons/nelavista-16x16.png">
+  <link rel="shortcut icon" href="/static/icons/favicon.ico">
+  
+  <!-- Apple Touch Icons -->
+  <link rel="apple-touch-icon" sizes="180x180" href="/static/icons/nelavista-180x180.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/static/icons/nelavista-152x152.png">
+  <link rel="apple-touch-icon" sizes="167x167" href="/static/icons/nelavista-167x167.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="/static/icons/nelavista-120x120.png">
+
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
 
@@ -70,7 +92,6 @@
       -moz-osx-font-smoothing: grayscale;
     }
 
-    /* Grain overlay */
     body::before {
       content:'';
       position:fixed; inset:0; z-index:0; pointer-events:none;
@@ -113,6 +134,7 @@
       letter-spacing:0.01em;
     }
     .header-link:hover { color:var(--text-primary); }
+    
     .header-cta {
       background:rgba(56,189,248,0.09) !important;
       border:1px solid rgba(56,189,248,0.22) !important;
@@ -120,6 +142,28 @@
       font-size:0.66rem !important; padding:5px 11px !important;
     }
     .header-cta:hover { background:rgba(56,189,248,0.16) !important; }
+    
+    /* Install button in header */
+    .header-install-btn {
+      display: none;
+      background: var(--grad-main) !important;
+      color: #fff !important;
+      font-weight: 700 !important;
+      font-size: 0.62rem !important;
+      padding: 5px 10px !important;
+      border: none !important;
+      cursor: pointer;
+      transition: all var(--t-fast) var(--ease);
+    }
+    .header-install-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(56,189,248,0.3);
+    }
+    .header-install-btn.show {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
 
     #menu-toggle, #theme-toggle {
       width:34px; height:34px; border-radius:50%;
@@ -180,7 +224,6 @@
       display:flex; align-items:center;
     }
 
-    /* Layered ambient glows */
     .hero-section::before {
       content:'';
       position:absolute; top:-120px; left:50%; transform:translateX(-50%);
@@ -361,12 +404,264 @@
     body.light-theme .hero-float-badge { background:rgba(255,255,255,0.95); }
     .float-badge-head { color:var(--accent-teal); font-weight:800; }
 
+    /* ===== DOWNLOAD PWA SECTION ===== */
+    .download-section {
+      padding: 48px 0 24px;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .download-card {
+      background: linear-gradient(135deg, rgba(56,189,248,0.08) 0%, rgba(45,212,191,0.05) 100%);
+      border: 1px solid rgba(56,189,248,0.2);
+      border-radius: var(--r-xl);
+      padding: 36px 24px;
+      position: relative;
+      overflow: hidden;
+      text-align: center;
+    }
+    
+    .download-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: var(--grad-hero);
+    }
+    
+    .download-card::after {
+      content: '';
+      position: absolute;
+      top: -60px;
+      right: -40px;
+      width: 200px;
+      height: 200px;
+      background: radial-gradient(circle, rgba(56,189,248,0.1) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    
+    .download-icon-wrapper {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 20px;
+      background: rgba(56,189,248,0.12);
+      border: 2px solid rgba(56,189,248,0.3);
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      position: relative;
+      z-index: 1;
+      animation: float-icon 3s ease-in-out infinite;
+    }
+    
+    @keyframes float-icon {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+    
+    .download-title {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: clamp(1.3rem, 4vw, 1.8rem);
+      font-weight: 800;
+      letter-spacing: -0.035em;
+      margin-bottom: 8px;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .download-subtitle {
+      color: var(--text-secondary);
+      font-size: 0.88rem;
+      margin-bottom: 24px;
+      position: relative;
+      z-index: 1;
+      line-height: 1.5;
+    }
+    
+    .download-benefits {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 12px;
+      margin-bottom: 24px;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .download-benefit {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+      padding: 8px 12px;
+      background: rgba(56,189,248,0.05);
+      border: 1px solid rgba(56,189,248,0.1);
+      border-radius: var(--r-md);
+      justify-content: center;
+    }
+    
+    .download-benefit i {
+      color: var(--accent-teal);
+      font-size: 0.9rem;
+    }
+    
+    .download-btn-main {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background: var(--grad-main);
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.92rem;
+      padding: 14px 32px;
+      border-radius: var(--r-md);
+      text-decoration: none;
+      transition: all var(--t-med) var(--ease);
+      box-shadow: var(--shadow-btn);
+      border: none;
+      cursor: pointer;
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 320px;
+      font-family: 'DM Sans', sans-serif;
+    }
+    
+    .download-btn-main:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 32px rgba(56,189,248,0.4);
+    }
+    
+    .download-btn-main:active {
+      transform: translateY(0);
+    }
+    
+    .download-btn-main.installed {
+      background: var(--grad-teal);
+      pointer-events: none;
+    }
+    
+    .download-instructions {
+      margin-top: 20px;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      position: relative;
+      z-index: 1;
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: 0.02em;
+    }
+    
+    .download-instructions span {
+      color: var(--accent);
+    }
+    
+    .platform-badges {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .platform-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.62rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-hard);
+      padding: 5px 10px;
+      border-radius: var(--r-pill);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    
+    .platform-badge i {
+      font-size: 0.7rem;
+      color: var(--accent);
+    }
+
+    /* ===== PWA INSTALL BANNER (for browsers that support it) ===== */
+    @keyframes slideDown {
+      from { transform: translateY(-100%); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    
+    .nelavista-install-banner {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 10000;
+      background: linear-gradient(135deg, #00D9FF, #0099CC);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      animation: slideDown 0.4s ease-out;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+    
+    .nelavista-install-banner .content {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .nelavista-install-banner .title {
+      font-size: 14px;
+      font-weight: 700;
+      margin: 0;
+    }
+    
+    .nelavista-install-banner .subtitle {
+      font-size: 12px;
+      opacity: 0.9;
+      margin: 0;
+    }
+    
+    .nelavista-install-banner .actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .nelavista-install-banner .download-btn {
+      background: #ffffff;
+      color: #00A8CC;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    
+    .nelavista-install-banner .close-btn {
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 22px;
+      cursor: pointer;
+      opacity: 0.7;
+    }
+
     /* ─── MARQUEE ─── */
     .marquee-wrap {
       overflow:hidden;
       border-top:1px solid var(--border-subtle);
       border-bottom:1px solid var(--border-subtle);
-      padding:11px 0; background:var(--bg-surface); position:relative; z-index:1;
+      padding:12px 0; background:var(--bg-surface); position:relative; z-index:1;
     }
     .marquee-track {
       display:flex; gap:36px; animation:marquee 22s linear infinite; white-space:nowrap;
@@ -381,6 +676,8 @@
       font-family:'JetBrains Mono', monospace;
     }
     .marquee-dot { width:3px; height:3px; border-radius:50%; background:var(--accent); opacity:0.7; }
+
+    /* [Rest of the styles remain the same as your original - context, features, testimonials, founder, cta, footer sections] */
 
     /* ─── SECTIONS ─── */
     .context-section { padding:56px 0; }
@@ -680,11 +977,11 @@
       .founder-card { padding:44px 40px; }
     }
 
-    /* ─── ACCESSIBILITY ─── */
     @media (prefers-reduced-motion: reduce) {
       .reveal { opacity:1; transform:none; transition:none; }
       .marquee-track { animation:none; }
       .badge-dot { animation:none; }
+      .download-icon-wrapper { animation: none; }
     }
   </style>
 </head>
@@ -699,6 +996,7 @@
     <nav>
       <ul class="sidebar-nav">
         <li><a href="#home"><i class="ri-home-4-line"></i>Home</a></li>
+        <li><a href="#download"><i class="ri-download-2-line"></i>Download App</a></li>
         <li><a href="#features"><i class="ri-apps-line"></i>Features</a></li>
         <li><a href="#testimonials"><i class="ri-chat-heart-line"></i>Student Voices</a></li>
         <li><a href="/signup"><i class="ri-user-add-line"></i>Get Started Free</a></li>
@@ -711,6 +1009,9 @@
     <button id="menu-toggle" aria-label="Menu"><i class="ri-menu-line"></i></button>
     <div class="brand-logo bg">Nela<span>vista</span></div>
     <div class="header-actions">
+      <button id="header-install-btn" class="header-link header-install-btn" onclick="triggerInstall()">
+        📲 Install
+      </button>
       <a href="/signup" class="header-link header-cta">Get started</a>
       <a href="/login" class="header-link">Login</a>
       <button id="theme-toggle" aria-label="Toggle theme">🌙</button>
@@ -735,7 +1036,7 @@
           </div>
           <div class="hero-actions reveal">
             <a href="/signup" class="btn-primary">Start for free <i class="ri-arrow-right-line"></i></a>
-            <a href="#features" class="btn-ghost">See what's inside <i class="ri-arrow-down-line"></i></a>
+            <a href="#download" class="btn-ghost">📲 Download App <i class="ri-download-line"></i></a>
           </div>
           <div class="stat-strip reveal">
             <div class="stat-item">
@@ -762,6 +1063,60 @@
       </div>
     </section>
 
+    <!-- ===== DOWNLOAD PWA SECTION ===== -->
+    <section class="download-section" id="download">
+      <div class="container">
+        <div class="download-card reveal">
+          <div class="download-icon-wrapper">📱</div>
+          <h2 class="download-title bg">Get the Nelavista App</h2>
+          <p class="download-subtitle">
+            Install Nelavista on your phone for the best experience.<br>
+            No Play Store. No downloads. Just one tap.
+          </p>
+          
+          <div class="download-benefits">
+            <div class="download-benefit">
+              <i class="ri-lightning-bolt-line"></i>
+              Works offline
+            </div>
+            <div class="download-benefit">
+              <i class="ri-smartphone-line"></i>
+              Full screen app
+            </div>
+            <div class="download-benefit">
+              <i class="ri-notification-3-line"></i>
+              Push notifications
+            </div>
+            <div class="download-benefit">
+              <i class="ri-speed-up-line"></i>
+              Faster than browser
+            </div>
+          </div>
+          
+          <button class="download-btn-main" id="downloadBtnMain" onclick="triggerInstall()">
+            <i class="ri-download-2-line"></i>
+            <span id="downloadBtnText">Install Nelavista App</span>
+          </button>
+          
+          <div class="download-instructions" id="downloadInstructions">
+            <span>💡 Tip:</span> After installing, find Nelavista on your home screen
+          </div>
+          
+          <div class="platform-badges">
+            <span class="platform-badge">
+              <i class="ri-android-line"></i> Android
+            </span>
+            <span class="platform-badge">
+              <i class="ri-apple-line"></i> iOS
+            </span>
+            <span class="platform-badge">
+              <i class="ri-computer-line"></i> Desktop
+            </span>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <div class="marquee-wrap">
       <div class="marquee-track">
         <span class="marquee-item"><span class="marquee-dot"></span>AI Tutor</span>
@@ -782,6 +1137,8 @@
         <span class="marquee-item"><span class="marquee-dot"></span>Built for Nigeria</span>
       </div>
     </div>
+
+    <!-- [Rest of the sections remain the same: context, features, testimonials, founder, cta, footer] -->
 
     <section class="context-section">
       <div class="container">
@@ -937,6 +1294,7 @@
             <h4>Platform</h4>
             <ul>
               <li><a href="#features">Features</a></li>
+              <li><a href="#download">Download App</a></li>
               <li><a href="#testimonials">Student Voices</a></li>
               <li><a href="/signup">Get Started</a></li>
             </ul>
@@ -956,6 +1314,112 @@
   </footer>
 
   <script>
+    // ===== PWA INSTALL HANDLING =====
+    let deferredPrompt;
+    let isAppInstalled = false;
+    
+    // Check if already installed
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+      isAppInstalled = true;
+      updateInstallUI();
+    }
+    
+    // Listen for install event
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      console.log('📲 Install prompt available');
+      
+      // Show install button in header
+      document.getElementById('header-install-btn').classList.add('show');
+      
+      // Update download section button
+      updateInstallUI();
+    });
+    
+    // Track successful installation
+    window.addEventListener('appinstalled', () => {
+      isAppInstalled = true;
+      deferredPrompt = null;
+      console.log('✅ App installed');
+      updateInstallUI();
+      
+      // Hide install elements
+      document.getElementById('header-install-btn').classList.remove('show');
+      
+      // Track with analytics
+      if (typeof gtag !== 'undefined') {
+        gtag('event', 'pwa_install', {
+          event_category: 'engagement',
+          event_label: 'PWA Installation'
+        });
+      }
+    });
+    
+    function updateInstallUI() {
+      const downloadBtn = document.getElementById('downloadBtnMain');
+      const downloadBtnText = document.getElementById('downloadBtnText');
+      const instructions = document.getElementById('downloadInstructions');
+      
+      if (isAppInstalled) {
+        if (downloadBtnText) downloadBtnText.textContent = '✅ App Installed';
+        if (downloadBtn) downloadBtn.classList.add('installed');
+        if (instructions) instructions.innerHTML = '<span>🎉</span> Nelavista is on your home screen!';
+      } else if (!deferredPrompt) {
+        // Browser doesn't support PWA install yet, show manual instructions
+        updateManualInstructions();
+      }
+    }
+    
+    function updateManualInstructions() {
+      const instructions = document.getElementById('downloadInstructions');
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+      const isAndroid = /Android/.test(navigator.userAgent);
+      const isChrome = /Chrome/.test(navigator.userAgent) && !/Edge/.test(navigator.userAgent);
+      const isSafari = /Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent);
+      
+      let instruction = '';
+      
+      if (isIOS && isSafari) {
+        instruction = '<span>📱 iOS:</span> Tap <strong>Share</strong> → <strong>Add to Home Screen</strong>';
+      } else if (isAndroid && isChrome) {
+        instruction = '<span>📱 Android:</span> Tap <strong>⋮</strong> menu → <strong>Add to Home Screen</strong>';
+      } else if (isAndroid) {
+        instruction = '<span>📱 Android:</span> Open in Chrome → menu → <strong>Install App</strong>';
+      } else {
+        instruction = '<span>💡 Tip:</span> Open in Chrome or Safari to install the app';
+      }
+      
+      if (instructions) instructions.innerHTML = instruction;
+    }
+    
+    function triggerInstall() {
+      if (isAppInstalled) {
+        alert('Nelavista is already installed on your device! 🎉');
+        return;
+      }
+      
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        
+        deferredPrompt.userChoice.then((choiceResult) => {
+          if (choiceResult.outcome === 'accepted') {
+            console.log('✅ User accepted install');
+          }
+          deferredPrompt = null;
+          updateInstallUI();
+        });
+      } else {
+        // Show manual instructions
+        updateManualInstructions();
+        
+        // Scroll to download section if on mobile
+        if (window.innerWidth < 768) {
+          document.getElementById('download')?.scrollIntoView({ behavior: 'smooth' });
+        }
+      }
+    }
+
     /* Theme */
     (function() {
       const tt = document.getElementById('theme-toggle'), b = document.body;
@@ -1009,6 +1473,9 @@
       });
     }, { threshold: 0.07 });
     document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+    
+    // Initial UI update
+    setTimeout(updateInstallUI, 1000);
   </script>
 </body>
 </html>

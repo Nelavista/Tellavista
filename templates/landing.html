@@ -403,235 +403,6 @@
     body.light-theme .hero-float-badge { background:rgba(255,255,255,0.95); }
     .float-badge-head { color:var(--accent-teal); font-weight:800; }
 
-    /* ===== DOWNLOAD PWA SECTION ===== */
-    .download-section {
-      padding: 48px 0 24px;
-      position: relative;
-      z-index: 1;
-    }
-    
-    .download-card {
-      background: linear-gradient(135deg, rgba(56,189,248,0.08) 0%, rgba(45,212,191,0.05) 100%);
-      border: 1px solid rgba(56,189,248,0.2);
-      border-radius: var(--r-xl);
-      padding: 36px 24px;
-      position: relative;
-      overflow: hidden;
-      text-align: center;
-    }
-    
-    .download-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 2px;
-      background: var(--grad-hero);
-    }
-    
-    .download-card::after {
-      content: '';
-      position: absolute;
-      top: -60px;
-      right: -40px;
-      width: 200px;
-      height: 200px;
-      background: radial-gradient(circle, rgba(56,189,248,0.1) 0%, transparent 70%);
-      pointer-events: none;
-    }
-    
-    .download-icon-wrapper {
-      width: 64px;
-      height: 64px;
-      margin: 0 auto 20px;
-      background: rgba(56,189,248,0.12);
-      border: 2px solid rgba(56,189,248,0.3);
-      border-radius: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 28px;
-      position: relative;
-      z-index: 1;
-      animation: float-icon 3s ease-in-out infinite;
-    }
-    
-    @keyframes float-icon {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-6px); }
-    }
-    
-    .download-title {
-      font-family: 'Bricolage Grotesque', sans-serif;
-      font-size: clamp(1.3rem, 4vw, 1.8rem);
-      font-weight: 800;
-      letter-spacing: -0.035em;
-      margin-bottom: 8px;
-      position: relative;
-      z-index: 1;
-    }
-    
-    .download-subtitle {
-      color: var(--text-secondary);
-      font-size: 0.88rem;
-      margin-bottom: 24px;
-      position: relative;
-      z-index: 1;
-      line-height: 1.5;
-    }
-    
-    .download-benefits {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-      gap: 12px;
-      margin-bottom: 24px;
-      position: relative;
-      z-index: 1;
-    }
-    
-    .download-benefit {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 0.78rem;
-      color: var(--text-secondary);
-      padding: 8px 12px;
-      background: rgba(56,189,248,0.05);
-      border: 1px solid rgba(56,189,248,0.1);
-      border-radius: var(--r-md);
-      justify-content: center;
-    }
-    
-    .download-benefit i {
-      color: var(--accent-teal);
-      font-size: 0.9rem;
-    }
-    
-    .download-btn-main {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      background: var(--grad-main);
-      color: #fff;
-      font-weight: 700;
-      font-size: 0.92rem;
-      padding: 14px 32px;
-      border-radius: var(--r-md);
-      text-decoration: none;
-      transition: all var(--t-med) var(--ease);
-      box-shadow: var(--shadow-btn);
-      border: none;
-      cursor: pointer;
-      position: relative;
-      z-index: 1;
-      width: 100%;
-      max-width: 320px;
-      font-family: 'DM Sans', sans-serif;
-    }
-    
-    .download-btn-main:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 12px 32px rgba(56,189,248,0.4);
-    }
-    
-    .download-btn-main:active {
-      transform: scale(0.97);
-    }
-    
-    .download-btn-main.installed {
-      background: var(--grad-teal);
-      pointer-events: none;
-      cursor: default;
-    }
-    
-    .download-btn-main.installed:hover {
-      transform: none;
-      box-shadow: var(--shadow-btn);
-    }
-    
-    .download-instructions {
-      margin-top: 20px;
-      font-size: 0.72rem;
-      color: var(--text-muted);
-      position: relative;
-      z-index: 1;
-      font-family: 'JetBrains Mono', monospace;
-      letter-spacing: 0.02em;
-      line-height: 1.6;
-    }
-    
-    .download-instructions span {
-      color: var(--accent);
-    }
-    
-    .platform-badges {
-      display: flex;
-      justify-content: center;
-      gap: 12px;
-      margin-top: 16px;
-      flex-wrap: wrap;
-      position: relative;
-      z-index: 1;
-    }
-    
-    .platform-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      font-size: 0.62rem;
-      font-weight: 600;
-      color: var(--text-muted);
-      background: var(--bg-elevated);
-      border: 1px solid var(--border-hard);
-      padding: 5px 10px;
-      border-radius: var(--r-pill);
-      font-family: 'JetBrains Mono', monospace;
-    }
-    
-    .platform-badge i {
-      font-size: 0.7rem;
-      color: var(--accent);
-    }
-
-    /* ─── FLOATING INSTALL BUTTON ─── */
-    .floating-install-btn {
-      position: fixed;
-      bottom: 24px;
-      right: 24px;
-      z-index: 998;
-      background: var(--grad-main);
-      color: white;
-      border: none;
-      padding: 14px 26px;
-      border-radius: var(--r-pill);
-      font-weight: 700;
-      font-size: 0.85rem;
-      font-family: 'DM Sans', sans-serif;
-      cursor: pointer;
-      box-shadow: 0 8px 32px rgba(56,189,248,0.4);
-      display: none;
-      align-items: center;
-      gap: 8px;
-      animation: bounce 2s infinite;
-      transition: all var(--t-fast) var(--ease);
-    }
-    .floating-install-btn.show {
-      display: flex;
-    }
-    .floating-install-btn:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 12px 40px rgba(56,189,248,0.5);
-    }
-    .floating-install-btn:active {
-      transform: scale(0.95);
-    }
-    @keyframes bounce {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-6px); }
-    }
-
     /* ─── MARQUEE ─── */
     .marquee-wrap {
       overflow:hidden;
@@ -955,8 +726,6 @@
       .reveal { opacity:1; transform:none; transition:none; }
       .marquee-track { animation:none; }
       .badge-dot { animation:none; }
-      .download-icon-wrapper { animation: none; }
-      .floating-install-btn { animation: none; }
     }
   </style>
 </head>
@@ -971,7 +740,6 @@
     <nav>
       <ul class="sidebar-nav">
         <li><a href="#home"><i class="ri-home-4-line"></i>Home</a></li>
-        <li><a href="#download"><i class="ri-download-2-line"></i>Download App</a></li>
         <li><a href="#features"><i class="ri-apps-line"></i>Features</a></li>
         <li><a href="#testimonials"><i class="ri-chat-heart-line"></i>Student Voices</a></li>
         <li><a href="/signup"><i class="ri-user-add-line"></i>Get Started Free</a></li>
@@ -1011,7 +779,7 @@
           </div>
           <div class="hero-actions reveal">
             <a href="/signup" class="btn-primary">Start for free <i class="ri-arrow-right-line"></i></a>
-            <a href="#download" class="btn-ghost">📲 Download App <i class="ri-download-line"></i></a>
+            <a href="/login" class="btn-ghost">Already a student? Sign in <i class="ri-arrow-right-line"></i></a>
           </div>
           <div class="stat-strip reveal">
             <div class="stat-item">
@@ -1034,60 +802,6 @@
           <div class="hero-visual-blob"></div>
           <img src="{{ url_for('static', filename='hero-preview.jpg') }}" alt="Nelavista study platform" class="hero-visual-media" onerror="this.style.display='none'">
           <div class="hero-float-badge"><span class="float-badge-head">Free</span> · For Africa</div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ===== INSTANT INSTALL PWA SECTION ===== -->
-    <section class="download-section" id="download">
-      <div class="container">
-        <div class="download-card reveal">
-          <div class="download-icon-wrapper">📱</div>
-          <h2 class="download-title bg">Get the Nelavista App</h2>
-          <p class="download-subtitle">
-            Install Nelavista on your phone for the best experience.<br>
-            No Play Store. No App Store. Just one tap.
-          </p>
-          
-          <div class="download-benefits">
-            <div class="download-benefit">
-              <i class="ri-lightning-bolt-line"></i>
-              Works offline
-            </div>
-            <div class="download-benefit">
-              <i class="ri-smartphone-line"></i>
-              Full screen app
-            </div>
-            <div class="download-benefit">
-              <i class="ri-notification-3-line"></i>
-              Push notifications
-            </div>
-            <div class="download-benefit">
-              <i class="ri-speed-up-line"></i>
-              Faster than browser
-            </div>
-          </div>
-          
-          <button class="download-btn-main" id="downloadBtnMain" onclick="installApp()">
-            <i class="ri-download-2-line"></i>
-            <span>Install Nelavista App</span>
-          </button>
-          
-          <div class="download-instructions" id="downloadInstructions">
-            <span>⚡</span> One tap install. Find Nelavista on your home screen.
-          </div>
-          
-          <div class="platform-badges">
-            <span class="platform-badge">
-              <i class="ri-android-line"></i> Android
-            </span>
-            <span class="platform-badge">
-              <i class="ri-apple-line"></i> iOS
-            </span>
-            <span class="platform-badge">
-              <i class="ri-computer-line"></i> Desktop
-            </span>
-          </div>
         </div>
       </div>
     </section>
@@ -1267,7 +981,6 @@
             <h4>Platform</h4>
             <ul>
               <li><a href="#features">Features</a></li>
-              <li><a href="#download">Download App</a></li>
               <li><a href="#testimonials">Student Voices</a></li>
               <li><a href="/signup">Get Started</a></li>
             </ul>
@@ -1286,31 +999,22 @@
     </div>
   </footer>
 
-  <!-- Floating Install Button -->
-  <button class="floating-install-btn" id="floatingInstallBtn" onclick="installApp()">
-    <i class="ri-download-2-line"></i>
-    Install App
-  </button>
-
   <script>
-    // ===== DIRECT INSTANT PWA INSTALL =====
+    // ===== PWA INSTALL (Android only) =====
     let deferredPrompt;
     let isAppInstalled = false;
 
     // Check if already installed
     if (window.matchMedia('(display-mode: standalone)').matches) {
       isAppInstalled = true;
-      updateInstallUI();
     }
 
-    // Capture the install prompt
+    // Capture the install prompt (Android only)
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
       deferredPrompt = e;
-      console.log('📲 Install prompt ready');
+      console.log('📲 Install prompt ready (Android)');
       document.getElementById('header-install-btn').classList.add('show');
-      document.getElementById('floatingInstallBtn').classList.add('show');
-      updateInstallUI();
     });
 
     // Track successful installation
@@ -1318,160 +1022,29 @@
       isAppInstalled = true;
       deferredPrompt = null;
       console.log('✅ App installed');
-      updateInstallUI();
       document.getElementById('header-install-btn').classList.remove('show');
-      document.getElementById('floatingInstallBtn').classList.remove('show');
       if (typeof gtag !== 'undefined') {
-        gtag('event', 'pwa_install', { event_category: 'engagement', event_label: 'Direct Install' });
+        gtag('event', 'pwa_install', { event_category: 'engagement', event_label: 'Android Install' });
       }
     });
 
-    // Main install function - always triggers direct install
+    // Install function
     function installApp() {
-      // If already installed, just show confirmation
       if (isAppInstalled) {
-        const downloadBtn = document.getElementById('downloadBtnMain');
-        if (downloadBtn) {
-          downloadBtn.innerHTML = '<i class="ri-checkbox-circle-line"></i><span>✅ Already Installed</span>';
-          downloadBtn.classList.add('installed');
-          setTimeout(() => {
-            downloadBtn.innerHTML = '<i class="ri-checkbox-circle-line"></i><span>✅ App Installed</span>';
-          }, 2000);
-        }
+        alert('Nelavista is already installed on your device!');
         return;
       }
 
-      // If install prompt is available, trigger it directly
       if (deferredPrompt) {
         deferredPrompt.prompt();
         deferredPrompt.userChoice.then((choiceResult) => {
           if (choiceResult.outcome === 'accepted') {
             console.log('✅ User installed the app');
             isAppInstalled = true;
-          } else {
-            console.log('❌ User dismissed');
-            // Still show manual instructions as fallback
-            showManualFallback();
           }
           deferredPrompt = null;
-          updateInstallUI();
+          document.getElementById('header-install-btn').classList.remove('show');
         });
-        return;
-      }
-
-      // No deferred prompt - try alternate methods
-      tryAutoInstall();
-    }
-
-    // Try alternate installation methods
-    function tryAutoInstall() {
-      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-      const isAndroid = /Android/.test(navigator.userAgent);
-      const isChrome = /Chrome/.test(navigator.userAgent) && !/Edge/.test(navigator.userAgent);
-      const isSafari = /Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent);
-
-      // For iOS Safari - can't auto-install, show instructions
-      if (isIOS && isSafari) {
-        showManualFallback();
-        return;
-      }
-
-      // For Android Chrome - try to trigger install via different methods
-      if (isAndroid && isChrome) {
-        // Method 1: Try using the experimental navigator.install() if available
-        if (navigator.install) {
-          navigator.install().catch(() => showManualFallback());
-          return;
-        }
-        
-        // Method 2: Try to use the mini-infobar or settings install
-        // Some Android versions allow triggering via window.open
-        const installUrl = window.location.origin + '?install=true';
-        if (confirm('Tap "Install" to add Nelavista to your home screen')) {
-          // This sometimes triggers the install flow on Android
-          window.location.href = installUrl;
-        }
-        return;
-      }
-
-      // Desktop or other browsers
-      showManualFallback();
-    }
-
-    // Show manual installation instructions as fallback
-    function showManualFallback() {
-      const instructions = document.getElementById('downloadInstructions');
-      const downloadBtn = document.getElementById('downloadBtnMain');
-      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-      const isAndroid = /Android/.test(navigator.userAgent);
-      const isChrome = /Chrome/.test(navigator.userAgent) && !/Edge/.test(navigator.userAgent);
-      const isSafari = /Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent);
-
-      let instructionHTML = '';
-
-      if (isIOS && isSafari) {
-        instructionHTML = '<span>📱 iOS:</span> Tap <strong>Share</strong> icon → <strong>Add to Home Screen</strong> → <strong>Add</strong>';
-      } else if (isAndroid && isChrome) {
-        instructionHTML = '<span>📱 Android:</span> Tap <strong>⋮</strong> menu → <strong>Install App</strong> → <strong>Install</strong>';
-      } else if (isAndroid) {
-        instructionHTML = '<span>📱 Android:</span> Open in Chrome browser → menu → <strong>Install App</strong>';
-      } else {
-        instructionHTML = '<span>💡</span> Look for the install icon <i class="ri-download-2-line"></i> in your browser address bar';
-      }
-
-      if (instructions) instructions.innerHTML = instructionHTML;
-      
-      // Keep button showing "Install Nelavista App" 
-      if (downloadBtn) {
-        downloadBtn.innerHTML = '<i class="ri-download-2-line"></i><span>Install Nelavista App</span>';
-        downloadBtn.classList.remove('installed');
-        downloadBtn.onclick = installApp;
-      }
-
-      // Scroll instructions into view on mobile
-      setTimeout(() => {
-        if (window.innerWidth < 768) {
-          instructions?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-      }, 300);
-    }
-
-    function updateInstallUI() {
-      const downloadBtn = document.getElementById('downloadBtnMain');
-      const instructions = document.getElementById('downloadInstructions');
-      const floatingBtn = document.getElementById('floatingInstallBtn');
-
-      if (isAppInstalled) {
-        // App is already installed
-        if (downloadBtn) {
-          downloadBtn.innerHTML = '<i class="ri-checkbox-circle-line"></i><span>✅ App Installed</span>';
-          downloadBtn.classList.add('installed');
-        }
-        if (instructions) {
-          instructions.innerHTML = '<span>🎉</span> Nelavista is on your home screen! Tap to open anytime.';
-        }
-        if (floatingBtn) floatingBtn.classList.remove('show');
-        document.getElementById('header-install-btn').classList.remove('show');
-      } else if (deferredPrompt) {
-        // Install is ready
-        if (downloadBtn) {
-          downloadBtn.innerHTML = '<i class="ri-download-2-line"></i><span>Install Nelavista App</span>';
-          downloadBtn.classList.remove('installed');
-          downloadBtn.onclick = installApp;
-        }
-        if (instructions) {
-          instructions.innerHTML = '<span>⚡</span> One tap install. No Play Store. No sign-up.';
-        }
-        if (floatingBtn) floatingBtn.classList.add('show');
-      } else {
-        // Browser doesn't support PWA prompts yet
-        if (downloadBtn) {
-          downloadBtn.innerHTML = '<i class="ri-download-2-line"></i><span>Install Nelavista App</span>';
-          downloadBtn.classList.remove('installed');
-          downloadBtn.onclick = installApp;
-        }
-        showManualFallback();
-        if (floatingBtn) floatingBtn.classList.remove('show');
       }
     }
 
@@ -1537,17 +1110,6 @@
           .catch(err => console.log('Service Worker failed:', err));
       });
     }
-
-    // Listen for display mode changes
-    window.matchMedia('(display-mode: standalone)').addEventListener('change', (e) => {
-      if (e.matches) {
-        isAppInstalled = true;
-        updateInstallUI();
-      }
-    });
-
-    // Initial UI update
-    setTimeout(updateInstallUI, 1000);
   </script>
 </body>
 </html>

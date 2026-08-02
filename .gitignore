@@ -1,0 +1,66 @@
+# Environment / secrets
+.env
+.env.local
+.env.*.local
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+
+# Virtual environments
+venv/
+env/
+.venv/
+
+# Flask / sessions
+instance/
+flask_session/
+flask_sessions/
+memory/
+
+# Uploads / generated / runtime data
+uploads/
+extracted_images/
+generated_notes/
+turbo_images/
+session_data/
+*.db
+*.sqlite
+*.sqlite3
+
+# Editor / OS
+.vscode/
+.idea/
+*.swp
+Thumbs.db
+.DS_Store
+
+# Large stray downloads / installers (should never be committed)
+*.exe
+
+# Loose scratch/course-material PDFs accidentally dropped at repo root
+# (course.json and "cbt questions" are left tracked -- unused by live code today
+# but real content; their fate is decided in the Stage 12 dead-file review, not here)
+/*.pdf
+/100 level pdfs/
+/SC COURSE CODE
+/tellavista_cache.json
+/tawfiq_cache.json
+
+# Accidental zero-byte / shell-redirect artifacts
+/0.5)
+/0.6)
+/0.7]
+/bool
+/dict
+/int
+/list
+/str
+/value
+/mvp
+/hhh
+/1000
+/2000
+/500

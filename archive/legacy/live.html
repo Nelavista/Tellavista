@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Nelavista Live Classroom</title>
+</head>
+<body style="font-family: Arial; text-align: center;">
+
+    <h1>Nelavista Live Classroom</h1>
+    <h2>{{ session.title }}</h2>
+
+    {% if session.youtube_url %}
+        <iframe width="800" height="450"
+            src="{{ session.youtube_url }}"
+            frameborder="0"
+            allowfullscreen>
+        </iframe>
+    {% else %}
+        <p>No live session currently running.</p>
+    {% endif %}
+
+</body>
+</html>

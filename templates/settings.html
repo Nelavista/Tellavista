@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nelavista Settings</title>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; font-family:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif; }
+    body { background:#0d1117; color:#e6edf3; min-height:100vh; padding:32px 20px 80px; }
+    .wrap { max-width:640px; margin:0 auto; }
+    .top-bar { display:flex; align-items:center; gap:14px; margin-bottom:28px; }
+    .back-btn { display:flex; align-items:center; justify-content:center; width:38px; height:38px; border-radius:50%; background:#161b22; border:1px solid #30363d; color:#8b949e; text-decoration:none; font-size:1.1rem; transition:all 0.2s; flex-shrink:0; }
+    .back-btn:hover { border-color:#58a6ff; color:#58a6ff; }
+    h1 { font-size:1.4rem; font-weight:700; }
+    h2 { font-size:1rem; font-weight:600; color:#e6edf3; margin-bottom:4px; }
+    .section-desc { color:#8b949e; font-size:0.85rem; margin-bottom:18px; }
+    .card { background:#161b22; border:1px solid #21262d; border-radius:16px; padding:22px; margin-bottom:20px; }
+    .setting { display:flex; justify-content:space-between; align-items:center; gap:16px; padding:14px 0; border-bottom:1px solid #21262d; }
+    .setting:last-child { border-bottom:none; }
+    label { font-size:0.92rem; color:#e6edf3; flex:1; }
+    select, textarea { background:#0d1117; border:1px solid #30363d; color:#e6edf3; padding:9px 12px; border-radius:10px; font-size:0.88rem; outline:none; transition:border 0.2s; }
+    select { min-width:150px; }
+    textarea { width:100%; resize:vertical; }
+    select:focus, textarea:focus { border-color:#58a6ff; }
+    input[type="checkbox"] { width:18px; height:18px; accent-color:#58a6ff; cursor:pointer; }
+    .checkbox-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(150px, 1fr)); gap:10px; }
+    .trait-label { display:flex; align-items:center; gap:8px; background:#0d1117; border:1px solid #30363d; border-radius:10px; padding:9px 12px; font-size:0.85rem; cursor:pointer; transition:all 0.2s; }
+    .trait-label:hover { border-color:#58a6ff; }
+    .trait-label input { margin:0; }
+    .btn { display:block; width:100%; padding:13px; font-size:0.95rem; font-weight:700; border:none; border-radius:40px; cursor:pointer; transition:all 0.2s; }
+    .btn-primary { background:#58a6ff; color:#0d1117; margin-top:8px; }
+    .btn-primary:hover { opacity:0.9; }
+    .btn-danger { background:transparent; border:1px solid #30363d; color:#f87171; }
+    .btn-danger:hover { border-color:#f87171; background:rgba(248,113,113,0.08); }
+    .field-select-row { display:flex; gap:10px; margin-bottom:14px; }
+    .field-select-row select { flex:1; }
+    .toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(20px); background:#14b8a6; color:#0d1117; padding:12px 22px; border-radius:40px; font-weight:600; font-size:0.9rem; opacity:0; pointer-events:none; transition:all 0.3s ease; z-index:100; }
+    .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+    @media (max-width:480px) {
+      .setting { flex-direction:column; align-items:flex-start; gap:8px; }
+      select, textarea { width:100%; }
+    }
+  </style>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top-bar">
+      <a class="back-btn" href="{{ url_for('dashboard.dashboard') }}" title="Back to dashboard">←</a>
+      <h1 id="settings-title">⚙️ Nelavista Settings</h1>
+    </div>
+
+    <div class="card">
+      <h2>General</h2>
+      <div class="setting">
+        <label for="theme">Theme Mode</label>
+        <select id="theme">
+          <option value="light">Light Mode</option>
+          <option value="dark">Dark Mode</option>
+        </select>
+      </div>
+      <div class="setting">
+        <label for="notifications">Enable Notifications</label>
+        <input type="checkbox" id="notifications" />
+      </div>
+      <div class="setting">
+        <label for="language">Language</label>
+        <select id="language">
+          <option value="en">English</option>
+          <option value="yo">Yoruba</option>
+          <option value="fr">French</option>
+          <option value="ha">Hausa</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2 id="ai-pref-title">📚 Nelavista AI Preferences</h2>
+      <div class="setting">
+        <label for="memoryToggle">Enable Learning Memory</label>
+        <input type="checkbox" id="memoryToggle" />
+      </div>
+      <div class="setting">
+        <label for="historyToggle">Use Learning History</label>
+        <input type="checkbox" id="historyToggle" />
+      </div>
+    </div>
+
+    <form id="settingsForm">
+      <div class="card">
+        <h2 id="assistant-type-title">🧠 What type of assistant do you want?</h2>
+        <p class="section-desc">Pick as many as you like</p>
+        <div class="checkbox-grid">
+          <label class="trait-label"><input type="checkbox" name="traits" value="Motivational"> Motivational</label>
+          <label class="trait-label"><input type="checkbox" name="traits" value="Code Mentor"> Code Mentor</label>
+          <label class="trait-label"><input type="checkbox" name="traits" value="Study Buddy"> Study Buddy</label>
+          <label class="trait-label"><input type="checkbox" name="traits" value="No-Nonsense"> No-Nonsense</label>
+          <label class="trait-label"><input type="checkbox" name="traits" value="Gen Z Vibes"> Gen Z Vibes</label>
+          <label class="trait-label"><input type="checkbox" name="traits" value="Chill Tutor"> Chill Tutor</label>
+          <label class="trait-label"><input type="checkbox" name="traits" value="Goal Setter"> Goal Setter</label>
+          <label class="trait-label"><input type="checkbox" name="traits" value="Encouraging"> Encouraging</label>
+          <label class="trait-label"><input type="checkbox" name="traits" value="Discipline Coach"> Discipline Coach</label>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Anything else Nelavista should know about you?</h2>
+        <p class="section-desc">Used to personalize AI tutoring responses</p>
+        <textarea name="more_info" id="moreInfo" rows="3"></textarea>
+        <div class="setting" style="border-bottom:none; padding-bottom:0;">
+          <label>Enable settings for all future sessions</label>
+          <input type="checkbox" name="enable_memory" id="enableMemory" />
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary">💾 Save Preferences</button>
+    </form>
+
+    <div class="card" style="margin-top:20px;">
+      <h2>❌ Reset a Specific Field</h2>
+      <p class="section-desc">Choose a field to clear</p>
+      <div class="field-select-row">
+        <select id="fieldToDelete">
+          <option value="theme">Theme</option>
+          <option value="language">Language</option>
+          <option value="notifications">Notifications</option>
+          <option value="traits">Traits</option>
+          <option value="moreInfo">More Info</option>
+          <option value="enableMemory">Enable Memory</option>
+          <option value="memoryToggle">Learning Memory</option>
+          <option value="historyToggle">History</option>
+        </select>
+      </div>
+      <button class="btn btn-danger" onclick="deleteField()">🗑️ Delete Selected Field</button>
+    </div>
+  </div>
+
+  <div class="toast" id="toast">Preferences saved!</div>
+
+  <script>
+    const SERVER_MEMORY = {{ memory | tojson }};
+    const SERVER_THEME = {{ theme | tojson }};
+    const SERVER_LANGUAGE = {{ language | tojson }};
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const settings = JSON.parse(localStorage.getItem('NelavistaSettings') || '{}');
+      document.getElementById('theme').value = SERVER_THEME || settings.theme || 'dark';
+      document.getElementById('notifications').checked = settings.notifications || false;
+      document.getElementById('language').value = SERVER_LANGUAGE || settings.language || 'en';
+      document.getElementById('memoryToggle').checked = settings.memoryToggle || false;
+      document.getElementById('historyToggle').checked = settings.historyToggle || false;
+      document.getElementById('enableMemory').checked = SERVER_MEMORY.enable_memory || settings.enableMemory || false;
+      document.getElementById('moreInfo').value = SERVER_MEMORY.more_info || settings.moreInfo || '';
+
+      const traits = (SERVER_MEMORY.traits && SERVER_MEMORY.traits.length) ? SERVER_MEMORY.traits : (settings.traits || []);
+      document.querySelectorAll('input[name="traits"]').forEach(input => {
+        if (traits.includes(input.value)) input.checked = true;
+      });
+
+      applyLanguage(document.getElementById('language').value);
+    });
+
+    function applyLanguage(lang) {
+      if (lang === 'yo') {
+        document.getElementById('settings-title').textContent = '⚙️ Eto Nelavista';
+        document.getElementById('ai-pref-title').textContent = '📚 Awon Ayanfẹ AI Nelavista';
+        document.getElementById('assistant-type-title').textContent = '🧠 Iru Iranlọwọ to fe';
+      } else {
+        document.getElementById('settings-title').textContent = '⚙️ Nelavista Settings';
+        document.getElementById('ai-pref-title').textContent = '📚 Nelavista AI Preferences';
+        document.getElementById('assistant-type-title').textContent = '🧠 What type of assistant do you want?';
+      }
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2200);
+    }
+
+    document.getElementById('settingsForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      const traits = Array.from(document.querySelectorAll('input[name="traits"]:checked')).map(i => i.value);
+      const theme = document.getElementById('theme').value;
+      const language = document.getElementById('language').value;
+      const data = {
+        theme,
+        notifications: document.getElementById('notifications').checked,
+        language,
+        memoryToggle: document.getElementById('memoryToggle').checked,
+        historyToggle: document.getElementById('historyToggle').checked,
+        enableMemory: document.getElementById('enableMemory').checked,
+        moreInfo: document.getElementById('moreInfo').value,
+        traits
+      };
+      localStorage.setItem('NelavistaSettings', JSON.stringify(data));
+      applyLanguage(language);
+
+      try {
+        const body = new URLSearchParams();
+        body.set('theme', theme);
+        body.set('language', language);
+        body.set('ajax', '1');
+        if (data.notifications) body.set('notifications', 'on');
+        if (data.enableMemory) body.set('enable_memory', 'on');
+        body.set('more_info', data.moreInfo);
+        traits.forEach(t => body.append('traits', t));
+        await fetch('/memory', { method: 'POST', body });
+      } catch (err) {
+        console.warn('Could not sync settings to server:', err);
+      }
+
+      showToast('Preferences saved!');
+    });
+
+    function deleteField() {
+      const field = document.getElementById('fieldToDelete').value;
+      const settings = JSON.parse(localStorage.getItem('NelavistaSettings') || '{}');
+      delete settings[field];
+      localStorage.setItem('NelavistaSettings', JSON.stringify(settings));
+      location.reload();
+    }
+  </script>
+</body>
+</html>

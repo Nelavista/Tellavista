@@ -1,0 +1,521 @@
+<!-- templates/learning_profile.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Learning Profile - Nelavista</title>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-light: #818cf8;
+            --secondary: #10b981;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        header {
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+        
+        h1 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            font-size: 2.5rem;
+        }
+        
+        .subtitle {
+            color: var(--text-light);
+            font-size: 1.1rem;
+        }
+        
+        .profile-card {
+            background: var(--card-bg);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            border: 1px solid var(--border);
+        }
+        
+        .section-title {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-size: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .section-title i {
+            font-size: 1.5rem;
+        }
+        
+        .insight-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .insight-card {
+            background: var(--bg);
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            border-left: 4px solid var(--primary-light);
+        }
+        
+        .insight-label {
+            color: var(--text-light);
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .insight-value {
+            color: var(--text);
+            font-size: 1rem;
+            font-weight: 500;
+        }
+        
+        .tag-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        
+        .tag {
+            background: var(--primary-light);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+        }
+        
+        .control-panel {
+            background: var(--bg);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .toggle-switch {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+        }
+        
+        .switch-label {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 52px;
+            height: 28px;
+        }
+        
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .slider {
+            background-color: var(--secondary);
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(24px);
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #4338ca;
+        }
+        
+        .btn-secondary {
+            background: var(--card-bg);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--bg);
+        }
+        
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-light);
+        }
+        
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--border);
+        }
+        
+        .last-updated {
+            color: var(--text-light);
+            font-size: 0.875rem;
+            text-align: center;
+            margin-top: 2rem;
+        }
+        
+        .note {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-top: 2rem;
+        }
+        
+        .note p {
+            color: #92400e;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>How Nelavista Understands You</h1>
+            <p class="subtitle">Based on your learning patterns and interactions</p>
+        </header>
+        
+        <div class="profile-card">
+            <h2 class="section-title">
+                <i class="fas fa-graduation-cap"></i>
+                Academic Profile
+            </h2>
+            
+            {% if profile.learning_style == 'Not yet analyzed' %}
+            <div class="empty-state">
+                <i class="fas fa-chart-line"></i>
+                <h3>Learning Profile Pending</h3>
+                <p>Nelavista needs more interactions to build your profile.</p>
+                <p>Keep asking questions to enable personalized insights.</p>
+            </div>
+            {% else %}
+            <div class="insight-grid">
+                <div class="insight-card">
+                    <div class="insight-label">Learning Style</div>
+                    <div class="insight-value">{{ profile.learning_style }}</div>
+                </div>
+                
+                <div class="insight-card">
+                    <div class="insight-label">Preferred Explanation</div>
+                    <div class="insight-value">{{ profile.explanation_preference }}</div>
+                </div>
+                
+                <div class="insight-card">
+                    <div class="insight-label">Learning Pace</div>
+                    <div class="insight-value">{{ profile.pace_insight }}</div>
+                </div>
+                
+                <div class="insight-card">
+                    <div class="insight-label">Question Pattern</div>
+                    <div class="insight-value">{{ profile.question_pattern }}</div>
+                </div>
+            </div>
+            
+            <div style="margin: 2rem 0;">
+                <h3 class="section-title">
+                    <i class="fas fa-star"></i>
+                    Academic Strengths
+                </h3>
+                {% if profile.strong_subjects %}
+                <div class="tag-list">
+                    {% for subject in profile.strong_subjects %}
+                    <span class="tag">{{ subject }}</span>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p style="color: var(--text-light);">Still analyzing your strengths...</p>
+                {% endif %}
+            </div>
+            
+            <div style="margin: 2rem 0;">
+                <h3 class="section-title">
+                    <i class="fas fa-lightbulb"></i>
+                    Areas for Growth
+                </h3>
+                {% if profile.challenging_topics %}
+                <div class="tag-list">
+                    {% for topic in profile.challenging_topics %}
+                    <span class="tag" style="background: #f59e0b;">{{ topic }}</span>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p style="color: var(--text-light);">No challenging topics identified yet.</p>
+                {% endif %}
+            </div>
+            
+            <div style="margin: 2rem 0;">
+                <h3 class="section-title">
+                    <i class="fas fa-sticky-note"></i>
+                    Tutor Notes
+                </h3>
+                <p>{{ profile.tutor_notes }}</p>
+            </div>
+            {% endif %}
+        </div>
+        
+        <div class="control-panel">
+            <h2 class="section-title">
+                <i class="fas fa-sliders-h"></i>
+                Profile Settings
+            </h2>
+            
+            <div class="toggle-switch">
+                <div class="switch-label">
+                    <i class="fas fa-robot"></i>
+                    <div>
+                        <div>Automatic Profile Updates</div>
+                        <small>Nelavista will update your profile based on new interactions</small>
+                    </div>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" id="autoProfile" {{ 'checked' if profile.auto_profile_enabled else '' }}>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            
+            <div class="note">
+                <p><strong>How this works:</strong> Nelavista analyzes your question patterns to understand how you learn best. This helps provide more effective explanations. All insights are based solely on academic interactions and can be reset at any time.</p>
+            </div>
+            
+            <div class="action-buttons">
+                <button class="btn btn-primary" onclick="saveSettings()">
+                    <i class="fas fa-save"></i>
+                    Save Settings
+                </button>
+                
+                <button class="btn btn-secondary" onclick="exportData()">
+                    <i class="fas fa-download"></i>
+                    Export My Data
+                </button>
+                
+                <button class="btn btn-danger" onclick="resetProfile()">
+                    <i class="fas fa-redo"></i>
+                    Reset Profile
+                </button>
+            </div>
+        </div>
+        
+        <div class="last-updated">
+            Last analyzed: {{ profile.last_analyzed }}
+        </div>
+    </div>
+    
+    <script>
+        async function saveSettings() {
+            const autoProfile = document.getElementById('autoProfile').checked;
+            
+            try {
+                const response = await fetch('/api/update-profile-setting', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        auto_profile_enabled: autoProfile
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showNotification('Settings saved successfully', 'success');
+                } else {
+                    showNotification('Error saving settings', 'error');
+                }
+            } catch (error) {
+                showNotification('Network error', 'error');
+            }
+        }
+        
+        async function exportData() {
+            try {
+                const response = await fetch('/api/export-profile-data');
+                const data = await response.json();
+                
+                // Create download link
+                const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `nelavista-profile-${new Date().toISOString().split('T')[0]}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                showNotification('Data exported successfully', 'success');
+            } catch (error) {
+                showNotification('Error exporting data', 'error');
+            }
+        }
+        
+        async function resetProfile() {
+            if (!confirm('Are you sure? This will clear all learning insights Nelavista has gathered about you.')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/reset-profile', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showNotification('Profile reset successfully', 'success');
+                    // Reload page after 1 second
+                    setTimeout(() => location.reload(), 1000);
+                } else {
+                    showNotification('Error resetting profile', 'error');
+                }
+            } catch (error) {
+                showNotification('Network error', 'error');
+            }
+        }
+        
+        function showNotification(message, type) {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 1rem 1.5rem;
+                border-radius: 0.5rem;
+                color: white;
+                font-weight: 600;
+                z-index: 1000;
+                animation: slideIn 0.3s ease;
+            `;
+            
+            if (type === 'success') {
+                notification.style.background = '#10b981';
+            } else {
+                notification.style.background = '#ef4444';
+            }
+            
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            // Remove after 3 seconds
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+            
+            // Add CSS animations
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes slideIn {
+                    from { transform: translateX(100%); opacity: 0; }
+                    to { transform: translateX(0); opacity: 1; }
+                }
+                @keyframes slideOut {
+                    from { transform: translateX(0); opacity: 1; }
+                    to { transform: translateX(100%); opacity: 0; }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+    </script>
+</body>
+</html>

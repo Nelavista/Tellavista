@@ -1,0 +1,1156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>Nelavista · TikTok style reels</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: #000;
+            color: #fff;
+            height: 100vh;
+            overflow: hidden;
+            position: fixed;
+            width: 100%;
+        }
+
+        #top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(12px);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 12px;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        #back-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #top-bar-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            background: linear-gradient(135deg, #fff, #aaa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .right-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .icon-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .icon-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.05);
+        }
+
+        #admin-btn.admin-active {
+            background: #4caf50;
+            border-color: #4caf50;
+            color: black;
+        }
+
+        #search-bar-container {
+            position: fixed;
+            top: 72px;
+            left: 16px;
+            right: 16px;
+            z-index: 998;
+            transition: opacity 0.2s;
+        }
+
+        .search-bar {
+            width: 100%;
+            height: 52px;
+            background: #1a1a1a;
+            border-radius: 30px;
+            border: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            color: #aaa;
+            cursor: pointer;
+            transition: 0.2s;
+            backdrop-filter: blur(5px);
+        }
+
+        .search-bar:hover {
+            background: #252525;
+            border-color: rgba(255,255,255,0.2);
+        }
+
+        .search-bar .search-icon {
+            font-size: 1.2rem;
+            margin-right: 12px;
+            opacity: 0.7;
+        }
+
+        .search-bar .placeholder {
+            font-size: 1rem;
+            font-weight: 400;
+            opacity: 0.7;
+        }
+
+        /* YouTube course selector UI (inside reel container) */
+        .youtube-course-panel {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            background: #000;
+            text-align: center;
+        }
+
+        .course-selector-box {
+            width: 100%;
+            max-width: 400px;
+            background: #1a1a1a;
+            border-radius: 48px;
+            border: 1px solid #333;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .course-selector-box select {
+            width: 100%;
+            padding: 14px;
+            background: #2a2a2a;
+            border: 1px solid #444;
+            border-radius: 30px;
+            color: white;
+            font-size: 1rem;
+            margin-bottom: 16px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .course-selector-box button {
+            width: 100%;
+            background: white;
+            border: none;
+            border-radius: 40px;
+            padding: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            color: black;
+            transition: 0.2s;
+        }
+
+        .course-selector-box button:active {
+            transform: scale(0.96);
+        }
+
+        .search-prompt-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            opacity: 0.7;
+        }
+
+        .search-prompt-text {
+            color: #aaa;
+            font-size: 1rem;
+            margin-top: 12px;
+        }
+
+        #reel-container {
+            position: fixed;
+            top: 140px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            overflow-y: scroll;
+            scroll-snap-type: y mandatory;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+            padding: 0;
+            background: black;
+        }
+
+        .reel-item {
+            height: 100vh;
+            width: 100%;
+            scroll-snap-align: start;
+            scroll-snap-stop: always;
+            position: relative;
+            background: #0a0a0a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .reel-media {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #000;
+            aspect-ratio: 9 / 16;
+            max-height: 100vh;
+            width: auto;
+            position: relative;
+        }
+
+        .reel-media video,
+        .reel-media iframe {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            background: #000;
+            border: none;
+            image-rendering: auto;
+        }
+
+        .reel-media iframe {
+            pointer-events: none;
+        }
+
+        /* Loading overlay for videos */
+        .video-loading {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 5;
+            transition: opacity 0.2s ease;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Always-present click-catcher over the iframe (which has pointer-events:none),
+           so tapping the video can pause/resume it. Only visually "shown" (dimmed +
+           play icon) while paused; fully transparent but still clickable while playing. */
+        .play-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+        .play-overlay:not(.hidden) {
+            background: rgba(0,0,0,0.3);
+            backdrop-filter: blur(4px);
+        }
+        .play-icon {
+            font-size: 4rem;
+            color: white;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            background: rgba(0,0,0,0.5);
+            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease, transform 0.2s;
+        }
+        .play-overlay:not(.hidden) .play-icon {
+            opacity: 1;
+        }
+        .play-overlay:active .play-icon {
+            transform: scale(0.9);
+        }
+
+        .video-overlay-right {
+            position: absolute;
+            right: 12px;
+            bottom: 120px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 24px;
+            z-index: 20;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        /* New transport buttons container (horizontal, positioned left side) */
+        .transport-controls {
+            position: absolute;
+            left: 12px;
+            bottom: 120px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            z-index: 20;
+        }
+        .transport-btn {
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            width: 48px;
+            height: 48px;
+            border-radius: 30px;
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+        .transport-btn:active {
+            transform: scale(0.95);
+            background: rgba(0,0,0,0.8);
+        }
+
+        .overlay-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.8rem;
+            cursor: pointer;
+            filter: drop-shadow(0 2px 4px black);
+            transition: 0.2s;
+        }
+
+        .overlay-btn span {
+            font-size: 0.9rem;
+            margin-top: 4px;
+            background: rgba(0,0,0,0.4);
+            padding: 2px 8px;
+            border-radius: 30px;
+        }
+
+        .overlay-btn.liked {
+            color: #ff4d6d;
+        }
+
+        .delete-overlay {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 25;
+        }
+
+        .delete-btn {
+            background: #d32f2f;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 8px 16px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+
+        .video-info-bottom {
+            position: absolute;
+            bottom: 30px;
+            left: 16px;
+            right: 70px;
+            z-index: 15;
+            color: white;
+            text-shadow: 0 1px 3px black;
+        }
+
+        .creator-name {
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 4px;
+        }
+
+        .caption {
+            font-size: 0.95rem;
+            opacity: 0.9;
+            margin-bottom: 6px;
+        }
+
+        .badge {
+            background: rgba(255,255,255,0.2);
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            display: inline-block;
+            margin-right: 6px;
+        }
+
+        .empty-reel {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: #aaa;
+            font-size: 1.2rem;
+            padding: 20px;
+        }
+
+    </style>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
+</head>
+<body>
+    <div id="top-bar">
+        <button id="back-btn" onclick="goBack()">←</button>
+        <div id="top-bar-title">🎓 Nelavista Reels</div>
+        <div class="right-buttons"></div>
+    </div>
+
+    <div id="search-bar-container">
+        <div class="search-bar" onclick="backToCourses()">
+            <span class="search-icon">📚</span>
+            <span class="placeholder">Browse courses...</span>
+        </div>
+    </div>
+
+    <div id="reel-container"></div>
+
+    <script src="https://www.youtube.com/iframe_api"></script>
+
+    <script>
+        (function() {
+            // ---------- PRELOADED COURSE VIDEOS ----------
+            const courseVideosData = [
+  {"course": "CHM 101 General Chemistry I", "caption": "Introduction to Chemistry – Atoms, Compounds, Ions", "video_url": "https://www.youtube.com/watch?v=Rd4a1X3B61w"},
+  {"course": "CHM 101 General Chemistry I", "caption": "Atomic Structure and the Periodic Table", "video_url": "https://www.youtube.com/watch?v=OH-aSu-rWgk"},
+  {"course": "CHM 101 General Chemistry I", "caption": "Mole Concept and Stoichiometry", "video_url": "https://www.youtube.com/watch?v=1xSQlwWGT8M"},
+  {"course": "CHM 101 General Chemistry I", "caption": "Chemical Bonding – Ionic and Covalent", "video_url": "https://www.youtube.com/watch?v=bOV3DQZflZA"},
+  {"course": "CHM 101 General Chemistry I", "caption": "Gas Laws and Kinetic Molecular Theory", "video_url": "https://www.youtube.com/watch?v=F6lhYxV6gEY"},
+  {"course": "CHM 107 Experimental Chemistry I", "caption": "Basic Lab Safety and Equipment", "video_url": "https://www.youtube.com/watch?v=_X6cCpONibE"},
+  {"course": "CHM 107 Experimental Chemistry I", "caption": "How to Perform a Titration", "video_url": "https://www.youtube.com/watch?v=WAXPw-7aTnw"},
+  {"course": "CHM 107 Experimental Chemistry I", "caption": "Using a Balance and Measuring Mass", "video_url": "https://www.youtube.com/watch?v=vw4DazDOGCM"},
+  {"course": "CHM 107 Experimental Chemistry I", "caption": "Filtration and Recrystallization", "video_url": "https://www.youtube.com/watch?v=CQw0OuXqmEY"},
+  {"course": "CHM 107 Experimental Chemistry I", "caption": "Calorimetry Experiment", "video_url": "https://www.youtube.com/watch?v=JuWtBR-rDQk"},
+  {"course": "PHY 101 General Physics I", "caption": "Kinematics in One Dimension", "video_url": "https://www.youtube.com/watch?v=dHjWVlfNraM"},
+  {"course": "PHY 101 General Physics I", "caption": "Newton's Laws of Motion", "video_url": "https://www.youtube.com/watch?v=qgIm96-WkwY"},
+  {"course": "PHY 101 General Physics I", "caption": "Work, Energy, and Power", "video_url": "https://www.youtube.com/watch?v=_MR1Dp8-F8w"},
+  {"course": "PHY 101 General Physics I", "caption": "Momentum and Collisions", "video_url": "https://www.youtube.com/watch?v=X2eURF6eEFE"},
+  {"course": "PHY 101 General Physics I", "caption": "Rotational Motion and Torque", "video_url": "https://www.youtube.com/watch?v=WQ9AH2S8B6Y"},
+  {"course": "PHY 107 Experimental Physics I", "caption": "How to Plot a Graph in Physics Practicals", "video_url": "https://www.youtube.com/watch?v=K-Ix3gWBGsc"},
+  {"course": "PHY 107 Experimental Physics I", "caption": "Newton's Third Law Demonstration", "video_url": "https://www.youtube.com/watch?v=ruBfXIVSYZ8"},
+  {"course": "PHY 107 Experimental Physics I", "caption": "Physics Practical: Refraction Through a Glass Prism", "video_url": "https://www.youtube.com/watch?v=GdndqRYk-Zs"},
+  {"course": "PHY 107 Experimental Physics I", "caption": "Physics Practical: Simple Pendulum", "video_url": "https://www.youtube.com/watch?v=eeF4VIFOrP4"},
+  {"course": "BIO 101 Basic Biology I", "caption": "Cell Structure and Function", "video_url": "https://www.youtube.com/watch?v=URUJD5NEXC8"},
+  {"course": "BIO 101 Basic Biology I", "caption": "DNA Structure and Replication", "video_url": "https://www.youtube.com/watch?v=8kK2zwjRV0M"},
+  {"course": "BIO 101 Basic Biology I", "caption": "Protein Synthesis (Transcription & Translation)", "video_url": "https://www.youtube.com/watch?v=8wAwLwJAGHs"},
+  {"course": "BIO 101 Basic Biology I", "caption": "Mendelian Genetics", "video_url": "https://www.youtube.com/watch?v=3f_eisNPpnc"},
+  {"course": "BIO 101 Basic Biology I", "caption": "Enzymes and Metabolism", "video_url": "https://www.youtube.com/watch?v=BJMGHnkYxJQ"},
+  {"course": "BIO 107 Experimental Biology I", "caption": "Microscope Parts and Usage", "video_url": "https://www.youtube.com/watch?v=pujis3QsA_I"},
+  {"course": "BIO 107 Experimental Biology I", "caption": "Preparing Wet Mount Slides", "video_url": "https://www.youtube.com/watch?v=Xm8HqekySzM"},
+  {"course": "BIO 107 Experimental Biology I", "caption": "Staining Techniques (Gram Staining)", "video_url": "https://www.youtube.com/watch?v=AZS2wb7pMo4"},
+  {"course": "BIO 107 Experimental Biology I", "caption": "Dissection Techniques (Frog)", "video_url": "https://www.youtube.com/watch?v=k4PlpB-FZa4"},
+  {"course": "BIO 107 Experimental Biology I", "caption": "Plant Tissue Sectioning", "video_url": "https://www.youtube.com/watch?v=gms6BrFl6mc"},
+  {"course": "MTH 101 General Mathematics I", "caption": "Algebra Basics (Equations and Inequalities)", "video_url": "https://www.youtube.com/watch?v=zPgfIOWVnF4"},
+  {"course": "MTH 101 General Mathematics I", "caption": "Functions and Graphs", "video_url": "https://www.youtube.com/watch?v=kvU9sOzT2mk"},
+  {"course": "MTH 101 General Mathematics I", "caption": "Limits and Continuity (Intro to Calculus)", "video_url": "https://www.youtube.com/watch?v=9brk313DjV8"},
+  {"course": "MTH 101 General Mathematics I", "caption": "Differentiation Rules", "video_url": "https://www.youtube.com/watch?v=AdLAkD-r9Rs"},
+  {"course": "MTH 101 General Mathematics I", "caption": "Integration Basics", "video_url": "https://www.youtube.com/watch?v=zOxaUlRkFG0"},
+  {"course": "CIT 111 Introduction to Information and Communication Technology", "caption": "Computer Hardware Basics", "video_url": "https://www.youtube.com/watch?v=RzQtbFb0KIk"},
+  {"course": "CIT 111 Introduction to Information and Communication Technology", "caption": "Operating Systems Overview", "video_url": "https://www.youtube.com/watch?v=KI9cEvcFvnk"},
+  {"course": "CIT 111 Introduction to Information and Communication Technology", "caption": "Internet and Networking Fundamentals", "video_url": "https://www.youtube.com/watch?v=cNwEVYkx2Kk"},
+  {"course": "CIT 111 Introduction to Information and Communication Technology", "caption": "Microsoft Word Basics", "video_url": "https://www.youtube.com/watch?v=2MCmnr2L50o"},
+  {"course": "CIT 111 Introduction to Information and Communication Technology", "caption": "Data Security and Privacy", "video_url": "https://www.youtube.com/watch?v=VluVl1mrUnA"},
+  {"course": "FRN 221 Basic French", "caption": "French Alphabet and Pronunciation", "video_url": "https://www.youtube.com/watch?v=q7aFYzB1a18"},
+  {"course": "FRN 221 Basic French", "caption": "Basic Greetings and Introductions", "video_url": "https://www.youtube.com/watch?v=TA2sOhFj_Xw"},
+  {"course": "FRN 221 Basic French", "caption": "French Numbers and Time", "video_url": "https://www.youtube.com/watch?v=H2-REbL2OU0"},
+  {"course": "FRN 221 Basic French", "caption": "Common Verbs (Être, Avoir)", "video_url": "https://www.youtube.com/watch?v=W-mjhGSWzdE"},
+  {"course": "FRN 221 Basic French", "caption": "Simple Sentence Structure", "video_url": "https://www.youtube.com/watch?v=rYVhuQeYTik"},
+  {"course": "GNS 101 Use of English I", "caption": "Parts of Speech", "video_url": "https://www.youtube.com/watch?v=SceDmiBEESI"},
+  {"course": "GNS 101 Use of English I", "caption": "Essay Writing: Introduction and Thesis", "video_url": "https://www.youtube.com/watch?v=msaynBwwxkA"},
+  {"course": "GNS 101 Use of English I", "caption": "Reading Comprehension Strategies", "video_url": "https://www.youtube.com/watch?v=W7BW9gv_OkU"},
+  {"course": "GNS 101 Use of English I", "caption": "Common Grammar Mistakes", "video_url": "https://www.youtube.com/watch?v=TesbMy__Uq8"},
+  {"course": "LIB 101 Use of Library", "caption": "Library Orientation: Call Numbers and Shelving", "video_url": "https://www.youtube.com/watch?v=gCZ_nDYxbg8"},
+  {"course": "LIB 101 Use of Library", "caption": "Using Online Databases (JSTOR, Google Scholar)", "video_url": "https://www.youtube.com/watch?v=esuRxK44d00"},
+  {"course": "LIB 101 Use of Library", "caption": "How to Cite Sources (APA/MLA)", "video_url": "https://www.youtube.com/watch?v=3Yhp_2ocP3I"},
+  {"course": "LIB 101 Use of Library", "caption": "Evaluating Sources for Credibility", "video_url": "https://www.youtube.com/watch?v=PLTOVoHbH5c"},
+  {"course": "LIB 101 Use of Library", "caption": "Library Catalog Search Tutorial", "video_url": "https://www.youtube.com/watch?v=K3nqnRXf-FE"},
+  {"course": "CHM 102 General Chemistry II", "caption": "Chemical Equilibrium", "video_url": "https://www.youtube.com/watch?v=ANi709MYnWg"},
+  {"course": "CHM 102 General Chemistry II", "caption": "General Chemistry: Full University Course", "video_url": "https://www.youtube.com/watch?v=6OV3tmt9uhs"},
+  {"course": "CHM 102 General Chemistry II", "caption": "Introduction to Chemistry Course", "video_url": "https://www.youtube.com/watch?v=k3rRrl9J2F4"},
+  {"course": "CHM 102 General Chemistry II", "caption": "Intro to Chemistry", "video_url": "https://www.youtube.com/watch?v=pdyDmXtye2w"},
+  {"course": "CHM 108 Experimental Chemistry II", "caption": "Setting Up and Performing a Titration", "video_url": "https://www.youtube.com/watch?v=sFpFCPTDv2w"},
+  {"course": "CHM 108 Experimental Chemistry II", "caption": "Back Titration: Lab Experiment and Calculations", "video_url": "https://www.youtube.com/watch?v=1PtllAHAyb0"},
+  {"course": "CHM 108 Experimental Chemistry II", "caption": "Assessing Risks in the Chemistry Laboratory", "video_url": "https://www.youtube.com/watch?v=PhwyPQ0_5K0"},
+  {"course": "CHM 108 Experimental Chemistry II", "caption": "Chemistry Practical: Titration Walkthrough", "video_url": "https://www.youtube.com/watch?v=-y7nVizx4RY"},
+  {"course": "PHY 102 General Physics II", "caption": "Introduction to Physics: Force, Motion & Energy", "video_url": "https://www.youtube.com/watch?v=i_CijGuk7fw"},
+  {"course": "PHY 102 General Physics II", "caption": "Physics: Basic Introduction", "video_url": "https://www.youtube.com/watch?v=b1t41Q3xRM8"},
+  {"course": "PHY 102 General Physics II", "caption": "Physics: Motion (JAMB and PUTME class)", "video_url": "https://www.youtube.com/watch?v=-Z3jIEKWMfk"},
+  {"course": "PHY 108 Experimental Physics II", "caption": "How to Plot a Graph in Physics Practicals", "video_url": "https://www.youtube.com/watch?v=K-Ix3gWBGsc"},
+  {"course": "PHY 108 Experimental Physics II", "caption": "Newton's Third Law Demonstration", "video_url": "https://www.youtube.com/watch?v=ruBfXIVSYZ8"},
+  {"course": "PHY 108 Experimental Physics II", "caption": "Physics Practical: Refraction Through a Glass Prism", "video_url": "https://www.youtube.com/watch?v=GdndqRYk-Zs"},
+  {"course": "PHY 108 Experimental Physics II", "caption": "Physics Practical: Simple Pendulum", "video_url": "https://www.youtube.com/watch?v=eeF4VIFOrP4"},
+  {"course": "BIO 102 Basic Biology II", "caption": "Immune System Overview", "video_url": "https://www.youtube.com/watch?v=zQGOcOUBi6s"},
+  {"course": "BIO 102 Basic Biology II", "caption": "Cell Biology Full Course", "video_url": "https://www.youtube.com/watch?v=AfhRglVwx4g"},
+  {"course": "BIO 102 Basic Biology II", "caption": "Introduction to Biology: Classification of Living Organisms", "video_url": "https://www.youtube.com/watch?v=BkUxxIlamyE"},
+  {"course": "BIO 102 Basic Biology II", "caption": "Biology Review Session", "video_url": "https://www.youtube.com/watch?v=kU6X5xF30d4"},
+  {"course": "BIO 108 Experimental Biology II", "caption": "Basic Microscope Setup and Use", "video_url": "https://www.youtube.com/watch?v=SUo2fHZaZCU"},
+  {"course": "BIO 108 Experimental Biology II", "caption": "Microscope Parts and Functions", "video_url": "https://www.youtube.com/watch?v=FnOvLEaC4gg"},
+  {"course": "BIO 108 Experimental Biology II", "caption": "Microscopy: A Step by Step Guide", "video_url": "https://www.youtube.com/watch?v=vo-JmxTEtk4"},
+  {"course": "BIO 108 Experimental Biology II", "caption": "Gram Staining Procedure", "video_url": "https://www.youtube.com/watch?v=AZS2wb7pMo4"},
+  {"course": "MTH 102 General Mathematics II", "caption": "Integration Techniques", "video_url": "https://www.youtube.com/watch?v=rfG8ce4nNh0"},
+  {"course": "MTH 102 General Mathematics II", "caption": "Differential Equations (First Order)", "video_url": "https://www.youtube.com/watch?v=6o7b9yyhH7k"},
+  {"course": "MTH 102 General Mathematics II", "caption": "Introduction to Mathematical Thinking", "video_url": "https://www.youtube.com/watch?v=LN7cCW1rSsI"},
+  {"course": "MTH 102 General Mathematics II", "caption": "Integration (Calculus)", "video_url": "https://www.youtube.com/watch?v=IQ15BnVUgis"},
+  {"course": "MTH 102 General Mathematics II", "caption": "Business Mathematics: Basic Mathematics, Intro to Calculus", "video_url": "https://www.youtube.com/watch?v=XCzYeutfb8o"},
+  {"course": "CIT 112 Introduction to Computer Programming", "caption": "Programming Basics (Pseudocode, Flowcharts)", "video_url": "https://www.youtube.com/watch?v=_uQrJ0TkZlc"},
+  {"course": "CIT 112 Introduction to Computer Programming", "caption": "Python Installation and Setup", "video_url": "https://www.youtube.com/watch?v=YYXdXT2l-Gg"},
+  {"course": "CIT 112 Introduction to Computer Programming", "caption": "Variables and Data Types (Python)", "video_url": "https://www.youtube.com/watch?v=Z1Yd7upQsXY"},
+  {"course": "CIT 112 Introduction to Computer Programming", "caption": "Functions and Modules", "video_url": "https://www.youtube.com/watch?v=NSbOtYzIQI0"},
+  {"course": "FRN 222 French for Specific Purposes", "caption": "French in Scientific Contexts", "video_url": "https://www.youtube.com/watch?v=Z1Yd7upQsXY"},
+  {"course": "FRN 222 French for Specific Purposes", "caption": "Full French Course A1", "video_url": "https://www.youtube.com/watch?v=wSZG0OOiPcE"},
+  {"course": "FRN 222 French for Specific Purposes", "caption": "Learn French in 1 Hour", "video_url": "https://www.youtube.com/watch?v=RxCR3g6aYJ0"},
+  {"course": "GNS 102 Use of English II", "caption": "English Masterclass: Think & Speak English", "video_url": "https://www.youtube.com/watch?v=mKBbP4T5fbk"},
+  {"course": "GNS 102 Use of English II", "caption": "Complete English Grammar Course for Beginners", "video_url": "https://www.youtube.com/watch?v=vq_wMegXFdg"},
+  {"course": "GNS 102 Use of English II", "caption": "Learn All the Tenses in English", "video_url": "https://www.youtube.com/watch?v=O9S70oJAivI"},
+  {"course": "BCH 201 General Biochemistry I", "caption": "Introduction to Biochemistry", "video_url": "https://www.youtube.com/watch?v=CHJsaq2lNjU"},
+  {"course": "BCH 201 General Biochemistry I", "caption": "Introduction to Biochemistry - Metabolism Overview", "video_url": "https://www.youtube.com/watch?v=BjzH4Hr_wGg"},
+  {"course": "BCH 201 General Biochemistry I", "caption": "Biochemistry Lecture 1: Introduction", "video_url": "https://www.youtube.com/watch?v=BUhaP139_Ug"},
+  {"course": "BCH 201 General Biochemistry I", "caption": "General Enzymology: Definition, Classes of Enzymes, Cofactors", "video_url": "https://www.youtube.com/watch?v=MeQouJ6-UNM"},
+  {"course": "BCH 203 Metabolism of Carbohydrates", "caption": "Krebs Cycle (Citric Acid Cycle)", "video_url": "https://www.youtube.com/watch?v=juM2ROSLWfw"},
+  {"course": "BCH 203 Metabolism of Carbohydrates", "caption": "Metabolism: The Metabolic Map (Carbohydrates)", "video_url": "https://www.youtube.com/watch?v=DQ-tUjfFet4"},
+  {"course": "BCH 203 Metabolism of Carbohydrates", "caption": "Glycolysis: Carbohydrate Metabolism Basics", "video_url": "https://www.youtube.com/watch?v=XwJ-mCp-TZ0"},
+  {"course": "BCH 203 Metabolism of Carbohydrates", "caption": "Overview of Carbohydrate Metabolism", "video_url": "https://www.youtube.com/watch?v=a3hy-i8Usj4"},
+  {"course": "BCH 203 Metabolism of Carbohydrates", "caption": "Biochemistry of Carbohydrates", "video_url": "https://www.youtube.com/watch?v=JxK5rZxbyQY"},
+  {"course": "MCB 201 General Microbiology I", "caption": "Introduction to Microbiology", "video_url": "https://www.youtube.com/watch?v=fU0XO1X1tAE"},
+  {"course": "MCB 201 General Microbiology I", "caption": "Microbiology & Infectious Diseases: Full Course", "video_url": "https://www.youtube.com/watch?v=LnKU4BD8JgU"},
+  {"course": "MCB 201 General Microbiology I", "caption": "Microbiology Complete Course", "video_url": "https://www.youtube.com/watch?v=TwDK6zMpYL8"},
+  {"course": "BIO 203 Introductory Genetics", "caption": "DNA Replication", "video_url": "https://www.youtube.com/watch?v=8m6hHRlKwxY"},
+  {"course": "BIO 203 Introductory Genetics", "caption": "Gene Regulation (Lac Operon)", "video_url": "https://www.youtube.com/watch?v=oBwtxdI1zvk"},
+  {"course": "BIO 203 Introductory Genetics", "caption": "Introduction to Genetics: DNA, RNA, Genes", "video_url": "https://www.youtube.com/watch?v=Z6O_5Noh4WM"},
+  {"course": "BIO 203 Introductory Genetics", "caption": "Genetics for Beginners: Genes, Alleles, Loci", "video_url": "https://www.youtube.com/watch?v=wpraShKAJcw"},
+  {"course": "BIO 203 Introductory Genetics", "caption": "Genetics: Mendelian Genetics, Monohybrid and Dihybrid Cross", "video_url": "https://www.youtube.com/watch?v=moNxXFAJ448"},
+  {"course": "CHM 205 Physical Chemistry I", "caption": "Introduction to Physical Chemistry", "video_url": "https://www.youtube.com/watch?v=ooxYGusEUb4"},
+  {"course": "CHM 205 Physical Chemistry I", "caption": "Physical Chemistry: Introduction", "video_url": "https://www.youtube.com/watch?v=B9DuTNaPm4M"},
+  {"course": "CHM 205 Physical Chemistry I", "caption": "Physical Chemistry Chapter 1: Introduction", "video_url": "https://www.youtube.com/watch?v=yOLk95aA_bU"},
+  {"course": "CHM 205 Physical Chemistry I", "caption": "What is Physical Chemistry?", "video_url": "https://www.youtube.com/watch?v=IY-7q0o0Jf8"},
+  {"course": "CHM 207 Inorganic Chemistry I", "caption": "Introduction to Inorganic Chemistry", "video_url": "https://www.youtube.com/watch?v=gHFU6S3VWAs"},
+  {"course": "CHM 207 Inorganic Chemistry I", "caption": "Introduction to Inorganic and Organometallic Chemistry", "video_url": "https://www.youtube.com/watch?v=RxWmdyjR544"},
+  {"course": "CHM 207 Inorganic Chemistry I", "caption": "What is Inorganic Chemistry?", "video_url": "https://www.youtube.com/watch?v=cYAcrSIFvco"},
+  {"course": "CHM 291 Experimental Physical/Inorganic Chemistry", "caption": "Setting Up and Performing a Titration", "video_url": "https://www.youtube.com/watch?v=sFpFCPTDv2w"},
+  {"course": "CHM 291 Experimental Physical/Inorganic Chemistry", "caption": "Back Titration: Lab Experiment and Calculations", "video_url": "https://www.youtube.com/watch?v=1PtllAHAyb0"},
+  {"course": "CHM 291 Experimental Physical/Inorganic Chemistry", "caption": "Assessing Risks in the Chemistry Laboratory", "video_url": "https://www.youtube.com/watch?v=PhwyPQ0_5K0"},
+  {"course": "CHM 291 Experimental Physical/Inorganic Chemistry", "caption": "Chemistry Practical: Titration Walkthrough", "video_url": "https://www.youtube.com/watch?v=-y7nVizx4RY"},
+  {"course": "GNS 201 Nigerian Peoples and Culture", "caption": "Ethnic Groups in Nigeria", "video_url": "https://www.youtube.com/watch?v=Z1Yd7upQsXY"},
+  {"course": "GNS 201 Nigerian Peoples and Culture", "caption": "Nigerian Traditional Religions", "video_url": "https://www.youtube.com/watch?v=2ePf9rue1Ao"},
+  {"course": "GNS 201 Nigerian Peoples and Culture", "caption": "Nigerian Peoples & Culture: Complete Course", "video_url": "https://www.youtube.com/watch?v=6fHjonIWWoQ"},
+  {"course": "GNS 201 Nigerian Peoples and Culture", "caption": "The History of Nigeria Explained", "video_url": "https://www.youtube.com/watch?v=fMmkmHUAAO0"},
+  {"course": "GNS 201 Nigerian Peoples and Culture", "caption": "The History of Nigeria: Full Overview", "video_url": "https://www.youtube.com/watch?v=uPz9AbfufTQ"},
+  {"course": "CIT 201 Structured Programming", "caption": "C Programming: Variables and Data Types", "video_url": "https://www.youtube.com/watch?v=KJgsSFOSQv0"},
+  {"course": "CIT 201 Structured Programming", "caption": "Control Structures (if, loops)", "video_url": "https://www.youtube.com/watch?v=Z1Yd7upQsXY"},
+  {"course": "CIT 201 Structured Programming", "caption": "Functions and Arrays in C", "video_url": "https://www.youtube.com/watch?v=NSbOtYzIQI0"},
+  {"course": "BCH 202 General Biochemistry II", "caption": "Nucleic Acids (DNA/RNA Structure)", "video_url": "https://www.youtube.com/watch?v=8m6hHRlKwxY"},
+  {"course": "BCH 202 General Biochemistry II", "caption": "Metabolism Overview", "video_url": "https://www.youtube.com/watch?v=Lf4irlyN1eE"},
+  {"course": "BCH 202 General Biochemistry II", "caption": "Metabolism: The Metabolic Map (Carbohydrates)", "video_url": "https://www.youtube.com/watch?v=DQ-tUjfFet4"},
+  {"course": "BCH 202 General Biochemistry II", "caption": "Introduction to Biochemistry - Metabolism Overview", "video_url": "https://www.youtube.com/watch?v=BjzH4Hr_wGg"},
+  {"course": "BCH 202 General Biochemistry II", "caption": "Metabolism: Glycolysis", "video_url": "https://www.youtube.com/watch?v=gggC9vctvBQ"},
+  {"course": "BCH 204 Biochemical Methods", "caption": "Chromatography (Paper, TLC, Column)", "video_url": "https://www.youtube.com/watch?v=Z1Yd7upQsXY"},
+  {"course": "BCH 204 Biochemical Methods", "caption": "Essential Biochemistry Lab Techniques", "video_url": "https://www.youtube.com/watch?v=tRWXj2K_hO8"},
+  {"course": "BCH 204 Biochemical Methods", "caption": "Biochemistry Lab Techniques Overview", "video_url": "https://www.youtube.com/watch?v=UGxpsxgLIPU"},
+  {"course": "BCH 204 Biochemical Methods", "caption": "Separations & Purifications: Lab Techniques", "video_url": "https://www.youtube.com/watch?v=CkMhEtfaYTU"},
+  {"course": "BCH 204 Biochemical Methods", "caption": "Top 10 Lab Techniques Every Life Science Researcher Must Know", "video_url": "https://www.youtube.com/watch?v=JKTBe2jyfOg"},
+  {"course": "BCH 206 Food and Nutritional Biochemistry", "caption": "Metabolism & Nutrition Part 1", "video_url": "https://www.youtube.com/watch?v=fR3NxCR9z2U"},
+  {"course": "BCH 206 Food and Nutritional Biochemistry", "caption": "Nutrition and Metabolism Lecture", "video_url": "https://www.youtube.com/watch?v=HLzB3miHWM8"},
+  {"course": "BCH 206 Food and Nutritional Biochemistry", "caption": "What is Nutritional Biochemistry?", "video_url": "https://www.youtube.com/watch?v=L7lArqYpT6s"},
+  {"course": "BCH 206 Food and Nutritional Biochemistry", "caption": "Introduction to Nutritional Biochemistry", "video_url": "https://www.youtube.com/watch?v=Do6b1zBKMS8"},
+  {"course": "BIO 202 Biological Techniques", "caption": "DNA Extraction and Purification", "video_url": "https://www.youtube.com/watch?v=8m6hHRlKwxY"},
+  {"course": "BIO 202 Biological Techniques", "caption": "PCR (Polymerase Chain Reaction)", "video_url": "https://www.youtube.com/watch?v=2KoLnIwoZKU"},
+  {"course": "BIO 202 Biological Techniques", "caption": "Basic Microscope Setup and Use", "video_url": "https://www.youtube.com/watch?v=SUo2fHZaZCU"},
+  {"course": "BIO 202 Biological Techniques", "caption": "Microscope Parts and Functions", "video_url": "https://www.youtube.com/watch?v=FnOvLEaC4gg"},
+  {"course": "BIO 202 Biological Techniques", "caption": "Microscopy: A Step by Step Guide", "video_url": "https://www.youtube.com/watch?v=vo-JmxTEtk4"},
+  {"course": "CHM 208 Physical Chemistry II", "caption": "Introduction to Physical Chemistry", "video_url": "https://www.youtube.com/watch?v=ooxYGusEUb4"},
+  {"course": "CHM 208 Physical Chemistry II", "caption": "Physical Chemistry: Introduction", "video_url": "https://www.youtube.com/watch?v=B9DuTNaPm4M"},
+  {"course": "CHM 208 Physical Chemistry II", "caption": "Physical Chemistry Chapter 1: Introduction", "video_url": "https://www.youtube.com/watch?v=yOLk95aA_bU"},
+  {"course": "CHM 208 Physical Chemistry II", "caption": "What is Physical Chemistry?", "video_url": "https://www.youtube.com/watch?v=IY-7q0o0Jf8"},
+  {"course": "CHM 202 Organic Chemistry I", "caption": "Organic Chemistry Basics", "video_url": "https://www.youtube.com/watch?v=StSrkPX7np4"},
+  {"course": "CHM 202 Organic Chemistry I", "caption": "Organic Chemistry: Basic Introduction", "video_url": "https://www.youtube.com/watch?v=B_ketdzJtY8"},
+  {"course": "CHM 202 Organic Chemistry I", "caption": "Introduction to Organic Chemistry", "video_url": "https://www.youtube.com/watch?v=gn3kJsMVCG8"},
+  {"course": "CHM 202 Organic Chemistry I", "caption": "Introduction to Organic Chemistry Lecture", "video_url": "https://www.youtube.com/watch?v=6br-pcd5f5A"},
+  {"course": "CHM 292 Experimental Physical/Organic Chemistry", "caption": "Thin Layer Chromatography (TLC)", "video_url": "https://www.youtube.com/watch?v=Z1Yd7upQsXY"},
+  {"course": "CHM 292 Experimental Physical/Organic Chemistry", "caption": "Setting Up and Performing a Titration", "video_url": "https://www.youtube.com/watch?v=sFpFCPTDv2w"},
+  {"course": "CHM 292 Experimental Physical/Organic Chemistry", "caption": "Back Titration: Lab Experiment and Calculations", "video_url": "https://www.youtube.com/watch?v=1PtllAHAyb0"},
+  {"course": "CHM 292 Experimental Physical/Organic Chemistry", "caption": "Assessing Risks in the Chemistry Laboratory", "video_url": "https://www.youtube.com/watch?v=PhwyPQ0_5K0"},
+  {"course": "CHM 292 Experimental Physical/Organic Chemistry", "caption": "Chemistry Practical: Titration Walkthrough", "video_url": "https://www.youtube.com/watch?v=-y7nVizx4RY"},
+  {"course": "GNS 202 Osun Peoples and Culture", "caption": "Yoruba Traditions and Festivals (Osun-Osogbo)", "video_url": "https://www.youtube.com/watch?v=Z1Yd7upQsXY"},
+  {"course": "GNS 202 Osun Peoples and Culture", "caption": "Indigenous Governance Systems", "video_url": "https://www.youtube.com/watch?v=2ePf9rue1Ao"},
+  {"course": "GNS 202 Osun Peoples and Culture", "caption": "Osun-Osogbo Sacred Grove, Nigeria", "video_url": "https://www.youtube.com/watch?v=I4m6Uuckfp4"},
+  {"course": "GNS 202 Osun Peoples and Culture", "caption": "Discover Osun State, Nigeria", "video_url": "https://www.youtube.com/watch?v=vqUMQRsor-Q"},
+  {"course": "GNS 202 Osun Peoples and Culture", "caption": "Osun's Sacred Forest Explained", "video_url": "https://www.youtube.com/watch?v=j3Fy3PztDUs"},
+  {"course": "GNS 302 Introduction to Logic and Philosophy", "caption": "What is Philosophy?", "video_url": "https://www.youtube.com/watch?v=1A_CAkYt3GY"},
+  {"course": "GNS 302 Introduction to Logic and Philosophy", "caption": "Introduction to Philosophy Lecture 1", "video_url": "https://www.youtube.com/watch?v=_bUlaQ5-FqU"},
+  {"course": "GNS 302 Introduction to Logic and Philosophy", "caption": "What is Philosophy? First Lecture of the Semester", "video_url": "https://www.youtube.com/watch?v=wwT4N_v0-WQ"},
+  {"course": "GNS 302 Introduction to Logic and Philosophy", "caption": "Introduction to Philosophy: Introduction", "video_url": "https://www.youtube.com/watch?v=tY2njfpWC8g"},
+  {"course": "BCH 301 Enzymology", "caption": "Allosteric Regulation", "video_url": "https://www.youtube.com/watch?v=oBwtxdI1zvk"},
+  {"course": "BCH 301 Enzymology", "caption": "Michaelis-Menten Equation", "video_url": "https://www.youtube.com/watch?v=4eLjRcHnMCk"},
+  {"course": "BCH 301 Enzymology", "caption": "Enzymes: Catalysis, Kinetics & Classification", "video_url": "https://www.youtube.com/watch?v=-slPtkO2d9g"},
+  {"course": "BCH 301 Enzymology", "caption": "Enzyme Kinetics with Michaelis-Menten Curve", "video_url": "https://www.youtube.com/watch?v=kmyR1cYxRL4"},
+  {"course": "BCH 301 Enzymology", "caption": "Kinetics of Enzymes", "video_url": "https://www.youtube.com/watch?v=xobYo15J7QI"},
+  {"course": "BCH 303 Metabolism of Lipids", "caption": "Metabolism: The Metabolic Map (Lipids)", "video_url": "https://www.youtube.com/watch?v=Wm7UR0zCQzM"},
+  {"course": "BCH 303 Metabolism of Lipids", "caption": "Lipid (Fat) Metabolism Overview", "video_url": "https://www.youtube.com/watch?v=ppqpUVaasNc"},
+  {"course": "BCH 303 Metabolism of Lipids", "caption": "Lipoprotein Metabolism", "video_url": "https://www.youtube.com/watch?v=wQY0xpwqPfQ"},
+  {"course": "BCH 303 Metabolism of Lipids", "caption": "Lipids: Fatty Acids, Triglycerides, Phospholipids", "video_url": "https://www.youtube.com/watch?v=7dmoH5dAvpY"},
+  {"course": "BCH 305 Metabolism of Nucleic Acids", "caption": "Purine and Pyrimidine Synthesis", "video_url": "https://www.youtube.com/watch?v=8m6hHRlKwxY"},
+  {"course": "BCH 305 Metabolism of Nucleic Acids", "caption": "DNA and Nucleotides", "video_url": "https://www.youtube.com/watch?v=yLsIvVs5ZWI"},
+  {"course": "BCH 305 Metabolism of Nucleic Acids", "caption": "Nucleotide Synthesis: Purine and Pyrimidine Synthesis", "video_url": "https://www.youtube.com/watch?v=4GFKdLy2fOE"},
+  {"course": "BCH 305 Metabolism of Nucleic Acids", "caption": "Nucleic Acids: RNA and DNA Structure", "video_url": "https://www.youtube.com/watch?v=7AtO8DuWsck"},
+  {"course": "BCH 305 Metabolism of Nucleic Acids", "caption": "Purine Synthesis", "video_url": "https://www.youtube.com/watch?v=sZTWmw14YZs"},
+  {"course": "BCH 307 Metabolism of Amino Acids & Protein", "caption": "One-Carbon Metabolism", "video_url": "https://www.youtube.com/watch?v=8m6hHRlKwxY"},
+  {"course": "BCH 307 Metabolism of Amino Acids & Protein", "caption": "Amino Acid Metabolism", "video_url": "https://www.youtube.com/watch?v=0M-B2dOfcUo"},
+  {"course": "BCH 307 Metabolism of Amino Acids & Protein", "caption": "Proteins & Amino Acids", "video_url": "https://www.youtube.com/watch?v=9ssCKw-7OvQ"},
+  {"course": "BCH 307 Metabolism of Amino Acids & Protein", "caption": "The Metabolic Map: Proteins", "video_url": "https://www.youtube.com/watch?v=IlnI5-08U8E"},
+  {"course": "BCH 307 Metabolism of Amino Acids & Protein", "caption": "Introduction to Amino Acid Metabolism", "video_url": "https://www.youtube.com/watch?v=p8YWfhQPuoE"},
+  {"course": "BCH 309 Membrane Biochemistry", "caption": "Cell Membrane Structure & Function", "video_url": "https://www.youtube.com/watch?v=iYG_GH1EdEc"},
+  {"course": "BCH 309 Membrane Biochemistry", "caption": "The Cell Membrane", "video_url": "https://www.youtube.com/watch?v=AsffT7XIXbA"},
+  {"course": "BCH 309 Membrane Biochemistry", "caption": "Fluid Mosaic Model of the Plasma Membrane", "video_url": "https://www.youtube.com/watch?v=xQjzPZZ4olE"},
+  {"course": "BCH 309 Membrane Biochemistry", "caption": "Cell Membrane Structure and Function", "video_url": "https://www.youtube.com/watch?v=fJfTDc3WzQ8"},
+  {"course": "BCH 391 General Biochemical Methods", "caption": "Chromatography (Ion Exchange, Affinity)", "video_url": "https://www.youtube.com/watch?v=Z1Yd7upQsXY"},
+  {"course": "BCH 391 General Biochemical Methods", "caption": "Essential Biochemistry Lab Techniques", "video_url": "https://www.youtube.com/watch?v=tRWXj2K_hO8"},
+  {"course": "BCH 391 General Biochemical Methods", "caption": "Biochemistry Lab Techniques Overview", "video_url": "https://www.youtube.com/watch?v=UGxpsxgLIPU"},
+  {"course": "BCH 391 General Biochemical Methods", "caption": "Separations & Purifications: Lab Techniques", "video_url": "https://www.youtube.com/watch?v=CkMhEtfaYTU"},
+  {"course": "BCH 391 General Biochemical Methods", "caption": "Top 10 Lab Techniques Every Life Science Researcher Must Know", "video_url": "https://www.youtube.com/watch?v=JKTBe2jyfOg"},
+  {"course": "CHM 303 Organic Chemistry II", "caption": "Organic Chemistry Basics", "video_url": "https://www.youtube.com/watch?v=StSrkPX7np4"},
+  {"course": "CHM 303 Organic Chemistry II", "caption": "Organic Chemistry: Basic Introduction", "video_url": "https://www.youtube.com/watch?v=B_ketdzJtY8"},
+  {"course": "CHM 303 Organic Chemistry II", "caption": "Introduction to Organic Chemistry", "video_url": "https://www.youtube.com/watch?v=gn3kJsMVCG8"},
+  {"course": "CHM 303 Organic Chemistry II", "caption": "Introduction to Organic Chemistry Lecture", "video_url": "https://www.youtube.com/watch?v=6br-pcd5f5A"},
+  {"course": "STA 201 Statistics for Agricultural & Biological Students", "caption": "Probability Distributions (Normal, Binomial)", "video_url": "https://www.youtube.com/watch?v=Z1Yd7upQsXY"},
+  {"course": "STA 201 Statistics for Agricultural & Biological Students", "caption": "Fundamentals of Biostatistics", "video_url": "https://www.youtube.com/watch?v=7CqolAC_owc"},
+  {"course": "STA 201 Statistics for Agricultural & Biological Students", "caption": "Introduction to Statistics: Data Collection and Presentation", "video_url": "https://www.youtube.com/watch?v=IL2P_y7OQcg"},
+  {"course": "STA 201 Statistics for Agricultural & Biological Students", "caption": "Developing Agricultural Statistics", "video_url": "https://www.youtube.com/watch?v=2DcwCWvZlLY"},
+  {"course": "CHM 401 Instrumental Analytical Methods", "caption": "Gas Chromatography (GC)", "video_url": "https://www.youtube.com/watch?v=Z1Yd7upQsXY"},
+  {"course": "CHM 401 Instrumental Analytical Methods", "caption": "Introduction to Advanced Instrumental Analysis", "video_url": "https://www.youtube.com/watch?v=mKtGg8LXx5s"},
+  {"course": "CHM 401 Instrumental Analytical Methods", "caption": "Introduction to Instrumental Analysis", "video_url": "https://www.youtube.com/watch?v=1mM_3727HRs"},
+  {"course": "CHM 401 Instrumental Analytical Methods", "caption": "Parameters of Instrumental Analysis", "video_url": "https://www.youtube.com/watch?v=tDIXabBC0ls"},
+  {"course": "CHM 401 Instrumental Analytical Methods", "caption": "Sampling and Analytical Data", "video_url": "https://www.youtube.com/watch?v=b66zalex7-c"},
+  {"course": "GNS 301 Entrepreneurial Skill Development", "caption": "Business Idea Generation", "video_url": "https://www.youtube.com/watch?v=2ePf9rue1Ao"},
+  {"course": "GNS 301 Entrepreneurial Skill Development", "caption": "Financial Management for Startups", "video_url": "https://www.youtube.com/watch?v=1A_CAkYt3GY"},
+  {"course": "GNS 301 Entrepreneurial Skill Development", "caption": "What is Entrepreneurship?", "video_url": "https://www.youtube.com/watch?v=pC5l5j2u9SQ"},
+  {"course": "GNS 301 Entrepreneurial Skill Development", "caption": "Entrepreneurship Skills Development", "video_url": "https://www.youtube.com/watch?v=LFAZHraZDiA"},
+  {"course": "GNS 301 Entrepreneurial Skill Development", "caption": "Tips on Being a Successful Entrepreneur", "video_url": "https://www.youtube.com/watch?v=eHJnEHyyN1Y"},
+  {"course": "BCH 399 Industrial Attachment (SIWES)", "caption": "Report Writing and Documentation", "video_url": "https://www.youtube.com/watch?v=2ePf9rue1Ao"},
+  {"course": "BCH 399 Industrial Attachment (SIWES)", "caption": "Networking and Career Development", "video_url": "https://www.youtube.com/watch?v=1A_CAkYt3GY"},
+  {"course": "BCH 399 Industrial Attachment (SIWES)", "caption": "Introduction to Biochemistry", "video_url": "https://www.youtube.com/watch?v=CHJsaq2lNjU"},
+  {"course": "BCH 399 Industrial Attachment (SIWES)", "caption": "Carbohydrates: Biochemistry", "video_url": "https://www.youtube.com/watch?v=AC5yGU7EfBI"},
+  {"course": "BCH 399 Industrial Attachment (SIWES)", "caption": "Industrial Microbiology Introduction", "video_url": "https://www.youtube.com/watch?v=V0BzQQCCwgo"},
+  {"course": "BCH 401 Advanced Enzymology", "caption": "Michaelis-Menten Equation", "video_url": "https://www.youtube.com/watch?v=4eLjRcHnMCk"},
+  {"course": "BCH 401 Advanced Enzymology", "caption": "Enzymes: Catalysis, Kinetics & Classification", "video_url": "https://www.youtube.com/watch?v=-slPtkO2d9g"},
+  {"course": "BCH 401 Advanced Enzymology", "caption": "Enzyme Kinetics with Michaelis-Menten Curve", "video_url": "https://www.youtube.com/watch?v=kmyR1cYxRL4"},
+  {"course": "BCH 401 Advanced Enzymology", "caption": "Kinetics of Enzymes", "video_url": "https://www.youtube.com/watch?v=xobYo15J7QI"},
+  {"course": "BCH 403 Tissue Biochemistry", "caption": "Epithelial Tissues (Barrier Functions)", "video_url": "https://www.youtube.com/watch?v=URUJD5NEXC8"},
+  {"course": "BCH 403 Tissue Biochemistry", "caption": "Connective Tissue Overview", "video_url": "https://www.youtube.com/watch?v=0z9rF2kJaXs"},
+  {"course": "BCH 403 Tissue Biochemistry", "caption": "Histology Fundamentals: Complete Overview", "video_url": "https://www.youtube.com/watch?v=0U5J_unEM-Q"},
+  {"course": "BCH 403 Tissue Biochemistry", "caption": "Connective and Muscle Tissue Staining", "video_url": "https://www.youtube.com/watch?v=DYcnasW2iEE"},
+  {"course": "BCH 403 Tissue Biochemistry", "caption": "Tissues: Anatomy and Physiology Overview", "video_url": "https://www.youtube.com/watch?v=5gUzEHT1dGE"},
+  {"course": "BCH 405 Biotechnology & Genetic Engineering", "caption": "Recombinant DNA Technology", "video_url": "https://www.youtube.com/watch?v=8m6hHRlKwxY"},
+  {"course": "BCH 405 Biotechnology & Genetic Engineering", "caption": "CRISPR-Cas9 Gene Editing", "video_url": "https://www.youtube.com/watch?v=2KoLnIwoZKU"},
+  {"course": "BCH 405 Biotechnology & Genetic Engineering", "caption": "Ethical Issues in Biotechnology", "video_url": "https://www.youtube.com/watch?v=1A_CAkYt3GY"},
+  {"course": "BCH 407 Plant Biochemistry", "caption": "Nitrogen Fixation in Plants", "video_url": "https://www.youtube.com/watch?v=8m6hHRlKwxY"},
+  {"course": "BCH 407 Plant Biochemistry", "caption": "Photosynthesis: Light Reactions and the Calvin Cycle", "video_url": "https://www.youtube.com/watch?v=dAF5FngVa7A"},
+  {"course": "BCH 407 Plant Biochemistry", "caption": "Photosynthesis: Light Dependent Reactions", "video_url": "https://www.youtube.com/watch?v=D2Y_eEaxrYo"},
+  {"course": "BCH 407 Plant Biochemistry", "caption": "Types of Photosynthesis: C3, C4, and CAM", "video_url": "https://www.youtube.com/watch?v=8oodcy8SEBk"},
+  {"course": "BCH 407 Plant Biochemistry", "caption": "Photosynthesis Crash Course", "video_url": "https://www.youtube.com/watch?v=sQK3Yr4Sc_k"},
+  {"course": "BCH 409 Seminar in Biochemistry", "caption": "Designing Scientific Posters", "video_url": "https://www.youtube.com/watch?v=2ePf9rue1Ao"},
+  {"course": "BCH 409 Seminar in Biochemistry", "caption": "Research Methods: Introduction", "video_url": "https://www.youtube.com/watch?v=PDjS20kic54"},
+  {"course": "BCH 409 Seminar in Biochemistry", "caption": "Why We Do Research", "video_url": "https://www.youtube.com/watch?v=luM2Y4otHUY"},
+  {"course": "BCH 409 Seminar in Biochemistry", "caption": "Introduction to Research Methods Q&A", "video_url": "https://www.youtube.com/watch?v=RY4iMSlWysU"},
+  {"course": "BCH 409 Seminar in Biochemistry", "caption": "Research Methodology Lecture Series", "video_url": "https://www.youtube.com/watch?v=GSeeyJVD0JU"},
+  {"course": "BCH 411 Pharmacological Biochemistry and Toxicology", "caption": "Pharmacology Intro: Pharmacokinetics & Pharmacodynamics", "video_url": "https://www.youtube.com/watch?v=1FDgj3R3DDM"},
+  {"course": "BCH 411 Pharmacological Biochemistry and Toxicology", "caption": "Pharmacokinetics: Drug Absorption", "video_url": "https://www.youtube.com/watch?v=kkUxUBoM-hM"},
+  {"course": "BCH 411 Pharmacological Biochemistry and Toxicology", "caption": "Biotransformation of Drugs and Toxins", "video_url": "https://www.youtube.com/watch?v=zkS7PZUE27g"},
+  {"course": "BCH 411 Pharmacological Biochemistry and Toxicology", "caption": "Pharmacology & Toxicology Review", "video_url": "https://www.youtube.com/watch?v=wCTGtm-uY1Q"},
+  {"course": "BCH 413 Bioenergetics", "caption": "Bioenergetics Explained: Glycolysis, Krebs Cycle, Oxidative Phosphorylation", "video_url": "https://www.youtube.com/watch?v=ld7NUAHGS7U"},
+  {"course": "BCH 413 Bioenergetics", "caption": "Metabolism and ATP", "video_url": "https://www.youtube.com/watch?v=-6VyMFQ7rRo"},
+  {"course": "BCH 413 Bioenergetics", "caption": "Metabolism: Glycolysis", "video_url": "https://www.youtube.com/watch?v=gggC9vctvBQ"},
+  {"course": "BCH 413 Bioenergetics", "caption": "Metabolism Overview", "video_url": "https://www.youtube.com/watch?v=Lf4irlyN1eE"},
+  {"course": "MCB 305 Microbial Genetics/Molecular Biology", "caption": "Bacterial Genetics (Transformation, Conjugation)", "video_url": "https://www.youtube.com/watch?v=8m6hHRlKwxY"},
+  {"course": "MCB 305 Microbial Genetics/Molecular Biology", "caption": "Gene Regulation in Prokaryotes (Lac Operon)", "video_url": "https://www.youtube.com/watch?v=oBwtxdI1zvk"},
+  {"course": "MCB 305 Microbial Genetics/Molecular Biology", "caption": "Molecular Cloning Techniques", "video_url": "https://www.youtube.com/watch?v=2KoLnIwoZKU"},
+  {"course": "MCB 401 Immunology and Immunochemistry", "caption": "Innate vs Adaptive Immunity", "video_url": "https://www.youtube.com/watch?v=zQGOcOUBi6s"},
+  {"course": "MCB 401 Immunology and Immunochemistry", "caption": "Immunology: Diversity, Specificity, & B Cells", "video_url": "https://www.youtube.com/watch?v=FpXIGTFD8Qs"},
+  {"course": "MCB 401 Immunology and Immunochemistry", "caption": "Introduction to Immunology", "video_url": "https://www.youtube.com/watch?v=xQiF2ZwI2uo"},
+  {"course": "MCB 401 Immunology and Immunochemistry", "caption": "Understanding the Immune System", "video_url": "https://www.youtube.com/watch?v=_jBpv9fYSU4"},
+  {"course": "MCB 401 Immunology and Immunochemistry", "caption": "Immune System: Overview", "video_url": "https://www.youtube.com/watch?v=qkIfYwnaYqc"},
+  {"course": "BCH 417 Biochemistry of Parasites", "caption": "Introduction to Parasitology", "video_url": "https://www.youtube.com/watch?v=8m6hHRlKwxY"},
+  {"course": "BCH 417 Biochemistry of Parasites", "caption": "Parasites Overview", "video_url": "https://www.youtube.com/watch?v=LSqiJozPpF0"},
+  {"course": "BCH 417 Biochemistry of Parasites", "caption": "Parasites: Protozoa Classification, Structure, Life Cycle", "video_url": "https://www.youtube.com/watch?v=V4iSB0_7opM"},
+  {"course": "BCH 417 Biochemistry of Parasites", "caption": "Parasitology Lecture", "video_url": "https://www.youtube.com/watch?v=AKaq02B5-AA"},
+  {"course": "BCH 417 Biochemistry of Parasites", "caption": "Introduction to Parasitology", "video_url": "https://www.youtube.com/watch?v=IIUMdE9L1lY"},
+  {"course": "BCH 402 Biosynthesis of Macromolecules", "caption": "DNA Replication (Eukaryotes vs Prokaryotes)", "video_url": "https://www.youtube.com/watch?v=8m6hHRlKwxY"},
+  {"course": "BCH 402 Biosynthesis of Macromolecules", "caption": "Proteins & Amino Acids", "video_url": "https://www.youtube.com/watch?v=9ssCKw-7OvQ"},
+  {"course": "BCH 402 Biosynthesis of Macromolecules", "caption": "Carbohydrates: Biochemistry", "video_url": "https://www.youtube.com/watch?v=AC5yGU7EfBI"},
+  {"course": "BCH 402 Biosynthesis of Macromolecules", "caption": "Macromolecules Explained", "video_url": "https://www.youtube.com/watch?v=pZ-lj6fr2BM"},
+  {"course": "BCH 402 Biosynthesis of Macromolecules", "caption": "Macromolecules Review", "video_url": "https://www.youtube.com/watch?v=Y3h2GNajvcY"},
+  {"course": "BCH 404 Bioinorganic Chemistry", "caption": "Complex Ions, Ligands & Coordination Compounds", "video_url": "https://www.youtube.com/watch?v=r4H5XjJPn58"},
+  {"course": "BCH 404 Bioinorganic Chemistry", "caption": "Bioinorganic Chemistry: Introduction", "video_url": "https://www.youtube.com/watch?v=HBlvemcs01Q"},
+  {"course": "BCH 404 Bioinorganic Chemistry", "caption": "Metalloenzymes vs Metal-Activated Enzymes", "video_url": "https://www.youtube.com/watch?v=o_kT1kB21l8"},
+  {"course": "BCH 404 Bioinorganic Chemistry", "caption": "Introduction to Bioinorganic Chemistry & Bioactivity of Metal Ions", "video_url": "https://www.youtube.com/watch?v=qGkYLk5coCE"},
+  {"course": "BCH 406 Metabolic Regulations", "caption": "Allosteric Regulation (PFK)", "video_url": "https://www.youtube.com/watch?v=oBwtxdI1zvk"},
+  {"course": "BCH 406 Metabolic Regulations", "caption": "Iron Absorption, Transport, Metabolism and Regulation", "video_url": "https://www.youtube.com/watch?v=498haH-rMVg"},
+  {"course": "BCH 406 Metabolic Regulations", "caption": "Metabolism Overview", "video_url": "https://www.youtube.com/watch?v=Lf4irlyN1eE"},
+  {"course": "BCH 406 Metabolic Regulations", "caption": "Metabolism: Glycolysis", "video_url": "https://www.youtube.com/watch?v=gggC9vctvBQ"},
+  {"course": "BCH 406 Metabolic Regulations", "caption": "The Metabolic Map: Carbohydrates", "video_url": "https://www.youtube.com/watch?v=DQ-tUjfFet4"},
+  {"course": "BCH 408 Biochemical Reasoning", "caption": "Experimental Design in Biochemistry", "video_url": "https://www.youtube.com/watch?v=1A_CAkYt3GY"},
+  {"course": "BCH 408 Biochemical Reasoning", "caption": "Critical Analysis of Literature", "video_url": "https://www.youtube.com/watch?v=2ePf9rue1Ao"},
+  {"course": "BCH 408 Biochemical Reasoning", "caption": "Research Methods: Introduction", "video_url": "https://www.youtube.com/watch?v=PDjS20kic54"},
+  {"course": "BCH 408 Biochemical Reasoning", "caption": "Why We Do Research", "video_url": "https://www.youtube.com/watch?v=luM2Y4otHUY"},
+  {"course": "BCH 408 Biochemical Reasoning", "caption": "Introduction to Research Methods Q&A", "video_url": "https://www.youtube.com/watch?v=RY4iMSlWysU"},
+  {"course": "BCH 412 Industrial Biochemistry", "caption": "Introduction to Biochemistry", "video_url": "https://www.youtube.com/watch?v=CHJsaq2lNjU"},
+  {"course": "BCH 412 Industrial Biochemistry", "caption": "Carbohydrates: Biochemistry", "video_url": "https://www.youtube.com/watch?v=AC5yGU7EfBI"},
+  {"course": "BCH 412 Industrial Biochemistry", "caption": "Industrial Microbiology Introduction", "video_url": "https://www.youtube.com/watch?v=V0BzQQCCwgo"},
+  {"course": "BCH 412 Industrial Biochemistry", "caption": "What is Industrial Biochemistry?", "video_url": "https://www.youtube.com/watch?v=_DKoqyeHxFM"},
+  {"course": "MCB 408 Microbial Physiology & Metabolism", "caption": "Microbial Metabolism Part 1", "video_url": "https://www.youtube.com/watch?v=pvTeJopT23E"},
+  {"course": "MCB 408 Microbial Physiology & Metabolism", "caption": "Microbial Physiology: A Conversation with Dr. Cari Vanderpool", "video_url": "https://www.youtube.com/watch?v=KHq-tjnKSBk"},
+  {"course": "MCB 408 Microbial Physiology & Metabolism", "caption": "Metabolism Overview", "video_url": "https://www.youtube.com/watch?v=Lf4irlyN1eE"},
+  {"course": "MCB 408 Microbial Physiology & Metabolism", "caption": "Metabolism: Glycolysis", "video_url": "https://www.youtube.com/watch?v=gggC9vctvBQ"},
+  {"course": "BCH 499 Research Project", "caption": "How to Choose a Research Topic", "video_url": "https://www.youtube.com/watch?v=2ePf9rue1Ao"},
+  {"course": "BCH 499 Research Project", "caption": "Experimental Design and Methodology", "video_url": "https://www.youtube.com/watch?v=1A_CAkYt3GY"},
+  {"course": "BCH 499 Research Project", "caption": "Research Methods: Introduction", "video_url": "https://www.youtube.com/watch?v=PDjS20kic54"},
+  {"course": "BCH 499 Research Project", "caption": "Why We Do Research", "video_url": "https://www.youtube.com/watch?v=luM2Y4otHUY"},
+  {"course": "BCH 499 Research Project", "caption": "Introduction to Research Methods Q&A", "video_url": "https://www.youtube.com/watch?v=RY4iMSlWysU"},
+  {"course": "BCH 492 Advanced Biochemical Methods", "caption": "Bioinformatics Tools", "video_url": "https://www.youtube.com/watch?v=8m6hHRlKwxY"},
+  {"course": "BCH 492 Advanced Biochemical Methods", "caption": "Essential Biochemistry Lab Techniques", "video_url": "https://www.youtube.com/watch?v=tRWXj2K_hO8"},
+  {"course": "BCH 492 Advanced Biochemical Methods", "caption": "Biochemistry Lab Techniques Overview", "video_url": "https://www.youtube.com/watch?v=UGxpsxgLIPU"},
+  {"course": "BCH 492 Advanced Biochemical Methods", "caption": "Separations & Purifications: Lab Techniques", "video_url": "https://www.youtube.com/watch?v=CkMhEtfaYTU"},
+  {"course": "BCH 492 Advanced Biochemical Methods", "caption": "Top 10 Lab Techniques Every Life Science Researcher Must Know", "video_url": "https://www.youtube.com/watch?v=JKTBe2jyfOg"},
+  {"course": "BCH 414 Clinical and Forensic Biochemistry", "caption": "Forensic DNA Analysis", "video_url": "https://www.youtube.com/watch?v=2KoLnIwoZKU"},
+  {"course": "BCH 414 Clinical and Forensic Biochemistry", "caption": "Toxicology Intro: Clinical Chemistry Review", "video_url": "https://www.youtube.com/watch?v=FIJvk67-848"},
+  {"course": "BCH 414 Clinical and Forensic Biochemistry", "caption": "Toxicology Review Course", "video_url": "https://www.youtube.com/watch?v=ukFzex4Z0Wk"},
+  {"course": "BCH 414 Clinical and Forensic Biochemistry", "caption": "Clinical Chemistry: Toxicology and Drugs of Abuse", "video_url": "https://www.youtube.com/watch?v=WPtil10Tfzc"},
+  {"course": "BCH 414 Clinical and Forensic Biochemistry", "caption": "Introduction to Forensic Toxicology", "video_url": "https://www.youtube.com/watch?v=896r4jCL_5o"}
+]
+
+            const uniqueCourses = [...new Map(courseVideosData.map(v => [v.course, v.course])).values()].sort();
+
+            // ---------- STATE ----------
+            let selectedCourseVideos = [];
+
+            let localLikes = new Map();
+            let localViews = new Map();
+            
+            // ---------- AUDIO CONTROL STATE ----------
+            let userInteracted = false;
+            let activeReelElement = null;
+            let viewCountedSet = new Set();
+            let isManuallyUnmuted = true;
+
+            // YouTube Player instances
+            let ytPlayers = new Map(); // key: iframe id, value: YT.Player
+            let ytReady = false;
+            let ytQueue = [];
+
+            function onYouTubeIframeAPIReady() {
+                ytReady = true;
+                ytQueue.forEach(id => initYouTubePlayer(id));
+                ytQueue = [];
+            }
+            window.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady;
+
+            function initYouTubePlayer(iframeId) {
+                const iframe = document.getElementById(iframeId);
+                if (!iframe) return;
+                // Create YT.Player for this iframe
+                const player = new YT.Player(iframeId, {
+                    events: {
+                        onReady: (event) => {
+                            if (isManuallyUnmuted) event.target.unMute();
+                            else event.target.mute();
+                            // Auto-start the reel that's active (or the first one, if none is active yet)
+                            const reel = iframe.closest('.reel-item');
+                            const firstReel = reelContainer.querySelector('.reel-item');
+                            if (reel && (reel === activeReelElement || (!activeReelElement && reel === firstReel))) {
+                                event.target.playVideo();
+                                const overlay = reel.querySelector('.play-overlay');
+                                if (overlay) overlay.classList.add('hidden');
+                                if (!activeReelElement) setActiveReel(reel);
+                            }
+                        }
+                    }
+                });
+                ytPlayers.set(iframeId, player);
+            }
+
+            // Helper to get YouTube embed URL, with our own UI standing in for YouTube's controls
+            function getYouTubeEmbedNoAuto(url) {
+                const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]+)/);
+                return match ? `https://www.youtube.com/embed/${match[1]}?enablejsapi=1&playsinline=1&controls=0&modestbranding=1&rel=0&iv_load_policy=3&fs=0` : url;
+            }
+
+            // ---------- DOM elements ----------
+            const reelContainer = document.getElementById('reel-container');
+
+            // Helper: get course videos
+            function getCourseVideos(courseName) {
+                return courseVideosData.filter(v => v.course === courseName).map((v, idx) => ({
+                    id: `course_${courseName.replace(/\s/g, '_')}_${idx}`,
+                    video_url: v.video_url,
+                    creator_name: "Educational Channel",
+                    caption: v.caption,
+                    course: v.course,
+                    level: "",
+                    semester: "",
+                    likes: localLikes.get(`course_${courseName.replace(/\s/g, '_')}_${idx}`) || 0,
+                    views: localViews.get(`course_${courseName.replace(/\s/g, '_')}_${idx}`) || 0,
+                    source: 'course'
+                }));
+            }
+            
+            function formatNumber(num) {
+                if (num >= 1e6) return (num/1e6).toFixed(1)+'M';
+                if (num >= 1e3) return (num/1e3).toFixed(1)+'k';
+                return num;
+            }
+            
+            // New: forward/backward functions
+            function seekVideo(reel, delta) {
+                const video = reel.querySelector('video');
+                if (video) {
+                    let newTime = video.currentTime + delta;
+                    newTime = Math.max(0, Math.min(video.duration, newTime));
+                    video.currentTime = newTime;
+                    // Vibration if supported
+                    if (navigator.vibrate) navigator.vibrate(50);
+                    return;
+                }
+                const iframe = reel.querySelector('iframe');
+                if (iframe && iframe.id) {
+                    const player = ytPlayers.get(iframe.id);
+                    if (player && typeof player.seekTo === 'function') {
+                        player.getCurrentTime().then(current => {
+                            let newTime = current + delta;
+                            newTime = Math.max(0, newTime);
+                            player.seekTo(newTime, true);
+                            if (navigator.vibrate) navigator.vibrate(50);
+                        }).catch(() => {
+                            // fallback
+                            player.seekTo(delta > 0 ? 10 : 0, true);
+                            if (navigator.vibrate) navigator.vibrate(50);
+                        });
+                    }
+                }
+            }
+
+
+            // Tap the video itself to pause/resume, TikTok-style — sound stays on either way
+            function toggleReelPlayback(reel) {
+                const iframe = reel.querySelector('iframe');
+                const playOverlay = reel.querySelector('.play-overlay');
+                if (!iframe || !iframe.id) return;
+                const player = ytPlayers.get(iframe.id);
+                if (!player) return;
+                const state = player.getPlayerState ? player.getPlayerState() : null;
+                const isPlaying = state === 1; // YT.PlayerState.PLAYING
+                if (isPlaying) {
+                    if (player.pauseVideo) player.pauseVideo();
+                    if (playOverlay) playOverlay.classList.remove('hidden');
+                } else {
+                    if (player.playVideo) player.playVideo();
+                    if (isManuallyUnmuted) player.unMute();
+                    else player.mute();
+                    if (playOverlay) playOverlay.classList.add('hidden');
+                }
+                if (!userInteracted) userInteracted = true;
+            }
+            
+            function updateMuteButtonIcon(reelElement) {
+                if (!reelElement) return;
+                const muteBtn = reelElement.querySelector('.mute-btn');
+                if (muteBtn) muteBtn.textContent = isManuallyUnmuted ? '🔊' : '🔇';
+            }
+            
+            function updateAllMuteButtons() {
+                document.querySelectorAll('.reel-item').forEach(reel => updateMuteButtonIcon(reel));
+            }
+            
+            function applyAudioToReel(reelElement, isActive) {
+                if (!reelElement) return;
+                const iframe = reelElement.querySelector('iframe');
+                const playOverlay = reelElement.querySelector('.play-overlay');
+                if (!iframe || !iframe.id) return;
+                const player = ytPlayers.get(iframe.id);
+
+                if (!isActive) {
+                    if (player && player.pauseVideo) player.pauseVideo();
+                    if (playOverlay) playOverlay.classList.remove('hidden');
+                    return;
+                }
+                // Active: always auto-play with sound already on — no tap needed
+                if (player && player.playVideo) {
+                    player.playVideo();
+                    if (isManuallyUnmuted) player.unMute();
+                    else player.mute();
+                }
+                if (playOverlay) playOverlay.classList.add('hidden');
+            }
+            
+            function setActiveReel(newReelElement) {
+                if (activeReelElement === newReelElement) return;
+                if (activeReelElement) applyAudioToReel(activeReelElement, false);
+                activeReelElement = newReelElement;
+                if (activeReelElement) {
+                    applyAudioToReel(activeReelElement, true);
+                    updateMuteButtonIcon(activeReelElement);
+                }
+            }
+            
+            function toggleManualMute() {
+                if (!userInteracted) userInteracted = true;
+                isManuallyUnmuted = !isManuallyUnmuted;
+                updateAllMuteButtons();
+                if (activeReelElement) applyAudioToReel(activeReelElement, true);
+            }
+            
+            async function countViewForReel(reelElement) {
+                const id = reelElement.dataset.id;
+                const source = reelElement.dataset.source;
+                if (!id) return;
+                if (source === 'course') {
+                    if (localViews.has(id)) localViews.set(id, localViews.get(id) + 1);
+                    else localViews.set(id, 1);
+                    const viewsSpan = reelElement.querySelector('.overlay-btn:last-child span');
+                    if (viewsSpan) viewsSpan.textContent = formatNumber(localViews.get(id));
+                    return;
+                }
+                if (viewCountedSet.has(id)) return;
+                viewCountedSet.add(id);
+                try {
+                    const res = await fetch(`/api/videos/${id}/view`, { method: 'POST', credentials: 'include' });
+                    const data = await res.json();
+                    const viewsSpan = reelElement.querySelector('.overlay-btn:last-child span');
+                    if (viewsSpan) viewsSpan.textContent = formatNumber(data.views);
+                } catch (err) { console.error('View increment failed', err); }
+            }
+            
+            // Scroll-driven active-reel detection: whichever reel is centered in the
+            // container is the one that plays. Polled every animation frame rather than
+            // on the 'scroll' event, since some embedded/automated webviews don't fire
+            // scroll events for programmatic or momentum scrolling reliably.
+            let scrollTrackingActive = false;
+            function updateActiveReelFromScroll() {
+                const reels = document.querySelectorAll('.reel-item');
+                if (!reels.length) return;
+                const containerRect = reelContainer.getBoundingClientRect();
+                const containerMid = containerRect.top + containerRect.height / 2;
+                let closest = null, closestDist = Infinity;
+                reels.forEach(reel => {
+                    const rect = reel.getBoundingClientRect();
+                    const mid = rect.top + rect.height / 2;
+                    const dist = Math.abs(mid - containerMid);
+                    if (dist < closestDist) { closestDist = dist; closest = reel; }
+                });
+                if (closest && closest !== activeReelElement) {
+                    setActiveReel(closest);
+                    countViewForReel(closest);
+                }
+            }
+            function reelScrollTrackLoop() {
+                if (!scrollTrackingActive) return;
+                updateActiveReelFromScroll();
+                requestAnimationFrame(reelScrollTrackLoop);
+            }
+            function initReelScrollTracking() {
+                activeReelElement = null;
+                scrollTrackingActive = true;
+                reelScrollTrackLoop();
+            }
+            function stopReelScrollTracking() {
+                scrollTrackingActive = false;
+            }
+
+            function onFirstUserInteraction() {
+                if (userInteracted) return;
+                userInteracted = true;
+                if (activeReelElement) applyAudioToReel(activeReelElement, true);
+            }
+            document.addEventListener('touchstart', onFirstUserInteraction, { once: true, passive: true });
+            document.addEventListener('click', onFirstUserInteraction, { once: true });
+            
+            // ---------- RENDER LOGIC ----------
+            function renderReel() {
+                if (selectedCourseVideos.length > 0) {
+                    let html = '';
+                    selectedCourseVideos.forEach((item, idx) => {
+                        const iframeSrc = getYouTubeEmbedNoAuto(item.video_url);
+                        const iframeId = `yt-${item.id}-${Date.now()}-${idx}`;
+                        const mediaTag = `<iframe id="${iframeId}" src="${iframeSrc}" frameborder="0" allowfullscreen loading="lazy" allow="autoplay; encrypted-media" style="pointer-events: none;"></iframe>`;
+                        const likesCount = localLikes.get(item.id) !== undefined ? localLikes.get(item.id) : (item.likes || 0);
+                        const viewsCount = localViews.get(item.id) !== undefined ? localViews.get(item.id) : (item.views || 0);
+                        html += `<div class="reel-item" data-id="${item.id}" data-type="course" data-source="course">
+                            <div class="reel-media">
+                                ${mediaTag}
+                                <div class="play-overlay hidden"><div class="play-icon">▶️</div></div>
+                            </div>
+                            <div class="transport-controls">
+                                <button class="transport-btn" data-seek="-5">⏪</button>
+                                <button class="transport-btn" data-seek="5">⏩</button>
+                            </div>
+                            <div class="video-info-bottom">
+                                <div class="creator-name">🎬 ${item.creator_name}</div>
+                                <div class="caption">${item.caption}</div>
+                                <div><span class="badge">${item.course}</span></div>
+                            </div>
+                            <div class="video-overlay-right">
+                                <button class="overlay-btn mute-btn">${isManuallyUnmuted ? '🔊' : '🔇'}</button>
+                                <button class="overlay-btn like-btn" data-id="${item.id}">❤️ <span class="like-count">${formatNumber(likesCount)}</span></button>
+                                <div class="overlay-btn">👁️ <span>${formatNumber(viewsCount)}</span></div>
+                            </div>
+                        </div>`;
+                    });
+                    reelContainer.innerHTML = html;
+                    // Initialize YouTube players
+                    document.querySelectorAll('iframe[id^="yt-"]').forEach(iframe => {
+                        if (ytReady) initYouTubePlayer(iframe.id);
+                        else ytQueue.push(iframe.id);
+                    });
+                    attachReelListeners();
+                    // Tap anywhere on the video to pause/resume, TikTok-style
+                    document.querySelectorAll('.reel-media').forEach(media => {
+                        media.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            const reel = media.closest('.reel-item');
+                            toggleReelPlayback(reel);
+                        });
+                    });
+                    viewCountedSet.clear();
+                    initReelScrollTracking();
+                    updateAllMuteButtons();
+                } else {
+                    // Course selection UI
+                    stopReelScrollTracking();
+                    let courseOptions = uniqueCourses.map(c => `<option value="${c.replace(/"/g, '&quot;')}">${c}</option>`).join('');
+                    reelContainer.innerHTML = `
+                        <div class="youtube-course-panel">
+                            <div class="search-prompt-icon">📚🎓</div>
+                            <div class="course-selector-box">
+                                <select id="courseSelect">
+                                    <option value="">-- Select a course --</option>
+                                    ${courseOptions}
+                                </select>
+                                <button id="loadCourseBtn">Load Videos</button>
+                            </div>
+                            <div class="search-prompt-text">Choose a course to watch educational reels</div>
+                        </div>
+                    `;
+                    const courseSelect = document.getElementById('courseSelect');
+                    const loadBtn = document.getElementById('loadCourseBtn');
+                    if (loadBtn && courseSelect) {
+                        loadBtn.addEventListener('click', () => {
+                            const selected = courseSelect.value;
+                            if (!selected) return;
+                            selectedCourseVideos = getCourseVideos(selected);
+                            renderReel();
+                        });
+                    }
+                    activeReelElement = null;
+                }
+            }
+            
+            function attachReelListeners() {
+                document.querySelectorAll('.like-btn').forEach(btn => {
+                    btn.addEventListener('click', async (e) => {
+                        e.stopPropagation();
+                        const id = btn.dataset.id;
+                        const reelDiv = btn.closest('.reel-item');
+                        const source = reelDiv?.dataset.source;
+                        if (source === 'course') {
+                            let currentLikes = localLikes.get(id) || 0;
+                            currentLikes++;
+                            localLikes.set(id, currentLikes);
+                            btn.querySelector('.like-count').textContent = formatNumber(currentLikes);
+                            btn.classList.add('liked');
+                            return;
+                        }
+                        try {
+                            const res = await fetch(`/api/videos/${id}/like`, { method: 'POST', credentials: 'include' });
+                            const data = await res.json();
+                            btn.querySelector('.like-count').textContent = formatNumber(data.likes);
+                            btn.classList.add('liked');
+                        } catch (err) { console.error('Like failed', err); }
+                    });
+                });
+                document.querySelectorAll('.mute-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => { e.stopPropagation(); toggleManualMute(); });
+                });
+                document.querySelectorAll('.transport-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const delta = parseInt(btn.dataset.seek, 10);
+                        const reel = btn.closest('.reel-item');
+                        if (reel) seekVideo(reel, delta);
+                    });
+                });
+            }
+            
+            window.backToCourses = function() {
+                selectedCourseVideos = [];
+                renderReel();
+            };
+            window.goBack = () => window.history.back();
+
+            renderReel();
+        })();
+    </script>
+</body>
+</html>

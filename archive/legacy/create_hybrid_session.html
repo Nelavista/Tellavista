@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}Create Hybrid Live Session - Nelavista{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>🎥 Create New Hybrid Live Session</h2>
+    <p class="lead">Set up a session with interactive Jitsi (up to 50 participants) and a YouTube broadcast for unlimited viewers.</p>
+
+    <form method="post" action="{{ url_for('create_hybrid_session') }}" class="mt-4">
+        <div class="mb-3">
+            <label for="title" class="form-label">Session Title *</label>
+            <input type="text" class="form-control" id="title" name="title" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="course_id" class="form-label">Course (optional)</label>
+            <select class="form-select" id="course_id" name="course_id">
+                <option value="">-- Select Course --</option>
+                {% for course in courses %}
+                <option value="{{ course.id }}">{{ course.title }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="description" class="form-label">Description</label>
+            <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label for="scheduled_time" class="form-label">Scheduled Date & Time *</label>
+            <input type="datetime-local" class="form-control" id="scheduled_time" name="scheduled_time" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="max_interactive" class="form-label">Max Interactive Participants (default 50)</label>
+            <input type="number" class="form-control" id="max_interactive" name="max_interactive" value="50" min="1" max="100">
+        </div>
+
+        <div class="mb-3">
+            <label for="youtube_embed_url" class="form-label">YouTube Embed URL (optional)</label>
+            <input type="url" class="form-control" id="youtube_embed_url" name="youtube_embed_url" placeholder="https://www.youtube.com/embed/...">
+            <small class="text-muted">You can add this later; it will be the broadcast stream.</small>
+        </div>
+
+        <div class="mb-3">
+            <label for="jitsi_password" class="form-label">Jitsi Room Password (optional)</label>
+            <input type="text" class="form-control" id="jitsi_password" name="jitsi_password">
+            <small class="text-muted">Leave blank for no password.</small>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Create Session</button>
+        <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

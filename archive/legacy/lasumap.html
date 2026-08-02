@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>LASU Map</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
+    #map {
+      height: 100vh;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+
+<div id="map"></div>
+
+<script>
+  function initMap() {
+    const lasu = { lat: 6.4698, lng: 3.2003 };
+
+    const map = new google.maps.Map(document.getElementById("map"), {
+      zoom: 16,
+      center: lasu,
+      mapTypeControl: false,
+      streetViewControl: true,
+      fullscreenControl: true
+    });
+
+    new google.maps.Marker({
+      position: lasu,
+      map: map,
+      title: "Lagos State University"
+    });
+  }
+</script>
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCfJIpd-09U00nEokdD6SWa3Cgw-P61K9E&callback=initMap" async defer></script>
+
+</body>
+</html>

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
+  <title>Nelavista · The future of African learning</title>
+  <meta name="theme-color" content="#050810">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Nelavista">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="description" content="The smarter way to study at African universities. AI-powered tools, CBT practice, study materials — built for how you actually learn.">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" type="image/png" sizes="32x32" href="/static/icons/nelavista-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/static/icons/nelavista-16x16.png">
+  <link rel="shortcut icon" href="/static/icons/favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="/static/icons/nelavista-180x180.png">
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
+</head>
+<body>
+  {% include 'components/navbar.html' %}
+
+
+  <main>
+    <section class="hero-section" id="home">
+      <div class="container hero-container">
+        <h1 class="hero-headline bg reveal">The smarter way<br>to study at<br><em>African universities.</em></h1>
+        <p class="hero-sub reveal">Built by an African student, for African students. AI-powered tools, CBT practice, study materials — designed around how you actually learn.</p>
+        <div class="hero-actions reveal">
+          <a href="/signup" class="btn-primary">Start for free <i class="ri-arrow-right-line"></i></a>
+          <a href="/login" class="btn-ghost">Already a student? Sign in <i class="ri-arrow-right-line"></i></a>
+        </div>
+        <div class="stat-strip reveal">
+          <div class="stat-item">
+            <div class="stat-num"><span class="count-up" data-target="2400">0</span><span>+</span></div>
+            <div class="stat-label">Students</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-num"><span class="count-up" data-target="8">0</span><span></span></div>
+            <div class="stat-label">Tools</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-num"><span class="count-up" data-target="100">0</span><span>%</span></div>
+            <div class="stat-label">Free</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="marquee-wrap">
+      <div class="marquee-track">
+        <span class="marquee-item"><span class="marquee-dot"></span>AI Tutor</span>
+        <span class="marquee-item"><span class="marquee-dot"></span>CBT Practice</span>
+        <span class="marquee-item"><span class="marquee-dot"></span>Study Materials</span>
+        <span class="marquee-item"><span class="marquee-dot"></span>Live Meetings</span>
+        <span class="marquee-item"><span class="marquee-dot"></span>Campus Map</span>
+        <span class="marquee-item"><span class="marquee-dot"></span>Material Analysis</span>
+        <span class="marquee-item"><span class="marquee-dot"></span>Video Reels</span>
+        <span class="marquee-item"><span class="marquee-dot"></span>Built for Africa</span>
+        <span class="marquee-item"><span class="marquee-dot"></span>AI Tutor</span>
+        <span class="marquee-item"><span class="marquee-dot"></span>CBT Practice</span>
+        <span class="marquee-item"><span class="marquee-dot"></span>Study Materials</span>
+        <span class="marquee-item"><span class="marquee-dot"></span>Live Meetings</span>
+        <span class="marquee-item"><span class="marquee-dot"></span>Campus Map</span>
+        <span class="marquee-item"><span class="marquee-dot"></span>Material Analysis</span>
+        <span class="marquee-item"><span class="marquee-dot"></span>Video Reels</span>
+        <span class="marquee-item"><span class="marquee-dot"></span>Built for Africa</span>
+      </div>
+    </div>
+
+    <section class="features-section" id="features">
+      <div class="container">
+        <div class="features-header">
+          <span class="section-label">Platform</span>
+          <h2 class="section-title bg reveal">Everything you need to excel.</h2>
+        </div>
+        <div class="features-grid">
+          <div class="feature-card reveal">
+            <div class="feature-icon"><i class="ri-chat-smile-2-line"></i></div>
+            <h3>Talk to Nelavista</h3>
+            <p>Your AI academic assistant that understands African university courses, exam formats, and how you actually study.</p>
+          </div>
+          <div class="feature-card reveal">
+            <div class="feature-icon"><i class="ri-questionnaire-line"></i></div>
+            <h3>CBT Practice</h3>
+            <p>Adaptive mock exams built around African university question banks. Practice until you're ready.</p>
+          </div>
+          <div class="feature-card reveal">
+            <div class="feature-icon"><i class="ri-file-search-line"></i></div>
+            <h3>Analyze Materials</h3>
+            <p>Upload your lecture notes or past questions. Nelavista breaks them down and summarizes clearly.</p>
+          </div>
+          <div class="feature-card reveal">
+            <div class="feature-icon"><i class="ri-book-open-line"></i></div>
+            <h3>Study Library</h3>
+            <p>Curated materials organized by course and level — no more chasing classmates for PDFs.</p>
+          </div>
+          <div class="feature-card reveal">
+            <div class="feature-icon"><i class="ri-video-chat-line"></i></div>
+            <h3>Live Study Rooms</h3>
+            <p>Virtual meeting rooms for group study. No WhatsApp chaos, just structured collaboration.</p>
+          </div>
+          <div class="feature-card reveal">
+            <div class="feature-icon"><i class="ri-film-line"></i></div>
+            <h3>Reels</h3>
+            <p>Short video explanations on core topics. Built for the way your generation learns.</p>
+          </div>
+          <div class="feature-card reveal">
+            <div class="feature-icon"><i class="ri-map-pin-line"></i></div>
+            <h3>Campus Map</h3>
+            <p>Find lecture halls, facilities, and offices. Navigate your campus with ease.</p>
+          </div>
+          <div class="feature-card reveal">
+            <div class="feature-icon"><i class="ri-bar-chart-line"></i></div>
+            <h3>Progress Tracker</h3>
+            <p>See how you improve week by week across all your courses and CBT scores.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="founder-section" id="about">
+      <div class="container">
+        <div class="founder-card reveal">
+          <div>
+            <p class="founder-quote">"I built Nelavista because I was that student—searching for notes across WhatsApp groups, preparing for exams with uncertainty, and wishing there was a smarter way to learn. Nelavista is the platform I wish I had."
+            </p>
+            <div class="founder-name bg">Abdul Afeez Tella</div>
+            <div class="founder-role">Founder · Mathematics Student · Nigeria</div>
+          </div>
+          <div>
+            <img src="{{ url_for('static', filename='founder.jpeg') }}" alt="Abdul Afeez Tella" class="founder-avatar">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta-section" id="cta">
+      <div class="container">
+        <div class="cta-card reveal">
+          <div class="cta-glow"></div>
+          <h2 class="cta-title bg">Ready to study smarter?</h2>
+          <p class="cta-desc">Join thousands of African students already using Nelavista.<br>Free. No card needed.</p>
+          <a href="/signup" class="cta-btn">Create free account <i class="ri-arrow-right-line"></i></a>
+          <p class="cta-note">2-minute setup · Built for Africa · Always free</p>
+          <p class="cta-login">Already have an account? <a href="/login">Sign in</a></p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  {% include 'components/footer.html' %}
+
+
+  <script src="{{ url_for('static', filename='js/nav.js') }}"></script>
+</body>
+</html>

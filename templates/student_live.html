@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Nelavista - Student Live</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      min-height: 100vh;
+      color: #fff;
+      padding: 15px;
+    }
+    .container { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
+    @media (max-width: 850px) { .container { grid-template-columns: 1fr; } }
+    .main-col { min-width: 0; }
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 8px; }
+    .room-id { background: rgba(255,255,255,0.2); padding: 5px 15px; border-radius: 20px; font-weight: 600; }
+    .timer { font-size: 1.3rem; font-weight: 600; }
+    .status { font-size: 0.85rem; background: rgba(255,255,255,0.2); padding: 5px 15px; border-radius: 20px; display: flex; align-items: center; gap: 5px; }
+    .status-dot { width: 10px; height: 10px; border-radius: 50%; background: #ffc107; display: inline-block; }
+    .status-dot.live { background: #4caf50; }
+    .video-container { background: #000; border-radius: 15px; overflow: hidden; margin-bottom: 20px; position: relative; width: 100%; aspect-ratio: 16/9; }
+    #remote-video { width: 100%; height: 100%; }
+    .waiting-overlay {
+      position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; flex-direction: column; gap: 10px;
+      align-items: center; justify-content: center; background: rgba(0,0,0,0.85); font-size: 1.2rem; font-weight: 600; text-align: center; padding: 20px;
+    }
+    .unmute-banner {
+      position: absolute; top: 12px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.8);
+      padding: 8px 18px; border-radius: 20px; font-size: 0.9rem; cursor: pointer; z-index: 5;
+    }
+    .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 15px; }
+    button {
+      background: rgba(255,255,255,0.9); color: #333; border: none; padding: 10px 20px; border-radius: 25px;
+      font-family: 'Poppins', sans-serif; font-weight: 600; cursor: pointer; transition: 0.2s; font-size: 0.95rem;
+    }
+    button:active { transform: scale(0.96); }
+    button.struggle-btn { background: rgba(255,255,255,0.7); }
+    .participant-count { font-size: 1.1rem; margin-bottom: 10px; }
+    .leave-btn { background: #e74c3c; color: #fff; margin-top: 10px; }
+    .message { background: rgba(255,255,255,0.1); padding: 10px; border-radius: 8px; margin: 10px 0; font-size: 0.9rem; }
+    .hidden { display: none !important; }
+    .side-col { display: flex; flex-direction: column; gap: 12px; }
+    .chat-panel { background: rgba(255,255,255,0.1); border-radius: 15px; padding: 16px; display: flex; flex-direction: column; height: 420px; }
+    .chat-panel h3 { font-size: 1rem; margin-bottom: 10px; }
+    .chat-log { flex: 1; overflow-y: auto; background: rgba(0,0,0,0.2); border-radius: 8px; padding: 8px; font-size: 0.85rem; margin-bottom: 8px; }
+    .chat-log .msg { margin-bottom: 6px; line-height: 1.4; }
+    .chat-log .msg b { opacity: 0.9; }
+    .chat-log .msg.me b { color: #ffe28a; }
+    .chat-input-row { display: flex; gap: 6px; }
+    .chat-input-row input { flex: 1; padding: 8px 12px; border-radius: 20px; border: none; font-family: 'Poppins', sans-serif; }
+    .chat-input-row button { margin: 0; padding: 8px 16px; }
+  </style>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
+</head>
+<body>
+<div class="container">
+  <div class="main-col">
+    <div class="header">
+      <div class="room-id">Room: {{ room_id }}</div>
+      <div class="timer" id="session-timer">00:00:00</div>
+      <div class="status" id="connection-status">
+        <span class="status-dot" id="status-dot"></span>
+        <span id="status-text">Connecting...</span>
+      </div>
+    </div>
+
+    <div class="video-container" id="video-wrapper">
+      <div id="remote-video"></div>
+      <div class="unmute-banner hidden" id="unmute-banner">🔇 Tap to unmute</div>
+      <div class="waiting-overlay" id="waiting-msg">Waiting for the teacher to go live…</div>
+    </div>
+
+    <div class="actions">
+      <button id="request-speak-btn">🙋 Raise Hand</button>
+      <button class="struggle-btn" data-signal="confused">😕 Confused</button>
+      <button class="struggle-btn" data-signal="too-fast">⏩ Too Fast</button>
+      <button class="struggle-btn" data-signal="got-it">👍 Got It</button>
+    </div>
+
+    <div class="participant-count">👥 <span id="participant-count">0</span> watching</div>
+    <div id="mic-approved-msg" class="message hidden"></div>
+    <button class="leave-btn" id="leave-btn">Leave Class</button>
+  </div>
+
+  <div class="side-col">
+    <div class="chat-panel">
+      <h3>💬 Chat</h3>
+      <div class="chat-log" id="chat-log"></div>
+      <div class="chat-input-row">
+        <input type="text" id="chat-input" placeholder="Say something...">
+        <button id="chat-send-btn">Send</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://download.agora.io/sdk/release/AgoraRTC_N.js"></script>
+<script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+<script>
+  const roomId = "{{ room_id }}";
+  const username = {{ username | tojson }};
+  const AGORA_APP_ID = {{ agora_app_id | tojson }};
+  const socket = io();
+
+  let streamLive = false;
+  let sessionStartTime = null;
+  let timerInterval = null;
+  let participantCount = 0;
+
+  // ---------- Agora state ----------
+  let agoraClient = null;
+  let remoteAudioTrack = null;
+  let joinedChannel = false;
+
+  const waitingOverlay = document.getElementById('waiting-msg');
+  const unmuteBanner = document.getElementById('unmute-banner');
+  const statusDot = document.getElementById('status-dot');
+  const statusText = document.getElementById('status-text');
+  const timerEl = document.getElementById('session-timer');
+  const partCountEl = document.getElementById('participant-count');
+  const requestSpeakBtn = document.getElementById('request-speak-btn');
+  const micApprovedMsg = document.getElementById('mic-approved-msg');
+  const chatLog = document.getElementById('chat-log');
+  const chatInput = document.getElementById('chat-input');
+  const chatSendBtn = document.getElementById('chat-send-btn');
+
+  function updateTimer() {
+    if (!sessionStartTime) { timerEl.textContent = '00:00:00'; return; }
+    const elapsed = Math.floor((Date.now() - sessionStartTime) / 1000);
+    const hrs = String(Math.floor(elapsed / 3600)).padStart(2, '0');
+    const mins = String(Math.floor((elapsed % 3600) / 60)).padStart(2, '0');
+    const secs = String(elapsed % 60).padStart(2, '0');
+    timerEl.textContent = `${hrs}:${mins}:${secs}`;
+  }
+  function startTimer() {
+    if (sessionStartTime) return;
+    sessionStartTime = Date.now();
+    timerInterval = setInterval(updateTimer, 1000);
+    updateTimer();
+  }
+  function stopTimer() {
+    if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+    sessionStartTime = null;
+    updateTimer();
+  }
+
+  function setConnectionStatus(connected, text) {
+    statusDot.className = 'status-dot' + (connected ? ' live' : '');
+    statusText.textContent = text;
+  }
+
+  function escapeHtml(s) {
+    const d = document.createElement('div');
+    d.textContent = s == null ? '' : String(s);
+    return d.innerHTML;
+  }
+  function appendChat(entry) {
+    const div = document.createElement('div');
+    div.className = 'msg' + (entry.username === username ? ' me' : '');
+    div.innerHTML = `<b>${escapeHtml(entry.username)}:</b> ${escapeHtml(entry.text)}`;
+    chatLog.appendChild(div);
+    chatLog.scrollTop = chatLog.scrollHeight;
+  }
+  chatSendBtn.addEventListener('click', sendChat);
+  chatInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') sendChat(); });
+  function sendChat() {
+    const text = chatInput.value.trim();
+    if (!text) return;
+    socket.emit('chat-message', { room: roomId, text });
+    chatInput.value = '';
+  }
+
+  // ---------- Agora: watch the teacher's broadcast ----------
+  function ensureClient() {
+    if (!agoraClient) {
+      agoraClient = AgoraRTC.createClient({ mode: 'live', codec: 'vp8' });
+      agoraClient.on('user-published', async (user, mediaType) => {
+        await agoraClient.subscribe(user, mediaType);
+        if (mediaType === 'video') {
+          waitingOverlay.style.display = 'none';
+          user.videoTrack.play('remote-video');
+        }
+        if (mediaType === 'audio') {
+          remoteAudioTrack = user.audioTrack;
+          try {
+            await remoteAudioTrack.play();
+            unmuteBanner.classList.add('hidden');
+          } catch (e) {
+            // Autoplay-with-sound blocked until the viewer interacts with the page once.
+            unmuteBanner.classList.remove('hidden');
+          }
+        }
+      });
+      agoraClient.on('user-unpublished', (user, mediaType) => {
+        if (mediaType === 'video') {
+          waitingOverlay.textContent = 'The teacher’s video paused…';
+          waitingOverlay.style.display = 'flex';
+        }
+      });
+    }
+    return agoraClient;
+  }
+
+  unmuteBanner.addEventListener('click', async () => {
+    if (remoteAudioTrack) {
+      try { await remoteAudioTrack.play(); unmuteBanner.classList.add('hidden'); } catch (e) {}
+    }
+  });
+
+  async function joinWatch() {
+    if (!AGORA_APP_ID || joinedChannel) return;
+    try {
+      const client = ensureClient();
+      await client.setClientRole('audience');
+      await client.join(AGORA_APP_ID, roomId, null, null);
+      joinedChannel = true;
+    } catch (err) {
+      console.error('Failed to join stream:', err);
+    }
+  }
+
+  async function leaveWatch() {
+    if (agoraClient && joinedChannel) {
+      try { await agoraClient.leave(); } catch (e) {}
+    }
+    joinedChannel = false;
+  }
+
+  function showLive() {
+    joinWatch();
+    streamLive = true;
+    startTimer();
+    // waitingOverlay is hidden once user-published actually delivers video (above)
+  }
+  function showWaiting(text) {
+    waitingOverlay.style.display = 'flex';
+    waitingOverlay.textContent = text;
+    unmuteBanner.classList.add('hidden');
+    streamLive = false;
+    stopTimer();
+    leaveWatch();
+  }
+
+  socket.on('connect', () => {
+    setConnectionStatus(true, 'Connected');
+    socket.emit('join-room', { room: roomId, role: 'student', username: username });
+  });
+
+  socket.on('disconnect', () => {
+    setConnectionStatus(false, 'Disconnected');
+  });
+
+  socket.on('room-joined', (data) => {
+    participantCount = data.existing_participants.filter(p => p.role === 'student').length;
+    partCountEl.textContent = participantCount;
+    if (data.is_live) {
+      showLive();
+    } else if (!data.teacher_sid) {
+      showWaiting("The teacher hasn't joined yet.");
+    } else {
+      showWaiting("Waiting for the teacher to go live…");
+    }
+    (data.chat_log || []).forEach(appendChat);
+  });
+
+  socket.on('stream-live', () => showLive());
+  socket.on('stream-ended', () => showWaiting('The teacher paused the stream — stay tuned.'));
+  socket.on('session-ended', () => showWaiting('Class has ended. Thanks for joining!'));
+  socket.on('chat-message', appendChat);
+
+  socket.on('new-participant', (data) => {
+    if (data.role === 'student') { participantCount++; partCountEl.textContent = participantCount; }
+  });
+  socket.on('participant-left', (data) => {
+    if (data.role === 'student') { participantCount = Math.max(0, participantCount - 1); partCountEl.textContent = participantCount; }
+  });
+  socket.on('teacher-disconnected', () => {
+    showWaiting('The teacher disconnected. They may reconnect shortly.');
+  });
+  socket.on('mic-approved', (data) => {
+    micApprovedMsg.textContent = data.approved ? 'The teacher acknowledged your raised hand.' : 'Your raised hand was dismissed.';
+    micApprovedMsg.classList.remove('hidden');
+    setTimeout(() => micApprovedMsg.classList.add('hidden'), 6000);
+  });
+
+  requestSpeakBtn.addEventListener('click', () => {
+    socket.emit('student-request-mic', { room: roomId });
+    showTempMessage('Raised hand — the teacher has been notified');
+  });
+  document.querySelectorAll('.struggle-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const signal = btn.dataset.signal;
+      socket.emit('student-struggle-signal', { room: roomId, signal: signal });
+      showTempMessage(`Signal sent: ${signal}`);
+    });
+  });
+  function showTempMessage(msg) {
+    const div = document.createElement('div');
+    div.className = 'message';
+    div.textContent = msg;
+    div.style.position = 'fixed';
+    div.style.top = '20px';
+    div.style.left = '50%';
+    div.style.transform = 'translateX(-50%)';
+    div.style.background = '#333';
+    div.style.zIndex = '999';
+    document.body.appendChild(div);
+    setTimeout(() => div.remove(), 3000);
+  }
+
+  document.getElementById('leave-btn').addEventListener('click', async () => {
+    await leaveWatch();
+    socket.disconnect();
+    window.location.href = '/dashboard';
+  });
+
+  window.addEventListener('beforeunload', () => {
+    leaveWatch();
+    socket.disconnect();
+  });
+
+  setConnectionStatus(false, 'Connecting...');
+</script>
+</body>
+</html>

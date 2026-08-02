@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - {{ target.name or target.username }}'s Activity · Nelavista</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Inter',system-ui,sans-serif; }
+        body { background:#0d1117; color:#e6edf3; }
+        .container { max-width:1000px; margin:0 auto; padding:28px 20px 60px; }
+        .back-link { color:#8b949e; text-decoration:none; font-size:0.85rem; display:inline-block; margin-bottom:16px; }
+        .back-link:hover { color:#58a6ff; }
+        .profile-head { display:flex; align-items:center; gap:14px; margin-bottom:8px; }
+        .avatar { width:48px; height:48px; border-radius:50%; background:linear-gradient(135deg,#58a6ff,#79c0ff); display:flex; align-items:center; justify-content:center; font-weight:700; color:#0d1117; flex-shrink:0; }
+        h1 { font-size:1.5rem; }
+        .subtitle { color:#8b949e; font-size:0.88rem; margin-bottom:22px; }
+        .notice { background:rgba(88,166,255,0.08); border:1px solid rgba(88,166,255,0.3); color:#a5c8ff; font-size:0.8rem; padding:10px 14px; border-radius:10px; margin-bottom:22px; }
+        .stats-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px; margin-bottom:26px; }
+        .stat-card { background:#161b22; border:1px solid #21262d; border-radius:12px; padding:14px 16px; }
+        .stat-value { font-size:1.4rem; font-weight:700; }
+        .stat-label { font-size:0.72rem; color:#8b949e; text-transform:uppercase; letter-spacing:0.4px; margin-top:4px; }
+        .section { margin-bottom:26px; }
+        .section h2 { font-size:1rem; margin-bottom:10px; color:#e6edf3; }
+        table { width:100%; border-collapse:collapse; background:#161b22; border:1px solid #21262d; border-radius:12px; overflow:hidden; }
+        th { text-align:left; font-size:0.68rem; text-transform:uppercase; letter-spacing:0.4px; color:#8b949e; padding:10px 14px; border-bottom:1px solid #21262d; background:#0d1117; }
+        td { padding:10px 14px; border-bottom:1px solid #21262d; font-size:0.84rem; }
+        tr:last-child td { border-bottom:none; }
+        .badge { font-size:0.68rem; font-weight:700; padding:2px 8px; border-radius:10px; }
+        .badge-pending { background:rgba(240,180,60,0.15); color:#f0b43c; }
+        .badge-approved { background:rgba(34,197,94,0.15); color:#22c55e; }
+        .empty { color:#6e7681; font-size:0.85rem; padding:16px; text-align:center; }
+    </style>
+</head>
+<body>
+{% include 'components/admin_nav.html' %}
+<div class="container">
+    <a href="/admin/users" class="back-link">&larr; Back to Users</a>
+    <div class="profile-head">
+        <div class="avatar">{{ (target.name or target.username)[:2]|upper }}</div>
+        <div>
+            <h1>{{ target.name or target.username }}</h1>
+            <div class="subtitle">@{{ target.username }} · {{ target.email }}</div>
+        </div>
+    </div>
+    <p class="subtitle">
+        {{ target.department or '—' }}{% if target.level %} · {{ target.level }} Level{% endif %} ·
+        Joined {{ target.joined_on.strftime('%b %d, %Y') if target.joined_on else '—' }} ·
+        Last login {{ target.last_login.strftime('%b %d, %Y %H:%M') if target.last_login else 'never' }}
+    </p>
+
+    <div class="notice">📋 Usage summary only — logins, uploads, study time, and message counts. Message content isn't shown here; use Community moderation to review a specific reported message.</div>
+
+    <div class="stats-grid">
+        <div class="stat-card"><div class="stat-value">{{ activity.total_study_hours }}h</div><div class="stat-label">Study time ({{ activity.study_days }} days)</div></div>
+        <div class="stat-card"><div class="stat-value">{{ activity.materials_uploaded }}</div><div class="stat-label">Materials uploaded</div></div>
+        <div class="stat-card"><div class="stat-value">{{ activity.videos_uploaded }}</div><div class="stat-label">Videos uploaded</div></div>
+        <div class="stat-card"><div class="stat-value">{{ activity.exams_logged }}</div><div class="stat-label">Exams logged</div></div>
+        <div class="stat-card"><div class="stat-value">{{ activity.groups_created }}</div><div class="stat-label">Groups created</div></div>
+        <div class="stat-card"><div class="stat-value">{{ activity.total_messages_sent }}</div><div class="stat-label">Messages sent</div></div>
+    </div>
+
+    <div class="section">
+        <h2>Group memberships</h2>
+        {% if not memberships %}
+        <div class="empty">Not in any groups</div>
+        {% else %}
+        <table>
+            <thead><tr><th>Group</th><th>Role</th><th>Joined</th><th>Messages sent there</th></tr></thead>
+            <tbody>
+                {% for m in memberships %}
+                <tr>
+                    <td>{{ m.group_name }}</td>
+                    <td>{{ m.role }}</td>
+                    <td>{{ m.joined_at.strftime('%b %d, %Y') if m.joined_at else '—' }}</td>
+                    <td>{{ m.message_count }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+    </div>
+
+    <div class="section">
+        <h2>Recent materials ({{ activity.materials_uploaded }} total, {{ activity.materials_pending }} pending)</h2>
+        {% if not materials %}
+        <div class="empty">No materials uploaded</div>
+        {% else %}
+        <table>
+            <thead><tr><th>Title</th><th>Department</th><th>Uploaded</th><th>Status</th></tr></thead>
+            <tbody>
+                {% for m in materials %}
+                <tr>
+                    <td>{{ m.title }}</td>
+                    <td>{{ m.department }}</td>
+                    <td>{{ m.created_at.strftime('%b %d, %Y') if m.created_at else '—' }}</td>
+                    <td>{% if m.is_approved %}<span class="badge badge-approved">Approved</span>{% else %}<span class="badge badge-pending">Pending</span>{% endif %}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+    </div>
+
+    <div class="section">
+        <h2>Recent videos ({{ activity.videos_uploaded }} total, {{ activity.videos_pending }} pending)</h2>
+        {% if not videos %}
+        <div class="empty">No videos uploaded</div>
+        {% else %}
+        <table>
+            <thead><tr><th>Caption / Course</th><th>Department</th><th>Uploaded</th><th>Status</th></tr></thead>
+            <tbody>
+                {% for v in videos %}
+                <tr>
+                    <td>{{ v.caption or v.course }}</td>
+                    <td>{{ v.department }}</td>
+                    <td>{{ v.created_at.strftime('%b %d, %Y') if v.created_at else '—' }}</td>
+                    <td>{% if v.is_approved %}<span class="badge badge-approved">Approved</span>{% else %}<span class="badge badge-pending">Pending</span>{% endif %}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+    </div>
+</div>
+</body>
+</html>

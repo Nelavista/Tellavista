@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Privacy Policy | Nelavista</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+  <style>
+    .legal-wrap {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 130px 24px 80px;
+    }
+    .legal-wrap header { text-align: center; margin-bottom: 40px; }
+    .legal-wrap h1 { font-size: 2rem; margin-bottom: 8px; }
+    .legal-wrap p.lead { color: var(--text-muted); margin-top: 0; }
+    .legal-wrap section { margin: 32px 0; }
+    .legal-wrap h2 { font-size: 1.2rem; margin-bottom: 10px; }
+    .legal-wrap p { color: var(--text-secondary); line-height: 1.7; margin-bottom: 10px; }
+    .legal-wrap ul { margin-left: 20px; color: var(--text-secondary); line-height: 1.7; }
+    .legal-wrap a { color: var(--accent); }
+    .legal-wrap code { background: var(--bg-card); padding: 2px 6px; border-radius: 4px; }
+  </style>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
+</head>
+<body>
+  {% include 'components/navbar.html' %}
+
+  <div class="legal-wrap">
+    <header>
+      <h1 class="bg">Privacy Policy</h1>
+      <p class="lead">Effective date: October 21, 2025</p>
+      <p>This page explains how we collect, use, and protect your data when you use Nelavista.</p>
+    </header>
+
+    <section>
+      <h2>Information we collect</h2>
+      <p>When you create an account or use Nelavista we collect only the information we need to provide the service. This may include:</p>
+      <ul>
+        <li><strong>Name</strong> provided during signup</li>
+        <li><strong>Email address</strong> used for login and notifications</li>
+        <li><strong>App activity</strong> such as usage events and feature interactions to help improve Nelavista</li>
+        <li><strong>Device information</strong> such as device type and basic technical data for troubleshooting and performance</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>How we use your information</h2>
+      <p>We use collected information for the following purposes:</p>
+      <ul>
+        <li><strong>Account management</strong> to create and manage your Nelavista account</li>
+        <li><strong>App functionality</strong> to personalize your experience and enable core features</li>
+        <li><strong>Security and fraud prevention</strong> to protect accounts and detect abuse</li>
+        <li><strong>Analytics and improvement</strong> to understand how people use Nelavista and to fix bugs and improve features</li>
+        <li><strong>Developer communications</strong> to send important updates about Nelavista only when necessary</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Data sharing</h2>
+      <p>We do not sell your personal data. We do not share personal data with other companies for marketing purposes. We may share limited data with third parties only in these cases:</p>
+      <ul>
+        <li>When required by law or to respond to legal process</li>
+        <li>With service providers who help us operate Nelavista for example hosting providers and email services. These providers are bound to protect your information</li>
+        <li>When you explicitly ask us to share information with another service</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Data security</h2>
+      <p>All data transmitted between your device and our servers is encrypted in transit using secure protocols. We follow reasonable security practices to protect stored data. No system is perfect. If a security breach happens we will follow applicable laws and notify affected users when required.</p>
+    </section>
+
+    <section>
+      <h2>Data retention and deletion</h2>
+      <p>We keep your personal information only as long as necessary to provide Nelavista and to comply with legal obligations. If you want to delete your account and associated data, you can request deletion from your <a href="/settings">account settings</a>.</p>
+      <p>If you need help with deletion contact us at the support address below.</p>
+    </section>
+
+    <section>
+      <h2>Children</h2>
+      <p>Nelavista is intended for users 16 years and older. We do not knowingly collect personal information from children under 13. If you believe we collected information from a child under 13 contact us and we will take steps to remove the data.</p>
+    </section>
+
+    <section>
+      <h2>Third party services</h2>
+      <p>We may use third party services to host analytics or to operate the app. If we use third party services we will name them here and add links to their privacy policies. Example services we may use include hosting providers and analytics tools. If you want a current list of third party services used by Nelavista contact us.</p>
+    </section>
+
+    <section>
+      <h2>Changes to this policy</h2>
+      <p>We may update this policy from time to time. When we make changes we will update the effective date at the top. For major changes we will notify users by email or in app.</p>
+    </section>
+
+    <section>
+      <h2>Contact us</h2>
+      <p>If you have questions or requests about this privacy policy contact us at:</p>
+      <p><strong>Email</strong>: <a href="mailto:tellaafeezadewale@gmail.com">tellaafeezadewale@gmail.com</a></p>
+    </section>
+  </div>
+
+  {% include 'components/footer.html' %}
+
+  <script src="{{ url_for('static', filename='js/nav.js') }}"></script>
+</body>
+</html>

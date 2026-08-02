@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Pending Videos · Nelavista</title>
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Inter',system-ui,sans-serif; }
+        body { background:#0d1117; color:#e6edf3; padding:20px; }
+        .container { max-width:1200px; margin:0 auto; }
+        h1 { font-size:1.8rem; margin-bottom:20px; }
+        .back-btn { background:#21262d; border:1px solid #30363d; color:#8b949e; padding:8px 16px; border-radius:8px; text-decoration:none; display:inline-block; margin-bottom:20px; }
+        .back-btn:hover { border-color:#58a6ff; color:#58a6ff; }
+        .video-card { background:#161b22; border:1px solid #21262d; border-radius:12px; padding:20px; margin-bottom:16px; }
+        .video-title { font-size:1.1rem; font-weight:600; margin-bottom:10px; }
+        .video-meta { font-size:0.85rem; color:#8b949e; margin-bottom:12px; }
+        .video-meta span { margin-right:16px; }
+        video { max-width: 320px; border-radius: 8px; display: block; margin-bottom: 12px; background: #000; }
+        .actions { display:flex; gap:10px; }
+        .approve-btn { background:#22c55e; border:none; padding:10px 20px; border-radius:8px; color:#fff; font-weight:600; cursor:pointer; }
+        .approve-btn:hover { background:#16a34a; }
+        .reject-btn { background:#ef4444; border:none; padding:10px 20px; border-radius:8px; color:#fff; font-weight:600; cursor:pointer; }
+        .reject-btn:hover { background:#dc2626; }
+        .empty { text-align:center; padding:60px 20px; color:#6e7681; }
+    </style>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
+</head>
+<body>
+{% include 'components/admin_nav.html' %}
+    <div class="container">
+        <h1>🎥 Pending Videos ({{ videos|length }})</h1>
+
+        {% if not videos %}
+        <div class="empty">
+            <div style="font-size:3rem; margin-bottom:10px;">✨</div>
+            <div>No pending videos to review</div>
+        </div>
+        {% else %}
+
+        {% for video in videos %}
+        <div class="video-card" id="video-{{ video.id }}">
+            <div class="video-title">{{ video.caption or video.course }}</div>
+            <div class="video-meta">
+                <span>📚 {{ video.department }}</span>
+                <span>📊 {{ video.level }} Level</span>
+                <span>📅 {{ video.semester }}</span>
+                <span>📖 {{ video.course }}</span>
+                <span>👤 {{ video.creator_name }}</span>
+            </div>
+            <video src="{{ video.video_url }}" controls preload="metadata"></video>
+            <div class="actions">
+                <button class="approve-btn" onclick="approveVideo({{ video.id }})">✅ Approve</button>
+                <button class="reject-btn" onclick="rejectVideo({{ video.id }})">❌ Reject & Delete</button>
+            </div>
+        </div>
+        {% endfor %}
+
+        {% endif %}
+    </div>
+
+    <script>
+        async function approveVideo(id) {
+            if (!confirm('Approve this video?')) return;
+            try {
+                const res = await fetch(`/admin/videos/${id}/approve`, { method: 'POST' });
+                const data = await res.json();
+                if (data.success) {
+                    document.getElementById(`video-${id}`).remove();
+                    alert('Video approved!');
+                    if (document.querySelectorAll('.video-card').length === 0) {
+                        location.reload();
+                    }
+                } else {
+                    alert('Error: ' + (data.error || 'unknown error'));
+                }
+            } catch(e) {
+                alert('Error: ' + e.message);
+            }
+        }
+
+        async function rejectVideo(id) {
+            if (!confirm('Reject and DELETE this video permanently? This cannot be undone.')) return;
+            try {
+                const res = await fetch(`/api/videos/${id}`, { method: 'DELETE' });
+                const data = await res.json();
+                if (data.success) {
+                    document.getElementById(`video-${id}`).remove();
+                    alert('Video rejected and deleted');
+                    if (document.querySelectorAll('.video-card').length === 0) {
+                        location.reload();
+                    }
+                } else {
+                    alert('Error: ' + (data.error || 'unknown error'));
+                }
+            } catch(e) {
+                alert('Error: ' + e.message);
+            }
+        }
+    </script>
+</body>
+</html>

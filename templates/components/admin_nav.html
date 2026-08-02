@@ -1,0 +1,27 @@
+<style>
+  .admin-nav {
+    background: #161b22; border-bottom: 1px solid #21262d; padding: 0 20px;
+    display: flex; align-items: center; gap: 4px; overflow-x: auto;
+    position: sticky; top: 0; z-index: 200; font-family: 'Inter', system-ui, sans-serif;
+  }
+  .admin-nav a {
+    color: #8b949e; text-decoration: none; font-size: 0.85rem; font-weight: 600;
+    padding: 14px 14px; white-space: nowrap; border-bottom: 2px solid transparent; transition: 0.15s;
+  }
+  .admin-nav a:hover { color: #e6edf3; }
+  .admin-nav a.active { color: #58a6ff; border-bottom-color: #58a6ff; }
+  .admin-nav .admin-nav-title { color: #e6edf3; font-weight: 700; padding: 14px 16px 14px 0; font-size: 0.9rem; }
+  .admin-nav .admin-nav-spacer { flex: 1; }
+  .admin-nav .admin-nav-exit { color: #8b949e; }
+</style>
+<div class="admin-nav">
+  <div class="admin-nav-title">🛡️ Admin</div>
+  <a href="/admin" class="{{ 'active' if active_page == 'dashboard' else '' }}">Dashboard</a>
+  <a href="/admin/users" class="{{ 'active' if active_page == 'users' else '' }}">Users</a>
+  <a href="/admin/materials" class="{{ 'active' if active_page == 'materials' else '' }}">Materials</a>
+  <a href="/admin/videos" class="{{ 'active' if active_page == 'videos' else '' }}">Videos</a>
+  <a href="/admin/community" class="{{ 'active' if active_page == 'community' else '' }}">Community</a>
+  <a href="/admin/live-rooms" class="{{ 'active' if active_page == 'live_rooms' else '' }}">Live Rooms</a>
+  <div class="admin-nav-spacer"></div>
+  <a href="/dashboard" class="admin-nav-exit">← Back to App</a>
+</div>

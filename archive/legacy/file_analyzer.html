@@ -1,0 +1,1426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Turbo AI • Document Analyzer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Markdown rendering -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.2.0/github-markdown.min.css">
+    
+    <!-- FIXED: MathJax for LaTeX rendering (UPDATED CONFIG) -->
+    <script>
+      window.MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']],
+          displayMath: [['$$', '$$'], ['\\[', '\\]']]
+        },
+        options: {
+          skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']  // Removed 'code' from skip list
+        },
+        svg: { fontCache: 'global' }
+      };
+    </script>
+    <script id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+    
+    <style>
+        :root {
+            --bg-primary: #0f1419;
+            --bg-secondary: #1a2029;
+            --bg-card: #1e2633;
+            --border-color: #2a3441;
+            --text-primary: #e6edf3;
+            --text-secondary: #8b949e;
+            --accent: #58a6ff;
+            --accent-light: rgba(56, 139, 253, 0.15);
+            --success: #238636;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+            --shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.35);
+            --radius: 12px;
+            --radius-sm: 6px;
+            --transition: all 0.2s ease;
+            --spacing-xs: 0.25rem;
+            --spacing-sm: 0.5rem;
+            --spacing-md: 1rem;
+            --spacing-lg: 1.5rem;
+            --spacing-xl: 2rem;
+            --spacing-xxl: 3rem;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', Roboto, Oxygen, Ubuntu, sans-serif;
+        }
+
+        body {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.7;
+            font-size: 16px;
+            font-weight: 400;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        h2 {
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-lg);
+            padding-bottom: var(--spacing-sm);
+            border-bottom: 1px solid var(--border-color);
+            letter-spacing: -0.01em;
+        }
+
+        h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: var(--spacing-xl) 0 var(--spacing-md);
+            letter-spacing: -0.005em;
+        }
+
+        p {
+            margin-bottom: var(--spacing-lg);
+            line-height: 1.7;
+            color: var(--text-secondary);
+        }
+
+        strong {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        ul, ol {
+            margin-bottom: var(--spacing-lg);
+            padding-left: var(--spacing-xl);
+        }
+
+        li {
+            margin-bottom: var(--spacing-sm);
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        li:last-child {
+            margin-bottom: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: var(--spacing-xl) 0;
+            font-size: 0.95rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+        }
+
+        th {
+            background: var(--bg-secondary);
+            font-weight: 600;
+            text-align: left;
+            padding: var(--spacing-md) var(--spacing-lg);
+            border-bottom: 2px solid var(--border-color);
+            color: var(--text-primary);
+        }
+
+        td {
+            padding: var(--spacing-md) var(--spacing-lg);
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:nth-child(even) {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: var(--spacing-xl);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            padding: var(--spacing-xxl) 0 var(--spacing-xxl);
+        }
+
+        .logo {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .logo i {
+            color: var(--accent);
+        }
+
+        .tagline {
+            font-size: 1.125rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+            letter-spacing: 0.01em;
+        }
+
+        /* Upload Interface */
+        .upload-interface {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-xxl);
+        }
+
+        @media (max-width: 768px) {
+            .options-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .option-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: var(--spacing-xl);
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--spacing-lg);
+        }
+
+        .option-card:hover {
+            border-color: var(--accent);
+            box-shadow: var(--shadow-hover);
+            transform: translateY(-2px);
+        }
+
+        .option-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            background: var(--accent-light);
+            color: var(--accent);
+        }
+
+        .option-content {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+        }
+
+        .option-card h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            border: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .option-card p {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        .upload-area {
+            display: none;
+            background: var(--bg-card);
+            border: 2px dashed var(--border-color);
+            border-radius: var(--radius);
+            padding: var(--spacing-xxl) var(--spacing-xl);
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        .upload-area.active {
+            display: block;
+        }
+
+        .upload-area:hover {
+            border-color: var(--accent);
+            background: var(--accent-light);
+        }
+
+        .upload-area i {
+            font-size: 3rem;
+            color: var(--accent);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .upload-area h3 {
+            font-size: 1.5rem;
+            margin-bottom: var(--spacing-sm);
+            font-weight: 600;
+            border: none;
+            margin-top: 0;
+        }
+
+        .upload-area p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .file-input-wrapper {
+            display: inline-block;
+            position: relative;
+        }
+
+        .btn-upload {
+            background: var(--accent);
+            color: var(--text-primary);
+            padding: var(--spacing-md) var(--spacing-xl);
+            font-size: 1rem;
+            font-weight: 500;
+            border-radius: var(--radius-sm);
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+
+        .btn-upload:hover {
+            background: #1f6feb;
+            transform: translateY(-1px);
+        }
+
+        .btn-upload:active {
+            transform: translateY(0);
+        }
+
+        #fileInput {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        /* Upload Status */
+        .upload-status {
+            display: none;
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: var(--spacing-xl);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .upload-status.active {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-lg);
+        }
+
+        .status-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            background: var(--accent-light);
+            color: var(--accent);
+        }
+
+        .status-content {
+            flex: 1;
+        }
+
+        .status-content h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: var(--spacing-xs);
+            border: none;
+            margin-top: 0;
+        }
+
+        .status-content p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        .status-loading {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            margin-top: var(--spacing-sm);
+        }
+
+        .loading-spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid var(--accent-light);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Analysis Results */
+        .analysis-results {
+            display: none;
+        }
+
+        .analysis-results.active {
+            display: block;
+        }
+
+        .results-header {
+            text-align: center;
+            margin-bottom: var(--spacing-xl);
+            padding-bottom: var(--spacing-lg);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .results-header h2 {
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin-bottom: var(--spacing-sm);
+            color: var(--text-primary);
+            border: none;
+        }
+
+        .document-title {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-sm);
+        }
+
+        /* Notes Container */
+        .notes-container {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: var(--spacing-xl);
+            border: 1px solid var(--border-color);
+        }
+
+        /* Markdown Content Styling */
+        .markdown-body {
+            font-size: 1rem;
+            line-height: 1.7;
+            color: var(--text-secondary);
+            background: transparent;
+        }
+
+        .markdown-body h1 {
+            font-size: 1.75rem;
+            margin-bottom: var(--spacing-lg);
+            padding-bottom: var(--spacing-sm);
+            border-bottom: 2px solid var(--border-color);
+            color: var(--text-primary);
+        }
+
+        .markdown-body h2 {
+            font-size: 1.5rem;
+            margin: var(--spacing-xl) 0 var(--spacing-md);
+            color: var(--text-primary);
+        }
+
+        .markdown-body h3 {
+            font-size: 1.25rem;
+            margin: var(--spacing-lg) 0 var(--spacing-sm);
+            color: var(--text-primary);
+        }
+
+        .markdown-body h4 {
+            font-size: 1.125rem;
+            margin: var(--spacing-lg) 0 var(--spacing-sm);
+            color: var(--text-secondary);
+        }
+
+        .markdown-body p {
+            margin-bottom: var(--spacing-lg);
+            line-height: 1.7;
+        }
+
+        .markdown-body ul, .markdown-body ol {
+            margin-bottom: var(--spacing-lg);
+            padding-left: var(--spacing-xl);
+        }
+
+        .markdown-body li {
+            margin-bottom: var(--spacing-sm);
+            line-height: 1.6;
+        }
+
+        .markdown-body li > ul, .markdown-body li > ol {
+            margin-top: var(--spacing-sm);
+            margin-bottom: 0;
+        }
+
+        .markdown-body blockquote {
+            border-left: 4px solid var(--border-color);
+            padding-left: var(--spacing-md);
+            margin: var(--spacing-lg) 0;
+            color: var(--text-secondary);
+            font-style: normal;
+            background: rgba(255, 255, 255, 0.03);
+            padding: var(--spacing-md);
+            border-radius: var(--radius-sm);
+        }
+
+        .markdown-body code {
+            background: rgba(255, 255, 255, 0.08);
+            padding: 0.2em 0.4em;
+            border-radius: 4px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9em;
+            color: var(--accent);
+        }
+
+        .markdown-body pre {
+            background: rgba(255, 255, 255, 0.05);
+            padding: var(--spacing-md);
+            border-radius: var(--radius-sm);
+            overflow-x: auto;
+            margin: var(--spacing-lg) 0;
+            border: 1px solid var(--border-color);
+        }
+
+        .markdown-body pre code {
+            background: none;
+            padding: 0;
+            color: var(--text-secondary);
+        }
+
+        .markdown-body table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: var(--spacing-lg) 0;
+            font-size: 0.95rem;
+        }
+
+        .markdown-body table th {
+            background: var(--bg-secondary);
+            font-weight: 600;
+            text-align: left;
+            padding: var(--spacing-md) var(--spacing-lg);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+        }
+
+        .markdown-body table td {
+            padding: var(--spacing-md) var(--spacing-lg);
+            border: 1px solid var(--border-color);
+            line-height: 1.5;
+            color: var(--text-secondary);
+        }
+
+        .markdown-body table tr:nth-child(even) {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .notes-actions {
+            display: flex;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-lg);
+            flex-wrap: wrap;
+        }
+
+        .btn-action {
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-color);
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+
+        .btn-action:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .btn-action.active {
+            background: var(--accent-light);
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        /* Error Message */
+        .error-message {
+            display: none;
+            background: rgba(248, 81, 73, 0.1);
+            border-left: 4px solid #f85149;
+            border-radius: var(--radius-sm);
+            padding: var(--spacing-md) var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+            color: #f85149;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .error-message.active {
+            display: block;
+        }
+
+        .error-message i {
+            margin-right: var(--spacing-sm);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: var(--spacing-xxl) var(--spacing-xl);
+            color: var(--text-secondary);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: var(--spacing-lg);
+            color: var(--border-color);
+        }
+
+        .empty-state h3 {
+            font-size: 1.25rem;
+            margin-bottom: var(--spacing-sm);
+            color: var(--text-primary);
+            border: none;
+        }
+
+        .empty-state p {
+            font-size: 0.95rem;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: var(--spacing-xxl) 0 var(--spacing-lg);
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border-color);
+            margin-top: var(--spacing-xxl);
+        }
+
+        /* Mobile Optimizations */
+        @media (max-width: 768px) {
+            .container {
+                padding: var(--spacing-md);
+            }
+
+            .header {
+                padding: var(--spacing-xl) 0 var(--spacing-xl);
+            }
+
+            .logo {
+                font-size: 1.5rem;
+            }
+
+            .tagline {
+                font-size: 1rem;
+            }
+
+            .option-card {
+                padding: var(--spacing-lg);
+            }
+
+            .option-icon {
+                width: 56px;
+                height: 56px;
+                font-size: 1.25rem;
+            }
+
+            .upload-area {
+                padding: var(--spacing-xl) var(--spacing-md);
+            }
+
+            .upload-area i {
+                font-size: 2.5rem;
+            }
+
+            .upload-status.active {
+                flex-direction: column;
+                text-align: center;
+                gap: var(--spacing-md);
+            }
+
+            .notes-container {
+                padding: var(--spacing-lg);
+            }
+
+            .markdown-body h1 {
+                font-size: 1.5rem;
+            }
+
+            .markdown-body h2 {
+                font-size: 1.35rem;
+            }
+
+            .markdown-body h3 {
+                font-size: 1.15rem;
+            }
+
+            .notes-actions {
+                flex-direction: column;
+            }
+
+            .btn-action {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        /* Utility Classes */
+        .hidden {
+            display: none !important;
+        }
+
+        .scroll-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 44px;
+            height: 44px;
+            background: var(--accent);
+            color: var(--text-primary);
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+            z-index: 100;
+            transition: var(--transition);
+            border: 1px solid var(--border-color);
+        }
+
+        .scroll-to-top:hover {
+            background: #1f6feb;
+            transform: translateY(-1px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">
+                <i class="fas fa-bolt"></i>
+                <span>Nelavista</span>
+            </div>
+            <p class="tagline">Academic Document Analyzer</p>
+        </div>
+
+        <!-- Main Content -->
+        <div class="upload-interface">
+            <!-- Initial Options -->
+            <div class="options-grid" id="initialOptions">
+                <div class="option-card" id="uploadOption">
+                    <div class="option-icon">
+                        <i class="fas fa-file-upload"></i>
+                    </div>
+                    <div class="option-content">
+                        <h2>Upload PDF</h2>
+                        <p>Upload any academic PDF for AI-powered study notes</p>
+                    </div>
+                </div>
+                
+                <div class="option-card" id="notesOption">
+                    <div class="option-icon">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <div class="option-content">
+                        <h2>Lecture Notes</h2>
+                        <p>Generate exam-ready notes from your documents</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Error Message -->
+            <div class="error-message" id="errorMessage">
+                <i class="fas fa-exclamation-circle"></i>
+                <span id="errorText">An error occurred during analysis</span>
+            </div>
+
+            <!-- Upload Area -->
+            <div class="upload-area" id="uploadArea">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <h3>Upload Academic PDF</h3>
+                <p>Upload any PDF document (lecture slides, textbooks, papers)</p>
+                <div class="file-input-wrapper">
+                    <button class="btn-upload" id="uploadButton">
+                        <i class="fas fa-folder-open"></i>
+                        Choose PDF File
+                    </button>
+                    <input type="file" id="fileInput" accept=".pdf">
+                </div>
+            </div>
+
+            <!-- Upload Status -->
+            <div class="upload-status" id="uploadStatus">
+                <div class="status-icon">
+                    <i class="far fa-file-pdf"></i>
+                </div>
+                <div class="status-content">
+                    <h3>Processing PDF</h3>
+                    <p id="fileName">document.pdf</p>
+                    <div class="status-loading">
+                        <div class="loading-spinner"></div>
+                        <span id="loadingText">Analyzing document structure...</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analysis Results -->
+            <div class="analysis-results" id="analysisResults">
+                <div class="results-header">
+                    <h2 id="resultsTitle">Study Notes</h2>
+                    <div class="document-title">
+                        <i class="far fa-file-alt"></i>
+                        <span id="resultFileName">document.pdf</span>
+                    </div>
+                </div>
+
+                <!-- Notes Actions -->
+                <div class="notes-actions" id="notesActions">
+                    <button class="btn-action active" data-section="notes">
+                        <i class="fas fa-graduation-cap"></i> Study Notes
+                    </button>
+                    <button class="btn-action" data-section="summary">
+                        <i class="fas fa-file-alt"></i> Quick Summary
+                    </button>
+                    <button class="btn-action" data-section="topics">
+                        <i class="fas fa-tags"></i> Key Topics
+                    </button>
+                    <button class="btn-action" id="downloadButton">
+                        <i class="fas fa-download"></i> Download Notes
+                    </button>
+                    <button class="btn-action" id="clearButton">
+                        <i class="fas fa-trash-alt"></i> Clear
+                    </button>
+                </div>
+
+                <!-- Notes Content -->
+                <div class="notes-container" id="notesContainer">
+                    <div class="markdown-body" id="notesContent">
+                        <!-- Full notes will be rendered here -->
+                    </div>
+                    
+                    <div class="empty-state" id="emptyState">
+                        <i class="fas fa-file-alt"></i>
+                        <h3>No Document Analyzed</h3>
+                        <p>Upload a PDF to generate AI-powered study notes</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>Nellavista • Intelligent Academic Notes Generator</p>
+            <p>Transform PDFs into exam-ready study materials</p>
+        </div>
+
+        <!-- Scroll to Top Button -->
+        <div class="scroll-to-top" id="scrollToTop">
+            <i class="fas fa-arrow-up"></i>
+        </div>
+    </div>
+
+    <!-- Markdown Parser -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <!-- File Saver -->
+    <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+
+    <script>
+        // DOM Elements - safely get references
+        const elements = {
+            initialOptions: document.getElementById('initialOptions'),
+            uploadArea: document.getElementById('uploadArea'),
+            uploadStatus: document.getElementById('uploadStatus'),
+            analysisResults: document.getElementById('analysisResults'),
+            fileInput: document.getElementById('fileInput'),
+            notesContent: document.getElementById('notesContent'),
+            emptyState: document.getElementById('emptyState'),
+            scrollToTopBtn: document.getElementById('scrollToTop'),
+            errorMessage: document.getElementById('errorMessage'),
+            errorText: document.getElementById('errorText'),
+            uploadOption: document.getElementById('uploadOption'),
+            notesOption: document.getElementById('notesOption'),
+            uploadButton: document.getElementById('uploadButton'),
+            downloadButton: document.getElementById('downloadButton'),
+            clearButton: document.getElementById('clearButton'),
+            notesActions: document.querySelectorAll('.btn-action[data-section]')
+        };
+
+        // State
+        let currentFile = null;
+        let currentNotes = null;
+        let currentSection = 'notes';
+
+        // Initialize event listeners when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            // Setup option card click handlers
+            if (elements.uploadOption) {
+                elements.uploadOption.addEventListener('click', showUploadArea);
+            }
+            if (elements.notesOption) {
+                elements.notesOption.addEventListener('click', showUploadArea);
+            }
+
+            // Setup file input handling
+            if (elements.fileInput) {
+                elements.fileInput.addEventListener('change', handleFileSelect);
+            }
+
+            // Setup upload button to trigger file input
+            if (elements.uploadButton) {
+                elements.uploadButton.addEventListener('click', () => {
+                    if (elements.fileInput) {
+                        elements.fileInput.click();
+                    }
+                });
+            }
+
+            // Setup download button
+            if (elements.downloadButton) {
+                elements.downloadButton.addEventListener('click', downloadNotes);
+            }
+
+            // Setup clear button
+            if (elements.clearButton) {
+                elements.clearButton.addEventListener('click', clearAnalysis);
+            }
+
+            // Setup section buttons
+            if (elements.notesActions) {
+                elements.notesActions.forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        const section = e.currentTarget.getAttribute('data-section');
+                        if (section) {
+                            showSection(section, e.currentTarget);
+                        }
+                    });
+                });
+            }
+
+            // Setup scroll to top button
+            if (elements.scrollToTopBtn) {
+                elements.scrollToTopBtn.addEventListener('click', scrollToTop);
+            }
+
+            // Setup drag and drop
+            setupDragAndDrop();
+        });
+
+        // Show upload area
+        function showUploadArea() {
+            hideError();
+            if (elements.initialOptions && elements.uploadArea) {
+                elements.initialOptions.classList.add('hidden');
+                elements.uploadArea.classList.add('active');
+                if (elements.analysisResults) {
+                    elements.analysisResults.classList.remove('active');
+                }
+            }
+        }
+
+        // Handle file selection
+        function handleFileSelect(event) {
+            // Get file from event or directly from input
+            const input = event?.target || elements.fileInput;
+            const file = input?.files?.[0];
+            
+            if (!file) {
+                showError('No file selected');
+                return;
+            }
+
+            // Validate PDF
+            if (!file.name.toLowerCase().endsWith('.pdf')) {
+                showError('Please upload a PDF file only');
+                // Reset file input
+                if (input) input.value = '';
+                return;
+            }
+
+            // Validate file size (max 50MB)
+            if (file.size > 50 * 1024 * 1024) {
+                showError('File too large. Maximum size is 50MB');
+                if (input) input.value = '';
+                return;
+            }
+
+            currentFile = file;
+            startUploadProcess(file);
+        }
+
+        // Start upload and analysis process
+        function startUploadProcess(file) {
+            hideError();
+            
+            // Show upload status
+            if (elements.uploadArea) elements.uploadArea.classList.remove('active');
+            if (elements.uploadStatus) {
+                elements.uploadStatus.classList.add('active');
+            }
+
+            // Update file name display
+            const fileNameElements = [
+                document.getElementById('fileName'),
+                document.getElementById('resultFileName')
+            ];
+            
+            fileNameElements.forEach(el => {
+                if (el) el.textContent = file.name;
+            });
+
+            // Start analysis
+            uploadAndAnalyze(file);
+        }
+
+        // Upload file to backend and get analysis
+        async function uploadAndAnalyze(file) {
+            const formData = new FormData();
+            formData.append('file', file);
+
+            try {
+                // Update loading text
+                const loadingText = document.getElementById('loadingText');
+                if (loadingText) loadingText.textContent = 'Uploading and parsing PDF...';
+                
+                // Upload to /analyze endpoint
+                const uploadResponse = await fetch('/analyze', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!uploadResponse.ok) {
+                    throw new Error(`Upload failed: ${uploadResponse.status}`);
+                }
+
+                const uploadData = await uploadResponse.json();
+
+                if (!uploadData?.success) {
+                    throw new Error(uploadData?.error || 'Upload failed');
+                }
+
+                // Update loading text for AI analysis
+                if (loadingText) loadingText.textContent = 'Generating study notes with AI...';
+                
+                // Get structured notes from /understand endpoint
+                const analysisResponse = await fetch('/understand', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ filename: file.name })
+                });
+
+                if (!analysisResponse.ok) {
+                    throw new Error(`Analysis failed: ${analysisResponse.status}`);
+                }
+
+                const analysisData = await analysisResponse.json();
+
+                if (!analysisData?.success) {
+                    throw new Error(analysisData?.error || 'Analysis failed');
+                }
+
+                // Store and display notes
+                currentNotes = analysisData;
+                displayStructuredNotes(analysisData);
+                
+                // Show success message
+                showNotification('Study notes generated successfully!', 'success');
+
+            } catch (error) {
+                console.error('Upload/Analysis error:', error);
+                showError(error.message || 'Analysis failed. Please try again.');
+                resetToUploadState();
+            }
+        }
+
+        // Display structured notes
+        function displayStructuredNotes(data) {
+            // Hide upload status and empty state, show results
+            if (elements.uploadStatus) elements.uploadStatus.classList.remove('active');
+            if (elements.analysisResults) {
+                elements.analysisResults.classList.add('active');
+            }
+            if (elements.emptyState) {
+                elements.emptyState.classList.add('hidden');
+            }
+            if (elements.notesContent) {
+                elements.notesContent.classList.remove('hidden');
+            }
+            
+            // Set results title
+            const title = data?.filename || 'Study Notes';
+            const resultsTitle = document.getElementById('resultsTitle');
+            if (resultsTitle) resultsTitle.textContent = title;
+            
+            // Render markdown content
+            let markdownContent = '';
+            
+            // FIX: Use the correct field from backend response
+            if (data?.markdown) {
+                markdownContent = data.markdown;
+            } else if (data?.full_notes) {
+                markdownContent = data.full_notes;
+            } else if (data?.markdown_content) {
+                markdownContent = data.markdown_content;
+            } else {
+                // Fallback: construct notes from structured data
+                markdownContent = constructMarkdownFromData(data);
+            }
+            
+            // FIXED: Render markdown with CORRECT MathJax support
+            if (elements.notesContent && markdownContent) {
+                try {
+                    // First render markdown
+                    elements.notesContent.innerHTML = marked.parse(markdownContent);
+                    
+                    // Then tell MathJax to typeset the math - WITH CLEAR AND PROMISE
+                    if (window.MathJax) {
+                        // Clear previous MathJax output
+                        MathJax.typesetClear([elements.notesContent]);
+                        
+                        // Re-typeset the math
+                        MathJax.typesetPromise([elements.notesContent])
+                            .then(() => {
+                                console.log('MathJax: Successfully rendered equations.');
+                            })
+                            .catch((err) => {
+                                console.error('MathJax typeset error:', err);
+                            });
+                    } else {
+                        console.error('MathJax is not loaded');
+                    }
+                } catch (error) {
+                    console.error('Markdown parsing error:', error);
+                    elements.notesContent.innerHTML = '<p>Error rendering markdown content.</p><pre>' + markdownContent + '</pre>';
+                }
+            } else if (elements.notesContent) {
+                elements.notesContent.innerHTML = '<p>No content available.</p>';
+            }
+            
+            // Set initial active section
+            if (elements.notesActions && elements.notesActions.length > 0) {
+                showSection(currentSection, elements.notesActions[0]);
+            }
+            
+            // Scroll to results
+            if (elements.analysisResults) {
+                elements.analysisResults.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        // Construct markdown from structured data (fallback)
+        function constructMarkdownFromData(data) {
+            if (!data) return '# No Notes Available\n\nUpload a PDF to generate study notes.';
+            
+            let markdown = '';
+            
+            // Title
+            if (data.title || data.filename) {
+                markdown += `# ${data.title || data.filename}\n\n`;
+            }
+            
+            // Brief Overview
+            if (data.brief_overview) {
+                markdown += `## 📚 Brief Overview\n\n${data.brief_overview}\n\n`;
+            }
+            
+            // Key Points
+            if (data.key_points && Array.isArray(data.key_points) && data.key_points.length > 0) {
+                markdown += `## 🎯 Key Points\n\n`;
+                data.key_points.forEach(point => {
+                    if (point) markdown += `• ${point}\n`;
+                });
+                markdown += '\n';
+            }
+            
+            // Main Content
+            if (data.main_content) {
+                markdown += `## 📖 Main Content\n\n${data.main_content}\n\n`;
+            }
+            
+            // Processes / Mechanisms
+            if (data.processes) {
+                markdown += `## ⚙️ Processes / Mechanisms\n\n${data.processes}\n\n`;
+            }
+            
+            // Classifications / Tables
+            if (data.tables) {
+                markdown += `## 📊 Classifications & Tables\n\n${data.tables}\n\n`;
+            }
+            
+            // Examples
+            if (data.examples) {
+                markdown += `## 🧪 Examples\n\n${data.examples}\n\n`;
+            }
+            
+            // Summary
+            if (data.summary) {
+                markdown += `## 📝 Summary\n\n${data.summary}\n\n`;
+            }
+            
+            return markdown || '# Study Notes\n\nContent analysis completed.';
+        }
+
+        // Show specific section
+        function showSection(section, buttonElement) {
+            if (!section || !elements.notesContent) return;
+            
+            currentSection = section;
+            
+            // Update active button
+            if (elements.notesActions) {
+                elements.notesActions.forEach(btn => {
+                    btn.classList.remove('active');
+                });
+            }
+            if (buttonElement) {
+                buttonElement.classList.add('active');
+            }
+            
+            // For now, we'll just show the full notes
+            // In a more advanced version, you could filter sections
+            if (currentNotes?.markdown && elements.notesContent) {
+                elements.notesContent.innerHTML = marked.parse(currentNotes.markdown);
+                
+                // FIXED: Re-render math when switching sections - WITH CLEAR
+                if (window.MathJax) {
+                    MathJax.typesetClear([elements.notesContent]);
+                    MathJax.typesetPromise([elements.notesContent])
+                        .then(() => {
+                            console.log('MathJax re-rendered for section:', section);
+                        })
+                        .catch((err) => {
+                            console.error('MathJax section render error:', err);
+                        });
+                }
+            }
+        }
+
+        // Download notes as markdown file
+        function downloadNotes() {
+            if (!currentNotes) {
+                showNotification('No notes to download', 'error');
+                return;
+            }
+            
+            let markdown = '';
+            if (currentNotes.markdown) {
+                markdown = currentNotes.markdown;
+            } else {
+                markdown = constructMarkdownFromData(currentNotes);
+            }
+            
+            const filename = `study-notes-${Date.now()}.md`;
+            const blob = new Blob([markdown], { type: 'text/markdown;charset=utf-8' });
+            saveAs(blob, filename);
+            showNotification('Notes downloaded successfully!', 'success');
+        }
+
+        // Clear analysis
+        function clearAnalysis() {
+            currentFile = null;
+            currentNotes = null;
+            
+            // Reset UI
+            if (elements.analysisResults) elements.analysisResults.classList.remove('active');
+            if (elements.initialOptions) elements.initialOptions.classList.remove('hidden');
+            if (elements.uploadArea) elements.uploadArea.classList.remove('active');
+            if (elements.uploadStatus) elements.uploadStatus.classList.remove('active');
+            if (elements.emptyState) elements.emptyState.classList.remove('hidden');
+            if (elements.notesContent) {
+                elements.notesContent.classList.add('hidden');
+            }
+            if (elements.fileInput) elements.fileInput.value = '';
+            
+            hideError();
+            showNotification('Analysis cleared', 'info');
+        }
+
+        // Show error message
+        function showError(message) {
+            if (elements.errorMessage && elements.errorText) {
+                elements.errorText.textContent = message || 'An error occurred';
+                elements.errorMessage.classList.add('active');
+            }
+        }
+
+        // Hide error message
+        function hideError() {
+            if (elements.errorMessage) {
+                elements.errorMessage.classList.remove('active');
+            }
+        }
+
+        // Reset to upload state
+        function resetToUploadState() {
+            if (elements.uploadStatus) elements.uploadStatus.classList.remove('active');
+            if (elements.uploadArea) elements.uploadArea.classList.add('active');
+            if (elements.fileInput) elements.fileInput.value = '';
+        }
+
+        // Show notification
+        function showNotification(message, type) {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+                <span>${message}</span>
+            `;
+            
+            // Add styles
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${type === 'success' ? '#e6f4ea' : type === 'error' ? '#fce8e6' : '#e8f0fe'};
+                color: ${type === 'success' ? '#0d9d58' : type === 'error' ? '#d93025' : '#1a73e8'};
+                padding: 16px 24px;
+                border-radius: 8px;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+                z-index: 1000;
+                animation: fadeIn 0.3s ease;
+                max-width: 400px;
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Remove after 4 seconds
+            setTimeout(() => {
+                notification.style.animation = 'fadeOut 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 4000);
+        }
+
+        // Scroll to top
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Scroll event listener for scroll-to-top button
+        window.addEventListener('scroll', () => {
+            if (elements.scrollToTopBtn) {
+                elements.scrollToTopBtn.style.display = window.pageYOffset > 300 ? 'flex' : 'none';
+            }
+        });
+
+        // Setup drag and drop
+        function setupDragAndDrop() {
+            if (!elements.uploadArea) return;
+
+            // Prevent default drag behaviors
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                elements.uploadArea.addEventListener(eventName, preventDefaults, false);
+            });
+
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+
+            // Highlight drop area
+            ['dragenter', 'dragover'].forEach(eventName => {
+                elements.uploadArea.addEventListener(eventName, highlight, false);
+            });
+
+            ['dragleave', 'drop'].forEach(eventName => {
+                elements.uploadArea.addEventListener(eventName, unhighlight, false);
+            });
+
+            function highlight() {
+                elements.uploadArea.style.borderColor = 'var(--accent)';
+                elements.uploadArea.style.background = 'var(--accent-light)';
+            }
+
+            function unhighlight() {
+                elements.uploadArea.style.borderColor = '';
+                elements.uploadArea.style.background = '';
+            }
+
+            // Handle drop
+            elements.uploadArea.addEventListener('drop', handleDrop, false);
+
+            function handleDrop(e) {
+                const dt = e.dataTransfer;
+                const file = dt?.files?.[0];
+                
+                if (file && file.name.toLowerCase().endsWith('.pdf')) {
+                    // Create a synthetic event to mimic file input
+                    const dataTransfer = new DataTransfer();
+                    dataTransfer.items.add(file);
+                    if (elements.fileInput) {
+                        elements.fileInput.files = dataTransfer.files;
+                        handleFileSelect({ target: elements.fileInput });
+                    }
+                } else if (file) {
+                    showError('Please drop a PDF file only');
+                }
+            }
+        }
+
+        // Add CSS for fadeOut animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fadeOut {
+                from { opacity: 1; transform: translateY(0); }
+                to { opacity: 0; transform: translateY(-20px); }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

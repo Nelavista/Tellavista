@@ -1,0 +1,1553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
+  <title>Nelavista · The smarter way to study at African universities</title>
+
+  <!-- ===== PWA META TAGS ===== -->
+  <meta name="theme-color" content="#050810">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Nelavista">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="description" content="The smarter way to study at African universities. AI-powered tools, CBT practice, study materials — built for how you actually learn.">
+  
+  <!-- Manifest -->
+  <link rel="manifest" href="/manifest.json">
+  
+  <!-- Favicons -->
+  <link rel="icon" type="image/png" sizes="32x32" href="/static/icons/nelavista-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/static/icons/nelavista-16x16.png">
+  <link rel="shortcut icon" href="/static/icons/favicon.ico">
+  
+  <!-- Apple Touch Icons -->
+  <link rel="apple-touch-icon" sizes="180x180" href="/static/icons/nelavista-180x180.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/static/icons/nelavista-152x152.png">
+  <link rel="apple-touch-icon" sizes="167x167" href="/static/icons/nelavista-167x167.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="/static/icons/nelavista-120x120.png">
+
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-deep:      #050810;
+      --bg-surface:   #0a0f1a;
+      --bg-elevated:  #0f1825;
+      --bg-card:      #111927;
+      --border-glow:  rgba(56,189,248,0.12);
+      --border-hard:  #1c2a3a;
+      --border-subtle:rgba(255,255,255,0.04);
+      --text-primary: #eef2f7;
+      --text-secondary:#8fa8c8;
+      --text-muted:   #4d6480;
+      --accent:       #38bdf8;
+      --accent-teal:  #2dd4bf;
+      --accent-warm:  #f59e0b;
+      --grad-main:    linear-gradient(135deg, #38bdf8 0%, #3b82f6 100%);
+      --grad-teal:    linear-gradient(135deg, #2dd4bf 0%, #059669 100%);
+      --grad-hero:    linear-gradient(135deg, #38bdf8, #2dd4bf);
+      --glow-blue:    0 0 80px rgba(56,189,248,0.07);
+      --shadow-card:  0 2px 4px rgba(0,0,0,0.5), 0 12px 32px rgba(0,0,0,0.4);
+      --shadow-btn:   0 4px 20px rgba(56,189,248,0.25);
+      --r-sm:  8px;
+      --r-md:  12px;
+      --r-lg:  18px;
+      --r-xl:  24px;
+      --r-pill:50px;
+      --ease:  cubic-bezier(0.23, 1, 0.32, 1);
+      --t-fast:0.16s;
+      --t-med: 0.28s;
+    }
+
+    body.light-theme {
+      --bg-deep:       #f4f7fb;
+      --bg-surface:    #ffffff;
+      --bg-elevated:   #eef2f7;
+      --bg-card:       #f8fafc;
+      --border-glow:   rgba(37,99,235,0.1);
+      --border-hard:   #dde4ef;
+      --border-subtle: rgba(0,0,0,0.05);
+      --text-primary:  #0c1929;
+      --text-secondary:#4a6080;
+      --text-muted:    #8fa0b4;
+      --accent:        #2563eb;
+      --accent-teal:   #0d9488;
+      --glow-blue:     0 0 60px rgba(37,99,235,0.04);
+      --shadow-card:   0 1px 3px rgba(0,0,0,0.06), 0 8px 24px rgba(0,0,0,0.06);
+      --shadow-btn:    0 4px 20px rgba(37,99,235,0.18);
+    }
+
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior:smooth; -webkit-tap-highlight-color:transparent; }
+
+    body {
+      font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-deep);
+      color: var(--text-primary);
+      line-height: 1.55;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body::before {
+      content:'';
+      position:fixed; inset:0; z-index:0; pointer-events:none;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      opacity: 0.35;
+    }
+
+    .bg { font-family:'Bricolage Grotesque', sans-serif; letter-spacing:-0.025em; }
+    .mono { font-family:'JetBrains Mono', monospace; }
+    .container { max-width:1140px; margin:0 auto; padding:0 20px; position:relative; z-index:1; }
+
+    /* ─── TOP BAR ─── */
+    #top-bar {
+      position:fixed; top:0; left:0; right:0; height:52px;
+      background:rgba(5,8,16,0.88);
+      backdrop-filter:blur(24px) saturate(160%);
+      -webkit-backdrop-filter:blur(24px) saturate(160%);
+      display:flex; align-items:center; justify-content:space-between;
+      padding:0 18px; z-index:1000;
+      border-bottom:1px solid var(--border-subtle);
+      transition:background var(--t-med) var(--ease);
+    }
+    body.light-theme #top-bar { background:rgba(244,247,251,0.9); }
+
+    .brand-logo {
+      font-family:'Bricolage Grotesque', sans-serif;
+      font-size:1.1rem; font-weight:800;
+      letter-spacing:-0.04em; color:var(--text-primary);
+      line-height:1;
+    }
+    .brand-logo span { color:var(--accent-teal); }
+
+    .header-actions { display:flex; align-items:center; gap:6px; }
+
+    .header-link {
+      font-size:0.72rem; font-weight:600; padding:6px 13px;
+      border-radius:var(--r-pill); transition:all var(--t-fast) var(--ease);
+      border:1px solid transparent; text-decoration:none;
+      color:var(--text-secondary); white-space:nowrap;
+      letter-spacing:0.01em;
+    }
+    .header-link:hover { color:var(--text-primary); }
+    
+    .header-cta {
+      background:rgba(56,189,248,0.09) !important;
+      border:1px solid rgba(56,189,248,0.22) !important;
+      color:var(--accent) !important; font-weight:600 !important;
+      font-size:0.66rem !important; padding:5px 11px !important;
+    }
+    .header-cta:hover { background:rgba(56,189,248,0.16) !important; }
+    
+    .header-install-btn {
+      display: none;
+      background: var(--grad-main) !important;
+      color: #fff !important;
+      font-weight: 700 !important;
+      font-size: 0.62rem !important;
+      padding: 5px 10px !important;
+      border: none !important;
+      cursor: pointer;
+      transition: all var(--t-fast) var(--ease);
+    }
+    .header-install-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(56,189,248,0.3);
+    }
+    .header-install-btn.show {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    #menu-toggle, #theme-toggle {
+      width:34px; height:34px; border-radius:50%;
+      display:flex; align-items:center; justify-content:center;
+      font-size:0.95rem; background:transparent;
+      border:1px solid var(--border-hard); color:var(--text-primary);
+      cursor:pointer; transition:all var(--t-fast) var(--ease); flex-shrink:0;
+    }
+    #menu-toggle:hover, #theme-toggle:hover { border-color:var(--accent); }
+
+    /* ─── SIDE MENU ─── */
+    #side-menu {
+      position:fixed; top:0; left:-100%; width:min(290px,88vw); height:100vh;
+      background:rgba(10,15,26,0.98); backdrop-filter:blur(32px);
+      border-right:1px solid var(--border-hard);
+      transition:left 0.32s var(--ease); z-index:1001;
+      padding:28px 22px;
+    }
+    #side-menu.active { left:0; }
+    body.light-theme #side-menu { background:rgba(255,255,255,0.98); }
+
+    .sidebar-header {
+      display:flex; justify-content:space-between; align-items:center;
+      margin-bottom:28px; padding-bottom:16px;
+      border-bottom:1px solid var(--border-hard);
+    }
+    .side-logo { font-family:'Bricolage Grotesque',sans-serif; font-size:1.25rem; font-weight:800; letter-spacing:-0.04em; }
+    .side-logo span { color:var(--accent-teal); }
+
+    .close-icon {
+      font-size:1.1rem; cursor:pointer; color:var(--text-muted);
+      width:30px; height:30px; display:flex; align-items:center; justify-content:center;
+      border-radius:50%; transition:all var(--t-fast) var(--ease);
+      border:1px solid var(--border-hard);
+    }
+    .close-icon:hover { color:var(--accent); border-color:var(--accent); }
+
+    .sidebar-nav { list-style:none; }
+    .sidebar-nav li { margin:2px 0; }
+    .sidebar-nav a {
+      display:flex; align-items:center; gap:11px; font-size:0.88rem;
+      color:var(--text-secondary); font-weight:500; padding:11px 14px;
+      border-radius:var(--r-md); transition:all var(--t-fast) var(--ease); text-decoration:none;
+    }
+    .sidebar-nav a:hover { color:var(--accent); background:rgba(56,189,248,0.07); }
+    .sidebar-nav a i { font-size:1rem; }
+
+    #overlay {
+      position:fixed; inset:0; background:rgba(0,0,0,0.6);
+      backdrop-filter:blur(6px); display:none; z-index:999;
+    }
+    #overlay.active { display:block; }
+
+    /* ─── HERO ─── */
+    .hero-section {
+      padding:78px 0 36px; margin-top:52px;
+      position:relative; overflow:hidden; min-height:90vh;
+      display:flex; align-items:center;
+    }
+
+    .hero-section::before {
+      content:'';
+      position:absolute; top:-120px; left:50%; transform:translateX(-50%);
+      width:700px; height:600px;
+      background:radial-gradient(ellipse at 60% 40%, rgba(56,189,248,0.05) 0%, transparent 55%),
+                 radial-gradient(ellipse at 30% 70%, rgba(45,212,191,0.04) 0%, transparent 55%);
+      pointer-events:none;
+    }
+    .hero-section::after {
+      content:'';
+      position:absolute; bottom:-60px; right:-80px;
+      width:400px; height:400px;
+      background:radial-gradient(ellipse, rgba(59,130,246,0.04) 0%, transparent 60%);
+      pointer-events:none;
+    }
+
+    .hero-container {
+      display:flex; flex-direction:column; gap:36px;
+      position:relative; z-index:1; width:100%;
+    }
+    .hero-text { order:2; }
+
+    .hero-badge {
+      display:inline-flex; align-items:center; gap:7px;
+      background:rgba(56,189,248,0.06); border:1px solid rgba(56,189,248,0.18);
+      padding:5px 13px; border-radius:var(--r-pill);
+      font-size:0.63rem; font-weight:700; color:var(--accent);
+      letter-spacing:0.07em; text-transform:uppercase; margin-bottom:16px;
+      font-family:'JetBrains Mono', monospace;
+    }
+    .badge-dot {
+      width:6px; height:6px; border-radius:50%; background:var(--accent-teal);
+      box-shadow:0 0 6px var(--accent-teal);
+      animation:pulse 2.2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%,100%{opacity:1;transform:scale(1);box-shadow:0 0 6px var(--accent-teal)}
+      50%{opacity:0.5;transform:scale(1.5);box-shadow:0 0 12px var(--accent-teal)}
+    }
+
+    .hero-tagline {
+      color:var(--accent-teal); text-transform:uppercase;
+      letter-spacing:3px; font-size:0.58rem; font-weight:600;
+      margin-bottom:10px; display:block; font-family:'JetBrains Mono',monospace;
+    }
+
+    .hero-headline {
+      font-family:'Bricolage Grotesque', sans-serif;
+      font-size:clamp(1.9rem, 6vw, 3.1rem);
+      font-weight:800; line-height:1.05;
+      letter-spacing:-0.035em; margin-bottom:14px;
+      color:var(--text-primary);
+    }
+    .hero-headline em {
+      font-style:normal;
+      background:var(--grad-hero);
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+      background-clip:text;
+    }
+
+    .hero-sub {
+      font-size:0.92rem; color:var(--text-secondary);
+      max-width:430px; line-height:1.6; margin-bottom:22px;
+      font-weight:400;
+    }
+
+    .hero-features {
+      display:flex; gap:7px; margin-bottom:24px; flex-wrap:wrap;
+    }
+    .hero-feature-pill {
+      display:inline-flex; align-items:center; gap:5px;
+      background:var(--bg-elevated); border:1px solid var(--border-hard);
+      padding:5px 12px; border-radius:var(--r-pill);
+      font-size:0.68rem; font-weight:600; color:var(--text-secondary);
+      transition:all var(--t-fast) var(--ease); white-space:nowrap;
+      cursor:default;
+    }
+    .hero-feature-pill:hover { color:var(--accent); border-color:var(--border-glow); }
+    .hero-feature-pill i { color:var(--accent); font-size:0.78rem; }
+
+    .hero-actions {
+      display:flex; flex-direction:column; gap:10px; margin-bottom:28px;
+    }
+
+    .btn-primary {
+      display:inline-flex; align-items:center; justify-content:center; gap:7px;
+      background:var(--grad-main); color:#fff; font-weight:700;
+      font-size:0.88rem; padding:13px 26px; border-radius:var(--r-md);
+      text-decoration:none; transition:all var(--t-med) var(--ease);
+      box-shadow:var(--shadow-btn); width:100%; letter-spacing:0.01em;
+      font-family:'DM Sans',sans-serif;
+    }
+    .btn-primary:hover {
+      transform:translateY(-2px);
+      box-shadow:0 10px 30px rgba(56,189,248,0.35);
+    }
+    .btn-primary:active { transform:translateY(0); }
+
+    .btn-ghost {
+      display:inline-flex; align-items:center; justify-content:center; gap:7px;
+      background:transparent; color:var(--text-secondary); font-size:0.84rem;
+      font-weight:500; padding:12px 20px; border-radius:var(--r-md);
+      text-decoration:none; border:1px solid var(--border-hard);
+      transition:all var(--t-fast) var(--ease); width:100%;
+    }
+    .btn-ghost:hover { border-color:var(--accent); color:var(--accent); background:rgba(56,189,248,0.04); }
+
+    /* Stat strip */
+    .stat-strip {
+      display:grid; grid-template-columns:repeat(3,1fr);
+      border:1px solid var(--border-hard); border-radius:var(--r-lg);
+      overflow:hidden; width:100%; background:var(--bg-surface);
+    }
+    .stat-item {
+      padding:14px 8px; text-align:center;
+      border-right:1px solid var(--border-hard);
+      position:relative; overflow:hidden;
+    }
+    .stat-item::before {
+      content:''; position:absolute; top:0; left:0; right:0; height:1px;
+      background:var(--grad-hero); opacity:0;
+      transition:opacity var(--t-fast) var(--ease);
+    }
+    .stat-item:hover::before { opacity:1; }
+    .stat-item:last-child { border-right:none; }
+
+    .stat-num {
+      font-family:'Bricolage Grotesque', sans-serif;
+      font-size:1.25rem; font-weight:800;
+      letter-spacing:-0.04em; line-height:1; margin-bottom:3px;
+      color:var(--text-primary);
+    }
+    .stat-num span { color:var(--accent-teal); }
+    .stat-label {
+      font-size:0.58rem; color:var(--text-muted); font-weight:600;
+      text-transform:uppercase; letter-spacing:0.07em;
+      font-family:'JetBrains Mono', monospace;
+    }
+
+    /* Hero visual */
+    .hero-visual {
+      order:1; position:relative; display:flex; justify-content:center;
+      margin:0 auto; width:100%; max-width:270px;
+    }
+    .visual-ring {
+      position:absolute; inset:-12px; border-radius:calc(var(--r-xl) + 12px);
+      border:1px solid rgba(56,189,248,0.08);
+      animation:ring-pulse 4s ease-in-out infinite;
+    }
+    .visual-ring-2 {
+      position:absolute; inset:-24px; border-radius:calc(var(--r-xl) + 24px);
+      border:1px solid rgba(56,189,248,0.04);
+      animation:ring-pulse 4s ease-in-out 1s infinite;
+    }
+    @keyframes ring-pulse {
+      0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.3;transform:scale(1.01)}
+    }
+    .hero-visual-blob {
+      position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+      width:140%; height:140%;
+      background:radial-gradient(circle, rgba(56,189,248,0.1) 0%, transparent 55%);
+      filter:blur(50px); pointer-events:none;
+    }
+    .hero-visual-media {
+      width:100%; border-radius:var(--r-xl);
+      border:1px solid var(--border-hard); box-shadow:var(--shadow-card);
+      aspect-ratio:1/1.05; object-fit:cover; background:var(--bg-card);
+      position:relative; z-index:1;
+    }
+    .hero-float-badge {
+      position:absolute; bottom:10px; right:-6px; z-index:2;
+      background:rgba(10,15,26,0.95); border:1px solid var(--border-hard);
+      padding:6px 14px; backdrop-filter:blur(16px); border-radius:var(--r-pill);
+      font-size:0.67rem; font-weight:600; color:var(--text-primary);
+      box-shadow:0 8px 24px rgba(0,0,0,0.5);
+      font-family:'JetBrains Mono', monospace;
+    }
+    body.light-theme .hero-float-badge { background:rgba(255,255,255,0.95); }
+    .float-badge-head { color:var(--accent-teal); font-weight:800; }
+
+    /* ===== DOWNLOAD PWA SECTION ===== */
+    .download-section {
+      padding: 48px 0 24px;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .download-card {
+      background: linear-gradient(135deg, rgba(56,189,248,0.08) 0%, rgba(45,212,191,0.05) 100%);
+      border: 1px solid rgba(56,189,248,0.2);
+      border-radius: var(--r-xl);
+      padding: 36px 24px;
+      position: relative;
+      overflow: hidden;
+      text-align: center;
+    }
+    
+    .download-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: var(--grad-hero);
+    }
+    
+    .download-card::after {
+      content: '';
+      position: absolute;
+      top: -60px;
+      right: -40px;
+      width: 200px;
+      height: 200px;
+      background: radial-gradient(circle, rgba(56,189,248,0.1) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    
+    .download-icon-wrapper {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 20px;
+      background: rgba(56,189,248,0.12);
+      border: 2px solid rgba(56,189,248,0.3);
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      position: relative;
+      z-index: 1;
+      animation: float-icon 3s ease-in-out infinite;
+    }
+    
+    @keyframes float-icon {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+    
+    .download-title {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: clamp(1.3rem, 4vw, 1.8rem);
+      font-weight: 800;
+      letter-spacing: -0.035em;
+      margin-bottom: 8px;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .download-subtitle {
+      color: var(--text-secondary);
+      font-size: 0.88rem;
+      margin-bottom: 24px;
+      position: relative;
+      z-index: 1;
+      line-height: 1.5;
+    }
+    
+    .download-benefits {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 12px;
+      margin-bottom: 24px;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .download-benefit {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+      padding: 8px 12px;
+      background: rgba(56,189,248,0.05);
+      border: 1px solid rgba(56,189,248,0.1);
+      border-radius: var(--r-md);
+      justify-content: center;
+    }
+    
+    .download-benefit i {
+      color: var(--accent-teal);
+      font-size: 0.9rem;
+    }
+    
+    .download-btn-main {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background: var(--grad-main);
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.92rem;
+      padding: 14px 32px;
+      border-radius: var(--r-md);
+      text-decoration: none;
+      transition: all var(--t-med) var(--ease);
+      box-shadow: var(--shadow-btn);
+      border: none;
+      cursor: pointer;
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 320px;
+      font-family: 'DM Sans', sans-serif;
+    }
+    
+    .download-btn-main:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 32px rgba(56,189,248,0.4);
+    }
+    
+    .download-btn-main:active {
+      transform: scale(0.97);
+    }
+    
+    .download-btn-main.installed {
+      background: var(--grad-teal);
+      pointer-events: none;
+      cursor: default;
+    }
+    
+    .download-btn-main.installed:hover {
+      transform: none;
+      box-shadow: var(--shadow-btn);
+    }
+    
+    .download-instructions {
+      margin-top: 20px;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      position: relative;
+      z-index: 1;
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: 0.02em;
+      line-height: 1.6;
+    }
+    
+    .download-instructions span {
+      color: var(--accent);
+    }
+    
+    .platform-badges {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .platform-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.62rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-hard);
+      padding: 5px 10px;
+      border-radius: var(--r-pill);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    
+    .platform-badge i {
+      font-size: 0.7rem;
+      color: var(--accent);
+    }
+
+    /* ─── FLOATING INSTALL BUTTON ─── */
+    .floating-install-btn {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 998;
+      background: var(--grad-main);
+      color: white;
+      border: none;
+      padding: 14px 26px;
+      border-radius: var(--r-pill);
+      font-weight: 700;
+      font-size: 0.85rem;
+      font-family: 'DM Sans', sans-serif;
+      cursor: pointer;
+      box-shadow: 0 8px 32px rgba(56,189,248,0.4);
+      display: none;
+      align-items: center;
+      gap: 8px;
+      animation: bounce 2s infinite;
+      transition: all var(--t-fast) var(--ease);
+    }
+    .floating-install-btn.show {
+      display: flex;
+    }
+    .floating-install-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 40px rgba(56,189,248,0.5);
+    }
+    .floating-install-btn:active {
+      transform: scale(0.95);
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+
+    /* ─── MARQUEE ─── */
+    .marquee-wrap {
+      overflow:hidden;
+      border-top:1px solid var(--border-subtle);
+      border-bottom:1px solid var(--border-subtle);
+      padding:12px 0; background:var(--bg-surface); position:relative; z-index:1;
+    }
+    .marquee-track {
+      display:flex; gap:36px; animation:marquee 22s linear infinite; white-space:nowrap;
+    }
+    @keyframes marquee {
+      from{transform:translateX(0)}to{transform:translateX(-50%)}
+    }
+    .marquee-item {
+      display:inline-flex; align-items:center; gap:8px;
+      font-size:0.62rem; font-weight:600; color:var(--text-muted);
+      text-transform:uppercase; letter-spacing:0.08em; flex-shrink:0;
+      font-family:'JetBrains Mono', monospace;
+    }
+    .marquee-dot { width:3px; height:3px; border-radius:50%; background:var(--accent); opacity:0.7; }
+
+    /* ─── SECTIONS ─── */
+    .context-section { padding:56px 0; }
+    .two-col { display:flex; flex-direction:column; gap:28px; }
+
+    .section-label {
+      display:inline-flex; align-items:center; gap:8px;
+      font-size:0.6rem; font-weight:700; text-transform:uppercase;
+      letter-spacing:0.1em; color:var(--accent); margin-bottom:10px;
+      font-family:'JetBrains Mono', monospace;
+    }
+    .section-label::before {
+      content:''; width:16px; height:1px; background:var(--accent); opacity:0.6;
+    }
+    .section-title {
+      font-family:'Bricolage Grotesque', sans-serif;
+      font-size:clamp(1.4rem, 4vw, 2.1rem);
+      font-weight:800; letter-spacing:-0.035em; line-height:1.1;
+      margin-bottom:10px; color:var(--text-primary);
+    }
+    .section-body {
+      font-size:0.87rem; color:var(--text-secondary); line-height:1.65;
+      font-weight:400;
+    }
+
+    /* Context card */
+    .context-card {
+      background:var(--bg-card); border:1px solid var(--border-hard);
+      border-radius:var(--r-xl); padding:24px 22px; position:relative;
+      overflow:hidden; box-shadow:var(--shadow-card);
+    }
+    .context-card::before {
+      content:''; position:absolute; top:0; left:0; width:100%;
+      height:2px; background:var(--grad-hero);
+    }
+    .context-card::after {
+      content:'\201C'; position:absolute; right:16px; top:-4px;
+      font-size:5rem; color:var(--accent); opacity:0.06;
+      font-family:Georgia, serif; line-height:1; pointer-events:none;
+    }
+    .context-quote {
+      font-size:0.9rem; line-height:1.55; color:var(--text-primary);
+      font-weight:500; margin-bottom:16px; position:relative; z-index:1;
+    }
+    .context-source { display:flex; align-items:center; gap:10px; }
+    .context-dot {
+      width:32px; height:32px; border-radius:50%;
+      background:rgba(56,189,248,0.07); border:1px solid rgba(56,189,248,0.2);
+      display:flex; align-items:center; justify-content:center;
+      font-family:'Bricolage Grotesque',sans-serif; font-weight:800; font-size:0.68rem;
+      color:var(--accent); flex-shrink:0;
+    }
+    .context-name { font-size:0.78rem; font-weight:700; margin-bottom:1px; }
+    .context-role { font-size:0.65rem; color:var(--text-muted); }
+
+    /* ─── FEATURES ─── */
+    .features-section { padding:12px 0 56px; }
+    .features-header {
+      display:flex; justify-content:space-between; align-items:flex-end;
+      margin-bottom:22px; flex-wrap:wrap; gap:10px;
+    }
+    .features-grid { display:grid; grid-template-columns:1fr; gap:10px; }
+
+    .feature-card {
+      background:var(--bg-card); border:1px solid var(--border-hard);
+      border-radius:var(--r-lg); padding:20px 18px; transition:all var(--t-med) var(--ease);
+      position:relative; overflow:hidden;
+    }
+    .feature-card::after {
+      content:''; position:absolute; inset:0; border-radius:var(--r-lg);
+      background:var(--grad-hero); opacity:0;
+      transition:opacity var(--t-med) var(--ease);
+      pointer-events:none;
+    }
+    .feature-card:hover {
+      border-color:rgba(56,189,248,0.3);
+      transform:translateY(-2px);
+      box-shadow:0 8px 28px rgba(0,0,0,0.35), 0 0 0 1px rgba(56,189,248,0.08);
+    }
+
+    .feature-icon {
+      width:36px; height:36px; border-radius:var(--r-sm);
+      background:rgba(56,189,248,0.07); border:1px solid rgba(56,189,248,0.14);
+      display:flex; align-items:center; justify-content:center;
+      font-size:0.95rem; color:var(--accent); margin-bottom:12px;
+      transition:all var(--t-fast) var(--ease);
+    }
+    .feature-card:hover .feature-icon {
+      background:rgba(56,189,248,0.12); border-color:rgba(56,189,248,0.3);
+    }
+
+    .feature-card h3 {
+      font-family:'Bricolage Grotesque', sans-serif;
+      font-size:0.95rem; font-weight:700; margin-bottom:5px;
+      color:var(--text-primary); letter-spacing:-0.02em;
+    }
+    .feature-card p { font-size:0.77rem; color:var(--text-secondary); line-height:1.5; }
+    .feature-tag {
+      display:inline-block; margin-top:8px; font-size:0.56rem; font-weight:700;
+      text-transform:uppercase; letter-spacing:0.07em; color:var(--accent-teal);
+      background:rgba(45,212,191,0.08); padding:3px 8px;
+      border-radius:4px; border:1px solid rgba(45,212,191,0.15);
+      font-family:'JetBrains Mono', monospace;
+    }
+
+    /* ─── TESTIMONIALS ─── */
+    .testimonials-section {
+      background:var(--bg-surface);
+      border-top:1px solid var(--border-hard);
+      border-bottom:1px solid var(--border-hard);
+      padding:56px 0;
+    }
+    .testimonials-grid { display:grid; grid-template-columns:1fr; gap:10px; margin-top:24px; }
+
+    .testimonial-card {
+      background:var(--bg-card); border:1px solid var(--border-hard);
+      border-radius:var(--r-lg); padding:20px 18px;
+      transition:all var(--t-fast) var(--ease); position:relative; overflow:hidden;
+    }
+    .testimonial-card::before {
+      content:''; position:absolute; top:0; left:0; width:2px; height:0;
+      background:var(--grad-hero);
+      transition:height var(--t-med) var(--ease);
+    }
+    .testimonial-card:hover::before { height:100%; }
+    .testimonial-card:hover { border-color:rgba(56,189,248,0.2); }
+
+    .testimonial-stars {
+      color:var(--accent-warm); font-size:0.65rem;
+      margin-bottom:10px; letter-spacing:2px;
+    }
+    .testimonial-text {
+      font-size:0.82rem; line-height:1.55; color:var(--text-primary);
+      margin-bottom:16px; font-weight:400; font-style:italic;
+    }
+    .testimonial-author {
+      display:flex; align-items:center; gap:10px; padding-top:12px;
+      border-top:1px solid var(--border-hard);
+    }
+    .testimonial-avatar {
+      width:30px; height:30px; border-radius:50%;
+      background:rgba(56,189,248,0.07); border:1px solid rgba(56,189,248,0.2);
+      display:flex; align-items:center; justify-content:center;
+      font-family:'Bricolage Grotesque', sans-serif; font-weight:800; font-size:0.6rem;
+      color:var(--accent); flex-shrink:0; letter-spacing:-0.02em;
+    }
+    .testimonial-name { font-size:0.78rem; font-weight:700; margin-bottom:1px; }
+    .testimonial-role { font-size:0.63rem; color:var(--text-muted); }
+
+    /* ─── FOUNDER ─── */
+    .founder-section { padding:56px 0; }
+    .founder-card {
+      background:var(--bg-card); border:1px solid var(--border-hard);
+      border-radius:var(--r-xl); padding:30px 24px;
+      display:flex; flex-direction:column; gap:26px; align-items:center;
+      text-align:center; position:relative; overflow:hidden;
+      box-shadow:var(--shadow-card);
+    }
+    .founder-card::before {
+      content:''; position:absolute; top:0; left:0; width:100%;
+      height:2px; background:var(--grad-hero);
+    }
+    .founder-card::after {
+      content:'\201C'; position:absolute; right:18px; top:6px;
+      font-size:5rem; color:var(--accent); opacity:0.04;
+      font-family:Georgia, serif; line-height:1; pointer-events:none;
+    }
+    .founder-left { order:2; }
+    .founder-quote {
+      font-size:0.9rem; line-height:1.65; color:var(--text-secondary);
+      margin-bottom:14px; font-weight:400;
+    }
+    .founder-name {
+      font-family:'Bricolage Grotesque', sans-serif;
+      font-size:1rem; font-weight:800; letter-spacing:-0.03em;
+    }
+    .founder-role { font-size:0.68rem; color:var(--accent); font-weight:600; margin-top:3px; font-family:'JetBrains Mono',monospace; }
+    .founder-right { order:1; }
+    .founder-avatar {
+      width:82px; height:82px; border-radius:50%; object-fit:cover;
+      border:2px solid rgba(56,189,248,0.4);
+      box-shadow:0 0 0 4px rgba(56,189,248,0.08), 0 10px 24px rgba(0,0,0,0.4);
+      background:var(--bg-surface);
+    }
+
+    /* ─── CTA ─── */
+    .cta-section { padding:12px 0 56px; }
+    .cta-card {
+      background:var(--bg-card); border:1px solid var(--border-hard);
+      border-radius:var(--r-xl); padding:44px 24px; text-align:center;
+      position:relative; overflow:hidden; box-shadow:var(--shadow-card);
+    }
+    .cta-card::before {
+      content:''; position:absolute; top:0; left:0; width:100%;
+      height:2px; background:var(--grad-hero);
+    }
+    .cta-glow {
+      position:absolute; top:-80px; left:50%; transform:translateX(-50%);
+      width:400px; height:280px;
+      background:radial-gradient(ellipse, rgba(56,189,248,0.05) 0%, transparent 60%);
+      pointer-events:none;
+    }
+    .cta-title {
+      font-family:'Bricolage Grotesque', sans-serif;
+      font-size:clamp(1.5rem, 5vw, 2rem);
+      font-weight:800; color:var(--text-primary);
+      letter-spacing:-0.035em; margin-bottom:8px; position:relative;
+    }
+    .cta-desc { color:var(--text-secondary); font-size:0.86rem; margin-bottom:24px; position:relative; line-height:1.55; }
+    .cta-btn {
+      display:inline-flex; align-items:center; justify-content:center; gap:7px;
+      background:var(--grad-main); color:#fff; font-weight:700;
+      font-size:0.88rem; padding:13px 30px; border-radius:var(--r-md);
+      text-decoration:none; transition:all var(--t-med) var(--ease);
+      box-shadow:var(--shadow-btn); width:100%; max-width:270px; position:relative;
+    }
+    .cta-btn:hover { transform:translateY(-2px); box-shadow:0 12px 32px rgba(56,189,248,0.4); }
+    .cta-note { margin-top:12px; font-size:0.65rem; color:var(--text-muted); position:relative; font-family:'JetBrains Mono',monospace; letter-spacing:0.02em; }
+    .cta-login { margin-top:14px; font-size:0.78rem; color:var(--text-secondary); }
+    .cta-login a { color:var(--accent); font-weight:700; text-decoration:none; }
+    .cta-login a:hover { text-decoration:underline; }
+
+    /* ─── FOOTER ─── */
+    footer { border-top:1px solid var(--border-hard); padding:32px 0 22px; position:relative; z-index:1; }
+    .footer-inner { display:flex; flex-direction:column; gap:24px; }
+    .footer-brand { text-align:center; }
+    .footer-logo {
+      font-family:'Bricolage Grotesque', sans-serif;
+      font-weight:800; font-size:1rem; margin-bottom:4px;
+      color:var(--text-primary); letter-spacing:-0.04em;
+    }
+    .footer-logo span { color:var(--accent-teal); }
+    .footer-tagline { font-size:0.72rem; color:var(--text-muted); }
+    .footer-links { display:flex; justify-content:center; gap:36px; text-align:center; }
+    .footer-links h4 {
+      font-size:0.6rem; font-weight:700; text-transform:uppercase;
+      letter-spacing:0.08em; margin-bottom:10px; color:var(--text-primary);
+      font-family:'JetBrains Mono', monospace;
+    }
+    .footer-links ul { list-style:none; }
+    .footer-links li { margin-bottom:6px; }
+    .footer-links a {
+      font-size:0.74rem; color:var(--text-muted); text-decoration:none;
+      transition:color var(--t-fast) var(--ease);
+    }
+    .footer-links a:hover { color:var(--text-primary); }
+    .footer-bottom {
+      margin-top:22px; padding-top:16px; border-top:1px solid var(--border-subtle);
+      text-align:center; font-size:0.63rem; color:var(--text-muted);
+      font-family:'JetBrains Mono', monospace;
+    }
+
+    /* ─── SCROLL PROGRESS ─── */
+    #scrollProgress {
+      position:fixed; top:52px; left:0; height:2px;
+      background:var(--grad-hero); z-index:1000; width:0%;
+      transition:width 0.1s linear;
+    }
+
+    /* ─── REVEAL ─── */
+    .reveal {
+      opacity:0; transform:translateY(16px);
+      transition:opacity 0.5s var(--ease), transform 0.5s var(--ease);
+    }
+    .reveal.visible { opacity:1; transform:translateY(0); }
+
+    /* ─── RESPONSIVE ─── */
+    @media (min-width:600px) {
+      .hero-headline { font-size:2.3rem; }
+      .hero-actions { flex-direction:row; }
+      .btn-primary, .btn-ghost { width:auto; }
+      .hero-visual { max-width:310px; }
+      .features-grid { grid-template-columns:repeat(2,1fr); }
+      .testimonials-grid { grid-template-columns:repeat(2,1fr); }
+      .founder-card { flex-direction:row; text-align:left; align-items:center; padding:36px 28px; }
+      .founder-left { order:1; flex:2; }
+      .founder-right { order:2; flex:0 0 auto; }
+      .footer-inner { flex-direction:row; justify-content:space-between; align-items:flex-start; }
+      .footer-brand { text-align:left; }
+      .two-col { flex-direction:row; gap:40px; align-items:center; }
+      .two-col > * { flex:1; }
+    }
+
+    @media (min-width:768px) {
+      .hero-section { padding:96px 0 44px; }
+      .hero-container { flex-direction:row; align-items:center; gap:52px; }
+      .hero-text { order:1; flex:1; }
+      .hero-visual { order:2; flex:0 0 38%; max-width:340px; }
+      .features-grid { grid-template-columns:repeat(3,1fr); gap:12px; }
+      .feature-card.feature-wide { grid-column:span 2; }
+      .testimonials-grid { grid-template-columns:repeat(3,1fr); gap:12px; }
+      .cta-card { padding:56px 36px; }
+    }
+
+    @media (min-width:1024px) {
+      .hero-sub { font-size:0.95rem; }
+      .founder-card { padding:44px 40px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .reveal { opacity:1; transform:none; transition:none; }
+      .marquee-track { animation:none; }
+      .badge-dot { animation:none; }
+      .download-icon-wrapper { animation: none; }
+      .floating-install-btn { animation: none; }
+    }
+  </style>
+</head>
+<body>
+  <div id="overlay"></div>
+
+  <aside id="side-menu">
+    <div class="sidebar-header">
+      <span class="side-logo bg">Nela<span>vista</span></span>
+      <i class="ri-close-line close-icon" id="closeSidebar"></i>
+    </div>
+    <nav>
+      <ul class="sidebar-nav">
+        <li><a href="#home"><i class="ri-home-4-line"></i>Home</a></li>
+        <li><a href="#download"><i class="ri-download-2-line"></i>Download App</a></li>
+        <li><a href="#features"><i class="ri-apps-line"></i>Features</a></li>
+        <li><a href="#testimonials"><i class="ri-chat-heart-line"></i>Student Voices</a></li>
+        <li><a href="/signup"><i class="ri-user-add-line"></i>Get Started Free</a></li>
+        <li><a href="/login"><i class="ri-login-box-line"></i>Log In</a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <header id="top-bar">
+    <button id="menu-toggle" aria-label="Menu"><i class="ri-menu-line"></i></button>
+    <div class="brand-logo bg">Nela<span>vista</span></div>
+    <div class="header-actions">
+      <button id="header-install-btn" class="header-link header-install-btn" onclick="installApp()">
+        📲 Install
+      </button>
+      <a href="/signup" class="header-link header-cta">Get started</a>
+      <a href="/login" class="header-link">Login</a>
+      <button id="theme-toggle" aria-label="Toggle theme">🌙</button>
+    </div>
+  </header>
+
+  <div id="scrollProgress"></div>
+
+  <main>
+    <section class="hero-section" id="home">
+      <div class="container hero-container">
+        <div class="hero-text">
+          <div class="hero-badge reveal"><span class="badge-dot"></span>Free for African students</div>
+          <span class="hero-tagline reveal">// Your Academic Edge</span>
+          <h1 class="hero-headline bg reveal">The smarter way<br>to study at<br><em>African universities.</em></h1>
+          <p class="hero-sub reveal">Built by an African student, for African students. AI-powered tools, CBT practice, study materials — designed around how you actually learn.</p>
+          <div class="hero-features reveal">
+            <div class="hero-feature-pill"><i class="ri-brain-line"></i>AI Tutor</div>
+            <div class="hero-feature-pill"><i class="ri-file-search-line"></i>Notes Scanner</div>
+            <div class="hero-feature-pill"><i class="ri-questionnaire-line"></i>CBT Practice</div>
+            <div class="hero-feature-pill"><i class="ri-map-pin-line"></i>Campus Map</div>
+          </div>
+          <div class="hero-actions reveal">
+            <a href="/signup" class="btn-primary">Start for free <i class="ri-arrow-right-line"></i></a>
+            <a href="#download" class="btn-ghost">📲 Download App <i class="ri-download-line"></i></a>
+          </div>
+          <div class="stat-strip reveal">
+            <div class="stat-item">
+              <div class="stat-num">2,400<span>+</span></div>
+              <div class="stat-label">Students</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-num">9<span>+</span></div>
+              <div class="stat-label">Tools</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-num">100<span>%</span></div>
+              <div class="stat-label">Free</div>
+            </div>
+          </div>
+        </div>
+        <div class="hero-visual reveal">
+          <div class="visual-ring"></div>
+          <div class="visual-ring-2"></div>
+          <div class="hero-visual-blob"></div>
+          <img src="{{ url_for('static', filename='hero-preview.jpg') }}" alt="Nelavista study platform" class="hero-visual-media" onerror="this.style.display='none'">
+          <div class="hero-float-badge"><span class="float-badge-head">Free</span> · For Africa</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== INSTANT INSTALL PWA SECTION ===== -->
+    <section class="download-section" id="download">
+      <div class="container">
+        <div class="download-card reveal">
+          <div class="download-icon-wrapper">📱</div>
+          <h2 class="download-title bg">Get the Nelavista App</h2>
+          <p class="download-subtitle">
+            Install Nelavista on your phone for the best experience.<br>
+            No Play Store. No App Store. Just one tap.
+          </p>
+          
+          <div class="download-benefits">
+            <div class="download-benefit">
+              <i class="ri-lightning-bolt-line"></i>
+              Works offline
+            </div>
+            <div class="download-benefit">
+              <i class="ri-smartphone-line"></i>
+              Full screen app
+            </div>
+            <div class="download-benefit">
+              <i class="ri-notification-3-line"></i>
+              Push notifications
+            </div>
+            <div class="download-benefit">
+              <i class="ri-speed-up-line"></i>
+              Faster than browser
+            </div>
+          </div>
+          
+          <button class="download-btn-main" id="downloadBtnMain" onclick="installApp()">
+            <i class="ri-download-2-line"></i>
+            <span>Install Nelavista App</span>
+          </button>
+          
+          <div class="download-instructions" id="downloadInstructions">
+            <span>⚡</span> One tap install. Find Nelavista on your home screen.
+          </div>
+          
+          <div class="platform-badges">
+            <span class="platform-badge">
+              <i class="ri-android-line"></i> Android
+            </span>
+            <span class="platform-badge">
+              <i class="ri-apple-line"></i> iOS
+            </span>
+            <span class="platform-badge">
+              <i class="ri-computer-line"></i> Desktop
+            </span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="marquee-wrap">
+      <div class="marquee-track">
+        <span class="marquee-item"><span class="marquee-dot"></span>AI Tutor</span>
+        <span class="marquee-item"><span class="marquee-dot"></span>CBT Practice</span>
+        <span class="marquee-item"><span class="marquee-dot"></span>Study Materials</span>
+        <span class="marquee-item"><span class="marquee-dot"></span>Live Meetings</span>
+        <span class="marquee-item"><span class="marquee-dot"></span>Campus Map</span>
+        <span class="marquee-item"><span class="marquee-dot"></span>Material Analysis</span>
+        <span class="marquee-item"><span class="marquee-dot"></span>Video Reels</span>
+        <span class="marquee-item"><span class="marquee-dot"></span>Built for Africa</span>
+        <span class="marquee-item"><span class="marquee-dot"></span>AI Tutor</span>
+        <span class="marquee-item"><span class="marquee-dot"></span>CBT Practice</span>
+        <span class="marquee-item"><span class="marquee-dot"></span>Study Materials</span>
+        <span class="marquee-item"><span class="marquee-dot"></span>Live Meetings</span>
+        <span class="marquee-item"><span class="marquee-dot"></span>Campus Map</span>
+        <span class="marquee-item"><span class="marquee-dot"></span>Material Analysis</span>
+        <span class="marquee-item"><span class="marquee-dot"></span>Video Reels</span>
+        <span class="marquee-item"><span class="marquee-dot"></span>Built for Africa</span>
+      </div>
+    </div>
+
+    <section class="context-section">
+      <div class="container">
+        <div class="two-col">
+          <div class="reveal">
+            <span class="section-label">What is Nelavista</span>
+            <h2 class="section-title bg">Your context.<br>Your tools.<br>Your platform.</h2>
+            <p class="section-body">Most academic platforms were built for Western students. They don't speak your language — not literally, not contextually. Nelavista was built from the ground up for how African university students actually learn.</p>
+          </div>
+          <div class="reveal">
+            <div class="context-card">
+              <p class="context-quote">"Others are good, but don't feel African. They feel like an adopted solution that hasn't been filtered properly."</p>
+              <div class="context-source">
+                <div class="context-dot">E</div>
+                <div>
+                  <div class="context-name">Epaphras Adelabi</div>
+                  <div class="context-role">Product Owner · Brand Consultant</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="features-section" id="features">
+      <div class="container">
+        <div class="features-header">
+          <div>
+            <span class="section-label">Features</span>
+            <h2 class="section-title bg">Everything in one place.</h2>
+          </div>
+          <a href="/signup" class="btn-ghost reveal" style="width:auto;padding:9px 18px;font-size:0.76rem;">Get full access <i class="ri-arrow-right-line"></i></a>
+        </div>
+        <div class="features-grid">
+          <div class="feature-card feature-wide reveal">
+            <div class="feature-icon"><i class="ri-chat-smile-2-line"></i></div>
+            <h3>Talk to Nelavista</h3>
+            <p>Your AI academic assistant that understands African university courses, exam formats, and how you actually study.</p>
+            <span class="feature-tag">AI Powered</span>
+          </div>
+          <div class="feature-card reveal">
+            <div class="feature-icon"><i class="ri-questionnaire-line"></i></div>
+            <h3>CBT Practice</h3>
+            <p>Adaptive mock exams built around African university question banks. Practice until you're ready.</p>
+            <span class="feature-tag">Exam Ready</span>
+          </div>
+          <div class="feature-card reveal">
+            <div class="feature-icon"><i class="ri-file-search-line"></i></div>
+            <h3>Analyze Materials</h3>
+            <p>Upload your lecture notes or past questions. Nelavista breaks them down and summarizes clearly.</p>
+          </div>
+          <div class="feature-card reveal">
+            <div class="feature-icon"><i class="ri-book-open-line"></i></div>
+            <h3>Study Library</h3>
+            <p>Curated materials organized by course and level — no more chasing classmates for PDFs.</p>
+          </div>
+          <div class="feature-card reveal">
+            <div class="feature-icon"><i class="ri-video-chat-line"></i></div>
+            <h3>Live Study Rooms</h3>
+            <p>Virtual meeting rooms for group study. No WhatsApp chaos, just structured collaboration.</p>
+          </div>
+          <div class="feature-card reveal">
+            <div class="feature-icon"><i class="ri-film-line"></i></div>
+            <h3>Reels</h3>
+            <p>Short video explanations on core topics. Built for the way your generation learns.</p>
+          </div>
+          <div class="feature-card reveal">
+            <div class="feature-icon"><i class="ri-map-pin-line"></i></div>
+            <h3>Campus Map</h3>
+            <p>Find lecture halls, facilities, and offices. Navigate your campus with ease.</p>
+          </div>
+          <div class="feature-card reveal">
+            <div class="feature-icon"><i class="ri-bar-chart-line"></i></div>
+            <h3>Progress Tracker</h3>
+            <p>See how you improve week by week across all your courses and CBT scores.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="testimonials-section" id="testimonials">
+      <div class="container">
+        <span class="section-label">Student voices</span>
+        <h2 class="section-title bg reveal">2,400+ students.<br>Real feedback.</h2>
+        <div class="testimonials-grid">
+          <div class="testimonial-card reveal">
+            <div class="testimonial-stars">★★★★★</div>
+            <p class="testimonial-text">"Nelavista changed how I prepare for exams. The CBT practice is exactly what we face in school. I passed 4 courses with better grades."</p>
+            <div class="testimonial-author">
+              <div class="testimonial-avatar">FK</div>
+              <div><div class="testimonial-name">Fatimah K.</div><div class="testimonial-role">Accounting, 300L · University of Lagos</div></div>
+            </div>
+          </div>
+          <div class="testimonial-card reveal">
+            <div class="testimonial-stars">★★★★★</div>
+            <p class="testimonial-text">"The AI tutor understands our syllabus. I asked about Engineering courses and got clear explanations — not some American textbook version."</p>
+            <div class="testimonial-author">
+              <div class="testimonial-avatar">TA</div>
+              <div><div class="testimonial-name">Tobi A.</div><div class="testimonial-role">Mechanical Engineering, 200L · UNILAG</div></div>
+            </div>
+          </div>
+          <div class="testimonial-card reveal">
+            <div class="testimonial-stars">★★★★★</div>
+            <p class="testimonial-text">"I love that it's free and built by someone who understands our system. The materials library saved me during exam season."</p>
+            <div class="testimonial-author">
+              <div class="testimonial-avatar">CE</div>
+              <div><div class="testimonial-name">Chisom E.</div><div class="testimonial-role">Mass Communication, 200L · UNN</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="founder-section" id="about">
+      <div class="container">
+        <div class="founder-card reveal">
+          <div class="founder-left">
+            <p class="founder-quote">"I built Nelavista because I was that student — searching for notes across five WhatsApp groups, guessing what would come out in CBT, struggling with tools that weren't built for our reality."</p>
+            <div class="founder-name bg">Abdul Afeez Tella</div>
+            <div class="founder-role">Founder · Mathematics Student · Nigeria</div>
+          </div>
+          <div class="founder-right">
+            <img src="{{ url_for('static', filename='founder.jpeg') }}" alt="Abdul Afeez Tella" class="founder-avatar">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta-section" id="cta">
+      <div class="container">
+        <div class="cta-card reveal">
+          <div class="cta-glow"></div>
+          <h2 class="cta-title bg">Ready to study smarter?</h2>
+          <p class="cta-desc">Join thousands of African students already using Nelavista.<br>Free. No card needed.</p>
+          <a href="/signup" class="cta-btn">Create free account <i class="ri-arrow-right-line"></i></a>
+          <p class="cta-note">2-minute setup · Built for Africa · Always free</p>
+          <p class="cta-login">Already have an account? <a href="/login">Sign in</a></p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <div class="footer-logo bg">Nela<span>vista</span></div>
+          <p class="footer-tagline">The smarter way to study at African universities.</p>
+        </div>
+        <div class="footer-links">
+          <div>
+            <h4>Platform</h4>
+            <ul>
+              <li><a href="#features">Features</a></li>
+              <li><a href="#download">Download App</a></li>
+              <li><a href="#testimonials">Student Voices</a></li>
+              <li><a href="/signup">Get Started</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4>Connect</h4>
+            <ul>
+              <li><a href="mailto:hello@nelavista.com">hello@nelavista.com</a></li>
+              <li><a href="#">@nelavista</a></li>
+              <li><a href="/login">Log In</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">© 2026 Nelavista — Built in Africa, for every African university student.</div>
+    </div>
+  </footer>
+
+  <!-- Floating Install Button -->
+  <button class="floating-install-btn" id="floatingInstallBtn" onclick="installApp()">
+    <i class="ri-download-2-line"></i>
+    Install App
+  </button>
+
+  <script>
+    // ===== DIRECT INSTANT PWA INSTALL =====
+    let deferredPrompt;
+    let isAppInstalled = false;
+
+    // Check if already installed
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+      isAppInstalled = true;
+      updateInstallUI();
+    }
+
+    // Capture the install prompt
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      console.log('📲 Install prompt ready');
+      document.getElementById('header-install-btn').classList.add('show');
+      document.getElementById('floatingInstallBtn').classList.add('show');
+      updateInstallUI();
+    });
+
+    // Track successful installation
+    window.addEventListener('appinstalled', () => {
+      isAppInstalled = true;
+      deferredPrompt = null;
+      console.log('✅ App installed');
+      updateInstallUI();
+      document.getElementById('header-install-btn').classList.remove('show');
+      document.getElementById('floatingInstallBtn').classList.remove('show');
+      if (typeof gtag !== 'undefined') {
+        gtag('event', 'pwa_install', { event_category: 'engagement', event_label: 'Direct Install' });
+      }
+    });
+
+    // Main install function - always triggers direct install
+    function installApp() {
+      // If already installed, just show confirmation
+      if (isAppInstalled) {
+        const downloadBtn = document.getElementById('downloadBtnMain');
+        if (downloadBtn) {
+          downloadBtn.innerHTML = '<i class="ri-checkbox-circle-line"></i><span>✅ Already Installed</span>';
+          downloadBtn.classList.add('installed');
+          setTimeout(() => {
+            downloadBtn.innerHTML = '<i class="ri-checkbox-circle-line"></i><span>✅ App Installed</span>';
+          }, 2000);
+        }
+        return;
+      }
+
+      // If install prompt is available, trigger it directly
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then((choiceResult) => {
+          if (choiceResult.outcome === 'accepted') {
+            console.log('✅ User installed the app');
+            isAppInstalled = true;
+          } else {
+            console.log('❌ User dismissed');
+            // Still show manual instructions as fallback
+            showManualFallback();
+          }
+          deferredPrompt = null;
+          updateInstallUI();
+        });
+        return;
+      }
+
+      // No deferred prompt - try alternate methods
+      tryAutoInstall();
+    }
+
+    // Try alternate installation methods
+    function tryAutoInstall() {
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+      const isAndroid = /Android/.test(navigator.userAgent);
+      const isChrome = /Chrome/.test(navigator.userAgent) && !/Edge/.test(navigator.userAgent);
+      const isSafari = /Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent);
+
+      // For iOS Safari - can't auto-install, show instructions
+      if (isIOS && isSafari) {
+        showManualFallback();
+        return;
+      }
+
+      // For Android Chrome - try to trigger install via different methods
+      if (isAndroid && isChrome) {
+        // Method 1: Try using the experimental navigator.install() if available
+        if (navigator.install) {
+          navigator.install().catch(() => showManualFallback());
+          return;
+        }
+        
+        // Method 2: Try to use the mini-infobar or settings install
+        // Some Android versions allow triggering via window.open
+        const installUrl = window.location.origin + '?install=true';
+        if (confirm('Tap "Install" to add Nelavista to your home screen')) {
+          // This sometimes triggers the install flow on Android
+          window.location.href = installUrl;
+        }
+        return;
+      }
+
+      // Desktop or other browsers
+      showManualFallback();
+    }
+
+    // Show manual installation instructions as fallback
+    function showManualFallback() {
+      const instructions = document.getElementById('downloadInstructions');
+      const downloadBtn = document.getElementById('downloadBtnMain');
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+      const isAndroid = /Android/.test(navigator.userAgent);
+      const isChrome = /Chrome/.test(navigator.userAgent) && !/Edge/.test(navigator.userAgent);
+      const isSafari = /Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent);
+
+      let instructionHTML = '';
+
+      if (isIOS && isSafari) {
+        instructionHTML = '<span>📱 iOS:</span> Tap <strong>Share</strong> icon → <strong>Add to Home Screen</strong> → <strong>Add</strong>';
+      } else if (isAndroid && isChrome) {
+        instructionHTML = '<span>📱 Android:</span> Tap <strong>⋮</strong> menu → <strong>Install App</strong> → <strong>Install</strong>';
+      } else if (isAndroid) {
+        instructionHTML = '<span>📱 Android:</span> Open in Chrome browser → menu → <strong>Install App</strong>';
+      } else {
+        instructionHTML = '<span>💡</span> Look for the install icon <i class="ri-download-2-line"></i> in your browser address bar';
+      }
+
+      if (instructions) instructions.innerHTML = instructionHTML;
+      
+      // Keep button showing "Install Nelavista App" 
+      if (downloadBtn) {
+        downloadBtn.innerHTML = '<i class="ri-download-2-line"></i><span>Install Nelavista App</span>';
+        downloadBtn.classList.remove('installed');
+        downloadBtn.onclick = installApp;
+      }
+
+      // Scroll instructions into view on mobile
+      setTimeout(() => {
+        if (window.innerWidth < 768) {
+          instructions?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 300);
+    }
+
+    function updateInstallUI() {
+      const downloadBtn = document.getElementById('downloadBtnMain');
+      const instructions = document.getElementById('downloadInstructions');
+      const floatingBtn = document.getElementById('floatingInstallBtn');
+
+      if (isAppInstalled) {
+        // App is already installed
+        if (downloadBtn) {
+          downloadBtn.innerHTML = '<i class="ri-checkbox-circle-line"></i><span>✅ App Installed</span>';
+          downloadBtn.classList.add('installed');
+        }
+        if (instructions) {
+          instructions.innerHTML = '<span>🎉</span> Nelavista is on your home screen! Tap to open anytime.';
+        }
+        if (floatingBtn) floatingBtn.classList.remove('show');
+        document.getElementById('header-install-btn').classList.remove('show');
+      } else if (deferredPrompt) {
+        // Install is ready
+        if (downloadBtn) {
+          downloadBtn.innerHTML = '<i class="ri-download-2-line"></i><span>Install Nelavista App</span>';
+          downloadBtn.classList.remove('installed');
+          downloadBtn.onclick = installApp;
+        }
+        if (instructions) {
+          instructions.innerHTML = '<span>⚡</span> One tap install. No Play Store. No sign-up.';
+        }
+        if (floatingBtn) floatingBtn.classList.add('show');
+      } else {
+        // Browser doesn't support PWA prompts yet
+        if (downloadBtn) {
+          downloadBtn.innerHTML = '<i class="ri-download-2-line"></i><span>Install Nelavista App</span>';
+          downloadBtn.classList.remove('installed');
+          downloadBtn.onclick = installApp;
+        }
+        showManualFallback();
+        if (floatingBtn) floatingBtn.classList.remove('show');
+      }
+    }
+
+    /* Theme */
+    (function() {
+      const tt = document.getElementById('theme-toggle'), b = document.body;
+      const st = localStorage.getItem('theme');
+      const pd = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      let ct = st || (pd ? 'dark' : 'light');
+      function at(t) {
+        if(t === 'light') { b.classList.add('light-theme'); tt.textContent = '☀️'; }
+        else { b.classList.remove('light-theme'); tt.textContent = '🌙'; }
+        localStorage.setItem('theme', t);
+      }
+      at(ct);
+      tt.addEventListener('click', () => { ct = b.classList.contains('light-theme') ? 'dark' : 'light'; at(ct); });
+      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+        if(!localStorage.getItem('theme')) at(e.matches ? 'dark' : 'light');
+      });
+    })();
+
+    /* Side menu */
+    const mt = document.getElementById('menu-toggle');
+    const sm = document.getElementById('side-menu');
+    const ov = document.getElementById('overlay');
+    const cs = document.getElementById('closeSidebar');
+    const cm = () => { sm.classList.remove('active'); ov.classList.remove('active'); };
+    mt.addEventListener('click', () => { sm.classList.add('active'); ov.classList.add('active'); });
+    cs.addEventListener('click', cm); ov.addEventListener('click', cm);
+
+    /* Scroll progress */
+    const pb = document.getElementById('scrollProgress');
+    window.addEventListener('scroll', () => {
+      const ws = document.documentElement.scrollTop;
+      const h = document.documentElement.scrollHeight - window.innerHeight;
+      pb.style.width = (ws / h * 100) + '%';
+    }, { passive: true });
+
+    /* Smooth scroll */
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', function(e) {
+        const t = document.querySelector(this.getAttribute('href'));
+        if(t) { e.preventDefault(); t.scrollIntoView({ behavior:'smooth' }); cm(); }
+      });
+    });
+
+    /* Reveal on scroll */
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach((e, i) => {
+        if(e.isIntersecting) {
+          setTimeout(() => e.target.classList.add('visible'), i * 40);
+          obs.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.07 });
+    document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+    // Register service worker
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/service-worker.js')
+          .then(reg => console.log('✅ Service Worker registered'))
+          .catch(err => console.log('Service Worker failed:', err));
+      });
+    }
+
+    // Listen for display mode changes
+    window.matchMedia('(display-mode: standalone)').addEventListener('change', (e) => {
+      if (e.matches) {
+        isAppInstalled = true;
+        updateInstallUI();
+      }
+    });
+
+    // Initial UI update
+    setTimeout(updateInstallUI, 1000);
+  </script>
+</body>
+</html>

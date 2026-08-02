@@ -1,0 +1,1390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Talk to Nelavista</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#000000" />
+  
+  <style>
+    /* ===== CSS VARIABLES & RESET ===== */
+    :root {
+      --primary-color: #000000;
+      --primary-dark: #333333;
+      --light-bg: #ffffff;
+      --dark-bg: #000000;
+      --card-light: #ffffff;
+      --card-dark: #0a0a0a;
+      --text-light: #000000;
+      --text-dark: #ffffff;
+      --input-bg: #0a0a0a;
+      --border-light: rgba(0, 0, 0, 0.1);
+      --border-dark: rgba(255, 255, 255, 0.1);
+      --gradient-start: #ffffff;
+      --gradient-end: #888888;
+      --accent-color: #1a1a1a;
+      --listening-color: #ff5722;
+      --speaking-color: #4caf50;
+      --pulse-color: rgba(255, 255, 255, 0.1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background: var(--dark-bg);
+      color: var(--text-dark);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      overflow-x: hidden;
+      padding: 0 20px;
+      opacity: 0;
+      animation: fadeIn 0.6s ease-out forwards;
+      animation-delay: 0.1s;
+    }
+
+    /* ===== TOP BAR ===== */
+    #top-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      background: rgba(0, 0, 0, 0.95);
+      backdrop-filter: blur(10px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      z-index: 1002;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      opacity: 0;
+      animation: fadeInDown 0.5s ease-out 0.2s forwards;
+    }
+
+    #back-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 20px;
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      color: white;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    #back-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: translateX(-2px);
+    }
+
+    #top-bar-title {
+      font-weight: 600;
+      font-size: 1.1rem;
+      background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* ===== ANIMATIONS ===== */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(15px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateX(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes orbitalSpin {
+      0% {
+        transform: translate(-50%, -50%) rotate(0deg);
+      }
+      100% {
+        transform: translate(-50%, -50%) rotate(360deg);
+      }
+    }
+
+    @keyframes gentlePulse {
+      0%, 100% {
+        transform: scale(1);
+        opacity: 0.8;
+      }
+      50% {
+        transform: scale(1.05);
+        opacity: 1;
+      }
+    }
+
+    @keyframes listeningGlow {
+      0%, 100% {
+        box-shadow: 0 0 20px var(--listening-color),
+                   0 0 40px rgba(255, 87, 34, 0.3),
+                   0 0 60px rgba(255, 87, 34, 0.1);
+      }
+      50% {
+        box-shadow: 0 0 30px var(--listening-color),
+                   0 0 60px rgba(255, 87, 34, 0.4),
+                   0 0 90px rgba(255, 87, 34, 0.2);
+      }
+    }
+
+    @keyframes speakingGlow {
+      0%, 100% {
+        box-shadow: 0 0 20px var(--speaking-color),
+                   0 0 40px rgba(76, 175, 80, 0.3),
+                   0 0 60px rgba(76, 175, 80, 0.1);
+      }
+      50% {
+        box-shadow: 0 0 30px var(--speaking-color),
+                   0 0 60px rgba(76, 175, 80, 0.4),
+                   0 0 90px rgba(76, 175, 80, 0.2);
+      }
+    }
+
+    @keyframes soundWave {
+      0%, 100% {
+        height: 8px;
+        opacity: 0.6;
+      }
+      50% {
+        height: 24px;
+        opacity: 1;
+      }
+    }
+
+    @keyframes orbitDot {
+      0% {
+        transform: rotate(0deg) translateX(60px) rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg) translateX(60px) rotate(-360deg);
+      }
+    }
+
+    /* ===== MAIN CONTAINER ===== */
+    .talk-container {
+      width: 100%;
+      max-width: 500px;
+      margin-top: 80px;
+      opacity: 0;
+      animation: fadeInUp 0.7s ease-out 0.3s forwards;
+    }
+
+    .header-section {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+
+    .header-title {
+      font-size: 2rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.5rem;
+      opacity: 0;
+      animation: fadeInUp 0.7s ease-out 0.4s forwards;
+    }
+
+    .header-subtitle {
+      color: #a0a0a0;
+      font-size: 1rem;
+      line-height: 1.5;
+      max-width: 400px;
+      margin: 0 auto;
+      opacity: 0;
+      animation: fadeInUp 0.7s ease-out 0.5s forwards;
+    }
+
+    /* ===== INPUT SECTION ===== */
+    .input-section {
+      background: var(--card-dark);
+      border: 1px solid var(--border-dark);
+      border-radius: 16px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      opacity: 0;
+      animation: fadeInUp 0.7s ease-out 0.6s forwards;
+    }
+
+    .input-group {
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      animation: slideIn 0.6s ease-out forwards;
+    }
+
+    .input-group:nth-child(1) {
+      animation-delay: 0.6s;
+    }
+
+    .input-group:nth-child(2) {
+      animation-delay: 0.7s;
+    }
+
+    .input-label {
+      display: block;
+      margin-bottom: 0.7rem;
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: #e0e0e0;
+    }
+
+    .input-wrapper {
+      position: relative;
+      background: var(--input-bg);
+      border-radius: 12px;
+      border: 1px solid var(--border-dark);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .input-wrapper:focus-within {
+      border-color: rgba(255, 255, 255, 0.3);
+      transform: translateY(-1px);
+    }
+
+    .styled-input,
+    .styled-select {
+      width: 100%;
+      padding: 1rem 1.2rem;
+      background: none;
+      border: none;
+      outline: none;
+      font-size: 1rem;
+      color: var(--text-dark);
+      appearance: none;
+      -webkit-appearance: none;
+    }
+
+    .styled-select {
+      cursor: pointer;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") no-repeat right 1rem center;
+      background-size: 16px;
+    }
+
+    /* ===== VOICE ORB SECTION ===== */
+    .orb-section {
+      background: var(--card-dark);
+      border: 1px solid var(--border-dark);
+      border-radius: 16px;
+      padding: 2.5rem 1.5rem;
+      margin-bottom: 2rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      opacity: 0;
+      animation: fadeInUp 0.7s ease-out 0.8s forwards;
+    }
+
+    .orb-wrapper {
+      position: relative;
+      width: 180px;
+      height: 180px;
+      margin: 0 auto 1.5rem;
+      cursor: pointer;
+    }
+
+    .orbital-ring {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      border: 2px dashed rgba(255, 255, 255, 0.1);
+      transform: translate(-50%, -50%);
+      animation: orbitalSpin 20s linear infinite;
+      pointer-events: none;
+    }
+
+    .orbital-dot {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 8px;
+      height: 8px;
+      background: var(--gradient-start);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      animation: orbitDot 4s linear infinite;
+    }
+
+    .orb {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 100px;
+      height: 100px;
+      background: var(--primary-color);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.8rem;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      animation: gentlePulse 2s ease-in-out infinite;
+      z-index: 2;
+    }
+
+    .orb.listening {
+      background: var(--listening-color);
+      animation: listeningGlow 1.5s ease-in-out infinite;
+    }
+
+    .orb.speaking {
+      background: var(--speaking-color);
+      animation: speakingGlow 1.5s ease-in-out infinite;
+    }
+
+    .sound-wave {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 4px;
+      z-index: 3;
+    }
+
+    .sound-wave .bar {
+      width: 4px;
+      height: 10px;
+      background: white;
+      border-radius: 2px;
+      opacity: 0;
+    }
+
+    .sound-wave.active .bar:nth-child(1) { animation: soundWave 0.7s infinite ease-in-out; }
+    .sound-wave.active .bar:nth-child(2) { animation: soundWave 0.7s infinite ease-in-out 0.1s; }
+    .sound-wave.active .bar:nth-child(3) { animation: soundWave 0.7s infinite ease-in-out 0.2s; }
+    .sound-wave.active .bar:nth-child(4) { animation: soundWave 0.7s infinite ease-in-out 0.3s; }
+    .sound-wave.active .bar:nth-child(5) { animation: soundWave 0.7s infinite ease-in-out 0.4s; }
+
+    .orb-label {
+      color: #a0a0a0;
+      font-size: 0.9rem;
+      margin-top: 1rem;
+      font-weight: 500;
+      opacity: 0;
+      animation: fadeInUp 0.7s ease-out 0.9s forwards;
+    }
+
+    /* ===== TEXT INPUT SECTION ===== */
+    .text-input-section {
+      background: var(--card-dark);
+      border: 1px solid var(--border-dark);
+      border-radius: 16px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      opacity: 0;
+      animation: fadeInUp 0.7s ease-out 1s forwards;
+    }
+
+    .text-input-group {
+      opacity: 0;
+      animation: slideIn 0.6s ease-out forwards;
+      animation-delay: 1s;
+    }
+
+    .text-input-wrapper {
+      display: flex;
+      gap: 12px;
+      margin-top: 0.5rem;
+    }
+
+    .text-input-wrapper .input-wrapper {
+      flex: 1;
+    }
+
+    .ask-btn {
+      padding: 0 1.5rem;
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      white-space: nowrap;
+      min-width: 100px;
+    }
+
+    .ask-btn:hover:not(:disabled) {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+
+    .ask-btn:active:not(:disabled) {
+      transform: translateY(0);
+    }
+
+    .ask-btn:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    /* ===== CONVERSATION LOG ===== */
+    .log-section {
+      background: var(--card-dark);
+      border: 1px solid var(--border-dark);
+      border-radius: 16px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      opacity: 0;
+      animation: fadeInUp 0.7s ease-out 1.1s forwards;
+      min-height: 200px;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .log-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .clear-log-btn {
+      background: none;
+      border: 1px solid var(--border-dark);
+      color: #a0a0a0;
+      padding: 4px 12px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .clear-log-btn:hover {
+      border-color: rgba(255, 255, 255, 0.3);
+      color: white;
+    }
+
+    .log-content {
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    .log-message {
+      margin-bottom: 1rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      opacity: 0;
+      animation: slideIn 0.5s ease-out forwards;
+    }
+
+    .log-message:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+
+    .user-message {
+      color: #ffffff;
+    }
+
+    .user-message::before {
+      content: '🧑 ';
+      margin-right: 6px;
+    }
+
+    .ai-message {
+      color: #e0e0e0;
+    }
+
+    .ai-message::before {
+      content: '🧠 ';
+      margin-right: 6px;
+    }
+
+    .log-placeholder {
+      color: #666;
+      font-style: italic;
+      text-align: center;
+      padding: 2rem 0;
+      animation: fadeInUp 0.5s ease-out;
+    }
+
+    /* ===== INFO SECTION ===== */
+    .info-section {
+      background: var(--card-dark);
+      border: 1px solid var(--border-dark);
+      border-radius: 16px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      opacity: 0;
+      animation: fadeInUp 0.7s ease-out 1.2s forwards;
+    }
+
+    .info-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 1rem;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+    }
+
+    .info-item {
+      background: var(--accent-color);
+      border: 1px solid var(--border-dark);
+      border-radius: 12px;
+      padding: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .info-item:hover {
+      border-color: rgba(255, 255, 255, 0.3);
+      transform: translateY(-2px);
+    }
+
+    .info-item strong {
+      display: block;
+      margin-bottom: 0.3rem;
+      color: #ffffff;
+    }
+
+    .info-item span {
+      display: block;
+      color: #a0a0a0;
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    .info-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .action-btn {
+      flex: 1;
+      min-width: 120px;
+      padding: 0.8rem 1rem;
+      background: var(--accent-color);
+      border: 1px solid var(--border-dark);
+      color: white;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .action-btn:hover {
+      border-color: rgba(255, 255, 255, 0.3);
+      transform: translateY(-2px);
+    }
+
+    .action-btn:active {
+      transform: translateY(0);
+    }
+
+    /* ===== SCROLLBAR ===== */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 3px;
+      transition: background 0.3s ease;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    /* ===== RESPONSIVE DESIGN ===== */
+    @media (max-width: 768px) {
+      body {
+        padding: 0 16px;
+        padding-top: 70px;
+      }
+
+      .talk-container {
+        margin-top: 70px;
+      }
+
+      .header-title {
+        font-size: 1.6rem;
+      }
+
+      .header-subtitle {
+        font-size: 0.95rem;
+      }
+
+      .orb-wrapper {
+        width: 150px;
+        height: 150px;
+      }
+
+      .orbital-ring {
+        width: 160px;
+        height: 160px;
+      }
+
+      .orb {
+        width: 80px;
+        height: 80px;
+        font-size: 1.5rem;
+      }
+
+      .input-section,
+      .orb-section,
+      .text-input-section,
+      .log-section,
+      .info-section {
+        padding: 1.2rem;
+        border-radius: 12px;
+      }
+
+      .text-input-wrapper {
+        flex-direction: column;
+      }
+
+      .ask-btn {
+        width: 100%;
+        padding: 1rem;
+      }
+
+      .info-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .action-btn {
+        flex: 1 0 100%;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .header-title {
+        font-size: 1.4rem;
+      }
+
+      .orb-wrapper {
+        width: 120px;
+        height: 120px;
+      }
+
+      .orbital-ring {
+        width: 130px;
+        height: 130px;
+      }
+
+      .orb {
+        width: 70px;
+        height: 70px;
+        font-size: 1.3rem;
+      }
+    }
+
+    /* ===== UTILITY CLASSES ===== */
+    .hidden {
+      display: none !important;
+    }
+
+    .show {
+      display: block !important;
+    }
+
+    .flex-show {
+      display: flex !important;
+    }
+  </style>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
+</head>
+<body>
+  <!-- TOP BAR -->
+  <div id="top-bar">
+    <button id="back-btn" onclick="goBack()">←</button>
+    <div id="top-bar-title">Talk to AI</div>
+    <div style="width: 40px;"></div> <!-- Spacer for symmetry -->
+  </div>
+
+  <!-- MAIN CONTAINER -->
+  <div class="talk-container">
+    <!-- HEADER -->
+    <div class="header-section">
+      <h1 class="header-title">Talk to Nelavista</h1>
+      <p class="header-subtitle">Speak or type your questions. I'm here to help with your studies.</p>
+    </div>
+
+    <!-- INPUT SECTION -->
+    <div class="input-section">
+      <div class="input-group">
+        <label class="input-label">Your Name (Optional)</label>
+        <div class="input-wrapper">
+          <input type="text" id="username" class="styled-input" placeholder="Enter your name" />
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label class="input-label">Select Voice</label>
+        <div class="input-wrapper">
+          <select id="voiceSelect" class="styled-select" aria-label="Voice Selection">
+            <option>Loading voices...</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- VOICE ORB SECTION -->
+    <div class="orb-section">
+      <div class="orb-wrapper" id="mic">
+        <div class="orbital-ring"></div>
+        <div class="orbital-dot"></div>
+        <div class="orb" id="orb">
+          🎙️
+          <div class="sound-wave" id="wave">
+            <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
+          </div>
+        </div>
+      </div>
+      <div class="orb-label" id="orbStatus">Tap the orb to start speaking</div>
+    </div>
+
+    <!-- TEXT INPUT SECTION -->
+    <div class="text-input-section">
+      <div class="text-input-group">
+        <label class="input-label">Type your question</label>
+        <div class="text-input-wrapper">
+          <div class="input-wrapper">
+            <input type="text" id="typedQuestion" class="styled-input" placeholder="Type your question here..." />
+          </div>
+          <button class="ask-btn" id="askBtn" onclick="handleTypedInput()">Ask</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONVERSATION LOG -->
+    <div class="log-section">
+      <div class="log-title">
+        <span>Conversation Log</span>
+        <button class="clear-log-btn" onclick="clearLog()">Clear</button>
+      </div>
+      <div class="log-content" id="log">
+        <div class="log-placeholder">No conversation yet. Start by speaking or typing a question.</div>
+      </div>
+    </div>
+
+    <!-- INFO SECTION -->
+    <div class="info-section">
+      <div class="info-title">Features & Information</div>
+      <div class="info-grid">
+        <div class="info-item">
+          <strong>🌍 Multilingual Support</strong>
+          <span>Arabic, French, Hausa, Yoruba and more (Coming Soon)</span>
+        </div>
+        <div class="info-item">
+          <strong>🔊 Scholar Voices</strong>
+          <span>Authentic recitations (Coming Soon)</span>
+        </div>
+        <div class="info-item">
+          <strong>📱 Install App</strong>
+          <span>Use browser menu to "Add to Home Screen"</span>
+        </div>
+      </div>
+      <div class="info-actions">
+        <button class="action-btn" onclick="downloadChat()">
+          <span>📥</span>
+          Download Chat
+        </button>
+        <button class="action-btn" onclick="shareConversation()">
+          <span>↗️</span>
+          Share Conversation
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ===== STATE MANAGEMENT =====
+    const state = {
+      isListening: false,
+      isSpeaking: false,
+      voices: [],
+      bestVoice: null,
+      conversationHistory: JSON.parse(localStorage.getItem('nelavistaVoiceHistory')) || [],
+      recognition: null
+    };
+
+    // ===== INITIALIZATION =====
+    document.addEventListener('DOMContentLoaded', () => {
+      initializeVoiceRecognition();
+      initializeVoices();
+      loadConversationHistory();
+      setupEventListeners();
+      
+      // Auto-focus username input
+      setTimeout(() => {
+        document.getElementById('username').focus();
+      }, 800);
+    });
+
+    // ===== VOICE RECOGNITION =====
+    function initializeVoiceRecognition() {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      
+      if (!SpeechRecognition) {
+        showError('Voice recognition is not supported in your browser. Please use Chrome or Edge.');
+        document.getElementById('mic').style.opacity = '0.3';
+        document.getElementById('mic').style.cursor = 'not-allowed';
+        document.getElementById('orbStatus').textContent = 'Voice not supported';
+        return;
+      }
+
+      state.recognition = new SpeechRecognition();
+      state.recognition.lang = 'en-US';
+      state.recognition.interimResults = false;
+      state.recognition.maxAlternatives = 1;
+      state.recognition.continuous = false;
+
+      state.recognition.onstart = () => {
+        state.isListening = true;
+        updateOrbState();
+        document.getElementById('orbStatus').textContent = 'Listening...';
+      };
+
+      state.recognition.onresult = (event) => {
+        const spokenText = event.results[0][0].transcript.trim();
+        if (spokenText) {
+          handleUserInput(spokenText, 'voice');
+        }
+      };
+
+      state.recognition.onerror = (event) => {
+        console.error('Speech recognition error:', event.error);
+        state.isListening = false;
+        updateOrbState();
+        document.getElementById('orbStatus').textContent = 'Error listening. Try again.';
+        
+        setTimeout(() => {
+          document.getElementById('orbStatus').textContent = 'Tap the orb to start speaking';
+        }, 2000);
+      };
+
+      state.recognition.onend = () => {
+        state.isListening = false;
+        updateOrbState();
+        if (!state.isSpeaking) {
+          document.getElementById('orbStatus').textContent = 'Tap the orb to start speaking';
+        }
+      };
+    }
+
+    // ===== VOICE SYNTHESIS =====
+    function initializeVoices() {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.onvoiceschanged = populateVoiceOptions;
+        populateVoiceOptions();
+      }
+    }
+
+    function populateVoiceOptions() {
+      state.voices = window.speechSynthesis.getVoices();
+      const voiceSelect = document.getElementById('voiceSelect');
+      
+      if (!state.voices.length) {
+        voiceSelect.innerHTML = '<option>No voices available</option>';
+        return;
+      }
+
+      voiceSelect.innerHTML = state.voices
+        .map(v => `<option value="${v.name}">${v.name} (${v.lang})</option>`)
+        .join('');
+      
+      // Find best voice
+      state.bestVoice = state.voices.find(v => 
+        v.name.includes('Google US English') || 
+        v.lang === 'en-US' ||
+        v.name.includes('Microsoft David')
+      ) || state.voices[0];
+      
+      if (state.bestVoice) {
+        voiceSelect.value = state.bestVoice.name;
+      }
+    }
+
+    // ===== ORB STATE MANAGEMENT =====
+    function updateOrbState() {
+      const orb = document.getElementById('orb');
+      const wave = document.getElementById('wave');
+      
+      orb.classList.remove('listening', 'speaking');
+      wave.classList.remove('active');
+      
+      if (state.isListening) {
+        orb.classList.add('listening');
+        wave.classList.add('active');
+      } else if (state.isSpeaking) {
+        orb.classList.add('speaking');
+        wave.classList.add('active');
+      }
+    }
+
+    // ===== EVENT LISTENERS =====
+    function setupEventListeners() {
+      const voiceSelect = document.getElementById('voiceSelect');
+      voiceSelect.addEventListener('change', () => {
+        state.bestVoice = state.voices.find(v => v.name === voiceSelect.value);
+      });
+
+      const mic = document.getElementById('mic');
+      mic.addEventListener('click', toggleVoiceRecording);
+
+      const typedInput = document.getElementById('typedQuestion');
+      typedInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+          handleTypedInput();
+        }
+      });
+
+      // Update button state based on input
+      typedInput.addEventListener('input', updateAskButton);
+      updateAskButton();
+    }
+
+    // ===== VOICE RECORDING TOGGLE =====
+    function toggleVoiceRecording() {
+      if (!state.recognition) return;
+      
+      if (state.isListening) {
+        state.recognition.stop();
+      } else {
+        try {
+          state.recognition.start();
+        } catch (error) {
+          console.error('Failed to start recognition:', error);
+          document.getElementById('orbStatus').textContent = 'Cannot start listening';
+          setTimeout(() => {
+            document.getElementById('orbStatus').textContent = 'Tap the orb to start speaking';
+          }, 2000);
+        }
+      }
+    }
+
+    // ===== TEXT INPUT HANDLING =====
+    function handleTypedInput() {
+      const typedInput = document.getElementById('typedQuestion');
+      const text = typedInput.value.trim();
+      
+      if (text) {
+        handleUserInput(text, 'text');
+        typedInput.value = '';
+        updateAskButton();
+      }
+    }
+
+    function updateAskButton() {
+      const typedInput = document.getElementById('typedQuestion');
+      const askBtn = document.getElementById('askBtn');
+      askBtn.disabled = !typedInput.value.trim();
+    }
+
+    // ===== MAIN INPUT HANDLER =====
+    async function handleUserInput(text, inputType) {
+      if (!text.trim()) return;
+      
+      // Add user message to log
+      addLogMessage(text, 'user', inputType);
+      
+      // Show loading state
+      document.getElementById('orbStatus').textContent = 'Thinking...';
+      state.isSpeaking = true;
+      updateOrbState();
+      
+      try {
+        // Send to backend
+        const response = await sendToBackend(text);
+        const answer = response.choices[0].message.content;
+        
+        // Add AI response to log
+        addLogMessage(answer, 'ai');
+        
+        // Speak the response
+        speakResponse(answer);
+        
+        // Save to history
+        state.conversationHistory.push({
+          role: 'user',
+          content: text,
+          timestamp: new Date().toISOString(),
+          inputType: inputType
+        });
+        
+        state.conversationHistory.push({
+          role: 'assistant',
+          content: answer,
+          timestamp: new Date().toISOString()
+        });
+        
+        saveHistory();
+        
+      } catch (error) {
+        console.error('Error getting response:', error);
+        addLogMessage("Sorry, I encountered an error. Please try again.", 'ai');
+        document.getElementById('orbStatus').textContent = 'Error occurred';
+        state.isSpeaking = false;
+        updateOrbState();
+        
+        setTimeout(() => {
+          document.getElementById('orbStatus').textContent = 'Tap the orb to start speaking';
+        }, 2000);
+      }
+    }
+
+    // ===== BACKEND COMMUNICATION =====
+    async function sendToBackend(message) {
+      // Send ONLY 'message' field (matches your backend /ask endpoint)
+      const response = await fetch('/ask', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          message: message  // Backend expects ONLY 'message'
+        })
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      console.log('Backend response:', data);
+      
+      // Handle different response formats
+      let answer = "";
+      
+      if (data.choices && data.choices[0] && data.choices[0].message) {
+        // Format: {choices: [{message: {content: "..."}}]}
+        answer = data.choices[0].message.content;
+      } else if (data.answer) {
+        // Format: {success: true, answer: "..."}
+        answer = data.answer;
+      } else if (data.choices && data.choices[0] && data.choices[0].text) {
+        // Format: {choices: [{text: "..."}]}
+        answer = data.choices[0].text;
+      } else {
+        answer = "I received your message but couldn't find the answer in the response.";
+      }
+      
+      // Always return in the format frontend expects
+      return { 
+        choices: [{ 
+          message: { 
+            content: answer 
+          } 
+        }] 
+      };
+    }
+
+    // ===== TEXT-TO-SPEECH =====
+    function speakResponse(text) {
+      if (!('speechSynthesis' in window) || !state.bestVoice) {
+        state.isSpeaking = false;
+        updateOrbState();
+        document.getElementById('orbStatus').textContent = 'Tap the orb to start speaking';
+        return;
+      }
+      
+      // Clean text
+      const cleanedText = text.replace(/[#*_`~]/g, '').replace(/\p{Emoji}/gu, '');
+      
+      const utterance = new SpeechSynthesisUtterance(cleanedText);
+      utterance.voice = state.bestVoice;
+      utterance.lang = state.bestVoice.lang || 'en-US';
+      utterance.pitch = 1.0;
+      utterance.rate = 0.95;
+      utterance.volume = 1;
+      
+      utterance.onstart = () => {
+        state.isSpeaking = true;
+        updateOrbState();
+        document.getElementById('orbStatus').textContent = 'Speaking...';
+      };
+      
+      utterance.onend = () => {
+        state.isSpeaking = false;
+        updateOrbState();
+        document.getElementById('orbStatus').textContent = 'Tap the orb to start speaking';
+      };
+      
+      utterance.onerror = (event) => {
+        console.error('Speech synthesis error:', event);
+        state.isSpeaking = false;
+        updateOrbState();
+        document.getElementById('orbStatus').textContent = 'Speech error occurred';
+        
+        setTimeout(() => {
+          document.getElementById('orbStatus').textContent = 'Tap the orb to start speaking';
+        }, 2000);
+      };
+      
+      window.speechSynthesis.speak(utterance);
+    }
+
+    // ===== LOG MANAGEMENT =====
+    function addLogMessage(text, type, inputType = 'text') {
+      const logContent = document.getElementById('log');
+      const placeholder = logContent.querySelector('.log-placeholder');
+      
+      if (placeholder) {
+        placeholder.remove();
+      }
+      
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `log-message ${type}-message`;
+      
+      let prefix = type === 'user' ? '🧑 You' : '🧠 Nelavista';
+      if (type === 'user' && inputType === 'voice') {
+        prefix = '🎤 You (Voice)';
+      }
+      
+      messageDiv.textContent = `${prefix}: ${text}`;
+      logContent.appendChild(messageDiv);
+      
+      // Auto-scroll to bottom
+      setTimeout(() => {
+        logContent.scrollTop = logContent.scrollHeight;
+      }, 100);
+    }
+
+    function loadConversationHistory() {
+      if (state.conversationHistory.length === 0) return;
+      
+      const logContent = document.getElementById('log');
+      const placeholder = logContent.querySelector('.log-placeholder');
+      
+      if (placeholder) {
+        placeholder.remove();
+      }
+      
+      // Show last 5 messages
+      const recentMessages = state.conversationHistory.slice(-5);
+      
+      recentMessages.forEach((msg, index) => {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `log-message ${msg.role}-message`;
+        messageDiv.style.animationDelay = `${index * 0.1}s`;
+        
+        let prefix = msg.role === 'user' ? '🧑 You' : '🧠 Nelavista';
+        if (msg.role === 'user' && msg.inputType === 'voice') {
+          prefix = '🎤 You (Voice)';
+        }
+        
+        messageDiv.textContent = `${prefix}: ${msg.content}`;
+        logContent.appendChild(messageDiv);
+      });
+      
+      // Auto-scroll to bottom
+      setTimeout(() => {
+        logContent.scrollTop = logContent.scrollHeight;
+      }, 300);
+    }
+
+    function clearLog() {
+      if (!confirm('Are you sure you want to clear the conversation log?')) return;
+      
+      state.conversationHistory = [];
+      saveHistory();
+      
+      const logContent = document.getElementById('log');
+      logContent.innerHTML = '<div class="log-placeholder">No conversation yet. Start by speaking or typing a question.</div>';
+    }
+
+    // ===== HISTORY MANAGEMENT =====
+    function saveHistory() {
+      localStorage.setItem('nelavistaVoiceHistory', JSON.stringify(state.conversationHistory));
+    }
+
+    // ===== UTILITY FUNCTIONS =====
+    function goBack() {
+      // Stop any ongoing speech or recognition
+      if (state.isListening && state.recognition) {
+        state.recognition.stop();
+      }
+      if (state.isSpeaking && window.speechSynthesis) {
+        window.speechSynthesis.cancel();
+      }
+      
+      // Smooth page transition
+      document.body.style.opacity = '0';
+      document.body.style.transform = 'translateX(20px)';
+      document.body.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+      
+      setTimeout(() => {
+        window.history.back();
+      }, 300);
+    }
+
+    function downloadChat() {
+      if (state.conversationHistory.length === 0) {
+        alert('No conversation to download.');
+        return;
+      }
+      
+      const chatText = state.conversationHistory.map(entry => {
+        const time = new Date(entry.timestamp).toLocaleTimeString();
+        const who = entry.role === 'user' ? "🧑 You" : "🧠 Nelavista";
+        if (entry.role === 'user' && entry.inputType === 'voice') {
+          who = "🎤 You (Voice)";
+        }
+        return `[${time}] ${who}: ${entry.content}`;
+      }).join('\n\n');
+      
+      const blob = new Blob([chatText], { type: 'text/plain' });
+      const link = document.createElement('a');
+      link.download = `nelavista_conversation_${new Date().toISOString().split('T')[0]}.txt`;
+      link.href = URL.createObjectURL(blob);
+      link.click();
+    }
+
+    function shareConversation() {
+      if (state.conversationHistory.length === 0) {
+        alert('No conversation to share.');
+        return;
+      }
+      
+      const recentMessages = state.conversationHistory.slice(-3);
+      const shareText = recentMessages.map(entry => {
+        const who = entry.role === 'user' ? 'You' : 'Nelavista';
+        return `${who}: ${entry.content}`;
+      }).join('\n\n');
+      
+      const fullText = `My conversation with Nelavista:\n\n${shareText}\n\nTry Nelavista: An AI Educational Companion`;
+      
+      if (navigator.share) {
+        navigator.share({
+          title: 'My Nelavista Conversation',
+          text: fullText,
+          url: window.location.href
+        }).catch(console.error);
+      } else {
+        // Fallback: copy to clipboard
+        navigator.clipboard.writeText(fullText).then(() => {
+          alert('Conversation copied to clipboard!');
+        }).catch(() => {
+          prompt('Copy this text:', fullText);
+        });
+      }
+    }
+
+    function showError(message) {
+      const errorDiv = document.createElement('div');
+      errorDiv.className = 'log-message';
+      errorDiv.style.color = '#ff6b6b';
+      errorDiv.textContent = `⚠️ ${message}`;
+      
+      const logContent = document.getElementById('log');
+      const placeholder = logContent.querySelector('.log-placeholder');
+      
+      if (placeholder) {
+        placeholder.after(errorDiv);
+      } else {
+        logContent.appendChild(errorDiv);
+      }
+    }
+
+    // Handle page visibility changes
+    document.addEventListener('visibilitychange', function() {
+      if (!document.hidden) {
+        // Page became visible again
+        document.body.style.animation = 'none';
+        setTimeout(() => {
+          document.body.style.animation = 'fadeIn 0.6s ease-out forwards';
+        }, 10);
+      } else {
+        // Page became hidden, stop speech/recognition
+        if (state.isListening && state.recognition) {
+          state.recognition.stop();
+        }
+        if (state.isSpeaking && window.speechSynthesis) {
+          window.speechSynthesis.cancel();
+          state.isSpeaking = false;
+          updateOrbState();
+        }
+      }
+    });
+
+    // Save history before page unload
+    window.addEventListener('beforeunload', () => {
+      saveHistory();
+    });
+  </script>
+</body>
+</html>

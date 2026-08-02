@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Live Rooms · Nelavista</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Inter',system-ui,sans-serif; }
+        body { background:#0d1117; color:#e6edf3; }
+        .container { max-width:1000px; margin:0 auto; padding:28px 20px 60px; }
+        h1 { font-size:1.6rem; margin-bottom:6px; }
+        .subtitle { color:#8b949e; font-size:0.9rem; margin-bottom:22px; }
+        .room-card { background:#161b22; border:1px solid #21262d; border-radius:14px; padding:18px; margin-bottom:12px; display:flex; align-items:center; gap:14px; }
+        .live-badge { display:inline-flex; align-items:center; gap:5px; background:rgba(248,113,113,0.15); color:#f87171; font-size:0.68rem; font-weight:700; padding:3px 10px; border-radius:10px; }
+        .live-badge .dot { width:6px; height:6px; border-radius:50%; background:#f87171; animation:pulse 1.5s infinite; }
+        @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
+        .room-body { flex:1; min-width:0; }
+        .room-title { font-weight:700; font-size:0.98rem; margin-bottom:3px; display:flex; align-items:center; gap:8px; }
+        .room-meta { font-size:0.78rem; color:#8b949e; display:flex; gap:10px; flex-wrap:wrap; }
+        .btn-end { border:1px solid #30363d; background:transparent; color:#f87171; padding:8px 16px; border-radius:8px; font-size:0.82rem; font-weight:600; cursor:pointer; flex-shrink:0; }
+        .btn-end:hover { border-color:#f87171; background:rgba(248,113,113,0.08); }
+        .empty { text-align:center; padding:60px 20px; color:#6e7681; }
+    </style>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
+</head>
+<body>
+{% include 'components/admin_nav.html' %}
+<div class="container">
+    <h1>Live Meeting Rooms</h1>
+    <p class="subtitle">Rooms that are currently open (a teacher has joined and not yet ended the session).</p>
+
+    {% if not rooms %}
+    <div class="empty"><div style="font-size:3rem; margin-bottom:10px;">📡</div><div>No open meeting rooms right now</div></div>
+    {% else %}
+    {% for r in rooms %}
+    <div class="room-card" id="room-{{ r.id }}">
+        <div class="room-body">
+            <div class="room-title">
+                Room {{ r.id }} — {{ r.teacher_name or 'Unknown teacher' }}
+                {% if r.is_live %}<span class="live-badge"><span class="dot"></span> STREAMING</span>{% endif %}
+            </div>
+            <div class="room-meta">
+                <span>👥 {{ r.participant_count }} currently connected</span>
+                <span>📅 Created {{ r.created_at.strftime('%b %d, %Y %H:%M') if r.created_at else '—' }}</span>
+                {% if r.started_at %}<span>▶️ Went live {{ r.started_at.strftime('%b %d, %Y %H:%M') }}</span>{% endif %}
+            </div>
+        </div>
+        <button class="btn-end" onclick="endRoom('{{ r.id }}')">Force End</button>
+    </div>
+    {% endfor %}
+    {% endif %}
+</div>
+
+<script>
+async function endRoom(roomId) {
+    if (!confirm('Force-end this session for everyone connected?')) return;
+    try {
+        const res = await fetch(`/admin/live-rooms/${roomId}/end`, { method: 'POST' });
+        const data = await res.json();
+        if (!data.success) { alert(data.error || 'Failed to end room'); return; }
+        document.getElementById(`room-${roomId}`).remove();
+    } catch (e) {
+        alert('Error: ' + e.message);
+    }
+}
+</script>
+</body>
+</html>

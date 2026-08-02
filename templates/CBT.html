@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Nelavista · Mock Exam</title>
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif; }
+        body { background:#0d1117; color:#e6edf3; min-height:100vh; overflow-x:hidden; }
+
+        /* ── TOP BAR ── */
+        .top-bar { display:flex; align-items:center; justify-content:space-between; padding:14px 20px; border-bottom:1px solid #21262d; position:sticky; top:0; background:#0d1117; z-index:100; }
+        .top-left { display:flex; align-items:center; gap:14px; }
+        .menu-btn { background:transparent; border:none; color:#e6edf3; font-size:22px; cursor:pointer; width:38px; height:38px; border-radius:50%; display:flex; align-items:center; justify-content:center; transition:background 0.2s; }
+        .menu-btn:hover { background:#21262d; }
+        .logo-area { display:flex; align-items:baseline; gap:8px; }
+        .logo-text { font-size:1.2rem; font-weight:700; background:linear-gradient(135deg,#e6edf3,#58a6ff); -webkit-background-clip:text; background-clip:text; color:transparent; }
+        .logo-badge { font-size:0.65rem; background:#14b8a6; padding:2px 8px; border-radius:30px; font-weight:600; color:#0d1117; }
+        .top-right { display:flex; align-items:center; gap:10px; }
+        .user-avatar { width:36px; height:36px; background:#21262d; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:0.8rem; color:#58a6ff; border:1px solid #30363d; }
+
+        /* ── SCREENS ── */
+        .screen { display:none; min-height:calc(100vh - 61px); }
+        .screen.active { display:block; }
+
+        /* ── ONBOARDING / COURSE SELECT ── */
+        .onboarding-wrap { max-width:780px; margin:0 auto; padding:32px 20px 80px; }
+        .ob-title { font-size:1.8rem; font-weight:700; margin-bottom:8px; }
+        .ob-sub { color:#8b949e; font-size:0.92rem; margin-bottom:20px; }
+        .dept-pill { display:inline-flex; align-items:center; gap:6px; background:#161b22; border:1px solid #30363d; padding:6px 14px; border-radius:30px; font-size:0.82rem; color:#8b949e; margin-bottom:24px; }
+        .ob-meta { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
+        .section-label { font-size:0.68rem; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:#6e7681; }
+        .sel-all-btn { background:transparent; border:none; color:#58a6ff; font-size:0.82rem; cursor:pointer; }
+        .sel-all-btn:hover { text-decoration:underline; }
+        .courses-grid { display:flex; flex-wrap:wrap; gap:10px; margin-bottom:20px; }
+        .course-chip { background:#161b22; border:2px solid #21262d; border-radius:12px; padding:12px 16px; cursor:pointer; transition:all 0.18s; min-width:150px; flex:1 0 auto; max-width:210px; position:relative; }
+        .course-chip:hover { border-color:#30363d; }
+        .course-chip.selected { background:rgba(20,184,166,0.1); border-color:#14b8a6; }
+        .chip-code { font-weight:700; font-size:0.92rem; display:block; }
+        .chip-name { font-size:0.7rem; color:#8b949e; margin-top:3px; line-height:1.3; }
+        .chip-check { position:absolute; top:8px; right:10px; color:#14b8a6; font-size:13px; font-weight:700; opacity:0; transition:opacity 0.15s; }
+        .course-chip.selected .chip-check { opacity:1; }
+        .sel-count { font-size:0.82rem; color:#8b949e; margin-bottom:18px; }
+        .sel-count span { color:#14b8a6; font-weight:600; }
+        .continue-btn { background:#14b8a6; border:none; padding:14px 28px; border-radius:40px; font-weight:700; font-size:1rem; color:#0d1117; width:100%; cursor:pointer; transition:all 0.2s; }
+        .continue-btn:disabled { opacity:0.35; cursor:not-allowed; }
+        .continue-btn:not(:disabled):hover { background:#0d9488; }
+
+        /* ── EXAM TYPE SELECT ── */
+        .type-screen { max-width:600px; margin:0 auto; padding:40px 20px; }
+        .type-header { text-align:center; margin-bottom:36px; }
+        .type-header h2 { font-size:1.7rem; font-weight:700; margin-bottom:8px; }
+        .type-header p { color:#8b949e; font-size:0.92rem; }
+        .course-display { background:#161b22; border:1px solid #30363d; border-radius:12px; padding:12px 18px; text-align:center; margin-bottom:32px; font-size:0.9rem; color:#8b949e; }
+        .course-display strong { color:#e6edf3; }
+        .type-cards { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:28px; }
+        .type-card { background:#161b22; border:2px solid #21262d; border-radius:18px; padding:28px 20px; cursor:pointer; text-align:center; transition:all 0.2s; }
+        .type-card:hover { border-color:#30363d; transform:translateY(-2px); }
+        .type-card.selected { border-color:#58a6ff; background:rgba(88,166,255,0.06); }
+        .type-icon { font-size:2.4rem; margin-bottom:14px; }
+        .type-title { font-weight:700; font-size:1.1rem; margin-bottom:6px; }
+        .type-desc { font-size:0.78rem; color:#8b949e; line-height:1.5; }
+        .type-badge { display:inline-block; margin-top:10px; font-size:0.65rem; font-weight:700; padding:3px 10px; border-radius:30px; }
+        .badge-cbt { background:rgba(88,166,255,0.15); color:#58a6ff; }
+        .badge-written { background:rgba(20,184,166,0.15); color:#14b8a6; }
+        .back-btn { background:transparent; border:1px solid #30363d; color:#8b949e; padding:10px 24px; border-radius:40px; font-size:0.88rem; cursor:pointer; transition:all 0.2s; margin-right:10px; }
+        .back-btn:hover { border-color:#58a6ff; color:#58a6ff; }
+        .start-exam-btn { background:#58a6ff; border:none; padding:14px 32px; border-radius:40px; font-weight:700; font-size:1rem; color:#0d1117; cursor:pointer; transition:all 0.2s; }
+        .start-exam-btn:disabled { opacity:0.35; cursor:not-allowed; }
+        .start-exam-btn:not(:disabled):hover { background:#4493e8; }
+        .type-actions { display:flex; justify-content:center; gap:10px; flex-wrap:wrap; }
+
+        /* ── EXAM SCREEN ── */
+        .exam-wrap { max-width:820px; margin:0 auto; padding:20px 20px 80px; }
+
+        /* Progress bar */
+        .exam-progress-bar { background:#161b22; border:1px solid #21262d; border-radius:16px; padding:16px 20px; margin-bottom:20px; display:flex; align-items:center; gap:16px; flex-wrap:wrap; }
+        .progress-info { display:flex; gap:16px; flex:1; flex-wrap:wrap; }
+        .prog-stat { font-size:0.78rem; color:#8b949e; }
+        .prog-stat strong { color:#e6edf3; font-size:0.88rem; }
+        .prog-track { flex:1; min-width:120px; height:6px; background:#21262d; border-radius:6px; overflow:hidden; }
+        .prog-fill { height:100%; background:linear-gradient(90deg,#58a6ff,#14b8a6); border-radius:6px; transition:width 0.4s ease; }
+        .timer-badge { display:flex; align-items:center; gap:6px; background:#21262d; padding:6px 14px; border-radius:30px; font-size:0.82rem; font-weight:600; }
+        .timer-badge.warning { background:rgba(249,115,22,0.2); color:#f97316; }
+        .timer-badge.danger { background:rgba(239,68,68,0.2); color:#ef4444; animation:pulse 1s infinite; }
+        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.6} }
+
+        /* CBT nav pills */
+        .cbt-nav { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:20px; }
+        .q-pill { width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.75rem; font-weight:600; cursor:pointer; border:2px solid #21262d; background:#161b22; color:#8b949e; transition:all 0.15s; flex-shrink:0; }
+        .q-pill.current { border-color:#58a6ff; color:#58a6ff; }
+        .q-pill.answered { background:#14b8a6; border-color:#14b8a6; color:#0d1117; }
+        .q-pill.flagged { border-color:#f97316; color:#f97316; }
+
+        /* Question card */
+        .question-card { background:#161b22; border:1px solid #21262d; border-radius:18px; padding:28px; margin-bottom:16px; }
+        .q-header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:18px; gap:12px; }
+        .q-number { font-size:0.72rem; font-weight:700; text-transform:uppercase; letter-spacing:0.8px; color:#8b949e; }
+        .q-course-tag { font-size:0.7rem; background:rgba(88,166,255,0.1); color:#58a6ff; padding:3px 10px; border-radius:30px; white-space:nowrap; }
+        .q-text { font-size:1.05rem; font-weight:500; line-height:1.65; color:#e6edf3; margin-bottom:22px; }
+
+        /* CBT options */
+        .options-list { display:flex; flex-direction:column; gap:10px; }
+        .option-btn { display:flex; align-items:flex-start; gap:14px; background:#0d1117; border:2px solid #21262d; border-radius:12px; padding:14px 16px; cursor:pointer; text-align:left; transition:all 0.18s; width:100%; }
+        .option-btn:hover:not(:disabled) { border-color:#30363d; background:#161b22; }
+        .option-btn.selected { border-color:#58a6ff; background:rgba(88,166,255,0.08); }
+        .option-btn.correct { border-color:#22c55e; background:rgba(34,197,94,0.1); }
+        .option-btn.wrong { border-color:#ef4444; background:rgba(239,68,68,0.1); }
+        .opt-letter { width:28px; height:28px; border-radius:50%; background:#21262d; display:flex; align-items:center; justify-content:center; font-size:0.75rem; font-weight:700; flex-shrink:0; color:#8b949e; }
+        .option-btn.selected .opt-letter { background:#58a6ff; color:#0d1117; }
+        .option-btn.correct .opt-letter { background:#22c55e; color:#0d1117; }
+        .option-btn.wrong .opt-letter { background:#ef4444; color:#fff; }
+        .opt-text { font-size:0.92rem; color:#c9d1d9; line-height:1.5; padding-top:3px; }
+
+        /* Written answer */
+        .written-answer-wrap { margin-top:6px; }
+        .written-answer { width:100%; background:#0d1117; border:2px solid #21262d; border-radius:12px; padding:16px; color:#e6edf3; font-size:0.95rem; line-height:1.6; resize:vertical; min-height:140px; outline:none; transition:border 0.2s; font-family:inherit; }
+        .written-answer:focus { border-color:#58a6ff; }
+        .written-answer::placeholder { color:#6e7681; }
+        .mark-scheme { background:rgba(34,197,94,0.06); border:1px solid rgba(34,197,94,0.2); border-radius:12px; padding:16px; margin-top:14px; display:none; }
+        .mark-scheme.show { display:block; }
+        .mark-scheme-title { font-size:0.75rem; font-weight:700; color:#22c55e; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:8px; }
+        .mark-scheme-text { font-size:0.88rem; color:#c9d1d9; line-height:1.6; }
+        .self-mark-row { display:flex; gap:10px; margin-top:12px; flex-wrap:wrap; }
+        .self-mark-btn { flex:1; padding:10px; border-radius:10px; border:none; font-size:0.82rem; font-weight:600; cursor:pointer; transition:all 0.2s; min-width:100px; }
+        .self-mark-btn.got-it { background:rgba(34,197,94,0.15); color:#22c55e; border:1px solid rgba(34,197,94,0.3); }
+        .self-mark-btn.got-it:hover { background:rgba(34,197,94,0.25); }
+        .self-mark-btn.got-it.active { background:#22c55e; color:#0d1117; }
+        .self-mark-btn.partial { background:rgba(251,191,36,0.15); color:#fbbf24; border:1px solid rgba(251,191,36,0.3); }
+        .self-mark-btn.partial:hover { background:rgba(251,191,36,0.25); }
+        .self-mark-btn.partial.active { background:#fbbf24; color:#0d1117; }
+        .self-mark-btn.missed { background:rgba(239,68,68,0.15); color:#ef4444; border:1px solid rgba(239,68,68,0.3); }
+        .self-mark-btn.missed:hover { background:rgba(239,68,68,0.25); }
+        .self-mark-btn.missed.active { background:#ef4444; color:#fff; }
+
+        /* Exam actions */
+        .exam-actions { display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; margin-top:10px; }
+        .flag-btn { background:transparent; border:1px solid #30363d; color:#8b949e; padding:9px 18px; border-radius:30px; font-size:0.82rem; cursor:pointer; transition:all 0.2s; display:flex; align-items:center; gap:6px; }
+        .flag-btn:hover { border-color:#f97316; color:#f97316; }
+        .flag-btn.flagged { border-color:#f97316; color:#f97316; background:rgba(249,115,22,0.08); }
+        .nav-row { display:flex; gap:8px; }
+        .prev-btn, .next-btn { padding:10px 22px; border-radius:30px; font-size:0.88rem; font-weight:600; cursor:pointer; transition:all 0.2s; border:none; }
+        .prev-btn { background:#21262d; color:#e6edf3; }
+        .prev-btn:hover { background:#30363d; }
+        .next-btn { background:#58a6ff; color:#0d1117; }
+        .next-btn:hover { background:#4493e8; }
+        .next-btn:disabled { opacity:0.4; cursor:not-allowed; }
+        .submit-btn { background:#14b8a6; border:none; padding:10px 24px; border-radius:30px; font-size:0.88rem; font-weight:700; color:#0d1117; cursor:pointer; transition:all 0.2s; }
+        .submit-btn:hover { background:#0d9488; }
+
+        /* Written check answer */
+        .check-answer-btn { background:#21262d; border:none; padding:10px 20px; border-radius:30px; font-size:0.85rem; font-weight:600; color:#e6edf3; cursor:pointer; transition:all 0.2s; margin-top:12px; display:flex; align-items:center; gap:6px; }
+        .check-answer-btn:hover { background:#30363d; }
+
+        /* ── RESULTS SCREEN ── */
+        .results-wrap { max-width:700px; margin:0 auto; padding:30px 20px 80px; }
+        .results-hero { background:linear-gradient(135deg,#161b22,#0d1117); border:1px solid #21262d; border-radius:20px; padding:32px; text-align:center; margin-bottom:24px; }
+        .results-emoji { font-size:3rem; margin-bottom:12px; }
+        .results-title { font-size:1.6rem; font-weight:700; margin-bottom:6px; }
+        .results-sub { color:#8b949e; font-size:0.9rem; }
+        .score-ring { width:110px; height:110px; margin:20px auto; position:relative; }
+        .score-ring svg { transform:rotate(-90deg); }
+        .score-ring circle { fill:none; stroke-width:8; }
+        .ring-bg { stroke:#21262d; }
+        .ring-fill { stroke:#14b8a6; stroke-linecap:round; transition:stroke-dashoffset 1s ease; }
+        .score-text { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+        .score-pct { font-size:1.5rem; font-weight:700; }
+        .score-label { font-size:0.65rem; color:#8b949e; }
+        .stats-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:24px; }
+        .stat-box { background:#161b22; border:1px solid #21262d; border-radius:14px; padding:18px; text-align:center; }
+        .stat-num { font-size:1.6rem; font-weight:700; margin-bottom:4px; }
+        .stat-lbl { font-size:0.72rem; color:#8b949e; }
+        .stat-box.correct-box .stat-num { color:#22c55e; }
+        .stat-box.wrong-box .stat-num { color:#ef4444; }
+        .stat-box.partial-box .stat-num { color:#fbbf24; }
+
+        /* Review section */
+        .review-toggle { background:#161b22; border:1px solid #21262d; border-radius:14px; padding:14px 20px; cursor:pointer; display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
+        .review-toggle:hover { border-color:#30363d; }
+        .review-toggle span:first-child { font-weight:600; font-size:0.92rem; }
+        .review-body { display:none; }
+        .review-body.open { display:block; }
+        .review-item { background:#161b22; border:1px solid #21262d; border-radius:14px; padding:18px; margin-bottom:10px; }
+        .review-item.ri-correct { border-left:3px solid #22c55e; }
+        .review-item.ri-wrong { border-left:3px solid #ef4444; }
+        .review-item.ri-partial { border-left:3px solid #fbbf24; }
+        .review-item.ri-skipped { border-left:3px solid #6e7681; }
+        .ri-q { font-size:0.88rem; font-weight:500; margin-bottom:10px; line-height:1.5; }
+        .ri-answer { font-size:0.8rem; padding:6px 10px; border-radius:8px; margin-bottom:6px; }
+        .ri-answer.your-ans { background:rgba(88,166,255,0.08); color:#58a6ff; }
+        .ri-answer.correct-ans { background:rgba(34,197,94,0.08); color:#22c55e; }
+        .ri-answer.written-ans { background:rgba(88,166,255,0.05); color:#c9d1d9; border:1px solid #21262d; }
+        .ri-status-chip { font-size:0.65rem; font-weight:700; padding:3px 10px; border-radius:30px; display:inline-block; margin-bottom:8px; }
+
+        /* Results actions */
+        .results-actions { display:flex; flex-direction:column; gap:10px; }
+        .try-again-btn { background:#58a6ff; border:none; padding:14px; border-radius:40px; font-weight:700; font-size:1rem; color:#0d1117; cursor:pointer; transition:all 0.2s; }
+        .try-again-btn:hover { background:#4493e8; }
+        .change-course-btn { background:transparent; border:1px solid #30363d; color:#8b949e; padding:12px; border-radius:40px; font-size:0.9rem; cursor:pointer; transition:all 0.2s; }
+        .change-course-btn:hover { border-color:#58a6ff; color:#58a6ff; }
+
+        /* No profile warning */
+        .no-profile-warning { background:rgba(249,115,22,0.1); border:1px solid rgba(249,115,22,0.3); border-radius:14px; padding:16px 20px; margin-bottom:20px; font-size:0.88rem; color:#f97316; display:flex; gap:10px; align-items:flex-start; }
+
+        @media(max-width:600px) {
+            .type-cards { grid-template-columns:1fr; }
+            .stats-grid { grid-template-columns:repeat(3,1fr); gap:8px; }
+            .stat-num { font-size:1.3rem; }
+            .exam-actions { flex-direction:column; align-items:stretch; }
+            .nav-row { justify-content:space-between; }
+            .course-chip { min-width:130px; max-width:none; flex:1 0 130px; }
+            .q-pill { width:32px; height:32px; font-size:0.7rem; }
+        }
+    </style>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="top-bar">
+    <div class="top-left">
+        <button class="menu-btn" onclick="window.location.href='/dashboard'">☰</button>
+        <div class="logo-area">
+            <span class="logo-text">Mock Exam</span>
+            <span class="logo-badge">Nelavista</span>
+        </div>
+    </div>
+    <div class="top-right">
+        <div class="user-avatar" id="userAvatar">{{ user_name[:2].upper() if user_name else 'SN' }}</div>
+    </div>
+</div>
+
+<!-- SCREEN 1: COURSE SELECTION -->
+<div class="screen active" id="screen-courses">
+    <div class="onboarding-wrap">
+        <h2 class="ob-title">🎓 Mock Exam</h2>
+        <p class="ob-sub">Select your courses to start practising.</p>
+        <div class="dept-pill">🎓 <span id="deptLabel">Loading profile...</span></div>
+        <div id="noCourseWarning" class="no-profile-warning" style="display:none;"></div>
+        <div class="ob-meta">
+            <div class="section-label">Your courses this semester</div>
+            <button class="sel-all-btn" id="selAllBtn">Select All</button>
+        </div>
+        <div class="courses-grid" id="coursesGrid"></div>
+        <div class="sel-count"><span id="selCountNum">0</span> courses selected</div>
+        <button class="continue-btn" id="toCourseTypeBtn" disabled>Continue to Exam →</button>
+    </div>
+</div>
+
+<!-- SCREEN 2: EXAM TYPE SELECT -->
+<div class="screen" id="screen-type">
+    <div class="type-screen">
+        <div class="type-header">
+            <h2>Choose Exam Type</h2>
+            <p>Pick how you want to practice today</p>
+        </div>
+        <div class="course-display" id="selectedCourseDisplay">
+            Selected: <strong id="selectedCourseName">—</strong>
+        </div>
+        <div class="type-cards">
+            <div class="type-card" id="card-cbt" onclick="selectExamType('cbt')">
+                <div class="type-icon">🖥️</div>
+                <div class="type-title">CBT Practice</div>
+                <div class="type-desc">50 multiple choice questions. Answers rotate every session so you get fresh questions each time.</div>
+                <span class="type-badge badge-cbt">50 Questions · MCQ</span>
+            </div>
+            <div class="type-card" id="card-written" onclick="selectExamType('written')">
+                <div class="type-icon">✍️</div>
+                <div class="type-title">Written Practice</div>
+                <div class="type-desc">10 essay or short-answer questions. Write your answers and compare with the mark scheme.</div>
+                <span class="type-badge badge-written">10 Questions · Essay</span>
+            </div>
+        </div>
+        <div class="type-actions">
+            <button class="back-btn" onclick="goToScreen('screen-courses')">← Back</button>
+            <button class="start-exam-btn" id="startExamBtn" disabled onclick="startExam()">Start Exam →</button>
+        </div>
+    </div>
+</div>
+
+<!-- SCREEN 3: EXAM -->
+<div class="screen" id="screen-exam">
+    <div class="exam-wrap">
+        <div class="exam-progress-bar">
+            <div class="progress-info">
+                <div class="prog-stat">Question <strong id="progCurrent">1</strong> / <strong id="progTotal">50</strong></div>
+                <div class="prog-stat">Answered <strong id="progAnswered">0</strong></div>
+                <div class="prog-stat" id="progFlaggedWrap" style="display:none">Flagged <strong id="progFlagged">0</strong></div>
+            </div>
+            <div class="prog-track"><div class="prog-fill" id="progFill"></div></div>
+            <div class="timer-badge" id="timerBadge">⏱ <span id="timerText">00:00</span></div>
+        </div>
+        <div class="cbt-nav" id="cbtNav" style="display:none"></div>
+        <div class="question-card" id="questionCard">
+            <div class="q-header">
+                <span class="q-number" id="qNumber">Question 1</span>
+                <span class="q-course-tag" id="qCourseTag">—</span>
+            </div>
+            <div class="q-text" id="qText">Loading…</div>
+            <div id="optionsArea"></div>
+        </div>
+        <div class="exam-actions">
+            <button class="flag-btn" id="flagBtn" onclick="toggleFlag()">🚩 Flag Question</button>
+            <div class="nav-row">
+                <button class="prev-btn" id="prevBtn" onclick="navigate(-1)">← Prev</button>
+                <button class="next-btn" id="nextBtn" onclick="navigate(1)">Next →</button>
+                <button class="submit-btn" id="submitBtn" onclick="confirmSubmit()" style="display:none">Submit ✓</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SCREEN 4: RESULTS -->
+<div class="screen" id="screen-results">
+    <div class="results-wrap">
+        <div class="results-hero">
+            <div class="results-emoji" id="resultsEmoji">🎉</div>
+            <div class="results-title" id="resultsTitle">Exam Complete!</div>
+            <div class="results-sub" id="resultsSub">Here's how you did</div>
+            <div class="score-ring">
+                <svg width="110" height="110" viewBox="0 0 110 110">
+                    <circle class="ring-bg" cx="55" cy="55" r="46"/>
+                    <circle class="ring-fill" id="ringFill" cx="55" cy="55" r="46" stroke-dasharray="289" stroke-dashoffset="289"/>
+                </svg>
+                <div class="score-text">
+                    <span class="score-pct" id="scorePct">0%</span>
+                    <span class="score-label">SCORE</span>
+                </div>
+            </div>
+        </div>
+        <div class="stats-grid" id="statsGrid">
+            <div class="stat-box correct-box">
+                <div class="stat-num" id="statCorrect">0</div>
+                <div class="stat-lbl">Correct</div>
+            </div>
+            <div class="stat-box wrong-box">
+                <div class="stat-num" id="statWrong">0</div>
+                <div class="stat-lbl">Wrong</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-num" id="statTime">0s</div>
+                <div class="stat-lbl">Time Taken</div>
+            </div>
+        </div>
+        <div class="review-toggle" onclick="toggleReview()">
+            <span>📋 Review Answers</span>
+            <span id="reviewArrow">▼</span>
+        </div>
+        <div class="review-body" id="reviewBody"></div>
+        <div class="results-actions" style="margin-top:20px;">
+            <button class="try-again-btn" onclick="tryAgain()">🔄 Try Again (New Questions)</button>
+            <button class="change-course-btn" onclick="goToScreen('screen-courses')">📚 Change Course</button>
+        </div>
+    </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════
+//  GET USER PROFILE FROM BACKEND
+// ══════════════════════════════════════════════════════
+// User data passed from Flask
+let USER_DEPT = "{{ user_dept }}";
+let USER_LEVEL = "{{ user_level }}";
+let USER_NAME = "{{ user_name }}";
+let USER_LEVEL_NUM = USER_LEVEL.replace(/[^0-9]/g, '') || '';
+
+// ══════════════════════════════════════════════════════
+//  COMPLETE COURSE CODES DATABASE
+// ══════════════════════════════════════════════════════
+const COURSE_CODES_DB = {
+    "Mathematics": {
+        "100": [
+            {code:"MTH101",name:"Elementary Mathematics I"}, {code:"MTH102",name:"Elementary Mathematics II"},
+            {code:"MTH103",name:"Elementary Mathematics III"}, {code:"STA112",name:"Probability I"},
+            {code:"PHY101",name:"General Physics I"}, {code:"PHY102",name:"General Physics II"},
+            {code:"CSC101",name:"Introduction to Computer Science"}, {code:"GST111",name:"Communication in English I"}
+        ],
+        "200": [
+            {code:"MTH201",name:"Mathematical Methods I"}, {code:"MTH202",name:"Elementary Differential Equations"},
+            {code:"MTH203",name:"Sets Logic & Algebra I"}, {code:"MTH204",name:"Linear Algebra I"},
+            {code:"MTH205",name:"Linear Algebra II"}, {code:"MTH207",name:"Real Analysis I"},
+            {code:"MTH209",name:"Introduction to Numerical Analysis"}, {code:"CSC201",name:"Computer Programming I"}
+        ],
+        "300": [
+            {code:"MTH300",name:"Abstract Algebra I"}, {code:"MTH301",name:"Metric Space Topology"},
+            {code:"MTH302",name:"Ordinary Differential Equations"}, {code:"MTH304",name:"Complex Analysis I"},
+            {code:"MTH306",name:"Abstract Algebra II"}, {code:"MTH319",name:"Numerical Analysis I"}
+        ],
+        "400": [
+            {code:"MTH401",name:"Theory of Ordinary Differential Equations"}, {code:"MTH403",name:"Functional Analysis"},
+            {code:"MTH404",name:"Project"}, {code:"MTH418",name:"Advanced Algebra"}
+        ]
+    },
+    "Biochemistry": {
+        "100": [
+            {code:"BCH101",name:"General Biochemistry I"}, {code:"BCH102",name:"General Biochemistry II"},
+            {code:"CHM101",name:"General Chemistry I"}, {code:"CHM102",name:"General Chemistry II"},
+            {code:"PHY101",name:"General Physics I"}, {code:"PHY102",name:"General Physics II"},
+            {code:"BIO101",name:"Basic Biology I"}, {code:"BIO102",name:"Basic Biology II"},
+            {code:"MTH101",name:"General Mathematics I"}, {code:"MTH102",name:"General Mathematics II"}
+        ],
+        "200": [
+            {code:"BCH201",name:"General Biochemistry I"}, {code:"BCH203",name:"Metabolism of Carbohydrates"},
+            {code:"MCB201",name:"General Microbiology I"}, {code:"CHM205",name:"Physical Chemistry I"}
+        ],
+        "300": [
+            {code:"BCH301",name:"Enzymology"}, {code:"BCH303",name:"Metabolism of Lipids"},
+            {code:"BCH305",name:"Metabolism of Nucleic Acids"}
+        ],
+        "400": [
+            {code:"BCH401",name:"Advanced Enzymology"}, {code:"BCH405",name:"Biotechnology"}
+        ]
+    },
+    "Computer Science": {
+        "100": [
+            {code:"CSC101",name:"Introduction to Computer Science"}, {code:"CSC111",name:"Computer Programming I"},
+            {code:"MTH101",name:"Elementary Mathematics I"}, {code:"PHY101",name:"General Physics I"},
+            {code:"CHM101",name:"General Chemistry I"}, {code:"GST111",name:"Communication in English I"}
+        ],
+        "200": [
+            {code:"CSC201",name:"Computer Programming II"}, {code:"CSC203",name:"Data Structures"},
+            {code:"CSC205",name:"Operating Systems"}, {code:"CSC207",name:"Computer Architecture"}
+        ],
+        "300": [
+            {code:"CSC301",name:"Algorithm Analysis"}, {code:"CSC303",name:"Database Systems"},
+            {code:"CSC305",name:"Software Engineering"}
+        ],
+        "400": [
+            {code:"CSC401",name:"Artificial Intelligence"}, {code:"CSC403",name:"Machine Learning"},
+            {code:"CSC499",name:"Project"}
+        ]
+    },
+    "Physics": {
+        "100": [
+            {code:"PHY101",name:"General Physics I"}, {code:"PHY102",name:"General Physics II"},
+            {code:"MTH101",name:"Elementary Maths I"}, {code:"CHM101",name:"General Chemistry I"}
+        ],
+        "200": [{code:"PHY201",name:"Electricity & Magnetism I"}, {code:"PHY203",name:"Waves & Optics"}],
+        "300": [{code:"PHY301",name:"Quantum Mechanics I"}, {code:"PHY303",name:"Statistical Mechanics"}],
+        "400": [{code:"PHY401",name:"Advanced Quantum Mechanics"}, {code:"PHY404",name:"Research Project"}]
+    },
+    "Chemistry": {
+        "100": [
+            {code:"CHM101",name:"General Chemistry I"}, {code:"CHM102",name:"General Chemistry II"},
+            {code:"PHY101",name:"General Physics I"}, {code:"MTH101",name:"Elementary Maths I"}
+        ],
+        "200": [{code:"CHM201",name:"Physical Chemistry I"}, {code:"CHM203",name:"Inorganic Chemistry"}],
+        "300": [{code:"CHM301",name:"Physical Chemistry II"}, {code:"CHM303",name:"Organic Chemistry"}],
+        "400": [{code:"CHM401",name:"Advanced Physical Chem"}, {code:"CHM404",name:"Research Project"}]
+    },
+    "Microbiology": {
+        "100": [{code:"MCB101",name:"Intro to Microbiology"}, {code:"BIO101",name:"General Biology I"}, {code:"CHM101",name:"General Chemistry I"}],
+        "200": [{code:"MCB201",name:"General Microbiology"}, {code:"MCB203",name:"Immunology"}],
+        "300": [{code:"MCB301",name:"Bacteriology"}, {code:"MCB303",name:"Virology"}],
+        "400": [{code:"MCB401",name:"Advanced Microbial Genetics"}, {code:"MCB404",name:"Research Project"}]
+    }
+};
+
+// ══════════════════════════════════════════════════════
+//  QUESTION BANK GENERATOR
+// ══════════════════════════════════════════════════════
+function generateFullQuestionBank() {
+    const bank = {};
+    
+    const createCbtSet = (code) => {
+        let arr = [];
+        const subject = code.match(/[A-Z]+/)[0];
+        
+        const templates = {
+            'MTH': [
+                {q:"Solve: 2x + 5 = 13", o:["3","4","5","6"], a:1, e:"2x = 8 => x = 4."},
+                {q:"What is log₂(8)?", o:["2","3","4","8"], a:1, e:"log₂(2³) = 3."},
+                {q:"Derivative of x³?", o:["x²","2x²","3x²","3x³"], a:2, e:"d/dx(xⁿ)=nxⁿ⁻¹ => 3x²."},
+                {q:"∫2x dx = ?", o:["x","x²+C","2x²","2+C"], a:1, e:"∫2x dx = x² + C."},
+                {q:"5! = ?", o:["25","60","120","720"], a:2, e:"5*4*3*2*1 = 120."}
+            ],
+            'BCH': [
+                {q:"What is the monomer of proteins?", o:["Nucleotides","Amino acids","Monosaccharides","Fatty acids"], a:1, e:"Amino acids link to form proteins."},
+                {q:"Which enzyme breaks down starch?", o:["Pepsin","Amylase","Lipase","Trypsin"], a:1, e:"Amylase hydrolyzes starch."},
+                {q:"Where does glycolysis occur?", o:["Mitochondria","Nucleus","Cytoplasm","Ribosome"], a:2, e:"Glycolysis occurs in cytoplasm."}
+            ],
+            'CSC': [
+                {q:"CPU stands for?", o:["Central Processing Unit","Computer Personal Unit","Central Program Utility","Core Process Unit"], a:0, e:"Central Processing Unit."},
+                {q:"Binary of 10?", o:["1001","1010","1100","1110"], a:1, e:"8+2 = 1010."},
+                {q:"RAM stands for?", o:["Read Access Memory","Random Access Memory","Read And Modify","Rapid Access Module"], a:1, e:"Random Access Memory."}
+            ],
+            'PHY': [
+                {q:"Newton's 2nd Law?", o:["F=ma","F=mv","F=½mv²","F=mg"], a:0, e:"Force = mass × acceleration."},
+                {q:"Speed of light?", o:["3×10⁸ m/s","3×10⁶ m/s","3×10¹⁰ m/s","300 km/s"], a:0, e:"c = 3×10⁸ m/s."}
+            ],
+            'CHM': [
+                {q:"Atomic number of Carbon?", o:["4","6","8","12"], a:1, e:"Carbon has 6 protons."},
+                {q:"What type of bond forms NaCl?", o:["Covalent","Ionic","Metallic","Hydrogen"], a:1, e:"Na donates electron to Cl."}
+            ],
+            'MCB': [
+                {q:"Which is a prokaryote?", o:["Yeast","Bacteria","Algae","Protozoa"], a:1, e:"Bacteria lack nucleus."},
+                {q:"Gram staining differentiates based on:", o:["Cell wall thickness","DNA content","Flagella","Spores"], a:0, e:"Gram-positive has thick peptidoglycan."}
+            ]
+        };
+        
+        const baseTemplates = templates[subject] || templates['MTH'];
+        for(let i=0; i<50; i++) {
+            const t = baseTemplates[i % baseTemplates.length];
+            let qText = t.q;
+            if(i >= baseTemplates.length) {
+                qText = `${t.q} (Variant ${Math.floor(i/baseTemplates.length)+1})`;
+            }
+            arr.push({q: qText, opts: [...t.o], ans: t.a, exp: t.e});
+        }
+        return arr;
+    };
+
+    const createWrittenSet = (code) => {
+        const arr = [];
+        const subject = code.match(/[A-Z]+/)[0];
+        const writtenBase = {
+            'MTH': [{q:"Prove sum of first n natural numbers is n(n+1)/2 using induction.", ms:"Base n=1: 1=1(2)/2 ✓. Assume true for k. Sum for k+1 = k(k+1)/2 + (k+1) = (k+1)(k+2)/2 ✓."}],
+            'BCH': [{q:"Describe the fluid mosaic model of membrane structure.", ms:"Phospholipid bilayer with embedded proteins. Hydrophobic tails inward, hydrophilic heads outward. Fluid nature allows movement."}],
+            'CSC': [{q:"Describe Von Neumann architecture.", ms:"CPU (ALU, CU), Memory (stores data & instructions), I/O. Fetch-Decode-Execute cycle."}],
+            'PHY': [{q:"State Newton's three laws of motion with examples.", ms:"1st: Inertia (car braking). 2nd: F=ma (pushing cart). 3rd: Action/Reaction (rocket propulsion)."}],
+            'CHM': [{q:"Explain atomic structure including subatomic particles.", ms:"Atom has nucleus (protons + neutrons) and electrons in shells. Proton: +1, mass 1 amu. Neutron: 0, mass 1 amu. Electron: -1, negligible mass."}],
+            'MCB': [{q:"Explain the Gram staining procedure and its significance.", ms:"Crystal violet → Iodine → Alcohol decolorization → Safranin. Gram+ purple, Gram- pink."}]
+        };
+        const base = writtenBase[subject] || writtenBase['MTH'];
+        for(let i=0; i<10; i++) {
+            const t = base[i % base.length];
+            arr.push({q: i < base.length ? t.q : `${t.q} (Practice variant ${i+1})`, ms: t.ms});
+        }
+        return arr;
+    };
+
+    Object.keys(COURSE_CODES_DB).forEach(dept => {
+        Object.keys(COURSE_CODES_DB[dept]).forEach(level => {
+            COURSE_CODES_DB[dept][level].forEach(c => {
+                bank[`${c.code}_cbt`] = createCbtSet(c.code);
+                bank[`${c.code}_written`] = createWrittenSet(c.code);
+            });
+        });
+    });
+    
+    return bank;
+}
+
+const QUESTION_BANK = generateFullQuestionBank();
+
+// ══════════════════════════════════════════════════════
+//  STATE MANAGEMENT
+// ══════════════════════════════════════════════════════
+let selectedCourses = [];
+let selectedCourseForExam = null;
+let examType = null;
+let questions = [];
+let currentQ = 0;
+let userAnswers = {};
+let userMarks = {};
+let flagged = [];
+let timerInterval = null;
+let elapsedSeconds = 0;
+
+function getCbtHistoryKey(code) { return `nela_cbt_hist_${code}`; }
+
+// ══════════════════════════════════════════════════════
+//  HELPER FUNCTIONS
+// ══════════════════════════════════════════════════════
+function goToScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    window.scrollTo(0,0);
+}
+
+function shuffle(arr) {
+    const a = [...arr];
+    for (let i=a.length-1;i>0;i--){
+        const j=Math.floor(Math.random()*(i+1));
+        [a[i],a[j]]=[a[j],a[i]];
+    }
+    return a;
+}
+
+// ══════════════════════════════════════════════════════
+//  SCREEN 1 - COURSE SELECTION
+// ══════════════════════════════════════════════════════
+function initCourseSelect() {
+    const deptLabel = document.getElementById('deptLabel');
+    const grid = document.getElementById('coursesGrid');
+    const warning = document.getElementById('noCourseWarning');
+
+    if (!USER_DEPT || !USER_LEVEL_NUM) {
+        warning.style.display = 'flex';
+        warning.innerHTML = `⚠️ Your academic profile is incomplete. <a href="/profile" style="color:#f97316;text-decoration:underline;margin-left:4px;">Complete your profile →</a>`;
+        deptLabel.textContent = 'Profile incomplete';
+        return;
+    }
+
+    deptLabel.textContent = `${USER_DEPT} · Level ${USER_LEVEL_NUM}`;
+
+    const list = (COURSE_CODES_DB[USER_DEPT]||{})[USER_LEVEL_NUM] || [];
+
+    if (!list.length) {
+        warning.style.display = 'flex';
+        warning.innerHTML = `⚠️ No course codes found for ${USER_DEPT} Level ${USER_LEVEL_NUM}. <a href="/profile" style="color:#f97316;text-decoration:underline;margin-left:4px;">Update profile →</a>`;
+        return;
+    }
+
+    grid.innerHTML = '';
+    list.forEach(c => {
+        const chip = document.createElement('div');
+        chip.className = 'course-chip';
+        chip.innerHTML = `<span class="chip-code">${c.code}</span><span class="chip-name">${c.name}</span><span class="chip-check">✓</span>`;
+        chip.addEventListener('click', () => {
+            chip.classList.toggle('selected');
+            if (chip.classList.contains('selected')) { 
+                if(!selectedCourses.includes(c.code)) selectedCourses.push(c.code); 
+            } else { 
+                selectedCourses = selectedCourses.filter(x=>x!==c.code); 
+            }
+            updateSelCount();
+        });
+        grid.appendChild(chip);
+    });
+
+    updateSelCount();
+
+    let allSel = false;
+    document.getElementById('selAllBtn').addEventListener('click', () => {
+        allSel = !allSel;
+        document.querySelectorAll('.course-chip').forEach((chip,i) => {
+            if(allSel){ 
+                chip.classList.add('selected'); 
+                if(!selectedCourses.includes(list[i].code)) selectedCourses.push(list[i].code); 
+            } else { 
+                chip.classList.remove('selected'); 
+                selectedCourses=[]; 
+            }
+        });
+        document.getElementById('selAllBtn').textContent = allSel ? 'Deselect All' : 'Select All';
+        updateSelCount();
+    });
+
+    document.getElementById('toCourseTypeBtn').addEventListener('click', () => {
+        if(!selectedCourses.length) return;
+        showExamTypeSelect();
+    });
+}
+
+function updateSelCount() {
+    document.getElementById('selCountNum').textContent = selectedCourses.length;
+    document.getElementById('toCourseTypeBtn').disabled = selectedCourses.length === 0;
+}
+
+// ══════════════════════════════════════════════════════
+//  SCREEN 2 - EXAM TYPE SELECT
+// ══════════════════════════════════════════════════════
+function showExamTypeSelect() {
+    goToScreen('screen-type');
+    examType = null;
+    selectedCourseForExam = selectedCourses[0];
+    updateCourseDisplay();
+    document.getElementById('startExamBtn').disabled = true;
+}
+
+function updateCourseDisplay() {
+    const display = document.getElementById('selectedCourseDisplay');
+    display.innerHTML = `Practising: <strong>${selectedCourseForExam}</strong>`;
+}
+
+window.pickCourse = function(code) {
+    selectedCourseForExam = code;
+    updateCourseDisplay();
+};
+
+function selectExamType(type) {
+    examType = type;
+    document.getElementById('card-cbt').classList.toggle('selected', type==='cbt');
+    document.getElementById('card-written').classList.toggle('selected', type==='written');
+    document.getElementById('startExamBtn').disabled = false;
+}
+
+// ══════════════════════════════════════════════════════
+//  SCREEN 3 - EXAM
+// ══════════════════════════════════════════════════════
+function startExam() {
+    if (!examType || !selectedCourseForExam) return;
+    goToScreen('screen-exam');
+    resetExamState();
+    buildQuestions();
+    renderExamUI();
+    startTimer();
+}
+
+function resetExamState() {
+    currentQ = 0;
+    userAnswers = {};
+    userMarks = {};
+    flagged = [];
+    elapsedSeconds = 0;
+    if(timerInterval) clearInterval(timerInterval);
+}
+
+function buildQuestions() {
+    const code = selectedCourseForExam;
+    const bankKey = `${code}_${examType}`;
+    const bank = QUESTION_BANK[bankKey];
+
+    if (!bank || !bank.length) {
+        questions = [{q:`No questions available for ${code}`, opts:["OK"], ans:0, exp:"", type:'cbt'}];
+        return;
+    }
+
+    if (examType === 'cbt') {
+        questions = shuffle([...bank]).slice(0, 50).map(q => ({...q, type:'cbt'}));
+    } else {
+        questions = shuffle([...bank]).slice(0,10).map(q=>({...q, type:'written'}));
+    }
+}
+
+function renderExamUI() {
+    const total = questions.length;
+    document.getElementById('progTotal').textContent = total;
+    document.getElementById('progAnswered').textContent = 0;
+
+    if (examType === 'cbt') {
+        buildCbtNav(total);
+        document.getElementById('cbtNav').style.display = 'flex';
+        document.getElementById('progFlaggedWrap').style.display = '';
+    } else {
+        document.getElementById('cbtNav').style.display = 'none';
+    }
+
+    renderQuestion(0);
+}
+
+function buildCbtNav(total) {
+    const nav = document.getElementById('cbtNav');
+    nav.innerHTML = '';
+    for(let i=0;i<total;i++){
+        const pill = document.createElement('div');
+        pill.className = 'q-pill' + (i===0?' current':'');
+        pill.textContent = i+1;
+        pill.id = `qpill-${i}`;
+        pill.addEventListener('click', ()=>{ if(examType==='cbt') jumpTo(i); });
+        nav.appendChild(pill);
+    }
+}
+
+function renderQuestion(idx) {
+    currentQ = idx;
+    const q = questions[idx];
+    const total = questions.length;
+
+    document.getElementById('progCurrent').textContent = idx+1;
+    document.getElementById('progFill').style.width = `${((idx+1)/total)*100}%`;
+    document.getElementById('qNumber').textContent = `Question ${idx+1} of ${total}`;
+    document.getElementById('qCourseTag').textContent = selectedCourseForExam;
+    document.getElementById('qText').textContent = q.q;
+
+    const flagBtn = document.getElementById('flagBtn');
+    flagBtn.className = 'flag-btn' + (flagged.includes(idx) ? ' flagged' : '');
+    flagBtn.textContent = flagged.includes(idx) ? '🚩 Flagged' : '🚩 Flag Question';
+
+    document.getElementById('prevBtn').style.display = idx===0 ? 'none' : '';
+    const isLast = idx === total-1;
+    document.getElementById('nextBtn').style.display = isLast ? 'none' : '';
+    document.getElementById('submitBtn').style.display = isLast ? '' : 'none';
+
+    if (examType === 'cbt') {
+        renderCbtOptions(q, idx);
+    } else {
+        renderWrittenQuestion(q, idx);
+    }
+
+    if(examType==='cbt'){
+        document.querySelectorAll('.q-pill').forEach((p,i)=>{
+            p.className = 'q-pill';
+            if(i===idx) p.classList.add('current');
+            if(userAnswers[i] !== undefined) p.classList.add('answered');
+            if(flagged.includes(i)) p.classList.add('flagged');
+        });
+    }
+
+    updateAnsweredCount();
+}
+
+function renderCbtOptions(q, idx) {
+    const area = document.getElementById('optionsArea');
+    const letters = ['A','B','C','D','E'];
+    area.innerHTML = `<div class="options-list">${q.opts.map((opt,oi)=>{
+        let cls = 'option-btn';
+        if(userAnswers[idx]===oi) cls += ' selected';
+        return `<button class="${cls}" onclick="selectOption(${idx},${oi})" id="opt-${idx}-${oi}">
+            <div class="opt-letter">${letters[oi]}</div>
+            <div class="opt-text">${opt}</div>
+        </button>`;
+    }).join('')}</div>`;
+}
+
+window.selectOption = function(qIdx, optIdx) {
+    if(userAnswers[qIdx] !== undefined) return;
+    userAnswers[qIdx] = optIdx;
+    const q = questions[qIdx];
+
+    q.opts.forEach((_,oi) => {
+        const btn = document.getElementById(`opt-${qIdx}-${oi}`);
+        if(!btn) return;
+        btn.disabled = true;
+        if(oi === q.ans) { 
+            btn.className = 'option-btn correct'; 
+            btn.querySelector('.opt-letter').style.background='#22c55e'; 
+            btn.querySelector('.opt-letter').style.color='#0d1117'; 
+        } else if(oi === optIdx && optIdx !== q.ans) { 
+            btn.className = 'option-btn wrong'; 
+        }
+    });
+
+    updateAnsweredCount();
+    updateCbtNavPill(qIdx);
+};
+
+function updateCbtNavPill(idx) {
+    const pill = document.getElementById(`qpill-${idx}`);
+    if(pill){ pill.classList.add('answered'); }
+}
+
+function renderWrittenQuestion(q, idx) {
+    const area = document.getElementById('optionsArea');
+    const savedText = userAnswers[idx] || '';
+    const savedMark = userMarks[idx];
+
+    area.innerHTML = `
+        <div class="written-answer-wrap">
+            <textarea class="written-answer" id="written-${idx}" placeholder="Write your answer here…" oninput="saveWritten(${idx})">${savedText}</textarea>
+            <button class="check-answer-btn" onclick="revealMarkScheme(${idx})">👁 Check Answer / Mark Scheme</button>
+            <div class="mark-scheme" id="ms-${idx}" ${savedMark?'style="display:block"':''}>
+                <div class="mark-scheme-title">✅ Mark Scheme / Model Answer</div>
+                <div class="mark-scheme-text">${q.ms||'Mark scheme not available.'}</div>
+                <div class="self-mark-row">
+                    <button class="self-mark-btn got-it ${savedMark==='correct'?'active':''}" onclick="markSelf(${idx},'correct')">✓ Got It</button>
+                    <button class="self-mark-btn partial ${savedMark==='partial'?'active':''}" onclick="markSelf(${idx},'partial')">~ Partial</button>
+                    <button class="self-mark-btn missed ${savedMark==='missed'?'active':''}" onclick="markSelf(${idx},'missed')">✗ Missed</button>
+                </div>
+            </div>
+        </div>`;
+}
+
+window.saveWritten = function(idx) {
+    const ta = document.getElementById(`written-${idx}`);
+    if(ta) userAnswers[idx] = ta.value;
+    updateAnsweredCount();
+};
+
+window.revealMarkScheme = function(idx) {
+    const ms = document.getElementById(`ms-${idx}`);
+    if(ms) ms.classList.add('show');
+};
+
+window.markSelf = function(idx, mark) {
+    userMarks[idx] = mark;
+    document.querySelectorAll(`#ms-${idx} .self-mark-btn`).forEach(b => b.classList.remove('active'));
+    const el = document.querySelector(`#ms-${idx} .self-mark-btn.${mark==='correct'?'got-it':mark==='partial'?'partial':'missed'}`);
+    if(el) el.classList.add('active');
+    updateAnsweredCount();
+};
+
+function updateAnsweredCount() {
+    const count = Object.keys(userAnswers).filter(k => {
+        if(examType==='written') return userAnswers[k] && userAnswers[k].trim().length > 0;
+        return userAnswers[k] !== undefined;
+    }).length;
+    document.getElementById('progAnswered').textContent = count;
+    if(examType==='cbt'){
+        document.getElementById('progFlagged').textContent = flagged.length;
+    }
+}
+
+function jumpTo(idx) { renderQuestion(idx); }
+
+window.navigate = function(dir) {
+    const newIdx = currentQ + dir;
+    if(newIdx >= 0 && newIdx < questions.length) renderQuestion(newIdx);
+};
+
+window.toggleFlag = function() {
+    const idx = currentQ;
+    if(flagged.includes(idx)) flagged = flagged.filter(f=>f!==idx);
+    else flagged.push(idx);
+    renderQuestion(idx);
+};
+
+function startTimer() {
+    elapsedSeconds = 0;
+    updateTimerDisplay();
+    timerInterval = setInterval(()=>{
+        elapsedSeconds++;
+        updateTimerDisplay();
+    },1000);
+}
+
+function updateTimerDisplay() {
+    const m = Math.floor(elapsedSeconds/60).toString().padStart(2,'0');
+    const s = (elapsedSeconds%60).toString().padStart(2,'0');
+    document.getElementById('timerText').textContent = `${m}:${s}`;
+}
+
+window.confirmSubmit = function() {
+    if(confirm('Submit your exam now? You cannot change answers after submission.')) submitExam();
+};
+
+// ══════════════════════════════════════════════════════
+//  SCREEN 4 - RESULTS
+// ══════════════════════════════════════════════════════
+function submitExam() {
+    clearInterval(timerInterval);
+    goToScreen('screen-results');
+
+    let correct=0, wrong=0;
+
+    if(examType==='cbt') {
+        questions.forEach((q,i) => {
+            if(userAnswers[i]===undefined) wrong++;
+            else if(userAnswers[i]===q.ans) correct++;
+            else wrong++;
+        });
+    } else {
+        questions.forEach((_,i) => {
+            const m = userMarks[i];
+            if(m==='correct') correct++;
+            else wrong++;
+        });
+    }
+
+    const total = questions.length;
+    const pct = Math.round(correct / total * 100);
+
+    let emoji='😐', title='Keep Practising';
+    if(pct>=90){emoji='🏆';title='Outstanding!';}
+    else if(pct>=75){emoji='🎉';title='Great Job!';}
+    else if(pct>=60){emoji='👍';title='Good Effort!';}
+    else if(pct>=40){emoji='💪';title='Keep Going!';}
+
+    document.getElementById('resultsEmoji').textContent = emoji;
+    document.getElementById('resultsTitle').textContent = title;
+    document.getElementById('resultsSub').textContent = `${selectedCourseForExam} · ${examType==='cbt'?'CBT':'Written'}`;
+    document.getElementById('scorePct').textContent = pct+'%';
+    document.getElementById('statCorrect').textContent = correct;
+    document.getElementById('statWrong').textContent = wrong;
+    document.getElementById('statTime').textContent = Math.floor(elapsedSeconds/60)+'m '+  (elapsedSeconds%60)+'s';
+
+    setTimeout(()=>{
+        const circumference = 289;
+        document.getElementById('ringFill').style.strokeDashoffset = circumference - (circumference*(pct/100));
+        document.getElementById('ringFill').style.stroke = pct>=75?'#22c55e':pct>=50?'#fbbf24':'#ef4444';
+    },200);
+
+    buildReview();
+}
+
+function buildReview() {
+    const body = document.getElementById('reviewBody');
+    const letters = ['A','B','C','D'];
+    body.innerHTML = questions.map((q,i)=>{
+        let status='skipped', statusColor='#6e7681', riClass='ri-skipped';
+        if(examType==='cbt'){
+            if(userAnswers[i]===undefined){status='Skipped';statusColor='#6e7681';riClass='ri-skipped';}
+            else if(userAnswers[i]===q.ans){status='Correct ✓';statusColor='#22c55e';riClass='ri-correct';}
+            else{status='Wrong ✗';statusColor='#ef4444';riClass='ri-wrong';}
+        } else {
+            const m=userMarks[i];
+            if(!m){status='Not marked';statusColor='#6e7681';riClass='ri-skipped';}
+            else if(m==='correct'){status='Correct ✓';statusColor='#22c55e';riClass='ri-correct';}
+            else if(m==='partial'){status='Partial ~';statusColor='#fbbf24';riClass='ri-partial';}
+            else{status='Missed ✗';statusColor='#ef4444';riClass='ri-wrong';}
+        }
+
+        let answerHtml = '';
+        if(examType==='cbt'){
+            if(userAnswers[i]!==undefined){
+                answerHtml = `<div class="ri-answer your-ans">Your answer: ${letters[userAnswers[i]]}. ${q.opts[userAnswers[i]]}</div>`;
+            }
+            if(userAnswers[i]!==q.ans){
+                answerHtml += `<div class="ri-answer correct-ans">Correct: ${letters[q.ans]}. ${q.opts[q.ans]}</div>`;
+            }
+            if(q.exp){ 
+                answerHtml += `<div class="ri-answer" style="background:rgba(88,166,255,0.05);color:#8b949e;margin-top:4px;font-size:0.75rem;">💡 ${q.exp}</div>`; 
+            }
+        } else {
+            const txt = userAnswers[i]||'(No answer written)';
+            answerHtml = `<div class="ri-answer written-ans">Your answer: ${txt}</div>
+                <div class="ri-answer correct-ans">Mark Scheme: ${q.ms||'N/A'}</div>`;
+        }
+
+        return `<div class="review-item ${riClass}">
+            <div style="margin-bottom:6px;"><span class="ri-status-chip" style="background:${statusColor}22;color:${statusColor};border:1px solid ${statusColor}44;">${status}</span></div>
+            <div class="ri-q">Q${i+1}: ${q.q}</div>
+            ${answerHtml}
+        </div>`;
+    }).join('');
+}
+
+window.toggleReview = function() {
+    const body = document.getElementById('reviewBody');
+    const arrow = document.getElementById('reviewArrow');
+    body.classList.toggle('open');
+    arrow.textContent = body.classList.contains('open') ? '▲' : '▼';
+};
+
+window.tryAgain = function() {
+    goToScreen('screen-type');
+};
+
+// ══════════════════════════════════════════════════════
+//  INITIALIZE
+// ══════════════════════════════════════════════════════
+initCourseSelect();
+
+// Debug log
+console.log('📋 User Profile:', { department: USER_DEPT, level: USER_LEVEL, name: USER_NAME });
+</script>
+</body>
+</html>

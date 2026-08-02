@@ -1,0 +1,38 @@
+<!-- Shared public-site navbar — canvas background, slide-out menu, and top bar.
+     Extracted from templates/landing.html. Links are deliberately page-agnostic (e.g.
+     "Features" points at /#features so it works from any page, not just landing itself).
+     Include right after <body>. Pairs with static/js/nav.js and templates/components/footer.html. -->
+<canvas id="nelavista-canvas"></canvas>
+<div id="overlay"></div>
+
+<aside id="side-menu">
+  <div class="sidebar-header">
+    <span class="side-logo bg">Nela<span>vista</span></span>
+    <i class="ri-close-line close-icon" id="closeSidebar"></i>
+  </div>
+
+  <nav>
+    <ul class="sidebar-nav">
+      <li><a href="/"><i class="ri-home-4-line"></i>Home</a></li>
+      <li><a href="/#features"><i class="ri-apps-line"></i>Features</a></li>
+      <li><a href="/signup"><i class="ri-user-add-line"></i>Get Started Free</a></li>
+      <li><a href="/login"><i class="ri-login-box-line"></i>Log In</a></li>
+    </ul>
+  </nav>
+</aside>
+
+<header id="top-bar">
+  <div class="nav-inner">
+    <button id="menu-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="side-menu">
+      <span class="menu-icon"><span></span><span></span><span></span></span>
+    </button>
+    <div class="brand-lockup">
+      <span class="ai-signature" aria-hidden="true"><span></span><span></span><span></span></span>
+      <a href="/" class="brand-logo bg" style="text-decoration:none;">Nela<span>vista</span></a>
+    </div>
+    <div class="header-actions">
+      <button id="header-install-btn" class="header-link header-install-btn" onclick="installApp()">📲 Install</button>
+      <button id="theme-toggle" aria-label="Toggle theme"><span class="theme-icon">🌙</span></button>
+    </div>
+  </div>
+</header>

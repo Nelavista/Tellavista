@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>Nelavista · LASU Campus Map (draggable landmarks)</title>
+  
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <!-- Leaflet Routing Machine CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+    }
+    body {
+      background-color: #fafafa;
+      color: #333;
+      line-height: 1.6;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    .header {
+      background-color: #fff;
+      border-bottom: 1px solid #e0e0e0;
+      padding: 1rem 1.2rem;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .header-left {
+      flex: 1 1 300px;
+    }
+    .header-left h1 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #222;
+      margin-bottom: 0.3rem;
+    }
+    .header-left p {
+      font-size: 0.85rem;
+      color: #666;
+      max-width: 600px;
+    }
+    .location-dropdown {
+      margin-left: 1rem;
+      flex-shrink: 0;
+    }
+    .location-dropdown select {
+      background-color: #111;
+      color: white;
+      border: none;
+      padding: 0.5rem 2rem 0.5rem 1rem;
+      font-size: 0.9rem;
+      font-weight: 500;
+      border-radius: 20px;
+      cursor: pointer;
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+      background-repeat: no-repeat;
+      background-position: right 0.7rem center;
+      background-size: 1rem;
+      max-width: 250px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .location-dropdown select:hover { background-color: #333; }
+    .location-dropdown select:focus { outline: none; box-shadow: 0 0 0 2px rgba(0,0,0,0.2); }
+    /* Location permission banner */
+    .location-prompt {
+      background-color: #f0f7ff;
+      border-bottom: 1px solid #b8d4f0;
+      padding: 0.6rem 1.2rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.8rem;
+      font-size: 0.95rem;
+      color: #1a3e6f;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+      transition: all 0.2s ease;
+    }
+    .location-prompt.hidden { display: none; }
+    .prompt-message i { margin-right: 0.5rem; color: #0066cc; }
+    .prompt-actions { display: flex; gap: 0.6rem; flex-shrink: 0; }
+    .prompt-btn {
+      border: none; padding: 0.4rem 1rem; border-radius: 30px; font-weight: 500;
+      font-size: 0.85rem; cursor: pointer; transition: background 0.15s, transform 0.1s;
+      touch-action: manipulation;
+    }
+    .prompt-btn.primary { background-color: #0066cc; color: white; }
+    .prompt-btn.primary:hover, .prompt-btn.primary:active { background-color: #004999; }
+    .prompt-btn.secondary { background-color: #e2eaf6; color: #1a3e6f; }
+    .prompt-btn.secondary:hover, .prompt-btn.secondary:active { background-color: #c9d6e8; }
+    .prompt-btn:active { transform: scale(0.96); }
+    @media (max-width: 500px) {
+      .location-prompt { flex-direction: column; align-items: flex-start; }
+      .prompt-actions { align-self: flex-end; }
+    }
+    .container {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      height: calc(100vh - 140px);
+    }
+    @media (min-width: 768px) { .container { flex-direction: row; } }
+    #map {
+      flex: 1;
+      min-height: 50vh;
+      background-color: #e9e9e9;
+      width: 100%;
+      z-index: 1;
+    }
+    @media (min-width: 768px) { #map { min-height: calc(100vh - 120px); } }
+    .sidebar {
+      width: 100%;
+      background-color: #fff;
+      border-top: 1px solid #e0e0e0;
+      padding: 1.2rem;
+      overflow-y: auto;
+      max-height: 50vh;
+      z-index: 1000;
+    }
+    @media (min-width: 768px) {
+      .sidebar {
+        width: 320px;
+        max-width: 100%;
+        border-top: none;
+        border-left: 1px solid #e0e0e0;
+        max-height: calc(100vh - 120px);
+      }
+    }
+    .sidebar h2 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: #222;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid #111;
+    }
+    .controls { margin-bottom: 1.5rem; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #111;
+      color: white;
+      border: none;
+      padding: 0.9rem 1.2rem;
+      font-size: 0.95rem;
+      font-weight: 500;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      width: 100%;
+      margin-bottom: 0.8rem;
+      touch-action: manipulation;
+    }
+    .btn:hover, .btn:active { background-color: #333; }
+    .btn:active { transform: scale(0.98); }
+    .btn i { margin-right: 0.5rem; font-weight: bold; }
+    .coords-box {
+      font-size: 0.85rem;
+      padding: 0.8rem;
+      border-radius: 6px;
+      margin-bottom: 1.2rem;
+      background-color: #f8f8f8;
+      color: #333;
+      border-left: 3px solid #111;
+      min-height: 50px;
+      display: flex;
+      align-items: center;
+      word-break: break-all;
+    }
+    .info-panel {
+      margin-top: 1.5rem;
+      padding-top: 1.2rem;
+      border-top: 1px solid #eee;
+    }
+    .info-panel p {
+      font-size: 0.8rem;
+      color: #777;
+      margin-bottom: 0.5rem;
+      line-height: 1.4;
+    }
+    .locations-list h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 0.8rem;
+      color: #444;
+    }
+    .locations-list ul {
+      list-style-type: none;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+    @media (min-width: 768px) { .locations-list ul { max-height: 300px; } }
+    .locations-list li {
+      padding: 0.9rem 0;
+      border-bottom: 1px solid #f0f0f0;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      transition: background-color 0.2s;
+      touch-action: manipulation;
+    }
+    .locations-list li:hover, .locations-list li:active { background-color: #f9f9f9; }
+    .locations-list li:last-child { border-bottom: none; }
+    .location-marker {
+      width: 12px; height: 12px; border-radius: 50%; margin-right: 0.8rem;
+      flex-shrink: 0; background-color: #111;
+    }
+    .location-name { font-weight: 500; font-size: 0.95rem; }
+    .footer {
+      background-color: #111; color: #aaa; text-align: center; padding: 1rem;
+      font-size: 0.75rem; border-top: 1px solid #333;
+    }
+    .footer a { color: #fff; text-decoration: underline; }
+    .mobile-nav-toggle {
+      display: none;
+      position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px;
+      background-color: #111; color: white; border-radius: 50%; border: none;
+      font-size: 1.5rem; z-index: 1001; box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      cursor: pointer; touch-action: manipulation;
+    }
+    @media (max-width: 767px) {
+      .mobile-nav-toggle { display: flex; align-items: center; justify-content: center; }
+      .sidebar {
+        position: fixed; bottom: 0; left: 0; right: 0; max-height: 70vh;
+        transform: translateY(100%); transition: transform 0.3s ease-in-out;
+        border-top: 2px solid #111; box-shadow: 0 -4px 20px rgba(0,0,0,0.15);
+        padding-bottom: 80px;
+      }
+      .sidebar.active { transform: translateY(0); }
+      #map { min-height: 60vh; height: 60vh; }
+    }
+    .leaflet-pulsing-icon {
+      border-radius: 100%;
+      box-shadow: 0 0 0 5px rgba(0, 102, 204, 0.4);
+    }
+    .leaflet-pulsing-icon::before {
+      content: "";
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      width: 12px; height: 12px; background-color: #0066cc; border-radius: 100%;
+    }
+    .nav-line { stroke: #0066cc; stroke-width: 3; stroke-dasharray: 10, 5; fill: none; }
+
+    /* === POPUP STYLES === */
+    .leaflet-popup-content {
+      margin: 10px;
+      font-size: 0.9rem;
+      min-width: 200px;
+    }
+
+    .popup-title {
+      font-weight: 600;
+      font-size: 1rem;
+      margin-bottom: 8px;
+      text-align: center;
+    }
+
+    .popup-image {
+      width: 100%;
+      height: 140px;
+      object-fit: cover;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      background-color: #eee;
+      border: 1px solid #ddd;
+    }
+
+    .popup-nav-btn {
+      display: block;
+      width: 100%;
+      padding: 8px;
+      border: none;
+      border-radius: 6px;
+      background-color: #111;
+      color: white;
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .popup-nav-btn:hover {
+      background-color: #333;
+    }
+  </style>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-left">
+      <h1>Nelavista LASU Campus Map</h1>
+      <p>Interactive map of Lagos State University. Landmarks are draggable — drag to adjust positions (saved locally).</p>
+    </div>
+    <div class="location-dropdown">
+      <select id="campusLocationSelect" aria-label="Select a campus location">
+        <option value="">— Select a location —</option>
+      </select>
+    </div>
+  </header>
+
+  <!-- LOCATION PERMISSION BANNER -->
+  <div id="locationPrompt" class="location-prompt">
+    <div class="prompt-message">
+      <i class="fas fa-location-dot"></i> For a better experience, enable your location.
+    </div>
+    <div class="prompt-actions">
+      <button class="prompt-btn primary" id="promptTurnOn"><i class="fas fa-toggle-on"></i> Turn On</button>
+      <button class="prompt-btn secondary" id="promptLater">Maybe later</button>
+    </div>
+  </div>
+
+  <div class="container">
+    <div id="map"></div>
+
+    <aside class="sidebar" id="sidebar">
+      <h2><i class="fas fa-map-pin"></i> Campus Navigator</h2>
+
+      <div class="controls">
+        <button class="btn" onclick="locateUser()">
+          <i class="fas fa-location-crosshairs"></i> Show My Location
+        </button>
+        
+        <!-- Navigate to nearest building button -->
+        <button class="btn" onclick="navigateToNearestBuilding()" style="background-color: #0066cc;">
+          <i class="fas fa-building"></i> Go to nearest building
+        </button>
+        
+        <div class="coords-box" id="coordsBox">
+          Click a landmark to see its coordinates.
+        </div>
+
+        <div class="search-container">
+          <input type="text" class="search-input" id="searchInput" placeholder="Search for a building..." onfocus="onSearchFocus()">
+        </div>
+        
+        <div class="key-hint">
+          <i class="fas fa-info-circle"></i> <strong>Note:</strong> Landmarks are draggable. Drag to adjust positions (saved locally).
+        </div>
+      </div>
+
+      <div class="locations-list">
+        <h3><i class="fas fa-building"></i> Campus Locations</h3>
+        <ul id="locationsList">
+          <!-- dynamic -->
+        </ul>
+      </div>
+
+      <div class="info-panel">
+        <p><i class="fas fa-database"></i> <strong>Storage:</strong> Your last view and selected location are saved. Dragged marker positions are saved locally.</p>
+        <p><i class="fas fa-mobile-alt"></i> <strong>Mobile:</strong> Tap a location to focus, then use the Navigate button.</p>
+      </div>
+    </aside>
+  </div>
+
+  <button class="mobile-nav-toggle" id="mobileToggle" aria-label="Toggle navigation panel">
+    <i class="fas fa-bars" id="toggleIcon"></i>
+  </button>
+
+  <footer class="footer">
+    <p>Nelavista Campus Map &copy; 2026 | Lagos State University (LASU) | 
+       <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors | 
+       Powered by <a href="https://leafletjs.com/" target="_blank">Leaflet</a>
+    </p>
+    <p style="margin-top:0.3rem; font-size:0.7rem;">Draggable landmarks – photos: images/[id].jpeg (e.g., arcade.jpeg).</p>
+  </footer>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <!-- Leaflet Routing Machine JS -->
+  <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
+  <!-- Leaflet RotatedMarker plugin (for heading) -->
+  <script src="https://unpkg.com/leaflet-rotatedmarker@0.2.0/leaflet.rotatedMarker.js"></script>
+
+  <script>
+    // ---------- LOCATION PERMISSION PROMPT ----------
+    const promptElement = document.getElementById('locationPrompt');
+    const promptTurnOn = document.getElementById('promptTurnOn');
+    const promptLater = document.getElementById('promptLater');
+    const DISMISSAL_KEY = 'lasu_location_prompt_dismissed';
+    let promptInteracted = false;
+
+    function hideLocationPrompt() {
+      if (promptElement) promptElement.classList.add('hidden');
+      promptInteracted = true;
+    }
+    function maybeShowPrompt() {
+      const permanentlyDismissed = localStorage.getItem(DISMISSAL_KEY) === 'true';
+      if (!permanentlyDismissed && !promptInteracted) promptElement.classList.remove('hidden');
+      else promptElement.classList.add('hidden');
+    }
+    promptTurnOn.addEventListener('click', function() { hideLocationPrompt(); locateUser(); });
+    promptLater.addEventListener('click', function() { localStorage.setItem(DISMISSAL_KEY, 'true'); hideLocationPrompt(); });
+
+    // ---------- MAP DATA (alphabetical order) ----------
+    const locations = [
+      { id: "makanjuola", name: "Aderemi Makanjuola Lecture Theatre", coords: [6.466381, 3.201246] },
+      { id: "Agriculture_Society_Building", name: "Agriculture Society Building", coords: [6.469889, 3.200425] },
+      { id: "Abisogun_Leigh_Science_Building", name: "Abisogun Leigh Science Building", coords: [6.467138, 3.199167] },
+      { id: "arcade", name: "Arcade (Student Commercial Hub)", coords: [6.465718, 3.203115] },
+      { id: "bank_arena", name: "Bank Arena", coords: [6.464388, 3.204019] },
+      { id: "bolasciencecomplex", name: "Bola Ahmed Tinubu Science Complex", coords: [6.466131, 3.200286] },
+      { id: "cbt_center", name: "CBT Center (Exam Hall)", coords: [6.475192, 3.201302] },
+      { id: "siwes", name: "Central industrial liason unit (A.K.A) SIWES", coords: [6.464279, 3.200211] },
+      { id: "cessed", name: "Centre for environmental studies and substanable Development (CESSED)", coords: [6.465832, 3.201125] },
+      { id: "Centre-of-General-Nigerian-Studies", name: "Centre of General Nigerian Studies (C.G.N.S)", coords: [6.464905, 3.200186] },
+      { id: "Chapel_Of_Light", name: "Chapel Of Light", coords: [6.464979, 3.198642] },
+      { id: "cheif_s.l._edu_lecture_hall", name: "Cheif S.L. Edu Lecture Hall", coords: [6.468023, 3.200031] },
+      { id: "Department_Of_Fisheries", name: "Department Of Fisheries Lagos State University", coords: [6.470422, 3.200270] },
+      { id: "dsdp", name: "Directorate of Sandwich Degree Program", coords: [6.470616, 3.201238] },
+      { id: "economics_hall", name: "Economics Hall", coords: [6.475243, 3.199060] },
+      { id: "arts", name: "Faculty of Arts", coords: [6.465115, 3.201104] },
+      { id: "education", name: "Faculty of Education", coords: [6.472996, 3.199889] },
+      { id: "it", name: "Faculty of Computing and information Technology", coords: [6.473991, 3.199653] },
+      { id: "law", name: "Faculty of Law", coords: [6.467394, 3.202010] },
+      { id: "management_sciences", name: "Faculty of Management Sciences", coords: [6.475661, 3.199942] },
+      { id: "odlri", name: "Open and Distance Learning and Research Institution", coords: [6.474928, 3.200071] },
+      { id: "sciences", name: "Faculty of Sciences", coords: [6.467837, 3.200798] },
+      { id: "social_sciences", name: "Faculty of Social Sciences", coords: [6.475243, 3.199060] },
+      { id: "gbajabiamila", name: "Femi Gbajabiamila Conference Centre", coords: [6.474624, 3.199331] },
+      { id: "health", name: "Health Center", coords: [6.465443, 3.202018] },
+      { id: "Hussam_okoya_Sports_Complex", name: "Hussam okoya Sports Complex", coords: [6.468703, 3.203875] },
+      { id: "ict", name: "ICT Building", coords: [6.468753, 3.201230] },
+      { id: "innovationhub", name: "Innovation Hub", coords: [6.465718, 3.200538] },
+      { id: "Library_Complex", name: "Lasu Centre Library", coords: [6.471904, 3.201474] },
+      { id: "lasu-radio", name: "Lasu Radio", coords: [6.472373, 3.199653] },
+      { id: "mosque", name: "LASU Central Mosque", coords: [6.465425, 3.200015] },
+      { id: "lasu_football_pitch", name: "Lasu Football Pitch", coords: [6.467892, 3.203102] },
+      { id: "law_clinic", name: "Law Clinic", coords: [6.466861, 3.202268] },
+      { id: "love_garden", name: "Love Garden", coords: [6.469094, 3.200508] },
+      { id: "main_auditorium", name: "Main Auditorium", coords: [6.473108, 3.201887] },
+      { id: "library", name: "Main Library", coords: [6.464857, 3.200701] },
+      { id: "mass_comm_hall", name: "Mass Communication Lecture Hall", coords: [6.472277, 3.200154] },
+      { id: "mba_hall", name: "MBA Hall", coords: [6.468553, 3.200275] },
+      { id: "physicslab", name: "Physics Lab", coords: [6.465115, 3.201104] },
+      { id: "post_graduate_school", name: "Post Graduate School", coords: [6.468391, 3.201227] },
+      { id: "primaryhealth", name: "Primary Health Center", coords: [6.466038, 3.202061] },
+      { id: "SchoolofLibrary,ArchivalandinformationScience", name: "School of Library, Archival and information Science", coords: [6.464433, 3.200205] },
+      { id: "school_of_transport", name: "School of Transport and Logistics", coords: [6.474193, 3.198038] },
+      { id: "sciencecomplex", name: "Science Complex", coords: [6.466573, 3.200165] },
+      { id: "science_library", name: "Science Library", coords: [6.464526, 3.199186] },
+      { id: "science_market", name: "Science Market", coords: [6.468047, 3.199285] },
+      { id: "Sciences_Laboratory", name: "Sciences Laboratory", coords: [6.467114, 3.199851] },
+      { id: "Senate_Building", name: "Senate Building", coords: [6.471272, 3.199924] },
+      { id: "bensonhall", name: "Shobowale Benson Hall", coords: [6.467796, 3.200227] },
+      { id: "sports", name: "Sports Center", coords: [6.469750, 3.202550] },
+      { id: "tetfund", name: "Tetfund 2019/2020 annual intervention", coords: [6.465070, 3.202305] },
+      { id: "wppd", name: "Works and Physical Planning Department", coords: [6.464092, 3.200205] }
+    ];
+
+    const lasuCenter = [6.4700, 3.2000];
+    const map = L.map("map", { maxZoom: 21, zoomControl: true, tap: true, touchZoom: true, dragging: true, scrollWheelZoom: true }).setView(lasuCenter, 15);
+
+    // ---------- LAYERS ----------
+    const streetLayer = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { attribution: '© OpenStreetMap contributors | © <a href="https://www.esri.com/">Esri</a>', maxZoom: 19 });
+    const satelliteLayer = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", { attribution: '© OpenStreetMap contributors | Tiles © Esri &mdash; Source: Esri, Maxar, Earthstar Geographics, and the GIS User Community', maxZoom: 20 });
+    const terrainLayer = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}", { attribution: '© OpenStreetMap contributors | Tiles © Esri &mdash; Esri, DeLorme, NAVTEQ', maxZoom: 19 });
+    const hybridLayer = L.layerGroup([
+      L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", { attribution: '© OpenStreetMap contributors | Tiles © Esri &mdash; Source: Esri, Maxar, Earthstar Geographics, and the GIS User Community', maxZoom: 20 }),
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { opacity: 0.3, attribution: '© OpenStreetMap contributors', maxZoom: 19 })
+    ]);
+    streetLayer.maxAvailableZoom = 19; satelliteLayer.maxAvailableZoom = 19; terrainLayer.maxAvailableZoom = 19; hybridLayer.maxAvailableZoom = 20;
+    const baseLayers = { "Street": streetLayer, "Satellite": satelliteLayer, "Terrain": terrainLayer, "Hybrid": hybridLayer };
+    satelliteLayer.addTo(map);
+    const layerControl = L.control.layers(baseLayers, null, { position: 'topright', collapsed: true }).addTo(map);
+
+    let userManualSelection = false;
+    let currentBaseLayer = satelliteLayer;
+    const USER_PREFERENCE_KEY = 'lasu_map_base_layer';
+    function getCurrentLayerMaxZoom() { return currentBaseLayer.maxAvailableZoom || 19; }
+    function updateMapZoomLimits() {
+      const maxZoom = getCurrentLayerMaxZoom();
+      if (map.getZoom() > maxZoom) map.setZoom(maxZoom);
+      map.options.maxZoom = maxZoom;
+      if (map.zoomControl) map.zoomControl._updateDisabled();
+    }
+    function clampZoomToLayer() { const m = getCurrentLayerMaxZoom(); if (map.getZoom() > m) map.setZoom(m); }
+    function saveUserPreference(layerName) { localStorage.setItem(USER_PREFERENCE_KEY, layerName); userManualSelection = true; updateMapZoomLimits(); }
+    function restoreUserPreference() {
+      const saved = localStorage.getItem(USER_PREFERENCE_KEY);
+      if (saved && baseLayers[saved]) { map.removeLayer(currentBaseLayer); baseLayers[saved].addTo(map); currentBaseLayer = baseLayers[saved]; userManualSelection = true; updateMapZoomLimits(); return true; }
+      return false;
+    }
+    function autoSwitchLayerByZoom() {
+      if (userManualSelection) return;
+      const z = map.getZoom(); let target;
+      if (z < 16) target = streetLayer; else if (z < 18) target = terrainLayer; else target = satelliteLayer;
+      if (target !== currentBaseLayer) { map.removeLayer(currentBaseLayer); target.addTo(map); currentBaseLayer = target; updateMapZoomLimits(); }
+    }
+    const hasRestored = restoreUserPreference();
+    map.on('zoomend', function() { clampZoomToLayer(); if (!userManualSelection) autoSwitchLayerByZoom(); });
+    map.on('baselayerchange', function(e) {
+      const name = Object.keys(baseLayers).find(k => baseLayers[k] === e.layer);
+      if (name) { saveUserPreference(name); currentBaseLayer = e.layer; updateMapZoomLimits(); }
+    });
+    if (!hasRestored) { updateMapZoomLimits(); autoSwitchLayerByZoom(); }
+
+    // ---------- GLOBAL VARS ----------
+    const coordsBox = document.getElementById("coordsBox");
+    const locationsList = document.getElementById("locationsList");
+    let activeMarker = null;
+    const markers = {};
+    let userLocationMarker = null;
+    let userLatLng = null;
+    let lastNearestMarker = null;
+    const sidebar = document.getElementById('sidebar');
+    const mobileToggle = document.getElementById('mobileToggle');
+    const toggleIcon = document.getElementById('toggleIcon');
+    const locationSelect = document.getElementById('campusLocationSelect');
+
+    // Routing control variable
+    let routingControl = null;
+    // Watch ID for continuous location tracking
+    let watchID = null;
+    // Flag to prevent repeated route zooming
+    let routeZoomed = false;
+
+    function toggleSidebar() {
+      sidebar.classList.toggle('active');
+      toggleIcon.className = sidebar.classList.contains('active') ? 'fas fa-times' : 'fas fa-bars';
+      mobileToggle.style.backgroundColor = sidebar.classList.contains('active') ? '#e74c3c' : '#111';
+    }
+    function closeSidebarOnMobile() { if (window.innerWidth < 768 && sidebar.classList.contains('active')) toggleSidebar(); }
+    function onSearchFocus() { if (window.innerWidth < 768) { sidebar.classList.add('active'); toggleIcon.className = 'fas fa-times'; mobileToggle.style.backgroundColor = '#e74c3c'; } }
+    mobileToggle.addEventListener('click', toggleSidebar);
+    function getDistanceInMeters(a, b) { return a.distanceTo(b); }
+
+    function getMarkerColor(cat) {
+      const c = { faculty:'#3498db', department:'#9b59b6', lecture:'#1abc9c', administrative:'#f39c12', healthcare:'#e74c3c', religious:'#2c3e50', ict:'#16a085', bank:'#27ae60', sports:'#c0392b', commercial:'#8e44ad', utility:'#7f8c8d' };
+      return c[cat] || '#2ecc71';
+    }
+    function getCategoryFromLocation(loc) {
+      const n = loc.name.toLowerCase();
+      if (n.includes('arcade')||n.includes('commercial')) return 'commercial';
+      if (n.includes('mosque')) return 'religious';
+      if (n.includes('bank')) return 'bank';
+      if (n.includes('sport')||n.includes('court')) return 'sports';
+      if (n.includes('ict')||n.includes('cbt')||n.includes('computer')) return 'ict';
+      if (n.includes('medical')||n.includes('health')) return 'healthcare';
+      if (n.includes('faculty')||n.includes('school')) return 'faculty';
+      if (n.includes('library')||n.includes('lab')) return 'department';
+      if (n.includes('lecture')||n.includes('hall')||n.includes('auditorium')) return 'lecture';
+      return 'general';
+    }
+
+    function populateSidebar() {
+      locationsList.innerHTML = '';
+      locations.forEach(loc => {
+        const li = document.createElement('li');
+        li.setAttribute('data-location-id', loc.id);
+        li.innerHTML = `<div class="location-marker" style="background-color:${getMarkerColor(getCategoryFromLocation(loc))}"></div><div class="location-name">${loc.name}</div>`;
+        li.onclick = () => { focusOnMarker(loc.id); closeSidebarOnMobile(); };
+        locationsList.appendChild(li);
+      });
+    }
+    function populateDropdown() {
+      locationSelect.innerHTML = '<option value="">— Select a location —</option>';
+      locations.forEach(loc => {
+        const opt = document.createElement('option');
+        opt.value = loc.id; opt.textContent = loc.name;
+        locationSelect.appendChild(opt);
+      });
+    }
+    locationSelect.addEventListener('change', e => { if (e.target.value) focusOnMarker(e.target.value); });
+
+    // Get saved coordinates from localStorage (if user dragged them previously)
+    function getSavedCoords(id, fallback) { 
+      const s = localStorage.getItem(`lasu_${id}`); 
+      return s ? JSON.parse(s) : fallback; 
+    }
+    // Save new coordinates when marker is dragged
+    function saveCoords(id, latlng) { 
+      localStorage.setItem(`lasu_${id}`, JSON.stringify([latlng.lat, latlng.lng])); 
+    }
+    function findLocationById(id) { return locations.find(l => l.id === id); }
+
+    function updateCoordsBox(locationName, latlng) {
+      const lat = latlng.lat.toFixed(6);
+      const lng = latlng.lng.toFixed(6);
+      coordsBox.textContent = `${locationName} : ${lat}, ${lng}`;
+    }
+
+    // ---- INIT MARKERS (now draggable: true) ----
+    function initializeMarkers() {
+      locations.forEach(location => {
+        // Load saved coordinates if they exist (from previous drag sessions)
+        const start = getSavedCoords(location.id, location.coords);
+        const cat = getCategoryFromLocation(location);
+        const marker = L.marker(start, {
+          draggable: true,                 // <--- now draggable
+          title: location.name,
+          icon: L.divIcon({
+            className: 'custom-marker',
+            html: `<div style="background-color:${getMarkerColor(cat)}; width:14px; height:14px; border-radius:50%; border:2px solid white; box-shadow:0 0 5px rgba(0,0,0,0.5);"></div>`,
+            iconSize: [18,18], iconAnchor: [9,9]
+          })
+        }).addTo(map);
+
+        // Popup content with image and navigation button
+        const popupContent = `
+          <div class="popup-title">${location.name}</div>
+          
+          <img 
+            src="images/${location.id}.jpeg" 
+            alt="${location.name}" 
+            class="popup-image"
+            onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\\'http://www.w3.org/2000/svg\\' width=\\'200\\' height=\\'140\\' viewBox=\\'0 0 200 140\\'%3E%3Crect width=\\'200\\' height=\\'140\\' fill=\\'%23eeeeee\\'/%3E%3Ctext x=\\'50%25\\' y=\\'50%25\\' dominant-baseline=\\'middle\\' text-anchor=\\'middle\\' font-family=\\'Arial,sans-serif\\' font-size=\\'14\\' fill=\\'%23999\\'%3ENo image%3C/text%3E%3C/svg%3E';"
+          >
+
+          <button 
+            class="popup-nav-btn" 
+            onclick="navigateToMarker('${location.id}'); closeSidebarOnMobile();">
+            Navigate from my location
+          </button>
+        `;
+        marker.bindPopup(popupContent);
+        marker.locationData = location;
+
+        // --- click: show coordinates in sidebar ---
+        marker.on("click", function() {
+          activeMarker = marker;
+          updateCoordsBox(location.name, marker.getLatLng());
+          locationSelect.value = location.id;
+          saveState('marker', location.id);
+          closeSidebarOnMobile();
+        });
+
+        // --- dragend: save new position and update sidebar if active ---
+        marker.on("dragend", function(e) {
+          const newPos = marker.getLatLng();
+          saveCoords(location.id, newPos);
+          // If this marker is the active one, update the coords box
+          if (activeMarker === marker) {
+            updateCoordsBox(location.name, newPos);
+          }
+          // Optional: update popup content? not needed because button uses location.id
+        });
+
+        markers[location.id] = marker;
+      });
+    }
+
+    function focusOnMarker(locationId) {
+      const marker = markers[locationId];
+      const location = findLocationById(locationId);
+      if (marker && location) {
+        map.setView(marker.getLatLng(), Math.min(17, getCurrentLayerMaxZoom()));
+        marker.openPopup();
+        activeMarker = marker;
+        updateCoordsBox(location.name, marker.getLatLng());
+        locationSelect.value = locationId;
+        saveState('marker', locationId);
+      } else {
+        coordsBox.textContent = 'Location data not available.';
+      }
+    }
+
+    function findNearestBuilding(userLL) {
+      let bestDist = Infinity, bestLoc = null;
+      locations.forEach(loc => {
+        const m = markers[loc.id];
+        if (m) { const d = getDistanceInMeters(userLL, m.getLatLng()); if (d < bestDist) { bestDist = d; bestLoc = loc; } }
+      });
+      return { location: bestLoc, distance: bestDist };
+    }
+
+    // ---------- LOCATE USER (continuous tracking, with heading support) ----------
+    window.locateUser = function() {
+      hideLocationPrompt();
+      if (!navigator.geolocation) {
+        coordsBox.textContent = 'Geolocation not supported';
+        return;
+      }
+
+      // Stop any previous watch before starting a new one
+      if (watchID !== null) {
+        navigator.geolocation.clearWatch(watchID);
+      }
+
+      coordsBox.textContent = 'Getting your location…';
+
+      watchID = navigator.geolocation.watchPosition(
+        function(pos) {
+          const lat = pos.coords.latitude;
+          const lng = pos.coords.longitude;
+          const heading = pos.coords.heading; // may be null
+          const newLatLng = L.latLng(lat, lng);
+
+          // Update global user location
+          userLatLng = newLatLng;
+
+          // Create or update the blue dot (with rotation if heading available)
+          if (!userLocationMarker) {
+            const blueDot = L.divIcon({
+              className: 'leaflet-pulsing-icon',
+              iconSize: [24, 24],
+              iconAnchor: [12, 12]
+            });
+            // Use rotated marker if heading is supported, else normal marker
+            if (heading !== null) {
+              userLocationMarker = L.marker([lat, lng], {
+                icon: blueDot,
+                rotationAngle: heading,
+                rotationOrigin: 'center'
+              }).addTo(map);
+            } else {
+              userLocationMarker = L.marker([lat, lng], { icon: blueDot }).addTo(map);
+            }
+            userLocationMarker.bindPopup('You are here').openPopup();
+          } else {
+            userLocationMarker.setLatLng([lat, lng]);
+            if (heading !== null && userLocationMarker.setRotationAngle) {
+              userLocationMarker.setRotationAngle(heading);
+            }
+          }
+
+          // Show distance to nearest building
+          const nearest = findNearestBuilding(userLatLng);
+          if (nearest.location) {
+            coordsBox.textContent = `📍 You are ${Math.round(nearest.distance)} m from ${nearest.location.name}`;
+            if (lastNearestMarker && lastNearestMarker !== markers[nearest.location.id]) {
+              lastNearestMarker.closePopup();
+            }
+            lastNearestMarker = markers[nearest.location.id];
+          } else {
+            coordsBox.textContent = `📍 Your location: ${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+          }
+
+          // Live route update: if a route is active, update its start point
+          if (routingControl) {
+            const waypoints = routingControl.getWaypoints();
+            if (waypoints && waypoints.length >= 2 && waypoints[1].latLng) {
+              routingControl.setWaypoints([
+                userLatLng,
+                waypoints[1].latLng
+              ]);
+            }
+          }
+
+          saveState('view', null);
+          closeSidebarOnMobile();
+        },
+        function(err) {
+          coordsBox.textContent = 'Location error: ' + (err.message || 'denied');
+          console.warn('Geolocation error:', err);
+        },
+        {
+          enableHighAccuracy: true,
+          maximumAge: 3000,           // Better battery life, still accurate
+          timeout: 10000
+        }
+      );
+    };
+
+    // ---------- NAVIGATE (road‑following with OSRM router, auto‑zoom & distance display) ----------
+    window.navigateToMarker = function(locationId) {
+      // Reset the zoom flag so a new navigation will zoom again
+      routeZoomed = false;
+
+      if (!userLatLng) {
+        alert('Please enable location services and click "Show My Location" first.');
+        return;
+      }
+      const marker = markers[locationId];
+      if (!marker) return;
+
+      // Remove previous route if any
+      if (routingControl) {
+        map.removeControl(routingControl);
+      }
+
+      // Create a new route that follows roads, using OSRM router explicitly
+      routingControl = L.Routing.control({
+        waypoints: [
+          userLatLng,
+          marker.getLatLng()
+        ],
+        router: L.Routing.osrmv1({
+          serviceUrl: "https://router.project-osrm.org/route/v1"
+        }),
+        routeWhileDragging: false,
+        show: false,
+        addWaypoints: false,
+        draggableWaypoints: false,
+        lineOptions: {
+          styles: [
+            { color: "#0066cc", weight: 5, opacity: 0.9 }
+          ]
+        },
+        createMarker: function() { return null; }
+      }).addTo(map);
+
+      // --- Auto-zoom to route and show distance/time (only once) ---
+      routingControl.on('routesfound', function(e) {
+        const route = e.routes[0];
+        // Show distance & time
+        const distanceKm = (route.summary.totalDistance / 1000).toFixed(2);
+        const timeMin = Math.round(route.summary.totalTime / 60);
+        coordsBox.textContent = `🚶 Route: ${distanceKm} km • ${timeMin} min walk`;
+
+        // Zoom to route bounds only the first time
+        if (!routeZoomed) {
+          const bounds = L.latLngBounds(route.coordinates);
+          map.fitBounds(bounds, { padding: [40, 40] });
+          routeZoomed = true;
+        }
+      });
+
+      marker.openPopup();
+    };
+
+    // ---------- NAVIGATE TO NEAREST BUILDING ----------
+    window.navigateToNearestBuilding = function() {
+      if (!userLatLng) {
+        alert('Please enable location services first.');
+        return;
+      }
+      const nearest = findNearestBuilding(userLatLng);
+      if (nearest.location) {
+        // Show a message so the user knows what happened
+        coordsBox.textContent = `Navigating to nearest building: ${nearest.location.name}`;
+        navigateToMarker(nearest.location.id);
+      } else {
+        alert('No buildings found.');
+      }
+    };
+
+    function saveState(type, val) {
+      if (type === 'marker') localStorage.setItem('lasu_last_marker', val);
+      else if (type === 'view') { const c = map.getCenter(); localStorage.setItem('lasu_map_view', JSON.stringify({ center:[c.lat, c.lng], zoom:map.getZoom() })); }
+    }
+    function restoreState() {
+      const last = localStorage.getItem('lasu_last_marker');
+      if (last && markers[last]) { focusOnMarker(last); return; }
+      const saved = localStorage.getItem('lasu_map_view');
+      if (saved) { try { const {center,zoom}=JSON.parse(saved); map.setView(center,zoom); }catch(e){} }
+    }
+
+    function searchLocations() {
+      const term = document.getElementById('searchInput').value.toLowerCase();
+      const items = document.querySelectorAll('#locationsList li');
+      let first = null;
+      items.forEach(li => {
+        const id = li.getAttribute('data-location-id');
+        const loc = findLocationById(id);
+        if (loc.name.toLowerCase().includes(term)) { li.style.display = 'flex'; if (!first) first = id; }
+        else li.style.display = 'none';
+      });
+      if (first && term.length>0) focusOnMarker(first);
+    }
+    document.getElementById('searchInput').addEventListener('input', searchLocations);
+    map.on('moveend', () => saveState('view', null));
+    map.on('click', closeSidebarOnMobile);
+
+    // Clean up watch when page unloads (optional)
+    window.addEventListener('beforeunload', function() {
+      if (watchID !== null) {
+        navigator.geolocation.clearWatch(watchID);
+      }
+    });
+
+    // ---------- START ----------
+    populateSidebar();
+    populateDropdown();
+    initializeMarkers();
+    restoreState();
+    maybeShowPrompt();
+
+    if (window.innerWidth < 768) { sidebar.classList.remove('active'); mobileToggle.style.display = 'flex'; }
+    window.addEventListener('resize', function() {
+      if (window.innerWidth >= 768) { sidebar.classList.remove('active'); mobileToggle.style.display = 'none'; toggleIcon.className = 'fas fa-bars'; mobileToggle.style.backgroundColor = '#111'; }
+      else { mobileToggle.style.display = 'flex'; }
+    });
+  </script>
+  <!-- 
+    📸 IMAGE SETUP:
+    1. Place your landmark photos in the `templates/images` folder (next to this HTML file) with filenames matching the 'id' and .jpeg extension (e.g., arcade.jpeg, arts.jpeg).
+    2. The Flask route `/images/<filename>` (already defined in app.py) serves these files.
+    3. If an image is missing, a built‑in SVG fallback (grey box with "No image") will appear.
+    4. 🖱️ Landmarks are now draggable. Drag any marker to a new spot; the position is saved locally.
+    5. 🚶‍♂️ Your location updates live as you walk (with battery‑saving maximumAge 3000) and the dot rotates to show direction.
+    6. 🗺️ Navigation follows LASU roads using OSRM router, and the map auto‑zooms to the full route only once.
+    7. 🕒 Distance & walking time are displayed in the sidebar.
+    8. 🎯 "Go to nearest building" button shows a confirmation message.
+  -->
+</body>
+</html>

@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nelavista - Teacher Live</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #1a2980, #26d0ce);
+      min-height: 100vh;
+      color: #fff;
+      padding: 20px;
+    }
+    .container { max-width: 1200px; margin: 0 auto; }
+    .top-bar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
+    .room-info { display: flex; align-items: center; gap: 15px; background: rgba(255,255,255,0.1); padding: 10px 20px; border-radius: 8px; flex-wrap: wrap; }
+    .room-id { font-size: 1.2rem; font-weight: 600; letter-spacing: 2px; }
+    button {
+      background: #fff; color: #1a2980; border: none; padding: 10px 20px; border-radius: 25px;
+      font-family: 'Poppins', sans-serif; font-weight: 600; cursor: pointer;
+      transition: transform 0.2s, background 0.2s; margin: 5px 5px 5px 0;
+    }
+    button:hover { background: #f0f0f0; transform: scale(1.02); }
+    button:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    button.danger { background: #e74c3c; color: #fff; }
+    button.danger:hover { background: #c0392b; }
+    button.primary-cta { background: #2ecc71; color: #0a2e1a; font-size: 1.05rem; padding: 14px 32px; }
+    button.primary-cta:hover { background: #27ae60; }
+    .main-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
+    @media (max-width: 800px) { .main-grid { grid-template-columns: 1fr; } }
+    .stream-panel { background: rgba(0,0,0,0.3); border-radius: 15px; overflow: hidden; }
+    .go-live-prompt { padding: 40px 24px; text-align: center; }
+    .go-live-prompt p { opacity: 0.85; line-height: 1.6; margin-bottom: 24px; font-size: 0.95rem; max-width: 480px; margin-left: auto; margin-right: auto; }
+    .go-live-prompt .camera-icon { font-size: 3rem; margin-bottom: 12px; }
+    .resume-banner { background: rgba(255,200,0,0.2); padding: 12px 16px; border-radius: 8px; margin: 0 24px 20px; font-size: 0.9rem; }
+    .live-badge {
+      display: inline-flex; align-items: center; gap: 6px; background: #e74c3c; padding: 4px 12px;
+      border-radius: 20px; font-size: 0.8rem; font-weight: 600;
+    }
+    .live-badge .dot { width: 8px; height: 8px; border-radius: 50%; background: #fff; animation: pulse 1.5s infinite; }
+    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+    .video-wrap { position: relative; width: 100%; aspect-ratio: 16/9; background: #000; }
+    #local-video { width: 100%; height: 100%; }
+    .stream-controls { padding: 14px 20px; }
+    .side-panel { background: rgba(255,255,255,0.1); border-radius: 15px; padding: 20px; display: flex; flex-direction: column; gap: 16px; }
+    .student-count { font-size: 2rem; font-weight: 600; }
+    .section-title { font-weight: 600; margin-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.3); padding-bottom: 5px; }
+    .request-list, .struggle-list { list-style: none; max-height: 150px; overflow-y: auto; }
+    .request-list li, .struggle-list li { display: flex; justify-content: space-between; align-items: center; padding: 8px 5px; border-bottom: 1px solid rgba(255,255,255,0.2); font-size: 0.9rem; }
+    .request-list button { padding: 4px 10px; font-size: 0.8rem; margin: 0 0 0 4px; }
+    .timer { font-size: 1.6rem; font-weight: 600; }
+    .hidden { display: none !important; }
+    .chat-box { display: flex; flex-direction: column; height: 260px; }
+    .chat-log { flex: 1; overflow-y: auto; background: rgba(0,0,0,0.2); border-radius: 8px; padding: 8px; font-size: 0.85rem; margin-bottom: 8px; }
+    .chat-log .msg { margin-bottom: 6px; line-height: 1.4; }
+    .chat-log .msg b { opacity: 0.9; }
+    .chat-input-row { display: flex; gap: 6px; }
+    .chat-input-row input { flex: 1; padding: 8px 12px; border-radius: 20px; border: none; font-family: 'Poppins', sans-serif; }
+    .chat-input-row button { margin: 0; padding: 8px 16px; }
+    .setup-error { background: rgba(231,76,60,0.25); padding: 16px 20px; border-radius: 8px; margin: 20px 24px; font-size: 0.9rem; line-height: 1.6; }
+  </style>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
+</head>
+<body>
+<div class="container">
+  <div class="top-bar">
+    <div class="room-info">
+      <span>Room ID:</span>
+      <span class="room-id" id="room-id-display">{{ room_id }}</span>
+      <button id="copy-room-btn">Copy Link</button>
+      <span id="live-badge" class="live-badge hidden"><span class="dot"></span> LIVE</span>
+    </div>
+    <div class="timer" id="session-timer">00:00:00</div>
+  </div>
+
+  <div class="main-grid">
+    <div class="stream-panel">
+      {% if not agora_app_id %}
+      <div class="setup-error">
+        ⚠️ Live streaming isn't configured yet — an admin needs to set <code>AGORA_APP_ID</code> before anyone can go live. The rest of this room (chat, raised hands) still works.
+      </div>
+      {% endif %}
+      <div id="resume-banner" class="resume-banner hidden">This session was live before you reconnected — click Go Live to resume broadcasting.</div>
+      <div id="go-live-panel" class="go-live-prompt">
+        <div class="camera-icon">🎥</div>
+        <p>Click Go Live to start broadcasting from your camera. Students watch it right here in Nelavista — nothing to set up anywhere else.</p>
+        <button id="go-live-btn" class="primary-cta" {% if not agora_app_id %}disabled{% endif %}>Go Live</button>
+      </div>
+      <div id="live-panel" class="hidden">
+        <div class="video-wrap">
+          <div id="local-video"></div>
+        </div>
+        <div class="stream-controls">
+          <button id="stop-live-btn" class="danger">Stop Stream</button>
+        </div>
+      </div>
+      <div class="stream-controls">
+        <button id="end-session-btn" class="danger hidden">End Session</button>
+      </div>
+    </div>
+
+    <div class="side-panel">
+      <div>
+        <span class="section-title">Watching</span>
+        <div class="student-count" id="student-count">0</div>
+      </div>
+      <div>
+        <span class="section-title">Raised Hands</span>
+        <ul class="request-list" id="mic-requests"></ul>
+      </div>
+      <div>
+        <span class="section-title">Struggle Signals</span>
+        <ul class="struggle-list" id="struggle-signals"></ul>
+      </div>
+      <div>
+        <span class="section-title">Chat</span>
+        <div class="chat-box">
+          <div class="chat-log" id="chat-log"></div>
+          <div class="chat-input-row">
+            <input type="text" id="chat-input" placeholder="Message everyone...">
+            <button id="chat-send-btn">Send</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://download.agora.io/sdk/release/AgoraRTC_N.js"></script>
+<script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+<script>
+  const roomId = "{{ room_id }}";
+  const AGORA_APP_ID = {{ agora_app_id | tojson }};
+  const socket = io();
+
+  let sessionStartTime = null;
+  let timerInterval = null;
+  let studentCount = 0;
+  let micRequests = [];
+  let struggleSignals = [];
+
+  // ---------- Agora state ----------
+  let agoraClient = null;
+  let localTracks = { mic: null, cam: null };
+  let isLive = false;
+
+  const goLivePanel = document.getElementById('go-live-panel');
+  const livePanel = document.getElementById('live-panel');
+  const liveBadge = document.getElementById('live-badge');
+  const resumeBanner = document.getElementById('resume-banner');
+  const goLiveBtn = document.getElementById('go-live-btn');
+  const stopLiveBtn = document.getElementById('stop-live-btn');
+  const endBtn = document.getElementById('end-session-btn');
+  const copyBtn = document.getElementById('copy-room-btn');
+  const studentCountEl = document.getElementById('student-count');
+  const micRequestsList = document.getElementById('mic-requests');
+  const struggleSignalsList = document.getElementById('struggle-signals');
+  const timerEl = document.getElementById('session-timer');
+  const chatLog = document.getElementById('chat-log');
+  const chatInput = document.getElementById('chat-input');
+  const chatSendBtn = document.getElementById('chat-send-btn');
+
+  function updateTimer() {
+    if (!sessionStartTime) { timerEl.textContent = '00:00:00'; return; }
+    const elapsed = Math.floor((Date.now() - sessionStartTime) / 1000);
+    const hrs = String(Math.floor(elapsed / 3600)).padStart(2, '0');
+    const mins = String(Math.floor((elapsed % 3600) / 60)).padStart(2, '0');
+    const secs = String(elapsed % 60).padStart(2, '0');
+    timerEl.textContent = `${hrs}:${mins}:${secs}`;
+  }
+  function startTimer() {
+    if (sessionStartTime) return;
+    sessionStartTime = Date.now();
+    timerInterval = setInterval(updateTimer, 1000);
+    updateTimer();
+  }
+
+  function renderMicRequests() {
+    micRequestsList.innerHTML = micRequests.map(req =>
+      `<li><span>${escapeHtml(req.username)}</span><span>
+        <button onclick="approveMic('${req.socketId}')">Ack</button>
+        <button onclick="denyMic('${req.socketId}')">Dismiss</button>
+      </span></li>`
+    ).join('');
+  }
+  function renderStruggleSignals() {
+    struggleSignalsList.innerHTML = struggleSignals.map(sig => `<li>${escapeHtml(sig.username)}: ${escapeHtml(sig.type)}</li>`).join('');
+  }
+  function updateStudentCount(count) {
+    studentCount = count;
+    studentCountEl.textContent = count;
+  }
+  function escapeHtml(s) {
+    const d = document.createElement('div');
+    d.textContent = s == null ? '' : String(s);
+    return d.innerHTML;
+  }
+  function appendChat(entry) {
+    const div = document.createElement('div');
+    div.className = 'msg';
+    div.innerHTML = `<b>${escapeHtml(entry.username)}:</b> ${escapeHtml(entry.text)}`;
+    chatLog.appendChild(div);
+    chatLog.scrollTop = chatLog.scrollHeight;
+  }
+
+  // ---------- Go live via Agora ----------
+  function ensureClient() {
+    if (!agoraClient) {
+      agoraClient = AgoraRTC.createClient({ mode: 'live', codec: 'vp8' });
+    }
+    return agoraClient;
+  }
+
+  async function goLive() {
+    if (!AGORA_APP_ID) {
+      alert('Live streaming is not configured on this server yet.');
+      return;
+    }
+    goLiveBtn.disabled = true;
+    goLiveBtn.textContent = 'Starting…';
+    try {
+      const client = ensureClient();
+      await client.setClientRole('host');
+      await client.join(AGORA_APP_ID, roomId, null, null);
+      const [micTrack, camTrack] = await AgoraRTC.createMicrophoneAndCameraTracks();
+      localTracks.mic = micTrack;
+      localTracks.cam = camTrack;
+      camTrack.play('local-video');
+      await client.publish([micTrack, camTrack]);
+
+      isLive = true;
+      goLivePanel.classList.add('hidden');
+      resumeBanner.classList.add('hidden');
+      livePanel.classList.remove('hidden');
+      liveBadge.classList.remove('hidden');
+      endBtn.classList.remove('hidden');
+      startTimer();
+
+      socket.emit('teacher-go-live', { room: roomId });
+    } catch (err) {
+      console.error('Go live failed:', err);
+      alert('Could not start your camera: ' + (err.message || err));
+      goLiveBtn.disabled = false;
+      goLiveBtn.textContent = 'Go Live';
+    }
+  }
+
+  async function stopLive(notifyServer = true) {
+    if (localTracks.mic) { localTracks.mic.close(); localTracks.mic = null; }
+    if (localTracks.cam) { localTracks.cam.close(); localTracks.cam = null; }
+    if (agoraClient) {
+      try { await agoraClient.leave(); } catch (e) { /* already left */ }
+    }
+    isLive = false;
+    goLivePanel.classList.remove('hidden');
+    livePanel.classList.add('hidden');
+    liveBadge.classList.add('hidden');
+    goLiveBtn.disabled = false;
+    goLiveBtn.textContent = 'Go Live';
+    if (notifyServer) socket.emit('teacher-end-live', { room: roomId });
+  }
+
+  goLiveBtn.addEventListener('click', goLive);
+  stopLiveBtn.addEventListener('click', () => stopLive(true));
+  endBtn.addEventListener('click', async () => {
+    if (!confirm('End this session for everyone?')) return;
+    await stopLive(false);
+    socket.emit('teacher-end-session', { room: roomId });
+    if (timerInterval) clearInterval(timerInterval);
+    socket.disconnect();
+    window.location.href = '/dashboard';
+  });
+  copyBtn.addEventListener('click', () => {
+    const link = `${window.location.origin}/student/${roomId}`;
+    navigator.clipboard.writeText(link);
+    alert('Student join link copied!');
+  });
+  chatSendBtn.addEventListener('click', sendChat);
+  chatInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') sendChat(); });
+  function sendChat() {
+    const text = chatInput.value.trim();
+    if (!text) return;
+    socket.emit('chat-message', { room: roomId, text });
+    chatInput.value = '';
+  }
+
+  // ---------- Socket.IO events ----------
+  socket.on('connect', () => {
+    socket.emit('join-room', { room: roomId, role: 'teacher', username: 'Teacher' });
+  });
+
+  socket.on('room-joined', (data) => {
+    const students = data.existing_participants.filter(p => p.role === 'student').length;
+    updateStudentCount(students);
+    if (data.is_live && !isLive) {
+      // DB says this room was live, but our own Agora publish didn't survive the
+      // reconnect — prompt to resume rather than pretending we're still broadcasting.
+      resumeBanner.classList.remove('hidden');
+    }
+    (data.chat_log || []).forEach(appendChat);
+  });
+
+  socket.on('chat-message', appendChat);
+
+  socket.on('new-participant', (data) => {
+    if (data.role === 'student') updateStudentCount(studentCount + 1);
+  });
+  socket.on('participant-left', (data) => {
+    if (data.role === 'student') updateStudentCount(Math.max(0, studentCount - 1));
+  });
+  socket.on('mic-request-received', (data) => {
+    micRequests.push({ username: data.username, socketId: data.student_sid });
+    renderMicRequests();
+  });
+  socket.on('student-struggle-signal', (data) => {
+    struggleSignals.push({ username: data.username, type: data.type });
+    if (struggleSignals.length > 30) struggleSignals.shift();
+    renderStruggleSignals();
+  });
+  socket.on('error', (data) => {
+    alert(data.message || 'Something went wrong');
+  });
+
+  window.approveMic = function(socketId) {
+    socket.emit('teacher-approve-mic', { room: roomId, student_sid: socketId });
+    micRequests = micRequests.filter(r => r.socketId !== socketId);
+    renderMicRequests();
+  };
+  window.denyMic = function(socketId) {
+    socket.emit('teacher-deny-mic', { room: roomId, student_sid: socketId });
+    micRequests = micRequests.filter(r => r.socketId !== socketId);
+    renderMicRequests();
+  };
+
+  window.addEventListener('beforeunload', () => {
+    stopLive(false);
+    socket.disconnect();
+  });
+</script>
+</body>
+</html>

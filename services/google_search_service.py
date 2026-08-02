@@ -401,6 +401,110 @@ OPENSTAX_MATERIALS = {
         }
     ],
 
+    # Social Sciences / Arts — new departments, previously had zero coverage.
+    'SOC101': [
+        {
+            'title': 'Introduction to Sociology 3e - The Sociological Imagination',
+            'url': 'https://openstax.org/books/introduction-sociology-3e/pages/1-introduction',
+            'description': 'Foundations of sociological thinking'
+        },
+        {
+            'title': 'Introduction to Sociology 3e - Sociological Research',
+            'url': 'https://openstax.org/books/introduction-sociology-3e/pages/2-introduction',
+            'description': 'Research methods in sociology'
+        }
+    ],
+    'SOC201': [
+        {
+            'title': 'Introduction to Sociology 3e - Culture',
+            'url': 'https://openstax.org/books/introduction-sociology-3e/pages/3-introduction',
+            'description': 'Culture and society'
+        },
+        {
+            'title': 'Introduction to Sociology 3e - Socialization',
+            'url': 'https://openstax.org/books/introduction-sociology-3e/pages/5-introduction',
+            'description': 'Social institutions and socialization'
+        }
+    ],
+    'PSY101': [
+        {
+            'title': 'Psychology 2e - Introduction to Psychology',
+            'url': 'https://openstax.org/books/psychology-2e/pages/1-introduction',
+            'description': 'Foundations of psychological science'
+        },
+        {
+            'title': 'Psychology 2e - Psychological Research',
+            'url': 'https://openstax.org/books/psychology-2e/pages/2-introduction',
+            'description': 'Research methods in psychology'
+        }
+    ],
+    'PSY201': [
+        {
+            'title': 'Psychology 2e - States of Consciousness',
+            'url': 'https://openstax.org/books/psychology-2e/pages/4-introduction',
+            'description': 'Consciousness and cognition'
+        },
+        {
+            'title': 'Psychology 2e - Learning',
+            'url': 'https://openstax.org/books/psychology-2e/pages/6-introduction',
+            'description': 'Theories of learning and behavior'
+        }
+    ],
+    # No Nigeria-specific OER exists for Political Science; American Government
+    # covers general government/political-science theory, so it's included as
+    # the closest legitimate open-license match rather than left uncovered.
+    'POL101': [
+        {
+            'title': 'American Government 3e - American Government and Civic Engagement',
+            'url': 'https://openstax.org/books/american-government-3e/pages/1-introduction',
+            'description': 'Foundations of government and political systems (general political science theory)'
+        }
+    ],
+    'PHIL101': [
+        {
+            'title': 'Introduction to Philosophy - Introduction and History of Philosophy',
+            'url': 'https://openstax.org/books/introduction-philosophy/pages/1-introduction',
+            'description': 'What philosophy is and its historical traditions'
+        },
+        {
+            'title': 'Introduction to Philosophy - Logic and Reasoning',
+            'url': 'https://openstax.org/books/introduction-philosophy/pages/5-introduction',
+            'description': 'Logical reasoning and argumentation'
+        }
+    ],
+    'ANT101': [
+        {
+            'title': 'Introduction to Anthropology - The Study of Anthropology',
+            'url': 'https://openstax.org/books/introduction-anthropology/pages/1-introduction',
+            'description': 'Foundations of anthropology as a discipline'
+        }
+    ],
+    # Business Law is the closest OER match for law-adjacent courses in a Business/
+    # Management curriculum — it is not a substitute for Nigerian Legal System,
+    # Constitutional Law, Torts, or other core Law-faculty courses, which have no
+    # free OER equivalent yet.
+    'BUS301': [
+        {
+            'title': 'Business Law I Essentials - Introduction to Law and Legal Systems',
+            'url': 'https://openstax.org/books/business-law-i-essentials/pages/1-introduction',
+            'description': 'Foundations of law and the legal system (business/commercial law context)'
+        }
+    ],
+    'MGT201': [
+        {
+            'title': 'Organizational Behavior - Introduction to Organizational Behavior',
+            'url': 'https://openstax.org/books/organizational-behavior/pages/1-introduction',
+            'description': 'Individual and group behavior in organizations'
+        }
+    ],
+    'FIN201': [
+        {
+            'title': 'Principles of Finance - Introduction to Finance',
+            'url': 'https://openstax.org/books/principles-finance/pages/1-why-it-matters',
+            'description': 'Foundations of corporate and personal finance'
+        }
+    ],
+
     # Mathematics under the "MAT" prefix (same content as MTH101 under a different
     # department's course-code convention).
     'MAT101': [
@@ -443,68 +547,79 @@ OPENSTAX_MATERIALS = {
     ]
 }
 
-GOOGLE_API_KEY = os.environ.get('GOOGLE_CUSTOM_SEARCH_API_KEY')
-GOOGLE_SEARCH_ENGINE_ID = os.environ.get('GOOGLE_SEARCH_ENGINE_ID')
+# Google Custom Search JSON API is permanently closed to new customers as of
+# 2026 (confirmed directly by a Google representative on Google's own developer
+# forum) — existing customers only keep access until Jan 1 2027. Tavily replaces
+# it: a genuine recurring free tier (1,000 credits/month, renews automatically,
+# no credit card), unlike Brave (killed its free tier Feb 2026) or Serper.dev
+# (one-time signup bonus, not a monthly allowance). Get a key at app.tavily.com.
+TAVILY_API_KEY = os.environ.get('TAVILY_API_KEY')
 
 
 def search_google_pdfs(course_code, max_results=10):
     """
-    Search Google Custom Search API for PDF materials related to a course code.
+    Search for PDF materials related to a course code via the Tavily Search API.
+
+    Kept the old function name (search_google_pdfs) since routes/google_search_routes.py
+    and callers elsewhere import it by this name — renaming would be a pure churn
+    change with no behavioral benefit.
 
     Returns (results, api_ok):
       - results: list of dicts with title, url, snippet (possibly empty)
-      - api_ok: False if the API itself failed (bad key, quota, not enabled, network
-        error) — as opposed to the API working fine but genuinely having no results.
+      - api_ok: False if the API itself failed (bad key, quota, network error) —
+        as opposed to the API working fine but genuinely having no results.
         Callers use this to tell students "search is down right now" instead of the
         misleading "no materials found for this course" when it's actually our key.
     """
-    if not GOOGLE_API_KEY or not GOOGLE_SEARCH_ENGINE_ID:
-        print("[WARNING] Google API credentials not configured")
+    if not TAVILY_API_KEY:
+        print("[WARNING] Tavily API key not configured")
         return [], False
 
     # Try multiple query variations for better results
     queries = [
-        f'{course_code} lecture notes filetype:pdf',
-        f'{course_code} past questions filetype:pdf',
-        f'{course_code} study material filetype:pdf'
+        f'{course_code} lecture notes pdf',
+        f'{course_code} past questions pdf',
     ]
 
     all_results = []
     seen_urls = set()
     api_ok = True
 
-    for query in queries[:2]:  # Limit to 2 queries to stay within free tier
+    for query in queries:
         try:
-            url = "https://www.googleapis.com/customsearch/v1"
-            params = {
-                'key': GOOGLE_API_KEY,
-                'cx': GOOGLE_SEARCH_ENGINE_ID,
-                'q': query,
-                'num': min(max_results, 10),
-                'fileType': 'pdf'
-            }
-
-            response = requests.get(url, params=params, timeout=10)
+            response = requests.post(
+                "https://api.tavily.com/search",
+                json={
+                    'api_key': TAVILY_API_KEY,
+                    'query': query,
+                    'search_depth': 'basic',
+                    'max_results': min(max_results, 10),
+                },
+                timeout=10
+            )
             if response.status_code == 200:
                 data = response.json()
-                items = data.get('items', [])
+                items = data.get('results', [])
 
                 for item in items:
-                    pdf_url = item.get('link', '')
-                    if pdf_url and pdf_url not in seen_urls:
+                    pdf_url = item.get('url', '')
+                    # Tavily is a general web search API with no filetype filter —
+                    # only keep direct PDF links, matching the old Google
+                    # fileType=pdf behavior this function's callers expect.
+                    if pdf_url and pdf_url.lower().split('?')[0].endswith('.pdf') and pdf_url not in seen_urls:
                         seen_urls.add(pdf_url)
                         all_results.append({
                             'title': item.get('title', f'{course_code} Material'),
                             'url': pdf_url,
-                            'snippet': item.get('snippet', '')
+                            'snippet': (item.get('content', '') or '')[:300]
                         })
             else:
                 api_ok = False
-                print(f"[ERROR] Google API error: {response.status_code} - {response.text[:200]}")
+                print(f"[ERROR] Tavily API error: {response.status_code} - {response.text[:200]}")
 
         except Exception as e:
             api_ok = False
-            print(f"[ERROR] Google search exception: {str(e)}")
+            print(f"[ERROR] Tavily search exception: {str(e)}")
             continue
 
     return all_results[:max_results], api_ok

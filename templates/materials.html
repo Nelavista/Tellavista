@@ -1397,38 +1397,44 @@ function renderLibrary() {
 function openMaterial(material) {
     const link = material.link || material.file_url || material.external_url;
     if (!link) return alert('File not available.');
-    
+
+    // Third-party sites (OpenStax, Open Textbook Library, LibreTexts, general web
+    // search results) increasingly refuse to render inside an iframe -- modern
+    // Chrome blocks the third-party cookies/framing these sites need, showing
+    // "This content is blocked. Contact the site owner to fix the issue." instead
+    // of the material. That's a browser-side restriction, not fixable by us, so
+    // anything we don't host ourselves (no file_url) opens in a new tab instead.
+    if (!material.file_url && material.external_url) {
+        window.open(link, '_blank', 'noopener,noreferrer');
+        return;
+    }
+
     currentViewingMaterial = material;
-    
+
     // Reset iframe and show loader
     const iframe = document.getElementById('pdfViewerFrame');
     const loader = document.getElementById('pdfLoader');
-    
+
     iframe.classList.remove('loaded');
     loader.classList.remove('hidden');
     iframe.src = ''; // Clear previous
-    
+
     // Set title and source badge
     document.getElementById('viewerTitle').textContent = material.title || 'Document';
-    
+
     const sourceBadge = getSourceBadge(material.source);
     document.getElementById('viewerSourceBadge').innerHTML = `
         <span class="source-badge ${sourceBadge.class}">${sourceBadge.label}</span>
         <span style="color:#6e7681;">${material.courseCode || ''}</span>
     `;
-    
+
     // Show modal
     document.getElementById('pdfViewerModal').classList.add('show');
-    
-    // Start loading PDF
+
+    // Start loading PDF (own-hosted file -- Cloudinary or local /static/, safe to iframe)
     setTimeout(() => {
-        if (material.source === 'google_auto' && link.startsWith('http')) {
-            const viewerUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(link)}&embedded=true`;
-            iframe.src = viewerUrl;
-        } else {
-            iframe.src = link;
-        }
-        
+        iframe.src = link;
+
         // Handle load event
         iframe.onload = () => {
             setTimeout(() => {
@@ -1436,7 +1442,7 @@ function openMaterial(material) {
                 iframe.classList.add('loaded');
             }, 300);
         };
-        
+
         // Fallback timeout
         setTimeout(() => {
             if (!iframe.classList.contains('loaded')) {

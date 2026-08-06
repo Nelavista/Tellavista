@@ -47,6 +47,7 @@
                 <span>📊 {{ material.level }} Level</span>
                 <span>📅 {{ material.semester }}</span>
                 <span>🔖 {{ material.course_type }}</span>
+                <span>🏫 {{ material.university or 'Universal (any school)' }}</span>
                 <span>👤 {{ material.uploaded_by }}</span>
             </div>
             {% if material.next_topic %}

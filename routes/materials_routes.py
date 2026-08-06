@@ -180,7 +180,12 @@ def upload_material():
             file_url=cloudinary_url,
             uploaded_by=author,
             source='uploaded',  # Set source as uploaded
-            is_approved=False
+            is_approved=False,
+            # Tag with the uploader's own university so a student at a different
+            # school doesn't see course-code-specific past questions/notes that
+            # don't match their curriculum -- NULL (no university set) stays
+            # universal, same historical behavior as before this field existed.
+            university=user.university
         )
         db.session.add(new_material)
         db.session.commit()

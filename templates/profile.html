@@ -255,6 +255,49 @@
             border-color: #3b82f6;
             box-shadow: 0 0 0 2px rgba(59,130,246,0.3);
         }
+        .fd-picker-search { margin-bottom: 10px; }
+        .fd-picker-search:disabled { opacity: 0.5; cursor: not-allowed; }
+        .fd-quick-select {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 8px;
+            max-height: 200px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+        .fd-quick-select::-webkit-scrollbar { width: 4px; }
+        .fd-quick-select::-webkit-scrollbar-track { background: #0f172a; border-radius: 6px; }
+        .fd-quick-select::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 6px; }
+        .fd-chip {
+            background: #0f172a;
+            border: 2px solid #2d3a52;
+            color: #9ca3af;
+            padding: 10px 14px;
+            border-radius: 14px;
+            cursor: pointer;
+            font-size: 0.82rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            text-align: center;
+            font-family: inherit;
+        }
+        .fd-chip:hover { border-color: #3b82f6; color: #60a5fa; background: rgba(59, 130, 246, 0.1); }
+        .fd-chip.selected { background: #3b82f6; border-color: #3b82f6; color: white; }
+        .fd-chip .fd-emoji { display: block; font-size: 1.3rem; margin-bottom: 4px; }
+        .fd-curriculum-tag { display: block; font-size: 0.62rem; color: #14b8a6; margin-top: 3px; font-weight: 600; }
+        .picker-empty { grid-column: 1 / -1; text-align: center; color: #6b7280; font-size: 0.85rem; padding: 20px 10px; }
+        .fd-preview {
+            background: rgba(59,130,246,0.1);
+            border: 1px solid rgba(59,130,246,0.3);
+            border-radius: 10px;
+            padding: 10px 14px;
+            margin-top: 10px;
+            font-size: 0.8rem;
+            color: #93c5fd;
+            display: none;
+        }
+        .fd-preview.show { display: block; }
+        .fd-preview span { font-weight: 600; color: #60a5fa; }
         .save-btn-primary {
             background: #3b82f6;
             width: 100%;
@@ -480,6 +523,8 @@
     </style>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/faculty-departments.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/faculty-picker.js') }}"></script>
 </head>
 <body>
 
@@ -594,43 +639,23 @@
 
                 <div class="form-group">
                     <label class="form-label">Faculty</label>
-                    <select name="faculty" class="form-select">
+                    <input type="text" class="form-input fd-picker-search" id="facultySearch" placeholder="🔍 Search faculty (e.g. Science, Law, Engineering)...">
+                    <select name="faculty" id="facultySelect" class="form-select" style="display: none;">
                         <option value="">Select Faculty</option>
-                        <option value="Science" {% if user.faculty == "Science" %}selected{% endif %}>Science</option>
-                        <option value="Engineering" {% if user.faculty == "Engineering" %}selected{% endif %}>Engineering</option>
-                        <option value="Social Sciences" {% if user.faculty == "Social Sciences" %}selected{% endif %}>Social Sciences</option>
-                        <option value="Arts" {% if user.faculty == "Arts" %}selected{% endif %}>Arts</option>
-                        <option value="Education" {% if user.faculty == "Education" %}selected{% endif %}>Education</option>
-                        <option value="Management Sciences" {% if user.faculty == "Management Sciences" %}selected{% endif %}>Management Sciences</option>
-                        <option value="Law" {% if user.faculty == "Law" %}selected{% endif %}>Law</option>
-                        <option value="Pharmacy" {% if user.faculty == "Pharmacy" %}selected{% endif %}>Pharmacy</option>
                     </select>
+                    <div class="fd-quick-select" id="facultyQuickSelect"></div>
                 </div>
 
                 <div class="form-group">
                     <label class="form-label">Department</label>
-                    <select name="department" class="form-select" id="deptSelect">
+                    <input type="text" class="form-input fd-picker-search" id="deptSearch" placeholder="🔍 Search department..." disabled>
+                    <select name="department" class="form-select" id="departmentSelect" style="display: none;">
                         <option value="">Select Department</option>
-                        <option value="Biochemistry" {% if user.department == "Biochemistry" %}selected{% endif %}>Biochemistry</option>
-                        <option value="Mathematics" {% if user.department == "Mathematics" %}selected{% endif %}>Mathematics</option>
-                        <option value="Botany" {% if user.department == "Botany" %}selected{% endif %}>Botany</option>
-                        <option value="Chemistry" {% if user.department == "Chemistry" %}selected{% endif %}>Chemistry</option>
-                        <option value="Fisheries" {% if user.department == "Fisheries" %}selected{% endif %}>Fisheries</option>
-                        <option value="Microbiology" {% if user.department == "Microbiology" %}selected{% endif %}>Microbiology</option>
-                        <option value="Physics" {% if user.department == "Physics" %}selected{% endif %}>Physics</option>
-                        <option value="Science Laboratory Technology" {% if user.department == "SLT" %}selected{% endif %}>Science Laboratory Technology (SLT)</option>
-                        <option value="Computer Science" {% if user.department == "Computer Science" %}selected{% endif %}>Computer Science</option>
-                        <option value="Statistics" {% if user.department == "Statistics" %}selected{% endif %}>Statistics</option>
-                        <option value="Economics" {% if user.department == "Economics" %}selected{% endif %}>Economics</option>
-                        <option value="Mass Communication" {% if user.department == "Mass Communication" %}selected{% endif %}>Mass Communication</option>
-                        <option value="Accounting" {% if user.department == "Accounting" %}selected{% endif %}>Accounting</option>
-                        <option value="Business Administration" {% if user.department == "Business Administration" %}selected{% endif %}>Business Administration</option>
-                        <option value="English" {% if user.department == "English" %}selected{% endif %}>English</option>
-                        <option value="History" {% if user.department == "History" %}selected{% endif %}>History</option>
-                        <option value="Political Science" {% if user.department == "Political Science" %}selected{% endif %}>Political Science</option>
-                        <option value="Psychology" {% if user.department == "Psychology" %}selected{% endif %}>Psychology</option>
-                        <option value="Sociology" {% if user.department == "Sociology" %}selected{% endif %}>Sociology</option>
                     </select>
+                    <div class="fd-quick-select" id="deptQuickSelect"></div>
+                    <div class="fd-preview" id="deptPreview">
+                        📘 <span id="deptPreviewName"></span> — Full curriculum available
+                    </div>
                 </div>
 
                 <div class="form-group">
@@ -1618,6 +1643,18 @@
         refreshSemester();
         updateAvatarAndDisplay();
         bindFormPreviewSync();
+        initFacultyPicker({
+            facultySearchId: 'facultySearch',
+            facultyGridId: 'facultyQuickSelect',
+            facultySelectId: 'facultySelect',
+            deptSearchId: 'deptSearch',
+            deptGridId: 'deptQuickSelect',
+            deptSelectId: 'departmentSelect',
+            deptPreviewId: 'deptPreview',
+            deptPreviewNameId: 'deptPreviewName',
+            currentFaculty: "{{ user.faculty or '' }}",
+            currentDepartment: "{{ user.department or '' }}"
+        });
     }
 
     function initTabs() {

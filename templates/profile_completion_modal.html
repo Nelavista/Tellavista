@@ -227,7 +227,7 @@
             background: #3b82f6;
             border-radius: 6px;
         }
-        .dept-chip {
+        .fd-chip {
             background: #0f172a;
             border: 2px solid #2d3a52;
             color: #9ca3af;
@@ -240,17 +240,17 @@
             text-align: center;
             font-family: inherit;
         }
-        .dept-chip:hover {
+        .fd-chip:hover {
             border-color: #3b82f6;
             color: #60a5fa;
             background: rgba(59, 130, 246, 0.1);
         }
-        .dept-chip.selected {
+        .fd-chip.selected {
             background: #3b82f6;
             border-color: #3b82f6;
             color: white;
         }
-        .dept-chip .dept-emoji {
+        .fd-chip .fd-emoji {
             display: block;
             font-size: 1.3rem;
             margin-bottom: 4px;
@@ -281,6 +281,32 @@
         .dept-preview span {
             font-weight: 600;
             color: #60a5fa;
+        }
+
+        /* Search-filterable picker (faculty + department) */
+        .picker-search {
+            margin-bottom: 10px;
+        }
+        .picker-search:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .picker-empty {
+            grid-column: 1 / -1;
+            text-align: center;
+            color: #6b7280;
+            font-size: 0.85rem;
+            padding: 20px 10px;
+        }
+        .fd-curriculum-tag {
+            display: block;
+            font-size: 0.62rem;
+            color: #14b8a6;
+            margin-top: 3px;
+            font-weight: 600;
+        }
+        #facultyQuickSelect {
+            max-height: 180px;
         }
 
         /* Submit Button */
@@ -449,7 +475,7 @@
             <!-- Info Badge -->
             <div class="info-badge">
                 <span class="info-badge-icon">ℹ️</span>
-                <span>All fields are required. This helps us recommend the right materials and connect you with your classmates. <strong>Choose from 8 LASU departments below!</strong></span>
+                <span>All fields are required. This helps us recommend the right materials and connect you with your classmates. <strong>Pick your faculty first, then your department.</strong></span>
             </div>
 
             <!-- Error Message -->
@@ -499,19 +525,11 @@
                     <label class="form-label">
                         Faculty <span class="required">*</span>
                     </label>
-                    <select name="faculty" class="form-select" required>
+                    <input type="text" class="form-input picker-search" id="facultySearch" placeholder="🔍 Search faculty (e.g. Science, Law, Engineering)...">
+                    <select name="faculty" id="facultySelect" class="form-select" required style="display: none;">
                         <option value="">Select your faculty</option>
-                        <option value="Science">🔬 Science</option>
-                        <option value="Engineering">⚙️ Engineering</option>
-                        <option value="Social Sciences">🌍 Social Sciences</option>
-                        <option value="Arts">🎨 Arts</option>
-                        <option value="Education">📚 Education</option>
-                        <option value="Management Sciences">💼 Management Sciences</option>
-                        <option value="Law">⚖️ Law</option>
-                        <option value="Pharmacy">💊 Pharmacy</option>
-                        <option value="Medicine">🏥 Medicine</option>
-                        <option value="Agriculture">🌾 Agriculture</option>
                     </select>
+                    <div class="dept-quick-select" id="facultyQuickSelect"></div>
                 </div>
 
                 <!-- Department - Quick Select Grid -->
@@ -519,18 +537,16 @@
                     <label class="form-label">
                         Major Course / Department <span class="required">*</span>
                     </label>
-                    
+                    <input type="text" class="form-input picker-search" id="deptSearch" placeholder="🔍 Search department..." disabled>
+
                     <!-- Hidden actual select for form submission -->
                     <select name="department" id="departmentSelect" class="form-select" required style="display: none;">
                         <option value="">Select your department</option>
                     </select>
-                    
+
                     <!-- Visual Department Grid -->
-                    <div class="dept-quick-select" id="deptQuickSelect">
-                        <!-- LASU Science Departments (with curriculum) -->
-                        <!-- Will be populated by JavaScript -->
-                    </div>
-                    
+                    <div class="dept-quick-select" id="deptQuickSelect"></div>
+
                     <!-- Department Preview -->
                     <div class="dept-preview" id="deptPreview">
                         📘 <span id="deptPreviewName"></span> — Full LASU curriculum available (100L–400L)
@@ -580,103 +596,21 @@
     </div>
 </div>
 
+<script src="{{ url_for('static', filename='js/faculty-departments.js') }}"></script>
+<script src="{{ url_for('static', filename='js/faculty-picker.js') }}"></script>
 <script>
-    // ===== LASU DEPARTMENTS WITH FULL CURRICULUM =====
-    const lasuDepartments = [
-        { value: "Biochemistry", label: "Biochemistry", emoji: "🧬", hasCurriculum: true, totalCourses: 42 },
-        { value: "Mathematics", label: "Mathematics", emoji: "📐", hasCurriculum: true, totalCourses: 48 },
-        { value: "Computer Science", label: "Computer Science", emoji: "💻", hasCurriculum: false, totalCourses: null },
-        { value: "Botany", label: "Botany", emoji: "🌿", hasCurriculum: true, totalCourses: 40 },
-        { value: "Chemistry", label: "Chemistry", emoji: "⚗️", hasCurriculum: true, totalCourses: 44 },
-        { value: "Fisheries", label: "Fisheries", emoji: "🐟", hasCurriculum: true, totalCourses: 38 },
-        { value: "Microbiology", label: "Microbiology", emoji: "🔬", hasCurriculum: true, totalCourses: 38 },
-        { value: "Physics", label: "Physics", emoji: "⚛️", hasCurriculum: true, totalCourses: 38 },
-        { value: "Biology", label: "Biology", emoji: "🧫", hasCurriculum: false, totalCourses: null },
-        { value: "SLT", label: "Science Lab Tech", emoji: "🧪", hasCurriculum: true, totalCourses: 36 }
-        
-    ];
-
-    // Other departments (no curriculum yet)
-    const otherDepartments = [
-        { value: "Statistics", label: "Statistics", emoji: "📊", hasCurriculum: false, totalCourses: null },
-        { value: "Economics", label: "Economics", emoji: "💰", hasCurriculum: false, totalCourses: null },
-        { value: "Mass Communication", label: "Mass Communication", emoji: "📡", hasCurriculum: false, totalCourses: null },
-        { value: "Accounting", label: "Accounting", emoji: "📋", hasCurriculum: false, totalCourses: null },
-        { value: "Business Administration", label: "Business Admin", emoji: "🏢", hasCurriculum: false, totalCourses: null },
-        { value: "English", label: "English", emoji: "📖", hasCurriculum: false, totalCourses: null },
-        { value: "History", label: "History", emoji: "🏛️", hasCurriculum: false, totalCourses: null },
-        { value: "Political Science", label: "Political Science", emoji: "🏛️", hasCurriculum: false, totalCourses: null },
-        { value: "Psychology", label: "Psychology", emoji: "🧠", hasCurriculum: false, totalCourses: null },
-        { value: "Sociology", label: "Sociology", emoji: "👥", hasCurriculum: false, totalCourses: null },
-        { value: "Other", label: "Other", emoji: "📚", hasCurriculum: false, totalCourses: null }
-    ];
-
-    // Populate department grid and hidden select
-    function populateDepartments() {
-        const grid = document.getElementById('deptQuickSelect');
-        const hiddenSelect = document.getElementById('departmentSelect');
-        
-        // Add LASU Science Departments section
-        let gridHTML = '<div class="dept-divider">📘 LASU Science (with full curriculum)</div>';
-        lasuDepartments.forEach(dept => {
-            gridHTML += `
-                <button type="button" class="dept-chip" data-value="${dept.value}" data-label="${dept.label}" data-emoji="${dept.emoji}" data-curriculum="${dept.hasCurriculum}" data-courses="${dept.totalCourses || ''}">
-                    <span class="dept-emoji">${dept.emoji}</span>
-                    ${dept.label}
-                    <span style="font-size:0.65rem;display:block;color:#14b8a6;">${dept.totalCourses} courses</span>
-                </button>`;
-        });
-        
-        // Add Other Departments section
-        gridHTML += '<div class="dept-divider">📚 Other Departments</div>';
-        otherDepartments.forEach(dept => {
-            gridHTML += `
-                <button type="button" class="dept-chip" data-value="${dept.value}" data-label="${dept.label}" data-emoji="${dept.emoji}" data-curriculum="${dept.hasCurriculum}">
-                    <span class="dept-emoji">${dept.emoji}</span>
-                    ${dept.label}
-                </button>`;
-        });
-        
-        grid.innerHTML = gridHTML;
-        
-        // Populate hidden select
-        let selectHTML = '<option value="">Select your department</option>';
-        const allDepts = [...lasuDepartments, ...otherDepartments];
-        allDepts.forEach(dept => {
-            selectHTML += `<option value="${dept.value}">${dept.label}</option>`;
-        });
-        hiddenSelect.innerHTML = selectHTML;
-        
-        // Add click handlers to chips
-        document.querySelectorAll('.dept-chip').forEach(chip => {
-            chip.addEventListener('click', function() {
-                // Remove selected from all chips
-                document.querySelectorAll('.dept-chip').forEach(c => c.classList.remove('selected'));
-                // Add selected to clicked chip
-                this.classList.add('selected');
-                
-                // Update hidden select
-                const value = this.dataset.value;
-                hiddenSelect.value = value;
-                
-                // Trigger change event for progress tracking
-                hiddenSelect.dispatchEvent(new Event('change'));
-                
-                // Show preview if curriculum available
-                const preview = document.getElementById('deptPreview');
-                const previewName = document.getElementById('deptPreviewName');
-                if (this.dataset.curriculum === 'true') {
-                    previewName.textContent = this.dataset.label;
-                    preview.classList.add('show');
-                } else {
-                    preview.classList.remove('show');
-                }
-                
-                // Scroll chip into view if needed
-                this.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            });
-        });
-    }
+    initFacultyPicker({
+        facultySearchId: 'facultySearch',
+        facultyGridId: 'facultyQuickSelect',
+        facultySelectId: 'facultySelect',
+        deptSearchId: 'deptSearch',
+        deptGridId: 'deptQuickSelect',
+        deptSelectId: 'departmentSelect',
+        deptPreviewId: 'deptPreview',
+        deptPreviewNameId: 'deptPreviewName',
+        currentFaculty: "{{ user.faculty or '' }}",
+        currentDepartment: "{{ user.department or '' }}"
+    });
 
     // ===== FORM LOGIC =====
     const form = document.getElementById('profileCompletionForm');
@@ -716,17 +650,19 @@
                 allFilled = false;
                 input.style.borderColor = '#ef4444';
                 
-                // If hidden select is empty, highlight the grid
-                if (input.id === 'departmentSelect') {
-                    document.getElementById('deptQuickSelect').style.border = '2px solid #ef4444';
-                    document.getElementById('deptQuickSelect').style.borderRadius = '12px';
-                    document.getElementById('deptQuickSelect').style.padding = '8px';
+                // If hidden select is empty, highlight the matching grid
+                const gridId = input.id === 'departmentSelect' ? 'deptQuickSelect' : (input.id === 'facultySelect' ? 'facultyQuickSelect' : null);
+                if (gridId) {
+                    document.getElementById(gridId).style.border = '2px solid #ef4444';
+                    document.getElementById(gridId).style.borderRadius = '12px';
+                    document.getElementById(gridId).style.padding = '8px';
                 }
             } else {
                 input.style.borderColor = '#2d3a52';
-                if (input.id === 'departmentSelect') {
-                    document.getElementById('deptQuickSelect').style.border = 'none';
-                    document.getElementById('deptQuickSelect').style.padding = '0';
+                const gridId = input.id === 'departmentSelect' ? 'deptQuickSelect' : (input.id === 'facultySelect' ? 'facultyQuickSelect' : null);
+                if (gridId) {
+                    document.getElementById(gridId).style.border = 'none';
+                    document.getElementById(gridId).style.padding = '0';
                 }
             }
         });
@@ -734,13 +670,15 @@
         if (!allFilled) {
             e.preventDefault();
             errorMessage.classList.add('show');
-            
+
             // Find first empty field
             const firstEmpty = Array.from(inputs).find(input => input.value.trim() === '');
             if (firstEmpty) {
                 if (firstEmpty.id === 'departmentSelect') {
                     // Scroll to department grid
                     document.getElementById('deptQuickSelect').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                } else if (firstEmpty.id === 'facultySelect') {
+                    document.getElementById('facultyQuickSelect').scrollIntoView({ behavior: 'smooth', block: 'center' });
                 } else {
                     firstEmpty.focus();
                     firstEmpty.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -778,15 +716,26 @@
     });
 
     // Initialize on page load
-    populateDepartments();
     updateProgress();
 
-    // Auto-select department if URL has prefill (optional)
+    // Auto-select department if URL has prefill (optional) -- faculty/department
+    // chips are already rendered by initFacultyPicker() above, but a prefilled
+    // department needs its faculty selected first so the department grid
+    // actually contains it.
     const urlParams = new URLSearchParams(window.location.search);
     const prefillDept = urlParams.get('department');
     if (prefillDept) {
-        const chip = document.querySelector(`.dept-chip[data-value="${prefillDept}"]`);
-        if (chip) chip.click();
+        const facultyName = Object.keys(FACULTY_DEPARTMENTS).find(f =>
+            FACULTY_DEPARTMENTS[f].departments.some(d => d.value === prefillDept)
+        );
+        if (facultyName) {
+            const facultyChip = document.querySelector(`#facultyQuickSelect .fd-chip[data-faculty="${facultyName}"]`);
+            if (facultyChip) facultyChip.click();
+        }
+        setTimeout(() => {
+            const deptChip = document.querySelector(`#deptQuickSelect .fd-chip[data-value="${prefillDept}"]`);
+            if (deptChip) deptChip.click();
+        }, 0);
     }
 </script>
 

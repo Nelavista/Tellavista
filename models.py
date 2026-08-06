@@ -114,6 +114,12 @@ class Material(db.Model):
     department = db.Column(db.String(150), nullable=False)   # e.g. "Computer Science"
     level = db.Column(db.String(50), nullable=False)         # e.g. "200"
     semester = db.Column(db.String(20), nullable=False)      # "First Semester" / "Second Semester"
+    university = db.Column(db.String(150), nullable=True)    # NULL = universal (shown to everyone);
+                                                               # set = specific to that school's own
+                                                               # curriculum/past-questions (e.g. exact
+                                                               # course-code numbering, professor's own
+                                                               # exam), not shown to students at a
+                                                               # different, explicitly-set university
 
     # ── authorship / description ─────────────────────────────────────────────
     author = db.Column(db.String(200))
@@ -146,6 +152,7 @@ class Material(db.Model):
             'department': self.department,
             'level': self.level,
             'semester': self.semester,
+            'university': self.university,
             'course_code': self.course_code or self.course_type,
             'author': self.author,
             'description': self.description,

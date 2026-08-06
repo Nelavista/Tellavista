@@ -216,6 +216,20 @@ def fetch_materials():
         if semester:
             query = query.filter_by(semester=semester)
 
+        # University scoping: Material.university=NULL means universal (shown to
+        # everyone). A student who has explicitly set a university OTHER than
+        # Lagos State University shouldn't see LASU-specific past-questions/course
+        # numbering tagged for a different school. Students with no university set
+        # (the majority, historically LASU's own userbase before this field
+        # existed) keep seeing everything, same as before this feature existed --
+        # only an explicit "I'm at a different school" hides the mismatched content.
+        username = session['user']['username']
+        current_user = User.query.filter_by(username=username).first()
+        if current_user and current_user.university and current_user.university != 'Lagos State University':
+            query = query.filter(
+                (Material.university.is_(None)) | (Material.university == current_user.university)
+            )
+
         # Order by id descending
         results = query.order_by(Material.id.desc()).all()
 

@@ -324,6 +324,7 @@ const userLevel      = "{{ user.level or '' }}";
 const userName       = "{{ user.name or 'Student' }}";
 const userLevelNum   = userLevel.toString().replace(/[^0-9]/g, '') || '100';
 const userSemester   = "{{ user.semester or '' }}";
+const userUniversity = "{{ user.university or '' }}";
 
 // ============================================================
 //  STORAGE KEY — unique per student level + department
@@ -335,7 +336,13 @@ function getStorageKey() {
 // ============================================================
 //  COURSE CODES DATABASE
 // ============================================================
+// Keyed by university first, then department/level -- each school has its own
+// course-code numbering (this curriculum is Lagos State University's). A
+// student at a different, explicitly-set university falls back gracefully to
+// "no course codes found, browse all materials" (see showOnboarding()) rather
+// than being shown LASU's codes as if they were universal.
 const COURSE_CODES_DB = {
+  "Lagos State University": {
     "Biochemistry": {
         "100": [
             { code:"CHM101", name:"General Chemistry I" },
@@ -347,7 +354,7 @@ const COURSE_CODES_DB = {
             { code:"MTH101", name:"General Mathematics I" },
             { code:"CIT111", name:"Introduction to ICT" },
             { code:"FRN221", name:"Basic French" },
-            { code:"GNS101", name:"Use of English I" },
+            { code:"GST111", name:"Communication in English I" },
             { code:"LIB101", name:"Use of Library" },
             { code:"CHM102", name:"General Chemistry II" },
             { code:"CHM108", name:"Experimental Chemistry II" },
@@ -358,7 +365,7 @@ const COURSE_CODES_DB = {
             { code:"MTH102", name:"General Mathematics II" },
             { code:"CIT112", name:"Intro to Computer Programming" },
             { code:"FRN222", name:"French for Specific Purposes" },
-            { code:"GNS102", name:"Use of English II" }
+            { code:"GST122", name:"Communication in English II" }
         ],
         "200": [
             { code:"BCH201", name:"General Biochemistry I" },
@@ -368,7 +375,7 @@ const COURSE_CODES_DB = {
             { code:"CHM205", name:"Physical Chemistry I" },
             { code:"CHM207", name:"Inorganic Chemistry I" },
             { code:"CHM291", name:"Experimental Physical/Inorganic Chemistry" },
-            { code:"GNS201", name:"Nigerian Peoples and Culture" },
+            { code:"GST113", name:"Nigerian Peoples & Culture" },
             { code:"CIT201", name:"Structured Programming" },
             { code:"BCH202", name:"General Biochemistry II" },
             { code:"BCH204", name:"Biochemical Methods" },
@@ -377,8 +384,7 @@ const COURSE_CODES_DB = {
             { code:"CHM208", name:"Physical Chemistry II" },
             { code:"CHM202", name:"Organic Chemistry I" },
             { code:"CHM292", name:"Experimental Physical/Organic Chemistry" },
-            { code:"GNS202", name:"Osun Peoples and Culture" },
-            { code:"GNS302", name:"Intro to Logic and Philosophy" }
+            { code:"GST112", name:"Logic, Philosophy & Human Existence" }
         ],
         "300": [
             { code:"BCH301", name:"Enzymology" },
@@ -390,7 +396,7 @@ const COURSE_CODES_DB = {
             { code:"CHM303", name:"Organic Chemistry II" },
             { code:"STA201", name:"Statistics for Biological Students" },
             { code:"CHM401", name:"Instrumental Analytical Methods" },
-            { code:"GNS301", name:"Entrepreneurial Skill Development" },
+            { code:"GST311", name:"Entrepreneurship" },
             { code:"BCH399", name:"Industrial Attachment (SIWES)" }
         ],
         "400": [
@@ -951,8 +957,8 @@ const COURSE_CODES_DB = {
             { code:"PHY101", name:"General Physics I" },
             { code:"PHY107", name:"Experimental Physics I" },
             { code:"MTH101", name:"General Mathematics I" },
-            { code:"GNS101", name:"Use of English I" },
-            { code:"GNS102", name:"Use of English II" }
+            { code:"GST111", name:"Communication in English I" },
+            { code:"GST122", name:"Communication in English II" }
         ],
         "200": [
             { code:"BIO201", name:"Cell Biology" },
@@ -1163,6 +1169,7 @@ const COURSE_CODES_DB = {
             { code:"ENT499", name:"Research Project" }
         ]
     }
+  }
 };
 
 // ============================================================
@@ -1484,7 +1491,18 @@ function downloadMaterial(link, title) {
 //  ONBOARDING
 // ============================================================
 function showOnboarding(preSelected) {
-    const courseList = (COURSE_CODES_DB[userDepartment] || {})[userLevelNum] || [];
+    // No university set (the historical default -- most existing students
+    // predate this field) falls back to Lagos State University's curriculum,
+    // same as before this feature existed. An explicitly-set university we
+    // don't have curated course codes for gets an empty list instead of being
+    // shown another school's codes -- the "browse all materials" fallback
+    // below handles that gracefully.
+    const universityKey = !userUniversity
+        ? "Lagos State University"
+        : (COURSE_CODES_DB[userUniversity] ? userUniversity : null);
+    const courseList = universityKey
+        ? ((COURSE_CODES_DB[universityKey][userDepartment] || {})[userLevelNum] || [])
+        : [];
     const hasCourses = courseList.length > 0;
 
     const root = document.getElementById('onboardingRoot');

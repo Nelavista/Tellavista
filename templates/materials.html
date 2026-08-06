@@ -1169,6 +1169,42 @@ const COURSE_CODES_DB = {
             { code:"ENT499", name:"Research Project" }
         ]
     }
+  },
+
+  // Verified against UNILAG's own Centre for General Studies site
+  // (gstonline.unilag.edu.ng). Department-specific courses not yet added --
+  // students here currently see general-studies courses only.
+  "University of Lagos": {
+    "_general": {
+        "100": [
+            { code:"GST102", name:"Philosophy, Logic and Philosophy of Science" },
+            { code:"GST103", name:"Nigerian Peoples and Culture" },
+            { code:"GST105", name:"Use of English/Library" }
+        ],
+        "200": [
+            { code:"GST201", name:"General African Studies" },
+            { code:"GST214", name:"Basic Computer Studies" }
+        ],
+        "300": [
+            { code:"GST307", name:"Entrepreneurship and Business Innovation Studies" }
+        ]
+    }
+  },
+
+  // Verified against University of Ibadan's own published Faculty of
+  // Technology 100-level course list (ui.edu.ng). Department-specific courses
+  // not yet added -- students here currently see general-studies courses only.
+  "University of Ibadan": {
+    "_general": {
+        "100": [
+            { code:"GES101", name:"Use of English" },
+            { code:"GES107", name:"Reproductive Health: STIs and HIV" },
+            { code:"GES108", name:"Introduction to French" }
+        ],
+        "200": [
+            { code:"GES201", name:"Use of English II" }
+        ]
+    }
   }
 };
 
@@ -1500,9 +1536,19 @@ function showOnboarding(preSelected) {
     const universityKey = !userUniversity
         ? "Lagos State University"
         : (COURSE_CODES_DB[userUniversity] ? userUniversity : null);
-    const courseList = universityKey
+    // Merge general-studies courses (under the "_general" pseudo-department,
+    // which applies to every student at that school regardless of their real
+    // department) with department-specific ones. Some schools we've only
+    // researched general-studies codes for so far -- this still surfaces
+    // those instead of showing nothing until a department-specific curriculum
+    // gets added later.
+    const generalCourses = universityKey
+        ? ((COURSE_CODES_DB[universityKey]['_general'] || {})[userLevelNum] || [])
+        : [];
+    const deptCourses = universityKey
         ? ((COURSE_CODES_DB[universityKey][userDepartment] || {})[userLevelNum] || [])
         : [];
+    const courseList = [...generalCourses, ...deptCourses];
     const hasCourses = courseList.length > 0;
 
     const root = document.getElementById('onboardingRoot');

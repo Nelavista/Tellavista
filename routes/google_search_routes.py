@@ -3,6 +3,7 @@ from utils.helpers import login_required
 from models import Material
 from extensions import db
 from services.google_search_service import OPENSTAX_MATERIALS, search_google_pdfs
+from services.open_textbook_library_service import search_open_textbook_library
 
 google_search_bp = Blueprint('google_search', __name__)
 
@@ -85,8 +86,43 @@ def fetch_google_materials_batch():
                         seen_urls.add(material.external_url)
                         all_materials.append(material.to_dict())
 
-            # === STEP 3: If no OpenStax materials and no cache, fetch from Google ===
-            if not openstax_resources and not cached:
+            # === STEP 2.5: Check cached Open Textbook Library materials ===
+            cached_otl = Material.query.filter_by(
+                course_code=code,
+                source='oer_library',
+                is_approved=True
+            ).all()
+
+            if cached_otl:
+                for material in cached_otl:
+                    if material.external_url and material.external_url not in seen_urls:
+                        seen_urls.add(material.external_url)
+                        all_materials.append(material.to_dict())
+
+            # === STEP 3: Nothing cached anywhere for this course — try live sources ===
+            if not openstax_resources and not cached and not cached_otl:
+                # Open Textbook Library first — real textbooks, keyed by department
+                # rather than course code, so it works even for course codes Tavily's
+                # keyword search wouldn't match well.
+                otl_results, otl_ok = search_open_textbook_library(department, max_results=3)
+                for r in otl_results:
+                    if r['url'] not in seen_urls:
+                        seen_urls.add(r['url'])
+                        new_material = Material(
+                            title=r['title'][:200],
+                            course_code=code,
+                            external_url=r['url'],
+                            source='oer_library',
+                            is_approved=True,
+                            uploaded_by='Open Textbook Library',
+                            department=department,
+                            level=level,
+                            semester=semester,
+                            next_topic=r.get('snippet', '')[:190]
+                        )
+                        db.session.add(new_material)
+                        all_materials.append(new_material.to_dict())
+
                 results, api_ok = search_google_pdfs(code, max_results=5)
                 if not api_ok:
                     google_unavailable = True
@@ -187,8 +223,36 @@ def fetch_google_materials(course_code):
             for material in cached:
                 all_materials.append(material.to_dict())
 
-        # If no OpenStax and no cache, fetch from Google
-        if not openstax_resources and not cached:
+        # Check cached Open Textbook Library materials
+        cached_otl = Material.query.filter_by(
+            course_code=course_code,
+            source='oer_library',
+            is_approved=True
+        ).all()
+
+        if cached_otl:
+            for material in cached_otl:
+                all_materials.append(material.to_dict())
+
+        # Nothing cached anywhere for this course — try live sources
+        if not openstax_resources and not cached and not cached_otl:
+            otl_results, otl_ok = search_open_textbook_library(department, max_results=3)
+            for r in otl_results:
+                new_material = Material(
+                    title=r['title'][:200],
+                    course_code=course_code,
+                    external_url=r['url'],
+                    source='oer_library',
+                    is_approved=True,
+                    uploaded_by='Open Textbook Library',
+                    department=department,
+                    level=level,
+                    semester=semester,
+                    next_topic=r.get('snippet', '')[:190]
+                )
+                db.session.add(new_material)
+                all_materials.append(new_material.to_dict())
+
             results, api_ok = search_google_pdfs(course_code, max_results=8)
             if not api_ok:
                 google_unavailable = True

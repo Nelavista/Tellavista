@@ -1441,17 +1441,11 @@ function openMaterial(material) {
     const link = material.link || material.file_url || material.external_url;
     if (!link) return alert('File not available.');
 
-    // Third-party sites (OpenStax, Open Textbook Library, LibreTexts, general web
-    // search results) increasingly refuse to render inside an iframe -- modern
-    // Chrome blocks the third-party cookies/framing these sites need, showing
-    // "This content is blocked. Contact the site owner to fix the issue." instead
-    // of the material. That's a browser-side restriction, not fixable by us, so
-    // anything we don't host ourselves (no file_url) opens in a new tab instead.
-    if (!material.file_url && material.external_url) {
-        window.open(link, '_blank', 'noopener,noreferrer');
-        return;
-    }
-
+    // Every material in the DB has already been verified embeddable (checked
+    // for X-Frame-Options/CSP frame-ancestors headers before being stored --
+    // see the cleanup that removed ones that would show "This content is
+    // blocked. Contact the site owner to fix the issue."), so everything
+    // routes through the in-app iframe viewer below rather than a new tab.
     currentViewingMaterial = material;
 
     // Reset iframe and show loader
@@ -1474,7 +1468,7 @@ function openMaterial(material) {
     // Show modal
     document.getElementById('pdfViewerModal').classList.add('show');
 
-    // Start loading PDF (own-hosted file -- Cloudinary or local /static/, safe to iframe)
+    // Load into the iframe
     setTimeout(() => {
         iframe.src = link;
 

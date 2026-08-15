@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Privacy Settings · Nelavista Skills</title>
+  <meta name="theme-color" content="#111827">
+  <link rel="icon" type="image/png" sizes="32x32" href="/static/icons/nelavista-32x32.png">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/skills.css') }}">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
+  <style>
+    .st-option { display: flex; align-items: flex-start; gap: 12px; padding: 14px 0; border-bottom: 1px solid #1f2a3e; }
+    .st-option:last-child { border-bottom: none; }
+    .st-option input[type="radio"], .st-option input[type="checkbox"] { margin-top: 3px; accent-color: #3b82f6; width: 18px; height: 18px; flex-shrink: 0; }
+    .st-option-title { font-weight: 600; font-size: 0.92rem; }
+    .st-option-desc { font-size: 0.8rem; color: #9ca3af; margin-top: 2px; }
+  </style>
+</head>
+<body>
+{% include 'components/skills_sidebar.html' %}
+
+  <div class="sk-view" style="max-width:680px;">
+    <span class="sk-eyebrow">Privacy</span>
+    <h1 class="sk-h1">Skills Privacy Settings</h1>
+    <p class="sk-sub">You control exactly what employers can see. Nothing here affects your Academia profile or account settings.</p>
+
+    <form method="POST">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+      <div class="sk-section-title">Profile Visibility</div>
+      <div class="sk-panel">
+        <label class="st-option">
+          <input type="radio" name="profile_visibility" value="private" {{ 'checked' if not privacy or privacy.profile_visibility == 'private' else '' }}>
+          <div><div class="st-option-title">Private</div><div class="st-option-desc">Invisible to employer discovery entirely. This is the default.</div></div>
+        </label>
+        <label class="st-option">
+          <input type="radio" name="profile_visibility" value="employers" {{ 'checked' if privacy and privacy.profile_visibility == 'employers' else '' }}>
+          <div><div class="st-option-title">Employers only</div><div class="st-option-desc">Discoverable by employer accounts searching Nelavista, not shown on any public page.</div></div>
+        </label>
+        <label class="st-option">
+          <input type="radio" name="profile_visibility" value="public" {{ 'checked' if privacy and privacy.profile_visibility == 'public' else '' }}>
+          <div><div class="st-option-title">Public</div><div class="st-option-desc">Discoverable by employers and visible to anyone with your profile link.</div></div>
+        </label>
+      </div>
+
+      <div class="sk-section-title">What Employers Can See (if discoverable)</div>
+      <div class="sk-panel">
+        <label class="st-option">
+          <input type="checkbox" name="show_skill_transcript" {{ 'checked' if not privacy or privacy.show_skill_transcript else '' }}>
+          <div><div class="st-option-title">Skill Transcript</div><div class="st-option-desc">Skill GPA, grades, and cohort rank for your 30-Day Classes.</div></div>
+        </label>
+        <label class="st-option">
+          <input type="checkbox" name="show_projects" {{ 'checked' if not privacy or privacy.show_projects else '' }}>
+          <div><div class="st-option-title">Completed Projects</div><div class="st-option-desc">Your finished projects, including repo/live links you've added.</div></div>
+        </label>
+        <label class="st-option">
+          <input type="checkbox" name="show_academic_cgpa" {{ 'checked' if privacy and privacy.show_academic_cgpa else '' }}>
+          <div><div class="st-option-title">Academic CGPA (self-reported)</div><div class="st-option-desc">Off by default. Nelavista does not verify this against your university — it's shown as self-reported if you turn it on.</div></div>
+        </label>
+      </div>
+
+      <div class="sk-section-title">Self-Reported Academic CGPA</div>
+      <div class="sk-panel">
+        <p class="sk-card-desc" style="margin-bottom:12px;">This is completely separate from your <strong>Nelavista Skill GPA</strong>, which is calculated automatically from your class work. Nelavista has no way to verify a university-issued CGPA — only enter this if you want to voluntarily share it, and it will always be labeled "self-reported, unverified" wherever it's shown.</p>
+        <div class="sk-field" style="margin-bottom:0;">
+          <label class="sk-label">Your CGPA (0.0 – 5.0 scale)</label>
+          <input class="sk-input" type="number" step="0.01" min="0" max="5" name="academic_cgpa" value="{{ user.academic_cgpa if user.academic_cgpa is not none else '' }}" placeholder="e.g. 4.32">
+        </div>
+      </div>
+
+      <button type="submit" class="sk-btn full" style="margin-top:20px;">Save Settings</button>
+    </form>
+  </div>
+
+{% include 'components/skills_footer.html' %}
+</body>
+</html>

@@ -26,6 +26,10 @@ from routes.reels_routes import reels_bp
 from routes.cbt_routes import cbt_bp
 from routes.admin_routes import admin_bp
 from routes.community_routes import community_bp
+from routes.tech_routes import tech_bp
+from routes.skills_routes import skills_bp
+from routes.admin_skills_routes import admin_skills_bp
+from routes.employer_routes import employer_bp
 
 # Import socketio events to register handlers
 import events
@@ -48,6 +52,12 @@ def create_app():
     app.config['WTF_CSRF_TIME_LIMIT'] = None
     app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    # Render's free-tier Postgres silently closes idle connections; without pre-ping,
+    # the next request to reuse that connection from the pool fails with a raw
+    # OperationalError ("server closed the connection unexpectedly") instead of
+    # transparently reconnecting. pool_pre_ping issues a cheap SELECT 1 before handing a
+    # pooled connection to a request, so a dead one gets replaced instead of used.
+    app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_pre_ping': True}
     app.config['MAX_CONTENT_LENGTH'] = MAX_CONTENT_LENGTH
     app.config['UPLOAD_FOLDER'] = os.path.join(os.getcwd(), 'uploads')
     app.config['IMAGE_FOLDER'] = os.path.join(os.getcwd(), 'extracted_images')
@@ -174,6 +184,10 @@ def create_app():
     app.register_blueprint(cbt_bp, url_prefix='/')
     app.register_blueprint(admin_bp, url_prefix='/')
     app.register_blueprint(community_bp, url_prefix='/')
+    app.register_blueprint(tech_bp, url_prefix='/')
+    app.register_blueprint(skills_bp, url_prefix='/')
+    app.register_blueprint(admin_skills_bp, url_prefix='/')
+    app.register_blueprint(employer_bp, url_prefix='/')
 
     return app
 

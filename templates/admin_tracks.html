@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin · Learning Paths · Nelavista</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Inter',system-ui,sans-serif; }
+        body { background:#0d1117; color:#e6edf3; }
+        .container { max-width:1000px; margin:0 auto; padding:28px 20px 80px; }
+        .back-link { color:#8b949e; text-decoration:none; font-size:0.85rem; }
+        .back-link:hover { color:#58a6ff; }
+        h1 { font-size:1.5rem; margin:14px 0 6px; }
+        .subtitle { color:#8b949e; font-size:0.9rem; margin-bottom:24px; }
+        .btn { background:#238636; border:none; color:#fff; padding:9px 16px; border-radius:8px; font-size:0.85rem; font-weight:600; cursor:pointer; }
+        .btn:hover { background:#2ea043; }
+        .btn.secondary { background:#21262d; border:1px solid #30363d; color:#e6edf3; }
+        .btn.secondary:hover { border-color:#58a6ff; }
+        .btn.danger { background:#da3633; } .btn.danger:hover { background:#f85149; }
+        .btn.small { padding:6px 12px; font-size:0.78rem; }
+        .section-row { display:flex; justify-content:space-between; align-items:center; margin:24px 0 14px; }
+
+        .track-card { background:#161b22; border:1px solid #21262d; border-radius:14px; padding:18px; margin-bottom:14px; }
+        .track-head { display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; margin-bottom:12px; }
+        .track-title { font-weight:700; font-size:1rem; }
+        .track-desc { color:#8b949e; font-size:0.82rem; margin-top:3px; }
+        .pub-badge { font-size:0.62rem; font-weight:700; padding:2px 8px; border-radius:10px; margin-left:6px; }
+        .pub-badge.yes { background:rgba(63,185,80,0.15); color:#3fb950; }
+        .pub-badge.no { background:rgba(139,148,158,0.15); color:#8b949e; }
+        .track-actions { display:flex; gap:6px; }
+
+        .step-row { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:8px 12px; background:#0d1117; border-radius:8px; margin-bottom:6px; }
+        .step-row .sn { font-size:0.85rem; }
+        /* min-width:0 overrides flex items' default min-width:auto, which otherwise refuses
+           to shrink a <select>/<input> below its intrinsic content width and forces the row
+           (and the whole page) to overflow horizontally on narrow screens. */
+        .add-skill-row { display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; }
+        .add-skill-row select, .add-skill-row input { flex:1; min-width:0; background:#0d1117; border:1px solid #30363d; color:#e6edf3; padding:8px 10px; border-radius:8px; font-size:0.85rem; }
+        .empty-hint { color:#6e7681; font-size:0.82rem; padding:10px 0; }
+
+        @media (max-width: 560px) {
+            .add-skill-row { flex-direction:column; }
+            .add-skill-row select, .add-skill-row input, .add-skill-row button { width:100%; }
+        }
+
+        .modal-backdrop { position:fixed; inset:0; background:rgba(0,0,0,0.6); display:none; align-items:center; justify-content:center; z-index:2000; padding:16px; }
+        .modal-backdrop.active { display:flex; }
+        .modal { background:#161b22; border:1px solid #30363d; border-radius:16px; padding:24px; width:100%; max-width:460px; }
+        .modal h3 { margin-bottom:16px; font-size:1.1rem; }
+        .field { margin-bottom:14px; }
+        .field label { display:block; font-size:0.8rem; color:#8b949e; margin-bottom:6px; font-weight:600; }
+        .field input, .field textarea { width:100%; background:#0d1117; border:1px solid #30363d; color:#e6edf3; padding:9px 12px; border-radius:8px; font-size:0.88rem; font-family:inherit; outline:none; }
+        .field input:focus, .field textarea:focus { border-color:#58a6ff; }
+        .modal-actions { display:flex; gap:8px; justify-content:flex-end; margin-top:18px; }
+    </style>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
+</head>
+<body>
+{% include 'components/admin_nav.html' %}
+<div class="container">
+    <a href="/admin/skills" class="back-link">← Skills</a>
+    <h1>🗺️ Career Tracks</h1>
+    <p class="subtitle">Multi-skill paths — e.g. "AI Engineer" chains Python → Data Analysis → Machine Learning. Distinct from a skill's own internal learning path.</p>
+
+    <div class="section-row">
+        <div></div>
+        <button class="btn" onclick="openTrackModal()">+ New Track</button>
+    </div>
+
+    {% for t in tracks %}
+    <div class="track-card" id="track-{{ t.id }}">
+        <div class="track-head">
+            <div>
+                <span class="track-title">{{ t.icon or '🧭' }} {{ t.title }}</span>
+                <span class="pub-badge {{ 'yes' if t.is_published else 'no' }}">{{ 'LIVE' if t.is_published else 'DRAFT' }}</span>
+                <div class="track-desc">{{ t.tagline or '' }}</div>
+            </div>
+            <div class="track-actions">
+                <button class="btn secondary small" onclick='openTrackModal({{ t.to_dict()|tojson }})'>Edit</button>
+                <button class="btn secondary small" onclick="togglePublish({{ t.id }}, {{ (not t.is_published)|tojson }})">{{ 'Unpublish' if t.is_published else 'Publish' }}</button>
+                <button class="btn danger small" onclick="deleteTrack({{ t.id }})">Delete</button>
+            </div>
+        </div>
+
+        <div id="steps-{{ t.id }}">
+        {% for step in t.steps %}
+        <div class="step-row" id="step-{{ step.id }}">
+            <span class="sn">{{ loop.index }}. {{ step.skill.name if step.skill else 'Unknown' }}{% if step.note %} — <span style="color:#8b949e;">{{ step.note }}</span>{% endif %}</span>
+            <div class="track-actions">
+                <button class="btn secondary small" onclick="moveStep({{ t.id }}, {{ step.id }}, -1)">↑</button>
+                <button class="btn secondary small" onclick="moveStep({{ t.id }}, {{ step.id }}, 1)">↓</button>
+                <button class="btn danger small" onclick="deleteStep({{ step.id }}, {{ t.id }})">Remove</button>
+            </div>
+        </div>
+        {% else %}
+        <div class="empty-hint">No skills in this track yet — add one below.</div>
+        {% endfor %}
+        </div>
+
+        <div class="add-skill-row">
+            <select id="skill-select-{{ t.id }}">
+                {% for s in all_skills %}<option value="{{ s.id }}">{{ s.name }}{{ '' if s.is_published else ' (draft)' }}</option>{% endfor %}
+            </select>
+            <input type="text" id="skill-note-{{ t.id }}" placeholder="Optional note (e.g. 'just the basics')">
+            <button class="btn secondary small" onclick="addStep({{ t.id }})">+ Add</button>
+        </div>
+    </div>
+    {% else %}
+    <div class="empty-hint">No tracks yet — create one to start chaining skills together.</div>
+    {% endfor %}
+</div>
+
+<div class="modal-backdrop" id="trackModal"><div class="modal">
+  <h3 id="trackModalTitle">New Track</h3>
+  <input type="hidden" id="trackId">
+  <div class="field"><label>Title</label><input id="trackTitle" placeholder="e.g. AI Engineer"></div>
+  <div class="field"><label>Tagline</label><input id="trackTagline" placeholder="e.g. From Python basics to shipping ML models"></div>
+  <div class="field"><label>Description</label><textarea id="trackDescription" rows="4"></textarea></div>
+  <div class="field"><label>Icon (single emoji)</label><input id="trackIcon" placeholder="🤖"></div>
+  <div class="modal-actions"><button class="btn secondary" onclick="closeModal()">Cancel</button><button class="btn" onclick="saveTrack()">Save</button></div>
+</div></div>
+
+<script>
+async function jsonFetch(url, method, payload) {
+  const res = await fetch(url, { method, headers: {'Content-Type':'application/json'}, body: payload ? JSON.stringify(payload) : undefined });
+  return res.json();
+}
+function openModal(id) { document.getElementById(id).classList.add('active'); }
+function closeModal() { document.getElementById('trackModal').classList.remove('active'); }
+
+function openTrackModal(track) {
+  document.getElementById('trackModalTitle').textContent = track ? 'Edit Track' : 'New Track';
+  document.getElementById('trackId').value = track ? track.id : '';
+  document.getElementById('trackTitle').value = track ? track.title : '';
+  document.getElementById('trackTagline').value = track ? (track.tagline || '') : '';
+  document.getElementById('trackDescription').value = track ? (track.description || '') : '';
+  document.getElementById('trackIcon').value = track ? (track.icon || '') : '';
+  openModal('trackModal');
+}
+async function saveTrack() {
+  const id = document.getElementById('trackId').value;
+  const payload = {
+    title: document.getElementById('trackTitle').value.trim(),
+    tagline: document.getElementById('trackTagline').value.trim(),
+    description: document.getElementById('trackDescription').value.trim(),
+    icon: document.getElementById('trackIcon').value.trim(),
+  };
+  if (!payload.title) return alert('Title is required');
+  const url = id ? `/admin/api/tracks/${id}` : '/admin/api/tracks';
+  const data = await jsonFetch(url, id ? 'PUT' : 'POST', payload);
+  if (data.success) location.reload(); else alert(data.error || 'Failed');
+}
+async function togglePublish(id, value) {
+  const data = await jsonFetch(`/admin/api/tracks/${id}`, 'PUT', { is_published: value });
+  if (data.success) location.reload(); else alert(data.error || 'Failed');
+}
+async function deleteTrack(id) {
+  if (!confirm('Delete this track? This cannot be undone.')) return;
+  const data = await jsonFetch(`/admin/api/tracks/${id}`, 'DELETE');
+  if (data.success) location.reload(); else alert(data.error || 'Failed');
+}
+async function addStep(trackId) {
+  const skillId = document.getElementById(`skill-select-${trackId}`).value;
+  const note = document.getElementById(`skill-note-${trackId}`).value.trim();
+  const data = await jsonFetch(`/admin/api/tracks/${trackId}/steps`, 'POST', { skill_id: parseInt(skillId, 10), note });
+  if (data.success) location.reload(); else alert(data.error || 'Failed');
+}
+async function deleteStep(stepId) {
+  if (!confirm('Remove this skill from the track?')) return;
+  const data = await jsonFetch(`/admin/api/track-steps/${stepId}`, 'DELETE');
+  if (data.success) location.reload(); else alert(data.error || 'Failed');
+}
+async function moveStep(trackId, stepId, dir) {
+  const rows = Array.from(document.querySelectorAll(`#steps-${trackId} .step-row`));
+  const ids = rows.map(r => parseInt(r.id.replace('step-', ''), 10));
+  const idx = ids.indexOf(stepId);
+  const swapWith = idx + dir;
+  if (swapWith < 0 || swapWith >= ids.length) return;
+  [ids[idx], ids[swapWith]] = [ids[swapWith], ids[idx]];
+  await jsonFetch('/admin/api/track-steps/reorder', 'POST', { order: ids });
+  location.reload();
+}
+</script>
+</body>
+</html>

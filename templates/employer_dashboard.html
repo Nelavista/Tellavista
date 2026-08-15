@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Employer Dashboard · Nelavista</title>
+  <meta name="theme-color" content="#111827">
+  <link rel="icon" type="image/png" sizes="32x32" href="/static/icons/nelavista-32x32.png">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/skills.css') }}">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
+</head>
+<body>
+{% include 'components/employer_nav.html' %}
+
+  <div class="sk-view">
+    <span class="sk-eyebrow">{{ profile.company_name }}</span>
+    <h1 class="sk-h1">Welcome{{ ', ' ~ profile.user.name if profile.user.name else '' }}</h1>
+    <p class="sk-sub">
+      {% if profile.is_verified %}
+      <span class="sk-badge completed">✓ Verified company</span>
+      {% else %}
+      <span class="sk-badge soon">Verification pending — an admin will review your account</span>
+      {% endif %}
+    </p>
+
+    <div class="dc-stats-row">
+      <div class="dc-stat-card">
+        <div class="dc-stat-value">{{ discoverable_count }}</div>
+        <div class="dc-stat-label">Students currently discoverable</div>
+      </div>
+    </div>
+
+    <div class="sk-section-title">Get Started</div>
+    <div class="sk-grid">
+      <a href="/employer/discover" class="sk-card">
+        <div class="sk-icon-circle" style="background:#3b82f622; color:#3b82f6;">🔍</div>
+        <div class="sk-card-title">Discover Talent</div>
+        <div class="sk-card-desc">Search students by demonstrated Skill GPA, completed projects, and cohort rank — never self-reported skills alone.</div>
+      </a>
+    </div>
+
+    <div class="sk-panel" style="margin-top:24px;">
+      <strong>How discovery works</strong>
+      <p class="sk-card-desc" style="margin-top:8px; margin-bottom:0;">
+        Students choose whether to be discoverable and what to share — profile visibility, project visibility, and transcript visibility are all opt-in on their end.
+        You'll only ever see what a student has explicitly chosen to show employers.
+      </p>
+    </div>
+  </div>
+</body>
+</html>

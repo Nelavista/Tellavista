@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Explore Skills · Nelavista</title>
+  <meta name="theme-color" content="#111827">
+  <link rel="icon" type="image/png" sizes="32x32" href="/static/icons/nelavista-32x32.png">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/skills.css') }}">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
+</head>
+<body>
+{% include 'components/skills_sidebar.html' %}
+
+  <div class="sk-view">
+    <span class="sk-eyebrow">Explore</span>
+    <h1 class="sk-h1">Find a skill worth building.</h1>
+    <p class="sk-sub">Browse by category, or search for something specific. Every skill here comes with a real learning path — not just a pile of videos.</p>
+
+    <div style="margin-top:24px;">
+      <form class="sk-search-wrap" method="GET" action="/skills/catalog">
+        {% if active_category %}<input type="hidden" name="category" value="{{ active_category.slug }}">{% endif %}
+        <span class="sk-search-icon">🔍</span>
+        <input type="text" name="q" value="{{ search }}" placeholder="Search skills — e.g. Python, UI/UX, Copywriting...">
+      </form>
+    </div>
+
+    <div class="sk-category-rail">
+      <a href="/skills/catalog{{ '?q=' + search if search else '' }}" class="sk-category-chip {{ 'active' if not active_category else '' }}">All Skills</a>
+      {% for cat in categories %}
+      <a href="/skills/catalog?category={{ cat.slug }}{{ '&q=' + search if search else '' }}" class="sk-category-chip {{ 'active' if active_category and active_category.id == cat.id else '' }}">{{ cat.icon or '' }} {{ cat.name }}</a>
+      {% endfor %}
+    </div>
+
+    {% if not skills %}
+    <div class="sk-empty">
+      <div class="sk-empty-icon">🔍</div>
+      <div style="font-weight:600; margin-bottom:6px;">No skills found</div>
+      <div style="font-size:0.85rem;">
+        {% if search %}Nothing matched "{{ search }}" — try a different search.{% else %}This category doesn't have published skills yet.{% endif %}
+      </div>
+    </div>
+    {% else %}
+    <div class="sk-grid">
+      {% for skill in skills %}
+      <a href="/skills/{{ skill.slug }}" class="sk-card">
+        <div class="sk-icon-circle" style="background:{{ skill.color }}22; color:{{ skill.color }};">{{ skill.icon or '🧩' }}</div>
+        <div class="sk-card-title">{{ skill.name }}</div>
+        <div class="sk-card-desc">{{ skill.tagline or '' }}</div>
+        <div style="display:flex; gap:6px; flex-wrap:wrap;">
+          <span class="sk-badge {{ skill.level }}">{{ skill.level }}</span>
+          {% if skill.estimated_hours %}<span class="sk-badge">~{{ skill.estimated_hours }}h</span>{% endif %}
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+
+{% include 'components/skills_footer.html' %}
+</body>
+</html>

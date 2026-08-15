@@ -1,0 +1,76 @@
+<!-- "Ask Nelavista" — reuses the existing /ask AI tutor endpoint (routes/ai_routes.py),
+     just prefixing the question with page context so the same tutor that answers
+     Academia questions can help with a lesson/challenge/project in Skills too.
+     Pass `ask_context` (plain string) and optionally `ask_suggestions` (list of strings)
+     from the view before including this partial. -->
+<button class="sk-ask-fab" id="skAskFab" onclick="skAskToggle()">✨ Ask Nelavista</button>
+
+<div class="sk-ask-panel" id="skAskPanel">
+  <div class="sk-ask-header">
+    <strong>✨ Ask Nelavista</strong>
+    <button class="sk-ask-close" onclick="skAskToggle()">✕</button>
+  </div>
+  <div class="sk-ask-messages" id="skAskMessages">
+    <div class="sk-ask-msg ai">Ask me anything about this{{ ' — ' + ask_context if ask_context else '' }}. I can explain a concept, review your approach, or give you another exercise.</div>
+  </div>
+  <div class="sk-ask-suggestions" id="skAskSuggestions">
+    {% for s in (ask_suggestions or ['Explain this simply', 'Give me another example', 'Test me on this']) %}
+    <button class="sk-ask-suggestion" data-suggestion="{{ s }}">{{ s }}</button>
+    {% endfor %}
+  </div>
+  <div class="sk-ask-input-row">
+    <input type="text" id="skAskInput" placeholder="Type your question..." onkeypress="if(event.key==='Enter') skAskSend()">
+    <button onclick="skAskSend()">➤</button>
+  </div>
+</div>
+
+<script>
+  const SK_ASK_CONTEXT = {{ (ask_context or '')|tojson }};
+
+  function skAskToggle() {
+    document.getElementById('skAskPanel').classList.toggle('active');
+    if (document.getElementById('skAskPanel').classList.contains('active')) {
+      document.getElementById('skAskInput').focus();
+    }
+  }
+
+  function skAskAppend(text, who) {
+    const wrap = document.getElementById('skAskMessages');
+    const div = document.createElement('div');
+    div.className = 'sk-ask-msg ' + who;
+    // User text is plain (textContent, safe). AI replies are HTML from /ask's formatting
+    // contract (same as talk-to-nelavista.html / dashboard.html's chat) so headings,
+    // lists, and emphasis render instead of showing raw tags.
+    if (who === 'user') div.textContent = text; else div.innerHTML = text;
+    wrap.appendChild(div);
+    wrap.scrollTop = wrap.scrollHeight;
+    return div;
+  }
+
+  async function skAskSend(preset) {
+    const input = document.getElementById('skAskInput');
+    const question = (preset !== undefined ? preset : input.value).trim();
+    if (!question) return;
+    input.value = '';
+    skAskAppend(question, 'user');
+    const thinking = skAskAppend('Thinking…', 'ai');
+    const prefixed = SK_ASK_CONTEXT ? `[Context: ${SK_ASK_CONTEXT}]\n\n${question}` : question;
+    try {
+      const res = await fetch('/ask', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: prefixed })
+      });
+      const data = await res.json();
+      thinking.innerHTML = data.answer || "Sorry, I couldn't come up with an answer just now.";
+    } catch (e) {
+      thinking.textContent = "I'm having trouble connecting right now — please try again.";
+    }
+  }
+
+  // data-suggestion (not inline onclick+tojson) so suggestion text containing quotes
+  // can never break the surrounding HTML attribute.
+  document.querySelectorAll('.sk-ask-suggestion').forEach(btn => {
+    btn.addEventListener('click', () => skAskSend(btn.dataset.suggestion));
+  });
+</script>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>{{ course.title }} · Nelavista Skills</title>
+  <meta name="theme-color" content="#111827">
+  <link rel="icon" type="image/png" sizes="32x32" href="/static/icons/nelavista-32x32.png">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/skills.css') }}">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
+  <style>
+    .co-breadcrumb { font-size: 0.82rem; color: #6b7280; margin-bottom: 14px; }
+    .co-breadcrumb a { color: #6b7280; text-decoration: none; }
+    .co-breadcrumb a:hover { color: #3b82f6; }
+    .co-final-card { display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; }
+  </style>
+</head>
+<body>
+{% include 'components/skills_sidebar.html' %}
+
+  <div class="sk-view">
+    <div class="co-breadcrumb"><a href="/skills/{{ skill.slug }}">{{ skill.name }}</a> / {{ course.title }}</div>
+    <span class="sk-eyebrow">{{ course.duration_days or (weeks|length * 7) }}-Day Skill Class</span>
+    <h1 class="sk-h1">{{ course.title }}</h1>
+    {% if course.description %}<p class="sk-sub">{{ course.description }}</p>{% endif %}
+
+    <div class="dc-progress-line">
+      <span><strong>Day {{ current_day_num }}</strong> of {{ course.duration_days or total_days_count }}</span>
+      <span>{{ pct }}% complete</span>
+    </div>
+    <div class="sk-progress-track" style="margin-bottom:14px;"><div class="sk-progress-fill" style="width:{{ pct }}%;"></div></div>
+
+    <div class="dc-progress-line" style="margin-top:0;">
+      <span>Skill GPA: <strong>{{ gpa_data.gpa if gpa_data.gpa is not none else '—' }}</strong>{% if gpa_data.grade_letter %} ({{ gpa_data.grade_letter }}){% endif %}{% if rank %} · Rank #{{ rank }} of {{ cohort_total }}{% endif %}</span>
+      <a href="/skills/transcript" class="sk-view-link">Full transcript →</a>
+    </div>
+
+    {% if final_template %}
+    <div class="sk-section-title">Final Project</div>
+    <div class="sk-panel co-final-card">
+      <div>
+        <div class="sk-card-title">{{ final_template.title }}</div>
+        <div class="sk-card-desc" style="margin-bottom:0;">
+          {% if final_project and final_project.ai_overall_score is not none %}
+            Evaluated — {{ final_project.ai_overall_score }}/100
+          {% elif final_project and final_project.status == 'submitted' %}
+            Submitted — evaluation pending
+          {% elif final_project %}
+            In progress
+          {% else %}
+            Unlocks as you work through the class — start anytime.
+          {% endif %}
+        </div>
+      </div>
+      {% if final_project %}
+      <a href="/skills/projects/{{ final_project.id }}" class="sk-btn secondary">View Project</a>
+      {% else %}
+      <form method="POST" action="/skills/projects/start/{{ final_template.id }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button type="submit" class="sk-btn">Start Final Project</button>
+      </form>
+      {% endif %}
+    </div>
+    {% endif %}
+
+    <div class="sk-section-title">Class Schedule</div>
+    {% for week in weeks %}
+    <div class="dc-week">
+      <div class="dc-week-title">Week {{ week.week_number }}{% if week.week_title %} — {{ week.week_title }}{% endif %}</div>
+      <div class="dc-day-grid">
+        {% for day in week.days %}
+        {% set state = states.get(day.day_number, 'locked') %}
+        {% if state == 'locked' %}
+        <div class="dc-day-card {{ state }}">
+          <div class="dc-day-num">Day {{ day.day_number }}</div>
+          <div class="dc-day-title">{{ day.title }}</div>
+          <div class="dc-day-status">🔒 Locked</div>
+        </div>
+        {% else %}
+        <a href="/skills/{{ skill.slug }}/class/{{ course.slug }}/day/{{ day.day_number }}" class="dc-day-card {{ state }}">
+          <div class="dc-day-num">Day {{ day.day_number }}</div>
+          <div class="dc-day-title">{{ day.title }}</div>
+          <div class="dc-day-status">{{ '✓ Completed' if state == 'completed' else '▶ Continue' }}</div>
+        </a>
+        {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+    {% else %}
+    <div class="sk-empty"><div class="sk-empty-icon">🗓️</div>This class doesn't have any days published yet.</div>
+    {% endfor %}
+  </div>
+
+{% include 'components/skills_footer.html' %}
+{% include 'components/skills_ask_widget.html' %}
+</body>
+</html>

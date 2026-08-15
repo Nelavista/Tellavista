@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>{{ challenge.title }} · Nelavista Skills</title>
+  <meta name="theme-color" content="#111827">
+  <link rel="icon" type="image/png" sizes="32x32" href="/static/icons/nelavista-32x32.png">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/skills.css') }}">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
+  <style>
+    .cw-breadcrumb { font-size: 0.82rem; color: #6b7280; margin-bottom: 14px; }
+    .cw-breadcrumb a { color: #6b7280; text-decoration: none; }
+    .cw-breadcrumb a:hover { color: #3b82f6; }
+    .cw-container { max-width: 760px; }
+    .cw-instructions { white-space: pre-wrap; line-height: 1.7; font-size: 0.95rem; color: #dbe2ef; }
+    body.light-mode .cw-instructions { color: #1f2937; }
+    .cw-submission { background: #1a2235; border-radius: 14px; padding: 16px; margin-bottom: 12px; }
+    .cw-submission-content { white-space: pre-wrap; font-size: 0.88rem; color: #dbe2ef; line-height: 1.6; margin-top: 8px; }
+    body.light-mode .cw-submission-content { color: #1f2937; }
+    .cw-feedback { margin-top: 14px; padding-top: 14px; border-top: 1px solid #2d3a52; }
+    .cw-feedback-score { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+    .cw-feedback-score .num { font-size: 1.6rem; font-weight: 800; }
+    .cw-feedback-section { margin-bottom: 10px; }
+    .cw-feedback-label { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; color: #6b7280; margin-bottom: 6px; }
+    .cw-feedback ul { margin: 0 0 0 18px; font-size: 0.86rem; line-height: 1.6; }
+    .cw-feedback-explanation { font-size: 0.88rem; line-height: 1.6; color: #dbe2ef; }
+    body.light-mode .cw-feedback-explanation { color: #1f2937; }
+  </style>
+</head>
+<body>
+{% include 'components/skills_sidebar.html' %}
+
+  <div class="sk-view cw-container">
+    <div class="cw-breadcrumb"><a href="/skills/{{ skill.slug }}">{{ skill.name }}</a> / Practice / {{ challenge.title }}</div>
+    <h1 class="sk-h1" style="font-size:1.6rem;">{{ challenge.title }}</h1>
+    <div style="display:flex; gap:6px; margin:10px 0 18px; flex-wrap:wrap;">
+      <span class="sk-badge {{ challenge.difficulty }}">{{ challenge.difficulty }}</span>
+      <span class="sk-badge">{{ challenge.challenge_type }}</span>
+      <span class="sk-badge">⏱ ~{{ challenge.estimated_minutes }} min</span>
+    </div>
+    {% if challenge.description %}<p class="sk-sub" style="margin-bottom:20px;">{{ challenge.description }}</p>{% endif %}
+
+    <div class="sk-panel">
+      <div class="sk-section-title" style="margin-top:0;">Instructions</div>
+      <div class="cw-instructions">{{ challenge.instructions or 'No detailed instructions yet — do your best with the description above.' }}</div>
+    </div>
+
+    {% if submissions %}
+    <div class="sk-section-title">Your Submissions</div>
+    {% for s in submissions %}
+    <div class="cw-submission">
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;">
+        <span class="sk-badge {{ s.status }}">{{ s.status|title }}</span>
+        <span class="sk-card-desc" style="margin:0;">{{ s.created_at.strftime('%b %d, %Y · %I:%M %p') }}</span>
+      </div>
+      <div class="cw-submission-content">{{ s.content }}</div>
+      {% if s.feedback %}
+      <div class="cw-feedback">
+        <div class="cw-feedback-score">
+          <span class="num" style="color:{{ '#4ade80' if s.feedback.score >= 70 else ('#fbbf24' if s.feedback.score >= 40 else '#f87171') }};">{{ s.feedback.score }}%</span>
+          <span class="sk-card-desc" style="margin:0;">AI feedback</span>
+        </div>
+        {% if s.feedback.strengths %}
+        <div class="cw-feedback-section">
+          <div class="cw-feedback-label">What you did well</div>
+          <ul>{% for item in s.feedback.strengths %}<li>{{ item }}</li>{% endfor %}</ul>
+        </div>
+        {% endif %}
+        {% if s.feedback.improvements %}
+        <div class="cw-feedback-section">
+          <div class="cw-feedback-label">What to improve</div>
+          <ul>{% for item in s.feedback.improvements %}<li>{{ item }}</li>{% endfor %}</ul>
+        </div>
+        {% endif %}
+        {% if s.feedback.explanation %}
+        <div class="cw-feedback-section">
+          <div class="cw-feedback-label">Why</div>
+          <div class="cw-feedback-explanation">{{ s.feedback.explanation }}</div>
+        </div>
+        {% endif %}
+        {% if s.feedback.next_step %}
+        <div class="cw-feedback-section" style="margin-bottom:0;">
+          <div class="cw-feedback-label">Next step</div>
+          <div class="cw-feedback-explanation">{{ s.feedback.next_step }}</div>
+        </div>
+        {% endif %}
+      </div>
+      {% else %}
+      <div class="cw-feedback"><span class="sk-card-desc" style="margin:0; font-style:italic;">Feedback wasn't available for this attempt — you can still ask Nelavista to review it below.</span></div>
+      {% endif %}
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    <div class="sk-section-title">{{ 'Submit Another Attempt' if submissions else 'Submit Your Solution' }}</div>
+    <form method="POST" class="sk-panel">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <div class="sk-field">
+        <label class="sk-label">Your solution / write-up</label>
+        <textarea class="sk-textarea" name="content" rows="10" placeholder="Paste your code, describe your approach, link a file — whatever fits this challenge." required></textarea>
+      </div>
+      <button type="submit" class="sk-btn full">Submit</button>
+    </form>
+  </div>
+
+{% include 'components/skills_footer.html' %}
+{% include 'components/skills_ask_widget.html' %}
+</body>
+</html>

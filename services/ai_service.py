@@ -300,6 +300,559 @@ def generate_test_questions(text, test_type='cbt', num_questions=10, filename='S
     return _parse_question_json(raw)
 
 
+def generate_lesson_content_from_video(skill_name, lesson_title, video):
+    """Drafts a Skills lesson's written explanation anchored to a specific reference video,
+    so the text and the video actually teach the same material in the same order — not two
+    unrelated things sharing a page. Returns a draft for an admin to review/edit in the
+    lesson editor; nothing here writes to the database. Raises on failure, same convention
+    as generate_test_questions — the caller (an admin API route) decides the HTTP response.
+    """
+    system_prompt = (
+        "You are an instructional content writer for Nelavista, a student skills platform. "
+        "Write a lesson's written explanation to directly complement a specific reference "
+        "video students will watch alongside it — cover the same core ideas, in the same "
+        "order, so a student reading the text recognizes what they just watched. Do not "
+        "describe or refer to the video itself (no 'in this video...', 'as shown above') — "
+        "just teach the material the way the video teaches it, in your own words.\n\n"
+        "Output clean HTML only: <h2>/<h3> for structure, <p> for explanation, <ul>/<ol> for "
+        "lists, <code> for inline code, <pre><code> for code blocks, <strong> for emphasis. "
+        "No Markdown, no <html>/<body> wrapper, no surrounding code fences. Aim for 150-350 "
+        "words — a focused lesson, not an essay."
+    )
+    user_prompt = (
+        f"Skill: {skill_name}\n"
+        f"Lesson title: {lesson_title}\n"
+        f"Reference video: \"{video['title']}\" by {video['channel']}\n\n"
+        "Write the lesson content now."
+    )
+
+    headers = {
+        "Authorization": f"Bearer {OPENROUTER_API_KEY}",
+        "Content-Type": "application/json",
+        "HTTP-Referer": "https://nelavista.com",
+        "X-Title": "Nelavista Skills Lesson Drafter"
+    }
+    payload = {
+        "model": "openai/gpt-4o-mini",
+        "messages": [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_prompt}
+        ],
+        "temperature": 0.5,
+        "max_tokens": 1200
+    }
+    response = requests.post(
+        "https://openrouter.ai/api/v1/chat/completions",
+        headers=headers, json=payload, timeout=60
+    )
+    if response.status_code != 200:
+        raise Exception(f"AI API error: {response.status_code}")
+
+    content = response.json()["choices"][0]["message"]["content"].strip()
+    # Strip accidental code fences despite instructions not to include them (same defensive
+    # habit as _parse_question_json below).
+    content = re.sub(r'^```(?:html)?\s*', '', content)
+    content = re.sub(r'\s*```$', '', content)
+    return content
+
+
+def generate_challenge_feedback(challenge_title, challenge_instructions, submission_content):
+    """Evaluates a student's practice submission against the challenge's own instructions
+    and returns structured feedback — not a bare 'Correct ✓'. Works across challenge types
+    (coding, design, business, content, general) since the prompt reasons from whatever
+    the instructions actually asked for, rather than assuming code. Raises on failure; the
+    caller (challenge submission route) treats missing feedback as non-fatal — the
+    submission itself is saved either way.
+    """
+    system_prompt = (
+        "You are a practical, encouraging skills coach reviewing a student's attempt at a "
+        "practice challenge. Evaluate their submission strictly against what the challenge "
+        "instructions actually asked for. Be specific and honest — do not just say "
+        "'Correct' or 'Great job' without substance, and do not invent praise or issues "
+        "that don't apply.\n\n"
+        "Return ONLY a single JSON object with this exact shape, no surrounding prose:\n"
+        "{\n"
+        '  "score": integer 0-100 (how completely the submission meets the challenge),\n'
+        '  "strengths": [string, ...] (1-3 specific things done well — omit filler if there '
+        "genuinely isn't much),\n"
+        '  "improvements": [string, ...] (1-3 specific, actionable issues or gaps),\n'
+        '  "explanation": string (2-4 sentences: why the score is what it is, in plain terms),\n'
+        '  "next_step": string (one concrete suggestion for what to do next — revise this, '
+        "move on, try a harder variant, etc.)\n"
+        "}"
+    )
+    user_prompt = (
+        f"Challenge: {challenge_title}\n\n"
+        f"Instructions given to the student:\n{challenge_instructions or '(no detailed instructions were provided)'}\n\n"
+        f"Student's submission:\n{submission_content}"
+    )
+
+    headers = {
+        "Authorization": f"Bearer {OPENROUTER_API_KEY}",
+        "Content-Type": "application/json",
+        "HTTP-Referer": "https://nelavista.com",
+        "X-Title": "Nelavista Skills Challenge Feedback"
+    }
+    payload = {
+        "model": "openai/gpt-4o-mini",
+        "messages": [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_prompt}
+        ],
+        "temperature": 0.4,
+        "max_tokens": 800
+    }
+    response = requests.post(
+        "https://openrouter.ai/api/v1/chat/completions",
+        headers=headers, json=payload, timeout=45
+    )
+    if response.status_code != 200:
+        raise Exception(f"AI API error: {response.status_code}")
+
+    raw = response.json()["choices"][0]["message"]["content"].strip()
+    return _parse_json_object(raw)
+
+
+def generate_curriculum(skill_name, skill_description, level='beginner'):
+    """Proposes a starter curriculum for a skill: two modules of two lessons each (real,
+    complete HTML content — not just titles), one practice challenge, and one project
+    brief. Everything comes back as a structured draft for an admin to review, edit, and
+    individually publish through the normal Skills editor — nothing here is ever
+    auto-published (see routes/admin_skills_routes.py's generate_curriculum route).
+    Raises on failure; the caller decides the HTTP-level response.
+    """
+    system_prompt = (
+        "You are a curriculum designer for Nelavista, a student skills platform. Given a "
+        "skill, propose a focused starter curriculum: enough to genuinely teach the "
+        "fundamentals, not an exhaustive course. An admin will review and expand on this "
+        "before publishing, so prioritize getting the structure and first real lessons "
+        "right over covering everything.\n\n"
+        "Return ONLY a single JSON object with this exact shape, no surrounding prose:\n"
+        "{\n"
+        '  "course_title": string,\n'
+        '  "course_description": string (1-2 sentences),\n'
+        '  "modules": [\n'
+        "    {\n"
+        '      "title": string,\n'
+        '      "lessons": [\n'
+        '        {"title": string, "content": string (HTML: <h2>/<h3>/<p>/<ul>/<ol>/<code>/<pre><code>/<strong>, '
+        "150-300 words, a complete real lesson, no Markdown, no code fences), "
+        '"duration_minutes": integer}\n'
+        "      ]\n"
+        "    }\n"
+        "  ],\n"
+        '  "challenge": {"title": string, "description": string (1 sentence), '
+        '"instructions": string (a full practical exercise the student can actually attempt), '
+        '"difficulty": "beginner"|"intermediate"|"advanced", "estimated_minutes": integer},\n'
+        '  "project": {"title": string, "description": string (a real project brief students would '
+        'actually build, 2-4 sentences), "skills_demonstrated": [string, ...], '
+        '"difficulty": "beginner"|"intermediate"|"advanced", "estimated_hours": integer}\n'
+        "}\n\n"
+        "Exactly 2 modules, exactly 2 lessons per module (4 lessons total)."
+    )
+    user_prompt = (
+        f"Skill: {skill_name}\n"
+        f"Level: {level}\n"
+        f"Description: {skill_description or '(none given — infer a sensible scope from the skill name)'}"
+    )
+
+    headers = {
+        "Authorization": f"Bearer {OPENROUTER_API_KEY}",
+        "Content-Type": "application/json",
+        "HTTP-Referer": "https://nelavista.com",
+        "X-Title": "Nelavista Skills Curriculum Generator"
+    }
+    payload = {
+        "model": "openai/gpt-4o-mini",
+        "messages": [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_prompt}
+        ],
+        "temperature": 0.5,
+        "max_tokens": 4000
+    }
+    response = requests.post(
+        "https://openrouter.ai/api/v1/chat/completions",
+        headers=headers, json=payload, timeout=90
+    )
+    if response.status_code != 200:
+        raise Exception(f"AI API error: {response.status_code}")
+
+    raw = response.json()["choices"][0]["message"]["content"].strip()
+    return _parse_json_object(raw)
+
+
+def generate_daily_class_outline(skill_name, class_title, total_days, level='beginner'):
+    """Proposes just the week/day skeleton for a whole daily class — day titles, short
+    topics, and learning objectives for all `total_days` days, grouped into weeks.
+    Deliberately lightweight (no lesson content, video, assignment, or test yet) so a
+    30-day request stays within one call's token budget; each day's full content is
+    generated separately, on demand, once an admin reviews this outline (see
+    generate_daily_class_day_content below) — nothing here is ever auto-published.
+    Returns {"weeks": [{"week_number","week_title","days":[{"day_number","title","topic",
+    "learning_objective"}]}]}. Raises on failure; the caller decides the HTTP response.
+    """
+    system_prompt = (
+        "You are a curriculum designer for Nelavista, a student skills platform, planning "
+        f"a structured {total_days}-day class. Propose a day-by-day skeleton: what each "
+        "day covers, in a sensible teaching order building from fundamentals to more "
+        "advanced material. Group days into weeks (roughly 5-7 days each) with a short "
+        "theme per week. An admin will review this outline, then generate each day's full "
+        "lesson individually — so titles and objectives must be specific and topically "
+        "precise (e.g. 'CSS Flexbox: main-axis and cross-axis alignment', not vague "
+        "filler like 'More CSS').\n\n"
+        "Return ONLY a single JSON object with this exact shape, no surrounding prose:\n"
+        "{\n"
+        '  "weeks": [\n'
+        "    {\n"
+        '      "week_number": integer, "week_title": string,\n'
+        '      "days": [\n'
+        '        {"day_number": integer, "title": string, "topic": string (1 sentence, what this day teaches), '
+        '"learning_objective": string (1 sentence, starts with a verb, e.g. "Explain how...", "Build a...")}\n'
+        "      ]\n"
+        "    }\n"
+        "  ]\n"
+        "}\n\n"
+        f"Cover exactly {total_days} days total, day_number running 1 through {total_days} with no gaps or repeats."
+    )
+    user_prompt = f"Skill: {skill_name}\nClass title: {class_title}\nLevel: {level}\nTotal days: {total_days}"
+
+    headers = {
+        "Authorization": f"Bearer {OPENROUTER_API_KEY}",
+        "Content-Type": "application/json",
+        "HTTP-Referer": "https://nelavista.com",
+        "X-Title": "Nelavista Daily Class Outline Generator"
+    }
+    payload = {
+        "model": "openai/gpt-4o-mini",
+        "messages": [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_prompt}
+        ],
+        "temperature": 0.5,
+        "max_tokens": 4000
+    }
+    response = requests.post(
+        "https://openrouter.ai/api/v1/chat/completions",
+        headers=headers, json=payload, timeout=90
+    )
+    if response.status_code != 200:
+        raise Exception(f"AI API error: {response.status_code}")
+
+    raw = response.json()["choices"][0]["message"]["content"].strip()
+    return _parse_json_object(raw)
+
+
+def generate_daily_class_day_content(skill_name, day_title, learning_objective, video):
+    """Generates one day's full structured lesson content, anchored to a specific
+    reference video (same video/text alignment principle as generate_lesson_content_from_video).
+    Unlike a regular lesson, a daily-class day must explicitly walk through: a simple
+    explanation, a real-world analogy, a step-by-step breakdown, common mistakes, and a
+    practical application — the fixed teaching loop every day in the class follows.
+    Returns clean HTML content. Raises on failure.
+    """
+    system_prompt = (
+        "You are an instructional content writer for Nelavista, a student skills platform, "
+        "writing ONE day of a structured daily class. Write content that directly "
+        "complements a specific reference video the student watches alongside it — cover "
+        "the same core ideas, in the same order. Do not describe or refer to the video "
+        "itself (no 'in this video...').\n\n"
+        "Structure the content with these sections, in this order, using <h3> headings "
+        "exactly as named:\n"
+        "<h3>Simple Explanation</h3> — the core idea in plain, beginner-friendly language.\n"
+        "<h3>Real-World Analogy</h3> — one concrete analogy that makes the idea click.\n"
+        "<h3>Step-by-Step Breakdown</h3> — an ordered list walking through how it actually works or is done.\n"
+        "<h3>Common Mistakes</h3> — 2-4 specific mistakes beginners make with this topic.\n"
+        "<h3>Practical Application</h3> — a short worked example showing the idea used for real.\n\n"
+        "Output clean HTML only: <h3> for the section headings above, <p> for prose, "
+        "<ul>/<ol> for lists, <code> for inline code, <pre><code> for code blocks, "
+        "<strong> for emphasis. No Markdown, no <html>/<body> wrapper, no code fences. "
+        "Aim for 350-600 words total across all sections."
+    )
+    user_prompt = (
+        f"Skill: {skill_name}\n"
+        f"Day topic: {day_title}\n"
+        f"Learning objective: {learning_objective}\n"
+        f"Reference video: \"{video['title']}\" by {video['channel']}\n\n"
+        "Write the day's content now."
+    )
+
+    headers = {
+        "Authorization": f"Bearer {OPENROUTER_API_KEY}",
+        "Content-Type": "application/json",
+        "HTTP-Referer": "https://nelavista.com",
+        "X-Title": "Nelavista Daily Class Content Generator"
+    }
+    payload = {
+        "model": "openai/gpt-4o-mini",
+        "messages": [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_prompt}
+        ],
+        "temperature": 0.5,
+        "max_tokens": 1800
+    }
+    response = requests.post(
+        "https://openrouter.ai/api/v1/chat/completions",
+        headers=headers, json=payload, timeout=60
+    )
+    if response.status_code != 200:
+        raise Exception(f"AI API error: {response.status_code}")
+
+    content = response.json()["choices"][0]["message"]["content"].strip()
+    content = re.sub(r'^```(?:html)?\s*', '', content)
+    content = re.sub(r'\s*```$', '', content)
+    return content
+
+
+def generate_day_assignment(skill_name, day_title, learning_objective, lesson_content):
+    """Proposes a graded assignment for one class day, scoped to what was actually taught
+    (the day's lesson content), not a generic prompt. Returns {"title","instructions"}.
+    Raises on failure."""
+    system_prompt = (
+        "You are a curriculum designer creating a graded assignment for one day of a "
+        "structured skills class. The assignment must require applying what was just "
+        "taught in the lesson content given — not something unrelated or too advanced "
+        "for a single day's lesson.\n\n"
+        "Return ONLY a single JSON object with this exact shape, no surrounding prose:\n"
+        '{"title": string, "instructions": string (a complete, specific brief the student '
+        'can act on directly — what to produce and what it should demonstrate)}'
+    )
+    # Strip HTML tags from the lesson content for a cleaner prompt — the AI needs the
+    # substance, not the markup.
+    plain_content = re.sub(r'<[^>]+>', ' ', lesson_content or '')[:2000]
+    user_prompt = (
+        f"Skill: {skill_name}\nDay topic: {day_title}\nLearning objective: {learning_objective}\n\n"
+        f"Lesson content taught today:\n{plain_content}"
+    )
+
+    headers = {
+        "Authorization": f"Bearer {OPENROUTER_API_KEY}",
+        "Content-Type": "application/json",
+        "HTTP-Referer": "https://nelavista.com",
+        "X-Title": "Nelavista Daily Class Assignment Generator"
+    }
+    payload = {
+        "model": "openai/gpt-4o-mini",
+        "messages": [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_prompt}
+        ],
+        "temperature": 0.5,
+        "max_tokens": 700
+    }
+    response = requests.post(
+        "https://openrouter.ai/api/v1/chat/completions",
+        headers=headers, json=payload, timeout=45
+    )
+    if response.status_code != 200:
+        raise Exception(f"AI API error: {response.status_code}")
+
+    raw = response.json()["choices"][0]["message"]["content"].strip()
+    return _parse_json_object(raw)
+
+
+def generate_day_test(skill_name, day_title, learning_objective, lesson_content, num_questions=6):
+    """Generates 5-10 MCQ questions for one day's test — reuses the existing Quiz
+    infrastructure (same question shape as Quiz.questions) rather than a new test engine,
+    since MCQ already satisfies 'various formats' for a first version. Raises on failure."""
+    num_questions = max(5, min(10, int(num_questions or 6)))
+    plain_content = re.sub(r'<[^>]+>', ' ', lesson_content or '')[:2500]
+    system_prompt = (
+        "You are writing a short test for one day of a structured skills class, checking "
+        "understanding of exactly what was taught — do not test material outside the "
+        f"lesson content given below. Return a JSON array of exactly {num_questions} "
+        "multiple-choice questions. Each item must be an object with these exact keys: "
+        '"question" (string), "options" (array of exactly 4 strings), "correct_index" '
+        "(integer index 0-3), \"explanation\" (string, briefly explains why the answer is "
+        "correct). Output ONLY the JSON array, no surrounding prose, no code fences."
+    )
+    user_prompt = (
+        f"Skill: {skill_name}\nDay topic: {day_title}\nLearning objective: {learning_objective}\n\n"
+        f"Lesson content:\n{plain_content}"
+    )
+
+    headers = {
+        "Authorization": f"Bearer {OPENROUTER_API_KEY}",
+        "Content-Type": "application/json",
+        "HTTP-Referer": "https://nelavista.com",
+        "X-Title": "Nelavista Daily Class Test Generator"
+    }
+    payload = {
+        "model": "openai/gpt-4o-mini",
+        "messages": [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_prompt}
+        ],
+        "temperature": 0.4,
+        "max_tokens": 2200
+    }
+    response = requests.post(
+        "https://openrouter.ai/api/v1/chat/completions",
+        headers=headers, json=payload, timeout=60
+    )
+    if response.status_code != 200:
+        raise Exception(f"AI API error: {response.status_code}")
+
+    raw = response.json()["choices"][0]["message"]["content"].strip()
+    return _parse_question_json(raw)
+
+
+def generate_assignment_feedback(assignment_title, assignment_instructions, submission_content):
+    """Evaluates a graded assignment submission — same structured-feedback shape and
+    intent as generate_challenge_feedback, but for graded work whose score feeds directly
+    into Skill GPA, so the score must be defensible against the instructions actually
+    given, not a vibe. Raises on failure; the caller treats a failed AI call as non-fatal
+    (submission stands either way, review_status stays 'pending' until it succeeds)."""
+    system_prompt = (
+        "You are grading a student's assignment submission for a skills class. Evaluate "
+        "strictly against what the assignment instructions actually asked for. Be "
+        "specific and fair — this score contributes to the student's grade, so do not "
+        "inflate or invent issues that aren't there.\n\n"
+        "Return ONLY a single JSON object with this exact shape, no surrounding prose:\n"
+        "{\n"
+        '  "score": integer 0-100 (how completely the submission meets the assignment),\n'
+        '  "strengths": [string, ...] (1-3 specific things done well),\n'
+        '  "improvements": [string, ...] (1-3 specific, actionable issues or gaps),\n'
+        '  "explanation": string (2-4 sentences: why the score is what it is),\n'
+        '  "next_step": string (one concrete suggestion for what to do next)\n'
+        "}"
+    )
+    user_prompt = (
+        f"Assignment: {assignment_title}\n\n"
+        f"Instructions given to the student:\n{assignment_instructions or '(no detailed instructions were provided)'}\n\n"
+        f"Student's submission:\n{submission_content}"
+    )
+
+    headers = {
+        "Authorization": f"Bearer {OPENROUTER_API_KEY}",
+        "Content-Type": "application/json",
+        "HTTP-Referer": "https://nelavista.com",
+        "X-Title": "Nelavista Assignment Grading"
+    }
+    payload = {
+        "model": "openai/gpt-4o-mini",
+        "messages": [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_prompt}
+        ],
+        "temperature": 0.3,
+        "max_tokens": 800
+    }
+    response = requests.post(
+        "https://openrouter.ai/api/v1/chat/completions",
+        headers=headers, json=payload, timeout=45
+    )
+    if response.status_code != 200:
+        raise Exception(f"AI API error: {response.status_code}")
+
+    raw = response.json()["choices"][0]["message"]["content"].strip()
+    return _parse_json_object(raw)
+
+
+def evaluate_final_project(rubric, project_title, project_description, submission_details):
+    """Evaluates a final-project submission STRICTLY against the admin-defined rubric —
+    the AI never invents its own scale or criteria. `rubric` is
+    [{"name": str, "max_points": int}, ...] as configured on the ProjectTemplate (see
+    models.py ProjectTemplate.rubric). The AI scores each criterion individually, 0 to
+    that criterion's max_points; the overall score is then computed here in Python as the
+    literal sum of those per-criterion scores — never taken from an AI-reported total —
+    so the number a student sees can always be traced back to the rubric line-by-line.
+    Raises on failure.
+    """
+    rubric_lines = "\n".join(f"- {c['name']} (max {c['max_points']} points)" for c in rubric)
+    system_prompt = (
+        "You are evaluating a student's final project submission for a skills class, "
+        "against a fixed grading rubric. You MUST score ONLY the criteria listed below — "
+        "do not add, remove, rename, or reweight criteria, and do not exceed any "
+        "criterion's max_points. Be specific: every score needs a one-sentence comment "
+        "justifying it against what was actually submitted.\n\n"
+        f"RUBRIC (fixed, do not deviate from this):\n{rubric_lines}\n\n"
+        "Return ONLY a single JSON object with this exact shape, no surrounding prose:\n"
+        "{\n"
+        '  "criteria": [{"name": string (must exactly match a rubric name above), '
+        '"score": integer (0 to that criterion\'s max_points), "comment": string}, ...],\n'
+        '  "strengths": [string, ...] (1-3 things done well overall),\n'
+        '  "improvements": [string, ...] (1-3 specific, actionable gaps)\n'
+        "}\n"
+        "Include exactly one entry in \"criteria\" for every rubric line above, in the same order."
+    )
+    user_prompt = (
+        f"Project: {project_title}\n"
+        f"Project brief: {project_description or '(no brief provided)'}\n\n"
+        f"Student's submission details:\n{submission_details}"
+    )
+
+    headers = {
+        "Authorization": f"Bearer {OPENROUTER_API_KEY}",
+        "Content-Type": "application/json",
+        "HTTP-Referer": "https://nelavista.com",
+        "X-Title": "Nelavista Final Project Evaluation"
+    }
+    payload = {
+        "model": "openai/gpt-4o-mini",
+        "messages": [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_prompt}
+        ],
+        "temperature": 0.3,
+        "max_tokens": 1500
+    }
+    response = requests.post(
+        "https://openrouter.ai/api/v1/chat/completions",
+        headers=headers, json=payload, timeout=60
+    )
+    if response.status_code != 200:
+        raise Exception(f"AI API error: {response.status_code}")
+
+    raw = response.json()["choices"][0]["message"]["content"].strip()
+    result = _parse_json_object(raw)
+
+    # Ground truth: rebuild criteria strictly from the admin's rubric (name/max_points),
+    # only pulling the AI's score/comment per name and clamping into range — an AI
+    # hallucinating an extra criterion, a renamed one, or an out-of-range score can never
+    # change what the student is actually scored against or the total they receive.
+    ai_by_name = {c.get('name'): c for c in (result.get('criteria') or []) if isinstance(c, dict)}
+    final_criteria = []
+    overall_score = 0
+    for c in rubric:
+        name, max_points = c['name'], int(c['max_points'])
+        ai_entry = ai_by_name.get(name, {})
+        try:
+            score = int(ai_entry.get('score', 0))
+        except (TypeError, ValueError):
+            score = 0
+        score = max(0, min(max_points, score))
+        overall_score += score
+        final_criteria.append({
+            'name': name, 'max_points': max_points, 'score': score,
+            'comment': ai_entry.get('comment') or '',
+        })
+
+    return {
+        'criteria': final_criteria,
+        'overall_score': overall_score,
+        'strengths': result.get('strengths') or [],
+        'improvements': result.get('improvements') or [],
+    }
+
+
+def _parse_json_object(raw):
+    """Same defensive unwrapping as _parse_question_json, for a JSON object instead of
+    an array."""
+    text = raw.strip()
+    if text.startswith('```'):
+        text = re.sub(r'^```(?:json)?\s*', '', text)
+        text = re.sub(r'\s*```$', '', text)
+    start, end = text.find('{'), text.rfind('}')
+    if start != -1 and end != -1 and end > start:
+        text = text[start:end + 1]
+    obj = json.loads(text)
+    if not isinstance(obj, dict):
+        raise ValueError("AI did not return a JSON object")
+    return obj
+
+
 def _parse_question_json(raw):
     """LLMs routinely wrap JSON in ```json fences or add stray prose despite instructions
     not to — strip those defensively rather than fail the whole request over formatting."""

@@ -38,9 +38,23 @@ def enforce_profile_completion():
         'pwa.serve_manifest', 'pwa.serve_pwa_icons',
         'pages.about', 'pages.privacy_policy',
         'community.community_page',
+        # 'Choose Your Path' must always be reachable — a brand-new signup has no profile
+        # yet, so without this exemption every new account got bounced straight back to
+        # /dashboard before ever seeing the picker.
+        'dashboard.choose_path', 'tech.hub',
     )
+    # Skills' own profile fields (faculty/department/level/semester) are Academia-specific,
+    # so a student on the Skills path — and any admin managing Skills content — shouldn't
+    # be redirected into the Academia dashboard just to fill them in. Matched by blueprint
+    # prefix rather than one-by-one so a newly added skills.* route can't be silently
+    # missed the way dashboard.choose_path was the first time this hook was extended.
+    # Employer accounts have no Academia profile at all (they never see the student
+    # signup form), so they're exempt entirely — this check just doesn't apply to them.
+    exempt_prefixes = ('skills.', 'admin_skills.', 'employer.')
 
     if request.endpoint in exempt_endpoints:
+        return None
+    if request.endpoint and request.endpoint.startswith(exempt_prefixes):
         return None
 
     # Get user from session

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Learning Paths · Nelavista Skills</title>
+  <meta name="theme-color" content="#111827">
+  <meta name="description" content="Multi-skill career tracks — the sequence of skills that gets you somewhere specific.">
+  <link rel="icon" type="image/png" sizes="32x32" href="/static/icons/nelavista-32x32.png">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/skills.css') }}">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
+</head>
+<body>
+{% include 'components/skills_sidebar.html' %}
+
+  <div class="sk-view">
+    <span class="sk-eyebrow">Learning Paths</span>
+    <h1 class="sk-h1">Know where you're headed.</h1>
+    <p class="sk-sub">A track is a sequence of whole skills — not a single course — that gets you somewhere specific, like being job-ready as a web developer.</p>
+
+    {% if not tracks_data %}
+    <div class="sk-empty" style="margin-top:24px;">
+      <div class="sk-empty-icon">🧭</div>
+      <div style="font-weight:600; margin-bottom:6px;">No tracks published yet</div>
+      <div style="font-size:0.85rem;">Check back soon, or explore individual skills instead.</div>
+    </div>
+    {% else %}
+    <div class="sk-grid" style="margin-top:20px;">
+      {% for item in tracks_data %}
+      {% set t = item.track %}
+      <a href="/skills/tracks/{{ t.slug }}" class="sk-card">
+        <div class="sk-icon-circle" style="background:{{ t.color }}22; color:{{ t.color }};">{{ t.icon or '🧭' }}</div>
+        <div class="sk-card-title">{{ t.title }}</div>
+        <div class="sk-card-desc">{{ t.tagline or '' }}</div>
+        <span class="sk-badge">{{ t.steps.count() }} skill{{ 's' if t.steps.count() != 1 else '' }}</span>
+        {% if item.started %}
+        <div class="sk-progress-row"><div class="sk-progress-track"><div class="sk-progress-fill" style="width:{{ item.pct }}%;"></div></div><span class="sk-progress-pct">{{ item.pct }}%</span></div>
+        {% endif %}
+      </a>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+
+{% include 'components/skills_footer.html' %}
+</body>
+</html>

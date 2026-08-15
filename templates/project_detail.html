@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>{{ project.title }} · Nelavista Skills</title>
+  <meta name="theme-color" content="#111827">
+  <link rel="icon" type="image/png" sizes="32x32" href="/static/icons/nelavista-32x32.png">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/skills.css') }}">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
+  <style>
+    .pd-breadcrumb { font-size: 0.82rem; color: #6b7280; margin-bottom: 14px; }
+    .pd-breadcrumb a { color: #6b7280; text-decoration: none; }
+    .pd-breadcrumb a:hover { color: #3b82f6; }
+    .pd-container { max-width: 720px; }
+    .pd-status-row { display: flex; gap: 8px; margin: 12px 0 20px; }
+    .pd-status-btn { flex: 1; padding: 10px; border-radius: 10px; border: 1px solid #2d3a52; background: #1a2235; color: #9ca3af; font-size: 0.8rem; font-weight: 600; cursor: pointer; text-align: center; }
+    .pd-status-btn.active { border-color: #3b82f6; color: #3b82f6; background: rgba(59,130,246,0.08); }
+    .pd-save-note { font-size: 0.78rem; color: #6b7280; margin-top: 8px; min-height: 16px; }
+  </style>
+</head>
+<body>
+{% include 'components/skills_sidebar.html' %}
+
+  <div class="sk-view pd-container">
+    <div class="pd-breadcrumb"><a href="/skills/projects">My Projects</a> / {{ project.title }}</div>
+    <h1 class="sk-h1" style="font-size:1.6rem;">{{ project.title }}</h1>
+    <div style="display:flex; gap:6px; flex-wrap:wrap; margin:10px 0 20px;">
+      <span class="sk-badge {{ project.status }}">{{ project.status.replace('_',' ')|title }}</span>
+      {% for s in project.skills_demonstrated %}<span class="sk-badge">{{ s }}</span>{% endfor %}
+    </div>
+
+    <div class="sk-panel">
+      <div class="sk-progress-row" style="margin-top:0;">
+        <div class="sk-progress-track"><div class="sk-progress-fill" id="progressFill" style="width:{{ project.progress_pct }}%;"></div></div>
+        <span class="sk-progress-pct" id="progressLabel">{{ project.progress_pct }}%</span>
+      </div>
+      <input type="range" min="0" max="100" value="{{ project.progress_pct }}" id="progressSlider" style="width:100%; margin-top:12px; accent-color:#3b82f6;">
+
+      <div class="sk-label" style="margin-top:18px;">Status</div>
+      <div class="pd-status-row">
+        <div class="pd-status-btn {{ 'active' if project.status == 'in_progress' else '' }}" data-status="in_progress" onclick="setStatus('in_progress')">In Progress</div>
+        <div class="pd-status-btn {{ 'active' if project.status == 'submitted' else '' }}" data-status="submitted" onclick="setStatus('submitted')">Submitted</div>
+        <div class="pd-status-btn {{ 'active' if project.status == 'completed' else '' }}" data-status="completed" onclick="setStatus('completed')">Completed</div>
+      </div>
+
+      <div class="sk-field">
+        <label class="sk-label">Description / notes</label>
+        <textarea class="sk-textarea" id="descField" rows="4">{{ project.description or '' }}</textarea>
+      </div>
+      <div class="sk-field">
+        <label class="sk-label">Repository URL (GitHub, etc.)</label>
+        <input class="sk-input" id="repoField" value="{{ project.repo_url or '' }}" placeholder="https://github.com/you/project">
+      </div>
+      <div class="sk-field">
+        <label class="sk-label">Live URL (if deployed)</label>
+        <input class="sk-input" id="liveField" value="{{ project.live_url or '' }}" placeholder="https://your-project.example.com">
+      </div>
+      <button class="sk-btn full" onclick="saveProject()" id="saveBtn">Save Changes</button>
+      <div class="pd-save-note" id="saveNote"></div>
+    </div>
+
+    {% if project.repo_url or project.live_url %}
+    <div class="sk-section-title">Links</div>
+    <div style="display:flex; gap:10px; flex-wrap:wrap;">
+      {% if project.repo_url %}<a href="{{ project.repo_url }}" target="_blank" rel="noopener" class="sk-btn secondary">📂 Repository</a>{% endif %}
+      {% if project.live_url %}<a href="{{ project.live_url }}" target="_blank" rel="noopener" class="sk-btn secondary">🔗 Live Site</a>{% endif %}
+    </div>
+    {% endif %}
+  </div>
+
+{% include 'components/skills_footer.html' %}
+{% include 'components/skills_ask_widget.html' %}
+
+<script>
+  let currentStatus = "{{ project.status }}";
+
+  document.getElementById('progressSlider').addEventListener('input', (e) => {
+    document.getElementById('progressFill').style.width = e.target.value + '%';
+    document.getElementById('progressLabel').textContent = e.target.value + '%';
+  });
+
+  function setStatus(status) {
+    currentStatus = status;
+    document.querySelectorAll('.pd-status-btn').forEach(b => b.classList.toggle('active', b.dataset.status === status));
+    if (status === 'completed') {
+      document.getElementById('progressSlider').value = 100;
+      document.getElementById('progressFill').style.width = '100%';
+      document.getElementById('progressLabel').textContent = '100%';
+    }
+  }
+
+  async function saveProject() {
+    const btn = document.getElementById('saveBtn');
+    const note = document.getElementById('saveNote');
+    btn.disabled = true;
+    btn.textContent = 'Saving...';
+    try {
+      const res = await fetch(window.location.pathname + '/update', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          progress_pct: document.getElementById('progressSlider').value,
+          status: currentStatus,
+          description: document.getElementById('descField').value,
+          repo_url: document.getElementById('repoField').value,
+          live_url: document.getElementById('liveField').value,
+        })
+      });
+      const data = await res.json();
+      if (data.success) {
+        note.textContent = 'Saved ✓';
+        setTimeout(() => { note.textContent = ''; }, 2500);
+        if (currentStatus === 'completed') {
+          document.querySelector('.sk-badge.completed, .sk-badge.in_progress, .sk-badge.submitted')?.remove();
+        }
+      } else {
+        note.textContent = data.error || 'Could not save.';
+      }
+    } catch (e) {
+      note.textContent = 'Could not save — check your connection.';
+    }
+    btn.disabled = false;
+    btn.textContent = 'Save Changes';
+  }
+</script>
+</body>
+</html>

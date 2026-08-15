@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin · Employers · Nelavista</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Inter',system-ui,sans-serif; }
+        body { background:#0d1117; color:#e6edf3; }
+        .container { max-width:1100px; margin:0 auto; padding:28px 20px 60px; }
+        h1 { font-size:1.6rem; margin-bottom:6px; }
+        .subtitle { color:#8b949e; font-size:0.9rem; margin-bottom:22px; }
+        table { width:100%; border-collapse:collapse; background:#161b22; border:1px solid #21262d; border-radius:14px; overflow:hidden; }
+        th { text-align:left; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.4px; color:#8b949e; padding:12px 16px; border-bottom:1px solid #21262d; background:#0d1117; }
+        td { padding:12px 16px; border-bottom:1px solid #21262d; font-size:0.86rem; vertical-align:middle; }
+        tr:last-child td { border-bottom:none; }
+        .company-name { font-weight:600; }
+        .company-meta { color:#8b949e; font-size:0.78rem; }
+        .verified-tag { background:rgba(63,185,80,0.15); color:#3fb950; font-size:0.68rem; font-weight:700; padding:2px 8px; border-radius:10px; margin-left:6px; }
+        .btn { border:none; padding:6px 12px; border-radius:8px; font-size:0.78rem; font-weight:600; cursor:pointer; transition:0.2s; }
+        .btn-toggle { background:#21262d; border:1px solid #30363d; color:#e6edf3; }
+        .btn-toggle:hover { border-color:#58a6ff; color:#58a6ff; }
+        .btn-toggle.is-verified { background:rgba(63,185,80,0.12); border-color:#3fb950; color:#3fb950; }
+        .empty { text-align:center; padding:60px 20px; color:#6e7681; }
+    </style>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
+</head>
+<body>
+{% include 'components/admin_nav.html' %}
+<div class="container">
+    <h1>Employers</h1>
+    <p class="subtitle">{{ profiles|length }} employer account{{ 's' if profiles|length != 1 else '' }}. Verification is manual — there is no automated check, so only mark a company verified once you've actually looked into it.</p>
+
+    {% if not profiles %}
+    <div class="empty"><div style="font-size:3rem; margin-bottom:10px;">🏢</div><div>No employer accounts yet</div></div>
+    {% else %}
+    <table>
+        <thead><tr><th>Company</th><th>Contact</th><th>Industry</th><th>Joined</th><th>Actions</th></tr></thead>
+        <tbody>
+            {% for p in profiles %}
+            <tr id="employer-row-{{ p.id }}">
+                <td>
+                    <div class="company-name">{{ p.company_name }}{% if p.is_verified %}<span class="verified-tag" id="verified-tag-{{ p.id }}">VERIFIED</span>{% endif %}</div>
+                    {% if p.website %}<div class="company-meta">{{ p.website }}</div>{% endif %}
+                </td>
+                <td>{{ p.user.name or p.user.username }}<div class="company-meta">{{ p.user.email }}</div></td>
+                <td>{{ p.industry or '—' }}</td>
+                <td>{{ p.created_at.strftime('%b %d, %Y') if p.created_at else '—' }}</td>
+                <td>
+                    <button class="btn btn-toggle {{ 'is-verified' if p.is_verified else '' }}" id="verify-btn-{{ p.id }}" onclick="toggleVerified({{ p.id }})">{{ 'Unverify' if p.is_verified else 'Verify' }}</button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+</div>
+<script>
+async function toggleVerified(id) {
+  const res = await fetch(`/admin/employers/${id}/toggle-verified`, { method: 'POST' });
+  const data = await res.json();
+  if (data.success) location.reload(); else alert('Failed to update');
+}
+</script>
+</body>
+</html>

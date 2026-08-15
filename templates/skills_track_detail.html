@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>{{ track.title }} · Nelavista Skills</title>
+  <meta name="theme-color" content="#111827">
+  <meta name="description" content="{{ track.tagline or track.title }}">
+  <link rel="icon" type="image/png" sizes="32x32" href="/static/icons/nelavista-32x32.png">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/skills.css') }}">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
+  <style>
+    .td-breadcrumb { font-size: 0.82rem; color: #6b7280; margin-bottom: 14px; }
+    .td-breadcrumb a { color: #6b7280; text-decoration: none; }
+    .td-breadcrumb a:hover { color: #3b82f6; }
+    .td-hero { background: #1a2235; border-radius: 20px; padding: 28px; margin-bottom: 8px; display: flex; gap: 20px; align-items: flex-start; flex-wrap: wrap; }
+    .td-hero-icon { width: 60px; height: 60px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 28px; flex-shrink: 0; }
+    @media (max-width: 768px) { .td-hero { padding: 20px; } }
+  </style>
+</head>
+<body>
+{% include 'components/skills_sidebar.html' %}
+
+  <div class="sk-view">
+    <div class="td-breadcrumb"><a href="/skills/tracks">Learning Paths</a> / {{ track.title }}</div>
+    <div class="td-hero">
+      <div class="td-hero-icon" style="background:{{ track.color }}22; color:{{ track.color }};">{{ track.icon or '🧭' }}</div>
+      <div style="flex:1; min-width:220px;">
+        <span class="sk-eyebrow">Career Track</span>
+        <h1 class="sk-h1" style="margin-bottom:6px;">{{ track.title }}</h1>
+        <p class="sk-sub" style="margin-bottom:14px;">{{ track.tagline or '' }}</p>
+        <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+          <span class="sk-badge">{{ step_states|length }} skills</span>
+          <span class="sk-badge">{{ pct }}% complete</span>
+        </div>
+      </div>
+    </div>
+
+    {% if track.description %}
+    <p class="sk-sub" style="margin-top:18px; max-width:720px;">{{ track.description }}</p>
+    {% endif %}
+
+    <div class="sk-section-title">The Path</div>
+    {% if not step_states %}
+    <div class="sk-empty"><div class="sk-empty-icon">🧭</div><div style="font-weight:600;">This track doesn't have skills yet</div></div>
+    {% else %}
+    <ul class="sk-path">
+      {% for item in step_states %}
+      {% set step = item.step %}
+      <li class="sk-path-step {{ 'locked' if item.state == 'locked' else '' }}">
+        <div class="sk-step-marker {{ item.state }}">
+          {% if item.state == 'completed' %}✓{% else %}{{ loop.index }}{% endif %}
+        </div>
+        <div class="sk-step-body">
+          <div class="sk-step-num">Skill {{ loop.index }}</div>
+          <div class="sk-step-title">{{ step.skill.name if step.skill else 'Unknown skill' }}</div>
+          {% if step.note %}<div class="sk-step-desc">{{ step.note }}</div>{% endif %}
+          {% if item.state != 'locked' and step.skill %}
+            <a href="/skills/{{ step.skill.slug }}" class="sk-step-link">{{ 'Review' if item.state == 'completed' else 'Start' }} {{ step.skill.name }} →</a>
+          {% elif item.state == 'locked' %}
+            <span class="sk-step-desc" style="font-style:italic;">🔒 Complete the previous skill to unlock</span>
+          {% endif %}
+        </div>
+      </li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+  </div>
+
+{% include 'components/skills_footer.html' %}
+{% include 'components/skills_ask_widget.html' %}
+</body>
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Skill Transcript · Nelavista Skills</title>
+  <meta name="theme-color" content="#111827">
+  <link rel="icon" type="image/png" sizes="32x32" href="/static/icons/nelavista-32x32.png">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/skills.css') }}">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
+  <style>
+    .tr-class-card { margin-bottom: 16px; }
+    .tr-class-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 14px; flex-wrap: wrap; margin-bottom: 12px; }
+    .tr-class-title { font-weight: 700; font-size: 1rem; }
+    .tr-class-sub { font-size: 0.8rem; color: #9ca3af; margin-top: 2px; }
+    .tr-gpa-chip { text-align: center; }
+    .tr-gpa-chip .val { font-size: 1.6rem; font-weight: 800; }
+    .tr-gpa-chip .lbl { font-size: 0.68rem; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.4px; }
+    .tr-toggle { background: none; border: none; color: #3b82f6; font-size: 0.78rem; font-weight: 600; cursor: pointer; padding: 0; font-family: inherit; }
+    .tr-breakdown { display: none; margin-top: 14px; padding-top: 14px; border-top: 1px solid #1f2a3e; }
+    .tr-breakdown.open { display: block; }
+    .tr-cgpa-note { font-size: 0.72rem; color: #6b7280; margin-top: 4px; }
+  </style>
+</head>
+<body>
+{% include 'components/skills_sidebar.html' %}
+
+  <div class="sk-view">
+    <span class="sk-eyebrow">Your Evidence</span>
+    <h1 class="sk-h1">Skill Transcript</h1>
+    <p class="sk-sub">Everything you've earned across your 30-Day Skill Classes — Skill GPA, tests, assignments, and cohort rank, all computed transparently from your actual graded work.</p>
+
+    <div class="gpa-hero" style="margin:20px 0 6px;">
+      <span class="gpa-hero-value">{{ overall_gpa if overall_gpa is not none else '—' }}</span>
+      <span class="gpa-hero-label">Overall Skill GPA · {{ rows|length }} class{{ 'es' if rows|length != 1 else '' }}</span>
+    </div>
+
+    <div class="sk-panel" style="margin:24px 0;">
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;">
+        <div>Visible to employers: <strong>{{ (privacy.profile_visibility if privacy else 'private')|title }}</strong></div>
+        <a href="/skills/settings" class="sk-btn secondary small">Privacy Settings</a>
+      </div>
+    </div>
+
+    {% if not rows %}
+    <div class="sk-empty"><div class="sk-empty-icon">🎓</div><div style="font-weight:600;">No classes yet</div><div style="font-size:0.85rem;">Join a 30-Day Skill Class to start building your transcript.</div></div>
+    {% endif %}
+
+    {% for row in rows %}
+    <div class="sk-panel tr-class-card">
+      <div class="tr-class-head">
+        <div>
+          <div class="tr-class-title">{{ row.course.title }}</div>
+          <div class="tr-class-sub">{{ row.skill.name }} · {{ row.pct }}% complete{% if row.rank %} · Rank #{{ row.rank }} of {{ row.cohort_total }}{% endif %}</div>
+        </div>
+        <div class="tr-gpa-chip">
+          <div class="val">{{ row.gpa_data.gpa if row.gpa_data.gpa is not none else '—' }}</div>
+          <div class="lbl">{{ row.gpa_data.grade_letter or 'Skill GPA' }}</div>
+        </div>
+      </div>
+      <div class="sk-progress-row" style="margin-bottom:10px;">
+        <div class="sk-progress-track"><div class="sk-progress-fill" style="width:{{ row.pct }}%;"></div></div>
+        <span class="sk-progress-pct">{{ row.pct }}%</span>
+      </div>
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <a href="/skills/{{ row.skill.slug }}/class/{{ row.course.slug }}" class="sk-view-link">Continue class →</a>
+        {% if row.gpa_data.breakdown %}
+        <button class="tr-toggle" onclick="trToggle(this)">Show how this was calculated</button>
+        {% endif %}
+      </div>
+      {% if row.gpa_data.breakdown %}
+      <div class="tr-breakdown">
+        {% for comp in row.gpa_data.breakdown %}
+        <div class="gpa-breakdown-row">
+          <div>
+            <div class="gpa-component-label">{{ comp.label }}</div>
+            <div class="gpa-component-weight">{{ comp.weight_pct }}% of grade</div>
+          </div>
+          <div class="gpa-component-score">{{ comp.score_pct }}%</div>
+        </div>
+        {% endfor %}
+        <div class="sk-card-desc" style="margin-top:10px; margin-bottom:0;">Overall: {{ row.gpa_data.percentage }}% → {{ row.gpa_data.grade_letter }} ({{ row.gpa_data.gpa }} GPA)</div>
+      </div>
+      {% elif not row.gpa_data.configured %}
+      <div class="sk-card-desc" style="margin-top:10px; margin-bottom:0; font-style:italic;">Grading isn't configured for this class yet.</div>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+
+{% include 'components/skills_footer.html' %}
+{% include 'components/skills_ask_widget.html' %}
+
+<script>
+  function trToggle(btn) {
+    const panel = btn.closest('.tr-class-card').querySelector('.tr-breakdown');
+    const open = panel.classList.toggle('open');
+    btn.textContent = open ? 'Hide breakdown' : 'Show how this was calculated';
+  }
+</script>
+</body>
+</html>

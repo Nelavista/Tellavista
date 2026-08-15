@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Choose Your Path · Nelavista</title>
+  <meta name="theme-color" content="#050810">
+  <meta name="description" content="Choose how you want to grow with Nelavista — Academia or Tech & Skills. Switch anytime.">
+  <link rel="icon" type="image/png" sizes="32x32" href="/static/icons/nelavista-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/static/icons/nelavista-16x16.png">
+  <link rel="shortcut icon" href="/static/icons/favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="/static/icons/nelavista-180x180.png">
+
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
+
+  <style>
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      opacity: 0;
+      animation: cpFadeIn 0.6s ease-out forwards;
+    }
+    @keyframes cpFadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes cpUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* ----- TOP BAR (minimal — this isn't the public marketing nav) ----- */
+    .cp-topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 24px 32px; position: relative; z-index: 2;
+    }
+    .cp-topbar .brand-logo { font-size: 1.4rem; font-weight: 800; letter-spacing: -0.05em; color: var(--text-primary); text-decoration: none; }
+    .cp-topbar .brand-logo span { color: var(--accent-teal); }
+    .cp-logout {
+      color: var(--text-secondary); text-decoration: none; font-size: 0.88rem; font-weight: 600;
+      padding: 9px 18px; border-radius: var(--r-pill); border: 1px solid var(--border-hard);
+      transition: all 0.25s var(--ease);
+    }
+    .cp-logout:hover { color: var(--text-primary); border-color: var(--accent); background: rgba(56,189,248,0.08); }
+
+    /* ----- MAIN ----- */
+    .cp-main {
+      flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 24px 24px 64px; position: relative; z-index: 2;
+    }
+    .cp-intro { text-align: center; max-width: 640px; margin-bottom: 12px; }
+    .cp-eyebrow {
+      display: inline-block; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--accent-teal); margin-bottom: 18px; opacity: 0; animation: cpUp 0.6s ease-out 0.1s forwards;
+    }
+    .cp-headline {
+      font-size: clamp(1.9rem, 5vw, 2.9rem); font-weight: 800; letter-spacing: -0.04em; line-height: 1.08;
+      margin-bottom: 16px; color: var(--text-primary);
+      opacity: 0; animation: cpUp 0.6s ease-out 0.2s forwards;
+    }
+    .cp-sub {
+      font-size: 1.05rem; color: var(--text-secondary); line-height: 1.6;
+      opacity: 0; animation: cpUp 0.6s ease-out 0.3s forwards;
+    }
+
+    .cp-flashes { list-style: none; margin: 24px 0 0; max-width: 480px; width: 100%; }
+    .cp-flashes li {
+      background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); color: var(--text-primary);
+      padding: 0.8rem 1.1rem; border-radius: var(--r-md); font-size: 0.9rem; text-align: center; margin-bottom: 10px;
+    }
+
+    /* ----- PATH CARDS ----- */
+    .cp-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
+      max-width: 940px; width: 100%; margin-top: 48px;
+    }
+    .cp-form { display: contents; }
+
+    .path-card {
+      appearance: none; border: 1px solid var(--border-hard); background: var(--bg-card);
+      border-radius: var(--r-xl); padding: 40px 32px; text-align: left; cursor: pointer;
+      font-family: inherit; color: var(--text-primary); width: 100%;
+      display: flex; flex-direction: column; align-items: flex-start;
+      transition: transform 0.5s var(--ease-spring), box-shadow 0.5s ease, border-color 0.5s, background 0.5s;
+      position: relative; overflow: hidden; box-shadow: var(--shadow-card);
+      opacity: 0; animation: cpUp 0.6s ease-out forwards;
+    }
+    .path-card:nth-of-type(1), .cp-grid > .cp-form:nth-child(1) .path-card { animation-delay: 0.4s; }
+    .cp-grid > .cp-form:nth-child(2) .path-card { animation-delay: 0.5s; }
+
+    .path-card::before {
+      content: ''; position: absolute; inset: 0; z-index: 0; opacity: 0;
+      background: radial-gradient(520px circle at 30% 0%, rgba(56,189,248,0.1), transparent 65%);
+      transition: opacity 0.5s ease; pointer-events: none;
+    }
+    .path-tech::before {
+      background: radial-gradient(520px circle at 30% 0%, rgba(45,212,191,0.12), transparent 65%);
+    }
+    .path-card:hover::before, .path-card:focus-visible::before { opacity: 1; }
+    .path-card:hover, .path-card:focus-visible {
+      border-color: rgba(56,189,248,0.4); transform: translateY(-6px);
+      box-shadow: var(--shadow-card-hover);
+    }
+    .path-tech:hover, .path-tech:focus-visible { border-color: rgba(45,212,191,0.45); }
+    .path-card:active { transform: translateY(-2px); }
+
+    .path-icon {
+      width: 60px; height: 60px; border-radius: var(--r-md);
+      background: rgba(56,189,248,0.1); border: 1px solid rgba(56,189,248,0.25);
+      display: flex; align-items: center; justify-content: center; font-size: 1.7rem; color: var(--accent);
+      margin-bottom: 26px; position: relative; z-index: 1; transition: transform 0.5s var(--ease-spring);
+    }
+    .path-tech .path-icon { background: rgba(45,212,191,0.12); border-color: rgba(45,212,191,0.3); color: var(--accent-teal); }
+    .path-card:hover .path-icon { transform: scale(1.06) rotate(-4deg); }
+
+    .path-title { display: block; font-size: 1.7rem; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 8px; position: relative; z-index: 1; }
+    .path-desc { display: block; font-size: 0.98rem; color: var(--text-secondary); line-height: 1.55; margin-bottom: 24px; position: relative; z-index: 1; }
+
+    .path-features { list-style: none; width: 100%; margin-bottom: 32px; position: relative; z-index: 1; }
+    .path-features li { display: flex; align-items: center; gap: 10px; font-size: 0.9rem; color: var(--text-secondary); padding: 7px 0; }
+    .path-features li i { color: var(--accent); font-size: 1rem; flex-shrink: 0; }
+    .path-tech .path-features li i { color: var(--accent-teal); }
+
+    .path-cta {
+      margin-top: auto; display: inline-flex; align-items: center; gap: 8px;
+      font-weight: 700; font-size: 0.95rem; color: var(--accent);
+      position: relative; z-index: 1; transition: gap 0.3s var(--ease-spring);
+    }
+    .path-tech .path-cta { color: var(--accent-teal); }
+    .path-card:hover .path-cta, .path-card:focus-visible .path-cta { gap: 13px; }
+
+    .cp-footnote {
+      margin-top: 36px; font-size: 0.85rem; color: var(--text-muted); text-align: center;
+      opacity: 0; animation: cpUp 0.6s ease-out 0.6s forwards;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      body, .cp-eyebrow, .cp-headline, .cp-sub, .path-card, .cp-footnote { animation: none !important; opacity: 1 !important; transform: none !important; }
+    }
+
+    /* ----- MOBILE: deliberate layout, not a shrunk desktop card ----- */
+    @media (max-width: 760px) {
+      .cp-topbar { padding: 18px 20px; }
+      .cp-main { padding: 8px 16px 48px; justify-content: flex-start; }
+      .cp-intro { text-align: left; margin-bottom: 4px; }
+      .cp-eyebrow { margin-bottom: 12px; }
+      .cp-sub { font-size: 0.98rem; }
+
+      .cp-grid { grid-template-columns: 1fr; gap: 16px; margin-top: 28px; }
+      .path-card { padding: 24px 22px; border-radius: var(--r-lg); }
+      .path-icon { width: 48px; height: 48px; font-size: 1.4rem; margin-bottom: 16px; }
+      .path-title { font-size: 1.35rem; }
+      .path-desc { font-size: 0.92rem; margin-bottom: 18px; }
+
+      /* Feature list becomes wrapping chips instead of a vertical list — a layout that
+         only makes sense at this width, not a scaled-down copy of the desktop card. */
+      .path-features { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 22px; }
+      .path-features li { flex: 0 0 auto; padding: 6px 12px; background: rgba(255,255,255,0.04); border: 1px solid var(--border-subtle); border-radius: var(--r-pill); font-size: 0.78rem; }
+      .path-tech .path-features li { background: rgba(45,212,191,0.06); }
+
+      .path-cta {
+        width: 100%; justify-content: center; padding: 14px 0; border-radius: var(--r-sm);
+        background: var(--grad-main); color: #fff !important; margin-top: 6px;
+      }
+      .path-tech .path-cta { background: var(--grad-teal); }
+      .path-card:hover .path-cta, .path-card:focus-visible .path-cta { gap: 8px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="cp-topbar">
+    <a href="/" class="brand-logo bg">Nela<span>vista</span></a>
+    <a href="/logout" class="cp-logout">Log out</a>
+  </header>
+
+  <main class="cp-main">
+    <div class="cp-intro">
+      <span class="cp-eyebrow">{{ 'Welcome, ' ~ first_name if first_name else 'Welcome to Nelavista' }}</span>
+      <h1 class="cp-headline bg">How do you want to grow with Nelavista?</h1>
+      <p class="cp-sub">Choose where you want to start. You'll choose again each time you come back.</p>
+    </div>
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul class="cp-flashes">
+          {% for message in messages %}<li>{{ message }}</li>{% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+
+    <div class="cp-grid">
+      <form method="POST" action="{{ url_for('dashboard.choose_path') }}" class="cp-form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <input type="hidden" name="path" value="academia">
+        <button type="submit" class="path-card path-academia" aria-label="Enter Academia — courses, study materials, CBT practice, AI tutor, past questions, and progress tracking">
+          <span class="path-icon" aria-hidden="true"><i class="ri-graduation-cap-line"></i></span>
+          <span class="path-title bg">Academia</span>
+          <span class="path-desc">Ace your university journey.</span>
+          <ul class="path-features">
+            <li><i class="ri-check-line" aria-hidden="true"></i>Courses & Study Materials</li>
+            <li><i class="ri-check-line" aria-hidden="true"></i>CBT Practice</li>
+            <li><i class="ri-check-line" aria-hidden="true"></i>AI Tutor</li>
+            <li><i class="ri-check-line" aria-hidden="true"></i>Past Questions</li>
+            <li><i class="ri-check-line" aria-hidden="true"></i>Progress Tracking</li>
+          </ul>
+          <span class="path-cta">Enter Academia <i class="ri-arrow-right-line" aria-hidden="true"></i></span>
+        </button>
+      </form>
+
+      <form method="POST" action="{{ url_for('dashboard.choose_path') }}" class="cp-form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <input type="hidden" name="path" value="skills">
+        <button type="submit" class="path-card path-tech" aria-label="Explore Skills — learn, practice, build, and prove real skills through paths, challenges, and projects">
+          <span class="path-icon" aria-hidden="true"><i class="ri-code-s-slash-line"></i></span>
+          <span class="path-title bg">Skills</span>
+          <span class="path-desc">Learn skills. Build. Get opportunities.</span>
+          <ul class="path-features">
+            <li><i class="ri-check-line" aria-hidden="true"></i>Skill Learning Paths</li>
+            <li><i class="ri-check-line" aria-hidden="true"></i>Practice Challenges</li>
+            <li><i class="ri-check-line" aria-hidden="true"></i>Real Projects</li>
+            <li><i class="ri-check-line" aria-hidden="true"></i>Progress & Proof of Work</li>
+            <li><i class="ri-check-line" aria-hidden="true"></i>AI-Assisted Learning</li>
+          </ul>
+          <span class="path-cta">Explore Skills <i class="ri-arrow-right-line" aria-hidden="true"></i></span>
+        </button>
+      </form>
+    </div>
+
+    <p class="cp-footnote">Each experience is its own space — you'll pick again next time you log in.</p>
+  </main>
+</body>
+</html>

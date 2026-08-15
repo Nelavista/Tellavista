@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, jsonify, session, request
 from utils.helpers import login_required, admin_required
-from models import User, Material, Video, Group, GroupMember, GroupMessage, Room, StudySession, Exam
+from models import User, Material, Video, Group, GroupMember, GroupMessage, Room, StudySession, Exam, EmployerProfile
 from sqlalchemy import func
 from services.meeting_service import end_room_session, rooms as live_rooms_memory
 from extensions import db
@@ -67,6 +67,27 @@ def toggle_user_admin(user_id):
     target.is_admin = not target.is_admin
     db.session.commit()
     return jsonify({'success': True, 'is_admin': target.is_admin})
+
+
+# ===== EMPLOYER VERIFICATION =====
+@admin_bp.route('/admin/employers')
+@login_required
+@admin_required
+def admin_employers():
+    """No automated verification exists for employer accounts — is_verified means an
+    admin actually looked at the company and approved it, nothing more."""
+    profiles = EmployerProfile.query.order_by(EmployerProfile.created_at.desc()).all()
+    return render_template('admin_employers.html', profiles=profiles, active_page='employers')
+
+
+@admin_bp.route('/admin/employers/<int:profile_id>/toggle-verified', methods=['POST'])
+@login_required
+@admin_required
+def toggle_employer_verified(profile_id):
+    profile = EmployerProfile.query.get_or_404(profile_id)
+    profile.is_verified = not profile.is_verified
+    db.session.commit()
+    return jsonify({'success': True, 'is_verified': profile.is_verified})
 
 
 @admin_bp.route('/admin/users/<int:user_id>/activity')

@@ -72,10 +72,13 @@ def signup():
             'email': email,
             'joined_on': user.joined_on.strftime('%Y-%m-%d'),
             'last_login': datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S'),
-            'is_admin': user.is_admin
+            'is_admin': user.is_admin,
+            'preferred_path': user.preferred_path
         }
         flash('Account created successfully!')
-        return redirect(url_for('dashboard.dashboard'))
+        # Brand-new account: always send through path selection, never straight into
+        # Academia. Returning users skip this — see login() below.
+        return redirect(url_for('dashboard.choose_path'))
     return render_template('signup.html')
 
 
@@ -97,10 +100,18 @@ def login():
                 'email': user.email,
                 'joined_on': user.joined_on.strftime('%Y-%m-%d'),
                 'last_login': user.last_login.strftime('%Y-%m-%d %H:%M:%S'),
-                'is_admin': user.is_admin
+                'is_admin': user.is_admin,
+                'preferred_path': user.preferred_path
             }
             flash('Logged in successfully!')
-            return redirect(url_for('dashboard.dashboard'))
+            # Employers have their own separate experience entirely — no Academia/Skills
+            # picker for them, since that fork doesn't apply to an employer account.
+            if user.is_employer:
+                return redirect(url_for('employer.dashboard'))
+            # Every login lands on the Academia/Skills picker first — Academia and Skills
+            # are two genuinely separate destinations, not a single merged dashboard, and
+            # the picker is the deliberate fork between them each time you come in.
+            return redirect(url_for('dashboard.choose_path'))
         else:
             flash('Invalid credentials.')
             return redirect(url_for('auth.login'))

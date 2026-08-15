@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin · {{ skill.name }} · Nelavista</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Inter',system-ui,sans-serif; }
+        body { background:#0d1117; color:#e6edf3; }
+        .container { max-width:1100px; margin:0 auto; padding:28px 20px 100px; }
+        .back-link { color:#8b949e; text-decoration:none; font-size:0.85rem; }
+        .back-link:hover { color:#58a6ff; }
+        .hero { display:flex; align-items:center; justify-content:space-between; gap:14px; margin:14px 0 28px; flex-wrap:wrap; }
+        .hero h1 { font-size:1.5rem; display:flex; align-items:center; gap:10px; }
+        .hero .meta { color:#8b949e; font-size:0.85rem; margin-top:4px; }
+        .pub-toggle { display:flex; align-items:center; gap:10px; background:#161b22; border:1px solid #21262d; border-radius:10px; padding:10px 14px; }
+        .switch { position:relative; width:42px; height:22px; }
+        .switch input { opacity:0; width:0; height:0; }
+        .slider { position:absolute; inset:0; background:#30363d; border-radius:22px; cursor:pointer; transition:0.2s; }
+        .slider::before { content:''; position:absolute; width:16px; height:16px; left:3px; top:3px; background:#fff; border-radius:50%; transition:0.2s; }
+        input:checked + .slider { background:#238636; }
+        input:checked + .slider::before { transform:translateX(20px); }
+
+        .tabs { display:flex; gap:4px; border-bottom:1px solid #21262d; margin-bottom:20px; overflow-x:auto; }
+        .tab { padding:10px 16px; font-size:0.85rem; font-weight:600; color:#8b949e; background:none; border:none; border-bottom:2px solid transparent; cursor:pointer; white-space:nowrap; font-family:inherit; }
+        .tab.active { color:#58a6ff; border-bottom-color:#58a6ff; }
+        .tab-panel { display:none; } .tab-panel.active { display:block; }
+
+        .row-actions { display:flex; gap:6px; }
+        .btn { background:#238636; border:none; color:#fff; padding:9px 16px; border-radius:8px; font-size:0.85rem; font-weight:600; cursor:pointer; }
+        .btn:hover { background:#2ea043; }
+        .btn.secondary { background:#21262d; border:1px solid #30363d; color:#e6edf3; }
+        .btn.secondary:hover { border-color:#58a6ff; }
+        .btn.small { padding:6px 10px; font-size:0.76rem; }
+        .btn.danger { background:#da3633; } .btn.danger:hover { background:#f85149; }
+        .btn.ghost { background:none; border:1px solid #30363d; color:#8b949e; }
+
+        .item-card { background:#161b22; border:1px solid #21262d; border-radius:12px; padding:14px 16px; margin-bottom:10px; }
+        .item-head { display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; }
+        .item-title { font-weight:600; font-size:0.92rem; }
+        .item-sub { color:#8b949e; font-size:0.76rem; margin-top:3px; }
+        .pub-badge { font-size:0.6rem; font-weight:700; padding:2px 7px; border-radius:10px; margin-left:6px; }
+        .pub-badge.yes { background:rgba(63,185,80,0.15); color:#3fb950; }
+        .pub-badge.no { background:rgba(139,148,158,0.15); color:#8b949e; }
+
+        .module-block { margin:10px 0 10px 16px; padding-left:14px; border-left:2px solid #21262d; }
+        .lesson-row { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:8px 10px; background:#0d1117; border-radius:8px; margin-bottom:6px; flex-wrap:wrap; }
+        .lesson-row .lt { font-size:0.85rem; }
+
+        .empty-hint { color:#6e7681; font-size:0.85rem; padding:18px; text-align:center; }
+        .add-row { margin-top:8px; }
+
+        .modal-backdrop { position:fixed; inset:0; background:rgba(0,0,0,0.6); display:none; align-items:center; justify-content:center; z-index:2000; padding:16px; }
+        .modal-backdrop.active { display:flex; }
+        .modal { background:#161b22; border:1px solid #30363d; border-radius:16px; padding:24px; width:100%; max-width:560px; max-height:90vh; overflow-y:auto; }
+        .modal h3 { margin-bottom:16px; font-size:1.1rem; }
+        .field { margin-bottom:14px; }
+        .field label { display:block; font-size:0.8rem; color:#8b949e; margin-bottom:6px; font-weight:600; }
+        .field input, .field select, .field textarea { width:100%; background:#0d1117; border:1px solid #30363d; color:#e6edf3; padding:9px 12px; border-radius:8px; font-size:0.88rem; font-family:inherit; outline:none; }
+        .field input:focus, .field select:focus, .field textarea:focus { border-color:#58a6ff; }
+        .field textarea { resize:vertical; min-height:70px; }
+        .field .hint { font-size:0.72rem; color:#6e7681; margin-top:5px; }
+        .modal-actions { display:flex; gap:8px; justify-content:flex-end; margin-top:18px; }
+    </style>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
+</head>
+<body>
+{% include 'components/admin_nav.html' %}
+<div class="container">
+    <a href="/admin/skills" class="back-link">← All Skills</a>
+    <div class="hero">
+        <div>
+            <h1>{{ skill.icon or '🧩' }} {{ skill.name }}</h1>
+            <div class="meta">{{ skill.level|title }} · {{ student_count }} student{{ 's' if student_count != 1 else '' }} learning · <button class="btn ghost small" onclick="openSkillEditModal()">Edit details</button></div>
+        </div>
+        <div class="pub-toggle">
+            <span>{{ 'Live' if skill.is_published else 'Draft' }}</span>
+            <label class="switch">
+                <input type="checkbox" id="publishToggle" {{ 'checked' if skill.is_published else '' }} onchange="togglePublish(this.checked)">
+                <span class="slider"></span>
+            </label>
+        </div>
+    </div>
+
+    <div class="tabs">
+        <button class="tab active" data-tab="path" onclick="showTab('path')">Learning Path</button>
+        <button class="tab" data-tab="courses" onclick="showTab('courses')">Courses</button>
+        <button class="tab" data-tab="challenges" onclick="showTab('challenges')">Challenges</button>
+        <button class="tab" data-tab="projects" onclick="showTab('projects')">Projects</button>
+    </div>
+
+    <!-- LEARNING PATH -->
+    <div class="tab-panel active" id="tab-path">
+        <div id="stepsWrap">
+        {% for step in steps %}
+        <div class="item-card">
+            <div class="item-head">
+                <div>
+                    <div class="item-title">{{ loop.index }}. {{ step.title }} <span class="pub-badge no">{{ step.step_type|upper }}</span></div>
+                    <div class="item-sub">{{ step.description or '' }}
+                        {% if step.step_type == 'course' and step.course %} → {{ step.course.title }}{% endif %}
+                        {% if step.step_type == 'challenge' and step.challenge %} → {{ step.challenge.title }}{% endif %}
+                        {% if step.step_type == 'project' and step.project_template %} → {{ step.project_template.title }}{% endif %}
+                    </div>
+                </div>
+                <div class="row-actions">
+                    <button class="btn secondary small" onclick="moveStep({{ step.id }}, -1)">↑</button>
+                    <button class="btn secondary small" onclick="moveStep({{ step.id }}, 1)">↓</button>
+                    <button class="btn danger small" onclick="deleteItem('/admin/api/path-steps/{{ step.id }}', 'step-{{ step.id }}')">Delete</button>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="empty-hint">No steps yet — add courses, challenges, and projects below first, then sequence them here.</div>
+        {% endfor %}
+        </div>
+        <div class="add-row"><button class="btn" onclick="openStepModal()">+ Add Step</button></div>
+    </div>
+
+    <!-- COURSES -->
+    <div class="tab-panel" id="tab-courses">
+        {% for course in courses %}
+        <div class="item-card" id="course-{{ course.id }}">
+            <div class="item-head">
+                <div>
+                    <div class="item-title">{{ course.title }} <span class="pub-badge {{ 'yes' if course.is_published else 'no' }}">{{ 'LIVE' if course.is_published else 'DRAFT' }}</span>{% if course.is_daily_class %} <span class="pub-badge yes">🗓️ {{ course.duration_days or '?' }}-DAY CLASS</span>{% endif %}</div>
+                    <div class="item-sub">{{ course.description or '' }} · {{ course.modules.count() }} modules</div>
+                </div>
+                <div class="row-actions">
+                    {% if course.is_daily_class %}
+                    <a href="/admin/skills/classes/{{ course.id }}" class="btn small">🗓️ Manage Class</a>
+                    {% endif %}
+                    <button class="btn secondary small" onclick="togglePublishGeneric('/admin/api/courses/{{ course.id }}', {{ (not course.is_published)|tojson }})">{{ 'Unpublish' if course.is_published else 'Publish' }}</button>
+                    <button class="btn danger small" onclick="deleteItem('/admin/api/courses/{{ course.id }}', 'course-{{ course.id }}')">Delete</button>
+                </div>
+            </div>
+            {% if course.is_daily_class %}
+            <div class="item-sub" style="margin-top:8px; font-style:italic;">Days, assignments, tests, and grading for this class are managed on its dedicated page — click "Manage Class" above.</div>
+            {% else %}
+            {% for module in course.modules %}
+            <div class="module-block">
+                <div class="item-head">
+                    <strong style="font-size:0.85rem;">{{ module.title }}</strong>
+                    <div class="row-actions">
+                        <button class="btn secondary small" onclick="openLessonModal({{ module.id }})">+ Lesson</button>
+                        <button class="btn danger small" onclick="deleteItem('/admin/api/modules/{{ module.id }}', 'module-{{ module.id }}')">Delete Module</button>
+                    </div>
+                </div>
+                <div id="module-{{ module.id }}" style="margin-top:8px;">
+                {% for lesson in module.lessons %}
+                <div class="lesson-row">
+                    <span class="lt">{{ lesson.title }} <span class="pub-badge {{ 'yes' if lesson.is_published else 'no' }}">{{ 'LIVE' if lesson.is_published else 'DRAFT' }}</span>{% if lesson.quiz %} · quiz{% endif %}
+                        {% if lesson.videos is not none %} · 🎬 {{ lesson.videos|length }} video{{ 's' if lesson.videos|length != 1 else '' }}{% endif %}
+                    </span>
+                    <div class="row-actions">
+                        <!-- Lesson data (title/content/etc. can contain quotes and apostrophes from real
+                             prose) travels via a JSON script tag, not an inline onclick attribute — tojson's
+                             own quoting collides with HTML attribute delimiters otherwise. -->
+                        <script type="application/json" id="lesson-data-{{ lesson.id }}">{{ lesson.to_dict()|tojson }}</script>
+                        <button class="btn secondary small" onclick="openLessonModal({{ module.id }}, JSON.parse(document.getElementById('lesson-data-{{ lesson.id }}').textContent))">Edit</button>
+                        <button class="btn secondary small" id="refresh-videos-{{ lesson.id }}" onclick="refreshLessonVideos({{ lesson.id }})" title="Re-search YouTube for this lesson (e.g. after changing its title)">🔄 Videos</button>
+                        <button class="btn secondary small" onclick="togglePublishGeneric('/admin/api/lessons/{{ lesson.id }}', {{ (not lesson.is_published)|tojson }})">{{ 'Unpublish' if lesson.is_published else 'Publish' }}</button>
+                        <button class="btn danger small" onclick="deleteItem('/admin/api/lessons/{{ lesson.id }}', null)">Delete</button>
+                    </div>
+                </div>
+                {% else %}
+                <div class="empty-hint" style="padding:8px;">No lessons yet.</div>
+                {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+            <div class="add-row"><button class="btn secondary small" onclick="openModuleModal({{ course.id }})">+ Add Module</button></div>
+            {% endif %}
+        </div>
+        {% else %}
+        <div class="item-card" style="text-align:center; padding:28px 20px;">
+            <div style="font-size:1.5rem; margin-bottom:8px;">✨</div>
+            <div style="font-weight:700; margin-bottom:6px;">No courses yet — draft a starter curriculum with AI</div>
+            <div class="item-sub" style="margin-bottom:16px;">Proposes 2 modules (4 lessons), a challenge, and a project brief as drafts — nothing publishes automatically, you review and edit everything first.</div>
+            <button class="btn" id="generateCurriculumBtn" onclick="generateCurriculum()">✨ Generate Curriculum with AI</button>
+        </div>
+        {% endfor %}
+        <div class="add-row"><button class="btn secondary" onclick="openCourseModal()">+ Add Course Manually</button></div>
+    </div>
+
+    <!-- CHALLENGES -->
+    <div class="tab-panel" id="tab-challenges">
+        {% for c in challenges %}
+        <div class="item-card" id="challenge-{{ c.id }}">
+            <div class="item-head">
+                <div>
+                    <div class="item-title">{{ c.title }} <span class="pub-badge {{ 'yes' if c.is_published else 'no' }}">{{ 'LIVE' if c.is_published else 'DRAFT' }}</span></div>
+                    <div class="item-sub">{{ c.challenge_type }} · {{ c.difficulty }} · {{ c.description or '' }}</div>
+                </div>
+                <div class="row-actions">
+                    <script type="application/json" id="challenge-data-{{ c.id }}">{{ c.to_dict()|tojson }}</script>
+                    <button class="btn secondary small" onclick="openChallengeModal(JSON.parse(document.getElementById('challenge-data-{{ c.id }}').textContent))">Edit</button>
+                    <button class="btn secondary small" onclick="togglePublishGeneric('/admin/api/challenges/{{ c.id }}', {{ (not c.is_published)|tojson }})">{{ 'Unpublish' if c.is_published else 'Publish' }}</button>
+                    <button class="btn danger small" onclick="deleteItem('/admin/api/challenges/{{ c.id }}', 'challenge-{{ c.id }}')">Delete</button>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="empty-hint">No challenges yet.</div>
+        {% endfor %}
+        <div class="add-row"><button class="btn" onclick="openChallengeModal()">+ Add Challenge</button></div>
+    </div>
+
+    <!-- PROJECT TEMPLATES -->
+    <div class="tab-panel" id="tab-projects">
+        {% for p in project_templates %}
+        <div class="item-card" id="project-{{ p.id }}">
+            <div class="item-head">
+                <div>
+                    <div class="item-title">{{ p.title }} <span class="pub-badge {{ 'yes' if p.is_published else 'no' }}">{{ 'LIVE' if p.is_published else 'DRAFT' }}</span></div>
+                    <div class="item-sub">{{ p.difficulty }} · {{ p.skills_demonstrated|join(', ') }}</div>
+                </div>
+                <div class="row-actions">
+                    <script type="application/json" id="project-data-{{ p.id }}">{{ p.to_dict()|tojson }}</script>
+                    <button class="btn secondary small" onclick="openProjectModal(JSON.parse(document.getElementById('project-data-{{ p.id }}').textContent))">Edit</button>
+                    <button class="btn secondary small" onclick="togglePublishGeneric('/admin/api/projects/{{ p.id }}', {{ (not p.is_published)|tojson }})">{{ 'Unpublish' if p.is_published else 'Publish' }}</button>
+                    <button class="btn danger small" onclick="deleteItem('/admin/api/projects/{{ p.id }}', 'project-{{ p.id }}')">Delete</button>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="empty-hint">No project briefs yet.</div>
+        {% endfor %}
+        <div class="add-row"><button class="btn" onclick="openProjectModal()">+ Add Project Brief</button></div>
+    </div>
+</div>
+
+<!-- Skill edit modal -->
+<div class="modal-backdrop" id="skillEditModal"><div class="modal">
+  <h3>Edit Skill Details</h3>
+  <div class="field"><label>Name</label><input id="editSkillName" value="{{ skill.name }}"></div>
+  <div class="field"><label>Tagline</label><input id="editSkillTagline" value="{{ skill.tagline or '' }}"></div>
+  <div class="field"><label>Description</label><textarea id="editSkillDescription">{{ skill.description or '' }}</textarea></div>
+  <div class="field"><label>Level</label><select id="editSkillLevel">
+    <option value="beginner" {{ 'selected' if skill.level=='beginner' else '' }}>Beginner</option>
+    <option value="intermediate" {{ 'selected' if skill.level=='intermediate' else '' }}>Intermediate</option>
+    <option value="advanced" {{ 'selected' if skill.level=='advanced' else '' }}>Advanced</option>
+  </select></div>
+  <div class="field"><label>Icon</label><input id="editSkillIcon" value="{{ skill.icon or '' }}"></div>
+  <div class="field"><label>Estimated hours</label><input id="editSkillHours" type="number" value="{{ skill.estimated_hours or 0 }}"></div>
+  <div class="modal-actions"><button class="btn secondary" onclick="closeModal('skillEditModal')">Cancel</button><button class="btn" onclick="saveSkillEdit()">Save</button></div>
+</div></div>
+
+<!-- Step modal -->
+<div class="modal-backdrop" id="stepModal"><div class="modal">
+  <h3>Add Learning Path Step</h3>
+  <div class="field"><label>Step title</label><input id="stepTitle" placeholder="e.g. Python Fundamentals"></div>
+  <div class="field"><label>Description</label><input id="stepDescription" placeholder="One line about this step"></div>
+  <div class="field"><label>Type</label><select id="stepType" onchange="onStepTypeChange()">
+    <option value="course">Course</option><option value="challenge">Challenge</option><option value="project">Project</option>
+  </select></div>
+  <div class="field" id="stepCourseField"><label>Course</label><select id="stepCourseId">{% for c in courses %}<option value="{{ c.id }}">{{ c.title }}</option>{% endfor %}</select></div>
+  <div class="field" id="stepChallengeField" style="display:none;"><label>Challenge</label><select id="stepChallengeId">{% for c in challenges %}<option value="{{ c.id }}">{{ c.title }}</option>{% endfor %}</select></div>
+  <div class="field" id="stepProjectField" style="display:none;"><label>Project</label><select id="stepProjectId">{% for p in project_templates %}<option value="{{ p.id }}">{{ p.title }}</option>{% endfor %}</select></div>
+  <div class="modal-actions"><button class="btn secondary" onclick="closeModal('stepModal')">Cancel</button><button class="btn" onclick="saveStep()">Add Step</button></div>
+</div></div>
+
+<!-- Course modal -->
+<div class="modal-backdrop" id="courseModal"><div class="modal">
+  <h3>Add Course</h3>
+  <div class="field"><label>Title</label><input id="courseTitle" placeholder="e.g. Python Fundamentals"></div>
+  <div class="field"><label>Description</label><textarea id="courseDescription"></textarea></div>
+  <div class="field"><label>Level</label><select id="courseLevel"><option value="beginner">Beginner</option><option value="intermediate">Intermediate</option><option value="advanced">Advanced</option></select></div>
+  <div class="field"><label>Estimated hours</label><input id="courseHours" type="number" value="0"></div>
+  <div class="field">
+    <label><input type="checkbox" id="courseIsDailyClass" onchange="document.getElementById('courseDaysField').style.display = this.checked ? 'block' : 'none';" style="width:auto; display:inline-block; margin-right:8px;">This is a structured daily class (e.g. a 30-Day Skill Class)</label>
+  </div>
+  <div class="field" id="courseDaysField" style="display:none;"><label>Duration (days)</label><input id="courseDays" type="number" value="30"></div>
+  <div class="modal-actions"><button class="btn secondary" onclick="closeModal('courseModal')">Cancel</button><button class="btn" onclick="saveCourse()">Add Course</button></div>
+</div></div>
+
+<!-- Module modal -->
+<div class="modal-backdrop" id="moduleModal"><div class="modal">
+  <h3>Add Module</h3>
+  <input type="hidden" id="moduleCourseId">
+  <div class="field"><label>Title</label><input id="moduleTitle" placeholder="e.g. Getting Started"></div>
+  <div class="modal-actions"><button class="btn secondary" onclick="closeModal('moduleModal')">Cancel</button><button class="btn" onclick="saveModule()">Add Module</button></div>
+</div></div>
+
+<!-- Lesson modal (includes quiz JSON editor) -->
+<div class="modal-backdrop" id="lessonModal"><div class="modal">
+  <h3 id="lessonModalTitle">Add Lesson</h3>
+  <input type="hidden" id="lessonModuleId"><input type="hidden" id="lessonId">
+  <div class="field"><label>Title</label><input id="lessonTitle"></div>
+  <div class="field">
+    <label>Content (HTML/plain text)</label>
+    <textarea id="lessonContent" rows="6" placeholder="&lt;p&gt;Lesson body...&lt;/p&gt;"></textarea>
+    <button type="button" class="btn secondary small" id="draftFromVideoBtn" style="margin-top:8px; display:none;" onclick="draftFromVideo()">✨ Draft from Video</button>
+    <div class="hint" id="draftFromVideoHint" style="display:none;">Writes a draft grounded in this lesson's reference video — review and edit before saving.</div>
+  </div>
+  <div class="field"><label>Video URL (embeddable, optional)</label><input id="lessonVideo" placeholder="https://www.youtube.com/embed/..."></div>
+  <div class="field"><label>Duration (minutes)</label><input id="lessonDuration" type="number" value="10"></div>
+  <div class="field"><label>Quiz questions (JSON, optional)</label>
+    <textarea id="lessonQuiz" rows="5" placeholder='[{"question":"2+2?","options":["3","4","5"],"correct_index":1,"explanation":"2+2=4"}]'></textarea>
+    <div class="hint">Leave empty for no quiz. Each question needs question, options, correct_index (0-based).</div>
+  </div>
+  <div class="modal-actions"><button class="btn secondary" onclick="closeModal('lessonModal')">Cancel</button><button class="btn" onclick="saveLesson()">Save Lesson</button></div>
+</div></div>
+
+<!-- Challenge modal -->
+<div class="modal-backdrop" id="challengeModal"><div class="modal">
+  <h3 id="challengeModalTitle">Add Challenge</h3>
+  <input type="hidden" id="challengeId">
+  <div class="field"><label>Title</label><input id="challengeTitle"></div>
+  <div class="field"><label>Short description</label><input id="challengeDescription"></div>
+  <div class="field"><label>Type</label><select id="challengeType"><option value="coding">Coding</option><option value="design">Design</option><option value="business">Business</option><option value="content">Content</option><option value="general">General</option></select></div>
+  <div class="field"><label>Difficulty</label><select id="challengeDifficulty"><option value="beginner">Beginner</option><option value="intermediate">Intermediate</option><option value="advanced">Advanced</option></select></div>
+  <div class="field"><label>Estimated minutes</label><input id="challengeMinutes" type="number" value="30"></div>
+  <div class="field"><label>Full instructions</label><textarea id="challengeInstructions" rows="5"></textarea></div>
+  <div class="modal-actions"><button class="btn secondary" onclick="closeModal('challengeModal')">Cancel</button><button class="btn" onclick="saveChallenge()">Save Challenge</button></div>
+</div></div>
+
+<!-- Project template modal -->
+<div class="modal-backdrop" id="projectModal"><div class="modal">
+  <h3 id="projectModalTitle">Add Project Brief</h3>
+  <input type="hidden" id="projectId">
+  <div class="field"><label>Title</label><input id="projectTitle" placeholder="e.g. Student Marketplace"></div>
+  <div class="field"><label>Description</label><textarea id="projectDescription" rows="4"></textarea></div>
+  <div class="field"><label>Skills demonstrated (comma-separated)</label><input id="projectSkillsDemonstrated" placeholder="HTML, CSS, JavaScript, Git"></div>
+  <div class="field"><label>Difficulty</label><select id="projectDifficulty"><option value="beginner">Beginner</option><option value="intermediate">Intermediate</option><option value="advanced">Advanced</option></select></div>
+  <div class="field"><label>Estimated hours</label><input id="projectHours" type="number" value="0"></div>
+  <div class="modal-actions"><button class="btn secondary" onclick="closeModal('projectModal')">Cancel</button><button class="btn" onclick="saveProjectTemplate()">Save Project Brief</button></div>
+</div></div>
+
+<script>
+const SKILL_ID = {{ skill.id }};
+
+function showTab(name) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === name));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.id === 'tab-' + name));
+}
+function openModal(id) { document.getElementById(id).classList.add('active'); }
+function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+
+async function jsonFetch(url, method, payload) {
+  const res = await fetch(url, { method, headers: {'Content-Type':'application/json'}, body: payload ? JSON.stringify(payload) : undefined });
+  return res.json();
+}
+
+async function togglePublish(checked) {
+  const data = await jsonFetch(`/admin/api/skills/${SKILL_ID}`, 'PUT', { is_published: checked });
+  if (!data.success) { alert(data.error || 'Failed'); document.getElementById('publishToggle').checked = !checked; }
+}
+async function togglePublishGeneric(url, value) {
+  const data = await jsonFetch(url, 'PUT', { is_published: value });
+  if (data.success) location.reload(); else alert(data.error || 'Failed');
+}
+async function deleteItem(url, elId) {
+  if (!confirm('Delete this? This cannot be undone.')) return;
+  const data = await jsonFetch(url, 'DELETE');
+  if (data.success) location.reload(); else alert(data.error || 'Failed to delete');
+}
+
+function openSkillEditModal() { openModal('skillEditModal'); }
+async function saveSkillEdit() {
+  const payload = {
+    name: document.getElementById('editSkillName').value.trim(),
+    tagline: document.getElementById('editSkillTagline').value.trim(),
+    description: document.getElementById('editSkillDescription').value.trim(),
+    level: document.getElementById('editSkillLevel').value,
+    icon: document.getElementById('editSkillIcon').value.trim(),
+    estimated_hours: parseInt(document.getElementById('editSkillHours').value || 0, 10),
+  };
+  const data = await jsonFetch(`/admin/api/skills/${SKILL_ID}`, 'PUT', payload);
+  if (data.success) location.reload(); else alert(data.error || 'Failed');
+}
+
+function onStepTypeChange() {
+  const t = document.getElementById('stepType').value;
+  document.getElementById('stepCourseField').style.display = t === 'course' ? 'block' : 'none';
+  document.getElementById('stepChallengeField').style.display = t === 'challenge' ? 'block' : 'none';
+  document.getElementById('stepProjectField').style.display = t === 'project' ? 'block' : 'none';
+}
+function openStepModal() {
+  document.getElementById('stepTitle').value = '';
+  document.getElementById('stepDescription').value = '';
+  document.getElementById('stepType').value = 'course';
+  onStepTypeChange();
+  openModal('stepModal');
+}
+async function saveStep() {
+  const type = document.getElementById('stepType').value;
+  const payload = {
+    title: document.getElementById('stepTitle').value.trim(),
+    description: document.getElementById('stepDescription').value.trim(),
+    step_type: type,
+  };
+  if (!payload.title) return alert('Title is required');
+  if (type === 'course') payload.course_id = parseInt(document.getElementById('stepCourseId').value, 10);
+  if (type === 'challenge') payload.challenge_id = parseInt(document.getElementById('stepChallengeId').value, 10);
+  if (type === 'project') payload.project_template_id = parseInt(document.getElementById('stepProjectId').value, 10);
+  const data = await jsonFetch(`/admin/api/skills/${SKILL_ID}/path-steps`, 'POST', payload);
+  if (data.success) location.reload(); else alert(data.error || 'Failed');
+}
+async function moveStep(stepId, dir) {
+  const cards = Array.from(document.querySelectorAll('#stepsWrap .item-card'));
+  const ids = cards.map(c => parseInt(c.id.replace('step-', ''), 10));
+  const idx = ids.indexOf(stepId);
+  const swapWith = idx + dir;
+  if (swapWith < 0 || swapWith >= ids.length) return;
+  [ids[idx], ids[swapWith]] = [ids[swapWith], ids[idx]];
+  await jsonFetch('/admin/api/path-steps/reorder', 'POST', { order: ids });
+  location.reload();
+}
+
+function openCourseModal() {
+  document.getElementById('courseTitle').value = '';
+  document.getElementById('courseDescription').value = '';
+  document.getElementById('courseLevel').value = 'beginner';
+  document.getElementById('courseHours').value = 0;
+  document.getElementById('courseIsDailyClass').checked = false;
+  document.getElementById('courseDaysField').style.display = 'none';
+  document.getElementById('courseDays').value = 30;
+  openModal('courseModal');
+}
+async function saveCourse() {
+  const isDaily = document.getElementById('courseIsDailyClass').checked;
+  const payload = {
+    title: document.getElementById('courseTitle').value.trim(),
+    description: document.getElementById('courseDescription').value.trim(),
+    level: document.getElementById('courseLevel').value,
+    estimated_hours: parseInt(document.getElementById('courseHours').value || 0, 10),
+    is_daily_class: isDaily,
+    duration_days: isDaily ? parseInt(document.getElementById('courseDays').value || 30, 10) : null,
+  };
+  if (!payload.title) return alert('Title is required');
+  const data = await jsonFetch(`/admin/api/skills/${SKILL_ID}/courses`, 'POST', payload);
+  if (data.success) location.reload(); else alert(data.error || 'Failed');
+}
+
+async function generateCurriculum() {
+  const btn = document.getElementById('generateCurriculumBtn');
+  btn.disabled = true;
+  btn.textContent = 'Writing curriculum... (this can take up to a minute)';
+  const data = await jsonFetch(`/admin/api/skills/${SKILL_ID}/generate-curriculum`, 'POST');
+  if (data.success) {
+    location.reload();
+  } else {
+    alert(data.error || 'Failed to generate curriculum');
+    btn.disabled = false;
+    btn.textContent = '✨ Generate Curriculum with AI';
+  }
+}
+
+function openModuleModal(courseId) {
+  document.getElementById('moduleCourseId').value = courseId;
+  document.getElementById('moduleTitle').value = '';
+  openModal('moduleModal');
+}
+async function saveModule() {
+  const courseId = document.getElementById('moduleCourseId').value;
+  const title = document.getElementById('moduleTitle').value.trim();
+  if (!title) return alert('Title is required');
+  const data = await jsonFetch(`/admin/api/courses/${courseId}/modules`, 'POST', { title });
+  if (data.success) location.reload(); else alert(data.error || 'Failed');
+}
+
+function openLessonModal(moduleId, lesson) {
+  document.getElementById('lessonModuleId').value = moduleId;
+  document.getElementById('lessonId').value = lesson ? lesson.id : '';
+  document.getElementById('lessonModalTitle').textContent = lesson ? 'Edit Lesson' : 'Add Lesson';
+  document.getElementById('lessonTitle').value = lesson ? lesson.title : '';
+  document.getElementById('lessonContent').value = lesson ? (lesson.content || '') : '';
+  document.getElementById('lessonVideo').value = lesson ? (lesson.video_url || '') : '';
+  document.getElementById('lessonDuration').value = lesson ? lesson.duration_minutes : 10;
+  document.getElementById('lessonQuiz').value = '';
+  // Only an already-saved lesson has a reference video to draft from — hide for new ones.
+  const draftBtn = document.getElementById('draftFromVideoBtn');
+  const draftHint = document.getElementById('draftFromVideoHint');
+  draftBtn.style.display = lesson ? 'inline-flex' : 'none';
+  draftHint.style.display = lesson ? 'block' : 'none';
+  draftBtn.disabled = false;
+  draftBtn.textContent = '✨ Draft from Video';
+  openModal('lessonModal');
+}
+
+async function draftFromVideo() {
+  const lessonId = document.getElementById('lessonId').value;
+  if (!lessonId) return;
+  const btn = document.getElementById('draftFromVideoBtn');
+  btn.disabled = true;
+  btn.textContent = 'Writing draft...';
+  const data = await jsonFetch(`/admin/api/lessons/${lessonId}/generate-content`, 'POST');
+  btn.disabled = false;
+  btn.textContent = '✨ Draft from Video';
+  if (!data.success) return alert(data.error || 'Failed to generate a draft');
+  document.getElementById('lessonContent').value = data.content;
+}
+async function saveLesson() {
+  const id = document.getElementById('lessonId').value;
+  const moduleId = document.getElementById('lessonModuleId').value;
+  const payload = {
+    title: document.getElementById('lessonTitle').value.trim(),
+    content: document.getElementById('lessonContent').value,
+    video_url: document.getElementById('lessonVideo').value.trim(),
+    duration_minutes: parseInt(document.getElementById('lessonDuration').value || 10, 10),
+  };
+  if (!payload.title) return alert('Title is required');
+  const url = id ? `/admin/api/lessons/${id}` : `/admin/api/modules/${moduleId}/lessons`;
+  const data = await jsonFetch(url, id ? 'PUT' : 'POST', payload);
+  if (!data.success) return alert(data.error || 'Failed');
+
+  const quizRaw = document.getElementById('lessonQuiz').value.trim();
+  if (quizRaw) {
+    let questions;
+    try { questions = JSON.parse(quizRaw); } catch (e) { alert('Quiz JSON is invalid: ' + e.message); return; }
+    const lessonId = id || data.lesson.id;
+    const quizData = await jsonFetch(`/admin/api/lessons/${lessonId}/quiz`, 'PUT', { questions });
+    if (!quizData.success) { alert(quizData.error || 'Lesson saved, but quiz failed'); return; }
+  }
+  location.reload();
+}
+
+async function refreshLessonVideos(lessonId) {
+  const btn = document.getElementById(`refresh-videos-${lessonId}`);
+  btn.disabled = true;
+  btn.textContent = 'Searching...';
+  const data = await jsonFetch(`/admin/api/lessons/${lessonId}/videos/refresh`, 'POST');
+  if (data.success) {
+    location.reload();
+  } else {
+    alert(data.error || 'Failed to refresh videos');
+    btn.disabled = false;
+    btn.textContent = '🔄 Videos';
+  }
+}
+
+function openChallengeModal(challenge) {
+  document.getElementById('challengeId').value = challenge ? challenge.id : '';
+  document.getElementById('challengeModalTitle').textContent = challenge ? 'Edit Challenge' : 'Add Challenge';
+  document.getElementById('challengeTitle').value = challenge ? challenge.title : '';
+  document.getElementById('challengeDescription').value = challenge ? (challenge.description || '') : '';
+  document.getElementById('challengeType').value = challenge ? challenge.challenge_type : 'coding';
+  document.getElementById('challengeDifficulty').value = challenge ? challenge.difficulty : 'beginner';
+  document.getElementById('challengeMinutes').value = challenge ? challenge.estimated_minutes : 30;
+  document.getElementById('challengeInstructions').value = challenge ? (challenge.instructions || '') : '';
+  openModal('challengeModal');
+}
+async function saveChallenge() {
+  const id = document.getElementById('challengeId').value;
+  const payload = {
+    title: document.getElementById('challengeTitle').value.trim(),
+    description: document.getElementById('challengeDescription').value.trim(),
+    challenge_type: document.getElementById('challengeType').value,
+    difficulty: document.getElementById('challengeDifficulty').value,
+    estimated_minutes: parseInt(document.getElementById('challengeMinutes').value || 30, 10),
+    instructions: document.getElementById('challengeInstructions').value,
+  };
+  if (!payload.title) return alert('Title is required');
+  const url = id ? `/admin/api/challenges/${id}` : `/admin/api/skills/${SKILL_ID}/challenges`;
+  const data = await jsonFetch(url, id ? 'PUT' : 'POST', payload);
+  if (data.success) location.reload(); else alert(data.error || 'Failed');
+}
+
+function openProjectModal(project) {
+  document.getElementById('projectId').value = project ? project.id : '';
+  document.getElementById('projectModalTitle').textContent = project ? 'Edit Project Brief' : 'Add Project Brief';
+  document.getElementById('projectTitle').value = project ? project.title : '';
+  document.getElementById('projectDescription').value = project ? (project.description || '') : '';
+  document.getElementById('projectSkillsDemonstrated').value = project ? (project.skills_demonstrated || []).join(', ') : '';
+  document.getElementById('projectDifficulty').value = project ? project.difficulty : 'beginner';
+  document.getElementById('projectHours').value = project ? project.estimated_hours : 0;
+  openModal('projectModal');
+}
+async function saveProjectTemplate() {
+  const id = document.getElementById('projectId').value;
+  const payload = {
+    title: document.getElementById('projectTitle').value.trim(),
+    description: document.getElementById('projectDescription').value.trim(),
+    skills_demonstrated: document.getElementById('projectSkillsDemonstrated').value.split(',').map(s => s.trim()).filter(Boolean),
+    difficulty: document.getElementById('projectDifficulty').value,
+    estimated_hours: parseInt(document.getElementById('projectHours').value || 0, 10),
+  };
+  if (!payload.title) return alert('Title is required');
+  const url = id ? `/admin/api/projects/${id}` : `/admin/api/skills/${SKILL_ID}/projects`;
+  const data = await jsonFetch(url, id ? 'PUT' : 'POST', payload);
+  if (data.success) location.reload(); else alert(data.error || 'Failed');
+}
+</script>
+</body>
+</html>

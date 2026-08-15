@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin · {{ course.title }} · Nelavista</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Inter',system-ui,sans-serif; }
+        body { background:#0d1117; color:#e6edf3; }
+        .container { max-width:1100px; margin:0 auto; padding:28px 20px 100px; }
+        .back-link { color:#8b949e; text-decoration:none; font-size:0.85rem; }
+        .back-link:hover { color:#58a6ff; }
+        .hero { display:flex; align-items:center; justify-content:space-between; gap:14px; margin:14px 0 28px; flex-wrap:wrap; }
+        .hero h1 { font-size:1.5rem; display:flex; align-items:center; gap:10px; }
+        .hero .meta { color:#8b949e; font-size:0.85rem; margin-top:4px; }
+
+        .tabs { display:flex; gap:4px; border-bottom:1px solid #21262d; margin-bottom:20px; overflow-x:auto; }
+        .tab { padding:10px 16px; font-size:0.85rem; font-weight:600; color:#8b949e; background:none; border:none; border-bottom:2px solid transparent; cursor:pointer; white-space:nowrap; font-family:inherit; }
+        .tab.active { color:#58a6ff; border-bottom-color:#58a6ff; }
+        .tab-panel { display:none; } .tab-panel.active { display:block; }
+
+        .row-actions { display:flex; gap:6px; flex-wrap:wrap; }
+        .btn { background:#238636; border:none; color:#fff; padding:9px 16px; border-radius:8px; font-size:0.85rem; font-weight:600; cursor:pointer; }
+        .btn:hover { background:#2ea043; }
+        .btn.secondary { background:#21262d; border:1px solid #30363d; color:#e6edf3; }
+        .btn.secondary:hover { border-color:#58a6ff; }
+        .btn.small { padding:6px 10px; font-size:0.76rem; }
+        .btn.danger { background:#da3633; } .btn.danger:hover { background:#f85149; }
+        .btn:disabled { opacity:0.6; cursor:not-allowed; }
+
+        .item-card { background:#161b22; border:1px solid #21262d; border-radius:12px; padding:14px 16px; margin-bottom:10px; }
+        .item-head { display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; }
+        .item-title { font-weight:600; font-size:0.92rem; }
+        .item-sub { color:#8b949e; font-size:0.76rem; margin-top:3px; }
+        .pub-badge { font-size:0.6rem; font-weight:700; padding:2px 7px; border-radius:10px; margin-left:6px; }
+        .pub-badge.yes { background:rgba(63,185,80,0.15); color:#3fb950; }
+        .pub-badge.no { background:rgba(139,148,158,0.15); color:#8b949e; }
+
+        .week-block { margin-bottom:18px; }
+        .week-title { font-size:0.72rem; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; color:#6e7681; margin-bottom:8px; }
+        .day-row { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:10px 12px; background:#0d1117; border-radius:8px; margin-bottom:6px; flex-wrap:wrap; }
+        .day-row .dt { font-size:0.85rem; }
+        .day-tags { font-size:0.68rem; color:#6e7681; margin-top:2px; }
+
+        .empty-hint { color:#6e7681; font-size:0.85rem; padding:18px; text-align:center; }
+        .add-row { margin-top:8px; }
+
+        .modal-backdrop { position:fixed; inset:0; background:rgba(0,0,0,0.6); display:none; align-items:center; justify-content:center; z-index:2000; padding:16px; overflow-y:auto; }
+        .modal-backdrop.active { display:flex; }
+        .modal { background:#161b22; border:1px solid #30363d; border-radius:16px; padding:24px; width:100%; max-width:640px; max-height:90vh; overflow-y:auto; margin:auto; }
+        .modal h3 { margin-bottom:16px; font-size:1.1rem; }
+        .modal h4 { font-size:0.9rem; margin:22px 0 12px; padding-top:16px; border-top:1px solid #21262d; }
+        .modal h4:first-of-type { border-top:none; padding-top:0; margin-top:6px; }
+        .field { margin-bottom:14px; }
+        .field label { display:block; font-size:0.8rem; color:#8b949e; margin-bottom:6px; font-weight:600; }
+        .field input, .field select, .field textarea { width:100%; background:#0d1117; border:1px solid #30363d; color:#e6edf3; padding:9px 12px; border-radius:8px; font-size:0.88rem; font-family:inherit; outline:none; }
+        .field input:focus, .field select:focus, .field textarea:focus { border-color:#58a6ff; }
+        .field textarea { resize:vertical; min-height:70px; }
+        .field .hint { font-size:0.72rem; color:#6e7681; margin-top:5px; }
+        .modal-actions { display:flex; gap:8px; justify-content:flex-end; margin-top:12px; flex-wrap:wrap; }
+
+        .weight-row, .scale-row { display:flex; gap:8px; align-items:center; margin-bottom:8px; }
+        .weight-row label { flex:1; font-size:0.85rem; color:#c9d1d9; }
+        .weight-row input { width:80px; }
+        .scale-row input { width:80px; }
+        .scale-row .lt { width:60px; }
+        .weight-sum { font-size:0.8rem; margin-top:6px; }
+        .weight-sum.ok { color:#3fb950; } .weight-sum.bad { color:#f85149; }
+
+        .rubric-row { display:flex; gap:8px; align-items:center; margin-bottom:8px; }
+        .rubric-row input[name="rname"] { flex:1; }
+        .rubric-row input[name="rpoints"] { width:90px; }
+    </style>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
+</head>
+<body>
+{% include 'components/admin_nav.html' %}
+<div class="container">
+    <a href="/admin/skills/{{ skill.id }}" class="back-link">← {{ skill.name }}</a>
+    <div class="hero">
+        <div>
+            <h1>🗓️ {{ course.title }}</h1>
+            <div class="meta">{{ course.duration_days or '?' }}-day class · {{ 'LIVE' if course.is_published else 'DRAFT' }} · <button class="btn secondary small" onclick="togglePublishGeneric('/admin/api/courses/{{ course.id }}', {{ (not course.is_published)|tojson }})">{{ 'Unpublish' if course.is_published else 'Publish' }}</button></div>
+        </div>
+    </div>
+
+    <div class="tabs">
+        <button class="tab active" data-tab="days" onclick="showTab('days')">Days</button>
+        <button class="tab" data-tab="grading" onclick="showTab('grading')">Grading</button>
+        <button class="tab" data-tab="cohorts" onclick="showTab('cohorts')">Cohorts</button>
+        <button class="tab" data-tab="finalproject" onclick="showTab('finalproject')">Final Project</button>
+    </div>
+
+    <!-- DAYS -->
+    <div class="tab-panel active" id="tab-days">
+        {% if not weeks %}
+        <div class="item-card" style="text-align:center; padding:28px 20px;">
+            <div style="font-size:1.5rem; margin-bottom:8px;">✨</div>
+            <div style="font-weight:700; margin-bottom:6px;">No days yet — draft the outline with AI</div>
+            <div class="item-sub" style="margin-bottom:16px;">Proposes day titles, topics, and learning objectives for the whole class as drafts — you generate each day's full content afterward.</div>
+            <div style="display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin-bottom:14px;">
+                <input type="number" id="outlineDays" value="{{ course.duration_days or 30 }}" style="width:90px; background:#0d1117; border:1px solid #30363d; color:#e6edf3; padding:9px 12px; border-radius:8px;">
+                <select id="outlineLevel" style="background:#0d1117; border:1px solid #30363d; color:#e6edf3; padding:9px 12px; border-radius:8px;">
+                    <option value="beginner">Beginner</option><option value="intermediate">Intermediate</option><option value="advanced">Advanced</option>
+                </select>
+            </div>
+            <button class="btn" id="generateOutlineBtn" onclick="generateOutline()">✨ Generate Outline with AI</button>
+        </div>
+        {% else %}
+        {% for week in weeks %}
+        <div class="week-block">
+            <div class="week-title">Week {{ week.week_number }}{% if week.week_title %} — {{ week.week_title }}{% endif %}</div>
+            {% for day in week.days %}
+            <div class="day-row" id="day-{{ day.id }}">
+                <div>
+                    <span class="dt">Day {{ day.day_number }}: {{ day.title }} <span class="pub-badge {{ 'yes' if day.is_published else 'no' }}">{{ 'LIVE' if day.is_published else 'DRAFT' }}</span></span>
+                    <div class="day-tags">
+                        {{ '✓ content' if day.content else '— no content' }} ·
+                        {{ '✓ assignment' if day.assignment else '— no assignment' }} ·
+                        {{ '✓ test' if day.quiz and day.quiz.questions else '— no test' }}
+                    </div>
+                </div>
+                <div class="row-actions">
+                    <script type="application/json" id="day-data-{{ day.id }}">{{ day.to_dict()|tojson }}</script>
+                    <button class="btn secondary small" onclick="openDayModal(JSON.parse(document.getElementById('day-data-{{ day.id }}').textContent))">Edit</button>
+                    <button class="btn secondary small" onclick="togglePublishGeneric('/admin/api/lessons/{{ day.id }}', {{ (not day.is_published)|tojson }})">{{ 'Unpublish' if day.is_published else 'Publish' }}</button>
+                    <button class="btn danger small" onclick="deleteItem('/admin/api/lessons/{{ day.id }}', 'day-{{ day.id }}')">Delete</button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endfor %}
+        {% endif %}
+    </div>
+
+    <!-- GRADING -->
+    <div class="tab-panel" id="tab-grading">
+        <div class="item-card">
+            <div class="item-title" style="margin-bottom:12px;">Grade Scale</div>
+            <div class="item-sub" style="margin-bottom:14px;">Maps a percentage score to a letter grade and Skill GPA point — specific to this class.</div>
+            <div id="scaleRows">
+            {% for row in grade_scale %}
+            <div class="scale-row" data-row>
+                <input class="lt" name="letter" value="{{ row.grade_letter }}" placeholder="A">
+                <input name="min" type="number" value="{{ row.min_score }}" placeholder="Min %">
+                <span style="color:#6e7681;">–</span>
+                <input name="max" type="number" value="{{ row.max_score }}" placeholder="Max %">
+                <input name="point" type="number" step="0.1" value="{{ row.grade_point }}" placeholder="GPA pt">
+                <button class="btn danger small" onclick="this.closest('[data-row]').remove()">✕</button>
+            </div>
+            {% endfor %}
+            </div>
+            <div class="row-actions" style="margin-top:10px;">
+                <button class="btn secondary small" onclick="addScaleRow()">+ Add Grade</button>
+                <button class="btn secondary small" onclick="useDefaultScale()">Use Default Scale</button>
+                <button class="btn small" onclick="saveScale()">Save Grade Scale</button>
+            </div>
+        </div>
+
+        <div class="item-card">
+            <div class="item-title" style="margin-bottom:12px;">Grade Weights</div>
+            <div class="item-sub" style="margin-bottom:14px;">How much each component counts toward Skill GPA. Should sum to 100%.</div>
+            <div class="weight-row"><label>Assignments</label><input id="weightAssignments" type="number" value="{{ grade_weights.assignments.weight_pct if grade_weights.assignments else 0 }}"><span>%</span></div>
+            <div class="weight-row"><label>Tests</label><input id="weightTests" type="number" value="{{ grade_weights.tests.weight_pct if grade_weights.tests else 0 }}"><span>%</span></div>
+            <div class="weight-row"><label>Final Project</label><input id="weightFinalProject" type="number" value="{{ grade_weights.final_project.weight_pct if grade_weights.final_project else 0 }}"><span>%</span></div>
+            <div class="weight-row"><label>Participation</label><input id="weightParticipation" type="number" value="{{ grade_weights.participation.weight_pct if grade_weights.participation else 0 }}"><span>%</span></div>
+            <div class="weight-sum" id="weightSum"></div>
+            <div class="row-actions" style="margin-top:10px;">
+                <button class="btn secondary small" onclick="useDefaultWeights()">Use Default Weights</button>
+                <button class="btn small" onclick="saveWeights()">Save Weights</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- COHORTS -->
+    <div class="tab-panel" id="tab-cohorts">
+        {% for c in cohorts %}
+        <div class="item-card">
+            <div class="item-head">
+                <div>
+                    <div class="item-title">{{ c.name }} <span class="pub-badge {{ 'yes' if c.is_active else 'no' }}">{{ 'ACCEPTING' if c.is_active else 'CLOSED' }}</span></div>
+                    <div class="item-sub">Started {{ c.start_date.strftime('%b %d, %Y') }} · {{ c.enrollments.count() }} students</div>
+                </div>
+                <div class="row-actions">
+                    <button class="btn secondary small" onclick="toggleCohortActive({{ c.id }}, {{ (not c.is_active)|tojson }})">{{ 'Close' if c.is_active else 'Reopen' }}</button>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="empty-hint">No cohorts yet — one is created automatically the first time a student joins this class, or add one manually below.</div>
+        {% endfor %}
+        <div class="add-row"><button class="btn secondary" onclick="openCohortModal()">+ New Cohort</button></div>
+    </div>
+
+    <!-- FINAL PROJECT -->
+    <div class="tab-panel" id="tab-finalproject">
+        {% if final_template %}
+        <div class="item-card">
+            <div class="item-title">{{ final_template.title }} <span class="pub-badge {{ 'yes' if final_template.is_published else 'no' }}">{{ 'LIVE' if final_template.is_published else 'DRAFT' }}</span></div>
+            <div class="item-sub" style="margin-bottom:12px;">{{ final_template.description or '' }}</div>
+            <div class="item-title" style="font-size:0.82rem; margin-bottom:6px;">Rubric</div>
+            {% for c in final_template.rubric %}
+            <div class="item-sub">• {{ c.name }} — {{ c.max_points }} pts</div>
+            {% else %}
+            <div class="item-sub">No rubric criteria set.</div>
+            {% endfor %}
+            <div class="row-actions" style="margin-top:12px;">
+                <script type="application/json" id="final-project-data">{{ final_template.to_dict()|tojson }}</script>
+                <button class="btn secondary small" onclick="openFinalProjectModal(JSON.parse(document.getElementById('final-project-data').textContent))">Edit</button>
+                <button class="btn secondary small" onclick="togglePublishGeneric('/admin/api/projects/{{ final_template.id }}', {{ (not final_template.is_published)|tojson }})">{{ 'Unpublish' if final_template.is_published else 'Publish' }}</button>
+            </div>
+        </div>
+        {% else %}
+        <div class="item-card" style="text-align:center; padding:28px 20px;">
+            <div style="font-weight:700; margin-bottom:6px;">No final project yet</div>
+            <div class="item-sub" style="margin-bottom:16px;">Set the brief and a weighted rubric — AI evaluates student submissions strictly against these criteria, never inventing its own scale.</div>
+            <button class="btn" onclick="openFinalProjectModal()">+ Set Up Final Project</button>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Day editor modal -->
+<div class="modal-backdrop" id="dayModal"><div class="modal">
+  <h3>Edit Day <span id="dayModalNum"></span></h3>
+  <input type="hidden" id="dayId">
+  <h4>Lesson</h4>
+  <div class="field"><label>Title</label><input id="dayTitle"></div>
+  <div class="field"><label>Learning objective</label><input id="dayObjective" placeholder="e.g. Explain how CSS Flexbox aligns items along the main axis"></div>
+  <div class="field">
+    <label>Content (HTML)</label>
+    <textarea id="dayContent" rows="7"></textarea>
+    <button type="button" class="btn secondary small" id="generateContentBtn" style="margin-top:8px;" onclick="generateDayContent()">✨ Generate Content with AI</button>
+    <div class="hint">Fetches a matching video (if not already fetched) and drafts structured content grounded in it — review before saving.</div>
+  </div>
+  <div class="field"><label>Video URL override (optional)</label><input id="dayVideoUrl" placeholder="https://www.youtube.com/embed/..."></div>
+  <div class="field"><label>Duration (minutes)</label><input id="dayDuration" type="number" value="15"></div>
+  <div class="modal-actions"><button class="btn secondary" onclick="closeModal('dayModal')">Close</button><button class="btn" onclick="saveDayLesson()">Save Lesson</button></div>
+
+  <h4>Assignment</h4>
+  <div class="field"><label>Title</label><input id="assignTitle"></div>
+  <div class="field">
+    <label>Instructions</label>
+    <textarea id="assignInstructions" rows="4"></textarea>
+    <button type="button" class="btn secondary small" id="generateAssignBtn" style="margin-top:8px;" onclick="generateAssignment()">✨ Generate with AI</button>
+  </div>
+  <div class="field"><label>Due (hours after this day unlocks for a student)</label><input id="assignDueHours" type="number" value="48"></div>
+  <div class="modal-actions"><button class="btn danger small" onclick="deleteAssignment()">Delete Assignment</button><button class="btn" onclick="saveAssignment()">Save Assignment</button></div>
+
+  <h4>Test</h4>
+  <div class="field">
+    <label>Test questions (JSON)</label>
+    <textarea id="dayQuiz" rows="5" placeholder='[{"question":"...","options":["a","b","c","d"],"correct_index":1,"explanation":"..."}]'></textarea>
+    <button type="button" class="btn secondary small" id="generateTestBtn" style="margin-top:8px;" onclick="generateTest()">✨ Generate Test with AI</button>
+    <div class="hint">5-10 multiple-choice questions. Leave empty to remove the test for this day.</div>
+  </div>
+  <div class="modal-actions"><button class="btn" onclick="saveTest()">Save Test</button></div>
+</div></div>
+
+<!-- Cohort modal -->
+<div class="modal-backdrop" id="cohortModal"><div class="modal">
+  <h3>New Cohort</h3>
+  <div class="field"><label>Name</label><input id="cohortName" placeholder="e.g. August 2026 Cohort"></div>
+  <div class="field"><label>Start date</label><input id="cohortStartDate" type="date"></div>
+  <div class="modal-actions"><button class="btn secondary" onclick="closeModal('cohortModal')">Cancel</button><button class="btn" onclick="saveCohort()">Create Cohort</button></div>
+</div></div>
+
+<!-- Final project modal -->
+<div class="modal-backdrop" id="finalProjectModal"><div class="modal">
+  <h3 id="finalProjectModalTitle">Set Up Final Project</h3>
+  <input type="hidden" id="finalProjectId">
+  <div class="field"><label>Title</label><input id="finalProjectTitle"></div>
+  <div class="field"><label>Description / brief</label><textarea id="finalProjectDescription" rows="4"></textarea></div>
+  <div class="field"><label>Difficulty</label><select id="finalProjectDifficulty"><option value="beginner">Beginner</option><option value="intermediate" selected>Intermediate</option><option value="advanced">Advanced</option></select></div>
+  <div class="field"><label>Estimated hours</label><input id="finalProjectHours" type="number" value="8"></div>
+  <div class="field">
+    <label>Evaluation Rubric</label>
+    <div id="rubricRows"></div>
+    <button type="button" class="btn secondary small" onclick="addRubricRow()">+ Add Criterion</button>
+    <div class="weight-sum" id="rubricSum"></div>
+    <div class="hint">AI scores each criterion 0 to its max points — the total is always the literal sum, never invented.</div>
+  </div>
+  <div class="modal-actions"><button class="btn secondary" onclick="closeModal('finalProjectModal')">Cancel</button><button class="btn" onclick="saveFinalProject()">Save</button></div>
+</div></div>
+
+<script>
+const COURSE_ID = {{ course.id }};
+
+function showTab(name) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === name));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.id === 'tab-' + name));
+}
+function openModal(id) { document.getElementById(id).classList.add('active'); }
+function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+
+async function jsonFetch(url, method, payload) {
+  const res = await fetch(url, { method, headers: {'Content-Type':'application/json'}, body: payload ? JSON.stringify(payload) : undefined });
+  return res.json();
+}
+async function togglePublishGeneric(url, value) {
+  const data = await jsonFetch(url, 'PUT', { is_published: value });
+  if (data.success) location.reload(); else alert(data.error || 'Failed');
+}
+async function deleteItem(url, elId) {
+  if (!confirm('Delete this? This cannot be undone.')) return;
+  const data = await jsonFetch(url, 'DELETE');
+  if (data.success) location.reload(); else alert(data.error || 'Failed to delete');
+}
+
+async function generateOutline() {
+  const btn = document.getElementById('generateOutlineBtn');
+  btn.disabled = true;
+  btn.textContent = 'Writing outline... (can take a minute)';
+  const total_days = parseInt(document.getElementById('outlineDays').value || 30, 10);
+  const level = document.getElementById('outlineLevel').value;
+  const data = await jsonFetch(`/admin/api/courses/${COURSE_ID}/generate-daily-outline`, 'POST', { total_days, level });
+  if (data.success) { location.reload(); } else {
+    alert(data.error || 'Failed to generate outline');
+    btn.disabled = false;
+    btn.textContent = '✨ Generate Outline with AI';
+  }
+}
+
+let currentDay = null;
+async function openDayModal(day) {
+  currentDay = day;
+  document.getElementById('dayId').value = day.id;
+  document.getElementById('dayModalNum').textContent = day.day_number;
+  document.getElementById('dayTitle').value = day.title;
+  document.getElementById('dayObjective').value = day.learning_objective || '';
+  document.getElementById('dayContent').value = day.content || '';
+  document.getElementById('dayVideoUrl').value = day.video_url || '';
+  document.getElementById('dayDuration').value = day.duration_minutes || 15;
+  document.getElementById('assignTitle').value = '';
+  document.getElementById('assignInstructions').value = '';
+  document.getElementById('assignDueHours').value = 48;
+  document.getElementById('dayQuiz').value = '';
+  openModal('dayModal');
+
+  const details = await (await fetch(`/admin/api/lessons/${day.id}/day-details`)).json();
+  if (details.success) {
+    if (details.assignment) {
+      document.getElementById('assignTitle').value = details.assignment.title || '';
+      document.getElementById('assignInstructions').value = details.assignment.instructions || '';
+      document.getElementById('assignDueHours').value = details.assignment.due_offset_hours || 48;
+    }
+    if (details.quiz_questions && details.quiz_questions.length) {
+      document.getElementById('dayQuiz').value = JSON.stringify(details.quiz_questions, null, 2);
+    }
+  }
+}
+
+async function generateDayContent() {
+  const btn = document.getElementById('generateContentBtn');
+  btn.disabled = true;
+  btn.textContent = 'Writing...';
+  const dayId = document.getElementById('dayId').value;
+  const data = await jsonFetch(`/admin/api/lessons/${dayId}/generate-daily-content`, 'POST');
+  btn.disabled = false;
+  btn.textContent = '✨ Generate Content with AI';
+  if (!data.success) return alert(data.error || 'Failed');
+  document.getElementById('dayContent').value = data.content;
+}
+async function saveDayLesson() {
+  const id = document.getElementById('dayId').value;
+  const payload = {
+    title: document.getElementById('dayTitle').value.trim(),
+    learning_objective: document.getElementById('dayObjective').value.trim(),
+    content: document.getElementById('dayContent').value,
+    video_url: document.getElementById('dayVideoUrl').value.trim(),
+    duration_minutes: parseInt(document.getElementById('dayDuration').value || 15, 10),
+  };
+  if (!payload.title) return alert('Title is required');
+  const data = await jsonFetch(`/admin/api/lessons/${id}`, 'PUT', payload);
+  if (data.success) location.reload(); else alert(data.error || 'Failed');
+}
+
+async function generateAssignment() {
+  const btn = document.getElementById('generateAssignBtn');
+  btn.disabled = true;
+  btn.textContent = 'Writing...';
+  const dayId = document.getElementById('dayId').value;
+  const data = await jsonFetch(`/admin/api/lessons/${dayId}/generate-assignment`, 'POST');
+  btn.disabled = false;
+  btn.textContent = '✨ Generate with AI';
+  if (!data.success) return alert(data.error || 'Failed');
+  document.getElementById('assignTitle').value = data.assignment.title || '';
+  document.getElementById('assignInstructions').value = data.assignment.instructions || '';
+}
+async function saveAssignment() {
+  const dayId = document.getElementById('dayId').value;
+  const payload = {
+    title: document.getElementById('assignTitle').value.trim(),
+    instructions: document.getElementById('assignInstructions').value,
+    due_offset_hours: parseInt(document.getElementById('assignDueHours').value || 48, 10),
+  };
+  if (!payload.title) return alert('Assignment title is required');
+  const data = await jsonFetch(`/admin/api/lessons/${dayId}/assignment`, 'PUT', payload);
+  if (data.success) location.reload(); else alert(data.error || 'Failed');
+}
+async function deleteAssignment() {
+  const dayId = document.getElementById('dayId').value;
+  if (!confirm('Remove this assignment?')) return;
+  const data = await jsonFetch(`/admin/api/lessons/${dayId}/assignment`, 'DELETE');
+  if (data.success) location.reload(); else alert(data.error || 'Failed');
+}
+
+async function generateTest() {
+  const btn = document.getElementById('generateTestBtn');
+  btn.disabled = true;
+  btn.textContent = 'Writing...';
+  const dayId = document.getElementById('dayId').value;
+  const data = await jsonFetch(`/admin/api/lessons/${dayId}/generate-test`, 'POST', {});
+  btn.disabled = false;
+  btn.textContent = '✨ Generate Test with AI';
+  if (!data.success) return alert(data.error || 'Failed');
+  document.getElementById('dayQuiz').value = JSON.stringify(data.questions, null, 2);
+}
+async function saveTest() {
+  const dayId = document.getElementById('dayId').value;
+  const raw = document.getElementById('dayQuiz').value.trim();
+  let questions = [];
+  if (raw) {
+    try { questions = JSON.parse(raw); } catch (e) { return alert('Test JSON is invalid: ' + e.message); }
+  }
+  const data = await jsonFetch(`/admin/api/lessons/${dayId}/quiz`, 'PUT', { questions });
+  if (data.success) location.reload(); else alert(data.error || 'Failed');
+}
+
+function addScaleRow(letter, min, max, point) {
+  const wrap = document.getElementById('scaleRows');
+  const row = document.createElement('div');
+  row.className = 'scale-row';
+  row.setAttribute('data-row', '');
+  row.innerHTML = `
+    <input class="lt" name="letter" placeholder="A" value="${letter || ''}">
+    <input name="min" type="number" placeholder="Min %" value="${min ?? ''}">
+    <span style="color:#6e7681;">–</span>
+    <input name="max" type="number" placeholder="Max %" value="${max ?? ''}">
+    <input name="point" type="number" step="0.1" placeholder="GPA pt" value="${point ?? ''}">
+    <button class="btn danger small" onclick="this.closest('[data-row]').remove()">✕</button>
+  `;
+  wrap.appendChild(row);
+}
+function useDefaultScale() {
+  document.getElementById('scaleRows').innerHTML = '';
+  const defaults = {{ default_scale|tojson }};
+  defaults.forEach(r => addScaleRow(r.grade_letter, r.min_score, r.max_score, r.grade_point));
+}
+async function saveScale() {
+  const rows = Array.from(document.querySelectorAll('#scaleRows [data-row]')).map(row => ({
+    grade_letter: row.querySelector('[name="letter"]').value.trim(),
+    min_score: parseInt(row.querySelector('[name="min"]').value || 0, 10),
+    max_score: parseInt(row.querySelector('[name="max"]').value || 0, 10),
+    grade_point: parseFloat(row.querySelector('[name="point"]').value || 0),
+  }));
+  if (rows.some(r => !r.grade_letter)) return alert('Every grade needs a letter');
+  const data = await jsonFetch(`/admin/api/courses/${COURSE_ID}/grade-scale`, 'PUT', { rows });
+  if (data.success) { alert('Grade scale saved'); } else alert(data.error || 'Failed');
+}
+
+function updateWeightSum() {
+  const total = ['weightAssignments','weightTests','weightFinalProject','weightParticipation']
+    .reduce((sum, id) => sum + (parseInt(document.getElementById(id).value || 0, 10)), 0);
+  const el = document.getElementById('weightSum');
+  el.textContent = `Total: ${total}%` + (total === 100 ? ' ✓' : ' (should sum to 100%)');
+  el.className = 'weight-sum ' + (total === 100 ? 'ok' : 'bad');
+}
+['weightAssignments','weightTests','weightFinalProject','weightParticipation'].forEach(id => {
+  document.getElementById(id).addEventListener('input', updateWeightSum);
+});
+updateWeightSum();
+function useDefaultWeights() {
+  const d = {{ default_weights|tojson }};
+  document.getElementById('weightAssignments').value = d.assignments;
+  document.getElementById('weightTests').value = d.tests;
+  document.getElementById('weightFinalProject').value = d.final_project;
+  document.getElementById('weightParticipation').value = d.participation;
+  updateWeightSum();
+}
+async function saveWeights() {
+  const weights = {
+    assignments: parseInt(document.getElementById('weightAssignments').value || 0, 10),
+    tests: parseInt(document.getElementById('weightTests').value || 0, 10),
+    final_project: parseInt(document.getElementById('weightFinalProject').value || 0, 10),
+    participation: parseInt(document.getElementById('weightParticipation').value || 0, 10),
+  };
+  const data = await jsonFetch(`/admin/api/courses/${COURSE_ID}/grade-weights`, 'PUT', { weights });
+  if (data.success) { alert('Grade weights saved'); } else alert(data.error || 'Failed');
+}
+
+function openCohortModal() {
+  document.getElementById('cohortName').value = '';
+  document.getElementById('cohortStartDate').value = new Date().toISOString().slice(0, 10);
+  openModal('cohortModal');
+}
+async function saveCohort() {
+  const payload = {
+    name: document.getElementById('cohortName').value.trim(),
+    start_date: document.getElementById('cohortStartDate').value,
+  };
+  if (!payload.name) return alert('Name is required');
+  const data = await jsonFetch(`/admin/api/courses/${COURSE_ID}/cohorts`, 'POST', payload);
+  if (data.success) location.reload(); else alert(data.error || 'Failed');
+}
+async function toggleCohortActive(id, value) {
+  const data = await jsonFetch(`/admin/api/cohorts/${id}`, 'PUT', { is_active: value });
+  if (data.success) location.reload(); else alert(data.error || 'Failed');
+}
+
+function addRubricRow(name, points) {
+  const wrap = document.getElementById('rubricRows');
+  const row = document.createElement('div');
+  row.className = 'rubric-row';
+  row.setAttribute('data-rubric-row', '');
+  row.innerHTML = `
+    <input name="rname" placeholder="e.g. Code Quality" value="${name || ''}">
+    <input name="rpoints" type="number" placeholder="Max points" value="${points ?? ''}">
+    <button class="btn danger small" onclick="this.closest('[data-rubric-row]').remove(); updateRubricSum();">✕</button>
+  `;
+  wrap.appendChild(row);
+  row.querySelector('[name="rpoints"]').addEventListener('input', updateRubricSum);
+  updateRubricSum();
+}
+function updateRubricSum() {
+  const total = Array.from(document.querySelectorAll('#rubricRows [name="rpoints"]'))
+    .reduce((sum, el) => sum + (parseInt(el.value || 0, 10)), 0);
+  const el = document.getElementById('rubricSum');
+  el.textContent = `Total: ${total} pts` + (total === 100 ? ' ✓' : ' (should sum to 100)');
+  el.className = 'weight-sum ' + (total === 100 ? 'ok' : 'bad');
+}
+function openFinalProjectModal(project) {
+  document.getElementById('finalProjectId').value = project ? project.id : '';
+  document.getElementById('finalProjectModalTitle').textContent = project ? 'Edit Final Project' : 'Set Up Final Project';
+  document.getElementById('finalProjectTitle').value = project ? project.title : '';
+  document.getElementById('finalProjectDescription').value = project ? (project.description || '') : '';
+  document.getElementById('finalProjectDifficulty').value = project ? project.difficulty : 'intermediate';
+  document.getElementById('finalProjectHours').value = project ? project.estimated_hours : 8;
+  document.getElementById('rubricRows').innerHTML = '';
+  const rubric = project ? (project.rubric || []) : [];
+  if (rubric.length) { rubric.forEach(c => addRubricRow(c.name, c.max_points)); } else { addRubricRow(); }
+  openModal('finalProjectModal');
+}
+async function saveFinalProject() {
+  const id = document.getElementById('finalProjectId').value;
+  const rubric = Array.from(document.querySelectorAll('#rubricRows [data-rubric-row]')).map(row => ({
+    name: row.querySelector('[name="rname"]').value.trim(),
+    max_points: parseInt(row.querySelector('[name="rpoints"]').value || 0, 10),
+  })).filter(c => c.name);
+  const payload = {
+    title: document.getElementById('finalProjectTitle').value.trim(),
+    description: document.getElementById('finalProjectDescription').value.trim(),
+    difficulty: document.getElementById('finalProjectDifficulty').value,
+    estimated_hours: parseInt(document.getElementById('finalProjectHours').value || 8, 10),
+    rubric,
+  };
+  if (!payload.title) return alert('Title is required');
+  const url = id ? `/admin/api/projects/${id}` : `/admin/api/courses/${COURSE_ID}/final-project`;
+  const data = await jsonFetch(url, id ? 'PUT' : 'POST', payload);
+  if (data.success) location.reload(); else alert(data.error || 'Failed');
+}
+</script>
+</body>
+</html>

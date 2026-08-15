@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Skills · Nelavista</title>
+  <meta name="theme-color" content="#111827">
+  <meta name="description" content="Learn, practice, build, and prove real skills — Nelavista Skills.">
+  <link rel="icon" type="image/png" sizes="32x32" href="/static/icons/nelavista-32x32.png">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/skills.css') }}">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
+</head>
+<body>
+{% include 'components/skills_sidebar.html' %}
+
+  <div class="sk-view">
+    <span class="sk-eyebrow">Skills</span>
+    <h1 class="sk-h1">
+      {% if data.continue_learning %}Welcome back, {{ first_name }}{% else %}Build skills that move you forward, {{ first_name }}{% endif %}
+    </h1>
+    <p class="sk-sub">Learn a real skill, practice it, build something with it, and track proof of what you've actually done.</p>
+
+    {% if data.continue_learning %}
+      {% set cl = data.continue_learning[0] %}
+      <div class="sk-section-title">Continue Learning</div>
+      <a href="/skills/{{ cl.skill.slug }}" class="sk-card" style="display:flex; align-items:center; gap:18px; flex-wrap:wrap;">
+        <div class="sk-icon-circle" style="background:{{ cl.skill.color }}22; color:{{ cl.skill.color }}; font-size:26px; margin-bottom:0;">{{ cl.skill.icon or '🧩' }}</div>
+        <div style="flex:1; min-width:200px;">
+          <div class="sk-card-title" style="font-size:1.1rem;">{{ cl.skill.name }}</div>
+          <div class="sk-card-desc" style="margin-bottom:0;">{{ cl.skill.tagline or 'Keep going — you\'re making real progress.' }}</div>
+          <div class="sk-progress-row" style="max-width:320px;">
+            <div class="sk-progress-track"><div class="sk-progress-fill" style="width:{{ cl.progress_pct }}%;"></div></div>
+            <span class="sk-progress-pct">{{ cl.progress_pct }}%</span>
+          </div>
+        </div>
+        <span class="sk-btn">Continue →</span>
+      </a>
+    {% elif spotlight_skill %}
+      <div class="sk-section-title">Because you told us you want to learn {{ spotlight_skill.name }}</div>
+      <a href="/skills/{{ spotlight_skill.slug }}" class="sk-card" style="display:flex; align-items:center; gap:18px; flex-wrap:wrap;">
+        <div class="sk-icon-circle" style="background:{{ spotlight_skill.color }}22; color:{{ spotlight_skill.color }}; font-size:26px; margin-bottom:0;">{{ spotlight_skill.icon or '🧩' }}</div>
+        <div style="flex:1; min-width:200px;">
+          <div class="sk-card-title" style="font-size:1.1rem;">{{ spotlight_skill.name }}</div>
+          <div class="sk-card-desc" style="margin-bottom:0;">{{ spotlight_skill.tagline or '' }}</div>
+        </div>
+        <span class="sk-btn">Start →</span>
+      </a>
+    {% else %}
+      <div class="sk-section-title">Get Started</div>
+      <div class="sk-empty">
+        <div class="sk-empty-icon">🚀</div>
+        <div style="font-weight:600; margin-bottom:6px;">You haven't started a skill yet</div>
+        <div style="font-size:0.85rem; margin-bottom:18px;">Pick something you're curious about — you can always explore more later.</div>
+        <a href="/skills/catalog" class="sk-btn">Explore Skills</a>
+      </div>
+    {% endif %}
+
+    {% if data.continue_learning and spotlight_skill %}
+      <div class="sk-section-title" style="margin-top:16px;">Also on your list</div>
+      <a href="/skills/{{ spotlight_skill.slug }}" class="sk-card">
+        <div class="sk-icon-circle" style="background:{{ spotlight_skill.color }}22; color:{{ spotlight_skill.color }};">{{ spotlight_skill.icon or '🧩' }}</div>
+        <div class="sk-card-title">{{ spotlight_skill.name }}</div>
+        <div class="sk-card-desc">You told us you wanted to learn this too — jump in whenever you're ready.</div>
+      </a>
+    {% endif %}
+
+    {% if data.stats.skills_in_progress or data.stats.skills_completed or data.stats.challenges_completed or data.stats.projects_completed %}
+    <div class="sk-section-title">Your Progress</div>
+    <div class="sk-grid" style="grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));">
+      <div class="sk-panel" style="text-align:center;"><div style="font-size:1.6rem; font-weight:800;">{{ data.stats.skills_in_progress }}</div><div class="sk-card-desc" style="margin:0;">In Progress</div></div>
+      <div class="sk-panel" style="text-align:center;"><div style="font-size:1.6rem; font-weight:800;">{{ data.stats.skills_completed }}</div><div class="sk-card-desc" style="margin:0;">Skills Completed</div></div>
+      <div class="sk-panel" style="text-align:center;"><div style="font-size:1.6rem; font-weight:800;">{{ data.stats.challenges_completed }}</div><div class="sk-card-desc" style="margin:0;">Challenges Done</div></div>
+      <div class="sk-panel" style="text-align:center;"><div style="font-size:1.6rem; font-weight:800;">{{ data.stats.projects_completed }}</div><div class="sk-card-desc" style="margin:0;">Projects Built</div></div>
+      {% if data.stats.streak > 0 %}
+      <div class="sk-panel" style="text-align:center;"><div style="font-size:1.6rem; font-weight:800;">🔥 {{ data.stats.streak }}</div><div class="sk-card-desc" style="margin:0;">Day Streak</div></div>
+      {% endif %}
+    </div>
+    {% endif %}
+
+    {% if data.in_progress_skills|length > 1 or data.completed_skills %}
+    <div class="sk-section-title">Your Skills</div>
+    <div class="sk-grid">
+      {% for ss in data.in_progress_skills %}
+      <a href="/skills/{{ ss.skill.slug }}" class="sk-card">
+        <div class="sk-icon-circle" style="background:{{ ss.skill.color }}22; color:{{ ss.skill.color }};">{{ ss.skill.icon or '🧩' }}</div>
+        <div class="sk-card-title">{{ ss.skill.name }}</div>
+        <div class="sk-progress-row"><div class="sk-progress-track"><div class="sk-progress-fill" style="width:{{ ss.progress_pct }}%;"></div></div><span class="sk-progress-pct">{{ ss.progress_pct }}%</span></div>
+      </a>
+      {% endfor %}
+      {% for ss in data.completed_skills %}
+      <a href="/skills/{{ ss.skill.slug }}" class="sk-card">
+        <div class="sk-icon-circle" style="background:{{ ss.skill.color }}22; color:{{ ss.skill.color }};">{{ ss.skill.icon or '🧩' }}</div>
+        <div class="sk-card-title">{{ ss.skill.name }}</div>
+        <span class="sk-badge completed">✓ Completed</span>
+      </a>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if tracks_data %}
+    <div class="sk-section-title">Your Learning Paths <a href="/skills/tracks" class="sk-view-link">View All →</a></div>
+    <div class="sk-grid">
+      {% for item in tracks_data %}
+      {% set t = item.track %}
+      <a href="/skills/tracks/{{ t.slug }}" class="sk-card">
+        <div class="sk-icon-circle" style="background:{{ t.color }}22; color:{{ t.color }};">{{ t.icon or '🧭' }}</div>
+        <div class="sk-card-title">{{ t.title }}</div>
+        <div class="sk-card-desc">{{ t.tagline or '' }}</div>
+        {% if item.started %}
+        <div class="sk-progress-row"><div class="sk-progress-track"><div class="sk-progress-fill" style="width:{{ item.pct }}%;"></div></div><span class="sk-progress-pct">{{ item.pct }}%</span></div>
+        {% else %}
+        <span class="sk-badge">{{ t.steps.count() }} skill{{ 's' if t.steps.count() != 1 else '' }}</span>
+        {% endif %}
+      </a>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if data.active_projects %}
+    <div class="sk-section-title">Projects <a href="/skills/projects" class="sk-view-link">View All →</a></div>
+    <div class="sk-grid">
+      {% for p in data.active_projects %}
+      <a href="/skills/projects/{{ p.id }}" class="sk-card">
+        <div class="sk-card-title">{{ p.title }}</div>
+        <div class="sk-card-desc">{{ p.template.skill.name if p.template and p.template.skill else (p.skills_demonstrated[0] if p.skills_demonstrated else 'Independent project') }}</div>
+        <span class="sk-badge {{ p.status }}">{{ p.status.replace('_',' ')|title }}</span>
+        <div class="sk-progress-row"><div class="sk-progress-track"><div class="sk-progress-fill" style="width:{{ p.progress_pct }}%;"></div></div><span class="sk-progress-pct">{{ p.progress_pct }}%</span></div>
+      </a>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if data.recommended %}
+    <div class="sk-section-title">Recommended for You <a href="/skills/catalog" class="sk-view-link">Explore All →</a></div>
+    <div class="sk-grid">
+      {% for skill in data.recommended %}
+      <a href="/skills/{{ skill.slug }}" class="sk-card">
+        <div class="sk-icon-circle" style="background:{{ skill.color }}22; color:{{ skill.color }};">{{ skill.icon or '🧩' }}</div>
+        <div class="sk-card-title">{{ skill.name }}</div>
+        <div class="sk-card-desc">{{ skill.tagline or '' }}</div>
+        <span class="sk-badge {{ skill.level }}">{{ skill.level }}</span>
+      </a>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+
+{% include 'components/skills_footer.html' %}
+{% include 'components/skills_ask_widget.html' %}
+</body>
+</html>

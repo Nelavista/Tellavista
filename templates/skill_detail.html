@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>{{ skill.name }} · Nelavista Skills</title>
+  <meta name="theme-color" content="#111827">
+  <meta name="description" content="{{ skill.tagline or skill.name }}">
+  <link rel="icon" type="image/png" sizes="32x32" href="/static/icons/nelavista-32x32.png">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/skills.css') }}">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
+  <style>
+    .skd-hero { background: #1a2235; border-radius: 20px; padding: 28px; margin-bottom: 8px; display: flex; gap: 20px; align-items: flex-start; flex-wrap: wrap; }
+    .skd-hero-icon { width: 60px; height: 60px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 28px; flex-shrink: 0; }
+    .skd-tabs { display: flex; gap: 4px; margin: 28px 0 4px; border-bottom: 1px solid #1f2a3e; overflow-x: auto; }
+    .skd-tab { padding: 12px 16px; font-size: 0.88rem; font-weight: 600; color: #9ca3af; text-decoration: none; border-bottom: 2px solid transparent; white-space: nowrap; cursor: pointer; background: none; border-top:none; border-left:none; border-right:none; font-family: inherit; }
+    .skd-tab.active { color: #3b82f6; border-bottom-color: #3b82f6; }
+    .skd-tab-panel { display: none; padding-top: 20px; }
+    .skd-tab-panel.active { display: block; }
+    @media (max-width: 768px) { .skd-hero { padding: 20px; } }
+  </style>
+</head>
+<body>
+{% include 'components/skills_sidebar.html' %}
+
+  <div class="sk-view">
+    <div class="skd-hero">
+      <div class="skd-hero-icon" style="background:{{ skill.color }}22; color:{{ skill.color }};">{{ skill.icon or '🧩' }}</div>
+      <div style="flex:1; min-width:220px;">
+        <span class="sk-eyebrow">{{ skill.category.name if skill.category else 'Skills' }}</span>
+        <h1 class="sk-h1" style="margin-bottom:6px;">{{ skill.name }}</h1>
+        <p class="sk-sub" style="margin-bottom:14px;">{{ skill.tagline or skill.description or '' }}</p>
+        <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+          <span class="sk-badge {{ skill.level }}">{{ skill.level }}</span>
+          {% if skill.estimated_hours %}<span class="sk-badge">⏱ ~{{ skill.estimated_hours }}h</span>{% endif %}
+          {% if student_skill %}<span class="sk-badge {{ student_skill.status }}">{{ student_skill.progress_pct }}% complete</span>{% endif %}
+        </div>
+      </div>
+    </div>
+
+    {% if onboarding_match %}
+    <div class="sk-panel" style="margin-top:18px; border-left:3px solid {{ skill.color }};">
+      <strong>You told us: "{{ onboarding_match.interest_text }}"</strong>
+      <p class="sk-card-desc" style="margin-top:6px; margin-bottom:0;">
+        {% if onboarding_match.experience_level == 'new' %}
+          Since you're completely new to this, we'll start from Step 1 — no assumptions.
+        {% elif onboarding_match.experience_level == 'some_basics' %}
+          Since you already know some basics, feel free to skim the early steps and jump to what's new for you.
+        {% else %}
+          Since you already have real experience, you might want to head straight to Practice or Projects below.
+        {% endif %}
+      </p>
+    </div>
+    {% endif %}
+
+    {% if skill.description %}
+    <p class="sk-sub" style="margin-top:18px; max-width:720px;">{{ skill.description }}</p>
+    {% endif %}
+
+    <div class="skd-tabs">
+      <button class="skd-tab active" data-tab="path" onclick="skdShowTab('path')">Learning Path</button>
+      <button class="skd-tab" data-tab="practice" onclick="skdShowTab('practice')">Practice{% if challenges %} ({{ challenges|length }}){% endif %}</button>
+      <button class="skd-tab" data-tab="projects" onclick="skdShowTab('projects')">Projects{% if project_templates %} ({{ project_templates|length }}){% endif %}</button>
+    </div>
+
+    <div class="skd-tab-panel active" id="tab-path">
+      {% if not step_states %}
+      <div class="sk-empty"><div class="sk-empty-icon">🧭</div><div style="font-weight:600;">This path is still being built</div><div style="font-size:0.85rem;">Check back soon.</div></div>
+      {% else %}
+      {% set current_step = namespace(num=None) %}
+      {% for item in step_states %}{% if item.state == 'current' and current_step.num is none %}{% set current_step.num = loop.index %}{% endif %}{% endfor %}
+      <ul class="sk-path">
+        {% for item in step_states %}
+        {% set step = item.step %}
+        <li class="sk-path-step {{ 'locked' if item.state == 'locked' else '' }}">
+          <div class="sk-step-marker {{ item.state }}">
+            {% if item.state == 'completed' %}✓{% else %}{{ loop.index }}{% endif %}
+          </div>
+          <div class="sk-step-body">
+            <div class="sk-step-num">Step {{ loop.index }} · {{ step.step_type|title }}</div>
+            <div class="sk-step-title">{{ step.title }}</div>
+            {% if step.description %}<div class="sk-step-desc">{{ step.description }}</div>{% endif %}
+            {% if item.state != 'locked' %}
+              {% if step.step_type == 'course' and step.course %}
+                {% set course_url = ('/skills/' ~ skill.slug ~ '/class/' ~ step.course.slug) if step.course.is_daily_class else ('/skills/' ~ skill.slug ~ '/learn/' ~ step.course.slug) %}
+                <a href="{{ course_url }}" class="sk-step-link">{{ 'Review course' if item.state == 'completed' else 'Start course' }} →</a>
+              {% elif step.step_type == 'challenge' and step.challenge %}
+                <a href="/skills/{{ skill.slug }}/challenge/{{ step.challenge.slug }}" class="sk-step-link">{{ 'View submission' if item.state == 'completed' else 'Start challenge' }} →</a>
+              {% elif step.step_type == 'project' and step.project_template %}
+                <a href="#tab-projects" onclick="skdShowTab('projects')" class="sk-step-link">{{ 'View project' if item.state == 'completed' else 'Start project' }} →</a>
+              {% endif %}
+            {% else %}
+              <span class="sk-step-desc" style="font-style:italic;">🔒 {{ 'Complete Step %d to unlock'|format(current_step.num) if current_step.num else 'Locked' }}</span>
+            {% endif %}
+          </div>
+        </li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+    </div>
+
+    <div class="skd-tab-panel" id="tab-practice">
+      {% if not challenges %}
+      <div class="sk-empty"><div class="sk-empty-icon">🎯</div><div style="font-weight:600;">No practice challenges yet</div><div style="font-size:0.85rem;">Practice exercises for {{ skill.name }} are coming soon.</div></div>
+      {% else %}
+      <div class="sk-grid">
+        {% for c in challenges %}
+        <a href="/skills/{{ skill.slug }}/challenge/{{ c.slug }}" class="sk-card">
+          <div class="sk-card-title">{{ c.title }}</div>
+          <div class="sk-card-desc">{{ c.description or '' }}</div>
+          <div style="display:flex; gap:6px; flex-wrap:wrap;">
+            <span class="sk-badge {{ c.difficulty }}">{{ c.difficulty }}</span>
+            <span class="sk-badge">{{ c.challenge_type }}</span>
+            {% if c.id in challenge_done_ids %}<span class="sk-badge completed">✓ Submitted</span>{% endif %}
+          </div>
+        </a>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+
+    <div class="skd-tab-panel" id="tab-projects">
+      {% if not project_templates %}
+      <div class="sk-empty"><div class="sk-empty-icon">🛠️</div><div style="font-weight:600;">No project briefs yet</div><div style="font-size:0.85rem;">Curated project ideas for {{ skill.name }} are coming soon.</div></div>
+      {% else %}
+      <div class="sk-grid">
+        {% for p in project_templates %}
+        <div class="sk-card" style="cursor:default;">
+          <div class="sk-card-title">{{ p.title }}</div>
+          <div class="sk-card-desc">{{ p.description or '' }}</div>
+          {% if p.skills_demonstrated %}
+          <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:12px;">
+            {% for s in p.skills_demonstrated %}<span class="sk-badge">{{ s }}</span>{% endfor %}
+          </div>
+          {% endif %}
+          {% if p.id in student_project_template_ids %}
+            <a href="/skills/projects" class="sk-btn small secondary">View my project</a>
+          {% else %}
+            <form method="POST" action="/skills/projects/start/{{ p.id }}">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <button type="submit" class="sk-btn small">Start Project</button>
+            </form>
+          {% endif %}
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <div class="sk-section-title">Have your own idea?</div>
+      <form method="POST" action="/skills/{{ skill.slug }}/projects/custom" class="sk-panel">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div class="sk-field"><label class="sk-label">Project title</label><input class="sk-input" name="title" placeholder="e.g. My own {{ skill.name }} project" required></div>
+        <div class="sk-field"><label class="sk-label">What are you building?</label><textarea class="sk-textarea" name="description" rows="3" placeholder="Briefly describe what you want to build with {{ skill.name }}."></textarea></div>
+        <button type="submit" class="sk-btn secondary">+ Start a custom project</button>
+      </form>
+    </div>
+  </div>
+
+{% include 'components/skills_footer.html' %}
+{% include 'components/skills_ask_widget.html' %}
+
+<script>
+  function skdShowTab(name) {
+    document.querySelectorAll('.skd-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === name));
+    document.querySelectorAll('.skd-tab-panel').forEach(p => p.classList.toggle('active', p.id === 'tab-' + name));
+  }
+</script>
+</body>
+</html>

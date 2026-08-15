@@ -19,6 +19,17 @@ class User(db.Model):
     reset_token = db.Column(db.String(200), nullable=True)
     reset_token_expiry = db.Column(db.DateTime, nullable=True)
     is_admin = db.Column(db.Boolean, nullable=False, default=False)
+    # Which top-level experience the user starts in: 'academia' or 'tech_skills'.
+    # NULL means "never chosen" — legacy accounts default to Academia at login time
+    # (see routes/auth_routes.py) rather than being forced through path selection.
+    preferred_path = db.Column(db.String(20), nullable=True)
+    # Sibling flag to is_admin — a third account type (see EmployerProfile) that reuses
+    # this same auth system rather than a parallel one.
+    is_employer = db.Column(db.Boolean, nullable=False, default=False)
+    # Self-reported only. Nelavista has no mechanism to verify a university-issued CGPA —
+    # never compute or claim to verify this from Skill GPA / Nelavista activity data.
+    # Shown to employers only if the student explicitly opts in (see StudentPrivacySettings).
+    academic_cgpa = db.Column(db.Float, nullable=True)
 
     def set_password(self, password):
         from werkzeug.security import generate_password_hash
@@ -422,4 +433,834 @@ class GroupInvite(db.Model):
             'expires_at': self.expires_at.isoformat() if self.expires_at else None,
             'current_uses': self.current_uses,
             'max_uses': self.max_uses
+        }
+
+
+# ============================================================
+# ===== SKILLS SYSTEM =====
+# Learn -> Practice -> Build -> Prove -> Progress. Mirrors the existing codebase's
+# JSON-as-text convention (see UserProfile.traits/focus_areas above) rather than native
+# JSON columns, so every JSON-ish field ships with a `_list`/`_dict` accessor pair.
+# ============================================================
+
+class SkillCategory(db.Model):
+    """Top-level grouping shown on the Skills catalog, e.g. Tech, Design, Business."""
+    __tablename__ = 'skill_categories'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    slug = db.Column(db.String(100), unique=True, nullable=False)
+    icon = db.Column(db.String(10))            # a single emoji, rendered directly
+    description = db.Column(db.String(300))
+    order = db.Column(db.Integer, default=0)
+    is_active = db.Column(db.Boolean, default=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    skills = db.relationship('Skill', backref='category', lazy='dynamic', order_by='Skill.order')
+
+    def to_dict(self):
+        return {
+            'id': self.id, 'name': self.name, 'slug': self.slug, 'icon': self.icon,
+            'description': self.description, 'order': self.order, 'is_active': self.is_active,
+        }
+
+
+class Skill(db.Model):
+    """One learnable skill, e.g. Python, UI/UX Design. The unit everything else hangs off:
+    its own LearningPath, courses, challenges, and project templates."""
+    __tablename__ = 'skills'
+
+    id = db.Column(db.Integer, primary_key=True)
+    category_id = db.Column(db.Integer, db.ForeignKey('skill_categories.id'), nullable=False)
+    name = db.Column(db.String(120), nullable=False)
+    slug = db.Column(db.String(120), unique=True, nullable=False)
+    tagline = db.Column(db.String(200))         # e.g. "Build the foundation you need to start developing real software."
+    description = db.Column(db.Text)
+    level = db.Column(db.String(20), default='beginner')   # beginner | intermediate | advanced
+    icon = db.Column(db.String(10))
+    color = db.Column(db.String(20), default='#3b82f6')
+    estimated_hours = db.Column(db.Integer, default=0)
+    is_published = db.Column(db.Boolean, default=False)
+    order = db.Column(db.Integer, default=0)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    path = db.relationship('LearningPath', backref='skill', uselist=False, cascade='all, delete-orphan')
+    courses = db.relationship('SkillCourse', backref='skill', lazy='dynamic', order_by='SkillCourse.order', cascade='all, delete-orphan')
+    challenges = db.relationship('Challenge', backref='skill', lazy='dynamic', order_by='Challenge.order', cascade='all, delete-orphan')
+    project_templates = db.relationship('ProjectTemplate', backref='skill', lazy='dynamic', order_by='ProjectTemplate.order', cascade='all, delete-orphan')
+
+    def to_dict(self):
+        return {
+            'id': self.id, 'category_id': self.category_id, 'name': self.name, 'slug': self.slug,
+            'tagline': self.tagline, 'description': self.description, 'level': self.level,
+            'icon': self.icon, 'color': self.color, 'estimated_hours': self.estimated_hours,
+            'is_published': self.is_published, 'order': self.order,
+        }
+
+
+class LearningPath(db.Model):
+    """The structured, ordered route through a Skill — what makes Nelavista's Skills
+    section a curriculum rather than a pile of courses. One path per skill."""
+    __tablename__ = 'learning_paths'
+
+    id = db.Column(db.Integer, primary_key=True)
+    skill_id = db.Column(db.Integer, db.ForeignKey('skills.id'), unique=True, nullable=False)
+    title = db.Column(db.String(150), nullable=False)
+    description = db.Column(db.Text)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    steps = db.relationship('LearningPathStep', backref='path', lazy='dynamic', order_by='LearningPathStep.order', cascade='all, delete-orphan')
+
+    def to_dict(self):
+        return {'id': self.id, 'skill_id': self.skill_id, 'title': self.title, 'description': self.description}
+
+
+class LearningPathStep(db.Model):
+    """One numbered stage in a LearningPath — a course to complete, a challenge to pass,
+    or a project to build. step_type decides which foreign key is populated."""
+    __tablename__ = 'learning_path_steps'
+
+    id = db.Column(db.Integer, primary_key=True)
+    path_id = db.Column(db.Integer, db.ForeignKey('learning_paths.id'), nullable=False)
+    order = db.Column(db.Integer, default=0)
+    step_type = db.Column(db.String(20), nullable=False, default='course')  # course | challenge | project
+    title = db.Column(db.String(150), nullable=False)
+    description = db.Column(db.String(300))
+    course_id = db.Column(db.Integer, db.ForeignKey('skill_courses.id'), nullable=True)
+    challenge_id = db.Column(db.Integer, db.ForeignKey('challenges.id'), nullable=True)
+    project_template_id = db.Column(db.Integer, db.ForeignKey('project_templates.id'), nullable=True)
+
+    course = db.relationship('SkillCourse')
+    challenge = db.relationship('Challenge')
+    project_template = db.relationship('ProjectTemplate')
+
+    def to_dict(self):
+        return {
+            'id': self.id, 'path_id': self.path_id, 'order': self.order, 'step_type': self.step_type,
+            'title': self.title, 'description': self.description, 'course_id': self.course_id,
+            'challenge_id': self.challenge_id, 'project_template_id': self.project_template_id,
+        }
+
+
+class SkillCourse(db.Model):
+    """A course within a skill (named SkillCourse, not Course, to avoid colliding with
+    the unrelated 'course' string fields already used by Material/Video)."""
+    __tablename__ = 'skill_courses'
+
+    id = db.Column(db.Integer, primary_key=True)
+    skill_id = db.Column(db.Integer, db.ForeignKey('skills.id'), nullable=False)
+    title = db.Column(db.String(150), nullable=False)
+    slug = db.Column(db.String(150), nullable=False)
+    description = db.Column(db.Text)
+    level = db.Column(db.String(20), default='beginner')
+    estimated_hours = db.Column(db.Integer, default=0)
+    order = db.Column(db.Integer, default=0)
+    is_published = db.Column(db.Boolean, default=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    # A daily class (e.g. a 30-Day Skill Class) is still a SkillCourse — same modules/
+    # lessons — but its lessons are additionally sequenced by day_number/week_number
+    # (see Lesson below) and it gets Cohorts, grading, and a final project on top.
+    is_daily_class = db.Column(db.Boolean, default=False)
+    duration_days = db.Column(db.Integer, nullable=True)
+
+    modules = db.relationship('CourseModule', backref='course', lazy='dynamic', order_by='CourseModule.order', cascade='all, delete-orphan')
+    grade_scale = db.relationship('GradeScale', backref='course', lazy='dynamic', order_by='GradeScale.order', cascade='all, delete-orphan')
+    grade_weights = db.relationship('GradeWeight', backref='course', lazy='dynamic', cascade='all, delete-orphan')
+    cohorts = db.relationship('Cohort', backref='course', lazy='dynamic', order_by='Cohort.created_at.desc()', cascade='all, delete-orphan')
+
+    __table_args__ = (db.UniqueConstraint('skill_id', 'slug', name='uq_skill_course_slug'),)
+
+    def to_dict(self):
+        return {
+            'id': self.id, 'skill_id': self.skill_id, 'title': self.title, 'slug': self.slug,
+            'description': self.description, 'level': self.level, 'estimated_hours': self.estimated_hours,
+            'order': self.order, 'is_published': self.is_published,
+            'is_daily_class': self.is_daily_class, 'duration_days': self.duration_days,
+        }
+
+
+class CourseModule(db.Model):
+    """A group of lessons within a SkillCourse."""
+    __tablename__ = 'course_modules'
+
+    id = db.Column(db.Integer, primary_key=True)
+    course_id = db.Column(db.Integer, db.ForeignKey('skill_courses.id'), nullable=False)
+    title = db.Column(db.String(150), nullable=False)
+    order = db.Column(db.Integer, default=0)
+
+    lessons = db.relationship('Lesson', backref='module', lazy='dynamic', order_by='Lesson.order', cascade='all, delete-orphan')
+
+    def to_dict(self):
+        return {'id': self.id, 'course_id': self.course_id, 'title': self.title, 'order': self.order}
+
+
+class Lesson(db.Model):
+    """One unit of learning content: written lesson body, optional video, optional
+    downloadable/linked resources, optional quiz (see Quiz)."""
+    __tablename__ = 'lessons'
+
+    id = db.Column(db.Integer, primary_key=True)
+    module_id = db.Column(db.Integer, db.ForeignKey('course_modules.id'), nullable=False)
+    title = db.Column(db.String(150), nullable=False)
+    slug = db.Column(db.String(150), nullable=False)
+    order = db.Column(db.Integer, default=0)
+    content = db.Column(db.Text)              # lesson body, simple markdown-ish text
+    video_url = db.Column(db.String(500))     # admin-set embeddable URL, optional, takes priority
+    duration_minutes = db.Column(db.Integer, default=10)
+    resources_json = db.Column(db.Text)       # JSON list of {"label": "...", "url": "..."}
+    # Auto-fetched YouTube results (see services/youtube_service.py), cached so the API is
+    # called once per lesson rather than on every student's every view. NULL = never
+    # fetched yet; "[]" = fetched and genuinely found nothing — that distinction is what
+    # the `videos` property below preserves (None vs an empty list).
+    videos_json = db.Column(db.Text)
+    is_published = db.Column(db.Boolean, default=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    # Populated only when this lesson belongs to a daily class (course.is_daily_class) —
+    # NULL for ordinary courses. day_number is the sequence a student must follow
+    # (Day 1 -> Day 2 -> ...); week_number/week_title group days for display only.
+    day_number = db.Column(db.Integer, nullable=True)
+    week_number = db.Column(db.Integer, nullable=True)
+    week_title = db.Column(db.String(150), nullable=True)
+    learning_objective = db.Column(db.String(300), nullable=True)
+
+    quiz = db.relationship('Quiz', backref='lesson', uselist=False, cascade='all, delete-orphan')
+    assignment = db.relationship('Assignment', backref='lesson', uselist=False, cascade='all, delete-orphan')
+
+    @property
+    def resources(self):
+        try:
+            return json.loads(self.resources_json) if self.resources_json else []
+        except (ValueError, TypeError):
+            return []
+
+    @resources.setter
+    def resources(self, value):
+        self.resources_json = json.dumps(value or [])
+
+    @property
+    def videos(self):
+        """None means 'never fetched'; [] means 'fetched, found nothing'."""
+        if self.videos_json is None:
+            return None
+        try:
+            return json.loads(self.videos_json)
+        except (ValueError, TypeError):
+            return None
+
+    @videos.setter
+    def videos(self, value):
+        self.videos_json = json.dumps(value if value is not None else [])
+
+    def to_dict(self):
+        return {
+            'id': self.id, 'module_id': self.module_id, 'title': self.title, 'slug': self.slug,
+            'order': self.order, 'content': self.content, 'video_url': self.video_url,
+            'duration_minutes': self.duration_minutes, 'resources': self.resources,
+            'videos': self.videos,
+            'is_published': self.is_published, 'has_quiz': self.quiz is not None,
+            'day_number': self.day_number, 'week_number': self.week_number,
+            'week_title': self.week_title, 'learning_objective': self.learning_objective,
+            'has_assignment': self.assignment is not None,
+        }
+
+
+class Quiz(db.Model):
+    """A short check-for-understanding attached to one Lesson. Questions are stored as a
+    JSON blob (admin-authored) rather than a separate QuizQuestion table — a quiz never
+    needs to be queried question-by-question, only rendered/graded as a whole."""
+    __tablename__ = 'quizzes'
+
+    id = db.Column(db.Integer, primary_key=True)
+    lesson_id = db.Column(db.Integer, db.ForeignKey('lessons.id'), unique=True, nullable=False)
+    title = db.Column(db.String(150), default='Check your understanding')
+    questions_json = db.Column(db.Text)  # [{"question","options":[...],"correct_index","explanation"}]
+
+    @property
+    def questions(self):
+        try:
+            return json.loads(self.questions_json) if self.questions_json else []
+        except (ValueError, TypeError):
+            return []
+
+    @questions.setter
+    def questions(self, value):
+        self.questions_json = json.dumps(value or [])
+
+    def to_dict(self, include_answers=True):
+        qs = self.questions
+        if not include_answers:
+            qs = [{k: v for k, v in q.items() if k not in ('correct_index', 'explanation')} for q in qs]
+        return {'id': self.id, 'lesson_id': self.lesson_id, 'title': self.title, 'questions': qs}
+
+
+class Challenge(db.Model):
+    """A practical exercise for a skill — coding, design, business, or content — kept
+    separate from Lesson so 'practice' is a first-class layer, not another video."""
+    __tablename__ = 'challenges'
+
+    id = db.Column(db.Integer, primary_key=True)
+    skill_id = db.Column(db.Integer, db.ForeignKey('skills.id'), nullable=False)
+    title = db.Column(db.String(150), nullable=False)
+    slug = db.Column(db.String(150), nullable=False)
+    description = db.Column(db.String(300))
+    challenge_type = db.Column(db.String(20), default='coding')  # coding | design | business | content | general
+    difficulty = db.Column(db.String(20), default='beginner')
+    instructions = db.Column(db.Text)
+    estimated_minutes = db.Column(db.Integer, default=30)
+    is_published = db.Column(db.Boolean, default=False)
+    order = db.Column(db.Integer, default=0)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    __table_args__ = (db.UniqueConstraint('skill_id', 'slug', name='uq_challenge_slug'),)
+
+    def to_dict(self):
+        return {
+            'id': self.id, 'skill_id': self.skill_id, 'title': self.title, 'slug': self.slug,
+            'description': self.description, 'challenge_type': self.challenge_type,
+            'difficulty': self.difficulty, 'instructions': self.instructions,
+            'estimated_minutes': self.estimated_minutes, 'is_published': self.is_published, 'order': self.order,
+        }
+
+
+class ChallengeSubmission(db.Model):
+    """A student's attempt at a Challenge — their write-up/solution, kept so 'practice'
+    produces a real, reviewable artifact rather than a silent checkbox. feedback_json holds
+    AI-generated feedback (strengths/improvements/explanation/score/next step) — 'Correct ✓'
+    is not useful feedback on its own, so this is what a student actually sees after
+    submitting. NULL feedback_json means feedback generation hasn't run or failed; the
+    submission itself still stands either way."""
+    __tablename__ = 'challenge_submissions'
+
+    id = db.Column(db.Integer, primary_key=True)
+    challenge_id = db.Column(db.Integer, db.ForeignKey('challenges.id'), nullable=False)
+    student_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    content = db.Column(db.Text, nullable=False)
+    status = db.Column(db.String(20), default='submitted')  # submitted | reviewed
+    feedback_json = db.Column(db.Text)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    challenge = db.relationship('Challenge', backref='submissions')
+    student = db.relationship('User', backref='challenge_submissions')
+
+    @property
+    def feedback(self):
+        if not self.feedback_json:
+            return None
+        try:
+            return json.loads(self.feedback_json)
+        except (ValueError, TypeError):
+            return None
+
+    @feedback.setter
+    def feedback(self, value):
+        self.feedback_json = json.dumps(value) if value is not None else None
+
+    def to_dict(self):
+        return {
+            'id': self.id, 'challenge_id': self.challenge_id, 'status': self.status,
+            'feedback': self.feedback,
+            'created_at': self.created_at.isoformat() if self.created_at else None,
+        }
+
+
+class ProjectTemplate(db.Model):
+    """An admin-curated project brief tied to a skill (e.g. 'Student Marketplace' for
+    Web Development) that students can start as their own StudentProject."""
+    __tablename__ = 'project_templates'
+
+    id = db.Column(db.Integer, primary_key=True)
+    skill_id = db.Column(db.Integer, db.ForeignKey('skills.id'), nullable=False)
+    # Set only when this is the final project for a specific daily class (course_id +
+    # is_final_project=True) rather than a general skill-level project brief. A daily
+    # class's final project is evaluated by AI strictly against rubric_json — see
+    # services/ai_service.py's evaluate_final_project and StudentProject.rubric_scores below.
+    course_id = db.Column(db.Integer, db.ForeignKey('skill_courses.id'), nullable=True)
+    is_final_project = db.Column(db.Boolean, default=False)
+    course = db.relationship('SkillCourse', backref='final_project_templates')
+    title = db.Column(db.String(150), nullable=False)
+    slug = db.Column(db.String(150), nullable=False)
+    description = db.Column(db.Text)
+    skills_demonstrated_json = db.Column(db.Text)  # JSON list of tag strings, e.g. ["HTML","CSS","Git"]
+    difficulty = db.Column(db.String(20), default='beginner')
+    estimated_hours = db.Column(db.Integer, default=0)
+    is_published = db.Column(db.Boolean, default=False)
+    order = db.Column(db.Integer, default=0)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    # Admin-configurable weighted evaluation criteria: [{"name": str, "max_points": int}, ...]
+    # where max_points across all criteria should sum to 100. The AI evaluator is given
+    # exactly these criteria and must score against them — it never invents its own scale.
+    rubric_json = db.Column(db.Text)
+
+    __table_args__ = (db.UniqueConstraint('skill_id', 'slug', name='uq_project_template_slug'),)
+
+    @property
+    def skills_demonstrated(self):
+        try:
+            return json.loads(self.skills_demonstrated_json) if self.skills_demonstrated_json else []
+        except (ValueError, TypeError):
+            return []
+
+    @skills_demonstrated.setter
+    def skills_demonstrated(self, value):
+        self.skills_demonstrated_json = json.dumps(value or [])
+
+    @property
+    def rubric(self):
+        try:
+            return json.loads(self.rubric_json) if self.rubric_json else []
+        except (ValueError, TypeError):
+            return []
+
+    @rubric.setter
+    def rubric(self, value):
+        self.rubric_json = json.dumps(value or [])
+
+    def to_dict(self):
+        return {
+            'id': self.id, 'skill_id': self.skill_id, 'course_id': self.course_id,
+            'is_final_project': self.is_final_project,
+            'title': self.title, 'slug': self.slug,
+            'description': self.description, 'skills_demonstrated': self.skills_demonstrated,
+            'difficulty': self.difficulty, 'estimated_hours': self.estimated_hours,
+            'is_published': self.is_published, 'order': self.order, 'rubric': self.rubric,
+        }
+
+
+class StudentProject(db.Model):
+    """A student's own instance of building something — started from a ProjectTemplate,
+    or (in future) from their own idea. This is the tangible proof-of-work layer."""
+    __tablename__ = 'student_projects'
+
+    id = db.Column(db.Integer, primary_key=True)
+    student_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    project_template_id = db.Column(db.Integer, db.ForeignKey('project_templates.id'), nullable=True)
+    title = db.Column(db.String(150), nullable=False)
+    description = db.Column(db.Text)
+    status = db.Column(db.String(20), default='in_progress')  # in_progress | submitted | completed
+    progress_pct = db.Column(db.Integer, default=0)
+    repo_url = db.Column(db.String(500))
+    live_url = db.Column(db.String(500))
+    skills_demonstrated_json = db.Column(db.Text)
+    started_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    completed_at = db.Column(db.DateTime)
+    # AI evaluation against the template's rubric (see ProjectTemplate.rubric), populated
+    # when a final-project submission is evaluated. rubric_scores is a list parallel to
+    # the rubric's criteria: [{"name","max_points","score","comment"}, ...] — ai_overall_score
+    # is always the sum of those per-criterion scores, never a separately invented number.
+    rubric_scores_json = db.Column(db.Text)
+    ai_overall_score = db.Column(db.Integer, nullable=True)
+
+    student = db.relationship('User', backref='student_projects')
+    template = db.relationship('ProjectTemplate', backref='student_instances')
+
+    @property
+    def skills_demonstrated(self):
+        try:
+            return json.loads(self.skills_demonstrated_json) if self.skills_demonstrated_json else []
+        except (ValueError, TypeError):
+            return []
+
+    @skills_demonstrated.setter
+    def skills_demonstrated(self, value):
+        self.skills_demonstrated_json = json.dumps(value or [])
+
+    @property
+    def rubric_scores(self):
+        try:
+            return json.loads(self.rubric_scores_json) if self.rubric_scores_json else None
+        except (ValueError, TypeError):
+            return None
+
+    @rubric_scores.setter
+    def rubric_scores(self, value):
+        self.rubric_scores_json = json.dumps(value) if value is not None else None
+
+    def to_dict(self):
+        return {
+            'id': self.id, 'title': self.title, 'description': self.description, 'status': self.status,
+            'progress_pct': self.progress_pct, 'repo_url': self.repo_url, 'live_url': self.live_url,
+            'skills_demonstrated': self.skills_demonstrated,
+            'skill_name': (self.template.skill.name if self.template and self.template.skill else None)
+                          or (self.skills_demonstrated[0] if self.skills_demonstrated else None),
+            'started_at': self.started_at.isoformat() if self.started_at else None,
+            'completed_at': self.completed_at.isoformat() if self.completed_at else None,
+            'rubric_scores': self.rubric_scores, 'ai_overall_score': self.ai_overall_score,
+        }
+
+
+class StudentSkill(db.Model):
+    """Aggregate per-student-per-skill progress — the row that powers the skill profile
+    bars and the dashboard's 'Continue learning'. Recomputed (not incrementally patched)
+    whenever a lesson/challenge/project changes, so it can never drift out of sync."""
+    __tablename__ = 'student_skills'
+
+    id = db.Column(db.Integer, primary_key=True)
+    student_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    skill_id = db.Column(db.Integer, db.ForeignKey('skills.id'), nullable=False)
+    status = db.Column(db.String(20), default='in_progress')  # in_progress | completed
+    progress_pct = db.Column(db.Integer, default=0)
+    started_at = db.Column(db.DateTime, default=datetime.utcnow)
+    last_activity_at = db.Column(db.DateTime, default=datetime.utcnow)
+    completed_at = db.Column(db.DateTime)
+
+    student = db.relationship('User', backref='student_skills')
+    skill = db.relationship('Skill', backref='student_progress')
+
+    __table_args__ = (db.UniqueConstraint('student_id', 'skill_id', name='uq_student_skill'),)
+
+    def to_dict(self):
+        return {
+            'skill_id': self.skill_id, 'skill_name': self.skill.name if self.skill else None,
+            'status': self.status, 'progress_pct': self.progress_pct,
+            'last_activity_at': self.last_activity_at.isoformat() if self.last_activity_at else None,
+        }
+
+
+class StudentLessonProgress(db.Model):
+    """One student's completion of one lesson — the atomic unit every higher-level
+    progress number (course %, path step state, skill %) is computed from."""
+    __tablename__ = 'student_lesson_progress'
+
+    id = db.Column(db.Integer, primary_key=True)
+    student_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    lesson_id = db.Column(db.Integer, db.ForeignKey('lessons.id'), nullable=False)
+    completed_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    student = db.relationship('User', backref='lesson_progress')
+    lesson = db.relationship('Lesson', backref='completions')
+
+    __table_args__ = (db.UniqueConstraint('student_id', 'lesson_id', name='uq_student_lesson'),)
+
+
+class StudentQuizAttempt(db.Model):
+    """A student's answers + score for one Quiz. Kept even after the lesson is complete
+    so 'review your answers' and skill-profile credibility both stay possible."""
+    __tablename__ = 'student_quiz_attempts'
+
+    id = db.Column(db.Integer, primary_key=True)
+    student_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    quiz_id = db.Column(db.Integer, db.ForeignKey('quizzes.id'), nullable=False)
+    answers_json = db.Column(db.Text)  # JSON list of selected option indices, parallel to quiz.questions
+    score = db.Column(db.Integer)      # 0-100
+    completed_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    student = db.relationship('User', backref='quiz_attempts')
+    quiz = db.relationship('Quiz', backref='attempts')
+
+    @property
+    def answers(self):
+        try:
+            return json.loads(self.answers_json) if self.answers_json else []
+        except (ValueError, TypeError):
+            return []
+
+    @answers.setter
+    def answers(self, value):
+        self.answers_json = json.dumps(value or [])
+
+
+class StudentOnboarding(db.Model):
+    """What a student told us they want on their first visit to Skills — captured once so
+    the experience can open focused on what they actually asked for, instead of a generic
+    catalog. interest_text is always kept (even when it matched a skill) so admins can see
+    the student's own words; interested_skill_id is set only when it resolved to a real,
+    published skill in the catalog."""
+    __tablename__ = 'student_onboarding'
+
+    id = db.Column(db.Integer, primary_key=True)
+    student_id = db.Column(db.Integer, db.ForeignKey('user.id'), unique=True, nullable=False)
+    interest_text = db.Column(db.String(200), nullable=False)
+    interested_skill_id = db.Column(db.Integer, db.ForeignKey('skills.id'), nullable=True)
+    experience_level = db.Column(db.String(20), nullable=False)  # new | some_basics | experienced
+    goal = db.Column(db.String(30))  # get_a_job | build_projects | exploring | start_a_business
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    student = db.relationship('User', backref=db.backref('skills_onboarding', uselist=False))
+    interested_skill = db.relationship('Skill')
+
+    def to_dict(self):
+        return {
+            'id': self.id, 'interest_text': self.interest_text,
+            'interested_skill_id': self.interested_skill_id,
+            'interested_skill_name': self.interested_skill.name if self.interested_skill else None,
+            'experience_level': self.experience_level, 'goal': self.goal,
+            'created_at': self.created_at.isoformat() if self.created_at else None,
+        }
+
+
+class CareerTrack(db.Model):
+    """A multi-skill career track (e.g. 'AI Engineer', 'Web Developer') that sequences
+    several whole Skills together. Distinct from LearningPath, which only sequences one
+    skill's own courses/challenges/projects — a CareerTrack is the layer above that,
+    telling a student which skills to learn in what order to get somewhere specific."""
+    __tablename__ = 'career_tracks'
+
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(150), nullable=False)
+    slug = db.Column(db.String(150), unique=True, nullable=False)
+    tagline = db.Column(db.String(200))
+    description = db.Column(db.Text)
+    icon = db.Column(db.String(10))
+    color = db.Column(db.String(20), default='#3b82f6')
+    is_published = db.Column(db.Boolean, default=False)
+    order = db.Column(db.Integer, default=0)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    steps = db.relationship('CareerTrackStep', backref='track', lazy='dynamic',
+                             order_by='CareerTrackStep.order', cascade='all, delete-orphan')
+
+    def to_dict(self):
+        return {
+            'id': self.id, 'title': self.title, 'slug': self.slug, 'tagline': self.tagline,
+            'description': self.description, 'icon': self.icon, 'color': self.color,
+            'is_published': self.is_published, 'order': self.order,
+            'step_count': self.steps.count(),
+        }
+
+
+class CareerTrackStep(db.Model):
+    """One skill within a CareerTrack, in sequence. A step's 'completion' is derived from
+    the student's StudentSkill row for skill_id — no separate progress table, same
+    recompute-don't-cache principle used everywhere else in the Skills system."""
+    __tablename__ = 'career_track_steps'
+
+    id = db.Column(db.Integer, primary_key=True)
+    track_id = db.Column(db.Integer, db.ForeignKey('career_tracks.id'), nullable=False)
+    skill_id = db.Column(db.Integer, db.ForeignKey('skills.id'), nullable=False)
+    order = db.Column(db.Integer, default=0)
+    note = db.Column(db.String(200))  # optional context, e.g. "just the math you'll actually use"
+
+    skill = db.relationship('Skill')
+
+    def to_dict(self):
+        return {
+            'id': self.id, 'track_id': self.track_id, 'skill_id': self.skill_id,
+            'skill_name': self.skill.name if self.skill else None, 'order': self.order,
+            'note': self.note,
+        }
+
+
+# ============================================================
+# ===== 30-DAY SKILL CLASSES: assignments, grading, cohorts, projects =====
+# Layered on top of the Skills system above rather than duplicating it: a "30-Day Skill
+# Class" is a SkillCourse with is_daily_class=True, whose Lesson rows carry day_number/
+# week_number. Everything below (Assignment, grading, Cohort) hangs off that same course.
+# ============================================================
+
+class Assignment(db.Model):
+    """A graded, per-day deliverable — distinct from Challenge (ungraded, open-ended
+    practice with AI feedback but no score/weight) and from Quiz (auto-graded, not
+    submission-reviewed). One assignment per daily-class Lesson."""
+    __tablename__ = 'assignments'
+
+    id = db.Column(db.Integer, primary_key=True)
+    lesson_id = db.Column(db.Integer, db.ForeignKey('lessons.id'), unique=True, nullable=False)
+    title = db.Column(db.String(150), nullable=False)
+    instructions = db.Column(db.Text)
+    due_offset_hours = db.Column(db.Integer, default=48)  # hours after the day unlocks before it counts "late"
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    submissions = db.relationship('AssignmentSubmission', backref='assignment', lazy='dynamic', cascade='all, delete-orphan')
+
+    def to_dict(self):
+        return {
+            'id': self.id, 'lesson_id': self.lesson_id, 'title': self.title,
+            'instructions': self.instructions, 'due_offset_hours': self.due_offset_hours,
+        }
+
+
+class AssignmentSubmission(db.Model):
+    """A student's graded submission for one Assignment. status distinguishes on-time vs
+    late (set at submit time, from the enrollment's day-unlock timestamp) from the AI's
+    qualitative read of the work (passed / needs_improvement) — two different questions
+    ('was it on time' and 'was it good'), both needed for Skill GPA and ranking to resist
+    gaming. One student may resubmit; only the latest submission counts toward grading
+    (enforced in services/gpa_service.py), so duplicate submissions can't be used to farm
+    attempts — the ORIGINAL submitted_at is what decides on-time/late, not the latest."""
+    __tablename__ = 'assignment_submissions'
+
+    id = db.Column(db.Integer, primary_key=True)
+    assignment_id = db.Column(db.Integer, db.ForeignKey('assignments.id'), nullable=False)
+    student_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    content = db.Column(db.Text, nullable=False)
+    status = db.Column(db.String(20), default='submitted')  # submitted | late
+    review_status = db.Column(db.String(20), default='pending')  # pending | passed | needs_improvement
+    score = db.Column(db.Integer, nullable=True)  # 0-100, from AI feedback
+    feedback_json = db.Column(db.Text)
+    submitted_at = db.Column(db.DateTime, default=datetime.utcnow)
+    first_submitted_at = db.Column(db.DateTime, default=datetime.utcnow)  # never overwritten by resubmits
+
+    student = db.relationship('User', backref='assignment_submissions')
+
+    @property
+    def feedback(self):
+        if not self.feedback_json:
+            return None
+        try:
+            return json.loads(self.feedback_json)
+        except (ValueError, TypeError):
+            return None
+
+    @feedback.setter
+    def feedback(self, value):
+        self.feedback_json = json.dumps(value) if value is not None else None
+
+    def to_dict(self):
+        return {
+            'id': self.id, 'assignment_id': self.assignment_id, 'status': self.status,
+            'review_status': self.review_status, 'score': self.score, 'feedback': self.feedback,
+            'submitted_at': self.submitted_at.isoformat() if self.submitted_at else None,
+        }
+
+
+class GradeScale(db.Model):
+    """Admin-configurable letter-grade -> grade-point mapping, scoped per course (not
+    global) so different classes can use different scales. Powers Skill GPA — never
+    hardcoded, and explicitly modeled on university CGPA mechanics but kept namespaced
+    as 'Skill GPA', never presented as academic CGPA (see User.academic_cgpa)."""
+    __tablename__ = 'grade_scales'
+
+    id = db.Column(db.Integer, primary_key=True)
+    course_id = db.Column(db.Integer, db.ForeignKey('skill_courses.id'), nullable=False)
+    grade_letter = db.Column(db.String(5), nullable=False)   # e.g. "A", "B+"
+    min_score = db.Column(db.Integer, nullable=False)        # inclusive, 0-100
+    max_score = db.Column(db.Integer, nullable=False)        # inclusive, 0-100
+    grade_point = db.Column(db.Float, nullable=False)        # e.g. 5.0, 4.0 ... 0.0
+    order = db.Column(db.Integer, default=0)
+
+    def to_dict(self):
+        return {
+            'id': self.id, 'course_id': self.course_id, 'grade_letter': self.grade_letter,
+            'min_score': self.min_score, 'max_score': self.max_score,
+            'grade_point': self.grade_point, 'order': self.order,
+        }
+
+
+class GradeWeight(db.Model):
+    """Admin-configurable weight (as a % of Skill GPA) for one grading component of a
+    course. component weights for a course should sum to 100 — enforced by the admin API,
+    not the DB, so a partially-configured course (mid-edit) is never blocked from saving."""
+    __tablename__ = 'grade_weights'
+
+    id = db.Column(db.Integer, primary_key=True)
+    course_id = db.Column(db.Integer, db.ForeignKey('skill_courses.id'), nullable=False)
+    component = db.Column(db.String(30), nullable=False)  # assignments | tests | final_project | participation
+    weight_pct = db.Column(db.Integer, nullable=False, default=0)
+
+    __table_args__ = (db.UniqueConstraint('course_id', 'component', name='uq_course_grade_component'),)
+
+    def to_dict(self):
+        return {'id': self.id, 'course_id': self.course_id, 'component': self.component, 'weight_pct': self.weight_pct}
+
+
+class Cohort(db.Model):
+    """A time-boxed intake of a daily class, e.g. 'August 2026 Cohort'. Exists so ranking
+    is always relative to peers who started together, not the whole all-time student
+    body — comparing a Day 3 student against a Day 28 student would be meaningless."""
+    __tablename__ = 'cohorts'
+
+    id = db.Column(db.Integer, primary_key=True)
+    course_id = db.Column(db.Integer, db.ForeignKey('skill_courses.id'), nullable=False)
+    name = db.Column(db.String(150), nullable=False)
+    start_date = db.Column(db.Date, nullable=False)
+    end_date = db.Column(db.Date, nullable=True)
+    is_active = db.Column(db.Boolean, default=True)  # accepting new enrollments
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    enrollments = db.relationship('CohortEnrollment', backref='cohort', lazy='dynamic', cascade='all, delete-orphan')
+
+    def to_dict(self):
+        return {
+            'id': self.id, 'course_id': self.course_id, 'name': self.name,
+            'start_date': self.start_date.isoformat() if self.start_date else None,
+            'end_date': self.end_date.isoformat() if self.end_date else None,
+            'is_active': self.is_active, 'student_count': self.enrollments.count(),
+        }
+
+
+class CohortEnrollment(db.Model):
+    """One student's membership in one Cohort of one daily class. skill_gpa is a cache —
+    recomputed (see services/gpa_service.py) after any grading event, never hand-edited —
+    kept here (rather than computed live on every page view) only because it's also the
+    sort key for the cohort leaderboard and recomputing 300 students' GPAs on every
+    leaderboard view would be wasteful; every individual student's own transcript view
+    still recomputes on the fly to guarantee it's never stale for the one person looking."""
+    __tablename__ = 'cohort_enrollments'
+
+    id = db.Column(db.Integer, primary_key=True)
+    cohort_id = db.Column(db.Integer, db.ForeignKey('cohorts.id'), nullable=False)
+    student_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    enrolled_at = db.Column(db.DateTime, default=datetime.utcnow)
+    current_day = db.Column(db.Integer, default=1)
+    skill_gpa = db.Column(db.Float, nullable=True)
+    gpa_updated_at = db.Column(db.DateTime, nullable=True)
+
+    student = db.relationship('User', backref='cohort_enrollments')
+
+    __table_args__ = (db.UniqueConstraint('cohort_id', 'student_id', name='uq_cohort_student'),)
+
+    def to_dict(self):
+        return {
+            'id': self.id, 'cohort_id': self.cohort_id, 'student_id': self.student_id,
+            'current_day': self.current_day, 'skill_gpa': self.skill_gpa,
+            'enrolled_at': self.enrolled_at.isoformat() if self.enrolled_at else None,
+        }
+
+
+class EmployerProfile(db.Model):
+    """The employer-side counterpart to a User row — reuses the exact same auth (User.
+    is_employer flag, same login/session), not a parallel account system. is_verified is
+    manually toggled by an admin (see routes/admin_skills_routes.py); no automated
+    verification mechanism exists, so 'verified' means an admin actually checked."""
+    __tablename__ = 'employer_profiles'
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), unique=True, nullable=False)
+    company_name = db.Column(db.String(150), nullable=False)
+    company_description = db.Column(db.Text)
+    website = db.Column(db.String(300))
+    industry = db.Column(db.String(120))
+    logo_url = db.Column(db.String(500))
+    is_verified = db.Column(db.Boolean, default=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    user = db.relationship('User', backref=db.backref('employer_profile', uselist=False))
+
+    def to_dict(self):
+        return {
+            'id': self.id, 'user_id': self.user_id, 'company_name': self.company_name,
+            'company_description': self.company_description, 'website': self.website,
+            'industry': self.industry, 'logo_url': self.logo_url, 'is_verified': self.is_verified,
+        }
+
+
+class StudentPrivacySettings(db.Model):
+    """What a student has opted to let employers see. Defaults are deliberately closed
+    (profile_visibility defaults to 'private') — a student must actively opt in before
+    employer discovery surfaces them at all; the per-field toggles then narrow further
+    what's visible even once discoverable. No row means the same as profile_visibility=
+    'private' (the safe default), so employer queries treat a missing row as fully hidden."""
+    __tablename__ = 'student_privacy_settings'
+
+    id = db.Column(db.Integer, primary_key=True)
+    student_id = db.Column(db.Integer, db.ForeignKey('user.id'), unique=True, nullable=False)
+    # private: invisible to employer discovery entirely.
+    # employers: discoverable by employers, not shown on any public page.
+    # public: discoverable and shown to anyone with the profile link.
+    profile_visibility = db.Column(db.String(20), nullable=False, default='private')
+    show_academic_cgpa = db.Column(db.Boolean, default=False)
+    show_projects = db.Column(db.Boolean, default=True)
+    show_skill_transcript = db.Column(db.Boolean, default=True)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    student = db.relationship('User', backref=db.backref('privacy_settings', uselist=False))
+
+    def to_dict(self):
+        return {
+            'profile_visibility': self.profile_visibility,
+            'show_academic_cgpa': self.show_academic_cgpa,
+            'show_projects': self.show_projects,
+            'show_skill_transcript': self.show_skill_transcript,
         }

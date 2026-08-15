@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Set Up Skills · Nelavista</title>
+  <meta name="theme-color" content="#111827">
+  <meta name="description" content="Tell Nelavista what you want to learn so Skills can focus on it.">
+  <link rel="icon" type="image/png" sizes="32x32" href="/static/icons/nelavista-32x32.png">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/skills.css') }}">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
+  <style>
+    body { display: flex; flex-direction: column; min-height: 100vh; }
+    .ob-topbar { display: flex; align-items: center; justify-content: space-between; padding: 20px 24px; }
+    .ob-logo { font-size: 1.3rem; font-weight: 800; letter-spacing: -0.03em; background: linear-gradient(135deg, #3b82f6, #60a5fa); -webkit-background-clip: text; background-clip: text; color: transparent; text-decoration: none; }
+    .ob-skip { color: #6b7280; text-decoration: none; font-size: 0.82rem; font-weight: 600; padding: 8px 14px; border-radius: 40px; border: 1px solid #1f2a3e; background: none; cursor: pointer; font-family: inherit; }
+    .ob-skip:hover { color: #9ca3af; border-color: #2d3a52; }
+
+    .ob-main { flex: 1; display: flex; justify-content: center; padding: 8px 20px 80px; }
+    .ob-container { width: 100%; max-width: 640px; }
+    .ob-intro { text-align: center; margin-bottom: 32px; }
+    .ob-eyebrow { display: block; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #3b82f6; margin-bottom: 10px; }
+    .ob-h1 { font-size: 1.7rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 8px; }
+    .ob-sub { color: #9ca3af; font-size: 0.95rem; }
+
+    .ob-q { margin-bottom: 32px; }
+    .ob-q-label { font-weight: 700; font-size: 1rem; margin-bottom: 4px; }
+    .ob-q-hint { color: #9ca3af; font-size: 0.82rem; margin-bottom: 14px; }
+
+    .ob-skill-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; margin-bottom: 14px; }
+    .ob-skill-chip { background: #1a2235; border: 2px solid transparent; border-radius: 14px; padding: 14px; cursor: pointer; text-align: left; transition: 0.15s; font-family: inherit; color: inherit; }
+    .ob-skill-chip:hover { border-color: rgba(59,130,246,0.4); }
+    .ob-skill-chip.selected { border-color: #3b82f6; background: rgba(59,130,246,0.1); }
+    .ob-skill-chip .chip-icon { font-size: 1.3rem; margin-bottom: 6px; }
+    .ob-skill-chip .chip-name { font-weight: 700; font-size: 0.88rem; }
+    .ob-skill-chip .chip-cat { font-size: 0.7rem; color: #6b7280; margin-top: 2px; }
+
+    .ob-or { display: flex; align-items: center; gap: 12px; color: #6b7280; font-size: 0.78rem; margin: 16px 0; }
+    .ob-or::before, .ob-or::after { content: ''; flex: 1; height: 1px; background: #1f2a3e; }
+
+    .ob-options { display: flex; flex-direction: column; gap: 8px; }
+    .ob-option { display: flex; align-items: center; gap: 12px; padding: 14px 16px; background: #1a2235; border: 2px solid transparent; border-radius: 14px; cursor: pointer; transition: 0.15s; }
+    .ob-option:hover { border-color: rgba(59,130,246,0.3); }
+    .ob-option input { accent-color: #3b82f6; width: 18px; height: 18px; flex-shrink: 0; }
+    .ob-option span { font-size: 0.9rem; font-weight: 500; }
+    .ob-option:has(input:checked) { border-color: #3b82f6; background: rgba(59,130,246,0.08); }
+
+    .ob-goal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    @media (max-width: 480px) { .ob-goal-grid { grid-template-columns: 1fr; } }
+
+    .ob-submit-row { margin-top: 8px; }
+    .ob-footnote { text-align: center; color: #6b7280; font-size: 0.8rem; margin-top: 16px; }
+  </style>
+</head>
+<body>
+  <div class="ob-topbar">
+    <a href="/" class="ob-logo">Nelavista</a>
+    <form method="POST" action="{{ url_for('skills.onboarding') }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <input type="hidden" name="skip" value="1">
+      <button type="submit" class="ob-skip">Skip for now</button>
+    </form>
+  </div>
+
+  <main class="ob-main">
+    <div class="ob-container">
+      <div class="ob-intro">
+        <span class="ob-eyebrow">Skills</span>
+        <h1 class="ob-h1">Let's set up your Skills, {{ first_name }}.</h1>
+        <p class="ob-sub">Answer a few quick questions and we'll focus everything around what you actually want to learn.</p>
+      </div>
+
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <ul style="list-style:none; margin-bottom:20px;">
+          {% for m in messages %}<li style="background:rgba(59,130,246,0.1); border:1px solid rgba(59,130,246,0.3); padding:12px 16px; border-radius:12px; font-size:0.88rem; margin-bottom:8px;">{{ m }}</li>{% endfor %}
+        </ul>
+        {% endif %}
+      {% endwith %}
+
+      <form method="POST" action="{{ url_for('skills.onboarding') }}" id="onboardingForm">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <input type="hidden" name="skill_id" id="selectedSkillId" value="">
+
+        <div class="ob-q">
+          <div class="ob-q-label">1. What do you want to learn?</div>
+          <div class="ob-q-hint">Pick one to start — you can always explore more later.</div>
+          <div class="ob-skill-grid">
+            {% for cat in categories %}
+              {% for skill in cat.skills %}
+                {% if skill.is_published %}
+                <button type="button" class="ob-skill-chip" data-skill-id="{{ skill.id }}" onclick="selectSkill(this)">
+                  <div class="chip-icon">{{ skill.icon or '🧩' }}</div>
+                  <div class="chip-name">{{ skill.name }}</div>
+                  <div class="chip-cat">{{ cat.name }}</div>
+                </button>
+                {% endif %}
+              {% endfor %}
+            {% endfor %}
+          </div>
+          <div class="ob-or">or tell us in your own words</div>
+          <input type="text" name="interest_text" id="interestText" class="sk-input" placeholder="e.g. I want to learn to build websites" oninput="clearSkillSelection()">
+        </div>
+
+        <div class="ob-q">
+          <div class="ob-q-label">2. What's your experience with it?</div>
+          <div class="ob-options">
+            {% for value, label in experience_labels.items() %}
+            <label class="ob-option">
+              <input type="radio" name="experience_level" value="{{ value }}" {{ 'checked' if loop.first else '' }}>
+              <span>{{ label }}</span>
+            </label>
+            {% endfor %}
+          </div>
+        </div>
+
+        <div class="ob-q">
+          <div class="ob-q-label">3. What's your main goal right now?</div>
+          <div class="ob-q-hint">Optional — helps us point you in the right direction.</div>
+          <div class="ob-goal-grid">
+            {% for value, label in goal_labels.items() %}
+            <label class="ob-option">
+              <input type="radio" name="goal" value="{{ value }}">
+              <span>{{ label }}</span>
+            </label>
+            {% endfor %}
+          </div>
+        </div>
+
+        <div class="ob-submit-row">
+          <button type="submit" class="sk-btn full">Continue →</button>
+        </div>
+      </form>
+      <p class="ob-footnote">This just helps us focus your Skills experience — nothing is shared publicly.</p>
+    </div>
+  </main>
+
+<script>
+  function selectSkill(btn) {
+    document.querySelectorAll('.ob-skill-chip').forEach(c => c.classList.remove('selected'));
+    btn.classList.add('selected');
+    document.getElementById('selectedSkillId').value = btn.dataset.skillId;
+    document.getElementById('interestText').value = '';
+  }
+  function clearSkillSelection() {
+    document.querySelectorAll('.ob-skill-chip').forEach(c => c.classList.remove('selected'));
+    document.getElementById('selectedSkillId').value = '';
+  }
+</script>
+</body>
+</html>

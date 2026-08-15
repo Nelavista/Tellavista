@@ -1,0 +1,52 @@
+<!-- Shared Skills shell — sidebar + top bar. Include right after <body>, pass
+     active_page ('home'|'catalog'|'projects'|None) to highlight the current nav item. -->
+<div class="app-wrapper">
+  <div class="sidebar" id="side-menu">
+    <div>
+      <div class="sidebar-header">
+        <div class="sidebar-logo">Nelavista</div>
+      </div>
+      <div class="sidebar-nav">
+        <div class="nav-group">
+          <div class="nav-label">SKILLS</div>
+          <a href="/skills" class="{{ 'active-link' if active_page == 'home' else '' }}">🧭 Skills Home</a>
+          <a href="/skills/catalog" class="{{ 'active-link' if active_page == 'catalog' else '' }}">🧩 Explore Skills</a>
+          <a href="/skills/tracks" class="{{ 'active-link' if active_page == 'tracks' else '' }}">🗺️ Learning Paths</a>
+          <a href="/skills/projects" class="{{ 'active-link' if active_page == 'projects' else '' }}">🛠️ My Projects</a>
+          <a href="/skills/transcript" class="{{ 'active-link' if active_page == 'transcript' else '' }}">🎓 Skill Transcript</a>
+          <a href="/skills/search">🔍 Search</a>
+        </div>
+
+        <div class="nav-group">
+          <div class="nav-label">MAIN MENU</div>
+          <a href="/profile">👤 Profile</a>
+          <a href="/ai">🤖 Chat with Nela</a>
+        </div>
+
+        <div class="nav-group">
+          <div class="nav-label">OTHER</div>
+          <a href="/about">ℹ️ About</a>
+          <a href="/settings">⚙️ Settings</a>
+        </div>
+      </div>
+    </div>
+    <div class="sidebar-footer">
+      <a href="/logout">🚪 Logout</a>
+    </div>
+  </div>
+
+  <div id="overlay" class="overlay" onclick="skClosMenu()"></div>
+
+  <div class="main-content">
+    <div class="top-bar">
+      <button id="menu-toggle" onclick="skToggleMenu()">☰</button>
+      <button id="theme-toggle" onclick="skToggleTheme()">🌙</button>
+    </div>
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+      <div class="sk-flashes">
+        {% for m in messages %}<div class="sk-flash">{{ m }}</div>{% endfor %}
+      </div>
+      {% endif %}
+    {% endwith %}

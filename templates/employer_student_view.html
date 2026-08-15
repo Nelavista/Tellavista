@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>{{ student.name or student.username }} · Nelavista Employers</title>
+  <meta name="theme-color" content="#111827">
+  <link rel="icon" type="image/png" sizes="32x32" href="/static/icons/nelavista-32x32.png">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/skills.css') }}">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
+</head>
+<body>
+{% include 'components/employer_nav.html' %}
+
+  <div class="sk-view">
+    <a href="/employer/discover" class="sk-view-link">← Discover Talent</a>
+    <h1 class="sk-h1" style="margin-top:10px;">{{ student.name or student.username }}</h1>
+    <p class="sk-sub">{{ student.university or 'University not set' }}{% if student.department %} · {{ student.department }}{% endif %}</p>
+
+    {% if privacy.show_academic_cgpa and student.academic_cgpa %}
+    <div class="sk-panel" style="margin-top:16px;">
+      <strong>Academic CGPA: {{ student.academic_cgpa }}</strong>
+      <div class="sk-card-desc" style="margin-top:4px; margin-bottom:0;">Self-reported by the student — Nelavista has not verified this against any university record.</div>
+    </div>
+    {% endif %}
+
+    {% if rows %}
+    <div class="sk-section-title">Skill Transcript</div>
+    {% for row in rows %}
+    <div class="sk-panel tr-class-card" style="margin-bottom:14px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;">
+        <div>
+          <div style="font-weight:700; font-size:0.95rem;">{{ row.course.title }}</div>
+          <div class="sk-card-desc" style="margin:2px 0 0;">{{ row.skill.name }} · {{ row.pct }}% complete{% if row.rank %} · Rank #{{ row.rank }} of {{ row.cohort_total }}{% endif %}</div>
+        </div>
+        <div style="text-align:center;">
+          <div style="font-size:1.4rem; font-weight:800;">{{ row.gpa_data.gpa if row.gpa_data.gpa is not none else '—' }}</div>
+          <div style="font-size:0.68rem; color:#9ca3af; text-transform:uppercase;">{{ row.gpa_data.grade_letter or 'Skill GPA' }}</div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+    {% elif privacy.show_skill_transcript %}
+    <div class="sk-empty" style="margin-top:20px;">No classes completed yet.</div>
+    {% endif %}
+
+    {% if projects %}
+    <div class="sk-section-title">Completed Projects</div>
+    <div class="sk-grid">
+      {% for p in projects %}
+      <div class="sk-card" style="cursor:default;">
+        <div class="sk-card-title">{{ p.title }}</div>
+        <div class="sk-card-desc">{{ p.description or '' }}</div>
+        <div style="display:flex; gap:6px; flex-wrap:wrap;">
+          {% for s in p.skills_demonstrated %}<span class="sk-badge">{{ s }}</span>{% endfor %}
+        </div>
+        {% if p.repo_url %}<a href="{{ p.repo_url }}" target="_blank" rel="noopener" class="sk-step-link" style="display:block; margin-top:8px;">Repository →</a>{% endif %}
+        {% if p.live_url %}<a href="{{ p.live_url }}" target="_blank" rel="noopener" class="sk-step-link" style="display:block;">Live →</a>{% endif %}
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if not rows and not projects and not (privacy.show_academic_cgpa and student.academic_cgpa) %}
+    <div class="sk-empty" style="margin-top:20px;">This student hasn't shared any evidence yet.</div>
+    {% endif %}
+  </div>
+</body>
+</html>

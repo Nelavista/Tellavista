@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin · Skills · Nelavista</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Inter',system-ui,sans-serif; }
+        body { background:#0d1117; color:#e6edf3; }
+        .container { max-width:1200px; margin:0 auto; padding:28px 20px 80px; }
+        h1 { font-size:1.6rem; margin-bottom:6px; }
+        .subtitle { color:#8b949e; font-size:0.9rem; margin-bottom:28px; }
+        .stats-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(160px, 1fr)); gap:14px; margin-bottom:32px; }
+        .stat-card { background:#161b22; border:1px solid #21262d; border-radius:14px; padding:16px; }
+        .stat-card .stat-value { font-size:1.5rem; font-weight:800; }
+        .stat-card .stat-label { font-size:0.72rem; color:#8b949e; font-weight:600; }
+
+        .section-row { display:flex; justify-content:space-between; align-items:center; margin:32px 0 14px; gap:12px; flex-wrap:wrap; }
+        .section-title { font-size:1.05rem; font-weight:700; }
+        .btn { background:#238636; border:none; color:#fff; padding:9px 16px; border-radius:8px; font-size:0.85rem; font-weight:600; cursor:pointer; }
+        .btn:hover { background:#2ea043; }
+        .btn.secondary { background:#21262d; border:1px solid #30363d; color:#e6edf3; }
+        .btn.secondary:hover { border-color:#58a6ff; }
+        .btn.small { padding:6px 12px; font-size:0.78rem; }
+        .btn.danger { background:#da3633; }
+        .btn.danger:hover { background:#f85149; }
+
+        .cat-card { background:#161b22; border:1px solid #21262d; border-radius:14px; padding:18px; margin-bottom:14px; }
+        .cat-header { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:14px; flex-wrap:wrap; }
+        .cat-header .cat-name { font-weight:700; font-size:1rem; display:flex; align-items:center; gap:8px; }
+        .cat-actions { display:flex; gap:6px; }
+        .skill-list { display:grid; grid-template-columns:repeat(auto-fill, minmax(230px,1fr)); gap:10px; }
+        .skill-item { background:#0d1117; border:1px solid #21262d; border-radius:10px; padding:12px 14px; text-decoration:none; color:#e6edf3; display:block; transition:0.15s; }
+        .skill-item:hover { border-color:#58a6ff; }
+        .skill-item .sk-name { font-weight:600; font-size:0.9rem; display:flex; align-items:center; justify-content:space-between; gap:8px; }
+        .skill-item .sk-meta { font-size:0.72rem; color:#8b949e; margin-top:4px; }
+        .pub-badge { font-size:0.62rem; font-weight:700; padding:2px 8px; border-radius:10px; }
+        .pub-badge.yes { background:rgba(63,185,80,0.15); color:#3fb950; }
+        .pub-badge.no { background:rgba(139,148,158,0.15); color:#8b949e; }
+        .empty-hint { color:#6e7681; font-size:0.85rem; padding:20px; text-align:center; }
+
+        .demand-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(260px,1fr)); gap:14px; margin-bottom:14px; }
+        .demand-row { display:flex; justify-content:space-between; align-items:center; padding:8px 4px; font-size:0.85rem; border-bottom:1px solid #21262d; }
+        .demand-row:last-child { border-bottom:none; }
+        .demand-count { background:#0d1117; border:1px solid #30363d; color:#8b949e; font-size:0.72rem; font-weight:700; padding:2px 9px; border-radius:20px; flex-shrink:0; margin-left:10px; }
+
+        /* Modal */
+        .modal-backdrop { position:fixed; inset:0; background:rgba(0,0,0,0.6); display:none; align-items:center; justify-content:center; z-index:2000; padding:16px; }
+        .modal-backdrop.active { display:flex; }
+        .modal { background:#161b22; border:1px solid #30363d; border-radius:16px; padding:24px; width:100%; max-width:440px; max-height:90vh; overflow-y:auto; }
+        .modal h3 { margin-bottom:16px; font-size:1.1rem; }
+        .field { margin-bottom:14px; }
+        .field label { display:block; font-size:0.8rem; color:#8b949e; margin-bottom:6px; font-weight:600; }
+        .field input, .field select, .field textarea { width:100%; background:#0d1117; border:1px solid #30363d; color:#e6edf3; padding:9px 12px; border-radius:8px; font-size:0.88rem; font-family:inherit; outline:none; }
+        .field input:focus, .field select:focus, .field textarea:focus { border-color:#58a6ff; }
+        .field textarea { resize:vertical; min-height:70px; }
+        .modal-actions { display:flex; gap:8px; justify-content:flex-end; margin-top:18px; }
+    </style>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
+</head>
+<body>
+{% include 'components/admin_nav.html' %}
+<div class="container">
+    <h1>🧩 Skills Management</h1>
+    <p class="subtitle">Create categories and skills, then open a skill to build its learning path, courses, challenges, and projects.</p>
+
+    <div class="stats-grid">
+        <div class="stat-card"><div class="stat-value">{{ stats.total_skills }}</div><div class="stat-label">TOTAL SKILLS</div></div>
+        <div class="stat-card"><div class="stat-value">{{ stats.published_skills }}</div><div class="stat-label">PUBLISHED</div></div>
+        <div class="stat-card"><div class="stat-value">{{ stats.students_with_progress }}</div><div class="stat-label">STUDENTS LEARNING</div></div>
+        <div class="stat-card"><div class="stat-value">{{ stats.challenge_submissions }}</div><div class="stat-label">CHALLENGE SUBMISSIONS</div></div>
+        <div class="stat-card"><div class="stat-value">{{ stats.projects_started }}</div><div class="stat-label">PROJECTS STARTED</div></div>
+        <div class="stat-card"><div class="stat-value">{{ stats.projects_completed }}</div><div class="stat-label">PROJECTS COMPLETED</div></div>
+    </div>
+
+    {% if demand and (demand.matched or demand.unmatched) %}
+    <div class="section-row">
+        <div class="section-title">What Students Are Asking For</div>
+    </div>
+    <p class="subtitle" style="margin-bottom:14px;">From the "what do you want to learn" question on first Skills visit.</p>
+    <div class="demand-grid">
+        {% if demand.matched %}
+        <div class="cat-card">
+            <div class="cat-name" style="margin-bottom:10px;">📈 Existing skills, by demand</div>
+            {% for name, slug, n in demand.matched %}
+            <div class="demand-row"><span>{{ name }}</span><span class="demand-count">{{ n }}</span></div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% if demand.unmatched %}
+        <div class="cat-card">
+            <div class="cat-name" style="margin-bottom:10px;">💡 Not in the catalog yet</div>
+            {% for text, n in demand.unmatched %}
+            <div class="demand-row"><span>{{ text }}</span><span class="demand-count">{{ n }}</span></div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    <div class="section-row">
+        <div class="section-title">Categories &amp; Skills</div>
+        <div style="display:flex; gap:8px;">
+            <a href="/admin/skills/tracks" class="btn secondary">🗺️ Career Tracks</a>
+            <button class="btn" onclick="openCategoryModal()">+ New Category</button>
+        </div>
+    </div>
+
+    <div id="categoriesWrap">
+        {% for cat in categories %}
+        <div class="cat-card" id="cat-{{ cat.id }}">
+            <div class="cat-header">
+                <div class="cat-name">{{ cat.icon or '📁' }} {{ cat.name }} <span style="color:#6e7681; font-weight:400; font-size:0.8rem;">({{ cat.skills.count() }})</span></div>
+                <div class="cat-actions">
+                    <!-- Category data travels via a JSON script tag, not an inline onclick attribute —
+                         tojson's own quoting collides with HTML attribute delimiters otherwise (breaks
+                         the moment a name/description contains a quote or apostrophe). -->
+                    <script type="application/json" id="category-data-{{ cat.id }}">{{ cat.to_dict()|tojson }}</script>
+                    <button class="btn secondary small" onclick="openSkillModal({{ cat.id }})">+ Skill</button>
+                    <button class="btn secondary small" onclick="editCategory(JSON.parse(document.getElementById('category-data-{{ cat.id }}').textContent))">Edit</button>
+                    <button class="btn danger small" onclick="deleteCategory({{ cat.id }})">Delete</button>
+                </div>
+            </div>
+            <div class="skill-list">
+                {% for skill in cat.skills %}
+                <a href="/admin/skills/{{ skill.id }}" class="skill-item">
+                    <div class="sk-name">{{ skill.icon or '🧩' }} {{ skill.name }} <span class="pub-badge {{ 'yes' if skill.is_published else 'no' }}">{{ 'LIVE' if skill.is_published else 'DRAFT' }}</span></div>
+                    <div class="sk-meta">{{ skill.level|title }} · {{ skill.courses.count() }} courses · {{ skill.challenges.count() }} challenges · {{ skill.project_templates.count() }} projects</div>
+                </a>
+                {% else %}
+                <div class="empty-hint">No skills in this category yet.</div>
+                {% endfor %}
+            </div>
+        </div>
+        {% else %}
+        <div class="empty-hint">No categories yet — create one to get started.</div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Category Modal -->
+<div class="modal-backdrop" id="categoryModal">
+  <div class="modal">
+    <h3 id="categoryModalTitle">New Category</h3>
+    <input type="hidden" id="categoryId">
+    <div class="field"><label>Name</label><input id="categoryName" placeholder="e.g. Tech"></div>
+    <div class="field"><label>Icon (single emoji)</label><input id="categoryIcon" placeholder="💻"></div>
+    <div class="field"><label>Description</label><textarea id="categoryDescription" placeholder="Optional short description"></textarea></div>
+    <div class="modal-actions">
+      <button class="btn secondary" onclick="closeModal('categoryModal')">Cancel</button>
+      <button class="btn" onclick="saveCategory()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Skill Modal -->
+<div class="modal-backdrop" id="skillModal">
+  <div class="modal">
+    <h3>New Skill</h3>
+    <input type="hidden" id="skillCategoryId">
+    <div class="field"><label>Name</label><input id="skillName" placeholder="e.g. Python"></div>
+    <div class="field"><label>Tagline</label><input id="skillTagline" placeholder="e.g. Build the foundation you need to start developing real software."></div>
+    <div class="field"><label>Description</label><textarea id="skillDescription" placeholder="What is this skill about?"></textarea></div>
+    <div class="field"><label>Level</label>
+      <select id="skillLevel"><option value="beginner">Beginner</option><option value="intermediate">Intermediate</option><option value="advanced">Advanced</option></select>
+    </div>
+    <div class="field"><label>Icon (single emoji)</label><input id="skillIcon" placeholder="🐍"></div>
+    <div class="field"><label>Estimated hours</label><input id="skillHours" type="number" min="0" value="0"></div>
+    <div class="modal-actions">
+      <button class="btn secondary" onclick="closeModal('skillModal')">Cancel</button>
+      <button class="btn" onclick="saveSkill()">Create Skill</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function openModal(id) { document.getElementById(id).classList.add('active'); }
+function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+
+function openCategoryModal() {
+  document.getElementById('categoryModalTitle').textContent = 'New Category';
+  document.getElementById('categoryId').value = '';
+  document.getElementById('categoryName').value = '';
+  document.getElementById('categoryIcon').value = '';
+  document.getElementById('categoryDescription').value = '';
+  openModal('categoryModal');
+}
+function editCategory(cat) {
+  document.getElementById('categoryModalTitle').textContent = 'Edit Category';
+  document.getElementById('categoryId').value = cat.id;
+  document.getElementById('categoryName').value = cat.name;
+  document.getElementById('categoryIcon').value = cat.icon || '';
+  document.getElementById('categoryDescription').value = cat.description || '';
+  openModal('categoryModal');
+}
+async function saveCategory() {
+  const id = document.getElementById('categoryId').value;
+  const payload = {
+    name: document.getElementById('categoryName').value.trim(),
+    icon: document.getElementById('categoryIcon').value.trim(),
+    description: document.getElementById('categoryDescription').value.trim(),
+  };
+  if (!payload.name) return alert('Name is required');
+  const url = id ? `/admin/api/categories/${id}` : '/admin/api/categories';
+  const res = await fetch(url, { method: id ? 'PUT' : 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+  const data = await res.json();
+  if (data.success) location.reload(); else alert(data.error || 'Failed to save');
+}
+async function deleteCategory(id) {
+  if (!confirm('Delete this category? It must be empty.')) return;
+  const res = await fetch(`/admin/api/categories/${id}`, { method: 'DELETE' });
+  const data = await res.json();
+  if (data.success) location.reload(); else alert(data.error || 'Failed to delete');
+}
+
+function openSkillModal(categoryId) {
+  document.getElementById('skillCategoryId').value = categoryId;
+  document.getElementById('skillName').value = '';
+  document.getElementById('skillTagline').value = '';
+  document.getElementById('skillDescription').value = '';
+  document.getElementById('skillLevel').value = 'beginner';
+  document.getElementById('skillIcon').value = '';
+  document.getElementById('skillHours').value = 0;
+  openModal('skillModal');
+}
+async function saveSkill() {
+  const payload = {
+    category_id: parseInt(document.getElementById('skillCategoryId').value, 10),
+    name: document.getElementById('skillName').value.trim(),
+    tagline: document.getElementById('skillTagline').value.trim(),
+    description: document.getElementById('skillDescription').value.trim(),
+    level: document.getElementById('skillLevel').value,
+    icon: document.getElementById('skillIcon').value.trim(),
+    estimated_hours: parseInt(document.getElementById('skillHours').value || 0, 10),
+  };
+  if (!payload.name) return alert('Name is required');
+  const res = await fetch('/admin/api/skills', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+  const data = await res.json();
+  if (data.success) { window.location.href = `/admin/skills/${data.skill.id}`; } else alert(data.error || 'Failed to create');
+}
+</script>
+</body>
+</html>

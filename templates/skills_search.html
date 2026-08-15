@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>{{ 'Search: ' ~ q if q else 'Search' }} · Nelavista Skills</title>
+  <meta name="theme-color" content="#111827">
+  <link rel="icon" type="image/png" sizes="32x32" href="/static/icons/nelavista-32x32.png">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/skills.css') }}">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
+  <style>
+    .sr-group { margin-bottom: 28px; }
+    .sr-group-label { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; color: #6b7280; margin-bottom: 10px; }
+    .sr-row { display: flex; align-items: center; gap: 12px; padding: 12px 16px; background: #1a2235; border-radius: 12px; margin-bottom: 8px; text-decoration: none; color: inherit; }
+    .sr-row:hover { background: #212c42; }
+    .sr-row-icon { font-size: 1.1rem; flex-shrink: 0; }
+    .sr-row-title { font-weight: 600; font-size: 0.9rem; }
+    .sr-row-sub { font-size: 0.76rem; color: #6b7280; margin-top: 2px; }
+  </style>
+</head>
+<body>
+{% include 'components/skills_sidebar.html' %}
+
+  <div class="sk-view">
+    <span class="sk-eyebrow">Search</span>
+    <h1 class="sk-h1">Find anything in Skills.</h1>
+    <form method="GET" action="/skills/search" class="sk-search-wrap" style="margin-top:20px;">
+      <span class="sk-search-icon">🔍</span>
+      <input type="text" name="q" value="{{ q }}" placeholder="Search skills, courses, lessons, challenges, projects..." autofocus>
+    </form>
+
+    {% if not q %}
+    <p class="sk-sub">Try "Python", "web development", "functions", or anything else you're curious about.</p>
+    {% elif total == 0 %}
+    <div class="sk-empty">
+      <div class="sk-empty-icon">🔍</div>
+      <div style="font-weight:600; margin-bottom:6px;">No results for "{{ q }}"</div>
+      <div style="font-size:0.85rem;">Try a different word, or <a href="/skills/catalog" style="color:#3b82f6;">browse the catalog</a> instead.</div>
+    </div>
+    {% else %}
+    <p class="sk-sub" style="margin-bottom:20px;">{{ total }} result{{ 's' if total != 1 else '' }} for "{{ q }}"</p>
+
+    {% if results.skills %}
+    <div class="sr-group">
+      <div class="sr-group-label">Skills</div>
+      {% for s in results.skills %}
+      <a href="/skills/{{ s.slug }}" class="sr-row">
+        <span class="sr-row-icon">{{ s.icon or '🧩' }}</span>
+        <div><div class="sr-row-title">{{ s.name }}</div>{% if s.tagline %}<div class="sr-row-sub">{{ s.tagline }}</div>{% endif %}</div>
+      </a>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if results.courses %}
+    <div class="sr-group">
+      <div class="sr-group-label">Courses</div>
+      {% for c in results.courses %}
+      <a href="/skills/{{ c.skill.slug }}/learn/{{ c.slug }}" class="sr-row">
+        <span class="sr-row-icon">📚</span>
+        <div><div class="sr-row-title">{{ c.title }}</div><div class="sr-row-sub">{{ c.skill.name }}</div></div>
+      </a>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if results.lessons %}
+    <div class="sr-group">
+      <div class="sr-group-label">Lessons</div>
+      {% for l in results.lessons %}
+      <a href="/skills/{{ l.module.course.skill.slug }}/learn/{{ l.module.course.slug }}/{{ l.slug }}" class="sr-row">
+        <span class="sr-row-icon">📄</span>
+        <div><div class="sr-row-title">{{ l.title }}</div><div class="sr-row-sub">{{ l.module.course.skill.name }} · {{ l.module.course.title }}</div></div>
+      </a>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if results.challenges %}
+    <div class="sr-group">
+      <div class="sr-group-label">Practice Challenges</div>
+      {% for c in results.challenges %}
+      <a href="/skills/{{ c.skill.slug }}/challenge/{{ c.slug }}" class="sr-row">
+        <span class="sr-row-icon">🎯</span>
+        <div><div class="sr-row-title">{{ c.title }}</div><div class="sr-row-sub">{{ c.skill.name }}</div></div>
+      </a>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if results.projects %}
+    <div class="sr-group">
+      <div class="sr-group-label">Projects</div>
+      {% for p in results.projects %}
+      <a href="/skills/{{ p.skill.slug }}" class="sr-row">
+        <span class="sr-row-icon">🛠️</span>
+        <div><div class="sr-row-title">{{ p.title }}</div><div class="sr-row-sub">{{ p.skill.name }}</div></div>
+      </a>
+      {% endfor %}
+    </div>
+    {% endif %}
+    {% endif %}
+  </div>
+
+{% include 'components/skills_footer.html' %}
+</body>
+</html>

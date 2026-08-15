@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>{{ course.title }} · Nelavista Skills</title>
+  <meta name="theme-color" content="#111827">
+  <link rel="icon" type="image/png" sizes="32x32" href="/static/icons/nelavista-32x32.png">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/skills.css') }}">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
+  <style>
+    .cv-breadcrumb { font-size: 0.82rem; color: #6b7280; margin-bottom: 10px; }
+    .cv-breadcrumb a { color: #6b7280; text-decoration: none; }
+    .cv-breadcrumb a:hover { color: #3b82f6; }
+    .cv-module { margin-bottom: 22px; }
+    .cv-module-title { font-weight: 700; font-size: 0.95rem; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+    .cv-lesson-row { display: flex; align-items: center; gap: 12px; padding: 12px 16px; background: #1a2235; border-radius: 14px; margin-bottom: 8px; text-decoration: none; color: inherit; transition: 0.15s; }
+    .cv-lesson-row:hover { background: #212c42; }
+    .cv-lesson-check { width: 24px; height: 24px; border-radius: 50%; border: 2px solid #2d3a52; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; flex-shrink: 0; }
+    .cv-lesson-check.done { background: #10b981; border-color: #10b981; color: #fff; }
+    .cv-lesson-title { flex: 1; font-size: 0.9rem; font-weight: 500; }
+    .cv-lesson-meta { font-size: 0.75rem; color: #6b7280; white-space: nowrap; }
+  </style>
+</head>
+<body>
+{% include 'components/skills_sidebar.html' %}
+
+  <div class="sk-view">
+    <div class="cv-breadcrumb"><a href="/skills/{{ skill.slug }}">{{ skill.name }}</a> / {{ course.title }}</div>
+    <h1 class="sk-h1">{{ course.title }}</h1>
+    <p class="sk-sub">{{ course.description or '' }}</p>
+
+    <div class="sk-panel" style="margin-top:20px; display:flex; align-items:center; gap:16px; flex-wrap:wrap;">
+      <div style="flex:1; min-width:200px;">
+        <div class="sk-progress-row" style="margin-top:0;"><div class="sk-progress-track"><div class="sk-progress-fill" style="width:{{ progress.pct }}%;"></div></div><span class="sk-progress-pct">{{ progress.pct }}%</span></div>
+        <div class="sk-card-desc" style="margin:6px 0 0;">{{ progress.completed }} of {{ progress.total }} lessons completed</div>
+      </div>
+      {% if next_lesson %}
+      <a href="/skills/{{ skill.slug }}/learn/{{ course.slug }}/{{ next_lesson.slug }}" class="sk-btn">{{ 'Start' if progress.completed == 0 else 'Continue' }} →</a>
+      {% else %}
+      <span class="sk-badge completed">✓ Course Complete</span>
+      {% endif %}
+    </div>
+
+    {% if not modules %}
+    <div class="sk-empty" style="margin-top:24px;"><div class="sk-empty-icon">📚</div><div style="font-weight:600;">This course doesn't have lessons yet</div></div>
+    {% endif %}
+
+    {% for module in modules %}
+    {% set pub_lessons = module.lessons.filter_by(is_published=True).all() %}
+    {% if pub_lessons %}
+    <div class="cv-module" style="margin-top:24px;">
+      <div class="cv-module-title">{{ module.title }}</div>
+      {% for lesson in pub_lessons|sort(attribute='order') %}
+      <a href="/skills/{{ skill.slug }}/learn/{{ course.slug }}/{{ lesson.slug }}" class="cv-lesson-row">
+        <div class="cv-lesson-check {{ 'done' if lesson.id in completed_ids else '' }}">{{ '✓' if lesson.id in completed_ids else '' }}</div>
+        <div class="cv-lesson-title">{{ lesson.title }}</div>
+        <div class="cv-lesson-meta">{{ lesson.duration_minutes }} min{% if lesson.quiz %} · quiz{% endif %}</div>
+      </a>
+      {% endfor %}
+    </div>
+    {% endif %}
+    {% endfor %}
+  </div>
+
+{% include 'components/skills_footer.html' %}
+{% include 'components/skills_ask_widget.html' %}
+</body>
+</html>

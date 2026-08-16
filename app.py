@@ -26,10 +26,15 @@ from routes.reels_routes import reels_bp
 from routes.cbt_routes import cbt_bp
 from routes.admin_routes import admin_bp
 from routes.community_routes import community_bp
-from routes.tech_routes import tech_bp
-from routes.skills_routes import skills_bp
-from routes.admin_skills_routes import admin_skills_bp
-from routes.employer_routes import employer_bp
+# Skills (courses, 30-Day Classes, Skill GPA, employer discovery) is temporarily disabled
+# per user request — Nelavista is Academia-only for now. Nothing is deleted: routes,
+# templates, services, and DB tables are untouched. To re-enable, uncomment these three
+# imports, the matching register_blueprint calls below, and see routes/dashboard_routes.py
+# (VALID_PATHS / choose_path) and routes/auth_routes.py (login/signup redirects).
+# from routes.tech_routes import tech_bp
+# from routes.skills_routes import skills_bp
+# from routes.admin_skills_routes import admin_skills_bp
+# from routes.employer_routes import employer_bp
 
 # Import socketio events to register handlers
 import events
@@ -184,10 +189,10 @@ def create_app():
     app.register_blueprint(cbt_bp, url_prefix='/')
     app.register_blueprint(admin_bp, url_prefix='/')
     app.register_blueprint(community_bp, url_prefix='/')
-    app.register_blueprint(tech_bp, url_prefix='/')
-    app.register_blueprint(skills_bp, url_prefix='/')
-    app.register_blueprint(admin_skills_bp, url_prefix='/')
-    app.register_blueprint(employer_bp, url_prefix='/')
+    # app.register_blueprint(tech_bp, url_prefix='/')
+    # app.register_blueprint(skills_bp, url_prefix='/')
+    # app.register_blueprint(admin_skills_bp, url_prefix='/')
+    # app.register_blueprint(employer_bp, url_prefix='/')
 
     return app
 

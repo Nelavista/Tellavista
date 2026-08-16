@@ -76,9 +76,7 @@ def signup():
             'preferred_path': user.preferred_path
         }
         flash('Account created successfully!')
-        # Brand-new account: always send through path selection, never straight into
-        # Academia. Returning users skip this — see login() below.
-        return redirect(url_for('dashboard.choose_path'))
+        return redirect(url_for('dashboard.dashboard'))
     return render_template('signup.html')
 
 
@@ -104,14 +102,9 @@ def login():
                 'preferred_path': user.preferred_path
             }
             flash('Logged in successfully!')
-            # Employers have their own separate experience entirely — no Academia/Skills
-            # picker for them, since that fork doesn't apply to an employer account.
-            if user.is_employer:
-                return redirect(url_for('employer.dashboard'))
-            # Every login lands on the Academia/Skills picker first — Academia and Skills
-            # are two genuinely separate destinations, not a single merged dashboard, and
-            # the picker is the deliberate fork between them each time you come in.
-            return redirect(url_for('dashboard.choose_path'))
+            # Skills (and the Employer blueprint) are currently disabled — see app.py —
+            # so every login goes straight to Academia.
+            return redirect(url_for('dashboard.dashboard'))
         else:
             flash('Invalid credentials.')
             return redirect(url_for('auth.login'))

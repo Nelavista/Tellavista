@@ -7,6 +7,7 @@ from models import (
     Lesson, Quiz, Challenge, ChallengeSubmission, ProjectTemplate, StudentProject, StudentSkill,
     StudentOnboarding, CareerTrack, CareerTrackStep, Assignment, AssignmentSubmission,
     GradeScale, GradeWeight, Cohort, CohortEnrollment, EmployerProfile, User,
+    Opportunity, OpportunityApplication,
 )
 from extensions import db
 from sqlalchemy.exc import IntegrityError
@@ -1151,3 +1152,112 @@ def create_final_project(course_id):
     db.session.add(template)
     db.session.commit()
     return jsonify({'success': True, 'project_template': template.to_dict()})
+
+
+# ==================== OPPORTUNITIES (the "Earn" phase) ====================
+
+@admin_skills_bp.route('/admin/skills/opportunities')
+@login_required
+@admin_required
+def admin_opportunities():
+    all_opportunities = Opportunity.query.order_by(Opportunity.order).all()
+    all_skills = Skill.query.order_by(Skill.name).all()
+    return render_template('admin_opportunities.html', opportunities=all_opportunities, all_skills=all_skills, active_page='skills')
+
+
+@admin_skills_bp.route('/admin/api/opportunities', methods=['POST'])
+@login_required
+@admin_required
+def create_opportunity():
+    data = request.get_json() or {}
+    title = (data.get('title') or '').strip()
+    skill_id = data.get('skill_id')
+    if not title or not skill_id:
+        return _bad_request('Title and skill are required')
+    due_date = None
+    if data.get('due_date'):
+        try:
+            due_date = datetime.strptime(data['due_date'], '%Y-%m-%d').date()
+        except ValueError:
+            return _bad_request('Invalid due_date — expected YYYY-MM-DD')
+    max_order = db.session.query(db.func.max(Opportunity.order)).scalar() or 0
+    opportunity = Opportunity(
+        skill_id=skill_id, title=title, description=(data.get('description') or '').strip() or None,
+        location=data.get('location') or 'Remote', payment_amount=int(data.get('payment_amount') or 0),
+        currency=data.get('currency') or 'NGN', due_date=due_date, order=max_order + 1,
+    )
+    db.session.add(opportunity)
+    db.session.commit()
+    return jsonify({'success': True, 'opportunity': opportunity.to_dict()})
+
+
+@admin_skills_bp.route('/admin/api/opportunities/<int:opportunity_id>', methods=['PUT'])
+@login_required
+@admin_required
+def update_opportunity(opportunity_id):
+    opportunity = Opportunity.query.get_or_404(opportunity_id)
+    data = request.get_json() or {}
+    if 'title' in data:
+        opportunity.title = data['title'].strip()
+    if 'description' in data:
+        opportunity.description = (data['description'] or '').strip() or None
+    if 'skill_id' in data:
+        opportunity.skill_id = data['skill_id']
+    if 'location' in data:
+        opportunity.location = data['location'] or 'Remote'
+    if 'payment_amount' in data:
+        opportunity.payment_amount = int(data['payment_amount'] or 0)
+    if 'due_date' in data:
+        if data['due_date']:
+            try:
+                opportunity.due_date = datetime.strptime(data['due_date'], '%Y-%m-%d').date()
+            except ValueError:
+                return _bad_request('Invalid due_date — expected YYYY-MM-DD')
+        else:
+            opportunity.due_date = None
+    if 'is_published' in data:
+        opportunity.is_published = bool(data['is_published'])
+    db.session.commit()
+    return jsonify({'success': True, 'opportunity': opportunity.to_dict()})
+
+
+@admin_skills_bp.route('/admin/api/opportunities/<int:opportunity_id>', methods=['DELETE'])
+@login_required
+@admin_required
+def delete_opportunity(opportunity_id):
+    opportunity = Opportunity.query.get_or_404(opportunity_id)
+    db.session.delete(opportunity)
+    db.session.commit()
+    return jsonify({'success': True})
+
+
+@admin_skills_bp.route('/admin/api/opportunities/<int:opportunity_id>/applications')
+@login_required
+@admin_required
+def list_opportunity_applications(opportunity_id):
+    opportunity = Opportunity.query.get_or_404(opportunity_id)
+    apps = opportunity.applications.order_by(OpportunityApplication.applied_at.desc()).all()
+    return jsonify({'success': True, 'applications': [
+        {**a.to_dict(), 'student_name': a.student.name or a.student.username} for a in apps
+    ]})
+
+
+@admin_skills_bp.route('/admin/api/opportunity-applications/<int:application_id>', methods=['PUT'])
+@login_required
+@admin_required
+def update_opportunity_application(application_id):
+    """Moves an application through applied -> accepted -> completed -> paid. Paying sets
+    payout_amount and paid_at — this is the only place Earnings numbers ever come from."""
+    application = OpportunityApplication.query.get_or_404(application_id)
+    data = request.get_json() or {}
+    status = data.get('status')
+    if status not in ('applied', 'accepted', 'completed', 'paid', 'rejected'):
+        return _bad_request('Invalid status')
+    application.status = status
+    if status == 'completed' and not application.completed_at:
+        application.completed_at = datetime.utcnow()
+    if status == 'paid':
+        application.paid_at = datetime.utcnow()
+        application.payout_amount = int(data.get('payout_amount') or application.opportunity.payment_amount or 0)
+    db.session.commit()
+    return jsonify({'success': True, 'application': application.to_dict()})

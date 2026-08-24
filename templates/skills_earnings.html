@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Earnings · Nelavista Skills</title>
+  <meta name="theme-color" content="#050810">
+  <link rel="icon" type="image/png" sizes="32x32" href="/static/icons/nelavista-32x32.png">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/skills.css') }}">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
+  <style>
+    .er-row { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 16px 0; border-bottom: 1px solid var(--sk-border); flex-wrap: wrap; }
+    .er-row:last-child { border-bottom: none; }
+  </style>
+</head>
+<body>
+{% include 'components/skills_sidebar.html' %}
+
+  <div class="sk-view">
+    <span class="sk-eyebrow">Earn</span>
+    <h1 class="sk-h1">Earnings</h1>
+
+    <div class="sk-panel" style="margin:20px 0;">
+      <div class="sk-card-desc" style="text-transform:uppercase; font-size:0.72rem; letter-spacing:0.06em; font-weight:700;">Total paid out</div>
+      <div class="dv2-earnings-hero">₦{{ '{:,}'.format(summary.total_paid) }}</div>
+      <div class="dv2-earnings-stats">
+        <div><div class="dv2-earnings-stat-label">Completed</div><div class="dv2-earnings-stat-value">{{ summary.completed_count }}</div></div>
+        <div><div class="dv2-earnings-stat-label">Pending</div><div class="dv2-earnings-stat-value">₦{{ '{:,}'.format(summary.pending) }}</div></div>
+        <div><div class="dv2-earnings-stat-label">Active</div><div class="dv2-earnings-stat-value">{{ summary.active_count }}</div></div>
+      </div>
+    </div>
+
+    <div class="sk-section-title">History</div>
+    {% if not applications %}
+    <div class="sk-empty"><div class="sk-empty-icon">💰</div>No applications yet. <a href="/skills/opportunities" style="color:var(--sk-accent);">Browse opportunities →</a></div>
+    {% else %}
+    <div class="sk-panel">
+      {% for a in applications %}
+      <div class="er-row">
+        <div>
+          <div class="sk-card-title" style="margin-bottom:2px;">{{ a.opportunity.title }}</div>
+          <div class="sk-card-desc" style="margin-bottom:0;">Applied {{ a.applied_at.strftime('%b %d, %Y') }}</div>
+        </div>
+        <div style="text-align:right;">
+          <span class="sk-badge {{ a.status }}">{{ a.status|title }}</span>
+          {% if a.status == 'paid' %}<div style="font-weight:700; margin-top:4px;">₦{{ '{:,}'.format(a.payout_amount or 0) }}</div>{% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+
+{% include 'components/skills_footer.html' %}
+{% include 'components/skills_ask_widget.html' %}
+</body>
+</html>

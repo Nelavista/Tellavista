@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin · Opportunities · Nelavista</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Inter',system-ui,sans-serif; }
+        body { background:#0d1117; color:#e6edf3; }
+        .container { max-width:1000px; margin:0 auto; padding:28px 20px 80px; }
+        h1 { font-size:1.5rem; margin:14px 0 6px; }
+        .subtitle { color:#8b949e; font-size:0.9rem; margin-bottom:24px; }
+        .btn { background:#238636; border:none; color:#fff; padding:9px 16px; border-radius:8px; font-size:0.85rem; font-weight:600; cursor:pointer; }
+        .btn:hover { background:#2ea043; }
+        .btn.secondary { background:#21262d; border:1px solid #30363d; color:#e6edf3; }
+        .btn.secondary:hover { border-color:#58a6ff; }
+        .btn.danger { background:#da3633; } .btn.danger:hover { background:#f85149; }
+        .btn.small { padding:6px 12px; font-size:0.78rem; }
+        .section-row { display:flex; justify-content:space-between; align-items:center; margin:24px 0 14px; }
+
+        .opp-card { background:#161b22; border:1px solid #21262d; border-radius:14px; padding:18px; margin-bottom:14px; }
+        .opp-head { display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; margin-bottom:8px; }
+        .opp-title { font-weight:700; font-size:1rem; }
+        .opp-meta { color:#8b949e; font-size:0.82rem; margin-top:3px; }
+        .pub-badge { font-size:0.62rem; font-weight:700; padding:2px 8px; border-radius:10px; margin-left:6px; }
+        .pub-badge.yes { background:rgba(63,185,80,0.15); color:#3fb950; }
+        .pub-badge.no { background:rgba(139,148,158,0.15); color:#8b949e; }
+        .opp-actions { display:flex; gap:6px; flex-wrap:wrap; }
+        .applications-list { margin-top:12px; padding-top:12px; border-top:1px solid #21262d; display:none; }
+        .applications-list.open { display:block; }
+        .app-row { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:8px 0; font-size:0.85rem; }
+        .status-select { background:#0d1117; border:1px solid #30363d; color:#e6edf3; padding:5px 8px; border-radius:6px; font-size:0.8rem; }
+
+        .modal-backdrop { position:fixed; inset:0; background:rgba(0,0,0,0.6); display:none; align-items:center; justify-content:center; z-index:2000; padding:16px; }
+        .modal-backdrop.active { display:flex; }
+        .modal { background:#161b22; border:1px solid #30363d; border-radius:16px; padding:24px; width:100%; max-width:480px; max-height:90vh; overflow-y:auto; }
+        .modal h3 { margin-bottom:16px; font-size:1.1rem; }
+        .field { margin-bottom:14px; }
+        .field label { display:block; font-size:0.8rem; color:#8b949e; margin-bottom:6px; font-weight:600; }
+        .field input, .field select, .field textarea { width:100%; background:#0d1117; border:1px solid #30363d; color:#e6edf3; padding:9px 12px; border-radius:8px; font-size:0.88rem; font-family:inherit; outline:none; }
+        .field textarea { resize:vertical; min-height:70px; }
+        .modal-actions { display:flex; gap:8px; justify-content:flex-end; margin-top:18px; }
+        .empty-hint { color:#6e7681; font-size:0.85rem; padding:18px; text-align:center; }
+    </style>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
+</head>
+<body>
+{% include 'components/admin_nav.html' %}
+<div class="container">
+    <a href="/admin/skills" class="back-link" style="color:#8b949e; text-decoration:none; font-size:0.85rem;">← Skills</a>
+    <h1>💼 Opportunities</h1>
+    <p class="subtitle">Real, paid gigs matched to skills — the "Earn" phase. Move applications through applied → accepted → completed → paid; Earnings on the student dashboard is always summed live from these.</p>
+
+    <div class="section-row">
+        <div></div>
+        <button class="btn" onclick="openOppModal()">+ New Opportunity</button>
+    </div>
+
+    {% for o in opportunities %}
+    <div class="opp-card" id="opp-{{ o.id }}">
+        <div class="opp-head">
+            <div>
+                <span class="opp-title">{{ o.title }}</span>
+                <span class="pub-badge {{ 'yes' if o.is_published else 'no' }}">{{ 'LIVE' if o.is_published else 'DRAFT' }}</span>
+                <div class="opp-meta">{{ o.skill.name if o.skill else '?' }} · {{ o.location }} · ₦{{ '{:,}'.format(o.payment_amount) }}{% if o.due_date %} · Due {{ o.due_date.strftime('%b %d, %Y') }}{% endif %}</div>
+            </div>
+            <div class="opp-actions">
+                <script type="application/json" id="opp-data-{{ o.id }}">{{ o.to_dict()|tojson }}</script>
+                <button class="btn secondary small" onclick="openOppModal(JSON.parse(document.getElementById('opp-data-{{ o.id }}').textContent))">Edit</button>
+                <button class="btn secondary small" onclick="togglePublish({{ o.id }}, {{ (not o.is_published)|tojson }})">{{ 'Unpublish' if o.is_published else 'Publish' }}</button>
+                <button class="btn secondary small" onclick="toggleApplications({{ o.id }})">Applications</button>
+                <button class="btn danger small" onclick="deleteOpp({{ o.id }})">Delete</button>
+            </div>
+        </div>
+        <div class="applications-list" id="applications-{{ o.id }}"></div>
+    </div>
+    {% else %}
+    <div class="empty-hint">No opportunities yet — create one to power the "Earn" phase.</div>
+    {% endfor %}
+</div>
+
+<div class="modal-backdrop" id="oppModal"><div class="modal">
+  <h3 id="oppModalTitle">New Opportunity</h3>
+  <input type="hidden" id="oppId">
+  <div class="field"><label>Title</label><input id="oppTitle" placeholder="e.g. Build a landing page for a Lagos startup"></div>
+  <div class="field"><label>Skill</label><select id="oppSkillId">{% for s in all_skills %}<option value="{{ s.id }}">{{ s.name }}</option>{% endfor %}</select></div>
+  <div class="field"><label>Description</label><textarea id="oppDescription"></textarea></div>
+  <div class="field"><label>Location</label><select id="oppLocation"><option value="Remote">Remote</option><option value="On-site">On-site</option></select></div>
+  <div class="field"><label>Payment (₦)</label><input id="oppPayment" type="number" value="0"></div>
+  <div class="field"><label>Due date (optional)</label><input id="oppDueDate" type="date"></div>
+  <div class="modal-actions"><button class="btn secondary" onclick="closeModal()">Cancel</button><button class="btn" onclick="saveOpp()">Save</button></div>
+</div></div>
+
+<script>
+async function jsonFetch(url, method, payload) {
+  const res = await fetch(url, { method, headers: {'Content-Type':'application/json'}, body: payload ? JSON.stringify(payload) : undefined });
+  return res.json();
+}
+function openModal(id) { document.getElementById(id).classList.add('active'); }
+function closeModal() { document.getElementById('oppModal').classList.remove('active'); }
+
+function openOppModal(o) {
+  document.getElementById('oppModalTitle').textContent = o ? 'Edit Opportunity' : 'New Opportunity';
+  document.getElementById('oppId').value = o ? o.id : '';
+  document.getElementById('oppTitle').value = o ? o.title : '';
+  document.getElementById('oppSkillId').value = o ? o.skill_id : '';
+  document.getElementById('oppDescription').value = o ? (o.description || '') : '';
+  document.getElementById('oppLocation').value = o ? o.location : 'Remote';
+  document.getElementById('oppPayment').value = o ? o.payment_amount : 0;
+  document.getElementById('oppDueDate').value = o && o.due_date ? o.due_date.slice(0, 10) : '';
+  openModal('oppModal');
+}
+async function saveOpp() {
+  const id = document.getElementById('oppId').value;
+  const payload = {
+    title: document.getElementById('oppTitle').value.trim(),
+    skill_id: parseInt(document.getElementById('oppSkillId').value, 10),
+    description: document.getElementById('oppDescription').value.trim(),
+    location: document.getElementById('oppLocation').value,
+    payment_amount: parseInt(document.getElementById('oppPayment').value || 0, 10),
+    due_date: document.getElementById('oppDueDate').value || null,
+  };
+  if (!payload.title) return alert('Title is required');
+  const url = id ? `/admin/api/opportunities/${id}` : '/admin/api/opportunities';
+  const data = await jsonFetch(url, id ? 'PUT' : 'POST', payload);
+  if (data.success) location.reload(); else alert(data.error || 'Failed');
+}
+async function togglePublish(id, value) {
+  const data = await jsonFetch(`/admin/api/opportunities/${id}`, 'PUT', { is_published: value });
+  if (data.success) location.reload(); else alert(data.error || 'Failed');
+}
+async function deleteOpp(id) {
+  if (!confirm('Delete this opportunity? This cannot be undone.')) return;
+  const data = await jsonFetch(`/admin/api/opportunities/${id}`, 'DELETE');
+  if (data.success) location.reload(); else alert(data.error || 'Failed');
+}
+
+async function toggleApplications(oppId) {
+  const el = document.getElementById(`applications-${oppId}`);
+  const isOpen = el.classList.toggle('open');
+  if (!isOpen) return;
+  const data = await jsonFetch(`/admin/api/opportunities/${oppId}/applications`, 'GET');
+  if (!data.success) { el.innerHTML = '<div class="empty-hint">Failed to load</div>'; return; }
+  if (!data.applications.length) { el.innerHTML = '<div class="empty-hint">No applications yet</div>'; return; }
+  el.innerHTML = '';
+  data.applications.forEach(a => {
+    const row = document.createElement('div');
+    row.className = 'app-row';
+    const nameSpan = document.createElement('span');
+    nameSpan.textContent = a.student_name;
+    const select = document.createElement('select');
+    select.className = 'status-select';
+    ['applied', 'accepted', 'completed', 'paid', 'rejected'].forEach(s => {
+      const opt = document.createElement('option');
+      opt.value = s; opt.textContent = s.charAt(0).toUpperCase() + s.slice(1);
+      if (s === a.status) opt.selected = true;
+      select.appendChild(opt);
+    });
+    select.addEventListener('change', async () => {
+      const payload = { status: select.value };
+      if (select.value === 'paid') {
+        const amt = prompt('Payout amount (₦)?', a.payout_amount || '');
+        if (amt === null) { select.value = a.status; return; }
+        payload.payout_amount = parseInt(amt || 0, 10);
+      }
+      const res = await jsonFetch(`/admin/api/opportunity-applications/${a.id}`, 'PUT', payload);
+      if (!res.success) alert(res.error || 'Failed to update');
+    });
+    row.appendChild(nameSpan);
+    row.appendChild(select);
+    el.appendChild(row);
+  });
+}
+</script>
+</body>
+</html>

@@ -21,6 +21,10 @@ from services.daily_class_service import (
     advance_enrollment_day, compute_assignment_due_at,
 )
 from services.gpa_service import compute_skill_gpa, recompute_and_cache_gpa, get_cohort_rank
+from services.skills_service import (
+    get_pipeline_state, opportunity_match_pct, profile_completeness, get_continue_learning_card,
+)
+from models import Opportunity, OpportunityApplication
 
 EXPERIENCE_LABELS = {
     'new': "I'm completely new to this",
@@ -122,7 +126,7 @@ def onboarding():
                             existing=existing, experience_labels=EXPERIENCE_LABELS, goal_labels=GOAL_LABELS)
 
 
-# ===== SKILLS HOME =====
+# ===== SKILLS DASHBOARD (Learn -> Practice -> Build -> Verify -> Earn) =====
 @skills_bp.route('/skills')
 @login_required
 def home():
@@ -134,27 +138,63 @@ def home():
     categories = SkillCategory.query.filter_by(is_active=True).order_by(SkillCategory.order).all()
     first_name = user.name.strip().split()[0] if user and user.name else session['user'].get('username', 'Student')
 
-    # Surface the student's own stated interest once, prominently — not duplicated into
-    # the generic "Recommended for You" rail below it.
-    started_ids = {s.skill_id for s in data['in_progress_skills']} | {s.skill_id for s in data['completed_skills']}
-    spotlight_skill = None
-    if onboarding.interested_skill and onboarding.interested_skill.id not in started_ids:
-        spotlight_skill = onboarding.interested_skill
-        data['recommended'] = [s for s in data['recommended'] if s.id != spotlight_skill.id]
+    all_progress = data['in_progress_skills'] + data['completed_skills']
+    overall_pct = round(sum(s.progress_pct for s in all_progress) / len(all_progress)) if all_progress else 0
 
-    # "Your Learning Paths" — tracks with activity first, then a couple of unstarted ones
-    # to explore. Capped at 4 so the home page stays a dashboard, not a full catalog.
-    all_tracks = CareerTrack.query.filter_by(is_published=True).order_by(CareerTrack.order).all()
-    tracks_data = [{
-        'track': t, 'pct': get_track_progress_pct(user.id, t),
-        'started': student_has_track_activity(user.id, t),
-    } for t in all_tracks]
-    tracks_data.sort(key=lambda x: not x['started'])
-    tracks_data = tracks_data[:4]
+    continue_card = None
+    if data['in_progress_skills']:
+        continue_card = get_continue_learning_card(user.id, data['in_progress_skills'][0])
 
-    return render_template('skills_home.html', first_name=first_name, data=data, categories=categories,
-                            active_page='home', ask_context='the Nelavista Skills home page',
-                            onboarding=onboarding, spotlight_skill=spotlight_skill, tracks_data=tracks_data)
+    verify_items = []
+    for student_skill in data['in_progress_skills'] + data['completed_skills']:
+        steps, current_phase = get_pipeline_state(user.id, student_skill.skill_id)
+        verify_items.append({
+            'skill': student_skill.skill,
+            'course_done': steps[0]['state'] == 'done',
+            'project_done': steps[2]['state'] == 'done',
+            'assessment_done': steps[3]['state'] == 'done',
+            'verified': steps[3]['state'] == 'done',
+        })
+    verify_focus = verify_items[0] if verify_items else None
+
+    # Skill catalog with level/duration, matching the dashboard's "What do you want to
+    # build?" section — separate from the fuller /skills/catalog browse page.
+    catalog_skills = Skill.query.filter_by(is_published=True).order_by(Skill.order).limit(6).all()
+
+    # Projects: the student's own StudentProject rows across every skill.
+    my_projects = StudentProject.query.filter_by(student_id=user.id).order_by(StudentProject.updated_at.desc()).limit(3).all()
+
+    # Opportunities matched to skills the student has actually started, best match first.
+    started_skill_ids = [s.skill_id for s in all_progress]
+    opportunities = []
+    if started_skill_ids:
+        opps = Opportunity.query.filter(
+            Opportunity.is_published.is_(True), Opportunity.skill_id.in_(started_skill_ids)
+        ).order_by(Opportunity.order).limit(6).all()
+        for o in opps:
+            opportunities.append({'opportunity': o, 'match_pct': opportunity_match_pct(user.id, o.skill_id)})
+        opportunities.sort(key=lambda x: -x['match_pct'])
+
+    my_applications = OpportunityApplication.query.filter_by(student_id=user.id).all()
+    earnings = {
+        'total_paid': sum(a.payout_amount or 0 for a in my_applications if a.status == 'paid'),
+        'pending': sum((a.opportunity.payment_amount or 0) for a in my_applications if a.status in ('applied', 'accepted')),
+        'completed_count': sum(1 for a in my_applications if a.status == 'paid'),
+        'active_count': sum(1 for a in my_applications if a.status in ('applied', 'accepted', 'completed')),
+    }
+
+    profile = profile_completeness(user)
+
+    hour = datetime.utcnow().hour
+    greeting = 'Good morning' if hour < 12 else ('Good afternoon' if hour < 17 else 'Good evening')
+
+    return render_template(
+        'skills_home.html', first_name=first_name, data=data, categories=categories,
+        active_page='home', ask_context='the Nelavista Skills dashboard', greeting=greeting,
+        onboarding=onboarding, overall_pct=overall_pct, continue_card=continue_card,
+        verify_focus=verify_focus, catalog_skills=catalog_skills, my_projects=my_projects,
+        opportunities=opportunities, earnings=earnings, profile=profile,
+    )
 
 
 # ===== CATALOG =====
@@ -759,6 +799,72 @@ def skill_transcript():
         'skills_transcript.html', rows=rows, overall_gpa=overall_gpa, privacy=privacy,
         active_page='transcript', ask_context='your Nelavista Skill Transcript',
     )
+
+
+# ===== OPPORTUNITIES (the "Earn" phase) =====
+@skills_bp.route('/skills/opportunities')
+@login_required
+def opportunities():
+    user = _current_user()
+    started_skill_ids = [s.skill_id for s in StudentSkill.query.filter_by(student_id=user.id).all()]
+    all_opps = Opportunity.query.filter_by(is_published=True).order_by(Opportunity.order).all()
+    my_applications = {a.opportunity_id: a for a in OpportunityApplication.query.filter_by(student_id=user.id).all()}
+
+    rows = []
+    for o in all_opps:
+        rows.append({
+            'opportunity': o,
+            'match_pct': opportunity_match_pct(user.id, o.skill_id) if o.skill_id in started_skill_ids else 0,
+            'application': my_applications.get(o.id),
+        })
+    rows.sort(key=lambda r: -r['match_pct'])
+    return render_template('skills_opportunities.html', rows=rows, active_page='opportunities')
+
+
+@skills_bp.route('/skills/opportunities/<int:opportunity_id>/apply', methods=['POST'])
+@login_required
+def apply_opportunity(opportunity_id):
+    opportunity = Opportunity.query.filter_by(id=opportunity_id, is_published=True).first_or_404()
+    user = _current_user()
+    existing = OpportunityApplication.query.filter_by(opportunity_id=opportunity.id, student_id=user.id).first()
+    if not existing:
+        db.session.add(OpportunityApplication(opportunity_id=opportunity.id, student_id=user.id))
+        db.session.commit()
+        flash(f'Applied to "{opportunity.title}"!')
+    return redirect(url_for('skills.opportunities'))
+
+
+@skills_bp.route('/skills/earnings')
+@login_required
+def earnings():
+    user = _current_user()
+    applications = (
+        OpportunityApplication.query.filter_by(student_id=user.id)
+        .order_by(OpportunityApplication.applied_at.desc()).all()
+    )
+    summary = {
+        'total_paid': sum(a.payout_amount or 0 for a in applications if a.status == 'paid'),
+        'pending': sum((a.opportunity.payment_amount or 0) for a in applications if a.status in ('applied', 'accepted')),
+        'completed_count': sum(1 for a in applications if a.status == 'paid'),
+        'active_count': sum(1 for a in applications if a.status in ('applied', 'accepted', 'completed')),
+    }
+    return render_template('skills_earnings.html', applications=applications, summary=summary, active_page='earnings')
+
+
+# ===== PROFILE (photo/bio/portfolio for the "Profile strength" checklist) =====
+@skills_bp.route('/skills/profile', methods=['GET', 'POST'])
+@login_required
+def edit_profile():
+    user = _current_user()
+    if request.method == 'POST':
+        user.bio = (request.form.get('bio') or '').strip() or None
+        user.portfolio_url = (request.form.get('portfolio_url') or '').strip() or None
+        user.profile_photo_url = (request.form.get('profile_photo_url') or '').strip() or None
+        db.session.commit()
+        flash('Profile updated.')
+        return redirect(url_for('skills.home'))
+    profile = profile_completeness(user)
+    return render_template('skills_profile_edit.html', user=user, profile=profile, active_page='home')
 
 
 # ===== PRIVACY SETTINGS (what employers can see) =====

@@ -10,7 +10,7 @@ from extensions import db
 from models import (
     Skill, SkillCourse, CourseModule, Lesson, LearningPathStep,
     StudentLessonProgress, StudentSkill, ChallengeSubmission, StudentProject,
-    CareerTrackStep,
+    CareerTrackStep, Challenge, ProjectTemplate, Opportunity, OpportunityApplication,
 )
 
 # Stored as StudentOnboarding.interest_text when a student explicitly skips the
@@ -285,4 +285,157 @@ def get_dashboard_data(student_id):
             'projects_completed': projects_done,
             'streak': compute_streak(student_id),
         },
+    }
+
+
+# ============================================================
+# ===== DASHBOARD V2: Learn -> Practice -> Build -> Verify -> Earn =====
+# ============================================================
+
+PIPELINE_PHASES = ['learn', 'practice', 'build', 'verify', 'earn']
+PIPELINE_LABELS = {'learn': 'Learn', 'practice': 'Practice', 'build': 'Build', 'verify': 'Verify', 'earn': 'Earn'}
+
+
+def has_practiced(student_id, skill_id):
+    return ChallengeSubmission.query.join(Challenge, ChallengeSubmission.challenge_id == Challenge.id) \
+        .filter(Challenge.skill_id == skill_id, ChallengeSubmission.student_id == student_id).first() is not None
+
+
+def has_built(student_id, skill_id):
+    return StudentProject.query.join(ProjectTemplate, StudentProject.project_template_id == ProjectTemplate.id) \
+        .filter(ProjectTemplate.skill_id == skill_id, StudentProject.student_id == student_id).first() is not None
+
+
+def is_skill_verified(student_id, skill_id):
+    """A skill counts as 'verified' once the student has finished its course content
+    AND shipped at least one completed project in it — a course alone only proves you
+    watched something; a finished project proves you can do it."""
+    student_skill = StudentSkill.query.filter_by(student_id=student_id, skill_id=skill_id).first()
+    if not student_skill or student_skill.status != 'completed':
+        return False
+    return StudentProject.query.join(ProjectTemplate, StudentProject.project_template_id == ProjectTemplate.id) \
+        .filter(ProjectTemplate.skill_id == skill_id, StudentProject.student_id == student_id,
+                StudentProject.status == 'completed').first() is not None
+
+
+def has_earned(student_id, skill_id):
+    return OpportunityApplication.query.join(Opportunity, OpportunityApplication.opportunity_id == Opportunity.id) \
+        .filter(Opportunity.skill_id == skill_id, OpportunityApplication.student_id == student_id,
+                OpportunityApplication.status.in_(['accepted', 'completed', 'paid'])).first() is not None
+
+
+def get_pipeline_state(student_id, skill_id):
+    """Returns the Learn->Practice->Build->Verify->Earn state for one skill: an ordered
+    list of {phase, label, state} ('done'|'current'|'locked') plus the current phase key.
+    Same completed/current/locked vocabulary used everywhere else in Skills."""
+    done_map = {
+        'learn': (StudentSkill.query.filter_by(student_id=student_id, skill_id=skill_id, status='completed').first() is not None),
+        'practice': has_practiced(student_id, skill_id),
+        'build': has_built(student_id, skill_id),
+        'verify': is_skill_verified(student_id, skill_id),
+        'earn': has_earned(student_id, skill_id),
+    }
+    steps = []
+    found_current = False
+    current_phase = None
+    for phase in PIPELINE_PHASES:
+        done = done_map[phase]
+        if done:
+            state = 'done'
+        elif not found_current:
+            state = 'current'
+            found_current = True
+            current_phase = phase
+        else:
+            state = 'locked'
+        steps.append({'phase': phase, 'label': PIPELINE_LABELS[phase], 'state': state})
+    if current_phase is None:
+        current_phase = 'earn'  # every phase done
+    return steps, current_phase
+
+
+def opportunity_match_pct(student_id, skill_id):
+    """How well-matched a student is to an opportunity in this skill — always derived
+    from real progress (StudentSkill.progress_pct), never a fabricated number."""
+    row = StudentSkill.query.filter_by(student_id=student_id, skill_id=skill_id).first()
+    return row.progress_pct if row else 0
+
+
+def profile_completeness(user):
+    """The 'Profile strength' checklist on the Skills dashboard — every item here is a
+    real, checkable fact, not a static UI decoration."""
+    items = [
+        {'key': 'photo', 'label': 'Profile photo', 'done': bool(user.profile_photo_url)},
+        {'key': 'bio', 'label': 'Bio', 'done': bool(user.bio and user.bio.strip())},
+        {'key': 'portfolio', 'label': 'Portfolio link', 'done': bool(user.portfolio_url)},
+        {'key': 'verification', 'label': 'Skill verification', 'done': _any_skill_verified(user.id)},
+        {'key': 'academic', 'label': 'Academic information', 'done': all([
+            user.university, user.faculty, user.department, user.level,
+        ])},
+    ]
+    done_count = sum(1 for i in items if i['done'])
+    pct = round((done_count / len(items)) * 100)
+    # Named 'checklist', not 'items' — Jinja resolves `dict.items` to the built-in
+    # dict.items() method via attribute lookup before it ever checks dict keys, so a key
+    # literally named 'items' silently becomes uniterable in a template.
+    return {'pct': pct, 'checklist': items}
+
+
+def _any_skill_verified(student_id):
+    for row in StudentSkill.query.filter_by(student_id=student_id, status='completed').all():
+        if is_skill_verified(student_id, row.skill_id):
+            return True
+    return False
+
+
+def get_continue_learning_card(student_id, student_skill):
+    """Everything the 'Continue Learning' card needs for one in-progress skill: the next
+    lesson to take, real remaining time (summed from actual lesson durations, not a
+    guess), and how many of the skill's project templates the student has started."""
+    skill = student_skill.skill
+    course = skill.courses.filter_by(is_published=True).order_by(SkillCourse.order).first()
+    if not course:
+        return None
+
+    modules = course.modules.order_by(CourseModule.order).all()
+    all_lessons = []
+    for m in modules:
+        all_lessons.extend(m.lessons.filter_by(is_published=True).order_by(Lesson.order).all())
+    completed_ids = {
+        p.lesson_id for p in StudentLessonProgress.query.filter(
+            StudentLessonProgress.student_id == student_id,
+            StudentLessonProgress.lesson_id.in_([l.id for l in all_lessons]),
+        ).all()
+    } if all_lessons else set()
+
+    next_lesson, next_module = None, None
+    remaining_minutes = 0
+    for m in modules:
+        for l in m.lessons.filter_by(is_published=True).order_by(Lesson.order).all():
+            if l.id not in completed_ids:
+                if next_lesson is None:
+                    next_lesson, next_module = l, m
+                remaining_minutes += l.duration_minutes or 0
+
+    total_templates = ProjectTemplate.query.filter_by(skill_id=skill.id, is_published=True).count()
+    started_templates = StudentProject.query.filter(
+        StudentProject.student_id == student_id, StudentProject.project_template_id.in_(
+            [t.id for t in ProjectTemplate.query.filter_by(skill_id=skill.id, is_published=True).all()]
+        )
+    ).count() if total_templates else 0
+
+    steps, current_phase = get_pipeline_state(student_id, skill.id)
+    next_phase = None
+    for i, s in enumerate(steps):
+        if s['phase'] == current_phase and i + 1 < len(steps):
+            next_phase = steps[i + 1]['label']
+            break
+
+    return {
+        'skill': skill, 'course': course, 'pct': student_skill.progress_pct,
+        'next_lesson': next_lesson, 'next_module': next_module,
+        'time_left_hours': round(remaining_minutes / 60, 1) if remaining_minutes else 0,
+        'projects_started': started_templates, 'projects_total': total_templates,
+        'next_phase_label': next_phase or 'Complete',
+        'pipeline_steps': steps, 'current_phase': current_phase,
     }

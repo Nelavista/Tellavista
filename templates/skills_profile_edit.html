@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Complete Your Profile · Nelavista Skills</title>
+  <meta name="theme-color" content="#050810">
+  <link rel="icon" type="image/png" sizes="32x32" href="/static/icons/nelavista-32x32.png">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/skills.css') }}">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
+</head>
+<body>
+{% include 'components/skills_sidebar.html' %}
+
+  <div class="sk-view" style="max-width:640px;">
+    <span class="sk-eyebrow">Your Profile</span>
+    <h1 class="sk-h1">Complete Your Profile</h1>
+    <p class="sk-sub">A stronger profile means better opportunity matches.</p>
+
+    <div class="dv2-profile-ring-row sk-panel" style="margin:20px 0;">
+      <div class="dv2-ring-wrap" style="width:64px; height:64px;">
+        <svg width="64" height="64" viewBox="0 0 64 64">
+          <circle class="dv2-ring-track" cx="32" cy="32" r="26"></circle>
+          {% set pcircumference = 163.36 %}
+          <circle class="dv2-ring-fill" cx="32" cy="32" r="26"
+                  stroke-dasharray="{{ pcircumference }}"
+                  stroke-dashoffset="{{ pcircumference - (pcircumference * profile.pct / 100) }}"></circle>
+        </svg>
+        <div class="dv2-ring-label" style="font-size:0.85rem;">{{ profile.pct }}%</div>
+      </div>
+      <div class="sk-card-desc" style="margin-bottom:0;">Profile strength — {{ profile.pct }}% complete</div>
+    </div>
+
+    <form method="POST" class="sk-panel">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <div class="sk-field">
+        <label class="sk-label">Profile photo URL</label>
+        <input class="sk-input" type="text" name="profile_photo_url" value="{{ user.profile_photo_url or '' }}" placeholder="https://...">
+      </div>
+      <div class="sk-field">
+        <label class="sk-label">Bio</label>
+        <textarea class="sk-textarea" name="bio" rows="4" placeholder="A short intro about you and what you're building.">{{ user.bio or '' }}</textarea>
+      </div>
+      <div class="sk-field">
+        <label class="sk-label">Portfolio link</label>
+        <input class="sk-input" type="text" name="portfolio_url" value="{{ user.portfolio_url or '' }}" placeholder="https://...">
+      </div>
+      <div class="sk-card-desc">
+        Skill verification and academic information are checked automatically — verify a skill by completing its course and a project, and fill in your academic info from
+        <a href="/profile" style="color:var(--sk-accent);">your Academia profile</a>.
+      </div>
+      <button type="submit" class="sk-btn full" style="margin-top:16px;">Save Profile</button>
+    </form>
+  </div>
+
+{% include 'components/skills_footer.html' %}
+</body>
+</html>

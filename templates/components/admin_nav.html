@@ -19,8 +19,8 @@
   <a href="/admin" class="{{ 'active' if active_page == 'dashboard' else '' }}">Dashboard</a>
   <a href="/admin/users" class="{{ 'active' if active_page == 'users' else '' }}">Users</a>
   <a href="/admin/materials" class="{{ 'active' if active_page == 'materials' else '' }}">Materials</a>
-  <!-- Skills and Employers admin pages hidden while Skills is disabled (see app.py) —
-       routes still exist, just not linked from here. -->
+  <a href="/admin/skills" class="{{ 'active' if active_page == 'skills' else '' }}">Skills</a>
+  <a href="/admin/skills/opportunities" class="{{ 'active' if active_page == 'opportunities' else '' }}">Opportunities</a>
   <a href="/admin/videos" class="{{ 'active' if active_page == 'videos' else '' }}">Videos</a>
   <a href="/admin/community" class="{{ 'active' if active_page == 'community' else '' }}">Community</a>
   <a href="/admin/live-rooms" class="{{ 'active' if active_page == 'live_rooms' else '' }}">Live Rooms</a>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Opportunities · Nelavista Skills</title>
+  <meta name="theme-color" content="#050810">
+  <link rel="icon" type="image/png" sizes="32x32" href="/static/icons/nelavista-32x32.png">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/skills.css') }}">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
+</head>
+<body>
+{% include 'components/skills_sidebar.html' %}
+
+  <div class="sk-view">
+    <span class="sk-eyebrow">Earn</span>
+    <h1 class="sk-h1">Opportunities</h1>
+    <p class="sk-sub">Real, paid gigs matched to the skills you're building. Apply to the ones you're ready for.</p>
+
+    {% if not rows %}
+    <div class="sk-empty" style="margin-top:24px;"><div class="sk-empty-icon">💼</div><div style="font-weight:600;">No opportunities yet</div><div style="font-size:0.9rem;">Keep building — new ones show up here as they're posted.</div></div>
+    {% else %}
+    <div class="sk-grid" style="margin-top:20px;">
+      {% for row in rows %}
+      <div class="sk-card dv2-opp-card">
+        <div class="dv2-opp-top">
+          <div class="sk-card-title" style="margin-bottom:0;">{{ row.opportunity.title }}</div>
+          {% if row.match_pct %}<span class="dv2-opp-match">{{ row.match_pct }}% match</span>{% endif %}
+        </div>
+        <div class="dv2-opp-meta">{{ row.opportunity.location }} · {{ row.opportunity.skill.name }}{% if row.opportunity.due_date %} · Due {{ row.opportunity.due_date.strftime('%b') }} {{ row.opportunity.due_date.day }}{% endif %}</div>
+        {% if row.opportunity.description %}<div class="sk-card-desc">{{ row.opportunity.description }}</div>{% endif %}
+        <div class="dv2-opp-price">₦{{ '{:,}'.format(row.opportunity.payment_amount) }}</div>
+        {% if row.application %}
+        <span class="sk-badge {{ row.application.status }}" style="align-self:flex-start;">{{ row.application.status|title }}</span>
+        {% else %}
+        <form method="POST" action="/skills/opportunities/{{ row.opportunity.id }}/apply">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button type="submit" class="sk-btn small">Apply</button>
+        </form>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+
+{% include 'components/skills_footer.html' %}
+{% include 'components/skills_ask_widget.html' %}
+</body>
+</html>

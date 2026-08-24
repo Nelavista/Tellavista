@@ -30,6 +30,11 @@ class User(db.Model):
     # never compute or claim to verify this from Skill GPA / Nelavista activity data.
     # Shown to employers only if the student explicitly opts in (see StudentPrivacySettings).
     academic_cgpa = db.Column(db.Float, nullable=True)
+    # Skills profile fields — power the "Profile strength" checklist on the Skills
+    # dashboard (see services/skills_service.py's profile_completeness()).
+    bio = db.Column(db.Text, nullable=True)
+    portfolio_url = db.Column(db.String(300), nullable=True)
+    profile_photo_url = db.Column(db.String(500), nullable=True)
 
     def set_password(self, password):
         from werkzeug.security import generate_password_hash
@@ -1264,3 +1269,69 @@ class StudentPrivacySettings(db.Model):
             'show_projects': self.show_projects,
             'show_skill_transcript': self.show_skill_transcript,
         }
+
+
+
+# ============================================================
+# ===== OPPORTUNITIES: the "Earn" phase of Learn -> Practice -> Build -> Verify -> Earn =====
+# Real, paid gigs tied to a skill. Admin-curated for now (not an open employer-posting
+# marketplace) — a student applies, an admin moves the application through
+# accepted -> completed -> paid. Earnings on the student dashboard are always summed
+# live from OpportunityApplication rows, never a separately-tracked balance that could
+# drift out of sync with what was actually paid.
+# ============================================================
+
+class Opportunity(db.Model):
+    """A real, paid gig matched to one skill."""
+    __tablename__ = 'opportunities'
+
+    id = db.Column(db.Integer, primary_key=True)
+    skill_id = db.Column(db.Integer, db.ForeignKey('skills.id'), nullable=False)
+    title = db.Column(db.String(200), nullable=False)
+    description = db.Column(db.Text)
+    location = db.Column(db.String(50), default='Remote')  # Remote | On-site
+    payment_amount = db.Column(db.Integer, nullable=False, default=0)  # whole naira
+    currency = db.Column(db.String(10), default='NGN')
+    due_date = db.Column(db.Date, nullable=True)
+    is_published = db.Column(db.Boolean, default=False)
+    order = db.Column(db.Integer, default=0)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    skill = db.relationship('Skill', backref='opportunities')
+    applications = db.relationship('OpportunityApplication', backref='opportunity', lazy='dynamic', cascade='all, delete-orphan')
+
+    def to_dict(self):
+        return {
+            'id': self.id, 'skill_id': self.skill_id, 'skill_name': self.skill.name if self.skill else None,
+            'title': self.title, 'description': self.description, 'location': self.location,
+            'payment_amount': self.payment_amount, 'currency': self.currency,
+            'due_date': self.due_date.isoformat() if self.due_date else None,
+            'is_published': self.is_published, 'order': self.order,
+        }
+
+
+class OpportunityApplication(db.Model):
+    """A student's application to one Opportunity, tracked through to payment — this is
+    what makes Earnings a real, derived number instead of a static UI element."""
+    __tablename__ = 'opportunity_applications'
+
+    id = db.Column(db.Integer, primary_key=True)
+    opportunity_id = db.Column(db.Integer, db.ForeignKey('opportunities.id'), nullable=False)
+    student_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    status = db.Column(db.String(20), default='applied')  # applied | accepted | completed | paid | rejected
+    applied_at = db.Column(db.DateTime, default=datetime.utcnow)
+    completed_at = db.Column(db.DateTime, nullable=True)
+    paid_at = db.Column(db.DateTime, nullable=True)
+    payout_amount = db.Column(db.Integer, nullable=True)  # set once paid; may differ from the listed amount
+
+    student = db.relationship('User', backref='opportunity_applications')
+
+    __table_args__ = (db.UniqueConstraint('opportunity_id', 'student_id', name='uq_opportunity_student'),)
+
+    def to_dict(self):
+        return {
+            'id': self.id, 'opportunity_id': self.opportunity_id, 'status': self.status,
+            'applied_at': self.applied_at.isoformat() if self.applied_at else None,
+            'completed_at': self.completed_at.isoformat() if self.completed_at else None,
+            'paid_at': self.paid_at.isoformat() if self.paid_at else None,
+            'payout_amount': self.payout_amount,

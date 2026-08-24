@@ -1,32 +1,30 @@
-<!-- Shared Skills shell — sidebar + top bar. Include right after <body>, pass
-     active_page ('home'|'catalog'|'projects'|None) to highlight the current nav item. -->
+<!-- Shared Skills shell — left rail (Overview/My Skills/Projects/Opportunities/Earnings/
+     Profile, each a real page) + a top bar with the Academia|Skills|Opportunities|
+     Community pill nav, search, and avatar. Include right after <body>, pass active_page
+     ('home'|'catalog'|'projects'|'opportunities'|'earnings'|'transcript'|None). -->
 <div class="app-wrapper">
   <div class="sidebar" id="side-menu">
     <div>
       <div class="sidebar-header">
         <div class="sidebar-logo">Nelavista</div>
+        <div class="nav-label" style="padding-left:0; margin-top:4px;">SKILLS</div>
       </div>
       <div class="sidebar-nav">
         <div class="nav-group">
-          <div class="nav-label">SKILLS</div>
-          <a href="/skills" class="{{ 'active-link' if active_page == 'home' else '' }}">🧭 Dashboard</a>
-          <a href="/skills/projects" class="{{ 'active-link' if active_page == 'projects' else '' }}">🛠️ My Tasks</a>
-          <a href="/skills/catalog" class="{{ 'active-link' if active_page == 'catalog' else '' }}">🧩 Explore Skills</a>
+          <a href="/skills" class="{{ 'active-link' if active_page == 'home' else '' }}">🧭 Overview</a>
+          <a href="/skills/catalog" class="{{ 'active-link' if active_page == 'catalog' else '' }}">🧩 My Skills</a>
+          <a href="/skills/projects" class="{{ 'active-link' if active_page == 'projects' else '' }}">🛠️ Projects</a>
+          <a href="/skills/opportunities" class="{{ 'active-link' if active_page == 'opportunities' else '' }}">💼 Opportunities</a>
+          <a href="/skills/earnings" class="{{ 'active-link' if active_page == 'earnings' else '' }}">💰 Earnings</a>
+          <a href="/skills/profile" class="{{ 'active-link' if active_page == 'profile' else '' }}">👤 Profile</a>
+        </div>
+
+        <div class="nav-group">
+          <div class="nav-label">MORE</div>
           <a href="/skills/tracks" class="{{ 'active-link' if active_page == 'tracks' else '' }}">🗺️ Learning Paths</a>
           <a href="/skills/transcript" class="{{ 'active-link' if active_page == 'transcript' else '' }}">🎓 Skill Transcript</a>
-          <a href="/skills/search">🔍 Search</a>
-        </div>
-
-        <div class="nav-group">
-          <div class="nav-label">MAIN MENU</div>
-          <a href="/profile">👤 Profile</a>
+          <a href="/skills/settings" class="{{ 'active-link' if active_page == 'settings' else '' }}">⚙️ Privacy Settings</a>
           <a href="/ai">🤖 Chat with Nela</a>
-        </div>
-
-        <div class="nav-group">
-          <div class="nav-label">OTHER</div>
-          <a href="/about">ℹ️ About</a>
-          <a href="/settings">⚙️ Settings</a>
         </div>
       </div>
     </div>
@@ -40,6 +38,13 @@
   <div class="main-content">
     <div class="top-bar">
       <button id="menu-toggle" onclick="skToggleMenu()">☰</button>
+      <div class="dv2-topnav">
+        <a href="/dashboard">Academia</a>
+        <a class="active">Skills</a>
+        <a href="/skills/opportunities">Opportunities</a>
+        <a href="/community">Community</a>
+      </div>
+      <div class="dv2-topbar-spacer"></div>
       <button id="theme-toggle" onclick="skToggleTheme()">🌙</button>
     </div>
 

@@ -27,7 +27,11 @@ DEPARTMENT_TO_SLUG = {
     'Business': 'management',
     'Marketing': 'marketing',
     'Mathematics': 'mathematics',
-    'Computer Science': 'computer-science',
+    # Verified live: 'computer-science' 404s (not a real OTL slug), the correct
+    # slug is 'computer-science-information-systems' -- this bug meant every
+    # Computer Science course silently got zero OTL results for as long as it
+    # was wrong.
+    'Computer Science': 'computer-science-information-systems',
     'Chemistry': 'chemistry',
     'Physics': 'physics',
     'Biology': 'biology',

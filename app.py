@@ -124,7 +124,7 @@ def create_app():
                 "media-src 'self' blob:; "
                 "worker-src 'self' blob:; "
                 "manifest-src 'self'; "
-                "frame-src 'self' https://www.youtube.com https://youtube.com https://docs.google.com"
+                "frame-src 'self' https:"
             )
         
         # PWA-specific headers

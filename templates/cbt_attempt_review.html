@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attempt Review — Nelavista</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/skills.css') }}">
+    <style>
+        .ar-container { max-width: 760px; margin: 0 auto; padding: 20px 20px 60px; }
+        .ar-top-bar { display: flex; align-items: center; justify-content: space-between; padding: 16px 0; border-bottom: 1px solid var(--sk-border); margin-bottom: 24px; }
+        .ar-logo { font-size: 1.2rem; font-weight: 700; background: linear-gradient(135deg, #e5e7eb, #3b82f6); -webkit-background-clip: text; background-clip: text; color: transparent; text-decoration: none; }
+        .ar-back { color: var(--sk-text-dim); text-decoration: none; font-size: 0.85rem; }
+        .ar-summary { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+        .ar-score { font-size: 2.2rem; font-weight: 800; }
+        .ar-item { background: var(--sk-card); border: 1px solid var(--sk-border); border-radius: var(--sk-radius-sm); padding: 14px 16px; margin-bottom: 10px; }
+        .ar-q { font-weight: 600; margin-bottom: 8px; }
+        .ar-answer { font-size: 0.85rem; padding: 6px 0; }
+        .ar-your { color: var(--sk-text-dim); }
+        .ar-correct { color: var(--sk-success); }
+        .ar-wrong { color: #ef4444; }
+        .ar-explain-btn { background: none; border: 1px solid var(--sk-border); color: var(--sk-accent); padding: 6px 12px; border-radius: 8px; font-size: 0.78rem; cursor: pointer; margin-top: 8px; }
+        .ar-explain-btn:hover { border-color: var(--sk-accent); }
+        .ar-explanation { margin-top: 10px; padding: 10px 12px; background: rgba(59,130,246,0.08); border-radius: 8px; font-size: 0.85rem; line-height: 1.5; display: none; }
+        .ar-explanation.show { display: block; }
+        .ar-study-link { display: inline-block; margin-bottom: 20px; font-size: 0.85rem; color: var(--sk-accent); text-decoration: none; }
+    </style>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
+</head>
+<body>
+<div class="ar-container">
+    <div class="ar-top-bar">
+        <a href="/dashboard" class="ar-logo">Nelavista</a>
+        <a href="/CBT/history" class="ar-back">← Practice History</a>
+    </div>
+
+    <div class="ar-summary">
+        <div>
+            <div style="font-weight:700; font-size:1.1rem;">{{ attempt.course_code }} · {{ attempt.question_type|capitalize }}</div>
+            <div style="font-size:0.8rem; color:var(--sk-text-dim);">{{ attempt.submitted_at.strftime('%d %b %Y, %I:%M %p') if attempt.submitted_at else '' }}</div>
+        </div>
+        {% if attempt.question_type == 'cbt' %}
+            <div class="ar-score">{{ attempt.score_pct }}%</div>
+        {% endif %}
+    </div>
+
+    {% if study_link %}
+        <a href="{{ study_link }}" class="ar-study-link">📘 Study {{ attempt.course_code }} →</a>
+    {% endif %}
+
+    {% for ans in answers %}
+        <div class="ar-item">
+            <div class="ar-q">Q{{ loop.index }}: {{ ans.question_text }}</div>
+            {% if attempt.question_type == 'cbt' %}
+                {% if ans.is_correct %}
+                    <div class="ar-answer ar-correct">✓ Correct</div>
+                {% else %}
+                    <div class="ar-answer ar-wrong">✗ {{ 'Skipped' if ans.selected_index is none else 'Wrong' }}</div>
+                    <button class="ar-explain-btn" onclick="explainAnswer({{ attempt.id }}, {{ ans.id }}, this)">💡 Explain this answer</button>
+                    <div class="ar-explanation" id="explain-{{ ans.id }}"></div>
+                {% endif %}
+            {% else %}
+                <div class="ar-answer ar-your">Your answer: {{ ans.written_answer or '(No answer written)' }}</div>
+                <button class="ar-explain-btn" onclick="explainAnswer({{ attempt.id }}, {{ ans.id }}, this)">💡 Get feedback on this answer</button>
+                <div class="ar-explanation" id="explain-{{ ans.id }}"></div>
+            {% endif %}
+        </div>
+    {% endfor %}
+</div>
+<script>
+async function explainAnswer(attemptId, answerId, btn) {
+    const box = document.getElementById(`explain-${answerId}`);
+    btn.disabled = true;
+    btn.textContent = 'Thinking…';
+    box.classList.add('show');
+    box.textContent = 'Nelavista is working on it…';
+    try {
+        const res = await fetch(`/CBT/attempts/${attemptId}/explain/${answerId}`, { method: 'POST' });
+        const data = await res.json();
+        box.textContent = data.explanation;
+    } catch (e) {
+        box.textContent = "Couldn't reach Nelavista — please try again.";
+    }
+    btn.style.display = 'none';
+}
+</script>
+</body>
+</html>

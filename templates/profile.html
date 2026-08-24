@@ -627,13 +627,15 @@
                     <label class="form-label">University</label>
                     <select name="university" class="form-select">
                         <option value="">Select University</option>
-                        <option value="Lagos State University" {% if user.university == "Lagos State University" %}selected{% endif %}>Lagos State University</option>
-                        <option value="University of Lagos" {% if user.university == "University of Lagos" %}selected{% endif %}>University of Lagos</option>
-                        <option value="University of Ibadan" {% if user.university == "University of Ibadan" %}selected{% endif %}>University of Ibadan</option>
-                        <option value="Obafemi Awolowo University" {% if user.university == "Obafemi Awolowo University" %}selected{% endif %}>Obafemi Awolowo University</option>
-                        <option value="Ahmadu Bello University" {% if user.university == "Ahmadu Bello University" %}selected{% endif %}>Ahmadu Bello University</option>
-                        <option value="University of Nigeria, Nsukka" {% if user.university == "University of Nigeria, Nsukka" %}selected{% endif %}>University of Nigeria, Nsukka</option>
-                        <option value="Covenant University" {% if user.university == "Covenant University" %}selected{% endif %}>Covenant University</option>
+                        <option value="Lagos State University" {% if user.university == "Lagos State University" %}selected{% endif %}>Lagos State University (LASU)</option>
+                        <option value="University of Lagos" {% if user.university == "University of Lagos" %}selected{% endif %}>University of Lagos (UNILAG)</option>
+                        <option value="Federal University Dutsin-Ma" {% if user.university == "Federal University Dutsin-Ma" %}selected{% endif %}>Federal University Dutsin-Ma (FUDMA)</option>
+                        <option value="University of Abuja" {% if user.university == "University of Abuja" %}selected{% endif %}>University of Abuja (UNIABUJA)</option>
+                        <option value="University of Ilorin" {% if user.university == "University of Ilorin" %}selected{% endif %}>University of Ilorin (UNILORIN)</option>
+                        <option value="Kwara State University" {% if user.university == "Kwara State University" %}selected{% endif %}>Kwara State University (KWASU)</option>
+                        {% if user.university and user.university not in ["Lagos State University", "University of Lagos", "Federal University Dutsin-Ma", "University of Abuja", "University of Ilorin", "Kwara State University"] %}
+                        <option value="{{ user.university }}" selected>{{ user.university }} (previously set)</option>
+                        {% endif %}
                     </select>
                 </div>
 

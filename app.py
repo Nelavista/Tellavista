@@ -26,6 +26,8 @@ from routes.reels_routes import reels_bp
 from routes.cbt_routes import cbt_bp
 from routes.admin_routes import admin_bp
 from routes.community_routes import community_bp
+from routes.academia_routes import academia_bp
+from routes.admin_academia_routes import admin_academia_bp
 # Skills is re-enabled, rebuilt around the Learn -> Practice -> Build -> Verify -> Earn
 # dashboard. The old GPA-discovery Employer blueprint and the legacy /tech-skills redirect
 # stay disabled — Opportunities (the new "Earn" phase) are admin-curated gigs, not an
@@ -188,6 +190,8 @@ def create_app():
     app.register_blueprint(cbt_bp, url_prefix='/')
     app.register_blueprint(admin_bp, url_prefix='/')
     app.register_blueprint(community_bp, url_prefix='/')
+    app.register_blueprint(academia_bp, url_prefix='/')
+    app.register_blueprint(admin_academia_bp, url_prefix='/')
     # app.register_blueprint(tech_bp, url_prefix='/')
     app.register_blueprint(skills_bp, url_prefix='/')
     app.register_blueprint(admin_skills_bp, url_prefix='/')

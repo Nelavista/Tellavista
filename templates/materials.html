@@ -42,6 +42,11 @@
         .filter-pill.active { background:#58a6ff; color:#fff; }
         .filter-pill:hover:not(.active) { background:#30363d; color:#e6edf3; }
 
+        /* ===== COURSE FILTER ===== */
+        .course-filter-row { margin-bottom:14px; }
+        #courseFilterSelect { background:#161b22; border:1px solid #30363d; border-radius:30px; color:#e6edf3; padding:9px 16px; font-size:0.85rem; outline:none; max-width:100%; }
+        #courseFilterSelect:focus { border-color:#58a6ff; }
+
         /* ===== GOOGLE SEARCH STATUS ===== */
         .google-status { display:flex; align-items:center; gap:8px; margin-bottom:12px; padding:8px 16px; background:#161b22; border-radius:40px; border:1px solid #30363d; }
         .google-status .status-icon { font-size:14px; }
@@ -77,6 +82,20 @@
         .card-icons span:hover { opacity:0.6; }
 
         .empty-state { grid-column:1/-1; text-align:center; padding:60px 20px; color:#6e7681; font-size:0.95rem; }
+
+        /* ===== AI ACTIONS (cards + viewer) ===== */
+        .card-desc { font-size:0.75rem; color:#8b949e; margin-bottom:10px; line-height:1.4; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+        .card-date { font-size:0.65rem; color:#6e7681; }
+        .ai-actions-row { display:flex; gap:6px; flex-wrap:wrap; margin-top:10px; }
+        .ai-action-btn { background:transparent; border:1px solid #30363d; color:#58a6ff; padding:5px 10px; border-radius:8px; font-size:0.68rem; cursor:pointer; transition:all 0.15s; }
+        .ai-action-btn:hover { border-color:#58a6ff; }
+        .ai-result-box { display:none; margin-top:10px; padding:10px 12px; background:rgba(88,166,255,0.08); border-radius:10px; font-size:0.78rem; line-height:1.55; color:#c9d1d9; }
+        .ai-result-box.show { display:block; }
+        .viewer-ai-row { display:flex; gap:8px; padding:12px 24px; background:#0d1117; border-top:1px solid #21262d; flex-wrap:wrap; }
+        .viewer-ai-btn { background:#21262d; border:1px solid #30363d; color:#58a6ff; padding:8px 14px; border-radius:20px; font-size:0.8rem; cursor:pointer; }
+        .viewer-ai-btn:hover { border-color:#58a6ff; }
+        .viewer-ai-result { display:none; margin:0 24px 16px; padding:14px 16px; background:#161b22; border-radius:12px; font-size:0.85rem; line-height:1.6; max-height:200px; overflow-y:auto; }
+        .viewer-ai-result.show { display:block; }
 
         /* ===== ONBOARDING ===== */
         .onboarding-screen { position:fixed; inset:0; background:#0d1117; z-index:2000; overflow-y:auto; padding:32px 20px 80px; }
@@ -172,9 +191,12 @@
         @media(max-width:600px) {
             .top-bar { flex-direction:column; align-items:stretch; }
             .left-area { justify-content:space-between; }
-            .right-area { justify-content:space-between; }
-            .onboarding-title { font-size:1.4rem; }
-            .course-chip { min-width:140px; max-width:none; flex:1 0 140px; }
+            .right-area { justify-content:space-between; flex-wrap:wrap; row-gap:8px; }
+            /* Study/Pulse are "coming soon" stubs and Library is already the page
+               you're on -- not worth the width on a small screen. */
+            .nav-tabs { display:none; }
+            .edit-courses-btn { font-size:0.72rem; padding:6px 10px; }
+            #courseFilterSelect { width:100%; }
         }
     </style>
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -211,16 +233,19 @@
         <!-- PDF iframe -->
         <iframe id="pdfViewerFrame" class="viewer-frame"></iframe>
     </div>
+    <div class="viewer-ai-row">
+        <button class="viewer-ai-btn" onclick="askAboutCurrentMaterial('explain')">💡 Explain this</button>
+        <button class="viewer-ai-btn" onclick="askAboutCurrentMaterial('summarize')">📝 Summarize this</button>
+        <button class="viewer-ai-btn" onclick="askAboutCurrentMaterial('quiz')">❓ Quiz me</button>
+    </div>
+    <div class="viewer-ai-result" id="viewerAiResult"></div>
     <div class="viewer-footer">
         <div class="viewer-source-badge" id="viewerSourceBadge"></div>
     </div>
 </div>
 
-<!-- onboarding renders here -->
-<div id="onboardingRoot"></div>
-
-<!-- main app (hidden until courses selected) -->
-<div id="mainApp" style="display:none;">
+<!-- main app -->
+<div id="mainApp">
     <div class="app-container">
         <div class="top-bar">
             <div class="left-area">
@@ -236,25 +261,30 @@
                     <button class="nav-tab" data-tab="study">Study</button>
                     <button class="nav-tab" data-tab="pulse">Pulse</button>
                 </div>
-                <button class="edit-courses-btn" id="editCoursesBtn">✏️ Edit Courses</button>
+                <a href="/search" class="edit-courses-btn" style="text-decoration:none;">🔍 Search Academia</a>
                 <div class="user-avatar">{{ user.name[:2].upper() if user.name else 'SN' }}</div>
             </div>
         </div>
 
         <div class="hero-section">
             <h1 class="hero-title">Find your next breakthrough.</h1>
-            <p class="hero-sub">Search through thousands of peer-reviewed notes, textbooks, and archived exam materials.</p>
-            
+            <p class="hero-sub" id="heroSub">Materials for your courses, straight from Nelavista.</p>
+
             <!-- Google Search Status -->
             <div class="google-status" id="googleStatus">
                 <span class="status-icon">🌐</span>
                 <span class="status-text" id="googleStatusText">Ready to search web for materials</span>
                 <button class="refresh-google-btn" id="refreshGoogleBtn" onclick="fetchGoogleMaterials()">🔄 Refresh</button>
             </div>
-            
+
             <div class="search-wrapper">
                 <span class="search-icon">🔍</span>
-                <input type="text" id="searchInput" placeholder="Search materials, faculty, or topics…">
+                <input type="text" id="searchInput" placeholder="Search your materials by title, author, or code…">
+            </div>
+            <div class="course-filter-row">
+                <select id="courseFilterSelect">
+                    <option value="">All My Courses</option>
+                </select>
             </div>
             <div class="filter-row" id="filterRow">
                 <button class="filter-pill active" data-filter="all">All</button>
@@ -268,6 +298,9 @@
 
         <div class="materials-grid" id="materialsGrid">
             <div class="empty-state">Loading your materials…</div>
+        </div>
+        <div style="text-align:center; margin-top:20px;">
+            <button class="refresh-google-btn" id="loadMoreBtn" style="display:none; padding:10px 24px; font-size:0.85rem;" onclick="loadMaterials(false)">Load more materials</button>
         </div>
     </div>
 </div>
@@ -327,899 +360,6 @@ const userSemester   = "{{ user.semester or '' }}";
 const userUniversity = "{{ user.university or '' }}";
 
 // ============================================================
-//  STORAGE KEY — unique per student level + department
-// ============================================================
-function getStorageKey() {
-    return `nelavista_courses_${userLevelNum}_${userDepartment.replace(/\s+/g,'_')}`;
-}
-
-// ============================================================
-//  COURSE CODES DATABASE
-// ============================================================
-// Keyed by university first, then department/level -- each school has its own
-// course-code numbering (this curriculum is Lagos State University's). A
-// student at a different, explicitly-set university falls back gracefully to
-// "no course codes found, browse all materials" (see showOnboarding()) rather
-// than being shown LASU's codes as if they were universal.
-const COURSE_CODES_DB = {
-  "Lagos State University": {
-    "Biochemistry": {
-        "100": [
-            { code:"CHM101", name:"General Chemistry I" },
-            { code:"CHM107", name:"Experimental Chemistry I" },
-            { code:"PHY101", name:"General Physics I" },
-            { code:"PHY107", name:"Experimental Physics I" },
-            { code:"BIO101", name:"Basic Biology I" },
-            { code:"BIO107", name:"Experimental Biology I" },
-            { code:"MTH101", name:"General Mathematics I" },
-            { code:"CIT111", name:"Introduction to ICT" },
-            { code:"FRN221", name:"Basic French" },
-            { code:"GST111", name:"Communication in English I" },
-            { code:"LIB101", name:"Use of Library" },
-            { code:"CHM102", name:"General Chemistry II" },
-            { code:"CHM108", name:"Experimental Chemistry II" },
-            { code:"PHY102", name:"General Physics II" },
-            { code:"PHY108", name:"Experimental Physics II" },
-            { code:"BIO102", name:"Basic Biology II" },
-            { code:"BIO108", name:"Experimental Biology II" },
-            { code:"MTH102", name:"General Mathematics II" },
-            { code:"CIT112", name:"Intro to Computer Programming" },
-            { code:"FRN222", name:"French for Specific Purposes" },
-            { code:"GST122", name:"Communication in English II" }
-        ],
-        "200": [
-            { code:"BCH201", name:"General Biochemistry I" },
-            { code:"BCH203", name:"Metabolism of Carbohydrates" },
-            { code:"MCB201", name:"General Microbiology I" },
-            { code:"BIO203", name:"Introductory Genetics" },
-            { code:"CHM205", name:"Physical Chemistry I" },
-            { code:"CHM207", name:"Inorganic Chemistry I" },
-            { code:"CHM291", name:"Experimental Physical/Inorganic Chemistry" },
-            { code:"GST113", name:"Nigerian Peoples & Culture" },
-            { code:"CIT201", name:"Structured Programming" },
-            { code:"BCH202", name:"General Biochemistry II" },
-            { code:"BCH204", name:"Biochemical Methods" },
-            { code:"BCH206", name:"Food & Nutritional Biochemistry" },
-            { code:"BIO202", name:"Biological Techniques" },
-            { code:"CHM208", name:"Physical Chemistry II" },
-            { code:"CHM202", name:"Organic Chemistry I" },
-            { code:"CHM292", name:"Experimental Physical/Organic Chemistry" },
-            { code:"GST112", name:"Logic, Philosophy & Human Existence" }
-        ],
-        "300": [
-            { code:"BCH301", name:"Enzymology" },
-            { code:"BCH303", name:"Metabolism of Lipids" },
-            { code:"BCH305", name:"Metabolism of Nucleic Acids" },
-            { code:"BCH307", name:"Metabolism of Amino Acids & Protein" },
-            { code:"BCH309", name:"Membrane Biochemistry" },
-            { code:"BCH391", name:"General Biochemical Methods" },
-            { code:"CHM303", name:"Organic Chemistry II" },
-            { code:"STA201", name:"Statistics for Biological Students" },
-            { code:"CHM401", name:"Instrumental Analytical Methods" },
-            { code:"GST311", name:"Entrepreneurship" },
-            { code:"BCH399", name:"Industrial Attachment (SIWES)" }
-        ],
-        "400": [
-            { code:"BCH401", name:"Advanced Enzymology" },
-            { code:"BCH403", name:"Tissue Biochemistry" },
-            { code:"BCH405", name:"Biotechnology & Genetic Engineering" },
-            { code:"BCH407", name:"Plant Biochemistry" },
-            { code:"BCH409", name:"Seminar in Biochemistry" },
-            { code:"BCH411", name:"Pharmacological Biochemistry & Toxicology" },
-            { code:"BCH413", name:"Bioenergetics" },
-            { code:"MCB305", name:"Microbial Genetics/Molecular Biology" },
-            { code:"MCB401", name:"Immunology & Immunochemistry" },
-            { code:"BCH417", name:"Biochemistry of Parasites" },
-            { code:"BCH402", name:"Biosynthesis of Macromolecules" },
-            { code:"BCH404", name:"Bioinorganic Chemistry" },
-            { code:"BCH406", name:"Metabolic Regulations" },
-            { code:"BCH408", name:"Biochemical Reasoning" },
-            { code:"BCH412", name:"Industrial Biochemistry" },
-            { code:"MCB408", name:"Microbial Physiology & Metabolism" },
-            { code:"BCH499", name:"Research Project" },
-            { code:"BCH492", name:"Advanced Biochemical Methods" },
-            { code:"BCH414", name:"Clinical and Forensic Biochemistry" }
-        ]
-    },
-    "Mathematics": {
-        "100": [
-            { code:"GST111", name:"Communication in English I" },
-            { code:"GST112", name:"Logic, Philosophy & Human Existence" },
-            { code:"GST113", name:"Nigerian Peoples & Culture" },
-            { code:"GST114", name:"Valuing the Teaching Profession I" },
-            { code:"GST115", name:"Lagos & Its Environs" },
-            { code:"GST116", name:"Intro to Yoruba Language & Culture" },
-            { code:"BIO101", name:"General Biology I" },
-            { code:"CHM101", name:"General Chemistry I" },
-            { code:"CSC101", name:"Intro to Computer Science" },
-            { code:"MTH101", name:"Elementary Mathematics I" },
-            { code:"MTH103", name:"Elementary Mathematics III" },
-            { code:"PHY101", name:"General Physics I" },
-            { code:"PHY107", name:"General Practical Physics I" },
-            { code:"GST121", name:"Use of Library Skills & ICT" },
-            { code:"GST122", name:"Communication in English II" },
-            { code:"GST125", name:"Contemporary Health Issues" },
-            { code:"GST126", name:"Communication in Arabic" },
-            { code:"MTH102", name:"Elementary Mathematics II" },
-            { code:"PHY102", name:"General Physics II" },
-            { code:"PHY108", name:"General Practical Physics II" },
-            { code:"STA112", name:"Probability I" },
-            { code:"CSC102", name:"Intro to Problem Solving" }
-        ],
-        "200": [
-            { code:"CSC201", name:"Computer Programming I" },
-            { code:"GST211", name:"Environment & Sustainable Development" },
-            { code:"GST212", name:"Application of Computer" },
-            { code:"GST214", name:"Valuing the Teaching Profession II" },
-            { code:"MTH201", name:"Mathematical Methods I" },
-            { code:"MTH203", name:"Sets Logic & Algebra I" },
-            { code:"MTH204", name:"Linear Algebra I" },
-            { code:"MTH207", name:"Real Analysis I" },
-            { code:"MTH209", name:"Intro to Numerical Analysis" },
-            { code:"MTH299", name:"Industrial Training I (12 Weeks)" },
-            { code:"PHY201", name:"General Physics III" },
-            { code:"CSC202", name:"Computer Programming II" },
-            { code:"GST222", name:"Peace & Conflict Resolution" },
-            { code:"GST223", name:"Intro to Entrepreneurship" },
-            { code:"GST224", name:"Leadership Skills" },
-            { code:"GST225", name:"Yoruba Grammar & Communication" },
-            { code:"GST226", name:"Land Use & General Agriculture" },
-            { code:"ENT221", name:"Intro to Entrepreneurship" },
-            { code:"MTH202", name:"Elementary Differential Equations" },
-            { code:"MTH205", name:"Linear Algebra II" },
-            { code:"MTH210", name:"Vector Analysis" },
-            { code:"PHY202", name:"Intro to Electric Circuits & Electronics" }
-        ],
-        "300": [
-            { code:"GST311", name:"Entrepreneurship" },
-            { code:"MTH301", name:"Metric Space Topology" },
-            { code:"MTH303", name:"Vector & Tensor Analysis" },
-            { code:"MTH304", name:"Complex Analysis I" },
-            { code:"MTH307", name:"Real Analysis II" },
-            { code:"MTH311", name:"Theory of Modules" },
-            { code:"MTH399", name:"Industrial Attachment II (12 Weeks)" },
-            { code:"MTH309", name:"Discrete Mathematics" },
-            { code:"MTH313", name:"Geometry" },
-            { code:"MTH319", name:"Numerical Analysis I" },
-            { code:"STA311", name:"Probability III" },
-            { code:"ENT321", name:"Entrepreneurship & Business Management" },
-            { code:"MTH300", name:"Abstract Algebra I" },
-            { code:"MTH302", name:"Ordinary Differential Equations" },
-            { code:"MTH305", name:"Complex Analysis II" },
-            { code:"MTH306", name:"Abstract Algebra II" },
-            { code:"MTH308", name:"Intro to Mathematical Modelling" },
-            { code:"MTH310", name:"Mathematical Methods II" },
-            { code:"MTH320", name:"Computational Techniques in Mathematics" },
-            { code:"MTH312", name:"Optimization Theory" },
-            { code:"MTH314", name:"Analytical Dynamics I" },
-            { code:"MTH316", name:"Intro to Operations Research" },
-            { code:"STA312", name:"Distribution Theory I" }
-        ],
-        "400": [
-            { code:"MTH401", name:"Theory of Ordinary Differential Equations" },
-            { code:"MTH403", name:"Functional Analysis" },
-            { code:"MTH405", name:"General Topology" },
-            { code:"MTH419", name:"Complex Analysis" },
-            { code:"MTH407", name:"Mathematical Methods III" },
-            { code:"MTH409", name:"General Relativity" },
-            { code:"MTH411", name:"Analytical Dynamics II" },
-            { code:"ENT421", name:"Investment Marketing & Management" },
-            { code:"MTH402", name:"Theory of Partial Differential Equations" },
-            { code:"MTH404", name:"Project" },
-            { code:"MTH406", name:"Lebesgue Measure & Integration" },
-            { code:"MTH418", name:"Advanced Algebra" },
-            { code:"MTH408", name:"Quantum Mechanics I" },
-            { code:"MTH410", name:"Electromagnetism" }
-        ]
-    },
-    "Botany": {
-        "100": [
-            { code:"GST111", name:"Communication in English I" },
-            { code:"GST112", name:"Logic, Philosophy & Human Existence" },
-            { code:"GST113", name:"Nigerian Peoples & Culture" },
-            { code:"GST114", name:"Valuing the Teaching Profession I" },
-            { code:"GST115", name:"Lagos & Its Environs" },
-            { code:"GST116", name:"Intro to Yoruba Language & Culture" },
-            { code:"BIO101", name:"General Biology I" },
-            { code:"CHM101", name:"General Chemistry I" },
-            { code:"CSC101", name:"Intro to Computer Science" },
-            { code:"MTH101", name:"Elementary Mathematics I" },
-            { code:"PHY101", name:"General Physics I" },
-            { code:"PHY107", name:"General Practical Physics I" },
-            { code:"GST121", name:"Use of Library Skills & ICT" },
-            { code:"GST122", name:"Communication in English II" },
-            { code:"GST125", name:"Contemporary Health Issues" },
-            { code:"GST126", name:"Communication in Arabic" },
-            { code:"BIO102", name:"General Biology II" },
-            { code:"BOT101", name:"Diversity of Plants" },
-            { code:"BOT103", name:"Basic Botanical Nomenclature" },
-            { code:"CHM102", name:"General Chemistry II" },
-            { code:"MTH102", name:"Elementary Mathematics II" },
-            { code:"PHY102", name:"General Physics II" },
-            { code:"PHY108", name:"General Practical Physics II" }
-        ],
-        "200": [
-            { code:"GST211", name:"Environment & Sustainable Development" },
-            { code:"GST212", name:"Application of Computer" },
-            { code:"GST214", name:"Valuing the Teaching Profession II" },
-            { code:"BOT201", name:"Seedless Plants (Cryptogams)" },
-            { code:"BOT203", name:"Plant Morphology" },
-            { code:"BOT205", name:"Introductory Plant Physiology" },
-            { code:"BOT207", name:"General Ecology" },
-            { code:"STA211", name:"Statistics for Biological Sciences" },
-            { code:"GST222", name:"Peace & Conflict Resolution" },
-            { code:"GST223", name:"Intro to Entrepreneurship" },
-            { code:"GST224", name:"Leadership Skills" },
-            { code:"GST225", name:"Yoruba Grammar & Communication" },
-            { code:"GST226", name:"Land Use & General Agriculture" },
-            { code:"BOT202", name:"Seed Plants (Spermatophyta)" },
-            { code:"BOT204", name:"Plant Anatomy" },
-            { code:"BOT206", name:"Plant Taxonomy" },
-            { code:"BOT208", name:"Biological Techniques" }
-        ],
-        "300": [
-            { code:"GST311", name:"Entrepreneurship" },
-            { code:"BOT301", name:"Plant Ecology & Field Course I" },
-            { code:"BOT303", name:"Algae (Phycology)" },
-            { code:"BOT305", name:"Mycology I" },
-            { code:"BOT307", name:"Plant Physiology I" },
-            { code:"BOT309", name:"Plant Taxonomy I" },
-            { code:"BOT311", name:"Biostatistics" },
-            { code:"ENT321", name:"Entrepreneurship & Business Management" },
-            { code:"BOT302", name:"Bryophyta & Pteridophyta" },
-            { code:"BOT304", name:"Gymnosperms" },
-            { code:"BOT306", name:"Plant Cytogenetics" },
-            { code:"BOT308", name:"Plant Pathology I" },
-            { code:"BOT310", name:"Economic Botany" },
-            { code:"BOT399", name:"SIWES / Industrial Training (12 weeks)" }
-        ],
-        "400": [
-            { code:"BOT401", name:"Plant Breeding" },
-            { code:"BOT403", name:"Population Ecology" },
-            { code:"BOT405", name:"Mycology II" },
-            { code:"BOT407", name:"Limnology" },
-            { code:"BOT409", name:"Evolution" },
-            { code:"BOT411", name:"Plant Pathology II" },
-            { code:"BOT413", name:"Seminar" },
-            { code:"ENT421", name:"Investment Marketing & Management" },
-            { code:"BOT402", name:"Soil Science" },
-            { code:"BOT404", name:"Development of Natural Resources & Afforestation" },
-            { code:"BOT406", name:"Comparative Plant Anatomy" },
-            { code:"BOT408", name:"Plant Physiology II / Tissue Culture" },
-            { code:"BOT410", name:"Molecular Biology / Biotechnology" },
-            { code:"BOT412", name:"Research Project" }
-        ]
-    },
-    "Chemistry": {
-        "100": [
-            { code:"GST111", name:"Communication in English I" },
-            { code:"GST112", name:"Logic, Philosophy & Human Existence" },
-            { code:"GST113", name:"Nigerian Peoples & Culture" },
-            { code:"GST114", name:"Valuing the Teaching Profession I" },
-            { code:"GST115", name:"Lagos & Its Environs" },
-            { code:"GST116", name:"Intro to Yoruba Language & Culture" },
-            { code:"CHM101", name:"General Chemistry I" },
-            { code:"CHM103", name:"General Chemistry Practical I" },
-            { code:"BIO101", name:"General Biology I" },
-            { code:"MTH101", name:"Elementary Mathematics I" },
-            { code:"PHY101", name:"General Physics I" },
-            { code:"PHY107", name:"General Practical Physics I" },
-            { code:"GST121", name:"Use of Library Skills & ICT" },
-            { code:"GST122", name:"Communication in English II" },
-            { code:"GST125", name:"Contemporary Health Issues" },
-            { code:"GST126", name:"Communication in Arabic" },
-            { code:"CHM102", name:"General Chemistry II" },
-            { code:"CHM104", name:"General Chemistry Practical II" },
-            { code:"BIO102", name:"General Biology II" },
-            { code:"MTH102", name:"Elementary Mathematics II" },
-            { code:"PHY102", name:"General Physics II" },
-            { code:"PHY108", name:"General Practical Physics II" }
-        ],
-        "200": [
-            { code:"GST211", name:"Environment & Sustainable Development" },
-            { code:"GST212", name:"Application of Computer" },
-            { code:"GST214", name:"Valuing the Teaching Profession II" },
-            { code:"CHM201", name:"Physical Chemistry I" },
-            { code:"CHM203", name:"Inorganic Chemistry I" },
-            { code:"CHM205", name:"Organic Chemistry I" },
-            { code:"CHM207", name:"Analytical Chemistry I" },
-            { code:"CHM209", name:"Chemistry Practical I" },
-            { code:"GST222", name:"Peace & Conflict Resolution" },
-            { code:"GST223", name:"Intro to Entrepreneurship" },
-            { code:"GST224", name:"Leadership Skills" },
-            { code:"GST225", name:"Yoruba Grammar & Communication" },
-            { code:"GST226", name:"Land Use & General Agriculture" },
-            { code:"CHM202", name:"Physical Chemistry II" },
-            { code:"CHM204", name:"Inorganic Chemistry II" },
-            { code:"CHM206", name:"Organic Chemistry II" },
-            { code:"CHM208", name:"Analytical Chemistry II" },
-            { code:"CHM210", name:"Chemistry Practical II" }
-        ],
-        "300": [
-            { code:"GST311", name:"Entrepreneurship" },
-            { code:"CHM301", name:"Physical Chemistry III" },
-            { code:"CHM303", name:"Inorganic Chemistry III" },
-            { code:"CHM305", name:"Organic Chemistry III" },
-            { code:"CHM307", name:"Analytical Chemistry III" },
-            { code:"CHM309", name:"Instrumental Methods of Analysis" },
-            { code:"CHM311", name:"Chemistry Practical III" },
-            { code:"ENT321", name:"Entrepreneurship & Business Management" },
-            { code:"CHM302", name:"Chemical Thermodynamics" },
-            { code:"CHM304", name:"Coordination Chemistry" },
-            { code:"CHM306", name:"Organic Reaction Mechanisms" },
-            { code:"CHM308", name:"Electrochemistry" },
-            { code:"CHM310", name:"Industrial Chemistry" },
-            { code:"CHM399", name:"SIWES / Industrial Training (12 weeks)" }
-        ],
-        "400": [
-            { code:"CHM401", name:"Advanced Physical Chemistry" },
-            { code:"CHM403", name:"Advanced Inorganic Chemistry" },
-            { code:"CHM405", name:"Advanced Organic Chemistry" },
-            { code:"CHM407", name:"Advanced Analytical Chemistry" },
-            { code:"CHM409", name:"Environmental Chemistry" },
-            { code:"CHM411", name:"Seminar" },
-            { code:"ENT421", name:"Investment Marketing & Management" },
-            { code:"CHM402", name:"Chemical Kinetics" },
-            { code:"CHM404", name:"Research Project" },
-            { code:"CHM406", name:"Polymer Chemistry" },
-            { code:"CHM408", name:"Medicinal Chemistry" },
-            { code:"CHM410", name:"Spectroscopy" }
-        ]
-    },
-    "Fisheries": {
-        "100": [
-            { code:"GST111", name:"Communication in English I" },
-            { code:"GST112", name:"Logic, Philosophy & Human Existence" },
-            { code:"GST113", name:"Nigerian Peoples & Culture" },
-            { code:"GST114", name:"Valuing the Teaching Profession I" },
-            { code:"GST115", name:"Lagos & Its Environs" },
-            { code:"GST116", name:"Intro to Yoruba Language & Culture" },
-            { code:"BIO101", name:"General Biology I" },
-            { code:"CHM101", name:"General Chemistry I" },
-            { code:"FIS101", name:"Introduction to Fisheries" },
-            { code:"MTH101", name:"Elementary Mathematics I" },
-            { code:"PHY101", name:"General Physics I" },
-            { code:"PHY107", name:"General Practical Physics I" },
-            { code:"GST121", name:"Use of Library Skills & ICT" },
-            { code:"GST122", name:"Communication in English II" },
-            { code:"GST125", name:"Contemporary Health Issues" },
-            { code:"GST126", name:"Communication in Arabic" },
-            { code:"BIO102", name:"General Biology II" },
-            { code:"CHM102", name:"General Chemistry II" },
-            { code:"FIS102", name:"Introduction to Aquatic Ecology" },
-            { code:"MTH102", name:"Elementary Mathematics II" },
-            { code:"PHY102", name:"General Physics II" },
-            { code:"PHY108", name:"General Practical Physics II" }
-        ],
-        "200": [
-            { code:"GST211", name:"Environment & Sustainable Development" },
-            { code:"GST212", name:"Application of Computer" },
-            { code:"GST214", name:"Valuing the Teaching Profession II" },
-            { code:"FIS201", name:"General Ichthyology" },
-            { code:"FIS203", name:"Fisheries Biology" },
-            { code:"FIS205", name:"Principles of Aquaculture" },
-            { code:"FIS207", name:"Fisheries Statistics" },
-            { code:"STA211", name:"Statistics for Biological Sciences" },
-            { code:"GST222", name:"Peace & Conflict Resolution" },
-            { code:"GST223", name:"Intro to Entrepreneurship" },
-            { code:"GST224", name:"Leadership Skills" },
-            { code:"GST225", name:"Yoruba Grammar & Communication" },
-            { code:"GST226", name:"Land Use & General Agriculture" },
-            { code:"FIS202", name:"Limnology" },
-            { code:"FIS204", name:"Fish Nutrition" },
-            { code:"FIS206", name:"Fish Genetics & Breeding" },
-            { code:"FIS208", name:"Fishing Gear Technology" }
-        ],
-        "300": [
-            { code:"GST311", name:"Entrepreneurship" },
-            { code:"FIS301", name:"Fish Physiology" },
-            { code:"FIS303", name:"Fish Pathology & Parasitology" },
-            { code:"FIS305", name:"Fisheries Management" },
-            { code:"FIS307", name:"Aquaculture Systems & Pond Management" },
-            { code:"FIS309", name:"Fish Processing & Preservation" },
-            { code:"FIS311", name:"Fisheries Economics" },
-            { code:"ENT321", name:"Entrepreneurship & Business Management" },
-            { code:"FIS302", name:"Marine Fisheries" },
-            { code:"FIS304", name:"Inland Fisheries" },
-            { code:"FIS306", name:"Fish Hatchery Management" },
-            { code:"FIS308", name:"Environmental Impact of Fisheries" },
-            { code:"FIS399", name:"SIWES / Industrial Training (12 weeks)" }
-        ],
-        "400": [
-            { code:"FIS401", name:"Advanced Aquaculture" },
-            { code:"FIS403", name:"Fish Stock Assessment" },
-            { code:"FIS405", name:"Fisheries Policy & Legislation" },
-            { code:"FIS407", name:"Integrated Fish Farming" },
-            { code:"FIS409", name:"Seminar" },
-            { code:"ENT421", name:"Investment Marketing & Management" },
-            { code:"FIS402", name:"Fisheries Extension & Rural Development" },
-            { code:"FIS404", name:"Research Project" },
-            { code:"FIS406", name:"Aquatic Pollution & Toxicology" },
-            { code:"FIS408", name:"Sustainable Fisheries Management" }
-        ]
-    },
-    "Microbiology": {
-        "100": [
-            { code:"GST111", name:"Communication in English I" },
-            { code:"GST112", name:"Logic, Philosophy & Human Existence" },
-            { code:"GST113", name:"Nigerian Peoples & Culture" },
-            { code:"GST114", name:"Valuing the Teaching Profession I" },
-            { code:"GST115", name:"Lagos & Its Environs" },
-            { code:"GST116", name:"Intro to Yoruba Language & Culture" },
-            { code:"BIO101", name:"General Biology I" },
-            { code:"CHM101", name:"General Chemistry I" },
-            { code:"MCB101", name:"Introduction to Microbiology" },
-            { code:"MTH101", name:"Elementary Mathematics I" },
-            { code:"PHY101", name:"General Physics I" },
-            { code:"PHY107", name:"General Practical Physics I" },
-            { code:"GST121", name:"Use of Library Skills & ICT" },
-            { code:"GST122", name:"Communication in English II" },
-            { code:"GST125", name:"Contemporary Health Issues" },
-            { code:"GST126", name:"Communication in Arabic" },
-            { code:"BIO102", name:"General Biology II" },
-            { code:"CHM102", name:"General Chemistry II" },
-            { code:"MCB102", name:"Microbial Diversity" },
-            { code:"MTH102", name:"Elementary Mathematics II" },
-            { code:"PHY102", name:"General Physics II" },
-            { code:"PHY108", name:"General Practical Physics II" }
-        ],
-        "200": [
-            { code:"GST211", name:"Environment & Sustainable Development" },
-            { code:"GST212", name:"Application of Computer" },
-            { code:"GST214", name:"Valuing the Teaching Profession II" },
-            { code:"MCB201", name:"General Microbiology" },
-            { code:"MCB203", name:"Microbial Morphology & Physiology" },
-            { code:"MCB205", name:"Microbial Genetics" },
-            { code:"MCB207", name:"Microbial Ecology" },
-            { code:"STA211", name:"Statistics for Biological Sciences" },
-            { code:"GST222", name:"Peace & Conflict Resolution" },
-            { code:"GST223", name:"Intro to Entrepreneurship" },
-            { code:"GST224", name:"Leadership Skills" },
-            { code:"GST225", name:"Yoruba Grammar & Communication" },
-            { code:"GST226", name:"Land Use & General Agriculture" },
-            { code:"MCB202", name:"Immunology" },
-            { code:"MCB204", name:"Medical Microbiology" },
-            { code:"MCB206", name:"Industrial Microbiology" },
-            { code:"MCB208", name:"Microbiology Practical I" }
-        ],
-        "300": [
-            { code:"GST311", name:"Entrepreneurship" },
-            { code:"MCB301", name:"Bacteriology" },
-            { code:"MCB303", name:"Virology" },
-            { code:"MCB305", name:"Mycology" },
-            { code:"MCB307", name:"Microbial Biochemistry" },
-            { code:"MCB309", name:"Food & Dairy Microbiology" },
-            { code:"MCB311", name:"Microbiology Practical II" },
-            { code:"ENT321", name:"Entrepreneurship & Business Management" },
-            { code:"MCB302", name:"Environmental Microbiology" },
-            { code:"MCB304", name:"Molecular Biology" },
-            { code:"MCB306", name:"Public Health Microbiology" },
-            { code:"MCB308", name:"Waste Management & Bioremediation" },
-            { code:"MCB399", name:"SIWES / Industrial Training (12 weeks)" }
-        ],
-        "400": [
-            { code:"MCB401", name:"Advanced Microbial Genetics" },
-            { code:"MCB403", name:"Pharmaceutical Microbiology" },
-            { code:"MCB405", name:"Microbial Biotechnology" },
-            { code:"MCB407", name:"Epidemiology" },
-            { code:"MCB409", name:"Seminar" },
-            { code:"ENT421", name:"Investment Marketing & Management" },
-            { code:"MCB402", name:"Clinical Microbiology" },
-            { code:"MCB404", name:"Research Project" },
-            { code:"MCB406", name:"Industrial Fermentation Technology" },
-            { code:"MCB408", name:"Advanced Immunology" }
-        ]
-    },
-    "Physics": {
-        "100": [
-            { code:"GST111", name:"Communication in English I" },
-            { code:"GST112", name:"Logic, Philosophy & Human Existence" },
-            { code:"GST113", name:"Nigerian Peoples & Culture" },
-            { code:"GST114", name:"Valuing the Teaching Profession I" },
-            { code:"GST115", name:"Lagos & Its Environs" },
-            { code:"GST116", name:"Intro to Yoruba Language & Culture" },
-            { code:"PHY101", name:"General Physics I" },
-            { code:"PHY103", name:"Mechanics & Properties of Matter" },
-            { code:"PHY107", name:"General Practical Physics I" },
-            { code:"MTH101", name:"Elementary Mathematics I" },
-            { code:"MTH103", name:"Elementary Mathematics III" },
-            { code:"CHM101", name:"General Chemistry I" },
-            { code:"GST121", name:"Use of Library Skills & ICT" },
-            { code:"GST122", name:"Communication in English II" },
-            { code:"GST125", name:"Contemporary Health Issues" },
-            { code:"GST126", name:"Communication in Arabic" },
-            { code:"PHY102", name:"General Physics II" },
-            { code:"PHY104", name:"Heat & Thermodynamics" },
-            { code:"PHY108", name:"General Practical Physics II" },
-            { code:"MTH102", name:"Elementary Mathematics II" },
-            { code:"STA112", name:"Probability I" }
-        ],
-        "200": [
-            { code:"GST211", name:"Environment & Sustainable Development" },
-            { code:"GST212", name:"Application of Computer" },
-            { code:"GST214", name:"Valuing the Teaching Profession II" },
-            { code:"PHY201", name:"Electricity & Magnetism I" },
-            { code:"PHY203", name:"Waves & Optics I" },
-            { code:"PHY205", name:"Classical Mechanics I" },
-            { code:"MTH201", name:"Mathematical Methods I" },
-            { code:"MTH207", name:"Real Analysis I" },
-            { code:"GST222", name:"Peace & Conflict Resolution" },
-            { code:"GST223", name:"Intro to Entrepreneurship" },
-            { code:"GST224", name:"Leadership Skills" },
-            { code:"GST225", name:"Yoruba Grammar & Communication" },
-            { code:"GST226", name:"Land Use & General Agriculture" },
-            { code:"PHY202", name:"Electricity & Magnetism II" },
-            { code:"PHY204", name:"Waves & Optics II" },
-            { code:"PHY206", name:"Modern Physics I" },
-            { code:"PHY208", name:"Electronics I" }
-        ],
-        "300": [
-            { code:"GST311", name:"Entrepreneurship" },
-            { code:"PHY301", name:"Quantum Mechanics I" },
-            { code:"PHY303", name:"Statistical Mechanics" },
-            { code:"PHY305", name:"Solid State Physics" },
-            { code:"PHY307", name:"Electronics II" },
-            { code:"PHY309", name:"Nuclear Physics" },
-            { code:"PHY311", name:"Experimental Physics I" },
-            { code:"ENT321", name:"Entrepreneurship & Business Management" },
-            { code:"PHY302", name:"Quantum Mechanics II" },
-            { code:"PHY304", name:"Electromagnetic Theory" },
-            { code:"PHY306", name:"Atomic & Molecular Physics" },
-            { code:"PHY308", name:"Optics & Lasers" },
-            { code:"PHY399", name:"SIWES / Industrial Training (12 weeks)" }
-        ],
-        "400": [
-            { code:"PHY401", name:"Advanced Quantum Mechanics" },
-            { code:"PHY403", name:"Advanced Solid State Physics" },
-            { code:"PHY405", name:"Plasma Physics" },
-            { code:"PHY407", name:"Computational Physics" },
-            { code:"PHY409", name:"Seminar" },
-            { code:"ENT421", name:"Investment Marketing & Management" },
-            { code:"PHY402", name:"General Relativity" },
-            { code:"PHY404", name:"Research Project" },
-            { code:"PHY406", name:"Renewable Energy Physics" },
-            { code:"PHY408", name:"Advanced Electronics" }
-        ]
-    },
-    "Science Laboratory Technology": {
-        "100": [
-            { code:"GST111", name:"Communication in English I" },
-            { code:"GST112", name:"Logic, Philosophy & Human Existence" },
-            { code:"GST113", name:"Nigerian Peoples & Culture" },
-            { code:"GST114", name:"Valuing the Teaching Profession I" },
-            { code:"GST115", name:"Lagos & Its Environs" },
-            { code:"GST116", name:"Intro to Yoruba Language & Culture" },
-            { code:"SLT101", name:"Intro to Science Laboratory Technology" },
-            { code:"BIO101", name:"General Biology I" },
-            { code:"CHM101", name:"General Chemistry I" },
-            { code:"PHY101", name:"General Physics I" },
-            { code:"MTH101", name:"Elementary Mathematics I" },
-            { code:"GST121", name:"Use of Library Skills & ICT" },
-            { code:"GST122", name:"Communication in English II" },
-            { code:"GST125", name:"Contemporary Health Issues" },
-            { code:"GST126", name:"Communication in Arabic" },
-            { code:"SLT102", name:"Laboratory Safety & Management" },
-            { code:"BIO102", name:"General Biology II" },
-            { code:"CHM102", name:"General Chemistry II" },
-            { code:"PHY102", name:"General Physics II" },
-            { code:"MTH102", name:"Elementary Mathematics II" },
-            { code:"PHY108", name:"General Practical Physics II" }
-        ],
-        "200": [
-            { code:"GST211", name:"Environment & Sustainable Development" },
-            { code:"GST212", name:"Application of Computer" },
-            { code:"GST214", name:"Valuing the Teaching Profession II" },
-            { code:"SLT201", name:"Laboratory Techniques I" },
-            { code:"SLT203", name:"Basic Instrumentation" },
-            { code:"SLT205", name:"Chemical Laboratory Technology" },
-            { code:"SLT207", name:"Biological Laboratory Technology" },
-            { code:"STA211", name:"Statistics for Biological Sciences" },
-            { code:"GST222", name:"Peace & Conflict Resolution" },
-            { code:"GST223", name:"Intro to Entrepreneurship" },
-            { code:"GST224", name:"Leadership Skills" },
-            { code:"GST225", name:"Yoruba Grammar & Communication" },
-            { code:"GST226", name:"Land Use & General Agriculture" },
-            { code:"SLT202", name:"Laboratory Techniques II" },
-            { code:"SLT204", name:"Physics Laboratory Technology" },
-            { code:"SLT206", name:"Quality Control & Assurance" },
-            { code:"SLT208", name:"Laboratory Management & Ethics" }
-        ],
-        "300": [
-            { code:"GST311", name:"Entrepreneurship" },
-            { code:"SLT301", name:"Advanced Laboratory Techniques" },
-            { code:"SLT303", name:"Instrument Maintenance & Calibration" },
-            { code:"SLT305", name:"Industrial & Environmental Analysis" },
-            { code:"SLT307", name:"Research Methods in SLT" },
-            { code:"SLT309", name:"Applied Microbiology for Technologists" },
-            { code:"ENT321", name:"Entrepreneurship & Business Management" },
-            { code:"SLT302", name:"Laboratory Automation & ICT" },
-            { code:"SLT304", name:"Analytical Instrumentation" },
-            { code:"SLT306", name:"Industrial Safety & Environmental Protection" },
-            { code:"SLT399", name:"SIWES / Industrial Training (12 weeks)" }
-        ],
-        "400": [
-            { code:"SLT401", name:"Advanced Analytical Techniques" },
-            { code:"SLT403", name:"Laboratory Quality Systems (ISO & GLP)" },
-            { code:"SLT405", name:"Environmental & Industrial Laboratory Practice" },
-            { code:"SLT407", name:"Seminar" },
-            { code:"ENT421", name:"Investment Marketing & Management" },
-            { code:"SLT402", name:"Laboratory Design & Management" },
-            { code:"SLT404", name:"Research Project" },
-            { code:"SLT406", name:"Forensic & Diagnostic Laboratory Techniques" }
-        ]
-    },
-    "Biology": {
-        "100": [
-            { code:"BIO101", name:"General Biology I" },
-            { code:"BIO107", name:"Experimental Biology I" },
-            { code:"CHM101", name:"General Chemistry I" },
-            { code:"CHM107", name:"Experimental Chemistry I" },
-            { code:"PHY101", name:"General Physics I" },
-            { code:"PHY107", name:"Experimental Physics I" },
-            { code:"MTH101", name:"General Mathematics I" },
-            { code:"GST111", name:"Communication in English I" },
-            { code:"GST122", name:"Communication in English II" }
-        ],
-        "200": [
-            { code:"BIO201", name:"Cell Biology" },
-            { code:"BIO203", name:"Introductory Genetics" },
-            { code:"BIO202", name:"Biological Techniques" },
-            { code:"MCB201", name:"General Microbiology I" },
-            { code:"CHM201", name:"Organic Chemistry I" },
-            { code:"CHM202", name:"Physical Chemistry" },
-            { code:"ENT211", name:"Entrepreneurship" }
-        ],
-        "300": [
-            { code:"BIO301", name:"Molecular Biology" },
-            { code:"BIO303", name:"Physiology" },
-            { code:"BIO305", name:"Ecology" },
-            { code:"BCH301", name:"Enzymology" },
-            { code:"MCB301", name:"Medical Microbiology" },
-            { code:"BIO399", name:"SIWES" }
-        ],
-        "400": [
-            { code:"BIO401", name:"Immunology" },
-            { code:"BIO403", name:"Biotechnology" },
-            { code:"BIO405", name:"Evolution" },
-            { code:"BIO407", name:"Seminar" },
-            { code:"BIO499", name:"Research Project" }
-        ]
-    },
-    "Computer Science": {
-        "100": [
-            { code:"CSC101", name:"Introduction to Computer Science" },
-            { code:"CSC102", name:"Introduction to Computing" },
-            { code:"MAT101", name:"Elementary Mathematics I" },
-            { code:"MAT161", name:"Introductory Statistics" },
-            { code:"PHY101", name:"General Physics I" },
-            { code:"GST101", name:"Use of English I" }
-        ],
-        "200": [
-            { code:"CSC201", name:"Computer Organization" },
-            { code:"CSC205", name:"Operating Systems" },
-            { code:"CSC213", name:"Data Structures & Algorithm Analysis" },
-            { code:"CSC215", name:"Discrete Mathematics" },
-            { code:"CSC221", name:"Data Structures" },
-            { code:"ENT211", name:"Entrepreneurship" },
-            { code:"MAT201", name:"Mathematical Methods I" }
-        ],
-        "300": [
-            { code:"CSC301", name:"Software Engineering" },
-            { code:"CSC311", name:"Database Management Systems" },
-            { code:"CSC319", name:"Compiler Construction" },
-            { code:"CSC321", name:"Computer Networks" },
-            { code:"CSC331", name:"Artificial Intelligence" },
-            { code:"CSC341", name:"Human Computer Interaction" }
-        ],
-        "400": [
-            { code:"CSC401", name:"Advanced Algorithms" },
-            { code:"CSC411", name:"Distributed Systems" },
-            { code:"CSC421", name:"Machine Learning" },
-            { code:"CSC431", name:"Cybersecurity" },
-            { code:"CSC499", name:"Final Year Project" }
-        ]
-    },
-    "Accounting": {
-        "100": [
-            { code:"ACC101", name:"Introduction to Accounting" },
-            { code:"ACC102", name:"Principles of Accounting" },
-            { code:"ECO101", name:"Principles of Economics I" },
-            { code:"BUS101", name:"Introduction to Business" },
-            { code:"MAT101", name:"Elementary Mathematics I" },
-            { code:"GST101", name:"Use of English I" }
-        ],
-        "200": [
-            { code:"ACC201", name:"Financial Accounting I" },
-            { code:"ACC203", name:"Cost Accounting I" },
-            { code:"ACC205", name:"Business Law" },
-            { code:"ACC207", name:"Management Principles" },
-            { code:"ECO201", name:"Microeconomics I" },
-            { code:"ENT211", name:"Entrepreneurship" }
-        ],
-        "300": [
-            { code:"ACC301", name:"Financial Accounting II" },
-            { code:"ACC303", name:"Auditing I" },
-            { code:"ACC305", name:"Taxation I" },
-            { code:"ACC307", name:"Management Accounting" }
-        ],
-        "400": [
-            { code:"ACC401", name:"Advanced Financial Accounting" },
-            { code:"ACC403", name:"Auditing II" },
-            { code:"ACC499", name:"Research Project" }
-        ]
-    },
-    "Agriculture": {
-        "100": [
-            { code:"AGR101", name:"Introduction to Agriculture" },
-            { code:"BIO101", name:"General Biology I" },
-            { code:"CHM101", name:"General Chemistry I" },
-            { code:"MAT101", name:"Elementary Mathematics I" },
-            { code:"GST101", name:"Use of English I" }
-        ],
-        "200": [
-            { code:"AGR201", name:"Crop Production" },
-            { code:"AGR203", name:"Animal Husbandry" },
-            { code:"AGR205", name:"Soil Science" },
-            { code:"ENT211", name:"Entrepreneurship" }
-        ],
-        "300": [
-            { code:"AGR301", name:"Agricultural Economics" },
-            { code:"AGR303", name:"Farm Management" },
-            { code:"AGR399", name:"SIWES" }
-        ],
-        "400": [
-            { code:"AGR401", name:"Agricultural Extension" },
-            { code:"AGR403", name:"Agricultural Policy" },
-            { code:"AGR499", name:"Research Project" }
-        ]
-    },
-    "Business Administration": {
-        "100": [
-            { code:"BUS101", name:"Introduction to Business" },
-            { code:"ECO101", name:"Principles of Economics I" },
-            { code:"ACC101", name:"Introduction to Accounting" },
-            { code:"MAT101", name:"Elementary Mathematics I" },
-            { code:"GST101", name:"Use of English I" }
-        ],
-        "200": [
-            { code:"BUS201", name:"Principles of Management" },
-            { code:"BUS203", name:"Business Communication" },
-            { code:"ECO201", name:"Microeconomics I" },
-            { code:"ACC201", name:"Financial Accounting I" },
-            { code:"ENT211", name:"Entrepreneurship" }
-        ],
-        "300": [
-            { code:"BUS301", name:"Human Resource Management" },
-            { code:"BUS303", name:"Marketing Management" },
-            { code:"BUS305", name:"Business Finance" }
-        ],
-        "400": [
-            { code:"BUS401", name:"Strategic Management" },
-            { code:"BUS403", name:"International Business" },
-            { code:"BUS499", name:"Research Project" }
-        ]
-    },
-    "Information Technology": {
-        "100": [
-            { code:"CSC101", name:"Introduction to Computer Science" },
-            { code:"CSC102", name:"Introduction to Computing" },
-            { code:"MAT101", name:"Elementary Mathematics I" },
-            { code:"GST101", name:"Use of English I" }
-        ],
-        "200": [
-            { code:"CSC201", name:"Computer Organization" },
-            { code:"CSC205", name:"Operating Systems" },
-            { code:"CSC213", name:"Data Structures" },
-            { code:"ENT211", name:"Entrepreneurship" }
-        ],
-        "300": [
-            { code:"CSC301", name:"Software Engineering" },
-            { code:"CSC311", name:"Database Management Systems" },
-            { code:"CSC321", name:"Computer Networks" }
-        ],
-        "400": [
-            { code:"CSC401", name:"IT Project Management" },
-            { code:"CSC411", name:"Information Security" },
-            { code:"CSC499", name:"Final Year Project" }
-        ]
-    },
-    "Zoology": {
-        "100": [
-            { code:"ZOO101", name:"General Zoology" },
-            { code:"BIO101", name:"General Biology I" },
-            { code:"CHM101", name:"General Chemistry I" },
-            { code:"MAT101", name:"Elementary Mathematics I" },
-            { code:"GST101", name:"Use of English I" }
-        ],
-        "200": [
-            { code:"ZOO201", name:"Invertebrate Zoology" },
-            { code:"ZOO203", name:"Vertebrate Zoology" },
-            { code:"BIO201", name:"Cell Biology" },
-            { code:"ENT211", name:"Entrepreneurship" }
-        ],
-        "300": [
-            { code:"ZOO301", name:"Animal Physiology" },
-            { code:"ZOO303", name:"Entomology" },
-            { code:"ZOO399", name:"SIWES" }
-        ],
-        "400": [
-            { code:"ZOO401", name:"Applied Zoology" },
-            { code:"ZOO403", name:"Wildlife Management" },
-            { code:"ZOO499", name:"Research Project" }
-        ]
-    },
-    "Entrepreneurship": {
-        "100": [
-            { code:"ENT101", name:"Introduction to Entrepreneurship" },
-            { code:"BUS101", name:"Introduction to Business" },
-            { code:"GST101", name:"Use of English I" }
-        ],
-        "200": [
-            { code:"ENT211", name:"Entrepreneurship" },
-            { code:"BUS201", name:"Principles of Management" },
-            { code:"ACC201", name:"Financial Accounting I" }
-        ],
-        "300": [
-            { code:"ENT321", name:"Entrepreneurship & Business Management" },
-            { code:"BUS301", name:"Human Resource Management" }
-        ],
-        "400": [
-            { code:"ENT421", name:"Investment Marketing & Management" },
-            { code:"BUS401", name:"Strategic Management" },
-            { code:"ENT499", name:"Research Project" }
-        ]
-    }
-  },
-
-  // Verified against UNILAG's own Centre for General Studies site
-  // (gstonline.unilag.edu.ng). Department-specific courses not yet added --
-  // students here currently see general-studies courses only.
-  "University of Lagos": {
-    "_general": {
-        "100": [
-            { code:"GST102", name:"Philosophy, Logic and Philosophy of Science" },
-            { code:"GST103", name:"Nigerian Peoples and Culture" },
-            { code:"GST105", name:"Use of English/Library" }
-        ],
-        "200": [
-            { code:"GST201", name:"General African Studies" },
-            { code:"GST214", name:"Basic Computer Studies" }
-        ],
-        "300": [
-            { code:"GST307", name:"Entrepreneurship and Business Innovation Studies" }
-        ]
-    }
-  },
-
-  // Verified against University of Ibadan's own published Faculty of
-  // Technology 100-level course list (ui.edu.ng). Department-specific courses
-  // not yet added -- students here currently see general-studies courses only.
-  "University of Ibadan": {
-    "_general": {
-        "100": [
-            { code:"GES101", name:"Use of English" },
-            { code:"GES107", name:"Reproductive Health: STIs and HIV" },
-            { code:"GES108", name:"Introduction to French" }
-        ],
-        "200": [
-            { code:"GES201", name:"Use of English II" }
-        ]
-    }
-  }
-};
-
-// ============================================================
-//  STATIC MATERIALS
-// ============================================================
-const staticMaterials = [
-    { title:"BCH 101 - Lipids of Biological Importance", author:"Unknown", license:"Educational Use", link:"static/materials/Lipids-of-Biological-Importance.pdf", course:"Biochemistry", level:"100", semester:"First Semester", courseCode:"BCH101", isStatic:true, source:'static' },
-    { title:"BCH 101 – Carbohydrates", author:"ADEYEMO, ADESEGUN GIDEON", license:"Educational Use", link:"static/materials/BCH-101-Carbohydrate.pdf", course:"Biochemistry", level:"100", semester:"First Semester", courseCode:"BCH101", isStatic:true, source:'static' },
-    { title:"BCH 101 – Amino Acids and Proteins", author:"Adeyemo, Adesegun Gideon", license:"Educational Use", link:"static/materials/BCH-101-Amino-Acids-and-Proteins.pdf", course:"Biochemistry", level:"100", semester:"First Semester", courseCode:"BCH101", isStatic:true, source:'static' },
-    { title:"MAT 101 OER – Likely Exam Questions", author:"Sir Temi", license:"OER", link:"static/materials/MAT-101-OER.pdf", course:"Mathematics", level:"100", semester:"First Semester", courseCode:"MAT101", isStatic:true, source:'static' },
-    { title:"CSC 102 – Introduction to Computing Concepts", author:"Prof. Aribisala & Dr. Zubair Adam", license:"Educational Use", link:"static/materials/CSC-102-Introduction-to-Computing-Concepts.pdf", course:"Computer Science", level:"100", semester:"Second Semester", courseCode:"CSC102", isStatic:true, source:'static' }
-];
-
-// ============================================================
 //  BADGE HELPER
 // ============================================================
 function getBadge(title) {
@@ -1244,68 +384,90 @@ function getSourceBadge(source) {
 // ============================================================
 //  STATE
 // ============================================================
-let selectedCourses = [];
-let uploadedMaterials = [];
-let googleMaterials = [];
+let currentCourseFilter = '';
 let currentFilter = 'all';
 let searchQuery = '';
-let isLoadingGoogle = false;
+let currentPage = 1;
+let hasMoreMaterials = false;
 let currentViewingMaterial = null;
+let myCourses = [];
+let loadedMaterialsById = {};
+let searchDebounceTimer = null;
 
 // ============================================================
-//  GOOGLE MATERIALS FETCH
+//  MY COURSES -- same resolver-backed source as the dashboard/course pages
+//  (services/academic_context.py via /api/user-courses), not a separate
+//  hardcoded curriculum. Populates the course filter dropdown.
+// ============================================================
+async function loadMyCourses() {
+    try {
+        const res = await fetch('/api/user-courses');
+        const data = await res.json();
+        myCourses = data.courses || [];
+        const select = document.getElementById('courseFilterSelect');
+        myCourses.forEach(c => {
+            const opt = document.createElement('option');
+            opt.value = c.code;
+            opt.textContent = c.name;
+            select.appendChild(opt);
+        });
+        if (!myCourses.length) {
+            document.getElementById('heroSub').textContent = userDepartment
+                ? `We don't have ${userDepartment} ${userLevel} Level courses mapped yet — showing materials tagged for your department instead.`
+                : 'Complete your academic profile to see materials matched to your courses.';
+        }
+    } catch (e) {
+        console.error('Failed to load courses', e);
+    }
+}
+
+function courseTitleFor(code) {
+    const c = myCourses.find(c => c.code === code);
+    return c ? c.name.replace(code + ' — ', '') : null;
+}
+
+// ============================================================
+//  GOOGLE / WEB DISCOVERY -- unchanged backend, but now re-loads the real
+//  paginated library afterward instead of merging a second, separate array;
+//  fetch-google-materials-batch already writes results into the Material
+//  table, so refreshing the normal query is all that's needed to show them.
 // ============================================================
 async function fetchGoogleMaterials() {
-    if (!selectedCourses.length) {
-        updateGoogleStatus('No courses selected', 'idle');
+    const codes = currentCourseFilter ? [currentCourseFilter] : myCourses.map(c => c.code).slice(0, 5);
+    if (!codes.length) {
+        updateGoogleStatus('No courses to search for yet', 'idle');
         return;
     }
-    
-    isLoadingGoogle = true;
+
     updateGoogleStatus('Searching web for materials...', 'loading');
     document.getElementById('refreshGoogleBtn').disabled = true;
-    
+
     try {
         const response = await fetch('/api/fetch-google-materials-batch', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                course_codes: selectedCourses.slice(0, 5),
+                course_codes: codes,
                 department: userDepartment,
                 level: userLevelNum,
                 semester: userSemester
             })
         });
-        
         const data = await response.json();
 
-        if (data.success) {
-            googleMaterials = (data.materials || []).map(m => ({
-                ...m,
-                isStatic: false,
-                source: m.source || 'google_auto',
-                link: m.external_url || m.file_url,
-                courseCode: m.course_code || '',
-                title: m.title || 'Untitled Material'
-            }));
-
-            if (googleMaterials.length) {
-                updateGoogleStatus(`Found ${googleMaterials.length} materials`, 'success');
-            } else if (data.search_unavailable) {
-                updateGoogleStatus('Web search is temporarily down — showing archived materials only', 'error');
-            } else {
-                updateGoogleStatus('No materials found for these courses yet', 'idle');
-            }
+        if (data.success && (data.materials || []).length) {
+            updateGoogleStatus(`Found ${data.materials.length} materials`, 'success');
+            await loadMaterials(true);
+        } else if (data.search_unavailable) {
+            updateGoogleStatus('Web search is temporarily down', 'error');
         } else {
-            updateGoogleStatus('No web materials found', 'idle');
+            updateGoogleStatus('No new materials found for these courses', 'idle');
         }
     } catch (error) {
         console.error('Google fetch error:', error);
         updateGoogleStatus('Search unavailable', 'error');
     } finally {
-        isLoadingGoogle = false;
         document.getElementById('refreshGoogleBtn').disabled = false;
-        renderLibrary();
     }
 }
 
@@ -1313,7 +475,7 @@ function updateGoogleStatus(text, status) {
     const statusEl = document.getElementById('googleStatus');
     const textEl = document.getElementById('googleStatusText');
     const iconEl = statusEl.querySelector('.status-icon');
-    
+
     statusEl.className = 'google-status';
     if (status === 'loading') {
         statusEl.classList.add('loading');
@@ -1326,119 +488,170 @@ function updateGoogleStatus(text, status) {
     } else {
         iconEl.textContent = '🌐';
     }
-    
+
     textEl.textContent = text;
 }
 
 // ============================================================
-//  FETCH UPLOADED MATERIALS FROM BACKEND
+//  MATERIALS -- the one real, database-backed, paginated source. No client-
+//  side merging of static/uploaded/google arrays anymore: everything a
+//  student sees here is a real Material row scoped server-side to their own
+//  department/level (routes/materials_routes.py::fetch_materials).
 // ============================================================
-async function fetchUploadedMaterials() {
+async function loadMaterials(reset) {
+    const grid = document.getElementById('materialsGrid');
+    const loadMoreBtn = document.getElementById('loadMoreBtn');
+
+    if (reset) {
+        currentPage = 1;
+        grid.innerHTML = `<div class="empty-state">Loading your materials…</div>`;
+    } else {
+        currentPage += 1;
+    }
+
+    const params = new URLSearchParams({ page: currentPage, per_page: 12 });
+    if (currentCourseFilter) params.set('course_code', currentCourseFilter);
+    if (searchQuery.trim()) params.set('q', searchQuery.trim());
+    if (currentFilter !== 'all') params.set('type', currentFilter);
+
     try {
-        const res = await fetch('/api/fetch-materials?course=&level=&semester=');
-        if (res.ok) {
-            const data = await res.json();
-            uploadedMaterials = (data.materials || []).map(m => ({
-                ...m,
-                isStatic: false,
-                source: m.source || 'uploaded',
-                courseCode: m.course_code || '',
-                link: m.file_url || m.external_url || ''
-            }));
+        const res = await fetch(`/api/fetch-materials?${params.toString()}`);
+        const data = await res.json();
+        hasMoreMaterials = !!data.has_more;
+        loadMoreBtn.style.display = hasMoreMaterials ? 'inline-block' : 'none';
+
+        const items = data.materials || [];
+        items.forEach(m => { loadedMaterialsById[m.id] = m; });
+
+        if (reset) {
+            if (!items.length) {
+                grid.innerHTML = `<div class="empty-state">${emptyStateMessage()}</div>`;
+                return;
+            }
+            grid.innerHTML = items.map(renderMaterialCard).join('');
+        } else if (items.length) {
+            grid.insertAdjacentHTML('beforeend', items.map(renderMaterialCard).join(''));
         }
-    } catch(e) {
-        uploadedMaterials = [];
+    } catch (e) {
+        console.error('Failed to load materials', e);
+        if (reset) grid.innerHTML = `<div class="empty-state">Couldn't load materials right now. Please try again.</div>`;
     }
 }
 
-// ============================================================
-//  RENDER LIBRARY
-// ============================================================
-function getMaterialsToShow() {
-    const all = [...staticMaterials, ...uploadedMaterials, ...googleMaterials];
-    if (!selectedCourses.length) return all;
-    return all.filter(m => {
-        const matchesCourse = selectedCourses.includes(m.courseCode);
-        const matchesSemester = !userSemester || m.semester === userSemester;
-        return matchesCourse && matchesSemester;
-    });
-}
-
-function applySearchAndFilter(materials) {
-    let result = [...materials];
-    const seen = new Set();
-    result = result.filter(m => {
-        const key = m.link || m.id;
-        if (seen.has(key)) return false;
-        seen.add(key);
-        return true;
-    });
-    if (currentFilter !== 'all') {
-        result = result.filter(m => getBadge(m.title).label === currentFilter);
+function emptyStateMessage() {
+    if (currentCourseFilter) {
+        return `📭 No materials have been added for ${currentCourseFilter} yet. <a href="#" style="color:#58a6ff;" onclick="event.preventDefault(); openUploadModal();">Upload one →</a>`;
     }
     if (searchQuery.trim()) {
-        const q = searchQuery.toLowerCase();
-        result = result.filter(m =>
-            (m.title || '').toLowerCase().includes(q) ||
-            (m.author || '').toLowerCase().includes(q) ||
-            (m.course || '').toLowerCase().includes(q) ||
-            (m.courseCode || '').toLowerCase().includes(q)
-        );
+        return `🔍 No materials matched "${searchQuery}" in your library. Try <a href="/search" style="color:#58a6ff;">searching all of Academia →</a>`;
     }
-    return result;
+    if (currentFilter !== 'all') {
+        return `No "${currentFilter.toLowerCase()}" materials for your courses yet.`;
+    }
+    return `✨ No materials for your courses yet. <a href="#" style="color:#58a6ff;" onclick="event.preventDefault(); openUploadModal();">Upload the first one →</a>`;
 }
 
-function renderLibrary() {
-    const base = getMaterialsToShow();
-    const final = applySearchAndFilter(base);
-    const grid = document.getElementById('materialsGrid');
+// ============================================================
+//  RENDER CARD
+// ============================================================
+function renderMaterialCard(m) {
+    const badge = getBadge(m.title || '');
+    const sourceBadge = getSourceBadge(m.source);
+    const icon = badge.label === 'PAST QUESTIONS' ? '📝' : (badge.label === 'TEXTBOOK' ? '📚' : (badge.label === 'LECTURE NOTES' ? '📖' : '📘'));
+    const courseTitle = m.course_code ? courseTitleFor(m.course_code) : null;
+    const dateStr = m.created_at ? new Date(m.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : '';
 
-    if (!final.length) {
-        grid.innerHTML = `<div class="empty-state">✨ No materials found for your selection. Try another filter or <a href="#" style="color:#58a6ff;" onclick="document.getElementById('searchInput').value=''; searchQuery=''; renderLibrary();">clear search</a>.</div>`;
-        return;
-    }
-
-    grid.innerHTML = final.map(m => {
-        const badge = getBadge(m.title);
-        const sourceBadge = getSourceBadge(m.source);
-        const icon = badge.label === 'PAST QUESTIONS' ? '📝' : (badge.label === 'TEXTBOOK' ? '📚' : (badge.label === 'LECTURE NOTES' ? '📖' : '📘'));
-        const dept = m.course || m.department || 'General';
-        const safeLink = (m.link || '').replace(/'/g, "\\'");
-        const safeTitle = (m.title || 'Untitled').replace(/'/g, "\\'");
-        const isGoogle = m.source === 'google_auto';
-        
-        return `
-            <div class="material-card ${isGoogle ? 'google-source' : ''}" onclick='openMaterial(${JSON.stringify(m)})'>
-                <div class="card-top">
-                    <span class="material-icon">${icon}</span>
-                    <div class="material-title">${m.title || 'Untitled Material'}</div>
-                </div>
-                <div class="dept-tag">${dept}</div>
-                <div class="meta-row">
-                    <span>📄 PDF</span>
-                    <span>${m.courseCode || ''}</span>
-                </div>
-                <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
-                    <span class="badge" style="background:${badge.color}22; color:${badge.color}; border:1px solid ${badge.color}44;">${badge.label}</span>
-                    <span class="source-badge ${sourceBadge.class}">${sourceBadge.label}</span>
-                </div>
-                <div class="card-bottom">
-                    <span class="pdf-label">📌 ${m.author || m.uploaded_by || 'Unknown'}</span>
-                    <div class="card-icons">
-                        <span title="Bookmark">🔖</span>
-                        <span title="Download" onclick="event.stopPropagation(); downloadMaterial('${safeLink}','${safeTitle}')">⬇️</span>
-                    </div>
+    return `
+        <div class="material-card ${m.source === 'google_auto' ? 'google-source' : ''}" onclick="openMaterialById(${m.id})">
+            <div class="card-top">
+                <span class="material-icon">${icon}</span>
+                <div class="material-title">${m.title || 'Untitled Material'}</div>
+            </div>
+            <div class="dept-tag">${m.course_code || m.department}${courseTitle ? ' — ' + courseTitle : ''}</div>
+            ${m.description ? `<div class="card-desc">${m.description}</div>` : ''}
+            <div class="meta-row">
+                <span>📄 PDF</span>
+                <span class="card-date">${dateStr}</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
+                <span class="badge" style="background:${badge.color}22; color:${badge.color}; border:1px solid ${badge.color}44;">${badge.label}</span>
+                <span class="source-badge ${sourceBadge.class}">${sourceBadge.label}</span>
+            </div>
+            <div class="ai-actions-row" onclick="event.stopPropagation();">
+                <button class="ai-action-btn" onclick="askAboutCard(${m.id}, 'explain', this)">💡 Explain</button>
+                <button class="ai-action-btn" onclick="askAboutCard(${m.id}, 'summarize', this)">📝 Summarize</button>
+                <button class="ai-action-btn" onclick="askAboutCard(${m.id}, 'quiz', this)">❓ Quiz me</button>
+            </div>
+            <div class="ai-result-box" id="card-ai-result-${m.id}" onclick="event.stopPropagation();"></div>
+            <div class="card-bottom">
+                <span class="pdf-label">📌 ${m.author || m.uploaded_by || 'Unknown'}</span>
+                <div class="card-icons">
+                    <span title="Download" onclick="event.stopPropagation(); downloadMaterialById(${m.id})">⬇️</span>
                 </div>
             </div>
-        `;
-    }).join('');
+        </div>
+    `;
 }
 
 // ============================================================
-//  PDF VIEWER
+//  AI ACTIONS -- reuses the exact same /api/materials/<id>/ai-action
+//  endpoint the course page uses (routes/ai_routes.py). No second AI
+//  implementation: same retrieval, same honest-failure behavior.
 // ============================================================
+async function askAboutCard(materialId, mode, btn) {
+    const box = document.getElementById(`card-ai-result-${materialId}`);
+    const original = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = 'Thinking…';
+    box.classList.add('show');
+    box.textContent = 'Nelavista is reading this material…';
+    try {
+        const res = await fetch(`/api/materials/${materialId}/ai-action`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ mode })
+        });
+        const data = await res.json();
+        box.innerHTML = data.answer;
+    } catch (e) {
+        box.textContent = "Couldn't reach Nelavista — please try again.";
+    }
+    btn.disabled = false;
+    btn.textContent = original;
+}
+
+async function askAboutCurrentMaterial(mode) {
+    if (!currentViewingMaterial || !currentViewingMaterial.id) {
+        alert("AI actions aren't available for this item yet.");
+        return;
+    }
+    const box = document.getElementById('viewerAiResult');
+    box.classList.add('show');
+    box.textContent = 'Nelavista is reading this material…';
+    try {
+        const res = await fetch(`/api/materials/${currentViewingMaterial.id}/ai-action`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ mode })
+        });
+        const data = await res.json();
+        box.innerHTML = data.answer;
+    } catch (e) {
+        box.textContent = "Couldn't reach Nelavista — please try again.";
+    }
+}
+
+// ============================================================
+//  PDF VIEWER (reader) -- opens by id looked up from the last-rendered page,
+//  so no material data has to round-trip through an HTML attribute.
+// ============================================================
+function openMaterialById(id) {
+    const material = loadedMaterialsById[id];
+    if (material) openMaterial(material);
+}
+
 function openMaterial(material) {
-    const link = material.link || material.file_url || material.external_url;
+    const link = material.file_url || material.external_url;
     if (!link) return alert('File not available.');
 
     // Every material in the DB has already been verified embeddable (checked
@@ -1448,39 +661,42 @@ function openMaterial(material) {
     // routes through the in-app iframe viewer below rather than a new tab.
     currentViewingMaterial = material;
 
-    // Reset iframe and show loader
+    // Real per-student view tracking -- same MaterialView system the
+    // dashboard's Continue Studying / Recent Materials and the course page's
+    // progress section already read from (services/progress_service.py).
+    if (material.id) {
+        fetch(`/api/materials/${material.id}/view`, { method: 'POST' }).catch(() => {});
+    }
+
+    // Reset iframe, loader, and any previous AI answer
     const iframe = document.getElementById('pdfViewerFrame');
     const loader = document.getElementById('pdfLoader');
+    const aiResult = document.getElementById('viewerAiResult');
 
     iframe.classList.remove('loaded');
     loader.classList.remove('hidden');
-    iframe.src = ''; // Clear previous
+    iframe.src = '';
+    aiResult.classList.remove('show');
+    aiResult.textContent = '';
 
-    // Set title and source badge
     document.getElementById('viewerTitle').textContent = material.title || 'Document';
 
     const sourceBadge = getSourceBadge(material.source);
     document.getElementById('viewerSourceBadge').innerHTML = `
         <span class="source-badge ${sourceBadge.class}">${sourceBadge.label}</span>
-        <span style="color:#6e7681;">${material.courseCode || ''}</span>
+        <span style="color:#6e7681;">${material.course_code || ''}</span>
     `;
 
-    // Show modal
     document.getElementById('pdfViewerModal').classList.add('show');
 
-    // Load into the iframe
     setTimeout(() => {
         iframe.src = link;
-
-        // Handle load event
         iframe.onload = () => {
             setTimeout(() => {
                 loader.classList.add('hidden');
                 iframe.classList.add('loaded');
             }, 300);
         };
-
-        // Fallback timeout
         setTimeout(() => {
             if (!iframe.classList.contains('loaded')) {
                 loader.classList.add('hidden');
@@ -1501,9 +717,13 @@ function closePdfViewer() {
 
 function downloadCurrentMaterial() {
     if (currentViewingMaterial) {
-        const link = currentViewingMaterial.link || currentViewingMaterial.file_url || currentViewingMaterial.external_url;
-        downloadMaterial(link, currentViewingMaterial.title);
+        downloadMaterial(currentViewingMaterial.file_url || currentViewingMaterial.external_url, currentViewingMaterial.title);
     }
+}
+
+function downloadMaterialById(id) {
+    const m = loadedMaterialsById[id];
+    if (m) downloadMaterial(m.file_url || m.external_url, m.title);
 }
 
 function downloadMaterial(link, title) {
@@ -1515,182 +735,6 @@ function downloadMaterial(link, title) {
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
-}
-
-// ============================================================
-//  ONBOARDING
-// ============================================================
-function showOnboarding(preSelected) {
-    // No university set (the historical default -- most existing students
-    // predate this field) falls back to Lagos State University's curriculum,
-    // same as before this feature existed. An explicitly-set university we
-    // don't have curated course codes for gets an empty list instead of being
-    // shown another school's codes -- the "browse all materials" fallback
-    // below handles that gracefully.
-    const universityKey = !userUniversity
-        ? "Lagos State University"
-        : (COURSE_CODES_DB[userUniversity] ? userUniversity : null);
-    // Merge general-studies courses (under the "_general" pseudo-department,
-    // which applies to every student at that school regardless of their real
-    // department) with department-specific ones. Some schools we've only
-    // researched general-studies codes for so far -- this still surfaces
-    // those instead of showing nothing until a department-specific curriculum
-    // gets added later.
-    const generalCourses = universityKey
-        ? ((COURSE_CODES_DB[universityKey]['_general'] || {})[userLevelNum] || [])
-        : [];
-    const deptCourses = universityKey
-        ? ((COURSE_CODES_DB[universityKey][userDepartment] || {})[userLevelNum] || [])
-        : [];
-    const courseList = [...generalCourses, ...deptCourses];
-    const hasCourses = courseList.length > 0;
-
-    const root = document.getElementById('onboardingRoot');
-    root.innerHTML = `
-        <div class="onboarding-screen" id="onboardingScreen">
-            <div class="onboarding-inner">
-                <div class="onboarding-top">
-                    <div>
-                        <div class="logo-area" style="margin-bottom:8px;">
-                            <span class="logo-text">Academic Archive</span>
-                            <span class="logo-badge">Nelavista</span>
-                        </div>
-                        <h2 class="onboarding-title">📚 Choose Your Courses</h2>
-                        <p class="onboarding-sub">Select the course codes you are studying this semester. You can always edit this later.</p>
-                    </div>
-                </div>
-
-                <div class="onboarding-meta">
-                    <div class="dept-pill">🎓 ${userDepartment} &nbsp;•&nbsp; ${userLevel} Level</div>
-                    <button class="select-all-btn" id="selectAllBtn">Select All</button>
-                </div>
-
-                ${hasCourses ? `
-                    <div class="section-label">${userDepartment} courses at ${userLevel} Level</div>
-                    <div class="courses-grid" id="coursesGrid"></div>
-                ` : `
-                    <div style="background:#161b22; border:1px solid #30363d; border-radius:14px; padding:24px; text-align:center; color:#8b949e; margin-bottom:24px;">
-                        <div style="font-size:2rem; margin-bottom:8px;">🔍</div>
-                        <div style="font-weight:600; color:#e6edf3; margin-bottom:4px;">No course codes found</div>
-                        <div style="font-size:0.85rem;">Course codes for ${userDepartment} ${userLevel} Level are not yet in our database. You can still browse all available materials.</div>
-                    </div>
-                `}
-
-                <div class="selected-count" id="selectedCount">
-                    <span id="countNum">0</span> courses selected
-                </div>
-
-                <button class="continue-btn" id="continueBtn" ${hasCourses ? 'disabled' : ''}>
-                    ${hasCourses ? 'Continue to Library →' : 'Browse All Materials →'}
-                </button>
-            </div>
-        </div>
-    `;
-
-    if (!hasCourses) {
-        document.getElementById('continueBtn').onclick = () => {
-            localStorage.setItem(getStorageKey(), JSON.stringify([]));
-            document.getElementById('onboardingRoot').innerHTML = '';
-            launchMainApp([]);
-        };
-        return;
-    }
-
-    const grid = document.getElementById('coursesGrid');
-    let tempSelected = preSelected ? [...preSelected] : [];
-
-    function updateCount() {
-        document.getElementById('countNum').textContent = tempSelected.length;
-        document.getElementById('continueBtn').disabled = tempSelected.length === 0;
-    }
-
-    courseList.forEach(c => {
-        const chip = document.createElement('div');
-        chip.className = 'course-chip' + (tempSelected.includes(c.code) ? ' selected' : '');
-        chip.innerHTML = `<span class="chip-code">${c.code}</span><span class="chip-name">${c.name}</span><span class="chip-check">✓</span>`;
-        chip.addEventListener('click', () => {
-            chip.classList.toggle('selected');
-            if (chip.classList.contains('selected')) {
-                if (!tempSelected.includes(c.code)) tempSelected.push(c.code);
-            } else {
-                tempSelected = tempSelected.filter(x => x !== c.code);
-            }
-            updateCount();
-        });
-        grid.appendChild(chip);
-    });
-
-    updateCount();
-
-    document.getElementById('selectAllBtn').addEventListener('click', () => {
-        const allSelected = tempSelected.length === courseList.length;
-        if (allSelected) {
-            tempSelected = [];
-            document.querySelectorAll('.course-chip').forEach(c => c.classList.remove('selected'));
-        } else {
-            tempSelected = courseList.map(c => c.code);
-            document.querySelectorAll('.course-chip').forEach(c => c.classList.add('selected'));
-        }
-        document.getElementById('selectAllBtn').textContent = allSelected ? 'Select All' : 'Deselect All';
-        updateCount();
-    });
-
-    document.getElementById('continueBtn').onclick = () => {
-        if (tempSelected.length === 0) return;
-        localStorage.setItem(getStorageKey(), JSON.stringify(tempSelected));
-        document.getElementById('onboardingRoot').innerHTML = '';
-        launchMainApp(tempSelected);
-    };
-}
-
-// ============================================================
-//  LAUNCH MAIN APP
-// ============================================================
-async function launchMainApp(courses) {
-    selectedCourses = courses;
-    document.getElementById('mainApp').style.display = 'block';
-
-    await fetchUploadedMaterials();
-    
-    if (selectedCourses.length > 0) {
-        fetchGoogleMaterials();
-    }
-    
-    renderLibrary();
-
-    document.getElementById('searchInput').addEventListener('input', e => {
-        searchQuery = e.target.value;
-        renderLibrary();
-    });
-
-    document.querySelectorAll('.filter-pill').forEach(btn => {
-        btn.addEventListener('click', () => {
-            document.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            currentFilter = btn.dataset.filter;
-            renderLibrary();
-        });
-    });
-
-    document.querySelectorAll('.nav-tab').forEach(tab => {
-        tab.addEventListener('click', () => {
-            if (tab.dataset.tab !== 'library') alert('Coming soon!');
-        });
-    });
-
-    document.getElementById('menuBtn').onclick = () => window.location.href = '/dashboard';
-
-    document.getElementById('editCoursesBtn').onclick = () => {
-        const saved = JSON.parse(localStorage.getItem(getStorageKey()) || '[]');
-        document.getElementById('mainApp').style.display = 'none';
-        showOnboarding(saved);
-    };
-
-    document.getElementById('fabBtn').onclick = () => openUploadModal();
-    
-    document.addEventListener('keydown', e => {
-        if (e.key === 'Escape') closePdfViewer();
-    });
 }
 
 // ============================================================
@@ -1722,7 +766,7 @@ async function handleUpload(e) {
         let pct = 0;
         const interval = setInterval(() => { pct = Math.min(pct + 15, 85); progressFill.style.width = pct + '%'; }, 300);
 
-        const res = await fetch('/api/upload-material', { method:'POST', body:formData });
+        const res = await fetch('/api/upload-material', { method: 'POST', body: formData });
         clearInterval(interval);
         progressFill.style.width = '100%';
         const data = await res.json();
@@ -1730,12 +774,11 @@ async function handleUpload(e) {
         if (data.success) {
             closeUploadModal();
             document.getElementById('uploadForm').reset();
-            await fetchUploadedMaterials();
-            renderLibrary();
+            await loadMaterials(true);
         } else {
             alert('Upload failed: ' + (data.error || 'Unknown error'));
         }
-    } catch(err) {
+    } catch (err) {
         alert('Upload error: ' + err.message);
     } finally {
         btn.disabled = false;
@@ -1750,20 +793,53 @@ window.closeUploadModal = closeUploadModal;
 window.closePdfViewer = closePdfViewer;
 window.downloadCurrentMaterial = downloadCurrentMaterial;
 window.fetchGoogleMaterials = fetchGoogleMaterials;
-window.openMaterial = openMaterial;
-window.downloadMaterial = downloadMaterial;
+window.openMaterialById = openMaterialById;
+window.downloadMaterialById = downloadMaterialById;
+window.askAboutCard = askAboutCard;
+window.askAboutCurrentMaterial = askAboutCurrentMaterial;
+window.openUploadModal = openUploadModal;
+window.loadMaterials = loadMaterials;
 
 // ============================================================
-//  INIT
+//  INIT -- no onboarding gate: a student's real courses/materials are
+//  already known from their profile, so the library loads directly.
 // ============================================================
-(function init() {
-    const saved = localStorage.getItem(getStorageKey());
-    if (saved === null) {
-        showOnboarding(null);
-    } else {
-        const parsed = JSON.parse(saved);
-        launchMainApp(parsed);
-    }
+(async function init() {
+    await loadMyCourses();
+    await loadMaterials(true);
+
+    document.getElementById('searchInput').addEventListener('input', e => {
+        searchQuery = e.target.value;
+        clearTimeout(searchDebounceTimer);
+        searchDebounceTimer = setTimeout(() => loadMaterials(true), 350);
+    });
+
+    document.getElementById('courseFilterSelect').addEventListener('change', e => {
+        currentCourseFilter = e.target.value;
+        loadMaterials(true);
+    });
+
+    document.querySelectorAll('.filter-pill').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentFilter = btn.dataset.filter;
+            loadMaterials(true);
+        });
+    });
+
+    document.querySelectorAll('.nav-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            if (tab.dataset.tab !== 'library') alert('Coming soon!');
+        });
+    });
+
+    document.getElementById('menuBtn').onclick = () => window.location.href = '/dashboard';
+    document.getElementById('fabBtn').onclick = () => openUploadModal();
+
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') closePdfViewer();
+    });
 })();
 </script>
 </body>

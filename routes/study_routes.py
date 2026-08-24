@@ -1,8 +1,10 @@
 from flask import Blueprint, request, jsonify, session
 from utils.helpers import login_required
-from models import User, Material, StudySession, Exam
+from models import User, StudySession, Exam
 from extensions import db
 from datetime import datetime, date, timedelta
+from services.academic_context import resolve_academic_context
+from services.progress_service import get_course_materials_progress
 
 study_bp = Blueprint('study', __name__)
 
@@ -156,7 +158,11 @@ def manage_exams():
 @study_bp.route('/api/user-courses')
 @login_required
 def get_user_courses():
-    """Get user's active courses based on department and level"""
+    """Real courses for this student's actual university/faculty/department/level,
+    resolved from the taxonomy (see services/academic_context.py) -- never a hardcoded
+    or invented course list. A student the taxonomy doesn't cover yet (unresolved
+    university/department) genuinely gets an empty list; the dashboard already has an
+    honest empty state for that ("No courses found. Browse materials →")."""
     try:
         username = session['user']['username']
         user = User.query.filter_by(username=username).first()
@@ -164,44 +170,19 @@ def get_user_courses():
         if not user:
             return jsonify({'error': 'User not found'}), 404
 
-        # Get materials that match user's department and level
-        materials = Material.query.filter_by(
-            department=user.department,
-            level=user.level,
-            is_approved=True
-        ).limit(4).all()
-
+        ctx = resolve_academic_context(user)
         courses = []
-        seen_courses = set()
-
-        for material in materials:
-            if material.department not in seen_courses:
-                seen_courses.add(material.department)
-                courses.append({
-                    'name': material.department,
-                    'type': material.course_type or 'CORE',
-                    'next_topic': material.next_topic or 'Continue studying',
-                    'progress': material.progress or 0
-                })
-
-        # If no courses found, add default ones based on department
-        if not courses:
-            default_courses = {
-                'Computer Science': ['Data Structures', 'Algorithms', 'Database Systems'],
-                'Biochemistry': ['Molecular Biology', 'Enzymology', 'Metabolism'],
-                'Accounting': ['Financial Accounting', 'Management Accounting', 'Taxation'],
-                'Botany': ['Plant Physiology', 'Plant Taxonomy', 'Ecology'],
-                'Zoology': ['Animal Physiology', 'Evolution', 'Ecology']
-            }
-
-            dept_courses = default_courses.get(user.department, ['Introduction to ' + user.department])
-            for course_name in dept_courses[:3]:
-                courses.append({
-                    'name': course_name,
-                    'type': 'CORE',
-                    'next_topic': 'Start learning',
-                    'progress': 0
-                })
+        for course in ctx.courses:
+            viewed, total = get_course_materials_progress(user, course.code)
+            progress = round(viewed / total * 100) if total else 0
+            courses.append({
+                'code': course.code,
+                'name': f"{course.code} — {course.title}",
+                'type': course.course_type or 'CORE',
+                'next_topic': 'Continue studying' if viewed else 'Start learning',
+                'progress': progress,
+                'link': f"/courses/{course.code}",
+            })
 
         return jsonify({
             'success': True,

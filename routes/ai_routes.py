@@ -6,11 +6,12 @@ import shutil
 import time
 import traceback
 from datetime import datetime
-from models import User
+from models import User, Material
 from flask import Blueprint, render_template, request, session, jsonify, send_from_directory, current_app
 from utils.helpers import login_required, debug_print, get_session_memory, add_to_session_memory, cleanup_old_files, allowed_file
 from services.material_service import extract_text_from_pdf, extract_text_from_pdf_turbo, extract_images_from_pdf, extract_tables_from_pdf, analyze_document_structure, extract_text_from_image, is_diagram_or_visual
 from services.ai_service import generate_turbo_style_notes, safe_markdown_to_html, generate_test_questions
+from services.academic_context import resolve_academic_context, find_course
 from models import UserQuestions
 from extensions import db
 import requests
@@ -47,6 +48,41 @@ def _load_content(session_id):
     except Exception as e:
         debug_print(f"⚠️ Failed to load analyzer content for {session_id}: {e}")
         return None
+
+
+def _build_course_materials_block(user, course_code):
+    """When the student is asking from within a specific course's context, tell the
+    tutor exactly what's available for that course -- titles/descriptions only, never
+    claimed as full text the model has read -- so it can decline honestly instead of
+    inventing course-specific facts (exact lecture content, past-question answers,
+    claims about 'what the course covers') when the real material doesn't back it up.
+    Returns '' when course_code is absent, so every existing caller (which never sends
+    one today) gets byte-identical behavior to before this was added."""
+    if not course_code:
+        return ""
+    ctx = resolve_academic_context(user)
+    course = find_course(ctx.department, course_code) if ctx.department else None
+    if not course:
+        return ""
+    materials = Material.query.filter(
+        Material.course_code.ilike(course.code), Material.is_approved == True  # noqa: E712
+    ).limit(8).all()
+    if materials:
+        lines = [f"- {m.title}" + (f": {m.description}" if m.description else "") for m in materials]
+        return (
+            f"\n\n## AVAILABLE COURSE MATERIALS for {course.code} — {course.title}\n"
+            + "\n".join(lines)
+            + "\n\nThese are titles/descriptions only -- you have not read their full text. "
+            "If the student asks something these titles don't clearly cover, say so honestly "
+            "and answer from general subject knowledge instead of inventing course-specific "
+            "facts (exact lecture content, past-question answers, or claims about what this "
+            "course covers beyond these titles)."
+        )
+    return (
+        f"\n\n## COURSE CONTEXT\nThe student is asking about {course.code} — {course.title}, but no "
+        "study materials have been uploaded for it on Nelavista yet. Do not claim to have or "
+        "reference any course materials for it; answer from general subject knowledge."
+    )
 
 
 @ai_bp.route('/analyze')
@@ -259,6 +295,7 @@ def ask_with_files():
         user_faculty = user.faculty if user and user.faculty else "not specified"
 
         message = request.form.get('message', '').strip()
+        course_materials_block = _build_course_materials_block(user, request.form.get('course_code', '').strip())
         session_memory = get_session_memory()
         file_texts = []
         vision_images = []
@@ -294,6 +331,7 @@ def ask_with_files():
 - Academic Level: {user_level}
 - University: {user_university}
 - Faculty: {user_faculty}
+{course_materials_block}
 
 Use this information to personalise your responses. Address the student by their name occasionally, and tailor examples to their department or level when relevant.
 
@@ -444,6 +482,7 @@ def ask():
         user_level = user.level if user and user.level else "not specified"
         user_university = user.university if user and user.university else "not specified"
         user_faculty = user.faculty if user and user.faculty else "not specified"
+        course_materials_block = _build_course_materials_block(user, (data.get('course_code') or '').strip())
 
         session_memory = get_session_memory()
         system_prompt = f"""You are Nelavista, an advanced AI tutor created by Afeez Adewale Tella for Nigerian university students (100–400 level).
@@ -454,6 +493,7 @@ def ask():
 - Academic Level: {user_level}
 - University: {user_university}
 - Faculty: {user_faculty}
+{course_materials_block}
 
 Use this information to personalise your responses. Address the student by their name occasionally, and tailor examples to their department or level when relevant.
 
@@ -573,6 +613,72 @@ Your final answer should be so clear and pleasant that a student would *want* to
         debug_print(f"Unhandled error in /ask: {e}")
         traceback.print_exc()
         return jsonify({"success": True, "answer": GRACEFUL_FALLBACK})
+
+_MATERIAL_AI_MODES = {
+    'explain': "Explain this material's content clearly, in plain language, as if teaching a "
+               "university student who hasn't read it yet. Break it into a few key ideas.",
+    'summarize': "Summarize this material's content into a concise study summary covering its "
+                 "main points, organized with short headings or bullet points.",
+    'quiz': "Based on this material's content, write 5 short practice questions (with answers) "
+            "a student could use to test themselves. Only ask about things actually covered in the text.",
+}
+
+
+@ai_bp.route('/api/materials/<int:material_id>/ai-action', methods=['POST'])
+@login_required
+def material_ai_action(material_id):
+    """Ask Nelavista about ONE specific material, grounded in its real extracted text
+    (not just its title) -- this is genuine retrieval, not a title-only guess. If the
+    file can't be downloaded/read, says so honestly instead of answering as if it had."""
+    from services.material_service import get_or_extract_material_text
+
+    material = Material.query.get(material_id)
+    if not material or not material.is_approved:
+        return jsonify({'success': False, 'error': 'Material not found'}), 404
+
+    mode = (request.get_json(silent=True) or {}).get('mode', 'explain')
+    if mode not in _MATERIAL_AI_MODES:
+        mode = 'explain'
+
+    text = get_or_extract_material_text(material)
+    if not text:
+        return jsonify({
+            'success': True,
+            'answer': f"Nelavista couldn't read \"{material.title}\" to {mode} it (the file may not be a "
+                      "readable PDF, or couldn't be downloaded right now). Try opening it directly instead.",
+            'grounded': False,
+        })
+
+    username = session['user']['username']
+    user = User.query.filter_by(username=username).first()
+    system_prompt = (
+        "You are Nelavista, an AI tutor for Nigerian university students. You have been given the actual "
+        f"extracted text of a study material titled \"{material.title}\"" +
+        (f" for course {material.course_code}" if material.course_code else "") + ". "
+        "Base your answer ONLY on this text -- if something isn't covered in it, say so rather than "
+        "inventing it. Use simple HTML (<h3>, <p>, <ul>/<li>, <strong>) for structure, no Markdown.\n\n"
+        f"TASK: {_MATERIAL_AI_MODES[mode]}\n\n"
+        f"MATERIAL CONTENT:\n{text}"
+    )
+
+    try:
+        headers = {"Authorization": f"Bearer {OPENROUTER_API_KEY}", "Content-Type": "application/json",
+                   "HTTP-Referer": "https://nelavista.com", "X-Title": "Nelavista Material AI"}
+        payload = {"model": "openai/gpt-4o-mini",
+                   "messages": [{"role": "system", "content": system_prompt},
+                                {"role": "user", "content": _MATERIAL_AI_MODES[mode]}],
+                   "temperature": 0.4, "max_tokens": 900}
+        resp = requests.post("https://openrouter.ai/api/v1/chat/completions", headers=headers, json=payload, timeout=45)
+        if resp.status_code == 200:
+            answer = resp.json()["choices"][0]["message"]["content"]
+            return jsonify({'success': True, 'answer': answer, 'grounded': True})
+        debug_print(f"Material AI action returned {resp.status_code}")
+    except Exception as e:
+        debug_print(f"Material AI action failed: {e}")
+        traceback.print_exc()
+
+    return jsonify({'success': True, 'answer': "Nelavista is having trouble responding right now — please try again.", 'grounded': False})
+
 
 @ai_bp.route('/teach-me-ai')
 @login_required

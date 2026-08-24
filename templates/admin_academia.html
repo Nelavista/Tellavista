@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Academia Taxonomy</title>
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Inter',system-ui,sans-serif; }
+        body { background:#0d1117; color:#e6edf3; padding:20px; }
+        .container { max-width:1000px; margin:0 auto; }
+        h1 { font-size:1.8rem; margin-bottom:20px; }
+        h2 { font-size:1.2rem; margin:24px 0 10px; }
+        .uni-card { background:#161b22; border:1px solid #21262d; border-radius:12px; padding:20px; margin-bottom:16px; }
+        .uni-title { font-size:1.15rem; font-weight:700; margin-bottom:4px; }
+        .uni-short { color:#8b949e; font-size:0.85rem; margin-bottom:14px; }
+        .fac-block { border-top:1px solid #21262d; padding-top:12px; margin-top:12px; }
+        .fac-title { font-weight:600; color:#58a6ff; margin-bottom:8px; }
+        .dept-row { display:flex; align-items:center; justify-content:space-between; padding:8px 0; font-size:0.9rem; }
+        .dept-name { color:#e6edf3; }
+        .dept-count { color:#8b949e; font-size:0.8rem; margin-left:8px; }
+        .manage-link { background:#21262d; border:1px solid #30363d; color:#58a6ff; padding:6px 12px; border-radius:8px; text-decoration:none; font-size:0.8rem; }
+        .manage-link:hover { border-color:#58a6ff; }
+        .add-form { display:flex; gap:8px; margin-top:14px; flex-wrap:wrap; }
+        .add-form input, .add-form select { background:#0d1117; border:1px solid #30363d; color:#e6edf3; padding:8px 10px; border-radius:6px; font-size:0.85rem; }
+        .add-form button { background:#3b82f6; border:none; color:#fff; padding:8px 16px; border-radius:6px; font-weight:600; cursor:pointer; font-size:0.85rem; }
+        .add-form button:hover { background:#2563eb; }
+        .empty { text-align:center; padding:60px 20px; color:#6e7681; }
+    </style>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
+</head>
+<body>
+{% include 'components/admin_nav.html' %}
+    <div class="container">
+        <h1>🎓 Academia Taxonomy</h1>
+
+        {% if not universities %}
+        <div class="empty">
+            <div style="font-size:3rem; margin-bottom:10px;">🏫</div>
+            <div>No universities seeded yet -- run seed_academia.py, or add one below.</div>
+        </div>
+        {% endif %}
+
+        {% for uni in universities %}
+        <div class="uni-card">
+            <div class="uni-title">{{ uni.name }}</div>
+            {% if uni.short_name %}<div class="uni-short">{{ uni.short_name }}</div>{% endif %}
+
+            {% for fac in uni.faculties %}
+            <div class="fac-block">
+                <div class="fac-title">{{ fac.name }}</div>
+                {% for dept in fac.departments %}
+                <div class="dept-row">
+                    <span class="dept-name">{{ dept.name }}<span class="dept-count">{{ dept.courses.count() }} course{{ 's' if dept.courses.count() != 1 else '' }}</span></span>
+                    <a href="/admin/academia/departments/{{ dept.id }}" class="manage-link">Manage courses →</a>
+                </div>
+                {% endfor %}
+                <form class="add-form" onsubmit="return addDepartment(event, {{ fac.id }})">
+                    <input type="text" name="name" placeholder="New department name" required>
+                    <button type="submit">+ Add Department</button>
+                </form>
+            </div>
+            {% endfor %}
+
+            <form class="add-form" onsubmit="return addFaculty(event, {{ uni.id }})">
+                <input type="text" name="name" placeholder="New faculty name" required>
+                <button type="submit">+ Add Faculty</button>
+            </form>
+        </div>
+        {% endfor %}
+
+        <h2>Add a University</h2>
+        <div class="uni-card">
+            <form class="add-form" onsubmit="return addUniversity(event)">
+                <input type="text" name="name" placeholder="Full university name" required>
+                <input type="text" name="short_name" placeholder="Short name (e.g. LASU)">
+                <button type="submit">+ Add University</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        async function postForm(url, form) {
+            const res = await fetch(url, { method: 'POST', body: new FormData(form) });
+            const data = await res.json();
+            if (!data.success) { alert('Error: ' + data.error); return false; }
+            location.reload();
+            return true;
+        }
+        function addUniversity(e) { e.preventDefault(); postForm('/admin/academia/universities/new', e.target); return false; }
+        function addFaculty(e, uniId) {
+            e.preventDefault();
+            const fd = new FormData(e.target); fd.append('university_id', uniId);
+            fetch('/admin/academia/faculties/new', { method: 'POST', body: fd }).then(r => r.json()).then(d => {
+                if (!d.success) { alert('Error: ' + d.error); return; }
+                location.reload();
+            });
+            return false;
+        }
+        function addDepartment(e, facId) {
+            e.preventDefault();
+            const fd = new FormData(e.target); fd.append('faculty_id', facId);
+            fetch('/admin/academia/departments/new', { method: 'POST', body: fd }).then(r => r.json()).then(d => {
+                if (!d.success) { alert('Error: ' + d.error); return; }
+                location.reload();
+            });
+            return false;
+        }
+    </script>
+</body>
+</html>

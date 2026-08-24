@@ -161,6 +161,14 @@ class Material(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     is_approved = db.Column(db.Boolean, default=True)
 
+    # ── AI content-retrieval cache ──────────────────────────────────────────
+    # Lazily populated the first time a student asks the AI about this specific
+    # material (see services/material_service.py::get_or_extract_material_text) --
+    # avoids re-downloading/re-parsing the same PDF on every question. Null means
+    # "never successfully extracted yet", not "empty file".
+    extracted_text = db.Column(db.Text, nullable=True)
+    extracted_at = db.Column(db.DateTime, nullable=True)
+
     def to_dict(self):
         return {
             'id': self.id,
@@ -169,7 +177,7 @@ class Material(db.Model):
             'level': self.level,
             'semester': self.semester,
             'university': self.university,
-            'course_code': self.course_code or self.course_type,
+            'course_code': self.course_code,
             'author': self.author,
             'description': self.description,
             'license': self.license or 'Student Upload',
@@ -1271,6 +1279,229 @@ class StudentPrivacySettings(db.Model):
         }
 
 
+# ============================================================
+# ===== ACADEMIA TAXONOMY: University -> Faculty -> Department -> Course =====
+# Normalizes what User.university/faculty/department/level (free strings, kept as-is
+# for backward compat -- see services/academic_context.py for the resolver bridging
+# the two) actually refer to. Seeded ONLY from Nelavista_Course_Codes.csv (real
+# curriculum data for LASU/UNILAG/UI) via seed_academia.py. Do not hand-add fake
+# departments/courses here -- if a school/department isn't covered, it stays
+# unresolved (see resolver) rather than getting invented rows.
+# ============================================================
+
+class University(db.Model):
+    __tablename__ = 'universities'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(150), nullable=False, unique=True)  # exact match to the
+    # <option value="..."> strings in profile_completion_modal.html / profile.html's
+    # university <select>, e.g. "Lagos State University"
+    short_name = db.Column(db.String(20))  # "LASU", "UNILAG", "UI" -- display only
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    faculties = db.relationship('Faculty', backref='university', lazy='dynamic', cascade='all, delete-orphan')
+
+    def to_dict(self):
+        return {'id': self.id, 'name': self.name, 'short_name': self.short_name}
+
+
+class Faculty(db.Model):
+    """Scoped per-university, not shared across schools -- a faculty's department
+    composition isn't verified to be identical at every institution."""
+    __tablename__ = 'faculties'
+
+    id = db.Column(db.Integer, primary_key=True)
+    university_id = db.Column(db.Integer, db.ForeignKey('universities.id'), nullable=False)
+    name = db.Column(db.String(150), nullable=False)  # e.g. "Science", "Management Sciences",
+    # or "General Studies" for university-wide GST/GES courses that don't belong to
+    # one real faculty (see seed_academia.py)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    departments = db.relationship('Department', backref='faculty', lazy='dynamic', cascade='all, delete-orphan')
+
+    __table_args__ = (db.UniqueConstraint('university_id', 'name', name='uq_faculty_university_name'),)
+
+    def to_dict(self):
+        return {'id': self.id, 'university_id': self.university_id, 'name': self.name}
+
+
+class Department(db.Model):
+    __tablename__ = 'departments'
+
+    id = db.Column(db.Integer, primary_key=True)
+    faculty_id = db.Column(db.Integer, db.ForeignKey('faculties.id'), nullable=False)
+    name = db.Column(db.String(150), nullable=False)  # exact match to the department strings
+    # in static/js/faculty-departments.js / User.department -- resolver.py relies on
+    # case-insensitive exact matching against this
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    courses = db.relationship('Course', backref='department', lazy='dynamic', cascade='all, delete-orphan')
+
+    __table_args__ = (db.UniqueConstraint('faculty_id', 'name', name='uq_department_faculty_name'),)
+
+    def to_dict(self):
+        return {'id': self.id, 'faculty_id': self.faculty_id, 'name': self.name}
+
+
+class Course(db.Model):
+    __tablename__ = 'courses'
+
+    id = db.Column(db.Integer, primary_key=True)
+    department_id = db.Column(db.Integer, db.ForeignKey('departments.id'), nullable=False)
+    code = db.Column(db.String(20), nullable=False, index=True)   # "MAT101" -- matches
+    # Material.course_code / CBT's subject-code-prefixed keys exactly
+    title = db.Column(db.String(200), nullable=False)             # from the curriculum source
+    level = db.Column(db.String(10), nullable=False)              # "100".."400", matches User.level
+    # The CSV source has no semester or course_type column -- these stay null until an
+    # admin sets them (see routes/admin_academia_routes.py). Never invented at seed time.
+    semester = db.Column(db.String(20), nullable=True)
+    course_type = db.Column(db.String(20), nullable=True)         # "CORE" / "ELECTIVE", admin-set only
+    # Course overview/outline text -- also admin-set only, stays null (no "Overview"
+    # section rendered) rather than ever being auto-filled with invented content.
+    description = db.Column(db.Text, nullable=True)
+    # Where this row's code/title actually came from -- lets students and admins tell a
+    # department's own registrar-verified numbering (e.g. LASU's CSV, source=NULL) apart from
+    # the NUC-mandated national core curriculum (CCMAS) used as an honest starting point for
+    # schools with no school-specific catalog yet (see seed_ccmas_core.py). CCMAS defines the
+    # compulsory floor every accredited Nigerian programme must teach, but a school may use
+    # different local numbering or add its own electives on top of it -- 'nuc_ccmas_core' is
+    # not a claim that this is that exact school's own published course list.
+    source = db.Column(db.String(30), nullable=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    __table_args__ = (db.UniqueConstraint('department_id', 'level', 'code', name='uq_course_dept_level_code'),)
+
+    def to_dict(self):
+        return {
+            'id': self.id, 'department_id': self.department_id, 'code': self.code,
+            'title': self.title, 'level': self.level, 'semester': self.semester,
+            'course_type': self.course_type, 'description': self.description, 'source': self.source,
+        }
+
+
+# ============================================================
+# ===== CBT PERSISTENCE: question bank + graded attempts =====
+# CBTQuestion is seeded from templates/CBT.html's generateFullQuestionBank() (hand-
+# authored, verified-accurate practice questions) via seed_cbt_questions.py -- no new
+# question content is invented here. Grain is subject_code (e.g. "MTH", "CSC"),
+# matching the JS bank's own design: a subject prefix with no entry deliberately has
+# no questions, never a silent substitution from a different subject. CBTAttempt links
+# to a free-string course_code (not a Course FK) so a student can still practice and
+# have it persisted even for a course/university the taxonomy above doesn't cover yet.
+# ============================================================
+
+class CBTQuestion(db.Model):
+    __tablename__ = 'cbt_questions'
+
+    id = db.Column(db.Integer, primary_key=True)
+    subject_code = db.Column(db.String(10), nullable=False, index=True)  # "MTH", "CSC", ...
+    question_type = db.Column(db.String(10), nullable=False, default='cbt')  # 'cbt' | 'written'
+    question_text = db.Column(db.Text, nullable=False)
+    # MCQ-only fields (question_type='cbt'); left null for 'written'
+    options_json = db.Column(db.Text)
+    correct_index = db.Column(db.Integer)
+    explanation = db.Column(db.Text)
+    # Written-only field (question_type='written'); left null for 'cbt'
+    mark_scheme = db.Column(db.Text)
+    is_active = db.Column(db.Boolean, default=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    @property
+    def options(self):
+        try:
+            return json.loads(self.options_json) if self.options_json else []
+        except (ValueError, TypeError):
+            return []
+
+    @options.setter
+    def options(self, value):
+        self.options_json = json.dumps(value or [])
+
+    def to_dict(self, include_answer=False):
+        d = {
+            'id': self.id, 'subject_code': self.subject_code, 'question_type': self.question_type,
+            'question_text': self.question_text, 'options': self.options,
+        }
+        if include_answer:
+            d['correct_index'] = self.correct_index
+            d['explanation'] = self.explanation
+            d['mark_scheme'] = self.mark_scheme
+        return d
+
+
+class CBTAttempt(db.Model):
+    __tablename__ = 'cbt_attempts'
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    course_code = db.Column(db.String(20), nullable=False, index=True)  # free string, not a
+    # Course FK -- a student can practice a subject the taxonomy doesn't cover yet
+    # (e.g. a non-seeded university); forcing a FK would break CBT for exactly those students
+    question_type = db.Column(db.String(10), nullable=False)  # 'cbt' | 'written'
+    total_questions = db.Column(db.Integer, nullable=False)
+    correct_count = db.Column(db.Integer, nullable=False, default=0)
+    score_pct = db.Column(db.Integer, nullable=False, default=0)
+    duration_seconds = db.Column(db.Integer)
+    started_at = db.Column(db.DateTime, default=datetime.utcnow)
+    submitted_at = db.Column(db.DateTime)
+
+    user = db.relationship('User', backref=db.backref('cbt_attempts', lazy='dynamic'))
+    answers = db.relationship('CBTAnswer', backref='attempt', lazy='dynamic', cascade='all, delete-orphan')
+
+    def to_dict(self):
+        return {
+            'id': self.id, 'course_code': self.course_code, 'question_type': self.question_type,
+            'total_questions': self.total_questions, 'correct_count': self.correct_count,
+            'score_pct': self.score_pct, 'duration_seconds': self.duration_seconds,
+            'submitted_at': self.submitted_at.isoformat() if self.submitted_at else None,
+        }
+
+
+class CBTAnswer(db.Model):
+    """One question's answer within one CBTAttempt -- snapshotted at submit time so a
+    later edit/removal of the source CBTQuestion never changes what a review screen
+    shows for a past attempt."""
+    __tablename__ = 'cbt_answers'
+
+    id = db.Column(db.Integer, primary_key=True)
+    attempt_id = db.Column(db.Integer, db.ForeignKey('cbt_attempts.id'), nullable=False)
+    question_id = db.Column(db.Integer, db.ForeignKey('cbt_questions.id'), nullable=True)
+    question_text = db.Column(db.Text, nullable=False)
+    selected_index = db.Column(db.Integer, nullable=True)   # MCQ only, null = skipped
+    written_answer = db.Column(db.Text, nullable=True)      # written only
+    is_correct = db.Column(db.Boolean, nullable=True)       # null for unmarked written answers
+
+    question = db.relationship('CBTQuestion')
+
+    def to_dict(self):
+        return {
+            'id': self.id, 'question_text': self.question_text,
+            'selected_index': self.selected_index, 'written_answer': self.written_answer,
+            'is_correct': self.is_correct,
+        }
+
+
+# ============================================================
+# ===== MATERIAL VIEW TRACKING =====
+# Real per-student "viewed this material" events -- powers Continue Studying, Recent
+# Materials, and a materials-viewed progress count on the dashboard/course page. Not a
+# page-view analytics log: one row per (user, material) pair, timestamp bumped on
+# repeat views, so it reflects genuine distinct materials studied, not refresh-spam.
+# ============================================================
+
+class MaterialView(db.Model):
+    __tablename__ = 'material_views'
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    material_id = db.Column(db.Integer, db.ForeignKey('materials.id'), nullable=False)
+    viewed_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    user = db.relationship('User', backref=db.backref('material_views', lazy='dynamic'))
+    material = db.relationship('Material')
+
+    __table_args__ = (db.UniqueConstraint('user_id', 'material_id', name='uq_material_view_user_material'),)
+
 
 # ============================================================
 # ===== OPPORTUNITIES: the "Earn" phase of Learn -> Practice -> Build -> Verify -> Earn =====
@@ -1335,3 +1566,4 @@ class OpportunityApplication(db.Model):
             'completed_at': self.completed_at.isoformat() if self.completed_at else None,
             'paid_at': self.paid_at.isoformat() if self.paid_at else None,
             'payout_amount': self.payout_amount,
+        }

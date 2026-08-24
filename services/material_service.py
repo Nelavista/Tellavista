@@ -14,13 +14,16 @@ buildpack doesn't include it). extract_text_from_image() below degrades graceful
 of crashing if Tesseract isn't installed; if OCR turns out to matter, install Tesseract in
 the deploy environment and this will pick it up automatically without further code changes.
 """
+import io
 import os
 import re
 import time
 import uuid
+from datetime import datetime
 
 import pdfplumber
 import fitz  # PyMuPDF
+import requests
 
 from config import DEBUG_MODE
 
@@ -50,6 +53,54 @@ def extract_text_from_pdf_turbo(file):
     """Same extraction as extract_text_from_pdf — kept as a separate name because
     routes/ai_routes.py calls this one specifically for the main analyzer flow."""
     return extract_text_from_pdf(file)
+
+
+# Matches the truncation convention already used in services/ai_service.py's
+# generate_test_questions() ("cap the source text so a huge document doesn't blow the
+# prompt token budget") -- reused here for the same reason.
+MATERIAL_TEXT_CHAR_CAP = 12000
+
+
+def get_or_extract_material_text(material):
+    """Real per-material content retrieval for the AI tutor -- downloads the material's
+    PDF and extracts its text on first use, then caches it on the Material row so a
+    second question about the same material doesn't re-download/re-parse it. Returns
+    None on ANY failure (no URL, download error, not a PDF, empty extraction) -- callers
+    MUST treat None as 'could not read this file' and say so honestly, never silently
+    fall back to answering as if the content were available."""
+    if material.extracted_text and material.extracted_at:
+        return material.extracted_text
+
+    url = material.file_url or material.external_url
+    if not url:
+        return None
+
+    try:
+        response = requests.get(url, timeout=15)
+        response.raise_for_status()
+        text = extract_text_from_pdf(io.BytesIO(response.content))
+    except Exception as e:
+        debug_print(f"⚠️ Material content fetch/extract failed for material {material.id}: {e}")
+        return None
+
+    if not text or len(text.strip()) < 50:  # too little to be a usable extraction
+        return None
+
+    text = text[:MATERIAL_TEXT_CHAR_CAP]
+
+    # Cache on the row -- best-effort; a failed commit here shouldn't break the
+    # in-flight AI response that already has the text in hand.
+    try:
+        from extensions import db
+        material.extracted_text = text
+        material.extracted_at = datetime.utcnow()
+        db.session.commit()
+    except Exception as e:
+        debug_print(f"⚠️ Failed to cache extracted text for material {material.id}: {e}")
+        from extensions import db
+        db.session.rollback()
+
+    return text
 
 
 def extract_images_from_pdf(file, session_id):

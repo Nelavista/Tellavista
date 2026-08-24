@@ -266,6 +266,33 @@ def approve_material(material_id):
     return jsonify({'success': True, 'message': 'Material approved'})
 
 
+@admin_bp.route('/admin/materials/<int:material_id>/edit', methods=['POST'])
+@login_required
+@admin_required
+def edit_material(material_id):
+    """Lets an admin fix a material's metadata (wrong course code, department, etc.)
+    without deleting and re-uploading it. Whitelisted fields only -- never file_url/
+    cloudinary_public_id/uploaded_by, which aren't safe to hand-edit from a form."""
+    material = Material.query.get_or_404(material_id)
+    # title/department/level/semester are NOT NULL on Material -- an empty submission
+    # for one of those leaves the existing value in place rather than nulling it out.
+    required_fields = ('title', 'department', 'level', 'semester')
+    nullable_fields = ('course_code', 'course_type', 'description', 'author')
+    for field in required_fields:
+        if field in request.form:
+            value = request.form[field].strip()
+            if value:
+                setattr(material, field, value)
+    for field in nullable_fields:
+        if field in request.form:
+            value = request.form[field].strip()
+            if field == 'course_code':
+                value = value.upper()
+            setattr(material, field, value or None)
+    db.session.commit()
+    return jsonify({'success': True, 'material': material.to_dict()})
+
+
 @admin_bp.route('/admin/materials/reject/<int:material_id>', methods=['DELETE'])
 @login_required
 @admin_required

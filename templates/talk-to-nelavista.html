@@ -1110,13 +1110,18 @@
     }
 
     // ===== BACKEND COMMUNICATION =====
+    // A ?course=CODE query param (set when arriving from a course's "Ask Nelavista
+    // AI" button) tells /ask to ground its answer in that course's real materials
+    // instead of answering generically -- see routes/ai_routes.py.
+    const ACTIVE_COURSE_CODE = new URLSearchParams(location.search).get('course') || '';
+
     async function sendToBackend(message) {
-      // Send ONLY 'message' field (matches your backend /ask endpoint)
       const response = await fetch('/ask', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          message: message  // Backend expects ONLY 'message'
+        body: JSON.stringify({
+          message: message,
+          course_code: ACTIVE_COURSE_CODE
         })
       });
       

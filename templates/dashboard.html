@@ -426,6 +426,7 @@
         <div class="nav-group">
           <div class="nav-label">LEARNING TOOLS</div>
           <a href="/materials">📚 Study Materials</a>
+          <a href="/search">🔍 Search Academia</a>
           <a href="/CBT">📝 Mock Exam</a>
           <a href="/analyze">📊 Analyze Materials</a>
         </div>
@@ -507,13 +508,31 @@
           <p>Get AI-powered recap & practice questions</p>
           <button class="ai-btn" id="chatWithAiBtn">Chat with AI →</button>
         </div>
+        <div class="stat-card" id="practiceCard" style="flex:1;">
+          <div class="stat-header"><span>PRACTICE</span></div>
+          <div class="stat-number" id="practiceScore" style="font-size:2rem;">—</div>
+          <div class="today-total" id="practiceSub">Loading...</div>
+        </div>
       </div>
 
+      <!-- Continue Studying -->
       <div class="section-header">
-        <h2>Active Courses</h2>
+        <h2>Continue Studying</h2>
+      </div>
+      <div id="continueStudyingContainer"></div>
+
+      <div class="section-header">
+        <h2>My Courses</h2>
         <a href="/materials" class="view-link">View All →</a>
       </div>
       <div class="courses-grid" id="coursesGrid"></div>
+
+      <!-- Recent Materials -->
+      <div class="section-header">
+        <h2>Recent Materials</h2>
+        <a href="/search" class="view-link">🔍 Search →</a>
+      </div>
+      <div id="recentMaterialsContainer"></div>
 
       <!-- Featured Tools -->
       <div class="featured-tools-section">
@@ -865,16 +884,84 @@
       grid.innerHTML = '';
       data.courses.forEach(course => {
         grid.innerHTML += `
-          <div class="course-card">
+          <a class="course-card" href="${course.link}" style="text-decoration:none;color:inherit;display:block;">
             <span class="badge ${course.type === 'CORE' ? 'core' : 'elective'}">${course.type || 'CORE'}</span>
             <div class="course-title">${course.name}</div>
-            <div class="course-sub">Next: ${course.next_topic || 'Continue studying'}</div>
+            <div class="course-sub">${course.next_topic || 'Continue studying'}</div>
             <div class="progress-bar"><div class="progress-fill" style="width:${course.progress || 0}%"></div></div>
             <div class="progress-text">${course.progress || 0}% completed</div>
-          </div>`;
+          </a>`;
       });
     } catch(e) {
       grid.innerHTML = `<div style="color:#9ca3af;padding:20px 0;">Set up your profile to see your courses. <a href="/profile" style="color:#3b82f6;">Complete profile →</a></div>`;
+    }
+  }
+
+  async function loadContinueStudying() {
+    const container = document.getElementById('continueStudyingContainer');
+    try {
+      const res = await fetch('/api/continue-studying');
+      const data = await res.json();
+      if (!data.material) {
+        container.innerHTML = `<div class="no-exams-msg"><p>📖 Nothing studied yet.</p><p style="color:#9ca3af;font-size:0.85rem;margin-top:6px;">Open a material to pick up where you left off next time.</p></div>`;
+        return;
+      }
+      const m = data.material;
+      container.innerHTML = `
+        <a href="${m.link}" style="text-decoration:none;color:inherit;">
+          <div class="exam-item">
+            <div class="exam-date" style="background:#3b82f6;"><div style="font-size:1.6rem;">📖</div></div>
+            <div class="exam-info"><div class="exam-title">${m.title}</div><div class="course-sub">${m.course_code || m.department} · last opened ${m.viewed_ago}</div></div>
+            <button class="practice-btn">Resume →</button>
+          </div>
+        </a>`;
+    } catch(e) {
+      container.innerHTML = '';
+      console.error('Failed to load continue-studying', e);
+    }
+  }
+
+  async function loadRecentMaterials() {
+    const container = document.getElementById('recentMaterialsContainer');
+    try {
+      const res = await fetch('/api/recent-materials');
+      const data = await res.json();
+      if (!data.materials || data.materials.length === 0) {
+        container.innerHTML = `<div style="color:#9ca3af;padding:20px 0;">No materials viewed yet. <a href="/materials" style="color:#3b82f6;">Browse materials →</a></div>`;
+        return;
+      }
+      container.innerHTML = '';
+      data.materials.forEach(m => {
+        container.innerHTML += `
+          <a href="${m.link}" style="text-decoration:none;color:inherit;">
+            <div class="exam-item" style="padding:12px 20px;">
+              <div class="exam-info"><div class="exam-title" style="font-size:0.92rem;">${m.title}</div><div class="course-sub">${m.course_code || m.department}</div></div>
+              <span class="badge">${m.viewed_ago}</span>
+            </div>
+          </a>`;
+      });
+    } catch(e) {
+      console.error('Failed to load recent materials', e);
+    }
+  }
+
+  async function loadPracticeSummary() {
+    try {
+      const res = await fetch('/api/cbt-summary');
+      const data = await res.json();
+      const scoreEl = document.getElementById('practiceScore');
+      const subEl = document.getElementById('practiceSub');
+      if (!data.attempts_count) {
+        scoreEl.textContent = '—';
+        subEl.innerHTML = `No practice yet. <a href="/CBT" style="color:#93c5fd;">Start →</a>`;
+        return;
+      }
+      scoreEl.textContent = data.average_score !== null ? `${data.average_score}%` : `${data.attempts_count}`;
+      subEl.textContent = data.average_score !== null
+        ? `Avg score · ${data.attempts_count} attempt${data.attempts_count === 1 ? '' : 's'}`
+        : `${data.attempts_count} attempt${data.attempts_count === 1 ? '' : 's'} (written)`;
+    } catch(e) {
+      console.error('Failed to load practice summary', e);
     }
   }
 
@@ -1069,7 +1156,10 @@
     await Promise.all([
       loadStudyStats(),
       loadExams(),
-      loadCourses()
+      loadCourses(),
+      loadContinueStudying(),
+      loadRecentMaterials(),
+      loadPracticeSummary()
     ]).catch(err => {
       console.error('Dashboard initialization error:', err);
     });

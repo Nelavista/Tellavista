@@ -864,6 +864,18 @@ function initCourseSelect() {
         if(!selectedCourses.length) return;
         showExamTypeSelect();
     });
+
+    // Deep-link from a course detail page (/CBT?course=MAT101): pre-select that
+    // course's chip and jump straight to the exam-type screen, if it's actually one
+    // of this student's own courses.
+    const preselect = new URLSearchParams(location.search).get('course');
+    if (preselect) {
+        const match = list.find(c => c.code.toUpperCase() === preselect.toUpperCase());
+        if (match) {
+            selectedCourses = [match.code];
+            showExamTypeSelect();
+        }
+    }
 }
 
 function updateSelCount() {
@@ -1196,6 +1208,23 @@ function submitExam() {
     },200);
 
     buildReview();
+
+    // Best-effort persistence so scores/history survive past this tab -- the results
+    // screen above is already fully rendered from client-side state, so a slow or
+    // failed request here must never block or change what the student sees.
+    fetch('/CBT/submit', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+            course_code: selectedCourseForExam,
+            question_type: examType,
+            duration_seconds: elapsedSeconds,
+            questions: questions.map((q, i) => examType === 'cbt'
+                ? {question_text: q.q, selected_index: userAnswers[i], correct_index: q.ans}
+                : {question_text: q.q, written_answer: userAnswers[i]}
+            ),
+        }),
+    }).catch(() => {});
 }
 
 function buildReview() {

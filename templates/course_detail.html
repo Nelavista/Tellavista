@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ course_code }}{% if course %} · {{ course.title }}{% endif %} — Nelavista</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/skills.css') }}">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
+    <style>
+        .cd-container { max-width: 900px; margin: 0 auto; padding: 0 20px 60px; }
+        .cd-top-bar {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 16px 0; border-bottom: 1px solid var(--sk-border); margin-bottom: 24px;
+        }
+        .cd-logo { font-size: 1.2rem; font-weight: 700; background: linear-gradient(135deg, #e5e7eb, #3b82f6);
+            -webkit-background-clip: text; background-clip: text; color: transparent; text-decoration: none; }
+        .cd-back { color: var(--sk-text-dim); text-decoration: none; font-size: 0.85rem; }
+        .cd-back:hover { color: var(--sk-accent); }
+        .cd-breadcrumb { font-size: 0.82rem; color: var(--sk-text-dim); margin-bottom: 10px; }
+        .cd-header { margin-bottom: 28px; }
+        .cd-code { font-size: 1.7rem; font-weight: 800; margin-bottom: 4px; }
+        .cd-title { font-size: 1.05rem; color: var(--sk-text-dim); margin-bottom: 12px; }
+        .cd-badges { display: flex; gap: 8px; flex-wrap: wrap; }
+        .cd-section { margin-bottom: 32px; }
+        .cd-section-title { font-size: 1rem; font-weight: 700; margin-bottom: 14px; }
+        .cd-materials-list { display: flex; flex-direction: column; gap: 10px; }
+        .cd-material-row {
+            display: flex; align-items: center; justify-content: space-between; gap: 12px;
+            background: var(--sk-card); border: 1px solid var(--sk-border); border-radius: var(--sk-radius-sm);
+            padding: 14px 16px;
+        }
+        .cd-material-title { font-weight: 600; font-size: 0.92rem; }
+        .cd-material-meta { font-size: 0.75rem; color: var(--sk-text-dim); margin-top: 2px; }
+        .cd-practice-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+        @media (max-width: 560px) { .cd-practice-grid { grid-template-columns: 1fr; } }
+        .cd-practice-card.disabled { opacity: 0.5; pointer-events: none; }
+        .cd-practice-emoji { font-size: 1.6rem; margin-bottom: 8px; }
+        .cd-attempts-list { display: flex; flex-direction: column; gap: 8px; }
+        .cd-attempt-row {
+            display: flex; align-items: center; justify-content: space-between;
+            background: var(--sk-card); border: 1px solid var(--sk-border); border-radius: var(--sk-radius-sm);
+            padding: 12px 16px; text-decoration: none; color: inherit; font-size: 0.85rem;
+        }
+        .cd-attempt-row:hover { border-color: var(--sk-accent); }
+        .cd-not-resolved { color: var(--sk-text-dim); font-size: 0.9rem; line-height: 1.6; }
+        .cd-overview { color: var(--sk-text); font-size: 0.9rem; line-height: 1.6; background: var(--sk-card); border: 1px solid var(--sk-border); border-radius: var(--sk-radius-sm); padding: 14px 16px; white-space: pre-line; }
+        .cd-progress-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+        @media (max-width: 560px) { .cd-progress-grid { grid-template-columns: 1fr; } }
+        .cd-progress-number { font-size: 1.8rem; font-weight: 800; }
+        .cd-progress-label { font-size: 0.8rem; color: var(--sk-text-dim); margin-top: 4px; }
+        .cd-material-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+        .cd-ai-btn { background: none; border: 1px solid var(--sk-border); color: var(--sk-accent); padding: 6px 10px; border-radius: 8px; font-size: 0.72rem; cursor: pointer; }
+        .cd-ai-btn:hover { border-color: var(--sk-accent); }
+        .cd-ai-result { display: none; margin-top: 10px; padding: 12px 14px; background: rgba(59,130,246,0.08); border-radius: 10px; font-size: 0.85rem; line-height: 1.6; }
+        .cd-ai-result.show { display: block; }
+        .cd-material-row { flex-direction: column; align-items: stretch; }
+        .cd-material-row-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    </style>
+</head>
+<body>
+<div class="cd-container">
+    <div class="cd-top-bar">
+        <a href="/dashboard" class="cd-logo">Nelavista</a>
+        <a href="/materials" class="cd-back">← Materials</a>
+    </div>
+
+    {% if not course %}
+        <div class="sk-empty">
+            <div class="sk-empty-icon">🎓</div>
+            <p>We don't have <strong>{{ course_code }}</strong> in our system for your department yet.</p>
+            <p class="cd-not-resolved" style="margin-top:8px;">
+                {% if not ctx.university %}
+                    Complete your academic profile (university, faculty, department, level) so Nelavista
+                    can match you to your real courses. <a href="/profile" style="color:var(--sk-accent);">Update profile →</a>
+                {% elif not ctx.department %}
+                    Nelavista hasn't added {{ ctx.university.name }}'s course catalog for {{ user.department }} yet —
+                    an admin can add it any time via the academic taxonomy. Materials tagged for your
+                    department may still be available below.
+                {% else %}
+                    You can still browse materials or practice by subject code below.
+                {% endif %}
+            </p>
+            <div style="margin-top:18px; display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">
+                <a href="/materials" class="sk-btn secondary small">Browse Materials</a>
+                <a href="/CBT?course={{ course_code }}" class="sk-btn small">Practice {{ course_code }}</a>
+            </div>
+        </div>
+    {% else %}
+        <div class="cd-breadcrumb">
+            {{ ctx.university.name }} / {{ ctx.faculty.name }} / {{ ctx.department.name }}
+        </div>
+        <div class="cd-header">
+            <div class="cd-code">{{ course.code }}</div>
+            <div class="cd-title">{{ course.title }}</div>
+            <div class="cd-badges">
+                <span class="sk-badge">Level {{ course.level }}</span>
+                {% if course.semester %}<span class="sk-badge">{{ course.semester }}</span>{% endif %}
+                {% if course.course_type %}<span class="sk-badge">{{ course.course_type }}</span>{% endif %}
+            </div>
+            {% if course.source == 'nuc_ccmas_core' %}
+            <p style="font-size:0.78rem; color:var(--sk-text-dim); margin-top:10px; line-height:1.5;">
+                ℹ️ This is the national core curriculum (NUC CCMAS) for {{ ctx.department.name }} — the
+                courses every accredited Nigerian programme in this discipline must teach. It may differ
+                slightly from {{ ctx.university.name }}'s own course-code numbering or electives.
+            </p>
+            {% endif %}
+        </div>
+
+        {% if course.description %}
+        <div class="cd-section">
+            <div class="cd-section-title">📖 Overview</div>
+            <div class="cd-overview">{{ course.description }}</div>
+        </div>
+        {% endif %}
+
+        <div class="cd-section">
+            <div class="cd-section-title">📊 Your Progress</div>
+            <div class="cd-progress-grid">
+                <div class="sk-panel">
+                    <div class="cd-progress-number">{{ materials_viewed }}/{{ materials_total }}</div>
+                    <div class="cd-progress-label">Materials viewed</div>
+                </div>
+                <div class="sk-panel">
+                    <div class="cd-progress-number">{{ cbt_progress.average_score if cbt_progress and cbt_progress.average_score is not none else '—' }}{{ '%' if cbt_progress and cbt_progress.average_score is not none else '' }}</div>
+                    <div class="cd-progress-label">{{ cbt_progress.attempts_count if cbt_progress else 0 }} CBT attempt{{ 's' if not cbt_progress or cbt_progress.attempts_count != 1 else '' }}</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="cd-section">
+            <div class="cd-section-title">📚 Study Materials</div>
+            {% if materials %}
+                <div class="cd-materials-list">
+                    {% for m in materials %}
+                        <div class="cd-material-row">
+                            <div class="cd-material-row-top">
+                                <div>
+                                    <div class="cd-material-title">{{ m.title }}</div>
+                                    <div class="cd-material-meta">{{ m.author or 'Nelavista' }} · {{ m.source|capitalize }}{% if m.description %} · {{ m.description }}{% endif %}</div>
+                                </div>
+                                <a href="{{ m.file_url or m.external_url }}" target="_blank" class="sk-btn small secondary" onclick="trackMaterialView({{ m.id }})">Open</a>
+                            </div>
+                            <div class="cd-material-actions">
+                                <button class="cd-ai-btn" onclick="askAboutMaterial({{ m.id }}, 'explain', this)">💡 Explain</button>
+                                <button class="cd-ai-btn" onclick="askAboutMaterial({{ m.id }}, 'summarize', this)">📝 Summarize</button>
+                                <button class="cd-ai-btn" onclick="askAboutMaterial({{ m.id }}, 'quiz', this)">❓ Quiz me</button>
+                            </div>
+                            <div class="cd-ai-result" id="ai-result-{{ m.id }}"></div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="sk-empty">
+                    <div class="sk-empty-icon">📭</div>
+                    <p>No study materials uploaded for {{ course.code }} yet.</p>
+                    <a href="/materials" class="sk-btn small" style="margin-top:12px;">Upload one →</a>
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="cd-section">
+            <div class="cd-section-title">📝 CBT Practice</div>
+            <div class="cd-practice-grid">
+                <a href="/CBT?course={{ course.code }}" class="sk-card cd-practice-card {{ 'disabled' if not cbt_count }}">
+                    <div class="cd-practice-emoji">✅</div>
+                    <div style="font-weight:700;">Multiple Choice</div>
+                    <div class="sk-badge" style="margin-top:8px;">{{ cbt_count }} question{{ 's' if cbt_count != 1 else '' }}{{ '' if cbt_count else ' · Not available yet' }}</div>
+                </a>
+                <a href="/CBT?course={{ course.code }}" class="sk-card cd-practice-card {{ 'disabled' if not written_count }}">
+                    <div class="cd-practice-emoji">✍️</div>
+                    <div style="font-weight:700;">Written / Essay</div>
+                    <div class="sk-badge" style="margin-top:8px;">{{ written_count }} question{{ 's' if written_count != 1 else '' }}{{ '' if written_count else ' · Not available yet' }}</div>
+                </a>
+            </div>
+        </div>
+
+        <div class="cd-section">
+            <div class="cd-section-title">📊 Your Recent Attempts</div>
+            {% if recent_attempts %}
+                <div class="cd-attempts-list">
+                    {% for a in recent_attempts %}
+                        <a href="/CBT/attempts/{{ a.id }}" class="cd-attempt-row">
+                            <span>{{ a.question_type|capitalize }} · {{ a.total_questions }} questions</span>
+                            <span class="sk-badge {{ 'completed' if a.score_pct >= 75 else '' }}">{{ a.score_pct }}%</span>
+                        </a>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="sk-empty">
+                    <div class="sk-empty-icon">🕓</div>
+                    <p>You haven't practiced {{ course.code }} yet.</p>
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="cd-section">
+            <a href="/talk-to-nelavista?course={{ course.code }}" class="sk-btn full">🤖 Ask Nelavista AI about {{ course.code }}</a>
+        </div>
+    {% endif %}
+</div>
+<script>
+function trackMaterialView(materialId) {
+    fetch(`/api/materials/${materialId}/view`, { method: 'POST' }).catch(() => {});
+}
+
+async function askAboutMaterial(materialId, mode, btn) {
+    const box = document.getElementById(`ai-result-${materialId}`);
+    const original = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = 'Thinking…';
+    box.classList.add('show');
+    box.textContent = 'Nelavista is reading this material…';
+    try {
+        const res = await fetch(`/api/materials/${materialId}/ai-action`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ mode: mode })
+        });
+        const data = await res.json();
+        box.innerHTML = data.answer;
+    } catch (e) {
+        box.textContent = "Couldn't reach Nelavista — please try again.";
+    }
+    btn.disabled = false;
+    btn.textContent = original;
+}
+</script>
+</body>
+</html>

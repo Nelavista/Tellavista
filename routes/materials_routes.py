@@ -1,5 +1,6 @@
 import os
 import time
+from datetime import datetime
 import cloudinary
 import cloudinary.uploader
 import requests
@@ -10,6 +11,7 @@ from utils.helpers import login_required, admin_required, is_academic_book, chec
 from models import User, Material
 from extensions import db
 from config import OPENROUTER_API_KEY
+from services.progress_service import record_material_view, get_recent_material_views
 
 materials_bp = Blueprint('materials', __name__)
 
@@ -215,25 +217,63 @@ def upload_material():
         return jsonify({'error': f'Upload failed: {str(e)}'}), 500
 
 
-# ===== FETCH UPLOADED MATERIALS FROM DB =====
+# Mirrors templates/materials.html's client-side getBadge() heuristic exactly -- kept
+# in one place so server-side `type` filtering (below) and the client's displayed badge
+# never drift apart. Categorizes real titles; invents nothing.
+def _infer_badge_label(title):
+    t = (title or '').lower()
+    if any(k in t for k in ('past question', 'oer', 'test', 'exam', 'multiple choice', 'mcq')):
+        return 'PAST QUESTIONS'
+    if any(k in t for k in ('lecture', 'lesson')):
+        return 'LECTURE NOTES'
+    if any(k in t for k in ('textbook', 'vol', 'edition', 'introduction to', 'principles of', 'fundamentals')):
+        return 'TEXTBOOK'
+    if any(k in t for k in ('note', 'compilation', 'summary')):
+        return 'NOTE'
+    return 'STUDY MATERIAL'
+
+
+# ===== FETCH MATERIALS (real, scoped, paginated) =====
 @materials_bp.route('/api/fetch-materials')
 @login_required
 def fetch_materials():
+    """The Materials library's one real data source -- scoped to the logged-in
+    student's own department/level by default (never a global cross-department
+    dump), with an explicit course_code for 'this course's materials', free-text q
+    for in-scope search, and type for the same category pills the UI already shows.
+    Paginated so a department with hundreds of materials doesn't ship them all in
+    one response."""
     try:
-        course   = request.args.get('course', '').strip()
-        level    = request.args.get('level', '').strip()
-        semester = request.args.get('semester', '').strip()
+        username = session['user']['username']
+        current_user = User.query.filter_by(username=username).first()
+        if not current_user:
+            return jsonify({'error': 'User not found'}), 404
 
-        # Build query - only show approved materials
+        course_code = request.args.get('course_code', '').strip()
+        q = request.args.get('q', '').strip()
+        type_filter = request.args.get('type', '').strip()
+        try:
+            page = max(1, int(request.args.get('page', 1)))
+        except ValueError:
+            page = 1
+        try:
+            per_page = min(30, max(1, int(request.args.get('per_page', 12))))
+        except ValueError:
+            per_page = 12
+
         query = Material.query.filter_by(is_approved=True)
 
-        # Apply filters if provided
-        if course:
-            query = query.filter_by(department=course)
-        if level:
-            query = query.filter_by(level=level)
-        if semester:
-            query = query.filter_by(semester=semester)
+        if course_code:
+            query = query.filter(Material.course_code.ilike(course_code))
+        else:
+            # Default scope: the student's own academic context -- never every
+            # material in the database. A course_code-scoped request (from a
+            # course page's "View all materials") skips this since it's already
+            # precise.
+            if current_user.department:
+                query = query.filter_by(department=current_user.department)
+            if current_user.level:
+                query = query.filter_by(level=current_user.level)
 
         # University scoping: Material.university=NULL means universal (shown to
         # everyone). A student who has explicitly set a university OTHER than
@@ -242,23 +282,104 @@ def fetch_materials():
         # (the majority, historically LASU's own userbase before this field
         # existed) keep seeing everything, same as before this feature existed --
         # only an explicit "I'm at a different school" hides the mismatched content.
-        username = session['user']['username']
-        current_user = User.query.filter_by(username=username).first()
-        if current_user and current_user.university and current_user.university != 'Lagos State University':
+        if current_user.university and current_user.university != 'Lagos State University':
             query = query.filter(
                 (Material.university.is_(None)) | (Material.university == current_user.university)
             )
 
-        # Order by id descending
-        results = query.order_by(Material.id.desc()).all()
+        if q:
+            like = f"%{q}%"
+            query = query.filter(
+                (Material.title.ilike(like)) | (Material.description.ilike(like)) | (Material.course_code.ilike(like))
+            )
+
+        # `type` is a display heuristic over titles, not a DB column -- filtered in
+        # Python over the already department/level/university/q-scoped set (never
+        # the whole table), which stays small enough per department to make this fine.
+        results = query.order_by(Material.created_at.desc()).all()
+        if type_filter and type_filter != 'all':
+            results = [m for m in results if _infer_badge_label(m.title) == type_filter]
+
+        total = len(results)
+        start = (page - 1) * per_page
+        page_results = results[start:start + per_page]
 
         return jsonify({
             'success': True,
-            'materials': [m.to_dict() for m in results]
+            'materials': [m.to_dict() for m in page_results],
+            'page': page,
+            'per_page': per_page,
+            'total': total,
+            'has_more': start + per_page < total,
         }), 200
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+
+def _time_ago(dt):
+    if not dt:
+        return ''
+    seconds = (datetime.utcnow() - dt).total_seconds()
+    if seconds < 60:
+        return 'just now'
+    if seconds < 3600:
+        return f"{int(seconds // 60)}m ago"
+    if seconds < 86400:
+        return f"{int(seconds // 3600)}h ago"
+    return f"{int(seconds // 86400)}d ago"
+
+
+def _material_link(material):
+    """Where 'open this material again' should send a student -- its course's digital
+    classroom when it has a course code (the materials list there shows it), otherwise
+    the general library."""
+    return f"/courses/{material.course_code}" if material.course_code else "/materials"
+
+
+# ===== MATERIAL VIEW TRACKING (real per-student progress) =====
+@materials_bp.route('/api/materials/<int:material_id>/view', methods=['POST'])
+@login_required
+def track_material_view(material_id):
+    """Fire-and-forget, called when a student actually opens a material -- powers
+    Continue Studying / Recent Materials / progress counts. A failure here must never
+    block the student from reading the material they already opened."""
+    username = session['user']['username']
+    user = User.query.filter_by(username=username).first()
+    material = Material.query.get(material_id)
+    if not user or not material:
+        return jsonify({'success': False}), 404
+    record_material_view(user, material)
+    return jsonify({'success': True})
+
+
+@materials_bp.route('/api/continue-studying')
+@login_required
+def continue_studying():
+    username = session['user']['username']
+    user = User.query.filter_by(username=username).first()
+    views = get_recent_material_views(user, limit=1)
+    if not views:
+        return jsonify({'material': None})
+    v = views[0]
+    m = v.material
+    return jsonify({'material': {
+        'title': m.title, 'course_code': m.course_code, 'department': m.department,
+        'link': _material_link(m), 'viewed_ago': _time_ago(v.viewed_at),
+    }})
+
+
+@materials_bp.route('/api/recent-materials')
+@login_required
+def recent_materials():
+    username = session['user']['username']
+    user = User.query.filter_by(username=username).first()
+    views = get_recent_material_views(user, limit=5)
+    return jsonify({'materials': [{
+        'title': v.material.title, 'course_code': v.material.course_code,
+        'department': v.material.department, 'link': _material_link(v.material),
+        'viewed_ago': _time_ago(v.viewed_at),
+    } for v in views]})
 
 
 # ===== DELETE MATERIAL (admin only) =====

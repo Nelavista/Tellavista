@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - {{ department.name }} Courses</title>
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Inter',system-ui,sans-serif; }
+        body { background:#0d1117; color:#e6edf3; padding:20px; }
+        .container { max-width:900px; margin:0 auto; }
+        .back-btn { background:#21262d; border:1px solid #30363d; color:#8b949e; padding:8px 16px; border-radius:8px; text-decoration:none; display:inline-block; margin-bottom:20px; }
+        .back-btn:hover { border-color:#58a6ff; color:#58a6ff; }
+        h1 { font-size:1.5rem; margin-bottom:4px; }
+        .subtitle { color:#8b949e; margin-bottom:20px; font-size:0.9rem; }
+        table { width:100%; border-collapse:collapse; margin-bottom:24px; }
+        th, td { text-align:left; padding:10px 8px; border-bottom:1px solid #21262d; font-size:0.88rem; }
+        th { color:#8b949e; font-weight:600; }
+        input.cell-edit, textarea.cell-edit { background:#0d1117; border:1px solid #30363d; color:#e6edf3; padding:6px 8px; border-radius:6px; font-size:0.85rem; width:100%; font-family:inherit; }
+        textarea.cell-edit { resize:vertical; min-height:36px; }
+        .desc-row td { border-bottom:1px solid #21262d; padding:0 8px 10px; }
+        .row-actions { display:flex; gap:6px; }
+        .save-btn { background:#22c55e; border:none; color:#fff; padding:6px 12px; border-radius:6px; cursor:pointer; font-size:0.8rem; }
+        .del-btn { background:#ef4444; border:none; color:#fff; padding:6px 12px; border-radius:6px; cursor:pointer; font-size:0.8rem; }
+        .add-form { display:flex; gap:8px; flex-wrap:wrap; background:#161b22; border:1px solid #21262d; border-radius:12px; padding:16px; }
+        .add-form input { background:#0d1117; border:1px solid #30363d; color:#e6edf3; padding:8px 10px; border-radius:6px; font-size:0.85rem; }
+        .add-form button { background:#3b82f6; border:none; color:#fff; padding:8px 16px; border-radius:6px; font-weight:600; cursor:pointer; }
+        .empty { text-align:center; padding:40px 20px; color:#6e7681; }
+    </style>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
+</head>
+<body>
+    <div class="container">
+        <a href="/admin/academia" class="back-btn">← Academia Taxonomy</a>
+        <h1>{{ department.name }}</h1>
+        <div class="subtitle">{{ department.faculty.name }} · {{ department.faculty.university.name }}</div>
+
+        {% if not courses %}
+        <div class="empty">No courses yet for this department.</div>
+        {% else %}
+        <table>
+            <thead><tr><th>Code</th><th>Title</th><th>Level</th><th>Semester</th><th>Type</th><th></th></tr></thead>
+            <tbody id="courseRows">
+                {% for c in courses %}
+                <tr id="course-{{ c.id }}">
+                    <td><input class="cell-edit" data-field="code" value="{{ c.code }}"></td>
+                    <td><input class="cell-edit" data-field="title" value="{{ c.title }}"></td>
+                    <td><input class="cell-edit" data-field="level" value="{{ c.level }}" style="width:60px;"></td>
+                    <td><input class="cell-edit" data-field="semester" value="{{ c.semester or '' }}" style="width:90px;"></td>
+                    <td><input class="cell-edit" data-field="course_type" value="{{ c.course_type or '' }}" style="width:80px;"></td>
+                    <td class="row-actions">
+                        <button class="save-btn" onclick="saveCourse({{ c.id }})">Save</button>
+                        <button class="del-btn" onclick="deleteCourse({{ c.id }})">Delete</button>
+                    </td>
+                </tr>
+                <tr class="desc-row" id="course-desc-row-{{ c.id }}">
+                    <td colspan="6"><textarea class="cell-edit" data-field="description" placeholder="Course overview/outline (shown to students on the course page — leave blank for none)" rows="1">{{ c.description or '' }}</textarea></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+
+        <div class="add-form">
+            <input type="text" id="newCode" placeholder="Code (e.g. MAT201)" required>
+            <input type="text" id="newTitle" placeholder="Course title" required style="flex:1; min-width:180px;">
+            <input type="text" id="newLevel" placeholder="Level (e.g. 200)" required style="width:100px;">
+            <input type="text" id="newSemester" placeholder="Semester (optional)">
+            <input type="text" id="newType" placeholder="Type (optional)">
+            <textarea id="newDescription" class="cell-edit" placeholder="Overview/outline (optional)" rows="1" style="flex-basis:100%;"></textarea>
+            <button onclick="addCourse()">+ Add Course</button>
+        </div>
+    </div>
+
+    <script>
+        const DEPARTMENT_ID = {{ department.id }};
+
+        async function saveCourse(id) {
+            const row = document.getElementById(`course-${id}`);
+            const descRow = document.getElementById(`course-desc-row-${id}`);
+            const fd = new FormData();
+            row.querySelectorAll('.cell-edit').forEach(inp => fd.append(inp.dataset.field, inp.value));
+            descRow.querySelectorAll('.cell-edit').forEach(inp => fd.append(inp.dataset.field, inp.value));
+            const res = await fetch(`/admin/academia/courses/${id}/edit`, { method: 'POST', body: fd });
+            const data = await res.json();
+            if (!data.success) { alert('Error: ' + data.error); return; }
+            alert('Saved');
+        }
+
+        async function deleteCourse(id) {
+            if (!confirm('Delete this course permanently?')) return;
+            const res = await fetch(`/admin/academia/courses/${id}/delete`, { method: 'DELETE' });
+            const data = await res.json();
+            if (!data.success) { alert('Error: ' + data.error); return; }
+            document.getElementById(`course-${id}`).remove();
+            document.getElementById(`course-desc-row-${id}`).remove();
+        }
+
+        async function addCourse() {
+            const fd = new FormData();
+            fd.append('department_id', DEPARTMENT_ID);
+            fd.append('code', document.getElementById('newCode').value);
+            fd.append('title', document.getElementById('newTitle').value);
+            fd.append('level', document.getElementById('newLevel').value);
+            fd.append('semester', document.getElementById('newSemester').value);
+            fd.append('course_type', document.getElementById('newType').value);
+            fd.append('description', document.getElementById('newDescription').value);
+            const res = await fetch('/admin/academia/courses/new', { method: 'POST', body: fd });
+            const data = await res.json();
+            if (!data.success) { alert('Error: ' + data.error); return; }
+            location.reload();
+        }
+    </script>
+</body>
+</html>

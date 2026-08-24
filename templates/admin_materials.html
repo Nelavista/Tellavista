@@ -23,6 +23,12 @@
         .view-btn { background:#3b82f6; border:none; padding:10px 20px; border-radius:8px; color:#fff; font-weight:600; cursor:pointer; text-decoration:none; display:inline-block; }
         .view-btn:hover { background:#2563eb; }
         .empty { text-align:center; padding:60px 20px; color:#6e7681; }
+        .edit-btn { background:#21262d; border:1px solid #30363d; color:#8b949e; padding:10px 20px; border-radius:8px; cursor:pointer; font-weight:600; }
+        .edit-btn:hover { border-color:#58a6ff; color:#58a6ff; }
+        .edit-form { display:none; gap:8px; flex-wrap:wrap; margin-top:14px; padding-top:14px; border-top:1px solid #21262d; }
+        .edit-form.open { display:flex; }
+        .edit-form input { background:#0d1117; border:1px solid #30363d; color:#e6edf3; padding:8px 10px; border-radius:6px; font-size:0.85rem; }
+        .edit-form .save-btn { background:#3b82f6; border:none; color:#fff; padding:8px 16px; border-radius:6px; font-weight:600; cursor:pointer; }
     </style>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
@@ -56,7 +62,17 @@
             <div class="actions">
                 <a href="{{ material.file_url }}" target="_blank" class="view-btn">👁️ View PDF</a>
                 <button class="approve-btn" onclick="approveMaterial({{ material.id }})">✅ Approve</button>
+                <button class="edit-btn" onclick="toggleEdit({{ material.id }})">✏️ Edit</button>
                 <button class="reject-btn" onclick="rejectMaterial({{ material.id }})">❌ Reject & Delete</button>
+            </div>
+            <div class="edit-form" id="edit-form-{{ material.id }}">
+                <input name="title" placeholder="Title" value="{{ material.title }}" style="flex:1; min-width:200px;">
+                <input name="department" placeholder="Department" value="{{ material.department }}">
+                <input name="level" placeholder="Level" value="{{ material.level }}" style="width:70px;">
+                <input name="semester" placeholder="Semester" value="{{ material.semester }}" style="width:130px;">
+                <input name="course_code" placeholder="Course code" value="{{ material.course_code or '' }}" style="width:110px;">
+                <input name="course_type" placeholder="Type" value="{{ material.course_type or '' }}" style="width:90px;">
+                <button class="save-btn" onclick="saveMaterial({{ material.id }})">Save</button>
             </div>
         </div>
         {% endfor %}
@@ -76,6 +92,28 @@
                     if (document.querySelectorAll('.material-card').length === 0) {
                         location.reload();
                     }
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            } catch(e) {
+                alert('Error: ' + e.message);
+            }
+        }
+
+        function toggleEdit(id) {
+            document.getElementById(`edit-form-${id}`).classList.toggle('open');
+        }
+
+        async function saveMaterial(id) {
+            const form = document.getElementById(`edit-form-${id}`);
+            const fd = new FormData();
+            form.querySelectorAll('input').forEach(inp => fd.append(inp.name, inp.value));
+            try {
+                const res = await fetch(`/admin/materials/${id}/edit`, { method: 'POST', body: fd });
+                const data = await res.json();
+                if (data.success) {
+                    alert('Saved!');
+                    location.reload();
                 } else {
                     alert('Error: ' + data.error);
                 }

@@ -6,11 +6,8 @@ from datetime import datetime
 
 dashboard_bp = Blueprint('dashboard', __name__)
 
-# The two top-level experiences a user's single Nelavista account could enter. Skills
-# (and the Employer blueprint) are currently disabled in app.py — not deleted, just not
-# registered — so the app is Academia-only for now. This dict, and the Choose Your Path
-# screen below, are left in place so re-enabling Skills is a small, contained change:
-# uncomment the blueprint registrations in app.py and restore the picker logic here.
+# The two top-level experiences a user's single Nelavista account can enter. Kept as a
+# module constant so choose_path() and the redirects in auth_routes.py can't drift apart.
 VALID_PATHS = {'academia': 'dashboard.dashboard', 'skills': 'skills.home'}
 
 # NOTE: study-session/exam/user-courses tracking used to be duplicated here (session-backed,
@@ -23,17 +20,40 @@ VALID_PATHS = {'academia': 'dashboard.dashboard', 'skills': 'skills.home'}
 def landing():
     user = session.get('user')
     if user:
-        return redirect(url_for('dashboard.dashboard'))
+        # Academia and Skills are two separate destinations, not one merged dashboard —
+        # every entry into the app (login, signup, or landing back on "/") forks through
+        # this picker rather than silently dropping the user into whichever they used last.
+        return redirect(url_for('dashboard.choose_path'))
     return render_template('landing.html')
 
 
 @dashboard_bp.route('/choose-path', methods=['GET', 'POST'])
 @login_required
 def choose_path():
-    """Skills is currently disabled (see VALID_PATHS comment above), so there's nothing
-    to choose between — send everyone straight to Academia. Kept as a route, not deleted,
-    so old links/bookmarks to /choose-path don't 404."""
-    return redirect(url_for('dashboard.dashboard'))
+    """'Choose Your Path' screen — the deliberate fork between Academia and Skills. Shown
+    every time a user enters the app (login, signup, landing on "/")."""
+    user_data = session.get('user')
+    user = User.query.filter_by(username=user_data['username']).first()
+    if not user:
+        flash('User not found. Please log in again.')
+        return redirect(url_for('auth.login'))
+
+    if request.method == 'POST':
+        path = request.form.get('path')
+        if path not in VALID_PATHS:
+            flash('Please choose a valid path.')
+            return redirect(url_for('dashboard.choose_path'))
+        user.preferred_path = path
+        db.session.commit()
+        session['user']['preferred_path'] = path
+        session.modified = True
+        return redirect(url_for(VALID_PATHS[path]))
+
+    if user.name:
+        first_name = user.name.strip().split()[0]
+    else:
+        first_name = None
+    return render_template('choose_path.html', user=user_data, first_name=first_name)
 
 @dashboard_bp.route('/dashboard')
 @login_required

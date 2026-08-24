@@ -156,16 +156,30 @@ def home():
             'verified': steps[3]['state'] == 'done',
         })
     verify_focus = verify_items[0] if verify_items else None
+    started_skill_ids = [s.skill_id for s in all_progress]
 
     # Skill catalog with level/duration, matching the dashboard's "What do you want to
-    # build?" section — separate from the fuller /skills/catalog browse page.
+    # build?" section — separate from the fuller /skills/catalog browse page. Personalized
+    # with the onboarding survey: what the student said they want to learn goes first,
+    # for as long as they haven't actually started it — once they do, it becomes their
+    # continue_card instead and this spotlight naturally stops appearing.
     catalog_skills = Skill.query.filter_by(is_published=True).order_by(Skill.order).limit(6).all()
+    spotlight_skill = None
+    unmatched_interest = None
+    if onboarding.interested_skill_id and onboarding.interested_skill_id not in started_skill_ids:
+        spotlight_skill = onboarding.interested_skill
+    elif onboarding.interest_text and onboarding.interest_text != ONBOARDING_SKIPPED:
+        unmatched_interest = onboarding.interest_text
+    if spotlight_skill and spotlight_skill.is_published:
+        catalog_skills = [spotlight_skill] + [s for s in catalog_skills if s.id != spotlight_skill.id]
+        catalog_skills = catalog_skills[:6]
+    else:
+        spotlight_skill = None
 
     # Projects: the student's own StudentProject rows across every skill.
     my_projects = StudentProject.query.filter_by(student_id=user.id).order_by(StudentProject.updated_at.desc()).limit(3).all()
 
     # Opportunities matched to skills the student has actually started, best match first.
-    started_skill_ids = [s.skill_id for s in all_progress]
     opportunities = []
     if started_skill_ids:
         opps = Opportunity.query.filter(
@@ -194,6 +208,7 @@ def home():
         onboarding=onboarding, overall_pct=overall_pct, continue_card=continue_card,
         verify_focus=verify_focus, catalog_skills=catalog_skills, my_projects=my_projects,
         opportunities=opportunities, earnings=earnings, profile=profile,
+        spotlight_skill=spotlight_skill, unmatched_interest=unmatched_interest,
     )
 
 

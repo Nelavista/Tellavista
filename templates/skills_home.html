@@ -45,6 +45,22 @@
       </div>
     </div>
 
+    {% if spotlight_skill %}
+    <div class="sk-panel" style="margin:22px 0; border:1px solid var(--border-glow); display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;">
+      <div>
+        <span class="sk-eyebrow" style="margin-bottom:6px;">Based on what you told us</span>
+        <div class="sk-card-title" style="font-size:1.2rem;">Ready to start {{ spotlight_skill.name }}?</div>
+        <div class="sk-card-desc" style="margin-bottom:0;">{{ spotlight_skill.tagline or spotlight_skill.description or '' }}</div>
+      </div>
+      <a href="/skills/{{ spotlight_skill.slug }}" class="sk-btn">Start Learning →</a>
+    </div>
+    {% elif unmatched_interest %}
+    <div class="sk-panel" style="margin:22px 0;">
+      <span class="sk-eyebrow" style="margin-bottom:6px;">Based on what you told us</span>
+      <div class="sk-card-desc" style="margin-bottom:0;">You said you wanted to learn "<strong>{{ unmatched_interest }}</strong>" — we don't have a dedicated path for that yet, but here's what's closest for now.</div>
+    </div>
+    {% endif %}
+
     {% if continue_card %}
     <div class="sk-section-title" style="margin-top:0;">Continue learning</div>
     <div class="sk-panel dv2-continue-card">
@@ -143,7 +159,11 @@
     <div class="sk-grid">
       {% for skill in catalog_skills %}
       <a href="/skills/{{ skill.slug }}" class="sk-card dv2-skill-card">
+        {% if spotlight_skill and skill.id == spotlight_skill.id %}
+        <span class="sk-badge completed" style="align-self:flex-start;">Recommended for you</span>
+        {% else %}
         <span class="sk-eyebrow" style="margin-bottom:0;">{{ skill.category.name if skill.category else '' }}</span>
+        {% endif %}
         <div class="sk-card-title">{{ skill.name }}</div>
         <div class="sk-card-desc">{{ skill.tagline or skill.description or '' }}</div>
         <div class="dv2-skill-meta">

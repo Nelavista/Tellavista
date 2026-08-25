@@ -20,6 +20,7 @@
   <div class="sk-view">
     <span class="sk-eyebrow">Earn</span>
     <h1 class="sk-h1">Earnings</h1>
+    <p class="sk-sub">Every gig you're paid for goes through Nelavista — here's exactly what you were paid and what was taken out.</p>
 
     <div class="sk-panel" style="margin:20px 0;">
       <div class="sk-card-desc" style="text-transform:uppercase; font-size:0.72rem; letter-spacing:0.06em; font-weight:700;">Total paid out</div>
@@ -41,6 +42,9 @@
         <div>
           <div class="sk-card-title" style="margin-bottom:2px;">{{ a.opportunity.title }}</div>
           <div class="sk-card-desc" style="margin-bottom:0;">Applied {{ a.applied_at.strftime('%b %d, %Y') }}</div>
+          {% if a.status == 'paid' %}
+          <div class="sk-card-desc" style="margin-bottom:0; margin-top:4px;">₦{{ '{:,}'.format(a.breakdown.gross) }} gross − {{ a.breakdown.fee_pct }}% fee (₦{{ '{:,}'.format(a.breakdown.fee) }}) = <strong style="color:var(--sk-text);">₦{{ '{:,}'.format(a.breakdown.net) }} to you</strong></div>
+          {% endif %}
         </div>
         <div style="text-align:right;">
           <span class="sk-badge {{ a.status }}">{{ a.status|title }}</span>

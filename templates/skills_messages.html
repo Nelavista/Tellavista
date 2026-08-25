@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Messages · Nelavista Skills</title>
+  <meta name="theme-color" content="#050810">
+  <link rel="icon" type="image/png" sizes="32x32" href="/static/icons/nelavista-32x32.png">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/skills.css') }}">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
+</head>
+<body>
+{% include 'components/skills_sidebar.html' %}
+
+  <div class="sk-view" style="max-width:680px;">
+    <span class="sk-eyebrow">Messages</span>
+    <h1 class="sk-h1">Conversations</h1>
+
+    {% if not rows %}
+    <div class="sk-empty"><div class="sk-empty-icon">💬</div><div style="font-weight:600;">No conversations yet</div><div style="font-size:0.85rem;">Messages from employers about a gig will show up here.</div></div>
+    {% else %}
+    <div class="sk-panel" style="padding:8px;">
+      {% for row in rows %}
+      <a href="/skills/messages/{{ row.thread.id }}" class="msg-thread-row">
+        <div class="msg-thread-avatar">{{ (row.other.name or row.other.username)[:1]|upper }}</div>
+        <div style="flex:1; min-width:0;">
+          <div class="msg-thread-name">{{ row.other.employer_profile.company_name if row.other.is_employer and row.other.employer_profile else (row.other.name or row.other.username) }}</div>
+          <div class="msg-thread-preview">{{ row.last_message.content if row.last_message else 'No messages yet' }}</div>
+        </div>
+        {% if row.unread %}<span class="nav-badge">{{ row.unread }}</span>{% endif %}
+      </a>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+
+{% include 'components/skills_footer.html' %}
+</body>
+</html>

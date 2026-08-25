@@ -1,17 +1,18 @@
 <!-- Employers get their own top nav, not the Skills sidebar — an employer account has no
-     Academia/Skills learning experience of its own, just Dashboard + Discovery. -->
+     Academia/Skills learning experience of its own, just Dashboard + Discovery + Messages. -->
 <style>
-  .emp-topbar { background: #0d1117; border-bottom: 1px solid #1f2a3e; padding: 0 20px; display: flex; align-items: center; gap: 4px; overflow-x: auto; position: sticky; top: 0; z-index: 200; }
-  .emp-topbar .emp-logo { font-weight: 800; font-size: 1.1rem; padding: 14px 16px 14px 0; background: linear-gradient(135deg, #3b82f6, #60a5fa); -webkit-background-clip: text; background-clip: text; color: transparent; }
-  .emp-topbar a { color: #9ca3af; text-decoration: none; font-size: 0.85rem; font-weight: 600; padding: 14px 14px; white-space: nowrap; border-bottom: 2px solid transparent; }
-  .emp-topbar a:hover { color: #e5e7eb; }
-  .emp-topbar a.active { color: #3b82f6; border-bottom-color: #3b82f6; }
+  .emp-topbar { background: var(--bg-surface); border-bottom: 1px solid var(--sk-border); padding: 0 20px; display: flex; align-items: center; gap: 4px; overflow-x: auto; position: sticky; top: 0; z-index: 200; }
+  .emp-topbar .emp-logo { font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 1.1rem; padding: 14px 16px 14px 0; background: var(--grad-hero); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .emp-topbar a { color: var(--sk-text-dim); text-decoration: none; font-size: 0.88rem; font-weight: 600; padding: 14px 14px; white-space: nowrap; border-bottom: 2px solid transparent; }
+  .emp-topbar a:hover { color: var(--sk-text); }
+  .emp-topbar a.active { color: var(--sk-accent); border-bottom-color: var(--sk-accent); }
   .emp-topbar .emp-spacer { flex: 1; }
 </style>
 <div class="emp-topbar">
-  <span class="emp-logo">Nelavista <span style="font-weight:600; color:#9ca3af; font-size:0.75rem;">for Employers</span></span>
+  <a href="/choose-path" class="emp-logo" style="text-decoration:none;">Nelavista <span style="font-weight:600; color:var(--text-muted); font-size:0.75rem;">for Employers</span></a>
   <a href="/employer/dashboard" class="{{ 'active' if active_page == 'dashboard' else '' }}">Dashboard</a>
   <a href="/employer/discover" class="{{ 'active' if active_page == 'discover' else '' }}">Discover Talent</a>
+  <a href="/skills/messages" class="{{ 'active' if active_page == 'messages' else '' }}">Messages</a>
   <div class="emp-spacer"></div>
   <a href="/logout">Logout</a>
 </div>

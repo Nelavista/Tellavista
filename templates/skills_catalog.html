@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Explore Skills · Nelavista</title>
+  <title>Learn · Nelavista Skills</title>
   <meta name="theme-color" content="#111827">
   <link rel="icon" type="image/png" sizes="32x32" href="/static/icons/nelavista-32x32.png">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/skills.css') }}">
@@ -14,9 +14,9 @@
 {% include 'components/skills_sidebar.html' %}
 
   <div class="sk-view">
-    <span class="sk-eyebrow">Explore</span>
-    <h1 class="sk-h1">Find a skill worth building.</h1>
-    <p class="sk-sub">Browse by category, or search for something specific. Every skill here comes with a real learning path — not just a pile of videos.</p>
+    <span class="sk-eyebrow">Learn</span>
+    <h1 class="sk-h1">Learn something that can change what you can do.</h1>
+    <p class="sk-sub">Browse by category, or search for something specific. Every skill here comes with a real learning path, real projects, and real opportunities behind it.</p>
 
     <div style="margin-top:24px;">
       <form class="sk-search-wrap" method="GET" action="/skills/catalog">
@@ -33,7 +33,7 @@
       {% endfor %}
     </div>
 
-    {% if not skills %}
+    {% if not rows %}
     <div class="sk-empty">
       <div class="sk-empty-icon">🔍</div>
       <div style="font-weight:600; margin-bottom:6px;">No skills found</div>
@@ -43,15 +43,22 @@
     </div>
     {% else %}
     <div class="sk-grid">
-      {% for skill in skills %}
-      <a href="/skills/{{ skill.slug }}" class="sk-card">
+      {% for row in rows %}
+      {% set skill = row.skill %}
+      <a href="/skills/{{ skill.slug }}" class="sk-card dv2-skill-card">
         <div class="sk-icon-circle" style="background:{{ skill.color }}22; color:{{ skill.color }};">{{ skill.icon or '🧩' }}</div>
         <div class="sk-card-title">{{ skill.name }}</div>
         <div class="sk-card-desc">{{ skill.tagline or '' }}</div>
         <div style="display:flex; gap:6px; flex-wrap:wrap;">
-          <span class="sk-badge {{ skill.level }}">{{ skill.level }}</span>
+          <span class="sk-badge">{{ skill.level|title }}</span>
           {% if skill.estimated_hours %}<span class="sk-badge">~{{ skill.estimated_hours }}h</span>{% endif %}
         </div>
+        <div class="dv2-skill-meta">
+          <div class="dv2-skill-meta-col"><span class="dv2-skill-meta-label">Projects</span><span>{{ row.projects_count }}</span></div>
+          <div class="dv2-skill-meta-col"><span class="dv2-skill-meta-label">Learning it</span><span>{{ row.students_count }}</span></div>
+          <div class="dv2-skill-meta-col"><span class="dv2-skill-meta-label">Gigs open</span><span>{{ row.opportunities_count }}</span></div>
+        </div>
+        <span class="sk-btn secondary small" style="margin-top:4px; align-self:flex-start;">Start Learning</span>
       </a>
       {% endfor %}
     </div>

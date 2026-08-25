@@ -28,14 +28,14 @@ from routes.admin_routes import admin_bp
 from routes.community_routes import community_bp
 from routes.academia_routes import academia_bp
 from routes.admin_academia_routes import admin_academia_bp
-# Skills is re-enabled, rebuilt around the Learn -> Practice -> Build -> Verify -> Earn
-# dashboard. The old GPA-discovery Employer blueprint and the legacy /tech-skills redirect
-# stay disabled — Opportunities (the new "Earn" phase) are admin-curated gigs, not an
-# employer-posting marketplace.
+# Skills is rebuilt around Learn -> Practice -> Build -> Verify -> Showcase -> Get
+# Discovered -> Earn. Employer (talent discovery + messaging) is back on, now reading the
+# same get_talent_stats() a student's own Talent Profile shows. The legacy /tech-skills
+# redirect stays disabled — nothing routes there anymore.
 # from routes.tech_routes import tech_bp
 from routes.skills_routes import skills_bp
 from routes.admin_skills_routes import admin_skills_bp
-# from routes.employer_routes import employer_bp
+from routes.employer_routes import employer_bp
 
 # Import socketio events to register handlers
 import events
@@ -195,7 +195,7 @@ def create_app():
     # app.register_blueprint(tech_bp, url_prefix='/')
     app.register_blueprint(skills_bp, url_prefix='/')
     app.register_blueprint(admin_skills_bp, url_prefix='/')
-    # app.register_blueprint(employer_bp, url_prefix='/')
+    app.register_blueprint(employer_bp, url_prefix='/')
 
     return app
 

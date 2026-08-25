@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Gigs · Nelavista Skills</title>
+  <meta name="theme-color" content="#050810">
+  <link rel="icon" type="image/png" sizes="32x32" href="/static/icons/nelavista-32x32.png">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/skills.css') }}">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
+</head>
+<body>
+{% include 'components/skills_sidebar.html' %}
+
+  <div class="sk-view">
+    <span class="sk-eyebrow">Gigs</span>
+    <h1 class="sk-h1">The full marketplace.</h1>
+    <p class="sk-sub">Every open gig on Nelavista, not just the ones matched to you. Filter to find what fits.</p>
+
+    <form method="GET" action="/skills/gigs" class="gig-filter-row" style="margin-top:20px;">
+      <select name="skill_id" class="sk-select" onchange="this.form.submit()">
+        <option value="">Any skill</option>
+        {% for s in skills %}<option value="{{ s.id }}" {{ 'selected' if skill_id == s.id else '' }}>{{ s.name }}</option>{% endfor %}
+      </select>
+      <input type="text" name="location" class="sk-input" value="{{ location }}" placeholder="Location (e.g. Remote, Lagos)">
+      <input type="number" name="min_pay" class="sk-input" value="{{ min_pay or '' }}" placeholder="Min pay (₦)">
+      <button type="submit" class="sk-btn secondary">Filter</button>
+    </form>
+
+    {% if not rows %}
+    <div class="sk-empty"><div class="sk-empty-icon">💼</div><div style="font-weight:600;">No gigs match those filters</div><div style="font-size:0.85rem;">Try widening your search.</div></div>
+    {% else %}
+    <div class="sk-grid">
+      {% for row in rows %}
+      {% set o = row.opportunity %}
+      <div class="sk-card dv2-opp-card" style="cursor:default;">
+        <div class="dv2-opp-top">
+          <div class="sk-card-title" style="margin-bottom:0;">{{ o.title }}</div>
+          {% if row.match_pct %}<span class="dv2-opp-match">{{ row.match_pct }}% match</span>{% endif %}
+        </div>
+        <div class="dv2-opp-meta">{{ o.location }} · {{ o.skill.name }}{% if o.due_date %} · Due {{ o.due_date.strftime('%b') }} {{ o.due_date.day }}{% endif %}</div>
+        <div class="dv2-opp-price">₦{{ '{:,}'.format(o.payment_amount) }}</div>
+        {% if o.description %}<p class="sk-card-desc" style="margin-top:4px;">{{ o.description[:120] }}{{ '...' if o.description|length > 120 else '' }}</p>{% endif %}
+        {% if row.application %}
+        <span class="sk-badge {{ row.application.status }}">{{ row.application.status|title }}</span>
+        {% else %}
+        <form method="POST" action="/skills/opportunities/{{ o.id }}/apply">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button type="submit" class="sk-btn small" style="align-self:flex-start;">Apply</button>
+        </form>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+
+{% include 'components/skills_footer.html' %}
+{% include 'components/skills_ask_widget.html' %}
+</body>
+</html>

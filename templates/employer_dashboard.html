@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Employer Dashboard · Nelavista</title>
-  <meta name="theme-color" content="#111827">
+  <meta name="theme-color" content="#050810">
   <link rel="icon" type="image/png" sizes="32x32" href="/static/icons/nelavista-32x32.png">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/skills.css') }}">
   <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -24,19 +24,21 @@
       {% endif %}
     </p>
 
-    <div class="dc-stats-row">
-      <div class="dc-stat-card">
-        <div class="dc-stat-value">{{ discoverable_count }}</div>
-        <div class="dc-stat-label">Students currently discoverable</div>
-      </div>
+    <div class="tp-stats-row" style="margin:20px 0;">
+      <div><div class="tp-stat-value">{{ discoverable_count }}</div><div class="tp-stat-label">Students Discoverable</div></div>
     </div>
 
     <div class="sk-section-title">Get Started</div>
     <div class="sk-grid">
       <a href="/employer/discover" class="sk-card">
-        <div class="sk-icon-circle" style="background:#3b82f622; color:#3b82f6;">🔍</div>
+        <div class="sk-icon-circle" style="background:rgba(56,189,248,0.14); color:var(--sk-accent);"><i class="ri-search-line"></i></div>
         <div class="sk-card-title">Discover Talent</div>
-        <div class="sk-card-desc">Search students by demonstrated Skill GPA, completed projects, and cohort rank — never self-reported skills alone.</div>
+        <div class="sk-card-desc">Search students by verified skills, completed projects, and real gig history — never self-reported skills alone.</div>
+      </a>
+      <a href="/skills/messages" class="sk-card">
+        <div class="sk-icon-circle" style="background:rgba(45,212,191,0.14); color:var(--accent-teal);"><i class="ri-message-3-line"></i></div>
+        <div class="sk-card-title">Messages</div>
+        <div class="sk-card-desc">Conversations with students you've reached out to.</div>
       </a>
     </div>
 

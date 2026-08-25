@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>My Learning · Nelavista Skills</title>
+  <meta name="theme-color" content="#050810">
+  <link rel="icon" type="image/png" sizes="32x32" href="/static/icons/nelavista-32x32.png">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/skills.css') }}">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
+</head>
+<body>
+{% include 'components/skills_sidebar.html' %}
+
+  <div class="sk-view">
+    <span class="sk-eyebrow">My Learning</span>
+    <h1 class="sk-h1">Everything you're building.</h1>
+    <p class="sk-sub">Every skill you've started, in one place — not just the one on your dashboard.</p>
+
+    {% if not rows %}
+    <div class="sk-empty">
+      <div class="sk-empty-icon">📚</div>
+      <div style="font-weight:600; margin-bottom:6px;">Nothing started yet</div>
+      <div style="font-size:0.85rem;">Head to <a href="/skills/catalog" style="color:var(--sk-accent);">Learn</a> to pick your first skill.</div>
+    </div>
+    {% endif %}
+
+    {% for row in rows %}
+    <div class="sk-panel" style="margin-bottom:16px;">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap;">
+        <div>
+          <div class="sk-card-title" style="font-size:1.1rem;">{{ row.skill.name }}</div>
+          <div class="sk-card-desc" style="margin-bottom:0;">{{ row.student_skill.progress_pct }}% complete{% if row.student_skill.status == 'completed' %} · Completed{% endif %}</div>
+        </div>
+        {% if row.student_skill.status == 'completed' %}
+        <span class="sk-badge completed">Completed</span>
+        {% endif %}
+      </div>
+      <div class="sk-progress-row">
+        <div class="sk-progress-track"><div class="sk-progress-fill" style="width:{{ row.student_skill.progress_pct }}%;"></div></div>
+        <span class="sk-progress-pct">{{ row.student_skill.progress_pct }}%</span>
+      </div>
+
+      <div class="dv2-stepper" style="margin-top:16px;">
+        {% for step in row.pipeline_steps %}
+        <div class="dv2-step {{ step.state }}">
+          {% if not loop.first %}<div class="dv2-step-connector"></div>{% endif %}
+          <div class="dv2-step-dot">{{ '✓' if step.state == 'done' else loop.index }}</div>
+          <div class="dv2-step-label">{{ step.label }}</div>
+        </div>
+        {% endfor %}
+      </div>
+
+      <div style="margin-top:16px;">
+        {% if row.card and row.card.next_lesson %}
+        <a href="/skills/{{ row.skill.slug }}/learn/{{ row.card.course.slug }}/{{ row.card.next_lesson.slug }}" class="sk-btn">Continue Learning →</a>
+        {% else %}
+        <a href="/skills/{{ row.skill.slug }}" class="sk-btn secondary">View Skill →</a>
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+{% include 'components/skills_footer.html' %}
+{% include 'components/skills_ask_widget.html' %}
+</body>
+</html>

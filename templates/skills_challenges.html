@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Challenges · Nelavista Skills</title>
+  <meta name="theme-color" content="#050810">
+  <link rel="icon" type="image/png" sizes="32x32" href="/static/icons/nelavista-32x32.png">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/skills.css') }}">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
+</head>
+<body>
+{% include 'components/skills_sidebar.html' %}
+
+  <div class="sk-view">
+    <span class="sk-eyebrow">Challenges</span>
+    <h1 class="sk-h1">Turn skill into recognition.</h1>
+    <p class="sk-sub">Quick practice exercises, and bigger public competitions with real prizes and deadlines.</p>
+
+    <div class="sk-tabs-row">
+      <button class="sk-tab-btn active" data-tab="competitions" onclick="chShowTab('competitions')">Competitions{% if competitions %} ({{ competitions|length }}){% endif %}</button>
+      <button class="sk-tab-btn" data-tab="practice" onclick="chShowTab('practice')">Practice{% if challenges %} ({{ challenges|length }}){% endif %}</button>
+    </div>
+
+    <div class="sk-tab-panel active" id="tab-competitions">
+      {% if not competitions %}
+      <div class="sk-empty"><div class="sk-empty-icon">🏆</div><div style="font-weight:600;">No competitions open right now</div><div style="font-size:0.85rem;">Check back soon.</div></div>
+      {% else %}
+      <div class="sk-grid">
+        {% for c in competitions %}
+        <a href="/skills/competitions/{{ c.slug }}" class="sk-card comp-card">
+          <div class="sk-card-title">{{ c.title }}</div>
+          {% if c.prize_amount %}<div class="comp-prize">₦{{ '{:,}'.format(c.prize_amount) }}</div>{% endif %}
+          {% if c.deadline %}<div class="comp-deadline">Deadline: {{ c.deadline.strftime('%b') }} {{ c.deadline.day }}, {{ c.deadline.year }}</div>{% endif %}
+          {% if c.skills_tags %}
+          <div class="dv2-tag-row">{% for t in c.skills_tags %}<span class="dv2-tag">{{ t }}</span>{% endfor %}</div>
+          {% endif %}
+          {% if c.id in my_entries %}<span class="sk-badge completed">Entered</span>{% else %}<span class="sk-btn small" style="align-self:flex-start;">Join Challenge</span>{% endif %}
+        </a>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+
+    <div class="sk-tab-panel" id="tab-practice">
+      {% if not challenges %}
+      <div class="sk-empty"><div class="sk-empty-icon">🎯</div><div style="font-weight:600;">No practice challenges yet</div></div>
+      {% else %}
+      <div class="sk-grid">
+        {% for c in challenges %}
+        <a href="/skills/{{ c.skill.slug }}/challenge/{{ c.slug }}" class="sk-card">
+          <div class="sk-card-title">{{ c.title }}</div>
+          <div class="sk-card-desc">{{ c.description or '' }}</div>
+          <div style="display:flex; gap:6px; flex-wrap:wrap;">
+            <span class="sk-badge">{{ c.difficulty|title }}</span>
+            <span class="sk-badge">{{ c.skill.name }}</span>
+            {% if c.id in my_challenge_submissions %}<span class="sk-badge completed">✓ Submitted</span>{% endif %}
+          </div>
+        </a>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+{% include 'components/skills_footer.html' %}
+{% include 'components/skills_ask_widget.html' %}
+
+<script>
+  function chShowTab(name) {
+    document.querySelectorAll('.sk-tab-btn').forEach(t => t.classList.toggle('active', t.dataset.tab === name));
+    document.querySelectorAll('.sk-tab-panel').forEach(p => p.classList.toggle('active', p.id === 'tab-' + name));
+  }
+</script>
+</body>
+</html>

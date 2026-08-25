@@ -864,9 +864,23 @@ class StudentProject(db.Model):
     # is always the sum of those per-criterion scores, never a separately invented number.
     rubric_scores_json = db.Column(db.Text)
     ai_overall_score = db.Column(db.Integer, nullable=True)
+    # Project workspace: screenshots are pasted URLs (no new upload widget — same pattern
+    # as repo_url/live_url), not a Cloudinary integration of their own.
+    screenshots_json = db.Column(db.Text)
+    # Ordinary (non-final-project) AI review — same spirit as ChallengeSubmission.feedback:
+    # real strengths/improvements, not a bare pass/fail. Separate from rubric_scores, which
+    # only applies to a daily-class's formal final project.
+    ai_feedback_json = db.Column(db.Text)
+    # none: never asked | requested: waiting on AI review | reviewed: feedback delivered.
+    # Distinct from `status` (in_progress/submitted/completed), which is the student's own
+    # claim about the work; this tracks whether it's actually been looked at.
+    verification_status = db.Column(db.String(20), default='none')
+    is_public = db.Column(db.Boolean, default=True)  # shown on the student's Talent Profile
 
     student = db.relationship('User', backref='student_projects')
     template = db.relationship('ProjectTemplate', backref='student_instances')
+    milestones = db.relationship('ProjectMilestone', backref='project', lazy='dynamic',
+                                  order_by='ProjectMilestone.order', cascade='all, delete-orphan')
 
     @property
     def skills_demonstrated(self):
@@ -890,6 +904,30 @@ class StudentProject(db.Model):
     def rubric_scores(self, value):
         self.rubric_scores_json = json.dumps(value) if value is not None else None
 
+    @property
+    def screenshots(self):
+        try:
+            return json.loads(self.screenshots_json) if self.screenshots_json else []
+        except (ValueError, TypeError):
+            return []
+
+    @screenshots.setter
+    def screenshots(self, value):
+        self.screenshots_json = json.dumps(value or [])
+
+    @property
+    def ai_feedback(self):
+        if not self.ai_feedback_json:
+            return None
+        try:
+            return json.loads(self.ai_feedback_json)
+        except (ValueError, TypeError):
+            return None
+
+    @ai_feedback.setter
+    def ai_feedback(self, value):
+        self.ai_feedback_json = json.dumps(value) if value is not None else None
+
     def to_dict(self):
         return {
             'id': self.id, 'title': self.title, 'description': self.description, 'status': self.status,
@@ -900,6 +938,31 @@ class StudentProject(db.Model):
             'started_at': self.started_at.isoformat() if self.started_at else None,
             'completed_at': self.completed_at.isoformat() if self.completed_at else None,
             'rubric_scores': self.rubric_scores, 'ai_overall_score': self.ai_overall_score,
+            'screenshots': self.screenshots, 'ai_feedback': self.ai_feedback,
+            'verification_status': self.verification_status, 'is_public': self.is_public,
+        }
+
+
+class ProjectMilestone(db.Model):
+    """One checkpoint in a student's project workspace — breaks 'build a marketplace app'
+    into steps a student can actually make progress against, instead of one opaque
+    progress_pct slider. A template's milestones (if any) are copied in when the project
+    starts; the student can also add their own."""
+    __tablename__ = 'project_milestones'
+
+    id = db.Column(db.Integer, primary_key=True)
+    student_project_id = db.Column(db.Integer, db.ForeignKey('student_projects.id'), nullable=False)
+    title = db.Column(db.String(150), nullable=False)
+    description = db.Column(db.String(300))
+    order = db.Column(db.Integer, default=0)
+    is_done = db.Column(db.Boolean, default=False)
+    completed_at = db.Column(db.DateTime, nullable=True)
+
+    def to_dict(self):
+        return {
+            'id': self.id, 'title': self.title, 'description': self.description,
+            'order': self.order, 'is_done': self.is_done,
+            'completed_at': self.completed_at.isoformat() if self.completed_at else None,
         }
 
 
@@ -1566,4 +1629,178 @@ class OpportunityApplication(db.Model):
             'completed_at': self.completed_at.isoformat() if self.completed_at else None,
             'paid_at': self.paid_at.isoformat() if self.paid_at else None,
             'payout_amount': self.payout_amount,
+        }
+
+
+class Rating(db.Model):
+    """An employer's rating of a student after ONE completed OpportunityApplication —
+    this is the only source of the ★ trust signal shown on a Talent Profile; there is no
+    way to fabricate a rating without a real completed gig behind it."""
+    __tablename__ = 'ratings'
+
+    id = db.Column(db.Integer, primary_key=True)
+    opportunity_application_id = db.Column(db.Integer, db.ForeignKey('opportunity_applications.id'), unique=True, nullable=False)
+    employer_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    student_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    stars = db.Column(db.Integer, nullable=False)  # 1-5
+    comment = db.Column(db.String(500))
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    application = db.relationship('OpportunityApplication', backref=db.backref('rating', uselist=False))
+    employer = db.relationship('User', foreign_keys=[employer_id])
+
+    def to_dict(self):
+        return {
+            'id': self.id, 'stars': self.stars, 'comment': self.comment,
+            'employer_name': (self.employer.employer_profile.company_name
+                               if self.employer and self.employer.employer_profile else None),
+            'created_at': self.created_at.isoformat() if self.created_at else None,
+        }
+
+
+# ============================================================
+# ===== CHALLENGES & COMPETITIONS: recognition, not just paid work =====
+# Distinct from the practice `Challenge` model (skill-specific drills feeding the
+# Learn->Practice pipeline) — a Competition is time-boxed, prize-based, and public,
+# closer to a hackathon than an exercise.
+# ============================================================
+
+class Competition(db.Model):
+    __tablename__ = 'competitions'
+
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(200), nullable=False)
+    slug = db.Column(db.String(200), unique=True, nullable=False)
+    description = db.Column(db.Text)
+    prize_amount = db.Column(db.Integer, default=0)  # whole naira, 0 = non-monetary/recognition only
+    currency = db.Column(db.String(10), default='NGN')
+    deadline = db.Column(db.DateTime, nullable=True)
+    skills_tags_json = db.Column(db.Text)  # JSON list of tag strings, e.g. ["Product","Engineering","Design"]
+    is_published = db.Column(db.Boolean, default=False)
+    order = db.Column(db.Integer, default=0)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    entries = db.relationship('CompetitionEntry', backref='competition', lazy='dynamic', cascade='all, delete-orphan')
+
+    @property
+    def skills_tags(self):
+        try:
+            return json.loads(self.skills_tags_json) if self.skills_tags_json else []
+        except (ValueError, TypeError):
+            return []
+
+    @skills_tags.setter
+    def skills_tags(self, value):
+        self.skills_tags_json = json.dumps(value or [])
+
+    def to_dict(self):
+        return {
+            'id': self.id, 'title': self.title, 'slug': self.slug, 'description': self.description,
+            'prize_amount': self.prize_amount, 'currency': self.currency,
+            'deadline': self.deadline.isoformat() if self.deadline else None,
+            'skills_tags': self.skills_tags, 'is_published': self.is_published,
+            'entry_count': self.entries.count(),
+        }
+
+
+class CompetitionEntry(db.Model):
+    """A student's submission to a Competition. status is admin-judged, mirroring
+    AssignmentSubmission's review_status pattern rather than inventing a new vocabulary."""
+    __tablename__ = 'competition_entries'
+
+    id = db.Column(db.Integer, primary_key=True)
+    competition_id = db.Column(db.Integer, db.ForeignKey('competitions.id'), nullable=False)
+    student_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    submission_url = db.Column(db.String(500))
+    description = db.Column(db.Text)
+    status = db.Column(db.String(20), default='submitted')  # submitted | shortlisted | winner | not_selected
+    submitted_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    student = db.relationship('User', backref='competition_entries')
+
+    __table_args__ = (db.UniqueConstraint('competition_id', 'student_id', name='uq_competition_student'),)
+
+    def to_dict(self):
+        return {
+            'id': self.id, 'competition_id': self.competition_id, 'submission_url': self.submission_url,
+            'description': self.description, 'status': self.status,
+            'submitted_at': self.submitted_at.isoformat() if self.submitted_at else None,
+        }
+
+
+# ============================================================
+# ===== NOTIFICATIONS & MESSAGES =====
+# Both real and DB-backed (polled, not push/websocket) — deliberately simple rather than
+# fake. A notification is always written by the specific event that caused it (assignment
+# graded, opportunity match, application status change, new message) — never a generic
+# "something happened" placeholder.
+# ============================================================
+
+class Notification(db.Model):
+    __tablename__ = 'notifications'
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    type = db.Column(db.String(40), nullable=False)  # e.g. verification | opportunity_match | application_update | message | competition
+    title = db.Column(db.String(200), nullable=False)
+    body = db.Column(db.String(400))
+    link_url = db.Column(db.String(300))
+    is_read = db.Column(db.Boolean, default=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    user = db.relationship('User', backref=db.backref('notifications', lazy='dynamic'))
+
+    def to_dict(self):
+        return {
+            'id': self.id, 'type': self.type, 'title': self.title, 'body': self.body,
+            'link_url': self.link_url, 'is_read': self.is_read,
+            'created_at': self.created_at.isoformat() if self.created_at else None,
+        }
+
+
+class MessageThread(db.Model):
+    """One conversation between one employer and one student — optionally scoped to a
+    specific OpportunityApplication for context, but usable standalone too. One thread
+    per (employer, student) pair keeps this simple rather than allowing an unbounded
+    number of parallel conversations between the same two people."""
+    __tablename__ = 'message_threads'
+
+    id = db.Column(db.Integer, primary_key=True)
+    employer_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    student_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    opportunity_application_id = db.Column(db.Integer, db.ForeignKey('opportunity_applications.id'), nullable=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    last_message_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    employer = db.relationship('User', foreign_keys=[employer_id])
+    student = db.relationship('User', foreign_keys=[student_id])
+    application = db.relationship('OpportunityApplication')
+    messages = db.relationship('Message', backref='thread', lazy='dynamic',
+                                order_by='Message.created_at', cascade='all, delete-orphan')
+
+    __table_args__ = (db.UniqueConstraint('employer_id', 'student_id', name='uq_thread_employer_student'),)
+
+    def other_party(self, viewer_id):
+        return self.student if viewer_id == self.employer_id else self.employer
+
+    def unread_count_for(self, user_id):
+        return self.messages.filter(Message.sender_id != user_id, Message.is_read.is_(False)).count()
+
+
+class Message(db.Model):
+    __tablename__ = 'messages'
+
+    id = db.Column(db.Integer, primary_key=True)
+    thread_id = db.Column(db.Integer, db.ForeignKey('message_threads.id'), nullable=False)
+    sender_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    content = db.Column(db.Text, nullable=False)
+    is_read = db.Column(db.Boolean, default=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    sender = db.relationship('User')
+
+    def to_dict(self):
+        return {
+            'id': self.id, 'sender_id': self.sender_id, 'content': self.content,
+            'is_read': self.is_read, 'created_at': self.created_at.isoformat() if self.created_at else None,
         }

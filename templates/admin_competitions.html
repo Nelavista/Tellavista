@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin · Competitions · Nelavista</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Inter',system-ui,sans-serif; }
+        body { background:#0d1117; color:#e6edf3; }
+        .container { max-width:1000px; margin:0 auto; padding:28px 20px 80px; }
+        h1 { font-size:1.5rem; margin:14px 0 6px; }
+        .subtitle { color:#8b949e; font-size:0.9rem; margin-bottom:24px; }
+        .btn { background:#238636; border:none; color:#fff; padding:9px 16px; border-radius:8px; font-size:0.85rem; font-weight:600; cursor:pointer; }
+        .btn:hover { background:#2ea043; }
+        .btn.secondary { background:#21262d; border:1px solid #30363d; color:#e6edf3; }
+        .btn.secondary:hover { border-color:#58a6ff; }
+        .btn.danger { background:#da3633; } .btn.danger:hover { background:#f85149; }
+        .btn.small { padding:6px 12px; font-size:0.78rem; }
+        .section-row { display:flex; justify-content:space-between; align-items:center; margin:24px 0 14px; }
+
+        .comp-card { background:#161b22; border:1px solid #21262d; border-radius:14px; padding:18px; margin-bottom:14px; }
+        .comp-head { display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; margin-bottom:8px; }
+        .comp-title { font-weight:700; font-size:1rem; }
+        .comp-meta { color:#8b949e; font-size:0.82rem; margin-top:3px; }
+        .pub-badge { font-size:0.62rem; font-weight:700; padding:2px 8px; border-radius:10px; margin-left:6px; }
+        .pub-badge.yes { background:rgba(63,185,80,0.15); color:#3fb950; }
+        .pub-badge.no { background:rgba(139,148,158,0.15); color:#8b949e; }
+        .comp-actions { display:flex; gap:6px; flex-wrap:wrap; }
+        .entries-list { margin-top:12px; padding-top:12px; border-top:1px solid #21262d; display:none; }
+        .entries-list.open { display:block; }
+        .entry-row { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:8px 0; font-size:0.85rem; }
+        .status-select { background:#0d1117; border:1px solid #30363d; color:#e6edf3; padding:5px 8px; border-radius:6px; font-size:0.8rem; }
+
+        .modal-backdrop { position:fixed; inset:0; background:rgba(0,0,0,0.6); display:none; align-items:center; justify-content:center; z-index:2000; padding:16px; }
+        .modal-backdrop.active { display:flex; }
+        .modal { background:#161b22; border:1px solid #30363d; border-radius:16px; padding:24px; width:100%; max-width:480px; max-height:90vh; overflow-y:auto; }
+        .modal h3 { margin-bottom:16px; font-size:1.1rem; }
+        .field { margin-bottom:14px; }
+        .field label { display:block; font-size:0.8rem; color:#8b949e; margin-bottom:6px; font-weight:600; }
+        .field input, .field select, .field textarea { width:100%; background:#0d1117; border:1px solid #30363d; color:#e6edf3; padding:9px 12px; border-radius:8px; font-size:0.88rem; font-family:inherit; outline:none; }
+        .field textarea { resize:vertical; min-height:70px; }
+        .field .hint { font-size:0.72rem; color:#6e7681; margin-top:5px; }
+        .modal-actions { display:flex; gap:8px; justify-content:flex-end; margin-top:18px; }
+        .empty-hint { color:#6e7681; font-size:0.85rem; padding:18px; text-align:center; }
+        .back-link { color:#8b949e; text-decoration:none; font-size:0.85rem; }
+    </style>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
+</head>
+<body>
+{% include 'components/admin_nav.html' %}
+<div class="container">
+    <a href="/admin/skills" class="back-link">← Skills</a>
+    <h1>🏆 Competitions</h1>
+    <p class="subtitle">Public, prize-based challenges — separate from per-skill practice Challenges. Review entries and mark shortlisted/winner to notify students.</p>
+
+    <div class="section-row">
+        <div></div>
+        <button class="btn" onclick="openCompModal()">+ New Competition</button>
+    </div>
+
+    {% for c in competitions %}
+    <div class="comp-card" id="comp-{{ c.id }}">
+        <div class="comp-head">
+            <div>
+                <span class="comp-title">{{ c.title }}</span>
+                <span class="pub-badge {{ 'yes' if c.is_published else 'no' }}">{{ 'LIVE' if c.is_published else 'DRAFT' }}</span>
+                <div class="comp-meta">
+                    {% if c.prize_amount %}₦{{ '{:,}'.format(c.prize_amount) }} · {% endif %}
+                    {% if c.deadline %}Deadline {{ c.deadline.strftime('%b %d, %Y') }} · {% endif %}
+                    {{ c.entries.count() }} entries
+                </div>
+            </div>
+            <div class="comp-actions">
+                <script type="application/json" id="comp-data-{{ c.id }}">{{ c.to_dict()|tojson }}</script>
+                <button class="btn secondary small" onclick="openCompModal(JSON.parse(document.getElementById('comp-data-{{ c.id }}').textContent))">Edit</button>
+                <button class="btn secondary small" onclick="togglePublish({{ c.id }}, {{ (not c.is_published)|tojson }})">{{ 'Unpublish' if c.is_published else 'Publish' }}</button>
+                <button class="btn secondary small" onclick="toggleEntries({{ c.id }})">Entries</button>
+                <button class="btn danger small" onclick="deleteComp({{ c.id }})">Delete</button>
+            </div>
+        </div>
+        <div class="entries-list" id="entries-{{ c.id }}"></div>
+    </div>
+    {% else %}
+    <div class="empty-hint">No competitions yet.</div>
+    {% endfor %}
+</div>
+
+<div class="modal-backdrop" id="compModal"><div class="modal">
+  <h3 id="compModalTitle">New Competition</h3>
+  <input type="hidden" id="compId">
+  <div class="field"><label>Title</label><input id="compTitle" placeholder="e.g. Build for Nigerian Students"></div>
+  <div class="field"><label>Description</label><textarea id="compDescription"></textarea></div>
+  <div class="field"><label>Prize (₦, 0 = recognition only)</label><input id="compPrize" type="number" value="0"></div>
+  <div class="field"><label>Deadline (optional)</label><input id="compDeadline" type="date"></div>
+  <div class="field"><label>Skill tags (comma-separated)</label><input id="compTags" placeholder="Product, Engineering, Design"></div>
+  <div class="modal-actions"><button class="btn secondary" onclick="closeModal()">Cancel</button><button class="btn" onclick="saveComp()">Save</button></div>
+</div></div>
+
+<script>
+async function jsonFetch(url, method, payload) {
+  const res = await fetch(url, { method, headers: {'Content-Type':'application/json'}, body: payload ? JSON.stringify(payload) : undefined });
+  return res.json();
+}
+function openModal(id) { document.getElementById(id).classList.add('active'); }
+function closeModal() { document.getElementById('compModal').classList.remove('active'); }
+
+function openCompModal(c) {
+  document.getElementById('compModalTitle').textContent = c ? 'Edit Competition' : 'New Competition';
+  document.getElementById('compId').value = c ? c.id : '';
+  document.getElementById('compTitle').value = c ? c.title : '';
+  document.getElementById('compDescription').value = c ? (c.description || '') : '';
+  document.getElementById('compPrize').value = c ? c.prize_amount : 0;
+  document.getElementById('compDeadline').value = c && c.deadline ? c.deadline.slice(0, 10) : '';
+  document.getElementById('compTags').value = c ? (c.skills_tags || []).join(', ') : '';
+  openModal('compModal');
+}
+async function saveComp() {
+  const id = document.getElementById('compId').value;
+  const payload = {
+    title: document.getElementById('compTitle').value.trim(),
+    description: document.getElementById('compDescription').value.trim(),
+    prize_amount: parseInt(document.getElementById('compPrize').value || 0, 10),
+    deadline: document.getElementById('compDeadline').value || null,
+    skills_tags: document.getElementById('compTags').value.split(',').map(s => s.trim()).filter(Boolean),
+  };
+  if (!payload.title) return alert('Title is required');
+  const url = id ? `/admin/api/competitions/${id}` : '/admin/api/competitions';
+  const data = await jsonFetch(url, id ? 'PUT' : 'POST', payload);
+  if (data.success) location.reload(); else alert(data.error || 'Failed');
+}
+async function togglePublish(id, value) {
+  const data = await jsonFetch(`/admin/api/competitions/${id}`, 'PUT', { is_published: value });
+  if (data.success) location.reload(); else alert(data.error || 'Failed');
+}
+async function deleteComp(id) {
+  if (!confirm('Delete this competition? This cannot be undone.')) return;
+  const data = await jsonFetch(`/admin/api/competitions/${id}`, 'DELETE');
+  if (data.success) location.reload(); else alert(data.error || 'Failed');
+}
+
+async function toggleEntries(compId) {
+  const el = document.getElementById(`entries-${compId}`);
+  const isOpen = el.classList.toggle('open');
+  if (!isOpen) return;
+  const data = await jsonFetch(`/admin/api/competitions/${compId}/entries`, 'GET');
+  if (!data.success) { el.innerHTML = '<div class="empty-hint">Failed to load</div>'; return; }
+  if (!data.entries.length) { el.innerHTML = '<div class="empty-hint">No entries yet</div>'; return; }
+  el.innerHTML = '';
+  data.entries.forEach(entry => {
+    const row = document.createElement('div');
+    row.className = 'entry-row';
+    const nameSpan = document.createElement('span');
+    nameSpan.textContent = entry.student_name;
+    const select = document.createElement('select');
+    select.className = 'status-select';
+    ['submitted', 'shortlisted', 'winner', 'not_selected'].forEach(s => {
+      const opt = document.createElement('option');
+      opt.value = s; opt.textContent = s.replace('_', ' ');
+      if (s === entry.status) opt.selected = true;
+      select.appendChild(opt);
+    });
+    select.addEventListener('change', async () => {
+      const res = await jsonFetch(`/admin/api/competition-entries/${entry.id}`, 'PUT', { status: select.value });
+      if (!res.success) alert(res.error || 'Failed to update');
+    });
+    row.appendChild(nameSpan);
+    row.appendChild(select);
+    el.appendChild(row);
+  });
+}
+</script>
+</body>
+</html>

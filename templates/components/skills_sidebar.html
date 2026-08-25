@@ -1,35 +1,54 @@
-<!-- Shared Skills shell — left rail (Overview/My Skills/Projects/Opportunities/Earnings/
-     Profile, each a real page) + a top bar with the Academia|Skills|Opportunities|
-     Community pill nav, search, and avatar. Include right after <body>, pass active_page
-     ('home'|'catalog'|'projects'|'opportunities'|'earnings'|'transcript'|None). -->
+<!-- Nelavista Skills — its own navigation, its own product identity. No Academia here by
+     design: the only way back to the rest of Nelavista is the wordmark, which returns to
+     the Choose Your Path picker — Skills doesn't mix Academia links into its own IA.
+     Include right after <body>, pass active_page: 'home'|'learn'|'my_learning'|'projects'|
+     'opportunities'|'gigs'|'talent'|'challenges'|'profile'|'earnings'|'messages'|
+     'notifications'|'tracks'|'transcript'|'settings'. -->
 <div class="app-wrapper">
   <div class="sidebar" id="side-menu">
     <div>
       <div class="sidebar-header">
-        <div class="sidebar-logo">Nelavista</div>
-        <div class="nav-label" style="padding-left:0; margin-top:4px;">SKILLS</div>
+        <a href="/choose-path" class="sidebar-logo">Nelavista</a>
+        <div class="sidebar-tagline">Learn it. Build it. Prove it. Get paid.</div>
       </div>
       <div class="sidebar-nav">
         <div class="nav-group">
-          <a href="/skills" class="{{ 'active-link' if active_page == 'home' else '' }}">🧭 Overview</a>
-          <a href="/skills/catalog" class="{{ 'active-link' if active_page == 'catalog' else '' }}">🧩 My Skills</a>
-          <a href="/skills/projects" class="{{ 'active-link' if active_page == 'projects' else '' }}">🛠️ Projects</a>
-          <a href="/skills/opportunities" class="{{ 'active-link' if active_page == 'opportunities' else '' }}">💼 Opportunities</a>
-          <a href="/skills/earnings" class="{{ 'active-link' if active_page == 'earnings' else '' }}">💰 Earnings</a>
-          <a href="/skills/profile" class="{{ 'active-link' if active_page == 'profile' else '' }}">👤 Profile</a>
+          <div class="nav-label">Skills</div>
+          <a href="/skills" class="{{ 'active-link' if active_page == 'home' else '' }}"><i class="ri-compass-3-line"></i>Overview</a>
+          <a href="/skills/catalog" class="{{ 'active-link' if active_page == 'learn' else '' }}"><i class="ri-graduation-cap-line"></i>Learn</a>
+          <a href="/skills/my-learning" class="{{ 'active-link' if active_page == 'my_learning' else '' }}"><i class="ri-book-open-line"></i>My Learning</a>
+          <a href="/skills/projects" class="{{ 'active-link' if active_page == 'projects' else '' }}"><i class="ri-hammer-line"></i>Projects</a>
+          <a href="/skills/opportunities" class="{{ 'active-link' if active_page == 'opportunities' else '' }}"><i class="ri-briefcase-line"></i>Opportunities</a>
+          <a href="/skills/gigs" class="{{ 'active-link' if active_page == 'gigs' else '' }}"><i class="ri-store-line"></i>Gigs</a>
+          <a href="/skills/talent" class="{{ 'active-link' if active_page == 'talent' else '' }}"><i class="ri-user-star-line"></i>Talent</a>
+          <a href="/skills/challenges" class="{{ 'active-link' if active_page == 'challenges' else '' }}"><i class="ri-trophy-line"></i>Challenges</a>
         </div>
 
         <div class="nav-group">
-          <div class="nav-label">MORE</div>
-          <a href="/skills/tracks" class="{{ 'active-link' if active_page == 'tracks' else '' }}">🗺️ Learning Paths</a>
-          <a href="/skills/transcript" class="{{ 'active-link' if active_page == 'transcript' else '' }}">🎓 Skill Transcript</a>
-          <a href="/skills/settings" class="{{ 'active-link' if active_page == 'settings' else '' }}">⚙️ Privacy Settings</a>
-          <a href="/ai">🤖 Chat with Nela</a>
+          <div class="nav-label">Account</div>
+          <a href="/skills/profile" class="{{ 'active-link' if active_page == 'profile' else '' }}"><i class="ri-user-line"></i>Profile</a>
+          <a href="/skills/earnings" class="{{ 'active-link' if active_page == 'earnings' else '' }}"><i class="ri-wallet-3-line"></i>Earnings</a>
+          <a href="/skills/messages" class="{{ 'active-link' if active_page == 'messages' else '' }}">
+            <i class="ri-message-3-line"></i>Messages
+            {% if nav_unread_messages %}<span class="nav-badge">{{ nav_unread_messages }}</span>{% endif %}
+          </a>
+          <a href="/skills/notifications" class="{{ 'active-link' if active_page == 'notifications' else '' }}">
+            <i class="ri-notification-3-line"></i>Notifications
+            {% if nav_unread_notifications %}<span class="nav-badge">{{ nav_unread_notifications }}</span>{% endif %}
+          </a>
+        </div>
+
+        <div class="nav-group">
+          <div class="nav-label">More</div>
+          <a href="/skills/tracks" class="{{ 'active-link' if active_page == 'tracks' else '' }}"><i class="ri-route-line"></i>Learning Paths</a>
+          <a href="/skills/transcript" class="{{ 'active-link' if active_page == 'transcript' else '' }}"><i class="ri-award-line"></i>Skill Transcript</a>
+          <a href="/skills/settings" class="{{ 'active-link' if active_page == 'settings' else '' }}"><i class="ri-shield-check-line"></i>Privacy</a>
+          <a href="/ai"><i class="ri-sparkling-2-line"></i>Ask Nela</a>
         </div>
       </div>
     </div>
     <div class="sidebar-footer">
-      <a href="/logout">🚪 Logout</a>
+      <a href="/logout"><i class="ri-logout-box-line"></i>Logout</a>
     </div>
   </div>
 
@@ -37,15 +56,17 @@
 
   <div class="main-content">
     <div class="top-bar">
-      <button id="menu-toggle" onclick="skToggleMenu()">☰</button>
-      <div class="dv2-topnav">
-        <a href="/dashboard">Academia</a>
-        <a class="active">Skills</a>
-        <a href="/skills/opportunities">Opportunities</a>
-        <a href="/community">Community</a>
-      </div>
+      <button id="menu-toggle" onclick="skToggleMenu()"><i class="ri-menu-line"></i></button>
+      <form action="/skills/search" method="GET" class="sk-topsearch">
+        <i class="ri-search-line"></i>
+        <input type="text" name="q" placeholder="Search skills, projects, gigs...">
+      </form>
       <div class="dv2-topbar-spacer"></div>
-      <button id="theme-toggle" onclick="skToggleTheme()">🌙</button>
+      <a href="/skills/notifications" class="top-icon-btn" aria-label="Notifications">
+        <i class="ri-notification-3-line"></i>
+        {% if nav_unread_notifications %}<span class="top-icon-dot"></span>{% endif %}
+      </a>
+      <button id="theme-toggle" onclick="skToggleTheme()"><i class="ri-moon-line"></i></button>
     </div>
 
     {% with messages = get_flashed_messages() %}

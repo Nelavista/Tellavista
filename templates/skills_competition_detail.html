@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>{{ competition.title }} · Nelavista Skills</title>
+  <meta name="theme-color" content="#050810">
+  <link rel="icon" type="image/png" sizes="32x32" href="/static/icons/nelavista-32x32.png">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/skills.css') }}">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
+</head>
+<body>
+{% include 'components/skills_sidebar.html' %}
+
+  <div class="sk-view" style="max-width:720px;">
+    <a href="/skills/challenges" class="sk-view-link">← Challenges</a>
+    <h1 class="sk-h1" style="margin-top:12px;">{{ competition.title }}</h1>
+    <div style="display:flex; gap:16px; flex-wrap:wrap; margin:10px 0 20px;">
+      {% if competition.prize_amount %}<div class="comp-prize">₦{{ '{:,}'.format(competition.prize_amount) }}</div>{% endif %}
+      {% if competition.deadline %}<div class="sk-sub" style="margin:0;">Deadline: {{ competition.deadline.strftime('%b') }} {{ competition.deadline.day }}, {{ competition.deadline.year }}</div>{% endif %}
+    </div>
+    {% if competition.skills_tags %}
+    <div class="dv2-tag-row">{% for t in competition.skills_tags %}<span class="dv2-tag">{{ t }}</span>{% endfor %}</div>
+    {% endif %}
+
+    <div class="sk-panel" style="margin:20px 0;">
+      <div style="white-space:pre-wrap; line-height:1.7;">{{ competition.description or 'No details provided yet.' }}</div>
+    </div>
+
+    {% if existing %}
+    <div class="sk-panel">
+      <div class="sk-card-title">Your entry <span class="sk-badge {{ 'completed' if existing.status == 'winner' else '' }}">{{ existing.status|replace('_',' ')|title }}</span></div>
+      {% if existing.submission_url %}<a href="{{ existing.submission_url }}" target="_blank" rel="noopener" class="sk-view-link" style="display:block; margin-top:8px;">{{ existing.submission_url }} ↗</a>{% endif %}
+      {% if existing.description %}<p class="sk-card-desc" style="margin-top:8px;">{{ existing.description }}</p>{% endif %}
+      <div class="sk-card-desc" style="margin-top:8px; margin-bottom:0;">Submitted {{ existing.submitted_at.strftime('%b %d, %Y') }}</div>
+    </div>
+    {% else %}
+    <div class="sk-section-title" style="margin-top:0;">Enter this competition</div>
+    <form method="POST" class="sk-panel">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <div class="sk-field">
+        <label class="sk-label">Submission link (GitHub, live demo, video — whatever fits)</label>
+        <input class="sk-input" type="text" name="submission_url" placeholder="https://...">
+      </div>
+      <div class="sk-field">
+        <label class="sk-label">Describe your entry</label>
+        <textarea class="sk-textarea" name="description" rows="5" placeholder="What did you build and why?"></textarea>
+      </div>
+      <button type="submit" class="sk-btn full">Submit Entry</button>
+    </form>
+    {% endif %}
+  </div>
+
+{% include 'components/skills_footer.html' %}
+{% include 'components/skills_ask_widget.html' %}
+</body>
+</html>

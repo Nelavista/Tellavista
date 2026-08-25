@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Notifications · Nelavista Skills</title>
+  <meta name="theme-color" content="#050810">
+  <link rel="icon" type="image/png" sizes="32x32" href="/static/icons/nelavista-32x32.png">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/skills.css') }}">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
+  <style>
+    .notif-icon.opportunity_match { color: var(--accent); }
+    .notif-icon.verification { color: var(--accent-teal); }
+    .notif-icon.application_update { color: var(--accent-warm); }
+    .notif-icon.message { color: var(--sk-accent); }
+    .notif-icon.competition { color: var(--accent-warm); }
+  </style>
+</head>
+<body>
+{% include 'components/skills_sidebar.html' %}
+
+  <div class="sk-view" style="max-width:680px;">
+    <span class="sk-eyebrow">Notifications</span>
+    <h1 class="sk-h1">What's new</h1>
+
+    {% if not notifications %}
+    <div class="sk-empty"><div class="sk-empty-icon">🔔</div><div style="font-weight:600;">Nothing yet</div><div style="font-size:0.85rem;">Application updates, project reviews, and messages will show up here.</div></div>
+    {% else %}
+    <div class="sk-panel" style="padding:8px;">
+      {% for n in notifications %}
+      {% set icon = {'opportunity_match':'ri-briefcase-line','verification':'ri-checkbox-circle-line','application_update':'ri-file-list-3-line','message':'ri-message-3-line','competition':'ri-trophy-line'}.get(n.type, 'ri-notification-3-line') %}
+      {% if n.link_url %}<a href="{{ n.link_url }}" class="notif-row {{ 'unread' if not n.is_read else '' }}" style="text-decoration:none; color:inherit; display:flex;">
+      {% else %}<div class="notif-row {{ 'unread' if not n.is_read else '' }}">
+      {% endif %}
+        <div class="notif-icon {{ n.type }}"><i class="{{ icon }}"></i></div>
+        <div style="flex:1;">
+          <div class="notif-title">{{ n.title }}</div>
+          {% if n.body %}<div class="notif-body">{{ n.body }}</div>{% endif %}
+          <div class="notif-time">{{ n.created_at.strftime('%b %d, %Y · %I:%M %p') }}</div>
+        </div>
+      {% if n.link_url %}</a>{% else %}</div>{% endif %}
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+
+{% include 'components/skills_footer.html' %}
+</body>
+</html>

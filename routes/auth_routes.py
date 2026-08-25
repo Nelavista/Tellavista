@@ -104,6 +104,10 @@ def login():
                 'preferred_path': user.preferred_path
             }
             flash('Logged in successfully!')
+            # Employers have their own separate experience entirely — no Academia/Skills
+            # picker for them, since that fork doesn't apply to an employer account.
+            if user.is_employer:
+                return redirect(url_for('employer.dashboard'))
             # Every login lands on the Academia/Skills picker first — Academia and Skills
             # are two genuinely separate destinations, not a single merged dashboard, and
             # the picker is the deliberate fork between them each time you come in.

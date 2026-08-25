@@ -1,10 +1,9 @@
 from datetime import datetime
 from functools import wraps
 from flask import Blueprint, render_template, redirect, url_for, session, flash, request
-from models import User, EmployerProfile, StudentPrivacySettings, CohortEnrollment, Cohort, SkillCourse, Skill, StudentProject
+from models import User, EmployerProfile, StudentPrivacySettings, StudentSkill, Skill
 from extensions import db
-from services.gpa_service import compute_skill_gpa, get_cohort_rank
-from services.daily_class_service import get_class_progress_pct
+from services.skills_service import get_talent_stats, is_skill_verified
 
 employer_bp = Blueprint('employer', __name__)
 
@@ -90,9 +89,12 @@ def dashboard():
 def discover():
     """Students are discoverable only if they've opted in (profile_visibility in
     'employers'/'public') — an empty result here is the correct, safe default for a class
-    with nobody opted in yet, not a bug."""
+    with nobody opted in yet, not a bug. Filters and results are built from the same
+    get_talent_stats() a student's own Talent Profile uses — an employer sees exactly
+    what the student's profile shows, never a separate, richer view."""
     skill_id = request.args.get('skill_id', type=int)
-    min_gpa = request.args.get('min_gpa', type=float)
+    min_rating = request.args.get('min_rating', type=float)
+    verified_only = request.args.get('verified_only') == '1'
     q = request.args.get('q', '').strip()
 
     query = (
@@ -107,57 +109,31 @@ def discover():
 
     results = []
     for privacy, student in rows:
-        enrollments = CohortEnrollment.query.filter_by(student_id=student.id).all()
-        best = None
-        matched_skill = False
-        for enrollment in enrollments:
-            course = enrollment.cohort.course
-            if skill_id and course.skill_id != skill_id:
+        if skill_id:
+            has_progress = StudentSkill.query.filter_by(student_id=student.id, skill_id=skill_id).first() is not None
+            if not has_progress:
                 continue
-            if skill_id:
-                matched_skill = True
-            gpa_data = compute_skill_gpa(enrollment)
-            if gpa_data['gpa'] is not None and (best is None or gpa_data['gpa'] > best['gpa_data']['gpa']):
-                rank, total = get_cohort_rank(enrollment)
-                best = {'course': course, 'gpa_data': gpa_data, 'rank': rank, 'cohort_total': total}
-        if skill_id and not matched_skill:
+            if verified_only and not is_skill_verified(student.id, skill_id):
+                continue
+        stats = get_talent_stats(student)
+        if verified_only and not skill_id and not stats['verified_skills']:
             continue
-        if min_gpa and (not best or best['gpa_data']['gpa'] is None or best['gpa_data']['gpa'] < min_gpa):
+        if min_rating and (not stats['avg_rating'] or stats['avg_rating'] < min_rating):
             continue
-        results.append({'student': student, 'privacy': privacy, 'best': best})
+        results.append({'student': student, 'privacy': privacy, 'stats': stats})
 
     skills = Skill.query.filter_by(is_published=True).order_by(Skill.name).all()
     return render_template(
         'employer_discover.html', results=results, skills=skills,
-        skill_id=skill_id, min_gpa=min_gpa, q=q, active_page='discover',
+        skill_id=skill_id, min_rating=min_rating, verified_only=verified_only, q=q, active_page='discover',
     )
 
 
 @employer_bp.route('/employer/students/<int:student_id>')
 @employer_required
 def student_view(student_id):
+    """An employer's view of a student is the exact same Talent Profile the student sees
+    of themselves — one page, one source of truth, not a separate employer-only template
+    that could drift out of sync with what the student thinks they're showing."""
     student = User.query.get_or_404(student_id)
-    privacy = StudentPrivacySettings.query.filter_by(student_id=student.id).first()
-    if not privacy or privacy.profile_visibility not in ('employers', 'public'):
-        flash("This student's profile isn't available.")
-        return redirect(url_for('employer.discover'))
-
-    rows = []
-    if privacy.show_skill_transcript:
-        for enrollment in CohortEnrollment.query.filter_by(student_id=student.id).all():
-            course = enrollment.cohort.course
-            gpa_data = compute_skill_gpa(enrollment)
-            rank, total = get_cohort_rank(enrollment)
-            rows.append({
-                'course': course, 'skill': course.skill, 'gpa_data': gpa_data,
-                'rank': rank, 'cohort_total': total, 'pct': get_class_progress_pct(course, enrollment),
-            })
-
-    projects = []
-    if privacy.show_projects:
-        projects = StudentProject.query.filter_by(student_id=student.id, status='completed').all()
-
-    return render_template(
-        'employer_student_view.html', student=student, privacy=privacy, rows=rows,
-        projects=projects, active_page='discover',
-    )
+    return redirect(url_for('skills.talent_public', username=student.username))

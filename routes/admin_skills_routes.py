@@ -1,18 +1,19 @@
 import re
 from datetime import datetime
-from flask import Blueprint, render_template, jsonify, request, redirect, url_for
+from flask import Blueprint, render_template, jsonify, request, redirect, url_for, session
 from utils.helpers import login_required, admin_required
 from models import (
     SkillCategory, Skill, LearningPath, LearningPathStep, SkillCourse, CourseModule,
     Lesson, Quiz, Challenge, ChallengeSubmission, ProjectTemplate, StudentProject, StudentSkill,
     StudentOnboarding, CareerTrack, CareerTrackStep, Assignment, AssignmentSubmission,
     GradeScale, GradeWeight, Cohort, CohortEnrollment, EmployerProfile, User,
-    Opportunity, OpportunityApplication,
+    Opportunity, OpportunityApplication, Rating, Competition, CompetitionEntry,
 )
 from extensions import db
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy import func
 from services.skills_service import ONBOARDING_SKIPPED
+from services.notification_service import notify
 from services.youtube_service import search_youtube_videos, build_lesson_video_query
 from services.ai_service import generate_lesson_content_from_video as generate_ai_lesson_content
 from services.ai_service import (
@@ -1231,6 +1232,108 @@ def delete_opportunity(opportunity_id):
     return jsonify({'success': True})
 
 
+# ==================== COMPETITIONS ====================
+
+@admin_skills_bp.route('/admin/skills/competitions')
+@login_required
+@admin_required
+def admin_competitions():
+    all_competitions = Competition.query.order_by(Competition.created_at.desc()).all()
+    return render_template('admin_competitions.html', competitions=all_competitions, active_page='skills')
+
+
+@admin_skills_bp.route('/admin/api/competitions', methods=['POST'])
+@login_required
+@admin_required
+def create_competition():
+    data = request.get_json() or {}
+    title = (data.get('title') or '').strip()
+    if not title:
+        return _bad_request('Title is required')
+    deadline = None
+    if data.get('deadline'):
+        try:
+            deadline = datetime.strptime(data['deadline'], '%Y-%m-%d')
+        except ValueError:
+            return _bad_request('Invalid deadline — expected YYYY-MM-DD')
+    competition = Competition(
+        title=title, slug=_unique_slug(Competition, _slugify(title)),
+        description=(data.get('description') or '').strip() or None,
+        prize_amount=int(data.get('prize_amount') or 0), currency=data.get('currency') or 'NGN',
+        deadline=deadline,
+    )
+    competition.skills_tags = data.get('skills_tags') or []
+    db.session.add(competition)
+    db.session.commit()
+    return jsonify({'success': True, 'competition': competition.to_dict()})
+
+
+@admin_skills_bp.route('/admin/api/competitions/<int:competition_id>', methods=['PUT'])
+@login_required
+@admin_required
+def update_competition(competition_id):
+    competition = Competition.query.get_or_404(competition_id)
+    data = request.get_json() or {}
+    if 'title' in data:
+        competition.title = data['title'].strip()
+    if 'description' in data:
+        competition.description = (data['description'] or '').strip() or None
+    if 'prize_amount' in data:
+        competition.prize_amount = int(data['prize_amount'] or 0)
+    if 'deadline' in data:
+        if data['deadline']:
+            try:
+                competition.deadline = datetime.strptime(data['deadline'], '%Y-%m-%d')
+            except ValueError:
+                return _bad_request('Invalid deadline — expected YYYY-MM-DD')
+        else:
+            competition.deadline = None
+    if 'skills_tags' in data:
+        competition.skills_tags = data['skills_tags'] or []
+    if 'is_published' in data:
+        competition.is_published = bool(data['is_published'])
+    db.session.commit()
+    return jsonify({'success': True, 'competition': competition.to_dict()})
+
+
+@admin_skills_bp.route('/admin/api/competitions/<int:competition_id>', methods=['DELETE'])
+@login_required
+@admin_required
+def delete_competition(competition_id):
+    competition = Competition.query.get_or_404(competition_id)
+    db.session.delete(competition)
+    db.session.commit()
+    return jsonify({'success': True})
+
+
+@admin_skills_bp.route('/admin/api/competitions/<int:competition_id>/entries')
+@login_required
+@admin_required
+def list_competition_entries(competition_id):
+    competition = Competition.query.get_or_404(competition_id)
+    entries = competition.entries.order_by(CompetitionEntry.submitted_at.desc()).all()
+    return jsonify({'success': True, 'entries': [
+        {**e.to_dict(), 'student_name': e.student.name or e.student.username} for e in entries
+    ]})
+
+
+@admin_skills_bp.route('/admin/api/competition-entries/<int:entry_id>', methods=['PUT'])
+@login_required
+@admin_required
+def update_competition_entry(entry_id):
+    entry = CompetitionEntry.query.get_or_404(entry_id)
+    data = request.get_json() or {}
+    status = data.get('status')
+    if status not in ('submitted', 'shortlisted', 'winner', 'not_selected'):
+        return _bad_request('Invalid status')
+    entry.status = status
+    db.session.commit()
+    if status in ('shortlisted', 'winner'):
+        notify(entry.student_id, 'competition', f'You were {status} for "{entry.competition.title}"',
+               None, url_for('skills.competition_detail', slug=entry.competition.slug))
+    return jsonify({'success': True, 'entry': entry.to_dict()})
+
+
 @admin_skills_bp.route('/admin/api/opportunities/<int:opportunity_id>/applications')
 @login_required
 @admin_required
@@ -1260,4 +1363,43 @@ def update_opportunity_application(application_id):
         application.paid_at = datetime.utcnow()
         application.payout_amount = int(data.get('payout_amount') or application.opportunity.payment_amount or 0)
     db.session.commit()
+
+    status_messages = {
+        'accepted': 'was accepted', 'completed': 'was marked completed', 'paid': 'was paid out', 'rejected': "wasn't selected this time",
+    }
+    if status in status_messages:
+        notify(application.student_id, 'application_update', f'"{application.opportunity.title}" {status_messages[status]}',
+               (f'₦{application.payout_amount:,} paid' if status == 'paid' else None),
+               url_for('skills.earnings'))
+
     return jsonify({'success': True, 'application': application.to_dict()})
+
+
+@admin_skills_bp.route('/admin/api/opportunity-applications/<int:application_id>/rating', methods=['POST'])
+@login_required
+@admin_required
+def rate_opportunity_application(application_id):
+    """Admin-entered on the employer's behalf for now (no employer self-service rating UI
+    yet) — still a real rating tied to a real completed gig, never fabricated."""
+    application = OpportunityApplication.query.get_or_404(application_id)
+    if application.status not in ('completed', 'paid'):
+        return _bad_request('Can only rate a completed gig')
+    if application.rating:
+        return _bad_request('Already rated')
+    data = request.get_json() or {}
+    try:
+        stars = int(data.get('stars'))
+    except (TypeError, ValueError):
+        return _bad_request('stars must be 1-5')
+    if not 1 <= stars <= 5:
+        return _bad_request('stars must be 1-5')
+    admin_user = User.query.filter_by(username=session['user']['username']).first()
+    rating = Rating(
+        opportunity_application_id=application.id, employer_id=admin_user.id, student_id=application.student_id,
+        stars=stars, comment=(data.get('comment') or '').strip() or None,
+    )
+    db.session.add(rating)
+    db.session.commit()
+    notify(application.student_id, 'application_update', f'You were rated {stars}★ for "{application.opportunity.title}"',
+           rating.comment, url_for('skills.talent_profile'))
+    return jsonify({'success': True, 'rating': rating.to_dict()})

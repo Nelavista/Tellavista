@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Discover Talent · Nelavista Employers</title>
-  <meta name="theme-color" content="#111827">
+  <meta name="theme-color" content="#050810">
   <link rel="icon" type="image/png" sizes="32x32" href="/static/icons/nelavista-32x32.png">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/skills.css') }}">
   <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -16,29 +16,38 @@
   <div class="sk-view">
     <span class="sk-eyebrow">Talent Discovery</span>
     <h1 class="sk-h1">Find students by demonstrated ability</h1>
-    <p class="sk-sub">Only students who've opted in to employer visibility appear here.</p>
+    <p class="sk-sub">Only students who've opted in to employer visibility appear here — what you see is exactly what's on their own Talent Profile.</p>
 
-    <form method="GET" action="/employer/discover" class="emp-filter-row" style="margin-top:20px;">
+    <form method="GET" action="/employer/discover" class="gig-filter-row" style="margin-top:20px;">
       <input class="sk-input" type="text" name="q" value="{{ q }}" placeholder="Search by name or university...">
       <select class="sk-select" name="skill_id">
         <option value="">Any skill</option>
         {% for s in skills %}<option value="{{ s.id }}" {{ 'selected' if skill_id == s.id else '' }}>{{ s.name }}</option>{% endfor %}
       </select>
-      <input class="sk-input" type="number" step="0.1" name="min_gpa" value="{{ min_gpa or '' }}" placeholder="Min Skill GPA">
+      <input class="sk-input" type="number" step="0.1" min="1" max="5" name="min_rating" value="{{ min_rating or '' }}" placeholder="Min rating (★)">
+      <label style="display:flex; align-items:center; gap:8px; font-size:0.88rem; white-space:nowrap;">
+        <input type="checkbox" name="verified_only" value="1" {{ 'checked' if verified_only else '' }} style="width:16px; height:16px; accent-color:var(--sk-accent);">Verified only
+      </label>
       <button type="submit" class="sk-btn">Search</button>
     </form>
 
     {% if not results %}
     <div class="sk-empty" style="margin-top:24px;"><div class="sk-empty-icon">🔍</div><div style="font-weight:600;">No matching students</div><div style="font-size:0.85rem;">Try broadening your filters, or check back as more students opt in to visibility.</div></div>
     {% else %}
-    <div class="emp-card" style="margin-top:20px;">
+    <div class="sk-panel" style="margin-top:20px; padding:8px;">
       {% for r in results %}
-      <div class="emp-student-row">
-        <div>
-          <div class="emp-student-name">{{ r.student.name or r.student.username }}</div>
-          <div class="emp-student-meta">
+      <div class="msg-thread-row" style="align-items:flex-start;">
+        <div class="msg-thread-avatar">{{ (r.student.name or r.student.username)[:1]|upper }}</div>
+        <div style="flex:1; min-width:0;">
+          <div class="msg-thread-name">{{ r.student.name or r.student.username }}</div>
+          <div class="msg-thread-preview" style="white-space:normal; max-width:none;">
             {{ r.student.university or 'University not set' }}
-            {% if r.best %} · {{ r.best.course.title }} — Skill GPA {{ r.best.gpa_data.gpa }} ({{ r.best.gpa_data.grade_letter }}){% if r.best.rank %} · Rank #{{ r.best.rank }} of {{ r.best.cohort_total }}{% endif %}{% endif %}
+            {% if r.stats.avg_rating %} · <span class="star-rating"><span class="stars">★</span>{{ r.stats.avg_rating }}</span>{% endif %}
+          </div>
+          <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:8px;">
+            {% for skill in r.stats.verified_skills[:4] %}<span class="skill-chip verified" style="padding:4px 10px; font-size:0.76rem;"><i class="ri-checkbox-circle-fill"></i>{{ skill.name }}</span>{% endfor %}
+            <span class="sk-badge">{{ r.stats.completed_projects }} project{{ 's' if r.stats.completed_projects != 1 else '' }}</span>
+            <span class="sk-badge">{{ r.stats.completed_gigs }} gig{{ 's' if r.stats.completed_gigs != 1 else '' }} completed</span>
           </div>
         </div>
         <a href="/employer/students/{{ r.student.id }}" class="sk-btn secondary small">View Profile</a>

@@ -413,6 +413,63 @@ def generate_challenge_feedback(challenge_title, challenge_instructions, submiss
     return _parse_json_object(raw)
 
 
+def evaluate_project_submission(project_title, project_description, submission_details, skills_demonstrated):
+    """Reviews an ordinary (non-final-project) StudentProject submission — the 'Request
+    Review' action in the project workspace. Same structured-feedback spirit as
+    generate_challenge_feedback (real strengths/improvements, not a bare score), but for
+    a whole project rather than one exercise. No rubric here (ordinary projects don't have
+    one — only a daily-class's formal final project does; see evaluate_final_project),
+    so this reasons from the project's own stated brief and what was actually submitted.
+    Raises on failure; the caller treats a failed review as non-fatal.
+    """
+    system_prompt = (
+        "You are reviewing a student's project submission for a skills platform. Judge it "
+        "against what the project brief actually asked for and what skills it claims to "
+        "demonstrate. Be specific and honest — do not inflate the score or invent issues "
+        "that aren't there. This score becomes part of the student's public proof of work, "
+        "so it needs to be defensible.\n\n"
+        "Return ONLY a single JSON object with this exact shape, no surrounding prose:\n"
+        "{\n"
+        '  "score": integer 0-100 (how complete and functional the submission is),\n'
+        '  "strengths": [string, ...] (1-3 specific things done well),\n'
+        '  "improvements": [string, ...] (1-3 specific, actionable gaps),\n'
+        '  "explanation": string (2-4 sentences on why the score is what it is),\n'
+        '  "next_step": string (one concrete suggestion for what to do next)\n'
+        "}"
+    )
+    user_prompt = (
+        f"Project: {project_title}\n"
+        f"Brief: {project_description or '(no brief — a freeform project)'}\n"
+        f"Skills claimed: {', '.join(skills_demonstrated) if skills_demonstrated else '(none listed)'}\n\n"
+        f"Submission details:\n{submission_details}"
+    )
+
+    headers = {
+        "Authorization": f"Bearer {OPENROUTER_API_KEY}",
+        "Content-Type": "application/json",
+        "HTTP-Referer": "https://nelavista.com",
+        "X-Title": "Nelavista Project Review"
+    }
+    payload = {
+        "model": "openai/gpt-4o-mini",
+        "messages": [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_prompt}
+        ],
+        "temperature": 0.3,
+        "max_tokens": 800
+    }
+    response = requests.post(
+        "https://openrouter.ai/api/v1/chat/completions",
+        headers=headers, json=payload, timeout=45
+    )
+    if response.status_code != 200:
+        raise Exception(f"AI API error: {response.status_code}")
+
+    raw = response.json()["choices"][0]["message"]["content"].strip()
+    return _parse_json_object(raw)
+
+
 def generate_curriculum(skill_name, skill_description, level='beginner'):
     """Proposes a starter curriculum for a skill: two modules of two lessons each (real,
     complete HTML content — not just titles), one practice challenge, and one project

@@ -11,7 +11,13 @@ from models import (
     Skill, SkillCourse, CourseModule, Lesson, LearningPathStep,
     StudentLessonProgress, StudentSkill, ChallengeSubmission, StudentProject,
     CareerTrackStep, Challenge, ProjectTemplate, Opportunity, OpportunityApplication,
+    Rating,
 )
+
+# What Nelavista keeps of a paid gig — shown openly everywhere a payout is shown (Earnings,
+# an application's status, a Talent Profile) so "trusted intermediary" is never just a
+# claim. A single constant, not per-opportunity, so a student can trust it's consistent.
+PLATFORM_FEE_PCT = 10
 
 # Stored as StudentOnboarding.interest_text when a student explicitly skips the
 # "what do you want to learn" question, so a completed-but-empty onboarding is
@@ -438,4 +444,57 @@ def get_continue_learning_card(student_id, student_skill):
         'projects_started': started_templates, 'projects_total': total_templates,
         'next_phase_label': next_phase or 'Complete',
         'pipeline_steps': steps, 'current_phase': current_phase,
+    }
+
+
+def compute_payout_breakdown(payment_amount):
+    """Gross/fee/net for one gig — the same formula everywhere a payout is shown, so a
+    number on the Earnings page always matches what was quoted on the Opportunity."""
+    payment_amount = payment_amount or 0
+    fee = round(payment_amount * PLATFORM_FEE_PCT / 100)
+    return {'gross': payment_amount, 'fee': fee, 'fee_pct': PLATFORM_FEE_PCT, 'net': payment_amount - fee}
+
+
+def get_verified_skills(student_id):
+    """Every Skill this student has actually verified (Learn+Practice+Build+Verify all
+    done) — the badge list shown on a Talent Profile. Always recomputed, never cached,
+    same as the rest of this module."""
+    verified = []
+    for row in StudentSkill.query.filter_by(student_id=student_id, status='completed').all():
+        if is_skill_verified(student_id, row.skill_id):
+            verified.append(row.skill)
+    return verified
+
+
+def get_talent_stats(user):
+    """Everything a Talent Profile (public or the student's own preview) needs in one
+    call: verified skills, real project count, real completed-gig count with a real
+    average rating (never a placeholder), and total earned. Every number here is derived
+    from the same rows Earnings/Transcript/Dashboard already use — a Talent Profile is a
+    view of that data, not a separate source of truth."""
+    verified_skills = get_verified_skills(user.id)
+    completed_projects = StudentProject.query.filter_by(student_id=user.id, status='completed').count()
+
+    completed_apps = OpportunityApplication.query.filter(
+        OpportunityApplication.student_id == user.id, OpportunityApplication.status.in_(['completed', 'paid'])
+    ).all()
+    ratings = Rating.query.filter_by(student_id=user.id).all()
+    avg_rating = round(sum(r.stars for r in ratings) / len(ratings), 1) if ratings else None
+
+    total_earned = sum(a.payout_amount or 0 for a in
+                        OpportunityApplication.query.filter_by(student_id=user.id, status='paid').all())
+
+    headline_skill = verified_skills[0] if verified_skills else None
+    if not headline_skill:
+        top = StudentSkill.query.filter_by(student_id=user.id).order_by(StudentSkill.progress_pct.desc()).first()
+        headline_skill = top.skill if top else None
+
+    return {
+        'verified_skills': verified_skills,
+        'completed_projects': completed_projects,
+        'completed_gigs': len(completed_apps),
+        'avg_rating': avg_rating,
+        'rating_count': len(ratings),
+        'total_earned': total_earned,
+        'headline_skill': headline_skill,
     }

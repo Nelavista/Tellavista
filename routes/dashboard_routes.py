@@ -37,6 +37,10 @@ def choose_path():
     if not user:
         flash('User not found. Please log in again.')
         return redirect(url_for('auth.login'))
+    if user.is_employer:
+        # Employers have no Academia/Skills fork to choose between — straight to their
+        # own dashboard, same as auth.login already does for them.
+        return redirect(url_for('employer.dashboard'))
 
     if request.method == 'POST':
         path = request.form.get('path')

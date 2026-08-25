@@ -19,7 +19,7 @@
 
   <div class="sk-view">
     <h1 class="sk-h1" style="font-size:1.8rem;">{{ greeting }}, {{ first_name }} 👋</h1>
-    <p class="sk-sub">Keep building. Your next opportunity starts with what you can prove.</p>
+    <p class="sk-sub">What are you building today?</p>
 
     <div class="sk-panel dv2-progress-card" style="margin:22px 0;">
       {% set circumference = 226.19 %}
@@ -39,10 +39,17 @@
         <div class="dv2-ring-label">{{ overall_pct }}%</div>
       </div>
       <div class="dv2-progress-stats">
-        <div class="dv2-progress-title">Skills Progress</div>
-        <div class="dv2-progress-line">{{ data.stats.skills_completed }} skill{{ 's' if data.stats.skills_completed != 1 else '' }} completed</div>
-        <div class="dv2-progress-line">{{ data.stats.skills_in_progress }} currently learning</div>
+        <div class="dv2-progress-title">{{ continue_card.skill.name if continue_card else 'Skills Progress' }}</div>
+        <div class="dv2-progress-line">{{ overall_pct }}% complete</div>
+        <div class="dv2-progress-line">{{ data.stats.skills_completed }} skill{{ 's' if data.stats.skills_completed != 1 else '' }} completed · {{ data.stats.skills_in_progress }} in progress</div>
       </div>
+    </div>
+
+    <div class="tp-stats-row" style="margin:0 0 8px; padding:0 4px;">
+      <div><div class="tp-stat-value">{{ talent_stats.completed_projects }}</div><div class="tp-stat-label">Projects</div></div>
+      <div><div class="tp-stat-value">{{ talent_stats.verified_skills|length }}</div><div class="tp-stat-label">Verified Skills</div></div>
+      <div><div class="tp-stat-value">₦{{ '{:,}'.format(talent_stats.total_earned) }}</div><div class="tp-stat-label">Earned</div></div>
+      <div><div class="tp-stat-value">{{ available_opportunities }}</div><div class="tp-stat-label">Gigs Available</div></div>
     </div>
 
     {% if spotlight_skill %}

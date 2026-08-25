@@ -23,8 +23,15 @@ from services.daily_class_service import (
 from services.gpa_service import compute_skill_gpa, recompute_and_cache_gpa, get_cohort_rank
 from services.skills_service import (
     get_pipeline_state, opportunity_match_pct, profile_completeness, get_continue_learning_card,
+    compute_payout_breakdown, get_talent_stats, get_verified_skills,
 )
-from models import Opportunity, OpportunityApplication
+from services.ai_service import evaluate_project_submission
+from services.notification_service import notify, unread_count, mark_all_read
+from services.messaging_service import get_or_create_thread, send_message, mark_thread_read
+from models import (
+    Opportunity, OpportunityApplication, ProjectMilestone, Rating, Competition,
+    CompetitionEntry, Notification, MessageThread, Message,
+)
 
 EXPERIENCE_LABELS = {
     'new': "I'm completely new to this",
@@ -43,6 +50,23 @@ skills_bp = Blueprint('skills', __name__)
 
 def _current_user():
     return User.query.filter_by(username=session['user']['username']).first()
+
+
+@skills_bp.context_processor
+def _inject_nav_badges():
+    """Unread counts for the notification bell / Messages nav item — computed once per
+    request rather than duplicated into every route's render_template call. Safe to call
+    unconditionally: unread_count/thread queries just return 0 for a logged-out session,
+    and the sidebar only renders the badge when the count is truthy."""
+    if 'user' not in session:
+        return {}
+    user = User.query.filter_by(username=session['user']['username']).first()
+    if not user:
+        return {}
+    unread_msgs = sum(t.unread_count_for(user.id) for t in MessageThread.query.filter(
+        db.or_(MessageThread.employer_id == user.id, MessageThread.student_id == user.id)
+    ).all())
+    return {'nav_unread_notifications': unread_count(user.id), 'nav_unread_messages': unread_msgs}
 
 
 @skills_bp.before_request
@@ -198,6 +222,8 @@ def home():
     }
 
     profile = profile_completeness(user)
+    talent_stats = get_talent_stats(user)
+    available_opportunities = len(opportunities) if opportunities else Opportunity.query.filter_by(is_published=True).count()
 
     hour = datetime.utcnow().hour
     greeting = 'Good morning' if hour < 12 else ('Good afternoon' if hour < 17 else 'Good evening')
@@ -209,10 +235,11 @@ def home():
         verify_focus=verify_focus, catalog_skills=catalog_skills, my_projects=my_projects,
         opportunities=opportunities, earnings=earnings, profile=profile,
         spotlight_skill=spotlight_skill, unmatched_interest=unmatched_interest,
+        talent_stats=talent_stats, available_opportunities=available_opportunities,
     )
 
 
-# ===== CATALOG =====
+# ===== CATALOG (discovery) =====
 @skills_bp.route('/skills/catalog')
 @login_required
 def catalog():
@@ -230,8 +257,19 @@ def catalog():
         query = query.filter(Skill.name.ilike(f'%{search}%'))
     skills = query.order_by(Skill.order).all()
 
-    return render_template('skills_catalog.html', categories=categories, skills=skills,
-                            active_category=active_category, search=search, active_page='catalog')
+    # Each card needs real numbers, not filler text — projects available, students
+    # actually learning it right now, and open paid opportunities in this skill.
+    rows = []
+    for skill in skills:
+        rows.append({
+            'skill': skill,
+            'projects_count': skill.project_templates.filter_by(is_published=True).count(),
+            'students_count': StudentSkill.query.filter_by(skill_id=skill.id).count(),
+            'opportunities_count': Opportunity.query.filter_by(skill_id=skill.id, is_published=True).count(),
+        })
+
+    return render_template('skills_catalog.html', categories=categories, rows=rows,
+                            active_category=active_category, search=search, active_page='learn')
 
 
 # ===== UNIFIED SEARCH (skills, courses, lessons, challenges, projects) =====
@@ -750,6 +788,10 @@ def update_project(project_id):
         project.live_url = (data['live_url'] or '').strip() or None
     if 'description' in data:
         project.description = (data['description'] or '').strip() or None
+    if 'screenshots' in data:
+        project.screenshots = data['screenshots'] or []
+    if 'is_public' in data:
+        project.is_public = bool(data['is_public'])
 
     db.session.commit()
 
@@ -846,7 +888,40 @@ def apply_opportunity(opportunity_id):
         db.session.add(OpportunityApplication(opportunity_id=opportunity.id, student_id=user.id))
         db.session.commit()
         flash(f'Applied to "{opportunity.title}"!')
-    return redirect(url_for('skills.opportunities'))
+    return redirect(request.referrer or url_for('skills.opportunities'))
+
+
+@skills_bp.route('/skills/gigs')
+@login_required
+def gigs():
+    """The full open marketplace — every published gig, filterable, not just the ones
+    matched to skills the student has already started. Opportunities (the dashboard/
+    personalized feed) is 'best matches'; Gigs is 'browse everything', same distinction
+    Upwork/Fiverr draw between a matched feed and open browse."""
+    user = _current_user()
+    skill_id = request.args.get('skill_id', type=int)
+    location = request.args.get('location', '').strip()
+    min_pay = request.args.get('min_pay', type=int)
+
+    query = Opportunity.query.filter_by(is_published=True)
+    if skill_id:
+        query = query.filter_by(skill_id=skill_id)
+    if location:
+        query = query.filter(Opportunity.location.ilike(f'%{location}%'))
+    if min_pay:
+        query = query.filter(Opportunity.payment_amount >= min_pay)
+    all_opps = query.order_by(Opportunity.created_at.desc()).all()
+
+    started_skill_ids = [s.skill_id for s in StudentSkill.query.filter_by(student_id=user.id).all()]
+    my_applications = {a.opportunity_id: a for a in OpportunityApplication.query.filter_by(student_id=user.id).all()}
+    rows = [{
+        'opportunity': o, 'application': my_applications.get(o.id),
+        'match_pct': opportunity_match_pct(user.id, o.skill_id) if o.skill_id in started_skill_ids else 0,
+    } for o in all_opps]
+
+    skills = Skill.query.filter_by(is_published=True).order_by(Skill.name).all()
+    return render_template('skills_gigs.html', rows=rows, skills=skills, active_page='gigs',
+                            skill_id=skill_id, location=location, min_pay=min_pay)
 
 
 @skills_bp.route('/skills/earnings')
@@ -857,6 +932,8 @@ def earnings():
         OpportunityApplication.query.filter_by(student_id=user.id)
         .order_by(OpportunityApplication.applied_at.desc()).all()
     )
+    for a in applications:
+        a.breakdown = compute_payout_breakdown(a.payout_amount if a.status == 'paid' else a.opportunity.payment_amount)
     summary = {
         'total_paid': sum(a.payout_amount or 0 for a in applications if a.status == 'paid'),
         'pending': sum((a.opportunity.payment_amount or 0) for a in applications if a.status in ('applied', 'accepted')),
@@ -877,9 +954,9 @@ def edit_profile():
         user.profile_photo_url = (request.form.get('profile_photo_url') or '').strip() or None
         db.session.commit()
         flash('Profile updated.')
-        return redirect(url_for('skills.home'))
+        return redirect(url_for('skills.talent_profile'))
     profile = profile_completeness(user)
-    return render_template('skills_profile_edit.html', user=user, profile=profile, active_page='home')
+    return render_template('skills_profile_edit.html', user=user, profile=profile, active_page='profile')
 
 
 # ===== PRIVACY SETTINGS (what employers can see) =====
@@ -916,3 +993,225 @@ def privacy_settings():
         return redirect(url_for('skills.privacy_settings'))
 
     return render_template('skills_settings.html', privacy=privacy, user=user, active_page='settings')
+
+
+# ===== MY LEARNING (every skill in progress or completed, not just the top one) =====
+@skills_bp.route('/skills/my-learning')
+@login_required
+def my_learning():
+    user = _current_user()
+    data = get_dashboard_data(user.id)
+    rows = []
+    for student_skill in data['in_progress_skills'] + data['completed_skills']:
+        card = get_continue_learning_card(user.id, student_skill) if student_skill.status == 'in_progress' else None
+        steps, current_phase = get_pipeline_state(user.id, student_skill.skill_id)
+        rows.append({'student_skill': student_skill, 'skill': student_skill.skill, 'card': card,
+                     'pipeline_steps': steps, 'current_phase': current_phase})
+    return render_template('skills_my_learning.html', rows=rows, active_page='my_learning')
+
+
+# ===== TALENT PROFILE =====
+@skills_bp.route('/skills/talent')
+@login_required
+def talent_profile():
+    """The student's own preview of what a Talent Profile looks like — same template as
+    the public view, so what they see here is exactly what a visitor with matching
+    permissions would see."""
+    user = _current_user()
+    stats = get_talent_stats(user)
+    projects = StudentProject.query.filter_by(student_id=user.id, is_public=True).order_by(StudentProject.updated_at.desc()).all()
+    privacy = StudentPrivacySettings.query.filter_by(student_id=user.id).first()
+    return render_template('skills_talent.html', profile_user=user, stats=stats, projects=projects,
+                            privacy=privacy, is_own_profile=True, active_page='talent')
+
+
+@skills_bp.route('/skills/talent/<username>')
+@login_required
+def talent_public(username):
+    profile_user = User.query.filter_by(username=username).first_or_404()
+    viewer = _current_user()
+    is_own = viewer.id == profile_user.id
+    privacy = StudentPrivacySettings.query.filter_by(student_id=profile_user.id).first()
+
+    if not is_own:
+        visibility = privacy.profile_visibility if privacy else 'private'
+        allowed = visibility == 'public' or (visibility == 'employers' and (viewer.is_employer or viewer.is_admin))
+        if not allowed:
+            flash("This student's profile isn't public.")
+            return redirect(url_for('skills.home'))
+
+    stats = get_talent_stats(profile_user)
+    show_projects = is_own or not privacy or privacy.show_projects
+    projects = (
+        StudentProject.query.filter_by(student_id=profile_user.id, is_public=True)
+        .order_by(StudentProject.updated_at.desc()).all()
+        if show_projects else []
+    )
+    return render_template('skills_talent.html', profile_user=profile_user, stats=stats, projects=projects,
+                            privacy=privacy, is_own_profile=is_own, active_page='talent')
+
+
+# ===== CHALLENGES & COMPETITIONS =====
+@skills_bp.route('/skills/challenges')
+@login_required
+def challenges():
+    user = _current_user()
+    all_challenges = Challenge.query.filter_by(is_published=True).order_by(Challenge.order).all()
+    my_challenge_submissions = {s.challenge_id for s in ChallengeSubmission.query.filter_by(student_id=user.id).all()}
+    all_competitions = Competition.query.filter_by(is_published=True).order_by(Competition.deadline.asc()).all()
+    my_entries = {e.competition_id for e in CompetitionEntry.query.filter_by(student_id=user.id).all()}
+    return render_template(
+        'skills_challenges.html', challenges=all_challenges, my_challenge_submissions=my_challenge_submissions,
+        competitions=all_competitions, my_entries=my_entries, active_page='challenges',
+    )
+
+
+@skills_bp.route('/skills/competitions/<slug>', methods=['GET', 'POST'])
+@login_required
+def competition_detail(slug):
+    competition = Competition.query.filter_by(slug=slug, is_published=True).first_or_404()
+    user = _current_user()
+    existing = CompetitionEntry.query.filter_by(competition_id=competition.id, student_id=user.id).first()
+
+    if request.method == 'POST':
+        if existing:
+            flash("You've already entered this competition.")
+            return redirect(url_for('skills.competition_detail', slug=slug))
+        submission_url = request.form.get('submission_url', '').strip()
+        description = request.form.get('description', '').strip()
+        if not submission_url and not description:
+            flash('Add a submission link or description before entering.')
+            return redirect(url_for('skills.competition_detail', slug=slug))
+        db.session.add(CompetitionEntry(
+            competition_id=competition.id, student_id=user.id,
+            submission_url=submission_url or None, description=description or None,
+        ))
+        db.session.commit()
+        flash('Entry submitted!')
+        return redirect(url_for('skills.competition_detail', slug=slug))
+
+    return render_template('skills_competition_detail.html', competition=competition, existing=existing,
+                            active_page='challenges', ask_context=f'the "{competition.title}" competition')
+
+
+# ===== MESSAGES =====
+@skills_bp.route('/skills/messages/new')
+@login_required
+def new_message_thread():
+    """Entry point from a Talent Profile's 'Hire' button — only an employer can start a
+    thread this way (a student messaging another student isn't a supported flow yet)."""
+    user = _current_user()
+    if not user.is_employer:
+        flash('Only employer accounts can start a conversation from a Talent Profile.')
+        return redirect(url_for('skills.talent_public', username=request.args.get('to', '')))
+    target = User.query.filter_by(username=request.args.get('to', '')).first_or_404()
+    thread = get_or_create_thread(user.id, target.id)
+    return redirect(url_for('skills.message_thread', thread_id=thread.id))
+
+
+@skills_bp.route('/skills/messages')
+@login_required
+def messages():
+    user = _current_user()
+    if user.is_employer:
+        threads = MessageThread.query.filter_by(employer_id=user.id).order_by(MessageThread.last_message_at.desc()).all()
+    else:
+        threads = MessageThread.query.filter_by(student_id=user.id).order_by(MessageThread.last_message_at.desc()).all()
+    rows = [{
+        'thread': t, 'other': t.other_party(user.id), 'unread': t.unread_count_for(user.id),
+        'last_message': t.messages.order_by(Message.created_at.desc()).first(),
+    } for t in threads]
+    return render_template('skills_messages.html', rows=rows, active_page='messages')
+
+
+@skills_bp.route('/skills/messages/<int:thread_id>', methods=['GET', 'POST'])
+@login_required
+def message_thread(thread_id):
+    user = _current_user()
+    thread = MessageThread.query.get_or_404(thread_id)
+    if user.id not in (thread.employer_id, thread.student_id):
+        flash("That conversation isn't yours.")
+        return redirect(url_for('skills.messages'))
+
+    if request.method == 'POST':
+        content = request.form.get('content', '').strip()
+        if content:
+            send_message(thread, user.id, content)
+        return redirect(url_for('skills.message_thread', thread_id=thread.id))
+
+    mark_thread_read(thread, user.id)
+    other = thread.other_party(user.id)
+    thread_messages = thread.messages.order_by(Message.created_at.asc()).all()
+    return render_template('skills_message_thread.html', thread=thread, other=other,
+                            thread_messages=thread_messages, active_page='messages')
+
+
+# ===== NOTIFICATIONS =====
+@skills_bp.route('/skills/notifications')
+@login_required
+def notifications():
+    user = _current_user()
+    items = Notification.query.filter_by(user_id=user.id).order_by(Notification.created_at.desc()).limit(50).all()
+    mark_all_read(user.id)
+    return render_template('skills_notifications.html', notifications=items, active_page='notifications')
+
+
+# ===== PROJECT WORKSPACE: milestones + AI review =====
+@skills_bp.route('/skills/projects/<int:project_id>/milestones', methods=['POST'])
+@login_required
+def add_milestone(project_id):
+    user = _current_user()
+    project = StudentProject.query.filter_by(id=project_id, student_id=user.id).first_or_404()
+    data = request.get_json() or {}
+    title = (data.get('title') or '').strip()
+    if not title:
+        return jsonify({'success': False, 'error': 'Title is required'}), 400
+    max_order = db.session.query(db.func.max(ProjectMilestone.order)).filter_by(student_project_id=project.id).scalar() or 0
+    milestone = ProjectMilestone(
+        student_project_id=project.id, title=title,
+        description=(data.get('description') or '').strip() or None, order=max_order + 1,
+    )
+    db.session.add(milestone)
+    db.session.commit()
+    return jsonify({'success': True, 'milestone': milestone.to_dict()})
+
+
+@skills_bp.route('/skills/projects/milestones/<int:milestone_id>/toggle', methods=['POST'])
+@login_required
+def toggle_milestone(milestone_id):
+    user = _current_user()
+    milestone = ProjectMilestone.query.get_or_404(milestone_id)
+    if milestone.project.student_id != user.id:
+        return jsonify({'success': False, 'error': 'Not your project'}), 403
+    milestone.is_done = not milestone.is_done
+    milestone.completed_at = datetime.utcnow() if milestone.is_done else None
+    db.session.commit()
+    return jsonify({'success': True, 'is_done': milestone.is_done})
+
+
+@skills_bp.route('/skills/projects/<int:project_id>/request-review', methods=['POST'])
+@login_required
+def request_project_review(project_id):
+    user = _current_user()
+    project = StudentProject.query.filter_by(id=project_id, student_id=user.id).first_or_404()
+    submission_details = (
+        f"Description: {project.description or '(none provided)'}\n"
+        f"Repository: {project.repo_url or '(none provided)'}\n"
+        f"Live URL: {project.live_url or '(none provided)'}\n"
+        f"Screenshots: {len(project.screenshots)} attached"
+    )
+    project.verification_status = 'requested'
+    db.session.commit()
+    try:
+        result = evaluate_project_submission(
+            project.title, project.description, submission_details, project.skills_demonstrated
+        )
+        project.ai_feedback = result
+        project.verification_status = 'reviewed'
+        db.session.commit()
+        notify(user.id, 'verification', 'Your project was reviewed',
+               f'{project.title}: {result.get("score")}%', url_for('skills.project_detail', project_id=project.id))
+    except Exception:
+        db.session.rollback()
+        flash("Review couldn't be generated right now — try again in a moment.")
+    return redirect(url_for('skills.project_detail', project_id=project.id))

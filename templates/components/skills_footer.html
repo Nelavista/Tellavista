@@ -1,4 +1,15 @@
   </div><!-- /.main-content -->
+
+  <!-- Mobile bottom nav: the 5 destinations that answer the five-second test. Everything
+       else is one tap away via the hamburger drawer — this isn't the whole IA squeezed
+       onto a phone, just the essentials. -->
+  <nav class="mobile-tabbar">
+    <a href="/skills" class="{{ 'active' if active_page == 'home' else '' }}"><i class="ri-compass-3-line"></i><span>Overview</span></a>
+    <a href="/skills/catalog" class="{{ 'active' if active_page == 'learn' else '' }}"><i class="ri-graduation-cap-line"></i><span>Learn</span></a>
+    <a href="/skills/projects" class="{{ 'active' if active_page == 'projects' else '' }}"><i class="ri-hammer-line"></i><span>Projects</span></a>
+    <a href="/skills/opportunities" class="{{ 'active' if active_page == 'opportunities' else '' }}"><i class="ri-briefcase-line"></i><span>Gigs</span></a>
+    <a href="/skills/talent" class="{{ 'active' if active_page == 'talent' else '' }}"><i class="ri-user-star-line"></i><span>Talent</span></a>
+  </nav>
 </div><!-- /.app-wrapper -->
 
 <script>
@@ -6,8 +17,8 @@
     const theme = localStorage.getItem('theme') || 'dark';
     if (theme === 'light') {
       document.body.classList.add('light-mode');
-      const t = document.getElementById('theme-toggle');
-      if (t) t.textContent = '☀️';
+      const icon = document.querySelector('#theme-toggle i');
+      if (icon) icon.className = 'ri-sun-line';
     }
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.getRegistrations().then(regs => regs.forEach(r => r.unregister()));
@@ -27,7 +38,7 @@
   function skToggleTheme() {
     const isLight = document.body.classList.toggle('light-mode');
     localStorage.setItem('theme', isLight ? 'light' : 'dark');
-    const t = document.getElementById('theme-toggle');
-    if (t) t.textContent = isLight ? '☀️' : '🌙';
+    const icon = document.querySelector('#theme-toggle i');
+    if (icon) icon.className = isLight ? 'ri-sun-line' : 'ri-moon-line';
   }
 </script>

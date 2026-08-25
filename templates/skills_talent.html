@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>{{ profile_user.name or profile_user.username }} · Nelavista Talent</title>
+  <meta name="theme-color" content="#050810">
+  <link rel="icon" type="image/png" sizes="32x32" href="/static/icons/nelavista-32x32.png">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/skills.css') }}">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
+</head>
+<body>
+{% include 'components/skills_sidebar.html' %}
+
+  <div class="sk-view" style="max-width:820px;">
+    {% if is_own_profile %}
+    <div class="sk-panel" style="margin-bottom:20px; display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;">
+      <div class="sk-card-desc" style="margin-bottom:0;">This is what employers see when your profile is visible. <a href="/skills/settings" style="color:var(--sk-accent);">Manage who can see it →</a></div>
+      <a href="/skills/profile" class="sk-btn secondary small">Edit Profile</a>
+    </div>
+    {% endif %}
+
+    <div class="sk-panel tp-hero">
+      <div class="tp-avatar">
+        {% if profile_user.profile_photo_url %}<img src="{{ profile_user.profile_photo_url }}" alt="">
+        {% else %}{{ (profile_user.name or profile_user.username)[:1]|upper }}{% endif %}
+      </div>
+      <div style="flex:1; min-width:200px;">
+        <div class="tp-name">{{ profile_user.name or profile_user.username }}</div>
+        {% if stats.headline_skill %}<div class="tp-headline">{{ stats.headline_skill.name }} Builder</div>{% endif %}
+        <div class="tp-meta">
+          {{ profile_user.university or 'Nelavista Skills' }}
+          {% if stats.avg_rating %} · <span class="star-rating"><span class="stars">★</span>{{ stats.avg_rating }} <span class="count">({{ stats.rating_count }})</span></span>{% endif %}
+        </div>
+        {% if profile_user.bio %}<p class="sk-sub" style="margin-top:10px;">{{ profile_user.bio }}</p>{% endif %}
+        {% if profile_user.portfolio_url %}<a href="{{ profile_user.portfolio_url }}" target="_blank" rel="noopener" class="sk-view-link" style="display:inline-block; margin-top:8px;">Portfolio ↗</a>{% endif %}
+
+        <div class="tp-stats-row">
+          <div><div class="tp-stat-value">{{ stats.verified_skills|length }}</div><div class="tp-stat-label">Verified Skills</div></div>
+          <div><div class="tp-stat-value">{{ stats.completed_projects }}</div><div class="tp-stat-label">Projects Built</div></div>
+          <div><div class="tp-stat-value">{{ stats.completed_gigs }}</div><div class="tp-stat-label">Gigs Completed</div></div>
+          {% if is_own_profile or not privacy or privacy.show_academic_cgpa %}
+          {% if profile_user.academic_cgpa %}
+          <div><div class="tp-stat-value">{{ profile_user.academic_cgpa }}</div><div class="tp-stat-label">CGPA (self-reported)</div></div>
+          {% endif %}
+          {% endif %}
+        </div>
+      </div>
+      {% if not is_own_profile %}
+      <a href="/skills/messages/new?to={{ profile_user.username }}" class="sk-btn" style="align-self:flex-start;">Hire {{ (profile_user.name or profile_user.username).split(' ')[0] }}</a>
+      {% endif %}
+    </div>
+
+    {% if stats.verified_skills %}
+    <div class="sk-section-title">Verified Skills</div>
+    <div style="display:flex; gap:8px; flex-wrap:wrap;">
+      {% for skill in stats.verified_skills %}
+      <span class="skill-chip verified"><i class="ri-checkbox-circle-fill"></i>{{ skill.name }}</span>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="sk-section-title">Projects</div>
+    {% if not projects %}
+    <div class="sk-empty" style="padding:32px 20px;"><div style="font-size:0.9rem;">{{ 'Nothing shared publicly yet.' if is_own_profile else "This student hasn't shared any projects." }}</div></div>
+    {% else %}
+    <div class="sk-grid">
+      {% for p in projects %}
+      <div class="sk-card" style="cursor:default;">
+        {% if p.screenshots %}<img src="{{ p.screenshots[0] }}" alt="" style="width:100%; aspect-ratio:16/10; object-fit:cover; border-radius:var(--r-sm); margin-bottom:12px;">{% endif %}
+        <span class="sk-badge {{ p.status }}">{{ 'Done' if p.status == 'completed' else p.status|replace('_', ' ')|title }}</span>
+        <div class="sk-card-title" style="margin-top:10px;">{{ p.title }}</div>
+        <div class="sk-card-desc">{{ p.description or '' }}</div>
+        {% if p.skills_demonstrated %}
+        <div class="dv2-tag-row">{% for s in p.skills_demonstrated %}<span class="dv2-tag">{{ s }}</span>{% endfor %}</div>
+        {% endif %}
+        <div style="display:flex; gap:8px;">
+          {% if p.repo_url %}<a href="{{ p.repo_url }}" target="_blank" rel="noopener" class="sk-view-link">Code ↗</a>{% endif %}
+          {% if p.live_url %}<a href="{{ p.live_url }}" target="_blank" rel="noopener" class="sk-view-link">Live ↗</a>{% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+
+{% include 'components/skills_footer.html' %}
+{% if is_own_profile %}{% include 'components/skills_ask_widget.html' %}{% endif %}
+</body>
+</html>

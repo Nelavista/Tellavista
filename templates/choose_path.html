@@ -137,7 +137,7 @@
       body, .cp-eyebrow, .cp-headline, .cp-sub, .path-card, .cp-footnote { animation: none !important; opacity: 1 !important; transform: none !important; }
     }
 
-    /* ----- MOBILE: deliberate layout, not a shrunk desktop card ----- */
+    /* ----- MOBILE: same side-by-side layout as desktop, just compacted to fit ----- */
     @media (max-width: 760px) {
       .cp-topbar { padding: 18px 20px; }
       .cp-main { padding: 8px 16px 48px; justify-content: flex-start; }
@@ -145,24 +145,28 @@
       .cp-eyebrow { margin-bottom: 12px; }
       .cp-sub { font-size: 0.98rem; }
 
-      .cp-grid { grid-template-columns: 1fr; gap: 16px; margin-top: 28px; }
-      .path-card { padding: 24px 22px; border-radius: var(--r-lg); }
-      .path-icon { width: 48px; height: 48px; font-size: 1.4rem; margin-bottom: 16px; }
-      .path-title { font-size: 1.35rem; }
-      .path-desc { font-size: 0.92rem; margin-bottom: 18px; }
+      .cp-grid { grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 24px; }
+      .path-card { padding: 18px 14px; border-radius: var(--r-md); align-items: center; text-align: center; }
+      .path-icon { width: 42px; height: 42px; font-size: 1.2rem; margin-bottom: 12px; }
+      .path-title { font-size: 1.05rem; margin-bottom: 6px; }
+      .path-desc { font-size: 0.78rem; margin-bottom: 14px; }
 
-      /* Feature list becomes wrapping chips instead of a vertical list — a layout that
-         only makes sense at this width, not a scaled-down copy of the desktop card. */
-      .path-features { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 22px; }
-      .path-features li { flex: 0 0 auto; padding: 6px 12px; background: rgba(255,255,255,0.04); border: 1px solid var(--border-subtle); border-radius: var(--r-pill); font-size: 0.78rem; }
-      .path-tech .path-features li { background: rgba(45,212,191,0.06); }
+      /* No room for the full feature list at this width without wrapping into a mess —
+         the card's own title/description already say what each path is for. */
+      .path-features { display: none; }
 
       .path-cta {
-        width: 100%; justify-content: center; padding: 14px 0; border-radius: var(--r-sm);
-        background: var(--grad-main); color: #fff !important; margin-top: 6px;
+        width: 100%; justify-content: center; padding: 11px 0; border-radius: var(--r-sm);
+        background: var(--grad-main); color: #fff !important; margin-top: auto; font-size: 0.82rem;
       }
       .path-tech .path-cta { background: var(--grad-teal); }
       .path-card:hover .path-cta, .path-card:focus-visible .path-cta { gap: 8px; }
+    }
+
+    @media (max-width: 380px) {
+      .path-title { font-size: 0.95rem; }
+      .path-desc { font-size: 0.74rem; }
+      .path-cta { font-size: 0.76rem; padding: 10px 0; }
     }
   </style>
 </head>

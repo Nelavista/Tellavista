@@ -429,7 +429,16 @@ def seed_200_to_400_level():
                 if existing:
                     skipped_count += 1
                     continue
-                
+
+                # Skip entries whose referenced local file doesn't actually exist on
+                # disk -- see the Level 1 audit's Academia findings for why this guard
+                # exists (a large share of this file's paths were stale/never uploaded).
+                _url = material_data.get('url') or ''
+                if _url.startswith('static/') and not os.path.exists(_url):
+                    print(f"   ⚠️  Skipping '{material_data['title']}' — file not found: {_url}")
+                    skipped_count += 1
+                    continue
+
                 # Create new material
                 new_material = Material(
                     title=material_data['title'],

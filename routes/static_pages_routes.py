@@ -19,6 +19,11 @@ def privacy_policy():
     return render_template('privacy-policy.html')
 
 
+@pages_bp.route('/terms-of-service')
+def terms_of_service():
+    return render_template('terms-of-service.html')
+
+
 @pages_bp.route('/settings')
 @login_required
 def settings():

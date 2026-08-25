@@ -1,3 +1,4 @@
+import os
 from app import app, db
 from models import Material
 
@@ -401,7 +402,19 @@ def seed_materials():
                 if exists:
                     skipped += 1
                     continue
-                
+
+                # Skip entries whose referenced file doesn't actually exist on disk --
+                # this bank has historically had many stale/typo'd paths (see the Level 1
+                # audit's Academia findings: ~88% of paths across these seed scripts
+                # didn't exist). Creating a Material row for a file that isn't there just
+                # produces a broken "Open" link for a student; better to skip it loudly
+                # here than seed a dead link.
+                url = mat.get('url') or ''
+                if url.startswith('static/') and not os.path.exists(url):
+                    print(f"   ⚠️  Skipping '{mat['title']}' — file not found: {url}")
+                    skipped += 1
+                    continue
+
                 # Create new material
                 new_material = Material(
                     title=mat['title'],

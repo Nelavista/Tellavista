@@ -91,7 +91,8 @@ def dashboard():
                            user=user_data,
                            first_name=first_name,
                            exam_count=exam_count,
-                           show_profile_modal=show_profile_modal)
+                           show_profile_modal=show_profile_modal,
+                           email_verified=user.email_verified)
 
 @dashboard_bp.route('/api/debug-courses')
 @login_required

@@ -139,7 +139,7 @@
                                     <div class="cd-material-title">{{ m.title }}</div>
                                     <div class="cd-material-meta">{{ m.author or 'Nelavista' }} · {{ m.source|capitalize }}{% if m.description %} · {{ m.description }}{% endif %}</div>
                                 </div>
-                                <a href="{{ m.file_url or m.external_url }}" target="_blank" class="sk-btn small secondary" onclick="trackMaterialView({{ m.id }})">Open</a>
+                                <a href="{{ m.resolved_url or m.external_url }}" target="_blank" class="sk-btn small secondary" onclick="trackMaterialView({{ m.id }})">Open</a>
                             </div>
                             <div class="cd-material-actions">
                                 <button class="cd-ai-btn" onclick="askAboutMaterial({{ m.id }}, 'explain', this)">💡 Explain</button>

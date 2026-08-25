@@ -4,6 +4,7 @@ Flask-Migrate==4.1.0
 Flask-Mail==0.10.0
 Flask-WTF==1.3.0
 Flask-SocketIO==5.6.1
+Flask-Limiter==3.9.2
 python-socketio==5.16.3
 python-engineio==4.13.3
 eventlet==0.41.1
@@ -16,3 +17,9 @@ beautifulsoup4==4.15.0
 Pillow==12.3.0
 pdfplumber==0.11.10
 PyMuPDF==1.28.0
+# Required once REDIS_URL is configured (multi-worker rate limiting + Socket.IO message
+# queue -- see extensions.py). Harmless to have installed even when REDIS_URL is unset.
+redis==6.4.0
+# Optional: only activates if SENTRY_DSN is set (see logging_config.py). Safe to leave
+# installed and unused.
+sentry-sdk[flask]==2.19.2

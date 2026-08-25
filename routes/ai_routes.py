@@ -6,14 +6,14 @@ import shutil
 import time
 import traceback
 from datetime import datetime
-from models import User, Material
+from models import User, Material, AnalyzerSession
 from flask import Blueprint, render_template, request, session, jsonify, send_from_directory, current_app
 from utils.helpers import login_required, debug_print, get_session_memory, add_to_session_memory, cleanup_old_files, allowed_file
 from services.material_service import extract_text_from_pdf, extract_text_from_pdf_turbo, extract_images_from_pdf, extract_tables_from_pdf, analyze_document_structure, extract_text_from_image, is_diagram_or_visual
 from services.ai_service import generate_turbo_style_notes, safe_markdown_to_html, generate_test_questions
 from services.academic_context import resolve_academic_context, find_course
 from models import UserQuestions
-from extensions import db
+from extensions import db, limiter
 import requests
 from config import OPENROUTER_API_KEY
 
@@ -25,26 +25,27 @@ ai_bp = Blueprint('ai', __name__)
 # cookie session (capped at ~4KB by browser/RFC limits — a single lecture-notes PDF's
 # extracted text alone routinely exceeds that, and the browser just silently drops or
 # truncates an oversized cookie). Only a small pointer lives in session['analyzer_content'];
-# the actual payload is written to a JSON file under IMAGE_FOLDER/<session_id>/, reusing the
-# same per-session folder extract_images_from_pdf() already writes images into.
-def _content_path(session_id):
-    return os.path.join(current_app.config['IMAGE_FOLDER'], session_id, 'content.json')
-
-
+# the actual payload lives in the AnalyzerSession table (see models.py) -- previously a
+# JSON file under IMAGE_FOLDER/<session_id>/content.json, which Render's ephemeral
+# filesystem silently destroyed on every redeploy/restart.
 def _save_content(session_id, content):
-    path = _content_path(session_id)
-    os.makedirs(os.path.dirname(path), exist_ok=True)
-    with open(path, 'w', encoding='utf-8') as f:
-        json.dump(content, f)
+    username = session.get('user', {}).get('username')
+    user = User.query.filter_by(username=username).first() if username else None
+    row = AnalyzerSession.query.filter_by(session_id=session_id).first()
+    if not row:
+        row = AnalyzerSession(session_id=session_id)
+        db.session.add(row)
+    row.user_id = user.id if user else None
+    row.content_json = json.dumps(content)
+    db.session.commit()
 
 
 def _load_content(session_id):
-    path = _content_path(session_id)
-    if not os.path.exists(path):
+    row = AnalyzerSession.query.filter_by(session_id=session_id).first()
+    if not row:
         return None
     try:
-        with open(path, 'r', encoding='utf-8') as f:
-            return json.load(f)
+        return json.loads(row.content_json)
     except Exception as e:
         debug_print(f"⚠️ Failed to load analyzer content for {session_id}: {e}")
         return None
@@ -85,6 +86,29 @@ def _build_course_materials_block(user, course_code):
     )
 
 
+# The Flask-wide MAX_CONTENT_LENGTH (100MB, config.py) exists to reject absurd uploads
+# outright, but a 100MB PDF is still well within that limit and would tie up the single
+# eventlet worker handling it for a long time -- pdfplumber/PyMuPDF extraction is
+# CPU-bound C-extension work that does NOT yield to eventlet's cooperative scheduler, so
+# a huge/complex PDF here blocks every other concurrent student's request too, not just
+# the uploader's. This caps synchronous PDF-analysis uploads specifically, well below the
+# app-wide ceiling, independent of the general upload limit used elsewhere (materials,
+# videos). A real fix (background job queue) is out of scope for this pass -- see the
+# Level 1 audit's scale findings -- this bounds the worst case in the meantime.
+MAX_ANALYZE_PDF_BYTES = 20 * 1024 * 1024  # 20MB
+
+
+def _reject_if_too_large(file_content_or_size, max_bytes=MAX_ANALYZE_PDF_BYTES):
+    size = file_content_or_size if isinstance(file_content_or_size, int) else len(file_content_or_size)
+    if size > max_bytes:
+        return jsonify({
+            "success": False,
+            "error": f"That PDF is too large to analyze ({size // (1024*1024)}MB). "
+                     f"Please upload a file under {max_bytes // (1024*1024)}MB.",
+        }), 413
+    return None
+
+
 @ai_bp.route('/analyze')
 @login_required
 def analyze_page():
@@ -93,6 +117,7 @@ def analyze_page():
 
 @ai_bp.route('/analyze', methods=['POST'])
 @login_required
+@limiter.limit('15 per hour')
 def analyze_pdf():
     try:
         if 'file' not in request.files:
@@ -106,6 +131,9 @@ def analyze_pdf():
         file_content = file.read()
         if len(file_content) == 0:
             return jsonify({"success": False, "error": "Uploaded file is empty"}), 400
+        too_large = _reject_if_too_large(file_content)
+        if too_large:
+            return too_large
         from io import BytesIO
         file_streams = [BytesIO(file_content) for _ in range(3)]
         text = extract_text_from_pdf_turbo(file_streams[0])
@@ -133,6 +161,7 @@ def analyze_pdf():
 
 @ai_bp.route('/understand', methods=['POST'])
 @login_required
+@limiter.limit('20 per hour')
 def understand_content():
     try:
         pointer = session.get('analyzer_content')
@@ -170,6 +199,7 @@ def understand_content():
 
 @ai_bp.route('/generate-test', methods=['POST'])
 @login_required
+@limiter.limit('15 per hour')
 def generate_test():
     """Backs the "Test Yourself" option on /analyze — templates/analyze.html's
     generateTest() posts a PDF or image plus test_type ('cbt' or 'written') here and
@@ -190,6 +220,12 @@ def generate_test():
         source_text = ""
 
         if filename_lower.endswith('.pdf'):
+            file.seek(0, os.SEEK_END)
+            file_size = file.tell()
+            file.seek(0)
+            too_large = _reject_if_too_large(file_size)
+            if too_large:
+                return too_large
             source_text = extract_text_from_pdf_turbo(file)
         elif filename_lower.endswith(('.png', '.jpg', '.jpeg')):
             # No reliable OCR available (see services/material_service.py) — send the
@@ -268,6 +304,7 @@ def get_analyzer_status():
         return jsonify({"success": False, "error": f"Error getting status: {str(e)}"}), 500
 
 @ai_bp.route('/static/extracted_images/<path:filename>')
+@login_required
 def serve_extracted_image(filename):
     try:
         return send_from_directory(current_app.config['IMAGE_FOLDER'], filename)
@@ -282,6 +319,7 @@ def talk_to_nelavista():
 
 @ai_bp.route('/ask_with_files', methods=['POST'])
 @login_required
+@limiter.limit('20 per hour')
 def ask_with_files():
     GRACEFUL_FALLBACK = "I'm having a little trouble answering right now, but please try again."
     try:
@@ -467,6 +505,7 @@ Your final answer should be so clear and pleasant that a student would *want* to
 
 @ai_bp.route('/ask', methods=['POST'])
 @login_required
+@limiter.limit('40 per hour')
 def ask():
     GRACEFUL_FALLBACK = "I'm having a little trouble answering right now, but please try again."
     try:
@@ -626,6 +665,7 @@ _MATERIAL_AI_MODES = {
 
 @ai_bp.route('/api/materials/<int:material_id>/ai-action', methods=['POST'])
 @login_required
+@limiter.limit('30 per hour')
 def material_ai_action(material_id):
     """Ask Nelavista about ONE specific material, grounded in its real extracted text
     (not just its title) -- this is genuine retrieval, not a title-only guess. If the
@@ -687,6 +727,8 @@ def teach_me_ai():
 
 
 @ai_bp.route('/api/ai-teach')
+@login_required
+@limiter.limit('20 per hour')
 def ai_teach():
     course = request.args.get("course")
     level = request.args.get("level")

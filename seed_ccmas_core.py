@@ -37,6 +37,15 @@ TARGET_UNIVERSITIES = [
     'University of Abuja',
     'University of Ilorin',
     'Kwara State University',
+    # UNILAG/UI already have a handful of real registrar-verified rows from
+    # Nelavista_Course_Codes.csv (source=NULL, kept as-is) -- but that CSV only ever
+    # had 6 UNILAG rows and 4 UI rows, nowhere near full 100-400L coverage. Layering
+    # the same national CCMAS floor on top (source='nuc_ccmas_core', same as the four
+    # schools above) closes that gap without touching or duplicating the existing
+    # registrar rows -- Course.query.filter_by(department_id, level, code) dedup
+    # means only genuinely new course codes get added.
+    'University of Lagos',
+    'University of Ibadan',
 ]
 
 # {department_name: {level: [(code, title), ...]}} -- verbatim from the CCMAS PDFs (see module

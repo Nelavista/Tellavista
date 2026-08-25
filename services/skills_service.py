@@ -19,6 +19,14 @@ from models import (
 # claim. A single constant, not per-opportunity, so a student can trust it's consistent.
 PLATFORM_FEE_PCT = 10
 
+# Minimum review score (percent) for a project to count toward skill verification. Applies
+# to both review paths a StudentProject can go through: the ordinary "Request Review" AI
+# feedback (ai_feedback['score'], 0-100) and a daily-class final project's rubric score
+# (ai_overall_score, which by ProjectTemplate.rubric's own convention sums to 100 -- see
+# models.py). A completed project that was never reviewed, or that scored below this bar,
+# does not count -- see _project_counts_as_verified below.
+PROJECT_VERIFICATION_MIN_SCORE = 60
+
 # Stored as StudentOnboarding.interest_text when a student explicitly skips the
 # "what do you want to learn" question, so a completed-but-empty onboarding is
 # distinguishable from one that hasn't happened yet (no row at all).
@@ -312,16 +320,51 @@ def has_built(student_id, skill_id):
         .filter(ProjectTemplate.skill_id == skill_id, StudentProject.student_id == student_id).first() is not None
 
 
+def _project_counts_as_verified(project):
+    """Whether one StudentProject clears the bar for skill verification. Being marked
+    `status == 'completed'` is the student's OWN claim (see routes/skills_routes.py's
+    update_project -- a plain student-triggered status flip) and is NOT sufficient by
+    itself; this additionally requires a real, Nelavista-triggered review that actually
+    scored the work at or above PROJECT_VERIFICATION_MIN_SCORE, via either review path:
+    - `verification_status == 'reviewed'` with a numeric ai_feedback['score'] (the
+      "Request Review" AI evaluation, routes/skills_routes.py's request_project_review), or
+    - a rubric-graded final project's `ai_overall_score` (evaluate_final_project, only set
+      once a daily-class final-project submission has actually been evaluated).
+    A project that is merely 'completed' with neither signal present returns False."""
+    if project.status != 'completed':
+        return False
+
+    if project.verification_status == 'reviewed':
+        feedback = project.ai_feedback or {}
+        score = feedback.get('score')
+        try:
+            if score is not None and int(score) >= PROJECT_VERIFICATION_MIN_SCORE:
+                return True
+        except (TypeError, ValueError):
+            pass
+
+    if project.ai_overall_score is not None:
+        try:
+            if int(project.ai_overall_score) >= PROJECT_VERIFICATION_MIN_SCORE:
+                return True
+        except (TypeError, ValueError):
+            pass
+
+    return False
+
+
 def is_skill_verified(student_id, skill_id):
-    """A skill counts as 'verified' once the student has finished its course content
-    AND shipped at least one completed project in it — a course alone only proves you
-    watched something; a finished project proves you can do it."""
+    """A skill counts as 'verified' once the student has finished its course content AND
+    shipped at least one project in it that was actually reviewed and scored well enough
+    (see _project_counts_as_verified) — a course alone only proves you watched something,
+    and an unreviewed 'completed' project is only the student's own say-so, neither of
+    which is a claim Nelavista makes to an employer on the student's behalf."""
     student_skill = StudentSkill.query.filter_by(student_id=student_id, skill_id=skill_id).first()
     if not student_skill or student_skill.status != 'completed':
         return False
-    return StudentProject.query.join(ProjectTemplate, StudentProject.project_template_id == ProjectTemplate.id) \
-        .filter(ProjectTemplate.skill_id == skill_id, StudentProject.student_id == student_id,
-                StudentProject.status == 'completed').first() is not None
+    projects = StudentProject.query.join(ProjectTemplate, StudentProject.project_template_id == ProjectTemplate.id) \
+        .filter(ProjectTemplate.skill_id == skill_id, StudentProject.student_id == student_id).all()
+    return any(_project_counts_as_verified(p) for p in projects)
 
 
 def has_earned(student_id, skill_id):

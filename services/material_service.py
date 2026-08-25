@@ -24,8 +24,21 @@ from datetime import datetime
 import pdfplumber
 import fitz  # PyMuPDF
 import requests
+import cloudinary
+import cloudinary.uploader
 
 from config import DEBUG_MODE
+
+# Configured independently here (same pattern as routes/materials_routes.py and
+# routes/community_routes.py) rather than relying on another module having already
+# configured the global cloudinary client first -- config() is idempotent, so this is
+# safe to call from multiple modules.
+cloudinary.config(
+    cloud_name=os.environ.get('CLOUDINARY_CLOUD_NAME'),
+    api_key=os.environ.get('CLOUDINARY_API_KEY'),
+    api_secret=os.environ.get('CLOUDINARY_API_SECRET'),
+    secure=True
+)
 
 
 def debug_print(*args, **kwargs):
@@ -105,19 +118,21 @@ def get_or_extract_material_text(material):
 
 def extract_images_from_pdf(file, session_id):
     """
-    Extract embedded raster images from a PDF, save them under IMAGE_FOLDER/<session_id>/,
-    and return metadata routes/ai_routes.py's /understand endpoint expects: a list of dicts
-    with 'path' (local filesystem path, checked with os.path.exists), 'url' (served via
-    ai_bp's /static/extracted_images/<path:filename> route), 'alt', and 'page'.
+    Extract embedded raster images from a PDF and upload each to Cloudinary (folder
+    nelavista_analyzer/<session_id>/), returning a list of dicts with 'url' (the
+    Cloudinary secure_url), 'alt', and 'page'. Previously these were written to local
+    disk under extracted_images/<session_id>/ and served back via a same-origin route --
+    on Render's ephemeral filesystem, a redeploy or restart between a student generating
+    notes and revisiting them silently broke every image (404s where a diagram used to
+    be). Cloudinary is already how every other user-facing file in this app is stored
+    (see routes/materials_routes.py, routes/community_routes.py) -- this brings the AI
+    Analyzer's images in line with that, instead of being the one exception.
     """
     try:
         file.seek(0)
         file_bytes = file.read()
         if not file_bytes:
             return []
-
-        image_folder = os.path.join(os.getcwd(), 'extracted_images', session_id)
-        os.makedirs(image_folder, exist_ok=True)
 
         results = []
         doc = fitz.open(stream=file_bytes, filetype='pdf')
@@ -132,20 +147,28 @@ def extract_images_from_pdf(file, session_id):
                         debug_print(f"⚠️ Skipping image xref {xref}: {e}")
                         continue
 
-                    ext = base_image.get('ext', 'png')
                     # Skip tiny images — these are almost always icons/bullets/rules embedded
                     # in the page background, not real diagrams worth surfacing.
                     if base_image.get('width', 0) < 80 or base_image.get('height', 0) < 80:
                         continue
 
-                    filename = f"p{page_index + 1}_{img_index}_{uuid.uuid4().hex[:8]}.{ext}"
-                    filepath = os.path.join(image_folder, filename)
-                    with open(filepath, 'wb') as f:
-                        f.write(base_image['image'])
+                    public_id = f"nelavista_analyzer/{session_id}/p{page_index + 1}_{img_index}_{uuid.uuid4().hex[:8]}"
+                    try:
+                        upload_result = cloudinary.uploader.upload(
+                            io.BytesIO(base_image['image']),
+                            resource_type='image',
+                            public_id=public_id,
+                            overwrite=False,
+                        )
+                        image_url = upload_result.get('secure_url')
+                    except Exception as e:
+                        debug_print(f"⚠️ Cloudinary upload failed for {public_id}: {e}")
+                        continue
+                    if not image_url:
+                        continue
 
                     results.append({
-                        'path': filepath,
-                        'url': f"/static/extracted_images/{session_id}/{filename}",
+                        'url': image_url,
                         'alt': f"Diagram from page {page_index + 1}",
                         'page': page_index + 1,
                     })

@@ -556,6 +556,37 @@ OPENSTAX_MATERIALS = {
 TAVILY_API_KEY = os.environ.get('TAVILY_API_KEY')
 
 
+def _verify_pdf_url(url):
+    """Live-checks that a URL genuinely serves a PDF before it's ever auto-approved and
+    shown to a student. The '.pdf' extension check below only tells us what the URL
+    CLAIMS to be -- a redirect to a paywall, a dead-link landing page, or an HTML error
+    page would previously sail straight through as long as the original URL string
+    happened to end in '.pdf'. This follows redirects to the final URL and checks the
+    actual response: both Content-Type and the real leading bytes (genuine PDFs start
+    with the %PDF- magic number), so a mislabeled or swapped response is rejected rather
+    than approved. Same spirit as open_textbook_library_service.py's _verify_url, just
+    stricter (content, not only reachability) since this source's relevance signal is
+    weaker to begin with."""
+    r = None
+    try:
+        r = requests.get(url, timeout=10, stream=True, allow_redirects=True)
+        if r.status_code >= 400:
+            return False
+        content_type = (r.headers.get('Content-Type') or '').lower()
+        chunk = next(r.iter_content(chunk_size=8), b'')
+        looks_like_pdf = chunk.startswith(b'%PDF-')
+        plausible_content_type = 'pdf' in content_type or 'octet-stream' in content_type or not content_type
+        return looks_like_pdf and plausible_content_type
+    except Exception:
+        return False
+    finally:
+        if r is not None:
+            try:
+                r.close()
+            except Exception:
+                pass
+
+
 def search_google_pdfs(course_code, max_results=10):
     """
     Search for PDF materials related to a course code via the Tavily Search API.
@@ -603,11 +634,20 @@ def search_google_pdfs(course_code, max_results=10):
 
                 for item in items:
                     pdf_url = item.get('url', '')
+                    if len(all_results) >= max_results:
+                        break
                     # Tavily is a general web search API with no filetype filter —
                     # only keep direct PDF links, matching the old Google
-                    # fileType=pdf behavior this function's callers expect.
+                    # fileType=pdf behavior this function's callers expect. The
+                    # '.pdf' extension is just a cheap pre-filter; _verify_pdf_url
+                    # below is what actually decides whether this gets shown to a
+                    # student, since a URL ending in .pdf can still redirect to a
+                    # paywall/404/anything else.
                     if pdf_url and pdf_url.lower().split('?')[0].endswith('.pdf') and pdf_url not in seen_urls:
                         seen_urls.add(pdf_url)
+                        if not _verify_pdf_url(pdf_url):
+                            print(f"[INFO] Rejected non-PDF or unreachable result: {pdf_url}")
+                            continue
                         all_results.append({
                             'title': item.get('title', f'{course_code} Material'),
                             'url': pdf_url,

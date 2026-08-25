@@ -7,7 +7,7 @@ from models import (
     Lesson, Quiz, Challenge, ChallengeSubmission, ProjectTemplate, StudentProject, StudentSkill,
     StudentOnboarding, CareerTrack, CareerTrackStep, Assignment, AssignmentSubmission,
     GradeScale, GradeWeight, Cohort, CohortEnrollment, EmployerProfile, User,
-    Opportunity, OpportunityApplication, Rating, Competition, CompetitionEntry,
+    Opportunity, OpportunityApplication, OpportunityStatusEvent, Rating, Competition, CompetitionEntry,
 )
 from extensions import db
 from sqlalchemy.exc import IntegrityError
@@ -1345,27 +1345,56 @@ def list_opportunity_applications(opportunity_id):
     ]})
 
 
+_APPLICATION_STATUSES = ('applied', 'accepted', 'completed', 'paid', 'rejected', 'disputed', 'refunded', 'cancelled')
+
+
 @admin_skills_bp.route('/admin/api/opportunity-applications/<int:application_id>', methods=['PUT'])
 @login_required
 @admin_required
 def update_opportunity_application(application_id):
-    """Moves an application through applied -> accepted -> completed -> paid. Paying sets
-    payout_amount and paid_at — this is the only place Earnings numbers ever come from."""
+    """Moves an application through applied -> accepted -> completed -> paid (plus
+    disputed/refunded/cancelled for a real future clawback path -- see models.py's
+    OpportunityApplication comment). Every transition is written to
+    OpportunityStatusEvent (who, from what, to what, when, why) so 'paid' is never just
+    an untraceable status flip -- see that model's docstring. Marking 'paid' still does
+    NOT move any real money: there is no payment gateway integration yet (see the Level 1
+    audit's business-readiness section) -- payment_reference is a free-text field for
+    however the payout actually happened (bank transfer ref, "cash - receipt #123", etc.),
+    filled in by the admin doing the paying, never auto-generated or assumed."""
     application = OpportunityApplication.query.get_or_404(application_id)
     data = request.get_json() or {}
     status = data.get('status')
-    if status not in ('applied', 'accepted', 'completed', 'paid', 'rejected'):
+    if status not in _APPLICATION_STATUSES:
         return _bad_request('Invalid status')
+
+    admin_user = User.query.filter_by(username=session['user']['username']).first()
+    from_status = application.status
+    note = (data.get('note') or '').strip() or None
     application.status = status
+
     if status == 'completed' and not application.completed_at:
         application.completed_at = datetime.utcnow()
     if status == 'paid':
         application.paid_at = datetime.utcnow()
         application.payout_amount = int(data.get('payout_amount') or application.opportunity.payment_amount or 0)
+        application.payment_reference = (data.get('payment_reference') or '').strip() or None
+        application.paid_by_admin_id = admin_user.id
+    if status == 'disputed':
+        application.disputed_at = datetime.utcnow()
+        application.dispute_reason = (data.get('dispute_reason') or '').strip() or None
+    if status == 'refunded':
+        application.refunded_at = datetime.utcnow()
+
+    db.session.add(OpportunityStatusEvent(
+        application_id=application.id, actor_user_id=admin_user.id,
+        from_status=from_status, to_status=status, note=note,
+    ))
     db.session.commit()
 
     status_messages = {
-        'accepted': 'was accepted', 'completed': 'was marked completed', 'paid': 'was paid out', 'rejected': "wasn't selected this time",
+        'accepted': 'was accepted', 'completed': 'was marked completed', 'paid': 'was paid out',
+        'rejected': "wasn't selected this time", 'disputed': 'is under dispute',
+        'refunded': 'was refunded', 'cancelled': 'was cancelled',
     }
     if status in status_messages:
         notify(application.student_id, 'application_update', f'"{application.opportunity.title}" {status_messages[status]}',

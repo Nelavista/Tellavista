@@ -45,10 +45,11 @@
     <div class="sk-grid">
       {% for row in rows %}
       {% set skill = row.skill %}
-      <a href="/skills/{{ skill.slug }}" class="sk-card dv2-skill-card">
+      <a href="/skills/{{ skill.slug }}" class="sk-card dv2-skill-card"{% if not row.has_content %} style="opacity:0.72;"{% endif %}>
         <div class="sk-icon-circle" style="background:{{ skill.color }}22; color:{{ skill.color }};">{{ skill.icon or '🧩' }}</div>
-        <div class="sk-card-title">{{ skill.name }}</div>
+        <div class="sk-card-title">{{ skill.name }}{% if not row.has_content %} <span class="sk-badge" style="background:rgba(251,191,36,0.15); color:#fbbf24; font-size:0.68rem; vertical-align:middle;">Coming Soon</span>{% endif %}</div>
         <div class="sk-card-desc">{{ skill.tagline or '' }}</div>
+        {% if row.has_content %}
         <div style="display:flex; gap:6px; flex-wrap:wrap;">
           <span class="sk-badge">{{ skill.level|title }}</span>
           {% if skill.estimated_hours %}<span class="sk-badge">~{{ skill.estimated_hours }}h</span>{% endif %}
@@ -59,6 +60,9 @@
           <div class="dv2-skill-meta-col"><span class="dv2-skill-meta-label">Gigs open</span><span>{{ row.opportunities_count }}</span></div>
         </div>
         <span class="sk-btn secondary small" style="margin-top:4px; align-self:flex-start;">Start Learning</span>
+        {% else %}
+        <div class="sk-card-desc" style="margin-top:2px;">Lessons for this path are still being built — check back soon.</div>
+        {% endif %}
       </a>
       {% endfor %}
     </div>

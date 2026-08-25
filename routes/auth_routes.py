@@ -2,13 +2,54 @@ from flask import Blueprint, render_template, request, redirect, url_for, sessio
 from datetime import datetime, timedelta
 import secrets
 from models import User
-from extensions import db, mail  # Assuming 'mail' is initialized in extensions.py
+from extensions import db, mail, limiter  # Assuming 'mail' is initialized in extensions.py
 from flask_mail import Message
+from logging_config import logger
 
 auth_bp = Blueprint('auth', __name__)
 
+EMAIL_VERIFY_TOKEN_HOURS = 48
 
-# ---------- Email Sending Function ----------
+
+# ---------- Email Sending Functions ----------
+def send_verification_email(user):
+    """Sends (or resends) the email-identity-confirmation link. Generates a fresh,
+    single-use, expiring token every time -- a previously issued token stops working the
+    moment a new one is requested, same single-active-token pattern as password reset
+    below, just a separate token/expiry pair (User.email_verify_token) so verifying an
+    email can never be confused with, or substituted for, resetting a password."""
+    token = secrets.token_urlsafe(32)
+    user.email_verify_token = token
+    user.email_verify_token_expiry = datetime.utcnow() + timedelta(hours=EMAIL_VERIFY_TOKEN_HOURS)
+    db.session.commit()
+
+    verify_link = f"{request.host_url}verify-email?token={token}"
+    html_content = f"""
+    <div style="font-family: Inter, sans-serif; max-width: 600px; margin: 0 auto; background: #161b22; color: #f0f3f8; padding: 40px 24px; border-radius: 20px;">
+      <h1 style="color: #00d1ff; margin-bottom: 16px;">Confirm your email</h1>
+      <p style="color: #b9c3d1; line-height: 1.6; margin-bottom: 24px;">
+        Welcome to Nelavista! Confirm this is really your email address to finish setting up your account.
+      </p>
+      <a href="{verify_link}" style="display: inline-block; padding: 14px 32px; background: linear-gradient(135deg, #00d1ff, #007bff); color: white; text-decoration: none; border-radius: 12px; font-weight: 600;">
+        Confirm Email →
+      </a>
+      <p style="color: #b9c3d1; font-size: 0.9rem; margin-top: 32px; line-height: 1.6;">
+        This link will expire in {EMAIL_VERIFY_TOKEN_HOURS} hours. If you didn't create a Nelavista account, you can safely ignore this email.
+      </p>
+      <p style="color: #6b7280; font-size: 0.85rem; margin-top: 24px; border-top: 1px solid #30363d; padding-top: 24px;">
+        Or copy this link: <span style="color: #00d1ff;">{verify_link}</span>
+      </p>
+    </div>
+    """
+    msg = Message(
+        subject="Confirm your Nelavista email",
+        recipients=[user.email],
+        html=html_content,
+        sender=current_app.config.get('MAIL_DEFAULT_SENDER', 'noreply@nelavista.com')
+    )
+    mail.send(msg)
+
+
 def send_password_reset_email(user_email, reset_link):
     """Send a password reset email with a beautiful HTML template."""
     html_content = f"""
@@ -40,6 +81,7 @@ def send_password_reset_email(user_email, reset_link):
 
 # ---------- Existing Routes ----------
 @auth_bp.route('/signup', methods=['GET', 'POST'])
+@limiter.limit('10 per hour')
 def signup():
     if request.method == 'POST':
         username = request.form.get('username', '').strip()
@@ -75,7 +117,17 @@ def signup():
             'is_admin': user.is_admin,
             'preferred_path': user.preferred_path
         }
-        flash('Account created successfully!')
+
+        # Best-effort: a failed verification email must never block account creation or
+        # login (the account and session above are already committed) -- the student can
+        # always resend it later from the dashboard reminder (see resend_verification_email).
+        try:
+            send_verification_email(user)
+            flash('Account created! Check your email to confirm your address.')
+        except Exception as e:
+            logger.error(f"Failed to send verification email to new signup: {e}")
+            flash('Account created successfully!')
+
         # Brand-new account: always send through path selection, never straight into
         # Academia. Returning users skip this — see login() below.
         return redirect(url_for('dashboard.choose_path'))
@@ -83,6 +135,7 @@ def signup():
 
 
 @auth_bp.route('/login', methods=['GET', 'POST'])
+@limiter.limit('15 per 5 minutes')
 def login():
     if request.method == 'POST':
         login_input = request.form.get('username_or_email', '').strip()
@@ -125,8 +178,54 @@ def logout():
     return redirect(url_for('auth.login'))
 
 
+# ---------- Email Verification Routes ----------
+@auth_bp.route('/verify-email')
+def verify_email():
+    token = request.args.get('token')
+    if not token:
+        flash('Verification link is invalid.', 'error')
+        return redirect(url_for('dashboard.dashboard') if 'user' in session else url_for('auth.login'))
+
+    user = User.query.filter_by(email_verify_token=token).first()
+    if not user or not user.email_verify_token_expiry or user.email_verify_token_expiry < datetime.utcnow():
+        flash('That verification link is invalid or has expired. Request a new one below.', 'error')
+        return redirect(url_for('dashboard.dashboard') if 'user' in session else url_for('auth.login'))
+
+    user.email_verified = True
+    user.email_verify_token = None
+    user.email_verify_token_expiry = None
+    db.session.commit()
+    flash('Email confirmed — thanks!', 'success')
+    return redirect(url_for('dashboard.dashboard') if 'user' in session else url_for('auth.login'))
+
+
+@auth_bp.route('/verify-email/resend', methods=['POST'])
+@limiter.limit('3 per hour')
+def resend_verification_email():
+    """Login-required (operates only on the current session's own account) rather than
+    taking an email address as input -- sidesteps any 'does this email exist' enumeration
+    entirely, since there's nothing to guess: it always targets whoever is already logged
+    in."""
+    if 'user' not in session:
+        return redirect(url_for('auth.login'))
+    user = User.query.filter_by(username=session['user']['username']).first()
+    if not user:
+        return redirect(url_for('auth.login'))
+    if user.email_verified:
+        flash('Your email is already confirmed.', 'success')
+        return redirect(request.referrer or url_for('dashboard.dashboard'))
+    try:
+        send_verification_email(user)
+        flash('Verification email sent — check your inbox.', 'success')
+    except Exception as e:
+        logger.error(f"Failed to resend verification email: {e}")
+        flash('Could not send the email right now — please try again shortly.', 'error')
+    return redirect(request.referrer or url_for('dashboard.dashboard'))
+
+
 # ---------- New Password Reset Routes ----------
 @auth_bp.route('/forgot-password', methods=['GET', 'POST'])
+@limiter.limit('5 per hour')
 def forgot_password():
     if request.method == 'POST':
         email = request.form.get('email', '').strip().lower()
@@ -161,6 +260,7 @@ def forgot_password():
 
 
 @auth_bp.route('/reset-password', methods=['GET', 'POST'])
+@limiter.limit('10 per hour')
 def reset_password():
     token = request.args.get('token')
     if not token:

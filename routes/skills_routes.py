@@ -8,7 +8,7 @@ from models import (
     CareerTrack, CareerTrackStep, Assignment, AssignmentSubmission, StudentPrivacySettings,
     CohortEnrollment,
 )
-from extensions import db
+from extensions import db, limiter
 from services.skills_service import (
     get_dashboard_data, get_path_step_states, get_course_progress, mark_lesson_complete,
     touch_skill_activity, match_skill_from_text, ONBOARDING_SKIPPED,
@@ -266,6 +266,13 @@ def catalog():
             'projects_count': skill.project_templates.filter_by(is_published=True).count(),
             'students_count': StudentSkill.query.filter_by(skill_id=skill.id).count(),
             'opportunities_count': Opportunity.query.filter_by(skill_id=skill.id, is_published=True).count(),
+            # A published Skill with zero published courses has no actual learning
+            # content behind it yet (see seed_skills.py's own comment: some skills are
+            # published early "so the catalog shows real breadth from day one"). The
+            # catalog card must say so honestly ("Coming Soon") instead of looking
+            # identical to a fully-built path — same "no fake empty exam" principle as
+            # CBT.html.
+            'has_content': skill.courses.filter_by(is_published=True).count() > 0,
         })
 
     return render_template('skills_catalog.html', categories=categories, rows=rows,
@@ -621,6 +628,7 @@ def day_view(skill_slug, course_slug, day_number):
 
 @skills_bp.route('/skills/assignment/<int:assignment_id>/submit', methods=['POST'])
 @login_required
+@limiter.limit('20 per hour')
 def submit_assignment(assignment_id):
     assignment = Assignment.query.get_or_404(assignment_id)
     lesson = assignment.lesson
@@ -666,6 +674,7 @@ def submit_assignment(assignment_id):
 # ===== PRACTICE / CHALLENGES =====
 @skills_bp.route('/skills/<skill_slug>/challenge/<challenge_slug>', methods=['GET', 'POST'])
 @login_required
+@limiter.limit('20 per hour', methods=['POST'])
 def challenge_view(skill_slug, challenge_slug):
     skill = Skill.query.filter_by(slug=skill_slug, is_published=True).first_or_404()
     challenge = Challenge.query.filter_by(skill_id=skill.id, slug=challenge_slug, is_published=True).first_or_404()
@@ -765,6 +774,7 @@ def project_detail(project_id):
 
 @skills_bp.route('/skills/projects/<int:project_id>/update', methods=['POST'])
 @login_required
+@limiter.limit('60 per hour')
 def update_project(project_id):
     user = _current_user()
     project = StudentProject.query.filter_by(id=project_id, student_id=user.id).first_or_404()
@@ -1191,6 +1201,7 @@ def toggle_milestone(milestone_id):
 
 @skills_bp.route('/skills/projects/<int:project_id>/request-review', methods=['POST'])
 @login_required
+@limiter.limit('15 per hour')
 def request_project_review(project_id):
     user = _current_user()
     project = StudentProject.query.filter_by(id=project_id, student_id=user.id).first_or_404()

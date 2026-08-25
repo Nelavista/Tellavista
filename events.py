@@ -1,7 +1,7 @@
-from flask import request
+from flask import request, session
 from flask_socketio import emit, join_room, leave_room
 from extensions import socketio, db
-from models import Room
+from models import Room, User
 from services.meeting_service import (
     rooms, participants, room_authority,
     get_or_create_room, get_room_authority, get_participants_list,
@@ -11,6 +11,17 @@ from utils.helpers import debug_print
 from datetime import datetime
 
 MAX_CHAT_LEN = 500
+
+
+def _current_user():
+    """Resolves the real logged-in user from the Flask session tied to this socket's
+    connection cookie -- same pattern as community_events.py's _current_user_id(). Never
+    trust a client-supplied username/role field for anything privileged; this is the only
+    source of truth for 'who is this socket.'"""
+    username = session.get('user', {}).get('username')
+    if not username:
+        return None
+    return User.query.filter_by(username=username).first()
 
 
 @socketio.on('connect')
@@ -51,10 +62,30 @@ def handle_join_room(data):
         sid = request.sid
         room_id = data.get('room')
         role = data.get('role', 'student')
-        username = data.get('username', 'Teacher' if role == 'teacher' else f'Student_{sid[:6]}')
         if not room_id:
             emit('error', {'message': 'Room ID required'})
             return
+
+        # Student join stays open to guests-by-link, same as before (the /student/<id>
+        # HTTP route deliberately has no login requirement -- a shareable class link is
+        # the intended access model there). Only the 'teacher' role is privileged, so
+        # only it is gated below -- claiming it now requires BOTH a real logged-in
+        # Nelavista session (previously: none at all) AND that this specific user is the
+        # room's registered owner (Room.teacher_user_id, set once via the /teacher/
+        # <room_id> HTTP route in routes/live_meeting_routes.py -- previously: nothing
+        # checked this, so any anonymous socket claiming role:'teacher' for any room_id
+        # was simply believed).
+        current_user = _current_user()
+        if role == 'teacher':
+            if not current_user:
+                emit('error', {'message': 'You must be logged in to host a class.'})
+                return
+            room_db = Room.query.get(room_id)
+            if not room_db or room_db.teacher_user_id != current_user.id:
+                emit('error', {'message': 'You are not authorized to host this room.'})
+                return
+
+        username = (current_user.name or current_user.username) if current_user else data.get('username', f'Student_{sid[:6]}')
         debug_print(f"👤 {username} ({role}) joining room: {room_id}")
         room = get_or_create_room(room_id)
         get_room_authority(room_id)
@@ -64,19 +95,15 @@ def handle_join_room(data):
         room['participants'][sid] = {'username': username, 'role': role, 'joined_at': datetime.utcnow().isoformat()}
         if role == 'teacher':
             room['teacher_sid'] = sid
-            existing_room = Room.query.get(room_id)
-            if not existing_room:
-                room_db = Room(id=room_id, teacher_id=sid, teacher_name=username, is_active=True)
-                db.session.add(room_db)
-            else:
-                existing_room.teacher_id = sid
-                existing_room.teacher_name = username
-                existing_room.is_active = True
-                # A reconnect (dropped wifi, refreshed tab) also drops the teacher's Agora
-                # publish, so the stream itself actually stopped even though the DB still
-                # says is_live — the frontend uses this to prompt "click Go Live to resume"
-                # rather than falsely claiming the video is still playing for everyone.
-                room['is_live'] = existing_room.is_live
+            existing_room = Room.query.get(room_id)  # already confirmed to exist and be owned by current_user above
+            existing_room.teacher_id = sid
+            existing_room.teacher_name = username
+            existing_room.is_active = True
+            # A reconnect (dropped wifi, refreshed tab) also drops the teacher's Agora
+            # publish, so the stream itself actually stopped even though the DB still
+            # says is_live — the frontend uses this to prompt "click Go Live to resume"
+            # rather than falsely claiming the video is still playing for everyone.
+            room['is_live'] = existing_room.is_live
             db.session.commit()
             for p_sid in room['participants']:
                 if room['participants'][p_sid]['role'] == 'student':

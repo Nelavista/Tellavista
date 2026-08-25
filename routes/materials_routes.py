@@ -3,11 +3,9 @@ import time
 from datetime import datetime
 import cloudinary
 import cloudinary.uploader
-import requests
-from bs4 import BeautifulSoup
 from flask import (Blueprint, render_template, request, jsonify, session,
                    flash, redirect, url_for)
-from utils.helpers import login_required, admin_required, is_academic_book, check_profile_complete
+from utils.helpers import login_required, admin_required, check_profile_complete
 from models import User, Material
 from extensions import db
 from config import OPENROUTER_API_KEY
@@ -52,7 +50,13 @@ def enforce_profile_completion():
     # missed the way dashboard.choose_path was the first time this hook was extended.
     # Employer accounts have no Academia profile at all (they never see the student
     # signup form), so they're exempt entirely — this check just doesn't apply to them.
-    exempt_prefixes = ('skills.', 'admin_skills.', 'employer.')
+    # cbt.* is exempt too: CBT.html/routes/cbt_routes.py already handle an incomplete
+    # profile gracefully on their own (checking department/level specifically, showing an
+    # inline "complete your profile" warning) -- without this exemption, a student with
+    # a not-fully-complete Academia profile hitting a JSON endpoint like
+    # /api/cbt/start mid-exam would silently get this hook's HTML redirect back instead
+    # of JSON, breaking the fetch() call with no visible error.
+    exempt_prefixes = ('skills.', 'admin_skills.', 'employer.', 'cbt.')
 
     if request.endpoint in exempt_endpoints:
         return None
@@ -276,13 +280,16 @@ def fetch_materials():
                 query = query.filter_by(level=current_user.level)
 
         # University scoping: Material.university=NULL means universal (shown to
-        # everyone). A student who has explicitly set a university OTHER than
-        # Lagos State University shouldn't see LASU-specific past-questions/course
-        # numbering tagged for a different school. Students with no university set
-        # (the majority, historically LASU's own userbase before this field
-        # existed) keep seeing everything, same as before this feature existed --
-        # only an explicit "I'm at a different school" hides the mismatched content.
-        if current_user.university and current_user.university != 'Lagos State University':
+        # everyone). A student who has explicitly set a university shouldn't see
+        # another school's university-specific past-questions/course numbering --
+        # applied uniformly for every school, LASU included (a prior version of this
+        # filter special-cased LASU out of it entirely, which meant a LASU student
+        # could see materials tagged for a different university; that exception is
+        # removed). Students with no university set at all (the majority,
+        # historically the userbase before this field existed) keep seeing
+        # everything, same as before this feature existed -- only an explicit "I'm
+        # at this school" narrows what's shown.
+        if current_user.university:
             query = query.filter(
                 (Material.university.is_(None)) | (Material.university == current_user.university)
             )
@@ -416,99 +423,9 @@ def delete_material_api(material_id):
         return jsonify({'error': str(e)}), 500
 
 
-@materials_bp.route('/api/materials')
-def get_study_materials():
-    query = request.args.get("q", "python")
-    pdfs = []
-    try:
-        pdf_html = requests.get(
-            f"https://www.pdfdrive.com/search?q={query}",
-            headers={"User-Agent": "Mozilla/5.0"}, timeout=10).text
-        soup = BeautifulSoup(pdf_html, 'html.parser')
-        for book in soup.select('.file-left')[:5]:
-            title = book.select_one('img')['alt']
-            link = "https://www.pdfdrive.com" + book.parent['href']
-            pdfs.append({'title': title, 'link': link})
-    except Exception as e:
-        pdfs = [{"error": str(e)}]
-    books = []
-    try:
-        ol_data = requests.get(
-            f"https://openlibrary.org/search.json?q={query}", timeout=10).json()
-        for doc in ol_data.get("docs", [])[:5]:
-            books.append({
-                "title": doc.get("title"),
-                "author": ', '.join(doc.get("author_name", [])) if doc.get("author_name") else "Unknown",
-                "link": f"https://openlibrary.org{doc.get('key')}"
-            })
-    except Exception as e:
-        books = [{"error": str(e)}]
-    return jsonify({"query": query, "pdfs": pdfs, "books": books})
-
-
-@materials_bp.route('/ai/materials')
-def ai_materials():
-    topic      = request.args.get("topic")
-    level      = request.args.get("level")
-    department = request.args.get("department")
-    goal       = request.args.get("goal", "general")
-    if not topic or not level or not department:
-        return jsonify({"error": "Missing one or more parameters: topic, level, department"}), 400
-    prompt = (
-        f"You're an educational AI helping a {level} student in the {department} department. "
-        f"They want to learn: '{goal}' in the topic of {topic}. "
-        f"Provide a short and clear explanation. End with: '📚 Here are materials to study further:'"
-    )
-    explanation = ""
-    try:
-        headers = {
-            "Authorization": f"Bearer {OPENROUTER_API_KEY}",
-            "Content-Type": "application/json",
-            "HTTP-Referer": "https://nelavista.com",
-            "X-Title": "Nelavista AI Tutor"
-        }
-        payload = {
-            "model": "openai/gpt-4o-mini",
-            "messages": [
-                {"role": "system", "content": "You are an educational AI assistant."},
-                {"role": "user", "content": prompt}
-            ],
-            "temperature": 0.7, "max_tokens": 500
-        }
-        response = requests.post(
-            "https://openrouter.ai/api/v1/chat/completions",
-            headers=headers, json=payload, timeout=30)
-        if response.status_code == 200:
-            explanation = response.json()["choices"][0]["message"]["content"]
-        else:
-            explanation = f"Let me help you learn {topic}. 📚 Here are materials to study further:"
-    except Exception:
-        explanation = f"Let me help you learn {topic}. 📚 Here are materials to study further:"
-    pdfs = []
-    try:
-        pdf_html = requests.get(
-            f"https://www.pdfdrive.com/search?q={topic}",
-            headers={"User-Agent": "Mozilla/5.0"}, timeout=10).text
-        soup = BeautifulSoup(pdf_html, 'html.parser')
-        for book in soup.select('.file-left')[:10]:
-            title = book.select_one('img')['alt']
-            if is_academic_book(title, topic, department):
-                link = "https://www.pdfdrive.com" + book.parent['href']
-                pdfs.append({'title': title, 'link': link})
-    except Exception:
-        pdfs = [{"error": "Failed to fetch PDFs"}]
-    books = []
-    try:
-        ol_data = requests.get(
-            f"https://openlibrary.org/search.json?q={topic}", timeout=10).json()
-        for doc in ol_data.get("docs", [])[:10]:
-            title = doc.get("title", "")
-            if is_academic_book(title, topic, department):
-                books.append({
-                    "title": doc.get("title"),
-                    "author": ', '.join(doc.get("author_name", [])) if doc.get("author_name") else "Unknown",
-                    "link": f"https://openlibrary.org{doc.get('key')}"
-                })
-    except Exception:
-        books = [{"error": "Failed to fetch books"}]
-    return jsonify({"query": topic, "ai_explanation": explanation, "pdfs": pdfs, "books": books})
+# Removed (Level 1 cleanup pass): /api/materials and /ai/materials were unauthenticated
+# routes that scraped pdfdrive.com/openlibrary.org live on every request -- confirmed
+# unreferenced by any template or static JS file, and not part of the live materials
+# flow (which is /api/fetch-materials above, scoped to the student's own department/
+# level/university and backed by the real Material table). Pure unscoped, unauthenticated
+# attack surface with no user-facing value.

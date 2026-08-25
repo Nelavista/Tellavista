@@ -1,15 +1,30 @@
+import random
+import re
 import traceback
 from datetime import datetime
 from flask import Blueprint, render_template, request, session, redirect, url_for, flash, jsonify
 from utils.helpers import login_required, debug_print
-from models import User, CBTAttempt, CBTAnswer
-from extensions import db
+from models import User, CBTQuestion, CBTAttempt, CBTAnswer
+from extensions import db, limiter
 from config import OPENROUTER_API_KEY
 from services.academic_context import resolve_academic_context, find_course
 from services.progress_service import get_cbt_summary
 import requests
 
 cbt_bp = Blueprint('cbt', __name__)
+
+# Matches CBT.html's own subject-prefix extraction (course.match(/[A-Z]+/)) -- the
+# leading letters of a course code, e.g. "MAT101" -> "MAT". Kept in exact sync so a
+# course that resolves to a question bank client-side resolves to the same bank here.
+_SUBJECT_PREFIX_RE = re.compile(r'[A-Za-z]+')
+
+MAX_CBT_QUESTIONS = 50
+MAX_WRITTEN_QUESTIONS = 10
+
+
+def _subject_code_for(course_code):
+    m = _SUBJECT_PREFIX_RE.match(course_code or '')
+    return m.group(0).upper() if m else None
 
 
 @cbt_bp.route('/CBT', methods=['GET'])
@@ -38,14 +53,59 @@ def CBT():
     )
 
 
-@cbt_bp.route('/CBT/submit', methods=['POST'])
+@cbt_bp.route('/api/cbt/counts')
 @login_required
-def submit_cbt_attempt():
-    """Persists one completed exam's score/answers. The client (CBT.html's
-    submitExam()) already has everything it needs to score itself for the results
-    screen the student sees immediately -- this just saves a copy of that so it's
-    not lost the moment the tab closes. Called fire-and-forget from the client; a
-    failure here must never block or alter the results the student already sees."""
+def cbt_counts():
+    """How many CBT/written questions exist for one course -- used by the exam-type
+    screen to show real counts and honestly disable a card with no content, without ever
+    shipping the questions (or answers) themselves before the student actually starts."""
+    course_code = (request.args.get('course_code') or '').strip().upper()
+    subject_code = _subject_code_for(course_code)
+    if not subject_code:
+        return jsonify({'success': True, 'cbt_count': 0, 'written_count': 0})
+    cbt_count = CBTQuestion.query.filter_by(subject_code=subject_code, question_type='cbt', is_active=True).count()
+    written_count = CBTQuestion.query.filter_by(subject_code=subject_code, question_type='written', is_active=True).count()
+    return jsonify({'success': True, 'cbt_count': min(cbt_count, MAX_CBT_QUESTIONS),
+                     'written_count': min(written_count, MAX_WRITTEN_QUESTIONS)})
+
+
+@cbt_bp.route('/api/cbt/mark-scheme')
+@login_required
+def cbt_mark_scheme():
+    """Reveals one written question's mark scheme mid-attempt -- the 'Check Answer' study
+    aid in the exam UI. Written questions were never auto-scored (the student self-marks
+    honestly or not, same as before this change), so there's no score-forging risk here
+    the way there was for CBT correct_index; this endpoint still scopes to a real,
+    in-progress attempt the student owns so it can't be used to scrape the whole written
+    bank's mark schemes without ever starting a practice attempt."""
+    try:
+        attempt_id = int(request.args.get('attempt_id'))
+        question_id = int(request.args.get('question_id'))
+    except (TypeError, ValueError):
+        return jsonify({'success': False, 'error': 'Invalid attempt_id/question_id'}), 400
+
+    username = session['user']['username']
+    user = User.query.filter_by(username=username).first()
+    attempt = CBTAttempt.query.filter_by(id=attempt_id, user_id=user.id).first()
+    if not attempt or question_id not in attempt.issued_question_ids:
+        return jsonify({'success': False, 'error': 'Not found'}), 404
+
+    question = CBTQuestion.query.get(question_id)
+    return jsonify({'success': True, 'mark_scheme': (question.mark_scheme if question else None) or 'Mark scheme not available.'})
+
+
+@cbt_bp.route('/api/cbt/start', methods=['POST'])
+@login_required
+@limiter.limit('30 per hour')
+def start_cbt_attempt():
+    """Issues a fresh set of questions for one course/type WITHOUT correct answers --
+    the server picks and shuffles the questions from CBTQuestion (never the client), and
+    snapshots exactly which question ids were issued onto the new CBTAttempt row
+    (issued_question_ids) so /CBT/submit/<id> can later verify every submitted answer
+    belongs to a question that was actually handed out for this specific attempt, and
+    can never be substituted, duplicated, or invented by the client. Mirrors CBT.html's
+    own course-code -> subject-prefix mapping exactly (see _subject_code_for above) so
+    the same course always resolves to the same bank."""
     data = request.get_json(silent=True) or {}
     username = session['user']['username']
     user = User.query.filter_by(username=username).first()
@@ -54,35 +114,133 @@ def submit_cbt_attempt():
 
     course_code = (data.get('course_code') or '').strip().upper()
     question_type = data.get('question_type')
-    questions = data.get('questions') or []
-    if not course_code or question_type not in ('cbt', 'written') or not questions:
-        return jsonify({'success': False, 'error': 'Missing/invalid attempt data'}), 400
+    if not course_code or question_type not in ('cbt', 'written'):
+        return jsonify({'success': False, 'error': 'Missing/invalid course_code or question_type'}), 400
 
-    if question_type == 'cbt':
-        correct = sum(1 for q in questions if q.get('selected_index') == q.get('correct_index'))
-    else:
-        correct = 0  # written answers are self-marked client-side only, never auto-scored here
-    total = len(questions)
+    subject_code = _subject_code_for(course_code)
+    bank = CBTQuestion.query.filter_by(
+        subject_code=subject_code, question_type=question_type, is_active=True
+    ).all() if subject_code else []
+
+    if not bank:
+        return jsonify({'success': False, 'error': 'no_questions',
+                         'message': f'No {question_type} questions available for {course_code} yet.'}), 200
+
+    limit = MAX_CBT_QUESTIONS if question_type == 'cbt' else MAX_WRITTEN_QUESTIONS
+    selected = random.sample(bank, min(limit, len(bank)))
 
     attempt = CBTAttempt(
         user_id=user.id, course_code=course_code, question_type=question_type,
-        total_questions=total, correct_count=correct,
-        score_pct=round(correct / total * 100) if total and question_type == 'cbt' else 0,
-        duration_seconds=data.get('duration_seconds'), submitted_at=datetime.utcnow(),
+        total_questions=len(selected), correct_count=0, score_pct=0,
+        started_at=datetime.utcnow(),
     )
+    attempt.issued_question_ids = [q.id for q in selected]
     db.session.add(attempt)
-    db.session.flush()
-
-    for q in questions:
-        db.session.add(CBTAnswer(
-            attempt_id=attempt.id,
-            question_text=q.get('question_text', ''),
-            selected_index=q.get('selected_index'),
-            written_answer=q.get('written_answer'),
-            is_correct=(q.get('selected_index') == q.get('correct_index')) if question_type == 'cbt' else None,
-        ))
     db.session.commit()
-    return jsonify({'success': True, 'attempt_id': attempt.id})
+
+    return jsonify({
+        'success': True,
+        'attempt_id': attempt.id,
+        'course_code': course_code,
+        'question_type': question_type,
+        # include_answer defaults to False -- correct_index/explanation/mark_scheme are
+        # never sent here, only after the student submits (see /CBT/submit/<id> below).
+        'questions': [q.to_dict() for q in selected],
+    })
+
+
+@cbt_bp.route('/CBT/submit/<int:attempt_id>', methods=['POST'])
+@login_required
+@limiter.limit('60 per hour')
+def submit_cbt_attempt(attempt_id):
+    """Grades one attempt server-side and persists the authoritative result. The client
+    sends only {answers: {question_id: selected_index_or_written_text}, duration_seconds}
+    -- never a correct_index or a score. Every question actually graded/counted comes
+    from attempt.issued_question_ids (set at /api/cbt/start time), not from whatever ids
+    the client happens to submit, so a request can't invent extra questions, replay a
+    different attempt's questions, or submit the same question twice to inflate a score.
+    Rejects a second submission against an already-graded attempt outright."""
+    username = session['user']['username']
+    user = User.query.filter_by(username=username).first()
+    if not user:
+        return jsonify({'success': False, 'error': 'User not found'}), 401
+
+    attempt = CBTAttempt.query.filter_by(id=attempt_id, user_id=user.id).first()
+    if not attempt:
+        return jsonify({'success': False, 'error': 'Attempt not found'}), 404
+    if attempt.submitted_at is not None:
+        return jsonify({'success': False, 'error': 'This attempt was already submitted'}), 409
+
+    issued_ids = attempt.issued_question_ids
+    if not issued_ids:
+        # Only possible for attempts created before this endpoint existed -- nothing to
+        # grade against; refuse rather than guess.
+        return jsonify({'success': False, 'error': 'This attempt has no issued questions to grade'}), 400
+
+    data = request.get_json(silent=True) or {}
+    raw_answers = data.get('answers') or {}
+    # Client keys are strings (JSON object keys always are) -- normalize to int and drop
+    # anything not in issued_ids so a submitted id that was never issued to THIS attempt
+    # (a different attempt's question, or a made-up id) is silently ignored, not graded.
+    answers_by_id = {}
+    for k, v in raw_answers.items():
+        try:
+            qid = int(k)
+        except (TypeError, ValueError):
+            continue
+        if qid in issued_ids:
+            answers_by_id[qid] = v
+
+    questions = {q.id: q for q in CBTQuestion.query.filter(CBTQuestion.id.in_(issued_ids)).all()}
+
+    correct_count = 0
+    results = []
+    for qid in issued_ids:  # iterate the server's issued order, not the client's payload
+        question = questions.get(qid)
+        if not question:
+            continue  # question was deleted/deactivated between issue and submit
+        answer_value = answers_by_id.get(qid)
+        is_correct = None
+        selected_index, written_answer = None, None
+
+        if attempt.question_type == 'cbt':
+            try:
+                selected_index = int(answer_value) if answer_value is not None else None
+            except (TypeError, ValueError):
+                selected_index = None
+            is_correct = (selected_index is not None and selected_index == question.correct_index)
+            if is_correct:
+                correct_count += 1
+        else:
+            written_answer = str(answer_value) if answer_value is not None else None
+            # Written answers stay self-marked (never auto-scored) -- unchanged from
+            # before; is_correct stays None, correct_count/score_pct stay 0 for these.
+
+        db.session.add(CBTAnswer(
+            attempt_id=attempt.id, question_id=question.id, question_text=question.question_text,
+            selected_index=selected_index, written_answer=written_answer, is_correct=is_correct,
+        ))
+        results.append({
+            'question_id': question.id, 'question_text': question.question_text,
+            'options': question.options, 'selected_index': selected_index,
+            'written_answer': written_answer, 'correct_index': question.correct_index,
+            'is_correct': is_correct, 'explanation': question.explanation,
+            'mark_scheme': question.mark_scheme,
+        })
+
+    total = len(issued_ids)
+    attempt.correct_count = correct_count
+    attempt.score_pct = round(correct_count / total * 100) if total and attempt.question_type == 'cbt' else 0
+    attempt.duration_seconds = data.get('duration_seconds')
+    attempt.submitted_at = datetime.utcnow()
+    db.session.commit()
+
+    return jsonify({
+        'success': True, 'attempt_id': attempt.id, 'course_code': attempt.course_code,
+        'question_type': attempt.question_type, 'total_questions': total,
+        'correct_count': correct_count, 'score_pct': attempt.score_pct,
+        'duration_seconds': attempt.duration_seconds, 'results': results,
+    })
 
 
 @cbt_bp.route('/CBT/history')
@@ -127,6 +285,7 @@ def cbt_summary():
 
 @cbt_bp.route('/CBT/attempts/<int:attempt_id>/explain/<int:answer_id>', methods=['POST'])
 @login_required
+@limiter.limit('30 per hour')
 def explain_cbt_answer(attempt_id, answer_id):
     """Closes the CBT learning loop: 'why was I wrong?' answered by the AI using only
     the exact question/answer/mark-scheme already captured on this attempt -- no

@@ -35,6 +35,14 @@ DEPARTMENT_TO_SLUG = {
     'Chemistry': 'chemistry',
     'Physics': 'physics',
     'Biology': 'biology',
+    # 'entrepreneurship' itself 403s on OTL (dead subject page) -- Management is the
+    # closest real subject with actually-relevant content (Principles of Management,
+    # Strategic Management, etc.), verified live.
+    'Entrepreneurship': 'management',
+    # Distinct from Computer Science's combined slug -- verified live, returns
+    # genuinely IT-relevant titles (systems analysis, geographic information
+    # systems, etc.), not just re-used CS textbooks.
+    'Information Technology': 'information-systems',
 }
 
 FORMAT_PRIORITY = ['PDF', 'Online', 'eBook', 'XML', 'ODF', 'Print']

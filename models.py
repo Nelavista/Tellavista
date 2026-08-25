@@ -18,6 +18,13 @@ class User(db.Model):
     semester = db.Column(db.String(20))
     reset_token = db.Column(db.String(200), nullable=True)
     reset_token_expiry = db.Column(db.DateTime, nullable=True)
+    # Email identity verification -- separate token/flow from password reset above.
+    # email_verified defaults False for new signups (see routes/auth_routes.py); existing
+    # rows created before this column existed are backfilled True by the migration so
+    # accounts that already logged in successfully aren't suddenly locked out.
+    email_verified = db.Column(db.Boolean, nullable=False, default=False)
+    email_verify_token = db.Column(db.String(200), nullable=True)
+    email_verify_token_expiry = db.Column(db.DateTime, nullable=True)
     is_admin = db.Column(db.Boolean, nullable=False, default=False)
     # Which top-level experience the user starts in: 'academia' or 'tech_skills'.
     # NULL means "never chosen" — legacy accounts default to Academia at login time
@@ -77,7 +84,15 @@ class UserProfile(db.Model):
 
 class Room(db.Model):
     id = db.Column(db.String(32), primary_key=True)
+    # NOTE: teacher_id stores the current live Socket.IO session id (sid), not a user id
+    # -- it's ephemeral, overwritten on every (re)connect. teacher_user_id below is the
+    # real, stable owner: the logged-in User.id who first claimed this room via the
+    # /teacher/<room_id> HTTP route (see routes/live_meeting_routes.py), set once and
+    # never silently reassigned. events.py's join-room handler checks the latter before
+    # ever letting a socket claim the 'teacher' role for this room -- teacher_id/sid
+    # alone was previously trusted from the client with no ownership check at all.
     teacher_id = db.Column(db.String(120))
+    teacher_user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
     teacher_name = db.Column(db.String(80))
     is_active = db.Column(db.Boolean, default=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
@@ -169,6 +184,24 @@ class Material(db.Model):
     extracted_text = db.Column(db.Text, nullable=True)
     extracted_at = db.Column(db.DateTime, nullable=True)
 
+    @property
+    def resolved_url(self):
+        """The actual URL to open/download this material from. Cloudinary uploads and
+        auto-ingested external URLs are already absolute (https://...) and pass through
+        unchanged. Some older seed-script rows stored a bare relative path with no
+        leading slash (e.g. "static/materials/x.pdf") -- normalized here to a real
+        root-relative path so the same material link resolves identically from every
+        page it's rendered on (materials library, course page, search results), instead
+        of only working from whichever page's URL happened to have a matching relative
+        base. Use this (not the raw file_url column) everywhere a material link is
+        rendered -- see to_dict() below and templates/course_detail.html."""
+        url = self.file_url
+        if not url:
+            return None
+        if url.startswith(('http://', 'https://', '//')):
+            return url
+        return '/' + url.lstrip('/')
+
     def to_dict(self):
         return {
             'id': self.id,
@@ -181,7 +214,7 @@ class Material(db.Model):
             'author': self.author,
             'description': self.description,
             'license': self.license or 'Student Upload',
-            'file_url': self.file_url,
+            'file_url': self.resolved_url,
             'external_url': self.external_url,
             'source': self.source or 'uploaded',
             'course_type': self.course_type,
@@ -973,7 +1006,7 @@ class StudentSkill(db.Model):
     __tablename__ = 'student_skills'
 
     id = db.Column(db.Integer, primary_key=True)
-    student_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    student_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False, index=True)
     skill_id = db.Column(db.Integer, db.ForeignKey('skills.id'), nullable=False)
     status = db.Column(db.String(20), default='in_progress')  # in_progress | completed
     progress_pct = db.Column(db.Integer, default=0)
@@ -1000,7 +1033,7 @@ class StudentLessonProgress(db.Model):
     __tablename__ = 'student_lesson_progress'
 
     id = db.Column(db.Integer, primary_key=True)
-    student_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    student_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False, index=True)
     lesson_id = db.Column(db.Integer, db.ForeignKey('lessons.id'), nullable=False)
     completed_at = db.Column(db.DateTime, default=datetime.utcnow)
 
@@ -1267,7 +1300,7 @@ class CohortEnrollment(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     cohort_id = db.Column(db.Integer, db.ForeignKey('cohorts.id'), nullable=False)
-    student_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    student_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False, index=True)
     enrolled_at = db.Column(db.DateTime, default=datetime.utcnow)
     current_day = db.Column(db.Integer, default=1)
     skill_gpa = db.Column(db.Float, nullable=True)
@@ -1496,7 +1529,7 @@ class CBTAttempt(db.Model):
     __tablename__ = 'cbt_attempts'
 
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False, index=True)
     course_code = db.Column(db.String(20), nullable=False, index=True)  # free string, not a
     # Course FK -- a student can practice a subject the taxonomy doesn't cover yet
     # (e.g. a non-seeded university); forcing a FK would break CBT for exactly those students
@@ -1507,9 +1540,25 @@ class CBTAttempt(db.Model):
     duration_seconds = db.Column(db.Integer)
     started_at = db.Column(db.DateTime, default=datetime.utcnow)
     submitted_at = db.Column(db.DateTime)
+    # Server-side snapshot of exactly which CBTQuestion ids were issued to this attempt
+    # at /api/cbt/start time -- the submit endpoint only grades questions that appear in
+    # this set, so a client can't substitute, duplicate, or invent question ids to
+    # manipulate its score. Null/empty for attempts created before this existed.
+    issued_question_ids_json = db.Column(db.Text, nullable=True)
 
     user = db.relationship('User', backref=db.backref('cbt_attempts', lazy='dynamic'))
     answers = db.relationship('CBTAnswer', backref='attempt', lazy='dynamic', cascade='all, delete-orphan')
+
+    @property
+    def issued_question_ids(self):
+        try:
+            return json.loads(self.issued_question_ids_json) if self.issued_question_ids_json else []
+        except (ValueError, TypeError):
+            return []
+
+    @issued_question_ids.setter
+    def issued_question_ids(self, value):
+        self.issued_question_ids_json = json.dumps(value or [])
 
     def to_dict(self):
         return {
@@ -1611,14 +1660,28 @@ class OpportunityApplication(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     opportunity_id = db.Column(db.Integer, db.ForeignKey('opportunities.id'), nullable=False)
-    student_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    status = db.Column(db.String(20), default='applied')  # applied | accepted | completed | paid | rejected
+    student_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False, index=True)
+    # applied | accepted | completed | paid | rejected | disputed | refunded | cancelled
+    # Additive to the original 5 -- disputed/refunded/cancelled exist so a real future
+    # payment system has somewhere to represent a clawback; nothing here activates real
+    # money movement (see PLATFORM_FEE_PCT / compute_payout_breakdown -- still display-only).
+    status = db.Column(db.String(20), default='applied')
     applied_at = db.Column(db.DateTime, default=datetime.utcnow)
     completed_at = db.Column(db.DateTime, nullable=True)
     paid_at = db.Column(db.DateTime, nullable=True)
     payout_amount = db.Column(db.Integer, nullable=True)  # set once paid; may differ from the listed amount
+    # Free-text reference for whatever actually moved the money (bank transfer ref,
+    # gateway transaction id, "cash - see receipt #123") -- optional because no payment
+    # gateway is wired up yet, but the field exists so 'paid' is never JUST a status flip
+    # once one is. Never fabricated/auto-generated.
+    payment_reference = db.Column(db.String(150), nullable=True)
+    paid_by_admin_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
+    dispute_reason = db.Column(db.Text, nullable=True)
+    disputed_at = db.Column(db.DateTime, nullable=True)
+    refunded_at = db.Column(db.DateTime, nullable=True)
 
-    student = db.relationship('User', backref='opportunity_applications')
+    student = db.relationship('User', foreign_keys=[student_id], backref='opportunity_applications')
+    paid_by_admin = db.relationship('User', foreign_keys=[paid_by_admin_id])
 
     __table_args__ = (db.UniqueConstraint('opportunity_id', 'student_id', name='uq_opportunity_student'),)
 
@@ -1629,6 +1692,37 @@ class OpportunityApplication(db.Model):
             'completed_at': self.completed_at.isoformat() if self.completed_at else None,
             'paid_at': self.paid_at.isoformat() if self.paid_at else None,
             'payout_amount': self.payout_amount,
+            'payment_reference': self.payment_reference,
+            'paid_by_admin': (self.paid_by_admin.name or self.paid_by_admin.username) if self.paid_by_admin else None,
+            'dispute_reason': self.dispute_reason,
+            'disputed_at': self.disputed_at.isoformat() if self.disputed_at else None,
+            'refunded_at': self.refunded_at.isoformat() if self.refunded_at else None,
+        }
+
+
+class OpportunityStatusEvent(db.Model):
+    """Audit trail for every OpportunityApplication status transition -- who changed it,
+    from what, to what, when, and any note. Additive/append-only; never edited or
+    deleted. Exists so 'paid' (or any other status) is never just an untraceable flag
+    flip -- see update_opportunity_application in routes/admin_skills_routes.py."""
+    __tablename__ = 'opportunity_status_events'
+
+    id = db.Column(db.Integer, primary_key=True)
+    application_id = db.Column(db.Integer, db.ForeignKey('opportunity_applications.id'), nullable=False)
+    actor_user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
+    from_status = db.Column(db.String(20), nullable=True)
+    to_status = db.Column(db.String(20), nullable=False)
+    note = db.Column(db.String(300), nullable=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    application = db.relationship('OpportunityApplication', backref=db.backref('status_events', lazy='dynamic', order_by='OpportunityStatusEvent.created_at'))
+    actor = db.relationship('User')
+
+    def to_dict(self):
+        return {
+            'id': self.id, 'from_status': self.from_status, 'to_status': self.to_status,
+            'note': self.note, 'actor': (self.actor.name or self.actor.username) if self.actor else None,
+            'created_at': self.created_at.isoformat() if self.created_at else None,
         }
 
 
@@ -1641,7 +1735,7 @@ class Rating(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     opportunity_application_id = db.Column(db.Integer, db.ForeignKey('opportunity_applications.id'), unique=True, nullable=False)
     employer_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    student_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    student_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False, index=True)
     stars = db.Column(db.Integer, nullable=False)  # 1-5
     comment = db.Column(db.String(500))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
@@ -1740,7 +1834,7 @@ class Notification(db.Model):
     __tablename__ = 'notifications'
 
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False, index=True)
     type = db.Column(db.String(40), nullable=False)  # e.g. verification | opportunity_match | application_update | message | competition
     title = db.Column(db.String(200), nullable=False)
     body = db.Column(db.String(400))
@@ -1766,8 +1860,8 @@ class MessageThread(db.Model):
     __tablename__ = 'message_threads'
 
     id = db.Column(db.Integer, primary_key=True)
-    employer_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    student_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    employer_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False, index=True)
+    student_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False, index=True)
     opportunity_application_id = db.Column(db.Integer, db.ForeignKey('opportunity_applications.id'), nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     last_message_at = db.Column(db.DateTime, default=datetime.utcnow)
@@ -1791,8 +1885,8 @@ class Message(db.Model):
     __tablename__ = 'messages'
 
     id = db.Column(db.Integer, primary_key=True)
-    thread_id = db.Column(db.Integer, db.ForeignKey('message_threads.id'), nullable=False)
-    sender_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    thread_id = db.Column(db.Integer, db.ForeignKey('message_threads.id'), nullable=False, index=True)
+    sender_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False, index=True)
     content = db.Column(db.Text, nullable=False)
     is_read = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
@@ -1804,3 +1898,42 @@ class Message(db.Model):
             'id': self.id, 'sender_id': self.sender_id, 'content': self.content,
             'is_read': self.is_read, 'created_at': self.created_at.isoformat() if self.created_at else None,
         }
+
+
+class AnalyzerSession(db.Model):
+    """Server-side storage for one AI PDF-Analyzer session's extracted content (text,
+    tables, image URLs, document analysis) -- replaces a JSON file previously written to
+    local disk under extracted_images/<session_id>/content.json. On Render's ephemeral
+    filesystem, that file (and therefore a student's analyzed notes) was silently lost on
+    every redeploy/restart; a database row survives exactly as long as everything else
+    does. Session-scoped, not permanent user content -- see cleanup note in
+    routes/ai_routes.py for how old rows are expected to be pruned."""
+    __tablename__ = 'analyzer_sessions'
+
+    id = db.Column(db.Integer, primary_key=True)
+    session_id = db.Column(db.String(36), unique=True, nullable=False, index=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
+    content_json = db.Column(db.Text, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+
+# ============================================================
+# ===== ADMIN AUDIT LOG =====
+# Append-only record of every admin-privilege change (grant or revoke) -- who did it, to
+# whom, and when. Written by both the CLI promotion flow (make_admin.py) and the
+# in-app toggle (routes/admin_routes.py), so there is exactly one place privilege
+# escalation can happen from and it is always logged, regardless of entry point.
+# ============================================================
+
+class AdminAuditLog(db.Model):
+    __tablename__ = 'admin_audit_log'
+
+    id = db.Column(db.Integer, primary_key=True)
+    target_user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    actor_user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)  # null = CLI script, no session actor
+    action = db.Column(db.String(30), nullable=False)  # 'grant_admin' | 'revoke_admin'
+    source = db.Column(db.String(30), nullable=False)  # 'cli' | 'web'
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    target_user = db.relationship('User', foreign_keys=[target_user_id])
+    actor_user = db.relationship('User', foreign_keys=[actor_user_id])

@@ -6,6 +6,7 @@ from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 from extensions import db
 from models import User
 from config import DATABASE_URL
+from logging_config import logger
 
 def debug_print(*args, **kwargs):
     from config import DEBUG_MODE
@@ -95,16 +96,42 @@ def init_database(app):
             print(f"🗄️ Connected to database: {masked_uri}")
             return True
     except Exception as e:
-        print(f"❌ Database initialization failed: {e}")
-        print("🚨 Falling back to SQLite database")
-        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///tellavista.db'
+        configured_uri = app.config.get('SQLALCHEMY_DATABASE_URI', '') or ''
+        is_sqlite_configured = configured_uri.startswith('sqlite')
+        # str(e) from psycopg2/SQLAlchemy connection errors does not echo the DSN/password
+        # (they report things like "connection failed: timeout expired", "password
+        # authentication failed") -- safe to log as-is; never log configured_uri itself,
+        # which does contain the password.
+        logger.error(f"Database initialization failed: {e}")
+
+        if not is_sqlite_configured:
+            # A real (non-SQLite) database was configured -- e.g. Postgres in production
+            # -- and connecting to it failed. Previously this silently swapped to a local,
+            # empty, non-durable SQLite file and kept serving traffic, which turned a
+            # visible outage into a silent one (the app "came up successfully" against an
+            # empty database, any writes during that window were lost on next restart).
+            # Fail startup loudly instead so the outage is impossible to miss.
+            logger.error(
+                "Refusing to silently fall back to SQLite -- DATABASE_URL was configured "
+                "for a real database. Fix the database connection (check DATABASE_URL, "
+                "network access, credentials) and restart. The process will now exit."
+            )
+            raise RuntimeError(
+                'Database initialization failed and a non-SQLite DATABASE_URL was '
+                'configured. Refusing to start against a silent empty fallback database. '
+                f'Original error: {e}'
+            ) from e
+
+        # DATABASE_URL was already sqlite (the local-dev default when DATABASE_URL is
+        # unset) -- this is not a production fallback, just a retry of the same local
+        # file, which is the intentional, supported local/test path.
         try:
             with app.app_context():
                 db.create_all()
-                print("✅ SQLite database created as fallback")
+                logger.info("SQLite (local dev) database created/verified.")
                 return True
         except Exception as e2:
-            print(f"❌ SQLite fallback also failed: {e2}")
+            logger.error(f"SQLite initialization also failed: {e2}")
             return False
 
 def create_default_user(app):

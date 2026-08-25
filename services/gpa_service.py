@@ -16,7 +16,7 @@ AssignmentSubmission / StudentQuizAttempt / StudentProject rows.
 from datetime import datetime
 from extensions import db
 from models import (
-    GradeScale, GradeWeight, Lesson, CourseModule, AssignmentSubmission,
+    GradeScale, GradeWeight, Lesson, CourseModule, Assignment, Quiz, AssignmentSubmission,
     StudentQuizAttempt, StudentProject, ProjectTemplate, StudentLessonProgress,
 )
 
@@ -63,44 +63,75 @@ def score_to_grade(course, score):
 def _reached_lessons(course, enrollment):
     """Lessons the student has actually reached (day_number <= their current_day) — GPA
     is computed only against work that's actually been assigned to them so far, so a
-    student on Day 5 isn't penalized for Day 6-30 work that doesn't exist for them yet."""
-    lessons = []
-    for module in course.modules.order_by(CourseModule.order).all():
-        for lesson in module.lessons.filter_by(is_published=True).all():
-            if lesson.day_number and lesson.day_number <= enrollment.current_day:
-                lessons.append(lesson)
-    return lessons
+    student on Day 5 isn't penalized for Day 6-30 work that doesn't exist for them yet.
+
+    Batched into 2 queries total (module ids, then lessons for all of them) instead of
+    1-query-per-module — on a 30-day class with ~6-8 modules this alone was a third of
+    this function's query count, multiplied by every enrollment on the Skill Transcript
+    page (see routes/skills_routes.py's skill_transcript, the audited N+1 hotspot)."""
+    module_ids = [m.id for m in course.modules.order_by(CourseModule.order).all()]
+    if not module_ids:
+        return []
+    lessons = Lesson.query.filter(
+        Lesson.module_id.in_(module_ids), Lesson.is_published.is_(True)
+    ).all()
+    return [l for l in lessons if l.day_number and l.day_number <= enrollment.current_day]
 
 
 def _assignments_component(student_id, lessons):
-    graded_lessons = [l for l in lessons if l.assignment]
-    if not graded_lessons:
+    lesson_ids = [l.id for l in lessons]
+    if not lesson_ids:
         return None
+    # Bulk-fetch Assignment rows by lesson_id instead of touching each Lesson.assignment
+    # relationship individually (that's lazy-loaded, default lazy='select' -- one query
+    # per lesson otherwise; see models.py's Lesson.assignment).
+    assignments = Assignment.query.filter(Assignment.lesson_id.in_(lesson_ids)).all()
+    if not assignments:
+        return None
+    assignment_by_lesson = {a.lesson_id: a for a in assignments}
+    assignment_ids = [a.id for a in assignments]
+
+    # One bulk query for every submission across all reached assignments, instead of one
+    # query per assignment -- then pick each assignment's latest submission in Python.
+    all_subs = AssignmentSubmission.query.filter(
+        AssignmentSubmission.assignment_id.in_(assignment_ids),
+        AssignmentSubmission.student_id == student_id,
+    ).order_by(AssignmentSubmission.submitted_at.desc()).all()
+    latest_by_assignment = {}
+    for sub in all_subs:
+        latest_by_assignment.setdefault(sub.assignment_id, sub)  # first seen = latest, given the ORDER BY above
+
     total = 0
-    for l in graded_lessons:
-        sub = (
-            AssignmentSubmission.query.filter_by(assignment_id=l.assignment.id, student_id=student_id)
-            .order_by(AssignmentSubmission.submitted_at.desc()).first()
-        )
+    for a in assignments:
+        sub = latest_by_assignment.get(a.id)
         # A reached-but-never-submitted assignment counts as 0 — an assignment that's
         # simply skipped over must not be invisible to grading, or a student could game
         # their GPA by only ever attempting the ones they're confident about.
         total += sub.score if (sub and sub.score is not None) else 0
-    return total / len(graded_lessons)
+    return total / len(assignments)
 
 
 def _tests_component(student_id, lessons):
-    quiz_lessons = [l for l in lessons if l.quiz]
-    if not quiz_lessons:
+    lesson_ids = [l.id for l in lessons]
+    if not lesson_ids:
         return None
+    quizzes = Quiz.query.filter(Quiz.lesson_id.in_(lesson_ids)).all()
+    if not quizzes:
+        return None
+    quiz_ids = [q.id for q in quizzes]
+
+    all_attempts = StudentQuizAttempt.query.filter(
+        StudentQuizAttempt.quiz_id.in_(quiz_ids), StudentQuizAttempt.student_id == student_id,
+    ).order_by(StudentQuizAttempt.completed_at.desc()).all()
+    latest_by_quiz = {}
+    for attempt in all_attempts:
+        latest_by_quiz.setdefault(attempt.quiz_id, attempt)
+
     total = 0
-    for l in quiz_lessons:
-        attempt = (
-            StudentQuizAttempt.query.filter_by(quiz_id=l.quiz.id, student_id=student_id)
-            .order_by(StudentQuizAttempt.completed_at.desc()).first()
-        )
+    for q in quizzes:
+        attempt = latest_by_quiz.get(q.id)
         total += attempt.score if attempt else 0
-    return total / len(quiz_lessons)
+    return total / len(quizzes)
 
 
 def _final_project_component(course, student_id):

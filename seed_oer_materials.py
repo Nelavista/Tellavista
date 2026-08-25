@@ -13,8 +13,14 @@ Sources, in order, matching the existing route:
 2. Open Textbook Library (free, no API key, no quota -- open-license textbooks keyed by
    department; only departments with a verified-good OTL subject slug get results, see
    services/open_textbook_library_service.py's DEPARTMENT_TO_SLUG)
-3. Tavily web search (has a monthly quota) -- run ONLY for codes where OpenStax and OTL
-   found nothing, and capped, to avoid burning the whole monthly allowance in one run.
+3. Tavily web search (has a monthly quota) -- runs for every code that doesn't already
+   have a google_auto material, REGARDLESS of whether OpenStax/OTL found something.
+   OTL's department-level textbooks are the same for every level in a department (a
+   300-level course gets the same generic OTL result as a 100-level one), so skipping
+   Tavily just because OTL found *something* was leaving genuinely course/level-specific
+   content undiscovered. A consecutive-failure circuit breaker (not a raw call cap) stops
+   Tavily calls once the API itself starts failing (bad key/quota/network), since that's
+   the real constraint -- OpenStax/OTL keep running for remaining codes either way.
 
 Materials created here are universal (university=None) since OpenStax/OTL/web-search
 results aren't school-specific -- the same textbook applies regardless of which of the
@@ -32,7 +38,9 @@ from models import Material
 from services.google_search_service import OPENSTAX_MATERIALS, search_google_pdfs
 from services.open_textbook_library_service import search_open_textbook_library
 
-TAVILY_CAP = 250
+TAVILY_CAP = 5000  # effectively unbounded -- the real stop condition is the consecutive-
+                   # failure circuit breaker below, once Tavily's own API signals it's done
+CONSECUTIVE_FAILURE_LIMIT = 6
 for arg in sys.argv[1:]:
     if arg.startswith('--tavily-cap'):
         TAVILY_CAP = int(arg.split('=')[1]) if '=' in arg else int(sys.argv[sys.argv.index(arg) + 1])
@@ -55,6 +63,8 @@ def seed_oer_materials():
 
         openstax_added = otl_added = tavily_added = skipped_existing = 0
         tavily_used = 0
+        tavily_exhausted = False
+        consecutive_tavily_failures = 0
 
         for i, code in enumerate(codes):
             department = code_to_department[code]
@@ -97,12 +107,24 @@ def seed_oer_materials():
                                   # this hits a remote DB and outbound HTTP APIs; a dropped
                                   # connection should only cost one code's progress, not the batch.
 
-            # --- 3. Tavily (quota-limited) -- only if steps 1-2 found nothing, and capped ---
-            if not found_anything and tavily_used < TAVILY_CAP:
+            # --- 3. Tavily (quota-limited) -- runs for every code lacking google_auto
+            # material, regardless of whether OpenStax/OTL already found something, so
+            # every level gets real course-specific content instead of a department-
+            # generic freebie. Stops once the API itself starts failing repeatedly. ---
+            if not tavily_exhausted and tavily_used < TAVILY_CAP:
                 already_cached_google = Material.query.filter_by(course_code=code, source='google_auto').first()
                 if not already_cached_google:
                     tavily_used += 1
                     results, api_ok = search_google_pdfs(code, max_results=5)
+                    if not api_ok:
+                        consecutive_tavily_failures += 1
+                        if consecutive_tavily_failures >= CONSECUTIVE_FAILURE_LIMIT:
+                            tavily_exhausted = True
+                            print(f"\n[TAVILY EXHAUSTED] {consecutive_tavily_failures} consecutive API "
+                                  f"failures at code {code} ({i+1}/{len(codes)}) -- stopping Tavily calls "
+                                  "for the rest of this run. OpenStax/OTL continue for remaining codes.")
+                    else:
+                        consecutive_tavily_failures = 0
                     for r in results:
                         existing = Material.query.filter_by(external_url=r['url'], source='google_auto').first()
                         if existing:
@@ -123,7 +145,8 @@ def seed_oer_materials():
             time.sleep(0.2)  # be polite to open.umn.edu / api.tavily.com
 
         print(f"\nDONE. openstax added: {openstax_added}, otl added: {otl_added}, "
-              f"tavily added: {tavily_added} (tavily calls used: {tavily_used}/{TAVILY_CAP}), "
+              f"tavily added: {tavily_added} (tavily calls used: {tavily_used}/{TAVILY_CAP}"
+              f"{', EXHAUSTED' if tavily_exhausted else ''}), "
               f"skipped (already existed): {skipped_existing}")
 
 

@@ -1,14 +1,27 @@
 import eventlet
 eventlet.monkey_patch()
 
+import sys
+# Force UTF-8 stdout/stderr regardless of the host console's default codepage. Without
+# this, the emoji in this codebase's startup print() calls (see database.py) raise
+# UnicodeEncodeError the moment stdout isn't a real UTF-8-capable console -- e.g. on
+# Windows the moment output is piped/redirected (cp1252 fallback), which previously got
+# misreported as "database connection failed" by database.py's error handling, when the
+# actual database connection had already succeeded. errors='replace' means a genuinely
+# unencodable character degrades to a placeholder instead of crashing the process.
+if hasattr(sys.stdout, 'reconfigure'):
+    sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+    sys.stderr.reconfigure(encoding='utf-8', errors='replace')
+
 import os
 from datetime import timedelta
 from flask import Flask, send_from_directory, render_template, request, jsonify
 from flask_migrate import Migrate
 from config import (DEBUG_MODE, SECRET_KEY, DATABASE_URL, MAX_CONTENT_LENGTH,
                      SESSION_COOKIE_SECURE, SESSION_COOKIE_SAMESITE, SESSION_COOKIE_HTTPONLY,
-                     PERMANENT_SESSION_LIFETIME_DAYS)
-from extensions import db, socketio, mail, csrf
+                     PERMANENT_SESSION_LIFETIME_DAYS, SOCKETIO_CORS_ORIGINS, REDIS_URL, SUPPORT_EMAIL)
+from extensions import db, socketio, mail, csrf, limiter
+import logging_config
 from database import init_database, create_default_user, cleanup_stale_files
 from routes.auth_routes import auth_bp
 from routes.dashboard_routes import dashboard_bp
@@ -30,9 +43,9 @@ from routes.academia_routes import academia_bp
 from routes.admin_academia_routes import admin_academia_bp
 # Skills is rebuilt around Learn -> Practice -> Build -> Verify -> Showcase -> Get
 # Discovered -> Earn. Employer (talent discovery + messaging) is back on, now reading the
-# same get_talent_stats() a student's own Talent Profile shows. The legacy /tech-skills
-# redirect stays disabled — nothing routes there anymore.
-# from routes.tech_routes import tech_bp
+# same get_talent_stats() a student's own Talent Profile shows. The old /tech-skills
+# redirect blueprint (routes/tech_routes.py) was fully dead -- never imported/registered,
+# nothing routed there -- and has been deleted (Level 1 cleanup pass).
 from routes.skills_routes import skills_bp
 from routes.admin_skills_routes import admin_skills_bp
 from routes.employer_routes import employer_bp
@@ -83,9 +96,26 @@ def create_app():
     # Initialize extensions
     db.init_app(app)
     Migrate(app, db)
-    socketio.init_app(app, cors_allowed_origins="*")
+    # cors_allowed_origins is NOT repeated/widened here -- it stays whatever extensions.py
+    # already configured from SOCKETIO_CORS_ORIGINS (never "*"). message_queue shares real-
+    # time room/participant/chat state (services/meeting_service.py, community_events.py)
+    # across every gunicorn worker/dyno once REDIS_URL is set; without it, each worker only
+    # sees connections it personally handled, which silently breaks live classes/chat the
+    # moment more than one worker runs.
+    socketio.init_app(app, message_queue=REDIS_URL)
     mail.init_app(app)
     csrf.init_app(app)
+    limiter.init_app(app)
+
+    # ==================== TEMPLATE GLOBALS ====================
+
+    @app.context_processor
+    def inject_support_email():
+        """Makes SUPPORT_EMAIL available to every template (footer.html, Terms of
+        Service, privacy policy) without every single route needing to pass it
+        explicitly — a dedicated, configurable support address instead of the
+        founder's personal Gmail hardcoded into the templates directly."""
+        return {'support_email': SUPPORT_EMAIL}
 
     # ==================== SECURITY HEADERS ====================
     
@@ -192,7 +222,6 @@ def create_app():
     app.register_blueprint(community_bp, url_prefix='/')
     app.register_blueprint(academia_bp, url_prefix='/')
     app.register_blueprint(admin_academia_bp, url_prefix='/')
-    # app.register_blueprint(tech_bp, url_prefix='/')
     app.register_blueprint(skills_bp, url_prefix='/')
     app.register_blueprint(admin_skills_bp, url_prefix='/')
     app.register_blueprint(employer_bp, url_prefix='/')
@@ -368,13 +397,21 @@ def create_maskable_icon(icons_dir):
 
 app = create_app()
 
-# Database initialization
-with app.app_context():
-    cleanup_stale_files()
-    init_database(app)
-    # Hardcoded test/test123 account — dev convenience only, never in production.
-    if DEBUG_MODE:
-        create_default_user(app)
+# Database initialization -- skipped when SKIP_DB_INIT=1. db.create_all() below creates
+# any table defined in models.py that's missing, with no awareness of Alembic -- if a
+# migration is about to CREATE TABLE something new, importing app.py (which any script
+# using `from app import app`, including a migration-running one-liner, has to do to get
+# the Flask app object) silently creates that same table first via create_all(), and the
+# migration then fails on "relation already exists". SKIP_DB_INIT=1 lets a migration
+# script opt out of that race. Normal app boot (gunicorn, `python app.py`) never sets
+# this env var, so production/dev behavior is completely unchanged.
+if os.environ.get('SKIP_DB_INIT') != '1':
+    with app.app_context():
+        cleanup_stale_files()
+        init_database(app)
+        # Hardcoded test/test123 account — dev convenience only, never in production.
+        if DEBUG_MODE:
+            create_default_user(app)
 
 # Generate icons on startup (development only)
 if DEBUG_MODE:

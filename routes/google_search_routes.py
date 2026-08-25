@@ -141,7 +141,17 @@ def fetch_google_materials_batch():
                                 course_code=code,
                                 external_url=r['url'],
                                 source='google_auto',
-                                is_approved=True,
+                                # Unlike OpenStax/Open Textbook Library (curated catalogs),
+                                # a Tavily keyword search's relevance-to-this-exact-course
+                                # signal is weak even after search_google_pdfs()'s live
+                                # content verification confirms it's a genuine, reachable
+                                # PDF -- goes through the normal admin moderation queue
+                                # (same as a student upload) before other students see it
+                                # in the library, rather than auto-publishing on a keyword
+                                # match alone. The requesting student still sees it
+                                # immediately in THIS response, just not yet in the shared
+                                # library for everyone else.
+                                is_approved=False,
                                 uploaded_by='Google Search',
                                 department=department,
                                 level=level,
@@ -268,7 +278,9 @@ def fetch_google_materials(course_code):
                         course_code=course_code,
                         external_url=r['url'],
                         source='google_auto',
-                        is_approved=True,
+                        # See the matching comment in fetch_google_materials_batch above:
+                        # goes to the normal moderation queue rather than auto-publishing.
+                        is_approved=False,
                         uploaded_by='Google Search',
                         department=department,
                         level=level,

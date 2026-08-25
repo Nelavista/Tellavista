@@ -1,3 +1,4 @@
+import os
 from app import app, db
 from models import Material
 
@@ -401,7 +402,16 @@ def seed_materials():
                 if exists:
                     skipped += 1
                     continue
-                
+
+                # Skip entries whose referenced local file doesn't actually exist on
+                # disk -- see the Level 1 audit's Academia findings for why this guard
+                # exists (a large share of this file's paths were stale/never uploaded).
+                url = mat.get('url') or ''
+                if url.startswith('static/') and not os.path.exists(url):
+                    print(f"   ⚠️  Skipping '{mat['title']}' — file not found: {url}")
+                    skipped += 1
+                    continue
+
                 # Create new material
                 new_material = Material(
                     title=mat['title'],

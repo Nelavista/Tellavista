@@ -1,6 +1,7 @@
+from datetime import datetime
 from flask import Blueprint, render_template, jsonify, session, request
 from utils.helpers import login_required, admin_required
-from models import User, Material, Video, Group, GroupMember, GroupMessage, Room, StudySession, Exam, EmployerProfile
+from models import User, Material, Video, Group, GroupMember, GroupMessage, Room, StudySession, Exam, EmployerProfile, AdminAuditLog
 from sqlalchemy import func
 from services.meeting_service import end_room_session, rooms as live_rooms_memory
 from extensions import db
@@ -65,6 +66,11 @@ def toggle_user_admin(user_id):
     if target.id == actor.id and target.is_admin:
         return jsonify({'success': False, 'error': "You can't remove your own admin access"}), 400
     target.is_admin = not target.is_admin
+    db.session.add(AdminAuditLog(
+        target_user_id=target.id, actor_user_id=actor.id,
+        action='grant_admin' if target.is_admin else 'revoke_admin',
+        source='web', created_at=datetime.utcnow(),
+    ))
     db.session.commit()
     return jsonify({'success': True, 'is_admin': target.is_admin})
 

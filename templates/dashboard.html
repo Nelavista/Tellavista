@@ -413,7 +413,7 @@
   <div class="sidebar" id="side-menu">
     <div>
       <div class="sidebar-header">
-        <div class="sidebar-logo">Nelavista</div>
+        <a href="{{ url_for('dashboard.choose_path') }}" class="sidebar-logo" style="display:inline-block; text-decoration:none;" title="Switch between Academia and Skills">Nelavista</a>
       </div>
       <div class="sidebar-nav">
 
@@ -481,6 +481,24 @@
 
     <!-- DASHBOARD VIEW -->
     <div id="dashboardView" class="dashboard-view">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+      <div style="margin-bottom:18px;">
+        {% for category, message in messages %}
+        <div style="background:{{ 'rgba(239,68,68,0.08)' if category == 'error' else 'rgba(34,197,94,0.08)' }}; border:1px solid {{ 'rgba(239,68,68,0.35)' if category == 'error' else 'rgba(34,197,94,0.35)' }}; border-radius:10px; padding:10px 14px; font-size:0.86rem; margin-bottom:8px;">{{ message }}</div>
+        {% endfor %}
+      </div>
+      {% endif %}
+      {% endwith %}
+      {% if not email_verified %}
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; background:rgba(251,191,36,0.08); border:1px solid rgba(251,191,36,0.35); border-radius:12px; padding:12px 16px; margin-bottom:18px; font-size:0.88rem;">
+        <span>📧 Please confirm your email address — check your inbox for the link we sent when you signed up.</span>
+        <form method="POST" action="{{ url_for('auth.resend_verification_email') }}" style="margin:0;">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button type="submit" style="background:none; border:1px solid rgba(251,191,36,0.5); color:#fbbf24; border-radius:8px; padding:6px 12px; font-size:0.82rem; cursor:pointer; white-space:nowrap;">Resend email</button>
+        </form>
+      </div>
+      {% endif %}
       <div class="greeting">
         <h1 id="greetingText">Hello, {{ first_name }}</h1>
         <p id="greetingSubtitle">
@@ -620,7 +638,6 @@
 <script>
   // ===== PWA: SERVICE WORKER REGISTRATION & MANAGEMENT =====
   let deferredPrompt;
-  let serviceWorkerRegistration = null;
   let isAppInstalled = false;
   
   // Check if app is installed
@@ -662,61 +679,16 @@
   });
 
   // ===== PUSH NOTIFICATIONS =====
-  async function requestNotificationPermission() {
-    if (!('Notification' in window)) {
-      console.log('Push notifications not supported');
-      return;
-    }
-    
-    const permission = await Notification.requestPermission();
-    
-    if (permission === 'granted') {
-      console.log('✅ Notification permission granted');
-      
-      // Subscribe to push notifications
-      if (serviceWorkerRegistration) {
-        try {
-          const subscription = await serviceWorkerRegistration.pushManager.subscribe({
-            userVisibleOnly: true,
-            applicationServerKey: urlBase64ToUint8Array('YOUR_PUBLIC_VAPID_KEY')
-          });
-          
-          // Send subscription to your server
-          await fetch('/api/push-subscribe', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(subscription)
-          });
-          
-          console.log('✅ Push notification subscription saved');
-        } catch (err) {
-          console.error('Push subscription failed:', err);
-        }
-      }
-    }
-  }
-  
-  function urlBase64ToUint8Array(base64String) {
-    const padding = '='.repeat((4 - base64String.length % 4) % 4);
-    const base64 = (base64String + padding)
-      .replace(/\-/g, '+')
-      .replace(/_/g, '/');
-    const rawData = window.atob(base64);
-    const outputArray = new Uint8Array(rawData.length);
-    for (let i = 0; i < rawData.length; ++i) {
-      outputArray[i] = rawData.charCodeAt(i);
-    }
-    return outputArray;
-  }
-  
-  // Request notification permission after user interaction
-  document.addEventListener('click', function requestPermissionOnce() {
-    if (Notification.permission === 'default') {
-      requestNotificationPermission();
-    }
-    document.removeEventListener('click', requestPermissionOnce);
-  }, { once: true });
-  
+  // Removed (Level 1 fix): this used to request the browser's notification permission
+  // on the very first click anywhere on the dashboard, then try to subscribe against a
+  // service worker that's actively unregistered two blocks above, a literal placeholder
+  // VAPID key ('YOUR_PUBLIC_VAPID_KEY'), and a POST target (/api/push-subscribe) that
+  // doesn't exist anywhere in routes/. A new student's first interaction with Nelavista
+  // was an unexplained OS permission dialog for a feature that could never have worked
+  // end-to-end. Per the "never ask for a permission a feature doesn't back up" rule: no
+  // permission prompt until push notifications are actually built (real service worker +
+  // VAPID keys + a subscription-storing endpoint + something that sends pushes).
+
   // ===== INSTALL FUNCTION =====
   function triggerInstall() {
     if (deferredPrompt) {

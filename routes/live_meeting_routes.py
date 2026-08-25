@@ -2,8 +2,39 @@ import uuid
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session
 from utils.helpers import login_required
 from config import AGORA_APP_ID
+from extensions import db
+from models import Room, User
 
 live_bp = Blueprint('live', __name__)
+
+
+def _claim_room_ownership(room_id):
+    """First logged-in visit to /teacher/<room_id> for a given room_id registers that
+    user as the room's real owner (Room.teacher_user_id) -- events.py's Socket.IO
+    join-room handler requires this to match before letting any socket claim the
+    'teacher' role for the room, so knowing/guessing a room_id alone is no longer
+    enough to become its teacher. A room_id is only ever handed out fresh (see
+    teacher_create below), so the first claimant is legitimately the room's creator;
+    a second, different logged-in user hitting the same URL later is refused rather
+    than silently taking over an already-claimed room.
+    """
+    username = session.get('user', {}).get('username')
+    user = User.query.filter_by(username=username).first() if username else None
+    if not user:
+        return None, False
+
+    room = Room.query.get(room_id)
+    if not room:
+        room = Room(id=room_id, teacher_user_id=user.id, teacher_name=user.name or user.username)
+        db.session.add(room)
+        db.session.commit()
+        return user, True
+    if room.teacher_user_id is None:
+        room.teacher_user_id = user.id
+        db.session.commit()
+        return user, True
+    return user, room.teacher_user_id == user.id
+
 
 @live_bp.route('/teacher')
 @login_required
@@ -14,6 +45,10 @@ def teacher_create():
 @live_bp.route('/teacher/<room_id>')
 @login_required
 def teacher_view(room_id):
+    user, owns_room = _claim_room_ownership(room_id)
+    if not owns_room:
+        flash("This room already has a different host.", 'error')
+        return redirect(url_for('live.teacher_create'))
     return render_template('teacher_live.html', room_id=room_id, agora_app_id=AGORA_APP_ID)
 
 @live_bp.route('/student/<room_id>')
@@ -46,6 +81,10 @@ def live_meeting_teacher_create():
 @live_bp.route('/live_meeting/teacher/<room_id>')
 @login_required
 def live_meeting_teacher_view(room_id):
+    user, owns_room = _claim_room_ownership(room_id)
+    if not owns_room:
+        flash("This room already has a different host.", 'error')
+        return redirect(url_for('live.live_meeting_teacher_create'))
     return render_template('teacher_live.html', room_id=room_id, agora_app_id=AGORA_APP_ID)
 
 @live_bp.route('/live-meeting/student/<room_id>')

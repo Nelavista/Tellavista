@@ -270,13 +270,60 @@
             transform: translateY(0);
         }
 
+        .oauth-divider {
+            display: flex;
+            align-items: center;
+            gap: 0.9rem;
+            margin: 1.6rem 0;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            opacity: 0;
+            animation: fadeInUp 0.6s ease-out 0.85s forwards;
+        }
+
+        .oauth-divider::before,
+        .oauth-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border-premium);
+        }
+
+        .google-btn {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.6rem;
+            padding: 0.9rem;
+            background: var(--bg-deep);
+            color: var(--text-primary);
+            border: 1px solid var(--border-premium);
+            border-radius: var(--radius-button);
+            font-size: 0.98rem;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            opacity: 0;
+            animation: fadeInUp 0.6s ease-out 0.9s forwards;
+        }
+
+        .google-btn:hover {
+            transform: translateY(-2px);
+            border-color: var(--accent-blue);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .google-btn i { font-size: 1.15rem; color: #ea4335; }
+
         .link-section {
             text-align: center;
             margin-top: 2rem;
             padding-top: 1.8rem;
             border-top: 1px solid var(--border-premium);
             opacity: 0;
-            animation: fadeInUp 0.6s ease-out 0.9s forwards;
+            animation: fadeInUp 0.6s ease-out 0.95s forwards;
         }
 
         .link-section p {
@@ -396,6 +443,13 @@
 
             <button type="submit" class="submit-btn">Create Account →</button>
         </form>
+
+        {% if google_oauth_enabled %}
+        <div class="oauth-divider">or</div>
+        <a href="{{ url_for('auth.google_login') }}" class="google-btn">
+          <i class="ri-google-fill"></i> Continue with Google
+        </a>
+        {% endif %}
 
         <div class="link-section">
             <p>Already have an account? <a href="{{ url_for('auth.login') }}">Log in</a></p>

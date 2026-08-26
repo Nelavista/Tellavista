@@ -1,10 +1,12 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash, current_app
 from datetime import datetime, timedelta
+import re
 import secrets
 from models import User
-from extensions import db, mail, limiter  # Assuming 'mail' is initialized in extensions.py
+from extensions import db, mail, limiter, oauth  # Assuming 'mail' is initialized in extensions.py
 from flask_mail import Message
 from logging_config import logger
+from config import GOOGLE_OAUTH_ENABLED
 
 auth_bp = Blueprint('auth', __name__)
 
@@ -131,7 +133,7 @@ def signup():
         # Brand-new account: always send through path selection, never straight into
         # Academia. Returning users skip this — see login() below.
         return redirect(url_for('dashboard.choose_path'))
-    return render_template('signup.html')
+    return render_template('signup.html', google_oauth_enabled=GOOGLE_OAUTH_ENABLED)
 
 
 @auth_bp.route('/login', methods=['GET', 'POST'])
@@ -168,7 +170,7 @@ def login():
         else:
             flash('Invalid credentials.')
             return redirect(url_for('auth.login'))
-    return render_template('login.html')
+    return render_template('login.html', google_oauth_enabled=GOOGLE_OAUTH_ENABLED)
 
 
 @auth_bp.route('/logout')
@@ -176,6 +178,105 @@ def logout():
     session.clear()
     flash('You have been logged out.')
     return redirect(url_for('auth.login'))
+
+
+# ---------- Google Sign-In ----------
+def _generate_username_from_email(email):
+    """Turns 'jane.doe99@gmail.com' into a free username like 'janedoe99', trying the
+    plain slug first and falling back to numeric suffixes -- usernames are required and
+    unique, but a Google sign-in never collects one."""
+    base = re.sub(r'[^a-z0-9]', '', email.split('@', 1)[0].lower())[:30] or 'user'
+    candidate = base
+    suffix = 0
+    while User.query.filter_by(username=candidate).first() is not None:
+        suffix += 1
+        candidate = f"{base}{suffix}"
+    return candidate
+
+
+def _start_session_for(user):
+    """Same session shape auth.login()/auth.signup() build, factored out so both the
+    existing-account and new-account branches of the Google callback below set it
+    identically."""
+    user.last_login = datetime.utcnow()
+    db.session.commit()
+    session.permanent = True
+    session['user'] = {
+        'username': user.username,
+        'email': user.email,
+        'joined_on': user.joined_on.strftime('%Y-%m-%d'),
+        'last_login': user.last_login.strftime('%Y-%m-%d %H:%M:%S'),
+        'is_admin': user.is_admin,
+        'preferred_path': user.preferred_path
+    }
+
+
+@auth_bp.route('/auth/google')
+@limiter.limit('20 per hour')
+def google_login():
+    if not GOOGLE_OAUTH_ENABLED:
+        flash('Google sign-in is not available right now.', 'error')
+        return redirect(url_for('auth.login'))
+    redirect_uri = url_for('auth.google_callback', _external=True)
+    return oauth.google.authorize_redirect(redirect_uri)
+
+
+@auth_bp.route('/auth/google/callback')
+@limiter.limit('20 per hour')
+def google_callback():
+    if not GOOGLE_OAUTH_ENABLED:
+        flash('Google sign-in is not available right now.', 'error')
+        return redirect(url_for('auth.login'))
+
+    try:
+        # authorize_access_token() validates the id_token's nonce (set during
+        # authorize_redirect above, stored server-side in the session by Authlib) and
+        # returns the already-verified claims under 'userinfo' -- never parse the id
+        # token manually, that's what would skip nonce validation.
+        token = oauth.google.authorize_access_token()
+        userinfo = token.get('userinfo') or oauth.google.userinfo(token=token)
+    except Exception as e:
+        logger.error(f"Google OAuth callback failed: {e}")
+        flash('Google sign-in failed. Please try again.', 'error')
+        return redirect(url_for('auth.login'))
+
+    google_sub = userinfo.get('sub')
+    google_email = (userinfo.get('email') or '').strip().lower()
+    email_verified_by_google = bool(userinfo.get('email_verified'))
+
+    if not google_sub or not google_email:
+        flash('Google did not share the account details we need. Please try again.', 'error')
+        return redirect(url_for('auth.login'))
+
+    # 1. Returning Google sign-in -- matched by the stable Google account id.
+    user = User.query.filter_by(google_sub=google_sub).first()
+
+    # 2. First-time Google sign-in on an email that already has a password account --
+    # link the two rather than creating a duplicate, but only when Google itself vouches
+    # for the email (never link on an unverified email claim -- that's how account
+    # takeover via a look-alike Google Workspace address would work).
+    if not user and email_verified_by_google:
+        existing = User.query.filter_by(email=google_email).first()
+        if existing:
+            existing.google_sub = google_sub
+            user = existing
+
+    # 3. Brand new account -- new accounts always start with preferred_path unset, so
+    # they land on the Academia/Skills picker below same as a regular signup.
+    if not user:
+        username = _generate_username_from_email(google_email)
+        user = User(username=username, email=google_email, google_sub=google_sub,
+                    name=userinfo.get('name') or None,
+                    email_verified=email_verified_by_google)
+        db.session.add(user)
+
+    _start_session_for(user)
+    flash('Logged in with Google!')
+
+    # Employers have their own separate experience -- same fork as auth.login() above.
+    if user.is_employer:
+        return redirect(url_for('employer.dashboard'))
+    return redirect(url_for('dashboard.choose_path'))
 
 
 # ---------- Email Verification Routes ----------

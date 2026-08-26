@@ -24,6 +24,14 @@ OPENROUTER_API_KEY = os.getenv('OPENROUTER_API_KEY')
 YOUTUBE_API_KEY = os.getenv('YOUTUBE_API_KEY')
 AGORA_APP_ID = os.getenv('AGORA_APP_ID')
 
+# "Sign in with Google" -- both must be set (from the Google Cloud Console OAuth client)
+# for the feature to activate. Left unset, the Google button simply doesn't render and
+# the /auth/google routes redirect back with a flash error instead of crashing -- see
+# routes/auth_routes.py.
+GOOGLE_CLIENT_ID = os.getenv('GOOGLE_CLIENT_ID')
+GOOGLE_CLIENT_SECRET = os.getenv('GOOGLE_CLIENT_SECRET')
+GOOGLE_OAUTH_ENABLED = bool(GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET)
+
 # Explicit environment marker -- distinct from DEBUG_MODE, which controls Flask/Werkzeug
 # debug behavior. This controls things (like the database fallback below and the
 # Socket.IO CORS allow-list) that must never silently relax just because DEBUG happens

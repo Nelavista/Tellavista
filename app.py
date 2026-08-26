@@ -19,8 +19,9 @@ from flask import Flask, send_from_directory, render_template, request, jsonify
 from flask_migrate import Migrate
 from config import (DEBUG_MODE, SECRET_KEY, DATABASE_URL, MAX_CONTENT_LENGTH,
                      SESSION_COOKIE_SECURE, SESSION_COOKIE_SAMESITE, SESSION_COOKIE_HTTPONLY,
-                     PERMANENT_SESSION_LIFETIME_DAYS, SOCKETIO_CORS_ORIGINS, REDIS_URL, SUPPORT_EMAIL)
-from extensions import db, socketio, mail, csrf, limiter
+                     PERMANENT_SESSION_LIFETIME_DAYS, SOCKETIO_CORS_ORIGINS, REDIS_URL, SUPPORT_EMAIL,
+                     GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET)
+from extensions import db, socketio, mail, csrf, limiter, oauth
 import logging_config
 from database import init_database, create_default_user, cleanup_stale_files
 from routes.auth_routes import auth_bp
@@ -106,6 +107,15 @@ def create_app():
     mail.init_app(app)
     csrf.init_app(app)
     limiter.init_app(app)
+    oauth.init_app(app)
+    if GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET:
+        oauth.register(
+            name='google',
+            client_id=GOOGLE_CLIENT_ID,
+            client_secret=GOOGLE_CLIENT_SECRET,
+            server_metadata_url='https://accounts.google.com/.well-known/openid-configuration',
+            client_kwargs={'scope': 'openid email profile'},
+        )
 
     # ==================== TEMPLATE GLOBALS ====================
 

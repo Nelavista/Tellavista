@@ -6,7 +6,14 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(150), unique=True, nullable=False)
     email = db.Column(db.String(150), unique=True, nullable=False)
-    password_hash = db.Column(db.String(200), nullable=False)
+    # Nullable because a Google-only account (see google_sub below) never sets a password --
+    # check_password() below handles that case rather than crashing.
+    password_hash = db.Column(db.String(200), nullable=True)
+    # Google's stable per-account subject identifier (the OIDC "sub" claim) -- never the
+    # email, since an email can change hands. Set the first time someone uses "Sign in with
+    # Google", whether that creates a new account or links onto an existing password
+    # account with a matching, Google-verified email (see routes/auth_routes.py).
+    google_sub = db.Column(db.String(64), unique=True, nullable=True, index=True)
     user_level = db.Column(db.Integer, default=1)
     joined_on = db.Column(db.DateTime, default=datetime.utcnow)
     last_login = db.Column(db.DateTime)
@@ -48,6 +55,8 @@ class User(db.Model):
         self.password_hash = generate_password_hash(password)
 
     def check_password(self, password):
+        if not self.password_hash:
+            return False
         from werkzeug.security import check_password_hash
         return check_password_hash(self.password_hash, password)
 

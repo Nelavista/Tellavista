@@ -4,6 +4,7 @@ from flask_mail import Mail
 from flask_wtf import CSRFProtect
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
+from authlib.integrations.flask_client import OAuth
 from config import SOCKETIO_CORS_ORIGINS, REDIS_URL
 
 db = SQLAlchemy()
@@ -26,3 +27,7 @@ limiter = Limiter(
     storage_uri=(REDIS_URL if REDIS_URL else 'memory://'),
     default_limits=[],
 )
+# Google OAuth client (see routes/auth_routes.py). Registered in app.py's create_app()
+# only when GOOGLE_CLIENT_ID/SECRET are configured -- oauth.google stays unset otherwise,
+# which the routes check for before using it.
+oauth = OAuth()

@@ -55,6 +55,7 @@ UNIVERSITY_SHORT_NAMES = {
     'University of Abuja': 'UNIABUJA',
     'University of Ilorin': 'UNILORIN',
     'Kwara State University': 'KWASU',
+    'University of Port Harcourt': 'UNIPORT',
 }
 
 # Universities selectable in the student-facing university picker (see
@@ -70,6 +71,7 @@ ACTIVE_UNIVERSITIES_WITHOUT_TAXONOMY_YET = [
     'University of Abuja',
     'University of Ilorin',
     'Kwara State University',
+    'University of Port Harcourt',
 ]
 
 

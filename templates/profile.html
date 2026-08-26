@@ -633,7 +633,8 @@
                         <option value="University of Abuja" {% if user.university == "University of Abuja" %}selected{% endif %}>University of Abuja (UNIABUJA)</option>
                         <option value="University of Ilorin" {% if user.university == "University of Ilorin" %}selected{% endif %}>University of Ilorin (UNILORIN)</option>
                         <option value="Kwara State University" {% if user.university == "Kwara State University" %}selected{% endif %}>Kwara State University (KWASU)</option>
-                        {% if user.university and user.university not in ["Lagos State University", "University of Lagos", "Federal University Dutsin-Ma", "University of Abuja", "University of Ilorin", "Kwara State University"] %}
+                        <option value="University of Port Harcourt" {% if user.university == "University of Port Harcourt" %}selected{% endif %}>University of Port Harcourt (UNIPORT)</option>
+                        {% if user.university and user.university not in ["Lagos State University", "University of Lagos", "Federal University Dutsin-Ma", "University of Abuja", "University of Ilorin", "Kwara State University", "University of Port Harcourt"] %}
                         <option value="{{ user.university }}" selected>{{ user.university }} (previously set)</option>
                         {% endif %}
                     </select>

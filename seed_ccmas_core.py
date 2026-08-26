@@ -46,6 +46,9 @@ TARGET_UNIVERSITIES = [
     # means only genuinely new course codes get added.
     'University of Lagos',
     'University of Ibadan',
+    # Same bare-row-only situation as FUDMA/UNIABUJA/UNILORIN/KWASU above -- Uniport has
+    # no registrar-verified CSV rows at all, so CCMAS is its only course data.
+    'University of Port Harcourt',
 ]
 
 # {department_name: {level: [(code, title), ...]}} -- verbatim from the CCMAS PDFs (see module

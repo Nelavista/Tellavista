@@ -1,0 +1,14 @@
+  </div><!-- /.main-content -->
+
+  <!-- Mobile bottom nav — same 5-destination pattern as components/skills_footer.html:
+       the essentials only, everything else is one tap away via the drawer. -->
+  <nav class="mobile-tabbar">
+    <a href="/dashboard" class="{{ 'active' if active_page == 'home' else '' }}"><i class="ri-home-4-line"></i><span>Home</span></a>
+    <a href="/materials" class="{{ 'active' if active_page == 'materials' else '' }}"><i class="ri-book-open-line"></i><span>Materials</span></a>
+    <a href="/CBT" class="{{ 'active' if active_page == 'practice' else '' }}"><i class="ri-file-list-3-line"></i><span>Practice</span></a>
+    <a href="/community" class="{{ 'active' if active_page == 'community' else '' }}"><i class="ri-group-line"></i><span>Community</span></a>
+    <a href="/profile" class="{{ 'active' if active_page == 'profile' else '' }}"><i class="ri-user-line"></i><span>Profile</span></a>
+  </nav>
+</div><!-- /.app-wrapper -->
+
+<script src="{{ url_for('static', filename='js/shell.js') }}"></script>

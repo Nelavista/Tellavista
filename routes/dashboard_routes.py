@@ -18,11 +18,20 @@ VALID_PATHS = {'academia': 'dashboard.dashboard', 'skills': 'skills.home'}
 
 @dashboard_bp.route('/')
 def landing():
-    user = session.get('user')
-    if user:
-        # Academia and Skills are two separate destinations, not one merged dashboard —
-        # every entry into the app (login, signup, or landing back on "/") forks through
-        # this picker rather than silently dropping the user into whichever they used last.
+    user_data = session.get('user')
+    if user_data:
+        # Academia and Skills are two separate destinations, not one merged dashboard.
+        # First-ever entry (no preferred_path set yet) forks through the Choose Your Path
+        # picker so the student makes a deliberate choice; every entry after that goes
+        # straight to whichever space they're in — the picker no longer stands between a
+        # returning user and their own dashboard. The sidebar wordmark in both shells still
+        # links back to /choose-path, which remains how someone switches spaces on purpose.
+        preferred_path = user_data.get('preferred_path')
+        if preferred_path in VALID_PATHS:
+            return redirect(url_for(VALID_PATHS[preferred_path]))
+        user = User.query.filter_by(username=user_data.get('username')).first()
+        if user and user.preferred_path in VALID_PATHS:
+            return redirect(url_for(VALID_PATHS[user.preferred_path]))
         return redirect(url_for('dashboard.choose_path'))
     return render_template('landing.html')
 

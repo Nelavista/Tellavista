@@ -3,133 +3,125 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Community - Nelavista</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <title>Community · Nelavista</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/skills.css') }}">
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-    body { background: #0d1117; color: #e6edf3; min-height: 100vh; }
+    /* Page-specific: community chat only. Shell comes from skills.css/the shared include
+       below — no .top-bar/.sidebar rules here so they can't shadow it. */
 
-    .top-bar {
-      position: sticky; top: 0; background: rgba(13, 17, 23, 0.95);
-      backdrop-filter: blur(10px); display: flex; align-items: center;
-      justify-content: space-between; padding: 12px 20px;
-      border-bottom: 1px solid #21262d; z-index: 100;
+    .community-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: var(--space-4) var(--space-5); border-bottom: 1px solid var(--sk-border);
     }
-    .top-bar h1 { font-size: 1.3rem; font-weight: 700; display: flex; align-items: center; gap: 8px; }
-    .top-bar button {
-      background: #58a6ff; border: none; padding: 8px 16px;
-      border-radius: 40px; color: #0d1117; font-weight: 700;
-      cursor: pointer; transition: 0.2s; font-size: 0.85rem;
-    }
-    .top-bar button:hover { opacity: 0.9; transform: translateY(-1px); }
+    .community-header h1 { font-size: var(--text-lg); font-weight: 700; display: flex; align-items: center; gap: 8px; font-family: 'Bricolage Grotesque', sans-serif; }
 
-    .community-container { display: flex; height: calc(100vh - 58px); }
+    .community-container { display: flex; height: calc(100vh - 130px); }
 
     .groups-sidebar {
-      width: 320px; background: #161b22; border-right: 1px solid #21262d;
+      width: 320px; background: var(--sk-card); border-right: 1px solid var(--sk-border);
       display: flex; flex-direction: column; overflow: hidden;
     }
-    .search-section { padding: 14px; border-bottom: 1px solid #21262d; }
+    .search-section { padding: 14px; border-bottom: 1px solid var(--sk-border); }
     .search-wrapper {
-      background: #0d1117; border: 1px solid #30363d; border-radius: 40px; padding: 9px 14px;
+      background: var(--bg-deep); border: 1px solid var(--sk-border); border-radius: 40px; padding: 9px 14px;
       display: flex; align-items: center; gap: 8px; transition: border-color 0.2s;
     }
-    .search-wrapper:focus-within { border-color: #58a6ff; }
+    .search-wrapper:focus-within { border-color: var(--sk-accent); }
     .search-wrapper input {
-      flex: 1; background: none; border: none; color: #e6edf3;
+      flex: 1; background: none; border: none; color: var(--text-primary);
       outline: none; font-size: 0.88rem;
     }
-    .search-wrapper input::placeholder { color: #6e7681; }
+    .search-wrapper input::placeholder { color: var(--text-muted); }
 
     .filter-tabs {
       display: flex; gap: 6px; padding: 10px 14px;
-      border-bottom: 1px solid #21262d; overflow-x: auto;
+      border-bottom: 1px solid var(--sk-border); overflow-x: auto;
     }
     .filter-tab {
       flex-shrink: 0; padding: 6px 14px; background: none;
-      border: 1px solid #30363d; border-radius: 30px;
-      color: #8b949e; font-size: 0.78rem; cursor: pointer;
+      border: 1px solid var(--sk-border); border-radius: 30px;
+      color: var(--text-secondary); font-size: 0.78rem; cursor: pointer;
       transition: 0.2s; font-weight: 600;
     }
-    .filter-tab.active { background: #58a6ff; color: #0d1117; border-color: #58a6ff; }
+    .filter-tab.active { background: var(--sk-accent); color: var(--bg-deep); border-color: var(--sk-accent); }
 
     .groups-list { flex: 1; overflow-y: auto; padding: 8px; }
-    .no-groups { text-align: center; padding: 40px 20px; color: #6e7681; cursor: pointer; }
+    .no-groups { text-align: center; padding: 40px 20px; color: var(--text-muted); cursor: pointer; }
     .no-groups-icon { font-size: 2.6rem; margin-bottom: 10px; opacity: 0.4; }
     .no-groups p { font-size: 0.88rem; margin-bottom: 4px; }
-    .loading-groups { text-align: center; padding: 40px 20px; color: #6e7681; }
+    .loading-groups { text-align: center; padding: 40px 20px; color: var(--text-muted); }
     .loading-spinner {
-      width: 28px; height: 28px; border: 3px solid #30363d;
-      border-top: 3px solid #58a6ff; border-radius: 50%;
+      width: 28px; height: 28px; border: 3px solid var(--sk-border);
+      border-top: 3px solid var(--sk-accent); border-radius: 50%;
       animation: spin 0.8s linear infinite; margin: 0 auto 10px;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
     .group-item {
-      background: #0d1117; border-radius: 12px; padding: 12px;
+      background: var(--bg-deep); border-radius: 12px; padding: 12px;
       margin-bottom: 6px; cursor: pointer; transition: 0.15s;
       border: 1px solid transparent;
     }
-    .group-item:hover { border-color: #30363d; }
-    .group-item.active { border-color: #58a6ff; background: #131c2e; }
+    .group-item:hover { border-color: var(--sk-border); }
+    .group-item.active { border-color: var(--sk-accent); background: var(--sk-neutral-bg); }
     .group-header { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
     .group-avatar {
       width: 42px; height: 42px; border-radius: 12px;
-      background: linear-gradient(135deg, #58a6ff, #79c0ff);
+      background: linear-gradient(135deg, var(--sk-accent), var(--sk-accent-hover));
       display: flex; align-items: center; justify-content: center;
-      font-size: 1.1rem; font-weight: 700; color: #0d1117; flex-shrink: 0;
+      font-size: 1.1rem; font-weight: 700; color: var(--bg-deep); flex-shrink: 0;
     }
     .group-info { flex: 1; min-width: 0; }
     .group-name { font-weight: 600; font-size: 0.92rem; margin-bottom: 2px; word-break: break-word; }
-    .group-meta { font-size: 0.72rem; color: #8b949e; display: flex; align-items: center; gap: 5px; flex-wrap: wrap; }
+    .group-meta { font-size: 0.72rem; color: var(--text-secondary); display: flex; align-items: center; gap: 5px; flex-wrap: wrap; }
     .group-type-badge {
       display: inline-block; padding: 2px 7px; border-radius: 4px;
       font-size: 0.62rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.3px;
     }
-    .badge-course { background: rgba(20,184,166,0.18); color: #2dd4bf; }
-    .badge-study { background: rgba(249,115,22,0.18); color: #fb923c; }
-    .badge-social { background: rgba(139,92,246,0.18); color: #a78bfa; }
+    .badge-course { background: rgba(20,184,166,0.18); color: var(--sk-success); }
+    .badge-study { background: rgba(249,115,22,0.18); color: var(--sk-warn); }
+    .badge-social { background: rgba(139,92,246,0.18); color: var(--sk-warn); }
     .group-description {
-      font-size: 0.78rem; color: #8b949e; line-height: 1.4;
+      font-size: 0.78rem; color: var(--text-secondary); line-height: 1.4;
       margin-top: 4px; word-break: break-word;
     }
 
-    .chat-main { flex: 1; display: flex; flex-direction: column; background: #0d1117; min-width: 0; }
+    .chat-main { flex: 1; display: flex; flex-direction: column; background: var(--bg-deep); min-width: 0; }
     .empty-state {
       flex: 1; display: flex; flex-direction: column;
       align-items: center; justify-content: center;
-      color: #6e7681; text-align: center; padding: 40px;
+      color: var(--text-muted); text-align: center; padding: 40px;
     }
     .empty-state-icon { font-size: 3.5rem; margin-bottom: 14px; opacity: 0.4; }
-    .empty-state h3 { font-size: 1.2rem; margin-bottom: 6px; color: #8b949e; }
+    .empty-state h3 { font-size: 1.2rem; margin-bottom: 6px; color: var(--text-secondary); }
     .empty-state p { font-size: 0.88rem; max-width: 380px; }
 
     .chat-header {
       display: none; padding: 14px 18px;
-      border-bottom: 1px solid #21262d; background: #161b22;
+      border-bottom: 1px solid var(--sk-border); background: var(--sk-card);
     }
     .chat-header.active { display: flex; justify-content: space-between; align-items: center; }
     .chat-header-left { display: flex; align-items: center; gap: 10px; cursor: pointer; min-width: 0; }
     .chat-header-avatar {
       width: 38px; height: 38px; border-radius: 10px;
-      background: linear-gradient(135deg, #58a6ff, #79c0ff);
+      background: linear-gradient(135deg, var(--sk-accent), var(--sk-accent-hover));
       display: flex; align-items: center; justify-content: center;
-      font-weight: 700; color: #0d1117; flex-shrink: 0;
+      font-weight: 700; color: var(--bg-deep); flex-shrink: 0;
     }
     .chat-header-info { min-width: 0; }
     .chat-header-info h3 { font-size: 0.98rem; font-weight: 600; margin-bottom: 1px; word-break: break-word; }
-    .chat-header-info p { font-size: 0.73rem; color: #8b949e; }
+    .chat-header-info p { font-size: 0.73rem; color: var(--text-secondary); }
     .chat-header-actions { display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
     .icon-btn {
-      background: none; border: 1px solid #30363d; color: #8b949e; width: 34px; height: 34px;
+      background: none; border: 1px solid var(--sk-border); color: var(--text-secondary); width: 34px; height: 34px;
       border-radius: 50%; cursor: pointer; font-size: 1rem; transition: 0.2s;
       display: flex; align-items: center; justify-content: center;
     }
-    .icon-btn:hover { border-color: #58a6ff; color: #58a6ff; }
+    .icon-btn:hover { border-color: var(--sk-accent); color: var(--sk-accent); }
 
     .messages-area { flex: 1; overflow-y: auto; padding: 18px; display: none; }
     .messages-area.active { display: block; }
-    .no-messages { text-align: center; padding: 60px 20px; color: #6e7681; }
+    .no-messages { text-align: center; padding: 60px 20px; color: var(--text-muted); }
     .no-messages-icon { font-size: 2.2rem; margin-bottom: 8px; opacity: 0.4; }
     .no-messages p { font-size: 0.88rem; }
 
@@ -138,29 +130,29 @@
     .message-row.system { max-width: 100%; justify-content: center; margin-bottom: 10px; }
     .message-avatar {
       width: 32px; height: 32px; border-radius: 50%;
-      background: linear-gradient(135deg, #a78bfa, #8b5cf6);
+      background: linear-gradient(135deg, var(--sk-warn), color-mix(in srgb, var(--sk-warn) 65%, black));
       display: flex; align-items: center; justify-content: center;
       font-size: 0.82rem; font-weight: 700; color: white; flex-shrink: 0;
     }
-    .message-row.mine .message-avatar { background: linear-gradient(135deg, #58a6ff, #79c0ff); color: #0d1117; }
+    .message-row.mine .message-avatar { background: linear-gradient(135deg, var(--sk-accent), var(--sk-accent-hover)); color: var(--bg-deep); }
     .message-content-wrapper { min-width: 0; position: relative; }
     .message-row.mine .message-content-wrapper { text-align: right; }
     .message-sender {
       font-weight: 600; font-size: 0.8rem; margin-bottom: 3px;
-      display: flex; align-items: center; gap: 6px; color: #8b949e;
+      display: flex; align-items: center; gap: 6px; color: var(--text-secondary);
     }
     .message-row.mine .message-sender { justify-content: flex-end; }
-    .message-time { font-size: 0.68rem; color: #6e7681; font-weight: 400; }
+    .message-time { font-size: 0.68rem; color: var(--text-muted); font-weight: 400; }
     .message-bubble {
-      background: #161b22; padding: 9px 13px; border-radius: 14px;
+      background: var(--sk-card); padding: 9px 13px; border-radius: 14px;
       font-size: 0.9rem; line-height: 1.5; display: inline-block;
       max-width: 100%; word-break: break-word; text-align: left; position: relative;
     }
-    .message-row.mine .message-bubble { background: #1f3a5f; border-bottom-right-radius: 4px; }
+    .message-row.mine .message-bubble { background: color-mix(in srgb, var(--sk-accent) 22%, var(--bg-elevated)); border-bottom-right-radius: 4px; }
     .message-row:not(.mine) .message-bubble { border-bottom-left-radius: 4px; }
-    .message-edited-tag { font-size: 0.68rem; color: #6e7681; margin-left: 4px; }
+    .message-edited-tag { font-size: 0.68rem; color: var(--text-muted); margin-left: 4px; }
     .message-system-text {
-      font-size: 0.76rem; color: #6e7681; background: #161b22; padding: 5px 14px;
+      font-size: 0.76rem; color: var(--text-muted); background: var(--sk-card); padding: 5px 14px;
       border-radius: 30px; text-align: center;
     }
 
@@ -168,62 +160,62 @@
     .message-file-icon { font-size: 1.6rem; }
     .message-file-info { text-align: left; }
     .message-file-name { font-weight: 600; font-size: 0.85rem; word-break: break-all; }
-    .message-file-size { font-size: 0.7rem; color: #8b949e; }
+    .message-file-size { font-size: 0.7rem; color: var(--text-secondary); }
     .message-image { max-width: 260px; border-radius: 12px; display: block; margin-top: 2px; cursor: pointer; }
 
     .message-actions {
-      position: absolute; top: -14px; display: none; gap: 4px; background: #21262d;
-      border: 1px solid #30363d; border-radius: 20px; padding: 3px; z-index: 5;
+      position: absolute; top: -14px; display: none; gap: 4px; background: var(--sk-border);
+      border: 1px solid var(--sk-border); border-radius: 20px; padding: 3px; z-index: 5;
     }
     .message-row.mine .message-actions { right: 0; }
     .message-row:not(.mine) .message-actions { left: 0; }
     .message-content-wrapper:hover .message-actions { display: flex; }
     .message-action-btn {
-      background: none; border: none; color: #8b949e; width: 24px; height: 24px;
+      background: none; border: none; color: var(--text-secondary); width: 24px; height: 24px;
       border-radius: 50%; cursor: pointer; font-size: 0.78rem; display: flex;
       align-items: center; justify-content: center; transition: 0.15s;
     }
-    .message-action-btn:hover { background: #30363d; color: #e6edf3; }
+    .message-action-btn:hover { background: var(--sk-border); color: var(--text-primary); }
 
     .message-input-area {
       display: none; padding: 14px 18px;
-      border-top: 1px solid #21262d; background: #161b22;
+      border-top: 1px solid var(--sk-border); background: var(--sk-card);
     }
     .message-input-area.active { display: block; }
     .message-input-wrapper {
-      background: #0d1117; border: 1px solid #30363d; border-radius: 24px;
+      background: var(--bg-deep); border: 1px solid var(--sk-border); border-radius: 24px;
       padding: 5px 6px 5px 14px; display: flex; align-items: center; gap: 8px;
     }
-    .message-input-wrapper:focus-within { border-color: #58a6ff; }
+    .message-input-wrapper:focus-within { border-color: var(--sk-accent); }
     .message-input-wrapper input {
-      flex: 1; background: none; border: none; color: #e6edf3;
+      flex: 1; background: none; border: none; color: var(--text-primary);
       padding: 9px 4px; font-size: 0.9rem; outline: none;
     }
-    .message-input-wrapper input::placeholder { color: #6e7681; }
+    .message-input-wrapper input::placeholder { color: var(--text-muted); }
     .attach-btn {
-      background: none; border: none; color: #8b949e; width: 34px; height: 34px;
+      background: none; border: none; color: var(--text-secondary); width: 34px; height: 34px;
       border-radius: 50%; cursor: pointer; font-size: 1.1rem; transition: 0.2s; flex-shrink: 0;
     }
-    .attach-btn:hover { color: #58a6ff; }
+    .attach-btn:hover { color: var(--sk-accent); }
     .send-msg-btn {
-      background: #58a6ff; border: none; width: 34px; height: 34px;
-      border-radius: 50%; color: #0d1117; cursor: pointer; font-size: 1rem; transition: 0.2s; flex-shrink: 0;
+      background: var(--sk-accent); border: none; width: 34px; height: 34px;
+      border-radius: 50%; color: var(--bg-deep); cursor: pointer; font-size: 1rem; transition: 0.2s; flex-shrink: 0;
     }
     .send-msg-btn:hover:not(:disabled) { opacity: 0.9; }
     .send-msg-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-    .uploading-indicator { font-size: 0.75rem; color: #8b949e; padding: 6px 18px 0; }
+    .uploading-indicator { font-size: 0.75rem; color: var(--text-secondary); padding: 6px 18px 0; }
 
     .join-btn {
-      background: #58a6ff !important; border: none !important;
+      background: var(--sk-accent) !important; border: none !important;
       padding: 7px 18px !important; border-radius: 20px !important;
-      color: #0d1117 !important; font-weight: 700 !important;
+      color: var(--bg-deep) !important; font-weight: 700 !important;
       cursor: pointer !important; transition: 0.2s !important;
       font-size: 0.8rem !important; width: auto !important; height: auto !important;
       white-space: nowrap;
     }
     .join-btn:hover:not(:disabled) { opacity: 0.9; }
-    .join-btn.joined { background: #21262d !important; color: #f87171 !important; border: 1px solid #30363d !important; }
-    .join-btn.admin { background: #14b8a6 !important; color: #0d1117 !important; }
+    .join-btn.joined { background: var(--sk-border) !important; color: var(--sk-danger) !important; border: 1px solid var(--sk-border) !important; }
+    .join-btn.admin { background: var(--sk-success) !important; color: var(--bg-deep) !important; }
     .join-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
     .modal-overlay {
@@ -233,71 +225,71 @@
     }
     .modal-overlay.active { display: flex; }
     .modal {
-      background: #161b22; border: 1px solid #30363d; border-radius: 20px;
+      background: var(--sk-card); border: 1px solid var(--sk-border); border-radius: 20px;
       width: 100%; max-width: 480px; padding: 26px; max-height: 85vh; overflow-y: auto;
       animation: modalSlide 0.25s ease-out;
     }
     @keyframes modalSlide { from{opacity:0;transform:translateY(-14px)} to{opacity:1;transform:translateY(0)} }
     .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
     .modal-header h2 { font-size: 1.25rem; font-weight: 700; }
-    .modal-close { background: none; border: none; color: #8b949e; font-size: 1.4rem; cursor: pointer; padding: 4px; }
+    .modal-close { background: none; border: none; color: var(--text-secondary); font-size: 1.4rem; cursor: pointer; padding: 4px; }
     .form-group { margin-bottom: 18px; }
-    .form-label { display: block; font-size: 0.82rem; font-weight: 600; margin-bottom: 7px; color: #d1d5db; }
+    .form-label { display: block; font-size: 0.82rem; font-weight: 600; margin-bottom: 7px; color: var(--text-secondary); }
     .form-input, .form-textarea, .form-select {
-      width: 100%; background: #0d1117; border: 1px solid #30363d;
-      border-radius: 12px; padding: 11px 13px; color: #e6edf3;
+      width: 100%; background: var(--bg-deep); border: 1px solid var(--sk-border);
+      border-radius: 12px; padding: 11px 13px; color: var(--text-primary);
       font-size: 0.88rem; outline: none; transition: 0.2s;
     }
-    .form-input:focus, .form-textarea:focus, .form-select:focus { border-color: #58a6ff; }
+    .form-input:focus, .form-textarea:focus, .form-select:focus { border-color: var(--sk-accent); }
     .form-textarea { resize: vertical; min-height: 70px; font-family: inherit; }
     .privacy-options { display: flex; gap: 10px; }
     .privacy-option {
-      flex: 1; background: #0d1117; border: 2px solid #30363d;
+      flex: 1; background: var(--bg-deep); border: 2px solid var(--sk-border);
       border-radius: 12px; padding: 12px; cursor: pointer;
       transition: 0.2s; text-align: center;
     }
-    .privacy-option.selected { border-color: #58a6ff; background: rgba(88,166,255,0.08); }
+    .privacy-option.selected { border-color: var(--sk-accent); background: rgba(88,166,255,0.08); }
     .privacy-option-icon { font-size: 1.4rem; margin-bottom: 5px; }
     .privacy-option-title { font-weight: 600; font-size: 0.85rem; margin-bottom: 3px; }
-    .privacy-option-desc { font-size: 0.72rem; color: #8b949e; }
+    .privacy-option-desc { font-size: 0.72rem; color: var(--text-secondary); }
     .modal-actions { display: flex; gap: 10px; margin-top: 24px; }
     .modal-btn {
       flex: 1; padding: 11px; border-radius: 12px;
       font-weight: 600; cursor: pointer; transition: 0.2s;
       border: none; font-size: 0.9rem;
     }
-    .modal-btn-cancel { background: #21262d; color: #e6edf3; }
-    .modal-btn-cancel:hover { background: #30363d; }
-    .modal-btn-create { background: #58a6ff; color: #0d1117; }
+    .modal-btn-cancel { background: var(--sk-border); color: var(--text-primary); }
+    .modal-btn-cancel:hover { background: var(--sk-border); }
+    .modal-btn-create { background: var(--sk-accent); color: var(--bg-deep); }
     .modal-btn-create:hover { opacity: 0.9; }
     .modal-btn-create:disabled { opacity: 0.5; cursor: not-allowed; }
-    .modal-btn-danger { background: #f87171; color: #2b0d0d; }
+    .modal-btn-danger { background: var(--sk-danger); color: #2b0d0d; }
     .modal-btn-danger:hover { opacity: 0.9; }
-    .form-error { color: #f87171; font-size: 0.75rem; margin-top: 6px; display: none; }
+    .form-error { color: var(--sk-danger); font-size: 0.75rem; margin-top: 6px; display: none; }
     .form-error.active { display: block; }
 
     .members-list { list-style: none; }
-    .member-row { display: flex; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 1px solid #21262d; }
+    .member-row { display: flex; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--sk-border); }
     .member-row:last-child { border-bottom: none; }
     .member-avatar {
-      width: 34px; height: 34px; border-radius: 50%; background: linear-gradient(135deg, #58a6ff, #79c0ff);
-      display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8rem; color: #0d1117; flex-shrink: 0;
+      width: 34px; height: 34px; border-radius: 50%; background: linear-gradient(135deg, var(--sk-accent), var(--sk-accent-hover));
+      display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8rem; color: var(--bg-deep); flex-shrink: 0;
     }
     .member-info { flex: 1; min-width: 0; }
     .member-name { font-size: 0.88rem; font-weight: 600; }
-    .member-role { font-size: 0.7rem; color: #8b949e; }
-    .member-remove-btn { background: none; border: 1px solid #30363d; color: #f87171; border-radius: 20px; padding: 4px 12px; font-size: 0.72rem; cursor: pointer; }
-    .member-remove-btn:hover { border-color: #f87171; background: rgba(248,113,113,0.1); }
-    .danger-zone { margin-top: 20px; padding-top: 16px; border-top: 1px solid #21262d; }
+    .member-role { font-size: 0.7rem; color: var(--text-secondary); }
+    .member-remove-btn { background: none; border: 1px solid var(--sk-border); color: var(--sk-danger); border-radius: 20px; padding: 4px 12px; font-size: 0.72rem; cursor: pointer; }
+    .member-remove-btn:hover { border-color: var(--sk-danger); background: rgba(248,113,113,0.1); }
+    .danger-zone { margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--sk-border); }
 
     .toast {
       position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-      background: #14b8a6; color: #0d1117; padding: 11px 22px;
+      background: var(--sk-success); color: var(--bg-deep); padding: 11px 22px;
       border-radius: 30px; font-weight: 700; font-size: 0.85rem;
       z-index: 2000; animation: toastIn 0.3s ease-out, toastOut 0.3s ease-out 2.7s forwards;
       box-shadow: 0 4px 12px rgba(0,0,0,0.4);
     }
-    .toast.error { background: #f87171; }
+    .toast.error { background: var(--sk-danger); }
     @keyframes toastIn { from{opacity:0;transform:translateX(-50%) translateY(16px)} to{opacity:1;transform:translateX(-50%) translateY(0)} }
     @keyframes toastOut { from{opacity:1} to{opacity:0} }
 
@@ -306,7 +298,7 @@
       .chat-main { display: none; }
       .groups-sidebar.hidden { display: none; }
       .chat-main.active-mobile { display: flex; }
-      .chat-back-btn { display: block !important; background: none; border: none; color: #8b949e; font-size: 1.2rem; cursor: pointer; padding: 4px 8px; }
+      .chat-back-btn { display: block !important; background: none; border: none; color: var(--text-secondary); font-size: 1.2rem; cursor: pointer; padding: 4px 8px; }
       .message-row { max-width: 88%; }
     }
     .chat-back-btn { display: none; }
@@ -316,16 +308,18 @@
     <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
 </head>
 <body>
-  <div class="top-bar">
-    <h1>🏛️ Community</h1>
-    <button onclick="openCreateModal()">+ Create Group</button>
+{% set active_page = 'community' %}
+{% include 'components/academia_sidebar.html' %}
+  <div class="community-header">
+    <h1><i class="ri-group-line"></i> Community</h1>
+    <button class="sk-btn small" onclick="openCreateModal()"><i class="ri-add-line"></i> Create group</button>
   </div>
 
   <div class="community-container">
     <div class="groups-sidebar" id="groupsSidebar">
       <div class="search-section">
         <div class="search-wrapper">
-          <span>🔍</span>
+          <span><i class="ri-search-line"></i></span>
           <input type="text" placeholder="Search groups..." id="searchInput" oninput="debounceSearch()">
         </div>
       </div>
@@ -345,13 +339,13 @@
 
     <div class="chat-main" id="chatMain">
       <div class="empty-state" id="emptyState">
-        <div class="empty-state-icon">💬</div>
+        <div class="empty-state-icon"><i class="ri-message-3-line"></i></div>
         <h3>Welcome to Community</h3>
         <p>Select a group to start chatting, or create your own study group</p>
       </div>
       <div class="chat-header" id="chatHeader">
         <div class="chat-header-left" onclick="openMembersModal()">
-          <button class="chat-back-btn" onclick="event.stopPropagation(); goBackToGroups()">←</button>
+          <button class="chat-back-btn" onclick="event.stopPropagation(); goBackToGroups()"><i class="ri-arrow-left-line"></i></button>
           <div class="chat-header-avatar" id="chatAvatar">#</div>
           <div class="chat-header-info">
             <h3 id="chatGroupName">Group Name</h3>
@@ -359,23 +353,23 @@
           </div>
         </div>
         <div class="chat-header-actions">
-          <button class="icon-btn" onclick="openMembersModal()" title="Members">👥</button>
+          <button class="icon-btn" onclick="openMembersModal()" title="Members"><i class="ri-group-line"></i></button>
           <button class="join-btn" id="joinLeaveBtn" onclick="toggleMembership()">Join</button>
         </div>
       </div>
       <div class="messages-area" id="messagesArea">
         <div class="no-messages" id="noMessages">
-          <div class="no-messages-icon">💭</div>
+          <div class="no-messages-icon"><i class="ri-chat-3-line"></i></div>
           <p>No messages yet. Start the conversation!</p>
         </div>
       </div>
-      <div class="uploading-indicator" id="uploadingIndicator" style="display:none;">📎 Uploading file...</div>
+      <div class="uploading-indicator" id="uploadingIndicator" style="display:none;"><i class="ri-attachment-2"></i> Uploading file...</div>
       <div class="message-input-area" id="messageInput">
         <div class="message-input-wrapper">
-          <button class="attach-btn" onclick="document.getElementById('fileInput').click()" title="Attach file">📎</button>
+          <button class="attach-btn" onclick="document.getElementById('fileInput').click()" title="Attach file"><i class="ri-attachment-2"></i></button>
           <input type="file" id="fileInput" onchange="handleFileSelected(event)">
           <input type="text" placeholder="Type a message..." id="messageText" onkeypress="handleMessageKey(event)" autocomplete="off">
-          <button class="send-msg-btn" id="sendBtn" onclick="sendMessage()" disabled>➤</button>
+          <button class="send-msg-btn" id="sendBtn" onclick="sendMessage()" disabled><i class="ri-send-plane-2-fill"></i></button>
         </div>
       </div>
     </div>
@@ -409,12 +403,12 @@
           <label class="form-label">Privacy</label>
           <div class="privacy-options">
             <div class="privacy-option selected" onclick="selectPrivacy('public', this)">
-              <div class="privacy-option-icon">🌍</div>
+              <div class="privacy-option-icon"><i class="ri-global-line"></i></div>
               <div class="privacy-option-title">Public</div>
               <div class="privacy-option-desc">Anyone can join</div>
             </div>
             <div class="privacy-option" onclick="selectPrivacy('private', this)">
-              <div class="privacy-option-icon">🔒</div>
+              <div class="privacy-option-icon"><i class="ri-lock-line"></i></div>
               <div class="privacy-option-title">Private</div>
               <div class="privacy-option-desc">Invite only</div>
             </div>
@@ -437,7 +431,7 @@
       </div>
       <ul class="members-list" id="membersList"></ul>
       <div class="danger-zone hidden" id="dangerZone">
-        <button class="modal-btn modal-btn-danger" style="width:100%;" onclick="confirmDeleteGroup()">🗑️ Delete This Group</button>
+        <button class="modal-btn modal-btn-danger" style="width:100%;" onclick="confirmDeleteGroup()"><i class="ri-delete-bin-line"></i> Delete this group</button>
       </div>
     </div>
   </div>
@@ -512,7 +506,7 @@
         renderGroups(data.groups);
       } catch (err) {
         console.error('Load groups error:', err);
-        groupsList.innerHTML = `<div class="no-groups" onclick="loadGroups('${filter}','${search}')"><div class="no-groups-icon">⚠️</div><p>Failed to load</p><p style="font-size:0.75rem;margin-top:4px;">Tap to retry</p></div>`;
+        groupsList.innerHTML = `<div class="no-groups" onclick="loadGroups('${filter}','${search}')"><div class="no-groups-icon"><i class="ri-error-warning-line"></i></div><p>Failed to load</p><p style="font-size:0.75rem;margin-top:4px;">Tap to retry</p></div>`;
       }
       if (loadingEl) loadingEl.style.display = 'none';
     }
@@ -520,7 +514,7 @@
     function renderGroups(groups) {
       const groupsList = document.getElementById('groupsList');
       if (!groups || groups.length === 0) {
-        groupsList.innerHTML = `<div class="no-groups"><div class="no-groups-icon">📭</div><p>No groups yet</p><p style="font-size:0.8rem;margin-top:4px;">Create the first group!</p></div>`;
+        groupsList.innerHTML = `<div class="no-groups"><div class="no-groups-icon"><i class="ri-group-line"></i></div><p>No groups yet</p><p style="font-size:0.8rem;margin-top:4px;">Create the first group!</p></div>`;
         return;
       }
       groupsList.innerHTML = groups.map(group => {
@@ -535,7 +529,7 @@
               <div class="group-meta">
                 <span class="group-type-badge ${badge.class}">${badge.label}</span>
                 <span>•</span><span>${group.member_count||0} members</span>
-                ${group.is_member?'<span>•</span><span style="color:#3fb950;">✓ Joined</span>':''}
+                ${group.is_member?'<span>•</span><span style="color:var(--sk-success);"><i class="ri-check-line"></i> Joined</span>':''}
               </div>
             </div>
           </div>
@@ -647,12 +641,13 @@
     }
 
     function fileIconFor(type) {
-      if (['png','jpg','jpeg','gif'].includes(type)) return '🖼️';
-      if (type === 'pdf') return '📕';
-      if (['doc','docx'].includes(type)) return '📘';
-      if (['ppt','pptx'].includes(type)) return '📙';
-      if (['xls','xlsx'].includes(type)) return '📗';
-      return '📄';
+      let icon = 'ri-file-line';
+      if (['png','jpg','jpeg','gif'].includes(type)) icon = 'ri-image-line';
+      else if (type === 'pdf') icon = 'ri-file-pdf-2-line';
+      else if (['doc','docx'].includes(type)) icon = 'ri-file-word-2-line';
+      else if (['ppt','pptx'].includes(type)) icon = 'ri-file-ppt-2-line';
+      else if (['xls','xlsx'].includes(type)) icon = 'ri-file-excel-2-line';
+      return `<i class="${icon}"></i>`;
     }
     function fmtBytes(n) {
       if (!n) return '';
@@ -707,12 +702,12 @@
       let actionsHtml = '';
       if (isMine && msg.message_type === 'text') {
         actionsHtml = `<div class="message-actions">
-          <button class="message-action-btn" onclick="startEditMessage(${msg.id})" title="Edit">✏️</button>
-          <button class="message-action-btn" onclick="deleteMessage(${msg.id})" title="Delete">🗑️</button>
+          <button class="message-action-btn" onclick="startEditMessage(${msg.id})" title="Edit"><i class="ri-pencil-line"></i></button>
+          <button class="message-action-btn" onclick="deleteMessage(${msg.id})" title="Delete"><i class="ri-delete-bin-line"></i></button>
         </div>`;
       } else if (isMine || (currentGroupData && currentGroupData.user_role === 'admin')) {
         actionsHtml = `<div class="message-actions">
-          <button class="message-action-btn" onclick="deleteMessage(${msg.id})" title="Delete">🗑️</button>
+          <button class="message-action-btn" onclick="deleteMessage(${msg.id})" title="Delete"><i class="ri-delete-bin-line"></i></button>
         </div>`;
       }
 
@@ -889,7 +884,7 @@
           updateChatHeader(currentGroupData);
           return;
         }
-        showToast(isMember ? 'Left group' : 'Joined group! 🎉');
+        showToast(isMember ? 'Left group' : 'Joined group');
         const infoRes = await fetch(`/api/groups/${currentGroupId}/info`);
         const infoData = await infoRes.json();
         if (infoData.success) {
@@ -938,14 +933,14 @@
             <div class="member-avatar">${esc(initials)}</div>
             <div class="member-info">
               <div class="member-name">${esc(m.display_name)}</div>
-              <div class="member-role">${m.role === 'admin' ? '👑 Admin' : 'Member'}</div>
+              <div class="member-role">${m.role === 'admin' ? '<i class="ri-vip-crown-line"></i> Admin' : 'Member'}</div>
             </div>
             ${canRemove ? `<button class="member-remove-btn" onclick="removeMember(${m.user_id})">Remove</button>` : ''}
           </li>`;
         }).join('');
         document.getElementById('dangerZone').classList.toggle('hidden', !currentGroupData.is_creator);
       } catch (err) {
-        list.innerHTML = `<p style="color:#8b949e; font-size:0.85rem;">Failed to load members</p>`;
+        list.innerHTML = `<p style="color:var(--text-secondary); font-size:0.85rem;">Failed to load members</p>`;
       }
     }
     function closeMembersModal() { document.getElementById('membersModal').classList.remove('active'); }
@@ -996,7 +991,7 @@
         });
         const data = await res.json();
         if (!data.success) throw new Error(data.error || 'Failed');
-        showToast('Group created! 🎉');
+        showToast('Group created');
         closeCreateModal();
         await loadGroups(currentFilter);
         setTimeout(() => openGroup(data.group.id), 500);
@@ -1026,5 +1021,6 @@
       if (currentGroupId && socket) socket.emit('leave-community-group', { group_id: currentGroupId });
     });
   </script>
+{% include 'components/academia_footer.html' %}
 </body>
 </html>

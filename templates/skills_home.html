@@ -21,7 +21,7 @@
     <h1 class="sk-h1" style="font-size:1.8rem;">{{ greeting }}, {{ first_name }} <i class="ri-emotion-happy-line"></i></h1>
     <p class="sk-sub">What are you building today?</p>
 
-    <div class="sk-panel dv2-progress-card" style="margin:22px 0;">
+    <div class="sk-panel dv2-progress-card" style="margin: var(--space-5) 0;">
       {% set circumference = 226.19 %}
       <div class="dv2-ring-wrap">
         <svg width="88" height="88" viewBox="0 0 88 88">
@@ -39,9 +39,9 @@
         <div class="dv2-ring-label">{{ overall_pct }}%</div>
       </div>
       <div class="dv2-progress-stats">
-        <div class="dv2-progress-title">{{ continue_card.skill.name if continue_card else 'Skills Progress' }}</div>
-        <div class="dv2-progress-line">{{ overall_pct }}% complete</div>
-        <div class="dv2-progress-line">{{ data.stats.skills_completed }} skill{{ 's' if data.stats.skills_completed != 1 else '' }} completed · {{ data.stats.skills_in_progress }} in progress</div>
+        <div class="dv2-progress-title">{{ continue_card.skill.name if continue_card else 'Skills you\'ve started' }}</div>
+        <div class="dv2-progress-line">{{ overall_pct }}% average progress on the {{ data.stats.skills_completed + data.stats.skills_in_progress }} skill{{ 's' if (data.stats.skills_completed + data.stats.skills_in_progress) != 1 else '' }} you've started</div>
+        <div class="dv2-progress-line">{{ data.stats.skills_completed }} completed · {{ data.stats.skills_in_progress }} in progress</div>
       </div>
     </div>
 
@@ -53,7 +53,7 @@
     </div>
 
     {% if spotlight_skill %}
-    <div class="sk-panel" style="margin:22px 0; border:1px solid var(--border-glow); display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;">
+    <div class="sk-panel" style="margin: var(--space-5) 0; border:1px solid var(--border-glow); display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;">
       <div>
         <span class="sk-eyebrow" style="margin-bottom:6px;">Based on what you told us</span>
         <div class="sk-card-title" style="font-size:1.2rem;">Ready to start {{ spotlight_skill.name }}?</div>
@@ -62,7 +62,7 @@
       <a href="/skills/{{ spotlight_skill.slug }}" class="sk-btn">Start Learning →</a>
     </div>
     {% elif unmatched_interest %}
-    <div class="sk-panel" style="margin:22px 0;">
+    <div class="sk-panel" style="margin: var(--space-5) 0;">
       <span class="sk-eyebrow" style="margin-bottom:6px;">Based on what you told us</span>
       <div class="sk-card-desc" style="margin-bottom:0;">You said you wanted to learn "<strong>{{ unmatched_interest }}</strong>" — we don't have a dedicated path for that yet, but here's what's closest for now.</div>
     </div>
@@ -102,7 +102,7 @@
       {% endif %}
     </div>
 
-    <div class="sk-panel" style="margin-top:16px;">
+    <div class="sk-panel" style="margin-top: var(--space-4);">
       <div class="sk-card-title">{{ continue_card.skill.name }}</div>
       <div class="sk-card-desc" style="text-transform:uppercase; font-size:0.72rem; letter-spacing:0.06em; font-weight:700;">Learn → Practice → Build → Verify → Earn</div>
       <div class="dv2-stepper">
@@ -117,7 +117,7 @@
       </div>
     </div>
 
-    <div class="sk-panel dv2-nudge" style="margin-top:16px;">
+    <div class="sk-panel dv2-nudge" style="margin-top: var(--space-4);">
       <div>
         <div class="sk-card-desc" style="text-transform:uppercase; font-size:0.72rem; letter-spacing:0.06em; font-weight:700; margin-bottom:6px;">Next best step</div>
         <div class="sk-card-title">Continue your {{ continue_card.current_phase|title }} step in {{ continue_card.skill.name }}</div>
@@ -232,7 +232,8 @@
     </div>
     {% endif %}
 
-    <div class="hm-grid-2" style="margin-top:34px;">
+    <div class="sk-section-title" style="margin-top: var(--space-7); font-size:1rem; color:var(--sk-text-dim);">Your account</div>
+    <div class="hm-grid-2">
       <div class="sk-panel">
         <div class="sk-card-desc" style="text-transform:uppercase; font-size:0.72rem; letter-spacing:0.06em; font-weight:700;">Your earnings</div>
         <div class="dv2-earnings-hero">₦{{ '{:,}'.format(earnings.total_paid) }}</div>
@@ -242,7 +243,7 @@
           <div><div class="dv2-earnings-stat-label">Pending</div><div class="dv2-earnings-stat-value">₦{{ '{:,}'.format(earnings.pending) }}</div></div>
           <div><div class="dv2-earnings-stat-label">Active</div><div class="dv2-earnings-stat-value">{{ earnings.active_count }}</div></div>
         </div>
-        <a href="/skills/earnings" class="sk-btn secondary small" style="margin-top:16px;">View Earnings</a>
+        <a href="/skills/earnings" class="sk-btn secondary small" style="margin-top: var(--space-4);">View Earnings</a>
       </div>
 
       <div class="sk-panel">

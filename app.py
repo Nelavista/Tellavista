@@ -135,6 +135,27 @@ def create_app():
         founder's personal Gmail hardcoded into the templates directly."""
         return {'support_email': SUPPORT_EMAIL}
 
+    @app.context_processor
+    def inject_nav_badges():
+        """Unread counts for the notification bell / Messages nav item, available to the
+        shared app shell (both Skills' and Academia's sidebar/topbar) regardless of which
+        blueprint served the request. Was previously a skills_bp-only context processor,
+        which meant these badges silently never appeared outside Skills routes. Safe to
+        call unconditionally: returns {} for a logged-out session, and the shell only
+        renders the badge when the count is truthy."""
+        from flask import session as flask_session
+        if 'user' not in flask_session:
+            return {}
+        from models import User, MessageThread
+        from services.notification_service import unread_count
+        user = User.query.filter_by(username=flask_session['user']['username']).first()
+        if not user:
+            return {}
+        unread_msgs = sum(t.unread_count_for(user.id) for t in MessageThread.query.filter(
+            db.or_(MessageThread.employer_id == user.id, MessageThread.student_id == user.id)
+        ).all())
+        return {'nav_unread_notifications': unread_count(user.id), 'nav_unread_messages': unread_msgs}
+
     # ==================== SECURITY HEADERS ====================
     
     @app.after_request

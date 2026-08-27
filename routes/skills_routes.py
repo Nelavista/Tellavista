@@ -66,21 +66,8 @@ def _current_user():
     return User.query.filter_by(username=session['user']['username']).first()
 
 
-@skills_bp.context_processor
-def _inject_nav_badges():
-    """Unread counts for the notification bell / Messages nav item — computed once per
-    request rather than duplicated into every route's render_template call. Safe to call
-    unconditionally: unread_count/thread queries just return 0 for a logged-out session,
-    and the sidebar only renders the badge when the count is truthy."""
-    if 'user' not in session:
-        return {}
-    user = User.query.filter_by(username=session['user']['username']).first()
-    if not user:
-        return {}
-    unread_msgs = sum(t.unread_count_for(user.id) for t in MessageThread.query.filter(
-        db.or_(MessageThread.employer_id == user.id, MessageThread.student_id == user.id)
-    ).all())
-    return {'nav_unread_notifications': unread_count(user.id), 'nav_unread_messages': unread_msgs}
+# nav-badge injection moved to an app-level context processor in app.py (inject_nav_badges)
+# so it also covers Academia's shell, not just skills_bp routes.
 
 
 @skills_bp.before_request

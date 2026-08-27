@@ -5,19 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Nelavista · Mock Exam</title>
     <style>
-        * { margin:0; padding:0; box-sizing:border-box; font-family:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif; }
-        body { background:#0d1117; color:#e6edf3; min-height:100vh; overflow-x:hidden; }
-
-        /* ── TOP BAR ── */
-        .top-bar { display:flex; align-items:center; justify-content:space-between; padding:14px 20px; border-bottom:1px solid #21262d; position:sticky; top:0; background:#0d1117; z-index:100; }
-        .top-left { display:flex; align-items:center; gap:14px; }
-        .menu-btn { background:transparent; border:none; color:#e6edf3; font-size:22px; cursor:pointer; width:38px; height:38px; border-radius:50%; display:flex; align-items:center; justify-content:center; transition:background 0.2s; }
-        .menu-btn:hover { background:#21262d; }
-        .logo-area { display:flex; align-items:baseline; gap:8px; }
-        .logo-text { font-size:1.2rem; font-weight:700; background:linear-gradient(135deg,#e6edf3,#58a6ff); -webkit-background-clip:text; background-clip:text; color:transparent; }
-        .logo-badge { font-size:0.65rem; background:#14b8a6; padding:2px 8px; border-radius:30px; font-weight:600; color:#0d1117; }
-        .top-right { display:flex; align-items:center; gap:10px; }
-        .user-avatar { width:36px; height:36px; background:#21262d; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:0.8rem; color:#58a6ff; border:1px solid #30363d; }
+        /* Page-specific: exam-runner UI only. Shell (sidebar/topbar/mobile nav) and
+           typography/colors come from skills.css, linked above — this block no longer
+           defines .top-bar/.sidebar/etc. so it can't shadow the shared shell's own rules
+           of the same name. */
+        .screen, .onboarding-wrap, .type-screen, .exam-wrap, .results-wrap { font-family: inherit; }
+        body { overflow-x:hidden; }
 
         /* ── SCREENS ── */
         .screen { display:none; min-height:calc(100vh - 61px); }
@@ -26,23 +19,23 @@
         /* ── ONBOARDING / COURSE SELECT ── */
         .onboarding-wrap { max-width:780px; margin:0 auto; padding:32px 20px 80px; }
         .ob-title { font-size:1.8rem; font-weight:700; margin-bottom:8px; }
-        .ob-sub { color:#8b949e; font-size:0.92rem; margin-bottom:20px; }
-        .dept-pill { display:inline-flex; align-items:center; gap:6px; background:#161b22; border:1px solid #30363d; padding:6px 14px; border-radius:30px; font-size:0.82rem; color:#8b949e; margin-bottom:24px; }
+        .ob-sub { color:var(--text-secondary); font-size:0.92rem; margin-bottom:20px; }
+        .dept-pill { display:inline-flex; align-items:center; gap:6px; background:var(--sk-card); border:1px solid var(--sk-border); padding:6px 14px; border-radius:30px; font-size:0.82rem; color:var(--text-secondary); margin-bottom:24px; }
         .ob-meta { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
-        .section-label { font-size:0.68rem; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:#6e7681; }
-        .sel-all-btn { background:transparent; border:none; color:#58a6ff; font-size:0.82rem; cursor:pointer; }
+        .section-label { font-size:0.68rem; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--text-muted); }
+        .sel-all-btn { background:transparent; border:none; color:var(--sk-accent); font-size:0.82rem; cursor:pointer; }
         .sel-all-btn:hover { text-decoration:underline; }
         .courses-grid { display:flex; flex-wrap:wrap; gap:10px; margin-bottom:20px; }
-        .course-chip { background:#161b22; border:2px solid #21262d; border-radius:12px; padding:12px 16px; cursor:pointer; transition:all 0.18s; min-width:150px; flex:1 0 auto; max-width:210px; position:relative; }
-        .course-chip:hover { border-color:#30363d; }
-        .course-chip.selected { background:rgba(20,184,166,0.1); border-color:#14b8a6; }
+        .course-chip { background:var(--sk-card); border:2px solid var(--sk-border); border-radius:12px; padding:12px 16px; cursor:pointer; transition:all 0.18s; min-width:150px; flex:1 0 auto; max-width:210px; position:relative; }
+        .course-chip:hover { border-color:var(--sk-border); }
+        .course-chip.selected { background:rgba(20,184,166,0.1); border-color:var(--sk-success); }
         .chip-code { font-weight:700; font-size:0.92rem; display:block; }
-        .chip-name { font-size:0.7rem; color:#8b949e; margin-top:3px; line-height:1.3; }
-        .chip-check { position:absolute; top:8px; right:10px; color:#14b8a6; font-size:13px; font-weight:700; opacity:0; transition:opacity 0.15s; }
+        .chip-name { font-size:0.7rem; color:var(--text-secondary); margin-top:3px; line-height:1.3; }
+        .chip-check { position:absolute; top:8px; right:10px; color:var(--sk-success); font-size:13px; font-weight:700; opacity:0; transition:opacity 0.15s; }
         .course-chip.selected .chip-check { opacity:1; }
-        .sel-count { font-size:0.82rem; color:#8b949e; margin-bottom:18px; }
-        .sel-count span { color:#14b8a6; font-weight:600; }
-        .continue-btn { background:#14b8a6; border:none; padding:14px 28px; border-radius:40px; font-weight:700; font-size:1rem; color:#0d1117; width:100%; cursor:pointer; transition:all 0.2s; }
+        .sel-count { font-size:0.82rem; color:var(--text-secondary); margin-bottom:18px; }
+        .sel-count span { color:var(--sk-success); font-weight:600; }
+        .continue-btn { background:var(--sk-success); border:none; padding:14px 28px; border-radius:40px; font-weight:700; font-size:1rem; color:var(--bg-deep); width:100%; cursor:pointer; transition:all 0.2s; }
         .continue-btn:disabled { opacity:0.35; cursor:not-allowed; }
         .continue-btn:not(:disabled):hover { background:#0d9488; }
 
@@ -50,159 +43,159 @@
         .type-screen { max-width:600px; margin:0 auto; padding:40px 20px; }
         .type-header { text-align:center; margin-bottom:36px; }
         .type-header h2 { font-size:1.7rem; font-weight:700; margin-bottom:8px; }
-        .type-header p { color:#8b949e; font-size:0.92rem; }
-        .course-display { background:#161b22; border:1px solid #30363d; border-radius:12px; padding:12px 18px; text-align:center; margin-bottom:32px; font-size:0.9rem; color:#8b949e; }
-        .course-display strong { color:#e6edf3; }
+        .type-header p { color:var(--text-secondary); font-size:0.92rem; }
+        .course-display { background:var(--sk-card); border:1px solid var(--sk-border); border-radius:12px; padding:12px 18px; text-align:center; margin-bottom:32px; font-size:0.9rem; color:var(--text-secondary); }
+        .course-display strong { color:var(--text-primary); }
         .type-cards { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:28px; }
-        .type-card { background:#161b22; border:2px solid #21262d; border-radius:18px; padding:28px 20px; cursor:pointer; text-align:center; transition:all 0.2s; }
-        .type-card:hover { border-color:#30363d; transform:translateY(-2px); }
-        .type-card.selected { border-color:#58a6ff; background:rgba(88,166,255,0.06); }
+        .type-card { background:var(--sk-card); border:2px solid var(--sk-border); border-radius:18px; padding:28px 20px; cursor:pointer; text-align:center; transition:all 0.2s; }
+        .type-card:hover { border-color:var(--sk-border); transform:translateY(-2px); }
+        .type-card.selected { border-color:var(--sk-accent); background:rgba(88,166,255,0.06); }
         .type-card.disabled { cursor:not-allowed; opacity:0.4; }
-        .type-card.disabled:hover { border-color:#21262d; transform:none; }
+        .type-card.disabled:hover { border-color:var(--sk-border); transform:none; }
         .type-icon { font-size:2.4rem; margin-bottom:14px; }
         .type-title { font-weight:700; font-size:1.1rem; margin-bottom:6px; }
-        .type-desc { font-size:0.78rem; color:#8b949e; line-height:1.5; }
+        .type-desc { font-size:0.78rem; color:var(--text-secondary); line-height:1.5; }
         .type-badge { display:inline-block; margin-top:10px; font-size:0.65rem; font-weight:700; padding:3px 10px; border-radius:30px; }
-        .badge-cbt { background:rgba(88,166,255,0.15); color:#58a6ff; }
-        .badge-written { background:rgba(20,184,166,0.15); color:#14b8a6; }
-        .back-btn { background:transparent; border:1px solid #30363d; color:#8b949e; padding:10px 24px; border-radius:40px; font-size:0.88rem; cursor:pointer; transition:all 0.2s; margin-right:10px; }
-        .back-btn:hover { border-color:#58a6ff; color:#58a6ff; }
-        .start-exam-btn { background:#58a6ff; border:none; padding:14px 32px; border-radius:40px; font-weight:700; font-size:1rem; color:#0d1117; cursor:pointer; transition:all 0.2s; }
+        .badge-cbt { background:rgba(88,166,255,0.15); color:var(--sk-accent); }
+        .badge-written { background:rgba(20,184,166,0.15); color:var(--sk-success); }
+        .back-btn { background:transparent; border:1px solid var(--sk-border); color:var(--text-secondary); padding:10px 24px; border-radius:40px; font-size:0.88rem; cursor:pointer; transition:all 0.2s; margin-right:10px; }
+        .back-btn:hover { border-color:var(--sk-accent); color:var(--sk-accent); }
+        .start-exam-btn { background:var(--sk-accent); border:none; padding:14px 32px; border-radius:40px; font-weight:700; font-size:1rem; color:var(--bg-deep); cursor:pointer; transition:all 0.2s; }
         .start-exam-btn:disabled { opacity:0.35; cursor:not-allowed; }
-        .start-exam-btn:not(:disabled):hover { background:#4493e8; }
+        .start-exam-btn:not(:disabled):hover { background:var(--sk-accent-hover); }
         .type-actions { display:flex; justify-content:center; gap:10px; flex-wrap:wrap; }
 
         /* ── EXAM SCREEN ── */
         .exam-wrap { max-width:820px; margin:0 auto; padding:20px 20px 80px; }
 
         /* Progress bar */
-        .exam-progress-bar { background:#161b22; border:1px solid #21262d; border-radius:16px; padding:16px 20px; margin-bottom:20px; display:flex; align-items:center; gap:16px; flex-wrap:wrap; }
+        .exam-progress-bar { background:var(--sk-card); border:1px solid var(--sk-border); border-radius:16px; padding:16px 20px; margin-bottom:20px; display:flex; align-items:center; gap:16px; flex-wrap:wrap; }
         .progress-info { display:flex; gap:16px; flex:1; flex-wrap:wrap; }
-        .prog-stat { font-size:0.78rem; color:#8b949e; }
-        .prog-stat strong { color:#e6edf3; font-size:0.88rem; }
-        .prog-track { flex:1; min-width:120px; height:6px; background:#21262d; border-radius:6px; overflow:hidden; }
-        .prog-fill { height:100%; background:linear-gradient(90deg,#58a6ff,#14b8a6); border-radius:6px; transition:width 0.4s ease; }
-        .timer-badge { display:flex; align-items:center; gap:6px; background:#21262d; padding:6px 14px; border-radius:30px; font-size:0.82rem; font-weight:600; }
-        .timer-badge.warning { background:rgba(249,115,22,0.2); color:#f97316; }
-        .timer-badge.danger { background:rgba(239,68,68,0.2); color:#ef4444; animation:pulse 1s infinite; }
+        .prog-stat { font-size:0.78rem; color:var(--text-secondary); }
+        .prog-stat strong { color:var(--text-primary); font-size:0.88rem; }
+        .prog-track { flex:1; min-width:120px; height:6px; background:var(--sk-border); border-radius:6px; overflow:hidden; }
+        .prog-fill { height:100%; background:linear-gradient(90deg,var(--sk-accent),var(--sk-success)); border-radius:6px; transition:width 0.4s ease; }
+        .timer-badge { display:flex; align-items:center; gap:6px; background:var(--sk-border); padding:6px 14px; border-radius:30px; font-size:0.82rem; font-weight:600; }
+        .timer-badge.warning { background:rgba(249,115,22,0.2); color:var(--sk-warn); }
+        .timer-badge.danger { background:rgba(239,68,68,0.2); color:var(--sk-danger); animation:pulse 1s infinite; }
         @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.6} }
 
         /* CBT nav pills */
         .cbt-nav { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:20px; }
-        .q-pill { width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.75rem; font-weight:600; cursor:pointer; border:2px solid #21262d; background:#161b22; color:#8b949e; transition:all 0.15s; flex-shrink:0; }
-        .q-pill.current { border-color:#58a6ff; color:#58a6ff; }
-        .q-pill.answered { background:#14b8a6; border-color:#14b8a6; color:#0d1117; }
-        .q-pill.flagged { border-color:#f97316; color:#f97316; }
+        .q-pill { width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.75rem; font-weight:600; cursor:pointer; border:2px solid var(--sk-border); background:var(--sk-card); color:var(--text-secondary); transition:all 0.15s; flex-shrink:0; }
+        .q-pill.current { border-color:var(--sk-accent); color:var(--sk-accent); }
+        .q-pill.answered { background:var(--sk-success); border-color:var(--sk-success); color:var(--bg-deep); }
+        .q-pill.flagged { border-color:var(--sk-warn); color:var(--sk-warn); }
 
         /* Question card */
-        .question-card { background:#161b22; border:1px solid #21262d; border-radius:18px; padding:28px; margin-bottom:16px; }
+        .question-card { background:var(--sk-card); border:1px solid var(--sk-border); border-radius:18px; padding:28px; margin-bottom:16px; }
         .q-header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:18px; gap:12px; }
-        .q-number { font-size:0.72rem; font-weight:700; text-transform:uppercase; letter-spacing:0.8px; color:#8b949e; }
-        .q-course-tag { font-size:0.7rem; background:rgba(88,166,255,0.1); color:#58a6ff; padding:3px 10px; border-radius:30px; white-space:nowrap; }
-        .q-text { font-size:1.05rem; font-weight:500; line-height:1.65; color:#e6edf3; margin-bottom:22px; }
+        .q-number { font-size:0.72rem; font-weight:700; text-transform:uppercase; letter-spacing:0.8px; color:var(--text-secondary); }
+        .q-course-tag { font-size:0.7rem; background:rgba(88,166,255,0.1); color:var(--sk-accent); padding:3px 10px; border-radius:30px; white-space:nowrap; }
+        .q-text { font-size:1.05rem; font-weight:500; line-height:1.65; color:var(--text-primary); margin-bottom:22px; }
 
         /* CBT options */
         .options-list { display:flex; flex-direction:column; gap:10px; }
-        .option-btn { display:flex; align-items:flex-start; gap:14px; background:#0d1117; border:2px solid #21262d; border-radius:12px; padding:14px 16px; cursor:pointer; text-align:left; transition:all 0.18s; width:100%; }
-        .option-btn:hover:not(:disabled) { border-color:#30363d; background:#161b22; }
-        .option-btn.selected { border-color:#58a6ff; background:rgba(88,166,255,0.08); }
-        .option-btn.correct { border-color:#22c55e; background:rgba(34,197,94,0.1); }
-        .option-btn.wrong { border-color:#ef4444; background:rgba(239,68,68,0.1); }
-        .opt-letter { width:28px; height:28px; border-radius:50%; background:#21262d; display:flex; align-items:center; justify-content:center; font-size:0.75rem; font-weight:700; flex-shrink:0; color:#8b949e; }
-        .option-btn.selected .opt-letter { background:#58a6ff; color:#0d1117; }
-        .option-btn.correct .opt-letter { background:#22c55e; color:#0d1117; }
-        .option-btn.wrong .opt-letter { background:#ef4444; color:#fff; }
-        .opt-text { font-size:0.92rem; color:#c9d1d9; line-height:1.5; padding-top:3px; }
+        .option-btn { display:flex; align-items:flex-start; gap:14px; background:var(--bg-deep); border:2px solid var(--sk-border); border-radius:12px; padding:14px 16px; cursor:pointer; text-align:left; transition:all 0.18s; width:100%; }
+        .option-btn:hover:not(:disabled) { border-color:var(--sk-border); background:var(--sk-card); }
+        .option-btn.selected { border-color:var(--sk-accent); background:rgba(88,166,255,0.08); }
+        .option-btn.correct { border-color:var(--sk-success); background:rgba(34,197,94,0.1); }
+        .option-btn.wrong { border-color:var(--sk-danger); background:rgba(239,68,68,0.1); }
+        .opt-letter { width:28px; height:28px; border-radius:50%; background:var(--sk-border); display:flex; align-items:center; justify-content:center; font-size:0.75rem; font-weight:700; flex-shrink:0; color:var(--text-secondary); }
+        .option-btn.selected .opt-letter { background:var(--sk-accent); color:var(--bg-deep); }
+        .option-btn.correct .opt-letter { background:var(--sk-success); color:var(--bg-deep); }
+        .option-btn.wrong .opt-letter { background:var(--sk-danger); color:#fff; }
+        .opt-text { font-size:0.92rem; color:var(--text-secondary); line-height:1.5; padding-top:3px; }
 
         /* Written answer */
         .written-answer-wrap { margin-top:6px; }
-        .written-answer { width:100%; background:#0d1117; border:2px solid #21262d; border-radius:12px; padding:16px; color:#e6edf3; font-size:0.95rem; line-height:1.6; resize:vertical; min-height:140px; outline:none; transition:border 0.2s; font-family:inherit; }
-        .written-answer:focus { border-color:#58a6ff; }
-        .written-answer::placeholder { color:#6e7681; }
+        .written-answer { width:100%; background:var(--bg-deep); border:2px solid var(--sk-border); border-radius:12px; padding:16px; color:var(--text-primary); font-size:0.95rem; line-height:1.6; resize:vertical; min-height:140px; outline:none; transition:border 0.2s; font-family:inherit; }
+        .written-answer:focus { border-color:var(--sk-accent); }
+        .written-answer::placeholder { color:var(--text-muted); }
         .mark-scheme { background:rgba(34,197,94,0.06); border:1px solid rgba(34,197,94,0.2); border-radius:12px; padding:16px; margin-top:14px; display:none; }
         .mark-scheme.show { display:block; }
-        .mark-scheme-title { font-size:0.75rem; font-weight:700; color:#22c55e; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:8px; }
-        .mark-scheme-text { font-size:0.88rem; color:#c9d1d9; line-height:1.6; }
+        .mark-scheme-title { font-size:0.75rem; font-weight:700; color:var(--sk-success); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:8px; }
+        .mark-scheme-text { font-size:0.88rem; color:var(--text-secondary); line-height:1.6; }
         .self-mark-row { display:flex; gap:10px; margin-top:12px; flex-wrap:wrap; }
         .self-mark-btn { flex:1; padding:10px; border-radius:10px; border:none; font-size:0.82rem; font-weight:600; cursor:pointer; transition:all 0.2s; min-width:100px; }
-        .self-mark-btn.got-it { background:rgba(34,197,94,0.15); color:#22c55e; border:1px solid rgba(34,197,94,0.3); }
+        .self-mark-btn.got-it { background:rgba(34,197,94,0.15); color:var(--sk-success); border:1px solid rgba(34,197,94,0.3); }
         .self-mark-btn.got-it:hover { background:rgba(34,197,94,0.25); }
-        .self-mark-btn.got-it.active { background:#22c55e; color:#0d1117; }
-        .self-mark-btn.partial { background:rgba(251,191,36,0.15); color:#fbbf24; border:1px solid rgba(251,191,36,0.3); }
+        .self-mark-btn.got-it.active { background:var(--sk-success); color:var(--bg-deep); }
+        .self-mark-btn.partial { background:rgba(251,191,36,0.15); color:var(--sk-warn); border:1px solid rgba(251,191,36,0.3); }
         .self-mark-btn.partial:hover { background:rgba(251,191,36,0.25); }
-        .self-mark-btn.partial.active { background:#fbbf24; color:#0d1117; }
-        .self-mark-btn.missed { background:rgba(239,68,68,0.15); color:#ef4444; border:1px solid rgba(239,68,68,0.3); }
+        .self-mark-btn.partial.active { background:var(--sk-warn); color:var(--bg-deep); }
+        .self-mark-btn.missed { background:rgba(239,68,68,0.15); color:var(--sk-danger); border:1px solid rgba(239,68,68,0.3); }
         .self-mark-btn.missed:hover { background:rgba(239,68,68,0.25); }
-        .self-mark-btn.missed.active { background:#ef4444; color:#fff; }
+        .self-mark-btn.missed.active { background:var(--sk-danger); color:#fff; }
 
         /* Exam actions */
         .exam-actions { display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; margin-top:10px; }
-        .flag-btn { background:transparent; border:1px solid #30363d; color:#8b949e; padding:9px 18px; border-radius:30px; font-size:0.82rem; cursor:pointer; transition:all 0.2s; display:flex; align-items:center; gap:6px; }
-        .flag-btn:hover { border-color:#f97316; color:#f97316; }
-        .flag-btn.flagged { border-color:#f97316; color:#f97316; background:rgba(249,115,22,0.08); }
+        .flag-btn { background:transparent; border:1px solid var(--sk-border); color:var(--text-secondary); padding:9px 18px; border-radius:30px; font-size:0.82rem; cursor:pointer; transition:all 0.2s; display:flex; align-items:center; gap:6px; }
+        .flag-btn:hover { border-color:var(--sk-warn); color:var(--sk-warn); }
+        .flag-btn.flagged { border-color:var(--sk-warn); color:var(--sk-warn); background:rgba(249,115,22,0.08); }
         .nav-row { display:flex; gap:8px; }
         .prev-btn, .next-btn { padding:10px 22px; border-radius:30px; font-size:0.88rem; font-weight:600; cursor:pointer; transition:all 0.2s; border:none; }
-        .prev-btn { background:#21262d; color:#e6edf3; }
-        .prev-btn:hover { background:#30363d; }
-        .next-btn { background:#58a6ff; color:#0d1117; }
-        .next-btn:hover { background:#4493e8; }
+        .prev-btn { background:var(--sk-border); color:var(--text-primary); }
+        .prev-btn:hover { background:var(--sk-border); }
+        .next-btn { background:var(--sk-accent); color:var(--bg-deep); }
+        .next-btn:hover { background:var(--sk-accent-hover); }
         .next-btn:disabled { opacity:0.4; cursor:not-allowed; }
-        .submit-btn { background:#14b8a6; border:none; padding:10px 24px; border-radius:30px; font-size:0.88rem; font-weight:700; color:#0d1117; cursor:pointer; transition:all 0.2s; }
+        .submit-btn { background:var(--sk-success); border:none; padding:10px 24px; border-radius:30px; font-size:0.88rem; font-weight:700; color:var(--bg-deep); cursor:pointer; transition:all 0.2s; }
         .submit-btn:hover { background:#0d9488; }
 
         /* Written check answer */
-        .check-answer-btn { background:#21262d; border:none; padding:10px 20px; border-radius:30px; font-size:0.85rem; font-weight:600; color:#e6edf3; cursor:pointer; transition:all 0.2s; margin-top:12px; display:flex; align-items:center; gap:6px; }
-        .check-answer-btn:hover { background:#30363d; }
+        .check-answer-btn { background:var(--sk-border); border:none; padding:10px 20px; border-radius:30px; font-size:0.85rem; font-weight:600; color:var(--text-primary); cursor:pointer; transition:all 0.2s; margin-top:12px; display:flex; align-items:center; gap:6px; }
+        .check-answer-btn:hover { background:var(--sk-border); }
 
         /* ── RESULTS SCREEN ── */
         .results-wrap { max-width:700px; margin:0 auto; padding:30px 20px 80px; }
-        .results-hero { background:linear-gradient(135deg,#161b22,#0d1117); border:1px solid #21262d; border-radius:20px; padding:32px; text-align:center; margin-bottom:24px; }
+        .results-hero { background:linear-gradient(135deg,var(--sk-card),var(--bg-deep)); border:1px solid var(--sk-border); border-radius:20px; padding:32px; text-align:center; margin-bottom:24px; }
         .results-emoji { font-size:3rem; margin-bottom:12px; }
         .results-title { font-size:1.6rem; font-weight:700; margin-bottom:6px; }
-        .results-sub { color:#8b949e; font-size:0.9rem; }
+        .results-sub { color:var(--text-secondary); font-size:0.9rem; }
         .score-ring { width:110px; height:110px; margin:20px auto; position:relative; }
         .score-ring svg { transform:rotate(-90deg); }
         .score-ring circle { fill:none; stroke-width:8; }
-        .ring-bg { stroke:#21262d; }
-        .ring-fill { stroke:#14b8a6; stroke-linecap:round; transition:stroke-dashoffset 1s ease; }
+        .ring-bg { stroke:var(--sk-border); }
+        .ring-fill { stroke:var(--sk-success); stroke-linecap:round; transition:stroke-dashoffset 1s ease; }
         .score-text { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; }
         .score-pct { font-size:1.5rem; font-weight:700; }
-        .score-label { font-size:0.65rem; color:#8b949e; }
+        .score-label { font-size:0.65rem; color:var(--text-secondary); }
         .stats-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:24px; }
-        .stat-box { background:#161b22; border:1px solid #21262d; border-radius:14px; padding:18px; text-align:center; }
+        .stat-box { background:var(--sk-card); border:1px solid var(--sk-border); border-radius:14px; padding:18px; text-align:center; }
         .stat-num { font-size:1.6rem; font-weight:700; margin-bottom:4px; }
-        .stat-lbl { font-size:0.72rem; color:#8b949e; }
-        .stat-box.correct-box .stat-num { color:#22c55e; }
-        .stat-box.wrong-box .stat-num { color:#ef4444; }
-        .stat-box.partial-box .stat-num { color:#fbbf24; }
+        .stat-lbl { font-size:0.72rem; color:var(--text-secondary); }
+        .stat-box.correct-box .stat-num { color:var(--sk-success); }
+        .stat-box.wrong-box .stat-num { color:var(--sk-danger); }
+        .stat-box.partial-box .stat-num { color:var(--sk-warn); }
 
         /* Review section */
-        .review-toggle { background:#161b22; border:1px solid #21262d; border-radius:14px; padding:14px 20px; cursor:pointer; display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
-        .review-toggle:hover { border-color:#30363d; }
+        .review-toggle { background:var(--sk-card); border:1px solid var(--sk-border); border-radius:14px; padding:14px 20px; cursor:pointer; display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
+        .review-toggle:hover { border-color:var(--sk-border); }
         .review-toggle span:first-child { font-weight:600; font-size:0.92rem; }
         .review-body { display:none; }
         .review-body.open { display:block; }
-        .review-item { background:#161b22; border:1px solid #21262d; border-radius:14px; padding:18px; margin-bottom:10px; }
-        .review-item.ri-correct { border-left:3px solid #22c55e; }
-        .review-item.ri-wrong { border-left:3px solid #ef4444; }
-        .review-item.ri-partial { border-left:3px solid #fbbf24; }
-        .review-item.ri-skipped { border-left:3px solid #6e7681; }
+        .review-item { background:var(--sk-card); border:1px solid var(--sk-border); border-radius:14px; padding:18px; margin-bottom:10px; }
+        .review-item.ri-correct { border-left:3px solid var(--sk-success); }
+        .review-item.ri-wrong { border-left:3px solid var(--sk-danger); }
+        .review-item.ri-partial { border-left:3px solid var(--sk-warn); }
+        .review-item.ri-skipped { border-left:3px solid var(--text-muted); }
         .ri-q { font-size:0.88rem; font-weight:500; margin-bottom:10px; line-height:1.5; }
         .ri-answer { font-size:0.8rem; padding:6px 10px; border-radius:8px; margin-bottom:6px; }
-        .ri-answer.your-ans { background:rgba(88,166,255,0.08); color:#58a6ff; }
-        .ri-answer.correct-ans { background:rgba(34,197,94,0.08); color:#22c55e; }
-        .ri-answer.written-ans { background:rgba(88,166,255,0.05); color:#c9d1d9; border:1px solid #21262d; }
+        .ri-answer.your-ans { background:rgba(88,166,255,0.08); color:var(--sk-accent); }
+        .ri-answer.correct-ans { background:rgba(34,197,94,0.08); color:var(--sk-success); }
+        .ri-answer.written-ans { background:rgba(88,166,255,0.05); color:var(--text-secondary); border:1px solid var(--sk-border); }
         .ri-status-chip { font-size:0.65rem; font-weight:700; padding:3px 10px; border-radius:30px; display:inline-block; margin-bottom:8px; }
 
         /* Results actions */
         .results-actions { display:flex; flex-direction:column; gap:10px; }
-        .try-again-btn { background:#58a6ff; border:none; padding:14px; border-radius:40px; font-weight:700; font-size:1rem; color:#0d1117; cursor:pointer; transition:all 0.2s; }
-        .try-again-btn:hover { background:#4493e8; }
-        .change-course-btn { background:transparent; border:1px solid #30363d; color:#8b949e; padding:12px; border-radius:40px; font-size:0.9rem; cursor:pointer; transition:all 0.2s; }
-        .change-course-btn:hover { border-color:#58a6ff; color:#58a6ff; }
+        .try-again-btn { background:var(--sk-accent); border:none; padding:14px; border-radius:40px; font-weight:700; font-size:1rem; color:var(--bg-deep); cursor:pointer; transition:all 0.2s; }
+        .try-again-btn:hover { background:var(--sk-accent-hover); }
+        .change-course-btn { background:transparent; border:1px solid var(--sk-border); color:var(--text-secondary); padding:12px; border-radius:40px; font-size:0.9rem; cursor:pointer; transition:all 0.2s; }
+        .change-course-btn:hover { border-color:var(--sk-accent); color:var(--sk-accent); }
 
         /* No profile warning */
-        .no-profile-warning { background:rgba(249,115,22,0.1); border:1px solid rgba(249,115,22,0.3); border-radius:14px; padding:16px 20px; margin-bottom:20px; font-size:0.88rem; color:#f97316; display:flex; gap:10px; align-items:flex-start; }
+        .no-profile-warning { background:rgba(249,115,22,0.1); border:1px solid rgba(249,115,22,0.3); border-radius:14px; padding:16px 20px; margin-bottom:20px; font-size:0.88rem; color:var(--sk-warn); display:flex; gap:10px; align-items:flex-start; }
 
         @media(max-width:600px) {
             .type-cards { grid-template-columns:1fr; }
@@ -214,31 +207,21 @@
             .q-pill { width:32px; height:32px; font-size:0.7rem; }
         }
     </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/skills.css') }}">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
 </head>
 <body>
-
-<!-- TOP BAR -->
-<div class="top-bar">
-    <div class="top-left">
-        <button class="menu-btn" onclick="window.location.href='/dashboard'">☰</button>
-        <div class="logo-area">
-            <span class="logo-text">Mock Exam</span>
-            <span class="logo-badge">Nelavista</span>
-        </div>
-    </div>
-    <div class="top-right">
-        <div class="user-avatar" id="userAvatar">{{ user_name[:2].upper() if user_name else 'SN' }}</div>
-    </div>
-</div>
+{% set active_page = 'practice' %}
+{% include 'components/academia_sidebar.html' %}
+<div class="sk-view" style="max-width:none;padding-left:0;padding-right:0;">
 
 <!-- SCREEN 1: COURSE SELECTION -->
 <div class="screen active" id="screen-courses">
     <div class="onboarding-wrap">
-        <h2 class="ob-title">🎓 Mock Exam</h2>
+        <h2 class="ob-title"><i class="ri-file-list-3-line"></i> Mock Exam</h2>
         <p class="ob-sub">Select your courses to start practising.</p>
-        <div class="dept-pill">🎓 <span id="deptLabel">Loading profile...</span></div>
+        <div class="dept-pill"><i class="ri-graduation-cap-line"></i> <span id="deptLabel">Loading profile...</span></div>
         <div id="noCourseWarning" class="no-profile-warning" style="display:none;"></div>
         <div class="ob-meta">
             <div class="section-label">Your courses this semester</div>
@@ -262,13 +245,13 @@
         </div>
         <div class="type-cards">
             <div class="type-card" id="card-cbt" onclick="selectExamType('cbt')">
-                <div class="type-icon">🖥️</div>
+                <div class="type-icon"><i class="ri-list-check-3"></i></div>
                 <div class="type-title">CBT Practice</div>
                 <div class="type-desc">Multiple choice practice questions, shuffled into a random order each time you start.</div>
                 <span class="type-badge badge-cbt" id="cbtCountBadge">MCQ</span>
             </div>
             <div class="type-card" id="card-written" onclick="selectExamType('written')">
-                <div class="type-icon">✍️</div>
+                <div class="type-icon"><i class="ri-quill-pen-line"></i></div>
                 <div class="type-title">Written Practice</div>
                 <div class="type-desc">Essay or short-answer questions. Write your answers and compare with the mark scheme.</div>
                 <span class="type-badge badge-written" id="writtenCountBadge">Essay</span>
@@ -291,7 +274,7 @@
                 <div class="prog-stat" id="progFlaggedWrap" style="display:none">Flagged <strong id="progFlagged">0</strong></div>
             </div>
             <div class="prog-track"><div class="prog-fill" id="progFill"></div></div>
-            <div class="timer-badge" id="timerBadge">⏱ <span id="timerText">00:00</span></div>
+            <div class="timer-badge" id="timerBadge"><i class="ri-time-line"></i> <span id="timerText">00:00</span></div>
         </div>
         <div class="cbt-nav" id="cbtNav" style="display:none"></div>
         <div class="question-card" id="questionCard">
@@ -303,7 +286,7 @@
             <div id="optionsArea"></div>
         </div>
         <div class="exam-actions">
-            <button class="flag-btn" id="flagBtn" onclick="toggleFlag()">🚩 Flag Question</button>
+            <button class="flag-btn" id="flagBtn" onclick="toggleFlag()"><i class="ri-flag-line"></i> Flag Question</button>
             <div class="nav-row">
                 <button class="prev-btn" id="prevBtn" onclick="navigate(-1)">← Prev</button>
                 <button class="next-btn" id="nextBtn" onclick="navigate(1)">Next →</button>
@@ -317,7 +300,7 @@
 <div class="screen" id="screen-results">
     <div class="results-wrap">
         <div class="results-hero">
-            <div class="results-emoji" id="resultsEmoji">🎉</div>
+            <div class="results-emoji" id="resultsEmoji"><i class="ri-trophy-line"></i></div>
             <div class="results-title" id="resultsTitle">Exam Complete!</div>
             <div class="results-sub" id="resultsSub">Here's how you did</div>
             <div class="score-ring">
@@ -346,16 +329,19 @@
             </div>
         </div>
         <div class="review-toggle" onclick="toggleReview()">
-            <span>📋 Review Answers</span>
-            <span id="reviewArrow">▼</span>
+            <span><i class="ri-file-list-2-line"></i> Review Answers</span>
+            <i id="reviewArrow" class="ri-arrow-down-s-line"></i>
         </div>
         <div class="review-body" id="reviewBody"></div>
         <div class="results-actions" style="margin-top:20px;">
-            <button class="try-again-btn" onclick="tryAgain()">🔄 Try Again (New Questions)</button>
-            <button class="change-course-btn" onclick="goToScreen('screen-courses')">📚 Change Course</button>
+            <button class="try-again-btn" onclick="tryAgain()"><i class="ri-refresh-line"></i> Try Again (New Questions)</button>
+            <button class="change-course-btn" onclick="goToScreen('screen-courses')"><i class="ri-book-open-line"></i> Change Course</button>
         </div>
     </div>
 </div>
+
+</div><!-- /.sk-view -->
+{% include 'components/academia_footer.html' %}
 
 <script>
 // ══════════════════════════════════════════════════════
@@ -511,7 +497,7 @@ function initCourseSelect() {
 
     if (!USER_DEPT || !USER_LEVEL_NUM) {
         warning.style.display = 'flex';
-        warning.innerHTML = `⚠️ Your academic profile is incomplete. <a href="/profile" style="color:#f97316;text-decoration:underline;margin-left:4px;">Complete your profile →</a>`;
+        warning.innerHTML = `<i class="ri-error-warning-line"></i> Your academic profile is incomplete. <a href="/profile" style="color:var(--sk-warn);text-decoration:underline;margin-left:4px;">Complete your profile →</a>`;
         deptLabel.textContent = 'Profile incomplete';
         return;
     }
@@ -522,7 +508,7 @@ function initCourseSelect() {
 
     if (!list.length) {
         warning.style.display = 'flex';
-        warning.innerHTML = `⚠️ No course codes found for ${USER_DEPT} Level ${USER_LEVEL_NUM}. <a href="/profile" style="color:#f97316;text-decoration:underline;margin-left:4px;">Update profile →</a>`;
+        warning.innerHTML = `<i class="ri-error-warning-line"></i> No course codes found for ${USER_DEPT} Level ${USER_LEVEL_NUM}. <a href="/profile" style="color:var(--sk-warn);text-decoration:underline;margin-left:4px;">Update profile →</a>`;
         return;
     }
 
@@ -738,7 +724,7 @@ function renderQuestion(idx) {
 
     const flagBtn = document.getElementById('flagBtn');
     flagBtn.className = 'flag-btn' + (flagged.includes(idx) ? ' flagged' : '');
-    flagBtn.textContent = flagged.includes(idx) ? '🚩 Flagged' : '🚩 Flag Question';
+    flagBtn.innerHTML = flagged.includes(idx) ? '<i class="ri-flag-fill"></i> Flagged' : '<i class="ri-flag-line"></i> Flag Question';
 
     document.getElementById('prevBtn').style.display = idx===0 ? 'none' : '';
     const isLast = idx === total-1;
@@ -809,9 +795,9 @@ function renderWrittenQuestion(q, idx) {
     area.innerHTML = `
         <div class="written-answer-wrap">
             <textarea class="written-answer" id="written-${idx}" placeholder="Write your answer here…" oninput="saveWritten(${idx})">${savedText}</textarea>
-            <button class="check-answer-btn" onclick="revealMarkScheme(${idx})">👁 Check Answer / Mark Scheme</button>
+            <button class="check-answer-btn" onclick="revealMarkScheme(${idx})"><i class="ri-eye-line"></i> Check Answer / Mark Scheme</button>
             <div class="mark-scheme" id="ms-${idx}" ${savedMs?'style="display:block"':''}>
-                <div class="mark-scheme-title">✅ Mark Scheme / Model Answer</div>
+                <div class="mark-scheme-title"><i class="ri-checkbox-circle-line"></i> Mark Scheme / Model Answer</div>
                 <div class="mark-scheme-text" id="ms-text-${idx}">${savedMs || ''}</div>
                 <div class="self-mark-row">
                     <button class="self-mark-btn got-it ${savedMark==='correct'?'active':''}" onclick="markSelf(${idx},'correct')">✓ Got It</button>
@@ -944,13 +930,13 @@ async function submitExam() {
 
     goToScreen('screen-results');
 
-    let emoji='😐', title='Keep Practising';
-    if(pct>=90){emoji='🏆';title='Outstanding!';}
-    else if(pct>=75){emoji='🎉';title='Great Job!';}
-    else if(pct>=60){emoji='👍';title='Good Effort!';}
-    else if(pct>=40){emoji='💪';title='Keep Going!';}
+    let resultIcon='ri-emotion-normal-line', title='Keep Practising';
+    if(pct>=90){resultIcon='ri-trophy-line';title='Outstanding!';}
+    else if(pct>=75){resultIcon='ri-emotion-happy-line';title='Great Job!';}
+    else if(pct>=60){resultIcon='ri-thumb-up-line';title='Good Effort!';}
+    else if(pct>=40){resultIcon='ri-flashlight-line';title='Keep Going!';}
 
-    document.getElementById('resultsEmoji').textContent = emoji;
+    document.getElementById('resultsEmoji').innerHTML = `<i class="${resultIcon}"></i>`;
     document.getElementById('resultsTitle').textContent = title;
     document.getElementById('resultsSub').textContent = `${selectedCourseForExam} · ${examType==='cbt'?'CBT':'Written'}`;
     document.getElementById('scorePct').textContent = pct+'%';
@@ -961,7 +947,7 @@ async function submitExam() {
     setTimeout(()=>{
         const circumference = 289;
         document.getElementById('ringFill').style.strokeDashoffset = circumference - (circumference*(pct/100));
-        document.getElementById('ringFill').style.stroke = pct>=75?'#22c55e':pct>=50?'#fbbf24':'#ef4444';
+        document.getElementById('ringFill').style.stroke = pct>=75?'var(--sk-success)':pct>=50?'var(--sk-warn)':'var(--sk-danger)';
     },200);
 
     buildReview();
@@ -973,17 +959,17 @@ function buildReview() {
     const body = document.getElementById('reviewBody');
     const letters = ['A','B','C','D'];
     body.innerHTML = lastResults.map((r,i)=>{
-        let status='skipped', statusColor='#6e7681', riClass='ri-skipped';
+        let status='skipped', statusColor='var(--text-muted)', riClass='ri-skipped';
         if(examType==='cbt'){
-            if(r.selected_index===null || r.selected_index===undefined){status='Skipped';statusColor='#6e7681';riClass='ri-skipped';}
-            else if(r.is_correct){status='Correct ✓';statusColor='#22c55e';riClass='ri-correct';}
-            else{status='Wrong ✗';statusColor='#ef4444';riClass='ri-wrong';}
+            if(r.selected_index===null || r.selected_index===undefined){status='Skipped';statusColor='var(--text-muted)';riClass='ri-skipped';}
+            else if(r.is_correct){status='Correct ✓';statusColor='var(--sk-success)';riClass='ri-correct';}
+            else{status='Wrong ✗';statusColor='var(--sk-danger)';riClass='ri-wrong';}
         } else {
             const m=userMarks[i];
-            if(!m){status='Not marked';statusColor='#6e7681';riClass='ri-skipped';}
-            else if(m==='correct'){status='Correct ✓';statusColor='#22c55e';riClass='ri-correct';}
-            else if(m==='partial'){status='Partial ~';statusColor='#fbbf24';riClass='ri-partial';}
-            else{status='Missed ✗';statusColor='#ef4444';riClass='ri-wrong';}
+            if(!m){status='Not marked';statusColor='var(--text-muted)';riClass='ri-skipped';}
+            else if(m==='correct'){status='Correct ✓';statusColor='var(--sk-success)';riClass='ri-correct';}
+            else if(m==='partial'){status='Partial ~';statusColor='var(--sk-warn)';riClass='ri-partial';}
+            else{status='Missed ✗';statusColor='var(--sk-danger)';riClass='ri-wrong';}
         }
 
         let answerHtml = '';
@@ -995,7 +981,7 @@ function buildReview() {
                 answerHtml += `<div class="ri-answer correct-ans">Correct: ${letters[r.correct_index]}. ${r.options[r.correct_index]}</div>`;
             }
             if(r.explanation){
-                answerHtml += `<div class="ri-answer" style="background:rgba(88,166,255,0.05);color:#8b949e;margin-top:4px;font-size:0.75rem;">💡 ${r.explanation}</div>`;
+                answerHtml += `<div class="ri-answer" style="background:rgba(88,166,255,0.05);color:var(--text-secondary);margin-top:4px;font-size:0.75rem;"><i class="ri-lightbulb-line"></i> ${r.explanation}</div>`;
             }
         } else {
             const txt = r.written_answer||'(No answer written)';
@@ -1004,7 +990,7 @@ function buildReview() {
         }
 
         return `<div class="review-item ${riClass}">
-            <div style="margin-bottom:6px;"><span class="ri-status-chip" style="background:${statusColor}22;color:${statusColor};border:1px solid ${statusColor}44;">${status}</span></div>
+            <div style="margin-bottom:6px;"><span class="ri-status-chip" style="background:color-mix(in srgb, ${statusColor} 15%, transparent);color:${statusColor};border:1px solid color-mix(in srgb, ${statusColor} 35%, transparent);">${status}</span></div>
             <div class="ri-q">Q${i+1}: ${r.question_text}</div>
             ${answerHtml}
         </div>`;
@@ -1015,7 +1001,7 @@ window.toggleReview = function() {
     const body = document.getElementById('reviewBody');
     const arrow = document.getElementById('reviewArrow');
     body.classList.toggle('open');
-    arrow.textContent = body.classList.contains('open') ? '▲' : '▼';
+    arrow.className = body.classList.contains('open') ? 'ri-arrow-up-s-line' : 'ri-arrow-down-s-line';
 };
 
 window.tryAgain = function() {
@@ -1028,7 +1014,7 @@ window.tryAgain = function() {
 initCourseSelect();
 
 // Debug log
-console.log('📋 User Profile:', { department: USER_DEPT, level: USER_LEVEL, name: USER_NAME });
+console.log('User profile:', { department: USER_DEPT, level: USER_LEVEL, name: USER_NAME });
 </script>
 </body>
 </html>

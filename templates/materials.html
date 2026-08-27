@@ -4,57 +4,41 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <title>Nelavista · Academic Archive</title>
+    <title>Study Materials · Nelavista</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/skills.css') }}">
     <style>
-        * { margin:0; padding:0; box-sizing:border-box; font-family:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif; }
-        body { background:#0d1117; color:#e6edf3; overflow-x:hidden; min-height:100vh; }
-
-        /* ===== TOP BAR ===== */
+        /* Page-specific: materials library only. Shell comes from skills.css/the shared
+           include below — no .top-bar/.sidebar rules here so they can't shadow it. */
         .app-container { max-width:1400px; margin:0 auto; padding:0 24px 80px; }
-        .top-bar { display:flex; align-items:center; justify-content:space-between; padding:16px 0 20px; border-bottom:1px solid #21262d; margin-bottom:28px; gap:12px; flex-wrap:wrap; }
-        .left-area { display:flex; align-items:center; gap:16px; }
-        .menu-btn { background:transparent; border:none; color:#e6edf3; font-size:22px; cursor:pointer; width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center; transition:background 0.2s; }
-        .menu-btn:hover { background:#21262d; }
-        .logo-area { display:flex; align-items:baseline; gap:8px; }
-        .logo-text { font-size:1.4rem; font-weight:700; background:linear-gradient(135deg,#e6edf3,#58a6ff); -webkit-background-clip:text; background-clip:text; color:transparent; letter-spacing:-0.3px; }
-        .logo-badge { font-size:0.68rem; background:#14b8a6; padding:2px 8px; border-radius:30px; font-weight:600; color:#0d1117; }
-        .right-area { display:flex; align-items:center; gap:16px; }
-        .nav-tabs { display:flex; gap:20px; }
-        .nav-tab { background:transparent; border:none; font-size:0.95rem; font-weight:500; color:#8b949e; cursor:pointer; padding:6px 0; border-bottom:2px solid transparent; transition:all 0.2s; }
-        .nav-tab.active { color:#e6edf3; border-bottom-color:#58a6ff; }
-        .nav-tab:hover:not(.active) { color:#c9d1d9; }
-        .user-avatar { width:38px; height:38px; background:#21262d; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:0.85rem; color:#58a6ff; border:1px solid #30363d; cursor:pointer; flex-shrink:0; }
-        .edit-courses-btn { background:transparent; border:1px solid #30363d; color:#8b949e; padding:6px 14px; border-radius:30px; font-size:0.78rem; cursor:pointer; transition:all 0.2s; white-space:nowrap; }
-        .edit-courses-btn:hover { border-color:#58a6ff; color:#58a6ff; }
 
         /* ===== HERO / SEARCH ===== */
         .hero-section { margin-bottom:28px; }
         .hero-title { font-size:1.9rem; font-weight:700; letter-spacing:-0.02em; margin-bottom:6px; }
-        .hero-sub { color:#8b949e; margin-bottom:22px; font-size:0.95rem; }
+        .hero-sub { color:var(--text-secondary); margin-bottom:22px; font-size:0.95rem; }
         .search-wrapper { position:relative; margin-bottom:18px; }
-        .search-icon { position:absolute; left:16px; top:50%; transform:translateY(-50%); color:#8b949e; font-size:17px; pointer-events:none; }
-        #searchInput { width:100%; padding:13px 16px 13px 46px; background:#161b22; border:1px solid #30363d; border-radius:40px; font-size:0.95rem; color:#e6edf3; outline:none; transition:all 0.2s; }
-        #searchInput:focus { border-color:#58a6ff; box-shadow:0 0 0 3px rgba(88,166,255,0.15); }
-        #searchInput::placeholder { color:#6e7681; }
+        .search-icon { position:absolute; left:16px; top:50%; transform:translateY(-50%); color:var(--text-secondary); font-size:17px; pointer-events:none; }
+        #searchInput { width:100%; padding:13px 16px 13px 46px; background:var(--sk-card); border:1px solid var(--sk-border); border-radius:40px; font-size:0.95rem; color:var(--text-primary); outline:none; transition:all 0.2s; }
+        #searchInput:focus { border-color:var(--sk-accent); box-shadow:0 0 0 3px rgba(88,166,255,0.15); }
+        #searchInput::placeholder { color:var(--text-muted); }
         .filter-row { display:flex; gap:10px; overflow-x:auto; padding-bottom:4px; scrollbar-width:none; }
         .filter-row::-webkit-scrollbar { display:none; }
-        .filter-pill { background:#21262d; border:none; padding:7px 18px; border-radius:30px; font-size:0.82rem; font-weight:500; color:#8b949e; cursor:pointer; white-space:nowrap; transition:all 0.2s; flex-shrink:0; }
-        .filter-pill.active { background:#58a6ff; color:#fff; }
-        .filter-pill:hover:not(.active) { background:#30363d; color:#e6edf3; }
+        .filter-pill { background:var(--sk-border); border:none; padding:7px 18px; border-radius:30px; font-size:0.82rem; font-weight:500; color:var(--text-secondary); cursor:pointer; white-space:nowrap; transition:all 0.2s; flex-shrink:0; }
+        .filter-pill.active { background:var(--sk-accent); color:#fff; }
+        .filter-pill:hover:not(.active) { background:var(--sk-border); color:var(--text-primary); }
 
         /* ===== COURSE FILTER ===== */
         .course-filter-row { margin-bottom:14px; }
-        #courseFilterSelect { background:#161b22; border:1px solid #30363d; border-radius:30px; color:#e6edf3; padding:9px 16px; font-size:0.85rem; outline:none; max-width:100%; }
-        #courseFilterSelect:focus { border-color:#58a6ff; }
+        #courseFilterSelect { background:var(--sk-card); border:1px solid var(--sk-border); border-radius:30px; color:var(--text-primary); padding:9px 16px; font-size:0.85rem; outline:none; max-width:100%; }
+        #courseFilterSelect:focus { border-color:var(--sk-accent); }
 
         /* ===== GOOGLE SEARCH STATUS ===== */
-        .google-status { display:flex; align-items:center; gap:8px; margin-bottom:12px; padding:8px 16px; background:#161b22; border-radius:40px; border:1px solid #30363d; }
+        .google-status { display:flex; align-items:center; gap:8px; margin-bottom:12px; padding:8px 16px; background:var(--sk-card); border-radius:40px; border:1px solid var(--sk-border); }
         .google-status .status-icon { font-size:14px; }
-        .google-status .status-text { font-size:0.8rem; color:#8b949e; }
-        .google-status.loading .status-text { color:#58a6ff; }
-        .google-status.success .status-icon { color:#14b8a6; }
-        .refresh-google-btn { margin-left:auto; background:transparent; border:1px solid #30363d; color:#8b949e; padding:4px 12px; border-radius:30px; font-size:0.7rem; cursor:pointer; transition:all 0.2s; }
-        .refresh-google-btn:hover { border-color:#58a6ff; color:#58a6ff; }
+        .google-status .status-text { font-size:0.8rem; color:var(--text-secondary); }
+        .google-status.loading .status-text { color:var(--sk-accent); }
+        .google-status.success .status-icon { color:var(--sk-success); }
+        .refresh-google-btn { margin-left:auto; background:transparent; border:1px solid var(--sk-border); color:var(--text-secondary); padding:4px 12px; border-radius:30px; font-size:0.7rem; cursor:pointer; transition:all 0.2s; }
+        .refresh-google-btn:hover { border-color:var(--sk-accent); color:var(--sk-accent); }
         .refresh-google-btn:disabled { opacity:0.5; cursor:not-allowed; }
 
         /* ===== MATERIALS GRID ===== */
@@ -62,102 +46,102 @@
         @media(max-width:1024px){ .materials-grid { grid-template-columns:repeat(2,1fr); } }
         @media(max-width:640px){ .materials-grid { grid-template-columns:1fr; } }
 
-        .material-card { background:#161b22; border:1px solid #21262d; border-radius:16px; padding:18px; display:flex; flex-direction:column; cursor:pointer; transition:all 0.2s; position:relative; }
-        .material-card:hover { border-color:#58a6ff; box-shadow:0 6px 20px rgba(88,166,255,0.08); transform:translateY(-2px); }
-        .material-card.google-source { border-left:3px solid #14b8a6; }
+        .material-card { background:var(--sk-card); border:1px solid var(--sk-border); border-radius:16px; padding:18px; display:flex; flex-direction:column; cursor:pointer; transition:all 0.2s; position:relative; }
+        .material-card:hover { border-color:var(--sk-accent); box-shadow:0 6px 20px rgba(88,166,255,0.08); transform:translateY(-2px); }
+        .material-card.google-source { border-left:3px solid var(--sk-success); }
         .card-top { display:flex; gap:12px; align-items:flex-start; margin-bottom:10px; }
         .material-icon { font-size:26px; flex-shrink:0; }
         .material-title { font-weight:600; font-size:0.95rem; line-height:1.45; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
-        .dept-tag { font-size:0.72rem; color:#58a6ff; background:rgba(88,166,255,0.1); padding:3px 10px; border-radius:30px; display:inline-block; margin-bottom:10px; width:fit-content; }
-        .meta-row { display:flex; justify-content:space-between; font-size:0.68rem; color:#6e7681; margin-bottom:10px; }
+        .dept-tag { font-size:0.72rem; color:var(--sk-accent); background:rgba(88,166,255,0.1); padding:3px 10px; border-radius:30px; display:inline-block; margin-bottom:10px; width:fit-content; }
+        .meta-row { display:flex; justify-content:space-between; font-size:0.68rem; color:var(--text-muted); margin-bottom:10px; }
         .badge { font-size:0.62rem; font-weight:700; padding:3px 8px; border-radius:30px; display:inline-block; width:fit-content; letter-spacing:0.3px; }
         .source-badge { font-size:0.6rem; font-weight:600; padding:2px 8px; border-radius:30px; display:inline-flex; align-items:center; gap:4px; margin-left:8px; }
-        .source-badge.web { background:rgba(20,184,166,0.15); color:#14b8a6; border:1px solid rgba(20,184,166,0.3); }
-        .source-badge.uploaded { background:rgba(88,166,255,0.15); color:#58a6ff; border:1px solid rgba(88,166,255,0.3); }
-        .source-badge.static { background:rgba(107,114,128,0.15); color:#8b949e; border:1px solid rgba(107,114,128,0.3); }
-        .card-bottom { display:flex; justify-content:space-between; align-items:center; margin-top:auto; padding-top:12px; border-top:1px solid #21262d; }
-        .pdf-label { font-size:0.68rem; color:#6e7681; }
+        .source-badge.web { background:rgba(20,184,166,0.15); color:var(--sk-success); border:1px solid rgba(20,184,166,0.3); }
+        .source-badge.uploaded { background:rgba(88,166,255,0.15); color:var(--sk-accent); border:1px solid rgba(88,166,255,0.3); }
+        .source-badge.static { background:rgba(107,114,128,0.15); color:var(--text-secondary); border:1px solid rgba(107,114,128,0.3); }
+        .card-bottom { display:flex; justify-content:space-between; align-items:center; margin-top:auto; padding-top:12px; border-top:1px solid var(--sk-border); }
+        .pdf-label { font-size:0.68rem; color:var(--text-muted); }
         .card-icons { display:flex; gap:14px; }
         .card-icons span { cursor:pointer; font-size:17px; transition:opacity 0.2s; }
         .card-icons span:hover { opacity:0.6; }
 
-        .empty-state { grid-column:1/-1; text-align:center; padding:60px 20px; color:#6e7681; font-size:0.95rem; }
+        .empty-state { grid-column:1/-1; text-align:center; padding:60px 20px; color:var(--text-muted); font-size:0.95rem; }
 
         /* ===== AI ACTIONS (cards + viewer) ===== */
-        .card-desc { font-size:0.75rem; color:#8b949e; margin-bottom:10px; line-height:1.4; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
-        .card-date { font-size:0.65rem; color:#6e7681; }
+        .card-desc { font-size:0.75rem; color:var(--text-secondary); margin-bottom:10px; line-height:1.4; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+        .card-date { font-size:0.65rem; color:var(--text-muted); }
         .ai-actions-row { display:flex; gap:6px; flex-wrap:wrap; margin-top:10px; }
-        .ai-action-btn { background:transparent; border:1px solid #30363d; color:#58a6ff; padding:5px 10px; border-radius:8px; font-size:0.68rem; cursor:pointer; transition:all 0.15s; }
-        .ai-action-btn:hover { border-color:#58a6ff; }
-        .ai-result-box { display:none; margin-top:10px; padding:10px 12px; background:rgba(88,166,255,0.08); border-radius:10px; font-size:0.78rem; line-height:1.55; color:#c9d1d9; }
+        .ai-action-btn { background:transparent; border:1px solid var(--sk-border); color:var(--sk-accent); padding:5px 10px; border-radius:8px; font-size:0.68rem; cursor:pointer; transition:all 0.15s; }
+        .ai-action-btn:hover { border-color:var(--sk-accent); }
+        .ai-result-box { display:none; margin-top:10px; padding:10px 12px; background:rgba(88,166,255,0.08); border-radius:10px; font-size:0.78rem; line-height:1.55; color:var(--text-secondary); }
         .ai-result-box.show { display:block; }
-        .viewer-ai-row { display:flex; gap:8px; padding:12px 24px; background:#0d1117; border-top:1px solid #21262d; flex-wrap:wrap; }
-        .viewer-ai-btn { background:#21262d; border:1px solid #30363d; color:#58a6ff; padding:8px 14px; border-radius:20px; font-size:0.8rem; cursor:pointer; }
-        .viewer-ai-btn:hover { border-color:#58a6ff; }
-        .viewer-ai-result { display:none; margin:0 24px 16px; padding:14px 16px; background:#161b22; border-radius:12px; font-size:0.85rem; line-height:1.6; max-height:200px; overflow-y:auto; }
+        .viewer-ai-row { display:flex; gap:8px; padding:12px 24px; background:var(--bg-deep); border-top:1px solid var(--sk-border); flex-wrap:wrap; }
+        .viewer-ai-btn { background:var(--sk-border); border:1px solid var(--sk-border); color:var(--sk-accent); padding:8px 14px; border-radius:20px; font-size:0.8rem; cursor:pointer; }
+        .viewer-ai-btn:hover { border-color:var(--sk-accent); }
+        .viewer-ai-result { display:none; margin:0 24px 16px; padding:14px 16px; background:var(--sk-card); border-radius:12px; font-size:0.85rem; line-height:1.6; max-height:200px; overflow-y:auto; }
         .viewer-ai-result.show { display:block; }
 
         /* ===== ONBOARDING ===== */
-        .onboarding-screen { position:fixed; inset:0; background:#0d1117; z-index:2000; overflow-y:auto; padding:32px 20px 80px; }
+        .onboarding-screen { position:fixed; inset:0; background:var(--bg-deep); z-index:2000; overflow-y:auto; padding:32px 20px 80px; }
         .onboarding-inner { max-width:860px; margin:0 auto; }
         .onboarding-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; }
         .onboarding-title { font-size:1.8rem; font-weight:700; }
-        .onboarding-sub { color:#8b949e; margin-top:6px; font-size:0.92rem; }
+        .onboarding-sub { color:var(--text-secondary); margin-top:6px; font-size:0.92rem; }
         .onboarding-meta { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; margin:16px 0 24px; }
-        .dept-pill { background:#161b22; border:1px solid #30363d; padding:6px 16px; border-radius:30px; font-size:0.85rem; color:#8b949e; }
-        .select-all-btn { background:transparent; border:none; color:#58a6ff; font-size:0.85rem; cursor:pointer; padding:4px 0; }
+        .dept-pill { background:var(--sk-card); border:1px solid var(--sk-border); padding:6px 16px; border-radius:30px; font-size:0.85rem; color:var(--text-secondary); }
+        .select-all-btn { background:transparent; border:none; color:var(--sk-accent); font-size:0.85rem; cursor:pointer; padding:4px 0; }
         .select-all-btn:hover { text-decoration:underline; }
 
-        .section-label { font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:#6e7681; margin:20px 0 12px; padding-bottom:8px; border-bottom:1px solid #21262d; }
+        .section-label { font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--text-muted); margin:20px 0 12px; padding-bottom:8px; border-bottom:1px solid var(--sk-border); }
 
         .courses-grid { display:flex; flex-wrap:wrap; gap:12px; margin-bottom:8px; }
-        .course-chip { background:#161b22; border:2px solid #21262d; border-radius:14px; padding:14px 16px; cursor:pointer; transition:all 0.18s; min-width:160px; flex:1 0 auto; max-width:220px; position:relative; }
-        .course-chip:hover { border-color:#30363d; background:#1c2129; }
-        .course-chip.selected { background:rgba(20,184,166,0.1); border-color:#14b8a6; }
-        .chip-code { font-weight:700; font-size:0.95rem; color:#e6edf3; }
-        .chip-name { font-size:0.72rem; color:#8b949e; margin-top:4px; line-height:1.3; }
-        .chip-check { position:absolute; top:10px; right:10px; color:#14b8a6; font-size:14px; font-weight:700; opacity:0; transition:opacity 0.15s; }
+        .course-chip { background:var(--sk-card); border:2px solid var(--sk-border); border-radius:14px; padding:14px 16px; cursor:pointer; transition:all 0.18s; min-width:160px; flex:1 0 auto; max-width:220px; position:relative; }
+        .course-chip:hover { border-color:var(--sk-border); background:var(--sk-card); }
+        .course-chip.selected { background:rgba(20,184,166,0.1); border-color:var(--sk-success); }
+        .chip-code { font-weight:700; font-size:0.95rem; color:var(--text-primary); }
+        .chip-name { font-size:0.72rem; color:var(--text-secondary); margin-top:4px; line-height:1.3; }
+        .chip-check { position:absolute; top:10px; right:10px; color:var(--sk-success); font-size:14px; font-weight:700; opacity:0; transition:opacity 0.15s; }
         .course-chip.selected .chip-check { opacity:1; }
 
-        .selected-count { font-size:0.82rem; color:#8b949e; margin-bottom:20px; }
-        .selected-count span { color:#14b8a6; font-weight:600; }
+        .selected-count { font-size:0.82rem; color:var(--text-secondary); margin-bottom:20px; }
+        .selected-count span { color:var(--sk-success); font-weight:600; }
 
-        .continue-btn { background:#14b8a6; border:none; padding:15px 28px; border-radius:40px; font-weight:700; font-size:1rem; color:#0d1117; width:100%; cursor:pointer; transition:all 0.2s; position:sticky; bottom:20px; }
+        .continue-btn { background:var(--sk-success); border:none; padding:15px 28px; border-radius:40px; font-weight:700; font-size:1rem; color:var(--bg-deep); width:100%; cursor:pointer; transition:all 0.2s; position:sticky; bottom:20px; }
         .continue-btn:disabled { opacity:0.35; cursor:not-allowed; }
-        .continue-btn:not(:disabled):hover { background:#0d9488; }
+        .continue-btn:not(:disabled):hover { background:var(--sk-success); }
 
         /* ===== FAB ===== */
-        .fab { position:fixed; bottom:28px; right:24px; background:#14b8a6; width:54px; height:54px; border-radius:50%; border:none; font-size:26px; cursor:pointer; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 16px rgba(20,184,166,0.35); z-index:100; transition:transform 0.15s; }
+        .fab { position:fixed; bottom:28px; right:24px; background:var(--sk-success); width:54px; height:54px; border-radius:50%; border:none; font-size:26px; cursor:pointer; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 16px rgba(20,184,166,0.35); z-index:100; transition:transform 0.15s; }
         .fab:hover { transform:scale(1.04); }
 
         /* ===== PDF VIEWER MODAL ===== */
         .viewer-modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.95); backdrop-filter:blur(8px); z-index:4000; }
         .viewer-modal.show { display:flex; flex-direction:column; }
-        .viewer-header { display:flex; justify-content:space-between; align-items:center; padding:16px 24px; background:#161b22; border-bottom:1px solid #30363d; }
-        .viewer-title { font-size:1rem; font-weight:600; color:#e6edf3; max-width:70%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+        .viewer-header { display:flex; justify-content:space-between; align-items:center; padding:16px 24px; background:var(--sk-card); border-bottom:1px solid var(--sk-border); }
+        .viewer-title { font-size:1rem; font-weight:600; color:var(--text-primary); max-width:70%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         .viewer-actions { display:flex; gap:16px; }
-        .viewer-btn { background:transparent; border:none; color:#8b949e; font-size:18px; cursor:pointer; padding:8px; border-radius:8px; transition:all 0.2s; }
-        .viewer-btn:hover { background:#21262d; color:#e6edf3; }
+        .viewer-btn { background:transparent; border:none; color:var(--text-secondary); font-size:18px; cursor:pointer; padding:8px; border-radius:8px; transition:all 0.2s; }
+        .viewer-btn:hover { background:var(--sk-border); color:var(--text-primary); }
 
         /* ===== PDF LOADING STATE ===== */
         .viewer-content { flex:1; position:relative; display:flex; align-items:center; justify-content:center; }
         .viewer-frame { position:absolute; width:100%; height:100%; border:none; opacity:0; transition:opacity 0.4s ease-in; }
         .viewer-frame.loaded { opacity:1; }
 
-        .pdf-loader { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; background:#0d1117; pointer-events:none; opacity:1; transition:opacity 0.4s ease-out; }
+        .pdf-loader { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; background:var(--bg-deep); pointer-events:none; opacity:1; transition:opacity 0.4s ease-out; }
         .pdf-loader.hidden { opacity:0; }
 
         .skeleton-container { width:90%; max-width:800px; }
-        .skeleton-header { height:12px; background:linear-gradient(90deg, #21262d 25%, #30363d 50%, #21262d 75%); background-size:200% 100%; animation:shimmer 1.5s infinite; border-radius:6px; margin-bottom:24px; width:60%; }
-        .skeleton-line { height:8px; background:linear-gradient(90deg, #21262d 25%, #30363d 50%, #21262d 75%); background-size:200% 100%; animation:shimmer 1.5s infinite; border-radius:4px; margin-bottom:12px; }
+        .skeleton-header { height:12px; background:linear-gradient(90deg, var(--sk-border) 25%, var(--sk-neutral-bg) 50%, var(--sk-border) 75%); background-size:200% 100%; animation:shimmer 1.5s infinite; border-radius:6px; margin-bottom:24px; width:60%; }
+        .skeleton-line { height:8px; background:linear-gradient(90deg, var(--sk-border) 25%, var(--sk-neutral-bg) 50%, var(--sk-border) 75%); background-size:200% 100%; animation:shimmer 1.5s infinite; border-radius:4px; margin-bottom:12px; }
         .skeleton-line:nth-child(2) { width:95%; }
         .skeleton-line:nth-child(3) { width:88%; }
         .skeleton-line:nth-child(4) { width:92%; }
         .skeleton-line:nth-child(5) { width:78%; }
         .skeleton-line:nth-child(6) { width:85%; }
 
-        .loader-text { margin-top:32px; color:#58a6ff; font-size:0.9rem; font-weight:500; display:flex; align-items:center; gap:10px; }
-        .loader-spinner { width:16px; height:16px; border:2px solid #30363d; border-top-color:#58a6ff; border-radius:50%; animation:spin 0.8s linear infinite; }
+        .loader-text { margin-top:32px; color:var(--sk-accent); font-size:0.9rem; font-weight:500; display:flex; align-items:center; gap:10px; }
+        .loader-spinner { width:16px; height:16px; border:2px solid var(--sk-border); border-top-color:var(--sk-accent); border-radius:50%; animation:spin 0.8s linear infinite; }
 
         @keyframes shimmer {
             0% { background-position: -200% 0; }
@@ -165,37 +149,30 @@
         }
         @keyframes spin { to { transform:rotate(360deg); } }
 
-        .viewer-footer { padding:12px 24px; background:#161b22; border-top:1px solid #30363d; display:flex; justify-content:center; }
+        .viewer-footer { padding:12px 24px; background:var(--sk-card); border-top:1px solid var(--sk-border); display:flex; justify-content:center; }
         .viewer-source-badge { display:flex; align-items:center; gap:6px; font-size:0.75rem; }
 
         /* ===== UPLOAD MODAL ===== */
         .modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); backdrop-filter:blur(6px); z-index:3000; align-items:center; justify-content:center; }
         .modal.show { display:flex; }
-        .modal-card { background:#161b22; border:1px solid #30363d; border-radius:24px; width:92%; max-width:520px; max-height:88vh; overflow-y:auto; padding:26px; }
+        .modal-card { background:var(--sk-card); border:1px solid var(--sk-border); border-radius:24px; width:92%; max-width:520px; max-height:88vh; overflow-y:auto; padding:26px; }
         .modal-card h3 { font-size:1.4rem; font-weight:700; margin-bottom:18px; }
-        .upload-form label { display:block; font-size:0.8rem; color:#8b949e; margin-bottom:6px; font-weight:500; }
+        .upload-form label { display:block; font-size:0.8rem; color:var(--text-secondary); margin-bottom:6px; font-weight:500; }
         .upload-form .fg { margin-bottom:14px; }
-        .upload-form input, .upload-form select, .upload-form textarea { width:100%; background:#0d1117; border:1px solid #30363d; padding:11px 14px; border-radius:12px; color:#e6edf3; font-size:0.9rem; outline:none; transition:border 0.2s; }
-        .upload-form input:focus, .upload-form select:focus { border-color:#58a6ff; }
+        .upload-form input, .upload-form select, .upload-form textarea { width:100%; background:var(--bg-deep); border:1px solid var(--sk-border); padding:11px 14px; border-radius:12px; color:var(--text-primary); font-size:0.9rem; outline:none; transition:border 0.2s; }
+        .upload-form input:focus, .upload-form select:focus { border-color:var(--sk-accent); }
         .upload-form textarea { resize:vertical; min-height:72px; }
-        .upload-submit-btn { background:#58a6ff; border:none; padding:13px; border-radius:40px; font-weight:700; font-size:0.95rem; width:100%; cursor:pointer; color:#0d1117; margin-top:6px; transition:opacity 0.2s; }
+        .upload-submit-btn { background:var(--sk-accent); border:none; padding:13px; border-radius:40px; font-weight:700; font-size:0.95rem; width:100%; cursor:pointer; color:var(--bg-deep); margin-top:6px; transition:opacity 0.2s; }
         .upload-submit-btn:hover { opacity:0.88; }
-        .modal-cancel { margin-top:10px; width:100%; background:transparent; border:1px solid #30363d; color:#8b949e; padding:10px; border-radius:40px; cursor:pointer; font-size:0.88rem; transition:all 0.2s; }
-        .modal-cancel:hover { border-color:#58a6ff; color:#58a6ff; }
-        .upload-progress { display:none; background:#21262d; border-radius:4px; overflow:hidden; margin:8px 0; }
-        .upload-progress-fill { width:0%; height:4px; background:#58a6ff; transition:width 0.3s; }
+        .modal-cancel { margin-top:10px; width:100%; background:transparent; border:1px solid var(--sk-border); color:var(--text-secondary); padding:10px; border-radius:40px; cursor:pointer; font-size:0.88rem; transition:all 0.2s; }
+        .modal-cancel:hover { border-color:var(--sk-accent); color:var(--sk-accent); }
+        .upload-progress { display:none; background:var(--sk-border); border-radius:4px; overflow:hidden; margin:8px 0; }
+        .upload-progress-fill { width:0%; height:4px; background:var(--sk-accent); transition:width 0.3s; }
 
         /* ===== LOADING SPINNER ===== */
-        .loading-spinner { display:inline-block; width:14px; height:14px; border:2px solid #30363d; border-top-color:#58a6ff; border-radius:50%; animation:spin 0.8s linear infinite; }
+        .loading-spinner { display:inline-block; width:14px; height:14px; border:2px solid var(--sk-border); border-top-color:var(--sk-accent); border-radius:50%; animation:spin 0.8s linear infinite; }
 
         @media(max-width:600px) {
-            .top-bar { flex-direction:column; align-items:stretch; }
-            .left-area { justify-content:space-between; }
-            .right-area { justify-content:space-between; flex-wrap:wrap; row-gap:8px; }
-            /* Study/Pulse are "coming soon" stubs and Library is already the page
-               you're on -- not worth the width on a small screen. */
-            .nav-tabs { display:none; }
-            .edit-courses-btn { font-size:0.72rem; padding:6px 10px; }
             #courseFilterSelect { width:100%; }
         }
     </style>
@@ -203,14 +180,16 @@
     <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
 </head>
 <body>
+{% set active_page = 'materials' %}
+{% include 'components/academia_sidebar.html' %}
 
 <!-- PDF Viewer Modal -->
 <div id="pdfViewerModal" class="viewer-modal">
     <div class="viewer-header">
         <span class="viewer-title" id="viewerTitle">Document Title</span>
         <div class="viewer-actions">
-            <button class="viewer-btn" onclick="downloadCurrentMaterial()" title="Download">⬇️</button>
-            <button class="viewer-btn" onclick="closePdfViewer()" title="Close">✕</button>
+            <button class="viewer-btn" onclick="downloadCurrentMaterial()" title="Download"><i class="ri-download-2-line"></i></button>
+            <button class="viewer-btn" onclick="closePdfViewer()" title="Close"><i class="ri-close-line"></i></button>
         </div>
     </div>
     <div class="viewer-content">
@@ -234,9 +213,9 @@
         <iframe id="pdfViewerFrame" class="viewer-frame"></iframe>
     </div>
     <div class="viewer-ai-row">
-        <button class="viewer-ai-btn" onclick="askAboutCurrentMaterial('explain')">💡 Explain this</button>
-        <button class="viewer-ai-btn" onclick="askAboutCurrentMaterial('summarize')">📝 Summarize this</button>
-        <button class="viewer-ai-btn" onclick="askAboutCurrentMaterial('quiz')">❓ Quiz me</button>
+        <button class="viewer-ai-btn" onclick="askAboutCurrentMaterial('explain')"><i class="ri-lightbulb-line"></i> Explain this</button>
+        <button class="viewer-ai-btn" onclick="askAboutCurrentMaterial('summarize')"><i class="ri-file-text-line"></i> Summarize this</button>
+        <button class="viewer-ai-btn" onclick="askAboutCurrentMaterial('quiz')"><i class="ri-question-line"></i> Quiz me</button>
     </div>
     <div class="viewer-ai-result" id="viewerAiResult"></div>
     <div class="viewer-footer">
@@ -247,38 +226,19 @@
 <!-- main app -->
 <div id="mainApp">
     <div class="app-container">
-        <div class="top-bar">
-            <div class="left-area">
-                <button class="menu-btn" id="menuBtn">☰</button>
-                <div class="logo-area">
-                    <span class="logo-text">Academic Archive</span>
-                    <span class="logo-badge">Nelavista</span>
-                </div>
-            </div>
-            <div class="right-area">
-                <div class="nav-tabs">
-                    <button class="nav-tab active" data-tab="library">Library</button>
-                    <button class="nav-tab" data-tab="study">Study</button>
-                    <button class="nav-tab" data-tab="pulse">Pulse</button>
-                </div>
-                <a href="/search" class="edit-courses-btn" style="text-decoration:none;">🔍 Search Academia</a>
-                <div class="user-avatar">{{ user.name[:2].upper() if user.name else 'SN' }}</div>
-            </div>
-        </div>
-
         <div class="hero-section">
-            <h1 class="hero-title">Find your next breakthrough.</h1>
-            <p class="hero-sub" id="heroSub">Materials for your courses, straight from Nelavista.</p>
+            <h1 class="hero-title">Study Materials</h1>
+            <p class="hero-sub" id="heroSub">Notes, past questions and textbooks for your courses.</p>
 
             <!-- Google Search Status -->
             <div class="google-status" id="googleStatus">
-                <span class="status-icon">🌐</span>
+                <span class="status-icon"><i class="ri-global-line"></i></span>
                 <span class="status-text" id="googleStatusText">Ready to search web for materials</span>
-                <button class="refresh-google-btn" id="refreshGoogleBtn" onclick="fetchGoogleMaterials()">🔄 Refresh</button>
+                <button class="refresh-google-btn" id="refreshGoogleBtn" onclick="fetchGoogleMaterials()"><i class="ri-refresh-line"></i> Refresh</button>
             </div>
 
             <div class="search-wrapper">
-                <span class="search-icon">🔍</span>
+                <span class="search-icon"><i class="ri-search-line"></i></span>
                 <input type="text" id="searchInput" placeholder="Search your materials by title, author, or code…">
             </div>
             <div class="course-filter-row">
@@ -305,12 +265,12 @@
     </div>
 </div>
 
-<button class="fab" id="fabBtn">+</button>
+<button class="fab" id="fabBtn"><i class="ri-add-line"></i></button>
 
 <!-- Upload Modal -->
 <div id="uploadModal" class="modal">
     <div class="modal-card">
-        <h3>📤 Share Your PDF</h3>
+        <h3><i class="ri-upload-2-line"></i> Share Your PDF</h3>
         <form id="uploadForm" onsubmit="handleUpload(event)" class="upload-form">
             <div class="fg"><label>Title *</label><input type="text" id="materialTitle" placeholder="e.g. BCH 201 – Enzyme Kinetics" required></div>
             <div class="fg"><label>Course *</label>
@@ -342,7 +302,7 @@
             <div class="fg"><label>Description (optional)</label><textarea id="materialDesc" placeholder="Brief description…"></textarea></div>
             <div class="fg"><label>PDF File *</label><input type="file" id="materialFile" accept=".pdf" required></div>
             <div class="upload-progress" id="uploadProgress"><div class="upload-progress-fill" id="uploadProgressFill"></div></div>
-            <button type="submit" class="upload-submit-btn" id="uploadSubmitBtn">📤 Upload & Share</button>
+            <button type="submit" class="upload-submit-btn" id="uploadSubmitBtn"><i class="ri-upload-2-line"></i> Upload & share</button>
             <button type="button" class="modal-cancel" onclick="closeUploadModal()">Cancel</button>
         </form>
     </div>
@@ -373,12 +333,12 @@ function getBadge(title) {
 
 function getSourceBadge(source) {
     const badges = {
-        'static': { label:'📁 ARCHIVED', class:'static' },
-        'uploaded': { label:'📤 UPLOADED', class:'uploaded' },
-        'google_auto': { label:'🌐 WEB SOURCE', class:'web' },
-        'openstax': { label:'📚 OPENSTAX', class:'web' }
+        'static': { label:'ARCHIVED', class:'static' },
+        'uploaded': { label:'UPLOADED', class:'uploaded' },
+        'google_auto': { label:'WEB SOURCE', class:'web' },
+        'openstax': { label:'OPENSTAX', class:'web' }
     };
-    return badges[source] || { label:'📁 ARCHIVED', class:'static' };
+    return badges[source] || { label:'ARCHIVED', class:'static' };
 }
 
 // ============================================================
@@ -482,11 +442,11 @@ function updateGoogleStatus(text, status) {
         iconEl.innerHTML = '<span class="loading-spinner"></span>';
     } else if (status === 'success') {
         statusEl.classList.add('success');
-        iconEl.textContent = '✅';
+        iconEl.innerHTML = '<i class="ri-checkbox-circle-line"></i>';
     } else if (status === 'error') {
-        iconEl.textContent = '⚠️';
+        iconEl.innerHTML = '<i class="ri-error-warning-line"></i>';
     } else {
-        iconEl.textContent = '🌐';
+        iconEl.innerHTML = '<i class="ri-global-line"></i>';
     }
 
     textEl.textContent = text;
@@ -540,15 +500,15 @@ async function loadMaterials(reset) {
 
 function emptyStateMessage() {
     if (currentCourseFilter) {
-        return `📭 No materials have been added for ${currentCourseFilter} yet. <a href="#" style="color:#58a6ff;" onclick="event.preventDefault(); openUploadModal();">Upload one →</a>`;
+        return `No materials have been added for ${currentCourseFilter} yet. <a href="#" style="color:var(--sk-accent);" onclick="event.preventDefault(); openUploadModal();">Upload one →</a>`;
     }
     if (searchQuery.trim()) {
-        return `🔍 No materials matched "${searchQuery}" in your library. Try <a href="/search" style="color:#58a6ff;">searching all of Academia →</a>`;
+        return `No materials matched "${searchQuery}" in your library. Try <a href="/search" style="color:var(--sk-accent);">searching all of Academia →</a>`;
     }
     if (currentFilter !== 'all') {
         return `No "${currentFilter.toLowerCase()}" materials for your courses yet.`;
     }
-    return `✨ No materials for your courses yet. <a href="#" style="color:#58a6ff;" onclick="event.preventDefault(); openUploadModal();">Upload the first one →</a>`;
+    return `No materials for your courses yet. <a href="#" style="color:var(--sk-accent);" onclick="event.preventDefault(); openUploadModal();">Upload the first one →</a>`;
 }
 
 // ============================================================
@@ -557,36 +517,36 @@ function emptyStateMessage() {
 function renderMaterialCard(m) {
     const badge = getBadge(m.title || '');
     const sourceBadge = getSourceBadge(m.source);
-    const icon = badge.label === 'PAST QUESTIONS' ? '📝' : (badge.label === 'TEXTBOOK' ? '📚' : (badge.label === 'LECTURE NOTES' ? '📖' : '📘'));
+    const icon = badge.label === 'PAST QUESTIONS' ? 'ri-file-list-3-line' : (badge.label === 'TEXTBOOK' ? 'ri-book-2-line' : (badge.label === 'LECTURE NOTES' ? 'ri-quill-pen-line' : 'ri-file-text-line'));
     const courseTitle = m.course_code ? courseTitleFor(m.course_code) : null;
     const dateStr = m.created_at ? new Date(m.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : '';
 
     return `
         <div class="material-card ${m.source === 'google_auto' ? 'google-source' : ''}" onclick="openMaterialById(${m.id})">
             <div class="card-top">
-                <span class="material-icon">${icon}</span>
+                <span class="material-icon"><i class="${icon}"></i></span>
                 <div class="material-title">${m.title || 'Untitled Material'}</div>
             </div>
             <div class="dept-tag">${m.course_code || m.department}${courseTitle ? ' — ' + courseTitle : ''}</div>
             ${m.description ? `<div class="card-desc">${m.description}</div>` : ''}
             <div class="meta-row">
-                <span>📄 PDF</span>
+                <span><i class="ri-file-pdf-2-line"></i> PDF</span>
                 <span class="card-date">${dateStr}</span>
             </div>
             <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
-                <span class="badge" style="background:${badge.color}22; color:${badge.color}; border:1px solid ${badge.color}44;">${badge.label}</span>
+                <span class="badge" style="background:color-mix(in srgb, ${badge.color} 15%, transparent); color:${badge.color}; border:1px solid color-mix(in srgb, ${badge.color} 30%, transparent);">${badge.label}</span>
                 <span class="source-badge ${sourceBadge.class}">${sourceBadge.label}</span>
             </div>
             <div class="ai-actions-row" onclick="event.stopPropagation();">
-                <button class="ai-action-btn" onclick="askAboutCard(${m.id}, 'explain', this)">💡 Explain</button>
-                <button class="ai-action-btn" onclick="askAboutCard(${m.id}, 'summarize', this)">📝 Summarize</button>
-                <button class="ai-action-btn" onclick="askAboutCard(${m.id}, 'quiz', this)">❓ Quiz me</button>
+                <button class="ai-action-btn" onclick="askAboutCard(${m.id}, 'explain', this)"><i class="ri-lightbulb-line"></i> Explain</button>
+                <button class="ai-action-btn" onclick="askAboutCard(${m.id}, 'summarize', this)"><i class="ri-file-text-line"></i> Summarize</button>
+                <button class="ai-action-btn" onclick="askAboutCard(${m.id}, 'quiz', this)"><i class="ri-question-line"></i> Quiz me</button>
             </div>
             <div class="ai-result-box" id="card-ai-result-${m.id}" onclick="event.stopPropagation();"></div>
             <div class="card-bottom">
-                <span class="pdf-label">📌 ${m.author || m.uploaded_by || 'Unknown'}</span>
+                <span class="pdf-label"><i class="ri-user-line"></i> ${m.author || m.uploaded_by || 'Unknown'}</span>
                 <div class="card-icons">
-                    <span title="Download" onclick="event.stopPropagation(); downloadMaterialById(${m.id})">⬇️</span>
+                    <span title="Download" onclick="event.stopPropagation(); downloadMaterialById(${m.id})"><i class="ri-download-2-line"></i></span>
                 </div>
             </div>
         </div>
@@ -684,7 +644,7 @@ function openMaterial(material) {
     const sourceBadge = getSourceBadge(material.source);
     document.getElementById('viewerSourceBadge').innerHTML = `
         <span class="source-badge ${sourceBadge.class}">${sourceBadge.label}</span>
-        <span style="color:#6e7681;">${material.course_code || ''}</span>
+        <span style="color:var(--text-muted);">${material.course_code || ''}</span>
     `;
 
     document.getElementById('pdfViewerModal').classList.add('show');
@@ -782,7 +742,7 @@ async function handleUpload(e) {
         alert('Upload error: ' + err.message);
     } finally {
         btn.disabled = false;
-        btn.textContent = '📤 Upload & Share';
+        btn.innerHTML = '<i class="ri-upload-2-line"></i> Upload & share';
         progressDiv.style.display = 'none';
         progressFill.style.width = '0%';
     }
@@ -828,13 +788,6 @@ window.loadMaterials = loadMaterials;
         });
     });
 
-    document.querySelectorAll('.nav-tab').forEach(tab => {
-        tab.addEventListener('click', () => {
-            if (tab.dataset.tab !== 'library') alert('Coming soon!');
-        });
-    });
-
-    document.getElementById('menuBtn').onclick = () => window.location.href = '/dashboard';
     document.getElementById('fabBtn').onclick = () => openUploadModal();
 
     document.addEventListener('keydown', e => {
@@ -842,5 +795,6 @@ window.loadMaterials = loadMaterials;
     });
 })();
 </script>
+{% include 'components/academia_footer.html' %}
 </body>
 </html>

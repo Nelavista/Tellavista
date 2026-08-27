@@ -1,0 +1,74 @@
+<!-- Nelavista Academia — shared shell, same contract as components/skills_sidebar.html
+     (same CSS classes, same include pattern) but Academia's own nav content: this is one
+     product with two sections, not two products, so the chrome matches exactly and only
+     the destinations differ. The wordmark returns to the Choose Your Path picker, same as
+     Skills' sidebar — that's the one deliberate way to switch between the two spaces.
+     Include right after <body>, pass active_page: 'home'|'materials'|'practice'|
+     'community'|'live'|'profile'. Pair with components/academia_footer.html. -->
+<div class="app-wrapper">
+  <div class="sidebar" id="side-menu">
+    <div>
+      <div class="sidebar-header">
+        <a href="/choose-path" class="sidebar-logo">Nelavista</a>
+        <div class="sidebar-tagline">Learn it. Practice it. Track it.</div>
+      </div>
+      <div class="sidebar-nav">
+        <div class="nav-group">
+          <div class="nav-label">Learn</div>
+          <a href="/dashboard" class="{{ 'active-link' if active_page == 'home' else '' }}"><i class="ri-home-4-line"></i>Dashboard</a>
+          <a href="/materials" class="{{ 'active-link' if active_page == 'materials' else '' }}"><i class="ri-book-open-line"></i>Study Materials</a>
+          <a href="/talk-to-nelavista" class="{{ 'active-link' if active_page == 'ai_tutor' else '' }}"><i class="ri-sparkling-2-line"></i>AI Tutor</a>
+          <a href="/videos" class="{{ 'active-link' if active_page == 'videos' else '' }}"><i class="ri-vidicon-line"></i>Campus Videos</a>
+        </div>
+
+        <div class="nav-group">
+          <div class="nav-label">Practice</div>
+          <a href="/CBT" class="{{ 'active-link' if active_page == 'practice' else '' }}"><i class="ri-file-list-3-line"></i>Mock Exam</a>
+        </div>
+
+        <div class="nav-group">
+          <div class="nav-label">Connect</div>
+          <a href="/community" class="{{ 'active-link' if active_page == 'community' else '' }}"><i class="ri-group-line"></i>Community</a>
+          <a href="/live-meeting" class="{{ 'active-link' if active_page == 'live' else '' }}"><i class="ri-broadcast-line"></i>Live Meeting</a>
+        </div>
+
+        <div class="nav-group">
+          <div class="nav-label">Account</div>
+          <a href="/profile" class="{{ 'active-link' if active_page == 'profile' else '' }}"><i class="ri-user-line"></i>Profile</a>
+        </div>
+
+        <div class="nav-group">
+          <div class="nav-label">More</div>
+          <a href="/campus-map"><i class="ri-map-pin-line"></i>Campus Map</a>
+          <a href="/analyze"><i class="ri-bar-chart-line"></i>Analyze Materials</a>
+          <a href="/settings"><i class="ri-settings-3-line"></i>Settings</a>
+          <a href="/about"><i class="ri-information-line"></i>About</a>
+          <a href="/privacy-policy"><i class="ri-shield-check-line"></i>Privacy Policy</a>
+        </div>
+      </div>
+    </div>
+    <div class="sidebar-footer">
+      <a href="/logout"><i class="ri-logout-box-line"></i>Logout</a>
+    </div>
+  </div>
+
+  <div id="overlay" class="overlay" onclick="skClosMenu()"></div>
+
+  <div class="main-content">
+    <div class="top-bar">
+      <button id="menu-toggle" onclick="skToggleMenu()"><i class="ri-menu-line"></i></button>
+      <form action="/search" method="GET" class="sk-topsearch">
+        <i class="ri-search-line"></i>
+        <input type="text" name="q" placeholder="Search courses, materials...">
+      </form>
+      <div class="dv2-topbar-spacer"></div>
+      <button id="theme-toggle" onclick="skToggleTheme()"><i class="ri-moon-line"></i></button>
+    </div>
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+      <div class="sk-flashes">
+        {% for m in messages %}<div class="sk-flash">{{ m }}</div>{% endfor %}
+      </div>
+      {% endif %}
+    {% endwith %}

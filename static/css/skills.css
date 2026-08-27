@@ -1,9 +1,13 @@
 /* ============================================================
-   Nelavista Skills — shared stylesheet.
-   Rebuilt to match the "Learn -> Practice -> Build -> Verify -> Earn" dashboard spec:
-   deep navy palette, DM Sans body / Bricolage Grotesque headings, pill buttons with a
-   cyan->blue gradient. Same token names as main.css (the public/auth pages) so Skills
-   reads as the same product, not a bolt-on.
+   Nelavista — shared application stylesheet.
+   Originally built for Skills ("Learn -> Practice -> Build -> Verify -> Earn"); now the
+   one design system for every authenticated screen, Academia included (see the ACADEMIA
+   SHELL and ACADEMIA DASHBOARD sections below). Deep navy palette, DM Sans body /
+   Bricolage Grotesque headings, pill buttons with a cyan->blue gradient. Same token names
+   as main.css (the public/auth pages) so the whole product reads as one thing, not a
+   bolt-on. Don't start a second stylesheet for a new authenticated screen — extend this
+   one and reuse its component classes (.sk-card, .sk-btn, .sk-badge, .sk-empty, etc. are
+   already generic, not Skills-specific, despite the sk- prefix).
    ============================================================ */
 
 @import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap');
@@ -48,9 +52,29 @@
   --sk-success-bg: rgba(45,212,191,0.14);
   --sk-warn: var(--accent-warm);
   --sk-warn-bg: rgba(245,158,11,0.14);
+  --sk-danger: #ef4444;
+  --sk-danger-bg: rgba(239,68,68,0.1);
   --sk-neutral-bg: var(--bg-elevated);
   --sk-radius: var(--r-md);
   --sk-radius-sm: var(--r-sm);
+
+  /* Type scale — one ramp for every screen. Bricolage Grotesque (headings) / DM Sans
+     (everything else) are already loaded above; this just stops each page from picking
+     its own one-off rem/px value for "a heading". */
+  --text-xs: 13px;   /* metadata, timestamps, badges */
+  --text-sm: 15px;   /* secondary body, nav labels */
+  --text-base: 18px; /* primary body */
+  --text-lg: 24px;   /* section headings */
+  --text-xl: 32px;   /* page titles */
+
+  /* Spacing scale — every new gap/padding value comes from this list. */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif; }
@@ -443,3 +467,51 @@ body.light-mode .sk-input, body.light-mode .sk-textarea, body.light-mode .sk-sel
 .sk-tab-btn.active { color: var(--sk-accent); border-bottom-color: var(--sk-accent); }
 .sk-tab-panel { display: none; }
 .sk-tab-panel.active { display: block; }
+
+/* ============================================================
+   ===== ACADEMIA DASHBOARD =====
+   New primitives for the Academia dashboard. Reuses .sk-eyebrow/.sk-h1/.sk-sub for the
+   greeting, .sk-card/.sk-empty/.notif-row/.dv2-* for everything that already has a
+   generic equivalent — only what's genuinely new to Academia lives here.
+   ============================================================ */
+
+/* The one primary next-action card a new or returning user sees — deliberately the only
+   card on the page allowed visual weight, so it reads as "start here" without a shadow
+   or gradient fill (see the design direction: elevation is earned, not decorative). */
+.ac-action-card {
+  display: flex; align-items: center; gap: var(--space-5);
+  padding: var(--space-5) var(--space-6);
+  background: rgba(56,189,248,0.06);
+  border: 1px solid var(--sk-accent);
+  border-radius: var(--sk-radius);
+  margin: var(--space-5) 0;
+}
+.ac-action-icon {
+  width: 52px; height: 52px; border-radius: var(--r-sm); flex-shrink: 0;
+  background: var(--grad-main); color: var(--bg-deep);
+  display: flex; align-items: center; justify-content: center; font-size: 1.4rem;
+}
+.ac-action-body { flex: 1; min-width: 0; }
+.ac-action-title { font-weight: 700; font-size: var(--text-base); margin-bottom: 3px; }
+.ac-action-sub { font-size: var(--text-sm); color: var(--sk-text-dim); }
+
+/* Weekly study-hours bar chart. */
+.ac-bars { display: flex; align-items: flex-end; gap: var(--space-3); height: 90px; margin: var(--space-4) 0 var(--space-2); }
+.ac-bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: var(--space-2); height: 100%; justify-content: flex-end; }
+.ac-bar-track { width: 100%; max-width: 22px; height: 100%; display: flex; align-items: flex-end; background: var(--sk-neutral-bg); border-radius: var(--r-sm); overflow: hidden; }
+.ac-bar-fill { width: 100%; background: var(--grad-main); border-radius: var(--r-sm); transition: height 0.4s var(--ease); }
+.ac-bar-label { font-size: var(--text-xs); color: var(--text-muted); font-weight: 600; }
+
+/* Generic row for exams / continue-studying / recent-materials lists — same shape as
+   .notif-row so this doesn't become a fourth "list item" pattern in the app. */
+.ac-row { display: flex; align-items: center; gap: var(--space-4); padding: var(--space-3) 0; border-bottom: 1px solid var(--sk-border); }
+.ac-row:last-child { border-bottom: none; }
+.ac-row-icon { width: 38px; height: 38px; border-radius: 50%; background: var(--sk-neutral-bg); display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: var(--sk-accent); font-size: 1rem; }
+.ac-row-title { font-weight: 600; font-size: var(--text-sm); }
+.ac-row-meta { font-size: var(--text-xs); color: var(--sk-text-dim); margin-top: 2px; }
+.ac-row-action { flex-shrink: 0; }
+
+/* Section-level rhythm — every dashboard/screen section shares this gap instead of a
+   one-off margin per page. */
+.ac-section { margin-bottom: var(--space-6); }
+.ac-section-head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-3); margin-bottom: var(--space-4); }

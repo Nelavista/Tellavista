@@ -16,6 +16,7 @@ if hasattr(sys.stdout, 'reconfigure'):
 import os
 from datetime import timedelta
 from flask import Flask, send_from_directory, render_template, request, jsonify
+from werkzeug.middleware.proxy_fix import ProxyFix
 from flask_migrate import Migrate
 from config import (DEBUG_MODE, SECRET_KEY, DATABASE_URL, MAX_CONTENT_LENGTH,
                      SESSION_COOKIE_SECURE, SESSION_COOKIE_SAMESITE, SESSION_COOKIE_HTTPONLY,
@@ -57,6 +58,13 @@ import community_events
 
 def create_app():
     app = Flask(__name__)
+    # Render terminates HTTPS at its edge and forwards to gunicorn over plain HTTP --
+    # without this, request.scheme (and therefore url_for(..., _external=True), which
+    # routes/auth_routes.py's Google sign-in uses to build the OAuth redirect_uri) reads
+    # 'http', producing a redirect_uri that doesn't match the 'https://...' URI
+    # registered in Google Cloud Console and failing with Error 400: redirect_uri_mismatch.
+    # x_proto=1 trusts exactly one hop of X-Forwarded-Proto, which is what Render sets.
+    app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1)
     app.config['SECRET_KEY'] = SECRET_KEY
     app.config['SESSION_COOKIE_SECURE'] = SESSION_COOKIE_SECURE
     app.config['SESSION_COOKIE_SAMESITE'] = SESSION_COOKIE_SAMESITE

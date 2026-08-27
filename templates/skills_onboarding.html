@@ -1,152 +1,547 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Set Up Skills · Nelavista</title>
-  <meta name="theme-color" content="#050810">
-  <meta name="description" content="Tell Nelavista what you want to learn so Skills can focus on it.">
-  <link rel="icon" type="image/png" sizes="32x32" href="/static/icons/nelavista-32x32.png">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/skills.css') }}">
-  <meta name="csrf-token" content="{{ csrf_token() }}">
-  <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
-  <style>
-    body { display: flex; flex-direction: column; min-height: 100vh; }
-    .ob-topbar { display: flex; align-items: center; justify-content: space-between; padding: 20px 24px; }
-    .ob-logo { font-family: 'Bricolage Grotesque', sans-serif; font-size: 1.3rem; font-weight: 800; letter-spacing: -0.03em; background: var(--grad-hero); -webkit-background-clip: text; background-clip: text; color: transparent; text-decoration: none; }
-    .ob-skip { color: var(--text-muted); text-decoration: none; font-size: 0.82rem; font-weight: 600; padding: 8px 14px; border-radius: var(--r-pill); border: 1px solid var(--border-hard); background: none; cursor: pointer; font-family: inherit; }
-    .ob-skip:hover { color: var(--text-secondary); border-color: var(--sk-accent); }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Set Up Skills | Nelavista</title>
+    <meta name="theme-color" content="#0d1117">
+    <meta name="description" content="Tell Nelavista what you want to learn so Skills can focus on it.">
+    <link rel="icon" type="image/png" sizes="32x32" href="/static/icons/nelavista-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/static/icons/nelavista-16x16.png">
+    <link rel="shortcut icon" href="/static/icons/favicon.ico">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    .ob-main { flex: 1; display: flex; justify-content: center; padding: 8px 20px 80px; }
-    .ob-container { width: 100%; max-width: 640px; }
-    .ob-intro { text-align: center; margin-bottom: 32px; }
-    .ob-eyebrow { display: block; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--sk-accent); margin-bottom: 10px; }
-    .ob-h1 { font-family: 'Bricolage Grotesque', sans-serif; font-size: 1.7rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 8px; }
-    .ob-sub { color: var(--sk-text-dim); font-size: 0.95rem; }
+        body {
+            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, sans-serif;
+        }
 
-    .ob-q { margin-bottom: 32px; }
-    .ob-q-label { font-weight: 700; font-size: 1rem; margin-bottom: 4px; }
-    .ob-q-hint { color: var(--sk-text-dim); font-size: 0.82rem; margin-bottom: 14px; }
+        /* Modal Overlay - Full Screen Block */
+        .profile-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(13, 17, 23, 0.97);
+            backdrop-filter: blur(8px);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            animation: fadeIn 0.3s ease;
+            overflow-y: auto;
+        }
 
-    .ob-skill-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; margin-bottom: 14px; }
-    .ob-skill-chip { background: var(--sk-card); border: 2px solid transparent; border-radius: var(--sk-radius); padding: 14px; cursor: pointer; text-align: left; transition: 0.15s; font-family: inherit; color: inherit; }
-    .ob-skill-chip:hover { border-color: rgba(56,189,248,0.4); }
-    .ob-skill-chip.selected { border-color: var(--sk-accent); background: rgba(56,189,248,0.1); }
-    .ob-skill-chip .chip-icon { font-size: 1.3rem; margin-bottom: 6px; }
-    .ob-skill-chip .chip-name { font-weight: 700; font-size: 0.88rem; }
-    .ob-skill-chip .chip-cat { font-size: 0.7rem; color: var(--text-muted); margin-top: 2px; }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
 
-    .ob-or { display: flex; align-items: center; gap: 12px; color: var(--text-muted); font-size: 0.78rem; margin: 16px 0; }
-    .ob-or::before, .ob-or::after { content: ''; flex: 1; height: 1px; background: var(--border-hard); }
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
 
-    .ob-options { display: flex; flex-direction: column; gap: 8px; }
-    .ob-option { display: flex; align-items: center; gap: 12px; padding: 14px 16px; background: var(--sk-card); border: 2px solid transparent; border-radius: var(--sk-radius); cursor: pointer; transition: 0.15s; }
-    .ob-option:hover { border-color: rgba(56,189,248,0.3); }
-    .ob-option input { accent-color: var(--sk-accent); width: 18px; height: 18px; flex-shrink: 0; }
-    .ob-option span { font-size: 0.9rem; font-weight: 500; }
-    .ob-option:has(input:checked) { border-color: var(--sk-accent); background: rgba(56,189,248,0.08); }
+        /* Top row - brand + skip, sits above the card like the rest of the modal chrome */
+        .setup-topbar {
+            width: 100%;
+            max-width: 520px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 0 auto 14px;
+        }
+        .setup-logo {
+            font-size: 1.1rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            color: #ffffff;
+            text-decoration: none;
+        }
+        .setup-logo span { color: #14b8a6; }
+        .setup-skip {
+            background: none;
+            border: 1px solid #2d3a52;
+            color: #9ca3af;
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 8px 16px;
+            border-radius: 999px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.2s ease;
+        }
+        .setup-skip:hover { color: #ffffff; border-color: #3b82f6; }
 
-    .ob-goal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    @media (max-width: 480px) { .ob-goal-grid { grid-template-columns: 1fr; } }
+        /* Modal Container */
+        .profile-modal-container {
+            background: #1a2235;
+            border-radius: 32px;
+            max-width: 520px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 1px solid #2d3a52;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+            animation: slideUp 0.4s ease;
+        }
 
-    .ob-submit-row { margin-top: 8px; }
-    .ob-footnote { text-align: center; color: var(--text-muted); font-size: 0.8rem; margin-top: 16px; }
-  </style>
+        /* Custom Scrollbar */
+        .profile-modal-container::-webkit-scrollbar { width: 6px; }
+        .profile-modal-container::-webkit-scrollbar-track { background: #0f172a; border-radius: 10px; }
+        .profile-modal-container::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 10px; }
+
+        /* Header Section */
+        .modal-header {
+            padding: 32px 28px 24px;
+            text-align: center;
+            border-bottom: 1px solid #2d3a52;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(20, 184, 166, 0.1));
+        }
+
+        .modal-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background: linear-gradient(135deg, #3b82f6, #14b8a6);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .modal-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ffffff, #cbd5e1);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .modal-subtitle {
+            color: #9ca3af;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        /* Form Section */
+        .modal-body { padding: 28px; }
+
+        .form-group { margin-bottom: 20px; }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #9ca3af;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .form-label .required { color: #f97316; margin-left: 2px; }
+        .form-label .optional { color: #6b7280; text-transform: none; letter-spacing: 0; font-weight: 500; }
+
+        .form-input {
+            width: 100%;
+            background: #0f172a;
+            border: 2px solid #2d3a52;
+            border-radius: 16px;
+            padding: 14px 18px;
+            font-size: 1rem;
+            color: #ffffff;
+            outline: none;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+
+        .form-input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+            background: #0d1117;
+        }
+
+        .form-input::placeholder { color: #6b7280; }
+
+        /* Info Badge */
+        .info-badge {
+            background: rgba(249, 115, 22, 0.15);
+            border: 1px solid #f97316;
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 0.85rem;
+            color: #fbbf24;
+            line-height: 1.5;
+        }
+
+        .info-badge-icon { font-size: 1.2rem; flex-shrink: 0; margin-top: 2px; }
+
+        /* Quick Select Grid (skills / experience / goal) */
+        .dept-quick-select {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 8px;
+            margin-top: 8px;
+            max-height: 220px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+        .dept-quick-select::-webkit-scrollbar { width: 4px; }
+        .dept-quick-select::-webkit-scrollbar-track { background: #0f172a; border-radius: 6px; }
+        .dept-quick-select::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 6px; }
+
+        .fd-chip {
+            background: #0f172a;
+            border: 2px solid #2d3a52;
+            color: #9ca3af;
+            padding: 10px 14px;
+            border-radius: 14px;
+            cursor: pointer;
+            font-size: 0.82rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            text-align: center;
+            font-family: inherit;
+            display: block;
+            width: 100%;
+            position: relative;
+        }
+        .fd-chip:hover { border-color: #3b82f6; color: #60a5fa; background: rgba(59, 130, 246, 0.1); }
+        .fd-chip.selected, .fd-chip:has(input:checked) {
+            background: #3b82f6;
+            border-color: #3b82f6;
+            color: white;
+        }
+        .fd-chip .fd-emoji { display: block; font-size: 1.3rem; margin-bottom: 4px; }
+        .fd-chip .fd-curriculum-tag { display: block; font-size: 0.62rem; color: #14b8a6; margin-top: 3px; font-weight: 600; }
+        .fd-chip.selected .fd-curriculum-tag { color: rgba(255,255,255,0.85); }
+        .fd-chip input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+            width: 1px; height: 1px;
+            pointer-events: none;
+        }
+
+        .ob-or { display: flex; align-items: center; gap: 12px; color: #6b7280; font-size: 0.78rem; margin: 14px 0; }
+        .ob-or::before, .ob-or::after { content: ''; flex: 1; height: 1px; background: #2d3a52; }
+
+        /* Submit Button */
+        .submit-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            border: none;
+            border-radius: 16px;
+            padding: 16px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 8px;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(59, 130, 246, 0.5);
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+        }
+
+        .submit-btn:active { transform: scale(0.98); }
+        .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+        /* Progress Indicator */
+        .progress-bar {
+            height: 4px;
+            background: #2d3a52;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3b82f6, #14b8a6);
+            transition: width 0.3s ease;
+            width: 0%;
+        }
+
+        /* Error Message */
+        .error-message {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid #ef4444;
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin-bottom: 20px;
+            color: #fca5a5;
+            font-size: 0.9rem;
+            display: none;
+            animation: shake 0.3s ease;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .error-message.show { display: block; }
+
+        .flash-message {
+            background: rgba(59, 130, 246, 0.12);
+            border: 1px solid #3b82f6;
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin-bottom: 20px;
+            color: #93c5fd;
+            font-size: 0.85rem;
+            list-style: none;
+        }
+
+        /* Loading State */
+        .submit-btn .spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+        }
+
+        .submit-btn.loading .spinner { display: block; }
+        .submit-btn.loading .btn-text { display: none; }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .setup-footnote {
+            text-align: center;
+            margin-top: 14px;
+            color: #6b7280;
+            font-size: 0.78rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 550px) {
+            .profile-modal-container { border-radius: 24px; max-height: 95vh; }
+            .modal-header { padding: 24px 20px 20px; }
+            .modal-icon { width: 70px; height: 70px; font-size: 2rem; }
+            .modal-title { font-size: 1.5rem; }
+            .modal-subtitle { font-size: 0.9rem; }
+            .modal-body { padding: 20px; }
+            .form-group { margin-bottom: 16px; }
+            .dept-quick-select { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
+        }
+    </style>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
 </head>
 <body>
-  <div class="ob-topbar">
-    <a href="/" class="ob-logo">Nelavista</a>
-    <form method="POST" action="{{ url_for('skills.onboarding') }}">
-      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-      <input type="hidden" name="skip" value="1">
-      <button type="submit" class="ob-skip">Skip for now</button>
-    </form>
-  </div>
 
-  <main class="ob-main">
-    <div class="ob-container">
-      <div class="ob-intro">
-        <span class="ob-eyebrow">Skills</span>
-        <h1 class="ob-h1">Let's set up your Skills, {{ first_name }}.</h1>
-        <p class="ob-sub">Answer a few quick questions and we'll focus everything around what you actually want to learn.</p>
-      </div>
+<div class="profile-modal-overlay" id="skillsSetupModal">
 
-      {% with messages = get_flashed_messages() %}
-        {% if messages %}
-        <ul style="list-style:none; margin-bottom:20px;">
-          {% for m in messages %}<li class="sk-flash">{{ m }}</li>{% endfor %}
-        </ul>
-        {% endif %}
-      {% endwith %}
-
-      <form method="POST" action="{{ url_for('skills.onboarding') }}" id="onboardingForm">
-        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-        <input type="hidden" name="skill_id" id="selectedSkillId" value="">
-
-        <div class="ob-q">
-          <div class="ob-q-label">1. What do you want to learn?</div>
-          <div class="ob-q-hint">Pick one to start — you can always explore more later.</div>
-          <div class="ob-skill-grid">
-            {% for cat in categories %}
-              {% for skill in cat.skills %}
-                {% if skill.is_published %}
-                <button type="button" class="ob-skill-chip" data-skill-id="{{ skill.id }}" onclick="selectSkill(this)">
-                  <div class="chip-icon">{{ skill.icon or '🧩' }}</div>
-                  <div class="chip-name">{{ skill.name }}</div>
-                  <div class="chip-cat">{{ cat.name }}</div>
-                </button>
-                {% endif %}
-              {% endfor %}
-            {% endfor %}
-          </div>
-          <div class="ob-or">or tell us in your own words</div>
-          <input type="text" name="interest_text" id="interestText" class="sk-input" placeholder="e.g. I want to learn to build websites" oninput="clearSkillSelection()">
-        </div>
-
-        <div class="ob-q">
-          <div class="ob-q-label">2. What's your experience with it?</div>
-          <div class="ob-options">
-            {% for value, label in experience_labels.items() %}
-            <label class="ob-option">
-              <input type="radio" name="experience_level" value="{{ value }}" {{ 'checked' if loop.first else '' }}>
-              <span>{{ label }}</span>
-            </label>
-            {% endfor %}
-          </div>
-        </div>
-
-        <div class="ob-q">
-          <div class="ob-q-label">3. What's your main goal right now?</div>
-          <div class="ob-q-hint">Optional — helps us point you in the right direction.</div>
-          <div class="ob-goal-grid">
-            {% for value, label in goal_labels.items() %}
-            <label class="ob-option">
-              <input type="radio" name="goal" value="{{ value }}">
-              <span>{{ label }}</span>
-            </label>
-            {% endfor %}
-          </div>
-        </div>
-
-        <div class="ob-submit-row">
-          <button type="submit" class="sk-btn full">Continue →</button>
-        </div>
-      </form>
-      <p class="ob-footnote">This just helps us focus your Skills experience — nothing is shared publicly.</p>
+    <div class="setup-topbar">
+        <a href="/" class="setup-logo">Nela<span>vista</span></a>
+        <form method="POST" action="{{ url_for('skills.onboarding') }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <input type="hidden" name="skip" value="1">
+            <button type="submit" class="setup-skip">Skip for now</button>
+        </form>
     </div>
-  </main>
+
+    <div class="profile-modal-container">
+
+        <!-- Header -->
+        <div class="modal-header">
+            <div class="modal-icon"><i class="ri-focus-3-line"></i></div>
+            <h2 class="modal-title">Let's set up your Skills, {{ first_name }}!</h2>
+            <p class="modal-subtitle">
+                Answer a couple of quick questions so we can focus everything around what you actually want to learn.
+            </p>
+        </div>
+
+        <!-- Form Body -->
+        <div class="modal-body">
+
+            <!-- Progress Bar -->
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+
+            <!-- Info Badge -->
+            <div class="info-badge">
+                <span class="info-badge-icon"><i class="ri-information-line"></i></span>
+                <span>This just helps us focus your Skills experience — nothing is shared publicly. <strong>Pick a skill first, then your experience level.</strong></span>
+            </div>
+
+            {% with messages = get_flashed_messages() %}
+              {% if messages %}
+              <ul style="list-style:none; padding:0; margin:0;">
+                {% for m in messages %}<li class="flash-message">{{ m }}</li>{% endfor %}
+              </ul>
+              {% endif %}
+            {% endwith %}
+
+            <!-- Error Message -->
+            <div class="error-message" id="errorMessage">
+                <i class="ri-error-warning-line"></i> Tell us what you want to learn, or pick one from the list.
+            </div>
+
+            <!-- Form -->
+            <form id="skillsOnboardingForm" method="POST" action="{{ url_for('skills.onboarding') }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <input type="hidden" name="skill_id" id="selectedSkillId" value="">
+
+                <!-- What do you want to learn -->
+                <div class="form-group">
+                    <label class="form-label">
+                        What do you want to learn <span class="required">*</span>
+                    </label>
+                    <div class="dept-quick-select" id="skillQuickSelect">
+                        {% for cat in categories %}
+                          {% for skill in cat.skills %}
+                            {% if skill.is_published %}
+                            <button type="button" class="fd-chip" data-skill-id="{{ skill.id }}" onclick="selectSkill(this)">
+                                <span class="fd-emoji"><i class="{{ skill.icon or 'ri-puzzle-line' }}"></i></span>
+                                {{ skill.name }}
+                                <span class="fd-curriculum-tag">{{ cat.name }}</span>
+                            </button>
+                            {% endif %}
+                          {% endfor %}
+                        {% endfor %}
+                    </div>
+                    <div class="ob-or">or tell us in your own words</div>
+                    <input type="text" name="interest_text" id="interestText" class="form-input" placeholder="e.g. I want to learn to build websites" oninput="clearSkillSelection()">
+                </div>
+
+                <!-- Experience -->
+                <div class="form-group">
+                    <label class="form-label">Your experience with it</label>
+                    <div class="dept-quick-select" id="experienceGrid">
+                        {% for value, label in experience_labels.items() %}
+                        <label class="fd-chip">
+                            <input type="radio" name="experience_level" value="{{ value }}" {{ 'checked' if loop.first else '' }} onchange="updateProgress()">
+                            {{ label }}
+                        </label>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Goal -->
+                <div class="form-group">
+                    <label class="form-label">
+                        Your main goal right now <span class="optional">(optional)</span>
+                    </label>
+                    <div class="dept-quick-select" id="goalGrid">
+                        {% for value, label in goal_labels.items() %}
+                        <label class="fd-chip">
+                            <input type="radio" name="goal" value="{{ value }}" onchange="updateProgress()">
+                            {{ label }}
+                        </label>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    <div class="spinner"></div>
+                    <span class="btn-text">
+                        <span><i class="ri-rocket-line"></i></span>
+                        <span>Continue</span>
+                    </span>
+                </button>
+
+            </form>
+
+            <p class="setup-footnote">You can change what you're learning anytime from Skills settings.</p>
+
+        </div>
+
+    </div>
+</div>
 
 <script>
-  function selectSkill(btn) {
-    document.querySelectorAll('.ob-skill-chip').forEach(c => c.classList.remove('selected'));
-    btn.classList.add('selected');
-    document.getElementById('selectedSkillId').value = btn.dataset.skillId;
-    document.getElementById('interestText').value = '';
-  }
-  function clearSkillSelection() {
-    document.querySelectorAll('.ob-skill-chip').forEach(c => c.classList.remove('selected'));
-    document.getElementById('selectedSkillId').value = '';
-  }
+    const form = document.getElementById('skillsOnboardingForm');
+    const progressFill = document.getElementById('progressFill');
+    const errorMessage = document.getElementById('errorMessage');
+    const submitBtn = document.getElementById('submitBtn');
+    const selectedSkillId = document.getElementById('selectedSkillId');
+    const interestText = document.getElementById('interestText');
+
+    function selectSkill(btn) {
+        document.querySelectorAll('#skillQuickSelect .fd-chip').forEach(c => c.classList.remove('selected'));
+        btn.classList.add('selected');
+        selectedSkillId.value = btn.dataset.skillId;
+        interestText.value = '';
+        updateProgress();
+    }
+
+    function clearSkillSelection() {
+        document.querySelectorAll('#skillQuickSelect .fd-chip').forEach(c => c.classList.remove('selected'));
+        selectedSkillId.value = '';
+        updateProgress();
+    }
+
+    function updateProgress() {
+        let filled = 0;
+        const total = 2; // what-to-learn + experience (goal is optional)
+        if (selectedSkillId.value.trim() !== '' || interestText.value.trim() !== '') filled++;
+        if (form.querySelector('input[name="experience_level"]:checked')) filled++;
+        progressFill.style.width = ((filled / total) * 100) + '%';
+    }
+
+    interestText.addEventListener('input', updateProgress);
+
+    form.addEventListener('submit', function (e) {
+        const hasSkill = selectedSkillId.value.trim() !== '' || interestText.value.trim() !== '';
+        if (!hasSkill) {
+            e.preventDefault();
+            errorMessage.classList.add('show');
+            document.getElementById('skillQuickSelect').scrollIntoView({ behavior: 'smooth', block: 'center' });
+            setTimeout(() => errorMessage.classList.remove('show'), 4000);
+            return;
+        }
+        submitBtn.classList.add('loading');
+        submitBtn.disabled = true;
+    });
+
+    updateProgress();
 </script>
+
 </body>
 </html>

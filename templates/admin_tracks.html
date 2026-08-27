@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin · Learning Paths · Nelavista</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
     <style>
         * { margin:0; padding:0; box-sizing:border-box; font-family:'Inter',system-ui,sans-serif; }
         body { background:#0d1117; color:#e6edf3; }
@@ -61,7 +62,7 @@
 {% include 'components/admin_nav.html' %}
 <div class="container">
     <a href="/admin/skills" class="back-link">← Skills</a>
-    <h1>🗺️ Career Tracks</h1>
+    <h1><i class="ri-route-line"></i> Career Tracks</h1>
     <p class="subtitle">Multi-skill paths — e.g. "AI Engineer" chains Python → Data Analysis → Machine Learning. Distinct from a skill's own internal learning path.</p>
 
     <div class="section-row">
@@ -73,7 +74,7 @@
     <div class="track-card" id="track-{{ t.id }}">
         <div class="track-head">
             <div>
-                <span class="track-title">{{ t.icon or '🧭' }} {{ t.title }}</span>
+                <span class="track-title"><i class="{{ t.icon or 'ri-route-line' }}"></i> {{ t.title }}</span>
                 <span class="pub-badge {{ 'yes' if t.is_published else 'no' }}">{{ 'LIVE' if t.is_published else 'DRAFT' }}</span>
                 <div class="track-desc">{{ t.tagline or '' }}</div>
             </div>
@@ -118,7 +119,12 @@
   <div class="field"><label>Title</label><input id="trackTitle" placeholder="e.g. AI Engineer"></div>
   <div class="field"><label>Tagline</label><input id="trackTagline" placeholder="e.g. From Python basics to shipping ML models"></div>
   <div class="field"><label>Description</label><textarea id="trackDescription" rows="4"></textarea></div>
-  <div class="field"><label>Icon (single emoji)</label><input id="trackIcon" placeholder="🤖"></div>
+  <div class="field"><label>Icon (Remix Icon class — browse at remixicon.com)</label>
+    <div style="display:flex; align-items:center; gap:10px;">
+      <input id="trackIcon" placeholder="ri-route-line" oninput="document.getElementById('trackIconPreview').className = this.value" style="flex:1;">
+      <i id="trackIconPreview" style="font-size:1.3rem; width:24px; text-align:center;"></i>
+    </div>
+  </div>
   <div class="modal-actions"><button class="btn secondary" onclick="closeModal()">Cancel</button><button class="btn" onclick="saveTrack()">Save</button></div>
 </div></div>
 
@@ -137,6 +143,7 @@ function openTrackModal(track) {
   document.getElementById('trackTagline').value = track ? (track.tagline || '') : '';
   document.getElementById('trackDescription').value = track ? (track.description || '') : '';
   document.getElementById('trackIcon').value = track ? (track.icon || '') : '';
+  document.getElementById('trackIconPreview').className = track ? (track.icon || '') : '';
   openModal('trackModal');
 }
 async function saveTrack() {

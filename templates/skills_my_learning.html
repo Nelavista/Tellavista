@@ -20,7 +20,7 @@
 
     {% if not rows %}
     <div class="sk-empty">
-      <div class="sk-empty-icon">📚</div>
+      <div class="sk-empty-icon"><i class="ri-book-open-line"></i></div>
       <div style="font-weight:600; margin-bottom:6px;">Nothing started yet</div>
       <div style="font-size:0.85rem;">Head to <a href="/skills/catalog" style="color:var(--sk-accent);">Learn</a> to pick your first skill.</div>
     </div>
@@ -46,7 +46,7 @@
         {% for step in row.pipeline_steps %}
         <div class="dv2-step {{ step.state }}">
           {% if not loop.first %}<div class="dv2-step-connector"></div>{% endif %}
-          <div class="dv2-step-dot">{{ '✓' if step.state == 'done' else loop.index }}</div>
+          <div class="dv2-step-dot">{% if step.state == 'done' %}<i class="ri-check-line"></i>{% else %}{{ loop.index }}{% endif %}</div>
           <div class="dv2-step-label">{{ step.label }}</div>
         </div>
         {% endfor %}

@@ -68,8 +68,8 @@
     {% if project.repo_url or project.live_url %}
     <div class="sk-section-title">Links</div>
     <div style="display:flex; gap:10px; flex-wrap:wrap;">
-      {% if project.repo_url %}<a href="{{ project.repo_url }}" target="_blank" rel="noopener" class="sk-btn secondary">📂 Repository</a>{% endif %}
-      {% if project.live_url %}<a href="{{ project.live_url }}" target="_blank" rel="noopener" class="sk-btn secondary">🔗 Live Site</a>{% endif %}
+      {% if project.repo_url %}<a href="{{ project.repo_url }}" target="_blank" rel="noopener" class="sk-btn secondary"><i class="ri-folder-3-line"></i> Repository</a>{% endif %}
+      {% if project.live_url %}<a href="{{ project.live_url }}" target="_blank" rel="noopener" class="sk-btn secondary"><i class="ri-link"></i> Live Site</a>{% endif %}
     </div>
     {% endif %}
 
@@ -91,7 +91,7 @@
       <div id="milestoneList">
         {% for m in project.milestones %}
         <div class="milestone-row" data-milestone-id="{{ m.id }}">
-          <button type="button" class="milestone-check {{ 'done' if m.is_done else '' }}" onclick="toggleMilestone({{ m.id }}, this)">{{ '✓' if m.is_done else '' }}</button>
+          <button type="button" class="milestone-check {{ 'done' if m.is_done else '' }}" onclick="toggleMilestone({{ m.id }}, this)">{% if m.is_done %}<i class="ri-check-line"></i>{% endif %}</button>
           <div style="flex:1;">
             <div class="milestone-title {{ 'done' if m.is_done else '' }}">{{ m.title }}</div>
             {% if m.description %}<div class="milestone-desc">{{ m.description }}</div>{% endif %}
@@ -177,7 +177,7 @@
       });
       const data = await res.json();
       if (data.success) {
-        note.textContent = 'Saved ✓';
+        note.innerHTML = 'Saved <i class="ri-check-line"></i>';
         setTimeout(() => { note.textContent = ''; }, 2500);
         if (currentStatus === 'completed') {
           document.querySelector('.sk-badge.completed, .sk-badge.in_progress, .sk-badge.submitted')?.remove();
@@ -199,7 +199,7 @@
       const data = await res.json();
       if (data.success) {
         btn.classList.toggle('done', data.is_done);
-        btn.textContent = data.is_done ? '✓' : '';
+        btn.innerHTML = data.is_done ? '<i class="ri-check-line"></i>' : '';
         btn.closest('.milestone-row').querySelector('.milestone-title').classList.toggle('done', data.is_done);
       }
     } finally {

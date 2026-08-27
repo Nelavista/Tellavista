@@ -3,12 +3,12 @@
      Academia questions can help with a lesson/challenge/project in Skills too.
      Pass `ask_context` (plain string) and optionally `ask_suggestions` (list of strings)
      from the view before including this partial. -->
-<button class="sk-ask-fab" id="skAskFab" onclick="skAskToggle()">✨ Ask Nelavista</button>
+<button class="sk-ask-fab" id="skAskFab" onclick="skAskToggle()"><i class="ri-sparkling-2-line"></i> Ask Nelavista</button>
 
 <div class="sk-ask-panel" id="skAskPanel">
   <div class="sk-ask-header">
-    <strong>✨ Ask Nelavista</strong>
-    <button class="sk-ask-close" onclick="skAskToggle()">✕</button>
+    <strong><i class="ri-sparkling-2-line"></i> Ask Nelavista</strong>
+    <button class="sk-ask-close" onclick="skAskToggle()"><i class="ri-close-line"></i></button>
   </div>
   <div class="sk-ask-messages" id="skAskMessages">
     <div class="sk-ask-msg ai">Ask me anything about this{{ ' — ' + ask_context if ask_context else '' }}. I can explain a concept, review your approach, or give you another exercise.</div>
@@ -20,7 +20,7 @@
   </div>
   <div class="sk-ask-input-row">
     <input type="text" id="skAskInput" placeholder="Type your question..." onkeypress="if(event.key==='Enter') skAskSend()">
-    <button onclick="skAskSend()">➤</button>
+    <button onclick="skAskSend()"><i class="ri-send-plane-fill"></i></button>
   </div>
 </div>
 

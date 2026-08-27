@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin · {{ skill.name }} · Nelavista</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
     <style>
         * { margin:0; padding:0; box-sizing:border-box; font-family:'Inter',system-ui,sans-serif; }
         body { background:#0d1117; color:#e6edf3; }
@@ -72,7 +73,7 @@
     <a href="/admin/skills" class="back-link">← All Skills</a>
     <div class="hero">
         <div>
-            <h1>{{ skill.icon or '🧩' }} {{ skill.name }}</h1>
+            <h1><i class="{{ skill.icon or 'ri-puzzle-line' }}"></i> {{ skill.name }}</h1>
             <div class="meta">{{ skill.level|title }} · {{ student_count }} student{{ 's' if student_count != 1 else '' }} learning · <button class="btn ghost small" onclick="openSkillEditModal()">Edit details</button></div>
         </div>
         <div class="pub-toggle">
@@ -125,12 +126,12 @@
         <div class="item-card" id="course-{{ course.id }}">
             <div class="item-head">
                 <div>
-                    <div class="item-title">{{ course.title }} <span class="pub-badge {{ 'yes' if course.is_published else 'no' }}">{{ 'LIVE' if course.is_published else 'DRAFT' }}</span>{% if course.is_daily_class %} <span class="pub-badge yes">🗓️ {{ course.duration_days or '?' }}-DAY CLASS</span>{% endif %}</div>
+                    <div class="item-title">{{ course.title }} <span class="pub-badge {{ 'yes' if course.is_published else 'no' }}">{{ 'LIVE' if course.is_published else 'DRAFT' }}</span>{% if course.is_daily_class %} <span class="pub-badge yes"><i class="ri-calendar-line"></i> {{ course.duration_days or '?' }}-DAY CLASS</span>{% endif %}</div>
                     <div class="item-sub">{{ course.description or '' }} · {{ course.modules.count() }} modules</div>
                 </div>
                 <div class="row-actions">
                     {% if course.is_daily_class %}
-                    <a href="/admin/skills/classes/{{ course.id }}" class="btn small">🗓️ Manage Class</a>
+                    <a href="/admin/skills/classes/{{ course.id }}" class="btn small"><i class="ri-calendar-line"></i> Manage Class</a>
                     {% endif %}
                     <button class="btn secondary small" onclick="togglePublishGeneric('/admin/api/courses/{{ course.id }}', {{ (not course.is_published)|tojson }})">{{ 'Unpublish' if course.is_published else 'Publish' }}</button>
                     <button class="btn danger small" onclick="deleteItem('/admin/api/courses/{{ course.id }}', 'course-{{ course.id }}')">Delete</button>
@@ -152,7 +153,7 @@
                 {% for lesson in module.lessons %}
                 <div class="lesson-row">
                     <span class="lt">{{ lesson.title }} <span class="pub-badge {{ 'yes' if lesson.is_published else 'no' }}">{{ 'LIVE' if lesson.is_published else 'DRAFT' }}</span>{% if lesson.quiz %} · quiz{% endif %}
-                        {% if lesson.videos is not none %} · 🎬 {{ lesson.videos|length }} video{{ 's' if lesson.videos|length != 1 else '' }}{% endif %}
+                        {% if lesson.videos is not none %} · <i class="ri-vidicon-line"></i> {{ lesson.videos|length }} video{{ 's' if lesson.videos|length != 1 else '' }}{% endif %}
                     </span>
                     <div class="row-actions">
                         <!-- Lesson data (title/content/etc. can contain quotes and apostrophes from real
@@ -160,7 +161,7 @@
                              own quoting collides with HTML attribute delimiters otherwise. -->
                         <script type="application/json" id="lesson-data-{{ lesson.id }}">{{ lesson.to_dict()|tojson }}</script>
                         <button class="btn secondary small" onclick="openLessonModal({{ module.id }}, JSON.parse(document.getElementById('lesson-data-{{ lesson.id }}').textContent))">Edit</button>
-                        <button class="btn secondary small" id="refresh-videos-{{ lesson.id }}" onclick="refreshLessonVideos({{ lesson.id }})" title="Re-search YouTube for this lesson (e.g. after changing its title)">🔄 Videos</button>
+                        <button class="btn secondary small" id="refresh-videos-{{ lesson.id }}" onclick="refreshLessonVideos({{ lesson.id }})" title="Re-search YouTube for this lesson (e.g. after changing its title)"><i class="ri-refresh-line"></i> Videos</button>
                         <button class="btn secondary small" onclick="togglePublishGeneric('/admin/api/lessons/{{ lesson.id }}', {{ (not lesson.is_published)|tojson }})">{{ 'Unpublish' if lesson.is_published else 'Publish' }}</button>
                         <button class="btn danger small" onclick="deleteItem('/admin/api/lessons/{{ lesson.id }}', null)">Delete</button>
                     </div>
@@ -176,10 +177,10 @@
         </div>
         {% else %}
         <div class="item-card" style="text-align:center; padding:28px 20px;">
-            <div style="font-size:1.5rem; margin-bottom:8px;">✨</div>
+            <div style="font-size:1.5rem; margin-bottom:8px;"><i class="ri-sparkling-2-line"></i></div>
             <div style="font-weight:700; margin-bottom:6px;">No courses yet — draft a starter curriculum with AI</div>
             <div class="item-sub" style="margin-bottom:16px;">Proposes 2 modules (4 lessons), a challenge, and a project brief as drafts — nothing publishes automatically, you review and edit everything first.</div>
-            <button class="btn" id="generateCurriculumBtn" onclick="generateCurriculum()">✨ Generate Curriculum with AI</button>
+            <button class="btn" id="generateCurriculumBtn" onclick="generateCurriculum()"><i class="ri-sparkling-2-line"></i> Generate Curriculum with AI</button>
         </div>
         {% endfor %}
         <div class="add-row"><button class="btn secondary" onclick="openCourseModal()">+ Add Course Manually</button></div>
@@ -243,7 +244,12 @@
     <option value="intermediate" {{ 'selected' if skill.level=='intermediate' else '' }}>Intermediate</option>
     <option value="advanced" {{ 'selected' if skill.level=='advanced' else '' }}>Advanced</option>
   </select></div>
-  <div class="field"><label>Icon</label><input id="editSkillIcon" value="{{ skill.icon or '' }}"></div>
+  <div class="field"><label>Icon (Remix Icon class — browse at remixicon.com)</label>
+    <div style="display:flex; align-items:center; gap:10px;">
+      <input id="editSkillIcon" value="{{ skill.icon or '' }}" oninput="document.getElementById('editSkillIconPreview').className = this.value" style="flex:1;">
+      <i id="editSkillIconPreview" class="{{ skill.icon or '' }}" style="font-size:1.3rem; width:24px; text-align:center;"></i>
+    </div>
+  </div>
   <div class="field"><label>Estimated hours</label><input id="editSkillHours" type="number" value="{{ skill.estimated_hours or 0 }}"></div>
   <div class="modal-actions"><button class="btn secondary" onclick="closeModal('skillEditModal')">Cancel</button><button class="btn" onclick="saveSkillEdit()">Save</button></div>
 </div></div>
@@ -292,7 +298,7 @@
   <div class="field">
     <label>Content (HTML/plain text)</label>
     <textarea id="lessonContent" rows="6" placeholder="&lt;p&gt;Lesson body...&lt;/p&gt;"></textarea>
-    <button type="button" class="btn secondary small" id="draftFromVideoBtn" style="margin-top:8px; display:none;" onclick="draftFromVideo()">✨ Draft from Video</button>
+    <button type="button" class="btn secondary small" id="draftFromVideoBtn" style="margin-top:8px; display:none;" onclick="draftFromVideo()"><i class="ri-sparkling-2-line"></i> Draft from Video</button>
     <div class="hint" id="draftFromVideoHint" style="display:none;">Writes a draft grounded in this lesson's reference video — review and edit before saving.</div>
   </div>
   <div class="field"><label>Video URL (embeddable, optional)</label><input id="lessonVideo" placeholder="https://www.youtube.com/embed/..."></div>
@@ -445,7 +451,7 @@ async function generateCurriculum() {
   } else {
     alert(data.error || 'Failed to generate curriculum');
     btn.disabled = false;
-    btn.textContent = '✨ Generate Curriculum with AI';
+    btn.innerHTML = '<i class="ri-sparkling-2-line"></i> Generate Curriculum with AI';
   }
 }
 
@@ -477,7 +483,7 @@ function openLessonModal(moduleId, lesson) {
   draftBtn.style.display = lesson ? 'inline-flex' : 'none';
   draftHint.style.display = lesson ? 'block' : 'none';
   draftBtn.disabled = false;
-  draftBtn.textContent = '✨ Draft from Video';
+  draftBtn.innerHTML = '<i class="ri-sparkling-2-line"></i> Draft from Video';
   openModal('lessonModal');
 }
 
@@ -489,7 +495,7 @@ async function draftFromVideo() {
   btn.textContent = 'Writing draft...';
   const data = await jsonFetch(`/admin/api/lessons/${lessonId}/generate-content`, 'POST');
   btn.disabled = false;
-  btn.textContent = '✨ Draft from Video';
+  btn.innerHTML = '<i class="ri-sparkling-2-line"></i> Draft from Video';
   if (!data.success) return alert(data.error || 'Failed to generate a draft');
   document.getElementById('lessonContent').value = data.content;
 }
@@ -528,7 +534,7 @@ async function refreshLessonVideos(lessonId) {
   } else {
     alert(data.error || 'Failed to refresh videos');
     btn.disabled = false;
-    btn.textContent = '🔄 Videos';
+    btn.innerHTML = '<i class="ri-refresh-line"></i> Videos';
   }
 }
 

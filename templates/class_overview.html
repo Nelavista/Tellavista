@@ -75,20 +75,20 @@
         <div class="dc-day-card {{ state }}">
           <div class="dc-day-num">Day {{ day.day_number }}</div>
           <div class="dc-day-title">{{ day.title }}</div>
-          <div class="dc-day-status">🔒 Locked</div>
+          <div class="dc-day-status"><i class="ri-lock-line"></i> Locked</div>
         </div>
         {% else %}
         <a href="/skills/{{ skill.slug }}/class/{{ course.slug }}/day/{{ day.day_number }}" class="dc-day-card {{ state }}">
           <div class="dc-day-num">Day {{ day.day_number }}</div>
           <div class="dc-day-title">{{ day.title }}</div>
-          <div class="dc-day-status">{{ '✓ Completed' if state == 'completed' else '▶ Continue' }}</div>
+          <div class="dc-day-status">{% if state == 'completed' %}<i class="ri-check-line"></i> Completed{% else %}<i class="ri-play-fill"></i> Continue{% endif %}</div>
         </a>
         {% endif %}
         {% endfor %}
       </div>
     </div>
     {% else %}
-    <div class="sk-empty"><div class="sk-empty-icon">🗓️</div>This class doesn't have any days published yet.</div>
+    <div class="sk-empty"><div class="sk-empty-icon"><i class="ri-calendar-line"></i></div>This class doesn't have any days published yet.</div>
     {% endfor %}
   </div>
 

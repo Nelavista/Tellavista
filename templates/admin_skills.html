@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin · Skills · Nelavista</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
     <style>
         * { margin:0; padding:0; box-sizing:border-box; font-family:'Inter',system-ui,sans-serif; }
         body { background:#0d1117; color:#e6edf3; }
@@ -63,7 +64,7 @@
 <body>
 {% include 'components/admin_nav.html' %}
 <div class="container">
-    <h1>🧩 Skills Management</h1>
+    <h1><i class="ri-puzzle-line"></i> Skills Management</h1>
     <p class="subtitle">Create categories and skills, then open a skill to build its learning path, courses, challenges, and projects.</p>
 
     <div class="stats-grid">
@@ -83,7 +84,7 @@
     <div class="demand-grid">
         {% if demand.matched %}
         <div class="cat-card">
-            <div class="cat-name" style="margin-bottom:10px;">📈 Existing skills, by demand</div>
+            <div class="cat-name" style="margin-bottom:10px;"><i class="ri-line-chart-line"></i> Existing skills, by demand</div>
             {% for name, slug, n in demand.matched %}
             <div class="demand-row"><span>{{ name }}</span><span class="demand-count">{{ n }}</span></div>
             {% endfor %}
@@ -91,7 +92,7 @@
         {% endif %}
         {% if demand.unmatched %}
         <div class="cat-card">
-            <div class="cat-name" style="margin-bottom:10px;">💡 Not in the catalog yet</div>
+            <div class="cat-name" style="margin-bottom:10px;"><i class="ri-lightbulb-line"></i> Not in the catalog yet</div>
             {% for text, n in demand.unmatched %}
             <div class="demand-row"><span>{{ text }}</span><span class="demand-count">{{ n }}</span></div>
             {% endfor %}
@@ -103,9 +104,9 @@
     <div class="section-row">
         <div class="section-title">Categories &amp; Skills</div>
         <div style="display:flex; gap:8px; flex-wrap:wrap;">
-            <a href="/admin/skills/tracks" class="btn secondary">🗺️ Career Tracks</a>
-            <a href="/admin/skills/opportunities" class="btn secondary">💼 Opportunities</a>
-            <a href="/admin/skills/competitions" class="btn secondary">🏆 Competitions</a>
+            <a href="/admin/skills/tracks" class="btn secondary"><i class="ri-route-line"></i> Career Tracks</a>
+            <a href="/admin/skills/opportunities" class="btn secondary"><i class="ri-briefcase-line"></i> Opportunities</a>
+            <a href="/admin/skills/competitions" class="btn secondary"><i class="ri-trophy-line"></i> Competitions</a>
             <button class="btn" onclick="openCategoryModal()">+ New Category</button>
         </div>
     </div>
@@ -114,7 +115,7 @@
         {% for cat in categories %}
         <div class="cat-card" id="cat-{{ cat.id }}">
             <div class="cat-header">
-                <div class="cat-name">{{ cat.icon or '📁' }} {{ cat.name }} <span style="color:#6e7681; font-weight:400; font-size:0.8rem;">({{ cat.skills.count() }})</span></div>
+                <div class="cat-name"><i class="{{ cat.icon or 'ri-folder-line' }}"></i> {{ cat.name }} <span style="color:#6e7681; font-weight:400; font-size:0.8rem;">({{ cat.skills.count() }})</span></div>
                 <div class="cat-actions">
                     <!-- Category data travels via a JSON script tag, not an inline onclick attribute —
                          tojson's own quoting collides with HTML attribute delimiters otherwise (breaks
@@ -128,7 +129,7 @@
             <div class="skill-list">
                 {% for skill in cat.skills %}
                 <a href="/admin/skills/{{ skill.id }}" class="skill-item">
-                    <div class="sk-name">{{ skill.icon or '🧩' }} {{ skill.name }} <span class="pub-badge {{ 'yes' if skill.is_published else 'no' }}">{{ 'LIVE' if skill.is_published else 'DRAFT' }}</span></div>
+                    <div class="sk-name"><i class="{{ skill.icon or 'ri-puzzle-line' }}"></i> {{ skill.name }} <span class="pub-badge {{ 'yes' if skill.is_published else 'no' }}">{{ 'LIVE' if skill.is_published else 'DRAFT' }}</span></div>
                     <div class="sk-meta">{{ skill.level|title }} · {{ skill.courses.count() }} courses · {{ skill.challenges.count() }} challenges · {{ skill.project_templates.count() }} projects</div>
                 </a>
                 {% else %}
@@ -148,7 +149,12 @@
     <h3 id="categoryModalTitle">New Category</h3>
     <input type="hidden" id="categoryId">
     <div class="field"><label>Name</label><input id="categoryName" placeholder="e.g. Tech"></div>
-    <div class="field"><label>Icon (single emoji)</label><input id="categoryIcon" placeholder="💻"></div>
+    <div class="field"><label>Icon (Remix Icon class — browse at remixicon.com)</label>
+      <div style="display:flex; align-items:center; gap:10px;">
+        <input id="categoryIcon" placeholder="ri-code-s-slash-line" oninput="document.getElementById('categoryIconPreview').className = this.value" style="flex:1;">
+        <i id="categoryIconPreview" style="font-size:1.3rem; width:24px; text-align:center;"></i>
+      </div>
+    </div>
     <div class="field"><label>Description</label><textarea id="categoryDescription" placeholder="Optional short description"></textarea></div>
     <div class="modal-actions">
       <button class="btn secondary" onclick="closeModal('categoryModal')">Cancel</button>
@@ -168,7 +174,12 @@
     <div class="field"><label>Level</label>
       <select id="skillLevel"><option value="beginner">Beginner</option><option value="intermediate">Intermediate</option><option value="advanced">Advanced</option></select>
     </div>
-    <div class="field"><label>Icon (single emoji)</label><input id="skillIcon" placeholder="🐍"></div>
+    <div class="field"><label>Icon (Remix Icon class — browse at remixicon.com)</label>
+      <div style="display:flex; align-items:center; gap:10px;">
+        <input id="skillIcon" placeholder="ri-terminal-box-line" oninput="document.getElementById('skillIconPreview').className = this.value" style="flex:1;">
+        <i id="skillIconPreview" style="font-size:1.3rem; width:24px; text-align:center;"></i>
+      </div>
+    </div>
     <div class="field"><label>Estimated hours</label><input id="skillHours" type="number" min="0" value="0"></div>
     <div class="modal-actions">
       <button class="btn secondary" onclick="closeModal('skillModal')">Cancel</button>
@@ -186,6 +197,7 @@ function openCategoryModal() {
   document.getElementById('categoryId').value = '';
   document.getElementById('categoryName').value = '';
   document.getElementById('categoryIcon').value = '';
+  document.getElementById('categoryIconPreview').className = '';
   document.getElementById('categoryDescription').value = '';
   openModal('categoryModal');
 }
@@ -194,6 +206,7 @@ function editCategory(cat) {
   document.getElementById('categoryId').value = cat.id;
   document.getElementById('categoryName').value = cat.name;
   document.getElementById('categoryIcon').value = cat.icon || '';
+  document.getElementById('categoryIconPreview').className = cat.icon || '';
   document.getElementById('categoryDescription').value = cat.description || '';
   openModal('categoryModal');
 }
@@ -224,6 +237,7 @@ function openSkillModal(categoryId) {
   document.getElementById('skillDescription').value = '';
   document.getElementById('skillLevel').value = 'beginner';
   document.getElementById('skillIcon').value = '';
+  document.getElementById('skillIconPreview').className = '';
   document.getElementById('skillHours').value = 0;
   openModal('skillModal');
 }

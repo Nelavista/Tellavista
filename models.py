@@ -505,7 +505,7 @@ class SkillCategory(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     slug = db.Column(db.String(100), unique=True, nullable=False)
-    icon = db.Column(db.String(10))            # a single emoji, rendered directly
+    icon = db.Column(db.String(40))            # a Remix Icon class name, e.g. "ri-code-s-slash-line"
     description = db.Column(db.String(300))
     order = db.Column(db.Integer, default=0)
     is_active = db.Column(db.Boolean, default=True)
@@ -532,7 +532,7 @@ class Skill(db.Model):
     tagline = db.Column(db.String(200))         # e.g. "Build the foundation you need to start developing real software."
     description = db.Column(db.Text)
     level = db.Column(db.String(20), default='beginner')   # beginner | intermediate | advanced
-    icon = db.Column(db.String(10))
+    icon = db.Column(db.String(40))            # a Remix Icon class name, e.g. "ri-terminal-box-line"
     color = db.Column(db.String(20), default='#3b82f6')
     estimated_hours = db.Column(db.Integer, default=0)
     is_published = db.Column(db.Boolean, default=False)
@@ -1120,7 +1120,7 @@ class CareerTrack(db.Model):
     slug = db.Column(db.String(150), unique=True, nullable=False)
     tagline = db.Column(db.String(200))
     description = db.Column(db.Text)
-    icon = db.Column(db.String(10))
+    icon = db.Column(db.String(40))            # a Remix Icon class name, e.g. "ri-route-line"
     color = db.Column(db.String(20), default='#3b82f6')
     is_published = db.Column(db.Boolean, default=False)
     order = db.Column(db.Integer, default=0)

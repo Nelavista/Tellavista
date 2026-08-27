@@ -26,7 +26,7 @@
     <span class="sk-eyebrow">Search</span>
     <h1 class="sk-h1">Find anything in Skills.</h1>
     <form method="GET" action="/skills/search" class="sk-search-wrap" style="margin-top:20px;">
-      <span class="sk-search-icon">🔍</span>
+      <span class="sk-search-icon"><i class="ri-search-line"></i></span>
       <input type="text" name="q" value="{{ q }}" placeholder="Search skills, courses, lessons, challenges, projects..." autofocus>
     </form>
 
@@ -34,7 +34,7 @@
     <p class="sk-sub">Try "Python", "web development", "functions", or anything else you're curious about.</p>
     {% elif total == 0 %}
     <div class="sk-empty">
-      <div class="sk-empty-icon">🔍</div>
+      <div class="sk-empty-icon"><i class="ri-search-line"></i></div>
       <div style="font-weight:600; margin-bottom:6px;">No results for "{{ q }}"</div>
       <div style="font-size:0.85rem;">Try a different word, or <a href="/skills/catalog" style="color:#3b82f6;">browse the catalog</a> instead.</div>
     </div>
@@ -46,7 +46,7 @@
       <div class="sr-group-label">Skills</div>
       {% for s in results.skills %}
       <a href="/skills/{{ s.slug }}" class="sr-row">
-        <span class="sr-row-icon">{{ s.icon or '🧩' }}</span>
+        <span class="sr-row-icon"><i class="{{ s.icon or 'ri-puzzle-line' }}"></i></span>
         <div><div class="sr-row-title">{{ s.name }}</div>{% if s.tagline %}<div class="sr-row-sub">{{ s.tagline }}</div>{% endif %}</div>
       </a>
       {% endfor %}
@@ -58,7 +58,7 @@
       <div class="sr-group-label">Courses</div>
       {% for c in results.courses %}
       <a href="/skills/{{ c.skill.slug }}/learn/{{ c.slug }}" class="sr-row">
-        <span class="sr-row-icon">📚</span>
+        <span class="sr-row-icon"><i class="ri-book-open-line"></i></span>
         <div><div class="sr-row-title">{{ c.title }}</div><div class="sr-row-sub">{{ c.skill.name }}</div></div>
       </a>
       {% endfor %}
@@ -70,7 +70,7 @@
       <div class="sr-group-label">Lessons</div>
       {% for l in results.lessons %}
       <a href="/skills/{{ l.module.course.skill.slug }}/learn/{{ l.module.course.slug }}/{{ l.slug }}" class="sr-row">
-        <span class="sr-row-icon">📄</span>
+        <span class="sr-row-icon"><i class="ri-file-text-line"></i></span>
         <div><div class="sr-row-title">{{ l.title }}</div><div class="sr-row-sub">{{ l.module.course.skill.name }} · {{ l.module.course.title }}</div></div>
       </a>
       {% endfor %}
@@ -82,7 +82,7 @@
       <div class="sr-group-label">Practice Challenges</div>
       {% for c in results.challenges %}
       <a href="/skills/{{ c.skill.slug }}/challenge/{{ c.slug }}" class="sr-row">
-        <span class="sr-row-icon">🎯</span>
+        <span class="sr-row-icon"><i class="ri-focus-3-line"></i></span>
         <div><div class="sr-row-title">{{ c.title }}</div><div class="sr-row-sub">{{ c.skill.name }}</div></div>
       </a>
       {% endfor %}
@@ -94,7 +94,7 @@
       <div class="sr-group-label">Projects</div>
       {% for p in results.projects %}
       <a href="/skills/{{ p.skill.slug }}" class="sr-row">
-        <span class="sr-row-icon">🛠️</span>
+        <span class="sr-row-icon"><i class="ri-hammer-line"></i></span>
         <div><div class="sr-row-title">{{ p.title }}</div><div class="sr-row-sub">{{ p.skill.name }}</div></div>
       </a>
       {% endfor %}

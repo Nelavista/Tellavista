@@ -27,29 +27,29 @@ def get_or_create(model, defaults=None, **lookup):
 def run():
     with app.app_context():
         tech, _ = get_or_create(SkillCategory, slug='tech', defaults={
-            'name': 'Tech', 'icon': '💻', 'order': 1,
+            'name': 'Tech', 'icon': 'ri-code-s-slash-line', 'order': 1,
             'description': 'Software development, data, AI, and infrastructure skills.',
         })
         design, _ = get_or_create(SkillCategory, slug='design', defaults={
-            'name': 'Design', 'icon': '🎨', 'order': 2,
+            'name': 'Design', 'icon': 'ri-palette-line', 'order': 2,
             'description': 'UI/UX, product, and visual design.',
         })
         business, _ = get_or_create(SkillCategory, slug='business', defaults={
-            'name': 'Business', 'icon': '💼', 'order': 3,
+            'name': 'Business', 'icon': 'ri-briefcase-line', 'order': 3,
             'description': 'Entrepreneurship, marketing, sales, and strategy.',
         })
         creative, _ = get_or_create(SkillCategory, slug='creative', defaults={
-            'name': 'Creative', 'icon': '🎬', 'order': 4,
+            'name': 'Creative', 'icon': 'ri-movie-2-line', 'order': 4,
             'description': 'Content, video, writing, and personal brand.',
         })
         career, _ = get_or_create(SkillCategory, slug='career', defaults={
-            'name': 'Career', 'icon': '🚀', 'order': 5,
+            'name': 'Career', 'icon': 'ri-rocket-line', 'order': 5,
             'description': 'Getting opportunity-ready — CVs, interviews, and remote work.',
         })
 
         # ============== PYTHON (fully built path) ==============
         python, _ = get_or_create(Skill, slug='python', defaults={
-            'category_id': tech.id, 'name': 'Python', 'level': 'beginner', 'icon': '🐍',
+            'category_id': tech.id, 'name': 'Python', 'level': 'beginner', 'icon': 'ri-terminal-box-line',
             'color': '#3b82f6', 'estimated_hours': 20, 'is_published': True, 'order': 1,
             'tagline': "Build the foundation you need to start developing real software.",
             'description': (
@@ -156,7 +156,7 @@ def run():
 
         # ============== WEB DEVELOPMENT (fully built path) ==============
         webdev, _ = get_or_create(Skill, slug='web-development', defaults={
-            'category_id': tech.id, 'name': 'Web Development', 'level': 'beginner', 'icon': '🌐',
+            'category_id': tech.id, 'name': 'Web Development', 'level': 'beginner', 'icon': 'ri-global-line',
             'color': '#06b6d4', 'estimated_hours': 18, 'is_published': True, 'order': 2,
             'tagline': "Learn to build and ship real websites, from your first tag to a live page.",
             'description': (
@@ -260,25 +260,25 @@ def run():
 
         # ============== A FEW MORE SKILLS (breadth, content coming soon) ==============
         get_or_create(Skill, slug='ui-ux-design', defaults={
-            'category_id': design.id, 'name': 'UI/UX Design', 'level': 'beginner', 'icon': '🎨',
+            'category_id': design.id, 'name': 'UI/UX Design', 'level': 'beginner', 'icon': 'ri-palette-line',
             'color': '#a855f7', 'estimated_hours': 15, 'is_published': True, 'order': 1,
             'tagline': 'Design products people actually enjoy using.',
             'description': 'Learn how to research, wireframe, and design interfaces that solve real problems.',
         })
         get_or_create(Skill, slug='digital-marketing', defaults={
-            'category_id': business.id, 'name': 'Digital Marketing', 'level': 'beginner', 'icon': '📈',
+            'category_id': business.id, 'name': 'Digital Marketing', 'level': 'beginner', 'icon': 'ri-line-chart-line',
             'color': '#f59e0b', 'estimated_hours': 12, 'is_published': True, 'order': 1,
             'tagline': 'Get products and ideas in front of the right people.',
             'description': 'The fundamentals of reaching an audience — content, social, and basic analytics.',
         })
         get_or_create(Skill, slug='content-creation', defaults={
-            'category_id': creative.id, 'name': 'Content Creation', 'level': 'beginner', 'icon': '🎬',
+            'category_id': creative.id, 'name': 'Content Creation', 'level': 'beginner', 'icon': 'ri-movie-2-line',
             'color': '#ec4899', 'estimated_hours': 10, 'is_published': True, 'order': 1,
             'tagline': 'Turn what you know into content people want to watch or read.',
             'description': 'Planning, writing, and producing content that holds attention.',
         })
         get_or_create(Skill, slug='cv-interview-prep', defaults={
-            'category_id': career.id, 'name': 'CV & Interview Prep', 'level': 'beginner', 'icon': '📄',
+            'category_id': career.id, 'name': 'CV & Interview Prep', 'level': 'beginner', 'icon': 'ri-file-text-line',
             'color': '#22c55e', 'estimated_hours': 5, 'is_published': True, 'order': 1,
             'tagline': 'Get opportunity-ready.',
             'description': 'Build a CV that gets read, and prepare for the interviews that follow.',
@@ -288,7 +288,7 @@ def run():
         # Only combines skills that actually have real content — no placeholder skills
         # invented just to pad out the track.
         track, _ = get_or_create(CareerTrack, slug='full-stack-foundations', defaults={
-            'title': 'Full-Stack Foundations', 'icon': '🧭', 'color': '#3b82f6', 'is_published': True,
+            'title': 'Full-Stack Foundations', 'icon': 'ri-route-line', 'color': '#3b82f6', 'is_published': True,
             'tagline': 'Learn to build the logic and the interface — backend thinking meets a real website.',
             'description': (
                 "A short, focused track for students who want both sides of the picture: how "

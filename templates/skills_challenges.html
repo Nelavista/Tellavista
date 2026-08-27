@@ -25,7 +25,7 @@
 
     <div class="sk-tab-panel active" id="tab-competitions">
       {% if not competitions %}
-      <div class="sk-empty"><div class="sk-empty-icon">🏆</div><div style="font-weight:600;">No competitions open right now</div><div style="font-size:0.85rem;">Check back soon.</div></div>
+      <div class="sk-empty"><div class="sk-empty-icon"><i class="ri-trophy-line"></i></div><div style="font-weight:600;">No competitions open right now</div><div style="font-size:0.85rem;">Check back soon.</div></div>
       {% else %}
       <div class="sk-grid">
         {% for c in competitions %}
@@ -45,7 +45,7 @@
 
     <div class="sk-tab-panel" id="tab-practice">
       {% if not challenges %}
-      <div class="sk-empty"><div class="sk-empty-icon">🎯</div><div style="font-weight:600;">No practice challenges yet</div></div>
+      <div class="sk-empty"><div class="sk-empty-icon"><i class="ri-focus-3-line"></i></div><div style="font-weight:600;">No practice challenges yet</div></div>
       {% else %}
       <div class="sk-grid">
         {% for c in challenges %}
@@ -55,7 +55,7 @@
           <div style="display:flex; gap:6px; flex-wrap:wrap;">
             <span class="sk-badge">{{ c.difficulty|title }}</span>
             <span class="sk-badge">{{ c.skill.name }}</span>
-            {% if c.id in my_challenge_submissions %}<span class="sk-badge completed">✓ Submitted</span>{% endif %}
+            {% if c.id in my_challenge_submissions %}<span class="sk-badge completed"><i class="ri-check-line"></i> Submitted</span>{% endif %}
           </div>
         </a>
         {% endfor %}

@@ -39,12 +39,12 @@
       {% if next_lesson %}
       <a href="/skills/{{ skill.slug }}/learn/{{ course.slug }}/{{ next_lesson.slug }}" class="sk-btn">{{ 'Start' if progress.completed == 0 else 'Continue' }} →</a>
       {% else %}
-      <span class="sk-badge completed">✓ Course Complete</span>
+      <span class="sk-badge completed"><i class="ri-check-line"></i> Course Complete</span>
       {% endif %}
     </div>
 
     {% if not modules %}
-    <div class="sk-empty" style="margin-top:24px;"><div class="sk-empty-icon">📚</div><div style="font-weight:600;">This course doesn't have lessons yet</div></div>
+    <div class="sk-empty" style="margin-top:24px;"><div class="sk-empty-icon"><i class="ri-book-open-line"></i></div><div style="font-weight:600;">This course doesn't have lessons yet</div></div>
     {% endif %}
 
     {% for module in modules %}
@@ -54,7 +54,7 @@
       <div class="cv-module-title">{{ module.title }}</div>
       {% for lesson in pub_lessons|sort(attribute='order') %}
       <a href="/skills/{{ skill.slug }}/learn/{{ course.slug }}/{{ lesson.slug }}" class="cv-lesson-row">
-        <div class="cv-lesson-check {{ 'done' if lesson.id in completed_ids else '' }}">{{ '✓' if lesson.id in completed_ids else '' }}</div>
+        <div class="cv-lesson-check {{ 'done' if lesson.id in completed_ids else '' }}">{% if lesson.id in completed_ids %}<i class="ri-check-line"></i>{% endif %}</div>
         <div class="cv-lesson-title">{{ lesson.title }}</div>
         <div class="cv-lesson-meta">{{ lesson.duration_minutes }} min{% if lesson.quiz %} · quiz{% endif %}</div>
       </a>

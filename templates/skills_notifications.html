@@ -25,7 +25,7 @@
     <h1 class="sk-h1">What's new</h1>
 
     {% if not notifications %}
-    <div class="sk-empty"><div class="sk-empty-icon">🔔</div><div style="font-weight:600;">Nothing yet</div><div style="font-size:0.85rem;">Application updates, project reviews, and messages will show up here.</div></div>
+    <div class="sk-empty"><div class="sk-empty-icon"><i class="ri-notification-3-line"></i></div><div style="font-weight:600;">Nothing yet</div><div style="font-size:0.85rem;">Application updates, project reviews, and messages will show up here.</div></div>
     {% else %}
     <div class="sk-panel" style="padding:8px;">
       {% for n in notifications %}

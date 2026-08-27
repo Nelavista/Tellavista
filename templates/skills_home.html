@@ -18,7 +18,7 @@
 {% include 'components/skills_sidebar.html' %}
 
   <div class="sk-view">
-    <h1 class="sk-h1" style="font-size:1.8rem;">{{ greeting }}, {{ first_name }} 👋</h1>
+    <h1 class="sk-h1" style="font-size:1.8rem;">{{ greeting }}, {{ first_name }} <i class="ri-emotion-happy-line"></i></h1>
     <p class="sk-sub">What are you building today?</p>
 
     <div class="sk-panel dv2-progress-card" style="margin:22px 0;">
@@ -109,7 +109,7 @@
         {% for step in continue_card.pipeline_steps %}
         <div class="dv2-step {{ step.state }}">
           {% if not loop.first %}<div class="dv2-step-connector"></div>{% endif %}
-          <div class="dv2-step-dot">{{ '✓' if step.state == 'done' else loop.index }}</div>
+          <div class="dv2-step-dot">{% if step.state == 'done' %}<i class="ri-check-line"></i>{% else %}{{ loop.index }}{% endif %}</div>
           <div class="dv2-step-label">{{ step.label }}</div>
           <div class="dv2-step-status">{{ 'Done' if step.state == 'done' else ('In Progress' if step.state == 'current' else '') }}</div>
         </div>
@@ -128,7 +128,7 @@
       {% endif %}
     </div>
     {% else %}
-    <div class="sk-empty"><div class="sk-empty-icon">🚀</div><div style="font-weight:600;">Nothing in progress yet</div><div style="font-size:0.9rem;">Pick a skill below to start your Learn → Practice → Build → Verify → Earn journey.</div></div>
+    <div class="sk-empty"><div class="sk-empty-icon"><i class="ri-rocket-line"></i></div><div style="font-weight:600;">Nothing in progress yet</div><div style="font-size:0.9rem;">Pick a skill below to start your Learn → Practice → Build → Verify → Earn journey.</div></div>
     {% endif %}
 
     {% if verify_focus %}
@@ -137,18 +137,18 @@
     <div class="sk-panel">
       <div class="sk-card-title" style="margin-bottom:12px;">{{ verify_focus.skill.name }}</div>
       <div class="dv2-verify-row">
-        <div class="dv2-verify-check {{ 'done' if verify_focus.course_done else 'pending' }}">{{ '✓' if verify_focus.course_done else '' }}</div>
+        <div class="dv2-verify-check {{ 'done' if verify_focus.course_done else 'pending' }}">{% if verify_focus.course_done %}<i class="ri-check-line"></i>{% endif %}</div>
         <span>Course completed</span>
       </div>
       <div class="dv2-verify-row">
-        <div class="dv2-verify-check {{ 'done' if verify_focus.project_done else 'pending' }}">{{ '✓' if verify_focus.project_done else '' }}</div>
+        <div class="dv2-verify-check {{ 'done' if verify_focus.project_done else 'pending' }}">{% if verify_focus.project_done %}<i class="ri-check-line"></i>{% endif %}</div>
         <span>Project completed</span>
       </div>
       <div class="dv2-verify-row">
-        <div class="dv2-verify-check {{ 'done' if verify_focus.assessment_done else 'pending' }}">{{ '✓' if verify_focus.assessment_done else '' }}</div>
+        <div class="dv2-verify-check {{ 'done' if verify_focus.assessment_done else 'pending' }}">{% if verify_focus.assessment_done %}<i class="ri-check-line"></i>{% endif %}</div>
         <span>Skill assessment</span>
       </div>
-      <a href="/skills/{{ verify_focus.skill.slug }}" class="sk-btn secondary" style="margin-top:14px;">{{ 'Verified ✓' if verify_focus.verified else 'Continue Verification' }}</a>
+      <a href="/skills/{{ verify_focus.skill.slug }}" class="sk-btn secondary" style="margin-top:14px;">{% if verify_focus.verified %}Verified <i class="ri-check-line"></i>{% else %}Continue Verification{% endif %}</a>
     </div>
     {% endif %}
 
@@ -188,7 +188,7 @@
     </div>
     <p class="sk-card-desc" style="margin-top:-10px;">Your certificate shows you completed the learning. Your projects show what you can actually do.</p>
     {% if not my_projects %}
-    <div class="sk-empty"><div class="sk-empty-icon">🛠️</div>No projects started yet.</div>
+    <div class="sk-empty"><div class="sk-empty-icon"><i class="ri-hammer-line"></i></div>No projects started yet.</div>
     {% else %}
     <div class="sk-grid">
       {% for p in my_projects %}
@@ -265,7 +265,7 @@
         <div style="margin-top:14px;">
           {% for item in profile.checklist %}
           <div class="dv2-verify-row">
-            <div class="dv2-verify-check {{ 'done' if item.done else 'pending' }}">{{ '✓' if item.done else '' }}</div>
+            <div class="dv2-verify-check {{ 'done' if item.done else 'pending' }}">{% if item.done %}<i class="ri-check-line"></i>{% endif %}</div>
             <span>{{ item.label }}</span>
           </div>
           {% endfor %}

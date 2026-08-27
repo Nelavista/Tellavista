@@ -594,7 +594,7 @@ def generate_lesson_content(lesson_id):
 
     if not lesson.videos:
         return _bad_request(
-            'No reference video found for this lesson yet — try 🔄 Videos first, '
+            'No reference video found for this lesson yet — try Videos first, '
             'or a real video for this topic may not exist on YouTube.'
         )
 
@@ -958,7 +958,7 @@ def generate_daily_content_route(lesson_id):
         lesson.videos = search_youtube_videos(build_lesson_video_query(skill.name, lesson.title))
         db.session.commit()
     if not lesson.videos:
-        return _bad_request('No reference video found for this day yet — try 🔄 Videos first.')
+        return _bad_request('No reference video found for this day yet — try Videos first.')
 
     try:
         content = generate_daily_class_day_content(

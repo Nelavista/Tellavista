@@ -21,7 +21,7 @@
     <div style="margin-top:24px;">
       <form class="sk-search-wrap" method="GET" action="/skills/catalog">
         {% if active_category %}<input type="hidden" name="category" value="{{ active_category.slug }}">{% endif %}
-        <span class="sk-search-icon">🔍</span>
+        <span class="sk-search-icon"><i class="ri-search-line"></i></span>
         <input type="text" name="q" value="{{ search }}" placeholder="Search skills — e.g. Python, UI/UX, Copywriting...">
       </form>
     </div>
@@ -29,13 +29,13 @@
     <div class="sk-category-rail">
       <a href="/skills/catalog{{ '?q=' + search if search else '' }}" class="sk-category-chip {{ 'active' if not active_category else '' }}">All Skills</a>
       {% for cat in categories %}
-      <a href="/skills/catalog?category={{ cat.slug }}{{ '&q=' + search if search else '' }}" class="sk-category-chip {{ 'active' if active_category and active_category.id == cat.id else '' }}">{{ cat.icon or '' }} {{ cat.name }}</a>
+      <a href="/skills/catalog?category={{ cat.slug }}{{ '&q=' + search if search else '' }}" class="sk-category-chip {{ 'active' if active_category and active_category.id == cat.id else '' }}">{% if cat.icon %}<i class="{{ cat.icon }}"></i>{% endif %} {{ cat.name }}</a>
       {% endfor %}
     </div>
 
     {% if not rows %}
     <div class="sk-empty">
-      <div class="sk-empty-icon">🔍</div>
+      <div class="sk-empty-icon"><i class="ri-search-line"></i></div>
       <div style="font-weight:600; margin-bottom:6px;">No skills found</div>
       <div style="font-size:0.85rem;">
         {% if search %}Nothing matched "{{ search }}" — try a different search.{% else %}This category doesn't have published skills yet.{% endif %}
@@ -46,7 +46,7 @@
       {% for row in rows %}
       {% set skill = row.skill %}
       <a href="/skills/{{ skill.slug }}" class="sk-card dv2-skill-card"{% if not row.has_content %} style="opacity:0.72;"{% endif %}>
-        <div class="sk-icon-circle" style="background:{{ skill.color }}22; color:{{ skill.color }};">{{ skill.icon or '🧩' }}</div>
+        <div class="sk-icon-circle" style="background:{{ skill.color }}22; color:{{ skill.color }};"><i class="{{ skill.icon or 'ri-puzzle-line' }}"></i></div>
         <div class="sk-card-title">{{ skill.name }}{% if not row.has_content %} <span class="sk-badge" style="background:rgba(251,191,36,0.15); color:#fbbf24; font-size:0.68rem; vertical-align:middle;">Coming Soon</span>{% endif %}</div>
         <div class="sk-card-desc">{{ skill.tagline or '' }}</div>
         {% if row.has_content %}

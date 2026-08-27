@@ -21,7 +21,7 @@
 
     {% if not tracks_data %}
     <div class="sk-empty" style="margin-top:24px;">
-      <div class="sk-empty-icon">🧭</div>
+      <div class="sk-empty-icon"><i class="ri-route-line"></i></div>
       <div style="font-weight:600; margin-bottom:6px;">No tracks published yet</div>
       <div style="font-size:0.85rem;">Check back soon, or explore individual skills instead.</div>
     </div>
@@ -30,7 +30,7 @@
       {% for item in tracks_data %}
       {% set t = item.track %}
       <a href="/skills/tracks/{{ t.slug }}" class="sk-card">
-        <div class="sk-icon-circle" style="background:{{ t.color }}22; color:{{ t.color }};">{{ t.icon or '🧭' }}</div>
+        <div class="sk-icon-circle" style="background:{{ t.color }}22; color:{{ t.color }};"><i class="{{ t.icon or 'ri-route-line' }}"></i></div>
         <div class="sk-card-title">{{ t.title }}</div>
         <div class="sk-card-desc">{{ t.tagline or '' }}</div>
         <span class="sk-badge">{{ t.steps.count() }} skill{{ 's' if t.steps.count() != 1 else '' }}</span>

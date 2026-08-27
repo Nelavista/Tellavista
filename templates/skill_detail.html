@@ -26,14 +26,14 @@
 
   <div class="sk-view">
     <div class="skd-hero">
-      <div class="skd-hero-icon" style="background:{{ skill.color }}22; color:{{ skill.color }};">{{ skill.icon or '🧩' }}</div>
+      <div class="skd-hero-icon" style="background:{{ skill.color }}22; color:{{ skill.color }};"><i class="{{ skill.icon or 'ri-puzzle-line' }}"></i></div>
       <div style="flex:1; min-width:220px;">
         <span class="sk-eyebrow">{{ skill.category.name if skill.category else 'Skills' }}</span>
         <h1 class="sk-h1" style="margin-bottom:6px;">{{ skill.name }}</h1>
         <p class="sk-sub" style="margin-bottom:14px;">{{ skill.tagline or skill.description or '' }}</p>
         <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
           <span class="sk-badge {{ skill.level }}">{{ skill.level }}</span>
-          {% if skill.estimated_hours %}<span class="sk-badge">⏱ ~{{ skill.estimated_hours }}h</span>{% endif %}
+          {% if skill.estimated_hours %}<span class="sk-badge"><i class="ri-time-line"></i> ~{{ skill.estimated_hours }}h</span>{% endif %}
           {% if student_skill %}<span class="sk-badge {{ student_skill.status }}">{{ student_skill.progress_pct }}% complete</span>{% endif %}
         </div>
       </div>
@@ -66,7 +66,7 @@
 
     <div class="skd-tab-panel active" id="tab-path">
       {% if not step_states %}
-      <div class="sk-empty"><div class="sk-empty-icon">🧭</div><div style="font-weight:600;">This path is still being built</div><div style="font-size:0.85rem;">Check back soon.</div></div>
+      <div class="sk-empty"><div class="sk-empty-icon"><i class="ri-route-line"></i></div><div style="font-weight:600;">This path is still being built</div><div style="font-size:0.85rem;">Check back soon.</div></div>
       {% else %}
       {% set current_step = namespace(num=None) %}
       {% for item in step_states %}{% if item.state == 'current' and current_step.num is none %}{% set current_step.num = loop.index %}{% endif %}{% endfor %}
@@ -75,7 +75,7 @@
         {% set step = item.step %}
         <li class="sk-path-step {{ 'locked' if item.state == 'locked' else '' }}">
           <div class="sk-step-marker {{ item.state }}">
-            {% if item.state == 'completed' %}✓{% else %}{{ loop.index }}{% endif %}
+            {% if item.state == 'completed' %}<i class="ri-check-line"></i>{% else %}{{ loop.index }}{% endif %}
           </div>
           <div class="sk-step-body">
             <div class="sk-step-num">Step {{ loop.index }} · {{ step.step_type|title }}</div>
@@ -91,7 +91,7 @@
                 <a href="#tab-projects" onclick="skdShowTab('projects')" class="sk-step-link">{{ 'View project' if item.state == 'completed' else 'Start project' }} →</a>
               {% endif %}
             {% else %}
-              <span class="sk-step-desc" style="font-style:italic;">🔒 {{ 'Complete Step %d to unlock'|format(current_step.num) if current_step.num else 'Locked' }}</span>
+              <span class="sk-step-desc" style="font-style:italic;"><i class="ri-lock-line"></i> {{ 'Complete Step %d to unlock'|format(current_step.num) if current_step.num else 'Locked' }}</span>
             {% endif %}
           </div>
         </li>
@@ -102,7 +102,7 @@
 
     <div class="skd-tab-panel" id="tab-practice">
       {% if not challenges %}
-      <div class="sk-empty"><div class="sk-empty-icon">🎯</div><div style="font-weight:600;">No practice challenges yet</div><div style="font-size:0.85rem;">Practice exercises for {{ skill.name }} are coming soon.</div></div>
+      <div class="sk-empty"><div class="sk-empty-icon"><i class="ri-focus-3-line"></i></div><div style="font-weight:600;">No practice challenges yet</div><div style="font-size:0.85rem;">Practice exercises for {{ skill.name }} are coming soon.</div></div>
       {% else %}
       <div class="sk-grid">
         {% for c in challenges %}
@@ -112,7 +112,7 @@
           <div style="display:flex; gap:6px; flex-wrap:wrap;">
             <span class="sk-badge {{ c.difficulty }}">{{ c.difficulty }}</span>
             <span class="sk-badge">{{ c.challenge_type }}</span>
-            {% if c.id in challenge_done_ids %}<span class="sk-badge completed">✓ Submitted</span>{% endif %}
+            {% if c.id in challenge_done_ids %}<span class="sk-badge completed"><i class="ri-check-line"></i> Submitted</span>{% endif %}
           </div>
         </a>
         {% endfor %}
@@ -122,7 +122,7 @@
 
     <div class="skd-tab-panel" id="tab-projects">
       {% if not project_templates %}
-      <div class="sk-empty"><div class="sk-empty-icon">🛠️</div><div style="font-weight:600;">No project briefs yet</div><div style="font-size:0.85rem;">Curated project ideas for {{ skill.name }} are coming soon.</div></div>
+      <div class="sk-empty"><div class="sk-empty-icon"><i class="ri-hammer-line"></i></div><div style="font-weight:600;">No project briefs yet</div><div style="font-size:0.85rem;">Curated project ideas for {{ skill.name }} are coming soon.</div></div>
       {% else %}
       <div class="sk-grid">
         {% for p in project_templates %}

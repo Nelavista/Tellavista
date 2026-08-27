@@ -1,0 +1,61 @@
+<div class="sk-panel">
+  <div class="sk-card-title" style="font-size:0.9rem;">Moodboard & Notes</div>
+  <textarea class="sk-textarea" id="pwdesNotes" rows="6" style="margin-top:10px;" placeholder="Sketch your ideas, layout plans, color palette, inspiration...">{{ project.design_notes or '' }}</textarea>
+  <p class="sk-card-desc" id="pwdesNotesStatus" style="margin-top:6px;">Autosaves as you type.</p>
+</div>
+
+<div class="sk-panel" style="margin-top:14px;">
+  <div style="display:flex; align-items:center; justify-content:space-between;">
+    <div class="sk-card-title" style="font-size:0.9rem;">Assets</div>
+    <button type="button" class="sk-btn secondary small" onclick="document.getElementById('pwdesUploadForm').style.display = document.getElementById('pwdesUploadForm').style.display === 'none' ? 'flex' : 'none';"><i class="ri-add-line"></i> Add asset</button>
+  </div>
+  <form id="pwdesUploadForm" method="POST" action="{{ url_for('skills.upload_project_design_asset', project_id=project.id) }}" enctype="multipart/form-data" style="display:none; gap:8px; align-items:flex-end; flex-wrap:wrap; margin-top:12px;">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <div class="sk-field" style="flex:1; min-width:160px; margin-bottom:0;">
+      <label class="sk-label">Image</label>
+      <input class="sk-input" type="file" name="asset" accept="image/*" required>
+    </div>
+    <div class="sk-field" style="flex:1; min-width:160px; margin-bottom:0;">
+      <label class="sk-label">Note</label>
+      <input class="sk-input" type="text" name="note" placeholder="What is this?">
+    </div>
+    <button type="submit" class="sk-btn">Upload</button>
+  </form>
+
+  {% if project.design_assets %}
+  <div class="screenshot-grid" style="margin-top:16px;">
+    {% for asset in project.design_assets %}
+    <div>
+      <img src="{{ asset.url }}" alt="{{ asset.note or 'Design asset' }}">
+      {% if asset.note %}<p class="sk-card-desc" style="margin-top:4px;">{{ asset.note }}</p>{% endif %}
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p class="sk-card-desc" style="margin-top:12px;">No assets uploaded yet.</p>
+  {% endif %}
+</div>
+
+<div class="sk-panel" style="margin-top:14px;">
+  <div class="sk-card-title" style="font-size:0.9rem;">Prototype</div>
+  <p class="sk-card-desc" style="margin-top:6px;">Working in Figma? Paste your prototype link in the Overview tab's Live URL field when you're ready.</p>
+</div>
+
+<script>
+(function () {
+  const textarea = document.getElementById('pwdesNotes');
+  const status = document.getElementById('pwdesNotesStatus');
+  let timer = null;
+  textarea.addEventListener('input', function () {
+    status.textContent = 'Saving...';
+    clearTimeout(timer);
+    timer = setTimeout(async function () {
+      await fetch(window.location.pathname + '/design/notes', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content: textarea.value }),
+      });
+      status.textContent = 'Autosaves as you type.';
+    }, 800);
+  });
+})();
+</script>

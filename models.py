@@ -846,6 +846,10 @@ class ProjectTemplate(db.Model):
     # where max_points across all criteria should sum to 100. The AI evaluator is given
     # exactly these criteria and must score against them — it never invents its own scale.
     rubric_json = db.Column(db.Text)
+    # Optional: opts this template into an in-browser project workspace (see StudentProject
+    # below). NULL for every template today — a curated template behaves exactly as it does
+    # now (plain repo_url/live_url tracking) until an admin explicitly turns this on.
+    workspace_type = db.Column(db.String(20), nullable=True)  # developer | writer | designer | NULL
 
     __table_args__ = (db.UniqueConstraint('skill_id', 'slug', name='uq_project_template_slug'),)
 
@@ -879,6 +883,7 @@ class ProjectTemplate(db.Model):
             'description': self.description, 'skills_demonstrated': self.skills_demonstrated,
             'difficulty': self.difficulty, 'estimated_hours': self.estimated_hours,
             'is_published': self.is_published, 'order': self.order, 'rubric': self.rubric,
+            'workspace_type': self.workspace_type,
         }
 
 
@@ -919,10 +924,51 @@ class StudentProject(db.Model):
     verification_status = db.Column(db.String(20), default='none')
     is_public = db.Column(db.Boolean, default=True)  # shown on the student's Talent Profile
 
+    # ── AI-generated brief + workspace (source='ai_generated') ──────────────────────────
+    # 'template' | 'custom' | 'ai_generated' — how this project was started. Backfilled on
+    # existing rows by the migration (project_template_id set -> 'template', else 'custom')
+    # so every historical row gets a correct value, not just new ones.
+    source = db.Column(db.String(20), nullable=False, default='custom', server_default='custom')
+    # Which in-browser workspace this project gets, if any. NULL means no workspace — the
+    # plain repo_url/live_url/screenshots flow, same as every project today. Only ever
+    # developer/writer/designer — there is deliberately no 'data'/notebook workspace.
+    workspace_type = db.Column(db.String(20), nullable=True)
+    idea_text = db.Column(db.Text, nullable=True)  # the student's own free-text idea (ai_generated only)
+    objectives = db.Column(db.Text, nullable=True)  # AI brief: one-paragraph objective
+    features_json = db.Column(db.Text, nullable=True)
+    deliverables_json = db.Column(db.Text, nullable=True)
+    tech_stack_json = db.Column(db.Text, nullable=True)
+    success_criteria_json = db.Column(db.Text, nullable=True)
+    difficulty = db.Column(db.String(20), nullable=True)  # beginner | intermediate | advanced
+    estimated_time = db.Column(db.String(60), nullable=True)  # free text, e.g. "6-8 hours"
+
+    # ── writer workspace ─────────────────────────────────────────────────────────────────
+    doc_content = db.Column(db.Text, nullable=True)  # current markdown document
+    # [{"content": str, "saved_at": iso str}, ...], newest first, capped at 20 by the route —
+    # same "just enough undo history, not a full revision system" spirit as elsewhere here.
+    doc_versions_json = db.Column(db.Text, nullable=True)
+
+    # ── designer workspace ───────────────────────────────────────────────────────────────
+    design_notes = db.Column(db.Text, nullable=True)  # moodboard/plan notes
+    design_assets_json = db.Column(db.Text, nullable=True)  # [{"url","note","uploaded_at"}, ...] Cloudinary URLs
+
+    # ── reflection answers, for "Request Review" ─────────────────────────────────────────
+    # Own columns, not folded into ai_feedback_json, for the same reason description/repo_url
+    # are their own columns: this is what the STUDENT wrote, and must survive even if the AI
+    # review call itself fails (it's persisted before the AI is ever called — see
+    # routes/skills_routes.py's request_project_review).
+    reflection_problem_solved = db.Column(db.Text, nullable=True)
+    reflection_challenges = db.Column(db.Text, nullable=True)
+    reflection_improvements = db.Column(db.Text, nullable=True)
+
     student = db.relationship('User', backref='student_projects')
     template = db.relationship('ProjectTemplate', backref='student_instances')
     milestones = db.relationship('ProjectMilestone', backref='project', lazy='dynamic',
                                   order_by='ProjectMilestone.order', cascade='all, delete-orphan')
+    files = db.relationship('ProjectFile', backref='project', lazy='dynamic',
+                             order_by='ProjectFile.order', cascade='all, delete-orphan')
+    messages = db.relationship('ProjectMessage', backref='project', lazy='dynamic',
+                                order_by='ProjectMessage.created_at', cascade='all, delete-orphan')
 
     @property
     def skills_demonstrated(self):
@@ -970,6 +1016,73 @@ class StudentProject(db.Model):
     def ai_feedback(self, value):
         self.ai_feedback_json = json.dumps(value) if value is not None else None
 
+    # ── AI-brief list fields — same json-list-property pattern as skills_demonstrated ────
+    @property
+    def features(self):
+        try:
+            return json.loads(self.features_json) if self.features_json else []
+        except (ValueError, TypeError):
+            return []
+
+    @features.setter
+    def features(self, value):
+        self.features_json = json.dumps(value or [])
+
+    @property
+    def deliverables(self):
+        try:
+            return json.loads(self.deliverables_json) if self.deliverables_json else []
+        except (ValueError, TypeError):
+            return []
+
+    @deliverables.setter
+    def deliverables(self, value):
+        self.deliverables_json = json.dumps(value or [])
+
+    @property
+    def tech_stack(self):
+        try:
+            return json.loads(self.tech_stack_json) if self.tech_stack_json else []
+        except (ValueError, TypeError):
+            return []
+
+    @tech_stack.setter
+    def tech_stack(self, value):
+        self.tech_stack_json = json.dumps(value or [])
+
+    @property
+    def success_criteria(self):
+        try:
+            return json.loads(self.success_criteria_json) if self.success_criteria_json else []
+        except (ValueError, TypeError):
+            return []
+
+    @success_criteria.setter
+    def success_criteria(self, value):
+        self.success_criteria_json = json.dumps(value or [])
+
+    @property
+    def doc_versions(self):
+        try:
+            return json.loads(self.doc_versions_json) if self.doc_versions_json else []
+        except (ValueError, TypeError):
+            return []
+
+    @doc_versions.setter
+    def doc_versions(self, value):
+        self.doc_versions_json = json.dumps(value or [])
+
+    @property
+    def design_assets(self):
+        try:
+            return json.loads(self.design_assets_json) if self.design_assets_json else []
+        except (ValueError, TypeError):
+            return []
+
+    @design_assets.setter
+    def design_assets(self, value):
+        self.design_assets_json = json.dumps(value or [])
+
     def to_dict(self):
         return {
             'id': self.id, 'title': self.title, 'description': self.description, 'status': self.status,
@@ -982,6 +1095,11 @@ class StudentProject(db.Model):
             'rubric_scores': self.rubric_scores, 'ai_overall_score': self.ai_overall_score,
             'screenshots': self.screenshots, 'ai_feedback': self.ai_feedback,
             'verification_status': self.verification_status, 'is_public': self.is_public,
+            'source': self.source, 'workspace_type': self.workspace_type,
+            'objectives': self.objectives, 'features': self.features,
+            'deliverables': self.deliverables, 'tech_stack': self.tech_stack,
+            'success_criteria': self.success_criteria,
+            'difficulty': self.difficulty, 'estimated_time': self.estimated_time,
         }
 
 
@@ -1006,6 +1124,43 @@ class ProjectMilestone(db.Model):
             'order': self.order, 'is_done': self.is_done,
             'completed_at': self.completed_at.isoformat() if self.completed_at else None,
         }
+
+
+class ProjectFile(db.Model):
+    """One file in a developer-workspace StudentProject's in-browser code editor. A
+    parallel table to ProjectMilestone rather than a JSON blob on StudentProject, for the
+    same reason: the editor's save/rename/delete calls need a stable id to address one
+    specific file, not just "replace the whole blob"."""
+    __tablename__ = 'project_files'
+
+    id = db.Column(db.Integer, primary_key=True)
+    student_project_id = db.Column(db.Integer, db.ForeignKey('student_projects.id'), nullable=False)
+    filename = db.Column(db.String(200), nullable=False)
+    content = db.Column(db.Text, default='')
+    order = db.Column(db.Integer, default=0)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    def to_dict(self):
+        return {'id': self.id, 'filename': self.filename, 'content': self.content, 'order': self.order}
+
+
+class ProjectMessage(db.Model):
+    """One turn in the AI mentor chat for a StudentProject. Deliberately separate from the
+    site-wide 'Ask Nelavista' widget (components/skills_ask_widget.html + routes/ai_routes.py
+    '/ask'), which is stateless and single-turn per request (its memory is generic
+    Flask-session state, not tied to one project) — this table gives one project a real,
+    persistent, multi-turn mentor conversation that survives across visits."""
+    __tablename__ = 'project_messages'
+
+    id = db.Column(db.Integer, primary_key=True)
+    student_project_id = db.Column(db.Integer, db.ForeignKey('student_projects.id'), nullable=False)
+    role = db.Column(db.String(10), nullable=False)  # user | assistant
+    body = db.Column(db.Text, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def to_dict(self):
+        return {'id': self.id, 'role': self.role, 'body': self.body,
+                'created_at': self.created_at.isoformat() if self.created_at else None}
 
 
 class StudentSkill(db.Model):

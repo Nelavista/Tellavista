@@ -1,0 +1,151 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+<style>
+  .pwd-tabs { display: flex; gap: 2px; overflow-x: auto; border-bottom: 1px solid var(--sk-border); }
+  .pwd-tab { display: flex; align-items: center; gap: 6px; padding: 9px 14px; font-size: 0.82rem; font-weight: 600; color: var(--sk-text-dim); background: var(--sk-card); border: 1px solid var(--sk-border); border-bottom: none; border-radius: 8px 8px 0 0; cursor: pointer; white-space: nowrap; }
+  .pwd-tab.active { color: var(--sk-accent); background: var(--sk-bg); }
+  .pwd-tab-close { opacity: 0.6; }
+  .pwd-tab-close:hover { opacity: 1; }
+  .pwd-editor-wrap .CodeMirror { height: 360px; border: 1px solid var(--sk-border); border-radius: 0 0 10px 10px; font-size: 0.85rem; }
+  .pwd-preview-frame { width: 100%; height: 320px; border: 1px solid var(--sk-border); border-radius: 10px; background: #fff; }
+  .pwd-empty { padding: 24px; text-align: center; }
+</style>
+
+<div class="sk-panel" style="background:var(--sk-card);">
+  <p class="sk-card-desc" style="line-height:1.6;">
+    <strong>You write the code here.</strong> Nothing is pre-generated for you. Already have a repo, or
+    prefer your own editor? Skip this and attach your <strong>GitHub link</strong> in the Overview tab
+    when you're done.
+  </p>
+</div>
+
+<div class="sk-panel" style="margin-top:14px; padding:0; overflow:hidden;">
+  <div class="pwd-tabs" id="pwdTabs" style="padding:10px 10px 0;">
+    {% for f in project.files %}
+      <div class="pwd-tab {{ 'active' if loop.first }}" data-file-id="{{ f.id }}">
+        <span>{{ f.filename }}</span>
+        <span class="pwd-tab-close" onclick="event.stopPropagation(); pwdDeleteFile({{ f.id }})"><i class="ri-close-line"></i></span>
+      </div>
+    {% endfor %}
+    <div class="pwd-tab" onclick="pwdCreateFile()"><i class="ri-add-line"></i> New file</div>
+  </div>
+  {% if not project.files.count() %}
+    <div class="pwd-empty">
+      <p class="sk-card-desc">No files yet. Create one to start writing code.</p>
+      <button type="button" class="sk-btn secondary small" onclick="pwdCreateFile()"><i class="ri-add-line"></i> Create your first file</button>
+    </div>
+  {% endif %}
+  <div class="pwd-editor-wrap" style="padding:0 10px 10px; {{ 'display:none;' if not project.files.count() }}">
+    <textarea id="pwdCodeEditor"></textarea>
+  </div>
+</div>
+
+<div class="sk-panel" style="margin-top:14px;">
+  <div style="display:flex; align-items:center; justify-content:space-between;">
+    <div class="sk-card-title" style="font-size:0.9rem;"><i class="ri-play-circle-line"></i> Live Preview</div>
+    <button type="button" class="sk-btn secondary small" onclick="pwdRefreshPreview()">Refresh</button>
+  </div>
+  <iframe id="pwdPreviewFrame" class="pwd-preview-frame" style="margin-top:10px;" sandbox="allow-scripts"></iframe>
+  <p class="sk-card-desc" style="margin-top:8px;">Renders your HTML, CSS and JS files directly, for web projects. Other languages get the editor and mentor chat, without execution.</p>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/xml/xml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/css/css.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/javascript/javascript.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/htmlmixed/htmlmixed.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/clike/clike.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/markdown/markdown.min.js"></script>
+
+<script>
+(function () {
+  const projectUrl = window.location.pathname;
+  const pwdFiles = [
+    {% for f in project.files %}{ id: {{ f.id }}, filename: {{ f.filename|tojson }}, content: {{ f.content|tojson }} }{{ ',' if not loop.last }}
+    {% endfor %}
+  ];
+  let activeFileId = pwdFiles.length ? pwdFiles[0].id : null;
+  let saveTimer = null;
+
+  function pwdModeFor(filename) {
+    const ext = filename.split('.').pop().toLowerCase();
+    const map = { html: 'htmlmixed', htm: 'htmlmixed', css: 'css', js: 'javascript',
+      py: 'python', java: 'text/x-java', c: 'text/x-csrc', cpp: 'text/x-c++src', md: 'markdown' };
+    return map[ext] || 'text/plain';
+  }
+
+  const editor = CodeMirror.fromTextArea(document.getElementById('pwdCodeEditor'), {
+    lineNumbers: true, mode: 'htmlmixed', tabSize: 2,
+  });
+
+  function pwdLoadFile(id) {
+    const file = pwdFiles.find(f => f.id === id);
+    if (!file) return;
+    activeFileId = id;
+    editor.setOption('mode', pwdModeFor(file.filename));
+    editor.setValue(file.content || '');
+    document.querySelectorAll('.pwd-tab[data-file-id]').forEach(tab => {
+      tab.classList.toggle('active', parseInt(tab.dataset.fileId, 10) === id);
+    });
+  }
+
+  editor.on('change', function () {
+    const file = pwdFiles.find(f => f.id === activeFileId);
+    if (!file) return;
+    file.content = editor.getValue();
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(pwdSaveActiveFile, 800);
+  });
+
+  async function pwdSaveActiveFile() {
+    const file = pwdFiles.find(f => f.id === activeFileId);
+    if (!file) return;
+    await fetch('/skills/projects/files/' + file.id, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ content: file.content }),
+    });
+  }
+
+  document.querySelectorAll('.pwd-tab[data-file-id]').forEach(tab => {
+    tab.addEventListener('click', () => pwdLoadFile(parseInt(tab.dataset.fileId, 10)));
+  });
+
+  window.pwdCreateFile = async function () {
+    const filename = prompt('New file name (e.g. index.html):');
+    if (!filename) return;
+    const res = await fetch(projectUrl + '/files', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ filename: filename }),
+    });
+    const data = await res.json();
+    if (data.success) location.reload();
+    else alert(data.error || 'Could not create file.');
+  };
+
+  window.pwdDeleteFile = async function (fileId) {
+    if (!confirm('Delete this file?')) return;
+    await fetch('/skills/projects/files/' + fileId + '/delete', { method: 'POST' });
+    location.reload();
+  };
+
+  window.pwdRefreshPreview = function () {
+    const html = pwdFiles.find(f => /\.html?$/i.test(f.filename));
+    const frame = document.getElementById('pwdPreviewFrame');
+    if (!html) {
+      frame.srcdoc = '<body style="font-family:sans-serif;padding:20px;color:#666">No HTML file found. Create an index.html to see a live preview.</body>';
+      return;
+    }
+    let doc = html.content;
+    const css = pwdFiles.filter(f => f.filename.endsWith('.css')).map(f => '<style>' + f.content + '</style>').join('\n');
+    const js = pwdFiles.filter(f => f.filename.endsWith('.js')).map(f => '<script>' + f.content + '<' + '/script>').join('\n');
+    doc = doc.replace(/<link[^>]*rel=["']stylesheet["'][^>]*>/gi, '');
+    doc = doc.replace(/<script[^>]*src=["'][^"']*\.js["'][^>]*><\/script>/gi, '');
+    doc = doc.includes('</head>') ? doc.replace('</head>', css + '</head>') : css + doc;
+    doc = doc.includes('</body>') ? doc.replace('</body>', js + '</body>') : doc + js;
+    frame.srcdoc = doc;
+  };
+
+  if (pwdFiles.length) pwdLoadFile(pwdFiles[0].id);
+  pwdRefreshPreview();
+})();
+</script>

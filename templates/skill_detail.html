@@ -147,11 +147,31 @@
       </div>
       {% endif %}
 
+      <div class="sk-section-title"><i class="ri-sparkling-2-line"></i> Generate a project with AI</div>
+      <form method="POST" action="/skills/{{ skill.slug }}/projects/generate" class="sk-panel">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div class="sk-field">
+          <label class="sk-label">Describe what you want to build</label>
+          <textarea class="sk-textarea" name="idea" rows="2" placeholder="e.g. I want to build a budgeting app for students" required></textarea>
+        </div>
+        <button type="submit" class="sk-btn"><i class="ri-sparkling-2-line"></i> Generate my project</button>
+        <div class="sk-card-desc" style="margin-top:8px;">AI turns your idea into a full brief — objectives, features, milestones — and opens a workspace built for it.</div>
+      </form>
+
       <div class="sk-section-title">Have your own idea?</div>
       <form method="POST" action="/skills/{{ skill.slug }}/projects/custom" class="sk-panel">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <div class="sk-field"><label class="sk-label">Project title</label><input class="sk-input" name="title" placeholder="e.g. My own {{ skill.name }} project" required></div>
         <div class="sk-field"><label class="sk-label">What are you building?</label><textarea class="sk-textarea" name="description" rows="3" placeholder="Briefly describe what you want to build with {{ skill.name }}."></textarea></div>
+        <div class="sk-field">
+          <label class="sk-label">Want an in-browser workspace? (optional)</label>
+          <select class="sk-select" name="workspace_type">
+            <option value="">No workspace — just track links</option>
+            <option value="developer">Developer — code editor</option>
+            <option value="writer">Writer — document editor</option>
+            <option value="designer">Designer — moodboard & assets</option>
+          </select>
+        </div>
         <button type="submit" class="sk-btn secondary">+ Start a custom project</button>
       </form>
     </div>

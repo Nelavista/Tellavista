@@ -1,3 +1,7 @@
+import os
+import time
+import cloudinary
+import cloudinary.uploader
 from datetime import datetime
 from flask import Blueprint, render_template, redirect, url_for, session, flash, jsonify, request
 from utils.helpers import login_required
@@ -6,7 +10,7 @@ from models import (
     Lesson, Quiz, Challenge, ChallengeSubmission, ProjectTemplate, StudentProject,
     StudentSkill, StudentLessonProgress, StudentQuizAttempt, StudentOnboarding,
     CareerTrack, CareerTrackStep, Assignment, AssignmentSubmission, StudentPrivacySettings,
-    CohortEnrollment,
+    CohortEnrollment, ProjectFile, ProjectMessage,
 )
 from extensions import db, limiter
 from services.skills_service import (
@@ -25,7 +29,7 @@ from services.skills_service import (
     get_pipeline_state, opportunity_match_pct, profile_completeness, get_continue_learning_card,
     compute_payout_breakdown, get_talent_stats, get_verified_skills,
 )
-from services.ai_service import evaluate_project_submission
+from services.ai_service import evaluate_project_submission, generate_project_brief, project_mentor_reply
 from services.notification_service import notify, unread_count, mark_all_read
 from services.messaging_service import get_or_create_thread, send_message, mark_thread_read
 from models import (
@@ -44,6 +48,16 @@ GOAL_LABELS = {
     'exploring': "I'm just exploring",
     'start_a_business': 'Start something of my own',
 }
+
+# Configured independently here (same pattern as routes/materials_routes.py and
+# routes/community_routes.py) rather than relying on another module having already
+# configured the global cloudinary client first -- config() is idempotent.
+cloudinary.config(
+    cloud_name=os.environ.get('CLOUDINARY_CLOUD_NAME'),
+    api_key=os.environ.get('CLOUDINARY_API_KEY'),
+    api_secret=os.environ.get('CLOUDINARY_API_SECRET'),
+    secure=True
+)
 
 skills_bp = Blueprint('skills', __name__)
 
@@ -734,6 +748,7 @@ def start_project(template_id):
     project = StudentProject(
         student_id=user.id, project_template_id=template.id,
         title=template.title, description=template.description,
+        source='template', workspace_type=template.workspace_type,
     )
     project.skills_demonstrated = template.skills_demonstrated
     db.session.add(project)
@@ -753,12 +768,63 @@ def start_custom_project(skill_slug):
         flash('Give your project a title first.')
         return redirect(url_for('skills.skill_detail', slug=skill_slug))
 
+    workspace_type = request.form.get('workspace_type', '').strip() or None
+    if workspace_type not in (None, 'developer', 'writer', 'designer'):
+        workspace_type = None
+
     project = StudentProject(student_id=user.id, title=title,
-                              description=request.form.get('description', '').strip() or None)
+                              description=request.form.get('description', '').strip() or None,
+                              source='custom', workspace_type=workspace_type)
     project.skills_demonstrated = [skill.name]
     db.session.add(project)
     db.session.commit()
     touch_skill_activity(user.id, skill.id)
+    return redirect(url_for('skills.project_detail', project_id=project.id))
+
+
+@skills_bp.route('/skills/<skill_slug>/projects/generate', methods=['POST'])
+@login_required
+@limiter.limit('10 per hour')
+def generate_ai_project(skill_slug):
+    """AI idea -> full project brief. A third, parallel project-creation path alongside
+    start_project (admin template) and start_custom_project (plain title+description) --
+    a student who wants zero AI involvement always still has those two."""
+    skill = Skill.query.filter_by(slug=skill_slug, is_published=True).first_or_404()
+    user = _current_user()
+    idea = request.form.get('idea', '').strip()
+    if not idea:
+        flash('Describe what you want to build first.')
+        return redirect(url_for('skills.skill_detail', slug=skill_slug))
+
+    onboarding = StudentOnboarding.query.filter_by(student_id=user.id).first()
+    experience_level = onboarding.experience_level if onboarding else 'some_basics'
+
+    try:
+        brief = generate_project_brief(idea, experience_level)
+    except Exception:
+        flash("Couldn't generate a project brief right now — try again in a moment.")
+        return redirect(url_for('skills.skill_detail', slug=skill_slug))
+
+    project = StudentProject(
+        student_id=user.id, title=brief['title'], description=brief.get('objectives'),
+        source='ai_generated', workspace_type=brief['category'], idea_text=idea,
+        objectives=brief.get('objectives'), difficulty=brief.get('difficulty'),
+        estimated_time=brief.get('estimated_time'),
+    )
+    project.skills_demonstrated = [skill.name]
+    project.features = brief.get('features') or []
+    project.deliverables = brief.get('deliverables') or []
+    project.tech_stack = brief.get('tech_stack') or []
+    project.success_criteria = brief.get('success_criteria') or []
+    db.session.add(project)
+    db.session.flush()
+
+    for order, title in enumerate(brief.get('milestones') or []):
+        db.session.add(ProjectMilestone(student_project_id=project.id, title=title, order=order))
+
+    db.session.commit()
+    touch_skill_activity(user.id, skill.id)
+    flash(f'"{project.title}" is ready — time to build it.')
     return redirect(url_for('skills.project_detail', project_id=project.id))
 
 
@@ -1205,24 +1271,180 @@ def toggle_milestone(milestone_id):
 def request_project_review(project_id):
     user = _current_user()
     project = StudentProject.query.filter_by(id=project_id, student_id=user.id).first_or_404()
+    data = request.get_json(silent=True) or {}
+
+    # Persisted before the AI is ever called, same as verification_status='requested' below --
+    # the student's own reflection answers must survive even if the AI call itself fails.
+    project.reflection_problem_solved = (data.get('problem_solved') or '').strip() or None
+    project.reflection_challenges = (data.get('challenges') or '').strip() or None
+    project.reflection_improvements = (data.get('improvements') or '').strip() or None
+
     submission_details = (
         f"Description: {project.description or '(none provided)'}\n"
         f"Repository: {project.repo_url or '(none provided)'}\n"
         f"Live URL: {project.live_url or '(none provided)'}\n"
         f"Screenshots: {len(project.screenshots)} attached"
     )
+    if project.workspace_type == 'developer':
+        submission_details += f"\nWorkspace: {project.files.count()} code file(s) written in-browser"
+    elif project.workspace_type == 'writer':
+        submission_details += f"\nWorkspace: {len(project.doc_content or '')} characters of document content written in-browser"
+    elif project.workspace_type == 'designer':
+        submission_details += f"\nWorkspace: {len(project.design_assets)} design asset(s) uploaded, notes: {project.design_notes or '(none)'}"
+
+    reflections = {
+        'problem_solved': project.reflection_problem_solved,
+        'challenges': project.reflection_challenges,
+        'improvements': project.reflection_improvements,
+    }
+
     project.verification_status = 'requested'
     db.session.commit()
     try:
         result = evaluate_project_submission(
-            project.title, project.description, submission_details, project.skills_demonstrated
+            project.title, project.description, submission_details, project.skills_demonstrated,
+            reflections=reflections,
         )
         project.ai_feedback = result
         project.verification_status = 'reviewed'
         db.session.commit()
         notify(user.id, 'verification', 'Your project was reviewed',
                f'{project.title}: {result.get("score")}%', url_for('skills.project_detail', project_id=project.id))
+        return jsonify({'success': True, 'project': project.to_dict()})
     except Exception:
         db.session.rollback()
-        flash("Review couldn't be generated right now — try again in a moment.")
+        return jsonify({'success': False, 'error': "Review couldn't be generated right now — try again in a moment."}), 502
+
+
+# ===== PROJECT WORKSPACE: developer (code editor) =====
+@skills_bp.route('/skills/projects/<int:project_id>/files', methods=['POST'])
+@login_required
+@limiter.limit('60 per hour')
+def create_project_file(project_id):
+    user = _current_user()
+    project = StudentProject.query.filter_by(id=project_id, student_id=user.id).first_or_404()
+    data = request.get_json(silent=True) or {}
+    filename = (data.get('filename') or '').strip()
+    if not filename:
+        return jsonify({'success': False, 'error': 'Filename required.'}), 400
+
+    max_order = db.session.query(db.func.max(ProjectFile.order)).filter_by(student_project_id=project.id).scalar() or 0
+    pf = ProjectFile(student_project_id=project.id, filename=filename, content='', order=max_order + 1)
+    db.session.add(pf)
+    db.session.commit()
+    return jsonify({'success': True, 'file': pf.to_dict()})
+
+
+@skills_bp.route('/skills/projects/files/<int:file_id>', methods=['POST'])
+@login_required
+@limiter.limit('120 per hour')
+def save_project_file(file_id):
+    user = _current_user()
+    pf = ProjectFile.query.get_or_404(file_id)
+    if pf.project.student_id != user.id:
+        return jsonify({'success': False, 'error': 'Not your project'}), 403
+    data = request.get_json(silent=True) or {}
+    pf.content = data.get('content', '')
+    db.session.commit()
+    return jsonify({'success': True})
+
+
+@skills_bp.route('/skills/projects/files/<int:file_id>/delete', methods=['POST'])
+@login_required
+@limiter.limit('60 per hour')
+def delete_project_file(file_id):
+    user = _current_user()
+    pf = ProjectFile.query.get_or_404(file_id)
+    if pf.project.student_id != user.id:
+        return jsonify({'success': False, 'error': 'Not your project'}), 403
+    db.session.delete(pf)
+    db.session.commit()
+    return jsonify({'success': True})
+
+
+# ===== PROJECT WORKSPACE: writer (markdown document) =====
+@skills_bp.route('/skills/projects/<int:project_id>/doc', methods=['POST'])
+@login_required
+@limiter.limit('120 per hour')
+def save_project_doc(project_id):
+    user = _current_user()
+    project = StudentProject.query.filter_by(id=project_id, student_id=user.id).first_or_404()
+    data = request.get_json(silent=True) or {}
+    content = data.get('content', '')
+
+    versions = list(project.doc_versions or [])
+    versions.insert(0, {'content': project.doc_content or '', 'saved_at': datetime.utcnow().isoformat()})
+    project.doc_versions = versions[:20]
+    project.doc_content = content
+    db.session.commit()
+    return jsonify({'success': True})
+
+
+# ===== PROJECT WORKSPACE: designer (moodboard + assets) =====
+@skills_bp.route('/skills/projects/<int:project_id>/design/notes', methods=['POST'])
+@login_required
+@limiter.limit('120 per hour')
+def save_project_design_notes(project_id):
+    user = _current_user()
+    project = StudentProject.query.filter_by(id=project_id, student_id=user.id).first_or_404()
+    data = request.get_json(silent=True) or {}
+    project.design_notes = data.get('content', '')
+    db.session.commit()
+    return jsonify({'success': True})
+
+
+@skills_bp.route('/skills/projects/<int:project_id>/design/upload', methods=['POST'])
+@login_required
+@limiter.limit('20 per hour')
+def upload_project_design_asset(project_id):
+    user = _current_user()
+    project = StudentProject.query.filter_by(id=project_id, student_id=user.id).first_or_404()
+    file = request.files.get('asset')
+    if not file or not file.filename:
+        flash('Choose an image to upload.')
+        return redirect(url_for('skills.project_detail', project_id=project.id))
+
+    ext = file.filename.rsplit('.', 1)[-1].lower() if '.' in file.filename else ''
+    if ext not in ('png', 'jpg', 'jpeg', 'gif', 'webp'):
+        flash('Only image files are supported for design assets.')
+        return redirect(url_for('skills.project_detail', project_id=project.id))
+
+    public_id = f"nelavista_projects/{project.id}_{int(time.time())}"
+    upload_result = cloudinary.uploader.upload(file, resource_type='image', public_id=public_id, overwrite=False)
+    asset_url = upload_result.get('secure_url')
+    if not asset_url:
+        flash('Upload failed — try again.')
+        return redirect(url_for('skills.project_detail', project_id=project.id))
+
+    assets = list(project.design_assets or [])
+    assets.append({'url': asset_url, 'note': request.form.get('note', '').strip(),
+                    'uploaded_at': datetime.utcnow().isoformat()})
+    project.design_assets = assets
+    db.session.commit()
     return redirect(url_for('skills.project_detail', project_id=project.id))
+
+
+# ===== PROJECT MENTOR CHAT =====
+@skills_bp.route('/skills/projects/<int:project_id>/mentor', methods=['POST'])
+@login_required
+@limiter.limit('20 per hour')
+def project_mentor_message(project_id):
+    user = _current_user()
+    project = StudentProject.query.filter_by(id=project_id, student_id=user.id).first_or_404()
+    data = request.get_json(silent=True) or {}
+    user_message = (data.get('message') or '').strip()
+    if not user_message:
+        return jsonify({'success': False, 'error': 'Message required.'}), 400
+
+    history = [{'role': m.role, 'body': m.body} for m in project.messages.all()]
+    db.session.add(ProjectMessage(student_project_id=project.id, role='user', body=user_message))
+    db.session.commit()
+
+    try:
+        reply = project_mentor_reply(project.to_dict(), history, user_message)
+    except Exception:
+        return jsonify({'success': False, 'error': 'Mentor is unavailable right now — try again shortly.'}), 503
+
+    db.session.add(ProjectMessage(student_project_id=project.id, role='assistant', body=reply))
+    db.session.commit()
+    return jsonify({'success': True, 'reply': reply})

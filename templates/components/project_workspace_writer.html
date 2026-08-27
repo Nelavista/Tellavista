@@ -1,0 +1,63 @@
+<style>
+  .pww-split { display: grid; grid-template-columns: 1fr; gap: 14px; }
+  @media (min-width: 900px) { .pww-split { grid-template-columns: 1fr 1fr; } }
+  .pww-preview { border: 1px solid var(--sk-border); border-radius: 10px; padding: 14px 16px; min-height: 340px; max-height: 460px; overflow-y: auto; font-size: 0.88rem; line-height: 1.6; }
+  .pww-preview h1, .pww-preview h2, .pww-preview h3 { margin: 0.6em 0 0.3em; }
+  .pww-preview p { margin: 0.5em 0; }
+  .pww-preview ul, .pww-preview ol { margin: 0.4em 0 0.4em 1.4em; }
+  .pww-preview code { background: var(--sk-card); padding: 1px 5px; border-radius: 4px; font-size: 0.85em; }
+</style>
+
+<div class="sk-panel">
+  <div style="display:flex; align-items:center; justify-content:space-between;">
+    <div class="sk-card-title" style="font-size:0.9rem;">Document</div>
+    <span class="sk-card-desc" id="pwwStatus" style="margin:0;">All changes saved</span>
+  </div>
+  <div class="pww-split" style="margin-top:12px;">
+    <textarea class="sk-textarea" id="pwwDoc" rows="18" style="font-family:var(--font-mono, monospace);" placeholder="Write in Markdown...">{{ project.doc_content or '' }}</textarea>
+    <div class="pww-preview" id="pwwPreview"></div>
+  </div>
+</div>
+
+{% if project.doc_versions %}
+<div class="sk-panel" style="margin-top:14px;">
+  <div class="sk-card-title" style="font-size:0.9rem;">Version History</div>
+  <div style="margin-top:10px; display:flex; flex-direction:column; gap:8px;">
+    {% for v in project.doc_versions[:10] %}
+      <details style="border:1px solid var(--sk-border); border-radius:8px; padding:8px 12px;">
+        <summary class="sk-card-desc" style="cursor:pointer; font-size:0.82rem;">{{ v.saved_at|replace('T', ' ') }}</summary>
+        <pre style="white-space:pre-wrap; font-size:0.78rem; color:var(--sk-text-dim); margin-top:8px;">{{ v.content[:400] }}{{ '...' if v.content|length > 400 }}</pre>
+      </details>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script>
+(function () {
+  const textarea = document.getElementById('pwwDoc');
+  const preview = document.getElementById('pwwPreview');
+  const status = document.getElementById('pwwStatus');
+  let timer = null;
+
+  function renderPreview() {
+    preview.innerHTML = window.marked ? marked.parse(textarea.value || '') : textarea.value;
+  }
+
+  textarea.addEventListener('input', function () {
+    renderPreview();
+    status.textContent = 'Saving...';
+    clearTimeout(timer);
+    timer = setTimeout(async function () {
+      await fetch(window.location.pathname + '/doc', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content: textarea.value }),
+      });
+      status.textContent = 'All changes saved';
+    }, 800);
+  });
+
+  renderPreview();
+})();
+</script>

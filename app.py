@@ -159,7 +159,7 @@ def create_app():
                 "https://unpkg.com https://www.youtube.com "
                 "https://www.googletagmanager.com "
                 "https://www.google-analytics.com https://ssl.google-analytics.com "
-                "https://download.agora.io; "
+                "https://download.agora.io https://cdnjs.cloudflare.com; "
                 "style-src 'self' 'unsafe-inline' "
                 "https://cdn.jsdelivr.net https://fonts.googleapis.com "
                 "https://unpkg.com https://cdnjs.cloudflare.com; "

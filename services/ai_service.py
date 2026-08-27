@@ -413,35 +413,64 @@ def generate_challenge_feedback(challenge_title, challenge_instructions, submiss
     return _parse_json_object(raw)
 
 
-def evaluate_project_submission(project_title, project_description, submission_details, skills_demonstrated):
+PROJECT_REVIEW_DIMENSIONS = ('functionality', 'craft_quality', 'problem_solving', 'documentation', 'originality')
+
+
+def evaluate_project_submission(project_title, project_description, submission_details, skills_demonstrated,
+                                 reflections=None):
     """Reviews an ordinary (non-final-project) StudentProject submission — the 'Request
     Review' action in the project workspace. Same structured-feedback spirit as
     generate_challenge_feedback (real strengths/improvements, not a bare score), but for
     a whole project rather than one exercise. No rubric here (ordinary projects don't have
     one — only a daily-class's formal final project does; see evaluate_final_project),
     so this reasons from the project's own stated brief and what was actually submitted.
+
+    The AI scores PROJECT_REVIEW_DIMENSIONS individually (0-100 each); the overall score
+    returned as 'score' is then computed HERE as their rounded mean — never taken from an
+    AI-reported total — same "AI proposes, Python computes ground truth" discipline
+    evaluate_final_project already uses for rubric criteria. 'score' stays the top-level key
+    services/skills_service.py's _project_counts_as_verified reads, so this change is
+    backward-compatible with every existing caller.
+
+    `reflections` (optional dict: problem_solved/challenges/improvements, all optional) is
+    the student's own account of the work — given to the AI as grading context, not scored
+    as its own dimension, so a vague reflection just makes the whole submission read as
+    vague rather than being penalized in isolation.
+
     Raises on failure; the caller treats a failed review as non-fatal.
     """
+    reflections = reflections or {}
+    reflection_block = (
+        f"What problem this solves (in the student's own words): {reflections.get('problem_solved') or '(not provided)'}\n"
+        f"Challenges they faced: {reflections.get('challenges') or '(not provided)'}\n"
+        f"What they'd improve: {reflections.get('improvements') or '(not provided)'}"
+    )
     system_prompt = (
         "You are reviewing a student's project submission for a skills platform. Judge it "
         "against what the project brief actually asked for and what skills it claims to "
-        "demonstrate. Be specific and honest — do not inflate the score or invent issues "
-        "that aren't there. This score becomes part of the student's public proof of work, "
-        "so it needs to be defensible.\n\n"
+        "demonstrate. Be specific and honest — do not inflate scores or invent issues that "
+        "aren't there. This becomes part of the student's public proof of work, so it needs "
+        "to be defensible.\n\n"
+        f"Score exactly these dimensions, 0-100 each: {', '.join(PROJECT_REVIEW_DIMENSIONS)} "
+        "(functionality: does it do what it claims; craft_quality: how well-built/organized "
+        "it is; problem_solving: depth of the approach; documentation: how clearly the "
+        "student explained it; originality). Do not add, rename, or drop dimensions.\n\n"
         "Return ONLY a single JSON object with this exact shape, no surrounding prose:\n"
         "{\n"
-        '  "score": integer 0-100 (how complete and functional the submission is),\n'
+        '  "dimension_scores": {"functionality": int, "craft_quality": int, "problem_solving": int, '
+        '"documentation": int, "originality": int},\n'
         '  "strengths": [string, ...] (1-3 specific things done well),\n'
         '  "improvements": [string, ...] (1-3 specific, actionable gaps),\n'
-        '  "explanation": string (2-4 sentences on why the score is what it is),\n'
-        '  "next_step": string (one concrete suggestion for what to do next)\n'
+        '  "explanation": string (2-4 sentences on why the scores are what they are),\n'
+        '  "next_project": {"title": string, "description": string} (one concrete project, '
+        'slightly harder, that builds on this one)\n'
         "}"
     )
     user_prompt = (
         f"Project: {project_title}\n"
         f"Brief: {project_description or '(no brief — a freeform project)'}\n"
         f"Skills claimed: {', '.join(skills_demonstrated) if skills_demonstrated else '(none listed)'}\n\n"
-        f"Submission details:\n{submission_details}"
+        f"Submission details:\n{submission_details}\n\n{reflection_block}"
     )
 
     headers = {
@@ -457,7 +486,7 @@ def evaluate_project_submission(project_title, project_description, submission_d
             {"role": "user", "content": user_prompt}
         ],
         "temperature": 0.3,
-        "max_tokens": 800
+        "max_tokens": 900
     }
     response = requests.post(
         "https://openrouter.ai/api/v1/chat/completions",
@@ -467,7 +496,147 @@ def evaluate_project_submission(project_title, project_description, submission_d
         raise Exception(f"AI API error: {response.status_code}")
 
     raw = response.json()["choices"][0]["message"]["content"].strip()
-    return _parse_json_object(raw)
+    result = _parse_json_object(raw)
+
+    # Ground truth: clamp each dimension into 0-100 (never trust the AI's own bounds), and
+    # compute the overall score as their rounded mean rather than an AI-reported total.
+    raw_dims = result.get('dimension_scores') or {}
+    dims = {}
+    for key in PROJECT_REVIEW_DIMENSIONS:
+        try:
+            dims[key] = max(0, min(100, int(raw_dims.get(key, 0))))
+        except (TypeError, ValueError):
+            dims[key] = 0
+    overall = round(sum(dims.values()) / len(dims))
+
+    next_project = result.get('next_project') or {}
+    next_project_title = next_project.get('title') or ''
+
+    return {
+        'score': overall,
+        'strengths': result.get('strengths') or [],
+        'improvements': result.get('improvements') or [],
+        'explanation': result.get('explanation') or '',
+        'next_step': next_project_title,  # kept for backward-compat with older callers/UI
+        'dimension_scores': dims,
+        'next_project': {'title': next_project_title, 'description': next_project.get('description') or ''},
+    }
+
+
+def generate_project_brief(idea, experience_level):
+    """Turns a student's free-text project idea into a full, structured project brief —
+    the entry point for an AI-generated StudentProject (source='ai_generated'). Classifies
+    the idea into exactly one of Nelavista's three workspace types — unlike a broader
+    'data'/'other' category set, these three are the only in-browser workspaces this
+    platform builds (see the project_workspace_* templates), so the AI is constrained to
+    them rather than free-choosing a category with no matching workspace.
+    Raises on failure; the caller must not create a project if this raises.
+    """
+    system_prompt = (
+        "You are helping a student turn a rough idea into a concrete, buildable project "
+        "brief for a student skills platform. Classify which kind of hands-on workspace "
+        "this needs: 'developer' (a multi-file code project), 'writer' (a written "
+        "document/report/plan), or 'designer' (a visual/UI moodboard-and-asset project) — "
+        "choose the closest fit even if the idea is ambiguous; these are the only three "
+        "options.\n\n"
+        "Return ONLY a single JSON object with this exact shape, no surrounding prose:\n"
+        "{\n"
+        '  "title": string (concrete, specific — not a restatement of the idea),\n'
+        '  "category": "developer" | "writer" | "designer",\n'
+        '  "objectives": string (one clear paragraph),\n'
+        '  "features": [string, ...] (4-8 concrete features/sections to build),\n'
+        '  "difficulty": "beginner" | "intermediate" | "advanced",\n'
+        '  "estimated_time": string (realistic, e.g. "6-8 hours"),\n'
+        '  "deliverables": [string, ...] (3-6 concrete things handed in),\n'
+        '  "milestones": [string, ...] (4-6 ordered build steps, short),\n'
+        '  "tech_stack": [string, ...] (tools/frameworks/methods appropriate to the category),\n'
+        '  "success_criteria": [string, ...] (3-5 concrete "this is genuinely done when..." checks)\n'
+        "}"
+    )
+    user_prompt = f"Student's experience level: {experience_level}\nTheir idea: \"{idea}\""
+
+    headers = {
+        "Authorization": f"Bearer {OPENROUTER_API_KEY}",
+        "Content-Type": "application/json",
+        "HTTP-Referer": "https://nelavista.com",
+        "X-Title": "Nelavista AI Project Brief"
+    }
+    payload = {
+        "model": "openai/gpt-4o-mini",
+        "messages": [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_prompt}
+        ],
+        "temperature": 0.4,
+        "max_tokens": 1200
+    }
+    response = requests.post(
+        "https://openrouter.ai/api/v1/chat/completions",
+        headers=headers, json=payload, timeout=45
+    )
+    if response.status_code != 200:
+        raise Exception(f"AI API error: {response.status_code}")
+
+    raw = response.json()["choices"][0]["message"]["content"].strip()
+    result = _parse_json_object(raw)
+    if result.get('category') not in ('developer', 'writer', 'designer'):
+        result['category'] = 'developer'  # defensive only -- the prompt already constrains this
+    return result
+
+
+def project_mentor_reply(project_brief, history, user_message):
+    """One turn of the AI mentor chat scoped to a single StudentProject (see models.py's
+    ProjectMessage — deliberately separate from the site-wide, stateless 'Ask Nelavista'
+    widget). Guides the student — explains concepts, points out mistakes, suggests
+    approaches — without writing the project for them. `history` is a chronological list of
+    {"role", "body"} dicts; only the most recent turns are sent, to keep the request small.
+    Returns plain text, not JSON — this is a conversational reply. Raises on failure; the
+    caller surfaces that as a chat-unavailable error rather than a broken reply.
+    """
+    brief_lines = [f"Project: {project_brief.get('title')} ({project_brief.get('workspace_type') or 'no workspace'})"]
+    if project_brief.get('objectives'):
+        brief_lines.append(f"Objectives: {project_brief['objectives']}")
+    elif project_brief.get('description'):
+        brief_lines.append(f"Description: {project_brief['description']}")
+    if project_brief.get('features'):
+        brief_lines.append(f"Features: {', '.join(project_brief['features'])}")
+    if project_brief.get('tech_stack'):
+        brief_lines.append(f"Tech/tools: {', '.join(project_brief['tech_stack'])}")
+    if project_brief.get('success_criteria'):
+        brief_lines.append(f"Success criteria: {', '.join(project_brief['success_criteria'])}")
+
+    system_prompt = (
+        "You are a mentor helping a student build their own project on Nelavista. Act like "
+        "an experienced professional pairing with them: answer questions, point out "
+        "mistakes, suggest better approaches, explain concepts, and give implementation "
+        "ideas. Never just write the finished solution or complete the project for them — "
+        "guide them to figure it out. Keep replies focused and practical, usually under 150 "
+        "words unless the question genuinely needs more.\n\n" + "\n".join(brief_lines)
+    )
+    messages = [{"role": "system", "content": system_prompt}]
+    messages += [{"role": m['role'], "content": m['body']} for m in history[-12:]]
+    messages.append({"role": "user", "content": user_message})
+
+    headers = {
+        "Authorization": f"Bearer {OPENROUTER_API_KEY}",
+        "Content-Type": "application/json",
+        "HTTP-Referer": "https://nelavista.com",
+        "X-Title": "Nelavista Project Mentor"
+    }
+    payload = {
+        "model": "openai/gpt-4o-mini",
+        "messages": messages,
+        "temperature": 0.4,
+        "max_tokens": 500
+    }
+    response = requests.post(
+        "https://openrouter.ai/api/v1/chat/completions",
+        headers=headers, json=payload, timeout=45
+    )
+    if response.status_code != 200:
+        raise Exception(f"AI API error: {response.status_code}")
+
+    return response.json()["choices"][0]["message"]["content"].strip()
 
 
 def generate_curriculum(skill_name, skill_description, level='beginner'):

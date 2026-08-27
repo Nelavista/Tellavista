@@ -37,6 +37,8 @@
         </div>
         {% endif %}
         <span class="sk-badge {{ p.status }}">{{ p.status.replace('_',' ')|title }}</span>
+        {% if p.workspace_type %}<span class="sk-badge"><i class="ri-{{ 'code-s-slash-line' if p.workspace_type == 'developer' else 'quill-pen-line' if p.workspace_type == 'writer' else 'palette-line' }}"></i> {{ p.workspace_type|title }}</span>{% endif %}
+        {% if p.source == 'ai_generated' %}<span class="sk-badge"><i class="ri-sparkling-2-line"></i> AI-generated</span>{% endif %}
         <div class="sk-progress-row"><div class="sk-progress-track"><div class="sk-progress-fill" style="width:{{ p.progress_pct }}%;"></div></div><span class="sk-progress-pct">{{ p.progress_pct }}%</span></div>
       </a>
       {% endfor %}

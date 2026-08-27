@@ -13,11 +13,13 @@
     .pd-breadcrumb { font-size: 0.82rem; color: #6b7280; margin-bottom: 14px; }
     .pd-breadcrumb a { color: #6b7280; text-decoration: none; }
     .pd-breadcrumb a:hover { color: #3b82f6; }
-    .pd-container { max-width: 720px; }
+    .pd-container { max-width: 760px; }
     .pd-status-row { display: flex; gap: 8px; margin: 12px 0 20px; }
     .pd-status-btn { flex: 1; padding: 10px; border-radius: 10px; border: 1px solid #2d3a52; background: #1a2235; color: #9ca3af; font-size: 0.8rem; font-weight: 600; cursor: pointer; text-align: center; }
     .pd-status-btn.active { border-color: #3b82f6; color: #3b82f6; background: rgba(59,130,246,0.08); }
     .pd-save-note { font-size: 0.78rem; color: #6b7280; margin-top: 8px; min-height: 16px; }
+    .pd-dim-row { margin-bottom: 12px; }
+    .pd-dim-row .pd-dim-label { display: flex; justify-content: space-between; font-size: 0.82rem; margin-bottom: 4px; }
   </style>
 </head>
 <body>
@@ -28,111 +30,188 @@
     <h1 class="sk-h1" style="font-size:1.6rem;">{{ project.title }}</h1>
     <div style="display:flex; gap:6px; flex-wrap:wrap; margin:10px 0 20px;">
       <span class="sk-badge {{ project.status }}">{{ project.status.replace('_',' ')|title }}</span>
+      {% if project.workspace_type %}<span class="sk-badge"><i class="ri-{{ 'code-s-slash-line' if project.workspace_type == 'developer' else 'quill-pen-line' if project.workspace_type == 'writer' else 'palette-line' }}"></i> {{ project.workspace_type|title }}</span>{% endif %}
+      {% if project.source == 'ai_generated' %}<span class="sk-badge"><i class="ri-sparkling-2-line"></i> AI-generated</span>{% endif %}
       {% for s in project.skills_demonstrated %}<span class="sk-badge">{{ s }}</span>{% endfor %}
     </div>
 
-    <div class="sk-panel">
-      <div class="sk-progress-row" style="margin-top:0;">
-        <div class="sk-progress-track"><div class="sk-progress-fill" id="progressFill" style="width:{{ project.progress_pct }}%;"></div></div>
-        <span class="sk-progress-pct" id="progressLabel">{{ project.progress_pct }}%</span>
-      </div>
-      <input type="range" min="0" max="100" value="{{ project.progress_pct }}" id="progressSlider" style="width:100%; margin-top:12px; accent-color:#3b82f6;">
-
-      <div class="sk-label" style="margin-top:18px;">Status</div>
-      <div class="pd-status-row">
-        <div class="pd-status-btn {{ 'active' if project.status == 'in_progress' else '' }}" data-status="in_progress" onclick="setStatus('in_progress')">In Progress</div>
-        <div class="pd-status-btn {{ 'active' if project.status == 'submitted' else '' }}" data-status="submitted" onclick="setStatus('submitted')">Submitted</div>
-        <div class="pd-status-btn {{ 'active' if project.status == 'completed' else '' }}" data-status="completed" onclick="setStatus('completed')">Completed</div>
-      </div>
-
-      <div class="sk-field">
-        <label class="sk-label">Description / notes</label>
-        <textarea class="sk-textarea" id="descField" rows="4">{{ project.description or '' }}</textarea>
-      </div>
-      <div class="sk-field">
-        <label class="sk-label">Repository URL (GitHub, etc.)</label>
-        <input class="sk-input" id="repoField" value="{{ project.repo_url or '' }}" placeholder="https://github.com/you/project">
-      </div>
-      <div class="sk-field">
-        <label class="sk-label">Live URL (if deployed)</label>
-        <input class="sk-input" id="liveField" value="{{ project.live_url or '' }}" placeholder="https://your-project.example.com">
-      </div>
-      <label style="display:flex; align-items:center; gap:8px; font-size:0.88rem; margin-bottom:18px; cursor:pointer;">
-        <input type="checkbox" id="publicField" {{ 'checked' if project.is_public else '' }} style="width:16px; height:16px; accent-color:var(--sk-accent);">
-        Show this project on my Talent Profile
-      </label>
-      <button class="sk-btn full" onclick="saveProject()" id="saveBtn">Save Changes</button>
-      <div class="pd-save-note" id="saveNote"></div>
+    <div class="sk-tabs-row" id="pdTabsRow">
+      <button class="sk-tab-btn active" data-tab="overview" onclick="pdShowTab('overview')">Overview</button>
+      {% if project.workspace_type %}<button class="sk-tab-btn" data-tab="workspace" onclick="pdShowTab('workspace')">Workspace</button>{% endif %}
+      <button class="sk-tab-btn" data-tab="mentor" onclick="pdShowTab('mentor')">Mentor</button>
+      <button class="sk-tab-btn" data-tab="review" onclick="pdShowTab('review')">Review</button>
     </div>
 
-    {% if project.repo_url or project.live_url %}
-    <div class="sk-section-title">Links</div>
-    <div style="display:flex; gap:10px; flex-wrap:wrap;">
-      {% if project.repo_url %}<a href="{{ project.repo_url }}" target="_blank" rel="noopener" class="sk-btn secondary"><i class="ri-folder-3-line"></i> Repository</a>{% endif %}
-      {% if project.live_url %}<a href="{{ project.live_url }}" target="_blank" rel="noopener" class="sk-btn secondary"><i class="ri-link"></i> Live Site</a>{% endif %}
-    </div>
-    {% endif %}
-
-    <div class="sk-section-title">Screenshots</div>
-    {% if project.screenshots %}
-    <div class="screenshot-grid">
-      {% for url in project.screenshots %}<img src="{{ url }}" alt="Project screenshot">{% endfor %}
-    </div>
-    {% else %}
-    <p class="sk-card-desc">No screenshots added yet.</p>
-    {% endif %}
-    <form id="screenshotForm" class="sk-panel" style="display:flex; gap:8px; margin-top:10px;" onsubmit="return addScreenshot(event)">
-      <input type="text" id="screenshotUrl" class="sk-input" placeholder="Paste an image URL...">
-      <button type="submit" class="sk-btn secondary small" style="flex-shrink:0;">Add</button>
-    </form>
-
-    <div class="sk-section-title">Milestones</div>
-    <div class="sk-panel">
-      <div id="milestoneList">
-        {% for m in project.milestones %}
-        <div class="milestone-row" data-milestone-id="{{ m.id }}">
-          <button type="button" class="milestone-check {{ 'done' if m.is_done else '' }}" onclick="toggleMilestone({{ m.id }}, this)">{% if m.is_done %}<i class="ri-check-line"></i>{% endif %}</button>
-          <div style="flex:1;">
-            <div class="milestone-title {{ 'done' if m.is_done else '' }}">{{ m.title }}</div>
-            {% if m.description %}<div class="milestone-desc">{{ m.description }}</div>{% endif %}
-          </div>
+    <div class="sk-tab-panel active" id="tab-overview">
+      {% if project.objectives %}
+      <div class="sk-panel">
+        <div class="sk-section-title" style="margin-top:0;">Brief</div>
+        <p class="sk-card-desc" style="line-height:1.6;">{{ project.objectives }}</p>
+        {% if project.difficulty or project.estimated_time %}
+        <div style="display:flex; gap:6px; flex-wrap:wrap; margin:10px 0;">
+          {% if project.difficulty %}<span class="sk-badge">{{ project.difficulty|title }}</span>{% endif %}
+          {% if project.estimated_time %}<span class="sk-badge"><i class="ri-time-line"></i> {{ project.estimated_time }}</span>{% endif %}
         </div>
-        {% else %}
-        <p class="sk-card-desc" id="noMilestonesMsg">No milestones yet — break the build into steps.</p>
-        {% endfor %}
+        {% endif %}
+        {% if project.features %}
+        <div class="sk-card-desc" style="text-transform:uppercase; font-weight:700; letter-spacing:0.5px; font-size:0.72rem; margin-top:12px;">Features</div>
+        <ul style="margin:6px 0 0 18px; font-size:0.86rem; line-height:1.6;">{% for f in project.features %}<li>{{ f }}</li>{% endfor %}</ul>
+        {% endif %}
+        {% if project.tech_stack %}
+        <div class="sk-card-desc" style="text-transform:uppercase; font-weight:700; letter-spacing:0.5px; font-size:0.72rem; margin-top:12px;">Tech / Tools</div>
+        <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:6px;">{% for t in project.tech_stack %}<span class="sk-badge">{{ t }}</span>{% endfor %}</div>
+        {% endif %}
+        {% if project.success_criteria %}
+        <div class="sk-card-desc" style="text-transform:uppercase; font-weight:700; letter-spacing:0.5px; font-size:0.72rem; margin-top:12px;">Success Criteria</div>
+        <ul style="margin:6px 0 0 18px; font-size:0.86rem; line-height:1.6;">{% for c in project.success_criteria %}<li>{{ c }}</li>{% endfor %}</ul>
+        {% endif %}
       </div>
-      <form style="display:flex; gap:8px; margin-top:12px;" onsubmit="return addMilestone(event)">
-        <input type="text" id="milestoneTitle" class="sk-input" placeholder="e.g. Set up the database schema">
-        <button type="submit" class="sk-btn secondary small" style="flex-shrink:0;">+ Add</button>
+      {% endif %}
+
+      <div class="sk-panel">
+        <div class="sk-progress-row" style="margin-top:0;">
+          <div class="sk-progress-track"><div class="sk-progress-fill" id="progressFill" style="width:{{ project.progress_pct }}%;"></div></div>
+          <span class="sk-progress-pct" id="progressLabel">{{ project.progress_pct }}%</span>
+        </div>
+        <input type="range" min="0" max="100" value="{{ project.progress_pct }}" id="progressSlider" style="width:100%; margin-top:12px; accent-color:#3b82f6;">
+
+        <div class="sk-label" style="margin-top:18px;">Status</div>
+        <div class="pd-status-row">
+          <div class="pd-status-btn {{ 'active' if project.status == 'in_progress' else '' }}" data-status="in_progress" onclick="setStatus('in_progress')">In Progress</div>
+          <div class="pd-status-btn {{ 'active' if project.status == 'submitted' else '' }}" data-status="submitted" onclick="setStatus('submitted')">Submitted</div>
+          <div class="pd-status-btn {{ 'active' if project.status == 'completed' else '' }}" data-status="completed" onclick="setStatus('completed')">Completed</div>
+        </div>
+
+        <div class="sk-field">
+          <label class="sk-label">Description / notes</label>
+          <textarea class="sk-textarea" id="descField" rows="4">{{ project.description or '' }}</textarea>
+        </div>
+        <div class="sk-field">
+          <label class="sk-label">Repository URL (GitHub, etc.)</label>
+          <input class="sk-input" id="repoField" value="{{ project.repo_url or '' }}" placeholder="https://github.com/you/project">
+        </div>
+        <div class="sk-field">
+          <label class="sk-label">Live URL (if deployed)</label>
+          <input class="sk-input" id="liveField" value="{{ project.live_url or '' }}" placeholder="https://your-project.example.com">
+        </div>
+        <label style="display:flex; align-items:center; gap:8px; font-size:0.88rem; margin-bottom:18px; cursor:pointer;">
+          <input type="checkbox" id="publicField" {{ 'checked' if project.is_public else '' }} style="width:16px; height:16px; accent-color:var(--sk-accent);">
+          Show this project on my Talent Profile
+        </label>
+        <button class="sk-btn full" onclick="saveProject()" id="saveBtn">Save Changes</button>
+        <div class="pd-save-note" id="saveNote"></div>
+      </div>
+
+      {% if project.repo_url or project.live_url %}
+      <div class="sk-section-title">Links</div>
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        {% if project.repo_url %}<a href="{{ project.repo_url }}" target="_blank" rel="noopener" class="sk-btn secondary"><i class="ri-folder-3-line"></i> Repository</a>{% endif %}
+        {% if project.live_url %}<a href="{{ project.live_url }}" target="_blank" rel="noopener" class="sk-btn secondary"><i class="ri-link"></i> Live Site</a>{% endif %}
+      </div>
+      {% endif %}
+
+      <div class="sk-section-title">Screenshots</div>
+      {% if project.screenshots %}
+      <div class="screenshot-grid">
+        {% for url in project.screenshots %}<img src="{{ url }}" alt="Project screenshot">{% endfor %}
+      </div>
+      {% else %}
+      <p class="sk-card-desc">No screenshots added yet.</p>
+      {% endif %}
+      <form id="screenshotForm" class="sk-panel" style="display:flex; gap:8px; margin-top:10px;" onsubmit="return addScreenshot(event)">
+        <input type="text" id="screenshotUrl" class="sk-input" placeholder="Paste an image URL...">
+        <button type="submit" class="sk-btn secondary small" style="flex-shrink:0;">Add</button>
       </form>
+
+      <div class="sk-section-title">Milestones</div>
+      <div class="sk-panel">
+        <div id="milestoneList">
+          {% for m in project.milestones %}
+          <div class="milestone-row" data-milestone-id="{{ m.id }}">
+            <button type="button" class="milestone-check {{ 'done' if m.is_done else '' }}" onclick="toggleMilestone({{ m.id }}, this)">{% if m.is_done %}<i class="ri-check-line"></i>{% endif %}</button>
+            <div style="flex:1;">
+              <div class="milestone-title {{ 'done' if m.is_done else '' }}">{{ m.title }}</div>
+              {% if m.description %}<div class="milestone-desc">{{ m.description }}</div>{% endif %}
+            </div>
+          </div>
+          {% else %}
+          <p class="sk-card-desc" id="noMilestonesMsg">No milestones yet — break the build into steps.</p>
+          {% endfor %}
+        </div>
+        <form style="display:flex; gap:8px; margin-top:12px;" onsubmit="return addMilestone(event)">
+          <input type="text" id="milestoneTitle" class="sk-input" placeholder="e.g. Set up the database schema">
+          <button type="submit" class="sk-btn secondary small" style="flex-shrink:0;">+ Add</button>
+        </form>
+      </div>
     </div>
 
-    <div class="sk-section-title">Review & Verification</div>
-    <div class="sk-panel">
-      {% if project.ai_feedback %}
-      <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
-        <span style="font-size:1.6rem; font-weight:800; color:{{ '#4ade80' if project.ai_feedback.score >= 70 else ('#fbbf24' if project.ai_feedback.score >= 40 else '#f87171') }};">{{ project.ai_feedback.score }}%</span>
-        <span class="sk-card-desc" style="margin:0;">AI review</span>
+    {% if project.workspace_type %}
+    <div class="sk-tab-panel" id="tab-workspace">
+      {% if project.workspace_type == 'developer' %}
+        {% include 'components/project_workspace_developer.html' %}
+      {% elif project.workspace_type == 'writer' %}
+        {% include 'components/project_workspace_writer.html' %}
+      {% elif project.workspace_type == 'designer' %}
+        {% include 'components/project_workspace_designer.html' %}
+      {% endif %}
+    </div>
+    {% endif %}
+
+    <div class="sk-tab-panel" id="tab-mentor">
+      {% include 'components/project_mentor_chat.html' %}
+    </div>
+
+    <div class="sk-tab-panel" id="tab-review">
+      <div class="sk-panel">
+        <div class="sk-section-title" style="margin-top:0;">Review & Verification</div>
+        {% if project.ai_feedback %}
+        <div style="display:flex; align-items:center; gap:12px; margin-bottom:16px;">
+          <span style="font-size:1.6rem; font-weight:800; color:{{ '#4ade80' if project.ai_feedback.score >= 70 else ('#fbbf24' if project.ai_feedback.score >= 40 else '#f87171') }};">{{ project.ai_feedback.score }}%</span>
+          <span class="sk-card-desc" style="margin:0;">AI review</span>
+        </div>
+
+        {% if project.ai_feedback.dimension_scores %}
+        <div style="margin-bottom:16px;">
+          {% for key, label in [('functionality','Functionality'), ('craft_quality','Craft Quality'), ('problem_solving','Problem Solving'), ('documentation','Documentation'), ('originality','Originality')] %}
+          {% set score = project.ai_feedback.dimension_scores.get(key, 0) %}
+          <div class="pd-dim-row">
+            <div class="pd-dim-label"><span>{{ label }}</span><span class="sk-card-desc" style="margin:0;">{{ score }}/100</span></div>
+            <div class="sk-progress-track"><div class="sk-progress-fill" style="width:{{ score }}%;"></div></div>
+          </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+
+        {% if project.ai_feedback.strengths %}
+        <div style="margin-bottom:10px;"><div class="sk-card-desc" style="text-transform:uppercase; font-weight:700; letter-spacing:0.5px; font-size:0.72rem;">Strengths</div><ul style="margin:6px 0 0 18px; font-size:0.86rem; line-height:1.6;">{% for item in project.ai_feedback.strengths %}<li>{{ item }}</li>{% endfor %}</ul></div>
+        {% endif %}
+        {% if project.ai_feedback.improvements %}
+        <div style="margin-bottom:10px;"><div class="sk-card-desc" style="text-transform:uppercase; font-weight:700; letter-spacing:0.5px; font-size:0.72rem;">To improve</div><ul style="margin:6px 0 0 18px; font-size:0.86rem; line-height:1.6;">{% for item in project.ai_feedback.improvements %}<li>{{ item }}</li>{% endfor %}</ul></div>
+        {% endif %}
+        {% if project.ai_feedback.explanation %}<div style="font-size:0.88rem; line-height:1.6; margin-bottom:8px;">{{ project.ai_feedback.explanation }}</div>{% endif %}
+
+        {% if project.ai_feedback.next_project and project.ai_feedback.next_project.title %}
+        <div class="sk-panel" style="margin-top:12px; background:var(--sk-card);">
+          <div class="sk-card-title" style="font-size:0.9rem;"><i class="ri-flashlight-line"></i> Suggested Next Project</div>
+          <div class="sk-card-desc">{{ project.ai_feedback.next_project.title }}</div>
+          {% if project.ai_feedback.next_project.description %}<p class="sk-card-desc" style="margin-top:4px;">{{ project.ai_feedback.next_project.description }}</p>{% endif %}
+        </div>
+        {% endif %}
+
+        <button type="button" class="sk-btn secondary small" style="margin-top:14px;" onclick="pdShowReflectionForm()">Request another review</button>
+        {% else %}
+        <p class="sk-card-desc">Get real, specific feedback before you show this off — what's strong, what's missing, and whether it's ready to count toward a verified skill.</p>
+        <button type="button" class="sk-btn" id="requestReviewBtn" onclick="pdShowReflectionForm()">{{ 'Reviewing...' if project.verification_status == 'requested' else 'Request Review' }}</button>
+        {% endif %}
+
+        <form id="pdReflectionForm" style="display:none; margin-top:16px;" onsubmit="return pdSubmitReview(event)">
+          <div class="sk-field"><label class="sk-label">What problem does it solve? (optional)</label><textarea class="sk-textarea" id="reflProblem" rows="2">{{ project.reflection_problem_solved or '' }}</textarea></div>
+          <div class="sk-field"><label class="sk-label">What challenges did you face? (optional)</label><textarea class="sk-textarea" id="reflChallenges" rows="2">{{ project.reflection_challenges or '' }}</textarea></div>
+          <div class="sk-field"><label class="sk-label">What would you improve? (optional)</label><textarea class="sk-textarea" id="reflImprovements" rows="2">{{ project.reflection_improvements or '' }}</textarea></div>
+          <button type="submit" class="sk-btn full" id="pdSubmitReviewBtn">Submit for AI Review</button>
+          <div class="pd-save-note" id="pdReviewNote"></div>
+        </form>
       </div>
-      {% if project.ai_feedback.strengths %}
-      <div style="margin-bottom:10px;"><div class="sk-card-desc" style="text-transform:uppercase; font-weight:700; letter-spacing:0.5px; font-size:0.72rem;">Strengths</div><ul style="margin:6px 0 0 18px; font-size:0.86rem; line-height:1.6;">{% for item in project.ai_feedback.strengths %}<li>{{ item }}</li>{% endfor %}</ul></div>
-      {% endif %}
-      {% if project.ai_feedback.improvements %}
-      <div style="margin-bottom:10px;"><div class="sk-card-desc" style="text-transform:uppercase; font-weight:700; letter-spacing:0.5px; font-size:0.72rem;">To improve</div><ul style="margin:6px 0 0 18px; font-size:0.86rem; line-height:1.6;">{% for item in project.ai_feedback.improvements %}<li>{{ item }}</li>{% endfor %}</ul></div>
-      {% endif %}
-      {% if project.ai_feedback.explanation %}<div style="font-size:0.88rem; line-height:1.6; margin-bottom:8px;">{{ project.ai_feedback.explanation }}</div>{% endif %}
-      {% if project.ai_feedback.next_step %}<div class="sk-card-desc" style="margin:0;"><strong>Next step:</strong> {{ project.ai_feedback.next_step }}</div>{% endif %}
-      <form method="POST" action="/skills/projects/{{ project.id }}/request-review" style="margin-top:14px;">
-        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-        <button type="submit" class="sk-btn secondary small">Request another review</button>
-      </form>
-      {% else %}
-      <p class="sk-card-desc">Get real, specific feedback before you show this off — what's strong, what's missing, and whether it's ready to count toward a verified skill.</p>
-      <form method="POST" action="/skills/projects/{{ project.id }}/request-review">
-        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-        <button type="submit" class="sk-btn">{{ 'Reviewing...' if project.verification_status == 'requested' else 'Request Review' }}</button>
-      </form>
-      {% endif %}
     </div>
   </div>
 
@@ -140,6 +219,11 @@
 {% include 'components/skills_ask_widget.html' %}
 
 <script>
+  function pdShowTab(name) {
+    document.querySelectorAll('#pdTabsRow .sk-tab-btn').forEach(t => t.classList.toggle('active', t.dataset.tab === name));
+    document.querySelectorAll('.sk-tab-panel').forEach(p => p.classList.toggle('active', p.id === 'tab-' + name));
+  }
+
   let currentStatus = "{{ project.status }}";
 
   document.getElementById('progressSlider').addEventListener('input', (e) => {
@@ -179,9 +263,6 @@
       if (data.success) {
         note.innerHTML = 'Saved <i class="ri-check-line"></i>';
         setTimeout(() => { note.textContent = ''; }, 2500);
-        if (currentStatus === 'completed') {
-          document.querySelector('.sk-badge.completed, .sk-badge.in_progress, .sk-badge.submitted')?.remove();
-        }
       } else {
         note.textContent = data.error || 'Could not save.';
       }
@@ -243,6 +324,43 @@
     });
     const data = await res.json();
     if (data.success) { location.reload(); }
+    return false;
+  }
+
+  function pdShowReflectionForm() {
+    document.getElementById('pdReflectionForm').style.display = 'block';
+    document.getElementById('requestReviewBtn')?.setAttribute('style', 'display:none;');
+  }
+
+  async function pdSubmitReview(e) {
+    e.preventDefault();
+    const btn = document.getElementById('pdSubmitReviewBtn');
+    const note = document.getElementById('pdReviewNote');
+    btn.disabled = true;
+    btn.textContent = 'Reviewing...';
+    try {
+      const res = await fetch(window.location.pathname + '/request-review', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          problem_solved: document.getElementById('reflProblem').value,
+          challenges: document.getElementById('reflChallenges').value,
+          improvements: document.getElementById('reflImprovements').value,
+        })
+      });
+      const data = await res.json();
+      if (data.success) {
+        location.reload();
+      } else {
+        note.textContent = data.error || 'Could not run the review.';
+        btn.disabled = false;
+        btn.textContent = 'Submit for AI Review';
+      }
+    } catch (err) {
+      note.textContent = 'Could not reach the server — check your connection.';
+      btn.disabled = false;
+      btn.textContent = 'Submit for AI Review';
+    }
     return false;
   }
 </script>

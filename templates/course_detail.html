@@ -56,6 +56,29 @@
         .cd-ai-result.show { display: block; }
         .cd-material-row { flex-direction: column; align-items: stretch; }
         .cd-material-row-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+
+        /* Real-counts strip -- CSC201 / Topics: 14 / Materials: 3 / Videos: 18 / Mock Exam: Available */
+        .cd-stats-row { display: flex; gap: 20px; flex-wrap: wrap; margin: 14px 0 4px; padding: 14px 16px; background: var(--sk-card); border: 1px solid var(--sk-border); border-radius: var(--sk-radius-sm); }
+        .cd-stat { display: flex; flex-direction: column; gap: 2px; }
+        .cd-stat-number { font-size: 1.15rem; font-weight: 800; }
+        .cd-stat-label { font-size: 0.7rem; color: var(--sk-text-dim); text-transform: uppercase; letter-spacing: 0.04em; }
+
+        /* Topics -- the visually dominant section; deliberately plainer than a "card" so
+           it reads like a real course outline, not another dashboard widget. */
+        .cd-topics-list { display: flex; flex-direction: column; border: 1px solid var(--sk-border); border-radius: var(--sk-radius-sm); overflow: hidden; }
+        .cd-topic-row { display: flex; align-items: center; gap: 12px; padding: 13px 16px; text-decoration: none; color: inherit; border-bottom: 1px solid var(--sk-border); transition: background 0.12s; }
+        .cd-topic-row:last-child { border-bottom: none; }
+        .cd-topic-row:hover { background: var(--sk-card); }
+        .cd-topic-check { flex-shrink: 0; width: 20px; height: 20px; border-radius: 50%; border: 1.5px solid var(--sk-border); display: flex; align-items: center; justify-content: center; font-size: 0.7rem; }
+        .cd-topic-check.done { background: var(--sk-success); border-color: var(--sk-success); color: #fff; }
+        .cd-topic-num { font-variant-numeric: tabular-nums; color: var(--sk-text-dim); font-size: 0.85rem; width: 22px; flex-shrink: 0; }
+        .cd-topic-title { flex: 1; font-weight: 600; font-size: 0.92rem; }
+        .cd-topic-meta { font-size: 0.72rem; color: var(--sk-text-dim); flex-shrink: 0; }
+
+        .cd-secondary-toggle { font-size: 0.8rem; color: var(--sk-text-dim); cursor: pointer; padding: 4px 0; }
+        .cd-secondary-toggle:hover { color: var(--sk-accent); }
+        .cd-secondary-panel { display: none; margin-top: 10px; }
+        .cd-secondary-panel.show { display: block; }
     </style>
 </head>
 <body>
@@ -105,6 +128,13 @@
                 slightly from {{ ctx.university.name }}'s own course-code numbering or electives.
             </p>
             {% endif %}
+
+            <div class="cd-stats-row">
+                <div class="cd-stat"><div class="cd-stat-number">{{ topics|length }}</div><div class="cd-stat-label">Topics</div></div>
+                <div class="cd-stat"><div class="cd-stat-number">{{ school_materials|length }}</div><div class="cd-stat-label">School materials</div></div>
+                <div class="cd-stat"><div class="cd-stat-number">{{ video_count }}</div><div class="cd-stat-label">Learning videos</div></div>
+                <div class="cd-stat"><div class="cd-stat-number">{{ 'Yes' if (cbt_count or written_count) else '—' }}</div><div class="cd-stat-label">Mock exam</div></div>
+            </div>
         </div>
 
         {% if course.description %}
@@ -113,6 +143,33 @@
             <div class="cd-overview">{{ course.description }}</div>
         </div>
         {% endif %}
+
+        <div class="cd-section">
+            <div class="cd-section-title">Course Topics</div>
+            {% if topics %}
+                <div class="cd-topics-list">
+                    {% for t in topics %}
+                        {% set mcount = topic_material_counts.get(t.id, 0) %}
+                        {% set done = t.id in completed_topic_ids %}
+                        <a href="/courses/{{ course.code }}/topics/{{ t.id }}" class="cd-topic-row">
+                            <span class="cd-topic-check {{ 'done' if done else '' }}">{% if done %}<i class="ri-check-line"></i>{% endif %}</span>
+                            <span class="cd-topic-num">{{ '%02d'|format(loop.index) }}</span>
+                            <span class="cd-topic-title">{{ t.title }}</span>
+                            <span class="cd-topic-meta">{% if mcount %}{{ mcount }} material{{ 's' if mcount != 1 else '' }}{% endif %}{% if t.primary_video %}{% if mcount %} &middot; {% endif %}video{% endif %}</span>
+                        </a>
+                    {% endfor %}
+                </div>
+                {% if completed_topic_ids %}
+                <p style="font-size:0.8rem; color:var(--sk-text-dim); margin-top:10px;">{{ completed_topic_ids|length }}/{{ topics|length }} topics completed</p>
+                {% endif %}
+            {% else %}
+                <div class="sk-empty">
+                    <div class="sk-empty-icon">🎓</div>
+                    <p>Nelavista hasn't added a topic breakdown for {{ course.code }} yet.</p>
+                    <p class="cd-not-resolved" style="margin-top:6px;">You can still practice with Mock Exam questions and contribute school materials below.</p>
+                </div>
+            {% endif %}
+        </div>
 
         <div class="cd-section">
             <div class="cd-section-title">📊 Your Progress</div>
@@ -129,44 +186,19 @@
         </div>
 
         <div class="cd-section">
-            <div class="cd-section-title">📖 Topics</div>
-            {% if topics %}
-                <div class="cd-materials-list">
-                    {% for t in topics %}
-                        {% set mcount = topic_material_counts.get(t.id, 0) %}
-                        <a href="/courses/{{ course.code }}/topics/{{ t.id }}" class="cd-material-row" style="text-decoration:none; color:inherit; flex-direction:row; align-items:center;">
-                            <div class="cd-material-row-top" style="width:100%;">
-                                <div>
-                                    <div class="cd-material-title">{{ '%02d'|format(loop.index) }} &middot; {{ t.title }}</div>
-                                    <div class="cd-material-meta">{{ mcount }} material{{ 's' if mcount != 1 else '' }}{% if t.primary_video %} &middot; video available{% endif %}</div>
-                                </div>
-                                <span class="sk-btn small secondary">Open →</span>
-                            </div>
-                        </a>
-                    {% endfor %}
-                </div>
-            {% else %}
-                <div class="sk-empty">
-                    <div class="sk-empty-icon">🎓</div>
-                    <p>Nelavista hasn't added a topic breakdown for {{ course.code }} yet.</p>
-                    <p class="cd-not-resolved" style="margin-top:6px;">You can still practice with Mock Exam questions and contribute school materials below.</p>
-                </div>
-            {% endif %}
-        </div>
-
-        <div class="cd-section">
             <div class="cd-section-title">📚 School Materials</div>
+            <p style="font-size:0.85rem; color:var(--sk-text-dim); margin-bottom:14px;">Have a lecture note, past question, handout, or other material from your school? Upload it to help other students taking {{ course.code }}.</p>
             <div style="margin-bottom:14px;">
                 <button class="sk-btn small secondary" onclick="openUploadModal({{ course.id }})">+ Contribute a material for {{ course.code }}</button>
             </div>
-            {% if materials %}
+            {% if school_materials %}
                 <div class="cd-materials-list">
-                    {% for m in materials %}
+                    {% for m in school_materials %}
                         <div class="cd-material-row">
                             <div class="cd-material-row-top">
                                 <div>
                                     <div class="cd-material-title">{{ m.title }}</div>
-                                    <div class="cd-material-meta">{{ m.author or 'Nelavista' }} · {{ m.source|capitalize }}{% if m.description %} · {{ m.description }}{% endif %}</div>
+                                    <div class="cd-material-meta">{{ m.author or m.uploaded_by }} · {{ m.type_label }}{% if m.description %} · {{ m.description }}{% endif %}</div>
                                 </div>
                                 <a href="{{ m.resolved_url or m.external_url }}" target="_blank" class="sk-btn small secondary" onclick="trackMaterialView({{ m.id }})">Open</a>
                             </div>
@@ -183,10 +215,32 @@
                 <div class="sk-empty">
                     <div class="sk-empty-icon">📭</div>
                     <p>No school materials uploaded for {{ course.code }} yet.</p>
-                    <button class="sk-btn small" style="margin-top:12px;" onclick="openUploadModal({{ course.id }})">Upload one →</button>
                 </div>
             {% endif %}
         </div>
+
+        {% if additional_resources %}
+        <div class="cd-section">
+            <div class="cd-secondary-toggle" onclick="document.getElementById('additionalResources').classList.toggle('show')">
+                <i class="ri-arrow-right-s-line"></i> Additional Resources ({{ additional_resources|length }}) — general open-license textbooks and web resources, not specific to {{ ctx.university.name }}
+            </div>
+            <div class="cd-secondary-panel" id="additionalResources">
+                <div class="cd-materials-list">
+                    {% for m in additional_resources %}
+                        <div class="cd-material-row">
+                            <div class="cd-material-row-top">
+                                <div>
+                                    <div class="cd-material-title">{{ m.title }}</div>
+                                    <div class="cd-material-meta">{{ m.source|capitalize }}{% if m.description %} · {{ m.description }}{% endif %}</div>
+                                </div>
+                                <a href="{{ m.resolved_url or m.external_url }}" target="_blank" class="sk-btn small secondary" onclick="trackMaterialView({{ m.id }})">Open</a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
 
         <div class="cd-section">
             <div class="cd-section-title">Mock Exam</div>

@@ -1928,6 +1928,25 @@ class MaterialView(db.Model):
     __table_args__ = (db.UniqueConstraint('user_id', 'material_id', name='uq_material_view_user_material'),)
 
 
+class TopicProgress(db.Model):
+    """A student marking one Topic as studied/complete -- deliberately minimal (row
+    exists = complete, no partial-progress states, no streaks, no extra stats) per the
+    product principle that this should be basic completion tracking, not another
+    dashboard. Foundation for later per-topic quizzes/CBT without redesigning this
+    table -- see models.py's Topic docstring."""
+    __tablename__ = 'topic_progress'
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    topic_id = db.Column(db.Integer, db.ForeignKey('topics.id'), nullable=False)
+    completed_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    user = db.relationship('User', backref=db.backref('topic_progress', lazy='dynamic'))
+    topic = db.relationship('Topic', backref=db.backref('progress_rows', lazy='dynamic'))
+
+    __table_args__ = (db.UniqueConstraint('user_id', 'topic_id', name='uq_topic_progress_user_topic'),)
+
+
 # ============================================================
 # ===== OPPORTUNITIES: the "Earn" phase of Learn -> Practice -> Build -> Verify -> Earn =====
 # Real, paid gigs tied to a skill. Admin-curated for now (not an open employer-posting

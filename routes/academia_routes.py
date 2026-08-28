@@ -1,7 +1,9 @@
+from datetime import datetime
+
 from flask import Blueprint, render_template, session, request, jsonify, abort
 from sqlalchemy import or_
 from utils.helpers import login_required
-from models import User, Material, CBTQuestion, CBTAttempt, Course, Topic
+from models import User, Material, CBTQuestion, CBTAttempt, Course, Topic, TopicProgress
 from services.academic_context import resolve_academic_context, find_course
 from services.progress_service import get_course_materials_progress, get_cbt_summary
 from extensions import db
@@ -18,6 +20,20 @@ def _course_materials_query(course):
         or_(Material.course_id == course.id, Material.course_code.ilike(course.code)),
         Material.is_approved == True,  # noqa: E712
     )
+
+
+def _split_school_vs_additional(materials):
+    """We promised students 'materials', not 'we found your lecturer's notes' -- a
+    student-contributed upload (source='uploaded') is real school-specific content; an
+    OpenStax/Open-Textbook-Library/web-search/static-seeded row is generic content that
+    happens to share a course code. Mixing them into one undifferentiated list is
+    exactly the "we searched the internet and put some books here" impression students
+    were rejecting (Academia Materials audit P9). School Materials stays the visually
+    dominant section; everything else becomes a clearly secondary 'Additional Resources'
+    list, never presented as if it were the student's actual course material."""
+    school = [m for m in materials if m.source == 'uploaded']
+    additional = [m for m in materials if m.source != 'uploaded']
+    return school, additional
 
 
 def _cbt_subject_prefix(course_code):
@@ -40,20 +56,32 @@ def course_detail(course_code):
     ctx = resolve_academic_context(user)
     course = find_course(ctx.department, course_code) if ctx.department else None
 
-    materials = []
+    school_materials = []
+    additional_resources = []
     topics = []
     topic_material_counts = {}
+    completed_topic_ids = set()
+    video_count = 0
     if course:
         query = _course_materials_query(course)
         if user.university:
             query = query.filter((Material.university.is_(None)) | (Material.university == user.university))
         materials = query.order_by(Material.created_at.desc()).all()
+        school_materials, additional_resources = _split_school_vs_additional(materials)
         topics = course.topics.filter_by(is_active=True).order_by(Topic.order).all()
         # Computed from the `materials` list already fetched above -- avoids the N+1
         # pattern of a separate `t.materials.count()` query per topic in the template.
         for m in materials:
             if m.topic_id:
                 topic_material_counts[m.topic_id] = topic_material_counts.get(m.topic_id, 0) + 1
+        video_count = sum(1 for t in topics if t.primary_video)
+        if topics:
+            completed_topic_ids = {
+                row.topic_id for row in TopicProgress.query.filter(
+                    TopicProgress.user_id == user.id,
+                    TopicProgress.topic_id.in_([t.id for t in topics]),
+                ).all()
+            }
 
     subject = _cbt_subject_prefix(course_code)
     cbt_count = CBTQuestion.query.filter_by(subject_code=subject, question_type='cbt', is_active=True).count()
@@ -75,7 +103,9 @@ def course_detail(course_code):
     return render_template(
         'course_detail.html',
         user=user, ctx=ctx, course=course, course_code=course_code.upper(),
-        materials=materials, topics=topics, topic_material_counts=topic_material_counts,
+        school_materials=school_materials, additional_resources=additional_resources,
+        topics=topics, topic_material_counts=topic_material_counts,
+        completed_topic_ids=completed_topic_ids, video_count=video_count,
         cbt_count=cbt_count, written_count=written_count,
         recent_attempts=recent_attempts, materials_viewed=materials_viewed,
         materials_total=materials_total, cbt_progress=cbt_progress,
@@ -120,15 +150,42 @@ def topic_detail(course_code, topic_id):
             (Material.university.is_(None)) | (Material.university == user.university)
         )
     all_course_materials = materials_query.order_by(Material.created_at.desc()).all()
-    topic_materials = [m for m in all_course_materials if m.topic_id == topic.id]
-    other_course_materials = [m for m in all_course_materials if m.topic_id != topic.id]
+    this_topic = [m for m in all_course_materials if m.topic_id == topic.id]
+    rest_of_course = [m for m in all_course_materials if m.topic_id != topic.id]
+    topic_school_materials, topic_additional_resources = _split_school_vs_additional(this_topic)
+    other_school_materials, other_additional_resources = _split_school_vs_additional(rest_of_course)
+
+    is_complete = TopicProgress.query.filter_by(user_id=user.id, topic_id=topic.id).first() is not None
 
     return render_template(
         'topic_detail.html',
         user=user, ctx=ctx, course=course, topic=topic, other_topics=other_topics,
-        topic_materials=topic_materials, other_course_materials=other_course_materials,
-        next_topic=next_topic, prev_topic=prev_topic,
+        topic_school_materials=topic_school_materials, topic_additional_resources=topic_additional_resources,
+        other_school_materials=other_school_materials, other_additional_resources=other_additional_resources,
+        next_topic=next_topic, prev_topic=prev_topic, is_complete=is_complete,
     )
+
+
+@academia_bp.route('/api/topics/<int:topic_id>/complete', methods=['POST'])
+@login_required
+def toggle_topic_complete(topic_id):
+    """Basic completion tracking -- a row exists or it doesn't, no partial states.
+    Toggles: marks complete if not already, un-marks if it already was (a student
+    revisiting a topic to double-check something shouldn't have to hunt for an 'undo').
+    """
+    username = session['user']['username']
+    user = User.query.filter_by(username=username).first()
+    topic = Topic.query.get_or_404(topic_id)
+
+    existing = TopicProgress.query.filter_by(user_id=user.id, topic_id=topic.id).first()
+    if existing:
+        db.session.delete(existing)
+        db.session.commit()
+        return jsonify({'success': True, 'completed': False})
+
+    db.session.add(TopicProgress(user_id=user.id, topic_id=topic.id, completed_at=datetime.utcnow()))
+    db.session.commit()
+    return jsonify({'success': True, 'completed': True})
 
 
 @academia_bp.route('/courses')

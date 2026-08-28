@@ -9,7 +9,7 @@ import io
 import json
 
 from extensions import db
-from models import Material, Topic, Course
+from models import Material, Topic, Course, TopicProgress
 
 
 # ─────────────────────────── Topic <-> Course model ───────────────────────────
@@ -598,3 +598,102 @@ def test_backfill_leaves_department_unresolved_when_ambiguous_and_no_university_
             university = None
 
         assert _resolve_department(FakeMaterial(), dept_by_name) is None
+
+
+# ─────────────────────────── Topic completion tracking ───────────────────────────
+
+def test_toggle_topic_complete_marks_and_unmarks(app, client, make_user, make_course, login_as):
+    course = make_course()
+    with app.app_context():
+        topic = Topic(course_id=course.id, title='Trees')
+        db.session.add(topic)
+        db.session.commit()
+        topic_id = topic.id
+
+    user = make_user('progress_student', university='Lagos State University',
+                      department='Computer Science', level='200')
+    login_as(client, user)
+
+    res = client.post(f'/api/topics/{topic_id}/complete')
+    assert res.status_code == 200
+    assert res.get_json()['completed'] is True
+    with app.app_context():
+        assert TopicProgress.query.filter_by(topic_id=topic_id).count() == 1
+
+    res2 = client.post(f'/api/topics/{topic_id}/complete')
+    assert res2.get_json()['completed'] is False
+    with app.app_context():
+        assert TopicProgress.query.filter_by(topic_id=topic_id).count() == 0
+
+
+def test_course_page_shows_completed_topics_and_count(app, client, make_user, make_course, login_as):
+    course = make_course()
+    with app.app_context():
+        t1 = Topic(course_id=course.id, title='Arrays', order=0)
+        t2 = Topic(course_id=course.id, title='Linked Lists', order=1)
+        db.session.add_all([t1, t2])
+        db.session.commit()
+        t1_id = t1.id
+
+    user = make_user('progress_student2', university='Lagos State University',
+                      department='Computer Science', level='200')
+    login_as(client, user)
+    client.post(f'/api/topics/{t1_id}/complete')
+
+    res = client.get(f'/courses/{course.code}')
+    body = res.data.decode()
+    assert '1/2 topics completed' in body
+
+
+# ─────────────────────────── School Materials vs Additional Resources ───────────────────────────
+
+def test_course_page_separates_uploaded_from_generic_materials(app, client, make_user, make_course, login_as):
+    course = make_course()
+    with app.app_context():
+        db.session.add_all([
+            Material(title='Real LASU Lecture Note', department='Computer Science', level='200',
+                     semester='First Semester', course_id=course.id, course_code=course.code,
+                     source='uploaded', material_type='lecture_note', is_approved=True,
+                     file_url='https://example.com/a.pdf', uploaded_by='a_student'),
+            Material(title='Collaborative Statistics', department='Computer Science', level='200',
+                     semester='First Semester', course_id=course.id, course_code=course.code,
+                     source='oer_library', is_approved=True, external_url='https://openstax.org/x'),
+            Material(title='Some Web Result', department='Computer Science', level='200',
+                     semester='First Semester', course_id=course.id, course_code=course.code,
+                     source='google_auto', is_approved=True, external_url='https://example.com/y'),
+        ])
+        db.session.commit()
+
+    user = make_user('split_student', university='Lagos State University',
+                      department='Computer Science', level='200')
+    login_as(client, user)
+
+    res = client.get(f'/courses/{course.code}')
+    body = res.data.decode()
+    assert 'Real LASU Lecture Note' in body
+    assert 'Additional Resources (2)' in body
+    # The generic titles must not appear in the always-visible School Materials list --
+    # only inside the (collapsed by default) Additional Resources panel.
+    school_section = body.split('School Materials')[1].split('Additional Resources')[0]
+    assert 'Collaborative Statistics' not in school_section
+    assert 'Some Web Result' not in school_section
+
+
+def test_course_stats_row_shows_real_counts_only(app, client, make_user, make_course, login_as):
+    course = make_course()
+    with app.app_context():
+        t = Topic(course_id=course.id, title='Arrays', video_url='https://youtu.be/jNQXAC9IVRw')
+        db.session.add(t)
+        db.session.add(Material(title='Real Note', department='Computer Science', level='200',
+                                 semester='First Semester', course_id=course.id, course_code=course.code,
+                                 source='uploaded', material_type='lecture_note', is_approved=True,
+                                 file_url='https://example.com/a.pdf', uploaded_by='a_student'))
+        db.session.commit()
+
+    user = make_user('stats_student', university='Lagos State University',
+                      department='Computer Science', level='200')
+    login_as(client, user)
+
+    res = client.get(f'/courses/{course.code}')
+    body = res.data.decode()
+    assert '<div class="cd-stat-number">1</div>' in body  # 1 topic, 1 school material, 1 video -- all real

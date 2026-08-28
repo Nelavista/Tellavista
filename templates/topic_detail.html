@@ -30,6 +30,9 @@
         .tp-explanation p { margin-bottom: 10px; }
         .tp-explanation ul, .tp-explanation ol { margin: 8px 0 10px 22px; }
         .tp-explanation li { margin-bottom: 4px; }
+        .tp-explanation code { background: var(--sk-border); padding: 1px 6px; border-radius: 4px; font-size: 0.85em; font-family: ui-monospace, 'SF Mono', Menlo, monospace; }
+        .tp-explanation pre { background: var(--bg-deep, #0d1117); border: 1px solid var(--sk-border); border-radius: 8px; padding: 12px 14px; overflow-x: auto; margin: 10px 0; }
+        .tp-explanation pre code { background: none; padding: 0; font-size: 0.82rem; line-height: 1.5; }
 
         .tp-video-wrap { position: relative; width: 100%; padding-top: 56.25%; border-radius: var(--sk-radius-sm); overflow: hidden; background: var(--sk-card); border: 1px solid var(--sk-border); }
         .tp-video-wrap iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: none; }
@@ -52,6 +55,11 @@
         .tp-secondary-list.show { display: block; }
 
         .tp-topic-footer-nav { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 34px; padding-top: 20px; border-top: 1px solid var(--sk-border); }
+
+        .tp-header-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; }
+        .tp-complete-btn { flex-shrink: 0; display: flex; align-items: center; gap: 6px; background: var(--sk-card); border: 1px solid var(--sk-border); color: var(--sk-text-dim); padding: 8px 14px; border-radius: 20px; font-size: 0.8rem; cursor: pointer; white-space: nowrap; }
+        .tp-complete-btn.done { background: rgba(20,184,166,0.12); border-color: var(--sk-success); color: var(--sk-success); font-weight: 600; }
+        .tp-video-meta { font-size: 0.78rem; color: var(--sk-text-dim); margin-top: 8px; }
     </style>
 </head>
 <body>
@@ -61,9 +69,17 @@
         <a href="/courses/{{ course.code }}" class="tp-back">&larr; {{ course.code }}</a>
     </div>
 
-    <div class="tp-breadcrumb">{{ ctx.university.name }} / {{ ctx.department.name }} / {{ course.code }}</div>
-    <div class="tp-title">{{ topic.title }}</div>
-    <div class="tp-course-sub">{{ course.code }} &middot; {{ course.title }}</div>
+    <div class="tp-breadcrumb">{{ course.code }} &rarr; {{ course.title }} &rarr; {{ topic.title }}</div>
+    <div class="tp-header-row">
+        <div>
+            <div class="tp-title">{{ topic.title }}</div>
+            <div class="tp-course-sub">{{ course.code }} &middot; {{ course.title }}</div>
+        </div>
+        <button class="tp-complete-btn {{ 'done' if is_complete else '' }}" id="completeBtn" onclick="toggleComplete()">
+            <i class="ri-check-line" id="completeIcon" style="{{ '' if is_complete else 'display:none;' }}"></i>
+            <span id="completeLabel">{{ 'Completed' if is_complete else 'Mark as complete' }}</span>
+        </button>
+    </div>
     {% if topic.content_source == 'ai_draft' %}
     <div class="tp-draft-badge">Draft content — not yet reviewed by an admin</div>
     {% endif %}
@@ -94,6 +110,9 @@
         <div class="tp-video-wrap">
             <iframe src="https://www.youtube-nocookie.com/embed/{{ topic.primary_video.video_id }}" title="{{ topic.title }}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
         </div>
+        {% if topic.primary_video.title %}
+        <div class="tp-video-meta">{{ topic.primary_video.title }}{% if topic.primary_video.channel %} &middot; {{ topic.primary_video.channel }}{% endif %}</div>
+        {% endif %}
         {% else %}
         <div class="sk-empty"><p>No video linked for this topic yet.</p></div>
         {% endif %}
@@ -101,12 +120,13 @@
 
     <div class="tp-section">
         <div class="tp-section-title"><i class="ri-file-list-3-line"></i> School Materials</div>
-        {% if topic_materials %}
-        {% for m in topic_materials %}
+        <p style="font-size:0.82rem; color:var(--sk-text-dim); margin-bottom:12px;">Have your school's notes or past materials for <strong>{{ topic.title }}</strong>? Help other students by contributing them.</p>
+        {% if topic_school_materials %}
+        {% for m in topic_school_materials %}
         <div class="tp-material-row">
             <div>
                 <div class="tp-material-title">{{ m.title }}</div>
-                <div class="tp-material-meta">{{ m.type_label }} &middot; {{ m.author or 'Nelavista' }}</div>
+                <div class="tp-material-meta">{{ m.type_label }} &middot; {{ m.author or m.uploaded_by }}</div>
             </div>
             <a href="{{ m.resolved_url or m.external_url }}" target="_blank" class="sk-btn small secondary" onclick="trackMaterialView({{ m.id }})">Open</a>
         </div>
@@ -117,16 +137,16 @@
         </div>
         {% endif %}
 
-        {% if other_course_materials %}
-        <div class="tp-secondary-toggle" onclick="document.getElementById('otherMaterials').classList.toggle('show')">
-            + {{ other_course_materials|length }} more material{{ 's' if other_course_materials|length != 1 else '' }} for {{ course.code }} generally
+        {% if other_school_materials %}
+        <div class="tp-secondary-toggle" onclick="document.getElementById('otherSchoolMaterials').classList.toggle('show')">
+            + {{ other_school_materials|length }} more school material{{ 's' if other_school_materials|length != 1 else '' }} for {{ course.code }} generally
         </div>
-        <div class="tp-secondary-list" id="otherMaterials">
-            {% for m in other_course_materials %}
+        <div class="tp-secondary-list" id="otherSchoolMaterials">
+            {% for m in other_school_materials %}
             <div class="tp-material-row">
                 <div>
                     <div class="tp-material-title">{{ m.title }}</div>
-                    <div class="tp-material-meta">{{ m.type_label }} &middot; {{ m.author or 'Nelavista' }}</div>
+                    <div class="tp-material-meta">{{ m.type_label }} &middot; {{ m.author or m.uploaded_by }}</div>
                 </div>
                 <a href="{{ m.resolved_url or m.external_url }}" target="_blank" class="sk-btn small secondary" onclick="trackMaterialView({{ m.id }})">Open</a>
             </div>
@@ -139,6 +159,26 @@
             <button class="sk-btn small" onclick="openUploadModal({{ course.id }}, {{ topic.id }})">Upload for this topic</button>
         </div>
     </div>
+
+    {% set all_additional = topic_additional_resources + other_additional_resources %}
+    {% if all_additional %}
+    <div class="tp-section">
+        <div class="tp-secondary-toggle" onclick="document.getElementById('additionalResources').classList.toggle('show')">
+            <i class="ri-arrow-right-s-line"></i> Additional Resources ({{ all_additional|length }}) — general open-license textbooks and web resources
+        </div>
+        <div class="tp-secondary-list" id="additionalResources">
+            {% for m in all_additional %}
+            <div class="tp-material-row">
+                <div>
+                    <div class="tp-material-title">{{ m.title }}</div>
+                    <div class="tp-material-meta">{{ m.source|capitalize }}</div>
+                </div>
+                <a href="{{ m.resolved_url or m.external_url }}" target="_blank" class="sk-btn small secondary" onclick="trackMaterialView({{ m.id }})">Open</a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
 
     <div class="tp-section">
         <div class="tp-section-title"><i class="ri-sparkling-2-line"></i> AI Tutor</div>
@@ -174,6 +214,25 @@ window.onMaterialUploaded = function () {
 
 function trackMaterialView(id) {
     fetch(`/api/materials/${id}/view`, { method: 'POST' }).catch(() => {});
+}
+
+async function toggleComplete() {
+    const btn = document.getElementById('completeBtn');
+    const icon = document.getElementById('completeIcon');
+    const label = document.getElementById('completeLabel');
+    btn.disabled = true;
+    try {
+        const res = await fetch(`/api/topics/{{ topic.id }}/complete`, { method: 'POST' });
+        const data = await res.json();
+        if (data.success) {
+            btn.classList.toggle('done', data.completed);
+            icon.style.display = data.completed ? '' : 'none';
+            label.textContent = data.completed ? 'Completed' : 'Mark as complete';
+        }
+    } catch (e) {
+        // Non-fatal -- completion tracking is a convenience, not required to read the topic.
+    }
+    btn.disabled = false;
 }
 
 async function askTopicAI(mode, btn) {

@@ -4,7 +4,9 @@ from models import User, StudySession, Exam
 from extensions import db
 from datetime import datetime, date, timedelta
 from services.academic_context import resolve_academic_context
-from services.progress_service import get_course_materials_progress
+from services.progress_service import get_courses_materials_progress_bulk
+from models import Topic
+from sqlalchemy import func
 
 study_bp = Blueprint('study', __name__)
 
@@ -171,16 +173,30 @@ def get_user_courses():
             return jsonify({'error': 'User not found'}), 404
 
         ctx = resolve_academic_context(user)
+        all_courses = list(ctx.courses)
+
+        # Bulk-computed instead of one query per course -- a student with 20+ courses
+        # (the normal case for a whole department/level) previously cost 2-3 remote
+        # round-trips *per course* here, which is what made "Loading your courses..."
+        # visibly slow. Both are now O(1) queries regardless of course count.
+        progress_by_code = get_courses_materials_progress_bulk(user, [c.code for c in all_courses])
+        topic_counts = dict(
+            db.session.query(Topic.course_id, func.count(Topic.id))
+            .filter(Topic.course_id.in_([c.id for c in all_courses]), Topic.is_active == True)  # noqa: E712
+            .group_by(Topic.course_id)
+            .all()
+        ) if all_courses else {}
+
         courses = []
-        for course in ctx.courses:
-            viewed, total = get_course_materials_progress(user, course.code)
+        for course in all_courses:
+            viewed, total = progress_by_code.get(course.code, (0, 0))
             progress = round(viewed / total * 100) if total else 0
             courses.append({
                 'code': course.code,
                 'title': course.title,
                 'name': f"{course.code} — {course.title}",
                 'type': course.course_type or 'CORE',
-                'topic_count': course.topics.filter_by(is_active=True).count(),
+                'topic_count': topic_counts.get(course.id, 0),
                 'next_topic': 'Continue studying' if viewed else 'Start learning',
                 'progress': progress,
                 'link': f"/courses/{course.code}",

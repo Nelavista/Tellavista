@@ -1,0 +1,61 @@
+<!-- Shared "contribute a material" modal -- used by materials.html, course_detail.html,
+     and topic_detail.html so there's exactly one upload form/flow in the whole product,
+     not three copies that can drift. Course/Topic dropdowns are populated from the real
+     University->Faculty->Department->Course taxonomy (services/academic_context.py via
+     /api/upload-course-picker-data), not hand-typed free text -- see
+     Academia Materials audit P1-3 ("Course" field used to actually be a department
+     picklist). Pair with static/js/material_upload.js. Call openUploadModal(courseId,
+     topicId) to open pre-scoped to a specific course/topic (both optional). -->
+<div id="uploadModal" class="mu-modal">
+    <div class="mu-modal-card">
+        <h3>Contribute a school material</h3>
+        <p class="mu-modal-sub">Have your lecturer's notes, a course outline, a handout, or a past question? Upload it here — it goes through a quick review before other students see it.</p>
+        <form id="uploadForm" onsubmit="handleMaterialUpload(event)" class="mu-upload-form">
+            <div class="mu-fg"><label>Title *</label><input type="text" id="materialTitle" placeholder="e.g. Enzyme Kinetics — Lecture Note" required></div>
+            <div class="mu-fg"><label>Course *</label>
+                <select id="materialCourseSelect" required onchange="onUploadCourseChange()">
+                    <option value="">Loading your courses…</option>
+                </select>
+            </div>
+            <div class="mu-fg"><label>Topic (optional)</label>
+                <select id="materialTopicSelect">
+                    <option value="">Whole course (no specific topic)</option>
+                </select>
+            </div>
+            <div class="mu-fg"><label>Material type *</label>
+                <select id="materialType" required>
+                    <option value="">Select type</option>
+                </select>
+            </div>
+            <div class="mu-fg"><label>Author / Your Name *</label><input type="text" id="materialAuthor" required></div>
+            <div class="mu-fg"><label>Description (optional)</label><textarea id="materialDesc" placeholder="Brief description…"></textarea></div>
+            <div class="mu-fg"><label>PDF File *</label><input type="file" id="materialFile" accept=".pdf" required></div>
+            <div class="mu-upload-progress" id="uploadProgress"><div class="mu-upload-progress-fill" id="uploadProgressFill"></div></div>
+            <div id="uploadFormError" class="mu-form-error"></div>
+            <button type="submit" class="mu-upload-submit-btn" id="uploadSubmitBtn">Upload &amp; share</button>
+            <button type="button" class="mu-modal-cancel" onclick="closeUploadModal()">Cancel</button>
+        </form>
+    </div>
+</div>
+
+<style>
+    .mu-modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); backdrop-filter:blur(6px); z-index:3000; align-items:center; justify-content:center; }
+    .mu-modal.show { display:flex; }
+    .mu-modal-card { background:var(--sk-card); border:1px solid var(--sk-border); border-radius:24px; width:92%; max-width:520px; max-height:88vh; overflow-y:auto; padding:26px; }
+    .mu-modal-card h3 { font-size:1.3rem; font-weight:700; margin-bottom:8px; }
+    .mu-modal-sub { font-size:0.82rem; color:var(--sk-text-dim, var(--text-secondary)); margin-bottom:18px; line-height:1.5; }
+    .mu-upload-form label { display:block; font-size:0.8rem; color:var(--sk-text-dim, var(--text-secondary)); margin-bottom:6px; font-weight:500; }
+    .mu-fg { margin-bottom:14px; }
+    .mu-upload-form input, .mu-upload-form select, .mu-upload-form textarea { width:100%; background:var(--bg-deep, #0d1117); border:1px solid var(--sk-border); padding:11px 14px; border-radius:12px; color:var(--text-primary, var(--sk-text)); font-size:0.9rem; outline:none; transition:border 0.2s; }
+    .mu-upload-form input:focus, .mu-upload-form select:focus { border-color:var(--sk-accent); }
+    .mu-upload-form textarea { resize:vertical; min-height:64px; }
+    .mu-upload-submit-btn { background:var(--sk-accent); border:none; padding:13px; border-radius:40px; font-weight:700; font-size:0.95rem; width:100%; cursor:pointer; color:var(--bg-deep, #0d1117); margin-top:6px; transition:opacity 0.2s; }
+    .mu-upload-submit-btn:hover { opacity:0.88; }
+    .mu-upload-submit-btn:disabled { opacity:0.5; cursor:not-allowed; }
+    .mu-modal-cancel { margin-top:10px; width:100%; background:transparent; border:1px solid var(--sk-border); color:var(--sk-text-dim, var(--text-secondary)); padding:10px; border-radius:40px; cursor:pointer; font-size:0.88rem; transition:all 0.2s; }
+    .mu-modal-cancel:hover { border-color:var(--sk-accent); color:var(--sk-accent); }
+    .mu-upload-progress { display:none; background:var(--sk-border); border-radius:4px; overflow:hidden; margin:8px 0; }
+    .mu-upload-progress-fill { width:0%; height:4px; background:var(--sk-accent); transition:width 0.3s; }
+    .mu-form-error { display:none; color:#ef4444; font-size:0.8rem; margin-bottom:10px; }
+</style>
+<script src="{{ url_for('static', filename='js/material_upload.js') }}"></script>

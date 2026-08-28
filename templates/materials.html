@@ -7,37 +7,53 @@
     <title>Study Materials · Nelavista</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/skills.css') }}">
     <style>
-        /* Page-specific: materials library only. Shell comes from skills.css/the shared
-           include below — no .top-bar/.sidebar rules here so they can't shadow it. */
         .app-container { max-width:1400px; margin:0 auto; padding:0 24px 80px; }
 
-        /* ===== HERO / SEARCH ===== */
+        /* ===== HERO ===== */
         .hero-section { margin-bottom:28px; }
+        .hero-top-row { display:flex; align-items:flex-start; justify-content:space-between; gap:16px; flex-wrap:wrap; }
         .hero-title { font-size:1.9rem; font-weight:700; letter-spacing:-0.02em; margin-bottom:6px; }
-        .hero-sub { color:var(--text-secondary); margin-bottom:22px; font-size:0.95rem; }
-        .search-wrapper { position:relative; margin-bottom:18px; }
+        .hero-sub { color:var(--text-secondary); margin-bottom:8px; font-size:0.95rem; max-width:640px; }
+
+        /* ===== MY COURSES (primary) ===== */
+        .courses-grid { display:flex; gap:14px; flex-wrap:wrap; margin:20px 0 36px; }
+        .course-card { background:var(--sk-card); border:1px solid var(--sk-border); border-radius:var(--sk-radius, 14px); padding:18px; flex:1 1 220px; min-width:220px; max-width:280px; text-decoration:none; color:inherit; display:block; transition:all 0.15s; }
+        .course-card:hover { border-color:var(--sk-accent); transform:translateY(-2px); }
+        .course-code { font-weight:700; font-size:1.05rem; }
+        .course-name { font-size:0.8rem; color:var(--text-secondary); margin:4px 0 10px; line-height:1.35; min-height:2.2em; }
+        .course-meta-row { display:flex; align-items:center; justify-content:space-between; font-size:0.72rem; color:var(--text-muted); }
+        .course-progress-bar { height:4px; background:var(--sk-border); border-radius:4px; margin-top:10px; overflow:hidden; }
+        .course-progress-fill { height:100%; background:var(--sk-success); }
+
+        /* ===== SECONDARY: BROWSE ALL UPLOADED MATERIALS ===== */
+        .secondary-toggle-row { display:flex; align-items:center; justify-content:space-between; padding:14px 0; border-top:1px solid var(--sk-border); margin-top:8px; cursor:pointer; }
+        .secondary-toggle-row h2 { font-size:0.95rem; font-weight:700; }
+        .secondary-toggle-row .hint { font-size:0.78rem; color:var(--text-muted); margin-top:2px; }
+        .secondary-panel { display:none; }
+        .secondary-panel.show { display:block; }
+
+        .search-wrapper { position:relative; margin-bottom:14px; margin-top:16px; }
         .search-icon { position:absolute; left:16px; top:50%; transform:translateY(-50%); color:var(--text-secondary); font-size:17px; pointer-events:none; }
         #searchInput { width:100%; padding:13px 16px 13px 46px; background:var(--sk-card); border:1px solid var(--sk-border); border-radius:40px; font-size:0.95rem; color:var(--text-primary); outline:none; transition:all 0.2s; }
         #searchInput:focus { border-color:var(--sk-accent); box-shadow:0 0 0 3px rgba(88,166,255,0.15); }
         #searchInput::placeholder { color:var(--text-muted); }
-        .filter-row { display:flex; gap:10px; overflow-x:auto; padding-bottom:4px; scrollbar-width:none; }
+        .filter-row { display:flex; gap:10px; overflow-x:auto; padding-bottom:4px; scrollbar-width:none; margin-bottom:14px; }
         .filter-row::-webkit-scrollbar { display:none; }
         .filter-pill { background:var(--sk-border); border:none; padding:7px 18px; border-radius:30px; font-size:0.82rem; font-weight:500; color:var(--text-secondary); cursor:pointer; white-space:nowrap; transition:all 0.2s; flex-shrink:0; }
         .filter-pill.active { background:var(--sk-accent); color:#fff; }
         .filter-pill:hover:not(.active) { background:var(--sk-border); color:var(--text-primary); }
-
-        /* ===== COURSE FILTER ===== */
         .course-filter-row { margin-bottom:14px; }
         #courseFilterSelect { background:var(--sk-card); border:1px solid var(--sk-border); border-radius:30px; color:var(--text-primary); padding:9px 16px; font-size:0.85rem; outline:none; max-width:100%; }
         #courseFilterSelect:focus { border-color:var(--sk-accent); }
 
-        /* ===== GOOGLE SEARCH STATUS ===== */
-        .google-status { display:flex; align-items:center; gap:8px; margin-bottom:12px; padding:8px 16px; background:var(--sk-card); border-radius:40px; border:1px solid var(--sk-border); }
-        .google-status .status-icon { font-size:14px; }
-        .google-status .status-text { font-size:0.8rem; color:var(--text-secondary); }
-        .google-status.loading .status-text { color:var(--sk-accent); }
-        .google-status.success .status-icon { color:var(--sk-success); }
-        .refresh-google-btn { margin-left:auto; background:transparent; border:1px solid var(--sk-border); color:var(--text-secondary); padding:4px 12px; border-radius:30px; font-size:0.7rem; cursor:pointer; transition:all 0.2s; }
+        /* Honest web-search disclosure -- de-emphasized, correctly labeled (it is not
+           Google; see services/google_search_service.py -- and it isn't the primary
+           way students find materials any more, the course/topic pages are). */
+        .web-search-toggle { font-size:0.78rem; color:var(--sk-accent); cursor:pointer; margin-bottom:12px; display:inline-block; }
+        .web-search-panel { display:none; align-items:center; gap:8px; margin-bottom:12px; padding:8px 16px; background:var(--sk-card); border-radius:40px; border:1px solid var(--sk-border); }
+        .web-search-panel.show { display:flex; }
+        .web-search-panel .status-text { font-size:0.8rem; color:var(--text-secondary); flex:1; }
+        .refresh-google-btn { background:transparent; border:1px solid var(--sk-border); color:var(--text-secondary); padding:4px 12px; border-radius:30px; font-size:0.7rem; cursor:pointer; transition:all 0.2s; }
         .refresh-google-btn:hover { border-color:var(--sk-accent); color:var(--sk-accent); }
         .refresh-google-btn:disabled { opacity:0.5; cursor:not-allowed; }
 
@@ -71,7 +87,7 @@
         .card-desc { font-size:0.75rem; color:var(--text-secondary); margin-bottom:10px; line-height:1.4; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
         .card-date { font-size:0.65rem; color:var(--text-muted); }
         .ai-actions-row { display:flex; gap:6px; flex-wrap:wrap; margin-top:10px; }
-        .ai-action-btn { background:transparent; border:1px solid var(--sk-border); color:var(--sk-accent); padding:5px 10px; border-radius:8px; font-size:0.68rem; cursor:pointer; transition:all 0.15s; }
+        .ai-action-btn { background:transparent; border:1px solid var(--sk-border); color:var(--sk-accent); padding:5px 10px; border-radius:8px; font-size:0.68rem; cursor:pointer; }
         .ai-action-btn:hover { border-color:var(--sk-accent); }
         .ai-result-box { display:none; margin-top:10px; padding:10px 12px; background:rgba(88,166,255,0.08); border-radius:10px; font-size:0.78rem; line-height:1.55; color:var(--text-secondary); }
         .ai-result-box.show { display:block; }
@@ -81,36 +97,6 @@
         .viewer-ai-result { display:none; margin:0 24px 16px; padding:14px 16px; background:var(--sk-card); border-radius:12px; font-size:0.85rem; line-height:1.6; max-height:200px; overflow-y:auto; }
         .viewer-ai-result.show { display:block; }
 
-        /* ===== ONBOARDING ===== */
-        .onboarding-screen { position:fixed; inset:0; background:var(--bg-deep); z-index:2000; overflow-y:auto; padding:32px 20px 80px; }
-        .onboarding-inner { max-width:860px; margin:0 auto; }
-        .onboarding-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; }
-        .onboarding-title { font-size:1.8rem; font-weight:700; }
-        .onboarding-sub { color:var(--text-secondary); margin-top:6px; font-size:0.92rem; }
-        .onboarding-meta { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; margin:16px 0 24px; }
-        .dept-pill { background:var(--sk-card); border:1px solid var(--sk-border); padding:6px 16px; border-radius:30px; font-size:0.85rem; color:var(--text-secondary); }
-        .select-all-btn { background:transparent; border:none; color:var(--sk-accent); font-size:0.85rem; cursor:pointer; padding:4px 0; }
-        .select-all-btn:hover { text-decoration:underline; }
-
-        .section-label { font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--text-muted); margin:20px 0 12px; padding-bottom:8px; border-bottom:1px solid var(--sk-border); }
-
-        .courses-grid { display:flex; flex-wrap:wrap; gap:12px; margin-bottom:8px; }
-        .course-chip { background:var(--sk-card); border:2px solid var(--sk-border); border-radius:14px; padding:14px 16px; cursor:pointer; transition:all 0.18s; min-width:160px; flex:1 0 auto; max-width:220px; position:relative; }
-        .course-chip:hover { border-color:var(--sk-border); background:var(--sk-card); }
-        .course-chip.selected { background:rgba(20,184,166,0.1); border-color:var(--sk-success); }
-        .chip-code { font-weight:700; font-size:0.95rem; color:var(--text-primary); }
-        .chip-name { font-size:0.72rem; color:var(--text-secondary); margin-top:4px; line-height:1.3; }
-        .chip-check { position:absolute; top:10px; right:10px; color:var(--sk-success); font-size:14px; font-weight:700; opacity:0; transition:opacity 0.15s; }
-        .course-chip.selected .chip-check { opacity:1; }
-
-        .selected-count { font-size:0.82rem; color:var(--text-secondary); margin-bottom:20px; }
-        .selected-count span { color:var(--sk-success); font-weight:600; }
-
-        .continue-btn { background:var(--sk-success); border:none; padding:15px 28px; border-radius:40px; font-weight:700; font-size:1rem; color:var(--bg-deep); width:100%; cursor:pointer; transition:all 0.2s; position:sticky; bottom:20px; }
-        .continue-btn:disabled { opacity:0.35; cursor:not-allowed; }
-        .continue-btn:not(:disabled):hover { background:var(--sk-success); }
-
-        /* ===== FAB ===== */
         .fab { position:fixed; bottom:28px; right:24px; background:var(--sk-success); width:54px; height:54px; border-radius:50%; border:none; font-size:26px; cursor:pointer; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 16px rgba(20,184,166,0.35); z-index:100; transition:transform 0.15s; }
         .fab:hover { transform:scale(1.04); }
 
@@ -122,59 +108,24 @@
         .viewer-actions { display:flex; gap:16px; }
         .viewer-btn { background:transparent; border:none; color:var(--text-secondary); font-size:18px; cursor:pointer; padding:8px; border-radius:8px; transition:all 0.2s; }
         .viewer-btn:hover { background:var(--sk-border); color:var(--text-primary); }
-
-        /* ===== PDF LOADING STATE ===== */
         .viewer-content { flex:1; position:relative; display:flex; align-items:center; justify-content:center; }
         .viewer-frame { position:absolute; width:100%; height:100%; border:none; opacity:0; transition:opacity 0.4s ease-in; }
         .viewer-frame.loaded { opacity:1; }
-
         .pdf-loader { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; background:var(--bg-deep); pointer-events:none; opacity:1; transition:opacity 0.4s ease-out; }
         .pdf-loader.hidden { opacity:0; }
-
         .skeleton-container { width:90%; max-width:800px; }
         .skeleton-header { height:12px; background:linear-gradient(90deg, var(--sk-border) 25%, var(--sk-neutral-bg) 50%, var(--sk-border) 75%); background-size:200% 100%; animation:shimmer 1.5s infinite; border-radius:6px; margin-bottom:24px; width:60%; }
         .skeleton-line { height:8px; background:linear-gradient(90deg, var(--sk-border) 25%, var(--sk-neutral-bg) 50%, var(--sk-border) 75%); background-size:200% 100%; animation:shimmer 1.5s infinite; border-radius:4px; margin-bottom:12px; }
-        .skeleton-line:nth-child(2) { width:95%; }
-        .skeleton-line:nth-child(3) { width:88%; }
-        .skeleton-line:nth-child(4) { width:92%; }
-        .skeleton-line:nth-child(5) { width:78%; }
-        .skeleton-line:nth-child(6) { width:85%; }
-
+        .skeleton-line:nth-child(2) { width:95%; } .skeleton-line:nth-child(3) { width:88%; } .skeleton-line:nth-child(4) { width:92%; } .skeleton-line:nth-child(5) { width:78%; } .skeleton-line:nth-child(6) { width:85%; }
         .loader-text { margin-top:32px; color:var(--sk-accent); font-size:0.9rem; font-weight:500; display:flex; align-items:center; gap:10px; }
         .loader-spinner { width:16px; height:16px; border:2px solid var(--sk-border); border-top-color:var(--sk-accent); border-radius:50%; animation:spin 0.8s linear infinite; }
-
-        @keyframes shimmer {
-            0% { background-position: -200% 0; }
-            100% { background-position: 200% 0; }
-        }
+        @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
         @keyframes spin { to { transform:rotate(360deg); } }
-
         .viewer-footer { padding:12px 24px; background:var(--sk-card); border-top:1px solid var(--sk-border); display:flex; justify-content:center; }
         .viewer-source-badge { display:flex; align-items:center; gap:6px; font-size:0.75rem; }
-
-        /* ===== UPLOAD MODAL ===== */
-        .modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); backdrop-filter:blur(6px); z-index:3000; align-items:center; justify-content:center; }
-        .modal.show { display:flex; }
-        .modal-card { background:var(--sk-card); border:1px solid var(--sk-border); border-radius:24px; width:92%; max-width:520px; max-height:88vh; overflow-y:auto; padding:26px; }
-        .modal-card h3 { font-size:1.4rem; font-weight:700; margin-bottom:18px; }
-        .upload-form label { display:block; font-size:0.8rem; color:var(--text-secondary); margin-bottom:6px; font-weight:500; }
-        .upload-form .fg { margin-bottom:14px; }
-        .upload-form input, .upload-form select, .upload-form textarea { width:100%; background:var(--bg-deep); border:1px solid var(--sk-border); padding:11px 14px; border-radius:12px; color:var(--text-primary); font-size:0.9rem; outline:none; transition:border 0.2s; }
-        .upload-form input:focus, .upload-form select:focus { border-color:var(--sk-accent); }
-        .upload-form textarea { resize:vertical; min-height:72px; }
-        .upload-submit-btn { background:var(--sk-accent); border:none; padding:13px; border-radius:40px; font-weight:700; font-size:0.95rem; width:100%; cursor:pointer; color:var(--bg-deep); margin-top:6px; transition:opacity 0.2s; }
-        .upload-submit-btn:hover { opacity:0.88; }
-        .modal-cancel { margin-top:10px; width:100%; background:transparent; border:1px solid var(--sk-border); color:var(--text-secondary); padding:10px; border-radius:40px; cursor:pointer; font-size:0.88rem; transition:all 0.2s; }
-        .modal-cancel:hover { border-color:var(--sk-accent); color:var(--sk-accent); }
-        .upload-progress { display:none; background:var(--sk-border); border-radius:4px; overflow:hidden; margin:8px 0; }
-        .upload-progress-fill { width:0%; height:4px; background:var(--sk-accent); transition:width 0.3s; }
-
-        /* ===== LOADING SPINNER ===== */
         .loading-spinner { display:inline-block; width:14px; height:14px; border:2px solid var(--sk-border); border-top-color:var(--sk-accent); border-radius:50%; animation:spin 0.8s linear infinite; }
 
-        @media(max-width:600px) {
-            #courseFilterSelect { width:100%; }
-        }
+        @media(max-width:600px) { #courseFilterSelect { width:100%; } }
     </style>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
@@ -193,23 +144,14 @@
         </div>
     </div>
     <div class="viewer-content">
-        <!-- Loading skeleton -->
         <div class="pdf-loader" id="pdfLoader">
             <div class="skeleton-container">
                 <div class="skeleton-header"></div>
-                <div class="skeleton-line"></div>
-                <div class="skeleton-line"></div>
-                <div class="skeleton-line"></div>
-                <div class="skeleton-line"></div>
-                <div class="skeleton-line"></div>
-                <div class="skeleton-line"></div>
+                <div class="skeleton-line"></div><div class="skeleton-line"></div><div class="skeleton-line"></div>
+                <div class="skeleton-line"></div><div class="skeleton-line"></div><div class="skeleton-line"></div>
             </div>
-            <div class="loader-text">
-                <div class="loader-spinner"></div>
-                <span>Loading PDF...</span>
-            </div>
+            <div class="loader-text"><div class="loader-spinner"></div><span>Loading PDF...</span></div>
         </div>
-        <!-- PDF iframe -->
         <iframe id="pdfViewerFrame" class="viewer-frame"></iframe>
     </div>
     <div class="viewer-ai-row">
@@ -218,25 +160,41 @@
         <button class="viewer-ai-btn" onclick="askAboutCurrentMaterial('quiz')"><i class="ri-question-line"></i> Quiz me</button>
     </div>
     <div class="viewer-ai-result" id="viewerAiResult"></div>
-    <div class="viewer-footer">
-        <div class="viewer-source-badge" id="viewerSourceBadge"></div>
-    </div>
+    <div class="viewer-footer"><div class="viewer-source-badge" id="viewerSourceBadge"></div></div>
 </div>
 
 <!-- main app -->
 <div id="mainApp">
     <div class="app-container">
         <div class="hero-section">
-            <h1 class="hero-title">Study Materials</h1>
-            <p class="hero-sub" id="heroSub">Notes, past questions and textbooks for your courses.</p>
-
-            <!-- Google Search Status -->
-            <div class="google-status" id="googleStatus">
-                <span class="status-icon"><i class="ri-global-line"></i></span>
-                <span class="status-text" id="googleStatusText">Ready to search web for materials</span>
-                <button class="refresh-google-btn" id="refreshGoogleBtn" onclick="fetchGoogleMaterials()"><i class="ri-refresh-line"></i> Refresh</button>
+            <div class="hero-top-row">
+                <div>
+                    <h1 class="hero-title">Study Materials</h1>
+                    <p class="hero-sub">Your actual university courses. Open one to study exactly what's taught in it — topics, explanations, videos, and school materials.</p>
+                </div>
+                <a href="/my-uploads" class="sk-btn small secondary" style="white-space:nowrap;">My Uploads</a>
             </div>
+        </div>
 
+        <!-- ===== PRIMARY: MY COURSES ===== -->
+        <div id="coursesSection">
+            <div class="courses-grid" id="coursesGrid">
+                <div class="empty-state">Loading your courses…</div>
+            </div>
+            <div style="margin-top:14px;">
+                <a href="/courses" class="sk-btn small secondary">Browse all courses &rarr;</a>
+            </div>
+        </div>
+
+        <!-- ===== SECONDARY: BROWSE ALL UPLOADED MATERIALS ===== -->
+        <div class="secondary-toggle-row" onclick="toggleSecondary()">
+            <div>
+                <h2>Browse all uploaded materials</h2>
+                <div class="hint">Search across every approved material in your department, outside a specific course</div>
+            </div>
+            <i class="ri-arrow-down-s-line" id="secondaryChevron"></i>
+        </div>
+        <div class="secondary-panel" id="secondaryPanel">
             <div class="search-wrapper">
                 <span class="search-icon"><i class="ri-search-line"></i></span>
                 <input type="text" id="searchInput" placeholder="Search your materials by title, author, or code…">
@@ -248,65 +206,32 @@
             </div>
             <div class="filter-row" id="filterRow">
                 <button class="filter-pill active" data-filter="all">All</button>
-                <button class="filter-pill" data-filter="PAST QUESTIONS">Past Questions</button>
-                <button class="filter-pill" data-filter="TEXTBOOK">Textbooks</button>
-                <button class="filter-pill" data-filter="LECTURE NOTES">Lecture Notes</button>
-                <button class="filter-pill" data-filter="NOTE">Notes</button>
-                <button class="filter-pill" data-filter="STUDY MATERIAL">Study Materials</button>
+                <button class="filter-pill" data-filter="past_question">Past Questions</button>
+                <button class="filter-pill" data-filter="textbook">Textbooks</button>
+                <button class="filter-pill" data-filter="lecture_note">Lecture Notes</button>
+                <button class="filter-pill" data-filter="handout">Handouts</button>
+                <button class="filter-pill" data-filter="course_outline">Outlines</button>
             </div>
-        </div>
 
-        <div class="materials-grid" id="materialsGrid">
-            <div class="empty-state">Loading your materials…</div>
-        </div>
-        <div style="text-align:center; margin-top:20px;">
-            <button class="refresh-google-btn" id="loadMoreBtn" style="display:none; padding:10px 24px; font-size:0.85rem;" onclick="loadMaterials(false)">Load more materials</button>
+            <span class="web-search-toggle" id="webSearchToggle" onclick="toggleWebSearch()">+ Search the web for extra resources (experimental, not curated for your syllabus)</span>
+            <div class="web-search-panel" id="googleStatus">
+                <span class="status-text" id="googleStatusText">Searches OpenStax + the open web for your course codes — results are generic, not school-specific.</span>
+                <button class="refresh-google-btn" id="refreshGoogleBtn" onclick="fetchGoogleMaterials()"><i class="ri-refresh-line"></i> Search</button>
+            </div>
+
+            <div class="materials-grid" id="materialsGrid">
+                <div class="empty-state">Loading materials…</div>
+            </div>
+            <div style="text-align:center; margin-top:20px;">
+                <button class="refresh-google-btn" id="loadMoreBtn" style="display:none; padding:10px 24px; font-size:0.85rem;" onclick="loadMaterials(false)">Load more materials</button>
+            </div>
         </div>
     </div>
 </div>
 
-<button class="fab" id="fabBtn"><i class="ri-add-line"></i></button>
+<button class="fab" id="fabBtn" title="Contribute a material"><i class="ri-add-line"></i></button>
 
-<!-- Upload Modal -->
-<div id="uploadModal" class="modal">
-    <div class="modal-card">
-        <h3><i class="ri-upload-2-line"></i> Share Your PDF</h3>
-        <form id="uploadForm" onsubmit="handleUpload(event)" class="upload-form">
-            <div class="fg"><label>Title *</label><input type="text" id="materialTitle" placeholder="e.g. BCH 201 – Enzyme Kinetics" required></div>
-            <div class="fg"><label>Course *</label>
-                <select id="materialCourse" required>
-                    <option value="">Select Course</option>
-                    <option>Biochemistry</option><option>Mathematics</option><option>Computer Science</option>
-                    <option>Biology</option><option>Chemistry</option><option>Physics</option>
-                    <option>Accounting</option><option>Agriculture</option><option>Business Administration</option>
-                    <option>Information Technology</option><option>Zoology</option>
-                    <option>Science Laboratory Technology</option><option>Entrepreneurship</option>
-                </select>
-            </div>
-            <div class="fg"><label>Level *</label>
-                <select id="materialLevel" required>
-                    <option value="">Select Level</option>
-                    <option value="100">100 Level</option><option value="200">200 Level</option>
-                    <option value="300">300 Level</option><option value="400">400 Level</option>
-                </select>
-            </div>
-            <div class="fg"><label>Semester *</label>
-                <select id="materialSemester" required>
-                    <option value="">Select Semester</option>
-                    <option value="First Semester">First Semester</option>
-                    <option value="Second Semester">Second Semester</option>
-                </select>
-            </div>
-            <div class="fg"><label>Course Code *</label><input type="text" id="materialCode" placeholder="e.g. BCH201" required></div>
-            <div class="fg"><label>Author / Your Name</label><input type="text" id="materialAuthor" value="{{ user.name or '' }}"></div>
-            <div class="fg"><label>Description (optional)</label><textarea id="materialDesc" placeholder="Brief description…"></textarea></div>
-            <div class="fg"><label>PDF File *</label><input type="file" id="materialFile" accept=".pdf" required></div>
-            <div class="upload-progress" id="uploadProgress"><div class="upload-progress-fill" id="uploadProgressFill"></div></div>
-            <button type="submit" class="upload-submit-btn" id="uploadSubmitBtn"><i class="ri-upload-2-line"></i> Upload & share</button>
-            <button type="button" class="modal-cancel" onclick="closeUploadModal()">Cancel</button>
-        </form>
-    </div>
-</div>
+{% include 'components/material_upload_modal.html' %}
 
 <script>
 // ============================================================
@@ -314,28 +239,77 @@
 // ============================================================
 const userDepartment = "{{ user.department or '' }}";
 const userLevel      = "{{ user.level or '' }}";
-const userName       = "{{ user.name or 'Student' }}";
-const userLevelNum   = userLevel.toString().replace(/[^0-9]/g, '') || '100';
-const userSemester   = "{{ user.semester or '' }}";
-const userUniversity = "{{ user.university or '' }}";
+window.currentUserName = {{ (user.name or '')|tojson }};
 
 // ============================================================
-//  BADGE HELPER
+//  MY COURSES -- the primary destination now. Same resolver-backed source as the
+//  dashboard/course pages (services/academic_context.py via /api/user-courses).
 // ============================================================
-function getBadge(title) {
-    const t = title.toLowerCase();
-    if (t.includes('past question') || t.includes('oer') || t.includes('test') || t.includes('exam') || t.includes('multiple choice') || t.includes('mcq')) return { label:'PAST QUESTIONS', color:'#f97316' };
-    if (t.includes('lecture') || t.includes('lesson')) return { label:'LECTURE NOTES', color:'#8b5cf6' };
-    if (t.includes('textbook') || t.includes('vol') || t.includes('edition') || t.includes('introduction to') || t.includes('principles of') || t.includes('fundamentals')) return { label:'TEXTBOOK', color:'#3b82f6' };
-    if (t.includes('note') || t.includes('compilation') || t.includes('summary')) return { label:'NOTE', color:'#6b7280' };
-    return { label:'STUDY MATERIAL', color:'#14b8a6' };
+async function loadMyCourses() {
+    const grid = document.getElementById('coursesGrid');
+    try {
+        const res = await fetch('/api/user-courses');
+        const data = await res.json();
+        const courses = data.courses || [];
+
+        if (!courses.length) {
+            grid.innerHTML = `
+                <div class="empty-state">
+                    ${userDepartment
+                        ? `Nelavista doesn't have ${userDepartment}${userLevel ? ' ' + userLevel + ' Level' : ''} courses mapped yet. Browse uploaded materials below, or check back as more course data is added.`
+                        : 'Complete your academic profile so Nelavista can show your real courses.'}
+                </div>`;
+            return;
+        }
+
+        grid.innerHTML = courses.map(c => `
+            <a class="course-card" href="${c.link}">
+                <div class="course-code">${c.code}</div>
+                <div class="course-name">${c.title || c.name}</div>
+                <div class="course-meta-row">
+                    <span>${c.topic_count} topic${c.topic_count === 1 ? '' : 's'}</span>
+                    <span class="sk-badge">${c.type}</span>
+                </div>
+                <div class="course-progress-bar"><div class="course-progress-fill" style="width:${c.progress}%;"></div></div>
+            </a>
+        `).join('');
+
+        // Populate the secondary section's course filter from the same list.
+        const select = document.getElementById('courseFilterSelect');
+        courses.forEach(c => {
+            const opt = document.createElement('option');
+            opt.value = c.code;
+            opt.textContent = c.name;
+            select.appendChild(opt);
+        });
+        myCourses = courses;
+    } catch (e) {
+        grid.innerHTML = `<div class="empty-state">Couldn't load your courses right now.</div>`;
+    }
 }
 
+function toggleSecondary() {
+    const panel = document.getElementById('secondaryPanel');
+    const chevron = document.getElementById('secondaryChevron');
+    const opening = !panel.classList.contains('show');
+    panel.classList.toggle('show');
+    chevron.style.transform = opening ? 'rotate(180deg)' : 'rotate(0deg)';
+    if (opening && !materialsLoadedOnce) { materialsLoadedOnce = true; loadMaterials(true); }
+}
+
+function toggleWebSearch() {
+    document.getElementById('googleStatus').classList.toggle('show');
+}
+
+// ============================================================
+//  SOURCE BADGE (material type badges now come straight from the server's
+//  Material.type_label -- see models.py -- not a client-side title-keyword guess)
+// ============================================================
 function getSourceBadge(source) {
     const badges = {
         'static': { label:'ARCHIVED', class:'static' },
         'uploaded': { label:'UPLOADED', class:'uploaded' },
-        'google_auto': { label:'WEB SOURCE', class:'web' },
+        'google_auto': { label:'WEB', class:'web' },
         'openstax': { label:'OPENSTAX', class:'web' }
     };
     return badges[source] || { label:'ARCHIVED', class:'static' };
@@ -353,44 +327,12 @@ let currentViewingMaterial = null;
 let myCourses = [];
 let loadedMaterialsById = {};
 let searchDebounceTimer = null;
+let materialsLoadedOnce = false;
 
 // ============================================================
-//  MY COURSES -- same resolver-backed source as the dashboard/course pages
-//  (services/academic_context.py via /api/user-courses), not a separate
-//  hardcoded curriculum. Populates the course filter dropdown.
-// ============================================================
-async function loadMyCourses() {
-    try {
-        const res = await fetch('/api/user-courses');
-        const data = await res.json();
-        myCourses = data.courses || [];
-        const select = document.getElementById('courseFilterSelect');
-        myCourses.forEach(c => {
-            const opt = document.createElement('option');
-            opt.value = c.code;
-            opt.textContent = c.name;
-            select.appendChild(opt);
-        });
-        if (!myCourses.length) {
-            document.getElementById('heroSub').textContent = userDepartment
-                ? `We don't have ${userDepartment} ${userLevel} Level courses mapped yet — showing materials tagged for your department instead.`
-                : 'Complete your academic profile to see materials matched to your courses.';
-        }
-    } catch (e) {
-        console.error('Failed to load courses', e);
-    }
-}
-
-function courseTitleFor(code) {
-    const c = myCourses.find(c => c.code === code);
-    return c ? c.name.replace(code + ' — ', '') : null;
-}
-
-// ============================================================
-//  GOOGLE / WEB DISCOVERY -- unchanged backend, but now re-loads the real
-//  paginated library afterward instead of merging a second, separate array;
-//  fetch-google-materials-batch already writes results into the Material
-//  table, so refreshing the normal query is all that's needed to show them.
+//  GOOGLE / WEB DISCOVERY -- de-emphasized, honestly labeled secondary tool. Backend
+//  unchanged (routes/google_search_routes.py); results still land in the real Material
+//  table so refreshing the normal query is all that's needed to show them.
 // ============================================================
 async function fetchGoogleMaterials() {
     const codes = currentCourseFilter ? [currentCourseFilter] : myCourses.map(c => c.code).slice(0, 5);
@@ -398,65 +340,36 @@ async function fetchGoogleMaterials() {
         updateGoogleStatus('No courses to search for yet', 'idle');
         return;
     }
-
-    updateGoogleStatus('Searching web for materials...', 'loading');
+    updateGoogleStatus('Searching…', 'loading');
     document.getElementById('refreshGoogleBtn').disabled = true;
-
     try {
         const response = await fetch('/api/fetch-google-materials-batch', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                course_codes: codes,
-                department: userDepartment,
-                level: userLevelNum,
-                semester: userSemester
-            })
+            body: JSON.stringify({ course_codes: codes, department: userDepartment, level: userLevel.toString().replace(/[^0-9]/g, '') || '100', semester: '' })
         });
         const data = await response.json();
-
         if (data.success && (data.materials || []).length) {
-            updateGoogleStatus(`Found ${data.materials.length} materials`, 'success');
+            updateGoogleStatus(`Found ${data.materials.length} extra resources`, 'success');
             await loadMaterials(true);
         } else if (data.search_unavailable) {
             updateGoogleStatus('Web search is temporarily down', 'error');
         } else {
-            updateGoogleStatus('No new materials found for these courses', 'idle');
+            updateGoogleStatus('No extra resources found for these courses', 'idle');
         }
     } catch (error) {
-        console.error('Google fetch error:', error);
         updateGoogleStatus('Search unavailable', 'error');
     } finally {
         document.getElementById('refreshGoogleBtn').disabled = false;
     }
 }
 
-function updateGoogleStatus(text, status) {
-    const statusEl = document.getElementById('googleStatus');
-    const textEl = document.getElementById('googleStatusText');
-    const iconEl = statusEl.querySelector('.status-icon');
-
-    statusEl.className = 'google-status';
-    if (status === 'loading') {
-        statusEl.classList.add('loading');
-        iconEl.innerHTML = '<span class="loading-spinner"></span>';
-    } else if (status === 'success') {
-        statusEl.classList.add('success');
-        iconEl.innerHTML = '<i class="ri-checkbox-circle-line"></i>';
-    } else if (status === 'error') {
-        iconEl.innerHTML = '<i class="ri-error-warning-line"></i>';
-    } else {
-        iconEl.innerHTML = '<i class="ri-global-line"></i>';
-    }
-
-    textEl.textContent = text;
+function updateGoogleStatus(text) {
+    document.getElementById('googleStatusText').textContent = text;
 }
 
 // ============================================================
-//  MATERIALS -- the one real, database-backed, paginated source. No client-
-//  side merging of static/uploaded/google arrays anymore: everything a
-//  student sees here is a real Material row scoped server-side to their own
-//  department/level (routes/materials_routes.py::fetch_materials).
+//  MATERIALS -- the real, database-backed, paginated secondary browse list.
 // ============================================================
 async function loadMaterials(reset) {
     const grid = document.getElementById('materialsGrid');
@@ -464,7 +377,7 @@ async function loadMaterials(reset) {
 
     if (reset) {
         currentPage = 1;
-        grid.innerHTML = `<div class="empty-state">Loading your materials…</div>`;
+        grid.innerHTML = `<div class="empty-state">Loading materials…</div>`;
     } else {
         currentPage += 1;
     }
@@ -493,32 +406,21 @@ async function loadMaterials(reset) {
             grid.insertAdjacentHTML('beforeend', items.map(renderMaterialCard).join(''));
         }
     } catch (e) {
-        console.error('Failed to load materials', e);
         if (reset) grid.innerHTML = `<div class="empty-state">Couldn't load materials right now. Please try again.</div>`;
     }
 }
 
 function emptyStateMessage() {
-    if (currentCourseFilter) {
-        return `No materials have been added for ${currentCourseFilter} yet. <a href="#" style="color:var(--sk-accent);" onclick="event.preventDefault(); openUploadModal();">Upload one →</a>`;
-    }
-    if (searchQuery.trim()) {
-        return `No materials matched "${searchQuery}" in your library. Try <a href="/search" style="color:var(--sk-accent);">searching all of Academia →</a>`;
-    }
-    if (currentFilter !== 'all') {
-        return `No "${currentFilter.toLowerCase()}" materials for your courses yet.`;
-    }
+    if (currentCourseFilter) return `No materials have been added for ${currentCourseFilter} yet. <a href="#" style="color:var(--sk-accent);" onclick="event.preventDefault(); openUploadModal();">Upload one →</a>`;
+    if (searchQuery.trim()) return `No materials matched "${searchQuery}" in your library. Try <a href="/search" style="color:var(--sk-accent);">searching all of Academia →</a>`;
+    if (currentFilter !== 'all') return `No materials of that type for your courses yet.`;
     return `No materials for your courses yet. <a href="#" style="color:var(--sk-accent);" onclick="event.preventDefault(); openUploadModal();">Upload the first one →</a>`;
 }
 
-// ============================================================
-//  RENDER CARD
-// ============================================================
 function renderMaterialCard(m) {
-    const badge = getBadge(m.title || '');
     const sourceBadge = getSourceBadge(m.source);
-    const icon = badge.label === 'PAST QUESTIONS' ? 'ri-file-list-3-line' : (badge.label === 'TEXTBOOK' ? 'ri-book-2-line' : (badge.label === 'LECTURE NOTES' ? 'ri-quill-pen-line' : 'ri-file-text-line'));
-    const courseTitle = m.course_code ? courseTitleFor(m.course_code) : null;
+    const label = m.type_label || 'STUDY MATERIAL';
+    const icon = label === 'PAST QUESTIONS' ? 'ri-file-list-3-line' : (label === 'TEXTBOOK' ? 'ri-book-2-line' : (label === 'LECTURE NOTES' ? 'ri-quill-pen-line' : 'ri-file-text-line'));
     const dateStr = m.created_at ? new Date(m.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : '';
 
     return `
@@ -527,14 +429,14 @@ function renderMaterialCard(m) {
                 <span class="material-icon"><i class="${icon}"></i></span>
                 <div class="material-title">${m.title || 'Untitled Material'}</div>
             </div>
-            <div class="dept-tag">${m.course_code || m.department}${courseTitle ? ' — ' + courseTitle : ''}</div>
+            <div class="dept-tag">${m.course_code || m.department}</div>
             ${m.description ? `<div class="card-desc">${m.description}</div>` : ''}
             <div class="meta-row">
                 <span><i class="ri-file-pdf-2-line"></i> PDF</span>
                 <span class="card-date">${dateStr}</span>
             </div>
             <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
-                <span class="badge" style="background:color-mix(in srgb, ${badge.color} 15%, transparent); color:${badge.color}; border:1px solid color-mix(in srgb, ${badge.color} 30%, transparent);">${badge.label}</span>
+                <span class="badge" style="background:rgba(88,166,255,0.12); color:var(--sk-accent); border:1px solid rgba(88,166,255,0.3);">${label}</span>
                 <span class="source-badge ${sourceBadge.class}">${sourceBadge.label}</span>
             </div>
             <div class="ai-actions-row" onclick="event.stopPropagation();">
@@ -554,9 +456,7 @@ function renderMaterialCard(m) {
 }
 
 // ============================================================
-//  AI ACTIONS -- reuses the exact same /api/materials/<id>/ai-action
-//  endpoint the course page uses (routes/ai_routes.py). No second AI
-//  implementation: same retrieval, same honest-failure behavior.
+//  AI ACTIONS -- reuses /api/materials/<id>/ai-action (routes/ai_routes.py).
 // ============================================================
 async function askAboutCard(materialId, mode, btn) {
     const box = document.getElementById(`card-ai-result-${materialId}`);
@@ -567,9 +467,7 @@ async function askAboutCard(materialId, mode, btn) {
     box.textContent = 'Nelavista is reading this material…';
     try {
         const res = await fetch(`/api/materials/${materialId}/ai-action`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ mode })
+            method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ mode })
         });
         const data = await res.json();
         box.innerHTML = data.answer;
@@ -581,18 +479,13 @@ async function askAboutCard(materialId, mode, btn) {
 }
 
 async function askAboutCurrentMaterial(mode) {
-    if (!currentViewingMaterial || !currentViewingMaterial.id) {
-        alert("AI actions aren't available for this item yet.");
-        return;
-    }
+    if (!currentViewingMaterial || !currentViewingMaterial.id) { alert("AI actions aren't available for this item yet."); return; }
     const box = document.getElementById('viewerAiResult');
     box.classList.add('show');
     box.textContent = 'Nelavista is reading this material…';
     try {
         const res = await fetch(`/api/materials/${currentViewingMaterial.id}/ai-action`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ mode })
+            method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ mode })
         });
         const data = await res.json();
         box.innerHTML = data.answer;
@@ -602,8 +495,7 @@ async function askAboutCurrentMaterial(mode) {
 }
 
 // ============================================================
-//  PDF VIEWER (reader) -- opens by id looked up from the last-rendered page,
-//  so no material data has to round-trip through an HTML attribute.
+//  PDF VIEWER
 // ============================================================
 function openMaterialById(id) {
     const material = loadedMaterialsById[id];
@@ -613,143 +505,51 @@ function openMaterialById(id) {
 function openMaterial(material) {
     const link = material.file_url || material.external_url;
     if (!link) return alert('File not available.');
-
-    // Every material in the DB has already been verified embeddable (checked
-    // for X-Frame-Options/CSP frame-ancestors headers before being stored --
-    // see the cleanup that removed ones that would show "This content is
-    // blocked. Contact the site owner to fix the issue."), so everything
-    // routes through the in-app iframe viewer below rather than a new tab.
     currentViewingMaterial = material;
+    if (material.id) fetch(`/api/materials/${material.id}/view`, { method: 'POST' }).catch(() => {});
 
-    // Real per-student view tracking -- same MaterialView system the
-    // dashboard's Continue Studying / Recent Materials and the course page's
-    // progress section already read from (services/progress_service.py).
-    if (material.id) {
-        fetch(`/api/materials/${material.id}/view`, { method: 'POST' }).catch(() => {});
-    }
-
-    // Reset iframe, loader, and any previous AI answer
     const iframe = document.getElementById('pdfViewerFrame');
     const loader = document.getElementById('pdfLoader');
     const aiResult = document.getElementById('viewerAiResult');
-
-    iframe.classList.remove('loaded');
-    loader.classList.remove('hidden');
-    iframe.src = '';
-    aiResult.classList.remove('show');
-    aiResult.textContent = '';
-
+    iframe.classList.remove('loaded'); loader.classList.remove('hidden'); iframe.src = '';
+    aiResult.classList.remove('show'); aiResult.textContent = '';
     document.getElementById('viewerTitle').textContent = material.title || 'Document';
-
     const sourceBadge = getSourceBadge(material.source);
-    document.getElementById('viewerSourceBadge').innerHTML = `
-        <span class="source-badge ${sourceBadge.class}">${sourceBadge.label}</span>
-        <span style="color:var(--text-muted);">${material.course_code || ''}</span>
-    `;
-
+    document.getElementById('viewerSourceBadge').innerHTML = `<span class="source-badge ${sourceBadge.class}">${sourceBadge.label}</span><span style="color:var(--text-muted);">${material.course_code || ''}</span>`;
     document.getElementById('pdfViewerModal').classList.add('show');
-
     setTimeout(() => {
         iframe.src = link;
-        iframe.onload = () => {
-            setTimeout(() => {
-                loader.classList.add('hidden');
-                iframe.classList.add('loaded');
-            }, 300);
-        };
-        setTimeout(() => {
-            if (!iframe.classList.contains('loaded')) {
-                loader.classList.add('hidden');
-                iframe.classList.add('loaded');
-            }
-        }, 5000);
+        iframe.onload = () => { setTimeout(() => { loader.classList.add('hidden'); iframe.classList.add('loaded'); }, 300); };
+        setTimeout(() => { if (!iframe.classList.contains('loaded')) { loader.classList.add('hidden'); iframe.classList.add('loaded'); } }, 5000);
     }, 100);
 }
 
 function closePdfViewer() {
     document.getElementById('pdfViewerModal').classList.remove('show');
     const iframe = document.getElementById('pdfViewerFrame');
-    iframe.src = '';
-    iframe.classList.remove('loaded');
+    iframe.src = ''; iframe.classList.remove('loaded');
     document.getElementById('pdfLoader').classList.remove('hidden');
     currentViewingMaterial = null;
 }
 
 function downloadCurrentMaterial() {
-    if (currentViewingMaterial) {
-        downloadMaterial(currentViewingMaterial.file_url || currentViewingMaterial.external_url, currentViewingMaterial.title);
-    }
+    if (currentViewingMaterial) downloadMaterial(currentViewingMaterial.file_url || currentViewingMaterial.external_url, currentViewingMaterial.title);
 }
-
 function downloadMaterialById(id) {
     const m = loadedMaterialsById[id];
     if (m) downloadMaterial(m.file_url || m.external_url, m.title);
 }
-
 function downloadMaterial(link, title) {
     if (!link) return alert('File not available.');
     const a = document.createElement('a');
-    a.href = link;
-    a.download = (title || 'document').replace(/[^a-z0-9]/gi, '_') + '.pdf';
-    a.target = '_blank';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+    a.href = link; a.download = (title || 'document').replace(/[^a-z0-9]/gi, '_') + '.pdf'; a.target = '_blank';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
 }
 
-// ============================================================
-//  UPLOAD MODAL
-// ============================================================
-function openUploadModal() { document.getElementById('uploadModal').classList.add('show'); }
-function closeUploadModal() { document.getElementById('uploadModal').classList.remove('show'); }
-
-async function handleUpload(e) {
-    e.preventDefault();
-    const btn = document.getElementById('uploadSubmitBtn');
-    btn.disabled = true;
-    btn.textContent = 'Uploading…';
-    const progressDiv = document.getElementById('uploadProgress');
-    const progressFill = document.getElementById('uploadProgressFill');
-    progressDiv.style.display = 'block';
-
-    const formData = new FormData();
-    formData.append('file',        document.getElementById('materialFile').files[0]);
-    formData.append('title',       document.getElementById('materialTitle').value);
-    formData.append('course',      document.getElementById('materialCourse').value);
-    formData.append('level',       document.getElementById('materialLevel').value);
-    formData.append('semester',    document.getElementById('materialSemester').value);
-    formData.append('course_code', document.getElementById('materialCode').value);
-    formData.append('author',      document.getElementById('materialAuthor').value);
-    formData.append('description', document.getElementById('materialDesc').value);
-
-    try {
-        let pct = 0;
-        const interval = setInterval(() => { pct = Math.min(pct + 15, 85); progressFill.style.width = pct + '%'; }, 300);
-
-        const res = await fetch('/api/upload-material', { method: 'POST', body: formData });
-        clearInterval(interval);
-        progressFill.style.width = '100%';
-        const data = await res.json();
-
-        if (data.success) {
-            closeUploadModal();
-            document.getElementById('uploadForm').reset();
-            await loadMaterials(true);
-        } else {
-            alert('Upload failed: ' + (data.error || 'Unknown error'));
-        }
-    } catch (err) {
-        alert('Upload error: ' + err.message);
-    } finally {
-        btn.disabled = false;
-        btn.innerHTML = '<i class="ri-upload-2-line"></i> Upload & share';
-        progressDiv.style.display = 'none';
-        progressFill.style.width = '0%';
-    }
-}
-
-window.handleUpload = handleUpload;
-window.closeUploadModal = closeUploadModal;
+window.onMaterialUploaded = function () {
+    alert('Uploaded! Track its review status on My Uploads.');
+    if (materialsLoadedOnce) loadMaterials(true);
+};
 window.closePdfViewer = closePdfViewer;
 window.downloadCurrentMaterial = downloadCurrentMaterial;
 window.fetchGoogleMaterials = fetchGoogleMaterials;
@@ -757,28 +557,24 @@ window.openMaterialById = openMaterialById;
 window.downloadMaterialById = downloadMaterialById;
 window.askAboutCard = askAboutCard;
 window.askAboutCurrentMaterial = askAboutCurrentMaterial;
-window.openUploadModal = openUploadModal;
 window.loadMaterials = loadMaterials;
 
 // ============================================================
-//  INIT -- no onboarding gate: a student's real courses/materials are
-//  already known from their profile, so the library loads directly.
+//  INIT -- courses load immediately (primary); the flat materials browse only loads
+//  once a student actually opens the secondary section, so it's never wasted work.
 // ============================================================
 (async function init() {
     await loadMyCourses();
-    await loadMaterials(true);
 
     document.getElementById('searchInput').addEventListener('input', e => {
         searchQuery = e.target.value;
         clearTimeout(searchDebounceTimer);
         searchDebounceTimer = setTimeout(() => loadMaterials(true), 350);
     });
-
     document.getElementById('courseFilterSelect').addEventListener('change', e => {
         currentCourseFilter = e.target.value;
         loadMaterials(true);
     });
-
     document.querySelectorAll('.filter-pill').forEach(btn => {
         btn.addEventListener('click', () => {
             document.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
@@ -787,12 +583,8 @@ window.loadMaterials = loadMaterials;
             loadMaterials(true);
         });
     });
-
     document.getElementById('fabBtn').onclick = () => openUploadModal();
-
-    document.addEventListener('keydown', e => {
-        if (e.key === 'Escape') closePdfViewer();
-    });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closePdfViewer(); });
 })();
 </script>
 {% include 'components/academia_footer.html' %}

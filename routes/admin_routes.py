@@ -252,8 +252,13 @@ def admin_materials():
     username = session['user']['username']
     user = User.query.filter_by(username=username).first()
 
-    # Get all pending materials
-    pending = Material.query.filter_by(is_approved=False).order_by(Material.id.desc()).all()
+    # Pending = never actioned yet. A rejected-with-reason row is also is_approved=False
+    # but must NOT keep reappearing in this queue -- rejection_reason IS NULL is what
+    # actually distinguishes "needs a decision" from "already decided, rejected".
+    pending = (
+        Material.query.filter_by(is_approved=False, rejection_reason=None)
+        .order_by(Material.id.desc()).all()
+    )
 
     return render_template('admin_materials.html', pending=pending, user=user, active_page='materials')
 
@@ -267,6 +272,7 @@ def approve_material(material_id):
         return jsonify({'error': 'Material not found'}), 404
 
     material.is_approved = True
+    material.rejection_reason = None  # clears a prior rejection if this was re-reviewed
     db.session.commit()
 
     return jsonify({'success': True, 'message': 'Material approved'})
@@ -295,19 +301,50 @@ def edit_material(material_id):
             if field == 'course_code':
                 value = value.upper()
             setattr(material, field, value or None)
+    if 'material_type' in request.form:
+        value = request.form['material_type'].strip()
+        if not value or value in Material.MATERIAL_TYPE_LABELS:
+            material.material_type = value or None
     db.session.commit()
     return jsonify({'success': True, 'material': material.to_dict()})
 
 
-@admin_bp.route('/admin/materials/reject/<int:material_id>', methods=['DELETE'])
+@admin_bp.route('/admin/materials/reject/<int:material_id>', methods=['POST'])
 @login_required
 @admin_required
 def reject_material(material_id):
+    """Rejects with a reason, WITHOUT deleting the row or its Cloudinary file --
+    Academia Materials audit P1-6 found students had zero visibility into what
+    happened to their upload after submitting it. A rejected row now stays queryable
+    on the uploader's own /my-uploads page (see routes/materials_routes.py::my_uploads)
+    showing exactly why. Genuinely removing spam/abuse is a separate, explicitly
+    destructive action -- see delete_material_permanently below."""
     material = Material.query.get(material_id)
     if not material:
         return jsonify({'error': 'Material not found'}), 404
 
-    # Delete from Cloudinary if needed
+    reason = (request.get_json(silent=True) or {}).get('reason', '').strip() or (request.form.get('reason') or '').strip()
+    if not reason:
+        return jsonify({'error': 'A rejection reason is required'}), 400
+
+    material.is_approved = False
+    material.rejection_reason = reason[:300]
+    db.session.commit()
+
+    return jsonify({'success': True, 'message': 'Material rejected'})
+
+
+@admin_bp.route('/admin/materials/<int:material_id>/delete-permanently', methods=['DELETE'])
+@login_required
+@admin_required
+def delete_material_permanently(material_id):
+    """The genuinely destructive action (removes the DB row and its Cloudinary file) --
+    for spam/abuse, not for ordinary rejection. Ordinary 'this isn't quite right' goes
+    through reject_material above instead, which keeps the row and tells the uploader why."""
+    material = Material.query.get(material_id)
+    if not material:
+        return jsonify({'error': 'Material not found'}), 404
+
     if material.file_url and material.source == 'uploaded':
         try:
             parts = material.file_url.split('/upload/')
@@ -324,7 +361,7 @@ def reject_material(material_id):
     db.session.delete(material)
     db.session.commit()
 
-    return jsonify({'success': True, 'message': 'Material rejected and deleted'})
+    return jsonify({'success': True, 'message': 'Material permanently deleted'})
 
 
 @admin_bp.route('/debug/check-admin')

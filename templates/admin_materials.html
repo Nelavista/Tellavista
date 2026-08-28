@@ -9,17 +9,19 @@
         body { background:#0d1117; color:#e6edf3; padding:20px; }
         .container { max-width:1200px; margin:0 auto; }
         h1 { font-size:1.8rem; margin-bottom:20px; }
-        .back-btn { background:#21262d; border:1px solid #30363d; color:#8b949e; padding:8px 16px; border-radius:8px; text-decoration:none; display:inline-block; margin-bottom:20px; }
-        .back-btn:hover { border-color:#58a6ff; color:#58a6ff; }
         .material-card { background:#161b22; border:1px solid #21262d; border-radius:12px; padding:20px; margin-bottom:16px; }
         .material-title { font-size:1.1rem; font-weight:600; margin-bottom:10px; }
         .material-meta { font-size:0.85rem; color:#8b949e; margin-bottom:12px; }
         .material-meta span { margin-right:16px; }
-        .actions { display:flex; gap:10px; }
+        .material-meta .taxonomy-ok { color:#22c55e; }
+        .material-meta .taxonomy-missing { color:#f59e0b; }
+        .actions { display:flex; gap:10px; flex-wrap:wrap; }
         .approve-btn { background:#22c55e; border:none; padding:10px 20px; border-radius:8px; color:#fff; font-weight:600; cursor:pointer; }
         .approve-btn:hover { background:#16a34a; }
         .reject-btn { background:#ef4444; border:none; padding:10px 20px; border-radius:8px; color:#fff; font-weight:600; cursor:pointer; }
         .reject-btn:hover { background:#dc2626; }
+        .delete-btn { background:transparent; border:1px solid #ef4444; color:#ef4444; padding:10px 20px; border-radius:8px; font-weight:600; cursor:pointer; }
+        .delete-btn:hover { background:#ef4444; color:#fff; }
         .view-btn { background:#3b82f6; border:none; padding:10px 20px; border-radius:8px; color:#fff; font-weight:600; cursor:pointer; text-decoration:none; display:inline-block; }
         .view-btn:hover { background:#2563eb; }
         .empty { text-align:center; padding:60px 20px; color:#6e7681; }
@@ -27,7 +29,7 @@
         .edit-btn:hover { border-color:#58a6ff; color:#58a6ff; }
         .edit-form { display:none; gap:8px; flex-wrap:wrap; margin-top:14px; padding-top:14px; border-top:1px solid #21262d; }
         .edit-form.open { display:flex; }
-        .edit-form input { background:#0d1117; border:1px solid #30363d; color:#e6edf3; padding:8px 10px; border-radius:6px; font-size:0.85rem; }
+        .edit-form input, .edit-form select { background:#0d1117; border:1px solid #30363d; color:#e6edf3; padding:8px 10px; border-radius:6px; font-size:0.85rem; }
         .edit-form .save-btn { background:#3b82f6; border:none; color:#fff; padding:8px 16px; border-radius:6px; font-weight:600; cursor:pointer; }
     </style>
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -36,34 +38,34 @@
 <body>
 {% include 'components/admin_nav.html' %}
     <div class="container">
-        <h1>📋 Pending Materials ({{ pending|length }})</h1>
-        
+        <h1>Pending Materials ({{ pending|length }})</h1>
+
         {% if not pending %}
-        <div class="empty">
-            <div style="font-size:3rem; margin-bottom:10px;">✨</div>
-            <div>No pending materials to review</div>
-        </div>
+        <div class="empty">No pending materials to review</div>
         {% else %}
-        
+
         {% for material in pending %}
         <div class="material-card" id="material-{{ material.id }}">
             <div class="material-title">{{ material.title }}</div>
             <div class="material-meta">
-                <span>📚 {{ material.department }}</span>
-                <span>📊 {{ material.level }} Level</span>
-                <span>📅 {{ material.semester }}</span>
-                <span>🔖 {{ material.course_type }}</span>
-                <span>🏫 {{ material.university or 'Universal (any school)' }}</span>
-                <span>👤 {{ material.uploaded_by }}</span>
+                <span>{{ material.department }}</span>
+                <span>{{ material.level }} Level</span>
+                <span>{{ material.course_code or 'No course code' }}</span>
+                <span>{{ material.material_type or 'Uncategorized' }}</span>
+                <span>{{ material.university or 'Universal (any school)' }}</span>
+                <span>{{ material.uploaded_by }}{% if material.author and material.author != material.uploaded_by %} ({{ material.author }}){% endif %}</span>
+                {% if material.course_id %}<span class="taxonomy-ok">Linked to course #{{ material.course_id }}{% if material.topic_id %} / topic #{{ material.topic_id }}{% endif %}</span>
+                {% else %}<span class="taxonomy-missing">Not linked to a taxonomy course</span>{% endif %}
             </div>
-            {% if material.next_topic %}
-            <div style="font-size:0.85rem; color:#8b949e; margin-bottom:12px;">{{ material.next_topic }}</div>
+            {% if material.description %}
+            <div style="font-size:0.85rem; color:#8b949e; margin-bottom:12px;">{{ material.description }}</div>
             {% endif %}
             <div class="actions">
-                <a href="{{ material.file_url }}" target="_blank" class="view-btn">👁️ View PDF</a>
-                <button class="approve-btn" onclick="approveMaterial({{ material.id }})">✅ Approve</button>
-                <button class="edit-btn" onclick="toggleEdit({{ material.id }})">✏️ Edit</button>
-                <button class="reject-btn" onclick="rejectMaterial({{ material.id }})">❌ Reject & Delete</button>
+                <a href="{{ material.resolved_url }}" target="_blank" class="view-btn">View PDF</a>
+                <button class="approve-btn" onclick="approveMaterial({{ material.id }})">Approve</button>
+                <button class="edit-btn" onclick="toggleEdit({{ material.id }})">Edit</button>
+                <button class="reject-btn" onclick="rejectMaterial({{ material.id }})">Reject (with reason)</button>
+                <button class="delete-btn" onclick="deletePermanently({{ material.id }})">Delete permanently</button>
             </div>
             <div class="edit-form" id="edit-form-{{ material.id }}">
                 <input name="title" placeholder="Title" value="{{ material.title }}" style="flex:1; min-width:200px;">
@@ -71,12 +73,17 @@
                 <input name="level" placeholder="Level" value="{{ material.level }}" style="width:70px;">
                 <input name="semester" placeholder="Semester" value="{{ material.semester }}" style="width:130px;">
                 <input name="course_code" placeholder="Course code" value="{{ material.course_code or '' }}" style="width:110px;">
-                <input name="course_type" placeholder="Type" value="{{ material.course_type or '' }}" style="width:90px;">
+                <select name="material_type" style="width:150px;">
+                    <option value="">Uncategorized</option>
+                    {% for key, label in material.MATERIAL_TYPE_LABELS.items() %}
+                    <option value="{{ key }}" {{ 'selected' if material.material_type == key else '' }}>{{ label }}</option>
+                    {% endfor %}
+                </select>
                 <button class="save-btn" onclick="saveMaterial({{ material.id }})">Save</button>
             </div>
         </div>
         {% endfor %}
-        
+
         {% endif %}
     </div>
 
@@ -88,10 +95,6 @@
                 const data = await res.json();
                 if (data.success) {
                     document.getElementById(`material-${id}`).remove();
-                    alert('Material approved!');
-                    if (document.querySelectorAll('.material-card').length === 0) {
-                        location.reload();
-                    }
                 } else {
                     alert('Error: ' + data.error);
                 }
@@ -107,12 +110,11 @@
         async function saveMaterial(id) {
             const form = document.getElementById(`edit-form-${id}`);
             const fd = new FormData();
-            form.querySelectorAll('input').forEach(inp => fd.append(inp.name, inp.value));
+            form.querySelectorAll('input, select').forEach(inp => fd.append(inp.name, inp.value));
             try {
                 const res = await fetch(`/admin/materials/${id}/edit`, { method: 'POST', body: fd });
                 const data = await res.json();
                 if (data.success) {
-                    alert('Saved!');
                     location.reload();
                 } else {
                     alert('Error: ' + data.error);
@@ -123,16 +125,32 @@
         }
 
         async function rejectMaterial(id) {
-            if (!confirm('Reject and DELETE this material permanently? This cannot be undone.')) return;
+            const reason = prompt('Reason for rejecting this material (the student will see this on My Uploads):');
+            if (reason === null) return;
+            if (!reason.trim()) { alert('A reason is required.'); return; }
             try {
-                const res = await fetch(`/admin/materials/reject/${id}`, { method: 'DELETE' });
+                const res = await fetch(`/admin/materials/reject/${id}`, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ reason: reason.trim() }),
+                });
                 const data = await res.json();
                 if (data.success) {
                     document.getElementById(`material-${id}`).remove();
-                    alert('Material rejected and deleted');
-                    if (document.querySelectorAll('.material-card').length === 0) {
-                        location.reload();
-                    }
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            } catch(e) {
+                alert('Error: ' + e.message);
+            }
+        }
+
+        async function deletePermanently(id) {
+            if (!confirm('Permanently delete this material and its file? This cannot be undone and is meant for spam/abuse, not ordinary rejection.')) return;
+            try {
+                const res = await fetch(`/admin/materials/${id}/delete-permanently`, { method: 'DELETE' });
+                const data = await res.json();
+                if (data.success) {
+                    document.getElementById(`material-${id}`).remove();
                 } else {
                     alert('Error: ' + data.error);
                 }

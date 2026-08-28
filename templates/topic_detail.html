@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ topic.title }} — {{ course.code }} — Nelavista</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/skills.css') }}">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
+    <style>
+        .tp-container { max-width: 820px; margin: 0 auto; padding: 0 20px 60px; }
+        .tp-top-bar { display: flex; align-items: center; justify-content: space-between; padding: 16px 0; border-bottom: 1px solid var(--sk-border); margin-bottom: 20px; }
+        .tp-logo { font-size: 1.2rem; font-weight: 700; background: linear-gradient(135deg, #e5e7eb, #3b82f6); -webkit-background-clip: text; background-clip: text; color: transparent; text-decoration: none; }
+        .tp-back { color: var(--sk-text-dim); text-decoration: none; font-size: 0.85rem; }
+        .tp-breadcrumb { font-size: 0.8rem; color: var(--sk-text-dim); margin-bottom: 8px; }
+        .tp-title { font-size: 1.6rem; font-weight: 800; margin-bottom: 4px; }
+        .tp-course-sub { font-size: 0.9rem; color: var(--sk-text-dim); margin-bottom: 18px; }
+        .tp-draft-badge { display:inline-block; font-size: 0.68rem; font-weight: 700; color: #f59e0b; background: rgba(245,158,11,0.12); border: 1px solid rgba(245,158,11,0.3); padding: 3px 10px; border-radius: 20px; margin-bottom: 14px; }
+
+        .tp-topic-nav { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 26px; scrollbar-width: none; }
+        .tp-topic-nav::-webkit-scrollbar { display: none; }
+        .tp-topic-chip { flex-shrink: 0; background: var(--sk-card); border: 1px solid var(--sk-border); border-radius: 20px; padding: 6px 14px; font-size: 0.78rem; text-decoration: none; color: var(--sk-text-dim); white-space: nowrap; }
+        .tp-topic-chip.current { background: var(--sk-accent); color: #fff; border-color: var(--sk-accent); font-weight: 600; }
+
+        .tp-section { margin-bottom: 30px; }
+        .tp-section-title { font-size: 0.95rem; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+        .tp-explanation { background: var(--sk-card); border: 1px solid var(--sk-border); border-radius: var(--sk-radius-sm); padding: 18px 20px; font-size: 0.92rem; line-height: 1.7; }
+        .tp-explanation h3 { font-size: 1rem; margin: 14px 0 8px; }
+        .tp-explanation h3:first-child { margin-top: 0; }
+        .tp-explanation p { margin-bottom: 10px; }
+        .tp-explanation ul, .tp-explanation ol { margin: 8px 0 10px 22px; }
+        .tp-explanation li { margin-bottom: 4px; }
+
+        .tp-video-wrap { position: relative; width: 100%; padding-top: 56.25%; border-radius: var(--sk-radius-sm); overflow: hidden; background: var(--sk-card); border: 1px solid var(--sk-border); }
+        .tp-video-wrap iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: none; }
+
+        .tp-material-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; background: var(--sk-card); border: 1px solid var(--sk-border); border-radius: var(--sk-radius-sm); padding: 14px 16px; margin-bottom: 8px; }
+        .tp-material-title { font-weight: 600; font-size: 0.9rem; }
+        .tp-material-meta { font-size: 0.75rem; color: var(--sk-text-dim); margin-top: 2px; }
+
+        .tp-contribute-box { background: var(--sk-card); border: 1px dashed var(--sk-border); border-radius: var(--sk-radius-sm); padding: 18px 20px; text-align: center; }
+        .tp-contribute-box p { font-size: 0.85rem; color: var(--sk-text-dim); margin-bottom: 12px; }
+
+        .tp-ai-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+        .tp-ai-btn { background: none; border: 1px solid var(--sk-border); color: var(--sk-accent); padding: 7px 12px; border-radius: 20px; font-size: 0.78rem; cursor: pointer; }
+        .tp-ai-btn:hover { border-color: var(--sk-accent); }
+        .tp-ai-result { display: none; margin-top: 12px; padding: 14px 16px; background: rgba(59,130,246,0.08); border-radius: 10px; font-size: 0.85rem; line-height: 1.6; }
+        .tp-ai-result.show { display: block; }
+
+        .tp-secondary-toggle { font-size: 0.78rem; color: var(--sk-text-dim); cursor: pointer; }
+        .tp-secondary-list { display: none; margin-top: 10px; }
+        .tp-secondary-list.show { display: block; }
+
+        .tp-topic-footer-nav { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 34px; padding-top: 20px; border-top: 1px solid var(--sk-border); }
+    </style>
+</head>
+<body>
+<div class="tp-container">
+    <div class="tp-top-bar">
+        <a href="/dashboard" class="tp-logo">Nelavista</a>
+        <a href="/courses/{{ course.code }}" class="tp-back">&larr; {{ course.code }}</a>
+    </div>
+
+    <div class="tp-breadcrumb">{{ ctx.university.name }} / {{ ctx.department.name }} / {{ course.code }}</div>
+    <div class="tp-title">{{ topic.title }}</div>
+    <div class="tp-course-sub">{{ course.code }} &middot; {{ course.title }}</div>
+    {% if topic.content_source == 'ai_draft' %}
+    <div class="tp-draft-badge">Draft content — not yet reviewed by an admin</div>
+    {% endif %}
+
+    {% if other_topics|length > 1 %}
+    <div class="tp-topic-nav">
+        {% for t in other_topics %}
+        <a class="tp-topic-chip {{ 'current' if t.id == topic.id else '' }}" href="/courses/{{ course.code }}/topics/{{ t.id }}">{{ loop.index }}. {{ t.title }}</a>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="tp-section">
+        <div class="tp-section-title"><i class="ri-book-open-line"></i> Explanation</div>
+        {% if topic.explanation %}
+        <div class="tp-explanation">{{ topic.explanation|safe }}</div>
+        {% else %}
+        <div class="sk-empty">
+            <p>Nelavista hasn't written an explanation for this topic yet.</p>
+            {% if topic.primary_video %}<p style="margin-top:6px; font-size:0.82rem;">Check the video below in the meantime.</p>{% endif %}
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="tp-section">
+        <div class="tp-section-title"><i class="ri-play-circle-line"></i> Watch &amp; Learn</div>
+        {% if topic.primary_video %}
+        <div class="tp-video-wrap">
+            <iframe src="https://www.youtube-nocookie.com/embed/{{ topic.primary_video.video_id }}" title="{{ topic.title }}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+        </div>
+        {% else %}
+        <div class="sk-empty"><p>No video linked for this topic yet.</p></div>
+        {% endif %}
+    </div>
+
+    <div class="tp-section">
+        <div class="tp-section-title"><i class="ri-file-list-3-line"></i> School Materials</div>
+        {% if topic_materials %}
+        {% for m in topic_materials %}
+        <div class="tp-material-row">
+            <div>
+                <div class="tp-material-title">{{ m.title }}</div>
+                <div class="tp-material-meta">{{ m.type_label }} &middot; {{ m.author or 'Nelavista' }}</div>
+            </div>
+            <a href="{{ m.resolved_url or m.external_url }}" target="_blank" class="sk-btn small secondary" onclick="trackMaterialView({{ m.id }})">Open</a>
+        </div>
+        {% endfor %}
+        {% else %}
+        <div class="tp-contribute-box">
+            <p>No school materials have been added for this specific topic yet.</p>
+        </div>
+        {% endif %}
+
+        {% if other_course_materials %}
+        <div class="tp-secondary-toggle" onclick="document.getElementById('otherMaterials').classList.toggle('show')">
+            + {{ other_course_materials|length }} more material{{ 's' if other_course_materials|length != 1 else '' }} for {{ course.code }} generally
+        </div>
+        <div class="tp-secondary-list" id="otherMaterials">
+            {% for m in other_course_materials %}
+            <div class="tp-material-row">
+                <div>
+                    <div class="tp-material-title">{{ m.title }}</div>
+                    <div class="tp-material-meta">{{ m.type_label }} &middot; {{ m.author or 'Nelavista' }}</div>
+                </div>
+                <a href="{{ m.resolved_url or m.external_url }}" target="_blank" class="sk-btn small secondary" onclick="trackMaterialView({{ m.id }})">Open</a>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <div class="tp-contribute-box" style="margin-top:14px;">
+            <p>Help improve {{ course.code }} for your classmates. Have your lecturer's notes, a course outline, a handout, or a past question for <strong>{{ topic.title }}</strong>?</p>
+            <button class="sk-btn small" onclick="openUploadModal({{ course.id }}, {{ topic.id }})">Upload for this topic</button>
+        </div>
+    </div>
+
+    <div class="tp-section">
+        <div class="tp-section-title"><i class="ri-sparkling-2-line"></i> AI Tutor</div>
+        <div class="tp-ai-row">
+            <button class="tp-ai-btn" onclick="askTopicAI('explain', this)">Explain differently</button>
+            <button class="tp-ai-btn" onclick="askTopicAI('summarize', this)">Summarize</button>
+            <button class="tp-ai-btn" onclick="askTopicAI('quiz', this)">Quiz me</button>
+        </div>
+        <div class="tp-ai-result" id="topicAiResult"></div>
+    </div>
+
+    <div class="tp-topic-footer-nav">
+        {% if prev_topic %}
+        <a href="/courses/{{ course.code }}/topics/{{ prev_topic.id }}" class="sk-btn small secondary">&larr; {{ prev_topic.title }}</a>
+        {% else %}
+        <span></span>
+        {% endif %}
+        {% if next_topic %}
+        <a href="/courses/{{ course.code }}/topics/{{ next_topic.id }}" class="sk-btn small">Next: {{ next_topic.title }} &rarr;</a>
+        {% else %}
+        <a href="/courses/{{ course.code }}" class="sk-btn small secondary">Back to {{ course.code }} &rarr;</a>
+        {% endif %}
+    </div>
+</div>
+
+{% include 'components/material_upload_modal.html' %}
+
+<script>
+window.currentUserName = {{ (user.name or '')|tojson }};
+window.onMaterialUploaded = function () {
+    alert('Uploaded! It will appear here once an admin approves it. Track its status on My Uploads.');
+};
+
+function trackMaterialView(id) {
+    fetch(`/api/materials/${id}/view`, { method: 'POST' }).catch(() => {});
+}
+
+async function askTopicAI(mode, btn) {
+    const box = document.getElementById('topicAiResult');
+    const original = btn.textContent;
+    btn.disabled = true;
+    box.classList.add('show');
+    box.textContent = 'Nelavista is thinking…';
+    try {
+        const res = await fetch(`/api/topics/{{ topic.id }}/ai-action`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ mode })
+        });
+        const data = await res.json();
+        box.innerHTML = data.answer;
+    } catch (e) {
+        box.textContent = "Couldn't reach Nelavista — please try again.";
+    }
+    btn.disabled = false;
+    btn.textContent = original;
+}
+</script>
+</body>
+</html>

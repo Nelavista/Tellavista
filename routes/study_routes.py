@@ -177,8 +177,10 @@ def get_user_courses():
             progress = round(viewed / total * 100) if total else 0
             courses.append({
                 'code': course.code,
+                'title': course.title,
                 'name': f"{course.code} — {course.title}",
                 'type': course.course_type or 'CORE',
+                'topic_count': course.topics.filter_by(is_active=True).count(),
                 'next_topic': 'Continue studying' if viewed else 'Start learning',
                 'progress': progress,
                 'link': f"/courses/{course.code}",

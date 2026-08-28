@@ -1,5 +1,6 @@
 from datetime import datetime
 import json
+import re
 from extensions import db
 
 class User(db.Model):
@@ -173,10 +174,33 @@ class Material(db.Model):
     # ── GOOGLE CUSTOM SEARCH INTEGRATION ─────────────────────────────────────
     external_url = db.Column(db.String(500))                 # Direct PDF link from Google search
     source = db.Column(db.String(50), default='uploaded')    # 'static', 'uploaded', 'google_auto'
-    course_code = db.Column(db.String(20))                   # Actual course code column (MAT101, CSC111, etc.)
+    course_code = db.Column(db.String(20))                   # Legacy free-text course code (MAT101, CSC111,
+    # etc.) -- kept for backward compat / rows the taxonomy backfill couldn't resolve.
+    # New code should prefer course_id below; course_code is still populated on write
+    # (denormalized) so nothing that reads it directly breaks.
+
+    # ── real academic-taxonomy relationships (see "ACADEMIA TAXONOMY" below) ──
+    # Nullable because a material can predate the taxonomy covering its course/dept
+    # (legacy rows, or a university the taxonomy doesn't have yet) -- NULL means "not
+    # linked to the structured taxonomy", never an error. New uploads always set these
+    # via routes/materials_routes.py's course picker; see migrations/versions/
+    # <rev>_add_topic_and_material_taxonomy_links.py for the one-time backfill of
+    # pre-existing rows.
+    course_id = db.Column(db.Integer, db.ForeignKey('courses.id'), nullable=True, index=True)
+    topic_id = db.Column(db.Integer, db.ForeignKey('topics.id'), nullable=True, index=True)
+    department_id = db.Column(db.Integer, db.ForeignKey('departments.id'), nullable=True, index=True)
+
+    course = db.relationship('Course', backref=db.backref('materials', lazy='dynamic'))
+    topic = db.relationship('Topic', backref=db.backref('materials', lazy='dynamic'))
 
     # ── misc ─────────────────────────────────────────────────────────────────
     course_type = db.Column(db.String(20), default='CORE')   # Stores course type like "CORE", "ELECTIVE"
+    # Real, stored classification -- replaces the old title-keyword-guessing heuristic
+    # (routes/materials_routes.py's now-removed _infer_badge_label). One of:
+    # 'lecture_note' | 'course_outline' | 'handout' | 'past_question' | 'textbook' | 'other'.
+    # NULL only for legacy rows seeded before this column existed; to_dict() falls back
+    # to the old title heuristic for those so existing badges don't blank out overnight.
+    material_type = db.Column(db.String(30), nullable=True, index=True)
     next_topic = db.Column(db.String(200))
     progress = db.Column(db.Integer, default=0)
     views = db.Column(db.Integer, default=0)
@@ -184,6 +208,8 @@ class Material(db.Model):
     uploaded_by = db.Column(db.String(150))                  # username of uploader
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     is_approved = db.Column(db.Boolean, default=True)
+    rejection_reason = db.Column(db.String(300), nullable=True)  # set by an admin on reject,
+    # shown back to the uploader on "My Uploads" -- see routes/materials_routes.py::my_uploads
 
     # ── AI content-retrieval cache ──────────────────────────────────────────
     # Lazily populated the first time a student asks the AI about this specific
@@ -192,6 +218,36 @@ class Material(db.Model):
     # "never successfully extracted yet", not "empty file".
     extracted_text = db.Column(db.Text, nullable=True)
     extracted_at = db.Column(db.DateTime, nullable=True)
+
+    MATERIAL_TYPE_LABELS = {
+        'lecture_note': 'LECTURE NOTES',
+        'course_outline': 'COURSE OUTLINE',
+        'handout': 'HANDOUT',
+        'past_question': 'PAST QUESTIONS',
+        'textbook': 'TEXTBOOK',
+        'other': 'STUDY MATERIAL',
+    }
+
+    def _legacy_inferred_type_label(self):
+        """Only reached for pre-migration rows with no material_type set -- the same
+        keyword heuristic the old client/server code used, kept solely so those rows
+        keep a sensible badge instead of going blank. Never used for new rows."""
+        t = (self.title or '').lower()
+        if any(k in t for k in ('past question', 'oer', 'test', 'exam', 'multiple choice', 'mcq')):
+            return 'PAST QUESTIONS'
+        if any(k in t for k in ('lecture', 'lesson')):
+            return 'LECTURE NOTES'
+        if any(k in t for k in ('textbook', 'vol', 'edition', 'introduction to', 'principles of', 'fundamentals')):
+            return 'TEXTBOOK'
+        if any(k in t for k in ('note', 'compilation', 'summary')):
+            return 'HANDOUT'
+        return 'STUDY MATERIAL'
+
+    @property
+    def type_label(self):
+        if self.material_type:
+            return self.MATERIAL_TYPE_LABELS.get(self.material_type, 'STUDY MATERIAL')
+        return self._legacy_inferred_type_label()
 
     @property
     def resolved_url(self):
@@ -220,6 +276,10 @@ class Material(db.Model):
             'semester': self.semester,
             'university': self.university,
             'course_code': self.course_code,
+            'course_id': self.course_id,
+            'topic_id': self.topic_id,
+            'material_type': self.material_type,
+            'type_label': self.type_label,
             'author': self.author,
             'description': self.description,
             'license': self.license or 'Student Upload',
@@ -231,7 +291,8 @@ class Material(db.Model):
             'downloads': self.downloads or 0,
             'uploaded_by': self.uploaded_by,
             'created_at': self.created_at.isoformat() if self.created_at else None,
-            'is_approved': self.is_approved
+            'is_approved': self.is_approved,
+            'rejection_reason': self.rejection_reason,
         }
 
 
@@ -1636,7 +1697,95 @@ class Course(db.Model):
             'id': self.id, 'department_id': self.department_id, 'code': self.code,
             'title': self.title, 'level': self.level, 'semester': self.semester,
             'course_type': self.course_type, 'description': self.description, 'source': self.source,
+            'topic_count': self.topics.filter_by(is_active=True).count(),
         }
+
+
+class Topic(db.Model):
+    """One teachable unit inside a Course -- 'CSC213 -> Linked Lists', not a whole PDF.
+    This is the piece that was completely missing before: a course code alone is too
+    coarse to organize study material or show real progress against. A Topic belongs to
+    exactly one Course; a Course has an ordered list of Topics.
+
+    Mirrors models.Lesson's already-proven shape (written content + an admin-set video
+    URL that takes priority + a cached auto-search fallback) rather than inventing a new
+    pattern -- see services/youtube_service.py, which both now share.
+    """
+    __tablename__ = 'topics'
+
+    id = db.Column(db.Integer, primary_key=True)
+    course_id = db.Column(db.Integer, db.ForeignKey('courses.id'), nullable=False, index=True)
+    title = db.Column(db.String(200), nullable=False)
+    order = db.Column(db.Integer, default=0)
+    explanation = db.Column(db.Text, nullable=True)   # simple HTML, same convention as Lesson.content
+
+    # Admin-picked/pinned video -- takes priority over the auto-search cache below,
+    # same convention as Lesson.video_url.
+    video_url = db.Column(db.String(500), nullable=True)
+    # Auto-fetched YouTube search results (services/youtube_service.search_youtube_videos),
+    # cached so the API is called once per topic, not on every student view. NULL =
+    # never fetched yet; "[]" = fetched and genuinely found nothing -- see the `videos`
+    # property, same None-vs-empty-list distinction as Lesson.videos.
+    videos_json = db.Column(db.Text, nullable=True)
+
+    # 'ai_draft' = generated but not yet reviewed by an admin -- shown to students (if
+    # is_active) but the content pipeline's own UI flags it as unreviewed draft content,
+    # never presented as an official university syllabus. 'reviewed' = an admin has
+    # edited/approved it. 'manual' = an admin wrote it from scratch, no AI involved.
+    content_source = db.Column(db.String(20), default='ai_draft')
+    is_active = db.Column(db.Boolean, default=True)  # publish/hide without deleting
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    course = db.relationship('Course', backref=db.backref(
+        'topics', lazy='dynamic', cascade='all, delete-orphan', order_by='Topic.order'
+    ))
+
+    @property
+    def videos(self):
+        """None means 'never fetched'; [] means 'fetched, found nothing'."""
+        if self.videos_json is None:
+            return None
+        try:
+            return json.loads(self.videos_json)
+        except (ValueError, TypeError):
+            return None
+
+    @videos.setter
+    def videos(self, value):
+        self.videos_json = json.dumps(value if value is not None else [])
+
+    @property
+    def primary_video(self):
+        """The one video the topic page actually embeds: the admin's pinned URL if set
+        (parsed for its ID), otherwise the first cached auto-search result."""
+        if self.video_url:
+            vid = _extract_youtube_id(self.video_url)
+            if vid:
+                return {'video_id': vid, 'title': self.title, 'channel': '', 'thumbnail': ''}
+        videos = self.videos
+        return videos[0] if videos else None
+
+    def to_dict(self):
+        return {
+            'id': self.id, 'course_id': self.course_id, 'title': self.title, 'order': self.order,
+            'explanation': self.explanation, 'video_url': self.video_url, 'videos': self.videos,
+            'primary_video': self.primary_video, 'content_source': self.content_source,
+            'is_active': self.is_active,
+            'material_count': self.materials.filter_by(is_approved=True).count(),
+        }
+
+
+def _extract_youtube_id(url):
+    """Pulls the 11-char video ID out of a youtube.com/watch, youtu.be, or bare-ID
+    string an admin might paste when pinning a topic's video."""
+    if not url:
+        return None
+    url = url.strip()
+    if re.fullmatch(r'[A-Za-z0-9_-]{11}', url):
+        return url
+    match = re.search(r'(?:v=|youtu\.be/|embed/)([A-Za-z0-9_-]{11})', url)
+    return match.group(1) if match else None
 
 
 # ============================================================

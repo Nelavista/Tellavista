@@ -708,6 +708,135 @@ def generate_curriculum(skill_name, skill_description, level='beginner'):
     return _parse_json_object(raw)
 
 
+def generate_course_topics(course_code, course_title, department_name, level, existing_description=None):
+    """Drafts a course's student-facing description plus an ordered topic list -- the
+    core Academia content pipeline (see routes/admin_academia_routes.py's
+    generate_course_content). Mirrors generate_curriculum's structured-draft convention:
+    everything comes back for an admin to review/edit before any Topic row is created,
+    nothing is auto-published. Explicitly instructed to describe the SUBJECT MATTER a
+    course with this code/title normally covers at Nigerian universities, never to
+    invent a specific lecturer's own syllabus -- this is a reasonable starting draft,
+    not a claim of official curriculum. Raises on failure; caller decides the HTTP
+    response.
+    """
+    system_prompt = (
+        "You are an experienced university lecturer writing a course description for "
+        "Nelavista, an academic study platform for Nigerian university students. Given a "
+        "course code and title, draft: (1) a course description, and (2) an ordered list "
+        "of the core topics a course with this code and title normally covers, in a "
+        "sensible teaching order from fundamentals onward. Base this on the well-established "
+        "general subject matter such a course code/title conventionally covers -- do not "
+        "invent a specific lecturer's own syllabus, exam pattern, or claim this is any "
+        "particular university's official curriculum. This is a draft starting point for "
+        "an admin to review and edit, not a final authoritative document.\n\n"
+        "The description must read like a lecturer briefing a student, in 3-5 sentences "
+        "covering: what the course is about, why it matters, the major concepts covered, "
+        "and what a student should be able to do after studying it. Write clearly and "
+        "directly -- no marketing language of any kind. Never use phrases like 'embark on "
+        "a journey', 'unlock your potential', 'master the world of', 'dive into', or "
+        "similar hype. State facts about the subject, plainly.\n\n"
+        "Return ONLY a single JSON object with this exact shape, no surrounding prose:\n"
+        "{\n"
+        '  "description": string (3-5 sentences, lecturer tone as described above),\n'
+        '  "topics": [string, ...] (8-14 topic titles, ordered, specific -- e.g. "Linked Lists", '
+        'not vague filler like "More Concepts")\n'
+        "}"
+    )
+    user_prompt = (
+        f"Course code: {course_code}\nCourse title: {course_title}\n"
+        f"Department: {department_name}\nLevel: {level}"
+        + (f"\nExisting description (revise/improve, don't ignore): {existing_description}" if existing_description else "")
+    )
+
+    headers = {
+        "Authorization": f"Bearer {OPENROUTER_API_KEY}",
+        "Content-Type": "application/json",
+        "HTTP-Referer": "https://nelavista.com",
+        "X-Title": "Nelavista Course Content Drafter"
+    }
+    payload = {
+        "model": "openai/gpt-4o-mini",
+        "messages": [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_prompt}
+        ],
+        "temperature": 0.4,
+        "max_tokens": 1500
+    }
+    response = requests.post(
+        "https://openrouter.ai/api/v1/chat/completions",
+        headers=headers, json=payload, timeout=60
+    )
+    if response.status_code != 200:
+        raise Exception(f"AI API error: {response.status_code}")
+
+    raw = response.json()["choices"][0]["message"]["content"].strip()
+    return _parse_json_object(raw)
+
+
+def generate_topic_explanation(course_code, course_title, topic_title, video=None):
+    """Drafts one Topic's written explanation -- same anchored-to-a-reference-video
+    convention as generate_lesson_content_from_video when a video is already attached
+    (so the text and the video teach the same material), otherwise a standalone
+    explanation grounded only in the course/topic identity. Returns a draft for an admin
+    to review/edit before it's saved as Topic.explanation; nothing here writes to the
+    database. Raises on failure; caller decides the HTTP response."""
+    system_prompt = (
+        "You are an experienced university lecturer writing study material for Nelavista, "
+        "an academic study platform for Nigerian university students. Write a clear, "
+        "focused explanation of ONE topic within a specific university course, at a level "
+        "appropriate for a student encountering it for the first time. Write like a "
+        "lecturer explaining the topic to a student: clear, direct, academic, human. Do "
+        "NOT use marketing language ('embark on a journey', 'unlock', 'master', 'dive "
+        "into', or similar hype) -- state what the topic is and how it works, plainly. "
+        + (
+            "A reference video is provided below -- cover the same core ideas, in the same "
+            "order, so a student reading the text recognizes what they just watched. Do not "
+            "describe or refer to the video itself (no 'in this video...', 'as shown above')."
+            if video else
+            "No reference video is available yet -- write a self-contained explanation."
+        )
+        + "\n\nStructure the output as clean HTML in exactly this shape: "
+        "an <h3>What you'll learn</h3> section with one or two <p> paragraphs explaining "
+        "the topic itself, followed by an <h3>Key concepts</h3> section with a <ul> of "
+        "3-6 <li> bullets, each a specific concept/term within this topic (not vague "
+        "restatements of the topic name). <strong> for emphasis, <code> for inline "
+        "technical terms. No Markdown, no <html>/<body> wrapper, no surrounding code "
+        "fences. Aim for 150-350 words total -- a focused explanation, not an essay."
+    )
+    user_prompt = f"Course: {course_code} — {course_title}\nTopic: {topic_title}"
+    if video:
+        user_prompt += f"\nReference video: \"{video['title']}\" by {video.get('channel', '')}"
+    user_prompt += "\n\nWrite the topic explanation now."
+
+    headers = {
+        "Authorization": f"Bearer {OPENROUTER_API_KEY}",
+        "Content-Type": "application/json",
+        "HTTP-Referer": "https://nelavista.com",
+        "X-Title": "Nelavista Topic Content Drafter"
+    }
+    payload = {
+        "model": "openai/gpt-4o-mini",
+        "messages": [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_prompt}
+        ],
+        "temperature": 0.5,
+        "max_tokens": 1000
+    }
+    response = requests.post(
+        "https://openrouter.ai/api/v1/chat/completions",
+        headers=headers, json=payload, timeout=60
+    )
+    if response.status_code != 200:
+        raise Exception(f"AI API error: {response.status_code}")
+
+    content = response.json()["choices"][0]["message"]["content"].strip()
+    content = re.sub(r'^```(?:html)?\s*', '', content)
+    content = re.sub(r'\s*```$', '', content)
+    return content
+
+
 def generate_daily_class_outline(skill_name, class_title, total_days, level='beginner'):
     """Proposes just the week/day skeleton for a whole daily class — day titles, short
     topics, and learning objectives for all `total_days` days, grouped into weeks.

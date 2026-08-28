@@ -55,8 +55,12 @@ def app():
     from routes.dashboard_routes import dashboard_bp
     from routes.admin_skills_routes import admin_skills_bp
     from routes.admin_routes import admin_bp
+    from routes.academia_routes import academia_bp
+    from routes.admin_academia_routes import admin_academia_bp
+    from routes.ai_routes import ai_bp
 
-    for bp in (auth_bp, cbt_bp, skills_bp, materials_bp, live_bp, dashboard_bp, admin_skills_bp, admin_bp):
+    for bp in (auth_bp, cbt_bp, skills_bp, materials_bp, live_bp, dashboard_bp, admin_skills_bp, admin_bp,
+               academia_bp, admin_academia_bp, ai_bp):
         flask_app.register_blueprint(bp, url_prefix='/')
 
     with flask_app.app_context():
@@ -115,6 +119,51 @@ class _UserRef:
         self.level = u.level
         self.university = u.university
         self.preferred_path = u.preferred_path
+
+
+class _CourseRef:
+    """Same plain-snapshot convention as _UserRef -- avoids handing back a detached ORM
+    instance once the creating app-context block exits."""
+    def __init__(self, c):
+        self.id = c.id
+        self.code = c.code
+        self.title = c.title
+        self.level = c.level
+        self.department_id = c.department_id
+
+
+@pytest.fixture
+def make_course(app):
+    """Builds a full University -> Faculty -> Department -> Course chain in one call --
+    every taxonomy-linked Material/Topic test needs this same setup, so it lives here
+    rather than being copy-pasted per test file."""
+    from models import University, Faculty, Department, Course
+
+    def _make(university='Lagos State University', faculty='Science', department='Computer Science',
+              code='CSC213', title='Data Structures & Algorithm Analysis', level='200'):
+        with app.app_context():
+            uni = University.query.filter_by(name=university).first()
+            if not uni:
+                uni = University(name=university)
+                db.session.add(uni)
+                db.session.flush()
+            fac = Faculty.query.filter_by(university_id=uni.id, name=faculty).first()
+            if not fac:
+                fac = Faculty(university_id=uni.id, name=faculty)
+                db.session.add(fac)
+                db.session.flush()
+            dept = Department.query.filter_by(faculty_id=fac.id, name=department).first()
+            if not dept:
+                dept = Department(faculty_id=fac.id, name=department)
+                db.session.add(dept)
+                db.session.flush()
+            course = Course.query.filter_by(department_id=dept.id, code=code, level=level).first()
+            if not course:
+                course = Course(department_id=dept.id, code=code, title=title, level=level)
+                db.session.add(course)
+                db.session.commit()
+            return _CourseRef(course)
+    return _make
 
 
 @pytest.fixture

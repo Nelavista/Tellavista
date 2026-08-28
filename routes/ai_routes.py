@@ -6,7 +6,7 @@ import shutil
 import time
 import traceback
 from datetime import datetime
-from models import User, Material, AnalyzerSession
+from models import User, Material, AnalyzerSession, Topic
 from flask import Blueprint, render_template, request, session, jsonify, send_from_directory, current_app
 from utils.helpers import login_required, debug_print, get_session_memory, add_to_session_memory, cleanup_old_files, allowed_file
 from services.material_service import extract_text_from_pdf, extract_text_from_pdf_turbo, extract_images_from_pdf, extract_tables_from_pdf, analyze_document_structure, extract_text_from_image, is_diagram_or_visual
@@ -715,6 +715,59 @@ def material_ai_action(material_id):
         debug_print(f"Material AI action returned {resp.status_code}")
     except Exception as e:
         debug_print(f"Material AI action failed: {e}")
+        traceback.print_exc()
+
+    return jsonify({'success': True, 'answer': "Nelavista is having trouble responding right now — please try again.", 'grounded': False})
+
+
+@ai_bp.route('/api/topics/<int:topic_id>/ai-action', methods=['POST'])
+@login_required
+@limiter.limit('30 per hour')
+def topic_ai_action(topic_id):
+    """Same idea as material_ai_action above, grounded in a Topic's own written
+    explanation instead of a PDF's extracted text -- the 'AI Tutor' entry point on a
+    topic page. A topic with no explanation yet is answered honestly rather than
+    guessing content that was never written."""
+    topic = Topic.query.get_or_404(topic_id)
+    if not topic.is_active:
+        return jsonify({'success': False, 'error': 'Topic not found'}), 404
+
+    mode = (request.get_json(silent=True) or {}).get('mode', 'explain')
+    if mode not in _MATERIAL_AI_MODES:
+        mode = 'explain'
+
+    if not topic.explanation:
+        return jsonify({
+            'success': True,
+            'answer': f"Nelavista doesn't have a written explanation for \"{topic.title}\" yet to {mode} it. "
+                      "Try the reference video above, or check back once an admin has added one.",
+            'grounded': False,
+        })
+
+    course = topic.course
+    system_prompt = (
+        "You are Nelavista, an AI tutor for Nigerian university students. You have been given the actual "
+        f"written explanation of the topic \"{topic.title}\" from the course {course.code} — {course.title}. "
+        "Base your answer ONLY on this text -- if something isn't covered in it, say so rather than "
+        "inventing it. Use simple HTML (<h3>, <p>, <ul>/<li>, <strong>) for structure, no Markdown.\n\n"
+        f"TASK: {_MATERIAL_AI_MODES[mode]}\n\n"
+        f"TOPIC CONTENT:\n{topic.explanation}"
+    )
+
+    try:
+        headers = {"Authorization": f"Bearer {OPENROUTER_API_KEY}", "Content-Type": "application/json",
+                   "HTTP-Referer": "https://nelavista.com", "X-Title": "Nelavista Topic AI"}
+        payload = {"model": "openai/gpt-4o-mini",
+                   "messages": [{"role": "system", "content": system_prompt},
+                                {"role": "user", "content": _MATERIAL_AI_MODES[mode]}],
+                   "temperature": 0.4, "max_tokens": 900}
+        resp = requests.post("https://openrouter.ai/api/v1/chat/completions", headers=headers, json=payload, timeout=45)
+        if resp.status_code == 200:
+            answer = resp.json()["choices"][0]["message"]["content"]
+            return jsonify({'success': True, 'answer': answer, 'grounded': True})
+        debug_print(f"Topic AI action returned {resp.status_code}")
+    except Exception as e:
+        debug_print(f"Topic AI action failed: {e}")
         traceback.print_exc()
 
     return jsonify({'success': True, 'answer': "Nelavista is having trouble responding right now — please try again.", 'grounded': False})

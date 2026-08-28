@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - {{ course.code }} Topics</title>
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Inter',system-ui,sans-serif; }
+        body { background:#0d1117; color:#e6edf3; padding:20px; }
+        .container { max-width:960px; margin:0 auto; }
+        .back-btn { background:#21262d; border:1px solid #30363d; color:#8b949e; padding:8px 16px; border-radius:8px; text-decoration:none; display:inline-block; margin-bottom:20px; }
+        .back-btn:hover { border-color:#58a6ff; color:#58a6ff; }
+        h1 { font-size:1.5rem; margin-bottom:4px; }
+        .subtitle { color:#8b949e; margin-bottom:20px; font-size:0.9rem; }
+        .panel { background:#161b22; border:1px solid #21262d; border-radius:12px; padding:18px; margin-bottom:20px; }
+        .panel h2 { font-size:1rem; margin-bottom:10px; }
+        textarea, input { background:#0d1117; border:1px solid #30363d; color:#e6edf3; padding:8px 10px; border-radius:6px; font-size:0.85rem; font-family:inherit; width:100%; }
+        textarea { resize:vertical; min-height:60px; }
+        .btn { background:#3b82f6; border:none; color:#fff; padding:8px 16px; border-radius:6px; font-weight:600; cursor:pointer; font-size:0.85rem; }
+        .btn.secondary { background:#21262d; border:1px solid #30363d; color:#8b949e; }
+        .btn.green { background:#22c55e; }
+        .btn.red { background:#ef4444; }
+        .btn:disabled { opacity:0.5; cursor:not-allowed; }
+        .row { display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-top:10px; }
+        .draft-box { display:none; margin-top:14px; padding:14px; background:#0d1117; border:1px solid #30363d; border-radius:8px; }
+        .draft-box.show { display:block; }
+        .draft-topic-row { display:flex; align-items:center; gap:8px; padding:6px 0; border-bottom:1px solid #21262d; }
+        .draft-topic-row input[type=text] { flex:1; }
+        .topic-card { background:#161b22; border:1px solid #21262d; border-radius:10px; padding:16px; margin-bottom:12px; }
+        .topic-top { display:flex; align-items:center; gap:10px; margin-bottom:10px; flex-wrap:wrap; }
+        .topic-order { width:50px; }
+        .topic-title-input { flex:1; min-width:180px; font-weight:600; }
+        .badge { font-size:0.68rem; font-weight:700; padding:2px 8px; border-radius:20px; }
+        .badge.draft { background:rgba(245,158,11,0.15); color:#f59e0b; }
+        .badge.reviewed { background:rgba(34,197,94,0.15); color:#22c55e; }
+        .badge.manual { background:rgba(107,114,128,0.15); color:#8b949e; }
+        .badge.inactive { background:rgba(239,68,68,0.15); color:#ef4444; }
+        .topic-video { font-size:0.8rem; color:#8b949e; margin:8px 0; }
+        .empty { text-align:center; padding:40px 20px; color:#6e7681; }
+        label.inline { font-size:0.75rem; color:#8b949e; display:flex; align-items:center; gap:4px; }
+    </style>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
+</head>
+<body>
+{% include 'components/admin_nav.html' %}
+    <div class="container">
+        <a href="/admin/academia/departments/{{ course.department_id }}" class="back-btn">&larr; {{ course.department.name }}</a>
+        <h1>{{ course.code }} &mdash; {{ course.title }}</h1>
+        <div class="subtitle">{{ course.department.faculty.university.name }} &middot; Level {{ course.level }} &middot; {{ topics|length }} topic{{ 's' if topics|length != 1 else '' }}</div>
+
+        <div class="panel">
+            <h2>Course description</h2>
+            <textarea id="courseDescription" placeholder="Shown to students on the course page. Leave blank for none.">{{ course.description or '' }}</textarea>
+            <div class="row">
+                <button class="btn secondary" onclick="saveDescription()">Save description</button>
+                <button class="btn" onclick="generateContent()" id="genContentBtn">Generate draft topics with AI</button>
+                <span id="genContentStatus" style="font-size:0.8rem; color:#8b949e;"></span>
+            </div>
+            <div class="draft-box" id="draftBox">
+                <div style="font-size:0.8rem; color:#8b949e; margin-bottom:8px;">AI draft &mdash; review before applying. Uncheck any topic you don't want added.</div>
+                <div id="draftDescription" style="font-size:0.85rem; margin-bottom:10px; color:#c9d1d9;"></div>
+                <div id="draftTopicsList"></div>
+                <div class="row">
+                    <button class="btn green" onclick="applyDraft()">Apply selected topics</button>
+                    <button class="btn secondary" onclick="document.getElementById('draftBox').classList.remove('show')">Discard</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel">
+            <h2>Add a topic manually</h2>
+            <div class="row">
+                <input type="text" id="newTopicTitle" placeholder="Topic title (e.g. Linked Lists)" style="flex:1; min-width:200px;">
+                <button class="btn" onclick="addTopic()">+ Add topic</button>
+            </div>
+        </div>
+
+        <h2 style="font-size:1rem; margin-bottom:12px;">Topics</h2>
+        {% if not topics %}
+        <div class="empty">No topics yet. Generate a draft above, or add one manually.</div>
+        {% endif %}
+        <div id="topicsList">
+            {% for t in topics %}
+            <div class="topic-card" id="topic-{{ t.id }}">
+                <div class="topic-top">
+                    <input type="text" class="topic-order" data-field="order" value="{{ t.order }}" title="Order">
+                    <input type="text" class="topic-title-input" data-field="title" value="{{ t.title }}">
+                    <span class="badge {{ t.content_source }}">{{ 'AI DRAFT' if t.content_source == 'ai_draft' else ('MANUAL' if t.content_source == 'manual' else 'REVIEWED') }}</span>
+                    {% if not t.is_active %}<span class="badge inactive">HIDDEN</span>{% endif %}
+                    <label class="inline"><input type="checkbox" data-field="is_active" {{ 'checked' if t.is_active else '' }}> Visible to students</label>
+                </div>
+                <textarea data-field="explanation" placeholder="Explanation (HTML: <h3>/<p>/<ul>/<strong>) &mdash; shown to students.">{{ t.explanation or '' }}</textarea>
+                <div class="row">
+                    <input type="text" data-field="video_url" placeholder="Pinned YouTube URL (optional -- overrides auto-search)" value="{{ t.video_url or '' }}" style="flex:1; min-width:220px;">
+                </div>
+                <div class="topic-video" id="topic-video-{{ t.id }}">
+                    {% if t.primary_video %}Reference video: {{ t.primary_video.title }}{% else %}No video fetched yet.{% endif %}
+                </div>
+                <div class="row">
+                    <button class="btn secondary" onclick="fetchVideo({{ t.id }})">Fetch YouTube video</button>
+                    <button class="btn secondary" onclick="generateExplanation({{ t.id }})">Generate explanation draft</button>
+                    <button class="btn green" onclick="saveTopic({{ t.id }})">Save</button>
+                    <button class="btn red" onclick="deleteTopic({{ t.id }})">Delete</button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script>
+        const COURSE_ID = {{ course.id }};
+        let lastDraft = null;
+
+        async function saveDescription() {
+            const fd = new FormData();
+            fd.append('description', document.getElementById('courseDescription').value);
+            const res = await fetch(`/admin/academia/courses/${COURSE_ID}/edit`, { method: 'POST', body: fd });
+            const data = await res.json();
+            alert(data.success ? 'Saved' : 'Error: ' + data.error);
+        }
+
+        async function generateContent() {
+            const btn = document.getElementById('genContentBtn');
+            const status = document.getElementById('genContentStatus');
+            btn.disabled = true; status.textContent = 'Generating…';
+            try {
+                const res = await fetch(`/admin/academia/courses/${COURSE_ID}/generate-content`, { method: 'POST' });
+                const data = await res.json();
+                if (!data.success) { status.textContent = 'Failed: ' + (data.error || 'unknown error'); return; }
+                lastDraft = data.draft;
+                document.getElementById('draftDescription').textContent = data.draft.description || '';
+                const list = document.getElementById('draftTopicsList');
+                list.innerHTML = (data.draft.topics || []).map((t, i) => `
+                    <div class="draft-topic-row">
+                        <input type="checkbox" checked data-idx="${i}">
+                        <input type="text" value="${t.replace(/"/g, '&quot;')}" data-idx-title="${i}">
+                    </div>
+                `).join('');
+                document.getElementById('draftBox').classList.add('show');
+                status.textContent = '';
+            } catch (e) {
+                status.textContent = 'Failed -- try again.';
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        async function applyDraft() {
+            const checks = document.querySelectorAll('#draftTopicsList input[type=checkbox]');
+            const titles = document.querySelectorAll('#draftTopicsList input[type=text]');
+            const selected = [];
+            checks.forEach((c, i) => { if (c.checked) selected.push(titles[i].value.trim()); });
+            if (!selected.length) { alert('Select at least one topic.'); return; }
+            const res = await fetch(`/admin/academia/courses/${COURSE_ID}/apply-topics`, {
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ description: lastDraft ? lastDraft.description : '', topics: selected })
+            });
+            const data = await res.json();
+            if (!data.success) { alert('Error: ' + data.error); return; }
+            location.reload();
+        }
+
+        async function addTopic() {
+            const title = document.getElementById('newTopicTitle').value.trim();
+            if (!title) return;
+            const fd = new FormData();
+            fd.append('title', title);
+            const res = await fetch(`/admin/academia/courses/${COURSE_ID}/topics/new`, { method: 'POST', body: fd });
+            const data = await res.json();
+            if (!data.success) { alert('Error: ' + data.error); return; }
+            location.reload();
+        }
+
+        function topicFields(id) {
+            const card = document.getElementById(`topic-${id}`);
+            const fd = new FormData();
+            card.querySelectorAll('[data-field]').forEach(el => {
+                if (el.type === 'checkbox') fd.append(el.dataset.field, el.checked ? '1' : '0');
+                else fd.append(el.dataset.field, el.value);
+            });
+            return fd;
+        }
+
+        async function saveTopic(id) {
+            const res = await fetch(`/admin/academia/topics/${id}/edit`, { method: 'POST', body: topicFields(id) });
+            const data = await res.json();
+            alert(data.success ? 'Saved' : 'Error: ' + data.error);
+            if (data.success) location.reload();
+        }
+
+        async function deleteTopic(id) {
+            if (!confirm('Delete this topic permanently? Materials linked to it are kept but unlinked.')) return;
+            const res = await fetch(`/admin/academia/topics/${id}/delete`, { method: 'DELETE' });
+            const data = await res.json();
+            if (!data.success) { alert('Error: ' + data.error); return; }
+            document.getElementById(`topic-${id}`).remove();
+        }
+
+        async function fetchVideo(id) {
+            const el = document.getElementById(`topic-video-${id}`);
+            el.textContent = 'Searching YouTube…';
+            const res = await fetch(`/admin/academia/topics/${id}/videos`, { method: 'POST' });
+            const data = await res.json();
+            if (!data.success || !data.videos || !data.videos.length) { el.textContent = 'No video found.'; return; }
+            el.textContent = `Reference video: ${data.videos[0].title} (${data.videos.length} found -- refresh page to see all)`;
+        }
+
+        async function generateExplanation(id) {
+            const card = document.getElementById(`topic-${id}`);
+            const textarea = card.querySelector('[data-field="explanation"]');
+            const original = textarea.value;
+            textarea.value = 'Generating…';
+            const res = await fetch(`/admin/academia/topics/${id}/generate-explanation`, { method: 'POST' });
+            const data = await res.json();
+            if (!data.success) { textarea.value = original; alert('Error: ' + data.error); return; }
+            textarea.value = data.content;
+        }
+    </script>
+</body>
+</html>

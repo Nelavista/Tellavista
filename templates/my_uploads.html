@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Uploads — Nelavista</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/skills.css') }}">
+    <style>
+        .mu-container { max-width: 800px; margin: 0 auto; padding: 0 20px 60px; }
+        .mu-top-bar { display: flex; align-items: center; justify-content: space-between; padding: 16px 0; border-bottom: 1px solid var(--sk-border); margin-bottom: 24px; }
+        .mu-logo { font-size: 1.2rem; font-weight: 700; background: linear-gradient(135deg, #e5e7eb, #3b82f6); -webkit-background-clip: text; background-clip: text; color: transparent; text-decoration: none; }
+        .mu-back { color: var(--sk-text-dim); text-decoration: none; font-size: 0.85rem; }
+        .mu-title { font-size: 1.5rem; font-weight: 800; margin-bottom: 6px; }
+        .mu-sub { color: var(--sk-text-dim); font-size: 0.9rem; margin-bottom: 24px; }
+        .mu-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; background: var(--sk-card); border: 1px solid var(--sk-border); border-radius: var(--sk-radius-sm); padding: 16px; margin-bottom: 10px; }
+        .mu-row-title { font-weight: 600; font-size: 0.92rem; }
+        .mu-row-meta { font-size: 0.78rem; color: var(--sk-text-dim); margin-top: 4px; }
+        .mu-reason { font-size: 0.8rem; color: #ef4444; margin-top: 6px; }
+        .mu-status { font-size: 0.7rem; font-weight: 700; padding: 4px 10px; border-radius: 20px; white-space: nowrap; }
+        .mu-status.pending { background: rgba(245,158,11,0.15); color: #f59e0b; }
+        .mu-status.approved { background: rgba(34,197,94,0.15); color: #22c55e; }
+        .mu-status.rejected { background: rgba(239,68,68,0.15); color: #ef4444; }
+    </style>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
+</head>
+<body>
+<div class="mu-container">
+    <div class="mu-top-bar">
+        <a href="/dashboard" class="mu-logo">Nelavista</a>
+        <a href="/materials" class="mu-back">&larr; Materials</a>
+    </div>
+
+    <div class="mu-title">My Uploads</div>
+    <div class="mu-sub">Every school material you've contributed, and its review status.</div>
+
+    {% if not uploads %}
+    <div class="sk-empty">
+        <div class="sk-empty-icon">📤</div>
+        <p>You haven't uploaded anything yet.</p>
+        <a href="/materials" class="sk-btn small" style="margin-top:12px;">Contribute a material &rarr;</a>
+    </div>
+    {% else %}
+    {% for m in uploads %}
+    <div class="mu-row">
+        <div>
+            <div class="mu-row-title">{{ m.title }}</div>
+            <div class="mu-row-meta">{{ m.course_code or m.department }}{% if m.type_label %} &middot; {{ m.type_label }}{% endif %} &middot; {{ m.created_at.strftime('%b %d, %Y') if m.created_at else '' }}</div>
+            {% if m.rejection_reason %}
+            <div class="mu-reason">Rejected: {{ m.rejection_reason }}</div>
+            {% endif %}
+        </div>
+        {% if m.is_approved %}
+        <span class="mu-status approved">Approved</span>
+        {% elif m.rejection_reason %}
+        <span class="mu-status rejected">Rejected</span>
+        {% else %}
+        <span class="mu-status pending">Pending review</span>
+        {% endif %}
+    </div>
+    {% endfor %}
+    {% endif %}
+</div>
+</body>
+</html>

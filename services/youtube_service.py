@@ -1,10 +1,12 @@
 """YouTube Data API v3 search, used to auto-surface real tutorial videos for Skills
-lessons — the same idea Geeg uses for its lesson videos, adapted to Nelavista's
-admin-curated (not per-student AI-generated) Lesson model: results are fetched once per
-lesson and cached on it (see Lesson.videos in models.py), not refetched per student.
+lessons and Academia topics — the same idea Geeg uses for its lesson videos, adapted to
+Nelavista's admin-curated (not per-student AI-generated) Lesson/Topic models: results
+are fetched once per lesson/topic and cached on it (see Lesson.videos / Topic.videos in
+models.py), not refetched per student.
 
 Reuses the same YOUTUBE_API_KEY config already declared for routes/video_routes.py's
-(currently unused) /api/youtube/search endpoint, rather than adding a second config var.
+(unrelated, Campus-Videos-feature) /api/youtube/search endpoint, rather than adding a
+second config var or a second YouTube integration.
 """
 import html
 import requests
@@ -19,6 +21,14 @@ def build_lesson_video_query(skill_name, lesson_title):
     (it's the actual topic), skill name disambiguates it, 'tutorial' steers away from vlogs
     and news clips toward the same kind of educational content Geeg's search targets."""
     return f'{lesson_title} {skill_name} tutorial'
+
+
+def build_topic_video_query(course_code, course_title, topic_title):
+    """Same idea as build_lesson_video_query, for an Academia Topic: topic leads (it's
+    the actual thing being taught), course code+title disambiguate which course's
+    version of the topic this is (e.g. 'Linked Lists CSC213' rather than a generic CS
+    result), 'tutorial' steers toward educational content."""
+    return f'{topic_title} {course_code} {course_title} tutorial'
 
 
 def search_youtube_videos(query, max_results=3):

@@ -49,6 +49,7 @@
                     <td><input class="cell-edit" data-field="semester" value="{{ c.semester or '' }}" style="width:90px;"></td>
                     <td><input class="cell-edit" data-field="course_type" value="{{ c.course_type or '' }}" style="width:80px;"></td>
                     <td class="row-actions">
+                        <a href="/admin/academia/courses/{{ c.id }}" class="save-btn" style="text-decoration:none; background:#3b82f6;">Topics ({{ c.topics.count() }})</a>
                         <button class="save-btn" onclick="saveCourse({{ c.id }})">Save</button>
                         <button class="del-btn" onclick="deleteCourse({{ c.id }})">Delete</button>
                     </td>

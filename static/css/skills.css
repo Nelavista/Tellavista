@@ -494,6 +494,23 @@ body.light-mode .sk-input, body.light-mode .sk-textarea, body.light-mode .sk-sel
 .ac-action-body { flex: 1; min-width: 0; }
 .ac-action-title { font-weight: 700; font-size: var(--text-base); margin-bottom: 3px; }
 .ac-action-sub { font-size: var(--text-sm); color: var(--sk-text-dim); }
+@media (max-width: 640px) {
+  .ac-action-card {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-areas: "icon body" "cta cta";
+    align-items: center;
+    column-gap: var(--space-3);
+    row-gap: var(--space-3);
+    padding: var(--space-4);
+    margin: var(--space-4) 0;
+  }
+  .ac-action-icon { grid-area: icon; width: 40px; height: 40px; font-size: 1.1rem; }
+  .ac-action-body { grid-area: body; }
+  .ac-action-title { font-size: var(--text-sm); }
+  .ac-action-sub { font-size: var(--text-xs); }
+  .ac-action-card .sk-btn.small { grid-area: cta; width: 100%; text-align: center; }
+}
 
 /* Weekly study-hours bar chart. */
 .ac-bars { display: flex; align-items: flex-end; gap: var(--space-3); height: 90px; margin: var(--space-4) 0 var(--space-2); }

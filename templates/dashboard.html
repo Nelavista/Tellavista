@@ -92,7 +92,7 @@
     /* ===== IN-PAGE AI CHAT ===== */
     .chat-container { display: none; flex-direction: column; height: calc(100vh - 60px); position: relative; max-width: 900px; margin: 0 auto; width: 100%; opacity: 0; animation: fadeIn 0.3s forwards; padding-bottom: 80px; }
     .chat-container.active { display: flex; }
-    .messages { flex: 1; overflow-y: auto; padding: var(--space-5); padding-bottom: 100px; scroll-behavior: smooth; }
+    .messages { flex: 1; overflow-y: auto; padding: var(--space-5); padding-bottom: 160px; scroll-behavior: smooth; }
     .message { margin: var(--space-4) 0; animation: messageAppear 0.4s ease-out; display: block; }
     .message-content { display: inline-block; max-width: 85%; padding: 12px 16px; border-radius: 16px; line-height: 1.5; word-wrap: break-word; font-size: var(--text-sm); }
     .message.user .message-content { background: var(--sk-accent); color: var(--bg-deep); border-bottom-right-radius: 4px; float: right; clear: both; }
@@ -107,6 +107,12 @@
 
     .input-area { position: fixed; bottom: 0; left: 0; right: 0; padding: var(--space-4) var(--space-5) var(--space-6); background: rgba(5,8,16,0.96); backdrop-filter: blur(12px); border-top: 1px solid var(--sk-border); z-index: 1001; }
     body.light-mode .input-area { background: rgba(255,255,255,0.96); }
+    /* Below 1024px the 5-item mobile-tabbar (skills.css) also pins to bottom:0 at the
+       same z-index — without this offset it paints over the input bar instead of
+       stacking below it, and a sliver of the pill peeks out above the nav. */
+    @media (max-width: 1023px) {
+      .input-area { bottom: calc(78px + env(safe-area-inset-bottom)); padding: var(--space-3) var(--space-4); }
+    }
     .input-wrapper { max-width: 900px; margin: 0 auto; background: var(--sk-card); border: 1px solid var(--sk-border); border-radius: var(--r-pill); padding: 6px 12px; display: flex; align-items: center; gap: 4px; }
     .input-wrapper input { flex: 1; background: none; border: none; color: var(--sk-text); padding: 10px 8px; font-size: var(--text-sm); outline: none; font-family: inherit; }
     .attachment-icon, .voice-icon { background: none; border: none; color: var(--sk-text-dim); font-size: 1.1rem; cursor: pointer; padding: 8px; border-radius: 50%; display: flex; }

@@ -40,6 +40,47 @@ def create_database_if_not_exists():
         print(f"⚠️ Could not create database: {e}")
         return False
 
+def _create_all_and_stamp_if_alembic_untracked(app):
+    """The db.create_all()-vs-Alembic race, fixed: db.create_all() creates any table
+    defined in models.py that's missing, with zero awareness of migration history. Once
+    a database has ever been touched by Alembic (its `alembic_version` table exists),
+    create_all() must never run again on it — if a migration is about to CREATE TABLE
+    something new, importing app.py first (which any script using `from app import app`
+    has to do, including a migration-running one-liner, and including every normal app
+    boot before the migration is run) silently creates that same table via create_all(),
+    and the migration then fails on "relation already exists". This bit us for real: a
+    routine `flask db current` check against production silently created a bare,
+    un-indexed, un-tracked `topics` table ahead of the actual migration, which then had
+    to be manually dropped before the real migration could run.
+
+    Fix: check whether `alembic_version` exists first.
+      - If it does NOT exist, this is either a genuinely fresh database (no tables at
+        all -- first-ever local/CI setup) or a legacy database that predates Alembic
+        being wired into this project (already has tables, never stamped) -- the
+        existing "legacy bridge" scenario this function's tables-upgrade blocks below
+        were written for. Either way, create_all() is safe to run (a no-op for tables
+        that already exist), and the database is then stamped at the current Alembic
+        head so a subsequent `flask db upgrade` sees "nothing to apply" instead of
+        replaying the entire migration history against tables that already exist.
+      - If `alembic_version` DOES exist, this database is already Alembic-tracked
+        (true of every real deployed environment, production included) -- create_all()
+        is skipped entirely. From that point on, `flask db upgrade` is the only path
+        that may ever create a new table, exactly as the module docstring below always
+        intended.
+    """
+    from sqlalchemy import inspect
+    from flask_migrate import stamp
+
+    alembic_tracked = inspect(db.engine).has_table('alembic_version')
+    if alembic_tracked:
+        debug_print("Database already tracked by Alembic -- skipping db.create_all(), migrations are the only path.")
+        return
+
+    db.create_all()
+    stamp()
+    print("✅ Fresh/legacy database: tables created and stamped at the current Alembic head.")
+
+
 def init_database(app):
     """Initialize database with error handling and upgrade video columns.
 
@@ -52,7 +93,7 @@ def init_database(app):
     try:
         create_database_if_not_exists()
         with app.app_context():
-            db.create_all()
+            _create_all_and_stamp_if_alembic_untracked(app)
             print("✅ Database tables created/verified")
 
             # Upgrade video table columns (PostgreSQL)
@@ -127,7 +168,7 @@ def init_database(app):
         # file, which is the intentional, supported local/test path.
         try:
             with app.app_context():
-                db.create_all()
+                _create_all_and_stamp_if_alembic_untracked(app)
                 logger.info("SQLite (local dev) database created/verified.")
                 return True
         except Exception as e2:

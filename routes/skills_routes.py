@@ -3,6 +3,7 @@ import time
 import cloudinary
 import cloudinary.uploader
 from datetime import datetime
+from urllib.parse import urlparse
 from flask import Blueprint, render_template, redirect, url_for, session, flash, jsonify, request
 from utils.helpers import login_required
 from models import (
@@ -33,6 +34,7 @@ from services.ai_service import (
     evaluate_project_submission, generate_project_brief, project_mentor_reply,
     PROJECT_REVIEW_DIMENSIONS, PROJECT_REVIEW_DIMENSION_LABELS,
 )
+from services.link_fetch_service import fetch_page_text, fetch_github_summary, is_figma_url
 from services.notification_service import notify, unread_count, mark_all_read
 from services.messaging_service import get_or_create_thread, send_message, mark_thread_read
 from models import (
@@ -855,6 +857,46 @@ def project_detail(project_id):
         ask_suggestions=['Review my project', 'What should I add next?', 'Help me debug something'])
 
 
+def _gather_fetched_context(project):
+    """Best-effort real content for whatever the student attached (repo_url, live_url,
+    external_links) — folded into the AI review's submission_details string alongside the
+    student's own account, so the review can reason about what was actually built rather
+    than only what was claimed. Every fetch is independently wrapped; one slow/failed
+    fetch never blocks the others or the review itself. See services/link_fetch_service.py
+    for the SSRF-safe fetching this relies on."""
+    sections = []
+
+    if project.repo_url:
+        gh_summary = fetch_github_summary(project.repo_url)
+        if gh_summary:
+            sections.append(f"--- Fetched from GitHub repository ---\n{gh_summary}")
+        else:
+            page_text = fetch_page_text(project.repo_url)
+            if page_text:
+                sections.append(f"--- Fetched from repository URL ---\n{page_text}")
+
+    if project.live_url:
+        page_text = fetch_page_text(project.live_url)
+        if page_text:
+            sections.append(f"--- Fetched from live URL ---\n{page_text}")
+
+    for link in project.external_links:
+        url = link.get('url')
+        label = link.get('label') or 'Additional link'
+        if not url:
+            continue
+        if is_figma_url(url):
+            sections.append(f"--- Additional link (Figma, content not fetched) ---\n{label}: {url}")
+            continue
+        page_text = fetch_page_text(url)
+        if page_text:
+            sections.append(f"--- Fetched from {label} ---\n{page_text}")
+        else:
+            sections.append(f"--- Additional link (could not fetch) ---\n{label}: {url}")
+
+    return '\n\n'.join(sections)
+
+
 @skills_bp.route('/skills/projects/<int:project_id>/update', methods=['POST'])
 @login_required
 @limiter.limit('60 per hour')
@@ -883,6 +925,21 @@ def update_project(project_id):
         project.description = (data['description'] or '').strip() or None
     if 'screenshots' in data:
         project.screenshots = data['screenshots'] or []
+    if 'external_links' in data:
+        raw_links = data['external_links'] if isinstance(data['external_links'], list) else []
+        clean_links = []
+        for link in raw_links[:10]:
+            if not isinstance(link, dict):
+                continue
+            label = str(link.get('label') or '').strip()[:60]
+            url = str(link.get('url') or '').strip()[:500]
+            if not label or not url:
+                continue
+            parsed = urlparse(url)
+            if parsed.scheme not in ('http', 'https') or not parsed.hostname:
+                continue
+            clean_links.append({'label': label, 'url': url})
+        project.external_links = clean_links
     if 'is_public' in data:
         project.is_public = bool(data['is_public'])
 
@@ -900,6 +957,9 @@ def update_project(project_id):
                 f"Repository: {project.repo_url or '(none provided)'}\n"
                 f"Live URL: {project.live_url or '(none provided)'}"
             )
+            fetched = _gather_fetched_context(project)
+            if fetched:
+                submission_details += f"\n\n{fetched}"
             result = evaluate_final_project(
                 project.template.rubric, project.template.title, project.template.description, submission_details
             )
@@ -1312,6 +1372,10 @@ def request_project_review(project_id):
         submission_details += f"\nWorkspace: {len(project.design_assets)} design asset(s) uploaded, notes: {project.design_notes or '(none)'}"
     elif project.workspace_type == 'data':
         submission_details += f"\nWorkspace: {len(project.notebook_cells)} notebook cell(s) written in-browser"
+
+    fetched = _gather_fetched_context(project)
+    if fetched:
+        submission_details += f"\n\n{fetched}"
 
     reflections = {
         'problem_solved': project.reflection_problem_solved,

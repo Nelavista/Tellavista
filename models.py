@@ -975,6 +975,13 @@ class StudentProject(db.Model):
     # Project workspace: screenshots are pasted URLs (no new upload widget — same pattern
     # as repo_url/live_url), not a Cloudinary integration of their own.
     screenshots_json = db.Column(db.Text)
+    # Generic labeled links beyond repo_url/live_url — [{"label","url"}, ...]. Lets a
+    # student attach whatever they actually used (Figma, Notion, Behance, a staging URL,
+    # anything) without this platform needing a dedicated field per tool. See
+    # services/link_fetch_service.py for how (and whether) each link's content gets
+    # fetched for AI review — Figma links are stored/shown but never fetched (no OAuth
+    # integration exists for it), everything else is fetched best-effort.
+    external_links_json = db.Column(db.Text)
     # Ordinary (non-final-project) AI review — same spirit as ChallengeSubmission.feedback:
     # real strengths/improvements, not a bare pass/fail. Separate from rubric_scores, which
     # only applies to a daily-class's formal final project.
@@ -1069,6 +1076,17 @@ class StudentProject(db.Model):
     @screenshots.setter
     def screenshots(self, value):
         self.screenshots_json = json.dumps(value or [])
+
+    @property
+    def external_links(self):
+        try:
+            return json.loads(self.external_links_json) if self.external_links_json else []
+        except (ValueError, TypeError):
+            return []
+
+    @external_links.setter
+    def external_links(self, value):
+        self.external_links_json = json.dumps(value or [])
 
     @property
     def ai_feedback(self):
@@ -1171,7 +1189,7 @@ class StudentProject(db.Model):
             'started_at': self.started_at.isoformat() if self.started_at else None,
             'completed_at': self.completed_at.isoformat() if self.completed_at else None,
             'rubric_scores': self.rubric_scores, 'ai_overall_score': self.ai_overall_score,
-            'screenshots': self.screenshots, 'ai_feedback': self.ai_feedback,
+            'screenshots': self.screenshots, 'external_links': self.external_links, 'ai_feedback': self.ai_feedback,
             'verification_status': self.verification_status, 'is_public': self.is_public,
             'source': self.source, 'workspace_type': self.workspace_type,
             'objectives': self.objectives, 'features': self.features,

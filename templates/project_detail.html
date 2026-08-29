@@ -158,6 +158,26 @@
         <button type="submit" class="sk-btn secondary small" style="flex-shrink:0;">Add</button>
       </form>
 
+      <div class="sk-section-title">Additional Links</div>
+      <p class="sk-card-desc" style="margin-top:-6px;">Figma, Notion, a deployed staging build — anything else you used. GitHub and live-site links are reviewed automatically; other links marked Figma are shown but their content isn't fetched.</p>
+      {% if project.external_links %}
+      <div id="externalLinksList" style="display:flex; flex-direction:column; gap:6px; margin-bottom:10px;">
+        {% for link in project.external_links %}
+        <div style="display:flex; align-items:center; gap:8px;">
+          <a href="{{ link.url }}" target="_blank" rel="noopener" class="sk-view-link">{{ link.label }} →</a>
+          {% if 'figma.com' in link.url %}<span class="sk-card-desc" style="margin:0; font-size:0.76rem;">(content not verified)</span>{% endif %}
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <p class="sk-card-desc" id="noExternalLinksMsg">No additional links yet.</p>
+      {% endif %}
+      <form id="externalLinkForm" class="sk-panel" style="display:flex; gap:8px; margin-top:10px; flex-wrap:wrap;" onsubmit="return addExternalLink(event)">
+        <input type="text" id="externalLinkLabel" class="sk-input" style="flex:1; min-width:120px;" placeholder="Label, e.g. Figma prototype">
+        <input type="text" id="externalLinkUrl" class="sk-input" style="flex:2; min-width:180px;" placeholder="https://...">
+        <button type="submit" class="sk-btn secondary small" style="flex-shrink:0;">Add</button>
+      </form>
+
       <div class="sk-section-title">Milestones</div>
       <div class="sk-panel">
         <div id="milestoneList">
@@ -373,6 +393,25 @@
     const res = await fetch(window.location.pathname + '/update', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ screenshots: current })
+    });
+    const data = await res.json();
+    if (data.success) { location.reload(); }
+    return false;
+  }
+
+  const currentExternalLinks = {{ project.external_links|tojson }};
+
+  async function addExternalLink(e) {
+    e.preventDefault();
+    const labelInput = document.getElementById('externalLinkLabel');
+    const urlInput = document.getElementById('externalLinkUrl');
+    const label = labelInput.value.trim();
+    const url = urlInput.value.trim();
+    if (!label || !url) return false;
+    currentExternalLinks.push({ label, url });
+    const res = await fetch(window.location.pathname + '/update', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ external_links: currentExternalLinks })
     });
     const data = await res.json();
     if (data.success) { location.reload(); }

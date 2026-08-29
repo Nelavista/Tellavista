@@ -29,6 +29,11 @@ YOUTUBE_API_KEY = os.getenv('YOUTUBE_API_KEY')
 # the day; unset (the common case) is a complete no-op, same single-key behavior as before.
 YOUTUBE_API_KEY_2 = os.getenv('YOUTUBE_API_KEY_2')
 AGORA_APP_ID = os.getenv('AGORA_APP_ID')
+# Optional -- raises GitHub's public REST API rate limit from 60/hr to 5000/hr, shared
+# across every student's project review on this deploy (see services/link_fetch_service.py's
+# fetch_github_summary). Same "unset = graceful no-op" pattern as YOUTUBE_API_KEY_2; a
+# fine-grained token with no scopes (read-only access to public repos only) is enough.
+GITHUB_TOKEN = os.getenv('GITHUB_TOKEN')
 
 # "Sign in with Google" -- both must be set (from the Google Cloud Console OAuth client)
 # for the feature to activate. Left unset, the Google button simply doesn't render and

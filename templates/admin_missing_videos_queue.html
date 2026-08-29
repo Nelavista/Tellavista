@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Missing Videos Queue</title>
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Inter',system-ui,sans-serif; }
+        body { background:#0d1117; color:#e6edf3; padding:20px; }
+        .container { max-width:640px; margin:0 auto; }
+        .top-row { display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; }
+        .back-link { color:#8b949e; text-decoration:none; font-size:0.85rem; }
+        .back-link:hover { color:#58a6ff; }
+        .remaining-badge { background:#21262d; border:1px solid #30363d; color:#8b949e; padding:4px 12px; border-radius:20px; font-size:0.8rem; }
+        h1 { font-size:1.4rem; margin-bottom:4px; }
+        .subtitle { color:#8b949e; font-size:0.85rem; margin-bottom:24px; }
+
+        .empty { text-align:center; padding:60px 20px; color:#6e7681; }
+
+        .card { background:#161b22; border:1px solid #21262d; border-radius:12px; padding:24px; }
+        .breadcrumb { color:#8b949e; font-size:0.8rem; margin-bottom:6px; }
+        .topic-title { font-size:1.3rem; font-weight:700; margin-bottom:18px; }
+
+        .search-link { display:inline-flex; align-items:center; gap:6px; background:#21262d; border:1px solid #30363d; color:#58a6ff; padding:9px 16px; border-radius:8px; text-decoration:none; font-size:0.85rem; margin-bottom:20px; }
+        .search-link:hover { border-color:#58a6ff; }
+
+        label { display:block; font-size:0.8rem; color:#8b949e; margin-bottom:6px; }
+        input.url-input { width:100%; background:#0d1117; border:1px solid #30363d; color:#e6edf3; padding:12px 14px; border-radius:8px; font-size:0.9rem; margin-bottom:6px; }
+        input.url-input:focus { outline:none; border-color:#58a6ff; }
+        .hint { font-size:0.75rem; color:#6e7681; margin-bottom:20px; }
+        .hint.bad { color:#f59e0b; }
+
+        .actions { display:flex; gap:10px; }
+        .save-btn { flex:1; background:#22c55e; border:none; color:#fff; padding:12px; border-radius:8px; font-weight:600; font-size:0.9rem; cursor:pointer; }
+        .save-btn:hover { background:#16a34a; }
+        .save-btn:disabled { opacity:0.6; cursor:default; }
+        .skip-link { flex-shrink:0; background:#21262d; border:1px solid #30363d; color:#8b949e; padding:12px 18px; border-radius:8px; text-decoration:none; font-size:0.9rem; text-align:center; }
+        .skip-link:hover { border-color:#8b949e; color:#e6edf3; }
+    </style>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
+</head>
+<body>
+{% include 'components/admin_nav.html' %}
+    <div class="container">
+        <div class="top-row">
+            <a href="/admin/academia" class="back-link">&larr; Academia Taxonomy</a>
+            {% if topic %}<span class="remaining-badge">{{ remaining }} remaining</span>{% endif %}
+        </div>
+        <h1>Missing Videos Queue</h1>
+        <div class="subtitle">Paste a video URL for each topic — saves instantly, zero YouTube API quota used.</div>
+
+        {% if not topic %}
+        <div class="empty">Every active topic has a video linked. Nothing left in the queue.</div>
+        {% else %}
+        <div class="card">
+            <div class="breadcrumb">{{ topic.course.code }} &middot; {{ topic.course.title }}</div>
+            <div class="topic-title">{{ topic.title }}</div>
+
+            <a class="search-link" target="_blank" rel="noopener"
+               href="https://www.youtube.com/results?search_query={{ query|urlencode }}">
+                Search YouTube for "{{ query }}" &#8599;
+            </a>
+
+            <label for="urlInput">Video URL</label>
+            <input type="text" id="urlInput" class="url-input" autocomplete="off"
+                   placeholder="https://www.youtube.com/watch?v=... or youtu.be/...">
+            <div class="hint" id="urlHint">Paste the full video URL, or just the 11-character video ID.</div>
+
+            <div class="actions">
+                <button class="save-btn" id="saveBtn" onclick="saveAndNext()">Save &amp; Next</button>
+                <a class="skip-link" href="/admin/academia/videos/missing?after_id={{ topic.id }}">Skip</a>
+            </div>
+        </div>
+
+        <script>
+            const TOPIC_ID = {{ topic.id }};
+            const NEXT_URL = '/admin/academia/videos/missing?after_id={{ topic.id }}';
+            const input = document.getElementById('urlInput');
+            const hint = document.getElementById('urlHint');
+
+            function extractId(v) {
+                v = (v || '').trim();
+                if (/^[A-Za-z0-9_-]{11}$/.test(v)) return v;
+                const m = v.match(/(?:v=|youtu\.be\/|embed\/)([A-Za-z0-9_-]{11})/);
+                return m ? m[1] : null;
+            }
+
+            input.addEventListener('input', () => {
+                if (!input.value.trim()) {
+                    hint.textContent = 'Paste the full video URL, or just the 11-character video ID.';
+                    hint.classList.remove('bad');
+                    return;
+                }
+                if (extractId(input.value)) {
+                    hint.textContent = 'Looks like a valid video link.';
+                    hint.classList.remove('bad');
+                } else {
+                    hint.textContent = "Doesn't look like a YouTube URL or video ID yet.";
+                    hint.classList.add('bad');
+                }
+            });
+            input.focus();
+
+            async function saveAndNext() {
+                const url = input.value.trim();
+                if (!url) { window.location.href = NEXT_URL; return; }
+                const btn = document.getElementById('saveBtn');
+                btn.disabled = true;
+                btn.textContent = 'Saving…';
+                const fd = new FormData();
+                fd.append('video_url', url);
+                try {
+                    const res = await fetch(`/admin/academia/topics/${TOPIC_ID}/edit`, { method: 'POST', body: fd });
+                    const data = await res.json();
+                    if (!data.success) { alert('Error: ' + (data.error || 'save failed')); btn.disabled = false; btn.textContent = 'Save & Next'; return; }
+                    window.location.href = NEXT_URL;
+                } catch (e) {
+                    alert('Network error — please try again.');
+                    btn.disabled = false;
+                    btn.textContent = 'Save & Next';
+                }
+            }
+
+            input.addEventListener('keydown', (e) => { if (e.key === 'Enter') saveAndNext(); });
+        </script>
+        {% endif %}
+    </div>
+</body>
+</html>

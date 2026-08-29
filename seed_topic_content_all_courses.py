@@ -41,13 +41,18 @@ def main():
     from services.ai_service import generate_topic_explanation
     from services.youtube_service import search_youtube_videos, build_topic_video_query
 
+    # A topic still "needs content" if it's missing an explanation OR a video -- these
+    # are independently retryable (a video-search failure from a quota day must not
+    # block a topic whose explanation is already fine, and vice versa).
+    needs_content = db.or_(Topic.explanation.is_(None), Topic.videos_json.is_(None))
+
     with app.app_context():
-        # Every course with >=1 topic missing an explanation, ordered so partially-done
+        # Every course with >=1 topic still missing something, ordered so partially-done
         # courses (from an earlier interrupted run) are picked up before untouched ones.
         course_ids = [
             row[0] for row in
             db.session.query(Topic.course_id)
-            .filter(Topic.explanation.is_(None))
+            .filter(needs_content)
             .distinct()
             .all()
         ]
@@ -59,10 +64,11 @@ def main():
 
         total_topics_remaining = (
             db.session.query(func.count(Topic.id))
-            .filter(Topic.course_id.in_([c.id for c in courses]), Topic.explanation.is_(None))
+            .filter(Topic.course_id.in_([c.id for c in courses]), needs_content)
             .scalar()
         )
-        print(f"{len(courses)} courses, {total_topics_remaining} topics still need content.")
+        print(f"{len(courses)} courses, {total_topics_remaining} topics still need content "
+              f"(missing explanation and/or video).")
 
         if not APPLY:
             print("Dry run only. Re-run with --apply.")
@@ -74,7 +80,7 @@ def main():
         t_start = time.time()
 
         for ci, course in enumerate(courses):
-            topics = course.topics.order_by(Topic.order).filter(Topic.explanation.is_(None)).all()
+            topics = course.topics.order_by(Topic.order).filter(needs_content).all()
             for topic in topics:
                 try:
                     if topic.videos is None:
@@ -84,10 +90,14 @@ def main():
                             topic.videos = result
                             db.session.commit()
 
-                    video = topic.videos[0] if topic.videos else None
-                    content = generate_topic_explanation(course.code, course.title, topic.title, video=video)
-                    topic.explanation = content
-                    db.session.commit()
+                    # Only (re)write the explanation if it's actually missing -- a topic
+                    # that just needed a video (explanation already fine) must not spend
+                    # another AI call rewriting text that was never broken.
+                    if topic.explanation is None:
+                        video = topic.videos[0] if topic.videos else None
+                        content = generate_topic_explanation(course.code, course.title, topic.title, video=video)
+                        topic.explanation = content
+                        db.session.commit()
                     done_topics += 1
                 except Exception as e:
                     db.session.rollback()

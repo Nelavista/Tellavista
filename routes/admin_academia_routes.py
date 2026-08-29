@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, jsonify
+from flask import Blueprint, render_template, request, jsonify, redirect, url_for
 from utils.helpers import login_required, admin_required
 from models import University, Faculty, Department, Course, Topic
 from extensions import db
@@ -283,3 +283,31 @@ def generate_topic_explanation_draft(topic_id):
     except Exception:
         return jsonify({'success': False, 'error': 'AI content generation failed -- please try again.'}), 502
     return jsonify({'success': True, 'content': content, 'video': video})
+
+
+@admin_academia_bp.route('/admin/academia/videos/missing')
+@login_required
+@admin_required
+def missing_videos_queue():
+    """Fast one-at-a-time queue for manually pinning a video on topics the auto-search
+    pipeline couldn't fill (quota exhausted, or a genuine no-match) -- sidesteps YouTube's
+    search.list quota entirely, since pasting a URL costs zero API calls. Saves through
+    the existing edit_topic endpoint (video_url), so no new write path is introduced.
+    `after_id` moves the cursor forward without server-side session state -- both "Skip"
+    and "Save & Next" just link/redirect to the next topic id past the current one."""
+    after_id = request.args.get('after_id', type=int) or 0
+
+    no_video = db.or_(Topic.video_url.is_(None), Topic.video_url == '')
+    no_cached_search = db.or_(Topic.videos_json.is_(None), Topic.videos_json == '[]')
+
+    base_query = Topic.query.join(Course).filter(
+        Topic.is_active == True, no_video, no_cached_search,  # noqa: E712
+    )
+    remaining = base_query.filter(Topic.id > after_id).count()
+    topic = base_query.filter(Topic.id > after_id).order_by(Topic.id).first()
+
+    return render_template(
+        'admin_missing_videos_queue.html', topic=topic, remaining=remaining,
+        query=build_topic_video_query(topic.course.code, topic.course.title, topic.title) if topic else None,
+        active_page='academia',
+    )

@@ -29,6 +29,7 @@ from services.gpa_service import compute_skill_gpa, recompute_and_cache_gpa, get
 from services.skills_service import (
     get_pipeline_state, opportunity_match_pct, profile_completeness, get_continue_learning_card,
     compute_payout_breakdown, get_talent_stats, get_verified_skills, get_skill_scores,
+    get_projects_empty_state_cta,
 )
 from services.ai_service import (
     evaluate_project_submission, generate_project_brief, project_mentor_reply,
@@ -730,7 +731,8 @@ def challenge_view(skill_slug, challenge_slug):
 def projects():
     user = _current_user()
     my_projects = StudentProject.query.filter_by(student_id=user.id).order_by(StudentProject.updated_at.desc()).all()
-    return render_template('projects.html', projects=my_projects, active_page='projects')
+    empty_state_cta = get_projects_empty_state_cta(user.id) if not my_projects else None
+    return render_template('projects.html', projects=my_projects, empty_state_cta=empty_state_cta, active_page='projects')
 
 
 @skills_bp.route('/skills/projects/start/<int:template_id>', methods=['POST'])

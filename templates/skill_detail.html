@@ -192,6 +192,10 @@
     document.querySelectorAll('.skd-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === name));
     document.querySelectorAll('.skd-tab-panel').forEach(p => p.classList.toggle('active', p.id === 'tab-' + name));
   }
+
+  if (window.location.hash === '#tab-projects') {
+    skdShowTab('projects');
+  }
 </script>
 </body>
 </html>

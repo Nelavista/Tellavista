@@ -21,9 +21,19 @@
     {% if not projects %}
     <div class="sk-empty" style="margin-top:24px;">
       <div class="sk-empty-icon"><i class="ri-hammer-line"></i></div>
+      {% if empty_state_cta and empty_state_cta.reason == 'completed' %}
+      <div style="font-weight:600; margin-bottom:6px;">You completed {{ empty_state_cta.skill.name }} — now prove it</div>
+      <div style="font-size:0.85rem; margin-bottom:18px;">A course shows you learned it. A project shows you can actually do it. Build the one waiting for you in {{ empty_state_cta.skill.name }}.</div>
+      <a href="/skills/{{ empty_state_cta.skill.slug }}#tab-projects" class="sk-btn">Build a {{ empty_state_cta.skill.name }} Project</a>
+      {% elif empty_state_cta and empty_state_cta.reason == 'experienced' %}
+      <div style="font-weight:600; margin-bottom:6px;">You told us you already know {{ empty_state_cta.skill.name }}</div>
+      <div style="font-size:0.85rem; margin-bottom:18px;">No need to start from the basics — jump straight to building something real.</div>
+      <a href="/skills/{{ empty_state_cta.skill.slug }}#tab-projects" class="sk-btn">Build a {{ empty_state_cta.skill.name }} Project</a>
+      {% else %}
       <div style="font-weight:600; margin-bottom:6px;">No projects yet</div>
       <div style="font-size:0.85rem; margin-bottom:18px;">Open any skill's Projects tab to start building something real.</div>
       <a href="/skills/catalog" class="sk-btn">Explore Skills</a>
+      {% endif %}
     </div>
     {% else %}
     <div class="sk-grid" style="margin-top:20px;">

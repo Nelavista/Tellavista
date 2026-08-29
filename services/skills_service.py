@@ -11,7 +11,7 @@ from models import (
     Skill, SkillCourse, CourseModule, Lesson, LearningPathStep,
     StudentLessonProgress, StudentSkill, ChallengeSubmission, StudentProject,
     CareerTrackStep, Challenge, ProjectTemplate, Opportunity, OpportunityApplication,
-    Rating,
+    Rating, StudentOnboarding,
 )
 
 # What Nelavista keeps of a paid gig — shown openly everywhere a payout is shown (Earnings,
@@ -496,6 +496,44 @@ def compute_payout_breakdown(payment_amount):
     payment_amount = payment_amount or 0
     fee = round(payment_amount * PLATFORM_FEE_PCT / 100)
     return {'gross': payment_amount, 'fee': fee, 'fee_pct': PLATFORM_FEE_PCT, 'net': payment_amount - fee}
+
+
+def get_projects_empty_state_cta(student_id):
+    """What to tell a student with zero StudentProjects about what to build next, instead
+    of a one-size-fits-all 'Explore Skills' — the same nudge shouldn't apply to someone
+    who just finished a course and someone who's never opened one.
+
+    Priority:
+    1. A skill they've actually completed (StudentSkill.status == 'completed'), most
+       recently finished first, that has a published project brief waiting -- they don't
+       need to 'explore' anything, they need to go build the thing tied to what they just
+       learned.
+    2. Failing that, an onboarding-declared 'experienced' student pointed at a specific
+       skill during onboarding -- they told us they already know this, so the nudge should
+       be 'build', not 'explore/learn' (that phrasing is for someone genuinely new).
+    3. Otherwise None -- the caller falls back to the generic 'Explore Skills' empty state,
+       which is the right default for a beginner with nothing completed yet.
+
+    Returns None or {'skill': Skill, 'reason': 'completed' | 'experienced'}.
+    """
+    completed = (
+        StudentSkill.query.filter_by(student_id=student_id, status='completed')
+        .order_by(StudentSkill.completed_at.desc()).all()
+    )
+    for student_skill in completed:
+        has_template = ProjectTemplate.query.filter_by(
+            skill_id=student_skill.skill_id, is_published=True
+        ).first()
+        if has_template and student_skill.skill and student_skill.skill.is_published:
+            return {'skill': student_skill.skill, 'reason': 'completed'}
+
+    onboarding = StudentOnboarding.query.filter_by(student_id=student_id).first()
+    if onboarding and onboarding.experience_level == 'experienced' and onboarding.interested_skill_id:
+        skill = onboarding.interested_skill
+        if skill and skill.is_published:
+            return {'skill': skill, 'reason': 'experienced'}
+
+    return None
 
 
 def get_verified_skills(student_id):

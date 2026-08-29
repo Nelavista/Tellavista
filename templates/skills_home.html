@@ -193,7 +193,13 @@
     <div class="sk-grid">
       {% for p in my_projects %}
       <div class="sk-card" style="cursor:default;">
-        <span class="sk-badge {{ p.status }}">{{ 'Done' if p.status == 'completed' else ('Active' if p.status == 'in_progress' else p.status|title) }}</span>
+        <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+          <span class="sk-badge {{ p.status }}">{{ 'Done' if p.status == 'completed' else ('Active' if p.status == 'in_progress' else p.status|title) }}</span>
+          {% set effective_score = p.ai_overall_score if p.ai_overall_score is not none else (p.ai_feedback.score if p.ai_feedback else none) %}
+          {% if effective_score is not none %}
+          <span class="sk-badge" style="color:{{ 'var(--sk-success)' if effective_score >= 70 else ('var(--sk-warn)' if effective_score >= 40 else 'var(--sk-danger)') }};"><i class="ri-star-fill"></i> {{ effective_score }}/100</span>
+          {% endif %}
+        </div>
         <div class="sk-card-title" style="margin-top:10px;">{{ p.title }}</div>
         <div class="sk-card-desc">{{ p.description or '' }}</div>
         {% if p.skills_demonstrated %}

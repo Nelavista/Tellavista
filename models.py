@@ -991,8 +991,8 @@ class StudentProject(db.Model):
     # so every historical row gets a correct value, not just new ones.
     source = db.Column(db.String(20), nullable=False, default='custom', server_default='custom')
     # Which in-browser workspace this project gets, if any. NULL means no workspace — the
-    # plain repo_url/live_url/screenshots flow, same as every project today. Only ever
-    # developer/writer/designer — there is deliberately no 'data'/notebook workspace.
+    # plain repo_url/live_url/screenshots flow, same as every project today.
+    # developer | writer | designer | data | NULL.
     workspace_type = db.Column(db.String(20), nullable=True)
     idea_text = db.Column(db.Text, nullable=True)  # the student's own free-text idea (ai_generated only)
     objectives = db.Column(db.Text, nullable=True)  # AI brief: one-paragraph objective
@@ -1012,6 +1012,12 @@ class StudentProject(db.Model):
     # ── designer workspace ───────────────────────────────────────────────────────────────
     design_notes = db.Column(db.Text, nullable=True)  # moodboard/plan notes
     design_assets_json = db.Column(db.Text, nullable=True)  # [{"url","note","uploaded_at"}, ...] Cloudinary URLs
+
+    # ── data workspace ───────────────────────────────────────────────────────────────────
+    # [{"type": "note"|"snippet", "content": str}, ...] — a lightweight notebook. Cells don't
+    # execute; the AI mentor helps explain/review the logic instead. Saved wholesale (not
+    # per-cell), same simplicity as design_assets.
+    notebook_cells_json = db.Column(db.Text, nullable=True)
 
     # ── reflection answers, for "Request Review" ─────────────────────────────────────────
     # Own columns, not folded into ai_feedback_json, for the same reason description/repo_url
@@ -1144,6 +1150,17 @@ class StudentProject(db.Model):
     def design_assets(self, value):
         self.design_assets_json = json.dumps(value or [])
 
+    @property
+    def notebook_cells(self):
+        try:
+            return json.loads(self.notebook_cells_json) if self.notebook_cells_json else []
+        except (ValueError, TypeError):
+            return []
+
+    @notebook_cells.setter
+    def notebook_cells(self, value):
+        self.notebook_cells_json = json.dumps(value or [])
+
     def to_dict(self):
         return {
             'id': self.id, 'title': self.title, 'description': self.description, 'status': self.status,
@@ -1161,6 +1178,7 @@ class StudentProject(db.Model):
             'deliverables': self.deliverables, 'tech_stack': self.tech_stack,
             'success_criteria': self.success_criteria,
             'difficulty': self.difficulty, 'estimated_time': self.estimated_time,
+            'notebook_cells': self.notebook_cells,
         }
 
 

@@ -20,6 +20,10 @@
     .pd-save-note { font-size: 0.78rem; color: #6b7280; margin-top: 8px; min-height: 16px; }
     .pd-dim-row { margin-bottom: 12px; }
     .pd-dim-row .pd-dim-label { display: flex; justify-content: space-between; font-size: 0.82rem; margin-bottom: 4px; }
+    .pd-label { text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; font-size: 0.72rem; margin-top: 12px; }
+    .pd-why-panel { display: flex; gap: 10px; align-items: flex-start; background: var(--sk-card); border-left: 3px solid var(--sk-accent); border-radius: 8px; padding: 12px 14px; margin: 14px 0; }
+    .pd-why-panel i { color: var(--sk-accent); font-size: 1.1rem; margin-top: 2px; }
+    .pd-why-panel p { margin: 0; font-size: 0.86rem; line-height: 1.6; color: var(--sk-text); }
   </style>
 </head>
 <body>
@@ -30,7 +34,7 @@
     <h1 class="sk-h1" style="font-size:1.6rem;">{{ project.title }}</h1>
     <div style="display:flex; gap:6px; flex-wrap:wrap; margin:10px 0 20px;">
       <span class="sk-badge {{ project.status }}">{{ project.status.replace('_',' ')|title }}</span>
-      {% if project.workspace_type %}<span class="sk-badge"><i class="ri-{{ 'code-s-slash-line' if project.workspace_type == 'developer' else 'quill-pen-line' if project.workspace_type == 'writer' else 'palette-line' }}"></i> {{ project.workspace_type|title }}</span>{% endif %}
+      {% if project.workspace_type %}<span class="sk-badge"><i class="ri-{{ 'code-s-slash-line' if project.workspace_type == 'developer' else 'quill-pen-line' if project.workspace_type == 'writer' else 'bar-chart-2-line' if project.workspace_type == 'data' else 'palette-line' }}"></i> {{ project.workspace_type|title }}</span>{% endif %}
       {% if project.source == 'ai_generated' %}<span class="sk-badge"><i class="ri-sparkling-2-line"></i> AI-generated</span>{% endif %}
       {% for s in project.skills_demonstrated %}<span class="sk-badge">{{ s }}</span>{% endfor %}
     </div>
@@ -45,7 +49,7 @@
     <div class="sk-tab-panel active" id="tab-overview">
       {% if project.objectives %}
       <div class="sk-panel">
-        <div class="sk-section-title" style="margin-top:0;">Brief</div>
+        <div class="sk-section-title" style="margin-top:0;">What You're Building</div>
         <p class="sk-card-desc" style="line-height:1.6;">{{ project.objectives }}</p>
         {% if project.difficulty or project.estimated_time %}
         <div style="display:flex; gap:6px; flex-wrap:wrap; margin:10px 0;">
@@ -53,20 +57,51 @@
           {% if project.estimated_time %}<span class="sk-badge"><i class="ri-time-line"></i> {{ project.estimated_time }}</span>{% endif %}
         </div>
         {% endif %}
+
+        {% if why_it_matters %}
+        <div class="pd-why-panel">
+          <i class="ri-flashlight-line"></i>
+          <p>{{ why_it_matters }}</p>
+        </div>
+        {% endif %}
+
         {% if project.features %}
-        <div class="sk-card-desc" style="text-transform:uppercase; font-weight:700; letter-spacing:0.5px; font-size:0.72rem; margin-top:12px;">Features</div>
+        <div class="sk-card-desc pd-label">Requirements</div>
         <ul style="margin:6px 0 0 18px; font-size:0.86rem; line-height:1.6;">{% for f in project.features %}<li>{{ f }}</li>{% endfor %}</ul>
         {% endif %}
+        {% if project.deliverables %}
+        <div class="sk-card-desc pd-label">Deliverables</div>
+        <ul style="margin:6px 0 0 18px; font-size:0.86rem; line-height:1.6;">{% for d in project.deliverables %}<li>{{ d }}</li>{% endfor %}</ul>
+        {% endif %}
+        {% if project.skills_demonstrated %}
+        <div class="sk-card-desc pd-label">Skills Being Assessed</div>
+        <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:6px;">{% for s in project.skills_demonstrated %}<span class="sk-badge">{{ s }}</span>{% endfor %}</div>
+        {% endif %}
         {% if project.tech_stack %}
-        <div class="sk-card-desc" style="text-transform:uppercase; font-weight:700; letter-spacing:0.5px; font-size:0.72rem; margin-top:12px;">Tech / Tools</div>
+        <div class="sk-card-desc pd-label">Tech / Tools</div>
         <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:6px;">{% for t in project.tech_stack %}<span class="sk-badge">{{ t }}</span>{% endfor %}</div>
         {% endif %}
         {% if project.success_criteria %}
-        <div class="sk-card-desc" style="text-transform:uppercase; font-weight:700; letter-spacing:0.5px; font-size:0.72rem; margin-top:12px;">Success Criteria</div>
+        <div class="sk-card-desc pd-label">Success Criteria</div>
         <ul style="margin:6px 0 0 18px; font-size:0.86rem; line-height:1.6;">{% for c in project.success_criteria %}<li>{{ c }}</li>{% endfor %}</ul>
         {% endif %}
       </div>
       {% endif %}
+
+      <div class="sk-panel">
+        <div class="sk-section-title" style="margin-top:0;">Evaluation Criteria</div>
+        {% if rubric_preview %}
+        <p class="sk-card-desc">This is a final project — it's graded strictly against this rubric, out of {{ rubric_preview|sum(attribute='max_points') }} points.</p>
+        <ul style="margin:8px 0 0 18px; font-size:0.86rem; line-height:1.7;">
+          {% for c in rubric_preview %}<li><strong>{{ c.name }}</strong> — up to {{ c.max_points }} points</li>{% endfor %}
+        </ul>
+        {% else %}
+        <p class="sk-card-desc">When you request a review, your submission is scored 0-100 on each of these:</p>
+        <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:8px;">
+          {% for key in review_dimensions %}<span class="sk-badge">{{ review_dimension_labels.get(key, key|title) }}</span>{% endfor %}
+        </div>
+        {% endif %}
+      </div>
 
       <div class="sk-panel">
         <div class="sk-progress-row" style="margin-top:0;">
@@ -153,6 +188,8 @@
         {% include 'components/project_workspace_writer.html' %}
       {% elif project.workspace_type == 'designer' %}
         {% include 'components/project_workspace_designer.html' %}
+      {% elif project.workspace_type == 'data' %}
+        {% include 'components/project_workspace_data.html' %}
       {% endif %}
     </div>
     {% endif %}
@@ -164,6 +201,21 @@
     <div class="sk-tab-panel" id="tab-review">
       <div class="sk-panel">
         <div class="sk-section-title" style="margin-top:0;">Review & Verification</div>
+        {% if project.rubric_scores is not none and project.ai_overall_score is not none %}
+        <div style="display:flex; align-items:center; gap:12px; margin-bottom:16px;">
+          <span style="font-size:1.6rem; font-weight:800; color:{{ '#4ade80' if project.ai_overall_score >= 70 else ('#fbbf24' if project.ai_overall_score >= 40 else '#f87171') }};">{{ project.ai_overall_score }}%</span>
+          <span class="sk-card-desc" style="margin:0;">Final project — graded against the rubric</span>
+        </div>
+        <div style="margin-bottom:8px;">
+          {% for c in project.rubric_scores %}
+          <div class="pd-dim-row">
+            <div class="pd-dim-label"><span>{{ c.name }}</span><span class="sk-card-desc" style="margin:0;">{{ c.score }}/{{ c.max_points }}</span></div>
+            <div class="sk-progress-track"><div class="sk-progress-fill" style="width:{{ (c.score / c.max_points * 100) if c.max_points else 0 }}%;"></div></div>
+            {% if c.comment %}<p class="sk-card-desc" style="margin-top:4px;">{{ c.comment }}</p>{% endif %}
+          </div>
+          {% endfor %}
+        </div>
+        {% endif %}
         {% if project.ai_feedback %}
         <div style="display:flex; align-items:center; gap:12px; margin-bottom:16px;">
           <span style="font-size:1.6rem; font-weight:800; color:{{ '#4ade80' if project.ai_feedback.score >= 70 else ('#fbbf24' if project.ai_feedback.score >= 40 else '#f87171') }};">{{ project.ai_feedback.score }}%</span>
@@ -172,10 +224,10 @@
 
         {% if project.ai_feedback.dimension_scores %}
         <div style="margin-bottom:16px;">
-          {% for key, label in [('functionality','Functionality'), ('craft_quality','Craft Quality'), ('problem_solving','Problem Solving'), ('documentation','Documentation'), ('originality','Originality')] %}
+          {% for key in review_dimensions %}
           {% set score = project.ai_feedback.dimension_scores.get(key, 0) %}
           <div class="pd-dim-row">
-            <div class="pd-dim-label"><span>{{ label }}</span><span class="sk-card-desc" style="margin:0;">{{ score }}/100</span></div>
+            <div class="pd-dim-label"><span>{{ review_dimension_labels.get(key, key|title) }}</span><span class="sk-card-desc" style="margin:0;">{{ score }}/100</span></div>
             <div class="sk-progress-track"><div class="sk-progress-fill" style="width:{{ score }}%;"></div></div>
           </div>
           {% endfor %}

@@ -27,9 +27,12 @@ from services.daily_class_service import (
 from services.gpa_service import compute_skill_gpa, recompute_and_cache_gpa, get_cohort_rank
 from services.skills_service import (
     get_pipeline_state, opportunity_match_pct, profile_completeness, get_continue_learning_card,
-    compute_payout_breakdown, get_talent_stats, get_verified_skills,
+    compute_payout_breakdown, get_talent_stats, get_verified_skills, get_skill_scores,
 )
-from services.ai_service import evaluate_project_submission, generate_project_brief, project_mentor_reply
+from services.ai_service import (
+    evaluate_project_submission, generate_project_brief, project_mentor_reply,
+    PROJECT_REVIEW_DIMENSIONS, PROJECT_REVIEW_DIMENSION_LABELS,
+)
 from services.notification_service import notify, unread_count, mark_all_read
 from services.messaging_service import get_or_create_thread, send_message, mark_thread_read
 from models import (
@@ -437,10 +440,14 @@ def lesson_view(skill_slug, course_slug, lesson_slug):
 
     if lesson.videos is None:
         # Fetched once and cached on the lesson (shared by every student, not per-student
-        # like Geeg's AI-generated courses) — search_youtube_videos already degrades to []
-        # if YOUTUBE_API_KEY isn't configured, so this is safe to call unconditionally.
-        lesson.videos = search_youtube_videos(build_lesson_video_query(skill.name, lesson.title))
-        db.session.commit()
+        # like Geeg's AI-generated courses) -- safe to call unconditionally even with no
+        # key configured. A None result (quota/network failure) is deliberately NOT
+        # cached, so the next student to open this lesson gets a fresh attempt instead
+        # of a permanently-stuck "no video" from one bad moment.
+        result = search_youtube_videos(build_lesson_video_query(skill.name, lesson.title))
+        if result is not None:
+            lesson.videos = result
+            db.session.commit()
 
     all_lessons = []
     for m in course.modules.order_by(CourseModule.order).all():
@@ -584,8 +591,10 @@ def day_view(skill_slug, course_slug, day_number):
         return redirect(url_for('skills.class_overview', skill_slug=skill_slug, course_slug=course_slug))
 
     if lesson.videos is None:
-        lesson.videos = search_youtube_videos(build_lesson_video_query(skill.name, lesson.title))
-        db.session.commit()
+        result = search_youtube_videos(build_lesson_video_query(skill.name, lesson.title))
+        if result is not None:
+            lesson.videos = result
+            db.session.commit()
     fetched = lesson.videos or []
     if lesson.video_url:
         primary_video, more_videos = None, fetched
@@ -756,7 +765,7 @@ def start_custom_project(skill_slug):
         return redirect(url_for('skills.skill_detail', slug=skill_slug))
 
     workspace_type = request.form.get('workspace_type', '').strip() or None
-    if workspace_type not in (None, 'developer', 'writer', 'designer'):
+    if workspace_type not in (None, 'developer', 'writer', 'designer', 'data'):
         workspace_type = None
 
     project = StudentProject(student_id=user.id, title=title,
@@ -820,9 +829,30 @@ def generate_ai_project(skill_slug):
 def project_detail(project_id):
     user = _current_user()
     project = StudentProject.query.filter_by(id=project_id, student_id=user.id).first_or_404()
-    return render_template('project_detail.html', project=project, active_page='projects',
-                            ask_context=f'the project "{project.title}"',
-                            ask_suggestions=['Review my project', 'What should I add next?', 'Help me debug something'])
+
+    skill = project.template.skill if project.template and project.template.skill else None
+    skill_name = skill.name if skill else (project.skills_demonstrated[0] if project.skills_demonstrated else None)
+    why_it_matters = None
+    if skill_name:
+        demonstrated = [s for s in project.skills_demonstrated if s != skill_name] or project.skills_demonstrated
+        if demonstrated:
+            why_it_matters = (
+                f"This project is evidence you can actually apply {skill_name} — "
+                f"specifically {', '.join(demonstrated)}."
+            )
+        else:
+            why_it_matters = f"This project is evidence you can actually apply {skill_name}, not just that you studied it."
+
+    rubric_preview = None
+    if project.project_template_id and project.template and project.template.is_final_project:
+        rubric_preview = project.template.rubric
+
+    return render_template(
+        'project_detail.html', project=project, active_page='projects',
+        why_it_matters=why_it_matters, rubric_preview=rubric_preview,
+        review_dimensions=PROJECT_REVIEW_DIMENSIONS, review_dimension_labels=PROJECT_REVIEW_DIMENSION_LABELS,
+        ask_context=f'the project "{project.title}"',
+        ask_suggestions=['Review my project', 'What should I add next?', 'Help me debug something'])
 
 
 @skills_bp.route('/skills/projects/<int:project_id>/update', methods=['POST'])
@@ -1084,8 +1114,9 @@ def talent_profile():
     stats = get_talent_stats(user)
     projects = StudentProject.query.filter_by(student_id=user.id, is_public=True).order_by(StudentProject.updated_at.desc()).all()
     privacy = StudentPrivacySettings.query.filter_by(student_id=user.id).first()
+    skill_scores = get_skill_scores(user.id, public_only=True)
     return render_template('skills_talent.html', profile_user=user, stats=stats, projects=projects,
-                            privacy=privacy, is_own_profile=True, active_page='talent')
+                            skill_scores=skill_scores, privacy=privacy, is_own_profile=True, active_page='talent')
 
 
 @skills_bp.route('/skills/talent/<username>')
@@ -1110,8 +1141,9 @@ def talent_public(username):
         .order_by(StudentProject.updated_at.desc()).all()
         if show_projects else []
     )
+    skill_scores = get_skill_scores(profile_user.id, public_only=not is_own) if show_projects else []
     return render_template('skills_talent.html', profile_user=profile_user, stats=stats, projects=projects,
-                            privacy=privacy, is_own_profile=is_own, active_page='talent')
+                            skill_scores=skill_scores, privacy=privacy, is_own_profile=is_own, active_page='talent')
 
 
 # ===== CHALLENGES & COMPETITIONS =====
@@ -1278,6 +1310,8 @@ def request_project_review(project_id):
         submission_details += f"\nWorkspace: {len(project.doc_content or '')} characters of document content written in-browser"
     elif project.workspace_type == 'designer':
         submission_details += f"\nWorkspace: {len(project.design_assets)} design asset(s) uploaded, notes: {project.design_notes or '(none)'}"
+    elif project.workspace_type == 'data':
+        submission_details += f"\nWorkspace: {len(project.notebook_cells)} notebook cell(s) written in-browser"
 
     reflections = {
         'problem_solved': project.reflection_problem_solved,
@@ -1409,6 +1443,25 @@ def upload_project_design_asset(project_id):
     project.design_assets = assets
     db.session.commit()
     return redirect(url_for('skills.project_detail', project_id=project.id))
+
+
+# ===== PROJECT WORKSPACE: data (notebook cells) =====
+@skills_bp.route('/skills/projects/<int:project_id>/notebook', methods=['POST'])
+@login_required
+@limiter.limit('120 per hour')
+def save_project_notebook(project_id):
+    user = _current_user()
+    project = StudentProject.query.filter_by(id=project_id, student_id=user.id).first_or_404()
+    data = request.get_json(silent=True) or {}
+    cells = data.get('cells')
+    if not isinstance(cells, list):
+        return jsonify({'success': False, 'error': 'cells must be a list.'}), 400
+    project.notebook_cells = [
+        {'type': c.get('type') if c.get('type') in ('note', 'snippet') else 'note', 'content': c.get('content', '')}
+        for c in cells if isinstance(c, dict)
+    ]
+    db.session.commit()
+    return jsonify({'success': True})
 
 
 # ===== PROJECT MENTOR CHAT =====

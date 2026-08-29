@@ -61,6 +61,28 @@
     </div>
     {% endif %}
 
+    {% if skill_scores %}
+    <div class="sk-section-title">Skill Score</div>
+    <p class="sk-card-desc" style="margin-top:-10px;">Averaged from every reviewed project in that skill — not self-reported.</p>
+    <div class="sk-grid">
+      {% for row in skill_scores %}
+      <div class="sk-card" style="cursor:default;">
+        <div style="display:flex; align-items:baseline; justify-content:space-between;">
+          <span class="sk-card-title" style="margin-bottom:0;">{{ row.skill_name }}</span>
+          <span style="font-size:1.3rem; font-weight:800; color:{{ 'var(--sk-success)' if row.score >= 70 else ('var(--sk-warn)' if row.score >= 40 else 'var(--sk-danger)') }};">{{ row.score }}</span>
+        </div>
+        <div style="margin-top:10px; display:flex; flex-direction:column; gap:6px;">
+          {% for e in row.evidence[:3] %}
+          <a href="/skills/projects/{{ e.project_id }}" class="sk-view-link" style="display:flex; justify-content:space-between; gap:8px;">
+            <span>✓ {{ e.title }}</span><span>{{ e.score }}/100</span>
+          </a>
+          {% endfor %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
     <div class="sk-section-title">Projects</div>
     {% if not projects %}
     <div class="sk-empty" style="padding:32px 20px;"><div style="font-size:0.9rem;">{{ 'Nothing shared publicly yet.' if is_own_profile else "This student hasn't shared any projects." }}</div></div>
@@ -69,7 +91,13 @@
       {% for p in projects %}
       <div class="sk-card" style="cursor:default;">
         {% if p.screenshots %}<img src="{{ p.screenshots[0] }}" alt="" style="width:100%; aspect-ratio:16/10; object-fit:cover; border-radius:var(--r-sm); margin-bottom:12px;">{% endif %}
-        <span class="sk-badge {{ p.status }}">{{ 'Done' if p.status == 'completed' else p.status|replace('_', ' ')|title }}</span>
+        <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+          <span class="sk-badge {{ p.status }}">{{ 'Done' if p.status == 'completed' else p.status|replace('_', ' ')|title }}</span>
+          {% set effective_score = p.ai_overall_score if p.ai_overall_score is not none else (p.ai_feedback.score if p.ai_feedback else none) %}
+          {% if effective_score is not none %}
+          <span class="sk-badge" style="color:{{ 'var(--sk-success)' if effective_score >= 70 else ('var(--sk-warn)' if effective_score >= 40 else 'var(--sk-danger)') }};"><i class="ri-star-fill"></i> {{ effective_score }}/100</span>
+          {% endif %}
+        </div>
         <div class="sk-card-title" style="margin-top:10px;">{{ p.title }}</div>
         <div class="sk-card-desc">{{ p.description or '' }}</div>
         {% if p.skills_demonstrated %}

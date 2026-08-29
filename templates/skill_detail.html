@@ -129,6 +129,12 @@
         <div class="sk-card" style="cursor:default;">
           <div class="sk-card-title">{{ p.title }}</div>
           <div class="sk-card-desc">{{ p.description or '' }}</div>
+          {% if p.difficulty or p.estimated_hours %}
+          <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px;">
+            {% if p.difficulty %}<span class="sk-badge {{ p.difficulty }}">{{ p.difficulty|title }}</span>{% endif %}
+            {% if p.estimated_hours %}<span class="sk-badge"><i class="ri-time-line"></i> ~{{ p.estimated_hours }}h</span>{% endif %}
+          </div>
+          {% endif %}
           {% if p.skills_demonstrated %}
           <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:12px;">
             {% for s in p.skills_demonstrated %}<span class="sk-badge">{{ s }}</span>{% endfor %}
@@ -170,6 +176,7 @@
             <option value="developer">Developer — code editor</option>
             <option value="writer">Writer — document editor</option>
             <option value="designer">Designer — moodboard & assets</option>
+            <option value="data">Data — notebook cells</option>
           </select>
         </div>
         <button type="submit" class="sk-btn secondary">+ Start a custom project</button>

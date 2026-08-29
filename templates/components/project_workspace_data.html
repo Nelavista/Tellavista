@@ -1,0 +1,91 @@
+<style>
+  .pwd-cell { border: 1px solid var(--sk-border); border-radius: 10px; padding: 12px 14px; margin-top: 10px; }
+  .pwd-cell-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+  .pwd-cell-type { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--sk-text-dim); }
+  .pwd-cell-remove { background: none; border: none; color: var(--sk-text-dim); cursor: pointer; font-size: 0.78rem; }
+  .pwd-cell-remove:hover { color: #f87171; }
+  .pwd-cell textarea { width: 100%; border: none; background: transparent; color: var(--sk-text); font-family: var(--font-mono, monospace); font-size: 0.86rem; line-height: 1.6; resize: vertical; }
+  .pwd-cell textarea:focus { outline: none; }
+  .pwd-cell.note textarea { font-family: inherit; }
+  .pwd-preview { font-size: 0.86rem; line-height: 1.6; }
+  .pwd-preview h1, .pwd-preview h2, .pwd-preview h3 { margin: 0.5em 0 0.3em; }
+  .pwd-preview p { margin: 0.4em 0; }
+  .pwd-add-row { display: flex; gap: 8px; margin-top: 14px; }
+</style>
+
+<div class="sk-panel">
+  <div style="display:flex; align-items:center; justify-content:space-between;">
+    <div class="sk-card-title" style="font-size:0.9rem;">Notebook</div>
+    <span class="sk-card-desc" id="pwdStatus" style="margin:0;">All changes saved</span>
+  </div>
+  <p class="sk-card-desc" style="margin-top:6px;">Cells don't execute — this is a place to work through your analysis in the open. Your AI mentor helps explain and review the logic, not run it.</p>
+
+  <div id="pwdCellList">
+    {% for cell in project.notebook_cells %}
+    <div class="pwd-cell {{ cell.type }}" data-index="{{ loop.index0 }}">
+      <div class="pwd-cell-head">
+        <span class="pwd-cell-type">{{ 'Note' if cell.type == 'note' else 'Code / Query' }}</span>
+        <button type="button" class="pwd-cell-remove" onclick="pwdRemoveCell(this)">Remove</button>
+      </div>
+      <textarea rows="{{ 6 if cell.type == 'snippet' else 3 }}" oninput="pwdOnEdit()">{{ cell.content }}</textarea>
+    </div>
+    {% endfor %}
+  </div>
+
+  <div class="pwd-add-row">
+    <button type="button" class="sk-btn secondary small" onclick="pwdAddCell('note')">+ Add note</button>
+    <button type="button" class="sk-btn secondary small" onclick="pwdAddCell('snippet')">+ Add code / query</button>
+  </div>
+</div>
+
+<script>
+(function () {
+  const list = document.getElementById('pwdCellList');
+  const status = document.getElementById('pwdStatus');
+  let timer = null;
+
+  function cellTemplate(type, content) {
+    const div = document.createElement('div');
+    div.className = 'pwd-cell ' + type;
+    div.innerHTML = `<div class="pwd-cell-head">
+        <span class="pwd-cell-type">${type === 'note' ? 'Note' : 'Code / Query'}</span>
+        <button type="button" class="pwd-cell-remove" onclick="pwdRemoveCell(this)">Remove</button>
+      </div>
+      <textarea rows="${type === 'snippet' ? 6 : 3}" oninput="pwdOnEdit()"></textarea>`;
+    div.querySelector('textarea').value = content || '';
+    return div;
+  }
+
+  window.pwdAddCell = function (type) {
+    list.appendChild(cellTemplate(type, ''));
+    pwdOnEdit();
+  };
+
+  window.pwdRemoveCell = function (btn) {
+    btn.closest('.pwd-cell').remove();
+    pwdOnEdit();
+  };
+
+  window.pwdOnEdit = function () {
+    status.textContent = 'Saving...';
+    clearTimeout(timer);
+    timer = setTimeout(pwdSave, 800);
+  };
+
+  async function pwdSave() {
+    const cells = Array.from(list.querySelectorAll('.pwd-cell')).map(el => ({
+      type: el.classList.contains('snippet') ? 'snippet' : 'note',
+      content: el.querySelector('textarea').value,
+    }));
+    try {
+      await fetch(window.location.pathname + '/notebook', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ cells }),
+      });
+      status.textContent = 'All changes saved';
+    } catch (e) {
+      status.textContent = 'Could not save — check your connection.';
+    }
+  }
+})();
+</script>

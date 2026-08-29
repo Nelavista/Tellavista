@@ -37,8 +37,12 @@
         </div>
         {% endif %}
         <span class="sk-badge {{ p.status }}">{{ p.status.replace('_',' ')|title }}</span>
-        {% if p.workspace_type %}<span class="sk-badge"><i class="ri-{{ 'code-s-slash-line' if p.workspace_type == 'developer' else 'quill-pen-line' if p.workspace_type == 'writer' else 'palette-line' }}"></i> {{ p.workspace_type|title }}</span>{% endif %}
+        {% if p.workspace_type %}<span class="sk-badge"><i class="ri-{{ 'code-s-slash-line' if p.workspace_type == 'developer' else 'quill-pen-line' if p.workspace_type == 'writer' else 'bar-chart-2-line' if p.workspace_type == 'data' else 'palette-line' }}"></i> {{ p.workspace_type|title }}</span>{% endif %}
         {% if p.source == 'ai_generated' %}<span class="sk-badge"><i class="ri-sparkling-2-line"></i> AI-generated</span>{% endif %}
+        {% set effective_score = p.ai_overall_score if p.ai_overall_score is not none else (p.ai_feedback.score if p.ai_feedback else none) %}
+        {% if effective_score is not none %}
+        <span class="sk-badge" style="color:{{ 'var(--sk-success)' if effective_score >= 70 else ('var(--sk-warn)' if effective_score >= 40 else 'var(--sk-danger)') }};"><i class="ri-star-fill"></i> {{ effective_score }}/100</span>
+        {% endif %}
         <div class="sk-progress-row"><div class="sk-progress-track"><div class="sk-progress-fill" style="width:{{ p.progress_pct }}%;"></div></div><span class="sk-progress-pct">{{ p.progress_pct }}%</span></div>
       </a>
       {% endfor %}

@@ -509,6 +509,66 @@ def get_verified_skills(student_id):
     return verified
 
 
+def get_skill_scores(student_id, public_only=False):
+    """Per-skill score + project evidence, computed at query time from reviewed
+    StudentProjects — same 'derive, don't persist' convention get_cohort_rank uses for
+    cohort ranking (services/gpa_service.py). No new table, no caching.
+
+    Only scores projects that have actually been graded (rubric-based or the ordinary
+    AI review) — reuses the exact numbers _project_counts_as_verified already trusts,
+    never recomputes or re-derives a score of its own. A project stuck at 'in_progress'
+    or merely self-marked 'completed' with no review contributes nothing here, same
+    gating spirit as is_skill_verified.
+
+    `public_only=True` (for a Talent Profile a viewer other than the student themself is
+    looking at) additionally requires each project's own is_public flag — the same
+    per-project toggle that already gates the adjacent Projects grid on that page. Without
+    this, a project the student explicitly marked private could still leak its title and
+    score into the evidence list.
+
+    Returns a list of {skill, score, evidence: [{project_id, title, score}, ...]},
+    sorted by score desc, skill name used as the grouping key so custom/AI-generated
+    projects (no project_template_id) still count toward the skill they declared via
+    skills_demonstrated.
+    """
+    query = StudentProject.query.filter_by(student_id=student_id)
+    if public_only:
+        query = query.filter_by(is_public=True)
+    projects = query.all()
+    by_skill = {}
+    for p in projects:
+        if p.ai_overall_score is not None:
+            score = p.ai_overall_score
+        elif p.ai_feedback and p.ai_feedback.get('score') is not None:
+            score = p.ai_feedback['score']
+        else:
+            continue
+        try:
+            score = int(score)
+        except (TypeError, ValueError):
+            continue
+
+        skill = p.template.skill if p.template and p.template.skill else None
+        skill_name = skill.name if skill else (p.skills_demonstrated[0] if p.skills_demonstrated else None)
+        if not skill_name:
+            continue
+
+        entry = by_skill.setdefault(skill_name, {'skill': skill, 'skill_name': skill_name, 'scores': [], 'evidence': []})
+        entry['scores'].append(score)
+        entry['evidence'].append({'project_id': p.id, 'title': p.title, 'score': score})
+
+    results = []
+    for entry in by_skill.values():
+        entry['evidence'].sort(key=lambda e: e['score'], reverse=True)
+        results.append({
+            'skill': entry['skill'], 'skill_name': entry['skill_name'],
+            'score': round(sum(entry['scores']) / len(entry['scores'])),
+            'evidence': entry['evidence'],
+        })
+    results.sort(key=lambda r: r['score'], reverse=True)
+    return results
+
+
 def get_talent_stats(user):
     """Everything a Talent Profile (public or the student's own preview) needs in one
     call: verified skills, real project count, real completed-gig count with a real

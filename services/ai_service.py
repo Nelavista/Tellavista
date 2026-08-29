@@ -415,6 +415,17 @@ def generate_challenge_feedback(challenge_title, challenge_instructions, submiss
 
 PROJECT_REVIEW_DIMENSIONS = ('functionality', 'craft_quality', 'problem_solving', 'documentation', 'originality')
 
+# Single source of truth for how each dimension is labeled in the UI — shared by the
+# project detail page's pre-start "Evaluation Criteria" preview and its post-review score
+# breakdown, so the two never drift out of sync with each other or with PROJECT_REVIEW_DIMENSIONS.
+PROJECT_REVIEW_DIMENSION_LABELS = {
+    'functionality': 'Functionality',
+    'craft_quality': 'Craft Quality',
+    'problem_solving': 'Problem Solving',
+    'documentation': 'Documentation',
+    'originality': 'Originality',
+}
+
 
 def evaluate_project_submission(project_title, project_description, submission_details, skills_demonstrated,
                                  reflections=None):
@@ -526,23 +537,24 @@ def evaluate_project_submission(project_title, project_description, submission_d
 def generate_project_brief(idea, experience_level):
     """Turns a student's free-text project idea into a full, structured project brief —
     the entry point for an AI-generated StudentProject (source='ai_generated'). Classifies
-    the idea into exactly one of Nelavista's three workspace types — unlike a broader
-    'data'/'other' category set, these three are the only in-browser workspaces this
-    platform builds (see the project_workspace_* templates), so the AI is constrained to
-    them rather than free-choosing a category with no matching workspace.
+    the idea into exactly one of Nelavista's four workspace types — these are the only
+    in-browser workspaces this platform builds (see the project_workspace_* templates), so
+    the AI is constrained to them rather than free-choosing a category with no matching
+    workspace.
     Raises on failure; the caller must not create a project if this raises.
     """
     system_prompt = (
         "You are helping a student turn a rough idea into a concrete, buildable project "
         "brief for a student skills platform. Classify which kind of hands-on workspace "
         "this needs: 'developer' (a multi-file code project), 'writer' (a written "
-        "document/report/plan), or 'designer' (a visual/UI moodboard-and-asset project) — "
-        "choose the closest fit even if the idea is ambiguous; these are the only three "
+        "document/report/plan), 'designer' (a visual/UI moodboard-and-asset project), or "
+        "'data' (a dataset/analysis project worked through in notebook-style cells) — "
+        "choose the closest fit even if the idea is ambiguous; these are the only four "
         "options.\n\n"
         "Return ONLY a single JSON object with this exact shape, no surrounding prose:\n"
         "{\n"
         '  "title": string (concrete, specific — not a restatement of the idea),\n'
-        '  "category": "developer" | "writer" | "designer",\n'
+        '  "category": "developer" | "writer" | "designer" | "data",\n'
         '  "objectives": string (one clear paragraph),\n'
         '  "features": [string, ...] (4-8 concrete features/sections to build),\n'
         '  "difficulty": "beginner" | "intermediate" | "advanced",\n'
@@ -579,7 +591,7 @@ def generate_project_brief(idea, experience_level):
 
     raw = response.json()["choices"][0]["message"]["content"].strip()
     result = _parse_json_object(raw)
-    if result.get('category') not in ('developer', 'writer', 'designer'):
+    if result.get('category') not in ('developer', 'writer', 'designer', 'data'):
         result['category'] = 'developer'  # defensive only -- the prompt already constrains this
     return result
 

@@ -8,7 +8,7 @@
     <style>
         .as-container { max-width: 760px; margin: 0 auto; padding: 20px 20px 60px; }
         .as-top-bar { display: flex; align-items: center; justify-content: space-between; padding: 16px 0; border-bottom: 1px solid var(--sk-border); margin-bottom: 24px; }
-        .as-logo { font-size: 1.2rem; font-weight: 700; background: linear-gradient(135deg, #e5e7eb, #3b82f6); -webkit-background-clip: text; background-clip: text; color: transparent; text-decoration: none; }
+        .as-logo { font-size: 1.2rem; font-weight: 700; background: linear-gradient(135deg, var(--sk-text), var(--sk-accent)); -webkit-background-clip: text; background-clip: text; color: transparent; text-decoration: none; }
         .as-back { color: var(--sk-text-dim); text-decoration: none; font-size: 0.85rem; }
         .as-search-box { display: flex; gap: 8px; margin-bottom: 28px; }
         .as-section-title { font-size: 0.95rem; font-weight: 700; margin: 20px 0 12px; color: var(--sk-text-dim); text-transform: uppercase; letter-spacing: 0.03em; }
@@ -75,5 +75,6 @@ async function runSearch() {
     results.innerHTML = html;
 }
 </script>
+<script src="{{ url_for('static', filename='js/shell.js') }}"></script>
 </body>
 </html>

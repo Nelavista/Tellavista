@@ -8,18 +8,18 @@
     <style>
         .mu-container { max-width: 800px; margin: 0 auto; padding: 0 20px 60px; }
         .mu-top-bar { display: flex; align-items: center; justify-content: space-between; padding: 16px 0; border-bottom: 1px solid var(--sk-border); margin-bottom: 24px; }
-        .mu-logo { font-size: 1.2rem; font-weight: 700; background: linear-gradient(135deg, #e5e7eb, #3b82f6); -webkit-background-clip: text; background-clip: text; color: transparent; text-decoration: none; }
+        .mu-logo { font-size: 1.2rem; font-weight: 700; background: linear-gradient(135deg, var(--sk-text), var(--sk-accent)); -webkit-background-clip: text; background-clip: text; color: transparent; text-decoration: none; }
         .mu-back { color: var(--sk-text-dim); text-decoration: none; font-size: 0.85rem; }
         .mu-title { font-size: 1.5rem; font-weight: 800; margin-bottom: 6px; }
         .mu-sub { color: var(--sk-text-dim); font-size: 0.9rem; margin-bottom: 24px; }
         .mu-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; background: var(--sk-card); border: 1px solid var(--sk-border); border-radius: var(--sk-radius-sm); padding: 16px; margin-bottom: 10px; }
         .mu-row-title { font-weight: 600; font-size: 0.92rem; }
         .mu-row-meta { font-size: 0.78rem; color: var(--sk-text-dim); margin-top: 4px; }
-        .mu-reason { font-size: 0.8rem; color: #ef4444; margin-top: 6px; }
+        .mu-reason { font-size: 0.8rem; color: var(--sk-danger); margin-top: 6px; }
         .mu-status { font-size: 0.7rem; font-weight: 700; padding: 4px 10px; border-radius: 20px; white-space: nowrap; }
-        .mu-status.pending { background: rgba(245,158,11,0.15); color: #f59e0b; }
-        .mu-status.approved { background: rgba(34,197,94,0.15); color: #22c55e; }
-        .mu-status.rejected { background: rgba(239,68,68,0.15); color: #ef4444; }
+        .mu-status.pending { background: var(--sk-warn-bg); color: var(--sk-warn); }
+        .mu-status.approved { background: var(--sk-success-bg); color: var(--sk-success); }
+        .mu-status.rejected { background: var(--sk-danger-bg); color: var(--sk-danger); }
     </style>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
@@ -61,5 +61,6 @@
     {% endfor %}
     {% endif %}
 </div>
+<script src="{{ url_for('static', filename='js/shell.js') }}"></script>
 </body>
 </html>

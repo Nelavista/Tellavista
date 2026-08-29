@@ -11,11 +11,11 @@
   <meta name="csrf-token" content="{{ csrf_token() }}">
   <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
   <style>
-    .skd-hero { background: #1a2235; border-radius: 20px; padding: 28px; margin-bottom: 8px; display: flex; gap: 20px; align-items: flex-start; flex-wrap: wrap; }
+    .skd-hero { background: var(--bg-elevated); border: 1px solid var(--sk-border); border-radius: 20px; padding: 28px; margin-bottom: 8px; display: flex; gap: 20px; align-items: flex-start; flex-wrap: wrap; }
     .skd-hero-icon { width: 60px; height: 60px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 28px; flex-shrink: 0; }
-    .skd-tabs { display: flex; gap: 4px; margin: 28px 0 4px; border-bottom: 1px solid #1f2a3e; overflow-x: auto; }
-    .skd-tab { padding: 12px 16px; font-size: 0.88rem; font-weight: 600; color: #9ca3af; text-decoration: none; border-bottom: 2px solid transparent; white-space: nowrap; cursor: pointer; background: none; border-top:none; border-left:none; border-right:none; font-family: inherit; }
-    .skd-tab.active { color: #3b82f6; border-bottom-color: #3b82f6; }
+    .skd-tabs { display: flex; gap: 4px; margin: 28px 0 4px; border-bottom: 1px solid var(--sk-border); overflow-x: auto; }
+    .skd-tab { padding: 12px 16px; font-size: 0.88rem; font-weight: 600; color: var(--sk-text-dim); text-decoration: none; border-bottom: 2px solid transparent; white-space: nowrap; cursor: pointer; background: none; border-top:none; border-left:none; border-right:none; font-family: inherit; }
+    .skd-tab.active { color: var(--sk-accent); border-bottom-color: var(--sk-accent); }
     .skd-tab-panel { display: none; padding-top: 20px; }
     .skd-tab-panel.active { display: block; }
     @media (max-width: 768px) { .skd-hero { padding: 20px; } }

@@ -51,13 +51,13 @@
 
         /* Modal Container */
         .profile-modal-container {
-            background: #1a2235;
+            background: var(--sk-card, #1a2235);
             border-radius: 32px;
             max-width: 520px;
             width: 100%;
             max-height: 90vh;
             overflow-y: auto;
-            border: 1px solid #2d3a52;
+            border: 1px solid var(--sk-border, #2d3a52);
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
             animation: slideUp 0.4s ease;
         }
@@ -67,11 +67,11 @@
             width: 6px;
         }
         .profile-modal-container::-webkit-scrollbar-track {
-            background: #0f172a;
+            background: var(--bg-elevated, #0f172a);
             border-radius: 10px;
         }
         .profile-modal-container::-webkit-scrollbar-thumb {
-            background: #3b82f6;
+            background: var(--sk-accent, #3b82f6);
             border-radius: 10px;
         }
 
@@ -79,7 +79,7 @@
         .modal-header {
             padding: 32px 28px 24px;
             text-align: center;
-            border-bottom: 1px solid #2d3a52;
+            border-bottom: 1px solid var(--sk-border, #2d3a52);
             background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(20, 184, 166, 0.1));
         }
 
@@ -105,7 +105,7 @@
         .modal-title {
             font-size: 1.8rem;
             font-weight: 700;
-            background: linear-gradient(135deg, #ffffff, #cbd5e1);
+            background: linear-gradient(135deg, var(--sk-text, #ffffff), var(--sk-text-dim, #cbd5e1));
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
@@ -114,7 +114,7 @@
         }
 
         .modal-subtitle {
-            color: #9ca3af;
+            color: var(--sk-text-dim, #9ca3af);
             font-size: 0.95rem;
             line-height: 1.6;
             max-width: 400px;
@@ -135,7 +135,7 @@
             margin-bottom: 8px;
             font-size: 0.85rem;
             font-weight: 600;
-            color: #9ca3af;
+            color: var(--sk-text-dim, #9ca3af);
             letter-spacing: 0.5px;
             text-transform: uppercase;
         }
@@ -148,12 +148,12 @@
         .form-input,
         .form-select {
             width: 100%;
-            background: #0f172a;
-            border: 2px solid #2d3a52;
+            background: var(--bg-elevated, #0f172a);
+            border: 2px solid var(--sk-border, #2d3a52);
             border-radius: 16px;
             padding: 14px 18px;
             font-size: 1rem;
-            color: #ffffff;
+            color: var(--sk-text, #ffffff);
             outline: none;
             transition: all 0.2s ease;
             font-family: inherit;
@@ -161,13 +161,13 @@
 
         .form-input:focus,
         .form-select:focus {
-            border-color: #3b82f6;
+            border-color: var(--sk-accent, #3b82f6);
             box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
-            background: #0d1117;
+            background: var(--bg-card, #0d1117);
         }
 
         .form-input::placeholder {
-            color: #6b7280;
+            color: var(--text-muted, #6b7280);
         }
 
         .form-select {
@@ -180,15 +180,15 @@
         }
 
         .form-select option {
-            background: #0f172a;
-            color: #ffffff;
+            background: var(--bg-elevated, #0f172a);
+            color: var(--sk-text, #ffffff);
             padding: 10px;
         }
 
         /* Info Badge */
         .info-badge {
             background: rgba(249, 115, 22, 0.15);
-            border: 1px solid #f97316;
+            border: 1px solid var(--sk-warn, #f97316);
             border-radius: 12px;
             padding: 12px 16px;
             margin-bottom: 24px;
@@ -196,7 +196,7 @@
             align-items: flex-start;
             gap: 10px;
             font-size: 0.85rem;
-            color: #fbbf24;
+            color: var(--sk-warn, #fbbf24);
             line-height: 1.5;
         }
 
@@ -220,17 +220,17 @@
             width: 4px;
         }
         .dept-quick-select::-webkit-scrollbar-track {
-            background: #0f172a;
+            background: var(--bg-elevated, #0f172a);
             border-radius: 6px;
         }
         .dept-quick-select::-webkit-scrollbar-thumb {
-            background: #3b82f6;
+            background: var(--sk-accent, #3b82f6);
             border-radius: 6px;
         }
         .fd-chip {
-            background: #0f172a;
-            border: 2px solid #2d3a52;
-            color: #9ca3af;
+            background: var(--bg-elevated, #0f172a);
+            border: 2px solid var(--sk-border, #2d3a52);
+            color: var(--sk-text-dim, #9ca3af);
             padding: 10px 14px;
             border-radius: 14px;
             cursor: pointer;
@@ -241,13 +241,13 @@
             font-family: inherit;
         }
         .fd-chip:hover {
-            border-color: #3b82f6;
-            color: #60a5fa;
+            border-color: var(--sk-accent, #3b82f6);
+            color: var(--sk-accent, #60a5fa);
             background: rgba(59, 130, 246, 0.1);
         }
         .fd-chip.selected {
-            background: #3b82f6;
-            border-color: #3b82f6;
+            background: var(--sk-accent, #3b82f6);
+            border-color: var(--sk-accent, #3b82f6);
             color: white;
         }
         .fd-chip .fd-emoji {
@@ -257,7 +257,7 @@
         }
         .dept-divider {
             grid-column: 1 / -1;
-            color: #6b7280;
+            color: var(--text-muted, #6b7280);
             font-size: 0.7rem;
             text-transform: uppercase;
             letter-spacing: 1px;
@@ -271,7 +271,7 @@
             padding: 10px 14px;
             margin-top: 10px;
             font-size: 0.8rem;
-            color: #93c5fd;
+            color: var(--sk-accent, #93c5fd);
             display: none;
             animation: fadeIn 0.3s ease;
         }
@@ -280,7 +280,7 @@
         }
         .dept-preview span {
             font-weight: 600;
-            color: #60a5fa;
+            color: var(--sk-accent, #60a5fa);
         }
 
         /* Search-filterable picker (faculty + department) */
@@ -294,14 +294,14 @@
         .picker-empty {
             grid-column: 1 / -1;
             text-align: center;
-            color: #6b7280;
+            color: var(--text-muted, #6b7280);
             font-size: 0.85rem;
             padding: 20px 10px;
         }
         .fd-curriculum-tag {
             display: block;
             font-size: 0.62rem;
-            color: #14b8a6;
+            color: var(--accent-teal, #14b8a6);
             margin-top: 3px;
             font-weight: 600;
         }
@@ -348,7 +348,7 @@
         /* Progress Indicator */
         .progress-bar {
             height: 4px;
-            background: #2d3a52;
+            background: var(--sk-neutral-bg, #2d3a52);
             border-radius: 10px;
             overflow: hidden;
             margin-bottom: 24px;
@@ -364,11 +364,11 @@
         /* Error Message */
         .error-message {
             background: rgba(239, 68, 68, 0.1);
-            border: 1px solid #ef4444;
+            border: 1px solid var(--sk-danger, #ef4444);
             border-radius: 12px;
             padding: 12px 16px;
             margin-bottom: 20px;
-            color: #fca5a5;
+            color: var(--sk-danger, #fca5a5);
             font-size: 0.9rem;
             display: none;
             animation: shake 0.3s ease;
@@ -647,17 +647,17 @@
         inputs.forEach(input => {
             if (input.value.trim() === '') {
                 allFilled = false;
-                input.style.borderColor = '#ef4444';
-                
+                input.style.borderColor = 'var(--sk-danger, #ef4444)';
+
                 // If hidden select is empty, highlight the matching grid
                 const gridId = input.id === 'departmentSelect' ? 'deptQuickSelect' : (input.id === 'facultySelect' ? 'facultyQuickSelect' : null);
                 if (gridId) {
-                    document.getElementById(gridId).style.border = '2px solid #ef4444';
+                    document.getElementById(gridId).style.border = '2px solid var(--sk-danger, #ef4444)';
                     document.getElementById(gridId).style.borderRadius = '12px';
                     document.getElementById(gridId).style.padding = '8px';
                 }
             } else {
-                input.style.borderColor = '#2d3a52';
+                input.style.borderColor = 'var(--sk-border, #2d3a52)';
                 const gridId = input.id === 'departmentSelect' ? 'deptQuickSelect' : (input.id === 'facultySelect' ? 'facultyQuickSelect' : null);
                 if (gridId) {
                     document.getElementById(gridId).style.border = 'none';

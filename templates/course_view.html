@@ -10,17 +10,17 @@
   <meta name="csrf-token" content="{{ csrf_token() }}">
   <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
   <style>
-    .cv-breadcrumb { font-size: 0.82rem; color: #6b7280; margin-bottom: 10px; }
-    .cv-breadcrumb a { color: #6b7280; text-decoration: none; }
-    .cv-breadcrumb a:hover { color: #3b82f6; }
+    .cv-breadcrumb { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 10px; }
+    .cv-breadcrumb a { color: var(--text-muted); text-decoration: none; }
+    .cv-breadcrumb a:hover { color: var(--sk-accent); }
     .cv-module { margin-bottom: 22px; }
     .cv-module-title { font-weight: 700; font-size: 0.95rem; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
-    .cv-lesson-row { display: flex; align-items: center; gap: 12px; padding: 12px 16px; background: #1a2235; border-radius: 14px; margin-bottom: 8px; text-decoration: none; color: inherit; transition: 0.15s; }
-    .cv-lesson-row:hover { background: #212c42; }
-    .cv-lesson-check { width: 24px; height: 24px; border-radius: 50%; border: 2px solid #2d3a52; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; flex-shrink: 0; }
+    .cv-lesson-row { display: flex; align-items: center; gap: 12px; padding: 12px 16px; background: var(--bg-elevated); border: 1px solid var(--sk-border); border-radius: 14px; margin-bottom: 8px; text-decoration: none; color: inherit; transition: 0.15s; }
+    .cv-lesson-row:hover { border-color: var(--sk-accent); }
+    .cv-lesson-check { width: 24px; height: 24px; border-radius: 50%; border: 2px solid var(--sk-border); display: flex; align-items: center; justify-content: center; font-size: 0.7rem; flex-shrink: 0; }
     .cv-lesson-check.done { background: #10b981; border-color: #10b981; color: #fff; }
     .cv-lesson-title { flex: 1; font-size: 0.9rem; font-weight: 500; }
-    .cv-lesson-meta { font-size: 0.75rem; color: #6b7280; white-space: nowrap; }
+    .cv-lesson-meta { font-size: 0.75rem; color: var(--text-muted); white-space: nowrap; }
   </style>
 </head>
 <body>

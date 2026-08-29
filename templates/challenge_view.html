@@ -10,23 +10,20 @@
   <meta name="csrf-token" content="{{ csrf_token() }}">
   <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
   <style>
-    .cw-breadcrumb { font-size: 0.82rem; color: #6b7280; margin-bottom: 14px; }
-    .cw-breadcrumb a { color: #6b7280; text-decoration: none; }
-    .cw-breadcrumb a:hover { color: #3b82f6; }
+    .cw-breadcrumb { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 14px; }
+    .cw-breadcrumb a { color: var(--text-muted); text-decoration: none; }
+    .cw-breadcrumb a:hover { color: var(--sk-accent); }
     .cw-container { max-width: 760px; }
-    .cw-instructions { white-space: pre-wrap; line-height: 1.7; font-size: 0.95rem; color: #dbe2ef; }
-    body.light-mode .cw-instructions { color: #1f2937; }
-    .cw-submission { background: #1a2235; border-radius: 14px; padding: 16px; margin-bottom: 12px; }
-    .cw-submission-content { white-space: pre-wrap; font-size: 0.88rem; color: #dbe2ef; line-height: 1.6; margin-top: 8px; }
-    body.light-mode .cw-submission-content { color: #1f2937; }
-    .cw-feedback { margin-top: 14px; padding-top: 14px; border-top: 1px solid #2d3a52; }
+    .cw-instructions { white-space: pre-wrap; line-height: 1.7; font-size: 0.95rem; color: var(--sk-text); }
+    .cw-submission { background: var(--bg-elevated); border: 1px solid var(--sk-border); border-radius: 14px; padding: 16px; margin-bottom: 12px; }
+    .cw-submission-content { white-space: pre-wrap; font-size: 0.88rem; color: var(--sk-text); line-height: 1.6; margin-top: 8px; }
+    .cw-feedback { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--sk-border); }
     .cw-feedback-score { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
     .cw-feedback-score .num { font-size: 1.6rem; font-weight: 800; }
     .cw-feedback-section { margin-bottom: 10px; }
-    .cw-feedback-label { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; color: #6b7280; margin-bottom: 6px; }
+    .cw-feedback-label { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px; }
     .cw-feedback ul { margin: 0 0 0 18px; font-size: 0.86rem; line-height: 1.6; }
-    .cw-feedback-explanation { font-size: 0.88rem; line-height: 1.6; color: #dbe2ef; }
-    body.light-mode .cw-feedback-explanation { color: #1f2937; }
+    .cw-feedback-explanation { font-size: 0.88rem; line-height: 1.6; color: var(--sk-text); }
   </style>
 </head>
 <body>
@@ -59,7 +56,7 @@
       {% if s.feedback %}
       <div class="cw-feedback">
         <div class="cw-feedback-score">
-          <span class="num" style="color:{{ '#4ade80' if s.feedback.score >= 70 else ('#fbbf24' if s.feedback.score >= 40 else '#f87171') }};">{{ s.feedback.score }}%</span>
+          <span class="num" style="color:{{ 'var(--sk-success)' if s.feedback.score >= 70 else ('var(--sk-warn)' if s.feedback.score >= 40 else 'var(--sk-danger)') }};">{{ s.feedback.score }}%</span>
           <span class="sk-card-desc" style="margin:0;">AI feedback</span>
         </div>
         {% if s.feedback.strengths %}

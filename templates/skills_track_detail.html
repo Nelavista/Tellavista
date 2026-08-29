@@ -11,10 +11,10 @@
   <meta name="csrf-token" content="{{ csrf_token() }}">
   <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
   <style>
-    .td-breadcrumb { font-size: 0.82rem; color: #6b7280; margin-bottom: 14px; }
-    .td-breadcrumb a { color: #6b7280; text-decoration: none; }
-    .td-breadcrumb a:hover { color: #3b82f6; }
-    .td-hero { background: #1a2235; border-radius: 20px; padding: 28px; margin-bottom: 8px; display: flex; gap: 20px; align-items: flex-start; flex-wrap: wrap; }
+    .td-breadcrumb { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 14px; }
+    .td-breadcrumb a { color: var(--text-muted); text-decoration: none; }
+    .td-breadcrumb a:hover { color: var(--sk-accent); }
+    .td-hero { background: var(--bg-elevated); border: 1px solid var(--sk-border); border-radius: 20px; padding: 28px; margin-bottom: 8px; display: flex; gap: 20px; align-items: flex-start; flex-wrap: wrap; }
     .td-hero-icon { width: 60px; height: 60px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 28px; flex-shrink: 0; }
     @media (max-width: 768px) { .td-hero { padding: 20px; } }
   </style>

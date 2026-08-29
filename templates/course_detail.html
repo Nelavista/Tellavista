@@ -13,7 +13,7 @@
             display: flex; align-items: center; justify-content: space-between;
             padding: 16px 0; border-bottom: 1px solid var(--sk-border); margin-bottom: 24px;
         }
-        .cd-logo { font-size: 1.2rem; font-weight: 700; background: linear-gradient(135deg, #e5e7eb, #3b82f6);
+        .cd-logo { font-size: 1.2rem; font-weight: 700; background: linear-gradient(135deg, var(--sk-text), var(--sk-accent));
             -webkit-background-clip: text; background-clip: text; color: transparent; text-decoration: none; }
         .cd-back { color: var(--sk-text-dim); text-decoration: none; font-size: 0.85rem; }
         .cd-back:hover { color: var(--sk-accent); }
@@ -317,5 +317,6 @@ async function askAboutMaterial(materialId, mode, btn) {
     btn.textContent = original;
 }
 </script>
+<script src="{{ url_for('static', filename='js/shell.js') }}"></script>
 </body>
 </html>

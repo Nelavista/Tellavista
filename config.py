@@ -22,6 +22,12 @@ if not SECRET_KEY:
 DATABASE_URL = os.getenv('DATABASE_URL', 'sqlite:///tellavista.db')
 OPENROUTER_API_KEY = os.getenv('OPENROUTER_API_KEY')
 YOUTUBE_API_KEY = os.getenv('YOUTUBE_API_KEY')
+# Optional second YouTube Data API project's key -- YouTube's search.list quota (100
+# queries/day on the default tier) is per-project, not per-application, so a second real
+# Google Cloud project (its own key, same app) gets its own separate 100/day allowance.
+# search_youtube_videos() below tries this only after YOUTUBE_API_KEY is exhausted for
+# the day; unset (the common case) is a complete no-op, same single-key behavior as before.
+YOUTUBE_API_KEY_2 = os.getenv('YOUTUBE_API_KEY_2')
 AGORA_APP_ID = os.getenv('AGORA_APP_ID')
 
 # "Sign in with Google" -- both must be set (from the Google Cloud Console OAuth client)

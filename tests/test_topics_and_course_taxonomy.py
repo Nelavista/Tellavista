@@ -513,6 +513,36 @@ def test_refresh_topic_videos_caches_search_results(app, client, make_user, make
         assert Topic.query.get(topic_id).videos == fake_videos
 
 
+def test_quota_exceeded_video_search_is_not_cached_as_confirmed_empty(
+        app, client, make_user, make_course, login_as, monkeypatch):
+    """search_youtube_videos returns None (not []) when every configured API key failed
+    (quota exceeded, network error, etc) -- a real bug this guards against: an earlier
+    version treated that failure identically to 'searched, found nothing', permanently
+    writing videos_json='[]' for topics that were never actually searched. That falsely
+    marks them as done, so a later retry (once quota resets) silently skips them forever.
+    None must be left uncached so a future attempt can still pick the topic up."""
+    course = make_course()
+    with app.app_context():
+        t = Topic(course_id=course.id, title='Graphs')
+        db.session.add(t)
+        db.session.commit()
+        topic_id = t.id
+
+    monkeypatch.setattr('routes.admin_academia_routes.search_youtube_videos', lambda query, max_results=3: None)
+
+    admin = make_user('quota_admin', is_admin=True, university='Lagos State University',
+                       department='Computer Science', level='200')
+    login_as(client, admin)
+
+    res = client.post(f'/admin/academia/topics/{topic_id}/videos')
+    assert res.status_code == 502  # surfaced as a real failure, not a silent success
+
+    with app.app_context():
+        # Still None (never fetched), NOT [] (confirmed empty) -- a later retry must
+        # still see this topic as needing a search.
+        assert Topic.query.get(topic_id).videos is None
+
+
 def test_edit_topic_marks_hand_edited_content_as_reviewed(app, client, make_user, make_course, login_as):
     course = make_course()
     with app.app_context():

@@ -10,9 +10,11 @@ second config var or a second YouTube integration.
 """
 import html
 import requests
-from config import YOUTUBE_API_KEY
+from config import YOUTUBE_API_KEY, YOUTUBE_API_KEY_2
 
 SEARCH_URL = 'https://www.googleapis.com/youtube/v3/search'
+
+_API_KEYS = [k for k in (YOUTUBE_API_KEY, YOUTUBE_API_KEY_2) if k]
 
 
 def build_lesson_video_query(skill_name, lesson_title):
@@ -32,14 +34,24 @@ def build_topic_video_query(course_code, course_title, topic_title):
 
 
 def search_youtube_videos(query, max_results=3):
-    """Best-effort search for embeddable, education-category videos. Returns [] — never
-    raises — when the API key isn't configured or the request fails, so a missing key
-    degrades to 'no videos shown' instead of breaking the lesson page."""
-    if not (YOUTUBE_API_KEY and query):
-        return []
+    """Best-effort search for embeddable, education-category videos.
+
+    Returns a list (possibly []) when we got a real answer from YouTube -- [] means
+    "searched, genuinely found nothing", safe to cache as a confirmed result. Returns
+    None -- never [] -- when no key is configured, or every configured key failed
+    (quota-exceeded, network error, etc.): this is "couldn't determine, try again
+    later", and callers MUST NOT cache a None result as if it were a confirmed empty
+    search (see models.Topic.videos / models.Lesson.videos' None-vs-[] contract).
+
+    Tries YOUTUBE_API_KEY_2 (a second Google Cloud project, if configured) after
+    YOUTUBE_API_KEY hits its daily search.list quota -- YouTube's quota is per-project,
+    so a second real project gets its own separate daily allowance. A single key with
+    no YOUTUBE_API_KEY_2 configured behaves exactly as before this fallback existed.
+    """
+    if not (_API_KEYS and query):
+        return None
 
     params = {
-        'key': YOUTUBE_API_KEY,
         'part': 'snippet',
         'q': query,
         'type': 'video',
@@ -51,12 +63,23 @@ def search_youtube_videos(query, max_results=3):
         'videoCategoryId': '27',  # Education
     }
 
-    try:
-        resp = requests.get(SEARCH_URL, params=params, timeout=8)
-        resp.raise_for_status()
-        data = resp.json()
-    except (requests.RequestException, ValueError):
-        return []
+    data = None
+    for key in _API_KEYS:
+        try:
+            resp = requests.get(SEARCH_URL, params={**params, 'key': key}, timeout=8)
+        except requests.RequestException:
+            continue  # network error on this key -- try the next one
+        if resp.status_code == 429:
+            continue  # this key's daily quota is exhausted -- try the next one
+        try:
+            resp.raise_for_status()
+            data = resp.json()
+        except (requests.RequestException, ValueError):
+            continue
+        break  # got a real response
+
+    if data is None:
+        return None  # every configured key failed -- unknown, not "no results"
 
     videos = []
     for item in data.get('items', []):

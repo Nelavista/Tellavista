@@ -58,8 +58,10 @@ def main():
             try:
                 if topic.videos is None:
                     query = build_topic_video_query(course.code, course.title, topic.title)
-                    topic.videos = search_youtube_videos(query)
-                    db.session.commit()
+                    result = search_youtube_videos(query)
+                    if result is not None:
+                        topic.videos = result
+                        db.session.commit()
 
                 video = topic.videos[0] if topic.videos else None
                 content = generate_topic_explanation(course.code, course.title, topic.title, video=video)

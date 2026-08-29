@@ -572,7 +572,10 @@ def refresh_lesson_videos(lesson_id):
     (see skills.lesson_view), so this is the only way to update a lesson's cached videos."""
     lesson = Lesson.query.get_or_404(lesson_id)
     skill = lesson.module.course.skill
-    lesson.videos = search_youtube_videos(build_lesson_video_query(skill.name, lesson.title))
+    result = search_youtube_videos(build_lesson_video_query(skill.name, lesson.title))
+    if result is None:
+        return _bad_request('YouTube search is unavailable right now (quota or network) -- try again later.')
+    lesson.videos = result
     db.session.commit()
     return jsonify({'success': True, 'videos': lesson.videos})
 
@@ -589,8 +592,10 @@ def generate_lesson_content(lesson_id):
     skill = lesson.module.course.skill
 
     if lesson.videos is None:
-        lesson.videos = search_youtube_videos(build_lesson_video_query(skill.name, lesson.title))
-        db.session.commit()
+        result = search_youtube_videos(build_lesson_video_query(skill.name, lesson.title))
+        if result is not None:
+            lesson.videos = result
+            db.session.commit()
 
     if not lesson.videos:
         return _bad_request(
@@ -955,8 +960,10 @@ def generate_daily_content_route(lesson_id):
     skill = lesson.module.course.skill
 
     if lesson.videos is None:
-        lesson.videos = search_youtube_videos(build_lesson_video_query(skill.name, lesson.title))
-        db.session.commit()
+        result = search_youtube_videos(build_lesson_video_query(skill.name, lesson.title))
+        if result is not None:
+            lesson.videos = result
+            db.session.commit()
     if not lesson.videos:
         return _bad_request('No reference video found for this day yet — try Videos first.')
 

@@ -254,7 +254,10 @@ def refresh_topic_videos(topic_id):
     topic = Topic.query.get_or_404(topic_id)
     course = topic.course
     query = build_topic_video_query(course.code, course.title, topic.title)
-    topic.videos = search_youtube_videos(query)
+    result = search_youtube_videos(query)
+    if result is None:
+        return jsonify({'success': False, 'error': 'YouTube search is unavailable right now (quota or network) -- try again later.'}), 502
+    topic.videos = result
     db.session.commit()
     return jsonify({'success': True, 'videos': topic.videos})
 
@@ -270,8 +273,10 @@ def generate_topic_explanation_draft(topic_id):
     topic = Topic.query.get_or_404(topic_id)
     course = topic.course
     if topic.videos is None:
-        topic.videos = search_youtube_videos(build_topic_video_query(course.code, course.title, topic.title))
-        db.session.commit()
+        result = search_youtube_videos(build_topic_video_query(course.code, course.title, topic.title))
+        if result is not None:
+            topic.videos = result
+            db.session.commit()
     video = topic.videos[0] if topic.videos else None
     try:
         content = generate_topic_explanation(course.code, course.title, topic.title, video=video)

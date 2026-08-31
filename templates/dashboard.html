@@ -270,7 +270,7 @@
 
   function applyProgressiveState() {
     const isNew = !activity.hours && !activity.exams && !activity.continuing;
-    document.getElementById('acStartHere').style.display = isNew ? 'flex' : 'none';
+    document.getElementById('acStartHere').style.display = isNew ? '' : 'none';
     document.getElementById('progressiveSections').style.display = isNew ? 'none' : 'block';
   }
 

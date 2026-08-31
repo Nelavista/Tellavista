@@ -37,23 +37,11 @@
 
   <link rel="stylesheet" href="{{ url_for('static', filename='css/skills.css') }}">
 
-  <script>
-    window.MathJax = {
-      tex: {
-        inlineMath: [['$', '$'], ['\\(', '\\)']],
-        displayMath: [['$$', '$$'], ['\\[', '\\]']]
-      },
-      options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre'] },
-      svg: { fontCache: 'global' }
-    };
-  </script>
-  <script id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
-
   <style>
-    /* Page-specific pieces with no shared-system equivalent yet: the PWA install pill, the
-       exam/course/material list rows, and the in-page AI chat panel. Everything else
-       (shell, cards, buttons, badges, typography) comes from skills.css. Values below are
-       tokens from that file, not new one-off colors. */
+    /* Page-specific pieces with no shared-system equivalent yet: the PWA install pill and
+       the exam/course/material list rows. Everything else (shell, cards, buttons, badges,
+       typography) comes from skills.css. Values below are tokens from that file, not new
+       one-off colors. */
 
     .pwa-install-btn {
       display: none; align-items: center; gap: 6px;
@@ -64,12 +52,19 @@
     }
     .pwa-install-btn.show { display: inline-flex; }
 
-    #dashboardView.hidden { display: none; }
-
     .cards-row { display: flex; gap: var(--space-5); margin: var(--space-5) 0 var(--space-6); flex-wrap: wrap; }
     .cards-row > .sk-card { flex: 1; min-width: 220px; }
     .stat-number { font-size: var(--text-xl); font-weight: 800; margin: var(--space-2) 0; font-family: 'Bricolage Grotesque', sans-serif; }
     .today-total { font-size: var(--text-sm); color: var(--sk-text-dim); margin-bottom: var(--space-3); }
+
+    /* ===== ASK NELAVISTA — small dashboard entry point into the AI Tutor. Replaces the
+       old full-width "Ask anything about your studies..." input bar; the tutor itself
+       now lives at /ai-tutor. Capped to a stat-card width even on its own row so it
+       reads as a compact entry point, not a banner. ===== */
+    .ac-ask-card { display: flex; flex-direction: column; max-width: 320px; }
+    .ac-ask-card-title { display: flex; align-items: center; gap: 8px; font-size: var(--text-lg); font-weight: 800; margin: var(--space-2) 0 var(--space-1); font-family: 'Bricolage Grotesque', sans-serif; }
+    .ac-ask-card-title i { color: var(--sk-accent); }
+    .ac-ask-card .sk-btn { align-self: flex-start; margin-top: var(--space-3); }
 
     .bar-chart { display: flex; align-items: flex-end; gap: var(--space-3); margin-top: var(--space-4); height: 90px; }
     .bar-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: var(--space-2); font-size: var(--text-xs); color: var(--text-muted); height: 100%; justify-content: flex-end; }
@@ -88,39 +83,6 @@
     .exam-title { font-weight: 700; font-size: var(--text-sm); }
     .no-exams-msg { text-align: center; padding: var(--space-6) var(--space-4); background: var(--sk-card); border: 1px solid var(--sk-border); border-radius: var(--sk-radius); margin-bottom: var(--space-3); color: var(--sk-text-dim); }
     .no-exams-msg p:first-child { color: var(--sk-text); font-weight: 600; }
-
-    /* ===== IN-PAGE AI CHAT ===== */
-    .chat-container { display: none; flex-direction: column; height: calc(100vh - 60px); position: relative; max-width: 900px; margin: 0 auto; width: 100%; opacity: 0; animation: fadeIn 0.3s forwards; padding-bottom: 80px; }
-    .chat-container.active { display: flex; }
-    .messages { flex: 1; overflow-y: auto; padding: var(--space-5); padding-bottom: 160px; scroll-behavior: smooth; }
-    .message { margin: var(--space-4) 0; animation: messageAppear 0.4s ease-out; display: block; }
-    .message-content { display: inline-block; max-width: 85%; padding: 12px 16px; border-radius: 16px; line-height: 1.5; word-wrap: break-word; font-size: var(--text-sm); }
-    .message.user .message-content { background: var(--sk-accent); color: var(--bg-deep); border-bottom-right-radius: 4px; float: right; clear: both; }
-    .message.ai .message-content { background: var(--sk-card); border: 1px solid var(--sk-border); border-bottom-left-radius: 4px; float: left; clear: both; }
-    .message::after { content: ""; display: table; clear: both; }
-    .typing-indicator { display: inline-block; padding: 12px 16px; background: var(--sk-card); border-radius: 16px; float: left; clear: both; }
-    .typing-dots { display: flex; gap: 4px; }
-    .typing-dots span { width: 8px; height: 8px; background: var(--sk-text-dim); border-radius: 50%; animation: typingPulse 1.4s infinite; }
-    @keyframes typingPulse { 0%,100%{opacity:0.3} 50%{opacity:1} }
-    @keyframes messageAppear { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
-    @keyframes fadeIn { from{opacity:0} to{opacity:1} }
-
-    .input-area { position: fixed; bottom: 0; left: 0; right: 0; padding: var(--space-4) var(--space-5) var(--space-6); background: rgba(5,8,16,0.96); backdrop-filter: blur(12px); border-top: 1px solid var(--sk-border); z-index: 1001; }
-    body.light-mode .input-area { background: rgba(255,255,255,0.96); }
-    /* Below 1024px the 5-item mobile-tabbar (skills.css) also pins to bottom:0 at the
-       same z-index — without this offset it paints over the input bar instead of
-       stacking below it, and a sliver of the pill peeks out above the nav. */
-    @media (max-width: 1023px) {
-      .input-area { bottom: calc(78px + env(safe-area-inset-bottom)); padding: var(--space-3) var(--space-4); }
-    }
-    .input-wrapper { max-width: 900px; margin: 0 auto; background: var(--sk-card); border: 1px solid var(--sk-border); border-radius: var(--r-pill); padding: 6px 12px; display: flex; align-items: center; gap: 4px; }
-    .input-wrapper input { flex: 1; background: none; border: none; color: var(--sk-text); padding: 10px 8px; font-size: var(--text-sm); outline: none; font-family: inherit; }
-    .attachment-icon, .voice-icon { background: none; border: none; color: var(--sk-text-dim); font-size: 1.1rem; cursor: pointer; padding: 8px; border-radius: 50%; display: flex; }
-    .attachment-icon:hover, .voice-icon:hover { background: var(--sk-neutral-bg); color: var(--sk-accent); }
-    .send-btn { background: var(--sk-accent); border: none; width: 36px; height: 36px; border-radius: 50%; color: var(--bg-deep); cursor: pointer; font-size: 1rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-    .attachment-container { max-width: 900px; margin: 0 auto var(--space-3); display: flex; gap: var(--space-2); flex-wrap: wrap; }
-    .attachment-preview { background: var(--sk-card); border: 1px solid var(--sk-border); border-radius: var(--r-sm); padding: 6px 10px; display: flex; align-items: center; gap: var(--space-2); font-size: var(--text-xs); }
-    .attachment-remove { background: none; border: none; color: var(--sk-danger); cursor: pointer; font-size: 0.9rem; padding: 2px 4px; display: flex; }
 
     @media (max-width: 768px) {
       .cards-row { flex-direction: column; }
@@ -182,6 +144,18 @@
         <a href="/materials" class="sk-btn small">Start studying</a>
       </div>
 
+      <!-- Ask Nelavista lives outside the #progressiveSections toggle above so the AI
+           Tutor entry point is discoverable from a student's very first visit, not just
+           once they have study activity to show. -->
+      <div class="cards-row">
+        <div class="sk-card ac-ask-card">
+          <div class="sk-eyebrow">AI Tutor</div>
+          <div class="ac-ask-card-title"><i class="ri-sparkling-2-line"></i>Ask Nelavista</div>
+          <div class="today-total">Get help with any course, topic, or exam question.</div>
+          <a href="/ai-tutor" class="sk-btn small">Open AI Tutor →</a>
+        </div>
+      </div>
+
       <div id="progressiveSections">
         <div class="cards-row">
           <div class="sk-card">
@@ -226,23 +200,6 @@
         <a href="/search" class="sk-view-link">Search →</a>
       </div>
       <div id="recentMaterialsContainer"></div>
-    </div>
-
-    <!-- CHAT CONTAINER -->
-    <div class="chat-container" id="chatContainer">
-      <div class="messages" id="messages"></div>
-      <div class="attachment-container" id="attachmentContainer" style="display:none;"></div>
-    </div>
-
-    <!-- INPUT AREA — the one persistent AI entry point on this page. -->
-    <div class="input-area">
-      <div class="input-wrapper">
-        <button class="attachment-icon" onclick="document.getElementById('fileInput').click()" aria-label="Attach file"><i class="ri-attachment-2"></i></button>
-        <input type="file" id="fileInput" style="display:none;" accept=".pdf,.png,.jpg,.jpeg,.gif" onchange="handleFileSelect(this.files)" multiple>
-        <button class="voice-icon" onclick="toggleVoiceInput()" aria-label="Voice input"><i class="ri-mic-line"></i></button>
-        <input type="text" id="chatInput" placeholder="Ask anything about your studies…" onkeypress="handleKeyPress(event)" />
-        <button class="send-btn" id="sendButton" onclick="sendMessage()" aria-label="Send"><i class="ri-arrow-up-line"></i></button>
-      </div>
     </div>
 
 {% include 'components/academia_footer.html' %}
@@ -293,16 +250,6 @@
       });
     }
   }
-
-  // ===== APP STATE =====
-  const state = {
-    isChatMode: false,
-    messages: [],
-    pendingAttachments: [],
-    isRecording: false,
-    recognition: null,
-    isLoading: false
-  };
 
   // Flags used by applyProgressiveState() to decide whether this is a brand-new,
   // no-activity account (see the #acStartHere / #progressiveSections toggle above).
@@ -539,155 +486,6 @@
     }
   }
 
-  function enterChatMode() {
-    if (!state.isChatMode) {
-      state.isChatMode = true;
-      const dashboard = document.getElementById('dashboardView');
-      const chatContainer = document.getElementById('chatContainer');
-      dashboard.style.opacity = '0';
-      dashboard.style.transform = 'translateY(-8px)';
-      setTimeout(() => { dashboard.classList.add('hidden'); dashboard.style.opacity = ''; }, 300);
-      chatContainer.classList.add('active');
-      setTimeout(() => { document.getElementById('chatInput').focus(); scrollMessagesToBottom(); }, 100);
-    }
-  }
-
-  function addMessage(text, sender) {
-    const messagesDiv = document.getElementById('messages');
-    messagesDiv.querySelector('.typing-indicator')?.remove();
-    const msgDiv = document.createElement('div');
-    msgDiv.className = `message ${sender}`;
-    const contentDiv = document.createElement('div');
-    contentDiv.className = 'message-content';
-    contentDiv.innerHTML = text.replace(/\n/g, '<br>');
-    msgDiv.appendChild(contentDiv);
-    messagesDiv.appendChild(msgDiv);
-    state.messages.push({ text, sender, timestamp: Date.now() });
-    scrollMessagesToBottom();
-    renderMathInElement(msgDiv);
-  }
-
-  function renderMathInElement(element) {
-    if (window.MathJax && MathJax.typesetPromise) {
-      MathJax.typesetPromise([element]).catch(e => console.log(e));
-    }
-  }
-
-  function showTypingIndicator() {
-    const messagesDiv = document.getElementById('messages');
-    messagesDiv.querySelector('.typing-indicator')?.remove();
-    const typingDiv = document.createElement('div');
-    typingDiv.className = 'typing-indicator';
-    typingDiv.innerHTML = '<div class="typing-dots"><span></span><span></span><span></span></div>';
-    messagesDiv.appendChild(typingDiv);
-    scrollMessagesToBottom();
-    state.isLoading = true;
-  }
-
-  function scrollMessagesToBottom() {
-    const m = document.getElementById('messages');
-    if (m) m.scrollTop = m.scrollHeight;
-  }
-
-  function updateSendButton() {
-    const btn = document.getElementById('sendButton');
-    const inp = document.getElementById('chatInput');
-    btn.disabled = (inp.value.trim() === '' && state.pendingAttachments.length === 0);
-  }
-
-  function handleKeyPress(e) {
-    if (e.key === 'Enter') sendMessage();
-  }
-
-  async function sendToBackend(message, attachments) {
-    try {
-      const formData = new FormData();
-      formData.append('message', message);
-      attachments.forEach(att => formData.append('files', att.file));
-      showTypingIndicator();
-      const response = await fetch('/ask_with_files', { method: 'POST', body: formData });
-      if (!response.ok) throw new Error('Server error');
-      const data = await response.json();
-      document.querySelector('.typing-indicator')?.remove();
-      state.isLoading = false;
-      addMessage(data.answer || "I received your message but couldn't generate a response. Please try again.", 'ai');
-    } catch(err) {
-      document.querySelector('.typing-indicator')?.remove();
-      state.isLoading = false;
-      addMessage("Sorry, I encountered an error. Please try again.", 'ai');
-    }
-  }
-
-  async function sendMessage() {
-    if (state.isLoading) return;
-    const input = document.getElementById('chatInput');
-    const text = input.value.trim();
-    if (text === '' && state.pendingAttachments.length === 0) return;
-    if (!state.isChatMode) enterChatMode();
-    if (text) addMessage(text, 'user');
-    const attachmentsToSend = [...state.pendingAttachments];
-    if (attachmentsToSend.length) {
-      addMessage(`Sent ${attachmentsToSend.length} file(s): ${attachmentsToSend.map(f => f.name).join(', ')}`, 'user');
-    }
-    input.value = '';
-    updateSendButton();
-    await sendToBackend(text, attachmentsToSend);
-    state.pendingAttachments = [];
-    const attachContainer = document.getElementById('attachmentContainer');
-    attachContainer.style.display = 'none';
-    attachContainer.innerHTML = '';
-    input.focus();
-  }
-
-  function handleFileSelect(files) {
-    if (!files.length) return;
-    const file = files[0];
-    if (file.size > 16 * 1024 * 1024) { alert('File too large (max 16MB)'); return; }
-    state.pendingAttachments.push({ id: 'att_' + Date.now(), file, name: file.name, size: file.size, type: file.type });
-    renderAttachmentPreview();
-    document.getElementById('attachmentContainer').style.display = 'flex';
-    updateSendButton();
-    if (!state.isChatMode) enterChatMode();
-  }
-
-  function renderAttachmentPreview() {
-    const cont = document.getElementById('attachmentContainer');
-    cont.innerHTML = '';
-    state.pendingAttachments.forEach(att => {
-      const div = document.createElement('div');
-      div.className = 'attachment-preview';
-      const icon = att.type === 'application/pdf' ? 'ri-file-pdf-2-line' : 'ri-image-line';
-      div.innerHTML = `<i class="${icon}"></i> <span>${att.name}</span> <button class="attachment-remove" onclick="removeAttachment('${att.id}')"><i class="ri-close-line"></i></button>`;
-      cont.appendChild(div);
-    });
-  }
-
-  function removeAttachment(id) {
-    state.pendingAttachments = state.pendingAttachments.filter(a => a.id !== id);
-    renderAttachmentPreview();
-    if (!state.pendingAttachments.length) document.getElementById('attachmentContainer').style.display = 'none';
-    updateSendButton();
-  }
-
-  function toggleVoiceInput() {
-    if (!('webkitSpeechRecognition' in window)) {
-      alert('Voice recognition not supported in this browser');
-      return;
-    }
-    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-    state.recognition = new SR();
-    state.recognition.lang = 'en-US';
-    state.recognition.interimResults = false;
-    state.recognition.onresult = (e) => {
-      document.getElementById('chatInput').value = e.results[0][0].transcript;
-      updateSendButton();
-    };
-    state.recognition.onerror = (e) => {
-      console.error('Voice recognition error:', e.error);
-    };
-    state.recognition.start();
-  }
-
   // ===== INITIALIZATION =====
   async function initializeDashboard() {
     await Promise.all([
@@ -700,21 +498,7 @@
     ]).catch(err => {
       console.error('Dashboard initialization error:', err);
     });
-
-    const savedChat = localStorage.getItem('nelavista_chat_history');
-    if (savedChat) {
-      try {
-        state.messages = JSON.parse(savedChat);
-      } catch(e) {
-        console.error('Failed to load chat history', e);
-      }
-    }
   }
-
-  document.getElementById('chatInput')?.addEventListener('focus', () => {
-    if (!state.isChatMode) enterChatMode();
-  });
-  document.getElementById('chatInput')?.addEventListener('input', updateSendButton);
 
   setGreeting();
   initializeDashboard();
@@ -745,17 +529,10 @@
     }
   });
 
-  window.addEventListener('beforeunload', () => {
-    if (state.messages.length) {
-      localStorage.setItem('nelavista_chat_history', JSON.stringify(state.messages.slice(-50)));
-    }
-  });
-
   document.addEventListener('keydown', (e) => {
     if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
       e.preventDefault();
-      enterChatMode();
-      document.getElementById('chatInput').focus();
+      window.location.href = '/ai-tutor';
     }
   });
 </script>

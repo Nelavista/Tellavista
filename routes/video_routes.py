@@ -11,7 +11,10 @@ video_bp = Blueprint('video', __name__)
 @video_bp.route('/videos')
 @login_required
 def videos_page():
-    return render_template('video.html', user=session.get('user'))
+    # Campus Videos was retired as an Academia destination -- the standalone browsing
+    # page is gone from nav, but the Video model/API below stay: /reels (routes/
+    # reels_routes.py) and topic/lesson video embeds still read from the same table.
+    return redirect(url_for('dashboard.dashboard'))
 
 @video_bp.route('/api/youtube/search', methods=['GET'])
 def youtube_search():

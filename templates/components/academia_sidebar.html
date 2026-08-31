@@ -3,8 +3,15 @@
      product with two sections, not two products, so the chrome matches exactly and only
      the destinations differ. The wordmark returns to the Choose Your Path picker, same as
      Skills' sidebar — that's the one deliberate way to switch between the two spaces.
-     Include right after <body>, pass active_page: 'home'|'materials'|'practice'|
-     'community'|'live'|'profile'. Pair with components/academia_footer.html. -->
+     Include right after <body>, pass active_page: 'home'|'materials'|'ai_tutor'|
+     'practice'|'profile'. Pair with components/academia_footer.html.
+
+     Academia is centered on Learn -> Practice -> Understand -> Improve: Campus Videos,
+     Community and Live Meeting have been retired as Academia destinations (their page
+     routes now redirect to the dashboard -- see routes/video_routes.py,
+     community_routes.py, live_meeting_routes.py -- backend/models kept as-is since Video
+     is still shared with /reels). Ask Nelavista (the AI Tutor) is the one AI entry point
+     here; it replaced the old /talk-to-nelavista link. -->
 <div class="app-wrapper">
   <div class="sidebar" id="side-menu">
     <div>
@@ -17,19 +24,12 @@
           <div class="nav-label">Learn</div>
           <a href="/dashboard" class="{{ 'active-link' if active_page == 'home' else '' }}"><i class="ri-home-4-line"></i>Dashboard</a>
           <a href="/materials" class="{{ 'active-link' if active_page == 'materials' else '' }}"><i class="ri-book-open-line"></i>Study Materials</a>
-          <a href="/talk-to-nelavista" class="{{ 'active-link' if active_page == 'ai_tutor' else '' }}"><i class="ri-sparkling-2-line"></i>AI Tutor</a>
-          <a href="/videos" class="{{ 'active-link' if active_page == 'videos' else '' }}"><i class="ri-vidicon-line"></i>Campus Videos</a>
+          <a href="/ai-tutor" class="{{ 'active-link' if active_page == 'ai_tutor' else '' }}"><i class="ri-sparkling-2-line"></i>Ask Nelavista</a>
         </div>
 
         <div class="nav-group">
           <div class="nav-label">Practice</div>
           <a href="/CBT" class="{{ 'active-link' if active_page == 'practice' else '' }}"><i class="ri-file-list-3-line"></i>Mock Exam</a>
-        </div>
-
-        <div class="nav-group">
-          <div class="nav-label">Connect</div>
-          <a href="/community" class="{{ 'active-link' if active_page == 'community' else '' }}"><i class="ri-group-line"></i>Community</a>
-          <a href="/live-meeting" class="{{ 'active-link' if active_page == 'live' else '' }}"><i class="ri-broadcast-line"></i>Live Meeting</a>
         </div>
 
         <div class="nav-group">

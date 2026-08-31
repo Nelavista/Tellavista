@@ -2,7 +2,7 @@ import os
 import time
 import cloudinary
 import cloudinary.uploader
-from flask import Blueprint, render_template, request, jsonify, session
+from flask import Blueprint, render_template, request, jsonify, session, redirect, url_for
 from utils.helpers import login_required
 from models import User, Group, GroupMember, GroupMessage, GroupFile
 from extensions import db, socketio
@@ -34,7 +34,10 @@ def _room_name(group_id):
 @community_bp.route('/community')
 @login_required
 def community_page():
-    return render_template('community.html')
+    # Community was retired as an Academia destination -- the group-chat page is gone
+    # from nav, but the API endpoints below and the Group/GroupMessage models stay
+    # (admin moderation at /admin/community still reads them).
+    return redirect(url_for('dashboard.dashboard'))
 
 
 @community_bp.route('/api/groups/create', methods=['POST'])

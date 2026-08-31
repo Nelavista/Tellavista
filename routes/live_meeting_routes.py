@@ -68,7 +68,11 @@ def join_room_post():
 @live_bp.route('/live_meeting')
 @login_required
 def live_meeting():
-    return render_template('live_meeting.html')
+    # Live Meeting was retired as an Academia destination -- the landing page is gone
+    # from nav. The teacher/student room routes below are left as-is (nothing in the
+    # app links to them anymore, so they're unreachable via normal navigation) rather
+    # than deleted, since the Room model/Socket.IO events may be reused later.
+    return redirect(url_for('dashboard.dashboard'))
 
 @live_bp.route('/live-meeting/teacher')
 @live_bp.route('/live_meeting/teacher')

@@ -31,6 +31,7 @@ from routes.profile_routes import profile_bp
 from routes.materials_routes import materials_bp
 from routes.video_routes import video_bp
 from routes.ai_routes import ai_bp
+from routes.tutor_routes import tutor_bp
 from routes.live_meeting_routes import live_bp
 from routes.core_routes import core_bp
 from routes.pwa_routes import pwa_bp
@@ -250,6 +251,7 @@ def create_app():
     app.register_blueprint(materials_bp, url_prefix='/')
     app.register_blueprint(video_bp, url_prefix='/')
     app.register_blueprint(ai_bp, url_prefix='/')
+    app.register_blueprint(tutor_bp, url_prefix='/')
     app.register_blueprint(live_bp, url_prefix='/')
     app.register_blueprint(core_bp, url_prefix='/')
     app.register_blueprint(pages_bp, url_prefix='/')
@@ -475,7 +477,7 @@ if __name__ == '__main__':
     print("="*70)
     print("\n📡 Access at: http://localhost:5000")
     print("📊 Turbo Analyzer: http://localhost:5000/analyze")
-    print("🤖 AI Tutor: http://localhost:5000/talk-to-nelavista")
+    print("🤖 AI Tutor: http://localhost:5000/ai-tutor")
     print("🎬 Videos: http://localhost:5000/videos")
     print("📱 PWA Manifest: http://localhost:5000/manifest.json")
     print("="*70)

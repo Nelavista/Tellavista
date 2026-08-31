@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>AI Tutor · Nelavista</title>
+  <meta name="theme-color" content="#050810">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/skills.css') }}">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
+
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+      },
+      options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre'] },
+      svg: { fontCache: 'global' }
+    };
+  </script>
+  <script id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked@11/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@3/dist/purify.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+
+  <style>
+    /* ===== AI TUTOR — a first-class Academia screen, built entirely on skills.css
+       tokens (--sk-*, --space-*, --text-*, --grad-*). No new colors introduced. ===== */
+
+    /* The shared app shell (.app-wrapper / .main-content, skills.css) is built for
+       normal scrolling pages -- .app-wrapper only sets min-height:100vh, so its height
+       is content-driven, not capped. A chat layout needs the opposite: everything above
+       .tutor-messages pinned, and ONLY that pane scrolling. Without an explicit, capped
+       height here, .tutor-shell's flex:1 has no fixed space to fill, so it (and the
+       whole page) grows to fit the conversation instead of clipping it -- the entire
+       document scrolls like any other page instead of just the messages pane. Scoped to
+       this page's own <style> only; every other Academia page keeps the normal behavior. */
+    html, body { height: 100%; overflow: hidden; }
+    .main-content { display: flex; flex-direction: column; height: 100vh; height: 100dvh; overflow: hidden; }
+    .tutor-shell {
+      display: flex; flex: 1; min-height: 0;
+      height: calc(100vh - 66px);
+      height: calc(100dvh - 66px);
+    }
+    @media (max-width: 1023px) {
+      .tutor-shell {
+        /* flex:1 above sets flex-basis:0%, which makes flexbox size this box purely by
+           flex-growing to fill .main-content's remaining space -- the explicit `height`
+           below is otherwise silently ignored. .main-content's flex column only knows
+           about its own in-flow children (the top bar), not the mobile tab bar, which is
+           a position:fixed overlay outside .main-content entirely -- so without pinning
+           flex-basis to `height` here (flex:none), .tutor-shell grows to the very bottom
+           of the viewport and the composer ends up hidden underneath the tab bar. */
+        flex: none;
+        height: calc(100vh - 66px - 70px);
+        height: calc(100dvh - 66px - 70px - env(safe-area-inset-bottom));
+      }
+    }
+
+    /* ----- conversation history rail ----- */
+    .tutor-history {
+      width: 280px; flex-shrink: 0; border-right: 1px solid var(--sk-border);
+      display: flex; flex-direction: column; background: var(--sk-sidebar);
+      transition: margin-left 0.25s var(--ease);
+    }
+    .tutor-history-head { padding: var(--space-4); border-bottom: 1px solid var(--sk-border); }
+    .tutor-new-chat-btn {
+      width: 100%; display: flex; align-items: center; gap: 8px; justify-content: center;
+      background: var(--grad-main); color: var(--on-accent); border: none; font-weight: 700;
+      font-size: var(--text-sm); padding: 11px 14px; border-radius: var(--r-sm); cursor: pointer;
+    }
+    .tutor-history-list { flex: 1; overflow-y: auto; padding: var(--space-2) 0 var(--space-4); }
+    .tutor-history-group-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); padding: 14px 16px 6px; }
+    .tutor-history-item {
+      display: flex; align-items: center; gap: 8px; padding: 10px 16px; cursor: pointer;
+      color: var(--sk-text-dim); border-left: 3px solid transparent; position: relative;
+    }
+    .tutor-history-item:hover { background: var(--bg-elevated); }
+    .tutor-history-item.active { background: var(--bg-elevated); color: var(--sk-text); border-left-color: var(--sk-accent); }
+    .tutor-history-item-body { flex: 1; min-width: 0; }
+    .tutor-history-item-title { font-size: 0.86rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .tutor-history-item-meta { font-size: 0.72rem; color: var(--text-muted); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .tutor-history-item-actions { display: none; gap: 2px; flex-shrink: 0; }
+    .tutor-history-item:hover .tutor-history-item-actions { display: flex; }
+    .tutor-history-item-actions button { background: none; border: none; color: var(--text-muted); cursor: pointer; width: 26px; height: 26px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; }
+    .tutor-history-item-actions button:hover { background: var(--sk-border); color: var(--sk-text); }
+    .tutor-history-empty { padding: 24px 16px; color: var(--text-muted); font-size: 0.85rem; text-align: center; }
+
+    .tutor-history-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 1009; }
+    @media (max-width: 1023px) {
+      /* Above the global sticky .top-bar (z-index 1002) and app .sidebar (1003) --
+         otherwise the drawer's own header (New chat button) renders underneath the
+         app chrome instead of over it, since both sit at the same fixed top:0. */
+      .tutor-history {
+        position: fixed; top: 0; bottom: 0; left: -300px; z-index: 1010; width: 280px;
+        transition: left 0.25s var(--ease); box-shadow: 0 0 40px rgba(0,0,0,0.4);
+      }
+      .tutor-history.open { left: 0; }
+      .tutor-history-overlay.open { display: block; }
+    }
+
+    /* ----- main chat column ----- */
+    .tutor-main { flex: 1; min-width: 0; display: flex; flex-direction: column; min-height: 0; }
+
+    .tutor-toolbar {
+      display: flex; align-items: center; gap: 10px; padding: 10px 16px;
+      border-bottom: 1px solid var(--sk-border); flex-shrink: 0; min-height: 52px;
+    }
+    .tutor-icon-btn {
+      background: none; border: 1px solid transparent; color: var(--sk-text-dim); cursor: pointer;
+      width: 36px; height: 36px; border-radius: var(--r-sm); display: flex; align-items: center;
+      justify-content: center; font-size: 1.15rem; flex-shrink: 0;
+    }
+    .tutor-icon-btn:hover { background: var(--bg-elevated); color: var(--sk-text); }
+    .tutor-icon-btn.only-mobile { display: none; }
+    @media (max-width: 1023px) { .tutor-icon-btn.only-mobile { display: flex; } }
+
+    .tutor-context-row { flex: 1; min-width: 0; display: flex; align-items: center; gap: 8px; overflow-x: auto; scrollbar-width: none; }
+    .tutor-context-row::-webkit-scrollbar { display: none; }
+    .tutor-context-chip {
+      display: flex; align-items: center; gap: 6px; background: rgba(56,189,248,0.1);
+      border: 1px solid var(--border-glow); color: var(--sk-accent); font-size: 0.8rem; font-weight: 600;
+      padding: 6px 12px; border-radius: var(--r-pill); white-space: nowrap; flex-shrink: 0;
+    }
+    .tutor-context-chip.topic { background: var(--sk-neutral-bg); border-color: var(--sk-border); color: var(--sk-text-dim); }
+    .tutor-context-chip i { font-size: 0.95rem; }
+    .tutor-context-clear { background: none; border: none; color: inherit; cursor: pointer; font-size: 0.85rem; opacity: 0.7; padding: 0; margin-left: 2px; }
+    .tutor-context-clear:hover { opacity: 1; }
+    .tutor-context-empty-label { color: var(--text-muted); font-size: 0.85rem; }
+
+    /* ----- messages ----- */
+    .tutor-messages { flex: 1; overflow-y: auto; padding: 24px 20px 8px; }
+    .tutor-messages-inner { max-width: 760px; margin: 0 auto; display: flex; flex-direction: column; gap: 26px; }
+
+    .tutor-empty { max-width: 640px; margin: 4vh auto 0; text-align: center; padding: 0 12px; }
+    .tutor-empty-icon {
+      width: 56px; height: 56px; margin: 0 auto 20px; border-radius: 16px; background: var(--grad-main);
+      color: var(--on-accent); display: flex; align-items: center; justify-content: center; font-size: 1.7rem;
+    }
+    .tutor-empty h1 { font-size: 1.7rem; font-weight: 800; margin-bottom: 8px; font-family: 'Bricolage Grotesque', sans-serif; }
+    .tutor-empty p { color: var(--sk-text-dim); font-size: 1rem; line-height: 1.6; margin-bottom: 28px; }
+    .tutor-suggestion-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; text-align: left; }
+    @media (max-width: 560px) { .tutor-suggestion-grid { grid-template-columns: 1fr; } }
+    .tutor-suggestion-card {
+      background: var(--sk-card); border: 1px solid var(--sk-border); border-radius: var(--sk-radius-sm);
+      padding: 14px 16px; cursor: pointer; font-size: 0.88rem; font-weight: 600; color: var(--sk-text);
+      transition: border-color 0.15s;
+    }
+    .tutor-suggestion-card:hover { border-color: var(--sk-accent); }
+
+    .tutor-msg-row { display: flex; }
+    .tutor-msg-row.user { justify-content: flex-end; }
+    .tutor-msg-row.assistant { justify-content: flex-start; }
+
+    .tutor-msg-user-bubble {
+      max-width: 78%; background: var(--grad-main); color: var(--on-accent);
+      padding: 12px 17px; border-radius: 18px 18px 4px 18px; font-size: 0.98rem; line-height: 1.55;
+      white-space: pre-wrap; word-break: break-word;
+    }
+
+    .tutor-msg-assistant { width: 100%; }
+    .tutor-msg-assistant-head { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+    .tutor-avatar {
+      width: 26px; height: 26px; border-radius: 8px; background: var(--grad-main); color: var(--on-accent);
+      display: flex; align-items: center; justify-content: center; font-size: 0.85rem; flex-shrink: 0;
+    }
+    .tutor-avatar-name { font-size: 0.82rem; font-weight: 700; color: var(--sk-text-dim); }
+    .tutor-msg-body {
+      font-size: 1rem; line-height: 1.75; color: var(--text-primary); overflow-x: auto;
+    }
+    .tutor-msg-body > *:first-child { margin-top: 0; }
+    .tutor-msg-body p { margin: 0 0 14px; }
+    .tutor-msg-body h1, .tutor-msg-body h2, .tutor-msg-body h3 { margin: 22px 0 10px; font-weight: 700; line-height: 1.3; }
+    .tutor-msg-body h1 { font-size: 1.3rem; } .tutor-msg-body h2 { font-size: 1.15rem; } .tutor-msg-body h3 { font-size: 1.03rem; }
+    .tutor-msg-body ul, .tutor-msg-body ol { margin: 0 0 14px 22px; }
+    .tutor-msg-body li { margin-bottom: 6px; }
+    .tutor-msg-body li > p { margin-bottom: 4px; }
+    .tutor-msg-body strong { color: var(--sk-text); font-weight: 700; }
+    .tutor-msg-body a { color: var(--sk-accent); }
+    .tutor-msg-body code { background: var(--sk-neutral-bg); padding: 2px 6px; border-radius: 5px; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 0.88em; }
+    .tutor-msg-body pre { background: #0d1117; border: 1px solid var(--sk-border); border-radius: 12px; padding: 16px; overflow-x: auto; margin: 0 0 16px; }
+    .tutor-msg-body pre code { background: none; padding: 0; font-size: 0.86em; color: #e6edf3; }
+    .tutor-msg-body table { border-collapse: collapse; width: 100%; margin: 0 0 16px; font-size: 0.92em; }
+    .tutor-msg-body th, .tutor-msg-body td { border: 1px solid var(--sk-border); padding: 8px 12px; text-align: left; }
+    .tutor-msg-body th { background: var(--sk-neutral-bg); font-weight: 700; }
+    .tutor-msg-body blockquote { border-left: 3px solid var(--sk-accent); margin: 0 0 14px; padding: 2px 0 2px 14px; color: var(--sk-text-dim); }
+    .tutor-msg-body hr { border: none; border-top: 1px solid var(--sk-border); margin: 18px 0; }
+    .tutor-msg-body mjx-container { overflow-x: auto; overflow-y: hidden; }
+
+    .tutor-cursor { display: inline-block; width: 8px; height: 1.05em; background: var(--sk-accent); vertical-align: text-bottom; animation: tutorBlink 0.9s steps(1) infinite; margin-left: 2px; border-radius: 1px; }
+    @keyframes tutorBlink { 50% { opacity: 0; } }
+
+    .tutor-typing { display: flex; gap: 5px; padding: 4px 0; }
+    .tutor-typing span { width: 7px; height: 7px; border-radius: 50%; background: var(--text-muted); animation: tutorTyping 1.1s ease-in-out infinite; }
+    .tutor-typing span:nth-child(2) { animation-delay: 0.15s; } .tutor-typing span:nth-child(3) { animation-delay: 0.3s; }
+    @keyframes tutorTyping { 0%, 60%, 100% { transform: translateY(0); opacity: 0.4; } 30% { transform: translateY(-4px); opacity: 1; } }
+
+    .tutor-msg-actions { display: flex; gap: 2px; margin-top: 8px; }
+    .tutor-msg-actions button {
+      background: none; border: none; color: var(--text-muted); cursor: pointer; width: 30px; height: 30px;
+      border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.95rem;
+    }
+    .tutor-msg-actions button:hover { background: var(--sk-neutral-bg); color: var(--sk-text); }
+    .tutor-msg-actions button.active { color: var(--sk-accent); }
+
+    /* ----- composer ----- */
+    .tutor-composer-wrap { flex-shrink: 0; padding: 10px 20px calc(14px + env(safe-area-inset-bottom)); border-top: 1px solid var(--sk-border); }
+    .tutor-composer-inner { max-width: 760px; margin: 0 auto; }
+
+    .tutor-quick-row { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; scrollbar-width: none; }
+    .tutor-quick-row::-webkit-scrollbar { display: none; }
+    .tutor-quick-row.hidden { display: none; }
+    .tutor-quick-chip {
+      flex-shrink: 0; background: var(--sk-card); border: 1px solid var(--sk-border); color: var(--sk-text-dim);
+      font-size: 0.8rem; padding: 7px 13px; border-radius: var(--r-pill); cursor: pointer; white-space: nowrap;
+    }
+    .tutor-quick-chip:hover { border-color: var(--sk-accent); color: var(--sk-accent); }
+
+    .tutor-composer {
+      display: flex; align-items: flex-end; gap: 6px; background: var(--bg-elevated);
+      border: 1px solid var(--sk-border); border-radius: 22px; padding: 6px 6px 6px 10px; position: relative;
+    }
+    .tutor-composer:focus-within { border-color: var(--sk-accent); }
+    #tutorInput {
+      flex: 1; background: none; border: none; outline: none; color: var(--sk-text); font-size: 0.98rem;
+      font-family: inherit; resize: none; max-height: 160px; padding: 9px 4px; line-height: 1.5;
+    }
+    .tutor-send-btn {
+      flex-shrink: 0; width: 38px; height: 38px; border-radius: 50%; border: none; cursor: pointer;
+      background: var(--grad-main); color: var(--on-accent); display: flex; align-items: center; justify-content: center; font-size: 1.05rem;
+    }
+    .tutor-send-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .tutor-send-btn.stop { background: var(--sk-danger); }
+    .tutor-mic-btn.listening { color: #fff; background: var(--sk-danger); }
+
+    .tutor-actions-menu {
+      display: none; position: absolute; bottom: 52px; left: 0; background: var(--sk-card);
+      border: 1px solid var(--sk-border); border-radius: var(--sk-radius-sm); box-shadow: var(--shadow-card);
+      padding: 6px; min-width: 220px; z-index: 20;
+    }
+    .tutor-actions-menu.open { display: block; }
+    .tutor-actions-menu button {
+      width: 100%; display: flex; align-items: center; gap: 10px; background: none; border: none;
+      color: var(--sk-text); font-size: 0.88rem; padding: 10px 12px; border-radius: 8px; cursor: pointer; text-align: left;
+    }
+    .tutor-actions-menu button:hover { background: var(--bg-elevated); }
+    .tutor-actions-menu button i { color: var(--sk-accent); font-size: 1.05rem; width: 20px; }
+    .tutor-composer-hint { text-align: center; font-size: 0.72rem; color: var(--text-muted); margin-top: 8px; }
+  </style>
+</head>
+<body>
+{% set active_page = 'ai_tutor' %}
+{% include 'components/academia_sidebar.html' %}
+
+  <div class="tutor-shell">
+    <div class="tutor-history-overlay" id="tutorHistoryOverlay"></div>
+    <aside class="tutor-history" id="tutorHistory">
+      <div class="tutor-history-head">
+        <button class="tutor-new-chat-btn" id="tutorNewChatBtn"><i class="ri-add-line"></i> New chat</button>
+      </div>
+      <div class="tutor-history-list" id="tutorHistoryList"></div>
+    </aside>
+
+    <div class="tutor-main">
+      <div class="tutor-toolbar">
+        <button class="tutor-icon-btn only-mobile" id="tutorHistoryToggle" title="Chat history"><i class="ri-menu-line"></i></button>
+        <div class="tutor-context-row" id="tutorContextRow"></div>
+        <button class="tutor-icon-btn" id="tutorNewChatBtnTop" title="New chat"><i class="ri-add-line"></i></button>
+      </div>
+
+      <div class="tutor-messages" id="tutorMessages">
+        <div class="tutor-messages-inner" id="tutorMessagesInner"></div>
+      </div>
+
+      <div class="tutor-composer-wrap">
+        <div class="tutor-composer-inner">
+          <div class="tutor-quick-row hidden" id="tutorQuickRow"></div>
+          <form class="tutor-composer" id="tutorComposer" autocomplete="off">
+            <button type="button" class="tutor-icon-btn" id="tutorActionsBtn" title="Tutor actions"><i class="ri-magic-line"></i></button>
+            <div class="tutor-actions-menu" id="tutorActionsMenu">
+              <button type="button" data-mode="explain"><i class="ri-lightbulb-line"></i> Explain simply</button>
+              <button type="button" data-mode="steps"><i class="ri-list-ordered"></i> Step-by-step</button>
+              <button type="button" data-mode="quiz"><i class="ri-question-line"></i> Quiz me</button>
+              <button type="button" data-mode="practice"><i class="ri-pencil-line"></i> Practice question</button>
+              <button type="button" data-mode="summarize"><i class="ri-file-list-3-line"></i> Summarize</button>
+              <button type="button" data-mode="exam_prep"><i class="ri-graduation-cap-line"></i> Exam prep</button>
+            </div>
+            <textarea id="tutorInput" rows="1" placeholder="Message your AI Tutor..."></textarea>
+            <button type="button" class="tutor-icon-btn tutor-mic-btn" id="tutorMicBtn" title="Voice input"><i class="ri-mic-line"></i></button>
+            <button type="submit" class="tutor-send-btn" id="tutorSendBtn" title="Send"><i class="ri-send-plane-fill"></i></button>
+          </form>
+          <div class="tutor-composer-hint">Nelavista's AI Tutor can make mistakes. Check important facts against your course material.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% include 'components/academia_footer.html' %}
+
+<script>
+window.TUTOR_CONTEXT = {
+  course: {{ course_dict | tojson }},
+  topic: {{ topic_dict | tojson }},
+  material: {{ material_dict | tojson }},
+  activeConversationId: {{ (active_conversation.id if active_conversation else none) | tojson }},
+  quickPrompts: {{ quick_prompts | tojson }},
+  userName: {{ (user.name or user.username) | tojson }}
+};
+window.TUTOR_CONVERSATIONS = {{ conversations | tojson }};
+window.TUTOR_ACTIVE_MESSAGES = {{ active_messages | tojson }};
+</script>
+<script>
+(function () {
+  "use strict";
+
+  var state = {
+    conversationId: window.TUTOR_CONTEXT.activeConversationId || null,
+    context: {
+      course: window.TUTOR_CONTEXT.course,
+      topic: window.TUTOR_CONTEXT.topic,
+      material: window.TUTOR_CONTEXT.material
+    },
+    conversations: window.TUTOR_CONVERSATIONS || [],
+    messages: (window.TUTOR_ACTIVE_MESSAGES || []).slice(),
+    isStreaming: false,
+    abortController: null,
+    recognizing: false
+  };
+
+  var messagesInner = document.getElementById('tutorMessagesInner');
+  var messagesWrap = document.getElementById('tutorMessages');
+  var composer = document.getElementById('tutorComposer');
+  var input = document.getElementById('tutorInput');
+  var sendBtn = document.getElementById('tutorSendBtn');
+  var micBtn = document.getElementById('tutorMicBtn');
+  var actionsBtn = document.getElementById('tutorActionsBtn');
+  var actionsMenu = document.getElementById('tutorActionsMenu');
+  var quickRow = document.getElementById('tutorQuickRow');
+  var contextRow = document.getElementById('tutorContextRow');
+  var historyList = document.getElementById('tutorHistoryList');
+  var historyPanel = document.getElementById('tutorHistory');
+  var historyOverlay = document.getElementById('tutorHistoryOverlay');
+
+  var mathQueue = null;
+  function typeset(el) {
+    if (window.MathJax && window.MathJax.typesetPromise) {
+      mathQueue = (mathQueue || Promise.resolve()).then(function () {
+        return window.MathJax.typesetPromise([el]).catch(function () {});
+      });
+    }
+  }
+  function highlightCode(el) {
+    if (window.hljs) {
+      el.querySelectorAll('pre code').forEach(function (block) { window.hljs.highlightElement(block); });
+    }
+  }
+
+  function renderMarkdown(raw) {
+    var mathMap = [];
+    var protectedText = raw.replace(/\$\$[\s\S]*?\$\$|\\\[[\s\S]*?\\\]|\\\([\s\S]*?\\\)|\$[^\$\n]+?\$/g, function (m) {
+      var token = '@@TUTORMATH' + mathMap.length + '@@';
+      mathMap.push(m);
+      return token;
+    });
+    var html;
+    try {
+      html = window.marked ? window.marked.parse(protectedText, { breaks: true, gfm: true }) : protectedText;
+    } catch (e) { html = protectedText; }
+    if (window.DOMPurify) html = window.DOMPurify.sanitize(html);
+    mathMap.forEach(function (m, i) {
+      html = html.split('@@TUTORMATH' + i + '@@').join(m.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'));
+    });
+    return html;
+  }
+
+  function escapeHtml(s) {
+    var d = document.createElement('div');
+    d.textContent = s;
+    return d.innerHTML;
+  }
+
+  function isNearBottom() {
+    return messagesWrap.scrollHeight - messagesWrap.scrollTop - messagesWrap.clientHeight < 120;
+  }
+  function scrollToBottom(force) {
+    if (force || isNearBottom()) messagesWrap.scrollTop = messagesWrap.scrollHeight;
+  }
+
+  // ===== CONTEXT BAR =====
+  function contextTarget() {
+    var c = state.context;
+    if (c.topic) return c.course ? ('"' + c.topic.title + '" from ' + c.course.code) : ('"' + c.topic.title + '"');
+    if (c.course) return c.course.code + ' — ' + c.course.title;
+    if (c.material) return 'the material "' + c.material.title + '"';
+    return null;
+  }
+
+  function renderContextBar() {
+    var c = state.context;
+    var html = '';
+    if (c.course) {
+      html += '<span class="tutor-context-chip"><i class="ri-book-2-line"></i>' + escapeHtml(c.course.code + ' · ' + c.course.title) + '</span>';
+    }
+    if (c.topic) {
+      html += '<span class="tutor-context-chip topic"><i class="ri-price-tag-3-line"></i>Topic: ' + escapeHtml(c.topic.title) + '</span>';
+    }
+    if (c.material) {
+      html += '<span class="tutor-context-chip topic"><i class="ri-file-text-line"></i>' + escapeHtml(c.material.title) + '</span>';
+    }
+    if (c.course || c.topic || c.material) {
+      html += '<button class="tutor-context-clear" id="tutorClearContext" title="Leave this context">&times;</button>';
+    } else {
+      html = '<span class="tutor-context-empty-label">General study session</span>';
+    }
+    contextRow.innerHTML = html;
+    var clearBtn = document.getElementById('tutorClearContext');
+    if (clearBtn) clearBtn.addEventListener('click', function () {
+      state.context = { course: null, topic: null, material: null };
+      window.TUTOR_CONTEXT.quickPrompts = buildGenericQuickPrompts();
+      window.history.pushState({}, '', '/ai-tutor');
+      renderContextBar();
+      if (!state.messages.length) renderMessages();
+    });
+  }
+
+  function buildGenericQuickPrompts() {
+    return [
+      { label: 'Explain a topic', prompt: "Explain a topic to me — ask me which one first." },
+      { label: 'Help me solve a question', prompt: "Help me solve a question step by step. I'll paste it now." },
+      { label: 'Summarize my material', prompt: "Help me summarize a study material into concise notes. I'll tell you what it's about." },
+      { label: 'Prepare me for an exam', prompt: "Help me prepare for an exam. Ask me which course first." }
+    ];
+  }
+
+  // ===== QUICK PROMPTS =====
+  function renderQuickRow(prompts) {
+    prompts = prompts || [];
+    if (!prompts.length || state.messages.length) {
+      quickRow.classList.add('hidden');
+      quickRow.innerHTML = '';
+      return;
+    }
+    quickRow.classList.remove('hidden');
+    quickRow.innerHTML = prompts.map(function (p) {
+      return '<button type="button" class="tutor-quick-chip" data-prompt="' + escapeHtml(p.prompt) + '">' + escapeHtml(p.label) + '</button>';
+    }).join('');
+    quickRow.querySelectorAll('.tutor-quick-chip').forEach(function (btn) {
+      btn.addEventListener('click', function () { sendUserText(btn.getAttribute('data-prompt')); });
+    });
+  }
+
+  // ===== MESSAGE RENDERING =====
+  function renderMessages() {
+    if (!state.messages.length) {
+      var prompts = window.TUTOR_CONTEXT.quickPrompts && window.TUTOR_CONTEXT.quickPrompts.length ? window.TUTOR_CONTEXT.quickPrompts : buildGenericQuickPrompts();
+      var target = contextTarget();
+      messagesInner.innerHTML =
+        '<div class="tutor-empty">' +
+          '<div class="tutor-empty-icon"><i class="ri-sparkling-2-line"></i></div>' +
+          '<h1>Your AI Tutor</h1>' +
+          '<p>' + (target ? ('Studying <strong>' + escapeHtml(target) + '</strong>. Ask anything, or pick a starting point below.') : 'Learn your courses. Understand difficult topics. Prepare smarter.') + '</p>' +
+          '<div class="tutor-suggestion-grid">' +
+            prompts.map(function (p) {
+              return '<div class="tutor-suggestion-card" data-prompt="' + escapeHtml(p.prompt) + '">' + escapeHtml(p.label) + '</div>';
+            }).join('') +
+          '</div>' +
+        '</div>';
+      messagesInner.querySelectorAll('.tutor-suggestion-card').forEach(function (card) {
+        card.addEventListener('click', function () { sendUserText(card.getAttribute('data-prompt')); });
+      });
+      renderQuickRow([]);
+      return;
+    }
+    messagesInner.innerHTML = '';
+    state.messages.forEach(function (m, idx) {
+      messagesInner.appendChild(buildMessageEl(m, idx === state.messages.length - 1));
+    });
+    scrollToBottom(true);
+    renderQuickRow([]);
+  }
+
+  function buildMessageEl(m, isLast) {
+    var row = document.createElement('div');
+    if (m.role === 'user') {
+      row.className = 'tutor-msg-row user';
+      var bubble = document.createElement('div');
+      bubble.className = 'tutor-msg-user-bubble';
+      bubble.textContent = m.content;
+      row.appendChild(bubble);
+      return row;
+    }
+    row.className = 'tutor-msg-row assistant';
+    var wrap = document.createElement('div');
+    wrap.className = 'tutor-msg-assistant';
+    wrap.innerHTML =
+      '<div class="tutor-msg-assistant-head"><div class="tutor-avatar"><i class="ri-sparkling-2-line"></i></div><div class="tutor-avatar-name">Nelavista</div></div>' +
+      '<div class="tutor-msg-body">' + renderMarkdown(m.content || '') + '</div>' +
+      '<div class="tutor-msg-actions">' +
+        '<button type="button" class="tutor-copy-btn" title="Copy"><i class="ri-file-copy-line"></i></button>' +
+        '<button type="button" class="tutor-speak-btn" title="Read aloud"><i class="ri-volume-up-line"></i></button>' +
+        (isLast ? '<button type="button" class="tutor-regen-btn" title="Regenerate"><i class="ri-refresh-line"></i></button>' : '') +
+      '</div>';
+    row.appendChild(wrap);
+    typeset(wrap.querySelector('.tutor-msg-body'));
+    highlightCode(wrap.querySelector('.tutor-msg-body'));
+    return row;
+  }
+
+  // Copy / read-aloud / regenerate buttons are wired once via delegation below, since
+  // assistant message actions are appended both here (history) and in finalize() (live).
+  document.body.addEventListener('click', function (e) {
+    var copyBtn = e.target.closest('.tutor-copy-btn');
+    if (copyBtn) {
+      var body = copyBtn.closest('.tutor-msg-assistant').querySelector('.tutor-msg-body');
+      var text = body ? body.innerText : '';
+      if (navigator.clipboard && text) {
+        navigator.clipboard.writeText(text).then(function () {
+          var icon = copyBtn.querySelector('i');
+          icon.className = 'ri-check-line';
+          setTimeout(function () { icon.className = 'ri-file-copy-line'; }, 1500);
+        });
+      }
+      return;
+    }
+    var speakBtn = e.target.closest('.tutor-speak-btn');
+    if (speakBtn) { toggleSpeak(speakBtn); return; }
+    var regenBtn = e.target.closest('.tutor-regen-btn');
+    if (regenBtn) { regenerate(); return; }
+  });
+
+  var currentUtterance = null;
+  function toggleSpeak(btn) {
+    if (!('speechSynthesis' in window)) return;
+    if (currentUtterance && btn.classList.contains('active')) {
+      window.speechSynthesis.cancel();
+      btn.classList.remove('active');
+      currentUtterance = null;
+      return;
+    }
+    window.speechSynthesis.cancel();
+    document.querySelectorAll('.tutor-speak-btn.active').forEach(function (b) { b.classList.remove('active'); });
+    var body = btn.closest('.tutor-msg-assistant').querySelector('.tutor-msg-body');
+    var text = (body ? body.innerText : '').replace(/\s+/g, ' ').trim();
+    if (!text) return;
+    currentUtterance = new SpeechSynthesisUtterance(text);
+    currentUtterance.rate = 0.98;
+    btn.classList.add('active');
+    currentUtterance.onend = function () { btn.classList.remove('active'); currentUtterance = null; };
+    currentUtterance.onerror = function () { btn.classList.remove('active'); currentUtterance = null; };
+    window.speechSynthesis.speak(currentUtterance);
+  }
+
+  // ===== HISTORY SIDEBAR =====
+  function groupLabel(updatedAt) {
+    var d = new Date(updatedAt);
+    var now = new Date();
+    var startOfDay = function (x) { return new Date(x.getFullYear(), x.getMonth(), x.getDate()); };
+    var diffDays = Math.round((startOfDay(now) - startOfDay(d)) / 86400000);
+    if (diffDays <= 0) return 'Today';
+    if (diffDays === 1) return 'Yesterday';
+    if (diffDays <= 7) return 'Previous 7 days';
+    return 'Older';
+  }
+
+  function renderHistory() {
+    if (!state.conversations.length) {
+      historyList.innerHTML = '<div class="tutor-history-empty">No conversations yet. Start one below.</div>';
+      return;
+    }
+    var groups = {};
+    var order = ['Today', 'Yesterday', 'Previous 7 days', 'Older'];
+    state.conversations.forEach(function (c) {
+      var label = groupLabel(c.updated_at || c.created_at);
+      (groups[label] = groups[label] || []).push(c);
+    });
+    var html = '';
+    order.forEach(function (label) {
+      if (!groups[label]) return;
+      html += '<div class="tutor-history-group-label">' + label + '</div>';
+      groups[label].forEach(function (c) {
+        var meta = c.topic_title || c.course_code || '';
+        html +=
+          '<div class="tutor-history-item ' + (c.id === state.conversationId ? 'active' : '') + '" data-id="' + c.id + '">' +
+            '<div class="tutor-history-item-body">' +
+              '<div class="tutor-history-item-title">' + escapeHtml(c.title || 'New chat') + '</div>' +
+              (meta ? '<div class="tutor-history-item-meta">' + escapeHtml(meta) + '</div>' : '') +
+            '</div>' +
+            '<div class="tutor-history-item-actions">' +
+              '<button type="button" class="tutor-rename-btn" title="Rename"><i class="ri-pencil-line"></i></button>' +
+              '<button type="button" class="tutor-delete-btn" title="Delete"><i class="ri-delete-bin-line"></i></button>' +
+            '</div>' +
+          '</div>';
+      });
+    });
+    historyList.innerHTML = html;
+    historyList.querySelectorAll('.tutor-history-item').forEach(function (el) {
+      el.addEventListener('click', function (e) {
+        if (e.target.closest('.tutor-history-item-actions')) return;
+        openConversation(parseInt(el.getAttribute('data-id'), 10));
+      });
+    });
+    historyList.querySelectorAll('.tutor-delete-btn').forEach(function (btn) {
+      btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var id = parseInt(btn.closest('.tutor-history-item').getAttribute('data-id'), 10);
+        deleteConversation(id);
+      });
+    });
+    historyList.querySelectorAll('.tutor-rename-btn').forEach(function (btn) {
+      btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var item = btn.closest('.tutor-history-item');
+        var id = parseInt(item.getAttribute('data-id'), 10);
+        var conv = state.conversations.find(function (c) { return c.id === id; });
+        var next = window.prompt('Rename conversation', conv ? conv.title : '');
+        if (next && next.trim()) renameConversation(id, next.trim());
+      });
+    });
+  }
+
+  function renameConversation(id, title) {
+    fetch('/api/tutor/conversations/' + id, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ title: title }) })
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        if (data.success) {
+          var conv = state.conversations.find(function (c) { return c.id === id; });
+          if (conv) conv.title = data.conversation.title;
+          renderHistory();
+        }
+      }).catch(function () {});
+  }
+
+  function deleteConversation(id) {
+    if (!window.confirm('Delete this conversation? This cannot be undone.')) return;
+    fetch('/api/tutor/conversations/' + id, { method: 'DELETE' })
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        if (data.success) {
+          state.conversations = state.conversations.filter(function (c) { return c.id !== id; });
+          renderHistory();
+          if (state.conversationId === id) startNewChat(false);
+        }
+      }).catch(function () {});
+  }
+
+  function openConversation(id) {
+    if (state.isStreaming || id === state.conversationId) {
+      closeHistoryDrawer();
+      return;
+    }
+    fetch('/api/tutor/conversations/' + id)
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        if (!data.success) return;
+        state.conversationId = id;
+        state.context = {
+          course: data.conversation.course_code ? { code: data.conversation.course_code, title: data.conversation.course_title } : null,
+          topic: data.conversation.topic_id ? { id: data.conversation.topic_id, title: data.conversation.topic_title } : null,
+          material: data.conversation.material_id ? { id: data.conversation.material_id, title: data.conversation.material_title } : null
+        };
+        window.TUTOR_CONTEXT.quickPrompts = data.quick_prompts;
+        state.messages = data.messages;
+        renderContextBar();
+        renderMessages();
+        renderHistory();
+        closeHistoryDrawer();
+        var qs = [];
+        if (data.conversation.course_code) qs.push('course=' + encodeURIComponent(data.conversation.course_code));
+        if (data.conversation.topic_id) qs.push('topic=' + data.conversation.topic_id);
+        window.history.pushState({}, '', '/ai-tutor?conversation=' + id + (qs.length ? '&' + qs.join('&') : ''));
+      }).catch(function () {});
+  }
+
+  function startNewChat(preserveContext) {
+    state.conversationId = null;
+    state.messages = [];
+    if (preserveContext === false) state.context = { course: null, topic: null, material: null };
+    renderContextBar();
+    renderMessages();
+    renderHistory();
+    closeHistoryDrawer();
+    var qs = [];
+    if (state.context.course) qs.push('course=' + encodeURIComponent(state.context.course.code));
+    if (state.context.topic) qs.push('topic=' + state.context.topic.id);
+    window.history.pushState({}, '', '/ai-tutor' + (qs.length ? '?' + qs.join('&') : ''));
+  }
+
+  document.getElementById('tutorNewChatBtn').addEventListener('click', function () { startNewChat(true); });
+  document.getElementById('tutorNewChatBtnTop').addEventListener('click', function () { startNewChat(true); });
+
+  function closeHistoryDrawer() {
+    historyPanel.classList.remove('open');
+    historyOverlay.classList.remove('open');
+  }
+  document.getElementById('tutorHistoryToggle').addEventListener('click', function () {
+    historyPanel.classList.add('open');
+    historyOverlay.classList.add('open');
+  });
+  historyOverlay.addEventListener('click', closeHistoryDrawer);
+
+  // ===== SENDING / STREAMING =====
+  function contextQuery() {
+    var parts = [];
+    if (state.context.course) parts.push('course=' + encodeURIComponent(state.context.course.code));
+    if (state.context.topic) parts.push('topic=' + state.context.topic.id);
+    if (state.context.material) parts.push('material=' + state.context.material.id);
+    return parts.join('&');
+  }
+
+  function ensureConversation() {
+    if (state.conversationId) return Promise.resolve(state.conversationId);
+    return fetch('/api/tutor/conversations?' + contextQuery(), { method: 'POST' })
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        if (!data.success) throw new Error('Could not start conversation');
+        state.conversationId = data.conversation.id;
+        state.conversations.unshift(data.conversation);
+        return state.conversationId;
+      });
+  }
+
+  function setStreaming(streaming) {
+    state.isStreaming = streaming;
+    input.disabled = streaming;
+    sendBtn.querySelector('i').className = streaming ? 'ri-stop-fill' : 'ri-send-plane-fill';
+    sendBtn.classList.toggle('stop', streaming);
+    sendBtn.disabled = !streaming && !input.value.trim();
+  }
+
+  function sendUserText(text) {
+    text = (text || '').trim();
+    if (!text || state.isStreaming) return;
+    input.value = '';
+    autoResize();
+    state.messages.push({ role: 'user', content: text });
+    renderMessages();
+    setStreaming(true);
+    ensureConversation().then(function (id) {
+      streamTurn(id, { content: text });
+    }).catch(function () {
+      setStreaming(false);
+      state.messages.push({ role: 'assistant', content: "I couldn't start a new conversation just now — please try again." });
+      renderMessages();
+    });
+  }
+
+  function regenerate() {
+    if (state.isStreaming || !state.conversationId) return;
+    if (state.messages.length && state.messages[state.messages.length - 1].role === 'assistant') {
+      state.messages.pop();
+    }
+    renderMessages();
+    setStreaming(true);
+    streamTurn(state.conversationId, { regenerate: true });
+  }
+
+  function streamTurn(conversationId, body) {
+    var controller = new AbortController();
+    state.abortController = controller;
+
+    var assistantMsg = { role: 'assistant', content: '' };
+    state.messages.push(assistantMsg);
+
+    var row = document.createElement('div');
+    row.className = 'tutor-msg-row assistant';
+    var wrap = document.createElement('div');
+    wrap.className = 'tutor-msg-assistant';
+    wrap.innerHTML =
+      '<div class="tutor-msg-assistant-head"><div class="tutor-avatar"><i class="ri-sparkling-2-line"></i></div><div class="tutor-avatar-name">Nelavista</div></div>' +
+      '<div class="tutor-msg-body"><div class="tutor-typing"><span></span><span></span><span></span></div></div>';
+    row.appendChild(wrap);
+    // Only the most recent assistant message keeps a Regenerate button -- drop it from
+    // whatever previously held that spot now that a new turn is starting (copy/read-aloud
+    // stay available on every past message).
+    document.querySelectorAll('.tutor-regen-btn').forEach(function (b) { b.remove(); });
+    messagesInner.appendChild(row);
+    scrollToBottom(true);
+    var bodyEl = wrap.querySelector('.tutor-msg-body');
+    var started = false;
+    var raf = null;
+
+    function flush() {
+      raf = null;
+      bodyEl.innerHTML = renderMarkdown(assistantMsg.content) + '<span class="tutor-cursor"></span>';
+      scrollToBottom();
+    }
+
+    fetch('/api/tutor/conversations/' + conversationId + '/messages', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body), signal: controller.signal
+    }).then(function (resp) {
+      var reader = resp.body.getReader();
+      var decoder = new TextDecoder();
+      var buffer = '';
+      function pump() {
+        return reader.read().then(function (result) {
+          if (result.done) return;
+          buffer += decoder.decode(result.value, { stream: true });
+          var parts = buffer.split('\n\n');
+          buffer = parts.pop();
+          parts.forEach(function (part) {
+            if (!part.startsWith('data: ')) return;
+            var payload;
+            try { payload = JSON.parse(part.slice(6)); } catch (e) { return; }
+            if (payload.delta) {
+              if (!started) { started = true; }
+              assistantMsg.content += payload.delta;
+              if (!raf) raf = requestAnimationFrame(flush);
+            } else if (payload.done) {
+              finalize(wrap, assistantMsg, payload.title);
+            }
+          });
+          return pump();
+        });
+      }
+      return pump();
+    }).catch(function (err) {
+      if (err && err.name === 'AbortError') {
+        finalize(wrap, assistantMsg, null);
+        return;
+      }
+      assistantMsg.content = assistantMsg.content || "I'm having trouble responding right now — please try again.";
+      finalize(wrap, assistantMsg, null);
+    });
+  }
+
+  function finalize(wrap, assistantMsg, title) {
+    setStreaming(false);
+    state.abortController = null;
+    var bodyEl = wrap.querySelector('.tutor-msg-body');
+    bodyEl.innerHTML = renderMarkdown(assistantMsg.content || '_No response._');
+    typeset(bodyEl);
+    highlightCode(bodyEl);
+    var actions = document.createElement('div');
+    actions.className = 'tutor-msg-actions';
+    actions.innerHTML =
+      '<button type="button" class="tutor-copy-btn" title="Copy"><i class="ri-file-copy-line"></i></button>' +
+      '<button type="button" class="tutor-speak-btn" title="Read aloud"><i class="ri-volume-up-line"></i></button>' +
+      '<button type="button" class="tutor-regen-btn" title="Regenerate"><i class="ri-refresh-line"></i></button>';
+    wrap.appendChild(actions);
+    scrollToBottom(true);
+    if (title) {
+      var conv = state.conversations.find(function (c) { return c.id === state.conversationId; });
+      if (conv) conv.title = title;
+      renderHistory();
+    }
+  }
+
+  document.getElementById('tutorSendBtn').addEventListener('click', function (e) {
+    if (state.isStreaming) {
+      e.preventDefault();
+      if (state.abortController) state.abortController.abort();
+    }
+  });
+  composer.addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (state.isStreaming) return;
+    sendUserText(input.value);
+  });
+  input.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      if (!state.isStreaming) sendUserText(input.value);
+    }
+  });
+  function autoResize() {
+    input.style.height = 'auto';
+    input.style.height = Math.min(input.scrollHeight, 160) + 'px';
+    sendBtn.disabled = !state.isStreaming && !input.value.trim();
+  }
+  input.addEventListener('input', autoResize);
+
+  // ===== TUTOR ACTIONS MENU =====
+  actionsBtn.addEventListener('click', function (e) {
+    e.stopPropagation();
+    actionsMenu.classList.toggle('open');
+  });
+  document.addEventListener('click', function (e) {
+    if (!actionsMenu.contains(e.target) && e.target !== actionsBtn) actionsMenu.classList.remove('open');
+  });
+  actionsMenu.querySelectorAll('button[data-mode]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      actionsMenu.classList.remove('open');
+      var mode = btn.getAttribute('data-mode');
+      fetch('/api/tutor/action-prompt?' + contextQuery(), {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ mode: mode })
+      }).then(function (r) { return r.json(); }).then(function (data) {
+        if (data.success) sendUserText(data.prompt);
+      }).catch(function () {});
+    });
+  });
+
+  // ===== VOICE INPUT =====
+  var SpeechRecognitionCtor = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognitionCtor) {
+    micBtn.disabled = true;
+    micBtn.title = 'Voice input is not supported in this browser';
+    micBtn.style.opacity = '0.35';
+  } else {
+    var recognition = new SpeechRecognitionCtor();
+    recognition.lang = 'en-US';
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+    recognition.continuous = false;
+    recognition.onstart = function () { state.recognizing = true; micBtn.classList.add('listening'); };
+    recognition.onend = function () { state.recognizing = false; micBtn.classList.remove('listening'); };
+    recognition.onerror = function () { state.recognizing = false; micBtn.classList.remove('listening'); };
+    recognition.onresult = function (event) {
+      var transcript = event.results[0][0].transcript.trim();
+      if (transcript) sendUserText(transcript);
+    };
+    micBtn.addEventListener('click', function () {
+      if (state.isStreaming) return;
+      if (state.recognizing) { recognition.stop(); return; }
+      try { recognition.start(); } catch (e) {}
+    });
+  }
+
+  // ===== INIT =====
+  renderContextBar();
+  renderHistory();
+  renderMessages();
+})();
+</script>
+</body>
+</html>

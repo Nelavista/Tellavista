@@ -1636,6 +1636,73 @@ class StudentPrivacySettings(db.Model):
         }
 
 
+class UserPreferences(db.Model):
+    """The single source of truth for Academia Settings (routes/settings_routes.py,
+    templates/settings.html) -- one row per user, created lazily on first visit to
+    /settings. Every column here has exactly one real consumer; see the comment above
+    each field. This deliberately replaces the old dead UserProfile table and the
+    session-only theme/traits/memory keys that routes/static_pages_routes.py used to
+    write (session['theme'], session['traits'], ...) with nothing ever reading them back."""
+    __tablename__ = 'user_preferences'
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), unique=True, nullable=False)
+
+    # ── Appearance ── read by static/js/shell.js (every page that includes
+    # components/academia_footer.html or components/skills_footer.html) and by
+    # templates/talk-to-nelavista.html's own theme-init script.
+    theme = db.Column(db.String(10), nullable=False, default='dark')  # 'light' | 'dark' | 'system'
+
+    # ── AI Tutor ── read by services/tutor_service.py's build_tutor_system_prompt()
+    # (the new /ai-tutor backend) and routes/ai_routes.py's /ask (the live AI Tutor at
+    # /talk-to-nelavista) when building the system prompt for each request.
+    ai_response_style = db.Column(db.String(20), nullable=False, default='balanced')        # concise | balanced | detailed
+    ai_teaching_approach = db.Column(db.String(20), nullable=False, default='step_by_step')  # step_by_step | concept_first | example_first | exam_focused
+    ai_difficulty = db.Column(db.String(20), nullable=False, default='university')           # beginner | university | advanced
+    ai_use_academic_context = db.Column(db.Boolean, nullable=False, default=True)
+    # Only meaningful for /ask (routes/ai_routes.py), which has no real conversation
+    # threads -- gates whether it pulls prior UserQuestions rows as context or starts
+    # fresh each message. The newer /ai-tutor has real persisted threads instead, so
+    # "continuity" there is just the thread itself, not something this flag controls.
+    ai_use_conversation_history = db.Column(db.Boolean, nullable=False, default=True)
+    ai_personal_context = db.Column(db.Text, nullable=True)  # spliced into the system prompt verbatim when non-empty
+
+    # ── Study & Exam (CBT) ── read by routes/cbt_routes.py's CBT() (pre-selects the
+    # practice-mode card in templates/CBT.html) and templates/cbt_attempt_review.html
+    # (auto-triggers "Explain this answer" for wrong answers on load, if enabled).
+    cbt_default_mode = db.Column(db.String(10), nullable=False, default='cbt')  # cbt | written
+    cbt_auto_explain = db.Column(db.Boolean, nullable=False, default=False)
+
+    # ── Notifications ── read by routes/cbt_routes.py's submit_cbt_attempt() before
+    # calling services/notification_service.notify(). This is the ONLY notification
+    # category Academia can actually trigger today (see routes/academia_routes.py's
+    # /notifications) -- no other category is exposed because nothing else in Academia
+    # fires a notification yet.
+    notify_cbt_results = db.Column(db.Boolean, nullable=False, default=True)
+
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    user = db.relationship('User', backref=db.backref('preferences', uselist=False))
+
+    # Field-level defaults for "Reset preferences" (routes/settings_routes.py) --  kept
+    # here, next to the columns, so a new field can't be added to one without the other.
+    DEFAULTS = {
+        'theme': 'dark',
+        'ai_response_style': 'balanced',
+        'ai_teaching_approach': 'step_by_step',
+        'ai_difficulty': 'university',
+        'ai_use_academic_context': True,
+        'ai_use_conversation_history': True,
+        'ai_personal_context': None,
+        'cbt_default_mode': 'cbt',
+        'cbt_auto_explain': False,
+        'notify_cbt_results': True,
+    }
+
+    def to_dict(self):
+        return {field: getattr(self, field) for field in self.DEFAULTS}
+
+
 # ============================================================
 # ===== ACADEMIA TAXONOMY: University -> Faculty -> Department -> Course =====
 # Normalizes what User.university/faculty/department/level (free strings, kept as-is
@@ -1981,6 +2048,75 @@ class TopicProgress(db.Model):
     topic = db.relationship('Topic', backref=db.backref('progress_rows', lazy='dynamic'))
 
     __table_args__ = (db.UniqueConstraint('user_id', 'topic_id', name='uq_topic_progress_user_topic'),)
+
+
+# ============================================================
+# ===== AI TUTOR: threaded conversations =====
+# Real per-student chat threads, distinct from the flat UserQuestions log above (which
+# stays exactly as-is, still written by /ask and /ask_with_files for backward
+# compatibility). A conversation optionally carries the Course/Topic/Material it was
+# opened from -- e.g. from "CSC201 -> Variables and Data Types -> AI Tutor" -- so the
+# history sidebar can group/label threads by what they're actually about instead of an
+# anonymous list, and so re-opening one restores the same academic context it started in.
+# ============================================================
+
+class TutorConversation(db.Model):
+    __tablename__ = 'tutor_conversations'
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False, index=True)
+    # NULL until the first exchange completes (see services/tutor_service.py's
+    # generate_conversation_title) -- rendered as "New chat" in the sidebar until then.
+    title = db.Column(db.String(200), nullable=True)
+    course_id = db.Column(db.Integer, db.ForeignKey('courses.id'), nullable=True)
+    topic_id = db.Column(db.Integer, db.ForeignKey('topics.id'), nullable=True)
+    material_id = db.Column(db.Integer, db.ForeignKey('materials.id'), nullable=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    # Bumped on every new message, not just row edits -- this is what "most recent" means
+    # for the Today / Yesterday / Previous 7 days grouping in the history sidebar.
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    user = db.relationship('User', backref=db.backref('tutor_conversations', lazy='dynamic', cascade='all, delete-orphan'))
+    course = db.relationship('Course')
+    topic = db.relationship('Topic')
+    material = db.relationship('Material')
+    messages = db.relationship('TutorMessage', backref='conversation', lazy='dynamic',
+                                cascade='all, delete-orphan', order_by='TutorMessage.created_at')
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'title': self.title or 'New chat',
+            'course_code': self.course.code if self.course else None,
+            'course_title': self.course.title if self.course else None,
+            'topic_id': self.topic_id,
+            'topic_title': self.topic.title if self.topic else None,
+            'material_id': self.material_id,
+            'material_title': self.material.title if self.material else None,
+            'created_at': self.created_at.isoformat() if self.created_at else None,
+            'updated_at': self.updated_at.isoformat() if self.updated_at else None,
+        }
+
+
+class TutorMessage(db.Model):
+    """One turn in a TutorConversation. role is 'user' or 'assistant' only -- the system
+    prompt is never stored as a row here, it's rebuilt fresh from live academic context on
+    every request (see services/tutor_service.py) so it always reflects the student's
+    CURRENT department/level/course, even if their profile or the conversation's course
+    context changes mid-thread."""
+    __tablename__ = 'tutor_messages'
+
+    id = db.Column(db.Integer, primary_key=True)
+    conversation_id = db.Column(db.Integer, db.ForeignKey('tutor_conversations.id'), nullable=False, index=True)
+    role = db.Column(db.String(10), nullable=False)  # 'user' | 'assistant'
+    content = db.Column(db.Text, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def to_dict(self):
+        return {
+            'id': self.id, 'role': self.role, 'content': self.content,
+            'created_at': self.created_at.isoformat() if self.created_at else None,
+        }
 
 
 # ============================================================

@@ -458,7 +458,7 @@ window.TUTOR_ACTIVE_MESSAGES = {{ active_messages | tojson }};
       var target = contextTarget();
       messagesInner.innerHTML =
         '<div class="tutor-empty">' +
-          '<div class="tutor-empty-icon"><i class="ri-sparkling-2-line"></i></div>' +
+          '<div class="tutor-empty-icon"><i class="ri-robot-line"></i></div>' +
           '<h1>Your AI Tutor</h1>' +
           '<p>' + (target ? ('Studying <strong>' + escapeHtml(target) + '</strong>. Ask anything, or pick a starting point below.') : 'Learn your courses. Understand difficult topics. Prepare smarter.') + '</p>' +
           '<div class="tutor-suggestion-grid">' +
@@ -495,7 +495,7 @@ window.TUTOR_ACTIVE_MESSAGES = {{ active_messages | tojson }};
     var wrap = document.createElement('div');
     wrap.className = 'tutor-msg-assistant';
     wrap.innerHTML =
-      '<div class="tutor-msg-assistant-head"><div class="tutor-avatar"><i class="ri-sparkling-2-line"></i></div><div class="tutor-avatar-name">Nelavista</div></div>' +
+      '<div class="tutor-msg-assistant-head"><div class="tutor-avatar"><i class="ri-robot-line"></i></div><div class="tutor-avatar-name">Nelavista</div></div>' +
       '<div class="tutor-msg-body">' + renderMarkdown(m.content || '') + '</div>' +
       '<div class="tutor-msg-actions">' +
         '<button type="button" class="tutor-copy-btn" title="Copy"><i class="ri-file-copy-line"></i></button>' +
@@ -768,7 +768,7 @@ window.TUTOR_ACTIVE_MESSAGES = {{ active_messages | tojson }};
     var wrap = document.createElement('div');
     wrap.className = 'tutor-msg-assistant';
     wrap.innerHTML =
-      '<div class="tutor-msg-assistant-head"><div class="tutor-avatar"><i class="ri-sparkling-2-line"></i></div><div class="tutor-avatar-name">Nelavista</div></div>' +
+      '<div class="tutor-msg-assistant-head"><div class="tutor-avatar"><i class="ri-robot-line"></i></div><div class="tutor-avatar-name">Nelavista</div></div>' +
       '<div class="tutor-msg-body"><div class="tutor-typing"><span></span><span></span><span></span></div></div>';
     row.appendChild(wrap);
     // Only the most recent assistant message keeps a Regenerate button -- drop it from

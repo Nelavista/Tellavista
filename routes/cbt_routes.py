@@ -4,11 +4,12 @@ import traceback
 from datetime import datetime
 from flask import Blueprint, render_template, request, session, redirect, url_for, flash, jsonify
 from utils.helpers import login_required, debug_print
-from models import User, CBTQuestion, CBTAttempt, CBTAnswer
+from models import User, CBTQuestion, CBTAttempt, CBTAnswer, UserPreferences
 from extensions import db, limiter
 from config import OPENROUTER_API_KEY
 from services.academic_context import resolve_academic_context, find_course
 from services.progress_service import get_cbt_summary
+from services.notification_service import notify
 import requests
 
 cbt_bp = Blueprint('cbt', __name__)
@@ -45,11 +46,13 @@ def CBT():
         flash('User not found. Please log in again.', 'error')
         return redirect(url_for('auth.login'))
 
+    prefs = UserPreferences.query.filter_by(user_id=user.id).first()
     return render_template(
         "CBT.html",
         user_dept=user.department or '',
         user_level=user.level or '',
-        user_name=user.name or 'Student'
+        user_name=user.name or 'Student',
+        preferred_mode=(prefs.cbt_default_mode if prefs else 'cbt')
     )
 
 
@@ -235,6 +238,16 @@ def submit_cbt_attempt(attempt_id):
     attempt.submitted_at = datetime.utcnow()
     db.session.commit()
 
+    if attempt.question_type == 'cbt':
+        prefs = UserPreferences.query.filter_by(user_id=user.id).first()
+        if not prefs or prefs.notify_cbt_results:
+            notify(
+                user.id, 'cbt_result',
+                f'Mock exam result: {attempt.course_code}',
+                f'You scored {attempt.score_pct}% ({correct_count}/{total}).',
+                link_url=url_for('cbt.cbt_attempt_review', attempt_id=attempt.id),
+            )
+
     return jsonify({
         'success': True, 'attempt_id': attempt.id, 'course_code': attempt.course_code,
         'question_type': attempt.question_type, 'total_questions': total,
@@ -268,8 +281,11 @@ def cbt_attempt_review(attempt_id):
     ctx = resolve_academic_context(user)
     course = find_course(ctx.department, attempt.course_code) if ctx.department else None
     study_link = f"/courses/{course.code}" if course else None
+    prefs = UserPreferences.query.filter_by(user_id=user.id).first()
+    auto_explain = bool(prefs and prefs.cbt_auto_explain)
 
-    return render_template('cbt_attempt_review.html', attempt=attempt, answers=answers, study_link=study_link)
+    return render_template('cbt_attempt_review.html', attempt=attempt, answers=answers,
+                            study_link=study_link, auto_explain=auto_explain)
 
 
 @cbt_bp.route('/api/cbt-summary')

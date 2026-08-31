@@ -1,227 +1,417 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Nelavista Settings</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Settings · Nelavista</title>
+  <meta name="theme-color" content="#050810">
+  <link rel="icon" type="image/png" sizes="32x32" href="/static/icons/nelavista-32x32.png">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/skills.css') }}">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
   <style>
-    * { margin:0; padding:0; box-sizing:border-box; font-family:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif; }
-    body { background:#0d1117; color:#e6edf3; min-height:100vh; padding:32px 20px 80px; }
-    .wrap { max-width:640px; margin:0 auto; }
-    .top-bar { display:flex; align-items:center; gap:14px; margin-bottom:28px; }
-    .back-btn { display:flex; align-items:center; justify-content:center; width:38px; height:38px; border-radius:50%; background:#161b22; border:1px solid #30363d; color:#8b949e; text-decoration:none; font-size:1.1rem; transition:all 0.2s; flex-shrink:0; }
-    .back-btn:hover { border-color:#58a6ff; color:#58a6ff; }
-    h1 { font-size:1.4rem; font-weight:700; }
-    h2 { font-size:1rem; font-weight:600; color:#e6edf3; margin-bottom:4px; }
-    .section-desc { color:#8b949e; font-size:0.85rem; margin-bottom:18px; }
-    .card { background:#161b22; border:1px solid #21262d; border-radius:16px; padding:22px; margin-bottom:20px; }
-    .setting { display:flex; justify-content:space-between; align-items:center; gap:16px; padding:14px 0; border-bottom:1px solid #21262d; }
-    .setting:last-child { border-bottom:none; }
-    label { font-size:0.92rem; color:#e6edf3; flex:1; }
-    select, textarea { background:#0d1117; border:1px solid #30363d; color:#e6edf3; padding:9px 12px; border-radius:10px; font-size:0.88rem; outline:none; transition:border 0.2s; }
-    select { min-width:150px; }
-    textarea { width:100%; resize:vertical; }
-    select:focus, textarea:focus { border-color:#58a6ff; }
-    input[type="checkbox"] { width:18px; height:18px; accent-color:#58a6ff; cursor:pointer; }
-    .checkbox-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(150px, 1fr)); gap:10px; }
-    .trait-label { display:flex; align-items:center; gap:8px; background:#0d1117; border:1px solid #30363d; border-radius:10px; padding:9px 12px; font-size:0.85rem; cursor:pointer; transition:all 0.2s; }
-    .trait-label:hover { border-color:#58a6ff; }
-    .trait-label input { margin:0; }
-    .btn { display:block; width:100%; padding:13px; font-size:0.95rem; font-weight:700; border:none; border-radius:40px; cursor:pointer; transition:all 0.2s; }
-    .btn-primary { background:#58a6ff; color:#0d1117; margin-top:8px; }
-    .btn-primary:hover { opacity:0.9; }
-    .btn-danger { background:transparent; border:1px solid #30363d; color:#f87171; }
-    .btn-danger:hover { border-color:#f87171; background:rgba(248,113,113,0.08); }
-    .field-select-row { display:flex; gap:10px; margin-bottom:14px; }
-    .field-select-row select { flex:1; }
-    .toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(20px); background:#14b8a6; color:#0d1117; padding:12px 22px; border-radius:40px; font-weight:600; font-size:0.9rem; opacity:0; pointer-events:none; transition:all 0.3s ease; z-index:100; }
-    .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
-    @media (max-width:480px) {
-      .setting { flex-direction:column; align-items:flex-start; gap:8px; }
-      select, textarea { width:100%; }
+    /* Every control class below is scoped to this page (stg- prefix) and built entirely
+       on skills.css's shared tokens (--sk-*, --grad-main, --on-accent, ...) -- same
+       approach as templates/skills_settings.html's .st-option, just with a couple more
+       control shapes (switch, segmented picker) this page needed and that one didn't. */
+    .stg-section { margin-bottom: 8px; }
+    .stg-section-desc { color: var(--sk-text-dim); font-size: 0.88rem; line-height: 1.55; margin: -8px 0 16px; }
+    .stg-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; padding: 18px 0; border-bottom: 1px solid var(--sk-border); }
+    .stg-row:last-child { border-bottom: none; }
+    .stg-row-text { flex: 1; min-width: 0; }
+    .stg-row-title { font-weight: 700; font-size: 0.95rem; margin-bottom: 3px; }
+    .stg-row-desc { font-size: 0.83rem; color: var(--sk-text-dim); line-height: 1.5; }
+    .stg-row-control { flex-shrink: 0; display: flex; align-items: center; gap: 10px; padding-top: 2px; }
+
+    .stg-switch { position: relative; display: inline-block; width: 44px; height: 26px; flex-shrink: 0; }
+    .stg-switch input { opacity: 0; width: 0; height: 0; }
+    .stg-switch .stg-slider { position: absolute; inset: 0; background: var(--sk-border); border-radius: 999px; transition: 0.15s; cursor: pointer; }
+    .stg-switch .stg-slider:before { content: ''; position: absolute; width: 20px; height: 20px; left: 3px; top: 3px; background: #fff; border-radius: 50%; transition: 0.15s; }
+    .stg-switch input:checked + .stg-slider { background: var(--grad-main); }
+    .stg-switch input:checked + .stg-slider:before { transform: translateX(18px); }
+
+    .stg-seg { display: inline-flex; flex-wrap: wrap; background: var(--sk-bg); border: 1px solid var(--sk-border); border-radius: 999px; padding: 3px; gap: 2px; }
+    .stg-seg button { border: none; background: transparent; color: var(--sk-text-dim); font-size: 0.8rem; font-weight: 600; padding: 7px 13px; border-radius: 999px; cursor: pointer; transition: 0.15s; white-space: nowrap; }
+    .stg-seg button.active { background: var(--grad-main); color: var(--on-accent); }
+    .stg-seg button:hover:not(.active) { color: var(--sk-text); }
+
+    .stg-account-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 14px 24px; margin-bottom: 16px; }
+    .stg-account-item label { display: block; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; color: var(--sk-text-dim); margin-bottom: 3px; }
+    .stg-account-item span { font-size: 0.9rem; }
+
+    /* Account/Security is deliberately the quietest section on the page -- smaller
+       eyebrow-style heading instead of a full .sk-section-title, positioned last before
+       Danger Zone, no icon/emphasis. Every academic control above it uses the full-size
+       heading. This is the "shouldn't visually overpower the academic controls" ask. */
+    .stg-minor-title { font-size: 0.95rem; font-weight: 700; color: var(--sk-text-dim); text-transform: uppercase; letter-spacing: 0.03em; margin: 30px 0 14px; }
+
+    .stg-danger-panel { border-color: var(--sk-danger-bg); background: var(--sk-danger-bg); }
+    .stg-danger-panel .stg-row { border-bottom-color: rgba(239,68,68,0.2); }
+    .sk-btn.stg-danger-btn { background: var(--sk-danger); color: #fff; box-shadow: none; }
+    .sk-btn.stg-danger-btn:hover { opacity: 0.9; }
+
+    .stg-toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--sk-card); border: 1px solid var(--sk-border); color: var(--sk-text); padding: 10px 20px; border-radius: 999px; font-weight: 600; font-size: 0.85rem; opacity: 0; pointer-events: none; transition: all 0.25s ease; z-index: 500; box-shadow: var(--shadow-card); }
+    .stg-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    @media (max-width: 560px) {
+      .stg-row { flex-direction: column; }
+      .stg-row-control { padding-top: 4px; }
     }
   </style>
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
 </head>
 <body>
-  <div class="wrap">
-    <div class="top-bar">
-      <a class="back-btn" href="{{ url_for('dashboard.dashboard') }}" title="Back to dashboard">←</a>
-      <h1 id="settings-title">⚙️ Nelavista Settings</h1>
-    </div>
+{% include 'components/academia_sidebar.html' %}
 
-    <div class="card">
-      <h2>General</h2>
-      <div class="setting">
-        <label for="theme">Theme Mode</label>
-        <select id="theme">
-          <option value="light">Light Mode</option>
-          <option value="dark">Dark Mode</option>
-        </select>
-      </div>
-      <div class="setting">
-        <label for="notifications">Enable Notifications</label>
-        <input type="checkbox" id="notifications" />
-      </div>
-      <div class="setting">
-        <label for="language">Language</label>
-        <select id="language">
-          <option value="en">English</option>
-          <option value="yo">Yoruba</option>
-          <option value="fr">French</option>
-          <option value="ha">Hausa</option>
-        </select>
-      </div>
-    </div>
+  <div class="sk-view" style="max-width: 760px;">
+    <span class="sk-eyebrow">Settings</span>
+    <h1 class="sk-h1">Settings</h1>
+    <p class="sk-sub" style="margin-bottom: 34px;">Your control center for how Academia works for you. Every setting here actually does something — nothing on this page is decorative.</p>
 
-    <div class="card">
-      <h2 id="ai-pref-title">📚 Nelavista AI Preferences</h2>
-      <div class="setting">
-        <label for="memoryToggle">Enable Learning Memory</label>
-        <input type="checkbox" id="memoryToggle" />
-      </div>
-      <div class="setting">
-        <label for="historyToggle">Use Learning History</label>
-        <input type="checkbox" id="historyToggle" />
-      </div>
-    </div>
-
-    <form id="settingsForm">
-      <div class="card">
-        <h2 id="assistant-type-title">🧠 What type of assistant do you want?</h2>
-        <p class="section-desc">Pick as many as you like</p>
-        <div class="checkbox-grid">
-          <label class="trait-label"><input type="checkbox" name="traits" value="Motivational"> Motivational</label>
-          <label class="trait-label"><input type="checkbox" name="traits" value="Code Mentor"> Code Mentor</label>
-          <label class="trait-label"><input type="checkbox" name="traits" value="Study Buddy"> Study Buddy</label>
-          <label class="trait-label"><input type="checkbox" name="traits" value="No-Nonsense"> No-Nonsense</label>
-          <label class="trait-label"><input type="checkbox" name="traits" value="Gen Z Vibes"> Gen Z Vibes</label>
-          <label class="trait-label"><input type="checkbox" name="traits" value="Chill Tutor"> Chill Tutor</label>
-          <label class="trait-label"><input type="checkbox" name="traits" value="Goal Setter"> Goal Setter</label>
-          <label class="trait-label"><input type="checkbox" name="traits" value="Encouraging"> Encouraging</label>
-          <label class="trait-label"><input type="checkbox" name="traits" value="Discipline Coach"> Discipline Coach</label>
+    <!-- ═══ AI TUTOR ═══ -->
+    <div class="sk-section-title">AI Tutor</div>
+    <p class="stg-section-desc">Response depth, teaching approach and difficulty apply everywhere the tutor explains something to you — Ask Nelavista, the AI Tutor chat, and the Explain/Summarize/Quiz actions on Materials and Topics. Academic context and conversation continuity apply to Ask Nelavista and the AI Tutor chat specifically, since the Materials/Topics actions are single questions, not a conversation.</p>
+    <div class="sk-panel stg-section">
+      <div class="stg-row">
+        <div class="stg-row-text">
+          <div class="stg-row-title">Response depth</div>
+          <div class="stg-row-desc">How much detail the tutor gives by default.</div>
+        </div>
+        <div class="stg-row-control">
+          <div class="stg-seg" data-field="ai_response_style">
+            <button type="button" data-value="concise" class="{{ 'active' if prefs.ai_response_style == 'concise' }}">Concise</button>
+            <button type="button" data-value="balanced" class="{{ 'active' if prefs.ai_response_style == 'balanced' }}">Balanced</button>
+            <button type="button" data-value="detailed" class="{{ 'active' if prefs.ai_response_style == 'detailed' }}">Detailed</button>
+          </div>
         </div>
       </div>
-
-      <div class="card">
-        <h2>Anything else Nelavista should know about you?</h2>
-        <p class="section-desc">Used to personalize AI tutoring responses</p>
-        <textarea name="more_info" id="moreInfo" rows="3"></textarea>
-        <div class="setting" style="border-bottom:none; padding-bottom:0;">
-          <label>Enable settings for all future sessions</label>
-          <input type="checkbox" name="enable_memory" id="enableMemory" />
+      <div class="stg-row">
+        <div class="stg-row-text">
+          <div class="stg-row-title">Teaching approach</div>
+          <div class="stg-row-desc">How the tutor structures explanations.</div>
+        </div>
+        <div class="stg-row-control">
+          <div class="stg-seg" data-field="ai_teaching_approach">
+            <button type="button" data-value="step_by_step" class="{{ 'active' if prefs.ai_teaching_approach == 'step_by_step' }}">Step-by-step</button>
+            <button type="button" data-value="concept_first" class="{{ 'active' if prefs.ai_teaching_approach == 'concept_first' }}">Concept-first</button>
+            <button type="button" data-value="example_first" class="{{ 'active' if prefs.ai_teaching_approach == 'example_first' }}">Example-first</button>
+            <button type="button" data-value="exam_focused" class="{{ 'active' if prefs.ai_teaching_approach == 'exam_focused' }}">Exam-focused</button>
+          </div>
         </div>
       </div>
-
-      <button type="submit" class="btn btn-primary">💾 Save Preferences</button>
-    </form>
-
-    <div class="card" style="margin-top:20px;">
-      <h2>❌ Reset a Specific Field</h2>
-      <p class="section-desc">Choose a field to clear</p>
-      <div class="field-select-row">
-        <select id="fieldToDelete">
-          <option value="theme">Theme</option>
-          <option value="language">Language</option>
-          <option value="notifications">Notifications</option>
-          <option value="traits">Traits</option>
-          <option value="moreInfo">More Info</option>
-          <option value="enableMemory">Enable Memory</option>
-          <option value="memoryToggle">Learning Memory</option>
-          <option value="historyToggle">History</option>
-        </select>
+      <div class="stg-row">
+        <div class="stg-row-text">
+          <div class="stg-row-title">Difficulty</div>
+          <div class="stg-row-desc">How much background knowledge the tutor assumes.</div>
+        </div>
+        <div class="stg-row-control">
+          <div class="stg-seg" data-field="ai_difficulty">
+            <button type="button" data-value="beginner" class="{{ 'active' if prefs.ai_difficulty == 'beginner' }}">Beginner</button>
+            <button type="button" data-value="university" class="{{ 'active' if prefs.ai_difficulty == 'university' }}">University</button>
+            <button type="button" data-value="advanced" class="{{ 'active' if prefs.ai_difficulty == 'advanced' }}">Advanced</button>
+          </div>
+        </div>
       </div>
-      <button class="btn btn-danger" onclick="deleteField()">🗑️ Delete Selected Field</button>
+      <div class="stg-row">
+        <div class="stg-row-text">
+          <div class="stg-row-title">Use my academic context</div>
+          <div class="stg-row-desc">In Ask Nelavista / the AI Tutor chat: let the tutor see your university, faculty, department and level, and tailor examples to them.</div>
+        </div>
+        <div class="stg-row-control">
+          <label class="stg-switch">
+            <input type="checkbox" data-field="ai_use_academic_context" {{ 'checked' if prefs.ai_use_academic_context }}>
+            <span class="stg-slider"></span>
+          </label>
+        </div>
+      </div>
+      <div class="stg-row">
+        <div class="stg-row-text">
+          <div class="stg-row-title">Use my previous conversations</div>
+          <div class="stg-row-desc">In Ask Nelavista: let the tutor recall your recent questions there for continuity across visits. Off starts every conversation fresh. (The AI Tutor chat always has real conversation threads regardless of this toggle — this only affects Ask Nelavista's shorter Q&amp;A history.)</div>
+        </div>
+        <div class="stg-row-control">
+          <label class="stg-switch">
+            <input type="checkbox" data-field="ai_use_conversation_history" {{ 'checked' if prefs.ai_use_conversation_history }}>
+            <span class="stg-slider"></span>
+          </label>
+        </div>
+      </div>
+      <div class="stg-row" style="flex-direction: column; align-items: stretch;">
+        <div class="stg-row-text" style="margin-bottom: 10px;">
+          <div class="stg-row-title">Anything else the tutor should know about you?</div>
+          <div class="stg-row-desc">Optional. Shared with the tutor on every question — e.g. "I learn best with real-world examples" or "I'm preparing for a transfer exam."</div>
+        </div>
+        <textarea class="sk-textarea" id="personal-context" rows="3" maxlength="2000" placeholder="e.g. I struggle with word problems, prefer visual explanations..." onblur="savePref('ai_personal_context', this.value)">{{ prefs.ai_personal_context or '' }}</textarea>
+      </div>
+    </div>
+
+    <!-- ═══ STUDY & EXAM PREFERENCES ═══ -->
+    <div class="sk-section-title">Study &amp; Exam Preferences</div>
+    <div class="sk-panel stg-section">
+      <div class="stg-row">
+        <div class="stg-row-text">
+          <div class="stg-row-title">Preferred practice mode</div>
+          <div class="stg-row-desc">Which Mock Exam mode is pre-selected when you start practicing (you can always switch on the day).</div>
+        </div>
+        <div class="stg-row-control">
+          <div class="stg-seg" data-field="cbt_default_mode">
+            <button type="button" data-value="cbt" class="{{ 'active' if prefs.cbt_default_mode == 'cbt' }}">CBT / MCQ</button>
+            <button type="button" data-value="written" class="{{ 'active' if prefs.cbt_default_mode == 'written' }}">Written</button>
+          </div>
+        </div>
+      </div>
+      <div class="stg-row">
+        <div class="stg-row-text">
+          <div class="stg-row-title">Automatically explain wrong answers</div>
+          <div class="stg-row-desc">When reviewing a practice attempt, fetch Nelavista's explanation for every wrong answer automatically instead of tapping "Explain" each time.</div>
+        </div>
+        <div class="stg-row-control">
+          <label class="stg-switch">
+            <input type="checkbox" data-field="cbt_auto_explain" {{ 'checked' if prefs.cbt_auto_explain }}>
+            <span class="stg-slider"></span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ NOTIFICATIONS ═══ -->
+    <div class="sk-section-title">Notifications</div>
+    <div class="sk-panel stg-section">
+      <div class="stg-row">
+        <div class="stg-row-text">
+          <div class="stg-row-title">Mock exam results</div>
+          <div class="stg-row-desc">Get a notification (bell icon, top right) when a CBT practice attempt is graded.</div>
+        </div>
+        <div class="stg-row-control">
+          <label class="stg-switch">
+            <input type="checkbox" data-field="notify_cbt_results" {{ 'checked' if prefs.notify_cbt_results }}>
+            <span class="stg-slider"></span>
+          </label>
+        </div>
+      </div>
+      <p class="stg-row-desc" style="padding-top: 14px;">That's the only notification Academia can send today. Study reminders, course/material updates and community activity aren't wired up to any notification yet — we're not going to show you a toggle for something that can't actually notify you.</p>
+    </div>
+
+    <!-- ═══ APPEARANCE ═══ -->
+    <div class="sk-section-title">Appearance</div>
+    <div class="sk-panel stg-section">
+      <div class="stg-row">
+        <div class="stg-row-text">
+          <div class="stg-row-title">Theme</div>
+          <div class="stg-row-desc">Applies everywhere — Academia, AI Tutor, Materials, Mock Exam, Community, Profile, Settings. "System" follows your device's light/dark setting automatically.</div>
+        </div>
+        <div class="stg-row-control">
+          <div class="stg-seg" id="theme-seg">
+            <button type="button" data-value="light" class="{{ 'active' if prefs.theme == 'light' }}" onclick="setTheme('light')">Light</button>
+            <button type="button" data-value="dark" class="{{ 'active' if prefs.theme == 'dark' }}" onclick="setTheme('dark')">Dark</button>
+            <button type="button" data-value="system" class="{{ 'active' if prefs.theme == 'system' }}" onclick="setTheme('system')">System</button>
+          </div>
+        </div>
+      </div>
+      <p class="stg-row-desc" style="padding-top: 14px;">Language: Nelavista is currently English-only. Yoruba, French and Hausa are planned, but no screen is translated yet — we'd rather ship that honestly than offer a language picker that doesn't change anything.</p>
+    </div>
+
+    <!-- ═══ PRIVACY & DATA ═══ -->
+    <div class="sk-section-title">Privacy &amp; Data</div>
+    <p class="stg-section-desc">Nelavista keeps three genuinely different kinds of data about you — worth being precise about which is which:</p>
+    <div class="sk-panel stg-section">
+      <div class="stg-row">
+        <div class="stg-row-text">
+          <div class="stg-row-title">Learning progress</div>
+          <div class="stg-row-desc">Topics you've completed and Mock Exam scores — your real academic record. View it on your <a href="/dashboard" class="sk-view-link">Dashboard</a> or <a href="/CBT/history" class="sk-view-link">Practice History</a>. Not cleared from here — it isn't personalization data, it's what you actually did.</div>
+        </div>
+      </div>
+      <div class="stg-row">
+        <div class="stg-row-text">
+          <div class="stg-row-title">AI Tutor conversation history</div>
+          <div class="stg-row-desc">The questions you've asked Ask Nelavista and its answers. Used for the "previous conversations" continuity toggle above.</div>
+        </div>
+        <div class="stg-row-control">
+          <button type="button" class="sk-btn secondary small" onclick="clearAiHistory(this)">Clear history</button>
+        </div>
+      </div>
+      <div class="stg-row">
+        <div class="stg-row-text">
+          <div class="stg-row-title">AI personalization memory</div>
+          <div class="stg-row-desc">The teaching-style preferences and "anything else you should know" text above. Reset it from Danger Zone below, or edit it directly in AI Tutor settings.</div>
+        </div>
+      </div>
+      <div class="stg-row">
+        <div class="stg-row-text">
+          <div class="stg-row-title">Download your data</div>
+          <div class="stg-row-desc">A copy of your profile, preferences, AI Tutor history, mock exam attempts and topic progress, as a JSON file.</div>
+        </div>
+        <div class="stg-row-control">
+          <a href="/settings/export" class="sk-btn secondary small">Download</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ ACCOUNT / SECURITY (deliberately the quietest section) ═══ -->
+    <div class="stg-minor-title">Account &amp; Security</div>
+    <div class="sk-panel stg-section">
+      <div class="stg-account-grid">
+        <div class="stg-account-item"><label>Name</label><span>{{ user.name or '—' }}</span></div>
+        <div class="stg-account-item"><label>Username</label><span>{{ user.username }}</span></div>
+        <div class="stg-account-item"><label>Email</label><span>{{ user.email }}</span></div>
+        <div class="stg-account-item"><label>University</label><span>{{ user.university or '—' }}</span></div>
+        <div class="stg-account-item"><label>Faculty</label><span>{{ user.faculty or '—' }}</span></div>
+        <div class="stg-account-item"><label>Department</label><span>{{ user.department or '—' }}</span></div>
+        <div class="stg-account-item"><label>Level</label><span>{{ user.level or '—' }}</span></div>
+        <div class="stg-account-item"><label>Semester</label><span>{{ user.semester or '—' }}</span></div>
+      </div>
+      <p class="stg-section-desc" style="margin: 0 0 14px;">
+        {% if ctx.resolved %}Nelavista recognizes your department and found {{ ctx.courses|length }} course{{ '' if ctx.courses|length == 1 else 's' }} for your level.{% else %}Nelavista hasn't matched your university/department to a course list yet.{% endif %}
+        These fields (and your profile photo, bio) live on your <a href="/profile" class="sk-view-link">Profile</a> — edit them there, not here.
+      </p>
+      <a href="/profile" class="sk-btn secondary small">Go to Profile</a>
+
+      {% if has_password %}
+      <form method="POST" action="/account/change-password" style="max-width: 380px; margin-top: 24px;">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div class="sk-field">
+          <label class="sk-label">Current password</label>
+          <input class="sk-input" type="password" name="current_password" required>
+        </div>
+        <div class="sk-field">
+          <label class="sk-label">New password</label>
+          <input class="sk-input" type="password" name="new_password" minlength="8" required>
+        </div>
+        <div class="sk-field">
+          <label class="sk-label">Confirm new password</label>
+          <input class="sk-input" type="password" name="confirm_password" minlength="8" required>
+        </div>
+        <button type="submit" class="sk-btn small">Change password</button>
+      </form>
+      {% else %}
+      <p class="stg-row-desc" style="margin-top: 24px;">Your account signs in with Google — there's no Nelavista password to change.</p>
+      {% endif %}
+      <div class="stg-row" style="border-top: 1px solid var(--sk-border); margin-top: 20px; padding-top: 18px; border-bottom: none;">
+        <div class="stg-row-text">
+          <div class="stg-row-title">Sign out</div>
+          <div class="stg-row-desc">Multi-device session management (viewing/ending other sessions) isn't available yet — this signs out the device you're using right now.</div>
+        </div>
+        <div class="stg-row-control">
+          <a href="/logout" class="sk-btn secondary small">Sign out</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ DANGER ZONE ═══ -->
+    <div class="sk-section-title" style="color: var(--sk-danger);">Danger Zone</div>
+    <div class="sk-panel stg-danger-panel stg-section">
+      <div class="stg-row">
+        <div class="stg-row-text">
+          <div class="stg-row-title">Reset preferences</div>
+          <div class="stg-row-desc">Puts a group of settings back to their defaults. This does not delete any data — only preference values.</div>
+        </div>
+        <div class="stg-row-control" style="flex-wrap: wrap; justify-content: flex-end;">
+          <button type="button" class="sk-btn secondary small" onclick="resetScope('ai_tutor')">AI Tutor</button>
+          <button type="button" class="sk-btn secondary small" onclick="resetScope('study')">Study &amp; Exam</button>
+          <button type="button" class="sk-btn secondary small" onclick="resetScope('notifications')">Notifications</button>
+          <button type="button" class="sk-btn secondary small" onclick="resetScope('appearance')">Appearance</button>
+          <button type="button" class="sk-btn stg-danger-btn small" onclick="resetScope('all')">Reset everything</button>
+        </div>
+      </div>
+      <div class="stg-row" style="flex-direction: column; align-items: stretch;">
+        <div class="stg-row-text" style="margin-bottom: 12px;">
+          <div class="stg-row-title">Delete account</div>
+          <div class="stg-row-desc">Permanently deactivates your account and removes your personal details (name, university, department, contact info, bio, photo). Your username/email are freed up. This cannot be undone.</div>
+        </div>
+        <form method="POST" action="/account/delete" onsubmit="return confirm('This permanently deletes your Nelavista account. This cannot be undone. Continue?');" style="max-width: 380px;">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          {% if has_password %}
+          <div class="sk-field">
+            <label class="sk-label">Confirm your password</label>
+            <input class="sk-input" type="password" name="password" required>
+          </div>
+          {% endif %}
+          <div class="sk-field">
+            <label class="sk-label">Type DELETE to confirm</label>
+            <input class="sk-input" type="text" name="confirm_text" placeholder="DELETE" required>
+          </div>
+          <button type="submit" class="sk-btn stg-danger-btn small">Delete my account</button>
+        </form>
+      </div>
     </div>
   </div>
 
-  <div class="toast" id="toast">Preferences saved!</div>
+  <div class="stg-toast" id="stg-toast"></div>
 
-  <script>
-    const SERVER_MEMORY = {{ memory | tojson }};
-    const SERVER_THEME = {{ theme | tojson }};
-    const SERVER_LANGUAGE = {{ language | tojson }};
+{% include 'components/academia_footer.html' %}
+<script>
+  function stgToast(msg) {
+    const t = document.getElementById('stg-toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(window._stgToastTimer);
+    window._stgToastTimer = setTimeout(() => t.classList.remove('show'), 2000);
+  }
 
-    document.addEventListener('DOMContentLoaded', () => {
-      const settings = JSON.parse(localStorage.getItem('NelavistaSettings') || '{}');
-      document.getElementById('theme').value = SERVER_THEME || settings.theme || 'dark';
-      document.getElementById('notifications').checked = settings.notifications || false;
-      document.getElementById('language').value = SERVER_LANGUAGE || settings.language || 'en';
-      document.getElementById('memoryToggle').checked = settings.memoryToggle || false;
-      document.getElementById('historyToggle').checked = settings.historyToggle || false;
-      document.getElementById('enableMemory').checked = SERVER_MEMORY.enable_memory || settings.enableMemory || false;
-      document.getElementById('moreInfo').value = SERVER_MEMORY.more_info || settings.moreInfo || '';
-
-      const traits = (SERVER_MEMORY.traits && SERVER_MEMORY.traits.length) ? SERVER_MEMORY.traits : (settings.traits || []);
-      document.querySelectorAll('input[name="traits"]').forEach(input => {
-        if (traits.includes(input.value)) input.checked = true;
+  async function savePref(field, value) {
+    try {
+      const res = await fetch('/settings/update', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ field, value }),
       });
+      const data = await res.json();
+      stgToast(data.success ? 'Saved' : (data.error || 'Could not save'));
+    } catch (e) {
+      stgToast('Could not save — check your connection');
+    }
+  }
 
-      applyLanguage(document.getElementById('language').value);
+  // Segmented pickers: every .stg-seg with a data-field saves through the generic
+  // /settings/update endpoint; the theme picker is the one exception (setTheme below),
+  // since it also has to apply instantly via localStorage/shell.js, not just persist.
+  document.querySelectorAll('.stg-seg[data-field]').forEach(seg => {
+    seg.querySelectorAll('button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        seg.querySelectorAll('button').forEach(b => b.classList.toggle('active', b === btn));
+        savePref(seg.dataset.field, btn.dataset.value);
+      });
     });
+  });
 
-    function applyLanguage(lang) {
-      if (lang === 'yo') {
-        document.getElementById('settings-title').textContent = '⚙️ Eto Nelavista';
-        document.getElementById('ai-pref-title').textContent = '📚 Awon Ayanfẹ AI Nelavista';
-        document.getElementById('assistant-type-title').textContent = '🧠 Iru Iranlọwọ to fe';
-      } else {
-        document.getElementById('settings-title').textContent = '⚙️ Nelavista Settings';
-        document.getElementById('ai-pref-title').textContent = '📚 Nelavista AI Preferences';
-        document.getElementById('assistant-type-title').textContent = '🧠 What type of assistant do you want?';
-      }
+  document.querySelectorAll('input[type="checkbox"][data-field]').forEach(input => {
+    input.addEventListener('change', () => savePref(input.dataset.field, input.checked));
+  });
+
+  function setTheme(value) {
+    document.querySelectorAll('#theme-seg button').forEach(b => b.classList.toggle('active', b.dataset.value === value));
+    localStorage.setItem('theme', value);
+    if (typeof skApplyTheme === 'function' && typeof skResolveTheme === 'function') {
+      skApplyTheme(skResolveTheme(value));
     }
+    savePref('theme', value);
+  }
 
-    function showToast(msg) {
-      const toast = document.getElementById('toast');
-      toast.textContent = msg;
-      toast.classList.add('show');
-      setTimeout(() => toast.classList.remove('show'), 2200);
+  async function resetScope(scope) {
+    if (!confirm('Reset ' + (scope === 'all' ? 'ALL preferences' : 'these preferences') + ' to their defaults?')) return;
+    try {
+      const res = await fetch('/settings/reset', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ scope }),
+      });
+      const data = await res.json();
+      if (data.success) { stgToast('Reset'); location.reload(); } else { stgToast(data.error || 'Could not reset'); }
+    } catch (e) {
+      stgToast('Could not reset — check your connection');
     }
+  }
 
-    document.getElementById('settingsForm').addEventListener('submit', async e => {
-      e.preventDefault();
-      const traits = Array.from(document.querySelectorAll('input[name="traits"]:checked')).map(i => i.value);
-      const theme = document.getElementById('theme').value;
-      const language = document.getElementById('language').value;
-      const data = {
-        theme,
-        notifications: document.getElementById('notifications').checked,
-        language,
-        memoryToggle: document.getElementById('memoryToggle').checked,
-        historyToggle: document.getElementById('historyToggle').checked,
-        enableMemory: document.getElementById('enableMemory').checked,
-        moreInfo: document.getElementById('moreInfo').value,
-        traits
-      };
-      localStorage.setItem('NelavistaSettings', JSON.stringify(data));
-      applyLanguage(language);
-
-      try {
-        const body = new URLSearchParams();
-        body.set('theme', theme);
-        body.set('language', language);
-        body.set('ajax', '1');
-        if (data.notifications) body.set('notifications', 'on');
-        if (data.enableMemory) body.set('enable_memory', 'on');
-        body.set('more_info', data.moreInfo);
-        traits.forEach(t => body.append('traits', t));
-        await fetch('/memory', { method: 'POST', body });
-      } catch (err) {
-        console.warn('Could not sync settings to server:', err);
-      }
-
-      showToast('Preferences saved!');
-    });
-
-    function deleteField() {
-      const field = document.getElementById('fieldToDelete').value;
-      const settings = JSON.parse(localStorage.getItem('NelavistaSettings') || '{}');
-      delete settings[field];
-      localStorage.setItem('NelavistaSettings', JSON.stringify(settings));
-      location.reload();
+  async function clearAiHistory(btn) {
+    if (!confirm('This permanently deletes everything Nelavista has logged from your AI Tutor chats. This cannot be undone. Continue?')) return;
+    btn.disabled = true;
+    try {
+      const res = await fetch('/settings/clear-ai-history', { method: 'POST' });
+      const data = await res.json();
+      stgToast(data.success ? 'AI Tutor conversation history cleared' : 'Could not clear history');
+    } catch (e) {
+      stgToast('Could not clear history — check your connection');
+    } finally {
+      btn.disabled = false;
     }
-  </script>
+  }
+</script>
 </body>
 </html>

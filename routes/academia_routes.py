@@ -3,9 +3,10 @@ from datetime import datetime
 from flask import Blueprint, render_template, session, request, jsonify, abort
 from sqlalchemy import or_
 from utils.helpers import login_required
-from models import User, Material, CBTQuestion, CBTAttempt, Course, Topic, TopicProgress
+from models import User, Material, CBTQuestion, CBTAttempt, Course, Topic, TopicProgress, Notification
 from services.academic_context import resolve_academic_context, find_course
 from services.progress_service import get_course_materials_progress, get_cbt_summary
+from services.notification_service import mark_all_read
 from extensions import db
 
 academia_bp = Blueprint('academia', __name__)
@@ -279,3 +280,19 @@ def academic_search():
             'link': f"/courses/{m.course_code}" if m.course_code else "/materials",
         } for m in materials],
     })
+
+
+@academia_bp.route('/notifications')
+@login_required
+def notifications():
+    """Academia's own notifications list -- same Notification model/service as Skills'
+    /skills/notifications (services/notification_service.py is generic, not Skills-only),
+    just shelled with academia_sidebar/academia_footer instead of Skills' chrome. Today
+    the only category Academia actually triggers is a mock exam result (see
+    routes/cbt_routes.py's submit_cbt_attempt, gated by Settings > Notifications) -- see
+    templates/settings.html for why no other category is exposed there yet."""
+    username = session['user']['username']
+    user = User.query.filter_by(username=username).first()
+    items = Notification.query.filter_by(user_id=user.id).order_by(Notification.created_at.desc()).limit(50).all()
+    mark_all_read(user.id)
+    return render_template('academia_notifications.html', notifications=items, active_page='notifications')

@@ -146,6 +146,9 @@ def login():
             flash('Please enter username/email and password.')
             return redirect(url_for('auth.login'))
         user = User.query.filter((User.username == login_input) | (User.email == login_input)).first()
+        if user and user.is_deleted:
+            flash('This account has been deleted.')
+            return redirect(url_for('auth.login'))
         if user and user.check_password(password):
             user.last_login = datetime.utcnow()
             db.session.commit()
@@ -197,7 +200,10 @@ def _generate_username_from_email(email):
 def _start_session_for(user):
     """Same session shape auth.login()/auth.signup() build, factored out so both the
     existing-account and new-account branches of the Google callback below set it
-    identically."""
+    identically. Returns False (and starts no session) if the account was deleted via
+    Settings > Danger Zone -- mirrors the is_deleted check in login() above."""
+    if user.is_deleted:
+        return False
     user.last_login = datetime.utcnow()
     db.session.commit()
     session.permanent = True
@@ -270,7 +276,9 @@ def google_callback():
                     email_verified=email_verified_by_google)
         db.session.add(user)
 
-    _start_session_for(user)
+    if not _start_session_for(user):
+        flash('This account has been deleted.')
+        return redirect(url_for('auth.login'))
     flash('Logged in with Google!')
 
     # Employers have their own separate experience -- same fork as auth.login() above.

@@ -5,6 +5,7 @@ are monkeypatched at their routes.tutor_routes import site (not the defining mod
 since routes.tutor_routes already bound its own reference at import time).
 """
 import json
+from datetime import datetime
 import pytest
 from extensions import db
 from models import TutorConversation, TutorMessage
@@ -231,3 +232,131 @@ class TestTutorServiceUnits:
             ungrounded = build_tutor_system_prompt(user_row, course=course_row, topic=topic_without)
             assert 'A loop repeats code.' not in ungrounded
             assert 'Recursion' in ungrounded
+
+    def test_lookup_finds_course_and_materials_mentioned_by_code(self, app, make_course, make_user):
+        from models import Material, User
+        from services.tutor_service import lookup_mentioned_course_materials
+        make_course(code='MAT207', title='Real Analysis', level='200')
+        user = make_user(username='lookupuser', university='Lagos State University', department='Computer Science')
+        with app.app_context():
+            db.session.add(Material(title='MAT207 Handout', department='Computer Science', level='200',
+                                     semester='First Semester', course_code='MAT207', is_approved=True))
+            db.session.commit()
+            user_row = User.query.get(user.id)
+            results = lookup_mentioned_course_materials(user_row, "check my material, there is mat207")
+        assert len(results) == 1
+        assert results[0]['code'] == 'MAT207'
+        assert results[0]['course'] is not None
+        assert results[0]['course'].title == 'Real Analysis'
+        assert [m.title for m in results[0]['materials']] == ['MAT207 Handout']
+
+    def test_lookup_is_honest_about_unknown_course_code(self, app, make_user):
+        from models import User
+        from services.tutor_service import lookup_mentioned_course_materials
+        user = make_user(username='lookupuser2')
+        with app.app_context():
+            user_row = User.query.get(user.id)
+            results = lookup_mentioned_course_materials(user_row, "what about zzz999")
+        assert len(results) == 1
+        assert results[0]['course'] is None
+        assert results[0]['materials'] == []
+
+    def test_lookup_ignores_messages_with_no_course_code(self, make_user, app):
+        from models import User
+        from services.tutor_service import lookup_mentioned_course_materials
+        user = make_user(username='lookupuser3')
+        with app.app_context():
+            user_row = User.query.get(user.id)
+            assert lookup_mentioned_course_materials(user_row, "what is nelavista about?") == []
+
+    def test_system_prompt_lists_materials_honestly_without_claiming_to_have_read_them(self, app, make_course, make_user):
+        from models import Material, Course, User
+        from services.tutor_service import build_tutor_system_prompt, lookup_mentioned_course_materials
+        make_course(code='MAT207', title='Real Analysis', level='200')
+        user = make_user(username='promptuser2', university='Lagos State University', department='Computer Science')
+        with app.app_context():
+            db.session.add(Material(title='MAT207 Handout', department='Computer Science', level='200',
+                                     semester='First Semester', course_code='MAT207', is_approved=True))
+            db.session.commit()
+            user_row = User.query.get(user.id)
+            lookups = lookup_mentioned_course_materials(user_row, "check my material for mat207")
+            prompt = build_tutor_system_prompt(user_row, course_lookups=lookups)
+        assert 'MAT207 Handout' in prompt
+        assert 'Real Analysis' in prompt
+        assert 'have NOT read their contents' in prompt
+
+    def test_message_wants_material_content_detects_intent(self):
+        from services.tutor_service import message_wants_material_content
+        assert message_wants_material_content("check my material, there is mat207") is True
+        assert message_wants_material_content("please summarize this") is True
+        assert message_wants_material_content("hey what's up") is False
+
+
+class TestMessagingCourseMaterialLookup:
+    def test_mentioning_single_matching_material_auto_grounds_the_answer(self, client, make_user, make_course, login_as, monkeypatch):
+        """Regression coverage for the reported UX failure: a student mid-conversation
+        says "check my material, there is mat207" and the tutor used to reply "I don't
+        have access to your materials" even though Nelavista has exactly that material
+        on file. It should now be auto-selected and its real text grounded into the
+        system prompt sent to the model."""
+        from models import Material
+        make_course(code='MAT207', title='Real Analysis', level='200')
+        user = make_user(username='tutor_lookup', university='Lagos State University', department='Computer Science')
+        with client.application.app_context():
+            db.session.add(Material(title='MAT207 Handout', department='Computer Science', level='200',
+                                     semester='First Semester', course_code='MAT207', is_approved=True,
+                                     extracted_text='Limits are defined using epsilon-delta.', extracted_at=datetime.utcnow()))
+            db.session.commit()
+        login_as(client, user)
+
+        captured = {}
+
+        def _capturing_stream(messages, **kwargs):
+            captured['system'] = messages[0]['content']
+            yield "Found it."
+        monkeypatch.setattr('routes.tutor_routes.stream_chat_completion', _capturing_stream)
+        monkeypatch.setattr('routes.tutor_routes.generate_conversation_title', lambda *a, **k: 'title')
+
+        conv_id = client.post('/api/tutor/conversations').get_json()['conversation']['id']
+        resp = client.post(f'/api/tutor/conversations/{conv_id}/messages',
+                            json={'content': 'check my material, there is mat207'})
+        resp.get_data()
+
+        assert 'SELECTED MATERIAL: "MAT207 Handout"' in captured['system']
+        assert 'Limits are defined using epsilon-delta.' in captured['system']
+
+    def test_mentioning_course_with_multiple_materials_lists_instead_of_guessing(self, client, make_user, make_course, login_as, monkeypatch):
+        from models import Material
+        make_course(code='MAT207', title='Real Analysis', level='200')
+        user = make_user(username='tutor_lookup2', university='Lagos State University', department='Computer Science')
+        with client.application.app_context():
+            db.session.add_all([
+                Material(title='MAT207 Handout A', department='Computer Science', level='200',
+                         semester='First Semester', course_code='MAT207', is_approved=True),
+                Material(title='MAT207 Past Questions', department='Computer Science', level='200',
+                         semester='First Semester', course_code='MAT207', is_approved=True),
+            ])
+            db.session.commit()
+        login_as(client, user)
+
+        captured = {}
+
+        def _capturing_stream(messages, **kwargs):
+            captured['system'] = messages[0]['content']
+            yield "Which one?"
+        monkeypatch.setattr('routes.tutor_routes.stream_chat_completion', _capturing_stream)
+        monkeypatch.setattr('routes.tutor_routes.generate_conversation_title', lambda *a, **k: 'title')
+
+        conv_id = client.post('/api/tutor/conversations').get_json()['conversation']['id']
+        resp = client.post(f'/api/tutor/conversations/{conv_id}/messages',
+                            json={'content': 'check my material for mat207'})
+        resp.get_data()
+
+        # The static instructions always reference "SELECTED MATERIAL" by name (as a
+        # cross-reference to the section that appears only when one IS selected) -- the
+        # real assertion is that the heading itself (and therefore the section) doesn't
+        # render, since two candidates must be listed for the student to pick, never
+        # silently guessed at.
+        assert '## SELECTED MATERIAL:' not in captured['system']
+        assert 'MAT207 Handout A' in captured['system']
+        assert 'MAT207 Past Questions' in captured['system']

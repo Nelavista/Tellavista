@@ -57,7 +57,17 @@ def enforce_profile_completion():
     # a not-fully-complete Academia profile hitting a JSON endpoint like
     # /api/cbt/start mid-exam would silently get this hook's HTML redirect back instead
     # of JSON, breaking the fetch() call with no visible error.
-    exempt_prefixes = ('skills.', 'admin_skills.', 'employer.', 'cbt.')
+    # settings.* is exempt for the same reason CBT is, plus a sharper one: /account/delete
+    # and /account/change-password live inside routes/settings_routes.py, and both must
+    # stay reachable no matter how incomplete a student's Academia profile is -- a student
+    # who signs up, never finishes onboarding, and wants to delete their account can't be
+    # forced through "finish your profile" first just to leave. Confirmed by testing: a
+    # deliberately incomplete test account got bounced to /dashboard on every /settings
+    # request, so /account/delete's own POST silently never ran (it never got past this
+    # hook), even though the route itself was correct -- theme/AI Tutor/notification
+    # prefs have the same no-academic-fields-required argument, so the whole blueprint is
+    # exempted rather than picking apart which of its routes "need" a finished profile.
+    exempt_prefixes = ('skills.', 'admin_skills.', 'employer.', 'cbt.', 'settings.')
 
     if request.endpoint in exempt_endpoints:
         return None

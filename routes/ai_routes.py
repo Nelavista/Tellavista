@@ -12,7 +12,7 @@ from utils.helpers import login_required, debug_print, get_session_memory, add_t
 from services.material_service import extract_text_from_pdf, extract_text_from_pdf_turbo, extract_images_from_pdf, extract_tables_from_pdf, analyze_document_structure, extract_text_from_image, is_diagram_or_visual
 from services.ai_service import generate_turbo_style_notes, safe_markdown_to_html, generate_test_questions
 from services.academic_context import resolve_academic_context, find_course
-from models import UserQuestions
+from models import UserQuestions, UserPreferences
 from extensions import db, limiter
 import requests
 from config import OPENROUTER_API_KEY
@@ -84,6 +84,73 @@ def _build_course_materials_block(user, course_code):
         "study materials have been uploaded for it on Nelavista yet. Do not claim to have or "
         "reference any course materials for it; answer from general subject knowledge."
     )
+
+
+_RESPONSE_STYLE_INSTRUCTIONS = {
+    'concise': "Keep answers tight -- the shortest response that actually answers the question, minimal elaboration.",
+    'balanced': "Match length to the question -- a quick question gets a focused answer, a genuinely complex one gets a fuller explanation.",
+    'detailed': "Prefer thorough, fully worked-through explanations, even for questions that could technically be answered briefly.",
+}
+_TEACHING_APPROACH_INSTRUCTIONS = {
+    'step_by_step': "Teach by breaking everything into clear, numbered steps the student can follow in order.",
+    'concept_first': "Lead with the underlying concept/intuition before any steps or formulas -- make sure the 'why' lands before the 'how'.",
+    'example_first': "Lead with a concrete worked example, then generalize into the underlying concept/rule.",
+    'exam_focused': "Frame explanations around what's likely to be tested -- key definitions, common exam question patterns, and typical mistakes to avoid.",
+}
+_DIFFICULTY_INSTRUCTIONS = {
+    'beginner': "Assume no prior background -- define terms before using them, avoid jargon, favor simple language.",
+    'university': "Assume standard Nigerian university-level background for this student's level -- normal course terminology is fine.",
+    'advanced': "Assume strong prior background -- move quickly past basics, use precise technical language, go deeper than a standard lecture would.",
+}
+
+
+def _get_user_preferences(user):
+    if not user:
+        return None
+    return UserPreferences.query.filter_by(user_id=user.id).first()
+
+
+def _build_personalization_block(prefs):
+    """Settings > AI Tutor -- turns response depth / teaching approach / difficulty /
+    personal context into explicit instructions in the system prompt. Falls back to the
+    same defaults models.UserPreferences.DEFAULTS uses when the student has no row yet
+    (prefs is None), so /ask behaves identically to before this existed until someone
+    actually visits Settings and changes something."""
+    style = prefs.ai_response_style if prefs else 'balanced'
+    approach = prefs.ai_teaching_approach if prefs else 'step_by_step'
+    difficulty = prefs.ai_difficulty if prefs else 'university'
+
+    lines = [
+        "\n## PERSONALIZATION (from this student's Settings)",
+        f"- Response depth: {_RESPONSE_STYLE_INSTRUCTIONS.get(style, _RESPONSE_STYLE_INSTRUCTIONS['balanced'])}",
+        f"- Teaching approach: {_TEACHING_APPROACH_INSTRUCTIONS.get(approach, _TEACHING_APPROACH_INSTRUCTIONS['step_by_step'])}",
+        f"- Difficulty level: {_DIFFICULTY_INSTRUCTIONS.get(difficulty, _DIFFICULTY_INSTRUCTIONS['university'])}",
+    ]
+    personal_context = (prefs.ai_personal_context if prefs else None) or ''
+    personal_context = personal_context.strip()
+    if personal_context:
+        lines.append(f"- Additional context this student shared about themselves: {personal_context}")
+    return "\n".join(lines)
+
+
+def _build_history_messages(user, prefs):
+    """Settings > AI Tutor > 'Use my previous conversations for continuity'. ON (default):
+    pulls the student's real, persistent AI Tutor history from UserQuestions -- carries
+    over across logins/devices, not just the current Flask session. OFF: no prior turns at
+    all, every message starts a fresh conversation. Only applies to this single-shot /ask
+    endpoint -- the newer /ai-tutor (services/tutor_service.py) has real conversation
+    threads instead, where continuity is just the thread itself."""
+    use_history = prefs.ai_use_conversation_history if prefs else True
+    if not use_history or not user:
+        return []
+    recent = (UserQuestions.query.filter_by(username=user.username)
+              .order_by(UserQuestions.timestamp.desc()).limit(5).all())
+    recent.reverse()
+    messages = []
+    for q in recent:
+        messages.append({"role": "user", "content": q.question})
+        messages.append({"role": "assistant", "content": q.answer})
+    return messages
 
 
 # The Flask-wide MAX_CONTENT_LENGTH (100MB, config.py) exists to reject absurd uploads
@@ -517,24 +584,33 @@ def ask():
         # Fetch user profile from database
         user = User.query.filter_by(username=username).first()
         user_name = user.name if user and user.name else username
-        user_department = user.department if user and user.department else "not specified"
-        user_level = user.level if user and user.level else "not specified"
-        user_university = user.university if user and user.university else "not specified"
-        user_faculty = user.faculty if user and user.faculty else "not specified"
-        course_materials_block = _build_course_materials_block(user, (data.get('course_code') or '').strip())
+        prefs = _get_user_preferences(user)
+        use_academic_context = prefs.ai_use_academic_context if prefs else True
 
-        session_memory = get_session_memory()
+        if use_academic_context:
+            student_context_block = f"""## STUDENT CONTEXT
+- Name: {user_name}
+- Department: {user.department if user and user.department else "not specified"}
+- Academic Level: {user.level if user and user.level else "not specified"}
+- University: {user.university if user and user.university else "not specified"}
+- Faculty: {user.faculty if user and user.faculty else "not specified"}"""
+            personalise_line = "Use this information to personalise your responses. Address the student by their name occasionally, and tailor examples to their department or level when relevant."
+        else:
+            # "Use my academic context" is OFF (Settings > AI Tutor > Personalization) --
+            # the student chose not to have their university/faculty/department/level
+            # shared with the tutor, so only their display name is used.
+            student_context_block = f"## STUDENT CONTEXT\n- Name: {user_name}"
+            personalise_line = "The student has turned off academic-context personalization -- do not guess or assume their department, level, or university."
+        course_materials_block = _build_course_materials_block(user, (data.get('course_code') or '').strip()) if use_academic_context else ""
+        personalization_block = _build_personalization_block(prefs)
+
         system_prompt = f"""You are Nelavista, an advanced AI tutor created by Afeez Adewale Tella for Nigerian university students (100–400 level).
 
-## STUDENT CONTEXT
-- Name: {user_name}
-- Department: {user_department}
-- Academic Level: {user_level}
-- University: {user_university}
-- Faculty: {user_faculty}
+{student_context_block}
 {course_materials_block}
+{personalization_block}
 
-Use this information to personalise your responses. Address the student by their name occasionally, and tailor examples to their department or level when relevant.
+{personalise_line}
 
 ## YOUR ROLE
 You are a professional, friendly university‑level tutor who makes learning enjoyable. Your answers should feel like a conversation with a brilliant, approachable lecturer.
@@ -592,8 +668,7 @@ Teach clearly, patiently, and in a way students love to read and keep using. Eve
 Your final answer should be so clear and pleasant that a student would *want* to read it and come back for more."""
 
         messages = [{"role": "system", "content": system_prompt}]
-        for mem in session_memory:
-            messages.append({"role": mem["role"], "content": mem["content"]})
+        messages += _build_history_messages(user, prefs)
         messages.append({"role": "user", "content": message})
 
         headers = {"Authorization": f"Bearer {OPENROUTER_API_KEY}", "Content-Type": "application/json", "HTTP-Referer": "https://nelavista.com", "X-Title": "Nelavista AI Tutor"}
@@ -691,12 +766,14 @@ def material_ai_action(material_id):
 
     username = session['user']['username']
     user = User.query.filter_by(username=username).first()
+    prefs = _get_user_preferences(user)
     system_prompt = (
         "You are Nelavista, an AI tutor for Nigerian university students. You have been given the actual "
         f"extracted text of a study material titled \"{material.title}\"" +
         (f" for course {material.course_code}" if material.course_code else "") + ". "
         "Base your answer ONLY on this text -- if something isn't covered in it, say so rather than "
         "inventing it. Use simple HTML (<h3>, <p>, <ul>/<li>, <strong>) for structure, no Markdown.\n\n"
+        f"{_build_personalization_block(prefs)}\n\n"
         f"TASK: {_MATERIAL_AI_MODES[mode]}\n\n"
         f"MATERIAL CONTENT:\n{text}"
     )
@@ -744,12 +821,16 @@ def topic_ai_action(topic_id):
             'grounded': False,
         })
 
+    username = session['user']['username']
+    user = User.query.filter_by(username=username).first()
+    prefs = _get_user_preferences(user)
     course = topic.course
     system_prompt = (
         "You are Nelavista, an AI tutor for Nigerian university students. You have been given the actual "
         f"written explanation of the topic \"{topic.title}\" from the course {course.code} — {course.title}. "
         "Base your answer ONLY on this text -- if something isn't covered in it, say so rather than "
         "inventing it. Use simple HTML (<h3>, <p>, <ul>/<li>, <strong>) for structure, no Markdown.\n\n"
+        f"{_build_personalization_block(prefs)}\n\n"
         f"TASK: {_MATERIAL_AI_MODES[mode]}\n\n"
         f"TOPIC CONTENT:\n{topic.explanation}"
     )

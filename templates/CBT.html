@@ -352,6 +352,10 @@ let USER_DEPT = "{{ user_dept }}";
 let USER_LEVEL = "{{ user_level }}";
 let USER_NAME = "{{ user_name }}";
 let USER_LEVEL_NUM = USER_LEVEL.replace(/[^0-9]/g, '') || '';
+// Settings > Study & Exam Preferences > Preferred practice mode (models.UserPreferences.
+// cbt_default_mode) -- pre-selects this card once counts are known, never overrides an
+// explicit click, and never selects a mode with zero available questions.
+const PREFERRED_EXAM_MODE = "{{ preferred_mode }}";
 
 // ══════════════════════════════════════════════════════
 //  COMPLETE COURSE CODES DATABASE
@@ -616,6 +620,10 @@ async function updateCourseDisplay() {
 
     if (examType === 'cbt' && !cbtCount) { examType = null; document.getElementById('startExamBtn').disabled = true; cbtCard.classList.remove('selected'); }
     if (examType === 'written' && !writtenCount) { examType = null; document.getElementById('startExamBtn').disabled = true; writtenCard.classList.remove('selected'); }
+
+    if (!examType && PREFERRED_EXAM_MODE && currentCounts[PREFERRED_EXAM_MODE]) {
+        selectExamType(PREFERRED_EXAM_MODE);
+    }
 }
 
 window.pickCourse = function(code) {

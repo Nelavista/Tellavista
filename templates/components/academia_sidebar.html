@@ -62,6 +62,10 @@
         <input type="text" name="q" placeholder="Search courses, materials...">
       </form>
       <div class="dv2-topbar-spacer"></div>
+      <a href="/notifications" class="top-icon-btn" aria-label="Notifications">
+        <i class="ri-notification-3-line"></i>
+        {% if nav_unread_notifications %}<span class="top-icon-dot"></span>{% endif %}
+      </a>
       <button id="theme-toggle" onclick="skToggleTheme()"><i class="ri-moon-line"></i></button>
     </div>
 

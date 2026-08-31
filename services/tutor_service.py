@@ -10,8 +10,10 @@ real course/topic data instead of anything hardcoded.
 import json
 import re
 import requests
+from extensions import db
 from config import OPENROUTER_API_KEY
-from models import Topic
+from models import Topic, Course, Material
+from services.academic_context import resolve_academic_context, find_course
 
 OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
 TUTOR_MODEL = "openai/gpt-4o-mini"
@@ -19,6 +21,69 @@ TUTOR_MODEL = "openai/gpt-4o-mini"
 # Mirrors _MATERIAL_AI_MODES' honesty rule in routes/ai_routes.py: never claim to have
 # read something the platform hasn't actually extracted text from.
 MAX_MATERIAL_CHARS = 6000
+
+# A student can mention a course by code mid-conversation ("check my material for
+# MAT207") without ever opening the tutor from that course/topic -- previously the
+# tutor had no way to see anything beyond whatever course/topic/material the
+# conversation was opened with, so it could only ever say "I don't have access to your
+# materials", even when Nelavista actually has real data for that exact course. Matches
+# "MAT207", "MAT 207", "CSC-201", etc.
+_COURSE_CODE_RE = re.compile(r'\b([A-Za-z]{2,5})\s?-?(\d{3}[A-Za-z]?)\b')
+# Signals the student actually wants the material's CONTENT used (summarized, read,
+# quizzed from, etc.), not just "does this course exist" -- gates the more expensive
+# auto-extract-and-ground path in routes/tutor_routes.py so a passing mention of a
+# course code doesn't trigger a PDF download/parse on every message.
+_WANTS_MATERIAL_CONTENT_RE = re.compile(
+    r'\b(summar\w*|check|read|explain|use|notes?|content|based on|what.?s in|go through)\b', re.I
+)
+
+
+def _extract_course_codes(text):
+    seen = []
+    for letters, digits in _COURSE_CODE_RE.findall(text or ''):
+        code = f"{letters.upper()}{digits.upper()}"
+        if code not in seen:
+            seen.append(code)
+    return seen[:3]  # a real question won't reference more than a couple of courses
+
+
+def message_wants_material_content(message_text):
+    return bool(_WANTS_MATERIAL_CONTENT_RE.search(message_text or ''))
+
+
+def lookup_mentioned_course_materials(user, message_text):
+    """Scans a student's message for course-code-like tokens and looks up real
+    Course/Material rows for them, mirroring routes/materials_routes.py's own
+    visibility rules (is_approved only, university-scoped) -- so the tutor can answer
+    "check my material for X" with actual Nelavista data instead of a blanket "I don't
+    have access to your materials". Returns a list of
+    {'code', 'course' (Course|None), 'materials' (list[Material])} dicts, one per
+    mentioned code -- callers must render "not found" honestly rather than skip it,
+    since a wrong/unmapped course code is itself useful information for the student.
+    """
+    codes = _extract_course_codes(message_text)
+    if not codes:
+        return []
+
+    ctx = resolve_academic_context(user) if user else None
+    results = []
+    for code in codes:
+        course = find_course(ctx.department, code) if ctx and ctx.department else None
+        if not course:
+            # Not in this student's own department taxonomy -- a plain, unscoped
+            # lookup still lets the tutor give an honest, specific answer (e.g. "that
+            # code belongs to a different department's course") instead of silence.
+            course = Course.query.filter(db.func.upper(Course.code) == code).first()
+
+        materials_q = Material.query.filter_by(is_approved=True).filter(Material.course_code.ilike(code))
+        if user and user.university:
+            materials_q = materials_q.filter(
+                (Material.university.is_(None)) | (Material.university == user.university)
+            )
+        materials = materials_q.order_by(Material.created_at.desc()).limit(8).all()
+
+        results.append({'code': code, 'course': course, 'materials': materials})
+    return results
 
 # Settings > AI Tutor -- same instruction set routes/ai_routes.py's /ask uses for the
 # legacy single-shot tutor, kept in sync per concept rather than duplicated ad hoc.
@@ -49,7 +114,8 @@ def _headers():
     }
 
 
-def build_tutor_system_prompt(user, course=None, topic=None, material=None, material_text=None, prefs=None):
+def build_tutor_system_prompt(user, course=None, topic=None, material=None, material_text=None, prefs=None,
+                               course_lookups=None):
     """Builds the system prompt for one tutor turn. Recomputed fresh on every request
     (never cached/stored) so it always reflects the student's current academic profile,
     not whatever it was when the conversation started.
@@ -61,6 +127,10 @@ def build_tutor_system_prompt(user, course=None, topic=None, material=None, mate
     about what it has and hasn't actually read. prefs is the student's
     models.UserPreferences row (or None, treated as all defaults) -- see Settings > AI
     Tutor; every field it has is read somewhere below, nothing is accepted and ignored.
+    course_lookups is lookup_mentioned_course_materials()'s result for THIS turn's
+    message -- course codes the student typed that aren't necessarily the
+    conversation's pinned course/topic/material (e.g. "check my material for MAT207"
+    mid-conversation about a different course).
     """
     name = user.name or (user.username if user else "there")
     use_academic_context = prefs.ai_use_academic_context if prefs else True
@@ -115,6 +185,33 @@ def build_tutor_system_prompt(user, course=None, topic=None, material=None, mate
                 f"claim to have read it -- say so if asked, and answer from general "
                 f"subject knowledge instead.\n"
             )
+
+    if course_lookups:
+        lookup_lines = [
+            "\n## COURSE/MATERIAL LOOKUP (from the student's latest message)",
+            "The student's message mentioned a course code. This is what Nelavista actually "
+            "has on file for it -- treat it as ground truth. Never claim you \"don't have "
+            "access\" to materials in general; if something below isn't found, say THAT "
+            "specifically instead.",
+        ]
+        for entry in course_lookups:
+            code, found_course, materials = entry['code'], entry['course'], entry['materials']
+            if found_course:
+                lookup_lines.append(f"- {code} is on file as {found_course.code} — {found_course.title} ({found_course.level} level).")
+            else:
+                lookup_lines.append(f"- {code} isn't in Nelavista's course catalog for this student yet.")
+            if materials:
+                labels = Material.MATERIAL_TYPE_LABELS
+                titles = "; ".join(f"\"{m.title}\" ({labels.get(m.material_type, 'STUDY MATERIAL')})" for m in materials)
+                lookup_lines.append(
+                    f"  {len(materials)} material(s) on file for {code}: {titles}. You have NOT "
+                    f"read their contents (no text is included in this prompt) -- if the student "
+                    f"wants you to actually use one, tell them to open it from Study Materials "
+                    f"(which re-opens the tutor with it attached) or paste the content directly."
+                )
+            else:
+                lookup_lines.append(f"  No materials are on file for {code} yet.")
+        focus_block += "\n".join(lookup_lines) + "\n"
 
     style = prefs.ai_response_style if prefs else 'balanced'
     approach = prefs.ai_teaching_approach if prefs else 'step_by_step'

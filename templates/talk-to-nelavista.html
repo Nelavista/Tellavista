@@ -765,11 +765,61 @@
     .flex-show {
       display: flex !important;
     }
+
+    /* ===== LIGHT MODE ===== */
+    /* Settings > Appearance > Theme (models.UserPreferences.theme), applied via
+       static/js/shell.js's theme-init script (loaded below) toggling this class on
+       <body> -- same mechanism as every other Academia/Skills page. Most of this page
+       already reads color from the CSS variables above, so redefining those covers the
+       majority of it; the handful of rules below hardcoded a literal white-on-black
+       value instead of a variable and need their own light-mode override. */
+    body.light-mode {
+      --dark-bg: var(--light-bg);
+      --card-dark: var(--card-light);
+      --text-dark: var(--text-light);
+      --border-dark: rgba(0, 0, 0, 0.1);
+      --input-bg: #f4f4f5;
+      --pulse-color: rgba(0, 0, 0, 0.06);
+      --gradient-start: #111111;
+      --gradient-end: #555555;
+      /* .info-item and .action-btn below were still hardcoding a white-on-black card
+         (var(--accent-color) + literal color:#fff/white) instead of reading the
+         --card-dark/--text-dark variables the rest of the page uses, so this class
+         alone didn't fix them -- confirmed visually (screenshot showed two solid black
+         cards on an otherwise white page). --accent-color has no dark-mode consumer
+         besides those two rules, so redefining it here is enough. */
+      --accent-color: #f4f4f5;
+    }
+    body.light-mode #top-bar { background: rgba(255, 255, 255, 0.9); border-bottom-color: rgba(0, 0, 0, 0.1); }
+    body.light-mode #back-btn { background: rgba(0, 0, 0, 0.06); color: #111111; }
+    body.light-mode #back-btn:hover { background: rgba(0, 0, 0, 0.1); }
+    body.light-mode .header-subtitle,
+    body.light-mode .orb-label,
+    body.light-mode .clear-log-btn,
+    body.light-mode .info-item span { color: #6b7280; }
+    body.light-mode .input-label,
+    body.light-mode .ai-message { color: #374151; }
+    body.light-mode .log-title,
+    body.light-mode .info-title { color: #4b5563; }
+    body.light-mode .log-placeholder { color: #9ca3af; }
+    body.light-mode .user-message,
+    body.light-mode .info-item label { color: #000000; }
+    body.light-mode .input-wrapper:focus-within,
+    body.light-mode .clear-log-btn:hover,
+    body.light-mode .info-item:hover,
+    body.light-mode .action-btn:hover { border-color: rgba(0, 0, 0, 0.25); }
+    body.light-mode .info-item strong,
+    body.light-mode .action-btn { color: #111111; }
+    body.light-mode .orbital-ring { border-color: rgba(0, 0, 0, 0.1); }
+    body.light-mode .log-message { border-bottom-color: rgba(0, 0, 0, 0.06); }
+    body.light-mode ::-webkit-scrollbar-thumb { background: rgba(0, 0, 0, 0.15); }
+    body.light-mode ::-webkit-scrollbar-thumb:hover { background: rgba(0, 0, 0, 0.25); }
   </style>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
 </head>
 <body>
+  <script src="{{ url_for('static', filename='js/shell.js') }}"></script>
   <!-- TOP BAR -->
   <div id="top-bar">
     <button id="back-btn" onclick="goBack()">←</button>

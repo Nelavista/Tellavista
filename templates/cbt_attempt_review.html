@@ -68,6 +68,17 @@
     {% endfor %}
 </div>
 <script>
+const AUTO_EXPLAIN = {{ auto_explain | tojson }};
+
+// Settings > Study & Exam Preferences > "Automatically show explanations" (models.
+// UserPreferences.cbt_auto_explain) -- fires the same explain call every "Explain this
+// answer" button already makes, just automatically for wrong CBT answers on page load.
+if (AUTO_EXPLAIN) {
+    document.querySelectorAll('.ar-explain-btn').forEach(btn => explainAnswer(
+        {{ attempt.id }}, parseInt(btn.nextElementSibling.id.replace('explain-', ''), 10), btn
+    ));
+}
+
 async function explainAnswer(attemptId, answerId, btn) {
     const box = document.getElementById(`explain-${answerId}`);
     btn.disabled = true;

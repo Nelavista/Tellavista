@@ -36,6 +36,7 @@ from routes.live_meeting_routes import live_bp
 from routes.core_routes import core_bp
 from routes.pwa_routes import pwa_bp
 from routes.static_pages_routes import pages_bp
+from routes.settings_routes import settings_bp
 from routes.study_routes import study_bp
 from routes.google_search_routes import google_search_bp
 from routes.reels_routes import reels_bp
@@ -255,6 +256,7 @@ def create_app():
     app.register_blueprint(live_bp, url_prefix='/')
     app.register_blueprint(core_bp, url_prefix='/')
     app.register_blueprint(pages_bp, url_prefix='/')
+    app.register_blueprint(settings_bp, url_prefix='/')
     app.register_blueprint(study_bp, url_prefix='/')
     app.register_blueprint(google_search_bp, url_prefix='/')
     app.register_blueprint(reels_bp, url_prefix='/')

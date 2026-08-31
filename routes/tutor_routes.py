@@ -18,7 +18,7 @@ from services.academic_context import resolve_academic_context, find_course
 from services.material_service import get_or_extract_material_text
 from services.tutor_service import (
     build_tutor_system_prompt, stream_chat_completion, generate_conversation_title,
-    build_quick_prompts, TUTOR_ACTIONS,
+    build_quick_prompts, TUTOR_ACTIONS, lookup_mentioned_course_materials, message_wants_material_content,
 )
 
 tutor_bp = Blueprint('tutor', __name__)
@@ -195,17 +195,38 @@ def send_message(conversation_id):
         if last_message.role == 'assistant':
             db.session.delete(last_message)
             db.session.commit()
-        if not conversation.messages.filter_by(role='user').first():
+        last_user_message = (TutorMessage.query.filter_by(conversation_id=conversation.id, role='user')
+                              .order_by(TutorMessage.created_at.desc()).first())
+        if not last_user_message:
             return jsonify({'success': False, 'error': 'Nothing to regenerate yet'}), 400
 
+    # The message actually driving this turn -- the student's fresh `content` for a new
+    # message, or whichever user message is being re-answered on regenerate. Used below
+    # to look up any course code the student mentioned, independent of whatever
+    # course/topic/material the conversation happened to be opened with.
+    turn_text = content if not regenerate else last_user_message.content
+    course_lookups = lookup_mentioned_course_materials(user, turn_text)
+
+    material_for_prompt = conversation.material
+    if not material_for_prompt and course_lookups and message_wants_material_content(turn_text):
+        # Only auto-select when exactly one course was mentioned and it has exactly one
+        # material on file -- multiple candidates get listed (not guessed at) via
+        # course_lookups below instead, so the student picks rather than the tutor
+        # silently grounding on the wrong file.
+        single_candidates = [entry for entry in course_lookups if len(entry['materials']) == 1]
+        if len(single_candidates) == 1:
+            material_for_prompt = single_candidates[0]['materials'][0]
+            course_lookups = [entry for entry in course_lookups if entry is not single_candidates[0]]
+
     material_text = None
-    if conversation.material:
-        material_text = get_or_extract_material_text(conversation.material)
+    if material_for_prompt:
+        material_text = get_or_extract_material_text(material_for_prompt)
 
     prefs = UserPreferences.query.filter_by(user_id=user.id).first()
     system_prompt = build_tutor_system_prompt(
         user, course=conversation.course, topic=conversation.topic,
-        material=conversation.material, material_text=material_text, prefs=prefs,
+        material=material_for_prompt, material_text=material_text, prefs=prefs,
+        course_lookups=course_lookups,
     )
     # Same additive-order_by pitfall as last_message above -- query TutorMessage directly
     # so .desc() actually takes effect and this grabs the most recent 30 turns (not the

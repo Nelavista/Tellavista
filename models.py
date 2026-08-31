@@ -50,6 +50,15 @@ class User(db.Model):
     bio = db.Column(db.Text, nullable=True)
     portfolio_url = db.Column(db.String(300), nullable=True)
     profile_photo_url = db.Column(db.String(500), nullable=True)
+    # Self-service account deletion (Settings > Danger Zone) anonymizes + deactivates this
+    # row rather than deleting it outright -- dozens of tables across Academia and Skills
+    # hold a user_id FK back to this row (CBTAttempt, TutorConversation, StudentProject,
+    # GroupMessage, etc.), most without ON DELETE CASCADE, so a hard delete would either
+    # violate FK constraints or silently orphan rows. Login is blocked once is_deleted is
+    # set (see routes/auth_routes.py), and personal-identifying fields are scrubbed at
+    # deletion time (see routes/settings_routes.py delete_account).
+    is_deleted = db.Column(db.Boolean, nullable=False, default=False)
+    deleted_at = db.Column(db.DateTime, nullable=True)
 
     def set_password(self, password):
         from werkzeug.security import generate_password_hash
@@ -69,27 +78,6 @@ class UserQuestions(db.Model):
     answer = db.Column(db.Text, nullable=False)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
     memory_layer = db.Column(db.String(50))
-
-
-class UserProfile(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(150), unique=True, nullable=False)
-    level = db.Column(db.String(50))
-    department = db.Column(db.String(100))
-    traits = db.Column(db.Text)
-    explanation_style = db.Column(db.String(50))
-    focus_areas = db.Column(db.Text)
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-
-    def to_dict(self):
-        return {
-            "username": self.username,
-            "level": self.level,
-            "department": self.department,
-            "traits": json.loads(self.traits) if self.traits else [],
-            "explanation_style": self.explanation_style,
-            "focus_areas": json.loads(self.focus_areas) if self.focus_areas else []
-        }
 
 
 class Room(db.Model):
@@ -555,7 +543,7 @@ class GroupInvite(db.Model):
 # ============================================================
 # ===== SKILLS SYSTEM =====
 # Learn -> Practice -> Build -> Prove -> Progress. Mirrors the existing codebase's
-# JSON-as-text convention (see UserProfile.traits/focus_areas above) rather than native
+# JSON-as-text convention (see Competition.skills_tags_json below) rather than native
 # JSON columns, so every JSON-ish field ships with a `_list`/`_dict` accessor pair.
 # ============================================================
 
@@ -1654,8 +1642,11 @@ class UserPreferences(db.Model):
     theme = db.Column(db.String(10), nullable=False, default='dark')  # 'light' | 'dark' | 'system'
 
     # ── AI Tutor ── read by services/tutor_service.py's build_tutor_system_prompt()
-    # (the new /ai-tutor backend) and routes/ai_routes.py's /ask (the live AI Tutor at
-    # /talk-to-nelavista) when building the system prompt for each request.
+    # (the new /ai-tutor backend), routes/ai_routes.py's /ask (the live AI Tutor at
+    # /talk-to-nelavista), and its material_ai_action()/topic_ai_action() (the Explain/
+    # Summarize/Quiz actions on Materials and Topics) -- response style/teaching approach/
+    # difficulty/personal context apply to all four; academic-context and conversation-
+    # history are /ask- and /ai-tutor-specific (see their own comments below).
     ai_response_style = db.Column(db.String(20), nullable=False, default='balanced')        # concise | balanced | detailed
     ai_teaching_approach = db.Column(db.String(20), nullable=False, default='step_by_step')  # step_by_step | concept_first | example_first | exam_focused
     ai_difficulty = db.Column(db.String(20), nullable=False, default='university')           # beginner | university | advanced

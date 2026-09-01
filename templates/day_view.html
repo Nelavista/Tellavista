@@ -127,8 +127,8 @@
     <div id="quizSection" style="margin-top:36px;">
       <div class="sk-section-title" style="margin-top:0;">{{ lesson.quiz.title }}{% if quiz_attempt %} <span class="sk-badge">Last score: {{ quiz_attempt.score }}%</span>{% endif %}</div>
       <form id="quizForm">
-        {% for q in lesson.quiz.questions %}
-        <div class="sk-quiz-q" data-correct="{{ q.correct_index }}">
+        {% for q in quiz_questions %}
+        <div class="sk-quiz-q">
           <div class="sk-quiz-q-text">{{ loop.index }}. {{ q.question }}</div>
           {% for opt in q.options %}
           <label class="sk-quiz-opt">
@@ -136,7 +136,7 @@
             <span>{{ opt }}</span>
           </label>
           {% endfor %}
-          <div class="sk-card-desc quiz-explanation" style="display:none; margin-top:8px;">{{ q.explanation or '' }}</div>
+          <div class="sk-card-desc quiz-explanation" style="display:none; margin-top:8px;"></div>
         </div>
         {% endfor %}
       </form>
@@ -224,13 +224,18 @@
       });
       const data = await res.json();
       questions.forEach((q, i) => {
-        const correctIdx = parseInt(q.dataset.correct, 10);
+        const result = data.results && data.results[i];
+        if (!result) return;
         const opts = q.querySelectorAll('.sk-quiz-opt');
         opts.forEach((opt, oi) => {
-          if (oi === correctIdx) opt.classList.add('correct');
+          if (oi === result.correct_index) opt.classList.add('correct');
           else if (oi === answers[i]) opt.classList.add('incorrect');
         });
-        q.querySelector('.quiz-explanation').style.display = 'block';
+        const expl = q.querySelector('.quiz-explanation');
+        if (result.explanation) {
+          expl.textContent = result.explanation;
+          expl.style.display = 'block';
+        }
       });
       document.getElementById('quizResult').textContent = `Score: ${data.score}% (${data.correct}/${data.total} correct)`;
       btn.textContent = 'Submitted';

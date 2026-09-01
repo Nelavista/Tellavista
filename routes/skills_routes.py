@@ -482,10 +482,17 @@ def lesson_view(skill_slug, course_slug, lesson_slug):
     else:
         primary_video, more_videos = (fetched[0], fetched[1:]) if fetched else (None, [])
 
+    # Never hand the template the raw ORM questions (each one carries correct_index/
+    # explanation) -- Quiz.to_dict(include_answers=False) is the model's own sanitized
+    # view, built for exactly this. The template must only learn the right answer from
+    # /skills/quiz/<id>/submit's response, after grading, not from the page's initial HTML.
+    quiz_questions = lesson.quiz.to_dict(include_answers=False)['questions'] if lesson.quiz else []
+
     return render_template(
         'lesson_view.html', skill=skill, course=course, lesson=lesson,
         is_completed=lesson.id in completed_ids, prev_lesson=prev_lesson, next_lesson=next_lesson,
-        quiz_attempt=quiz_attempt, lessons_done=len(completed_ids), lessons_total=len(all_lessons),
+        quiz_attempt=quiz_attempt, quiz_questions=quiz_questions,
+        lessons_done=len(completed_ids), lessons_total=len(all_lessons),
         primary_video=primary_video, more_videos=more_videos,
         ask_context=f'the lesson "{lesson.title}" in {course.title}',
         ask_suggestions=['Explain this simply', 'Why does this matter?', 'Give me a practice example', 'Test me on this lesson'],
@@ -537,7 +544,11 @@ def submit_quiz(quiz_id):
 
     mark_lesson_complete(user.id, quiz.lesson)
     _touch_daily_class_progress(user, quiz.lesson)
-    return jsonify({'success': True, 'score': score, 'correct': correct, 'total': len(questions)})
+    # The one place the answer key is allowed to reach the client -- after grading, not
+    # in the page's initial HTML (see lesson_view()/day_view()'s quiz_questions, which
+    # deliberately strip correct_index/explanation via Quiz.to_dict(include_answers=False)).
+    results = [{'correct_index': q.get('correct_index'), 'explanation': q.get('explanation') or ''} for q in questions]
+    return jsonify({'success': True, 'score': score, 'correct': correct, 'total': len(questions), 'results': results})
 
 
 # ===== 30-DAY SKILL CLASSES =====
@@ -630,10 +641,15 @@ def day_view(skill_slug, course_slug, day_number):
 
     is_completed = states.get(day_number) == 'completed'
 
+    # Same sanitized-view rule as lesson_view() above -- the answer key must only ever
+    # reach the client via /skills/quiz/<id>/submit's response, after grading.
+    quiz_questions = lesson.quiz.to_dict(include_answers=False)['questions'] if lesson.quiz else []
+
     return render_template(
         'day_view.html', skill=skill, course=course, lesson=lesson, day_number=day_number,
         is_completed=is_completed, primary_video=primary_video, more_videos=more_videos,
-        quiz_attempt=quiz_attempt, assignment_submission=assignment_submission, due_at=due_at,
+        quiz_attempt=quiz_attempt, quiz_questions=quiz_questions,
+        assignment_submission=assignment_submission, due_at=due_at,
         prev_day=prev_day, next_day=next_day, next_day_locked=next_day_locked,
         total_days=len(day_numbers),
         ask_context=f'Day {day_number} of {course.title}: "{lesson.title}"',

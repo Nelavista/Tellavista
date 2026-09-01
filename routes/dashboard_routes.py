@@ -19,18 +19,18 @@ VALID_PATHS = {'academia': 'dashboard.dashboard', 'skills': 'skills.home'}
 def post_auth_redirect(user):
     """Where a user lands right after authenticating -- login(), signup(), and
     google_callback() in routes/auth_routes.py all call this so the three entry points
-    can never drift apart on this decision (they previously did: login()/signup()/
-    google_callback() always forced the choose-path picker, while landing() ('/') already
-    respected a saved preferred_path -- so a returning user with an already-chosen path
-    was forced to re-pick it every single login, even though switching spaces later is
-    always available from the sidebar). The rule, matching landing()'s: no saved
-    preference yet -> choose-path; a saved preference -> straight to that space."""
+    can never drift apart on this decision. Deliberately always the Choose Your Path
+    picker for a non-employer account, on every login/signup, regardless of any saved
+    preferred_path: the product decision is that authenticating is itself the moment to
+    choose Academia or Skills, not something to skip based on last time's pick. (This
+    briefly went the other way -- skipping the picker when preferred_path was already
+    set -- before being reverted back to always-show here; landing() below is a
+    different case (a still-active session revisiting '/', not a fresh authentication)
+    and keeps respecting the saved path, untouched by this)."""
     if user.is_employer:
         # Employers have their own separate experience entirely — no Academia/Skills
         # picker for them, since that fork doesn't apply to an employer account.
         return redirect(url_for('employer.dashboard'))
-    if user.preferred_path in VALID_PATHS:
-        return redirect(url_for(VALID_PATHS[user.preferred_path]))
     return redirect(url_for('dashboard.choose_path'))
 
 
@@ -58,7 +58,11 @@ def landing():
 @login_required
 def choose_path():
     """'Choose Your Path' screen — the deliberate fork between Academia and Skills. Shown
-    every time a user enters the app (login, signup, landing on "/")."""
+    on every login/signup/Google sign-in (post_auth_redirect() above, unconditionally,
+    for a non-employer account) and on landing() ('/') only for a session with no saved
+    preferred_path yet -- a still-active session revisiting '/' goes straight to its
+    saved space instead. Also reachable anytime via the sidebar wordmark, for switching
+    spaces on purpose without re-authenticating."""
     user_data = session.get('user')
     user = User.query.filter_by(username=user_data['username']).first()
     if not user:

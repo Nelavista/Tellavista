@@ -241,7 +241,12 @@ def google_login():
         flash('Google sign-in is not available right now.', 'error')
         return redirect(url_for('auth.login'))
     redirect_uri = url_for('auth.google_callback', _external=True)
-    return oauth.google.authorize_redirect(redirect_uri)
+    # Without this, Google silently reuses whichever Google account is already cached in
+    # the browser instead of ever showing the account picker -- someone with more than
+    # one Google account (or just wanting to sign up with a different one than they're
+    # currently signed into) gets authenticated as whichever account Google already had
+    # active, with no chance to choose. select_account forces the picker every time.
+    return oauth.google.authorize_redirect(redirect_uri, prompt='select_account')
 
 
 @auth_bp.route('/auth/google/callback')
@@ -290,7 +295,8 @@ def google_callback():
 
     # 3. Brand new account -- new accounts always start with preferred_path unset, so
     # they land on the Academia/Skills picker below same as a regular signup.
-    if not user:
+    is_new_account = not user
+    if is_new_account:
         username = _generate_username_from_email(google_email)
         user = User(username=username, email=google_email, google_sub=google_sub,
                     name=userinfo.get('name') or None,
@@ -300,7 +306,11 @@ def google_callback():
     if not _start_session_for(user):
         flash('This account has been deleted.')
         return redirect(url_for('auth.login'))
-    flash('Logged in with Google!')
+    # "Logged in" reads as a mistake to someone who tapped Sign Up and genuinely got a
+    # new account, and "Account created" would be just as misleading to someone who
+    # already had one -- is_new_account (set above, before the row could match anything
+    # existing) tells these apart for real, not by which button the user clicked.
+    flash('Account created with Google!' if is_new_account else 'Logged in with Google!')
     return post_auth_redirect(user)
 
 

@@ -1,9 +1,15 @@
-"""Regression tests for two auth-flow fixes:
+"""Regression tests for auth-flow fixes:
 
-1. login()/signup()/google_callback() previously always forced the choose-path picker,
-   ignoring any already-saved User.preferred_path -- contradicting landing() ('/'), which
-   already respected it. post_auth_redirect() (routes/dashboard_routes.py) now backs all
-   three so a returning user with a saved path goes straight there.
+1. post_auth_redirect() (routes/dashboard_routes.py) backs login()/signup()/
+   google_callback() so all three entry points agree on where a user lands. Product
+   decision: every login/signup always shows the Choose Your Path picker for a
+   non-employer account, regardless of any already-saved User.preferred_path -- this
+   briefly skipped the picker for a returning user with a saved path (a since-reverted
+   change), so the "shows picker" case below is the one that matters going forward; the
+   "even with a saved path" test guards specifically against that skip-picker behavior
+   coming back. landing() ('/') is intentionally different -- a still-active session
+   revisiting the root URL, not a fresh authentication -- and keeps going straight to
+   the saved space, untouched by this.
 
 2. A flash message queued by an earlier, interrupted request (redirect never followed to
    completion -- flaky network, backgrounded tab, shared browser) used to sit in the
@@ -14,7 +20,7 @@ from extensions import db
 from models import User
 
 
-def test_login_with_saved_path_skips_picker(app, client, make_user):
+def test_login_always_shows_picker_even_with_a_saved_path(app, client, make_user):
     user = make_user('pathed_user')
     with app.app_context():
         u = User.query.filter_by(username='pathed_user').first()
@@ -24,7 +30,7 @@ def test_login_with_saved_path_skips_picker(app, client, make_user):
     res = client.post('/login', data={'username_or_email': 'pathed_user', 'password': 'TestPass123!'},
                        follow_redirects=False)
     assert res.status_code == 302
-    assert '/choose-path' not in res.headers['Location']
+    assert '/choose-path' in res.headers['Location']
 
 
 def test_login_without_saved_path_shows_picker(app, client, make_user):

@@ -224,6 +224,14 @@ def _start_session_for(user):
         'is_admin': user.is_admin,
         'preferred_path': user.preferred_path
     }
+    # Without this, the function falls off the end and implicitly returns None -- falsy,
+    # so google_callback()'s `if not _start_session_for(user):` was true on EVERY Google
+    # sign-in, successful or not. The session above was already built correctly (hence
+    # last_login updating and a logged-in user landing on the dashboard if they navigated
+    # anywhere else), but the caller still flashed "This account has been deleted." and
+    # bounced back to /login regardless, because it never actually got a truthy result to
+    # check against.
+    return True
 
 
 @auth_bp.route('/auth/google')

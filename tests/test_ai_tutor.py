@@ -13,8 +13,9 @@ from models import TutorConversation, TutorMessage
 
 @pytest.fixture
 def client(app):
-    from routes.tutor_routes import tutor_bp
-    app.register_blueprint(tutor_bp, url_prefix='/')
+    # tests/conftest.py's shared `app` fixture now registers tutor_bp itself (see
+    # "Fix AI Tutor cross-university/department content leak") -- registering it again
+    # here raises "already registered for this blueprint".
     return app.test_client()
 
 

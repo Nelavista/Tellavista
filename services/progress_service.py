@@ -36,8 +36,17 @@ def get_recent_material_views(user, limit=5):
 def get_cbt_summary(user, course_code=None):
     """{attempts_count, average_score, last_attempt} from real CBTAttempt rows only --
     average_score is over 'cbt' (auto-scored) attempts, since written attempts are
-    never auto-scored (score_pct is always 0 for them, which would skew an average)."""
-    query = CBTAttempt.query.filter_by(user_id=user.id)
+    never auto-scored (score_pct is always 0 for them, which would skew an average).
+
+    Only ever counts attempts that were actually submitted. start_cbt_attempt() (see
+    routes/cbt_routes.py) creates the row up front with submitted_at=None and
+    score_pct=0, then fills in the real result on submit -- a student who starts an
+    exam and never finishes it (closes the tab, opens a second tab and starts over,
+    double-clicks "Start Exam") would otherwise leave a phantom 0% attempt sitting in
+    this query forever, dragging average_score down and, worse, potentially winning
+    "last_attempt" outright over a real finished result (submitted_at=NULL sorts before
+    every real timestamp on a DESC order in Postgres)."""
+    query = CBTAttempt.query.filter(CBTAttempt.user_id == user.id, CBTAttempt.submitted_at.isnot(None))
     if course_code:
         query = query.filter_by(course_code=course_code.upper())
     attempts = query.order_by(CBTAttempt.submitted_at.desc()).all()

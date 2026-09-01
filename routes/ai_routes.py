@@ -163,6 +163,10 @@ def _build_history_messages(user, prefs):
 # videos). A real fix (background job queue) is out of scope for this pass -- see the
 # Level 1 audit's scale findings -- this bounds the worst case in the meantime.
 MAX_ANALYZE_PDF_BYTES = 20 * 1024 * 1024  # 20MB
+# Images go to a vision model as base64 (~33% size inflation) inside a single JSON
+# request body, not streamed/extracted like a PDF -- a much smaller ceiling than the PDF
+# one above is plenty for a photographed textbook page while still bounding the worst case.
+MAX_IMAGE_BYTES = 8 * 1024 * 1024  # 8MB
 
 
 def _reject_if_too_large(file_content_or_size, max_bytes=MAX_ANALYZE_PDF_BYTES):
@@ -298,7 +302,12 @@ def generate_test():
             # No reliable OCR available (see services/material_service.py) — send the
             # image straight to a vision model to describe/transcribe its content, same
             # pattern already used by ask_with_files() for image attachments.
+            file.seek(0, os.SEEK_END)
+            image_size = file.tell()
             file.seek(0)
+            too_large = _reject_if_too_large(image_size, max_bytes=MAX_IMAGE_BYTES)
+            if too_large:
+                return too_large
             image_bytes = file.read()
             image_base64 = base64.b64encode(image_bytes).decode('utf-8')
             mime_type = 'image/png' if filename_lower.endswith('.png') else 'image/jpeg'
@@ -404,17 +413,32 @@ def ask_with_files():
         session_memory = get_session_memory()
         file_texts = []
         vision_images = []
+        # Unlike /analyze and /generate-test's PDF branch (both capped at
+        # MAX_ANALYZE_PDF_BYTES / MAX_IMAGE_BYTES above), this endpoint accepted an
+        # unlimited number of files of any size and shipped the full extracted text of
+        # every PDF straight into the prompt with no truncation -- a student attaching a
+        # 200-page textbook (or several) blocked the single eventlet worker on synchronous
+        # PDF parsing and could balloon the OpenRouter request to an enormous, expensive
+        # payload. Same caps as the other two upload paths, applied here too.
+        MAX_ASK_FILES = 3
+        ASK_PDF_TEXT_CHAR_CAP = 12000  # matches services/material_service.py's MATERIAL_TEXT_CHAR_CAP
         if 'files' in request.files:
-            files = request.files.getlist('files')
+            files = request.files.getlist('files')[:MAX_ASK_FILES]
             for file in files:
                 if file and file.filename:
                     filename = file.filename.lower()
+                    file.seek(0, os.SEEK_END)
+                    file_size = file.tell()
+                    file.seek(0)
                     if filename.endswith('.pdf'):
+                        if file_size > MAX_ANALYZE_PDF_BYTES:
+                            continue  # skip an oversized attachment rather than fail the whole request
                         text = extract_text_from_pdf(file)
                         if text:
-                            file_texts.append(f"[PDF: {file.filename}]\n{text}")
+                            file_texts.append(f"[PDF: {file.filename}]\n{text[:ASK_PDF_TEXT_CHAR_CAP]}")
                     elif filename.endswith(('.png', '.jpg', '.jpeg', '.gif')):
-                        file.seek(0)
+                        if file_size > MAX_IMAGE_BYTES:
+                            continue
                         image_bytes = file.read()
                         image_base64 = base64.b64encode(image_bytes).decode('utf-8')
                         mime_type = 'image/png' if filename.endswith('.png') else 'image/gif' if filename.endswith('.gif') else 'image/jpeg'
@@ -751,6 +775,16 @@ def material_ai_action(material_id):
     if not material or not material.is_approved:
         return jsonify({'success': False, 'error': 'Material not found'}), 404
 
+    username = session['user']['username']
+    user = User.query.filter_by(username=username).first()
+    # Same university boundary materials_routes.py's fetch_materials()/topic_detail()
+    # already enforce on every other read path (Material.university=NULL is universal;
+    # a school-specific material is only for that school's own students) -- this AI
+    # action fetched the row directly by id with no such check, so a student could pull
+    # another university's material content through it just by knowing/guessing the id.
+    if material.university and user and user.university and material.university != user.university:
+        return jsonify({'success': False, 'error': 'Material not found'}), 404
+
     mode = (request.get_json(silent=True) or {}).get('mode', 'explain')
     if mode not in _MATERIAL_AI_MODES:
         mode = 'explain'
@@ -764,8 +798,6 @@ def material_ai_action(material_id):
             'grounded': False,
         })
 
-    username = session['user']['username']
-    user = User.query.filter_by(username=username).first()
     prefs = _get_user_preferences(user)
     system_prompt = (
         "You are Nelavista, an AI tutor for Nigerian university students. You have been given the actual "
@@ -809,6 +841,18 @@ def topic_ai_action(topic_id):
     if not topic.is_active:
         return jsonify({'success': False, 'error': 'Topic not found'}), 404
 
+    username = session['user']['username']
+    user = User.query.filter_by(username=username).first()
+    # Mirrors academia_routes.py's topic_detail(), which 404s a topic whose course isn't
+    # in the requesting student's own resolved department ("never leaks a topic from a
+    # course the URL didn't ask for") -- a student only ever reaches this action's
+    # topic_id by first loading that same page, so this is never reachable for a topic a
+    # real user browsed to. It was missing here, so POSTing an arbitrary topic_id
+    # (any other department's/university's) bypassed that boundary entirely.
+    ctx = resolve_academic_context(user)
+    if not ctx.department or topic.course.department_id != ctx.department.id:
+        return jsonify({'success': False, 'error': 'Topic not found'}), 404
+
     mode = (request.get_json(silent=True) or {}).get('mode', 'explain')
     if mode not in _MATERIAL_AI_MODES:
         mode = 'explain'
@@ -821,8 +865,6 @@ def topic_ai_action(topic_id):
             'grounded': False,
         })
 
-    username = session['user']['username']
-    user = User.query.filter_by(username=username).first()
     prefs = _get_user_preferences(user)
     course = topic.course
     system_prompt = (
@@ -864,8 +906,8 @@ def teach_me_ai():
 @login_required
 @limiter.limit('20 per hour')
 def ai_teach():
-    course = request.args.get("course")
-    level = request.args.get("level")
+    course = (request.args.get("course") or "")[:200]
+    level = (request.args.get("level") or "")[:50]
     if not course or not level:
         return jsonify({"error": "Missing course or level"}), 400
     prompt = f"You're a tutor. Teach a {level} student the basics of {course} in a friendly and easy-to-understand way."
@@ -893,4 +935,11 @@ def ai_teach():
             summary = f"Let me teach you the basics of {course}. We'll start with fundamental concepts and build up from there. This is perfect for {level} students!"
         return jsonify({"summary": summary})
     except Exception as e:
-        return jsonify({"error": str(e)})
+        # Every other AI action in this file (topic_ai_action, material_ai_action, /ask,
+        # /ask_with_files) logs and returns a fixed friendly message on failure -- this
+        # one returned str(e) straight to the client instead, which can include internal
+        # detail (connection errors, provider-side messages) that isn't the student's
+        # business, with nothing logged server-side to actually diagnose it from.
+        debug_print(f"ai_teach failed for course={course!r} level={level!r}: {e}")
+        traceback.print_exc()
+        return jsonify({"error": "Nelavista is having trouble responding right now — please try again."}), 502

@@ -273,7 +273,15 @@
         <button type="button" class="sk-btn secondary small" style="margin-top:14px;" onclick="pdShowReflectionForm()">Request another review</button>
         {% else %}
         <p class="sk-card-desc">Get real, specific feedback before you show this off — what's strong, what's missing, and whether it's ready to count toward a verified skill.</p>
-        <button type="button" class="sk-btn" id="requestReviewBtn" onclick="pdShowReflectionForm()">{{ 'Reviewing...' if project.verification_status == 'requested' else 'Request Review' }}</button>
+        {# verification_status='requested' is committed before the AI call runs (so the
+           student's reflection answers survive even if that call fails) and only
+           advances to 'reviewed' once it succeeds -- seeing 'requested' on a fresh page
+           load (not immediately after clicking) always means the last attempt didn't
+           finish, never "still in progress": a synchronous request-review call either
+           completes with 'reviewed' or returns its own error within the same
+           request/response cycle. "Retry Review" says the true, actionable state
+           instead of implying a wait that isn't happening. #}
+        <button type="button" class="sk-btn" id="requestReviewBtn" onclick="pdShowReflectionForm()">{{ 'Retry Review' if project.verification_status == 'requested' else 'Request Review' }}</button>
         {% endif %}
 
         <form id="pdReflectionForm" style="display:none; margin-top:16px;" onsubmit="return pdSubmitReview(event)">

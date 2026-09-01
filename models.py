@@ -1032,6 +1032,20 @@ class StudentProject(db.Model):
     messages = db.relationship('ProjectMessage', backref='project', lazy='dynamic',
                                 order_by='ProjectMessage.created_at', cascade='all, delete-orphan')
 
+    # start_project() (routes/skills_routes.py) already checks for an existing row before
+    # inserting, but that check-then-act has no isolation of its own -- two nearly
+    # simultaneous requests (a double-click, a slow-network retry) can both pass the
+    # check before either commits, creating two independent project rows for the same
+    # template and splitting that project's milestones/files/AI feedback across both.
+    # project_template_id stays nullable (custom/AI-generated projects never set it), and
+    # a NULL is never considered equal to another NULL by a unique constraint on any
+    # supported backend here (Postgres, SQLite), so this only ever constrains
+    # template-started projects -- exactly the ones start_project() already intends to be
+    # one-per-student. See migrations/versions/<new>_add_student_project_unique_constraint.py.
+    __table_args__ = (
+        db.UniqueConstraint('student_id', 'project_template_id', name='uq_student_project_student_template'),
+    )
+
     @property
     def skills_demonstrated(self):
         try:

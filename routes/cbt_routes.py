@@ -259,10 +259,19 @@ def submit_cbt_attempt(attempt_id):
 @cbt_bp.route('/CBT/history')
 @login_required
 def cbt_history():
-    """List the current user's past CBT practice attempts, newest first."""
+    """List the current user's past CBT practice attempts, newest first. Only ever
+    submitted attempts -- an abandoned/never-finished attempt (started, then the tab
+    was closed or a second attempt started instead) has submitted_at=None and would
+    otherwise show up as a confusing '0%, never submitted' history entry (see the
+    matching comment on services/progress_service.py's get_cbt_summary)."""
     username = session['user']['username']
     user = User.query.filter_by(username=username).first()
-    attempts = CBTAttempt.query.filter_by(user_id=user.id).order_by(CBTAttempt.submitted_at.desc()).all()
+    attempts = (
+        CBTAttempt.query.filter(CBTAttempt.user_id == user.id, CBTAttempt.submitted_at.isnot(None))
+        .order_by(CBTAttempt.submitted_at.desc())
+        .limit(100)
+        .all()
+    )
     return render_template('cbt_history.html', attempts=attempts, user=user)
 
 

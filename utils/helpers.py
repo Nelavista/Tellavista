@@ -3,7 +3,7 @@ import time
 import base64
 import uuid
 from functools import wraps
-from flask import session, redirect, url_for, request
+from flask import session, redirect, url_for, request, flash
 from config import DEBUG_MODE, ALLOWED_EXTENSIONS, ALLOWED_VIDEO_EXTENSIONS
 
 def debug_print(*args, **kwargs):
@@ -14,6 +14,24 @@ def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if 'user' not in session:
+            return redirect(url_for('auth.login', next=request.url))
+        # The session cookie outliving the account it names is a real, reachable state --
+        # not just a hypothetical. Settings > Danger Zone renames/anonymizes the row
+        # in-place rather than hard-deleting it (models.py's User.is_deleted comment), so
+        # a second tab/device on the same browser keeps a session for a username that no
+        # longer resolves to anything the moment the first tab deletes the account. Every
+        # route downstream re-queries `User.query.filter_by(username=session['user']
+        # ['username'])` with no None-guard and immediately dereferences the result --
+        # dozens of them across cbt/materials/tutor/settings/academia, including ones
+        # dashboard JS polls automatically (continue_studying, recent_materials,
+        # cbt_summary) -- so a stale session doesn't just fail to load one page, it 500s
+        # the whole app for that browser. Checking once, here, at the one choke-point
+        # every protected route already passes through, closes all of those at once.
+        from models import User
+        user = User.query.filter_by(username=session['user'].get('username')).first()
+        if not user or user.is_deleted:
+            session.clear()
+            flash('Your session has expired. Please log in again.')
             return redirect(url_for('auth.login', next=request.url))
         return f(*args, **kwargs)
     return decorated_function

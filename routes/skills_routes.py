@@ -6,6 +6,7 @@ from datetime import datetime
 from urllib.parse import urlparse
 from flask import Blueprint, render_template, redirect, url_for, session, flash, jsonify, request
 from utils.helpers import login_required
+from logging_config import logger
 from models import (
     User, SkillCategory, Skill, LearningPath, LearningPathStep, SkillCourse, CourseModule,
     Lesson, Quiz, Challenge, ChallengeSubmission, ProjectTemplate, StudentProject,
@@ -14,6 +15,7 @@ from models import (
     CohortEnrollment, ProjectFile, ProjectMessage,
 )
 from extensions import db, limiter
+from sqlalchemy.exc import IntegrityError
 from services.skills_service import (
     get_dashboard_data, get_path_step_states, get_course_progress, mark_lesson_complete,
     touch_skill_activity, match_skill_from_text, ONBOARDING_SKIPPED,
@@ -752,7 +754,20 @@ def start_project(template_id):
     )
     project.skills_demonstrated = template.skills_demonstrated
     db.session.add(project)
-    db.session.commit()
+    try:
+        db.session.commit()
+    except IntegrityError:
+        # The check above is check-then-act with no isolation of its own -- a
+        # double-click or a slow-network retry can both pass it before either commits.
+        # The database's own unique constraint (student_id, project_template_id) is what
+        # actually prevents the duplicate row; this just turns the loser of that race
+        # into the same "you already have one, here it is" outcome as the check above,
+        # instead of an unhandled IntegrityError/500.
+        db.session.rollback()
+        existing = StudentProject.query.filter_by(student_id=user.id, project_template_id=template.id).first()
+        if existing:
+            return redirect(url_for('skills.project_detail', project_id=existing.id))
+        raise
     touch_skill_activity(user.id, template.skill_id)
     flash('Project started! Track your progress here as you build.')
     return redirect(url_for('skills.project_detail', project_id=project.id))
@@ -948,11 +963,22 @@ def update_project(project_id):
     db.session.commit()
 
     # A final-project submission (template.is_final_project) triggers AI evaluation
-    # against the admin-configured rubric — this is the only path that ever writes
-    # StudentProject.rubric_scores/ai_overall_score, and it only runs once per submission
-    # event (status just flipped to 'submitted'), not on every routine progress update.
-    just_submitted = data.get('status') == 'submitted'
-    if just_submitted and project.project_template_id and project.template and project.template.is_final_project:
+    # against the admin-configured rubric -- this is the only path that ever writes
+    # StudentProject.rubric_scores/ai_overall_score, which gpa_service.py's
+    # _final_project_component() treats as a hard 0 while it's still None. Triggering on
+    # "the status the client just submitted", not "the project is submitted but not yet
+    # scored", meant a transient AI failure here (a timeout, OpenRouter briefly down --
+    # not even a crash) left the project stuck 'submitted'/score=None forever: the guard
+    # only fired again on a fresh POST carrying status='submitted', which the frontend
+    # only ever sends once, at the moment of the original submit. Retriggering off the
+    # actual DB state instead means the very next save on this project -- even an
+    # unrelated progress/description edit -- retries the evaluation automatically, no
+    # separate "retry" UI required.
+    needs_evaluation = (
+        project.status == 'submitted' and project.ai_overall_score is None
+        and project.project_template_id and project.template and project.template.is_final_project
+    )
+    if needs_evaluation:
         try:
             submission_details = (
                 f"Description: {project.description or '(none provided)'}\n"
@@ -968,8 +994,9 @@ def update_project(project_id):
             project.rubric_scores = result['criteria']
             project.ai_overall_score = result['overall_score']
             db.session.commit()
-        except Exception:
+        except Exception as e:
             db.session.rollback()
+            logger.error(f"Final project evaluation failed for project {project.id} (student {user.id}): {e}")
 
     if project.project_template_id and project.template:
         touch_skill_activity(user.id, project.template.skill_id)
@@ -1041,8 +1068,19 @@ def apply_opportunity(opportunity_id):
     existing = OpportunityApplication.query.filter_by(opportunity_id=opportunity.id, student_id=user.id).first()
     if not existing:
         db.session.add(OpportunityApplication(opportunity_id=opportunity.id, student_id=user.id))
-        db.session.commit()
-        flash(f'Applied to "{opportunity.title}"!')
+        try:
+            db.session.commit()
+            flash(f'Applied to "{opportunity.title}"!')
+        except IntegrityError:
+            # OpportunityApplication already has a DB-level unique constraint on
+            # (opportunity_id, student_id) -- data can't actually duplicate -- but the
+            # check-then-act above has no isolation of its own, so a double-click/retry
+            # race previously hit an unhandled IntegrityError -> 500 instead of the same
+            # "you're in" outcome the winner of the race gets.
+            db.session.rollback()
+            flash(f'You already applied to "{opportunity.title}".')
+    else:
+        flash(f'You already applied to "{opportunity.title}".')
     return redirect(request.referrer or url_for('skills.opportunities'))
 
 
@@ -1243,8 +1281,16 @@ def competition_detail(slug):
             competition_id=competition.id, student_id=user.id,
             submission_url=submission_url or None, description=description or None,
         ))
-        db.session.commit()
-        flash('Entry submitted!')
+        try:
+            db.session.commit()
+            flash('Entry submitted!')
+        except IntegrityError:
+            # Same check-then-act race as apply_opportunity() above -- CompetitionEntry's
+            # own unique constraint (competition_id, student_id) already prevents the
+            # duplicate row; this just avoids turning the loser of a double-click/retry
+            # race into an unhandled 500.
+            db.session.rollback()
+            flash("You've already entered this competition.")
         return redirect(url_for('skills.competition_detail', slug=slug))
 
     return render_template('skills_competition_detail.html', competition=competition, existing=existing,

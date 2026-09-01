@@ -43,12 +43,28 @@ def _resolve_context_from_args(user, ctx):
 
     if topic_id:
         topic = Topic.query.filter_by(id=topic_id, is_active=True).first()
+        # Mirrors academia_routes.py's topic_detail() and ai_routes.py's
+        # topic_ai_action() -- a topic whose course isn't in the requesting student's
+        # own resolved department must never ground the tutor. Previously unchecked
+        # here: passing another department's/university's real topic_id let the tutor
+        # be grounded on content that topic's course_lookups/system-prompt building
+        # would then treat as legitimately "the student's own topic".
+        if topic and (not ctx.department or topic.course.department_id != ctx.department.id):
+            topic = None
         if topic:
             course = topic.course
     if not course and course_code:
         course = find_course(ctx.department, course_code) if ctx.department else None
     if material_id:
         material = Material.query.filter_by(id=material_id, is_approved=True).first()
+        # Mirrors ai_routes.py's material_ai_action() -- same university boundary every
+        # other Material read path in the app already enforces (Material.university=NULL
+        # is universal; a school-specific material is only for that school's own
+        # students). Previously unchecked here: material_text below sends the file's
+        # actual extracted content into the tutor's system prompt, so an unscoped
+        # material_id was a real cross-university content leak, not just metadata.
+        if material and material.university and user and user.university and material.university != user.university:
+            material = None
 
     return course, topic, material
 

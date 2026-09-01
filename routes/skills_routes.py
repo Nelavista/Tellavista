@@ -16,6 +16,7 @@ from models import (
 )
 from extensions import db, limiter
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy import func
 from services.skills_service import (
     get_dashboard_data, get_path_step_states, get_course_progress, mark_lesson_complete,
     touch_skill_activity, match_skill_from_text, ONBOARDING_SKIPPED,
@@ -29,9 +30,9 @@ from services.daily_class_service import (
 )
 from services.gpa_service import compute_skill_gpa, recompute_and_cache_gpa, get_cohort_rank
 from services.skills_service import (
-    get_pipeline_state, opportunity_match_pct, profile_completeness, get_continue_learning_card,
-    compute_payout_breakdown, get_talent_stats, get_verified_skills, get_skill_scores,
-    get_projects_empty_state_cta,
+    get_pipeline_state, get_pipeline_states_bulk, opportunity_match_pct, profile_completeness,
+    get_continue_learning_card, compute_payout_breakdown, get_talent_stats, get_verified_skills,
+    get_skill_scores, get_projects_empty_state_cta,
 )
 from services.ai_service import (
     evaluate_project_submission, generate_project_brief, project_mentor_reply,
@@ -178,9 +179,14 @@ def home():
     if data['in_progress_skills']:
         continue_card = get_continue_learning_card(user.id, data['in_progress_skills'][0])
 
+    # One batched lookup for every started skill instead of get_pipeline_state()'s 5-6
+    # queries repeated per skill -- a student with 8 started skills previously cost
+    # 40-50 queries just for this section (see services/skills_service.py's
+    # get_pipeline_states_bulk docstring).
+    pipeline_states = get_pipeline_states_bulk(user.id, [s.skill_id for s in all_progress])
     verify_items = []
-    for student_skill in data['in_progress_skills'] + data['completed_skills']:
-        steps, current_phase = get_pipeline_state(user.id, student_skill.skill_id)
+    for student_skill in all_progress:
+        steps, current_phase = pipeline_states[student_skill.skill_id]
         verify_items.append({
             'skill': student_skill.skill,
             'course_done': steps[0]['state'] == 'done',
@@ -267,21 +273,47 @@ def catalog():
     skills = query.order_by(Skill.order).all()
 
     # Each card needs real numbers, not filler text — projects available, students
-    # actually learning it right now, and open paid opportunities in this skill.
+    # actually learning it right now, and open paid opportunities in this skill. Was 4
+    # separate .count() queries PER skill card (a published catalog of 50 skills = 200
+    # queries on one page load); now one grouped-count query per number, covering every
+    # skill on the page at once, regardless of how many there are.
+    skill_ids = [s.id for s in skills]
+    projects_counts = dict(
+        db.session.query(ProjectTemplate.skill_id, func.count(ProjectTemplate.id))
+        .filter(ProjectTemplate.skill_id.in_(skill_ids), ProjectTemplate.is_published.is_(True))
+        .group_by(ProjectTemplate.skill_id).all()
+    ) if skill_ids else {}
+    students_counts = dict(
+        db.session.query(StudentSkill.skill_id, func.count(StudentSkill.id))
+        .filter(StudentSkill.skill_id.in_(skill_ids))
+        .group_by(StudentSkill.skill_id).all()
+    ) if skill_ids else {}
+    opportunities_counts = dict(
+        db.session.query(Opportunity.skill_id, func.count(Opportunity.id))
+        .filter(Opportunity.skill_id.in_(skill_ids), Opportunity.is_published.is_(True))
+        .group_by(Opportunity.skill_id).all()
+    ) if skill_ids else {}
+    has_content_ids = {
+        row[0] for row in
+        db.session.query(SkillCourse.skill_id)
+        .filter(SkillCourse.skill_id.in_(skill_ids), SkillCourse.is_published.is_(True))
+        .distinct().all()
+    } if skill_ids else set()
+
     rows = []
     for skill in skills:
         rows.append({
             'skill': skill,
-            'projects_count': skill.project_templates.filter_by(is_published=True).count(),
-            'students_count': StudentSkill.query.filter_by(skill_id=skill.id).count(),
-            'opportunities_count': Opportunity.query.filter_by(skill_id=skill.id, is_published=True).count(),
+            'projects_count': projects_counts.get(skill.id, 0),
+            'students_count': students_counts.get(skill.id, 0),
+            'opportunities_count': opportunities_counts.get(skill.id, 0),
             # A published Skill with zero published courses has no actual learning
             # content behind it yet (see seed_skills.py's own comment: some skills are
             # published early "so the catalog shows real breadth from day one"). The
             # catalog card must say so honestly ("Coming Soon") instead of looking
             # identical to a fully-built path — same "no fake empty exam" principle as
             # CBT.html.
-            'has_content': skill.courses.filter_by(is_published=True).count() > 0,
+            'has_content': skill.id in has_content_ids,
         })
 
     return render_template('skills_catalog.html', categories=categories, rows=rows,
@@ -1061,7 +1093,10 @@ def skill_transcript():
 @login_required
 def opportunities():
     user = _current_user()
-    started_skill_ids = [s.skill_id for s in StudentSkill.query.filter_by(student_id=user.id).all()]
+    # progress_by_skill replaces a call to opportunity_match_pct() per opportunity below
+    # -- that function's whole body is this same StudentSkill lookup, run again for every
+    # row even though every row's answer was already sitting in one query's results.
+    progress_by_skill = {s.skill_id: s.progress_pct for s in StudentSkill.query.filter_by(student_id=user.id).all()}
     all_opps = Opportunity.query.filter_by(is_published=True).order_by(Opportunity.order).all()
     my_applications = {a.opportunity_id: a for a in OpportunityApplication.query.filter_by(student_id=user.id).all()}
 
@@ -1069,7 +1104,7 @@ def opportunities():
     for o in all_opps:
         rows.append({
             'opportunity': o,
-            'match_pct': opportunity_match_pct(user.id, o.skill_id) if o.skill_id in started_skill_ids else 0,
+            'match_pct': progress_by_skill.get(o.skill_id, 0),
             'application': my_applications.get(o.id),
         })
     rows.sort(key=lambda r: -r['match_pct'])
@@ -1121,11 +1156,13 @@ def gigs():
         query = query.filter(Opportunity.payment_amount >= min_pay)
     all_opps = query.order_by(Opportunity.created_at.desc()).all()
 
-    started_skill_ids = [s.skill_id for s in StudentSkill.query.filter_by(student_id=user.id).all()]
+    # Same batching as opportunities() above -- one query for every skill's progress
+    # instead of one opportunity_match_pct() call (itself a query) per gig on the page.
+    progress_by_skill = {s.skill_id: s.progress_pct for s in StudentSkill.query.filter_by(student_id=user.id).all()}
     my_applications = {a.opportunity_id: a for a in OpportunityApplication.query.filter_by(student_id=user.id).all()}
     rows = [{
         'opportunity': o, 'application': my_applications.get(o.id),
-        'match_pct': opportunity_match_pct(user.id, o.skill_id) if o.skill_id in started_skill_ids else 0,
+        'match_pct': progress_by_skill.get(o.skill_id, 0),
     } for o in all_opps]
 
     skills = Skill.query.filter_by(is_published=True).order_by(Skill.name).all()
@@ -1137,8 +1174,12 @@ def gigs():
 @login_required
 def earnings():
     user = _current_user()
+    # joinedload: a.opportunity below is otherwise a separate lazy-loaded query per
+    # application (OpportunityApplication.opportunity has no lazy= override, so it
+    # defaults to lazy='select') -- one JOIN here instead of N queries for N applications.
     applications = (
         OpportunityApplication.query.filter_by(student_id=user.id)
+        .options(db.joinedload(OpportunityApplication.opportunity))
         .order_by(OpportunityApplication.applied_at.desc()).all()
     )
     for a in applications:
@@ -1210,10 +1251,12 @@ def privacy_settings():
 def my_learning():
     user = _current_user()
     data = get_dashboard_data(user.id)
+    all_progress = data['in_progress_skills'] + data['completed_skills']
+    pipeline_states = get_pipeline_states_bulk(user.id, [s.skill_id for s in all_progress])
     rows = []
-    for student_skill in data['in_progress_skills'] + data['completed_skills']:
+    for student_skill in all_progress:
         card = get_continue_learning_card(user.id, student_skill) if student_skill.status == 'in_progress' else None
-        steps, current_phase = get_pipeline_state(user.id, student_skill.skill_id)
+        steps, current_phase = pipeline_states[student_skill.skill_id]
         rows.append({'student_skill': student_skill, 'skill': student_skill.skill, 'card': card,
                      'pipeline_steps': steps, 'current_phase': current_phase})
     return render_template('skills_my_learning.html', rows=rows, active_page='my_learning')
@@ -1332,13 +1375,43 @@ def new_message_thread():
 @login_required
 def messages():
     user = _current_user()
+    # joinedload the side of each thread that ISN'T the viewer -- .other_party() reads
+    # self.employer/self.student, each an un-eager-loaded relationship (a separate query
+    # the first time it's touched) without this.
+    base_query = MessageThread.query.options(
+        db.joinedload(MessageThread.employer), db.joinedload(MessageThread.student),
+    )
     if user.is_employer:
-        threads = MessageThread.query.filter_by(employer_id=user.id).order_by(MessageThread.last_message_at.desc()).all()
+        threads = base_query.filter_by(employer_id=user.id).order_by(MessageThread.last_message_at.desc()).all()
     else:
-        threads = MessageThread.query.filter_by(student_id=user.id).order_by(MessageThread.last_message_at.desc()).all()
+        threads = base_query.filter_by(student_id=user.id).order_by(MessageThread.last_message_at.desc()).all()
+
+    thread_ids = [t.id for t in threads]
+    # Unread counts: one GROUP BY covering every thread instead of one .count() per
+    # thread (t.unread_count_for() was exactly that single-thread count, called in a loop).
+    unread_by_thread = dict(
+        db.session.query(Message.thread_id, func.count(Message.id))
+        .filter(Message.thread_id.in_(thread_ids), Message.sender_id != user.id, Message.is_read.is_(False))
+        .group_by(Message.thread_id).all()
+    ) if thread_ids else {}
+    # Last message per thread: find each thread's latest timestamp in one query, then
+    # fetch the matching rows in a second -- two queries total instead of one .first()
+    # per thread (a "top-1 per group" lookup doesn't collapse into a single simple query
+    # portably across Postgres and SQLite without a window function).
+    latest_at_by_thread = dict(
+        db.session.query(Message.thread_id, func.max(Message.created_at))
+        .filter(Message.thread_id.in_(thread_ids))
+        .group_by(Message.thread_id).all()
+    ) if thread_ids else {}
+    last_message_by_thread = {}
+    if latest_at_by_thread:
+        pairs = [(tid, ts) for tid, ts in latest_at_by_thread.items() if ts is not None]
+        for m in Message.query.filter(db.tuple_(Message.thread_id, Message.created_at).in_(pairs)).all():
+            last_message_by_thread[m.thread_id] = m
+
     rows = [{
-        'thread': t, 'other': t.other_party(user.id), 'unread': t.unread_count_for(user.id),
-        'last_message': t.messages.order_by(Message.created_at.desc()).first(),
+        'thread': t, 'other': t.other_party(user.id), 'unread': unread_by_thread.get(t.id, 0),
+        'last_message': last_message_by_thread.get(t.id),
     } for t in threads]
     return render_template('skills_messages.html', rows=rows, active_page='messages')
 

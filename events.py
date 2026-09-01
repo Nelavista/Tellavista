@@ -1,11 +1,11 @@
-from flask import request, session
+from flask import request, session, current_app
 from flask_socketio import emit, join_room, leave_room
 from extensions import socketio, db
 from models import Room, User
 from services.meeting_service import (
     rooms, participants, room_authority,
     get_or_create_room, get_room_authority, get_participants_list,
-    append_chat_message, cleanup_room, end_room_session,
+    append_chat_message, cleanup_room, end_room_session, schedule_teacher_reconnect_check,
 )
 from utils.helpers import debug_print
 from datetime import datetime
@@ -49,6 +49,11 @@ def handle_disconnect():
                 for p_sid in room['participants']:
                     if room['participants'][p_sid]['role'] == 'student':
                         emit('teacher-disconnected', room=p_sid)
+                # The teacher's socket dropping here could be a genuine end (crash,
+                # closed laptop, lost wifi) or just a blip (refreshed tab) -- schedule a
+                # grace-period check instead of guessing either way now. See
+                # services/meeting_service.py's schedule_teacher_reconnect_check.
+                schedule_teacher_reconnect_check(current_app._get_current_object(), room_id)
             emit('participant-left', {'sid': sid, 'username': participant_info['username'], 'role': participant_info['role']}, room=room_id, skip_sid=sid)
             debug_print(f"❌ {participant_info['username']} left room {room_id}")
     cleanup_room(room_id)

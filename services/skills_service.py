@@ -403,6 +403,81 @@ def get_pipeline_state(student_id, skill_id):
     return steps, current_phase
 
 
+def get_pipeline_states_bulk(student_id, skill_ids):
+    """Same result as calling get_pipeline_state(student_id, skill_id) once per skill --
+    {skill_id: (steps, current_phase)} -- but with 5 queries total instead of 5-6 PER
+    skill (get_pipeline_state's own body already runs learn/practice/build/earn as one
+    query each, plus is_skill_verified's own extra query). The Skills dashboard, My
+    Learning, and Talent Profile pages all render every one of a student's started
+    skills at once, so a student with a handful of skills was costing 20-50+ queries on
+    a single page load; this makes it a fixed, small number regardless of how many
+    skills they've started. Callers that only ever need ONE skill's state (skill_detail,
+    get_continue_learning_card) should keep calling get_pipeline_state directly --
+    batching is only a win once there's more than one skill to look up."""
+    if not skill_ids:
+        return {}
+    skill_ids = list(set(skill_ids))
+
+    learned_ids = {
+        row.skill_id for row in StudentSkill.query.filter(
+            StudentSkill.student_id == student_id, StudentSkill.skill_id.in_(skill_ids),
+            StudentSkill.status == 'completed',
+        ).all()
+    }
+    practiced_ids = {
+        row.skill_id for row in Challenge.query.join(
+            ChallengeSubmission, ChallengeSubmission.challenge_id == Challenge.id
+        ).filter(
+            Challenge.skill_id.in_(skill_ids), ChallengeSubmission.student_id == student_id,
+        ).with_entities(Challenge.skill_id).all()
+    }
+    projects_by_skill = {}
+    for template_skill_id, project in StudentProject.query.join(
+        ProjectTemplate, StudentProject.project_template_id == ProjectTemplate.id
+    ).filter(
+        ProjectTemplate.skill_id.in_(skill_ids), StudentProject.student_id == student_id,
+    ).with_entities(ProjectTemplate.skill_id, StudentProject).all():
+        projects_by_skill.setdefault(template_skill_id, []).append(project)
+    earned_ids = {
+        row.skill_id for row in Opportunity.query.join(
+            OpportunityApplication, OpportunityApplication.opportunity_id == Opportunity.id
+        ).filter(
+            Opportunity.skill_id.in_(skill_ids), OpportunityApplication.student_id == student_id,
+            OpportunityApplication.status.in_(['accepted', 'completed', 'paid']),
+        ).with_entities(Opportunity.skill_id).all()
+    }
+
+    results = {}
+    for skill_id in skill_ids:
+        done_map = {
+            'learn': skill_id in learned_ids,
+            'practice': skill_id in practiced_ids,
+            'build': bool(projects_by_skill.get(skill_id)),
+            'verify': skill_id in learned_ids and any(
+                _project_counts_as_verified(p) for p in projects_by_skill.get(skill_id, [])
+            ),
+            'earn': skill_id in earned_ids,
+        }
+        steps = []
+        found_current = False
+        current_phase = None
+        for phase in PIPELINE_PHASES:
+            done = done_map[phase]
+            if done:
+                state = 'done'
+            elif not found_current:
+                state = 'current'
+                found_current = True
+                current_phase = phase
+            else:
+                state = 'locked'
+            steps.append({'phase': phase, 'label': PIPELINE_LABELS[phase], 'state': state})
+        if current_phase is None:
+            current_phase = 'earn'
+        results[skill_id] = (steps, current_phase)
+    return results
+
+
 def opportunity_match_pct(student_id, skill_id):
     """How well-matched a student is to an opportunity in this skill — always derived
     from real progress (StudentSkill.progress_pct), never a fabricated number."""

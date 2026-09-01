@@ -1,5 +1,5 @@
 from datetime import datetime
-from extensions import db
+from extensions import db, socketio
 from models import Room
 
 # In-memory storage for live meetings. This is per-process state — fine for a single
@@ -95,3 +95,56 @@ def end_room_session(room_id):
         del rooms[room_id]
     if room_id in room_authority:
         del room_authority[room_id]
+
+
+# How long to wait, after a teacher's socket disconnects, before treating the session as
+# genuinely over rather than a blip (dropped wifi, a refreshed tab, a laptop briefly
+# closing). Long enough to survive that; short enough that a teacher who never comes
+# back (a crash, a dead laptop) doesn't leave the room "live" in the admin dashboard
+# indefinitely -- previously nothing did this at all: cleanup_room() above deliberately
+# never touches the DB row (a session going quiet should still exist for reconnects), so
+# the only things that ever closed Room.is_live/is_active were an explicit "End Session"
+# click or an admin manually ending it from /admin/live-rooms. See events.py's
+# handle_disconnect, the only caller of schedule_teacher_reconnect_check below.
+TEACHER_RECONNECT_GRACE_SECONDS = 120
+
+
+def schedule_teacher_reconnect_check(app, room_id):
+    """Fire-and-forget: runs the grace-period check in the background so
+    handle_disconnect itself returns immediately -- it must not block the socket event
+    loop for two minutes. `app` is the real Flask app object, captured from the live
+    request context by the caller (current_app._get_current_object() -- see events.py).
+    A background task runs outside any request, so it needs the app object passed in
+    rather than importing app.py directly here, which would both reintroduce a circular
+    import (app.py is what imports the blueprints/events that reach this module) and the
+    exact "importing app.py touches the real configured database" hazard documented in
+    database.py / tests/conftest.py."""
+    socketio.start_background_task(_reap_abandoned_room, app, room_id)
+
+
+def _reap_abandoned_room(app, room_id):
+    """Waits out the grace period, then defers to _close_room_if_still_abandoned. Split
+    into two functions so a test can call the check directly and skip the real-time
+    sleep."""
+    socketio.sleep(TEACHER_RECONNECT_GRACE_SECONDS)
+    _close_room_if_still_abandoned(app, room_id)
+
+
+def _close_room_if_still_abandoned(app, room_id):
+    """Runs once, TEACHER_RECONNECT_GRACE_SECONDS after a teacher's socket disconnected.
+    If the teacher (or a legitimate reconnect as the same real owner) hasn't reclaimed
+    the room by then -- a fresh join-room as 'teacher' sets room['teacher_sid'] again --
+    the session is genuinely abandoned, not just quiet, so close it out the same way an
+    explicit "End Session" click would. Handles both shapes of the bug: the in-memory
+    room still existing with no teacher, and the in-memory room already having been
+    dropped entirely by cleanup_room() (which happens whenever the teacher was the last
+    participant left) -- either way, if the DB row is still live, nothing else was ever
+    going to notice and close it."""
+    room = rooms.get(room_id)
+    if room and room.get('teacher_sid'):
+        return  # teacher (re)claimed the room within the grace period -- not abandoned
+    with app.app_context():
+        room_db = Room.query.get(room_id)
+        if room_db and (room_db.is_live or room_db.is_active):
+            socketio.emit('session-ended', {}, room=room_id)
+            end_room_session(room_id)

@@ -401,22 +401,37 @@ def fetch_materials():
         # seeded before that column existed (material_type IS NULL) are matched in
         # Python against their title-heuristic label so old material doesn't just
         # disappear from every filter pill until someone manually classifies it.
+        query = query.order_by(Material.created_at.desc())
+        start = (page - 1) * per_page
+
         if type_filter and type_filter != 'all':
+            # Legacy rows seeded before Material.material_type existed (NULL) are matched
+            # against a Python title-heuristic (_legacy_inferred_type_label) that can't be
+            # expressed in SQL, so this branch has to load every DB-level-matching row
+            # before it can know the true filtered set/page -- unavoidable without a
+            # one-time backfill of every legacy row's material_type (a separate, larger
+            # change). Only this branch pays that cost; the far more common "browse
+            # everything" / no-type-filter path below doesn't.
             query = query.filter(
                 db.or_(Material.material_type == type_filter, Material.material_type.is_(None))
             )
-        results = query.order_by(Material.created_at.desc()).all()
-        if type_filter and type_filter != 'all':
+            results = query.all()
             target_label = Material.MATERIAL_TYPE_LABELS.get(type_filter, type_filter)
             results = [
                 m for m in results
                 if m.material_type == type_filter
                 or (m.material_type is None and m._legacy_inferred_type_label() == target_label)
             ]
-
-        total = len(results)
-        start = (page - 1) * per_page
-        page_results = results[start:start + per_page]
+            total = len(results)
+            page_results = results[start:start + per_page]
+        else:
+            # Real DB-level pagination -- previously this branch also ran the .all() +
+            # Python-slice above, loading and serializing every matching row on every
+            # request just to throw all but `per_page` of them away. Materials is scoped
+            # per-department/level so this was fine at today's per-department counts, but
+            # scales linearly with content, not with what's actually shown.
+            total = query.order_by(None).count()
+            page_results = query.offset(start).limit(per_page).all()
 
         return jsonify({
             'success': True,

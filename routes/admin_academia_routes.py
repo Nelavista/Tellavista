@@ -1,11 +1,19 @@
 from flask import Blueprint, render_template, request, jsonify, redirect, url_for
+from sqlalchemy.exc import IntegrityError
 from utils.helpers import login_required, admin_required
-from models import University, Faculty, Department, Course, Topic
+from models import University, Faculty, Department, Course, Topic, Material, TopicProgress, TutorConversation
 from extensions import db
 from services.ai_service import generate_course_topics, generate_topic_explanation
 from services.youtube_service import search_youtube_videos, build_topic_video_query
 
 admin_academia_bp = Blueprint('admin_academia', __name__)
+
+
+def _bad_request(msg):
+    # Same pattern as routes/admin_skills_routes.py's own _bad_request -- a friendly,
+    # actionable 400 instead of an unhandled IntegrityError -> 500 (see delete_course()/
+    # delete_topic() below, neither of which had this before).
+    return jsonify({'success': False, 'error': msg}), 400
 
 
 @admin_academia_bp.route('/admin/academia')
@@ -119,9 +127,24 @@ def edit_course(course_id):
 @admin_required
 def delete_course(course_id):
     course = Course.query.get_or_404(course_id)
-    db.session.delete(course)
-    db.session.commit()
-    return jsonify({'success': True})
+    # Material.course_id references this course with a backref (Course.materials), is
+    # nullable, and carries no cascade -- SQLAlchemy's default behavior is to silently
+    # set Material.course_id back to NULL and let the delete through rather than raise
+    # anything, which would detach real materials from their course instead of refusing
+    # the delete. TutorConversation.course_id is nullable with no backref either way, so
+    # it wouldn't be nullified or raise anything here either -- check both explicitly.
+    # (Topic.course_id is nullable=False and already correctly ORM-cascaded via
+    # Course.topics' cascade='all, delete-orphan' -- deleting topics along with their
+    # course is intended, not guarded against here.)
+    if Material.query.filter_by(course_id=course.id).first() or TutorConversation.query.filter_by(course_id=course.id).first():
+        return _bad_request('Materials or tutor conversations are linked to this course — remove or reassign them first')
+    try:
+        db.session.delete(course)
+        db.session.commit()
+        return jsonify({'success': True})
+    except IntegrityError:
+        db.session.rollback()
+        return _bad_request('This course is still referenced elsewhere and cannot be deleted')
 
 
 # ============================================================
@@ -239,9 +262,25 @@ def edit_topic(topic_id):
 @admin_required
 def delete_topic(topic_id):
     topic = Topic.query.get_or_404(topic_id)
-    db.session.delete(topic)
-    db.session.commit()
-    return jsonify({'success': True})
+    # Material.topic_id is nullable with a backref (Topic.materials) -- same silent-
+    # nullify trap as delete_course() above, so an except IntegrityError alone would
+    # never fire for it. TopicProgress.topic_id is nullable=False (a real IntegrityError
+    # would fire, but checking explicitly keeps this route's behavior consistent and
+    # DB-agnostic rather than depending on the exact FK-enforcement/ORM-relationship
+    # interaction). TutorConversation.topic_id is nullable with no backref either way.
+    # Topic.is_active already exists for exactly this ("publish/hide without deleting"
+    # per its own model comment) and is already toggleable from this same admin UI.
+    if (Material.query.filter_by(topic_id=topic.id).first()
+            or TopicProgress.query.filter_by(topic_id=topic.id).first()
+            or TutorConversation.query.filter_by(topic_id=topic.id).first()):
+        return _bad_request('Students have progress on this topic, or materials/conversations are linked to it — hide it instead of deleting')
+    try:
+        db.session.delete(topic)
+        db.session.commit()
+        return jsonify({'success': True})
+    except IntegrityError:
+        db.session.rollback()
+        return _bad_request('This topic is still referenced elsewhere and cannot be deleted')
 
 
 @admin_academia_bp.route('/admin/academia/topics/<int:topic_id>/videos', methods=['POST'])

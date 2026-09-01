@@ -448,9 +448,25 @@ def update_course(course_id):
 @admin_required
 def delete_course(course_id):
     course = SkillCourse.query.get_or_404(course_id)
-    db.session.delete(course)
-    db.session.commit()
-    return jsonify({'success': True})
+    # ProjectTemplate.course_id / LearningPathStep.course_id reference this course with
+    # no ORM cascade (only CourseModule/GradeScale/GradeWeight/Cohort are, via
+    # SkillCourse's own relationships) -- and NOT with an IntegrityError either: both
+    # columns are nullable, and ProjectTemplate.course carries a backref
+    # (SkillCourse.final_project_templates), so SQLAlchemy's default no-cascade behavior
+    # silently sets ProjectTemplate.course_id to NULL and lets the delete through rather
+    # than raising anything -- an except IntegrityError here would never fire, and the
+    # delete would quietly detach those project templates from their course instead of
+    # being refused. Check first, same "refuse rather than crash/corrupt" intent as
+    # delete_skill() above, just enforced explicitly since the DB/ORM won't do it here.
+    if ProjectTemplate.query.filter_by(course_id=course.id).first() or LearningPathStep.query.filter_by(course_id=course.id).first():
+        return _bad_request('Project templates or learning paths reference this course — unpublish it instead of deleting')
+    try:
+        db.session.delete(course)
+        db.session.commit()
+        return jsonify({'success': True})
+    except IntegrityError:
+        db.session.rollback()
+        return _bad_request('This course is still referenced elsewhere and cannot be deleted')
 
 
 # ==================== MODULES ====================
@@ -700,9 +716,19 @@ def update_challenge(challenge_id):
 @admin_required
 def delete_challenge(challenge_id):
     challenge = Challenge.query.get_or_404(challenge_id)
-    db.session.delete(challenge)
-    db.session.commit()
-    return jsonify({'success': True})
+    # ChallengeSubmission.challenge_id is nullable=False, so a submission genuinely does
+    # block the delete with a real IntegrityError (caught below) -- but
+    # LearningPathStep.challenge_id is nullable and has no backref from Challenge's side,
+    # so it wouldn't be nullified OR raise anything here; check it explicitly too.
+    if LearningPathStep.query.filter_by(challenge_id=challenge.id).first():
+        return _bad_request('A learning path references this challenge — remove that step first')
+    try:
+        db.session.delete(challenge)
+        db.session.commit()
+        return jsonify({'success': True})
+    except IntegrityError:
+        db.session.rollback()
+        return _bad_request('Students have submitted to this challenge — unpublish it instead of deleting')
 
 
 @admin_skills_bp.route('/admin/api/challenges/<int:challenge_id>/submissions')
@@ -773,9 +799,20 @@ def update_project_template(template_id):
 @admin_required
 def delete_project_template(template_id):
     template = ProjectTemplate.query.get_or_404(template_id)
-    db.session.delete(template)
-    db.session.commit()
-    return jsonify({'success': True})
+    # Same silent-nullify trap as delete_course() above: StudentProject.project_template_id
+    # is nullable and StudentProject.template carries a backref (ProjectTemplate.
+    # student_instances), so SQLAlchemy would detach a student's project from its
+    # template rather than block the delete or raise anything -- check first.
+    # LearningPathStep.project_template_id is nullable too, with no backref either way.
+    if StudentProject.query.filter_by(project_template_id=template.id).first() or LearningPathStep.query.filter_by(project_template_id=template.id).first():
+        return _bad_request('Students have started projects from this template — unpublish it instead of deleting')
+    try:
+        db.session.delete(template)
+        db.session.commit()
+        return jsonify({'success': True})
+    except IntegrityError:
+        db.session.rollback()
+        return _bad_request('This project template is still referenced elsewhere and cannot be deleted')
 
 
 # ==================== CAREER TRACKS ====================

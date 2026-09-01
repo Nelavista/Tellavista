@@ -91,8 +91,16 @@ def main():
                 # (a dropped DB connection mid-commit) -- either way the session must be
                 # rolled back before the next iteration's queries, or every subsequent
                 # course fails too with a cascading PendingRollbackError even though
-                # nothing is actually wrong with them.
-                db.session.rollback()
+                # nothing is actually wrong with them. Render's Postgres can drop an
+                # idle connection while the AI call is in flight (calls run up to 60s),
+                # which makes rollback() itself raise -- db.session.remove() discards
+                # the broken connection outright so the next iteration's scoped-session
+                # access opens a fresh one, instead of letting that second failure
+                # crash the whole run.
+                try:
+                    db.session.rollback()
+                except Exception:
+                    db.session.remove()
                 print(f"[FAIL] {course.code} ({course.department.name}): {e}")
                 failed += 1
                 continue

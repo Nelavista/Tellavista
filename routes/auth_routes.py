@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 import re
 import secrets
 from models import User
+from routes.dashboard_routes import post_auth_redirect
 from extensions import db, mail, limiter, oauth  # Assuming 'mail' is initialized in extensions.py
 from flask_mail import Message
 from logging_config import logger
@@ -86,6 +87,13 @@ def send_password_reset_email(user_email, reset_link):
 @limiter.limit('10 per hour')
 def signup():
     if request.method == 'POST':
+        # A flash queued by an earlier, unrelated attempt (e.g. a redirect the browser
+        # never finished following -- a flaky mobile connection, a backgrounded tab, a
+        # shared/public browser) sits in the session until some page happens to render
+        # get_flashed_messages(). Left alone, it would surface here glued onto whatever
+        # this attempt flashes, showing an unrelated leftover message next to today's
+        # actual result. Every fresh attempt starts from a clean slate.
+        session.pop('_flashes', None)
         username = request.form.get('username', '').strip()
         email = request.form.get('email', '').strip()
         password = request.form.get('password', '').strip()
@@ -130,9 +138,10 @@ def signup():
             logger.error(f"Failed to send verification email to new signup: {e}")
             flash('Account created successfully!')
 
-        # Brand-new account: always send through path selection, never straight into
-        # Academia. Returning users skip this — see login() below.
-        return redirect(url_for('dashboard.choose_path'))
+        # Brand-new account: preferred_path is always unset at this point, so
+        # post_auth_redirect() sends them through path selection like any first-ever
+        # entry — see its docstring in routes/dashboard_routes.py.
+        return post_auth_redirect(user)
     return render_template('signup.html', google_oauth_enabled=GOOGLE_OAUTH_ENABLED)
 
 
@@ -140,6 +149,10 @@ def signup():
 @limiter.limit('15 per 5 minutes')
 def login():
     if request.method == 'POST':
+        # See the matching comment in signup() above -- a stale flash from an earlier,
+        # interrupted attempt (redirect never finished loading) must never bleed into
+        # this attempt's result.
+        session.pop('_flashes', None)
         login_input = request.form.get('username_or_email', '').strip()
         password = request.form.get('password', '').strip()
         if not login_input or not password:
@@ -162,14 +175,10 @@ def login():
                 'preferred_path': user.preferred_path
             }
             flash('Logged in successfully!')
-            # Employers have their own separate experience entirely — no Academia/Skills
-            # picker for them, since that fork doesn't apply to an employer account.
-            if user.is_employer:
-                return redirect(url_for('employer.dashboard'))
-            # Every login lands on the Academia/Skills picker first — Academia and Skills
-            # are two genuinely separate destinations, not a single merged dashboard, and
-            # the picker is the deliberate fork between them each time you come in.
-            return redirect(url_for('dashboard.choose_path'))
+            # A first-ever login (no preferred_path saved yet) forks through the
+            # Academia/Skills picker; a returning user goes straight back to whichever
+            # space they already chose — see post_auth_redirect()'s docstring.
+            return post_auth_redirect(user)
         else:
             flash('Invalid credentials.')
             return redirect(url_for('auth.login'))
@@ -230,6 +239,10 @@ def google_login():
 @auth_bp.route('/auth/google/callback')
 @limiter.limit('20 per hour')
 def google_callback():
+    # See the matching comment in login()/signup() -- a stale flash from an earlier,
+    # interrupted attempt must never bleed into this one (OAuth round-trips through
+    # Google and back are especially prone to a browser giving up mid-redirect).
+    session.pop('_flashes', None)
     if not GOOGLE_OAUTH_ENABLED:
         flash('Google sign-in is not available right now.', 'error')
         return redirect(url_for('auth.login'))
@@ -280,11 +293,7 @@ def google_callback():
         flash('This account has been deleted.')
         return redirect(url_for('auth.login'))
     flash('Logged in with Google!')
-
-    # Employers have their own separate experience -- same fork as auth.login() above.
-    if user.is_employer:
-        return redirect(url_for('employer.dashboard'))
-    return redirect(url_for('dashboard.choose_path'))
+    return post_auth_redirect(user)
 
 
 # ---------- Email Verification Routes ----------

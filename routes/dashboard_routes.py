@@ -16,6 +16,24 @@ VALID_PATHS = {'academia': 'dashboard.dashboard', 'skills': 'skills.home'}
 # versions are now the sole implementation — see routes/materials_routes.py.
 
 
+def post_auth_redirect(user):
+    """Where a user lands right after authenticating -- login(), signup(), and
+    google_callback() in routes/auth_routes.py all call this so the three entry points
+    can never drift apart on this decision (they previously did: login()/signup()/
+    google_callback() always forced the choose-path picker, while landing() ('/') already
+    respected a saved preferred_path -- so a returning user with an already-chosen path
+    was forced to re-pick it every single login, even though switching spaces later is
+    always available from the sidebar). The rule, matching landing()'s: no saved
+    preference yet -> choose-path; a saved preference -> straight to that space."""
+    if user.is_employer:
+        # Employers have their own separate experience entirely — no Academia/Skills
+        # picker for them, since that fork doesn't apply to an employer account.
+        return redirect(url_for('employer.dashboard'))
+    if user.preferred_path in VALID_PATHS:
+        return redirect(url_for(VALID_PATHS[user.preferred_path]))
+    return redirect(url_for('dashboard.choose_path'))
+
+
 @dashboard_bp.route('/')
 def landing():
     user_data = session.get('user')

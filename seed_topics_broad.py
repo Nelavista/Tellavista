@@ -71,18 +71,31 @@ def main():
             print("\nDry run only -- no AI calls made, no changes written. Re-run with --apply.")
             return
 
+        # Only IDs survive the loop, not the ORM objects themselves. A run this long (hours,
+        # thousands of commits) will eventually hit a dropped connection; when that forces a
+        # db.session.remove(), every Course object already loaded into memory is left bound to
+        # the now-discarded session, and SQLAlchemy's post-commit attribute expiry means even
+        # ones untouched by the failure will raise DetachedInstanceError the next time anything
+        # (e.g. course.department.name) needs to lazy-load. Re-fetching by id each iteration
+        # always goes through the scoped session's current (possibly freshly-recreated) session,
+        # so a mid-run session reset can never strand a stale object.
+        course_ids = [c.id for c in courses]
+
         from models import Topic
         succeeded = failed = 0
-        for i, course in enumerate(courses):
+        for i, course_id in enumerate(course_ids):
+            course = db.session.get(Course, course_id)
+            code, title, level = course.code, course.title, course.level
+            dept_name = course.department.name
             try:
-                draft = generate_course_topics(course.code, course.title, course.department.name, course.level)
+                draft = generate_course_topics(code, title, dept_name, level)
 
                 if draft.get('description') and not course.description:
                     course.description = draft['description']
 
                 titles = [t.strip() for t in (draft.get('topics') or []) if isinstance(t, str) and t.strip()]
-                for order, title in enumerate(titles):
-                    db.session.add(Topic(course_id=course.id, title=title, order=order, content_source='ai_draft'))
+                for order, topic_title in enumerate(titles):
+                    db.session.add(Topic(course_id=course.id, title=topic_title, order=order, content_source='ai_draft'))
 
                 db.session.commit()
                 succeeded += 1
@@ -96,17 +109,18 @@ def main():
                 # which makes rollback() itself raise -- db.session.remove() discards
                 # the broken connection outright so the next iteration's scoped-session
                 # access opens a fresh one, instead of letting that second failure
-                # crash the whole run.
+                # crash the whole run. code/title/dept_name were captured above (before the
+                # AI call), so this print never touches the now-possibly-detached course.
                 try:
                     db.session.rollback()
                 except Exception:
                     db.session.remove()
-                print(f"[FAIL] {course.code} ({course.department.name}): {e}")
+                print(f"[FAIL] {code} ({dept_name}): {e}")
                 failed += 1
                 continue
 
             if (i + 1) % 10 == 0:
-                print(f"[{i + 1}/{len(courses)}] ok={succeeded} failed={failed} -- last: {course.code} ({len(titles)} topics)")
+                print(f"[{i + 1}/{len(course_ids)}] ok={succeeded} failed={failed} -- last: {code} ({len(titles)} topics)")
 
         print(f"\nDONE. {succeeded} course(s) seeded with topic outlines, {failed} failed.")
 

@@ -6,10 +6,9 @@
     <title>Search — Nelavista</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/skills.css') }}">
     <style>
-        .as-container { max-width: 760px; margin: 0 auto; padding: 20px 20px 60px; }
-        .as-top-bar { display: flex; align-items: center; justify-content: space-between; padding: 16px 0; border-bottom: 1px solid var(--sk-border); margin-bottom: 24px; }
-        .as-logo { font-size: 1.2rem; font-weight: 700; background: linear-gradient(135deg, var(--sk-text), var(--sk-accent)); -webkit-background-clip: text; background-clip: text; color: transparent; text-decoration: none; }
-        .as-back { color: var(--sk-text-dim); text-decoration: none; font-size: 0.85rem; }
+        .as-container { max-width: 760px; margin: 0 auto; padding: 24px 20px 60px; }
+        .as-back { display: inline-block; color: var(--sk-text-dim); text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; }
+        .as-back:hover { color: var(--sk-accent); }
         .as-search-box { display: flex; gap: 8px; margin-bottom: 28px; }
         .as-section-title { font-size: 0.95rem; font-weight: 700; margin: 20px 0 12px; color: var(--sk-text-dim); text-transform: uppercase; letter-spacing: 0.03em; }
         .as-result-row { display: flex; align-items: center; justify-content: space-between; background: var(--sk-card); border: 1px solid var(--sk-border); border-radius: var(--sk-radius-sm); padding: 14px 16px; margin-bottom: 8px; text-decoration: none; color: inherit; }
@@ -19,11 +18,11 @@
     <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
 </head>
 <body>
+{% set active_page = 'home' %}
+{% include 'components/academia_sidebar.html' %}
+
 <div class="as-container">
-    <div class="as-top-bar">
-        <a href="/dashboard" class="as-logo">Nelavista</a>
-        <a href="/dashboard" class="as-back">← Dashboard</a>
-    </div>
+    <a href="/dashboard" class="as-back"><i class="ri-arrow-left-line"></i> Dashboard</a>
 
     <div class="as-search-box">
         <input type="text" id="searchInput" class="sk-input" placeholder="Search your courses and materials..." style="flex:1;">
@@ -34,6 +33,12 @@
 </div>
 <script>
 let searchTimeout;
+function escapeHtml(s) {
+    const d = document.createElement('div');
+    d.textContent = s;
+    return d.innerHTML;
+}
+
 document.getElementById('searchInput').addEventListener('input', () => {
     clearTimeout(searchTimeout);
     searchTimeout = setTimeout(runSearch, 350);
@@ -51,11 +56,11 @@ async function runSearch() {
     const data = await res.json();
 
     if (!data.resolved) {
-        results.innerHTML = `<div class="sk-empty"><div class="sk-empty-icon">🎓</div><p>Complete your academic profile so Nelavista can search your own department's courses and materials.</p><a href="/profile" class="sk-btn small" style="margin-top:12px;">Update profile →</a></div>`;
+        results.innerHTML = `<div class="sk-empty"><div class="sk-empty-icon"><i class="ri-graduation-cap-line"></i></div><p>Complete your academic profile so Nelavista can search your own department's courses and materials.</p><a href="/profile" class="sk-btn small" style="margin-top:12px;">Update profile →</a></div>`;
         return;
     }
     if (!data.courses.length && !data.materials.length) {
-        results.innerHTML = `<div class="sk-empty"><div class="sk-empty-icon">🔍</div><p>No courses or materials matched "${q}" in your department.</p></div>`;
+        results.innerHTML = `<div class="sk-empty"><div class="sk-empty-icon"><i class="ri-search-line"></i></div><p>No courses or materials matched "${escapeHtml(q)}" in your department.</p></div>`;
         return;
     }
 
@@ -75,6 +80,6 @@ async function runSearch() {
     results.innerHTML = html;
 }
 </script>
-<script src="{{ url_for('static', filename='js/shell.js') }}"></script>
+{% include 'components/academia_footer.html' %}
 </body>
 </html>

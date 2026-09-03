@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>{{ course.title }} · Nelavista Skills</title>
-  <meta name="theme-color" content="#111827">
+  <meta name="theme-color" content="#050810">
   <link rel="icon" type="image/png" sizes="32x32" href="/static/icons/nelavista-32x32.png">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/skills.css') }}">
   <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -39,7 +39,10 @@
       {% if next_lesson %}
       <a href="/skills/{{ skill.slug }}/learn/{{ course.slug }}/{{ next_lesson.slug }}" class="sk-btn">{{ 'Start' if progress.completed == 0 else 'Continue' }} →</a>
       {% else %}
-      <span class="sk-badge completed"><i class="ri-check-line"></i> Course Complete</span>
+      <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+        <span class="sk-badge completed"><i class="ri-check-line"></i> Course Complete</span>
+        <a href="/skills/{{ skill.slug }}#tab-projects" class="sk-btn"><i class="ri-hammer-line"></i> Now build a Project →</a>
+      </div>
       {% endif %}
     </div>
 

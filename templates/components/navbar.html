@@ -2,6 +2,20 @@
      Extracted from templates/landing.html. Links are deliberately page-agnostic (e.g.
      "Features" points at /#features so it works from any page, not just landing itself).
      Include right after <body>. Pairs with static/js/nav.js and templates/components/footer.html. -->
+<script>
+// Applies the saved theme before the page paints -- mirrors nav.js's own fallback exactly
+// (unset -> respect prefers-color-scheme) so this doesn't disagree with what nav.js
+// settles into moments later when it runs at the end of <body>. See the matching
+// comment in components/academia_sidebar.html for the app-shell equivalent of this fix.
+(function () {
+  try {
+    var stored = localStorage.getItem('theme');
+    var light = stored ? stored === 'light'
+      : !(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    if (light) document.body.classList.add('light-theme', 'light-mode');
+  } catch (e) {}
+})();
+</script>
 <canvas id="nelavista-canvas"></canvas>
 <div id="overlay"></div>
 

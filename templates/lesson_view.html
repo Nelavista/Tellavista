@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>{{ lesson.title }} · {{ course.title }}</title>
-  <meta name="theme-color" content="#111827">
+  <meta name="theme-color" content="#050810">
   <link rel="icon" type="image/png" sizes="32x32" href="/static/icons/nelavista-32x32.png">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/skills.css') }}">
   <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -124,7 +124,7 @@
     <div class="lv-nav-row">
       {% if prev_lesson %}<a href="/skills/{{ skill.slug }}/learn/{{ course.slug }}/{{ prev_lesson.slug }}" class="sk-btn ghost">← {{ prev_lesson.title }}</a>{% else %}<span></span>{% endif %}
       {% if next_lesson %}<a href="/skills/{{ skill.slug }}/learn/{{ course.slug }}/{{ next_lesson.slug }}" class="sk-btn secondary">{{ next_lesson.title }} →</a>
-      {% else %}<a href="/skills/{{ skill.slug }}/learn/{{ course.slug }}" class="sk-btn secondary">Back to course →</a>{% endif %}
+      {% else %}<a href="/skills/{{ skill.slug }}#tab-projects" class="sk-btn secondary"><i class="ri-hammer-line"></i> That was the last lesson — build a Project →</a>{% endif %}
     </div>
   </div>
 

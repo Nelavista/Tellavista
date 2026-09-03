@@ -12,6 +12,24 @@
      community_routes.py, live_meeting_routes.py -- backend/models kept as-is since Video
      is still shared with /reels). Ask Nelavista (the AI Tutor) is the one AI entry point
      here; it replaced the old /talk-to-nelavista link. -->
+<script>
+// Applies the saved theme before the page paints, instead of at the very end of <body>
+// (where shell.js's own copy of this same logic still runs, harmlessly re-applying the
+// same class) -- eliminates the dark-then-light flash a light-mode user used to see on
+// every navigation. Mirrors shell.js's skResolveTheme/skApplyTheme fallback exactly
+// (unset -> 'dark', not the OS preference) so this doesn't disagree with what shell.js
+// settles into moments later. Kept deliberately tiny and inline -- no new theme system,
+// just the existing one applied earlier.
+(function () {
+  try {
+    var pref = localStorage.getItem('theme') || 'dark';
+    var light = pref === 'system'
+      ? (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches)
+      : pref === 'light';
+    if (light) document.body.classList.add('light-mode', 'light-theme');
+  } catch (e) {}
+})();
+</script>
 <div class="app-wrapper">
   <div class="sidebar" id="side-menu">
     <div>
@@ -56,7 +74,7 @@
 
   <div class="main-content">
     <div class="top-bar">
-      <button id="menu-toggle" onclick="skToggleMenu()"><i class="ri-menu-line"></i></button>
+      <button id="menu-toggle" onclick="skToggleMenu()" aria-label="Open menu"><i class="ri-menu-line"></i></button>
       <form action="/search" method="GET" class="sk-topsearch">
         <i class="ri-search-line"></i>
         <input type="text" name="q" placeholder="Search courses, materials...">
@@ -66,13 +84,13 @@
         <i class="ri-notification-3-line"></i>
         {% if nav_unread_notifications %}<span class="top-icon-dot"></span>{% endif %}
       </a>
-      <button id="theme-toggle" onclick="skToggleTheme()"><i class="ri-moon-line"></i></button>
+      <button id="theme-toggle" onclick="skToggleTheme()" aria-label="Toggle theme"><i class="ri-moon-line"></i></button>
     </div>
 
-    {% with messages = get_flashed_messages() %}
+    {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
       <div class="sk-flashes">
-        {% for m in messages %}<div class="sk-flash">{{ m }}</div>{% endfor %}
+        {% for category, m in messages %}<div class="sk-flash {{ category }}">{{ m }}</div>{% endfor %}
       </div>
       {% endif %}
     {% endwith %}

@@ -8,10 +8,9 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
     <style>
-        .bc-container { max-width: 820px; margin: 0 auto; padding: 0 20px 60px; }
-        .bc-top-bar { display: flex; align-items: center; justify-content: space-between; padding: 16px 0; border-bottom: 1px solid var(--sk-border); margin-bottom: 20px; }
-        .bc-logo { font-size: 1.2rem; font-weight: 700; background: linear-gradient(135deg, var(--sk-text), var(--sk-accent)); -webkit-background-clip: text; background-clip: text; color: transparent; text-decoration: none; }
-        .bc-back { color: var(--sk-text-dim); text-decoration: none; font-size: 0.85rem; }
+        .bc-container { max-width: 820px; margin: 0 auto; padding: 24px 20px 60px; }
+        .bc-back { display: inline-block; color: var(--sk-text-dim); text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; }
+        .bc-back:hover { color: var(--sk-accent); }
         .bc-title { font-size: 1.5rem; font-weight: 800; margin-bottom: 4px; }
         .bc-sub { color: var(--sk-text-dim); font-size: 0.9rem; margin-bottom: 26px; }
         .bc-level-group { margin-bottom: 26px; }
@@ -24,11 +23,11 @@
     </style>
 </head>
 <body>
+{% set active_page = 'materials' %}
+{% include 'components/academia_sidebar.html' %}
+
 <div class="bc-container">
-    <div class="bc-top-bar">
-        <a href="/dashboard" class="bc-logo">Nelavista</a>
-        <a href="/materials" class="bc-back">&larr; Materials</a>
-    </div>
+    <a href="/materials" class="bc-back"><i class="ri-arrow-left-line"></i> Materials</a>
 
     <div class="bc-title">Browse Courses</div>
     {% if ctx.department %}
@@ -37,18 +36,18 @@
 
     {% if not ctx.university %}
     <div class="sk-empty">
-        <div class="sk-empty-icon">🎓</div>
+        <div class="sk-empty-icon"><i class="ri-graduation-cap-line"></i></div>
         <p>Complete your academic profile so Nelavista can show your department's course catalog.</p>
         <a href="/profile" class="sk-btn small" style="margin-top:12px;">Update profile &rarr;</a>
     </div>
     {% elif not ctx.department %}
     <div class="sk-empty">
-        <div class="sk-empty-icon">🏫</div>
+        <div class="sk-empty-icon"><i class="ri-building-line"></i></div>
         <p>We're still mapping courses for {{ ctx.university.name }}. Check back as more course data is added.</p>
     </div>
     {% elif not courses_by_level %}
     <div class="sk-empty">
-        <div class="sk-empty-icon">📭</div>
+        <div class="sk-empty-icon"><i class="ri-inbox-line"></i></div>
         <p>We're still mapping {{ ctx.department.name }}'s course catalog at {{ ctx.university.name }}.</p>
     </div>
     {% else %}
@@ -71,6 +70,6 @@
         {% endfor %}
     {% endif %}
 </div>
-<script src="{{ url_for('static', filename='js/shell.js') }}"></script>
+{% include 'components/academia_footer.html' %}
 </body>
 </html>

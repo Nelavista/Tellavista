@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>{{ skill.name }} · Nelavista Skills</title>
-  <meta name="theme-color" content="#111827">
+  <meta name="theme-color" content="#050810">
   <meta name="description" content="{{ skill.tagline or skill.name }}">
   <link rel="icon" type="image/png" sizes="32x32" href="/static/icons/nelavista-32x32.png">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/skills.css') }}">
@@ -153,14 +153,14 @@
       </div>
       {% endif %}
 
-      <div class="sk-section-title"><i class="ri-sparkling-2-line"></i> Generate a project with AI</div>
+      <div class="sk-section-title"><i class="ri-robot-line"></i> Generate a project with AI</div>
       <form method="POST" action="/skills/{{ skill.slug }}/projects/generate" class="sk-panel">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <div class="sk-field">
           <label class="sk-label">Describe what you want to build</label>
           <textarea class="sk-textarea" name="idea" rows="2" placeholder="e.g. I want to build a budgeting app for students" required></textarea>
         </div>
-        <button type="submit" class="sk-btn"><i class="ri-sparkling-2-line"></i> Generate my project</button>
+        <button type="submit" class="sk-btn"><i class="ri-robot-line"></i> Generate my project</button>
         <div class="sk-card-desc" style="margin-top:8px;">AI turns your idea into a full brief — objectives, features, milestones — and opens a workspace built for it.</div>
       </form>
 

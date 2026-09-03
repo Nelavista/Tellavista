@@ -3,8 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>Nelavista • Document Analyzer</title>
-    
+    <title>Analyze Materials · Nelavista</title>
+
+    <!-- Shared app shell (sidebar/top-bar/mobile nav) -- loaded before this page's own
+         <style> block below so analyze.html's own rules keep winning the cascade for its
+         own content; only the sidebar/.top-bar/.mobile-tabbar classes are borrowed from it. -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/skills.css') }}">
+
     <!-- Premium fonts & icons -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
@@ -49,8 +54,12 @@
             --incorrect-color: #f85149;
         }
 
-        /* Light theme overrides */
-        body.light-theme {
+        /* Light theme overrides -- .light-mode is the class the shared shell's theme
+           toggle (static/js/shell.js) actually applies; this page used to run its own
+           independent toggle (removed below) that used .light-theme instead, which would
+           have left this page's own content stuck dark while the shared sidebar switched
+           to light. */
+        body.light-mode {
             --bg-deep: #f5f7fa;
             --bg-surface: #ffffff;
             --border-premium: #e2e8f0;
@@ -92,155 +101,16 @@
             to { opacity: 1; }
         }
 
-        /* ----- GLASSMORPHISM TOP BAR ----- */
-        #top-bar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 64px;
-            background: rgba(11, 14, 20, 0.8);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 24px;
-            z-index: 1002;
-            border-bottom: 1px solid var(--border-premium);
-        }
-
-        body.light-theme #top-bar {
-            background: rgba(255, 255, 255, 0.75);
-        }
-
-        .top-bar-left {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            flex: 1;
-        }
-
-        .top-bar-title {
-            font-size: 1.1rem;
-            font-weight: 500;
-            color: var(--text-primary);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 40%;
-            text-align: center;
-        }
-
-        .top-bar-right {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            flex: 1;
-            justify-content: flex-end;
-        }
-
-        .circular-btn {
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 1.3rem;
-            background: transparent;
-            border: 1px solid var(--border-premium);
-            color: var(--text-primary);
-            transition: var(--transition-smooth);
-        }
-
-        .circular-btn:hover {
-            background: rgba(255,255,255,0.05);
-            border-color: var(--accent-blue);
-        }
-
-        #menu-toggle,
-        #theme-toggle {
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 1.3rem;
-            background: transparent;
-            border: 1px solid var(--border-premium);
-            color: var(--text-primary);
-            transition: var(--transition-smooth);
-        }
-
-        #menu-toggle:hover,
-        #theme-toggle:hover {
-            background: rgba(255,255,255,0.05);
-            border-color: var(--accent-teal);
-        }
-
-        /* ----- SIDEBAR MENU ----- */
-        #side-menu {
-            position: fixed;
-            top: 0;
-            left: -300px;
-            width: min(300px, 80vw);
-            height: 100vh;
-            background: var(--bg-surface);
-            backdrop-filter: blur(16px);
-            border-right: 1px solid var(--border-premium);
-            transition: left 0.3s ease;
-            z-index: 1003;
-            padding: 80px 24px 32px;
-            overflow-y: auto;
-        }
-
-        #side-menu.active { left: 0; }
-
-        #side-menu ul { list-style: none; }
-
-        #side-menu li { margin: 24px 0; }
-
-        #side-menu a {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            font-size: 1.1rem;
-            color: var(--text-secondary);
-            font-weight: 500;
-            padding: 8px 0;
-            transition: var(--transition-smooth);
-            text-decoration: none;
-        }
-
-        #side-menu a:hover {
-            color: var(--accent-blue);
-            transform: translateX(4px);
-        }
-
-        #overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(6px);
-            display: none;
-            z-index: 1001;
-        }
-
-        #overlay.active { display: block; }
-
-        /* ----- CONTAINER & HEADER ----- */
+        /* ----- CONTAINER & HEADER -----
+           The old glassmorphism top bar / hand-rolled sidebar / overlay that used to live
+           here (id="top-bar", id="side-menu", id="overlay") are gone -- this page now uses
+           the shared Academia sidebar/top-bar (components/academia_sidebar.html), which
+           already brings its own .top-bar/.sidebar/.overlay styling from skills.css. */
         .container {
             max-width: 1000px;
-            margin: 80px auto 40px;
+            margin: 24px auto 40px;
             padding: 20px;
-            min-height: calc(100vh - 120px);
+            min-height: 60vh;
             display: flex;
             flex-direction: column;
         }
@@ -263,7 +133,7 @@
             margin-bottom: 16px;
         }
 
-        body.light-theme .logo {
+        body.light-mode .logo {
             background: linear-gradient(135deg, #0f172a, #0284c7);
             background-clip: text;
             -webkit-background-clip: text;
@@ -752,7 +622,7 @@
 
         /* ----- RESPONSIVE ----- */
         @media (max-width: 768px) {
-            .container { padding: 16px; margin-top: 70px; }
+            .container { padding: 16px; }
             .logo { font-size: 2rem; }
             .options-grid { grid-template-columns: 1fr; }
             .test-type-buttons { flex-direction: column; align-items: center; }
@@ -768,46 +638,18 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
 </head>
-<body class="dark-mode">
-    <!-- GLASS TOP BAR -->
-    <header id="top-bar">
-        <div class="top-bar-left">
-            <button class="circular-btn" id="back-button" onclick="goBack()">←</button>
-            <button id="menu-toggle" onclick="toggleMenu()">☰</button>
-        </div>
-        <div class="top-bar-title">Document Analyzer</div>
-        <div class="top-bar-right">
-            <button id="theme-toggle" aria-label="Toggle theme">🌙</button>
-        </div>
-    </header>
-
-    <!-- SIDEBAR -->
-    <aside id="side-menu">
-        <ul>
-            <li><a href="/campus-map"><i class="ri-map-pin-line"></i> Lasu Map</a></li>
-            <li><a href="/profile"><i class="ri-user-line"></i> Profile</a></li>
-            <li><a href="/talk-to-nelavista"><i class="ri-chat-1-line"></i> Talk to Nelavista</a></li>
-            <li><a href="/analyze"><i class="ri-file-search-line"></i> Analyze Materials</a></li>
-            <li><a href="/materials"><i class="ri-book-open-line"></i> Study Materials</a></li>
-            <li><a href="/reels"><i class="ri-film-line"></i> Reels</a></li>
-            <li><a href="/CBT"><i class="ri-questionnaire-line"></i> Mock Exam</a></li>
-            <li><a href="/about"><i class="ri-information-line"></i> About</a></li>
-            <li><a href="/settings"><i class="ri-settings-4-line"></i> Settings</a></li>
-            <li><a href="/privacy-policy"><i class="ri-lock-line"></i> Privacy Policy</a></li>
-            <li><a href="/logout"><i class="ri-logout-box-r-line"></i> Logout</a></li>
-        </ul>
-    </aside>
-
-    <div id="overlay" onclick="closeMenu()"></div>
+<body>
+{% set active_page = 'materials' %}
+{% include 'components/academia_sidebar.html' %}
 
     <!-- Main Content -->
     <div class="container">
         <div class="header">
             <div class="logo">
-                <i class="fas fa-bolt"></i>
-                <span>Nelavista</span>
+                <i class="ri-file-search-line"></i>
+                <span>Analyze Materials</span>
             </div>
-            <p class="tagline">Academic Document Analyzer</p>
+            <p class="tagline">Upload a PDF and Nelavista turns it into study notes, summaries, or practice questions.</p>
         </div>
 
         <div class="upload-interface">
@@ -952,61 +794,18 @@
 
         <div class="scroll-to-top" id="scrollToTop"><i class="fas fa-arrow-up"></i></div>
     </div>
+{% include 'components/academia_footer.html' %}
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
 
     <script>
-        // ===== THEME MANAGEMENT =====
-        (function() {
-            const themeToggle = document.getElementById('theme-toggle');
-            const body = document.body;
-            const storedTheme = localStorage.getItem('theme');
-            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            let currentTheme = storedTheme || (prefersDark ? 'dark' : 'light');
-
-            function applyTheme(theme) {
-                if (theme === 'light') {
-                    body.classList.add('light-theme');
-                    body.classList.remove('dark-mode');
-                    themeToggle.textContent = '☀️';
-                } else {
-                    body.classList.remove('light-theme');
-                    body.classList.add('dark-mode');
-                    themeToggle.textContent = '🌙';
-                }
-                localStorage.setItem('theme', theme);
-            }
-
-            applyTheme(currentTheme);
-
-            themeToggle.addEventListener('click', () => {
-                currentTheme = body.classList.contains('light-theme') ? 'dark' : 'light';
-                applyTheme(currentTheme);
-            });
-
-            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-                if (!localStorage.getItem('theme')) {
-                    applyTheme(e.matches ? 'dark' : 'light');
-                }
-            });
-        })();
-
-        // ===== SIDEBAR FUNCTIONS =====
-        function toggleMenu() {
-            const sideMenu = document.getElementById('side-menu');
-            const overlay = document.getElementById('overlay');
-            sideMenu.classList.toggle('active');
-            overlay.classList.toggle('active');
-            document.body.style.overflow = sideMenu.classList.contains('active') ? 'hidden' : '';
-        }
-
-        function closeMenu() {
-            document.getElementById('side-menu').classList.remove('active');
-            document.getElementById('overlay').classList.remove('active');
-            document.body.style.overflow = '';
-        }
+        // Theme and menu toggling are now owned entirely by the shared shell
+        // (static/js/shell.js, wired up by components/academia_sidebar.html /
+        // academia_footer.html) -- this page's own independent theme IIFE and
+        // toggleMenu()/closeMenu() (which targeted the old id="side-menu"/id="overlay"
+        // this page no longer has) have been removed rather than left to silently no-op.
 
         // ===== GLOBAL STATE =====
         const state = {

@@ -23,8 +23,13 @@
         .dept-pill { display:inline-flex; align-items:center; gap:6px; background:var(--sk-card); border:1px solid var(--sk-border); padding:6px 14px; border-radius:30px; font-size:0.82rem; color:var(--text-secondary); margin-bottom:24px; }
         .ob-meta { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
         .section-label { font-size:0.68rem; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--text-muted); }
-        .sel-all-btn { background:transparent; border:none; color:var(--sk-accent); font-size:0.82rem; cursor:pointer; }
-        .sel-all-btn:hover { text-decoration:underline; }
+        .resume-exam-banner { display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; background:rgba(88,166,255,0.06); border:1px solid var(--sk-accent); border-radius:14px; padding:14px 18px; margin-bottom:20px; }
+        .resume-exam-text { display:flex; align-items:center; gap:10px; font-size:0.86rem; color:var(--text-primary); }
+        .resume-exam-text i { color:var(--sk-accent); font-size:1.1rem; }
+        .resume-exam-actions { display:flex; gap:10px; flex-shrink:0; }
+        .resume-exam-discard { background:transparent; border:1px solid var(--sk-border); color:var(--text-secondary); padding:8px 16px; border-radius:30px; font-size:0.82rem; cursor:pointer; }
+        .resume-exam-discard:hover { border-color:var(--sk-danger); color:var(--sk-danger); }
+        .resume-exam-continue { background:var(--sk-accent); border:none; color:var(--bg-deep); padding:8px 18px; border-radius:30px; font-size:0.82rem; font-weight:700; cursor:pointer; }
         .courses-grid { display:flex; flex-wrap:wrap; gap:10px; margin-bottom:20px; }
         .course-chip { background:var(--sk-card); border:2px solid var(--sk-border); border-radius:12px; padding:12px 16px; cursor:pointer; transition:all 0.18s; min-width:150px; flex:1 0 auto; max-width:210px; position:relative; }
         .course-chip:hover { border-color:var(--sk-border); }
@@ -220,15 +225,24 @@
 <div class="screen active" id="screen-courses">
     <div class="onboarding-wrap">
         <h2 class="ob-title"><i class="ri-file-list-3-line"></i> Mock Exam</h2>
-        <p class="ob-sub">Select your courses to start practising.</p>
+        <p class="ob-sub">Select a course to start practising.</p>
+        <div id="resumeExamBanner" class="resume-exam-banner" style="display:none;">
+            <div class="resume-exam-text">
+                <i class="ri-time-line"></i>
+                <span id="resumeExamText"></span>
+            </div>
+            <div class="resume-exam-actions">
+                <button type="button" class="resume-exam-discard" id="resumeExamDiscard">Discard</button>
+                <button type="button" class="resume-exam-continue" id="resumeExamContinue">Resume exam →</button>
+            </div>
+        </div>
         <div class="dept-pill"><i class="ri-graduation-cap-line"></i> <span id="deptLabel">Loading profile...</span></div>
         <div id="noCourseWarning" class="no-profile-warning" style="display:none;"></div>
         <div class="ob-meta">
             <div class="section-label">Your courses this semester</div>
-            <button class="sel-all-btn" id="selAllBtn">Select All</button>
         </div>
         <div class="courses-grid" id="coursesGrid"></div>
-        <div class="sel-count"><span id="selCountNum">0</span> courses selected</div>
+        <div class="sel-count" id="selCountText">Pick one course to practice.</div>
         <button class="continue-btn" id="toCourseTypeBtn" disabled>Continue to Exam →</button>
     </div>
 </div>
@@ -257,6 +271,7 @@
                 <span class="type-badge badge-written" id="writtenCountBadge">Essay</span>
             </div>
         </div>
+        <div id="noContentWarning" class="no-profile-warning" style="display:none;"></div>
         <div class="type-actions">
             <button class="back-btn" onclick="goToScreen('screen-courses')">← Back</button>
             <button class="start-exam-btn" id="startExamBtn" disabled onclick="startExam()">Start Exam →</button>
@@ -480,6 +495,68 @@ let currentCounts = { cbt: 0, written: 0 };  // last-fetched /api/cbt/counts res
 function getCbtHistoryKey(code) { return `nela_cbt_hist_${code}`; }
 
 // ══════════════════════════════════════════════════════
+//  IN-PROGRESS EXAM PERSISTENCE
+//  A refresh, an accidental back-swipe, or a low-battery phone dying mid-exam must not
+//  wipe out everything a student answered. This is a pure UI-recovery cache -- grading
+//  stays 100% server-side against the real attempt_id (see submitExam()); nothing here
+//  is trusted for correctness. `questions` (id/text/options, never a correct_index) is
+//  the same data already sitting in the DOM, so persisting it is no more sensitive than
+//  the page itself. Namespaced by attempt_id so a stale/foreign blob can never be
+//  silently resumed into a different exam.
+// ══════════════════════════════════════════════════════
+const EXAM_STORAGE_KEY = 'nela_cbt_active_attempt_v1';
+const EXAM_STORAGE_MAX_AGE_MS = 6 * 60 * 60 * 1000; // 6 hours -- older than that, don't offer to resume
+
+function saveExamState() {
+    if (!currentAttemptId) return;
+    try {
+        localStorage.setItem(EXAM_STORAGE_KEY, JSON.stringify({
+            attemptId: currentAttemptId,
+            courseCode: selectedCourseForExam,
+            examType,
+            questions,
+            currentQ,
+            userAnswers,
+            userMarks,
+            flagged,
+            elapsedSeconds,
+            savedAt: Date.now(),
+        }));
+    } catch (e) { /* storage full/unavailable -- exam still works, just without recovery */ }
+}
+
+function loadExamState() {
+    let raw;
+    try { raw = localStorage.getItem(EXAM_STORAGE_KEY); } catch (e) { return null; }
+    if (!raw) return null;
+    let parsed;
+    try { parsed = JSON.parse(raw); } catch (e) { clearExamState(); return null; }
+    if (!parsed || typeof parsed !== 'object' || !parsed.attemptId || !Array.isArray(parsed.questions) || !parsed.questions.length) {
+        clearExamState();
+        return null;
+    }
+    if (!parsed.savedAt || (Date.now() - parsed.savedAt) > EXAM_STORAGE_MAX_AGE_MS) {
+        clearExamState();
+        return null;
+    }
+    return parsed;
+}
+
+function clearExamState() {
+    try { localStorage.removeItem(EXAM_STORAGE_KEY); } catch (e) { /* nothing to clean up */ }
+}
+
+// Only warn about leaving while an exam is genuinely active and unsubmitted -- never on
+// any other screen, and never after a successful/failed-but-final submit.
+window.addEventListener('beforeunload', function (e) {
+    if (!currentAttemptId) return;
+    const examScreen = document.getElementById('screen-exam');
+    if (!examScreen || !examScreen.classList.contains('active')) return;
+    e.preventDefault();
+    e.returnValue = '';
+});
+
+// ══════════════════════════════════════════════════════
 //  HELPER FUNCTIONS
 // ══════════════════════════════════════════════════════
 function goToScreen(id) {
@@ -491,10 +568,31 @@ function goToScreen(id) {
 // (Shuffling now happens server-side in routes/cbt_routes.py's start_cbt_attempt --
 // the client never has a full bank to shuffle from anymore.)
 
+function initResumeBanner() {
+    const saved = loadExamState();
+    const banner = document.getElementById('resumeExamBanner');
+    if (!saved) { banner.style.display = 'none'; return; }
+
+    const answered = Object.keys(saved.userAnswers || {}).length;
+    const mins = Math.floor((saved.elapsedSeconds || 0) / 60);
+    document.getElementById('resumeExamText').textContent =
+        `You have an unfinished ${saved.courseCode} ${saved.examType === 'cbt' ? 'CBT' : 'Written'} practice — ` +
+        `${answered}/${saved.questions.length} answered, ${mins} min in.`;
+    banner.style.display = 'flex';
+
+    document.getElementById('resumeExamContinue').onclick = () => resumeExamState(saved);
+    document.getElementById('resumeExamDiscard').onclick = () => {
+        clearExamState();
+        banner.style.display = 'none';
+    };
+}
+
 // ══════════════════════════════════════════════════════
 //  SCREEN 1 - COURSE SELECTION
 // ══════════════════════════════════════════════════════
 function initCourseSelect() {
+    initResumeBanner();
+
     const deptLabel = document.getElementById('deptLabel');
     const grid = document.getElementById('coursesGrid');
     const warning = document.getElementById('noCourseWarning');
@@ -522,11 +620,17 @@ function initCourseSelect() {
         chip.className = 'course-chip';
         chip.innerHTML = `<span class="chip-code">${c.code}</span><span class="chip-name">${c.name}</span><span class="chip-check">✓</span>`;
         chip.addEventListener('click', () => {
-            chip.classList.toggle('selected');
-            if (chip.classList.contains('selected')) { 
-                if(!selectedCourses.includes(c.code)) selectedCourses.push(c.code); 
-            } else { 
-                selectedCourses = selectedCourses.filter(x=>x!==c.code); 
+            // Practice is always exactly one course at a time (the /api/cbt/start
+            // endpoint takes a single course_code) -- so selecting a course here is a
+            // radio choice, not a multi-select checkbox: picking one clears any other
+            // selection instead of letting the student believe several are queued up.
+            const alreadySelected = chip.classList.contains('selected');
+            document.querySelectorAll('.course-chip').forEach(other => other.classList.remove('selected'));
+            if (alreadySelected) {
+                selectedCourses = [];
+            } else {
+                chip.classList.add('selected');
+                selectedCourses = [c.code];
             }
             updateSelCount();
         });
@@ -534,22 +638,6 @@ function initCourseSelect() {
     });
 
     updateSelCount();
-
-    let allSel = false;
-    document.getElementById('selAllBtn').addEventListener('click', () => {
-        allSel = !allSel;
-        document.querySelectorAll('.course-chip').forEach((chip,i) => {
-            if(allSel){ 
-                chip.classList.add('selected'); 
-                if(!selectedCourses.includes(list[i].code)) selectedCourses.push(list[i].code); 
-            } else { 
-                chip.classList.remove('selected'); 
-                selectedCourses=[]; 
-            }
-        });
-        document.getElementById('selAllBtn').textContent = allSel ? 'Deselect All' : 'Select All';
-        updateSelCount();
-    });
 
     document.getElementById('toCourseTypeBtn').addEventListener('click', () => {
         if(!selectedCourses.length) return;
@@ -570,7 +658,8 @@ function initCourseSelect() {
 }
 
 function updateSelCount() {
-    document.getElementById('selCountNum').textContent = selectedCourses.length;
+    const text = document.getElementById('selCountText');
+    text.textContent = selectedCourses.length ? `Practising ${selectedCourses[0]}.` : 'Pick one course to practice.';
     document.getElementById('toCourseTypeBtn').disabled = selectedCourses.length === 0;
 }
 
@@ -621,6 +710,18 @@ async function updateCourseDisplay() {
     if (examType === 'cbt' && !cbtCount) { examType = null; document.getElementById('startExamBtn').disabled = true; cbtCard.classList.remove('selected'); }
     if (examType === 'written' && !writtenCount) { examType = null; document.getElementById('startExamBtn').disabled = true; writtenCard.classList.remove('selected'); }
 
+    // Neither practice type has content for this course -- the Start Exam button stays
+    // disabled (see the `disabled` HTML attribute + the two blocks above), but a disabled
+    // button alone gave no explanation of *why*, which read as a dead/broken control.
+    // Say so explicitly instead of leaving the student to guess.
+    const noContent = document.getElementById('noContentWarning');
+    if (!cbtCount && !writtenCount) {
+        noContent.style.display = 'flex';
+        noContent.innerHTML = `<i class="ri-error-warning-line"></i> Practice questions aren't available for ${selectedCourseForExam} yet. Try another course, or check back once your school's questions have been added.`;
+    } else {
+        noContent.style.display = 'none';
+    }
+
     if (!examType && PREFERRED_EXAM_MODE && currentCounts[PREFERRED_EXAM_MODE]) {
         selectExamType(PREFERRED_EXAM_MODE);
     }
@@ -669,6 +770,10 @@ async function startExam() {
         return;
     }
 
+    // A genuinely new attempt is starting -- any previously-saved in-progress exam
+    // (this one or a different one) is no longer relevant; don't let it resurface later.
+    clearExamState();
+
     currentAttemptId = data.attempt_id;
     // Server sends {id, question_text, options} -- mapped to the {q, opts} shape the
     // existing render functions already use. No `ans`/`exp` here: the server never
@@ -679,6 +784,26 @@ async function startExam() {
     resetExamState();
     renderExamUI();
     startTimer();
+    saveExamState();
+}
+
+// Restores an in-progress attempt from EXAM_STORAGE_KEY instead of calling
+// /api/cbt/start again -- re-starting would issue a *different* shuffled attempt on the
+// server, silently orphaning the one the student already has real answers against.
+function resumeExamState(saved) {
+    currentAttemptId = saved.attemptId;
+    selectedCourseForExam = saved.courseCode;
+    examType = saved.examType;
+    questions = saved.questions;
+    userAnswers = saved.userAnswers || {};
+    userMarks = saved.userMarks || {};
+    flagged = saved.flagged || [];
+    if (timerInterval) clearInterval(timerInterval);
+
+    goToScreen('screen-exam');
+    renderExamUI();
+    renderQuestion(Math.min(saved.currentQ || 0, questions.length - 1));
+    startTimer(saved.elapsedSeconds || 0);
 }
 
 function resetExamState() {
@@ -755,6 +880,7 @@ function renderQuestion(idx) {
     }
 
     updateAnsweredCount();
+    saveExamState();
 }
 
 function renderCbtOptions(q, idx) {
@@ -787,6 +913,7 @@ window.selectOption = function(qIdx, optIdx) {
 
     updateAnsweredCount();
     updateCbtNavPill(qIdx);
+    saveExamState();
 };
 
 function updateCbtNavPill(idx) {
@@ -820,6 +947,7 @@ window.saveWritten = function(idx) {
     const ta = document.getElementById(`written-${idx}`);
     if(ta) userAnswers[idx] = ta.value;
     updateAnsweredCount();
+    saveExamState();
 };
 
 window.revealMarkScheme = async function(idx) {
@@ -870,15 +998,16 @@ window.toggleFlag = function() {
     const idx = currentQ;
     if(flagged.includes(idx)) flagged = flagged.filter(f=>f!==idx);
     else flagged.push(idx);
-    renderQuestion(idx);
+    renderQuestion(idx); // renderQuestion() itself persists the updated state
 };
 
-function startTimer() {
-    elapsedSeconds = 0;
+function startTimer(resumeFromSeconds) {
+    elapsedSeconds = resumeFromSeconds || 0;
     updateTimerDisplay();
     timerInterval = setInterval(()=>{
         elapsedSeconds++;
         updateTimerDisplay();
+        if (elapsedSeconds % 5 === 0) saveExamState(); // periodic save so elapsed time survives a refresh too, without writing every second
     },1000);
 }
 
@@ -927,11 +1056,22 @@ async function submitExam() {
     if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Submit Exam'; }
 
     if (!data.success) {
+        if (data.error === 'This attempt was already submitted') {
+            // Only reachable via a resumed attempt that was actually completed elsewhere
+            // (another tab, a since-cleared local save that got re-submitted, etc.) --
+            // there's nothing left to grade here, and re-showing this exam would be
+            // misleading, so send the student to where their real result already lives.
+            clearExamState();
+            alert("This attempt was already submitted — check CBT History for your result.");
+            window.location.href = '/CBT/history';
+            return;
+        }
         alert("Couldn't submit your exam — check your connection and try again. Your answers are still here.");
-        startTimer();  // resume the clock; nothing was lost
+        startTimer(elapsedSeconds);  // resume the clock from where it was; nothing was lost
         return;
     }
 
+    clearExamState();
     lastResults = data.results || [];
     const { correct_count: correct, total_questions: total, score_pct: pct } = data;
     const wrong = total - correct;

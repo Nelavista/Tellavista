@@ -8,10 +8,9 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
     <style>
-        .tp-container { max-width: 820px; margin: 0 auto; padding: 0 20px 60px; }
-        .tp-top-bar { display: flex; align-items: center; justify-content: space-between; padding: 16px 0; border-bottom: 1px solid var(--sk-border); margin-bottom: 20px; }
-        .tp-logo { font-size: 1.2rem; font-weight: 700; background: linear-gradient(135deg, var(--sk-text), var(--sk-accent)); -webkit-background-clip: text; background-clip: text; color: transparent; text-decoration: none; }
-        .tp-back { color: var(--sk-text-dim); text-decoration: none; font-size: 0.85rem; }
+        .tp-container { max-width: 820px; margin: 0 auto; padding: 24px 20px 60px; }
+        .tp-back { display: inline-block; color: var(--sk-text-dim); text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; }
+        .tp-back:hover { color: var(--sk-accent); }
         .tp-breadcrumb { font-size: 0.8rem; color: var(--sk-text-dim); margin-bottom: 8px; }
         .tp-title { font-size: 1.6rem; font-weight: 800; margin-bottom: 4px; }
         .tp-course-sub { font-size: 0.9rem; color: var(--sk-text-dim); margin-bottom: 18px; }
@@ -63,11 +62,11 @@
     </style>
 </head>
 <body>
+{% set active_page = 'materials' %}
+{% include 'components/academia_sidebar.html' %}
+
 <div class="tp-container">
-    <div class="tp-top-bar">
-        <a href="/dashboard" class="tp-logo">Nelavista</a>
-        <a href="/courses/{{ course.code }}" class="tp-back">&larr; {{ course.code }}</a>
-    </div>
+    <a href="/courses/{{ course.code }}" class="tp-back"><i class="ri-arrow-left-line"></i> {{ course.code }}</a>
 
     <div class="tp-breadcrumb">{{ course.code }} &rarr; {{ course.title }} &rarr; {{ topic.title }}</div>
     <div class="tp-header-row">
@@ -181,7 +180,7 @@
     {% endif %}
 
     <div class="tp-section">
-        <div class="tp-section-title"><i class="ri-sparkling-2-line"></i> AI Tutor</div>
+        <div class="tp-section-title"><i class="ri-robot-line"></i> AI Tutor</div>
         <div class="tp-ai-row">
             <button class="tp-ai-btn" onclick="askTopicAI('explain', this)">Explain differently</button>
             <button class="tp-ai-btn" onclick="askTopicAI('summarize', this)">Summarize</button>
@@ -190,7 +189,7 @@
         <div class="tp-ai-result" id="topicAiResult"></div>
         <div style="margin-top:12px;">
             <a href="/ai-tutor?course={{ course.code }}&topic={{ topic.id }}" class="sk-btn small">
-                <i class="ri-sparkling-2-line"></i> Open full AI Tutor for this topic
+                <i class="ri-robot-line"></i> Open full AI Tutor for this topic
             </a>
         </div>
     </div>
@@ -261,6 +260,6 @@ async function askTopicAI(mode, btn) {
     btn.textContent = original;
 }
 </script>
-<script src="{{ url_for('static', filename='js/shell.js') }}"></script>
+{% include 'components/academia_footer.html' %}
 </body>
 </html>

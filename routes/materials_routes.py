@@ -106,6 +106,12 @@ def complete_profile():
         return redirect(url_for('dashboard.dashboard'))
 
     if request.method == 'POST':
+        # A flash queued by an earlier, interrupted attempt at this same form (validation
+        # error the student then corrected, a request that never finished loading) must
+        # never bleed into this submission's own flash -- same fix already applied to
+        # login()/signup() in routes/auth_routes.py, which is where this exact bug (a
+        # student seeing "Profile completed successfully!" rendered twice) was traced to.
+        session.pop('_flashes', None)
         try:
             # Get form data
             name = request.form.get('name', '').strip()

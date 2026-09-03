@@ -104,12 +104,12 @@ def signup():
         level = request.form.get('level', '').strip() or None
 
         if not username or not email or not password:
-            flash('Please fill out all fields.')
+            flash('Please fill out all fields.', 'error')
             return redirect(url_for('auth.signup'))
 
         existing_user = User.query.filter((User.username == username) | (User.email == email)).first()
         if existing_user:
-            flash('Username or email already exists.')
+            flash('Username or email already exists.', 'error')
             return redirect(url_for('auth.signup'))
 
         user = User(username=username, email=email, name=name, university=university,
@@ -133,10 +133,10 @@ def signup():
         # always resend it later from the dashboard reminder (see resend_verification_email).
         try:
             send_verification_email(user)
-            flash('Account created! Check your email to confirm your address.')
+            flash('Account created! Check your email to confirm your address.', 'success')
         except Exception as e:
             logger.error(f"Failed to send verification email to new signup: {e}")
-            flash('Account created successfully!')
+            flash('Account created successfully!', 'success')
 
         # Brand-new account: preferred_path is always unset at this point, so
         # post_auth_redirect() sends them through path selection like any first-ever
@@ -156,11 +156,11 @@ def login():
         login_input = request.form.get('username_or_email', '').strip()
         password = request.form.get('password', '').strip()
         if not login_input or not password:
-            flash('Please enter username/email and password.')
+            flash('Please enter username/email and password.', 'error')
             return redirect(url_for('auth.login'))
         user = User.query.filter((User.username == login_input) | (User.email == login_input)).first()
         if user and user.is_deleted:
-            flash('This account has been deleted.')
+            flash('This account has been deleted.', 'error')
             return redirect(url_for('auth.login'))
         if user and user.check_password(password):
             user.last_login = datetime.utcnow()
@@ -174,13 +174,13 @@ def login():
                 'is_admin': user.is_admin,
                 'preferred_path': user.preferred_path
             }
-            flash('Logged in successfully!')
+            flash('Logged in successfully!', 'success')
             # A first-ever login (no preferred_path saved yet) forks through the
             # Academia/Skills picker; a returning user goes straight back to whichever
             # space they already chose — see post_auth_redirect()'s docstring.
             return post_auth_redirect(user)
         else:
-            flash('Invalid credentials.')
+            flash('Invalid credentials.', 'error')
             return redirect(url_for('auth.login'))
     return render_template('login.html', google_oauth_enabled=GOOGLE_OAUTH_ENABLED)
 
@@ -188,7 +188,7 @@ def login():
 @auth_bp.route('/logout')
 def logout():
     session.clear()
-    flash('You have been logged out.')
+    flash('You have been logged out.', 'success')
     return redirect(url_for('auth.login'))
 
 
@@ -304,13 +304,13 @@ def google_callback():
         db.session.add(user)
 
     if not _start_session_for(user):
-        flash('This account has been deleted.')
+        flash('This account has been deleted.', 'error')
         return redirect(url_for('auth.login'))
     # "Logged in" reads as a mistake to someone who tapped Sign Up and genuinely got a
     # new account, and "Account created" would be just as misleading to someone who
     # already had one -- is_new_account (set above, before the row could match anything
     # existing) tells these apart for real, not by which button the user clicked.
-    flash('Account created with Google!' if is_new_account else 'Logged in with Google!')
+    flash('Account created with Google!' if is_new_account else 'Logged in with Google!', 'success')
     return post_auth_redirect(user)
 
 

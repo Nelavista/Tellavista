@@ -8,14 +8,8 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
     <style>
-        .cd-container { max-width: 900px; margin: 0 auto; padding: 0 20px 60px; }
-        .cd-top-bar {
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 16px 0; border-bottom: 1px solid var(--sk-border); margin-bottom: 24px;
-        }
-        .cd-logo { font-size: 1.2rem; font-weight: 700; background: linear-gradient(135deg, var(--sk-text), var(--sk-accent));
-            -webkit-background-clip: text; background-clip: text; color: transparent; text-decoration: none; }
-        .cd-back { color: var(--sk-text-dim); text-decoration: none; font-size: 0.85rem; }
+        .cd-container { max-width: 900px; margin: 0 auto; padding: 24px 20px 60px; }
+        .cd-back { display: inline-block; color: var(--sk-text-dim); text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; }
         .cd-back:hover { color: var(--sk-accent); }
         .cd-breadcrumb { font-size: 0.82rem; color: var(--sk-text-dim); margin-bottom: 10px; }
         .cd-header { margin-bottom: 28px; }
@@ -82,15 +76,15 @@
     </style>
 </head>
 <body>
+{% set active_page = 'materials' %}
+{% include 'components/academia_sidebar.html' %}
+
 <div class="cd-container">
-    <div class="cd-top-bar">
-        <a href="/dashboard" class="cd-logo">Nelavista</a>
-        <a href="/materials" class="cd-back">← Materials</a>
-    </div>
+    <a href="/materials" class="cd-back"><i class="ri-arrow-left-line"></i> Back to Materials</a>
 
     {% if not course %}
         <div class="sk-empty">
-            <div class="sk-empty-icon">🎓</div>
+            <div class="sk-empty-icon"><i class="ri-graduation-cap-line"></i></div>
             <p>We don't have <strong>{{ course_code }}</strong> in our system for your department yet.</p>
             <p class="cd-not-resolved" style="margin-top:8px;">
                 {% if not ctx.university %}
@@ -123,7 +117,7 @@
             </div>
             {% if course.source == 'nuc_ccmas_core' %}
             <p style="font-size:0.78rem; color:var(--sk-text-dim); margin-top:10px; line-height:1.5;">
-                ℹ️ This is the national core curriculum (NUC CCMAS) for {{ ctx.department.name }} — the
+                <i class="ri-information-line"></i> This is the national core curriculum (NUC CCMAS) for {{ ctx.department.name }} — the
                 courses every accredited Nigerian programme in this discipline must teach. It may differ
                 slightly from {{ ctx.university.name }}'s own course-code numbering or electives.
             </p>
@@ -133,13 +127,13 @@
                 <div class="cd-stat"><div class="cd-stat-number">{{ topics|length }}</div><div class="cd-stat-label">Topics</div></div>
                 <div class="cd-stat"><div class="cd-stat-number">{{ school_materials|length }}</div><div class="cd-stat-label">School materials</div></div>
                 <div class="cd-stat"><div class="cd-stat-number">{{ video_count }}</div><div class="cd-stat-label">Learning videos</div></div>
-                <div class="cd-stat"><div class="cd-stat-number">{{ 'Yes' if (cbt_count or written_count) else '—' }}</div><div class="cd-stat-label">Mock exam</div></div>
+                <div class="cd-stat"><div class="cd-stat-number" style="{{ '' if (cbt_count or written_count) else 'font-size:0.95rem;color:var(--sk-text-dim);' }}">{{ 'Available' if (cbt_count or written_count) else 'Not yet' }}</div><div class="cd-stat-label">Mock exam</div></div>
             </div>
         </div>
 
         {% if course.description %}
         <div class="cd-section">
-            <div class="cd-section-title">📖 Overview</div>
+            <div class="cd-section-title"><i class="ri-book-open-line"></i> Overview</div>
             <div class="cd-overview">{{ course.description }}</div>
         </div>
         {% endif %}
@@ -164,7 +158,7 @@
                 {% endif %}
             {% else %}
                 <div class="sk-empty">
-                    <div class="sk-empty-icon">🎓</div>
+                    <div class="sk-empty-icon"><i class="ri-graduation-cap-line"></i></div>
                     <p>Nelavista hasn't added a topic breakdown for {{ course.code }} yet.</p>
                     <p class="cd-not-resolved" style="margin-top:6px;">You can still practice with Mock Exam questions and contribute school materials below.</p>
                 </div>
@@ -172,7 +166,7 @@
         </div>
 
         <div class="cd-section">
-            <div class="cd-section-title">📊 Your Progress</div>
+            <div class="cd-section-title"><i class="ri-bar-chart-line"></i> Your Progress</div>
             <div class="cd-progress-grid">
                 <div class="sk-panel">
                     <div class="cd-progress-number">{{ materials_viewed }}/{{ materials_total }}</div>
@@ -186,7 +180,7 @@
         </div>
 
         <div class="cd-section">
-            <div class="cd-section-title">📚 School Materials</div>
+            <div class="cd-section-title"><i class="ri-book-2-line"></i> School Materials</div>
             <p style="font-size:0.85rem; color:var(--sk-text-dim); margin-bottom:14px;">Have a lecture note, past question, handout, or other material from your school? Upload it to help other students taking {{ course.code }}.</p>
             <div style="margin-bottom:14px;">
                 <button class="sk-btn small secondary" onclick="openUploadModal({{ course.id }})">+ Contribute a material for {{ course.code }}</button>
@@ -203,9 +197,9 @@
                                 <a href="{{ m.resolved_url or m.external_url }}" target="_blank" class="sk-btn small secondary" onclick="trackMaterialView({{ m.id }})">Open</a>
                             </div>
                             <div class="cd-material-actions">
-                                <button class="cd-ai-btn" onclick="askAboutMaterial({{ m.id }}, 'explain', this)">💡 Explain</button>
-                                <button class="cd-ai-btn" onclick="askAboutMaterial({{ m.id }}, 'summarize', this)">📝 Summarize</button>
-                                <button class="cd-ai-btn" onclick="askAboutMaterial({{ m.id }}, 'quiz', this)">❓ Quiz me</button>
+                                <button class="cd-ai-btn" onclick="askAboutMaterial({{ m.id }}, 'explain', this)"><i class="ri-lightbulb-line"></i> Explain</button>
+                                <button class="cd-ai-btn" onclick="askAboutMaterial({{ m.id }}, 'summarize', this)"><i class="ri-file-text-line"></i> Summarize</button>
+                                <button class="cd-ai-btn" onclick="askAboutMaterial({{ m.id }}, 'quiz', this)"><i class="ri-question-line"></i> Quiz me</button>
                             </div>
                             <div class="cd-ai-result" id="ai-result-{{ m.id }}"></div>
                         </div>
@@ -213,7 +207,7 @@
                 </div>
             {% else %}
                 <div class="sk-empty">
-                    <div class="sk-empty-icon">📭</div>
+                    <div class="sk-empty-icon"><i class="ri-inbox-line"></i></div>
                     <p>No school materials uploaded for {{ course.code }} yet.</p>
                 </div>
             {% endif %}
@@ -246,12 +240,12 @@
             <div class="cd-section-title">Mock Exam</div>
             <div class="cd-practice-grid">
                 <a href="/CBT?course={{ course.code }}" class="sk-card cd-practice-card {{ 'disabled' if not cbt_count }}">
-                    <div class="cd-practice-emoji">✅</div>
+                    <div class="cd-practice-emoji"><i class="ri-list-check-3"></i></div>
                     <div style="font-weight:700;">Multiple Choice</div>
                     <div class="sk-badge" style="margin-top:8px;">{{ cbt_count }} question{{ 's' if cbt_count != 1 else '' }}{{ '' if cbt_count else ' · Not available yet' }}</div>
                 </a>
                 <a href="/CBT?course={{ course.code }}" class="sk-card cd-practice-card {{ 'disabled' if not written_count }}">
-                    <div class="cd-practice-emoji">✍️</div>
+                    <div class="cd-practice-emoji"><i class="ri-quill-pen-line"></i></div>
                     <div style="font-weight:700;">Written / Essay</div>
                     <div class="sk-badge" style="margin-top:8px;">{{ written_count }} question{{ 's' if written_count != 1 else '' }}{{ '' if written_count else ' · Not available yet' }}</div>
                 </a>
@@ -259,7 +253,7 @@
         </div>
 
         <div class="cd-section">
-            <div class="cd-section-title">📊 Your Recent Attempts</div>
+            <div class="cd-section-title"><i class="ri-bar-chart-line"></i> Your Recent Attempts</div>
             {% if recent_attempts %}
                 <div class="cd-attempts-list">
                     {% for a in recent_attempts %}
@@ -271,14 +265,14 @@
                 </div>
             {% else %}
                 <div class="sk-empty">
-                    <div class="sk-empty-icon">🕓</div>
+                    <div class="sk-empty-icon"><i class="ri-time-line"></i></div>
                     <p>You haven't practiced {{ course.code }} yet.</p>
                 </div>
             {% endif %}
         </div>
 
         <div class="cd-section">
-            <a href="/ai-tutor?course={{ course.code }}" class="sk-btn full"><i class="ri-sparkling-2-line"></i> Ask Nelavista about {{ course.code }}</a>
+            <a href="/ai-tutor?course={{ course.code }}" class="sk-btn full"><i class="ri-robot-line"></i> Ask Nelavista about {{ course.code }}</a>
         </div>
     {% endif %}
 </div>
@@ -297,7 +291,7 @@ function trackMaterialView(materialId) {
 
 async function askAboutMaterial(materialId, mode, btn) {
     const box = document.getElementById(`ai-result-${materialId}`);
-    const original = btn.textContent;
+    const original = btn.innerHTML; // innerHTML, not textContent -- these buttons carry an <i> icon that textContent would silently drop on restore
     btn.disabled = true;
     btn.textContent = 'Thinking…';
     box.classList.add('show');
@@ -314,9 +308,9 @@ async function askAboutMaterial(materialId, mode, btn) {
         box.textContent = "Couldn't reach Nelavista — please try again.";
     }
     btn.disabled = false;
-    btn.textContent = original;
+    btn.innerHTML = original;
 }
 </script>
-<script src="{{ url_for('static', filename='js/shell.js') }}"></script>
+{% include 'components/academia_footer.html' %}
 </body>
 </html>

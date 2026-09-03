@@ -6,10 +6,9 @@
     <title>Attempt Review — Nelavista</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/skills.css') }}">
     <style>
-        .ar-container { max-width: 760px; margin: 0 auto; padding: 20px 20px 60px; }
-        .ar-top-bar { display: flex; align-items: center; justify-content: space-between; padding: 16px 0; border-bottom: 1px solid var(--sk-border); margin-bottom: 24px; }
-        .ar-logo { font-size: 1.2rem; font-weight: 700; background: linear-gradient(135deg, var(--sk-text), var(--sk-accent)); -webkit-background-clip: text; background-clip: text; color: transparent; text-decoration: none; }
-        .ar-back { color: var(--sk-text-dim); text-decoration: none; font-size: 0.85rem; }
+        .ar-container { max-width: 760px; margin: 0 auto; padding: 24px 20px 60px; }
+        .ar-back { display: inline-block; color: var(--sk-text-dim); text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; }
+        .ar-back:hover { color: var(--sk-accent); }
         .ar-summary { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
         .ar-score { font-size: 2.2rem; font-weight: 800; }
         .ar-item { background: var(--sk-card); border: 1px solid var(--sk-border); border-radius: var(--sk-radius-sm); padding: 14px 16px; margin-bottom: 10px; }
@@ -28,11 +27,11 @@
     <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
 </head>
 <body>
+{% set active_page = 'practice' %}
+{% include 'components/academia_sidebar.html' %}
+
 <div class="ar-container">
-    <div class="ar-top-bar">
-        <a href="/dashboard" class="ar-logo">Nelavista</a>
-        <a href="/CBT/history" class="ar-back">← Practice History</a>
-    </div>
+    <a href="/CBT/history" class="ar-back"><i class="ri-arrow-left-line"></i> Practice History</a>
 
     <div class="ar-summary">
         <div>
@@ -45,23 +44,30 @@
     </div>
 
     {% if study_link %}
-        <a href="{{ study_link }}" class="ar-study-link">📘 Study {{ attempt.course_code }} →</a>
+        <a href="{{ study_link }}" class="ar-study-link"><i class="ri-book-2-line"></i> Study {{ attempt.course_code }} →</a>
     {% endif %}
 
     {% for ans in answers %}
         <div class="ar-item">
             <div class="ar-q">Q{{ loop.index }}: {{ ans.question_text }}</div>
             {% if attempt.question_type == 'cbt' %}
+                {% set opts = ans.question.options if ans.question else [] %}
+                {% if ans.selected_index is not none and opts and ans.selected_index < opts|length %}
+                    <div class="ar-answer ar-your">Your answer: {{ opts[ans.selected_index] }}</div>
+                {% endif %}
                 {% if ans.is_correct %}
-                    <div class="ar-answer ar-correct">✓ Correct</div>
+                    <div class="ar-answer ar-correct"><i class="ri-checkbox-circle-line"></i> Correct</div>
                 {% else %}
-                    <div class="ar-answer ar-wrong">✗ {{ 'Skipped' if ans.selected_index is none else 'Wrong' }}</div>
-                    <button class="ar-explain-btn" onclick="explainAnswer({{ attempt.id }}, {{ ans.id }}, this)">💡 Explain this answer</button>
+                    <div class="ar-answer ar-wrong"><i class="ri-close-circle-line"></i> {{ 'Skipped' if ans.selected_index is none else 'Wrong' }}</div>
+                    {% if ans.question and ans.question.correct_index is not none and opts and ans.question.correct_index < opts|length %}
+                    <div class="ar-answer ar-correct">Correct answer: {{ opts[ans.question.correct_index] }}</div>
+                    {% endif %}
+                    <button class="ar-explain-btn" onclick="explainAnswer({{ attempt.id }}, {{ ans.id }}, this)"><i class="ri-lightbulb-line"></i> Explain this answer</button>
                     <div class="ar-explanation" id="explain-{{ ans.id }}"></div>
                 {% endif %}
             {% else %}
                 <div class="ar-answer ar-your">Your answer: {{ ans.written_answer or '(No answer written)' }}</div>
-                <button class="ar-explain-btn" onclick="explainAnswer({{ attempt.id }}, {{ ans.id }}, this)">💡 Get feedback on this answer</button>
+                <button class="ar-explain-btn" onclick="explainAnswer({{ attempt.id }}, {{ ans.id }}, this)"><i class="ri-lightbulb-line"></i> Get feedback on this answer</button>
                 <div class="ar-explanation" id="explain-{{ ans.id }}"></div>
             {% endif %}
         </div>
@@ -95,6 +101,6 @@ async function explainAnswer(attemptId, answerId, btn) {
     btn.style.display = 'none';
 }
 </script>
-<script src="{{ url_for('static', filename='js/shell.js') }}"></script>
+{% include 'components/academia_footer.html' %}
 </body>
 </html>

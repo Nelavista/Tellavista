@@ -7,7 +7,7 @@ import time
 import traceback
 from datetime import datetime
 from models import User, Material, AnalyzerSession, Topic
-from flask import Blueprint, render_template, request, session, jsonify, send_from_directory, current_app
+from flask import Blueprint, render_template, request, session, jsonify, send_from_directory, current_app, redirect, url_for
 from utils.helpers import login_required, debug_print, get_session_memory, add_to_session_memory, cleanup_old_files, allowed_file
 from services.material_service import extract_text_from_pdf, extract_text_from_pdf_turbo, extract_images_from_pdf, extract_tables_from_pdf, analyze_document_structure, extract_text_from_image, is_diagram_or_visual
 from services.ai_service import generate_turbo_style_notes, safe_markdown_to_html, generate_test_questions
@@ -391,7 +391,12 @@ def serve_extracted_image(filename):
 @ai_bp.route('/talk-to-nelavista')
 @login_required
 def talk_to_nelavista():
-    return render_template('talk-to-nelavista.html')
+    # Retired: this was a separate, voice-first AI surface (its own conversation log,
+    # a "Coming Soon" multilingual/scholar-voices pitch) that gave students two
+    # differently-branded AI assistants with no explanation of how they related. "Ask
+    # Nelavista" (tutor.ai_tutor_page) is the one AI entry point in Academia now, so any
+    # old link/bookmark to this URL lands there instead of a dead or duplicate product.
+    return redirect(url_for('tutor.ai_tutor_page'))
 
 @ai_bp.route('/ask_with_files', methods=['POST'])
 @login_required

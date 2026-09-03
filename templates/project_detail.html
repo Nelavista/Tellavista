@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>{{ project.title }} · Nelavista Skills</title>
-  <meta name="theme-color" content="#111827">
+  <meta name="theme-color" content="#050810">
   <link rel="icon" type="image/png" sizes="32x32" href="/static/icons/nelavista-32x32.png">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/skills.css') }}">
   <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -35,7 +35,7 @@
     <div style="display:flex; gap:6px; flex-wrap:wrap; margin:10px 0 20px;">
       <span class="sk-badge {{ project.status }}">{{ project.status.replace('_',' ')|title }}</span>
       {% if project.workspace_type %}<span class="sk-badge"><i class="ri-{{ 'code-s-slash-line' if project.workspace_type == 'developer' else 'quill-pen-line' if project.workspace_type == 'writer' else 'bar-chart-2-line' if project.workspace_type == 'data' else 'palette-line' }}"></i> {{ project.workspace_type|title }}</span>{% endif %}
-      {% if project.source == 'ai_generated' %}<span class="sk-badge"><i class="ri-sparkling-2-line"></i> AI-generated</span>{% endif %}
+      {% if project.source == 'ai_generated' %}<span class="sk-badge"><i class="ri-robot-line"></i> AI-generated</span>{% endif %}
       {% for s in project.skills_demonstrated %}<span class="sk-badge">{{ s }}</span>{% endfor %}
     </div>
 

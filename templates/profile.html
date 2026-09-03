@@ -65,6 +65,8 @@
             background: var(--sk-success);
             width: 36px;
             height: 36px;
+            padding: 0;
+            margin: 0;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -73,8 +75,13 @@
             cursor: pointer;
             transition: all 0.2s ease;
             font-size: 1rem;
+            font-family: inherit;
             color: white;
             box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+        .edit-avatar-btn:focus-visible {
+            outline: 2px solid var(--sk-accent, #58a6ff);
+            outline-offset: 2px;
         }
         .edit-avatar-btn:hover { background: var(--sk-success); transform: scale(1.05); }
 
@@ -464,7 +471,7 @@
                 <div class="avatar" id="avatarInitials">
                     {{ user.name[:2].upper() if user.name else 'SN' }}
                 </div>
-                <div class="edit-avatar-btn" id="editAvatarBtn"><i class="ri-pencil-line"></i></div>
+                <button type="button" class="edit-avatar-btn" id="editAvatarBtn" aria-label="Edit profile"><i class="ri-pencil-line"></i></button>
             </div>
             <div class="hero-name" id="displayFullName">{{ user.name or 'Student Name' }}</div>
             <div class="hero-subtitle">Undergraduate Student</div>
@@ -512,12 +519,17 @@
                 <div class="card-label">CURRENT SEMESTER</div>
                 <div class="card-value" id="semesterValue">{{ user.semester or 'Not set' }}</div>
             </div>
-            <!-- View Curriculum Card -->
+            {% if user.university == 'Lagos State University' %}
+            <!-- View Curriculum Card -- LASU-only: the curriculum data behind this card
+                 only exists for LASU, so it's never shown to students at the other 6
+                 universities Nelavista supports (they'd otherwise land on a "curriculum"
+                 tool that can't actually apply to them). -->
             <div class="info-card" id="viewCurriculumCard" style="cursor: pointer; border: 1px dashed var(--sk-accent);" onclick="showCurriculum()">
                 <div class="card-icon blue-bg"><i class="ri-book-open-line"></i></div>
                 <div class="card-label">COURSE CURRICULUM</div>
-                <div class="card-value" style="font-size: 1rem; color: var(--sk-accent-hover);">View LASU Department Curricula →</div>
+                <div class="card-value" style="font-size: 1rem; color: var(--sk-accent-hover);">View LASU {{ user.department or 'department' }} curriculum →</div>
             </div>
+            {% endif %}
         </div>
 
         <div class="flash-messages" id="flashMessages">
@@ -535,14 +547,14 @@
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
                 <div class="form-group">
-                    <label class="form-label">Full Name</label>
-                    <input type="text" name="name" class="form-input"
+                    <label class="form-label" for="fullNameInput">Full Name</label>
+                    <input type="text" name="name" id="fullNameInput" class="form-input"
                         value="{{ user.name or '' }}" placeholder="e.g. Afeez Tella">
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">University</label>
-                    <select name="university" class="form-select">
+                    <label class="form-label" for="universitySelect">University</label>
+                    <select name="university" id="universitySelect" class="form-select">
                         <option value="">Select University</option>
                         <option value="Lagos State University" {% if user.university == "Lagos State University" %}selected{% endif %}>Lagos State University (LASU)</option>
                         <option value="University of Lagos" {% if user.university == "University of Lagos" %}selected{% endif %}>University of Lagos (UNILAG)</option>
@@ -558,7 +570,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Faculty</label>
+                    <label class="form-label" for="facultySearch">Faculty</label>
                     <input type="text" class="form-input fd-picker-search" id="facultySearch" placeholder="Search faculty (e.g. Science, Law, Engineering)...">
                     <select name="faculty" id="facultySelect" class="form-select" style="display: none;">
                         <option value="">Select Faculty</option>
@@ -567,7 +579,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Department</label>
+                    <label class="form-label" for="deptSearch">Department</label>
                     <input type="text" class="form-input fd-picker-search" id="deptSearch" placeholder="Search department..." disabled>
                     <select name="department" class="form-select" id="departmentSelect" style="display: none;">
                         <option value="">Select Department</option>
@@ -579,8 +591,8 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Level</label>
-                    <select name="user_level" class="form-select">
+                    <label class="form-label" for="levelSelect">Level</label>
+                    <select name="user_level" id="levelSelect" class="form-select">
                         <option value="">Select Level</option>
                         <option value="100" {% if user.level == "100" %}selected{% endif %}>100 Level</option>
                         <option value="200" {% if user.level == "200" %}selected{% endif %}>200 Level</option>
@@ -591,7 +603,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Current Semester</label>
+                    <label class="form-label" for="semesterSelect">Current Semester</label>
                     <select name="semester" class="form-select" id="semesterSelect">
                         <option value="">Select Semester</option>
                         <option value="First Semester" {% if user.semester == "First Semester" %}selected{% endif %}>First Semester</option>
@@ -1374,7 +1386,18 @@
         "SLT": "Science Lab Tech (SLT)"
     };
 
-    let currentDept = "Biochemistry";
+    // Default to the logged-in student's own department when it's one of the LASU
+    // departments this data actually covers -- never a hardcoded department (used to
+    // always default to "Biochemistry" regardless of who was looking), and never another
+    // student's department standing in for their own when there's no match.
+    const USER_DEPT_RAW = {{ (user.department or '')|tojson }};
+    function matchDeptKey(raw) {
+        if (!raw) return null;
+        const norm = raw.trim().toLowerCase();
+        const key = Object.keys(deptDisplayNames).find(k => k.toLowerCase() === norm || deptDisplayNames[k].toLowerCase() === norm);
+        return key || null;
+    }
+    let currentDept = matchDeptKey(USER_DEPT_RAW);
 
     // ===== CURRICULUM FUNCTIONS =====
     function showCurriculum(dept) {
@@ -1405,9 +1428,11 @@
     }
 
     function renderCurriculum(deptKey) {
-        const data = lasuCurriculum[deptKey];
+        const data = deptKey ? lasuCurriculum[deptKey] : null;
         if (!data) {
-            document.getElementById('curriculumContent').innerHTML = '<p style="color:var(--text-secondary);">Curriculum data not available for this department.</p>';
+            document.getElementById('curriculumContent').innerHTML = deptKey
+                ? '<p style="color:var(--text-secondary);">Curriculum data not available for this department yet.</p>'
+                : '<p style="color:var(--text-secondary);">This LASU curriculum isn\'t mapped to your own department yet -- pick one below to browse it anyway.</p>';
             return;
         }
         document.getElementById('curriculumTitle').innerHTML = `<i class="ri-book-open-line"></i> B.Sc ${deptDisplayNames[deptKey]} — LASU Curriculum`;

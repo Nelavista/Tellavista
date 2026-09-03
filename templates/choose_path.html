@@ -64,9 +64,12 @@
 
     .cp-flashes { list-style: none; margin: 24px 0 0; max-width: 480px; width: 100%; }
     .cp-flashes li {
-      background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); color: var(--text-primary);
+      background: rgba(32,201,151,0.12); border: 1px solid rgba(32,201,151,0.3); color: var(--text-primary);
       padding: 0.8rem 1.1rem; border-radius: var(--r-md); font-size: 0.9rem; text-align: center; margin-bottom: 10px;
     }
+    .cp-flashes li.error { background: rgba(220,53,69,0.12); border-color: rgba(220,53,69,0.3); }
+    .cp-flashes li.warning { background: rgba(245,158,11,0.12); border-color: rgba(245,158,11,0.35); }
+    .cp-flashes li.info { background: rgba(56,189,248,0.12); border-color: rgba(56,189,248,0.3); }
 
     /* ----- PATH CARDS ----- */
     .cp-grid {
@@ -171,6 +174,21 @@
   </style>
 </head>
 <body>
+  <script>
+  // This page previously loaded neither nav.js nor shell.js, so it never applied the
+  // saved theme at all -- it always rendered dark regardless of preference. Same early
+  // (pre-paint), reused mechanism as the app/public shells (see the matching comment in
+  // components/academia_sidebar.html); mirrors nav.js's fallback since this page shares
+  // main.css's .light-theme convention.
+  (function () {
+    try {
+      var stored = localStorage.getItem('theme');
+      var light = stored ? stored === 'light'
+        : !(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+      if (light) document.body.classList.add('light-theme', 'light-mode');
+    } catch (e) {}
+  })();
+  </script>
   <header class="cp-topbar">
     <a href="/" class="brand-logo bg">Nela<span>vista</span></a>
     <a href="/logout" class="cp-logout">Log out</a>
@@ -183,10 +201,10 @@
       <p class="cp-sub">Choose where you want to start. You can switch anytime from the sidebar.</p>
     </div>
 
-    {% with messages = get_flashed_messages() %}
+    {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
         <ul class="cp-flashes">
-          {% for message in messages %}<li>{{ message }}</li>{% endfor %}
+          {% for category, message in messages %}<li class="{{ category }}">{{ message }}</li>{% endfor %}
         </ul>
       {% endif %}
     {% endwith %}

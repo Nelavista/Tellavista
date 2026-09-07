@@ -30,6 +30,10 @@ session_data/
 *.sqlite
 *.sqlite3
 
+# Database backups -- full production data (incl. student PII), never committed
+backups/
+*.dump
+
 # Editor / OS
 .vscode/
 .idea/

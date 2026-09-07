@@ -575,7 +575,7 @@ class Skill(db.Model):
     __tablename__ = 'skills'
 
     id = db.Column(db.Integer, primary_key=True)
-    category_id = db.Column(db.Integer, db.ForeignKey('skill_categories.id'), nullable=False)
+    category_id = db.Column(db.Integer, db.ForeignKey('skill_categories.id'), nullable=False, index=True)
     name = db.Column(db.String(120), nullable=False)
     slug = db.Column(db.String(120), unique=True, nullable=False)
     tagline = db.Column(db.String(200))         # e.g. "Build the foundation you need to start developing real software."
@@ -652,7 +652,7 @@ class SkillCourse(db.Model):
     __tablename__ = 'skill_courses'
 
     id = db.Column(db.Integer, primary_key=True)
-    skill_id = db.Column(db.Integer, db.ForeignKey('skills.id'), nullable=False)
+    skill_id = db.Column(db.Integer, db.ForeignKey('skills.id'), nullable=False, index=True)
     title = db.Column(db.String(150), nullable=False)
     slug = db.Column(db.String(150), nullable=False)
     description = db.Column(db.Text)
@@ -731,6 +731,11 @@ class Lesson(db.Model):
     quiz = db.relationship('Quiz', backref='lesson', uselist=False, cascade='all, delete-orphan')
     assignment = db.relationship('Assignment', backref='lesson', uselist=False, cascade='all, delete-orphan')
 
+    # Closes the create_lesson() check-then-insert race (admin_skills_routes.py) at the DB
+    # level -- every sibling content model (SkillCourse, Challenge, ProjectTemplate) already
+    # has an equivalent slug-uniqueness constraint; Lesson was the one left without one.
+    __table_args__ = (db.UniqueConstraint('module_id', 'slug', name='uq_lesson_module_slug'),)
+
     @property
     def resources(self):
         try:
@@ -804,7 +809,7 @@ class Challenge(db.Model):
     __tablename__ = 'challenges'
 
     id = db.Column(db.Integer, primary_key=True)
-    skill_id = db.Column(db.Integer, db.ForeignKey('skills.id'), nullable=False)
+    skill_id = db.Column(db.Integer, db.ForeignKey('skills.id'), nullable=False, index=True)
     title = db.Column(db.String(150), nullable=False)
     slug = db.Column(db.String(150), nullable=False)
     description = db.Column(db.String(300))
@@ -874,7 +879,7 @@ class ProjectTemplate(db.Model):
     __tablename__ = 'project_templates'
 
     id = db.Column(db.Integer, primary_key=True)
-    skill_id = db.Column(db.Integer, db.ForeignKey('skills.id'), nullable=False)
+    skill_id = db.Column(db.Integer, db.ForeignKey('skills.id'), nullable=False, index=True)
     # Set only when this is the final project for a specific daily class (course_id +
     # is_final_project=True) rather than a general skill-level project brief. A daily
     # class's final project is evaluated by AI strictly against rubric_json — see
@@ -1400,7 +1405,7 @@ class CareerTrackStep(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     track_id = db.Column(db.Integer, db.ForeignKey('career_tracks.id'), nullable=False)
-    skill_id = db.Column(db.Integer, db.ForeignKey('skills.id'), nullable=False)
+    skill_id = db.Column(db.Integer, db.ForeignKey('skills.id'), nullable=False, index=True)
     order = db.Column(db.Integer, default=0)
     note = db.Column(db.String(200))  # optional context, e.g. "just the math you'll actually use"
 
@@ -1542,6 +1547,18 @@ class Cohort(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     enrollments = db.relationship('CohortEnrollment', backref='cohort', lazy='dynamic', cascade='all, delete-orphan')
+
+    # A course with two active cohorts at once silently forks its leaderboard/ranking --
+    # get_cohort_rank() (services/gpa_service.py) only ever compares within ONE cohort, so
+    # two students who started together but landed in different active cohorts for the
+    # same course would never be ranked against each other. Partial (not a plain unique on
+    # course_id) because a course legitimately accumulates many *closed* past cohorts over
+    # time -- only "more than one currently accepting enrollments" is the bug.
+    __table_args__ = (
+        db.Index('uq_cohort_active_per_course', 'course_id', unique=True,
+                 postgresql_where=db.text('is_active = true'),
+                 sqlite_where=db.text('is_active = 1')),
+    )
 
     def to_dict(self):
         return {
@@ -2138,7 +2155,7 @@ class Opportunity(db.Model):
     __tablename__ = 'opportunities'
 
     id = db.Column(db.Integer, primary_key=True)
-    skill_id = db.Column(db.Integer, db.ForeignKey('skills.id'), nullable=False)
+    skill_id = db.Column(db.Integer, db.ForeignKey('skills.id'), nullable=False, index=True)
     title = db.Column(db.String(200), nullable=False)
     description = db.Column(db.Text)
     location = db.Column(db.String(50), default='Remote')  # Remote | On-site
@@ -2328,6 +2345,46 @@ class CompetitionEntry(db.Model):
             'id': self.id, 'competition_id': self.competition_id, 'submission_url': self.submission_url,
             'description': self.description, 'status': self.status,
             'submitted_at': self.submitted_at.isoformat() if self.submitted_at else None,
+        }
+
+
+# ============================================================
+# ===== GRADING AUDIT TRAIL =====
+# One row per AI grading ATTEMPT (not just successful ones) across every scored Skills
+# evaluator -- challenge feedback, assignment grading, ordinary project review, and
+# final-project rubric scoring. Append-only, never edited: a regrade inserts a new row
+# rather than overwriting the last one, so a dispute or a "why did this score change"
+# question can always be answered from history instead of trusting whatever the live
+# score currently says. See services/ai_grading.py for the one call path that writes here.
+# ============================================================
+
+class GradingEvent(db.Model):
+    __tablename__ = 'grading_events'
+
+    id = db.Column(db.Integer, primary_key=True)
+    # challenge_submission | assignment_submission | student_project | final_project
+    submission_type = db.Column(db.String(30), nullable=False, index=True)
+    submission_id = db.Column(db.Integer, nullable=False, index=True)
+    # student | admin (a manual regrade) | system_retry (an automatic retry of a failed attempt)
+    triggered_by = db.Column(db.String(20), nullable=False, default='student')
+    model = db.Column(db.String(80))
+    prompt_version = db.Column(db.String(40))
+    # Raw, unclamped model output exactly as returned -- kept for audit even though the
+    # submission's live score is always the clamped/reconciled version in final_scores_json.
+    raw_scores_json = db.Column(db.Text)
+    final_scores_json = db.Column(db.Text)
+    # ok | malformed_output | timeout | provider_error -- None only while the attempt is
+    # still the one row a job is actively working (should not persist in that state).
+    status = db.Column(db.String(20), nullable=False, default='ok')
+    error_detail = db.Column(db.String(300), nullable=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow, index=True)
+
+    def to_dict(self):
+        return {
+            'id': self.id, 'submission_type': self.submission_type, 'submission_id': self.submission_id,
+            'triggered_by': self.triggered_by, 'model': self.model, 'prompt_version': self.prompt_version,
+            'status': self.status, 'error_detail': self.error_detail,
+            'created_at': self.created_at.isoformat() if self.created_at else None,
         }
 
 

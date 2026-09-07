@@ -7,6 +7,7 @@ cache can never drift out of sync with reality: if it's ever wrong, the next rea
 """
 from datetime import datetime, timedelta
 from extensions import db
+from sqlalchemy.exc import IntegrityError
 from models import (
     Skill, SkillCourse, CourseModule, Lesson, LearningPathStep,
     StudentLessonProgress, StudentSkill, ChallengeSubmission, StudentProject,
@@ -197,24 +198,68 @@ def recompute_student_skill(student_id, skill_id):
 
     pct = round((completed_lessons / total_lessons) * 100) if total_lessons else 0
 
-    record = StudentSkill.query.filter_by(student_id=student_id, skill_id=skill_id).first()
-    if not record:
-        if completed_lessons == 0:
-            return None  # don't create a tracking row until the student has actually started
-        record = StudentSkill(student_id=student_id, skill_id=skill_id, started_at=datetime.utcnow())
-        db.session.add(record)
+    def _apply(record):
+        record.progress_pct = pct
+        record.last_activity_at = datetime.utcnow()
+        if pct >= 100 and total_lessons > 0:
+            record.status = 'completed'
+            if not record.completed_at:
+                record.completed_at = datetime.utcnow()
+        else:
+            record.status = 'in_progress'
+            record.completed_at = None
 
-    record.progress_pct = pct
-    record.last_activity_at = datetime.utcnow()
-    if pct >= 100 and total_lessons > 0:
-        record.status = 'completed'
-        if not record.completed_at:
-            record.completed_at = datetime.utcnow()
-    else:
-        record.status = 'in_progress'
-        record.completed_at = None
-    db.session.commit()
+    record = StudentSkill.query.filter_by(student_id=student_id, skill_id=skill_id).first()
+    if record:
+        _apply(record)
+        db.session.commit()
+        return record
+
+    if completed_lessons == 0:
+        return None  # don't create a tracking row until the student has actually started
+
+    record = StudentSkill(student_id=student_id, skill_id=skill_id, started_at=datetime.utcnow())
+    _apply(record)
+    db.session.add(record)
+    try:
+        db.session.commit()
+    except IntegrityError:
+        # The check-then-act above has no isolation of its own -- two nearly-simultaneous
+        # first-activities on the same skill (a double-click, a flaky-connection retry)
+        # can both see no existing row and both try to insert one; the DB's own
+        # (student_id, skill_id) unique constraint lets only one through. Same fallback
+        # as start_project()/apply_opportunity() elsewhere in this codebase: update the
+        # winner's row with this same computation instead of a 500 for the loser.
+        db.session.rollback()
+        record = StudentSkill.query.filter_by(student_id=student_id, skill_id=skill_id).first()
+        _apply(record)
+        db.session.commit()
     return record
+
+
+def can_access_lesson(student_id, lesson):
+    """Whether a student may currently view, complete, or be graded on this lesson (and,
+    by extension, its quiz/assignment). Reads by slug already filter on is_published at
+    every level (see lesson_view/day_view/course_view), so this exists specifically for
+    the POST endpoints that resolve a lesson/quiz/assignment straight from its own
+    numeric id (complete_lesson, submit_quiz, submit_assignment) -- without this, any
+    logged-in student can reach any lesson/quiz/assignment in the database by id alone,
+    including ones on unpublished content or a daily-class day they haven't reached yet.
+    A quiz's answer key is only ever released via a graded submit_quiz response (see
+    Quiz.to_dict(include_answers=False) used everywhere the questions are first shown),
+    so gating access here is also what stops a student from scraping every quiz's
+    answer key by enumerating ids."""
+    module = lesson.module
+    course = module.course if module else None
+    skill = course.skill if course else None
+    if not lesson.is_published or not module or not course or not course.is_published or not skill or not skill.is_published:
+        return False
+    if course.is_daily_class and lesson.day_number:
+        from services.daily_class_service import get_or_create_enrollment
+        enrollment = get_or_create_enrollment(student_id, course)
+        if lesson.day_number > enrollment.current_day:
+            return False
+    return True
 
 
 def mark_lesson_complete(student_id, lesson):

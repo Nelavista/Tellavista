@@ -4,6 +4,9 @@ import requests
 import re
 from datetime import datetime
 from config import OPENROUTER_API_KEY
+from services.ai_grading import (
+    wrap_untrusted, truncate_submission, call_grading_model, parse_json_object as _parse_json_object,
+)
 
 def debug_print(*args, **kwargs):
     from config import DEBUG_MODE
@@ -384,33 +387,9 @@ def generate_challenge_feedback(challenge_title, challenge_instructions, submiss
     user_prompt = (
         f"Challenge: {challenge_title}\n\n"
         f"Instructions given to the student:\n{challenge_instructions or '(no detailed instructions were provided)'}\n\n"
-        f"Student's submission:\n{submission_content}"
+        + wrap_untrusted("Student's submission", truncate_submission(submission_content))
     )
-
-    headers = {
-        "Authorization": f"Bearer {OPENROUTER_API_KEY}",
-        "Content-Type": "application/json",
-        "HTTP-Referer": "https://nelavista.com",
-        "X-Title": "Nelavista Skills Challenge Feedback"
-    }
-    payload = {
-        "model": "openai/gpt-4o-mini",
-        "messages": [
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": user_prompt}
-        ],
-        "temperature": 0.4,
-        "max_tokens": 800
-    }
-    response = requests.post(
-        "https://openrouter.ai/api/v1/chat/completions",
-        headers=headers, json=payload, timeout=45
-    )
-    if response.status_code != 200:
-        raise Exception(f"AI API error: {response.status_code}")
-
-    raw = response.json()["choices"][0]["message"]["content"].strip()
-    return _parse_json_object(raw)
+    return call_grading_model(system_prompt, user_prompt, title="Nelavista Skills Challenge Feedback", max_tokens=800)
 
 
 PROJECT_REVIEW_DIMENSIONS = ('functionality', 'craft_quality', 'problem_solving', 'documentation', 'originality')
@@ -451,7 +430,8 @@ def evaluate_project_submission(project_title, project_description, submission_d
     Raises on failure; the caller treats a failed review as non-fatal.
     """
     reflections = reflections or {}
-    reflection_block = (
+    reflection_block = wrap_untrusted(
+        "Student's own reflections",
         f"What problem this solves (in the student's own words): {reflections.get('problem_solved') or '(not provided)'}\n"
         f"Challenges they faced: {reflections.get('challenges') or '(not provided)'}\n"
         f"What they'd improve: {reflections.get('improvements') or '(not provided)'}"
@@ -477,37 +457,19 @@ def evaluate_project_submission(project_title, project_description, submission_d
         'slightly harder, that builds on this one)\n'
         "}"
     )
+    # submission_details includes description/repo/live-url lines PLUS whatever
+    # _gather_fetched_context() (routes/skills_routes.py) appended -- fetched GitHub
+    # README/topics and fetched live-page text, both entirely attacker-controlled (a
+    # student's own repo/site). Wrapping the whole block, not just the reflections, is
+    # what closes the widest injection surface in this evaluator.
     user_prompt = (
         f"Project: {project_title}\n"
         f"Brief: {project_description or '(no brief — a freeform project)'}\n"
         f"Skills claimed: {', '.join(skills_demonstrated) if skills_demonstrated else '(none listed)'}\n\n"
-        f"Submission details:\n{submission_details}\n\n{reflection_block}"
+        + wrap_untrusted("Submission details (may include fetched repo/site content)", truncate_submission(submission_details))
+        + f"\n\n{reflection_block}"
     )
-
-    headers = {
-        "Authorization": f"Bearer {OPENROUTER_API_KEY}",
-        "Content-Type": "application/json",
-        "HTTP-Referer": "https://nelavista.com",
-        "X-Title": "Nelavista Project Review"
-    }
-    payload = {
-        "model": "openai/gpt-4o-mini",
-        "messages": [
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": user_prompt}
-        ],
-        "temperature": 0.3,
-        "max_tokens": 900
-    }
-    response = requests.post(
-        "https://openrouter.ai/api/v1/chat/completions",
-        headers=headers, json=payload, timeout=45
-    )
-    if response.status_code != 200:
-        raise Exception(f"AI API error: {response.status_code}")
-
-    raw = response.json()["choices"][0]["message"]["content"].strip()
-    result = _parse_json_object(raw)
+    result = call_grading_model(system_prompt, user_prompt, title="Nelavista Project Review", max_tokens=900)
 
     # Ground truth: clamp each dimension into 0-100 (never trust the AI's own bounds), and
     # compute the overall score as their rounded mean rather than an AI-reported total.
@@ -1102,33 +1064,9 @@ def generate_assignment_feedback(assignment_title, assignment_instructions, subm
     user_prompt = (
         f"Assignment: {assignment_title}\n\n"
         f"Instructions given to the student:\n{assignment_instructions or '(no detailed instructions were provided)'}\n\n"
-        f"Student's submission:\n{submission_content}"
+        + wrap_untrusted("Student's submission", truncate_submission(submission_content))
     )
-
-    headers = {
-        "Authorization": f"Bearer {OPENROUTER_API_KEY}",
-        "Content-Type": "application/json",
-        "HTTP-Referer": "https://nelavista.com",
-        "X-Title": "Nelavista Assignment Grading"
-    }
-    payload = {
-        "model": "openai/gpt-4o-mini",
-        "messages": [
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": user_prompt}
-        ],
-        "temperature": 0.3,
-        "max_tokens": 800
-    }
-    response = requests.post(
-        "https://openrouter.ai/api/v1/chat/completions",
-        headers=headers, json=payload, timeout=45
-    )
-    if response.status_code != 200:
-        raise Exception(f"AI API error: {response.status_code}")
-
-    raw = response.json()["choices"][0]["message"]["content"].strip()
-    return _parse_json_object(raw)
+    return call_grading_model(system_prompt, user_prompt, title="Nelavista Assignment Grading", max_tokens=800)
 
 
 def evaluate_final_project(rubric, project_title, project_description, submission_details):
@@ -1158,36 +1096,15 @@ def evaluate_final_project(rubric, project_title, project_description, submissio
         "}\n"
         "Include exactly one entry in \"criteria\" for every rubric line above, in the same order."
     )
+    # Same fetched-content injection surface as evaluate_project_submission -- this
+    # score feeds 25% of Skill GPA (services/gpa_service.py's _final_project_component),
+    # so wrapping submission_details here matters at least as much as there.
     user_prompt = (
         f"Project: {project_title}\n"
         f"Project brief: {project_description or '(no brief provided)'}\n\n"
-        f"Student's submission details:\n{submission_details}"
+        + wrap_untrusted("Student's submission details (may include fetched repo/site content)", truncate_submission(submission_details))
     )
-
-    headers = {
-        "Authorization": f"Bearer {OPENROUTER_API_KEY}",
-        "Content-Type": "application/json",
-        "HTTP-Referer": "https://nelavista.com",
-        "X-Title": "Nelavista Final Project Evaluation"
-    }
-    payload = {
-        "model": "openai/gpt-4o-mini",
-        "messages": [
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": user_prompt}
-        ],
-        "temperature": 0.3,
-        "max_tokens": 1500
-    }
-    response = requests.post(
-        "https://openrouter.ai/api/v1/chat/completions",
-        headers=headers, json=payload, timeout=60
-    )
-    if response.status_code != 200:
-        raise Exception(f"AI API error: {response.status_code}")
-
-    raw = response.json()["choices"][0]["message"]["content"].strip()
-    result = _parse_json_object(raw)
+    result = call_grading_model(system_prompt, user_prompt, title="Nelavista Final Project Evaluation", max_tokens=1500, timeout=60)
 
     # Ground truth: rebuild criteria strictly from the admin's rubric (name/max_points),
     # only pulling the AI's score/comment per name and clamping into range — an AI
@@ -1216,22 +1133,6 @@ def evaluate_final_project(rubric, project_title, project_description, submissio
         'strengths': result.get('strengths') or [],
         'improvements': result.get('improvements') or [],
     }
-
-
-def _parse_json_object(raw):
-    """Same defensive unwrapping as _parse_question_json, for a JSON object instead of
-    an array."""
-    text = raw.strip()
-    if text.startswith('```'):
-        text = re.sub(r'^```(?:json)?\s*', '', text)
-        text = re.sub(r'\s*```$', '', text)
-    start, end = text.find('{'), text.rfind('}')
-    if start != -1 and end != -1 and end > start:
-        text = text[start:end + 1]
-    obj = json.loads(text)
-    if not isinstance(obj, dict):
-        raise ValueError("AI did not return a JSON object")
-    return obj
 
 
 def _parse_question_json(raw):

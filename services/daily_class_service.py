@@ -8,6 +8,7 @@ fiction. Cohort membership exists for peer comparison (ranking), not pacing.
 """
 from datetime import datetime, timedelta
 from extensions import db
+from sqlalchemy.exc import IntegrityError
 from models import Cohort, CohortEnrollment, CourseModule, Lesson, StudentLessonProgress
 
 
@@ -41,7 +42,21 @@ def get_or_create_enrollment(student_id, course):
     cohort = get_or_create_active_cohort(course)
     enrollment = CohortEnrollment(cohort_id=cohort.id, student_id=student_id, current_day=1)
     db.session.add(enrollment)
-    db.session.commit()
+    try:
+        db.session.commit()
+    except IntegrityError:
+        # Same check-then-act race as recompute_student_skill() -- opening a daily class
+        # in two tabs, or a page-load retry, can have both requests see no existing
+        # enrollment and both try to create one; the (cohort_id, student_id) unique
+        # constraint lets only one through. Fall back to the winner's row instead of a 500.
+        db.session.rollback()
+        existing = (
+            CohortEnrollment.query.join(Cohort, CohortEnrollment.cohort_id == Cohort.id)
+            .filter(Cohort.course_id == course.id, CohortEnrollment.student_id == student_id).first()
+        )
+        if existing:
+            return existing
+        raise
     return enrollment
 
 

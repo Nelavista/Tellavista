@@ -7,7 +7,7 @@ from models import (
     Lesson, Quiz, Challenge, ChallengeSubmission, ProjectTemplate, StudentProject, StudentSkill,
     StudentOnboarding, CareerTrack, CareerTrackStep, Assignment, AssignmentSubmission,
     GradeScale, GradeWeight, Cohort, CohortEnrollment, EmployerProfile, User,
-    Opportunity, OpportunityApplication, OpportunityStatusEvent, Rating, Competition, CompetitionEntry,
+    Opportunity, OpportunityApplication, Rating, Competition, CompetitionEntry,
 )
 from extensions import db
 from sqlalchemy.exc import IntegrityError
@@ -22,6 +22,7 @@ from services.ai_service import (
 )
 from services.daily_class_service import get_days
 from services.gpa_service import DEFAULT_GRADE_SCALE, DEFAULT_GRADE_WEIGHTS
+from services.opportunity_service import transition_application, InvalidTransition
 
 admin_skills_bp = Blueprint('admin_skills', __name__)
 
@@ -47,6 +48,74 @@ def _unique_slug(model, base_slug, scope_filters=None):
 
 def _bad_request(msg):
     return jsonify({'success': False, 'error': msg}), 400
+
+
+# Shared pre-delete reference checks, used both by each model's own direct delete route
+# AND by delete_skill() below -- Skill.courses/challenges/project_templates all cascade
+# ('all, delete-orphan'), so deleting a Skill bypasses these routes' own checks entirely
+# unless the same logic is run again here, against every child, before the cascade fires.
+def _course_deletion_blocked(course):
+    """True if deleting this course would either silently orphan a ProjectTemplate/
+    LearningPathStep (both columns are nullable with a backref, so SQLAlchemy's default
+    no-cascade behavior nulls them out rather than raising anything an except
+    IntegrityError could catch), or destroy a live cohort's real enrollment/grading
+    history (Cohort/CohortEnrollment cascade fully and intentionally, so that's not an
+    error either -- just a silent, permanent loss of student data)."""
+    if ProjectTemplate.query.filter_by(course_id=course.id).first():
+        return True
+    if LearningPathStep.query.filter_by(course_id=course.id).first():
+        return True
+    if CohortEnrollment.query.join(Cohort, CohortEnrollment.cohort_id == Cohort.id).filter(Cohort.course_id == course.id).first():
+        return True
+    return False
+
+
+def _challenge_deletion_blocked(challenge):
+    """LearningPathStep.challenge_id is nullable with no backref from Challenge's side,
+    so it's neither nulled nor does it raise -- ChallengeSubmission.challenge_id (NOT
+    NULL, no cascade) still correctly raises IntegrityError on its own and is left to
+    that existing catch."""
+    return LearningPathStep.query.filter_by(challenge_id=challenge.id).first() is not None
+
+
+def _rubric_sum_invalid(rubric):
+    """True if a non-empty rubric's max_points don't sum to exactly 100. An empty rubric
+    ([], not configured yet) is always valid -- ProjectTemplate.rubric's own JSON-property
+    default is [] for exactly that "nothing set yet" state. The AI evaluator (services/
+    ai_service.py's evaluate_final_project) is handed these criteria as-is and sums each
+    criterion's clamped score into the project's overall score, so a rubric that doesn't
+    sum to 100 makes every "score out of 100" for that project mathematically wrong."""
+    if not rubric:
+        return False
+    total = sum((c.get('max_points') or 0) for c in rubric if isinstance(c, dict))
+    return total != 100
+
+
+def _grade_weights_sum_invalid(course_id):
+    """True if all 4 grading components are configured for this course but their
+    weight_pct doesn't sum to exactly 100. A partially-configured course (mid-edit, not
+    every component set yet) is never blocked -- same "don't punish an in-progress edit"
+    intent as GradeWeight's own model comment -- this only fires once every component
+    that will actually be used to compute Skill GPA (services/gpa_service.py) has a
+    real value and that value set doesn't add up."""
+    rows = GradeWeight.query.filter_by(course_id=course_id).all()
+    by_component = {r.component: r.weight_pct for r in rows}
+    valid_components = {'assignments', 'tests', 'final_project', 'participation'}
+    if not valid_components.issubset(by_component.keys()):
+        return False
+    return sum(by_component[c] for c in valid_components) != 100
+
+
+def _project_template_deletion_blocked(template):
+    """Same silent-nullify trap as _course_deletion_blocked: StudentProject.
+    project_template_id is nullable with a backref (ProjectTemplate.student_instances),
+    and LearningPathStep.project_template_id is nullable with no backref either way --
+    neither raises, both need an explicit check."""
+    if StudentProject.query.filter_by(project_template_id=template.id).first():
+        return True
+    if LearningPathStep.query.filter_by(project_template_id=template.id).first():
+        return True
+    return False
 
 
 # ==================== PAGES ====================
@@ -218,6 +287,29 @@ def update_skill(skill_id):
 @admin_required
 def delete_skill(skill_id):
     skill = Skill.query.get_or_404(skill_id)
+    # See _course_deletion_blocked()'s docstring: Skill.courses/challenges/project_templates
+    # cascade='all, delete-orphan', so deleting a Skill directly bypasses delete_course()/
+    # delete_challenge()/delete_project_template()'s own explicit pre-checks entirely --
+    # those only ever run when their own route is hit. Re-run the same checks against
+    # every child here first, or a course with a live cohort, or a project template with
+    # student projects, can be wiped with zero warning just by deleting the parent skill.
+    for course in skill.courses:
+        if _course_deletion_blocked(course):
+            return _bad_request(
+                'This skill has a course with project templates, learning paths, or an '
+                'enrolled cohort — unpublish the skill instead of deleting it'
+            )
+    for challenge in skill.challenges:
+        if _challenge_deletion_blocked(challenge):
+            return _bad_request(
+                'A learning path references a challenge under this skill — remove that step first'
+            )
+    for template in skill.project_templates:
+        if _project_template_deletion_blocked(template):
+            return _bad_request(
+                'Students have started projects from a template under this skill — '
+                'unpublish the skill instead of deleting it'
+            )
     try:
         db.session.delete(skill)
         db.session.commit()
@@ -448,18 +540,11 @@ def update_course(course_id):
 @admin_required
 def delete_course(course_id):
     course = SkillCourse.query.get_or_404(course_id)
-    # ProjectTemplate.course_id / LearningPathStep.course_id reference this course with
-    # no ORM cascade (only CourseModule/GradeScale/GradeWeight/Cohort are, via
-    # SkillCourse's own relationships) -- and NOT with an IntegrityError either: both
-    # columns are nullable, and ProjectTemplate.course carries a backref
-    # (SkillCourse.final_project_templates), so SQLAlchemy's default no-cascade behavior
-    # silently sets ProjectTemplate.course_id to NULL and lets the delete through rather
-    # than raising anything -- an except IntegrityError here would never fire, and the
-    # delete would quietly detach those project templates from their course instead of
-    # being refused. Check first, same "refuse rather than crash/corrupt" intent as
-    # delete_skill() above, just enforced explicitly since the DB/ORM won't do it here.
-    if ProjectTemplate.query.filter_by(course_id=course.id).first() or LearningPathStep.query.filter_by(course_id=course.id).first():
-        return _bad_request('Project templates or learning paths reference this course — unpublish it instead of deleting')
+    if _course_deletion_blocked(course):
+        return _bad_request(
+            'Project templates, learning paths, or an enrolled cohort reference this '
+            'course — unpublish it instead of deleting'
+        )
     try:
         db.session.delete(course)
         db.session.commit()
@@ -637,6 +722,16 @@ def upsert_quiz(lesson_id):
     for q in questions:
         if not isinstance(q, dict) or 'question' not in q or 'options' not in q or 'correct_index' not in q:
             return _bad_request('Each question needs question, options, and correct_index')
+        options = q.get('options')
+        correct_index = q.get('correct_index')
+        # Shape, not just key presence -- an out-of-range or wrong-typed correct_index
+        # used to save fine and silently become an unwinnable question (routes/
+        # skills_routes.py's submit_quiz compares answers[i] == correct_index by value,
+        # so a string "0" vs int 0, or an index past the end of options, never matches).
+        if not isinstance(options, list) or len(options) < 2:
+            return _bad_request('Each question needs at least 2 options')
+        if not isinstance(correct_index, int) or isinstance(correct_index, bool) or not (0 <= correct_index < len(options)):
+            return _bad_request('correct_index must be a valid index into that question\'s options')
     quiz = lesson.quiz
     if not quiz:
         quiz = Quiz(lesson_id=lesson.id)
@@ -716,11 +811,7 @@ def update_challenge(challenge_id):
 @admin_required
 def delete_challenge(challenge_id):
     challenge = Challenge.query.get_or_404(challenge_id)
-    # ChallengeSubmission.challenge_id is nullable=False, so a submission genuinely does
-    # block the delete with a real IntegrityError (caught below) -- but
-    # LearningPathStep.challenge_id is nullable and has no backref from Challenge's side,
-    # so it wouldn't be nullified OR raise anything here; check it explicitly too.
-    if LearningPathStep.query.filter_by(challenge_id=challenge.id).first():
+    if _challenge_deletion_blocked(challenge):
         return _bad_request('A learning path references this challenge — remove that step first')
     try:
         db.session.delete(challenge)
@@ -789,7 +880,10 @@ def update_project_template(template_id):
     if 'is_published' in data:
         template.is_published = bool(data['is_published'])
     if 'rubric' in data:
-        template.rubric = data['rubric'] or []
+        rubric = data['rubric'] or []
+        if _rubric_sum_invalid(rubric):
+            return _bad_request('Rubric criteria must sum to exactly 100 points')
+        template.rubric = rubric
     db.session.commit()
     return jsonify({'success': True, 'project_template': template.to_dict()})
 
@@ -799,12 +893,7 @@ def update_project_template(template_id):
 @admin_required
 def delete_project_template(template_id):
     template = ProjectTemplate.query.get_or_404(template_id)
-    # Same silent-nullify trap as delete_course() above: StudentProject.project_template_id
-    # is nullable and StudentProject.template carries a backref (ProjectTemplate.
-    # student_instances), so SQLAlchemy would detach a student's project from its
-    # template rather than block the delete or raise anything -- check first.
-    # LearningPathStep.project_template_id is nullable too, with no backref either way.
-    if StudentProject.query.filter_by(project_template_id=template.id).first() or LearningPathStep.query.filter_by(project_template_id=template.id).first():
+    if _project_template_deletion_blocked(template):
         return _bad_request('Students have started projects from this template — unpublish it instead of deleting')
     try:
         db.session.delete(template)
@@ -1134,6 +1223,11 @@ def set_grade_weights(course_id):
             row = GradeWeight(course_id=course.id, component=component)
             db.session.add(row)
         row.weight_pct = int(pct or 0)
+
+    if _grade_weights_sum_invalid(course.id):
+        db.session.rollback()
+        return _bad_request('Once all 4 grading components are set, their weights must sum to exactly 100')
+
     db.session.commit()
     return jsonify({'success': True})
 
@@ -1193,7 +1287,10 @@ def create_final_project(course_id):
         difficulty=data.get('difficulty') or 'intermediate',
         estimated_hours=int(data.get('estimated_hours') or 0),
     )
-    template.rubric = data.get('rubric') or []
+    rubric = data.get('rubric') or []
+    if _rubric_sum_invalid(rubric):
+        return _bad_request('Rubric criteria must sum to exactly 100 points')
+    template.rubric = rubric
     db.session.add(template)
     db.session.commit()
     return jsonify({'success': True, 'project_template': template.to_dict()})
@@ -1271,9 +1368,20 @@ def update_opportunity(opportunity_id):
 @admin_required
 def delete_opportunity(opportunity_id):
     opportunity = Opportunity.query.get_or_404(opportunity_id)
-    db.session.delete(opportunity)
-    db.session.commit()
-    return jsonify({'success': True})
+    # OpportunityApplication.opportunity_id is NOT NULL with cascade='all, delete-orphan'
+    # on Opportunity.applications, so deleting an opportunity that already has
+    # applications would silently wipe them -- including any 'paid' ones with real
+    # payout_amount/payment_reference history. Check first, same "refuse rather than
+    # destroy real records" intent as every other delete route in this file.
+    if OpportunityApplication.query.filter_by(opportunity_id=opportunity.id).first():
+        return _bad_request('Students have applied to this opportunity — unpublish it instead of deleting')
+    try:
+        db.session.delete(opportunity)
+        db.session.commit()
+        return jsonify({'success': True})
+    except IntegrityError:
+        db.session.rollback()
+        return _bad_request('This opportunity is still referenced elsewhere and cannot be deleted')
 
 
 # ==================== COMPETITIONS ====================
@@ -1398,13 +1506,16 @@ _APPLICATION_STATUSES = ('applied', 'accepted', 'completed', 'paid', 'rejected',
 def update_opportunity_application(application_id):
     """Moves an application through applied -> accepted -> completed -> paid (plus
     disputed/refunded/cancelled for a real future clawback path -- see models.py's
-    OpportunityApplication comment). Every transition is written to
-    OpportunityStatusEvent (who, from what, to what, when, why) so 'paid' is never just
-    an untraceable status flip -- see that model's docstring. Marking 'paid' still does
-    NOT move any real money: there is no payment gateway integration yet (see the Level 1
-    audit's business-readiness section) -- payment_reference is a free-text field for
-    however the payout actually happened (bank transfer ref, "cash - receipt #123", etc.),
-    filled in by the admin doing the paying, never auto-generated or assumed."""
+    OpportunityApplication comment), enforced by services/opportunity_service.py's
+    LEGAL_TRANSITIONS rather than accepting any status from any status -- that's what
+    used to let a request take a brand-new 'applied' row straight to 'paid' with an
+    unbounded payout_amount. Every legal transition is written to OpportunityStatusEvent
+    (who, from what, to what, when, why) so 'paid' is never just an untraceable status
+    flip -- see that model's docstring. Marking 'paid' still does NOT move any real
+    money: there is no payment gateway integration yet (see the Level 1 audit's
+    business-readiness section) -- payment_reference is a free-text field for however
+    the payout actually happened (bank transfer ref, "cash - receipt #123", etc.), filled
+    in by the admin doing the paying, never auto-generated or assumed."""
     application = OpportunityApplication.query.get_or_404(application_id)
     data = request.get_json() or {}
     status = data.get('status')
@@ -1412,27 +1523,14 @@ def update_opportunity_application(application_id):
         return _bad_request('Invalid status')
 
     admin_user = User.query.filter_by(username=session['user']['username']).first()
-    from_status = application.status
-    note = (data.get('note') or '').strip() or None
-    application.status = status
-
-    if status == 'completed' and not application.completed_at:
-        application.completed_at = datetime.utcnow()
-    if status == 'paid':
-        application.paid_at = datetime.utcnow()
-        application.payout_amount = int(data.get('payout_amount') or application.opportunity.payment_amount or 0)
-        application.payment_reference = (data.get('payment_reference') or '').strip() or None
-        application.paid_by_admin_id = admin_user.id
-    if status == 'disputed':
-        application.disputed_at = datetime.utcnow()
-        application.dispute_reason = (data.get('dispute_reason') or '').strip() or None
-    if status == 'refunded':
-        application.refunded_at = datetime.utcnow()
-
-    db.session.add(OpportunityStatusEvent(
-        application_id=application.id, actor_user_id=admin_user.id,
-        from_status=from_status, to_status=status, note=note,
-    ))
+    try:
+        transition_application(
+            application, status, actor=admin_user, note=data.get('note'),
+            payout_amount=data.get('payout_amount'), payment_reference=data.get('payment_reference'),
+            dispute_reason=data.get('dispute_reason'),
+        )
+    except InvalidTransition as e:
+        return _bad_request(str(e))
     db.session.commit()
 
     status_messages = {

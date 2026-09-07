@@ -2270,10 +2270,22 @@ class Rating(db.Model):
     employer = db.relationship('User', foreign_keys=[employer_id])
 
     def to_dict(self):
+        # Ratings today are always admin-entered "on the employer's behalf" (see
+        # routes/admin_skills_routes.py's rate_opportunity_application) -- the acting
+        # admin has no EmployerProfile of their own, so self.employer.employer_profile is
+        # always None in practice and this used to render a blank employer name on the
+        # Talent Profile, the one place this ★ is meant to build trust. Falls back to the
+        # gig's own title (still a real, specific attribution) and only then to a generic
+        # label -- never blank. Once real employer self-service rating exists (AD-16),
+        # self.employer will actually be that employer and the first branch applies again.
+        employer_name = (
+            (self.employer.employer_profile.company_name if self.employer and self.employer.employer_profile else None)
+            or (self.application.opportunity.title if self.application and self.application.opportunity else None)
+            or 'Nelavista'
+        )
         return {
             'id': self.id, 'stars': self.stars, 'comment': self.comment,
-            'employer_name': (self.employer.employer_profile.company_name
-                               if self.employer and self.employer.employer_profile else None),
+            'employer_name': employer_name,
             'created_at': self.created_at.isoformat() if self.created_at else None,
         }
 

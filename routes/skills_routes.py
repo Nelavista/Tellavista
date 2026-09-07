@@ -3,9 +3,9 @@ import time
 import cloudinary
 import cloudinary.uploader
 from datetime import datetime
-from urllib.parse import urlparse
 from flask import Blueprint, render_template, redirect, url_for, session, flash, jsonify, request
 from utils.helpers import login_required
+from utils.validation import safe_external_url
 from logging_config import logger
 from models import (
     User, SkillCategory, Skill, LearningPath, LearningPathStep, SkillCourse, CourseModule,
@@ -21,6 +21,7 @@ from services.skills_service import (
     get_dashboard_data, get_path_step_states, get_course_progress, mark_lesson_complete,
     touch_skill_activity, match_skill_from_text, ONBOARDING_SKIPPED,
     get_track_step_states, get_track_progress_pct, student_has_track_activity,
+    can_access_lesson,
 )
 from services.youtube_service import search_youtube_videos, build_lesson_video_query
 from services.ai_service import generate_challenge_feedback, generate_assignment_feedback, evaluate_final_project
@@ -549,6 +550,8 @@ def _touch_daily_class_progress(user, lesson):
 def complete_lesson(lesson_id):
     lesson = Lesson.query.get_or_404(lesson_id)
     user = _current_user()
+    if not can_access_lesson(user.id, lesson):
+        return jsonify({'success': False, 'error': "This lesson isn't available to you yet."}), 403
     record = mark_lesson_complete(user.id, lesson)
     _touch_daily_class_progress(user, lesson)
     return jsonify({'success': True, 'skill_progress': record.progress_pct if record else 0})
@@ -556,11 +559,16 @@ def complete_lesson(lesson_id):
 
 @skills_bp.route('/skills/quiz/<int:quiz_id>/submit', methods=['POST'])
 @login_required
+@limiter.limit('20 per hour')
 def submit_quiz(quiz_id):
     quiz = Quiz.query.get_or_404(quiz_id)
     user = _current_user()
-    data = request.get_json() or {}
-    answers = data.get('answers', [])
+    if not can_access_lesson(user.id, quiz.lesson):
+        return jsonify({'success': False, 'error': "This quiz isn't available to you yet."}), 403
+    data = request.get_json(silent=True) or {}
+    answers = data.get('answers')
+    if not isinstance(answers, list):
+        return jsonify({'success': False, 'error': 'Invalid answers payload.'}), 400
     questions = quiz.questions
 
     correct = 0
@@ -697,6 +705,10 @@ def submit_assignment(assignment_id):
     lesson = assignment.lesson
     course = lesson.module.course
     user = _current_user()
+
+    if not can_access_lesson(user.id, lesson):
+        flash("That day isn't unlocked yet — finish your current day first.")
+        return redirect(url_for('skills.class_overview', skill_slug=course.skill.slug, course_slug=course.slug))
 
     content = request.form.get('content', '').strip()
     if not content:
@@ -983,9 +995,14 @@ def update_project(project_id):
         else:
             project.completed_at = None
     if 'repo_url' in data:
-        project.repo_url = (data['repo_url'] or '').strip() or None
+        # Rendered as a raw <a href> on both this project's own page and the student's
+        # PUBLIC Talent Profile -- must go through the same scheme check as external_links
+        # below, not just be trimmed, or a javascript:/data: URI here is stored-XSS against
+        # anyone (including an employer) who clicks it. Invalid input is dropped silently
+        # rather than 400ing the whole save, same as external_links' own bad-entry handling.
+        project.repo_url = safe_external_url(data['repo_url'])
     if 'live_url' in data:
-        project.live_url = (data['live_url'] or '').strip() or None
+        project.live_url = safe_external_url(data['live_url'])
     if 'description' in data:
         project.description = (data['description'] or '').strip() or None
     if 'screenshots' in data:
@@ -997,11 +1014,8 @@ def update_project(project_id):
             if not isinstance(link, dict):
                 continue
             label = str(link.get('label') or '').strip()[:60]
-            url = str(link.get('url') or '').strip()[:500]
+            url = safe_external_url(link.get('url'))
             if not label or not url:
-                continue
-            parsed = urlparse(url)
-            if parsed.scheme not in ('http', 'https') or not parsed.hostname:
                 continue
             clean_links.append({'label': label, 'url': url})
         project.external_links = clean_links
@@ -1200,7 +1214,7 @@ def edit_profile():
     user = _current_user()
     if request.method == 'POST':
         user.bio = (request.form.get('bio') or '').strip() or None
-        user.portfolio_url = (request.form.get('portfolio_url') or '').strip() or None
+        user.portfolio_url = safe_external_url(request.form.get('portfolio_url'))
         user.profile_photo_url = (request.form.get('profile_photo_url') or '').strip() or None
         db.session.commit()
         flash('Profile updated.')
@@ -1331,7 +1345,7 @@ def competition_detail(slug):
         if existing:
             flash("You've already entered this competition.")
             return redirect(url_for('skills.competition_detail', slug=slug))
-        submission_url = request.form.get('submission_url', '').strip()
+        submission_url = safe_external_url(request.form.get('submission_url', ''))
         description = request.form.get('description', '').strip()
         if not submission_url and not description:
             flash('Add a submission link or description before entering.')

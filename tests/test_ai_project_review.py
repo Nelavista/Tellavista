@@ -37,7 +37,7 @@ def test_overall_score_is_rounded_mean_of_dimensions_not_ai_total():
         'strengths': ['Clear structure'], 'improvements': ['Add tests'],
         'explanation': 'Solid work.', 'next_project': {'title': 'Next thing', 'description': 'Build more.'},
     }
-    with patch('services.ai_service.requests.post', return_value=_mock_response(ai_payload)):
+    with patch('services.ai_grading.requests.post', return_value=_mock_response(ai_payload)):
         result = evaluate_project_submission('Test Project', 'A brief', 'Submission details', ['Python'])
 
     true_mean = round((80 + 60 + 100 + 40 + 70) / 5)
@@ -55,7 +55,7 @@ def test_out_of_range_dimension_scores_are_clamped_to_0_100():
                               'documentation': 50, 'originality': 50},
         'strengths': [], 'improvements': [], 'explanation': '', 'next_project': {},
     }
-    with patch('services.ai_service.requests.post', return_value=_mock_response(ai_payload)):
+    with patch('services.ai_grading.requests.post', return_value=_mock_response(ai_payload)):
         result = evaluate_project_submission('Test Project', None, 'details', [])
 
     assert result['dimension_scores']['functionality'] == 100  # clamped down from 150
@@ -68,7 +68,7 @@ def test_missing_or_malformed_dimension_scores_default_to_zero():
         'dimension_scores': {'functionality': 'not-a-number'},  # missing 4 of 5 dimensions entirely
         'strengths': [], 'improvements': [], 'explanation': '',
     }
-    with patch('services.ai_service.requests.post', return_value=_mock_response(ai_payload)):
+    with patch('services.ai_grading.requests.post', return_value=_mock_response(ai_payload)):
         result = evaluate_project_submission('Test Project', None, 'details', [])
 
     assert set(result['dimension_scores'].keys()) == set(PROJECT_REVIEW_DIMENSIONS)
@@ -83,7 +83,7 @@ def test_reflections_are_included_in_the_prompt_when_provided():
         'dimension_scores': {d: 50 for d in PROJECT_REVIEW_DIMENSIONS},
         'strengths': [], 'improvements': [], 'explanation': '', 'next_project': {},
     }
-    with patch('services.ai_service.requests.post', return_value=_mock_response(ai_payload)) as mock_post:
+    with patch('services.ai_grading.requests.post', return_value=_mock_response(ai_payload)) as mock_post:
         evaluate_project_submission(
             'Test Project', None, 'details', [],
             reflections={'problem_solved': 'Saves time on X', 'challenges': 'Debugging Y', 'improvements': 'Add Z'},
@@ -100,7 +100,7 @@ def test_missing_reflections_render_as_not_provided():
         'dimension_scores': {d: 50 for d in PROJECT_REVIEW_DIMENSIONS},
         'strengths': [], 'improvements': [], 'explanation': '', 'next_project': {},
     }
-    with patch('services.ai_service.requests.post', return_value=_mock_response(ai_payload)) as mock_post:
+    with patch('services.ai_grading.requests.post', return_value=_mock_response(ai_payload)) as mock_post:
         evaluate_project_submission('Test Project', None, 'details', [])  # no reflections kwarg at all
 
     sent_prompt = mock_post.call_args.kwargs['json']['messages'][1]['content']

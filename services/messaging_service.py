@@ -4,6 +4,7 @@ worked together, so a conversation doesn't fragment across applications.
 """
 from datetime import datetime
 from extensions import db
+from sqlalchemy.exc import IntegrityError
 from models import MessageThread, Message
 from services.notification_service import notify
 
@@ -17,7 +18,20 @@ def get_or_create_thread(employer_id, student_id, application_id=None):
         return thread
     thread = MessageThread(employer_id=employer_id, student_id=student_id, opportunity_application_id=application_id)
     db.session.add(thread)
-    db.session.commit()
+    try:
+        db.session.commit()
+    except IntegrityError:
+        # Same check-then-act race as get_or_create_enrollment()/recompute_student_skill()
+        # -- a double-click on "Hire" (or two tabs) can have both requests see no existing
+        # thread and both try to create one; uq_thread_employer_student lets only one
+        # through. Fall back to the winner's row instead of a 500.
+        db.session.rollback()
+        thread = MessageThread.query.filter_by(employer_id=employer_id, student_id=student_id).first()
+        if not thread:
+            raise
+        if application_id and not thread.opportunity_application_id:
+            thread.opportunity_application_id = application_id
+            db.session.commit()
     return thread
 
 

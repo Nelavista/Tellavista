@@ -12,9 +12,10 @@ LANDING_MIN_SKILL_TOPICS = 20
 
 
 def _landing_stats():
-    """Real, live counts for the landing page -- never hardcoded, so the page can't drift
-    into the "0+ students" problem the old landing page had. Computed fresh per request;
-    the underlying tables are small enough that this costs nothing."""
+    """Live counts for the landing page's skills grid and university count, computed fresh
+    per request so those two numbers can't drift into the old landing page's "0+" problem.
+    The student count shown on the page is a fixed marketing figure set directly in
+    landing.html, not derived here -- see that template if it needs updating."""
     topic_counts = dict(
         db.session.query(SkillCourse.skill_id, func.count(Lesson.id))
         .join(CourseModule, CourseModule.course_id == SkillCourse.id)
@@ -38,7 +39,6 @@ def _landing_stats():
             qualifying_skill_count += len(cat_skills)
             categories.append({'name': cat.name, 'slug': cat.slug, 'skills': cat_skills})
 
-    student_count = User.query.filter_by(is_employer=False, is_admin=False).count()
     # University.active doesn't exist on the currently-deployed schema yet (it's added by
     # an in-progress, not-yet-merged migration) -- guard with hasattr so this counts every
     # university today and starts filtering to active ones automatically once that
@@ -51,9 +51,6 @@ def _landing_stats():
     return {
         'skill_categories': categories,
         'skill_count': qualifying_skill_count,
-        # Floored to the nearest 10 -- an honest lower bound rather than a number that's
-        # already stale (higher than reality) by the time someone reads it.
-        'student_count': (student_count // 10) * 10,
         'university_count': university_count,
     }
 

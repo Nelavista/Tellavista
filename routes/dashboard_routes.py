@@ -168,20 +168,11 @@ def dashboard():
     ]
     exam_count = len(upcoming)
 
-    # The dashboard template {% include %}s profile_completion_modal.html when
-    # show_profile_modal is true, which needs the same active-universities list
-    # complete_profile() passes it -- only queried when the modal will actually render.
-    universities = (
-        University.query.filter_by(active=True).order_by(University.name).all()
-        if show_profile_modal else []
-    )
-
     return render_template('dashboard.html',
                            user=user_data,
                            first_name=first_name,
                            exam_count=exam_count,
                            show_profile_modal=show_profile_modal,
-                           universities=universities,
                            email_verified=user.email_verified)
 
 @dashboard_bp.route('/api/debug-courses')

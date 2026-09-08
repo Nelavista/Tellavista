@@ -1,8 +1,54 @@
 from flask import Blueprint, render_template, redirect, url_for, session, flash, jsonify, request
 from utils.helpers import login_required, admin_required, check_profile_complete
-from models import User, Material
+from models import User, Material, University, Skill, SkillCategory, SkillCourse, CourseModule, Lesson
 from extensions import db
+from sqlalchemy import func
 from datetime import datetime
+
+# A skill only shows up on the marketing site once it has a real, substantial curriculum
+# behind it -- this threshold is what keeps "structured topics" counts on the landing page
+# honest as skills are still being authored (see seed_data/career_skills/).
+LANDING_MIN_SKILL_TOPICS = 20
+
+
+def _landing_stats():
+    """Real, live counts for the landing page -- never hardcoded, so the page can't drift
+    into the "0+ students" problem the old landing page had. Computed fresh per request;
+    the underlying tables are small enough that this costs nothing."""
+    topic_counts = dict(
+        db.session.query(SkillCourse.skill_id, func.count(Lesson.id))
+        .join(CourseModule, CourseModule.course_id == SkillCourse.id)
+        .join(Lesson, Lesson.module_id == CourseModule.id)
+        .group_by(SkillCourse.skill_id).all()
+    )
+
+    categories = []
+    qualifying_skill_count = 0
+    for cat in SkillCategory.query.filter_by(is_active=True).order_by(SkillCategory.order).all():
+        cat_skills = []
+        for skill in cat.skills.filter_by(is_published=True).order_by(Skill.order):
+            topics = topic_counts.get(skill.id, 0)
+            if topics < LANDING_MIN_SKILL_TOPICS:
+                continue
+            cat_skills.append({
+                'name': skill.name, 'slug': skill.slug, 'icon': skill.icon or 'ri-lightbulb-line',
+                'color': skill.color, 'tagline': skill.tagline, 'topics': topics,
+            })
+        if cat_skills:
+            qualifying_skill_count += len(cat_skills)
+            categories.append({'name': cat.name, 'slug': cat.slug, 'skills': cat_skills})
+
+    student_count = User.query.filter_by(is_employer=False, is_admin=False).count()
+    university_count = University.query.filter_by(active=True).count()
+
+    return {
+        'skill_categories': categories,
+        'skill_count': qualifying_skill_count,
+        # Floored to the nearest 10 -- an honest lower bound rather than a number that's
+        # already stale (higher than reality) by the time someone reads it.
+        'student_count': (student_count // 10) * 10,
+        'university_count': university_count,
+    }
 
 dashboard_bp = Blueprint('dashboard', __name__)
 
@@ -51,7 +97,7 @@ def landing():
         if user and user.preferred_path in VALID_PATHS:
             return redirect(url_for(VALID_PATHS[user.preferred_path]))
         return redirect(url_for('dashboard.choose_path'))
-    return render_template('landing.html')
+    return render_template('landing.html', stats=_landing_stats())
 
 
 @dashboard_bp.route('/choose-path', methods=['GET', 'POST'])
@@ -118,11 +164,20 @@ def dashboard():
     ]
     exam_count = len(upcoming)
 
+    # The dashboard template {% include %}s profile_completion_modal.html when
+    # show_profile_modal is true, which needs the same active-universities list
+    # complete_profile() passes it -- only queried when the modal will actually render.
+    universities = (
+        University.query.filter_by(active=True).order_by(University.name).all()
+        if show_profile_modal else []
+    )
+
     return render_template('dashboard.html',
                            user=user_data,
                            first_name=first_name,
                            exam_count=exam_count,
                            show_profile_modal=show_profile_modal,
+                           universities=universities,
                            email_verified=user.email_verified)
 
 @dashboard_bp.route('/api/debug-courses')

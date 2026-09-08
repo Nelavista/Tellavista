@@ -28,25 +28,38 @@
   <nav>
     <ul class="sidebar-nav">
       <li><a href="/"><i class="ri-home-4-line"></i>Home</a></li>
-      <li><a href="/#features"><i class="ri-apps-line"></i>Features</a></li>
-      <li><a href="/signup"><i class="ri-user-add-line"></i>Get Started Free</a></li>
-      <li><a href="/login"><i class="ri-login-box-line"></i>Log In</a></li>
+      <li><a href="/#platform"><i class="ri-apps-line"></i>Platform</a></li>
+      <li><a href="/#skills"><i class="ri-stack-line"></i>Skills</a></li>
+      <li><a href="/#opportunities"><i class="ri-briefcase-line"></i>Opportunities</a></li>
+      <li><a href="/#campus"><i class="ri-map-pin-line"></i>Campus</a></li>
+    </ul>
+    <div class="sidebar-divider"></div>
+    <ul class="sidebar-nav">
+      <li><a href="/login"><i class="ri-login-box-line"></i>Log in</a></li>
+      <li><a href="/signup" class="sidebar-cta"><i class="ri-arrow-right-line"></i>Get started free</a></li>
     </ul>
   </nav>
 </aside>
 
 <header id="top-bar">
   <div class="nav-inner">
-    <button id="menu-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="side-menu">
-      <span class="menu-icon"><span></span><span></span><span></span></span>
-    </button>
     <div class="brand-lockup">
-      <span class="ai-signature" aria-hidden="true"><span></span><span></span><span></span></span>
       <a href="/" class="brand-logo bg" style="text-decoration:none;">Nela<span>vista</span></a>
     </div>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="/">Home</a>
+      <a href="/#platform">Platform</a>
+      <a href="/#skills">Skills</a>
+      <a href="/#opportunities">Opportunities</a>
+      <a href="/#campus">Campus</a>
+    </nav>
     <div class="header-actions">
-      <button id="header-install-btn" class="header-link header-install-btn" onclick="installApp()">📲 Install</button>
+      <a href="/login" class="header-link nav-auth-desktop">Log in</a>
+      <a href="/signup" class="header-link header-cta nav-auth-desktop">Get started free</a>
       <button id="theme-toggle" aria-label="Toggle theme"><span class="theme-icon">🌙</span></button>
+      <button id="menu-toggle" class="nav-menu-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="side-menu">
+        <span class="menu-icon"><span></span><span></span><span></span></span>
+      </button>
     </div>
   </div>
 </header>

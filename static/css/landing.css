@@ -1,0 +1,217 @@
+/* Nelavista landing page: sections beyond the shared design system in main.css.
+   Reuses main.css's tokens (colors, radius, shadow, ease) so nothing here invents a
+   second visual language; it only adds the section layouts specific to the marketing
+   page (pillars, skills grid, journey, opportunities, campus, why, hero product visual). */
+
+.section-head { max-width: 640px; margin: 0 0 56px; }
+.section-desc { font-size: 1rem; line-height: 1.7; color: var(--text-secondary); margin-top: 16px; }
+.campus-layout .section-desc, .why-copy { max-width: 560px; }
+
+/* ─── HERO EXTRAS ─── */
+.hero-note {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  font-family: 'JetBrains Mono', monospace;
+  margin: -12px 0 40px;
+}
+
+.hero-visual { width: 100%; max-width: 1040px; margin: 0 auto 44px; text-align: left; }
+.hv-frame {
+  border: 1px solid var(--border-hard);
+  border-radius: var(--r-lg);
+  background: var(--bg-card);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+}
+.hv-titlebar {
+  display: flex; align-items: center; gap: 7px;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border-hard);
+  background: var(--bg-elevated);
+}
+.hv-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border-hard); }
+.hv-titlebar-label { margin-left: 10px; font-size: 0.7rem; color: var(--text-muted); }
+.hv-body { display: grid; grid-template-columns: 176px 1fr; }
+.hv-sidebar {
+  border-right: 1px solid var(--border-hard);
+  background: var(--bg-surface);
+  padding: 16px 10px;
+  display: flex; flex-direction: column; gap: 3px;
+}
+.hv-side-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 12px; border-radius: var(--r-sm);
+  font-size: 0.78rem; color: var(--text-muted);
+}
+.hv-side-item i { font-size: 1rem; width: 18px; text-align: center; }
+.hv-side-item.active { background: rgba(56,189,248,0.1); color: var(--accent); font-weight: 600; }
+.hv-main { padding: 20px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; align-content: start; }
+.hv-card-wide { grid-column: 1 / -1; }
+.hv-card { background: var(--bg-surface); border: 1px solid var(--border-hard); border-radius: var(--r-md); padding: 16px; }
+.hv-card-head {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--text-muted); margin-bottom: 12px;
+}
+.hv-card-head i { color: var(--accent); font-size: 0.9rem; }
+.hv-chat-line { font-size: 0.8rem; line-height: 1.5; padding: 10px 14px; border-radius: var(--r-sm); margin-bottom: 8px; max-width: 88%; }
+.hv-chat-user { background: rgba(56,189,248,0.12); margin-left: auto; color: var(--text-primary); }
+.hv-chat-reply { background: var(--bg-card); color: var(--text-secondary); margin-bottom: 0; }
+.hv-skill-name { font-size: 0.88rem; font-weight: 600; margin-bottom: 8px; }
+.hv-progress-track { height: 6px; border-radius: 4px; background: var(--border-hard); overflow: hidden; margin-bottom: 8px; }
+.hv-progress-fill { height: 100%; background: var(--grad-teal); border-radius: 4px; }
+.hv-card-meta { font-size: 0.68rem; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; }
+.hv-card-big { font-size: 1.7rem; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 4px; }
+
+@media (max-width: 720px) {
+  .hv-body { grid-template-columns: 1fr; }
+  .hv-sidebar { display: none; }
+  .hv-main { grid-template-columns: 1fr; padding: 16px; }
+}
+
+/* ─── PILLARS ─── */
+.pillars-section { padding: 100px 0; }
+.pillars-grid { display: grid; grid-template-columns: 1fr; gap: 20px; }
+.pillar-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-hard);
+  border-radius: var(--r-lg);
+  padding: 32px 28px;
+  box-shadow: var(--shadow-card);
+  transition: border-color 0.4s ease, transform 0.4s var(--ease);
+}
+.pillar-card:hover { border-color: rgba(56,189,248,0.3); transform: translateY(-4px); }
+.pillar-num {
+  display: block; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--accent); margin-bottom: 18px;
+}
+.pillar-card h3 { font-size: 1.2rem; font-weight: 700; margin-bottom: 10px; letter-spacing: -0.01em; }
+.pillar-card p { font-size: 0.88rem; line-height: 1.65; color: var(--text-secondary); margin-bottom: 20px; }
+.pillar-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.pillar-list li {
+  font-size: 0.8rem; color: var(--text-muted); padding-left: 16px; position: relative;
+}
+.pillar-list li::before {
+  content: ''; position: absolute; left: 0; top: 0.55em; width: 6px; height: 1.5px; background: var(--text-muted);
+}
+
+/* ─── SKILLS MAJOR SECTION ─── */
+.skills-major-section { padding: 110px 0; background: var(--bg-surface); border-top: 1px solid var(--border-subtle); border-bottom: 1px solid var(--border-subtle); }
+.skill-cats { display: flex; flex-direction: column; gap: 44px; }
+.skill-cat-label {
+  font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em;
+  color: var(--accent-teal); margin-bottom: 18px;
+}
+.skills-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+.skill-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-hard);
+  border-radius: var(--r-md);
+  padding: 18px;
+  transition: transform 0.35s var(--ease), border-color 0.35s ease;
+}
+.skill-card:hover { transform: translateY(-3px); border-color: color-mix(in srgb, var(--sc, var(--accent)) 45%, var(--border-hard)); }
+.skill-card-icon {
+  width: 38px; height: 38px; border-radius: var(--r-sm);
+  display: flex; align-items: center; justify-content: center;
+  background: color-mix(in srgb, var(--sc, var(--accent)) 16%, transparent);
+  color: var(--sc, var(--accent));
+  font-size: 1.05rem; margin-bottom: 14px;
+}
+.skill-card-name { font-size: 0.9rem; font-weight: 600; margin-bottom: 4px; line-height: 1.35; }
+.skill-card-topics { font-size: 0.7rem; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; }
+.skills-cta { text-align: center; margin-top: 52px; }
+
+/* ─── JOURNEY ─── */
+.journey-section { padding: 100px 0; }
+.journey-track {
+  list-style: none;
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
+  gap: 10px;
+}
+.journey-track li {
+  background: var(--bg-card);
+  border: 1px solid var(--border-hard);
+  border-radius: var(--r-pill);
+  padding: 14px 24px;
+  font-size: 0.86rem; font-weight: 600;
+  white-space: nowrap;
+}
+.journey-track li:not(:first-child) { position: relative; margin-left: 20px; }
+.journey-track li:not(:first-child)::before {
+  content: '→';
+  position: absolute; left: -24px; top: 50%; transform: translateY(-50%);
+  color: var(--text-muted); font-size: 0.9rem;
+}
+@media (max-width: 640px) {
+  .journey-track { flex-direction: column; align-items: stretch; }
+  .journey-track li { text-align: center; }
+  .journey-track li:not(:first-child) { margin-left: 0; margin-top: 20px; }
+  .journey-track li:not(:first-child)::before { content: '↓'; left: 50%; top: -22px; transform: translateX(-50%); }
+}
+
+/* ─── OPPORTUNITIES ─── */
+.opportunities-section { padding: 100px 0; }
+.opp-layout { display: grid; grid-template-columns: 1fr; gap: 40px; align-items: center; }
+.opp-cta { margin-top: 26px; }
+.opp-types { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+.opp-type {
+  display: flex; flex-direction: column; gap: 10px;
+  background: var(--bg-card); border: 1px solid var(--border-hard); border-radius: var(--r-md);
+  padding: 18px 16px; font-size: 0.82rem; font-weight: 600;
+}
+.opp-type i { font-size: 1.3rem; color: var(--accent); }
+
+/* ─── CAMPUS ─── */
+.campus-section { padding: 100px 0; }
+.campus-layout { display: grid; grid-template-columns: 1fr; gap: 40px; align-items: center; }
+.campus-count { margin-top: 22px; font-size: 0.76rem; color: var(--accent-teal); }
+.campus-visual {
+  position: relative; height: 280px;
+  background: var(--bg-card); border: 1px solid var(--border-hard); border-radius: var(--r-lg);
+  overflow: hidden; box-shadow: var(--shadow-card);
+}
+.cv-grid {
+  position: absolute; inset: 0;
+  background-image: linear-gradient(var(--border-subtle) 1px, transparent 1px),
+                     linear-gradient(90deg, var(--border-subtle) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+.cv-pin {
+  position: absolute; width: 28px; height: 28px; border-radius: 50% 50% 50% 0;
+  background: var(--accent); transform: rotate(-45deg);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 6px 16px rgba(56,189,248,0.35);
+}
+.cv-pin i { transform: rotate(45deg); font-size: 0.8rem; color: #fff; }
+.cv-pin-1 { top: 26%; left: 20%; }
+.cv-pin-2 { top: 52%; left: 56%; background: var(--accent-teal); box-shadow: 0 6px 16px rgba(45,212,191,0.35); }
+.cv-pin-3 { top: 68%; left: 28%; background: var(--accent-warm); box-shadow: 0 6px 16px rgba(245,158,11,0.35); }
+.cv-label {
+  position: absolute; bottom: 16px; left: 16px;
+  background: var(--bg-elevated); border: 1px solid var(--border-hard);
+  padding: 8px 14px; border-radius: var(--r-pill);
+  font-size: 0.7rem; color: var(--text-secondary);
+}
+
+/* ─── WHY NELAVISTA ─── */
+.why-section { padding: 100px 0; }
+.why-layout { display: grid; grid-template-columns: 1fr; gap: 32px; }
+.why-copy { font-size: 0.98rem; line-height: 1.75; color: var(--text-secondary); margin-bottom: 16px; }
+
+/* ─── RESPONSIVE ─── */
+@media (min-width: 640px) {
+  .pillars-grid { grid-template-columns: repeat(2, 1fr); }
+  .skills-grid { grid-template-columns: repeat(3, 1fr); }
+  .opp-types { grid-template-columns: repeat(3, 1fr); }
+}
+@media (min-width: 900px) {
+  .pillars-grid { grid-template-columns: repeat(4, 1fr); }
+  .skills-grid { grid-template-columns: repeat(4, 1fr); }
+  .opp-layout { grid-template-columns: 1.1fr 1fr; }
+  .campus-layout { grid-template-columns: 1fr 1fr; }
+  .why-layout { grid-template-columns: 0.8fr 1.2fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pillar-card, .skill-card { transition: none; }
+}

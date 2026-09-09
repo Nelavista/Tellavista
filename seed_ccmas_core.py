@@ -49,6 +49,14 @@ TARGET_UNIVERSITIES = [
     # Same bare-row-only situation as FUDMA/UNIABUJA/UNILORIN/KWASU above -- Uniport has
     # no registrar-verified CSV rows at all, so CCMAS is its only course data.
     'University of Port Harcourt',
+    # 10-university expansion (2026-09) -- same bare-row-only situation, CCMAS is the
+    # only course data these 6 have until a school-specific catalog is sourced.
+    'Federal University of Technology, Akure',
+    'Federal University of Technology, Minna',
+    'University of Nigeria, Nsukka',
+    'University of Benin',
+    'Modibbo Adama University',
+    'Obafemi Awolowo University',
 ]
 
 # {department_name: {level: [(code, title), ...]}} -- verbatim from the CCMAS PDFs (see module

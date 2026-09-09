@@ -30,6 +30,7 @@ Usage:
     python seed_topics_broad.py --apply --course CSC201   # just one course code, any level
 """
 import sys
+import time
 
 APPLY = '--apply' in sys.argv
 LIMIT = None
@@ -83,11 +84,22 @@ def main():
 
         from models import Topic
         succeeded = failed = 0
-        for i, course_id in enumerate(course_ids):
-            course = db.session.get(Course, course_id)
-            code, title, level = course.code, course.title, course.level
-            dept_name = course.department.name
+        consecutive_failures = 0
+        total = len(course_ids)
+        i = 0
+        while i < total:
+            course_id = course_ids[i]
+            # The re-fetch itself (db.session.get + the department lazy-load it
+            # triggers) must be INSIDE the try: a network/DB blip here is exactly as
+            # likely as one during the AI call, and previously this ran unguarded --
+            # one bad fetch after a rollback-forced db.session.remove() crashed the
+            # whole process uncaught instead of being logged as a single [FAIL].
+            code = title = level = dept_name = None
             try:
+                course = db.session.get(Course, course_id)
+                code, title, level = course.code, course.title, course.level
+                dept_name = course.department.name
+
                 draft = generate_course_topics(code, title, dept_name, level)
 
                 if draft.get('description') and not course.description:
@@ -99,6 +111,8 @@ def main():
 
                 db.session.commit()
                 succeeded += 1
+                consecutive_failures = 0
+                i += 1
             except Exception as e:
                 # Covers both the AI call (network/API failures) and the commit itself
                 # (a dropped DB connection mid-commit) -- either way the session must be
@@ -107,20 +121,35 @@ def main():
                 # nothing is actually wrong with them. Render's Postgres can drop an
                 # idle connection while the AI call is in flight (calls run up to 60s),
                 # which makes rollback() itself raise -- db.session.remove() discards
-                # the broken connection outright so the next iteration's scoped-session
-                # access opens a fresh one, instead of letting that second failure
-                # crash the whole run. code/title/dept_name were captured above (before the
-                # AI call), so this print never touches the now-possibly-detached course.
+                # the broken connection outright so the next iteration's re-fetch opens
+                # a fresh one, instead of letting that second failure crash the whole run.
                 try:
                     db.session.rollback()
                 except Exception:
                     db.session.remove()
-                print(f"[FAIL] {code} ({dept_name}): {e}")
-                failed += 1
-                continue
+                consecutive_failures += 1
 
-            if (i + 1) % 10 == 0:
-                print(f"[{i + 1}/{len(course_ids)}] ok={succeeded} failed={failed} -- last: {code} ({len(titles)} topics)")
+                # A DNS/network outage fails every subsequent lookup near-instantly, so
+                # without this the loop races through the ENTIRE remaining queue as
+                # pointless failures in minutes and exits "DONE" having finished almost
+                # nothing. 5+ failures in a row is a strong signal of an outage rather
+                # than a one-off bad response, so pause here WITHOUT advancing `i` and
+                # retry the same course once the wait is up -- self-heals once the
+                # network returns instead of needing a restart. An isolated failure
+                # (< 5 in a row) still gets logged and skipped immediately.
+                if consecutive_failures >= 5:
+                    wait_s = min(30 * (consecutive_failures - 4), 300)
+                    print(f"[WAIT] {consecutive_failures} failures in a row (last: {e}) -- pausing {wait_s}s, will retry course_id={course_id}")
+                    time.sleep(wait_s)
+                    continue
+
+                label = f"{code} ({dept_name})" if code else f"course_id={course_id}"
+                print(f"[FAIL] {label}: {e}")
+                failed += 1
+                i += 1
+
+            if i % 10 == 0:
+                print(f"[{i}/{total}] ok={succeeded} failed={failed} -- last: {code} ({len(titles)} topics)")
 
         print(f"\nDONE. {succeeded} course(s) seeded with topic outlines, {failed} failed.")
 

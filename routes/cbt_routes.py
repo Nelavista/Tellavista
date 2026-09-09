@@ -28,6 +28,18 @@ def _subject_code_for(course_code):
     return m.group(0).upper() if m else None
 
 
+def _scope_to_university(query, user):
+    """NULL university_id on a CBTQuestion means universal (every row today) -- same
+    'universal + specific' OR-pattern already proven by Material.university in
+    routes/materials_routes.py. Provably a no-op right now since nothing has been tagged
+    yet; only narrows once/if a question is later tagged to one school."""
+    if user and user.university_id:
+        return query.filter(
+            db.or_(CBTQuestion.university_id.is_(None), CBTQuestion.university_id == user.university_id)
+        )
+    return query
+
+
 @cbt_bp.route('/CBT', methods=['GET'])
 @login_required
 def CBT():
@@ -66,8 +78,13 @@ def cbt_counts():
     subject_code = _subject_code_for(course_code)
     if not subject_code:
         return jsonify({'success': True, 'cbt_count': 0, 'written_count': 0})
-    cbt_count = CBTQuestion.query.filter_by(subject_code=subject_code, question_type='cbt', is_active=True).count()
-    written_count = CBTQuestion.query.filter_by(subject_code=subject_code, question_type='written', is_active=True).count()
+    user = User.query.filter_by(username=session['user']['username']).first()
+    cbt_count = _scope_to_university(
+        CBTQuestion.query.filter_by(subject_code=subject_code, question_type='cbt', is_active=True), user
+    ).count()
+    written_count = _scope_to_university(
+        CBTQuestion.query.filter_by(subject_code=subject_code, question_type='written', is_active=True), user
+    ).count()
     return jsonify({'success': True, 'cbt_count': min(cbt_count, MAX_CBT_QUESTIONS),
                      'written_count': min(written_count, MAX_WRITTEN_QUESTIONS)})
 
@@ -121,8 +138,8 @@ def start_cbt_attempt():
         return jsonify({'success': False, 'error': 'Missing/invalid course_code or question_type'}), 400
 
     subject_code = _subject_code_for(course_code)
-    bank = CBTQuestion.query.filter_by(
-        subject_code=subject_code, question_type=question_type, is_active=True
+    bank = _scope_to_university(
+        CBTQuestion.query.filter_by(subject_code=subject_code, question_type=question_type, is_active=True), user
     ).all() if subject_code else []
 
     if not bank:

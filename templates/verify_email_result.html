@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>{{ 'Email Verified' if status == 'success' else 'Verify Email' }} - Nelavista</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+
+  <style>
+    :root {
+      --accent-blue: var(--accent);
+      --border-premium: var(--border-hard);
+      --gradient-blue: var(--grad-main);
+      --shadow-soft: var(--shadow-card);
+      --shadow-glow: var(--glow-accent);
+      --transition-smooth: all var(--t-fast) var(--ease);
+      --radius-card: var(--r-lg);
+      --radius-input: var(--r-md);
+      --radius-button: var(--r-sm);
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 100px 20px 20px;
+      opacity: 0;
+      animation: fadeIn 0.6s ease-out forwards;
+      animation-delay: 0.1s;
+    }
+
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+
+    .logo-section {
+      text-align: center;
+      margin: 16px 0 24px;
+      animation: fadeInUp 0.7s ease-out forwards;
+      opacity: 0;
+    }
+
+    .logo {
+      font-size: 2.8rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #ffffff, #a0c0ff);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.02em;
+    }
+
+    body.light-theme .logo {
+      background: linear-gradient(135deg, #0f172a, #0284c7);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .tagline {
+      color: var(--text-secondary);
+      font-size: 1rem;
+      max-width: 500px;
+      line-height: 1.5;
+      animation: fadeInUp 0.7s ease-out 0.1s forwards;
+      opacity: 0;
+    }
+
+    .result-container {
+      background: var(--bg-surface);
+      padding: 2.5rem 2.2rem;
+      border-radius: var(--radius-card);
+      width: 100%;
+      max-width: 440px;
+      border: 1px solid var(--border-premium);
+      box-shadow: var(--shadow-soft), var(--shadow-glow);
+      opacity: 0;
+      transform: translateY(10px);
+      animation: fadeInUp 0.7s ease-out 0.2s forwards;
+      margin-bottom: 32px;
+      text-align: center;
+    }
+
+    .result-icon {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+      font-size: 1.8rem;
+    }
+
+    .result-icon.success { background: rgba(32, 201, 151, 0.14); color: #20c997; }
+    .result-icon.error { background: rgba(220, 53, 69, 0.14); color: #dc3545; }
+
+    .result-container h1 {
+      font-size: 1.7rem;
+      font-weight: 600;
+      margin-bottom: 0.6rem;
+      color: var(--text-primary);
+      letter-spacing: -0.02em;
+    }
+
+    .subtitle {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      margin-bottom: 1.8rem;
+      line-height: 1.6;
+    }
+
+    .action-btn {
+      display: inline-block;
+      width: 100%;
+      padding: 1rem;
+      background: var(--gradient-blue);
+      color: white;
+      border: none;
+      border-radius: var(--radius-button);
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+      text-decoration: none;
+      box-shadow: var(--shadow-btn);
+      letter-spacing: -0.01em;
+      box-sizing: border-box;
+    }
+
+    .action-btn:hover { transform: translateY(-2px); box-shadow: var(--shadow-btn-hover); filter: brightness(1.05); }
+
+    .resend-section {
+      text-align: left;
+      margin-top: 1.8rem;
+      padding-top: 1.6rem;
+      border-top: 1px solid var(--border-premium);
+    }
+
+    .resend-section p { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 0.9rem; text-align: center; }
+
+    .input-wrapper {
+      position: relative;
+      background: var(--bg-deep);
+      border-radius: var(--radius-input);
+      border: 1px solid var(--border-premium);
+      transition: var(--transition-smooth);
+      margin-bottom: 0.9rem;
+    }
+
+    .input-wrapper:focus-within { border-color: var(--accent-blue); box-shadow: 0 8px 20px rgba(56, 189, 248, 0.12); }
+
+    input[type="email"] {
+      width: 100%;
+      padding: 0.9rem 1rem;
+      background: transparent;
+      border: none;
+      outline: none;
+      font-size: 1rem;
+      color: var(--text-primary);
+      font-family: inherit;
+      box-sizing: border-box;
+    }
+
+    .secondary-btn {
+      width: 100%;
+      padding: 0.85rem;
+      background: transparent;
+      color: var(--text-primary);
+      border: 1px solid var(--border-premium);
+      border-radius: var(--radius-button);
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-sizing: border-box;
+    }
+
+    .secondary-btn:hover { border-color: var(--accent-blue); color: var(--accent-blue); }
+
+    .link-section { text-align: center; margin-top: 1.6rem; }
+    .link-section a { color: var(--accent-blue); text-decoration: none; font-weight: 600; border-bottom: 1px solid rgba(56, 189, 248, 0.3); padding-bottom: 2px; }
+    .link-section a:hover { color: var(--accent-teal); }
+
+    @media (max-width: 768px) {
+      body { padding: 84px 0 0; }
+      .logo { font-size: 2.4rem; }
+      .result-container { padding: 2rem 1.5rem; margin: 0 12px 24px; max-width: 100%; border-radius: 18px; }
+      input, .action-btn, .secondary-btn { font-size: 16px; }
+    }
+  </style>
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
+</head>
+<body>
+  {% include 'components/navbar.html' %}
+
+  <div class="logo-section">
+    <div class="logo">Nelavista</div>
+    <div class="tagline">Your AI‑powered learning companion</div>
+  </div>
+
+  <div class="result-container">
+    {% if status == 'success' %}
+      <div class="result-icon success"><i class="ri-checkbox-circle-line"></i></div>
+      <h1>Email confirmed</h1>
+      <p class="subtitle">Your Nelavista account is now verified. Thanks for confirming it's really you.</p>
+      {% if logged_in %}
+        <a class="action-btn" href="{{ url_for('dashboard.dashboard') }}">Continue to Dashboard →</a>
+      {% else %}
+        <a class="action-btn" href="{{ url_for('auth.login') }}">Log in →</a>
+      {% endif %}
+    {% else %}
+      <div class="result-icon error"><i class="ri-error-warning-line"></i></div>
+      {% if status == 'expired' %}
+        <h1>Link expired or already used</h1>
+        <p class="subtitle">This verification link is no longer valid. Request a new one below and we'll send a fresh link.</p>
+      {% else %}
+        <h1>Invalid verification link</h1>
+        <p class="subtitle">We couldn't find a valid verification link here. Request a new one below.</p>
+      {% endif %}
+
+      <div class="resend-section">
+        {% if logged_in %}
+          <form method="POST" action="{{ url_for('auth.resend_verification_email') }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button type="submit" class="secondary-btn"><i class="ri-mail-send-line"></i> Resend verification email</button>
+          </form>
+        {% else %}
+          <p>Enter your email and we'll send a new verification link</p>
+          <form method="POST" action="{{ url_for('auth.resend_verification_public') }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <div class="input-wrapper">
+              <input type="email" name="email" required autocomplete="email" placeholder="you@example.com" autocapitalize="none">
+            </div>
+            <button type="submit" class="secondary-btn"><i class="ri-mail-send-line"></i> Resend verification email</button>
+          </form>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    <div class="link-section">
+      <p style="color:var(--text-secondary); font-size:0.9rem;">Back to <a href="{{ url_for('auth.login') }}">Log in</a></p>
+    </div>
+  </div>
+
+  {% include 'components/footer.html' %}
+  <script src="{{ url_for('static', filename='js/nav.js') }}"></script>
+</body>
+</html>

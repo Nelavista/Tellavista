@@ -33,3 +33,25 @@ def safe_external_url(url, max_length=500):
     if parsed.scheme not in ('http', 'https') or not parsed.hostname:
         return None
     return url
+
+
+def password_strength_error(password):
+    """Returns a user-facing error string if `password` is too weak to set (whether at
+    signup or via password reset), or None if it's acceptable. Kept as one shared check
+    -- routes/auth_routes.py's reset-password flow used only a bare length check before
+    this existed, letting through things like '11111111' or 'aaaaaaaa'.
+
+    Deliberately modest requirements (length + a letter + a digit, no symbol/uppercase
+    mandate) -- strict composition rules push people toward predictable substitutions
+    ('Password1!') without meaningfully raising real entropy, and this app has no
+    business being the strictest link in a student's password hygiene.
+    """
+    if not password or len(password) < 8:
+        return 'Password must be at least 8 characters long.'
+    if len(password) > 128:
+        return 'Password is too long.'
+    if not any(c.isalpha() for c in password):
+        return 'Password must include at least one letter.'
+    if not any(c.isdigit() for c in password):
+        return 'Password must include at least one number.'
+    return None

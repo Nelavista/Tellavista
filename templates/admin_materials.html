@@ -73,6 +73,12 @@
                 <input name="level" placeholder="Level" value="{{ material.level }}" style="width:70px;">
                 <input name="semester" placeholder="Semester" value="{{ material.semester }}" style="width:130px;">
                 <input name="course_code" placeholder="Course code" value="{{ material.course_code or '' }}" style="width:110px;">
+                <select name="university" style="width:170px;">
+                    <option value="" {{ 'selected' if not material.university else '' }}>Universal (any school)</option>
+                    {% for uni in universities %}
+                    <option value="{{ uni.name }}" {{ 'selected' if material.university == uni.name else '' }}>{{ uni.name }}</option>
+                    {% endfor %}
+                </select>
                 <select name="material_type" style="width:150px;">
                     <option value="">Uncategorized</option>
                     {% for key, label in material.MATERIAL_TYPE_LABELS.items() %}

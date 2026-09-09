@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash, current_app
 from datetime import datetime, timedelta
+import hashlib
 import re
 import secrets
 from models import User
@@ -8,10 +9,43 @@ from extensions import db, mail, limiter, oauth  # Assuming 'mail' is initialize
 from flask_mail import Message
 from logging_config import logger
 from config import GOOGLE_OAUTH_ENABLED
+from utils.validation import password_strength_error
 
 auth_bp = Blueprint('auth', __name__)
 
 EMAIL_VERIFY_TOKEN_HOURS = 48
+RESET_TOKEN_MINUTES = 30
+
+
+def _hash_token(token):
+    """SHA-256 hex digest of a reset/verification token -- see models.py's
+    reset_token_hash / email_verify_token_hash docstrings for why only the hash is ever
+    persisted. The raw token itself always comes from secrets.token_urlsafe(32) (256 bits
+    of entropy), so a fast, unsalted hash is fine here -- unlike a password, there's no
+    realistic low-entropy input for an attacker with DB access to brute force. Hashing
+    (rather than e.g. encrypting) also means the lookup stays a plain indexed equality
+    query: hash the incoming token and compare, same as before but hashed both sides."""
+    return hashlib.sha256(token.encode('utf-8')).hexdigest()
+
+
+def _send_mail_or_raise(msg):
+    """Thin wrapper around mail.send() that fails with a specific, actionable message
+    when SMTP credentials simply aren't configured, instead of letting Flask-Mail attempt
+    a real connection and raise a generic (and, against Gmail, sometimes confusingly
+    worded) SMTPAuthenticationError. This is what routes/auth_routes.py's forgot-password
+    endpoint was tracing back to: MAIL_USERNAME/MAIL_PASSWORD were unset in production, so
+    every send attempt failed the same way and got swallowed into "Unable to send email at
+    this time." -- with nothing in the logs to say *why*. Skipped when MAIL_SUPPRESS_SEND
+    is on (tests and any deliberate dry-run config) since Flask-Mail itself never opens a
+    real connection in that mode either."""
+    if not current_app.config.get('MAIL_SUPPRESS_SEND') and not (
+        current_app.config.get('MAIL_USERNAME') and current_app.config.get('MAIL_PASSWORD')
+    ):
+        raise RuntimeError(
+            'Email is not configured: MAIL_USERNAME and/or MAIL_PASSWORD environment '
+            'variables are not set. See .env.example.'
+        )
+    mail.send(msg)
 
 
 # ---------- Email Sending Functions ----------
@@ -19,10 +53,12 @@ def send_verification_email(user):
     """Sends (or resends) the email-identity-confirmation link. Generates a fresh,
     single-use, expiring token every time -- a previously issued token stops working the
     moment a new one is requested, same single-active-token pattern as password reset
-    below, just a separate token/expiry pair (User.email_verify_token) so verifying an
-    email can never be confused with, or substituted for, resetting a password."""
+    below, just a separate token/expiry pair (User.email_verify_token_hash) so verifying
+    an email can never be confused with, or substituted for, resetting a password. Only
+    the token's hash is persisted (see _hash_token above); the raw token exists only in
+    this function's local variable and the outgoing email, never logged or stored."""
     token = secrets.token_urlsafe(32)
-    user.email_verify_token = token
+    user.email_verify_token_hash = _hash_token(token)
     user.email_verify_token_expiry = datetime.utcnow() + timedelta(hours=EMAIL_VERIFY_TOKEN_HOURS)
     db.session.commit()
 
@@ -50,7 +86,7 @@ def send_verification_email(user):
         html=html_content,
         sender=current_app.config.get('MAIL_DEFAULT_SENDER', 'noreply@nelavista.com')
     )
-    mail.send(msg)
+    _send_mail_or_raise(msg)
 
 
 def send_password_reset_email(user_email, reset_link):
@@ -79,7 +115,7 @@ def send_password_reset_email(user_email, reset_link):
         html=html_content,
         sender=current_app.config.get('MAIL_DEFAULT_SENDER', 'noreply@nelavista.com')
     )
-    mail.send(msg)
+    _send_mail_or_raise(msg)
 
 
 # ---------- Existing Routes ----------
@@ -133,10 +169,15 @@ def signup():
         # always resend it later from the dashboard reminder (see resend_verification_email).
         try:
             send_verification_email(user)
-            flash('Account created! Check your email to confirm your address.', 'success')
-        except Exception as e:
-            logger.error(f"Failed to send verification email to new signup: {e}")
-            flash('Account created successfully!', 'success')
+            flash('Account created! Check your email to verify your Nelavista account.', 'success')
+        except Exception:
+            # logger.exception (not .error(f"...{e}")) captures the full traceback server-
+            # side -- e.g. an SMTPAuthenticationError's real cause -- without putting
+            # anything sensitive in the user-facing flash below. Never include str(e) in
+            # what's shown to the user: some SMTP failures echo back configuration detail.
+            logger.exception('Failed to send verification email to new signup %s', user.id)
+            flash('Account created successfully! We could not send a verification email '
+                  'right now -- you can request one anytime from your dashboard.', 'success')
 
         # Brand-new account: preferred_path is always unset at this point, so
         # post_auth_redirect() sends them through path selection like any first-ever
@@ -317,22 +358,26 @@ def google_callback():
 # ---------- Email Verification Routes ----------
 @auth_bp.route('/verify-email')
 def verify_email():
+    """Renders a dedicated result page (success / expired / invalid) rather than just
+    flashing and redirecting -- the old behavior bounced a logged-out visitor straight to
+    /login with no context on what happened, and gave no way to request a new link without
+    logging in first. The expired/invalid state embeds a resend-by-email form (see
+    resend_verification_public below) for exactly that case."""
     token = request.args.get('token')
-    if not token:
-        flash('Verification link is invalid.', 'error')
-        return redirect(url_for('dashboard.dashboard') if 'user' in session else url_for('auth.login'))
+    logged_in = 'user' in session
 
-    user = User.query.filter_by(email_verify_token=token).first()
+    if not token:
+        return render_template('verify_email_result.html', status='invalid', logged_in=logged_in)
+
+    user = User.query.filter_by(email_verify_token_hash=_hash_token(token)).first()
     if not user or not user.email_verify_token_expiry or user.email_verify_token_expiry < datetime.utcnow():
-        flash('That verification link is invalid or has expired. Request a new one below.', 'error')
-        return redirect(url_for('dashboard.dashboard') if 'user' in session else url_for('auth.login'))
+        return render_template('verify_email_result.html', status='expired', logged_in=logged_in)
 
     user.email_verified = True
-    user.email_verify_token = None
+    user.email_verify_token_hash = None
     user.email_verify_token_expiry = None
     db.session.commit()
-    flash('Email confirmed — thanks!', 'success')
-    return redirect(url_for('dashboard.dashboard') if 'user' in session else url_for('auth.login'))
+    return render_template('verify_email_result.html', status='success', logged_in=logged_in)
 
 
 @auth_bp.route('/verify-email/resend', methods=['POST'])
@@ -341,7 +386,8 @@ def resend_verification_email():
     """Login-required (operates only on the current session's own account) rather than
     taking an email address as input -- sidesteps any 'does this email exist' enumeration
     entirely, since there's nothing to guess: it always targets whoever is already logged
-    in."""
+    in. Used by the dashboard's "Resend email" banner. See resend_verification_public
+    below for the logged-out equivalent (e.g. from an expired verification link)."""
     if 'user' not in session:
         return redirect(url_for('auth.login'))
     user = User.query.filter_by(username=session['user']['username']).first()
@@ -353,10 +399,31 @@ def resend_verification_email():
     try:
         send_verification_email(user)
         flash('Verification email sent — check your inbox.', 'success')
-    except Exception as e:
-        logger.error(f"Failed to resend verification email: {e}")
+    except Exception:
+        logger.exception('Failed to resend verification email for user %s', user.id)
         flash('Could not send the email right now — please try again shortly.', 'error')
     return redirect(request.referrer or url_for('dashboard.dashboard'))
+
+
+@auth_bp.route('/verify-email/resend-public', methods=['POST'])
+@limiter.limit('5 per hour')
+def resend_verification_public():
+    """Same account-enumeration-proof pattern as forgot_password() below (generic
+    response regardless of whether the email exists, is already verified, or the send
+    itself fails) -- reachable from verify_email_result.html's expired/invalid state for
+    someone who isn't (or is no longer) logged in, so "Resend verification email" doesn't
+    require signing back in first."""
+    email = request.form.get('email', '').strip().lower()
+    if email:
+        user = User.query.filter_by(email=email).first()
+        if user and not user.email_verified:
+            try:
+                send_verification_email(user)
+            except Exception:
+                logger.exception('Failed to send verification email via public resend')
+    flash("If an account exists with this email and hasn't been verified yet, "
+          "we've sent a new verification link.", 'success')
+    return redirect(url_for('auth.login'))
 
 
 # ---------- New Password Reset Routes ----------
@@ -372,23 +439,34 @@ def forgot_password():
         user = User.query.filter_by(email=email).first()
 
         if user:
-            # Generate secure token and expiry
+            # Generate secure token and expiry. Only the hash is persisted -- see
+            # models.py's reset_token_hash docstring and _hash_token above.
             token = secrets.token_urlsafe(32)
-            user.reset_token = token
-            user.reset_token_expiry = datetime.utcnow() + timedelta(minutes=30)
+            user.reset_token_hash = _hash_token(token)
+            user.reset_token_expiry = datetime.utcnow() + timedelta(minutes=RESET_TOKEN_MINUTES)
             db.session.commit()
 
-            # Build reset link
+            # request.host_url reflects whatever Host header this request actually
+            # arrived on -- ProxyFix (app.py) trusts Render's X-Forwarded-Proto, so this
+            # is 'https://nelavista.com/...' in production and 'http://localhost:5000/...'
+            # locally, never a hardcoded domain that could point the wrong way.
             reset_link = f"{request.host_url}reset-password?token={token}"
             try:
                 send_password_reset_email(user.email, reset_link)
-            except Exception as e:
-                current_app.logger.error(f"Failed to send reset email: {e}")
-                flash('Unable to send email at this time. Please try again later.', 'error')
-                return redirect(url_for('auth.forgot_password'))
+            except Exception:
+                # Logged with full detail server-side (e.g. "MAIL_USERNAME/MAIL_PASSWORD
+                # not set", or the real SMTPAuthenticationError) -- but the response to
+                # the client below is identical to the "no such account" and "sent fine"
+                # cases. Previously this branch returned a distinct "Unable to send email"
+                # flash *only* when the account existed, which let anyone probe which
+                # emails were registered simply by watching which message they got back
+                # while the mail system was down -- exactly the enumeration this endpoint
+                # is supposed to prevent.
+                logger.exception('Failed to send password reset email for user %s', user.id)
 
-        # Always show the same message (security best practice)
-        flash("If that email exists, you'll receive a reset link.", 'success')
+        # Always the same response, regardless of whether the account exists, is
+        # unverified, or the email send itself failed -- see the comment above.
+        flash("If an account exists with this email, a password reset link has been sent.", 'success')
         return redirect(url_for('auth.login'))
 
     # GET request
@@ -404,7 +482,7 @@ def reset_password():
         return redirect(url_for('auth.forgot_password'))
 
     # Find user by token and check expiry
-    user = User.query.filter_by(reset_token=token).first()
+    user = User.query.filter_by(reset_token_hash=_hash_token(token)).first()
     if not user or not user.reset_token_expiry or user.reset_token_expiry < datetime.utcnow():
         flash('Reset link is invalid or expired.', 'error')
         return redirect(url_for('auth.forgot_password'))
@@ -414,8 +492,9 @@ def reset_password():
         confirm = request.form.get('confirm_password', '')
 
         errors = []
-        if len(password) < 8:
-            errors.append('Password must be at least 8 characters long.')
+        strength_error = password_strength_error(password)
+        if strength_error:
+            errors.append(strength_error)
         if password != confirm:
             errors.append('Passwords do not match.')
 
@@ -424,9 +503,9 @@ def reset_password():
                 flash(err, 'error')
             return render_template('reset_password.html')
 
-        # Update password and clear token
-        user.set_password(password)  # using your existing method
-        user.reset_token = None
+        # Update password and invalidate the token so the same link can't be replayed
+        user.set_password(password)
+        user.reset_token_hash = None
         user.reset_token_expiry = None
         db.session.commit()
 

@@ -519,16 +519,25 @@
                 <div class="card-label">CURRENT SEMESTER</div>
                 <div class="card-value" id="semesterValue">{{ user.semester or 'Not set' }}</div>
             </div>
+            {% if has_curriculum %}
+            <!-- View Curriculum Card -- shown whenever the real University/Faculty/
+                 Department/Course taxonomy actually has course rows for this student's
+                 own university (computed in routes/profile_routes.py), not hardcoded to
+                 any one school -- a student at a university with no course data yet
+                 correctly never sees this. -->
             {% if user.university == 'Lagos State University' %}
-            <!-- View Curriculum Card -- LASU-only: the curriculum data behind this card
-                 only exists for LASU, so it's never shown to students at the other 6
-                 universities Nelavista supports (they'd otherwise land on a "curriculum"
-                 tool that can't actually apply to them). -->
             <div class="info-card" id="viewCurriculumCard" style="cursor: pointer; border: 1px dashed var(--sk-accent);" onclick="showCurriculum()">
                 <div class="card-icon blue-bg"><i class="ri-book-open-line"></i></div>
                 <div class="card-label">COURSE CURRICULUM</div>
                 <div class="card-value" style="font-size: 1rem; color: var(--sk-accent-hover);">View LASU {{ user.department or 'department' }} curriculum →</div>
             </div>
+            {% else %}
+            <a class="info-card" id="viewCurriculumCard" href="{{ url_for('academia.browse_courses') }}" style="cursor: pointer; border: 1px dashed var(--sk-accent); text-decoration: none; color: inherit; display: block;">
+                <div class="card-icon blue-bg"><i class="ri-book-open-line"></i></div>
+                <div class="card-label">COURSE CURRICULUM</div>
+                <div class="card-value" style="font-size: 1rem; color: var(--sk-accent-hover);">View {{ user.department or 'department' }} curriculum →</div>
+            </a>
+            {% endif %}
             {% endif %}
         </div>
 
@@ -556,14 +565,10 @@
                     <label class="form-label" for="universitySelect">University</label>
                     <select name="university" id="universitySelect" class="form-select">
                         <option value="">Select University</option>
-                        <option value="Lagos State University" {% if user.university == "Lagos State University" %}selected{% endif %}>Lagos State University (LASU)</option>
-                        <option value="University of Lagos" {% if user.university == "University of Lagos" %}selected{% endif %}>University of Lagos (UNILAG)</option>
-                        <option value="Federal University Dutsin-Ma" {% if user.university == "Federal University Dutsin-Ma" %}selected{% endif %}>Federal University Dutsin-Ma (FUDMA)</option>
-                        <option value="University of Abuja" {% if user.university == "University of Abuja" %}selected{% endif %}>University of Abuja (UNIABUJA)</option>
-                        <option value="University of Ilorin" {% if user.university == "University of Ilorin" %}selected{% endif %}>University of Ilorin (UNILORIN)</option>
-                        <option value="Kwara State University" {% if user.university == "Kwara State University" %}selected{% endif %}>Kwara State University (KWASU)</option>
-                        <option value="University of Port Harcourt" {% if user.university == "University of Port Harcourt" %}selected{% endif %}>University of Port Harcourt (UNIPORT)</option>
-                        {% if user.university and user.university not in ["Lagos State University", "University of Lagos", "Federal University Dutsin-Ma", "University of Abuja", "University of Ilorin", "Kwara State University", "University of Port Harcourt"] %}
+                        {% for uni in universities %}
+                        <option value="{{ uni.name }}" {% if user.university == uni.name %}selected{% endif %}>{{ uni.name }}{{ ' (' + uni.short_name + ')' if uni.short_name else '' }}</option>
+                        {% endfor %}
+                        {% if user.university and user.university not in universities|map(attribute='name')|list %}
                         <option value="{{ user.university }}" selected>{{ user.university }} (previously set)</option>
                         {% endif %}
                     </select>

@@ -24,6 +24,7 @@ from config import (DEBUG_MODE, SECRET_KEY, DATABASE_URL, MAX_CONTENT_LENGTH,
                      GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET)
 from extensions import db, socketio, mail, csrf, limiter, oauth
 import logging_config
+from logging_config import logger
 from database import init_database, create_default_user, cleanup_stale_files
 from routes.auth_routes import auth_bp
 from routes.dashboard_routes import dashboard_bp
@@ -45,6 +46,7 @@ from routes.admin_routes import admin_bp
 from routes.community_routes import community_bp
 from routes.academia_routes import academia_bp
 from routes.admin_academia_routes import admin_academia_bp
+from routes.campus_map_routes import campus_map_bp
 # Skills is rebuilt around Learn -> Practice -> Build -> Verify -> Showcase -> Get
 # Discovered -> Earn. Employer (talent discovery + messaging) is back on, now reading the
 # same get_talent_stats() a student's own Talent Profile shows. The old /tech-skills
@@ -97,9 +99,24 @@ def create_app():
     app.config['MAIL_PORT'] = int(os.environ.get('MAIL_PORT', 587))
     app.config['MAIL_USE_TLS'] = os.environ.get('MAIL_USE_TLS', 'True').lower() == 'true'
     app.config['MAIL_USE_SSL'] = os.environ.get('MAIL_USE_SSL', 'False').lower() == 'true'
-    app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME', 'your-email@gmail.com')
-    app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD', 'your-app-password')
+    # No placeholder fallback here on purpose -- 'your-email@gmail.com' / 'your-app-
+    # password' used to be the defaults, which meant a deploy that forgot to set these
+    # would silently attempt a real SMTP login with obviously-fake credentials on every
+    # password-reset/verification email, fail with an auth error, and get swallowed by
+    # routes/auth_routes.py's try/except into the generic "Unable to send email" message
+    # -- indistinguishable from a real outage. Left unset (None) instead, so the warning
+    # below fires at startup and routes/auth_routes.py's pre-flight check in
+    # _send_mail_or_raise() logs the *actual* cause ("MAIL_USERNAME/MAIL_PASSWORD not
+    # set") the moment anyone tries to send, rather than a generic SMTP exception.
+    app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME') or None
+    app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD') or None
     app.config['MAIL_DEFAULT_SENDER'] = os.environ.get('MAIL_DEFAULT_SENDER', 'noreply@nelavista.com')
+    if not (app.config['MAIL_USERNAME'] and app.config['MAIL_PASSWORD']):
+        logger.warning(
+            'MAIL_USERNAME and/or MAIL_PASSWORD are not set -- password-reset and '
+            'email-verification messages will fail to send until both are configured '
+            '(see .env.example).'
+        )
 
     os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
     os.makedirs(app.config['IMAGE_FOLDER'], exist_ok=True)
@@ -265,6 +282,7 @@ def create_app():
     app.register_blueprint(community_bp, url_prefix='/')
     app.register_blueprint(academia_bp, url_prefix='/')
     app.register_blueprint(admin_academia_bp, url_prefix='/')
+    app.register_blueprint(campus_map_bp, url_prefix='/')
     app.register_blueprint(skills_bp, url_prefix='/')
     app.register_blueprint(admin_skills_bp, url_prefix='/')
     app.register_blueprint(employer_bp, url_prefix='/')

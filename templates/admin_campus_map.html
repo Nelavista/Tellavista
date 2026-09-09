@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Campus Map</title>
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Inter',system-ui,sans-serif; }
+        body { background:#0d1117; color:#e6edf3; padding:20px; }
+        .container { max-width:1000px; margin:0 auto; }
+        h1 { font-size:1.8rem; margin-bottom:8px; }
+        .hint { color:#8b949e; font-size:0.85rem; margin-bottom:20px; }
+        .uni-card { background:#161b22; border:1px solid #21262d; border-radius:12px; padding:20px; margin-bottom:16px; }
+        .uni-title { font-size:1.15rem; font-weight:700; margin-bottom:4px; }
+        .uni-short { color:#8b949e; font-size:0.85rem; margin-bottom:14px; }
+        .campus-block { border-top:1px solid #21262d; padding-top:12px; margin-top:12px; }
+        .campus-title { font-weight:600; color:#58a6ff; margin-bottom:8px; }
+        .campus-coords { color:#6e7681; font-size:0.78rem; margin-bottom:8px; }
+        .loc-row { display:flex; align-items:center; justify-content:space-between; padding:8px 0; font-size:0.9rem; border-bottom:1px solid #1c2128; }
+        .loc-name { color:#e6edf3; }
+        .loc-meta { color:#8b949e; font-size:0.78rem; margin-left:8px; }
+        .del-btn { background:transparent; border:1px solid #30363d; color:#f85149; padding:4px 10px; border-radius:6px; cursor:pointer; font-size:0.78rem; }
+        .del-btn:hover { border-color:#f85149; }
+        .add-form { display:flex; gap:8px; margin-top:14px; flex-wrap:wrap; }
+        .add-form input, .add-form select { background:#0d1117; border:1px solid #30363d; color:#e6edf3; padding:8px 10px; border-radius:6px; font-size:0.85rem; }
+        .add-form input[type=number] { width:110px; }
+        .add-form button { background:#3b82f6; border:none; color:#fff; padding:8px 16px; border-radius:6px; font-weight:600; cursor:pointer; font-size:0.85rem; }
+        .add-form button:hover { background:#2563eb; }
+        .empty { text-align:center; padding:60px 20px; color:#6e7681; }
+    </style>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
+</head>
+<body>
+{% include 'components/admin_nav.html' %}
+    <div class="container">
+        <h1>🗺️ Campus Map</h1>
+        <div class="hint">Every university gets a Main Campus automatically. Add real, sourced pins below -- coordinates are never guessed.</div>
+
+        {% if not universities %}
+        <div class="empty">
+            <div style="font-size:3rem; margin-bottom:10px;">🏫</div>
+            <div>No universities seeded yet -- add one via Academia first.</div>
+        </div>
+        {% endif %}
+
+        {% for uni in universities %}
+        <div class="uni-card">
+            <div class="uni-title">{{ uni.name }}</div>
+            {% if uni.short_name %}<div class="uni-short">{{ uni.short_name }}</div>{% endif %}
+
+            {% for campus in uni.campuses %}
+            <div class="campus-block">
+                <div class="campus-title">{{ campus.name }}{{ ' (main)' if campus.is_main else '' }}</div>
+                <div class="campus-coords">
+                    {% if campus.latitude and campus.longitude %}{{ campus.latitude }}, {{ campus.longitude }}{% else %}No coordinates set yet{% endif %}
+                    · {{ campus.locations.count() }} location{{ 's' if campus.locations.count() != 1 else '' }}
+                </div>
+                {% for loc in campus.locations %}
+                <div class="loc-row" data-loc-id="{{ loc.id }}">
+                    <span class="loc-name">{{ loc.name }}<span class="loc-meta">{{ loc.category or 'uncategorized' }} · {{ loc.latitude }}, {{ loc.longitude }}</span></span>
+                    <button class="del-btn" onclick="deleteLocation({{ loc.id }})">Delete</button>
+                </div>
+                {% endfor %}
+                <form class="add-form" onsubmit="return addLocation(event, {{ campus.id }})">
+                    <input type="text" name="name" placeholder="Location name" required>
+                    <select name="category">
+                        <option value="">Category</option>
+                        <option value="faculty">Faculty</option>
+                        <option value="department">Department/Lab</option>
+                        <option value="lecture">Lecture Hall</option>
+                        <option value="administrative">Administrative</option>
+                        <option value="healthcare">Healthcare</option>
+                        <option value="religious">Religious</option>
+                        <option value="ict">ICT</option>
+                        <option value="bank">Bank</option>
+                        <option value="sports">Sports</option>
+                        <option value="commercial">Commercial</option>
+                        <option value="utility">Utility</option>
+                        <option value="general">General</option>
+                    </select>
+                    <input type="number" step="any" name="latitude" placeholder="Latitude" required>
+                    <input type="number" step="any" name="longitude" placeholder="Longitude" required>
+                    <button type="submit">+ Add Location</button>
+                </form>
+            </div>
+            {% endfor %}
+        </div>
+        {% endfor %}
+    </div>
+
+    <script>
+        function deleteLocation(id) {
+            if (!confirm('Delete this campus location?')) return;
+            fetch(`/admin/campus-map/locations/${id}/delete`, { method: 'POST' }).then(r => r.json()).then(d => {
+                if (!d.success) { alert('Error: ' + (d.error || 'unknown error')); return; }
+                location.reload();
+            });
+        }
+        function addLocation(e, campusId) {
+            e.preventDefault();
+            const fd = new FormData(e.target); fd.append('campus_id', campusId);
+            fetch('/admin/campus-map/locations/new', { method: 'POST', body: fd }).then(r => r.json()).then(d => {
+                if (!d.success) { alert('Error: ' + d.error); return; }
+                location.reload();
+            });
+            return false;
+        }
+    </script>
+</body>
+</html>

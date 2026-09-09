@@ -1,9 +1,23 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash
 from utils.helpers import login_required
-from models import User
+from models import User, University, Faculty, Department, Course
 from extensions import db
+from services.academic_context import sync_user_university
 
 profile_bp = Blueprint('profile', __name__)
+
+
+def _has_curriculum(user):
+    """True once the real University -> Faculty -> Department -> Course taxonomy has any
+    course row for this student's own university -- drives the profile page's "View
+    Curriculum" card. Data-driven (not hardcoded to any one school) so it correctly turns
+    on for every university that actually has course data and off for one that doesn't."""
+    if not user.university_id:
+        return False
+    return db.session.query(Course.id).join(Department).join(Faculty).filter(
+        Faculty.university_id == user.university_id
+    ).first() is not None
+
 
 @profile_bp.route('/profile', methods=['GET', 'POST'])
 @login_required
@@ -16,7 +30,7 @@ def profile():
 
     if request.method == 'POST':
         user.name = request.form.get('name', '').strip() or None
-        user.university = request.form.get('university', '').strip() or None
+        sync_user_university(user, request.form.get('university', '').strip())
         user.faculty = request.form.get('faculty', '').strip() or None
         user.department = request.form.get('department', '').strip() or None
 
@@ -37,4 +51,5 @@ def profile():
         flash('Profile updated successfully!', 'success')
         return redirect(url_for('profile.profile'))
 
-    return render_template('profile.html', user=user)
+    universities = University.query.filter_by(active=True).order_by(University.name).all()
+    return render_template('profile.html', user=user, universities=universities, has_curriculum=_has_curriculum(user))

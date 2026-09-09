@@ -16,7 +16,7 @@ fields and an empty course list -- callers must treat that as "no data yet", nev
 an error.
 """
 from extensions import db
-from models import University, Faculty, Department, Course
+from models import University, Faculty, Department, Course, Campus
 
 
 class AcademicContext:
@@ -66,6 +66,31 @@ def resolve_academic_context(user, level=None):
         )
 
     return AcademicContext(university=university, faculty=faculty, department=department, courses=courses)
+
+
+def resolve_university(university_name):
+    """Case-insensitive-trim match against University.name -- the same rule
+    resolve_academic_context uses above. Returns None if the string is blank or doesn't
+    match any known university (typo, or a school not added yet); never guesses."""
+    if not university_name or not university_name.strip():
+        return None
+    return University.query.filter(
+        db.func.lower(University.name) == university_name.strip().lower()
+    ).first()
+
+
+def sync_user_university(user, university_name):
+    """Sets user.university (free text, unchanged) and resolves+sets
+    user.university_id/campus_id alongside it -- the one place this matching happens so
+    routes/profile_routes.py and routes/materials_routes.py's complete_profile() don't
+    each reimplement it. Called whenever a student sets/changes their university."""
+    user.university = university_name or None
+    university = resolve_university(university_name)
+    user.university_id = university.id if university else None
+    user.campus_id = None
+    if university:
+        campus = Campus.query.filter_by(university_id=university.id, is_main=True).first()
+        user.campus_id = campus.id if campus else None
 
 
 def find_course(department, code):

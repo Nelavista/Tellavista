@@ -1,6 +1,7 @@
 from datetime import datetime
 import json
 import re
+from sqlalchemy import event
 from extensions import db
 
 class User(db.Model):
@@ -19,19 +20,38 @@ class User(db.Model):
     joined_on = db.Column(db.DateTime, default=datetime.utcnow)
     last_login = db.Column(db.DateTime)
     name = db.Column(db.String(100))
+    # Free-text, kept as the authoritative display/legacy value -- every existing
+    # template/filter that reads user.university keeps working unchanged. university_id
+    # below is the proper relational reference (see models.py's ACADEMIA TAXONOMY
+    # section), kept in sync whenever university is set (routes/profile_routes.py,
+    # routes/materials_routes.py's complete_profile()) rather than replacing this column.
     university = db.Column(db.String(150))
     faculty = db.Column(db.String(150))
     department = db.Column(db.String(150))
     level = db.Column(db.String(50))
     semester = db.Column(db.String(20))
-    reset_token = db.Column(db.String(200), nullable=True)
+    # Nullable: NULL means "university string didn't resolve to a known University row"
+    # (typo, blank, or a school not yet in the table) -- same honest-unresolved behavior
+    # as services/academic_context.py, never a forced/guessed match.
+    university_id = db.Column(db.Integer, db.ForeignKey('universities.id'), nullable=True)
+    campus_id = db.Column(db.Integer, db.ForeignKey('campuses.id'), nullable=True)
+
+    university_ref = db.relationship('University', foreign_keys=[university_id])
+    campus_ref = db.relationship('Campus', foreign_keys=[campus_id])
+    # Only the SHA-256 hash of the reset token is ever stored -- routes/auth_routes.py
+    # emails the raw, high-entropy token (secrets.token_urlsafe(32)) to the user and never
+    # persists it; the DB holds just enough to verify a presented token by re-hashing and
+    # comparing, the same reason a password itself is never stored, only its hash. A stolen
+    # DB row alone can't be turned back into a usable reset link.
+    reset_token_hash = db.Column(db.String(64), nullable=True, index=True)
     reset_token_expiry = db.Column(db.DateTime, nullable=True)
     # Email identity verification -- separate token/flow from password reset above.
     # email_verified defaults False for new signups (see routes/auth_routes.py); existing
     # rows created before this column existed are backfilled True by the migration so
     # accounts that already logged in successfully aren't suddenly locked out.
     email_verified = db.Column(db.Boolean, nullable=False, default=False)
-    email_verify_token = db.Column(db.String(200), nullable=True)
+    # Same hash-at-rest pattern as reset_token_hash above.
+    email_verify_token_hash = db.Column(db.String(64), nullable=True, index=True)
     email_verify_token_expiry = db.Column(db.DateTime, nullable=True)
     is_admin = db.Column(db.Boolean, nullable=False, default=False)
     # Which top-level experience the user starts in: 'academia' or 'tech_skills'.
@@ -1743,12 +1763,101 @@ class University(db.Model):
     # <option value="..."> strings in profile_completion_modal.html / profile.html's
     # university <select>, e.g. "Lagos State University"
     short_name = db.Column(db.String(20))  # "LASU", "UNILAG", "UI" -- display only
+    # URL/localStorage-safe identifier (e.g. "lagos-state-university"), backfilled from
+    # name at migration time -- used by the campus map's per-university localStorage key
+    # prefix so two schools' saved map preferences on a shared browser never collide.
+    slug = db.Column(db.String(160), unique=True, nullable=True)
+    # False hides a university from the student-facing picker without deleting its row
+    # (and everything hanging off it -- Faculty/Department/Course/Campus/existing users)
+    # -- e.g. a school added by mistake, or retired from active support.
+    active = db.Column(db.Boolean, nullable=False, default=True, server_default='1')
+    # Deliberately left blank at seed time rather than guessed -- see models.py's
+    # ACADEMIA TAXONOMY note above and seed_academia.py: an admin fills these in via
+    # /admin/academia once real, sourced data is available (never invented here).
+    location = db.Column(db.String(150), nullable=True)   # e.g. "Akure, Ondo State"
+    logo_url = db.Column(db.String(500), nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     faculties = db.relationship('Faculty', backref='university', lazy='dynamic', cascade='all, delete-orphan')
+    campuses = db.relationship('Campus', backref='university', lazy='dynamic', cascade='all, delete-orphan')
 
     def to_dict(self):
-        return {'id': self.id, 'name': self.name, 'short_name': self.short_name}
+        return {
+            'id': self.id, 'name': self.name, 'short_name': self.short_name,
+            'slug': self.slug, 'location': self.location, 'logo_url': self.logo_url,
+        }
+
+
+@event.listens_for(University, 'before_insert')
+def _university_auto_slug(mapper, connection, target):
+    """Every University row needs a slug (campus-map.html's per-university localStorage
+    key prefix reads it) -- auto-derived here so every creation path (seed_academia.py,
+    /admin/academia's new_university(), a future one) gets one for free instead of each
+    one having to remember to compute it, the way migration e1a4c7f92b58 did for rows
+    that already existed when this column was added."""
+    if target.slug:
+        return
+    base = re.sub(r'[^a-z0-9]+', '-', (target.name or '').lower()).strip('-') or 'university'
+    slug = base
+    n = 2
+    while connection.execute(
+        db.select(University.id).where(University.slug == slug)
+    ).first() is not None:
+        slug = f'{base}-{n}'
+        n += 1
+    target.slug = slug
+
+
+class Campus(db.Model):
+    """University -> Campus -> CampusLocation. Most schools have exactly one row here
+    today (their main campus) -- modeled as a table rather than columns directly on
+    University so a school with a genuine second campus can be added later without a
+    schema change. latitude/longitude stay null until real, sourced coordinates exist
+    for that school (see campus-map.html / seed_campus_map.py) -- never guessed."""
+    __tablename__ = 'campuses'
+
+    id = db.Column(db.Integer, primary_key=True)
+    university_id = db.Column(db.Integer, db.ForeignKey('universities.id'), nullable=False, index=True)
+    name = db.Column(db.String(100), nullable=False, default='Main Campus')
+    latitude = db.Column(db.Float, nullable=True)
+    longitude = db.Column(db.Float, nullable=True)
+    is_main = db.Column(db.Boolean, nullable=False, default=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    locations = db.relationship('CampusLocation', backref='campus', lazy='dynamic', cascade='all, delete-orphan')
+
+    def to_dict(self):
+        return {
+            'id': self.id, 'university_id': self.university_id, 'name': self.name,
+            'latitude': self.latitude, 'longitude': self.longitude, 'is_main': self.is_main,
+        }
+
+
+class CampusLocation(db.Model):
+    """One pin on a campus map (lecture hall, faculty building, hostel, library, ...).
+    Only LASU has real rows today, migrated from the coordinates that used to live
+    hardcoded in templates/campus-map.html (see seed_campus_map.py) -- every other
+    campus starts empty rather than with invented buildings, per product policy."""
+    __tablename__ = 'campus_locations'
+
+    id = db.Column(db.Integer, primary_key=True)
+    campus_id = db.Column(db.Integer, db.ForeignKey('campuses.id'), nullable=False, index=True)
+    name = db.Column(db.String(200), nullable=False)
+    category = db.Column(db.String(40), nullable=True)  # e.g. 'faculty', 'library', 'hostel', 'lecture_hall'
+    description = db.Column(db.Text, nullable=True)
+    latitude = db.Column(db.Float, nullable=False)
+    longitude = db.Column(db.Float, nullable=False)
+    image_path = db.Column(db.String(200), nullable=True)  # matches routes/core_routes.py's /images/<filename>
+    is_active = db.Column(db.Boolean, nullable=False, default=True)
+    created_by = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def to_dict(self):
+        return {
+            'id': self.id, 'name': self.name, 'category': self.category,
+            'description': self.description, 'latitude': self.latitude, 'longitude': self.longitude,
+            'image_path': self.image_path,
+        }
 
 
 class Faculty(db.Model):
@@ -1938,6 +2047,16 @@ class CBTQuestion(db.Model):
     # Written-only field (question_type='written'); left null for 'cbt'
     mark_scheme = db.Column(db.Text)
     is_active = db.Column(db.Boolean, default=True)
+    # All nullable, all NULL on every row that exists today -- NULL means "universal",
+    # shown to every school practicing this subject_code, identical to current behavior.
+    # Lets a future admin/import tag a question to one school's own course numbering
+    # without affecting the shared bank everyone else still draws from (see
+    # routes/cbt_routes.py's question-selection query, same NULL-is-universal pattern
+    # already proven by Material.university in routes/materials_routes.py).
+    university_id = db.Column(db.Integer, db.ForeignKey('universities.id'), nullable=True)
+    faculty_id = db.Column(db.Integer, db.ForeignKey('faculties.id'), nullable=True)
+    department_id = db.Column(db.Integer, db.ForeignKey('departments.id'), nullable=True)
+    course_id = db.Column(db.Integer, db.ForeignKey('courses.id'), nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     @property

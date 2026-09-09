@@ -29,6 +29,7 @@ Usage:
     python seed_topic_explanations_broad.py --apply --course CSC201   # one course's topics
 """
 import sys
+import time
 
 APPLY = '--apply' in sys.argv
 LIMIT = None
@@ -60,32 +61,64 @@ def main():
             return
 
         succeeded = failed = 0
-        for i, topic_id in enumerate(topic_ids):
-            topic = db.session.get(Topic, topic_id)
-            course = topic.course
-            code, title, topic_title = course.code, course.title, topic.title
+        consecutive_failures = 0
+        total = len(topic_ids)
+        i = 0
+        while i < total:
+            topic_id = topic_ids[i]
+            # The re-fetch itself (db.session.get + the course/title lazy-loads it
+            # triggers) must be INSIDE the try: a network/DB blip here is exactly as
+            # likely as one during the AI call, and previously this ran unguarded --
+            # one bad fetch after a rollback-forced db.session.remove() crashed the
+            # whole process uncaught instead of being logged as a single [FAIL].
+            code = title = topic_title = None
             try:
+                topic = db.session.get(Topic, topic_id)
+                course = topic.course
+                code, title, topic_title = course.code, course.title, topic.title
+
                 content = generate_topic_explanation(code, title, topic_title)
                 topic.explanation = content
                 if not topic.content_source:
                     topic.content_source = 'ai_draft'
                 db.session.commit()
                 succeeded += 1
+                consecutive_failures = 0
+                i += 1
             except Exception as e:
                 # Same session-recovery pattern as seed_topics_broad.py: rollback can
-                # itself fail after a dropped connection, and code/title/topic_title were
-                # captured before the AI call so this print never touches a possibly-
-                # detached object.
+                # itself fail after a dropped connection, in which case
+                # db.session.remove() discards it so the next iteration's re-fetch opens
+                # a fresh one instead of cascading failures.
                 try:
                     db.session.rollback()
                 except Exception:
                     db.session.remove()
-                print(f"[FAIL] {code} / {topic_title}: {e}")
-                failed += 1
-                continue
+                consecutive_failures += 1
 
-            if (i + 1) % 20 == 0:
-                print(f"[{i + 1}/{len(topic_ids)}] ok={succeeded} failed={failed} -- last: {code} / {topic_title}")
+                # A DNS/network outage fails every subsequent lookup near-instantly, so
+                # without this the loop races through the ENTIRE remaining queue as
+                # pointless failures in minutes and then exits "DONE" having actually
+                # finished almost nothing, leaving a human to notice and start a fresh
+                # run. 5+ failures in a row is a strong signal of an outage rather than
+                # a one-off bad response, so pause here WITHOUT advancing `i` and retry
+                # the same topic once the wait is up -- this run self-heals once the
+                # network returns and actually finishes the queue it started with,
+                # instead of needing a restart. An isolated failure (< 5 in a row)
+                # still gets logged and skipped immediately, same as before.
+                if consecutive_failures >= 5:
+                    wait_s = min(30 * (consecutive_failures - 4), 300)
+                    print(f"[WAIT] {consecutive_failures} failures in a row (last: {e}) -- pausing {wait_s}s, will retry topic_id={topic_id}")
+                    time.sleep(wait_s)
+                    continue
+
+                label = f"{code} / {topic_title}" if code else f"topic_id={topic_id}"
+                print(f"[FAIL] {label}: {e}")
+                failed += 1
+                i += 1
+
+            if i % 20 == 0:
+                print(f"[{i}/{total}] ok={succeeded} failed={failed} -- last: {code} / {topic_title}")
 
         print(f"\nDONE. {succeeded} topic(s) seeded with explanations, {failed} failed.")
 

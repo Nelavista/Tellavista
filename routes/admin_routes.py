@@ -1,7 +1,7 @@
 from datetime import datetime
 from flask import Blueprint, render_template, jsonify, session, request
 from utils.helpers import login_required, admin_required
-from models import User, Material, Video, Group, GroupMember, GroupMessage, Room, StudySession, Exam, EmployerProfile, AdminAuditLog
+from models import User, Material, Video, Group, GroupMember, GroupMessage, Room, StudySession, Exam, EmployerProfile, AdminAuditLog, University
 from sqlalchemy import func
 from services.meeting_service import end_room_session, rooms as live_rooms_memory
 from extensions import db
@@ -260,7 +260,8 @@ def admin_materials():
         .order_by(Material.id.desc()).all()
     )
 
-    return render_template('admin_materials.html', pending=pending, user=user, active_page='materials')
+    universities = University.query.filter_by(active=True).order_by(University.name).all()
+    return render_template('admin_materials.html', pending=pending, user=user, universities=universities, active_page='materials')
 
 
 @admin_bp.route('/admin/materials/approve/<int:material_id>', methods=['POST'])
@@ -289,7 +290,10 @@ def edit_material(material_id):
     # title/department/level/semester are NOT NULL on Material -- an empty submission
     # for one of those leaves the existing value in place rather than nulling it out.
     required_fields = ('title', 'department', 'level', 'semester')
-    nullable_fields = ('course_code', 'course_type', 'description', 'author')
+    # university is nullable -- NULL means "universal", shown to every school (see
+    # routes/materials_routes.py's fetch_materials() scoping filter). Lets an admin
+    # correct a mistagged upload or widen/narrow its audience without re-uploading it.
+    nullable_fields = ('course_code', 'course_type', 'description', 'author', 'university')
     for field in required_fields:
         if field in request.form:
             value = request.form[field].strip()

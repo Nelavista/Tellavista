@@ -56,6 +56,14 @@ UNIVERSITY_SHORT_NAMES = {
     'University of Ilorin': 'UNILORIN',
     'Kwara State University': 'KWASU',
     'University of Port Harcourt': 'UNIPORT',
+    # 10-university expansion (2026-09) -- see ACTIVE_UNIVERSITIES_WITHOUT_TAXONOMY_YET
+    # below; these 6 are brand new, no registrar CSV data exists for any of them yet.
+    'Federal University of Technology, Akure': 'FUTA',
+    'Federal University of Technology, Minna': 'FUT Minna',
+    'University of Nigeria, Nsukka': 'UNN',
+    'University of Benin': 'UNIBEN',
+    'Modibbo Adama University': 'MAU',
+    'Obafemi Awolowo University': 'OAU',
 }
 
 # Universities selectable in the student-facing university picker (see
@@ -72,6 +80,16 @@ ACTIVE_UNIVERSITIES_WITHOUT_TAXONOMY_YET = [
     'University of Ilorin',
     'Kwara State University',
     'University of Port Harcourt',
+    # 10-university expansion (2026-09) -- FUTA/FUT Minna/UNN/UNIBEN/MAU/OAU. Each gets
+    # the NUC CCMAS national-core courses layered on top via seed_ccmas_core.py, same as
+    # FUDMA/UNIABUJA/UNILORIN/KWASU/UNIPORT above -- never hand-invented department/course
+    # rows for a school with no registrar CSV.
+    'Federal University of Technology, Akure',
+    'Federal University of Technology, Minna',
+    'University of Nigeria, Nsukka',
+    'University of Benin',
+    'Modibbo Adama University',
+    'Obafemi Awolowo University',
 ]
 
 

@@ -8,11 +8,6 @@ def about():
     return render_template('about.html')
 
 
-@pages_bp.route('/campus-map')
-def campus_map():
-    return render_template('campus-map.html')
-
-
 @pages_bp.route('/privacy-policy')
 def privacy_policy():
     return render_template('privacy-policy.html')

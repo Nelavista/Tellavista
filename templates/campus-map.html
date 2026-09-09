@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-  <title>Nelavista · LASU Campus Map (draggable landmarks)</title>
+  <title>Nelavista · {{ university_name }} Campus Map (draggable landmarks)</title>
   
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <!-- Leaflet Routing Machine CSS -->
@@ -298,6 +298,16 @@
     .popup-nav-btn:hover {
       background-color: #333;
     }
+
+    .no-data-banner {
+      background-color: #fff8e1;
+      border-bottom: 1px solid #f0d98c;
+      padding: 0.7rem 1.2rem;
+      font-size: 0.9rem;
+      color: #6b5200;
+      text-align: center;
+    }
+    .no-data-banner.hidden { display: none; }
   </style>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
@@ -305,8 +315,8 @@
 <body>
   <header class="header">
     <div class="header-left">
-      <h1>Nelavista LASU Campus Map</h1>
-      <p>Interactive map of Lagos State University. Landmarks are draggable — drag to adjust positions (saved locally).</p>
+      <h1>Nelavista {{ university_name }} Campus Map</h1>
+      <p>Interactive map of {{ university_name }}. Landmarks are draggable — drag to adjust positions (saved locally).</p>
     </div>
     <div class="location-dropdown">
       <select id="campusLocationSelect" aria-label="Select a campus location">
@@ -314,6 +324,11 @@
       </select>
     </div>
   </header>
+
+  <!-- NO MAP DATA YET BANNER -->
+  <div id="noDataBanner" class="no-data-banner hidden">
+    <i class="fas fa-circle-info"></i> Campus map data for {{ university_name }} is coming soon — check back later.
+  </div>
 
   <!-- LOCATION PERMISSION BANNER -->
   <div id="locationPrompt" class="location-prompt">
@@ -374,11 +389,11 @@
   </button>
 
   <footer class="footer">
-    <p>Nelavista Campus Map &copy; 2026 | Lagos State University (LASU) | 
-       <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors | 
+    <p>Nelavista Campus Map &copy; 2026 | {{ university_name }} |
+       <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors |
        Powered by <a href="https://leafletjs.com/" target="_blank">Leaflet</a>
     </p>
-    <p style="margin-top:0.3rem; font-size:0.7rem;">Draggable landmarks – photos: images/[id].jpeg (e.g., arcade.jpeg).</p>
+    <p style="margin-top:0.3rem; font-size:0.7rem;">Draggable landmarks – positions saved to your browser only.</p>
   </footer>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -388,11 +403,15 @@
   <script src="https://unpkg.com/leaflet-rotatedmarker@0.2.0/leaflet.rotatedMarker.js"></script>
 
   <script>
+    // Per-university localStorage key prefix -- so two schools' saved map preferences on
+    // a shared browser (e.g. a support/admin account) never collide with each other.
+    const LS_PREFIX = {{ university_slug|tojson }};
+
     // ---------- LOCATION PERMISSION PROMPT ----------
     const promptElement = document.getElementById('locationPrompt');
     const promptTurnOn = document.getElementById('promptTurnOn');
     const promptLater = document.getElementById('promptLater');
-    const DISMISSAL_KEY = 'lasu_location_prompt_dismissed';
+    const DISMISSAL_KEY = `${LS_PREFIX}_location_prompt_dismissed`;
     let promptInteracted = false;
 
     function hideLocationPrompt() {
@@ -407,64 +426,16 @@
     promptTurnOn.addEventListener('click', function() { hideLocationPrompt(); locateUser(); });
     promptLater.addEventListener('click', function() { localStorage.setItem(DISMISSAL_KEY, 'true'); hideLocationPrompt(); });
 
-    // ---------- MAP DATA (alphabetical order) ----------
-    const locations = [
-      { id: "makanjuola", name: "Aderemi Makanjuola Lecture Theatre", coords: [6.466381, 3.201246] },
-      { id: "Agriculture_Society_Building", name: "Agriculture Society Building", coords: [6.469889, 3.200425] },
-      { id: "Abisogun_Leigh_Science_Building", name: "Abisogun Leigh Science Building", coords: [6.467138, 3.199167] },
-      { id: "arcade", name: "Arcade (Student Commercial Hub)", coords: [6.465718, 3.203115] },
-      { id: "bank_arena", name: "Bank Arena", coords: [6.464388, 3.204019] },
-      { id: "bolasciencecomplex", name: "Bola Ahmed Tinubu Science Complex", coords: [6.466131, 3.200286] },
-      { id: "cbt_center", name: "CBT Center (Exam Hall)", coords: [6.475192, 3.201302] },
-      { id: "siwes", name: "Central industrial liason unit (A.K.A) SIWES", coords: [6.464279, 3.200211] },
-      { id: "cessed", name: "Centre for environmental studies and substanable Development (CESSED)", coords: [6.465832, 3.201125] },
-      { id: "Centre-of-General-Nigerian-Studies", name: "Centre of General Nigerian Studies (C.G.N.S)", coords: [6.464905, 3.200186] },
-      { id: "Chapel_Of_Light", name: "Chapel Of Light", coords: [6.464979, 3.198642] },
-      { id: "cheif_s.l._edu_lecture_hall", name: "Cheif S.L. Edu Lecture Hall", coords: [6.468023, 3.200031] },
-      { id: "Department_Of_Fisheries", name: "Department Of Fisheries Lagos State University", coords: [6.470422, 3.200270] },
-      { id: "dsdp", name: "Directorate of Sandwich Degree Program", coords: [6.470616, 3.201238] },
-      { id: "economics_hall", name: "Economics Hall", coords: [6.475243, 3.199060] },
-      { id: "arts", name: "Faculty of Arts", coords: [6.465115, 3.201104] },
-      { id: "education", name: "Faculty of Education", coords: [6.472996, 3.199889] },
-      { id: "it", name: "Faculty of Computing and information Technology", coords: [6.473991, 3.199653] },
-      { id: "law", name: "Faculty of Law", coords: [6.467394, 3.202010] },
-      { id: "management_sciences", name: "Faculty of Management Sciences", coords: [6.475661, 3.199942] },
-      { id: "odlri", name: "Open and Distance Learning and Research Institution", coords: [6.474928, 3.200071] },
-      { id: "sciences", name: "Faculty of Sciences", coords: [6.467837, 3.200798] },
-      { id: "social_sciences", name: "Faculty of Social Sciences", coords: [6.475243, 3.199060] },
-      { id: "gbajabiamila", name: "Femi Gbajabiamila Conference Centre", coords: [6.474624, 3.199331] },
-      { id: "health", name: "Health Center", coords: [6.465443, 3.202018] },
-      { id: "Hussam_okoya_Sports_Complex", name: "Hussam okoya Sports Complex", coords: [6.468703, 3.203875] },
-      { id: "ict", name: "ICT Building", coords: [6.468753, 3.201230] },
-      { id: "innovationhub", name: "Innovation Hub", coords: [6.465718, 3.200538] },
-      { id: "Library_Complex", name: "Lasu Centre Library", coords: [6.471904, 3.201474] },
-      { id: "lasu-radio", name: "Lasu Radio", coords: [6.472373, 3.199653] },
-      { id: "mosque", name: "LASU Central Mosque", coords: [6.465425, 3.200015] },
-      { id: "lasu_football_pitch", name: "Lasu Football Pitch", coords: [6.467892, 3.203102] },
-      { id: "law_clinic", name: "Law Clinic", coords: [6.466861, 3.202268] },
-      { id: "love_garden", name: "Love Garden", coords: [6.469094, 3.200508] },
-      { id: "main_auditorium", name: "Main Auditorium", coords: [6.473108, 3.201887] },
-      { id: "library", name: "Main Library", coords: [6.464857, 3.200701] },
-      { id: "mass_comm_hall", name: "Mass Communication Lecture Hall", coords: [6.472277, 3.200154] },
-      { id: "mba_hall", name: "MBA Hall", coords: [6.468553, 3.200275] },
-      { id: "physicslab", name: "Physics Lab", coords: [6.465115, 3.201104] },
-      { id: "post_graduate_school", name: "Post Graduate School", coords: [6.468391, 3.201227] },
-      { id: "primaryhealth", name: "Primary Health Center", coords: [6.466038, 3.202061] },
-      { id: "SchoolofLibrary,ArchivalandinformationScience", name: "School of Library, Archival and information Science", coords: [6.464433, 3.200205] },
-      { id: "school_of_transport", name: "School of Transport and Logistics", coords: [6.474193, 3.198038] },
-      { id: "sciencecomplex", name: "Science Complex", coords: [6.466573, 3.200165] },
-      { id: "science_library", name: "Science Library", coords: [6.464526, 3.199186] },
-      { id: "science_market", name: "Science Market", coords: [6.468047, 3.199285] },
-      { id: "Sciences_Laboratory", name: "Sciences Laboratory", coords: [6.467114, 3.199851] },
-      { id: "Senate_Building", name: "Senate Building", coords: [6.471272, 3.199924] },
-      { id: "bensonhall", name: "Shobowale Benson Hall", coords: [6.467796, 3.200227] },
-      { id: "sports", name: "Sports Center", coords: [6.469750, 3.202550] },
-      { id: "tetfund", name: "Tetfund 2019/2020 annual intervention", coords: [6.465070, 3.202305] },
-      { id: "wppd", name: "Works and Physical Planning Department", coords: [6.464092, 3.200205] }
-    ];
+    // ---------- MAP DATA ----------
+    // Populated from /api/campus-map, scoped server-side to the logged-in student's own
+    // university/campus (see routes/campus_map_routes.py) -- never hardcoded here.
+    let locations = [];
 
-    const lasuCenter = [6.4700, 3.2000];
-    const map = L.map("map", { maxZoom: 21, zoomControl: true, tap: true, touchZoom: true, dragging: true, scrollWheelZoom: true }).setView(lasuCenter, 15);
+    // Nigeria-wide fallback view for a university with no campus coordinates yet (see
+    // models.py's Campus.latitude/longitude -- left null rather than guessed until real
+    // data exists for that school).
+    const NIGERIA_CENTER = [9.0820, 8.6753];
+    const map = L.map("map", { maxZoom: 21, zoomControl: true, tap: true, touchZoom: true, dragging: true, scrollWheelZoom: true }).setView(NIGERIA_CENTER, 6);
 
     // ---------- LAYERS ----------
     const streetLayer = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { attribution: '© OpenStreetMap contributors | © <a href="https://www.esri.com/">Esri</a>', maxZoom: 19 });
@@ -481,7 +452,7 @@
 
     let userManualSelection = false;
     let currentBaseLayer = satelliteLayer;
-    const USER_PREFERENCE_KEY = 'lasu_map_base_layer';
+    const USER_PREFERENCE_KEY = `${LS_PREFIX}_map_base_layer`;
     function getCurrentLayerMaxZoom() { return currentBaseLayer.maxAvailableZoom || 19; }
     function updateMapZoomLimits() {
       const maxZoom = getCurrentLayerMaxZoom();
@@ -579,13 +550,13 @@
     locationSelect.addEventListener('change', e => { if (e.target.value) focusOnMarker(e.target.value); });
 
     // Get saved coordinates from localStorage (if user dragged them previously)
-    function getSavedCoords(id, fallback) { 
-      const s = localStorage.getItem(`lasu_${id}`); 
-      return s ? JSON.parse(s) : fallback; 
+    function getSavedCoords(id, fallback) {
+      const s = localStorage.getItem(`${LS_PREFIX}_${id}`);
+      return s ? JSON.parse(s) : fallback;
     }
     // Save new coordinates when marker is dragged
-    function saveCoords(id, latlng) { 
-      localStorage.setItem(`lasu_${id}`, JSON.stringify([latlng.lat, latlng.lng])); 
+    function saveCoords(id, latlng) {
+      localStorage.setItem(`${LS_PREFIX}_${id}`, JSON.stringify([latlng.lat, latlng.lng]));
     }
     function findLocationById(id) { return locations.find(l => l.id === id); }
 
@@ -594,6 +565,11 @@
       const lng = latlng.lng.toFixed(6);
       coordsBox.textContent = `${locationName} : ${lat}, ${lng}`;
     }
+
+    // Grey "No image" placeholder -- shared by the initial src (no image_path stored for
+    // this location) and the onerror fallback (image_path set but the file 404s), so the
+    // two never drift into different escaping of the same SVG data URI.
+    const NO_IMAGE_SVG = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='140' viewBox='0 0 200 140'%3E%3Crect width='200' height='140' fill='%23eeeeee'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial,sans-serif' font-size='14' fill='%23999'%3ENo image%3C/text%3E%3C/svg%3E";
 
     // ---- INIT MARKERS (now draggable: true) ----
     function initializeMarkers() {
@@ -614,12 +590,12 @@
         // Popup content with image and navigation button
         const popupContent = `
           <div class="popup-title">${location.name}</div>
-          
-          <img 
-            src="images/${location.id}.jpeg" 
-            alt="${location.name}" 
+
+          <img
+            src="${location.image_path ? '/' + location.image_path : NO_IMAGE_SVG}"
+            alt="${location.name}"
             class="popup-image"
-            onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\\'http://www.w3.org/2000/svg\\' width=\\'200\\' height=\\'140\\' viewBox=\\'0 0 200 140\\'%3E%3Crect width=\\'200\\' height=\\'140\\' fill=\\'%23eeeeee\\'/%3E%3Ctext x=\\'50%25\\' y=\\'50%25\\' dominant-baseline=\\'middle\\' text-anchor=\\'middle\\' font-family=\\'Arial,sans-serif\\' font-size=\\'14\\' fill=\\'%23999\\'%3ENo image%3C/text%3E%3C/svg%3E';"
+            onerror="this.onerror=null; this.src='${NO_IMAGE_SVG}';"
           >
 
           <button 
@@ -841,13 +817,13 @@
     };
 
     function saveState(type, val) {
-      if (type === 'marker') localStorage.setItem('lasu_last_marker', val);
-      else if (type === 'view') { const c = map.getCenter(); localStorage.setItem('lasu_map_view', JSON.stringify({ center:[c.lat, c.lng], zoom:map.getZoom() })); }
+      if (type === 'marker') localStorage.setItem(`${LS_PREFIX}_last_marker`, val);
+      else if (type === 'view') { const c = map.getCenter(); localStorage.setItem(`${LS_PREFIX}_map_view`, JSON.stringify({ center:[c.lat, c.lng], zoom:map.getZoom() })); }
     }
     function restoreState() {
-      const last = localStorage.getItem('lasu_last_marker');
+      const last = localStorage.getItem(`${LS_PREFIX}_last_marker`);
       if (last && markers[last]) { focusOnMarker(last); return; }
-      const saved = localStorage.getItem('lasu_map_view');
+      const saved = localStorage.getItem(`${LS_PREFIX}_map_view`);
       if (saved) { try { const {center,zoom}=JSON.parse(saved); map.setView(center,zoom); }catch(e){} }
     }
 
@@ -875,11 +851,37 @@
     });
 
     // ---------- START ----------
-    populateSidebar();
-    populateDropdown();
-    initializeMarkers();
-    restoreState();
-    maybeShowPrompt();
+    // Fetch this student's own university/campus locations (see
+    // routes/campus_map_routes.py's /api/campus-map -- always server-derived from the
+    // logged-in user, never a client-supplied university id) before wiring up the UI.
+    async function loadCampusMap() {
+      const noDataBanner = document.getElementById('noDataBanner');
+      try {
+        const res = await fetch('/api/campus-map');
+        const data = await res.json();
+
+        locations = (data.locations || []).map(l => ({
+          id: String(l.id), name: l.name, category: l.category, image_path: l.image_path,
+          coords: [l.latitude, l.longitude],
+        }));
+
+        if (data.campus && data.campus.latitude != null && data.campus.longitude != null) {
+          map.setView([data.campus.latitude, data.campus.longitude], 15);
+        }
+
+        if (noDataBanner) noDataBanner.classList.toggle('hidden', !!data.has_data);
+      } catch (e) {
+        console.warn('Failed to load campus map data:', e);
+        if (noDataBanner) noDataBanner.classList.remove('hidden');
+      }
+
+      populateSidebar();
+      populateDropdown();
+      initializeMarkers();
+      restoreState();
+      maybeShowPrompt();
+    }
+    loadCampusMap();
 
     if (window.innerWidth < 768) { sidebar.classList.remove('active'); mobileToggle.style.display = 'flex'; }
     window.addEventListener('resize', function() {
@@ -894,7 +896,7 @@
     3. If an image is missing, a built‑in SVG fallback (grey box with "No image") will appear.
     4. 🖱️ Landmarks are now draggable. Drag any marker to a new spot; the position is saved locally.
     5. 🚶‍♂️ Your location updates live as you walk (with battery‑saving maximumAge 3000) and the dot rotates to show direction.
-    6. 🗺️ Navigation follows LASU roads using OSRM router, and the map auto‑zooms to the full route only once.
+    6. 🗺️ Navigation follows real roads using OSRM router, and the map auto‑zooms to the full route only once.
     7. 🕒 Distance & walking time are displayed in the sidebar.
     8. 🎯 "Go to nearest building" button shows a confirmation message.
   -->

@@ -6,11 +6,11 @@ import cloudinary.uploader
 from flask import (Blueprint, render_template, request, jsonify, session,
                    flash, redirect, url_for)
 from utils.helpers import login_required, admin_required, check_profile_complete
-from models import User, Material, Course, Topic
+from models import User, Material, Course, Topic, University
 from extensions import db
 from config import OPENROUTER_API_KEY
 from services.progress_service import record_material_view, get_recent_material_views
-from services.academic_context import resolve_academic_context
+from services.academic_context import resolve_academic_context, sync_user_university
 
 materials_bp = Blueprint('materials', __name__)
 
@@ -34,6 +34,12 @@ def enforce_profile_completion():
     exempt_endpoints = (
         'auth.login', 'auth.logout', 'auth.signup',
         'auth.forgot_password', 'auth.reset_password',
+        # A brand-new signup is logged in (session set) but hasn't necessarily finished
+        # the profile-completion modal yet (it doesn't collect 'semester' -- see
+        # utils/helpers.py's check_profile_complete). Without this exemption, clicking
+        # the emailed verification link before finishing that modal got silently bounced
+        # to /dashboard by this same hook, and the email was never actually verified.
+        'auth.verify_email', 'auth.resend_verification_email', 'auth.resend_verification_public',
         'dashboard.dashboard', 'dashboard.landing',
         'materials.complete_profile', 'static',
         'pwa.serve_manifest', 'pwa.serve_pwa_icons',
@@ -105,6 +111,8 @@ def complete_profile():
     if check_profile_complete(user):
         return redirect(url_for('dashboard.dashboard'))
 
+    universities = University.query.filter_by(active=True).order_by(University.name).all()
+
     if request.method == 'POST':
         # A flash queued by an earlier, interrupted attempt at this same form (validation
         # error the student then corrected, a request that never finished loading) must
@@ -124,11 +132,11 @@ def complete_profile():
             # Validate all fields are filled
             if not all([name, university, faculty, department, user_level, semester]):
                 flash('Please fill in all required fields.', 'error')
-                return render_template('profile_completion_modal.html', user=user)
+                return render_template('profile_completion_modal.html', user=user, universities=universities)
 
             # Update user profile
             user.name = name
-            user.university = university
+            sync_user_university(user, university)  # sets university + university_id/campus_id
             user.faculty = faculty
             user.department = department
             user.level = user_level
@@ -145,10 +153,10 @@ def complete_profile():
         except Exception as e:
             db.session.rollback()
             flash(f'An error occurred: {str(e)}', 'error')
-            return render_template('profile_completion_modal.html', user=user)
+            return render_template('profile_completion_modal.html', user=user, universities=universities)
 
     # GET request - show the modal (fallback)
-    return render_template('profile_completion_modal.html', user=user)
+    return render_template('profile_completion_modal.html', user=user, universities=universities)
 
 
 @materials_bp.route('/materials')

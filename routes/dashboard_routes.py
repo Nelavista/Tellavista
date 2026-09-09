@@ -39,14 +39,7 @@ def _landing_stats():
             qualifying_skill_count += len(cat_skills)
             categories.append({'name': cat.name, 'slug': cat.slug, 'skills': cat_skills})
 
-    # University.active doesn't exist on the currently-deployed schema yet (it's added by
-    # an in-progress, not-yet-merged migration) -- guard with hasattr so this counts every
-    # university today and starts filtering to active ones automatically once that
-    # migration lands, instead of hardcoding an assumption that breaks production again.
-    if hasattr(University, 'active'):
-        university_count = University.query.filter_by(active=True).count()
-    else:
-        university_count = University.query.count()
+    university_count = University.query.filter_by(active=True).count()
 
     return {
         'skill_categories': categories,

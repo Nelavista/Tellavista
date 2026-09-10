@@ -130,10 +130,10 @@
     function applyTheme(t) {
       if (t === 'light') {
         b.classList.add('light-theme');
-        if (icon) icon.textContent = '☀️';
+        if (icon) icon.innerHTML = '<i class="ri-sun-line"></i>';
       } else {
         b.classList.remove('light-theme');
-        if (icon) icon.textContent = '🌙';
+        if (icon) icon.innerHTML = '<i class="ri-moon-line"></i>';
       }
       localStorage.setItem('theme', t);
     }

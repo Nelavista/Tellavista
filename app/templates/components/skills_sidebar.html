@@ -79,6 +79,7 @@
         {% if nav_unread_notifications %}<span class="top-icon-dot"></span>{% endif %}
       </a>
       <button id="theme-toggle" onclick="skToggleTheme()" aria-label="Toggle theme"><i class="ri-moon-line"></i></button>
+      <a href="/logout" class="top-icon-btn sk-topbar-logout" aria-label="Logout"><i class="ri-logout-box-line"></i></a>
     </div>
 
     {% with messages = get_flashed_messages(with_categories=true) %}

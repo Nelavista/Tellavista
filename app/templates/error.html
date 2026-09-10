@@ -4,68 +4,94 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Nelavista - {% if error_code == 404 %}Page not found{% elif error_code == 503 %}Service unavailable{% else %}Something went wrong{% endif %}</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     :root {
-      --err-bg: #050810;
-      --err-text: #eef2f7;
-      --err-text-dim: #8fa8c8;
+      --bg-deep: #050810;
+      --bg-card: #111927;
+      --border-hard: #1c2a3a;
+      --text-primary: #eef2f7;
+      --text-secondary: #8fa8c8;
+      --accent: #38bdf8;
+      --accent-teal: #2dd4bf;
+      --grad-main: linear-gradient(135deg, #38bdf8 0%, #3b82f6 100%);
     }
     body.light-mode, body.light-theme {
-      --err-bg: #f5f7fa;
-      --err-text: #1e293b;
-      --err-text-dim: #55647a;
+      --bg-deep: #f5f8fc;
+      --bg-card: #ffffff;
+      --border-hard: #dce3ec;
+      --text-primary: #0b1a2f;
+      --text-secondary: #3f5470;
+      --accent: #2563eb;
+      --accent-teal: #0d9488;
     }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: var(--err-bg);
-      color: var(--err-text);
+      font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-deep);
+      color: var(--text-primary);
       display: flex;
       align-items: center;
       justify-content: center;
       min-height: 100vh;
       padding: 20px;
-      transition: background 0.2s, color 0.2s;
+      transition: background 0.3s ease, color 0.3s ease;
     }
     .error-container {
       text-align: center;
-      max-width: 400px;
+      max-width: 420px;
     }
     .error-icon {
       font-size: 56px;
       margin-bottom: 24px;
-      color: #38bdf8;
+      color: var(--accent);
     }
     h1 {
+      font-family: 'Bricolage Grotesque', sans-serif;
       font-size: 1.8rem;
-      font-weight: 700;
+      font-weight: 800;
       margin-bottom: 12px;
-      background: linear-gradient(135deg, #38bdf8, #2dd4bf);
+      background: var(--grad-main);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
+      letter-spacing: -0.02em;
     }
     p {
-      color: var(--err-text-dim);
-      margin-bottom: 24px;
-      line-height: 1.6;
+      color: var(--text-secondary);
+      margin-bottom: 28px;
+      line-height: 1.7;
+      font-size: 1rem;
     }
     .retry-btn {
-      display: inline-block;
-      background: linear-gradient(135deg, #38bdf8, #3b82f6);
-      color: white;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: var(--grad-main);
+      color: #fff;
       border: none;
-      padding: 12px 32px;
-      border-radius: 12px;
-      font-size: 0.9rem;
-      font-weight: 600;
+      padding: 14px 32px;
+      border-radius: 18px;
+      font-size: 0.95rem;
+      font-weight: 700;
       cursor: pointer;
       text-decoration: none;
-      transition: transform 0.2s;
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+      box-shadow: 0 8px 24px rgba(56, 189, 248, 0.25);
     }
     .retry-btn:hover {
-      transform: translateY(-2px);
+      transform: translateY(-3px);
+      box-shadow: 0 14px 34px rgba(56, 189, 248, 0.4);
+    }
+    .retry-btn:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 4px;
+      border-radius: 18px;
+    }
+    .retry-btn:active {
+      transform: translateY(0);
     }
   </style>
   <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -73,9 +99,7 @@
 </head>
 <body>
   <script>
-  // Same saved-theme-before-paint fix as the rest of the app (see the fuller comment in
-  // components/academia_sidebar.html) -- this page previously never applied it, so a
-  // light-mode student always landed on a hardcoded-dark error screen.
+  // Apply saved theme before paint to prevent flash of wrong theme.
   (function () {
     try {
       var pref = localStorage.getItem('theme') || 'dark';
@@ -88,19 +112,19 @@
   </script>
   <div class="error-container">
     {% if error_code == 404 %}
-      <div class="error-icon"><i class="ri-map-pin-line"></i></div>
+      <div class="error-icon" aria-hidden="true"><i class="ri-map-pin-line"></i></div>
       <h1>Page not found</h1>
-      <p>The page you're looking for doesn't exist or may have moved.</p>
+      <p>The page you're looking for doesn't exist or may have moved. Try heading back to the home page.</p>
     {% elif error_code == 503 %}
-      <div class="error-icon"><i class="ri-time-line"></i></div>
+      <div class="error-icon" aria-hidden="true"><i class="ri-time-line"></i></div>
       <h1>Service temporarily unavailable</h1>
-      <p>Nelavista is briefly unavailable. Please try again in a moment.</p>
+      <p>Nelavista is briefly unavailable. This usually resolves on its own — try again in a moment.</p>
     {% else %}
-      <div class="error-icon"><i class="ri-error-warning-line"></i></div>
+      <div class="error-icon" aria-hidden="true"><i class="ri-error-warning-line"></i></div>
       <h1>Something went wrong</h1>
-      <p>We hit an unexpected error on our end. Please try again.</p>
+      <p>We hit an unexpected error on our end. If this keeps happening, please let us know.</p>
     {% endif %}
-    <a class="retry-btn" href="/">Back to Nelavista</a>
+    <a class="retry-btn" href="/"><i class="ri-home-line"></i> Back to Nelavista</a>
   </div>
 </body>
 </html>

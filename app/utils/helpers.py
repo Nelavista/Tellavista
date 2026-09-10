@@ -4,7 +4,7 @@ import base64
 import uuid
 from functools import wraps
 from flask import session, redirect, url_for, request, flash
-from app.config import DEBUG_MODE, ALLOWED_EXTENSIONS, ALLOWED_VIDEO_EXTENSIONS
+from app.config import DEBUG_MODE, ALLOWED_EXTENSIONS, ALLOWED_VIDEO_EXTENSIONS, allowed_file, allowed_video_file
 
 def debug_print(*args, **kwargs):
     if DEBUG_MODE:
@@ -54,12 +54,6 @@ def admin_required(f):
             return {'error': 'Unauthorized'}, 403
         return f(*args, **kwargs)
     return decorated_function
-
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
-def allowed_video_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_VIDEO_EXTENSIONS
 
 def get_session_memory():
     if 'chat_memory' not in session:

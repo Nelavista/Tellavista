@@ -23,7 +23,7 @@
 
     <div class="sk-panel tp-hero">
       <div class="tp-avatar">
-        {% if profile_user.profile_photo_url %}<img src="{{ profile_user.profile_photo_url }}" alt="">
+        {% if profile_user.profile_photo_url %}<img src="{{ profile_user.profile_photo_url }}" alt="{{ profile_user.name or 'User' }}'s profile photo">
         {% else %}{{ (profile_user.name or profile_user.username)[:1]|upper }}{% endif %}
       </div>
       <div style="flex:1; min-width:200px;">
@@ -90,7 +90,7 @@
     <div class="sk-grid">
       {% for p in projects %}
       <div class="sk-card" style="cursor:default;">
-        {% if p.screenshots %}<img src="{{ p.screenshots[0] }}" alt="" style="width:100%; aspect-ratio:16/10; object-fit:cover; border-radius:var(--r-sm); margin-bottom:12px;">{% endif %}
+        {% if p.screenshots %}<img src="{{ p.screenshots[0] }}" alt="Project screenshot for {{ p.title or 'project' }}" style="width:100%; aspect-ratio:16/10; object-fit:cover; border-radius:var(--r-sm); margin-bottom:12px;">{% endif %}
         <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
           <span class="sk-badge {{ p.status }}">{{ 'Done' if p.status == 'completed' else p.status|replace('_', ' ')|title }}</span>
           {% set effective_score = p.ai_overall_score if p.ai_overall_score is not none else (p.ai_feedback.score if p.ai_feedback else none) %}

@@ -40,7 +40,7 @@ function skToggleMenu() {
   document.getElementById('overlay').classList.toggle('active');
   document.body.style.overflow = document.getElementById('side-menu').classList.contains('active') ? 'hidden' : '';
 }
-function skClosMenu() {
+function skCloseMenu() {
   document.getElementById('side-menu').classList.remove('active');
   document.getElementById('overlay').classList.remove('active');
   document.body.style.overflow = '';

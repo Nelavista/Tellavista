@@ -274,6 +274,13 @@
     document.getElementById('progressiveSections').style.display = isNew ? 'none' : 'block';
   }
 
+  function showSectionError(containerId, message) {
+    const el = document.getElementById(containerId);
+    if (el && !el.dataset.loaded) {
+      el.innerHTML = `<div class="sk-flash" style="border-color:rgba(245,158,11,0.35);background:rgba(245,158,11,0.12);"><i class="ri-refresh-line" style="margin-right:6px;"></i>${message}</div>`;
+    }
+  }
+
   async function loadStudyStats() {
     try {
       const res = await fetch('/api/study-stats');
@@ -293,7 +300,10 @@
 
       renderBarChart(values);
     } catch(e) {
-      console.error('Failed to load study stats:', e);
+      document.getElementById('weeklyTotal').textContent = '--';
+      document.getElementById('todayTotal').textContent = 'Could not load stats. Tap to retry.';
+      document.getElementById('todayTotal').style.cursor = 'pointer';
+      document.getElementById('todayTotal').onclick = loadStudyStats;
     }
   }
 
@@ -326,21 +336,44 @@
     const course = document.getElementById('examCourse').value.trim();
     const date = document.getElementById('examDate').value;
     const duration = document.getElementById('examDuration').value.trim();
-    if (!course || !date) return alert('Please fill in course name and date.');
+    if (!course || !date) {
+      const flashContainer = document.getElementById('addExamForm');
+      const existing = flashContainer.querySelector('.sk-flash');
+      if (existing) existing.remove();
+      const msg = document.createElement('div');
+      msg.className = 'sk-flash';
+      msg.style.cssText = 'border-color:rgba(220,53,69,0.3);background:rgba(220,53,69,0.12);margin-bottom:12px;';
+      msg.textContent = 'Please fill in the course name and exam date.';
+      flashContainer.prepend(msg);
+      return;
+    }
+
+    const saveBtn = document.querySelector('#addExamForm .sk-btn');
+    if (saveBtn) { saveBtn.disabled = true; saveBtn.textContent = 'Saving…'; }
 
     try {
-      await fetch('/api/exams', {
+      const res = await fetch('/api/exams', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({course, date, duration})
       });
+      if (!res.ok) throw new Error('Server returned ' + res.status);
       document.getElementById('examCourse').value = '';
       document.getElementById('examDate').value = '';
       document.getElementById('examDuration').value = '';
       document.getElementById('addExamForm').style.display = 'none';
       loadExams();
     } catch(e) {
-      alert('Failed to save exam. Please try again.');
+      const flashContainer = document.getElementById('addExamForm');
+      const existing = flashContainer.querySelector('.sk-flash');
+      if (existing) existing.remove();
+      const msg = document.createElement('div');
+      msg.className = 'sk-flash';
+      msg.style.cssText = 'border-color:rgba(220,53,69,0.3);background:rgba(220,53,69,0.12);margin-bottom:12px;';
+      msg.textContent = 'Could not save the exam. Check your connection and try again.';
+      flashContainer.prepend(msg);
+    } finally {
+      if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Save exam'; }
     }
   }
 
@@ -385,7 +418,7 @@
       });
       applyProgressiveState();
     } catch(e) {
-      console.error('Failed to load exams', e);
+      document.getElementById('examsContainer').innerHTML = '<div class="sk-flash" style="border-color:rgba(245,158,11,0.35);background:rgba(245,158,11,0.12);">Could not load exams. <a href="" style="color:inherit;font-weight:600;text-decoration:underline;">Try again</a></div>';
     }
   }
 
@@ -414,7 +447,7 @@
       });
       applyProgressiveState();
     } catch(e) {
-      grid.innerHTML = `<div class="sk-sub">Set up your profile to see your courses. <a href="/profile" style="color:var(--sk-accent);">Complete profile →</a></div>`;
+      grid.innerHTML = `<div class="sk-flash" style="border-color:rgba(245,158,11,0.35);background:rgba(245,158,11,0.12);">Could not load your courses. <a href="/materials" style="color:var(--sk-accent);font-weight:600;">Browse materials →</a></div>`;
       applyProgressiveState();
     }
   }
@@ -439,8 +472,7 @@
         </a>`;
       applyProgressiveState();
     } catch(e) {
-      container.innerHTML = '';
-      console.error('Failed to load continue-studying', e);
+      container.innerHTML = '<div class="sk-flash" style="border-color:rgba(245,158,11,0.35);background:rgba(245,158,11,0.12);">Could not load your recent activity.</div>';
     }
   }
 
@@ -462,7 +494,7 @@
           </a>`;
       });
     } catch(e) {
-      console.error('Failed to load recent materials', e);
+      container.innerHTML = '<div class="sk-flash" style="border-color:rgba(245,158,11,0.35);background:rgba(245,158,11,0.12);">Could not load recent materials.</div>';
     }
   }
 
@@ -482,22 +514,21 @@
         ? `Avg score · ${data.attempts_count} attempt${data.attempts_count === 1 ? '' : 's'}`
         : `${data.attempts_count} attempt${data.attempts_count === 1 ? '' : 's'} (written)`;
     } catch(e) {
-      console.error('Failed to load practice summary', e);
+      document.getElementById('practiceScore').textContent = '--';
+      document.getElementById('practiceSub').textContent = 'Could not load practice data.';
     }
   }
 
   // ===== INITIALIZATION =====
   async function initializeDashboard() {
-    await Promise.all([
+    await Promise.allSettled([
       loadStudyStats(),
       loadExams(),
       loadCourses(),
       loadContinueStudying(),
       loadRecentMaterials(),
       loadPracticeSummary()
-    ]).catch(err => {
-      console.error('Dashboard initialization error:', err);
-    });
+    ]);
   }
 
   setGreeting();
@@ -511,9 +542,9 @@
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({seconds: 60})
       })
-      .then(res => res.json())
+      .then(res => { if (res.ok) return res.json(); })
       .then(() => loadStudyStats())
-      .catch(err => console.error('Failed to track session:', err));
+      .catch(() => {});
     }
   }, 60000);
 

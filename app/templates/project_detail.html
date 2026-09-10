@@ -148,7 +148,7 @@
       <div class="sk-section-title">Screenshots</div>
       {% if project.screenshots %}
       <div class="screenshot-grid">
-        {% for url in project.screenshots %}<img src="{{ url }}" alt="Project screenshot">{% endfor %}
+        {% for url in project.screenshots %}<img src="{{ url }}" alt="Project screenshot {{ loop.index }}" loading="lazy">{% endfor %}
       </div>
       {% else %}
       <p class="sk-card-desc">No screenshots added yet.</p>

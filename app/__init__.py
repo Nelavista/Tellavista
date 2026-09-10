@@ -226,15 +226,28 @@ def create_app():
     
     @app.after_request
     def add_cors_headers(response):
-        """Add CORS headers for PWA service worker scope."""
-        response.headers['Access-Control-Allow-Origin'] = '*'
-        response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS'
-        response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
-        
+        """Add CORS headers for PWA service worker scope.
+
+        The old wildcard '*' allowed any origin to read authenticated responses --
+        dangerous when the app carries session cookies. Replaced with an origin-
+        allowlist derived from SOCKETIO_CORS_ORIGINS (the same env-var-driven list
+        that already gates WebSocket connections), plus localhost for dev.
+        """
+        origin = request.headers.get('Origin', '')
+        allowed = [o.strip() for o in app.config.get('SOCKETIO_CORS_ORIGINS', [])]
+        # Fall back to the module-level import if the config key isn't populated yet.
+        if not allowed:
+            from app.config import SOCKETIO_CORS_ORIGINS as _cfg_origins
+            allowed = list(_cfg_origins)
+        if origin and origin in allowed:
+            response.headers['Access-Control-Allow-Origin'] = origin
+            response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS'
+            response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
+
         # Allow service worker to register
         if response.content_type and 'application/javascript' in response.content_type:
             response.headers['Service-Worker-Allowed'] = '/'
-        
+
         return response
 
     # ==================== ERROR HANDLERS ====================

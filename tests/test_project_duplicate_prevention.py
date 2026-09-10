@@ -8,8 +8,8 @@ winning row instead of crashing.
 """
 import pytest
 from sqlalchemy.exc import IntegrityError
-from extensions import db
-from models import SkillCategory, Skill, ProjectTemplate, StudentProject
+from app.extensions import db
+from app.models import SkillCategory, Skill, ProjectTemplate, StudentProject
 
 
 @pytest.fixture

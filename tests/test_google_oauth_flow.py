@@ -16,8 +16,8 @@ fix landed:
 Both require faking Authlib's oauth.google client rather than a real Google round-trip.
 """
 from flask import redirect
-from extensions import db
-from models import User
+from app.extensions import db
+from app.models import User
 import routes.auth_routes as auth_routes
 
 

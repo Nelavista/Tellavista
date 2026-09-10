@@ -8,8 +8,8 @@ IntegrityError -> raw 500 instead of the same "you're in" outcome the winner get
 """
 import pytest
 from sqlalchemy.exc import IntegrityError
-from extensions import db
-from models import (
+from app.extensions import db
+from app.models import (
     SkillCategory, Skill, Opportunity, OpportunityApplication, Competition, CompetitionEntry,
 )
 

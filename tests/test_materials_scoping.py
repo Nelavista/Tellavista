@@ -3,8 +3,8 @@
 University students, so a LASU student could see materials tagged for a different
 school. The fix applies the same filter to every university, LASU included.
 """
-from extensions import db
-from models import Material
+from app.extensions import db
+from app.models import Material
 
 
 def _add_material(app, title, university, department='Computer Science', level='200'):
@@ -74,7 +74,7 @@ def test_no_university_set_query_is_unscoped_by_university(app, make_user):
     user = make_user('no_uni_student', university=None, complete_profile=False)
 
     with app.app_context():
-        from models import User
+        from app.models import User
         current_user = User.query.get(user.id)
         query = Material.query.filter_by(is_approved=True)
         if current_user.university:

@@ -3,9 +3,9 @@ password-reset token flows are single-use, expiring, and store only a token hash
 neither endpoint leaks whether an arbitrary email exists.
 """
 from datetime import datetime, timedelta
-from extensions import db
-from models import User
-from routes.auth_routes import _hash_token
+from app.extensions import db
+from app.models import User
+from app.routes.auth_routes import _hash_token
 
 
 def test_login_rate_limit_engages(app, client, make_user):
@@ -137,7 +137,7 @@ def test_verify_email_blocked_by_profile_completion_gate_regression(app, client)
 
     with app.app_context():
         user = User.query.filter_by(username='incomplete_profile_user').first()
-        from utils.helpers import check_profile_complete
+        from app.utils.helpers import check_profile_complete
         assert check_profile_complete(user) is False  # confirms the scenario is real
         token = 'incomplete-user-verify-token'
         user.email_verify_token_hash = _hash_token(token)

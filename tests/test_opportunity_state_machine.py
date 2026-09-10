@@ -6,8 +6,8 @@ value from ANY current status -- a single PUT could take a brand-new 'applied' r
 straight to 'paid' with payout_amount taken from the request body with no bound on it,
 and deleting an Opportunity with existing applications had no guard at all.
 """
-from extensions import db
-from models import Skill, SkillCategory, Opportunity, OpportunityApplication, OpportunityStatusEvent
+from app.extensions import db
+from app.models import Skill, SkillCategory, Opportunity, OpportunityApplication, OpportunityStatusEvent
 
 
 def _make_opportunity_and_application(student_id, status='applied', payment_amount=50000):

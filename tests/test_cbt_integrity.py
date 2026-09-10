@@ -9,8 +9,8 @@ Red-team scenarios this file exercises directly:
 """
 import json
 import pytest
-from extensions import db
-from models import CBTQuestion, CBTAttempt, User
+from app.extensions import db
+from app.models import CBTQuestion, CBTAttempt, User
 
 
 def _seed_mth_questions(app):

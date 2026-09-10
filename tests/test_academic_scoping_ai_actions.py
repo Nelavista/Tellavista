@@ -6,8 +6,8 @@ university/department -- unlike every other Material/Topic read path in the app
 enforce that boundary. A student could pull another university's/department's content
 through the AI action just by knowing or guessing an id.
 """
-from extensions import db
-from models import Material, Topic
+from app.extensions import db
+from app.models import Material, Topic
 
 
 def test_material_ai_action_blocks_other_university(app, client, make_user, login_as):

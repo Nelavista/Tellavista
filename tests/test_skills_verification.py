@@ -4,9 +4,9 @@
 alone).
 """
 from datetime import datetime
-from extensions import db
-from models import Skill, SkillCategory, SkillCourse, CourseModule, Lesson, StudentSkill, ProjectTemplate, StudentProject
-from services.skills_service import is_skill_verified, recompute_student_skill
+from app.extensions import db
+from app.models import Skill, SkillCategory, SkillCourse, CourseModule, Lesson, StudentSkill, ProjectTemplate, StudentProject
+from app.services.skills_service import is_skill_verified, recompute_student_skill
 
 
 def _make_completed_skill_with_one_lesson(app, student_id, skill_slug='web-development'):
@@ -34,7 +34,7 @@ def _make_completed_skill_with_one_lesson(app, student_id, skill_slug='web-devel
         db.session.add(lesson)
         db.session.commit()
 
-        from models import StudentLessonProgress
+        from app.models import StudentLessonProgress
         db.session.add(StudentLessonProgress(student_id=student_id, lesson_id=lesson.id))
         db.session.commit()
 

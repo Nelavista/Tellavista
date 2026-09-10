@@ -4,7 +4,7 @@
 eventlet worker on synchronous parsing and/or balloon the OpenRouter request payload.
 """
 import io
-from routes.ai_routes import MAX_ANALYZE_PDF_BYTES, MAX_IMAGE_BYTES
+from app.routes.ai_routes import MAX_ANALYZE_PDF_BYTES, MAX_IMAGE_BYTES
 
 
 def test_generate_test_rejects_oversized_image(client, make_user, login_as):

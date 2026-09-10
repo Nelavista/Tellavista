@@ -7,9 +7,9 @@ left a phantom 0% attempt that dragged average_score down and could even win
 in Postgres). Both now only ever consider attempts that were actually submitted.
 """
 from datetime import datetime, timedelta
-from extensions import db
-from models import CBTAttempt
-from services.progress_service import get_cbt_summary
+from app.extensions import db
+from app.models import CBTAttempt
+from app.services.progress_service import get_cbt_summary
 
 
 def test_abandoned_attempt_excluded_from_summary_and_average(app, make_user):

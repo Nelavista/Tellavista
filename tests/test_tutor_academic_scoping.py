@@ -11,8 +11,8 @@ This mattered more than a metadata leak: send_message() injects the resolved mat
 actual extracted text into the tutor's system prompt, so an unscoped material_id was a
 real cross-university content leak, not just a title/id disclosure.
 """
-from extensions import db
-from models import Material, Topic
+from app.extensions import db
+from app.models import Material, Topic
 
 
 def test_create_conversation_blocks_other_university_material(app, client, make_user, login_as):

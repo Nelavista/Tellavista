@@ -10,8 +10,8 @@ grading) scrapeable by enumerating quiz ids for content the student was never sh
 let a student pre-submit graded work for days they hadn't unlocked.
 """
 from datetime import datetime
-from extensions import db
-from models import (
+from app.extensions import db
+from app.models import (
     Skill, SkillCategory, SkillCourse, CourseModule, Lesson, Quiz, Assignment,
     Cohort, CohortEnrollment,
 )
@@ -184,5 +184,5 @@ def test_submit_assignment_rejects_locked_daily_class_day(app, client, make_user
     assert res.status_code == 302  # redirected back to class_overview with a flash, not accepted
 
     with app.app_context():
-        from models import AssignmentSubmission
+        from app.models import AssignmentSubmission
         assert AssignmentSubmission.query.filter_by(assignment_id=assignment_id).count() == 0

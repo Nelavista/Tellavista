@@ -16,8 +16,8 @@
    session and surface glued onto the next unrelated request's own flash. login()/
    signup()/google_callback() now discard any stale flash queue before adding their own.
 """
-from extensions import db
-from models import User
+from app.extensions import db
+from app.models import User
 
 
 def test_login_always_shows_picker_even_with_a_saved_path(app, client, make_user):

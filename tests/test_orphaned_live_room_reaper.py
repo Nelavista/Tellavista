@@ -16,11 +16,11 @@ and separately confirm handle_disconnect actually wires it up.
 """
 import uuid
 import pytest
-from extensions import db, socketio
+from app.extensions import db, socketio
 import events  # noqa: F401 -- registers @socketio.on handlers onto the shared socketio instance
-from models import Room
+from app.models import Room
 import services.meeting_service as meeting_service
-from services.meeting_service import rooms, room_authority, _close_room_if_still_abandoned
+from app.services.meeting_service import rooms, room_authority, _close_room_if_still_abandoned
 
 
 @pytest.fixture

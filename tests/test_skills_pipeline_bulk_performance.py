@@ -7,12 +7,12 @@ batched result is identical to the per-skill result, and that query count no lon
 scales with the number of skills.
 """
 from sqlalchemy import event
-from extensions import db
-from models import (
+from app.extensions import db
+from app.models import (
     SkillCategory, Skill, StudentSkill, Challenge, ChallengeSubmission,
     ProjectTemplate, StudentProject, Opportunity, OpportunityApplication,
 )
-from services.skills_service import get_pipeline_state, get_pipeline_states_bulk
+from app.services.skills_service import get_pipeline_state, get_pipeline_states_bulk
 
 
 def _make_skill(name, slug):

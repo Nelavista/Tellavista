@@ -8,8 +8,8 @@ taxonomy backfill script's matching logic.
 import io
 import json
 
-from extensions import db
-from models import Material, Topic, Course, TopicProgress
+from app.extensions import db
+from app.models import Material, Topic, Course, TopicProgress
 
 
 # ─────────────────────────── Topic <-> Course model ───────────────────────────
@@ -184,7 +184,7 @@ def test_course_detail_never_triggers_ai_topic_generation(app, client, make_user
     page view. Patches the function everywhere it's imported to catch a future regression
     regardless of which module ends up calling it."""
     calls = []
-    monkeypatch.setattr('services.ai_service.generate_course_topics', lambda *a, **kw: calls.append(1))
+    monkeypatch.setattr('app.services.ai_service.generate_course_topics', lambda *a, **kw: calls.append(1))
 
     course = make_course()
     user = make_user('no_ai_student', university='Lagos State University',
@@ -203,7 +203,7 @@ def test_topic_detail_never_triggers_youtube_search(app, client, make_user, make
     Topic.videos_json. A student re-opening the same topic repeatedly must never
     re-trigger the search, regardless of whether a video was ever fetched."""
     calls = []
-    monkeypatch.setattr('services.youtube_service.search_youtube_videos', lambda *a, **kw: calls.append(1))
+    monkeypatch.setattr('app.services.youtube_service.search_youtube_videos', lambda *a, **kw: calls.append(1))
 
     course = make_course()
     with app.app_context():
@@ -248,7 +248,7 @@ def test_course_detail_graceful_for_university_not_yet_mapped(app, client, make_
     seed_academia.py's ACTIVE_UNIVERSITIES_WITHOUT_TAXONOMY_YET -- a bare University row
     with no Faculty/Department/Course data behind it yet) must get an honest 'not mapped
     yet' message when opening any course code -- never a 404, never invented content."""
-    from models import University
+    from app.models import University
     with app.app_context():
         db.session.add(University(name='University of Abuja', short_name='UNIABUJA'))
         db.session.commit()
@@ -591,7 +591,7 @@ def test_backfill_resolves_department_scoped_to_university(app, make_course):
     make_course(university='University of Lagos', department='Computer Science', code='CSC101')
 
     from backfill_material_taxonomy_links import _resolve_department
-    from models import Department, Faculty, University
+    from app.models import Department, Faculty, University
 
     with app.app_context():
         departments = Department.query.join(Faculty).join(University).all()
@@ -614,7 +614,7 @@ def test_backfill_leaves_department_unresolved_when_ambiguous_and_no_university_
     make_course(university='University of Lagos', department='Computer Science', code='CSC101')
 
     from backfill_material_taxonomy_links import _resolve_department
-    from models import Department, Faculty, University
+    from app.models import Department, Faculty, University
     from collections import defaultdict
 
     with app.app_context():

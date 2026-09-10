@@ -1,0 +1,388 @@
+from datetime import datetime
+from flask import Blueprint, render_template, jsonify, session, request
+from app.utils.helpers import login_required, admin_required
+from app.models import User, Material, Video, Group, GroupMember, GroupMessage, Room, StudySession, Exam, EmployerProfile, AdminAuditLog, University
+from sqlalchemy import func
+from app.services.meeting_service import end_room_session, rooms as live_rooms_memory
+from app.extensions import db
+import cloudinary
+import cloudinary.uploader
+
+admin_bp = Blueprint('admin', __name__)
+
+
+def _current_admin():
+    username = session['user']['username']
+    return User.query.filter_by(username=username).first()
+
+
+# ===== ADMIN DASHBOARD HUB =====
+@admin_bp.route('/admin')
+@login_required
+@admin_required
+def admin_dashboard():
+    stats = {
+        'total_users': User.query.count(),
+        'admin_count': User.query.filter_by(is_admin=True).count(),
+        'total_materials': Material.query.count(),
+        'pending_materials': Material.query.filter_by(is_approved=False).count(),
+        'total_videos': Video.query.count(),
+        'pending_videos': Video.query.filter_by(is_approved=False).count(),
+        'total_groups': Group.query.count(),
+        'total_messages': GroupMessage.query.count(),
+        'live_rooms': Room.query.filter_by(is_live=True).count(),
+        'total_rooms_ever': Room.query.count(),
+        'total_study_sessions': StudySession.query.count(),
+        'total_exams': Exam.query.count(),
+    }
+    recent_users = User.query.order_by(User.joined_on.desc()).limit(6).all()
+    return render_template('admin_dashboard.html', stats=stats, recent_users=recent_users, active_page='dashboard')
+
+
+# ===== USER MANAGEMENT =====
+@admin_bp.route('/admin/users')
+@login_required
+@admin_required
+def admin_users():
+    search = request.args.get('search', '').strip()
+    query = User.query
+    if search:
+        like = f'%{search}%'
+        query = query.filter(
+            (User.username.ilike(like)) | (User.email.ilike(like)) | (User.name.ilike(like))
+        )
+    users = query.order_by(User.joined_on.desc()).all()
+    return render_template('admin_users.html', users=users, search=search, active_page='users')
+
+
+@admin_bp.route('/admin/users/<int:user_id>/toggle-admin', methods=['POST'])
+@login_required
+@admin_required
+def toggle_user_admin(user_id):
+    actor = _current_admin()
+    target = User.query.get(user_id)
+    if not target:
+        return jsonify({'success': False, 'error': 'User not found'}), 404
+    if target.id == actor.id and target.is_admin:
+        return jsonify({'success': False, 'error': "You can't remove your own admin access"}), 400
+    target.is_admin = not target.is_admin
+    db.session.add(AdminAuditLog(
+        target_user_id=target.id, actor_user_id=actor.id,
+        action='grant_admin' if target.is_admin else 'revoke_admin',
+        source='web', created_at=datetime.utcnow(),
+    ))
+    db.session.commit()
+    return jsonify({'success': True, 'is_admin': target.is_admin})
+
+
+# ===== EMPLOYER VERIFICATION =====
+@admin_bp.route('/admin/employers')
+@login_required
+@admin_required
+def admin_employers():
+    """No automated verification exists for employer accounts — is_verified means an
+    admin actually looked at the company and approved it, nothing more."""
+    profiles = EmployerProfile.query.order_by(EmployerProfile.created_at.desc()).all()
+    return render_template('admin_employers.html', profiles=profiles, active_page='employers')
+
+
+@admin_bp.route('/admin/employers/<int:profile_id>/toggle-verified', methods=['POST'])
+@login_required
+@admin_required
+def toggle_employer_verified(profile_id):
+    profile = EmployerProfile.query.get_or_404(profile_id)
+    profile.is_verified = not profile.is_verified
+    db.session.commit()
+    return jsonify({'success': True, 'is_verified': profile.is_verified})
+
+
+@admin_bp.route('/admin/users/<int:user_id>/activity')
+@login_required
+@admin_required
+def admin_user_activity(user_id):
+    """Usage metadata only — logins, upload counts, message counts, study time.
+    Deliberately excludes message content: this is a usage overview, not a
+    surveillance log. For a specific reported message, use Community moderation."""
+    target = User.query.get_or_404(user_id)
+
+    total_seconds = db.session.query(func.sum(StudySession.seconds)).filter_by(user_id=target.id).scalar() or 0
+    study_days = StudySession.query.filter_by(user_id=target.id).count()
+
+    materials = Material.query.filter_by(uploaded_by=target.username).order_by(Material.created_at.desc()).all()
+    videos = Video.query.filter_by(username=target.username).order_by(Video.created_at.desc()).all()
+    exams = Exam.query.filter_by(user_id=target.id).count()
+    groups_created = Group.query.filter_by(creator_id=target.id).count()
+
+    memberships = GroupMember.query.filter_by(user_id=target.id).all()
+    membership_data = []
+    total_messages = 0
+    for m in memberships:
+        msg_count = GroupMessage.query.filter_by(group_id=m.group_id, sender_id=target.id).count()
+        total_messages += msg_count
+        membership_data.append({
+            'group_name': m.group.name if m.group else 'Deleted group',
+            'role': m.role,
+            'joined_at': m.joined_at,
+            'message_count': msg_count,
+        })
+
+    activity = {
+        'total_study_hours': round(total_seconds / 3600, 1),
+        'study_days': study_days,
+        'materials_uploaded': len(materials),
+        'materials_pending': sum(1 for m in materials if not m.is_approved),
+        'videos_uploaded': len(videos),
+        'videos_pending': sum(1 for v in videos if not v.is_approved),
+        'exams_logged': exams,
+        'groups_created': groups_created,
+        'total_messages_sent': total_messages,
+    }
+
+    return render_template(
+        'admin_user_activity.html',
+        target=target,
+        activity=activity,
+        materials=materials[:10],
+        videos=videos[:10],
+        memberships=membership_data,
+        active_page='users',
+    )
+
+
+@admin_bp.route('/admin/users/<int:user_id>/delete', methods=['POST'])
+@login_required
+@admin_required
+def delete_user(user_id):
+    actor = _current_admin()
+    target = User.query.get(user_id)
+    if not target:
+        return jsonify({'success': False, 'error': 'User not found'}), 404
+    if target.id == actor.id:
+        return jsonify({'success': False, 'error': "You can't delete your own account here"}), 400
+    try:
+        db.session.delete(target)
+        db.session.commit()
+        return jsonify({'success': True})
+    except Exception as e:
+        db.session.rollback()
+        # This user owns groups/messages/etc. with foreign keys pointing at them — refuse
+        # rather than silently cascading deletes into other users' shared data.
+        return jsonify({
+            'success': False,
+            'error': 'This user has associated data (groups, messages, or materials) and cannot be deleted directly. Remove admin access instead, or clean up their content first.'
+        }), 409
+
+
+# ===== COMMUNITY MODERATION =====
+@admin_bp.route('/admin/community')
+@login_required
+@admin_required
+def admin_community():
+    groups = Group.query.order_by(Group.created_at.desc()).all()
+    groups_data = []
+    for g in groups:
+        groups_data.append({
+            'id': g.id,
+            'name': g.name,
+            'description': g.description or '',
+            'type': g.group_type,
+            'privacy': g.privacy,
+            'creator': g.creator.username if g.creator else 'unknown',
+            'member_count': GroupMember.query.filter_by(group_id=g.id).count(),
+            'message_count': GroupMessage.query.filter_by(group_id=g.id).count(),
+            'created_at': g.created_at,
+        })
+    return render_template('admin_community.html', groups=groups_data, active_page='community')
+
+
+@admin_bp.route('/admin/community/<int:group_id>/delete', methods=['POST'])
+@login_required
+@admin_required
+def admin_delete_group(group_id):
+    group = Group.query.get(group_id)
+    if not group:
+        return jsonify({'success': False, 'error': 'Group not found'}), 404
+    for f in group.files:
+        if f.cloudinary_public_id:
+            try:
+                cloudinary.uploader.destroy(f.cloudinary_public_id, resource_type='raw')
+            except Exception:
+                pass
+    db.session.delete(group)
+    db.session.commit()
+    return jsonify({'success': True})
+
+
+# ===== LIVE ROOMS MONITOR =====
+@admin_bp.route('/admin/live-rooms')
+@login_required
+@admin_required
+def admin_live_rooms():
+    rooms = Room.query.filter_by(is_active=True).order_by(Room.created_at.desc()).all()
+    rooms_data = []
+    for r in rooms:
+        memory_state = live_rooms_memory.get(r.id, {})
+        rooms_data.append({
+            'id': r.id,
+            'teacher_name': r.teacher_name,
+            'is_live': r.is_live,
+            'started_at': r.started_at,
+            'created_at': r.created_at,
+            'participant_count': len(memory_state.get('participants', {})),
+        })
+    return render_template('admin_live_rooms.html', rooms=rooms_data, active_page='live_rooms')
+
+
+@admin_bp.route('/admin/live-rooms/<room_id>/end', methods=['POST'])
+@login_required
+@admin_required
+def admin_end_room(room_id):
+    room = Room.query.get(room_id)
+    if not room:
+        return jsonify({'success': False, 'error': 'Room not found'}), 404
+    end_room_session(room_id)
+    return jsonify({'success': True})
+
+
+# ===== MATERIALS MODERATION (existing) =====
+@admin_bp.route('/admin/materials')
+@login_required
+@admin_required
+def admin_materials():
+    username = session['user']['username']
+    user = User.query.filter_by(username=username).first()
+
+    # Pending = never actioned yet. A rejected-with-reason row is also is_approved=False
+    # but must NOT keep reappearing in this queue -- rejection_reason IS NULL is what
+    # actually distinguishes "needs a decision" from "already decided, rejected".
+    pending = (
+        Material.query.filter_by(is_approved=False, rejection_reason=None)
+        .order_by(Material.id.desc()).all()
+    )
+
+    universities = University.query.filter_by(active=True).order_by(University.name).all()
+    return render_template('admin_materials.html', pending=pending, user=user, universities=universities, active_page='materials')
+
+
+@admin_bp.route('/admin/materials/approve/<int:material_id>', methods=['POST'])
+@login_required
+@admin_required
+def approve_material(material_id):
+    material = Material.query.get(material_id)
+    if not material:
+        return jsonify({'error': 'Material not found'}), 404
+
+    material.is_approved = True
+    material.rejection_reason = None  # clears a prior rejection if this was re-reviewed
+    db.session.commit()
+
+    return jsonify({'success': True, 'message': 'Material approved'})
+
+
+@admin_bp.route('/admin/materials/<int:material_id>/edit', methods=['POST'])
+@login_required
+@admin_required
+def edit_material(material_id):
+    """Lets an admin fix a material's metadata (wrong course code, department, etc.)
+    without deleting and re-uploading it. Whitelisted fields only -- never file_url/
+    cloudinary_public_id/uploaded_by, which aren't safe to hand-edit from a form."""
+    material = Material.query.get_or_404(material_id)
+    # title/department/level/semester are NOT NULL on Material -- an empty submission
+    # for one of those leaves the existing value in place rather than nulling it out.
+    required_fields = ('title', 'department', 'level', 'semester')
+    # university is nullable -- NULL means "universal", shown to every school (see
+    # routes/materials_routes.py's fetch_materials() scoping filter). Lets an admin
+    # correct a mistagged upload or widen/narrow its audience without re-uploading it.
+    nullable_fields = ('course_code', 'course_type', 'description', 'author', 'university')
+    for field in required_fields:
+        if field in request.form:
+            value = request.form[field].strip()
+            if value:
+                setattr(material, field, value)
+    for field in nullable_fields:
+        if field in request.form:
+            value = request.form[field].strip()
+            if field == 'course_code':
+                value = value.upper()
+            setattr(material, field, value or None)
+    if 'material_type' in request.form:
+        value = request.form['material_type'].strip()
+        if not value or value in Material.MATERIAL_TYPE_LABELS:
+            material.material_type = value or None
+    db.session.commit()
+    return jsonify({'success': True, 'material': material.to_dict()})
+
+
+@admin_bp.route('/admin/materials/reject/<int:material_id>', methods=['POST'])
+@login_required
+@admin_required
+def reject_material(material_id):
+    """Rejects with a reason, WITHOUT deleting the row or its Cloudinary file --
+    Academia Materials audit P1-6 found students had zero visibility into what
+    happened to their upload after submitting it. A rejected row now stays queryable
+    on the uploader's own /my-uploads page (see routes/materials_routes.py::my_uploads)
+    showing exactly why. Genuinely removing spam/abuse is a separate, explicitly
+    destructive action -- see delete_material_permanently below."""
+    material = Material.query.get(material_id)
+    if not material:
+        return jsonify({'error': 'Material not found'}), 404
+
+    reason = (request.get_json(silent=True) or {}).get('reason', '').strip() or (request.form.get('reason') or '').strip()
+    if not reason:
+        return jsonify({'error': 'A rejection reason is required'}), 400
+
+    material.is_approved = False
+    material.rejection_reason = reason[:300]
+    db.session.commit()
+
+    return jsonify({'success': True, 'message': 'Material rejected'})
+
+
+@admin_bp.route('/admin/materials/<int:material_id>/delete-permanently', methods=['DELETE'])
+@login_required
+@admin_required
+def delete_material_permanently(material_id):
+    """The genuinely destructive action (removes the DB row and its Cloudinary file) --
+    for spam/abuse, not for ordinary rejection. Ordinary 'this isn't quite right' goes
+    through reject_material above instead, which keeps the row and tells the uploader why."""
+    material = Material.query.get(material_id)
+    if not material:
+        return jsonify({'error': 'Material not found'}), 404
+
+    if material.file_url and material.source == 'uploaded':
+        try:
+            parts = material.file_url.split('/upload/')
+            if len(parts) == 2:
+                path_part = parts[1]
+                segments = path_part.split('/')
+                if segments[0].startswith('v') and segments[0][1:].isdigit():
+                    segments = segments[1:]
+                public_id = '/'.join(segments)
+                cloudinary.uploader.destroy(public_id, resource_type='raw')
+        except Exception:
+            pass
+
+    db.session.delete(material)
+    db.session.commit()
+
+    return jsonify({'success': True, 'message': 'Material permanently deleted'})
+
+
+@admin_bp.route('/debug/check-admin')
+@login_required
+@admin_required
+def debug_check_admin():
+    username = session['user']['username']
+    user = User.query.filter_by(username=username).first()
+
+    return jsonify({
+        'username': user.username,
+        'is_admin': user.is_admin,
+        'user_level': user.user_level,
+        'all_user_fields': {
+            'name': user.name,
+            'department': user.department,
+            'level': user.level,
+            'semester': user.semester
+        }
+    })

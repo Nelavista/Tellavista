@@ -8,9 +8,9 @@ back to /login -- even though the session had already been established correctly
 is why navigating anywhere else in the same browser landed on the dashboard, logged in).
 """
 from flask import session
-from extensions import db
-from models import User
-from routes.auth_routes import _start_session_for
+from app.extensions import db
+from app.models import User
+from app.routes.auth_routes import _start_session_for
 
 
 def test_start_session_for_returns_true_and_sets_session_on_success(app, make_user):

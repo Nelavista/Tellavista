@@ -6,9 +6,9 @@ external_links (which already ran a scheme check) -- both fields render as a raw
 <a href> on the project's own page AND the student's PUBLIC Talent Profile, so a
 javascript:/data: URI here was stored XSS against any visitor who clicked it.
 """
-from extensions import db
-from models import Skill, SkillCategory, ProjectTemplate, StudentProject
-from utils.validation import safe_external_url
+from app.extensions import db
+from app.models import Skill, SkillCategory, ProjectTemplate, StudentProject
+from app.utils.validation import safe_external_url
 
 
 def test_safe_external_url_rejects_dangerous_schemes():
@@ -112,6 +112,6 @@ def test_edit_profile_rejects_javascript_uri_in_portfolio_url(app, client, make_
     assert res.status_code in (302, 303)
 
     with app.app_context():
-        from models import User
+        from app.models import User
         user = User.query.get(student.id)
         assert user.portfolio_url is None

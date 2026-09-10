@@ -7,8 +7,8 @@ Before these existed, the admin UI showed a live "sums to 100?" warning but neve
 blocked the save on it, and a quiz question with a bad correct_index saved fine and
 became silently, permanently unwinnable.
 """
-from extensions import db
-from models import Skill, SkillCategory, SkillCourse, CourseModule, Lesson, ProjectTemplate
+from app.extensions import db
+from app.models import Skill, SkillCategory, SkillCourse, CourseModule, Lesson, ProjectTemplate
 
 
 def _make_admin(make_user, login_as, client, username='content_admin'):
@@ -112,7 +112,7 @@ def test_set_grade_weights_rejects_total_not_100_once_all_four_set(app, client, 
     assert res.status_code == 400
 
     with app.app_context():
-        from models import GradeWeight
+        from app.models import GradeWeight
         assert GradeWeight.query.filter_by(course_id=course_id).count() == 0
 
 

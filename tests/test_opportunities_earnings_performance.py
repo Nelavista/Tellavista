@@ -5,8 +5,8 @@ student's StudentSkill rows a line earlier just to check skill-id membership. ea
 accessed a.opportunity per application, a separate lazy-loaded query each time with no
 eager-load. All three now do one query for the data they need regardless of row count.
 """
-from extensions import db
-from models import SkillCategory, Skill, StudentSkill, Opportunity, OpportunityApplication
+from app.extensions import db
+from app.models import SkillCategory, Skill, StudentSkill, Opportunity, OpportunityApplication
 
 
 def _make_skill_with_progress(user_id, progress_pct, slug):

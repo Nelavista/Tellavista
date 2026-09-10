@@ -6,8 +6,8 @@ ever ran when their own route was hit directly), silently orphaning a StudentPro
 wiping a live cohort's enrollment history with zero warning.
 """
 from datetime import datetime
-from extensions import db
-from models import (
+from app.extensions import db
+from app.models import (
     Skill, SkillCategory, SkillCourse, ProjectTemplate, StudentProject,
     Challenge, LearningPath, LearningPathStep, Cohort, CohortEnrollment,
 )

@@ -8,8 +8,8 @@ moment the first tab deletes the account. Every protected route downstream re-qu
 the user with no None-guard and immediately dereferences the result, so the very next
 request on that stale session used to 500 instead of bouncing back to login.
 """
-from extensions import db
-from models import User
+from app.extensions import db
+from app.models import User
 
 
 def test_stale_session_after_account_deleted_redirects_instead_of_crashing(app, client, make_user, login_as):

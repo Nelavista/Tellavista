@@ -3,13 +3,13 @@ _reached_lessons/_assignments_component/_tests_component were rewritten from
 one-query-per-lesson to bulk queries) -- confirms the GPA math still comes out
 identical to what the original per-lesson-query version would have produced."""
 from datetime import datetime, timedelta
-from extensions import db
-from models import (
+from app.extensions import db
+from app.models import (
     Skill, SkillCategory, SkillCourse, CourseModule, Lesson, Cohort, CohortEnrollment,
     GradeScale, GradeWeight, Assignment, AssignmentSubmission, Quiz, StudentQuizAttempt,
     StudentLessonProgress,
 )
-from services.gpa_service import compute_skill_gpa, DEFAULT_GRADE_SCALE, DEFAULT_GRADE_WEIGHTS
+from app.services.gpa_service import compute_skill_gpa, DEFAULT_GRADE_SCALE, DEFAULT_GRADE_WEIGHTS
 
 
 def test_compute_skill_gpa_bulk_queries_match_expected_math(app, make_user):

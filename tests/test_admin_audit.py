@@ -1,7 +1,7 @@
 """Admin privilege changes must always be logged, from both entry points (the in-app
 toggle and the make_admin.py CLI script)."""
-from extensions import db
-from models import User, AdminAuditLog
+from app.extensions import db
+from app.models import User, AdminAuditLog
 
 
 def test_web_toggle_admin_writes_audit_log(app, client, make_user, login_as):

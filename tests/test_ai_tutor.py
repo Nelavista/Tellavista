@@ -7,8 +7,8 @@ since routes.tutor_routes already bound its own reference at import time).
 import json
 from datetime import datetime
 import pytest
-from extensions import db
-from models import TutorConversation, TutorMessage
+from app.extensions import db
+from app.models import TutorConversation, TutorMessage
 
 
 @pytest.fixture
@@ -83,7 +83,7 @@ class TestConversationCrud:
                              json={'title': 'hijacked'}).status_code == 404
 
     def test_conversation_scoped_to_course_and_topic(self, client, make_user, login_as, make_course, app):
-        from models import Topic
+        from app.models import Topic
         user = make_user(username='tutor_ctx')
         course = make_course(code='CSC201', title='Computer Programming I', level='200')
         with app.app_context():
@@ -194,17 +194,17 @@ class TestActionPrompt:
 
 class TestTutorServiceUnits:
     def test_build_quick_prompts_generic_when_no_context(self):
-        from services.tutor_service import build_quick_prompts
+        from app.services.tutor_service import build_quick_prompts
         prompts = build_quick_prompts()
         assert len(prompts) == 4
         assert all('prompt' in p and 'label' in p for p in prompts)
 
     def test_build_quick_prompts_topic_scoped(self, app, make_course):
-        from models import Topic
-        from services.tutor_service import build_quick_prompts
+        from app.models import Topic
+        from app.services.tutor_service import build_quick_prompts
         course = make_course(code='CSC201', level='200')
         with app.app_context():
-            from models import Course
+            from app.models import Course
             course_row = Course.query.get(course.id)
             topic = Topic(course_id=course.id, title='Variables & Data Types', order=1)
             db.session.add(topic)
@@ -215,8 +215,8 @@ class TestTutorServiceUnits:
         assert any('Variables & Data Types' in p['prompt'] for p in prompts)
 
     def test_system_prompt_grounds_in_topic_explanation_and_is_honest_without_one(self, app, make_course, make_user):
-        from models import Topic, Course, User
-        from services.tutor_service import build_tutor_system_prompt
+        from app.models import Topic, Course, User
+        from app.services.tutor_service import build_tutor_system_prompt
         course = make_course(code='CSC201', level='200')
         user = make_user(username='promptuser')
         with app.app_context():
@@ -235,8 +235,8 @@ class TestTutorServiceUnits:
             assert 'Recursion' in ungrounded
 
     def test_lookup_finds_course_and_materials_mentioned_by_code(self, app, make_course, make_user):
-        from models import Material, User
-        from services.tutor_service import lookup_mentioned_course_materials
+        from app.models import Material, User
+        from app.services.tutor_service import lookup_mentioned_course_materials
         make_course(code='MAT207', title='Real Analysis', level='200')
         user = make_user(username='lookupuser', university='Lagos State University', department='Computer Science')
         with app.app_context():
@@ -252,8 +252,8 @@ class TestTutorServiceUnits:
         assert [m.title for m in results[0]['materials']] == ['MAT207 Handout']
 
     def test_lookup_is_honest_about_unknown_course_code(self, app, make_user):
-        from models import User
-        from services.tutor_service import lookup_mentioned_course_materials
+        from app.models import User
+        from app.services.tutor_service import lookup_mentioned_course_materials
         user = make_user(username='lookupuser2')
         with app.app_context():
             user_row = User.query.get(user.id)
@@ -263,16 +263,16 @@ class TestTutorServiceUnits:
         assert results[0]['materials'] == []
 
     def test_lookup_ignores_messages_with_no_course_code(self, make_user, app):
-        from models import User
-        from services.tutor_service import lookup_mentioned_course_materials
+        from app.models import User
+        from app.services.tutor_service import lookup_mentioned_course_materials
         user = make_user(username='lookupuser3')
         with app.app_context():
             user_row = User.query.get(user.id)
             assert lookup_mentioned_course_materials(user_row, "what is nelavista about?") == []
 
     def test_system_prompt_lists_materials_honestly_without_claiming_to_have_read_them(self, app, make_course, make_user):
-        from models import Material, Course, User
-        from services.tutor_service import build_tutor_system_prompt, lookup_mentioned_course_materials
+        from app.models import Material, Course, User
+        from app.services.tutor_service import build_tutor_system_prompt, lookup_mentioned_course_materials
         make_course(code='MAT207', title='Real Analysis', level='200')
         user = make_user(username='promptuser2', university='Lagos State University', department='Computer Science')
         with app.app_context():
@@ -287,7 +287,7 @@ class TestTutorServiceUnits:
         assert 'have NOT read their contents' in prompt
 
     def test_message_wants_material_content_detects_intent(self):
-        from services.tutor_service import message_wants_material_content
+        from app.services.tutor_service import message_wants_material_content
         assert message_wants_material_content("check my material, there is mat207") is True
         assert message_wants_material_content("please summarize this") is True
         assert message_wants_material_content("hey what's up") is False
@@ -300,7 +300,7 @@ class TestMessagingCourseMaterialLookup:
         have access to your materials" even though Nelavista has exactly that material
         on file. It should now be auto-selected and its real text grounded into the
         system prompt sent to the model."""
-        from models import Material
+        from app.models import Material
         make_course(code='MAT207', title='Real Analysis', level='200')
         user = make_user(username='tutor_lookup', university='Lagos State University', department='Computer Science')
         with client.application.app_context():
@@ -327,7 +327,7 @@ class TestMessagingCourseMaterialLookup:
         assert 'Limits are defined using epsilon-delta.' in captured['system']
 
     def test_mentioning_course_with_multiple_materials_lists_instead_of_guessing(self, client, make_user, make_course, login_as, monkeypatch):
-        from models import Material
+        from app.models import Material
         make_course(code='MAT207', title='Real Analysis', level='200')
         user = make_user(username='tutor_lookup2', university='Lagos State University', department='Computer Science')
         with client.application.app_context():

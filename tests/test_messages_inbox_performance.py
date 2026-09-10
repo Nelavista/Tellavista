@@ -5,16 +5,16 @@ PER thread in a loop. All three are now batched into a small, fixed number of qu
 regardless of thread count. Proves the inbox still shows the correct unread count, last
 message, and other-party name after the refactor.
 """
-from extensions import db
-from models import MessageThread, Message
-from services.messaging_service import get_or_create_thread, send_message
+from app.extensions import db
+from app.models import MessageThread, Message
+from app.services.messaging_service import get_or_create_thread, send_message
 
 
 def test_inbox_shows_correct_unread_count_and_last_message(app, client, make_user, login_as):
     employer = make_user('inbox_employer', is_admin=False)
     student = make_user('inbox_student')
     with app.app_context():
-        from models import User
+        from app.models import User
         emp = User.query.get(employer.id)
         emp.is_employer = True
         db.session.commit()

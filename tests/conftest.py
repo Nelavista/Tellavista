@@ -20,8 +20,8 @@ os.environ.setdefault('SECRET_KEY', 'test-secret-key-for-pytest-only')
 os.environ.setdefault('FLASK_DEBUG', 'True')
 
 from flask import Flask
-from extensions import db, csrf, limiter, mail
-import models  # noqa: F401 -- registers all models onto db.metadata
+from app.extensions import db, csrf, limiter, mail
+import app.models as models  # noqa: F401 -- registers all models onto db.metadata
 
 
 @pytest.fixture
@@ -29,8 +29,9 @@ def app():
     db_fd, db_path = tempfile.mkstemp(suffix='.db')
     os.close(db_fd)
 
-    flask_app = Flask(__name__, template_folder=os.path.join(os.path.dirname(os.path.dirname(__file__)), 'templates'),
-                       static_folder=os.path.join(os.path.dirname(os.path.dirname(__file__)), 'static'))
+    project_root = os.path.dirname(os.path.dirname(__file__))
+    flask_app = Flask(__name__, template_folder=os.path.join(project_root, 'app', 'templates'),
+                       static_folder=os.path.join(project_root, 'app', 'static'))
     flask_app.config.update(
         SQLALCHEMY_DATABASE_URI=f'sqlite:///{db_path}',
         SQLALCHEMY_TRACK_MODIFICATIONS=False,
@@ -47,18 +48,18 @@ def app():
 
     # Only import blueprints inside the fixture, after config is set, so a route module's
     # top-level imports (which may pull in config.py) see the test config.
-    from routes.auth_routes import auth_bp
-    from routes.cbt_routes import cbt_bp
-    from routes.skills_routes import skills_bp
-    from routes.materials_routes import materials_bp
-    from routes.live_meeting_routes import live_bp
-    from routes.dashboard_routes import dashboard_bp
-    from routes.admin_skills_routes import admin_skills_bp
-    from routes.admin_routes import admin_bp
-    from routes.academia_routes import academia_bp
-    from routes.admin_academia_routes import admin_academia_bp
-    from routes.ai_routes import ai_bp
-    from routes.tutor_routes import tutor_bp
+    from app.routes.auth_routes import auth_bp
+    from app.routes.cbt_routes import cbt_bp
+    from app.routes.skills_routes import skills_bp
+    from app.routes.materials_routes import materials_bp
+    from app.routes.live_meeting_routes import live_bp
+    from app.routes.dashboard_routes import dashboard_bp
+    from app.routes.admin_skills_routes import admin_skills_bp
+    from app.routes.admin_routes import admin_bp
+    from app.routes.academia_routes import academia_bp
+    from app.routes.admin_academia_routes import admin_academia_bp
+    from app.routes.ai_routes import ai_bp
+    from app.routes.tutor_routes import tutor_bp
 
     for bp in (auth_bp, cbt_bp, skills_bp, materials_bp, live_bp, dashboard_bp, admin_skills_bp, admin_bp,
                academia_bp, admin_academia_bp, ai_bp, tutor_bp):
@@ -138,7 +139,7 @@ def make_course(app):
     """Builds a full University -> Faculty -> Department -> Course chain in one call --
     every taxonomy-linked Material/Topic test needs this same setup, so it lives here
     rather than being copy-pasted per test file."""
-    from models import University, Faculty, Department, Course
+    from app.models import University, Faculty, Department, Course
 
     def _make(university='Lagos State University', faculty='Science', department='Computer Science',
               code='CSC213', title='Data Structures & Algorithm Analysis', level='200'):
@@ -169,7 +170,7 @@ def make_course(app):
 
 @pytest.fixture
 def make_user(app):
-    from models import User
+    from app.models import User
 
     def _make(username='student1', email=None, is_admin=False, department='Computer Science', level='200',
               university=None, complete_profile=True):

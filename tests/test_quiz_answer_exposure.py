@@ -12,8 +12,8 @@ the model's own answer-stripped view) to the template instead of the raw ORM que
 and the answer key is only ever returned by /skills/quiz/<id>/submit's JSON response,
 after the server has already graded the submission.
 """
-from extensions import db
-from models import Skill, SkillCategory, SkillCourse, CourseModule, Lesson, Quiz
+from app.extensions import db
+from app.models import Skill, SkillCategory, SkillCourse, CourseModule, Lesson, Quiz
 
 
 def _make_lesson_with_quiz(slug='quiz-lesson'):

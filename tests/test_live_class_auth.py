@@ -5,9 +5,9 @@ believed -- this is the red-team test for that fix (events.py's handle_join_room
 """
 import uuid
 import pytest
-from extensions import db, socketio
+from app.extensions import db, socketio
 import events  # noqa: F401 -- registers @socketio.on handlers onto the shared socketio instance
-from models import Room
+from app.models import Room
 
 
 @pytest.fixture
@@ -124,7 +124,7 @@ def test_http_route_registers_ownership_for_first_visitor(socket_app):
     fresh room_id becomes its owner in the database, which is what the socket-layer check
     above depends on."""
     # live_bp is already registered by the base `app` fixture in conftest.py.
-    from models import User
+    from app.models import User
     with socket_app.app_context():
         u = User(username='http_claim_user', email='http_claim_user@example.com', name='X',
                   university='Lagos State University', faculty='Science', department='CS',

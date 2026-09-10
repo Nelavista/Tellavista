@@ -13,8 +13,8 @@ not error-catching:
   delete_project_template
 - admin_academia_routes.py: delete_course (Academia/Course), delete_topic
 """
-from extensions import db
-from models import (
+from app.extensions import db
+from app.models import (
     SkillCategory, Skill, SkillCourse, Challenge, ChallengeSubmission,
     ProjectTemplate, StudentProject, University, Faculty, Department, Course, Topic,
     Material, TopicProgress,

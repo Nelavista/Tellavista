@@ -1,8 +1,8 @@
 """Every OpportunityApplication status change (especially marking something 'paid') must
 be recorded in OpportunityStatusEvent -- an admin PUT is never just an untraceable flag
 flip anymore."""
-from extensions import db
-from models import Skill, SkillCategory, Opportunity, OpportunityApplication, OpportunityStatusEvent
+from app.extensions import db
+from app.models import Skill, SkillCategory, Opportunity, OpportunityApplication, OpportunityStatusEvent
 
 
 def _make_opportunity_and_application(app, student_id):

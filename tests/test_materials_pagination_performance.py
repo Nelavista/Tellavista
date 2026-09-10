@@ -5,8 +5,8 @@ path now uses real DB-level OFFSET/LIMIT; the type-filter path (which needs a Py
 heuristic for legacy NULL-material_type rows) is unchanged. Both must produce identical,
 correct pagination results to before.
 """
-from extensions import db
-from models import Material
+from app.extensions import db
+from app.models import Material
 
 
 def _make_materials(n, department='Computer Science', level='200', material_type='lecture_note'):

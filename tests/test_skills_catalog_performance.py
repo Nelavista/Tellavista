@@ -5,8 +5,8 @@ page load. Now 4 grouped-count queries total, covering every skill on the page. 
 the counts rendered are still correct after the refactor, including that unpublished
 rows are still excluded from each count exactly as before.
 """
-from extensions import db
-from models import SkillCategory, Skill, ProjectTemplate, StudentSkill, Opportunity, SkillCourse
+from app.extensions import db
+from app.models import SkillCategory, Skill, ProjectTemplate, StudentSkill, Opportunity, SkillCourse
 
 
 def test_catalog_counts_are_correct_after_batching(app, client, make_user, login_as):

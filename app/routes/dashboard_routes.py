@@ -147,6 +147,14 @@ def dashboard():
 
     # Determine if profile completion modal should be shown
     show_profile_modal = not check_profile_complete(user)
+    # dashboard.html includes profile_completion_modal.html inline (rather than
+    # redirecting to materials.complete_profile's own route) whenever show_profile_modal
+    # is true -- the path every new signup hits right after choose-path. That template's
+    # university <select> needs the same `universities` list materials_routes.py's
+    # complete_profile() passes; without it, {% for uni in universities %} silently
+    # iterates over nothing (Jinja treats an undefined loop variable as empty, not an
+    # error), so the dropdown renders with only its placeholder option.
+    universities = University.query.filter_by(active=True).order_by(University.name).all() if show_profile_modal else []
 
     if user and user.name:
         first_name = user.name.strip().split()[0]
@@ -166,6 +174,7 @@ def dashboard():
                            first_name=first_name,
                            exam_count=exam_count,
                            show_profile_modal=show_profile_modal,
+                           universities=universities,
                            email_verified=user.email_verified)
 
 @dashboard_bp.route('/api/debug-courses')

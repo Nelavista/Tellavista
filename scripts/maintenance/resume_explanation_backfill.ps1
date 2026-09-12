@@ -39,8 +39,13 @@ if (-not $resolved) {
 $stamp = Get-Date -Format "yyyyMMdd_HHmmss"
 $logFile = Join-Path $logDir "explanation_backfill_$stamp.log"
 
+# Run as a module (python -m scripts.seed.seed_topic_explanations_broad), not a direct
+# file path -- since the app.py -> app/ package refactor, the script's own directory is
+# no longer the project root, so a direct file invocation can't resolve `from app import
+# app, db`. -m runs it with the project root as the working directory added to
+# sys.path[0] instead, matching every other scripts/ entry point (see README.md).
 Set-Location $projectDir
-$proc = Start-Process -FilePath "python" -ArgumentList "seed_topic_explanations_broad.py", "--apply" `
+$proc = Start-Process -FilePath "python" -ArgumentList "-m", "scripts.seed.seed_topic_explanations_broad", "--apply" `
     -WorkingDirectory $projectDir -RedirectStandardOutput $logFile -RedirectStandardError "$logFile.err" `
     -WindowStyle Hidden -PassThru
 

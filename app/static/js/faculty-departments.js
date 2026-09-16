@@ -164,6 +164,10 @@ const FACULTY_DEPARTMENTS = {
       { value: "Computer Engineering", emoji: "💻" },
       { value: "Agricultural Engineering", emoji: "🚜" },
       { value: "Systems Engineering", emoji: "🔧" },
+      // LASU's own real department (added 2021, lasu.edu.ng) -- kept distinct from
+      // "Systems Engineering" above rather than merged, since the two aren't
+      // confirmed to be the same department at every school that offers either name.
+      { value: "Industrial and Systems Engineering", emoji: "🔧" },
       { value: "Metallurgical and Materials Engineering", emoji: "⚙️" },
       { value: "Water Resources Engineering", emoji: "💧" },
       { value: "Biomedical Engineering", emoji: "🩺" },
@@ -171,6 +175,7 @@ const FACULTY_DEPARTMENTS = {
       { value: "Marine Engineering", emoji: "⚓" },
       { value: "Structural Engineering", emoji: "🏗️" },
       { value: "Food Engineering", emoji: "🍞" },
+      { value: "Aeronautical and Astronautical Engineering", emoji: "✈️" },
     ]
   },
   "Education": {
@@ -276,6 +281,8 @@ const FACULTY_DEPARTMENTS = {
       { value: "Surgery", emoji: "🔪" },
       { value: "Internal Medicine", emoji: "🩻" },
       { value: "Psychiatry", emoji: "🧠" },
+      { value: "Anaesthesia", emoji: "💉" },
+      { value: "Behavioural Medicine", emoji: "🧠" },
     ]
   },
   "Dentistry": {

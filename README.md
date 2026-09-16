@@ -74,6 +74,11 @@ inserting)
   `data/Nelavista_Course_Codes.csv` (LASU/UNILAG/UI).
 - `scripts/seed/seed_ccmas_core.py` — NUC CCMAS national core curriculum floor for universities
   without a school-specific catalog yet.
+- `scripts/seed/seed_unilag_academia.py` — UNILAG's real Faculty/Department structure
+  (Management Sciences, Social Sciences, Environmental Sciences, Engineering) sourced
+  from official unilag.edu.ng subdomain pages, on top of the CSV's bare General Studies
+  rows. No Course rows -- no UNILAG course-code source was found; see the module
+  docstring for what's deliberately left unseeded pending further verification.
 - `scripts/seed/seed_cbt_questions.py` — copies the CBT question bank into the `CBTQuestion` table.
 - `scripts/seed/seed_skills.py` — Skills catalog (categories, skills, courses, lessons, project
   templates).

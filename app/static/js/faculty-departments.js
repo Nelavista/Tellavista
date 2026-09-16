@@ -13,6 +13,43 @@
 // rather than a single NUC-standard list, since a student picks whatever name
 // their own school actually uses.
 
+// Canonical departments that are known by several real-world names across Nigerian
+// universities but must resolve to ONE picker entry (never duplicated across
+// faculties as separate rows) -- see faculty-picker.js's alias-aware search, which
+// matches a typed query against `aliases` as well as `value`. Declared once here and
+// reused by reference everywhere the department appears below, so there is a single
+// source of truth instead of near-duplicate literals drifting apart faculty by faculty.
+//
+// Industrial Relations and Human Resource(s) Management: LASU's own faculty page
+// (lasu.edu.ng, Faculty of Management Sciences) still titles the department page
+// "Industrial Relations and Personnel Management" (the historical name) while its
+// current postgraduate programmes (M.HRIR, M.Sc Human Resources & Industrial
+// Relations) use the modern name -- i.e. this is a real school actively using both
+// names for the same department, not a typo. UNILAG's Faculty of Management Science
+// still uses "Industrial Relations and Personnel Management" as its official
+// department name too. All variants below resolve to one canonical row.
+const IRHRM_DEPARTMENT = {
+  value: "Industrial Relations and Human Resources Management",
+  emoji: "🤝",
+  aliases: [
+    "Industrial Relations and Human Resource Management",
+    "Industrial Relations and Personnel Management",
+    "Industrial Relations and HRM",
+    "IRHRM",
+    "Human Resource Management",
+    "Human Resources Management",
+  ],
+};
+
+// LASU's Department of Local Government Administration and Development Studies
+// (lasu.edu.ng, Faculty of Management Sciences) -- "Local Government Studies" is the
+// shorter name students commonly search for.
+const LOCAL_GOVT_DEPARTMENT = {
+  value: "Local Government Administration and Development Studies",
+  emoji: "🏘️",
+  aliases: ["Local Government Studies", "Local Government Administration"],
+};
+
 const FACULTY_DEPARTMENTS = {
   "Science": {
     emoji: "🔬",
@@ -173,11 +210,13 @@ const FACULTY_DEPARTMENTS = {
       { value: "Marketing", emoji: "📣" },
       { value: "Insurance", emoji: "🛡️" },
       { value: "Actuarial Science", emoji: "📈" },
-      { value: "Human Resource Management", emoji: "👥" },
-      { value: "Industrial Relations and Personnel Management", emoji: "🤝" },
+      IRHRM_DEPARTMENT,
       { value: "Entrepreneurship", emoji: "💡", hasCurriculum: true },
       { value: "Taxation", emoji: "🧾" },
       { value: "Office and Information Management", emoji: "🗂️" },
+      { value: "Project Management", emoji: "📆" },
+      { value: "Public Administration", emoji: "🏢" },
+      LOCAL_GOVT_DEPARTMENT,
     ]
   },
   "Business Administration": {
@@ -188,14 +227,14 @@ const FACULTY_DEPARTMENTS = {
       { value: "Marketing", emoji: "📣" },
       { value: "Banking and Finance", emoji: "🏦" },
       { value: "Entrepreneurship", emoji: "💡", hasCurriculum: true },
-      { value: "Human Resource Management", emoji: "👥" },
+      IRHRM_DEPARTMENT,
     ]
   },
   "Administration": {
     emoji: "🏛️",
     departments: [
       { value: "Public Administration", emoji: "🏢" },
-      { value: "Local Government Studies", emoji: "🏘️" },
+      LOCAL_GOVT_DEPARTMENT,
       { value: "Accounting", emoji: "📋", hasCurriculum: true },
       { value: "Business Administration", emoji: "🏢", hasCurriculum: true },
     ]

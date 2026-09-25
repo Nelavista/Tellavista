@@ -1,0 +1,296 @@
+{
+  "course_code": "CSC213",
+  "title": "Data Structures & Algorithm Analysis",
+  "level": "200",
+  "source_note": "Standard NUC-aligned algorithm analysis curriculum (asymptotic notation, algorithm design paradigms, sorting/searching complexity, recursion, NP-completeness), grounded against LASU's own CSC213 'Algorithm Development and Application' course description (efficient algorithm design, complexity, recursion, NP-completeness, sorting/searching, hashing, greedy techniques, amortized analysis). Kept distinct from CSC221 by focusing on efficiency/complexity analysis rather than structure definitions.",
+  "questions": [
+    {
+      "question": "What does Big-O notation primarily describe about an algorithm?",
+      "options": ["An upper bound on its growth rate in the worst case", "The exact number of operations it performs", "The amount of memory it uses on disk", "The programming language it was written in"],
+      "correct_answer": "An upper bound on its growth rate in the worst case",
+      "explanation": "Big-O notation expresses an asymptotic upper bound on how an algorithm's running time (or space) grows as input size increases, typically for the worst case.",
+      "topic": "Asymptotic notation",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which of the following growth rates is the smallest (most efficient) for large n?",
+      "options": ["O(log n)", "O(n)", "O(n log n)", "O(n^2)"],
+      "correct_answer": "O(log n)",
+      "explanation": "Logarithmic growth increases far more slowly than linear, linearithmic, or quadratic growth as n becomes large.",
+      "topic": "Asymptotic notation",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is the worst-case time complexity of binary search on a sorted array of n elements?",
+      "options": ["O(log n)", "O(n)", "O(n log n)", "O(1)"],
+      "correct_answer": "O(log n)",
+      "explanation": "Binary search halves the search space at each step, giving a logarithmic number of comparisons in the worst case.",
+      "topic": "Searching algorithms",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is the average-case time complexity of Quicksort?",
+      "options": ["O(n log n)", "O(n)", "O(n^2)", "O(log n)"],
+      "correct_answer": "O(n log n)",
+      "explanation": "On average, Quicksort's partitioning splits the array reasonably evenly, giving O(n log n) performance; its worst case is O(n^2) with poor pivot choices.",
+      "topic": "Sorting algorithms",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Under what condition does Quicksort degrade to its worst-case O(n^2) performance?",
+      "options": ["When the chosen pivot repeatedly produces highly unbalanced partitions", "When the array is already sorted in random order", "When the array contains only unique elements", "When recursion is replaced with iteration"],
+      "correct_answer": "When the chosen pivot repeatedly produces highly unbalanced partitions",
+      "explanation": "If the pivot is consistently the smallest or largest element (e.g., on an already-sorted array with a naive pivot choice), partitions become unbalanced, leading to O(n^2) behavior.",
+      "topic": "Sorting algorithms",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which sorting algorithm guarantees O(n log n) time complexity in the worst case?",
+      "options": ["Merge sort", "Quicksort", "Bubble sort", "Insertion sort"],
+      "correct_answer": "Merge sort",
+      "explanation": "Merge sort always divides the array in half and merges in linear time, giving a guaranteed O(n log n) worst-case bound regardless of input arrangement.",
+      "topic": "Sorting algorithms",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the time complexity of Bubble sort in the worst case?",
+      "options": ["O(n^2)", "O(n log n)", "O(n)", "O(log n)"],
+      "correct_answer": "O(n^2)",
+      "explanation": "Bubble sort compares and swaps adjacent elements repeatedly, requiring roughly n^2 comparisons in the worst case for a reverse-sorted array.",
+      "topic": "Sorting algorithms",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In algorithm design, what characterizes the 'divide and conquer' paradigm?",
+      "options": ["Breaking a problem into independent subproblems, solving them recursively, and combining results", "Always choosing the locally optimal choice at each step", "Building a solution incrementally using previously computed results stored in a table", "Trying every possible solution exhaustively"],
+      "correct_answer": "Breaking a problem into independent subproblems, solving them recursively, and combining results",
+      "explanation": "Divide and conquer splits a problem into smaller independent subproblems (divide), solves each recursively (conquer), then merges their solutions (combine); merge sort and quicksort are classic examples.",
+      "topic": "Algorithm design paradigms",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which algorithm design technique makes the locally optimal choice at each step, hoping it leads to a globally optimal solution?",
+      "options": ["Greedy algorithm", "Dynamic programming", "Backtracking", "Divide and conquer"],
+      "correct_answer": "Greedy algorithm",
+      "explanation": "A greedy algorithm builds up a solution piece by piece, always choosing the option that looks best at the current step, without reconsidering earlier choices.",
+      "topic": "Algorithm design paradigms",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Dynamic programming is most effective on problems that exhibit which two properties?",
+      "options": ["Optimal substructure and overlapping subproblems", "Randomness and non-determinism", "Linear structure and constant space", "Greedy choice property and NP-hardness"],
+      "correct_answer": "Optimal substructure and overlapping subproblems",
+      "explanation": "Dynamic programming solves problems by storing solutions to overlapping subproblems (memoization/tabulation), which is only beneficial when the problem also has optimal substructure.",
+      "topic": "Algorithm design paradigms",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the time complexity of a naive (non-memoized) recursive Fibonacci algorithm?",
+      "options": ["O(2^n)", "O(n)", "O(n log n)", "O(n^2)"],
+      "correct_answer": "O(2^n)",
+      "explanation": "Without memoization, the recursive Fibonacci algorithm recomputes overlapping subproblems repeatedly, resulting in exponential time complexity.",
+      "topic": "Recursion",
+      "difficulty": "hard"
+    },
+    {
+      "question": "What technique converts an exponential-time recursive algorithm with overlapping subproblems into a polynomial-time one by storing previously computed results?",
+      "options": ["Memoization", "Backtracking", "Tail recursion elimination", "Pruning"],
+      "correct_answer": "Memoization",
+      "explanation": "Memoization caches the results of expensive function calls so that repeated calls with the same inputs return the cached result instead of recomputing.",
+      "topic": "Recursion",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A recurrence relation T(n) = 2T(n/2) + O(n) describes the running time of which type of algorithm?",
+      "options": ["A divide-and-conquer algorithm like merge sort", "A simple linear scan", "A constant-time lookup", "A bubble sort implementation"],
+      "correct_answer": "A divide-and-conquer algorithm like merge sort",
+      "explanation": "This recurrence splits the problem into two halves and does linear work to combine them, which by the Master Theorem resolves to O(n log n) -- the signature of merge sort.",
+      "topic": "Recursion",
+      "difficulty": "hard"
+    },
+    {
+      "question": "What is the primary purpose of the Master Theorem in algorithm analysis?",
+      "options": ["To provide a direct way to solve certain classes of divide-and-conquer recurrence relations", "To prove that a problem is NP-complete", "To calculate the exact memory usage of an algorithm", "To determine whether an algorithm is stable"],
+      "correct_answer": "To provide a direct way to solve certain classes of divide-and-conquer recurrence relations",
+      "explanation": "The Master Theorem gives asymptotic bounds for recurrences of the form T(n) = aT(n/b) + f(n) without needing to expand the recursion tree manually.",
+      "topic": "Recursion",
+      "difficulty": "hard"
+    },
+    {
+      "question": "What does it mean for a decision problem to be in the complexity class P?",
+      "options": ["It can be solved by a deterministic algorithm in polynomial time", "It can only be solved by trying all possibilities", "It has no known algorithmic solution", "It requires exponential space to solve"],
+      "correct_answer": "It can be solved by a deterministic algorithm in polynomial time",
+      "explanation": "Class P consists of decision problems solvable in time that is a polynomial function of the input size by a deterministic algorithm.",
+      "topic": "NP-completeness",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What distinguishes an NP-complete problem from other problems in NP?",
+      "options": ["Every problem in NP can be reduced to it in polynomial time", "It can be solved in constant time", "It has infinitely many solutions", "It cannot be verified in polynomial time"],
+      "correct_answer": "Every problem in NP can be reduced to it in polynomial time",
+      "explanation": "NP-complete problems are the 'hardest' problems in NP: they are in NP, and every other problem in NP can be polynomial-time reduced to them.",
+      "topic": "NP-completeness",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Which of the following is a classic example of an NP-complete problem?",
+      "options": ["The Traveling Salesman Problem (decision version)", "Binary search", "Finding the maximum of an array", "Sorting a list of integers"],
+      "correct_answer": "The Traveling Salesman Problem (decision version)",
+      "explanation": "The decision version of the Traveling Salesman Problem (does a route of length <= k exist?) is a well-known NP-complete problem, unlike sorting or searching which are polynomial-time solvable.",
+      "topic": "NP-completeness",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is an approximation algorithm typically used for?",
+      "options": ["Finding a near-optimal solution to an NP-hard problem in polynomial time", "Guaranteeing the exact optimal solution to any problem", "Reducing the memory footprint of sorting algorithms", "Converting recursive algorithms into iterative ones"],
+      "correct_answer": "Finding a near-optimal solution to an NP-hard problem in polynomial time",
+      "explanation": "Since NP-hard problems generally lack known polynomial-time exact algorithms, approximation algorithms trade optimality for a provable, efficient near-optimal solution.",
+      "topic": "NP-completeness",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is amortized analysis used for?",
+      "options": ["Determining the average performance of a sequence of operations, even if some individual operations are costly", "Measuring the exact worst-case cost of a single operation", "Calculating the best-case time complexity only", "Comparing two unrelated algorithms directly"],
+      "correct_answer": "Determining the average performance of a sequence of operations, even if some individual operations are costly",
+      "explanation": "Amortized analysis averages the cost of an expensive but infrequent operation (like dynamic array resizing) over a sequence of operations, giving a more realistic performance bound.",
+      "topic": "Amortized analysis",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In a dynamic array (like a resizable list) that doubles its capacity when full, what is the amortized time complexity of a single insertion?",
+      "options": ["O(1)", "O(n)", "O(log n)", "O(n^2)"],
+      "correct_answer": "O(1)",
+      "explanation": "Although occasional resizing costs O(n), doubling the capacity ensures that resizing happens rarely enough that the amortized cost per insertion averages to O(1).",
+      "topic": "Amortized analysis",
+      "difficulty": "hard"
+    },
+    {
+      "question": "What is the average-case time complexity of searching for a key in a well-implemented hash table?",
+      "options": ["O(1)", "O(n)", "O(log n)", "O(n log n)"],
+      "correct_answer": "O(1)",
+      "explanation": "With a good hash function and low load factor, hash table lookups take constant time on average, since collisions are rare and chains/probes remain short.",
+      "topic": "Hashing",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is a 'collision' in the context of hash tables?",
+      "options": ["Two different keys mapping to the same hash bucket or index", "A hash function producing a negative value", "The table exceeding its maximum size", "Two threads accessing the table simultaneously"],
+      "correct_answer": "Two different keys mapping to the same hash bucket or index",
+      "explanation": "A collision occurs when the hash function assigns the same index to two distinct keys, requiring a resolution strategy such as chaining or open addressing.",
+      "topic": "Hashing",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which collision resolution technique stores multiple colliding elements in a linked list at the same table index?",
+      "options": ["Separate chaining", "Linear probing", "Double hashing", "Quadratic probing"],
+      "correct_answer": "Separate chaining",
+      "explanation": "Separate chaining resolves collisions by maintaining a linked list (or similar structure) at each bucket, appending colliding elements to it.",
+      "topic": "Hashing",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the worst-case time complexity of Depth-First Search (DFS) on a graph with V vertices and E edges using an adjacency list?",
+      "options": ["O(V + E)", "O(V^2)", "O(E log V)", "O(V * E)"],
+      "correct_answer": "O(V + E)",
+      "explanation": "DFS visits each vertex once and explores each edge once when using an adjacency list, giving a linear O(V + E) time complexity.",
+      "topic": "Graph algorithms",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which traversal strategy uses a queue and explores a graph level by level?",
+      "options": ["Breadth-First Search (BFS)", "Depth-First Search (DFS)", "In-order traversal", "Post-order traversal"],
+      "correct_answer": "Breadth-First Search (BFS)",
+      "explanation": "BFS uses a FIFO queue to explore all neighbors at the current depth before moving to nodes at the next depth level.",
+      "topic": "Graph algorithms",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which algorithm is most naturally used to find the shortest path in an unweighted graph?",
+      "options": ["Breadth-First Search (BFS)", "Depth-First Search (DFS)", "Quicksort", "Binary search"],
+      "correct_answer": "Breadth-First Search (BFS)",
+      "explanation": "Because BFS explores nodes level by level, the first time it reaches a target node corresponds to the shortest path in terms of number of edges.",
+      "topic": "Graph algorithms",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the height of a balanced Binary Search Tree with n nodes, in Big-O terms?",
+      "options": ["O(log n)", "O(n)", "O(n^2)", "O(1)"],
+      "correct_answer": "O(log n)",
+      "explanation": "A balanced BST keeps roughly equal-sized subtrees, so the height grows logarithmically with the number of nodes, enabling O(log n) search operations.",
+      "topic": "Tree-based analysis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What worst-case search time can occur in an unbalanced Binary Search Tree?",
+      "options": ["O(n), if the tree degenerates into a linked-list-like chain", "O(1), always", "O(log n), regardless of shape", "O(n log n), always"],
+      "correct_answer": "O(n), if the tree degenerates into a linked-list-like chain",
+      "explanation": "If nodes are inserted in sorted order without rebalancing, a BST can degenerate into a chain, making search operations take linear time in the worst case.",
+      "topic": "Tree-based analysis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which of the following best describes 'string processing' algorithms like KMP (Knuth-Morris-Pratt)?",
+      "options": ["Algorithms designed to efficiently search for a pattern within a text string", "Algorithms for compressing binary files", "Algorithms for sorting arrays of strings alphabetically", "Algorithms used to encrypt string data"],
+      "correct_answer": "Algorithms designed to efficiently search for a pattern within a text string",
+      "explanation": "KMP and related string-matching algorithms locate occurrences of a pattern within a larger text more efficiently than naive character-by-character comparison, often in O(n + m) time.",
+      "topic": "String processing algorithms",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the time complexity of the naive string-matching algorithm that checks every possible alignment of a pattern of length m in a text of length n?",
+      "options": ["O(n*m)", "O(n + m)", "O(log n)", "O(n)"],
+      "correct_answer": "O(n*m)",
+      "explanation": "The naive approach slides the pattern across the text and, in the worst case, compares all m characters of the pattern at each of the n possible starting positions.",
+      "topic": "String processing algorithms",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In asymptotic notation, what does Big-Omega (Ω) represent?",
+      "options": ["A lower bound on an algorithm's growth rate", "An upper bound on an algorithm's growth rate", "The exact running time of an algorithm", "The space complexity only"],
+      "correct_answer": "A lower bound on an algorithm's growth rate",
+      "explanation": "Big-Omega describes the best-case (or a guaranteed minimum) growth rate of an algorithm's running time as input size increases.",
+      "topic": "Asymptotic notation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What does Big-Theta (Θ) notation indicate about an algorithm's complexity?",
+      "options": ["A tight bound -- the algorithm's growth rate is bounded both above and below by the same function", "Only the worst-case behavior", "Only the average-case behavior", "That the algorithm is optimal for all inputs"],
+      "correct_answer": "A tight bound -- the algorithm's growth rate is bounded both above and below by the same function",
+      "explanation": "Θ notation is used when an algorithm's running time is bounded both above (Big-O) and below (Big-Omega) by the same asymptotic function, giving a tight characterization.",
+      "topic": "Asymptotic notation",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Which sorting algorithm is considered 'in-place' and typically has O(n^2) time complexity but performs well on small or nearly sorted datasets?",
+      "options": ["Insertion sort", "Merge sort", "Radix sort", "Heap sort with external storage"],
+      "correct_answer": "Insertion sort",
+      "explanation": "Insertion sort builds the sorted array one element at a time and is efficient (close to O(n)) on nearly sorted or small datasets, despite O(n^2) worst-case complexity.",
+      "topic": "Sorting algorithms",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A greedy algorithm is used to solve the activity-selection (interval scheduling) problem. What is the typical greedy strategy?",
+      "options": ["Always select the activity that finishes earliest among the remaining compatible activities", "Always select the longest activity first", "Randomly select activities until none remain", "Select activities in the order they were input"],
+      "correct_answer": "Always select the activity that finishes earliest among the remaining compatible activities",
+      "explanation": "Choosing the activity with the earliest finish time leaves the most room for subsequent activities, which provably yields an optimal schedule for this problem.",
+      "topic": "Algorithm design paradigms",
+      "difficulty": "hard"
+    },
+    {
+      "question": "What is the main difference between 'top-down' (memoized recursion) and 'bottom-up' (tabulation) approaches to dynamic programming?",
+      "options": ["Top-down starts from the original problem and recurses into subproblems, caching results; bottom-up builds up solutions from the smallest subproblems first", "Top-down is always faster than bottom-up", "Bottom-up always uses more memory than top-down", "There is no practical difference between them"],
+      "correct_answer": "Top-down starts from the original problem and recurses into subproblems, caching results; bottom-up builds up solutions from the smallest subproblems first",
+      "explanation": "Top-down (memoization) solves the problem recursively and caches results as they are computed, while bottom-up (tabulation) iteratively fills a table starting from base cases.",
+      "topic": "Algorithm design paradigms",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Why is analyzing an algorithm's space complexity important alongside time complexity?",
+      "options": ["Because an algorithm may be fast but require an impractical amount of memory to run", "Because space complexity is always equal to time complexity", "Because space complexity determines the programming language used", "Because it only matters for sorting algorithms"],
+      "correct_answer": "Because an algorithm may be fast but require an impractical amount of memory to run",
+      "explanation": "A time-efficient algorithm can still be impractical if its memory usage grows too large for available resources, so both dimensions must be considered together.",
+      "topic": "Asymptotic notation",
+      "difficulty": "easy"
+    }
+  ]
+}

@@ -1,0 +1,264 @@
+{
+  "course_code": "BCH413",
+  "title": "Bioenergetics",
+  "level": "400",
+  "source_note": "Grounded in standard bioenergetics curricula covering thermodynamics, free energy, the electron transport chain, chemiosmotic theory, and oxidative phosphorylation (Lehninger Principles of Biochemistry, Nicholls & Ferguson's Bioenergetics).",
+  "questions": [
+    {
+      "question": "The first law of thermodynamics states that:",
+      "options": ["Energy can neither be created nor destroyed, only transformed", "Entropy of the universe always decreases", "All spontaneous reactions release heat", "Free energy is always positive"],
+      "correct_answer": "Energy can neither be created nor destroyed, only transformed",
+      "explanation": "The first law of thermodynamics (conservation of energy) states that total energy in an isolated system remains constant, though it may be converted between forms.",
+      "topic": "Thermodynamics",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The second law of thermodynamics states that in any spontaneous process:",
+      "options": ["The total entropy of the universe increases", "Energy is created from nothing", "Enthalpy always decreases to zero", "Free energy always remains constant"],
+      "correct_answer": "The total entropy of the universe increases",
+      "explanation": "The second law states that spontaneous processes increase the total entropy (disorder) of the universe, providing the directionality for energy transformations.",
+      "topic": "Thermodynamics",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The Gibbs free energy equation is expressed as:",
+      "options": ["ΔG = ΔH - TΔS", "ΔG = ΔH + TΔS", "ΔG = ΔS - TΔH", "ΔG = TΔH - ΔS"],
+      "correct_answer": "ΔG = ΔH - TΔS",
+      "explanation": "Gibbs free energy change combines enthalpy (ΔH) and entropy (ΔS) changes at absolute temperature T: ΔG = ΔH - TΔS, determining reaction spontaneity.",
+      "topic": "Free energy",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A reaction with a negative ΔG is described as:",
+      "options": ["Exergonic and thermodynamically spontaneous", "Endergonic and non-spontaneous", "At equilibrium with no net change", "Requiring continuous energy input to proceed"],
+      "correct_answer": "Exergonic and thermodynamically spontaneous",
+      "explanation": "A negative ΔG indicates the reaction releases free energy and can proceed spontaneously under the given conditions (exergonic).",
+      "topic": "Free energy",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The standard free energy change (ΔG°') in biochemistry is defined at which standard pH?",
+      "options": ["pH 7.0", "pH 0", "pH 14", "pH 4.5"],
+      "correct_answer": "pH 7.0",
+      "explanation": "Biochemical standard state (ΔG°') is defined at pH 7.0, unlike the chemical standard state (ΔG°) defined at pH 0 (1 M H+), reflecting physiological conditions.",
+      "topic": "Free energy",
+      "difficulty": "medium"
+    },
+    {
+      "question": "ATP is often called a 'high-energy' compound because hydrolysis of its terminal phosphate bond:",
+      "options": ["Releases a large negative ΔG° due to charge repulsion relief and resonance stabilization of products", "Requires a large input of energy to occur", "Produces no measurable free energy change", "Only occurs in the presence of oxygen"],
+      "correct_answer": "Releases a large negative ΔG° due to charge repulsion relief and resonance stabilization of products",
+      "explanation": "ATP hydrolysis releases substantial free energy because the products (ADP and Pi) are more stable due to reduced electrostatic repulsion, resonance stabilization, and greater solvation.",
+      "topic": "High-energy compounds",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which of the following compounds has a more negative standard free energy of hydrolysis than ATP, making it a better phosphate donor to ATP synthesis?",
+      "options": ["Phosphoenolpyruvate", "Glucose-6-phosphate", "AMP", "Glycerol-3-phosphate"],
+      "correct_answer": "Phosphoenolpyruvate",
+      "explanation": "Phosphoenolpyruvate has one of the most negative free energies of hydrolysis among biological phosphate compounds, enabling it to phosphorylate ADP to ATP in substrate-level phosphorylation.",
+      "topic": "High-energy compounds",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Substrate-level phosphorylation differs from oxidative phosphorylation in that it:",
+      "options": ["Generates ATP directly from a high-energy substrate intermediate without involving the electron transport chain", "Occurs exclusively within the inner mitochondrial membrane", "Always requires molecular oxygen", "Depends on the proton motive force"],
+      "correct_answer": "Generates ATP directly from a high-energy substrate intermediate without involving the electron transport chain",
+      "explanation": "Substrate-level phosphorylation transfers a phosphate group directly from a high-energy metabolic intermediate to ADP, independent of the electron transport chain, e.g., in glycolysis and the citric acid cycle.",
+      "topic": "ATP synthesis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The electron transport chain is located in which membrane of the mitochondrion?",
+      "options": ["Inner mitochondrial membrane", "Outer mitochondrial membrane", "Mitochondrial matrix (soluble phase)", "Intermembrane space (soluble phase)"],
+      "correct_answer": "Inner mitochondrial membrane",
+      "explanation": "The electron transport chain complexes are embedded within the inner mitochondrial membrane, which also houses ATP synthase.",
+      "topic": "Electron transport chain",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Complex I of the electron transport chain is also known as:",
+      "options": ["NADH dehydrogenase (NADH:ubiquinone oxidoreductase)", "Succinate dehydrogenase", "Cytochrome bc1 complex", "Cytochrome c oxidase"],
+      "correct_answer": "NADH dehydrogenase (NADH:ubiquinone oxidoreductase)",
+      "explanation": "Complex I accepts electrons from NADH and transfers them to ubiquinone (coenzyme Q), while pumping protons across the inner mitochondrial membrane.",
+      "topic": "Electron transport chain",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Complex II of the electron transport chain, which oxidizes succinate to fumarate, is unique in that it:",
+      "options": ["Does not pump protons across the inner mitochondrial membrane", "Is the primary site of ATP synthase activity", "Only functions in anaerobic conditions", "Directly reduces molecular oxygen"],
+      "correct_answer": "Does not pump protons across the inner mitochondrial membrane",
+      "explanation": "Complex II (succinate dehydrogenase) links the citric acid cycle to the electron transport chain but, unlike Complexes I, III, and IV, does not contribute to proton pumping.",
+      "topic": "Electron transport chain",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The final electron acceptor in the mitochondrial electron transport chain is:",
+      "options": ["Molecular oxygen", "NAD+", "Ubiquinone", "Cytochrome c"],
+      "correct_answer": "Molecular oxygen",
+      "explanation": "Oxygen is the terminal electron acceptor at Complex IV (cytochrome c oxidase), where it is reduced to water, allowing continuous electron flow through the chain.",
+      "topic": "Electron transport chain",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Cytochrome c functions in the electron transport chain as a:",
+      "options": ["Mobile electron carrier between Complex III and Complex IV", "Proton pump embedded permanently in the membrane", "Enzyme that synthesizes ATP", "Final electron acceptor reducing oxygen directly"],
+      "correct_answer": "Mobile electron carrier between Complex III and Complex IV",
+      "explanation": "Cytochrome c is a small, water-soluble protein that shuttles electrons from Complex III to Complex IV along the outer face of the inner mitochondrial membrane.",
+      "topic": "Electron transport chain",
+      "difficulty": "medium"
+    },
+    {
+      "question": "According to the chemiosmotic theory proposed by Peter Mitchell, ATP synthesis is driven by:",
+      "options": ["An electrochemical proton gradient across the inner mitochondrial membrane", "Direct phosphorylation of ADP by NADH", "Heat released from electron transport", "Osmotic pressure differences of sucrose"],
+      "correct_answer": "An electrochemical proton gradient across the inner mitochondrial membrane",
+      "explanation": "The chemiosmotic hypothesis states that electron transport pumps protons out of the matrix, creating a proton motive force that drives ATP synthase to produce ATP as protons flow back in.",
+      "topic": "Chemiosmotic theory",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The proton motive force (PMF) across the inner mitochondrial membrane has two components:",
+      "options": ["A chemical (pH) gradient and an electrical (membrane potential) gradient", "Only a temperature gradient", "Only an osmotic gradient of glucose", "A magnetic field gradient and a pH gradient"],
+      "correct_answer": "A chemical (pH) gradient and an electrical (membrane potential) gradient",
+      "explanation": "The proton motive force is the sum of the proton concentration (ΔpH) gradient and the electrical potential (Δψ) gradient generated by proton pumping across the membrane.",
+      "topic": "Chemiosmotic theory",
+      "difficulty": "hard"
+    },
+    {
+      "question": "ATP synthase (Complex V) generates ATP by using energy from:",
+      "options": ["Protons flowing down their electrochemical gradient through the enzyme's Fo channel", "Direct hydrolysis of NADH", "Oxidation of pyruvate in the matrix", "Glycolytic substrate phosphorylation"],
+      "correct_answer": "Protons flowing down their electrochemical gradient through the enzyme's Fo channel",
+      "explanation": "ATP synthase couples the energetically favorable flow of protons through its Fo channel to conformational changes in the F1 head that catalyze ATP synthesis from ADP and Pi.",
+      "topic": "ATP synthesis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Uncoupling agents such as 2,4-dinitrophenol (DNP) affect oxidative phosphorylation by:",
+      "options": ["Dissipating the proton gradient without ATP synthesis, releasing energy as heat", "Directly inhibiting electron transport at Complex I", "Blocking ATP synthase's proton channel completely", "Enhancing ATP yield beyond normal levels"],
+      "correct_answer": "Dissipating the proton gradient without ATP synthesis, releasing energy as heat",
+      "explanation": "Uncouplers like DNP are lipid-soluble weak acids that carry protons across the inner membrane independent of ATP synthase, collapsing the proton gradient and releasing the energy as heat instead of ATP.",
+      "topic": "Oxidative phosphorylation inhibitors",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Thermogenin (UCP1), found in brown adipose tissue, functions physiologically as a natural:",
+      "options": ["Uncoupling protein that generates heat instead of ATP", "ATP synthase activator", "Electron transport chain inhibitor", "Glycolytic enzyme"],
+      "correct_answer": "Uncoupling protein that generates heat instead of ATP",
+      "explanation": "Thermogenin is a natural mitochondrial uncoupling protein in brown fat that allows protons to re-enter the matrix without producing ATP, generating heat for non-shivering thermogenesis.",
+      "topic": "Oxidative phosphorylation inhibitors",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Cyanide inhibits cellular respiration by binding to and blocking:",
+      "options": ["Complex IV (cytochrome c oxidase)", "Complex I (NADH dehydrogenase)", "ATP synthase directly", "Complex II (succinate dehydrogenase)"],
+      "correct_answer": "Complex IV (cytochrome c oxidase)",
+      "explanation": "Cyanide binds tightly to the heme a3-CuB center of cytochrome c oxidase, blocking electron transfer to oxygen and halting the entire electron transport chain.",
+      "topic": "Oxidative phosphorylation inhibitors",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Rotenone is a classical inhibitor that blocks electron transport at:",
+      "options": ["Complex I", "Complex II", "Complex III", "Complex IV"],
+      "correct_answer": "Complex I",
+      "explanation": "Rotenone binds to Complex I (NADH dehydrogenase), preventing electron transfer from NADH to ubiquinone and blocking the chain at its entry point.",
+      "topic": "Oxidative phosphorylation inhibitors",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Oligomycin inhibits oxidative phosphorylation by directly blocking:",
+      "options": ["The proton channel of ATP synthase (Fo subunit)", "Electron flow at Complex III", "Oxygen binding at Complex IV", "NADH production in the citric acid cycle"],
+      "correct_answer": "The proton channel of ATP synthase (Fo subunit)",
+      "explanation": "Oligomycin binds the Fo subunit of ATP synthase, blocking proton flow through the enzyme and thereby inhibiting ATP synthesis, which secondarily backs up and halts electron transport.",
+      "topic": "Oxidative phosphorylation inhibitors",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The P/O ratio in oxidative phosphorylation refers to:",
+      "options": ["The number of ATP molecules synthesized per pair of electrons passed to oxygen", "The ratio of phosphate to oxygen atoms in ATP", "The pH change per oxygen molecule consumed", "The proton to oxygen stoichiometry in water formation only"],
+      "correct_answer": "The number of ATP molecules synthesized per pair of electrons passed to oxygen",
+      "explanation": "The P/O ratio expresses how many ATP molecules are produced for each pair of electrons (or each atom of oxygen consumed) passing through the electron transport chain.",
+      "topic": "ATP synthesis",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Electrons donated by cytosolic NADH must be shuttled into the mitochondrial matrix because:",
+      "options": ["The inner mitochondrial membrane is impermeable to NADH itself", "NADH is toxic to mitochondrial enzymes", "Cytosolic NADH cannot be oxidized under any condition", "Only FADH2 can enter the matrix directly"],
+      "correct_answer": "The inner mitochondrial membrane is impermeable to NADH itself",
+      "explanation": "NADH cannot cross the inner mitochondrial membrane directly, so shuttle systems (e.g., malate-aspartate or glycerol-3-phosphate shuttle) transfer the reducing equivalents into the matrix.",
+      "topic": "Electron transport chain",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The glycerol-3-phosphate shuttle transfers cytosolic reducing equivalents into the mitochondria and ultimately donates electrons to:",
+      "options": ["Ubiquinone (via Complex II-associated FAD), bypassing Complex I", "Complex I directly as NADH would", "Cytochrome c directly", "Complex IV directly"],
+      "correct_answer": "Ubiquinone (via Complex II-associated FAD), bypassing Complex I",
+      "explanation": "The glycerol-3-phosphate shuttle delivers electrons to FAD-linked glycerol-3-phosphate dehydrogenase, which passes them to ubiquinone, bypassing Complex I and yielding less ATP than the malate-aspartate shuttle.",
+      "topic": "Electron transport chain",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Calorimetry is used in bioenergetics to measure:",
+      "options": ["The heat released or absorbed during a biochemical reaction or metabolic process", "The pH of a biological sample", "The molecular weight of a protein", "The wavelength of light absorbed by a compound"],
+      "correct_answer": "The heat released or absorbed during a biochemical reaction or metabolic process",
+      "explanation": "Calorimetry quantifies heat changes, allowing determination of enthalpy changes and total energy content of metabolic fuels or reactions.",
+      "topic": "Thermodynamics",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A coupled reaction in bioenergetics allows an unfavorable (endergonic) reaction to proceed by:",
+      "options": ["Linking it to a favorable (exergonic) reaction so the net ΔG is negative", "Removing the enzyme catalyzing the reaction", "Increasing the temperature indefinitely", "Eliminating the need for any free energy change"],
+      "correct_answer": "Linking it to a favorable (exergonic) reaction so the net ΔG is negative",
+      "explanation": "Coupling an endergonic reaction to a sufficiently exergonic one (often ATP hydrolysis) makes the combined net free energy change negative, allowing the overall process to proceed spontaneously.",
+      "topic": "Free energy",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The relationship between standard free energy change and the equilibrium constant is given by:",
+      "options": ["ΔG° = -RT ln Keq", "ΔG° = RT ln Keq", "ΔG° = -RT / Keq", "ΔG° = RT + Keq"],
+      "correct_answer": "ΔG° = -RT ln Keq",
+      "explanation": "This equation links the standard free energy change directly to the equilibrium constant: a large positive Keq corresponds to a large negative ΔG°, indicating a favorable reaction.",
+      "topic": "Free energy",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Creatine phosphate in muscle tissue serves as a:",
+      "options": ["Rapid phosphate reservoir for regenerating ATP during short bursts of activity", "Primary long-term energy storage molecule like glycogen", "Direct substrate for the citric acid cycle", "Electron carrier in oxidative phosphorylation"],
+      "correct_answer": "Rapid phosphate reservoir for regenerating ATP during short bursts of activity",
+      "explanation": "Creatine phosphate donates its high-energy phosphate to ADP via creatine kinase, rapidly regenerating ATP during brief intense muscular activity before other pathways ramp up.",
+      "topic": "High-energy compounds",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The redox potential (E°') of a half-reaction indicates:",
+      "options": ["The tendency of a chemical species to gain electrons (be reduced)", "The total entropy change of the reaction", "The pH at which the reaction occurs", "The molecular weight of the electron carrier"],
+      "correct_answer": "The tendency of a chemical species to gain electrons (be reduced)",
+      "explanation": "Standard reduction potential quantifies a substance's affinity for electrons relative to the standard hydrogen electrode; more positive E°' indicates a greater tendency to be reduced.",
+      "topic": "Redox potentials",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Electrons flow spontaneously through the electron transport chain from carriers with:",
+      "options": ["More negative redox potential to those with more positive redox potential", "More positive redox potential to those with more negative redox potential", "Equal redox potentials only", "Random potentials with no directionality"],
+      "correct_answer": "More negative redox potential to those with more positive redox potential",
+      "explanation": "Electrons flow spontaneously from carriers with lower (more negative) reduction potential toward carriers with higher (more positive) reduction potential, releasing free energy along the way, culminating at oxygen.",
+      "topic": "Redox potentials",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The relationship between free energy change and redox potential difference is given by:",
+      "options": ["ΔG°' = -nFΔE°'", "ΔG°' = nFΔE°'", "ΔG°' = -RT/ΔE°'", "ΔG°' = F/nΔE°'"],
+      "correct_answer": "ΔG°' = -nFΔE°'",
+      "explanation": "This equation relates free energy change to the number of electrons transferred (n), Faraday's constant (F), and the difference in reduction potentials (ΔE°') between electron donor and acceptor.",
+      "topic": "Redox potentials",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In brown adipose tissue thermogenesis, the dissipation of the proton gradient as heat rather than ATP is an example of:",
+      "options": ["Physiologically regulated uncoupling of oxidative phosphorylation", "Substrate-level phosphorylation", "Complete inhibition of the electron transport chain", "Anaerobic glycolysis"],
+      "correct_answer": "Physiologically regulated uncoupling of oxidative phosphorylation",
+      "explanation": "Brown fat thermogenesis is a controlled physiological process where UCP1 deliberately uncouples electron transport from ATP synthesis to generate heat, unlike pathological or chemical uncoupling.",
+      "topic": "Oxidative phosphorylation inhibitors",
+      "difficulty": "medium"
+    }
+  ]
+}

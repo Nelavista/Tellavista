@@ -1,0 +1,399 @@
+{
+  "course_code": "CSC205",
+  "title": "Operating Systems",
+  "level": "200",
+  "source_note": "LASU CS department curriculum document, CSC205 'Operating System I' course description (OS structures, process model, inter-process communication, mutual exclusion problems, scheduling, and memory management), directly matching the course code and level assigned here.",
+  "questions": [
+    {
+      "question": "An operating system is best defined as:",
+      "options": [
+        "System software that manages computer hardware and provides services for application programs",
+        "A type of application used only for word processing",
+        "A physical hardware component inside the CPU",
+        "A programming language used to write web pages"
+      ],
+      "correct_answer": "System software that manages computer hardware and provides services for application programs",
+      "explanation": "An operating system is the core system software that manages hardware resources (CPU, memory, devices) and provides a platform on which application software runs.",
+      "topic": "Introduction to operating systems",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In a monolithic operating system structure, the entire operating system is:",
+      "options": [
+        "Compiled as a single large program where all components can directly call each other",
+        "Split into isolated hardware-only modules with no software",
+        "Run entirely inside a web browser",
+        "Composed of independent virtual machines only"
+      ],
+      "correct_answer": "Compiled as a single large program where all components can directly call each other",
+      "explanation": "A monolithic OS structure implements the entire operating system as one large program running in kernel mode, where internal procedures can call each other freely.",
+      "topic": "Operating system structures",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a layered operating system structure, the system is organized as:",
+      "options": [
+        "A hierarchy of layers, each built on top of lower layers and offering services to the layer above",
+        "A single undivided block of code",
+        "A collection of unrelated applications with no OS control",
+        "Only hardware components with no software abstraction"
+      ],
+      "correct_answer": "A hierarchy of layers, each built on top of lower layers and offering services to the layer above",
+      "explanation": "A layered OS design divides the system into layers, where each layer uses the functions of the layer below it, improving modularity and simplifying debugging.",
+      "topic": "Operating system structures",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A virtual machine operating system structure allows:",
+      "options": [
+        "Multiple isolated instances of an operating environment to run on the same physical hardware",
+        "Only one program to run on a computer at any time",
+        "Hardware to run without any operating system",
+        "Files to be permanently deleted automatically"
+      ],
+      "correct_answer": "Multiple isolated instances of an operating environment to run on the same physical hardware",
+      "explanation": "The virtual machine approach creates an illusion of multiple separate machines on top of shared physical hardware, each capable of running its own operating system.",
+      "topic": "Operating system structures",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the client-server model of operating system structure, most OS services are provided by:",
+      "options": [
+        "User-level server processes that communicate with client processes via message passing",
+        "A single hardware chip with no software involved",
+        "The BIOS exclusively",
+        "External printers only"
+      ],
+      "correct_answer": "User-level server processes that communicate with client processes via message passing",
+      "explanation": "The client-server model moves most OS functionality out of the kernel into separate server processes, with clients requesting services via message passing.",
+      "topic": "Operating system structures",
+      "difficulty": "hard"
+    },
+    {
+      "question": "What is a 'process' in operating systems terminology?",
+      "options": [
+        "A program in execution, along with its current state and resources",
+        "A file stored permanently on disk",
+        "A piece of computer hardware",
+        "A type of network cable"
+      ],
+      "correct_answer": "A program in execution, along with its current state and resources",
+      "explanation": "A process is an instance of a program that is being executed, including its program counter, registers, and the resources allocated to it.",
+      "topic": "Process management",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which of the following is typically NOT one of the basic process states?",
+      "options": ["Compiled", "Running", "Ready", "Blocked/Waiting"],
+      "correct_answer": "Compiled",
+      "explanation": "The basic process states are typically new, ready, running, waiting/blocked, and terminated; 'compiled' describes a stage of program translation, not a process execution state.",
+      "topic": "Process management",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What information does a Process Control Block (PCB) store?",
+      "options": [
+        "Information about a process such as its state, program counter, registers, and memory allocation",
+        "The physical location of the CPU on the motherboard",
+        "The content of all files on the hard disk",
+        "The list of all installed application software"
+      ],
+      "correct_answer": "Information about a process such as its state, program counter, registers, and memory allocation",
+      "explanation": "The Process Control Block (PCB) is a data structure the OS uses to store all information needed to manage and track a specific process, including its state and register values.",
+      "topic": "Process management",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What does it mean when a process transitions from 'running' to 'ready' state?",
+      "options": [
+        "The process is preempted or voluntarily gives up the CPU but remains able to run",
+        "The process has permanently finished execution",
+        "The process has encountered a fatal unrecoverable error",
+        "The process has been deleted from memory"
+      ],
+      "correct_answer": "The process is preempted or voluntarily gives up the CPU but remains able to run",
+      "explanation": "A running process moves to the ready state when it is preempted (e.g. by the scheduler) or voluntarily yields the CPU, while still being eligible to run again later.",
+      "topic": "Process management",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is a 'race condition' in the context of concurrent processes?",
+      "options": [
+        "A situation where the outcome of execution depends on the unpredictable timing or interleaving of processes accessing shared data",
+        "A competition between two computers to boot up first",
+        "A method for speeding up CPU clock cycles",
+        "A technique for encrypting network traffic"
+      ],
+      "correct_answer": "A situation where the outcome of execution depends on the unpredictable timing or interleaving of processes accessing shared data",
+      "explanation": "A race condition occurs when multiple processes access and manipulate shared data concurrently, and the final outcome depends on the particular, unpredictable order of execution.",
+      "topic": "Inter-process communication",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the 'critical section' in concurrent programming?",
+      "options": [
+        "A segment of code where a process accesses shared resources that must not be concurrently accessed by more than one process",
+        "The very first line of code in any program",
+        "A section of the hard disk reserved for the operating system only",
+        "The part of a program that handles user input exclusively"
+      ],
+      "correct_answer": "A segment of code where a process accesses shared resources that must not be concurrently accessed by more than one process",
+      "explanation": "The critical section is the part of a program where shared resources are accessed; only one process should execute in its critical section at a time to avoid race conditions.",
+      "topic": "Inter-process communication",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What does 'mutual exclusion' ensure in concurrent process management?",
+      "options": [
+        "That only one process can execute in its critical section involving a shared resource at any given time",
+        "That all processes run at exactly the same speed",
+        "That every process has unlimited access to memory",
+        "That processes can never communicate with each other"
+      ],
+      "correct_answer": "That only one process can execute in its critical section involving a shared resource at any given time",
+      "explanation": "Mutual exclusion is a property that guarantees only one process at a time can access a shared resource within its critical section, preventing data inconsistency.",
+      "topic": "Inter-process communication",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is a semaphore used for in operating systems?",
+      "options": [
+        "A synchronization tool used to control access to shared resources by multiple processes",
+        "A device used to physically connect a monitor to a computer",
+        "A tool for compiling source code",
+        "A type of file compression algorithm"
+      ],
+      "correct_answer": "A synchronization tool used to control access to shared resources by multiple processes",
+      "explanation": "A semaphore is a synchronization primitive (an integer variable with atomic wait/signal operations) used to coordinate access to shared resources among concurrent processes.",
+      "topic": "Inter-process communication",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the producer-consumer problem, what is the main challenge being addressed?",
+      "options": [
+        "Coordinating access to a shared, bounded buffer so producers don't overfill it and consumers don't read from an empty buffer",
+        "Determining which process should be terminated first",
+        "Encrypting data before it is written to disk",
+        "Choosing the fastest programming language for I/O"
+      ],
+      "correct_answer": "Coordinating access to a shared, bounded buffer so producers don't overfill it and consumers don't read from an empty buffer",
+      "explanation": "The producer-consumer problem involves synchronizing producer processes (which add items to a shared buffer) and consumer processes (which remove items), avoiding buffer overflow or underflow.",
+      "topic": "Inter-process communication",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The dining philosophers problem is a classic illustration of which operating system concept?",
+      "options": [
+        "Deadlock and resource allocation among concurrent processes",
+        "File compression algorithms",
+        "Network routing protocols",
+        "Graphical user interface design"
+      ],
+      "correct_answer": "Deadlock and resource allocation among concurrent processes",
+      "explanation": "The dining philosophers problem is a classic synchronization example used to illustrate challenges of deadlock, resource allocation, and starvation among concurrent processes.",
+      "topic": "Deadlock",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is 'deadlock' in operating systems?",
+      "options": [
+        "A situation where two or more processes are each waiting for a resource held by another, so none can proceed",
+        "A state where the CPU is turned off",
+        "A type of scheduling algorithm that prioritizes short jobs",
+        "A method for allocating disk space efficiently"
+      ],
+      "correct_answer": "A situation where two or more processes are each waiting for a resource held by another, so none can proceed",
+      "explanation": "Deadlock occurs when a set of processes are blocked because each process is holding a resource and waiting for another resource held by another process in the set.",
+      "topic": "Deadlock",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which of the following is a necessary condition for deadlock to occur?",
+      "options": ["Circular wait", "Unlimited memory", "Single-threaded execution only", "No shared resources exist"],
+      "correct_answer": "Circular wait",
+      "explanation": "Circular wait, along with mutual exclusion, hold and wait, and no preemption, is one of the four necessary conditions for a deadlock to occur.",
+      "topic": "Deadlock",
+      "difficulty": "hard"
+    },
+    {
+      "question": "What does 'starvation' refer to in process scheduling?",
+      "options": [
+        "A situation where a process is perpetually denied the resources it needs to proceed, often due to scheduling policy bias",
+        "A process running out of available RAM entirely",
+        "A hardware failure affecting the CPU",
+        "The complete shutdown of the operating system"
+      ],
+      "correct_answer": "A situation where a process is perpetually denied the resources it needs to proceed, often due to scheduling policy bias",
+      "explanation": "Starvation occurs when a process is indefinitely delayed or denied necessary resources, often because a scheduling algorithm favors other processes repeatedly.",
+      "topic": "CPU scheduling",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which CPU scheduling algorithm processes jobs strictly in the order they arrive, without preemption?",
+      "options": ["First-In-First-Out (FIFO/FCFS)", "Shortest Job First", "Round Robin", "Priority Scheduling"],
+      "correct_answer": "First-In-First-Out (FIFO/FCFS)",
+      "explanation": "First-In-First-Out (FIFO), also called First-Come-First-Served (FCFS), schedules processes strictly in the order they arrive in the ready queue, with no preemption.",
+      "topic": "CPU scheduling",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In Round Robin scheduling, each process is given:",
+      "options": [
+        "A fixed small unit of CPU time (time quantum) before being moved to the back of the ready queue",
+        "Unlimited CPU time until it finishes execution",
+        "No CPU time at all",
+        "Priority based only on its file size"
+      ],
+      "correct_answer": "A fixed small unit of CPU time (time quantum) before being moved to the back of the ready queue",
+      "explanation": "Round Robin scheduling allocates a fixed time quantum to each process in turn; if the process does not finish within that time, it is preempted and moved to the back of the ready queue.",
+      "topic": "CPU scheduling",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which scheduling algorithm selects the process with the smallest estimated execution time next?",
+      "options": ["Shortest Job First (SJF)", "Round Robin", "First-In-First-Out", "Highest Response Ratio Next only"],
+      "correct_answer": "Shortest Job First (SJF)",
+      "explanation": "Shortest Job First (SJF) scheduling selects the waiting process with the smallest estimated run time to execute next, minimizing average waiting time under ideal conditions.",
+      "topic": "CPU scheduling",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What distinguishes preemptive scheduling from non-preemptive scheduling?",
+      "options": [
+        "Preemptive scheduling allows a running process to be interrupted and moved to ready state, while non-preemptive does not",
+        "Non-preemptive scheduling always runs faster than preemptive scheduling",
+        "Preemptive scheduling can only be used with a single process",
+        "There is no real difference between the two approaches"
+      ],
+      "correct_answer": "Preemptive scheduling allows a running process to be interrupted and moved to ready state, while non-preemptive does not",
+      "explanation": "In preemptive scheduling, the operating system can forcibly suspend a running process to allocate the CPU elsewhere; in non-preemptive scheduling, a process keeps the CPU until it voluntarily releases it.",
+      "topic": "CPU scheduling",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is a common scheduling criterion used to evaluate CPU scheduling algorithms?",
+      "options": ["Average waiting time", "The color of the monitor", "The brand of the hard disk", "The number of installed fonts"],
+      "correct_answer": "Average waiting time",
+      "explanation": "Average waiting time (along with turnaround time, throughput, and CPU utilization) is a key metric used to evaluate the effectiveness of CPU scheduling algorithms.",
+      "topic": "CPU scheduling",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In real memory management, what does the 'single-user contiguous scheme' mean?",
+      "options": [
+        "The entire main memory (aside from OS space) is allocated to a single running program at a time",
+        "Multiple users can run programs simultaneously in separate memory blocks",
+        "Memory is divided into equal fixed partitions for many users",
+        "Memory is never allocated to any program"
+      ],
+      "correct_answer": "The entire main memory (aside from OS space) is allocated to a single running program at a time",
+      "explanation": "In the single-user contiguous memory scheme, one program occupies the available memory space (besides the OS) at any given time, a simple early memory management approach.",
+      "topic": "Memory management",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In fixed partition memory management, main memory is divided into:",
+      "options": [
+        "A predetermined number of partitions of fixed size, each holding one process",
+        "An infinite number of variable-sized partitions",
+        "A single partition shared by all processes simultaneously",
+        "Partitions that grow automatically without limit"
+      ],
+      "correct_answer": "A predetermined number of partitions of fixed size, each holding one process",
+      "explanation": "Fixed partitioning divides memory into a set number of partitions of predetermined (fixed) size at system startup, with each partition holding one process.",
+      "topic": "Memory management",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is 'virtual memory' in an operating system?",
+      "options": [
+        "A memory management technique that gives programs the illusion of a large, continuous address space by using disk storage to extend physical RAM",
+        "A type of memory that exists only in cloud storage",
+        "Memory that is not real and cannot store any data",
+        "A memory chip that never loses data even after being physically destroyed"
+      ],
+      "correct_answer": "A memory management technique that gives programs the illusion of a large, continuous address space by using disk storage to extend physical RAM",
+      "explanation": "Virtual memory allows the OS to use disk space to simulate additional RAM, giving processes the illusion of a large, contiguous address space even if physical memory is limited.",
+      "topic": "Virtual memory management",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In paged memory allocation, memory is divided into:",
+      "options": [
+        "Fixed-size blocks called pages (in logical memory) and frames (in physical memory)",
+        "Variable-size blocks that change every clock cycle",
+        "A single block equal to the size of the entire hard disk",
+        "Blocks defined only by file extension"
+      ],
+      "correct_answer": "Fixed-size blocks called pages (in logical memory) and frames (in physical memory)",
+      "explanation": "Paging divides a process's logical memory into fixed-size pages and physical memory into equally sized frames, allowing non-contiguous allocation of memory to a process.",
+      "topic": "Virtual memory management",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What does a 'page replacement policy' determine in virtual memory management?",
+      "options": [
+        "Which page currently in memory should be swapped out to make room for a new page being brought in",
+        "How many users can log into the system at once",
+        "The physical color scheme of the desktop",
+        "The list of installed printer drivers"
+      ],
+      "correct_answer": "Which page currently in memory should be swapped out to make room for a new page being brought in",
+      "explanation": "When a new page must be loaded into a full memory, a page replacement policy (such as LRU or FIFO) decides which existing page to evict to make space.",
+      "topic": "Virtual memory management",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What does 'demand paging' mean in virtual memory systems?",
+      "options": [
+        "Pages are loaded into memory only when they are actually referenced/needed during execution",
+        "All pages of a program are loaded into memory before execution begins",
+        "Pages are never loaded into memory at all",
+        "Only the operating system's pages are ever loaded"
+      ],
+      "correct_answer": "Pages are loaded into memory only when they are actually referenced/needed during execution",
+      "explanation": "Demand paging loads a page into physical memory only when a process actually references it, rather than loading the entire program into memory upfront, saving memory resources.",
+      "topic": "Virtual memory management",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is a 'nucleus' (or kernel) in the context of process implementation within an operating system?",
+      "options": [
+        "The core part of the operating system responsible for managing processes, memory, and hardware at the lowest level",
+        "A hardware chip that stores only the BIOS",
+        "An external application used for word processing",
+        "A type of computer virus"
+      ],
+      "correct_answer": "The core part of the operating system responsible for managing processes, memory, and hardware at the lowest level",
+      "explanation": "The nucleus, or kernel, is the central component of an operating system that directly manages hardware resources, processes, and low-level system operations.",
+      "topic": "Process management",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What distinguishes 'job scheduling' from 'process scheduling' in operating systems?",
+      "options": [
+        "Job scheduling selects which jobs are admitted into the system for processing, while process scheduling selects which ready process runs on the CPU next",
+        "Job scheduling and process scheduling are exactly the same operation",
+        "Process scheduling determines which files can be deleted",
+        "Job scheduling only applies to network requests"
+      ],
+      "correct_answer": "Job scheduling selects which jobs are admitted into the system for processing, while process scheduling selects which ready process runs on the CPU next",
+      "explanation": "Job scheduling (long-term scheduling) decides which jobs are brought into the system to become processes, while process scheduling (short-term scheduling) decides which ready process gets the CPU next.",
+      "topic": "CPU scheduling",
+      "difficulty": "hard"
+    },
+    {
+      "question": "What is the main purpose of an interrupt in process handling within an operating system?",
+      "options": [
+        "To signal the CPU to temporarily suspend the current process and handle an event such as I/O completion",
+        "To permanently terminate all running processes",
+        "To format the hard disk automatically",
+        "To install new application software"
+      ],
+      "correct_answer": "To signal the CPU to temporarily suspend the current process and handle an event such as I/O completion",
+      "explanation": "Interrupts allow hardware or software events (like I/O completion) to signal the CPU, causing it to suspend the current process temporarily and handle the event via an interrupt handler.",
+      "topic": "Process management",
+      "difficulty": "medium"
+    }
+  ]
+}

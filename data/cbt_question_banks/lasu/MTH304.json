@@ -1,0 +1,264 @@
+{
+  "course_code": "MTH304",
+  "title": "Complex Analysis I",
+  "level": "300",
+  "source_note": "Standard NUC-aligned Nigerian university 300L Complex Analysis I curriculum: complex numbers in polar/exponential form and De Moivre's theorem, limits and continuity of complex functions, differentiability and analyticity, the Cauchy-Riemann equations, harmonic functions, elementary complex functions (exponential, logarithm, trigonometric, hyperbolic), power series and radius of convergence, Cauchy's theorem, and the Cauchy integral formula.",
+  "questions": [
+    {
+      "question": "The polar form of the complex number z = 1 + i is:",
+      "options": ["√2 (cos45° + i sin45°)", "2(cos45° + i sin45°)", "√2 (cos90° + i sin90°)", "1(cos45° + i sin45°)"],
+      "correct_answer": "√2 (cos45° + i sin45°)",
+      "explanation": "The modulus is |z| = √(1^2+1^2) = √2 and the argument is arctan(1/1) = 45°, giving z = √2(cos45°+isin45°).",
+      "topic": "Complex numbers in polar form",
+      "difficulty": "medium"
+    },
+    {
+      "question": "De Moivre's Theorem states that (cosθ + i sinθ)^n equals:",
+      "options": ["cos(nθ) + i sin(nθ)", "n cosθ + i n sinθ", "cos(θ/n) + i sin(θ/n)", "cosθ^n + i sinθ^n"],
+      "correct_answer": "cos(nθ) + i sin(nθ)",
+      "explanation": "De Moivre's theorem states (cosθ + isinθ)^n = cos(nθ) + isin(nθ), used to compute powers and roots of complex numbers.",
+      "topic": "Complex numbers in polar form",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Using De Moivre's theorem, the number of distinct n-th roots of a nonzero complex number is:",
+      "options": ["n", "1", "2n", "n^2"],
+      "correct_answer": "n",
+      "explanation": "Every nonzero complex number has exactly n distinct n-th roots, obtained by varying the argument by multiples of 2π/n.",
+      "topic": "Complex numbers in polar form",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Euler's formula states that e^{iθ} equals:",
+      "options": ["cosθ + i sinθ", "cosθ - i sinθ", "sinθ + i cosθ", "1 + iθ"],
+      "correct_answer": "cosθ + i sinθ",
+      "explanation": "Euler's formula relates the complex exponential to trigonometric functions: e^{iθ} = cosθ + isinθ.",
+      "topic": "Complex numbers in polar form",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A function f(z) is said to have a limit L as z → z0 if:",
+      "options": ["for every ε>0 there exists δ>0 such that |f(z)-L|<ε whenever 0<|z-z0|<δ", "f(z0) = L exactly", "f is a polynomial", "f is bounded near z0"],
+      "correct_answer": "for every ε>0 there exists δ>0 such that |f(z)-L|<ε whenever 0<|z-z0|<δ",
+      "explanation": "This is the standard epsilon-delta definition of a limit, extended from real to complex variables using the complex modulus.",
+      "topic": "Limits and continuity",
+      "difficulty": "hard"
+    },
+    {
+      "question": "For a complex function to be continuous at z0, it is necessary that:",
+      "options": ["lim(z→z0) f(z) exists and equals f(z0)", "f(z0) = 0", "f is differentiable at z0", "f is a polynomial"],
+      "correct_answer": "lim(z→z0) f(z) exists and equals f(z0)",
+      "explanation": "Continuity at a point requires the limit to exist and coincide with the function's value there, exactly as in real analysis.",
+      "topic": "Limits and continuity",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A function f(z) is said to be analytic (holomorphic) at a point z0 if:",
+      "options": ["f is differentiable at z0 and at every point in some neighborhood of z0", "f is continuous at z0 only", "f(z0) is real", "f is a polynomial of degree ≤ 2"],
+      "correct_answer": "f is differentiable at z0 and at every point in some neighborhood of z0",
+      "explanation": "Analyticity requires complex differentiability not just at a single point but throughout an open neighborhood of that point.",
+      "topic": "Analytic functions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "If f(z) = z^2, then f'(z) using the complex derivative definition is:",
+      "options": ["2z", "z", "2", "z^2"],
+      "correct_answer": "2z",
+      "explanation": "The complex derivative follows the same power rule as real calculus for polynomials: d/dz(z^2) = 2z.",
+      "topic": "Analytic functions",
+      "difficulty": "easy"
+    },
+    {
+      "question": "If f(z) = z̄ (the complex conjugate), is f(z) analytic anywhere?",
+      "options": ["No, f(z) = z̄ is nowhere analytic", "Yes, everywhere", "Only at z = 0", "Only for real z"],
+      "correct_answer": "No, f(z) = z̄ is nowhere analytic",
+      "explanation": "The conjugate function fails the Cauchy-Riemann equations everywhere, so it is nowhere complex differentiable, hence nowhere analytic.",
+      "topic": "Analytic functions",
+      "difficulty": "hard"
+    },
+    {
+      "question": "If f(z) = u(x,y) + iv(x,y) is analytic, the Cauchy-Riemann equations require:",
+      "options": ["∂u/∂x = ∂v/∂y and ∂u/∂y = -∂v/∂x", "∂u/∂x = ∂v/∂x and ∂u/∂y = ∂v/∂y", "u = v everywhere", "∂u/∂x = -∂v/∂y and ∂u/∂y = ∂v/∂x"],
+      "correct_answer": "∂u/∂x = ∂v/∂y and ∂u/∂y = -∂v/∂x",
+      "explanation": "These are the standard Cauchy-Riemann equations, a necessary condition (together with continuity of partials) for f = u+iv to be analytic.",
+      "topic": "Cauchy-Riemann equations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For f(z) = x^2 - y^2 + i(2xy), verify the Cauchy-Riemann equations hold since:",
+      "options": ["∂u/∂x = 2x = ∂v/∂y, and ∂u/∂y = -2y = -∂v/∂x", "∂u/∂x = 2y = ∂v/∂y", "u and v are both zero", "the equations fail here"],
+      "correct_answer": "∂u/∂x = 2x = ∂v/∂y, and ∂u/∂y = -2y = -∂v/∂x",
+      "explanation": "Here u=x^2-y^2, v=2xy; ∂u/∂x=2x, ∂v/∂y=2x (equal), and ∂u/∂y=-2y, ∂v/∂x=2y so -∂v/∂x=-2y (equal), satisfying CR equations. This confirms f(z)=z^2 is analytic.",
+      "topic": "Cauchy-Riemann equations",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The Cauchy-Riemann equations in polar form (z = re^{iθ}, f = u+iv) are:",
+      "options": ["∂u/∂r = (1/r)∂v/∂θ and (1/r)∂u/∂θ = -∂v/∂r", "∂u/∂r = ∂v/∂r", "∂u/∂θ = ∂v/∂θ", "∂u/∂r = -∂v/∂θ"],
+      "correct_answer": "∂u/∂r = (1/r)∂v/∂θ and (1/r)∂u/∂θ = -∂v/∂r",
+      "explanation": "This is the polar-coordinate version of the Cauchy-Riemann equations, useful for functions naturally expressed in r and θ.",
+      "topic": "Cauchy-Riemann equations",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A real-valued function φ(x,y) is harmonic if it satisfies:",
+      "options": ["Laplace's equation, ∂²φ/∂x² + ∂²φ/∂y² = 0", "the wave equation", "φ = 0 everywhere", "the Cauchy-Riemann equations directly"],
+      "correct_answer": "Laplace's equation, ∂²φ/∂x² + ∂²φ/∂y² = 0",
+      "explanation": "A harmonic function is a twice continuously differentiable solution of Laplace's equation.",
+      "topic": "Harmonic functions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "If f(z) = u + iv is analytic, then both u and v are:",
+      "options": ["harmonic functions", "linear functions", "always equal to each other", "never differentiable"],
+      "correct_answer": "harmonic functions",
+      "explanation": "The real and imaginary parts of an analytic function each satisfy Laplace's equation, making them harmonic conjugates of one another.",
+      "topic": "Harmonic functions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Given u(x,y) = x^2 - y^2 as the harmonic conjugate real part, a suitable harmonic conjugate v(x,y) satisfying the Cauchy-Riemann equations is:",
+      "options": ["2xy + C", "x^2 + y^2", "xy^2", "x - y"],
+      "correct_answer": "2xy + C",
+      "explanation": "Integrating ∂v/∂y = ∂u/∂x = 2x with respect to y gives v = 2xy + C, consistent with -∂v/∂x = ∂u/∂y = -2y.",
+      "topic": "Harmonic functions",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The complex exponential function e^z, where z = x+iy, is defined as:",
+      "options": ["e^x(cos y + i sin y)", "e^x + e^{iy}", "e^{x+y}", "e^x cos y"],
+      "correct_answer": "e^x(cos y + i sin y)",
+      "explanation": "The complex exponential extends the real exponential using Euler's formula: e^{x+iy} = e^x·e^{iy} = e^x(cos y + i sin y).",
+      "topic": "Elementary complex functions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The complex exponential function e^z is periodic with period:",
+      "options": ["2πi", "2π", "π", "i"],
+      "correct_answer": "2πi",
+      "explanation": "Since e^{z+2πi} = e^z·e^{2πi} = e^z (as e^{2πi}=1), the complex exponential has purely imaginary period 2πi.",
+      "topic": "Elementary complex functions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The complex logarithm log(z) for z ≠ 0 is defined as:",
+      "options": ["ln|z| + i(arg z + 2kπ), for integer k", "ln|z| only", "i·arg(z) only", "ln(z) same as real logarithm"],
+      "correct_answer": "ln|z| + i(arg z + 2kπ), for integer k",
+      "explanation": "Because the argument of z is only defined up to multiples of 2π, the complex logarithm is a multi-valued function with infinitely many branches.",
+      "topic": "Elementary complex functions",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The principal branch of log(z) restricts the argument to the interval:",
+      "options": ["(-π, π]", "[0, 2π)", "(-π/2, π/2]", "[0, π]"],
+      "correct_answer": "(-π, π]",
+      "explanation": "The principal branch (Log z) conventionally restricts arg(z) to (-π, π] to make the logarithm single-valued.",
+      "topic": "Elementary complex functions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The complex sine function is defined in terms of exponentials as:",
+      "options": ["sin z = (e^{iz} - e^{-iz})/(2i)", "sin z = (e^{iz} + e^{-iz})/2", "sin z = e^{iz} - e^{-iz}", "sin z = e^{iz}/2i"],
+      "correct_answer": "sin z = (e^{iz} - e^{-iz})/(2i)",
+      "explanation": "This is the standard definition of the complex sine function, consistent with Euler's formula and reducing to the usual sine for real z.",
+      "topic": "Elementary complex functions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Unlike the real sine function, the complex sine function sin z:",
+      "options": ["is unbounded as |Im(z)| → ∞", "is always bounded between -1 and 1", "is never zero", "has no zeros on the real axis"],
+      "correct_answer": "is unbounded as |Im(z)| → ∞",
+      "explanation": "Because sin z involves exponential terms e^{±iz}, its magnitude grows without bound as the imaginary part of z grows, unlike the bounded real sine.",
+      "topic": "Elementary complex functions",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The hyperbolic cosine and complex cosine are related by the identity:",
+      "options": ["cos(iz) = cosh(z)", "cos(iz) = sinh(z)", "cos(iz) = i·cosh(z)", "cos(iz) = -cosh(z)"],
+      "correct_answer": "cos(iz) = cosh(z)",
+      "explanation": "Substituting z→iz into the exponential definition of cosine yields cos(iz) = cosh(z), linking circular and hyperbolic functions.",
+      "topic": "Elementary complex functions",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A power series Σ an(z-z0)^n converges absolutely within its radius of convergence R, which can be computed using:",
+      "options": ["the ratio test: R = lim |an/an+1|", "always R = 1", "R = z0", "the sum of all an"],
+      "correct_answer": "the ratio test: R = lim |an/an+1|",
+      "explanation": "The radius of convergence is commonly found via the ratio test (or root test), R = lim_{n→∞}|an/an+1| when this limit exists.",
+      "topic": "Power series",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Within its radius of convergence, a power series represents a function that is:",
+      "options": ["analytic", "only continuous, never differentiable", "discontinuous", "always real-valued"],
+      "correct_answer": "analytic",
+      "explanation": "A convergent power series defines an analytic function inside its disc of convergence and can be differentiated term by term there.",
+      "topic": "Power series",
+      "difficulty": "medium"
+    },
+    {
+      "question": "On the boundary circle |z - z0| = R of a power series' disc of convergence, the series:",
+      "options": ["may converge or diverge depending on the point", "always converges", "always diverges", "is undefined"],
+      "correct_answer": "may converge or diverge depending on the point",
+      "explanation": "Behavior on the boundary of the disc of convergence is not determined by the radius alone and must be checked point by point.",
+      "topic": "Power series",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A contour integral ∫C f(z) dz is evaluated by parametrizing z = z(t) for t in [a,b], giving:",
+      "options": ["∫a^b f(z(t)) z'(t) dt", "∫a^b f(z(t)) dt", "∫a^b f'(z(t)) dt", "∫a^b z(t) dt"],
+      "correct_answer": "∫a^b f(z(t)) z'(t) dt",
+      "explanation": "The contour integral is defined by substituting the parametrization and multiplying by the derivative z'(t), analogous to a line integral.",
+      "topic": "Contour integration",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Cauchy's Theorem states that if f is analytic throughout a simply connected domain D, then for any closed contour C in D:",
+      "options": ["∮C f(z) dz = 0", "∮C f(z) dz = f(z0)", "∮C f(z) dz = 2πi", "∮C f(z) dz = length of C"],
+      "correct_answer": "∮C f(z) dz = 0",
+      "explanation": "Cauchy's theorem is the fundamental result that the contour integral of an analytic function over any closed contour in a simply connected domain vanishes.",
+      "topic": "Cauchy's theorem",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Cauchy's Theorem requires the domain of analyticity to be:",
+      "options": ["simply connected", "the whole complex plane", "bounded only", "purely real"],
+      "correct_answer": "simply connected",
+      "explanation": "Simple connectivity (no 'holes' in the domain) is essential; the theorem can fail if the contour encloses a singularity outside the domain of analyticity.",
+      "topic": "Cauchy's theorem",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Cauchy Integral Formula states that for f analytic inside and on a simple closed contour C, and z0 inside C:",
+      "options": ["f(z0) = (1/2πi) ∮C f(z)/(z-z0) dz", "f(z0) = ∮C f(z) dz", "f(z0) = (1/2πi) ∮C f(z) dz", "f(z0) = 2πi f'(z0)"],
+      "correct_answer": "f(z0) = (1/2πi) ∮C f(z)/(z-z0) dz",
+      "explanation": "This is the Cauchy Integral Formula, which expresses the value of an analytic function at an interior point in terms of a contour integral.",
+      "topic": "Cauchy integral formula",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The generalized Cauchy Integral Formula for the n-th derivative states f^{(n)}(z0) equals:",
+      "options": ["(n!/2πi) ∮C f(z)/(z-z0)^{n+1} dz", "(1/2πi) ∮C f(z)/(z-z0)^n dz", "n! ∮C f(z) dz", "(n!/2πi) ∮C f(z)/(z-z0) dz"],
+      "correct_answer": "(n!/2πi) ∮C f(z)/(z-z0)^{n+1} dz",
+      "explanation": "This generalization allows computing all derivatives of an analytic function purely from its boundary values via a contour integral.",
+      "topic": "Cauchy integral formula",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A key consequence of the Cauchy Integral Formula is that an analytic function:",
+      "options": ["is infinitely differentiable (has derivatives of all orders)", "is bounded everywhere", "must be a polynomial", "has no power series expansion"],
+      "correct_answer": "is infinitely differentiable (has derivatives of all orders)",
+      "explanation": "Unlike real differentiability, complex differentiability once (analyticity) guarantees the existence of derivatives of every order.",
+      "topic": "Cauchy integral formula",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Evaluate ∮C dz/(z - 2) where C is the circle |z| = 3 traversed counterclockwise.",
+      "options": ["2πi", "0", "πi", "4πi"],
+      "correct_answer": "2πi",
+      "explanation": "By the Cauchy Integral Formula with f(z)=1 and z0=2 (which lies inside |z|=3), the integral equals 2πi·f(z0) = 2πi.",
+      "topic": "Cauchy integral formula",
+      "difficulty": "hard"
+    }
+  ]
+}

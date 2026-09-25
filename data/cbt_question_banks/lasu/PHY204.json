@@ -1,0 +1,455 @@
+{
+  "course_code": "PHY204",
+  "title": "Waves & Optics II",
+  "level": "200",
+  "source_note": "Standard NUC-aligned Nigerian university 200L Physics curriculum for the second half of a Waves & Optics sequence, building on PHY203's wave motion and geometric optics: physical (wave) optics covering interference, diffraction, polarization, and coherence, with basic phase/group velocity concepts.",
+  "questions": [
+    {
+      "question": "In Young's double-slit experiment, bright fringes are observed on the screen because of:",
+      "options": [
+        "Constructive interference between light waves from the two slits",
+        "Diffraction of light around the edges of the slits only",
+        "Total internal reflection within the slits",
+        "Polarization of light passing through the slits"
+      ],
+      "correct_answer": "Constructive interference between light waves from the two slits",
+      "explanation": "Bright fringes appear where light waves from the two coherent slits arrive in phase and reinforce each other constructively.",
+      "topic": "Young's double-slit experiment",
+      "difficulty": "easy"
+    },
+    {
+      "question": "For Young's double-slit experiment to produce a stable, observable interference pattern, the two light sources (slits) must be:",
+      "options": ["Coherent, i.e. having a constant phase relationship", "Of different wavelengths", "Extremely bright but need not be coherent", "Separated by more than 1 metre"],
+      "correct_answer": "Coherent, i.e. having a constant phase relationship",
+      "explanation": "Coherence (constant phase difference) between the two sources is essential; without it, the interference pattern shifts too rapidly to be observed.",
+      "topic": "Young's double-slit experiment",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In Young's double-slit experiment, the fringe spacing (fringe width) β is given by (D = slit-to-screen distance, d = slit separation, λ = wavelength):",
+      "options": ["β = λD/d", "β = λd/D", "β = D/(λd)", "β = d/(λD)"],
+      "correct_answer": "β = λD/d",
+      "explanation": "Fringe width is directly proportional to wavelength and screen distance, and inversely proportional to slit separation, as derived from the double-slit geometry.",
+      "topic": "Young's double-slit experiment",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In a double-slit setup, slits are separated by 0.5 mm and the screen is 1 m away. If the wavelength of light used is 500 nm, what is the fringe spacing?",
+      "options": ["1 mm", "0.5 mm", "2 mm", "0.1 mm"],
+      "correct_answer": "1 mm",
+      "explanation": "β = λD/d = (500×10⁻⁹ × 1)/(0.5×10⁻³) = 1×10⁻³ m = 1 mm.",
+      "topic": "Young's double-slit experiment",
+      "difficulty": "hard"
+    },
+    {
+      "question": "For two coherent waves of equal amplitude, the condition for constructive interference in terms of path difference Δ is:",
+      "options": ["Δ = nλ, where n = 0, 1, 2, ...", "Δ = (n + 1/2)λ", "Δ = λ/4", "Δ = nλ/2 for any integer n"],
+      "correct_answer": "Δ = nλ, where n = 0, 1, 2, ...",
+      "explanation": "Constructive interference occurs when the path difference between the two waves is a whole number of wavelengths, so the waves arrive in phase.",
+      "topic": "Conditions for interference",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The condition for destructive interference of two coherent waves in terms of path difference Δ is:",
+      "options": ["Δ = (n + 1/2)λ, where n = 0, 1, 2, ...", "Δ = nλ", "Δ = 0", "Δ = 2nλ"],
+      "correct_answer": "Δ = (n + 1/2)λ, where n = 0, 1, 2, ...",
+      "explanation": "Destructive interference occurs when the path difference is an odd multiple of half a wavelength, so the waves arrive exactly out of phase and cancel.",
+      "topic": "Conditions for interference",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Thin-film interference (e.g. colours seen in a soap bubble or an oil film on water) arises from:",
+      "options": [
+        "Interference between light reflected from the top and bottom surfaces of the thin film",
+        "Diffraction of light through a single narrow slit",
+        "Polarization of light by the film surface",
+        "Total internal reflection inside the film"
+      ],
+      "correct_answer": "Interference between light reflected from the top and bottom surfaces of the thin film",
+      "explanation": "Light partially reflects at both the top and bottom surfaces of the film; these two reflected waves interfere, producing the characteristic colour patterns.",
+      "topic": "Thin-film interference",
+      "difficulty": "medium"
+    },
+    {
+      "question": "When light reflects off a medium of higher refractive index than the one it was travelling in, the reflected wave undergoes:",
+      "options": ["A phase change of π (180°)", "No phase change", "A phase change of π/2 (90°)", "A phase change of 2π"],
+      "correct_answer": "A phase change of π (180°)",
+      "explanation": "Reflection from a boundary going from a lower to a higher refractive index medium introduces a half-wave (π radian) phase shift, an important factor in analysing thin-film interference.",
+      "topic": "Thin-film interference",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Newton's rings are formed by:",
+      "options": [
+        "Interference between light reflected from a curved lens surface and a flat glass plate beneath it, producing an air film of varying thickness",
+        "Diffraction of light through a circular aperture",
+        "Polarization of light passing through a birefringent crystal",
+        "Reflection of light from a single flat mirror"
+      ],
+      "correct_answer": "Interference between light reflected from a curved lens surface and a flat glass plate beneath it, producing an air film of varying thickness",
+      "explanation": "Newton's rings arise from interference in the thin, variable-thickness air gap between a plano-convex lens and a flat glass plate, producing concentric circular fringes.",
+      "topic": "Newton's rings",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the Newton's rings experiment viewed in reflected light, the centre of the pattern appears:",
+      "options": ["Dark, due to the π phase change on reflection at the glass plate combined with zero air-gap thickness", "Bright, because the air gap is thickest there", "Coloured with all wavelengths superposed equally", "Invisible because no light reaches the centre"],
+      "correct_answer": "Dark, due to the π phase change on reflection at the glass plate combined with zero air-gap thickness",
+      "explanation": "At the point of contact the air-film thickness is zero, but the phase change on reflection at the lower (glass) surface produces effective destructive interference, giving a dark central spot.",
+      "topic": "Newton's rings",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Diffraction refers to:",
+      "options": [
+        "The bending/spreading of waves as they pass through an aperture or around an obstacle",
+        "The splitting of a wave into its component colours",
+        "The change in wave frequency due to relative motion",
+        "The total reflection of a wave at a boundary"
+      ],
+      "correct_answer": "The bending/spreading of waves as they pass through an aperture or around an obstacle",
+      "explanation": "Diffraction is the spreading of waves when they encounter an obstacle or pass through an opening comparable in size to their wavelength.",
+      "topic": "Diffraction",
+      "difficulty": "easy"
+    },
+    {
+      "question": "For single-slit diffraction, the condition for the first minimum (dark fringe) is:",
+      "options": ["a sinθ = λ", "a sinθ = λ/2", "a sinθ = 2λ", "a cosθ = λ"],
+      "correct_answer": "a sinθ = λ",
+      "explanation": "For a single slit of width a, the first diffraction minimum occurs where a sinθ = λ, derived by dividing the slit into two halves whose contributions cancel.",
+      "topic": "Single-slit diffraction",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In single-slit diffraction, narrowing the slit width (making it smaller) causes the central maximum to:",
+      "options": ["Become wider", "Become narrower", "Disappear completely", "Remain unchanged"],
+      "correct_answer": "Become wider",
+      "explanation": "Since the first minimum satisfies sinθ = λ/a, a smaller slit width a increases θ, spreading the central diffraction maximum wider.",
+      "topic": "Single-slit diffraction",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Compared to the central maximum, the secondary maxima in a single-slit diffraction pattern are:",
+      "options": ["Much less intense", "Equally intense", "More intense", "Completely dark"],
+      "correct_answer": "Much less intense",
+      "explanation": "The central maximum concentrates most of the diffracted light energy; secondary maxima fall off rapidly in intensity moving away from the centre.",
+      "topic": "Single-slit diffraction",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A diffraction grating consists of:",
+      "options": [
+        "A large number of equally spaced parallel slits (or rulings) that produce sharp interference maxima",
+        "A single narrow slit used to produce diffraction fringes",
+        "A pair of polarizing filters placed at right angles",
+        "A thin film of varying thickness"
+      ],
+      "correct_answer": "A large number of equally spaced parallel slits (or rulings) that produce sharp interference maxima",
+      "explanation": "A diffraction grating has many closely and evenly spaced slits; the combined interference from all slits produces sharp, well-defined bright fringes (principal maxima).",
+      "topic": "Diffraction grating",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The grating equation for principal maxima produced by a diffraction grating is:",
+      "options": ["d sinθ = nλ", "d cosθ = nλ", "d sinθ = λ/n", "n sinθ = dλ"],
+      "correct_answer": "d sinθ = nλ",
+      "explanation": "Here d is the grating spacing (distance between adjacent slits), n is the order of the maximum, and λ is the wavelength; this equation gives the angles at which constructive interference occurs.",
+      "topic": "Diffraction grating",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A diffraction grating has 5000 lines per centimetre. What is the grating spacing d?",
+      "options": ["2 × 10⁻⁶ m", "5 × 10⁻⁶ m", "2 × 10⁻⁴ m", "5000 m"],
+      "correct_answer": "2 × 10⁻⁶ m",
+      "explanation": "d = 1/(5000 lines/cm) = 1/(5000×100 lines/m) = 2×10⁻⁶ m.",
+      "topic": "Diffraction grating",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Increasing the number of slits in a diffraction grating (while keeping spacing fixed) has what effect on the observed spectral lines?",
+      "options": ["They become sharper and narrower", "They become broader and less distinct", "They disappear", "They merge into a continuous band"],
+      "correct_answer": "They become sharper and narrower",
+      "explanation": "More illuminated slits increase the resolving power of the grating, producing sharper, narrower principal maxima.",
+      "topic": "Diffraction grating",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The resolving power of an optical instrument refers to its ability to:",
+      "options": [
+        "Distinguish two closely spaced objects or spectral lines as separate",
+        "Magnify an object to a large size",
+        "Focus light of only one specific wavelength",
+        "Transmit the maximum possible intensity of light"
+      ],
+      "correct_answer": "Distinguish two closely spaced objects or spectral lines as separate",
+      "explanation": "Resolving power measures an instrument's capability to separate two closely spaced sources or spectral features rather than seeing them as one blurred feature, fundamentally limited by diffraction.",
+      "topic": "Resolving power",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Rayleigh criterion for the resolving power of a circular aperture states that two point sources are just resolved when:",
+      "options": [
+        "The central maximum of one diffraction pattern falls on the first minimum of the other",
+        "Their central maxima exactly coincide",
+        "They are separated by more than 10 wavelengths",
+        "Their diffraction patterns do not overlap at all"
+      ],
+      "correct_answer": "The central maximum of one diffraction pattern falls on the first minimum of the other",
+      "explanation": "This is the standard Rayleigh resolution criterion, defining the minimum angular separation at which two point sources can still be distinguished.",
+      "topic": "Resolving power",
+      "difficulty": "hard"
+    },
+    {
+      "question": "For a fixed wavelength, increasing the diameter of a telescope's objective aperture will:",
+      "options": ["Improve (increase) its resolving power", "Reduce its resolving power", "Have no effect on resolving power", "Only affect its magnification, not resolution"],
+      "correct_answer": "Improve (increase) its resolving power",
+      "explanation": "The minimum resolvable angle is inversely proportional to aperture diameter (θ_min ≈ 1.22λ/D), so a larger aperture gives finer resolving power.",
+      "topic": "Resolving power",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Polarization is a phenomenon that occurs in which type of wave?",
+      "options": ["Transverse waves only", "Longitudinal waves only", "Both transverse and longitudinal waves equally", "Only in sound waves"],
+      "correct_answer": "Transverse waves only",
+      "explanation": "Polarization involves restricting the oscillation direction of a wave to a single plane, which is only meaningful for transverse waves such as light; longitudinal waves like sound cannot be polarized.",
+      "topic": "Polarization",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Malus's law for the intensity of polarized light transmitted through a polarizer, given the angle θ between the light's polarization direction and the polarizer's transmission axis, is:",
+      "options": ["I = I₀ cos²θ", "I = I₀ sin²θ", "I = I₀ cosθ", "I = I₀ (1 − cosθ)"],
+      "correct_answer": "I = I₀ cos²θ",
+      "explanation": "Malus's law describes how the transmitted intensity of already-polarized light through an analyzer depends on the cosine squared of the angle between the polarization direction and the analyzer axis.",
+      "topic": "Malus's law",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Polarized light of intensity I₀ is incident on a polarizer whose transmission axis is at 60° to the light's polarization direction. What fraction of the intensity is transmitted?",
+      "options": ["0.25", "0.5", "0.75", "0.87"],
+      "correct_answer": "0.25",
+      "explanation": "By Malus's law, I/I₀ = cos²(60°) = (0.5)² = 0.25.",
+      "topic": "Malus's law",
+      "difficulty": "hard"
+    },
+    {
+      "question": "If unpolarized light of intensity I₀ passes through a single ideal polarizer, the transmitted intensity is approximately:",
+      "options": ["I₀/2", "I₀", "I₀/4", "Zero"],
+      "correct_answer": "I₀/2",
+      "explanation": "An ideal polarizer transmits, on average, half the intensity of unpolarized light regardless of its transmission axis orientation, since the incoming light has random polarization directions.",
+      "topic": "Malus's law",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Brewster's angle is the angle of incidence at which:",
+      "options": [
+        "Reflected light is completely (linearly) polarized",
+        "All incident light is transmitted with no reflection",
+        "The refracted ray disappears entirely",
+        "Total internal reflection first occurs"
+      ],
+      "correct_answer": "Reflected light is completely (linearly) polarized",
+      "explanation": "At Brewster's angle, the reflected and refracted rays are perpendicular to each other, and the reflected light is fully polarized parallel to the reflecting surface.",
+      "topic": "Brewster's angle",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Brewster's law relating Brewster's angle θ_B to the refractive index n of a medium is:",
+      "options": ["tanθ_B = n", "sinθ_B = n", "cosθ_B = n", "tanθ_B = 1/n"],
+      "correct_answer": "tanθ_B = n",
+      "explanation": "Brewster's law states that the tangent of the polarizing angle equals the refractive index of the medium relative to the medium of incidence.",
+      "topic": "Brewster's angle",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Light reflected from a smooth non-metallic surface such as water or glass at grazing angles is typically:",
+      "options": ["Partially polarized, which is why polarized sunglasses reduce such glare", "Completely unpolarized regardless of angle", "Circularly polarized only", "Unaffected by polarization phenomena"],
+      "correct_answer": "Partially polarized, which is why polarized sunglasses reduce such glare",
+      "explanation": "Reflection from dielectric surfaces like water preferentially polarizes light parallel to the surface, and polarized sunglasses are oriented to block this component and reduce glare.",
+      "topic": "Polarization by reflection/scattering",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The blue colour of the clear daytime sky and its partial polarization are both explained by:",
+      "options": [
+        "Rayleigh scattering of sunlight by air molecules",
+        "Total internal reflection in the atmosphere",
+        "Diffraction of sunlight by dust particles",
+        "Thin-film interference in the upper atmosphere"
+      ],
+      "correct_answer": "Rayleigh scattering of sunlight by air molecules",
+      "explanation": "Rayleigh scattering by molecules much smaller than the wavelength of light scatters shorter (blue) wavelengths more strongly and produces partially polarized scattered light, especially at 90° to the sun.",
+      "topic": "Polarization by reflection/scattering",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A Polaroid sheet works by:",
+      "options": [
+        "Absorbing light vibrating in one particular direction while transmitting light vibrating perpendicular to it",
+        "Reflecting all light regardless of polarization",
+        "Diffracting light into a spectrum of colours",
+        "Amplifying the intensity of transmitted light"
+      ],
+      "correct_answer": "Absorbing light vibrating in one particular direction while transmitting light vibrating perpendicular to it",
+      "explanation": "A Polaroid sheet contains aligned long-chain molecules that selectively absorb light polarized along their axis, transmitting mainly the perpendicular component, thus producing linearly polarized light.",
+      "topic": "Polarizers",
+      "difficulty": "medium"
+    },
+    {
+      "question": "When two polarizers are arranged with their transmission axes perpendicular to each other (\"crossed polarizers\"), the amount of light transmitted through the pair is:",
+      "options": ["Ideally zero", "Equal to the incident intensity", "Half the incident intensity", "One quarter of the incident intensity"],
+      "correct_answer": "Ideally zero",
+      "explanation": "By Malus's law with θ = 90°, cos²(90°) = 0, so an ideal pair of crossed polarizers blocks all light.",
+      "topic": "Polarizers",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Coherent light sources are characterized by:",
+      "options": [
+        "A constant phase difference and the same frequency",
+        "Random, rapidly varying phase differences",
+        "Different frequencies but identical amplitudes",
+        "Being derived from two entirely independent, unrelated lamps"
+      ],
+      "correct_answer": "A constant phase difference and the same frequency",
+      "explanation": "Coherence requires a fixed, well-defined phase relationship (and typically the same frequency) between the waves, which is essential for producing a stable interference pattern.",
+      "topic": "Coherence",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In practice, two independent, ordinary light sources (e.g. two separate light bulbs) do not produce a visible interference pattern because:",
+      "options": [
+        "They are not coherent — their relative phase fluctuates randomly and rapidly",
+        "Their wavelengths are always too different",
+        "Light from separate sources cannot travel through the same space",
+        "Only laser light can undergo interference at all"
+      ],
+      "correct_answer": "They are not coherent — their relative phase fluctuates randomly and rapidly",
+      "explanation": "Ordinary sources emit light in random, independent bursts, so the phase relationship between two separate sources changes too fast for any stable interference pattern to be observed.",
+      "topic": "Coherence",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Why does Young's double-slit experiment use a single slit before the double slits (or a single source illuminating both slits)?",
+      "options": [
+        "To ensure the light reaching both slits originates from the same wavefront and is therefore coherent",
+        "To increase the intensity of the light reaching the screen",
+        "To polarize the light before it reaches the slits",
+        "To eliminate diffraction effects entirely"
+      ],
+      "correct_answer": "To ensure the light reaching both slits originates from the same wavefront and is therefore coherent",
+      "explanation": "Using a single source (or single slit) ensures both double-slit apertures are illuminated by the same wavefront, keeping them coherent with one another so a stable interference pattern can form.",
+      "topic": "Coherence",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Phase velocity of a wave refers to:",
+      "options": [
+        "The speed at which a point of constant phase (e.g. a crest) propagates",
+        "The speed at which the energy of a wave packet travels",
+        "The speed of the fastest-moving particle in the medium",
+        "The average speed of all frequency components in a wave packet"
+      ],
+      "correct_answer": "The speed at which a point of constant phase (e.g. a crest) propagates",
+      "explanation": "Phase velocity is defined as v_p = ω/k, the rate at which a specific phase point, such as a crest, moves through space.",
+      "topic": "Phase and group velocity",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Group velocity is best described as:",
+      "options": [
+        "The speed at which the envelope (overall shape) of a wave packet, and hence its energy, propagates",
+        "The speed of an individual crest within the wave packet",
+        "Always exactly equal to the phase velocity in every medium",
+        "The speed of sound in a non-dispersive medium only"
+      ],
+      "correct_answer": "The speed at which the envelope (overall shape) of a wave packet, and hence its energy, propagates",
+      "explanation": "Group velocity, v_g = dω/dk, describes the speed of the overall envelope formed by superposing waves of slightly different frequencies, which generally carries the energy and information of the wave packet.",
+      "topic": "Phase and group velocity",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In a non-dispersive medium (where wave speed is independent of frequency), the relationship between phase velocity and group velocity is:",
+      "options": ["They are equal", "Group velocity is always greater than phase velocity", "Group velocity is always less than phase velocity", "They cannot be defined in a non-dispersive medium"],
+      "correct_answer": "They are equal",
+      "explanation": "In a non-dispersive medium, ω is directly proportional to k, so dω/dk = ω/k, making the group and phase velocities identical.",
+      "topic": "Phase and group velocity",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A wave packet is best described as:",
+      "options": [
+        "A localized superposition of waves of different frequencies/wavelengths, confined to a limited region of space",
+        "A single pure sine wave of infinite extent",
+        "A standing wave pattern with fixed nodes",
+        "A wave with only one possible frequency component"
+      ],
+      "correct_answer": "A localized superposition of waves of different frequencies/wavelengths, confined to a limited region of space",
+      "explanation": "A wave packet results from superposing many waves of slightly different frequencies so that they reinforce in a small region and cancel elsewhere, producing a localized pulse.",
+      "topic": "Wave packets",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Which observation is most directly explained by diffraction rather than simple geometric (ray) optics?",
+      "options": [
+        "Light bending slightly into the geometric shadow region behind a narrow slit or obstacle",
+        "A ray of light travelling in a perfectly straight line through a vacuum",
+        "The formation of a real image by a converging lens",
+        "The reversal of a light ray's path upon reflection"
+      ],
+      "correct_answer": "Light bending slightly into the geometric shadow region behind a narrow slit or obstacle",
+      "explanation": "Geometric optics predicts perfectly sharp shadows, but diffraction causes light to spread into the shadow region, a wave effect not captured by ray optics.",
+      "topic": "Diffraction",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which of the following is NOT a topic of physical (wave) optics but belongs instead to geometric optics?",
+      "options": ["Image formation by a convex lens using ray tracing", "Interference fringes in Young's double-slit experiment", "Diffraction through a narrow slit", "Polarization by a Polaroid filter"],
+      "correct_answer": "Image formation by a convex lens using ray tracing",
+      "explanation": "Ray-tracing image formation by lenses and mirrors is treated under geometric optics, whereas interference, diffraction, and polarization are physical (wave) optics phenomena.",
+      "topic": "Diffraction",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In a diffraction grating spectrum, red light (longer wavelength) compared to violet light (shorter wavelength) at the same order n will be diffracted at:",
+      "options": ["A larger angle", "A smaller angle", "Exactly the same angle", "It will not be diffracted at all"],
+      "correct_answer": "A larger angle",
+      "explanation": "From d sinθ = nλ, for a fixed order n and grating spacing d, a longer wavelength (red) corresponds to a larger sinθ and hence a larger diffraction angle than violet light.",
+      "topic": "Diffraction grating",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Two-slit interference maxima are always narrower and more closely spaced than a comparable single-slit diffraction pattern's central maximum for slits of similar dimensions. This is primarily because:",
+      "options": [
+        "Interference fringe spacing depends on slit separation d, which is typically much larger than the individual slit width a controlling diffraction spread",
+        "Interference only occurs for red light while diffraction occurs for all colours",
+        "Diffraction requires coherent sources but interference does not",
+        "Interference patterns do not depend on wavelength at all"
+      ],
+      "correct_answer": "Interference fringe spacing depends on slit separation d, which is typically much larger than the individual slit width a controlling diffraction spread",
+      "explanation": "Since fringe spacing scales as λ/d for interference and the diffraction envelope width scales as λ/a, and d is usually much greater than a, interference fringes are finer than the diffraction envelope that modulates them.",
+      "topic": "Diffraction",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A quarter-wave plate is an optical device used to:",
+      "options": [
+        "Convert linearly polarized light into circularly (or elliptically) polarized light by introducing a 90° phase difference between perpendicular components",
+        "Diffract light into a spectrum",
+        "Double the intensity of transmitted light",
+        "Reflect all incident light regardless of polarization"
+      ],
+      "correct_answer": "Convert linearly polarized light into circularly (or elliptically) polarized light by introducing a 90° phase difference between perpendicular components",
+      "explanation": "A quarter-wave plate introduces a quarter-wavelength (90°) phase shift between the two perpendicular polarization components of light, transforming linear polarization into circular or elliptical polarization.",
+      "topic": "Polarizers",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Which everyday application relies directly on polarization rather than interference or diffraction?",
+      "options": ["LCD (liquid crystal display) screens controlling light transmission using polarizing filters", "Colours seen in a thin soap film", "The spreading of laser light through a narrow slit", "Rainbow-like colours in a diffraction grating CD surface"],
+      "correct_answer": "LCD (liquid crystal display) screens controlling light transmission using polarizing filters",
+      "explanation": "LCD screens use two crossed polarizers with a liquid crystal layer between them that rotates the polarization of light to control how much is transmitted at each pixel.",
+      "topic": "Polarizers",
+      "difficulty": "medium"
+    }
+  ]
+}

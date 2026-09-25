@@ -1,0 +1,412 @@
+{
+  "course_code": "SLT201",
+  "title": "Laboratory Techniques I",
+  "level": "200",
+  "source_note": "Standard NUC-aligned 200-level Science Laboratory Technology curriculum covering core bench techniques: mass and volume measurement, solution and dilution preparation, filtration and centrifugation, heating methods, titration mechanics, and basic glassware care and safety practice.",
+  "questions": [
+    {
+      "question": "What is the typical readability (smallest scale division) of a standard analytical balance used for quantitative work?",
+      "options": ["0.1 g", "0.01 g", "0.0001 g", "1 g"],
+      "correct_answer": "0.0001 g",
+      "explanation": "Analytical balances used for quantitative analysis typically read to 0.0001 g (0.1 mg), far finer than a top-loading balance.",
+      "topic": "Mass measurement",
+      "difficulty": "easy"
+    },
+    {
+      "question": "'Taring' a balance before weighing a sample into a container means:",
+      "options": [
+        "Calibrating the balance against a certified reference mass",
+        "Resetting the display to zero with the empty container on the pan so only the sample mass is recorded",
+        "Cleaning the weighing pan with a brush",
+        "Locking the balance door to prevent air currents"
+      ],
+      "correct_answer": "Resetting the display to zero with the empty container on the pan so only the sample mass is recorded",
+      "explanation": "Taring zeroes out the weight of the container so the reading shows only the mass of the substance added afterward.",
+      "topic": "Mass measurement",
+      "difficulty": "easy"
+    },
+    {
+      "question": "When reading the volume of a clear liquid in a graduated cylinder, where should the eye be positioned and what mark is read?",
+      "options": [
+        "Above the cylinder, reading the top of the meniscus",
+        "Level with the meniscus, reading the bottom of the curve",
+        "Below the cylinder, reading through the base",
+        "At any angle, reading the nearest graduation line"
+      ],
+      "correct_answer": "Level with the meniscus, reading the bottom of the curve",
+      "explanation": "To avoid parallax error the eye must be level with the liquid surface, and for most aqueous solutions the bottom of the concave meniscus is the correct reading point.",
+      "topic": "Volume measurement",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A stock solution of 2.0 mol/dm3 HCl is diluted to prepare 500 cm3 of 0.5 mol/dm3 HCl. What volume of stock solution is required?",
+      "options": ["62.5 cm3", "125 cm3", "250 cm3", "100 cm3"],
+      "correct_answer": "125 cm3",
+      "explanation": "Using C1V1 = C2V2: V1 = (0.5 x 500) / 2.0 = 125 cm3 of stock is diluted to 500 cm3 with water.",
+      "topic": "Dilution calculations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In serial dilution, each successive tube or flask is prepared by:",
+      "options": [
+        "Diluting fresh stock solution independently each time",
+        "Taking a fixed volume from the previous dilution and adding fresh diluent, repeating stepwise",
+        "Mixing equal volumes of the first and last dilutions",
+        "Evaporating a fixed fraction of the previous solution"
+      ],
+      "correct_answer": "Taking a fixed volume from the previous dilution and adding fresh diluent, repeating stepwise",
+      "explanation": "Serial dilution transfers a measured aliquot from one dilution into the next diluent volume, producing a geometric dilution series (e.g. 1:10, 1:100, 1:1000).",
+      "topic": "Dilution technique",
+      "difficulty": "medium"
+    },
+    {
+      "question": "How many grams of NaOH (molar mass 40 g/mol) are needed to prepare 250 cm3 of a 0.2 mol/dm3 solution?",
+      "options": ["1.0 g", "2.0 g", "4.0 g", "0.5 g"],
+      "correct_answer": "2.0 g",
+      "explanation": "Moles required = 0.2 mol/dm3 x 0.25 dm3 = 0.05 mol; mass = 0.05 x 40 = 2.0 g.",
+      "topic": "Solution preparation calculations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What does '% w/v' mean when expressing the concentration of a solution?",
+      "options": [
+        "Grams of solute per 100 cm3 of solution",
+        "Grams of solute per gram of solvent",
+        "Millilitres of solute per 100 mL of solvent",
+        "Moles of solute per litre of solution"
+      ],
+      "correct_answer": "Grams of solute per 100 cm3 of solution",
+      "explanation": "Percentage weight/volume (% w/v) expresses the mass of solute, in grams, dissolved in every 100 cm3 of the final solution.",
+      "topic": "Concentration expressions",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Simple gravity filtration is primarily used to:",
+      "options": [
+        "Separate two miscible liquids by boiling point",
+        "Separate an insoluble solid (residue) from a liquid (filtrate)",
+        "Concentrate a solution by removing solvent",
+        "Separate dissolved ions by charge"
+      ],
+      "correct_answer": "Separate an insoluble solid (residue) from a liquid (filtrate)",
+      "explanation": "Filtration uses a porous medium (filter paper) to retain undissolved solid particles while the liquid passes through as filtrate.",
+      "topic": "Filtration",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Why is filter paper fluted (pleated) rather than folded into a simple quarter-cone for routine filtration?",
+      "options": [
+        "It looks neater in the funnel",
+        "It increases the surface area and air gaps between paper and funnel, speeding up filtration",
+        "It prevents any liquid from passing through",
+        "It removes the need for a filter funnel"
+      ],
+      "correct_answer": "It increases the surface area and air gaps between paper and funnel, speeding up filtration",
+      "explanation": "Fluted (fan-folded) filter paper creates more surface area and channels for air, allowing faster gravity filtration than a simple cone fold.",
+      "topic": "Filtration",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Vacuum (suction) filtration using a Buchner funnel and filter flask is preferred over gravity filtration when:",
+      "options": [
+        "The solid product is very soluble in the filtrate",
+        "A fast filtration and drier solid residue are needed, e.g. for a crystalline precipitate",
+        "The liquid is highly volatile and flammable",
+        "Only a very small volume of liquid is being filtered"
+      ],
+      "correct_answer": "A fast filtration and drier solid residue are needed, e.g. for a crystalline precipitate",
+      "explanation": "The applied vacuum pulls liquid through faster and draws more filtrate out of the solid, giving quicker filtration and a drier cake than gravity filtration.",
+      "topic": "Filtration",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Decantation is a separation technique that works by:",
+      "options": [
+        "Passing the mixture through filter paper",
+        "Carefully pouring off the liquid layer after the denser solid or immiscible liquid has settled",
+        "Heating the mixture until the solid dissolves",
+        "Spinning the mixture at high speed in a centrifuge"
+      ],
+      "correct_answer": "Carefully pouring off the liquid layer after the denser solid or immiscible liquid has settled",
+      "explanation": "Decantation separates a settled solid (or denser liquid) from the liquid above it simply by pouring off the top layer without disturbing the sediment.",
+      "topic": "Separation techniques",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Centrifugation separates components of a mixture mainly on the basis of:",
+      "options": [
+        "Boiling point differences",
+        "Differences in density under centrifugal force",
+        "Differences in electrical charge",
+        "Differences in solubility in water"
+      ],
+      "correct_answer": "Differences in density under centrifugal force",
+      "explanation": "Centrifugal force accelerates sedimentation, causing denser particles to pack at the bottom of the tube faster than less dense ones.",
+      "topic": "Centrifugation",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Before starting a centrifuge run, tubes must be balanced in the rotor because:",
+      "options": [
+        "It looks tidier",
+        "An unbalanced load creates vibration that can damage the rotor, bearings, or cause the centrifuge to shake violently",
+        "It changes the density of the sample",
+        "It speeds up sedimentation"
+      ],
+      "correct_answer": "An unbalanced load creates vibration that can damage the rotor, bearings, or cause the centrifuge to shake violently",
+      "explanation": "Tubes of equal mass must be placed opposite each other so centrifugal forces are balanced; an unbalanced rotor causes dangerous vibration and equipment wear.",
+      "topic": "Centrifugation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Relative Centrifugal Force (RCF), expressed in 'x g', differs from rotor speed (rpm) because RCF also depends on:",
+      "options": [
+        "The colour of the sample tubes",
+        "The radius from the centre of rotation to the sample",
+        "The temperature of the centrifuge room",
+        "The volume of liquid in the tube only"
+      ],
+      "correct_answer": "The radius from the centre of rotation to the sample",
+      "explanation": "RCF depends on both rotor speed and the radius of rotation, so the same rpm gives different RCF values on rotors of different sizes.",
+      "topic": "Centrifugation",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Which Bunsen burner flame is preferred for heating in general laboratory work because it burns hottest and cleanest?",
+      "options": [
+        "Luminous (yellow, safety) flame with the air hole closed",
+        "Non-luminous (blue) flame with the air hole open",
+        "A flame with excess unburnt gas",
+        "A flame with the gas supply nearly off"
+      ],
+      "correct_answer": "Non-luminous (blue) flame with the air hole open",
+      "explanation": "With the air hole open, complete combustion occurs giving a hot, non-luminous blue flame with a visible inner cone, preferred for efficient heating.",
+      "topic": "Heating methods",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A water bath is preferred over a direct naked flame for heating a flammable organic solvent because:",
+      "options": [
+        "It heats faster than a direct flame",
+        "It provides gentle, even heating below 100 degC and avoids exposing the solvent vapour to an open flame",
+        "It can reach higher temperatures than a Bunsen burner",
+        "It eliminates the need for any temperature control"
+      ],
+      "correct_answer": "It provides gentle, even heating below 100 degC and avoids exposing the solvent vapour to an open flame",
+      "explanation": "A water bath limits temperature to below boiling water and keeps the heat source away from flammable vapours, reducing fire risk with volatile solvents.",
+      "topic": "Heating methods",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A reflux setup, using a round-bottom flask fitted with a condenser held vertically, allows a reaction mixture to be:",
+      "options": [
+        "Cooled rapidly to below room temperature",
+        "Heated continuously at its boiling point while vapours condense and return to the flask, preventing loss of solvent",
+        "Evaporated completely to dryness",
+        "Filtered while still hot"
+      ],
+      "correct_answer": "Heated continuously at its boiling point while vapours condense and return to the flask, preventing loss of solvent",
+      "explanation": "Reflux allows prolonged boiling for a reaction to go to completion while the condenser returns evaporated solvent to the flask instead of letting it escape.",
+      "topic": "Heating techniques",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A desiccator is used in the laboratory to:",
+      "options": [
+        "Heat samples to constant weight",
+        "Store dried or hygroscopic substances in a low-humidity atmosphere to prevent moisture uptake",
+        "Generate a vacuum for filtration",
+        "Weigh samples with high precision"
+      ],
+      "correct_answer": "Store dried or hygroscopic substances in a low-humidity atmosphere to prevent moisture uptake",
+      "explanation": "A desiccator contains a drying agent (e.g. silica gel) beneath a sealed chamber, keeping stored samples dry between weighings.",
+      "topic": "Sample handling",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A reagent bottle label prepared in the laboratory should, at minimum, include:",
+      "options": [
+        "Only the chemical formula",
+        "Name of substance, concentration (if a solution), date prepared, and preparer's initials/hazard information",
+        "The manufacturer's advertising slogan",
+        "The price paid for the chemical"
+      ],
+      "correct_answer": "Name of substance, concentration (if a solution), date prepared, and preparer's initials/hazard information",
+      "explanation": "Proper labelling for traceability and safety requires the identity, concentration, preparation date, and preparer/hazard details at minimum.",
+      "topic": "Laboratory record keeping",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A 'standard solution' in analytical chemistry is one whose:",
+      "options": [
+        "Colour is always clear",
+        "Exact concentration is accurately known",
+        "pH is always neutral",
+        "Volume is always exactly one litre"
+      ],
+      "correct_answer": "Exact concentration is accurately known",
+      "explanation": "A standard solution has a precisely known concentration, used as a reference for titrations and calibrations.",
+      "topic": "Standard solutions",
+      "difficulty": "easy"
+    },
+    {
+      "question": "For a substance to serve as a good primary standard in volumetric analysis, it must be, among other things:",
+      "options": [
+        "Highly hygroscopic and unstable in air",
+        "Available in high purity, stable, and of known, constant composition",
+        "Volatile at room temperature",
+        "Reactive with atmospheric carbon dioxide and moisture"
+      ],
+      "correct_answer": "Available in high purity, stable, and of known, constant composition",
+      "explanation": "Primary standards (e.g. anhydrous sodium carbonate) must be pure, stable, non-hygroscopic, and of known formula so their weighed mass gives an accurate mole count.",
+      "topic": "Standard solutions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Why must a pipette never be filled by mouth suction in a modern laboratory?",
+      "options": [
+        "It is slower than using a pipette filler",
+        "It risks accidental ingestion or inhalation of hazardous or toxic liquids",
+        "It uses more of the sample than necessary",
+        "It is against tradition only, with no safety basis"
+      ],
+      "correct_answer": "It risks accidental ingestion or inhalation of hazardous or toxic liquids",
+      "explanation": "Mouth pipetting can draw corrosive, toxic, or biologically hazardous liquid into the mouth; a rubber bulb or mechanical pipette filler must always be used instead.",
+      "topic": "Pipetting safety",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is the key functional difference between a graduated (measuring) pipette and a volumetric (bulb) pipette?",
+      "options": [
+        "A graduated pipette can measure a range of variable volumes, a volumetric pipette delivers only one fixed volume with higher accuracy",
+        "A volumetric pipette can measure any volume from zero to its maximum",
+        "A graduated pipette is always more accurate than a volumetric pipette",
+        "There is no functional difference between them"
+      ],
+      "correct_answer": "A graduated pipette can measure a range of variable volumes, a volumetric pipette delivers only one fixed volume with higher accuracy",
+      "explanation": "Graduated pipettes have scale markings for variable volumes but are less precise; volumetric pipettes deliver a single calibrated volume very accurately.",
+      "topic": "Pipetting technique",
+      "difficulty": "medium"
+    },
+    {
+      "question": "During a titration, the burette is used to:",
+      "options": [
+        "Hold the fixed volume of analyte being tested",
+        "Deliver a precisely measured, variable volume of titrant into the analyte until the end point is reached",
+        "Filter the reaction mixture",
+        "Heat the titrant to boiling"
+      ],
+      "correct_answer": "Deliver a precisely measured, variable volume of titrant into the analyte until the end point is reached",
+      "explanation": "The burette allows controlled, incremental addition of titrant so its exact volume added at the end point can be read from the graduated scale.",
+      "topic": "Titration technique",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Before starting a titration, why must the burette tip be checked and filled to remove any air bubble?",
+      "options": [
+        "Air bubbles change the colour of the indicator",
+        "An air bubble that escapes during the titration is falsely counted as delivered titrant volume, causing an error",
+        "Air bubbles react with the titrant chemically",
+        "It has no effect on the result"
+      ],
+      "correct_answer": "An air bubble that escapes during the titration is falsely counted as delivered titrant volume, causing an error",
+      "explanation": "If a trapped air bubble is released during titration, the volume reading will overstate the actual amount of titrant delivered, giving an inaccurate result.",
+      "topic": "Titration technique",
+      "difficulty": "medium"
+    },
+    {
+      "question": "When reading the meniscus of a dark or coloured solution (e.g. potassium permanganate) in a burette, the analyst should:",
+      "options": [
+        "Read the bottom of the meniscus as usual",
+        "Read the top of the meniscus, since the bottom curve is not clearly visible through the coloured liquid",
+        "Estimate the volume without reading the scale",
+        "Tilt the burette to see the meniscus better"
+      ],
+      "correct_answer": "Read the top of the meniscus, since the bottom curve is not clearly visible through the coloured liquid",
+      "explanation": "For strongly coloured or opaque solutions, the lower meniscus edge is obscured, so the top of the meniscus is used as the consistent reference point instead.",
+      "topic": "Titration technique",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A student records a burette reading as 23.45 cm3. This number of decimal places reflects that burettes are typically graduated to:",
+      "options": ["1 cm3", "0.5 cm3", "0.1 cm3, allowing estimation to the nearest 0.01 cm3", "10 cm3"],
+      "correct_answer": "0.1 cm3, allowing estimation to the nearest 0.01 cm3",
+      "explanation": "Standard burettes have graduation lines every 0.1 cm3; the observer estimates and records one further digit, giving readings to the nearest 0.01 cm3 or 0.05 cm3.",
+      "topic": "Measurement precision",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which item of personal protective equipment is essential when handling concentrated acids or alkalis on the bench?",
+      "options": [
+        "Woollen gloves and open sandals",
+        "Safety goggles, laboratory coat, and chemical-resistant gloves",
+        "A face mask only, no eye protection",
+        "No protective equipment is required for dilute-looking solutions"
+      ],
+      "correct_answer": "Safety goggles, laboratory coat, and chemical-resistant gloves",
+      "explanation": "Corrosive chemicals require eye protection, a lab coat to protect skin and clothing, and gloves resistant to the specific chemical being handled.",
+      "topic": "Laboratory safety",
+      "difficulty": "easy"
+    },
+    {
+      "question": "If a small acid spill occurs on the bench, the FIRST appropriate action is to:",
+      "options": [
+        "Ignore it and continue working",
+        "Alert others, contain the spill, and neutralize/clean it up following the laboratory's spill procedure while wearing PPE",
+        "Wipe it up immediately with bare hands",
+        "Pour large amounts of organic solvent directly on it"
+      ],
+      "correct_answer": "Alert others, contain the spill, and neutralize/clean it up following the laboratory's spill procedure while wearing PPE",
+      "explanation": "Standard practice is to warn nearby people, contain the spread, and clean up using the appropriate neutralizing agent and protective equipment per the spill protocol.",
+      "topic": "Laboratory safety",
+      "difficulty": "medium"
+    },
+    {
+      "question": "After use, glassware that has held chemical reagents should generally be cleaned by:",
+      "options": [
+        "Rinsing once with tap water only and returning it to storage wet",
+        "Washing with appropriate detergent/acid wash as needed, then rinsing several times with distilled or deionized water",
+        "Wiping with a dry cloth only",
+        "Soaking indefinitely without ever rinsing"
+      ],
+      "correct_answer": "Washing with appropriate detergent/acid wash as needed, then rinsing several times with distilled or deionized water",
+      "explanation": "Proper cleaning removes chemical residues with detergent (or acid wash for stubborn residues), followed by repeated rinsing with distilled water to remove ionic contaminants before final use.",
+      "topic": "Glassware care",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Why should incompatible chemicals, such as strong oxidizers and flammable organic solvents, never be stored together on the same shelf?",
+      "options": [
+        "It is only a matter of tidiness",
+        "Contact between incompatible chemicals, e.g. through breakage or leakage, can cause a violent reaction, fire, or explosion",
+        "It affects the colour coding of labels",
+        "They must be stored together for easy access"
+      ],
+      "correct_answer": "Contact between incompatible chemicals, e.g. through breakage or leakage, can cause a violent reaction, fire, or explosion",
+      "explanation": "Chemical storage follows compatibility segregation because mixing incompatible classes (e.g. oxidizers with flammables) on accidental contact can trigger dangerous reactions.",
+      "topic": "Chemical storage",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A student weighs an empty beaker at 45.20 g and the beaker plus sample at 52.75 g. What is the mass of the sample?",
+      "options": ["97.95 g", "7.55 g", "6.55 g", "8.55 g"],
+      "correct_answer": "7.55 g",
+      "explanation": "Sample mass = mass of (beaker + sample) minus mass of empty beaker = 52.75 g - 45.20 g = 7.55 g.",
+      "topic": "Mass measurement",
+      "difficulty": "easy"
+    },
+    {
+      "question": "'Accuracy' in a laboratory measurement refers to:",
+      "options": [
+        "How close repeated measurements are to each other",
+        "How close a measured value is to the true or accepted value",
+        "The number of decimal places recorded",
+        "How quickly a measurement can be taken"
+      ],
+      "correct_answer": "How close a measured value is to the true or accepted value",
+      "explanation": "Accuracy describes closeness to the true value, which is distinct from precision (closeness of repeated measurements to one another).",
+      "topic": "Measurement concepts",
+      "difficulty": "medium"
+    }
+  ]
+}

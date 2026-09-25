@@ -1,0 +1,264 @@
+{
+  "course_code": "MTH204",
+  "title": "Linear Algebra I",
+  "level": "200",
+  "source_note": "Standard NUC-aligned Nigerian university 200L Linear Algebra I curriculum: vector spaces and subspaces, linear independence/span/basis/dimension, matrix algebra, determinants, and solving systems of linear equations by Gaussian elimination.",
+  "questions": [
+    {
+      "question": "Which of the following is required for a set V with operations + and scalar multiplication to be a vector space over a field F?",
+      "options": ["V must be closed under vector addition and scalar multiplication, and satisfy the vector space axioms (associativity, identity, inverses, distributivity, etc.)", "V must contain only finite sets of numbers", "V must have exactly one element", "Scalar multiplication must always give zero"],
+      "correct_answer": "V must be closed under vector addition and scalar multiplication, and satisfy the vector space axioms (associativity, identity, inverses, distributivity, etc.)",
+      "explanation": "A vector space is defined by closure under the two operations together with the standard list of axioms including additive identity/inverse and distributive laws.",
+      "topic": "Vector spaces",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A non-empty subset W of a vector space V is a subspace of V if and only if:",
+      "options": ["W is closed under vector addition and scalar multiplication", "W contains only the zero vector", "W has more elements than V", "W is closed under matrix multiplication only"],
+      "correct_answer": "W is closed under vector addition and scalar multiplication",
+      "explanation": "The subspace test requires closure under the two vector space operations (which also forces 0 ∈ W); the other vector space axioms are automatically inherited from V.",
+      "topic": "Subspaces",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which of the following subsets of ℝ^3 is a subspace of ℝ^3?",
+      "options": ["{(x, y, z) : x + y + z = 0}", "{(x, y, z) : x + y + z = 1}", "{(x, y, z) : x^2 + y^2 + z^2 = 1}", "{(x, y, z) : x, y, z ≥ 0}"],
+      "correct_answer": "{(x, y, z) : x + y + z = 0}",
+      "explanation": "This is a homogeneous linear equation through the origin, which is closed under addition and scalar multiplication; the others fail because they don't contain the zero vector or aren't closed.",
+      "topic": "Subspaces",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A set of vectors {v1, v2, ..., vn} is linearly independent if:",
+      "options": ["The only solution to c1v1 + c2v2 + ... + cnvn = 0 is c1 = c2 = ... = cn = 0", "At least one vector is a scalar multiple of another", "Some ci can be nonzero and the sum still equals 0", "All vectors are equal"],
+      "correct_answer": "The only solution to c1v1 + c2v2 + ... + cnvn = 0 is c1 = c2 = ... = cn = 0",
+      "explanation": "Linear independence means no nontrivial linear combination of the vectors gives the zero vector.",
+      "topic": "Linear independence",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In ℝ^3, are the vectors (1, 0, 0), (0, 1, 0), and (1, 1, 0) linearly independent?",
+      "options": ["No, because (1,1,0) = (1,0,0) + (0,1,0)", "Yes, they are linearly independent", "Yes, because they span ℝ^3", "No, because they are all unit vectors"],
+      "correct_answer": "No, because (1,1,0) = (1,0,0) + (0,1,0)",
+      "explanation": "Since the third vector is a linear combination of the first two, there is a nontrivial dependence relation, so the set is linearly dependent.",
+      "topic": "Linear independence",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A basis of a vector space V is:",
+      "options": ["A linearly independent set that spans V", "Any set that spans V, whether independent or not", "A set containing only the zero vector", "The largest possible subset of V"],
+      "correct_answer": "A linearly independent set that spans V",
+      "explanation": "A basis must be both linearly independent and a spanning set, so every vector in V is a unique linear combination of basis vectors.",
+      "topic": "Basis and dimension",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the dimension of ℝ^4 as a vector space over ℝ?",
+      "options": ["4", "1", "8", "16"],
+      "correct_answer": "4",
+      "explanation": "The standard basis {e1, e2, e3, e4} has 4 vectors, so dim(ℝ^4) = 4.",
+      "topic": "Basis and dimension",
+      "difficulty": "easy"
+    },
+    {
+      "question": "If a vector space V has dimension n, then any linearly independent set of exactly n vectors in V:",
+      "options": ["Is automatically a basis of V", "Cannot span V", "Must contain the zero vector", "Has dimension n^2"],
+      "correct_answer": "Is automatically a basis of V",
+      "explanation": "In an n-dimensional space, any linearly independent set of n vectors automatically spans the space and is therefore a basis.",
+      "topic": "Basis and dimension",
+      "difficulty": "hard"
+    },
+    {
+      "question": "For two matrices A and B to be multiplied as AB, what condition must hold on their dimensions?",
+      "options": ["The number of columns of A must equal the number of rows of B", "A and B must have the same dimensions", "The number of rows of A must equal the number of rows of B", "A and B must both be square"],
+      "correct_answer": "The number of columns of A must equal the number of rows of B",
+      "explanation": "Matrix multiplication AB is only defined when A is m×n and B is n×p, i.e. the inner dimensions match.",
+      "topic": "Matrix algebra",
+      "difficulty": "easy"
+    },
+    {
+      "question": "If A is a 2×3 matrix and B is a 3×4 matrix, what are the dimensions of AB?",
+      "options": ["2×4", "3×3", "4×2", "2×3"],
+      "correct_answer": "2×4",
+      "explanation": "The product of an m×n matrix and an n×p matrix is an m×p matrix, so 2×3 times 3×4 gives 2×4.",
+      "topic": "Matrix algebra",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In general, for matrices A and B (where both products are defined), which is true?",
+      "options": ["AB ≠ BA in general (matrix multiplication is not commutative)", "AB = BA always", "AB and BA always have the same dimensions", "Matrix multiplication is always commutative for square matrices"],
+      "correct_answer": "AB ≠ BA in general (matrix multiplication is not commutative)",
+      "explanation": "Unlike scalar multiplication, matrix multiplication does not commute in general, even for square matrices.",
+      "topic": "Matrix algebra",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the determinant of the matrix [[3, 1], [2, 4]]?",
+      "options": ["10", "14", "8", "12"],
+      "correct_answer": "10",
+      "explanation": "For a 2×2 matrix [[a,b],[c,d]], det = ad − bc = (3)(4) − (1)(2) = 12 − 2 = 10.",
+      "topic": "Determinants",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A square matrix A has an inverse A⁻¹ if and only if:",
+      "options": ["det(A) ≠ 0", "det(A) = 0", "A is symmetric", "A is the identity matrix"],
+      "correct_answer": "det(A) ≠ 0",
+      "explanation": "A square matrix is invertible (non-singular) precisely when its determinant is nonzero.",
+      "topic": "Matrix inverse",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the inverse of the 2×2 identity matrix I?",
+      "options": ["I itself", "The zero matrix", "It has no inverse", "−I"],
+      "correct_answer": "I itself",
+      "explanation": "The identity matrix is its own inverse since I × I = I.",
+      "topic": "Matrix inverse",
+      "difficulty": "easy"
+    },
+    {
+      "question": "For a 3×3 matrix A, if two rows are identical, what is det(A)?",
+      "options": ["0", "1", "It cannot be determined", "It equals the trace of A"],
+      "correct_answer": "0",
+      "explanation": "A determinant is zero whenever two rows (or columns) of the matrix are identical, since the rows become linearly dependent.",
+      "topic": "Determinants",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which elementary row operation does NOT change the determinant of a matrix?",
+      "options": ["Adding a multiple of one row to another row", "Swapping two rows", "Multiplying a row by a nonzero scalar k", "Multiplying every row by −1"],
+      "correct_answer": "Adding a multiple of one row to another row",
+      "explanation": "Adding a scalar multiple of one row to another leaves the determinant unchanged; swapping rows negates it, and scaling a row by k multiplies the determinant by k.",
+      "topic": "Determinants",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Using Gaussian elimination, a system of linear equations is transformed into:",
+      "options": ["Row echelon form, from which solutions can be found by back-substitution", "A single equation with no solution", "A determinant equal to zero", "A quadratic equation"],
+      "correct_answer": "Row echelon form, from which solutions can be found by back-substitution",
+      "explanation": "Gaussian elimination applies elementary row operations to reduce the augmented matrix to row echelon form, after which back-substitution solves the system.",
+      "topic": "Systems of linear equations",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Solve the system x + y = 5, x − y = 1 for x and y.",
+      "options": ["x = 3, y = 2", "x = 2, y = 3", "x = 4, y = 1", "x = 1, y = 4"],
+      "correct_answer": "x = 3, y = 2",
+      "explanation": "Adding the equations gives 2x = 6, so x = 3; substituting gives y = 5 − 3 = 2.",
+      "topic": "Systems of linear equations",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A system of linear equations Ax = b is called consistent if:",
+      "options": ["It has at least one solution", "It has no solution", "A is a singular matrix", "b is the zero vector"],
+      "correct_answer": "It has at least one solution",
+      "explanation": "Consistency simply means a solution (unique or infinitely many) exists; an inconsistent system has no solution.",
+      "topic": "Systems of linear equations",
+      "difficulty": "easy"
+    },
+    {
+      "question": "If a homogeneous system Ax = 0 has only the trivial solution x = 0, what does this imply about the columns of A?",
+      "options": ["The columns of A are linearly independent", "The columns of A are linearly dependent", "A must be a non-square matrix", "det(A) must equal zero"],
+      "correct_answer": "The columns of A are linearly independent",
+      "explanation": "The only solution being trivial means no nontrivial linear combination of the columns gives zero, i.e. the columns are linearly independent.",
+      "topic": "Systems of linear equations",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The rank of a matrix A is defined as:",
+      "options": ["The maximum number of linearly independent rows (or equivalently columns) of A", "The number of rows of A", "The determinant of A", "The sum of the diagonal entries of A"],
+      "correct_answer": "The maximum number of linearly independent rows (or equivalently columns) of A",
+      "explanation": "The rank equals the dimension of the row space (which equals the dimension of the column space), i.e. the number of linearly independent rows/columns.",
+      "topic": "Rank of a matrix",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the rank of the 3×3 identity matrix I3?",
+      "options": ["3", "0", "1", "9"],
+      "correct_answer": "3",
+      "explanation": "All three rows of the identity matrix are linearly independent, so its rank equals its size, 3.",
+      "topic": "Rank of a matrix",
+      "difficulty": "easy"
+    },
+    {
+      "question": "By the Rank-Nullity Theorem, for an m×n matrix A, rank(A) + nullity(A) equals:",
+      "options": ["n (the number of columns of A)", "m (the number of rows of A)", "m + n", "0"],
+      "correct_answer": "n (the number of columns of A)",
+      "explanation": "The rank-nullity theorem states that rank(A) + nullity(A) = n, where n is the number of columns (the dimension of the domain).",
+      "topic": "Rank of a matrix",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The transpose of a matrix A, denoted A^T, is obtained by:",
+      "options": ["Interchanging the rows and columns of A", "Multiplying every entry of A by −1", "Reversing the order of the rows only", "Taking the inverse of A"],
+      "correct_answer": "Interchanging the rows and columns of A",
+      "explanation": "The transpose swaps rows for columns, so the (i,j) entry of A becomes the (j,i) entry of A^T.",
+      "topic": "Matrix algebra",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A square matrix A is called symmetric if:",
+      "options": ["A = A^T", "A = −A^T", "A^2 = I", "A has determinant 1"],
+      "correct_answer": "A = A^T",
+      "explanation": "Symmetric matrices are equal to their own transpose, meaning a_ij = a_ji for all i, j.",
+      "topic": "Matrix algebra",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is the trace of the matrix [[2, 5], [7, 3]]?",
+      "options": ["5", "17", "6", "10"],
+      "correct_answer": "5",
+      "explanation": "The trace is the sum of the diagonal entries: 2 + 3 = 5.",
+      "topic": "Matrix algebra",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Cramer's rule for solving a system of n linear equations in n unknowns can be applied when:",
+      "options": ["The coefficient matrix has a nonzero determinant", "The coefficient matrix is singular", "The system has infinitely many solutions", "The system is homogeneous only"],
+      "correct_answer": "The coefficient matrix has a nonzero determinant",
+      "explanation": "Cramer's rule requires det(A) ≠ 0 so that x_i = det(A_i)/det(A) is well-defined for a unique solution.",
+      "topic": "Systems of linear equations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For an m×n matrix representing a linear map from ℝ^n to ℝ^m, the set of all solutions x to Ax = 0 is called:",
+      "options": ["The null space (kernel) of A", "The column space of A", "The row space of A", "The image of A"],
+      "correct_answer": "The null space (kernel) of A",
+      "explanation": "The null space (or kernel) consists precisely of all vectors x mapped to the zero vector by A.",
+      "topic": "Vector spaces",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the span of the vectors (1, 0) and (0, 1) in ℝ^2?",
+      "options": ["All of ℝ^2", "Only the origin", "The line y = x", "Only the vector (1, 1)"],
+      "correct_answer": "All of ℝ^2",
+      "explanation": "Since (1,0) and (0,1) form the standard basis of ℝ^2, every vector in ℝ^2 can be written as a linear combination of them.",
+      "topic": "Vector spaces",
+      "difficulty": "easy"
+    },
+    {
+      "question": "If A and B are both n×n invertible matrices, then (AB)⁻¹ equals:",
+      "options": ["B⁻¹A⁻¹", "A⁻¹B⁻¹", "AB", "A⁻¹ + B⁻¹"],
+      "correct_answer": "B⁻¹A⁻¹",
+      "explanation": "The inverse of a product reverses the order: (AB)(B⁻¹A⁻¹) = A(BB⁻¹)A⁻¹ = AA⁻¹ = I.",
+      "topic": "Matrix inverse",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Using the adjugate (adjoint) method, the inverse of a square matrix A is given by:",
+      "options": ["A⁻¹ = (1/det(A)) × adj(A)", "A⁻¹ = det(A) × adj(A)", "A⁻¹ = adj(A) alone, regardless of det(A)", "A⁻¹ = A^T / det(A)"],
+      "correct_answer": "A⁻¹ = (1/det(A)) × adj(A)",
+      "explanation": "The classical adjoint formula expresses the inverse as the adjugate matrix scaled by the reciprocal of the determinant.",
+      "topic": "Matrix inverse",
+      "difficulty": "hard"
+    },
+    {
+      "question": "How many solutions does the system x + y = 2, 2x + 2y = 4 have?",
+      "options": ["Infinitely many", "Exactly one", "No solution", "Exactly two"],
+      "correct_answer": "Infinitely many",
+      "explanation": "The second equation is just twice the first, so both equations describe the same line; every point on that line is a solution.",
+      "topic": "Systems of linear equations",
+      "difficulty": "medium"
+    }
+  ]
+}

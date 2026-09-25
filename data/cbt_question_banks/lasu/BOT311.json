@@ -1,0 +1,399 @@
+{
+  "course_code": "BOT311",
+  "title": "Biostatistics",
+  "level": "300",
+  "source_note": "Standard NUC-aligned 300L Biostatistics curriculum for Botany: data types and sampling, descriptive statistics (measures of central tendency and dispersion), probability, distributions, hypothesis testing, and common inferential tests (t-test, chi-square, ANOVA, correlation/regression) as applied to biological data. Calculation questions use small worked datasets.",
+  "questions": [
+    {
+      "question": "Biostatistics is best defined as:",
+      "options": [
+        "The application of statistical methods to the collection, analysis, and interpretation of biological data",
+        "The study of the anatomy of living organisms",
+        "A branch of ecology concerned only with population counts",
+        "The classification of organisms using numerical taxonomy alone"
+      ],
+      "correct_answer": "The application of statistical methods to the collection, analysis, and interpretation of biological data",
+      "explanation": "Biostatistics applies statistical theory and methods to biological, medical, and agricultural data.",
+      "topic": "Introduction",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A population, in statistical terms, refers to:",
+      "options": [
+        "The entire set of individuals or items about which information is sought",
+        "Only human beings living in a defined area",
+        "A small representative group drawn from a larger group",
+        "The average value of a set of measurements"
+      ],
+      "correct_answer": "The entire set of individuals or items about which information is sought",
+      "explanation": "A population is the complete collection of subjects of interest; a sample is a subset drawn from it.",
+      "topic": "Data and sampling",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A sample is best described as:",
+      "options": [
+        "A subset of the population selected for study",
+        "The complete list of all possible measurements",
+        "A statistical test used to compare two means",
+        "A graph showing the distribution of data"
+      ],
+      "correct_answer": "A subset of the population selected for study",
+      "explanation": "Because studying entire populations is often impractical, a representative sample is drawn and used to make inferences about the population.",
+      "topic": "Data and sampling",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which sampling method involves dividing the population into subgroups and randomly selecting from each subgroup?",
+      "options": ["Stratified random sampling", "Convenience sampling", "Systematic sampling", "Simple random sampling"],
+      "correct_answer": "Stratified random sampling",
+      "explanation": "Stratified sampling divides a heterogeneous population into homogeneous strata (subgroups) and samples randomly within each, improving representativeness.",
+      "topic": "Data and sampling",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Data such as leaf colour (green, yellow, brown) are an example of which type of data?",
+      "options": ["Qualitative (categorical) data", "Discrete quantitative data", "Continuous quantitative data", "Ratio data"],
+      "correct_answer": "Qualitative (categorical) data",
+      "explanation": "Leaf colour is a descriptive, non-numeric attribute, making it qualitative or categorical data.",
+      "topic": "Data types",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The number of seeds produced per pod, counted as whole numbers, is an example of:",
+      "options": ["Discrete quantitative data", "Continuous quantitative data", "Nominal data", "Ordinal data"],
+      "correct_answer": "Discrete quantitative data",
+      "explanation": "Seed counts take only whole-number values and are therefore discrete quantitative data, unlike continuous measurements such as height.",
+      "topic": "Data types",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Plant height measured in centimetres is an example of which level of measurement?",
+      "options": ["Ratio scale", "Nominal scale", "Ordinal scale", "Interval scale without a true zero"],
+      "correct_answer": "Ratio scale",
+      "explanation": "Height has a true zero point and equal intervals, so ratios (e.g., one plant is twice as tall as another) are meaningful, making it a ratio scale.",
+      "topic": "Levels of measurement",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Ranking disease severity on plants as 'mild', 'moderate', and 'severe' is an example of:",
+      "options": ["Ordinal data", "Nominal data", "Discrete data", "Ratio data"],
+      "correct_answer": "Ordinal data",
+      "explanation": "Ordinal data have a meaningful order or rank but the intervals between categories are not necessarily equal.",
+      "topic": "Levels of measurement",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Given the dataset 2, 4, 6, 8, 10, the arithmetic mean is:",
+      "options": ["6", "5", "8", "4"],
+      "correct_answer": "6",
+      "explanation": "Sum = 2+4+6+8+10 = 30; mean = 30 / 5 = 6.",
+      "topic": "Measures of central tendency (calculation)",
+      "difficulty": "easy"
+    },
+    {
+      "question": "For the dataset 3, 5, 5, 9, the median value is:",
+      "options": ["5", "4", "5.5", "9"],
+      "correct_answer": "5",
+      "explanation": "Arranged in order (3, 5, 5, 9), with an even number of values, the median is the average of the two middle values: (5+5)/2 = 5.",
+      "topic": "Measures of central tendency (calculation)",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For the dataset 2, 3, 3, 3, 4, 5, 5, the mode is:",
+      "options": ["3", "5", "4", "2"],
+      "correct_answer": "3",
+      "explanation": "The mode is the most frequently occurring value; 3 appears three times, more than any other value.",
+      "topic": "Measures of central tendency (calculation)",
+      "difficulty": "easy"
+    },
+    {
+      "question": "For the dataset 9, 12, 15, 18, 22, the range is:",
+      "options": ["13", "22", "9", "31"],
+      "correct_answer": "13",
+      "explanation": "Range = maximum − minimum = 22 − 9 = 13.",
+      "topic": "Measures of dispersion (calculation)",
+      "difficulty": "easy"
+    },
+    {
+      "question": "For the population dataset 2, 4, 6, 8, 10 (mean = 6), the population variance is:",
+      "options": ["8", "6", "40", "2.83"],
+      "correct_answer": "8",
+      "explanation": "Squared deviations from the mean are 16, 4, 0, 4, 16 (sum = 40); population variance = 40 / 5 = 8.",
+      "topic": "Measures of dispersion (calculation)",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Using the same dataset (2, 4, 6, 8, 10) with population variance 8, the population standard deviation (to one decimal place) is approximately:",
+      "options": ["2.8", "8.0", "4.0", "1.6"],
+      "correct_answer": "2.8",
+      "explanation": "Standard deviation is the square root of the variance: √8 ≈ 2.83, which rounds to 2.8.",
+      "topic": "Measures of dispersion (calculation)",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The coefficient of variation (CV) is useful because it:",
+      "options": [
+        "Expresses the standard deviation as a percentage of the mean, allowing comparison of variability between datasets with different units or means",
+        "Measures the correlation between two variables",
+        "Is always equal to the variance",
+        "Is only applicable to nominal data"
+      ],
+      "correct_answer": "Expresses the standard deviation as a percentage of the mean, allowing comparison of variability between datasets with different units or means",
+      "explanation": "CV = (standard deviation / mean) × 100%, which standardizes dispersion for comparison across datasets of different scales.",
+      "topic": "Measures of dispersion",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A frequency distribution table organizes raw data by:",
+      "options": [
+        "Grouping observations into class intervals and recording how many observations fall into each",
+        "Listing every individual observation in alphabetical order",
+        "Calculating only the mean and median of the data",
+        "Randomly assigning observations to categories"
+      ],
+      "correct_answer": "Grouping observations into class intervals and recording how many observations fall into each",
+      "explanation": "A frequency distribution summarizes data by showing the number (frequency) of observations within defined class intervals.",
+      "topic": "Data presentation",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A histogram differs from a bar chart in that a histogram:",
+      "options": [
+        "Represents continuous data with bars drawn without gaps between them",
+        "Is used only for categorical (nominal) data",
+        "Always has bars of equal height",
+        "Cannot represent frequency distributions"
+      ],
+      "correct_answer": "Represents continuous data with bars drawn without gaps between them",
+      "explanation": "Histograms display continuous, grouped data on a numeric scale with contiguous bars, whereas bar charts represent discrete categories with gaps between bars.",
+      "topic": "Data presentation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A normal (Gaussian) distribution is characterized by:",
+      "options": [
+        "A symmetrical, bell-shaped curve where the mean, median, and mode are equal",
+        "A curve skewed heavily to one side",
+        "Two distinct peaks",
+        "Values that only occur as whole numbers"
+      ],
+      "correct_answer": "A symmetrical, bell-shaped curve where the mean, median, and mode are equal",
+      "explanation": "The normal distribution is symmetric about its centre, with mean, median, and mode coinciding at the peak.",
+      "topic": "Probability distributions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A distribution with a long tail extending to the right (higher values) is described as:",
+      "options": ["Positively skewed", "Negatively skewed", "Symmetrical", "Bimodal"],
+      "correct_answer": "Positively skewed",
+      "explanation": "Positive (right) skew occurs when the tail extends toward higher values, pulling the mean above the median.",
+      "topic": "Probability distributions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "If the probability of a seed germinating is 0.7, the probability that it does NOT germinate is:",
+      "options": ["0.3", "0.7", "1.0", "0.49"],
+      "correct_answer": "0.3",
+      "explanation": "Since total probability equals 1, the complement of germination (0.7) is 1 − 0.7 = 0.3.",
+      "topic": "Probability",
+      "difficulty": "easy"
+    },
+    {
+      "question": "If two independent events A and B have probabilities 0.4 and 0.5 respectively, the probability that both occur together is:",
+      "options": ["0.20", "0.90", "0.10", "0.45"],
+      "correct_answer": "0.20",
+      "explanation": "For independent events, the multiplication rule applies: P(A and B) = P(A) × P(B) = 0.4 × 0.5 = 0.20.",
+      "topic": "Probability (calculation)",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In hypothesis testing, the null hypothesis (H0) typically states that:",
+      "options": [
+        "There is no significant difference or effect between the groups or variables being compared",
+        "There is a definite, large difference between groups",
+        "The sample size is too small to draw conclusions",
+        "The data must be discarded"
+      ],
+      "correct_answer": "There is no significant difference or effect between the groups or variables being compared",
+      "explanation": "The null hypothesis is the default assumption of no effect or no difference, which is tested against the alternative hypothesis.",
+      "topic": "Hypothesis testing",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A Type I error in hypothesis testing occurs when:",
+      "options": [
+        "A true null hypothesis is incorrectly rejected",
+        "A false null hypothesis is incorrectly accepted",
+        "The sample size is too large",
+        "The correct hypothesis is accepted"
+      ],
+      "correct_answer": "A true null hypothesis is incorrectly rejected",
+      "explanation": "Type I error (false positive) is rejecting H0 when it is actually true; its probability is denoted by the significance level, alpha.",
+      "topic": "Hypothesis testing",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A Type II error in hypothesis testing occurs when:",
+      "options": [
+        "A false null hypothesis is incorrectly accepted (failed to be rejected)",
+        "A true null hypothesis is correctly accepted",
+        "The p-value is exactly zero",
+        "Two samples are compared instead of one"
+      ],
+      "correct_answer": "A false null hypothesis is incorrectly accepted (failed to be rejected)",
+      "explanation": "Type II error (false negative) occurs when the test fails to reject a null hypothesis that is actually false.",
+      "topic": "Hypothesis testing",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A significance level (alpha) of 0.05 means that:",
+      "options": [
+        "There is a 5% risk of rejecting a true null hypothesis",
+        "The result is 95% likely to be wrong",
+        "The sample size must be exactly 5",
+        "The correlation coefficient equals 0.05"
+      ],
+      "correct_answer": "There is a 5% risk of rejecting a true null hypothesis",
+      "explanation": "The significance level sets the maximum acceptable probability of committing a Type I error, commonly set at 0.05 (5%).",
+      "topic": "Hypothesis testing",
+      "difficulty": "medium"
+    },
+    {
+      "question": "If a p-value obtained from a statistical test is 0.02 and the significance level is 0.05, the correct conclusion is to:",
+      "options": [
+        "Reject the null hypothesis, as the result is statistically significant",
+        "Accept the null hypothesis, as the result is not significant",
+        "Repeat the experiment because the p-value is invalid",
+        "Increase the sample size before drawing any conclusion"
+      ],
+      "correct_answer": "Reject the null hypothesis, as the result is statistically significant",
+      "explanation": "Since p (0.02) is less than alpha (0.05), the observed result is unlikely under the null hypothesis, so H0 is rejected.",
+      "topic": "Hypothesis testing",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For a one-sample t-test with a sample size of 15, the degrees of freedom is:",
+      "options": ["14", "15", "13", "16"],
+      "correct_answer": "14",
+      "explanation": "Degrees of freedom for a one-sample t-test equals n − 1 = 15 − 1 = 14.",
+      "topic": "t-test (calculation)",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For an independent two-sample t-test comparing groups of size 10 and 12, the degrees of freedom is:",
+      "options": ["20", "22", "21", "10"],
+      "correct_answer": "20",
+      "explanation": "Degrees of freedom for a two-sample t-test equals n1 + n2 − 2 = 10 + 12 − 2 = 20.",
+      "topic": "t-test (calculation)",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The Student's t-test is most appropriately used to:",
+      "options": [
+        "Compare the means of two groups to determine if they differ significantly",
+        "Test the relationship between three or more categorical variables",
+        "Measure the strength of association between two continuous variables",
+        "Determine the mode of a dataset"
+      ],
+      "correct_answer": "Compare the means of two groups to determine if they differ significantly",
+      "explanation": "The t-test evaluates whether the means of one or two samples differ significantly, typically for small sample sizes with roughly normal distributions.",
+      "topic": "t-test",
+      "difficulty": "easy"
+    },
+    {
+      "question": "For a chi-square (χ²) contingency table with 3 rows and 4 columns, the degrees of freedom is:",
+      "options": ["6", "12", "7", "3"],
+      "correct_answer": "6",
+      "explanation": "Degrees of freedom for a contingency table = (rows − 1) × (columns − 1) = (3−1) × (4−1) = 2 × 3 = 6.",
+      "topic": "Chi-square test (calculation)",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The chi-square (χ²) test is most appropriate for:",
+      "options": [
+        "Testing the association between two categorical variables or comparing observed and expected frequencies",
+        "Comparing the means of two continuous variables",
+        "Measuring the strength of a linear relationship between two continuous variables",
+        "Calculating the standard deviation of a dataset"
+      ],
+      "correct_answer": "Testing the association between two categorical variables or comparing observed and expected frequencies",
+      "explanation": "Chi-square tests, such as the goodness-of-fit and test of independence, compare observed frequency data against expected frequencies under a null hypothesis.",
+      "topic": "Chi-square test",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Analysis of Variance (ANOVA) is used primarily to:",
+      "options": [
+        "Compare the means of three or more groups simultaneously",
+        "Compare the means of exactly two groups only",
+        "Measure the correlation between two variables",
+        "Calculate the median of a distribution"
+      ],
+      "correct_answer": "Compare the means of three or more groups simultaneously",
+      "explanation": "ANOVA tests whether there are statistically significant differences among the means of three or more independent groups, avoiding the inflated error rate of multiple t-tests.",
+      "topic": "ANOVA",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A Pearson correlation coefficient (r) of +0.85 between fertilizer dose and plant height indicates:",
+      "options": [
+        "A strong positive linear relationship between the two variables",
+        "A strong negative linear relationship between the two variables",
+        "No relationship between the two variables",
+        "That fertilizer dose causes plant height changes with certainty"
+      ],
+      "correct_answer": "A strong positive linear relationship between the two variables",
+      "explanation": "Values of r close to +1 indicate a strong positive linear association; correlation does not, however, establish causation.",
+      "topic": "Correlation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a simple linear regression analysis, the variable being predicted is called the:",
+      "options": ["Dependent variable", "Independent variable", "Control variable", "Confounding variable"],
+      "correct_answer": "Dependent variable",
+      "explanation": "In regression, the dependent (response) variable is predicted from one or more independent (explanatory) variables.",
+      "topic": "Regression",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The standard error of the mean (SEM) describes:",
+      "options": [
+        "How much the sample mean is expected to vary from the true population mean",
+        "The total sum of all deviations in a dataset",
+        "The mode of a distribution",
+        "The number of degrees of freedom in a test"
+      ],
+      "correct_answer": "How much the sample mean is expected to vary from the true population mean",
+      "explanation": "SEM = standard deviation / √n, and it estimates the precision of the sample mean as an estimate of the population mean; it decreases as sample size increases.",
+      "topic": "Sampling distributions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A 95% confidence interval for a population mean means that:",
+      "options": [
+        "If the sampling were repeated many times, 95% of such intervals would contain the true population mean",
+        "There is a 95% chance the sample mean is wrong",
+        "95% of the individual data points fall within the interval",
+        "The population mean is definitely within this specific interval"
+      ],
+      "correct_answer": "If the sampling were repeated many times, 95% of such intervals would contain the true population mean",
+      "explanation": "A confidence interval reflects the long-run proportion of such intervals, constructed from repeated sampling, that would contain the true parameter.",
+      "topic": "Estimation",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Non-parametric statistical tests are preferred over parametric tests when:",
+      "options": [
+        "The data do not meet assumptions such as normality or the data are ordinal/ranked",
+        "The sample size is extremely large and normally distributed",
+        "The data are strictly continuous and normally distributed",
+        "Only categorical variables with two levels are involved"
+      ],
+      "correct_answer": "The data do not meet assumptions such as normality or the data are ordinal/ranked",
+      "explanation": "Non-parametric tests (e.g., Mann-Whitney U, Kruskal-Wallis) make fewer assumptions about the underlying distribution and are suited to ranked or non-normal data.",
+      "topic": "Non-parametric tests",
+      "difficulty": "medium"
+    }
+  ]
+}

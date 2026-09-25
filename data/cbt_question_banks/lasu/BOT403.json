@@ -1,0 +1,399 @@
+{
+  "course_code": "BOT403",
+  "title": "Population Ecology",
+  "level": "400",
+  "source_note": "Standard NUC-aligned Nigerian university 400L Botany/Plant Science Population Ecology curriculum: population characteristics (density, natality, mortality), population growth models (exponential and logistic), carrying capacity, survivorship curves, life tables, population regulation (density-dependent/independent factors), dispersion patterns, intraspecific and interspecific competition, r- and K-selection, and metapopulation concepts.",
+  "questions": [
+    {
+      "question": "In ecology, a population is best defined as:",
+      "options": [
+        "All organisms of different species living in an area",
+        "A group of individuals of the same species living in a defined geographic area at a given time, capable of interbreeding",
+        "A single organism and its immediate offspring only",
+        "All the biotic and abiotic components of an ecosystem"
+      ],
+      "correct_answer": "A group of individuals of the same species living in a defined geographic area at a given time, capable of interbreeding",
+      "explanation": "A population is defined at the species level -- individuals of one species occupying a given area and time, sharing a common gene pool.",
+      "topic": "Population concepts",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Population density refers to:",
+      "options": [
+        "The total number of species in a community",
+        "The number of individuals per unit area or volume",
+        "The rate of population growth",
+        "The proportion of males to females"
+      ],
+      "correct_answer": "The number of individuals per unit area or volume",
+      "explanation": "Density is a basic population attribute expressing abundance relative to space, e.g. number of trees per hectare.",
+      "topic": "Population attributes",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Natality in population ecology refers to:",
+      "options": [
+        "The death rate of a population",
+        "The birth rate; production of new individuals",
+        "Movement of individuals into a population",
+        "Movement of individuals out of a population"
+      ],
+      "correct_answer": "The birth rate; production of new individuals",
+      "explanation": "Natality is the rate of production of new individuals through reproduction, one of the four key processes (with mortality, immigration, emigration) that change population size.",
+      "topic": "Population attributes",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which combination of processes determines the rate of change of population size?",
+      "options": [
+        "Natality and mortality only",
+        "Natality, mortality, immigration and emigration",
+        "Photosynthesis and respiration",
+        "Predation and parasitism only"
+      ],
+      "correct_answer": "Natality, mortality, immigration and emigration",
+      "explanation": "Population size changes according to: births + immigrants - deaths - emigrants; all four processes must be considered for a complete population growth model.",
+      "topic": "Population attributes",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The exponential growth model (dN/dt = rN) describes population growth under which condition?",
+      "options": [
+        "Unlimited resources with no environmental resistance",
+        "Resources that are limiting and cause density-dependent regulation",
+        "A population at carrying capacity",
+        "A population experiencing only emigration"
+      ],
+      "correct_answer": "Unlimited resources with no environmental resistance",
+      "explanation": "Exponential (J-shaped) growth assumes an idealised environment with unlimited resources, so growth rate is proportional only to population size (r), producing continuously accelerating growth.",
+      "topic": "Population growth models",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the logistic growth equation dN/dt = rN(1 - N/K), the term (1 - N/K) represents:",
+      "options": [
+        "The intrinsic rate of increase",
+        "Environmental resistance that slows growth as population approaches carrying capacity",
+        "The mortality rate alone",
+        "The immigration rate"
+      ],
+      "correct_answer": "Environmental resistance that slows growth as population approaches carrying capacity",
+      "explanation": "As N approaches K, the term (1 - N/K) approaches zero, progressively reducing the realised growth rate and producing the characteristic S-shaped (sigmoid) logistic curve.",
+      "topic": "Population growth models",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Carrying capacity (K) of an environment is defined as:",
+      "options": [
+        "The maximum population size that an environment can sustain indefinitely given available resources",
+        "The minimum viable population size",
+        "The intrinsic rate of natural increase",
+        "The rate of resource renewal"
+      ],
+      "correct_answer": "The maximum population size that an environment can sustain indefinitely given available resources",
+      "explanation": "K represents the upper asymptote of the logistic growth curve, set by the limits of resources such as food, space and nutrients in a given environment.",
+      "topic": "Carrying capacity",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A population growth curve that rises steeply then levels off abruptly at carrying capacity, producing a J-shape followed by a crash, is typical of:",
+      "options": [
+        "Smooth logistic growth",
+        "Population overshoot and crash (boom-and-bust) dynamics",
+        "Zero population growth from the start",
+        "Constant exponential decline"
+      ],
+      "correct_answer": "Population overshoot and crash (boom-and-bust) dynamics",
+      "explanation": "When growth is rapid and density-dependent feedback is delayed, populations can overshoot K and then crash due to resource depletion, rather than smoothly approaching K.",
+      "topic": "Population growth models",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A Type I survivorship curve, as in humans and many large mammals, is characterised by:",
+      "options": [
+        "High mortality in early life with few survivors reaching old age",
+        "Constant mortality rate throughout life",
+        "Low mortality until late in life, with most individuals surviving to old age",
+        "Mortality that decreases with age from birth"
+      ],
+      "correct_answer": "Low mortality until late in life, with most individuals surviving to old age",
+      "explanation": "Type I curves show high survivorship through most of the lifespan with mortality concentrated in old age, typical of species with parental care and few offspring.",
+      "topic": "Survivorship curves",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A Type III survivorship curve, typical of many plants and organisms producing numerous offspring with little parental care, shows:",
+      "options": [
+        "Constant mortality rate at all ages",
+        "Very high mortality early in life (e.g. seeds/seedlings) with few survivors reaching maturity",
+        "Low mortality throughout life",
+        "High mortality only in old age"
+      ],
+      "correct_answer": "Very high mortality early in life (e.g. seeds/seedlings) with few survivors reaching maturity",
+      "explanation": "Type III curves reflect strategies producing many offspring (e.g. seeds, spores) of which very few survive early stages, but those that do survive have relatively low subsequent mortality.",
+      "topic": "Survivorship curves",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A life table is a tool used in population ecology to:",
+      "options": [
+        "Summarise age-specific survivorship and fecundity of a cohort or population",
+        "List the taxonomic classification of species",
+        "Record the geographic distribution of a species",
+        "Measure soil nutrient content"
+      ],
+      "correct_answer": "Summarise age-specific survivorship and fecundity of a cohort or population",
+      "explanation": "Life tables track a cohort through age classes, recording number surviving, mortality rate and reproductive output at each age, used to compute survivorship curves and net reproductive rate.",
+      "topic": "Life tables",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The net reproductive rate (R0) calculated from a life table represents:",
+      "options": [
+        "The average number of offspring produced per individual per generation",
+        "The instantaneous rate of population growth",
+        "The carrying capacity of the environment",
+        "The death rate of the population"
+      ],
+      "correct_answer": "The average number of offspring produced per individual per generation",
+      "explanation": "R0 is the sum of age-specific survivorship multiplied by fecundity across all ages, giving the mean number of offspring an individual leaves in the next generation; R0 > 1 indicates a growing population.",
+      "topic": "Life tables",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Density-dependent factors regulating population size (e.g. competition, disease, predation) are characterised by:",
+      "options": [
+        "Their effect intensifying as population density increases",
+        "Acting with equal intensity regardless of population size",
+        "Only affecting small populations",
+        "Being purely abiotic in nature"
+      ],
+      "correct_answer": "Their effect intensifying as population density increases",
+      "explanation": "Density-dependent factors have a proportionally greater regulatory effect (e.g. more disease transmission, more competition) as population density rises, tending to stabilise populations near K.",
+      "topic": "Population regulation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which of the following is typically a density-independent factor affecting population size?",
+      "options": ["Intraspecific competition for food", "A sudden severe frost or fire", "Predation pressure", "Disease transmission rate"],
+      "correct_answer": "A sudden severe frost or fire",
+      "explanation": "Density-independent factors such as extreme weather events, fire or flooding affect a fixed proportion of a population regardless of its density, unlike competition, predation or disease.",
+      "topic": "Population regulation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Intraspecific competition refers to competition:",
+      "options": [
+        "Between individuals of different species",
+        "Between individuals of the same species for the same limited resources",
+        "Between predator and prey species",
+        "Between a parasite and its host"
+      ],
+      "correct_answer": "Between individuals of the same species for the same limited resources",
+      "explanation": "Intraspecific competition occurs among members of a single species competing for resources such as light, water, nutrients or space, and is a key density-dependent regulator.",
+      "topic": "Competition",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Interspecific competition occurs when:",
+      "options": [
+        "Two or more different species compete for the same limited resource",
+        "Individuals of the same species cooperate",
+        "A species competes only with itself",
+        "One species preys directly on another"
+      ],
+      "correct_answer": "Two or more different species compete for the same limited resource",
+      "explanation": "Interspecific competition is competition between individuals of different species for shared limiting resources, which can lead to competitive exclusion or resource partitioning.",
+      "topic": "Competition",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The competitive exclusion principle (Gause's principle) states that:",
+      "options": [
+        "Two species with identical ecological niches cannot coexist indefinitely in the same habitat",
+        "All competing species eventually cooperate",
+        "Competition always benefits both species",
+        "Species with different niches always compete strongly"
+      ],
+      "correct_answer": "Two species with identical ecological niches cannot coexist indefinitely in the same habitat",
+      "explanation": "Gause's competitive exclusion principle holds that complete competitors for identical resources cannot stably coexist; one will outcompete and displace the other, unless niche differentiation occurs.",
+      "topic": "Competition",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Species that reduce competition by using different resources or habitats within an area are showing:",
+      "options": ["Resource/niche partitioning", "Competitive exclusion", "Predation", "Mutualism"],
+      "correct_answer": "Resource/niche partitioning",
+      "explanation": "Niche/resource partitioning allows ecologically similar species to coexist by dividing up resources along axes such as space, time, or food type, reducing direct competition.",
+      "topic": "Competition",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In population dispersion patterns, a 'clumped' (aggregated) distribution most commonly results from:",
+      "options": [
+        "Uniform resource availability and strong territoriality",
+        "Patchy resource distribution or social/reproductive behaviour such as seed dispersal near the parent plant",
+        "Strong negative interactions between individuals spacing them evenly",
+        "Completely random settlement independent of resources"
+      ],
+      "correct_answer": "Patchy resource distribution or social/reproductive behaviour such as seed dispersal near the parent plant",
+      "explanation": "Clumped distribution, the commonest pattern in nature, arises when resources are patchily distributed or when reproduction (e.g. seeds falling near the parent) and social behaviour concentrate individuals together.",
+      "topic": "Population dispersion",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A uniform (regular) dispersion pattern in a plant population is most likely to result from:",
+      "options": [
+        "Strong intraspecific competition for resources such as light and water, e.g. through allelopathy or root competition",
+        "Clustering of seeds by wind in one spot",
+        "Random dispersal with no interactions",
+        "Absence of any competition"
+      ],
+      "correct_answer": "Strong intraspecific competition for resources such as light and water, e.g. through allelopathy or root competition",
+      "explanation": "Uniform spacing arises when strong negative interactions (competition, allelopathy, territoriality) cause individuals to be evenly spaced, minimising resource overlap.",
+      "topic": "Population dispersion",
+      "difficulty": "medium"
+    },
+    {
+      "question": "r-selected species are typically characterised by:",
+      "options": [
+        "Large body size, long lifespan, few offspring with high parental investment",
+        "Small body size, short lifespan, rapid reproduction, many offspring with little parental care",
+        "Stable populations always at carrying capacity",
+        "Strong competitive ability under crowded conditions"
+      ],
+      "correct_answer": "Small body size, short lifespan, rapid reproduction, many offspring with little parental care",
+      "explanation": "r-selected species are adapted to exploit unstable or unpredictable environments by maximising intrinsic growth rate (r) through rapid reproduction and high offspring number, e.g. many weeds and annual plants.",
+      "topic": "r- and K-selection",
+      "difficulty": "medium"
+    },
+    {
+      "question": "K-selected species are typically adapted to:",
+      "options": [
+        "Unpredictable, disturbed habitats requiring rapid colonisation",
+        "Stable environments near carrying capacity, favouring competitive ability, larger size and fewer, well-provisioned offspring",
+        "Producing thousands of offspring with no parental investment",
+        "Extremely short generation times"
+      ],
+      "correct_answer": "Stable environments near carrying capacity, favouring competitive ability, larger size and fewer, well-provisioned offspring",
+      "explanation": "K-selected species thrive in stable, resource-limited environments where competitive ability matters more than rapid reproduction, e.g. many long-lived forest trees.",
+      "topic": "r- and K-selection",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which of the following plant life-history traits is most typical of an r-strategist pioneer/weed species?",
+      "options": ["Long-lived perennial with slow growth and shade tolerance", "Short-lived annual, rapid growth, abundant small seeds, good disperser", "Very slow seed production and low dispersal ability", "Requiring stable, undisturbed habitat"],
+      "correct_answer": "Short-lived annual, rapid growth, abundant small seeds, good disperser",
+      "explanation": "Pioneer/weedy species exploit disturbed habitats by growing and reproducing quickly, producing many easily dispersed seeds, consistent with r-selection.",
+      "topic": "r- and K-selection",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A metapopulation is best described as:",
+      "options": [
+        "A single, continuous, panmictic population",
+        "A set of spatially separated local populations of the same species that interact through occasional dispersal/migration",
+        "A community of different species",
+        "The total global population of a species with no substructure"
+      ],
+      "correct_answer": "A set of spatially separated local populations of the same species that interact through occasional dispersal/migration",
+      "explanation": "Metapopulation theory (Levins) describes a 'population of populations' linked by migration among habitat patches, with local extinctions and recolonisations shaping regional persistence.",
+      "topic": "Metapopulation ecology",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In metapopulation dynamics, a local population that has gone extinct in a habitat patch can be re-established through:",
+      "options": ["Colonisation from a nearby occupied patch", "Spontaneous generation", "Increased predation", "Habitat fragmentation alone"],
+      "correct_answer": "Colonisation from a nearby occupied patch",
+      "explanation": "Recolonisation of empty but suitable patches by dispersers from occupied patches is central to metapopulation persistence despite local extinctions.",
+      "topic": "Metapopulation ecology",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The intrinsic rate of natural increase (r) of a population is highest when:",
+      "options": [
+        "Birth rate greatly exceeds death rate under optimal, unlimited conditions",
+        "Birth rate equals death rate",
+        "Death rate exceeds birth rate",
+        "The population is at carrying capacity"
+      ],
+      "correct_answer": "Birth rate greatly exceeds death rate under optimal, unlimited conditions",
+      "explanation": "r (= b - d, birth rate minus death rate) is maximal (rmax, the biotic potential) under ideal conditions with abundant resources and no environmental resistance.",
+      "topic": "Population growth models",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Environmental resistance refers to:",
+      "options": [
+        "The sum of factors (e.g. limited food, predation, disease, competition) that limit population growth",
+        "The genetic resistance of a species to pesticides",
+        "The intrinsic growth rate of a population",
+        "The tendency of soil to resist erosion"
+      ],
+      "correct_answer": "The sum of factors (e.g. limited food, predation, disease, competition) that limit population growth",
+      "explanation": "Environmental resistance encompasses all limiting factors that prevent a population from achieving its full biotic potential, keeping actual growth below the exponential maximum.",
+      "topic": "Population regulation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Self-thinning in dense even-aged plant populations, described by the '-3/2 power law', refers to:",
+      "options": [
+        "A predictable decline in the number of surviving individuals as average plant size (biomass) increases with age due to density-dependent mortality",
+        "Random death unrelated to density",
+        "An increase in plant number as biomass increases",
+        "A phenomenon restricted to animal populations"
+      ],
+      "correct_answer": "A predictable decline in the number of surviving individuals as average plant size (biomass) increases with age due to density-dependent mortality",
+      "explanation": "As plants in a dense cohort grow, competition for light, water and nutrients causes progressive mortality of smaller individuals, following a characteristic self-thinning trajectory relating log mean plant weight to log density.",
+      "topic": "Population regulation",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Allee effects in population ecology describe a situation where:",
+      "options": [
+        "Population growth rate decreases at low population density (positive density dependence)",
+        "Population growth rate always increases indefinitely",
+        "Population size has no effect on individual fitness",
+        "Only large populations experience reduced fitness"
+      ],
+      "correct_answer": "Population growth rate decreases at low population density (positive density dependence)",
+      "explanation": "The Allee effect describes reduced individual fitness (e.g. via difficulty finding mates or reduced group protection) at low population densities, contrary to standard density-dependent regulation, and is important in conservation of small populations.",
+      "topic": "Population regulation",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Age structure (age distribution) of a population, showing the proportion of individuals in pre-reproductive, reproductive and post-reproductive classes, is useful for:",
+      "options": [
+        "Predicting future population growth trends",
+        "Determining the soil type of the habitat",
+        "Measuring photosynthetic rate",
+        "Classifying plant taxonomy"
+      ],
+      "correct_answer": "Predicting future population growth trends",
+      "explanation": "A population with a high proportion of pre-reproductive individuals (expanding age pyramid) predicts future growth, while a large post-reproductive class suggests decline, making age structure a key demographic tool.",
+      "topic": "Population attributes",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In plant population studies, a 'seed bank' refers to:",
+      "options": [
+        "A financial institution funding agricultural research",
+        "The reservoir of viable, ungerminated seeds present in the soil at a given site",
+        "A collection of herbarium specimens",
+        "The total leaf biomass of a population"
+      ],
+      "correct_answer": "The reservoir of viable, ungerminated seeds present in the soil at a given site",
+      "explanation": "The soil seed bank represents dormant, viable seeds accumulated over time, buffering plant populations against disturbance and enabling regeneration after events like fire or clearing.",
+      "topic": "Population dynamics in plants",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which sampling method is commonly used to estimate plant population density in the field using randomly placed sample units?",
+      "options": ["Mark-recapture method", "Quadrat sampling", "Pitfall trapping", "Electrofishing"],
+      "correct_answer": "Quadrat sampling",
+      "explanation": "Quadrats -- fixed-area sample plots placed randomly or systematically -- are the standard method for estimating plant density, frequency and cover, unlike mark-recapture which is used for mobile animals.",
+      "topic": "Population sampling methods",
+      "difficulty": "easy"
+    }
+  ]
+}

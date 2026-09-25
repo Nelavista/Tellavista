@@ -1,0 +1,567 @@
+{
+  "course_code": "MCB407",
+  "title": "Epidemiology",
+  "level": "400",
+  "source_note": "Grounded in standard epidemiology curriculum: disease frequency and association measures, study designs, outbreak investigation, screening test evaluation, bias/confounding, causation, and the natural history/chain of infection, as taught in NUC-aligned microbiology programmes. Kept distinct from MCB306 (Public Health Microbiology) by focusing on epidemiologic methods and quantitative disease-pattern analysis rather than specific microbial disease agents and control measures.",
+  "questions": [
+    {
+      "question": "What is 'epidemiology' most accurately defined as?",
+      "options": [
+        "The study of the distribution and determinants of health-related states or events in specified populations, and the application of this study to control health problems",
+        "The study of the structure and classification of microorganisms",
+        "The clinical treatment of individual patients with infectious disease",
+        "The manufacture of vaccines and antimicrobial drugs"
+      ],
+      "correct_answer": "The study of the distribution and determinants of health-related states or events in specified populations, and the application of this study to control health problems",
+      "explanation": "Epidemiology is a population-level discipline concerned with patterns (distribution) and causes (determinants) of disease, distinct from clinical medicine which focuses on individual patients.",
+      "topic": "Definition and scope of epidemiology",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is 'incidence' in epidemiology?",
+      "options": [
+        "The number of new cases of a disease occurring in a defined population during a specified period of time",
+        "The total number of existing cases (new and old) of a disease in a population at a given point in time",
+        "The number of deaths caused by a disease in a population",
+        "The proportion of a population that has ever been exposed to a risk factor"
+      ],
+      "correct_answer": "The number of new cases of a disease occurring in a defined population during a specified period of time",
+      "explanation": "Incidence measures the rate at which new cases arise over a period, making it a key indicator of the risk of developing a disease, as distinct from prevalence which counts all existing cases.",
+      "topic": "Measures of disease frequency",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is 'prevalence' in epidemiology?",
+      "options": [
+        "The proportion of a population that has a particular disease (new and pre-existing cases) at a specific point in time or over a specified period",
+        "The number of new cases of a disease arising over a year",
+        "The rate at which a disease causes death among infected persons",
+        "The number of people vaccinated against a disease"
+      ],
+      "correct_answer": "The proportion of a population that has a particular disease (new and pre-existing cases) at a specific point in time or over a specified period",
+      "explanation": "Prevalence is a snapshot measure of existing disease burden in a population, combining both newly diagnosed and previously diagnosed ongoing cases.",
+      "topic": "Measures of disease frequency",
+      "difficulty": "easy"
+    },
+    {
+      "question": "For a chronic disease with a long average duration, how would prevalence typically compare with incidence, all else being equal?",
+      "options": [
+        "Prevalence would tend to be higher than incidence, because cases accumulate and persist in the population over time",
+        "Prevalence would always be lower than incidence, regardless of disease duration",
+        "Prevalence and incidence are always numerically identical",
+        "Prevalence cannot be calculated for chronic diseases"
+      ],
+      "correct_answer": "Prevalence would tend to be higher than incidence, because cases accumulate and persist in the population over time",
+      "explanation": "Because prevalence accumulates existing cases while a disease persists, long disease duration causes prevalence to exceed the incidence rate, following the approximate relationship prevalence ≈ incidence × average duration.",
+      "topic": "Measures of disease frequency",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a cohort study comparing an exposed group to an unexposed group, 'relative risk' (risk ratio) is calculated as which of the following?",
+      "options": [
+        "The incidence of disease in the exposed group divided by the incidence of disease in the unexposed group",
+        "The odds of exposure among cases divided by the odds of exposure among controls",
+        "The total number of cases in the study divided by the total population studied",
+        "The difference between the incidence in the exposed and unexposed groups"
+      ],
+      "correct_answer": "The incidence of disease in the exposed group divided by the incidence of disease in the unexposed group",
+      "explanation": "Relative risk directly compares the incidence (risk) of disease between an exposed and an unexposed group, and can only be calculated when incidence data from a cohort or trial design is available.",
+      "topic": "Measures of association",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A relative risk of 3.0 for lung cancer among smokers compared to non-smokers means which of the following?",
+      "options": [
+        "Smokers are three times as likely to develop lung cancer as non-smokers",
+        "Three percent of smokers will develop lung cancer",
+        "Smoking causes exactly 3 additional cases of lung cancer per year",
+        "Non-smokers are three times as likely to develop lung cancer as smokers"
+      ],
+      "correct_answer": "Smokers are three times as likely to develop lung cancer as non-smokers",
+      "explanation": "A relative risk (risk ratio) of 3.0 indicates the risk of disease in the exposed group is three times that in the unexposed group.",
+      "topic": "Measures of association",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a case-control study, why is the 'odds ratio' used as the measure of association instead of relative risk?",
+      "options": [
+        "Because case-control studies select participants based on disease status, so true incidence in the population cannot be directly calculated, making relative risk inappropriate",
+        "Because odds ratios are always easier to calculate by hand than relative risk",
+        "Because case-control studies never involve any exposed individuals",
+        "Because odds ratio and relative risk always give identical numerical results in every study design"
+      ],
+      "correct_answer": "Because case-control studies select participants based on disease status, so true incidence in the population cannot be directly calculated, making relative risk inappropriate",
+      "explanation": "Since case-control studies start by selecting cases and controls rather than following exposed and unexposed cohorts over time, incidence cannot be measured directly, so the odds ratio is used as an approximation of relative risk.",
+      "topic": "Study designs",
+      "difficulty": "hard"
+    },
+    {
+      "question": "What does an odds ratio (or relative risk) equal to 1.0 indicate about the association between an exposure and a disease?",
+      "options": [
+        "There is no association between the exposure and the disease",
+        "The exposure completely prevents the disease",
+        "The exposure doubles the risk of disease",
+        "The study must have been conducted incorrectly"
+      ],
+      "correct_answer": "There is no association between the exposure and the disease",
+      "explanation": "A value of 1.0 means the risk (or odds) of disease is the same in the exposed and unexposed groups, indicating no association, as opposed to values above or below 1 which suggest increased or decreased risk respectively.",
+      "topic": "Measures of association",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is 'attributable risk' (risk difference)?",
+      "options": [
+        "The absolute difference in incidence of disease between the exposed and unexposed groups, representing the excess risk due to the exposure",
+        "The ratio of incidence in the exposed group to incidence in the unexposed group",
+        "The total number of cases attributable to any cause whatsoever in a population",
+        "The proportion of controls who were exposed to a risk factor"
+      ],
+      "correct_answer": "The absolute difference in incidence of disease between the exposed and unexposed groups, representing the excess risk due to the exposure",
+      "explanation": "Attributable risk quantifies the actual excess incidence of disease that can be attributed to the exposure, useful for assessing public health impact, unlike relative risk which is a ratio.",
+      "topic": "Measures of association",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a 'cohort study', participants are enrolled and classified based on what?",
+      "options": [
+        "Their exposure status, and then followed forward over time to observe who develops the disease of interest",
+        "Their disease status, and their past exposure history is then investigated retrospectively",
+        "Random assignment to receive a specific intervention, controlled by the investigator",
+        "Their geographic location alone, with no consideration of exposure or disease status"
+      ],
+      "correct_answer": "Their exposure status, and then followed forward over time to observe who develops the disease of interest",
+      "explanation": "A cohort study is fundamentally a follow-up (often prospective) design comparing disease occurrence between groups defined by exposure status at the start of the study.",
+      "topic": "Study designs",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a 'case-control study', participants are enrolled and classified based on what?",
+      "options": [
+        "Their disease status (cases with the disease vs. controls without it), and their past exposure history is investigated retrospectively",
+        "Their exposure status, then followed forward to see who develops disease",
+        "Random allocation to treatment or placebo groups",
+        "The severity of their symptoms only, with exposure never assessed"
+      ],
+      "correct_answer": "Their disease status (cases with the disease vs. controls without it), and their past exposure history is investigated retrospectively",
+      "explanation": "Case-control studies work backward from outcome to exposure, comparing the exposure history of individuals with the disease (cases) to those without it (controls).",
+      "topic": "Study designs",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which epidemiological study design is generally considered to provide the strongest evidence for a causal relationship, due to random allocation of exposure/intervention?",
+      "options": [
+        "Randomised controlled trial (RCT)",
+        "Case report",
+        "Ecological study",
+        "Cross-sectional study"
+      ],
+      "correct_answer": "Randomised controlled trial (RCT)",
+      "explanation": "Because random allocation balances both known and unknown confounding factors between groups, the RCT design offers the strongest study-design-based evidence for causation among observational and experimental designs.",
+      "topic": "Study designs",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is a key limitation of a 'cross-sectional study' when investigating disease causation?",
+      "options": [
+        "Because exposure and disease status are measured at the same point in time, it is often difficult to establish which occurred first (temporal sequence)",
+        "It can never include information about disease prevalence",
+        "It always requires many years of follow-up, making it very expensive",
+        "It cannot be used to study any chronic disease"
+      ],
+      "correct_answer": "Because exposure and disease status are measured at the same point in time, it is often difficult to establish which occurred first (temporal sequence)",
+      "explanation": "Cross-sectional studies capture a single snapshot, so the simultaneous measurement of exposure and outcome makes it hard to determine temporal (cause-before-effect) sequence, a key requirement for causal inference.",
+      "topic": "Study designs",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is an 'ecological study' in epidemiology?",
+      "options": [
+        "A study that examines the relationship between exposure and disease using aggregate (group-level) data for entire populations, rather than individual-level data",
+        "A study conducted exclusively in forests or natural habitats",
+        "A study that follows a single individual over their entire lifetime",
+        "A randomised trial comparing two competing drug treatments"
+      ],
+      "correct_answer": "A study that examines the relationship between exposure and disease using aggregate (group-level) data for entire populations, rather than individual-level data",
+      "explanation": "Ecological studies analyse correlations using population-level (aggregate) exposure and outcome data, which can be useful for generating hypotheses but is prone to the ecological fallacy.",
+      "topic": "Study designs",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the 'ecological fallacy'?",
+      "options": [
+        "The error of assuming that an association observed at the group/population level necessarily applies to individuals within that group",
+        "The mistaken belief that ecosystems have no effect on disease transmission",
+        "A bias that only occurs in randomised controlled trials",
+        "The failure to adjust for confounding in a cohort study"
+      ],
+      "correct_answer": "The error of assuming that an association observed at the group/population level necessarily applies to individuals within that group",
+      "explanation": "The ecological fallacy is the specific error of drawing conclusions about individual-level relationships purely from group-level (aggregate) data.",
+      "topic": "Study designs",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The three main variables examined in descriptive epidemiology are commonly summarised as which of the following?",
+      "options": [
+        "Person, place, and time",
+        "Agent, host, and environment",
+        "Sensitivity, specificity, and predictive value",
+        "Incidence, prevalence, and mortality"
+      ],
+      "correct_answer": "Person, place, and time",
+      "explanation": "Descriptive epidemiology characterises the occurrence of disease according to who is affected (person), where (place), and when (time), forming the basis for generating hypotheses about causation.",
+      "topic": "Descriptive epidemiology",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is the 'epidemiologic triad' (or triangle) traditionally used to describe the causation of infectious disease?",
+      "options": [
+        "Agent, host, and environment",
+        "Incidence, prevalence, and duration",
+        "Exposure, outcome, and confounder",
+        "Sensitivity, specificity, and prevalence"
+      ],
+      "correct_answer": "Agent, host, and environment",
+      "explanation": "The epidemiologic triad conceptualises disease as arising from an interaction between a causative agent, a susceptible host, and the surrounding environment that brings them together.",
+      "topic": "Epidemiologic triad",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is meant by the 'chain of infection'?",
+      "options": [
+        "The sequence of linked elements — infectious agent, reservoir, portal of exit, mode of transmission, portal of entry, and susceptible host — that must all be present for an infectious disease to spread",
+        "The order in which vaccines must be administered to a patient",
+        "The list of hospital departments a patient passes through during treatment",
+        "The sequence of steps followed in conducting a systematic literature review"
+      ],
+      "correct_answer": "The sequence of linked elements — infectious agent, reservoir, portal of exit, mode of transmission, portal of entry, and susceptible host — that must all be present for an infectious disease to spread",
+      "explanation": "The chain of infection model identifies the linked components required for transmission, and breaking any single link can prevent or control the spread of disease.",
+      "topic": "Chain of infection and transmission",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is a 'reservoir' of infection in epidemiology?",
+      "options": [
+        "A living organism or inanimate environment in which an infectious agent normally lives, grows, and multiplies, and on which it depends for survival",
+        "The specific syringe used to administer a vaccine",
+        "A laboratory device used to culture bacteria",
+        "A synonym for 'vector', meaning any insect that transmits disease"
+      ],
+      "correct_answer": "A living organism or inanimate environment in which an infectious agent normally lives, grows, and multiplies, and on which it depends for survival",
+      "explanation": "A reservoir (which may be human, animal, or environmental) is the natural habitat where the infectious agent survives, potentially serving as a continuing source of infection.",
+      "topic": "Chain of infection and transmission",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is a disease 'vector'?",
+      "options": [
+        "A living organism, typically an arthropod such as a mosquito, that transmits an infectious agent from one host to another",
+        "The chemical structure of a pathogen's cell wall",
+        "A synonym for the causative agent itself",
+        "A measure of how contagious a disease is"
+      ],
+      "correct_answer": "A living organism, typically an arthropod such as a mosquito, that transmits an infectious agent from one host to another",
+      "explanation": "Vectors, such as mosquitoes transmitting malaria or ticks transmitting Lyme disease, actively carry and transmit pathogens between hosts, distinguishing vector-borne transmission from direct or fomite transmission.",
+      "topic": "Chain of infection and transmission",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is 'herd immunity'?",
+      "options": [
+        "Indirect protection from an infectious disease that occurs when a sufficiently large proportion of a population is immune, reducing the likelihood of transmission to susceptible individuals",
+        "The immunity an individual develops after their first infection, regardless of population-level immunity",
+        "A vaccine given exclusively to livestock",
+        "The total number of people vaccinated in a country"
+      ],
+      "correct_answer": "Indirect protection from an infectious disease that occurs when a sufficiently large proportion of a population is immune, reducing the likelihood of transmission to susceptible individuals",
+      "explanation": "Herd immunity reduces disease spread by lowering the probability that an infected individual will contact a susceptible one, indirectly protecting even those who are not themselves immune.",
+      "topic": "Herd immunity",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What does the 'basic reproduction number' (R0) represent?",
+      "options": [
+        "The average number of secondary infections produced by a single infectious individual in a completely susceptible population",
+        "The total number of people who have ever been infected by a disease worldwide",
+        "The percentage of a population that must be vaccinated to eliminate a disease",
+        "The case fatality rate of a disease"
+      ],
+      "correct_answer": "The average number of secondary infections produced by a single infectious individual in a completely susceptible population",
+      "explanation": "R0 indicates the transmission potential of an infectious agent in a fully susceptible population; if R0 is greater than 1, the disease can spread, and if less than 1, it will tend to die out.",
+      "topic": "Basic reproduction number",
+      "difficulty": "medium"
+    },
+    {
+      "question": "If a disease has an R0 greater than 1 with no intervention, what does this imply about its potential to spread in a susceptible population?",
+      "options": [
+        "The number of cases is expected to increase over time, as each infected person on average infects more than one other person",
+        "The disease will automatically die out within one generation",
+        "The disease can never become an epidemic",
+        "Every person in the population will definitely become infected within a week"
+      ],
+      "correct_answer": "The number of cases is expected to increase over time, as each infected person on average infects more than one other person",
+      "explanation": "An R0 greater than 1 means, on average, transmission is self-sustaining and increasing, which is the condition required for an outbreak to grow into an epidemic in the absence of control measures.",
+      "topic": "Basic reproduction number",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the first key step typically undertaken when investigating a suspected disease outbreak?",
+      "options": [
+        "Verifying the diagnosis and confirming that a true outbreak exists (i.e., that case numbers genuinely exceed the expected baseline)",
+        "Immediately closing all public facilities in the affected area",
+        "Publishing the final investigation report to the media",
+        "Vaccinating the entire national population regardless of the disease involved"
+      ],
+      "correct_answer": "Verifying the diagnosis and confirming that a true outbreak exists (i.e., that case numbers genuinely exceed the expected baseline)",
+      "explanation": "Before extensive investigation, the outbreak investigator must confirm the diagnosis is accurate and that observed cases genuinely exceed the expected number for that place and time, ruling out reporting artefacts.",
+      "topic": "Outbreak investigation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In outbreak investigation, what is a 'case definition' used for?",
+      "options": [
+        "A standardised set of criteria used to decide whether a person should be classified as having the disease or condition under investigation",
+        "The legal definition of a crime committed by an infected individual",
+        "A list of every hospital in the affected geographic area",
+        "The dosage instructions for a treatment drug"
+      ],
+      "correct_answer": "A standardised set of criteria used to decide whether a person should be classified as having the disease or condition under investigation",
+      "explanation": "A consistent case definition, typically combining clinical, laboratory, and time/place/person criteria, ensures cases are identified and counted uniformly throughout an investigation.",
+      "topic": "Outbreak investigation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is an 'epidemic curve' (epi curve) used to display in an outbreak investigation?",
+      "options": [
+        "The distribution of cases of a disease over time (by date of onset), helping to identify the pattern and likely mode of transmission of the outbreak",
+        "The geographic distribution of cases on a map",
+        "The age distribution of the general population",
+        "The cost of treating each case of disease"
+      ],
+      "correct_answer": "The distribution of cases of a disease over time (by date of onset), helping to identify the pattern and likely mode of transmission of the outbreak",
+      "explanation": "An epidemic curve is a histogram of case counts by time of onset, and its shape (e.g. a sharp single peak vs. a prolonged pattern) helps investigators infer whether the outbreak had a common source or was propagated person-to-person.",
+      "topic": "Outbreak investigation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A single, sharp peak on an epidemic curve, with all cases occurring within roughly one incubation period, is most characteristic of which type of outbreak?",
+      "options": [
+        "A common-source, point-source outbreak, such as contamination of a single shared food item at one event",
+        "A propagated (person-to-person) outbreak occurring over several successive waves",
+        "A slowly, continuously emerging chronic disease with no discrete source",
+        "An outbreak with no identifiable source at all"
+      ],
+      "correct_answer": "A common-source, point-source outbreak, such as contamination of a single shared food item at one event",
+      "explanation": "A point-source outbreak, where everyone is exposed to the same source at roughly the same time, typically produces a single sharp peak on the epi curve corresponding to the common incubation period.",
+      "topic": "Outbreak investigation",
+      "difficulty": "hard"
+    },
+    {
+      "question": "What is the difference between an 'endemic', 'epidemic', and 'pandemic' disease pattern?",
+      "options": [
+        "Endemic is the constant, expected baseline presence of a disease in a population; epidemic is a sudden increase above that expected baseline; pandemic is an epidemic that has spread across multiple countries or continents",
+        "Endemic means a disease has been completely eradicated worldwide",
+        "Epidemic and pandemic are two names for exactly the same scale of disease occurrence",
+        "Endemic refers only to diseases affecting animals, never humans"
+      ],
+      "correct_answer": "Endemic is the constant, expected baseline presence of a disease in a population; epidemic is a sudden increase above that expected baseline; pandemic is an epidemic that has spread across multiple countries or continents",
+      "explanation": "These three terms represent an escalating scale of disease spread: endemic (steady baseline), epidemic (unusual increase in a defined area), and pandemic (widespread international/global epidemic).",
+      "topic": "Descriptive epidemiology",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is 'surveillance' in public health epidemiology?",
+      "options": [
+        "The ongoing, systematic collection, analysis, and interpretation of health data essential for planning, implementing, and evaluating public health action",
+        "The covert monitoring of individual citizens by security agencies",
+        "A one-time survey conducted only after an outbreak has ended",
+        "The process of manufacturing diagnostic test kits"
+      ],
+      "correct_answer": "The ongoing, systematic collection, analysis, and interpretation of health data essential for planning, implementing, and evaluating public health action",
+      "explanation": "Public health surveillance is a continuous process enabling early detection of health trends and outbreaks, and timely dissemination of information to those who need it for action.",
+      "topic": "Surveillance systems",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In evaluating a diagnostic/screening test, 'sensitivity' refers to which of the following?",
+      "options": [
+        "The proportion of people who truly have the disease who are correctly identified as positive by the test",
+        "The proportion of people who truly do not have the disease who are correctly identified as negative by the test",
+        "The proportion of positive test results that are truly positive",
+        "The proportion of negative test results that are truly negative"
+      ],
+      "correct_answer": "The proportion of people who truly have the disease who are correctly identified as positive by the test",
+      "explanation": "Sensitivity measures a test's ability to correctly detect disease among those who genuinely have it (true positive rate), which is critical for screening tests aiming to minimise missed cases.",
+      "topic": "Screening test evaluation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In evaluating a diagnostic/screening test, 'specificity' refers to which of the following?",
+      "options": [
+        "The proportion of people who truly do not have the disease who are correctly identified as negative by the test",
+        "The proportion of people who truly have the disease who are correctly identified as positive by the test",
+        "The overall accuracy of the test regardless of disease status",
+        "The cost of administering the test to the population"
+      ],
+      "correct_answer": "The proportion of people who truly do not have the disease who are correctly identified as negative by the test",
+      "explanation": "Specificity measures a test's ability to correctly rule out disease in people who do not have it (true negative rate), important for minimising false alarms.",
+      "topic": "Screening test evaluation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is 'positive predictive value' (PPV) of a diagnostic test?",
+      "options": [
+        "The proportion of people with a positive test result who actually have the disease",
+        "The proportion of people with the disease who test positive",
+        "The proportion of people without the disease who test negative",
+        "The overall prevalence of the disease in the tested population"
+      ],
+      "correct_answer": "The proportion of people with a positive test result who actually have the disease",
+      "explanation": "PPV answers the clinically relevant question 'given a positive result, how likely is this person to truly have the disease?' and, unlike sensitivity/specificity, is heavily influenced by disease prevalence in the tested population.",
+      "topic": "Screening test evaluation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "How does the prevalence of a disease in the population being tested affect the positive predictive value (PPV) of a screening test, holding sensitivity and specificity constant?",
+      "options": [
+        "As prevalence decreases, PPV tends to decrease, because a larger proportion of positive results become false positives",
+        "PPV is completely independent of disease prevalence",
+        "As prevalence decreases, PPV always increases",
+        "Prevalence only affects sensitivity, never PPV"
+      ],
+      "correct_answer": "As prevalence decreases, PPV tends to decrease, because a larger proportion of positive results become false positives",
+      "explanation": "In a low-prevalence population, even a specific test generates a high number of false positives relative to true positives, reducing PPV — a key reason screening in low-risk populations can yield many false-positive results.",
+      "topic": "Screening test evaluation",
+      "difficulty": "hard"
+    },
+    {
+      "question": "What is 'confounding' in an epidemiological study?",
+      "options": [
+        "A distortion of the observed association between an exposure and an outcome caused by a third factor that is independently related to both the exposure and the outcome",
+        "A type of measurement error caused by a faulty laboratory instrument",
+        "The deliberate falsification of study data by a researcher",
+        "The natural variation in disease incidence from one year to the next"
+      ],
+      "correct_answer": "A distortion of the observed association between an exposure and an outcome caused by a third factor that is independently related to both the exposure and the outcome",
+      "explanation": "A confounding variable is associated with both the exposure and the outcome (without being on the causal pathway between them), and can create a spurious or masked association if not controlled for.",
+      "topic": "Bias and confounding",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is 'selection bias' in an epidemiological study?",
+      "options": [
+        "A systematic error arising from the way study participants are selected or retained, leading to a study sample that is not representative of the population intended to be studied",
+        "An error that occurs only during statistical data analysis, never during participant recruitment",
+        "A type of bias that can be entirely eliminated by increasing the sample size alone",
+        "A bias that exclusively affects randomised controlled trials"
+      ],
+      "correct_answer": "A systematic error arising from the way study participants are selected or retained, leading to a study sample that is not representative of the population intended to be studied",
+      "explanation": "Selection bias distorts study validity when the process of enrolling or retaining subjects systematically differs between comparison groups in a way related to exposure or outcome.",
+      "topic": "Bias and confounding",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is 'recall bias', and in which study design does it most commonly pose a threat?",
+      "options": [
+        "Systematic differences in the accuracy or completeness of participants' memories about past exposures, most commonly affecting retrospective case-control studies",
+        "A bias that only affects laboratory equipment calibration",
+        "A bias arising exclusively in randomised controlled trials with blinding",
+        "A bias caused only by errors in a study's statistical software"
+      ],
+      "correct_answer": "Systematic differences in the accuracy or completeness of participants' memories about past exposures, most commonly affecting retrospective case-control studies",
+      "explanation": "Because case-control studies rely on participants recalling past exposures, cases (who may search harder for an explanation for their illness) can differentially over- or under-report exposure compared to controls, biasing results.",
+      "topic": "Bias and confounding",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Among the Bradford Hill criteria for assessing causation, what does 'biological gradient' (dose-response relationship) refer to?",
+      "options": [
+        "The observation that increasing levels or duration of exposure are associated with a correspondingly increasing risk of the disease",
+        "The requirement that the exposure must always precede the disease in time",
+        "The strength of the statistical association between exposure and outcome",
+        "The consistency of findings across multiple different studies and populations"
+      ],
+      "correct_answer": "The observation that increasing levels or duration of exposure are associated with a correspondingly increasing risk of the disease",
+      "explanation": "A dose-response (biological gradient) relationship, where greater exposure is linked to greater disease risk, strengthens the case for a causal relationship, as one of several Bradford Hill considerations.",
+      "topic": "Causation criteria",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Which Bradford Hill criterion for causation requires that the cause must occur before the effect?",
+      "options": [
+        "Temporality",
+        "Strength of association",
+        "Plausibility",
+        "Analogy"
+      ],
+      "correct_answer": "Temporality",
+      "explanation": "Temporality is considered the only truly indispensable Bradford Hill criterion: the exposure must precede the onset of disease for a causal relationship to be logically possible.",
+      "topic": "Causation criteria",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What does the 'natural history of disease' describe?",
+      "options": [
+        "The progression of a disease process in an individual over time, from exposure/pre-exposure through the biological onset, and on to resolution, disability, or death, in the absence of intervention",
+        "The historical timeline of when a pathogen species first evolved",
+        "The geographic spread of a pathogen across continents over centuries",
+        "A record of which laboratory first isolated a particular pathogen"
+      ],
+      "correct_answer": "The progression of a disease process in an individual over time, from exposure/pre-exposure through the biological onset, and on to resolution, disability, or death, in the absence of intervention",
+      "explanation": "Natural history describes the unmodified course a disease would take in an individual, forming the basis for identifying appropriate points at which to apply levels of prevention.",
+      "topic": "Natural history of disease",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the distinction between 'primary', 'secondary', and 'tertiary' prevention in the natural history of disease framework?",
+      "options": [
+        "Primary prevention aims to prevent disease onset before it occurs; secondary prevention aims for early detection and treatment of existing but early-stage disease; tertiary prevention aims to reduce complications and disability from established disease",
+        "Primary prevention treats only symptoms, secondary prevents disease entirely, and tertiary is only used for terminal illness",
+        "All three levels apply exclusively to non-communicable diseases and never to infectious diseases",
+        "Primary, secondary, and tertiary prevention are simply three different names for the same intervention"
+      ],
+      "correct_answer": "Primary prevention aims to prevent disease onset before it occurs; secondary prevention aims for early detection and treatment of existing but early-stage disease; tertiary prevention aims to reduce complications and disability from established disease",
+      "explanation": "This classic framework of prevention levels corresponds to distinct points along the natural history of disease: before onset, during the early/subclinical stage, and after disease is clinically established.",
+      "topic": "Levels of prevention",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A vaccination programme delivered to healthy individuals to prevent them from ever contracting a disease is an example of which level of prevention?",
+      "options": [
+        "Primary prevention",
+        "Secondary prevention",
+        "Tertiary prevention",
+        "Quaternary prevention"
+      ],
+      "correct_answer": "Primary prevention",
+      "explanation": "Vaccination reduces the risk of disease before exposure/onset occurs, which is the defining feature of primary prevention.",
+      "topic": "Levels of prevention",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is a 'notifiable disease'?",
+      "options": [
+        "A disease that healthcare providers and laboratories are legally required to report to public health authorities when diagnosed, to support surveillance and outbreak control",
+        "A disease that has never been recorded anywhere in the world",
+        "A disease for which no treatment currently exists",
+        "A disease that only affects animals and never humans"
+      ],
+      "correct_answer": "A disease that healthcare providers and laboratories are legally required to report to public health authorities when diagnosed, to support surveillance and outbreak control",
+      "explanation": "Mandatory reporting of notifiable diseases enables public health authorities to monitor trends, detect outbreaks quickly, and coordinate a timely response.",
+      "topic": "Surveillance systems",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is the difference between the 'crude mortality rate' and the 'case fatality rate' (CFR)?",
+      "options": [
+        "Crude mortality rate is the number of deaths from all causes divided by the total population, while CFR is the proportion of people diagnosed with a specific disease who die from it",
+        "Crude mortality rate applies only to infectious diseases, while CFR applies only to non-communicable diseases",
+        "The two terms are interchangeable and always yield an identical numeric value",
+        "CFR measures deaths in the entire population, while crude mortality rate measures deaths only among diagnosed cases"
+      ],
+      "correct_answer": "Crude mortality rate is the number of deaths from all causes divided by the total population, while CFR is the proportion of people diagnosed with a specific disease who die from it",
+      "explanation": "Crude mortality is a population-wide, all-cause measure, while case fatality rate is disease-specific and calculated only among people who actually have that disease.",
+      "topic": "Measures of disease frequency",
+      "difficulty": "medium"
+    }
+  ]
+}

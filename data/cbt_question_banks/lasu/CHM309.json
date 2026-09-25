@@ -1,0 +1,272 @@
+{
+  "course_code": "CHM309",
+  "title": "Instrumental Methods of Analysis",
+  "level": "300",
+  "source_note": "Standard NUC-aligned 300L instrumental analysis curriculum: principles and instrumentation of UV-Vis and IR spectrophotometry, atomic absorption/emission spectroscopy, chromatographic methods (TLC, column, GC, HPLC), electroanalytical methods (potentiometry, conductometry, voltammetry/polarography), and basic mass spectrometry, with emphasis on Beer-Lambert law, instrument components, and method selection.",
+  "questions": [
+    {
+      "question": "The Beer-Lambert law relates absorbance (A) to concentration (c) and path length (b) as:",
+      "options": ["A = εbc", "A = ε/bc", "A = bc/ε", "A = ε + b + c"],
+      "correct_answer": "A = εbc",
+      "explanation": "Absorbance is directly proportional to the molar absorptivity, path length, and concentration: A = εbc.",
+      "topic": "UV-Vis spectrophotometry",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In a UV-Vis spectrophotometer, the component that isolates a narrow band of wavelengths from the polychromatic source before it reaches the sample is the:",
+      "options": ["Detector", "Monochromator", "Cuvette", "Amplifier"],
+      "correct_answer": "Monochromator",
+      "explanation": "The monochromator (using a prism or diffraction grating) disperses light and selects a narrow wavelength band for analysis.",
+      "topic": "UV-Vis spectrophotometry",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A solution with molar absorptivity ε = 5000 dm3 mol-1 cm-1 gives an absorbance of 0.500 in a 1 cm cell. What is the concentration?",
+      "options": ["1.0 x 10^-4 mol/dm3", "2.5 x 10^-3 mol/dm3", "5.0 x 10^-4 mol/dm3", "1.0 x 10^-3 mol/dm3"],
+      "correct_answer": "1.0 x 10^-4 mol/dm3",
+      "explanation": "c = A/(εb) = 0.500/(5000 x 1) = 1.0 x 10^-4 mol/dm3.",
+      "topic": "UV-Vis spectrophotometry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Deviations from Beer-Lambert linearity at high analyte concentrations are commonly attributed to:",
+      "options": ["Increased stray light and analyte-analyte interactions changing the effective absorptivity", "Decreased path length of the cuvette", "Increased sensitivity of the detector", "The light source becoming monochromatic"],
+      "correct_answer": "Increased stray light and analyte-analyte interactions changing the effective absorptivity",
+      "explanation": "At high concentrations, deviations arise from chemical interactions between absorbing species and instrumental limitations such as stray light, causing the A-c plot to curve away from linearity.",
+      "topic": "UV-Vis spectrophotometry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In infrared (IR) spectrophotometry, sample cells and windows are commonly made of materials such as NaCl or KBr because they:",
+      "options": ["Absorb strongly in the IR region", "Are transparent to infrared radiation", "Are electrically conductive", "Fluoresce under IR light"],
+      "correct_answer": "Are transparent to infrared radiation",
+      "explanation": "Alkali halide salts like NaCl and KBr do not absorb in the mid-IR region, so they are used as windows/cell materials to allow IR radiation to pass through the sample.",
+      "topic": "IR spectrophotometry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A strong, sharp absorption band around 1700 cm-1 in an IR spectrum is most characteristic of which functional group?",
+      "options": ["O-H stretch of alcohols", "C=O stretch (carbonyl)", "C-H stretch of alkanes", "N-H bend of amines"],
+      "correct_answer": "C=O stretch (carbonyl)",
+      "explanation": "Carbonyl groups (aldehydes, ketones, acids, esters) show a strong, characteristic stretching absorption near 1650-1750 cm-1.",
+      "topic": "IR spectrophotometry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In atomic absorption spectroscopy (AAS), the hollow cathode lamp serves to:",
+      "options": ["Atomize the sample in a flame", "Provide radiation of the exact wavelength absorbed by the element being determined", "Detect the transmitted light intensity", "Separate isotopes of the analyte"],
+      "correct_answer": "Provide radiation of the exact wavelength absorbed by the element being determined",
+      "explanation": "The hollow cathode lamp is made of the element of interest and emits its characteristic line spectrum, matching the narrow absorption lines of ground-state atoms in the flame for selective, sensitive determination.",
+      "topic": "Atomic absorption spectroscopy",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In AAS, the sample is first converted into free gaseous ground-state atoms by a process called:",
+      "options": ["Ionisation", "Atomisation", "Excitation", "Fluorescence"],
+      "correct_answer": "Atomisation",
+      "explanation": "Atomisation (usually in a flame or graphite furnace) converts the sample into free ground-state atoms capable of absorbing radiation at their characteristic wavelength.",
+      "topic": "Atomic absorption spectroscopy",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Flame emission spectroscopy differs fundamentally from atomic absorption spectroscopy in that flame emission measures:",
+      "options": ["Light absorbed by ground-state atoms", "Light emitted by atoms that have been thermally excited and then return to the ground state", "Light scattered by molecules", "Light absorbed by molecular bonds"],
+      "correct_answer": "Light emitted by atoms that have been thermally excited and then return to the ground state",
+      "explanation": "In flame emission spectroscopy, thermal energy from the flame excites atoms, which then emit characteristic radiation as they relax back to the ground state; AAS instead measures absorption by ground-state atoms.",
+      "topic": "Flame emission spectroscopy",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In thin layer chromatography (TLC), the retardation factor (Rf) is defined as:",
+      "options": ["Distance travelled by solvent front divided by distance travelled by the compound", "Distance travelled by the compound divided by distance travelled by the solvent front", "Time taken by the compound to elute", "Mass of compound divided by mass of adsorbent"],
+      "correct_answer": "Distance travelled by the compound divided by distance travelled by the solvent front",
+      "explanation": "Rf = distance moved by solute / distance moved by solvent front, a characteristic value used to identify compounds under given TLC conditions.",
+      "topic": "Chromatography",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In column chromatography, a compound that is more strongly adsorbed onto the stationary phase will generally:",
+      "options": ["Elute faster than weakly adsorbed compounds", "Elute more slowly, requiring a larger elution volume", "Not separate from the mobile phase at all", "Decompose immediately on the column"],
+      "correct_answer": "Elute more slowly, requiring a larger elution volume",
+      "explanation": "Strongly adsorbed compounds spend more time associated with the stationary phase relative to the mobile phase, so they migrate down the column more slowly and elute later.",
+      "topic": "Chromatography",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In gas chromatography (GC), the mobile phase is:",
+      "options": ["A liquid solvent", "An inert carrier gas such as helium or nitrogen", "A solid adsorbent", "Water vapour only"],
+      "correct_answer": "An inert carrier gas such as helium or nitrogen",
+      "explanation": "GC uses an inert gas (e.g. He, N2, H2) as the mobile phase to carry vaporised analytes through the column; separation occurs based on interaction with the stationary phase and volatility.",
+      "topic": "Gas chromatography",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A key limitation of gas chromatography as an analytical technique is that it is generally only suitable for compounds that are:",
+      "options": ["Highly polar and ionic", "Volatile and thermally stable, or can be derivatised to be so", "Insoluble in all solvents", "Radioactive"],
+      "correct_answer": "Volatile and thermally stable, or can be derivatised to be so",
+      "explanation": "GC requires the analyte to vaporise without decomposition as it passes through the heated column, restricting its direct use to volatile, thermally stable compounds.",
+      "topic": "Gas chromatography",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In high-performance liquid chromatography (HPLC), reverse-phase columns use a non-polar stationary phase (e.g. C18-bonded silica) with a relatively polar mobile phase; in this mode, the most polar analytes will:",
+      "options": ["Elute last", "Elute first, since they interact weakly with the non-polar stationary phase", "Not be detected at all", "Decompose on the column"],
+      "correct_answer": "Elute first, since they interact weakly with the non-polar stationary phase",
+      "explanation": "In reverse-phase HPLC, polar solutes have weaker affinity for the non-polar stationary phase and are carried through faster by the polar mobile phase, eluting earlier than non-polar solutes.",
+      "topic": "HPLC",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which detector is most commonly paired with HPLC for compounds that absorb in the UV-visible region?",
+      "options": ["Flame ionisation detector", "UV-Vis (photodiode array) detector", "Thermal conductivity detector", "Electron capture detector"],
+      "correct_answer": "UV-Vis (photodiode array) detector",
+      "explanation": "UV-Vis detectors are the most widely used HPLC detectors for analytes containing chromophores, measuring absorbance of the column effluent as it passes through a flow cell.",
+      "topic": "HPLC",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The flame ionisation detector (FID) commonly used in GC responds primarily to:",
+      "options": ["Inorganic salts", "Organic compounds containing carbon-hydrogen bonds, which produce ions when burned", "Water vapour only", "Noble gases"],
+      "correct_answer": "Organic compounds containing carbon-hydrogen bonds, which produce ions when burned",
+      "explanation": "FID burns eluting compounds in a hydrogen/air flame; organic compounds generate ions and electrons proportional to the number of C-H bonds, producing a measurable current.",
+      "topic": "Gas chromatography",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In potentiometry, the electrode whose potential is fixed and known, used as a comparison point, is the:",
+      "options": ["Indicator electrode", "Reference electrode", "Working electrode", "Counter electrode"],
+      "correct_answer": "Reference electrode",
+      "explanation": "The reference electrode (e.g. standard calomel or Ag/AgCl electrode) maintains a constant, known potential against which the indicator electrode's potential is measured.",
+      "topic": "Electroanalytical methods",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A glass electrode used to measure pH functions on the principle that:",
+      "options": ["It generates a potential proportional to the hydrogen ion activity across a thin glass membrane", "It directly measures the colour of an indicator", "It conducts a fixed current regardless of solution composition", "It measures the boiling point of the solution"],
+      "correct_answer": "It generates a potential proportional to the hydrogen ion activity across a thin glass membrane",
+      "explanation": "The glass electrode develops a membrane potential that varies with the difference in H+ activity between the internal reference solution and the test solution, following the Nernst equation.",
+      "topic": "Electroanalytical methods",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Conductometric titration is particularly useful for titrations where:",
+      "options": ["No suitable visual indicator exists or the solution is coloured/turbid", "The analyte is a non-electrolyte", "Only gas-phase reactions are involved", "The titrant is always water"],
+      "correct_answer": "No suitable visual indicator exists or the solution is coloured/turbid",
+      "explanation": "Conductometric titration follows changes in solution conductance as ions are consumed/produced, making it valuable when coloured or turbid solutions preclude visual indicators.",
+      "topic": "Electroanalytical methods",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In polarography, the dropping mercury electrode is used because it:",
+      "options": ["Provides a continuously renewed, reproducible electrode surface for each drop", "Is completely inert and never participates in electrode reactions", "Eliminates the need for a reference electrode", "Cannot be used for reduction reactions"],
+      "correct_answer": "Provides a continuously renewed, reproducible electrode surface for each drop",
+      "explanation": "Each falling mercury drop presents a fresh, reproducible surface, minimising fouling effects and giving reproducible current-voltage (polarographic) curves.",
+      "topic": "Electroanalytical methods",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In voltammetry, the diffusion current observed is directly proportional to the:",
+      "options": ["Concentration of the electroactive species in solution", "Colour of the solution", "Volume of the titration flask", "Atmospheric pressure"],
+      "correct_answer": "Concentration of the electroactive species in solution",
+      "explanation": "Under diffusion-controlled conditions, the limiting current is proportional to bulk analyte concentration, which is the basis of quantitative voltammetric analysis.",
+      "topic": "Electroanalytical methods",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In basic mass spectrometry, the molecular ion peak (M+) observed in the mass spectrum corresponds to:",
+      "options": ["A fragment with half the molecular mass", "The intact molecule that has lost a single electron upon ionisation", "The base peak only", "An impurity in the sample"],
+      "correct_answer": "The intact molecule that has lost a single electron upon ionisation",
+      "explanation": "The molecular ion (M+) forms when the neutral molecule loses one electron during ionisation (e.g. electron impact), giving a peak at the molecular mass (minus the mass of an electron, which is negligible).",
+      "topic": "Mass spectrometry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The 'base peak' in a mass spectrum refers to the:",
+      "options": ["Peak with the lowest m/z value", "Peak corresponding to the molecular ion only", "Tallest (most intense) peak, arbitrarily assigned 100% relative abundance", "Peak used only for calibration"],
+      "correct_answer": "Tallest (most intense) peak, arbitrarily assigned 100% relative abundance",
+      "explanation": "The base peak is the most abundant ion observed and is set to 100% relative intensity, with all other peaks scaled against it.",
+      "topic": "Mass spectrometry",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A calibration curve in quantitative instrumental analysis is constructed by:",
+      "options": ["Plotting instrument response against known concentrations of standards to determine unknown concentrations by interpolation", "Measuring the unknown sample only, without standards", "Recording the boiling point of the analyte", "Using only qualitative colour comparison"],
+      "correct_answer": "Plotting instrument response against known concentrations of standards to determine unknown concentrations by interpolation",
+      "explanation": "A series of standards of known concentration is measured to establish a response-concentration relationship, which is then used to interpolate the concentration of an unknown from its measured response.",
+      "topic": "Quantitative analysis principles",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The limit of detection (LOD) of an instrumental method is best described as the:",
+      "options": ["Highest concentration the instrument can measure", "Lowest concentration of analyte that can be reliably distinguished from the blank/background noise", "Concentration at which the calibration curve becomes non-linear", "Average of all measured concentrations"],
+      "correct_answer": "Lowest concentration of analyte that can be reliably distinguished from the blank/background noise",
+      "explanation": "LOD is the smallest analyte concentration that produces a signal statistically distinguishable from the blank, commonly taken as three times the standard deviation of the blank signal divided by the calibration slope.",
+      "topic": "Quantitative analysis principles",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The method of standard addition is particularly useful in instrumental analysis when:",
+      "options": ["The sample matrix significantly affects the instrument response (matrix effects)", "The analyte is present in extremely high concentration", "No calibration is ever required", "The instrument has no detector"],
+      "correct_answer": "The sample matrix significantly affects the instrument response (matrix effects)",
+      "explanation": "Standard addition adds known amounts of analyte directly to aliquots of the sample itself, compensating for matrix effects that would distort a calibration curve made from pure standards.",
+      "topic": "Quantitative analysis principles",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In choosing between UV-Vis spectrophotometry and AAS for determining trace metal ions in a water sample, AAS is generally preferred because it offers:",
+      "options": ["Lower cost with no instrumentation required", "Greater selectivity and sensitivity for individual metal elements", "The ability to identify organic functional groups", "Faster results with no sample preparation needed"],
+      "correct_answer": "Greater selectivity and sensitivity for individual metal elements",
+      "explanation": "AAS exploits characteristic atomic absorption lines specific to each element, giving high selectivity and low detection limits for trace metals compared to general UV-Vis methods.",
+      "topic": "Method selection",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A chromophore, in the context of UV-Vis spectroscopy, is:",
+      "options": ["A part of a molecule responsible for its colour/light absorption, typically containing conjugated pi-electron systems", "The solvent used to dissolve the sample", "The detector component of the spectrophotometer", "A type of chromatography column"],
+      "correct_answer": "A part of a molecule responsible for its colour/light absorption, typically containing conjugated pi-electron systems",
+      "explanation": "Chromophores such as C=C, C=O, and aromatic rings undergo electronic transitions (e.g. pi to pi*) that absorb UV-visible light, giving rise to the observed spectrum.",
+      "topic": "UV-Vis spectrophotometry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Before running a sample on an AAS instrument for lead determination, an analyst prepares a blank and three standard solutions. The main purpose of the blank is to:",
+      "options": ["Correct for background absorbance/signal not due to the analyte", "Increase the sensitivity of the flame", "Replace the need for a hollow cathode lamp", "Calibrate the wavelength selector only"],
+      "correct_answer": "Correct for background absorbance/signal not due to the analyte",
+      "explanation": "The blank (containing no analyte) accounts for solvent, matrix, and instrumental background signals, which are subtracted from sample readings to isolate the true analyte signal.",
+      "topic": "Quantitative analysis principles",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In ion-exchange chromatography, separation of charged species is achieved primarily through:",
+      "options": ["Differences in boiling point", "Differences in affinity of ions for oppositely charged sites on the stationary phase resin", "Differences in molecular colour", "Differences in magnetic susceptibility"],
+      "correct_answer": "Differences in affinity of ions for oppositely charged sites on the stationary phase resin",
+      "explanation": "Ion-exchange resins carry fixed charged functional groups that reversibly bind oppositely charged analyte ions with varying affinity, enabling their separation as the mobile phase elutes them differentially.",
+      "topic": "Chromatography",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which of the following is NOT a typical component of a single-beam UV-Vis spectrophotometer?",
+      "options": ["Radiation source", "Monochromator", "Sample holder/cuvette", "Column packed with stationary phase"],
+      "correct_answer": "Column packed with stationary phase",
+      "explanation": "A packed column is a chromatography component, not part of a spectrophotometer, which instead comprises a source, monochromator, sample compartment, and detector.",
+      "topic": "UV-Vis spectrophotometry",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In IR spectroscopy, a sample is often prepared as a KBr pellet for solid samples mainly because KBr:",
+      "options": ["Is highly coloured, enhancing the spectrum", "Is IR-transparent and can be pressed with the solid sample into a clear disc", "Reacts chemically with the analyte to improve detection", "Is a strong absorbent of infrared radiation"],
+      "correct_answer": "Is IR-transparent and can be pressed with the solid sample into a clear disc",
+      "explanation": "KBr does not absorb in the mid-IR region and, being pliable under pressure, forms a transparent disc when mixed and pressed with a solid sample, allowing IR light to pass through for analysis.",
+      "topic": "IR spectrophotometry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Precision in an instrumental method refers to:",
+      "options": ["How close a measured value is to the true value", "The reproducibility of repeated measurements under the same conditions", "The range over which the instrument can operate", "The cost of the analysis"],
+      "correct_answer": "The reproducibility of repeated measurements under the same conditions",
+      "explanation": "Precision describes the closeness of agreement among repeated measurements of the same sample, distinct from accuracy, which describes closeness to the true value.",
+      "topic": "Quantitative analysis principles",
+      "difficulty": "easy"
+    }
+  ]
+}

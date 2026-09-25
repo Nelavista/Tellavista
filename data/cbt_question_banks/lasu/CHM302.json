@@ -1,0 +1,313 @@
+{
+  "course_code": "CHM302",
+  "title": "Chemical Thermodynamics",
+  "level": "300",
+  "source_note": "Standard NUC-aligned Nigerian university 300L Chemical Thermodynamics curriculum: laws of thermodynamics, entropy, Gibbs/Helmholtz free energy, chemical potential, thermodynamics of equilibrium, phase equilibria (Clapeyron/Clausius-Clapeyron, phase rule), and partial molar properties -- building on the introductory thermochemistry covered at 100L.",
+  "questions": [
+    {
+      "question": "The First Law of Thermodynamics is essentially a statement of:",
+      "options": ["Conservation of entropy", "Conservation of energy", "Conservation of mass only", "The impossibility of reaching absolute zero"],
+      "correct_answer": "Conservation of energy",
+      "explanation": "The First Law states that energy can neither be created nor destroyed, only converted between forms, expressed as ΔU = q + w.",
+      "topic": "Laws of thermodynamics",
+      "difficulty": "easy"
+    },
+    {
+      "question": "For a system undergoing a process, the change in internal energy is given by ΔU = q + w. If a gas absorbs 500 J of heat and has 200 J of work done ON it, ΔU equals:",
+      "options": ["300 J", "700 J", "-300 J", "-700 J"],
+      "correct_answer": "700 J",
+      "explanation": "With the convention that work done on the system is positive, ΔU = q + w = 500 + 200 = 700 J.",
+      "topic": "First law",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Second Law of Thermodynamics implies that for any spontaneous process occurring in an isolated system, the total entropy:",
+      "options": ["Decreases", "Remains exactly constant", "Increases", "Becomes zero"],
+      "correct_answer": "Increases",
+      "explanation": "The Second Law states that the entropy of an isolated system tends to increase for spontaneous (irreversible) processes, reaching a maximum at equilibrium.",
+      "topic": "Second law / entropy",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Entropy (S) is best described thermodynamically as a measure of:",
+      "options": [
+        "The total heat content of a system",
+        "The degree of molecular disorder or the number of accessible microstates of a system",
+        "The pressure exerted by a gas",
+        "The rate at which a reaction proceeds"
+      ],
+      "correct_answer": "The degree of molecular disorder or the number of accessible microstates of a system",
+      "explanation": "Statistically, S = k·lnW (Boltzmann), linking entropy to the number of microstates W consistent with a system's macroscopic state, i.e. its disorder.",
+      "topic": "Second law / entropy",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Third Law of Thermodynamics states that:",
+      "options": [
+        "The entropy of a perfect crystalline substance approaches zero as temperature approaches absolute zero",
+        "Energy cannot be created or destroyed",
+        "The entropy of the universe is always decreasing",
+        "Absolute zero can be reached in a finite number of steps"
+      ],
+      "correct_answer": "The entropy of a perfect crystalline substance approaches zero as temperature approaches absolute zero",
+      "explanation": "The Third Law provides the reference point (S = 0 at T = 0 K for a perfect crystal) that allows calculation of absolute entropies.",
+      "topic": "Third law",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Gibbs free energy is defined as:",
+      "options": ["G = U + PV", "G = H - TS", "G = H + TS", "G = U - TS"],
+      "correct_answer": "G = H - TS",
+      "explanation": "Gibbs free energy combines enthalpy and entropy contributions: G = H - TS, giving a criterion for spontaneity at constant temperature and pressure.",
+      "topic": "Free energy",
+      "difficulty": "easy"
+    },
+    {
+      "question": "At constant temperature and pressure, a reaction is spontaneous (thermodynamically favourable) when:",
+      "options": ["ΔG > 0", "ΔG = 0", "ΔG < 0", "ΔS is negative regardless of ΔH"],
+      "correct_answer": "ΔG < 0",
+      "explanation": "A negative Gibbs free energy change indicates the process can occur spontaneously under constant T and P without external work input.",
+      "topic": "Free energy",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The Helmholtz free energy (A = U - TS) is the appropriate criterion for spontaneity under conditions of constant:",
+      "options": ["Temperature and pressure", "Temperature and volume", "Pressure and volume only", "Entropy and enthalpy"],
+      "correct_answer": "Temperature and volume",
+      "explanation": "Helmholtz free energy A is minimised at equilibrium for processes at constant temperature and volume, analogous to how G applies at constant T and P.",
+      "topic": "Free energy",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The relationship between the standard Gibbs free energy change and the equilibrium constant of a reaction is:",
+      "options": ["ΔG° = RT ln K", "ΔG° = -RT ln K", "ΔG° = -RT/K", "ΔG° = K/RT"],
+      "correct_answer": "ΔG° = -RT ln K",
+      "explanation": "This equation links the thermodynamic driving force of a reaction (ΔG°) to its equilibrium constant K; a large positive K gives a large negative ΔG°.",
+      "topic": "Chemical equilibrium thermodynamics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A reaction has ΔH = -40 kJ/mol and ΔS = -50 J/(mol·K). This reaction will be spontaneous:",
+      "options": [
+        "At all temperatures",
+        "Only at low temperatures, where the favourable ΔH term outweighs the unfavourable -TΔS term",
+        "Only at high temperatures",
+        "Under no conditions"
+      ],
+      "correct_answer": "Only at low temperatures, where the favourable ΔH term outweighs the unfavourable -TΔS term",
+      "explanation": "With ΔH negative and ΔS negative, ΔG = ΔH - TΔS becomes less negative (eventually positive) as T rises, so the reaction is spontaneous only below a certain temperature.",
+      "topic": "Free energy",
+      "difficulty": "hard"
+    },
+    {
+      "question": "For an ideal gas undergoing isothermal reversible expansion, the internal energy change ΔU is:",
+      "options": ["Positive", "Negative", "Zero, since internal energy of an ideal gas depends only on temperature", "Equal to the heat absorbed only"],
+      "correct_answer": "Zero, since internal energy of an ideal gas depends only on temperature",
+      "explanation": "For an ideal gas, U is a function of temperature alone; at constant T, ΔU = 0, so all heat absorbed is converted to work done by the gas.",
+      "topic": "First law",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The chemical potential (μ) of a component in a mixture is defined as:",
+      "options": [
+        "The total Gibbs energy of the mixture",
+        "The partial molar Gibbs free energy of that component, (∂G/∂ni) at constant T, P, and other mole numbers",
+        "The molar volume of the component",
+        "The vapour pressure of the pure component"
+      ],
+      "correct_answer": "The partial molar Gibbs free energy of that component, (∂G/∂ni) at constant T, P, and other mole numbers",
+      "explanation": "Chemical potential quantifies how the Gibbs energy of a system changes as the amount of a given component changes, and governs the direction of mass transfer/phase change/reaction.",
+      "topic": "Chemical potential",
+      "difficulty": "hard"
+    },
+    {
+      "question": "At equilibrium between two phases of a pure substance (e.g. liquid and vapour), the chemical potential of the substance in each phase:",
+      "options": ["Must be equal in both phases", "Must differ by exactly RT", "Is undefined", "Is always zero"],
+      "correct_answer": "Must be equal in both phases",
+      "explanation": "Phase equilibrium requires that the chemical potential of a species be the same in every phase present; otherwise matter would spontaneously flow to the lower-potential phase.",
+      "topic": "Phase equilibria",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The Clausius–Clapeyron equation relates:",
+      "options": [
+        "Reaction rate to temperature",
+        "Vapour pressure of a substance to temperature, via its enthalpy of vaporisation",
+        "Entropy to volume at constant pressure",
+        "Equilibrium constant to pressure only"
+      ],
+      "correct_answer": "Vapour pressure of a substance to temperature, via its enthalpy of vaporisation",
+      "explanation": "The Clausius–Clapeyron equation, ln(P2/P1) = -ΔHvap/R (1/T2 - 1/T1), describes how vapour pressure varies with temperature along a liquid-vapour coexistence curve.",
+      "topic": "Phase equilibria",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Gibbs Phase Rule is expressed as F = C - P + 2, where F, C, and P represent:",
+      "options": [
+        "Force, concentration, pressure",
+        "Degrees of freedom, number of components, number of phases",
+        "Free energy, capacity, potential",
+        "Fugacity, concentration, partial pressure"
+      ],
+      "correct_answer": "Degrees of freedom, number of components, number of phases",
+      "explanation": "The phase rule gives the number of independent intensive variables (F) that can be varied without changing the number of phases (P) present in a system of C components.",
+      "topic": "Phase equilibria",
+      "difficulty": "medium"
+    },
+    {
+      "question": "At the triple point of a pure single-component substance (C = 1, P = 3), the number of degrees of freedom given by the phase rule is:",
+      "options": ["3", "2", "1", "0"],
+      "correct_answer": "0",
+      "explanation": "F = C - P + 2 = 1 - 3 + 2 = 0, meaning temperature and pressure are both fixed at a unique triple point with no freedom to vary either.",
+      "topic": "Phase equilibria",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A partial molar quantity, such as partial molar volume, describes:",
+      "options": [
+        "The total volume of a mixture",
+        "How an extensive property of a mixture changes with the addition of an infinitesimal amount of one component, at constant T, P, and other component amounts",
+        "The volume of one mole of a pure substance under standard conditions only",
+        "The molar mass of a component"
+      ],
+      "correct_answer": "How an extensive property of a mixture changes with the addition of an infinitesimal amount of one component, at constant T, P, and other component amounts",
+      "explanation": "Partial molar properties describe the contribution of one component to a mixture's overall extensive property, and can differ from the pure-substance molar property due to intermolecular interactions.",
+      "topic": "Partial molar properties",
+      "difficulty": "hard"
+    },
+    {
+      "question": "For an ideal solution, Raoult's Law states that the partial vapour pressure of a component equals:",
+      "options": [
+        "Its mole fraction in the vapour phase times total pressure",
+        "Its mole fraction in the liquid phase times the vapour pressure of the pure component",
+        "The total pressure of the system",
+        "Its Henry's Law constant divided by mole fraction"
+      ],
+      "correct_answer": "Its mole fraction in the liquid phase times the vapour pressure of the pure component",
+      "explanation": "Raoult's Law, Pi = xi·Pi°, applies to ideal solutions where solute-solvent interactions closely resemble solute-solute and solvent-solvent interactions.",
+      "topic": "Solution thermodynamics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The entropy of mixing of two ideal gases upon mixing at constant T and P is:",
+      "options": ["Always negative", "Always zero", "Always positive, since mixing increases the number of accessible microstates", "Dependent only on pressure, not composition"],
+      "correct_answer": "Always positive, since mixing increases the number of accessible microstates",
+      "explanation": "ΔSmix = -nR Σ xi ln xi, which is always positive since mole fractions are less than 1, reflecting the increased disorder of a mixed state.",
+      "topic": "Solution thermodynamics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Gibbs–Helmholtz equation is useful because it allows calculation of:",
+      "options": [
+        "The rate constant of a reaction from its activation energy",
+        "How ΔG (or ΔG/T) varies with temperature, from knowledge of ΔH",
+        "The equilibrium constant from pressure alone",
+        "The molar mass of a gas"
+      ],
+      "correct_answer": "How ΔG (or ΔG/T) varies with temperature, from knowledge of ΔH",
+      "explanation": "The Gibbs–Helmholtz equation, [∂(ΔG/T)/∂T]P = -ΔH/T², relates the temperature dependence of free energy to enthalpy, used e.g. to find K at different temperatures.",
+      "topic": "Free energy",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A process is described as 'reversible' in thermodynamics when:",
+      "options": [
+        "It can only occur in one direction",
+        "It proceeds through a continuous series of equilibrium states and can be reversed by an infinitesimal change in conditions",
+        "It always releases the maximum possible heat",
+        "It occurs instantaneously"
+      ],
+      "correct_answer": "It proceeds through a continuous series of equilibrium states and can be reversed by an infinitesimal change in conditions",
+      "explanation": "A reversible process is an idealised, quasi-static pathway where the system remains infinitesimally close to equilibrium throughout, allowing maximum work to be extracted.",
+      "topic": "Laws of thermodynamics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For an ideal gas, the work done during a reversible isothermal expansion from V1 to V2 is given by:",
+      "options": ["w = -nRT ln(V2/V1)", "w = nRT(V2 - V1)", "w = -PΔV", "w = nCvΔT"],
+      "correct_answer": "w = -nRT ln(V2/V1)",
+      "explanation": "For reversible isothermal expansion of an ideal gas, integrating PdV using PV = nRT gives w = -nRT ln(V2/V1); the negative sign shows work is done BY the system on the surroundings during expansion.",
+      "topic": "First law",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In an adiabatic process, which of the following is true?",
+      "options": ["q = 0, so ΔU = w", "w = 0, so ΔU = q", "Both q and w are zero", "ΔU is always zero"],
+      "correct_answer": "q = 0, so ΔU = w",
+      "explanation": "An adiabatic process involves no heat exchange with the surroundings (q = 0), so all change in internal energy arises from work done on or by the system.",
+      "topic": "First law",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The standard state used for tabulating standard thermodynamic quantities of a gaseous substance is typically:",
+      "options": ["1 atm (or 1 bar) pressure at the specified temperature, in its pure ideal-gas state", "0°C and 1 atm always", "Any arbitrary pressure chosen by the experimenter", "Infinite dilution in water"],
+      "correct_answer": "1 atm (or 1 bar) pressure at the specified temperature, in its pure ideal-gas state",
+      "explanation": "Standard state conventions fix a reference pressure (historically 1 atm, now 1 bar under IUPAC) for gases so that tabulated thermodynamic data are comparable.",
+      "topic": "Laws of thermodynamics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A eutectic point on a two-component solid-liquid phase diagram represents:",
+      "options": [
+        "The temperature at which one pure component melts",
+        "The lowest temperature at which a liquid mixture of the two components can exist, where both solids crystallise simultaneously",
+        "The boiling point of the mixture",
+        "A point where only one phase is ever present"
+      ],
+      "correct_answer": "The lowest temperature at which a liquid mixture of the two components can exist, where both solids crystallise simultaneously",
+      "explanation": "At the eutectic point, the liquid is in equilibrium with both solid phases simultaneously, and it represents the minimum melting point of the mixture as a function of composition.",
+      "topic": "Phase equilibria",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Le Chatelier's principle, viewed thermodynamically through ΔG, predicts that increasing temperature will shift an equilibrium in the endothermic direction because:",
+      "options": [
+        "K decreases with increasing T for an endothermic reaction",
+        "Increasing T increases K for an endothermic (ΔH > 0) reaction, per the van 't Hoff equation",
+        "Temperature has no effect on chemical equilibria",
+        "ΔG° becomes undefined at high temperature"
+      ],
+      "correct_answer": "Increasing T increases K for an endothermic (ΔH > 0) reaction, per the van 't Hoff equation",
+      "explanation": "The van 't Hoff equation, d(ln K)/dT = ΔH°/RT², shows K increases with T when ΔH° is positive (endothermic), consistent with Le Chatelier's principle.",
+      "topic": "Chemical equilibrium thermodynamics",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A bomb calorimeter measures heat of reaction at constant:",
+      "options": ["Pressure, giving ΔH directly", "Volume, giving ΔU (qv) directly, from which ΔH can be derived", "Temperature only", "Entropy"],
+      "correct_answer": "Volume, giving ΔU (qv) directly, from which ΔH can be derived",
+      "explanation": "A sealed bomb calorimeter operates at constant volume, so the measured heat equals ΔU; ΔH is then obtained via ΔH = ΔU + Δ(PV) or ΔH = ΔU + Δn(gas)RT.",
+      "topic": "First law",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Fugacity is introduced in thermodynamics of real gases to:",
+      "options": [
+        "Replace pressure in equilibrium expressions to account for non-ideal (real gas) behaviour",
+        "Measure the rate of a reaction",
+        "Describe the entropy of a perfect crystal",
+        "Replace temperature in the ideal gas law"
+      ],
+      "correct_answer": "Replace pressure in equilibrium expressions to account for non-ideal (real gas) behaviour",
+      "explanation": "Fugacity is an 'effective pressure' that corrects for deviations from ideal gas behaviour, allowing the simple thermodynamic relations derived for ideal gases to be retained in form for real gases.",
+      "topic": "Real gases",
+      "difficulty": "hard"
+    },
+    {
+      "question": "For a spontaneous process in an isolated system at constant internal energy and volume, the appropriate criterion is that:",
+      "options": ["ΔG decreases to a minimum", "ΔS increases to a maximum", "ΔH decreases to a minimum", "ΔU increases without bound"],
+      "correct_answer": "ΔS increases to a maximum",
+      "explanation": "In an isolated system (no heat or work exchange with surroundings), the Second Law criterion for spontaneity and equilibrium is that entropy increases and is maximised at equilibrium.",
+      "topic": "Second law / entropy",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Calculate ΔS for the reversible, isothermal expansion of 1 mole of an ideal gas at 298 K from 10 L to 20 L (R = 8.314 J/mol·K).",
+      "options": ["5.76 J/K", "-5.76 J/K", "11.52 J/K", "0 J/K"],
+      "correct_answer": "5.76 J/K",
+      "explanation": "ΔS = nR ln(V2/V1) = 1 × 8.314 × ln(20/10) = 8.314 × 0.693 ≈ 5.76 J/K.",
+      "topic": "Second law / entropy",
+      "difficulty": "hard"
+    }
+  ]
+}

@@ -1,0 +1,376 @@
+{
+  "course_code": "PHY202",
+  "title": "Electricity & Magnetism II",
+  "level": "200",
+  "source_note": "Standard NUC-aligned Nigerian university 200L Electricity and Magnetism II curriculum, building on PHY201: magnetostatics (Biot-Savart law, Ampere's law, force on moving charges and current-carrying conductors, torque on a current loop), electromagnetic induction (Faraday's and Lenz's laws, self- and mutual inductance, motional EMF), AC circuit theory (RMS values, reactance, impedance, series RLC resonance, power factor), and introductory magnetic properties of materials. Electrostatics and DC circuit theory are deliberately excluded, as they belong to PHY201.",
+  "questions": [
+    {
+      "question": "The Biot-Savart law is used to calculate:",
+      "options": ["The magnetic field produced at a point by a small current-carrying element", "The electric field produced by a point charge", "The force between two point charges", "The capacitance of a parallel-plate capacitor"],
+      "correct_answer": "The magnetic field produced at a point by a small current-carrying element",
+      "explanation": "The Biot-Savart law gives the contribution dB to the magnetic field at a point due to a small current element Idl, which can then be integrated over the full conductor.",
+      "topic": "Magnetostatics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "According to the Biot-Savart law, the magnitude of the magnetic field dB due to a current element is:",
+      "options": ["Proportional to the current and the sine of the angle between the element and the position vector, and inversely proportional to the square of the distance", "Proportional to the square of the distance from the element", "Independent of the current in the element", "Proportional only to the length of the element, regardless of distance"],
+      "correct_answer": "Proportional to the current and the sine of the angle between the element and the position vector, and inversely proportional to the square of the distance",
+      "explanation": "dB = (mu0/4pi) x I dl sin(theta) / r^2, so it depends on current, the sine of the angle between dl and the line to the field point, and falls off as 1/r^2.",
+      "topic": "Magnetostatics",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Using the Biot-Savart law, the magnetic field at the centre of a circular current loop of radius R carrying current I is given by:",
+      "options": ["B = mu0 I / (2R)", "B = mu0 I / (2 pi R)", "B = mu0 I R / 2", "B = mu0 I / R^2"],
+      "correct_answer": "B = mu0 I / (2R)",
+      "explanation": "Integrating the Biot-Savart law around a full circular loop, with every element perpendicular to the radius, gives B = mu0 I/(2R) at the centre.",
+      "topic": "Magnetostatics",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The magnetic field at a perpendicular distance r from a long, straight current-carrying conductor is given by:",
+      "options": ["B = mu0 I / (2 pi r)", "B = mu0 I / (2r)", "B = mu0 I r", "B = mu0 I / r^2"],
+      "correct_answer": "B = mu0 I / (2 pi r)",
+      "explanation": "This is the standard result obtained from Ampere's law (or the Biot-Savart law) for an infinite straight wire: the field circles the wire and falls off as 1/r.",
+      "topic": "Magnetostatics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Ampere's circuital law relates the line integral of the magnetic field around a closed loop to:",
+      "options": ["The total current enclosed by that loop, multiplied by the permeability of free space", "The total charge enclosed by the loop", "The rate of change of electric flux through the loop only", "The capacitance of the loop"],
+      "correct_answer": "The total current enclosed by that loop, multiplied by the permeability of free space",
+      "explanation": "Ampere's law states that the closed line integral of B.dl around any loop equals mu0 times the net current passing through the loop.",
+      "topic": "Magnetostatics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Ampere's law is most conveniently applied to find the magnetic field in situations with:",
+      "options": ["High symmetry, such as a long straight wire, a solenoid, or a toroid", "Any arbitrary, asymmetric current distribution", "Only isolated point charges at rest", "Static electric fields with no current present"],
+      "correct_answer": "High symmetry, such as a long straight wire, a solenoid, or a toroid",
+      "explanation": "Like Gauss's law in electrostatics, Ampere's law is only easy to solve for B directly when a symmetric Amperian loop can be chosen along which B is constant in magnitude.",
+      "topic": "Magnetostatics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Using Ampere's law, the magnetic field inside a long solenoid with n turns per unit length carrying current I is given by:",
+      "options": ["B = mu0 n I", "B = mu0 I / n", "B = mu0 n / I", "B = mu0 n I^2"],
+      "correct_answer": "B = mu0 n I",
+      "explanation": "Applying Ampere's law to a rectangular loop partly inside and partly outside a long, tightly wound solenoid gives the uniform interior field B = mu0 n I.",
+      "topic": "Magnetostatics",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The magnetic force on a charged particle of charge q moving with velocity v in a magnetic field B is given by:",
+      "options": ["F = qv x B (the vector cross product)", "F = qvB (always, regardless of direction)", "F = qv + B", "F = qB/v"],
+      "correct_answer": "F = qv x B (the vector cross product)",
+      "explanation": "The magnetic (Lorentz) force is F = qv x B, meaning its magnitude depends on the sine of the angle between v and B and its direction is perpendicular to both.",
+      "topic": "Force on moving charges",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A charged particle moving with velocity v parallel to a magnetic field B (i.e., along the field direction) experiences:",
+      "options": ["Zero magnetic force", "Maximum magnetic force", "A force perpendicular to both v and B", "A force that increases the particle's speed"],
+      "correct_answer": "Zero magnetic force",
+      "explanation": "Since F = qvB sin(theta), when v is parallel to B, theta = 0 and sin(theta) = 0, giving zero force.",
+      "topic": "Force on moving charges",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A charged particle moving perpendicular to a uniform magnetic field travels in a path that is:",
+      "options": ["A circle, because the magnetic force always acts perpendicular to the velocity", "A straight line, because the magnetic force has no effect", "A parabola, similar to projectile motion", "An ellipse that gradually spirals outward"],
+      "correct_answer": "A circle, because the magnetic force always acts perpendicular to the velocity",
+      "explanation": "Since the magnetic force is always perpendicular to velocity, it changes only the direction of motion, not the speed, producing uniform circular motion.",
+      "topic": "Force on moving charges",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The force on a straight current-carrying conductor of length L carrying current I, placed in a uniform magnetic field B, is given by:",
+      "options": ["F = BIL sin(theta), where theta is the angle between the conductor and the field", "F = BIL, regardless of orientation", "F = B/IL", "F = BI/L"],
+      "correct_answer": "F = BIL sin(theta), where theta is the angle between the conductor and the field",
+      "explanation": "The force on a current-carrying conductor in a magnetic field is F = BIL sin(theta), reaching a maximum of BIL when the conductor is perpendicular to the field and zero when parallel to it.",
+      "topic": "Force on current-carrying conductors",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A straight conductor of length 0.5 m carrying a current of 4 A is placed perpendicular to a uniform magnetic field of flux density 0.2 T. The force experienced by the conductor is:",
+      "options": ["0.4 N", "0.04 N", "4.0 N", "0.8 N"],
+      "correct_answer": "0.4 N",
+      "explanation": "F = BIL = 0.2 x 4 x 0.5 = 0.4 N, since the conductor is perpendicular to the field (sin90 = 1).",
+      "topic": "Force on current-carrying conductors",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The direction of the force on a current-carrying conductor in a magnetic field can be predicted using:",
+      "options": ["Fleming's left-hand rule", "Fleming's right-hand rule", "Lenz's law only", "Ohm's law"],
+      "correct_answer": "Fleming's left-hand rule",
+      "explanation": "Fleming's left-hand rule (motor rule) relates the directions of the field, current, and resulting force/motion for a current-carrying conductor in a magnetic field.",
+      "topic": "Force on current-carrying conductors",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A rectangular current loop placed in a uniform magnetic field experiences a torque that:",
+      "options": ["Tends to rotate the loop so its magnetic moment aligns with the field", "Always pushes the loop out of the field entirely", "Is zero regardless of the loop's orientation", "Only acts when the loop carries no current"],
+      "correct_answer": "Tends to rotate the loop so its magnetic moment aligns with the field",
+      "explanation": "The torque on a current loop in a magnetic field is tau = m x B (m being the magnetic moment), which acts to rotate the loop toward alignment of its moment with B, the principle behind electric motors and galvanometers.",
+      "topic": "Torque on a current loop",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The torque on a planar current loop of area A, carrying current I, with N turns, in a uniform magnetic field B, when the plane of the loop makes an angle theta with the field, is given by:",
+      "options": ["tau = NBIA sin(theta)", "tau = NBIA cos(theta)", "tau = NBIA", "tau = BIA/N"],
+      "correct_answer": "tau = NBIA sin(theta)",
+      "explanation": "Torque on a current loop is tau = NBIA sin(theta), where theta is measured between the field and the plane of the coil (equivalently, between the normal to the coil and the field gives a cosine form -- the sine form used here follows the standard convention with theta between B and the coil plane).",
+      "topic": "Torque on a current loop",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Faraday's law of electromagnetic induction states that the induced EMF in a circuit is:",
+      "options": ["Proportional to the rate of change of magnetic flux linked with the circuit", "Proportional to the magnetic flux itself, regardless of how it changes", "Independent of any change in magnetic flux", "Proportional to the resistance of the circuit only"],
+      "correct_answer": "Proportional to the rate of change of magnetic flux linked with the circuit",
+      "explanation": "Faraday's law states EMF = -N(dPhi/dt), so induction requires a changing flux; a constant flux, however large, induces no EMF.",
+      "topic": "Electromagnetic induction",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Lenz's law states that the direction of an induced current is such that:",
+      "options": ["It opposes the change in magnetic flux that produced it", "It always reinforces the change in magnetic flux that produced it", "It flows in the same direction as the applied EMF always", "It has no definite direction"],
+      "correct_answer": "It opposes the change in magnetic flux that produced it",
+      "explanation": "Lenz's law is a consequence of energy conservation: the induced current creates its own magnetic field that opposes the change in the original flux, requiring work to be done against this opposition.",
+      "topic": "Electromagnetic induction",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A bar magnet is pushed into a coil of wire connected to a galvanometer. As the magnet moves further into the coil, the induced current, by Lenz's law, flows in a direction that makes the coil's near face:",
+      "options": ["Repel the approaching magnet", "Attract the approaching magnet", "Have no magnetic polarity at all", "Reverse the magnet's own polarity"],
+      "correct_answer": "Repel the approaching magnet",
+      "explanation": "By Lenz's law, the induced current opposes the increasing flux caused by the approaching magnet, so the coil's near face develops a pole that repels the magnet, resisting its motion.",
+      "topic": "Electromagnetic induction",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Motional EMF is induced in a straight conducting rod of length L moving with velocity v perpendicular to a uniform magnetic field B, and is given by:",
+      "options": ["EMF = BLv", "EMF = BL/v", "EMF = B/(Lv)", "EMF = BLv^2"],
+      "correct_answer": "EMF = BLv",
+      "explanation": "As the rod moves through the field, the magnetic force on its free charges separates them, building up an EMF given by EMF = BLv (for B, L, and v mutually perpendicular).",
+      "topic": "Electromagnetic induction",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A conducting rod of length 0.8 m moves with a velocity of 5 m/s perpendicular to a magnetic field of flux density 0.4 T, with the field, rod, and velocity all mutually perpendicular. The motional EMF induced is:",
+      "options": ["1.6 V", "0.16 V", "16 V", "0.5 V"],
+      "correct_answer": "1.6 V",
+      "explanation": "EMF = BLv = 0.4 x 0.8 x 5 = 1.6 V.",
+      "topic": "Electromagnetic induction",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Self-inductance of a coil is defined as the property by which:",
+      "options": ["A changing current in the coil induces an EMF in the same coil, opposing the change", "A steady current in the coil produces a constant magnetic field only", "Two separate coils exchange energy through a shared magnetic flux", "The coil's resistance changes with current"],
+      "correct_answer": "A changing current in the coil induces an EMF in the same coil, opposing the change",
+      "explanation": "Self-inductance L relates the induced EMF in a coil to the rate of change of its own current: EMF = -L(dI/dt), the induced EMF always opposing the change (Lenz's law).",
+      "topic": "Self and mutual inductance",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The unit of inductance, the henry, is defined such that one henry corresponds to:",
+      "options": ["An induced EMF of one volt when the current changes at a rate of one ampere per second", "A current of one ampere flowing through a resistance of one ohm", "A magnetic flux of one weber linking one turn", "An EMF of one volt maintained for one second"],
+      "correct_answer": "An induced EMF of one volt when the current changes at a rate of one ampere per second",
+      "explanation": "By definition, EMF = -L(dI/dt), so L = 1 henry when a rate of change of current of 1 A/s produces an induced EMF of 1 V.",
+      "topic": "Self and mutual inductance",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Mutual inductance between two coils describes:",
+      "options": ["The EMF induced in one coil due to a changing current in a neighbouring coil", "The resistance shared between two coils connected in series", "The self-inductance of a single isolated coil", "The capacitance formed between two nearby coils"],
+      "correct_answer": "The EMF induced in one coil due to a changing current in a neighbouring coil",
+      "explanation": "Mutual inductance M links the changing current in one coil to the EMF induced in a second, magnetically coupled coil: EMF2 = -M(dI1/dt).",
+      "topic": "Self and mutual inductance",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The energy stored in the magnetic field of an inductor L carrying current I is given by:",
+      "options": ["U = (1/2)LI^2", "U = LI^2", "U = (1/2)L^2I", "U = LI"],
+      "correct_answer": "U = (1/2)LI^2",
+      "explanation": "Analogous to the energy stored in a capacitor, the energy stored in an inductor's magnetic field is U = (1/2)LI^2.",
+      "topic": "Self and mutual inductance",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For an alternating current (AC) that varies sinusoidally, the root-mean-square (RMS) value of the current is related to its peak (maximum) value I0 by:",
+      "options": ["I(rms) = I0 / sqrt(2)", "I(rms) = I0", "I(rms) = I0 x sqrt(2)", "I(rms) = I0 / 2"],
+      "correct_answer": "I(rms) = I0 / sqrt(2)",
+      "explanation": "For a sinusoidal waveform, the RMS value equals the peak value divided by the square root of 2, which is the value that would deliver the same average power as a DC current of that magnitude.",
+      "topic": "AC circuits",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The RMS value of an alternating current is significant because it represents:",
+      "options": ["The equivalent steady (DC) current that would produce the same average heating (power dissipation) effect in a resistor", "The maximum instantaneous value the current ever reaches", "The average value of the current over one full cycle, which is otherwise zero", "The frequency of the alternating current"],
+      "correct_answer": "The equivalent steady (DC) current that would produce the same average heating (power dissipation) effect in a resistor",
+      "explanation": "Since the true average of a symmetric sinusoid is zero, RMS is used instead because it corresponds to the DC current giving the same average power dissipation in a resistive load.",
+      "topic": "AC circuits",
+      "difficulty": "medium"
+    },
+    {
+      "question": "An AC supply has a peak voltage of 311 V (typical of 220 V mains). The RMS voltage is approximately:",
+      "options": ["220 V", "311 V", "440 V", "155 V"],
+      "correct_answer": "220 V",
+      "explanation": "V(rms) = V0/sqrt(2) = 311/1.414 is approximately 220 V, which is the standard quoted mains voltage.",
+      "topic": "AC circuits",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Capacitive reactance, the opposition offered by a capacitor to alternating current, is given by:",
+      "options": ["X_C = 1/(2 pi f C)", "X_C = 2 pi f C", "X_C = 2 pi f / C", "X_C = f C"],
+      "correct_answer": "X_C = 1/(2 pi f C)",
+      "explanation": "Capacitive reactance is inversely proportional to both frequency and capacitance: X_C = 1/(omega C) = 1/(2 pi f C).",
+      "topic": "AC circuits",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Inductive reactance, the opposition offered by an inductor to alternating current, is given by:",
+      "options": ["X_L = 2 pi f L", "X_L = 1/(2 pi f L)", "X_L = f/L", "X_L = 2 pi f / L"],
+      "correct_answer": "X_L = 2 pi f L",
+      "explanation": "Inductive reactance is directly proportional to both frequency and inductance: X_L = omega L = 2 pi f L.",
+      "topic": "AC circuits",
+      "difficulty": "medium"
+    },
+    {
+      "question": "As the frequency of an AC supply increases, the capacitive reactance of a capacitor:",
+      "options": ["Decreases", "Increases", "Stays exactly constant", "Becomes infinite"],
+      "correct_answer": "Decreases",
+      "explanation": "Since X_C = 1/(2 pi f C), reactance is inversely proportional to frequency, so it decreases as frequency rises.",
+      "topic": "AC circuits",
+      "difficulty": "medium"
+    },
+    {
+      "question": "As the frequency of an AC supply increases, the inductive reactance of an inductor:",
+      "options": ["Increases", "Decreases", "Stays exactly constant", "Drops to zero"],
+      "correct_answer": "Increases",
+      "explanation": "Since X_L = 2 pi f L, reactance is directly proportional to frequency, so it increases as frequency rises.",
+      "topic": "AC circuits",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a series RLC circuit driven by an AC source, the total opposition to current flow, called impedance Z, is given by:",
+      "options": ["Z = sqrt(R^2 + (X_L - X_C)^2)", "Z = R + X_L + X_C", "Z = R x X_L x X_C", "Z = R^2 + X_L^2 + X_C^2"],
+      "correct_answer": "Z = sqrt(R^2 + (X_L - X_C)^2)",
+      "explanation": "Because resistance and reactance are out of phase, impedance in a series RLC circuit combines them as the hypotenuse of a right triangle: Z = sqrt(R^2 + (X_L - X_C)^2).",
+      "topic": "AC circuits",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In a series RLC circuit, resonance occurs at the frequency where:",
+      "options": ["The inductive reactance equals the capacitive reactance (X_L = X_C)", "The resistance equals zero", "The capacitance equals the inductance numerically", "The impedance is at its maximum value"],
+      "correct_answer": "The inductive reactance equals the capacitive reactance (X_L = X_C)",
+      "explanation": "At resonance, X_L and X_C cancel exactly, leaving impedance at its minimum value (equal to R), which maximizes the current for a given applied voltage.",
+      "topic": "AC circuits - resonance",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The resonant frequency of a series RLC circuit is given by:",
+      "options": ["f0 = 1 / (2 pi sqrt(LC))", "f0 = 2 pi sqrt(LC)", "f0 = 1 / (LC)", "f0 = sqrt(L/C)"],
+      "correct_answer": "f0 = 1 / (2 pi sqrt(LC))",
+      "explanation": "Setting X_L = X_C and solving for f gives the resonant frequency formula f0 = 1/(2 pi sqrt(LC)).",
+      "topic": "AC circuits - resonance",
+      "difficulty": "hard"
+    },
+    {
+      "question": "At resonance in a series RLC circuit, the impedance of the circuit is:",
+      "options": ["At its minimum, equal to the resistance R alone", "At its maximum, equal to R + X_L + X_C", "Zero, regardless of R", "Equal to X_L alone"],
+      "correct_answer": "At its minimum, equal to the resistance R alone",
+      "explanation": "Since X_L and X_C cancel at resonance, Z = sqrt(R^2 + 0^2) = R, the minimum possible impedance for the circuit.",
+      "topic": "AC circuits - resonance",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The power factor of an AC circuit is defined as:",
+      "options": ["The cosine of the phase angle between the current and the applied voltage", "The ratio of peak voltage to peak current", "The ratio of resistance to reactance", "The sine of the phase angle between voltage and current"],
+      "correct_answer": "The cosine of the phase angle between the current and the applied voltage",
+      "explanation": "Power factor = cos(phi), where phi is the phase difference between voltage and current; it indicates what fraction of the apparent power (VI) is actually real (average) power delivered.",
+      "topic": "AC circuits - power factor",
+      "difficulty": "hard"
+    },
+    {
+      "question": "For a purely resistive AC circuit (no reactance), the power factor is:",
+      "options": ["1 (unity), because voltage and current are in phase", "0, because voltage and current are 90 degrees out of phase", "0.5, regardless of frequency", "Undefined"],
+      "correct_answer": "1 (unity), because voltage and current are in phase",
+      "explanation": "In a purely resistive circuit, current and voltage rise and fall together (zero phase difference), so cos(0) = 1, the maximum possible power factor.",
+      "topic": "AC circuits - power factor",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For a purely inductive or purely capacitive AC circuit (no resistance), the power factor is:",
+      "options": ["0, because voltage and current are 90 degrees out of phase", "1, because they are perfectly in phase", "Negative, always", "Equal to the reactance value"],
+      "correct_answer": "0, because voltage and current are 90 degrees out of phase",
+      "explanation": "In a purely reactive circuit, current and voltage are 90 degrees out of phase, giving cos(90) = 0, meaning no net (average) power is actually delivered even though current flows.",
+      "topic": "AC circuits - power factor",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The average (real) power delivered to an AC circuit is given by:",
+      "options": ["P = V(rms) I(rms) cos(phi)", "P = V(rms) I(rms)", "P = V0 I0", "P = V(rms) I(rms) sin(phi)"],
+      "correct_answer": "P = V(rms) I(rms) cos(phi)",
+      "explanation": "Real power accounts for the phase difference between voltage and current using the power factor cos(phi); V(rms)I(rms) alone gives the apparent power.",
+      "topic": "AC circuits - power factor",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Diamagnetic materials, when placed in an external magnetic field, become:",
+      "options": ["Weakly magnetized in a direction opposite to the applied field", "Strongly magnetized in the same direction as the applied field", "Permanently magnetized even after the field is removed", "Completely unaffected by any magnetic field"],
+      "correct_answer": "Weakly magnetized in a direction opposite to the applied field",
+      "explanation": "Diamagnetic materials (e.g., bismuth, copper) acquire a weak induced magnetization opposing the applied field, resulting in a small negative magnetic susceptibility.",
+      "topic": "Magnetic properties of materials",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Paramagnetic materials, when placed in an external magnetic field, become:",
+      "options": ["Weakly magnetized in the same direction as the applied field", "Weakly magnetized in a direction opposite to the applied field", "Strongly and permanently magnetized", "Demagnetized entirely"],
+      "correct_answer": "Weakly magnetized in the same direction as the applied field",
+      "explanation": "Paramagnetic materials (e.g., aluminium, platinum) have unpaired electrons whose magnetic moments partially align with the applied field, giving a small positive susceptibility, but this magnetization disappears once the field is removed.",
+      "topic": "Magnetic properties of materials",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Ferromagnetic materials, such as iron, cobalt, and nickel, are characterized by:",
+      "options": ["Strong magnetization that can persist even after the external field is removed, due to aligned magnetic domains", "Weak magnetization that always opposes the applied field", "No response whatsoever to external magnetic fields", "Magnetization only possible at extremely high temperatures"],
+      "correct_answer": "Strong magnetization that can persist even after the external field is removed, due to aligned magnetic domains",
+      "explanation": "Ferromagnetic materials contain domains of aligned atomic magnetic moments that can be strongly reinforced by an external field and can retain a net magnetization (remanence) after the field is removed.",
+      "topic": "Magnetic properties of materials",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The temperature above which a ferromagnetic material loses its ferromagnetic properties and becomes paramagnetic is called:",
+      "options": ["The Curie temperature", "The Boyle temperature", "The critical temperature of superconductivity", "The absolute zero point"],
+      "correct_answer": "The Curie temperature",
+      "explanation": "Above the Curie temperature, thermal agitation overcomes the alignment of magnetic domains, and the material's ordered ferromagnetism breaks down into disordered paramagnetic behaviour.",
+      "topic": "Magnetic properties of materials",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A step-up transformer is used to:",
+      "options": ["Increase the AC voltage while decreasing the current, based on electromagnetic induction between coils", "Convert AC to DC directly", "Increase both voltage and current simultaneously", "Store electrical energy in a magnetic field permanently"],
+      "correct_answer": "Increase the AC voltage while decreasing the current, based on electromagnetic induction between coils",
+      "explanation": "A transformer uses mutual inductance between a primary and secondary coil; a step-up transformer has more secondary turns than primary turns, raising voltage while lowering current to conserve power (ideally).",
+      "topic": "Electromagnetic induction",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Two long, straight, parallel wires carrying current in the same direction will:",
+      "options": ["Attract each other", "Repel each other", "Experience no force between them", "Rotate around each other continuously"],
+      "correct_answer": "Attract each other",
+      "explanation": "Each wire's magnetic field exerts a force on the other's current-carrying charges; when the currents flow in the same direction, this results in a net attractive force between the wires.",
+      "topic": "Force on current-carrying conductors",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A galvanometer's high sensitivity to small currents, exploited in devices like the moving-coil galvanometer, arises fundamentally from the principle that:",
+      "options": ["A current-carrying coil in a magnetic field experiences a torque proportional to the current, causing it to deflect", "The coil heats up and expands when current flows", "The coil's resistance decreases sharply with current", "Static electric charge builds up on the coil"],
+      "correct_answer": "A current-carrying coil in a magnetic field experiences a torque proportional to the current, causing it to deflect",
+      "explanation": "The moving-coil galvanometer relies directly on the torque tau = NBIA sin(theta) experienced by a current loop in a magnetic field, which is balanced against a restoring spring to give a deflection proportional to current.",
+      "topic": "Torque on a current loop",
+      "difficulty": "medium"
+    }
+  ]
+}

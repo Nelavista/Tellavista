@@ -1,0 +1,506 @@
+{
+  "course_code": "CSC102",
+  "title": "Introduction to Computing",
+  "level": "100",
+  "source_note": "Standard NUC-aligned Nigerian university 100L Introduction to Computer Science curriculum (history of computing, hardware/software fundamentals, number systems, data representation, algorithms, basic networking and ethics), cross-checked against LASU's own CSC111 'Introduction to Computer Science' and CSC120 'Computer as a Problem Solving Tool' course descriptions in the department curriculum document.",
+  "questions": [
+    {
+      "question": "Who is generally credited as the 'father of the computer' for designing the Analytical Engine?",
+      "options": ["Charles Babbage", "Alan Turing", "John von Neumann", "Blaise Pascal"],
+      "correct_answer": "Charles Babbage",
+      "explanation": "Charles Babbage designed the Analytical Engine in the 19th century, a mechanical general-purpose computer that is considered the conceptual forerunner of modern computers.",
+      "topic": "History of computing",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which generation of computers is associated with the use of vacuum tubes?",
+      "options": ["First generation", "Second generation", "Third generation", "Fourth generation"],
+      "correct_answer": "First generation",
+      "explanation": "First-generation computers (approximately 1940s-1950s) used vacuum tubes for circuitry, which made them large, hot, and power-hungry.",
+      "topic": "Generations of computers",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The invention of the microprocessor marked the beginning of which generation of computers?",
+      "options": ["Fourth generation", "Second generation", "Third generation", "First generation"],
+      "correct_answer": "Fourth generation",
+      "explanation": "Fourth-generation computers are characterized by the use of microprocessors, which integrated the entire CPU onto a single chip.",
+      "topic": "Generations of computers",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which of the following best defines a computer?",
+      "options": [
+        "An electronic device that accepts data as input, processes it, and produces output",
+        "A device used only for typing documents",
+        "A machine that can only perform arithmetic operations",
+        "A telecommunications device for making calls"
+      ],
+      "correct_answer": "An electronic device that accepts data as input, processes it, and produces output",
+      "explanation": "A computer is fundamentally an electronic device that follows the input-process-output cycle to perform tasks based on instructions.",
+      "topic": "Basic concepts",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which unit of a computer is responsible for performing arithmetic and logical operations?",
+      "options": ["Arithmetic Logic Unit (ALU)", "Control Unit", "Memory Unit", "Input Unit"],
+      "correct_answer": "Arithmetic Logic Unit (ALU)",
+      "explanation": "The ALU performs all arithmetic computations (addition, subtraction, etc.) and logical operations (comparisons) within the CPU.",
+      "topic": "Computer hardware",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which component of the CPU directs and coordinates the operations of the computer by interpreting instructions?",
+      "options": ["Control Unit", "Arithmetic Logic Unit", "Cache memory", "Register file only"],
+      "correct_answer": "Control Unit",
+      "explanation": "The Control Unit fetches, decodes, and directs the execution of instructions, coordinating the activities of other hardware components.",
+      "topic": "Computer hardware",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which of the following is an example of a secondary storage device?",
+      "options": ["Hard disk drive", "RAM", "Cache memory", "CPU register"],
+      "correct_answer": "Hard disk drive",
+      "explanation": "Secondary storage devices like hard disk drives retain data permanently (non-volatile), unlike RAM which is volatile and loses data when power is off.",
+      "topic": "Storage devices",
+      "difficulty": "easy"
+    },
+    {
+      "question": "RAM (Random Access Memory) is best described as which type of memory?",
+      "options": ["Volatile primary memory", "Non-volatile secondary memory", "Read-only memory", "Optical storage memory"],
+      "correct_answer": "Volatile primary memory",
+      "explanation": "RAM is volatile, meaning its contents are lost when power is removed, and it serves as the computer's main working memory during processing.",
+      "topic": "Computer hardware",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which of the following devices is used to convert human-readable input into a form the computer can process?",
+      "options": ["Input device", "Output device", "Storage device", "Processing device"],
+      "correct_answer": "Input device",
+      "explanation": "Input devices such as keyboards and scanners capture data from the user or environment and convert it into digital signals for processing.",
+      "topic": "Input/output devices",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which of these is classified as an output device?",
+      "options": ["Monitor", "Keyboard", "Mouse", "Scanner"],
+      "correct_answer": "Monitor",
+      "explanation": "A monitor displays processed information to the user, making it an output device, whereas the others listed are used to input data.",
+      "topic": "Input/output devices",
+      "difficulty": "easy"
+    },
+    {
+      "question": "System software differs from application software mainly because system software:",
+      "options": [
+        "Manages and controls computer hardware to provide a platform for other software",
+        "Is designed only for word processing",
+        "Cannot be installed without an internet connection",
+        "Is always more expensive than application software"
+      ],
+      "correct_answer": "Manages and controls computer hardware to provide a platform for other software",
+      "explanation": "System software, such as an operating system, manages hardware resources and provides the foundation on which application software runs.",
+      "topic": "Computer software",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which of the following is an example of application software?",
+      "options": ["Microsoft Word", "Windows Operating System", "Device driver", "BIOS"],
+      "correct_answer": "Microsoft Word",
+      "explanation": "Microsoft Word is application software designed to let users perform a specific task (word processing), unlike system software which manages the computer itself.",
+      "topic": "Computer software",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What does the acronym 'BIOS' stand for?",
+      "options": ["Basic Input Output System", "Binary Input Output Software", "Basic Internal Operating System", "Basic Integrated Output Storage"],
+      "correct_answer": "Basic Input Output System",
+      "explanation": "BIOS stands for Basic Input Output System, firmware that initializes hardware during the booting process before the operating system loads.",
+      "topic": "Computer software",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Convert the binary number 1011 to its decimal equivalent.",
+      "options": ["11", "9", "13", "10"],
+      "correct_answer": "11",
+      "explanation": "1011 in binary equals (1x8)+(0x4)+(1x2)+(1x1) = 8+0+2+1 = 11 in decimal.",
+      "topic": "Number systems",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Convert the decimal number 25 to binary.",
+      "options": ["11001", "11010", "10101", "11101"],
+      "correct_answer": "11001",
+      "explanation": "25 in binary is 11001 because 16+8+0+0+1 = 25, corresponding to bit positions 4,3,0.",
+      "topic": "Number systems",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the base (radix) of the hexadecimal number system?",
+      "options": ["16", "8", "10", "2"],
+      "correct_answer": "16",
+      "explanation": "The hexadecimal number system uses 16 symbols (0-9 and A-F) and therefore has a base of 16.",
+      "topic": "Number systems",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Convert the hexadecimal number 1F to decimal.",
+      "options": ["31", "15", "16", "33"],
+      "correct_answer": "31",
+      "explanation": "1F in hex equals (1x16)+(15x1) = 16+15 = 31 in decimal, since F represents 15.",
+      "topic": "Number systems",
+      "difficulty": "hard"
+    },
+    {
+      "question": "What is the smallest unit of data in a digital computer?",
+      "options": ["Bit", "Byte", "Nibble", "Word"],
+      "correct_answer": "Bit",
+      "explanation": "A bit (binary digit) is the smallest unit of data, representing either a 0 or a 1, and bits are combined to form larger units like bytes.",
+      "topic": "Data representation",
+      "difficulty": "easy"
+    },
+    {
+      "question": "How many bits make up one byte?",
+      "options": ["8", "4", "16", "2"],
+      "correct_answer": "8",
+      "explanation": "One byte consists of 8 bits, which is the standard unit used to represent a single character in many encoding schemes.",
+      "topic": "Data representation",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which character encoding standard uses 7 or 8 bits to represent English letters, digits, and symbols?",
+      "options": ["ASCII", "Unicode UTF-32", "EBCDIC only", "Morse code"],
+      "correct_answer": "ASCII",
+      "explanation": "ASCII (American Standard Code for Information Interchange) uses 7 bits (extended to 8) to represent 128 (or 256) characters including letters, digits and symbols.",
+      "topic": "Data representation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "An algorithm is best defined as:",
+      "options": [
+        "A finite sequence of well-defined instructions for solving a problem",
+        "A programming language used to write software",
+        "A type of computer hardware component",
+        "A diagram showing computer network connections"
+      ],
+      "correct_answer": "A finite sequence of well-defined instructions for solving a problem",
+      "explanation": "An algorithm is a step-by-step, unambiguous set of instructions designed to accomplish a specific task or solve a problem within a finite number of steps.",
+      "topic": "Algorithms and problem solving",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which diagrammatic tool uses standard symbols like ovals, rectangles, and diamonds to represent the steps of an algorithm?",
+      "options": ["Flowchart", "Pie chart", "Gantt chart", "Bar chart"],
+      "correct_answer": "Flowchart",
+      "explanation": "A flowchart uses standardized symbols (start/end ovals, process rectangles, decision diamonds) to visually represent the logical flow of an algorithm.",
+      "topic": "Algorithms and problem solving",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In flowchart symbols, what shape typically represents a decision point?",
+      "options": ["Diamond (rhombus)", "Rectangle", "Oval", "Parallelogram"],
+      "correct_answer": "Diamond (rhombus)",
+      "explanation": "A diamond shape in flowcharts represents a decision point where the flow branches based on a condition being true or false.",
+      "topic": "Algorithms and problem solving",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Pseudocode is best described as:",
+      "options": [
+        "An informal, high-level description of a program's logic using natural language-like structure",
+        "A compiled machine code program",
+        "A type of computer virus",
+        "A network communication protocol"
+      ],
+      "correct_answer": "An informal, high-level description of a program's logic using natural language-like structure",
+      "explanation": "Pseudocode allows programmers to plan program logic in a readable, language-independent way before writing actual code in a specific programming language.",
+      "topic": "Algorithms and problem solving",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the correct order of the basic problem-solving steps in computing?",
+      "options": [
+        "Problem definition, algorithm design, coding, testing, implementation",
+        "Coding, testing, problem definition, implementation, algorithm design",
+        "Implementation, coding, testing, problem definition, algorithm design",
+        "Testing, coding, implementation, algorithm design, problem definition"
+      ],
+      "correct_answer": "Problem definition, algorithm design, coding, testing, implementation",
+      "explanation": "Effective problem solving follows a logical sequence: first understand and define the problem, design a solution algorithm, translate it into code, test it, then implement it.",
+      "topic": "Algorithms and problem solving",
+      "difficulty": "medium"
+    },
+    {
+      "question": "An operating system primarily functions to:",
+      "options": [
+        "Manage computer hardware resources and provide services for application programs",
+        "Create documents and spreadsheets",
+        "Design web pages",
+        "Provide internet connectivity only"
+      ],
+      "correct_answer": "Manage computer hardware resources and provide services for application programs",
+      "explanation": "The operating system acts as an intermediary between hardware and application software, managing memory, processes, files, and devices.",
+      "topic": "Operating systems basics",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which of the following is an example of an operating system?",
+      "options": ["Windows", "Microsoft Excel", "Adobe Photoshop", "Google Chrome"],
+      "correct_answer": "Windows",
+      "explanation": "Windows is an operating system that manages computer hardware and software resources, while the others are application programs that run on top of an OS.",
+      "topic": "Operating systems basics",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What term describes an operating system's ability to run multiple programs seemingly at the same time?",
+      "options": ["Multitasking", "Multiplexing", "Multithreading only", "Multivoicing"],
+      "correct_answer": "Multitasking",
+      "explanation": "Multitasking is the operating system's capability to execute multiple tasks or processes concurrently by rapidly switching the CPU between them.",
+      "topic": "Operating systems basics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which of the following best describes a computer network?",
+      "options": [
+        "A collection of interconnected computers that can communicate and share resources",
+        "A single standalone computer",
+        "A type of computer virus",
+        "A programming language for the internet"
+      ],
+      "correct_answer": "A collection of interconnected computers that can communicate and share resources",
+      "explanation": "A computer network links two or more computing devices together to enable communication and sharing of resources such as files and printers.",
+      "topic": "Networks and the internet",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What does 'LAN' stand for in networking?",
+      "options": ["Local Area Network", "Long Access Network", "Linked Area Node", "Large Area Network"],
+      "correct_answer": "Local Area Network",
+      "explanation": "LAN stands for Local Area Network, a network that connects computers within a limited geographic area such as an office or school.",
+      "topic": "Networks and the internet",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which protocol is primarily used to transfer web pages over the internet?",
+      "options": ["HTTP", "FTP", "SMTP", "POP3"],
+      "correct_answer": "HTTP",
+      "explanation": "HTTP (HyperText Transfer Protocol) is the foundational protocol used to transfer web page data between web servers and browsers.",
+      "topic": "Networks and the internet",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The internet can best be described as:",
+      "options": [
+        "A global network of interconnected computer networks",
+        "A single company-owned computer network",
+        "A type of application software",
+        "A programming language"
+      ],
+      "correct_answer": "A global network of interconnected computer networks",
+      "explanation": "The internet is a massive, worldwide network made up of many smaller interconnected networks that communicate using standardized protocols.",
+      "topic": "Networks and the internet",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A computer virus is best defined as:",
+      "options": [
+        "A malicious program that can replicate itself and spread to other files or systems",
+        "A hardware component that cools the CPU",
+        "A type of input device",
+        "A network cable standard"
+      ],
+      "correct_answer": "A malicious program that can replicate itself and spread to other files or systems",
+      "explanation": "A computer virus is malicious software designed to attach itself to files or programs and replicate, often causing harm to data or systems.",
+      "topic": "Computer ethics and security",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which of the following is a recommended practice to protect a computer from malware?",
+      "options": ["Installing and regularly updating antivirus software", "Disabling all passwords", "Opening all email attachments", "Sharing passwords with friends"],
+      "correct_answer": "Installing and regularly updating antivirus software",
+      "explanation": "Regularly updated antivirus software helps detect and remove malware, protecting the system from known and emerging threats.",
+      "topic": "Computer ethics and security",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Software piracy refers to:",
+      "options": [
+        "The unauthorized copying, distribution, or use of copyrighted software",
+        "The legal purchase of a software license",
+        "Writing new original software",
+        "Uninstalling software from a computer"
+      ],
+      "correct_answer": "The unauthorized copying, distribution, or use of copyrighted software",
+      "explanation": "Software piracy is the illegal act of copying, distributing, or using software without proper authorization or licensing from the copyright holder.",
+      "topic": "Computer ethics and security",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which of the following best describes 'data' as distinct from 'information'?",
+      "options": [
+        "Data is raw, unprocessed facts, while information is processed and meaningful data",
+        "Data and information mean exactly the same thing",
+        "Data is always numeric, while information is always textual",
+        "Information is stored in RAM while data is stored on disk only"
+      ],
+      "correct_answer": "Data is raw, unprocessed facts, while information is processed and meaningful data",
+      "explanation": "Data refers to raw, unorganized facts or figures, while information is data that has been processed, structured, and given context to make it meaningful.",
+      "topic": "Basic concepts",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which of the following is a high-level programming language?",
+      "options": ["Python", "Assembly language", "Machine code", "Binary code"],
+      "correct_answer": "Python",
+      "explanation": "Python is a high-level programming language with syntax closer to human language, unlike assembly and machine code which are low-level and hardware-specific.",
+      "topic": "Programming basics",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is the primary function of a compiler?",
+      "options": [
+        "To translate an entire high-level source program into machine code before execution",
+        "To physically print program output",
+        "To manage computer memory allocation only",
+        "To connect a computer to a network"
+      ],
+      "correct_answer": "To translate an entire high-level source program into machine code before execution",
+      "explanation": "A compiler translates the entire source code of a high-level language into machine code (or an intermediate form) all at once, before the program runs.",
+      "topic": "Programming basics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "How does an interpreter differ from a compiler?",
+      "options": [
+        "An interpreter translates and executes code line-by-line rather than all at once",
+        "An interpreter produces faster programs than a compiler in all cases",
+        "An interpreter and compiler are exactly the same tool",
+        "An interpreter only works with binary files"
+      ],
+      "correct_answer": "An interpreter translates and executes code line-by-line rather than all at once",
+      "explanation": "Unlike a compiler which translates the whole program before execution, an interpreter translates and executes source code statement by statement.",
+      "topic": "Programming basics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the booting process, what is the first program that runs when a computer is powered on?",
+      "options": ["BIOS/UEFI firmware", "Web browser", "Word processor", "Antivirus software"],
+      "correct_answer": "BIOS/UEFI firmware",
+      "explanation": "The BIOS or UEFI firmware runs first at power-on, performing hardware checks (POST) before locating and loading the operating system.",
+      "topic": "Operating systems basics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which of the following storage devices has the fastest access speed?",
+      "options": ["Solid State Drive (SSD)", "Magnetic tape", "Hard Disk Drive (HDD)", "Compact Disc (CD)"],
+      "correct_answer": "Solid State Drive (SSD)",
+      "explanation": "SSDs use flash memory with no moving parts, giving them significantly faster read/write access speeds than HDDs, tapes, or optical discs.",
+      "topic": "Storage devices",
+      "difficulty": "medium"
+    },
+    {
+      "question": "One kilobyte (KB) is equal to how many bytes (using the standard binary convention)?",
+      "options": ["1024 bytes", "1000 bytes", "100 bytes", "1,048,576 bytes"],
+      "correct_answer": "1024 bytes",
+      "explanation": "In the binary (base-2) convention traditionally used in computing, one kilobyte equals 2^10 = 1024 bytes.",
+      "topic": "Data representation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What does 'GUI' stand for?",
+      "options": ["Graphical User Interface", "General Utility Interface", "Global Unified Interconnect", "Graphic Utility Input"],
+      "correct_answer": "Graphical User Interface",
+      "explanation": "GUI stands for Graphical User Interface, which allows users to interact with a computer through visual elements like icons, windows, and menus.",
+      "topic": "Operating systems basics",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A command-line interface (CLI) differs from a GUI in that a CLI:",
+      "options": [
+        "Requires users to type text-based commands to interact with the system",
+        "Only works on mobile phones",
+        "Cannot be used to manage files",
+        "Was invented after the GUI"
+      ],
+      "correct_answer": "Requires users to type text-based commands to interact with the system",
+      "explanation": "A command-line interface requires users to type textual commands, whereas a GUI allows interaction through visual elements like icons and menus; CLIs predate GUIs.",
+      "topic": "Operating systems basics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which logic gate outputs TRUE only when both of its inputs are TRUE?",
+      "options": ["AND gate", "OR gate", "NOT gate", "XOR gate"],
+      "correct_answer": "AND gate",
+      "explanation": "An AND gate produces a TRUE (1) output only when all of its inputs are TRUE (1); if any input is FALSE, the output is FALSE.",
+      "topic": "Boolean logic basics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which logic gate produces an output that is the inverse (opposite) of its single input?",
+      "options": ["NOT gate", "AND gate", "OR gate", "NAND gate"],
+      "correct_answer": "NOT gate",
+      "explanation": "A NOT gate (inverter) has one input and flips it: a TRUE input becomes FALSE output, and vice versa.",
+      "topic": "Boolean logic basics",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is the main purpose of file management within an operating system?",
+      "options": [
+        "To organize, store, retrieve, and control access to data files",
+        "To translate high-level code into machine code",
+        "To physically manufacture storage hardware",
+        "To design website layouts"
+      ],
+      "correct_answer": "To organize, store, retrieve, and control access to data files",
+      "explanation": "File management is an operating system function that handles the creation, organization, storage, retrieval, and protection of files on storage media.",
+      "topic": "Operating systems basics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which of the following best distinguishes hardware from software?",
+      "options": [
+        "Hardware is the physical, tangible components of a computer, while software is a set of instructions/programs",
+        "Hardware and software are interchangeable terms for the same thing",
+        "Software refers only to the monitor and keyboard",
+        "Hardware cannot be seen or touched"
+      ],
+      "correct_answer": "Hardware is the physical, tangible components of a computer, while software is a set of instructions/programs",
+      "explanation": "Hardware consists of physical components (CPU, monitor, keyboard), while software is the intangible set of instructions and programs that run on that hardware.",
+      "topic": "Basic concepts",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which term describes a small, temporary storage area located directly on or very close to the CPU used to speed up data access?",
+      "options": ["Cache memory", "Hard disk", "Optical disc", "Flash drive"],
+      "correct_answer": "Cache memory",
+      "explanation": "Cache memory is a small, very fast memory located close to or within the CPU that stores frequently accessed data to reduce access time compared to main memory.",
+      "topic": "Computer hardware",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Cloud computing refers to:",
+      "options": [
+        "The delivery of computing services (storage, processing, software) over the internet",
+        "A type of weather forecasting software",
+        "A physical storage device kept in the sky",
+        "A programming language for mobile apps"
+      ],
+      "correct_answer": "The delivery of computing services (storage, processing, software) over the internet",
+      "explanation": "Cloud computing delivers computing resources such as servers, storage, databases, and software over the internet, rather than relying on local hardware.",
+      "topic": "Trends in computing",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In the context of information security, what does 'phishing' refer to?",
+      "options": [
+        "A fraudulent attempt to obtain sensitive information by disguising as a trustworthy entity, often via email",
+        "A method of cooling computer hardware",
+        "A legitimate technique for backing up data",
+        "A type of computer network cable"
+      ],
+      "correct_answer": "A fraudulent attempt to obtain sensitive information by disguising as a trustworthy entity, often via email",
+      "explanation": "Phishing is a cyberattack technique where attackers impersonate legitimate organizations, typically via email, to trick victims into revealing sensitive information like passwords.",
+      "topic": "Computer ethics and security",
+      "difficulty": "medium"
+    }
+  ]
+}

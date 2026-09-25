@@ -1,0 +1,441 @@
+{
+  "course_code": "PHY107",
+  "title": "General Practical Physics I",
+  "level": "100",
+  "source_note": "Standard NUC-aligned Nigerian university 100L Practical Physics I curriculum: SI units and measurement, precision instruments (vernier caliper, micrometer screw gauge), error and uncertainty analysis, graph plotting technique, and standard first-year mechanics and heat experiments (simple pendulum, Hooke's law, density, specific heat capacity).",
+  "questions": [
+    {
+      "question": "The SI base unit of length is the:",
+      "options": ["Metre", "Centimetre", "Foot", "Kilometre"],
+      "correct_answer": "Metre",
+      "explanation": "The metre is the SI base unit of length; centimetres and kilometres are derived (non-base) multiples of it.",
+      "topic": "Units and measurement",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which of the following is a fundamental (base) SI quantity, as opposed to a derived quantity?",
+      "options": ["Mass", "Velocity", "Force", "Density"],
+      "correct_answer": "Mass",
+      "explanation": "Mass (measured in kilograms) is one of the seven SI base quantities; velocity, force, and density are all derived from combinations of base quantities.",
+      "topic": "Units and measurement",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In an experiment, a student records a length as 12.30 cm rather than 12.3 cm. The extra trailing zero indicates that:",
+      "options": [
+        "The measurement was made to a precision of 0.01 cm",
+        "The measurement is less precise than 12.3 cm",
+        "The zero is not a significant figure",
+        "An error was made in the measurement"
+      ],
+      "correct_answer": "The measurement was made to a precision of 0.01 cm",
+      "explanation": "Trailing zeros after a decimal point are significant figures; writing 12.30 cm instead of 12.3 cm communicates that the instrument could resolve to the hundredths place.",
+      "topic": "Significant figures and precision",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A systematic error in an experiment is one that:",
+      "options": [
+        "Consistently biases readings in the same direction and cannot be reduced by repeating the measurement",
+        "Varies randomly from one reading to the next",
+        "Can be eliminated by taking the average of many readings",
+        "Only occurs when the observer is careless"
+      ],
+      "correct_answer": "Consistently biases readings in the same direction and cannot be reduced by repeating the measurement",
+      "explanation": "Systematic errors, such as a zero error on an instrument, consistently shift all readings in one direction; repeating the measurement does not remove them -- only correcting or recalibrating the instrument does.",
+      "topic": "Error analysis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Random errors in a set of readings can generally be reduced by:",
+      "options": [
+        "Taking several readings and calculating their average",
+        "Using a single reading and rounding it",
+        "Ignoring the smallest and largest readings only",
+        "Increasing the systematic error"
+      ],
+      "correct_answer": "Taking several readings and calculating their average",
+      "explanation": "Random errors scatter unpredictably above and below the true value, so averaging multiple independent readings reduces their overall effect on the result.",
+      "topic": "Error analysis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which of these best describes the difference between accuracy and precision in measurement?",
+      "options": [
+        "Accuracy is closeness to the true value; precision is the closeness of repeated readings to each other",
+        "Accuracy and precision mean exactly the same thing",
+        "Precision is closeness to the true value; accuracy is the spread of repeated readings",
+        "Accuracy depends only on the number of decimal places recorded"
+      ],
+      "correct_answer": "Accuracy is closeness to the true value; precision is the closeness of repeated readings to each other",
+      "explanation": "A set of readings can be precise (tightly clustered) but inaccurate (offset from the true value due to systematic error), so the two concepts must be distinguished.",
+      "topic": "Error analysis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The least count of a measuring instrument refers to:",
+      "options": [
+        "The smallest measurement that can be accurately read from the instrument",
+        "The largest measurement the instrument can take",
+        "The average of all readings taken with the instrument",
+        "The zero error of the instrument"
+      ],
+      "correct_answer": "The smallest measurement that can be accurately read from the instrument",
+      "explanation": "Least count is the smallest value an instrument can reliably resolve, e.g. 0.01 cm for a typical vernier caliper or 0.01 mm for a micrometer screw gauge.",
+      "topic": "Measuring instruments",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A vernier caliper with 10 divisions on its vernier scale matched against 9 divisions on the main scale (each 1 mm) has a least count of:",
+      "options": ["0.1 mm", "1 mm", "0.01 mm", "10 mm"],
+      "correct_answer": "0.1 mm",
+      "explanation": "Least count = 1 main scale division / number of vernier divisions = 1 mm / 10 = 0.1 mm, the standard resolution of a common vernier caliper.",
+      "topic": "Measuring instruments - vernier caliper",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The vernier caliper is most suitable for accurately measuring:",
+      "options": [
+        "Internal and external diameters and depths of small objects",
+        "Very small thicknesses such as a sheet of paper",
+        "Large distances such as the length of a football field",
+        "Electrical resistance"
+      ],
+      "correct_answer": "Internal and external diameters and depths of small objects",
+      "explanation": "A vernier caliper is designed with jaws and a depth probe to measure external dimensions, internal dimensions, and depths of small objects to a precision of about 0.01-0.1 mm.",
+      "topic": "Measuring instruments - vernier caliper",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A micrometer screw gauge is typically used to measure:",
+      "options": [
+        "Very small thicknesses or diameters, such as the diameter of a thin wire",
+        "The volume of a large container",
+        "The mass of an object",
+        "Long distances of several metres"
+      ],
+      "correct_answer": "Very small thicknesses or diameters, such as the diameter of a thin wire",
+      "explanation": "The micrometer screw gauge has a finer least count than a vernier caliper (typically 0.01 mm), making it suitable for very small dimensions like wire diameter or sheet thickness.",
+      "topic": "Measuring instruments - micrometer screw gauge",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In a micrometer screw gauge, the pitch is the distance moved by the spindle per full rotation, and the least count is calculated as:",
+      "options": [
+        "Pitch divided by the number of divisions on the circular (thimble) scale",
+        "Pitch multiplied by the number of divisions on the circular scale",
+        "Pitch divided by the main scale reading",
+        "The reciprocal of the pitch"
+      ],
+      "correct_answer": "Pitch divided by the number of divisions on the circular (thimble) scale",
+      "explanation": "Least count of a micrometer screw gauge = pitch / number of divisions on the circular scale, giving the smallest measurable increment.",
+      "topic": "Measuring instruments - micrometer screw gauge",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Before taking readings with a vernier caliper or micrometer screw gauge, a student should first check for:",
+      "options": ["Zero error", "The colour of the instrument", "The brand of the instrument", "The room temperature only"],
+      "correct_answer": "Zero error",
+      "explanation": "Checking for zero error (the reading shown when the jaws/spindle are fully closed) is essential so it can be added to or subtracted from subsequent readings to correct for it.",
+      "topic": "Measuring instruments",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Parallax error in reading a scale, such as a metre rule, occurs when:",
+      "options": [
+        "The observer's eye is not positioned perpendicular to the scale being read",
+        "The scale is not calibrated correctly",
+        "The object being measured moves during the reading",
+        "The reading is taken in poor lighting"
+      ],
+      "correct_answer": "The observer's eye is not positioned perpendicular to the scale being read",
+      "explanation": "Parallax error arises from viewing a scale at an angle rather than directly perpendicular (at eye level with the pointer or meniscus), causing a misread value.",
+      "topic": "Error analysis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "When plotting a graph from experimental data, the independent variable (the one deliberately varied by the experimenter) is conventionally plotted on the:",
+      "options": ["Horizontal (x) axis", "Vertical (y) axis", "Either axis, it does not matter", "Diagonal of the graph"],
+      "correct_answer": "Horizontal (x) axis",
+      "explanation": "By convention, the independent variable that the experimenter controls is plotted on the x-axis, while the dependent variable being measured is plotted on the y-axis.",
+      "topic": "Graph plotting",
+      "difficulty": "easy"
+    },
+    {
+      "question": "When drawing a line of best fit through a scatter of experimental points, the line should:",
+      "options": [
+        "Pass as close as possible to all the points, with roughly equal numbers of points above and below it",
+        "Always pass through every single data point exactly",
+        "Only connect the first and last data points",
+        "Always be forced through the origin regardless of the data"
+      ],
+      "correct_answer": "Pass as close as possible to all the points, with roughly equal numbers of points above and below it",
+      "explanation": "A line of best fit is a smooth straight (or curved) line that best represents the overall trend of the data, minimising the scatter of points above and below it.",
+      "topic": "Graph plotting",
+      "difficulty": "medium"
+    },
+    {
+      "question": "On a straight-line graph of y against x, the gradient (slope) represents:",
+      "options": ["The rate of change of y with respect to x", "The value of y when x is zero", "The total area under the graph", "The maximum value of x"],
+      "correct_answer": "The rate of change of y with respect to x",
+      "explanation": "The gradient of a straight-line graph, calculated as (change in y)/(change in x), gives the rate at which y changes with x -- often representing a physical constant in an experiment.",
+      "topic": "Graph plotting",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A student plots extension (y-axis) against load (x-axis) for a spring and obtains a straight line through the origin with gradient 0.02 m/N. What physical quantity does this gradient represent?",
+      "options": ["The reciprocal of the spring's force constant (1/k)", "The spring's force constant k directly", "The spring's natural length", "The mass of the spring"],
+      "correct_answer": "The reciprocal of the spring's force constant (1/k)",
+      "explanation": "Since extension e = F/k, plotting e against F gives a gradient of 1/k; the force constant k is therefore the reciprocal of the measured gradient.",
+      "topic": "Graph plotting",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In a simple pendulum experiment to determine g, a graph of T^2 (y-axis) against length L (x-axis) is plotted. The gradient of this line equals:",
+      "options": ["4*pi^2/g", "g/(4*pi^2)", "2*pi/g", "g"],
+      "correct_answer": "4*pi^2/g",
+      "explanation": "Since T^2 = (4*pi^2/g)L, plotting T^2 against L gives a straight line through the origin with gradient 4*pi^2/g, from which g can be calculated.",
+      "topic": "Simple pendulum experiment",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In the simple pendulum experiment, why is the time for a large number of oscillations (e.g. 20) measured, rather than timing a single oscillation?",
+      "options": [
+        "To reduce the percentage error caused by human reaction time in starting and stopping the stopwatch",
+        "Because a single oscillation cannot be timed at all",
+        "To increase the length of the pendulum",
+        "Because the pendulum only swings correctly after 20 oscillations"
+      ],
+      "correct_answer": "To reduce the percentage error caused by human reaction time in starting and stopping the stopwatch",
+      "explanation": "Timing many oscillations and dividing by the number of oscillations spreads the fixed reaction-time error over a longer total time, reducing its percentage effect on the period measurement.",
+      "topic": "Simple pendulum experiment",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a simple pendulum experiment, which factor does NOT significantly affect the period of oscillation (for small angular displacements)?",
+      "options": ["The mass of the pendulum bob", "The length of the pendulum", "The acceleration due to gravity", "None of the above -- all affect the period"],
+      "correct_answer": "The mass of the pendulum bob",
+      "explanation": "For small-angle oscillations, the period T = 2*pi*sqrt(L/g) depends only on the pendulum's length and the local gravitational acceleration, not on the mass of the bob.",
+      "topic": "Simple pendulum experiment",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In Hooke's law verification experiment, a spring is loaded with increasing masses and the extension recorded. The elastic limit is exceeded when:",
+      "options": [
+        "The extension-load graph stops being a straight line and the spring no longer returns to its original length",
+        "The spring breaks immediately",
+        "The extension becomes exactly proportional to the load",
+        "The spring's colour changes"
+      ],
+      "correct_answer": "The extension-load graph stops being a straight line and the spring no longer returns to its original length",
+      "explanation": "Beyond the elastic limit, the extension-load relationship deviates from Hooke's law linearity, and the spring undergoes permanent deformation, not returning to its original length when unloaded.",
+      "topic": "Hooke's law experiment",
+      "difficulty": "medium"
+    },
+    {
+      "question": "To determine the density of an irregularly shaped solid that sinks in water, the volume is typically found by:",
+      "options": [
+        "Measuring the volume of water it displaces when fully submerged",
+        "Using a metre rule to measure its length, width, and height",
+        "Weighing it in air only",
+        "Calculating it from its mass alone"
+      ],
+      "correct_answer": "Measuring the volume of water it displaces when fully submerged",
+      "explanation": "For an irregular solid, volume is found using the displacement method (e.g. a eureka can or measuring cylinder), since its shape prevents direct geometric calculation.",
+      "topic": "Density determination",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A solid has a mass of 45 g and displaces 15 cm^3 of water when fully submerged. What is its density?",
+      "options": ["3 g/cm^3", "0.33 g/cm^3", "30 g/cm^3", "60 g/cm^3"],
+      "correct_answer": "3 g/cm^3",
+      "explanation": "Density = mass/volume = 45 g / 15 cm^3 = 3 g/cm^3.",
+      "topic": "Density determination",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In an experiment to determine the specific heat capacity of a metal block by the method of mixtures, the metal block is usually:",
+      "options": [
+        "Heated to a known high temperature, then transferred quickly into cool water in a calorimeter",
+        "Left at room temperature throughout the experiment",
+        "Weighed after being placed in the water",
+        "Dissolved completely in the water"
+      ],
+      "correct_answer": "Heated to a known high temperature, then transferred quickly into cool water in a calorimeter",
+      "explanation": "The metal block is heated to a measured temperature (often in boiling water), then quickly transferred into a calorimeter containing cooler water so the resulting temperature change can be used to calculate its specific heat capacity.",
+      "topic": "Specific heat capacity experiment",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the method of mixtures experiment, why is the calorimeter usually made of a material like copper with a polished exterior?",
+      "options": [
+        "Copper conducts heat well internally, while a polished exterior minimises heat loss by radiation",
+        "Copper is the cheapest available material",
+        "A polished surface increases heat loss to speed up the experiment",
+        "Copper is a good electrical insulator"
+      ],
+      "correct_answer": "Copper conducts heat well internally, while a polished exterior minimises heat loss by radiation",
+      "explanation": "Copper has high thermal conductivity, allowing the calorimeter's contents to reach thermal equilibrium quickly, while a shiny outer surface reduces unwanted heat exchange with the surroundings by radiation.",
+      "topic": "Specific heat capacity experiment",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A student measures the length of a wire five times, obtaining 24.5, 24.6, 24.4, 24.6, and 24.5 cm. What is the mean value of these readings?",
+      "options": ["24.52 cm", "24.5 cm", "24.6 cm", "24.4 cm"],
+      "correct_answer": "24.52 cm",
+      "explanation": "Mean = (24.5+24.6+24.4+24.6+24.5)/5 = 122.6/5 = 24.52 cm.",
+      "topic": "Error analysis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "If the true value of a quantity is 10.0 cm and a measurement gives 9.8 cm, what is the percentage error in the measurement?",
+      "options": ["2%", "0.2%", "20%", "9.8%"],
+      "correct_answer": "2%",
+      "explanation": "Percentage error = |true value - measured value| / true value x 100% = 0.2/10.0 x 100% = 2%.",
+      "topic": "Error analysis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In Boyle's law experiment using a J-tube apparatus, which two quantities are measured to verify the law?",
+      "options": ["The pressure of the trapped air column and its corresponding length (proportional to volume)", "The temperature and mass of the trapped air", "The colour and density of the trapped air", "The weight of the mercury column only"],
+      "correct_answer": "The pressure of the trapped air column and its corresponding length (proportional to volume)",
+      "explanation": "In the J-tube (or similar) Boyle's law apparatus, the length of the trapped air column (proportional to its volume, given constant cross-sectional area) is measured at different applied pressures, and a graph of P against 1/L verifies the inverse relationship.",
+      "topic": "Boyle's law experiment",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A graph of pressure P against 1/L (where L is the length of a trapped air column) for Boyle's law experiment should ideally produce:",
+      "options": ["A straight line through the origin", "A curve that rises steeply then flattens", "A horizontal straight line", "A straight line that does not pass through the origin"],
+      "correct_answer": "A straight line through the origin",
+      "explanation": "Since Boyle's law states P is proportional to 1/V (and L is proportional to V here), plotting P against 1/L should yield a straight line passing through the origin, confirming the inverse proportionality.",
+      "topic": "Boyle's law experiment",
+      "difficulty": "hard"
+    },
+    {
+      "question": "When recording an experimental result, why should measured values always be reported with appropriate units?",
+      "options": [
+        "Because a numerical value without units is physically meaningless",
+        "Units are optional and only added for decoration",
+        "Units only matter for electrical measurements",
+        "Units change the actual measured value"
+      ],
+      "correct_answer": "Because a numerical value without units is physically meaningless",
+      "explanation": "A physical quantity is fully specified only by a number together with its unit; omitting units makes the measurement ambiguous and unusable for calculation or comparison.",
+      "topic": "Units and measurement",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A stopwatch has a resolution of 0.01 s but the experimenter's reaction time introduces an uncertainty of about 0.2 s. The dominant source of uncertainty in timing a single short event here is:",
+      "options": ["Human reaction time, not the stopwatch's resolution", "The stopwatch's resolution, not reaction time", "Neither source contributes any uncertainty", "The temperature of the room"],
+      "correct_answer": "Human reaction time, not the stopwatch's resolution",
+      "explanation": "Since reaction time (about 0.2 s) is much larger than the stopwatch's resolution (0.01 s), it dominates the overall timing uncertainty for a single manually timed event.",
+      "topic": "Error analysis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a lab report, the purpose of recording a table of raw data before processing it is to:",
+      "options": [
+        "Preserve the original measurements so calculations can be checked or redone if needed",
+        "Make the report longer",
+        "Replace the need for a graph",
+        "Avoid stating the aim of the experiment"
+      ],
+      "correct_answer": "Preserve the original measurements so calculations can be checked or redone if needed",
+      "explanation": "Recording raw data in a clear table ensures transparency and allows calculations, graphs, and conclusions to be verified or recalculated if an error is suspected.",
+      "topic": "Laboratory technique and reporting",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Why should repeated readings be taken and averaged in most practical physics experiments?",
+      "options": [
+        "To minimise the effect of random errors and obtain a more reliable value",
+        "To make the experiment take longer",
+        "Because a single reading is never physically possible",
+        "To eliminate all systematic errors automatically"
+      ],
+      "correct_answer": "To minimise the effect of random errors and obtain a more reliable value",
+      "explanation": "Averaging several independent readings reduces the influence of random fluctuations, giving a value closer to the true one, although it does not remove systematic errors.",
+      "topic": "Error analysis",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A metre rule is used to measure the length of a wire, with its zero end aligned incorrectly 0.2 cm before the true zero mark. This introduces what type of error into every reading taken with it?",
+      "options": ["A systematic (zero) error", "A random error", "No error at all", "An error only in the final reading"],
+      "correct_answer": "A systematic (zero) error",
+      "explanation": "A misaligned zero mark causes every measurement taken with that rule to be offset by the same fixed amount in the same direction -- a classic systematic (zero) error.",
+      "topic": "Error analysis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "When reading the level of a liquid in a measuring cylinder, the reading should be taken at eye level from the:",
+      "options": ["Bottom of the meniscus (for most liquids like water)", "Top of the meniscus always", "Side of the cylinder, viewed from above", "Widest point of the cylinder"],
+      "correct_answer": "Bottom of the meniscus (for most liquids like water)",
+      "explanation": "For liquids such as water that wet glass and form a concave meniscus, the reading is conventionally taken at the bottom of the curve, viewed at eye level to avoid parallax error.",
+      "topic": "Measuring instruments",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In an experiment to determine acceleration due to gravity using a free-fall apparatus (e.g. ticker-tape timer or light gates), a graph of velocity against time is plotted. The gradient of this graph gives:",
+      "options": ["The acceleration due to gravity, g", "The total distance fallen", "The initial velocity", "The mass of the falling object"],
+      "correct_answer": "The acceleration due to gravity, g",
+      "explanation": "Since acceleration is the rate of change of velocity, the gradient of a velocity-time graph for a freely falling object gives the value of g.",
+      "topic": "Determination of g",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A ticker-tape timer commonly used in mechanics experiments in Nigerian university labs typically operates from the AC mains at a frequency of:",
+      "options": ["50 Hz", "1 Hz", "500 Hz", "5 Hz"],
+      "correct_answer": "50 Hz",
+      "explanation": "A ticker-tape timer makes dots on the tape at the frequency of the AC mains supply, which is 50 Hz in Nigeria, producing one dot every 1/50 = 0.02 s.",
+      "topic": "Determination of g",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the primary purpose of a control variable in a physics experiment, such as keeping the amplitude of a pendulum's swing small and constant?",
+      "options": [
+        "To ensure that only the variable being investigated affects the results",
+        "To make the experiment take less time",
+        "To eliminate the need for repeated readings",
+        "To increase the systematic error deliberately"
+      ],
+      "correct_answer": "To ensure that only the variable being investigated affects the results",
+      "explanation": "Controlling other variables (e.g. keeping the pendulum's swing angle small) isolates the effect of the variable being studied (e.g. length) on the outcome (period), ensuring a valid experiment.",
+      "topic": "Laboratory technique and reporting",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A student obtains inconsistent, widely scattered results for the period of a pendulum. This scatter is most likely due to:",
+      "options": ["Random errors, such as variation in reaction time when starting/stopping the stopwatch", "A single large systematic error only", "The pendulum having no mass", "The pendulum string being too short to measure"],
+      "correct_answer": "Random errors, such as variation in reaction time when starting/stopping the stopwatch",
+      "explanation": "Widely scattered (rather than consistently offset) results are typically caused by random errors, such as inconsistent reaction time, rather than a systematic bias.",
+      "topic": "Error analysis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a practical report, the 'precision' of a final calculated result should generally be expressed to:",
+      "options": [
+        "The same number of significant figures as justified by the least precise measurement used in the calculation",
+        "As many decimal places as the calculator displays",
+        "Exactly two decimal places in all cases",
+        "Whole numbers only"
+      ],
+      "correct_answer": "The same number of significant figures as justified by the least precise measurement used in the calculation",
+      "explanation": "A calculated result cannot be more precise than the least precise measurement that went into it, so the final answer's significant figures should reflect that limiting precision.",
+      "topic": "Significant figures and precision",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Which of these is an example of a zero error that must be subtracted from subsequent readings on a micrometer screw gauge?",
+      "options": [
+        "The scale reads 0.02 mm when the jaws are fully closed with nothing between them",
+        "The scale reads exactly 0.00 mm when the jaws are fully closed",
+        "The object being measured has an irregular shape",
+        "The screw gauge is used to measure a rod instead of a wire"
+      ],
+      "correct_answer": "The scale reads 0.02 mm when the jaws are fully closed with nothing between them",
+      "explanation": "If the instrument does not read exactly zero when fully closed, that offset (positive or negative) is the zero error, which must be corrected for in every subsequent reading.",
+      "topic": "Measuring instruments - micrometer screw gauge",
+      "difficulty": "medium"
+    }
+  ]
+}

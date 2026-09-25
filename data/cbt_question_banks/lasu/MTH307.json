@@ -1,0 +1,248 @@
+{
+  "course_code": "MTH307",
+  "title": "Real Analysis II",
+  "level": "300",
+  "source_note": "Standard NUC-aligned Nigerian university 300L Real Analysis II curriculum, building on MTH207 (introductory real analysis): sequences and series of functions, pointwise versus uniform convergence, the Weierstrass M-test, Riemann integration and its properties, the Riemann-Stieltjes integral, improper integrals, an introduction to functions of several variables, and an introduction to metric spaces (open/closed sets, compactness, connectedness).",
+  "questions": [
+    {
+      "question": "A sequence of functions fn converges pointwise to f on a set S if:",
+      "options": ["for each x in S, fn(x) → f(x) as n → ∞", "fn → f uniformly on S", "fn(x) = f(x) for all n", "the sequence fn is bounded"],
+      "correct_answer": "for each x in S, fn(x) → f(x) as n → ∞",
+      "explanation": "Pointwise convergence only requires convergence of fn(x) to f(x) at each individual point, with the rate of convergence possibly varying by point.",
+      "topic": "Sequences of functions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A sequence of functions fn converges uniformly to f on S if:",
+      "options": ["for every ε>0, there exists N such that |fn(x)-f(x)|<ε for all x in S and all n≥N", "fn(x)→f(x) for each x separately with no common N", "f is continuous", "fn is monotonic"],
+      "correct_answer": "for every ε>0, there exists N such that |fn(x)-f(x)|<ε for all x in S and all n≥N",
+      "explanation": "Uniform convergence strengthens pointwise convergence by requiring a single N that works simultaneously for every point in S.",
+      "topic": "Sequences of functions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The sequence fn(x) = x^n on [0,1] converges pointwise to:",
+      "options": ["f(x) = 0 for x in [0,1), and f(1) = 1", "f(x) = 1 for all x", "f(x) = x", "f(x) = 0 for all x including x=1"],
+      "correct_answer": "f(x) = 0 for x in [0,1), and f(1) = 1",
+      "explanation": "For 0 ≤ x < 1, x^n → 0, while at x=1, x^n = 1 for all n, giving this discontinuous pointwise limit.",
+      "topic": "Sequences of functions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The sequence fn(x) = x^n on [0,1] illustrates that:",
+      "options": ["the pointwise limit of continuous functions need not be continuous, so the convergence is not uniform", "uniform convergence always preserves discontinuity", "pointwise and uniform convergence are always equivalent", "fn(x) diverges everywhere"],
+      "correct_answer": "the pointwise limit of continuous functions need not be continuous, so the convergence is not uniform",
+      "explanation": "Since each x^n is continuous but the pointwise limit is discontinuous at x=1, the convergence cannot be uniform on [0,1] (uniform limits of continuous functions are continuous).",
+      "topic": "Sequences of functions",
+      "difficulty": "hard"
+    },
+    {
+      "question": "If fn → f uniformly on [a,b] and each fn is continuous, then:",
+      "options": ["f is continuous on [a,b]", "f need not be continuous", "fn must be constant", "f is always differentiable"],
+      "correct_answer": "f is continuous on [a,b]",
+      "explanation": "Uniform convergence preserves continuity: the uniform limit of a sequence of continuous functions is itself continuous.",
+      "topic": "Sequences of functions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "If fn → f uniformly on [a,b] and each fn is Riemann integrable, then:",
+      "options": ["∫a^b fn dx → ∫a^b f dx", "the integrals need not converge", "f is never integrable", "each fn must be zero"],
+      "correct_answer": "∫a^b fn dx → ∫a^b f dx",
+      "explanation": "Uniform convergence justifies interchanging the limit and integral: the limit of the integrals equals the integral of the limit.",
+      "topic": "Sequences of functions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Weierstrass M-test is used to establish:",
+      "options": ["uniform convergence of a series of functions", "pointwise divergence", "Riemann integrability only", "continuity of a single function"],
+      "correct_answer": "uniform convergence of a series of functions",
+      "explanation": "The M-test states that if |fn(x)| ≤ Mn for all x in S with ΣMn convergent, then Σfn converges uniformly (and absolutely) on S.",
+      "topic": "Series of functions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "By the Weierstrass M-test, the series Σ sin(nx)/n^2 converges uniformly on the real line because:",
+      "options": ["|sin(nx)/n^2| ≤ 1/n^2 and Σ1/n^2 converges", "sin(nx) is bounded by n", "the series is a power series", "n^2 diverges"],
+      "correct_answer": "|sin(nx)/n^2| ≤ 1/n^2 and Σ1/n^2 converges",
+      "explanation": "Since |sin(nx)| ≤ 1 for all x, the terms are dominated by the convergent p-series Σ1/n^2, satisfying the M-test hypothesis.",
+      "topic": "Series of functions",
+      "difficulty": "hard"
+    },
+    {
+      "question": "For a bounded function f on [a,b], the Riemann upper sum U(f,P) with respect to a partition P is defined using:",
+      "options": ["the supremum of f on each subinterval", "the infimum of f on each subinterval", "the value of f at the left endpoint only", "the average of f over [a,b]"],
+      "correct_answer": "the supremum of f on each subinterval",
+      "explanation": "The upper Riemann sum uses Mi = sup{f(x): x in the i-th subinterval} multiplied by the subinterval width, summed over all subintervals.",
+      "topic": "Riemann integration",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A bounded function f is Riemann integrable on [a,b] if and only if:",
+      "options": ["for every ε>0, there exists a partition P such that U(f,P) - L(f,P) < ε", "f is continuous everywhere", "f is monotonic", "f is differentiable"],
+      "correct_answer": "for every ε>0, there exists a partition P such that U(f,P) - L(f,P) < ε",
+      "explanation": "This is the Riemann integrability criterion: the upper and lower sums can be made arbitrarily close by refining the partition.",
+      "topic": "Riemann integration",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Which of these functions is Riemann integrable on [0,1]?",
+      "options": ["a continuous function on [0,1]", "the Dirichlet function (1 on rationals, 0 on irrationals)", "an unbounded function on [0,1]", "none of these"],
+      "correct_answer": "a continuous function on [0,1]",
+      "explanation": "Every continuous function on a closed bounded interval is Riemann integrable; the Dirichlet function is a classic example of a bounded function that is NOT Riemann integrable.",
+      "topic": "Riemann integration",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Fundamental Theorem of Calculus (Riemann integral version) states that if f is continuous on [a,b] and F(x) = ∫a^x f(t)dt, then:",
+      "options": ["F is differentiable and F'(x) = f(x)", "F is not differentiable", "F(x) = f(x) for all x", "F is constant"],
+      "correct_answer": "F is differentiable and F'(x) = f(x)",
+      "explanation": "This is the first part of the Fundamental Theorem of Calculus, linking differentiation and integration for continuous functions.",
+      "topic": "Riemann integration",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Riemann-Stieltjes integral ∫a^b f dα generalizes the Riemann integral by:",
+      "options": ["using an increasing (or bounded variation) function α(x) instead of x itself as the integrator", "requiring f to be constant", "removing the need for a partition", "only applying to polynomials"],
+      "correct_answer": "using an increasing (or bounded variation) function α(x) instead of x itself as the integrator",
+      "explanation": "The Riemann-Stieltjes integral replaces the increments Δx with Δα = α(xi) - α(xi-1), generalizing the ordinary Riemann integral (recovered when α(x)=x).",
+      "topic": "Riemann-Stieltjes integral",
+      "difficulty": "hard"
+    },
+    {
+      "question": "If α(x) is a step function with a jump of size c at point x0, then for continuous f, the Riemann-Stieltjes integral ∫f dα picks out:",
+      "options": ["c·f(x0)", "the average value of f", "zero", "the integral of f over the whole interval"],
+      "correct_answer": "c·f(x0)",
+      "explanation": "A jump discontinuity in the integrator α of size c contributes exactly c·f(x0) to the Riemann-Stieltjes integral, at the point of the jump.",
+      "topic": "Riemann-Stieltjes integral",
+      "difficulty": "hard"
+    },
+    {
+      "question": "An improper integral of the first kind is one where:",
+      "options": ["the interval of integration is unbounded (e.g. extends to ∞)", "the integrand has a removable discontinuity", "the interval is finite and the integrand is bounded", "the integrand is a polynomial"],
+      "correct_answer": "the interval of integration is unbounded (e.g. extends to ∞)",
+      "explanation": "Improper integrals of the first kind involve infinite limits of integration, evaluated as a limit of proper integrals over finite intervals.",
+      "topic": "Improper integrals",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The improper integral ∫1^∞ (1/x^p) dx converges if and only if:",
+      "options": ["p > 1", "p < 1", "p = 1", "p ≤ 0"],
+      "correct_answer": "p > 1",
+      "explanation": "This is the standard p-integral test: ∫1^∞ x^{-p}dx converges exactly when p > 1 and diverges otherwise.",
+      "topic": "Improper integrals",
+      "difficulty": "medium"
+    },
+    {
+      "question": "An improper integral of the second kind arises when:",
+      "options": ["the integrand is unbounded near a point in the interval of integration", "the interval is infinite", "f is a constant function", "the integrand is bounded everywhere"],
+      "correct_answer": "the integrand is unbounded near a point in the interval of integration",
+      "explanation": "This type occurs when f(x) becomes infinite at or near an endpoint (or interior point) of a finite interval, requiring a limiting definition.",
+      "topic": "Improper integrals",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For a function f(x,y) of two variables, the partial derivative ∂f/∂x is computed by:",
+      "options": ["differentiating with respect to x while treating y as constant", "differentiating with respect to both x and y simultaneously", "integrating with respect to y", "setting x = 0"],
+      "correct_answer": "differentiating with respect to x while treating y as constant",
+      "explanation": "A partial derivative measures the rate of change with respect to one variable while holding all other variables fixed.",
+      "topic": "Functions of several variables",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A function f(x,y) is differentiable at a point if:",
+      "options": ["it can be well-approximated by a linear (affine) function near that point", "its partial derivatives exist only", "it is continuous only", "it is a polynomial"],
+      "correct_answer": "it can be well-approximated by a linear (affine) function near that point",
+      "explanation": "Differentiability of a multivariable function requires the existence of a linear approximation (total derivative) whose error vanishes faster than the distance to the point, which is stronger than merely having partial derivatives.",
+      "topic": "Functions of several variables",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Clairaut's (Schwarz's) Theorem on mixed partial derivatives states that if fxy and fyx are both continuous, then:",
+      "options": ["fxy = fyx", "fxy = 0", "fx = fy", "f is not differentiable"],
+      "correct_answer": "fxy = fyx",
+      "explanation": "When the mixed second partial derivatives are continuous, the order of differentiation does not matter, so fxy = fyx.",
+      "topic": "Functions of several variables",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A metric space (X,d) consists of a set X together with a function d satisfying:",
+      "options": ["non-negativity, identity of indiscernibles, symmetry, and the triangle inequality", "only the triangle inequality", "only symmetry", "d(x,y) = 0 for all x,y"],
+      "correct_answer": "non-negativity, identity of indiscernibles, symmetry, and the triangle inequality",
+      "explanation": "These four axioms define a metric: d(x,y)≥0, d(x,y)=0 iff x=y, d(x,y)=d(y,x), and d(x,z)≤d(x,y)+d(y,z).",
+      "topic": "Metric spaces",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a metric space, an open ball B(x0, r) is defined as:",
+      "options": ["{x ∈ X : d(x,x0) < r}", "{x ∈ X : d(x,x0) = r}", "{x ∈ X : d(x,x0) ≤ r}", "{x ∈ X : d(x,x0) > r}"],
+      "correct_answer": "{x ∈ X : d(x,x0) < r}",
+      "explanation": "An open ball of radius r centered at x0 is the set of all points strictly within distance r of x0.",
+      "topic": "Metric spaces",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A subset U of a metric space X is called open if:",
+      "options": ["every point of U has an open ball around it entirely contained in U", "U contains all its limit points", "U equals X", "U is finite"],
+      "correct_answer": "every point of U has an open ball around it entirely contained in U",
+      "explanation": "This is the defining property of an open set in a metric space: each point is an interior point.",
+      "topic": "Metric spaces",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A subset F of a metric space is called closed if:",
+      "options": ["its complement is open", "it contains no limit points", "it is bounded", "it equals the whole space"],
+      "correct_answer": "its complement is open",
+      "explanation": "By definition, a closed set is one whose complement in the space is open; equivalently, it contains all of its limit points.",
+      "topic": "Metric spaces",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A metric space X is called compact if:",
+      "options": ["every open cover of X has a finite subcover", "X is finite", "X is closed only", "X has no open sets"],
+      "correct_answer": "every open cover of X has a finite subcover",
+      "explanation": "This is the general topological definition of compactness, which for metric spaces is equivalent to sequential compactness.",
+      "topic": "Compactness",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The Heine-Borel Theorem states that a subset of R^n (with the usual metric) is compact if and only if it is:",
+      "options": ["closed and bounded", "open and unbounded", "connected only", "finite"],
+      "correct_answer": "closed and bounded",
+      "explanation": "In Euclidean space, Heine-Borel gives the concrete characterization: compact sets are exactly those that are both closed and bounded.",
+      "topic": "Compactness",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A continuous image of a compact set (under a continuous function) is always:",
+      "options": ["compact", "open", "unbounded", "disconnected"],
+      "correct_answer": "compact",
+      "explanation": "Continuous functions preserve compactness: if f is continuous and K is compact, then f(K) is compact.",
+      "topic": "Compactness",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A metric space X is called connected if:",
+      "options": ["it cannot be partitioned into two nonempty disjoint open sets", "every subset is open", "it is bounded", "it contains only one point"],
+      "correct_answer": "it cannot be partitioned into two nonempty disjoint open sets",
+      "explanation": "Connectedness means X has no separation into two nonempty disjoint open subsets whose union is X.",
+      "topic": "Connectedness",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A function f: X → Y between metric spaces is continuous at x0 if:",
+      "options": ["for every ε>0 there exists δ>0 such that d(x,x0)<δ implies d(f(x),f(x0))<ε", "f(x0) = 0", "f is bounded", "f is a linear function"],
+      "correct_answer": "for every ε>0 there exists δ>0 such that d(x,x0)<δ implies d(f(x),f(x0))<ε",
+      "explanation": "This is the standard epsilon-delta definition of continuity generalized to metric spaces using the two spaces' respective metrics.",
+      "topic": "Continuity in metric spaces",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The interval [0,1] with the usual metric on R is an example of a set that is:",
+      "options": ["both compact and connected", "compact but not connected", "connected but not compact", "neither compact nor connected"],
+      "correct_answer": "both compact and connected",
+      "explanation": "[0,1] is closed and bounded (hence compact by Heine-Borel) and is an interval, hence connected.",
+      "topic": "Connectedness",
+      "difficulty": "medium"
+    }
+  ]
+}

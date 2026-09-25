@@ -1,0 +1,272 @@
+{
+  "course_code": "MTH203",
+  "title": "Sets Logic & Algebra I",
+  "level": "200",
+  "source_note": "Standard NUC-aligned Nigerian university 200L Sets, Logic and Algebra curriculum: set theory and Venn diagrams, propositional/predicate logic and proof technique, relations and functions, binary operations, elementary group axioms, and mathematical induction.",
+  "questions": [
+    {
+      "question": "If A = {1, 2, 3, 4} and B = {3, 4, 5, 6}, what is A ∩ B?",
+      "options": ["{3, 4}", "{1, 2, 5, 6}", "{1, 2, 3, 4, 5, 6}", "{}"],
+      "correct_answer": "{3, 4}",
+      "explanation": "The intersection A ∩ B contains only the elements common to both sets, which are 3 and 4.",
+      "topic": "Set operations",
+      "difficulty": "easy"
+    },
+    {
+      "question": "If A = {1, 2, 3, 4} and B = {3, 4, 5, 6}, what is A ∪ B?",
+      "options": ["{1, 2, 3, 4, 5, 6}", "{3, 4}", "{1, 2}", "{5, 6}"],
+      "correct_answer": "{1, 2, 3, 4, 5, 6}",
+      "explanation": "The union A ∪ B contains every element that belongs to A, to B, or to both, without repetition.",
+      "topic": "Set operations",
+      "difficulty": "easy"
+    },
+    {
+      "question": "For a set A with n elements, how many elements does its power set P(A) have?",
+      "options": ["2^n", "n^2", "2n", "n!"],
+      "correct_answer": "2^n",
+      "explanation": "The power set is the set of all subsets of A, and there are exactly 2^n subsets of a set with n elements.",
+      "topic": "Set theory",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which of the following correctly states one of De Morgan's laws for sets?",
+      "options": ["(A ∪ B)' = A' ∩ B'", "(A ∪ B)' = A' ∪ B'", "(A ∩ B)' = A' ∩ B'", "(A ∪ B)' = A ∩ B"],
+      "correct_answer": "(A ∪ B)' = A' ∩ B'",
+      "explanation": "De Morgan's law states the complement of a union equals the intersection of the complements.",
+      "topic": "Set theory",
+      "difficulty": "medium"
+    },
+    {
+      "question": "If A = {a, b} and B = {1, 2}, how many ordered pairs are in the Cartesian product A × B?",
+      "options": ["4", "2", "6", "8"],
+      "correct_answer": "4",
+      "explanation": "The Cartesian product A × B has |A| × |B| = 2 × 2 = 4 ordered pairs.",
+      "topic": "Set theory",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In a class of 50 students, 30 study Mathematics, 25 study Physics, and 15 study both. How many students study neither?",
+      "options": ["10", "20", "15", "5"],
+      "correct_answer": "10",
+      "explanation": "By inclusion-exclusion, |M ∪ P| = 30 + 25 − 15 = 40, so students studying neither = 50 − 40 = 10.",
+      "topic": "Set operations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Two sets A and B are disjoint if and only if:",
+      "options": ["A ∩ B = ∅", "A ∪ B = ∅", "A ⊆ B", "A = B"],
+      "correct_answer": "A ∩ B = ∅",
+      "explanation": "Disjoint sets have no elements in common, meaning their intersection is the empty set.",
+      "topic": "Set theory",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which of the following is always true about the empty set ∅?",
+      "options": ["∅ is a subset of every set", "∅ has exactly one element", "∅ is an element of every set", "∅ equals {0}"],
+      "correct_answer": "∅ is a subset of every set",
+      "explanation": "By vacuous truth, every element of ∅ (there are none) trivially satisfies membership in any set, so ∅ ⊆ A for any A.",
+      "topic": "Set theory",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which statement is a proposition in the sense used in propositional logic?",
+      "options": ["Lagos is the largest city in Nigeria.", "What time is it?", "Please close the door.", "x + 2 = 5"],
+      "correct_answer": "Lagos is the largest city in Nigeria.",
+      "explanation": "A proposition is a declarative sentence that is definitely true or false; questions, commands, and open sentences with a free variable are not propositions.",
+      "topic": "Propositional logic",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The compound statement p ∧ q (p AND q) is true when:",
+      "options": ["Both p and q are true", "At least one of p, q is true", "Both p and q are false", "Exactly one of p, q is true"],
+      "correct_answer": "Both p and q are true",
+      "explanation": "Conjunction (∧) is true only when both component statements are true.",
+      "topic": "Propositional logic",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The conditional statement p → q is false only when:",
+      "options": ["p is true and q is false", "p is false and q is true", "both p and q are false", "both p and q are true"],
+      "correct_answer": "p is true and q is false",
+      "explanation": "An implication p → q is false only in the single case where the hypothesis p holds but the conclusion q fails.",
+      "topic": "Propositional logic",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the contrapositive of the statement \"If it rains, then the ground is wet\"?",
+      "options": ["If the ground is not wet, then it did not rain", "If it does not rain, then the ground is not wet", "If the ground is wet, then it rains", "If it does not rain, then the ground is wet"],
+      "correct_answer": "If the ground is not wet, then it did not rain",
+      "explanation": "The contrapositive of p → q is ¬q → ¬p, and it is logically equivalent to the original statement.",
+      "topic": "Logical equivalence",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A statement that is true under every possible truth assignment of its variables is called a:",
+      "options": ["Tautology", "Contradiction", "Contingency", "Converse"],
+      "correct_answer": "Tautology",
+      "explanation": "A tautology is a compound proposition that is always true regardless of the truth values of its components, e.g. p ∨ ¬p.",
+      "topic": "Propositional logic",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A statement that is false under every possible truth assignment of its variables is called a:",
+      "options": ["Contradiction", "Tautology", "Biconditional", "Inverse"],
+      "correct_answer": "Contradiction",
+      "explanation": "A contradiction, such as p ∧ ¬p, is always false no matter the truth values assigned.",
+      "topic": "Propositional logic",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which of the following is logically equivalent to p → q?",
+      "options": ["¬p ∨ q", "p ∨ ¬q", "¬p ∧ q", "p ∧ q"],
+      "correct_answer": "¬p ∨ q",
+      "explanation": "The implication p → q is defined to be logically equivalent to ¬p ∨ q, verifiable via truth tables.",
+      "topic": "Logical equivalence",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In predicate logic, the statement ∀x P(x) means:",
+      "options": ["P(x) is true for every x in the domain", "P(x) is true for at least one x", "P(x) is never true", "P(x) is false for every x"],
+      "correct_answer": "P(x) is true for every x in the domain",
+      "explanation": "The universal quantifier ∀ (\"for all\") asserts that the predicate holds for every element of the domain of discourse.",
+      "topic": "Predicate logic",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is the negation of the statement ∀x, P(x)?",
+      "options": ["∃x, ¬P(x)", "∀x, ¬P(x)", "∃x, P(x)", "¬∃x, P(x)"],
+      "correct_answer": "∃x, ¬P(x)",
+      "explanation": "Negating a universal statement yields an existential statement of the negated predicate: ¬(∀x P(x)) ≡ ∃x ¬P(x).",
+      "topic": "Predicate logic",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A relation R on a set A is called reflexive if:",
+      "options": ["(a, a) ∈ R for every a ∈ A", "(a, b) ∈ R implies (b, a) ∈ R", "R has no elements", "(a, b), (b, c) ∈ R implies (a, c) ∈ R"],
+      "correct_answer": "(a, a) ∈ R for every a ∈ A",
+      "explanation": "Reflexivity requires that every element of A is related to itself.",
+      "topic": "Relations",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A relation that is reflexive, symmetric, and transitive is called a(n):",
+      "options": ["Equivalence relation", "Partial order", "Function", "Bijection"],
+      "correct_answer": "Equivalence relation",
+      "explanation": "By definition, a relation satisfying all three properties — reflexivity, symmetry, and transitivity — is an equivalence relation.",
+      "topic": "Relations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The equivalence classes formed by an equivalence relation on a set A:",
+      "options": ["Partition A into disjoint, non-empty subsets whose union is A", "Always contain exactly one element each", "Overlap with one another", "Form a subset of A rather than covering all of A"],
+      "correct_answer": "Partition A into disjoint, non-empty subsets whose union is A",
+      "explanation": "A fundamental theorem of equivalence relations states that the equivalence classes form a partition of the underlying set.",
+      "topic": "Relations",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A function f: A → B is called injective (one-to-one) if:",
+      "options": ["f(a1) = f(a2) implies a1 = a2", "Every element of B has a preimage in A", "f is both one-to-one and onto", "A and B have the same number of elements"],
+      "correct_answer": "f(a1) = f(a2) implies a1 = a2",
+      "explanation": "Injectivity means distinct inputs always map to distinct outputs, i.e. no two elements of A share an image.",
+      "topic": "Functions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A function f: A → B is called surjective (onto) if:",
+      "options": ["Every element of B is the image of at least one element of A", "f(a1) = f(a2) implies a1 = a2", "f has an inverse function", "A is a subset of B"],
+      "correct_answer": "Every element of B is the image of at least one element of A",
+      "explanation": "Surjectivity means the range of f equals the entire codomain B.",
+      "topic": "Functions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A function that is both injective and surjective is called:",
+      "options": ["Bijective", "Constant", "Identity", "Reflexive"],
+      "correct_answer": "Bijective",
+      "explanation": "A bijective function establishes a one-to-one correspondence between A and B, and is invertible.",
+      "topic": "Functions",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A binary operation * on a set S is said to be closed on S if:",
+      "options": ["a * b ∈ S for all a, b ∈ S", "a * b = b * a for all a, b ∈ S", "(a * b) * c = a * (b * c) for all a, b, c ∈ S", "There exists e ∈ S with a * e = a"],
+      "correct_answer": "a * b ∈ S for all a, b ∈ S",
+      "explanation": "Closure requires that combining any two elements of S under * always produces a result that is still in S.",
+      "topic": "Binary operations",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Subtraction on the set of natural numbers ℕ = {0, 1, 2, ...} is:",
+      "options": ["Not closed, since e.g. 2 − 5 = −3 ∉ ℕ", "Closed and commutative", "Closed and associative", "A group operation"],
+      "correct_answer": "Not closed, since e.g. 2 − 5 = −3 ∉ ℕ",
+      "explanation": "Subtracting a larger natural number from a smaller one gives a negative result, which is not in ℕ, so closure fails.",
+      "topic": "Binary operations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For the set of integers ℤ under addition, what is the identity element?",
+      "options": ["0", "1", "−1", "There is no identity"],
+      "correct_answer": "0",
+      "explanation": "Adding 0 to any integer leaves it unchanged, so 0 is the additive identity of ℤ.",
+      "topic": "Binary operations",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A set G together with a binary operation * is called a group if it satisfies which set of axioms?",
+      "options": ["Closure, associativity, identity element, and inverses for every element", "Closure and commutativity only", "Associativity and an identity element only, with no inverses required", "Only closure"],
+      "correct_answer": "Closure, associativity, identity element, and inverses for every element",
+      "explanation": "The group axioms require closure under *, associativity, existence of an identity element, and existence of an inverse for every element.",
+      "topic": "Groups",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A group (G, *) is called abelian if, in addition to the group axioms, it also satisfies:",
+      "options": ["Commutativity: a * b = b * a for all a, b ∈ G", "Closure under subtraction", "Existence of a zero divisor", "Finiteness of G"],
+      "correct_answer": "Commutativity: a * b = b * a for all a, b ∈ G",
+      "explanation": "An abelian (commutative) group is a group in which the operation additionally satisfies the commutative law.",
+      "topic": "Groups",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which of the following is a group under the operation of addition?",
+      "options": ["(ℤ, +)", "(ℕ, +)", "(ℤ, ×)", "The set of even integers under multiplication"],
+      "correct_answer": "(ℤ, +)",
+      "explanation": "The integers under addition satisfy closure, associativity, have identity 0, and every element n has inverse −n; ℕ under + lacks inverses, and ℤ under × lacks inverses for most elements.",
+      "topic": "Groups",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Using mathematical induction to prove a statement P(n) holds for all n ≥ 1, the base case establishes:",
+      "options": ["P(1) is true", "P(k) implies P(k+1) for arbitrary k", "P(n) is true for all n", "P(n) is false for n = 1"],
+      "correct_answer": "P(1) is true",
+      "explanation": "The base step verifies the statement directly for the smallest case (usually n = 1) before the inductive step extends it.",
+      "topic": "Mathematical induction",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In the inductive step of a proof by mathematical induction, what must be shown?",
+      "options": ["That assuming P(k) is true, P(k+1) must also be true", "That P(k) is true for one specific value of k only", "That P(1) is false", "That the statement holds for all negative integers"],
+      "correct_answer": "That assuming P(k) is true, P(k+1) must also be true",
+      "explanation": "The inductive step assumes the inductive hypothesis P(k) and derives P(k+1) from it, which together with the base case proves P(n) for all n in the range.",
+      "topic": "Mathematical induction",
+      "difficulty": "medium"
+    },
+    {
+      "question": "By mathematical induction, the sum 1 + 2 + 3 + ... + n equals:",
+      "options": ["n(n+1)/2", "n(n−1)/2", "n^2", "n(n+1)"],
+      "correct_answer": "n(n+1)/2",
+      "explanation": "This is the classical formula for the sum of the first n positive integers, provable by induction on n.",
+      "topic": "Mathematical induction",
+      "difficulty": "medium"
+    },
+    {
+      "question": "How many ways can 3 books be arranged in a row on a shelf (a permutation of 3 distinct items)?",
+      "options": ["6", "3", "9", "27"],
+      "correct_answer": "6",
+      "explanation": "The number of arrangements of 3 distinct items is 3! = 3 × 2 × 1 = 6.",
+      "topic": "Elementary combinatorics",
+      "difficulty": "easy"
+    }
+  ]
+}

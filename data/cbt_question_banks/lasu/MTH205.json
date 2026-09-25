@@ -1,0 +1,248 @@
+{
+  "course_code": "MTH205",
+  "title": "Linear Algebra II",
+  "level": "200",
+  "source_note": "Standard NUC-aligned Nigerian university 200L Linear Algebra II curriculum, building on Linear Algebra I: linear transformations and their matrix representations, eigenvalues/eigenvectors, diagonalization, inner product spaces, orthogonality, Gram-Schmidt orthogonalization, and quadratic forms.",
+  "questions": [
+    {
+      "question": "A function T: V → W between vector spaces is called a linear transformation if, for all vectors u, v and scalar c, it satisfies:",
+      "options": ["T(u + v) = T(u) + T(v) and T(cu) = cT(u)", "T(u + v) = T(u) × T(v)", "T(u) = T(v) whenever u ≠ v", "T maps every vector to the zero vector"],
+      "correct_answer": "T(u + v) = T(u) + T(v) and T(cu) = cT(u)",
+      "explanation": "Linearity requires additivity and homogeneity: the transformation preserves vector addition and scalar multiplication.",
+      "topic": "Linear transformations",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Every linear transformation T: ℝ^n → ℝ^m can be represented, relative to fixed bases, by:",
+      "options": ["An m×n matrix A such that T(x) = Ax", "A single real number", "A system of nonlinear equations", "An n×n identity matrix always"],
+      "correct_answer": "An m×n matrix A such that T(x) = Ax",
+      "explanation": "Once bases are fixed for the domain and codomain, a linear transformation corresponds uniquely to a matrix acting by multiplication.",
+      "topic": "Linear transformations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The kernel of a linear transformation T: V → W is:",
+      "options": ["{v ∈ V : T(v) = 0}", "{w ∈ W : T(v) = w for some v}", "The set of all eigenvalues of T", "The identity matrix of T"],
+      "correct_answer": "{v ∈ V : T(v) = 0}",
+      "explanation": "The kernel (null space) of T consists of all vectors in the domain that are mapped to the zero vector in the codomain.",
+      "topic": "Linear transformations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A linear transformation T is injective (one-to-one) if and only if:",
+      "options": ["ker(T) = {0}", "ker(T) = V", "T is represented by a square matrix", "The image of T is all of W"],
+      "correct_answer": "ker(T) = {0}",
+      "explanation": "A linear transformation is injective exactly when its kernel contains only the zero vector, since T(u) = T(v) implies T(u − v) = 0.",
+      "topic": "Linear transformations",
+      "difficulty": "hard"
+    },
+    {
+      "question": "For a square matrix A, a nonzero vector v satisfying Av = λv for some scalar λ is called:",
+      "options": ["An eigenvector of A, with eigenvalue λ", "The determinant of A", "A basis vector for ℝ^n", "A null vector of A"],
+      "correct_answer": "An eigenvector of A, with eigenvalue λ",
+      "explanation": "By definition, an eigenvector is a nonzero vector whose direction is unchanged (only scaled) by A, and λ is the associated eigenvalue.",
+      "topic": "Eigenvalues and eigenvectors",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The eigenvalues of a square matrix A are found by solving which equation?",
+      "options": ["det(A − λI) = 0", "det(A) = λ", "A + λI = 0", "trace(A) = λ"],
+      "correct_answer": "det(A − λI) = 0",
+      "explanation": "This is the characteristic equation; its roots are precisely the eigenvalues of A.",
+      "topic": "Eigenvalues and eigenvectors",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What are the eigenvalues of the matrix A = [[2, 0], [0, 3]]?",
+      "options": ["2 and 3", "0 and 5", "2 and 0", "5 and 6"],
+      "correct_answer": "2 and 3",
+      "explanation": "For a diagonal matrix, the eigenvalues are exactly the diagonal entries, here 2 and 3.",
+      "topic": "Eigenvalues and eigenvectors",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Find the eigenvalues of the matrix A = [[4, 1], [2, 3]].",
+      "options": ["5 and 2", "4 and 3", "1 and 6", "7 and 0"],
+      "correct_answer": "5 and 2",
+      "explanation": "The characteristic equation is (4−λ)(3−λ) − 2 = λ² − 7λ + 10 = 0, which factors as (λ−5)(λ−2) = 0, giving λ = 5, 2.",
+      "topic": "Eigenvalues and eigenvectors",
+      "difficulty": "hard"
+    },
+    {
+      "question": "For any square matrix A, the sum of its eigenvalues equals:",
+      "options": ["The trace of A", "The determinant of A", "The rank of A", "Zero"],
+      "correct_answer": "The trace of A",
+      "explanation": "A standard result of linear algebra: the sum of the eigenvalues (with multiplicity) of A equals trace(A).",
+      "topic": "Eigenvalues and eigenvectors",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For any square matrix A, the product of its eigenvalues equals:",
+      "options": ["The determinant of A", "The trace of A", "The rank of A", "One"],
+      "correct_answer": "The determinant of A",
+      "explanation": "The determinant of A equals the product of all its eigenvalues (counted with multiplicity).",
+      "topic": "Eigenvalues and eigenvectors",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A square matrix A is diagonalizable if:",
+      "options": ["There exists an invertible matrix P such that P⁻¹AP is a diagonal matrix", "A is already the zero matrix", "det(A) = 0", "A has no real eigenvalues"],
+      "correct_answer": "There exists an invertible matrix P such that P⁻¹AP is a diagonal matrix",
+      "explanation": "Diagonalizability means A is similar to a diagonal matrix, which requires n linearly independent eigenvectors for an n×n matrix.",
+      "topic": "Diagonalization",
+      "difficulty": "medium"
+    },
+    {
+      "question": "An n×n matrix A is guaranteed to be diagonalizable if:",
+      "options": ["It has n distinct eigenvalues", "It is the zero matrix", "It is singular", "It has repeated eigenvalues"],
+      "correct_answer": "It has n distinct eigenvalues",
+      "explanation": "Distinct eigenvalues always yield linearly independent eigenvectors, so an n×n matrix with n distinct eigenvalues is always diagonalizable.",
+      "topic": "Diagonalization",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In the diagonalization A = PDP⁻¹, what do the columns of P represent?",
+      "options": ["The eigenvectors of A", "The eigenvalues of A", "The rows of the identity matrix", "The determinant of A"],
+      "correct_answer": "The eigenvectors of A",
+      "explanation": "P is constructed from linearly independent eigenvectors of A as its columns, while D holds the corresponding eigenvalues on its diagonal.",
+      "topic": "Diagonalization",
+      "difficulty": "medium"
+    },
+    {
+      "question": "An inner product on a real vector space V is a function ⟨·,·⟩: V×V → ℝ that must satisfy:",
+      "options": ["Symmetry, bilinearity, and positive-definiteness (⟨v,v⟩ ≥ 0, equal to 0 only if v = 0)", "Only symmetry", "⟨v,v⟩ = 0 for all v", "Antisymmetry only"],
+      "correct_answer": "Symmetry, bilinearity, and positive-definiteness (⟨v,v⟩ ≥ 0, equal to 0 only if v = 0)",
+      "explanation": "These are the defining axioms of an inner product, generalizing the familiar dot product.",
+      "topic": "Inner product spaces",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The standard (dot product) inner product of vectors u = (1, 2, 3) and v = (4, 0, −1) in ℝ^3 is:",
+      "options": ["1", "4", "−3", "7"],
+      "correct_answer": "1",
+      "explanation": "⟨u,v⟩ = (1)(4) + (2)(0) + (3)(−1) = 4 + 0 − 3 = 1.",
+      "topic": "Inner product spaces",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Two vectors u and v in an inner product space are said to be orthogonal if:",
+      "options": ["⟨u, v⟩ = 0", "⟨u, v⟩ = 1", "u = v", "u and v have the same magnitude"],
+      "correct_answer": "⟨u, v⟩ = 0",
+      "explanation": "Orthogonality generalizes perpendicularity and is defined by a vanishing inner product.",
+      "topic": "Orthogonality",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The norm (length) of a vector v in an inner product space is defined as:",
+      "options": ["√⟨v, v⟩", "⟨v, v⟩", "⟨v, v⟩²", "The largest component of v"],
+      "correct_answer": "√⟨v, v⟩",
+      "explanation": "The induced norm is the square root of the inner product of the vector with itself.",
+      "topic": "Inner product spaces",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A set of vectors is called orthonormal if:",
+      "options": ["The vectors are pairwise orthogonal and each has unit norm", "The vectors are pairwise orthogonal but may have any length", "All vectors point in the same direction", "The set contains the zero vector"],
+      "correct_answer": "The vectors are pairwise orthogonal and each has unit norm",
+      "explanation": "Orthonormal sets combine mutual orthogonality (zero inner products between distinct vectors) with each vector normalized to length 1.",
+      "topic": "Orthogonality",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Gram-Schmidt process is used to:",
+      "options": ["Convert a linearly independent set of vectors into an orthogonal (or orthonormal) set spanning the same subspace", "Find the determinant of a matrix", "Solve a system of nonlinear equations", "Compute the trace of a matrix"],
+      "correct_answer": "Convert a linearly independent set of vectors into an orthogonal (or orthonormal) set spanning the same subspace",
+      "explanation": "Gram-Schmidt orthogonalization systematically subtracts projections to build an orthogonal basis from any linearly independent set.",
+      "topic": "Gram-Schmidt process",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the Gram-Schmidt process, the projection of vector v onto vector u is given by:",
+      "options": ["(⟨v, u⟩ / ⟨u, u⟩) u", "⟨v, u⟩ / ⟨u, u⟩", "⟨v, u⟩ × u", "u / ⟨v, u⟩"],
+      "correct_answer": "(⟨v, u⟩ / ⟨u, u⟩) u",
+      "explanation": "The orthogonal projection formula scales u by the ratio of the inner products, giving a vector in the direction of u.",
+      "topic": "Gram-Schmidt process",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A square matrix Q is called orthogonal if:",
+      "options": ["Q^T Q = I", "Q = Q^T", "det(Q) = 0", "Q has all positive entries"],
+      "correct_answer": "Q^T Q = I",
+      "explanation": "An orthogonal matrix satisfies Q^T Q = I, equivalently Q^T = Q⁻¹, meaning its columns form an orthonormal set.",
+      "topic": "Orthogonality",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For any real symmetric matrix A, which important property holds according to the Spectral Theorem?",
+      "options": ["A is orthogonally diagonalizable with real eigenvalues", "A always has complex eigenvalues", "A cannot be diagonalized", "det(A) is always negative"],
+      "correct_answer": "A is orthogonally diagonalizable with real eigenvalues",
+      "explanation": "The Spectral Theorem guarantees real symmetric matrices have real eigenvalues and can be diagonalized by an orthogonal matrix.",
+      "topic": "Diagonalization",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A quadratic form in variables x1, x2, ..., xn is an expression of the form:",
+      "options": ["x^T A x for a symmetric matrix A", "Ax + b for a matrix A and vector b", "det(A) × x", "A linear combination of the xi with no products of variables"],
+      "correct_answer": "x^T A x for a symmetric matrix A",
+      "explanation": "A quadratic form is a homogeneous degree-two polynomial in the variables, expressible as x^T A x for a symmetric matrix A.",
+      "topic": "Quadratic forms",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A quadratic form x^T A x is called positive definite if:",
+      "options": ["x^T A x > 0 for every nonzero vector x", "x^T A x = 0 for every x", "x^T A x < 0 for every nonzero vector x", "A is not symmetric"],
+      "correct_answer": "x^T A x > 0 for every nonzero vector x",
+      "explanation": "Positive definiteness requires the quadratic form to be strictly positive for all nonzero input vectors.",
+      "topic": "Quadratic forms",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A symmetric matrix A is positive definite if and only if:",
+      "options": ["All its eigenvalues are positive", "All its eigenvalues are negative", "Its determinant is zero", "It is the identity matrix"],
+      "correct_answer": "All its eigenvalues are positive",
+      "explanation": "A standard criterion states a symmetric matrix is positive definite exactly when every eigenvalue is strictly positive.",
+      "topic": "Quadratic forms",
+      "difficulty": "hard"
+    },
+    {
+      "question": "What is the geometric multiplicity of an eigenvalue λ of matrix A?",
+      "options": ["The dimension of the eigenspace corresponding to λ", "The number of times λ appears as a root of the characteristic polynomial", "The value of λ itself", "The trace of A"],
+      "correct_answer": "The dimension of the eigenspace corresponding to λ",
+      "explanation": "Geometric multiplicity is the dimension of ker(A − λI), i.e. the number of linearly independent eigenvectors for that eigenvalue, as opposed to algebraic multiplicity which counts root repetition.",
+      "topic": "Eigenvalues and eigenvectors",
+      "difficulty": "hard"
+    },
+    {
+      "question": "If A is an n×n matrix with eigenvalue λ having eigenvector v, then for any positive integer k, A^k v equals:",
+      "options": ["λ^k v", "kλv", "λv^k", "v/λ^k"],
+      "correct_answer": "λ^k v",
+      "explanation": "Applying A repeatedly to an eigenvector just scales it by λ each time, so A^k v = λ^k v.",
+      "topic": "Eigenvalues and eigenvectors",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Two vectors (1, 2) and (−2, 1) in ℝ^2 are:",
+      "options": ["Orthogonal, since their dot product is zero", "Parallel", "Equal", "Linearly dependent"],
+      "correct_answer": "Orthogonal, since their dot product is zero",
+      "explanation": "The dot product is (1)(−2) + (2)(1) = −2 + 2 = 0, confirming orthogonality.",
+      "topic": "Orthogonality",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The change-of-basis matrix P used in diagonalization must be invertible because:",
+      "options": ["Its columns (the eigenvectors) must be linearly independent to form a basis", "It must have determinant zero", "It represents a non-square transformation", "It always equals the identity matrix"],
+      "correct_answer": "Its columns (the eigenvectors) must be linearly independent to form a basis",
+      "explanation": "For P⁻¹AP to make sense and produce a diagonal matrix, the eigenvectors forming P's columns must be linearly independent, which is equivalent to P being invertible.",
+      "topic": "Diagonalization",
+      "difficulty": "hard"
+    },
+    {
+      "question": "If A is a linear transformation matrix and λ = 0 is an eigenvalue of A, what does this tell us about A?",
+      "options": ["A is singular (non-invertible)", "A is the identity matrix", "A has full rank", "A is orthogonal"],
+      "correct_answer": "A is singular (non-invertible)",
+      "explanation": "Since det(A) equals the product of the eigenvalues, having λ = 0 as an eigenvalue forces det(A) = 0, so A is not invertible.",
+      "topic": "Eigenvalues and eigenvectors",
+      "difficulty": "medium"
+    }
+  ]
+}

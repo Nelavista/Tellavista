@@ -1,0 +1,250 @@
+{
+  "course_code": "MTH402",
+  "title": "Theory of Partial Differential Equations",
+  "level": "400",
+  "source_note": "Standard NUC-aligned Nigerian university 400L PDE curriculum: classification of second-order PDEs, first-order PDEs and the method of characteristics, the classical wave, heat and Laplace equations, and separation of variables/Fourier series solution methods.",
+  "questions": [
+    {
+      "question": "A partial differential equation (PDE) differs from an ordinary differential equation (ODE) in that a PDE:",
+      "options": ["Involves partial derivatives with respect to two or more independent variables", "Has only one independent variable", "Cannot be linear", "Never has boundary conditions"],
+      "correct_answer": "Involves partial derivatives with respect to two or more independent variables",
+      "explanation": "PDEs involve functions of several independent variables and their partial derivatives, unlike ODEs which involve a single independent variable.",
+      "topic": "Introduction to PDEs",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The order of a PDE is determined by:",
+      "options": ["The highest-order partial derivative appearing in the equation", "The number of independent variables", "The number of terms in the equation", "The degree of the dependent variable"],
+      "correct_answer": "The highest-order partial derivative appearing in the equation",
+      "explanation": "Just as with ODEs, the order of a PDE is defined by its highest derivative, regardless of how many variables are involved.",
+      "topic": "Introduction to PDEs",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A general second-order linear PDE in two variables Auxx + Buxy + Cuyy + ... = 0 is classified as elliptic when:",
+      "options": ["B^2 - 4AC < 0", "B^2 - 4AC = 0", "B^2 - 4AC > 0", "A = C = 0"],
+      "correct_answer": "B^2 - 4AC < 0",
+      "explanation": "This discriminant condition mirrors the classification of conics; a negative discriminant classifies the PDE as elliptic (e.g. Laplace's equation).",
+      "topic": "Classification of PDEs",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A second-order linear PDE is classified as parabolic when its discriminant B^2 - 4AC equals:",
+      "options": ["0", "A negative number", "A positive number", "Infinity"],
+      "correct_answer": "0",
+      "explanation": "A vanishing discriminant classifies the PDE as parabolic, the type exhibited by the heat/diffusion equation.",
+      "topic": "Classification of PDEs",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A second-order linear PDE is classified as hyperbolic when its discriminant B^2 - 4AC is:",
+      "options": ["Positive", "Zero", "Negative", "Undefined"],
+      "correct_answer": "Positive",
+      "explanation": "A positive discriminant classifies the PDE as hyperbolic, the type exhibited by the classical wave equation.",
+      "topic": "Classification of PDEs",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The one-dimensional heat (diffusion) equation is written as:",
+      "options": ["∂u/∂t = k ∂²u/∂x²", "∂²u/∂t² = k ∂²u/∂x²", "∂u/∂x = k ∂u/∂t", "∂²u/∂t² = k ∂u/∂x"],
+      "correct_answer": "∂u/∂t = k ∂²u/∂x²",
+      "explanation": "The heat equation is a parabolic PDE relating the first time derivative to the second spatial derivative, with k the thermal diffusivity.",
+      "topic": "The heat equation",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The one-dimensional wave equation for a vibrating string is written as:",
+      "options": ["∂²u/∂t² = c² ∂²u/∂x²", "∂u/∂t = c² ∂²u/∂x²", "∂²u/∂t² = c ∂u/∂x", "∂²u/∂x² = c ∂u/∂t"],
+      "correct_answer": "∂²u/∂t² = c² ∂²u/∂x²",
+      "explanation": "The classical wave equation relates the second time derivative to the second spatial derivative, with c the wave propagation speed.",
+      "topic": "The wave equation",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Laplace's equation in two dimensions is written as:",
+      "options": ["∂²u/∂x² + ∂²u/∂y² = 0", "∂²u/∂x² - ∂²u/∂y² = 0", "∂u/∂x + ∂u/∂y = 0", "∂²u/∂x² + ∂²u/∂y² = 1"],
+      "correct_answer": "∂²u/∂x² + ∂²u/∂y² = 0",
+      "explanation": "Laplace's equation, the prototype elliptic PDE, requires the sum of the unmixed second partial derivatives (the Laplacian) to vanish.",
+      "topic": "Laplace's equation",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A function satisfying Laplace's equation is called:",
+      "options": ["A harmonic function", "A holomorphic function", "An eigenfunction", "A linear function"],
+      "correct_answer": "A harmonic function",
+      "explanation": "By definition, harmonic functions are precisely the solutions to Laplace's equation.",
+      "topic": "Laplace's equation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A first-order linear PDE of the form P(x,y) ∂u/∂x + Q(x,y) ∂u/∂y = R(x,y) can be solved using:",
+      "options": ["Lagrange's method of characteristics", "Simpson's Rule", "The Laplace transform only", "Separation of variables only"],
+      "correct_answer": "Lagrange's method of characteristics",
+      "explanation": "Lagrange's method reduces the first-order linear PDE to solving the auxiliary system dx/P = dy/Q = du/R along characteristic curves.",
+      "topic": "First-order PDEs",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In Lagrange's method, the auxiliary equations for Pux + Quy = R are:",
+      "options": ["dx/P = dy/Q = du/R", "dx/Q = dy/P = du/R", "dx = dy = du", "P dx = Q dy = R du^{-1}"],
+      "correct_answer": "dx/P = dy/Q = du/R",
+      "explanation": "This system of ordinary differential equations defines the characteristic curves along which the PDE reduces to simpler relations.",
+      "topic": "First-order PDEs",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Characteristic curves of a PDE are significant because:",
+      "options": ["Along them, the PDE reduces to an ordinary differential equation, and information/discontinuities propagate along them", "They are always straight lines regardless of the PDE", "They only exist for elliptic PDEs", "They represent points where no solution exists"],
+      "correct_answer": "Along them, the PDE reduces to an ordinary differential equation, and information/discontinuities propagate along them",
+      "explanation": "Characteristics are curves along which the PDE simplifies, and for hyperbolic PDEs, they carry the propagation of wave-like disturbances.",
+      "topic": "Method of characteristics",
+      "difficulty": "hard"
+    },
+    {
+      "question": "D'Alembert's solution to the wave equation utt = c²uxx with initial conditions u(x,0)=f(x), ut(x,0)=g(x) is given by:",
+      "options": [
+        "u(x,t) = (1/2)[f(x+ct) + f(x-ct)] + (1/2c)∫_{x-ct}^{x+ct} g(s) ds",
+        "u(x,t) = f(x)g(t)",
+        "u(x,t) = f(x+ct) - f(x-ct)",
+        "u(x,t) = f(x) + ct"
+      ],
+      "correct_answer": "u(x,t) = (1/2)[f(x+ct) + f(x-ct)] + (1/2c)∫_{x-ct}^{x+ct} g(s) ds",
+      "explanation": "This closed-form solution to the 1D wave equation on the infinite line uses the general solution as a superposition of forward and backward traveling waves.",
+      "topic": "The wave equation",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The general solution of the 1D wave equation utt = c²uxx (without initial/boundary conditions applied) can be written as:",
+      "options": ["u(x,t) = F(x+ct) + G(x-ct), for arbitrary functions F and G", "u(x,t) = F(x)G(t) only", "u(x,t) = c(x+t)", "u(x,t) = F(x)/G(t)"],
+      "correct_answer": "u(x,t) = F(x+ct) + G(x-ct), for arbitrary functions F and G",
+      "explanation": "This is d'Alembert's general solution, representing the superposition of two waves traveling in opposite directions at speed c.",
+      "topic": "The wave equation",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The method of separation of variables assumes a solution of the PDE can be written as:",
+      "options": ["A product of functions, each depending on only one of the independent variables, e.g. u(x,t) = X(x)T(t)", "A sum of the independent variables", "A single function of all variables combined into one", "Only the boundary values"],
+      "correct_answer": "A product of functions, each depending on only one of the independent variables, e.g. u(x,t) = X(x)T(t)",
+      "explanation": "This product ansatz allows the PDE to be split into separate ODEs for each factor, each depending on only one variable, connected via a separation constant.",
+      "topic": "Separation of variables",
+      "difficulty": "medium"
+    },
+    {
+      "question": "When separating variables for the heat equation ut = k uxx with u = X(x)T(t), the resulting equations typically take the form:",
+      "options": ["X''/X = T'/(kT) = -λ, a separation constant", "X' = T'', unrelated to λ", "X = T always", "X''+T''=0"],
+      "correct_answer": "X''/X = T'/(kT) = -λ, a separation constant",
+      "explanation": "Since the left side depends only on x and the right only on t, both must equal a constant (-λ), splitting the PDE into two ODEs.",
+      "topic": "Separation of variables",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In solving boundary value problems via separation of variables, the values of the separation constant λ for which nontrivial solutions exist are called:",
+      "options": ["Eigenvalues (with corresponding eigenfunctions)", "Boundary values", "Characteristics", "Green's functions"],
+      "correct_answer": "Eigenvalues (with corresponding eigenfunctions)",
+      "explanation": "The boundary conditions restrict λ to a discrete set of eigenvalues, each associated with an eigenfunction solving the spatial ODE.",
+      "topic": "Separation of variables",
+      "difficulty": "hard"
+    },
+    {
+      "question": "After separation of variables, the final solution to a PDE with given boundary conditions is typically expressed as:",
+      "options": ["An infinite series (Fourier series) summing the product solutions weighted by coefficients determined from initial conditions", "A single product solution only", "A polynomial of fixed degree", "The average of the boundary values"],
+      "correct_answer": "An infinite series (Fourier series) summing the product solutions weighted by coefficients determined from initial conditions",
+      "explanation": "Because the PDE is linear, a superposition (Fourier series) of the eigenfunction solutions is used to match arbitrary initial/boundary data.",
+      "topic": "Fourier series solutions",
+      "difficulty": "hard"
+    },
+    {
+      "question": "For the heat equation on [0,L] with u(0,t)=u(L,t)=0, the spatial eigenfunctions are typically:",
+      "options": ["sin(nπx/L) for n = 1,2,3,...", "cos(nπx/L) for n = 1,2,3,...", "e^{nx}", "x^n"],
+      "correct_answer": "sin(nπx/L) for n = 1,2,3,...",
+      "explanation": "Homogeneous Dirichlet boundary conditions (zero at both ends) select sine eigenfunctions that vanish at x=0 and x=L.",
+      "topic": "Fourier series solutions",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Boundary conditions that specify the value of the solution u itself on the boundary are called:",
+      "options": ["Dirichlet boundary conditions", "Neumann boundary conditions", "Robin (mixed) boundary conditions", "Periodic boundary conditions"],
+      "correct_answer": "Dirichlet boundary conditions",
+      "explanation": "Dirichlet conditions prescribe the function's value directly on the boundary, as opposed to Neumann conditions which prescribe the normal derivative.",
+      "topic": "Boundary conditions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Boundary conditions that specify the normal derivative (e.g. ∂u/∂n) on the boundary are called:",
+      "options": ["Neumann boundary conditions", "Dirichlet boundary conditions", "Initial conditions", "Homogeneous conditions only"],
+      "correct_answer": "Neumann boundary conditions",
+      "explanation": "Neumann conditions prescribe the derivative of the solution (e.g. flux) rather than its value, common in heat-flow problems with insulated boundaries.",
+      "topic": "Boundary conditions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A Robin (mixed) boundary condition is a linear combination of:",
+      "options": ["The function value and its normal derivative on the boundary", "Two initial conditions only", "Two Dirichlet conditions", "The eigenvalue and eigenfunction"],
+      "correct_answer": "The function value and its normal derivative on the boundary",
+      "explanation": "Robin conditions combine both Dirichlet-type and Neumann-type information, as in modeling convective heat exchange at a boundary.",
+      "topic": "Boundary conditions",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A well-posed PDE problem (in the Hadamard sense) requires that a solution:",
+      "options": ["Exists, is unique, and depends continuously on the given data", "Is always expressible in closed form", "Has no boundary conditions", "Is independent of initial conditions"],
+      "correct_answer": "Exists, is unique, and depends continuously on the given data",
+      "explanation": "Hadamard's well-posedness criteria (existence, uniqueness, stability/continuous dependence) are central to the theory of PDEs.",
+      "topic": "Well-posed problems",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The principle of superposition for linear homogeneous PDEs states that:",
+      "options": ["If u1 and u2 are solutions, then any linear combination c1u1 + c2u2 is also a solution", "Only one solution can exist", "Solutions cannot be added together", "It applies only to nonlinear PDEs"],
+      "correct_answer": "If u1 and u2 are solutions, then any linear combination c1u1 + c2u2 is also a solution",
+      "explanation": "Linearity of the PDE and its homogeneous boundary conditions guarantees that linear combinations of solutions remain solutions.",
+      "topic": "Linear PDEs",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which of the following is an example of a quasi-linear PDE (linear in its highest-order derivatives but not necessarily in lower-order terms)?",
+      "options": ["u ∂u/∂x + ∂u/∂y = 0 (a form of the inviscid Burgers' equation)", "∂²u/∂x² + ∂²u/∂y² = 0", "∂u/∂t = k ∂²u/∂x²", "∂²u/∂t² = c² ∂²u/∂x²"],
+      "correct_answer": "u ∂u/∂x + ∂u/∂y = 0 (a form of the inviscid Burgers' equation)",
+      "explanation": "This equation is linear in the highest derivatives (∂u/∂x, ∂u/∂y) but the coefficient u itself is the unknown function, making it quasi-linear rather than fully linear.",
+      "topic": "Classification of PDEs",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The two-dimensional Laplace equation in polar coordinates (r,θ) is written as:",
+      "options": ["∂²u/∂r² + (1/r)∂u/∂r + (1/r²)∂²u/∂θ² = 0", "∂²u/∂r² + ∂²u/∂θ² = 0", "∂u/∂r = ∂u/∂θ", "r∂²u/∂θ² = 0"],
+      "correct_answer": "∂²u/∂r² + (1/r)∂u/∂r + (1/r²)∂²u/∂θ² = 0",
+      "explanation": "Transforming the Cartesian Laplacian into polar coordinates introduces the extra first-derivative and curvature terms shown here.",
+      "topic": "Laplace's equation",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Poisson's equation differs from Laplace's equation in that:",
+      "options": ["It has a nonzero right-hand side (source) term: ∇²u = f(x,y)", "It is first-order", "It has no boundary conditions", "It cannot be solved by separation of variables"],
+      "correct_answer": "It has a nonzero right-hand side (source) term: ∇²u = f(x,y)",
+      "explanation": "Poisson's equation generalizes Laplace's equation by allowing a nonzero forcing/source function f on the right-hand side.",
+      "topic": "Laplace's equation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The maximum principle for harmonic functions states that:",
+      "options": [
+        "A harmonic function on a bounded domain attains its maximum (and minimum) value on the boundary of the domain",
+        "A harmonic function always attains its maximum at the centre of the domain",
+        "Harmonic functions have no maximum or minimum",
+        "The maximum value is always zero"
+      ],
+      "correct_answer": "A harmonic function on a bounded domain attains its maximum (and minimum) value on the boundary of the domain",
+      "explanation": "This important property of solutions to Laplace's equation follows from the mean value property of harmonic functions.",
+      "topic": "Laplace's equation",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In the heat equation, the parabolic classification reflects the physical fact that:",
+      "options": ["Heat diffuses instantaneously (in the idealized model) and irreversibly, smoothing out initial temperature variations over time", "Heat propagates as a wave with finite speed and no dissipation", "There is no time dependence in heat conduction", "Temperature oscillates periodically forever without damping"],
+      "correct_answer": "Heat diffuses instantaneously (in the idealized model) and irreversibly, smoothing out initial temperature variations over time",
+      "explanation": "Parabolic PDEs like the heat equation model diffusive, irreversible smoothing processes, distinct from the reversible, finite-speed propagation of hyperbolic wave equations.",
+      "topic": "Classification of PDEs",
+      "difficulty": "hard"
+    }
+  ]
+}

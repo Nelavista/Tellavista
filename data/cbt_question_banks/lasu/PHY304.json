@@ -1,0 +1,272 @@
+{
+  "course_code": "PHY304",
+  "title": "Electromagnetic Theory",
+  "level": "300",
+  "source_note": "Standard NUC-aligned Nigerian university 300L Electromagnetic Theory curriculum: vector calculus applied to fields, electrostatics (Coulomb's and Gauss's laws), electric potential and energy, conductors, dielectrics and polarization, Laplace/Poisson boundary value problems, magnetostatics (Biot-Savart and Ampere's laws), magnetic materials, electromagnetic induction, Maxwell's equations, and electromagnetic waves.",
+  "questions": [
+    {
+      "question": "The electric field E is related to the electrostatic potential V by",
+      "options": ["E = -grad(V)", "E = grad(V)", "E = -dV/dt", "E = curl(V)"],
+      "correct_answer": "E = -grad(V)",
+      "explanation": "The electrostatic field is conservative and derivable from a scalar potential as the negative gradient, E = -grad(V), so field lines point from high to low potential.",
+      "topic": "Vector calculus and fields",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The divergence theorem (Gauss's mathematical theorem) states that the volume integral of the divergence of a vector field over a region equals",
+      "options": ["the flux of the field through the closed surface bounding that region", "the line integral of the field around a closed loop", "the curl of the field integrated over the volume", "the gradient of the field at the centroid"],
+      "correct_answer": "the flux of the field through the closed surface bounding that region",
+      "explanation": "The divergence theorem converts a volume integral of div(F) into a surface integral of F over the boundary, and underlies the integral form of Gauss's law.",
+      "topic": "Vector calculus and fields",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For an electrostatic field E, which of the following always holds?",
+      "options": ["curl(E) = 0", "div(E) = 0 everywhere", "curl(E) is nonzero in charge-free regions", "E is independent of position"],
+      "correct_answer": "curl(E) = 0",
+      "explanation": "A static electric field is conservative, so its curl vanishes everywhere; this is equivalent to Faraday's law with no time-varying magnetic field.",
+      "topic": "Vector calculus and fields",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Coulomb's law gives the force between two point charges q1 and q2 separated by distance r as",
+      "options": ["F = k*q1*q2/r^2", "F = k*q1*q2/r", "F = k*q1*q2*r", "F = k*(q1+q2)/r^2"],
+      "correct_answer": "F = k*q1*q2/r^2",
+      "explanation": "Coulomb's law is an inverse-square law: F = k*q1*q2/r^2, where k = 1/(4*pi*epsilon_0).",
+      "topic": "Electrostatics",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Gauss's law states that the total electric flux through a closed surface equals",
+      "options": ["the enclosed charge divided by epsilon_0", "the enclosed charge multiplied by epsilon_0", "the total charge in the universe", "zero, always"],
+      "correct_answer": "the enclosed charge divided by epsilon_0",
+      "explanation": "Gauss's law, integral(E.dA) = Q_enc/epsilon_0, is one of Maxwell's equations and follows directly from Coulomb's law.",
+      "topic": "Electrostatics",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Using Gauss's law, the electric field due to an infinite plane sheet of surface charge density sigma is",
+      "options": ["sigma/(2*epsilon_0), directed perpendicular to the sheet", "sigma/epsilon_0", "sigma/(4*pi*epsilon_0)", "zero everywhere outside the sheet"],
+      "correct_answer": "sigma/(2*epsilon_0), directed perpendicular to the sheet",
+      "explanation": "Applying Gauss's law to a pillbox straddling an infinite charged sheet gives a uniform field of magnitude sigma/(2*epsilon_0) on each side, directed away from (or toward) the sheet.",
+      "topic": "Electrostatics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The capacitance of a parallel-plate capacitor with plate area A, separation d, and vacuum between the plates is",
+      "options": ["C = epsilon_0*A/d", "C = epsilon_0*d/A", "C = epsilon_0*A*d", "C = A/(epsilon_0*d)"],
+      "correct_answer": "C = epsilon_0*A/d",
+      "explanation": "For a parallel-plate capacitor, C = Q/V, and using Gauss's law and V = Ed for a uniform field gives C = epsilon_0*A/d.",
+      "topic": "Electrostatics",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Electric field lines and equipotential surfaces are always",
+      "options": ["perpendicular to each other", "parallel to each other", "at 45 degrees to each other", "unrelated in direction"],
+      "correct_answer": "perpendicular to each other",
+      "explanation": "Since E = -grad(V) points in the direction of steepest decrease of V, it must be perpendicular to surfaces of constant V (equipotentials).",
+      "topic": "Electric potential",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The electrostatic potential energy of two point charges q1 and q2 separated by distance r is",
+      "options": ["U = k*q1*q2/r", "U = k*q1*q2/r^2", "U = k*(q1+q2)/r", "U = -k*q1*q2*r"],
+      "correct_answer": "U = k*q1*q2/r",
+      "explanation": "Integrating Coulomb's force from infinity to separation r gives the potential energy U = k*q1*q2/r, with U = 0 taken at infinite separation.",
+      "topic": "Electric potential",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In electrostatic equilibrium, the electric field inside a conductor is",
+      "options": ["zero everywhere", "maximum at the center", "equal to the field just outside the surface", "dependent on the conductor's shape only"],
+      "correct_answer": "zero everywhere",
+      "explanation": "Free charges in a conductor rearrange until the internal field vanishes; otherwise they would continue to experience a net force and be in motion, contradicting equilibrium.",
+      "topic": "Conductors",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Excess charge placed on an isolated conductor resides",
+      "options": ["entirely on its outer surface", "uniformly throughout its volume", "only at its geometric center", "only at sharp corners, never on flat surfaces"],
+      "correct_answer": "entirely on its outer surface",
+      "explanation": "Since the field inside a conductor in equilibrium is zero, Gauss's law applied to any interior surface shows there can be no net charge in the bulk, so all excess charge resides on the outer surface.",
+      "topic": "Conductors",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The electric displacement field D in a dielectric medium is related to the electric field E and polarization P by",
+      "options": ["D = epsilon_0*E + P", "D = epsilon_0*E - P", "D = P/epsilon_0", "D = epsilon_0*E*P"],
+      "correct_answer": "D = epsilon_0*E + P",
+      "explanation": "D is defined as D = epsilon_0*E + P so that Gauss's law in terms of D, div(D) = rho_free, involves only free charge, with bound charge accounted for by P.",
+      "topic": "Dielectrics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Inserting a dielectric of relative permittivity (dielectric constant) K > 1 between the plates of an isolated, charged parallel-plate capacitor",
+      "options": ["increases the capacitance by a factor of K while reducing the field and voltage", "decreases the capacitance by a factor of K", "leaves the capacitance unchanged but increases the charge", "has no effect on any capacitor property"],
+      "correct_answer": "increases the capacitance by a factor of K while reducing the field and voltage",
+      "explanation": "Polarization of the dielectric partially cancels the field between the plates, reducing V for fixed Q; since C = Q/V, capacitance increases by the factor K.",
+      "topic": "Dielectrics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Poisson's equation for the electrostatic potential in a region of charge density rho is",
+      "options": ["grad^2(V) = -rho/epsilon_0", "grad^2(V) = rho/epsilon_0", "grad(V) = -rho/epsilon_0", "grad^2(V) = 0"],
+      "correct_answer": "grad^2(V) = -rho/epsilon_0",
+      "explanation": "Combining E = -grad(V) with Gauss's law div(E) = rho/epsilon_0 gives Poisson's equation, grad^2(V) = -rho/epsilon_0.",
+      "topic": "Boundary value problems",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Laplace's equation, grad^2(V) = 0, applies to regions",
+      "options": ["free of charge (rho = 0)", "containing point charges only", "with uniform charge density", "where the field is zero"],
+      "correct_answer": "free of charge (rho = 0)",
+      "explanation": "Laplace's equation is the charge-free special case of Poisson's equation, used to solve for the potential in regions bounded by conductors carrying no volume charge.",
+      "topic": "Boundary value problems",
+      "difficulty": "medium"
+    },
+    {
+      "question": "At the interface between two dielectric media with no free surface charge, which component of the electric field is continuous across the boundary?",
+      "options": ["The tangential component of E", "The normal component of E", "Neither component is continuous", "Both components are discontinuous"],
+      "correct_answer": "The tangential component of E",
+      "explanation": "Applying Faraday's law (curl(E)=0) to a thin loop straddling the interface shows the tangential component of E must be continuous, while the normal component of D (not E) is continuous when there is no free surface charge.",
+      "topic": "Boundary value problems",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The method of images is a technique used to solve electrostatic boundary value problems by",
+      "options": ["replacing conducting boundaries with fictitious charges that reproduce the same boundary conditions in the region of interest", "directly integrating Coulomb's law over the entire conductor volume", "assuming the field is uniform everywhere", "ignoring boundary conditions altogether"],
+      "correct_answer": "replacing conducting boundaries with fictitious charges that reproduce the same boundary conditions in the region of interest",
+      "explanation": "By the uniqueness theorem, if fictitious 'image' charges placed outside the region of interest reproduce the correct boundary conditions (e.g., V = 0 on a grounded conductor), the resulting potential is the unique correct solution inside that region.",
+      "topic": "Boundary value problems",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The Biot-Savart law gives the magnetic field contribution dB due to a current element I*dl as being proportional to",
+      "options": ["(I*dl x r-hat)/r^2", "I*dl/r", "(I*dl . r-hat)/r^2", "I*dl x r"],
+      "correct_answer": "(I*dl x r-hat)/r^2",
+      "explanation": "The Biot-Savart law is dB = (mu_0/4*pi) * (I*dl x r-hat)/r^2, the magnetostatic analogue of Coulomb's law for a current element.",
+      "topic": "Magnetostatics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Ampere's circuital law states that the line integral of B around a closed loop equals",
+      "options": ["mu_0 times the current enclosed by the loop", "mu_0 times the total charge enclosed", "the magnetic flux through the loop", "zero for any current-carrying loop"],
+      "correct_answer": "mu_0 times the current enclosed by the loop",
+      "explanation": "Ampere's law, integral(B.dl) = mu_0*I_enc, relates the circulation of B around a closed path to the current passing through any surface bounded by that path.",
+      "topic": "Magnetostatics",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The magnetic field inside a long, tightly-wound solenoid with n turns per unit length carrying current I is",
+      "options": ["B = mu_0*n*I, uniform and directed along the axis", "B = mu_0*I/(2*pi*r)", "B = mu_0*n*I^2", "B = 0"],
+      "correct_answer": "B = mu_0*n*I, uniform and directed along the axis",
+      "explanation": "Applying Ampere's law to a rectangular loop through an ideal long solenoid gives a uniform interior field B = mu_0*n*I directed along the solenoid axis.",
+      "topic": "Magnetostatics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The magnetic field at perpendicular distance r from a long, straight current-carrying wire, found using Ampere's law, is",
+      "options": ["B = mu_0*I/(2*pi*r)", "B = mu_0*I/(4*pi*r^2)", "B = mu_0*I*r", "B = mu_0*I/r^2"],
+      "correct_answer": "B = mu_0*I/(2*pi*r)",
+      "explanation": "Applying Ampere's law to a circular Amperian loop of radius r centered on the wire gives B*(2*pi*r) = mu_0*I, so B = mu_0*I/(2*pi*r).",
+      "topic": "Magnetostatics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A diamagnetic material, when placed in an external magnetic field,",
+      "options": ["develops a weak magnetization opposing the applied field", "develops a magnetization aligned with the applied field and retains it after the field is removed", "is strongly attracted to the field source", "has permanently aligned magnetic domains"],
+      "correct_answer": "develops a weak magnetization opposing the applied field",
+      "explanation": "Diamagnetism arises from induced currents (Lenz's law at the atomic level) that oppose the applied field, giving a small negative magnetic susceptibility present in all materials.",
+      "topic": "Magnetic materials",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Ferromagnetic materials are characterized by",
+      "options": ["regions called domains within which atomic magnetic moments are aligned, giving strong magnetization", "the complete absence of magnetic moments", "magnetization that always opposes the applied field", "magnetic susceptibility that is always negative"],
+      "correct_answer": "regions called domains within which atomic magnetic moments are aligned, giving strong magnetization",
+      "explanation": "In ferromagnets, strong exchange interactions align neighboring atomic moments within domains; an external field grows or aligns domains, producing large, often permanent, magnetization.",
+      "topic": "Magnetic materials",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Faraday's law of electromagnetic induction states that the induced EMF in a loop equals",
+      "options": ["the negative rate of change of magnetic flux through the loop", "the magnetic flux through the loop", "the rate of change of the electric field", "the product of resistance and current"],
+      "correct_answer": "the negative rate of change of magnetic flux through the loop",
+      "explanation": "Faraday's law, EMF = -d(Phi_B)/dt, states that a changing magnetic flux through a circuit induces an EMF, with the minus sign encoding Lenz's law.",
+      "topic": "Electromagnetic induction",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Lenz's law states that the direction of an induced current is such that it",
+      "options": ["opposes the change in magnetic flux that produced it", "reinforces the change in magnetic flux that produced it", "is always clockwise", "depends only on the resistance of the loop"],
+      "correct_answer": "opposes the change in magnetic flux that produced it",
+      "explanation": "Lenz's law is a consequence of energy conservation: the induced current creates a magnetic field that opposes the change in flux causing it.",
+      "topic": "Electromagnetic induction",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A conducting rod of length L moves with speed v perpendicular to a uniform magnetic field B, with v, B, and L mutually perpendicular. The motional EMF induced across the rod is",
+      "options": ["EMF = BLv", "EMF = BL/v", "EMF = B/(Lv)", "EMF = BLv^2"],
+      "correct_answer": "EMF = BLv",
+      "explanation": "The magnetic force on charge carriers in the moving rod is qvB, which does work equivalent to an EMF of BLv along the rod's length.",
+      "topic": "Electromagnetic induction",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Maxwell added the displacement current term to Ampere's law primarily to",
+      "options": ["make the equations consistent with charge conservation and account for time-varying electric fields, such as in a charging capacitor", "eliminate the need for Gauss's law", "replace the concept of magnetic field entirely", "account for magnetic monopoles"],
+      "correct_answer": "make the equations consistent with charge conservation and account for time-varying electric fields, such as in a charging capacitor",
+      "explanation": "Without the displacement current term epsilon_0*(dE/dt), Ampere's law gives inconsistent results for surfaces bounded by the same loop when applied to a charging capacitor; Maxwell's correction resolves this and restores consistency with charge conservation.",
+      "topic": "Maxwell's equations",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The Maxwell equation div(B) = 0 expresses the physical fact that",
+      "options": ["magnetic monopoles have never been observed; magnetic field lines have no beginning or end", "electric charge is conserved", "electric fields are always conservative", "magnetic fields do not propagate as waves"],
+      "correct_answer": "magnetic monopoles have never been observed; magnetic field lines have no beginning or end",
+      "explanation": "Unlike electric field lines that begin and end on charges, magnetic field lines form closed loops with no sources or sinks, reflecting the absence of observed magnetic monopoles.",
+      "topic": "Maxwell's equations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In their differential form, Maxwell's equations in vacuum consist of",
+      "options": ["Gauss's law for E, Gauss's law for B, Faraday's law, and the Ampere-Maxwell law", "only Coulomb's law and Ampere's law", "Newton's laws combined with Gauss's law", "Ohm's law and Faraday's law only"],
+      "correct_answer": "Gauss's law for E, Gauss's law for B, Faraday's law, and the Ampere-Maxwell law",
+      "explanation": "The complete set of four Maxwell equations, together with the Lorentz force law, fully describes classical electromagnetism.",
+      "topic": "Maxwell's equations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Maxwell's equations predict that electromagnetic waves propagate in vacuum with speed",
+      "options": ["c = 1/sqrt(mu_0*epsilon_0)", "c = mu_0*epsilon_0", "c = sqrt(mu_0/epsilon_0)", "c = mu_0/epsilon_0"],
+      "correct_answer": "c = 1/sqrt(mu_0*epsilon_0)",
+      "explanation": "Combining Faraday's and the Ampere-Maxwell laws in vacuum yields a wave equation for E and B with propagation speed c = 1/sqrt(mu_0*epsilon_0), matching the measured speed of light.",
+      "topic": "Electromagnetic waves",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a plane electromagnetic wave traveling in vacuum, the electric field E and magnetic field B are",
+      "options": ["perpendicular to each other and to the direction of propagation", "parallel to each other and to the direction of propagation", "parallel to each other but perpendicular to the direction of propagation", "antiparallel to each other"],
+      "correct_answer": "perpendicular to each other and to the direction of propagation",
+      "explanation": "Electromagnetic waves are transverse: E, B, and the propagation direction form a mutually orthogonal set, with E x B pointing along the direction of travel.",
+      "topic": "Electromagnetic waves",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Poynting vector S = (1/mu_0) E x B represents",
+      "options": ["the directional energy flux (power per unit area) carried by an electromagnetic wave", "the momentum of a charged particle in the field", "the electric field energy density alone", "the magnetic flux through a surface"],
+      "correct_answer": "the directional energy flux (power per unit area) carried by an electromagnetic wave",
+      "explanation": "The Poynting vector gives both the direction of energy flow and the rate of energy transfer per unit area of an electromagnetic field.",
+      "topic": "Electromagnetic waves",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The energy density stored in an electric field E in vacuum is",
+      "options": ["u_E = (1/2)*epsilon_0*E^2", "u_E = epsilon_0*E", "u_E = (1/2)*epsilon_0*E", "u_E = epsilon_0*E^2"],
+      "correct_answer": "u_E = (1/2)*epsilon_0*E^2",
+      "explanation": "The energy density associated with an electric field is derived from the work done to assemble a charge distribution and equals u_E = (1/2)*epsilon_0*E^2.",
+      "topic": "Field energy",
+      "difficulty": "medium"
+    }
+  ]
+}

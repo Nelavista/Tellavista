@@ -1,0 +1,359 @@
+{
+  "course_code": "MCB406",
+  "title": "Industrial Fermentation Technology",
+  "level": "400",
+  "source_note": "Standard NUC-aligned Nigerian university 400L Industrial Fermentation Technology curriculum: bioreactor design and operation, fermentation modes (batch, fed-batch, continuous), growth kinetics, media formulation, sterilisation and aseptic operation of fermenters, process control (aeration, agitation, pH, temperature), downstream processing, strain improvement, and inoculum development -- focused on the process-engineering scale-up of microbial production, distinct from MCB405's genetic-engineering emphasis.",
+  "questions": [
+    {
+      "question": "A stirred-tank bioreactor (STR), the most widely used industrial fermenter design, achieves mixing and oxygen transfer mainly through:",
+      "options": [
+        "Passive diffusion alone, with no mechanical intervention",
+        "A mechanically driven impeller that agitates the broth and disperses sparged air into fine bubbles, improving mass transfer and homogeneity",
+        "Gravity settling of the culture broth",
+        "Manual stirring by an operator throughout the run"
+      ],
+      "correct_answer": "A mechanically driven impeller that agitates the broth and disperses sparged air into fine bubbles, improving mass transfer and homogeneity",
+      "explanation": "In a conventional stirred-tank bioreactor, a motor-driven impeller provides mechanical agitation that mixes the culture broth and breaks up sparged air into smaller bubbles, improving oxygen transfer, nutrient distribution, and temperature uniformity throughout the vessel.",
+      "topic": "Bioreactor design",
+      "difficulty": "easy"
+    },
+    {
+      "question": "An airlift bioreactor achieves mixing and aeration without a mechanical impeller by:",
+      "options": [
+        "Using only gravity with no aeration at all",
+        "Using the injected air itself to create a density difference between a riser and downcomer zone, driving circulation of the broth throughout the vessel",
+        "Freezing part of the culture to create convection",
+        "Relying entirely on manual shaking of the vessel"
+      ],
+      "correct_answer": "Using the injected air itself to create a density difference between a riser and downcomer zone, driving circulation of the broth throughout the vessel",
+      "explanation": "Airlift reactors use a draft tube dividing the vessel into a gas-sparged riser (lower density, aerated) and a downcomer (denser, less aerated); this density difference drives natural circulation of the broth without mechanical agitation, offering gentler mixing suited to shear-sensitive cultures.",
+      "topic": "Bioreactor design",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In batch fermentation, nutrients and inoculum are added at the start of the process and, apart from pH-adjusting agents, gases, and antifoam, nothing further is added until the run ends; the culture therefore:",
+      "options": [
+        "Maintains constant cell density throughout the entire run",
+        "Passes through the classic microbial growth curve phases (lag, exponential, stationary, death) as nutrients are progressively depleted and metabolic byproducts accumulate",
+        "Never enters a stationary phase",
+        "Requires continuous fresh medium addition throughout the process"
+      ],
+      "correct_answer": "Passes through the classic microbial growth curve phases (lag, exponential, stationary, death) as nutrients are progressively depleted and metabolic byproducts accumulate",
+      "explanation": "Because no further nutrients are added in batch culture, the population follows the classic closed-system growth curve: an initial lag phase, exponential growth while nutrients are ample, a stationary phase as nutrients deplete/byproducts accumulate, and eventually a decline/death phase.",
+      "topic": "Fermentation modes",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Fed-batch fermentation is often preferred over simple batch fermentation for many industrial processes (e.g. antibiotic or recombinant protein production) mainly because it allows:",
+      "options": [
+        "Complete elimination of any nutrient limitation from the start of the run",
+        "Controlled, incremental addition of key nutrients (e.g. a carbon source) during the run, avoiding substrate inhibition/catabolite repression from an initially very high nutrient concentration while extending productive culture time",
+        "The vessel to never require sterilisation",
+        "Removal of the need for any process monitoring"
+      ],
+      "correct_answer": "Controlled, incremental addition of key nutrients (e.g. a carbon source) during the run, avoiding substrate inhibition/catabolite repression from an initially very high nutrient concentration while extending productive culture time",
+      "explanation": "Fed-batch culture feeds a concentrated nutrient (commonly the carbon source) incrementally over the course of the run, avoiding the substrate inhibition, catabolite repression, or osmotic stress that a single very high initial nutrient charge could cause, while sustaining high cell density and extending the productive phase longer than a simple batch process.",
+      "topic": "Fermentation modes",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Continuous fermentation, in which fresh medium is fed in and spent culture is simultaneously withdrawn at a matched rate, allows the culture to be maintained:",
+      "options": [
+        "In a constant, unchanging cell density and growth phase (steady state) for extended periods, in contrast to the changing conditions of batch culture",
+        "Only for a few minutes before the process must be stopped",
+        "Without ever reaching steady state",
+        "Exclusively in the death phase"
+      ],
+      "correct_answer": "In a constant, unchanging cell density and growth phase (steady state) for extended periods, in contrast to the changing conditions of batch culture",
+      "explanation": "By continuously feeding fresh medium and withdrawing culture at matched rates (as in a chemostat), continuous fermentation can maintain the population in a defined steady state, with constant cell density and growth conditions, for extended operating periods, unlike the constantly changing conditions of batch culture.",
+      "topic": "Fermentation modes",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a chemostat (a common continuous culture system), the specific growth rate of the microbial population at steady state is set by:",
+      "options": [
+        "The temperature of the vessel alone",
+        "The dilution rate (the rate of medium flow relative to vessel volume), since at steady state the growth rate equals the dilution rate",
+        "The colour of the medium",
+        "Random chance, with no controllable relationship"
+      ],
+      "correct_answer": "The dilution rate (the rate of medium flow relative to vessel volume), since at steady state the growth rate equals the dilution rate",
+      "explanation": "In a chemostat at steady state, cell loss through the outflow exactly balances growth, meaning the specific growth rate becomes equal to the dilution rate (flow rate divided by vessel volume); the operator can therefore control growth rate directly by adjusting the dilution rate, within the organism's physiological limits.",
+      "topic": "Fermentation modes",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The specific growth rate (μ) of a microbial culture during the exponential phase is defined as:",
+      "options": [
+        "The total number of cells present at any given time",
+        "The rate of increase in cell mass or number per unit cell mass/number per unit time, i.e. the fractional rate of growth",
+        "The lag time before growth begins",
+        "The final stationary-phase cell density"
+      ],
+      "correct_answer": "The rate of increase in cell mass or number per unit cell mass/number per unit time, i.e. the fractional rate of growth",
+      "explanation": "Specific growth rate (μ), typically expressed per hour, describes the fractional rate at which biomass increases during exponential growth (dX/dt = μX), and is a fundamental kinetic parameter used to characterise and model microbial growth in fermentation processes.",
+      "topic": "Growth kinetics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The doubling time (generation time) of a microbial population during exponential growth is inversely related to:",
+      "options": [
+        "The lag phase duration only",
+        "The specific growth rate; a higher specific growth rate corresponds to a shorter doubling time",
+        "The size of the fermentation vessel",
+        "The colour of the culture medium"
+      ],
+      "correct_answer": "The specific growth rate; a higher specific growth rate corresponds to a shorter doubling time",
+      "explanation": "Doubling time (td) and specific growth rate (μ) are mathematically related as td = ln(2)/μ; the faster a population grows (higher μ), the shorter the time required for the population to double, and vice versa.",
+      "topic": "Growth kinetics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Monod equation, a foundational model in fermentation kinetics, describes the relationship between:",
+      "options": [
+        "Product concentration and pH",
+        "Specific growth rate and the concentration of a single limiting substrate, characterised by a maximum growth rate (μmax) and a saturation constant (Ks)",
+        "Temperature and dissolved oxygen only",
+        "Vessel volume and agitation speed"
+      ],
+      "correct_answer": "Specific growth rate and the concentration of a single limiting substrate, characterised by a maximum growth rate (μmax) and a saturation constant (Ks)",
+      "explanation": "The Monod equation (μ = μmax * S / (Ks + S)) models how specific growth rate depends on the concentration (S) of a single growth-limiting substrate, approaching a maximum rate (μmax) at high substrate concentration, with Ks representing the substrate concentration at which growth rate is half-maximal, analogous to Michaelis-Menten enzyme kinetics.",
+      "topic": "Growth kinetics",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Selection of an industrial fermentation medium formulation typically balances the cost and availability of raw materials (e.g. molasses, corn steep liquor) against:",
+      "options": [
+        "The colour of the final medium only",
+        "The nutritional adequacy of the medium to support high biomass/product yield, including carbon, nitrogen, minerals, and any specific growth factors the organism requires",
+        "Whether the medium can be transported by air freight",
+        "The medium's ability to prevent any microbial growth at all"
+      ],
+      "correct_answer": "The nutritional adequacy of the medium to support high biomass/product yield, including carbon, nitrogen, minerals, and any specific growth factors the organism requires",
+      "explanation": "Industrial fermentation media are formulated to balance economic factors (cheap, readily available raw materials such as molasses or corn steep liquor) against the need to reliably supply adequate carbon, nitrogen, trace minerals, and any specific growth factors required to sustain the target organism's growth and desired product formation at scale.",
+      "topic": "Fermentation media",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Corn steep liquor, a common industrial fermentation medium ingredient, is valued mainly as a source of:",
+      "options": [
+        "Pure glucose only",
+        "Nitrogen, amino acids, vitamins, and minerals, as a relatively inexpensive byproduct of corn wet-milling",
+        "Sterile distilled water",
+        "Antibiotics used to prevent contamination"
+      ],
+      "correct_answer": "Nitrogen, amino acids, vitamins, and minerals, as a relatively inexpensive byproduct of corn wet-milling",
+      "explanation": "Corn steep liquor, a byproduct of the corn wet-milling process, is rich in organic nitrogen, amino acids, vitamins, and minerals, making it a widely used, economical complex nitrogen source in industrial fermentation media, notably in classic penicillin production.",
+      "topic": "Fermentation media",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Sterilisation of an industrial fermenter and its liquid medium before inoculation is most commonly achieved by:",
+      "options": [
+        "Adding preservative chemicals only",
+        "In-place steam sterilisation of the vessel and its medium (or continuous flash/UHT sterilisation for the medium), typically at around 121°C, to eliminate contaminating microorganisms before the desired inoculum is introduced",
+        "Simply washing the vessel with cold water",
+        "Filtration of the entire fermenter vessel through a membrane"
+      ],
+      "correct_answer": "In-place steam sterilisation of the vessel and its medium (or continuous flash/UHT sterilisation for the medium), typically at around 121°C, to eliminate contaminating microorganisms before the desired inoculum is introduced",
+      "explanation": "Large fermenters are typically sterilised in place using pressurised steam (batch sterilisation of vessel and medium together, or continuous/UHT sterilisation of the medium as it is fed in), reaching temperatures around 121°C for a sufficient time to eliminate contaminating microorganisms before the process organism is introduced.",
+      "topic": "Sterilisation and aseptic operation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Maintaining aseptic conditions throughout an industrial fermentation run is critical mainly because contamination by unwanted microorganisms can:",
+      "options": [
+        "Always improve the yield of the desired product",
+        "Compete for nutrients, alter the fermentation's chemistry, potentially degrade or contaminate the product, and in some cases (e.g. phage contamination) cause complete process failure",
+        "Have no effect on the process outcome",
+        "Only be a cosmetic concern with no economic impact"
+      ],
+      "correct_answer": "Compete for nutrients, alter the fermentation's chemistry, potentially degrade or contaminate the product, and in some cases (e.g. phage contamination) cause complete process failure",
+      "explanation": "Contaminating organisms can outcompete the production strain for nutrients, produce unwanted byproducts, degrade the desired product, alter pH or other process conditions, and in the case of bacteriophage contamination of a bacterial fermentation, can cause catastrophic culture lysis and complete batch loss, making asepsis a critical economic and quality concern.",
+      "topic": "Sterilisation and aseptic operation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Air used to aerate an industrial fermenter must be sterile-filtered before entering the vessel mainly to:",
+      "options": [
+        "Cool the fermentation broth",
+        "Prevent contaminating airborne microorganisms from entering the culture along with the oxygen supply",
+        "Increase the pressure inside the vessel only",
+        "Add nutrients to the medium"
+      ],
+      "correct_answer": "Prevent contaminating airborne microorganisms from entering the culture along with the oxygen supply",
+      "explanation": "Large volumes of air are sparged into aerobic fermenters to supply oxygen; because untreated air carries airborne microorganisms and particulates, it is passed through sterilising-grade filters before entering the vessel, preventing contamination while still supplying the needed oxygen.",
+      "topic": "Sterilisation and aseptic operation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The volumetric oxygen transfer coefficient (kLa) is a key parameter in aerobic fermentation because it characterises:",
+      "options": [
+        "The colour intensity of the fermentation broth",
+        "The rate at which oxygen can be transferred from the gas (air bubble) phase into the liquid broth to become available to the microorganisms, often the limiting factor in dense aerobic cultures",
+        "The pH buffering capacity of the medium",
+        "The viscosity of the final product"
+      ],
+      "correct_answer": "The rate at which oxygen can be transferred from the gas (air bubble) phase into the liquid broth to become available to the microorganisms, often the limiting factor in dense aerobic cultures",
+      "explanation": "Because oxygen has low solubility in aqueous media, its supply rate to a dense, actively respiring aerobic culture is frequently the rate-limiting factor in fermentation; kLa quantifies how efficiently a given bioreactor configuration (agitation, aeration rate, sparger design) can transfer oxygen from gas bubbles into solution to meet the culture's oxygen demand.",
+      "topic": "Process control",
+      "difficulty": "hard"
+    },
+    {
+      "question": "During industrial fermentation, pH control is typically achieved by:",
+      "options": [
+        "Never monitoring pH, since it does not affect the process",
+        "Automated addition of acid or alkali (e.g. via a pH probe linked to a controller and dosing pumps) to keep the broth within the range optimal for the organism's growth and product formation",
+        "Adding only distilled water to the vessel",
+        "Increasing agitation speed alone, with no chemical addition"
+      ],
+      "correct_answer": "Automated addition of acid or alkali (e.g. via a pH probe linked to a controller and dosing pumps) to keep the broth within the range optimal for the organism's growth and product formation",
+      "explanation": "Fermentation processes typically use an in-line pH probe connected to a control loop that triggers automated addition of acid or base to counteract metabolically driven pH drift, keeping the broth within the narrow pH range that supports optimal growth and product yield for the specific organism and product.",
+      "topic": "Process control",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Antifoam agents are added during industrial fermentation processes mainly to:",
+      "options": [
+        "Increase the amount of foam produced",
+        "Suppress excessive foaming (often caused by proteins and agitation/aeration), which could otherwise reduce effective vessel working volume, cause loss of culture through exhaust lines, or interfere with sensors",
+        "Sterilise the medium",
+        "Increase the dissolved oxygen concentration directly"
+      ],
+      "correct_answer": "Suppress excessive foaming (often caused by proteins and agitation/aeration), which could otherwise reduce effective vessel working volume, cause loss of culture through exhaust lines, or interfere with sensors",
+      "explanation": "Vigorous agitation and aeration, combined with proteinaceous fermentation broths, can generate substantial foam; antifoam agents reduce surface tension effects that stabilise foam, preventing problems such as reduced usable vessel volume, culture loss through the exhaust filter, and interference with probes.",
+      "topic": "Process control",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Temperature control in an industrial fermenter is essential mainly because microbial growth rate and product formation are:",
+      "options": [
+        "Completely independent of temperature",
+        "Highly sensitive to temperature, with each organism having an optimal range outside of which growth slows, enzymes may denature, or unwanted byproducts may form",
+        "Only affected by temperatures above 100°C",
+        "Unaffected as long as the vessel remains sealed"
+      ],
+      "correct_answer": "Highly sensitive to temperature, with each organism having an optimal range outside of which growth slows, enzymes may denature, or unwanted byproducts may form",
+      "explanation": "Microbial enzymes and cellular processes have defined optimal temperature ranges; deviations can slow growth, denature key enzymes, or shift metabolism toward unwanted byproducts, so most industrial fermenters incorporate cooling/heating jackets or coils with automated temperature control to maintain the organism's optimal range, especially important since fermentation itself is often exothermic.",
+      "topic": "Process control",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Downstream processing in industrial fermentation refers to:",
+      "options": [
+        "The initial preparation of the fermentation medium before inoculation",
+        "The series of steps after fermentation used to recover, concentrate, and purify the desired product from the fermentation broth, e.g. cell separation, extraction, and purification",
+        "The process of scaling up from shake flask to pilot plant",
+        "Sterilisation of the fermenter vessel"
+      ],
+      "correct_answer": "The series of steps after fermentation used to recover, concentrate, and purify the desired product from the fermentation broth, e.g. cell separation, extraction, and purification",
+      "explanation": "Downstream processing encompasses all post-fermentation operations required to isolate and purify the target product from the complex fermentation broth, commonly including cell/biomass separation, extraction or precipitation, chromatographic or other purification, concentration, and final formulation/drying.",
+      "topic": "Downstream processing",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Centrifugation and filtration are commonly used as an early downstream processing step in fermentation mainly to:",
+      "options": [
+        "Sterilise the final product",
+        "Separate microbial cells/biomass from the liquid fermentation broth, a necessary step whether the product is intracellular (requiring cell disruption afterward) or extracellular",
+        "Increase the concentration of dissolved oxygen",
+        "Add nutrients back into the broth"
+      ],
+      "correct_answer": "Separate microbial cells/biomass from the liquid fermentation broth, a necessary step whether the product is intracellular (requiring cell disruption afterward) or extracellular",
+      "explanation": "Cell/biomass separation (by centrifugation, filtration, or both) is typically the first major downstream step, clarifying the broth; if the product is extracellular, the clarified liquid is processed further, while an intracellular product requires the harvested cells to be subsequently disrupted to release it.",
+      "topic": "Downstream processing",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Strain improvement programmes in industrial microbiology, historically achieved through techniques such as UV or chemical mutagenesis followed by screening, aim to develop production strains with:",
+      "options": [
+        "Reduced product yield compared with the wild type",
+        "Enhanced yield, productivity, or other favourable traits (e.g. resistance to feedback inhibition, faster growth, tolerance of higher substrate concentrations) compared with the original wild-type organism",
+        "Complete loss of the ability to grow",
+        "No change whatsoever from the original strain"
+      ],
+      "correct_answer": "Enhanced yield, productivity, or other favourable traits (e.g. resistance to feedback inhibition, faster growth, tolerance of higher substrate concentrations) compared with the original wild-type organism",
+      "explanation": "Strain improvement seeks to generate variant strains, via mutagenesis and rigorous screening (and increasingly via targeted genetic/metabolic engineering), that outperform the original wild-type organism in industrially relevant traits such as product titre, productivity, substrate tolerance, or reduced feedback regulation.",
+      "topic": "Strain improvement",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A feedback-resistant (deregulated) mutant strain, useful in industrial amino acid or antibiotic production, is one in which:",
+      "options": [
+        "The biosynthetic pathway's regulatory (feedback) control has been altered or lost, so the pathway continues operating and overproducing the target metabolite even when levels that would normally trigger feedback inhibition are reached",
+        "The organism can no longer produce the desired metabolite at all",
+        "Growth is completely halted under all conditions",
+        "The mutation has no effect on metabolite production"
+      ],
+      "correct_answer": "The biosynthetic pathway's regulatory (feedback) control has been altered or lost, so the pathway continues operating and overproducing the target metabolite even when levels that would normally trigger feedback inhibition are reached",
+      "explanation": "In a normal cell, feedback inhibition by the end product prevents wasteful overproduction; industrial strains are selected/engineered to have desensitised or non-functional feedback control (e.g. an altered allosteric enzyme site), allowing continued flux through the pathway and substantial overproduction and excretion of the target metabolite, valuable for products like amino acids and antibiotics.",
+      "topic": "Strain improvement",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Inoculum development (seed culture preparation) before a large-scale industrial fermentation run typically involves:",
+      "options": [
+        "Directly inoculating the full-scale production vessel from a single frozen ampoule with no intermediate steps",
+        "Progressively scaling up a culture through a series of increasingly larger vessels (e.g. shake flask, seed fermenter, then production fermenter), ensuring a sufficiently large, healthy, actively growing inoculum for the final vessel",
+        "Using only spore suspensions with no active growth stage",
+        "Sterilising the inoculum completely before use, killing all cells"
+      ],
+      "correct_answer": "Progressively scaling up a culture through a series of increasingly larger vessels (e.g. shake flask, seed fermenter, then production fermenter), ensuring a sufficiently large, healthy, actively growing inoculum for the final vessel",
+      "explanation": "Because a very small inoculum in a very large vessel would extend the lag phase and increase contamination risk over the longer growth period, industrial inoculum development uses a staged scale-up through progressively larger vessels, ensuring the final production fermenter is inoculated with an actively growing, sufficiently large, healthy seed culture.",
+      "topic": "Inoculum development",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The percentage of inoculum (seed culture volume relative to the production vessel's working volume) used to start a large fermentation run is an important process parameter because too small an inoculum can:",
+      "options": [
+        "Guarantee the fastest possible process completion",
+        "Extend the lag phase and overall process time, and increase the relative risk that a contaminant could establish itself before the desired organism dominates",
+        "Have no impact on process outcome",
+        "Automatically improve final product yield"
+      ],
+      "correct_answer": "Extend the lag phase and overall process time, and increase the relative risk that a contaminant could establish itself before the desired organism dominates",
+      "explanation": "A very small inoculum relative to vessel volume means the culture must undergo more doublings (a longer lag and exponential phase) to reach a productive cell density, extending overall process time and increasing the window of opportunity during which a low-level contaminant could proliferate and compete with the intended organism.",
+      "topic": "Inoculum development",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Scale-up of a fermentation process from laboratory shake-flask scale to a large industrial production vessel is a significant engineering challenge mainly because:",
+      "options": [
+        "Nutrient concentrations must always be reduced to zero at larger scale",
+        "Parameters such as mixing time, oxygen transfer efficiency, and heat removal do not scale linearly with vessel volume, so conditions optimal at small scale may not be reproducible directly at large scale without careful process engineering",
+        "Larger vessels always sterilise instantly with no additional time required",
+        "Scale-up has no effect on any process parameter"
+      ],
+      "correct_answer": "Parameters such as mixing time, oxygen transfer efficiency, and heat removal do not scale linearly with vessel volume, so conditions optimal at small scale may not be reproducible directly at large scale without careful process engineering",
+      "explanation": "As vessel size increases, the surface-area-to-volume ratio decreases and physical parameters like mixing efficiency, oxygen transfer, and heat dissipation change in complex, non-linear ways relative to volume; successfully scaling up a fermentation therefore requires careful engineering (often using scale-up criteria like constant kLa or power input per unit volume) rather than simply enlarging the vessel.",
+      "topic": "Scale-up",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Penicillin, historically one of the most important industrial fermentation products, is produced commercially at large scale by submerged fermentation of:",
+      "options": [
+        "Penicillium chrysogenum, using high-yielding mutant strains developed through decades of strain improvement",
+        "Escherichia coli",
+        "Saccharomyces cerevisiae",
+        "Bacillus subtilis"
+      ],
+      "correct_answer": "Penicillium chrysogenum, using high-yielding mutant strains developed through decades of strain improvement",
+      "explanation": "Industrial penicillin production uses submerged, aerated fermentation of Penicillium chrysogenum strains, which were progressively improved through extensive mutagenesis and screening programmes over decades to dramatically increase yields compared with the original wild-type Penicillium notatum-related isolate.",
+      "topic": "Industrial fermentation products",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Single-cell protein (SCP) production, in which microbial biomass itself (rather than a secreted metabolite) is the desired product, is typically harvested and processed for use mainly as:",
+      "options": [
+        "A pharmaceutical antibiotic",
+        "A source of protein for animal feed or, after suitable processing, human food supplementation",
+        "A fuel additive with no nutritional value",
+        "An industrial solvent"
+      ],
+      "correct_answer": "A source of protein for animal feed or, after suitable processing, human food supplementation",
+      "explanation": "Single-cell protein processes grow microorganisms (bacteria, yeast, algae, or fungi) rapidly on relatively cheap substrates specifically to harvest the resulting protein-rich biomass, which is then processed and used mainly as an alternative protein source in animal feed, and in some cases human food supplementation, after appropriate nucleic acid reduction and safety processing.",
+      "topic": "Industrial fermentation products",
+      "difficulty": "medium"
+    }
+  ]
+}

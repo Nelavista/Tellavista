@@ -1,0 +1,359 @@
+{
+  "course_code": "CHM307",
+  "title": "Analytical Chemistry III",
+  "level": "300",
+  "source_note": "Standard NUC-aligned 300L Analytical Chemistry III curriculum: titrimetric methods (acid-base, redox, complexometric, precipitation), gravimetric analysis, statistical treatment of analytical data, sampling, and classical separation techniques.",
+  "questions": [
+    {
+      "question": "A primary standard substance used in titrimetric analysis must have all the following properties EXCEPT:",
+      "options": ["High purity", "Stability in air", "High hygroscopicity", "Known, stable composition"],
+      "correct_answer": "High hygroscopicity",
+      "explanation": "A good primary standard must not absorb moisture from air (hygroscopic materials give inaccurate, changing masses), so it must be non-hygroscopic, pure, and stable.",
+      "topic": "Titrimetric analysis",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Normality (N) is related to molarity (M) of a solution by the expression:",
+      "options": ["N = M x n-factor (equivalents per mole)", "N = M / n-factor", "N = M x molar mass", "N and M are always numerically equal"],
+      "correct_answer": "N = M x n-factor (equivalents per mole)",
+      "explanation": "Normality equals molarity multiplied by the number of equivalents (n-factor) each mole of solute provides in the given reaction, e.g. n = 2 for H2SO4 in full neutralization.",
+      "topic": "Volumetric calculations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The equivalence point of a titration differs from the end point in that the equivalence point is:",
+      "options": [
+        "The point signaled by a visible colour change of the indicator",
+        "The theoretical point at which moles of titrant exactly react with moles of analyte",
+        "Always reached before any titrant is added",
+        "Determined only by gravimetric means"
+      ],
+      "correct_answer": "The theoretical point at which moles of titrant exactly react with moles of analyte",
+      "explanation": "The equivalence point is the stoichiometric point calculated from reaction chemistry, while the end point is the experimentally observed point (e.g., indicator colour change), which should be as close as possible to the equivalence point.",
+      "topic": "Titrimetric analysis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Phenolphthalein is a suitable indicator for a strong acid-strong base titration because its colour change range (pH 8.2-10.0) falls:",
+      "options": [
+        "Within the steep vertical portion of the titration curve near the equivalence point",
+        "Below pH 4",
+        "Only at the very start of the titration",
+        "Outside the pH range of the titration entirely"
+      ],
+      "correct_answer": "Within the steep vertical portion of the titration curve near the equivalence point",
+      "explanation": "For a strong acid-strong base titration the pH rises sharply through a wide range (about 4-10) at the equivalence point, so any indicator changing colour in that steep region, including phenolphthalein, gives an accurate end point.",
+      "topic": "Acid-base titrations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For titration of a weak acid with a strong base, the most appropriate indicator is one that changes colour:",
+      "options": ["In the acidic range, since the equivalence point is below pH 7", "In the basic range, since the salt formed hydrolyses to give pH above 7", "Exactly at pH 7.00", "At pH 0"],
+      "correct_answer": "In the basic range, since the salt formed hydrolyses to give pH above 7",
+      "explanation": "At the equivalence point of a weak acid-strong base titration, the resulting salt's conjugate base hydrolyses water, giving a pH greater than 7, so an indicator like phenolphthalein (basic range) is required.",
+      "topic": "Acid-base titrations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In EDTA (complexometric) titrations, EDTA typically reacts with a metal ion in what ratio to form the metal-EDTA complex?",
+      "options": ["1:1", "1:2", "2:1", "1:4"],
+      "correct_answer": "1:1",
+      "explanation": "EDTA is a hexadentate ligand that wraps around a metal ion to form a single stable 1:1 chelate complex regardless of the metal ion's normal coordination number.",
+      "topic": "Complexometric titrations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Eriochrome Black T is commonly used as a metal-ion indicator in the EDTA titration for determining:",
+      "options": ["Water hardness (Ca2+ and Mg2+)", "Chloride ion concentration", "Dissolved oxygen", "Nitrate concentration"],
+      "correct_answer": "Water hardness (Ca2+ and Mg2+)",
+      "explanation": "Eriochrome Black T forms a wine-red complex with Ca2+/Mg2+ and turns blue when these ions are complexed by EDTA, making it the classic indicator for water-hardness titrations.",
+      "topic": "Complexometric titrations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Potassium permanganate (KMnO4) is described as a 'self-indicating' titrant in redox titrations because:",
+      "options": [
+        "It requires starch to show an end point",
+        "Its own intense purple colour disappears until the first slight excess produces a persistent faint pink colour",
+        "It is colourless throughout the titration",
+        "It changes the pH of the solution dramatically"
+      ],
+      "correct_answer": "Its own intense purple colour disappears until the first slight excess produces a persistent faint pink colour",
+      "explanation": "As MnO4- is reduced to nearly colourless Mn2+ during the titration, the solution stays colourless; the end point is marked by the first drop of excess KMnO4 giving a faint permanent pink tinge, so no separate indicator is needed.",
+      "topic": "Redox titrations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In an iodometric titration, the iodine liberated from a reaction is titrated against standard sodium thiosulfate solution using which indicator near the end point?",
+      "options": ["Starch", "Phenolphthalein", "Methyl orange", "Eriochrome Black T"],
+      "correct_answer": "Starch",
+      "explanation": "Starch forms an intense blue-black complex with iodine; it is added near the end point so the sharp disappearance of the blue-black colour signals complete reduction of iodine by thiosulfate.",
+      "topic": "Redox titrations",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The correct general sequence of steps in a classical gravimetric analysis is:",
+      "options": [
+        "Precipitation, digestion, filtration, washing, drying/igniting, weighing",
+        "Weighing, filtration, precipitation, washing, digestion",
+        "Igniting, precipitation, weighing, filtration",
+        "Filtration, precipitation, digestion, weighing, washing"
+      ],
+      "correct_answer": "Precipitation, digestion, filtration, washing, drying/igniting, weighing",
+      "explanation": "A precipitate is first formed, allowed to digest (age) for larger purer crystals, then filtered, washed free of impurities, dried or ignited to a known stable form, and finally weighed.",
+      "topic": "Gravimetric analysis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The purpose of 'digestion' (ageing) of a precipitate in gravimetric analysis is to:",
+      "options": [
+        "Dissolve the precipitate completely",
+        "Allow smaller crystals to redissolve and redeposit on larger ones, giving a purer, more filterable precipitate",
+        "Speed up filtration by reducing crystal size",
+        "Convert the precipitate into a gas"
+      ],
+      "correct_answer": "Allow smaller crystals to redissolve and redeposit on larger ones, giving a purer, more filterable precipitate",
+      "explanation": "During digestion, Ostwald ripening occurs: smaller, less stable crystals dissolve and redeposit on larger crystals, reducing surface area, occluded impurities, and improving filterability.",
+      "topic": "Gravimetric analysis",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Co-precipitation, an error source in gravimetric analysis, refers to:",
+      "options": [
+        "The desired precipitate failing to form at all",
+        "An otherwise soluble impurity being carried down with the desired precipitate",
+        "Complete dissolution of the analyte during filtration",
+        "The use of two indicators simultaneously"
+      ],
+      "correct_answer": "An otherwise soluble impurity being carried down with the desired precipitate",
+      "explanation": "Co-precipitation occurs when a normally soluble substance is removed from solution along with the precipitate, through adsorption, occlusion, or mixed-crystal formation, introducing a positive error.",
+      "topic": "Gravimetric analysis",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Determinate (systematic) errors differ from indeterminate (random) errors in that determinate errors:",
+      "options": [
+        "Have an identifiable, correctable cause and consistently bias results in one direction",
+        "Cannot be traced to any specific cause",
+        "Always cancel out over many repeated measurements",
+        "Only occur in gravimetric analysis"
+      ],
+      "correct_answer": "Have an identifiable, correctable cause and consistently bias results in one direction",
+      "explanation": "Determinate errors (e.g., a poorly calibrated balance) have a definite, identifiable cause and consistently push results high or low, unlike random indeterminate errors which scatter results in both directions.",
+      "topic": "Error analysis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Precision and accuracy differ in that precision refers to:",
+      "options": [
+        "How close a measured value is to the true value",
+        "The reproducibility (closeness of agreement) among repeated measurements",
+        "The molarity of a standard solution",
+        "The purity of a sample"
+      ],
+      "correct_answer": "The reproducibility (closeness of agreement) among repeated measurements",
+      "explanation": "Precision is the degree of agreement between repeated measurements of the same quantity, whereas accuracy is how close those measurements are to the true or accepted value.",
+      "topic": "Error analysis",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The Q-test in analytical chemistry is used to:",
+      "options": [
+        "Calculate the equivalence point of a titration",
+        "Determine whether a suspect (outlying) data point may be statistically rejected",
+        "Standardize a solution against a primary standard",
+        "Calculate the molar absorptivity of a compound"
+      ],
+      "correct_answer": "Determine whether a suspect (outlying) data point may be statistically rejected",
+      "explanation": "The Q-test compares the gap between a suspect value and its nearest neighbour to the overall data range, allowing a statistically justified decision on whether to discard the outlier.",
+      "topic": "Error analysis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Why is a representative sample critical before any analytical measurement is carried out?",
+      "options": [
+        "It reduces the cost of reagents used",
+        "The analytical result is only meaningful if the sample accurately reflects the composition of the entire bulk material",
+        "It eliminates the need for calibration",
+        "It removes the need for replicate measurements"
+      ],
+      "correct_answer": "The analytical result is only meaningful if the sample accurately reflects the composition of the entire bulk material",
+      "explanation": "No amount of analytical precision can compensate for a non-representative sample; sampling error can dominate the total error of an analysis if the sample does not reflect the bulk material.",
+      "topic": "Sampling",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Nernst distribution law governs the equilibrium distribution of a solute between two immiscible solvents in solvent extraction, expressed by the:",
+      "options": [
+        "Distribution (partition) coefficient, KD = [solute in organic phase]/[solute in aqueous phase] at equilibrium",
+        "Rate constant of the extraction reaction",
+        "pH of the aqueous phase alone",
+        "Molar mass of the solute"
+      ],
+      "correct_answer": "Distribution (partition) coefficient, KD = [solute in organic phase]/[solute in aqueous phase] at equilibrium",
+      "explanation": "At a fixed temperature, a solute distributes between two immiscible liquids in a constant ratio at equilibrium, defined as the distribution coefficient KD, which governs the efficiency of solvent extraction.",
+      "topic": "Separation techniques",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In chromatography, separation of components occurs because of their differing:",
+      "options": [
+        "Colours only",
+        "Relative affinities for the stationary phase versus the mobile phase",
+        "Boiling points only, regardless of phases used",
+        "Molecular charge in all cases"
+      ],
+      "correct_answer": "Relative affinities for the stationary phase versus the mobile phase",
+      "explanation": "Chromatographic separation is based on the differential partitioning or adsorption of components between a stationary phase and a moving mobile phase, causing them to travel at different rates.",
+      "topic": "Chromatography",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In thin-layer chromatography (TLC), the retardation factor (Rf) is calculated as:",
+      "options": [
+        "Distance travelled by solvent front / distance travelled by the compound",
+        "Distance travelled by the compound / distance travelled by the solvent front",
+        "Distance travelled by the compound x total plate length",
+        "Time taken for the compound to travel divided by plate length"
+      ],
+      "correct_answer": "Distance travelled by the compound / distance travelled by the solvent front",
+      "explanation": "Rf is defined as the ratio of the distance moved by a spot (compound) to the distance moved by the solvent front from the same origin, and is a characteristic value for a given compound/solvent system.",
+      "topic": "Chromatography",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A buffer solution resists changes in pH upon addition of small amounts of acid or base because it contains:",
+      "options": [
+        "Only a strong acid",
+        "A weak acid (or base) together with a substantial amount of its conjugate base (or acid)",
+        "Only pure water",
+        "A strong acid and a strong base in equal amounts"
+      ],
+      "correct_answer": "A weak acid (or base) together with a substantial amount of its conjugate base (or acid)",
+      "explanation": "A buffer's conjugate acid-base pair can neutralize small additions of H+ or OH- without large pH change, as described quantitatively by the Henderson-Hasselbalch equation.",
+      "topic": "Acid-base equilibria",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Titration of a triprotic acid such as H3PO4 with a strong base typically produces a titration curve with:",
+      "options": ["No equivalence points", "One equivalence point only", "Up to three distinguishable equivalence points/inflections", "An indefinite number of equivalence points"],
+      "correct_answer": "Up to three distinguishable equivalence points/inflections",
+      "explanation": "Each of the three ionizable protons of H3PO4 is neutralized in a separate stage, so up to three inflection (equivalence) points can appear, though the third is often too gradual to detect clearly.",
+      "topic": "Acid-base titrations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Back titration is a technique typically used when:",
+      "options": [
+        "The analyte reacts too slowly, incompletely, or has no suitable indicator for direct titration",
+        "An indicator is not required at all",
+        "Only strong acids are involved",
+        "The sample is a pure gas"
+      ],
+      "correct_answer": "The analyte reacts too slowly, incompletely, or has no suitable indicator for direct titration",
+      "explanation": "In back titration, a known excess of a reactant is added to react completely with the analyte (e.g., an insoluble antacid), and the unreacted excess is then titrated with a second standard solution, useful when direct titration is impractical.",
+      "topic": "Titrimetric analysis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A masking agent is added in complexometric titrations to:",
+      "options": [
+        "Increase the concentration of the metal ion being determined",
+        "Prevent an interfering metal ion from reacting with EDTA, by forming a more stable complex with it",
+        "Change the colour of the solution permanently",
+        "Precipitate the analyte metal ion"
+      ],
+      "correct_answer": "Prevent an interfering metal ion from reacting with EDTA, by forming a more stable complex with it",
+      "explanation": "Masking agents selectively tie up interfering ions in stable complexes so that they no longer compete with the analyte metal ion for EDTA, improving selectivity of the titration.",
+      "topic": "Complexometric titrations",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In Mohr's method for determining chloride ion by precipitation titration with AgNO3, the indicator used is:",
+      "options": ["Potassium chromate (K2CrO4), which forms a red-brown Ag2CrO4 precipitate after all Cl- is consumed", "Starch", "Eriochrome Black T", "Phenolphthalein"],
+      "correct_answer": "Potassium chromate (K2CrO4), which forms a red-brown Ag2CrO4 precipitate after all Cl- is consumed",
+      "explanation": "AgCl precipitates preferentially because it is less soluble; once Cl- is exhausted, the next drops of Ag+ react with chromate to form a reddish-brown Ag2CrO4 precipitate, signalling the end point.",
+      "topic": "Precipitation titrations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Volhard's method for halide determination is a back titration in which excess standard AgNO3 is added to the halide sample and the unreacted Ag+ is titrated with standard KSCN, using which indicator?",
+      "options": ["Fe3+ (ferric ion), which forms a red FeSCN2+ complex at the end point", "Methyl orange", "Starch", "Eriochrome Black T"],
+      "correct_answer": "Fe3+ (ferric ion), which forms a red FeSCN2+ complex at the end point",
+      "explanation": "Once all excess Ag+ has been consumed by SCN-, the next slight excess of SCN- reacts with the Fe3+ indicator to form a red [FeSCN]2+ complex, marking the end point.",
+      "topic": "Precipitation titrations",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Karl Fischer titration is a classical analytical method specifically used to determine:",
+      "options": ["Trace water content in a sample", "Chloride ion concentration", "Total nitrogen content", "The pH of a solution"],
+      "correct_answer": "Trace water content in a sample",
+      "explanation": "Karl Fischer titration uses a reagent (iodine, sulfur dioxide, a base, and an alcohol) that reacts stoichiometrically and specifically with water, allowing precise determination of even trace moisture.",
+      "topic": "Titrimetric analysis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Kjeldahl method is a classical titrimetric procedure primarily used to determine:",
+      "options": ["Total organic nitrogen (and hence protein content) in a sample", "Dissolved oxygen concentration", "Total hardness of water", "Fat content of food"],
+      "correct_answer": "Total organic nitrogen (and hence protein content) in a sample",
+      "explanation": "The Kjeldahl method digests a sample to convert organic nitrogen to ammonium sulfate, distils the liberated ammonia, and quantifies it by titration, giving total nitrogen from which protein content is estimated.",
+      "topic": "Titrimetric analysis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A standard sodium hydroxide solution is typically standardized against which primary standard acid?",
+      "options": ["Potassium hydrogen phthalate (KHP)", "Sodium chloride", "Glucose", "Sodium carbonate solution of unknown concentration"],
+      "correct_answer": "Potassium hydrogen phthalate (KHP)",
+      "explanation": "KHP is a stable, high-purity, non-hygroscopic monoprotic acid with a high molar mass, making it an excellent primary standard for standardizing NaOH solutions.",
+      "topic": "Titrimetric analysis",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In ion-exchange chromatography, separation of ionic species is based primarily on:",
+      "options": [
+        "Differences in boiling point",
+        "The differing affinities of ions for oppositely charged exchange sites on the resin",
+        "The colour of the ions in solution",
+        "Molecular weight only"
+      ],
+      "correct_answer": "The differing affinities of ions for oppositely charged exchange sites on the resin",
+      "explanation": "Ion-exchange resins carry fixed charged functional groups that reversibly bind counter-ions; ions with stronger affinity for the resin are retained longer, achieving separation.",
+      "topic": "Separation techniques",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A student reads a burette meniscus while looking at it from an angle above the scale rather than at eye level. This introduces which type of error?",
+      "options": ["A random statistical error only", "A parallax (determinate) error", "No error at all", "An error only in gravimetric analysis"],
+      "correct_answer": "A parallax (determinate) error",
+      "explanation": "Reading a scale from an angle rather than perpendicular to it (eye level) causes a systematic, reproducible misreading known as parallax error.",
+      "topic": "Error analysis",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A gravimetric factor is used to convert the mass of the weighed precipitate into the mass of the analyte originally sought, and is calculated from:",
+      "options": [
+        "The ratio of molar mass of analyte (per mole precipitate) to molar mass of the weighed precipitate form",
+        "The volume of titrant used",
+        "The pH of the solution",
+        "The colour intensity of the precipitate"
+      ],
+      "correct_answer": "The ratio of molar mass of analyte (per mole precipitate) to molar mass of the weighed precipitate form",
+      "explanation": "The gravimetric factor is a stoichiometric ratio (molar mass of the sought species x its coefficient, divided by molar mass of the weighed compound) used to convert the weighed precipitate mass into the corresponding mass of analyte.",
+      "topic": "Gravimetric analysis",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Which of the following best describes an indeterminate (random) error in a titration?",
+      "options": [
+        "Small unavoidable variations in judging the exact colour-change end point each time a titration is repeated",
+        "Using an uncalibrated pipette every time",
+        "A wrongly prepared standard solution used throughout the experiment",
+        "A permanently miscalibrated balance"
+      ],
+      "correct_answer": "Small unavoidable variations in judging the exact colour-change end point each time a titration is repeated",
+      "explanation": "Random errors arise from small, uncontrollable fluctuations (such as slightly different judgement of an end point each trial) that scatter results around the true value rather than biasing them in one direction.",
+      "topic": "Error analysis",
+      "difficulty": "medium"
+    }
+  ]
+}

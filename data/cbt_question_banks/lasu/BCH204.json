@@ -1,0 +1,326 @@
+{
+  "course_code": "BCH204",
+  "title": "Biochemical Methods",
+  "level": "200",
+  "source_note": "Standard NUC-aligned Nigerian university 200L introductory Biochemical Methods curriculum: laboratory safety, solution/buffer preparation, pH measurement, spectrophotometry/colorimetry and the Beer-Lambert law, basic chromatography (paper, thin-layer, column) and electrophoresis, centrifugation, and common qualitative/quantitative tests for biomolecules. More advanced protein purification and instrumentation techniques are covered in BCH391.",
+  "questions": [
+    {
+      "question": "According to the Beer-Lambert law, absorbance (A) of a solution is directly proportional to:",
+      "options": [
+        "The molar absorptivity, the path length, and the concentration of the absorbing solute",
+        "Only the wavelength of light used",
+        "The temperature of the solution alone",
+        "The volume of the cuvette"
+      ],
+      "correct_answer": "The molar absorptivity, the path length, and the concentration of the absorbing solute",
+      "explanation": "The Beer-Lambert law states A = εcl, where ε is the molar absorptivity (extinction coefficient), c is concentration, and l is the path length of light through the sample.",
+      "topic": "Spectrophotometry",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In a spectrophotometer, the 'blank' or reference cuvette is used to:",
+      "options": [
+        "Zero the instrument by accounting for absorbance from the solvent and cuvette so only the analyte's absorbance is measured",
+        "Increase the sensitivity of the light source",
+        "Calibrate the wavelength dial only, and has no effect on absorbance readings",
+        "Replace the need for a standard curve"
+      ],
+      "correct_answer": "Zero the instrument by accounting for absorbance from the solvent and cuvette so only the analyte's absorbance is measured",
+      "explanation": "The blank contains everything in the sample except the analyte of interest, allowing the instrument to subtract background absorbance from the solvent, reagents and cuvette.",
+      "topic": "Spectrophotometry",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A protein solution shows strong UV absorbance at 280 nm mainly because of which amino acid residues?",
+      "options": ["Tryptophan and tyrosine", "Glycine and alanine", "Lysine and arginine", "Aspartate and glutamate"],
+      "correct_answer": "Tryptophan and tyrosine",
+      "explanation": "The aromatic side chains of tryptophan and tyrosine (and to a lesser extent phenylalanine) absorb UV light strongly around 280 nm, which is used to estimate protein concentration.",
+      "topic": "Spectrophotometry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the Biuret test for proteins, a violet/purple colour develops due to:",
+      "options": [
+        "Complex formation between Cu2+ ions and peptide bonds in an alkaline medium",
+        "Reaction of Cu2+ with free amino groups only",
+        "Oxidation of aromatic amino acid side chains",
+        "Reduction of Folin-Ciocalteu reagent by tyrosine"
+      ],
+      "correct_answer": "Complex formation between Cu2+ ions and peptide bonds in an alkaline medium",
+      "explanation": "The Biuret reaction depends on Cu2+ coordinating with the nitrogen atoms of peptide bonds under alkaline conditions to form a violet complex, so its intensity is proportional to the number of peptide bonds (i.e. protein concentration), not amino acid composition.",
+      "topic": "Qualitative tests for biomolecules",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Lowry method for protein quantification combines the Biuret reaction with which additional reagent for increased sensitivity?",
+      "options": ["Folin-Ciocalteu reagent", "Ninhydrin", "Benedict's reagent", "Sudan III"],
+      "correct_answer": "Folin-Ciocalteu reagent",
+      "explanation": "The Lowry method enhances the Biuret copper-peptide reaction by adding Folin-Ciocalteu reagent, which reacts with tyrosine and tryptophan residues (and the Cu-peptide complex) to produce a more intense, sensitive blue colour.",
+      "topic": "Quantitative protein assays",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Bradford assay for protein quantification is based on:",
+      "options": [
+        "A shift in the absorbance maximum of Coomassie Brilliant Blue dye when it binds protein, from 465 nm to 595 nm",
+        "Reduction of cupric ions by reducing sugars",
+        "Formation of a purple complex between ninhydrin and free amino groups",
+        "Fluorescence emission of tryptophan residues"
+      ],
+      "correct_answer": "A shift in the absorbance maximum of Coomassie Brilliant Blue dye when it binds protein, from 465 nm to 595 nm",
+      "explanation": "Coomassie Brilliant Blue G-250 shifts its absorption maximum from 465 nm (unbound, reddish) to about 595 nm (bound to protein, blue) upon binding mainly to arginine and aromatic residues, forming the basis of the rapid Bradford assay.",
+      "topic": "Quantitative protein assays",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Benedict's test is used to detect the presence of:",
+      "options": ["Reducing sugars", "Proteins", "Lipids", "Nucleic acids"],
+      "correct_answer": "Reducing sugars",
+      "explanation": "Benedict's reagent contains Cu2+ that is reduced to a brick-red Cu2O precipitate by the free aldehyde or ketone group of reducing sugars such as glucose, fructose, and maltose.",
+      "topic": "Qualitative tests for biomolecules",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The iodine test is a standard qualitative test for the presence of:",
+      "options": ["Starch", "Protein", "Fat", "Vitamin C"],
+      "correct_answer": "Starch",
+      "explanation": "Iodine (I2/KI) forms a characteristic deep blue-black complex with the helical structure of amylose in starch.",
+      "topic": "Qualitative tests for biomolecules",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The ninhydrin test, which produces a purple (Ruhemann's purple) colour with most amino acids, specifically detects:",
+      "options": ["Free alpha-amino groups", "Reducing sugar hemiacetal groups", "Ester linkages in triglycerides", "Phosphate groups in nucleotides"],
+      "correct_answer": "Free alpha-amino groups",
+      "explanation": "Ninhydrin reacts with free primary amino groups (as found in free amino acids and peptide N-termini) through oxidative deamination to yield the purple Ruhemann's purple product.",
+      "topic": "Qualitative tests for biomolecules",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Sudan III/Sudan IV test is used to qualitatively detect the presence of:",
+      "options": ["Lipids", "Carbohydrates", "Proteins", "Nucleic acids"],
+      "correct_answer": "Lipids",
+      "explanation": "Sudan dyes are lipophilic and stain fats/oils a visible red-orange colour, forming the basis of a simple qualitative test for lipids.",
+      "topic": "Qualitative tests for biomolecules",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In paper and thin-layer chromatography, the retardation factor (Rf) is calculated as:",
+      "options": [
+        "The distance travelled by the solute divided by the distance travelled by the solvent front",
+        "The distance travelled by the solvent front divided by the distance travelled by the solute",
+        "The total plate length divided by the spot diameter",
+        "The molecular weight of the solute divided by that of the solvent"
+      ],
+      "correct_answer": "The distance travelled by the solute divided by the distance travelled by the solvent front",
+      "explanation": "Rf = (distance moved by the compound) / (distance moved by the solvent front), a characteristic, reproducible value for a given compound under fixed chromatographic conditions.",
+      "topic": "Chromatography",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In gel filtration (size-exclusion) chromatography, the order of elution of molecules from the column is:",
+      "options": [
+        "Larger molecules elute first because they are excluded from the porous gel beads and pass through faster",
+        "Smaller molecules always elute first regardless of pore size",
+        "All molecules elute together regardless of size",
+        "Elution order depends only on molecular charge, not size"
+      ],
+      "correct_answer": "Larger molecules elute first because they are excluded from the porous gel beads and pass through faster",
+      "explanation": "In gel filtration, large molecules cannot enter the pores of the stationary phase beads and so travel through the column faster (excluded volume), while smaller molecules enter the pores and are retained longer, eluting later.",
+      "topic": "Chromatography",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Ion-exchange chromatography separates molecules primarily on the basis of their:",
+      "options": ["Net surface charge", "Molecular size", "Volatility", "Solubility in organic solvents"],
+      "correct_answer": "Net surface charge",
+      "explanation": "Ion-exchange chromatography uses a charged stationary phase (cation- or anion-exchange resin) to bind and separate molecules according to their net charge at a given pH, eluting them with a changing salt or pH gradient.",
+      "topic": "Chromatography",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In affinity chromatography, separation is achieved based on:",
+      "options": [
+        "Specific, reversible binding between the target molecule and a ligand immobilised on the stationary phase",
+        "Differences in molecular size alone",
+        "Differences in net charge alone",
+        "Differences in volatility of the analytes"
+      ],
+      "correct_answer": "Specific, reversible binding between the target molecule and a ligand immobilised on the stationary phase",
+      "explanation": "Affinity chromatography exploits a highly specific biological interaction (e.g. antigen-antibody, enzyme-substrate analogue) between the target molecule and an immobilised ligand, giving very high purification power.",
+      "topic": "Chromatography",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In gas chromatography, the sample must generally be:",
+      "options": ["Volatile and thermally stable so it can be vaporised without decomposing", "A large, non-volatile macromolecule", "Dissolved only in water", "Radioactively labelled"],
+      "correct_answer": "Volatile and thermally stable so it can be vaporised without decomposing",
+      "explanation": "Gas chromatography separates compounds in the vapour phase carried by an inert gas, so analytes must be volatile (or made volatile by derivatisation) and stable at the operating temperature.",
+      "topic": "Chromatography",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In gel electrophoresis, molecules migrate through the gel matrix under an electric field mainly according to their:",
+      "options": ["Charge-to-mass ratio (and size, due to gel sieving)", "Colour", "Melting point", "Solubility in ethanol"],
+      "correct_answer": "Charge-to-mass ratio (and size, due to gel sieving)",
+      "explanation": "In an electric field, charged molecules migrate toward the oppositely charged electrode at a rate influenced by their charge-to-mass ratio and further modulated by the sieving effect of the gel matrix on molecular size/shape.",
+      "topic": "Electrophoresis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In agarose gel electrophoresis of DNA, smaller DNA fragments migrate:",
+      "options": ["Faster and farther toward the positive electrode (anode)", "Slower because they weigh less", "Toward the negative electrode because DNA is positively charged", "Not at all, since DNA carries no net charge"],
+      "correct_answer": "Faster and farther toward the positive electrode (anode)",
+      "explanation": "DNA's phosphate backbone gives it a uniform negative charge, so it migrates toward the anode; smaller fragments move through the gel's pores more easily and thus travel farther than larger fragments in a given time.",
+      "topic": "Electrophoresis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Centrifugation separates particles in a mixture primarily based on differences in:",
+      "options": ["Density, size, and shape, under centrifugal force", "Colour and pH", "Boiling point", "Electrical conductivity"],
+      "correct_answer": "Density, size, and shape, under centrifugal force",
+      "explanation": "Centrifugation applies centrifugal force to accelerate the sedimentation of particles, separating them according to differences in density, size and shape relative to the surrounding medium.",
+      "topic": "Centrifugation",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Differential centrifugation, used to isolate cell organelles, relies on:",
+      "options": [
+        "Sequential centrifugation at increasing speeds, pelleting progressively smaller/less dense organelles at each step",
+        "A single constant speed applied throughout",
+        "Separation based purely on organelle colour",
+        "Use of a density gradient medium exclusively, never variable speed"
+      ],
+      "correct_answer": "Sequential centrifugation at increasing speeds, pelleting progressively smaller/less dense organelles at each step",
+      "explanation": "Differential centrifugation pellets the largest, densest structures (e.g. nuclei) at low speed first, then progressively smaller organelles (mitochondria, microsomes, ribosomes) at increasing speeds.",
+      "topic": "Centrifugation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A pH meter measures the hydrogen ion activity of a solution using a glass electrode whose potential varies with pH; before use, it must be:",
+      "options": ["Calibrated with standard buffer solutions of known pH", "Sterilised in an autoclave", "Filled with distilled water only, never buffer", "Used without any reference electrode"],
+      "correct_answer": "Calibrated with standard buffer solutions of known pH",
+      "explanation": "pH meters must be calibrated against standard buffers (commonly pH 4, 7, and 10) to correct for electrode drift and ensure accurate readings of unknown samples.",
+      "topic": "pH measurement and buffers",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A buffer solution resists changes in pH most effectively when the pH of the solution is:",
+      "options": ["Close to the pKa of its weak acid/conjugate base pair", "At least 3 pH units away from the pKa", "Equal to 7.0 regardless of the buffer components", "Equal to 0"],
+      "correct_answer": "Close to the pKa of its weak acid/conjugate base pair",
+      "explanation": "Buffering capacity is greatest when pH is within about 1 unit of the pKa, where significant amounts of both the weak acid and its conjugate base are present to neutralise added acid or base.",
+      "topic": "pH measurement and buffers",
+      "difficulty": "medium"
+    },
+    {
+      "question": "To prepare a molar (M) solution of a solute, you would:",
+      "options": [
+        "Dissolve one mole (the molecular weight in grams) of the solute in solvent and make up to one litre total volume",
+        "Dissolve one gram of solute in one litre of solvent regardless of molecular weight",
+        "Mix equal volumes of solute and solvent",
+        "Dissolve one mole of solute in exactly one litre of solvent, ignoring the final volume"
+      ],
+      "correct_answer": "Dissolve one mole (the molecular weight in grams) of the solute in solvent and make up to one litre total volume",
+      "explanation": "Molarity is defined as moles of solute per litre of final solution, so the solute's gram-molecular-weight amount is dissolved and the solution is then made up to exactly one litre.",
+      "topic": "Solution preparation",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A dilution described as 1:10 typically means:",
+      "options": [
+        "One part of the stock solution is combined with enough diluent to give a total of 10 parts",
+        "Ten parts of stock are added to one part diluent",
+        "The stock is diluted to exactly one-tenth its original volume without adding diluent",
+        "One part stock is mixed with exactly one part diluent"
+      ],
+      "correct_answer": "One part of the stock solution is combined with enough diluent to give a total of 10 parts",
+      "explanation": "A 1:10 dilution means 1 volume of stock is brought to a final total volume of 10 (i.e. combined with 9 volumes of diluent), giving a 10-fold dilution.",
+      "topic": "Solution preparation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which item of personal protective equipment is essential when handling concentrated acids or bases in the biochemistry laboratory?",
+      "options": ["Safety goggles, gloves, and a lab coat", "Only a face mask", "Only closed shoes", "None, as biochemical reagents are always safe"],
+      "correct_answer": "Safety goggles, gloves, and a lab coat",
+      "explanation": "Handling corrosive chemicals requires eye protection, chemical-resistant gloves, and a lab coat to prevent splashes and skin contact injuries.",
+      "topic": "Laboratory safety",
+      "difficulty": "easy"
+    },
+    {
+      "question": "If a corrosive chemical splashes into the eyes in the laboratory, the correct immediate first-aid action is to:",
+      "options": ["Flush the eyes immediately with copious amounts of water at an eyewash station for at least 15 minutes", "Apply a neutralising acid or base to the eye", "Rub the eyes vigorously to remove the chemical", "Wait for a doctor before doing anything"],
+      "correct_answer": "Flush the eyes immediately with copious amounts of water at an eyewash station for at least 15 minutes",
+      "explanation": "Immediate, prolonged irrigation with water dilutes and removes the corrosive agent and is the standard first-aid response for chemical eye exposure, followed by prompt medical attention.",
+      "topic": "Laboratory safety",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Pipetting solutions by mouth suction in a biochemistry laboratory is considered unsafe practice because it risks:",
+      "options": ["Accidental ingestion or aspiration of hazardous or biological reagents", "Damaging the pipette tip only", "Producing inaccurate volumes only, with no safety concern", "Contaminating the reagent bottle only"],
+      "correct_answer": "Accidental ingestion or aspiration of hazardous or biological reagents",
+      "explanation": "Mouth pipetting is banned in modern laboratories because it can lead to ingestion, inhalation or aspiration of toxic, corrosive, or biologically hazardous liquids; mechanical pipette aids/bulbs must be used instead.",
+      "topic": "Laboratory safety",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A calibration/standard curve in quantitative biochemical analysis is constructed by:",
+      "options": [
+        "Plotting the measured signal (e.g. absorbance) against known concentrations of standards, then using the resulting line to determine unknown concentrations",
+        "Measuring the unknown sample repeatedly and averaging the readings",
+        "Comparing colour intensity to the naked eye only",
+        "Plotting time against temperature"
+      ],
+      "correct_answer": "Plotting the measured signal (e.g. absorbance) against known concentrations of standards, then using the resulting line to determine unknown concentrations",
+      "explanation": "A standard/calibration curve relates a measurable signal to known concentrations of reference standards, allowing the concentration of an unknown sample to be read off or calculated from its measured signal.",
+      "topic": "Quantitative analysis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In an enzyme assay measured spectrophotometrically, the term 'molar extinction coefficient' refers to:",
+      "options": [
+        "The absorbance of a 1 M solution of the absorbing species measured over a 1 cm path length at a specified wavelength",
+        "The total volume of substrate consumed",
+        "The temperature coefficient of the reaction rate",
+        "The pH at which the enzyme is most active"
+      ],
+      "correct_answer": "The absorbance of a 1 M solution of the absorbing species measured over a 1 cm path length at a specified wavelength",
+      "explanation": "The molar extinction (absorptivity) coefficient (ε) is a constant characteristic of a substance at a given wavelength, defined as the absorbance of a 1 M solution across a 1 cm path length, and is used to convert absorbance readings into concentration.",
+      "topic": "Spectrophotometry",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Which of the following is the correct order of steps for using an analytical (electronic) weighing balance to weigh a chemical accurately?",
+      "options": [
+        "Level and tare the balance, place a weighing boat/paper, zero the reading, then add the chemical gradually until the desired mass is reached",
+        "Add the chemical directly onto the pan, then subtract the boat weight afterward by calculation only",
+        "Weigh without taring since the boat's weight is negligible",
+        "Switch on the balance and immediately record any reading shown"
+      ],
+      "correct_answer": "Level and tare the balance, place a weighing boat/paper, zero the reading, then add the chemical gradually until the desired mass is reached",
+      "explanation": "Correct weighing practice requires the balance to be level and stable, the container tared (zeroed) so its weight is excluded, then the substance added incrementally while monitoring the display for the target mass.",
+      "topic": "Laboratory techniques",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which chromatographic technique separates volatile compounds using a mobile gas phase and is commonly coupled with mass spectrometry (GC-MS) for compound identification?",
+      "options": ["Gas chromatography", "Paper chromatography", "Gel filtration chromatography", "Thin-layer chromatography"],
+      "correct_answer": "Gas chromatography",
+      "explanation": "Gas chromatography uses an inert carrier gas as the mobile phase to separate volatile compounds, and is frequently interfaced with mass spectrometry for sensitive identification and quantification.",
+      "topic": "Chromatography",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Colorimetry differs from general spectrophotometry mainly in that a colorimeter:",
+      "options": [
+        "Uses filters to select broad bands of visible light rather than a diffraction grating/monochromator for precise single wavelengths",
+        "Can only be used with radioactive samples",
+        "Measures fluorescence rather than absorbance",
+        "Works only in the far-UV range"
+      ],
+      "correct_answer": "Uses filters to select broad bands of visible light rather than a diffraction grating/monochromator for precise single wavelengths",
+      "explanation": "A colorimeter is a simpler instrument that uses coloured glass or gel filters to select an approximate wavelength band in the visible spectrum, whereas a spectrophotometer uses a monochromator to select precise, narrow wavelengths across UV and visible ranges.",
+      "topic": "Spectrophotometry",
+      "difficulty": "medium"
+    }
+  ]
+}

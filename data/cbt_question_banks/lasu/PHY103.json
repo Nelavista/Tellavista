@@ -1,0 +1,403 @@
+{
+  "course_code": "PHY103",
+  "title": "Mechanics & Properties of Matter",
+  "level": "100",
+  "source_note": "Standard NUC-aligned Nigerian university 100L Mechanics & Properties of Matter curriculum: vectors, kinematics, Newton's laws, work-energy-power, momentum, circular motion, gravitation, elasticity, surface tension, viscosity, and rotational basics.",
+  "questions": [
+    {
+      "question": "Which of the following is a vector quantity?",
+      "options": ["Mass", "Temperature", "Displacement", "Speed"],
+      "correct_answer": "Displacement",
+      "explanation": "Displacement has both magnitude and direction, unlike mass, temperature, and speed which are scalars.",
+      "topic": "Vectors",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Two forces of 3 N and 4 N act at right angles to each other on a body. What is the magnitude of the resultant force?",
+      "options": ["5 N", "7 N", "1 N", "12 N"],
+      "correct_answer": "5 N",
+      "explanation": "By Pythagoras' theorem, the resultant is the square root of (3^2 + 4^2) = square root of 25 = 5 N.",
+      "topic": "Vectors",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A car starts from rest and accelerates uniformly at 2 m/s^2 for 5 seconds. What is its final velocity?",
+      "options": ["10 m/s", "2.5 m/s", "7 m/s", "25 m/s"],
+      "correct_answer": "10 m/s",
+      "explanation": "Using v = u + at, with u = 0, a = 2 m/s^2, t = 5 s, v = 0 + (2)(5) = 10 m/s.",
+      "topic": "Kinematics",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A ball is thrown vertically upward with an initial velocity of 20 m/s. Taking g = 10 m/s^2, what maximum height does it reach?",
+      "options": ["20 m", "10 m", "40 m", "2 m"],
+      "correct_answer": "20 m",
+      "explanation": "Maximum height = u^2 / (2g) = (20)^2 / (2x10) = 400/20 = 20 m.",
+      "topic": "Kinematics - projectile motion",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A projectile is launched with velocity u at an angle theta to the horizontal. Which expression gives its time of flight (on level ground)?",
+      "options": ["2u sin(theta) / g", "u cos(theta) / g", "u^2 sin(2theta) / g", "u sin(theta) / g"],
+      "correct_answer": "2u sin(theta) / g",
+      "explanation": "Time of flight for projectile motion on level ground is derived from the vertical motion and equals 2u sin(theta)/g.",
+      "topic": "Kinematics - projectile motion",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Newton's first law of motion is most closely associated with which property of matter?",
+      "options": ["Inertia", "Momentum", "Elasticity", "Viscosity"],
+      "correct_answer": "Inertia",
+      "explanation": "Newton's first law states a body remains at rest or in uniform motion unless acted on by a net external force, describing the body's inertia.",
+      "topic": "Newton's laws",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A net force of 15 N acts on a mass of 3 kg. What acceleration does the mass experience?",
+      "options": ["5 m/s^2", "45 m/s^2", "0.2 m/s^2", "18 m/s^2"],
+      "correct_answer": "5 m/s^2",
+      "explanation": "By Newton's second law, F = ma, so a = F/m = 15/3 = 5 m/s^2.",
+      "topic": "Newton's laws",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Newton's third law of motion states that:",
+      "options": [
+        "For every action there is an equal and opposite reaction",
+        "Force equals mass times acceleration",
+        "A body at rest stays at rest unless acted upon by a force",
+        "Momentum is always conserved"
+      ],
+      "correct_answer": "For every action there is an equal and opposite reaction",
+      "explanation": "Newton's third law states that action and reaction forces are equal in magnitude and opposite in direction, acting on different bodies.",
+      "topic": "Newton's laws",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A 10 kg block on a horizontal surface requires a horizontal force of 20 N to just start moving. What is the coefficient of static friction? (g = 10 m/s^2)",
+      "options": ["0.2", "2.0", "0.5", "20"],
+      "correct_answer": "0.2",
+      "explanation": "Coefficient of friction = Friction force / Normal force = 20 / (10x10) = 20/100 = 0.2.",
+      "topic": "Friction",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which statement correctly distinguishes static and kinetic friction?",
+      "options": [
+        "Static friction acts before motion begins; kinetic friction acts while the body is sliding",
+        "Kinetic friction is always greater than static friction",
+        "Static friction depends on velocity; kinetic friction does not",
+        "There is no difference between them"
+      ],
+      "correct_answer": "Static friction acts before motion begins; kinetic friction acts while the body is sliding",
+      "explanation": "Static friction opposes the tendency of relative motion before sliding starts, while kinetic (dynamic) friction opposes motion once sliding has begun, and is generally slightly less than the maximum static friction.",
+      "topic": "Friction",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A constant force of 50 N moves an object a distance of 4 m in the direction of the force. How much work is done?",
+      "options": ["200 J", "12.5 J", "54 J", "46 J"],
+      "correct_answer": "200 J",
+      "explanation": "Work done = Force x distance = 50 N x 4 m = 200 J.",
+      "topic": "Work, energy and power",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A 2 kg object is dropped from a height of 5 m. Ignoring air resistance, what is its kinetic energy just before hitting the ground? (g = 10 m/s^2)",
+      "options": ["100 J", "50 J", "10 J", "20 J"],
+      "correct_answer": "100 J",
+      "explanation": "By conservation of energy, KE at the bottom equals the initial PE = mgh = 2x10x5 = 100 J.",
+      "topic": "Work, energy and power",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Power is defined as:",
+      "options": [
+        "The rate at which work is done",
+        "The product of force and distance",
+        "The rate of change of momentum",
+        "The total energy stored in a system"
+      ],
+      "correct_answer": "The rate at which work is done",
+      "explanation": "Power P = Work done / time taken, measured in watts (joules per second).",
+      "topic": "Work, energy and power",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A machine does 600 J of work in 20 seconds. What is its power output?",
+      "options": ["30 W", "12000 W", "600 W", "20 W"],
+      "correct_answer": "30 W",
+      "explanation": "Power = Work / time = 600 J / 20 s = 30 W.",
+      "topic": "Work, energy and power",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In a perfectly elastic collision between two bodies, which quantities are conserved?",
+      "options": [
+        "Both momentum and kinetic energy",
+        "Only momentum",
+        "Only kinetic energy",
+        "Neither momentum nor kinetic energy"
+      ],
+      "correct_answer": "Both momentum and kinetic energy",
+      "explanation": "In a perfectly elastic collision, total momentum and total kinetic energy are both conserved, unlike inelastic collisions where only momentum is conserved.",
+      "topic": "Momentum and collisions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A 4 kg trolley moving at 3 m/s collides and sticks to a stationary 2 kg trolley. What is their common velocity after collision?",
+      "options": ["2 m/s", "1.5 m/s", "3 m/s", "6 m/s"],
+      "correct_answer": "2 m/s",
+      "explanation": "By conservation of momentum: (4x3 + 2x0) = (4+2)v, so 12 = 6v, giving v = 2 m/s.",
+      "topic": "Momentum and collisions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What provides the centripetal force that keeps a car moving in a circular path on a flat road?",
+      "options": ["Frictional force between tyres and road", "The car's weight", "The normal reaction force", "Air resistance"],
+      "correct_answer": "Frictional force between tyres and road",
+      "explanation": "On a flat road, the horizontal frictional force between the tyres and road surface provides the centripetal force directed toward the centre of the circular path.",
+      "topic": "Circular motion",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A body of mass 0.5 kg moves in a circle of radius 2 m at a constant speed of 4 m/s. What is the centripetal force acting on it?",
+      "options": ["4 N", "8 N", "1 N", "2 N"],
+      "correct_answer": "4 N",
+      "explanation": "Centripetal force F = mv^2/r = (0.5 x 16)/2 = 8/2 = 4 N.",
+      "topic": "Circular motion",
+      "difficulty": "medium"
+    },
+    {
+      "question": "According to Newton's law of universal gravitation, the gravitational force between two masses is:",
+      "options": [
+        "Directly proportional to the product of the masses and inversely proportional to the square of the distance between them",
+        "Directly proportional to the distance between them",
+        "Inversely proportional to the product of the masses",
+        "Independent of the distance between them"
+      ],
+      "correct_answer": "Directly proportional to the product of the masses and inversely proportional to the square of the distance between them",
+      "explanation": "Newton's law of gravitation states F = Gm1m2/r^2, so force increases with the product of masses and decreases with the square of separation.",
+      "topic": "Gravitation",
+      "difficulty": "easy"
+    },
+    {
+      "question": "As altitude above the Earth's surface increases, the acceleration due to gravity:",
+      "options": ["Decreases", "Increases", "Remains constant", "Becomes negative"],
+      "correct_answer": "Decreases",
+      "explanation": "Since gravitational acceleration g = GM/r^2, increasing the distance r from the Earth's centre reduces g.",
+      "topic": "Gravitation",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Hooke's law states that, within the elastic limit, the extension of a spring is:",
+      "options": [
+        "Directly proportional to the applied force",
+        "Inversely proportional to the applied force",
+        "Independent of the applied force",
+        "Proportional to the square of the applied force"
+      ],
+      "correct_answer": "Directly proportional to the applied force",
+      "explanation": "Hooke's law states F = ke, meaning extension e is directly proportional to the applied force F, provided the elastic limit is not exceeded.",
+      "topic": "Elasticity",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A spring with force constant 200 N/m is stretched by 0.05 m. What force was applied?",
+      "options": ["10 N", "4000 N", "0.0004 N", "250 N"],
+      "correct_answer": "10 N",
+      "explanation": "By Hooke's law, F = ke = 200 x 0.05 = 10 N.",
+      "topic": "Elasticity",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Young's modulus of a material is defined as the ratio of:",
+      "options": ["Tensile stress to tensile strain", "Force to extension", "Stress to volume", "Strain to force"],
+      "correct_answer": "Tensile stress to tensile strain",
+      "explanation": "Young's modulus E = stress/strain = (F/A)/(extension/original length), a measure of a material's stiffness within its elastic limit.",
+      "topic": "Elasticity",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A wire of original length 2 m and cross-sectional area 1 x 10^-6 m^2 stretches by 1 mm under a load of 100 N. What is the Young's modulus of the wire?",
+      "options": ["2 x 10^11 Pa", "2 x 10^8 Pa", "5 x 10^4 Pa", "1 x 10^11 Pa"],
+      "correct_answer": "2 x 10^11 Pa",
+      "explanation": "Stress = F/A = 100/(1x10^-6) = 1x10^8 Pa. Strain = 0.001/2 = 5x10^-4. E = stress/strain = 1x10^8/5x10^-4 = 2x10^11 Pa.",
+      "topic": "Elasticity",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The elastic limit of a material is the point beyond which:",
+      "options": [
+        "The material no longer returns to its original shape when the deforming force is removed",
+        "The material breaks immediately",
+        "Hooke's law always applies",
+        "The material becomes a liquid"
+      ],
+      "correct_answer": "The material no longer returns to its original shape when the deforming force is removed",
+      "explanation": "Beyond the elastic limit, a material undergoes permanent (plastic) deformation and does not fully recover its original shape.",
+      "topic": "Elasticity",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Surface tension in a liquid arises because of:",
+      "options": [
+        "Cohesive forces between liquid molecules at the surface",
+        "Adhesive forces between the liquid and its container only",
+        "Gravitational pull on the liquid",
+        "The viscosity of the liquid"
+      ],
+      "correct_answer": "Cohesive forces between liquid molecules at the surface",
+      "explanation": "Surface molecules experience a net inward cohesive pull from neighbouring molecules, creating a 'skin-like' effect known as surface tension.",
+      "topic": "Surface tension",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a capillary tube, water rises higher in a narrower tube than in a wider one because the rise height is:",
+      "options": ["Inversely proportional to the radius of the tube", "Directly proportional to the radius of the tube", "Independent of the radius", "Proportional to the square of the radius"],
+      "correct_answer": "Inversely proportional to the radius of the tube",
+      "explanation": "From the capillary rise formula h = 2T cos(theta) / (r rho g), the height h is inversely proportional to the tube radius r.",
+      "topic": "Surface tension",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Viscosity of a fluid is best described as a measure of:",
+      "options": [
+        "The fluid's internal resistance to flow",
+        "The fluid's density",
+        "The fluid's surface tension",
+        "The fluid's compressibility"
+      ],
+      "correct_answer": "The fluid's internal resistance to flow",
+      "explanation": "Viscosity arises from internal friction between adjacent layers of a moving fluid and represents its resistance to flow.",
+      "topic": "Viscosity",
+      "difficulty": "easy"
+    },
+    {
+      "question": "According to Stokes' law, the terminal velocity of a small sphere falling through a viscous fluid is:",
+      "options": [
+        "Directly proportional to the square of its radius",
+        "Inversely proportional to its radius",
+        "Independent of the fluid's viscosity",
+        "Directly proportional to the radius only"
+      ],
+      "correct_answer": "Directly proportional to the square of its radius",
+      "explanation": "Stokes' law gives terminal velocity v = 2r^2(rho_s - rho_f)g / (9eta), showing v is proportional to r^2.",
+      "topic": "Viscosity",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Relative density of a substance is defined as the ratio of:",
+      "options": [
+        "The density of the substance to the density of water",
+        "The mass of the substance to its volume",
+        "The weight of the substance to its mass",
+        "The density of water to the density of the substance"
+      ],
+      "correct_answer": "The density of the substance to the density of water",
+      "explanation": "Relative density (specific gravity) is defined as the density of a substance divided by the density of water at a standard temperature, and is dimensionless.",
+      "topic": "Density",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The principle of moments states that for a body in rotational equilibrium:",
+      "options": [
+        "The sum of clockwise moments equals the sum of anticlockwise moments about any point",
+        "The sum of all forces acting on it is zero",
+        "The body must be at rest",
+        "Its centre of gravity must be at its geometric centre"
+      ],
+      "correct_answer": "The sum of clockwise moments equals the sum of anticlockwise moments about any point",
+      "explanation": "The principle of moments (law of the lever) states that a body is in rotational equilibrium when the total clockwise moment equals the total anticlockwise moment about a pivot.",
+      "topic": "Equilibrium and moments",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A uniform beam is balanced on a pivot with a 20 N weight placed 0.5 m from the pivot on one side. What weight placed 0.25 m on the other side would balance it?",
+      "options": ["40 N", "10 N", "20 N", "5 N"],
+      "correct_answer": "40 N",
+      "explanation": "By the principle of moments, 20 x 0.5 = W x 0.25, so W = 10/0.25 = 40 N.",
+      "topic": "Equilibrium and moments",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The centre of gravity of a uniform rectangular lamina lies at:",
+      "options": ["Its geometric centre", "One of its corners", "The midpoint of its shortest side", "Outside the lamina"],
+      "correct_answer": "Its geometric centre",
+      "explanation": "For a uniform, symmetric body like a rectangular lamina, the centre of gravity coincides with its geometric centre.",
+      "topic": "Equilibrium and moments",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Simple harmonic motion is defined as motion in which the acceleration of a body is:",
+      "options": [
+        "Directly proportional to its displacement from a fixed point and directed towards that point",
+        "Constant at all times",
+        "Directly proportional to its velocity",
+        "Independent of its displacement"
+      ],
+      "correct_answer": "Directly proportional to its displacement from a fixed point and directed towards that point",
+      "explanation": "SHM is characterised by a restoring acceleration a = -omega^2 x, proportional to displacement x and always directed towards the equilibrium position.",
+      "topic": "Simple harmonic motion",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The period of a simple pendulum of length L undergoing small oscillations is given by:",
+      "options": ["T = 2*pi*sqrt(L/g)", "T = 2*pi*sqrt(g/L)", "T = 2*pi*sqrt(m/k)", "T = pi*sqrt(L/g)"],
+      "correct_answer": "T = 2*pi*sqrt(L/g)",
+      "explanation": "For small-angle oscillations, the period of a simple pendulum depends only on its length L and gravitational acceleration g, given by T = 2*pi*sqrt(L/g).",
+      "topic": "Simple harmonic motion",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For a mass-spring system undergoing SHM, the period T is given by:",
+      "options": ["T = 2*pi*sqrt(m/k)", "T = 2*pi*sqrt(k/m)", "T = 2*pi*sqrt(L/g)", "T = m*k"],
+      "correct_answer": "T = 2*pi*sqrt(m/k)",
+      "explanation": "For a mass m attached to a spring of force constant k, the period of oscillation is T = 2*pi*sqrt(m/k).",
+      "topic": "Simple harmonic motion",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The moment of inertia of a rigid body about an axis is a measure of:",
+      "options": [
+        "Its resistance to angular acceleration about that axis",
+        "Its resistance to linear acceleration",
+        "The total mass of the body",
+        "Its centre of gravity"
+      ],
+      "correct_answer": "Its resistance to angular acceleration about that axis",
+      "explanation": "Moment of inertia is the rotational analogue of mass, quantifying a body's resistance to changes in its angular motion about an axis.",
+      "topic": "Rotational motion",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Angular momentum of a rotating rigid body is given by the product of:",
+      "options": ["Moment of inertia and angular velocity", "Mass and linear velocity", "Force and radius", "Torque and time"],
+      "correct_answer": "Moment of inertia and angular velocity",
+      "explanation": "Angular momentum L = I*omega, the rotational analogue of linear momentum p = mv.",
+      "topic": "Rotational motion",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Stress in a deformed material is defined as:",
+      "options": ["Force applied per unit cross-sectional area", "Extension per unit original length", "Force per unit volume", "Energy stored per unit mass"],
+      "correct_answer": "Force applied per unit cross-sectional area",
+      "explanation": "Stress = Force / Area, while strain is the corresponding fractional deformation (e.g. extension divided by original length).",
+      "topic": "Elasticity",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A stone is thrown horizontally from the top of a cliff. Ignoring air resistance, which statement about its motion is correct?",
+      "options": [
+        "Its horizontal velocity remains constant while its vertical velocity increases",
+        "Both its horizontal and vertical velocities remain constant",
+        "Its vertical velocity remains constant while its horizontal velocity increases",
+        "Both velocities decrease continuously"
+      ],
+      "correct_answer": "Its horizontal velocity remains constant while its vertical velocity increases",
+      "explanation": "With no air resistance, there is no horizontal force so horizontal velocity is constant, while gravity causes the vertical velocity to increase uniformly.",
+      "topic": "Kinematics - projectile motion",
+      "difficulty": "medium"
+    }
+  ]
+}

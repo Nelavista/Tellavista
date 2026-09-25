@@ -1,0 +1,258 @@
+{
+  "course_code": "MTH319",
+  "title": "Numerical Analysis I",
+  "level": "300",
+  "source_note": "Standard NUC-aligned Nigerian university 300L Numerical Analysis curriculum, building on introductory numerical methods (MTH209): root-finding methods, interpolation, numerical differentiation and integration, numerical solution of linear systems, and error analysis.",
+  "questions": [
+    {
+      "question": "The Bisection method for finding a root of f(x) = 0 requires that the initial interval [a,b] satisfies:",
+      "options": ["f(a) and f(b) have opposite signs", "f(a) = f(b)", "f(a) and f(b) are both positive", "a and b are both roots"],
+      "correct_answer": "f(a) and f(b) have opposite signs",
+      "explanation": "By the Intermediate Value Theorem, a sign change guarantees at least one root lies within the interval, which the bisection method requires to begin.",
+      "topic": "Root-finding: bisection",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The Bisection method converges to a root with which order of convergence?",
+      "options": ["Linear", "Quadratic", "Cubic", "It does not converge"],
+      "correct_answer": "Linear",
+      "explanation": "The bisection method halves the interval at each step, giving a guaranteed but relatively slow linear rate of convergence.",
+      "topic": "Root-finding: bisection",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Newton-Raphson iteration formula for finding a root of f(x) = 0 is:",
+      "options": ["x_{n+1} = x_n - f(x_n)/f'(x_n)", "x_{n+1} = x_n + f(x_n)/f'(x_n)", "x_{n+1} = x_n - f'(x_n)/f(x_n)", "x_{n+1} = f(x_n)/f'(x_n)"],
+      "correct_answer": "x_{n+1} = x_n - f(x_n)/f'(x_n)",
+      "explanation": "Newton-Raphson approximates the function by its tangent line at x_n and uses the tangent's root as the next iterate.",
+      "topic": "Root-finding: Newton-Raphson",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The Newton-Raphson method generally converges faster than bisection because it has:",
+      "options": ["Quadratic convergence near a simple root", "Linear convergence only", "No dependence on the derivative", "Guaranteed global convergence from any starting point"],
+      "correct_answer": "Quadratic convergence near a simple root",
+      "explanation": "Near a simple root with f'(root) ≠ 0, Newton-Raphson's error roughly squares each iteration, giving quadratic convergence, much faster than bisection's linear rate.",
+      "topic": "Root-finding: Newton-Raphson",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A key drawback of the Newton-Raphson method is that it:",
+      "options": ["Requires evaluation of the derivative f'(x), and may fail to converge if f'(x_n) is near zero", "Never converges for polynomial equations", "Cannot be used for any nonlinear equation", "Always requires an interval containing the root"],
+      "correct_answer": "Requires evaluation of the derivative f'(x), and may fail to converge if f'(x_n) is near zero",
+      "explanation": "If the derivative is unavailable, expensive to compute, or close to zero near the iterate, Newton-Raphson can be impractical or diverge.",
+      "topic": "Root-finding: Newton-Raphson",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Secant method approximates the derivative in Newton's method by:",
+      "options": ["A finite-difference slope using the two most recent iterates", "The exact analytical derivative", "A constant value", "The second derivative"],
+      "correct_answer": "A finite-difference slope using the two most recent iterates",
+      "explanation": "The secant method replaces f'(x_n) with the slope [f(x_n) - f(x_{n-1})]/(x_n - x_{n-1}), avoiding the need for an explicit derivative formula.",
+      "topic": "Root-finding: secant method",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Compared to Newton-Raphson, the secant method requires:",
+      "options": ["Two initial approximations instead of one, and does not need the derivative", "No initial approximation at all", "Exactly the same formula as bisection", "A known interval with a sign change"],
+      "correct_answer": "Two initial approximations instead of one, and does not need the derivative",
+      "explanation": "The secant method needs two starting points to compute its initial finite-difference slope, unlike Newton-Raphson which needs one point plus the derivative formula.",
+      "topic": "Root-finding: secant method",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The fixed-point iteration method solves f(x) = 0 by rewriting it as x = g(x) and iterating x_{n+1} = g(x_n). Convergence near a fixed point is guaranteed when:",
+      "options": ["|g'(x)| < 1 near the fixed point", "|g'(x)| > 1 near the fixed point", "g(x) is discontinuous", "g is a linear function only"],
+      "correct_answer": "|g'(x)| < 1 near the fixed point",
+      "explanation": "The fixed-point theorem requires the iteration function to be a contraction (|g'(x)| < 1) near the root for guaranteed local convergence.",
+      "topic": "Root-finding: fixed-point iteration",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Lagrange's interpolation formula constructs a polynomial of degree n through n+1 data points by:",
+      "options": [
+        "Summing each data point's y-value weighted by a Lagrange basis polynomial that is 1 at that point and 0 at the others",
+        "Fitting a straight line through the first and last points only",
+        "Averaging all the y-values",
+        "Solving a system of trigonometric equations"
+      ],
+      "correct_answer": "Summing each data point's y-value weighted by a Lagrange basis polynomial that is 1 at that point and 0 at the others",
+      "explanation": "This weighted-sum construction guarantees the resulting polynomial passes exactly through all given data points.",
+      "topic": "Interpolation: Lagrange",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Given data points (0,1), (1,3), and (2,7), the Lagrange interpolating polynomial of degree 2 through them, evaluated conceptually, must satisfy:",
+      "options": ["P(0)=1, P(1)=3, P(2)=7", "P(0)=7, P(1)=1, P(2)=3", "P(x) = x^2 for all x", "P is a straight line"],
+      "correct_answer": "P(0)=1, P(1)=3, P(2)=7",
+      "explanation": "By construction, the Lagrange interpolating polynomial reproduces exactly the given y-values at the given x-values.",
+      "topic": "Interpolation: Lagrange",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Newton's Divided Difference interpolation formula is often preferred over Lagrange's formula in practice because:",
+      "options": [
+        "New data points can be added without recomputing the entire polynomial from scratch",
+        "It gives a different (non-unique) interpolating polynomial",
+        "It does not require evenly spaced data",
+        "It always gives a lower-degree polynomial"
+      ],
+      "correct_answer": "New data points can be added without recomputing the entire polynomial from scratch",
+      "explanation": "Divided differences build the polynomial incrementally, so extending the data set only requires computing additional terms, unlike Lagrange's formula.",
+      "topic": "Interpolation: Newton's divided differences",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Newton's Forward Difference interpolation formula is typically used when:",
+      "options": ["Data points are equally spaced and the interpolation point is near the start of the table", "Data points are randomly spaced", "Only two data points are available", "The function is known to be exponential"],
+      "correct_answer": "Data points are equally spaced and the interpolation point is near the start of the table",
+      "explanation": "Forward differences are most accurate/efficient for interpolating near the beginning of a table of equally spaced values.",
+      "topic": "Interpolation: finite differences",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For interpolation near the end of a table of equally spaced data, which formula is generally more appropriate?",
+      "options": ["Newton's Backward Difference formula", "Newton's Forward Difference formula", "Simpson's Rule", "Euler's method"],
+      "correct_answer": "Newton's Backward Difference formula",
+      "explanation": "Backward differences are built using the last few tabulated values, making them best suited for interpolation near the end of the data range.",
+      "topic": "Interpolation: finite differences",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Trapezoidal Rule approximates the definite integral of f(x) over [a,b] using n subintervals by:",
+      "options": ["Approximating the area under the curve with a series of trapezoids formed by connecting consecutive points with straight lines", "Fitting a single parabola across the whole interval", "Using only the function's derivative", "Summing rectangles of height f(a) only"],
+      "correct_answer": "Approximating the area under the curve with a series of trapezoids formed by connecting consecutive points with straight lines",
+      "explanation": "The trapezoidal rule replaces the curve on each subinterval with a straight line segment, whose enclosed trapezoid area approximates the integral.",
+      "topic": "Numerical integration: trapezoidal rule",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Simpson's 1/3 Rule for numerical integration requires:",
+      "options": ["An even number of subintervals (an odd number of nodes)", "An odd number of subintervals", "Exactly one subinterval", "Non-uniform spacing of nodes"],
+      "correct_answer": "An even number of subintervals (an odd number of nodes)",
+      "explanation": "Simpson's 1/3 Rule fits parabolas over pairs of subintervals, which requires the total number of subintervals to be even.",
+      "topic": "Numerical integration: Simpson's rule",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Compared to the Trapezoidal Rule, Simpson's Rule is generally more accurate because it:",
+      "options": ["Approximates the integrand with parabolic (quadratic) segments rather than straight lines", "Uses fewer function evaluations", "Ignores the endpoints", "Requires a smaller number of subintervals always"],
+      "correct_answer": "Approximates the integrand with parabolic (quadratic) segments rather than straight lines",
+      "explanation": "Fitting quadratics captures curvature that straight-line (trapezoidal) segments miss, giving Simpson's Rule a higher order of accuracy for smooth functions.",
+      "topic": "Numerical integration: Simpson's rule",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The forward-difference approximation to the first derivative f'(x0) is given by:",
+      "options": ["[f(x0+h) - f(x0)] / h", "[f(x0) - f(x0-h)] / h", "[f(x0+h) - f(x0-h)] / (2h)", "[f(x0+h) + f(x0-h)] / h"],
+      "correct_answer": "[f(x0+h) - f(x0)] / h",
+      "explanation": "This is the simplest finite-difference formula, derived by truncating the Taylor series expansion of f(x0+h) after the linear term.",
+      "topic": "Numerical differentiation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The central-difference approximation to f'(x0) is generally more accurate than the forward-difference formula because it:",
+      "options": ["Has a truncation error of order h^2 rather than order h", "Requires only one function evaluation", "Ignores the step size h entirely", "Is only valid for polynomials"],
+      "correct_answer": "Has a truncation error of order h^2 rather than order h",
+      "explanation": "The symmetric central-difference formula cancels the first-order error term in the Taylor expansion, giving second-order accuracy versus the forward difference's first-order accuracy.",
+      "topic": "Numerical differentiation",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Gaussian elimination solves a system of linear equations by:",
+      "options": ["Systematically eliminating variables to reduce the system to upper triangular form, then back-substituting", "Guessing solutions randomly and checking them", "Computing the matrix inverse directly in all cases", "Using only iterative averaging"],
+      "correct_answer": "Systematically eliminating variables to reduce the system to upper triangular form, then back-substituting",
+      "explanation": "Gaussian elimination uses row operations to produce an upper triangular (or reduced row echelon) system that can then be solved by back-substitution.",
+      "topic": "Solving linear systems: Gaussian elimination",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Partial pivoting is used in Gaussian elimination primarily to:",
+      "options": ["Reduce numerical (round-off) error by selecting the largest available pivot element", "Increase the size of the system", "Avoid solving for all variables", "Convert the system to a nonlinear one"],
+      "correct_answer": "Reduce numerical (round-off) error by selecting the largest available pivot element",
+      "explanation": "Choosing the largest-magnitude available entry as the pivot minimizes the propagation of round-off error during elimination.",
+      "topic": "Solving linear systems: Gaussian elimination",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The Jacobi iterative method for solving Ax = b updates each variable using:",
+      "options": ["Only values from the previous iteration for all other variables", "The most recently updated values within the same iteration", "Random values", "The matrix inverse computed exactly at each step"],
+      "correct_answer": "Only values from the previous iteration for all other variables",
+      "explanation": "Jacobi's method computes all new values simultaneously using only the previous iterate's values, distinguishing it from Gauss-Seidel.",
+      "topic": "Solving linear systems: Jacobi method",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Gauss-Seidel method improves on the Jacobi method by:",
+      "options": ["Immediately using newly computed values within the same iteration as soon as they are available", "Avoiding iteration altogether", "Requiring no convergence criterion", "Working only for 2x2 systems"],
+      "correct_answer": "Immediately using newly computed values within the same iteration as soon as they are available",
+      "explanation": "Gauss-Seidel updates variables sequentially and uses the latest available values immediately, generally converging faster than Jacobi.",
+      "topic": "Solving linear systems: Gauss-Seidel method",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A sufficient condition for the Jacobi and Gauss-Seidel methods to converge for a system Ax=b is that A is:",
+      "options": ["Strictly diagonally dominant", "Singular", "Skew-symmetric", "Nilpotent"],
+      "correct_answer": "Strictly diagonally dominant",
+      "explanation": "Diagonal dominance (each diagonal entry's magnitude exceeds the sum of the other entries in its row) guarantees convergence of both iterative methods.",
+      "topic": "Solving linear systems: convergence",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In numerical analysis, truncation error refers to:",
+      "options": ["The error introduced by approximating an infinite or exact process with a finite algorithm", "Errors due to computer rounding of decimal numbers", "Errors due to mistyped input data", "The error from using too many significant digits"],
+      "correct_answer": "The error introduced by approximating an infinite or exact process with a finite algorithm",
+      "explanation": "Truncation error arises from mathematical approximation (e.g. truncating a Taylor series), as opposed to round-off error which arises from finite-precision arithmetic.",
+      "topic": "Error analysis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Round-off error in numerical computation arises primarily because:",
+      "options": ["Computers represent real numbers with a finite number of digits (finite precision)", "Algorithms are always mathematically incorrect", "Data is always measured imprecisely", "Iterative methods never converge"],
+      "correct_answer": "Computers represent real numbers with a finite number of digits (finite precision)",
+      "explanation": "Finite-precision floating-point representation cannot exactly store most real numbers, leading to small round-off errors that can accumulate.",
+      "topic": "Error analysis",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The order of convergence of an iterative method measures:",
+      "options": ["How rapidly the sequence of approximations approaches the true solution as iterations proceed", "The total number of iterations required", "The size of the initial guess", "The dimension of the problem"],
+      "correct_answer": "How rapidly the sequence of approximations approaches the true solution as iterations proceed",
+      "explanation": "Order of convergence (linear, quadratic, etc.) quantifies the relationship between successive errors, indicating how fast a method converges.",
+      "topic": "Error analysis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In least-squares curve fitting, the 'best fit' line y = a + bx is chosen to:",
+      "options": ["Minimize the sum of the squares of the vertical deviations between the data points and the line", "Pass exactly through every data point", "Maximize the sum of squared deviations", "Minimize only the largest single deviation"],
+      "correct_answer": "Minimize the sum of the squares of the vertical deviations between the data points and the line",
+      "explanation": "The least-squares criterion minimizes the sum of squared residuals, giving the line of best fit for scattered data.",
+      "topic": "Curve fitting: least squares",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The normal equations used to solve for the least-squares line y = a + bx are derived by:",
+      "options": ["Setting the partial derivatives of the sum of squared errors with respect to a and b to zero", "Solving f(x) = 0 directly", "Applying Simpson's Rule to the data", "Using the bisection method on the residuals"],
+      "correct_answer": "Setting the partial derivatives of the sum of squared errors with respect to a and b to zero",
+      "explanation": "Minimizing the sum of squared residuals with respect to the fit parameters, via calculus, yields the system of normal equations.",
+      "topic": "Curve fitting: least squares",
+      "difficulty": "hard"
+    },
+    {
+      "question": "An interpolating polynomial of degree n is uniquely determined by:",
+      "options": ["Exactly n+1 distinct data points", "Exactly n data points", "Any number of data points", "Only 2 data points regardless of n"],
+      "correct_answer": "Exactly n+1 distinct data points",
+      "explanation": "A polynomial of degree n has n+1 coefficients, so exactly n+1 distinct points are needed (and sufficient) to determine it uniquely.",
+      "topic": "Interpolation: Lagrange",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Using the Bisection method on f(x) = x^2 - 2 with initial interval [1, 2], after one iteration the new midpoint is:",
+      "options": ["1.5", "1.25", "1.75", "2.0"],
+      "correct_answer": "1.5",
+      "explanation": "The midpoint of [1,2] is (1+2)/2 = 1.5; since f(1.5) = 0.25 > 0 and f(1) = -1 < 0, the new interval becomes [1, 1.5].",
+      "topic": "Root-finding: bisection",
+      "difficulty": "medium"
+    }
+  ]
+}

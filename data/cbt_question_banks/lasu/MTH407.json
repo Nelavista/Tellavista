@@ -1,0 +1,264 @@
+{
+  "course_code": "MTH407",
+  "title": "Mathematical Methods III",
+  "level": "400",
+  "source_note": "Standard NUC-aligned Nigerian university 400L Mathematical Methods III curriculum: special functions (Legendre, Bessel, Hermite, Laguerre polynomials) and their generating functions/recurrence relations, Fourier series and transforms, Laplace transforms, the calculus of variations, integral equations (Fredholm and Volterra), and Green's functions.",
+  "questions": [
+    {
+      "question": "Legendre polynomials P_n(x) satisfy the orthogonality relation on [-1,1]:",
+      "options": ["The integral from -1 to 1 of P_m(x)P_n(x) dx equals 0 for m not equal to n", "The integral from -1 to 1 of P_m(x)P_n(x) dx equals 1 always", "P_m(x)P_n(x) equals 0 for all x", "They are never orthogonal"],
+      "correct_answer": "The integral from -1 to 1 of P_m(x)P_n(x) dx equals 0 for m not equal to n",
+      "explanation": "Legendre polynomials are orthogonal on [-1,1] with weight function 1, a special case of Sturm-Liouville orthogonality.",
+      "topic": "Legendre polynomials",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The generating function for Legendre polynomials is:",
+      "options": ["(1 - 2xt + t^2)^(-1/2) equals the sum of P_n(x) t^n", "(1-t)^(-1) equals the sum of P_n(x) t^n", "e^(xt) equals the sum of P_n(x) t^n", "(1+t)^x equals the sum of P_n(x) t^n"],
+      "correct_answer": "(1 - 2xt + t^2)^(-1/2) equals the sum of P_n(x) t^n",
+      "explanation": "This generating function is used to derive many properties of Legendre polynomials, including their recurrence relations.",
+      "topic": "Legendre polynomials",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Rodrigues' formula for the Legendre polynomials is:",
+      "options": ["P_n(x) = (1/(2^n n!)) times the n-th derivative of (x^2 - 1)^n", "P_n(x) equals the n-th derivative of x^n", "P_n(x) = n! x^n", "P_n(x) = (x^2 - 1)^n"],
+      "correct_answer": "P_n(x) = (1/(2^n n!)) times the n-th derivative of (x^2 - 1)^n",
+      "explanation": "Rodrigues' formula provides a compact closed form for generating each Legendre polynomial via repeated differentiation.",
+      "topic": "Legendre polynomials",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The recurrence relation satisfied by Legendre polynomials is:",
+      "options": ["(n+1)P_(n+1)(x) = (2n+1)x P_n(x) - n P_(n-1)(x)", "P_(n+1)(x) = P_n(x) + P_(n-1)(x)", "P_(n+1)(x) = x P_n(x)", "n P_n(x) = P_(n+1)(x)"],
+      "correct_answer": "(n+1)P_(n+1)(x) = (2n+1)x P_n(x) - n P_(n-1)(x)",
+      "explanation": "This three-term recurrence relation allows successive Legendre polynomials to be generated without repeated differentiation.",
+      "topic": "Legendre polynomials",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Bessel's equation of order n, x^2 y'' + xy' + (x^2 - n^2)y = 0, arises typically in problems with:",
+      "options": ["Cylindrical symmetry", "Spherical symmetry only", "Cartesian symmetry", "No physical applications"],
+      "correct_answer": "Cylindrical symmetry",
+      "explanation": "Bessel's equation arises naturally when separating the Laplacian in cylindrical coordinates, as in vibrating circular membranes or waveguides.",
+      "topic": "Bessel functions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Bessel function of the first kind, J_n(x), is defined by a series expansion whose general term involves:",
+      "options": ["(-1)^k / (k! (n+k)!) times (x/2)^(n+2k)", "x^n / n! only", "e^x expanded in powers of x", "cos(nx) expanded in a Taylor series"],
+      "correct_answer": "(-1)^k / (k! (n+k)!) times (x/2)^(n+2k)",
+      "explanation": "This is the standard power series representation of the Bessel function of the first kind, obtained via the Frobenius method.",
+      "topic": "Bessel functions",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Bessel functions of the first kind J_n(x) and the second kind Y_n(x) together form:",
+      "options": ["A pair of linearly independent solutions of Bessel's equation", "The same function written two ways", "Solutions valid only for n=0", "A pair of non-oscillatory functions"],
+      "correct_answer": "A pair of linearly independent solutions of Bessel's equation",
+      "explanation": "J_n and Y_n span the two-dimensional solution space of Bessel's equation, with Y_n needed since it is singular at the origin while J_n is regular there.",
+      "topic": "Bessel functions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Hermite differential equation y'' - 2xy' + 2ny = 0 arises in the study of:",
+      "options": ["The quantum harmonic oscillator", "Cylindrical wave propagation only", "Spherical harmonics only", "Laplace's equation in polar coordinates"],
+      "correct_answer": "The quantum harmonic oscillator",
+      "explanation": "Hermite polynomials appear as the polynomial factor in the eigenfunctions of the quantum harmonic oscillator.",
+      "topic": "Hermite polynomials",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Hermite polynomials H_n(x) are orthogonal on (-infinity, infinity) with respect to the weight function:",
+      "options": ["e^(-x^2)", "e^(x^2)", "1", "x^2"],
+      "correct_answer": "e^(-x^2)",
+      "explanation": "The Gaussian weight e^(-x^2) is required for Hermite polynomials to satisfy the orthogonality relation over the whole real line.",
+      "topic": "Hermite polynomials",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The Laguerre differential equation xy'' + (1-x)y' + ny = 0 has polynomial solutions L_n(x) that are orthogonal on [0, infinity) with respect to the weight function:",
+      "options": ["e^(-x)", "e^(x)", "x", "1"],
+      "correct_answer": "e^(-x)",
+      "explanation": "Laguerre polynomials require the weight e^(-x) on the half-line to establish their orthogonality property.",
+      "topic": "Laguerre polynomials",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A Fourier series represents a periodic function f(x) of period 2L as a sum of:",
+      "options": ["Sines and cosines (or complex exponentials) with frequencies that are integer multiples of pi/L", "Only polynomial terms", "Only exponential decay terms", "Bessel functions"],
+      "correct_answer": "Sines and cosines (or complex exponentials) with frequencies that are integer multiples of pi/L",
+      "explanation": "The Fourier series decomposes a periodic function into a sum of harmonically related sinusoids.",
+      "topic": "Fourier series",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The Fourier cosine coefficients a_n for f(x) on [-L,L] are computed as:",
+      "options": ["a_n = (1/L) times the integral from -L to L of f(x) cos(n pi x / L) dx", "a_n = the integral of f(x) dx", "a_n = f(n pi / L)", "a_n = (1/L) times the integral of f(x) dx only"],
+      "correct_answer": "a_n = (1/L) times the integral from -L to L of f(x) cos(n pi x / L) dx",
+      "explanation": "This is the standard Euler formula for the Fourier cosine coefficients on the interval [-L,L].",
+      "topic": "Fourier series",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Dirichlet's conditions for the convergence of a Fourier series of f require that, on the interval, f be:",
+      "options": ["Piecewise continuous with finitely many maxima/minima and finitely many discontinuities", "Infinitely differentiable", "Bounded only", "A polynomial"],
+      "correct_answer": "Piecewise continuous with finitely many maxima/minima and finitely many discontinuities",
+      "explanation": "These mild regularity conditions are sufficient to guarantee pointwise convergence of the Fourier series.",
+      "topic": "Fourier series",
+      "difficulty": "hard"
+    },
+    {
+      "question": "At a jump discontinuity x0, the Fourier series of f converges to:",
+      "options": ["The average of the left- and right-hand limits, [f(x0-) + f(x0+)]/2", "f(x0-) only", "f(x0+) only", "Zero always"],
+      "correct_answer": "The average of the left- and right-hand limits, [f(x0-) + f(x0+)]/2",
+      "explanation": "This midpoint convergence at jump discontinuities is a classical result of Fourier series theory.",
+      "topic": "Fourier series",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Fourier transform of a function f(t) is defined as:",
+      "options": ["F(omega) = the integral from -infinity to infinity of f(t) e^(-i omega t) dt", "F(omega) = the integral of f(t) dt", "F(omega) = f(omega)", "F(omega) = the sum of f(n omega)"],
+      "correct_answer": "F(omega) = the integral from -infinity to infinity of f(t) e^(-i omega t) dt",
+      "explanation": "This is the standard definition of the Fourier transform, extending Fourier series ideas to non-periodic functions.",
+      "topic": "Fourier transforms",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Fourier transform of a Gaussian function is:",
+      "options": ["Another Gaussian function", "A Bessel function", "A delta function", "Undefined"],
+      "correct_answer": "Another Gaussian function",
+      "explanation": "The Gaussian is a fixed point (up to scaling) of the Fourier transform, a special and widely used property.",
+      "topic": "Fourier transforms",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The Laplace transform of f(t), written L{f(t)} = F(s), is defined as:",
+      "options": ["The integral from 0 to infinity of f(t) e^(-st) dt", "The integral from -infinity to infinity of f(t) e^(-st) dt", "The integral from 0 to infinity of f(t) dt", "f(s)"],
+      "correct_answer": "The integral from 0 to infinity of f(t) e^(-st) dt",
+      "explanation": "This one-sided integral transform is the standard definition used for solving initial value problems.",
+      "topic": "Laplace transforms",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The Laplace transform is particularly useful for solving linear ODEs with constant coefficients because it converts:",
+      "options": ["Differentiation into algebraic multiplication by s", "Multiplication into differentiation", "Integration into differentiation", "Nonlinear terms into linear ones"],
+      "correct_answer": "Differentiation into algebraic multiplication by s",
+      "explanation": "The transform of a derivative introduces a factor of s, turning differential equations into algebraic equations in s.",
+      "topic": "Laplace transforms",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the calculus of variations, a functional J[y] equal to the integral of F(x,y,y') dx is extremized by functions y(x) satisfying the:",
+      "options": ["Euler-Lagrange equation, d/dx(dF/dy') - dF/dy = 0", "Bessel equation", "Laplace equation", "Cauchy-Riemann equations"],
+      "correct_answer": "Euler-Lagrange equation, d/dx(dF/dy') - dF/dy = 0",
+      "explanation": "The Euler-Lagrange equation is the fundamental necessary condition for a function to extremize a variational functional.",
+      "topic": "Calculus of variations",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The classical brachistochrone problem, solved using the calculus of variations, asks for the curve of:",
+      "options": ["Least time for a bead to slide under gravity between two points", "Shortest length between two points", "Maximum area enclosed", "Steepest descent in a potential"],
+      "correct_answer": "Least time for a bead to slide under gravity between two points",
+      "explanation": "The brachistochrone (from Greek for 'shortest time') is the historic motivating problem of the calculus of variations.",
+      "topic": "Calculus of variations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "If the integrand F in the Euler-Lagrange functional does not explicitly depend on x, then a useful first integral is:",
+      "options": ["F - y' times dF/dy' equals a constant", "F equals 0", "y' equals a constant", "dF/dy equals 0"],
+      "correct_answer": "F - y' times dF/dy' equals a constant",
+      "explanation": "This is the Beltrami identity, a simplification of the Euler-Lagrange equation when F has no explicit x-dependence.",
+      "topic": "Calculus of variations",
+      "difficulty": "hard"
+    },
+    {
+      "question": "An integral equation in which the unknown function appears under the integral sign with constant (fixed) limits of integration is called:",
+      "options": ["A Fredholm integral equation", "A Volterra integral equation", "An ordinary differential equation", "A partial differential equation"],
+      "correct_answer": "A Fredholm integral equation",
+      "explanation": "Fredholm equations are characterized by fixed integration limits, unlike Volterra equations whose upper limit is the independent variable.",
+      "topic": "Integral equations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "An integral equation whose upper limit of integration is the variable x itself is called:",
+      "options": ["A Volterra integral equation", "A Fredholm integral equation", "A homogeneous ODE", "A boundary value problem"],
+      "correct_answer": "A Volterra integral equation",
+      "explanation": "The variable upper limit is the defining feature that distinguishes Volterra from Fredholm integral equations.",
+      "topic": "Integral equations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "An integral equation of the form phi(x) = f(x) + lambda times the integral of K(x,t)phi(t)dt, where the unknown appears both inside and outside the integral, is called:",
+      "options": ["An integral equation of the second kind", "An integral equation of the first kind", "A homogeneous equation only", "A degenerate kernel equation"],
+      "correct_answer": "An integral equation of the second kind",
+      "explanation": "Equations of the second kind include the free term f(x) in addition to the integral term, distinguishing them from first-kind equations.",
+      "topic": "Integral equations",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A Green's function G(x, xi) for a linear differential operator L is used to express the solution of Ly = f(x), with given boundary conditions, as:",
+      "options": ["y(x) equals the integral of G(x, xi) f(xi) d xi", "y(x) equals G(x,x)", "y(x) equals f(x)", "y(x) equals G(x, xi) times f(x)"],
+      "correct_answer": "y(x) equals the integral of G(x, xi) f(xi) d xi",
+      "explanation": "The Green's function acts as an integral kernel that produces the solution for any source term f(x) consistent with the boundary conditions.",
+      "topic": "Green's functions",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A key defining property of the Green's function for a second-order ODE is that it satisfies the homogeneous equation everywhere except at x = xi, where its derivative has:",
+      "options": ["A jump discontinuity of prescribed size", "No discontinuity at all", "A removable singularity", "A value of zero"],
+      "correct_answer": "A jump discontinuity of prescribed size",
+      "explanation": "This jump condition, derived from integrating the ODE across x = xi, encodes the effect of a delta-function source.",
+      "topic": "Green's functions",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Spherical harmonics Y_l^m(theta, phi), which arise from separating Laplace's equation in spherical coordinates, involve which special functions of theta?",
+      "options": ["Associated Legendre functions", "Bessel functions", "Hermite polynomials", "Laguerre polynomials"],
+      "correct_answer": "Associated Legendre functions",
+      "explanation": "The polar angle dependence of spherical harmonics is given by associated Legendre functions, while the azimuthal dependence is a complex exponential.",
+      "topic": "Special functions in PDEs",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The method of separation of variables applied to a PDE like the heat or wave equation converts the PDE into:",
+      "options": ["A set of ordinary differential equations, one for each independent variable", "A single algebraic equation", "A single first-order PDE", "An integral equation only"],
+      "correct_answer": "A set of ordinary differential equations, one for each independent variable",
+      "explanation": "Assuming a product solution reduces the PDE to independent ODEs, each governed by a separation constant.",
+      "topic": "Separation of variables",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The convolution of two functions f and g, denoted (f*g)(t), is defined as:",
+      "options": ["The integral from 0 to t of f(tau) g(t - tau) d tau", "f(t) times g(t)", "f(t) + g(t)", "The integral of f(t)dt times the integral of g(t)dt"],
+      "correct_answer": "The integral from 0 to t of f(tau) g(t - tau) d tau",
+      "explanation": "This is the standard one-sided (causal) convolution used in Laplace transform theory.",
+      "topic": "Laplace transforms",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Laplace transform of a convolution f*g equals:",
+      "options": ["The product F(s)G(s) of the individual Laplace transforms", "The sum F(s) + G(s)", "F(s)/G(s)", "The convolution of F(s) and G(s)"],
+      "correct_answer": "The product F(s)G(s) of the individual Laplace transforms",
+      "explanation": "The convolution theorem converts the often-difficult operation of convolution in the time domain into simple multiplication in the s-domain.",
+      "topic": "Laplace transforms",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Sturm-Liouville eigenfunction expansions generalize Fourier series by expanding a function in terms of:",
+      "options": ["Eigenfunctions of a Sturm-Liouville operator, orthogonal with respect to a weight function", "Only sine functions", "Only polynomials", "Bessel functions exclusively"],
+      "correct_answer": "Eigenfunctions of a Sturm-Liouville operator, orthogonal with respect to a weight function",
+      "explanation": "Fourier series is the special case where the Sturm-Liouville operator is -d^2/dx^2 with periodic boundary conditions; the general theory covers Legendre, Bessel and other expansions.",
+      "topic": "Eigenfunction expansions",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The gamma function Gamma(n), which generalizes the factorial and appears frequently in special-function formulas, satisfies:",
+      "options": ["Gamma(n+1) = n Gamma(n), and Gamma(n+1) = n! for positive integers n", "Gamma(n) = n! only for negative n", "Gamma(n) is defined only for even n", "Gamma(n+1) = Gamma(n)/n"],
+      "correct_answer": "Gamma(n+1) = n Gamma(n), and Gamma(n+1) = n! for positive integers n",
+      "explanation": "This recursive functional equation, together with Gamma(1)=1, recovers the factorial for positive integers and extends it to other values.",
+      "topic": "Gamma function",
+      "difficulty": "medium"
+    }
+  ]
+}

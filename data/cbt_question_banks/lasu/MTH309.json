@@ -1,0 +1,272 @@
+{
+  "course_code": "MTH309",
+  "title": "Discrete Mathematics",
+  "level": "300",
+  "source_note": "Standard NUC-aligned Nigerian university 300L Discrete Mathematics curriculum: propositional and predicate logic, proof techniques, relations and functions, graph theory (Eulerian/Hamiltonian graphs, trees, graph coloring), combinatorics and the pigeonhole principle, recurrence relations, Boolean algebra, and an introduction to algorithmic complexity.",
+  "questions": [
+    {
+      "question": "In propositional logic, the statement p → q (p implies q) is false only when:",
+      "options": ["p is true and q is false", "p is false and q is true", "both p and q are false", "both p and q are true"],
+      "correct_answer": "p is true and q is false",
+      "explanation": "A conditional statement p→q is false in exactly one case: when the hypothesis p is true but the conclusion q is false.",
+      "topic": "Propositional logic",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The logical statement ¬(p ∧ q) is equivalent, by De Morgan's Law, to:",
+      "options": ["¬p ∨ ¬q", "¬p ∧ ¬q", "p ∨ q", "p ∧ ¬q"],
+      "correct_answer": "¬p ∨ ¬q",
+      "explanation": "De Morgan's Law states the negation of a conjunction equals the disjunction of the negations: ¬(p∧q) ≡ ¬p ∨ ¬q.",
+      "topic": "Propositional logic",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A statement that is always true, regardless of the truth values of its components, is called a:",
+      "options": ["tautology", "contradiction", "contingency", "biconditional"],
+      "correct_answer": "tautology",
+      "explanation": "A tautology is a compound statement that evaluates to true under every possible assignment of truth values, such as p ∨ ¬p.",
+      "topic": "Propositional logic",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The converse of the statement 'if p then q' is:",
+      "options": ["if q then p", "if not p then not q", "if not q then not p", "p and q"],
+      "correct_answer": "if q then p",
+      "explanation": "The converse swaps the hypothesis and conclusion of the original conditional statement.",
+      "topic": "Propositional logic",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The contrapositive of 'if p then q' is 'if not q then not p'. The contrapositive is:",
+      "options": ["logically equivalent to the original statement", "the opposite of the original statement", "never true when the original is true", "the same as the converse"],
+      "correct_answer": "logically equivalent to the original statement",
+      "explanation": "A conditional statement and its contrapositive always have identical truth values, making proof by contrapositive a valid technique.",
+      "topic": "Propositional logic",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In predicate logic, the statement ∀x P(x) is read as:",
+      "options": ["for all x, P(x) is true", "there exists an x such that P(x) is true", "P(x) is never true", "P is a function of x"],
+      "correct_answer": "for all x, P(x) is true",
+      "explanation": "The universal quantifier ∀ asserts that the predicate P(x) holds for every element x in the domain of discourse.",
+      "topic": "Predicate logic",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The negation of ∀x P(x) is:",
+      "options": ["∃x ¬P(x)", "∀x ¬P(x)", "∃x P(x)", "¬∃x P(x)"],
+      "correct_answer": "∃x ¬P(x)",
+      "explanation": "Negating a universal statement produces an existential statement of the negated predicate: ¬(∀x P(x)) ≡ ∃x ¬P(x).",
+      "topic": "Predicate logic",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A proof by contradiction begins by:",
+      "options": ["assuming the negation of the statement to be proved and deriving a logical inconsistency", "assuming the statement is true and stopping", "proving the converse", "using only examples"],
+      "correct_answer": "assuming the negation of the statement to be proved and deriving a logical inconsistency",
+      "explanation": "Proof by contradiction assumes the opposite of the desired conclusion, then shows this assumption leads to a contradiction, forcing the original statement to be true.",
+      "topic": "Proof techniques",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Proof by mathematical induction consists of proving a base case and then proving:",
+      "options": ["that if the statement holds for n = k, it holds for n = k+1", "the statement for every n individually", "the statement is false for large n", "only the base case"],
+      "correct_answer": "that if the statement holds for n = k, it holds for n = k+1",
+      "explanation": "The inductive step shows the truth of the statement propagates from any k to k+1, which combined with the base case proves it for all n in the domain.",
+      "topic": "Proof techniques",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A relation R on a set A is called reflexive if:",
+      "options": ["(a,a) ∈ R for every a ∈ A", "(a,b) ∈ R implies (b,a) ∈ R", "R is empty", "(a,b),(b,c) ∈ R implies (a,c) ∈ R"],
+      "correct_answer": "(a,a) ∈ R for every a ∈ A",
+      "explanation": "Reflexivity requires every element to be related to itself.",
+      "topic": "Relations",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A relation R on a set A is called symmetric if:",
+      "options": ["(a,b) ∈ R implies (b,a) ∈ R", "(a,a) ∈ R for all a", "(a,b),(b,c) ∈ R implies (a,c) ∈ R", "R has no elements"],
+      "correct_answer": "(a,b) ∈ R implies (b,a) ∈ R",
+      "explanation": "Symmetry means the relation is order-independent: if a is related to b, then b must also be related to a.",
+      "topic": "Relations",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A relation that is reflexive, symmetric, and transitive is called an:",
+      "options": ["equivalence relation", "order relation", "injective relation", "empty relation"],
+      "correct_answer": "equivalence relation",
+      "explanation": "A relation satisfying all three properties (reflexive, symmetric, transitive) is an equivalence relation, which partitions the set into equivalence classes.",
+      "topic": "Relations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A relation that is reflexive, antisymmetric, and transitive is called a:",
+      "options": ["partial order relation", "equivalence relation", "total function", "bijection"],
+      "correct_answer": "partial order relation",
+      "explanation": "Partial orders satisfy reflexivity, antisymmetry (a R b and b R a implies a = b), and transitivity, generalizing the ≤ relation.",
+      "topic": "Relations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A function f: A → B is called injective (one-to-one) if:",
+      "options": ["distinct elements of A map to distinct elements of B", "every element of B has a preimage", "A and B have the same size", "f(a) = a for all a"],
+      "correct_answer": "distinct elements of A map to distinct elements of B",
+      "explanation": "Injectivity requires that f(a1) = f(a2) implies a1 = a2, i.e., no two distinct inputs share the same output.",
+      "topic": "Functions",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A function f: A → B is called surjective (onto) if:",
+      "options": ["every element of B is the image of at least one element of A", "f is injective", "A is a subset of B", "f(a) is unique for each a"],
+      "correct_answer": "every element of B is the image of at least one element of A",
+      "explanation": "Surjectivity requires the range of f to be all of B, meaning every element in the codomain has at least one preimage.",
+      "topic": "Functions",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A function that is both injective and surjective is called:",
+      "options": ["bijective", "constant", "undefined", "a relation only"],
+      "correct_answer": "bijective",
+      "explanation": "A bijective function establishes a one-to-one correspondence between A and B, and is invertible.",
+      "topic": "Functions",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In a simple undirected graph, the degree of a vertex is defined as:",
+      "options": ["the number of edges incident to that vertex", "the total number of vertices in the graph", "the shortest path length from that vertex", "the number of connected components"],
+      "correct_answer": "the number of edges incident to that vertex",
+      "explanation": "The degree of a vertex counts how many edges are directly connected to it.",
+      "topic": "Graph theory",
+      "difficulty": "easy"
+    },
+    {
+      "question": "By the Handshaking Lemma, the sum of all vertex degrees in a graph equals:",
+      "options": ["twice the number of edges", "the number of edges", "the number of vertices", "half the number of edges"],
+      "correct_answer": "twice the number of edges",
+      "explanation": "Since every edge contributes exactly 2 to the total degree count (one for each endpoint), the sum of degrees is always 2|E|.",
+      "topic": "Graph theory",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A graph has an Eulerian circuit (a closed walk using every edge exactly once) if and only if:",
+      "options": ["every vertex has even degree and the graph is connected", "every vertex has odd degree", "the graph has no cycles", "the graph is a tree"],
+      "correct_answer": "every vertex has even degree and the graph is connected",
+      "explanation": "Euler's theorem states a connected graph has an Eulerian circuit exactly when every vertex has even degree.",
+      "topic": "Graph theory",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A Hamiltonian cycle in a graph is a cycle that:",
+      "options": ["visits every vertex exactly once and returns to the start", "uses every edge exactly once", "visits only even-degree vertices", "has minimum total weight"],
+      "correct_answer": "visits every vertex exactly once and returns to the start",
+      "explanation": "A Hamiltonian cycle is a closed path that passes through every vertex of the graph exactly once before returning to the starting vertex.",
+      "topic": "Graph theory",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A tree, in graph theory, is defined as:",
+      "options": ["a connected graph with no cycles", "any graph with n vertices", "a graph with all vertices of degree 2", "a disconnected acyclic graph"],
+      "correct_answer": "a connected graph with no cycles",
+      "explanation": "A tree is a connected, acyclic graph; a graph with a tree structure in each of its components (allowing disconnection) is called a forest.",
+      "topic": "Graph theory",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A tree with n vertices always has exactly:",
+      "options": ["n - 1 edges", "n edges", "n + 1 edges", "n^2 edges"],
+      "correct_answer": "n - 1 edges",
+      "explanation": "This is a fundamental property of trees: a connected acyclic graph on n vertices always has exactly n-1 edges.",
+      "topic": "Graph theory",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The chromatic number of a graph is defined as:",
+      "options": ["the minimum number of colors needed to color the vertices so no two adjacent vertices share a color", "the number of edges in the graph", "the maximum vertex degree", "the number of connected components"],
+      "correct_answer": "the minimum number of colors needed to color the vertices so no two adjacent vertices share a color",
+      "explanation": "The chromatic number χ(G) is the smallest number of colors required for a proper vertex coloring of the graph.",
+      "topic": "Graph theory",
+      "difficulty": "medium"
+    },
+    {
+      "question": "By the Four Color Theorem, every planar graph can be properly vertex-colored using at most:",
+      "options": ["4 colors", "2 colors", "n colors, where n is the number of vertices", "3 colors"],
+      "correct_answer": "4 colors",
+      "explanation": "The Four Color Theorem states that any planar graph's vertices (regions of a map) can be colored with no more than four colors such that no two adjacent regions share a color.",
+      "topic": "Graph theory",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Pigeonhole Principle states that if n items are placed into m containers with n > m, then:",
+      "options": ["at least one container must contain more than one item", "each container has exactly one item", "some container is empty", "n must equal m"],
+      "correct_answer": "at least one container must contain more than one item",
+      "explanation": "This basic counting principle guarantees a collision when more items than containers are distributed among them.",
+      "topic": "Combinatorics",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The Pigeonhole Principle can be used to prove that among any 13 people, at least two:",
+      "options": ["share the same birth month", "have the same birthday", "are the same age", "live in the same city"],
+      "correct_answer": "share the same birth month",
+      "explanation": "With 13 people and only 12 months, by the pigeonhole principle at least two people must share a birth month.",
+      "topic": "Combinatorics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A recurrence relation defines a sequence by:",
+      "options": ["expressing each term as a function of one or more previous terms", "giving an explicit closed formula only", "listing all terms individually", "using only the first term"],
+      "correct_answer": "expressing each term as a function of one or more previous terms",
+      "explanation": "A recurrence relation recursively defines later terms in terms of earlier ones, such as the Fibonacci relation Fn = Fn-1 + Fn-2.",
+      "topic": "Recurrence relations",
+      "difficulty": "easy"
+    },
+    {
+      "question": "For the Fibonacci recurrence Fn = Fn-1 + Fn-2 with F0=0, F1=1, the value of F5 is:",
+      "options": ["5", "3", "8", "13"],
+      "correct_answer": "5",
+      "explanation": "Computing terms: F2=1, F3=2, F4=3, F5=5.",
+      "topic": "Recurrence relations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A linear homogeneous recurrence relation with constant coefficients, an = c1 an-1 + c2 an-2, is typically solved using:",
+      "options": ["the characteristic (auxiliary) equation method", "direct substitution of n = 0 only", "integration", "graph coloring techniques"],
+      "correct_answer": "the characteristic (auxiliary) equation method",
+      "explanation": "This mirrors the method for constant-coefficient linear ODEs: assuming an = r^n leads to a characteristic polynomial whose roots determine the general solution.",
+      "topic": "Recurrence relations",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In Boolean algebra, the expression A + A'B simplifies to:",
+      "options": ["A + B", "A", "B", "A'B"],
+      "correct_answer": "A + B",
+      "explanation": "Using the absorption/distribution identity, A + A'B = A + B, a standard Boolean algebra simplification.",
+      "topic": "Boolean algebra",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In Boolean algebra, De Morgan's Laws state that (A·B)' equals:",
+      "options": ["A' + B'", "A' · B'", "A + B", "AB"],
+      "correct_answer": "A' + B'",
+      "explanation": "De Morgan's Law for Boolean algebra: the complement of a conjunction equals the disjunction of the complements.",
+      "topic": "Boolean algebra",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In algorithmic complexity, Big-O notation O(n^2) describes an algorithm whose running time:",
+      "options": ["grows proportionally to the square of the input size, for large n", "is always exactly n^2 operations", "is constant regardless of input size", "grows logarithmically"],
+      "correct_answer": "grows proportionally to the square of the input size, for large n",
+      "explanation": "Big-O gives an asymptotic upper bound; O(n^2) means the running time is bounded above by a constant multiple of n^2 for sufficiently large n.",
+      "topic": "Algorithmic complexity",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Between an algorithm with time complexity O(n log n) and one with O(n^2), for very large n:",
+      "options": ["the O(n log n) algorithm will eventually run faster", "the O(n^2) algorithm always runs faster", "they always take the same time", "complexity notation cannot compare them"],
+      "correct_answer": "the O(n log n) algorithm will eventually run faster",
+      "explanation": "Since n log n grows more slowly than n^2 as n increases, the O(n log n) algorithm becomes faster for sufficiently large inputs.",
+      "topic": "Algorithmic complexity",
+      "difficulty": "medium"
+    }
+  ]
+}

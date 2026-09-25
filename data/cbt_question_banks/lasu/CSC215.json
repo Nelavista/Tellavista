@@ -1,0 +1,296 @@
+{
+  "course_code": "CSC215",
+  "title": "Discrete Mathematics",
+  "level": "200",
+  "source_note": "Standard NUC-aligned 200L Discrete Mathematics for Computer Science curriculum (set theory, logic, relations and functions, combinatorics, graph theory, Boolean algebra, proof techniques). Content overlaps in topic area with LASU's own CSC204 'Introduction to Discrete Mathematics' course description (set theory, relations, Boolean algebra and lattices, logic, graph theory, matrices), authored here under the assigned code CSC215.",
+  "questions": [
+    {
+      "question": "In set theory, what is the union of two sets A and B (A ∪ B)?",
+      "options": ["The set of all elements in A, in B, or in both", "The set of elements common to both A and B", "The set of elements in A but not in B", "The set of all possible subsets of A and B"],
+      "correct_answer": "The set of all elements in A, in B, or in both",
+      "explanation": "The union operation combines all elements that appear in either set, without duplication.",
+      "topic": "Set theory",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is the cardinality of the power set of a set with n elements?",
+      "options": ["2^n", "n^2", "n!", "2n"],
+      "correct_answer": "2^n",
+      "explanation": "The power set contains every possible subset of a set, and a set with n elements has exactly 2^n subsets, including the empty set and the set itself.",
+      "topic": "Set theory",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Two sets A and B are disjoint if:",
+      "options": ["Their intersection is the empty set", "Their union equals the universal set", "A is a subset of B", "They have the same cardinality"],
+      "correct_answer": "Their intersection is the empty set",
+      "explanation": "Disjoint sets share no common elements, meaning A ∩ B = ∅.",
+      "topic": "Set theory",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In propositional logic, what is the truth value of the conjunction (P ∧ Q) when P is true and Q is false?",
+      "options": ["False", "True", "Undefined", "Depends on the negation of P"],
+      "correct_answer": "False",
+      "explanation": "The conjunction (AND) is only true when both operands are true; since Q is false here, the whole expression is false.",
+      "topic": "Propositional logic",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is the truth value of the disjunction (P ∨ Q) when P is false and Q is true?",
+      "options": ["True", "False", "Undefined", "Depends on Q's negation"],
+      "correct_answer": "True",
+      "explanation": "The disjunction (OR) is true if at least one operand is true; since Q is true, the whole expression is true.",
+      "topic": "Propositional logic",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The conditional statement 'P → Q' is false only when:",
+      "options": ["P is true and Q is false", "P is false and Q is true", "Both P and Q are false", "Both P and Q are true"],
+      "correct_answer": "P is true and Q is false",
+      "explanation": "A conditional (implication) is false only when the hypothesis (P) is true but the conclusion (Q) is false; it is vacuously true whenever P is false.",
+      "topic": "Propositional logic",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the contrapositive of the statement 'If P, then Q'?",
+      "options": ["If not Q, then not P", "If not P, then not Q", "If Q, then P", "If not P, then Q"],
+      "correct_answer": "If not Q, then not P",
+      "explanation": "The contrapositive of 'P → Q' is '¬Q → ¬P', and it is logically equivalent to the original statement.",
+      "topic": "Propositional logic",
+      "difficulty": "medium"
+    },
+    {
+      "question": "According to De Morgan's laws, what is the negation of (P ∧ Q)?",
+      "options": ["¬P ∨ ¬Q", "¬P ∧ ¬Q", "P ∨ Q", "P ∧ ¬Q"],
+      "correct_answer": "¬P ∨ ¬Q",
+      "explanation": "De Morgan's law states that ¬(P ∧ Q) is logically equivalent to (¬P ∨ ¬Q).",
+      "topic": "Propositional logic",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In predicate logic, what does the universal quantifier '∀x P(x)' assert?",
+      "options": ["P(x) is true for every value of x in the domain", "P(x) is true for at least one value of x", "P(x) is always false", "x is a fixed constant"],
+      "correct_answer": "P(x) is true for every value of x in the domain",
+      "explanation": "The universal quantifier ∀ ('for all') asserts that the predicate holds for every element in the specified domain.",
+      "topic": "Predicate logic",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What does the existential quantifier '∃x P(x)' assert?",
+      "options": ["There exists at least one x for which P(x) is true", "P(x) is true for all x", "No value of x makes P(x) true", "x must be unique"],
+      "correct_answer": "There exists at least one x for which P(x) is true",
+      "explanation": "The existential quantifier ∃ ('there exists') asserts that at least one element in the domain satisfies the predicate.",
+      "topic": "Predicate logic",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A relation R on a set A is called 'reflexive' if:",
+      "options": ["(a, a) ∈ R for every element a in A", "(a, b) ∈ R implies (b, a) ∈ R", "R contains no elements", "(a, b) ∈ R and (b, c) ∈ R implies (a, c) ∈ R"],
+      "correct_answer": "(a, a) ∈ R for every element a in A",
+      "explanation": "Reflexivity requires every element to be related to itself.",
+      "topic": "Relations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A relation R is called 'symmetric' if:",
+      "options": ["Whenever (a, b) ∈ R, then (b, a) ∈ R also", "Every element relates only to itself", "(a, b) ∈ R and (b, c) ∈ R implies (a, c) ∈ R", "R has exactly one ordered pair"],
+      "correct_answer": "Whenever (a, b) ∈ R, then (b, a) ∈ R also",
+      "explanation": "Symmetry means that if a is related to b, then b must also be related to a.",
+      "topic": "Relations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A relation that is reflexive, symmetric, and transitive is called a(n):",
+      "options": ["Equivalence relation", "Partial order", "Total order", "Injective function"],
+      "correct_answer": "Equivalence relation",
+      "explanation": "A relation satisfying reflexivity, symmetry, and transitivity is defined as an equivalence relation, and it partitions the set into equivalence classes.",
+      "topic": "Relations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is a 'partition' of a set induced by an equivalence relation?",
+      "options": ["A division of the set into disjoint, non-empty subsets (equivalence classes) whose union is the whole set", "A single ordered pair from the relation", "A function mapping the set to itself", "The complement of the set"],
+      "correct_answer": "A division of the set into disjoint, non-empty subsets (equivalence classes) whose union is the whole set",
+      "explanation": "An equivalence relation partitions its underlying set into disjoint equivalence classes that together cover the entire set.",
+      "topic": "Relations",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A function f: A → B is called 'injective' (one-to-one) if:",
+      "options": ["Different elements of A always map to different elements of B", "Every element of B has a pre-image in A", "A and B have the same cardinality", "f maps every element of A to a single fixed element of B"],
+      "correct_answer": "Different elements of A always map to different elements of B",
+      "explanation": "An injective function never maps two distinct inputs to the same output.",
+      "topic": "Functions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A function f: A → B is called 'surjective' (onto) if:",
+      "options": ["Every element of B is the image of at least one element of A", "Every element of A maps to a unique element of B", "f has no inverse", "A is a subset of B"],
+      "correct_answer": "Every element of B is the image of at least one element of A",
+      "explanation": "Surjectivity requires the function's range to cover the entire codomain B.",
+      "topic": "Functions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A function that is both injective and surjective is called:",
+      "options": ["Bijective", "Reflexive", "Transitive", "Idempotent"],
+      "correct_answer": "Bijective",
+      "explanation": "A bijective function is a one-to-one correspondence between two sets -- it is both injective and surjective, and therefore invertible.",
+      "topic": "Functions",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In how many ways can 5 distinct books be arranged on a shelf?",
+      "options": ["120", "25", "20", "60"],
+      "correct_answer": "120",
+      "explanation": "The number of arrangements (permutations) of 5 distinct items is 5! = 5x4x3x2x1 = 120.",
+      "topic": "Combinatorics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "How many ways can a committee of 3 people be chosen from a group of 7, where order does not matter?",
+      "options": ["35", "21", "210", "42"],
+      "correct_answer": "35",
+      "explanation": "This is a combination: C(7,3) = 7! / (3! x 4!) = 35.",
+      "topic": "Combinatorics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the difference between a permutation and a combination?",
+      "options": ["A permutation considers order, while a combination does not", "A combination considers order, while a permutation does not", "They are mathematically identical", "Permutations apply only to numbers, combinations only to letters"],
+      "correct_answer": "A permutation considers order, while a combination does not",
+      "explanation": "Permutations count arrangements where order matters, while combinations count selections where order is irrelevant.",
+      "topic": "Combinatorics",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The Pigeonhole Principle states that if n items are placed into m containers with n > m, then:",
+      "options": ["At least one container must contain more than one item", "Every container must be empty", "Each container has exactly one item", "The number of items must equal the number of containers"],
+      "correct_answer": "At least one container must contain more than one item",
+      "explanation": "The Pigeonhole Principle is a basic counting argument: you cannot fit more items than containers into separate containers without at least one container holding more than one item.",
+      "topic": "Combinatorics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In graph theory, what is a 'simple graph'?",
+      "options": ["A graph with no loops and no multiple edges between the same pair of vertices", "A graph with only one vertex", "A graph where every vertex is connected to every other vertex", "A graph with weighted edges only"],
+      "correct_answer": "A graph with no loops and no multiple edges between the same pair of vertices",
+      "explanation": "A simple graph excludes self-loops (edges from a vertex to itself) and parallel/multiple edges between the same vertex pair.",
+      "topic": "Graph theory",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What distinguishes a directed graph from an undirected graph?",
+      "options": ["Edges in a directed graph have a specific direction (from one vertex to another)", "Directed graphs cannot have cycles", "Undirected graphs have weighted edges", "Directed graphs must be connected"],
+      "correct_answer": "Edges in a directed graph have a specific direction (from one vertex to another)",
+      "explanation": "In a directed graph (digraph), each edge is an ordered pair indicating a direction, whereas undirected graph edges have no direction.",
+      "topic": "Graph theory",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is the 'degree' of a vertex in an undirected graph?",
+      "options": ["The number of edges incident to that vertex", "The number of vertices in the graph", "The shortest path length from that vertex to any other", "The total number of edges in the graph"],
+      "correct_answer": "The number of edges incident to that vertex",
+      "explanation": "A vertex's degree counts how many edges connect to it.",
+      "topic": "Graph theory",
+      "difficulty": "easy"
+    },
+    {
+      "question": "According to the Handshaking Lemma, the sum of all vertex degrees in an undirected graph equals:",
+      "options": ["Twice the number of edges", "The number of edges", "The number of vertices", "Half the number of edges"],
+      "correct_answer": "Twice the number of edges",
+      "explanation": "Each edge contributes exactly 2 to the total degree count (one for each endpoint), so the sum of degrees is always 2|E|.",
+      "topic": "Graph theory",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Two graphs are 'isomorphic' if:",
+      "options": ["There exists a one-to-one correspondence between their vertices that preserves adjacency", "They have the same number of vertices only", "They both have Eulerian circuits", "One graph is a subgraph of the other"],
+      "correct_answer": "There exists a one-to-one correspondence between their vertices that preserves adjacency",
+      "explanation": "Graph isomorphism means the two graphs are structurally identical -- a bijection between vertex sets exists such that adjacency is preserved.",
+      "topic": "Graph theory",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A 'tree' in graph theory is defined as:",
+      "options": ["A connected graph with no cycles", "Any graph with exactly one vertex", "A graph where every vertex has degree 2", "A disconnected acyclic graph"],
+      "correct_answer": "A connected graph with no cycles",
+      "explanation": "A tree is a connected, acyclic graph; a tree with n vertices always has exactly n-1 edges.",
+      "topic": "Graph theory",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In Boolean algebra, what is the result of A AND 1 (A ∧ 1)?",
+      "options": ["A", "1", "0", "NOT A"],
+      "correct_answer": "A",
+      "explanation": "The identity law of Boolean algebra states that A AND 1 always equals A, since 1 is the identity element for AND.",
+      "topic": "Boolean algebra",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is the result of A OR NOT A (A ∨ ¬A) in Boolean algebra?",
+      "options": ["1 (always true)", "0 (always false)", "A", "NOT A"],
+      "correct_answer": "1 (always true)",
+      "explanation": "This is the law of excluded middle / complement law: a variable ORed with its complement always yields true (1).",
+      "topic": "Boolean algebra",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In lattice theory, what is the 'meet' of two elements typically analogous to?",
+      "options": ["The greatest lower bound (analogous to AND / intersection)", "The least upper bound (analogous to OR / union)", "The complement of an element", "The identity element"],
+      "correct_answer": "The greatest lower bound (analogous to AND / intersection)",
+      "explanation": "In a lattice, the 'meet' operation gives the greatest lower bound of two elements, mirroring set intersection or logical AND.",
+      "topic": "Boolean algebra",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Which proof technique involves assuming the statement is false and deriving a logical contradiction?",
+      "options": ["Proof by contradiction", "Direct proof", "Proof by induction", "Proof by exhaustion"],
+      "correct_answer": "Proof by contradiction",
+      "explanation": "Proof by contradiction assumes the negation of the statement to be proved, then shows this assumption leads to a logical contradiction, thereby proving the original statement true.",
+      "topic": "Proof techniques",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What are the two essential steps of a proof by mathematical induction?",
+      "options": ["The base case and the inductive step", "The hypothesis and the conclusion", "The premise and the contrapositive", "The domain and the codomain"],
+      "correct_answer": "The base case and the inductive step",
+      "explanation": "Induction requires proving the statement holds for a base case (usually n=1 or n=0), then proving that if it holds for n=k, it also holds for n=k+1.",
+      "topic": "Proof techniques",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is a matrix in the context of discrete mathematics used to represent a graph called?",
+      "options": ["An adjacency matrix", "A transition matrix", "An identity matrix", "A diagonal matrix"],
+      "correct_answer": "An adjacency matrix",
+      "explanation": "An adjacency matrix is a square matrix where entry (i, j) indicates whether (and possibly how many) edges connect vertex i to vertex j.",
+      "topic": "Matrices and graphs",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In an adjacency matrix for an undirected simple graph, what property does the matrix always have?",
+      "options": ["It is symmetric", "It is always the identity matrix", "It has all zero entries", "It is never square"],
+      "correct_answer": "It is symmetric",
+      "explanation": "Because edges in an undirected graph have no direction, if vertex i connects to vertex j, then j also connects to i, making the adjacency matrix symmetric about its diagonal.",
+      "topic": "Matrices and graphs",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Two positive integers a and b are said to be 'relatively prime' (coprime) if:",
+      "options": ["Their greatest common divisor (GCD) is 1", "They are both prime numbers", "Their sum is a prime number", "One divides the other evenly"],
+      "correct_answer": "Their greatest common divisor (GCD) is 1",
+      "explanation": "Two integers are coprime when they share no common positive divisor other than 1.",
+      "topic": "Number theory basics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What does the modulo operation (a mod n) return?",
+      "options": ["The remainder when a is divided by n", "The quotient when a is divided by n", "The greatest common divisor of a and n", "The product of a and n"],
+      "correct_answer": "The remainder when a is divided by n",
+      "explanation": "The modulo operation gives the remainder of integer division, which is fundamental in discrete mathematics and computer science (e.g., hashing, cryptography).",
+      "topic": "Number theory basics",
+      "difficulty": "easy"
+    }
+  ]
+}

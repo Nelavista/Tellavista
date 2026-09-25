@@ -1,0 +1,256 @@
+{
+  "course_code": "MTH305",
+  "title": "Complex Analysis II",
+  "level": "300",
+  "source_note": "Standard NUC-aligned Nigerian university 300L Complex Analysis II curriculum, building on MTH304 (Complex Analysis I): Taylor and Laurent series, classification of singularities (removable, poles, essential), residues and the Residue Theorem, evaluation of real integrals by residue calculus, the Argument Principle, Rouche's Theorem, conformal mapping, and Mobius (bilinear) transformations.",
+  "questions": [
+    {
+      "question": "The Taylor series of an analytic function f(z) about a point z0 converges to f(z) within:",
+      "options": ["the largest disc centered at z0 not containing a singularity of f", "the entire complex plane always", "only a single point", "a rectangle centered at z0"],
+      "correct_answer": "the largest disc centered at z0 not containing a singularity of f",
+      "explanation": "The Taylor series of f about z0 converges within the disc extending to the nearest singularity of f from z0.",
+      "topic": "Taylor series",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Taylor series expansion of e^z about z = 0 is:",
+      "options": ["Σ z^n/n!", "Σ z^n", "Σ n! z^n", "Σ z^{2n}/n!"],
+      "correct_answer": "Σ z^n/n!",
+      "explanation": "The exponential function's Maclaurin (Taylor about 0) series is e^z = Σ_{n=0}^∞ z^n/n!, valid for all z.",
+      "topic": "Taylor series",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A Laurent series differs from a Taylor series in that a Laurent series:",
+      "options": ["may include negative powers of (z - z0)", "only converges at isolated points", "has no positive powers", "is only defined for real z"],
+      "correct_answer": "may include negative powers of (z - z0)",
+      "explanation": "A Laurent series generalizes the Taylor series by allowing negative-power (principal part) terms, valid in an annulus around a singularity.",
+      "topic": "Laurent series",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A Laurent series for f(z) about z0 is valid within:",
+      "options": ["an annulus r < |z-z0| < R", "a full disc |z-z0| < R only", "the whole plane", "a single circle only"],
+      "correct_answer": "an annulus r < |z-z0| < R",
+      "explanation": "Unlike Taylor series (valid in a disc), Laurent series converge in an annular region between two concentric circles centered at z0.",
+      "topic": "Laurent series",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For the function f(z) = e^{1/z}, the Laurent series about z = 0 is:",
+      "options": ["Σ_{n=0}^∞ 1/(n! z^n)", "Σ_{n=0}^∞ z^n/n!", "1/z only", "z + 1/z"],
+      "correct_answer": "Σ_{n=0}^∞ 1/(n! z^n)",
+      "explanation": "Substituting 1/z for z in the exponential series e^w = Σ w^n/n! gives e^{1/z} = Σ 1/(n! z^n), a Laurent series with infinitely many negative-power terms.",
+      "topic": "Laurent series",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A singularity z0 of f is called removable if:",
+      "options": ["the Laurent series about z0 has no negative-power terms (principal part is zero)", "f has a pole of order 1 at z0", "the Laurent series has infinitely many negative-power terms", "f is undefined for all z near z0"],
+      "correct_answer": "the Laurent series about z0 has no negative-power terms (principal part is zero)",
+      "explanation": "A removable singularity occurs when the principal part of the Laurent expansion vanishes, so f can be redefined at z0 to become analytic there.",
+      "topic": "Classification of singularities",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The function f(z) = sin(z)/z has what type of singularity at z = 0?",
+      "options": ["removable singularity", "pole of order 1", "essential singularity", "no singularity, f is undefined everywhere"],
+      "correct_answer": "removable singularity",
+      "explanation": "Since sin(z)/z → 1 as z → 0 (its Laurent series has zero principal part), z=0 is a removable singularity.",
+      "topic": "Classification of singularities",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A singularity z0 is called a pole of order m if the Laurent series about z0 has:",
+      "options": ["a finite principal part with lowest term (z-z0)^{-m}", "an infinite principal part", "no principal part", "only positive powers"],
+      "correct_answer": "a finite principal part with lowest term (z-z0)^{-m}",
+      "explanation": "A pole of order m has a Laurent expansion whose principal part terminates, with the most negative power being -m.",
+      "topic": "Classification of singularities",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The function f(z) = 1/(z-3)^2 has what type of singularity at z = 3?",
+      "options": ["a pole of order 2", "a pole of order 1", "an essential singularity", "a removable singularity"],
+      "correct_answer": "a pole of order 2",
+      "explanation": "The Laurent series about z=3 is exactly 1/(z-3)^2, so the principal part terminates at order 2, giving a pole of order 2.",
+      "topic": "Classification of singularities",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A singularity z0 is called essential if:",
+      "options": ["the Laurent series has infinitely many nonzero negative-power terms", "the Laurent series has finitely many negative-power terms", "f(z0) is finite", "f is a polynomial near z0"],
+      "correct_answer": "the Laurent series has infinitely many nonzero negative-power terms",
+      "explanation": "An essential singularity has a principal part with infinitely many terms, as seen for example in e^{1/z} at z = 0.",
+      "topic": "Classification of singularities",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The residue of f(z) at an isolated singularity z0 is defined as:",
+      "options": ["the coefficient a_{-1} of (z-z0)^{-1} in the Laurent expansion", "the coefficient a0 of the Laurent expansion", "the value f(z0)", "the order of the pole"],
+      "correct_answer": "the coefficient a_{-1} of (z-z0)^{-1} in the Laurent expansion",
+      "explanation": "By definition, Res(f,z0) is the coefficient of the (z-z0)^{-1} term in the Laurent series, since that term alone survives contour integration.",
+      "topic": "Residues",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For a simple pole (pole of order 1) at z0, the residue can be computed as:",
+      "options": ["lim_{z→z0} (z-z0)f(z)", "lim_{z→z0} f(z)", "f'(z0)", "the value of f at z0 + 1"],
+      "correct_answer": "lim_{z→z0} (z-z0)f(z)",
+      "explanation": "For a simple pole, multiplying by (z-z0) and taking the limit isolates and extracts the residue coefficient.",
+      "topic": "Residues",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For a pole of order m at z0, the residue formula is:",
+      "options": ["(1/(m-1)!) lim_{z→z0} d^{m-1}/dz^{m-1} [(z-z0)^m f(z)]", "lim_{z→z0} (z-z0)^m f(z)", "m! f(z0)", "(1/m!) f^{(m)}(z0)"],
+      "correct_answer": "(1/(m-1)!) lim_{z→z0} d^{m-1}/dz^{m-1} [(z-z0)^m f(z)]",
+      "explanation": "This is the general residue formula for a pole of order m, reducing to the simple-pole formula when m = 1.",
+      "topic": "Residues",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The residue of f(z) = 1/(z(z-1)) at z = 0 is:",
+      "options": ["-1", "1", "0", "2"],
+      "correct_answer": "-1",
+      "explanation": "Res = lim_{z→0} z·f(z) = lim_{z→0} 1/(z-1) = 1/(0-1) = -1.",
+      "topic": "Residues",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Residue Theorem states that for f analytic inside and on a simple closed contour C except for finitely many isolated singularities inside C:",
+      "options": ["∮C f(z) dz = 2πi Σ (residues of f at singularities inside C)", "∮C f(z) dz = 0 always", "∮C f(z) dz = Σ residues (no factor of 2πi)", "∮C f(z) dz = πi Σ residues"],
+      "correct_answer": "∮C f(z) dz = 2πi Σ (residues of f at singularities inside C)",
+      "explanation": "The Residue Theorem generalizes the Cauchy Integral Formula, expressing a closed contour integral as 2πi times the sum of enclosed residues.",
+      "topic": "Residue theorem",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Evaluate ∮C dz/(z^2+1) where C is the circle |z| = 2 (counterclockwise).",
+      "options": ["πi", "0", "2π", "4πi"],
+      "correct_answer": "0",
+      "explanation": "The poles at z=i and z=-i (both inside |z|=2) have residues 1/2i and -1/2i respectively; the sum of residues is 0, so the integral is 2πi(0)=0.",
+      "topic": "Residue theorem",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Residue calculus is a standard technique for evaluating certain real definite integrals, such as:",
+      "options": ["improper integrals of rational functions over (-∞, ∞)", "only integrals of polynomials", "only integrals with finite bounds and no poles", "integrals of purely imaginary functions"],
+      "correct_answer": "improper integrals of rational functions over (-∞, ∞)",
+      "explanation": "By closing the real-axis contour with a large semicircular arc and applying the residue theorem, many improper real integrals of rational (and rational-trigonometric) functions can be evaluated.",
+      "topic": "Real integrals via residues",
+      "difficulty": "medium"
+    },
+    {
+      "question": "When evaluating ∫_{-∞}^{∞} f(x) dx via residues by closing the contour with a large semicircle in the upper half-plane, Jordan's Lemma is used to justify that:",
+      "options": ["the contribution from the semicircular arc vanishes as its radius → ∞ (under suitable conditions)", "the integral is always zero", "only poles on the real axis contribute", "f(x) must be a polynomial"],
+      "correct_answer": "the contribution from the semicircular arc vanishes as its radius → ∞ (under suitable conditions)",
+      "explanation": "Jordan's Lemma gives sufficient conditions (e.g. f(z) = e^{iaz}g(z) with g→0) under which the arc integral vanishes in the limit, leaving only the real-axis integral equal to 2πi times enclosed residues.",
+      "topic": "Real integrals via residues",
+      "difficulty": "hard"
+    },
+    {
+      "question": "For integrals of the form ∫0^{2π} R(cosθ, sinθ) dθ, the standard residue technique uses the substitution:",
+      "options": ["z = e^{iθ}, converting the integral to a contour integral over the unit circle", "z = θ", "z = cosθ + sinθ", "z = tan(θ/2) only"],
+      "correct_answer": "z = e^{iθ}, converting the integral to a contour integral over the unit circle",
+      "explanation": "Setting z = e^{iθ} converts trigonometric integrals over [0,2π] into contour integrals around |z|=1, where residue calculus applies.",
+      "topic": "Real integrals via residues",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The Argument Principle relates the number of zeros and poles of a meromorphic function f inside a contour C to:",
+      "options": ["(1/2πi) ∮C f'(z)/f(z) dz = Z - P (zeros minus poles, counted with multiplicity)", "the value of f at the center of C", "the length of C", "the residue of f at z=0 only"],
+      "correct_answer": "(1/2πi) ∮C f'(z)/f(z) dz = Z - P (zeros minus poles, counted with multiplicity)",
+      "explanation": "The Argument Principle states this contour integral of f'/f counts the zeros minus poles of f enclosed by C, each counted with multiplicity.",
+      "topic": "Argument principle",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The Argument Principle is often described geometrically as counting:",
+      "options": ["the number of times f(z) winds around the origin as z traverses C", "the area enclosed by C", "the number of poles only", "the curvature of C"],
+      "correct_answer": "the number of times f(z) winds around the origin as z traverses C",
+      "explanation": "As z moves once around C, the image curve f(C) winds around the origin (Z - P) times, which is the geometric content of the argument principle.",
+      "topic": "Argument principle",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Rouché's Theorem states that if |f(z)| > |g(z)| on a simple closed contour C, then f(z) and f(z)+g(z) have:",
+      "options": ["the same number of zeros inside C (counted with multiplicity)", "the same number of poles", "no common zeros", "identical values on C"],
+      "correct_answer": "the same number of zeros inside C (counted with multiplicity)",
+      "explanation": "Rouché's Theorem is a powerful tool for locating the number of zeros of a function by comparing it to a simpler dominant function on the boundary contour.",
+      "topic": "Rouché's theorem",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Rouché's Theorem is commonly used to prove which classical result about polynomials?",
+      "options": ["The Fundamental Theorem of Algebra (a degree-n polynomial has exactly n roots)", "Every polynomial is bounded", "All polynomials are entire functions", "Every polynomial has a pole"],
+      "correct_answer": "The Fundamental Theorem of Algebra (a degree-n polynomial has exactly n roots)",
+      "explanation": "By comparing a degree-n polynomial to its leading term on a sufficiently large circle, Rouché's theorem shows it has exactly n zeros (counted with multiplicity), proving the Fundamental Theorem of Algebra.",
+      "topic": "Rouché's theorem",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A conformal mapping is a function that:",
+      "options": ["preserves angles (both magnitude and orientation) between intersecting curves", "preserves only distances", "maps every point to itself", "is never analytic"],
+      "correct_answer": "preserves angles (both magnitude and orientation) between intersecting curves",
+      "explanation": "A conformal map preserves the angle of intersection between any two curves at points where the map's derivative is nonzero.",
+      "topic": "Conformal mapping",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A function f is conformal at a point z0 provided:",
+      "options": ["f is analytic at z0 and f'(z0) ≠ 0", "f is continuous at z0", "f(z0) = 0", "f is a polynomial"],
+      "correct_answer": "f is analytic at z0 and f'(z0) ≠ 0",
+      "explanation": "Analyticity with a nonzero derivative at a point guarantees the local angle-preserving (conformal) property there.",
+      "topic": "Conformal mapping",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A Möbius (bilinear) transformation has the general form:",
+      "options": ["w = (az+b)/(cz+d), with ad - bc ≠ 0", "w = az + b only", "w = a/z^2", "w = z^2 + c"],
+      "correct_answer": "w = (az+b)/(cz+d), with ad - bc ≠ 0",
+      "explanation": "A Möbius transformation is a rational function of this specific linear-over-linear form, with the nonvanishing determinant condition ensuring it is not constant.",
+      "topic": "Möbius transformations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Every Möbius transformation maps circles and lines in the extended complex plane to:",
+      "options": ["circles or lines", "only circles", "only straight lines", "ellipses"],
+      "correct_answer": "circles or lines",
+      "explanation": "A key property of Möbius transformations is that they always map the set of circles and lines (treating lines as circles through infinity) to itself.",
+      "topic": "Möbius transformations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The composition of two Möbius transformations is:",
+      "options": ["also a Möbius transformation", "never invertible", "always the identity map", "a quadratic function"],
+      "correct_answer": "also a Möbius transformation",
+      "explanation": "Möbius transformations form a group under composition; composing two of them yields another Möbius transformation.",
+      "topic": "Möbius transformations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A Möbius transformation is uniquely determined by specifying:",
+      "options": ["the images of three distinct points", "the images of two points", "only its derivative", "one fixed point"],
+      "correct_answer": "the images of three distinct points",
+      "explanation": "Since a Möbius transformation has three independent parameters, it is uniquely determined by where it sends any three distinct points.",
+      "topic": "Möbius transformations",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The Möbius transformation w = 1/z maps the unit circle |z| = 1 to:",
+      "options": ["the unit circle |w| = 1", "a straight line", "the origin", "infinity"],
+      "correct_answer": "the unit circle |w| = 1",
+      "explanation": "For |z|=1, |w| = |1/z| = 1/|z| = 1, so the image is also the unit circle (with orientation reversed).",
+      "topic": "Möbius transformations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Fixed points of a Möbius transformation w = (az+b)/(cz+d) are found by solving:",
+      "options": ["z = (az+b)/(cz+d)", "z = a + b", "w = 0", "c = 0"],
+      "correct_answer": "z = (az+b)/(cz+d)",
+      "explanation": "A fixed point z satisfies f(z) = z, leading to a quadratic equation with at most two solutions (unless f is the identity).",
+      "topic": "Möbius transformations",
+      "difficulty": "hard"
+    }
+  ]
+}

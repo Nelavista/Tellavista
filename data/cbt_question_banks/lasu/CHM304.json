@@ -1,0 +1,366 @@
+{
+  "course_code": "CHM304",
+  "title": "Coordination Chemistry",
+  "level": "300",
+  "source_note": "Standard NUC-aligned Nigerian university 300L Coordination Chemistry curriculum: nomenclature and structure of coordination compounds, bonding theories (VBT, crystal field theory, ligand field theory), isomerism, stability constants/chelate effect, magnetism and colour of complexes, and biological/industrial relevance of transition-metal complexes.",
+  "questions": [
+    {
+      "question": "In a coordination compound such as [Co(NH3)6]Cl3, the species in square brackets is called the:",
+      "options": ["Counter ion", "Coordination sphere (complex ion)", "Lattice water", "Oxidation state indicator"],
+      "correct_answer": "Coordination sphere (complex ion)",
+      "explanation": "The coordination sphere consists of the central metal ion and its directly bonded ligands, written inside square brackets; species outside (here, Cl-) are counter ions balancing charge.",
+      "topic": "Nomenclature and structure",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The coordination number of the central metal ion in a complex is defined as:",
+      "options": [
+        "The oxidation state of the metal",
+        "The total number of donor atoms directly bonded to the central metal ion",
+        "The total number of electrons on the metal",
+        "The number of counter ions in the compound"
+      ],
+      "correct_answer": "The total number of donor atoms directly bonded to the central metal ion",
+      "explanation": "Coordination number counts the ligand donor atoms directly attached to the metal centre (e.g. 6 in an octahedral complex, 4 in tetrahedral/square planar complexes).",
+      "topic": "Nomenclature and structure",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A ligand such as ethylenediamine (en), which can bind to a metal through two donor atoms simultaneously, is classified as:",
+      "options": ["Monodentate", "Bidentate", "Ambidentate", "Non-coordinating"],
+      "correct_answer": "Bidentate",
+      "explanation": "Ethylenediamine has two nitrogen donor atoms that can both coordinate to the same metal centre, forming a ring (chelate), making it a bidentate chelating ligand.",
+      "topic": "Ligands",
+      "difficulty": "easy"
+    },
+    {
+      "question": "An 'ambidentate' ligand, such as the thiocyanate ion (SCN⁻), is one that:",
+      "options": [
+        "Cannot bond to any metal",
+        "Has two different donor atoms but bonds to a metal through only one at a time, giving rise to linkage isomerism",
+        "Must always use both of its donor atoms simultaneously",
+        "Is always bidentate and chelating"
+      ],
+      "correct_answer": "Has two different donor atoms but bonds to a metal through only one at a time, giving rise to linkage isomerism",
+      "explanation": "Ambidentate ligands like SCN⁻ (which can bond via S or N) or NO2⁻ (via N or O) give linkage isomers depending on which atom coordinates to the metal.",
+      "topic": "Ligands / isomerism",
+      "difficulty": "medium"
+    },
+    {
+      "question": "EDTA (ethylenediaminetetraacetic acid) is a classic example of a:",
+      "options": ["Monodentate ligand", "Hexadentate chelating ligand", "Ambidentate ligand", "Bridging ligand only"],
+      "correct_answer": "Hexadentate chelating ligand",
+      "explanation": "EDTA has six donor atoms (two N and four O from carboxylate groups) that can wrap around and chelate a metal ion, forming very stable complexes -- widely used in complexometric titrations.",
+      "topic": "Ligands",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The 'chelate effect' refers to the observation that:",
+      "options": [
+        "Complexes with chelating (polydentate) ligands are generally less stable than those with an equivalent number of monodentate ligands",
+        "Complexes with chelating ligands are generally more thermodynamically stable than analogous complexes with monodentate ligands, largely due to a favourable entropy change",
+        "Chelating ligands cannot form stable complexes",
+        "Only monodentate ligands can chelate"
+      ],
+      "correct_answer": "Complexes with chelating ligands are generally more thermodynamically stable than analogous complexes with monodentate ligands, largely due to a favourable entropy change",
+      "explanation": "Replacing several monodentate ligands with one chelating ligand releases more free ligand molecules into solution, increasing entropy (ΔS > 0), which favours the chelate complex thermodynamically.",
+      "topic": "Stability constants",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The overall stability (formation) constant, β, of a complex ML_n is related to the stepwise formation constants K1, K2, ... Kn by:",
+      "options": ["β = K1 + K2 + ... + Kn", "β = K1 × K2 × ... × Kn", "β = K1 / Kn", "β = Kn - K1"],
+      "correct_answer": "β = K1 × K2 × ... × Kn",
+      "explanation": "The overall stability constant is the product of the successive stepwise equilibrium constants for each ligand addition step.",
+      "topic": "Stability constants",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In Crystal Field Theory (CFT) applied to an octahedral complex, the d-orbitals split into two energy sets. The higher-energy set (eg) consists of:",
+      "options": ["dxy, dxz, dyz", "dz², dx²-y²", "dxy and dz² only", "All five d orbitals equally"],
+      "correct_answer": "dz², dx²-y²",
+      "explanation": "In an octahedral field, ligands approach along the axes, so the dz² and dx²-y² orbitals (pointing directly at ligands, eg set) are raised in energy relative to the dxy, dxz, dyz (t2g) set which points between ligands.",
+      "topic": "Crystal field theory",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The energy gap between the t2g and eg orbital sets in an octahedral complex is denoted:",
+      "options": ["Δo (or 10Dq)", "ΔH", "K_sp", "λmax only"],
+      "correct_answer": "Δo (or 10Dq)",
+      "explanation": "Δo (crystal field splitting energy, octahedral) quantifies the energy separation between the t2g and eg d-orbital sets and governs a complex's colour and magnetic behaviour.",
+      "topic": "Crystal field theory",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A 'strong field' ligand such as CN⁻ or CO, which produces a large Δo, tends to favour:",
+      "options": [
+        "A high-spin configuration with maximum unpaired electrons",
+        "A low-spin configuration, pairing electrons in the lower t2g set before populating the higher eg set",
+        "No electrons in the d orbitals at all",
+        "Complete removal of the central metal's d electrons"
+      ],
+      "correct_answer": "A low-spin configuration, pairing electrons in the lower t2g set before populating the higher eg set",
+      "explanation": "When Δo is large (strong-field ligand), it costs less energy to pair electrons within the lower t2g set than to promote them to the eg set, giving a low-spin complex.",
+      "topic": "Crystal field theory",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The spectrochemical series ranks ligands by their ability to split d-orbitals. Which of these orderings correctly reflects increasing field strength (weak to strong)?",
+      "options": [
+        "CN⁻ < H2O < Cl⁻ < NH3",
+        "I⁻ < Cl⁻ < H2O < NH3 < CN⁻",
+        "NH3 < CN⁻ < I⁻ < Cl⁻",
+        "CN⁻ < NH3 < H2O < I⁻"
+      ],
+      "correct_answer": "I⁻ < Cl⁻ < H2O < NH3 < CN⁻",
+      "explanation": "The spectrochemical series places halides among the weakest field ligands and CN⁻/CO among the strongest, with H2O and NH3 in between; this ordering is derived experimentally from d-d spectral data.",
+      "topic": "Crystal field theory",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Transition metal complexes are often coloured because:",
+      "options": [
+        "They absorb all wavelengths of visible light equally",
+        "d-d electronic transitions between split d-orbitals absorb specific wavelengths of visible light, and the complementary colour is transmitted/observed",
+        "They always emit white light",
+        "Metal ions are inherently coloured regardless of ligand environment"
+      ],
+      "correct_answer": "d-d electronic transitions between split d-orbitals absorb specific wavelengths of visible light, and the complementary colour is transmitted/observed",
+      "explanation": "Electrons can be excited from lower to higher d-orbital sets by absorbing visible light of energy equal to Δo; the observed colour is complementary to the absorbed wavelength.",
+      "topic": "Colour of complexes",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A complex ion with the electron configuration giving it unpaired d-electrons will be:",
+      "options": ["Diamagnetic, repelled by a magnetic field", "Paramagnetic, attracted into a magnetic field", "Non-magnetic", "Radioactive"],
+      "correct_answer": "Paramagnetic, attracted into a magnetic field",
+      "explanation": "Unpaired electrons give a net magnetic moment, causing paramagnetism (attraction to an external magnetic field); complexes with all electrons paired are diamagnetic.",
+      "topic": "Magnetism",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Geometric (cis-trans) isomerism is possible in square planar complexes of the type MA2B2, such as [Pt(NH3)2Cl2], because:",
+      "options": [
+        "The two A and two B ligands can be arranged adjacent (cis) or opposite (trans) to each other around the square plane",
+        "Square planar complexes cannot show isomerism",
+        "Only octahedral complexes can be cis or trans",
+        "MA2B2 complexes are always linear"
+      ],
+      "correct_answer": "The two A and two B ligands can be arranged adjacent (cis) or opposite (trans) to each other around the square plane",
+      "explanation": "Cisplatin, cis-[Pt(NH3)2Cl2], and its trans isomer are a classic example -- the two arrangements are distinct, non-interconvertible geometric isomers with very different biological activity.",
+      "topic": "Isomerism",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Optical isomerism (chirality) is commonly observed in octahedral complexes with three bidentate ligands, such as [Co(en)3]³⁺, because:",
+      "options": [
+        "The complex and its mirror image are non-superimposable, like left and right hands",
+        "The complex has a plane of symmetry",
+        "Bidentate ligands prevent any isomerism",
+        "The complex is always planar"
+      ],
+      "correct_answer": "The complex and its mirror image are non-superimposable, like left and right hands",
+      "explanation": "[Co(en)3]3+ lacks an internal mirror plane, so it exists as two non-superimposable mirror-image enantiomers (Δ and Λ forms), a classic case of octahedral optical isomerism.",
+      "topic": "Isomerism",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Ionisation isomers, such as [Co(NH3)5Br]SO4 and [Co(NH3)5SO4]Br, differ in that:",
+      "options": [
+        "They have different molecular formulas",
+        "A counter ion and a ligand exchange places/roles, giving different ions in solution upon dissociation",
+        "They have different central metal ions",
+        "One is a coordination compound and the other is not"
+      ],
+      "correct_answer": "A counter ion and a ligand exchange places/roles, giving different ions in solution upon dissociation",
+      "explanation": "Ionisation isomers share the same overall formula but differ in which group is bonded inside the coordination sphere versus present as a free counter ion, producing different ions when dissolved.",
+      "topic": "Isomerism",
+      "difficulty": "medium"
+    },
+    {
+      "question": "According to Valence Bond Theory (VBT), the octahedral geometry of a complex such as [Co(NH3)6]3+ arises from the metal using:",
+      "options": ["sp3 hybrid orbitals", "d2sp3 (or sp3d2) hybrid orbitals to accept six ligand electron pairs", "Only s orbitals", "p3 hybrid orbitals"],
+      "correct_answer": "d2sp3 (or sp3d2) hybrid orbitals to accept six ligand electron pairs",
+      "explanation": "VBT explains octahedral coordination by proposing the metal hybridises appropriate d, s, and p orbitals (d2sp3 for inner orbital/low-spin, sp3d2 for outer orbital/high-spin complexes) to accept six ligand lone pairs.",
+      "topic": "Bonding theories",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A key limitation of Valence Bond Theory for coordination complexes, which Crystal Field Theory addresses better, is that VBT:",
+      "options": [
+        "Cannot explain the shapes of complexes at all",
+        "Does not readily explain the colour and detailed magnetic properties (e.g. the exact number of unpaired electrons in different fields) of complexes",
+        "Predicts too many isomers",
+        "Only applies to organic molecules"
+      ],
+      "correct_answer": "Does not readily explain the colour and detailed magnetic properties (e.g. the exact number of unpaired electrons in different fields) of complexes",
+      "explanation": "VBT accounts for geometry and approximate magnetism but does not naturally explain the electronic spectra (colour) of complexes, which CFT/LFT handle through orbital splitting energies.",
+      "topic": "Bonding theories",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Ligand Field Theory improves upon simple Crystal Field Theory mainly by:",
+      "options": [
+        "Ignoring the ligands entirely",
+        "Incorporating molecular orbital theory concepts, including covalent (not purely electrostatic) metal-ligand interactions",
+        "Assuming complexes are always purely ionic",
+        "Removing the concept of d-orbital splitting"
+      ],
+      "correct_answer": "Incorporating molecular orbital theory concepts, including covalent (not purely electrostatic) metal-ligand interactions",
+      "explanation": "Ligand Field Theory extends CFT's purely electrostatic model by treating metal-ligand bonding with molecular orbital theory, allowing for orbital overlap and covalency, giving a more complete picture.",
+      "topic": "Bonding theories",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The Jahn-Teller effect predicts that a non-linear complex with an unevenly occupied set of degenerate orbitals (e.g. a d9 Cu2+ octahedral complex) will:",
+      "options": [
+        "Remain perfectly symmetric",
+        "Distort geometrically (commonly elongating along one axis) to remove orbital degeneracy and lower overall energy",
+        "Immediately decompose",
+        "Become tetrahedral"
+      ],
+      "correct_answer": "Distort geometrically (commonly elongating along one axis) to remove orbital degeneracy and lower overall energy",
+      "explanation": "Jahn-Teller distortion is commonly observed in d9 (e.g. Cu2+) and high-spin d4 octahedral complexes, where axial elongation removes the eg orbital degeneracy and stabilises the system.",
+      "topic": "Crystal field theory",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Werner's coordination theory, foundational to modern coordination chemistry, proposed that a metal ion has two types of valence:",
+      "options": [
+        "Primary (ionisable, oxidation state) valence and secondary (non-ionisable, coordination number) valence, each satisfied by a fixed number of ligands/ions",
+        "Only one type of valence for all metals",
+        "Valences that change randomly",
+        "A valence that depends only on temperature"
+      ],
+      "correct_answer": "Primary (ionisable, oxidation state) valence and secondary (non-ionisable, coordination number) valence, each satisfied by a fixed number of ligands/ions",
+      "explanation": "Werner distinguished the metal's primary valence (satisfied by counter ions balancing oxidation state) from its secondary valence (satisfied by a fixed number of ligands directly bonded, the coordination number), explaining the structures of compounds like CoCl3·6NH3.",
+      "topic": "Nomenclature and structure",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In IUPAC nomenclature of coordination compounds, ligands are named in the complex ion:",
+      "options": [
+        "In alphabetical order regardless of charge type, before the metal name",
+        "Always with cationic ligands last",
+        "In order of increasing molecular weight",
+        "After the metal name always"
+      ],
+      "correct_answer": "In alphabetical order regardless of charge type, before the metal name",
+      "explanation": "IUPAC rules list ligand names alphabetically (ignoring multiplying prefixes like di-, tri-) before the metal name within the complex ion, e.g. diamminedichloroplatinum(II).",
+      "topic": "Nomenclature and structure",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the name 'potassium hexacyanoferrate(III)', the Roman numeral (III) refers to:",
+      "options": [
+        "The number of cyanide ligands",
+        "The oxidation state of iron",
+        "The number of potassium ions",
+        "The overall charge of the complex ion"
+      ],
+      "correct_answer": "The oxidation state of iron",
+      "explanation": "The Roman numeral in parentheses after the metal name in IUPAC nomenclature denotes the oxidation state of the central metal ion, here Fe3+.",
+      "topic": "Nomenclature and structure",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Square planar geometry, common for d8 metal ions such as Pt2+, Pd2+, and Ni2+ with strong-field ligands, arises because:",
+      "options": [
+        "It is thermodynamically random and unrelated to electron count",
+        "A large crystal field splitting strongly favours leaving the highest-energy dx²-y² orbital empty, stabilising the square planar arrangement over tetrahedral or octahedral",
+        "d8 ions cannot form any complexes",
+        "Square planar complexes never have any d-electrons"
+      ],
+      "correct_answer": "A large crystal field splitting strongly favours leaving the highest-energy dx²-y² orbital empty, stabilising the square planar arrangement over tetrahedral or octahedral",
+      "explanation": "For d8 metals with strong-field ligands, the large energy penalty of populating the dx²-y² orbital favours a square planar geometry where that orbital remains empty, giving extra stabilisation.",
+      "topic": "Crystal field theory",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Haemoglobin's ability to bind and transport O2 in the blood relies on a coordination complex in which:",
+      "options": [
+        "An Fe2+ ion at the centre of a porphyrin ring (heme) reversibly coordinates an O2 molecule at one axial site",
+        "O2 is dissolved directly in blood plasma with no metal involvement",
+        "A copper ion binds O2 in all vertebrates",
+        "The iron is always in the +3 oxidation state when bound to O2"
+      ],
+      "correct_answer": "An Fe2+ ion at the centre of a porphyrin ring (heme) reversibly coordinates an O2 molecule at one axial site",
+      "explanation": "Haemoglobin's heme group holds Fe2+ within a porphyrin ring; one axial coordination site reversibly binds O2, a classic biological application of coordination chemistry.",
+      "topic": "Biological relevance",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The 'trans effect' in square planar substitution reactions describes how:",
+      "options": [
+        "A ligand has no influence on ligands opposite to it",
+        "Certain ligands (e.g. CN⁻, CO, PR3) labilise (accelerate substitution of) the ligand positioned trans to them, useful in directing synthesis of specific isomers",
+        "Only cis ligands affect reaction rate",
+        "The trans effect only applies to octahedral complexes"
+      ],
+      "correct_answer": "Certain ligands (e.g. CN⁻, CO, PR3) labilise (accelerate substitution of) the ligand positioned trans to them, useful in directing synthesis of specific isomers",
+      "explanation": "The trans effect is used practically, for example in the stepwise synthesis of cis- vs trans-[Pt(NH3)2Cl2], by choosing which ligand is added first based on its trans-directing strength.",
+      "topic": "Reaction mechanisms of complexes",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Coordination compounds are used industrially in processes such as electroplating and in extraction of metals partly because:",
+      "options": [
+        "Complex formation can selectively solubilise or stabilise particular metal ions (e.g. cyanide complexes in gold extraction), aiding separation and deposition",
+        "Complexes are always insoluble",
+        "Metals cannot form complexes with cyanide",
+        "Coordination compounds have no industrial use"
+      ],
+      "correct_answer": "Complex formation can selectively solubilise or stabilise particular metal ions (e.g. cyanide complexes in gold extraction), aiding separation and deposition",
+      "explanation": "For example, gold is extracted as the soluble complex [Au(CN)2]⁻ in cyanidation; controlling complex formation similarly underlies electroplating baths and metal purification.",
+      "topic": "Industrial relevance",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A complex with the formula [Cr(H2O)4Cl2]Cl exhibits hydrate (solvate) isomerism relative to [Cr(H2O)5Cl]Cl2·H2O because:",
+      "options": [
+        "They have different metal oxidation states",
+        "Water molecules and chloride ions exchange between being coordinated to the metal and being outside the coordination sphere (as counter ion or lattice water)",
+        "One complex has no water at all",
+        "They are not actually isomers"
+      ],
+      "correct_answer": "Water molecules and chloride ions exchange between being coordinated to the metal and being outside the coordination sphere (as counter ion or lattice water)",
+      "explanation": "Hydrate isomerism, a special case of ionisation isomerism, arises when water molecules swap between coordinated and lattice (non-coordinated) positions, changing the compound's properties (e.g. conductivity, colour) despite identical overall formula.",
+      "topic": "Isomerism",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The magnetic moment of a transition metal complex can be estimated from the 'spin-only' formula μ = √[n(n+2)] BM, where n is the number of unpaired electrons. A complex with a spin-only moment of about 5.9 BM has:",
+      "options": ["1 unpaired electron", "3 unpaired electrons", "5 unpaired electrons", "0 unpaired electrons"],
+      "correct_answer": "5 unpaired electrons",
+      "explanation": "Using μ = √[n(n+2)], n = 5 gives √[5×7] = √35 ≈ 5.9 BM, characteristic of a high-spin d5 complex such as high-spin Fe3+ or Mn2+.",
+      "topic": "Magnetism",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Tetrahedral complexes, such as [NiCl4]2-, generally have a smaller crystal field splitting (Δt) than octahedral complexes of the same metal and ligands because:",
+      "options": [
+        "Tetrahedral complexes have more ligands surrounding the metal",
+        "Only 4 ligands surround the metal and none point directly at the d-orbital lobes, roughly giving Δt ≈ (4/9)Δo",
+        "Tetrahedral geometry has no d-orbital splitting at all",
+        "Tetrahedral complexes always use d2sp3 hybridisation"
+      ],
+      "correct_answer": "Only 4 ligands surround the metal and none point directly at the d-orbital lobes, roughly giving Δt ≈ (4/9)Δo",
+      "explanation": "With fewer ligands approaching between rather than along the orbital axes, the tetrahedral splitting is both smaller in magnitude and inverted in pattern (e dominates below t2) relative to the octahedral case, so tetrahedral complexes are almost always high-spin.",
+      "topic": "Crystal field theory",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Bridging ligands, such as μ-OH or μ-Cl in polynuclear (multi-metal) complexes, are ligands that:",
+      "options": [
+        "Bond to only one metal centre at a time",
+        "Simultaneously bond to and connect two (or more) metal centres in the same complex",
+        "Cannot form part of any complex",
+        "Are always monatomic gases"
+      ],
+      "correct_answer": "Simultaneously bond to and connect two (or more) metal centres in the same complex",
+      "explanation": "Bridging ligands (denoted with the prefix μ) link two or more metal centres, forming polynuclear complexes, e.g. di-μ-hydroxo-bridged dimers.",
+      "topic": "Ligands",
+      "difficulty": "medium"
+    }
+  ]
+}

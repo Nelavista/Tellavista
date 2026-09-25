@@ -1,0 +1,389 @@
+{
+  "course_code": "CHM403",
+  "title": "Advanced Inorganic Chemistry",
+  "level": "400",
+  "source_note": "Standard advanced inorganic syllabus building on earlier coordination chemistry (CHM304) and inorganic chemistry (CHM303): crystal field/ligand field and MO bonding theories, organometallic chemistry and the 18-electron rule, catalysis by transition-metal complexes, bioinorganic chemistry, cluster and solid-state inorganic compounds, and f-block (lanthanide/actinide) chemistry.",
+  "questions": [
+    {
+      "question": "In crystal field theory, the splitting of d-orbitals in an octahedral complex produces:",
+      "options": [
+        "A lower-energy t2g set (three orbitals) and a higher-energy eg set (two orbitals)",
+        "A lower-energy eg set and a higher-energy t2g set",
+        "Five degenerate orbitals with no splitting",
+        "A single non-degenerate orbital"
+      ],
+      "correct_answer": "A lower-energy t2g set (three orbitals) and a higher-energy eg set (two orbitals)",
+      "explanation": "In an octahedral field, ligand point charges raise the energy of orbitals pointing directly at the ligands (dz2, dx2-y2, the eg set) relative to those pointing between ligands (dxy, dxz, dyz, the t2g set).",
+      "topic": "Crystal field theory",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a tetrahedral complex, the crystal field splitting energy (Δt) compared with the octahedral splitting (Δo) for the same metal and ligands is:",
+      "options": [
+        "Smaller, approximately 4/9 of Δo",
+        "Larger, approximately twice Δo",
+        "Exactly equal to Δo",
+        "Zero, tetrahedral complexes show no d-orbital splitting"
+      ],
+      "correct_answer": "Smaller, approximately 4/9 of Δo",
+      "explanation": "Tetrahedral geometry has fewer ligands and none point directly at the orbital lobes, so the splitting is smaller; Δt ≈ (4/9)Δo, which is why tetrahedral complexes are almost always high-spin.",
+      "topic": "Crystal field theory",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The spectrochemical series ranks ligands by their ability to split d-orbitals. Which of the following is a strong-field ligand that typically produces low-spin complexes?",
+      "options": ["CN⁻", "I⁻", "Br⁻", "F⁻"],
+      "correct_answer": "CN⁻",
+      "explanation": "Cyanide is a strong π-acceptor ligand near the top of the spectrochemical series, producing a large Δo and favouring low-spin configurations.",
+      "topic": "Spectrochemical series",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A complex is described as 'high spin' when:",
+      "options": [
+        "Electrons occupy all d-orbitals singly (following Hund's rule) before pairing, because Δ is small relative to the pairing energy",
+        "All d-electrons are paired in the lowest-energy orbitals because Δ is large",
+        "The complex has no unpaired electrons",
+        "The metal is in a very high oxidation state"
+      ],
+      "correct_answer": "Electrons occupy all d-orbitals singly (following Hund's rule) before pairing, because Δ is small relative to the pairing energy",
+      "explanation": "When the crystal field splitting Δ is smaller than the electron pairing energy (typically with weak-field ligands), electrons preferentially occupy separate orbitals with parallel spins, giving a high-spin, more paramagnetic configuration.",
+      "topic": "High-spin/low-spin complexes",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Ligand field theory improves upon simple crystal field theory mainly by:",
+      "options": [
+        "Incorporating covalent metal-ligand orbital overlap through molecular orbital theory, rather than treating ligands as point charges",
+        "Ignoring the effect of ligands on d-orbital energies entirely",
+        "Applying only to organometallic compounds",
+        "Assuming purely ionic bonding with no orbital overlap"
+      ],
+      "correct_answer": "Incorporating covalent metal-ligand orbital overlap through molecular orbital theory, rather than treating ligands as point charges",
+      "explanation": "Ligand field theory is essentially an MO-theory treatment of coordination complexes, accounting for covalency and π-bonding effects that purely electrostatic crystal field theory ignores.",
+      "topic": "Ligand field theory",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The Jahn-Teller effect predicts that a non-linear molecule with an electronically degenerate ground state will:",
+      "options": [
+        "Distort geometrically to remove the degeneracy and lower its energy",
+        "Remain perfectly symmetric to preserve the degeneracy",
+        "Immediately dissociate",
+        "Only occur in tetrahedral complexes"
+      ],
+      "correct_answer": "Distort geometrically to remove the degeneracy and lower its energy",
+      "explanation": "The Jahn-Teller theorem states that a non-linear degenerate electronic state is unstable and the molecule distorts (e.g. axial elongation in Cu(II) complexes) to remove the degeneracy and achieve a lower-energy configuration.",
+      "topic": "Jahn-Teller distortion",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The 18-electron rule in organometallic chemistry states that stable transition-metal complexes tend to have:",
+      "options": [
+        "A total electron count (metal d-electrons plus electrons donated by ligands) of 18, filling all metal-based bonding/non-bonding valence orbitals",
+        "Exactly 18 ligands bound to the metal",
+        "18 valence electrons on each ligand",
+        "An oxidation state of +18"
+      ],
+      "correct_answer": "A total electron count (metal d-electrons plus electrons donated by ligands) of 18, filling all metal-based bonding/non-bonding valence orbitals",
+      "explanation": "Analogous to the octet rule, many stable organometallic complexes achieve a noble-gas-like configuration with a total valence electron count of 18 (one 's', three 'p' and five 'd' metal-based orbitals filled).",
+      "topic": "18-electron rule",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In ferrocene, Fe(C5H5)2, each cyclopentadienyl ring is best described as bonding to iron in what hapticity?",
+      "options": ["η5 (pentahapto)", "η1 (monohapto)", "η3 (trihapto)", "η2 (dihapto)"],
+      "correct_answer": "η5 (pentahapto)",
+      "explanation": "In ferrocene, each planar cyclopentadienyl ring bonds to the iron centre through all five carbon atoms simultaneously, described as η5-coordination, giving the characteristic sandwich structure.",
+      "topic": "Organometallic chemistry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Carbon monoxide acts as a ligand in metal carbonyls primarily through:",
+      "options": [
+        "σ-donation from carbon's lone pair to the metal, combined with π-backbonding from filled metal d-orbitals into the CO π* antibonding orbitals",
+        "Purely ionic bonding between C⁴⁻ and the metal cation",
+        "Hydrogen bonding between CO and the metal",
+        "π-donation only, with no σ-bonding component"
+      ],
+      "correct_answer": "σ-donation from carbon's lone pair to the metal, combined with π-backbonding from filled metal d-orbitals into the CO π* antibonding orbitals",
+      "explanation": "The synergic bonding model for metal carbonyls involves CO donating its carbon lone pair to the metal while the metal back-donates d-electron density into CO's π* orbitals, strengthening the M-C bond and weakening the C-O bond.",
+      "topic": "Organometallic chemistry",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Oxidative addition, a key step in many catalytic cycles of transition-metal complexes, involves:",
+      "options": [
+        "A substrate adding to the metal centre with an increase in both the metal's oxidation state and its coordination number",
+        "A ligand leaving the metal centre, decreasing the coordination number",
+        "The metal being reduced while the coordination number decreases",
+        "Formation of a new metal-metal bond only"
+      ],
+      "correct_answer": "A substrate adding to the metal centre with an increase in both the metal's oxidation state and its coordination number",
+      "explanation": "In oxidative addition, a molecule such as H2 or an alkyl halide adds across the metal, formally increasing the metal's oxidation state by two and its coordination number by two; the reverse process is reductive elimination.",
+      "topic": "Organometallic catalysis",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In homogeneous catalytic hydrogenation using Wilkinson's catalyst, RhCl(PPh3)3, the key mechanistic steps include:",
+      "options": [
+        "Ligand dissociation, oxidative addition of H2, alkene coordination, migratory insertion, and reductive elimination",
+        "Simple physical adsorption of the alkene on a metal surface",
+        "Direct radical chain addition of H2 to the alkene with no metal involvement",
+        "Formation of a stable, isolable metal-alkane complex as the final catalytic product"
+      ],
+      "correct_answer": "Ligand dissociation, oxidative addition of H2, alkene coordination, migratory insertion, and reductive elimination",
+      "explanation": "Wilkinson's catalyst operates via a well-established homogeneous catalytic cycle involving phosphine dissociation to open a site, oxidative addition of dihydrogen, alkene binding, migratory insertion of the alkene into the Rh-H bond, and reductive elimination of the alkane product.",
+      "topic": "Homogeneous catalysis",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Metal clusters in inorganic chemistry are characterised by:",
+      "options": [
+        "Direct metal-metal bonds linking three or more metal atoms within a single molecular unit",
+        "Metal atoms held together only by bridging halide ions with no direct metal-metal bonding",
+        "Isolated mononuclear metal complexes",
+        "Metal atoms dispersed in an inert solvent with no bonding interaction"
+      ],
+      "correct_answer": "Direct metal-metal bonds linking three or more metal atoms within a single molecular unit",
+      "explanation": "Metal cluster compounds are defined by the presence of direct metal-metal bonding among three or more metal centres, often supported by bridging ligands, and are important in catalysis and materials chemistry.",
+      "topic": "Cluster compounds",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Bioinorganic chemistry studies the role of metal ions in biological systems. Which metal is central to the oxygen-carrying protein haemoglobin?",
+      "options": ["Iron (in a porphyrin/heme unit)", "Zinc", "Copper", "Magnesium"],
+      "correct_answer": "Iron (in a porphyrin/heme unit)",
+      "explanation": "Haemoglobin contains an Fe(II) ion coordinated within a heme (porphyrin) prosthetic group, which reversibly binds molecular oxygen for transport in blood.",
+      "topic": "Bioinorganic chemistry",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In chlorophyll, the central metal ion coordinated within the porphyrin-like ring is:",
+      "options": ["Magnesium", "Iron", "Cobalt", "Manganese"],
+      "correct_answer": "Magnesium",
+      "explanation": "Chlorophyll is a magnesium-porphyrin (chlorin) complex; the Mg2+ ion sits at the centre of the tetrapyrrole ring and is essential for light absorption in photosynthesis.",
+      "topic": "Bioinorganic chemistry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Vitamin B12 (cobalamin) is notable in bioinorganic chemistry for containing:",
+      "options": ["A cobalt ion coordinated within a corrin ring", "A copper ion coordinated within a porphyrin ring", "A zinc ion coordinated to four cysteine residues", "A manganese cluster similar to photosystem II"],
+      "correct_answer": "A cobalt ion coordinated within a corrin ring",
+      "explanation": "Vitamin B12 is unique among vitamins for containing a metal, cobalt, held within a corrin macrocycle (related to but distinct from a porphyrin), with the cobalt able to form a Co-C bond in coenzyme forms.",
+      "topic": "Bioinorganic chemistry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Zinc finger proteins use a Zn2+ ion primarily to:",
+      "options": [
+        "Stabilise the folded structural motif that allows the protein to bind DNA",
+        "Transport oxygen in the bloodstream",
+        "Catalyse redox reactions by cycling between Zn(I) and Zn(III)",
+        "Absorb visible light for photosynthesis"
+      ],
+      "correct_answer": "Stabilise the folded structural motif that allows the protein to bind DNA",
+      "explanation": "Zinc in zinc-finger proteins is typically redox-inactive (fixed at Zn2+) and plays a structural role, coordinating cysteine/histidine residues to fold a compact motif that recognises specific DNA sequences.",
+      "topic": "Bioinorganic chemistry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Lanthanide (4f) ions characteristically show:",
+      "options": [
+        "Sharp, weak f-f electronic transitions because the 4f orbitals are shielded from the ligand environment by filled 5s and 5p orbitals",
+        "Very broad, intense d-d absorption bands typical of first-row transition metals",
+        "No characteristic optical absorption or emission at all",
+        "Bonding that is predominantly covalent and highly directional, like transition metals"
+      ],
+      "correct_answer": "Sharp, weak f-f electronic transitions because the 4f orbitals are shielded from the ligand environment by filled 5s and 5p orbitals",
+      "explanation": "The 4f orbitals of lanthanides are shielded by outer 5s and 5p electrons, so they are little perturbed by the ligand field, giving sharp, Laporte-forbidden f-f transitions and largely ionic, non-directional bonding.",
+      "topic": "Lanthanide chemistry",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The 'lanthanide contraction' refers to:",
+      "options": [
+        "The steady decrease in ionic radius across the lanthanide series from La3+ to Lu3+ due to imperfect shielding by 4f electrons",
+        "The tendency of lanthanides to form smaller complexes than transition metals",
+        "A decrease in atomic number across the series",
+        "The shrinking of the lanthanide series to only seven stable elements"
+      ],
+      "correct_answer": "The steady decrease in ionic radius across the lanthanide series from La3+ to Lu3+ due to imperfect shielding by 4f electrons",
+      "explanation": "As 4f electrons are added across the series they shield the increasing nuclear charge poorly, so the effective nuclear charge felt by outer electrons rises steadily, contracting the ionic radius from La3+ to Lu3+.",
+      "topic": "Lanthanide chemistry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The most common and stable oxidation state for nearly all lanthanide elements is:",
+      "options": ["+3", "+2", "+4", "+6"],
+      "correct_answer": "+3",
+      "explanation": "While some lanthanides can access +2 or +4 states (e.g. Ce4+, Eu2+), the +3 oxidation state is the characteristic and most stable state across essentially the whole lanthanide series.",
+      "topic": "Lanthanide chemistry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Actinide elements differ from lanthanides in that actinides:",
+      "options": [
+        "Show a wider range of accessible oxidation states and greater covalent character in bonding, partly because 5f orbitals extend further and participate more in bonding",
+        "Are all non-radioactive, stable elements",
+        "Never form complexes with oxo or halide ligands",
+        "Have completely filled 5f subshells in every known ion"
+      ],
+      "correct_answer": "Show a wider range of accessible oxidation states and greater covalent character in bonding, partly because 5f orbitals extend further and participate more in bonding",
+      "explanation": "Unlike the well-shielded 4f orbitals of the lanthanides, the 5f orbitals of actinides are more radially extended and can participate more in covalent bonding, giving actinides a greater variety of accessible oxidation states (e.g. uranium from +3 to +6).",
+      "topic": "Actinide chemistry",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Isopoly and heteropoly acids (e.g. phosphomolybdic acid) are examples of:",
+      "options": [
+        "Polyoxometalates formed by condensation of metal-oxo anions such as MoO4^2- or WO4^2-",
+        "Simple mononuclear transition-metal coordination complexes",
+        "Organometallic sandwich compounds",
+        "Lanthanide-organic frameworks"
+      ],
+      "correct_answer": "Polyoxometalates formed by condensation of metal-oxo anions such as MoO4^2- or WO4^2-",
+      "explanation": "Polyoxometalates are large anionic clusters built from linked, edge- or corner-sharing MO6 octahedra of early transition metals such as Mo or W, sometimes incorporating a heteroatom such as phosphorus.",
+      "topic": "Solid-state/cluster inorganic chemistry",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In solid-state inorganic chemistry, a Schottky defect in an ionic crystal consists of:",
+      "options": [
+        "Paired vacancies of a cation and an anion, leaving the crystal stoichiometry unchanged",
+        "An ion displaced from its normal lattice site into an interstitial site",
+        "A foreign atom substituting for a lattice ion",
+        "A dislocation line running through the crystal"
+      ],
+      "correct_answer": "Paired vacancies of a cation and an anion, leaving the crystal stoichiometry unchanged",
+      "explanation": "A Schottky defect involves the loss of a stoichiometric pair of oppositely charged ions from the lattice (both moving to the surface), preserving electrical neutrality and overall stoichiometry, unlike a Frenkel defect.",
+      "topic": "Solid-state inorganic chemistry",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A Frenkel defect in an ionic solid arises when:",
+      "options": [
+        "An ion leaves its normal lattice site and occupies an interstitial position, creating a vacancy-interstitial pair",
+        "Two cations are simultaneously removed from the lattice",
+        "A foreign ion of different charge is deliberately doped into the lattice",
+        "The crystal melts locally"
+      ],
+      "correct_answer": "An ion leaves its normal lattice site and occupies an interstitial position, creating a vacancy-interstitial pair",
+      "explanation": "A Frenkel defect occurs when an ion (typically the smaller cation) migrates from its regular lattice site into an interstitial void, leaving a vacancy behind while the total number of ions is unchanged.",
+      "topic": "Solid-state inorganic chemistry",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Which of the following ligands is classified as a 'pi-acceptor' (pi-acid) ligand because it accepts electron density from filled metal d-orbitals into its own empty pi* orbitals?",
+      "options": ["Carbon monoxide (CO)", "Ammonia (NH3)", "Fluoride (F⁻)", "Water (H2O)"],
+      "correct_answer": "Carbon monoxide (CO)",
+      "explanation": "CO, along with ligands like CN⁻ and phosphines, has low-lying empty π* orbitals that accept back-donated electron density from the metal, classifying it as a strong π-acceptor ligand.",
+      "topic": "Ligand bonding",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The trans effect in square planar complexes describes:",
+      "options": [
+        "The ability of certain ligands to labilise (accelerate substitution of) the ligand positioned trans to them",
+        "The tendency of ligands to always occupy cis positions",
+        "A change in oxidation state of the metal upon ligand substitution",
+        "The colour change observed when a complex is heated"
+      ],
+      "correct_answer": "The ability of certain ligands to labilise (accelerate substitution of) the ligand positioned trans to them",
+      "explanation": "Strong trans-directing ligands (e.g. CN⁻, CO, PR3) weaken and accelerate substitution of the ligand opposite them in square planar complexes, a kinetic effect widely exploited in synthesising Pt(II) complexes such as cisplatin.",
+      "topic": "Substitution reactions",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Cisplatin, cis-[PtCl2(NH3)2], is synthesised in preference to its trans isomer by exploiting:",
+      "options": [
+        "The trans effect, starting from [PtCl4]2- and sequentially substituting to direct the correct geometry",
+        "Random mixing of Pt salts with ammonia and chloride with no mechanistic control",
+        "High-temperature solid-state fusion of the elements",
+        "Electrolysis of platinum metal in ammonia solution"
+      ],
+      "correct_answer": "The trans effect, starting from [PtCl4]2- and sequentially substituting to direct the correct geometry",
+      "explanation": "The classic synthesis of cisplatin uses the trans effect: Cl⁻ is a stronger trans director than NH3, so sequential substitution starting from [PtCl4]2- can be directed to give specifically the cis isomer.",
+      "topic": "Substitution reactions",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Werner's coordination theory, foundational to inorganic complex chemistry, proposed that a metal ion exhibits:",
+      "options": [
+        "Both a primary valence (oxidation state) and a secondary valence (coordination number), with the latter having a fixed spatial arrangement",
+        "Only ionic bonding with no concept of coordination number",
+        "A single type of valence identical to that of main-group elements",
+        "No fixed geometry, with ligands arranged randomly"
+      ],
+      "correct_answer": "Both a primary valence (oxidation state) and a secondary valence (coordination number), with the latter having a fixed spatial arrangement",
+      "explanation": "Werner distinguished primary valence (ionisable, corresponding to oxidation state) from secondary valence (coordination number, satisfied by ligands in a fixed geometric arrangement such as octahedral), explaining the existence of isomers in coordination compounds.",
+      "topic": "Coordination theory foundations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Magnetic moment measurements are useful in inorganic chemistry because they allow determination of:",
+      "options": [
+        "The number of unpaired electrons in a metal complex, helping distinguish high-spin from low-spin configurations",
+        "The exact bond lengths in a complex",
+        "The colour of the complex directly",
+        "The solubility of the complex in water"
+      ],
+      "correct_answer": "The number of unpaired electrons in a metal complex, helping distinguish high-spin from low-spin configurations",
+      "explanation": "The experimental magnetic moment (via the spin-only formula μ = √[n(n+2)] BM) correlates with the number of unpaired electrons n, which differs between high-spin and low-spin d-electron configurations.",
+      "topic": "Magnetochemistry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Metallocenes such as ferrocene are classified structurally as:",
+      "options": [
+        "Sandwich compounds, with the metal centre held between two parallel cyclic pi-ligands",
+        "Octahedral coordination complexes with six monodentate ligands",
+        "Square planar complexes",
+        "Metal clusters with direct metal-metal bonding"
+      ],
+      "correct_answer": "Sandwich compounds, with the metal centre held between two parallel cyclic pi-ligands",
+      "explanation": "Metallocenes have the characteristic 'sandwich' architecture in which a transition metal is bound between two parallel cyclopentadienyl (or related cyclic) rings via delocalised pi-bonding.",
+      "topic": "Organometallic chemistry",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The Wacker process, an industrially important application of organometallic catalysis, converts ethylene to:",
+      "options": [
+        "Acetaldehyde, using a Pd(II)/Cu(II) catalytic system with O2 as the terminal oxidant",
+        "Ethanol, using a heterogeneous nickel catalyst",
+        "Polyethylene, using a Ziegler-Natta titanium catalyst",
+        "Vinyl chloride, using a mercury catalyst"
+      ],
+      "correct_answer": "Acetaldehyde, using a Pd(II)/Cu(II) catalytic system with O2 as the terminal oxidant",
+      "explanation": "The Wacker process oxidises ethylene to acetaldehyde using a palladium(II) catalyst that is reoxidised by copper(II), with dioxygen ultimately reoxidising the copper, forming the basis of an important industrial route to acetaldehyde.",
+      "topic": "Industrial organometallic catalysis",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Ziegler-Natta catalysts, widely used industrially, are best known for catalysing:",
+      "options": [
+        "Stereoregular (e.g. isotactic) polymerisation of alkenes such as propene",
+        "Hydrogenation of aromatic rings only",
+        "Oxidation of alkenes to epoxides",
+        "Carbonylation of methanol to acetic acid"
+      ],
+      "correct_answer": "Stereoregular (e.g. isotactic) polymerisation of alkenes such as propene",
+      "explanation": "Ziegler-Natta catalysts (typically based on titanium halides with an aluminium alkyl co-catalyst) enable controlled, stereoregular polymerisation of alkenes, producing materials such as isotactic polypropylene and high-density polyethylene.",
+      "topic": "Industrial organometallic catalysis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Superoxide dismutase (SOD), a key bioinorganic metalloenzyme, functions to:",
+      "options": [
+        "Catalyse the disproportionation of the superoxide radical (O2•⁻) into O2 and H2O2, protecting cells from oxidative damage",
+        "Transport oxygen in the bloodstream",
+        "Fix atmospheric nitrogen into ammonia",
+        "Catalyse the hydrolysis of ATP"
+      ],
+      "correct_answer": "Catalyse the disproportionation of the superoxide radical (O2•⁻) into O2 and H2O2, protecting cells from oxidative damage",
+      "explanation": "SOD enzymes (containing Cu/Zn, Mn, or Fe centres depending on the isoform) catalyse the disproportionation of the reactive superoxide radical into ordinary dioxygen and hydrogen peroxide, an essential cellular antioxidant defence.",
+      "topic": "Bioinorganic chemistry",
+      "difficulty": "hard"
+    }
+  ]
+}

@@ -1,0 +1,240 @@
+{
+  "course_code": "CSC319",
+  "title": "Compiler Construction",
+  "level": "300",
+  "source_note": "Standard NUC-aligned Compiler Construction curriculum (lexical/syntax/semantic analysis, parsing, symbol tables, code generation and optimization), directly matching LASU's own CSC319 'Compiler Construction' course description (compilers/assemblers/interpreters review, lexical/expression analysis, grammars, top-down/bottom-up parsing, LR grammars and analysers, symbol tables, run-time storage organization, code generation/optimization).",
+  "questions": [
+    {
+      "question": "What is the primary function of a compiler?",
+      "options": ["To translate source code written in a high-level language into another language, typically machine or object code", "To execute source code line by line without translation", "To manage a computer's file system", "To design the graphical user interface of an application"],
+      "correct_answer": "To translate source code written in a high-level language into another language, typically machine or object code",
+      "explanation": "A compiler translates an entire program from a source language (e.g., C) into a target language (e.g., machine code) before execution.",
+      "topic": "Compiler fundamentals",
+      "difficulty": "easy"
+    },
+    {
+      "question": "How does an interpreter differ from a compiler?",
+      "options": ["An interpreter executes source code statements directly, one at a time, without producing a separate standalone object file", "An interpreter always produces faster-running programs than a compiler", "A compiler cannot detect syntax errors", "An interpreter and a compiler are functionally identical"],
+      "correct_answer": "An interpreter executes source code statements directly, one at a time, without producing a separate standalone object file",
+      "explanation": "Unlike a compiler, which translates the whole program before execution, an interpreter reads and executes source code statements directly, typically without generating a persistent machine-code file.",
+      "topic": "Compiler fundamentals",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What distinguishes an assembler from a compiler?",
+      "options": ["An assembler translates assembly language (a low-level, largely one-to-one mnemonic representation) into machine code, while a compiler translates high-level languages", "An assembler can only translate Java programs", "A compiler works only with binary input", "There is no meaningful difference between them"],
+      "correct_answer": "An assembler translates assembly language (a low-level, largely one-to-one mnemonic representation) into machine code, while a compiler translates high-level languages",
+      "explanation": "Assemblers convert low-level assembly mnemonics into machine code on a largely one-to-one basis, whereas compilers perform a more complex many-to-one translation from high-level source code.",
+      "topic": "Compiler fundamentals",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the first phase of a typical compiler?",
+      "options": ["Lexical analysis", "Code generation", "Semantic analysis", "Optimization"],
+      "correct_answer": "Lexical analysis",
+      "explanation": "Lexical analysis (scanning) is the first phase, where the compiler reads the source code character by character and groups them into tokens.",
+      "topic": "Lexical analysis",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is a 'token' in the context of lexical analysis?",
+      "options": ["A categorized sequence of characters representing a meaningful unit, such as a keyword, identifier, or operator", "A single bit of machine code", "The final compiled executable file", "A syntax error message"],
+      "correct_answer": "A categorized sequence of characters representing a meaningful unit, such as a keyword, identifier, or operator",
+      "explanation": "Tokens are the smallest meaningful units identified by the lexical analyzer, such as keywords, identifiers, literals, operators, and punctuation.",
+      "topic": "Lexical analysis",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What formal tool is most commonly used to specify the patterns that define tokens during lexical analysis?",
+      "options": ["Regular expressions", "Context-free grammars", "Turing machines", "Relational algebra"],
+      "correct_answer": "Regular expressions",
+      "explanation": "Regular expressions are used to define the lexical patterns (e.g., identifier or number formats) that a lexical analyzer recognizes and converts into tokens.",
+      "topic": "Lexical analysis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What type of automaton is commonly used to implement a lexical analyzer that recognizes tokens?",
+      "options": ["A Deterministic Finite Automaton (DFA)", "A Turing machine", "A pushdown automaton exclusively", "A linear bounded automaton"],
+      "correct_answer": "A Deterministic Finite Automaton (DFA)",
+      "explanation": "Regular expressions describing token patterns are typically converted into a DFA (via an NFA), which efficiently recognizes tokens by processing input characters one at a time.",
+      "topic": "Lexical analysis",
+      "difficulty": "hard"
+    },
+    {
+      "question": "What is the purpose of syntax analysis (parsing) in a compiler?",
+      "options": ["To check whether the sequence of tokens conforms to the grammatical rules of the language and build a parse tree", "To allocate memory for variables at runtime", "To translate the program into machine code directly", "To manage input/output operations"],
+      "correct_answer": "To check whether the sequence of tokens conforms to the grammatical rules of the language and build a parse tree",
+      "explanation": "The parser takes the stream of tokens from lexical analysis and verifies it against the language's grammar, producing a parse tree (or syntax tree) representing its structure.",
+      "topic": "Syntax analysis",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What formalism is typically used to define the syntax (grammar) of a programming language?",
+      "options": ["Context-free grammar (often expressed in BNF)", "Regular expressions only", "Finite state machines only", "Relational calculus"],
+      "correct_answer": "Context-free grammar (often expressed in BNF)",
+      "explanation": "Programming language syntax is typically specified using context-free grammars, often written in Backus-Naur Form (BNF) or a similar notation.",
+      "topic": "Grammars",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the key difference between top-down and bottom-up parsing?",
+      "options": ["Top-down parsing builds the parse tree from the root downward, while bottom-up parsing builds it from the leaves upward", "Top-down parsing cannot handle recursive grammar rules", "Bottom-up parsing does not use a grammar", "There is no difference between the two"],
+      "correct_answer": "Top-down parsing builds the parse tree from the root downward, while bottom-up parsing builds it from the leaves upward",
+      "explanation": "Top-down parsers (e.g., recursive descent, LL) start from the start symbol and derive the input, while bottom-up parsers (e.g., LR) start from the input tokens and reduce toward the start symbol.",
+      "topic": "Parsing",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What does an LL(1) parser represent?",
+      "options": ["A top-down parser that scans input Left to right, produces a Leftmost derivation, using 1 token of lookahead", "A bottom-up parser using 1 symbol of lookahead", "A parser that only works on regular languages", "A parser generator for lexical analysis only"],
+      "correct_answer": "A top-down parser that scans input Left to right, produces a Leftmost derivation, using 1 token of lookahead",
+      "explanation": "LL(1) denotes a top-down parsing method: Left-to-right scan, Leftmost derivation, with 1 token of lookahead used to decide which production to apply.",
+      "topic": "Parsing",
+      "difficulty": "hard"
+    },
+    {
+      "question": "What does an LR parser represent, and how does it differ fundamentally from LL parsing?",
+      "options": ["LR is a bottom-up parsing technique that scans Left to right and produces a Rightmost derivation in reverse", "LR is a top-down parsing technique identical to LL", "LR only works for regular expressions, not grammars", "LR requires no stack during parsing"],
+      "correct_answer": "LR is a bottom-up parsing technique that scans Left to right and produces a Rightmost derivation in reverse",
+      "explanation": "LR parsers are bottom-up: they scan input left to right and construct a rightmost derivation in reverse, generally handling a broader class of grammars than LL parsers.",
+      "topic": "Parsing",
+      "difficulty": "hard"
+    },
+    {
+      "question": "What data structure is central to shift-reduce parsing (used in LR parsers)?",
+      "options": ["A stack", "A queue", "A hash table", "A binary search tree"],
+      "correct_answer": "A stack",
+      "explanation": "Shift-reduce parsers use a stack to hold grammar symbols and states, shifting input tokens onto the stack and reducing sequences according to grammar productions.",
+      "topic": "Parsing",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is a 'symbol table' used for in a compiler?",
+      "options": ["To store information about identifiers, such as their type, scope, and memory location, for use throughout compilation", "To store the final generated machine code", "To hold error messages produced by the lexer", "To represent the target CPU's instruction set"],
+      "correct_answer": "To store information about identifiers, such as their type, scope, and memory location, for use throughout compilation",
+      "explanation": "The symbol table is a central data structure that records attributes of identifiers (variables, functions, etc.), accessed and updated across multiple compilation phases.",
+      "topic": "Symbol tables",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the primary purpose of semantic analysis in a compiler?",
+      "options": ["To check for meaning-related errors, such as type mismatches, that syntax analysis alone cannot detect", "To generate the final machine code", "To read source code characters and form tokens", "To optimize the register allocation of the target machine"],
+      "correct_answer": "To check for meaning-related errors, such as type mismatches, that syntax analysis alone cannot detect",
+      "explanation": "Semantic analysis verifies context-sensitive correctness, such as type checking, scope resolution, and ensuring variables are declared before use, which a purely syntactic check cannot catch.",
+      "topic": "Semantic analysis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is 'type checking' during semantic analysis?",
+      "options": ["Verifying that operations are performed on operands of compatible types according to the language's type rules", "Counting the number of tokens in a program", "Allocating physical memory addresses to variables", "Formatting source code for readability"],
+      "correct_answer": "Verifying that operations are performed on operands of compatible types according to the language's type rules",
+      "explanation": "Type checking ensures expressions and statements use operands whose types are compatible with the operations being performed, catching errors like adding a string to an integer where disallowed.",
+      "topic": "Semantic analysis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is an 'intermediate representation' (or intermediate code) in compiler design?",
+      "options": ["A machine-independent representation of the source program used as a bridge between the front end and back end of the compiler", "The final executable binary file", "The original, unmodified source code", "A list of syntax errors found during parsing"],
+      "correct_answer": "A machine-independent representation of the source program used as a bridge between the front end and back end of the compiler",
+      "explanation": "Intermediate code (e.g., three-address code) abstracts away source and target language details, simplifying optimization and enabling retargeting to different machine architectures.",
+      "topic": "Intermediate code",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the purpose of code optimization in a compiler?",
+      "options": ["To improve the generated code's efficiency (speed or size) without changing its observable behavior", "To introduce additional syntax errors for testing", "To translate the program into a different high-level language", "To remove all comments from the source file"],
+      "correct_answer": "To improve the generated code's efficiency (speed or size) without changing its observable behavior",
+      "explanation": "Code optimization transforms the intermediate or target code to run faster or use less memory while preserving the program's original semantics.",
+      "topic": "Optimization",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is 'dead code elimination' as a compiler optimization technique?",
+      "options": ["Removing code that can never be executed or whose results are never used", "Adding extra instructions to slow down execution intentionally", "Renaming all variables to shorter names", "Converting the program into assembly language"],
+      "correct_answer": "Removing code that can never be executed or whose results are never used",
+      "explanation": "Dead code elimination identifies and removes statements that have no effect on the program's observable output, reducing code size and improving performance.",
+      "topic": "Optimization",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the final phase of a typical compiler pipeline?",
+      "options": ["Code generation", "Lexical analysis", "Parsing", "Semantic analysis"],
+      "correct_answer": "Code generation",
+      "explanation": "Code generation is the final phase, where the optimized intermediate representation is translated into target machine code or assembly.",
+      "topic": "Code generation",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is 'register allocation' in the code generation phase?",
+      "options": ["The process of assigning a program's variables to a limited number of CPU registers to minimize memory access", "The process of allocating disk space for the compiled executable", "Creating new entries in the symbol table", "Assigning line numbers to source code statements"],
+      "correct_answer": "The process of assigning a program's variables to a limited number of CPU registers to minimize memory access",
+      "explanation": "Since CPU registers are limited and much faster than main memory, register allocation strategically assigns frequently used variables to registers to improve performance.",
+      "topic": "Code generation",
+      "difficulty": "hard"
+    },
+    {
+      "question": "What is 'run-time storage organization' concerned with in compiler design?",
+      "options": ["How memory is organized and managed for a program during its execution, including the stack, heap, and static/global areas", "How source code files are organized on disk before compilation", "The layout of tokens produced by the lexer", "The formatting of compiler error messages"],
+      "correct_answer": "How memory is organized and managed for a program during its execution, including the stack, heap, and static/global areas",
+      "explanation": "Run-time storage organization defines how a compiled program's memory is laid out during execution, covering the stack (for function calls/local variables), heap (dynamic allocation), and static storage.",
+      "topic": "Run-time storage organization",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is an 'activation record' (or stack frame) used for in run-time storage organization?",
+      "options": ["To store information needed for a single execution of a procedure/function, such as local variables, parameters, and the return address", "To store the entire compiled program's machine code", "To hold the source code's comments", "To represent the symbol table permanently"],
+      "correct_answer": "To store information needed for a single execution of a procedure/function, such as local variables, parameters, and the return address",
+      "explanation": "An activation record is pushed onto the call stack for each function invocation, holding local variables, parameters, saved registers, and the return address.",
+      "topic": "Run-time storage organization",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In compiler theory, what is a 'grammar' used to define?",
+      "options": ["The syntactic structure and valid sentences (programs) of a language", "The meaning of variable names chosen by a programmer", "The physical hardware architecture of the target machine", "The color scheme of an IDE"],
+      "correct_answer": "The syntactic structure and valid sentences (programs) of a language",
+      "explanation": "A formal grammar specifies the set of rules (productions) that generate all syntactically valid strings (programs) in a language.",
+      "topic": "Grammars",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is meant by a grammar being 'ambiguous'?",
+      "options": ["There exists at least one string that can be generated by more than one distinct parse tree", "The grammar has no production rules at all", "The grammar can generate an infinite language", "The grammar uses only terminal symbols"],
+      "correct_answer": "There exists at least one string that can be generated by more than one distinct parse tree",
+      "explanation": "Ambiguity occurs when a single string in the language can be derived through multiple different parse trees, which complicates unambiguous interpretation during parsing.",
+      "topic": "Grammars",
+      "difficulty": "hard"
+    },
+    {
+      "question": "What is the role of a 'recognizer' in the context of formal languages and compiler front ends?",
+      "options": ["A program or automaton that determines whether a given input string belongs to a specified language", "A tool for generating random test data", "A device for formatting source code output", "A component that only handles runtime errors"],
+      "correct_answer": "A program or automaton that determines whether a given input string belongs to a specified language",
+      "explanation": "A recognizer accepts or rejects an input string based on whether it conforms to the rules of a formal language, forming the theoretical basis for lexical analyzers and parsers.",
+      "topic": "Grammars",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Why is FORTRAN historically significant as a reference language when teaching or studying early compiler construction?",
+      "options": ["It was one of the first widely used high-level languages, and its compiler was a landmark early example of automatic translation to machine code", "It was designed exclusively for web development", "It has no formal grammar", "It cannot be compiled, only interpreted"],
+      "correct_answer": "It was one of the first widely used high-level languages, and its compiler was a landmark early example of automatic translation to machine code",
+      "explanation": "FORTRAN, developed in the 1950s, was among the first high-level programming languages, and building its compiler pioneered many foundational compiler construction techniques still studied today.",
+      "topic": "Compiler fundamentals",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is a 'translator writing system' in compiler construction?",
+      "options": ["A tool or set of tools used to help automatically generate compilers or parts of compilers from formal language specifications", "A word processor used by programmers", "A hardware device for translating binary to decimal", "A system for translating natural language documentation"],
+      "correct_answer": "A tool or set of tools used to help automatically generate compilers or parts of compilers from formal language specifications",
+      "explanation": "Translator (or compiler) writing systems, such as parser generators, automate portions of compiler construction based on formal grammar and lexical specifications.",
+      "topic": "Compiler fundamentals",
+      "difficulty": "hard"
+    },
+    {
+      "question": "What is the purpose of constructing an LR parsing table during bottom-up parser construction?",
+      "options": ["To guide the parser's shift/reduce decisions based on the current state and input symbol", "To store the final compiled machine code instructions", "To list all lexical errors found in the source", "To record variable memory addresses only"],
+      "correct_answer": "To guide the parser's shift/reduce decisions based on the current state and input symbol",
+      "explanation": "The LR parsing table encodes, for each combination of parser state and lookahead symbol, whether to shift, reduce, accept, or report an error, driving the parsing process.",
+      "topic": "Parsing",
+      "difficulty": "hard"
+    }
+  ]
+}

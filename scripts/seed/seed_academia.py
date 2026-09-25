@@ -22,6 +22,23 @@ CSV_PATH = os.path.join(os.path.dirname(__file__), '..', '..', 'data', 'Nelavist
 # It is NOT verified against LASU's official faculty handbook -- if a department is
 # later confirmed to sit under a different faculty, fix this dict and re-run this
 # script (idempotent), don't hand-edit the database.
+#
+# 2026-09 academic-structure audit (lasu.edu.ng, via web search -- direct fetch of the
+# domain is network-blocked in this environment, so treat as search-snippet-sourced,
+# not a full page read):
+# - "Information Technology" -> corrected to LASU's actual current faculty name
+#   (lasu.edu.ng/home/faculties/faculty.php?id=25), not the placeholder "Computing".
+#   Safe rename: Faculty.name isn't matched against any user input (see
+#   services/academic_context.py), only Department.name is.
+# - "Computer Science" left under Science: LASU's site shows it live under both the
+#   Faculty of Science (csc.lasu.edu.ng/science) and the newer Faculty of Computing
+#   and Information Technology -- genuinely ambiguous from available sources, not
+#   changed without a clearer registrar source.
+# - "Biology" (Faculty of Science): LASU's current official Faculty of Science page
+#   lists 10 departments and Biology isn't one of them (Botany/Zoology appear to have
+#   superseded it) -- flagged for manual verification, NOT removed here since it has
+#   real CSV-sourced course rows and deleting on an ambiguous secondary source risks
+#   destroying real data.
 FACULTY_MAP = {
     'Biochemistry': 'Science',
     'Mathematics': 'Science',
@@ -38,7 +55,7 @@ FACULTY_MAP = {
     'Business Administration': 'Management Sciences',
     'Entrepreneurship': 'Management Sciences',
     'Agriculture': 'Agriculture',
-    'Information Technology': 'Computing',
+    'Information Technology': 'Faculty of Computing and Information Technology',
 }
 
 # The CSV's "_general" department (UNILAG/UI's GST/GES-style general-studies courses)

@@ -1,0 +1,393 @@
+{
+  "course_code": "MTH202",
+  "title": "Elementary Differential Equations",
+  "level": "200",
+  "source_note": "Standard NUC-aligned Nigerian university 200L differential equations curriculum, as used at LASU: classification of ODEs, first-order equations (separable, linear, exact, integrating factor, homogeneous), second-order linear ODEs with constant coefficients (homogeneous and non-homogeneous via undetermined coefficients), and applications (growth/decay, cooling, mixing, simple harmonic motion).",
+  "questions": [
+    {
+      "question": "What is the order of the differential equation d²y/dx² + 3(dy/dx) - y = 0?",
+      "options": ["2", "1", "3", "0"],
+      "correct_answer": "2",
+      "explanation": "The order of a differential equation is the order of the highest derivative present, which here is the second derivative.",
+      "topic": "Classification of ODEs",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A differential equation is called linear if:",
+      "options": [
+        "The dependent variable and its derivatives appear only to the first power and are not multiplied together",
+        "It contains only first derivatives",
+        "It has constant coefficients only",
+        "It is separable"
+      ],
+      "correct_answer": "The dependent variable and its derivatives appear only to the first power and are not multiplied together",
+      "explanation": "Linearity requires the dependent variable y and its derivatives to appear linearly, with no products or nonlinear functions of y.",
+      "topic": "Classification of ODEs",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A first-order differential equation of the form dy/dx = f(x)g(y) is called:",
+      "options": ["Separable", "Exact", "Linear", "Homogeneous"],
+      "correct_answer": "Separable",
+      "explanation": "Separable equations can be rearranged so all y-terms are on one side and all x-terms on the other, allowing direct integration.",
+      "topic": "First-order ODEs: separable equations",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Solve the separable equation dy/dx = xy.",
+      "options": ["y = Ce^(x²/2)", "y = Cx²", "y = Ce^x", "y = x²/2 + C"],
+      "correct_answer": "y = Ce^(x²/2)",
+      "explanation": "Separating variables: dy/y = x dx, integrating gives ln|y| = x²/2 + C₁, so y = Ce^(x²/2).",
+      "topic": "First-order ODEs: separable equations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Solve dy/dx = 2x, with y(0) = 3.",
+      "options": ["y = x² + 3", "y = x² - 3", "y = 2x² + 3", "y = x + 3"],
+      "correct_answer": "y = x² + 3",
+      "explanation": "Integrating dy/dx = 2x gives y = x² + C. Using y(0) = 3 gives C = 3, so y = x² + 3.",
+      "topic": "First-order ODEs: separable equations",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The standard form of a first-order linear ODE is:",
+      "options": [
+        "dy/dx + P(x)y = Q(x)",
+        "dy/dx = P(x)Q(y)",
+        "M(x,y)dx + N(x,y)dy = 0",
+        "d²y/dx² + P(x)y = 0"
+      ],
+      "correct_answer": "dy/dx + P(x)y = Q(x)",
+      "explanation": "This is the standard form used to solve first-order linear ODEs via the integrating factor method.",
+      "topic": "First-order ODEs: linear equations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For the linear ODE dy/dx + P(x)y = Q(x), the integrating factor is given by:",
+      "options": ["e^(∫P(x)dx)", "e^(∫Q(x)dx)", "∫P(x)dx", "P(x)Q(x)"],
+      "correct_answer": "e^(∫P(x)dx)",
+      "explanation": "Multiplying through by μ(x) = e^(∫P(x)dx) makes the left side an exact derivative of μ(x)y, enabling direct integration.",
+      "topic": "First-order ODEs: linear equations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Solve dy/dx + y = e^x using the integrating factor method.",
+      "options": ["y = (e^x)/2 + Ce^(-x)", "y = e^x + C", "y = Ce^x", "y = xe^x + C"],
+      "correct_answer": "y = (e^x)/2 + Ce^(-x)",
+      "explanation": "The integrating factor is e^x. Multiplying through: d/dx(ye^x) = e^(2x), integrating gives ye^x = e^(2x)/2 + C, so y = e^x/2 + Ce^(-x).",
+      "topic": "First-order ODEs: linear equations",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A differential equation M(x,y)dx + N(x,y)dy = 0 is exact if:",
+      "options": ["∂M/∂y = ∂N/∂x", "M = N", "∂M/∂x = ∂N/∂y", "M/N is constant"],
+      "correct_answer": "∂M/∂y = ∂N/∂x",
+      "explanation": "The exactness condition requires the partial derivative of M with respect to y to equal the partial derivative of N with respect to x.",
+      "topic": "First-order ODEs: exact equations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For an exact equation M dx + N dy = 0, the solution is found as F(x,y) = C where:",
+      "options": [
+        "∂F/∂x = M and ∂F/∂y = N",
+        "F = M + N",
+        "F = M · N",
+        "∂F/∂x = N and ∂F/∂y = M"
+      ],
+      "correct_answer": "∂F/∂x = M and ∂F/∂y = N",
+      "explanation": "The solution function F(x,y) is constructed such that its partial derivatives recover M and N respectively.",
+      "topic": "First-order ODEs: exact equations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "When an equation M dx + N dy = 0 is not exact, what technique can sometimes make it exact?",
+      "options": [
+        "Multiplying by a suitable integrating factor",
+        "Differentiating both sides",
+        "Squaring both sides",
+        "Taking the logarithm of both sides"
+      ],
+      "correct_answer": "Multiplying by a suitable integrating factor",
+      "explanation": "An integrating factor μ(x) or μ(y) can convert a non-exact equation into an exact one.",
+      "topic": "First-order ODEs: exact equations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A first-order homogeneous ODE dy/dx = f(x,y) has f(x,y) satisfying which property?",
+      "options": [
+        "f(tx,ty) = f(x,y), i.e. it can be written as a function of y/x only",
+        "f(x,y) is a linear function",
+        "f(x,y) = 0",
+        "f depends only on x"
+      ],
+      "correct_answer": "f(tx,ty) = f(x,y), i.e. it can be written as a function of y/x only",
+      "explanation": "A homogeneous first-order ODE has a right-hand side that depends only on the ratio y/x, allowing the substitution v = y/x.",
+      "topic": "First-order ODEs: homogeneous equations",
+      "difficulty": "hard"
+    },
+    {
+      "question": "To solve a homogeneous first-order ODE dy/dx = f(y/x), the standard substitution is:",
+      "options": ["y = vx", "y = v + x", "x = vy²", "y = v/x"],
+      "correct_answer": "y = vx",
+      "explanation": "Substituting y = vx (so dy/dx = v + x dv/dx) transforms the homogeneous equation into a separable one in v and x.",
+      "topic": "First-order ODEs: homogeneous equations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Newton's law of cooling states that the rate of change of temperature T is proportional to:",
+      "options": [
+        "The difference between T and the ambient temperature",
+        "The temperature T alone",
+        "The square of T",
+        "Time t alone"
+      ],
+      "correct_answer": "The difference between T and the ambient temperature",
+      "explanation": "Newton's law of cooling is modelled as dT/dt = -k(T - T_ambient), leading to exponential approach to ambient temperature.",
+      "topic": "Applications: growth, decay, cooling",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Exponential population growth is modelled by dP/dt = kP. What is the general solution?",
+      "options": ["P = P₀e^(kt)", "P = P₀ + kt", "P = kt", "P = P₀e^(-kt)"],
+      "correct_answer": "P = P₀e^(kt)",
+      "explanation": "Solving the separable equation dP/dt = kP gives exponential growth P = P₀e^(kt), where P₀ is the initial population.",
+      "topic": "Applications: growth, decay, cooling",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Radioactive decay follows dN/dt = -λN. If half-life is T½, which relation holds?",
+      "options": [
+        "λ = ln(2)/T½",
+        "λ = T½/ln(2)",
+        "λ = 2/T½",
+        "λ = ln(T½)"
+      ],
+      "correct_answer": "λ = ln(2)/T½",
+      "explanation": "From N = N₀e^(-λt), setting N=N₀/2 at t=T½ gives λ = ln(2)/T½.",
+      "topic": "Applications: growth, decay, cooling",
+      "difficulty": "hard"
+    },
+    {
+      "question": "What is the general solution form of a second-order linear homogeneous ODE with constant coefficients, ay'' + by' + cy = 0, when the auxiliary equation has two distinct real roots m₁, m₂?",
+      "options": [
+        "y = C₁e^(m₁x) + C₂e^(m₂x)",
+        "y = (C₁ + C₂x)e^(m₁x)",
+        "y = e^(m₁x)(C₁cos(m₂x) + C₂sin(m₂x))",
+        "y = C₁m₁ + C₂m₂"
+      ],
+      "correct_answer": "y = C₁e^(m₁x) + C₂e^(m₂x)",
+      "explanation": "Distinct real roots of the auxiliary (characteristic) equation give a general solution as a linear combination of two independent exponentials.",
+      "topic": "Second-order linear ODEs: homogeneous",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For ay'' + by' + cy = 0 with a repeated real root m of the auxiliary equation, the general solution is:",
+      "options": [
+        "y = (C₁ + C₂x)e^(mx)",
+        "y = C₁e^(mx) + C₂e^(mx)",
+        "y = C₁e^(mx)",
+        "y = C₁cos(mx) + C₂sin(mx)"
+      ],
+      "correct_answer": "y = (C₁ + C₂x)e^(mx)",
+      "explanation": "A repeated root requires a second linearly independent solution of the form xe^(mx), giving y = (C₁+C₂x)e^(mx).",
+      "topic": "Second-order linear ODEs: homogeneous",
+      "difficulty": "hard"
+    },
+    {
+      "question": "For ay'' + by' + cy = 0 with complex conjugate roots α ± iβ, the general solution is:",
+      "options": [
+        "y = e^(αx)(C₁cos(βx) + C₂sin(βx))",
+        "y = C₁e^(αx) + C₂e^(βx)",
+        "y = e^(βx)(C₁cos(αx) + C₂sin(αx))",
+        "y = C₁cos(αx)"
+      ],
+      "correct_answer": "y = e^(αx)(C₁cos(βx) + C₂sin(βx))",
+      "explanation": "Complex conjugate roots α±iβ produce oscillatory solutions modulated by an exponential envelope e^(αx).",
+      "topic": "Second-order linear ODEs: homogeneous",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Solve y'' - 5y' + 6y = 0.",
+      "options": [
+        "y = C₁e^(2x) + C₂e^(3x)",
+        "y = C₁e^(5x) + C₂e^(6x)",
+        "y = C₁e^(-2x) + C₂e^(-3x)",
+        "y = (C₁ + C₂x)e^(5x)"
+      ],
+      "correct_answer": "y = C₁e^(2x) + C₂e^(3x)",
+      "explanation": "The auxiliary equation m² - 5m + 6 = 0 factors as (m-2)(m-3)=0, giving roots m=2,3, so y = C₁e^(2x)+C₂e^(3x).",
+      "topic": "Second-order linear ODEs: homogeneous",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Solve y'' + 4y = 0.",
+      "options": [
+        "y = C₁cos(2x) + C₂sin(2x)",
+        "y = C₁e^(2x) + C₂e^(-2x)",
+        "y = C₁cos(4x) + C₂sin(4x)",
+        "y = (C₁ + C₂x)e^(2x)"
+      ],
+      "correct_answer": "y = C₁cos(2x) + C₂sin(2x)",
+      "explanation": "The auxiliary equation m²+4=0 has roots m=±2i, giving oscillatory solution y = C₁cos(2x)+C₂sin(2x).",
+      "topic": "Second-order linear ODEs: homogeneous",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Solve y'' - 4y' + 4y = 0.",
+      "options": [
+        "y = (C₁ + C₂x)e^(2x)",
+        "y = C₁e^(2x) + C₂e^(2x)",
+        "y = C₁e^(4x)",
+        "y = C₁cos(2x) + C₂sin(2x)"
+      ],
+      "correct_answer": "y = (C₁ + C₂x)e^(2x)",
+      "explanation": "The auxiliary equation m²-4m+4=0 factors as (m-2)²=0, a repeated root m=2, giving y=(C₁+C₂x)e^(2x).",
+      "topic": "Second-order linear ODEs: homogeneous",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For a non-homogeneous ODE ay''+by'+cy=f(x), the general solution is the sum of:",
+      "options": [
+        "The complementary function and a particular integral",
+        "Two particular integrals",
+        "The homogeneous solution only",
+        "f(x) and its derivative"
+      ],
+      "correct_answer": "The complementary function and a particular integral",
+      "explanation": "The general solution y = y_c + y_p combines the complementary function (solution of the homogeneous equation) with any particular solution of the full equation.",
+      "topic": "Second-order linear ODEs: non-homogeneous",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For the method of undetermined coefficients applied to y'' - y = e^(2x), what trial form of particular integral should be used?",
+      "options": ["y_p = Ae^(2x)", "y_p = Axe^(2x)", "y_p = A + Bx", "y_p = A cos(2x)"],
+      "correct_answer": "y_p = Ae^(2x)",
+      "explanation": "Since e^(2x) is not a solution of the homogeneous equation y''-y=0 (whose roots are ±1), the standard trial form Ae^(2x) applies.",
+      "topic": "Second-order linear ODEs: non-homogeneous",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Find the particular integral of y'' - y = e^(2x) using y_p = Ae^(2x).",
+      "options": ["y_p = e^(2x)/3", "y_p = e^(2x)", "y_p = e^(2x)/4", "y_p = 3e^(2x)"],
+      "correct_answer": "y_p = e^(2x)/3",
+      "explanation": "Substituting y_p=Ae^(2x): 4Ae^(2x) - Ae^(2x) = e^(2x) gives 3A=1, so A=1/3, i.e. y_p = e^(2x)/3.",
+      "topic": "Second-order linear ODEs: non-homogeneous",
+      "difficulty": "hard"
+    },
+    {
+      "question": "When the right-hand side f(x) of a non-homogeneous ODE duplicates a term in the complementary function, the standard fix in undetermined coefficients is to:",
+      "options": [
+        "Multiply the trial particular integral by x (or x² if needed)",
+        "Ignore the duplication",
+        "Use variation of parameters exclusively",
+        "Set the particular integral to zero"
+      ],
+      "correct_answer": "Multiply the trial particular integral by x (or x² if needed)",
+      "explanation": "When resonance occurs (the trial form matches a term in y_c), multiplying by x (or a higher power) resolves the duplication.",
+      "topic": "Second-order linear ODEs: non-homogeneous",
+      "difficulty": "hard"
+    },
+    {
+      "question": "An initial value problem (IVP) for a second-order ODE typically specifies:",
+      "options": [
+        "y(x₀) and y'(x₀) at a single point",
+        "y at two different points",
+        "Only y'(x₀)",
+        "The general solution directly"
+      ],
+      "correct_answer": "y(x₀) and y'(x₀) at a single point",
+      "explanation": "A second-order IVP needs two initial conditions (function value and first derivative) at a single starting point to determine a unique solution.",
+      "topic": "Initial and boundary value problems",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A boundary value problem (BVP), unlike an IVP, specifies conditions:",
+      "options": [
+        "At two different points (the boundaries)",
+        "Only at x = 0",
+        "As derivatives of infinite order",
+        "Only for first-order equations"
+      ],
+      "correct_answer": "At two different points (the boundaries)",
+      "explanation": "BVPs impose conditions on the solution at two distinct points (the boundaries of the domain), unlike IVPs which use one point.",
+      "topic": "Initial and boundary value problems",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The equation for simple harmonic motion, d²x/dt² + ω²x = 0, arises physically from:",
+      "options": [
+        "A restoring force proportional to displacement (e.g. mass-spring system)",
+        "A constant applied force",
+        "Frictional damping alone",
+        "Exponential growth of displacement"
+      ],
+      "correct_answer": "A restoring force proportional to displacement (e.g. mass-spring system)",
+      "explanation": "By Hooke's law, F = -kx, Newton's second law gives m(d²x/dt²) = -kx, leading to the SHM equation with ω²=k/m.",
+      "topic": "Applications: mechanical vibrations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a damped harmonic oscillator, the equation is m(d²x/dt²) + c(dx/dt) + kx = 0. Critical damping occurs when:",
+      "options": [
+        "c² = 4mk",
+        "c² > 4mk",
+        "c² < 4mk",
+        "c = 0"
+      ],
+      "correct_answer": "c² = 4mk",
+      "explanation": "Critical damping is the boundary case between overdamping and underdamping, where the discriminant of the auxiliary equation is zero, i.e. c²=4mk.",
+      "topic": "Applications: mechanical vibrations",
+      "difficulty": "hard"
+    },
+    {
+      "question": "If a damped system has c² < 4mk, the system is said to be:",
+      "options": ["Underdamped (oscillatory)", "Overdamped", "Critically damped", "Undamped"],
+      "correct_answer": "Underdamped (oscillatory)",
+      "explanation": "When c²<4mk, the auxiliary equation has complex roots, producing oscillations with an exponentially decaying amplitude.",
+      "topic": "Applications: mechanical vibrations",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A mixing tank problem where brine flows in and out at equal rates is typically modelled using which type of ODE?",
+      "options": [
+        "A first-order linear ODE for the amount of salt over time",
+        "A second-order homogeneous ODE",
+        "An exact equation in two variables",
+        "A partial differential equation"
+      ],
+      "correct_answer": "A first-order linear ODE for the amount of salt over time",
+      "explanation": "Mixing problems are modelled by a first-order linear ODE, since the rate of change of the amount of solute equals the rate in minus the rate out.",
+      "topic": "Applications: mixing problems",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Verify: is y = Ce^(-3x) a solution of dy/dx + 3y = 0?",
+      "options": ["Yes, it satisfies the equation for any constant C", "No, only for C=1", "No, it does not satisfy the equation", "Only when x=0"],
+      "correct_answer": "Yes, it satisfies the equation for any constant C",
+      "explanation": "dy/dx = -3Ce^(-3x), so dy/dx + 3y = -3Ce^(-3x)+3Ce^(-3x)=0, satisfied for every constant C.",
+      "topic": "Classification of ODEs",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Solve the linear ODE dy/dx + 2y = 4, given y(0) = 1.",
+      "options": [
+        "y = 2 - e^(-2x)",
+        "y = 2 + e^(-2x)",
+        "y = 4 - 3e^(-2x)",
+        "y = 2e^(-2x)"
+      ],
+      "correct_answer": "y = 2 - e^(-2x)",
+      "explanation": "Integrating factor e^(2x): d/dx(ye^(2x))=4e^(2x), so ye^(2x)=2e^(2x)+C, y=2+Ce^(-2x). Using y(0)=1 gives C=-1, so y=2-e^(-2x).",
+      "topic": "First-order ODEs: linear equations",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In the auxiliary (characteristic) equation approach for ay''+by'+cy=0, the auxiliary equation is obtained by substituting:",
+      "options": ["y = e^(mx)", "y = mx", "y = x^m", "y = sin(mx)"],
+      "correct_answer": "y = e^(mx)",
+      "explanation": "Substituting the trial solution y=e^(mx) into the homogeneous ODE reduces it to the algebraic auxiliary equation am²+bm+c=0.",
+      "topic": "Second-order linear ODEs: homogeneous",
+      "difficulty": "medium"
+    }
+  ]
+}

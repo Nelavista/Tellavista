@@ -1,0 +1,413 @@
+{
+  "course_code": "PHY308",
+  "title": "Optics & Lasers",
+  "level": "300",
+  "source_note": "Standard undergraduate physical optics and laser physics content (interference, diffraction, polarization, laser operation principles) building on PHY203/204 geometric and wave optics, as typically taught in NUC-aligned Nigerian physics programmes.",
+  "questions": [
+    {
+      "question": "In Young's double-slit experiment, the condition for a bright fringe (constructive interference) at a point on the screen is that the path difference between the two waves equals:",
+      "options": ["An integer multiple of the wavelength, n*lambda", "An odd multiple of half the wavelength", "A quarter wavelength", "Zero only"],
+      "correct_answer": "An integer multiple of the wavelength, n*lambda",
+      "explanation": "Constructive interference (bright fringes) occurs when the path difference between the two coherent waves is an integer number of wavelengths, n*lambda, n = 0, 1, 2, ...",
+      "topic": "Interference",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In Young's double-slit experiment, the fringe spacing (distance between adjacent bright fringes) on the screen is given by:",
+      "options": ["Beta = lambda*D/d", "Beta = lambda*d/D", "Beta = D/(lambda*d)", "Beta = d/lambda"],
+      "correct_answer": "Beta = lambda*D/d",
+      "explanation": "The fringe spacing in Young's double-slit setup is Beta = lambda*D/d, where D is the slit-to-screen distance, d is the slit separation, and lambda is the wavelength.",
+      "topic": "Interference",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For two light sources to produce a stable, observable interference pattern, they must be:",
+      "options": [
+        "Coherent, i.e. maintain a constant phase relationship with each other",
+        "Of different wavelengths",
+        "Extremely bright regardless of phase relationship",
+        "Located far apart with no restriction on phase"
+      ],
+      "correct_answer": "Coherent, i.e. maintain a constant phase relationship with each other",
+      "explanation": "Sustained interference patterns require coherent sources, meaning the waves maintain a constant phase difference over time; incoherent sources produce rapidly varying, unobservable patterns.",
+      "topic": "Interference",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The colourful pattern seen in a thin soap film or an oil slick on water is caused by:",
+      "options": [
+        "Diffraction of white light",
+        "Interference between light reflected from the top and bottom surfaces of the thin film",
+        "Polarization of sunlight",
+        "The Doppler effect on light"
+      ],
+      "correct_answer": "Interference between light reflected from the top and bottom surfaces of the thin film",
+      "explanation": "Thin-film colours arise from interference between light waves reflected off the front and back surfaces of the film, with the path difference depending on film thickness and wavelength, producing wavelength-dependent constructive/destructive interference.",
+      "topic": "Interference",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In thin-film interference, an additional phase shift of pi (equivalent to lambda/2 path difference) occurs when light reflects off a boundary where it goes from:",
+      "options": [
+        "A medium of higher refractive index to a medium of lower refractive index",
+        "A medium of lower refractive index to a medium of higher refractive index",
+        "Vacuum to vacuum",
+        "Any two media, always"
+      ],
+      "correct_answer": "A medium of lower refractive index to a medium of higher refractive index",
+      "explanation": "A pi phase shift (equivalent to a half-wavelength path difference) occurs on reflection only when light travelling in a lower-index medium reflects off a higher-index medium; no such shift occurs for reflection off a lower-index medium.",
+      "topic": "Interference",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Newton's rings, observed when a plano-convex lens is placed on a flat glass plate, are a result of:",
+      "options": [
+        "Diffraction from the edge of the lens",
+        "Interference between light reflected from the curved lens surface and the flat glass plate, forming a variable air gap",
+        "Polarization effects in the glass",
+        "Refraction through the lens only, with no interference"
+      ],
+      "correct_answer": "Interference between light reflected from the curved lens surface and the flat glass plate, forming a variable air gap",
+      "explanation": "Newton's rings arise from interference between light reflected at the curved lens surface and the flat plate, where the air gap thickness varies with radial distance, producing concentric circular fringes.",
+      "topic": "Interference",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the central region of Newton's rings viewed by reflection, the centre spot appears:",
+      "options": ["Bright", "Dark", "Coloured red", "Coloured blue"],
+      "correct_answer": "Dark",
+      "explanation": "At the point of contact between the lens and the plate the air gap is zero, but the reflection at the glass-air-glass boundary introduces a pi phase shift, causing destructive interference and a dark central spot.",
+      "topic": "Interference",
+      "difficulty": "medium"
+    },
+    {
+      "question": "According to Huygens' principle applied to single-slit diffraction, the dark fringes (minima) occur when the path difference between wavelets from the edges of the slit equals:",
+      "options": ["n*lambda (n = 1, 2, 3...)", "(n + 1/2)*lambda", "lambda/4", "Zero"],
+      "correct_answer": "n*lambda (n = 1, 2, 3...)",
+      "explanation": "For single-slit diffraction, minima (dark fringes) occur when a*sin(theta) = n*lambda, where a is the slit width; the wavelets from across the slit cancel in pairs at these angles.",
+      "topic": "Diffraction",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Compared to the double-slit interference pattern, the single-slit diffraction envelope is:",
+      "options": [
+        "Identical, with no differences",
+        "A broader central maximum that modulates the intensity of the finer interference fringes",
+        "Composed of equally spaced fringes of equal intensity",
+        "Present only for monochromatic red light"
+      ],
+      "correct_answer": "A broader central maximum that modulates the intensity of the finer interference fringes",
+      "explanation": "In a real double-slit setup, the diffraction pattern from each individual slit (a broad central maximum with weaker side lobes) modulates the amplitude of the finer double-slit interference fringes.",
+      "topic": "Diffraction",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The diffraction grating equation for the position of principal maxima is:",
+      "options": ["d*sin(theta) = n*lambda", "d*cos(theta) = n*lambda", "d/sin(theta) = n*lambda", "n*d = lambda*sin(theta)/2"],
+      "correct_answer": "d*sin(theta) = n*lambda",
+      "explanation": "For a diffraction grating with slit spacing d, principal maxima occur at angles theta satisfying d*sin(theta) = n*lambda, where n is the diffraction order.",
+      "topic": "Diffraction",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Increasing the number of slits (lines) in a diffraction grating, for a fixed slit spacing, primarily causes:",
+      "options": [
+        "Broader, less distinct principal maxima",
+        "Sharper, narrower principal maxima with higher resolving power",
+        "Complete disappearance of the diffraction pattern",
+        "A decrease in the number of observable orders"
+      ],
+      "correct_answer": "Sharper, narrower principal maxima with higher resolving power",
+      "explanation": "As the number of illuminated slits N increases, the principal maxima of a diffraction grating become sharper and narrower, improving the grating's ability to resolve closely spaced spectral lines.",
+      "topic": "Diffraction",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The resolving power of a diffraction grating is defined as:",
+      "options": [
+        "R = lambda / (delta lambda), the ability to distinguish two closely spaced wavelengths",
+        "R = d * N, the physical length of the grating only",
+        "R = n / d, independent of wavelength",
+        "The total number of lines on the grating regardless of order"
+      ],
+      "correct_answer": "R = lambda / (delta lambda), the ability to distinguish two closely spaced wavelengths",
+      "explanation": "Resolving power R = lambda/(delta lambda) = nN, where n is the diffraction order and N is the total number of illuminated lines, quantifying the grating's ability to separate closely spaced spectral lines.",
+      "topic": "Diffraction",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The Rayleigh criterion for the resolution of two point sources through a circular aperture states that they are just resolved when:",
+      "options": [
+        "The central maximum of one diffraction pattern falls on the first minimum of the other",
+        "The two central maxima exactly overlap",
+        "The two sources are separated by less than the aperture diameter",
+        "There is no diffraction from the aperture"
+      ],
+      "correct_answer": "The central maximum of one diffraction pattern falls on the first minimum of the other",
+      "explanation": "The Rayleigh criterion defines the minimum angular resolution as the angle at which the central maximum of one point source's diffraction pattern coincides with the first minimum of the adjacent source's pattern.",
+      "topic": "Diffraction",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Polarization is a phenomenon exhibited by which type of wave?",
+      "options": ["Only longitudinal waves", "Only sound waves", "Transverse waves, such as light", "All waves, both longitudinal and transverse equally"],
+      "correct_answer": "Transverse waves, such as light",
+      "explanation": "Polarization refers to the orientation of oscillation in transverse waves; since light is an electromagnetic transverse wave, it can be polarized, unlike longitudinal waves such as sound.",
+      "topic": "Polarization",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Malus's law for the intensity of polarized light transmitted through an analyser is given by:",
+      "options": ["I = I0 * cos(theta)", "I = I0 * cos^2(theta)", "I = I0 * sin^2(theta)", "I = I0 / cos(theta)"],
+      "correct_answer": "I = I0 * cos^2(theta)",
+      "explanation": "Malus's law states that when polarized light of intensity I0 passes through an analyser whose transmission axis makes angle theta with the light's polarization direction, the transmitted intensity is I = I0*cos^2(theta).",
+      "topic": "Polarization",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Two polarizers are arranged with their transmission axes perpendicular to each other (crossed polarizers). According to Malus's law, the intensity of light transmitted through both is:",
+      "options": ["Maximum", "Zero", "Half of the incident intensity", "Independent of their relative orientation"],
+      "correct_answer": "Zero",
+      "explanation": "When the analyser's axis is at 90 degrees to the polarizer (theta = 90 degrees), cos^2(90) = 0, so no light is transmitted through the crossed polarizers.",
+      "topic": "Polarization",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Brewster's angle is the angle of incidence at which:",
+      "options": [
+        "Reflected light is completely polarized perpendicular to the plane of incidence",
+        "All light is transmitted with no reflection at all",
+        "The refracted and reflected rays coincide",
+        "Total internal reflection always occurs"
+      ],
+      "correct_answer": "Reflected light is completely polarized perpendicular to the plane of incidence",
+      "explanation": "At Brewster's angle, the reflected and refracted rays are perpendicular to each other, and the reflected light becomes completely linearly polarized perpendicular to the plane of incidence.",
+      "topic": "Polarization",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Certain crystals such as calcite exhibit birefringence (double refraction), meaning that:",
+      "options": [
+        "They absorb all incident light",
+        "A single incident ray splits into two refracted rays (ordinary and extraordinary) with different refractive indices",
+        "They cannot transmit light at all",
+        "They only reflect light, never refract it"
+      ],
+      "correct_answer": "A single incident ray splits into two refracted rays (ordinary and extraordinary) with different refractive indices",
+      "explanation": "Birefringent (doubly refracting) crystals have different refractive indices along different crystal axes, splitting unpolarized light into an ordinary ray and an extraordinary ray that travel at different speeds and are polarized perpendicular to each other.",
+      "topic": "Polarization",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The word LASER is an acronym for:",
+      "options": [
+        "Light Amplification by Stimulated Emission of Radiation",
+        "Light Absorption through Stimulated Excitation of Radiation",
+        "Linear Amplification of Spontaneous Emission of Radiation",
+        "Light Attenuation by Spontaneous Emission of Radiation"
+      ],
+      "correct_answer": "Light Amplification by Stimulated Emission of Radiation",
+      "explanation": "LASER stands for Light Amplification by Stimulated Emission of Radiation, describing the fundamental process by which laser light is generated and amplified.",
+      "topic": "Laser fundamentals",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Stimulated emission occurs when:",
+      "options": [
+        "An excited atom spontaneously emits a photon in a random direction with random phase",
+        "An incoming photon of the right energy triggers an excited atom to emit a second photon that is identical in phase, frequency, and direction to the incident one",
+        "An atom absorbs a photon and moves to a higher energy state",
+        "Two ground-state atoms collide and emit light"
+      ],
+      "correct_answer": "An incoming photon of the right energy triggers an excited atom to emit a second photon that is identical in phase, frequency, and direction to the incident one",
+      "explanation": "Stimulated emission, first described by Einstein, occurs when a photon matching the energy gap between two atomic levels interacts with an excited atom, causing it to emit a coherent, identical photon, forming the basis of laser amplification.",
+      "topic": "Laser fundamentals",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Population inversion, a necessary condition for laser action, refers to a state in which:",
+      "options": [
+        "More atoms occupy the ground state than any excited state, as in thermal equilibrium",
+        "A higher energy state has a greater population of atoms than a lower energy state, the reverse of normal thermal equilibrium",
+        "All atoms are in the ground state",
+        "Atoms are equally distributed among all energy levels"
+      ],
+      "correct_answer": "A higher energy state has a greater population of atoms than a lower energy state, the reverse of normal thermal equilibrium",
+      "explanation": "Population inversion is an out-of-equilibrium condition where more atoms exist in a higher (excited) energy state than in a lower one, necessary so that stimulated emission dominates over absorption, enabling light amplification.",
+      "topic": "Laser fundamentals",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Population inversion cannot be achieved in a simple two-level atomic system under normal continuous pumping because:",
+      "options": [
+        "Two-level systems have no excited state at all",
+        "At best, stimulated absorption and emission rates equalize the populations (saturation), never inverting them; practical lasers use three- or four-level systems",
+        "Two-level systems always naturally invert without pumping",
+        "There is no such limitation; two-level systems work best for lasers"
+      ],
+      "correct_answer": "At best, stimulated absorption and emission rates equalize the populations (saturation), never inverting them; practical lasers use three- or four-level systems",
+      "explanation": "In an ideal two-level system, optical pumping can at most equalize the populations of the two levels (50/50), never achieving true inversion; practical lasers use three-level or four-level energy schemes with a metastable state to achieve inversion.",
+      "topic": "Laser fundamentals",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The three essential components of a laser system are:",
+      "options": [
+        "An active (gain) medium, a pump (energy source), and an optical resonant cavity",
+        "A lens, a mirror, and a prism only",
+        "A battery, a switch, and a wire",
+        "A diffraction grating, a polarizer, and a detector"
+      ],
+      "correct_answer": "An active (gain) medium, a pump (energy source), and an optical resonant cavity",
+      "explanation": "Every laser requires a gain medium capable of amplifying light through stimulated emission, a pumping mechanism to create population inversion, and an optical cavity (typically two mirrors) to provide feedback and build up coherent light.",
+      "topic": "Laser fundamentals",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a helium-neon (He-Ne) laser, the primary role of helium atoms is to:",
+      "options": [
+        "Directly emit the laser light at 632.8 nm",
+        "Be excited by electrical discharge and transfer energy to neon atoms via collisions, populating the neon upper laser level",
+        "Absorb the laser output to prevent overheating",
+        "Serve as the mirror coating material"
+      ],
+      "correct_answer": "Be excited by electrical discharge and transfer energy to neon atoms via collisions, populating the neon upper laser level",
+      "explanation": "In a He-Ne laser, helium atoms are excited by electrical discharge and efficiently transfer their energy to neon atoms through collisions, populating a neon energy level from which the actual 632.8 nm laser transition occurs.",
+      "topic": "Types of lasers",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The ruby laser, one of the first lasers developed, is an example of a:",
+      "options": ["Gas laser", "Solid-state laser using a chromium-doped crystal", "Liquid dye laser", "Semiconductor diode laser"],
+      "correct_answer": "Solid-state laser using a chromium-doped crystal",
+      "explanation": "The ruby laser is a solid-state laser using a synthetic ruby crystal (aluminium oxide doped with chromium ions) as the gain medium, typically pumped by a flash lamp.",
+      "topic": "Types of lasers",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Semiconductor (diode) lasers generate light through:",
+      "options": [
+        "Electron-hole recombination at a p-n junction under forward bias",
+        "Chemical combustion reactions",
+        "Nuclear fission",
+        "Purely mechanical vibration of the crystal lattice"
+      ],
+      "correct_answer": "Electron-hole recombination at a p-n junction under forward bias",
+      "explanation": "In a semiconductor laser diode, forward biasing injects electrons and holes into the active region, and their recombination across the p-n junction releases photons, which are amplified within the cavity.",
+      "topic": "Types of lasers",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which property distinguishes laser light most clearly from ordinary incandescent light?",
+      "options": [
+        "Laser light is always more intense but has the same coherence properties as ordinary light",
+        "Laser light is highly coherent (temporally and spatially), monochromatic, and highly directional",
+        "Laser light contains all visible wavelengths simultaneously with random phase",
+        "Laser light cannot be focused to a small spot"
+      ],
+      "correct_answer": "Laser light is highly coherent (temporally and spatially), monochromatic, and highly directional",
+      "explanation": "Laser light is distinguished by high coherence (fixed phase relationship over time and space), narrow spectral linewidth (monochromaticity), and a well-collimated, low-divergence beam, unlike the incoherent, broadband, omnidirectional emission of ordinary light sources.",
+      "topic": "Laser characteristics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Temporal coherence of a laser beam is related to its:",
+      "options": [
+        "Spectral purity (narrow linewidth) and coherence time/length",
+        "Beam diameter only",
+        "Polarization direction only",
+        "Output power only"
+      ],
+      "correct_answer": "Spectral purity (narrow linewidth) and coherence time/length",
+      "explanation": "Temporal coherence describes how well correlated the phase of a wave is with itself at different times, directly related to the spectral bandwidth: a narrower linewidth gives a longer coherence time and coherence length.",
+      "topic": "Laser characteristics",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The optical resonant cavity of a laser, typically formed by two mirrors (one fully reflective, one partially transmissive), serves to:",
+      "options": [
+        "Absorb all the light generated in the gain medium",
+        "Provide optical feedback so that light repeatedly passes through the gain medium, building up amplification, while allowing some light to escape as the output beam",
+        "Convert the laser light into heat",
+        "Filter out all light except infrared"
+      ],
+      "correct_answer": "Provide optical feedback so that light repeatedly passes through the gain medium, building up amplification, while allowing some light to escape as the output beam",
+      "explanation": "The resonant cavity reflects light back and forth through the gain medium many times, amplifying it via stimulated emission on each pass, with the partially reflective output coupler mirror allowing a fraction of the light to exit as the usable laser beam.",
+      "topic": "Laser fundamentals",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Holography differs from ordinary photography in that a hologram records:",
+      "options": [
+        "Only the intensity (amplitude) of light reflected from an object",
+        "Both the amplitude and phase information of the light wave, enabling reconstruction of a three-dimensional image",
+        "Only colour information with no spatial detail",
+        "Nothing about the object; it is purely a mathematical construct"
+      ],
+      "correct_answer": "Both the amplitude and phase information of the light wave, enabling reconstruction of a three-dimensional image",
+      "explanation": "A hologram is formed by recording the interference pattern between a reference beam and light scattered from an object, capturing both amplitude and phase information, which allows a full three-dimensional wavefront to be reconstructed upon replay.",
+      "topic": "Holography",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Producing a hologram requires the recording medium to be illuminated by:",
+      "options": [
+        "Ordinary incoherent white light only",
+        "Coherent laser light, split into a reference beam and an object beam that interfere on the recording medium",
+        "Ultraviolet light with no interference required",
+        "Radio waves"
+      ],
+      "correct_answer": "Coherent laser light, split into a reference beam and an object beam that interfere on the recording medium",
+      "explanation": "Holography requires highly coherent laser light so that a stable interference pattern forms between a reference beam and the beam scattered from the object, which is what gets recorded on the photographic medium.",
+      "topic": "Holography",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In an optical fibre, light is guided along the core primarily due to the phenomenon of:",
+      "options": [
+        "Total internal reflection at the core-cladding boundary",
+        "Simple reflection off an external metallic coating",
+        "Diffraction through the fibre's cross-section",
+        "Refraction that bends light out of the fibre"
+      ],
+      "correct_answer": "Total internal reflection at the core-cladding boundary",
+      "explanation": "Optical fibres guide light by total internal reflection, which occurs because the core has a higher refractive index than the surrounding cladding, confining light rays that strike the boundary above the critical angle.",
+      "topic": "Fibre optics",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The numerical aperture (NA) of an optical fibre is a measure of:",
+      "options": [
+        "The fibre's light-gathering ability and the maximum acceptance angle for rays to be guided by total internal reflection",
+        "The exact length of the fibre",
+        "The material cost of the fibre",
+        "The electrical resistance of the fibre"
+      ],
+      "correct_answer": "The fibre's light-gathering ability and the maximum acceptance angle for rays to be guided by total internal reflection",
+      "explanation": "Numerical aperture NA = sqrt(n_core^2 - n_cladding^2) characterises the range of angles over which the fibre can accept and guide incoming light via total internal reflection.",
+      "topic": "Fibre optics",
+      "difficulty": "hard"
+    },
+    {
+      "question": "One major medical application of lasers is:",
+      "options": [
+        "Laser eye surgery (e.g., LASIK) for reshaping the cornea to correct vision",
+        "Direct replacement of X-ray imaging for bone fractures",
+        "Measuring blood pressure directly",
+        "Producing MRI images"
+      ],
+      "correct_answer": "Laser eye surgery (e.g., LASIK) for reshaping the cornea to correct vision",
+      "explanation": "Lasers are widely used in ophthalmic surgery, such as LASIK, to precisely reshape corneal tissue and correct refractive vision errors, taking advantage of the laser's high spatial precision and controllable energy delivery.",
+      "topic": "Laser applications",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A CO2 laser, commonly used for industrial cutting and welding, is an example of a:",
+      "options": ["Solid-state laser", "Gas laser", "Liquid dye laser", "Free-electron laser"],
+      "correct_answer": "Gas laser",
+      "explanation": "The CO2 laser uses a gas mixture (carbon dioxide, nitrogen, and helium) as its active medium, emitting powerful infrared light widely used in industrial material processing.",
+      "topic": "Types of lasers",
+      "difficulty": "medium"
+    }
+  ]
+}

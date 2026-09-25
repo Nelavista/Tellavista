@@ -1,0 +1,248 @@
+{
+  "course_code": "MTH210",
+  "title": "Vector Analysis",
+  "level": "200",
+  "source_note": "Standard NUC-aligned Nigerian university 200L Vector Analysis curriculum: vector algebra in 2D/3D, dot and cross products, vector-valued functions, the gradient/divergence/curl operators, line and surface integrals, and the classical integral theorems (Green's, Stokes', divergence).",
+  "questions": [
+    {
+      "question": "Given vectors a = (1, 2, 3) and b = (4, 5, 6), what is a + b?",
+      "options": ["(5, 7, 9)", "(4, 10, 18)", "(3, 3, 3)", "(5, 7, 8)"],
+      "correct_answer": "(5, 7, 9)",
+      "explanation": "Vector addition is done component-wise: (1+4, 2+5, 3+6) = (5, 7, 9).",
+      "topic": "Vector algebra",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is the dot product of a = (1, 2, 3) and b = (4, −5, 6)?",
+      "options": ["12", "4 − 10 + 18 = 12", "20", "9"],
+      "correct_answer": "12",
+      "explanation": "a·b = (1)(4) + (2)(−5) + (3)(6) = 4 − 10 + 18 = 12.",
+      "topic": "Dot product",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The dot product a·b of two vectors can also be expressed as:",
+      "options": ["|a||b|cosθ, where θ is the angle between them", "|a||b|sinθ", "|a| + |b|", "|a × b|"],
+      "correct_answer": "|a||b|cosθ, where θ is the angle between them",
+      "explanation": "The geometric definition of the dot product relates it to the magnitudes of the vectors and the cosine of the angle between them.",
+      "topic": "Dot product",
+      "difficulty": "medium"
+    },
+    {
+      "question": "If a·b = 0 for two nonzero vectors a and b, then:",
+      "options": ["a and b are perpendicular (orthogonal)", "a and b are parallel", "a = b", "a and b point in the same direction"],
+      "correct_answer": "a and b are perpendicular (orthogonal)",
+      "explanation": "A zero dot product between nonzero vectors means cosθ = 0, so the angle between them is 90°.",
+      "topic": "Dot product",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is the cross product of i = (1,0,0) and j = (0,1,0) in ℝ^3?",
+      "options": ["k = (0, 0, 1)", "0", "i + j", "−k"],
+      "correct_answer": "k = (0, 0, 1)",
+      "explanation": "By the standard right-hand-rule convention, i × j = k.",
+      "topic": "Cross product",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The magnitude of the cross product a × b equals:",
+      "options": ["|a||b|sinθ, the area of the parallelogram spanned by a and b", "|a||b|cosθ", "a·b", "|a| + |b|"],
+      "correct_answer": "|a||b|sinθ, the area of the parallelogram spanned by a and b",
+      "explanation": "The cross product's magnitude gives the area of the parallelogram formed by the two vectors, using the sine of the angle between them.",
+      "topic": "Cross product",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which property is true of the cross product?",
+      "options": ["a × b = −(b × a) (it is anticommutative)", "a × b = b × a", "a × b is a scalar", "a × a = a for any vector a"],
+      "correct_answer": "a × b = −(b × a) (it is anticommutative)",
+      "explanation": "The cross product reverses sign when the order of the vectors is swapped, unlike the commutative dot product.",
+      "topic": "Cross product",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Compute a × b for a = (1, 0, 0) and b = (0, 0, 1).",
+      "options": ["(0, −1, 0)", "(0, 1, 0)", "(1, 0, 1)", "(0, 0, 0)"],
+      "correct_answer": "(0, −1, 0)",
+      "explanation": "Using the determinant formula, a × b = (0·1−0·0, 0·0−1·1, 1·0−0·0) = (0, −1, 0).",
+      "topic": "Cross product",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The scalar triple product a·(b × c) geometrically represents:",
+      "options": ["The volume of the parallelepiped spanned by a, b, and c", "The area of the triangle formed by a, b, c", "The angle between a and b", "The length of vector a"],
+      "correct_answer": "The volume of the parallelepiped spanned by a, b, and c",
+      "explanation": "The scalar triple product's absolute value equals the volume of the parallelepiped with edges a, b, and c.",
+      "topic": "Vector algebra",
+      "difficulty": "hard"
+    },
+    {
+      "question": "For a scalar field φ(x, y, z), the gradient ∇φ is a vector that points in the direction of:",
+      "options": ["The greatest rate of increase of φ", "The greatest rate of decrease of φ", "Zero change in φ", "The x-axis only"],
+      "correct_answer": "The greatest rate of increase of φ",
+      "explanation": "The gradient vector always points in the direction in which the scalar field increases most rapidly, with magnitude equal to that maximum rate.",
+      "topic": "Gradient",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is ∇φ for the scalar field φ(x, y, z) = x² + y² + z²?",
+      "options": ["(2x, 2y, 2z)", "(x², y², z²)", "(2, 2, 2)", "2x + 2y + 2z"],
+      "correct_answer": "(2x, 2y, 2z)",
+      "explanation": "The gradient is the vector of partial derivatives: ∂φ/∂x = 2x, ∂φ/∂y = 2y, ∂φ/∂z = 2z.",
+      "topic": "Gradient",
+      "difficulty": "easy"
+    },
+    {
+      "question": "For a vector field F = (P, Q, R), the divergence ∇·F is defined as:",
+      "options": ["∂P/∂x + ∂Q/∂y + ∂R/∂z", "∂P/∂y − ∂Q/∂x", "P + Q + R", "∂P/∂x × ∂Q/∂y × ∂R/∂z"],
+      "correct_answer": "∂P/∂x + ∂Q/∂y + ∂R/∂z",
+      "explanation": "Divergence is the dot product of the del operator with the vector field, summing the partial derivatives of each component with respect to its own variable.",
+      "topic": "Divergence",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Physically, the divergence of a vector field at a point measures:",
+      "options": ["The net outward flux (source/sink strength) per unit volume at that point", "The rotation of the field at that point", "The magnitude of the field only", "The direction the field points"],
+      "correct_answer": "The net outward flux (source/sink strength) per unit volume at that point",
+      "explanation": "Divergence quantifies how much a vector field spreads out from (positive) or converges into (negative) a given point.",
+      "topic": "Divergence",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For a vector field F = (P, Q, R), the curl ∇ × F is defined as:",
+      "options": ["A vector formed by (∂R/∂y − ∂Q/∂z, ∂P/∂z − ∂R/∂x, ∂Q/∂x − ∂P/∂y)", "∂P/∂x + ∂Q/∂y + ∂R/∂z", "A scalar equal to P + Q + R", "The magnitude of F"],
+      "correct_answer": "A vector formed by (∂R/∂y − ∂Q/∂z, ∂P/∂z − ∂R/∂x, ∂Q/∂x − ∂P/∂y)",
+      "explanation": "Curl is a vector quantity representing the local rotation of the field, computed via this specific cross-product-like combination of partial derivatives.",
+      "topic": "Curl",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A vector field F is called irrotational if:",
+      "options": ["∇ × F = 0 everywhere", "∇·F = 0 everywhere", "F is constant", "F has zero magnitude"],
+      "correct_answer": "∇ × F = 0 everywhere",
+      "explanation": "Irrotational fields have zero curl everywhere, meaning they have no local rotational tendency; such fields are conservative under suitable conditions.",
+      "topic": "Curl",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A vector field F is called solenoidal (divergence-free) if:",
+      "options": ["∇·F = 0 everywhere", "∇ × F = 0 everywhere", "F is a gradient field", "F has constant magnitude"],
+      "correct_answer": "∇·F = 0 everywhere",
+      "explanation": "A solenoidal field has zero divergence throughout its domain, meaning it has no sources or sinks.",
+      "topic": "Divergence",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For any scalar field φ with continuous second partial derivatives, curl(grad φ) equals:",
+      "options": ["0 (the zero vector)", "φ itself", "The Laplacian of φ", "A nonzero constant vector"],
+      "correct_answer": "0 (the zero vector)",
+      "explanation": "A fundamental vector calculus identity: the curl of a gradient field is always zero, i.e. ∇ × (∇φ) = 0.",
+      "topic": "Vector identities",
+      "difficulty": "hard"
+    },
+    {
+      "question": "For any vector field F with continuous second partial derivatives, div(curl F) equals:",
+      "options": ["0", "F itself", "The gradient of F", "A constant nonzero scalar"],
+      "correct_answer": "0",
+      "explanation": "Another fundamental identity states the divergence of the curl of any vector field is always identically zero: ∇·(∇×F) = 0.",
+      "topic": "Vector identities",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A line integral ∫C F·dr along a curve C represents:",
+      "options": ["The work done by force field F moving a particle along C", "The area under the curve C", "The length of the curve C", "The volume enclosed by C"],
+      "correct_answer": "The work done by force field F moving a particle along C",
+      "explanation": "The line integral of a vector field along a curve, weighted by the tangent direction, computes the total work done by that field along the path.",
+      "topic": "Line integrals",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A vector field F is called conservative if:",
+      "options": ["F = ∇φ for some scalar potential function φ", "∇·F ≠ 0 everywhere", "F depends only on time", "F has no components"],
+      "correct_answer": "F = ∇φ for some scalar potential function φ",
+      "explanation": "A conservative vector field can be written as the gradient of a scalar potential function, which implies path-independence of its line integral.",
+      "topic": "Line integrals",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For a conservative vector field F, the line integral ∫C F·dr between two fixed points:",
+      "options": ["Is independent of the path taken between the two points", "Depends heavily on the specific path chosen", "Is always zero regardless of the endpoints", "Cannot be evaluated"],
+      "correct_answer": "Is independent of the path taken between the two points",
+      "explanation": "Path independence is a defining characteristic of conservative fields, following from the Fundamental Theorem for Line Integrals.",
+      "topic": "Line integrals",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Green's Theorem relates a line integral around a simple closed curve C to:",
+      "options": ["A double integral over the plane region D enclosed by C", "A single integral along the x-axis", "A triple integral over a solid region", "The gradient of a scalar field"],
+      "correct_answer": "A double integral over the plane region D enclosed by C",
+      "explanation": "Green's Theorem converts a line integral around a closed curve in the plane into a double integral of the curl-like quantity (∂Q/∂x − ∂P/∂y) over the enclosed region.",
+      "topic": "Green's theorem",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Green's Theorem states that ∮C (P dx + Q dy) equals:",
+      "options": ["∬∬_D (∂Q/∂x − ∂P/∂y) dA", "∬∬_D (P + Q) dA", "∬∬_D (∂P/∂x + ∂Q/∂y) dA", "0 for every field"],
+      "correct_answer": "∬∬_D (∂Q/∂x − ∂P/∂y) dA",
+      "explanation": "This is the precise statement of Green's Theorem, converting the circulation around C into a double integral of the two-dimensional curl over the enclosed region D.",
+      "topic": "Green's theorem",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Stokes' Theorem relates a line integral around a closed curve C to:",
+      "options": ["A surface integral of the curl of a vector field over a surface S bounded by C", "A volume integral over a solid region", "The dot product of two constant vectors", "A double integral in the xy-plane only"],
+      "correct_answer": "A surface integral of the curl of a vector field over a surface S bounded by C",
+      "explanation": "Stokes' Theorem generalizes Green's Theorem to three dimensions, equating circulation around a boundary curve to the flux of the curl through any surface it bounds.",
+      "topic": "Stokes' theorem",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The Divergence (Gauss's) Theorem relates a surface integral over a closed surface S to:",
+      "options": ["A triple integral of the divergence of the vector field over the enclosed volume V", "A line integral along the boundary of S", "A single integral over one axis", "The curl of the field on S"],
+      "correct_answer": "A triple integral of the divergence of the vector field over the enclosed volume V",
+      "explanation": "The Divergence Theorem converts the total outward flux through a closed surface into a volume integral of the divergence over the region it encloses.",
+      "topic": "Divergence theorem",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A surface integral ∬∬S F·dS physically represents:",
+      "options": ["The flux of vector field F through surface S", "The area of surface S", "The circulation of F around a curve", "The volume enclosed by S"],
+      "correct_answer": "The flux of vector field F through surface S",
+      "explanation": "This surface integral measures the total amount of the field passing through S, weighted by the component normal to the surface.",
+      "topic": "Surface integrals",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The unit tangent vector T to a space curve r(t) is given by:",
+      "options": ["r'(t) / |r'(t)|", "r'(t) × r''(t)", "r(t) / |r(t)|", "r''(t) / |r''(t)|"],
+      "correct_answer": "r'(t) / |r'(t)|",
+      "explanation": "The unit tangent vector is the velocity vector r'(t) normalized to have length 1.",
+      "topic": "Vector-valued functions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For a particle with position vector r(t), the velocity and acceleration are given by:",
+      "options": ["v(t) = r'(t) and a(t) = r''(t)", "v(t) = r(t) and a(t) = r'(t)", "v(t) = ∫r(t)dt and a(t) = r(t)", "v(t) = r''(t) and a(t) = r'(t)"],
+      "correct_answer": "v(t) = r'(t) and a(t) = r''(t)",
+      "explanation": "Velocity is the first derivative of the position vector with respect to time, and acceleration is the second derivative.",
+      "topic": "Vector-valued functions",
+      "difficulty": "easy"
+    },
+    {
+      "question": "If r(t) = (cos t, sin t, t), what is r'(t)?",
+      "options": ["(−sin t, cos t, 1)", "(−cos t, −sin t, 0)", "(sin t, cos t, 1)", "(−sin t, cos t, 0)"],
+      "correct_answer": "(−sin t, cos t, 1)",
+      "explanation": "Differentiating each component: d/dt(cos t) = −sin t, d/dt(sin t) = cos t, d/dt(t) = 1.",
+      "topic": "Vector-valued functions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Laplacian ∇²φ of a scalar field φ is defined as:",
+      "options": ["div(grad φ) = ∂²φ/∂x² + ∂²φ/∂y² + ∂²φ/∂z²", "curl(grad φ)", "grad(div φ)", "φ²"],
+      "correct_answer": "div(grad φ) = ∂²φ/∂x² + ∂²φ/∂y² + ∂²φ/∂z²",
+      "explanation": "The Laplacian operator is the divergence of the gradient, summing the unmixed second partial derivatives; it appears widely in physics (e.g. Laplace's equation).",
+      "topic": "Vector identities",
+      "difficulty": "hard"
+    }
+  ]
+}

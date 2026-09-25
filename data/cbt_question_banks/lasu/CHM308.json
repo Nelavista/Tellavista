@@ -1,0 +1,296 @@
+{
+  "course_code": "CHM308",
+  "title": "Electrochemistry",
+  "level": "300",
+  "source_note": "Standard NUC-aligned 300L physical chemistry electrochemistry curriculum: galvanic and electrolytic cells, electrode potentials and the electrochemical series, the Nernst equation, conductance of electrolyte solutions and Kohlrausch's law, Faraday's laws of electrolysis, batteries and fuel cells, corrosion, and the thermodynamics of electrochemical cells.",
+  "questions": [
+    {
+      "question": "A galvanic (voltaic) cell differs fundamentally from an electrolytic cell in that a galvanic cell:",
+      "options": ["Requires an external power source to drive a non-spontaneous reaction", "Converts spontaneous chemical reaction energy directly into electrical energy without any external power source", "Can never produce an electric current", "Always has both electrodes made of the same metal"],
+      "correct_answer": "Converts spontaneous chemical reaction energy directly into electrical energy without any external power source",
+      "explanation": "A galvanic cell harnesses a spontaneous redox reaction (negative Gibbs free energy change) to generate electrical energy, whereas an electrolytic cell uses an external electrical source to force a non-spontaneous reaction to occur.",
+      "topic": "Galvanic and electrolytic cells",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In a galvanic cell, oxidation occurs at the electrode called the:",
+      "options": ["Cathode", "Anode", "Salt bridge", "Reference electrode only"],
+      "correct_answer": "Anode",
+      "explanation": "By convention (in both galvanic and electrolytic cells), oxidation (loss of electrons) occurs at the anode, while reduction occurs at the cathode.",
+      "topic": "Galvanic and electrolytic cells",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The salt bridge in a galvanic cell (e.g. the Daniell cell) serves mainly to:",
+      "options": ["Supply electrons directly to the external circuit", "Maintain electrical neutrality in each half-cell by allowing ion migration, completing the internal circuit without letting the two solutions mix freely", "Increase the standard cell potential", "Act as the site of oxidation"],
+      "correct_answer": "Maintain electrical neutrality in each half-cell by allowing ion migration, completing the internal circuit without letting the two solutions mix freely",
+      "explanation": "As current flows, ions must migrate to balance charge building up in each half-cell; the salt bridge (often a gel with an inert electrolyte) allows this ionic migration while minimising direct mixing of the two half-cell solutions.",
+      "topic": "Galvanic and electrolytic cells",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The standard hydrogen electrode (SHE) is universally assigned a standard electrode potential of exactly:",
+      "options": ["+1.00 V", "0.00 V", "-1.00 V", "+0.76 V"],
+      "correct_answer": "0.00 V",
+      "explanation": "By international convention, the standard hydrogen electrode (Pt/H2(1 atm)/H+(1 mol/dm3)) is defined as the reference point with a standard electrode potential of exactly 0.00 V, against which all other standard electrode potentials are measured.",
+      "topic": "Standard electrode potentials",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In the electrochemical (activity) series, a metal placed above hydrogen (with a more negative standard electrode potential) is generally:",
+      "options": ["A weaker reducing agent than hydrogen and unable to displace H2 from dilute acids", "A stronger reducing agent than hydrogen and able to displace H2 gas from dilute acids", "Always a noble (unreactive) metal", "Incapable of forming ions in solution"],
+      "correct_answer": "A stronger reducing agent than hydrogen and able to displace H2 gas from dilute acids",
+      "explanation": "Metals with more negative standard reduction potentials than hydrogen (e.g. Zn, Mg) are more easily oxidised (stronger reducing agents) than H2, so they spontaneously displace hydrogen gas from dilute acids.",
+      "topic": "Electrochemical series",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For a galvanic cell to have a positive (spontaneous) standard cell potential, E-cell(standard), the reduction potential of the cathode half-reaction must be:",
+      "options": ["More negative than that of the anode half-reaction", "More positive than that of the anode half-reaction", "Exactly equal to that of the anode half-reaction", "Irrelevant to the sign of E-cell"],
+      "correct_answer": "More positive than that of the anode half-reaction",
+      "explanation": "E-cell(standard) = E-cathode(standard) - E-anode(standard); for this to be positive (a spontaneous, working galvanic cell), the cathode's standard reduction potential must exceed that of the anode.",
+      "topic": "Standard electrode potentials",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The relationship between the standard Gibbs free energy change of a cell reaction and the standard cell potential is given by:",
+      "options": ["Delta G(standard) = -nFE(standard), where n is moles of electrons transferred and F is Faraday's constant", "Delta G(standard) = nRT ln K only", "Delta G(standard) = E(standard)/n", "Delta G(standard) is completely independent of E(standard)"],
+      "correct_answer": "Delta G(standard) = -nFE(standard), where n is moles of electrons transferred and F is Faraday's constant",
+      "explanation": "This fundamental thermodynamic relationship links the maximum non-expansion (electrical) work obtainable from a cell reaction to its standard cell potential; a positive E(standard) corresponds to a negative Delta G(standard), i.e. a spontaneous reaction.",
+      "topic": "Thermodynamics of cells",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Nernst equation, E = E(standard) - (RT/nF) ln Q, is used to calculate a cell's EMF under conditions that are:",
+      "options": ["Always at standard state (1 mol/dm3, 1 atm, 298 K)", "Non-standard, i.e. at concentrations, pressures, or temperatures that differ from the standard reference state", "Only applicable to solid-state reactions", "Only valid when the reaction has reached true chemical equilibrium (E = 0)"],
+      "correct_answer": "Non-standard, i.e. at concentrations, pressures, or temperatures that differ from the standard reference state",
+      "explanation": "The Nernst equation extends the standard cell potential to any set of actual reaction conditions by including the reaction quotient Q, allowing calculation of the cell EMF away from standard-state concentrations and pressures.",
+      "topic": "Nernst equation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "At chemical equilibrium, a galvanic cell's measured EMF (E) becomes:",
+      "options": ["Equal to the standard cell potential, E(standard)", "Zero, since the reaction quotient Q equals the equilibrium constant K and no further net driving force for current remains", "Infinite", "Independent of temperature entirely"],
+      "correct_answer": "Zero, since the reaction quotient Q equals the equilibrium constant K and no further net driving force for current remains",
+      "explanation": "As a cell reaction proceeds towards equilibrium, the driving force (EMF) decreases; at equilibrium Q = K and the Nernst equation gives E = 0, corresponding to a 'dead' cell with no further useful work obtainable.",
+      "topic": "Nernst equation",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A concentration cell generates an EMF using two half-cells of:",
+      "options": ["Completely different electrode materials and different electrolytes", "The same electrode material and the same electrolyte, but at two different concentrations", "No electrolyte solution at all", "Identical concentrations in both half-cells"],
+      "correct_answer": "The same electrode material and the same electrolyte, but at two different concentrations",
+      "explanation": "A concentration cell derives its EMF purely from the difference in ion concentration between two otherwise identical half-cells, with the more dilute half-cell typically acting as the anode as the system drives toward equalizing concentrations.",
+      "topic": "Concentration cells",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The calomel electrode, a commonly used secondary reference electrode in potentiometry, is based on the half-reaction of:",
+      "options": ["Mercury(I) chloride (calomel) and mercury metal, in contact with a KCl solution of known concentration", "Silver and silver chloride only", "Pure hydrogen gas over a platinum electrode", "Copper metal in copper sulphate solution"],
+      "correct_answer": "Mercury(I) chloride (calomel) and mercury metal, in contact with a KCl solution of known concentration",
+      "explanation": "The calomel electrode consists of mercury in contact with solid mercury(I) chloride (calomel) and a KCl solution of fixed concentration, giving a stable, reproducible reference potential more convenient to use than the SHE.",
+      "topic": "Reference electrodes",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The glass electrode, widely used for routine pH measurement, generates a potential that depends on the hydrogen ion activity because of:",
+      "options": ["Direct electron transfer between H+ ions in solution and the glass surface", "An ion-exchange equilibrium at the thin glass membrane surface that develops a potential related to the difference in H+ activity across the membrane", "The glass dissolving completely in the test solution", "A chemical reaction between glass and hydroxide ions only"],
+      "correct_answer": "An ion-exchange equilibrium at the thin glass membrane surface that develops a potential related to the difference in H+ activity across the membrane",
+      "explanation": "The thin glass membrane of a glass electrode undergoes an ion-exchange process with H+ ions at its surface, generating a boundary potential (following a Nernstian relationship) that depends on the H+ activity difference between the internal reference solution and the test solution.",
+      "topic": "Reference electrodes",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Faraday's first law of electrolysis states that the mass of a substance produced (or consumed) at an electrode during electrolysis is:",
+      "options": ["Independent of the quantity of electric charge passed", "Directly proportional to the quantity of electric charge (Q = It) passed through the electrolyte", "Proportional only to the current, regardless of time", "Always equal to one gram-equivalent regardless of current or time"],
+      "correct_answer": "Directly proportional to the quantity of electric charge (Q = It) passed through the electrolyte",
+      "explanation": "Faraday's first law states that mass deposited or liberated is directly proportional to the total charge passed, m = ZQ = Z x I x t, where Z is the electrochemical equivalent.",
+      "topic": "Faraday's laws of electrolysis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Faraday's second law of electrolysis states that when the same quantity of electric charge is passed through different electrolytes connected in series, the masses of the substances liberated at the electrodes are:",
+      "options": ["All exactly equal regardless of the substance", "Proportional to their chemical equivalent weights (molar mass divided by the number of electrons transferred per ion)", "Completely random and unrelated to chemical properties", "Proportional only to the current used"],
+      "correct_answer": "Proportional to their chemical equivalent weights (molar mass divided by the number of electrons transferred per ion)",
+      "explanation": "Faraday's second law states that for a fixed quantity of charge, the mass of substance deposited/liberated at each electrode in different electrolytic cells connected in series is proportional to its equivalent weight (molar mass/n).",
+      "topic": "Faraday's laws of electrolysis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Faraday constant (F), approximately 96,500 C/mol, represents:",
+      "options": ["The charge carried by one mole of electrons", "The charge carried by a single electron", "The universal gas constant", "The standard cell potential of any galvanic cell"],
+      "correct_answer": "The charge carried by one mole of electrons",
+      "explanation": "The Faraday constant is the magnitude of electric charge per mole of electrons (elementary charge x Avogadro's number), a fundamental constant linking moles of electrons transferred to the total charge passed in electrochemistry.",
+      "topic": "Faraday's laws of electrolysis",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In the electrolysis of molten sodium chloride using inert electrodes, the products formed at the cathode and anode respectively are:",
+      "options": ["Sodium metal at the cathode and chlorine gas at the anode", "Chlorine gas at the cathode and sodium metal at the anode", "Hydrogen gas at both electrodes", "Oxygen gas at both electrodes"],
+      "correct_answer": "Sodium metal at the cathode and chlorine gas at the anode",
+      "explanation": "In molten NaCl electrolysis, Na+ ions are reduced to sodium metal at the cathode while Cl- ions are oxidised to chlorine gas at the anode, since no water is present to compete in the electrode reactions.",
+      "topic": "Electrolysis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the electrolysis of aqueous sodium chloride solution (brine) using inert electrodes, the gas typically evolved at the cathode is:",
+      "options": ["Chlorine gas", "Hydrogen gas, since water is preferentially reduced over Na+ ions under normal conditions", "Oxygen gas", "Sodium vapour"],
+      "correct_answer": "Hydrogen gas, since water is preferentially reduced over Na+ ions under normal conditions",
+      "explanation": "In aqueous solution, water is much more easily reduced than the very electropositive Na+ ion, so hydrogen gas (with hydroxide ions left in solution) is produced at the cathode, while chlorine gas is preferentially oxidised and evolved at the anode.",
+      "topic": "Electrolysis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Electroplating (e.g. copper plating an object) is an industrial application of electrolysis in which the object to be plated is made the:",
+      "options": ["Cathode, so that metal cations from solution are reduced and deposited onto its surface", "Anode, so that it is dissolved away completely", "Salt bridge", "Reference electrode"],
+      "correct_answer": "Cathode, so that metal cations from solution are reduced and deposited onto its surface",
+      "explanation": "In electroplating, the object to be coated is connected as the cathode so that metal ions in the electrolyte are reduced and deposited as a metallic layer onto its surface, while a bar of the plating metal often serves as the anode to replenish the ions in solution.",
+      "topic": "Electrolysis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Specific conductance (conductivity), kappa, of an electrolyte solution is defined as:",
+      "options": ["The conductance of a solution contained between two electrodes of unit area separated by unit distance", "The resistance of the solution measured in ohms", "The total number of ions present regardless of solution volume", "The molar mass of the electrolyte divided by its density"],
+      "correct_answer": "The conductance of a solution contained between two electrodes of unit area separated by unit distance",
+      "explanation": "Specific conductance (kappa = 1/resistivity) is an intrinsic property of the solution representing the conductance of a notional 1 cm cube of solution, independent of the specific cell geometry used to measure it.",
+      "topic": "Conductance of electrolytes",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Molar conductance (Lambda-m) of an electrolyte solution is related to its specific conductance (kappa) and molar concentration (c) by:",
+      "options": ["Lambda-m = kappa / c", "Lambda-m = kappa x c", "Lambda-m = kappa + c", "Lambda-m is completely unrelated to kappa"],
+      "correct_answer": "Lambda-m = kappa / c",
+      "explanation": "Molar conductance is defined as the conductance of a solution containing one mole of electrolyte, calculated by dividing the specific conductance by the molar concentration of the electrolyte.",
+      "topic": "Conductance of electrolytes",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For a weak electrolyte, molar conductance increases sharply with increasing dilution mainly because:",
+      "options": ["The degree of dissociation of the weak electrolyte increases as it is diluted, producing more ions per mole", "Dilution decreases the number of ions produced", "The solvent becomes more viscous on dilution", "Dilution has no significant effect on weak electrolytes"],
+      "correct_answer": "The degree of dissociation of the weak electrolyte increases as it is diluted, producing more ions per mole",
+      "explanation": "Weak electrolytes are only partially dissociated; according to Ostwald's dilution law, dilution shifts the dissociation equilibrium further toward ions, so the degree of dissociation (and hence molar conductance) rises sharply as concentration decreases.",
+      "topic": "Conductance of electrolytes",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Kohlrausch's law of independent migration of ions states that at infinite dilution:",
+      "options": ["Each ion migrates independently and contributes a fixed value to the total molar conductance, regardless of the nature of the other ion it is paired with", "All ions have exactly the same molar ionic conductance", "Only cations contribute to the total conductance", "Molar conductance becomes zero"],
+      "correct_answer": "Each ion migrates independently and contributes a fixed value to the total molar conductance, regardless of the nature of the other ion it is paired with",
+      "explanation": "Kohlrausch's law states that at infinite dilution, each ion moves independently of its counter-ion, so the limiting molar conductance of an electrolyte is the sum of the fixed limiting ionic conductances of its constituent cation and anion.",
+      "topic": "Conductance of electrolytes",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Kohlrausch's law is particularly useful for determining the limiting molar conductance of a weak electrolyte (such as acetic acid), which cannot be measured directly by extrapolation, because it allows this value to be calculated from:",
+      "options": ["The limiting molar conductances of strong electrolytes sharing common ions with the weak electrolyte", "The boiling point of the weak electrolyte solution", "The colour of the weak electrolyte solution", "The viscosity of pure water alone"],
+      "correct_answer": "The limiting molar conductances of strong electrolytes sharing common ions with the weak electrolyte",
+      "explanation": "Because strong electrolytes are fully dissociated even at moderate concentrations, their limiting molar conductances can be found by extrapolation; using Kohlrausch's law, these values for suitable strong electrolytes are combined algebraically to obtain the limiting molar conductance of a related weak electrolyte.",
+      "topic": "Conductance of electrolytes",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The degree of dissociation (alpha) of a weak electrolyte at a given concentration can be estimated conductometrically as:",
+      "options": ["alpha = Lambda-m(at concentration c) / Lambda-m(at infinite dilution)", "alpha = Lambda-m(at infinite dilution) / Lambda-m(at concentration c)", "alpha = kappa x c always equal to 1", "alpha is unrelated to molar conductance"],
+      "correct_answer": "alpha = Lambda-m(at concentration c) / Lambda-m(at infinite dilution)",
+      "explanation": "Since molar conductance approaches its maximum (limiting) value only when dissociation is complete, the ratio of the molar conductance at a given concentration to the limiting molar conductance gives the fractional degree of dissociation at that concentration.",
+      "topic": "Conductance of electrolytes",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The transference (transport) number of an ion in an electrolyte solution represents:",
+      "options": ["The fraction of the total electric current carried by that particular ion", "The total number of moles of that ion present in solution", "The molar mass of the ion", "The charge on a single ion only"],
+      "correct_answer": "The fraction of the total electric current carried by that particular ion",
+      "explanation": "In a solution containing both cations and anions, each ion carries a share of the total current proportional to its mobility and concentration; the transference number is the fraction of total current carried by a given ionic species.",
+      "topic": "Conductance of electrolytes",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A lead-acid battery, widely used in vehicles, is classified as a:",
+      "options": ["Primary cell that cannot be recharged", "Secondary (storage) cell, which can be recharged by passing current through it in the reverse direction", "Fuel cell requiring continuous fuel and oxidant supply", "Concentration cell"],
+      "correct_answer": "Secondary (storage) cell, which can be recharged by passing current through it in the reverse direction",
+      "explanation": "The lead-acid battery is a rechargeable (secondary) cell: discharging converts lead and lead dioxide electrodes and sulphuric acid electrolyte to lead sulphate, and applying an external current reverses this reaction, restoring the original electrodes.",
+      "topic": "Batteries",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A hydrogen-oxygen fuel cell differs from an ordinary battery in that it:",
+      "options": ["Stores all of its reactants internally and cannot be operated continuously", "Generates electrical energy continuously as long as fuel (hydrogen) and oxidant (oxygen) are continuously supplied from external reservoirs", "Produces no water as a by-product", "Can never generate more than 0.1 V"],
+      "correct_answer": "Generates electrical energy continuously as long as fuel (hydrogen) and oxidant (oxygen) are continuously supplied from external reservoirs",
+      "explanation": "Unlike a conventional battery with a fixed internal supply of reactants, a fuel cell converts chemical energy of continuously supplied external fuel and oxidant (H2 and O2) directly into electrical energy, producing water as the only by-product.",
+      "topic": "Fuel cells",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The electrochemical mechanism of the rusting of iron involves iron acting as the anode (Fe to Fe2+ + 2e-) at one region of the metal surface, while at another region:",
+      "options": ["Oxygen dissolved in the surface moisture film is reduced, consuming electrons and forming hydroxide ions, which eventually react with Fe2+ ions to form hydrated iron(III) oxide (rust)", "Iron is further oxidised to Fe3+ directly without any reduction step occurring elsewhere", "The iron surface is reduced back to metallic iron immediately", "No electron transfer of any kind is involved in rusting"],
+      "correct_answer": "Oxygen dissolved in the surface moisture film is reduced, consuming electrons and forming hydroxide ions, which eventually react with Fe2+ ions to form hydrated iron(III) oxide (rust)",
+      "explanation": "Rusting is an electrochemical corrosion process: iron is oxidised to Fe2+ at anodic sites, while dissolved O2 is reduced to OH- at cathodic sites; the Fe2+ is subsequently further oxidised and combines with water to form hydrated Fe2O3 (rust).",
+      "topic": "Corrosion",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Cathodic protection of an iron structure (e.g. a ship's hull or underground pipeline) using a 'sacrificial anode' of a more reactive metal such as zinc or magnesium works because the more reactive metal:",
+      "options": ["Is oxidised preferentially instead of the iron, since it is a stronger reducing agent, thereby protecting the iron from corrosion", "Reacts with the iron to form a stable alloy that cannot rust", "Insulates the iron completely from any electrical contact", "Prevents oxygen from dissolving in water near the structure"],
+      "correct_answer": "Is oxidised preferentially instead of the iron, since it is a stronger reducing agent, thereby protecting the iron from corrosion",
+      "explanation": "A more reactive metal (higher in the electrochemical series) is preferentially oxidised (acts as the anode) when electrically connected to iron, sacrificing itself to prevent oxidation of the iron, which is thereby cathodically protected.",
+      "topic": "Corrosion",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Galvanizing (coating steel with a layer of zinc) protects the underlying steel from rusting through a combination of:",
+      "options": ["Acting purely as a physical barrier excluding air and moisture, with no electrochemical protective effect at all", "A physical barrier effect, plus sacrificial (cathodic) protection if the zinc coating is scratched, since zinc is more easily oxidised than iron", "Making the iron surface completely inert to oxidation chemically", "Converting the steel into a non-metal"],
+      "correct_answer": "A physical barrier effect, plus sacrificial (cathodic) protection if the zinc coating is scratched, since zinc is more easily oxidised than iron",
+      "explanation": "Galvanizing both physically excludes air and moisture from the steel surface and, because zinc is more reactive than iron, continues to protect exposed steel electrochemically (as a sacrificial anode) even if the zinc coating is scratched or damaged.",
+      "topic": "Corrosion",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Polarization (overpotential) at an electrode during electrolysis refers to:",
+      "options": ["The extra voltage, beyond the theoretical decomposition potential, required to drive an electrode reaction at an appreciable rate", "The theoretical minimum voltage needed for electrolysis, calculated purely from standard electrode potentials", "A property only relevant to galvanic cells, never electrolytic cells", "The complete absence of any current flow"],
+      "correct_answer": "The extra voltage, beyond the theoretical decomposition potential, required to drive an electrode reaction at an appreciable rate",
+      "explanation": "Overpotential is the additional potential (beyond the thermodynamically calculated value) that must be applied at an electrode to overcome kinetic barriers (such as slow electron transfer or gas evolution) and achieve a practical rate of reaction.",
+      "topic": "Electrolysis",
+      "difficulty": "hard"
+    },
+    {
+      "question": "According to the Debye-Huckel theory of strong electrolytes, ions in solution deviate from ideal behaviour mainly because of:",
+      "options": ["Complete absence of any interionic interactions in solution", "Electrostatic interactions between ions, described by an 'ionic atmosphere' of oppositely charged ions surrounding each central ion, which reduces its effective activity", "Ions being uncharged at all times in solution", "Ions reacting chemically with the solvent to form entirely new species"],
+      "correct_answer": "Electrostatic interactions between ions, described by an 'ionic atmosphere' of oppositely charged ions surrounding each central ion, which reduces its effective activity",
+      "explanation": "The Debye-Huckel theory models each ion in an electrolyte solution as surrounded by a diffuse 'ionic atmosphere' of predominantly oppositely charged ions, whose electrostatic interactions lower the ion's effective activity (activity coefficient less than 1) compared with an ideal, non-interacting solution.",
+      "topic": "Electrolyte solution theory",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The temperature coefficient of a cell's EMF, (dE/dT)p, is used together with E to calculate the standard entropy change of the cell reaction via the relation:",
+      "options": ["Delta S(standard) = nF(dE/dT)p", "Delta S(standard) = -nF(dE/dT)p", "Delta S(standard) = E/T only", "Delta S(standard) is unrelated to (dE/dT)p"],
+      "correct_answer": "Delta S(standard) = nF(dE/dT)p",
+      "explanation": "From the thermodynamic relation Delta G = -nFE and Delta S = -(d(Delta G)/dT)p, it follows that Delta S(standard) = nF(dE/dT)p, so measuring how a cell's EMF changes with temperature gives the entropy change of the cell reaction.",
+      "topic": "Thermodynamics of cells",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Combining Delta G(standard) = -nFE(standard) with Delta G(standard) = Delta H(standard) - T Delta S(standard) allows the standard enthalpy change of a cell reaction to be calculated from EMF measurements using:",
+      "options": ["Delta H(standard) = -nFE(standard) + nFT(dE/dT)p", "Delta H(standard) = nFE(standard) only, with no temperature dependence needed", "Delta H(standard) = -nF(dE/dT)p only", "Delta H(standard) cannot be determined from EMF data at all"],
+      "correct_answer": "Delta H(standard) = -nFE(standard) + nFT(dE/dT)p",
+      "explanation": "Substituting Delta G(standard) = -nFE(standard) and Delta S(standard) = nF(dE/dT)p into Delta G = Delta H - T Delta S and rearranging gives Delta H(standard) = -nFE(standard) + nFT(dE/dT)p, allowing enthalpy of the cell reaction to be found purely from electrochemical EMF and its temperature variation.",
+      "topic": "Thermodynamics of cells",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A daniell cell, consisting of a zinc electrode in zinc sulphate solution and a copper electrode in copper sulphate solution connected by a salt bridge, has zinc as the anode because:",
+      "options": ["Zinc has a more negative standard reduction potential than copper and is therefore preferentially oxidised", "Zinc has a more positive standard reduction potential than copper", "Copper cannot be reduced under any circumstances", "The salt bridge forces zinc to act as the anode regardless of its electrode potential"],
+      "correct_answer": "Zinc has a more negative standard reduction potential than copper and is therefore preferentially oxidised",
+      "explanation": "Since E(standard) for Zn2+/Zn (-0.76 V) is more negative than E(standard) for Cu2+/Cu (+0.34 V), zinc is more easily oxidised than copper, so it functions as the anode while copper ions are reduced at the cathode, giving a standard cell potential of about +1.10 V.",
+      "topic": "Galvanic and electrolytic cells",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A cell diagram (cell notation) such as Zn(s) | ZnSO4(aq) || CuSO4(aq) | Cu(s) uses a double vertical line (||) to represent:",
+      "options": ["A single phase boundary within one half-cell", "The salt bridge (or other means) separating the two half-cells", "The direction of conventional current flow only", "A short-circuit between the two electrodes"],
+      "correct_answer": "The salt bridge (or other means) separating the two half-cells",
+      "explanation": "In standard cell notation, a single vertical line denotes a phase boundary within a half-cell, while a double vertical line represents the salt bridge (or liquid junction) connecting the two half-cells, with the anode half-cell conventionally written on the left.",
+      "topic": "Galvanic and electrolytic cells",
+      "difficulty": "medium"
+    }
+  ]
+}

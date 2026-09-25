@@ -1,0 +1,355 @@
+{
+  "course_code": "SLT304",
+  "title": "Analytical Instrumentation",
+  "level": "300",
+  "source_note": "Grounded in standard NUC-aligned analytical instrumentation curricula for science laboratory technology programmes: UV-Vis spectrophotometry, chromatography (TLC, GC, HPLC), atomic absorption spectroscopy, electrochemical methods, centrifugation, and instrument calibration/maintenance.",
+  "questions": [
+    {
+      "question": "According to the Beer-Lambert law, absorbance (A) of a solution is directly proportional to:",
+      "options": [
+        "The concentration of the absorbing species and the path length of light through the sample",
+        "The wavelength of light used only",
+        "The colour of the cuvette",
+        "The temperature of the room only"
+      ],
+      "correct_answer": "The concentration of the absorbing species and the path length of light through the sample",
+      "explanation": "Beer-Lambert law states A = εcl, where absorbance is directly proportional to molar absorptivity (ε), concentration (c), and path length (l).",
+      "topic": "UV-Vis spectrophotometry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a UV-Vis spectrophotometer experiment, a 'blank' solution is used to:",
+      "options": [
+        "Zero the instrument by accounting for absorbance from the solvent and cuvette, isolating the analyte's absorbance",
+        "Increase the sensitivity of the detector permanently",
+        "Replace the need for a calibration curve",
+        "Clean the light source"
+      ],
+      "correct_answer": "Zero the instrument by accounting for absorbance from the solvent and cuvette, isolating the analyte's absorbance",
+      "explanation": "The blank (solvent without analyte) is used to set the instrument's zero absorbance baseline, correcting for background absorbance from the solvent, cuvette, and instrument so only the analyte's signal is measured.",
+      "topic": "UV-Vis spectrophotometry",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A calibration curve prepared from a series of standards with known concentrations plotted against absorbance is used to:",
+      "options": [
+        "Determine the concentration of an unknown sample by comparing its absorbance to the standard curve",
+        "Calibrate only the wavelength dial of the instrument",
+        "Replace the need for a blank solution",
+        "Measure the pH of the sample"
+      ],
+      "correct_answer": "Determine the concentration of an unknown sample by comparing its absorbance to the standard curve",
+      "explanation": "Once a linear relationship between concentration and absorbance is established from known standards, an unknown sample's absorbance can be read against this curve to determine its concentration.",
+      "topic": "UV-Vis spectrophotometry",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A standard solution series gives a calibration equation A = 0.05C + 0.02 (A = absorbance, C = concentration in ppm). If an unknown sample has an absorbance of 0.27, what is its concentration?",
+      "options": ["5.0 ppm", "5.4 ppm", "0.25 ppm", "13.5 ppm"],
+      "correct_answer": "5.0 ppm",
+      "explanation": "Rearranging: C = (A - 0.02) / 0.05 = (0.27 - 0.02) / 0.05 = 0.25 / 0.05 = 5.0 ppm.",
+      "topic": "UV-Vis spectrophotometry",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Why must a sample's absorbance ideally fall within the range of approximately 0.2 to 0.8 (or the linear range specified) for the most reliable spectrophotometric measurement?",
+      "options": [
+        "Outside this range, the relationship between absorbance and concentration becomes less linear and measurement error increases",
+        "Instruments cannot physically read any value outside this range",
+        "It is a legal requirement with no scientific basis",
+        "The colour of the solution changes outside this range"
+      ],
+      "correct_answer": "Outside this range, the relationship between absorbance and concentration becomes less linear and measurement error increases",
+      "explanation": "At very low or very high absorbance, stray light and detector response nonlinearity increase measurement uncertainty; diluting or concentrating the sample keeps readings in the most accurate, linear range.",
+      "topic": "UV-Vis spectrophotometry",
+      "difficulty": "hard"
+    },
+    {
+      "question": "What is the purpose of selecting the wavelength of maximum absorbance (λmax) when performing quantitative UV-Vis analysis of a coloured compound?",
+      "options": [
+        "It gives the greatest sensitivity and the smallest relative error for concentration changes",
+        "It is simply the easiest wavelength to set on the dial",
+        "It has no bearing on measurement sensitivity",
+        "It is only relevant for qualitative, not quantitative, analysis"
+      ],
+      "correct_answer": "It gives the greatest sensitivity and the smallest relative error for concentration changes",
+      "explanation": "At λmax, absorbance changes most steeply with concentration, maximizing sensitivity and minimizing the relative error in the measured concentration.",
+      "topic": "UV-Vis spectrophotometry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In thin-layer chromatography (TLC), the Retardation factor (Rf) is calculated as:",
+      "options": [
+        "Distance travelled by the solute / distance travelled by the solvent front",
+        "Distance travelled by the solvent front / distance travelled by the solute",
+        "Time taken by the solute / total run time",
+        "Mass of solute / mass of solvent used"
+      ],
+      "correct_answer": "Distance travelled by the solute / distance travelled by the solvent front",
+      "explanation": "Rf is defined as the ratio of the distance the compound spot travels from the origin to the distance the solvent front travels, both measured from the same baseline.",
+      "topic": "Chromatography",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a TLC experiment, a spot travels 4.5 cm from the origin while the solvent front travels 9.0 cm. What is the Rf value?",
+      "options": ["0.5", "2.0", "4.5", "0.05"],
+      "correct_answer": "0.5",
+      "explanation": "Rf = distance travelled by solute / distance travelled by solvent = 4.5 / 9.0 = 0.5.",
+      "topic": "Chromatography",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Why must the sample origin line on a TLC plate be drawn above the level of the solvent in the developing chamber?",
+      "options": [
+        "If the origin is submerged, the sample spot will dissolve directly into the bulk solvent rather than being carried up the plate by capillary action",
+        "It has no effect on the separation",
+        "It is only a matter of neatness, not chromatographic accuracy",
+        "It changes the colour of the spots"
+      ],
+      "correct_answer": "If the origin is submerged, the sample spot will dissolve directly into the bulk solvent rather than being carried up the plate by capillary action",
+      "explanation": "The sample must start above the solvent level so it is carried up the stationary phase by the rising solvent front via capillary action, not washed away by direct immersion.",
+      "topic": "Chromatography",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In gas chromatography (GC), the mobile phase is typically:",
+      "options": ["An inert carrier gas such as helium, nitrogen, or hydrogen", "A liquid solvent mixture", "A solid adsorbent", "Distilled water vapour only"],
+      "correct_answer": "An inert carrier gas such as helium, nitrogen, or hydrogen",
+      "explanation": "GC uses an inert gas (commonly helium, nitrogen, or hydrogen) as the mobile phase to carry the vaporized sample through the column, unlike liquid chromatography which uses a liquid mobile phase.",
+      "topic": "Chromatography",
+      "difficulty": "easy"
+    },
+    {
+      "question": "For a compound to be analyzed by standard gas chromatography, it must generally be:",
+      "options": [
+        "Volatile and thermally stable at the operating temperature of the column",
+        "Highly coloured for detection",
+        "Completely insoluble in all solvents",
+        "A solid at room temperature"
+      ],
+      "correct_answer": "Volatile and thermally stable at the operating temperature of the column",
+      "explanation": "GC separates compounds based on their vaporization and movement through the column as a gas, so the analyte must be volatile enough to vaporize and stable enough not to decompose at the required temperature.",
+      "topic": "Chromatography",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In High-Performance Liquid Chromatography (HPLC), what is the primary advantage of using a high-pressure pump to force the mobile phase through the column?",
+      "options": [
+        "It allows the use of very finely packed columns, improving resolution and speed of separation",
+        "It eliminates the need for a detector",
+        "It removes the need for sample injection",
+        "It converts liquid samples into gases before analysis"
+      ],
+      "correct_answer": "It allows the use of very finely packed columns, improving resolution and speed of separation",
+      "explanation": "High pressure is needed to force liquid mobile phase through columns packed with very small particles, which increases surface area and improves the efficiency and resolution of separation.",
+      "topic": "Chromatography",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What does the term 'retention time' mean in chromatography?",
+      "options": [
+        "The time taken for a specific compound to travel through the column and reach the detector from the point of injection",
+        "The total time the instrument has been switched on",
+        "The shelf-life of the mobile phase solvent",
+        "The time taken to prepare the sample before injection"
+      ],
+      "correct_answer": "The time taken for a specific compound to travel through the column and reach the detector from the point of injection",
+      "explanation": "Retention time is the characteristic time interval between sample injection and the peak detection of a given compound, used to help identify compounds by comparison to known standards.",
+      "topic": "Chromatography",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In atomic absorption spectroscopy (AAS), the sample is typically converted into which physical state before measurement?",
+      "options": ["A ground-state atomic vapour, usually via a flame or graphite furnace", "A solid pellet", "A crystalline precipitate", "A viscous gel"],
+      "correct_answer": "A ground-state atomic vapour, usually via a flame or graphite furnace",
+      "explanation": "AAS requires atomizing the sample (commonly by flame or graphite furnace) to produce free, ground-state atoms capable of absorbing characteristic wavelengths of light.",
+      "topic": "Atomic absorption spectroscopy",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A hollow cathode lamp in an AAS instrument serves what function?",
+      "options": [
+        "It emits light at the specific characteristic wavelength(s) absorbed by the target element being analyzed",
+        "It heats the sample to atomize it",
+        "It measures the pH of the sample solution",
+        "It filters out unwanted particulate matter from the sample"
+      ],
+      "correct_answer": "It emits light at the specific characteristic wavelength(s) absorbed by the target element being analyzed",
+      "explanation": "Each hollow cathode lamp is made of the specific element being analyzed and emits its characteristic emission wavelengths, which are then absorbed by ground-state atoms of that element in the flame.",
+      "topic": "Atomic absorption spectroscopy",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the underlying principle by which AAS quantifies the concentration of a metal in a sample?",
+      "options": [
+        "The amount of light absorbed by ground-state atoms of the element is proportional to the concentration of that element in the sample",
+        "The colour of the flame is compared visually to a chart",
+        "The sample's mass is measured directly before and after atomization",
+        "The boiling point of the sample solution is measured"
+      ],
+      "correct_answer": "The amount of light absorbed by ground-state atoms of the element is proportional to the concentration of that element in the sample",
+      "explanation": "AAS applies the Beer-Lambert principle to atomic vapour: more atoms of the target element present means more absorption of the characteristic wavelength, which is proportional to concentration.",
+      "topic": "Atomic absorption spectroscopy",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which instrument is used to measure the hydrogen ion activity (pH) of a solution using a glass electrode sensitive to H+ ions?",
+      "options": ["A pH meter", "A conductometer", "A refractometer", "A polarimeter"],
+      "correct_answer": "A pH meter",
+      "explanation": "A pH meter uses a glass electrode selectively responsive to hydrogen ion activity, paired with a reference electrode, to measure the pH of a solution potentiometrically.",
+      "topic": "Electrochemical methods",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Why must a pH meter be calibrated using standard buffer solutions (e.g. pH 4, 7, and 10) before use each day?",
+      "options": [
+        "To correct for drift in the glass electrode's response and ensure accurate readings of unknown samples",
+        "To clean the electrode of all residue permanently",
+        "Because buffer solutions change colour to indicate pH visually on the meter",
+        "It is unnecessary once the meter is purchased new"
+      ],
+      "correct_answer": "To correct for drift in the glass electrode's response and ensure accurate readings of unknown samples",
+      "explanation": "The glass electrode's response can drift due to aging, temperature, or contamination; calibrating with known buffers adjusts the meter's slope and offset to ensure accurate subsequent pH readings.",
+      "topic": "Electrochemical methods",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A conductometer measures which property of a solution?",
+      "options": [
+        "The ability of the solution to conduct electric current, related to its ionic concentration",
+        "The refractive index of the solution",
+        "The exact identity of dissolved ions",
+        "The viscosity of the solution"
+      ],
+      "correct_answer": "The ability of the solution to conduct electric current, related to its ionic concentration",
+      "explanation": "Conductometry measures the electrical conductance of a solution, which depends on the concentration and mobility of ions present, useful for conductometric titrations and purity checks.",
+      "topic": "Electrochemical methods",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the primary function of a centrifuge in a laboratory setting?",
+      "options": [
+        "To separate components of a mixture based on differences in density using centrifugal force",
+        "To heat samples to a specific temperature",
+        "To measure the pH of a liquid sample",
+        "To filter gases from a liquid sample"
+      ],
+      "correct_answer": "To separate components of a mixture based on differences in density using centrifugal force",
+      "explanation": "A centrifuge spins samples at high speed, generating centrifugal force that causes denser particles to sediment faster than less dense ones, separating them from the suspension.",
+      "topic": "Centrifugation",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Why must centrifuge tubes always be balanced (counterbalanced with equal mass on opposite sides of the rotor) before running a centrifuge?",
+      "options": [
+        "An unbalanced load causes excessive vibration, which can damage the rotor, motor, or bearings and is a safety hazard",
+        "Balance has no effect on centrifuge operation",
+        "It only matters for very old centrifuge models",
+        "It changes the density of the sample being separated"
+      ],
+      "correct_answer": "An unbalanced load causes excessive vibration, which can damage the rotor, motor, or bearings and is a safety hazard",
+      "explanation": "An unbalanced rotor spinning at high speed generates severe vibration and stress that can damage the instrument's bearings and shaft and pose a serious safety hazard if the rotor becomes unstable.",
+      "topic": "Centrifugation",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What does 'RCF' (Relative Centrifugal Force), expressed in units of x g, represent in a centrifugation procedure?",
+      "options": [
+        "The force applied to the sample relative to Earth's gravitational force, determined by rotor speed and radius",
+        "The exact mass of the sample being centrifuged",
+        "The colour change observed in the sample during centrifugation",
+        "The total volume of sample that can be processed"
+      ],
+      "correct_answer": "The force applied to the sample relative to Earth's gravitational force, determined by rotor speed and radius",
+      "explanation": "RCF expresses the centrifugal force generated as a multiple of standard gravity (x g), calculated from the rotational speed (rpm) and the radius from the axis of rotation.",
+      "topic": "Centrifugation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which type of chromatography detector responds to compounds that absorb ultraviolet or visible light as they elute from the column, commonly used in HPLC?",
+      "options": ["UV-Vis detector", "Flame ionization detector", "Thermal conductivity detector", "Mass-selective detector only"],
+      "correct_answer": "UV-Vis detector",
+      "explanation": "A UV-Vis detector in HPLC measures the absorbance of eluting compounds at a set wavelength, producing a chromatographic peak proportional to the amount of UV/visible-absorbing analyte present.",
+      "topic": "Chromatography",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A Flame Ionization Detector (FID) commonly paired with gas chromatography works by:",
+      "options": [
+        "Burning the eluting compound in a hydrogen flame and measuring the resulting ion current, which is proportional to the amount of organic carbon present",
+        "Measuring the colour of the flame produced by the compound",
+        "Weighing the compound directly as it exits the column",
+        "Measuring the boiling point of the compound as it elutes"
+      ],
+      "correct_answer": "Burning the eluting compound in a hydrogen flame and measuring the resulting ion current, which is proportional to the amount of organic carbon present",
+      "explanation": "An FID combusts organic compounds in a hydrogen/air flame, generating ions that are collected to produce a current proportional to the carbon content of the analyte, giving high sensitivity for hydrocarbons.",
+      "topic": "Chromatography",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Why should the cuvette used in a UV-Vis spectrophotometer be handled only by its frosted (ribbed) sides, and its clear optical faces kept free of fingerprints?",
+      "options": [
+        "Fingerprints and scratches on the optical path can absorb or scatter light, introducing error into the absorbance reading",
+        "It has no effect on the reading, only on appearance",
+        "The frosted sides are the only sides through which light passes",
+        "Touching the clear faces changes the sample's concentration"
+      ],
+      "correct_answer": "Fingerprints and scratches on the optical path can absorb or scatter light, introducing error into the absorbance reading",
+      "explanation": "Any contamination or scratches on the clear optical faces interfere with light transmission through the sample, introducing systematic error into the absorbance measurement.",
+      "topic": "UV-Vis spectrophotometry",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Why is routine maintenance, such as checking and replacing lamp sources and cleaning optical components, essential for maintaining the accuracy of analytical instruments over time?",
+      "options": [
+        "Instrument components degrade with use, and neglecting maintenance leads to drift, reduced sensitivity, and unreliable results",
+        "Maintenance is only cosmetic and does not affect data quality",
+        "Instruments never need maintenance once properly installed",
+        "Maintenance schedules are set arbitrarily with no technical basis"
+      ],
+      "correct_answer": "Instrument components degrade with use, and neglecting maintenance leads to drift, reduced sensitivity, and unreliable results",
+      "explanation": "Lamps dim, optics accumulate dust or residue, and mechanical parts wear over time; regular maintenance and verification are essential to sustain measurement accuracy and instrument reliability.",
+      "topic": "Instrument maintenance",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In infrared (IR) spectroscopy, absorption of IR radiation by a molecule is primarily associated with:",
+      "options": [
+        "Vibrational transitions of chemical bonds within the molecule",
+        "Electronic transitions between molecular orbitals",
+        "Nuclear spin transitions",
+        "Rotation of the entire molecule around its centre of mass only, with no bond involvement"
+      ],
+      "correct_answer": "Vibrational transitions of chemical bonds within the molecule",
+      "explanation": "IR spectroscopy detects the absorption of infrared energy that causes bonds within a molecule to stretch and bend, with each type of bond absorbing at characteristic frequencies.",
+      "topic": "Instrument maintenance",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the primary reason a sample cell (cuvette) for UV spectroscopy must be made of quartz rather than ordinary glass when working in the far-UV range (below about 300 nm)?",
+      "options": [
+        "Ordinary glass absorbs significant UV radiation below about 300-320 nm, whereas quartz is transparent across the UV range",
+        "Quartz is cheaper to manufacture than glass",
+        "Glass reacts chemically with all aqueous samples",
+        "Quartz changes colour to indicate concentration"
+      ],
+      "correct_answer": "Ordinary glass absorbs significant UV radiation below about 300-320 nm, whereas quartz is transparent across the UV range",
+      "explanation": "Standard glass strongly absorbs shorter UV wavelengths, which would distort or block the measurement; quartz cuvettes are transparent throughout the UV-visible range and are required for far-UV work.",
+      "topic": "UV-Vis spectrophotometry",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In flame photometry, used to determine concentrations of alkali/alkaline earth metals such as sodium and potassium, the technique relies on measuring:",
+      "options": [
+        "The intensity of light emitted by atoms excited in a flame, at wavelengths characteristic of the element",
+        "The absorbance of light passed through an unexcited atomic vapour",
+        "The mass of residue left after the flame is extinguished",
+        "The colour of the sample before it is introduced to the flame"
+      ],
+      "correct_answer": "The intensity of light emitted by atoms excited in a flame, at wavelengths characteristic of the element",
+      "explanation": "Flame photometry (emission, not absorption) measures the intensity of characteristic light emitted when flame-excited atoms return to the ground state, with intensity proportional to concentration.",
+      "topic": "Atomic absorption spectroscopy",
+      "difficulty": "medium"
+    }
+  ]
+}

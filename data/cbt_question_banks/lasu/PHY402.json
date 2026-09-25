@@ -1,0 +1,280 @@
+{
+  "course_code": "PHY402",
+  "title": "General Relativity",
+  "level": "400",
+  "source_note": "Standard NUC-aligned Nigerian university 400L (specialist/elective) General Relativity curriculum: the equivalence principle, transition from special to general relativity, metric/geodesic concepts, the Schwarzschild solution, gravitational time dilation and redshift, black holes, classical experimental tests, and a conceptual introduction to the Einstein field equations, with tensor mathematics kept qualitative as appropriate for an undergraduate course.",
+  "questions": [
+    {
+      "question": "The weak equivalence principle states that:",
+      "options": ["Inertial mass and gravitational mass are equivalent, so all objects fall with the same acceleration in a gravitational field regardless of composition", "The speed of light is the same in all inertial reference frames", "Energy and mass are equivalent via E = mc^2", "Spacetime is flat everywhere except near black holes"],
+      "correct_answer": "Inertial mass and gravitational mass are equivalent, so all objects fall with the same acceleration in a gravitational field regardless of composition",
+      "explanation": "The weak equivalence principle asserts the equality of inertial and gravitational mass, meaning the motion of a freely falling test body is independent of its internal composition or structure, as verified by Galileo's and later Eotvos-type experiments.",
+      "topic": "Equivalence principle",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The strong equivalence principle extends the weak form by asserting that:",
+      "options": ["In a small enough freely falling frame, all laws of physics (not just mechanics) are locally indistinguishable from those in special relativity with no gravity", "Only mechanical experiments obey the equivalence principle, not electromagnetic ones", "Gravitational mass is always greater than inertial mass", "The gravitational constant G varies with location"],
+      "correct_answer": "In a small enough freely falling frame, all laws of physics (not just mechanics) are locally indistinguishable from those in special relativity with no gravity",
+      "explanation": "The strong equivalence principle generalizes the weak principle to all physical laws, stating that locally, in a freely falling (inertial) frame, gravity is unobservable and special relativity holds.",
+      "topic": "Equivalence principle",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Einstein's famous thought experiment of a person in a freely falling elevator illustrates that:",
+      "options": ["A person in free fall feels weightless and locally cannot distinguish free fall from being in a gravity-free region of space", "Gravitational fields can be completely eliminated everywhere by choosing any reference frame", "Free fall is only possible in a vacuum", "The elevator's mass determines the local strength of gravity"],
+      "correct_answer": "A person in free fall feels weightless and locally cannot distinguish free fall from being in a gravity-free region of space",
+      "explanation": "This thought experiment underlies the equivalence principle: within a small freely falling frame, the effects of gravity vanish locally, motivating the idea that gravity is a manifestation of spacetime geometry rather than a conventional force.",
+      "topic": "Equivalence principle",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Why did Einstein find it necessary to extend special relativity into a theory of general relativity?",
+      "options": ["Special relativity applies only to inertial frames and cannot consistently incorporate gravity or accelerated frames", "Special relativity was mathematically inconsistent with Maxwell's equations", "General relativity was needed to explain the photoelectric effect", "Special relativity failed to predict the constancy of the speed of light"],
+      "correct_answer": "Special relativity applies only to inertial frames and cannot consistently incorporate gravity or accelerated frames",
+      "explanation": "Special relativity is restricted to non-accelerating (inertial) frames and flat spacetime; general relativity generalizes this to accelerated frames and gravity by describing spacetime as curved by mass-energy.",
+      "topic": "Transition from special to general relativity",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In general relativity, gravity is fundamentally understood as:",
+      "options": ["The curvature of spacetime caused by the presence of mass and energy", "A conventional force transmitted instantaneously between masses", "An electromagnetic phenomenon", "A purely quantum mechanical interaction"],
+      "correct_answer": "The curvature of spacetime caused by the presence of mass and energy",
+      "explanation": "General relativity reinterprets gravity not as a force acting across space but as the effect of mass-energy curving the geometry of spacetime itself, with objects moving along the resulting geodesics.",
+      "topic": "Transition from special to general relativity",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The metric tensor in general relativity primarily serves to:",
+      "options": ["Define how to measure distances and time intervals (the spacetime interval) between nearby events in curved spacetime", "Specify the electric charge distribution of a system", "Determine the rest mass of a particle", "Calculate the total energy of the universe directly"],
+      "correct_answer": "Define how to measure distances and time intervals (the spacetime interval) between nearby events in curved spacetime",
+      "explanation": "The metric tensor encodes the geometry of spacetime, generalizing the Pythagorean theorem to allow computation of the invariant spacetime interval between events in any coordinate system, flat or curved.",
+      "topic": "Metric tensor and spacetime interval",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In special relativity, the flat spacetime interval (using the Minkowski metric) between two nearby events is commonly written as ds^2 = -c^2 dt^2 + dx^2 + dy^2 + dz^2 (in one common sign convention). What is significant about this quantity?",
+      "options": ["It is invariant (the same) for all observers, regardless of their relative motion", "It changes value depending on the observer's velocity", "It is only defined for events at the same spatial location", "It represents the total energy of the system"],
+      "correct_answer": "It is invariant (the same) for all observers, regardless of their relative motion",
+      "explanation": "The spacetime interval ds^2 is a relativistic invariant, unlike separate space and time intervals which each depend on the observer's frame; this invariance underlies the geometric formulation of relativity.",
+      "topic": "Metric tensor and spacetime interval",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A geodesic in general relativity is best described as:",
+      "options": ["The natural path a freely falling particle follows through curved spacetime, generalizing the concept of a 'straight line'", "Any arbitrary path chosen by an observer", "A path that only exists inside a black hole", "The boundary of the event horizon"],
+      "correct_answer": "The natural path a freely falling particle follows through curved spacetime, generalizing the concept of a 'straight line'",
+      "explanation": "In curved spacetime, freely falling particles (subject to gravity alone) follow geodesics, the generalization of straight-line motion, without needing any additional 'force' of gravity.",
+      "topic": "Geodesics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "According to general relativity, planets orbit the Sun not because of a gravitational 'pulling force' in the Newtonian sense, but because:",
+      "options": ["They follow geodesic paths through the spacetime curved by the Sun's mass", "The Sun emits gravitons that physically push planets along their orbits", "Planets are magnetically attracted to the Sun", "Space itself expands uniformly around the Sun"],
+      "correct_answer": "They follow geodesic paths through the spacetime curved by the Sun's mass",
+      "explanation": "In the geometric view of general relativity, planetary orbits arise from following the straightest possible paths (geodesics) in the spacetime geometry curved by the Sun's mass-energy.",
+      "topic": "Geodesics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Schwarzschild solution to Einstein's field equations describes the spacetime geometry:",
+      "options": ["Outside a spherically symmetric, non-rotating mass in a vacuum", "Inside a rotating charged black hole", "Of the entire expanding universe", "Of flat, gravity-free spacetime"],
+      "correct_answer": "Outside a spherically symmetric, non-rotating mass in a vacuum",
+      "explanation": "The Schwarzschild solution, found by Karl Schwarzschild in 1916, is the exact vacuum solution describing spacetime curvature outside a static, spherically symmetric mass such as a non-rotating star or black hole.",
+      "topic": "Schwarzschild solution",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Schwarzschild radius of a mass M is given by:",
+      "options": ["Rs = 2GM/c^2", "Rs = GM/c", "Rs = GM^2/c^2", "Rs = 2GM/c"],
+      "correct_answer": "Rs = 2GM/c^2",
+      "explanation": "The Schwarzschild radius defines the radius at which the escape velocity from a mass M equals the speed of light; it is derived from the Schwarzschild metric and equals 2GM/c^2.",
+      "topic": "Schwarzschild radius",
+      "difficulty": "medium"
+    },
+    {
+      "question": "If a spherical mass is compressed to within its own Schwarzschild radius, what does general relativity predict?",
+      "options": ["It becomes a black hole, with an event horizon from which not even light can escape", "It automatically explodes and re-expands", "It converts entirely into radiation", "Nothing unusual happens; the object remains normal"],
+      "correct_answer": "It becomes a black hole, with an event horizon from which not even light can escape",
+      "explanation": "When a mass is compressed within its Schwarzschild radius, the escape velocity at that radius exceeds the speed of light, forming an event horizon that traps everything, including light, defining a black hole.",
+      "topic": "Black holes",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The event horizon of a black hole is best defined as:",
+      "options": ["The boundary within which the escape velocity exceeds the speed of light, so no signal or object can escape to the outside", "The exact geometric centre of the black hole", "The point where the gravitational force becomes zero", "The distance at which tidal forces first become noticeable"],
+      "correct_answer": "The boundary within which the escape velocity exceeds the speed of light, so no signal or object can escape to the outside",
+      "explanation": "The event horizon marks the point of no return; inside this boundary, no physical signal, including light, can travel outward to reach a distant observer.",
+      "topic": "Black holes",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The singularity at the centre of a (non-rotating) Schwarzschild black hole is a point where:",
+      "options": ["Spacetime curvature and density become infinite according to classical general relativity", "Matter converts entirely into antimatter", "The speed of light locally becomes infinite", "Gravity vanishes completely"],
+      "correct_answer": "Spacetime curvature and density become infinite according to classical general relativity",
+      "explanation": "Classical general relativity predicts a singularity of infinite density and curvature at the centre of a black hole, though this signals a breakdown of the classical theory where quantum gravity effects are expected to become important.",
+      "topic": "Black holes",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Gravitational time dilation predicts that a clock placed deeper within a gravitational potential well (closer to a massive body) will, compared to a clock far away, run:",
+      "options": ["Slower, as measured by the distant observer", "Faster, as measured by the distant observer", "At exactly the same rate always", "Backward in time"],
+      "correct_answer": "Slower, as measured by the distant observer",
+      "explanation": "General relativity predicts that clocks in a stronger gravitational field (deeper potential well) tick more slowly relative to clocks farther away, an effect confirmed experimentally and essential for GPS satellite corrections.",
+      "topic": "Gravitational time dilation and redshift",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Gravitational redshift refers to the phenomenon in which:",
+      "options": ["Light escaping from a strong gravitational field loses energy, shifting its wavelength toward the red (longer wavelength) end of the spectrum", "Light gains energy as it moves away from a massive body", "Light changes from a photon to a massive particle near a black hole", "Only radio waves are affected by gravity, not visible light"],
+      "correct_answer": "Light escaping from a strong gravitational field loses energy, shifting its wavelength toward the red (longer wavelength) end of the spectrum",
+      "explanation": "As photons climb out of a gravitational potential well, they lose energy (their frequency decreases and wavelength increases), producing a measurable gravitational redshift.",
+      "topic": "Gravitational time dilation and redshift",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Pound-Rebka experiment (1959), conducted at Harvard using the Mossbauer effect, provided direct experimental confirmation of:",
+      "options": ["Gravitational redshift of photons over a vertical height difference in Earth's gravitational field", "The bending of starlight by the Sun", "The existence of black holes", "The expansion of the universe"],
+      "correct_answer": "Gravitational redshift of photons over a vertical height difference in Earth's gravitational field",
+      "explanation": "The Pound-Rebka experiment measured the tiny gravitational frequency shift of gamma rays travelling up a tower at Harvard, confirming Einstein's prediction of gravitational redshift to high precision.",
+      "topic": "Classical tests of general relativity",
+      "difficulty": "hard"
+    },
+    {
+      "question": "One of the classical tests of general relativity involves the precession of Mercury's perihelion. What does general relativity correctly account for?",
+      "options": ["A small extra advance of Mercury's perihelion per century beyond what Newtonian gravity from the other planets predicts", "The complete orbit of Mercury, replacing all Newtonian effects entirely", "The reason Mercury has no atmosphere", "The tilt of Mercury's rotational axis"],
+      "correct_answer": "A small extra advance of Mercury's perihelion per century beyond what Newtonian gravity from the other planets predicts",
+      "explanation": "Mercury's orbit precesses faster than Newtonian mechanics (accounting for perturbations from other planets) predicts; general relativity accurately explains this residual excess precession of about 43 arcseconds per century.",
+      "topic": "Classical tests of general relativity",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The 1919 Eddington solar eclipse expedition tested general relativity by measuring:",
+      "options": ["The apparent deflection of starlight passing close to the Sun during a total solar eclipse", "The redshift of sunlight reaching Earth", "The precession of Mercury's orbit", "The existence of gravitational waves"],
+      "correct_answer": "The apparent deflection of starlight passing close to the Sun during a total solar eclipse",
+      "explanation": "Eddington's expedition photographed stars near the Sun's position during a total eclipse (when sunlight was blocked), confirming that light bends by an amount consistent with general relativity's prediction rather than the smaller Newtonian value.",
+      "topic": "Classical tests of general relativity",
+      "difficulty": "medium"
+    },
+    {
+      "question": "General relativity predicts that light passing close to a massive body such as the Sun is deflected by an angle that is, famously, twice the value predicted by simple Newtonian reasoning. Why does general relativity predict a larger deflection?",
+      "options": ["It accounts for both the curvature of space and the curvature of time, whereas simple Newtonian reasoning about light as a particle accounts for only one effect", "Newtonian gravity does not act on light at all, so any deflection is entirely a general-relativistic effect with no comparison possible", "General relativity assumes light has twice the mass predicted by Newtonian physics", "The difference arises purely from measurement error in Eddington's data"],
+      "correct_answer": "It accounts for both the curvature of space and the curvature of time, whereas simple Newtonian reasoning about light as a particle accounts for only one effect",
+      "explanation": "The full general-relativistic calculation includes both spatial curvature and time dilation effects near a mass, yielding a deflection angle twice that obtained from a naive Newtonian treatment of light as a massive particle.",
+      "topic": "Classical tests of general relativity",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Gravitational lensing, an important astrophysical application of general relativity, occurs when:",
+      "options": ["The gravity of a massive foreground object (such as a galaxy cluster) bends and distorts the light from a background object, sometimes producing multiple images or arcs", "A galaxy directly blocks all light from objects behind it", "Light passing near a mass speeds up beyond the speed of light", "Gravity converts light into radio waves"],
+      "correct_answer": "The gravity of a massive foreground object (such as a galaxy cluster) bends and distorts the light from a background object, sometimes producing multiple images or arcs",
+      "explanation": "Massive objects curve spacetime enough to act like a lens, bending light from more distant sources and producing observable effects such as multiple images, arcs, or Einstein rings.",
+      "topic": "Classical tests of general relativity",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Einstein field equations relate which two fundamental quantities?",
+      "options": ["The curvature of spacetime and the distribution of mass-energy and momentum", "The speed of light and the gravitational constant only", "Electric charge and magnetic field strength", "Temperature and entropy of a gravitational system"],
+      "correct_answer": "The curvature of spacetime and the distribution of mass-energy and momentum",
+      "explanation": "Symbolically written as Gμν = 8πG/c^4 Tμν, the field equations state that spacetime curvature (left side) is determined by the local mass-energy-momentum content (right side, the stress-energy tensor).",
+      "topic": "Einstein field equations",
+      "difficulty": "hard"
+    },
+    {
+      "question": "John Wheeler's famous informal summary of general relativity, 'spacetime tells matter how to move; matter tells spacetime how to curve,' captures the essential idea that:",
+      "options": ["Gravity is a two-way relationship between geometry and mass-energy, described self-consistently by the field equations", "Matter has no influence on the geometry of spacetime", "Spacetime is a fixed, unchanging background unaffected by matter", "Only massive black holes can curve spacetime; ordinary matter cannot"],
+      "correct_answer": "Gravity is a two-way relationship between geometry and mass-energy, described self-consistently by the field equations",
+      "explanation": "This phrase encapsulates the core conceptual content of the Einstein field equations: mass-energy determines spacetime curvature, and that curvature in turn dictates how matter and energy move.",
+      "topic": "Einstein field equations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the weak-field, low-velocity limit, the Einstein field equations reduce approximately to which well-known theory?",
+      "options": ["Newtonian gravity, described by Newton's law of universal gravitation", "Special relativity with no gravity", "Maxwell's equations of electromagnetism", "Quantum electrodynamics"],
+      "correct_answer": "Newtonian gravity, described by Newton's law of universal gravitation",
+      "explanation": "A crucial consistency check on general relativity is that in the limit of weak gravitational fields and slow speeds, its predictions reduce to Newton's familiar inverse-square law of gravitation.",
+      "topic": "Einstein field equations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which of the following is a defining property of a black hole's event horizon, sometimes called the 'point of no return'?",
+      "options": ["Once crossed inward, no future-directed path can lead back out to the external universe", "It marks the exact location of the singularity itself", "It is a physical, material surface analogous to a planet's crust", "It only exists for rotating black holes, not static ones"],
+      "correct_answer": "Once crossed inward, no future-directed path can lead back out to the external universe",
+      "explanation": "The event horizon is a one-way causal boundary; once an object or signal passes inward through it, general relativity shows no trajectory can bring it back out to an external observer.",
+      "topic": "Black holes",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Gravitational time dilation, combined with gravitational redshift, must be accounted for in the operation of GPS satellites because:",
+      "options": ["Satellite clocks experience weaker gravity than clocks on Earth's surface, causing them to run faster relative to ground clocks, which must be corrected for accurate positioning", "GPS satellites experience no gravity at all", "Gravitational effects are too small to matter for any modern technology", "GPS relies exclusively on special relativity with no general-relativistic correction needed"],
+      "correct_answer": "Satellite clocks experience weaker gravity than clocks on Earth's surface, causing them to run faster relative to ground clocks, which must be corrected for accurate positioning",
+      "explanation": "GPS satellites orbit where Earth's gravity is weaker, so their onboard clocks run faster than ground clocks by a measurable amount predicted by general relativity; this must be corrected alongside special-relativistic time dilation from orbital speed for accurate positioning.",
+      "topic": "Gravitational time dilation and redshift",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Which statement correctly distinguishes a 'freely falling frame' from a stationary frame on Earth's surface, in the context of the equivalence principle?",
+      "options": ["A freely falling frame is locally inertial (weightless), while a frame fixed to Earth's surface is non-inertial because it is continuously accelerated by the normal force resisting gravity", "Both frames are equally inertial in general relativity", "A stationary Earth-surface frame is inertial, while a freely falling frame is non-inertial", "Neither frame can ever be treated using the equivalence principle"],
+      "correct_answer": "A freely falling frame is locally inertial (weightless), while a frame fixed to Earth's surface is non-inertial because it is continuously accelerated by the normal force resisting gravity",
+      "explanation": "In general relativity, freely falling observers experience no local gravitational force (they are weightless and inertial), while an observer standing on Earth's surface is being continuously accelerated upward by the ground's normal force, analogous to being in an accelerating rocket.",
+      "topic": "Equivalence principle",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A key qualitative feature of the Schwarzschild metric is that its coefficients depend on which radial factor?",
+      "options": ["A term involving (1 - Rs/r), where Rs is the Schwarzschild radius and r is the radial coordinate", "The angular velocity of the central mass's rotation", "The electric charge of the central mass only", "The temperature of the central mass"],
+      "correct_answer": "A term involving (1 - Rs/r), where Rs is the Schwarzschild radius and r is the radial coordinate",
+      "explanation": "The Schwarzschild metric's time and radial coefficients involve the factor (1 - Rs/r); this factor governs both gravitational time dilation and the coordinate singularity that occurs at r = Rs (the event horizon).",
+      "topic": "Schwarzschild solution",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Tidal forces near a black hole arise because:",
+      "options": ["The gravitational pull varies with distance, stretching an extended object radially and compressing it laterally as it falls inward", "Black holes possess a uniform gravitational field with no variation over distance", "Tidal forces are a purely Newtonian concept that does not apply near black holes", "The event horizon exerts no gravitational influence"],
+      "correct_answer": "The gravitational pull varies with distance, stretching an extended object radially and compressing it laterally as it falls inward",
+      "explanation": "Tidal forces result from the difference (gradient) in gravitational pull across an extended body; near a black hole this gradient can become extreme, producing the stretching effect popularly called 'spaghettification'.",
+      "topic": "Black holes",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which of the following best describes why general relativity treats time as being on a similar footing to the three spatial dimensions?",
+      "options": ["It combines space and time into a single four-dimensional spacetime continuum in which events are located by both spatial and temporal coordinates", "It treats time purely as an external, universal parameter unaffected by mass or motion", "General relativity ignores time entirely in its equations", "Time and space are always measured identically by every observer, so they must be the same dimension"],
+      "correct_answer": "It combines space and time into a single four-dimensional spacetime continuum in which events are located by both spatial and temporal coordinates",
+      "explanation": "Building on special relativity's unification of space and time, general relativity describes physics using four-dimensional spacetime, where the geometry (including the passage of time) can be curved by mass-energy.",
+      "topic": "Metric tensor and spacetime interval",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In an Eotvos-type torsion balance experiment testing the equivalence principle, what quantity is being compared between two different test materials?",
+      "options": ["The ratio of gravitational mass to inertial mass for each material, to check whether it is the same for all substances", "The electric charge-to-mass ratio of each material", "The magnetic susceptibility of each material", "The speed of light through each material"],
+      "correct_answer": "The ratio of gravitational mass to inertial mass for each material, to check whether it is the same for all substances",
+      "explanation": "Eotvos-type experiments compare the gravitational acceleration of test masses made of different materials with extremely high precision, testing whether the ratio of gravitational to inertial mass is truly universal, as the equivalence principle requires.",
+      "topic": "Equivalence principle",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A star with mass equal to the Sun's mass would need to be compressed to approximately what radius to become a black hole (i.e. its Schwarzschild radius)?",
+      "options": ["About 3 kilometres", "About 700,000 kilometres (the Sun's actual radius)", "About 3 metres", "About 3 astronomical units"],
+      "correct_answer": "About 3 kilometres",
+      "explanation": "Using Rs = 2GM/c^2 with the Sun's mass (about 2 x 10^30 kg) gives a Schwarzschild radius of approximately 3 kilometres, far smaller than the Sun's actual radius, which is why the Sun is not a black hole.",
+      "topic": "Schwarzschild radius",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Which of the following is a defining observational signature that distinguishes a black hole from an ordinary star of similar mass?",
+      "options": ["A black hole has an event horizon from which no light can escape, so it cannot be observed directly by its own emitted light", "A black hole always emits more visible light than an ordinary star", "A black hole has zero gravitational influence on nearby objects", "A black hole has a lower density than an ordinary star of the same mass"],
+      "correct_answer": "A black hole has an event horizon from which no light can escape, so it cannot be observed directly by its own emitted light",
+      "explanation": "Unlike ordinary stars, black holes cannot be seen directly since no light escapes their event horizon; they are instead detected indirectly, through their gravitational influence on nearby matter, accretion disk radiation, or gravitational lensing.",
+      "topic": "Black holes",
+      "difficulty": "easy"
+    },
+    {
+      "question": "General relativity predicts the existence of gravitational waves, which are:",
+      "options": ["Ripples in spacetime curvature that propagate outward at the speed of light, generated by accelerating masses such as merging black holes", "Sound waves that travel through the vacuum of space", "Electromagnetic waves emitted specifically by black holes", "A purely Newtonian phenomenon unrelated to relativity"],
+      "correct_answer": "Ripples in spacetime curvature that propagate outward at the speed of light, generated by accelerating masses such as merging black holes",
+      "explanation": "Gravitational waves are disturbances in the curvature of spacetime itself, predicted by the field equations for accelerating (non-spherically-symmetric) mass distributions, and were first directly detected by LIGO in 2015 from a black hole merger.",
+      "topic": "Einstein field equations",
+      "difficulty": "medium"
+    }
+  ]
+}

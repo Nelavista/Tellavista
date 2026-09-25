@@ -1,0 +1,303 @@
+{
+  "course_code": "MTH316",
+  "title": "Intro to Operations Research",
+  "level": "300",
+  "source_note": "Standard NUC-aligned Nigerian university 300L Operations Research curriculum: linear programming formulation and the simplex method, transportation and assignment problems, network models (CPM/PERT), queuing theory basics, inventory models, game theory, and simulation.",
+  "questions": [
+    {
+      "question": "Operations Research (OR) is best described as:",
+      "options": [
+        "The application of scientific and mathematical methods to decision-making and resource allocation problems",
+        "The study of pure abstract algebra",
+        "A branch of physics concerned with motion",
+        "A purely descriptive statistical technique with no optimization component"
+      ],
+      "correct_answer": "The application of scientific and mathematical methods to decision-making and resource allocation problems",
+      "explanation": "OR uses mathematical modeling, statistics, and optimization algorithms to help make better decisions under constraints.",
+      "topic": "Introduction to OR",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In formulating a linear programming model, the decision variables represent:",
+      "options": ["The unknown quantities to be determined that optimize the objective", "The fixed resource limits", "The objective function coefficients only", "The constraints themselves"],
+      "correct_answer": "The unknown quantities to be determined that optimize the objective",
+      "explanation": "Decision variables are what the model solves for -- the controllable quantities whose optimal values are sought.",
+      "topic": "LP formulation",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A company makes two products, X and Y, with profit $3 per unit X and $5 per unit Y. If resource constraints limit combined production, the objective function to maximize profit is written as:",
+      "options": ["Z = 3X + 5Y", "Z = 3X - 5Y", "Z = X + Y", "Z = 3X * 5Y"],
+      "correct_answer": "Z = 3X + 5Y",
+      "explanation": "The total profit is the sum of the profit per unit of each product times the quantity produced, giving a linear objective function.",
+      "topic": "LP formulation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the simplex method, a basic feasible solution corresponds to:",
+      "options": ["A vertex (corner point) of the feasible region", "Any point inside the feasible region", "A point outside the feasible region", "The centroid of the feasible region"],
+      "correct_answer": "A vertex (corner point) of the feasible region",
+      "explanation": "Basic feasible solutions in the simplex tableau correspond exactly to the extreme points (vertices) of the LP's feasible polytope.",
+      "topic": "Simplex method",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The transportation problem seeks to determine:",
+      "options": [
+        "The shipment quantities from each supply source to each demand destination that minimize total transportation cost",
+        "The shortest path between two cities",
+        "The optimal price of a single commodity",
+        "The number of workers needed for a project"
+      ],
+      "correct_answer": "The shipment quantities from each supply source to each demand destination that minimize total transportation cost",
+      "explanation": "This classical OR problem balances supply and demand across a network of routes at minimum cost.",
+      "topic": "Transportation problem",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A transportation problem is said to be balanced when:",
+      "options": ["Total supply equals total demand", "The number of sources equals the number of destinations", "All costs are equal", "Only one route is used"],
+      "correct_answer": "Total supply equals total demand",
+      "explanation": "Balance between total available supply and total required demand is needed for a feasible transportation solution without adding dummy rows/columns.",
+      "topic": "Transportation problem",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The North-West Corner Rule is a method used to:",
+      "options": ["Find an initial basic feasible solution to a transportation problem", "Solve the assignment problem optimally", "Determine the critical path in a project network", "Calculate expected waiting time in a queue"],
+      "correct_answer": "Find an initial basic feasible solution to a transportation problem",
+      "explanation": "The North-West Corner Rule is a simple heuristic that allocates shipments starting from the top-left cell of the transportation tableau to quickly generate a starting feasible solution.",
+      "topic": "Transportation problem",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The assignment problem is a special case of the transportation problem where:",
+      "options": ["Each supply and each demand equals exactly 1 (one worker assigned to one job)", "Supplies and demands can be any positive number", "There is only one destination", "Costs are always zero"],
+      "correct_answer": "Each supply and each demand equals exactly 1 (one worker assigned to one job)",
+      "explanation": "The assignment problem matches n agents to n tasks one-to-one, minimizing total cost, making it a degenerate transportation problem.",
+      "topic": "Assignment problem",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Hungarian method is a specialized algorithm used to solve:",
+      "options": ["The assignment problem", "Queuing problems", "Inventory reorder problems", "Nonlinear programming problems"],
+      "correct_answer": "The assignment problem",
+      "explanation": "The Hungarian algorithm efficiently finds the optimal one-to-one assignment that minimizes (or maximizes) total cost.",
+      "topic": "Assignment problem",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In network analysis, the Critical Path Method (CPM) is used primarily for:",
+      "options": [
+        "Scheduling project activities with known (deterministic) durations to determine the minimum project completion time",
+        "Assigning workers randomly to jobs",
+        "Forecasting demand for inventory",
+        "Simulating customer arrivals in a queue"
+      ],
+      "correct_answer": "Scheduling project activities with known (deterministic) durations to determine the minimum project completion time",
+      "explanation": "CPM identifies the sequence of dependent activities (the critical path) whose total duration determines the shortest possible project completion time.",
+      "topic": "Network models: CPM/PERT",
+      "difficulty": "medium"
+    },
+    {
+      "question": "PERT (Program Evaluation and Review Technique) differs from CPM mainly in that PERT:",
+      "options": [
+        "Treats activity durations as uncertain, using three time estimates (optimistic, most likely, pessimistic)",
+        "Is used only for financial accounting",
+        "Assumes all activities take exactly the same time",
+        "Cannot be represented as a network diagram"
+      ],
+      "correct_answer": "Treats activity durations as uncertain, using three time estimates (optimistic, most likely, pessimistic)",
+      "explanation": "PERT was developed for projects with uncertain activity times, using a probabilistic (beta distribution) estimate rather than CPM's single deterministic duration.",
+      "topic": "Network models: CPM/PERT",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In a project network, the critical path is defined as:",
+      "options": ["The longest path through the network from start to finish, determining minimum project duration", "The shortest path through the network", "Any path with zero slack that is not the longest", "A path chosen at random"],
+      "correct_answer": "The longest path through the network from start to finish, determining minimum project duration",
+      "explanation": "Because all activities on the critical path must be completed in sequence, its total length (the longest path) sets the minimum overall project time.",
+      "topic": "Network models: CPM/PERT",
+      "difficulty": "medium"
+    },
+    {
+      "question": "'Slack' or 'float' for a non-critical activity in a project network represents:",
+      "options": ["The amount of time the activity can be delayed without delaying the overall project", "The total duration of the activity", "The cost of completing the activity", "The number of predecessors of the activity"],
+      "correct_answer": "The amount of time the activity can be delayed without delaying the overall project",
+      "explanation": "Slack quantifies scheduling flexibility; critical path activities have zero slack by definition.",
+      "topic": "Network models: CPM/PERT",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In queuing theory, the M/M/1 queue model assumes:",
+      "options": [
+        "Poisson arrivals, exponential service times, and a single server",
+        "Deterministic arrivals and service times",
+        "Multiple servers with no waiting line",
+        "Infinite service capacity with zero waiting time"
+      ],
+      "correct_answer": "Poisson arrivals, exponential service times, and a single server",
+      "explanation": "The M/M/1 notation denotes Markovian (Poisson) arrivals, Markovian (exponential) service, and a single server -- the simplest classical queuing model.",
+      "topic": "Queuing theory",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In queuing theory, the traffic intensity (utilization factor) ρ for an M/M/1 queue is defined as:",
+      "options": ["ρ = λ/μ, the ratio of arrival rate to service rate", "ρ = μ/λ", "ρ = λ + μ", "ρ = λμ"],
+      "correct_answer": "ρ = λ/μ, the ratio of arrival rate to service rate",
+      "explanation": "Traffic intensity measures how busy the server is; the queue is stable (steady-state exists) only when ρ < 1.",
+      "topic": "Queuing theory",
+      "difficulty": "hard"
+    },
+    {
+      "question": "For a stable M/M/1 queue to reach a steady state, the traffic intensity ρ must satisfy:",
+      "options": ["ρ < 1", "ρ = 1", "ρ > 1", "ρ = 0"],
+      "correct_answer": "ρ < 1",
+      "explanation": "If the arrival rate exceeds or equals the service rate (ρ ≥ 1), the queue length grows without bound and no steady state exists.",
+      "topic": "Queuing theory",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The Economic Order Quantity (EOQ) model in inventory theory seeks to determine:",
+      "options": [
+        "The order quantity that minimizes total inventory cost (ordering cost plus holding cost)",
+        "The maximum possible order size",
+        "The number of suppliers needed",
+        "The selling price of the item"
+      ],
+      "correct_answer": "The order quantity that minimizes total inventory cost (ordering cost plus holding cost)",
+      "explanation": "EOQ balances the trade-off between ordering costs (favoring larger, less frequent orders) and holding costs (favoring smaller orders), minimizing their sum.",
+      "topic": "Inventory models",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The classical EOQ formula is Q* = √(2DS/H), where D is annual demand, S is ordering cost per order, and H is holding cost per unit. This formula is derived by:",
+      "options": ["Minimizing total annual inventory cost with respect to order quantity Q", "Maximizing total revenue", "Minimizing D directly", "Setting holding cost to zero"],
+      "correct_answer": "Minimizing total annual inventory cost with respect to order quantity Q",
+      "explanation": "Setting the derivative of total cost (ordering cost D/Q * S plus holding cost Q/2 * H) with respect to Q to zero yields the EOQ formula.",
+      "topic": "Inventory models",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In a two-person zero-sum game, the payoff to one player is:",
+      "options": ["Exactly the negative of the payoff to the other player", "Independent of the other player's payoff", "Always positive for both players", "Equal to the sum of both players' strategies"],
+      "correct_answer": "Exactly the negative of the payoff to the other player",
+      "explanation": "Zero-sum means the total of both players' payoffs is always zero, so one player's gain is exactly the other's loss.",
+      "topic": "Game theory",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In game theory, a 'saddle point' in a payoff matrix corresponds to:",
+      "options": ["An entry that is both the minimum of its row and the maximum of its column, giving the game's value under pure strategies", "The largest entry in the entire matrix", "A random mixed strategy", "A matrix with all equal entries"],
+      "correct_answer": "An entry that is both the minimum of its row and the maximum of its column, giving the game's value under pure strategies",
+      "explanation": "A saddle point identifies the optimal pure strategy solution where the maximin and minimax values of the game coincide.",
+      "topic": "Game theory",
+      "difficulty": "hard"
+    },
+    {
+      "question": "When a payoff matrix has no saddle point, the players' optimal solution requires:",
+      "options": ["Mixed strategies, where players randomize over their available pure strategies with certain probabilities", "Abandoning the game", "Using only the largest single payoff", "Ignoring probability altogether"],
+      "correct_answer": "Mixed strategies, where players randomize over their available pure strategies with certain probabilities",
+      "explanation": "Without a saddle point, no pure strategy is dominant, so optimal play requires probabilistic mixing of strategies to reach the game's value.",
+      "topic": "Game theory",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Sensitivity analysis in linear programming examines:",
+      "options": [
+        "How changes in the coefficients of the objective function or constraints affect the optimal solution",
+        "How to formulate a new LP problem from scratch",
+        "The computational speed of the simplex method",
+        "The number of variables in the model only"
+      ],
+      "correct_answer": "How changes in the coefficients of the objective function or constraints affect the optimal solution",
+      "explanation": "Sensitivity (post-optimality) analysis determines the range over which parameters can vary without changing the optimal basis.",
+      "topic": "Sensitivity analysis",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In LP duality, the shadow price of a resource constraint represents:",
+      "options": [
+        "The amount by which the optimal objective value would change per unit increase in the resource's availability",
+        "The market price of the resource",
+        "The number of units of the resource used",
+        "The cost of formulating the constraint"
+      ],
+      "correct_answer": "The amount by which the optimal objective value would change per unit increase in the resource's availability",
+      "explanation": "Shadow prices (dual values) quantify the marginal value of relaxing a binding constraint by one unit.",
+      "topic": "Sensitivity analysis",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Monte Carlo simulation in Operations Research is a technique that:",
+      "options": [
+        "Uses repeated random sampling to model and analyze systems with uncertainty",
+        "Solves LP problems exactly using the simplex algorithm",
+        "Determines the critical path deterministically",
+        "Is only applicable to queuing systems"
+      ],
+      "correct_answer": "Uses repeated random sampling to model and analyze systems with uncertainty",
+      "explanation": "Monte Carlo methods generate random samples according to specified probability distributions to estimate outcomes of complex or stochastic systems.",
+      "topic": "Simulation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Simulation is often preferred over analytical (closed-form) OR models when:",
+      "options": ["The system is too complex for a tractable analytical solution", "The system has no randomness at all", "An exact simplex solution is required", "There is only one decision variable"],
+      "correct_answer": "The system is too complex for a tractable analytical solution",
+      "explanation": "Simulation provides a practical way to study systems whose complexity, nonlinearity, or stochastic elements make closed-form analytical solutions infeasible.",
+      "topic": "Simulation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In LP, if a constraint is not binding at the optimal solution, its associated slack variable value is:",
+      "options": ["Positive (greater than zero)", "Always zero", "Negative", "Undefined"],
+      "correct_answer": "Positive (greater than zero)",
+      "explanation": "A non-binding constraint has unused capacity, reflected by a positive slack variable in the optimal solution.",
+      "topic": "Simplex method",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Degeneracy in a transportation problem occurs when:",
+      "options": [
+        "The number of occupied (basic) cells is less than (rows + columns - 1)",
+        "Supply exceeds demand by a large margin",
+        "There is only one source and one destination",
+        "All shipping costs are identical"
+      ],
+      "correct_answer": "The number of occupied (basic) cells is less than (rows + columns - 1)",
+      "explanation": "Degeneracy occurs when the basic feasible solution has fewer occupied cells than required, which can be resolved by allocating an infinitesimally small quantity to a cell.",
+      "topic": "Transportation problem",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Which of the following best describes 'dynamic programming' as an OR technique?",
+      "options": [
+        "Breaking a complex problem into a sequence of simpler interrelated subproblems solved recursively",
+        "A technique exclusively for linear systems",
+        "A method for random number generation",
+        "A graphical method limited to two variables"
+      ],
+      "correct_answer": "Breaking a complex problem into a sequence of simpler interrelated subproblems solved recursively",
+      "explanation": "Dynamic programming, developed by Bellman, solves multistage decision problems by optimizing each stage in relation to the others via the principle of optimality.",
+      "topic": "Dynamic programming",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Which of these is a classic example of an integer programming problem, where variables must take whole-number values?",
+      "options": ["The knapsack problem (choosing items with integer counts to maximize value under a weight limit)", "Continuous blending of liquids in any proportion", "Finding the derivative of a cost function", "A queuing model with continuous arrival rates"],
+      "correct_answer": "The knapsack problem (choosing items with integer counts to maximize value under a weight limit)",
+      "explanation": "The knapsack problem requires discrete, integer (often 0/1) decisions, distinguishing it from continuous LP problems.",
+      "topic": "Integer programming",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Decision theory in OR deals with choosing among alternatives when outcomes depend on:",
+      "options": ["Uncertain states of nature, often using criteria like expected value, maximin, or minimax regret", "Only deterministic and known future outcomes", "A single guaranteed outcome", "No available data"],
+      "correct_answer": "Uncertain states of nature, often using criteria like expected value, maximin, or minimax regret",
+      "explanation": "Decision theory provides frameworks (expected monetary value, maximin, minimax regret, etc.) for choosing actions under risk or uncertainty.",
+      "topic": "Decision theory",
+      "difficulty": "medium"
+    }
+  ]
+}

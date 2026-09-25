@@ -1,0 +1,304 @@
+{
+  "course_code": "CSC221",
+  "title": "Data Structures",
+  "level": "200",
+  "source_note": "Standard NUC-aligned 200L core Data Structures curriculum covering arrays, linked lists, stacks, queues, trees, graphs, and hashing at a structural/operational level. Grounded against LASU's own CSC221 'Fundamentals of Data Structures' course description (elementary/structured data items, arrays, sparse matrices, stacks, queues, trees, graphs, hash coding, storage management). Kept distinct from CSC213 by focusing on structure definitions and operations rather than complexity analysis.",
+  "questions": [
+    {
+      "question": "What is a key characteristic of an array as a data structure?",
+      "options": ["Elements are stored in contiguous memory locations and accessed by index", "Elements are linked via pointers and scattered in memory", "It can only store elements of different data types", "It automatically grows without any size limit"],
+      "correct_answer": "Elements are stored in contiguous memory locations and accessed by index",
+      "explanation": "Arrays store elements in adjacent memory slots, which allows constant-time direct access to any element via its index.",
+      "topic": "Arrays",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is the main drawback of using a static array when the number of elements is not known in advance?",
+      "options": ["Its fixed size can lead to wasted memory or insufficient space", "It cannot be accessed randomly", "It cannot store integers", "It requires a hash function"],
+      "correct_answer": "Its fixed size can lead to wasted memory or insufficient space",
+      "explanation": "A static array has a fixed size determined at creation, so an inaccurate estimate leads to either wasted space or an inability to hold all required elements.",
+      "topic": "Arrays",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is a sparse matrix?",
+      "options": ["A matrix in which most of the elements are zero", "A matrix with only one row", "A matrix used exclusively for graph representation", "A matrix where all elements are non-zero"],
+      "correct_answer": "A matrix in which most of the elements are zero",
+      "explanation": "Sparse matrices contain a large proportion of zero-valued elements, so specialized storage schemes (like storing only non-zero entries) save memory compared to a full 2D array.",
+      "topic": "Arrays",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the defining feature of a singly linked list node?",
+      "options": ["It contains data and a single pointer/reference to the next node", "It contains data and pointers to both the next and previous nodes", "It stores data in a fixed-size contiguous block", "It cannot contain a null pointer"],
+      "correct_answer": "It contains data and a single pointer/reference to the next node",
+      "explanation": "A singly linked list node holds a data field and one pointer referencing the following node in the sequence, with the last node's pointer set to null.",
+      "topic": "Linked lists",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is a key advantage of a linked list over an array for insertions and deletions?",
+      "options": ["Insertions and deletions do not require shifting other elements in memory", "Linked lists always use less memory than arrays", "Linked lists support O(1) random access", "Linked lists are always faster to traverse"],
+      "correct_answer": "Insertions and deletions do not require shifting other elements in memory",
+      "explanation": "Because linked list nodes are connected via pointers rather than contiguous memory, inserting or deleting a node only requires updating a few pointers, not shifting other elements.",
+      "topic": "Linked lists",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What distinguishes a doubly linked list from a singly linked list?",
+      "options": ["Each node has pointers to both the next and previous nodes", "It cannot be traversed backward", "It has no head or tail", "Each node stores two data values"],
+      "correct_answer": "Each node has pointers to both the next and previous nodes",
+      "explanation": "A doubly linked list node maintains two pointers, enabling traversal in both forward and backward directions.",
+      "topic": "Linked lists",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In a circular linked list, what does the last node's pointer reference?",
+      "options": ["The first (head) node of the list", "Null", "Itself", "The middle node"],
+      "correct_answer": "The first (head) node of the list",
+      "explanation": "A circular linked list connects the last node back to the head node, forming a loop instead of terminating with a null pointer.",
+      "topic": "Linked lists",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which principle governs how elements are added and removed from a stack?",
+      "options": ["Last-In-First-Out (LIFO)", "First-In-First-Out (FIFO)", "Random access", "Priority-based ordering"],
+      "correct_answer": "Last-In-First-Out (LIFO)",
+      "explanation": "A stack follows LIFO ordering: the most recently added element is the first one removed.",
+      "topic": "Stacks",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What are the two primary operations of a stack?",
+      "options": ["Push and pop", "Enqueue and dequeue", "Insert and delete at head", "Append and prepend"],
+      "correct_answer": "Push and pop",
+      "explanation": "Push adds an element to the top of the stack, and pop removes the element currently at the top.",
+      "topic": "Stacks",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which of the following is a common real-world application of a stack data structure?",
+      "options": ["Managing function call returns (the call stack) and undo operations", "Managing print job queues", "Scheduling CPU processes in arrival order", "Implementing a breadth-first search"],
+      "correct_answer": "Managing function call returns (the call stack) and undo operations",
+      "explanation": "Program call stacks track function calls in LIFO order so that control returns to the most recent caller, and undo features similarly reverse the most recent action first.",
+      "topic": "Stacks",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What happens when you attempt to push an element onto a stack that has reached its maximum capacity?",
+      "options": ["A stack overflow occurs", "A stack underflow occurs", "The oldest element is automatically removed", "The stack resets to empty"],
+      "correct_answer": "A stack overflow occurs",
+      "explanation": "Attempting to add an element to a full, fixed-capacity stack results in a stack overflow condition.",
+      "topic": "Stacks",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which principle governs how elements are added and removed from a queue?",
+      "options": ["First-In-First-Out (FIFO)", "Last-In-First-Out (LIFO)", "Random selection", "Depth-based ordering"],
+      "correct_answer": "First-In-First-Out (FIFO)",
+      "explanation": "A queue processes elements in the order they arrive: the first element added is the first one removed.",
+      "topic": "Queues",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What are the two primary operations of a queue?",
+      "options": ["Enqueue and dequeue", "Push and pop", "Peek and poke", "Insert and rotate"],
+      "correct_answer": "Enqueue and dequeue",
+      "explanation": "Enqueue adds an element to the rear of the queue, and dequeue removes the element from the front.",
+      "topic": "Queues",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What problem does a circular queue solve compared to a simple linear array-based queue?",
+      "options": ["It reuses freed space at the front of the array instead of wasting it after dequeues", "It allows LIFO ordering instead of FIFO", "It removes the need for a rear pointer", "It eliminates the need for enqueue and dequeue operations"],
+      "correct_answer": "It reuses freed space at the front of the array instead of wasting it after dequeues",
+      "explanation": "In a linear array queue, dequeued front space is wasted as the rear keeps advancing; a circular queue wraps the rear pointer back to index 0 to reuse that freed space.",
+      "topic": "Queues",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a priority queue, how is the order of element removal determined?",
+      "options": ["By the priority assigned to each element, not the order of insertion", "Strictly by insertion order (FIFO)", "Strictly by reverse insertion order (LIFO)", "Randomly"],
+      "correct_answer": "By the priority assigned to each element, not the order of insertion",
+      "explanation": "A priority queue always removes the element with the highest (or lowest, depending on convention) priority first, regardless of when it was inserted.",
+      "topic": "Queues",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In tree terminology, what is the 'root' of a tree?",
+      "options": ["The single topmost node with no parent", "Any node with no children", "The deepest node in the tree", "A node with exactly two children"],
+      "correct_answer": "The single topmost node with no parent",
+      "explanation": "Every tree has exactly one root node, which is the topmost node and the starting point for traversals.",
+      "topic": "Trees",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is a 'leaf' node in a tree?",
+      "options": ["A node with no children", "The root node", "A node with exactly one child", "Any node at depth 1"],
+      "correct_answer": "A node with no children",
+      "explanation": "Leaf nodes are the terminal nodes of a tree that have no descendants.",
+      "topic": "Trees",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What defines a binary tree?",
+      "options": ["Each node has at most two children, commonly referred to as left and right", "Each node has exactly two children", "Every node must have a parent", "It contains only numeric data"],
+      "correct_answer": "Each node has at most two children, commonly referred to as left and right",
+      "explanation": "A binary tree restricts each node to a maximum of two child nodes, though a node can have zero, one, or two children.",
+      "topic": "Trees",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What property must a Binary Search Tree (BST) satisfy?",
+      "options": ["For every node, all values in its left subtree are smaller and all values in its right subtree are larger", "Every node must have exactly two children", "All leaf nodes must be at the same depth", "The tree must be perfectly balanced"],
+      "correct_answer": "For every node, all values in its left subtree are smaller and all values in its right subtree are larger",
+      "explanation": "This ordering property is what makes a BST allow efficient searching: the left subtree contains only smaller values, and the right subtree only larger values.",
+      "topic": "Trees",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In an in-order traversal of a Binary Search Tree, in what order are the nodes visited?",
+      "options": ["Left subtree, then root, then right subtree", "Root, then left subtree, then right subtree", "Left subtree, then right subtree, then root", "Right subtree, then root, then left subtree"],
+      "correct_answer": "Left subtree, then root, then right subtree",
+      "explanation": "In-order traversal visits the left subtree first, then the current node, then the right subtree -- for a BST, this visits nodes in sorted ascending order.",
+      "topic": "Trees",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a pre-order traversal of a binary tree, in what order are the nodes visited?",
+      "options": ["Root, then left subtree, then right subtree", "Left subtree, then root, then right subtree", "Left subtree, then right subtree, then root", "Right subtree, then left subtree, then root"],
+      "correct_answer": "Root, then left subtree, then right subtree",
+      "explanation": "Pre-order traversal visits the current (root) node first, followed by the left subtree, then the right subtree.",
+      "topic": "Trees",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a post-order traversal of a binary tree, in what order are the nodes visited?",
+      "options": ["Left subtree, then right subtree, then root", "Root, then left subtree, then right subtree", "Left subtree, then root, then right subtree", "Root only"],
+      "correct_answer": "Left subtree, then right subtree, then root",
+      "explanation": "Post-order traversal visits both subtrees before visiting the root node itself, which is useful for tasks like deleting a tree or evaluating expression trees.",
+      "topic": "Trees",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is a 'complete binary tree'?",
+      "options": ["A binary tree in which every level is completely filled except possibly the last, which is filled from left to right", "A binary tree with exactly one node", "A binary tree where every node has two children", "A binary tree with no leaf nodes"],
+      "correct_answer": "A binary tree in which every level is completely filled except possibly the last, which is filled from left to right",
+      "explanation": "A complete binary tree fills all levels fully except possibly the last level, which must be filled left to right without gaps -- this property is essential for array-based heap implementations.",
+      "topic": "Trees",
+      "difficulty": "hard"
+    },
+    {
+      "question": "What is a 'heap' data structure primarily used for?",
+      "options": ["Efficiently retrieving the minimum or maximum element (priority queues)", "Storing key-value pairs for O(1) lookup", "Representing hierarchical file systems only", "Implementing FIFO queues"],
+      "correct_answer": "Efficiently retrieving the minimum or maximum element (priority queues)",
+      "explanation": "A heap (min-heap or max-heap) maintains an ordering property that allows the minimum or maximum element to always be at the root, making it ideal for priority queue implementations.",
+      "topic": "Trees",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a max-heap, what is true of the value at the root node relative to all other nodes?",
+      "options": ["It is greater than or equal to the values of its children", "It is always the smallest value in the tree", "It has no children", "It is equal to the average of all node values"],
+      "correct_answer": "It is greater than or equal to the values of its children",
+      "explanation": "The max-heap property requires every parent node's value to be greater than or equal to the values of its children, with the maximum overall value residing at the root.",
+      "topic": "Trees",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is a graph, in the context of data structures?",
+      "options": ["A collection of vertices (nodes) connected by edges", "A linear collection of elements accessed sequentially", "A tree with exactly one root", "An array of key-value pairs"],
+      "correct_answer": "A collection of vertices (nodes) connected by edges",
+      "explanation": "A graph is a data structure consisting of a set of vertices and a set of edges connecting pairs of vertices, used to model relationships and networks.",
+      "topic": "Graphs",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is the difference between an adjacency matrix and an adjacency list for representing a graph?",
+      "options": ["An adjacency matrix uses a 2D array to indicate edges, while an adjacency list stores, for each vertex, a list of its neighbors", "An adjacency list can only represent directed graphs", "An adjacency matrix uses less memory for all graphs", "An adjacency list cannot represent weighted edges"],
+      "correct_answer": "An adjacency matrix uses a 2D array to indicate edges, while an adjacency list stores, for each vertex, a list of its neighbors",
+      "explanation": "Adjacency matrices use a V x V array (efficient for dense graphs), while adjacency lists store each vertex's neighbors in a list (more memory-efficient for sparse graphs).",
+      "topic": "Graphs",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is a 'weighted graph'?",
+      "options": ["A graph in which each edge has an associated numeric value (cost/weight)", "A graph with more vertices than edges", "A graph that cannot contain cycles", "A graph where all vertices have the same degree"],
+      "correct_answer": "A graph in which each edge has an associated numeric value (cost/weight)",
+      "explanation": "In a weighted graph, edges carry numeric weights representing cost, distance, or capacity, which is essential for algorithms like shortest-path calculations.",
+      "topic": "Graphs",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What data structure is typically used to implement the standard iterative Depth-First Search (DFS) traversal of a graph?",
+      "options": ["A stack", "A queue", "A hash table", "A priority queue"],
+      "correct_answer": "A stack",
+      "explanation": "Iterative DFS uses a stack (explicitly or via recursion's call stack) to remember which vertices to visit next, exploring as deep as possible before backtracking.",
+      "topic": "Graphs",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What data structure is typically used to implement Breadth-First Search (BFS) traversal of a graph?",
+      "options": ["A queue", "A stack", "A binary search tree", "A linked list only"],
+      "correct_answer": "A queue",
+      "explanation": "BFS uses a FIFO queue to visit vertices level by level, ensuring nodes closer to the starting vertex are explored before farther ones.",
+      "topic": "Graphs",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the purpose of a hash function in a hash table (hash coding)?",
+      "options": ["To map a key to an index in the underlying array for storage and retrieval", "To sort the elements of the table", "To encrypt data for secure storage", "To compress the size of stored data permanently"],
+      "correct_answer": "To map a key to an index in the underlying array for storage and retrieval",
+      "explanation": "A hash function converts a key into an array index, allowing near-direct access for insertion, deletion, and lookup operations.",
+      "topic": "Hashing",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is 'open addressing' in the context of resolving hash table collisions?",
+      "options": ["Probing for the next available slot in the array itself when a collision occurs", "Using a separate linked list for each bucket", "Rejecting any key that causes a collision", "Doubling the hash table size immediately on any collision"],
+      "correct_answer": "Probing for the next available slot in the array itself when a collision occurs",
+      "explanation": "Open addressing resolves collisions by searching (probing) for another open slot within the same array, using strategies like linear or quadratic probing.",
+      "topic": "Hashing",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is 'garbage collection' in the context of dynamic data structures?",
+      "options": ["Automatic reclamation of memory that is no longer referenced or needed by the program", "Manually deleting all elements from a data structure", "Sorting elements by removing duplicates", "A technique for balancing a binary tree"],
+      "correct_answer": "Automatic reclamation of memory that is no longer referenced or needed by the program",
+      "explanation": "Garbage collection automatically frees memory occupied by objects that are no longer reachable or in use, preventing memory leaks in languages that support it.",
+      "topic": "Storage management",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the primary difference between static memory allocation and dynamic memory allocation?",
+      "options": ["Static allocation happens at compile time with a fixed size; dynamic allocation happens at run time and can vary", "Static allocation is always slower than dynamic allocation", "Dynamic allocation cannot be freed", "Static allocation can only be used for arrays"],
+      "correct_answer": "Static allocation happens at compile time with a fixed size; dynamic allocation happens at run time and can vary",
+      "explanation": "Static memory is allocated at compile time with a size fixed in advance, while dynamic memory (e.g., via malloc/new) is allocated at run time based on program needs.",
+      "topic": "Storage management",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which data structure would be most appropriate for implementing an 'undo' feature in a text editor?",
+      "options": ["A stack", "A queue", "A hash table", "A graph"],
+      "correct_answer": "A stack",
+      "explanation": "Undo operations reverse the most recently performed action first, which naturally matches the LIFO behavior of a stack.",
+      "topic": "Stacks",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which data structure would be most appropriate for managing print jobs sent to a shared printer in the order they were received?",
+      "options": ["A queue", "A stack", "A binary tree", "A hash table"],
+      "correct_answer": "A queue",
+      "explanation": "Print jobs are typically processed in the order they were submitted, which matches the FIFO behavior of a queue.",
+      "topic": "Queues",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is 'Polish notation' (prefix notation), often discussed alongside stacks and expression trees?",
+      "options": ["A way of writing expressions where the operator precedes its operands", "A notation where operators always come after operands", "A binary encoding scheme for integers", "A method for balancing binary trees"],
+      "correct_answer": "A way of writing expressions where the operator precedes its operands",
+      "explanation": "Polish (prefix) notation places the operator before its operands (e.g., + A B instead of A + B), removing the need for parentheses and making it easy to evaluate with a stack.",
+      "topic": "Stacks",
+      "difficulty": "hard"
+    }
+  ]
+}

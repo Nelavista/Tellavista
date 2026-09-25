@@ -1,0 +1,312 @@
+{
+  "course_code": "CIT201",
+  "title": "Structured Programming",
+  "level": "200",
+  "source_note": "Standard NUC-aligned 200-level Structured Programming curriculum, built around the C language: structured programming principles, program structure, storage classes/scope, arrays, strings, pointers, structures, recursion, file handling, and basic sorting/searching algorithms. Deliberately distinct from CIT112's language-agnostic intro to avoid overlap.",
+  "questions": [
+    {
+      "question": "Structured programming is a programming paradigm that emphasizes:",
+      "options": ["Breaking a program into modules using sequence, selection, and iteration without unrestricted jumps", "Using goto statements extensively", "Writing all code in a single function", "Avoiding the use of functions"],
+      "correct_answer": "Breaking a program into modules using sequence, selection, and iteration without unrestricted jumps",
+      "explanation": "Structured programming organizes code using only sequence, selection, and iteration constructs, avoiding unstructured jumps like goto.",
+      "topic": "Structured programming principles",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which control constructs are considered the three basic building blocks of structured programming?",
+      "options": ["Sequence, selection, and iteration", "Compilation, linking, and loading", "Input, storage, and output", "Variables, constants, and operators"],
+      "correct_answer": "Sequence, selection, and iteration",
+      "explanation": "Structured programming theory shows that any algorithm can be expressed using only sequence, selection, and iteration.",
+      "topic": "Structured programming principles",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Structured programming discourages the use of which statement because it leads to unstructured, hard-to-follow code?",
+      "options": ["goto", "if", "while", "return"],
+      "correct_answer": "goto",
+      "explanation": "The goto statement allows arbitrary jumps in code execution, which structured programming avoids in favor of clear control structures.",
+      "topic": "Structured programming principles",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The principle of breaking a program into smaller, independent, reusable modules is called:",
+      "options": ["Modularity", "Recursion", "Polymorphism", "Inheritance"],
+      "correct_answer": "Modularity",
+      "explanation": "Modularity divides a program into separate, manageable modules or functions, each handling a distinct part of the task.",
+      "topic": "Structured programming principles",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In structured programming, a module or function should ideally:",
+      "options": ["Perform a single, well-defined task", "Perform as many unrelated tasks as possible", "Have no clear purpose", "Depend heavily on global variables"],
+      "correct_answer": "Perform a single, well-defined task",
+      "explanation": "Good modular design assigns each function one clear responsibility, improving readability and maintainability.",
+      "topic": "Structured programming principles",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a C program, execution always begins from the:",
+      "options": ["main() function", "first function defined in the file", "last function defined in the file", "function named start()"],
+      "correct_answer": "main() function",
+      "explanation": "Every standard C program must have a main() function, and execution starts there regardless of where it is placed in the file.",
+      "topic": "C program structure",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In C, preprocessor directives such as #include begin with which symbol?",
+      "options": ["#", "%", "&", "@"],
+      "correct_answer": "#",
+      "explanation": "Preprocessor directives in C always begin with the hash (#) symbol and are processed before compilation.",
+      "topic": "C program structure",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The directive #include <stdio.h> is used to:",
+      "options": ["Include the standard input/output header file", "Define a new function", "Declare a variable", "Start the main function"],
+      "correct_answer": "Include the standard input/output header file",
+      "explanation": "stdio.h provides declarations for standard input/output functions such as printf() and scanf().",
+      "topic": "C program structure",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which symbol is used to terminate a statement in C?",
+      "options": ["Semicolon (;)", "Colon (:)", "Period (.)", "Comma (,)"],
+      "correct_answer": "Semicolon (;)",
+      "explanation": "In C, each executable statement must end with a semicolon.",
+      "topic": "C program structure",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Curly braces { } in a C program are used to:",
+      "options": ["Group statements into a block", "Declare variables only", "End the program", "Include header files"],
+      "correct_answer": "Group statements into a block",
+      "explanation": "Curly braces enclose a block of statements, such as the body of a function, loop, or conditional.",
+      "topic": "C program structure",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A variable declared inside a function and accessible only within that function is called a:",
+      "options": ["Local variable", "Global variable", "Static variable", "External variable"],
+      "correct_answer": "Local variable",
+      "explanation": "Local variables are declared within a function or block and can only be accessed within that scope.",
+      "topic": "Storage classes and scope",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A variable declared outside all functions, accessible throughout the program, is called a:",
+      "options": ["Global variable", "Local variable", "Automatic variable", "Register variable"],
+      "correct_answer": "Global variable",
+      "explanation": "Global variables are declared outside any function and can be accessed by any function in the program.",
+      "topic": "Storage classes and scope",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The \"static\" storage class in C causes a local variable to:",
+      "options": ["Retain its value between function calls", "Lose its value after the function returns", "Become a global variable", "Become a constant that cannot be changed"],
+      "correct_answer": "Retain its value between function calls",
+      "explanation": "A static local variable is initialized only once and keeps its value across successive calls to the function.",
+      "topic": "Storage classes and scope",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The \"extern\" keyword in C is used to:",
+      "options": ["Declare a variable that is defined in another file or elsewhere in the program", "Make a variable local to a function", "Delete a variable", "Convert a variable to a constant"],
+      "correct_answer": "Declare a variable that is defined in another file or elsewhere in the program",
+      "explanation": "extern tells the compiler that a variable is defined elsewhere, allowing it to be shared across multiple source files.",
+      "topic": "Storage classes and scope",
+      "difficulty": "medium"
+    },
+    {
+      "question": "By default, local variables in C (without an explicit storage class) are considered:",
+      "options": ["Automatic (auto)", "Static", "Extern", "Register"],
+      "correct_answer": "Automatic (auto)",
+      "explanation": "If no storage class is specified, a local variable is automatic by default, existing only for the duration of the block.",
+      "topic": "Storage classes and scope",
+      "difficulty": "medium"
+    },
+    {
+      "question": "An array in C that uses two indices to access its elements (rows and columns) is called a:",
+      "options": ["Two-dimensional array", "One-dimensional array", "Linked list", "Structure"],
+      "correct_answer": "Two-dimensional array",
+      "explanation": "A two-dimensional array organizes data in rows and columns, requiring two indices to access an element.",
+      "topic": "Arrays",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Given the declaration int arr[5], the valid index range for accessing its elements is:",
+      "options": ["0 to 4", "1 to 5", "0 to 5", "1 to 4"],
+      "correct_answer": "0 to 4",
+      "explanation": "C arrays are zero-indexed, so an array of size 5 has valid indices from 0 to 4.",
+      "topic": "Arrays",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In C, a string is typically represented as:",
+      "options": ["An array of characters terminated by a null character ('\\0')", "A single character", "An integer array", "A floating-point array"],
+      "correct_answer": "An array of characters terminated by a null character ('\\0')",
+      "explanation": "C strings are character arrays that end with a special null terminator character to mark the end of the string.",
+      "topic": "Strings",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which C library function is used to find the length of a string?",
+      "options": ["strlen()", "strcpy()", "strcat()", "strcmp()"],
+      "correct_answer": "strlen()",
+      "explanation": "strlen() returns the number of characters in a string, not counting the null terminator.",
+      "topic": "Strings",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which C library function is used to concatenate (join) two strings?",
+      "options": ["strcat()", "strlen()", "strcpy()", "strcmp()"],
+      "correct_answer": "strcat()",
+      "explanation": "strcat() appends the contents of one string to the end of another.",
+      "topic": "Strings",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which C library function copies the contents of one string into another?",
+      "options": ["strcpy()", "strcat()", "strlen()", "strcmp()"],
+      "correct_answer": "strcpy()",
+      "explanation": "strcpy() copies a source string, including its terminator, into a destination character array.",
+      "topic": "Strings",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A pointer in C is a variable that:",
+      "options": ["Stores the memory address of another variable", "Stores only integer values", "Cannot be used with arrays", "Is the same as a constant"],
+      "correct_answer": "Stores the memory address of another variable",
+      "explanation": "A pointer holds the memory address where another variable's value is stored, rather than the value itself.",
+      "topic": "Pointers",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The \"&\" operator, when placed before a variable name in C, is used to:",
+      "options": ["Get the address of the variable", "Dereference a pointer", "Perform a logical AND", "Declare a pointer"],
+      "correct_answer": "Get the address of the variable",
+      "explanation": "The address-of operator (&) retrieves the memory address at which a variable is stored.",
+      "topic": "Pointers",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The \"*\" operator, when placed before a pointer variable, is used to:",
+      "options": ["Dereference the pointer to access the value it points to", "Get the address of the pointer", "Multiply two pointers", "Declare an array"],
+      "correct_answer": "Dereference the pointer to access the value it points to",
+      "explanation": "The dereference operator (*) accesses the value stored at the memory address held by a pointer.",
+      "topic": "Pointers",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In C, the name of an array, when used in most expressions, decays into:",
+      "options": ["A pointer to its first element", "An integer value", "A string", "A structure"],
+      "correct_answer": "A pointer to its first element",
+      "explanation": "In most expressions, an array's name is automatically converted to a pointer pointing to its first element.",
+      "topic": "Pointers",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A user-defined data type in C that groups variables of different data types under one name is called a:",
+      "options": ["Structure (struct)", "Array", "Pointer", "Function"],
+      "correct_answer": "Structure (struct)",
+      "explanation": "A struct groups related variables of possibly different types together under a single user-defined type.",
+      "topic": "Structures",
+      "difficulty": "easy"
+    },
+    {
+      "question": "To access a member of a structure variable directly, C uses which operator?",
+      "options": ["Dot (.) operator", "Arrow (->) operator", "Ampersand (&)", "Asterisk (*)"],
+      "correct_answer": "Dot (.) operator",
+      "explanation": "The dot operator is used to access a member of a structure variable that is not a pointer.",
+      "topic": "Structures",
+      "difficulty": "medium"
+    },
+    {
+      "question": "To access a structure member through a pointer to that structure, C uses which operator?",
+      "options": ["Arrow (->) operator", "Dot (.) operator", "Ampersand (&)", "Percent (%)"],
+      "correct_answer": "Arrow (->) operator",
+      "explanation": "The arrow operator (->) is used to access members of a structure through a pointer to that structure.",
+      "topic": "Structures",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A function that calls itself, directly or indirectly, is called a:",
+      "options": ["Recursive function", "Static function", "Inline function", "Virtual function"],
+      "correct_answer": "Recursive function",
+      "explanation": "A recursive function solves a problem by calling itself with a smaller version of the same problem.",
+      "topic": "Recursion",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Every recursive function must have a ___ to prevent infinite recursion.",
+      "options": ["Base case (terminating condition)", "Global variable", "Return type of void", "Loop"],
+      "correct_answer": "Base case (terminating condition)",
+      "explanation": "A base case stops the recursive calls once a certain condition is met, preventing infinite recursion and a stack overflow.",
+      "topic": "Recursion",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which of these problems is classically solved using recursion?",
+      "options": ["Calculating the factorial of a number", "Printing \"Hello World\" once", "Declaring a variable", "Including a header file"],
+      "correct_answer": "Calculating the factorial of a number",
+      "explanation": "The factorial function is a classic example of recursion, since n! is defined in terms of (n-1)!.",
+      "topic": "Recursion",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In C, the function fopen() is used to:",
+      "options": ["Open a file for reading, writing, or appending", "Close an open file", "Delete a file", "Rename a file"],
+      "correct_answer": "Open a file for reading, writing, or appending",
+      "explanation": "fopen() opens a file and returns a file pointer that is used for subsequent file operations.",
+      "topic": "File handling",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The C function used to close an open file is:",
+      "options": ["fclose()", "fopen()", "fread()", "fwrite()"],
+      "correct_answer": "fclose()",
+      "explanation": "fclose() closes a file that was previously opened with fopen(), releasing associated resources.",
+      "topic": "File handling",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A sorting algorithm that repeatedly compares and swaps adjacent elements if they are in the wrong order is called:",
+      "options": ["Bubble sort", "Binary search", "Linear search", "Quick recursion"],
+      "correct_answer": "Bubble sort",
+      "explanation": "Bubble sort repeatedly steps through a list, swapping adjacent elements that are out of order, until the list is sorted.",
+      "topic": "Sorting and searching",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which searching algorithm requires the data to be sorted first and repeatedly divides the search interval in half?",
+      "options": ["Binary search", "Linear search", "Bubble sort", "Selection sort"],
+      "correct_answer": "Binary search",
+      "explanation": "Binary search works on sorted data by repeatedly halving the search range to quickly locate the target value.",
+      "topic": "Sorting and searching",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A search algorithm that checks each element one by one from the beginning until the target is found is called:",
+      "options": ["Linear search", "Binary search", "Bubble sort", "Insertion sort"],
+      "correct_answer": "Linear search",
+      "explanation": "Linear search examines each element sequentially until it finds a match or reaches the end of the list.",
+      "topic": "Sorting and searching",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The scope of a variable refers to:",
+      "options": ["The region of the program where the variable can be accessed", "The amount of memory it occupies", "Its data type", "Its initial value"],
+      "correct_answer": "The region of the program where the variable can be accessed",
+      "explanation": "Scope defines the part of the program in which a declared variable is visible and can be referenced.",
+      "topic": "Storage classes and scope",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Passing a copy of a variable's value to a function, such that changes inside the function do not affect the original variable, is called:",
+      "options": ["Pass by value", "Pass by reference", "Pass by pointer only", "Global passing"],
+      "correct_answer": "Pass by value",
+      "explanation": "In pass by value, a copy of the argument is given to the function, so modifications inside the function do not affect the caller's original variable.",
+      "topic": "Functions",
+      "difficulty": "medium"
+    }
+  ]
+}

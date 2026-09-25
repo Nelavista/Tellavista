@@ -1,0 +1,378 @@
+{
+  "course_code": "SLT202",
+  "title": "Laboratory Techniques II",
+  "level": "200",
+  "source_note": "Standard NUC-aligned 200-level Science Laboratory Technology curriculum building on SLT201: separation and purification techniques (chromatography, extraction, distillation, crystallization, sublimation), gravimetric analysis, basic colorimetry/spectrophotometry, electrophoresis, and sample preservation, all bench-technique oriented and distinct from SLT201's basic measurement/titration content.",
+  "questions": [
+    {
+      "question": "Chromatography separates the components of a mixture based on:",
+      "options": [
+        "Differences in boiling point only",
+        "Differences in the relative affinity of components for a stationary phase versus a moving mobile phase",
+        "Differences in electrical conductivity",
+        "Differences in melting point only"
+      ],
+      "correct_answer": "Differences in the relative affinity of components for a stationary phase versus a moving mobile phase",
+      "explanation": "All chromatographic methods separate mixture components by how strongly each is retained by the stationary phase compared with how readily it travels with the mobile phase.",
+      "topic": "Chromatography principles",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In thin-layer chromatography (TLC), the Rf value of a spot is calculated as:",
+      "options": [
+        "Distance travelled by solvent front divided by distance travelled by the spot",
+        "Distance travelled by the spot divided by distance travelled by the solvent front",
+        "Distance travelled by the spot multiplied by the plate length",
+        "Time taken for the spot to travel divided by total run time"
+      ],
+      "correct_answer": "Distance travelled by the spot divided by distance travelled by the solvent front",
+      "explanation": "Rf (retention factor) = distance moved by the compound / distance moved by the solvent front, and is always less than 1.",
+      "topic": "Chromatography (TLC)",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A TLC spot travels 4.5 cm while the solvent front travels 9.0 cm. What is the Rf value?",
+      "options": ["0.5", "2.0", "4.5", "0.9"],
+      "correct_answer": "0.5",
+      "explanation": "Rf = 4.5 cm / 9.0 cm = 0.5.",
+      "topic": "Chromatography calculations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In paper chromatography, the stationary phase is best described as:",
+      "options": [
+        "The dry cellulose fibres of the paper alone",
+        "Water held within the cellulose fibres of the paper",
+        "The solvent in the developing tank",
+        "The pencil line used to spot the sample"
+      ],
+      "correct_answer": "Water held within the cellulose fibres of the paper",
+      "explanation": "In paper chromatography the true stationary phase is the layer of water adsorbed onto the cellulose fibres, while the mobile phase is the developing solvent.",
+      "topic": "Chromatography (paper)",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In column chromatography, the sample components that are LEAST strongly adsorbed onto the stationary phase (packing material) will:",
+      "options": [
+        "Remain permanently at the top of the column",
+        "Elute (come off the column) first",
+        "Elute last, after all other components",
+        "Never separate from the mobile phase"
+      ],
+      "correct_answer": "Elute (come off the column) first",
+      "explanation": "Weakly retained components move fastest with the mobile phase and are collected first at the bottom of the column; strongly adsorbed components elute later.",
+      "topic": "Chromatography (column)",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Liquid-liquid extraction (using a separating funnel) relies on the principle that a solute distributes between two immiscible solvents according to its:",
+      "options": [
+        "Melting point in each solvent",
+        "Partition (distribution) coefficient between the two solvents",
+        "Electrical charge in each solvent",
+        "Density relative to water only"
+      ],
+      "correct_answer": "Partition (distribution) coefficient between the two solvents",
+      "explanation": "A solute distributes between two immiscible liquids in a ratio described by its partition coefficient, which extraction exploits to transfer it preferentially into one phase.",
+      "topic": "Liquid-liquid extraction",
+      "difficulty": "medium"
+    },
+    {
+      "question": "When using a separating funnel for extraction, why must the tap be opened periodically (with the funnel inverted) during shaking?",
+      "options": [
+        "To mix the layers more vigorously",
+        "To release built-up vapour pressure from volatile solvents and prevent the stopper from being forced out",
+        "To add more solvent to the funnel",
+        "To check the colour of the lower layer"
+      ],
+      "correct_answer": "To release built-up vapour pressure from volatile solvents and prevent the stopper from being forced out",
+      "explanation": "Shaking immiscible, often volatile solvents builds internal pressure; venting through the tap at intervals prevents pressure buildup that could pop the stopper or burst the funnel.",
+      "topic": "Liquid-liquid extraction",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Simple distillation is an appropriate technique for separating:",
+      "options": [
+        "Two miscible liquids with very close boiling points",
+        "A dissolved non-volatile solute (e.g. salt) from a volatile solvent (e.g. water)",
+        "Two immiscible liquids of similar density",
+        "A mixture of solids only"
+      ],
+      "correct_answer": "A dissolved non-volatile solute (e.g. salt) from a volatile solvent (e.g. water)",
+      "explanation": "Simple distillation vaporizes and condenses a volatile liquid away from a non-volatile dissolved solid or from a liquid with a very different, well-separated boiling point.",
+      "topic": "Distillation",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Fractional distillation differs from simple distillation mainly by the addition of a:",
+      "options": [
+        "Fractionating column providing repeated vaporization-condensation cycles to separate liquids with close boiling points",
+        "Larger heating mantle for higher temperatures",
+        "Second condenser in series",
+        "Vacuum pump to lower the pressure"
+      ],
+      "correct_answer": "Fractionating column providing repeated vaporization-condensation cycles to separate liquids with close boiling points",
+      "explanation": "The fractionating column provides a large surface area for repeated condensation and re-vaporization, improving separation of liquids whose boiling points are close together.",
+      "topic": "Distillation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Steam distillation is particularly useful for isolating a volatile, heat-sensitive compound (e.g. an essential oil) that is immiscible with water because:",
+      "options": [
+        "It allows the compound to distil at a temperature below its normal boiling point, avoiding decomposition",
+        "It requires no heating at all",
+        "It increases the boiling point of the compound above 100 degC",
+        "It only works with water-soluble compounds"
+      ],
+      "correct_answer": "It allows the compound to distil at a temperature below its normal boiling point, avoiding decomposition",
+      "explanation": "With immiscible liquids, the mixture boils when the sum of the two vapour pressures equals atmospheric pressure, so the compound co-distils with steam at a temperature below its own boiling point.",
+      "topic": "Distillation",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Crystallization is used to purify a solid compound mainly by exploiting:",
+      "options": [
+        "Its differential solubility in a solvent at high versus low temperature",
+        "Its boiling point in the pure state",
+        "Its electrical conductivity in solution",
+        "Its colour under ultraviolet light"
+      ],
+      "correct_answer": "Its differential solubility in a solvent at high versus low temperature",
+      "explanation": "The compound is dissolved in a minimum volume of hot solvent, then slowly cooled so it becomes less soluble and crystallizes out, leaving soluble impurities in solution.",
+      "topic": "Crystallization",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Adding a small 'seed' crystal to a cooled, supersaturated solution helps to:",
+      "options": [
+        "Dissolve any remaining solid completely",
+        "Initiate and promote ordered crystal growth rather than a sudden, uncontrolled precipitate",
+        "Raise the boiling point of the solution",
+        "Neutralize the solution's pH"
+      ],
+      "correct_answer": "Initiate and promote ordered crystal growth rather than a sudden, uncontrolled precipitate",
+      "explanation": "A seed crystal provides a nucleation site so the solute deposits in an ordered lattice, producing larger, purer crystals rather than rapid, impure precipitation.",
+      "topic": "Crystallization",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A good recrystallization solvent for a given compound should ideally:",
+      "options": [
+        "Dissolve the compound well when cold and remain insoluble when hot",
+        "Dissolve the compound well when hot but only sparingly when cold, so crystals form on cooling",
+        "Be completely unable to dissolve the compound at any temperature",
+        "React chemically with the compound to form a new substance"
+      ],
+      "correct_answer": "Dissolve the compound well when hot but only sparingly when cold, so crystals form on cooling",
+      "explanation": "An ideal recrystallization solvent gives high solubility of the compound at its boiling point and low solubility when cold, maximizing recovery of pure crystals.",
+      "topic": "Crystallization",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Sublimation is used as a purification method for compounds that:",
+      "options": [
+        "Boil at very low temperatures only",
+        "Pass directly from the solid to the gaseous state (and back) without melting, leaving non-sublimable impurities behind",
+        "Are highly soluble in water at room temperature",
+        "Decompose immediately on any heating"
+      ],
+      "correct_answer": "Pass directly from the solid to the gaseous state (and back) without melting, leaving non-sublimable impurities behind",
+      "explanation": "Sublimable solids (e.g. iodine, naphthalene) vaporize directly and re-condense as pure solid on a cold surface, separating them from impurities that do not sublime.",
+      "topic": "Sublimation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "'Drying to constant weight' in the laboratory means a sample is repeatedly dried and reweighed until:",
+      "options": [
+        "It reaches exactly 100 g",
+        "Successive weighings show no further significant change in mass, confirming all moisture/volatiles have been removed",
+        "The sample changes colour",
+        "One hour of drying has elapsed, regardless of the reading"
+      ],
+      "correct_answer": "Successive weighings show no further significant change in mass, confirming all moisture/volatiles have been removed",
+      "explanation": "Constant weight is reached when repeated drying-cooling-weighing cycles produce essentially identical mass readings, showing that drying is complete.",
+      "topic": "Gravimetric technique",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A wet sample weighs 12.50 g before drying and 10.00 g after drying to constant weight. What is the percentage moisture content?",
+      "options": ["20.0%", "25.0%", "16.7%", "12.5%"],
+      "correct_answer": "20.0%",
+      "explanation": "% moisture = (mass lost / initial mass) x 100 = (2.50/12.50) x 100 = 20.0%.",
+      "topic": "Gravimetric calculations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The main difference between evaporation and distillation as separation techniques is that:",
+      "options": [
+        "Evaporation recovers only the solvent vapour, while distillation is used only for solids",
+        "Evaporation is used to obtain the dissolved solid by driving off the solvent (which is usually lost), while distillation condenses and collects the vaporized liquid itself",
+        "There is no real difference between the two techniques",
+        "Evaporation always requires a vacuum, unlike distillation"
+      ],
+      "correct_answer": "Evaporation is used to obtain the dissolved solid by driving off the solvent (which is usually lost), while distillation condenses and collects the vaporized liquid itself",
+      "explanation": "Evaporation simply drives off solvent to concentrate or isolate a solute, whereas distillation specifically condenses and collects the vapour as a purified liquid product.",
+      "topic": "Separation techniques",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The general steps of a gravimetric analysis, in correct order, are:",
+      "options": [
+        "Precipitate the analyte, filter, wash, dry/ignite to constant weight, then weigh the precipitate",
+        "Weigh the sample, dissolve it, and report the mass directly as the analyte",
+        "Titrate the sample, then evaporate the titrant",
+        "Filter first, then add the precipitating reagent afterward"
+      ],
+      "correct_answer": "Precipitate the analyte, filter, wash, dry/ignite to constant weight, then weigh the precipitate",
+      "explanation": "Gravimetric analysis quantifies an analyte by converting it to an insoluble precipitate, then filtering, washing, drying/igniting, and weighing it to determine mass and hence composition.",
+      "topic": "Gravimetric analysis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In gravimetric analysis, the precipitate is washed with a suitable wash liquid (not pure water alone, in many cases) mainly to:",
+      "options": [
+        "Increase the mass of the precipitate",
+        "Remove soluble impurities/adsorbed ions from the precipitate surface without causing it to dissolve or peptize",
+        "Dissolve the precipitate completely for easier transfer",
+        "Change the precipitate's chemical identity"
+      ],
+      "correct_answer": "Remove soluble impurities/adsorbed ions from the precipitate surface without causing it to dissolve or peptize",
+      "explanation": "An appropriate wash solution removes surface-adsorbed impurities while minimizing solubility loss of the precipitate and preventing peptization (breakup into colloidal particles).",
+      "topic": "Gravimetric analysis",
+      "difficulty": "hard"
+    },
+    {
+      "question": "If a reaction theoretically should yield 5.00 g of product but only 4.25 g is actually obtained, the percentage yield is:",
+      "options": ["85.0%", "75.0%", "90.0%", "17.6%"],
+      "correct_answer": "85.0%",
+      "explanation": "% yield = (actual yield / theoretical yield) x 100 = (4.25/5.00) x 100 = 85.0%.",
+      "topic": "Yield calculations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A sample of crude compound weighing 8.0 g is found to contain 6.4 g of the pure active substance. What is the percentage purity of the sample?",
+      "options": ["80.0%", "64.0%", "125.0%", "20.0%"],
+      "correct_answer": "80.0%",
+      "explanation": "% purity = (mass of pure substance / total sample mass) x 100 = (6.4/8.0) x 100 = 80.0%.",
+      "topic": "Purity calculations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In colorimetry/spectrophotometry, the basic principle used to determine the concentration of a coloured solution is that:",
+      "options": [
+        "Concentration is directly proportional to the solution's boiling point",
+        "The amount of light absorbed by the solution is related to the concentration of the absorbing substance, as described by the Beer-Lambert law",
+        "Concentration is measured by weighing the coloured solution",
+        "Colour intensity has no relationship to concentration"
+      ],
+      "correct_answer": "The amount of light absorbed by the solution is related to the concentration of the absorbing substance, as described by the Beer-Lambert law",
+      "explanation": "Colorimetry and spectrophotometry measure light absorbance, which the Beer-Lambert law relates directly to the concentration of the coloured/absorbing species in solution.",
+      "topic": "Colorimetry/spectrophotometry",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The Beer-Lambert law is commonly expressed as A = ecl. In this equation, 'c' represents:",
+      "options": [
+        "The path length of light through the sample",
+        "The molar absorptivity (extinction coefficient) of the substance",
+        "The concentration of the absorbing solution",
+        "The wavelength of light used"
+      ],
+      "correct_answer": "The concentration of the absorbing solution",
+      "explanation": "In A = ecl, A is absorbance, e (epsilon) is the molar absorptivity, c is concentration, and l is the path length of the light through the sample.",
+      "topic": "Colorimetry/spectrophotometry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Before measuring the absorbance of a series of coloured sample solutions, a spectrophotometer is first zeroed using a 'blank'. The blank typically contains:",
+      "options": [
+        "The most concentrated standard solution available",
+        "All reagents used in colour development except the analyte itself, to correct for background absorbance",
+        "Pure mercury for calibration",
+        "A solution of unknown, random composition"
+      ],
+      "correct_answer": "All reagents used in colour development except the analyte itself, to correct for background absorbance",
+      "explanation": "The blank contains the same solvent/reagents as the samples but without the analyte, allowing the instrument to be zeroed against background absorbance from the matrix.",
+      "topic": "Colorimetry/spectrophotometry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Gel electrophoresis separates charged molecules (e.g. DNA fragments or proteins) mainly on the basis of their:",
+      "options": [
+        "Colour under visible light",
+        "Size (and charge), as they migrate through a gel matrix under an applied electric field",
+        "Melting point",
+        "Solubility in organic solvents"
+      ],
+      "correct_answer": "Size (and charge), as they migrate through a gel matrix under an applied electric field",
+      "explanation": "In an electric field, charged molecules migrate through the porous gel matrix at rates influenced chiefly by their size (and charge/shape), separating them into bands.",
+      "topic": "Electrophoresis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In agarose gel electrophoresis of DNA, smaller DNA fragments migrate:",
+      "options": [
+        "Faster and further through the gel than larger fragments",
+        "Slower and less far through the gel than larger fragments",
+        "At exactly the same rate as larger fragments",
+        "Away from the direction of the electric field"
+      ],
+      "correct_answer": "Faster and further through the gel than larger fragments",
+      "explanation": "Smaller DNA fragments move more easily through the pores of the agarose gel matrix and therefore travel farther than larger fragments in the same run time.",
+      "topic": "Electrophoresis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which of the following is NOT a standard method of preserving a laboratory sample prior to analysis?",
+      "options": [
+        "Refrigeration or freezing to slow decomposition",
+        "Addition of an appropriate chemical preservative",
+        "Drying or desiccation to remove moisture",
+        "Leaving the sample uncovered at room temperature indefinitely"
+      ],
+      "correct_answer": "Leaving the sample uncovered at room temperature indefinitely",
+      "explanation": "Uncovered storage at room temperature promotes contamination, evaporation, and microbial or chemical degradation; recognized preservation methods include cooling, freezing, drying, or adding preservatives.",
+      "topic": "Sample preservation",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A Soxhlet extractor is a continuous solid-liquid extraction apparatus mainly used to:",
+      "options": [
+        "Extract a soluble compound repeatedly from a solid sample using a small, continuously recycled volume of solvent",
+        "Distil two miscible liquids of similar boiling point",
+        "Filter a precipitate under vacuum",
+        "Measure the pH of a solid sample"
+      ],
+      "correct_answer": "Extract a soluble compound repeatedly from a solid sample using a small, continuously recycled volume of solvent",
+      "explanation": "A Soxhlet apparatus repeatedly floods a solid sample with fresh, condensed solvent, efficiently extracting soluble compounds using a relatively small total solvent volume.",
+      "topic": "Extraction techniques",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A rotary evaporator ('rotavap') is used in the laboratory chiefly to:",
+      "options": [
+        "Efficiently remove solvent from a solution under reduced pressure at a relatively low temperature",
+        "Titrate a solution to its end point",
+        "Measure the melting point of a solid",
+        "Separate ions by electrophoresis"
+      ],
+      "correct_answer": "Efficiently remove solvent from a solution under reduced pressure at a relatively low temperature",
+      "explanation": "The rotary evaporator combines reduced pressure, gentle heating, and rotation to remove solvent quickly while minimizing thermal decomposition of the product.",
+      "topic": "Solvent removal techniques",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Determining the melting point of a purified solid and comparing it with the literature value is a common technique used mainly to assess:",
+      "options": [
+        "The colour of the compound",
+        "The purity and identity of the compound, since impurities typically lower and broaden the melting point range",
+        "The exact molecular formula of the compound",
+        "The boiling point of the compound"
+      ],
+      "correct_answer": "The purity and identity of the compound, since impurities typically lower and broaden the melting point range",
+      "explanation": "A sharp melting point close to the literature value indicates a pure compound; a lowered, broadened range indicates the presence of impurities.",
+      "topic": "Purity assessment",
+      "difficulty": "medium"
+    }
+  ]
+}

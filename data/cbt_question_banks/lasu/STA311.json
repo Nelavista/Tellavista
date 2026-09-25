@@ -1,0 +1,280 @@
+{
+  "course_code": "STA311",
+  "title": "Probability III",
+  "level": "300",
+  "source_note": "Standard NUC-aligned 300L advanced probability curriculum, building on STA112 (Probability I): joint and marginal distributions, conditional distributions and expectation, functions of random variables, moment generating functions, transformations, covariance and correlation, the Central Limit Theorem, and convergence concepts (in probability, in distribution).",
+  "questions": [
+    {
+      "question": "For two discrete random variables X and Y, the joint probability mass function p(x,y) gives:",
+      "options": ["The probability that X = x and Y = y simultaneously", "The probability that X = x regardless of Y", "The probability that X = x given Y = y", "The sum of P(X=x) and P(Y=y)"],
+      "correct_answer": "The probability that X = x and Y = y simultaneously",
+      "explanation": "The joint pmf p(x,y) = P(X=x, Y=y) specifies the probability of the simultaneous occurrence of both events.",
+      "topic": "Joint distributions",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The marginal probability mass function of X, given a joint pmf p(x,y), is obtained by:",
+      "options": ["Summing p(x,y) over all values of y", "Multiplying p(x,y) by P(Y=y)", "Taking the derivative of p(x,y) with respect to y", "Setting y equal to zero in p(x,y)"],
+      "correct_answer": "Summing p(x,y) over all values of y",
+      "explanation": "The marginal pmf of X is obtained by summing (or integrating, for continuous variables) the joint pmf/pdf over all possible values of the other variable Y.",
+      "topic": "Joint distributions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Two discrete random variables X and Y are statistically independent if and only if:",
+      "options": ["p(x,y) = p_X(x) . p_Y(y) for all x, y", "p(x,y) = p_X(x) + p_Y(y) for all x, y", "E(XY) = 0", "Var(X+Y) = Var(X) - Var(Y)"],
+      "correct_answer": "p(x,y) = p_X(x) . p_Y(y) for all x, y",
+      "explanation": "Independence requires the joint pmf to factor exactly as the product of the two marginal pmfs for every pair (x, y).",
+      "topic": "Independence of random variables",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The conditional pmf of Y given X = x is defined as:",
+      "options": ["p(y|x) = p(x,y) / p_X(x)", "p(y|x) = p(x,y) . p_X(x)", "p(y|x) = p_X(x) / p(x,y)", "p(y|x) = p_X(x) - p(x,y)"],
+      "correct_answer": "p(y|x) = p(x,y) / p_X(x)",
+      "explanation": "By the definition of conditional probability applied to random variables, p(y|x) = p(x,y) / p_X(x), provided p_X(x) > 0.",
+      "topic": "Conditional distributions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The conditional expectation E(Y|X=x) represents:",
+      "options": ["The average value of Y for a fixed value of X = x", "The average value of X for a fixed value of Y", "The unconditional expectation of Y", "The variance of Y given X"],
+      "correct_answer": "The average value of Y for a fixed value of X = x",
+      "explanation": "E(Y|X=x) is the expected value of Y computed using the conditional distribution of Y given that X takes the specific value x.",
+      "topic": "Conditional distributions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Law of Total Expectation (tower property) states that:",
+      "options": ["E(Y) = E[E(Y|X)]", "E(Y) = E(X) + E(Y|X)", "E(Y) = E(Y|X) for all X", "E(Y) = Var[E(Y|X)]"],
+      "correct_answer": "E(Y) = E[E(Y|X)]",
+      "explanation": "The tower property states that the unconditional expectation of Y equals the expectation, over X, of the conditional expectation of Y given X.",
+      "topic": "Conditional distributions",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The covariance between two random variables X and Y is defined as:",
+      "options": ["Cov(X,Y) = E[(X - E(X))(Y - E(Y))]", "Cov(X,Y) = E(X) . E(Y)", "Cov(X,Y) = E(X) + E(Y)", "Cov(X,Y) = Var(X) / Var(Y)"],
+      "correct_answer": "Cov(X,Y) = E[(X - E(X))(Y - E(Y))]",
+      "explanation": "Covariance measures the joint variability of X and Y, defined as the expected product of their deviations from their respective means.",
+      "topic": "Covariance and correlation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A useful computational formula for covariance is:",
+      "options": ["Cov(X,Y) = E(XY) - E(X)E(Y)", "Cov(X,Y) = E(XY) + E(X)E(Y)", "Cov(X,Y) = E(X)E(Y) - Var(X)", "Cov(X,Y) = E(X-Y)"],
+      "correct_answer": "Cov(X,Y) = E(XY) - E(X)E(Y)",
+      "explanation": "Expanding the definition of covariance algebraically gives the shortcut formula Cov(X,Y) = E(XY) - E(X)E(Y).",
+      "topic": "Covariance and correlation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "If X and Y are independent random variables, then Cov(X,Y) equals:",
+      "options": ["0", "1", "Var(X) + Var(Y)", "E(X)E(Y)"],
+      "correct_answer": "0",
+      "explanation": "Independence implies E(XY) = E(X)E(Y), so Cov(X,Y) = E(XY) - E(X)E(Y) = 0. Note the converse is not generally true.",
+      "topic": "Covariance and correlation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For any two random variables X and Y, Var(X+Y) equals:",
+      "options": ["Var(X) + Var(Y) + 2Cov(X,Y)", "Var(X) + Var(Y)", "Var(X) . Var(Y)", "Var(X) - Var(Y) - 2Cov(X,Y)"],
+      "correct_answer": "Var(X) + Var(Y) + 2Cov(X,Y)",
+      "explanation": "The variance of a sum includes a covariance term: Var(X+Y) = Var(X) + Var(Y) + 2Cov(X,Y), which reduces to Var(X)+Var(Y) only when X and Y are independent (or uncorrelated).",
+      "topic": "Covariance and correlation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Pearson correlation coefficient rho(X,Y) is defined as:",
+      "options": ["Cov(X,Y) / [SD(X) . SD(Y)]", "Cov(X,Y) / [Var(X) + Var(Y)]", "Cov(X,Y) . SD(X) . SD(Y)", "SD(X) / SD(Y)"],
+      "correct_answer": "Cov(X,Y) / [SD(X) . SD(Y)]",
+      "explanation": "Correlation standardizes covariance by dividing by the product of the standard deviations, so that rho always lies between -1 and +1.",
+      "topic": "Covariance and correlation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The correlation coefficient rho(X,Y) must always lie in which range?",
+      "options": ["-1 to +1", "0 to +1", "-infinity to +infinity", "0 to +infinity"],
+      "correct_answer": "-1 to +1",
+      "explanation": "By the Cauchy-Schwarz inequality, the correlation coefficient is bounded between -1 and +1 inclusive.",
+      "topic": "Covariance and correlation",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The moment generating function (MGF) of a random variable X is defined as:",
+      "options": ["M_X(t) = E(e^{tX})", "M_X(t) = E(X^t)", "M_X(t) = E(tX)", "M_X(t) = Var(X) . t"],
+      "correct_answer": "M_X(t) = E(e^{tX})",
+      "explanation": "The moment generating function is M_X(t) = E(e^{tX}), and its derivatives evaluated at t=0 generate the moments of X.",
+      "topic": "Moment generating functions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Given the MGF of X, the mean E(X) can be obtained by:",
+      "options": ["Evaluating the first derivative of M_X(t) at t = 0", "Evaluating M_X(0) directly", "Taking the integral of M_X(t) over all t", "Squaring M_X(t) at t = 0"],
+      "correct_answer": "Evaluating the first derivative of M_X(t) at t = 0",
+      "explanation": "The k-th moment E(X^k) is obtained by differentiating the MGF k times with respect to t and evaluating at t = 0; the first moment (mean) uses the first derivative.",
+      "topic": "Moment generating functions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "If X and Y are independent random variables, the MGF of their sum Z = X + Y is:",
+      "options": ["M_Z(t) = M_X(t) . M_Y(t)", "M_Z(t) = M_X(t) + M_Y(t)", "M_Z(t) = M_X(t) - M_Y(t)", "M_Z(t) = M_X(t) / M_Y(t)"],
+      "correct_answer": "M_Z(t) = M_X(t) . M_Y(t)",
+      "explanation": "For independent random variables, the MGF of the sum equals the product of the individual MGFs, a key property used to identify sums of distributions.",
+      "topic": "Moment generating functions",
+      "difficulty": "hard"
+    },
+    {
+      "question": "If Y = aX + b is a linear transformation of X, then E(Y) equals:",
+      "options": ["aE(X) + b", "aE(X)", "a + bE(X)", "E(X) + b"],
+      "correct_answer": "aE(X) + b",
+      "explanation": "Expectation is a linear operator, so for Y = aX + b, E(Y) = aE(X) + b.",
+      "topic": "Functions and transformations of random variables",
+      "difficulty": "easy"
+    },
+    {
+      "question": "If Y = aX + b is a linear transformation of X, then Var(Y) equals:",
+      "options": ["a^2 . Var(X)", "a . Var(X) + b", "Var(X) + b^2", "a . Var(X)"],
+      "correct_answer": "a^2 . Var(X)",
+      "explanation": "Adding a constant b does not affect variance, and scaling by a multiplies variance by a^2: Var(aX+b) = a^2 Var(X).",
+      "topic": "Functions and transformations of random variables",
+      "difficulty": "medium"
+    },
+    {
+      "question": "When finding the distribution of Y = g(X) for a continuous random variable using the transformation (change-of-variable) technique, the key formula involves:",
+      "options": ["Multiplying the pdf of X (evaluated at the inverse function) by the absolute value of the derivative of the inverse function", "Simply substituting Y for X in the pdf without adjustment", "Taking the integral of the pdf of X from 0 to Y", "Dividing the pdf of X by g(x)"],
+      "correct_answer": "Multiplying the pdf of X (evaluated at the inverse function) by the absolute value of the derivative of the inverse function",
+      "explanation": "The change-of-variable (Jacobian) technique requires f_Y(y) = f_X(g^{-1}(y)) . |d/dy g^{-1}(y)| to correctly transform the density.",
+      "topic": "Functions and transformations of random variables",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The Central Limit Theorem (CLT) states that, for a sufficiently large sample size n, the distribution of the sample mean:",
+      "options": ["Approaches a normal distribution regardless of the population's original distribution", "Always equals the population distribution exactly", "Becomes uniformly distributed", "Approaches a Poisson distribution"],
+      "correct_answer": "Approaches a normal distribution regardless of the population's original distribution",
+      "explanation": "The CLT states that as sample size increases, the sampling distribution of the mean approaches normality regardless of the shape of the underlying population distribution, given finite variance.",
+      "topic": "Central Limit Theorem",
+      "difficulty": "medium"
+    },
+    {
+      "question": "According to the Central Limit Theorem, if a population has mean mu and variance sigma^2, the sample mean X-bar from a sample of size n has approximate distribution:",
+      "options": ["Normal with mean mu and variance sigma^2/n", "Normal with mean mu and variance sigma^2", "Normal with mean n.mu and variance sigma^2", "Uniform with mean mu"],
+      "correct_answer": "Normal with mean mu and variance sigma^2/n",
+      "explanation": "By the CLT, X-bar is approximately N(mu, sigma^2/n) for large n, showing that the variance of the sample mean shrinks as sample size grows.",
+      "topic": "Central Limit Theorem",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A sequence of random variables X_n is said to converge in probability to X if, for every epsilon > 0:",
+      "options": ["P(|X_n - X| > epsilon) approaches 0 as n approaches infinity", "P(X_n = X) equals 1 for all n", "E(X_n) equals E(X) for all n", "X_n equals X for all n greater than some N"],
+      "correct_answer": "P(|X_n - X| > epsilon) approaches 0 as n approaches infinity",
+      "explanation": "Convergence in probability requires the probability that X_n deviates from X by more than any fixed epsilon to vanish as n grows.",
+      "topic": "Convergence concepts",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The Weak Law of Large Numbers states that, as sample size n increases:",
+      "options": ["The sample mean converges in probability to the population mean", "The sample variance converges to zero", "Individual observations become identical", "The sample mean converges to the sample median"],
+      "correct_answer": "The sample mean converges in probability to the population mean",
+      "explanation": "The Weak Law of Large Numbers states that the sample mean X-bar_n converges in probability to the true population mean mu as n approaches infinity.",
+      "topic": "Convergence concepts",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Convergence in distribution differs from convergence in probability in that convergence in distribution only requires:",
+      "options": ["The cumulative distribution functions to converge at continuity points", "Individual sample paths to converge almost surely", "The variance to converge to zero", "The random variables to be defined on the same probability space"],
+      "correct_answer": "The cumulative distribution functions to converge at continuity points",
+      "explanation": "Convergence in distribution (weak convergence) is a weaker condition requiring only that CDFs converge pointwise at continuity points of the limiting CDF, unlike convergence in probability.",
+      "topic": "Convergence concepts",
+      "difficulty": "hard"
+    },
+    {
+      "question": "If X and Y are independent Poisson random variables with parameters lambda1 and lambda2 respectively, then Z = X + Y follows:",
+      "options": ["A Poisson distribution with parameter lambda1 + lambda2", "A binomial distribution", "A normal distribution exactly", "A Poisson distribution with parameter lambda1 . lambda2"],
+      "correct_answer": "A Poisson distribution with parameter lambda1 + lambda2",
+      "explanation": "The sum of independent Poisson random variables is itself Poisson-distributed, with rate parameter equal to the sum of the individual rates, provable via the MGF product property.",
+      "topic": "Sums and functions of random variables",
+      "difficulty": "hard"
+    },
+    {
+      "question": "If X1, X2, ..., Xn are independent normal random variables with means mu_i and variances sigma_i^2, then their sum is:",
+      "options": ["Normally distributed with mean equal to the sum of the means and variance equal to the sum of the variances", "Normally distributed with mean equal to the product of the means", "Not normally distributed in general", "Uniformly distributed"],
+      "correct_answer": "Normally distributed with mean equal to the sum of the means and variance equal to the sum of the variances",
+      "explanation": "A linear combination of independent normal random variables is itself normal, with mean and variance obtained by summing the respective individual means and variances.",
+      "topic": "Sums and functions of random variables",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Chebyshev's inequality provides a bound on the probability that a random variable deviates from its mean, stated as P(|X - mu| >= k.sigma) is at most:",
+      "options": ["1/k^2", "k^2", "1/k", "k"],
+      "correct_answer": "1/k^2",
+      "explanation": "Chebyshev's inequality states P(|X - mu| >= k.sigma) <= 1/k^2 for any k > 0, applying to any distribution with finite variance regardless of shape.",
+      "topic": "Inequalities and bounds",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Markov's inequality states that for a non-negative random variable X and a > 0:",
+      "options": ["P(X >= a) <= E(X)/a", "P(X >= a) >= E(X)/a", "P(X >= a) = E(X)/a", "P(X >= a) <= a/E(X)"],
+      "correct_answer": "P(X >= a) <= E(X)/a",
+      "explanation": "Markov's inequality gives an upper bound on the probability that a non-negative random variable is at least a, using only its expectation.",
+      "topic": "Inequalities and bounds",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Two dice are rolled independently. Let X be the outcome of the first die and Y the outcome of the second. What is E(X+Y)?",
+      "options": ["7", "6", "3.5", "12"],
+      "correct_answer": "7",
+      "explanation": "Each die has E(X) = E(Y) = 3.5, so by linearity of expectation, E(X+Y) = 3.5 + 3.5 = 7.",
+      "topic": "Joint distributions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For the two independent dice X and Y in the previous scenario, what is Var(X+Y), given Var(X) = Var(Y) = 35/12?",
+      "options": ["35/6", "35/12", "35/24", "70/12 squared"],
+      "correct_answer": "35/6",
+      "explanation": "Since X and Y are independent, Cov(X,Y)=0, so Var(X+Y) = Var(X) + Var(Y) = 35/12 + 35/12 = 70/12 = 35/6.",
+      "topic": "Joint distributions",
+      "difficulty": "hard"
+    },
+    {
+      "question": "If X has MGF M_X(t) = (1-t)^{-1} for t < 1, this is the MGF of which distribution?",
+      "options": ["Exponential distribution with rate parameter 1", "Standard normal distribution", "Binomial distribution", "Poisson distribution with parameter 1"],
+      "correct_answer": "Exponential distribution with rate parameter 1",
+      "explanation": "The MGF (1-t)^{-1} for t<1 uniquely identifies the exponential distribution with rate (parameter) 1, since MGFs uniquely determine distributions when they exist.",
+      "topic": "Moment generating functions",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The property that a moment generating function, when it exists in an open interval around zero, uniquely determines the probability distribution is known as the:",
+      "options": ["Uniqueness theorem for MGFs", "Central Limit Theorem", "Law of total variance", "Bayes' theorem"],
+      "correct_answer": "Uniqueness theorem for MGFs",
+      "explanation": "The uniqueness property of MGFs states that if two random variables have the same MGF over an open interval containing zero, they have the same probability distribution.",
+      "topic": "Moment generating functions",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The Law of Total Variance states that Var(Y) equals:",
+      "options": ["E[Var(Y|X)] + Var[E(Y|X)]", "Var[E(Y|X)] - E[Var(Y|X)]", "E[Var(Y|X)] . Var[E(Y|X)]", "E(Y|X) + Var(Y|X)"],
+      "correct_answer": "E[Var(Y|X)] + Var[E(Y|X)]",
+      "explanation": "The Law of Total Variance decomposes the total variance of Y into the expected conditional variance plus the variance of the conditional expectation.",
+      "topic": "Conditional distributions",
+      "difficulty": "hard"
+    },
+    {
+      "question": "If X and Y are jointly continuous with joint pdf f(x,y), the marginal pdf of X is obtained by:",
+      "options": ["Integrating f(x,y) over all values of y", "Differentiating f(x,y) with respect to y", "Evaluating f(x,y) at y = 0", "Summing f(x,y) over discrete values of x"],
+      "correct_answer": "Integrating f(x,y) over all values of y",
+      "explanation": "For continuous joint densities, the marginal pdf of X is found by integrating out the other variable: f_X(x) = integral of f(x,y) dy over the support of Y.",
+      "topic": "Joint distributions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "If X and Y are uncorrelated (Cov(X,Y) = 0), this necessarily implies that:",
+      "options": ["X and Y have no linear relationship, though they might still be dependent in a nonlinear way", "X and Y are statistically independent", "X and Y have identical distributions", "Var(X) = Var(Y)"],
+      "correct_answer": "X and Y have no linear relationship, though they might still be dependent in a nonlinear way",
+      "explanation": "Zero covariance rules out only a linear relationship; it does not imply independence, since X and Y could still exhibit a nonlinear dependence.",
+      "topic": "Covariance and correlation",
+      "difficulty": "hard"
+    }
+  ]
+}

@@ -1,0 +1,296 @@
+{
+  "course_code": "BCH203",
+  "title": "Metabolism of Carbohydrates",
+  "level": "200",
+  "source_note": "Standard NUC-aligned Nigerian university 200L Metabolism of Carbohydrates curriculum: carbohydrate digestion and absorption, glycolysis, pyruvate oxidation, the citric acid (Krebs/TCA) cycle, glycogenesis and glycogenolysis, gluconeogenesis, the pentose phosphate pathway, and hormonal regulation of blood glucose. Lipid, amino acid and nucleic acid metabolism are covered separately in their own 300L courses.",
+  "questions": [
+    {
+      "question": "Which enzyme catalyses the first committed, rate-limiting step of glycolysis?",
+      "options": ["Phosphofructokinase-1 (PFK-1)", "Hexokinase", "Pyruvate kinase", "Aldolase"],
+      "correct_answer": "Phosphofructokinase-1 (PFK-1)",
+      "explanation": "PFK-1, which converts fructose-6-phosphate to fructose-1,6-bisphosphate, is the key regulatory and rate-limiting enzyme of glycolysis, allosterically inhibited by ATP and citrate and activated by AMP and fructose-2,6-bisphosphate.",
+      "topic": "Glycolysis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the net ATP yield per molecule of glucose from glycolysis alone (glucose to 2 pyruvate)?",
+      "options": ["2 ATP", "4 ATP", "6 ATP", "38 ATP"],
+      "correct_answer": "2 ATP",
+      "explanation": "Glycolysis consumes 2 ATP in the preparatory phase and produces 4 ATP in the payoff phase, for a net gain of 2 ATP per glucose molecule.",
+      "topic": "Glycolysis",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In glycolysis, which two enzymatic steps generate ATP by substrate-level phosphorylation?",
+      "options": [
+        "Phosphoglycerate kinase and pyruvate kinase",
+        "Hexokinase and phosphofructokinase",
+        "Aldolase and triose phosphate isomerase",
+        "Enolase and phosphoglycerate mutase"
+      ],
+      "correct_answer": "Phosphoglycerate kinase and pyruvate kinase",
+      "explanation": "Phosphoglycerate kinase (1,3-BPG to 3-PG) and pyruvate kinase (PEP to pyruvate) both transfer a high-energy phosphate directly to ADP, generating ATP by substrate-level phosphorylation.",
+      "topic": "Glycolysis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Under anaerobic conditions in human muscle, pyruvate is converted to lactate by which enzyme, regenerating NAD+ for continued glycolysis?",
+      "options": ["Lactate dehydrogenase", "Pyruvate dehydrogenase", "Pyruvate carboxylase", "Alcohol dehydrogenase"],
+      "correct_answer": "Lactate dehydrogenase",
+      "explanation": "Lactate dehydrogenase reduces pyruvate to lactate while oxidising NADH back to NAD+, allowing glycolysis to continue when oxygen is limited.",
+      "topic": "Glycolysis",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The pyruvate dehydrogenase complex, which converts pyruvate to acetyl-CoA, requires which set of cofactors?",
+      "options": [
+        "TPP, lipoic acid, FAD, CoA, and NAD+",
+        "Biotin, ATP, and Mg2+ only",
+        "NADP+ and folate only",
+        "Pyridoxal phosphate and thiamine alone"
+      ],
+      "correct_answer": "TPP, lipoic acid, FAD, CoA, and NAD+",
+      "explanation": "The multi-enzyme pyruvate dehydrogenase complex requires five cofactors: thiamine pyrophosphate, lipoic acid, FAD, coenzyme A, and NAD+, one from each of the B vitamins niacin, riboflavin, thiamine and pantothenate plus lipoic acid.",
+      "topic": "Pyruvate oxidation",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Which product of the pyruvate dehydrogenase reaction enters the citric acid cycle?",
+      "options": ["Acetyl-CoA", "Oxaloacetate", "Citrate", "Pyruvate itself"],
+      "correct_answer": "Acetyl-CoA",
+      "explanation": "Pyruvate dehydrogenase oxidatively decarboxylates pyruvate to acetyl-CoA, which condenses with oxaloacetate to form citrate and enter the TCA cycle.",
+      "topic": "Pyruvate oxidation",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In the citric acid cycle, citrate synthase catalyses the condensation of acetyl-CoA with which four-carbon compound?",
+      "options": ["Oxaloacetate", "Succinate", "Fumarate", "Malate"],
+      "correct_answer": "Oxaloacetate",
+      "explanation": "Citrate synthase condenses the 2-carbon acetyl-CoA with the 4-carbon oxaloacetate to form the 6-carbon citrate, the first step of the TCA cycle.",
+      "topic": "Citric acid cycle",
+      "difficulty": "easy"
+    },
+    {
+      "question": "How many molecules of NADH, FADH2, and GTP/ATP are produced per single turn of the citric acid cycle (per acetyl-CoA)?",
+      "options": ["3 NADH, 1 FADH2, 1 GTP", "2 NADH, 2 FADH2, 2 ATP", "1 NADH, 3 FADH2, 1 GTP", "4 NADH, 0 FADH2, 2 GTP"],
+      "correct_answer": "3 NADH, 1 FADH2, 1 GTP",
+      "explanation": "One turn of the TCA cycle yields 3 NADH (isocitrate DH, alpha-KG DH, malate DH), 1 FADH2 (succinate DH), and 1 GTP (succinyl-CoA synthetase), along with 2 CO2.",
+      "topic": "Citric acid cycle",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Which enzyme of the citric acid cycle is physically embedded in the inner mitochondrial membrane and also functions as Complex II of the electron transport chain?",
+      "options": ["Succinate dehydrogenase", "Citrate synthase", "Aconitase", "Fumarase"],
+      "correct_answer": "Succinate dehydrogenase",
+      "explanation": "Succinate dehydrogenase oxidises succinate to fumarate while reducing FAD to FADH2, and is unique among TCA enzymes for being embedded in the inner mitochondrial membrane as Complex II.",
+      "topic": "Citric acid cycle",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which enzyme catalyses the rate-limiting step of the citric acid cycle and is inhibited by high levels of ATP and NADH?",
+      "options": ["Isocitrate dehydrogenase", "Citrate synthase", "Succinyl-CoA synthetase", "Fumarase"],
+      "correct_answer": "Isocitrate dehydrogenase",
+      "explanation": "Isocitrate dehydrogenase, which oxidatively decarboxylates isocitrate to alpha-ketoglutarate, is the main rate-limiting and allosterically regulated step of the TCA cycle.",
+      "topic": "Citric acid cycle",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Glycogen synthesis (glycogenesis) requires activation of glucose units as UDP-glucose, catalysed by which enzyme?",
+      "options": ["UDP-glucose pyrophosphorylase", "Glycogen synthase", "Glycogen phosphorylase", "Phosphoglucomutase"],
+      "correct_answer": "UDP-glucose pyrophosphorylase",
+      "explanation": "UDP-glucose pyrophosphorylase converts glucose-1-phosphate and UTP into UDP-glucose, the activated glucosyl donor used by glycogen synthase to extend glycogen chains.",
+      "topic": "Glycogen metabolism",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which enzyme forms the alpha-1,6-glycosidic branch points during glycogen synthesis?",
+      "options": ["Branching enzyme (amylo-(1,4->1,6)-transglycosylase)", "Glycogen synthase", "Debranching enzyme", "Glycogen phosphorylase"],
+      "correct_answer": "Branching enzyme (amylo-(1,4->1,6)-transglycosylase)",
+      "explanation": "Branching enzyme transfers a segment of glucose chain to create an alpha-1,6 branch point, increasing the solubility and number of non-reducing ends on the glycogen molecule.",
+      "topic": "Glycogen metabolism",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Glycogen phosphorylase degrades glycogen by cleaving alpha-1,4-glycosidic bonds through which type of reaction?",
+      "options": ["Phosphorolysis, releasing glucose-1-phosphate", "Hydrolysis, releasing free glucose", "Oxidation, releasing gluconic acid", "Isomerisation to fructose-1-phosphate"],
+      "correct_answer": "Phosphorolysis, releasing glucose-1-phosphate",
+      "explanation": "Glycogen phosphorylase uses inorganic phosphate to cleave the terminal alpha-1,4 bond, releasing glucose-1-phosphate rather than free glucose, which conserves energy for subsequent metabolism.",
+      "topic": "Glycogen metabolism",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In liver cells, why can glycogen breakdown contribute to raising blood glucose, whereas in skeletal muscle it cannot?",
+      "options": [
+        "Liver contains glucose-6-phosphatase to convert glucose-6-phosphate to free glucose for release into blood, an enzyme muscle lacks",
+        "Muscle glycogen stores are always larger than liver glycogen stores",
+        "Only liver cells possess glycogen phosphorylase",
+        "Muscle cells cannot perform glycogenolysis at all"
+      ],
+      "correct_answer": "Liver contains glucose-6-phosphatase to convert glucose-6-phosphate to free glucose for release into blood, an enzyme muscle lacks",
+      "explanation": "Glucose-6-phosphatase, present in liver (and kidney) but not skeletal muscle, dephosphorylates glucose-6-phosphate to free glucose that can cross the plasma membrane and enter the bloodstream.",
+      "topic": "Glycogen metabolism",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Gluconeogenesis is the metabolic pathway that:",
+      "options": [
+        "Synthesises new glucose from non-carbohydrate precursors such as lactate, glycerol, and glucogenic amino acids",
+        "Breaks down glucose into pyruvate",
+        "Converts glucose directly into glycogen",
+        "Oxidises glucose completely to CO2 and water"
+      ],
+      "correct_answer": "Synthesises new glucose from non-carbohydrate precursors such as lactate, glycerol, and glucogenic amino acids",
+      "explanation": "Gluconeogenesis generates new glucose molecules from non-carbohydrate substrates, maintaining blood glucose during fasting, mainly in the liver and to a lesser extent the kidney.",
+      "topic": "Gluconeogenesis",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which enzyme bypasses the pyruvate kinase step of glycolysis by first converting pyruvate to oxaloacetate in the mitochondrion?",
+      "options": ["Pyruvate carboxylase", "Phosphoenolpyruvate carboxykinase", "Fructose-1,6-bisphosphatase", "Glucose-6-phosphatase"],
+      "correct_answer": "Pyruvate carboxylase",
+      "explanation": "Pyruvate carboxylase, a biotin-dependent enzyme, carboxylates pyruvate to oxaloacetate as the first of the gluconeogenic bypass reactions around the irreversible pyruvate kinase step.",
+      "topic": "Gluconeogenesis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which enzyme catalyses the gluconeogenic bypass of the PFK-1 step, converting fructose-1,6-bisphosphate to fructose-6-phosphate?",
+      "options": ["Fructose-1,6-bisphosphatase", "Phosphofructokinase-1", "Aldolase", "Triose phosphate isomerase"],
+      "correct_answer": "Fructose-1,6-bisphosphatase",
+      "explanation": "Fructose-1,6-bisphosphatase hydrolyses the 1-phosphate of fructose-1,6-bisphosphate, bypassing the irreversible PFK-1 reaction of glycolysis and is itself a key regulatory point of gluconeogenesis.",
+      "topic": "Gluconeogenesis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Cori cycle describes the metabolic cooperation in which:",
+      "options": [
+        "Lactate produced by anaerobic glycolysis in muscle is transported to the liver, converted back to glucose by gluconeogenesis, and returned to muscle",
+        "Glucose is converted directly to glycogen in muscle without involving the liver",
+        "Fatty acids are converted to glucose in the liver",
+        "Amino acids are exchanged between muscle and adipose tissue"
+      ],
+      "correct_answer": "Lactate produced by anaerobic glycolysis in muscle is transported to the liver, converted back to glucose by gluconeogenesis, and returned to muscle",
+      "explanation": "The Cori cycle links glycolysis in muscle (which produces lactate under high demand or low oxygen) with hepatic gluconeogenesis, recycling lactate's carbon skeleton back to glucose.",
+      "topic": "Gluconeogenesis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which vitamin-derived cofactor is required by pyruvate carboxylase for its carboxylation reaction in gluconeogenesis?",
+      "options": ["Biotin", "Thiamine pyrophosphate", "Pyridoxal phosphate", "Folate"],
+      "correct_answer": "Biotin",
+      "explanation": "Pyruvate carboxylase is a biotin-dependent carboxylase that uses biotin as a covalently attached carrier for CO2 during the carboxylation of pyruvate to oxaloacetate.",
+      "topic": "Gluconeogenesis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The pentose phosphate pathway (hexose monophosphate shunt) primarily generates which two products important for biosynthesis?",
+      "options": ["NADPH and ribose-5-phosphate", "ATP and CO2", "Lactate and pyruvate", "Glycogen and glucose-1-phosphate"],
+      "correct_answer": "NADPH and ribose-5-phosphate",
+      "explanation": "The pentose phosphate pathway produces NADPH (for reductive biosynthesis and antioxidant defence) and ribose-5-phosphate (for nucleotide synthesis).",
+      "topic": "Pentose phosphate pathway",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which enzyme catalyses the first, rate-limiting, and irreversible step of the pentose phosphate pathway?",
+      "options": ["Glucose-6-phosphate dehydrogenase", "6-phosphogluconate dehydrogenase", "Transketolase", "Transaldolase"],
+      "correct_answer": "Glucose-6-phosphate dehydrogenase",
+      "explanation": "Glucose-6-phosphate dehydrogenase (G6PD) catalyses the committed step of the oxidative branch of the pentose phosphate pathway, producing NADPH and 6-phosphogluconolactone.",
+      "topic": "Pentose phosphate pathway",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A deficiency of glucose-6-phosphate dehydrogenase (G6PD) makes red blood cells especially vulnerable to oxidative damage because it results in:",
+      "options": [
+        "Reduced NADPH production, impairing regeneration of reduced glutathione that protects against oxidative stress",
+        "Excess glucose accumulation in erythrocytes",
+        "Increased glycogen storage in red blood cells",
+        "Overproduction of ribose-5-phosphate"
+      ],
+      "correct_answer": "Reduced NADPH production, impairing regeneration of reduced glutathione that protects against oxidative stress",
+      "explanation": "G6PD deficiency limits NADPH supply, which is needed by glutathione reductase to keep glutathione reduced; without adequate reduced glutathione, red cells cannot neutralise oxidative stress and undergo haemolysis.",
+      "topic": "Pentose phosphate pathway",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Which hormone, released by pancreatic beta cells in response to high blood glucose, promotes glycogenesis and glycolysis while inhibiting gluconeogenesis?",
+      "options": ["Insulin", "Glucagon", "Cortisol", "Adrenaline (epinephrine)"],
+      "correct_answer": "Insulin",
+      "explanation": "Insulin is secreted when blood glucose rises and promotes glucose uptake, glycogen synthesis and glycolysis while suppressing gluconeogenesis and glycogenolysis, lowering blood glucose.",
+      "topic": "Hormonal regulation",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Glucagon, released during fasting/low blood glucose, raises blood glucose mainly by activating which second-messenger pathway in the liver?",
+      "options": [
+        "The cAMP-protein kinase A pathway, which activates glycogen phosphorylase and inhibits glycogen synthase",
+        "The inositol trisphosphate/calcium pathway exclusively",
+        "Direct binding to and activation of glucose-6-phosphatase",
+        "Direct phosphorylation of glucose"
+      ],
+      "correct_answer": "The cAMP-protein kinase A pathway, which activates glycogen phosphorylase and inhibits glycogen synthase",
+      "explanation": "Glucagon binds hepatic G-protein-coupled receptors, raising cAMP and activating protein kinase A, which phosphorylates and activates glycogen phosphorylase while phosphorylating and inhibiting glycogen synthase, promoting glycogenolysis and gluconeogenesis.",
+      "topic": "Hormonal regulation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which allosteric activator of PFK-1 and inhibitor of fructose-1,6-bisphosphatase is produced by PFK-2 and provides reciprocal control between glycolysis and gluconeogenesis in the liver?",
+      "options": ["Fructose-2,6-bisphosphate", "Citrate", "Glucose-1-phosphate", "AMP"],
+      "correct_answer": "Fructose-2,6-bisphosphate",
+      "explanation": "Fructose-2,6-bisphosphate, synthesised by the bifunctional enzyme PFK-2/FBPase-2, is the most potent allosteric activator of PFK-1 and inhibitor of fructose-1,6-bisphosphatase, allowing hormones to reciprocally regulate glycolysis and gluconeogenesis.",
+      "topic": "Hormonal regulation",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Dietary starch digestion begins in the mouth with which salivary enzyme?",
+      "options": ["Salivary amylase (ptyalin)", "Pepsin", "Pancreatic lipase", "Maltase"],
+      "correct_answer": "Salivary amylase (ptyalin)",
+      "explanation": "Salivary alpha-amylase begins hydrolysing internal alpha-1,4-glycosidic bonds of starch in the mouth, though its action is brief before gastric acid inactivates it.",
+      "topic": "Carbohydrate digestion",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The final digestion of disaccharides such as maltose, sucrose, and lactose into monosaccharides occurs at the:",
+      "options": ["Brush border of intestinal enterocytes", "Stomach lumen", "Salivary glands", "Colon by bacterial fermentation only"],
+      "correct_answer": "Brush border of intestinal enterocytes",
+      "explanation": "Brush-border disaccharidases (maltase, sucrase, lactase) on the intestinal epithelium hydrolyse disaccharides into absorbable monosaccharides (glucose, fructose, galactose).",
+      "topic": "Carbohydrate digestion",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Glucose is absorbed from the intestinal lumen into enterocytes mainly via which transport mechanism?",
+      "options": [
+        "Sodium-glucose linked transporter (SGLT1), a secondary active transport mechanism",
+        "Simple diffusion down its concentration gradient only",
+        "Direct phosphorylation in the gut lumen followed by passive entry",
+        "Bulk endocytosis of glucose molecules"
+      ],
+      "correct_answer": "Sodium-glucose linked transporter (SGLT1), a secondary active transport mechanism",
+      "explanation": "SGLT1 co-transports glucose with Na+ down the sodium gradient established by the Na+/K+-ATPase, allowing glucose absorption even against its own concentration gradient.",
+      "topic": "Carbohydrate digestion",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which enzyme deficiency causes lactose intolerance, the inability to digest the milk sugar lactose?",
+      "options": ["Lactase deficiency", "Sucrase deficiency", "Amylase deficiency", "Maltase deficiency"],
+      "correct_answer": "Lactase deficiency",
+      "explanation": "Lactase, the brush-border enzyme that hydrolyses lactose into glucose and galactose, is often reduced in activity after infancy in many populations, causing lactose intolerance.",
+      "topic": "Carbohydrate digestion",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Fructose entering glycolysis in the liver is first phosphorylated by which enzyme to fructose-1-phosphate, bypassing the PFK-1 control point?",
+      "options": ["Fructokinase", "Hexokinase", "Glucokinase", "Phosphofructokinase-1"],
+      "correct_answer": "Fructokinase",
+      "explanation": "Hepatic fructokinase phosphorylates fructose to fructose-1-phosphate, which is then cleaved by aldolase B, allowing fructose to enter glycolysis downstream of the PFK-1 regulatory step.",
+      "topic": "Carbohydrate digestion",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Complete aerobic oxidation of one glucose molecule (glycolysis, pyruvate oxidation, TCA cycle, and oxidative phosphorylation) yields approximately how much ATP?",
+      "options": ["30-32 ATP", "2 ATP", "10 ATP", "100 ATP"],
+      "correct_answer": "30-32 ATP",
+      "explanation": "Using current accepted P/O ratios, complete aerobic oxidation of glucose yields approximately 30-32 ATP per molecule, revised down from the older textbook estimate of 36-38 ATP.",
+      "topic": "Overall energy yield",
+      "difficulty": "medium"
+    }
+  ]
+}

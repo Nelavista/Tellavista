@@ -1,0 +1,280 @@
+{
+  "course_code": "CSC411",
+  "title": "Distributed Systems",
+  "level": "400",
+  "source_note": "Standard NUC-aligned 400-level Distributed Systems curriculum (Tanenbaum/Coulouris-style) covering architectural models, RPC/middleware, clock synchronization, mutual exclusion, election algorithms, distributed transactions, CAP theorem, consistency/replication, fault tolerance, consensus, naming, deadlock, and distributed data processing.",
+  "questions": [
+    {
+      "question": "A distributed system is best defined as:",
+      "options": ["A collection of independent computers that appears to its users as a single coherent system", "A single powerful mainframe computer serving multiple terminals", "A network of computers that never communicate with each other", "A standalone application running on one machine"],
+      "correct_answer": "A collection of independent computers that appears to its users as a single coherent system",
+      "explanation": "This is the classic Tanenbaum definition distinguishing distributed systems from centralized ones.",
+      "topic": "Introduction to distributed systems",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which of the following is NOT a key characteristic of distributed systems?",
+      "options": ["Concurrency of components", "Absence of a global clock", "Independent failure of components", "Guaranteed synchronous communication with zero delay"],
+      "correct_answer": "Guaranteed synchronous communication with zero delay",
+      "explanation": "Real distributed systems have variable network delays; there is no guarantee of instantaneous synchronous communication.",
+      "topic": "Characteristics of distributed systems",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In distributed systems terminology, \"transparency\" refers to:",
+      "options": ["Hiding the details of distribution from users and application programmers", "Making all source code publicly visible", "Displaying network topology to end users", "Using unencrypted communication channels"],
+      "correct_answer": "Hiding the details of distribution from users and application programmers",
+      "explanation": "Transparency means the distributed nature of the system is concealed so it appears as a single system.",
+      "topic": "Transparency",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which type of transparency ensures that users cannot tell whether a resource has moved to another location?",
+      "options": ["Migration transparency", "Access transparency", "Concurrency transparency", "Failure transparency"],
+      "correct_answer": "Migration transparency",
+      "explanation": "Migration transparency hides the fact that a resource may move from one location to another.",
+      "topic": "Transparency",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which architectural model involves a client sending a request to a server and waiting for a response?",
+      "options": ["Client-server model", "Peer-to-peer model", "Publish-subscribe model", "Proxy model"],
+      "correct_answer": "Client-server model",
+      "explanation": "The client-server model is the classic request-reply interaction pattern.",
+      "topic": "Architectural models",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In peer-to-peer architecture, which statement is true?",
+      "options": ["All nodes play similar roles and can act as both client and server", "Only one node can provide services to all others", "A central server must approve all communications", "Nodes cannot communicate directly with each other"],
+      "correct_answer": "All nodes play similar roles and can act as both client and server",
+      "explanation": "In P2P systems, each node (peer) can both consume and provide services, without a strict client/server distinction.",
+      "topic": "Architectural models",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Remote Procedure Call (RPC) allows a program to:",
+      "options": ["Call a procedure located on a remote machine as if it were local", "Execute only local functions", "Transfer files between two disks on the same machine", "Compile code remotely without execution"],
+      "correct_answer": "Call a procedure located on a remote machine as if it were local",
+      "explanation": "RPC is a communication paradigm that abstracts network calls to look like local procedure calls.",
+      "topic": "Remote procedure call",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In RPC, the client-side stub is responsible for:",
+      "options": ["Marshalling parameters and sending the request to the server", "Executing the actual procedure code", "Storing the server's database", "Managing the server's operating system"],
+      "correct_answer": "Marshalling parameters and sending the request to the server",
+      "explanation": "The client stub packages (marshals) arguments into a message format and forwards it over the network.",
+      "topic": "Remote procedure call",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Marshalling in distributed systems refers to:",
+      "options": ["Converting data structures into a format suitable for transmission over a network", "Assigning IP addresses to nodes", "Detecting deadlocks in the system", "Encrypting the entire operating system"],
+      "correct_answer": "Converting data structures into a format suitable for transmission over a network",
+      "explanation": "Marshalling (or serialization) packs parameters/data into a byte stream for network transfer.",
+      "topic": "Remote procedure call",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which of these best describes middleware in a distributed system?",
+      "options": ["Software layer that provides common services and abstractions to applications across a network", "A hardware component that routes packets", "The physical cabling connecting computers", "An operating system kernel module only"],
+      "correct_answer": "Software layer that provides common services and abstractions to applications across a network",
+      "explanation": "Middleware sits between the OS/network and applications, providing services like communication, naming, and coordination.",
+      "topic": "Middleware",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Because distributed systems lack a single global clock, which mechanism is commonly used to order events?",
+      "options": ["Lamport logical clocks", "GPS satellite time only", "A single centralized wall clock shared by all nodes", "Random number generators"],
+      "correct_answer": "Lamport logical clocks",
+      "explanation": "Lamport timestamps provide a logical ordering of events without relying on synchronized physical clocks.",
+      "topic": "Time and clock synchronization",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Lamport's \"happened-before\" relation is used to:",
+      "options": ["Establish a partial ordering of events in a distributed system", "Encrypt messages between processes", "Balance the load among servers", "Compress data before transmission"],
+      "correct_answer": "Establish a partial ordering of events in a distributed system",
+      "explanation": "The happened-before relation captures causal dependencies between events across processes.",
+      "topic": "Logical clocks",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Vector clocks improve upon Lamport clocks primarily by:",
+      "options": ["Allowing detection of causal relationships and concurrency between events", "Eliminating the need for any clock at all", "Making all clocks physically synchronized", "Reducing the number of processes needed"],
+      "correct_answer": "Allowing detection of causal relationships and concurrency between events",
+      "explanation": "Unlike scalar Lamport timestamps, vector clocks can determine whether two events are causally related or concurrent.",
+      "topic": "Logical clocks",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Cristian's algorithm is used for:",
+      "options": ["Synchronizing a client's clock with a time server over a network", "Electing a coordinator process", "Detecting distributed deadlocks", "Encrypting inter-process messages"],
+      "correct_answer": "Synchronizing a client's clock with a time server over a network",
+      "explanation": "Cristian's algorithm estimates round-trip delay to adjust a client's clock to match a time server.",
+      "topic": "Time and clock synchronization",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Berkeley algorithm for clock synchronization differs from Cristian's algorithm because it:",
+      "options": ["Uses an internal coordinator that averages clock readings from a group of machines without an accurate external time source", "Requires every node to have a GPS receiver", "Only works on a single machine", "Encrypts the synchronization messages"],
+      "correct_answer": "Uses an internal coordinator that averages clock readings from a group of machines without an accurate external time source",
+      "explanation": "Berkeley's algorithm computes an average time from participating machines rather than syncing to an external authoritative clock.",
+      "topic": "Time and clock synchronization",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which algorithm is commonly used for achieving mutual exclusion in a distributed system without a central coordinator?",
+      "options": ["Ricart-Agrawala algorithm", "Round-robin scheduling", "Dijkstra's shortest path algorithm", "Bubble sort algorithm"],
+      "correct_answer": "Ricart-Agrawala algorithm",
+      "explanation": "The Ricart-Agrawala algorithm is a permission-based distributed mutual exclusion algorithm using timestamped requests.",
+      "topic": "Mutual exclusion",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the token ring approach to distributed mutual exclusion, a process may enter its critical section when:",
+      "options": ["It possesses the token that is passed around the logical ring", "It has the lowest process ID", "It receives permission from all other processes individually", "The coordinator explicitly restarts the ring"],
+      "correct_answer": "It possesses the token that is passed around the logical ring",
+      "explanation": "Only the process holding the circulating token is allowed to access the critical section.",
+      "topic": "Mutual exclusion",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Bully algorithm is used for:",
+      "options": ["Electing a coordinator process among a group of distributed processes", "Encrypting messages between two processes", "Load balancing across servers", "Compressing large files before transfer"],
+      "correct_answer": "Electing a coordinator process among a group of distributed processes",
+      "explanation": "In the Bully algorithm, the process with the highest ID takes over as coordinator when the current one fails.",
+      "topic": "Election algorithms",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the Ring election algorithm, election messages are:",
+      "options": ["Passed around a logical ring, with each process adding its ID until the highest is elected", "Broadcast simultaneously to all processes", "Sent only to the current coordinator", "Never used because rings do not support elections"],
+      "correct_answer": "Passed around a logical ring, with each process adding its ID until the highest is elected",
+      "explanation": "Each process forwards the election message, appending its own ID, until the highest ID circulates back and is declared coordinator.",
+      "topic": "Election algorithms",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Two-Phase Commit (2PC) protocol is designed to ensure:",
+      "options": ["Atomicity of a distributed transaction across multiple participants", "Faster network throughput", "Automatic load balancing", "Encryption of transaction data"],
+      "correct_answer": "Atomicity of a distributed transaction across multiple participants",
+      "explanation": "2PC ensures all participants either commit or abort a transaction together, preserving atomicity.",
+      "topic": "Distributed transactions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In 2PC, the phase where the coordinator asks all participants if they are ready to commit is called:",
+      "options": ["The voting (prepare) phase", "The commit phase", "The rollback phase", "The election phase"],
+      "correct_answer": "The voting (prepare) phase",
+      "explanation": "In the first phase, the coordinator polls participants for their vote to commit or abort.",
+      "topic": "Distributed transactions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A major drawback of the Two-Phase Commit protocol is that it:",
+      "options": ["Can block indefinitely if the coordinator fails after the voting phase", "Cannot guarantee atomicity", "Works only with a single participant", "Requires no network communication"],
+      "correct_answer": "Can block indefinitely if the coordinator fails after the voting phase",
+      "explanation": "2PC is a blocking protocol; participants may wait indefinitely for the coordinator's decision if it crashes.",
+      "topic": "Distributed transactions",
+      "difficulty": "hard"
+    },
+    {
+      "question": "According to the CAP theorem, a distributed data store can simultaneously guarantee at most:",
+      "options": ["Two of Consistency, Availability, and Partition tolerance", "All three of Consistency, Availability, and Partition tolerance", "Only Consistency", "Only Availability"],
+      "correct_answer": "Two of Consistency, Availability, and Partition tolerance",
+      "explanation": "CAP theorem states that during a network partition, a system must trade off between consistency and availability.",
+      "topic": "CAP theorem",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which replication consistency model requires that all replicas reflect updates immediately, appearing as a single copy?",
+      "options": ["Strict/strong consistency", "Eventual consistency", "Causal consistency", "Weak consistency"],
+      "correct_answer": "Strict/strong consistency",
+      "explanation": "Strong consistency guarantees that any read returns the most recent write, as if there were only one copy of the data.",
+      "topic": "Consistency and replication",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Eventual consistency guarantees that:",
+      "options": ["If no new updates occur, all replicas will eventually converge to the same value", "All replicas are always identical at every instant", "Updates are never propagated to other replicas", "Only one replica ever exists"],
+      "correct_answer": "If no new updates occur, all replicas will eventually converge to the same value",
+      "explanation": "Eventual consistency allows temporary divergence but guarantees convergence over time absent further writes.",
+      "topic": "Consistency and replication",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which fault-tolerance approach involves running multiple redundant copies of a service so that failure of one does not stop the system?",
+      "options": ["Replication", "Serialization", "Marshalling", "Tokenization"],
+      "correct_answer": "Replication",
+      "explanation": "Replication maintains multiple copies of data or services to tolerate failures.",
+      "topic": "Fault tolerance",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A distributed consensus algorithm such as Paxos or Raft is primarily used to:",
+      "options": ["Get a group of distributed nodes to agree on a single value despite failures", "Compress data across the network", "Encrypt communication between nodes", "Balance CPU load among servers"],
+      "correct_answer": "Get a group of distributed nodes to agree on a single value despite failures",
+      "explanation": "Consensus algorithms ensure that non-faulty nodes in a distributed system agree on the same value, even amid crashes or delays.",
+      "topic": "Consensus algorithms",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In the Raft consensus algorithm, at any given time a node can be in one of these states EXCEPT:",
+      "options": ["Broker", "Leader", "Follower", "Candidate"],
+      "correct_answer": "Broker",
+      "explanation": "Raft defines three node states -- leader, follower, and candidate -- but not \"broker\", which is a messaging-system concept.",
+      "topic": "Consensus algorithms",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The Domain Name System (DNS) is an example of a distributed:",
+      "options": ["Naming service", "Mutual exclusion algorithm", "Clock synchronization protocol", "Transaction manager"],
+      "correct_answer": "Naming service",
+      "explanation": "DNS maps human-readable domain names to IP addresses in a distributed, hierarchical naming system.",
+      "topic": "Naming",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Distributed deadlock detection typically involves constructing a:",
+      "options": ["Wait-for graph across multiple nodes", "Binary search tree", "Hash table of IP addresses", "Routing table"],
+      "correct_answer": "Wait-for graph across multiple nodes",
+      "explanation": "A distributed wait-for graph tracks which processes are waiting for resources held by others, and a cycle indicates deadlock.",
+      "topic": "Distributed deadlock",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The Google MapReduce model processes large datasets by:",
+      "options": ["Splitting work into a Map phase and a Reduce phase distributed across many machines", "Running everything on a single powerful machine", "Encrypting data before any processing", "Eliminating the need for any data partitioning"],
+      "correct_answer": "Splitting work into a Map phase and a Reduce phase distributed across many machines",
+      "explanation": "MapReduce distributes computation as parallel map tasks followed by aggregation/reduce tasks across a cluster.",
+      "topic": "Distributed data processing",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A microservices architecture structures an application as:",
+      "options": ["A collection of small, independently deployable services communicating over a network", "A single monolithic codebase", "One large database shared with no APIs", "A purely client-side JavaScript application"],
+      "correct_answer": "A collection of small, independently deployable services communicating over a network",
+      "explanation": "Microservices decompose an application into loosely coupled, independently deployable services.",
+      "topic": "Distributed system design patterns",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which of these is a common message-oriented middleware technology used in distributed systems?",
+      "options": ["Apache Kafka", "MySQL Workbench", "Adobe Photoshop", "Microsoft Excel"],
+      "correct_answer": "Apache Kafka",
+      "explanation": "Apache Kafka is a distributed publish-subscribe messaging platform widely used for asynchronous communication between services.",
+      "topic": "Middleware",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Load balancing in a distributed system primarily aims to:",
+      "options": ["Distribute incoming requests evenly across multiple servers to avoid overload", "Encrypt traffic between servers", "Reduce the number of servers to one", "Increase the physical distance between servers"],
+      "correct_answer": "Distribute incoming requests evenly across multiple servers to avoid overload",
+      "explanation": "Load balancers spread client requests across a pool of servers to optimize resource use and prevent bottlenecks.",
+      "topic": "Load balancing",
+      "difficulty": "easy"
+    }
+  ]
+}

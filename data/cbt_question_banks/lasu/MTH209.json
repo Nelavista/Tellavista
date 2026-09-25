@@ -1,0 +1,248 @@
+{
+  "course_code": "MTH209",
+  "title": "Intro to Numerical Analysis",
+  "level": "200",
+  "source_note": "Standard NUC-aligned Nigerian university 200L Introduction to Numerical Analysis curriculum: sources of numerical error, root-finding methods (bisection, Newton-Raphson, secant), polynomial interpolation, numerical differentiation and integration, and numerical solution of linear systems.",
+  "questions": [
+    {
+      "question": "Round-off error in numerical computation arises primarily because:",
+      "options": ["Computers represent real numbers with a finite number of digits", "The chosen numerical method is always incorrect", "Only integers can be stored in memory", "The algorithm never converges"],
+      "correct_answer": "Computers represent real numbers with a finite number of digits",
+      "explanation": "Finite-precision (floating-point) representation cannot exactly store most real numbers, causing small representation errors that accumulate.",
+      "topic": "Errors in numerical computation",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Truncation error in numerical methods results from:",
+      "options": ["Approximating an infinite or exact mathematical process by a finite procedure", "Rounding numbers to fewer decimal digits", "Hardware malfunction", "Using too many iterations"],
+      "correct_answer": "Approximating an infinite or exact mathematical process by a finite procedure",
+      "explanation": "Truncation error comes from replacing an exact process, such as an infinite Taylor series, with a finite approximation, e.g. stopping a series after a few terms.",
+      "topic": "Errors in numerical computation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The absolute error in an approximation is defined as:",
+      "options": ["|true value − approximate value|", "true value / approximate value", "true value × approximate value", "approximate value − true value only when positive"],
+      "correct_answer": "|true value − approximate value|",
+      "explanation": "Absolute error is the magnitude of the difference between the exact and approximate values.",
+      "topic": "Errors in numerical computation",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The Bisection Method for finding roots of f(x) = 0 requires that:",
+      "options": ["f(a) and f(b) have opposite signs on the interval [a, b], with f continuous", "f must be differentiable everywhere", "f(a) = f(b)", "The interval [a, b] must contain no roots"],
+      "correct_answer": "f(a) and f(b) have opposite signs on the interval [a, b], with f continuous",
+      "explanation": "The method relies on the Intermediate Value Theorem, which requires continuity and a sign change to guarantee a root exists within [a, b].",
+      "topic": "Root-finding methods",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the Bisection Method, each iteration narrows the interval containing the root by a factor of:",
+      "options": ["1/2", "1/3", "1/4", "1/10"],
+      "correct_answer": "1/2",
+      "explanation": "Bisection always splits the current interval in half, choosing the sub-interval where the sign change still occurs.",
+      "topic": "Root-finding methods",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The Newton-Raphson iteration formula for finding a root of f(x) = 0 is:",
+      "options": ["x(n+1) = xn − f(xn)/f'(xn)", "x(n+1) = xn + f(xn)/f'(xn)", "x(n+1) = xn − f'(xn)/f(xn)", "x(n+1) = f(xn) − xn"],
+      "correct_answer": "x(n+1) = xn − f(xn)/f'(xn)",
+      "explanation": "Newton-Raphson uses the tangent line at xn to produce the next approximation, subtracting f(xn) divided by the derivative f'(xn).",
+      "topic": "Root-finding methods",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A key drawback of the Newton-Raphson method compared to bisection is that:",
+      "options": ["It may fail to converge if the initial guess is poor or f'(x) is near zero", "It always converges more slowly than bisection", "It cannot be used on polynomial functions", "It requires the interval to bracket the root"],
+      "correct_answer": "It may fail to converge if the initial guess is poor or f'(x) is near zero",
+      "explanation": "Unlike bisection's guaranteed (though slow) convergence, Newton-Raphson can diverge or oscillate if the initial guess is far from the root or the derivative is very small.",
+      "topic": "Root-finding methods",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The Secant Method approximates the derivative in Newton's method using:",
+      "options": ["A finite difference between two previous iterates", "The exact analytical derivative", "The second derivative of f", "A constant value of 1"],
+      "correct_answer": "A finite difference between two previous iterates",
+      "explanation": "The secant method replaces f'(xn) with the slope of the secant line through the last two approximations, avoiding the need for an explicit derivative.",
+      "topic": "Root-finding methods",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Compared to the Bisection Method, the Newton-Raphson method (when it converges) typically converges:",
+      "options": ["Faster, since it has quadratic convergence versus bisection's linear convergence", "Slower, since it needs more function evaluations", "At the same rate as bisection", "Only for linear functions"],
+      "correct_answer": "Faster, since it has quadratic convergence versus bisection's linear convergence",
+      "explanation": "Newton-Raphson exhibits quadratic convergence near a simple root, roughly doubling the number of correct digits each iteration, much faster than bisection's linear rate.",
+      "topic": "Root-finding methods",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Polynomial interpolation seeks to:",
+      "options": ["Find a polynomial that passes exactly through a given set of data points", "Compute the derivative of a function at a point", "Solve a system of linear equations", "Find the roots of an equation"],
+      "correct_answer": "Find a polynomial that passes exactly through a given set of data points",
+      "explanation": "Interpolation constructs a function (typically polynomial) that exactly matches known data values, useful for estimating values between them.",
+      "topic": "Interpolation",
+      "difficulty": "easy"
+    },
+    {
+      "question": "For n+1 distinct data points, the Lagrange interpolating polynomial has degree at most:",
+      "options": ["n", "n+1", "n−1", "2n"],
+      "correct_answer": "n",
+      "explanation": "Given n+1 distinct points, there is a unique interpolating polynomial of degree at most n passing through them.",
+      "topic": "Interpolation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Lagrange interpolating polynomial through points (x0, y0) and (x1, y1) is a straight line given by:",
+      "options": ["y0[(x−x1)/(x0−x1)] + y1[(x−x0)/(x1−x0)]", "y0 + y1", "y0x + y1", "(y0 − y1)/(x0 − x1)"],
+      "correct_answer": "y0[(x−x1)/(x0−x1)] + y1[(x−x0)/(x1−x0)]",
+      "explanation": "This is the two-point Lagrange form, which is equivalent to the usual linear interpolation formula and passes through both given points.",
+      "topic": "Interpolation",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Newton's divided-difference interpolation formula is preferred over Lagrange's in some applications because:",
+      "options": ["New data points can be added without recomputing the entire polynomial from scratch", "It always gives a lower-degree polynomial", "It does not require distinct x-values", "It avoids the use of any function values"],
+      "correct_answer": "New data points can be added without recomputing the entire polynomial from scratch",
+      "explanation": "Newton's divided-difference form builds the polynomial incrementally, so adding an extra point just appends another term rather than restarting the calculation.",
+      "topic": "Interpolation",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The forward difference approximation for the first derivative of f at x0 with step size h is:",
+      "options": ["[f(x0+h) − f(x0)] / h", "[f(x0) − f(x0−h)] / h", "[f(x0+h) − f(x0−h)] / (2h)", "[f(x0+h) + f(x0−h)] / h"],
+      "correct_answer": "[f(x0+h) − f(x0)] / h",
+      "explanation": "The forward difference formula uses the function value at x0 and one step ahead, x0 + h, divided by the step size.",
+      "topic": "Numerical differentiation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The central difference approximation for f'(x0) is generally more accurate than the forward difference because:",
+      "options": ["Its truncation error is O(h²) rather than O(h)", "It requires fewer function evaluations", "It does not depend on the step size h", "It is only usable for polynomials"],
+      "correct_answer": "Its truncation error is O(h²) rather than O(h)",
+      "explanation": "The central difference formula [f(x0+h) − f(x0−h)]/(2h) has a smaller order of truncation error compared to the one-sided forward or backward differences.",
+      "topic": "Numerical differentiation",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The Trapezoidal Rule approximates a definite integral by:",
+      "options": ["Approximating the area under the curve using trapezoids between sample points", "Using rectangles of equal height", "Fitting a cubic polynomial to every three points", "Ignoring the function values at the endpoints"],
+      "correct_answer": "Approximating the area under the curve using trapezoids between sample points",
+      "explanation": "The trapezoidal rule connects consecutive data points with straight lines, forming trapezoids whose areas approximate the integral.",
+      "topic": "Numerical integration",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Using the Trapezoidal Rule with a single interval [a, b], the approximate integral of f is:",
+      "options": ["(b−a)/2 × [f(a) + f(b)]", "(b−a) × f(a)", "(b−a) × [f(a) − f(b)]", "(b−a)/2 × f((a+b)/2)"],
+      "correct_answer": "(b−a)/2 × [f(a) + f(b)]",
+      "explanation": "The single-interval trapezoidal rule averages the endpoint function values and multiplies by the interval width.",
+      "topic": "Numerical integration",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Simpson's 1/3 Rule for numerical integration requires that the interval be divided into:",
+      "options": ["An even number of equal subintervals", "An odd number of equal subintervals", "Exactly three subintervals only", "Unequal subintervals"],
+      "correct_answer": "An even number of equal subintervals",
+      "explanation": "Simpson's 1/3 rule fits parabolas over pairs of subintervals, so it requires an even total number of equal-width subintervals.",
+      "topic": "Numerical integration",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Compared to the Trapezoidal Rule, Simpson's Rule is generally more accurate because it:",
+      "options": ["Approximates the integrand with parabolic (quadratic) segments instead of straight lines", "Uses fewer function evaluations", "Ignores the endpoints of the interval", "Only works for linear functions"],
+      "correct_answer": "Approximates the integrand with parabolic (quadratic) segments instead of straight lines",
+      "explanation": "By fitting quadratics rather than linear segments, Simpson's Rule captures curvature better and has a smaller truncation error, O(h⁴) versus O(h²).",
+      "topic": "Numerical integration",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In Gaussian elimination applied numerically, partial pivoting is used to:",
+      "options": ["Reduce round-off error by avoiding division by very small pivot elements", "Increase the size of the matrix", "Guarantee the system has no solution", "Convert the system into a nonlinear one"],
+      "correct_answer": "Reduce round-off error by avoiding division by very small pivot elements",
+      "explanation": "Partial pivoting swaps rows to place the largest available element in the pivot position, improving numerical stability.",
+      "topic": "Numerical solution of linear systems",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Jacobi iterative method for solving Ax = b updates each variable using:",
+      "options": ["Only the values from the previous iteration for all other variables", "The most recently updated values within the same iteration", "A random initial guess with no formula", "Only the diagonal entries of A, ignoring b"],
+      "correct_answer": "Only the values from the previous iteration for all other variables",
+      "explanation": "In the Jacobi method, all components are updated simultaneously using values from the prior iteration, unlike Gauss-Seidel which uses updated values immediately.",
+      "topic": "Numerical solution of linear systems",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Gauss-Seidel method differs from the Jacobi method in that it:",
+      "options": ["Uses the most recently computed values of variables immediately within the same iteration", "Never converges for diagonally dominant matrices", "Requires no initial guess", "Cannot be applied to linear systems"],
+      "correct_answer": "Uses the most recently computed values of variables immediately within the same iteration",
+      "explanation": "Gauss-Seidel updates each variable in place and uses the newest available values right away, typically making it converge faster than Jacobi.",
+      "topic": "Numerical solution of linear systems",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A sufficient condition for both Jacobi and Gauss-Seidel iterations to converge is that the coefficient matrix A is:",
+      "options": ["Strictly diagonally dominant", "The zero matrix", "Singular", "Symmetric only, with no other conditions"],
+      "correct_answer": "Strictly diagonally dominant",
+      "explanation": "If in each row the magnitude of the diagonal entry exceeds the sum of the magnitudes of the other entries, both iterative methods are guaranteed to converge.",
+      "topic": "Numerical solution of linear systems",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Using the Bisection Method on f(x) = x² − 4 with initial interval [0, 3], the first midpoint tested is:",
+      "options": ["1.5", "1", "2", "3"],
+      "correct_answer": "1.5",
+      "explanation": "The midpoint of [0, 3] is (0+3)/2 = 1.5, which is the first approximation tested in bisection.",
+      "topic": "Root-finding methods",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In fixed-point iteration for solving x = g(x), convergence to the fixed point is guaranteed near x0 if:",
+      "options": ["|g'(x)| < 1 in a neighborhood of the fixed point", "g(x) is any continuous function", "g'(x) > 1 near the fixed point", "g(x0) = 0"],
+      "correct_answer": "|g'(x)| < 1 in a neighborhood of the fixed point",
+      "explanation": "The fixed-point iteration xn+1 = g(xn) converges locally when the derivative of g has magnitude less than 1 near the fixed point.",
+      "topic": "Root-finding methods",
+      "difficulty": "hard"
+    },
+    {
+      "question": "What order of convergence does the Secant Method have, compared to Newton's method's quadratic (order 2) convergence?",
+      "options": ["Approximately 1.618 (the golden ratio), superlinear but sub-quadratic", "Exactly order 3 (cubic)", "Exactly order 1 (linear), same as bisection", "It does not converge at all"],
+      "correct_answer": "Approximately 1.618 (the golden ratio), superlinear but sub-quadratic",
+      "explanation": "The secant method has an order of convergence equal to the golden ratio φ ≈ 1.618, faster than linear methods but slightly slower than Newton's quadratic convergence.",
+      "topic": "Root-finding methods",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Relative error is generally preferred over absolute error when comparing approximations because:",
+      "options": ["It accounts for the scale/magnitude of the quantity being measured", "It is always smaller than absolute error", "It ignores the true value entirely", "It cannot be negative"],
+      "correct_answer": "It accounts for the scale/magnitude of the quantity being measured",
+      "explanation": "Relative error (|true − approx| / |true|) gives a scale-independent measure, so errors on very large or very small quantities can be meaningfully compared.",
+      "topic": "Errors in numerical computation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For the function f(x) = x³ − x − 2, evaluate f(1) and f(2) to determine if a root lies in [1, 2].",
+      "options": ["f(1) = −2, f(2) = 4, so a root lies in [1, 2] by the sign change", "f(1) = 0, f(2) = 0, so there is no root", "f(1) and f(2) are both positive, so no root exists in [1,2]", "f(1) and f(2) are both negative"],
+      "correct_answer": "f(1) = −2, f(2) = 4, so a root lies in [1, 2] by the sign change",
+      "explanation": "f(1) = 1 − 1 − 2 = −2 and f(2) = 8 − 2 − 2 = 4; since the signs differ, the Intermediate Value Theorem guarantees a root in (1, 2).",
+      "topic": "Root-finding methods",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Increasing the number of subintervals in the Trapezoidal or Simpson's Rule generally:",
+      "options": ["Reduces truncation error but may increase accumulated round-off error", "Has no effect on accuracy", "Always reduces total error without limit", "Eliminates all numerical error entirely"],
+      "correct_answer": "Reduces truncation error but may increase accumulated round-off error",
+      "explanation": "Finer subdivision improves the approximation to the true integral (lower truncation error) but requires more arithmetic operations, which can accumulate round-off error.",
+      "topic": "Numerical integration",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Using Simpson's 1/3 Rule with two subintervals [x0, x1, x2] of equal width h, the approximate integral is:",
+      "options": ["(h/3)[f(x0) + 4f(x1) + f(x2)]", "(h/2)[f(x0) + f(x2)]", "h[f(x0) + f(x1) + f(x2)]", "(h/3)[f(x0) + f(x1) + f(x2)]"],
+      "correct_answer": "(h/3)[f(x0) + 4f(x1) + f(x2)]",
+      "explanation": "Simpson's 1/3 rule on a single pair of subintervals weights the middle ordinate by 4 and the endpoints by 1, all scaled by h/3.",
+      "topic": "Numerical integration",
+      "difficulty": "medium"
+    }
+  ]
+}

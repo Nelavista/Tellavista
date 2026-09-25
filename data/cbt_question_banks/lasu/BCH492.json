@@ -1,0 +1,248 @@
+{
+  "course_code": "BCH492",
+  "title": "Advanced Biochemical Methods",
+  "level": "400",
+  "source_note": "Grounded in advanced biochemical instrumentation and molecular biology methods curricula covering mass spectrometry, chromatography, spectroscopy, electrophoresis, PCR/recombinant DNA techniques, and immunoassays (Wilson & Walker's Practical Biochemistry, standard molecular biology methods texts).",
+  "questions": [
+    {
+      "question": "In mass spectrometry, the mass-to-charge ratio (m/z) of ionized fragments is measured by the:",
+      "options": ["Mass analyzer", "Ion source only", "Detector's amplifier alone", "Sample injector"],
+      "correct_answer": "Mass analyzer",
+      "explanation": "After ionization, the mass analyzer (e.g., quadrupole, time-of-flight) separates ions according to their mass-to-charge ratio before they reach the detector.",
+      "topic": "Mass spectrometry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Electrospray ionization (ESI) is a 'soft' ionization technique favored in protein mass spectrometry because it:",
+      "options": ["Generates multiply charged ions with minimal fragmentation of the intact molecule", "Always fragments the protein into single amino acids", "Requires extremely high sample amounts in the gram range", "Cannot be coupled to liquid chromatography"],
+      "correct_answer": "Generates multiply charged ions with minimal fragmentation of the intact molecule",
+      "explanation": "ESI produces multiply charged intact molecular ions with minimal fragmentation, allowing large biomolecules like proteins to be analyzed by mass spectrometers with limited m/z range.",
+      "topic": "Mass spectrometry",
+      "difficulty": "hard"
+    },
+    {
+      "question": "MALDI (matrix-assisted laser desorption/ionization) mass spectrometry requires the sample to be:",
+      "options": ["Co-crystallized with a light-absorbing matrix compound before laser ionization", "Dissolved in strong acid before analysis", "Analyzed only in the gas phase without a matrix", "Radioactively labeled prior to ionization"],
+      "correct_answer": "Co-crystallized with a light-absorbing matrix compound before laser ionization",
+      "explanation": "In MALDI, the analyte is mixed and co-crystallized with a matrix that absorbs laser energy, facilitating desorption and ionization of the analyte with minimal fragmentation.",
+      "topic": "Mass spectrometry",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Nuclear magnetic resonance (NMR) spectroscopy provides structural information about biomolecules based on:",
+      "options": ["The behavior of atomic nuclei with spin in a strong magnetic field under radiofrequency radiation", "The absorption of ultraviolet light by aromatic residues", "The scattering of X-rays by a crystal lattice", "The mass-to-charge ratio of ionized fragments"],
+      "correct_answer": "The behavior of atomic nuclei with spin in a strong magnetic field under radiofrequency radiation",
+      "explanation": "NMR exploits the magnetic properties of certain atomic nuclei (e.g., 1H, 13C), which resonate at characteristic frequencies in a magnetic field, revealing detailed structural and dynamic information.",
+      "topic": "NMR spectroscopy",
+      "difficulty": "medium"
+    },
+    {
+      "question": "X-ray crystallography determines the three-dimensional structure of a macromolecule by analyzing:",
+      "options": ["The diffraction pattern produced when X-rays pass through a crystallized sample", "The fluorescence emitted after UV excitation", "The rate of enzyme-catalyzed reactions", "The electrophoretic mobility of the molecule"],
+      "correct_answer": "The diffraction pattern produced when X-rays pass through a crystallized sample",
+      "explanation": "X-ray crystallography directs X-rays at a crystallized macromolecule and uses the resulting diffraction pattern to computationally reconstruct its electron density and atomic structure.",
+      "topic": "X-ray crystallography",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A key prerequisite for successful X-ray crystallography of a protein is:",
+      "options": ["Obtaining a well-ordered, high-quality single crystal of the protein", "Denaturing the protein completely before analysis", "Labeling the protein radioactively", "Amplifying the protein-coding gene by PCR"],
+      "correct_answer": "Obtaining a well-ordered, high-quality single crystal of the protein",
+      "explanation": "High-resolution X-ray structure determination depends critically on growing a well-ordered protein crystal, which is often the most challenging step in the technique.",
+      "topic": "X-ray crystallography",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Two-dimensional gel electrophoresis (2D-PAGE) separates proteins sequentially by:",
+      "options": ["Isoelectric point in the first dimension, then molecular weight in the second dimension", "Molecular weight in both dimensions", "Hydrophobicity, then antigenicity", "Charge only, using two identical runs"],
+      "correct_answer": "Isoelectric point in the first dimension, then molecular weight in the second dimension",
+      "explanation": "2D-PAGE first resolves proteins by isoelectric focusing (based on pI), then perpendicular SDS-PAGE separates them by molecular weight, giving high-resolution proteomic separation.",
+      "topic": "Advanced electrophoresis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Capillary electrophoresis offers an advantage over traditional slab gel electrophoresis mainly due to its:",
+      "options": ["High resolution, speed, and requirement for very small sample volumes", "Inability to separate charged molecules", "Requirement for radioactive labeling", "Complete elimination of an electric field"],
+      "correct_answer": "High resolution, speed, and requirement for very small sample volumes",
+      "explanation": "Capillary electrophoresis performs separations within narrow capillaries under high voltage, achieving fast, high-resolution separations using only nanoliter-scale sample volumes.",
+      "topic": "Advanced electrophoresis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The polymerase chain reaction (PCR) amplifies a specific DNA sequence through repeated cycles of:",
+      "options": ["Denaturation, primer annealing, and extension", "Restriction digestion, ligation, and transformation", "Transcription, translation, and folding", "Centrifugation, dialysis, and precipitation"],
+      "correct_answer": "Denaturation, primer annealing, and extension",
+      "explanation": "PCR uses repeated thermal cycles of DNA denaturation (heat), primer annealing (cooling), and extension (Taq polymerase) to exponentially amplify a target DNA sequence.",
+      "topic": "PCR techniques",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Taq DNA polymerase is preferred for PCR because it is:",
+      "options": ["Thermostable and can withstand repeated high-temperature denaturation steps", "Only active at low temperatures below 20°C", "Derived from human cells", "Unable to synthesize new DNA strands"],
+      "correct_answer": "Thermostable and can withstand repeated high-temperature denaturation steps",
+      "explanation": "Taq polymerase, isolated from the thermophilic bacterium Thermus aquaticus, remains active after repeated exposure to the high temperatures needed for DNA denaturation in PCR cycles.",
+      "topic": "PCR techniques",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Real-time (quantitative) PCR differs from conventional PCR mainly in that it:",
+      "options": ["Monitors amplification in real time using fluorescent reporters, allowing quantification", "Does not require any primers", "Produces no amplified DNA product", "Can only be performed on RNA, never DNA"],
+      "correct_answer": "Monitors amplification in real time using fluorescent reporters, allowing quantification",
+      "explanation": "Real-time PCR uses fluorescent dyes or probes to monitor amplicon accumulation during each cycle, enabling quantification of the starting template amount, unlike endpoint conventional PCR.",
+      "topic": "PCR techniques",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Restriction endonucleases used in recombinant DNA technology function by:",
+      "options": ["Cleaving DNA at specific palindromic recognition sequences", "Joining DNA fragments together permanently", "Synthesizing new DNA strands from a template", "Unwinding the DNA double helix without cutting it"],
+      "correct_answer": "Cleaving DNA at specific palindromic recognition sequences",
+      "explanation": "Restriction endonucleases recognize specific, often palindromic, DNA sequences and cleave the phosphodiester backbone at or near these sites, enabling precise DNA fragment generation for cloning.",
+      "topic": "Recombinant DNA techniques",
+      "difficulty": "easy"
+    },
+    {
+      "question": "DNA ligase is used in molecular cloning to:",
+      "options": ["Covalently join DNA fragments by forming phosphodiester bonds", "Cut DNA at specific restriction sites", "Denature double-stranded DNA into single strands", "Amplify DNA exponentially"],
+      "correct_answer": "Covalently join DNA fragments by forming phosphodiester bonds",
+      "explanation": "DNA ligase catalyzes the formation of phosphodiester bonds between the 3'-OH and 5'-phosphate ends of DNA fragments, sealing nicks to join insert and vector DNA in cloning.",
+      "topic": "Recombinant DNA techniques",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A plasmid vector used in molecular cloning must typically contain an origin of replication, a selectable marker gene, and:",
+      "options": ["A multiple cloning site (polylinker) for insertion of foreign DNA", "A functional ribosome exclusively", "Host chromosomal DNA", "A complete eukaryotic nucleus"],
+      "correct_answer": "A multiple cloning site (polylinker) for insertion of foreign DNA",
+      "explanation": "Standard cloning vectors include an origin of replication, a selectable marker (e.g., antibiotic resistance), and a multiple cloning site containing unique restriction sites for inserting foreign DNA.",
+      "topic": "Recombinant DNA techniques",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Sanger (dideoxy chain-termination) DNA sequencing relies on the incorporation of:",
+      "options": ["Dideoxynucleotides (ddNTPs) that terminate DNA strand elongation when incorporated", "Only deoxyribonucleotides with no terminators", "Ribonucleotides exclusively", "Restriction enzymes during synthesis"],
+      "correct_answer": "Dideoxynucleotides (ddNTPs) that terminate DNA strand elongation when incorporated",
+      "explanation": "Sanger sequencing uses chain-terminating dideoxynucleotides lacking a 3'-OH group; their random incorporation halts DNA synthesis, generating fragments of varying lengths that are separated to read the sequence.",
+      "topic": "Sequencing techniques",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Next-generation sequencing (NGS) technologies differ from Sanger sequencing primarily by enabling:",
+      "options": ["Massively parallel sequencing of millions of DNA fragments simultaneously", "Sequencing of only a single DNA fragment per run", "Sequencing without any DNA polymerase", "Exclusive use of radioactive isotopes for detection"],
+      "correct_answer": "Massively parallel sequencing of millions of DNA fragments simultaneously",
+      "explanation": "NGS platforms sequence millions of DNA fragments in parallel, vastly increasing throughput and reducing cost per base compared to the serial, one-fragment-at-a-time Sanger method.",
+      "topic": "Sequencing techniques",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In enzyme kinetics studies, the Lineweaver-Burk plot is a double-reciprocal transformation used to determine:",
+      "options": ["Km and Vmax from a linear plot of 1/v against 1/[S]", "The molecular weight of the enzyme", "The isoelectric point of the substrate", "The optimal temperature for enzyme activity only"],
+      "correct_answer": "Km and Vmax from a linear plot of 1/v against 1/[S]",
+      "explanation": "The Lineweaver-Burk plot linearizes the Michaelis-Menten equation by plotting 1/v versus 1/[S], allowing Km and Vmax to be determined from the slope and intercepts.",
+      "topic": "Enzyme kinetics determination",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Radioimmunoassay (RIA) quantifies an analyte based on competitive binding between:",
+      "options": ["Radiolabeled and unlabeled antigen for a limited amount of specific antibody", "Two different enzymes competing for one substrate", "DNA probes competing for a single target sequence", "Two antibodies competing for a fluorescent tag"],
+      "correct_answer": "Radiolabeled and unlabeled antigen for a limited amount of specific antibody",
+      "explanation": "RIA relies on competition between a fixed amount of radiolabeled antigen and unlabeled antigen (from the sample) for binding to a limited quantity of specific antibody, with the ratio related to analyte concentration.",
+      "topic": "Immunoassays",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Flow cytometry is used to analyze individual cells in a fluid stream based on their:",
+      "options": ["Light scattering and fluorescence properties as they pass a laser detector", "Sedimentation rate in a centrifuge tube", "Migration distance on an agarose gel", "Retention time on a chromatography column"],
+      "correct_answer": "Light scattering and fluorescence properties as they pass a laser detector",
+      "explanation": "Flow cytometry passes cells single-file through a laser beam, measuring forward/side scatter and fluorescence (often from labeled antibodies) to characterize and sort cell populations.",
+      "topic": "Flow cytometry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Fluorescence spectroscopy is generally more sensitive than UV-visible absorbance spectroscopy because:",
+      "options": ["Fluorescence signal is measured against a low background, allowing detection of lower analyte concentrations", "Fluorescence requires no excitation light source", "All molecules fluoresce with equal intensity", "Absorbance measurements require radioactive samples"],
+      "correct_answer": "Fluorescence signal is measured against a low background, allowing detection of lower analyte concentrations",
+      "explanation": "Because fluorescence emission is measured at a different wavelength than excitation against a near-zero background, it offers greater sensitivity than absorbance measurements which compare large signals against each other.",
+      "topic": "Spectroscopic techniques",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Atomic absorption spectroscopy (AAS) is primarily used in biochemical analysis to quantify:",
+      "options": ["Trace metal ion concentrations in a sample", "Protein secondary structure", "DNA base sequence", "Enzyme reaction rates"],
+      "correct_answer": "Trace metal ion concentrations in a sample",
+      "explanation": "AAS measures the absorption of specific wavelengths of light by free gaseous metal atoms, making it a highly sensitive and selective method for quantifying trace metals such as iron, zinc, or lead.",
+      "topic": "Spectroscopic techniques",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Fast protein liquid chromatography (FPLC) is essentially a form of:",
+      "options": ["Medium-pressure liquid chromatography optimized for purifying biomolecules under mild, non-denaturing conditions", "Gas chromatography adapted for protein samples", "Thin-layer chromatography scaled up industrially", "A purely qualitative spot test"],
+      "correct_answer": "Medium-pressure liquid chromatography optimized for purifying biomolecules under mild, non-denaturing conditions",
+      "explanation": "FPLC uses moderate pressures and biocompatible materials to purify proteins and other biomolecules while preserving their native structure and biological activity, unlike harsher HPLC conditions.",
+      "topic": "Advanced chromatography",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In gas chromatography-mass spectrometry (GC-MS), the GC component separates volatile compounds while the MS component:",
+      "options": ["Identifies each separated compound based on its mass spectral fragmentation pattern", "Only measures the total run time of the analysis", "Replaces the need for a chromatographic column", "Determines the compound's optical rotation"],
+      "correct_answer": "Identifies each separated compound based on its mass spectral fragmentation pattern",
+      "explanation": "GC-MS couples chromatographic separation with mass spectrometric detection, where the MS provides structural identification via characteristic fragmentation patterns of each eluting compound.",
+      "topic": "Mass spectrometry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Site-directed mutagenesis is a molecular technique used to:",
+      "options": ["Introduce a specific, targeted change into a DNA sequence to study its functional effect", "Randomly fragment DNA for sequencing", "Amplify an entire genome without primers", "Stain proteins for gel visualization"],
+      "correct_answer": "Introduce a specific, targeted change into a DNA sequence to study its functional effect",
+      "explanation": "Site-directed mutagenesis uses primers with designed mismatches to introduce precise, intentional nucleotide changes into a cloned gene, enabling structure-function studies of the encoded protein.",
+      "topic": "Recombinant DNA techniques",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Bioinformatics tools such as BLAST (Basic Local Alignment Search Tool) are used primarily to:",
+      "options": ["Compare a query DNA or protein sequence against a database to find similar sequences", "Physically purify a protein from a crude extract", "Perform gel electrophoresis calculations automatically", "Replace the need for PCR amplification"],
+      "correct_answer": "Compare a query DNA or protein sequence against a database to find similar sequences",
+      "explanation": "BLAST is a bioinformatics algorithm that rapidly searches sequence databases to find regions of similarity between a query sequence and known sequences, aiding functional and evolutionary inference.",
+      "topic": "Bioinformatics tools",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Circular dichroism (CD) spectroscopy is commonly used in advanced biochemistry to study:",
+      "options": ["The secondary structure content of proteins (e.g., alpha-helix, beta-sheet)", "The exact molecular weight of a protein", "DNA base sequence", "Enzyme substrate specificity directly"],
+      "correct_answer": "The secondary structure content of proteins (e.g., alpha-helix, beta-sheet)",
+      "explanation": "CD spectroscopy measures the differential absorption of left- and right-circularly polarized light, producing characteristic spectra that reflect a protein's secondary structure composition.",
+      "topic": "Spectroscopic techniques",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Immunoprecipitation is a technique used to:",
+      "options": ["Isolate a specific protein (and its binding partners) from a complex mixture using a specific antibody", "Amplify a DNA sequence exponentially", "Separate proteins purely by molecular weight on a gel", "Sequence a purified protein's amino acid chain"],
+      "correct_answer": "Isolate a specific protein (and its binding partners) from a complex mixture using a specific antibody",
+      "explanation": "Immunoprecipitation uses an antibody bound to a solid support (e.g., protein A/G beads) to selectively capture a target protein, along with any associated interacting proteins, from a lysate.",
+      "topic": "Immunoassays",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In an ELISA (enzyme-linked immunosorbent assay), the intensity of the colorimetric signal produced is generally:",
+      "options": ["Proportional to the amount of target antigen or antibody present in the sample", "Completely independent of analyte concentration", "Inversely related to the amount of enzyme substrate added", "Determined solely by the plate material"],
+      "correct_answer": "Proportional to the amount of target antigen or antibody present in the sample",
+      "explanation": "In ELISA, the enzyme-catalyzed color development is proportional to the amount of bound antigen-antibody complex, allowing the signal to be used for quantification against a standard curve.",
+      "topic": "Immunoassays",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Reverse-phase HPLC separates biomolecules based primarily on their:",
+      "options": ["Hydrophobicity, using a nonpolar stationary phase and polar mobile phase", "Net charge at a fixed pH", "Molecular size exclusively", "Specific antigen-antibody binding"],
+      "correct_answer": "Hydrophobicity, using a nonpolar stationary phase and polar mobile phase",
+      "explanation": "Reverse-phase HPLC uses a hydrophobic (nonpolar) stationary phase with a polar mobile phase, separating analytes according to their differing hydrophobic interactions with the column packing.",
+      "topic": "Advanced chromatography",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Cryo-electron microscopy (cryo-EM) has become a powerful advanced structural biology technique because it allows determination of macromolecular structures:",
+      "options": ["Without the need to grow crystals, by rapidly freezing samples in their native state", "Only for very small molecules under 500 Da", "Using visible light microscopy exclusively", "Without any computational image processing"],
+      "correct_answer": "Without the need to grow crystals, by rapidly freezing samples in their native state",
+      "explanation": "Cryo-EM rapidly vitrifies samples in a near-native hydrated state and uses electron imaging plus computational reconstruction to determine structures without requiring crystallization, unlike X-ray crystallography.",
+      "topic": "X-ray crystallography",
+      "difficulty": "hard"
+    }
+  ]
+}

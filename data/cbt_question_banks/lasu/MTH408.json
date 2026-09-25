@@ -1,0 +1,264 @@
+{
+  "course_code": "MTH408",
+  "title": "Quantum Mechanics I",
+  "level": "400",
+  "source_note": "This is the Mathematics department's own mathematical-methods treatment of introductory quantum mechanics (standard NUC-aligned 400L content), emphasising the operator/wavefunction formalism: the Schrodinger equation, wavefunctions and the Born interpretation, position/momentum/Hamiltonian operators, commutators and Hermitian operators, the uncertainty principle, and the exactly solvable problems (infinite square well, harmonic oscillator, tunneling).",
+  "questions": [
+    {
+      "question": "The time-dependent Schrodinger equation for a particle of mass m in potential V(x,t) is:",
+      "options": ["i hbar dPsi/dt = -(hbar^2/2m) d^2 Psi/dx^2 + V Psi", "Psi = e^(iEt/hbar)", "dPsi/dt = d^2 Psi/dx^2", "i hbar Psi = E Psi"],
+      "correct_answer": "i hbar dPsi/dt = -(hbar^2/2m) d^2 Psi/dx^2 + V Psi",
+      "explanation": "This is the fundamental equation governing the time evolution of a quantum wavefunction in one spatial dimension.",
+      "topic": "Schrodinger equation",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The time-independent Schrodinger equation is obtained from the time-dependent one, for a time-independent potential, by separating variables as:",
+      "options": ["Psi(x,t) = psi(x) e^(-iEt/hbar)", "Psi(x,t) = psi(x) + t", "Psi(x,t) = psi(x)/t", "Psi(x,t) = E times psi(x)"],
+      "correct_answer": "Psi(x,t) = psi(x) e^(-iEt/hbar)",
+      "explanation": "This separation of variables produces stationary states with definite energy E, reducing the PDE to an ODE for psi(x).",
+      "topic": "Schrodinger equation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "According to the Born interpretation, |Psi(x,t)|^2 represents:",
+      "options": ["The probability density of finding the particle at position x at time t", "The particle's velocity", "The particle's energy", "The potential energy"],
+      "correct_answer": "The probability density of finding the particle at position x at time t",
+      "explanation": "The Born rule gives physical meaning to the wavefunction as a probability amplitude whose modulus squared is a probability density.",
+      "topic": "Wavefunctions and probability",
+      "difficulty": "easy"
+    },
+    {
+      "question": "For a wavefunction to be physically acceptable, it must be normalized so that:",
+      "options": ["The integral over all space of |Psi(x,t)|^2 dx equals 1", "The integral of Psi dx equals 0", "Psi(x,t) equals 1 for all x", "The integral of |Psi| dx equals 1"],
+      "correct_answer": "The integral over all space of |Psi(x,t)|^2 dx equals 1",
+      "explanation": "Normalization ensures the total probability of finding the particle somewhere in space is exactly one.",
+      "topic": "Wavefunctions and probability",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In quantum mechanics, the position operator acts on a wavefunction by:",
+      "options": ["Multiplication by x", "Differentiation with respect to x", "Multiplication by i hbar", "Integration over x"],
+      "correct_answer": "Multiplication by x",
+      "explanation": "In the position representation, the position operator simply multiplies the wavefunction by x.",
+      "topic": "Operators",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The momentum operator in the position representation is given by:",
+      "options": ["p-hat = -i hbar d/dx", "p-hat = x", "p-hat = i hbar x", "p-hat = d^2/dx^2"],
+      "correct_answer": "p-hat = -i hbar d/dx",
+      "explanation": "This differential operator representation of momentum is essential to the mathematical formalism of quantum mechanics.",
+      "topic": "Operators",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Hamiltonian operator H-hat for a particle in one dimension is:",
+      "options": ["H-hat = -(hbar^2/2m) d^2/dx^2 + V(x)", "H-hat = p-hat + V", "H-hat = -i hbar d/dt", "H-hat = x^2"],
+      "correct_answer": "H-hat = -(hbar^2/2m) d^2/dx^2 + V(x)",
+      "explanation": "The Hamiltonian operator represents the total energy, combining the kinetic energy operator with the potential energy function.",
+      "topic": "Operators",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The commutator of two operators A-hat and B-hat is defined as:",
+      "options": ["[A-hat,B-hat] = A-hat B-hat - B-hat A-hat", "[A-hat,B-hat] = A-hat B-hat + B-hat A-hat", "[A-hat,B-hat] = A-hat divided by B-hat", "[A-hat,B-hat] = A-hat B-hat"],
+      "correct_answer": "[A-hat,B-hat] = A-hat B-hat - B-hat A-hat",
+      "explanation": "The commutator measures the failure of two operators to commute and is central to quantum mechanical structure.",
+      "topic": "Commutators",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The canonical commutation relation between position and momentum operators is:",
+      "options": ["[x-hat, p-hat] = i hbar", "[x-hat, p-hat] = 0", "[x-hat, p-hat] = hbar", "[x-hat, p-hat] = -hbar^2"],
+      "correct_answer": "[x-hat, p-hat] = i hbar",
+      "explanation": "This fundamental commutation relation encodes the impossibility of simultaneously specifying exact position and momentum.",
+      "topic": "Commutators",
+      "difficulty": "medium"
+    },
+    {
+      "question": "An operator A-hat is Hermitian if it satisfies:",
+      "options": ["The inner product <psi|A-hat phi> equals <A-hat psi|phi> for all suitable psi, phi", "A-hat squared equals A-hat", "A-hat equals minus A-hat", "A-hat has only complex eigenvalues"],
+      "correct_answer": "The inner product <psi|A-hat phi> equals <A-hat psi|phi> for all suitable psi, phi",
+      "explanation": "This self-adjointness condition is the defining property of a Hermitian operator.",
+      "topic": "Hermitian operators",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Physical observables in quantum mechanics are represented by operators that are:",
+      "options": ["Hermitian, guaranteeing real eigenvalues", "Anti-Hermitian", "Always unitary", "Always unbounded and non-Hermitian"],
+      "correct_answer": "Hermitian, guaranteeing real eigenvalues",
+      "explanation": "Since measurement outcomes must be real numbers, observables are represented by Hermitian operators.",
+      "topic": "Hermitian operators",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Eigenfunctions of a Hermitian operator corresponding to distinct eigenvalues are:",
+      "options": ["Orthogonal", "Always identical", "Never normalizable", "Necessarily real-valued"],
+      "correct_answer": "Orthogonal",
+      "explanation": "This orthogonality is a general theorem for Hermitian operators and underlies the expansion of states in an eigenbasis.",
+      "topic": "Hermitian operators",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The expectation value of an observable A-hat in a normalized state Psi is computed as:",
+      "options": ["The integral of Psi* A-hat Psi dx", "The integral of A-hat dx", "A-hat evaluated at 0", "The integral of Psi dx"],
+      "correct_answer": "The integral of Psi* A-hat Psi dx",
+      "explanation": "This sandwich integral gives the average value that would be obtained from many measurements of the observable on identically prepared systems.",
+      "topic": "Expectation values",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Heisenberg Uncertainty Principle for position and momentum states that:",
+      "options": ["Delta x times Delta p is greater than or equal to hbar/2", "Delta x times Delta p equals 0", "Delta x equals Delta p always", "Delta x times Delta p is less than or equal to hbar/2"],
+      "correct_answer": "Delta x times Delta p is greater than or equal to hbar/2",
+      "explanation": "This inequality places a fundamental lower bound on the product of the uncertainties in position and momentum.",
+      "topic": "Uncertainty principle",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The uncertainty principle arises mathematically from the fact that position and momentum operators:",
+      "options": ["Do not commute", "Commute", "Are both Hermitian", "Are linear"],
+      "correct_answer": "Do not commute",
+      "explanation": "The general uncertainty relation for two observables is proportional to the expectation value of their commutator, which is nonzero for x and p.",
+      "topic": "Uncertainty principle",
+      "difficulty": "hard"
+    },
+    {
+      "question": "For a particle in an infinite square well of width L (from 0 to L), the allowed energy levels are:",
+      "options": ["E_n = n^2 pi^2 hbar^2 / (2mL^2), for n = 1,2,3,...", "E_n = n hbar omega", "E_n = n^2 hbar", "E_n = hbar^2/(2mL^2) for all n"],
+      "correct_answer": "E_n = n^2 pi^2 hbar^2 / (2mL^2), for n = 1,2,3,...",
+      "explanation": "Solving the time-independent Schrodinger equation with infinite walls at 0 and L gives quantized energies proportional to n squared.",
+      "topic": "Particle in a box",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The ground state wavefunction of the infinite square well (from 0 to L) is:",
+      "options": ["psi_1(x) = square root of (2/L) times sin(pi x/L)", "psi_1(x) = square root of (2/L) times cos(pi x/L)", "psi_1(x) = 1/L", "psi_1(x) = e^(-x)"],
+      "correct_answer": "psi_1(x) = square root of (2/L) times sin(pi x/L)",
+      "explanation": "This is the normalized lowest-energy eigenfunction, vanishing at both walls as required by the boundary conditions.",
+      "topic": "Particle in a box",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In the infinite square well, the wavefunction must vanish at the walls because:",
+      "options": ["The potential is infinite outside the well, so the wavefunction must be continuous and zero there", "The particle cannot have zero energy", "The well has no boundaries", "The wavefunction is always zero everywhere"],
+      "correct_answer": "The potential is infinite outside the well, so the wavefunction must be continuous and zero there",
+      "explanation": "Continuity of the wavefunction, combined with it being zero outside the infinite barrier, forces it to vanish exactly at the walls.",
+      "topic": "Particle in a box",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The energy levels of the quantum harmonic oscillator are given by:",
+      "options": ["E_n = (n + 1/2) hbar omega, for n = 0,1,2,...", "E_n = n hbar omega only", "E_n = n^2 hbar omega", "E_n = hbar omega/2 for all n"],
+      "correct_answer": "E_n = (n + 1/2) hbar omega, for n = 0,1,2,...",
+      "explanation": "The harmonic oscillator has evenly spaced energy levels shifted up from zero by the zero-point energy hbar omega/2.",
+      "topic": "Quantum harmonic oscillator",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The nonzero ground-state energy of the quantum harmonic oscillator (E_0 = hbar omega/2) is a direct consequence of:",
+      "options": ["The Heisenberg uncertainty principle", "Classical mechanics", "The particle having zero mass", "The potential being unbounded"],
+      "correct_answer": "The Heisenberg uncertainty principle",
+      "explanation": "A particle cannot have both zero position uncertainty and zero momentum uncertainty at the bottom of the well, forcing a minimum nonzero energy.",
+      "topic": "Quantum harmonic oscillator",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The raising and lowering (ladder) operators a-dagger and a for the harmonic oscillator satisfy the commutation relation:",
+      "options": ["[a, a-dagger] = 1", "[a, a-dagger] = 0", "[a, a-dagger] = hbar", "[a, a-dagger] = -1"],
+      "correct_answer": "[a, a-dagger] = 1",
+      "explanation": "This canonical commutation relation between the ladder operators underlies the algebraic solution of the harmonic oscillator.",
+      "topic": "Quantum harmonic oscillator",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The eigenfunctions of the quantum harmonic oscillator are expressed in terms of:",
+      "options": ["Hermite polynomials multiplied by a Gaussian", "Bessel functions", "Legendre polynomials", "Sine and cosine only"],
+      "correct_answer": "Hermite polynomials multiplied by a Gaussian",
+      "explanation": "Solving the harmonic oscillator's Schrodinger equation produces Hermite polynomials modulated by a Gaussian envelope.",
+      "topic": "Quantum harmonic oscillator",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In the quantum tunneling problem, a particle with energy E less than a potential barrier height V0 has a wavefunction inside the barrier that:",
+      "options": ["Decays exponentially but is nonzero, giving a nonzero probability of transmission", "Is identically zero", "Oscillates freely as if there were no barrier", "Becomes infinite"],
+      "correct_answer": "Decays exponentially but is nonzero, giving a nonzero probability of transmission",
+      "explanation": "The exponentially decaying solution inside a classically forbidden region does not vanish entirely, allowing tunneling through thin barriers.",
+      "topic": "Tunneling",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Classically, a particle with E less than V0 could never cross a potential barrier; quantum mechanically, tunneling is possible because:",
+      "options": ["The wavefunction does not vanish abruptly at the barrier, allowing a nonzero amplitude to persist on the far side", "Energy conservation is violated", "The particle's mass becomes negative", "The Schrodinger equation does not apply to barriers"],
+      "correct_answer": "The wavefunction does not vanish abruptly at the barrier, allowing a nonzero amplitude to persist on the far side",
+      "explanation": "Wavefunction continuity across the barrier allows a small but nonzero transmitted amplitude beyond the barrier.",
+      "topic": "Tunneling",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For a step potential where E is greater than V0, the wave is partially reflected and partially transmitted at the step; this is analogous to:",
+      "options": ["Partial reflection of light at a change in refractive index", "Total internal reflection only", "No physical analogy", "Complete absorption"],
+      "correct_answer": "Partial reflection of light at a change in refractive index",
+      "explanation": "Just as light partially reflects at an interface between media, a matter wave partially reflects at a potential step even when it has enough energy to pass.",
+      "topic": "Potential step",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The probability current (flux) density j(x,t) is constructed so that it satisfies a continuity equation with the probability density, expressing:",
+      "options": ["Conservation of probability", "Conservation of energy only", "Conservation of charge only", "No conservation law"],
+      "correct_answer": "Conservation of probability",
+      "explanation": "The continuity equation for the probability density and current ensures total probability is conserved over time, consistent with unitary evolution.",
+      "topic": "Probability current",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Stationary states of the time-independent Schrodinger equation have wavefunctions whose overall time dependence e^(-iEt/hbar) means that:",
+      "options": ["|Psi(x,t)|^2 is independent of time", "|Psi(x,t)|^2 oscillates rapidly with time", "Psi(x,t) is purely real", "The energy is undefined"],
+      "correct_answer": "|Psi(x,t)|^2 is independent of time",
+      "explanation": "Since the time factor has unit modulus, it cancels in |Psi|^2, so probability densities of stationary states are time-independent.",
+      "topic": "Stationary states",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The superposition principle in quantum mechanics states that if Psi1 and Psi2 are both solutions of the Schrodinger equation, then:",
+      "options": ["Any linear combination c1 Psi1 + c2 Psi2 is also a solution", "Only Psi1 is physically valid", "Psi1 times Psi2 is a solution", "Neither combination is valid"],
+      "correct_answer": "Any linear combination c1 Psi1 + c2 Psi2 is also a solution",
+      "explanation": "The Schrodinger equation is linear, so any superposition of its solutions is itself a valid solution.",
+      "topic": "Superposition principle",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Any two eigenfunctions of the Hamiltonian corresponding to different energy eigenvalues are automatically:",
+      "options": ["Orthogonal", "Equal", "Degenerate", "Non-normalizable"],
+      "correct_answer": "Orthogonal",
+      "explanation": "Since the Hamiltonian is Hermitian, its eigenfunctions with distinct eigenvalues are guaranteed to be orthogonal.",
+      "topic": "Hermitian operators",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The de Broglie relation connecting a particle's momentum p to its associated wavelength lambda is:",
+      "options": ["lambda = h/p", "lambda = p/h", "lambda = hp", "lambda = h^2/p"],
+      "correct_answer": "lambda = h/p",
+      "explanation": "This relation, proposed by de Broglie, extends wave-particle duality from photons to all matter.",
+      "topic": "Wave-particle duality",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The expectation value of momentum for a real-valued, normalizable bound-state wavefunction, such as an infinite-well eigenstate, is:",
+      "options": ["Zero", "Always positive", "Always equal to hbar", "Undefined"],
+      "correct_answer": "Zero",
+      "explanation": "For a real stationary-state wavefunction the momentum expectation value vanishes, reflecting that the particle is equally likely to be moving in either direction.",
+      "topic": "Expectation values",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Degenerate energy levels in quantum mechanics refer to a situation where:",
+      "options": ["More than one linearly independent eigenfunction corresponds to the same energy eigenvalue", "The energy is exactly zero", "The wavefunction is not normalizable", "The system has no bound states"],
+      "correct_answer": "More than one linearly independent eigenfunction corresponds to the same energy eigenvalue",
+      "explanation": "Degeneracy occurs when a single energy value admits multiple distinct quantum states, common in systems with symmetry.",
+      "topic": "Degeneracy",
+      "difficulty": "medium"
+    }
+  ]
+}

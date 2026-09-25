@@ -1,0 +1,296 @@
+{
+  "course_code": "PHY311",
+  "title": "Experimental Physics I",
+  "level": "300",
+  "source_note": "Standard NUC-aligned Nigerian university 300L advanced physics laboratory curriculum: e/m ratio determination, photoelectric effect experiment, diffraction grating, radioactivity/half-life counting, thermionic emission/CRO measurement, and advanced error analysis/data treatment, going beyond the introductory 100L practical courses (PHY107/PHY108).",
+  "questions": [
+    {
+      "question": "In the classic Thomson-type experiment to determine e/m for the electron using magnetic deflection, an electron beam is passed through a region of known magnetic field B. What measurement, together with the accelerating voltage V, allows e/m to be calculated?",
+      "options": ["The radius of curvature of the electron's circular path in the field", "The total mass of the electron gun", "The wavelength of light emitted by the electrons", "The temperature of the filament"],
+      "correct_answer": "The radius of curvature of the electron's circular path in the field",
+      "explanation": "Equating the magnetic force to the centripetal force (evB = mv^2/r) and using the accelerating voltage relation (eV = 1/2 mv^2) allows e/m to be found from B, V, and the measured radius r.",
+      "topic": "e/m ratio of the electron",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the e/m experiment, the formula used is e/m = 2V/(B^2 r^2). If the measured radius r is systematically too large due to a parallax error in reading the scale, how is the calculated e/m value affected?",
+      "options": ["It will be underestimated, since e/m is inversely proportional to r^2", "It will be overestimated", "It will be unaffected, since r cancels out", "It cannot be determined without knowing B"],
+      "correct_answer": "It will be underestimated, since e/m is inversely proportional to r^2",
+      "explanation": "Since e/m varies as 1/r^2, an overestimate of r produces a smaller calculated e/m, illustrating how systematic measurement errors propagate into the final result.",
+      "topic": "e/m ratio of the electron",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In the e/m tube experiment, Helmholtz coils are used mainly to:",
+      "options": ["Produce a uniform magnetic field over the region where the electron beam travels", "Accelerate the electrons to high speed", "Measure the electron beam current directly", "Filter out stray light so the beam path is visible"],
+      "correct_answer": "Produce a uniform magnetic field over the region where the electron beam travels",
+      "explanation": "A pair of Helmholtz coils, with separation equal to their radius, produces a region of nearly uniform magnetic field, essential for a clean circular electron trajectory.",
+      "topic": "e/m ratio of the electron",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the photoelectric effect experiment, the stopping voltage V0 is defined as the:",
+      "options": ["Minimum reverse voltage needed to reduce the photocurrent to zero", "Voltage at which the photocurrent is maximum", "Voltage applied to heat the photocathode", "Voltage across the ammeter used to measure current"],
+      "correct_answer": "Minimum reverse voltage needed to reduce the photocurrent to zero",
+      "explanation": "The stopping voltage is the retarding potential just sufficient to stop even the most energetic photoelectrons from reaching the collector, giving eV0 = maximum kinetic energy of emitted electrons.",
+      "topic": "Photoelectric effect experiment",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the photoelectric experiment, a graph of stopping voltage V0 against the frequency f of incident light is plotted for several light sources. What does the gradient of this straight-line graph represent?",
+      "options": ["h/e, allowing Planck's constant h to be determined since e is known", "The work function directly in volts", "The threshold frequency of the metal", "The speed of light divided by the wavelength"],
+      "correct_answer": "h/e, allowing Planck's constant h to be determined since e is known",
+      "explanation": "From eV0 = hf - phi, V0 = (h/e)f - phi/e, so the straight-line graph of V0 vs f has gradient h/e; multiplying by the known electronic charge e gives Planck's constant.",
+      "topic": "Photoelectric effect experiment",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In the photoelectric effect experiment, the y-intercept of a graph of stopping voltage V0 versus frequency f, when extrapolated, gives:",
+      "options": ["Minus the work function divided by e (-phi/e)", "The threshold frequency directly", "Planck's constant", "The maximum photocurrent"],
+      "correct_answer": "Minus the work function divided by e (-phi/e)",
+      "explanation": "From eV0 = hf - phi, rearranged as V0 = (h/e)f - phi/e, the y-intercept is -phi/e, from which the work function phi of the photocathode material can be extracted.",
+      "topic": "Photoelectric effect experiment",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In the photoelectric effect experiment, why must the apparatus be well shielded from stray ambient light?",
+      "options": ["Stray light produces additional photoelectrons that introduce error into the measured photocurrent and stopping voltage", "Stray light changes the work function of the photocathode permanently", "Stray light increases the resistance of the connecting wires", "Stray light discharges the battery supplying the accelerating voltage"],
+      "correct_answer": "Stray light produces additional photoelectrons that introduce error into the measured photocurrent and stopping voltage",
+      "explanation": "Unwanted ambient light striking the photocathode generates extra photoelectrons unrelated to the controlled monochromatic source, distorting the current-voltage measurements.",
+      "topic": "Photoelectric effect experiment",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a diffraction grating experiment to determine the wavelength of light, the key formula relating the grating spacing d, diffraction order n, angle theta, and wavelength lambda is:",
+      "options": ["d sin(theta) = n lambda", "d cos(theta) = n lambda", "d tan(theta) = n lambda", "n sin(theta) = d lambda"],
+      "correct_answer": "d sin(theta) = n lambda",
+      "explanation": "This is the diffraction grating equation; constructive interference (a bright fringe) occurs when the path difference between adjacent slits equals an integer number of wavelengths.",
+      "topic": "Diffraction grating experiment",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the diffraction grating experiment, the grating spacing d is typically calculated from the manufacturer's specification of lines per millimetre, N, using:",
+      "options": ["d = 1/N", "d = N", "d = N^2", "d = 1/N^2"],
+      "correct_answer": "d = 1/N",
+      "explanation": "If a grating has N lines per unit length, the spacing between adjacent lines (slits) is simply the reciprocal, d = 1/N.",
+      "topic": "Diffraction grating experiment",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the diffraction grating experiment using a spectrometer, why is it important to accurately measure the angle for both the +n and -n order maxima on either side of the central beam?",
+      "options": ["Averaging the two symmetric angles reduces the effect of any error in locating the true zero-order (straight-through) position", "The -n order gives a completely different wavelength from the +n order", "It doubles the number of diffraction gratings needed", "It eliminates the need to know the grating spacing"],
+      "correct_answer": "Averaging the two symmetric angles reduces the effect of any error in locating the true zero-order (straight-through) position",
+      "explanation": "Measuring the angle between the symmetric +n and -n order lines and halving it cancels out any systematic offset error in the assumed position of the undeviated (zero-order) beam.",
+      "topic": "Diffraction grating experiment",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In an experiment to determine the half-life of a radioactive source using a Geiger-Muller counter, why must the background count rate be measured separately and subtracted from the source readings?",
+      "options": ["Ambient cosmic and environmental radiation contributes counts unrelated to the sample being studied, which would otherwise bias the result", "The GM tube cannot detect the sample's radiation without first detecting background radiation", "Background radiation increases the actual half-life of the source", "Subtracting background doubles the counting efficiency of the tube"],
+      "correct_answer": "Ambient cosmic and environmental radiation contributes counts unrelated to the sample being studied, which would otherwise bias the result",
+      "explanation": "Background radiation is always present; the corrected count rate (source + background minus background alone) isolates the activity attributable to the sample.",
+      "topic": "Radioactivity/half-life determination experiment",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In counting statistics for radioactive decay measurements, if N counts are recorded in a fixed time interval, the standard deviation (statistical uncertainty) on that count is approximately:",
+      "options": ["The square root of N", "N divided by 2", "N squared", "A fixed value independent of N"],
+      "correct_answer": "The square root of N",
+      "explanation": "Radioactive decay counts follow Poisson statistics, for which the standard deviation of a count N is approximately sqrt(N), so longer counting times (larger N) give proportionally smaller relative uncertainty.",
+      "topic": "Radioactivity/half-life determination experiment",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In the half-life determination experiment, plotting the natural logarithm of the corrected count rate against time should produce a straight line whose gradient is:",
+      "options": ["Minus the decay constant, -lambda", "The half-life directly", "The activity at t = 0", "The background count rate"],
+      "correct_answer": "Minus the decay constant, -lambda",
+      "explanation": "Since N = N0 e^(-lambda t), taking natural logs gives ln N = ln N0 - lambda t, a straight line with gradient -lambda, from which the half-life T(1/2) = ln2/lambda can then be found.",
+      "topic": "Radioactivity/half-life determination experiment",
+      "difficulty": "hard"
+    },
+    {
+      "question": "When using a GM counter to determine half-life, why is it good practice to keep the sample-to-detector distance fixed throughout the experiment?",
+      "options": ["Changing the distance alters the detection geometry and count rate independent of the actual decay, distorting the measured half-life", "The GM tube stops working if the distance changes", "Fixed distance is required by law for radiation safety", "It has no effect on the results as long as counting time is fixed"],
+      "correct_answer": "Changing the distance alters the detection geometry and count rate independent of the actual decay, distorting the measured half-life",
+      "explanation": "The solid angle subtended by the detector (and hence the fraction of emitted radiation detected) depends on distance; keeping geometry constant ensures observed count-rate changes reflect only the sample's decay.",
+      "topic": "Radioactivity/half-life determination experiment",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a thermionic emission experiment studying a vacuum diode, the saturation current observed at high anode voltage for a fixed filament temperature is primarily limited by:",
+      "options": ["The rate at which electrons are thermionically emitted from the heated cathode", "The resistance of the vacuum itself", "The wavelength of light striking the cathode", "The magnetic field of the Earth"],
+      "correct_answer": "The rate at which electrons are thermionically emitted from the heated cathode",
+      "explanation": "Once the anode voltage is high enough to collect essentially all emitted electrons, further voltage increase does not raise current further; the current saturates at a value set by the cathode's emission rate (temperature-dependent).",
+      "topic": "Thermionic emission/vacuum tube characteristics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In studying thermionic emission, the relationship between saturation current density J and absolute cathode temperature T is described by which law?",
+      "options": ["Richardson-Dushman law, J = AT^2 exp(-phi/kT)", "Ohm's law, V = IR", "Stefan-Boltzmann law, P = sigma T^4 only", "Coulomb's law"],
+      "correct_answer": "Richardson-Dushman law, J = AT^2 exp(-phi/kT)",
+      "explanation": "The Richardson-Dushman equation describes how thermionic emission current density depends exponentially on temperature and the material's work function phi.",
+      "topic": "Thermionic emission/vacuum tube characteristics",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In a vacuum diode characteristic curve experiment, in the region below saturation (space-charge limited region), the current I depends on the anode voltage V approximately according to which law?",
+      "options": ["Child-Langmuir law, I proportional to V^(3/2)", "Ohm's law, I proportional to V", "I is independent of V", "I proportional to V^3"],
+      "correct_answer": "Child-Langmuir law, I proportional to V^(3/2)",
+      "explanation": "Before saturation, the current is limited by the space charge of electrons near the cathode, and the Child-Langmuir (three-halves power) law describes this V^(3/2) dependence.",
+      "topic": "Thermionic emission/vacuum tube characteristics",
+      "difficulty": "hard"
+    },
+    {
+      "question": "When using a cathode ray oscilloscope (CRO) to measure the frequency of an unknown periodic signal, the most direct method is to:",
+      "options": ["Measure the period of one complete waveform cycle on the screen using the time/division setting, then take the reciprocal", "Measure only the peak voltage displayed", "Count the number of gridlines on the y-axis", "Adjust only the intensity control until the frequency reading appears"],
+      "correct_answer": "Measure the period of one complete waveform cycle on the screen using the time/division setting, then take the reciprocal",
+      "explanation": "The horizontal (time) axis calibration (time/division) lets the operator read off the period T of the waveform directly from the screen; frequency is then f = 1/T.",
+      "topic": "Use of the cathode ray oscilloscope (CRO)",
+      "difficulty": "medium"
+    },
+    {
+      "question": "On a CRO, Lissajous figures are produced by feeding two sinusoidal signals into the:",
+      "options": ["Horizontal (X) and vertical (Y) inputs simultaneously, with the internal time base switched off", "Same input channel, one after the other", "Ground terminal only", "Intensity (Z) modulation input only"],
+      "correct_answer": "Horizontal (X) and vertical (Y) inputs simultaneously, with the internal time base switched off",
+      "explanation": "Lissajous figures result from applying one AC signal to the X-plates and another to the Y-plates (with the time base off), producing patterns whose shape reveals the frequency ratio and phase difference between the two signals.",
+      "topic": "Use of the cathode ray oscilloscope (CRO)",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A CRO screen shows a stationary Lissajous figure that is a simple ellipse when equal frequencies are applied to the X and Y inputs, and this ellipse becomes a straight diagonal line. What does this indicate about the phase difference between the two signals?",
+      "options": ["The two signals are in phase (or exactly 180 degrees out of phase)", "The two signals differ in frequency by a factor of two", "The signals have no relationship at all", "One signal has zero amplitude"],
+      "correct_answer": "The two signals are in phase (or exactly 180 degrees out of phase)",
+      "explanation": "For equal-frequency Lissajous figures, a straight line occurs when the phase difference is 0 degrees or 180 degrees; a circle occurs at 90 degrees phase difference with equal amplitudes, and general ellipses occur at intermediate phases.",
+      "topic": "Use of the cathode ray oscilloscope (CRO)",
+      "difficulty": "hard"
+    },
+    {
+      "question": "When using a CRO to measure voltage amplitude, the vertical deflection in divisions is multiplied by which setting to obtain the actual voltage?",
+      "options": ["The volts/division setting", "The time/division setting", "The trigger level setting", "The intensity control setting"],
+      "correct_answer": "The volts/division setting",
+      "explanation": "The CRO's vertical (Y) axis is calibrated in volts per division; multiplying the measured deflection (in divisions) by this factor gives the signal's voltage amplitude.",
+      "topic": "Use of the cathode ray oscilloscope (CRO)",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In advanced error analysis, if a quantity Z is calculated as a product of measured quantities, Z = AB, the fractional (relative) uncertainty in Z is approximately obtained by:",
+      "options": ["Adding the fractional uncertainties of A and B in quadrature (or, as a simpler estimate, summing them directly)", "Multiplying the absolute uncertainties of A and B", "Subtracting the fractional uncertainty of B from that of A", "Taking the square root of the sum of A and B themselves"],
+      "correct_answer": "Adding the fractional uncertainties of A and B in quadrature (or, as a simpler estimate, summing them directly)",
+      "explanation": "For a product or quotient, fractional uncertainties combine approximately in quadrature: (delta Z/Z)^2 = (delta A/A)^2 + (delta B/B)^2, or are simply added as a conservative upper bound.",
+      "topic": "Advanced error analysis and data treatment",
+      "difficulty": "hard"
+    },
+    {
+      "question": "If a quantity Z = A + B is calculated from two independently measured quantities with absolute uncertainties delta A and delta B, how is the absolute uncertainty in Z estimated?",
+      "options": ["By combining delta A and delta B in quadrature, sqrt((delta A)^2 + (delta B)^2), or as a simpler upper bound by direct addition", "By multiplying delta A and delta B", "By taking the larger of delta A or delta B and ignoring the smaller", "By dividing delta A by delta B"],
+      "correct_answer": "By combining delta A and delta B in quadrature, sqrt((delta A)^2 + (delta B)^2), or as a simpler upper bound by direct addition",
+      "explanation": "For a sum or difference of independent measurements, absolute uncertainties combine in quadrature under standard error propagation, or by simple addition as a conservative estimate.",
+      "topic": "Advanced error analysis and data treatment",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In least-squares fitting of experimental data to a straight line, the method finds the line that:",
+      "options": ["Minimizes the sum of the squares of the vertical deviations between the data points and the fitted line", "Passes through the maximum possible number of data points exactly", "Maximizes the sum of squared deviations", "Connects only the first and last data points"],
+      "correct_answer": "Minimizes the sum of the squares of the vertical deviations between the data points and the fitted line",
+      "explanation": "Least-squares regression determines the line parameters (gradient and intercept) that minimize the sum of squared residuals between observed data and the fitted line, giving the best statistical fit.",
+      "topic": "Advanced error analysis and data treatment",
+      "difficulty": "medium"
+    },
+    {
+      "question": "When reporting a measured value with its uncertainty, which of the following is the conventionally correct format?",
+      "options": ["Quantity = (measured value plus-or-minus uncertainty) with appropriate units, using a consistent number of significant figures", "Only the measured value, since uncertainty is implied", "The uncertainty alone, without the measured value", "The measured value with the number of trials performed but no uncertainty estimate"],
+      "correct_answer": "Quantity = (measured value plus-or-minus uncertainty) with appropriate units, using a consistent number of significant figures",
+      "explanation": "Proper scientific reporting states the best estimate together with its uncertainty and units, with the uncertainty typically quoted to one or two significant figures matching the precision of the measurement.",
+      "topic": "Advanced error analysis and data treatment",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Distinguishing between systematic and random errors in an experiment, which statement is correct?",
+      "options": ["Random errors cause scatter around the true value and can be reduced by averaging repeated measurements, while systematic errors consistently bias results in one direction and are not reduced by averaging", "Systematic errors are reduced by taking more readings and averaging", "Random errors always produce the same offset in every reading", "There is no meaningful difference between the two types of error"],
+      "correct_answer": "Random errors cause scatter around the true value and can be reduced by averaging repeated measurements, while systematic errors consistently bias results in one direction and are not reduced by averaging",
+      "explanation": "Random errors are statistical fluctuations reducible by repeated measurement and averaging; systematic errors (e.g. a miscalibrated instrument or zero error) shift all readings consistently and must be corrected by identifying and eliminating their source.",
+      "topic": "Advanced error analysis and data treatment",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In an experiment where a formula requires the fourth power of a measured length, such as in Poiseuille's formula, a small percentage error in the length measurement will:",
+      "options": ["Be amplified roughly fourfold in the calculated result's percentage error", "Have no effect on the final result", "Be reduced fourfold in the final result", "Only affect the result if the length is measured with a ruler"],
+      "correct_answer": "Be amplified roughly fourfold in the calculated result's percentage error",
+      "explanation": "For Z = A^n, the fractional error propagates as delta Z/Z = n(delta A/A); with n = 4, a given percentage error in the length measurement is magnified about four times in the final computed quantity.",
+      "topic": "Advanced error analysis and data treatment",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A well-designed experimental report should include which of the following as essential components?",
+      "options": ["Aim, theory, apparatus, procedure, tabulated data with uncertainties, analysis/graphs, discussion of error sources, and conclusion", "Only the final numerical answer", "A list of other students' results for comparison, with no own data", "The manufacturer's manual for each instrument used, with no student analysis"],
+      "correct_answer": "Aim, theory, apparatus, procedure, tabulated data with uncertainties, analysis/graphs, discussion of error sources, and conclusion",
+      "explanation": "A rigorous experimental report follows a structured format so that the method and reasoning are transparent, reproducible, and critically evaluated, which is emphasized in advanced experimental physics practice.",
+      "topic": "Experimental design and reporting",
+      "difficulty": "easy"
+    },
+    {
+      "question": "When designing an experiment, choosing a range of independent variable values that is too narrow typically causes which problem?",
+      "options": ["It makes it hard to reliably determine the gradient of a linear graph, increasing the relative uncertainty in derived quantities", "It guarantees zero experimental error", "It has no effect on the quality of results", "It eliminates the need for repeated readings"],
+      "correct_answer": "It makes it hard to reliably determine the gradient of a linear graph, increasing the relative uncertainty in derived quantities",
+      "explanation": "A wide, well-spread range of the independent variable improves the precision with which a gradient (and hence a derived physical constant) can be determined from a linear graph.",
+      "topic": "Experimental design and reporting",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the photoelectric effect experiment, if the intensity of monochromatic light striking the photocathode is increased while its frequency is kept constant, what happens to the measured stopping voltage?",
+      "options": ["The stopping voltage remains unchanged, since it depends only on frequency, not intensity", "The stopping voltage increases proportionally with intensity", "The stopping voltage decreases as intensity increases", "The photocurrent disappears entirely"],
+      "correct_answer": "The stopping voltage remains unchanged, since it depends only on frequency, not intensity",
+      "explanation": "Increasing light intensity increases the number of photoelectrons (and hence the saturation photocurrent) but not their maximum kinetic energy, so the stopping voltage (set by eV0 = hf - phi) is unaffected by intensity.",
+      "topic": "Photoelectric effect experiment",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In the diffraction grating experiment, using a grating with more lines per millimetre (smaller d) compared to one with fewer lines per millimetre, for the same wavelength of light, produces:",
+      "options": ["A larger diffraction angle for a given order", "A smaller diffraction angle for a given order", "No change in diffraction angle", "Complete elimination of higher-order maxima"],
+      "correct_answer": "A larger diffraction angle for a given order",
+      "explanation": "From d sin(theta) = n lambda, a smaller grating spacing d requires a larger angle theta to satisfy the equation for the same order n and wavelength, spreading the spectrum out more.",
+      "topic": "Diffraction grating experiment",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the e/m experiment, why is it necessary to correct for the Earth's magnetic field in a precise measurement?",
+      "options": ["The Earth's field adds to or opposes the applied Helmholtz coil field, introducing a systematic error in the effective B used in calculations", "The Earth's magnetic field changes the electron's charge", "The Earth's field only affects experiments performed at the poles", "The Earth's magnetic field increases the accelerating voltage"],
+      "correct_answer": "The Earth's field adds to or opposes the applied Helmholtz coil field, introducing a systematic error in the effective B used in calculations",
+      "explanation": "Since the Earth's magnetic field is comparable in some setups to the field from the coils, its component along the coil axis must be accounted for (or the apparatus oriented/shielded) to avoid systematic error in the deduced e/m ratio.",
+      "topic": "e/m ratio of the electron",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In a half-life determination experiment, if counting is done for too short a time interval at each reading, the main consequence is:",
+      "options": ["A larger statistical (Poisson) uncertainty in each count, reducing the precision of the derived half-life", "The half-life becomes systematically shorter regardless of statistics", "The GM tube becomes damaged", "The background count rate becomes negative"],
+      "correct_answer": "A larger statistical (Poisson) uncertainty in each count, reducing the precision of the derived half-life",
+      "explanation": "Since the statistical uncertainty on a Poisson count scales as sqrt(N), short counting intervals give fewer counts N and thus proportionally larger relative uncertainty in each data point used to extract the half-life.",
+      "topic": "Radioactivity/half-life determination experiment",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which of the following best describes the purpose of a controlled 'repeat readings' approach in experimental physics?",
+      "options": ["To reduce the effect of random error on the mean value and to allow an estimate of the uncertainty via the spread of the readings", "To eliminate all systematic errors automatically", "To increase the number of significant figures without any real gain in accuracy", "To replace the need for a proper theoretical model"],
+      "correct_answer": "To reduce the effect of random error on the mean value and to allow an estimate of the uncertainty via the spread of the readings",
+      "explanation": "Taking multiple independent readings and averaging reduces the influence of random fluctuations on the mean and permits calculation of the standard deviation/standard error as an uncertainty estimate.",
+      "topic": "Advanced error analysis and data treatment",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the CRO-based measurement of an AC signal's peak-to-peak voltage, which of the following is the correct relationship between peak-to-peak voltage (Vpp) and RMS voltage (Vrms) for a pure sine wave?",
+      "options": ["Vrms = Vpp / (2 sqrt(2))", "Vrms = Vpp", "Vrms = Vpp x 2", "Vrms = Vpp / 4"],
+      "correct_answer": "Vrms = Vpp / (2 sqrt(2))",
+      "explanation": "For a sinusoidal signal, Vpp = 2 x Vpeak, and Vrms = Vpeak/sqrt(2), so Vrms = Vpp/(2 sqrt(2)), a relationship often applied when converting a CRO screen reading to RMS voltage.",
+      "topic": "Use of the cathode ray oscilloscope (CRO)",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Which apparatus is essential in the standard photoelectric effect experiment to isolate light of a single, known frequency for the stopping-voltage measurement?",
+      "options": ["A set of interference or monochromatic filters, or a monochromator/spectral lamp with known emission lines", "A Geiger-Muller tube", "Helmholtz coils", "A vacuum diode with a heated cathode"],
+      "correct_answer": "A set of interference or monochromatic filters, or a monochromator/spectral lamp with known emission lines",
+      "explanation": "The experiment requires light of accurately known frequency; this is achieved using narrow-band filters or a spectral discharge lamp (e.g. mercury) whose line wavelengths are well established.",
+      "topic": "Photoelectric effect experiment",
+      "difficulty": "medium"
+    }
+  ]
+}

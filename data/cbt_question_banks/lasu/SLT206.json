@@ -1,0 +1,432 @@
+{
+  "course_code": "SLT206",
+  "title": "Quality Control & Assurance",
+  "level": "200",
+  "source_note": "Grounded in standard NUC-aligned quality control and quality assurance curricula for laboratory technology programmes: QC/QA fundamentals, statistical control, calibration and traceability, SOPs, ISO/GLP frameworks, and documentation practices.",
+  "questions": [
+    {
+      "question": "What is the key distinction between Quality Control (QC) and Quality Assurance (QA)?",
+      "options": [
+        "QC is product/output-focused testing to detect defects, while QA is a system of planned processes to prevent defects",
+        "QC and QA mean exactly the same thing in a laboratory",
+        "QA is only performed after a product is sold to the customer",
+        "QC applies only to finished goods, while QA applies only to raw materials"
+      ],
+      "correct_answer": "QC is product/output-focused testing to detect defects, while QA is a system of planned processes to prevent defects",
+      "explanation": "QC involves inspecting/testing outputs to identify defects, whereas QA is the broader, proactive system of procedures designed to prevent defects from occurring in the first place.",
+      "topic": "QC and QA fundamentals",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Accuracy in a measurement system refers to:",
+      "options": [
+        "How close a measured value is to the true or accepted value",
+        "How close repeated measurements are to each other",
+        "The number of decimal places an instrument can display",
+        "The speed at which a measurement is taken"
+      ],
+      "correct_answer": "How close a measured value is to the true or accepted value",
+      "explanation": "Accuracy describes the closeness of a measured result to the true/reference value, distinguishing it from precision, which describes reproducibility.",
+      "topic": "Accuracy and precision",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Precision in a measurement system refers to:",
+      "options": [
+        "How close repeated measurements of the same quantity are to one another",
+        "How close a single measurement is to the true value",
+        "The cost of the measuring instrument",
+        "The brand of the instrument used"
+      ],
+      "correct_answer": "How close repeated measurements of the same quantity are to one another",
+      "explanation": "Precision reflects the reproducibility/consistency of repeated measurements, regardless of whether they are close to the true value (accuracy).",
+      "topic": "Accuracy and precision",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A set of measurements that are tightly clustered together but far from the true value is described as:",
+      "options": ["Precise but not accurate", "Accurate but not precise", "Both accurate and precise", "Neither accurate nor precise"],
+      "correct_answer": "Precise but not accurate",
+      "explanation": "Tight clustering indicates high precision (low random error), while being far from the true value indicates poor accuracy (likely due to systematic/bias error).",
+      "topic": "Accuracy and precision",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the primary purpose of calibrating a laboratory instrument such as a weighing balance or pH meter?",
+      "options": [
+        "To verify and adjust the instrument's readings against a known reference standard, ensuring accuracy",
+        "To make the instrument run faster",
+        "To permanently fix any mechanical damage to the instrument",
+        "To change the instrument's model number"
+      ],
+      "correct_answer": "To verify and adjust the instrument's readings against a known reference standard, ensuring accuracy",
+      "explanation": "Calibration compares an instrument's output to a traceable reference standard and adjusts or documents any deviation, ensuring measurement accuracy over time.",
+      "topic": "Calibration and traceability",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What does 'traceability' mean in a laboratory measurement context?",
+      "options": [
+        "An unbroken chain of calibrations linking a measurement result back to a recognized (e.g. national or international) reference standard",
+        "The ability to trace who used an instrument last",
+        "Recording only the final result of an experiment",
+        "The physical location of the laboratory"
+      ],
+      "correct_answer": "An unbroken chain of calibrations linking a measurement result back to a recognized (e.g. national or international) reference standard",
+      "explanation": "Metrological traceability requires a documented, unbroken chain of comparisons connecting a measurement to a higher-level reference standard, ensuring reliability and comparability of results.",
+      "topic": "Calibration and traceability",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A Standard Operating Procedure (SOP) in a laboratory is best defined as:",
+      "options": [
+        "A documented, step-by-step set of instructions for performing a specific task consistently",
+        "A general company mission statement",
+        "An informal verbal agreement between staff on how to work",
+        "A one-time memo issued for a single experiment"
+      ],
+      "correct_answer": "A documented, step-by-step set of instructions for performing a specific task consistently",
+      "explanation": "SOPs are formal written documents that standardize how a task is performed, ensuring consistency, repeatability, and compliance across different operators and times.",
+      "topic": "Documentation and SOPs",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Why are SOPs important for maintaining quality in a laboratory setting?",
+      "options": [
+        "They reduce variability between operators and ensure procedures are performed consistently every time",
+        "They eliminate the need for staff training entirely",
+        "They are only required for financial audits",
+        "They replace the need for any instrument calibration"
+      ],
+      "correct_answer": "They reduce variability between operators and ensure procedures are performed consistently every time",
+      "explanation": "SOPs standardize methods so that results are reproducible regardless of which trained technician performs the procedure, reducing process variation.",
+      "topic": "Documentation and SOPs",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In statistical process control (SPC), a control chart is primarily used to:",
+      "options": [
+        "Monitor a process over time and distinguish between normal (common-cause) variation and abnormal (special-cause) variation",
+        "Record employee attendance",
+        "Calculate the final invoice for a client",
+        "Design the layout of the laboratory"
+      ],
+      "correct_answer": "Monitor a process over time and distinguish between normal (common-cause) variation and abnormal (special-cause) variation",
+      "explanation": "Control charts plot process data over time against upper and lower control limits, helping identify when a process has drifted out of statistical control due to a special cause.",
+      "topic": "Statistical process control",
+      "difficulty": "medium"
+    },
+    {
+      "question": "On a standard Shewhart control chart, the control limits are typically set at:",
+      "options": [
+        "The process mean plus or minus 3 standard deviations",
+        "The process mean plus or minus 1 standard deviation",
+        "The absolute minimum and maximum values ever recorded",
+        "Exactly the specification limits set by the customer"
+      ],
+      "correct_answer": "The process mean plus or minus 3 standard deviations",
+      "explanation": "Conventional control charts set upper and lower control limits at the mean ± 3 standard deviations, capturing about 99.7% of data from a stable process under normal variation.",
+      "topic": "Statistical process control",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A data point falling outside the control limits on a control chart most likely indicates:",
+      "options": [
+        "The presence of a special (assignable) cause of variation that should be investigated",
+        "That the process is perfectly in control",
+        "That the instrument needs to be replaced with a cheaper one",
+        "That no further action is required"
+      ],
+      "correct_answer": "The presence of a special (assignable) cause of variation that should be investigated",
+      "explanation": "Points outside control limits signal that variation is likely due to an identifiable, assignable cause rather than normal random process variation, warranting investigation.",
+      "topic": "Statistical process control",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is meant by 'tolerance' in a quality control specification for a manufactured item?",
+      "options": [
+        "The permissible range of variation around a target value that is still considered acceptable",
+        "The exact single value a product must have with no deviation allowed",
+        "The number of defective products allowed per year",
+        "The cost allowance for producing the item"
+      ],
+      "correct_answer": "The permissible range of variation around a target value that is still considered acceptable",
+      "explanation": "Tolerance defines the acceptable upper and lower deviation from a nominal/target specification within which a product is still considered to meet quality requirements.",
+      "topic": "Quality specifications",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In quality control, sampling refers to:",
+      "options": [
+        "Selecting a representative subset of items or material from a larger batch/population for testing",
+        "Testing every single unit produced without exception",
+        "Discarding all test results after use",
+        "Only weighing raw materials before production"
+      ],
+      "correct_answer": "Selecting a representative subset of items or material from a larger batch/population for testing",
+      "explanation": "Sampling involves choosing a representative portion of a lot for inspection or testing, since testing 100% of items (destructive testing especially) is often impractical.",
+      "topic": "Sampling",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Why is random sampling generally preferred over convenience sampling in quality control testing?",
+      "options": [
+        "It reduces selection bias and gives every unit in the batch an equal chance of being tested, making the sample more representative",
+        "It is always faster than any other sampling method",
+        "It guarantees zero defects will be found",
+        "It requires no statistical justification"
+      ],
+      "correct_answer": "It reduces selection bias and gives every unit in the batch an equal chance of being tested, making the sample more representative",
+      "explanation": "Random sampling minimizes bias by giving each unit equal selection probability, producing a sample that better reflects the true characteristics of the whole batch.",
+      "topic": "Sampling",
+      "difficulty": "medium"
+    },
+    {
+      "question": "ISO 9001 is an international standard primarily concerned with:",
+      "options": [
+        "Quality management systems for organizations",
+        "Environmental management systems only",
+        "Food safety management exclusively",
+        "Information security management exclusively"
+      ],
+      "correct_answer": "Quality management systems for organizations",
+      "explanation": "ISO 9001 specifies requirements for a quality management system, helping organizations consistently provide products/services that meet customer and regulatory requirements.",
+      "topic": "Quality standards",
+      "difficulty": "medium"
+    },
+    {
+      "question": "ISO/IEC 17025 is the international standard specifically for:",
+      "options": [
+        "The general competence of testing and calibration laboratories",
+        "Food packaging design",
+        "Corporate financial auditing",
+        "Building construction safety"
+      ],
+      "correct_answer": "The general competence of testing and calibration laboratories",
+      "explanation": "ISO/IEC 17025 specifies the general requirements for the competence, impartiality, and consistent operation of testing and calibration laboratories.",
+      "topic": "Quality standards",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Good Laboratory Practice (GLP) is best described as:",
+      "options": [
+        "A quality system covering the organizational process and conditions under which non-clinical studies are planned, performed, monitored, and reported",
+        "A rule that laboratories must be painted white",
+        "A set of instructions only for cleaning glassware",
+        "A voluntary suggestion with no formal documentation required"
+      ],
+      "correct_answer": "A quality system covering the organizational process and conditions under which non-clinical studies are planned, performed, monitored, and reported",
+      "explanation": "GLP is a formal quality system governing the organization and conduct of laboratory studies to ensure the reliability, traceability, and integrity of generated data.",
+      "topic": "Good Laboratory Practice",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a quality management system, what is a 'non-conformance'?",
+      "options": [
+        "A deviation from a specified requirement, standard, or procedure",
+        "A document listing employee salaries",
+        "A type of calibration certificate",
+        "A scheduled routine maintenance task"
+      ],
+      "correct_answer": "A deviation from a specified requirement, standard, or procedure",
+      "explanation": "A non-conformance is any instance where a product, process, or result fails to meet a defined requirement, specification, or documented procedure.",
+      "topic": "Quality management",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is the purpose of a corrective action in a quality system after a non-conformance is identified?",
+      "options": [
+        "To eliminate the root cause of the problem and prevent its recurrence",
+        "To hide the non-conformance from auditors",
+        "To immediately shut down the entire laboratory permanently",
+        "To increase production speed regardless of the defect"
+      ],
+      "correct_answer": "To eliminate the root cause of the problem and prevent its recurrence",
+      "explanation": "Corrective action investigates and addresses the underlying root cause of a non-conformance, distinguishing it from a mere quick fix, to prevent the problem recurring.",
+      "topic": "Quality management",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the difference between a corrective action and a preventive action in quality management?",
+      "options": [
+        "Corrective action addresses a problem that has already occurred, while preventive action addresses a potential problem before it occurs",
+        "They are identical terms with no distinction",
+        "Preventive action can only be taken after a customer complaint",
+        "Corrective action is always cheaper than preventive action"
+      ],
+      "correct_answer": "Corrective action addresses a problem that has already occurred, while preventive action addresses a potential problem before it occurs",
+      "explanation": "Corrective action is reactive, fixing an existing non-conformance and its cause; preventive action is proactive, addressing potential future non-conformances before they happen.",
+      "topic": "Quality management",
+      "difficulty": "medium"
+    },
+    {
+      "question": "An internal quality audit in a laboratory is conducted primarily to:",
+      "options": [
+        "Independently verify that the laboratory's activities comply with its own quality system and relevant standards",
+        "Increase the number of samples tested per day",
+        "Reduce the number of staff employed",
+        "Advertise the laboratory to new clients"
+      ],
+      "correct_answer": "Independently verify that the laboratory's activities comply with its own quality system and relevant standards",
+      "explanation": "Internal audits systematically and independently review whether documented procedures are being followed and whether the quality system is effective, identifying gaps for improvement.",
+      "topic": "Quality audits",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Why must all laboratory test results, calculations, and observations be recorded in real time, in ink, in a bound notebook or validated electronic system (rather than on loose scrap paper)?",
+      "options": [
+        "To ensure data integrity, traceability, and an auditable, tamper-evident record",
+        "Because loose paper is more expensive",
+        "Because scrap paper cannot hold liquid spills",
+        "It has no bearing on data quality, only tidiness"
+      ],
+      "correct_answer": "To ensure data integrity, traceability, and an auditable, tamper-evident record",
+      "explanation": "Contemporaneous, permanent recordkeeping (a key GLP/data-integrity principle) prevents data loss, supports traceability, and provides an auditable record that cannot be easily altered.",
+      "topic": "Documentation and SOPs",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The 'ALCOA' principles used to assess data integrity in quality systems stand for data that is:",
+      "options": [
+        "Attributable, Legible, Contemporaneous, Original, Accurate",
+        "Available, Long-lasting, Colourful, Organized, Affordable",
+        "Accurate, Legal, Complete, Official, Approved",
+        "Automated, Localized, Compressed, Optimized, Archived"
+      ],
+      "correct_answer": "Attributable, Legible, Contemporaneous, Original, Accurate",
+      "explanation": "ALCOA is a widely used data integrity framework requiring that data be Attributable, Legible, Contemporaneous, Original, and Accurate.",
+      "topic": "Documentation and SOPs",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In quality control terminology, what is a 'Certificate of Analysis' (CoA)?",
+      "options": [
+        "A document confirming that a batch of product or material meets specified quality requirements, based on actual test results",
+        "A certificate awarded to an employee for good attendance",
+        "A marketing brochure for a new product",
+        "A record of laboratory electricity consumption"
+      ],
+      "correct_answer": "A document confirming that a batch of product or material meets specified quality requirements, based on actual test results",
+      "explanation": "A Certificate of Analysis lists the actual test results for specified quality parameters of a batch, confirming it conforms to the required specification.",
+      "topic": "Documentation and SOPs",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which of the following best describes 'measurement uncertainty'?",
+      "options": [
+        "A quantified doubt about the validity of a measurement result, expressing the range within which the true value likely lies",
+        "The complete absence of any error in a measurement",
+        "The list of instruments used in an experiment",
+        "The cost of purchasing a new measuring instrument"
+      ],
+      "correct_answer": "A quantified doubt about the validity of a measurement result, expressing the range within which the true value likely lies",
+      "explanation": "Measurement uncertainty is a parameter associated with a measurement result that characterizes the dispersion of values that could reasonably be attributed to the measured quantity.",
+      "topic": "Calibration and traceability",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In quality control, what is the purpose of using a 'reference standard' or 'certified reference material' (CRM)?",
+      "options": [
+        "To validate the accuracy of test methods and instruments against a material with a known, certified property value",
+        "To decorate the laboratory shelf",
+        "To replace the need for any SOPs",
+        "To act as a disposable cleaning agent"
+      ],
+      "correct_answer": "To validate the accuracy of test methods and instruments against a material with a known, certified property value",
+      "explanation": "A CRM has an accurately known and certified value, allowing laboratories to check the accuracy of their methods and instruments by comparison.",
+      "topic": "Calibration and traceability",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What does 'batch' or 'lot' mean in a quality control context for manufactured or processed materials?",
+      "options": [
+        "A defined quantity of material produced in a single process run, assumed to have uniform characteristics",
+        "The total annual output of a factory",
+        "A single unit of finished product",
+        "The name of the quality control department"
+      ],
+      "correct_answer": "A defined quantity of material produced in a single process run, assumed to have uniform characteristics",
+      "explanation": "A batch/lot is produced under conditions considered uniform, so a sample from it is assumed representative of the entire batch for quality testing purposes.",
+      "topic": "Sampling",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which of these best describes the role of Statistical Process Control (SPC) in preventing defects, compared to end-of-line inspection alone?",
+      "options": [
+        "SPC monitors the process in real time so problems can be corrected before large quantities of defective product are made",
+        "SPC only inspects the final finished product after it is completed",
+        "SPC eliminates the need for any process monitoring",
+        "SPC is only applicable to service industries, never manufacturing"
+      ],
+      "correct_answer": "SPC monitors the process in real time so problems can be corrected before large quantities of defective product are made",
+      "explanation": "SPC shifts quality control 'upstream' by tracking the process itself in real time, allowing early detection and correction of drift before large-scale defects accumulate.",
+      "topic": "Statistical process control",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is meant by 'repeatability' when validating a test method?",
+      "options": [
+        "The closeness of agreement between results of successive measurements of the same sample, by the same operator, using the same equipment, under the same conditions, in a short time interval",
+        "The ability of a method to work in any laboratory worldwide",
+        "How quickly a test can be completed",
+        "The shelf-life of the reagents used"
+      ],
+      "correct_answer": "The closeness of agreement between results of successive measurements of the same sample, by the same operator, using the same equipment, under the same conditions, in a short time interval",
+      "explanation": "Repeatability specifically measures precision under the same, unchanged conditions (same analyst, equipment, lab, short timeframe), distinguishing it from reproducibility (different conditions/labs).",
+      "topic": "Method validation",
+      "difficulty": "hard"
+    },
+    {
+      "question": "What is 'reproducibility' in method validation, as distinct from repeatability?",
+      "options": [
+        "The closeness of agreement between results obtained under changed conditions, such as different operators, equipment, or laboratories",
+        "The exact same meaning as repeatability",
+        "The number of times an experiment must be repeated by law",
+        "A measure of instrument cost"
+      ],
+      "correct_answer": "The closeness of agreement between results obtained under changed conditions, such as different operators, equipment, or laboratories",
+      "explanation": "Reproducibility assesses precision when one or more conditions are varied (e.g. different analyst, instrument, or lab), unlike repeatability which holds conditions constant.",
+      "topic": "Method validation",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In quality control, what is the purpose of maintaining an equipment calibration schedule/log?",
+      "options": [
+        "To ensure instruments are calibrated at defined intervals so measurement accuracy and traceability are maintained over time",
+        "To track how much electricity each instrument consumes",
+        "To decide which instruments to discard at the end of the year regardless of condition",
+        "To satisfy an insurance requirement only, with no scientific benefit"
+      ],
+      "correct_answer": "To ensure instruments are calibrated at defined intervals so measurement accuracy and traceability are maintained over time",
+      "explanation": "Scheduled, documented calibration ensures instruments remain within acceptable accuracy limits and that this can be demonstrated as part of traceability and quality assurance.",
+      "topic": "Calibration and traceability",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A weighing balance is checked daily against a certified check-weight and the deviation is recorded. This is an example of:",
+      "options": [
+        "A routine performance/calibration verification check",
+        "A destructive test",
+        "A gravimetric analysis of an unknown sample",
+        "A method validation study"
+      ],
+      "correct_answer": "A routine performance/calibration verification check",
+      "explanation": "Daily checks against a known reference weight verify the balance continues to perform within acceptable tolerance between full formal calibrations.",
+      "topic": "Calibration and traceability",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Why is document control (version numbering, approval signatures, controlled distribution) important for SOPs in a quality system?",
+      "options": [
+        "To ensure staff always use the current, approved version of a procedure and prevent use of outdated instructions",
+        "To make documents harder for staff to find",
+        "To increase the number of pages in the quality manual",
+        "It is a purely cosmetic requirement with no functional purpose"
+      ],
+      "correct_answer": "To ensure staff always use the current, approved version of a procedure and prevent use of outdated instructions",
+      "explanation": "Document control prevents the use of obsolete or unapproved procedures, ensuring all personnel follow the latest validated version of an SOP.",
+      "topic": "Documentation and SOPs",
+      "difficulty": "medium"
+    }
+  ]
+}

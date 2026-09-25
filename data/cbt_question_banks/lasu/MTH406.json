@@ -1,0 +1,264 @@
+{
+  "course_code": "MTH406",
+  "title": "Lebesgue Measure and Integration",
+  "level": "400",
+  "source_note": "Standard NUC-aligned Nigerian university 400L Measure and Integration curriculum: sigma-algebras and Borel sets, Lebesgue outer measure and measurable sets, measurable functions, construction of the Lebesgue integral, the major convergence theorems (Monotone Convergence, Fatou, Dominated Convergence), comparison with the Riemann integral, and Lp spaces.",
+  "questions": [
+    {
+      "question": "A sigma-algebra Sigma on a set X is a collection of subsets satisfying:",
+      "options": ["X is in Sigma, Sigma is closed under complementation, and Sigma is closed under countable unions", "Only finite unions are allowed", "Only X and the empty set belong to it", "Sigma is closed under intersection only"],
+      "correct_answer": "X is in Sigma, Sigma is closed under complementation, and Sigma is closed under countable unions",
+      "explanation": "These three axioms define a sigma-algebra, the structure on which a measure is defined.",
+      "topic": "Sigma-algebras",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The Borel sigma-algebra on R is defined as:",
+      "options": ["The smallest sigma-algebra containing all open sets of R", "The collection of all subsets of R", "Only the closed intervals of R", "The collection of finite sets"],
+      "correct_answer": "The smallest sigma-algebra containing all open sets of R",
+      "explanation": "The Borel sigma-algebra is generated from the open sets, and includes all sets obtainable from them by countable unions, intersections and complements.",
+      "topic": "Sigma-algebras",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Lebesgue outer measure of an interval (a,b) is defined to be:",
+      "options": ["b - a", "(b-a) squared", "a + b", "Undefined"],
+      "correct_answer": "b - a",
+      "explanation": "The outer measure of an interval agrees with its ordinary length, matching intuition.",
+      "topic": "Lebesgue outer measure",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Lebesgue outer measure m* is defined for an arbitrary subset A of R by:",
+      "options": ["The infimum of the sum of lengths of open intervals in all countable covers of A", "The supremum of lengths of subsets of A", "The measure of the closure of A only", "The number of points in A"],
+      "correct_answer": "The infimum of the sum of lengths of open intervals in all countable covers of A",
+      "explanation": "Outer measure minimizes the total length of countable interval covers, giving a way to measure arbitrary sets.",
+      "topic": "Lebesgue outer measure",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A set E in R is Lebesgue measurable, by the Caratheodory criterion, if for every set A in R:",
+      "options": ["m*(A) = m*(A intersect E) + m*(A intersect the complement of E)", "m*(E) = 0", "E is an interval", "m*(A) <= m*(E)"],
+      "correct_answer": "m*(A) = m*(A intersect E) + m*(A intersect the complement of E)",
+      "explanation": "This splitting condition, required to hold for every test set A, is the Caratheodory definition of measurability.",
+      "topic": "Measurable sets",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Every set of Lebesgue outer measure zero is:",
+      "options": ["Lebesgue measurable", "Never measurable", "Necessarily an interval", "Necessarily uncountable"],
+      "correct_answer": "Lebesgue measurable",
+      "explanation": "Any set of outer measure zero satisfies the Caratheodory criterion automatically and is therefore measurable.",
+      "topic": "Measurable sets",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The collection of Lebesgue measurable subsets of R forms a:",
+      "options": ["Sigma-algebra", "Vector space only", "Finite collection", "Topology only, not a sigma-algebra"],
+      "correct_answer": "Sigma-algebra",
+      "explanation": "The Lebesgue measurable sets are closed under complementation and countable unions, forming a sigma-algebra that strictly contains the Borel sets.",
+      "topic": "Measurable sets",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Lebesgue measure is countably additive, meaning that for a countable collection of pairwise disjoint measurable sets {E_n}:",
+      "options": ["m(union of E_n) = sum of m(E_n)", "m(union of E_n) = max of m(E_n)", "m(union of E_n) = 0", "m(union of E_n) is strictly less than the sum of m(E_n)"],
+      "correct_answer": "m(union of E_n) = sum of m(E_n)",
+      "explanation": "Countable additivity is the central property that makes Lebesgue measure a genuine measure.",
+      "topic": "Properties of Lebesgue measure",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Lebesgue measure on R is translation invariant, meaning:",
+      "options": ["m(E + x) = m(E) for any real number x", "m(E + x) = m(E) + x", "m(E + x) = x times m(E)", "Lebesgue measure is not translation invariant"],
+      "correct_answer": "m(E + x) = m(E) for any real number x",
+      "explanation": "Shifting a measurable set by a constant does not change its measure, a natural property expected of a notion of length.",
+      "topic": "Properties of Lebesgue measure",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Every countable subset of R, such as the set of rational numbers, has Lebesgue measure:",
+      "options": ["Zero", "Infinite", "Equal to the number of elements", "Undefined"],
+      "correct_answer": "Zero",
+      "explanation": "A countable set can be covered by intervals of arbitrarily small total length, so its outer measure, and hence measure, is zero.",
+      "topic": "Properties of Lebesgue measure",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Using the Axiom of Choice, one can construct subsets of R that are:",
+      "options": ["Not Lebesgue measurable", "Always measurable", "Always of measure zero", "Always intervals"],
+      "correct_answer": "Not Lebesgue measurable",
+      "explanation": "The classical Vitali set construction produces a non-measurable set using the Axiom of Choice.",
+      "topic": "Measurable sets",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A function f: R to R is Lebesgue measurable if for every real number a:",
+      "options": ["The set {x : f(x) > a} is a measurable set", "f is continuous", "f is bounded", "f(a) = 0"],
+      "correct_answer": "The set {x : f(x) > a} is a measurable set",
+      "explanation": "This is the standard definition of a Lebesgue measurable function, requiring preimages of rays to be measurable.",
+      "topic": "Measurable functions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Every continuous function on R is:",
+      "options": ["Lebesgue measurable", "Never measurable", "Only Riemann integrable, not measurable", "Non-measurable if unbounded"],
+      "correct_answer": "Lebesgue measurable",
+      "explanation": "Continuous functions have open preimages of open sets, and open sets are Borel, hence Lebesgue, measurable.",
+      "topic": "Measurable functions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A simple function is one that:",
+      "options": ["Takes only finitely many values, each on a measurable set", "Is continuous everywhere", "Is always monotonic", "Is unbounded"],
+      "correct_answer": "Takes only finitely many values, each on a measurable set",
+      "explanation": "Simple functions are the building blocks used to construct the general Lebesgue integral.",
+      "topic": "Simple functions",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The Lebesgue integral of a nonnegative simple function phi equal to the sum of c_i times the indicator of E_i is defined as:",
+      "options": ["The sum of c_i times m(E_i)", "The sum of c_i", "The maximum c_i times m(E)", "The sum of m(E_i)"],
+      "correct_answer": "The sum of c_i times m(E_i)",
+      "explanation": "The integral of a simple function is a weighted sum of the measures of the sets on which it takes each value.",
+      "topic": "Lebesgue integral construction",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For a general nonnegative measurable function f, the Lebesgue integral is defined as:",
+      "options": ["The supremum of the integrals of simple functions phi with 0 <= phi <= f", "The limit of Riemann sums only", "Zero if f is unbounded", "The infimum of upper simple functions above f"],
+      "correct_answer": "The supremum of the integrals of simple functions phi with 0 <= phi <= f",
+      "explanation": "This approximation-from-below by simple functions is the standard construction of the Lebesgue integral for nonnegative functions.",
+      "topic": "Lebesgue integral construction",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The Monotone Convergence Theorem states that if 0 <= f_1 <= f_2 <= ... is an increasing sequence of measurable functions converging pointwise to f, then:",
+      "options": ["The integral of f_n converges to the integral of f", "The integral of f_n converges to 0 always", "The limit function f is not integrable", "The integral of f_n decreases to the integral of f"],
+      "correct_answer": "The integral of f_n converges to the integral of f",
+      "explanation": "The MCT allows interchange of limit and integral for monotone increasing sequences of nonnegative measurable functions.",
+      "topic": "Monotone convergence theorem",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Fatou's Lemma states that for a sequence of nonnegative measurable functions f_n:",
+      "options": ["The integral of liminf f_n is at most liminf of the integral of f_n", "The integral of liminf f_n equals liminf of the integral of f_n always", "The integral of liminf f_n is at least liminf of the integral of f_n", "Fatou's lemma applies only to decreasing sequences"],
+      "correct_answer": "The integral of liminf f_n is at most liminf of the integral of f_n",
+      "explanation": "Fatou's Lemma gives a one-directional inequality that holds without requiring monotonicity or dominance conditions.",
+      "topic": "Fatou's lemma",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The Dominated Convergence Theorem allows interchange of limit and integral for a sequence f_n converging pointwise to f, provided:",
+      "options": ["There exists an integrable function g with |f_n| <= g for all n", "f_n is monotonic", "f_n is bounded above by 1", "No additional condition is needed"],
+      "correct_answer": "There exists an integrable function g with |f_n| <= g for all n",
+      "explanation": "Domination by a fixed integrable function controls the sequence uniformly, justifying the interchange of limit and integral.",
+      "topic": "Dominated convergence theorem",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A key advantage of the Lebesgue integral over the Riemann integral is that it:",
+      "options": ["Allows stronger convergence theorems, such as the DCT, that need not hold for the Riemann integral", "Cannot integrate discontinuous functions", "Is only defined on bounded intervals", "Requires the function to be continuous"],
+      "correct_answer": "Allows stronger convergence theorems, such as the DCT, that need not hold for the Riemann integral",
+      "explanation": "Riemann integration lacks convenient convergence theorems for interchanging limits and integrals, a gap the Lebesgue theory fills.",
+      "topic": "Comparison with Riemann integral",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Dirichlet function, equal to 1 on the rationals and 0 on the irrationals, on [0,1] is:",
+      "options": ["Lebesgue integrable with integral 0, but not Riemann integrable", "Riemann integrable but not Lebesgue integrable", "Neither Riemann nor Lebesgue integrable", "Integrable with value 1 in both theories"],
+      "correct_answer": "Lebesgue integrable with integral 0, but not Riemann integrable",
+      "explanation": "Since the rationals have measure zero, the Dirichlet function equals 0 almost everywhere, giving Lebesgue integral 0, while its Riemann upper and lower sums never agree.",
+      "topic": "Comparison with Riemann integral",
+      "difficulty": "hard"
+    },
+    {
+      "question": "If a function is Riemann integrable on a closed bounded interval, then it is also:",
+      "options": ["Lebesgue integrable, and the two integrals agree", "Never Lebesgue integrable", "Lebesgue integrable but with a different value", "Undefined in Lebesgue theory"],
+      "correct_answer": "Lebesgue integrable, and the two integrals agree",
+      "explanation": "The Lebesgue integral is a genuine extension of the Riemann integral, agreeing with it whenever the Riemann integral exists.",
+      "topic": "Comparison with Riemann integral",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A property is said to hold 'almost everywhere' on a set if:",
+      "options": ["It holds except possibly on a set of measure zero", "It holds everywhere without exception", "It holds on a set of positive measure only", "It never holds"],
+      "correct_answer": "It holds except possibly on a set of measure zero",
+      "explanation": "Almost everywhere is the measure-theoretic way of saying a property holds up to a negligible exceptional set.",
+      "topic": "Almost everywhere",
+      "difficulty": "easy"
+    },
+    {
+      "question": "If f equals g almost everywhere and f is Lebesgue integrable, then:",
+      "options": ["g is also Lebesgue integrable with the same integral", "g need not be measurable", "The integral of f is not equal to the integral of g in general", "g must be continuous"],
+      "correct_answer": "g is also Lebesgue integrable with the same integral",
+      "explanation": "Since the Lebesgue integral ignores what happens on sets of measure zero, functions equal a.e. have identical integrals.",
+      "topic": "Almost everywhere",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Lp space, for 1 <= p < infinity, consists of measurable functions f such that:",
+      "options": ["The integral of |f|^p dm is finite", "f is bounded", "f is continuous", "The integral of f dm equals 0"],
+      "correct_answer": "The integral of |f|^p dm is finite",
+      "explanation": "Lp spaces collect functions whose p-th power is Lebesgue integrable, forming the basis for a family of normed function spaces.",
+      "topic": "Lp spaces",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Lp norm of a function f is defined by:",
+      "options": ["The p-th root of the integral of |f|^p dm", "The integral of |f| dm", "The supremum of |f|", "The integral of f^p dm"],
+      "correct_answer": "The p-th root of the integral of |f|^p dm",
+      "explanation": "This is the standard norm on Lp spaces, generalizing the Euclidean norm to function spaces.",
+      "topic": "Lp spaces",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The space L-infinity consists of measurable functions that are:",
+      "options": ["Essentially bounded, i.e. bounded outside a set of measure zero", "Continuous everywhere", "Integrable in the Riemann sense", "Simple functions only"],
+      "correct_answer": "Essentially bounded, i.e. bounded outside a set of measure zero",
+      "explanation": "L-infinity consists of functions whose essential supremum (the infimum of bounds that hold almost everywhere) is finite.",
+      "topic": "Lp spaces",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The Riesz-Fischer theorem states that for 1 <= p < infinity, the space Lp is:",
+      "options": ["Complete, i.e. a Banach space", "Never complete", "Finite-dimensional", "Not a normed space"],
+      "correct_answer": "Complete, i.e. a Banach space",
+      "explanation": "Completeness of Lp spaces is a major result made possible by the Lebesgue theory of integration.",
+      "topic": "Lp spaces",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Two functions f and g in Lp are identified as the same element of the space if:",
+      "options": ["f equals g almost everywhere", "f(x) equals g(x) for at least one x", "f and g have the same domain", "f and g are both continuous"],
+      "correct_answer": "f equals g almost everywhere",
+      "explanation": "Lp spaces are technically spaces of equivalence classes of functions under the relation of equality almost everywhere.",
+      "topic": "Lp spaces",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Cantor set, though uncountable, has Lebesgue measure:",
+      "options": ["Zero", "One", "Infinite", "Undefined"],
+      "correct_answer": "Zero",
+      "explanation": "The standard Cantor set is constructed by repeatedly removing middle thirds, and the total length removed sums to 1, leaving measure zero.",
+      "topic": "Properties of Lebesgue measure",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Lebesgue measure on R assigns to any single point {x} a measure of:",
+      "options": ["0", "1", "x", "Undefined"],
+      "correct_answer": "0",
+      "explanation": "A single point can be covered by an interval of arbitrarily small length, so its outer measure, and hence its Lebesgue measure, is zero.",
+      "topic": "Properties of Lebesgue measure",
+      "difficulty": "easy"
+    },
+    {
+      "question": "If f: [a,b] to R is Lebesgue measurable and bounded, then f is automatically:",
+      "options": ["Lebesgue integrable on [a,b]", "Not integrable", "Continuous", "Riemann integrable but not Lebesgue integrable"],
+      "correct_answer": "Lebesgue integrable on [a,b]",
+      "explanation": "A bounded measurable function on a finite-measure set is always Lebesgue integrable, since its integral is trivially finite.",
+      "topic": "Lebesgue integral construction",
+      "difficulty": "medium"
+    }
+  ]
+}

@@ -1,0 +1,476 @@
+{
+  "course_code": "CSC421",
+  "title": "Machine Learning",
+  "level": "400",
+  "source_note": "Grounded in standard undergraduate machine learning curricula (supervised/unsupervised learning, model evaluation, neural networks, ensemble methods) consistent with NUC-aligned Computer Science courses.",
+  "questions": [
+    {
+      "question": "Which of the following best defines machine learning?",
+      "options": [
+        "A field of study that gives computers the ability to learn from data without being explicitly programmed",
+        "The manual coding of every possible decision rule into a program",
+        "A hardware technique for speeding up computer processors",
+        "A method for designing computer chip circuits"
+      ],
+      "correct_answer": "A field of study that gives computers the ability to learn from data without being explicitly programmed",
+      "explanation": "This is the classical definition of machine learning attributed to Arthur Samuel, emphasizing learning patterns from data rather than explicit rule programming.",
+      "topic": "Foundations",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In supervised learning, the training data consists of:",
+      "options": [
+        "Input-output pairs where the correct output (label) is known",
+        "Only inputs with no labels at all",
+        "Randomly generated numbers with no structure",
+        "Only rewards received after actions"
+      ],
+      "correct_answer": "Input-output pairs where the correct output (label) is known",
+      "explanation": "Supervised learning trains a model on labeled examples, mapping known inputs to known outputs.",
+      "topic": "Supervised vs unsupervised learning",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which task is an example of unsupervised learning?",
+      "options": [
+        "Clustering customers into groups based on purchasing behavior with no predefined labels",
+        "Predicting house prices from labeled historical sales data",
+        "Classifying emails as spam or not spam using labeled training examples",
+        "Predicting whether a loan applicant will default using historical labeled outcomes"
+      ],
+      "correct_answer": "Clustering customers into groups based on purchasing behavior with no predefined labels",
+      "explanation": "Unsupervised learning finds structure (like clusters) in unlabeled data; the other options require labeled data.",
+      "topic": "Supervised vs unsupervised learning",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Linear regression is primarily used to:",
+      "options": [
+        "Predict a continuous numeric output based on one or more input features",
+        "Group unlabeled data points into clusters",
+        "Reduce the dimensionality of a dataset",
+        "Assign discrete class labels only"
+      ],
+      "correct_answer": "Predict a continuous numeric output based on one or more input features",
+      "explanation": "Linear regression models the relationship between input features and a continuous dependent variable.",
+      "topic": "Regression",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In logistic regression, which function is used to map a linear combination of inputs to a probability between 0 and 1?",
+      "options": [
+        "Sigmoid function",
+        "Identity function",
+        "ReLU function",
+        "Step function only"
+      ],
+      "correct_answer": "Sigmoid function",
+      "explanation": "The sigmoid (logistic) function squashes any real-valued input into the range (0, 1), suitable for representing probabilities in binary classification.",
+      "topic": "Classification",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What does 'overfitting' mean in machine learning?",
+      "options": [
+        "A model learns the training data too well, including noise, and performs poorly on new/unseen data",
+        "A model is too simple to capture the underlying pattern in the data",
+        "A model trains faster than expected",
+        "A model uses too few features"
+      ],
+      "correct_answer": "A model learns the training data too well, including noise, and performs poorly on new/unseen data",
+      "explanation": "Overfitting occurs when a model captures noise and specific quirks of the training set, reducing its ability to generalize.",
+      "topic": "Overfitting and underfitting",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Underfitting is best described as a situation where:",
+      "options": [
+        "The model is too simple to capture the underlying trend of the data",
+        "The model perfectly memorizes the training set",
+        "The model has zero bias and high variance",
+        "The model uses regularization that is too weak"
+      ],
+      "correct_answer": "The model is too simple to capture the underlying trend of the data",
+      "explanation": "Underfitting happens when the model lacks sufficient capacity or features to learn the true relationship, resulting in high bias.",
+      "topic": "Overfitting and underfitting",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The bias-variance tradeoff describes the relationship between:",
+      "options": [
+        "A model's error due to overly simplistic assumptions (bias) and its sensitivity to fluctuations in training data (variance)",
+        "The number of features and the number of training examples",
+        "The learning rate and the number of epochs",
+        "CPU speed and memory usage during training"
+      ],
+      "correct_answer": "A model's error due to overly simplistic assumptions (bias) and its sensitivity to fluctuations in training data (variance)",
+      "explanation": "High bias leads to underfitting while high variance leads to overfitting; a good model balances both to minimize total generalization error.",
+      "topic": "Bias-variance tradeoff",
+      "difficulty": "medium"
+    },
+    {
+      "question": "K-fold cross-validation is used primarily to:",
+      "options": [
+        "Get a more reliable estimate of model performance by training and testing on different data splits",
+        "Increase the size of the training dataset artificially",
+        "Reduce the number of features in a dataset",
+        "Convert categorical variables into numeric ones"
+      ],
+      "correct_answer": "Get a more reliable estimate of model performance by training and testing on different data splits",
+      "explanation": "K-fold cross-validation partitions data into k subsets, training and validating k times, then averages results for a robust performance estimate.",
+      "topic": "Model evaluation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a binary classification confusion matrix, a 'false positive' is:",
+      "options": [
+        "A case the model predicted as positive but is actually negative",
+        "A case the model predicted as negative but is actually positive",
+        "A case correctly predicted as positive",
+        "A case correctly predicted as negative"
+      ],
+      "correct_answer": "A case the model predicted as positive but is actually negative",
+      "explanation": "A false positive is a Type I error: the model incorrectly flags a negative instance as positive.",
+      "topic": "Model evaluation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Precision is calculated as:",
+      "options": [
+        "True Positives / (True Positives + False Positives)",
+        "True Positives / (True Positives + False Negatives)",
+        "True Negatives / (True Negatives + False Positives)",
+        "(True Positives + True Negatives) / Total predictions"
+      ],
+      "correct_answer": "True Positives / (True Positives + False Positives)",
+      "explanation": "Precision measures the proportion of predicted positives that are actually correct.",
+      "topic": "Model evaluation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Recall (sensitivity) is calculated as:",
+      "options": [
+        "True Positives / (True Positives + False Negatives)",
+        "True Positives / (True Positives + False Positives)",
+        "True Negatives / Total predictions",
+        "False Positives / (False Positives + True Negatives)"
+      ],
+      "correct_answer": "True Positives / (True Positives + False Negatives)",
+      "explanation": "Recall measures the proportion of actual positives that the model correctly identifies.",
+      "topic": "Model evaluation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The F1-score is:",
+      "options": [
+        "The harmonic mean of precision and recall",
+        "The arithmetic mean of accuracy and precision",
+        "Simply the total number of correct predictions",
+        "The difference between precision and recall"
+      ],
+      "correct_answer": "The harmonic mean of precision and recall",
+      "explanation": "F1-score balances precision and recall into a single metric, useful when class distribution is imbalanced.",
+      "topic": "Model evaluation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In gradient descent, the learning rate controls:",
+      "options": [
+        "The size of the steps taken toward minimizing the cost function",
+        "The number of features used in the model",
+        "The number of training examples processed at once",
+        "The type of activation function used"
+      ],
+      "correct_answer": "The size of the steps taken toward minimizing the cost function",
+      "explanation": "The learning rate is a hyperparameter that scales how much model parameters are updated in each iteration of gradient descent.",
+      "topic": "Optimization",
+      "difficulty": "medium"
+    },
+    {
+      "question": "If the learning rate in gradient descent is set too high, what is a likely consequence?",
+      "options": [
+        "The algorithm may overshoot the minimum and fail to converge",
+        "The algorithm will always converge faster and more accurately",
+        "The model will automatically switch to a different algorithm",
+        "Training will stop immediately with no error"
+      ],
+      "correct_answer": "The algorithm may overshoot the minimum and fail to converge",
+      "explanation": "An excessively high learning rate causes large parameter updates that can overshoot the minimum, causing divergence or oscillation.",
+      "topic": "Optimization",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A decision tree splits nodes based on which criterion, commonly, for classification tasks?",
+      "options": [
+        "Information gain (based on entropy) or Gini impurity",
+        "Mean squared error only",
+        "Euclidean distance to the nearest neighbor",
+        "The sigmoid activation output"
+      ],
+      "correct_answer": "Information gain (based on entropy) or Gini impurity",
+      "explanation": "Decision trees for classification commonly use information gain or Gini impurity to choose the best feature to split on at each node.",
+      "topic": "Decision trees",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Random forest is an ensemble method that primarily works by:",
+      "options": [
+        "Building multiple decision trees on random subsets of data/features and aggregating their predictions",
+        "Training a single very deep neural network",
+        "Applying k-means clustering repeatedly",
+        "Using only one decision tree with pruning"
+      ],
+      "correct_answer": "Building multiple decision trees on random subsets of data/features and aggregating their predictions",
+      "explanation": "Random forest is a bagging ensemble of decision trees, each trained on bootstrapped samples with random feature subsets, then combined by voting/averaging.",
+      "topic": "Ensemble methods",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Boosting algorithms like AdaBoost work by:",
+      "options": [
+        "Sequentially training weak learners, each focusing more on the errors of the previous one",
+        "Training all models independently and in parallel with no interaction",
+        "Randomly discarding half of the training data before training",
+        "Using only unsupervised clustering techniques"
+      ],
+      "correct_answer": "Sequentially training weak learners, each focusing more on the errors of the previous one",
+      "explanation": "Boosting builds models sequentially, with each new model giving more weight to previously misclassified examples.",
+      "topic": "Ensemble methods",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The k-Nearest Neighbors (KNN) algorithm classifies a new data point by:",
+      "options": [
+        "Looking at the majority class among its k closest training examples",
+        "Fitting a regression line through all data points",
+        "Splitting the feature space using entropy",
+        "Computing gradients and updating weights iteratively"
+      ],
+      "correct_answer": "Looking at the majority class among its k closest training examples",
+      "explanation": "KNN is a lazy, instance-based algorithm that assigns the class most common among the k nearest neighbors in feature space.",
+      "topic": "Classification",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In Naive Bayes classifiers, the 'naive' assumption refers to:",
+      "options": [
+        "That all features are conditionally independent given the class label",
+        "That the dataset has no missing values",
+        "That the model requires no training data",
+        "That all classes have equal prior probability"
+      ],
+      "correct_answer": "That all features are conditionally independent given the class label",
+      "explanation": "Naive Bayes assumes feature independence given the class, which simplifies computation even though it rarely holds exactly in practice.",
+      "topic": "Classification",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Support Vector Machines (SVMs) aim to find:",
+      "options": [
+        "The hyperplane that maximizes the margin between classes",
+        "The cluster centroid closest to the origin",
+        "The shortest path between two data points",
+        "The average value of all features"
+      ],
+      "correct_answer": "The hyperplane that maximizes the margin between classes",
+      "explanation": "SVMs seek the decision boundary (hyperplane) that has the maximum margin from the nearest points of each class (support vectors).",
+      "topic": "Classification",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The 'kernel trick' in SVMs allows the algorithm to:",
+      "options": [
+        "Implicitly map data into a higher-dimensional space to find a linear separator without explicitly computing the transformation",
+        "Reduce the number of training examples needed",
+        "Automatically select the number of clusters",
+        "Speed up gradient descent convergence in neural networks"
+      ],
+      "correct_answer": "Implicitly map data into a higher-dimensional space to find a linear separator without explicitly computing the transformation",
+      "explanation": "The kernel trick computes inner products in a higher-dimensional feature space efficiently, enabling non-linear separation without explicit transformation.",
+      "topic": "Classification",
+      "difficulty": "hard"
+    },
+    {
+      "question": "K-means clustering partitions data by:",
+      "options": [
+        "Iteratively assigning points to the nearest of k centroids and updating centroids until convergence",
+        "Building a hierarchical tree of nested clusters",
+        "Fitting a probability density function to the data",
+        "Randomly assigning permanent cluster labels with no updates"
+      ],
+      "correct_answer": "Iteratively assigning points to the nearest of k centroids and updating centroids until convergence",
+      "explanation": "K-means alternates between assigning points to the nearest centroid and recomputing centroids as the mean of assigned points.",
+      "topic": "Clustering",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Principal Component Analysis (PCA) is mainly used for:",
+      "options": [
+        "Reducing the dimensionality of data while preserving as much variance as possible",
+        "Classifying data into discrete categories",
+        "Increasing the number of features to improve model complexity",
+        "Clustering data into a fixed number of groups"
+      ],
+      "correct_answer": "Reducing the dimensionality of data while preserving as much variance as possible",
+      "explanation": "PCA transforms data into a new set of orthogonal components ordered by the amount of variance they explain, enabling dimensionality reduction.",
+      "topic": "Dimensionality reduction",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a neural network, the purpose of an activation function is to:",
+      "options": [
+        "Introduce non-linearity so the network can model complex patterns",
+        "Normalize the input features before training",
+        "Reduce the number of layers in the network",
+        "Directly compute the loss value"
+      ],
+      "correct_answer": "Introduce non-linearity so the network can model complex patterns",
+      "explanation": "Without non-linear activation functions, a stack of linear layers would collapse into a single linear transformation, unable to model complex relationships.",
+      "topic": "Neural networks",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which of the following is a commonly used activation function in deep learning hidden layers?",
+      "options": [
+        "ReLU (Rectified Linear Unit)",
+        "K-means",
+        "Gini impurity",
+        "Cross-validation"
+      ],
+      "correct_answer": "ReLU (Rectified Linear Unit)",
+      "explanation": "ReLU, defined as max(0, x), is widely used in hidden layers because it mitigates vanishing gradients and is computationally efficient.",
+      "topic": "Neural networks",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Backpropagation in neural networks is used to:",
+      "options": [
+        "Compute gradients of the loss function with respect to each weight, enabling weight updates",
+        "Randomly initialize the weights of the network",
+        "Cluster similar inputs together",
+        "Select the best hyperparameters automatically"
+      ],
+      "correct_answer": "Compute gradients of the loss function with respect to each weight, enabling weight updates",
+      "explanation": "Backpropagation applies the chain rule to efficiently compute how the loss changes with respect to each weight, which gradient descent then uses to update weights.",
+      "topic": "Neural networks",
+      "difficulty": "hard"
+    },
+    {
+      "question": "L2 regularization (ridge) helps prevent overfitting by:",
+      "options": [
+        "Adding a penalty proportional to the squared magnitude of the weights to the loss function",
+        "Removing random training examples during training",
+        "Increasing the learning rate over time",
+        "Forcing all weights to become exactly zero"
+      ],
+      "correct_answer": "Adding a penalty proportional to the squared magnitude of the weights to the loss function",
+      "explanation": "L2 regularization discourages large weight values by penalizing their squared magnitude, which reduces model complexity and overfitting.",
+      "topic": "Regularization",
+      "difficulty": "medium"
+    },
+    {
+      "question": "L1 regularization (lasso) is notable because it tends to:",
+      "options": [
+        "Drive some model weights exactly to zero, effectively performing feature selection",
+        "Increase all weights uniformly",
+        "Have no effect on model complexity",
+        "Only apply to unsupervised learning models"
+      ],
+      "correct_answer": "Drive some model weights exactly to zero, effectively performing feature selection",
+      "explanation": "L1 regularization's penalty on absolute weight values encourages sparsity, often eliminating less useful features entirely.",
+      "topic": "Regularization",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Dropout, used in training neural networks, works by:",
+      "options": [
+        "Randomly disabling a fraction of neurons during each training pass to reduce overfitting",
+        "Permanently removing layers from the network after training",
+        "Increasing the batch size dynamically",
+        "Normalizing the output of every layer"
+      ],
+      "correct_answer": "Randomly disabling a fraction of neurons during each training pass to reduce overfitting",
+      "explanation": "Dropout randomly deactivates neurons during training, forcing the network to learn more robust, redundant representations and reducing overfitting.",
+      "topic": "Neural networks",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In reinforcement learning, an 'agent' learns by:",
+      "options": [
+        "Interacting with an environment and receiving rewards or penalties for its actions",
+        "Being given fully labeled input-output pairs before training",
+        "Clustering unlabeled data into groups",
+        "Reducing the dimensionality of state representations only"
+      ],
+      "correct_answer": "Interacting with an environment and receiving rewards or penalties for its actions",
+      "explanation": "Reinforcement learning is based on an agent taking actions in an environment and learning a policy that maximizes cumulative reward through trial and feedback.",
+      "topic": "Reinforcement learning",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A dataset is split into training, validation, and test sets primarily to:",
+      "options": [
+        "Tune hyperparameters on the validation set while getting an unbiased final performance estimate on the test set",
+        "Make the dataset appear larger than it actually is",
+        "Avoid the need for any evaluation metric",
+        "Guarantee the model will never overfit"
+      ],
+      "correct_answer": "Tune hyperparameters on the validation set while getting an unbiased final performance estimate on the test set",
+      "explanation": "Separating data into training, validation, and test sets prevents information leakage and gives a fair assessment of generalization performance.",
+      "topic": "Model evaluation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Feature scaling (e.g., normalization or standardization) is especially important for algorithms like:",
+      "options": [
+        "K-Nearest Neighbors and gradient-descent-based models, which are sensitive to feature magnitude",
+        "Decision trees, which require scaled inputs to split nodes",
+        "All algorithms equally with no exceptions",
+        "Only unsupervised clustering and never supervised learning"
+      ],
+      "correct_answer": "K-Nearest Neighbors and gradient-descent-based models, which are sensitive to feature magnitude",
+      "explanation": "Distance-based algorithms like KNN and gradient-descent-optimized models are sensitive to the scale of features, so scaling improves performance and convergence.",
+      "topic": "Feature engineering",
+      "difficulty": "medium"
+    },
+    {
+      "question": "One-hot encoding is a technique used to:",
+      "options": [
+        "Convert categorical variables into a binary vector representation for use in numeric models",
+        "Reduce the number of training epochs required",
+        "Cluster continuous variables into bins",
+        "Normalize numeric features to a 0-1 range"
+      ],
+      "correct_answer": "Convert categorical variables into a binary vector representation for use in numeric models",
+      "explanation": "One-hot encoding represents each category as a binary vector, allowing categorical data to be used in models that require numeric input.",
+      "topic": "Feature engineering",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The 'curse of dimensionality' refers to the problem where:",
+      "options": [
+        "As the number of features grows, data becomes sparse and distance-based methods become less effective",
+        "Models automatically become more accurate with more features",
+        "Fewer features always lead to overfitting",
+        "Training time decreases as dimensions increase"
+      ],
+      "correct_answer": "As the number of features grows, data becomes sparse and distance-based methods become less effective",
+      "explanation": "High-dimensional spaces cause data points to become sparse, making distance metrics less meaningful and increasing the risk of overfitting.",
+      "topic": "Dimensionality reduction",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Which loss function is typically used for binary classification problems in neural networks?",
+      "options": [
+        "Binary cross-entropy",
+        "Mean squared error only",
+        "Gini impurity",
+        "Euclidean distance"
+      ],
+      "correct_answer": "Binary cross-entropy",
+      "explanation": "Binary cross-entropy measures the difference between predicted probabilities and actual binary labels, making it the standard loss for binary classification.",
+      "topic": "Neural networks",
+      "difficulty": "medium"
+    }
+  ]
+}

@@ -1,0 +1,449 @@
+{
+  "course_code": "BCH301",
+  "title": "Enzymology",
+  "level": "300",
+  "source_note": "Standard NUC-aligned Nigerian university 300L general Enzymology curriculum: enzyme nomenclature/classification, active site theories, cofactors/coenzymes, basic Michaelis-Menten kinetics, enzyme units, reversible/irreversible inhibition basics, factors affecting activity, isoenzymes, zymogen activation, allosteric regulation, ribozymes and clinical enzymology. Kept introductory/breadth-focused relative to the 400L Advanced Enzymology course, which covers deeper inhibition kinetics and multi-substrate mechanisms.",
+  "questions": [
+    {
+      "question": "Under the IUBMB enzyme classification system, enzymes that catalyze oxidation-reduction reactions belong to which class?",
+      "options": ["Transferases", "Oxidoreductases", "Hydrolases", "Isomerases"],
+      "correct_answer": "Oxidoreductases",
+      "explanation": "Oxidoreductases (EC class 1) catalyze reactions involving the transfer of electrons (hydride ions or hydrogen atoms), such as dehydrogenases and oxidases.",
+      "topic": "Enzyme classification",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Enzymes that catalyze the transfer of a functional group (e.g., amino, phosphate, acyl) from one molecule to another are classified as:",
+      "options": ["Ligases", "Lyases", "Transferases", "Hydrolases"],
+      "correct_answer": "Transferases",
+      "explanation": "Transferases (EC class 2) catalyze the transfer of a chemical group, such as a phosphoryl group (kinases) or amino group (transaminases), from a donor to an acceptor molecule.",
+      "topic": "Enzyme classification",
+      "difficulty": "easy"
+    },
+    {
+      "question": "An enzyme with EC number beginning 3.-.-.- belongs to which class and catalyzes what type of reaction?",
+      "options": [
+        "Ligases; bond formation coupled to ATP hydrolysis",
+        "Hydrolases; cleavage of bonds by addition of water",
+        "Lyases; addition/removal of groups without hydrolysis",
+        "Isomerases; rearrangement within a single molecule"
+      ],
+      "correct_answer": "Hydrolases; cleavage of bonds by addition of water",
+      "explanation": "Hydrolases (EC class 3) catalyze the hydrolytic cleavage of bonds such as ester, peptide, and glycosidic bonds, using water as a co-substrate.",
+      "topic": "Enzyme classification",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Lyases are enzymes that:",
+      "options": [
+        "Catalyze non-hydrolytic addition or removal of a group to form or break a double bond",
+        "Catalyze isomerization within a single molecule",
+        "Join two molecules using energy from nucleoside triphosphate hydrolysis",
+        "Transfer electrons between molecules"
+      ],
+      "correct_answer": "Catalyze non-hydrolytic addition or removal of a group to form or break a double bond",
+      "explanation": "Lyases (EC class 4) catalyze the non-hydrolytic, non-oxidative addition or removal of groups from substrates, often generating or consuming a double bond, e.g., decarboxylases and aldolases.",
+      "topic": "Enzyme classification",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Ligases (synthetases) are distinguished from other enzyme classes by their requirement for:",
+      "options": [
+        "Water as a co-substrate",
+        "A metal ion cofactor exclusively",
+        "Energy from ATP (or another nucleoside triphosphate) to join two molecules",
+        "A coenzyme derived from a B-vitamin"
+      ],
+      "correct_answer": "Energy from ATP (or another nucleoside triphosphate) to join two molecules",
+      "explanation": "Ligases (EC class 6) catalyze the formation of new covalent bonds joining two molecules, a reaction coupled to the hydrolysis of ATP or a similar high-energy compound, e.g., DNA ligase and pyruvate carboxylase.",
+      "topic": "Enzyme classification",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Isomerases catalyze:",
+      "options": [
+        "The interconversion of structural or geometric isomers within a single molecule",
+        "The transfer of a phosphate group between two different molecules",
+        "The hydrolysis of a peptide bond",
+        "The joining of two substrates with ATP hydrolysis"
+      ],
+      "correct_answer": "The interconversion of structural or geometric isomers within a single molecule",
+      "explanation": "Isomerases (EC class 5) catalyze intramolecular rearrangements, such as the conversion of glucose-6-phosphate to fructose-6-phosphate by phosphohexose isomerase.",
+      "topic": "Enzyme classification",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The active site of an enzyme is best described as:",
+      "options": [
+        "The entire surface of the enzyme molecule",
+        "A small, three-dimensional region, usually a cleft or pocket, where substrate binds and catalysis occurs",
+        "A site found only on multi-subunit enzymes",
+        "The site where allosteric effectors always bind"
+      ],
+      "correct_answer": "A small, three-dimensional region, usually a cleft or pocket, where substrate binds and catalysis occurs",
+      "explanation": "The active site is a relatively small pocket formed by amino acid residues (often from distant parts of the primary sequence brought together by folding) that binds substrate specifically and carries out catalysis.",
+      "topic": "Active site and specificity",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The 'lock and key' model of enzyme-substrate binding, proposed by Emil Fischer, assumes that:",
+      "options": [
+        "The enzyme's active site is flexible and changes shape upon substrate binding",
+        "The active site has a rigid shape that is exactly complementary to the substrate",
+        "Substrate binding always requires a metal cofactor",
+        "Multiple substrates can bind simultaneously at one active site"
+      ],
+      "correct_answer": "The active site has a rigid shape that is exactly complementary to the substrate",
+      "explanation": "Fischer's lock-and-key model (1894) treats the enzyme active site as a rigid, pre-formed shape that fits its specific substrate precisely, like a key fits a lock.",
+      "topic": "Active site and specificity",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Koshland's 'induced fit' model of enzyme action proposes that:",
+      "options": [
+        "Substrate binding induces a conformational change in the enzyme that creates the catalytically active geometry",
+        "The enzyme's shape never changes during catalysis",
+        "Substrates bind only to denatured enzymes",
+        "Enzyme specificity is determined solely by pH"
+      ],
+      "correct_answer": "Substrate binding induces a conformational change in the enzyme that creates the catalytically active geometry",
+      "explanation": "In the induced fit model, the active site is flexible; substrate binding induces the enzyme to change conformation so that catalytic groups are properly aligned, improving both fit and catalysis.",
+      "topic": "Active site and specificity",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A prosthetic group differs from a loosely-bound coenzyme in that a prosthetic group:",
+      "options": [
+        "Is always a metal ion",
+        "Is covalently or very tightly bound to the enzyme protein on a permanent basis",
+        "Dissociates from the enzyme after each catalytic cycle",
+        "Is never required for catalysis"
+      ],
+      "correct_answer": "Is covalently or very tightly bound to the enzyme protein on a permanent basis",
+      "explanation": "A prosthetic group is a cofactor that is permanently and tightly (often covalently) attached to the enzyme, such as FAD in succinate dehydrogenase or biotin in carboxylases, unlike a coenzyme that binds and dissociates transiently.",
+      "topic": "Cofactors and coenzymes",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The catalytically inactive protein portion of an enzyme, before it combines with its required cofactor, is called the:",
+      "options": ["Holoenzyme", "Zymogen", "Apoenzyme", "Isoenzyme"],
+      "correct_answer": "Apoenzyme",
+      "explanation": "The apoenzyme is the protein component alone, lacking its cofactor; when the apoenzyme combines with its cofactor (metal ion or coenzyme), it forms the catalytically active holoenzyme.",
+      "topic": "Cofactors and coenzymes",
+      "difficulty": "easy"
+    },
+    {
+      "question": "NAD+ and NADP+, coenzymes central to many oxidoreductase reactions, are synthesized in the body from which vitamin?",
+      "options": ["Riboflavin (B2)", "Niacin (B3)", "Pantothenic acid (B5)", "Pyridoxine (B6)"],
+      "correct_answer": "Niacin (B3)",
+      "explanation": "Niacin (nicotinic acid/nicotinamide, vitamin B3) is the dietary precursor used to synthesize the nicotinamide ring of NAD+ and NADP+.",
+      "topic": "Cofactors and coenzymes",
+      "difficulty": "medium"
+    },
+    {
+      "question": "FAD, the prosthetic group of succinate dehydrogenase and other flavoenzymes, is derived from which vitamin?",
+      "options": ["Riboflavin (B2)", "Thiamine (B1)", "Folate (B9)", "Cobalamin (B12)"],
+      "correct_answer": "Riboflavin (B2)",
+      "explanation": "Flavin adenine dinucleotide (FAD) and flavin mononucleotide (FMN) are synthesized from riboflavin (vitamin B2).",
+      "topic": "Cofactors and coenzymes",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Coenzyme A, which activates acyl groups (e.g., in acetyl-CoA), is derived from which vitamin?",
+      "options": ["Pantothenic acid (B5)", "Biotin (B7)", "Niacin (B3)", "Thiamine (B1)"],
+      "correct_answer": "Pantothenic acid (B5)",
+      "explanation": "Coenzyme A is synthesized from pantothenic acid (vitamin B5), combined with cysteine and ATP.",
+      "topic": "Cofactors and coenzymes",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Zinc functions as an essential metal cofactor in carbonic anhydrase, where it:",
+      "options": [
+        "Serves purely a structural role with no catalytic function",
+        "Polarizes a water molecule to generate a hydroxide nucleophile for CO2 hydration",
+        "Acts as an electron acceptor in a redox step",
+        "Binds ATP to supply energy for the reaction"
+      ],
+      "correct_answer": "Polarizes a water molecule to generate a hydroxide nucleophile for CO2 hydration",
+      "explanation": "In carbonic anhydrase, an active-site Zn2+ ion lowers the pKa of a bound water molecule, generating a hydroxide ion that acts as the nucleophile attacking CO2 to form bicarbonate.",
+      "topic": "Cofactors and coenzymes",
+      "difficulty": "hard"
+    },
+    {
+      "question": "According to the Michaelis-Menten model, when substrate concentration [S] is much greater than Km, the reaction rate:",
+      "options": [
+        "Increases linearly and indefinitely with [S]",
+        "Approaches Vmax and becomes approximately zero-order with respect to [S]",
+        "Becomes strictly first-order with respect to [S]",
+        "Falls to zero"
+      ],
+      "correct_answer": "Approaches Vmax and becomes approximately zero-order with respect to [S]",
+      "explanation": "At [S] >> Km the enzyme's active sites are essentially saturated, so the rate approaches the maximum velocity Vmax and no longer depends strongly on further increases in [S] (zero-order in substrate).",
+      "topic": "Enzyme kinetics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "When substrate concentration [S] is much less than Km, the initial reaction velocity is approximately:",
+      "options": [
+        "Independent of [S]",
+        "Proportional to [S], i.e., first-order in substrate",
+        "Equal to Vmax regardless of [S]",
+        "Inversely proportional to [S]"
+      ],
+      "correct_answer": "Proportional to [S], i.e., first-order in substrate",
+      "explanation": "When [S] << Km, the Michaelis-Menten equation v = Vmax[S]/(Km+[S]) simplifies to v ≈ (Vmax/Km)[S], so velocity rises roughly linearly (first-order) with substrate concentration.",
+      "topic": "Enzyme kinetics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The turnover number (kcat) of an enzyme represents:",
+      "options": [
+        "The number of substrate molecules converted to product per enzyme molecule per unit time under saturating substrate",
+        "The temperature at which the enzyme is most stable",
+        "The concentration of enzyme required to saturate the substrate",
+        "The pH at which the enzyme has maximal activity"
+      ],
+      "correct_answer": "The number of substrate molecules converted to product per enzyme molecule per unit time under saturating substrate",
+      "explanation": "kcat, the catalytic constant, describes the maximum number of substrate molecules each active site converts to product per second when the enzyme is fully saturated with substrate.",
+      "topic": "Enzyme kinetics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "One International Unit (IU) of enzyme activity is defined as the amount of enzyme that:",
+      "options": [
+        "Converts 1 mole of substrate to product per second",
+        "Converts 1 micromole of substrate to product per minute under specified conditions",
+        "Converts 1 gram of substrate to product per hour",
+        "Has a Km of 1 mM"
+      ],
+      "correct_answer": "Converts 1 micromole of substrate to product per minute under specified conditions",
+      "explanation": "The International Unit (IU or U) of enzyme activity is defined as the amount of enzyme that catalyzes the conversion of 1 micromole of substrate per minute under standard assay conditions.",
+      "topic": "Enzyme units",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The SI unit of enzyme activity, the katal, is defined as the enzyme activity that converts:",
+      "options": [
+        "1 micromole of substrate per minute",
+        "1 mole of substrate per second",
+        "1 millimole of substrate per hour",
+        "1 mole of substrate per minute"
+      ],
+      "correct_answer": "1 mole of substrate per second",
+      "explanation": "The katal (kat) is the SI-derived unit of catalytic activity, defined as the conversion of one mole of substrate per second; 1 katal = 6 x 10^7 IU.",
+      "topic": "Enzyme units",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Specific activity of an enzyme preparation is expressed as:",
+      "options": [
+        "Units of enzyme activity per milligram of total protein",
+        "Total units of activity in the whole sample",
+        "The Km value divided by Vmax",
+        "Milligrams of enzyme per milliliter of solution"
+      ],
+      "correct_answer": "Units of enzyme activity per milligram of total protein",
+      "explanation": "Specific activity (units/mg protein) measures enzyme purity; it increases as an enzyme preparation is purified away from contaminating proteins.",
+      "topic": "Enzyme units",
+      "difficulty": "medium"
+    },
+    {
+      "question": "As reaction temperature is raised beyond an enzyme's optimum, activity typically falls sharply because:",
+      "options": [
+        "Substrate concentration automatically decreases",
+        "The enzyme becomes denatured, disrupting its tertiary structure and active site",
+        "The reaction becomes reversible",
+        "Cofactors are destroyed at all temperatures above 0°C"
+      ],
+      "correct_answer": "The enzyme becomes denatured, disrupting its tertiary structure and active site",
+      "explanation": "Above the optimum temperature, thermal energy disrupts the weak non-covalent interactions maintaining enzyme tertiary structure, denaturing the protein and destroying the active site geometry.",
+      "topic": "Factors affecting enzyme activity",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Changes in pH away from an enzyme's optimum reduce activity mainly because:",
+      "options": [
+        "pH has no real effect on enzymes, only temperature does",
+        "Ionizable side chains in the active site (and elsewhere) change protonation state, altering substrate binding, catalysis, or protein conformation",
+        "Enzymes only function at pH 7.0",
+        "pH changes always irreversibly destroy the primary structure"
+      ],
+      "correct_answer": "Ionizable side chains in the active site (and elsewhere) change protonation state, altering substrate binding, catalysis, or protein conformation",
+      "explanation": "Enzyme activity depends on specific ionization states of active-site residues (e.g., His, Asp, Glu, Lys); deviation from optimal pH alters these charges, affecting substrate binding, catalytic mechanism, and overall protein folding.",
+      "topic": "Factors affecting enzyme activity",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a competitive enzyme inhibition, the inhibitor:",
+      "options": [
+        "Binds at the active site, structurally resembling the substrate, and its effect is overcome by raising substrate concentration",
+        "Binds only to the enzyme-substrate complex",
+        "Lowers Vmax while leaving Km unchanged",
+        "Cannot be reversed by any means"
+      ],
+      "correct_answer": "Binds at the active site, structurally resembling the substrate, and its effect is overcome by raising substrate concentration",
+      "explanation": "A competitive inhibitor resembles the substrate and competes for the active site; because it competes reversibly, sufficiently high substrate concentration can outcompete it and still reach Vmax.",
+      "topic": "Enzyme inhibition",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In pure non-competitive inhibition, the inhibitor binds to a site distinct from the active site and:",
+      "options": [
+        "Increases Km while leaving Vmax unchanged",
+        "Decreases Vmax while leaving Km essentially unchanged",
+        "Has no effect on either Km or Vmax",
+        "Only binds free enzyme, never the enzyme-substrate complex"
+      ],
+      "correct_answer": "Decreases Vmax while leaving Km essentially unchanged",
+      "explanation": "A pure non-competitive inhibitor binds equally well to free enzyme and the enzyme-substrate complex at a site other than the active site, reducing catalytic efficiency (lowering Vmax) without changing substrate affinity (Km).",
+      "topic": "Enzyme inhibition",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Aspirin inhibits cyclooxygenase (COX) irreversibly by:",
+      "options": [
+        "Reversibly occupying the substrate-binding channel",
+        "Covalently acetylating a serine residue in the active site",
+        "Chelating an essential metal cofactor",
+        "Competing with arachidonic acid without any covalent modification"
+      ],
+      "correct_answer": "Covalently acetylating a serine residue in the active site",
+      "explanation": "Aspirin (acetylsalicylic acid) irreversibly inhibits COX by transferring its acetyl group to a specific active-site serine residue, permanently blocking substrate access.",
+      "topic": "Enzyme inhibition",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Allosteric enzymes typically differ from simple Michaelis-Menten enzymes in that they:",
+      "options": [
+        "Show hyperbolic substrate saturation curves",
+        "Often show sigmoidal (S-shaped) substrate saturation curves due to cooperative subunit interactions",
+        "Have only one subunit",
+        "Cannot be regulated by metabolites"
+      ],
+      "correct_answer": "Often show sigmoidal (S-shaped) substrate saturation curves due to cooperative subunit interactions",
+      "explanation": "Allosteric enzymes are typically multi-subunit proteins whose subunits interact cooperatively; substrate or effector binding at one site alters affinity at other sites, producing a sigmoidal velocity-versus-[S] curve rather than a hyperbolic one.",
+      "topic": "Allosteric regulation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In feedback (end-product) inhibition of a metabolic pathway, the final product typically:",
+      "options": [
+        "Activates the first committed enzyme of its own synthetic pathway",
+        "Allosterically inhibits an early, often the first committed, enzyme of the pathway that produced it",
+        "Has no effect on any enzyme in the pathway",
+        "Only affects enzymes in unrelated pathways"
+      ],
+      "correct_answer": "Allosterically inhibits an early, often the first committed, enzyme of the pathway that produced it",
+      "explanation": "Feedback inhibition is a common regulatory strategy in which the end product of a pathway binds an allosteric site on an early regulatory enzyme (e.g., the first committed step) and inhibits it, preventing wasteful overproduction.",
+      "topic": "Allosteric regulation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Trypsinogen is converted to the active enzyme trypsin by:",
+      "options": [
+        "Phosphorylation by a protein kinase",
+        "Proteolytic cleavage that removes an N-terminal peptide, exposing the mature active site",
+        "Binding of a metal cofactor alone",
+        "Glycosylation in the Golgi apparatus"
+      ],
+      "correct_answer": "Proteolytic cleavage that removes an N-terminal peptide, exposing the mature active site",
+      "explanation": "Trypsinogen, an inactive zymogen, is activated by enteropeptidase (and later trypsin itself), which cleaves off a small N-terminal peptide, allowing the remaining chain to refold into the catalytically active trypsin.",
+      "topic": "Zymogen activation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Zymogens (proenzymes) exist as inactive precursors mainly to:",
+      "options": [
+        "Save the cell energy on protein synthesis",
+        "Prevent premature or inappropriate proteolytic (or other) activity that could damage the cell/tissue producing them",
+        "Increase the enzyme's substrate specificity permanently",
+        "Allow the enzyme to function only at high temperature"
+      ],
+      "correct_answer": "Prevent premature or inappropriate proteolytic (or other) activity that could damage the cell/tissue producing them",
+      "explanation": "Secreting digestive proteases such as trypsin and chymotrypsin as inactive zymogens protects the pancreas and other tissues from self-digestion; activation is triggered only at the intended site and time.",
+      "topic": "Zymogen activation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Isoenzymes (isozymes) are best defined as:",
+      "options": [
+        "Different enzymes that catalyze completely unrelated reactions",
+        "Multiple molecular forms of an enzyme that catalyze the same reaction but differ in structure, kinetic properties, or tissue distribution",
+        "Inactive precursors of a single enzyme",
+        "Enzymes that require different substrates entirely"
+      ],
+      "correct_answer": "Multiple molecular forms of an enzyme that catalyze the same reaction but differ in structure, kinetic properties, or tissue distribution",
+      "explanation": "Isoenzymes are structurally distinct forms of an enzyme (often differing in subunit composition, as in lactate dehydrogenase's five tetrameric isoforms) that catalyze the same chemical reaction but may differ in kinetics, regulation, and tissue expression.",
+      "topic": "Isoenzymes",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Lactate dehydrogenase (LDH) exists as five isoenzymes assembled from combinations of two subunit types. This is a classic example used to illustrate:",
+      "options": [
+        "Zymogen activation",
+        "Isoenzyme tissue-specific distribution useful in clinical diagnosis",
+        "Competitive inhibition",
+        "Coenzyme regeneration"
+      ],
+      "correct_answer": "Isoenzyme tissue-specific distribution useful in clinical diagnosis",
+      "explanation": "LDH is a tetramer of H (heart) and M (muscle) subunits giving five isoenzymes (LDH1-LDH5) with different tissue distributions; their relative serum levels help localize tissue damage clinically (e.g., LDH1 elevated in myocardial infarction).",
+      "topic": "Isoenzymes",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Markedly elevated serum alanine aminotransferase (ALT) and aspartate aminotransferase (AST) are most commonly used clinically as indicators of damage to which organ?",
+      "options": ["Kidney", "Liver", "Pancreas", "Bone"],
+      "correct_answer": "Liver",
+      "explanation": "ALT and AST are released into the blood when hepatocytes are damaged (e.g., in hepatitis), making them standard clinical markers of liver injury; ALT is considered more liver-specific.",
+      "topic": "Clinical enzymology",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Elevated serum creatine kinase (CK-MB isoenzyme) and cardiac troponins are used clinically to diagnose:",
+      "options": ["Acute pancreatitis", "Myocardial infarction", "Bone fracture", "Chronic kidney disease"],
+      "correct_answer": "Myocardial infarction",
+      "explanation": "CK-MB and cardiac troponins (T and I) are released from damaged cardiac muscle and are key biochemical markers used to diagnose myocardial infarction.",
+      "topic": "Clinical enzymology",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Ribozymes are notable because they demonstrate that:",
+      "options": [
+        "All enzymes are proteins",
+        "RNA molecules, not only proteins, can possess catalytic activity",
+        "Enzymes cannot function without cofactors",
+        "DNA can act as a catalyst"
+      ],
+      "correct_answer": "RNA molecules, not only proteins, can possess catalytic activity",
+      "explanation": "Ribozymes, such as the peptidyl transferase center of the ribosome and the self-splicing group I/II introns, are RNA molecules with intrinsic catalytic activity, disproving the earlier assumption that only proteins could be enzymes.",
+      "topic": "Ribozymes",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A key industrial/biotechnological advantage of immobilizing enzymes on a solid support is that it:",
+      "options": [
+        "Always increases the enzyme's substrate specificity",
+        "Allows the enzyme to be recovered and reused, and often improves its thermal and operational stability",
+        "Eliminates the need for substrate entirely",
+        "Converts the enzyme into a coenzyme"
+      ],
+      "correct_answer": "Allows the enzyme to be recovered and reused, and often improves its thermal and operational stability",
+      "explanation": "Immobilized enzymes (bound to beads, membranes, or gels) can be separated from the reaction mixture and reused across multiple batches, which lowers cost and often enhances stability compared with free enzyme in solution.",
+      "topic": "Enzyme immobilization",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which statement about coenzymes is correct?",
+      "options": [
+        "Coenzymes are always proteins",
+        "Coenzymes are small organic molecules, often derived from vitamins, that assist enzymes by transiently carrying chemical groups or electrons",
+        "Coenzymes permanently remain part of the enzyme's primary structure",
+        "Coenzymes function only as structural stabilizers with no chemical role"
+      ],
+      "correct_answer": "Coenzymes are small organic molecules, often derived from vitamins, that assist enzymes by transiently carrying chemical groups or electrons",
+      "explanation": "Coenzymes such as NAD+, CoA, and TPP are non-protein organic cofactors, frequently vitamin derivatives, that bind loosely and reversibly to enzymes to shuttle electrons or functional groups during catalysis.",
+      "topic": "Cofactors and coenzymes",
+      "difficulty": "easy"
+    }
+  ]
+}

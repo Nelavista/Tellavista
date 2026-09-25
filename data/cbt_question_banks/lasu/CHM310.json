@@ -1,0 +1,280 @@
+{
+  "course_code": "CHM310",
+  "title": "Industrial Chemistry",
+  "level": "300",
+  "source_note": "Standard NUC-aligned 300L industrial chemistry curriculum: major industrial processes (Haber, Contact, Solvay, petroleum refining and petrochemicals), metal extraction, cement and glass manufacture, soap/detergent and fertiliser production, industrial catalysis, unit operations, water treatment, and industrial pollution/corrosion control.",
+  "questions": [
+    {
+      "question": "The Haber process for industrial ammonia synthesis combines nitrogen and hydrogen gases under which typical operating conditions?",
+      "options": ["Low pressure, low temperature, no catalyst", "High pressure (~200 atm), moderate temperature (~450 degC), iron catalyst", "Atmospheric pressure, very high temperature (~1000 degC), platinum catalyst", "Vacuum conditions with a copper catalyst"],
+      "correct_answer": "High pressure (~200 atm), moderate temperature (~450 degC), iron catalyst",
+      "explanation": "N2 + 3H2 -> 2NH3 is exothermic and proceeds with a decrease in gas moles, so high pressure and a compromise (moderate) temperature with an iron catalyst (promoted with K2O/Al2O3) are used industrially to balance yield and rate.",
+      "topic": "Haber process",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the Haber process, increasing the operating pressure favours a higher equilibrium yield of ammonia mainly because:",
+      "options": ["The forward reaction produces fewer moles of gas, so Le Chatelier's principle favours the forward direction under higher pressure", "Ammonia is a liquid at high pressure", "Higher pressure destroys the catalyst", "Pressure has no effect on gas-phase equilibria"],
+      "correct_answer": "The forward reaction produces fewer moles of gas, so Le Chatelier's principle favours the forward direction under higher pressure",
+      "explanation": "Since 4 moles of gaseous reactants form 2 moles of product, increasing pressure shifts the equilibrium toward the side with fewer gas moles, i.e. toward ammonia.",
+      "topic": "Haber process",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Contact process for industrial sulfuric acid production involves the catalytic oxidation of sulfur dioxide to sulfur trioxide using which catalyst?",
+      "options": ["Finely divided iron", "Vanadium(V) oxide (V2O5)", "Nickel", "Platinum only, with no alternative catalyst ever used"],
+      "correct_answer": "Vanadium(V) oxide (V2O5)",
+      "explanation": "V2O5 is the standard industrial catalyst for 2SO2 + O2 -> 2SO3, chosen for its lower cost and resistance to catalyst poisoning compared with platinum.",
+      "topic": "Contact process",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the Contact process, SO3 is not absorbed directly into water to form H2SO4 industrially because this would:",
+      "options": ["Produce a dense, corrosive acid mist that is difficult to condense and control", "Immediately decompose SO3 into SO2", "Produce hydrogen gas as a hazardous by-product", "Reduce the reaction rate to zero"],
+      "correct_answer": "Produce a dense, corrosive acid mist that is difficult to condense and control",
+      "explanation": "Direct absorption of SO3 in water is highly exothermic and forms a fine, hard-to-condense acid mist; industrially SO3 is instead absorbed in concentrated H2SO4 to form oleum, which is then diluted.",
+      "topic": "Contact process",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The Solvay process is used industrially to manufacture which compound?",
+      "options": ["Sodium carbonate (Na2CO3)", "Sodium chloride (NaCl)", "Sodium hydroxide (NaOH)", "Sodium sulfate (Na2SO4)"],
+      "correct_answer": "Sodium carbonate (Na2CO3)",
+      "explanation": "The Solvay process converts brine and limestone (via ammonia and CO2) into sodium carbonate (soda ash), a key industrial alkali.",
+      "topic": "Solvay process",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In the Solvay process, sodium bicarbonate (NaHCO3) precipitates when carbon dioxide and ammonia are passed into brine because:",
+      "options": ["NaHCO3 is more soluble than NaCl in the ammoniated brine", "NaHCO3 has relatively low solubility in the cold, ammoniated, CO2-saturated brine and crystallises out", "Ammonia reacts directly with NaCl to form NaHCO3 gas", "The reaction produces only gaseous products"],
+      "correct_answer": "NaHCO3 has relatively low solubility in the cold, ammoniated, CO2-saturated brine and crystallises out",
+      "explanation": "NaHCO3 is the least soluble species present under these conditions, so it selectively crystallises and is filtered off, then calcined to give Na2CO3.",
+      "topic": "Solvay process",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Fractional distillation of crude petroleum separates its components mainly on the basis of differences in:",
+      "options": ["Colour", "Boiling point", "Density alone", "Electrical conductivity"],
+      "correct_answer": "Boiling point",
+      "explanation": "Crude oil is a mixture of hydrocarbons with different boiling points; fractional distillation exploits these differences to separate fractions such as gasoline, kerosene, diesel, and residue.",
+      "topic": "Petroleum refining",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Catalytic cracking of heavy petroleum fractions is carried out primarily to:",
+      "options": ["Increase the average molecular weight of the hydrocarbons", "Break large hydrocarbon molecules into smaller, more commercially valuable ones such as petrol", "Remove sulfur compounds only", "Convert alkanes into alcohols"],
+      "correct_answer": "Break large hydrocarbon molecules into smaller, more commercially valuable ones such as petrol",
+      "explanation": "Cracking converts high-boiling, low-demand heavy fractions into lighter, more valuable products like petrol and petrochemical feedstocks (alkenes), typically using a zeolite catalyst.",
+      "topic": "Petroleum refining",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Octane number is a measure used to describe:",
+      "options": ["The sulfur content of a fuel", "The resistance of a petrol/gasoline fuel to knocking (premature ignition) in a spark-ignition engine", "The boiling point of diesel fuel", "The viscosity of lubricating oil"],
+      "correct_answer": "The resistance of a petrol/gasoline fuel to knocking (premature ignition) in a spark-ignition engine",
+      "explanation": "Octane number rates a fuel's anti-knock performance relative to reference mixtures of iso-octane and heptane; higher octane numbers indicate greater resistance to knocking.",
+      "topic": "Petroleum refining",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Petrochemicals such as ethylene and propylene, used as feedstocks for plastics manufacture, are primarily obtained industrially by:",
+      "options": ["Steam cracking of naphtha or natural gas liquids", "Direct distillation of crude petroleum without further processing", "Fermentation of sugars", "Electrolysis of brine"],
+      "correct_answer": "Steam cracking of naphtha or natural gas liquids",
+      "explanation": "Steam cracking thermally breaks saturated hydrocarbon feedstocks into smaller alkenes (ethylene, propylene) that serve as building blocks for polymers and other petrochemicals.",
+      "topic": "Petrochemicals",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the industrial extraction of iron in the blast furnace, coke serves mainly as:",
+      "options": ["A drying agent", "Both a fuel and a reducing agent, converting iron oxide to iron via carbon monoxide", "An oxidising agent", "A catalyst that is not consumed"],
+      "correct_answer": "Both a fuel and a reducing agent, converting iron oxide to iron via carbon monoxide",
+      "explanation": "Coke burns to generate heat and CO, and CO reduces iron oxides (Fe2O3, Fe3O4) to molten iron in the blast furnace: Fe2O3 + 3CO -> 2Fe + 3CO2.",
+      "topic": "Metal extraction",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Limestone is added to the blast furnace during iron extraction mainly to:",
+      "options": ["Increase the melting point of iron", "React with silica (sand) impurities to form slag, which is removed separately from the molten iron", "Serve as the primary fuel", "Act as the reducing agent"],
+      "correct_answer": "React with silica (sand) impurities to form slag, which is removed separately from the molten iron",
+      "explanation": "Limestone decomposes to CaO, which reacts with acidic impurities like SiO2 to form calcium silicate (slag), a less dense liquid that floats above and is separated from molten iron.",
+      "topic": "Metal extraction",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Industrial extraction of aluminium from purified alumina (Al2O3) by the Hall-Heroult process requires electrolysis because:",
+      "options": ["Aluminium is too reactive to be reduced by carbon at achievable furnace temperatures, so electrolytic reduction is used instead", "Alumina is a liquid at room temperature", "Aluminium oxide conducts electricity in the solid state", "Carbon reduction produces pure aluminium directly at low temperature"],
+      "correct_answer": "Aluminium is too reactive to be reduced by carbon at achievable furnace temperatures, so electrolytic reduction is used instead",
+      "explanation": "Aluminium's strong affinity for oxygen makes carbon reduction thermodynamically impractical at normal furnace temperatures, so molten alumina dissolved in cryolite is electrolysed instead.",
+      "topic": "Metal extraction",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Cryolite (Na3AlF6) is added to alumina in the Hall-Heroult process primarily to:",
+      "options": ["Act as the electrolyte and lower the melting point of alumina, reducing energy costs", "Serve as the anode material", "Prevent any current from flowing", "Oxidise the aluminium produced"],
+      "correct_answer": "Act as the electrolyte and lower the melting point of alumina, reducing energy costs",
+      "explanation": "Pure alumina melts above 2000 degC; dissolving it in molten cryolite lowers the melting point to around 950-980 degC, making electrolysis economically feasible.",
+      "topic": "Metal extraction",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The main raw materials for the manufacture of ordinary Portland cement are:",
+      "options": ["Limestone and clay", "Sodium chloride and sulfuric acid", "Bauxite and cryolite", "Sulfur and coke"],
+      "correct_answer": "Limestone and clay",
+      "explanation": "Cement is made by heating a mixture of limestone (calcium carbonate) and clay (aluminosilicates) in a rotary kiln to form clinker, which is then ground with gypsum.",
+      "topic": "Cement manufacture",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Gypsum is added to cement clinker during grinding mainly to:",
+      "options": ["Control (retard) the setting time of the cement", "Increase the colour intensity of the cement", "Act as the primary binding compound", "Remove water from the clinker"],
+      "correct_answer": "Control (retard) the setting time of the cement",
+      "explanation": "Gypsum regulates the hydration rate of tricalcium aluminate, preventing flash setting and allowing workable setting times for construction use.",
+      "topic": "Cement manufacture",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Ordinary soda-lime glass is manufactured mainly by melting together silica (sand), sodium carbonate, and:",
+      "options": ["Calcium carbonate (limestone)", "Sodium chloride", "Sulfuric acid", "Aluminium metal"],
+      "correct_answer": "Calcium carbonate (limestone)",
+      "explanation": "Soda-lime glass is formed by fusing silica sand with soda ash (Na2CO3, lowers the melting point) and limestone (CaCO3, improves chemical durability).",
+      "topic": "Glass manufacture",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Saponification, the chemical reaction underlying soap manufacture, is best described as the:",
+      "options": ["Oxidation of fatty acids to carbon dioxide", "Alkaline hydrolysis of fats/oils (triglycerides) to give glycerol and fatty acid salts (soap)", "Esterification of glycerol with fatty acids", "Chlorination of fatty acids"],
+      "correct_answer": "Alkaline hydrolysis of fats/oils (triglycerides) to give glycerol and fatty acid salts (soap)",
+      "explanation": "Triglycerides are hydrolysed by a strong base (e.g. NaOH) into glycerol and the sodium salts of long-chain fatty acids, which are soaps.",
+      "topic": "Soap and detergent manufacture",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Synthetic detergents, unlike ordinary soaps, remain effective in hard water mainly because:",
+      "options": ["They form insoluble scum/precipitates with calcium and magnesium ions, just like soap", "Their sulfonate or sulfate head groups form soluble salts with calcium and magnesium ions rather than insoluble precipitates", "They contain no hydrophobic tail", "They react chemically with hard water to remove it"],
+      "correct_answer": "Their sulfonate or sulfate head groups form soluble salts with calcium and magnesium ions rather than insoluble precipitates",
+      "explanation": "Unlike carboxylate soaps, which precipitate as insoluble calcium/magnesium salts (scum) in hard water, sulfonate/sulfate-based detergents form soluble Ca2+/Mg2+ salts, retaining cleaning action.",
+      "topic": "Soap and detergent manufacture",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The industrial synthesis of nitric acid (Ostwald process) begins with the catalytic oxidation of ammonia over a platinum-rhodium catalyst to give:",
+      "options": ["Nitrogen dioxide directly", "Nitric oxide (NO)", "Ammonium nitrate", "Nitrous oxide only"],
+      "correct_answer": "Nitric oxide (NO)",
+      "explanation": "4NH3 + 5O2 -> 4NO + 6H2O over a Pt-Rh gauze catalyst is the first step; NO is then further oxidised to NO2 and absorbed in water to form HNO3.",
+      "topic": "Fertiliser and acid production",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Superphosphate fertiliser is produced industrially by treating phosphate rock with:",
+      "options": ["Sulfuric acid (or phosphoric acid for triple superphosphate)", "Sodium hydroxide", "Ammonia gas only", "Chlorine gas"],
+      "correct_answer": "Sulfuric acid (or phosphoric acid for triple superphosphate)",
+      "explanation": "Treating insoluble calcium phosphate rock with sulfuric acid converts it to soluble calcium dihydrogen phosphate (superphosphate); using phosphoric acid instead gives the more concentrated triple superphosphate.",
+      "topic": "Fertiliser and acid production",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Urea, a widely used nitrogenous fertiliser, is industrially synthesised from:",
+      "options": ["Ammonia and carbon dioxide under heat and pressure", "Nitric acid and calcium carbonate", "Sulfuric acid and ammonia only", "Sodium nitrate and potassium chloride"],
+      "correct_answer": "Ammonia and carbon dioxide under heat and pressure",
+      "explanation": "The industrial urea process reacts ammonia with carbon dioxide to form ammonium carbamate, which is then dehydrated to urea, CO(NH2)2.",
+      "topic": "Fertiliser and acid production",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A heterogeneous catalyst used in industrial processes such as the Haber and Contact processes offers the practical advantage of:",
+      "options": ["Being consumed and needing constant replacement", "Being in a different phase from the reactants, allowing easy separation and reuse", "Dissolving completely in the reaction mixture", "Requiring no support or promoter materials ever"],
+      "correct_answer": "Being in a different phase from the reactants, allowing easy separation and reuse",
+      "explanation": "Heterogeneous (usually solid) catalysts remain physically separate from gaseous or liquid reactants, simplifying continuous industrial processing and catalyst recovery.",
+      "topic": "Industrial catalysis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Catalyst poisoning in industrial processes refers to:",
+      "options": ["Deliberate addition of a promoter to boost catalytic activity", "Loss of catalytic activity due to strong adsorption of impurities (e.g. sulfur compounds) onto active sites", "The natural decay of radioactive catalysts", "Cooling of the catalyst bed below operating temperature"],
+      "correct_answer": "Loss of catalytic activity due to strong adsorption of impurities (e.g. sulfur compounds) onto active sites",
+      "explanation": "Poisons such as sulfur or arsenic compounds strongly and often irreversibly bind to active catalytic sites, blocking them and reducing or destroying catalytic activity.",
+      "topic": "Industrial catalysis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a distillation column used as a unit operation in industry, trays or packing are included mainly to:",
+      "options": ["Increase the surface area for vapour-liquid contact, improving separation efficiency", "Heat the feed directly", "Serve only as structural support with no separation function", "Condense all vapour instantly at the base"],
+      "correct_answer": "Increase the surface area for vapour-liquid contact, improving separation efficiency",
+      "explanation": "Trays/packing promote repeated vapour-liquid equilibration stages along the column height, improving component separation compared with a simple single-stage still.",
+      "topic": "Unit operations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Filtration as an industrial unit operation is used primarily to:",
+      "options": ["Separate a solid from a liquid or gas by passing the mixture through a porous medium", "Increase the temperature of a liquid", "Convert a gas into a liquid", "Separate two miscible liquids"],
+      "correct_answer": "Separate a solid from a liquid or gas by passing the mixture through a porous medium",
+      "explanation": "Filtration relies on a porous barrier (filter medium) that retains suspended solid particles while allowing the fluid phase to pass through.",
+      "topic": "Unit operations",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Fractional crystallisation as an industrial separation technique exploits differences in:",
+      "options": ["Solubility of different solutes at a given temperature", "Boiling point only", "Electrical charge of the compounds", "Molecular colour"],
+      "correct_answer": "Solubility of different solutes at a given temperature",
+      "explanation": "By controlling temperature and concentration, the least soluble component crystallises out first, allowing separation of solutes with different solubility-temperature behaviour.",
+      "topic": "Unit operations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Coagulation and flocculation in industrial water treatment are used mainly to:",
+      "options": ["Kill pathogenic microorganisms directly", "Aggregate fine suspended particles into larger flocs that settle out more readily", "Remove dissolved gases from water", "Adjust the pH of the water permanently"],
+      "correct_answer": "Aggregate fine suspended particles into larger flocs that settle out more readily",
+      "explanation": "Coagulants (e.g. alum) neutralise the charge on colloidal particles, allowing them to clump (flocculate) into larger aggregates that can be removed by sedimentation and filtration.",
+      "topic": "Water treatment",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Chlorination is commonly used as a final step in municipal water treatment primarily to:",
+      "options": ["Disinfect the water by killing or inactivating pathogenic microorganisms", "Remove all dissolved salts", "Increase water hardness", "Reduce the dissolved oxygen content"],
+      "correct_answer": "Disinfect the water by killing or inactivating pathogenic microorganisms",
+      "explanation": "Chlorine and its active species (HOCl/OCl-) oxidise and disrupt microbial cell components, providing effective, residual disinfection of treated water.",
+      "topic": "Water treatment",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Effluent from an industrial plant with a high biochemical oxygen demand (BOD) is a concern mainly because, if discharged untreated, it:",
+      "options": ["Increases dissolved oxygen levels in receiving water bodies", "Depletes dissolved oxygen in receiving water bodies as microorganisms decompose the organic matter, harming aquatic life", "Has no environmental effect", "Immediately neutralises water pH"],
+      "correct_answer": "Depletes dissolved oxygen in receiving water bodies as microorganisms decompose the organic matter, harming aquatic life",
+      "explanation": "High-BOD effluent supports intense microbial decomposition that consumes dissolved oxygen, potentially causing hypoxia and harming fish and other aquatic organisms.",
+      "topic": "Industrial pollution control",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Corrosion of iron structures in an industrial plant is fundamentally an example of which type of process?",
+      "options": ["A purely physical change with no chemical reaction", "An electrochemical oxidation of the metal, typically forming hydrated iron(III) oxide (rust)", "A nuclear decay process", "A purely thermal decomposition"],
+      "correct_answer": "An electrochemical oxidation of the metal, typically forming hydrated iron(III) oxide (rust)",
+      "explanation": "Rusting involves anodic oxidation of Fe to Fe2+ and cathodic reduction of oxygen (in the presence of water/electrolyte), with the resulting Fe2+ further oxidised to hydrated Fe2O3.",
+      "topic": "Corrosion in industry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Cathodic protection is used industrially to prevent corrosion of steel structures such as pipelines mainly by:",
+      "options": ["Coating the structure with a decorative paint only", "Connecting the structure to a more reactive (sacrificial) metal, such as zinc or magnesium, which corrodes preferentially", "Heating the structure continuously", "Increasing the oxygen concentration around the structure"],
+      "correct_answer": "Connecting the structure to a more reactive (sacrificial) metal, such as zinc or magnesium, which corrodes preferentially",
+      "explanation": "The sacrificial anode, being more easily oxidised than iron, supplies electrons to the protected structure, keeping it cathodic and suppressing its own oxidation (corrosion).",
+      "topic": "Corrosion in industry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Scrubbing of flue gases with an alkaline slurry (e.g. limestone) in industrial plants is primarily aimed at reducing emissions of:",
+      "options": ["Carbon dioxide only", "Sulfur dioxide, which contributes to acid rain", "Water vapour", "Nitrogen gas"],
+      "correct_answer": "Sulfur dioxide, which contributes to acid rain",
+      "explanation": "Flue-gas desulfurisation reacts SO2 with an alkaline sorbent (e.g. CaCO3/Ca(OH)2) to form calcium sulfite/sulfate, preventing SO2 release and subsequent acid rain formation.",
+      "topic": "Industrial pollution control",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Industrial fermentation, such as in the production of ethanol from molasses, relies on which type of process?",
+      "options": ["Purely inorganic catalytic oxidation", "Biological conversion of sugars into ethanol and carbon dioxide by microorganisms (e.g. yeast) under anaerobic conditions", "High-temperature cracking of hydrocarbons", "Electrolysis of aqueous sugar solutions"],
+      "correct_answer": "Biological conversion of sugars into ethanol and carbon dioxide by microorganisms (e.g. yeast) under anaerobic conditions",
+      "explanation": "Fermentation uses enzymes from microorganisms like Saccharomyces cerevisiae to anaerobically convert sugars into ethanol and CO2, a key process in industrial ethanol and brewing industries.",
+      "topic": "Fermentation industries",
+      "difficulty": "medium"
+    }
+  ]
+}

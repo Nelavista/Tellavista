@@ -1,0 +1,361 @@
+{
+  "course_code": "MTH312",
+  "title": "Optimization Theory",
+  "level": "300",
+  "source_note": "Standard NUC-aligned Nigerian university 300L mathematics curriculum: unconstrained and constrained optimization, convexity, Lagrange multipliers, Karush-Kuhn-Tucker conditions, and an introduction to linear programming and the simplex method.",
+  "questions": [
+    {
+      "question": "For a function f(x) of a single variable, a necessary condition for an interior point x0 to be a local extremum is:",
+      "options": ["f'(x0) = 0", "f''(x0) = 0", "f(x0) = 0", "f'(x0) > 0"],
+      "correct_answer": "f'(x0) = 0",
+      "explanation": "At an interior local extremum of a differentiable function, the first derivative must vanish (a stationary point).",
+      "topic": "Unconstrained optimization",
+      "difficulty": "easy"
+    },
+    {
+      "question": "If x0 is a stationary point of f(x) and f''(x0) > 0, then x0 is:",
+      "options": ["A local minimum", "A local maximum", "A saddle point", "Not an extremum"],
+      "correct_answer": "A local minimum",
+      "explanation": "The second derivative test: a positive second derivative at a stationary point indicates the function curves upward, so it is a local minimum.",
+      "topic": "Second-order conditions",
+      "difficulty": "easy"
+    },
+    {
+      "question": "For a function f(x,y) of two variables, the Hessian matrix H is:",
+      "options": [
+        "The matrix of second-order partial derivatives [[fxx, fxy],[fyx, fyy]]",
+        "The matrix of first-order partial derivatives",
+        "The Jacobian of the gradient with respect to time",
+        "A diagonal matrix of eigenvalues"
+      ],
+      "correct_answer": "The matrix of second-order partial derivatives [[fxx, fxy],[fyx, fyy]]",
+      "explanation": "The Hessian collects all second partial derivatives and is used to classify stationary points of multivariable functions.",
+      "topic": "Multivariable optimization",
+      "difficulty": "medium"
+    },
+    {
+      "question": "At a stationary point of f(x,y), if the Hessian is positive definite, the point is:",
+      "options": ["A local minimum", "A local maximum", "A saddle point", "Undetermined"],
+      "correct_answer": "A local minimum",
+      "explanation": "A positive definite Hessian means the function increases in every direction away from the point, characterizing a local minimum.",
+      "topic": "Multivariable optimization",
+      "difficulty": "medium"
+    },
+    {
+      "question": "If the Hessian at a stationary point has both positive and negative eigenvalues, the point is:",
+      "options": ["A saddle point", "A local minimum", "A local maximum", "A global minimum"],
+      "correct_answer": "A saddle point",
+      "explanation": "Mixed-sign eigenvalues mean the function increases in some directions and decreases in others, the defining feature of a saddle point.",
+      "topic": "Multivariable optimization",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A set S in R^n is convex if:",
+      "options": [
+        "For any two points x, y in S, the line segment λx + (1-λ)y lies in S for all λ in [0,1]",
+        "S contains the origin",
+        "S is bounded",
+        "S has a unique minimum point"
+      ],
+      "correct_answer": "For any two points x, y in S, the line segment λx + (1-λ)y lies in S for all λ in [0,1]",
+      "explanation": "Convexity of a set means it contains the entire line segment joining any two of its points.",
+      "topic": "Convexity",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A function f is convex on a convex set S if for all x, y in S and λ in [0,1]:",
+      "options": [
+        "f(λx + (1-λ)y) ≤ λf(x) + (1-λ)f(y)",
+        "f(λx + (1-λ)y) ≥ λf(x) + (1-λ)f(y)",
+        "f(x) = f(y) whenever x ≠ y",
+        "f(λx) = λf(x)"
+      ],
+      "correct_answer": "f(λx + (1-λ)y) ≤ λf(x) + (1-λ)f(y)",
+      "explanation": "This is the defining Jensen-type inequality of convexity: the function lies on or below the chord joining any two points.",
+      "topic": "Convexity",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Why is convexity important in optimization theory?",
+      "options": [
+        "Any local minimum of a convex function on a convex set is also a global minimum",
+        "Convex functions never have stationary points",
+        "It guarantees the function is linear",
+        "It ensures the function has multiple global minima"
+      ],
+      "correct_answer": "Any local minimum of a convex function on a convex set is also a global minimum",
+      "explanation": "This key property means local optimization methods (e.g. gradient-based) suffice to find global optima for convex problems.",
+      "topic": "Convexity",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In constrained optimization, the method of Lagrange multipliers is used to optimize f(x,y) subject to g(x,y) = c by solving:",
+      "options": [
+        "∇f = λ∇g together with g(x,y) = c",
+        "∇f = ∇g only",
+        "f(x,y) = g(x,y)",
+        "λ = 0 always"
+      ],
+      "correct_answer": "∇f = λ∇g together with g(x,y) = c",
+      "explanation": "At a constrained extremum, the gradient of the objective is parallel to the gradient of the constraint, introducing the Lagrange multiplier λ.",
+      "topic": "Lagrange multipliers",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Use Lagrange multipliers to find the maximum of f(x,y) = xy subject to x + y = 10. What is the maximum value?",
+      "options": ["25", "50", "10", "100"],
+      "correct_answer": "25",
+      "explanation": "Setting ∇f = λ∇g gives y = λ, x = λ, so x = y = 5, and f(5,5) = 25, the maximum product for a fixed sum.",
+      "topic": "Lagrange multipliers",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the Lagrangian function L(x,y,λ) = f(x,y) - λ(g(x,y) - c), the multiplier λ can be interpreted as:",
+      "options": [
+        "The sensitivity of the optimal objective value to a small change in the constraint constant c",
+        "The second derivative of f",
+        "A fixed constant unrelated to the problem",
+        "The number of constraints"
+      ],
+      "correct_answer": "The sensitivity of the optimal objective value to a small change in the constraint constant c",
+      "explanation": "This is the classical 'shadow price' interpretation of the Lagrange multiplier in optimization.",
+      "topic": "Lagrange multipliers",
+      "difficulty": "hard"
+    },
+    {
+      "question": "For optimization with inequality constraints g(x) ≤ 0, the Karush-Kuhn-Tucker (KKT) complementary slackness condition requires:",
+      "options": [
+        "λ.g(x) = 0 at the optimum, where λ ≥ 0",
+        "λ = g(x) always",
+        "g(x) = 0 for all constraints regardless of activity",
+        "λ < 0 at the optimum"
+      ],
+      "correct_answer": "λ.g(x) = 0 at the optimum, where λ ≥ 0",
+      "explanation": "Complementary slackness states that either the constraint is active (g(x)=0) or its multiplier is zero, with multipliers required non-negative for inequality constraints in a minimization problem.",
+      "topic": "KKT conditions",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The KKT conditions extend the method of Lagrange multipliers to problems that include:",
+      "options": ["Inequality constraints in addition to equality constraints", "Only linear objective functions", "Discrete variables only", "Only single-variable problems"],
+      "correct_answer": "Inequality constraints in addition to equality constraints",
+      "explanation": "KKT conditions generalize Lagrangian optimality to handle both equality and inequality constraints via stationarity, primal/dual feasibility and complementary slackness.",
+      "topic": "KKT conditions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A linear programming (LP) problem in standard form seeks to:",
+      "options": [
+        "Optimize a linear objective function subject to linear equality/inequality constraints and non-negativity of variables",
+        "Optimize a quadratic objective with no constraints",
+        "Find roots of a nonlinear system",
+        "Minimize a convex but nonlinear function"
+      ],
+      "correct_answer": "Optimize a linear objective function subject to linear equality/inequality constraints and non-negativity of variables",
+      "explanation": "LP restricts both the objective and constraints to linear expressions, with variables typically required to be non-negative.",
+      "topic": "Linear programming",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In LP, the feasible region defined by a set of linear inequality constraints is:",
+      "options": ["A convex polytope (intersection of half-spaces)", "Always unbounded", "A single point", "Never convex"],
+      "correct_answer": "A convex polytope (intersection of half-spaces)",
+      "explanation": "Each linear inequality defines a half-space, and the intersection of finitely many half-spaces is a convex polytope.",
+      "topic": "Linear programming",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Fundamental Theorem of Linear Programming states that if an optimal solution exists, it occurs at:",
+      "options": ["A vertex (extreme point) of the feasible region", "The centroid of the feasible region", "Any interior point", "Infinitely many random points"],
+      "correct_answer": "A vertex (extreme point) of the feasible region",
+      "explanation": "Because the objective is linear, the optimum of a bounded LP is always attained at an extreme point of the convex feasible polytope.",
+      "topic": "Linear programming",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The simplex method solves LP problems by:",
+      "options": [
+        "Moving along edges of the feasible polytope from vertex to vertex, improving the objective at each step",
+        "Randomly sampling points in the feasible region",
+        "Solving the dual problem exclusively",
+        "Using gradient descent on the objective function"
+      ],
+      "correct_answer": "Moving along edges of the feasible polytope from vertex to vertex, improving the objective at each step",
+      "explanation": "The simplex algorithm systematically pivots between adjacent basic feasible solutions (vertices) until no further improvement is possible.",
+      "topic": "Simplex method",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the simplex tableau, the optimality condition for a maximization problem is reached when:",
+      "options": [
+        "All coefficients in the objective (net evaluation) row are non-negative",
+        "All variables equal zero",
+        "The tableau has only one row",
+        "All constraints are equalities"
+      ],
+      "correct_answer": "All coefficients in the objective (net evaluation) row are non-negative",
+      "explanation": "When no reduced cost is negative, no further pivot can improve the objective, indicating the optimal solution has been reached (standard simplex convention).",
+      "topic": "Simplex method",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Slack variables are introduced in the simplex method to:",
+      "options": [
+        "Convert inequality constraints (≤) into equalities",
+        "Remove the objective function",
+        "Increase the number of optimal solutions",
+        "Make the problem nonlinear"
+      ],
+      "correct_answer": "Convert inequality constraints (≤) into equalities",
+      "explanation": "A slack variable absorbs the difference between the left and right sides of a ≤ constraint, turning it into an equation suitable for the simplex tableau.",
+      "topic": "Simplex method",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Every linear program (the primal) has an associated dual problem. Weak duality states that:",
+      "options": [
+        "The objective value of any feasible dual solution bounds the objective value of any feasible primal solution",
+        "The primal and dual always have the same feasible region",
+        "The dual problem has no solution if the primal does",
+        "Duality only applies to unbounded problems"
+      ],
+      "correct_answer": "The objective value of any feasible dual solution bounds the objective value of any feasible primal solution",
+      "explanation": "Weak duality guarantees that for a max primal and min dual, the dual objective is always ≥ the primal objective at any feasible points.",
+      "topic": "Duality in LP",
+      "difficulty": "hard"
+    },
+    {
+      "question": "According to Strong Duality in LP, if both primal and dual problems have feasible solutions, then:",
+      "options": [
+        "Their optimal objective values are equal",
+        "Their optimal objective values differ by a fixed positive constant",
+        "Only the primal has an optimum",
+        "The dual is always infeasible"
+      ],
+      "correct_answer": "Their optimal objective values are equal",
+      "explanation": "Strong duality is a central LP result: at optimality, the primal and dual optimal objective values coincide.",
+      "topic": "Duality in LP",
+      "difficulty": "hard"
+    },
+    {
+      "question": "An LP is said to be unbounded when:",
+      "options": [
+        "The objective function can be improved indefinitely within the feasible region",
+        "The feasible region is empty",
+        "There is exactly one feasible point",
+        "All variables must be integers"
+      ],
+      "correct_answer": "The objective function can be improved indefinitely within the feasible region",
+      "explanation": "If the feasible region extends infinitely in a direction that keeps improving the objective, no finite optimum exists.",
+      "topic": "Linear programming",
+      "difficulty": "medium"
+    },
+    {
+      "question": "An LP is infeasible when:",
+      "options": [
+        "No point satisfies all the constraints simultaneously",
+        "The objective function is unbounded",
+        "There are more variables than constraints",
+        "The objective function is nonlinear"
+      ],
+      "correct_answer": "No point satisfies all the constraints simultaneously",
+      "explanation": "Infeasibility means the constraints are mutually contradictory, so the feasible region is empty.",
+      "topic": "Linear programming",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Consider maximizing f(x) = -x^2 + 4x + 1. What is the optimal x and maximum value?",
+      "options": ["x = 2, f(2) = 5", "x = 4, f(4) = 1", "x = 0, f(0) = 1", "x = 2, f(2) = 9"],
+      "correct_answer": "x = 2, f(2) = 5",
+      "explanation": "f'(x) = -2x + 4 = 0 gives x = 2; since f''(x) = -2 < 0 it is a maximum, and f(2) = -4+8+1 = 5.",
+      "topic": "Unconstrained optimization",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For a twice-differentiable function of a single variable, a sufficient condition for x0 to be an inflection point (not necessarily an extremum) associated with f''(x0)=0 is:",
+      "options": ["f''' (x0) ≠ 0", "f'(x0) ≠ 0", "f(x0) = 0", "f''(x0) > 0"],
+      "correct_answer": "f''' (x0) ≠ 0",
+      "explanation": "When the second derivative vanishes, a nonzero third derivative confirms the concavity changes sign there, marking an inflection point rather than an extremum.",
+      "topic": "Second-order conditions",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A quadratic form x^T A x is positive semi-definite if and only if:",
+      "options": [
+        "All eigenvalues of the symmetric matrix A are non-negative",
+        "All eigenvalues of A are strictly positive",
+        "A is the identity matrix",
+        "det(A) = 0"
+      ],
+      "correct_answer": "All eigenvalues of the symmetric matrix A are non-negative",
+      "explanation": "Positive semi-definiteness of a symmetric matrix corresponds exactly to having no negative eigenvalues.",
+      "topic": "Convexity",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In the transportation problem (a special LP), the goal is to:",
+      "options": [
+        "Minimize total shipping cost from supply sources to demand destinations subject to supply and demand constraints",
+        "Maximize the number of routes used",
+        "Minimize the number of suppliers",
+        "Solve a nonlinear assignment problem"
+      ],
+      "correct_answer": "Minimize total shipping cost from supply sources to demand destinations subject to supply and demand constraints",
+      "explanation": "The transportation problem is a classical LP application balancing supply and demand at minimum total cost.",
+      "topic": "Applications of LP",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The gradient descent method for unconstrained minimization updates the iterate by:",
+      "options": [
+        "x_{k+1} = x_k - α∇f(x_k), where α is a step size",
+        "x_{k+1} = x_k + ∇f(x_k)",
+        "x_{k+1} = ∇^2 f(x_k)",
+        "x_{k+1} = x_k / f(x_k)"
+      ],
+      "correct_answer": "x_{k+1} = x_k - α∇f(x_k), where α is a step size",
+      "explanation": "Gradient descent moves against the gradient direction, the direction of steepest ascent, scaled by a chosen step size.",
+      "topic": "Numerical optimization methods",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Newton's method for optimization uses the update rule:",
+      "options": [
+        "x_{k+1} = x_k - [∇^2 f(x_k)]^{-1} ∇f(x_k)",
+        "x_{k+1} = x_k - α∇f(x_k)",
+        "x_{k+1} = x_k + f(x_k)",
+        "x_{k+1} = ∇f(x_k)"
+      ],
+      "correct_answer": "x_{k+1} = x_k - [∇^2 f(x_k)]^{-1} ∇f(x_k)",
+      "explanation": "Newton's method incorporates second-order (Hessian) curvature information for faster convergence near the optimum, unlike plain gradient descent.",
+      "topic": "Numerical optimization methods",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A global minimum of a function f over a set S is a point x* such that:",
+      "options": [
+        "f(x*) ≤ f(x) for all x in S",
+        "f(x*) ≤ f(x) only for x near x*",
+        "f'(x*) is undefined",
+        "x* is unique in every problem"
+      ],
+      "correct_answer": "f(x*) ≤ f(x) for all x in S",
+      "explanation": "A global minimum dominates the function value at every point of the feasible/domain set, not merely a local neighborhood.",
+      "topic": "Optimization fundamentals",
+      "difficulty": "easy"
+    },
+    {
+      "question": "For a constrained optimization problem where the constraint is inactive (not binding) at the optimum, the KKT stationarity condition reduces to:",
+      "options": [
+        "The unconstrained condition ∇f(x*) = 0, since the associated multiplier is zero",
+        "∇f(x*) = ∇g(x*) always",
+        "The constraint must be violated",
+        "x* cannot be optimal"
+      ],
+      "correct_answer": "The unconstrained condition ∇f(x*) = 0, since the associated multiplier is zero",
+      "explanation": "By complementary slackness, an inactive inequality constraint forces its multiplier to zero, so it drops out of the stationarity condition.",
+      "topic": "KKT conditions",
+      "difficulty": "hard"
+    }
+  ]
+}

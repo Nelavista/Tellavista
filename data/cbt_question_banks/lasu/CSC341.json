@@ -1,0 +1,336 @@
+{
+  "course_code": "CSC341",
+  "title": "Human Computer Interaction",
+  "level": "300",
+  "source_note": "Standard NUC-aligned 300L Human-Computer Interaction curriculum: HCI history and disciplines, human information processing, interaction styles and paradigms, usability principles and heuristics, design process (user-centered design, prototyping), evaluation methods (heuristic evaluation, usability testing, cognitive walkthrough), interface design guidelines, accessibility, and mental models/cognitive models such as GOMS.",
+  "questions": [
+    {
+      "question": "What is the primary goal of Human-Computer Interaction (HCI) as a field of study?",
+      "options": ["Designing and evaluating computer systems so they are usable, safe, effective, and satisfying for people to use", "Writing the fastest possible machine code for a given processor", "Manufacturing computer hardware components", "Compiling programming languages into executable binaries"],
+      "correct_answer": "Designing and evaluating computer systems so they are usable, safe, effective, and satisfying for people to use",
+      "explanation": "HCI is concerned with the design, evaluation, and implementation of interactive computing systems for human use, focusing on usability and user experience.",
+      "topic": "Introduction to HCI",
+      "difficulty": "easy"
+    },
+    {
+      "question": "HCI is best described as which type of field?",
+      "options": ["Multidisciplinary, drawing on computer science, psychology, design, and ergonomics", "Purely a branch of electrical engineering", "A subfield of theoretical mathematics only", "A field concerned solely with graphic design aesthetics"],
+      "correct_answer": "Multidisciplinary, drawing on computer science, psychology, design, and ergonomics",
+      "explanation": "HCI integrates knowledge from computer science, cognitive psychology, design, sociology, and ergonomics to understand and improve human interaction with technology.",
+      "topic": "Introduction to HCI",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In the human information processing model, what are the three main stages typically identified?",
+      "options": ["Perceptual (sensory), cognitive, and motor processing", "Input, storage, and deletion", "Compilation, linking, and execution", "Encryption, transmission, and decryption"],
+      "correct_answer": "Perceptual (sensory), cognitive, and motor processing",
+      "explanation": "The human information processor model describes how humans perceive stimuli, cognitively process and decide on a response, and then execute a motor response.",
+      "topic": "Human information processing",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What does 'short-term memory' (working memory) primarily constrain in interface design?",
+      "options": ["The amount of information a user can hold and manipulate at once, typically limited to about 7±2 chunks", "The maximum screen resolution a monitor can display", "The number of files a hard disk can store", "The speed of the CPU clock"],
+      "correct_answer": "The amount of information a user can hold and manipulate at once, typically limited to about 7±2 chunks",
+      "explanation": "Miller's 'magic number' 7±2 describes the limited capacity of human short-term/working memory, which interface designers must respect by chunking information.",
+      "topic": "Human information processing",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is a 'mental model' in the context of HCI?",
+      "options": ["A user's internal representation of how a system works, built from experience and interaction", "The physical circuit diagram of a computer", "A UML class diagram used by developers", "A statistical model used to test software performance"],
+      "correct_answer": "A user's internal representation of how a system works, built from experience and interaction",
+      "explanation": "A mental model is the user's own understanding or belief about how a system operates, which guides their expectations and behavior when interacting with it.",
+      "topic": "Cognitive models",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What does the GOMS model stand for in HCI?",
+      "options": ["Goals, Operators, Methods, and Selection rules", "Graphics, Objects, Menus, and Systems", "General Output Management System", "Gestures, Overlays, Modes, and Shortcuts"],
+      "correct_answer": "Goals, Operators, Methods, and Selection rules",
+      "explanation": "GOMS is a predictive modeling technique that analyzes user tasks in terms of Goals, Operators (actions), Methods (procedures), and Selection rules for choosing among methods.",
+      "topic": "Cognitive models",
+      "difficulty": "hard"
+    },
+    {
+      "question": "What is the primary purpose of the GOMS model in interface evaluation?",
+      "options": ["To predict the time an expert user will take to complete a task without errors", "To measure the electrical power consumption of a device", "To generate random test data for software testing", "To encrypt user passwords"],
+      "correct_answer": "To predict the time an expert user will take to complete a task without errors",
+      "explanation": "GOMS is used to analytically predict task execution time for skilled users, helping designers compare interface designs before building them.",
+      "topic": "Cognitive models",
+      "difficulty": "hard"
+    },
+    {
+      "question": "What is 'user-centered design' (UCD)?",
+      "options": ["A design philosophy that involves users throughout the design process to ensure the product meets their needs", "A method of designing systems based solely on developer preferences", "A design approach that ignores user feedback until final release", "A hardware-only design methodology"],
+      "correct_answer": "A design philosophy that involves users throughout the design process to ensure the product meets their needs",
+      "explanation": "UCD emphasizes understanding user needs, involving users in design and evaluation, and iterating based on their feedback throughout the development lifecycle.",
+      "topic": "Design process",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In the interaction design lifecycle, what typically comes immediately after identifying user needs and requirements?",
+      "options": ["Developing alternative designs (prototyping)", "Final product deployment", "Writing the user manual", "Decommissioning the system"],
+      "correct_answer": "Developing alternative designs (prototyping)",
+      "explanation": "The interaction design lifecycle moves from establishing requirements to (re)designing alternatives, building interactive versions, and evaluating them, in an iterative cycle.",
+      "topic": "Design process",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is a 'low-fidelity prototype'?",
+      "options": ["A simple, inexpensive representation of a design, such as paper sketches or wireframes, used for early feedback", "A fully functional final release of the software", "A prototype built using only compiled machine code", "A prototype that requires expensive specialized hardware"],
+      "correct_answer": "A simple, inexpensive representation of a design, such as paper sketches or wireframes, used for early feedback",
+      "explanation": "Low-fidelity prototypes (e.g., paper sketches, wireframes) are quick and cheap to produce, allowing rapid iteration and early feedback before investing in detailed development.",
+      "topic": "Prototyping",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is the main advantage of a 'high-fidelity prototype' over a low-fidelity one?",
+      "options": ["It closely resembles the final product in look, feel, and functionality, enabling more realistic usability testing", "It is always cheaper and faster to build", "It requires no design skills to produce", "It cannot be changed once created"],
+      "correct_answer": "It closely resembles the final product in look, feel, and functionality, enabling more realistic usability testing",
+      "explanation": "High-fidelity prototypes look and behave more like the final product, which allows for more accurate usability evaluation but typically takes more time and resources to build.",
+      "topic": "Prototyping",
+      "difficulty": "medium"
+    },
+    {
+      "question": "According to Jakob Nielsen's usability heuristics, what does 'visibility of system status' mean?",
+      "options": ["The system should always keep users informed about what is going on through appropriate feedback within reasonable time", "The system should hide all internal processes from the user", "The system status should only be visible to administrators", "The interface should never show loading indicators"],
+      "correct_answer": "The system should always keep users informed about what is going on through appropriate feedback within reasonable time",
+      "explanation": "This heuristic emphasizes timely and clear feedback so users understand the current state of the system, such as progress bars or confirmation messages.",
+      "topic": "Usability heuristics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which of Nielsen's usability heuristics refers to using words, phrases, and concepts familiar to the user rather than system-oriented terms?",
+      "options": ["Match between system and the real world", "Consistency and standards", "Error prevention", "Recognition rather than recall"],
+      "correct_answer": "Match between system and the real world",
+      "explanation": "This heuristic states that systems should speak the user's language, using familiar conventions and following real-world conventions to make information appear in a natural order.",
+      "topic": "Usability heuristics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What does the usability heuristic 'error prevention' emphasize?",
+      "options": ["Designing the system to prevent errors from occurring in the first place, or confirming actions before they are committed", "Allowing users to make as many errors as possible for testing purposes", "Displaying error messages only in technical jargon", "Removing all confirmation dialogs from the interface"],
+      "correct_answer": "Designing the system to prevent errors from occurring in the first place, or confirming actions before they are committed",
+      "explanation": "Good error prevention design eliminates error-prone conditions or checks for them and presents users with a confirmation option before they commit to an action.",
+      "topic": "Usability heuristics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the difference between 'recognition' and 'recall' in interface design?",
+      "options": ["Recognition means users identify options presented to them; recall means users must retrieve information from memory without cues", "Recognition and recall are identical concepts", "Recall is always easier for users than recognition", "Recognition only applies to command-line interfaces"],
+      "correct_answer": "Recognition means users identify options presented to them; recall means users must retrieve information from memory without cues",
+      "explanation": "Interfaces should minimize memory load by making objects, actions, and options visible (recognition) rather than requiring users to remember information (recall).",
+      "topic": "Usability heuristics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is a 'heuristic evaluation' in usability engineering?",
+      "options": ["An inspection method where evaluators examine an interface against a set of established usability principles to find problems", "A method that requires hundreds of real users to test the system", "A purely automated software testing technique", "A method used only for hardware testing"],
+      "correct_answer": "An inspection method where evaluators examine an interface against a set of established usability principles to find problems",
+      "explanation": "Heuristic evaluation involves a small number of expert evaluators judging an interface's compliance with recognized usability heuristics, such as Nielsen's ten.",
+      "topic": "Evaluation methods",
+      "difficulty": "medium"
+    },
+    {
+      "question": "How many evaluators does Nielsen recommend for an effective heuristic evaluation, and why?",
+      "options": ["About 3-5 evaluators, because this typically uncovers the majority of usability problems cost-effectively", "Exactly 1 evaluator, because more would be redundant", "At least 100 evaluators, to represent the whole user population", "Evaluators are unnecessary; only automated tools are used"],
+      "correct_answer": "About 3-5 evaluators, because this typically uncovers the majority of usability problems cost-effectively",
+      "explanation": "Research by Nielsen found that using 3-5 evaluators finds a large proportion of usability problems, balancing cost against thoroughness of the evaluation.",
+      "topic": "Evaluation methods",
+      "difficulty": "hard"
+    },
+    {
+      "question": "What is a 'cognitive walkthrough'?",
+      "options": ["A usability inspection method where evaluators step through a task from the perspective of a new user, asking whether they would know what to do at each step", "A method for measuring CPU cycles during code execution", "A technique for compiling source code", "A way to walk through the physical wiring of a computer"],
+      "correct_answer": "A usability inspection method where evaluators step through a task from the perspective of a new user, asking whether they would know what to do at each step",
+      "explanation": "Cognitive walkthroughs focus on evaluating ease of learning by simulating a user's problem-solving process at each step of a task sequence.",
+      "topic": "Evaluation methods",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What distinguishes 'formative evaluation' from 'summative evaluation' in HCI?",
+      "options": ["Formative evaluation occurs during design to inform improvements; summative evaluation assesses a finished product's overall effectiveness", "Formative evaluation only happens after release; summative evaluation only happens before release", "They are the same process performed at the same time", "Formative evaluation is always automated while summative is always manual"],
+      "correct_answer": "Formative evaluation occurs during design to inform improvements; summative evaluation assesses a finished product's overall effectiveness",
+      "explanation": "Formative evaluation guides iterative design improvements, while summative evaluation measures the outcome of a design, often to compare against a benchmark or competitor.",
+      "topic": "Evaluation methods",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is a 'think-aloud protocol' used for in usability testing?",
+      "options": ["Having participants verbalize their thoughts, actions, and reasoning while performing tasks so evaluators can understand their mental process", "Recording only the final results of a test without any commentary", "Testing the audio hardware of a computer", "A method for compiling verbal commands into code"],
+      "correct_answer": "Having participants verbalize their thoughts, actions, and reasoning while performing tasks so evaluators can understand their mental process",
+      "explanation": "Think-aloud protocols reveal the user's reasoning, confusion points, and expectations in real time, giving rich qualitative insight into usability issues.",
+      "topic": "Evaluation methods",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is Fitts' Law used to predict in HCI?",
+      "options": ["The time required to move to and select a target, based on the distance to and size of the target", "The number of colors a monitor can display", "The memory capacity required for an application", "The bandwidth needed for network communication"],
+      "correct_answer": "The time required to move to and select a target, based on the distance to and size of the target",
+      "explanation": "Fitts' Law models pointing movement time as a function of the distance to the target and the target's size, informing the placement and sizing of clickable elements.",
+      "topic": "Interaction laws and models",
+      "difficulty": "hard"
+    },
+    {
+      "question": "According to Fitts' Law, how should a designer make a button easier and faster to click?",
+      "options": ["Make the button larger and/or place it closer to the user's likely starting position", "Make the button smaller and place it further away", "Remove all visual boundaries from the button", "Change the button's color to match the background"],
+      "correct_answer": "Make the button larger and/or place it closer to the user's likely starting position",
+      "explanation": "Fitts' Law shows that larger targets closer to the pointer's starting position require less time to acquire, which is why screen edges and corners (effectively infinite size) are prime locations for frequently used controls.",
+      "topic": "Interaction laws and models",
+      "difficulty": "hard"
+    },
+    {
+      "question": "What is 'direct manipulation' as an interaction style?",
+      "options": ["An interface style where users act directly on visible objects, such as dragging icons, with immediate visible feedback", "An interface where users type only textual commands", "An interface accessible only via voice commands", "An interaction style with no visual feedback"],
+      "correct_answer": "An interface style where users act directly on visible objects, such as dragging icons, with immediate visible feedback",
+      "explanation": "Direct manipulation interfaces let users manipulate on-screen representations of objects directly (e.g., dragging a file icon to a folder), providing rapid, reversible, and visible actions.",
+      "topic": "Interaction styles",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is a key characteristic of a command-line interface (CLI) compared to a graphical user interface (GUI)?",
+      "options": ["CLI requires users to recall and type specific text commands, whereas GUI relies more on recognition of visual elements", "CLI always requires a mouse", "GUI cannot support keyboard shortcuts", "CLI and GUI are functionally identical in interaction style"],
+      "correct_answer": "CLI requires users to recall and type specific text commands, whereas GUI relies more on recognition of visual elements",
+      "explanation": "Command-line interfaces depend on the user recalling exact command syntax, while GUIs typically present visible options that users recognize and select.",
+      "topic": "Interaction styles",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the WIMP paradigm in GUI design?",
+      "options": ["Windows, Icons, Menus, and Pointer -- the standard elements of graphical user interfaces", "Wireless Internet Messaging Protocol", "A programming language for web design", "A data encryption standard"],
+      "correct_answer": "Windows, Icons, Menus, and Pointer -- the standard elements of graphical user interfaces",
+      "explanation": "WIMP describes the classic desktop GUI paradigm built around windows, icons, menus, and a pointing device, which became the dominant interaction style from the 1980s onward.",
+      "topic": "Interaction styles",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In HCI, what is 'affordance'?",
+      "options": ["A perceived property of an object that suggests how it should be used or interacted with", "The total memory an application consumes", "A type of network protocol", "The legal license under which software is distributed"],
+      "correct_answer": "A perceived property of an object that suggests how it should be used or interacted with",
+      "explanation": "Affordance, a concept popularized by Don Norman, refers to design cues that indicate how an object can be used, such as a button that looks pressable.",
+      "topic": "Design principles",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is a 'signifier' as distinguished from an 'affordance' by Don Norman?",
+      "options": ["A signifier is an explicit indicator (like a label or icon) that communicates where an action should take place, distinct from the affordance itself", "A signifier is identical in meaning to affordance and interchangeable with it", "A signifier only exists in audio interfaces", "A signifier is a type of computer virus"],
+      "correct_answer": "A signifier is an explicit indicator (like a label or icon) that communicates where an action should take place, distinct from the affordance itself",
+      "explanation": "Norman clarified that signifiers are the perceivable cues (signs, labels) that communicate appropriate behavior, while affordances are the actual possible actions an object supports.",
+      "topic": "Design principles",
+      "difficulty": "hard"
+    },
+    {
+      "question": "What does 'consistency' mean as a design principle in interface design?",
+      "options": ["Similar operations and elements should be achieved through similar means throughout the interface", "Every screen in an application should look completely different", "Consistency only applies to color schemes, not functionality", "Buttons should never be reused across screens"],
+      "correct_answer": "Similar operations and elements should be achieved through similar means throughout the interface",
+      "explanation": "Consistency reduces the learning burden on users by ensuring that similar tasks are performed in similar ways across the whole system.",
+      "topic": "Design principles",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is the purpose of 'feedback' as a design principle?",
+      "options": ["Providing the user with clear information about the results of their actions", "Hiding the outcome of user actions to reduce interface clutter", "Only providing information when an error occurs", "Delaying all system responses to reduce server load"],
+      "correct_answer": "Providing the user with clear information about the results of their actions",
+      "explanation": "Feedback confirms to users that their input was received and shows the result, helping them understand system behavior and correct mistakes.",
+      "topic": "Design principles",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is 'accessibility' in the context of interface design?",
+      "options": ["Designing systems that can be used effectively by people with a wide range of abilities and disabilities", "Making software available only on expensive premium hardware", "Restricting software use to certified professionals only", "A feature exclusive to mobile applications"],
+      "correct_answer": "Designing systems that can be used effectively by people with a wide range of abilities and disabilities",
+      "explanation": "Accessibility ensures that people with visual, auditory, motor, or cognitive impairments can perceive, understand, and interact with a system, often guided by standards such as WCAG.",
+      "topic": "Accessibility",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is the purpose of 'alt text' for images on a web interface?",
+      "options": ["To provide a text description of an image so screen readers can convey its content to visually impaired users", "To increase the loading speed of a webpage", "To compress the image file size", "To change the image's color palette automatically"],
+      "correct_answer": "To provide a text description of an image so screen readers can convey its content to visually impaired users",
+      "explanation": "Alt text allows assistive technologies like screen readers to describe non-text content to users who cannot see the image, supporting web accessibility.",
+      "topic": "Accessibility",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is a 'persona' in user-centered design?",
+      "options": ["A fictional but realistic representation of a target user group, used to guide design decisions", "The actual name of a real customer used in a contract", "A password-protected login profile", "A type of encryption key"],
+      "correct_answer": "A fictional but realistic representation of a target user group, used to guide design decisions",
+      "explanation": "Personas are archetypal user profiles built from research data that help designers keep specific user needs, goals, and behaviors in mind throughout the design process.",
+      "topic": "Design process",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is a 'use case' in requirements gathering for interactive systems?",
+      "options": ["A description of how a user interacts with a system to achieve a specific goal, outlining steps and possible variations", "A legal document specifying software licensing terms", "A diagram showing only the hardware architecture", "A financial report of software development costs"],
+      "correct_answer": "A description of how a user interacts with a system to achieve a specific goal, outlining steps and possible variations",
+      "explanation": "Use cases capture functional requirements from the user's perspective, describing the sequence of interactions between a user (actor) and the system to accomplish a task.",
+      "topic": "Requirements gathering",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the main purpose of conducting a 'contextual inquiry' during requirements gathering?",
+      "options": ["Observing and interviewing users in their real work environment to understand how they actually perform tasks", "Testing the software's performance under simulated network failure", "Auditing the source code for security vulnerabilities", "Measuring the physical dimensions of computer hardware"],
+      "correct_answer": "Observing and interviewing users in their real work environment to understand how they actually perform tasks",
+      "explanation": "Contextual inquiry is a field study method combining observation and interviewing within the user's natural work context, revealing real needs that may not surface in interviews alone.",
+      "topic": "Requirements gathering",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In A/B testing for interface design, what is being compared?",
+      "options": ["Two or more variations of a design element are shown to different user groups to measure which performs better against a defined metric", "Two different programming languages used to build the same app", "The speed of two different network providers", "Two competing companies' financial statements"],
+      "correct_answer": "Two or more variations of a design element are shown to different user groups to measure which performs better against a defined metric",
+      "explanation": "A/B testing is an empirical evaluation method that compares user response to different design variants to determine which better achieves a goal, such as click-through rate.",
+      "topic": "Evaluation methods",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is 'information architecture' in interface design?",
+      "options": ["The organization, structure, and labeling of content in a system so users can find and understand information easily", "The physical layout of server racks in a data center", "The circuit design of a motherboard", "A method of compressing video files"],
+      "correct_answer": "The organization, structure, and labeling of content in a system so users can find and understand information easily",
+      "explanation": "Information architecture focuses on structuring and organizing content (e.g., navigation, categorization) so users can efficiently locate and comprehend information.",
+      "topic": "Information architecture",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the primary concern of a 'card sorting' exercise in HCI research?",
+      "options": ["Understanding how users mentally group and categorize content to inform navigation and information architecture design", "Sorting physical playing cards for a game application", "Testing memory card storage speed", "Ranking programming languages by popularity"],
+      "correct_answer": "Understanding how users mentally group and categorize content to inform navigation and information architecture design",
+      "explanation": "Card sorting has participants organize topics into categories that make sense to them, revealing mental models that guide the design of menus and site structures.",
+      "topic": "Information architecture",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What does 'usability' generally refer to according to ISO 9241-11?",
+      "options": ["The extent to which a product can be used by specified users to achieve specified goals with effectiveness, efficiency, and satisfaction", "The number of features a software product has", "The price of a software license", "The programming language used to build a product"],
+      "correct_answer": "The extent to which a product can be used by specified users to achieve specified goals with effectiveness, efficiency, and satisfaction",
+      "explanation": "ISO 9241-11 defines usability in terms of effectiveness (accuracy/completeness), efficiency (resources used), and satisfaction, all measured in a specified context of use.",
+      "topic": "Usability principles",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In usability testing, what does 'effectiveness' measure?",
+      "options": ["The accuracy and completeness with which users achieve specified goals", "The number of colors used in the interface", "How quickly the code compiles", "The size of the software installation file"],
+      "correct_answer": "The accuracy and completeness with which users achieve specified goals",
+      "explanation": "Effectiveness is one of the three core usability measures in ISO 9241-11, capturing whether users can successfully and completely accomplish their intended tasks.",
+      "topic": "Usability principles",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the 'Hawthorne effect' as a concern in usability studies?",
+      "options": ["Participants may change their behavior simply because they know they are being observed, skewing results", "A phenomenon where computers run faster when monitored", "An error that only occurs in hardware testing", "A network latency issue in remote testing"],
+      "correct_answer": "Participants may change their behavior simply because they know they are being observed, skewing results",
+      "explanation": "The Hawthorne effect is a known bias in observational studies where awareness of being watched can alter participant behavior, which usability researchers must account for.",
+      "topic": "Evaluation methods",
+      "difficulty": "hard"
+    },
+    {
+      "question": "What is the main goal of 'error message' design guidelines in HCI?",
+      "options": ["Error messages should be clear, specific, constructive, and free of technical jargon so users understand the problem and how to fix it", "Error messages should always be as vague as possible", "Error messages should be hidden from users entirely", "Error messages should only display numeric codes with no explanation"],
+      "correct_answer": "Error messages should be clear, specific, constructive, and free of technical jargon so users understand the problem and how to fix it",
+      "explanation": "Well-designed error messages help users understand what went wrong and how to recover, reducing frustration and supporting error recovery -- a key usability heuristic.",
+      "topic": "Usability heuristics",
+      "difficulty": "medium"
+    }
+  ]
+}

@@ -1,0 +1,462 @@
+{
+  "course_code": "PHY206",
+  "title": "Modern Physics I",
+  "level": "200",
+  "source_note": "Standard NUC-aligned Nigerian university 200L Modern Physics curriculum bridging classical and quantum physics: special relativity and early quantum theory (blackbody radiation, photoelectric effect, Compton effect, Bohr model, de Broglie hypothesis, uncertainty principle), kept conceptual/semi-quantitative ahead of the rigorous 300L Quantum Mechanics sequence.",
+  "questions": [
+    {
+      "question": "The first postulate of Einstein's special theory of relativity states that:",
+      "options": [
+        "The laws of physics are the same in all inertial reference frames",
+        "The speed of light depends on the motion of the observer",
+        "Time flows at the same rate for all observers regardless of motion",
+        "Mass is conserved independently of energy in all frames"
+      ],
+      "correct_answer": "The laws of physics are the same in all inertial reference frames",
+      "explanation": "This is the principle of relativity: no inertial frame is preferred, and physical laws take the same form in all of them.",
+      "topic": "Postulates of relativity",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The second postulate of special relativity states that:",
+      "options": [
+        "The speed of light in vacuum is the same for all observers, regardless of the motion of the source or observer",
+        "The speed of light varies depending on the observer's velocity relative to the source",
+        "Only mechanical laws are invariant between inertial frames",
+        "Light requires a medium (ether) to propagate"
+      ],
+      "correct_answer": "The speed of light in vacuum is the same for all observers, regardless of the motion of the source or observer",
+      "explanation": "This postulate, confirmed by the Michelson-Morley experiment, asserts the constancy of the speed of light in vacuum (c) for all inertial observers.",
+      "topic": "Postulates of relativity",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Time dilation refers to the phenomenon whereby:",
+      "options": [
+        "A moving clock, as observed from a stationary frame, appears to run slower than an identical clock at rest",
+        "All clocks everywhere run at identical rates regardless of relative motion",
+        "Time moves backward for objects travelling faster than light",
+        "Clocks run faster the faster they move, without limit"
+      ],
+      "correct_answer": "A moving clock, as observed from a stationary frame, appears to run slower than an identical clock at rest",
+      "explanation": "Time dilation is a direct consequence of special relativity: a clock moving relative to an observer is measured by that observer to tick more slowly than a clock at rest in their own frame.",
+      "topic": "Time dilation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The time dilation formula relating proper time Δt₀ and dilated time Δt for an object moving at speed v is:",
+      "options": [
+        "Δt = Δt₀ / √(1 − v²/c²)",
+        "Δt = Δt₀ × √(1 − v²/c²)",
+        "Δt = Δt₀ × (1 − v/c)",
+        "Δt = Δt₀ + v/c"
+      ],
+      "correct_answer": "Δt = Δt₀ / √(1 − v²/c²)",
+      "explanation": "The dilated time interval measured in a frame where the clock is moving is the proper time divided by the Lorentz factor √(1 − v²/c²), which is always less than 1, making Δt > Δt₀.",
+      "topic": "Time dilation",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A spaceship travels at 0.8c relative to Earth. Approximately what is the Lorentz factor γ for this speed?",
+      "options": ["1.67", "0.6", "1.25", "2.0"],
+      "correct_answer": "1.67",
+      "explanation": "γ = 1/√(1 − 0.8²) = 1/√(1 − 0.64) = 1/√0.36 = 1/0.6 ≈ 1.67.",
+      "topic": "Time dilation",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Length contraction refers to the phenomenon whereby:",
+      "options": [
+        "An object's length, measured along its direction of motion by an observer at rest, appears shorter than its proper (rest-frame) length",
+        "All objects shrink uniformly in every direction as speed increases",
+        "Length increases as an object's speed increases",
+        "Length contraction applies only to light itself, not to material objects"
+      ],
+      "correct_answer": "An object's length, measured along its direction of motion by an observer at rest, appears shorter than its proper (rest-frame) length",
+      "explanation": "Length contraction occurs only along the direction of relative motion; the contracted length L = L₀√(1 − v²/c²), where L₀ is the proper length measured in the object's own rest frame.",
+      "topic": "Length contraction",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A rod has a proper length of 10 m. When observed moving at a speed such that γ = 2, what is its measured (contracted) length?",
+      "options": ["5 m", "10 m", "20 m", "2.5 m"],
+      "correct_answer": "5 m",
+      "explanation": "L = L₀/γ = 10/2 = 5 m, since length contraction uses 1/γ = √(1 − v²/c²).",
+      "topic": "Length contraction",
+      "difficulty": "hard"
+    },
+    {
+      "question": "According to special relativity, the relativistic mass (or momentum) of an object increases as its speed approaches:",
+      "options": ["The speed of light, c", "Half the speed of light", "Zero", "It never changes regardless of speed"],
+      "correct_answer": "The speed of light, c",
+      "explanation": "The relativistic momentum p = γm₀v grows without bound as v approaches c because the Lorentz factor γ diverges, which is why no massive object can be accelerated to reach c.",
+      "topic": "Relativistic mass/momentum",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The relativistic momentum of a particle of rest mass m₀ moving at speed v is given by:",
+      "options": ["p = γm₀v = m₀v/√(1 − v₂/c²)", "p = m₀v (unchanged from classical mechanics)", "p = m₀c²/v", "p = m₀v²/c"],
+      "correct_answer": "p = γm₀v = m₀v/√(1 − v₂/c²)",
+      "explanation": "Relativistic momentum modifies the classical formula by the Lorentz factor γ, ensuring momentum conservation holds in all inertial frames at relativistic speeds.",
+      "topic": "Relativistic mass/momentum",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Einstein's mass-energy equivalence relation is expressed as:",
+      "options": ["E = mc²", "E = mc", "E = m²c", "E = mc³"],
+      "correct_answer": "E = mc²",
+      "explanation": "This famous relation shows that mass and energy are equivalent and interconvertible, with c² (the speed of light squared) as the conversion factor.",
+      "topic": "Mass-energy equivalence",
+      "difficulty": "easy"
+    },
+    {
+      "question": "According to E = mc², if 1 gram of mass were completely converted into energy, approximately how much energy (in joules) would be released? (c ≈ 3 × 10⁸ m/s)",
+      "options": ["9 × 10¹³ J", "9 × 10⁸ J", "3 × 10⁸ J", "9 × 10⁶ J"],
+      "correct_answer": "9 × 10¹³ J",
+      "explanation": "E = mc² = (1×10⁻³ kg)(3×10⁸ m/s)² = 1×10⁻³ × 9×10¹⁶ = 9×10¹³ J.",
+      "topic": "Mass-energy equivalence",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In nuclear reactions such as fission and fusion, the immense energy released is a direct consequence of:",
+      "options": [
+        "A small amount of mass being converted into energy according to E = mc²",
+        "Chemical bonds being broken and reformed",
+        "Frictional heating within the reactor",
+        "Simple kinetic energy transfer with no mass change"
+      ],
+      "correct_answer": "A small amount of mass being converted into energy according to E = mc²",
+      "explanation": "The mass of the products in fission or fusion is slightly less than that of the reactants; this mass defect is converted into a large amount of energy via E = mc².",
+      "topic": "Mass-energy equivalence",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the relativistic (Einstein) velocity addition formula for two velocities u and v along the same direction, the combined velocity w is:",
+      "options": ["w = (u + v)/(1 + uv/c²)", "w = u + v", "w = uv/c²", "w = (u + v)/2"],
+      "correct_answer": "w = (u + v)/(1 + uv/c²)",
+      "explanation": "Unlike classical (Galilean) velocity addition, the relativistic formula ensures that the combined velocity never exceeds c even when both u and v are close to c.",
+      "topic": "Relativistic velocity addition",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A spaceship moving at 0.5c relative to Earth fires a probe forward at 0.5c relative to itself. What is the probe's speed relative to Earth, according to relativistic velocity addition?",
+      "options": ["0.8c", "1.0c", "0.5c", "0.25c"],
+      "correct_answer": "0.8c",
+      "explanation": "w = (0.5c + 0.5c)/(1 + (0.5c)(0.5c)/c²) = 1.0c/(1 + 0.25) = 1.0c/1.25 = 0.8c, illustrating that speeds never simply add to exceed c.",
+      "topic": "Relativistic velocity addition",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Classical (Newtonian) physics failed to correctly predict the spectrum of blackbody radiation, a discrepancy famously known as:",
+      "options": ["The ultraviolet catastrophe", "The photoelectric paradox", "The Compton problem", "The correspondence failure"],
+      "correct_answer": "The ultraviolet catastrophe",
+      "explanation": "Classical theory (Rayleigh-Jeans law) predicted that radiated energy would increase without bound at short (ultraviolet) wavelengths, contradicting experimental observation, a failure termed the ultraviolet catastrophe.",
+      "topic": "Blackbody radiation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Planck resolved the blackbody radiation problem by proposing that:",
+      "options": [
+        "Energy is emitted or absorbed by oscillators only in discrete packets (quanta), E = nhν",
+        "Light behaves purely as a continuous wave with no restriction on energy",
+        "All electromagnetic radiation has the same energy regardless of frequency",
+        "Blackbody radiation does not depend on temperature"
+      ],
+      "correct_answer": "Energy is emitted or absorbed by oscillators only in discrete packets (quanta), E = nhν",
+      "explanation": "Planck's quantum hypothesis proposed that oscillators in a blackbody can only emit or absorb energy in discrete multiples of hν, which successfully matched the observed radiation spectrum.",
+      "topic": "Blackbody radiation and Planck's hypothesis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In Planck's quantum hypothesis, the energy of a single quantum of radiation is given by:",
+      "options": ["E = hν", "E = h/ν", "E = hλ", "E = ν/h"],
+      "correct_answer": "E = hν",
+      "explanation": "Here h is Planck's constant and ν is the frequency of the radiation; this simple but revolutionary relation underlies all of quantum theory.",
+      "topic": "Blackbody radiation and Planck's hypothesis",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The photoelectric effect refers to the phenomenon in which:",
+      "options": [
+        "Electrons are ejected from a metal surface when light of sufficiently high frequency shines on it",
+        "Light is completely absorbed by any metal regardless of frequency",
+        "Electrons are ejected from a metal only when very intense low-frequency light is used",
+        "A metal surface emits light when heated"
+      ],
+      "correct_answer": "Electrons are ejected from a metal surface when light of sufficiently high frequency shines on it",
+      "explanation": "The photoelectric effect is the emission of electrons from a material surface upon absorption of electromagnetic radiation above a threshold frequency.",
+      "topic": "Photoelectric effect",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Classical wave theory failed to explain the photoelectric effect because it predicted that:",
+      "options": [
+        "Increasing light intensity alone (at any frequency) should eventually eject electrons, and there should be no threshold frequency",
+        "Only high-intensity red light could ever eject electrons",
+        "Electron ejection should occur instantaneously regardless of frequency, which matched experiment",
+        "No electrons could ever be ejected by light"
+      ],
+      "correct_answer": "Increasing light intensity alone (at any frequency) should eventually eject electrons, and there should be no threshold frequency",
+      "explanation": "Classically, energy should accumulate over time regardless of frequency, so any frequency of sufficiently intense or prolonged light should eject electrons — contrary to the sharp threshold frequency actually observed.",
+      "topic": "Photoelectric effect",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Einstein explained the photoelectric effect by proposing that:",
+      "options": [
+        "Light consists of discrete photons, each of energy hν, and an electron absorbs a single photon's energy at a time",
+        "Light is purely a continuous wave that gradually transfers energy to electrons",
+        "Electrons themselves carry quantized charge that determines emission",
+        "The metal surface vibrates at the frequency of incoming light"
+      ],
+      "correct_answer": "Light consists of discrete photons, each of energy hν, and an electron absorbs a single photon's energy at a time",
+      "explanation": "Einstein extended Planck's quantum idea to light itself, proposing that light is quantized into photons; an electron is ejected only if a single photon's energy exceeds the metal's work function.",
+      "topic": "Photoelectric effect",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Einstein's photoelectric equation relating the maximum kinetic energy KE_max of emitted electrons to the photon energy hν and the work function φ is:",
+      "options": ["KE_max = hν − φ", "KE_max = hν + φ", "KE_max = φ/hν", "KE_max = hν × φ"],
+      "correct_answer": "KE_max = hν − φ",
+      "explanation": "The maximum kinetic energy of an ejected photoelectron equals the incident photon's energy minus the work function (the minimum energy needed to free an electron from the metal).",
+      "topic": "Photoelectric effect",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The work function of a metal is 2.0 eV. If light of photon energy 3.5 eV strikes the metal, what is the maximum kinetic energy of the emitted photoelectrons?",
+      "options": ["1.5 eV", "5.5 eV", "2.0 eV", "3.5 eV"],
+      "correct_answer": "1.5 eV",
+      "explanation": "KE_max = hν − φ = 3.5 eV − 2.0 eV = 1.5 eV.",
+      "topic": "Photoelectric effect",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the photoelectric effect, if the frequency of incident light is below the metal's threshold frequency, then:",
+      "options": [
+        "No electrons are emitted, no matter how intense the light is",
+        "Electrons are still emitted but with reduced kinetic energy",
+        "Electrons are emitted only if the light is extremely intense",
+        "The metal begins to melt instead of emitting electrons"
+      ],
+      "correct_answer": "No electrons are emitted, no matter how intense the light is",
+      "explanation": "Below the threshold frequency, each photon carries insufficient energy to overcome the work function, so no electrons are emitted regardless of the light's intensity, a key quantum prediction confirmed experimentally.",
+      "topic": "Photoelectric effect",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Compton effect refers to:",
+      "options": [
+        "The increase in wavelength of X-rays (or gamma rays) scattered by a loosely bound electron, compared to the incident wavelength",
+        "The ejection of electrons from a metal by visible light",
+        "The emission of continuous radiation from a heated blackbody",
+        "The bending of light around a massive object"
+      ],
+      "correct_answer": "The increase in wavelength of X-rays (or gamma rays) scattered by a loosely bound electron, compared to the incident wavelength",
+      "explanation": "Compton scattering demonstrates the particle nature of photons: a photon transfers some of its energy and momentum to a free (or loosely bound) electron, resulting in a scattered photon of longer wavelength (lower energy).",
+      "topic": "Compton effect",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Compton effect provided strong evidence for which property of electromagnetic radiation?",
+      "options": [
+        "That photons possess both energy and momentum, behaving as particles in collisions",
+        "That light is purely a wave with no particle-like behaviour",
+        "That electrons have no mass",
+        "That the speed of light varies with photon energy"
+      ],
+      "correct_answer": "That photons possess both energy and momentum, behaving as particles in collisions",
+      "explanation": "By treating the photon-electron interaction as an elastic collision conserving both energy and momentum, Compton's analysis confirmed that photons carry momentum p = h/λ, reinforcing the particle nature of light.",
+      "topic": "Compton effect",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Compton shift formula for the change in wavelength Δλ when a photon scatters off an electron through angle θ is:",
+      "options": [
+        "Δλ = (h/m_ec)(1 − cosθ)",
+        "Δλ = (h/m_ec)(1 + cosθ)",
+        "Δλ = (m_ec/h)(1 − cosθ)",
+        "Δλ = hν(1 − cosθ)"
+      ],
+      "correct_answer": "Δλ = (h/m_ec)(1 − cosθ)",
+      "explanation": "This is the Compton scattering formula, where h/(m_ec) is the Compton wavelength of the electron (≈ 2.43 × 10⁻¹² m), and θ is the scattering angle of the photon.",
+      "topic": "Compton effect",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The Bohr model of the hydrogen atom postulates that electrons orbit the nucleus in:",
+      "options": [
+        "Certain allowed (quantized) circular orbits without radiating energy",
+        "Any arbitrary orbit, continuously radiating energy as they move",
+        "Elliptical orbits identical to planetary motion with no quantization",
+        "A fixed single orbit regardless of the atom's energy state"
+      ],
+      "correct_answer": "Certain allowed (quantized) circular orbits without radiating energy",
+      "explanation": "Bohr postulated that electrons occupy specific stationary states (quantized orbits) in which they do not radiate energy, resolving the classical problem of electrons spiralling into the nucleus.",
+      "topic": "Bohr model",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the Bohr model, an electron emits a photon of radiation when it:",
+      "options": [
+        "Transitions from a higher energy orbit to a lower energy orbit",
+        "Remains in the same stationary orbit indefinitely",
+        "Transitions from a lower energy orbit to a higher energy orbit",
+        "Moves in a straight line away from the nucleus"
+      ],
+      "correct_answer": "Transitions from a higher energy orbit to a lower energy orbit",
+      "explanation": "A photon is emitted, with energy equal to the energy difference between the two orbits, when an electron drops from a higher to a lower allowed energy level.",
+      "topic": "Bohr model",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Bohr's quantization condition states that the angular momentum of an electron in an allowed orbit is an integer multiple of:",
+      "options": ["h/2π (i.e., ħ)", "h (Planck's constant itself)", "2πh", "h²"],
+      "correct_answer": "h/2π (i.e., ħ)",
+      "explanation": "Bohr postulated that angular momentum L = nħ = nh/2π, where n is a positive integer (the principal quantum number), restricting electrons to specific discrete orbits.",
+      "topic": "Bohr model",
+      "difficulty": "hard"
+    },
+    {
+      "question": "According to the Bohr model, the energy of the hydrogen atom in its n-th orbit is given by E_n = −13.6/n² eV. What is the energy of the ground state (n = 1)?",
+      "options": ["−13.6 eV", "−6.8 eV", "0 eV", "13.6 eV"],
+      "correct_answer": "−13.6 eV",
+      "explanation": "Substituting n = 1 gives E₁ = −13.6/1² = −13.6 eV, the ground-state (lowest, most tightly bound) energy of the hydrogen atom.",
+      "topic": "Bohr model",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The discrete line spectra observed in hydrogen (e.g. the Balmer, Lyman, and Paschen series) are explained by the Bohr model as arising from:",
+      "options": [
+        "Electron transitions between specific quantized energy levels, each transition emitting a photon of a specific wavelength",
+        "Continuous energy loss as electrons spiral inward towards the nucleus",
+        "Random thermal vibrations of the hydrogen nucleus",
+        "The Doppler effect due to atomic motion alone"
+      ],
+      "correct_answer": "Electron transitions between specific quantized energy levels, each transition emitting a photon of a specific wavelength",
+      "explanation": "Each spectral line corresponds to a specific electron transition between two quantized energy levels, and since the allowed energies are discrete, only certain photon wavelengths (frequencies) are emitted or absorbed.",
+      "topic": "Atomic spectra",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Lyman series in the hydrogen spectrum corresponds to electron transitions that end at which energy level?",
+      "options": ["n = 1", "n = 2", "n = 3", "n = infinity"],
+      "correct_answer": "n = 1",
+      "explanation": "The Lyman series consists of transitions from higher energy levels down to the ground state (n = 1), producing spectral lines in the ultraviolet region.",
+      "topic": "Atomic spectra",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The de Broglie hypothesis proposes that:",
+      "options": [
+        "Every moving particle has an associated wavelength given by λ = h/p",
+        "Only photons have wave properties; matter particles are purely particle-like",
+        "Wavelength is independent of a particle's momentum",
+        "Large macroscopic objects show strong, easily observable wave behaviour"
+      ],
+      "correct_answer": "Every moving particle has an associated wavelength given by λ = h/p",
+      "explanation": "De Broglie extended wave-particle duality to matter, proposing that any particle with momentum p has an associated wavelength λ = h/p, later confirmed experimentally (e.g. electron diffraction).",
+      "topic": "De Broglie wave-particle duality",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which experiment provided direct experimental confirmation of the de Broglie hypothesis for electrons?",
+      "options": ["The Davisson-Germer electron diffraction experiment", "The Michelson-Morley experiment", "Millikan's oil-drop experiment", "Rutherford's gold foil scattering experiment"],
+      "correct_answer": "The Davisson-Germer electron diffraction experiment",
+      "explanation": "Davisson and Germer observed diffraction patterns of electrons scattered from a nickel crystal, confirming that electrons exhibit wave-like behaviour consistent with de Broglie's predicted wavelength.",
+      "topic": "De Broglie wave-particle duality",
+      "difficulty": "medium"
+    },
+    {
+      "question": "An electron of momentum p = 2 × 10⁻²⁴ kg·m/s has a de Broglie wavelength of approximately (h ≈ 6.63 × 10⁻³⁴ J·s):",
+      "options": ["3.3 × 10⁻¹⁰ m", "3.3 × 10⁻²⁴ m", "1.3 × 10⁻⁵⁹ m", "6.63 × 10⁻³⁴ m"],
+      "correct_answer": "3.3 × 10⁻¹⁰ m",
+      "explanation": "λ = h/p = (6.63×10⁻³⁴)/(2×10⁻²⁴) ≈ 3.3×10⁻¹⁰ m, on the order of atomic dimensions.",
+      "topic": "De Broglie wave-particle duality",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Wave-particle duality refers to the concept that:",
+      "options": [
+        "Entities such as photons and electrons exhibit both wave-like and particle-like properties depending on the experiment",
+        "All particles are purely waves with no particle characteristics whatsoever",
+        "Waves and particles are entirely unrelated concepts in quantum theory",
+        "Only large macroscopic objects show dual wave-particle behaviour"
+      ],
+      "correct_answer": "Entities such as photons and electrons exhibit both wave-like and particle-like properties depending on the experiment",
+      "explanation": "Quantum entities display wave-like behaviour (e.g. interference, diffraction) in some experiments and particle-like behaviour (e.g. discrete collisions, localized detection) in others, and neither picture alone is complete.",
+      "topic": "De Broglie wave-particle duality",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Heisenberg uncertainty principle states that:",
+      "options": [
+        "It is fundamentally impossible to simultaneously know both the exact position and exact momentum of a particle with arbitrary precision",
+        "Position and momentum can both be measured with unlimited precision simultaneously if instruments are good enough",
+        "Only energy and time are subject to any uncertainty relation",
+        "Uncertainty arises purely from limitations of measuring instruments, not from nature itself"
+      ],
+      "correct_answer": "It is fundamentally impossible to simultaneously know both the exact position and exact momentum of a particle with arbitrary precision",
+      "explanation": "The uncertainty principle is a fundamental feature of quantum mechanics, not merely an experimental limitation — the product of the uncertainties in position and momentum has an inherent lower bound.",
+      "topic": "Heisenberg uncertainty principle",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Heisenberg uncertainty relation for position (Δx) and momentum (Δp) is commonly expressed as:",
+      "options": ["Δx · Δp ≥ ħ/2", "Δx · Δp = 0", "Δx + Δp ≥ h", "Δx / Δp ≥ h"],
+      "correct_answer": "Δx · Δp ≥ ħ/2",
+      "explanation": "This is the standard form of the position-momentum uncertainty relation, where ħ = h/2π, showing that the product of the uncertainties has a minimum non-zero value.",
+      "topic": "Heisenberg uncertainty principle",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A conceptual consequence of the Heisenberg uncertainty principle is that:",
+      "options": [
+        "The classical idea of a particle following a precisely defined trajectory (exact position and momentum simultaneously) breaks down at the quantum scale",
+        "Macroscopic objects like cars and footballs show easily observable positional uncertainty in everyday life",
+        "Energy can be created or destroyed without any physical consequence",
+        "Only photons, and no other particles, are subject to the uncertainty principle"
+      ],
+      "correct_answer": "The classical idea of a particle following a precisely defined trajectory (exact position and momentum simultaneously) breaks down at the quantum scale",
+      "explanation": "Because Δx and Δp cannot both be arbitrarily small, quantum particles cannot be assigned a definite classical trajectory the way macroscopic objects can, though the effect is negligible for everyday-sized objects due to the smallness of ħ.",
+      "topic": "Heisenberg uncertainty principle",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which of the following pairs of observables also obeys an uncertainty relation analogous to position and momentum?",
+      "options": ["Energy and time", "Charge and mass", "Volume and pressure at constant temperature", "Velocity and acceleration"],
+      "correct_answer": "Energy and time",
+      "explanation": "An analogous uncertainty relation, ΔE·Δt ≥ ħ/2, links energy and time, meaning a state that exists for only a short time has a correspondingly large uncertainty in its energy.",
+      "topic": "Heisenberg uncertainty principle",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Which of these observations from classical physics's failures directly motivated the birth of quantum theory (as opposed to relativity)?",
+      "options": ["The inability of classical physics to explain the blackbody radiation spectrum and the photoelectric effect", "The null result of the Michelson-Morley experiment", "The precession of the perihelion of Mercury", "The constancy of the speed of light in all inertial frames"],
+      "correct_answer": "The inability of classical physics to explain the blackbody radiation spectrum and the photoelectric effect",
+      "explanation": "The blackbody radiation problem and the photoelectric effect were key experimental puzzles that classical physics could not explain, directly motivating Planck's and Einstein's quantum hypotheses; the other options relate to the historical motivation for relativity, not quantum theory.",
+      "topic": "Failure of classical physics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "At speeds much smaller than the speed of light (v << c), the relativistic formulas for time dilation, length contraction, and momentum reduce to:",
+      "options": ["The familiar classical (Newtonian) expressions", "Formulas identical to the photoelectric equation", "Zero for all quantities", "Formulas that diverge to infinity"],
+      "correct_answer": "The familiar classical (Newtonian) expressions",
+      "explanation": "This is the correspondence principle: relativistic mechanics reduces to Newtonian mechanics in the low-speed limit, since the Lorentz factor γ approaches 1 as v/c approaches 0.",
+      "topic": "Postulates of relativity",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Two events that are simultaneous in one inertial reference frame are, in general:",
+      "options": [
+        "Not simultaneous when observed from a different inertial frame moving relative to the first",
+        "Always simultaneous in every other inertial frame as well",
+        "Impossible to compare between different reference frames",
+        "Only non-simultaneous if the events occur at the same spatial location"
+      ],
+      "correct_answer": "Not simultaneous when observed from a different inertial frame moving relative to the first",
+      "explanation": "The relativity of simultaneity is a key consequence of special relativity: whether two spatially separated events are simultaneous depends on the observer's reference frame.",
+      "topic": "Postulates of relativity",
+      "difficulty": "hard"
+    }
+  ]
+}

@@ -1,0 +1,385 @@
+{
+  "course_code": "SLT204",
+  "title": "Physics Laboratory Technology",
+  "level": "200",
+  "source_note": "Grounded in standard NUC-aligned physics laboratory technology curricula: measurement and error analysis, mechanics, heat, optics, and electricity practicals typical of a 200-level Science Laboratory Technology programme.",
+  "questions": [
+    {
+      "question": "A vernier caliper has a main scale reading of 2.30 cm and a vernier scale that coincides at the 4th division, with a least count of 0.01 cm. What is the total reading?",
+      "options": ["2.34 cm", "2.30 cm", "2.40 cm", "2.304 cm"],
+      "correct_answer": "2.34 cm",
+      "explanation": "The total reading is the main scale reading plus (vernier coincidence x least count): 2.30 + (4 x 0.01) = 2.34 cm.",
+      "topic": "Measurement instruments",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the least count of a standard micrometer screw gauge with a pitch of 0.5 mm and 50 divisions on the circular scale?",
+      "options": ["0.01 mm", "0.05 mm", "0.1 mm", "0.001 mm"],
+      "correct_answer": "0.01 mm",
+      "explanation": "Least count = pitch / number of divisions on circular scale = 0.5 mm / 50 = 0.01 mm.",
+      "topic": "Measurement instruments",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Zero error in a micrometer screw gauge occurs when:",
+      "options": [
+        "The zero of the circular scale does not coincide with the reference line when the jaws are closed",
+        "The instrument has been dropped",
+        "The pitch is incorrectly manufactured",
+        "The object being measured is too small"
+      ],
+      "correct_answer": "The zero of the circular scale does not coincide with the reference line when the jaws are closed",
+      "explanation": "Zero error is a systematic error where the closed-jaw reading is not exactly zero, requiring a correction to be applied to all readings.",
+      "topic": "Measurement and errors",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In the equation for the simple pendulum, T = 2π√(l/g), what does the term 'l' represent in a lab experiment?",
+      "options": [
+        "The effective length from the point of suspension to the centre of the bob",
+        "The diameter of the bob",
+        "The length of the retort stand",
+        "The amplitude of oscillation"
+      ],
+      "correct_answer": "The effective length from the point of suspension to the centre of the bob",
+      "explanation": "The effective length is measured from the fixed support to the centre of mass of the bob, as this is the radius of the circular arc the bob traces.",
+      "topic": "Mechanics practicals",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A student times 20 oscillations of a simple pendulum and records 40.0 s. What is the period of one oscillation?",
+      "options": ["2.0 s", "0.5 s", "20.0 s", "40.0 s"],
+      "correct_answer": "2.0 s",
+      "explanation": "Period T = total time / number of oscillations = 40.0 s / 20 = 2.0 s.",
+      "topic": "Mechanics practicals",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Why is it standard practice to time multiple oscillations rather than a single oscillation when determining the period of a pendulum?",
+      "options": [
+        "To reduce the percentage error caused by human reaction time in starting/stopping the stopwatch",
+        "Because a single oscillation cannot be observed",
+        "To make the pendulum swing faster",
+        "Because the pendulum bob changes mass over time"
+      ],
+      "correct_answer": "To reduce the percentage error caused by human reaction time in starting/stopping the stopwatch",
+      "explanation": "Averaging over many oscillations spreads the fixed timing (reaction) error over a longer interval, reducing its relative contribution to the measured period.",
+      "topic": "Measurement and errors",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a Hooke's law experiment, a spring extends by 4.0 cm when a load of 2.0 N is applied. What is the spring constant k?",
+      "options": ["50 N/m", "0.5 N/m", "8 N/m", "500 N/m"],
+      "correct_answer": "50 N/m",
+      "explanation": "k = F/x = 2.0 N / 0.04 m = 50 N/m.",
+      "topic": "Mechanics practicals",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the Hooke's law experiment, why must the applied load remain within the elastic limit of the spring?",
+      "options": [
+        "Beyond the elastic limit the spring is permanently deformed and no longer obeys F = kx",
+        "Beyond the elastic limit the spring becomes heavier",
+        "It has no effect on the results",
+        "The spring changes colour beyond the elastic limit"
+      ],
+      "correct_answer": "Beyond the elastic limit the spring is permanently deformed and no longer obeys F = kx",
+      "explanation": "Hooke's law only holds for elastic deformation; exceeding the elastic limit causes plastic deformation and non-linear, non-recoverable extension.",
+      "topic": "Mechanics practicals",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which apparatus is used to determine the density of an irregularly shaped solid that sinks in water?",
+      "options": [
+        "A eureka (displacement) can and a measuring cylinder",
+        "A micrometer screw gauge only",
+        "A spring balance only",
+        "A thermometer"
+      ],
+      "correct_answer": "A eureka (displacement) can and a measuring cylinder",
+      "explanation": "The volume of an irregular solid is found by measuring the volume of water it displaces, then density is mass divided by that volume.",
+      "topic": "Mechanics practicals",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In calorimetry, the method of mixtures is based on which principle?",
+      "options": [
+        "Heat lost by the hotter body equals heat gained by the colder body (assuming no heat loss to surroundings)",
+        "Heat always increases the volume of a liquid",
+        "Specific heat capacity is constant for all substances",
+        "Temperature is directly proportional to mass"
+      ],
+      "correct_answer": "Heat lost by the hotter body equals heat gained by the colder body (assuming no heat loss to surroundings)",
+      "explanation": "The method of mixtures applies conservation of energy: in an insulated system, heat energy lost by the hot substance is gained by the cold substance and the calorimeter.",
+      "topic": "Heat and calorimetry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A calorimeter of negligible heat capacity contains 100 g of water at 20°C. 50 g of metal at 100°C is added and the final temperature is 25°C. Using specific heat capacity of water = 4.2 J/g°C, what is the heat gained by the water?",
+      "options": ["2100 J", "420 J", "2500 J", "8400 J"],
+      "correct_answer": "2100 J",
+      "explanation": "Q = mcΔT = 100 g x 4.2 J/g°C x (25-20)°C = 100 x 4.2 x 5 = 2100 J.",
+      "topic": "Heat and calorimetry",
+      "difficulty": "hard"
+    },
+    {
+      "question": "What is the main purpose of stirring the water in a calorimeter during a specific heat capacity experiment?",
+      "options": [
+        "To ensure a uniform temperature distribution throughout the liquid before taking readings",
+        "To cool the water rapidly",
+        "To increase the mass of water",
+        "To dissolve the calorimeter"
+      ],
+      "correct_answer": "To ensure a uniform temperature distribution throughout the liquid before taking readings",
+      "explanation": "Stirring prevents localized hot or cold spots, so the thermometer reading reflects the true average temperature of the system.",
+      "topic": "Heat and calorimetry",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Why is a lagged (insulated) calorimeter preferred over a bare metal container in heat experiments?",
+      "options": [
+        "It minimizes heat exchange with the surroundings, reducing experimental error",
+        "It makes the calorimeter lighter",
+        "It increases the specific heat capacity of the water",
+        "It is required for legal safety reasons only"
+      ],
+      "correct_answer": "It minimizes heat exchange with the surroundings, reducing experimental error",
+      "explanation": "Lagging reduces heat loss/gain to the environment during the experiment, improving the accuracy of the measured heat energy transfer.",
+      "topic": "Heat and calorimetry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In determining the refractive index of a glass block using the real-and-apparent depth method, what quantity is measured?",
+      "options": [
+        "Real depth and apparent depth of an object viewed through the glass block",
+        "The mass and volume of the glass block",
+        "The angle of the glass block's edges only",
+        "The temperature of the glass block"
+      ],
+      "correct_answer": "Real depth and apparent depth of an object viewed through the glass block",
+      "explanation": "Refractive index n = real depth / apparent depth, found by comparing the true thickness of the block to its apparent thickness when viewed from above.",
+      "topic": "Optics practicals",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the glass block refraction experiment using pins, why must the eye be positioned so that the two viewing pins appear to be in a straight line with the two pins on the other side of the block?",
+      "options": [
+        "To ensure the line of sight accurately traces the path of the refracted ray",
+        "To prevent the pins from falling over",
+        "To measure the mass of the glass block",
+        "It has no bearing on accuracy"
+      ],
+      "correct_answer": "To ensure the line of sight accurately traces the path of the refracted ray",
+      "explanation": "Collinearity of the pins as viewed by the eye confirms the observer is sighting exactly along the emergent ray, which is essential for accurately marking the ray path.",
+      "topic": "Optics practicals",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which formula is used to determine the focal length of a convex lens using the 'no-parallax' method with an illuminated object and a pin?",
+      "options": ["1/f = 1/v + 1/u", "f = u x v", "f = u + v", "f = u/v"],
+      "correct_answer": "1/f = 1/v + 1/u",
+      "explanation": "The thin lens formula relates focal length f to object distance u and image distance v as 1/f = 1/v + 1/u for a real image.",
+      "topic": "Optics practicals",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A convex lens forms a sharp image on a screen when the object is 30 cm away and the image distance is 15 cm. What is the focal length of the lens?",
+      "options": ["10 cm", "45 cm", "15 cm", "22.5 cm"],
+      "correct_answer": "10 cm",
+      "explanation": "1/f = 1/u + 1/v = 1/30 + 1/15 = 1/30 + 2/30 = 3/30 = 1/10, so f = 10 cm.",
+      "topic": "Optics practicals",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In a spectrometer experiment to determine the refractive index of a prism material, which two angles must be measured?",
+      "options": [
+        "The angle of the prism and the angle of minimum deviation",
+        "The angle of incidence and the height of the prism",
+        "Only the angle of the prism",
+        "The angle between the two lenses of the spectrometer"
+      ],
+      "correct_answer": "The angle of the prism and the angle of minimum deviation",
+      "explanation": "Refractive index is calculated from n = sin[(A+D)/2] / sin(A/2), where A is the prism angle and D is the angle of minimum deviation.",
+      "topic": "Optics practicals",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Before taking readings, a spectrometer must be adjusted so that the telescope and collimator are both set to receive:",
+      "options": ["Parallel rays", "Converging rays", "Diverging rays", "Polarized rays"],
+      "correct_answer": "Parallel rays",
+      "explanation": "The collimator produces a parallel beam from the slit, and the telescope must be focused for parallel rays so both are correctly adjusted for infinity.",
+      "topic": "Optics practicals",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a resistivity/Ohm's law experiment, what is the purpose of a rheostat connected in the circuit?",
+      "options": [
+        "To vary the current flowing through the circuit for a range of readings",
+        "To measure the voltage directly",
+        "To permanently fix the current at one value",
+        "To store electrical charge"
+      ],
+      "correct_answer": "To vary the current flowing through the circuit for a range of readings",
+      "explanation": "A rheostat is a variable resistor used to adjust current, allowing the student to obtain multiple voltage-current data points for plotting a graph.",
+      "topic": "Electricity practicals",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In a Wheatstone bridge experiment, the bridge is said to be balanced when:",
+      "options": [
+        "No current flows through the galvanometer",
+        "The current through the galvanometer is at its maximum",
+        "All four resistors have equal resistance",
+        "The battery is fully discharged"
+      ],
+      "correct_answer": "No current flows through the galvanometer",
+      "explanation": "At balance, the potential at the junction between the two arms is equal on both sides, so no current flows through the galvanometer bridging them.",
+      "topic": "Electricity practicals",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a metre bridge (a practical form of the Wheatstone bridge) experiment, the balance point is found at 40 cm from one end with a known resistance of 6 Ω in that gap. What is the unknown resistance?",
+      "options": ["9 Ω", "4 Ω", "2.4 Ω", "6.67 Ω"],
+      "correct_answer": "9 Ω",
+      "explanation": "Using R_unknown/R_known = (100-l)/l = 60/40, R_unknown = 6 x 60/40 = 9 Ω.",
+      "topic": "Electricity practicals",
+      "difficulty": "hard"
+    },
+    {
+      "question": "What is the primary function of a potentiometer in determining the EMF of a cell?",
+      "options": [
+        "To compare an unknown EMF against a known EMF using a null (zero-current) deflection method",
+        "To directly convert EMF into heat",
+        "To amplify the EMF of the cell",
+        "To measure the mass of the cell"
+      ],
+      "correct_answer": "To compare an unknown EMF against a known EMF using a null (zero-current) deflection method",
+      "explanation": "A potentiometer measures EMF without drawing current from the cell at the balance point, giving a more accurate measurement than a voltmeter, which draws some current.",
+      "topic": "Electricity practicals",
+      "difficulty": "medium"
+    },
+    {
+      "question": "An analogue multimeter set to measure DC voltage must be connected in the circuit:",
+      "options": ["In parallel with the component", "In series with the component", "Directly across the battery terminals only", "In series with the ammeter"],
+      "correct_answer": "In parallel with the component",
+      "explanation": "A voltmeter (or multimeter set to voltage mode) has high internal resistance and is connected in parallel so it measures potential difference without significantly altering circuit current.",
+      "topic": "Electricity practicals",
+      "difficulty": "easy"
+    },
+    {
+      "question": "An ammeter must be connected in a circuit:",
+      "options": ["In series with the component", "In parallel with the component", "Directly across the cell only", "Never connected to a closed circuit"],
+      "correct_answer": "In series with the component",
+      "explanation": "An ammeter has very low internal resistance and is placed in series so the full circuit current flows through it for accurate measurement.",
+      "topic": "Electricity practicals",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which of the following is a systematic error, as opposed to a random error?",
+      "options": [
+        "A zero error in a measuring instrument that is not corrected for",
+        "Slight variation in reaction time when using a stopwatch",
+        "Parallax error that varies from reading to reading",
+        "Fluctuation in room temperature during readings"
+      ],
+      "correct_answer": "A zero error in a measuring instrument that is not corrected for",
+      "explanation": "Systematic errors consistently bias every reading in the same direction (e.g. an uncorrected zero error), unlike random errors which vary unpredictably.",
+      "topic": "Measurement and errors",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What safety precaution is essential when handling a mercury-in-glass thermometer in the physics laboratory?",
+      "options": [
+        "Avoid dropping or breaking it, and report any breakage immediately due to mercury toxicity",
+        "Store it upside down at all times",
+        "Heat it rapidly to check calibration",
+        "Use it to stir chemical solutions"
+      ],
+      "correct_answer": "Avoid dropping or breaking it, and report any breakage immediately due to mercury toxicity",
+      "explanation": "Mercury is toxic and volatile; breakage requires careful containment and reporting to avoid exposure, so lab technicians must handle these thermometers with care.",
+      "topic": "Laboratory safety",
+      "difficulty": "easy"
+    },
+    {
+      "question": "When using a travelling microscope to measure small lengths, why should parallax error be checked before taking readings?",
+      "options": [
+        "Because misalignment between the crosswire and the object can cause a reading error that varies with the observer's eye position",
+        "Because it affects the colour of the object",
+        "Because it changes the object's actual size",
+        "Because the microscope cannot function without it"
+      ],
+      "correct_answer": "Because misalignment between the crosswire and the object can cause a reading error that varies with the observer's eye position",
+      "explanation": "Parallax occurs when the line of sight is not perpendicular to the scale, causing apparent shifts in reading; eliminating it ensures accurate length measurement.",
+      "topic": "Measurement instruments",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a simple electrical experiment measuring resistance, why should the current be kept low and switched off between readings?",
+      "options": [
+        "To prevent excessive heating of the resistor, which would change its resistance value",
+        "To make the ammeter needle move faster",
+        "To increase the EMF of the battery",
+        "Because low current damages the rheostat"
+      ],
+      "correct_answer": "To prevent excessive heating of the resistor, which would change its resistance value",
+      "explanation": "Resistance can vary with temperature; keeping current low and switching off between readings minimizes self-heating (Joule heating) that would distort results.",
+      "topic": "Laboratory safety",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In an experiment to verify Boyle's law using a Bourdon gauge apparatus, what two quantities are recorded at constant temperature?",
+      "options": [
+        "Pressure and volume of the trapped air column",
+        "Temperature and time",
+        "Mass and length of the tube",
+        "Current and voltage"
+      ],
+      "correct_answer": "Pressure and volume of the trapped air column",
+      "explanation": "Boyle's law experiments record pressure readings from the gauge against the corresponding volume (length) of trapped gas at constant temperature to show PV = constant.",
+      "topic": "Mechanics practicals",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the correct procedure for reading a scale to avoid parallax error when using a metre rule and a pointer?",
+      "options": [
+        "Position the eye directly perpendicular to the scale at the level of the pointer",
+        "Read the scale from an angle above the pointer",
+        "Read the scale as quickly as possible from any angle",
+        "Always read from the left side of the rule"
+      ],
+      "correct_answer": "Position the eye directly perpendicular to the scale at the level of the pointer",
+      "explanation": "Viewing perpendicular to the scale (line of sight normal to the ruler) at the pointer's level eliminates the apparent shift caused by parallax.",
+      "topic": "Measurement and errors",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A student records five readings for the period of a pendulum: 2.01 s, 2.05 s, 1.98 s, 2.02 s, 2.04 s. What best describes the type of error causing this spread?",
+      "options": ["Random error", "Systematic error", "Gross error only", "Instrumental zero error"],
+      "correct_answer": "Random error",
+      "explanation": "The small, unpredictable variation around a central value in repeated measurements is characteristic of random error, often reduced by averaging.",
+      "topic": "Measurement and errors",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Why should electrical circuits in the laboratory be checked by a demonstrator before switching on the power supply?",
+      "options": [
+        "To verify correct wiring and prevent short circuits or damage to components and injury to the student",
+        "To make the experiment take longer",
+        "Because it is required only for AC circuits",
+        "To reduce the resistance of the circuit"
+      ],
+      "correct_answer": "To verify correct wiring and prevent short circuits or damage to components and injury to the student",
+      "explanation": "Pre-checking wiring prevents short circuits, reversed polarity, or overloaded components, protecting both equipment and the student from electrical hazards.",
+      "topic": "Laboratory safety",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is the correct SI unit for measuring the extension of a spring in a Hooke's law experiment for use directly in F = kx (with k in N/m)?",
+      "options": ["Metre (m)", "Centimetre (cm)", "Millimetre (mm)", "Kilometre (km)"],
+      "correct_answer": "Metre (m)",
+      "explanation": "For the spring constant k to come out in the SI unit N/m, extension x must be converted to metres before substituting into F = kx.",
+      "topic": "Mechanics practicals",
+      "difficulty": "easy"
+    }
+  ]
+}

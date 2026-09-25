@@ -1,0 +1,256 @@
+{
+  "course_code": "SLT303",
+  "title": "Instrument Maintenance & Calibration",
+  "level": "300",
+  "source_note": "Standard NUC-aligned Science Laboratory Technology 300L curriculum: metrology fundamentals, calibration of common laboratory instruments (balances, pH meters, spectrophotometers, pipettes, thermometers, centrifuges), preventive maintenance, traceability, and calibration record-keeping.",
+  "questions": [
+    {
+      "question": "In metrology, what does 'traceability' of a measurement mean?",
+      "options": ["The measurement can be tracked by GPS", "The measurement result can be related to a national or international reference standard through an unbroken chain of comparisons", "The measurement was taken by a traceable analyst only", "The measurement cannot be repeated"],
+      "correct_answer": "The measurement result can be related to a national or international reference standard through an unbroken chain of comparisons",
+      "explanation": "Traceability means a measurement is linked, via a documented, unbroken chain of calibrations each with stated uncertainty, back to a recognized reference standard (e.g. SI units).",
+      "topic": "Metrology fundamentals",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the fundamental difference between 'calibration' and 'verification' of an instrument?",
+      "options": ["They are exactly the same procedure", "Calibration establishes the relationship between the instrument's readings and a reference standard, while verification confirms the instrument still meets specified performance criteria", "Verification always changes the instrument's internal settings", "Calibration is only done once in an instrument's lifetime"],
+      "correct_answer": "Calibration establishes the relationship between the instrument's readings and a reference standard, while verification confirms the instrument still meets specified performance criteria",
+      "explanation": "Calibration compares/adjusts an instrument against a reference to establish its accuracy relationship; verification is a check confirming the instrument continues to perform within acceptable limits, without necessarily adjusting it.",
+      "topic": "Metrology fundamentals",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Analytical balance calibration weights are classified into accuracy classes (e.g. E1, E2, F1, F2, M1). Which class has the tightest (smallest) tolerance?",
+      "options": ["E1", "F1", "F2", "M1"],
+      "correct_answer": "E1",
+      "explanation": "OIML weight classes run from E1 (highest accuracy, smallest tolerance) through E2, F1, F2, M1, M2, M3 (progressively looser tolerances); E1 weights are used to calibrate the most precise balances.",
+      "topic": "Balance calibration",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Before routine use each day, an analytical balance is typically checked using:",
+      "options": ["A certified reference check weight close to the expected working range", "Only a visual inspection with no weight check", "A random household object", "The balance's maximum capacity weight only"],
+      "correct_answer": "A certified reference check weight close to the expected working range",
+      "explanation": "A daily check weight near the routine working range confirms the balance reads correctly within its normal operating range before use.",
+      "topic": "Balance calibration",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What does it mean if an analytical balance shows a consistent offset (bias) of +0.002 g across all reference weights tested?",
+      "options": ["The balance is perfectly calibrated", "The balance has a systematic error that should be corrected/adjusted or the balance serviced", "The balance should be discarded immediately with no further action", "The reference weights are always wrong"],
+      "correct_answer": "The balance has a systematic error that should be corrected/adjusted or the balance serviced",
+      "explanation": "A consistent offset across multiple reference weights indicates systematic bias, which should trigger adjustment/calibration or servicing rather than being ignored.",
+      "topic": "Balance calibration",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A pH meter should be calibrated using how many buffer solutions at minimum for a reliable two-point calibration bracketing typical sample pH?",
+      "options": ["One buffer only", "Two buffer solutions that bracket the expected sample pH range", "Five buffer solutions always", "No buffer is needed if the electrode is new"],
+      "correct_answer": "Two buffer solutions that bracket the expected sample pH range",
+      "explanation": "A two-point calibration using two standard buffers (e.g. pH 4 and pH 7, or pH 7 and pH 10) that bracket the sample's expected pH establishes both the slope and offset of the electrode response.",
+      "topic": "pH meter calibration",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What does the 'slope' value reported after a pH meter calibration indicate?",
+      "options": ["The physical tilt angle of the meter", "How closely the electrode's actual response to pH change matches the theoretical Nernstian response (~59.16 mV/pH at 25°C)", "The battery charge remaining", "The volume of buffer used"],
+      "correct_answer": "How closely the electrode's actual response to pH change matches the theoretical Nernstian response (~59.16 mV/pH at 25°C)",
+      "explanation": "The slope compares the electrode's measured mV-per-pH-unit response to the ideal Nernstian value; a slope well below 100% (typically <90-95%) signals a worn or fouled electrode.",
+      "topic": "pH meter calibration",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Why must a pH electrode be stored in a storage/soaking solution rather than dry between uses?",
+      "options": ["Dry storage improves electrode response", "Allowing the glass membrane and reference junction to dry out damages them and causes slow, unstable readings", "It has no effect on performance", "Dry storage is required by all manufacturers"],
+      "correct_answer": "Allowing the glass membrane and reference junction to dry out damages them and causes slow, unstable readings",
+      "explanation": "The pH-sensitive glass membrane and reference junction must stay hydrated; drying out degrades the hydrated gel layer, causing sluggish, drifting, or inaccurate readings.",
+      "topic": "pH meter calibration",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In UV-Vis spectrophotometer calibration, wavelength accuracy is commonly verified using:",
+      "options": ["A holmium oxide or didymium filter with known characteristic absorption peaks", "A random colored liquid", "The instrument's power cable", "A magnifying glass"],
+      "correct_answer": "A holmium oxide or didymium filter with known characteristic absorption peaks",
+      "explanation": "Holmium oxide (or didymium) filters have sharp, well-characterized absorption peaks at known wavelengths, allowing verification of a spectrophotometer's wavelength accuracy.",
+      "topic": "Spectrophotometer calibration",
+      "difficulty": "hard"
+    },
+    {
+      "question": "What does a stray light check on a spectrophotometer assess?",
+      "options": ["Whether ambient room light is too bright for the operator", "Unwanted light reaching the detector that did not pass through the sample at the selected wavelength, which can distort absorbance readings", "The color of the instrument's housing", "The volume of the cuvette"],
+      "correct_answer": "Unwanted light reaching the detector that did not pass through the sample at the selected wavelength, which can distort absorbance readings",
+      "explanation": "Stray light is radiation reaching the detector outside the intended wavelength band; excessive stray light causes non-linearity and inaccurate absorbance readings, especially at high absorbance.",
+      "topic": "Spectrophotometer calibration",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Photometric (absorbance) accuracy of a spectrophotometer is typically verified using:",
+      "options": ["Certified neutral density or standard absorbance filters/solutions of known absorbance", "The instrument's user manual cover", "A blank cuvette filled with air only, with no reference standard", "Room temperature readings"],
+      "correct_answer": "Certified neutral density or standard absorbance filters/solutions of known absorbance",
+      "explanation": "Certified absorbance standards (filters or solutions) with known absorbance values are measured to confirm the instrument's photometric accuracy against the certified value.",
+      "topic": "Spectrophotometer calibration",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The gravimetric method for calibrating a micropipette involves:",
+      "options": ["Weighing multiple dispensed volumes of distilled water on an analytical balance and converting mass to volume using water's known density", "Measuring the pipette's length with a ruler", "Timing how fast the pipette is used", "Comparing pipette color to a reference chart"],
+      "correct_answer": "Weighing multiple dispensed volumes of distilled water on an analytical balance and converting mass to volume using water's known density",
+      "explanation": "Gravimetric pipette calibration dispenses water repeatedly, weighs each dispensed amount on a calibrated analytical balance, and converts mass to volume using water's density at the measured temperature.",
+      "topic": "Pipette calibration",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In pipette calibration, what do the terms 'accuracy' (systematic error) and 'precision' (random error, %CV) of the pipette each describe?",
+      "options": ["Accuracy describes closeness of the mean dispensed volume to the nominal volume; precision describes the spread (reproducibility) among repeated dispenses", "They are identical measures with no distinction", "Accuracy only applies to balances, not pipettes", "Precision measures color accuracy of the tip"],
+      "correct_answer": "Accuracy describes closeness of the mean dispensed volume to the nominal volume; precision describes the spread (reproducibility) among repeated dispenses",
+      "explanation": "Pipette accuracy is how close the average delivered volume is to the set (nominal) volume; precision (often expressed as %CV) is how consistent repeated deliveries are with each other.",
+      "topic": "Pipette calibration",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A digital thermometer used for critical temperature monitoring (e.g. incubator, refrigerator) should be calibrated against:",
+      "options": ["A certified reference thermometer traceable to a national standard, at multiple points across its working range", "Guesswork based on how the room feels", "Only the manufacturer's claimed accuracy with no independent check", "A thermometer of unknown calibration status"],
+      "correct_answer": "A certified reference thermometer traceable to a national standard, at multiple points across its working range",
+      "explanation": "Calibrating against a traceable certified reference thermometer at points spanning the working range confirms accuracy across the temperatures the instrument will actually be used at.",
+      "topic": "Thermometer calibration",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the recommended approach when volumetric glassware (e.g. a volumetric flask) needs calibration verification?",
+      "options": ["Gravimetric calibration: weigh the water it holds/delivers at a known temperature and convert to volume using water density", "Estimate the volume by eye only", "Assume all glassware from the same manufacturer is identical with no check needed", "Measure only the external dimensions of the glass"],
+      "correct_answer": "Gravimetric calibration: weigh the water it holds/delivers at a known temperature and convert to volume using water density",
+      "explanation": "Like pipettes, volumetric glassware accuracy is verified gravimetrically -- weighing the water contained/delivered at a known temperature and converting to volume via water's density.",
+      "topic": "Volumetric glassware calibration",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Why is water temperature recorded during gravimetric volumetric calibration?",
+      "options": ["It has no bearing on the result", "Water density varies with temperature, so temperature is needed to accurately convert the weighed mass into a calibrated volume", "It is only recorded for aesthetic completeness of the log", "Temperature only matters for gas measurements"],
+      "correct_answer": "Water density varies with temperature, so temperature is needed to accurately convert the weighed mass into a calibrated volume",
+      "explanation": "Water's density changes measurably with temperature, so an accurate mass-to-volume conversion in gravimetric calibration requires the measured water temperature.",
+      "topic": "Volumetric glassware calibration",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A centrifuge's rotational speed (RPM) is periodically verified using:",
+      "options": ["A calibrated tachometer", "A stopwatch measuring color change", "A pH meter", "A UV-Vis spectrophotometer"],
+      "correct_answer": "A calibrated tachometer",
+      "explanation": "A tachometer directly measures rotational speed and is used to confirm that a centrifuge's displayed RPM matches its actual rotor speed.",
+      "topic": "Centrifuge calibration",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the purpose of a preventive maintenance (PM) schedule for laboratory instruments?",
+      "options": ["To fix instruments only after they completely fail", "To perform planned, routine inspection, cleaning, and servicing that reduces unexpected breakdowns and maintains performance", "To avoid ever calibrating the instrument", "To increase instrument downtime deliberately"],
+      "correct_answer": "To perform planned, routine inspection, cleaning, and servicing that reduces unexpected breakdowns and maintains performance",
+      "explanation": "Preventive maintenance proactively inspects, cleans, and services equipment on a schedule to catch developing problems early and reduce unplanned failures.",
+      "topic": "Preventive maintenance",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What should be recorded in an instrument's maintenance/calibration logbook after every service or calibration event?",
+      "options": ["Nothing needs to be recorded", "Date, technician/analyst identity, work performed, results/values obtained, and next due date", "Only the technician's favorite color", "Just a checkmark with no other detail"],
+      "correct_answer": "Date, technician/analyst identity, work performed, results/values obtained, and next due date",
+      "explanation": "A complete calibration/maintenance record must show who did what, when, with what results, and when the next action is due, to maintain traceability and audit readiness.",
+      "topic": "Calibration records",
+      "difficulty": "easy"
+    },
+    {
+      "question": "If a routine calibration check shows an instrument reading is outside acceptable tolerance ('out of tolerance'), the correct next step is to:",
+      "options": ["Continue using it for reporting results and ignore the finding", "Take the instrument out of service, investigate/repair or adjust it, and assess the impact on any results generated since the last successful calibration", "Delete the calibration record so it is not noticed", "Increase the tolerance limits to make the reading pass"],
+      "correct_answer": "Take the instrument out of service, investigate/repair or adjust it, and assess the impact on any results generated since the last successful calibration",
+      "explanation": "An out-of-tolerance finding requires quarantining the instrument, investigating/correcting the cause, and reviewing results reported since the last good calibration for potential impact.",
+      "topic": "Out-of-tolerance handling",
+      "difficulty": "hard"
+    },
+    {
+      "question": "What is 'drift' in the context of instrument performance over time?",
+      "options": ["A sudden, one-time catastrophic failure", "A gradual, progressive change in an instrument's readings away from the true value over time", "The physical movement of the instrument on a bench", "A software update"],
+      "correct_answer": "A gradual, progressive change in an instrument's readings away from the true value over time",
+      "explanation": "Drift describes a slow, cumulative deviation of instrument response from the correct value, often due to component aging, fouling, or environmental effects, requiring periodic recalibration.",
+      "topic": "Calibration concepts",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Control charts (e.g. Levey-Jennings charts) used with periodic reference-material checks help a laboratory to:",
+      "options": ["Decorate the quality manual", "Detect trends, shifts, or drift in instrument/method performance over time before results fall outside acceptable limits", "Replace the need for calibration entirely", "Calculate staff salaries"],
+      "correct_answer": "Detect trends, shifts, or drift in instrument/method performance over time before results fall outside acceptable limits",
+      "explanation": "Control charts plot control-sample results over time so a technologist can visually spot trends or shifts indicating developing instrument problems before they cause reportable errors.",
+      "topic": "Calibration concepts",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is 'linearity' as a calibration performance characteristic of an instrument such as a spectrophotometer?",
+      "options": ["The instrument's physical shape", "The degree to which the instrument's response is directly proportional to analyte concentration across its working range", "The straightness of the power cable", "How quickly the instrument powers on"],
+      "correct_answer": "The degree to which the instrument's response is directly proportional to analyte concentration across its working range",
+      "explanation": "Linearity describes how well instrument response (e.g. absorbance) tracks proportionally with concentration over the stated working range, usually assessed via a multi-point calibration curve and correlation coefficient.",
+      "topic": "Calibration concepts",
+      "difficulty": "medium"
+    },
+    {
+      "question": "How often should a critical analytical instrument typically be recalibrated by an accredited external provider, in general laboratory practice?",
+      "options": ["Never, once installed", "At a defined interval (e.g. annually, or per manufacturer/risk-based schedule) based on stability, usage, and risk, then verified in between", "Every hour regardless of use", "Only when it physically breaks down"],
+      "correct_answer": "At a defined interval (e.g. annually, or per manufacturer/risk-based schedule) based on stability, usage, and risk, then verified in between",
+      "explanation": "Calibration intervals are set based on instrument stability, usage frequency, manufacturer recommendation, and risk, with routine verification checks performed between full calibrations.",
+      "topic": "Calibration intervals",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What information should a valid calibration certificate include?",
+      "options": ["Only the instrument's purchase price", "Reference standard used, measured values with uncertainty, date, conditions, and traceability statement", "The technician's personal phone number only", "Nothing beyond a pass/fail stamp"],
+      "correct_answer": "Reference standard used, measured values with uncertainty, date, conditions, and traceability statement",
+      "explanation": "A proper calibration certificate documents the reference standards used, results with measurement uncertainty, environmental conditions, date, and a statement of traceability so the calibration can be audited.",
+      "topic": "Calibration records",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What does 'measurement uncertainty' express about a calibration result?",
+      "options": ["The exact true value with no doubt", "A quantified range within which the true value is believed to lie, with a stated level of confidence", "The instrument's brand name", "The cost of the calibration service"],
+      "correct_answer": "A quantified range within which the true value is believed to lie, with a stated level of confidence",
+      "explanation": "Measurement uncertainty is a numerical estimate of the doubt about a measured value, expressed as a range around the result with an associated confidence level.",
+      "topic": "Metrology fundamentals",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Why should the base International System of Units (SI) matter to a laboratory technologist performing calibration?",
+      "options": ["It is irrelevant to laboratory work", "Reference standards and traceability chains are ultimately linked back to SI base units (e.g. kilogram, metre, kelvin) to ensure global comparability of measurements", "SI units apply only outside the laboratory", "SI units were abolished"],
+      "correct_answer": "Reference standards and traceability chains are ultimately linked back to SI base units (e.g. kilogram, metre, kelvin) to ensure global comparability of measurements",
+      "explanation": "Metrological traceability chains ultimately connect back to SI base units, which is what allows measurements made in different laboratories worldwide to be meaningfully compared.",
+      "topic": "Metrology fundamentals",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Autoclave performance qualification typically includes verifying that the chamber reaches and holds which condition to confirm effective sterilization?",
+      "options": ["121°C at 15 psi for the validated holding time, confirmed with a biological or chemical indicator", "Room temperature for 5 minutes", "0°C for 1 hour", "Any temperature above 40°C"],
+      "correct_answer": "121°C at 15 psi for the validated holding time, confirmed with a biological or chemical indicator",
+      "explanation": "Standard autoclave sterilization validation confirms the chamber reaches 121°C at 15 psi and holds it for the required time, verified using biological indicators (spore strips) or chemical indicators.",
+      "topic": "Equipment calibration -- sterilizers",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Incubators and ovens used for critical temperature-dependent work should have their temperature uniformity checked by:",
+      "options": ["A single sensor placed in the center only, assumed representative of the whole chamber", "Mapping temperature at multiple points throughout the chamber, since heating can be uneven", "Never checking uniformity, only the set-point display", "Checking uniformity only once at installation and never again"],
+      "correct_answer": "Mapping temperature at multiple points throughout the chamber, since heating can be uneven",
+      "explanation": "Temperature mapping at several locations detects hot or cold spots caused by uneven air circulation, which a single central sensor reading would miss.",
+      "topic": "Equipment calibration -- incubators/ovens",
+      "difficulty": "hard"
+    },
+    {
+      "question": "When an instrument fault is suspected, what is the recommended first troubleshooting step before assuming a major component failure?",
+      "options": ["Immediately dismantle the instrument's internal circuitry", "Check basic factors first: power supply, connections, consumables, recent calibration status, and error codes/manual troubleshooting guide", "Discard the instrument and purchase a new one", "Ignore the fault and continue reporting results"],
+      "correct_answer": "Check basic factors first: power supply, connections, consumables, recent calibration status, and error codes/manual troubleshooting guide",
+      "explanation": "Systematic troubleshooting starts with the simplest, most common causes -- power, connections, consumables, and manufacturer guidance -- before assuming a major internal failure.",
+      "topic": "Instrument troubleshooting",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Why should only manufacturer-approved spare parts and service technicians be used to maintain a critical analytical instrument where possible?",
+      "options": ["Approved parts and service preserve the instrument's calibration validity, warranty, and performance specifications", "Non-approved parts are always cheaper and equally reliable", "It has no bearing on performance or safety", "Manufacturer parts are never available"],
+      "correct_answer": "Approved parts and service preserve the instrument's calibration validity, warranty, and performance specifications",
+      "explanation": "Using unapproved parts or unqualified service can invalidate calibration, void warranty, and compromise the instrument's documented performance specifications.",
+      "topic": "Preventive maintenance",
+      "difficulty": "medium"
+    }
+  ]
+}

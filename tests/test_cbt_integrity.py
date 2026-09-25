@@ -15,11 +15,11 @@ from app.models import CBTQuestion, CBTAttempt, User
 
 def _seed_mth_questions(app):
     with app.app_context():
-        q1 = CBTQuestion(subject_code='MTH', question_type='cbt', question_text='2+2=?',
+        q1 = CBTQuestion(subject_code='MTH', course_code='MTH101', question_type='cbt', question_text='2+2=?',
                           options_json=json.dumps(['3', '4', '5', '6']), correct_index=1, explanation='basic addition')
-        q2 = CBTQuestion(subject_code='MTH', question_type='cbt', question_text='3*3=?',
+        q2 = CBTQuestion(subject_code='MTH', course_code='MTH101', question_type='cbt', question_text='3*3=?',
                           options_json=json.dumps(['6', '9', '12', '3']), correct_index=1, explanation='basic multiplication')
-        q3 = CBTQuestion(subject_code='MTH', question_type='cbt', question_text='10-4=?',
+        q3 = CBTQuestion(subject_code='MTH', course_code='MTH101', question_type='cbt', question_text='10-4=?',
                           options_json=json.dumps(['4', '5', '6', '7']), correct_index=2, explanation='basic subtraction')
         db.session.add_all([q1, q2, q3])
         db.session.commit()
@@ -181,8 +181,34 @@ def test_cannot_submit_another_students_attempt(app, client, make_user, login_as
 def test_no_questions_available_response(app, client, make_user, login_as):
     user = make_user('cbt_nobank')
     login_as(client, user)
-    # ZZZ999 -> subject prefix "ZZZ", nothing seeded for it
+    # ZZZ999 -> nothing seeded for this exact course code
     res = client.post('/api/cbt/start', json={'course_code': 'ZZZ999', 'question_type': 'cbt'})
     data = res.get_json()
     assert data['success'] is False
     assert data['error'] == 'no_questions'
+
+
+def test_question_bank_is_scoped_to_exact_course_code(app, client, make_user, login_as):
+    """A course's bank must never leak into another course that merely shares the same
+    letter prefix -- MTH401 questions must not appear when practicing MTH101, closing
+    the gap the old subject-prefix-only matching had (see app/services/cbt_bank.py)."""
+    user = make_user('cbt_isolation')
+    _seed_mth_questions(app)  # all seeded with course_code='MTH101'
+    with app.app_context():
+        other = CBTQuestion(subject_code='MTH', course_code='MTH401', question_type='cbt',
+                             question_text='Prove a functional is bounded.',
+                             options_json=json.dumps(['A', 'B', 'C', 'D']), correct_index=0)
+        db.session.add(other)
+        db.session.commit()
+    login_as(client, user)
+
+    start = client.post('/api/cbt/start', json={'course_code': 'MTH101', 'question_type': 'cbt'})
+    data = start.get_json()
+    assert data['success'] is True
+    assert all(q['question_text'] != 'Prove a functional is bounded.' for q in data['questions'])
+
+    start_401 = client.post('/api/cbt/start', json={'course_code': 'MTH401', 'question_type': 'cbt'})
+    data_401 = start_401.get_json()
+    assert data_401['success'] is True
+    assert len(data_401['questions']) == 1
+    assert data_401['questions'][0]['question_text'] == 'Prove a functional is bounded.'

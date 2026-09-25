@@ -1,0 +1,272 @@
+{
+  "course_code": "CSC311",
+  "title": "Database Management Systems",
+  "level": "300",
+  "source_note": "Standard NUC-aligned 300L Database Management Systems curriculum: DBMS concepts, ER modeling, relational model, SQL, normalization, transactions/ACID, concurrency control, indexing. Grounded against LASU's own CSC214 'Database Design and Management I' and CSC327 'Database Management System II' course descriptions (DBMS technology, ER analysis, relational model, SQL, normalization, functional dependencies, transaction processing, distributed databases), authored here under the assigned code CSC311.",
+  "questions": [
+    {
+      "question": "What is a Database Management System (DBMS)?",
+      "options": ["Software that enables the creation, management, and controlled access to databases", "A physical device for storing files", "A programming language used only for web development", "A type of computer network"],
+      "correct_answer": "Software that enables the creation, management, and controlled access to databases",
+      "explanation": "A DBMS is software that provides an interface for defining, creating, querying, updating, and administering databases while enforcing data integrity and security.",
+      "topic": "DBMS fundamentals",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is a key advantage of using a DBMS over traditional flat file systems?",
+      "options": ["It reduces data redundancy and improves data integrity through centralized control", "It eliminates the need for any data backup", "It guarantees unlimited storage capacity", "It removes the need for any query language"],
+      "correct_answer": "It reduces data redundancy and improves data integrity through centralized control",
+      "explanation": "A DBMS centralizes data management, minimizing duplicate data storage and enforcing consistency rules that flat file systems struggle to maintain.",
+      "topic": "DBMS fundamentals",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the Entity-Relationship (ER) model, what is an 'entity'?",
+      "options": ["A distinguishable real-world object or concept about which data is stored", "A column in a database table", "A query written in SQL", "A type of database index"],
+      "correct_answer": "A distinguishable real-world object or concept about which data is stored",
+      "explanation": "An entity represents a real-world object (e.g., a Student or a Product) that has attributes and can be distinguished from other objects.",
+      "topic": "ER modeling",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In an ER diagram, what does a relationship represent?",
+      "options": ["An association between two or more entities", "A single attribute of an entity", "A primary key constraint", "A stored procedure"],
+      "correct_answer": "An association between two or more entities",
+      "explanation": "Relationships in ER modeling describe how entities are associated with one another, such as a Student 'enrolls in' a Course.",
+      "topic": "ER modeling",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What does cardinality describe in an ER relationship such as 'one-to-many'?",
+      "options": ["The number of instances of one entity that can be associated with instances of another entity", "The total number of attributes an entity has", "The physical storage size of a table", "The number of foreign keys in a schema"],
+      "correct_answer": "The number of instances of one entity that can be associated with instances of another entity",
+      "explanation": "Cardinality specifies how many instances of one entity type can relate to instances of another, such as one-to-one, one-to-many, or many-to-many.",
+      "topic": "ER modeling",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the relational data model, what is a 'tuple'?",
+      "options": ["A single row in a relation (table), representing one record", "A column name in a table", "A database index structure", "A constraint on a foreign key"],
+      "correct_answer": "A single row in a relation (table), representing one record",
+      "explanation": "A tuple corresponds to a row in a relational table, representing one complete record with values for each attribute.",
+      "topic": "Relational model",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is a 'primary key' in a relational database table?",
+      "options": ["A column (or set of columns) that uniquely identifies each row in the table", "Any column that stores numeric data", "A column that references another table", "A column that can contain duplicate values"],
+      "correct_answer": "A column (or set of columns) that uniquely identifies each row in the table",
+      "explanation": "A primary key uniquely identifies each tuple in a relation and cannot contain NULL or duplicate values.",
+      "topic": "Relational model",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is a 'foreign key' used for in a relational database?",
+      "options": ["To establish and enforce a link between data in two tables by referencing another table's primary key", "To encrypt sensitive data in a column", "To index a table for faster searches only", "To store the database's schema version"],
+      "correct_answer": "To establish and enforce a link between data in two tables by referencing another table's primary key",
+      "explanation": "A foreign key is a column in one table that references the primary key of another table, enforcing referential integrity between related tables.",
+      "topic": "Relational model",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which SQL statement is used to retrieve data from one or more tables?",
+      "options": ["SELECT", "INSERT", "UPDATE", "DELETE"],
+      "correct_answer": "SELECT",
+      "explanation": "The SELECT statement is the fundamental SQL command used to query and retrieve data from database tables.",
+      "topic": "SQL",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which SQL clause is used to filter rows based on a specified condition?",
+      "options": ["WHERE", "GROUP BY", "ORDER BY", "HAVING"],
+      "correct_answer": "WHERE",
+      "explanation": "The WHERE clause filters individual rows before any grouping occurs, based on a specified boolean condition.",
+      "topic": "SQL",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is the purpose of the SQL JOIN operation?",
+      "options": ["To combine rows from two or more tables based on a related column between them", "To delete rows from a table", "To create a new database schema", "To back up a database"],
+      "correct_answer": "To combine rows from two or more tables based on a related column between them",
+      "explanation": "JOIN operations combine related rows from multiple tables using a common column, typically a foreign key referencing a primary key.",
+      "topic": "SQL",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What does an INNER JOIN return?",
+      "options": ["Only the rows that have matching values in both joined tables", "All rows from the left table regardless of matches", "All rows from both tables, matched or not", "Only rows that do not match"],
+      "correct_answer": "Only the rows that have matching values in both joined tables",
+      "explanation": "An INNER JOIN returns only rows where the join condition is satisfied in both tables, excluding unmatched rows from either side.",
+      "topic": "SQL",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What does a LEFT (OUTER) JOIN return that an INNER JOIN would not?",
+      "options": ["All rows from the left table, including those with no matching rows in the right table", "Only rows with matches in both tables", "All rows from the right table only", "No rows at all"],
+      "correct_answer": "All rows from the left table, including those with no matching rows in the right table",
+      "explanation": "A LEFT JOIN preserves every row from the left table, filling in NULLs for columns from the right table when there is no match.",
+      "topic": "SQL",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which SQL clause is used to group rows sharing a common value for aggregate calculations?",
+      "options": ["GROUP BY", "ORDER BY", "WHERE", "JOIN"],
+      "correct_answer": "GROUP BY",
+      "explanation": "GROUP BY organizes rows into groups sharing the same values in specified columns, typically used alongside aggregate functions like COUNT or SUM.",
+      "topic": "SQL",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the purpose of database normalization?",
+      "options": ["To organize tables to reduce data redundancy and avoid update/insertion/deletion anomalies", "To increase the physical size of the database", "To encrypt all data in the database", "To remove all foreign keys from a schema"],
+      "correct_answer": "To organize tables to reduce data redundancy and avoid update/insertion/deletion anomalies",
+      "explanation": "Normalization is the process of structuring relational tables according to a series of normal forms to minimize redundancy and prevent data anomalies.",
+      "topic": "Normalization",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What requirement must a table satisfy to be in First Normal Form (1NF)?",
+      "options": ["All attribute values must be atomic (indivisible), with no repeating groups", "It must have at least two foreign keys", "It must contain only numeric columns", "It must be fully denormalized"],
+      "correct_answer": "All attribute values must be atomic (indivisible), with no repeating groups",
+      "explanation": "1NF requires that each column contains only atomic (single, indivisible) values, eliminating repeating groups or multi-valued attributes within a single field.",
+      "topic": "Normalization",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What additional requirement must a table satisfy to be in Second Normal Form (2NF), beyond 1NF?",
+      "options": ["Every non-key attribute must be fully functionally dependent on the entire primary key (no partial dependency)", "The table must have no primary key", "Every column must be a foreign key", "The table must contain only one row"],
+      "correct_answer": "Every non-key attribute must be fully functionally dependent on the entire primary key (no partial dependency)",
+      "explanation": "2NF eliminates partial dependencies, requiring that non-key attributes depend on the whole composite primary key, not just part of it.",
+      "topic": "Normalization",
+      "difficulty": "hard"
+    },
+    {
+      "question": "What additional requirement must a table satisfy to be in Third Normal Form (3NF), beyond 2NF?",
+      "options": ["There must be no transitive dependency of non-key attributes on the primary key", "The table must contain duplicate rows", "All attributes must be foreign keys", "The table must have exactly three columns"],
+      "correct_answer": "There must be no transitive dependency of non-key attributes on the primary key",
+      "explanation": "3NF removes transitive dependencies, ensuring non-key attributes depend directly on the primary key and not on other non-key attributes.",
+      "topic": "Normalization",
+      "difficulty": "hard"
+    },
+    {
+      "question": "What is a 'functional dependency' in database theory, denoted A → B?",
+      "options": ["A relationship where the value of attribute A uniquely determines the value of attribute B", "A physical link between two database servers", "A type of SQL join", "A rule that forbids NULL values in a column"],
+      "correct_answer": "A relationship where the value of attribute A uniquely determines the value of attribute B",
+      "explanation": "A functional dependency A → B means that for any two tuples with the same value of A, the value of B must also be the same.",
+      "topic": "Functional dependencies",
+      "difficulty": "hard"
+    },
+    {
+      "question": "What does ACID stand for in the context of database transactions?",
+      "options": ["Atomicity, Consistency, Isolation, Durability", "Availability, Concurrency, Integrity, Distribution", "Accuracy, Consistency, Indexing, Durability", "Atomicity, Concurrency, Isolation, Data-integrity"],
+      "correct_answer": "Atomicity, Consistency, Isolation, Durability",
+      "explanation": "ACID properties guarantee reliable transaction processing: transactions are all-or-nothing (Atomicity), leave the database in a valid state (Consistency), do not interfere with each other (Isolation), and persist once committed (Durability).",
+      "topic": "Transactions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What does 'atomicity' guarantee in a database transaction?",
+      "options": ["A transaction is treated as a single indivisible unit -- it either completes fully or has no effect at all", "Multiple transactions can never run at the same time", "Data is always encrypted during a transaction", "A transaction always takes the same amount of time"],
+      "correct_answer": "A transaction is treated as a single indivisible unit -- it either completes fully or has no effect at all",
+      "explanation": "Atomicity ensures that all operations within a transaction succeed together, or none of them are applied, preventing partial updates.",
+      "topic": "Transactions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the purpose of concurrency control in a DBMS?",
+      "options": ["To ensure that simultaneous transactions execute correctly without interfering with each other's results", "To encrypt data stored on disk", "To physically back up the database to another location", "To compress table storage on disk"],
+      "correct_answer": "To ensure that simultaneous transactions execute correctly without interfering with each other's results",
+      "explanation": "Concurrency control mechanisms (such as locking or timestamp ordering) coordinate simultaneous transactions to preserve data consistency and isolation.",
+      "topic": "Concurrency control",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is a 'deadlock' in the context of database transactions?",
+      "options": ["A situation where two or more transactions are each waiting for a resource held by the other, and none can proceed", "A transaction that completes successfully", "An index that has become corrupted", "A query that returns zero rows"],
+      "correct_answer": "A situation where two or more transactions are each waiting for a resource held by the other, and none can proceed",
+      "explanation": "A deadlock occurs when transactions form a circular wait for locked resources, requiring the DBMS to detect and resolve it, often by aborting one transaction.",
+      "topic": "Concurrency control",
+      "difficulty": "hard"
+    },
+    {
+      "question": "What is the purpose of an index in a database table?",
+      "options": ["To speed up data retrieval operations by providing a fast lookup structure on one or more columns", "To enforce that all values in a column are unique", "To store a backup copy of the table", "To encrypt the data in a table"],
+      "correct_answer": "To speed up data retrieval operations by providing a fast lookup structure on one or more columns",
+      "explanation": "Indexes (often implemented as B-trees) allow the DBMS to locate rows matching a query condition much faster than scanning the entire table.",
+      "topic": "Indexing",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is a potential downside of adding too many indexes to a table?",
+      "options": ["Insert, update, and delete operations become slower because indexes must also be updated", "Query performance always decreases", "The table can no longer store data", "Indexes make primary keys unnecessary"],
+      "correct_answer": "Insert, update, and delete operations become slower because indexes must also be updated",
+      "explanation": "While indexes speed up reads, every write operation (insert, update, delete) must also update each relevant index, adding overhead.",
+      "topic": "Indexing",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the purpose of the SQL GRANT statement?",
+      "options": ["To assign specific privileges or permissions to a database user or role", "To create a new table", "To delete a database", "To start a new transaction"],
+      "correct_answer": "To assign specific privileges or permissions to a database user or role",
+      "explanation": "GRANT is a Data Control Language (DCL) statement used to assign access privileges such as SELECT, INSERT, or UPDATE to specific users or roles.",
+      "topic": "Database security",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is a 'view' in a relational database?",
+      "options": ["A virtual table defined by a stored query that presents data from one or more underlying tables", "A physical copy of a table stored separately", "A backup file of the entire database", "A type of index"],
+      "correct_answer": "A virtual table defined by a stored query that presents data from one or more underlying tables",
+      "explanation": "A view is a saved SQL query that behaves like a table for querying purposes but does not store data itself (in most cases); it derives its result dynamically from the underlying tables.",
+      "topic": "Relational model",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is a 'distributed database'?",
+      "options": ["A database whose data is stored across multiple physical locations, possibly on different networked computers", "A database that can only be accessed by one user at a time", "A database stored entirely in RAM", "A database with only a single table"],
+      "correct_answer": "A database whose data is stored across multiple physical locations, possibly on different networked computers",
+      "explanation": "A distributed database spreads data across multiple sites, which can improve availability and performance but introduces challenges like data consistency and network latency.",
+      "topic": "Distributed databases",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What does the SQL DISTINCT keyword do in a SELECT query?",
+      "options": ["It removes duplicate rows from the query result", "It sorts the result in descending order", "It groups rows by a specified column", "It joins two tables together"],
+      "correct_answer": "It removes duplicate rows from the query result",
+      "explanation": "DISTINCT filters out duplicate rows from the result set, returning only unique combinations of the selected columns.",
+      "topic": "SQL",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is the difference between the SQL WHERE clause and the HAVING clause?",
+      "options": ["WHERE filters individual rows before grouping, while HAVING filters groups after aggregation", "WHERE can only be used with UPDATE statements", "HAVING is used to filter individual rows before grouping", "There is no functional difference between them"],
+      "correct_answer": "WHERE filters individual rows before grouping, while HAVING filters groups after aggregation",
+      "explanation": "WHERE filters rows before any GROUP BY aggregation occurs, while HAVING filters the resulting groups based on aggregate conditions.",
+      "topic": "SQL",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In data modeling, what is a 'composite key'?",
+      "options": ["A primary key that consists of two or more columns combined to uniquely identify a row", "A key that is always numeric", "A foreign key that references itself", "A key used only for indexing text columns"],
+      "correct_answer": "A primary key that consists of two or more columns combined to uniquely identify a row",
+      "explanation": "A composite key uses a combination of two or more attributes together, since no single attribute alone is sufficient to uniquely identify each row.",
+      "topic": "Relational model",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is 'referential integrity' in a relational database?",
+      "options": ["A constraint ensuring that foreign key values always correspond to an existing primary key value in the referenced table", "A rule that all columns must be indexed", "A guarantee that queries execute in constant time", "A requirement that tables have no more than 10 columns"],
+      "correct_answer": "A constraint ensuring that foreign key values always correspond to an existing primary key value in the referenced table",
+      "explanation": "Referential integrity prevents orphaned records by requiring that a foreign key value either matches an existing primary key in the referenced table or is NULL.",
+      "topic": "Relational model",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What does the term 'query optimization' refer to in a DBMS?",
+      "options": ["The process by which the DBMS determines the most efficient way to execute a given query", "Manually rewriting application source code", "Increasing the physical RAM of the database server", "Encrypting query results before sending them to the client"],
+      "correct_answer": "The process by which the DBMS determines the most efficient way to execute a given query",
+      "explanation": "Query optimization involves the DBMS's query planner choosing an efficient execution strategy (e.g., which indexes to use, join order) to minimize resource usage and execution time.",
+      "topic": "Query optimization",
+      "difficulty": "medium"
+    }
+  ]
+}

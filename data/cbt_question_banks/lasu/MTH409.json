@@ -1,0 +1,264 @@
+{
+  "course_code": "MTH409",
+  "title": "General Relativity",
+  "level": "400",
+  "source_note": "This is the Mathematics department's mathematical treatment of general relativity (standard NUC-aligned 400L content), focused on the tensor calculus formalism: special relativity foundations, tensors and the metric, Christoffel symbols and covariant differentiation, geodesics, the Riemann and Ricci curvature tensors, the Einstein field equations, and the Schwarzschild solution with its classical tests.",
+  "questions": [
+    {
+      "question": "Using the (-,+,+,+) signature convention, the spacetime interval in flat Minkowski space is:",
+      "options": ["ds^2 = -c^2 dt^2 + dx^2 + dy^2 + dz^2", "ds^2 = c^2 dt^2 + dx^2 + dy^2 + dz^2", "ds^2 = dx^2 + dy^2 + dz^2 - 2c^2 dt^2", "ds^2 = c dt"],
+      "correct_answer": "ds^2 = -c^2 dt^2 + dx^2 + dy^2 + dz^2",
+      "explanation": "With the (-+++) signature, time contributes negatively and the three spatial coordinates contribute positively to the invariant interval.",
+      "topic": "Spacetime interval",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Using the (-,+,+,+) signature convention, a spacetime interval ds^2 less than 0 between two events is called:",
+      "options": ["Timelike", "Spacelike", "Null (lightlike)", "Undefined"],
+      "correct_answer": "Timelike",
+      "explanation": "A negative squared interval in this convention corresponds to a separation that can be traversed by a massive particle moving slower than light.",
+      "topic": "Spacetime interval",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A spacetime interval ds^2 = 0 between two events describes a separation that is:",
+      "options": ["Null (lightlike), connectable only by light", "Timelike", "Spacelike", "Undefined"],
+      "correct_answer": "Null (lightlike), connectable only by light",
+      "explanation": "A zero interval characterizes events that can only be connected by something travelling at the speed of light.",
+      "topic": "Spacetime interval",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Lorentz transformation between two inertial frames moving with relative velocity v along the x-axis includes the factor gamma, given by:",
+      "options": ["gamma = 1 / square root of (1 - v^2/c^2)", "gamma = 1 - v^2/c^2", "gamma = v/c", "gamma = c/v"],
+      "correct_answer": "gamma = 1 / square root of (1 - v^2/c^2)",
+      "explanation": "This Lorentz factor governs both time dilation and length contraction between inertial frames in special relativity.",
+      "topic": "Lorentz transformations",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In general relativity, the Equivalence Principle states that:",
+      "options": ["Locally, the effects of gravity are indistinguishable from the effects of uniform acceleration", "Gravity and electromagnetism are the same force", "Mass and energy are unrelated", "Spacetime is always flat"],
+      "correct_answer": "Locally, the effects of gravity are indistinguishable from the effects of uniform acceleration",
+      "explanation": "This principle, central to Einstein's development of general relativity, links gravity to the curvature of spacetime rather than a force acting through flat space.",
+      "topic": "Equivalence principle",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A tensor of type (p,q) has p:",
+      "options": ["Contravariant (upper) indices and q covariant (lower) indices", "Covariant indices and q contravariant indices", "Dimensions, and q components", "Symmetric indices"],
+      "correct_answer": "Contravariant (upper) indices and q covariant (lower) indices",
+      "explanation": "The type (p,q) classification of a tensor counts its upper and lower indices, which transform contravariantly and covariantly respectively.",
+      "topic": "Tensors",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Under a coordinate transformation, a contravariant vector V^mu transforms according to:",
+      "options": ["V'^mu = (partial x'^mu / partial x^nu) V^nu", "V'^mu = (partial x^nu / partial x'^mu) V^nu", "V'_mu = V^mu", "V'^mu = V_mu"],
+      "correct_answer": "V'^mu = (partial x'^mu / partial x^nu) V^nu",
+      "explanation": "This is the defining transformation law for a contravariant tensor component of rank one.",
+      "topic": "Tensors",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The metric tensor g_mu-nu in general relativity encodes:",
+      "options": ["The geometry of spacetime, allowing computation of distances and angles", "Only the mass distribution", "The electromagnetic field", "The particle's momentum"],
+      "correct_answer": "The geometry of spacetime, allowing computation of distances and angles",
+      "explanation": "The metric tensor generalizes the notion of distance to curved spacetime and is the fundamental dynamical field of general relativity.",
+      "topic": "Metric tensor",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The metric tensor is used to raise and lower indices on tensors; for example, a covariant vector is obtained from a contravariant one via:",
+      "options": ["V_mu = g_mu-nu V^nu", "V_mu = V^mu", "V_mu = g^mu-nu V_nu", "V_mu equals the derivative of V^mu"],
+      "correct_answer": "V_mu = g_mu-nu V^nu",
+      "explanation": "Contracting a contravariant vector with the metric tensor produces the corresponding covariant vector.",
+      "topic": "Metric tensor",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Christoffel symbols Gamma^lambda_mu-nu are constructed from the metric tensor and its derivatives, and represent:",
+      "options": ["The connection coefficients describing how basis vectors change from point to point in curved spacetime", "Components of the Riemann tensor", "The stress-energy tensor", "The determinant of the metric"],
+      "correct_answer": "The connection coefficients describing how basis vectors change from point to point in curved spacetime",
+      "explanation": "Christoffel symbols encode the affine connection compatible with the metric, needed to differentiate tensors covariantly in curved space.",
+      "topic": "Christoffel symbols",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The covariant derivative of a vector V^nu is defined using the Christoffel symbols as:",
+      "options": ["The partial derivative of V^nu plus Gamma^nu_mu-lambda V^lambda", "Just the partial derivative of V^nu", "Gamma^nu_mu-lambda alone", "V^nu divided by the partial derivative of x^mu"],
+      "correct_answer": "The partial derivative of V^nu plus Gamma^nu_mu-lambda V^lambda",
+      "explanation": "The covariant derivative adds a correction term involving the Christoffel symbols to account for the curvature of the coordinate basis.",
+      "topic": "Covariant derivative",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A geodesic in curved spacetime is a curve that:",
+      "options": ["Parallel-transports its own tangent vector, locally extremizing the spacetime interval between events", "Is always a straight line in any coordinates", "Has zero curvature everywhere", "Connects only timelike separated events"],
+      "correct_answer": "Parallel-transports its own tangent vector, locally extremizing the spacetime interval between events",
+      "explanation": "Geodesics generalize straight lines to curved spacetime and are the paths that extremize proper time or proper length.",
+      "topic": "Geodesics",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The geodesic equation for a curve x^mu(tau) is:",
+      "options": ["The second derivative of x^mu with respect to tau, plus Gamma^mu_alpha-beta times the product of the first derivatives of x^alpha and x^beta, equals zero", "The second derivative of x^mu with respect to tau equals zero always", "dx^mu/d tau is constant", "Gamma^mu_alpha-beta equals zero everywhere"],
+      "correct_answer": "The second derivative of x^mu with respect to tau, plus Gamma^mu_alpha-beta times the product of the first derivatives of x^alpha and x^beta, equals zero",
+      "explanation": "This second-order ODE, involving the Christoffel symbols, determines geodesic paths through curved spacetime.",
+      "topic": "Geodesics",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Freely falling particles (subject only to gravity) in general relativity move along:",
+      "options": ["Timelike geodesics of the spacetime metric", "Straight lines in Euclidean space", "Null geodesics only", "Arbitrary curves"],
+      "correct_answer": "Timelike geodesics of the spacetime metric",
+      "explanation": "In general relativity gravity is not a force but the curvature of spacetime, so free fall corresponds to following a timelike geodesic.",
+      "topic": "Geodesics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Riemann curvature tensor R^rho_sigma-mu-nu measures:",
+      "options": ["The failure of covariant derivatives to commute, i.e. the intrinsic curvature of spacetime", "The mass density", "The total energy", "The speed of light in a medium"],
+      "correct_answer": "The failure of covariant derivatives to commute, i.e. the intrinsic curvature of spacetime",
+      "explanation": "The Riemann tensor arises directly from the commutator of covariant derivatives and vanishes exactly when spacetime is flat.",
+      "topic": "Riemann curvature tensor",
+      "difficulty": "hard"
+    },
+    {
+      "question": "If the Riemann curvature tensor vanishes identically in a region, the spacetime there is:",
+      "options": ["Flat", "Maximally curved", "Expanding", "Undefined"],
+      "correct_answer": "Flat",
+      "explanation": "A vanishing Riemann tensor is the precise mathematical statement that a spacetime region has no intrinsic curvature.",
+      "topic": "Riemann curvature tensor",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Ricci tensor R_mu-nu is obtained from the Riemann tensor by:",
+      "options": ["Contracting (summing over) one pair of indices", "Multiplying by the metric determinant", "Taking its inverse", "Differentiating twice"],
+      "correct_answer": "Contracting (summing over) one pair of indices",
+      "explanation": "The Ricci tensor is a partial trace of the Riemann tensor, retaining a simplified but physically essential measure of curvature.",
+      "topic": "Ricci tensor",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The Ricci scalar R is obtained by:",
+      "options": ["Contracting the Ricci tensor with the metric", "Squaring the Riemann tensor", "Taking the determinant of the metric", "Integrating the Christoffel symbols"],
+      "correct_answer": "Contracting the Ricci tensor with the metric",
+      "explanation": "The Ricci scalar is a single number at each point summarizing the overall curvature, obtained by fully tracing the Ricci tensor with the inverse metric.",
+      "topic": "Ricci tensor",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The Einstein tensor G_mu-nu is defined as:",
+      "options": ["R_mu-nu minus one-half times g_mu-nu times R", "R_mu-nu plus g_mu-nu", "R times g_mu-nu", "Gamma^lambda_mu-nu"],
+      "correct_answer": "R_mu-nu minus one-half times g_mu-nu times R",
+      "explanation": "This particular combination of the Ricci tensor and scalar automatically satisfies a conservation law, making it suitable for the field equations.",
+      "topic": "Einstein field equations",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The Einstein field equations relating spacetime curvature to matter/energy content are written as:",
+      "options": ["G_mu-nu = (8 pi G / c^4) T_mu-nu", "G_mu-nu = T_mu-nu only", "R_mu-nu = 0 always", "G_mu-nu = 0 in all spacetimes"],
+      "correct_answer": "G_mu-nu = (8 pi G / c^4) T_mu-nu",
+      "explanation": "This is the central equation of general relativity, equating spacetime curvature (left side) to the matter and energy content (right side).",
+      "topic": "Einstein field equations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The stress-energy tensor T_mu-nu on the right-hand side of the Einstein field equations represents:",
+      "options": ["The density and flux of energy and momentum of matter and fields", "The curvature of spacetime", "The Christoffel symbols", "The metric tensor components"],
+      "correct_answer": "The density and flux of energy and momentum of matter and fields",
+      "explanation": "The stress-energy tensor is the source term of the field equations, describing how matter and energy are distributed and how they flow.",
+      "topic": "Stress-energy tensor",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The vacuum Einstein field equations, in regions with no matter (T_mu-nu = 0), reduce to:",
+      "options": ["R_mu-nu = 0", "G_mu-nu = T_mu-nu", "R = infinity", "g_mu-nu = 0"],
+      "correct_answer": "R_mu-nu = 0",
+      "explanation": "In vacuum, the Einstein tensor equation simplifies so that the Ricci tensor alone must vanish, though the Riemann tensor may still be nonzero.",
+      "topic": "Einstein field equations",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The Schwarzschild metric describes the spacetime geometry:",
+      "options": ["Outside a spherically symmetric, non-rotating mass", "Inside a rotating black hole", "For all of flat spacetime", "Only for massless particles"],
+      "correct_answer": "Outside a spherically symmetric, non-rotating mass",
+      "explanation": "The Schwarzschild solution is the unique vacuum solution to the Einstein field equations outside a static, spherically symmetric mass distribution.",
+      "topic": "Schwarzschild metric",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Schwarzschild radius r_s = 2GM/c^2 marks the location of:",
+      "options": ["The event horizon of a Schwarzschild black hole", "The center of the mass", "The point of zero curvature", "The speed-of-light limit"],
+      "correct_answer": "The event horizon of a Schwarzschild black hole",
+      "explanation": "Within this radius, nothing, not even light, can escape, defining the event horizon of a non-rotating black hole.",
+      "topic": "Schwarzschild metric",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the Schwarzschild metric, the coefficient of dt^2 involves the factor (1 - 2GM/(rc^2)), which leads to the prediction of:",
+      "options": ["Gravitational time dilation, with clocks running slower closer to the mass", "No physical effect", "Time running faster near the mass", "Constant proper time everywhere"],
+      "correct_answer": "Gravitational time dilation, with clocks running slower closer to the mass",
+      "explanation": "This metric coefficient directly encodes how strong gravity slows the rate at which proper time elapses relative to a distant observer.",
+      "topic": "Schwarzschild metric",
+      "difficulty": "hard"
+    },
+    {
+      "question": "One of the classical tests of general relativity, the perihelion precession of Mercury's orbit, is explained by:",
+      "options": ["Corrections to Newtonian gravity arising from the curvature of spacetime near the Sun", "Solar wind pressure", "The Sun's magnetic field", "Doppler shift of light"],
+      "correct_answer": "Corrections to Newtonian gravity arising from the curvature of spacetime near the Sun",
+      "explanation": "General relativity predicts a small additional precession of Mercury's orbit beyond what Newtonian gravity alone accounts for, matching observation.",
+      "topic": "Tests of general relativity",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The bending of starlight passing near the Sun, observed during solar eclipses, is a consequence of:",
+      "options": ["Light following null geodesics in the curved spacetime around the Sun", "Refraction in the solar atmosphere only", "The photoelectric effect", "Newtonian gravity acting identically on light"],
+      "correct_answer": "Light following null geodesics in the curved spacetime around the Sun",
+      "explanation": "Light rays follow null geodesics, and the curvature of spacetime near a massive body bends their paths, as famously confirmed in 1919.",
+      "topic": "Tests of general relativity",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The metric tensor is symmetric, meaning:",
+      "options": ["g_mu-nu = g_nu-mu", "g_mu-nu = -g_nu-mu", "g_mu-nu = 0 for mu not equal to nu, always", "g_mu-nu depends only on mu"],
+      "correct_answer": "g_mu-nu = g_nu-mu",
+      "explanation": "Symmetry of the metric tensor is a fundamental assumption, reflecting the symmetric bilinear nature of the spacetime interval.",
+      "topic": "Metric tensor",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The signature of the metric, such as (-,+,+,+), determines:",
+      "options": ["Which directions in spacetime are timelike versus spacelike", "The total mass of the system", "The value of the cosmological constant", "The number of dimensions only"],
+      "correct_answer": "Which directions in spacetime are timelike versus spacelike",
+      "explanation": "The pattern of positive and negative eigenvalues of the metric fixes which coordinate directions behave as time versus space.",
+      "topic": "Metric tensor",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The principle of general covariance requires that the fundamental laws of physics:",
+      "options": ["Take the same tensorial form in all coordinate systems", "Hold only in inertial frames", "Depend explicitly on the choice of coordinates", "Apply only to flat spacetime"],
+      "correct_answer": "Take the same tensorial form in all coordinate systems",
+      "explanation": "General covariance is a guiding principle of general relativity, requiring physical laws to be expressed as tensor equations valid in any coordinate system.",
+      "topic": "General covariance",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Conservation of energy-momentum in general relativity is expressed locally as:",
+      "options": ["The covariant divergence of T^mu-nu equals zero", "T^mu-nu equals a constant", "The partial derivative of T^mu-nu equals T^mu-nu", "T^mu-nu equals zero everywhere"],
+      "correct_answer": "The covariant divergence of T^mu-nu equals zero",
+      "explanation": "This tensorial conservation law generalizes the flat-spacetime conservation of energy and momentum to curved spacetime.",
+      "topic": "Stress-energy tensor",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The cosmological constant Lambda, introduced into the Einstein field equations as G_mu-nu + Lambda g_mu-nu = (8 pi G/c^4) T_mu-nu, is associated physically with:",
+      "options": ["A form of vacuum energy / dark energy driving cosmic acceleration", "The mass of the electron", "The speed of light", "The Planck constant"],
+      "correct_answer": "A form of vacuum energy / dark energy driving cosmic acceleration",
+      "explanation": "Modern cosmology interprets the cosmological constant as an energy density inherent to empty space, responsible for the observed accelerating expansion of the universe.",
+      "topic": "Cosmological constant",
+      "difficulty": "medium"
+    }
+  ]
+}

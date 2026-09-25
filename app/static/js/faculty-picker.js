@@ -38,9 +38,35 @@ function initFacultyPicker(opts) {
     selectEl.value = value;
   }
 
+  // Normalizes capitalization/spacing/punctuation/"&" so a search doesn't fail just
+  // because of how the student typed it -- e.g. "Industrial Relations & Human
+  // Resources Management", "industrial  relations and human resources management."
+  // and "Industrial Relations and Human Resources Management" all normalize to the
+  // same string. Deliberately NOT fuzzy (no edit-distance/typo-tolerance): only
+  // capitalization, whitespace, punctuation and "&"/"and" are folded, so it can't
+  // silently match an unrelated department.
+  function normalize(s) {
+    return (s || '')
+      .toLowerCase()
+      .replace(/&/g, ' and ')
+      .replace(/[.,/#!$%^*;:{}=\-_`~()]/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  // A department matches if the search text appears in its canonical name OR any of
+  // its aliases (both normalized) -- covers common abbreviations (e.g. "IRHRM") and
+  // alternate real-world names (e.g. "Industrial Relations and Personnel
+  // Management") without inventing a duplicate department for each spelling.
+  function departmentMatches(dept, normalizedQuery) {
+    if (!normalizedQuery) return true;
+    if (normalize(dept.value).includes(normalizedQuery)) return true;
+    return (dept.aliases || []).some(alias => normalize(alias).includes(normalizedQuery));
+  }
+
   function renderFacultyChips(filterText) {
-    const q = (filterText || '').trim().toLowerCase();
-    const names = Object.keys(FACULTY_DEPARTMENTS).filter(n => !q || n.toLowerCase().includes(q));
+    const q = normalize(filterText);
+    const names = Object.keys(FACULTY_DEPARTMENTS).filter(n => !q || normalize(n).includes(q));
 
     if (names.length === 0) {
       facultyGrid.innerHTML = '<div class="picker-empty">No faculty matches "' + escapeHtml(filterText) + '"</div>';
@@ -68,10 +94,8 @@ function initFacultyPicker(opts) {
     }
     deptSearch.disabled = false;
 
-    const q = (filterText || '').trim().toLowerCase();
-    const depts = FACULTY_DEPARTMENTS[selectedFaculty].departments.filter(
-      d => !q || d.value.toLowerCase().includes(q)
-    );
+    const q = normalize(filterText);
+    const depts = FACULTY_DEPARTMENTS[selectedFaculty].departments.filter(d => departmentMatches(d, q));
 
     if (depts.length === 0) {
       deptGrid.innerHTML = '<div class="picker-empty">No department matches "' + escapeHtml(filterText) + '"</div>';

@@ -1,0 +1,375 @@
+{
+  "course_code": "CHM306",
+  "title": "Organic Reaction Mechanisms",
+  "level": "300",
+  "source_note": "Standard NUC-aligned Nigerian university 300L Organic Reaction Mechanisms curriculum: nucleophilic substitution (SN1/SN2), elimination (E1/E2), addition to alkenes, free-radical mechanisms, electrophilic aromatic substitution mechanism, nucleophilic acyl substitution and carbonyl addition mechanisms, reactive intermediates, and an introduction to pericyclic reactions -- the mechanistic complement to the functional-group-focused CHM305.",
+  "questions": [
+    {
+      "question": "An SN2 reaction mechanism is characterised by:",
+      "options": [
+        "A two-step process via a carbocation intermediate",
+        "A single concerted step in which the nucleophile attacks the electrophilic carbon from the backside as the leaving group departs, resulting in inversion of configuration",
+        "No dependence on the nucleophile's concentration",
+        "Formation of a planar, achiral intermediate"
+      ],
+      "correct_answer": "A single concerted step in which the nucleophile attacks the electrophilic carbon from the backside as the leaving group departs, resulting in inversion of configuration",
+      "explanation": "SN2 is a bimolecular, one-step mechanism; backside attack causes Walden inversion, and the rate depends on both nucleophile and substrate concentration (second order overall).",
+      "topic": "Nucleophilic substitution",
+      "difficulty": "medium"
+    },
+    {
+      "question": "An SN1 reaction proceeds through:",
+      "options": [
+        "A single concerted step",
+        "Rate-determining ionisation of the substrate to form a planar carbocation intermediate, followed by fast nucleophilic attack from either face",
+        "Simultaneous attack by two nucleophiles",
+        "No intermediate species at all"
+      ],
+      "correct_answer": "Rate-determining ionisation of the substrate to form a planar carbocation intermediate, followed by fast nucleophilic attack from either face",
+      "explanation": "SN1 is a two-step, unimolecular-rate-determining mechanism; the flat carbocation intermediate can be attacked from either face, typically giving racemisation (with possible partial inversion preference).",
+      "topic": "Nucleophilic substitution",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Tertiary alkyl halides react readily via SN1 but very poorly via SN2, mainly because:",
+      "options": [
+        "Steric bulk around the carbon hinders backside attack (disfavouring SN2), while the tertiary carbocation formed in SN1 is relatively stable (hyperconjugation/inductive effects)",
+        "Tertiary carbons have no leaving group",
+        "SN1 requires a strong nucleophile in high concentration",
+        "Tertiary substrates cannot ionise"
+      ],
+      "correct_answer": "Steric bulk around the carbon hinders backside attack (disfavouring SN2), while the tertiary carbocation formed in SN1 is relatively stable (hyperconjugation/inductive effects)",
+      "explanation": "Bulky tertiary substrates sterically block the SN2 backside approach, while the resulting tertiary carbocation is comparatively stabilised by hyperconjugation and inductive electron donation from three alkyl groups, favouring the SN1 pathway.",
+      "topic": "Nucleophilic substitution",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A polar aprotic solvent (e.g. DMSO or acetone), compared to a polar protic solvent, generally favours:",
+      "options": [
+        "SN1 reactions by stabilising carbocations through hydrogen bonding",
+        "SN2 reactions, because it solvates cations well but leaves the nucleophile relatively 'naked' and highly reactive",
+        "No substitution reactions at all",
+        "Only elimination reactions"
+      ],
+      "correct_answer": "SN2 reactions, because it solvates cations well but leaves the nucleophile relatively 'naked' and highly reactive",
+      "explanation": "Polar aprotic solvents cannot hydrogen-bond to anionic nucleophiles, so nucleophiles remain highly reactive ('naked'), accelerating the bimolecular SN2 pathway relative to protic solvents which cage and weaken nucleophiles via hydrogen bonding.",
+      "topic": "Nucleophilic substitution",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The E2 elimination mechanism requires:",
+      "options": [
+        "A two-step process through a carbocation",
+        "A single concerted step in which a base removes a beta-hydrogen as the leaving group departs simultaneously, requiring anti-periplanar geometry between the H and leaving group",
+        "No base at all",
+        "The substrate to first form a carbanion"
+      ],
+      "correct_answer": "A single concerted step in which a base removes a beta-hydrogen as the leaving group departs simultaneously, requiring anti-periplanar geometry between the H and leaving group",
+      "explanation": "E2 is a concerted, bimolecular elimination that proceeds fastest when the beta-hydrogen and leaving group are anti-periplanar, allowing optimal orbital overlap as the new pi bond forms.",
+      "topic": "Elimination reactions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The E1 elimination mechanism shares its first (rate-determining) step with:",
+      "options": ["SN2", "E2", "SN1 (formation of a carbocation intermediate)", "Radical polymerisation"],
+      "correct_answer": "SN1 (formation of a carbocation intermediate)",
+      "explanation": "Both E1 and SN1 begin with rate-determining ionisation of the substrate to a carbocation; the subsequent fast step is either loss of a beta-hydrogen (E1, giving alkene) or nucleophilic capture (SN1, giving substitution product), and both often occur as competing pathways.",
+      "topic": "Elimination reactions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Zaitsev's (Saytzeff's) rule predicts that, in the absence of steric factors favouring otherwise, an elimination reaction preferentially forms:",
+      "options": [
+        "The least substituted (least stable) alkene",
+        "The most substituted (most stable, generally more thermodynamically favoured) alkene as the major product",
+        "Only terminal alkenes",
+        "A mixture with no major product"
+      ],
+      "correct_answer": "The most substituted (most stable, generally more thermodynamically favoured) alkene as the major product",
+      "explanation": "Zaitsev's rule reflects that more substituted alkenes are generally more stable (more hyperconjugative stabilisation), and this more stable alkene is usually the major product in E1 and most E2 reactions.",
+      "topic": "Elimination reactions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Markovnikov's rule for the addition of HX to an unsymmetrical alkene states that the hydrogen adds to the carbon:",
+      "options": [
+        "Bearing the most hydrogens already, so the halide ends up on the more substituted carbon, via the more stable carbocation intermediate",
+        "Bearing the fewest hydrogens already",
+        "Chosen at random",
+        "That produces the less stable carbocation"
+      ],
+      "correct_answer": "Bearing the most hydrogens already, so the halide ends up on the more substituted carbon, via the more stable carbocation intermediate",
+      "explanation": "Protonation occurs to generate the more stable (more substituted) carbocation intermediate, which is then captured by the halide nucleophile, placing X on the more substituted carbon.",
+      "topic": "Addition mechanisms",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Anti-Markovnikov addition of HBr to an alkene occurs in the presence of peroxides because the reaction proceeds via:",
+      "options": [
+        "A carbocation intermediate, exactly as in normal Markovnikov addition",
+        "A free-radical chain mechanism, where the bromine radical adds first to give the more stable (more substituted) carbon radical",
+        "No mechanism at all -- it is spontaneous",
+        "Simple ionic addition unaffected by peroxides"
+      ],
+      "correct_answer": "A free-radical chain mechanism, where the bromine radical adds first to give the more stable (more substituted) carbon radical",
+      "explanation": "Peroxides initiate a radical chain mechanism; Br• adds to the terminal carbon to generate the more stable secondary/tertiary radical, reversing the regiochemistry compared to the ionic (Markovnikov) HBr addition.",
+      "topic": "Free radical mechanisms",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A free-radical chain reaction, such as the halogenation of alkanes, proceeds through three characteristic phases:",
+      "options": [
+        "Nucleophilic attack, elimination, rearrangement",
+        "Initiation (radical formation), propagation (chain-carrying steps), and termination (radical combination)",
+        "Protonation, deprotonation, tautomerisation",
+        "Oxidation, reduction, hydrolysis"
+      ],
+      "correct_answer": "Initiation (radical formation), propagation (chain-carrying steps), and termination (radical combination)",
+      "explanation": "Radical chain mechanisms begin with homolytic bond cleavage (initiation, e.g. by light or heat), proceed through repeating radical-generating propagation steps, and end when two radicals combine (termination).",
+      "topic": "Free radical mechanisms",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The relative stability order of carbocations is:",
+      "options": [
+        "Methyl > primary > secondary > tertiary",
+        "Tertiary > secondary > primary > methyl",
+        "All carbocations are equally stable",
+        "Primary > tertiary > secondary > methyl"
+      ],
+      "correct_answer": "Tertiary > secondary > primary > methyl",
+      "explanation": "More alkyl substituents stabilise the positive charge through hyperconjugation and inductive electron donation, so tertiary carbocations are the most stable and methyl cations the least.",
+      "topic": "Reactive intermediates",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A carbocation can undergo a 1,2-hydride or 1,2-alkyl shift (rearrangement) when:",
+      "options": [
+        "It is already the most stable possible carbocation",
+        "A neighbouring carbon bears a hydrogen or alkyl group that can migrate with its bonding electrons to form a more stable carbocation",
+        "No adjacent atoms are present",
+        "The reaction is occurring under SN2 conditions"
+      ],
+      "correct_answer": "A neighbouring carbon bears a hydrogen or alkyl group that can migrate with its bonding electrons to form a more stable carbocation",
+      "explanation": "Carbocation rearrangements occur when migration of a hydride or alkyl group from an adjacent carbon converts a less stable carbocation into a more stable one, a hallmark of SN1/E1 mechanisms.",
+      "topic": "Reactive intermediates",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Carbenes, such as :CH2, are reactive intermediates characterised by:",
+      "options": [
+        "A carbon atom with a full octet and no charge",
+        "A neutral carbon atom with only six valence electrons (two nonbonding) and two substituents, making it highly reactive and electron-deficient",
+        "A permanently negative charge on carbon",
+        "Being unreactive and stable at room temperature"
+      ],
+      "correct_answer": "A neutral carbon atom with only six valence electrons (two nonbonding) and two substituents, making it highly reactive and electron-deficient",
+      "explanation": "Carbenes are neutral but electron-deficient (sextet) reactive intermediates that can be singlet (paired nonbonding electrons) or triplet (unpaired), and readily undergo insertion and cyclopropanation reactions.",
+      "topic": "Reactive intermediates",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In the mechanism of electrophilic aromatic substitution (EAS), the key intermediate formed after the electrophile attacks the aromatic ring is called:",
+      "options": [
+        "A carbanion",
+        "The arenium ion (sigma complex), a resonance-stabilised, non-aromatic cyclohexadienyl cation",
+        "A free radical",
+        "A carbene"
+      ],
+      "correct_answer": "The arenium ion (sigma complex), a resonance-stabilised, non-aromatic cyclohexadienyl cation",
+      "explanation": "EAS proceeds via addition of the electrophile to form a positively charged, resonance-stabilised (but non-aromatic) arenium ion intermediate, before a proton is lost to restore aromaticity.",
+      "topic": "Aromatic substitution mechanism",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The final step in the electrophilic aromatic substitution mechanism, which restores aromaticity, is:",
+      "options": [
+        "Addition of a second electrophile",
+        "Loss of a proton from the sp3 carbon of the arenium ion, reforming the aromatic pi system",
+        "Reduction of the ring",
+        "Formation of a new sigma bond to hydrogen at the ipso carbon"
+      ],
+      "correct_answer": "Loss of a proton from the sp3 carbon of the arenium ion, reforming the aromatic pi system",
+      "explanation": "Deprotonation of the sp3 carbon bearing both H and the new substituent regenerates full ring conjugation, driving the reaction because aromatic stabilisation is a strong thermodynamic sink.",
+      "topic": "Aromatic substitution mechanism",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Nucleophilic acyl substitution, the general mechanism for reactions of carboxylic acid derivatives, proceeds via:",
+      "options": [
+        "Direct backside SN2-like attack on the carbonyl carbon with simultaneous loss of the leaving group",
+        "Nucleophilic addition to the carbonyl carbon forming a tetrahedral intermediate, followed by collapse of that intermediate to expel the leaving group and reform the C=O",
+        "A radical chain process",
+        "Simple proton transfer with no bond formation to carbon"
+      ],
+      "correct_answer": "Nucleophilic addition to the carbonyl carbon forming a tetrahedral intermediate, followed by collapse of that intermediate to expel the leaving group and reform the C=O",
+      "explanation": "Unlike SN2 at sp3 carbon, acyl substitution proceeds through a discrete tetrahedral intermediate (addition-elimination mechanism), reflecting the planar sp2 carbonyl carbon and the presence of a leaving group.",
+      "topic": "Carbonyl mechanisms",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Nucleophilic addition to a simple aldehyde or ketone carbonyl (e.g. by a Grignard reagent or cyanide) proceeds by:",
+      "options": [
+        "The nucleophile attacking the electrophilic carbonyl carbon, pushing electron density onto oxygen to form a tetrahedral alkoxide intermediate",
+        "The nucleophile attacking oxygen exclusively",
+        "Formation of an aromatic ring",
+        "A concerted pericyclic pathway only"
+      ],
+      "correct_answer": "The nucleophile attacking the electrophilic carbonyl carbon, pushing electron density onto oxygen to form a tetrahedral alkoxide intermediate",
+      "explanation": "Because there is no leaving group on the sp2 carbonyl carbon of an aldehyde/ketone, nucleophilic attack simply generates a stable tetrahedral alkoxide (protonated on workup to an alcohol), rather than proceeding to substitution.",
+      "topic": "Carbonyl mechanisms",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Hammond postulate states that the transition state of a reaction step resembles:",
+      "options": [
+        "Always the reactants, regardless of the reaction's thermodynamics",
+        "Whichever species (reactant-like or product-like) it is closer to in energy -- so an endothermic step has a product-like transition state and an exothermic step has a reactant-like one",
+        "Neither the reactant nor the product ever",
+        "A fixed structure independent of energy"
+      ],
+      "correct_answer": "Whichever species (reactant-like or product-like) it is closer to in energy -- so an endothermic step has a product-like transition state and an exothermic step has a reactant-like one",
+      "explanation": "The Hammond postulate lets chemists infer transition-state structure from the relative stability of nearby species: for a highly endothermic step (like carbocation formation), the TS resembles the higher-energy product (the carbocation).",
+      "topic": "Mechanistic theory",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In a reaction with kinetic vs thermodynamic control (e.g. 1,2- vs 1,4-addition to a conjugated diene), the kinetic product is the one that:",
+      "options": [
+        "Is always more stable",
+        "Forms fastest (lowest activation energy), which may not be the most thermodynamically stable product; low temperature/short reaction time favours it",
+        "Forms only at very high temperature",
+        "Is identical to the thermodynamic product in all cases"
+      ],
+      "correct_answer": "Forms fastest (lowest activation energy), which may not be the most thermodynamically stable product; low temperature/short reaction time favours it",
+      "explanation": "The kinetic product arises from the lower-activation-energy pathway and dominates under conditions (low T, irreversible/short reaction time) where the reaction does not have the chance to equilibrate to the more stable thermodynamic product.",
+      "topic": "Mechanistic theory",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The Diels-Alder reaction, a classic pericyclic reaction, is a [4+2] cycloaddition between:",
+      "options": [
+        "Two alkenes only",
+        "A conjugated diene and a dienophile (typically an alkene), forming a new six-membered ring in a single concerted step",
+        "Two separate carbonyl compounds",
+        "A radical and a carbanion"
+      ],
+      "correct_answer": "A conjugated diene and a dienophile (typically an alkene), forming a new six-membered ring in a single concerted step",
+      "explanation": "The Diels-Alder reaction is a concerted, single-step [4πs+2πs] cycloaddition forming two new sigma bonds and a cyclohexene ring, with no discrete ionic or radical intermediate.",
+      "topic": "Pericyclic reactions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Pericyclic reactions such as the Diels-Alder reaction are described as 'concerted' because they:",
+      "options": [
+        "Occur via two clearly separable ionic steps",
+        "Proceed through a single cyclic transition state with bond-making and bond-breaking occurring simultaneously, with no discrete intermediate",
+        "Require a strong acid catalyst always",
+        "Only occur under radical conditions"
+      ],
+      "correct_answer": "Proceed through a single cyclic transition state with bond-making and bond-breaking occurring simultaneously, with no discrete intermediate",
+      "explanation": "Pericyclic reactions proceed through a single, cyclic, symmetry-allowed transition state without forming an intermediate, distinguishing them mechanistically from stepwise ionic or radical processes.",
+      "topic": "Pericyclic reactions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The rate law for an SN2 reaction, Rate = k[substrate][nucleophile], indicates that the reaction is:",
+      "options": ["Zero order overall", "First order overall", "Second order overall, first order in each reactant", "Third order overall"],
+      "correct_answer": "Second order overall, first order in each reactant",
+      "explanation": "Because both substrate and nucleophile appear in the rate-determining (and only) step of SN2, the reaction is first order in each, giving an overall second-order rate law.",
+      "topic": "Nucleophilic substitution",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The rate law for an SN1 reaction, Rate = k[substrate], is independent of nucleophile concentration because:",
+      "options": [
+        "The nucleophile is involved in the rate-determining step",
+        "The rate-determining step is the slow ionisation of the substrate to form the carbocation, which occurs before the (fast) nucleophile attack",
+        "SN1 reactions have no rate-determining step",
+        "The nucleophile is never involved in the overall reaction"
+      ],
+      "correct_answer": "The rate-determining step is the slow ionisation of the substrate to form the carbocation, which occurs before the (fast) nucleophile attack",
+      "explanation": "Because ionisation (not nucleophilic attack) is rate-limiting in SN1, the overall rate depends only on substrate concentration, unaffected by nucleophile concentration or identity (within reason).",
+      "topic": "Nucleophilic substitution",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Neighbouring group participation (anchimeric assistance) in a substitution reaction occurs when:",
+      "options": [
+        "An adjacent group with a lone pair or pi bond intramolecularly assists displacement of the leaving group, often forming a bridged intermediate and accelerating the reaction",
+        "No neighbouring atoms are present",
+        "The leaving group leaves without any assistance",
+        "The reaction rate is always slowed down"
+      ],
+      "correct_answer": "An adjacent group with a lone pair or pi bond intramolecularly assists displacement of the leaving group, often forming a bridged intermediate and accelerating the reaction",
+      "explanation": "Neighbouring group participation involves an internal nucleophile (e.g. a halide, sulfide, or pi system) stabilising the developing positive charge as the leaving group departs, often via a bridged (e.g. bromonium- or episulfonium-like) intermediate, accelerating the reaction and controlling stereochemistry.",
+      "topic": "Reactive intermediates",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Electrophilic addition of Br2 to an alkene proceeds via a bromonium ion intermediate, which explains why the reaction gives predominantly:",
+      "options": [
+        "Syn addition (both bromine atoms on the same face)",
+        "Anti addition (the two bromine atoms end up on opposite faces of the former double bond), due to backside opening of the cyclic bromonium ion by bromide",
+        "No stereochemical preference at all",
+        "Substitution rather than addition"
+      ],
+      "correct_answer": "Anti addition (the two bromine atoms end up on opposite faces of the former double bond), due to backside opening of the cyclic bromonium ion by bromide",
+      "explanation": "The cyclic bromonium ion is opened by backside attack of bromide at either carbon, placing the two bromine substituents anti (trans) to each other on the resulting vicinal dibromide.",
+      "topic": "Addition mechanisms",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Acid-catalysed hydration of an alkene (Markovnikov addition of water) proceeds through the mechanistic steps:",
+      "options": [
+        "Protonation of the alkene to form the more stable carbocation, followed by nucleophilic attack of water, then deprotonation of the resulting oxonium ion",
+        "Direct attack of hydroxide on the alkene with no catalyst",
+        "A radical chain mechanism",
+        "A pericyclic [4+2] mechanism"
+      ],
+      "correct_answer": "Protonation of the alkene to form the more stable carbocation, followed by nucleophilic attack of water, then deprotonation of the resulting oxonium ion",
+      "explanation": "Acid-catalysed hydration is mechanistically analogous to HX addition: the alkene is protonated to the more stable carbocation, water attacks as the nucleophile, and loss of a proton from the resulting oxonium ion gives the neutral alcohol.",
+      "topic": "Addition mechanisms",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the mechanism of ester hydrolysis under basic conditions (saponification), the reaction is essentially irreversible because:",
+      "options": [
+        "The tetrahedral intermediate collapses to expel alkoxide, which is then deprotonated (by the released carboxylic acid) to form the resonance-stabilised, unreactive carboxylate anion",
+        "No tetrahedral intermediate forms",
+        "The alkoxide leaving group is a stronger nucleophile than hydroxide",
+        "Basic hydrolysis produces an equilibrium mixture identical to acid-catalysed hydrolysis"
+      ],
+      "correct_answer": "The tetrahedral intermediate collapses to expel alkoxide, which is then deprotonated (by the released carboxylic acid) to form the resonance-stabilised, unreactive carboxylate anion",
+      "explanation": "Unlike acid-catalysed (reversible) ester hydrolysis, base hydrolysis is driven to completion because the final carboxylate product is resonance-stabilised and unreactive toward further nucleophilic attack, pulling the equilibrium irreversibly toward hydrolysis.",
+      "topic": "Carbonyl mechanisms",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Allylic and benzylic carbocations are unusually stable, more so than a simple secondary alkyl cation, because:",
+      "options": [
+        "They have no adjacent pi system",
+        "The positive charge is delocalised by resonance into an adjacent pi system (the alkene or aromatic ring)",
+        "They contain extra protons",
+        "They are always primary carbocations"
+      ],
+      "correct_answer": "The positive charge is delocalised by resonance into an adjacent pi system (the alkene or aromatic ring)",
+      "explanation": "Resonance delocalisation of the positive charge over an adjacent double bond (allylic) or aromatic ring (benzylic) provides substantial extra stabilisation beyond simple inductive/hyperconjugative effects.",
+      "topic": "Reactive intermediates",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The rate-determining step of a multistep reaction mechanism is:",
+      "options": [
+        "Always the first step, by definition",
+        "The slowest step in the overall sequence, which controls the observed overall reaction rate",
+        "The step with the lowest activation energy",
+        "Irrelevant to the overall rate"
+      ],
+      "correct_answer": "The slowest step in the overall sequence, which controls the observed overall reaction rate",
+      "explanation": "In a multistep mechanism, the step with the highest activation energy (the 'bottleneck') is rate-determining, and the experimentally observed rate law reflects the molecularity of that step.",
+      "topic": "Mechanistic theory",
+      "difficulty": "easy"
+    }
+  ]
+}

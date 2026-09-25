@@ -1,0 +1,393 @@
+{
+  "course_code": "SLT203",
+  "title": "Basic Instrumentation",
+  "level": "200",
+  "source_note": "Standard NUC-aligned 200-level Science Laboratory Technology curriculum on common laboratory instruments: their working principles, components, calibration/maintenance, and correct operation (pH meters, spectrophotometers/colorimeters, autoclaves, ovens/incubators, balances, microscopes, conductivity meters, centrifuges). Focus is on instrument operation and parts, distinct from the analytical calculation focus of SLT201/SLT202.",
+  "questions": [
+    {
+      "question": "A pH meter measures the pH of a solution by:",
+      "options": [
+        "Measuring the colour change of an added indicator dye",
+        "Detecting the electrical potential difference generated across a glass electrode membrane, which is proportional to hydrogen ion activity",
+        "Weighing the solution before and after adding acid",
+        "Measuring the boiling point of the solution"
+      ],
+      "correct_answer": "Detecting the electrical potential difference generated across a glass electrode membrane, which is proportional to hydrogen ion activity",
+      "explanation": "The glass electrode develops a potential across its thin glass membrane that varies with the hydrogen ion activity of the solution, and this potential is converted to a pH reading.",
+      "topic": "pH meter",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Standard buffer solutions used to calibrate a pH meter typically have pH values of:",
+      "options": [
+        "1, 2, and 3",
+        "4, 7, and 10",
+        "5, 6, and 8 only",
+        "0 and 14 only"
+      ],
+      "correct_answer": "4, 7, and 10",
+      "explanation": "Certified buffers at pH 4.0, 7.0, and 10.0 are the standard reference points used for a multi-point pH meter calibration, bracketing most sample pH ranges.",
+      "topic": "pH meter",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Why should calibration buffers bracket the expected pH range of the samples to be tested?",
+      "options": [
+        "It has no real effect on accuracy",
+        "It ensures the meter's response is linear and accurate across the exact range of the readings to be taken, minimizing interpolation error",
+        "It makes the buffers last longer",
+        "It reduces the cost of the buffer solutions"
+      ],
+      "correct_answer": "It ensures the meter's response is linear and accurate across the exact range of the readings to be taken, minimizing interpolation error",
+      "explanation": "Calibrating with buffers on either side of expected sample values ensures the instrument's readings are most accurate within that interpolated range.",
+      "topic": "pH meter",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Between uses, a glass pH electrode should be stored:",
+      "options": [
+        "Completely dry in an empty container",
+        "Immersed in an appropriate storage solution (e.g. KCl storage solution) to keep the glass membrane hydrated",
+        "Frozen in a freezer",
+        "Submerged in concentrated acid indefinitely"
+      ],
+      "correct_answer": "Immersed in an appropriate storage solution (e.g. KCl storage solution) to keep the glass membrane hydrated",
+      "explanation": "Allowing the glass membrane to dry out damages its hydrated gel layer and degrades electrode response, so it must be stored moist in the recommended storage solution.",
+      "topic": "pH meter maintenance",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A conductivity meter is used to measure:",
+      "options": [
+        "The colour intensity of a solution",
+        "The ability of a solution to conduct electric current, which relates to its dissolved ion concentration",
+        "The exact identity of dissolved solutes",
+        "The viscosity of a liquid"
+      ],
+      "correct_answer": "The ability of a solution to conduct electric current, which relates to its dissolved ion concentration",
+      "explanation": "Conductivity meters apply a small AC voltage across electrodes and measure the resulting current, which increases with the concentration of dissolved ions in solution.",
+      "topic": "Conductivity meter",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The key difference between a simple colorimeter and a spectrophotometer is that a spectrophotometer:",
+      "options": [
+        "Uses coloured glass or gelatin filters to select a broad band of wavelengths, while a colorimeter uses a monochromator",
+        "Uses a monochromator (prism or diffraction grating) to select a narrow, precisely tunable wavelength, whereas a colorimeter uses simple broad-band filters",
+        "Cannot measure absorbance at all",
+        "Is used only for opaque solid samples"
+      ],
+      "correct_answer": "Uses a monochromator (prism or diffraction grating) to select a narrow, precisely tunable wavelength, whereas a colorimeter uses simple broad-band filters",
+      "explanation": "A spectrophotometer's monochromator allows fine, continuous wavelength selection across a spectrum, giving greater precision than a colorimeter's fixed broad-band coloured filters.",
+      "topic": "Spectrophotometer vs colorimeter",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The basic optical components of a single-beam UV-Visible spectrophotometer, in order from light source to readout, are:",
+      "options": [
+        "Detector, monochromator, light source, sample cell, display",
+        "Light source, monochromator, sample cell (cuvette), detector, readout/display",
+        "Sample cell, light source, display, detector, monochromator",
+        "Monochromator, display, light source, detector, sample cell"
+      ],
+      "correct_answer": "Light source, monochromator, sample cell (cuvette), detector, readout/display",
+      "explanation": "Light travels from the source, through the monochromator (wavelength selector), through the sample in its cuvette, onto the detector, and the signal is shown on the readout.",
+      "topic": "Spectrophotometer components",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For measurements in the ultraviolet (UV) region, a spectrophotometer typically uses which light source, since ordinary tungsten lamps do not emit sufficient UV light?",
+      "options": [
+        "A deuterium (or hydrogen) discharge lamp",
+        "A simple candle flame",
+        "An incandescent tungsten filament lamp only",
+        "A laser pointer"
+      ],
+      "correct_answer": "A deuterium (or hydrogen) discharge lamp",
+      "explanation": "Deuterium lamps emit a strong, continuous spectrum in the UV range, while tungsten-halogen lamps are used for the visible range instead.",
+      "topic": "Spectrophotometer components",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Why must quartz cuvettes, rather than ordinary glass or plastic cuvettes, be used when taking absorbance readings in the UV range?",
+      "options": [
+        "Quartz is cheaper than glass",
+        "Glass and most plastics strongly absorb UV light, which would interfere with the true sample reading, while quartz is transparent to UV",
+        "Quartz cuvettes are unbreakable",
+        "Glass cuvettes cannot hold aqueous solutions"
+      ],
+      "correct_answer": "Glass and most plastics strongly absorb UV light, which would interfere with the true sample reading, while quartz is transparent to UV",
+      "explanation": "Ordinary glass absorbs most UV wavelengths, so quartz (or fused silica) cuvettes, which are UV-transparent, must be used for accurate UV absorbance measurements.",
+      "topic": "Spectrophotometer components",
+      "difficulty": "medium"
+    },
+    {
+      "question": "An autoclave sterilizes materials by using:",
+      "options": [
+        "Dry heat at atmospheric pressure for several hours",
+        "Saturated steam under pressure, typically around 121 degC at 15 psi for 15-20 minutes",
+        "Ultraviolet light exposure only",
+        "Cold ethanol immersion"
+      ],
+      "correct_answer": "Saturated steam under pressure, typically around 121 degC at 15 psi for 15-20 minutes",
+      "explanation": "Autoclaving uses pressurized saturated steam, commonly at 121 degC and 15 psi for 15-20 minutes, to achieve moist-heat sterilization that kills microorganisms including spores.",
+      "topic": "Autoclave",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Increasing the pressure inside an autoclave chamber is essential for effective sterilization because it:",
+      "options": [
+        "Raises the boiling point of water, allowing steam to reach a higher, more lethal temperature",
+        "Reduces the temperature needed for sterilization",
+        "Removes the need for any holding time",
+        "Has no effect on the sterilization process"
+      ],
+      "correct_answer": "Raises the boiling point of water, allowing steam to reach a higher, more lethal temperature",
+      "explanation": "Increasing pressure raises the boiling point of water above 100 degC, so the steam produced is hotter and penetrates materials more effectively, ensuring reliable microbial kill.",
+      "topic": "Autoclave",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A hot air oven used for dry-heat sterilization of glassware typically requires higher temperatures and longer times (e.g. 160-180 degC for 1-2 hours) than an autoclave because:",
+      "options": [
+        "Dry heat is a less efficient means of heat transfer to microorganisms than moist steam heat",
+        "Ovens cannot reach high temperatures",
+        "Dry heat kills microorganisms faster than steam",
+        "Glassware is destroyed by moist steam"
+      ],
+      "correct_answer": "Dry heat is a less efficient means of heat transfer to microorganisms than moist steam heat",
+      "explanation": "Dry heat penetrates and transfers heat to microbial cells less efficiently than moist steam, so higher temperatures and longer exposure times are needed for equivalent sterilization.",
+      "topic": "Hot air oven",
+      "difficulty": "medium"
+    },
+    {
+      "question": "An incubator is designed primarily to:",
+      "options": [
+        "Sterilize glassware using dry heat",
+        "Maintain a constant, controlled temperature (and sometimes humidity/CO2) suitable for culturing microorganisms or cells",
+        "Measure the pH of culture media",
+        "Weigh microbial samples accurately"
+      ],
+      "correct_answer": "Maintain a constant, controlled temperature (and sometimes humidity/CO2) suitable for culturing microorganisms or cells",
+      "explanation": "Incubators provide a stable, controlled environment, chiefly constant temperature, that supports the growth of microbial cultures or cells over time.",
+      "topic": "Incubator",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A laboratory water bath is chosen over a hot plate or naked flame for certain procedures mainly because it:",
+      "options": [
+        "Can heat samples above 200 degC",
+        "Provides gentle, even, controllable heating at temperatures generally below 100 degC without direct flame contact",
+        "Requires no water at all",
+        "Is used exclusively for freezing samples"
+      ],
+      "correct_answer": "Provides gentle, even, controllable heating at temperatures generally below 100 degC without direct flame contact",
+      "explanation": "A water bath transfers heat gently and evenly via surrounding water, useful for heat-sensitive or flammable samples that should not contact a direct flame or very high heat.",
+      "topic": "Water bath",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The draft shield (glass doors) surrounding the pan of an analytical balance serves to:",
+      "options": [
+        "Increase the balance's maximum weighing capacity",
+        "Protect the weighing pan from air currents and dust that would cause an unstable or inaccurate reading",
+        "Illuminate the sample for better visibility",
+        "Automatically calibrate the balance"
+      ],
+      "correct_answer": "Protect the weighing pan from air currents and dust that would cause an unstable or inaccurate reading",
+      "explanation": "Because analytical balances are sensitive to fractions of a milligram, even small air currents can disturb the reading, so a draft shield encloses the pan during weighing.",
+      "topic": "Analytical balance",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Calibrating an instrument means:",
+      "options": [
+        "Cleaning the instrument thoroughly",
+        "Comparing and adjusting the instrument's readings against a known reference standard to ensure accuracy",
+        "Replacing the instrument's power source",
+        "Increasing the instrument's measuring range"
+      ],
+      "correct_answer": "Comparing and adjusting the instrument's readings against a known reference standard to ensure accuracy",
+      "explanation": "Calibration checks and, where necessary, adjusts an instrument's output against certified reference standards so its readings can be trusted as accurate.",
+      "topic": "Instrument calibration",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In a standard compound light microscope, the total magnification of the image is calculated as:",
+      "options": [
+        "Eyepiece magnification minus objective magnification",
+        "Eyepiece magnification multiplied by objective magnification",
+        "Eyepiece magnification divided by objective magnification",
+        "Objective magnification alone, ignoring the eyepiece"
+      ],
+      "correct_answer": "Eyepiece magnification multiplied by objective magnification",
+      "explanation": "Total magnification equals the magnifying power of the eyepiece (ocular) lens multiplied by that of the objective lens in use.",
+      "topic": "Microscope",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A microscope fitted with a x10 eyepiece and a x40 objective lens gives a total magnification of:",
+      "options": ["x50", "x4", "x400", "x30"],
+      "correct_answer": "x400",
+      "explanation": "Total magnification = eyepiece x objective = 10 x 40 = 400.",
+      "topic": "Microscope calculations",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The condenser located beneath the stage of a compound microscope functions to:",
+      "options": [
+        "Hold the specimen slide in place",
+        "Focus and concentrate light from the light source onto the specimen",
+        "Magnify the image directly",
+        "Clean the objective lenses"
+      ],
+      "correct_answer": "Focus and concentrate light from the light source onto the specimen",
+      "explanation": "The condenser lens system gathers and focuses light onto the specimen plane, improving illumination and image resolution.",
+      "topic": "Microscope",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Immersion oil is used with the highest-power (e.g. x100) objective lens of a microscope mainly to:",
+      "options": [
+        "Clean the lens surface",
+        "Match the refractive index between the slide and the lens, reducing light refraction/loss and improving resolution",
+        "Prevent the slide from drying out",
+        "Increase the magnification power beyond x100"
+      ],
+      "correct_answer": "Match the refractive index between the slide and the lens, reducing light refraction/loss and improving resolution",
+      "explanation": "Immersion oil has a refractive index close to glass, minimizing light bending between the slide and lens and allowing higher resolution imaging at high magnification.",
+      "topic": "Microscope",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A refrigerated centrifuge is preferred over a standard bench-top centrifuge when processing samples that are:",
+      "options": [
+        "Completely inert and heat-stable",
+        "Heat-sensitive (e.g. certain proteins or cells) that could degrade from frictional heat generated during high-speed spinning",
+        "Already frozen solid",
+        "Extremely dilute aqueous salt solutions only"
+      ],
+      "correct_answer": "Heat-sensitive (e.g. certain proteins or cells) that could degrade from frictional heat generated during high-speed spinning",
+      "explanation": "High-speed centrifugation generates frictional heat; a refrigerated centrifuge maintains a low temperature to protect temperature-sensitive biological samples during the run.",
+      "topic": "Centrifuge",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Proper electrical earthing (grounding) of laboratory instruments is important mainly because it:",
+      "options": [
+        "Improves the instrument's measurement accuracy automatically",
+        "Provides a safe path for fault current, reducing the risk of electric shock if a fault develops",
+        "Increases the instrument's power consumption",
+        "Is required only for battery-powered instruments"
+      ],
+      "correct_answer": "Provides a safe path for fault current, reducing the risk of electric shock if a fault develops",
+      "explanation": "Earthing diverts stray or fault current safely to ground, protecting the operator from electric shock if internal insulation fails.",
+      "topic": "Electrical safety",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A voltage stabilizer or uninterruptible power supply (UPS) is often used with sensitive laboratory instruments mainly to:",
+      "options": [
+        "Increase the instrument's maximum reading range",
+        "Protect the instrument from voltage fluctuations and power interruptions that could damage components or corrupt data",
+        "Replace the need for regular calibration",
+        "Reduce the instrument's electricity bill"
+      ],
+      "correct_answer": "Protect the instrument from voltage fluctuations and power interruptions that could damage components or corrupt data",
+      "explanation": "Unstable mains power (surges, sags, outages) can damage sensitive electronics or interrupt a run; stabilizers and UPS units smooth and maintain power supply.",
+      "topic": "Instrument maintenance",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In instrumentation, a 'transducer' is a device that:",
+      "options": [
+        "Amplifies an electrical signal only",
+        "Converts one form of energy or signal (e.g. a chemical or physical quantity) into another, usually an electrical signal",
+        "Displays results on a digital screen",
+        "Stores calibration data permanently"
+      ],
+      "correct_answer": "Converts one form of energy or signal (e.g. a chemical or physical quantity) into another, usually an electrical signal",
+      "explanation": "A transducer changes a physical or chemical quantity, such as light intensity, pH, or pressure, into a proportional electrical signal that the instrument can measure and display.",
+      "topic": "Instrumentation principles",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The 'sensitivity' of an instrument refers to:",
+      "options": [
+        "How expensive the instrument is",
+        "The smallest change in the measured quantity that the instrument can reliably detect and register",
+        "How many samples it can process per hour",
+        "The colour of its display screen"
+      ],
+      "correct_answer": "The smallest change in the measured quantity that the instrument can reliably detect and register",
+      "explanation": "Sensitivity describes an instrument's ability to respond to and register small changes in the quantity being measured.",
+      "topic": "Instrumentation concepts",
+      "difficulty": "medium"
+    },
+    {
+      "question": "'Precision' of an instrument, as distinct from accuracy, refers to:",
+      "options": [
+        "How close a single reading is to the true value",
+        "How closely repeated measurements of the same quantity agree with one another, regardless of the true value",
+        "The purchase cost of the instrument",
+        "The maximum measuring range of the instrument"
+      ],
+      "correct_answer": "How closely repeated measurements of the same quantity agree with one another, regardless of the true value",
+      "explanation": "Precision reflects the reproducibility (closeness of agreement) between repeated measurements, which is a separate concept from accuracy (closeness to the true value).",
+      "topic": "Instrumentation concepts",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Instruments in a laboratory should be calibrated:",
+      "options": [
+        "Only once, when first purchased, and never again",
+        "At regular, defined intervals (and after any repair/relocation) against traceable reference standards to maintain reliable results",
+        "Only if a result looks obviously wrong",
+        "Only by the original manufacturer, and never on site"
+      ],
+      "correct_answer": "At regular, defined intervals (and after any repair/relocation) against traceable reference standards to maintain reliable results",
+      "explanation": "Good laboratory practice requires periodic calibration against traceable standards, since instrument response can drift over time, after repairs, or after being moved.",
+      "topic": "Instrument calibration",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Compared with a traditional mercury-in-glass thermometer, a digital (thermocouple or thermistor-based) thermometer generally offers the advantage of:",
+      "options": [
+        "Being unbreakable and completely free of any measurement error",
+        "Faster response and direct numeric readout, though it still requires periodic calibration for accuracy",
+        "Never needing a power source",
+        "Being usable without any prior calibration"
+      ],
+      "correct_answer": "Faster response and direct numeric readout, though it still requires periodic calibration for accuracy",
+      "explanation": "Digital temperature sensors typically respond faster and give a direct digital readout, but like any instrument they must still be periodically calibrated to remain accurate.",
+      "topic": "Temperature measurement",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A routine preventive maintenance schedule for laboratory instruments (e.g. regular cleaning, lubrication, and function checks) is important mainly because it:",
+      "options": [
+        "Guarantees the instrument will never break down",
+        "Helps detect early wear or faults, prolonging instrument life and reducing the risk of inaccurate results or sudden failure",
+        "Is a legal requirement with no practical benefit",
+        "Eliminates the need for any calibration"
+      ],
+      "correct_answer": "Helps detect early wear or faults, prolonging instrument life and reducing the risk of inaccurate results or sudden failure",
+      "explanation": "Preventive maintenance catches developing problems early, keeps instruments performing within specification, and reduces unplanned downtime and costly failures.",
+      "topic": "Instrument maintenance",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For a given analytical balance model, increasing its maximum weighing capacity generally comes at the cost of:",
+      "options": [
+        "Improved readability (finer precision)",
+        "Reduced readability (coarser precision), since capacity and fine precision are generally a trade-off in balance design",
+        "No effect on precision at all",
+        "A permanently fixed reading regardless of load"
+      ],
+      "correct_answer": "Reduced readability (coarser precision), since capacity and fine precision are generally a trade-off in balance design",
+      "explanation": "Balances designed for larger maximum loads generally have coarser readability than balances designed for small loads, reflecting an inherent capacity-versus-precision trade-off.",
+      "topic": "Analytical balance",
+      "difficulty": "hard"
+    }
+  ]
+}

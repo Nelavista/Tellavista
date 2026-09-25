@@ -1,0 +1,240 @@
+{
+  "course_code": "CSC331",
+  "title": "Artificial Intelligence",
+  "level": "300",
+  "source_note": "Standard NUC-aligned introductory Artificial Intelligence curriculum: intelligent agents, search strategies, knowledge representation, logic-based reasoning, constraint satisfaction, and expert systems. Grounded against LASU's own CSC437 'Artificial Intelligence' course description (intelligent agents, problem solving as search, search strategies, CSPs, logic-based knowledge representation, natural language understanding, expert systems, pattern recognition), authored here under the assigned code CSC331.",
+  "questions": [
+    {
+      "question": "What is the general goal of Artificial Intelligence as a field of study?",
+      "options": ["To build systems that can perform tasks that typically require human intelligence", "To design faster computer hardware exclusively", "To create physical robots only", "To replace all human decision-making with random processes"],
+      "correct_answer": "To build systems that can perform tasks that typically require human intelligence",
+      "explanation": "AI is broadly concerned with creating systems capable of reasoning, learning, perceiving, and acting in ways that emulate or achieve human-like intelligent behavior.",
+      "topic": "AI fundamentals",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In AI, what is an 'intelligent agent'?",
+      "options": ["An entity that perceives its environment through sensors and acts upon it through actuators to achieve goals", "A synonym for any computer program regardless of function", "A device used solely for data storage", "A physical network cable"],
+      "correct_answer": "An entity that perceives its environment through sensors and acts upon it through actuators to achieve goals",
+      "explanation": "An intelligent agent is defined by its perceive-act cycle: it senses its environment and takes actions intended to achieve specified goals or maximize performance.",
+      "topic": "Intelligent agents",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is a 'rational agent' in AI theory?",
+      "options": ["An agent that selects actions expected to maximize its performance measure given its knowledge and percepts", "An agent that always acts randomly", "An agent that never interacts with its environment", "An agent that can only follow pre-scripted, unchanging rules"],
+      "correct_answer": "An agent that selects actions expected to maximize its performance measure given its knowledge and percepts",
+      "explanation": "Rationality in AI means choosing, at each point, the action that is expected to best achieve the agent's goals based on available information.",
+      "topic": "Intelligent agents",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In problem-solving as search, what does the 'state space' represent?",
+      "options": ["The set of all possible configurations or states that a problem can be in", "The physical memory used by the search algorithm", "A single fixed solution to the problem", "The programming language used to implement the search"],
+      "correct_answer": "The set of all possible configurations or states that a problem can be in",
+      "explanation": "The state space encompasses every possible state reachable from the initial state via valid actions, forming the search problem's solution space.",
+      "topic": "Search strategies",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which uninformed search strategy explores all nodes at the current depth before moving to nodes at the next depth level?",
+      "options": ["Breadth-First Search (BFS)", "Depth-First Search (DFS)", "A* Search", "Greedy Best-First Search"],
+      "correct_answer": "Breadth-First Search (BFS)",
+      "explanation": "BFS systematically explores the search tree level by level, guaranteeing the shortest path (in terms of number of steps) is found first in unweighted graphs.",
+      "topic": "Search strategies",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which uninformed search strategy explores as far as possible along one branch before backtracking?",
+      "options": ["Depth-First Search (DFS)", "Breadth-First Search (BFS)", "Uniform Cost Search", "A* Search"],
+      "correct_answer": "Depth-First Search (DFS)",
+      "explanation": "DFS dives deep into one path of the search tree before backtracking to explore alternative branches, using less memory than BFS but not guaranteeing the shortest path.",
+      "topic": "Search strategies",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is the primary advantage of Uniform Cost Search over plain Breadth-First Search?",
+      "options": ["It finds the least-cost path when edges have varying (non-uniform) costs, not just the fewest edges", "It uses no memory at all", "It never needs to explore more than one node", "It guarantees finding a solution even when none exists"],
+      "correct_answer": "It finds the least-cost path when edges have varying (non-uniform) costs, not just the fewest edges",
+      "explanation": "Uniform Cost Search expands nodes in order of increasing path cost, making it suitable for weighted graphs where BFS's assumption of uniform edge cost would fail to find the optimal path.",
+      "topic": "Search strategies",
+      "difficulty": "hard"
+    },
+    {
+      "question": "What distinguishes 'informed' (heuristic) search strategies like A* from 'uninformed' search strategies like BFS?",
+      "options": ["Informed search uses problem-specific knowledge (a heuristic function) to guide the search more efficiently toward the goal", "Informed search never uses any memory", "Uninformed search always finds the optimal solution faster", "There is no meaningful difference between them"],
+      "correct_answer": "Informed search uses problem-specific knowledge (a heuristic function) to guide the search more efficiently toward the goal",
+      "explanation": "Informed search algorithms use a heuristic function to estimate the cost to the goal from a given state, allowing them to prioritize promising paths, unlike uninformed searches which have no such guidance.",
+      "topic": "Search strategies",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In A* search, what does the evaluation function f(n) = g(n) + h(n) represent?",
+      "options": ["The estimated total cost of the cheapest solution through node n, combining the cost so far and the estimated cost to the goal", "The total number of nodes in the search tree", "The maximum depth of the search tree", "The number of goal states in the problem"],
+      "correct_answer": "The estimated total cost of the cheapest solution through node n, combining the cost so far and the estimated cost to the goal",
+      "explanation": "In A*, g(n) is the actual cost from the start to node n, and h(n) is the heuristic estimate from n to the goal; their sum estimates the total path cost through n.",
+      "topic": "Search strategies",
+      "difficulty": "hard"
+    },
+    {
+      "question": "For A* search to guarantee an optimal solution, what property must the heuristic function h(n) satisfy?",
+      "options": ["It must be admissible (never overestimate the true cost to reach the goal)", "It must always return zero", "It must overestimate the cost to the goal", "It must be identical to g(n)"],
+      "correct_answer": "It must be admissible (never overestimate the true cost to reach the goal)",
+      "explanation": "An admissible heuristic never overestimates the actual cost to reach the goal, which is a required condition for A* to guarantee finding the optimal solution.",
+      "topic": "Search strategies",
+      "difficulty": "hard"
+    },
+    {
+      "question": "What is a Constraint Satisfaction Problem (CSP)?",
+      "options": ["A problem defined by a set of variables, each with a domain of possible values, subject to constraints that must be satisfied", "A problem that has no possible solution", "A problem solvable only through random search", "A type of neural network architecture"],
+      "correct_answer": "A problem defined by a set of variables, each with a domain of possible values, subject to constraints that must be satisfied",
+      "explanation": "CSPs are defined by variables, their domains, and constraints restricting which combinations of variable assignments are valid, such as in Sudoku or map coloring.",
+      "topic": "Constraint satisfaction",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is 'backtracking search' commonly used for in solving CSPs?",
+      "options": ["Incrementally building candidate solutions and abandoning ('backtracking' from) any partial solution that cannot satisfy the constraints", "Searching randomly without any systematic structure", "Guaranteeing a solution in constant time", "Avoiding the need to check any constraints"],
+      "correct_answer": "Incrementally building candidate solutions and abandoning ('backtracking' from) any partial solution that cannot satisfy the constraints",
+      "explanation": "Backtracking search assigns values to variables one at a time, and whenever a partial assignment violates a constraint, it backtracks to try a different value.",
+      "topic": "Constraint satisfaction",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is 'constraint propagation' used for in solving CSPs?",
+      "options": ["Reducing the domains of variables early by enforcing local consistency, which shrinks the search space", "Randomly generating new constraints", "Increasing the number of variables in the problem", "Eliminating the need for a solution altogether"],
+      "correct_answer": "Reducing the domains of variables early by enforcing local consistency, which shrinks the search space",
+      "explanation": "Constraint propagation techniques (such as arc consistency) prune inconsistent values from variable domains before or during search, reducing the overall search effort.",
+      "topic": "Constraint satisfaction",
+      "difficulty": "hard"
+    },
+    {
+      "question": "What is 'knowledge representation' in AI concerned with?",
+      "options": ["Encoding information about the world in a form that a computer system can use to reason and solve problems", "Physically storing data on a hard disk", "Compressing image files for storage", "Designing the visual layout of a user interface"],
+      "correct_answer": "Encoding information about the world in a form that a computer system can use to reason and solve problems",
+      "explanation": "Knowledge representation studies how to formally encode facts, rules, and relationships about the world so an AI system can use them for reasoning and inference.",
+      "topic": "Knowledge representation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is 'propositional logic' as a knowledge representation scheme primarily concerned with?",
+      "options": ["Representing statements that are either true or false, combined using logical connectives like AND, OR, and NOT", "Representing images and visual data", "Representing continuous probability distributions only", "Representing only numeric quantities"],
+      "correct_answer": "Representing statements that are either true or false, combined using logical connectives like AND, OR, and NOT",
+      "explanation": "Propositional logic represents knowledge as declarative statements (propositions) with a definite truth value, combined via logical operators to form more complex expressions.",
+      "topic": "Logic-based reasoning",
+      "difficulty": "medium"
+    },
+    {
+      "question": "How does first-order predicate logic extend propositional logic?",
+      "options": ["It introduces quantifiers, objects, and predicates, allowing statements about relationships between objects", "It removes the need for truth values entirely", "It can only represent numeric data", "It is identical to propositional logic in expressive power"],
+      "correct_answer": "It introduces quantifiers, objects, and predicates, allowing statements about relationships between objects",
+      "explanation": "First-order logic adds quantifiers (∀, ∃), objects, and predicates to propositional logic, enabling more expressive statements about properties and relationships among objects.",
+      "topic": "Logic-based reasoning",
+      "difficulty": "hard"
+    },
+    {
+      "question": "What is PROLOG primarily known for in the context of AI?",
+      "options": ["It is a logic programming language built around facts, rules, and automated inference (unification and backtracking)", "It is a language used exclusively for numerical computation", "It is a hardware description language", "It is a database query language unrelated to logic"],
+      "correct_answer": "It is a logic programming language built around facts, rules, and automated inference (unification and backtracking)",
+      "explanation": "PROLOG (PROgramming in LOGic) is a declarative language where programs consist of facts and rules, and the system uses logical inference to answer queries.",
+      "topic": "Logic-based reasoning",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is an 'expert system' in AI?",
+      "options": ["A computer program that emulates the decision-making ability of a human expert in a specific domain using a knowledge base and inference engine", "A system that can perform any task without any programmed knowledge", "A hardware device used only for image capture", "A synonym for a general-purpose operating system"],
+      "correct_answer": "A computer program that emulates the decision-making ability of a human expert in a specific domain using a knowledge base and inference engine",
+      "explanation": "Expert systems combine a domain-specific knowledge base with an inference engine to reason and provide expert-level advice or decisions within that narrow domain.",
+      "topic": "Expert systems",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What are the two main components of a typical rule-based expert system?",
+      "options": ["A knowledge base and an inference engine", "A compiler and a linker", "A web server and a database", "A monitor and a keyboard"],
+      "correct_answer": "A knowledge base and an inference engine",
+      "explanation": "The knowledge base stores domain facts and rules, while the inference engine applies logical reasoning to that knowledge to derive conclusions or recommendations.",
+      "topic": "Expert systems",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is 'forward chaining' in a rule-based inference engine?",
+      "options": ["Starting from known facts and applying rules to derive new facts until a goal is reached", "Starting from a goal and working backward to find supporting facts", "Randomly selecting rules to apply without regard to facts", "A method used only for image recognition"],
+      "correct_answer": "Starting from known facts and applying rules to derive new facts until a goal is reached",
+      "explanation": "Forward chaining is a data-driven inference strategy that starts with known facts and repeatedly applies matching rules to infer new facts, moving toward a conclusion.",
+      "topic": "Expert systems",
+      "difficulty": "hard"
+    },
+    {
+      "question": "What is 'backward chaining' in a rule-based inference engine?",
+      "options": ["Starting from a hypothesis or goal and working backward to determine what facts would need to be true to support it", "Starting from known facts and moving forward to any conclusion", "A method exclusive to neural networks", "A technique for compressing a knowledge base"],
+      "correct_answer": "Starting from a hypothesis or goal and working backward to determine what facts would need to be true to support it",
+      "explanation": "Backward chaining is a goal-driven inference strategy that starts with a hypothesized conclusion and works backward, checking whether supporting facts and rules exist.",
+      "topic": "Expert systems",
+      "difficulty": "hard"
+    },
+    {
+      "question": "What is the goal of Natural Language Processing (NLP) within AI?",
+      "options": ["To enable computers to understand, interpret, and generate human language", "To design faster CPU architectures", "To compress image files losslessly", "To manage database transactions"],
+      "correct_answer": "To enable computers to understand, interpret, and generate human language",
+      "explanation": "NLP focuses on building systems that can process, understand, and generate text or speech in human languages, bridging human communication and computer processing.",
+      "topic": "Natural language processing",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is 'machine learning' as a subfield of AI primarily concerned with?",
+      "options": ["Building systems that improve their performance on a task through experience or data, without being explicitly reprogrammed for each case", "Manually writing rules for every possible scenario", "Only building physical robots", "Encrypting data transmitted across a network"],
+      "correct_answer": "Building systems that improve their performance on a task through experience or data, without being explicitly reprogrammed for each case",
+      "explanation": "Machine learning enables systems to learn patterns from data and improve their performance over time, rather than relying solely on manually coded rules.",
+      "topic": "Machine learning basics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the key difference between supervised and unsupervised machine learning?",
+      "options": ["Supervised learning uses labeled training data with known outputs, while unsupervised learning finds patterns in unlabeled data", "Unsupervised learning always requires more labeled data than supervised learning", "Supervised learning cannot be used for classification tasks", "There is no meaningful difference between the two"],
+      "correct_answer": "Supervised learning uses labeled training data with known outputs, while unsupervised learning finds patterns in unlabeled data",
+      "explanation": "Supervised learning trains a model on input-output pairs, while unsupervised learning discovers hidden structure or groupings within data that has no labeled outputs.",
+      "topic": "Machine learning basics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is 'pattern recognition' in the context of AI?",
+      "options": ["The process of identifying regularities, structures, or categories within data, such as recognizing objects in images", "The process of writing new source code automatically", "A method for encrypting sensitive data", "A synonym for database indexing"],
+      "correct_answer": "The process of identifying regularities, structures, or categories within data, such as recognizing objects in images",
+      "explanation": "Pattern recognition involves classifying input data (images, sounds, text) into categories based on detected regularities or features, a core task in many AI applications.",
+      "topic": "Pattern recognition",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In game-playing AI, what does the Minimax algorithm attempt to do?",
+      "options": ["Choose moves that minimize the maximum possible loss (or maximize the minimum gain) against an optimal opponent", "Randomly select moves without evaluating outcomes", "Always choose the move with the highest immediate score, ignoring future consequences", "Guarantee a win regardless of the opponent's strategy"],
+      "correct_answer": "Choose moves that minimize the maximum possible loss (or maximize the minimum gain) against an optimal opponent",
+      "explanation": "Minimax is a decision rule for two-player zero-sum games, where one player tries to maximize their score and the other tries to minimize it, and the algorithm searches the game tree assuming optimal play from both sides.",
+      "topic": "Search strategies",
+      "difficulty": "hard"
+    },
+    {
+      "question": "What is 'alpha-beta pruning' used for in game-tree search?",
+      "options": ["Reducing the number of nodes evaluated in a Minimax search tree without affecting the final decision", "Increasing the depth of the search tree without limit", "Randomly discarding valid game states", "Encrypting the game tree for security"],
+      "correct_answer": "Reducing the number of nodes evaluated in a Minimax search tree without affecting the final decision",
+      "explanation": "Alpha-beta pruning eliminates branches of the Minimax search tree that cannot possibly influence the final decision, significantly reducing computation while preserving the same result.",
+      "topic": "Search strategies",
+      "difficulty": "hard"
+    },
+    {
+      "question": "What is the Turing Test intended to evaluate?",
+      "options": ["Whether a machine can exhibit intelligent behavior indistinguishable from that of a human", "The processing speed of a computer's CPU", "The storage capacity of a hard drive", "The accuracy of a machine's arithmetic calculations only"],
+      "correct_answer": "Whether a machine can exhibit intelligent behavior indistinguishable from that of a human",
+      "explanation": "Proposed by Alan Turing, the test evaluates a machine's ability to exhibit intelligent conversational behavior such that a human judge cannot reliably distinguish it from a real human.",
+      "topic": "AI fundamentals",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is a 'goal state' in a search-based AI problem?",
+      "options": ["A state that satisfies the conditions the agent is trying to achieve", "The very first state the agent starts in", "A state that has no successors", "A state chosen entirely at random"],
+      "correct_answer": "A state that satisfies the conditions the agent is trying to achieve",
+      "explanation": "The goal state (or set of goal states) represents the desired outcome of a search problem; the search algorithm's task is to find a path from the initial state to a goal state.",
+      "topic": "Search strategies",
+      "difficulty": "easy"
+    }
+  ]
+}

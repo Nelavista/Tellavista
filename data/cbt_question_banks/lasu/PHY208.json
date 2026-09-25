@@ -1,0 +1,480 @@
+{
+  "course_code": "PHY208",
+  "title": "Electronics I",
+  "level": "200",
+  "source_note": "Standard NUC-aligned Nigerian university 200L introductory analog electronics curriculum: semiconductor physics, p-n junction diodes and their applications (rectification, Zener regulation, LEDs), bipolar junction transistors and basic amplification, plus basic passive RC/RL circuit behaviour and a brief intro to logic gates. Advanced digital electronics, op-amps, and oscillators are reserved for PHY307 (Electronics II).",
+  "questions": [
+    {
+      "question": "An intrinsic semiconductor is best described as:",
+      "options": [
+        "A pure semiconductor material with no significant impurities added",
+        "A semiconductor that has been deliberately doped with impurity atoms",
+        "A material that conducts electricity as well as a metal at room temperature",
+        "A perfect insulator with zero free charge carriers at any temperature"
+      ],
+      "correct_answer": "A pure semiconductor material with no significant impurities added",
+      "explanation": "Intrinsic semiconductors, such as pure silicon or germanium, contain no significant impurity doping, and their conductivity arises solely from thermally generated electron-hole pairs.",
+      "topic": "Intrinsic vs extrinsic semiconductors",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In an intrinsic semiconductor at a given temperature, the number of free electrons compared to the number of holes is:",
+      "options": ["Equal", "Always greater than the number of holes", "Always less than the number of holes", "Exactly zero for both"],
+      "correct_answer": "Equal",
+      "explanation": "In a pure (intrinsic) semiconductor, every thermally excited electron that jumps to the conduction band leaves behind a hole in the valence band, so electron and hole concentrations are equal.",
+      "topic": "Intrinsic vs extrinsic semiconductors",
+      "difficulty": "medium"
+    },
+    {
+      "question": "An extrinsic semiconductor is produced by:",
+      "options": [
+        "Deliberately adding a small, controlled amount of impurity atoms (doping) to a pure semiconductor",
+        "Heating a pure semiconductor to extremely high temperatures",
+        "Removing all impurities from a semiconductor crystal",
+        "Cooling a semiconductor to near absolute zero"
+      ],
+      "correct_answer": "Deliberately adding a small, controlled amount of impurity atoms (doping) to a pure semiconductor",
+      "explanation": "Doping introduces controlled impurities into an intrinsic semiconductor to significantly alter and control its electrical conductivity, producing an extrinsic semiconductor.",
+      "topic": "Intrinsic vs extrinsic semiconductors",
+      "difficulty": "easy"
+    },
+    {
+      "question": "An n-type semiconductor is formed by doping a pure semiconductor (e.g. silicon) with:",
+      "options": [
+        "A pentavalent (Group V) impurity such as phosphorus or arsenic, which donates extra free electrons",
+        "A trivalent (Group III) impurity such as boron, which creates extra holes",
+        "Another sample of pure silicon with no valence difference",
+        "A noble gas element with a full valence shell"
+      ],
+      "correct_answer": "A pentavalent (Group V) impurity such as phosphorus or arsenic, which donates extra free electrons",
+      "explanation": "Pentavalent impurities have five valence electrons; four form covalent bonds with silicon, leaving one extra electron that becomes a free charge carrier, hence 'n-type' (negative charge carriers).",
+      "topic": "n-type/p-type doping",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A p-type semiconductor is formed by doping a pure semiconductor with:",
+      "options": [
+        "A trivalent (Group III) impurity such as boron or gallium, which creates extra holes",
+        "A pentavalent (Group V) impurity such as phosphorus",
+        "A tetravalent (Group IV) impurity identical to the host material",
+        "A metal with very high conductivity"
+      ],
+      "correct_answer": "A trivalent (Group III) impurity such as boron or gallium, which creates extra holes",
+      "explanation": "Trivalent impurities have only three valence electrons, leaving one covalent bond incomplete, which creates a 'hole' that acts as a positive charge carrier, hence 'p-type'.",
+      "topic": "n-type/p-type doping",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In an n-type semiconductor, the majority charge carriers are:",
+      "options": ["Free electrons", "Holes", "Protons", "Neutral atoms"],
+      "correct_answer": "Free electrons",
+      "explanation": "In n-type material, the donor impurities contribute a surplus of free electrons, making electrons the majority carriers, while holes (from thermal generation) are the minority carriers.",
+      "topic": "Majority/minority carriers",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In a p-type semiconductor, the minority charge carriers are:",
+      "options": ["Electrons", "Holes", "Protons", "Ions"],
+      "correct_answer": "Electrons",
+      "explanation": "In p-type material, holes (contributed by acceptor impurities) are the majority carriers, while thermally generated electrons are present in much smaller numbers as minority carriers.",
+      "topic": "Majority/minority carriers",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A p-n junction diode is formed by:",
+      "options": [
+        "Joining a p-type semiconductor region and an n-type semiconductor region within a single crystal",
+        "Joining two identical p-type semiconductor regions",
+        "Connecting a metal directly to an insulator",
+        "Joining two identical n-type semiconductor regions"
+      ],
+      "correct_answer": "Joining a p-type semiconductor region and an n-type semiconductor region within a single crystal",
+      "explanation": "A p-n junction is created at the interface between p-type and n-type regions of the same semiconductor crystal, forming the basic building block of the diode.",
+      "topic": "The p-n junction diode",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The depletion region (depletion layer) at a p-n junction is formed by:",
+      "options": [
+        "Diffusion of majority carriers across the junction, leaving behind fixed immobile ions and a region depleted of free charge carriers",
+        "The complete removal of all dopant atoms near the junction",
+        "An externally applied magnetic field",
+        "Cooling the junction to very low temperatures"
+      ],
+      "correct_answer": "Diffusion of majority carriers across the junction, leaving behind fixed immobile ions and a region depleted of free charge carriers",
+      "explanation": "Near the junction, electrons diffuse from the n-side and holes diffuse from the p-side, recombining and leaving behind fixed charged ions, creating a narrow region depleted of mobile carriers and an internal electric field (barrier potential).",
+      "topic": "The p-n junction diode",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The typical barrier (built-in) potential of a silicon p-n junction diode at room temperature is approximately:",
+      "options": ["0.7 V", "0.3 V", "1.5 V", "5.0 V"],
+      "correct_answer": "0.7 V",
+      "explanation": "Silicon diodes typically have a barrier potential of about 0.6-0.7 V, compared to about 0.3 V for germanium diodes.",
+      "topic": "The p-n junction diode",
+      "difficulty": "medium"
+    },
+    {
+      "question": "When a p-n junction diode is forward biased:",
+      "options": [
+        "The p-type region is connected to the positive terminal and the n-type region to the negative terminal, narrowing the depletion region and allowing current to flow easily",
+        "The p-type region is connected to the negative terminal and the n-type region to the positive terminal, widening the depletion region",
+        "No current flows under any circumstances",
+        "The diode behaves exactly like an open circuit at all voltages"
+      ],
+      "correct_answer": "The p-type region is connected to the positive terminal and the n-type region to the negative terminal, narrowing the depletion region and allowing current to flow easily",
+      "explanation": "Forward biasing reduces the depletion region width and barrier potential, allowing majority carriers to flow across the junction once the applied voltage exceeds the threshold (cut-in) voltage.",
+      "topic": "Forward/reverse bias",
+      "difficulty": "medium"
+    },
+    {
+      "question": "When a p-n junction diode is reverse biased:",
+      "options": [
+        "The depletion region widens and only a very small leakage (reverse saturation) current flows",
+        "The depletion region narrows and current flows freely",
+        "The diode conducts exactly as well as in forward bias",
+        "The diode is destroyed instantly regardless of the reverse voltage magnitude"
+      ],
+      "correct_answer": "The depletion region widens and only a very small leakage (reverse saturation) current flows",
+      "explanation": "In reverse bias, the applied voltage widens the depletion region and increases the barrier, allowing only a small reverse saturation current due to minority carriers, until breakdown occurs at sufficiently high reverse voltage.",
+      "topic": "Forward/reverse bias",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The current-voltage (I-V) characteristic curve of a p-n junction diode shows that:",
+      "options": [
+        "Current increases sharply (exponentially) once the forward voltage exceeds a threshold, while reverse current remains very small until breakdown",
+        "Current increases linearly with voltage in both forward and reverse bias, like a resistor",
+        "Current is completely independent of applied voltage",
+        "Reverse current is always larger than forward current"
+      ],
+      "correct_answer": "Current increases sharply (exponentially) once the forward voltage exceeds a threshold, while reverse current remains very small until breakdown",
+      "explanation": "The diode's I-V characteristic is highly non-linear: negligible current flows below the forward threshold voltage, then current rises steeply (approximately exponentially), while reverse bias produces only a tiny leakage current until avalanche or Zener breakdown.",
+      "topic": "Diode I-V characteristics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The cut-in (threshold/knee) voltage of a diode is:",
+      "options": [
+        "The forward voltage at which the diode begins to conduct significantly",
+        "The maximum reverse voltage the diode can withstand",
+        "The voltage at which the diode always fails permanently",
+        "A voltage that applies only in reverse bias"
+      ],
+      "correct_answer": "The forward voltage at which the diode begins to conduct significantly",
+      "explanation": "Below the cut-in voltage, forward current is negligible; once the applied forward voltage exceeds this threshold (about 0.7 V for silicon), current rises rapidly.",
+      "topic": "Diode I-V characteristics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A half-wave rectifier circuit uses a single diode to:",
+      "options": [
+        "Allow current to flow during only one half-cycle of the AC input, blocking the other half",
+        "Allow current to flow during both half-cycles of the AC input",
+        "Convert DC voltage into AC voltage",
+        "Amplify the AC input signal"
+      ],
+      "correct_answer": "Allow current to flow during only one half-cycle of the AC input, blocking the other half",
+      "explanation": "A half-wave rectifier conducts only when the diode is forward biased (one half-cycle of the AC waveform), producing a pulsating output for that half only and blocking the other half.",
+      "topic": "Half-wave and full-wave rectification",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A full-wave rectifier, compared to a half-wave rectifier, produces an output that:",
+      "options": [
+        "Utilizes both halves of the AC input cycle, giving a higher average output voltage and smoother pulsating DC",
+        "Utilizes only one half of the AC cycle, exactly like a half-wave rectifier",
+        "Produces pure, ripple-free DC without any filtering needed",
+        "Cannot be achieved using diodes at all"
+      ],
+      "correct_answer": "Utilizes both halves of the AC input cycle, giving a higher average output voltage and smoother pulsating DC",
+      "explanation": "Full-wave rectification converts both halves of the AC input into output pulses of the same polarity, resulting in a higher average DC output and less ripple than half-wave rectification.",
+      "topic": "Half-wave and full-wave rectification",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A bridge rectifier circuit uses how many diodes to achieve full-wave rectification?",
+      "options": ["Four", "Two", "One", "Six"],
+      "correct_answer": "Four",
+      "explanation": "A bridge rectifier arranges four diodes so that current always flows through the load in the same direction for both halves of the AC cycle, without requiring a centre-tapped transformer.",
+      "topic": "Bridge rectifier",
+      "difficulty": "medium"
+    },
+    {
+      "question": "One advantage of a bridge rectifier over a centre-tapped full-wave rectifier is that:",
+      "options": [
+        "It does not require a centre-tapped transformer",
+        "It uses fewer diodes",
+        "It only rectifies one half of the AC cycle",
+        "It cannot handle high currents"
+      ],
+      "correct_answer": "It does not require a centre-tapped transformer",
+      "explanation": "The bridge rectifier achieves full-wave rectification using an ordinary transformer (or no transformer at all), unlike the centre-tapped rectifier which needs a special transformer with a centre tap, though it uses more diodes.",
+      "topic": "Bridge rectifier",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A Zener diode is specifically designed to operate in which region of its characteristic curve?",
+      "options": ["The reverse breakdown region", "The forward conduction region only", "The cut-off region only", "It has no distinct operating region"],
+      "correct_answer": "The reverse breakdown region",
+      "explanation": "Unlike ordinary diodes, Zener diodes are designed to operate safely in reverse breakdown, where the voltage across them remains nearly constant over a range of currents.",
+      "topic": "Zener diode as voltage regulator",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A Zener diode is commonly used as a voltage regulator because:",
+      "options": [
+        "It maintains a nearly constant voltage across itself once it enters reverse breakdown, despite variations in current",
+        "It amplifies voltage signals like a transistor",
+        "It converts AC to DC more efficiently than a bridge rectifier",
+        "It blocks all current in both forward and reverse bias"
+      ],
+      "correct_answer": "It maintains a nearly constant voltage across itself once it enters reverse breakdown, despite variations in current",
+      "explanation": "Once operating in the breakdown (Zener) region, the voltage across the diode stays essentially constant over a wide current range, making it ideal for stabilizing (regulating) a voltage supply.",
+      "topic": "Zener diode as voltage regulator",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A light-emitting diode (LED) emits light when:",
+      "options": [
+        "It is forward biased and electrons recombine with holes at the junction, releasing energy as photons",
+        "It is reverse biased beyond its breakdown voltage",
+        "No current flows through it at all",
+        "It is cooled to a very low temperature"
+      ],
+      "correct_answer": "It is forward biased and electrons recombine with holes at the junction, releasing energy as photons",
+      "explanation": "In a forward-biased LED, electron-hole recombination at the junction releases energy directly as photons of light (rather than heat, as in ordinary diodes), a phenomenon called electroluminescence.",
+      "topic": "LEDs",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The colour (wavelength) of light emitted by an LED is primarily determined by:",
+      "options": [
+        "The band gap energy of the semiconductor material used",
+        "The physical size of the LED casing",
+        "The ambient room temperature only",
+        "The polarity of the power supply"
+      ],
+      "correct_answer": "The band gap energy of the semiconductor material used",
+      "explanation": "The energy (and hence wavelength/colour) of photons emitted during recombination is determined by the semiconductor's band gap; different compound semiconductors (e.g. GaAs, GaP, GaN) are used to produce different LED colours.",
+      "topic": "LEDs",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A bipolar junction transistor (BJT) has how many terminals?",
+      "options": ["Three: emitter, base, and collector", "Two: anode and cathode", "Four: source, gate, drain, and body", "Five terminals"],
+      "correct_answer": "Three: emitter, base, and collector",
+      "explanation": "A BJT is a three-terminal semiconductor device with an emitter, a base, and a collector, formed by two back-to-back p-n junctions.",
+      "topic": "Bipolar junction transistors",
+      "difficulty": "easy"
+    },
+    {
+      "question": "An NPN transistor consists of:",
+      "options": [
+        "A thin p-type base region sandwiched between two n-type regions (emitter and collector)",
+        "A thin n-type base region sandwiched between two p-type regions",
+        "Three n-type regions joined together with no p-type material",
+        "A single p-type region only"
+      ],
+      "correct_answer": "A thin p-type base region sandwiched between two n-type regions (emitter and collector)",
+      "explanation": "In an NPN transistor, the structure is n-type emitter, p-type base, and n-type collector; the reverse (PNP) has a thin n-type base between two p-type regions.",
+      "topic": "Bipolar junction transistors",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For normal (active-mode) transistor operation as an amplifier, the emitter-base junction and collector-base junction should be biased as follows:",
+      "options": [
+        "Emitter-base junction forward biased, collector-base junction reverse biased",
+        "Both junctions forward biased",
+        "Both junctions reverse biased",
+        "Emitter-base junction reverse biased, collector-base junction forward biased"
+      ],
+      "correct_answer": "Emitter-base junction forward biased, collector-base junction reverse biased",
+      "explanation": "In active mode (used for amplification), the emitter-base junction is forward biased to inject carriers into the base, while the collector-base junction is reverse biased to collect them, producing current gain.",
+      "topic": "Transistor biasing",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In a BJT, the base region is deliberately made:",
+      "options": ["Very thin and lightly doped", "Very thick and heavily doped", "The same thickness as the emitter and collector", "Made of a different element entirely from the rest of the transistor"],
+      "correct_answer": "Very thin and lightly doped",
+      "explanation": "A thin, lightly doped base allows most carriers injected from the emitter to pass through to the collector rather than recombining in the base, which is essential for good current gain.",
+      "topic": "Transistor biasing",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The DC current gain (β or h_FE) of a BJT is defined as the ratio of:",
+      "options": ["Collector current to base current (I_C/I_B)", "Base current to collector current (I_B/I_C)", "Emitter current to base current (I_E/I_B) only, never involving collector current", "Collector current to emitter current squared"],
+      "correct_answer": "Collector current to base current (I_C/I_B)",
+      "explanation": "Current gain β = I_C/I_B describes how much the small base current is amplified to produce a much larger collector current, typically ranging from tens to a few hundred for common transistors.",
+      "topic": "Current gain",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a BJT, the relationship between emitter current (I_E), base current (I_B), and collector current (I_C) is:",
+      "options": ["I_E = I_B + I_C", "I_E = I_B − I_C", "I_E = I_B × I_C", "I_C = I_E + I_B"],
+      "correct_answer": "I_E = I_B + I_C",
+      "explanation": "By Kirchhoff's current law applied to the transistor, the emitter current equals the sum of the base and collector currents.",
+      "topic": "Current gain",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A transistor has a base current of 50 μA and a current gain β of 100. What is the collector current?",
+      "options": ["5 mA", "0.5 mA", "50 mA", "150 μA"],
+      "correct_answer": "5 mA",
+      "explanation": "I_C = β × I_B = 100 × 50 μA = 5000 μA = 5 mA.",
+      "topic": "Current gain",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a basic common-emitter (CE) amplifier configuration, the emitter terminal is:",
+      "options": [
+        "Common to both the input and output circuits",
+        "Used only for the output signal, never the input",
+        "Left completely disconnected",
+        "Connected directly to the collector at all times"
+      ],
+      "correct_answer": "Common to both the input and output circuits",
+      "explanation": "In the common-emitter configuration, the input signal is applied between base and emitter, and the output is taken between collector and emitter, making the emitter the shared (common) terminal.",
+      "topic": "Common-emitter amplifier",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A key characteristic of the common-emitter amplifier configuration is that it provides:",
+      "options": [
+        "Both current gain and voltage gain, with a 180° phase inversion between input and output",
+        "Voltage gain only, with no current gain and no phase inversion",
+        "Neither current gain nor voltage gain",
+        "Current gain only, with the output in phase with the input"
+      ],
+      "correct_answer": "Both current gain and voltage gain, with a 180° phase inversion between input and output",
+      "explanation": "The common-emitter amplifier is widely used because it provides significant current and voltage amplification, though the output signal is inverted (180° out of phase) relative to the input.",
+      "topic": "Common-emitter amplifier",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The purpose of biasing a transistor amplifier circuit with resistors and a DC supply is to:",
+      "options": [
+        "Establish a stable operating (quiescent) point so the transistor amplifies the AC signal without distortion",
+        "Convert the transistor into a pure switch with no amplification",
+        "Eliminate the need for a power supply entirely",
+        "Ensure the transistor conducts only during reverse bias"
+      ],
+      "correct_answer": "Establish a stable operating (quiescent) point so the transistor amplifies the AC signal without distortion",
+      "explanation": "Proper DC biasing sets the transistor's quiescent (Q) point in the active region so that the applied AC signal can swing without driving the transistor into cut-off or saturation, avoiding distortion.",
+      "topic": "Transistor biasing",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a simple RC low-pass filter circuit (resistor and capacitor in series, output taken across the capacitor), the circuit tends to:",
+      "options": [
+        "Pass low-frequency signals while attenuating high-frequency signals",
+        "Pass high-frequency signals while attenuating low-frequency signals",
+        "Attenuate all frequencies equally regardless of value",
+        "Amplify all frequencies above a certain threshold"
+      ],
+      "correct_answer": "Pass low-frequency signals while attenuating high-frequency signals",
+      "explanation": "At low frequencies, the capacitor's reactance is high, so most of the input voltage appears across it (output); at high frequencies, the capacitor's reactance drops, shorting out the output, hence a low-pass response.",
+      "topic": "RC filters",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In an RC high-pass filter (output taken across the resistor), which frequencies are passed with little attenuation?",
+      "options": ["High-frequency signals", "Low-frequency signals", "Only DC (zero-frequency) signals", "No signals are passed at any frequency"],
+      "correct_answer": "High-frequency signals",
+      "explanation": "With the output taken across the resistor, high-frequency signals see low capacitor reactance and are passed through readily, while low-frequency (and DC) signals are blocked by the capacitor's high reactance.",
+      "topic": "RC filters",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The cutoff frequency of an RC filter is given by:",
+      "options": ["f_c = 1/(2πRC)", "f_c = 2πRC", "f_c = RC", "f_c = 1/(RC²)"],
+      "correct_answer": "f_c = 1/(2πRC)",
+      "explanation": "The cutoff (or corner/half-power) frequency of a simple RC filter is defined by f_c = 1/(2πRC), where R is resistance in ohms and C is capacitance in farads.",
+      "topic": "RC filters",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A capacitor in a DC circuit, once fully charged, behaves like:",
+      "options": ["An open circuit, blocking further DC current flow", "A short circuit, allowing unlimited current", "A resistor with fixed resistance equal to its capacitance value", "An inductor"],
+      "correct_answer": "An open circuit, blocking further DC current flow",
+      "explanation": "Once a capacitor is fully charged in a DC circuit, no further current flows through it, so it behaves like an open circuit under steady-state DC conditions.",
+      "topic": "Capacitor/inductor behavior",
+      "difficulty": "medium"
+    },
+    {
+      "question": "An inductor in a DC circuit, once current has reached steady state, behaves like:",
+      "options": ["A short circuit (ideally zero resistance)", "An open circuit, blocking all current", "A capacitor", "A device with infinite resistance"],
+      "correct_answer": "A short circuit (ideally zero resistance)",
+      "explanation": "In steady-state DC conditions, an ideal inductor offers no opposition to constant current flow (its induced EMF depends on the rate of change of current, which is zero at steady state), so it behaves like a short circuit.",
+      "topic": "Capacitor/inductor behavior",
+      "difficulty": "medium"
+    },
+    {
+      "question": "When an AC voltage is applied to a capacitor, its opposition to current flow (capacitive reactance, X_C) is given by:",
+      "options": ["X_C = 1/(2πfC)", "X_C = 2πfC", "X_C = 2πfL", "X_C = f/C"],
+      "correct_answer": "X_C = 1/(2πfC)",
+      "explanation": "Capacitive reactance decreases as frequency f or capacitance C increases, following X_C = 1/(2πfC), measured in ohms.",
+      "topic": "Capacitor/inductor behavior",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A basic logic AND gate produces a HIGH (1) output only when:",
+      "options": ["All of its inputs are HIGH (1)", "At least one input is HIGH (1)", "All of its inputs are LOW (0)", "Exactly one input is HIGH and the rest are LOW"],
+      "correct_answer": "All of its inputs are HIGH (1)",
+      "explanation": "An AND gate outputs HIGH only when every one of its inputs is HIGH; if any input is LOW, the output is LOW, matching the truth table of logical conjunction.",
+      "topic": "Basic logic gates",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A basic logic OR gate produces a HIGH (1) output when:",
+      "options": ["At least one of its inputs is HIGH (1)", "All of its inputs are HIGH (1) simultaneously only", "All inputs are LOW (0)", "Never, regardless of input"],
+      "correct_answer": "At least one of its inputs is HIGH (1)",
+      "explanation": "An OR gate outputs HIGH if one or more of its inputs are HIGH, and outputs LOW only when all inputs are LOW.",
+      "topic": "Basic logic gates",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A NOT gate (inverter) is a logic gate that:",
+      "options": ["Produces an output that is the logical complement (opposite) of its single input", "Requires at least two inputs to function", "Always outputs HIGH regardless of input", "Produces the same output as its input"],
+      "correct_answer": "Produces an output that is the logical complement (opposite) of its single input",
+      "explanation": "A NOT gate is a single-input gate that inverts its input: a HIGH input produces a LOW output and vice versa.",
+      "topic": "Basic logic gates",
+      "difficulty": "easy"
+    },
+    {
+      "question": "For a two-input AND gate with inputs A = 1 and B = 0, what is the output?",
+      "options": ["0", "1", "Undefined", "Depends on a third input"],
+      "correct_answer": "0",
+      "explanation": "An AND gate requires both inputs HIGH to output HIGH; since B = 0, the output is 0 according to the AND truth table.",
+      "topic": "Basic logic gates",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which of the following best distinguishes majority carriers from minority carriers in a doped semiconductor?",
+      "options": [
+        "Majority carriers are the charge carrier type present in much greater number due to doping, while minority carriers are present in much smaller numbers, mainly from thermal generation",
+        "Majority carriers only exist at very high temperatures",
+        "Minority carriers move faster than majority carriers in all cases",
+        "Majority and minority carriers always exist in exactly equal numbers"
+      ],
+      "correct_answer": "Majority carriers are the charge carrier type present in much greater number due to doping, while minority carriers are present in much smaller numbers, mainly from thermal generation",
+      "explanation": "Doping determines which carrier type dominates (majority) in a given semiconductor; the opposite carrier type remains present only in small numbers due to thermal generation (minority carriers).",
+      "topic": "Majority/minority carriers",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A filter capacitor is commonly added after a rectifier circuit in a power supply in order to:",
+      "options": [
+        "Smooth out the pulsating DC output by reducing ripple",
+        "Convert the rectified DC back into pure AC",
+        "Increase the ripple in the output voltage",
+        "Block DC current entirely from reaching the load"
+      ],
+      "correct_answer": "Smooth out the pulsating DC output by reducing ripple",
+      "explanation": "A filter (smoothing) capacitor charges during peaks of the rectified waveform and discharges slowly through the load during the troughs, reducing the ripple and producing a smoother, more constant DC output.",
+      "topic": "Half-wave and full-wave rectification",
+      "difficulty": "medium"
+    }
+  ]
+}

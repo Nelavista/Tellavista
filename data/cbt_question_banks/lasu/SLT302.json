@@ -1,0 +1,264 @@
+{
+  "course_code": "SLT302",
+  "title": "Laboratory Automation & ICT",
+  "level": "300",
+  "source_note": "Standard NUC-aligned Science Laboratory Technology 300L curriculum: computer and ICT fundamentals as applied to the modern laboratory -- LIMS, data acquisition, instrument interfacing, automation/control concepts, data integrity, and common lab software tools.",
+  "questions": [
+    {
+      "question": "What does LIMS stand for in a modern analytical laboratory?",
+      "options": ["Laboratory Instrument Management Software", "Laboratory Information Management System", "Local Instrument Monitoring Service", "Linked Inventory Management Server"],
+      "correct_answer": "Laboratory Information Management System",
+      "explanation": "LIMS (Laboratory Information Management System) is software that tracks samples, test results, and workflow data through the laboratory's testing process.",
+      "topic": "LIMS",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is the primary benefit of using a LIMS to track samples from receipt to final report?",
+      "options": ["It eliminates the need for any quality control", "It provides traceability, reduces transcription errors, and links each result to its sample and instrument", "It automatically performs all chemical analyses without an analyst", "It replaces the need for sample labelling"],
+      "correct_answer": "It provides traceability, reduces transcription errors, and links each result to its sample and instrument",
+      "explanation": "A LIMS creates an auditable chain linking sample, method, instrument, analyst and result, cutting manual transcription errors compared with paper logs.",
+      "topic": "LIMS",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The data integrity principle 'ALCOA' requires that laboratory records be:",
+      "options": ["Attractive, Legible, Correct, Official, Accurate", "Attributable, Legible, Contemporaneous, Original, Accurate", "Automated, Linked, Compressed, Organized, Archived", "Anonymous, Locked, Copied, Ordered, Approved"],
+      "correct_answer": "Attributable, Legible, Contemporaneous, Original, Accurate",
+      "explanation": "ALCOA is the standard data-integrity acronym: records must be Attributable, Legible, Contemporaneous, Original, and Accurate.",
+      "topic": "Data integrity",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In signal terms, a thermocouple's raw voltage output before digitization is best described as:",
+      "options": ["A digital signal", "An analog signal", "A binary signal", "A network packet"],
+      "correct_answer": "An analog signal",
+      "explanation": "A thermocouple produces a continuously varying voltage proportional to temperature, which is an analog signal until it is converted to discrete digital values.",
+      "topic": "Signals and data acquisition",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is the function of an Analog-to-Digital Converter (ADC) in a computer-interfaced instrument?",
+      "options": ["It converts digital data into a printed report", "It converts a continuous analog sensor signal into discrete digital values a computer can process", "It amplifies the mains power supply", "It converts digital signals back into analog only"],
+      "correct_answer": "It converts a continuous analog sensor signal into discrete digital values a computer can process",
+      "explanation": "An ADC samples a continuous analog signal (e.g. from a sensor) and converts it into discrete numeric values that a computer's data acquisition software can store and process.",
+      "topic": "Signals and data acquisition",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A data acquisition system (DAQ) attached to a laboratory instrument primarily serves to:",
+      "options": ["Manually record readings into a logbook", "Automatically capture, digitize, and store measurement data from sensors in real time", "Replace the need for any sensor", "Sterilize the instrument between runs"],
+      "correct_answer": "Automatically capture, digitize, and store measurement data from sensors in real time",
+      "explanation": "A DAQ system continuously samples sensor outputs, converts them to digital form, and logs the data, removing the need for manual reading and recording.",
+      "topic": "Signals and data acquisition",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which of the following is a physical device that detects a change in a physical quantity (e.g. temperature, pressure) and converts it into a measurable signal?",
+      "options": ["A transducer/sensor", "A compiler", "A router", "A spreadsheet macro"],
+      "correct_answer": "A transducer/sensor",
+      "explanation": "A transducer (sensor) converts a physical quantity such as temperature, pressure or pH into an electrical signal that can be measured or recorded.",
+      "topic": "Sensors and transducers",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In an automated titrator, what does the term 'endpoint detection' typically rely on?",
+      "options": ["A human visually watching the color change every time", "A potentiometric or optical sensor that detects the equivalence point electronically", "Manual stopwatch timing only", "The barcode printed on the sample bottle"],
+      "correct_answer": "A potentiometric or optical sensor that detects the equivalence point electronically",
+      "explanation": "Automated titrators use a pH/potentiometric or photometric sensor to detect the inflection point of the titration curve, removing the need for a human to watch a color-change indicator.",
+      "topic": "Automation in instrumentation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the main advantage of an autosampler on an HPLC or GC instrument?",
+      "options": ["It eliminates the need for a mobile phase", "It allows unattended, sequential injection of many samples with consistent, reproducible injection volumes", "It automatically writes the final analytical report", "It replaces the detector"],
+      "correct_answer": "It allows unattended, sequential injection of many samples with consistent, reproducible injection volumes",
+      "explanation": "Autosamplers inject a queue of samples automatically and reproducibly, improving throughput and reducing the injection-volume variability of manual injection.",
+      "topic": "Automation in instrumentation",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A Programmable Logic Controller (PLC) used in an automated laboratory or process line is best described as:",
+      "options": ["A device dedicated only to printing labels", "An industrial digital computer that executes control logic to operate equipment based on sensor inputs", "A type of analytical balance", "A category of glassware"],
+      "correct_answer": "An industrial digital computer that executes control logic to operate equipment based on sensor inputs",
+      "explanation": "A PLC is a ruggedized industrial computer programmed with control logic (e.g. ladder logic) to automate equipment operation based on real-time sensor input.",
+      "topic": "Automation and control",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a closed-loop (feedback) control system, what happens after the sensor detects a deviation from the setpoint?",
+      "options": ["Nothing; the system runs open-ended with no correction", "The controller compares it to the setpoint and adjusts the actuator to correct the deviation", "The setpoint is deleted", "The sensor is disconnected automatically"],
+      "correct_answer": "The controller compares it to the setpoint and adjusts the actuator to correct the deviation",
+      "explanation": "Closed-loop control continuously compares measured output to a desired setpoint via the controller and drives an actuator to minimize the error, e.g. an incubator maintaining set temperature.",
+      "topic": "Automation and control",
+      "difficulty": "hard"
+    },
+    {
+      "question": "How does an open-loop control system differ from a closed-loop system?",
+      "options": ["An open-loop system has no feedback path and does not adjust its output based on measured results", "An open-loop system is always more accurate", "There is no practical difference", "Open-loop systems cannot be automated"],
+      "correct_answer": "An open-loop system has no feedback path and does not adjust its output based on measured results",
+      "explanation": "Open-loop control applies a preset action without measuring or correcting for the actual output, unlike closed-loop control which continuously corrects based on feedback.",
+      "topic": "Automation and control",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Which file format is most commonly used to export tabular laboratory data for exchange between different software programs?",
+      "options": ["CSV (comma-separated values)", "MP3", "JPEG", "EXE"],
+      "correct_answer": "CSV (comma-separated values)",
+      "explanation": "CSV is a plain-text tabular format widely supported by spreadsheet, database, and statistical software for straightforward data exchange.",
+      "topic": "Lab software tools",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which type of software would a technologist use to organize calibration curve data, calculate a regression line, and plot results?",
+      "options": ["A spreadsheet program such as Microsoft Excel", "A video editing program", "An operating system kernel", "An email client"],
+      "correct_answer": "A spreadsheet program such as Microsoft Excel",
+      "explanation": "Spreadsheet software provides formulas, linear regression and charting tools well suited to building and plotting calibration curves from instrument response data.",
+      "topic": "Lab software tools",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is the key difference between a spreadsheet and a relational database for storing laboratory data?",
+      "options": ["There is no difference at all", "A database enforces structured relationships and referential integrity across tables, while a spreadsheet is a flat grid of cells", "Spreadsheets can never store numbers", "Databases cannot store text data"],
+      "correct_answer": "A database enforces structured relationships and referential integrity across tables, while a spreadsheet is a flat grid of cells",
+      "explanation": "Relational databases link related tables (e.g. samples, tests, results) with defined relationships and constraints, offering more structure and integrity than a flat spreadsheet.",
+      "topic": "Lab software tools",
+      "difficulty": "medium"
+    },
+    {
+      "question": "An Electronic Laboratory Notebook (ELN) improves on a traditional paper notebook mainly by:",
+      "options": ["Being impossible to back up", "Providing searchable, time-stamped, auditable digital records that can be linked to instrument data", "Removing the need for any experimental record at all", "Allowing entries to be freely altered with no trace"],
+      "correct_answer": "Providing searchable, time-stamped, auditable digital records that can be linked to instrument data",
+      "explanation": "ELNs give time-stamped, version-controlled, searchable digital entries with audit trails, improving traceability over handwritten paper notebooks.",
+      "topic": "Lab software tools",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which computer hardware component is often called the 'brain' of the computer, executing instructions?",
+      "options": ["Central Processing Unit (CPU)", "Monitor", "Mouse", "USB flash drive"],
+      "correct_answer": "Central Processing Unit (CPU)",
+      "explanation": "The CPU fetches, decodes, and executes instructions, coordinating the operations of all other computer hardware components.",
+      "topic": "Computer fundamentals",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which of the following is an example of an input device on a laboratory computer workstation?",
+      "options": ["A keyboard", "A printer", "A monitor", "A speaker"],
+      "correct_answer": "A keyboard",
+      "explanation": "A keyboard sends data into the computer, making it an input device, whereas monitors, printers and speakers are output devices.",
+      "topic": "Computer fundamentals",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is the main function of an operating system (e.g. Windows) on a laboratory computer?",
+      "options": ["It performs chemical analysis directly", "It manages hardware resources and provides a platform on which application software (e.g. instrument control software) runs", "It is a type of laboratory glassware", "It generates electrical power for instruments"],
+      "correct_answer": "It manages hardware resources and provides a platform on which application software (e.g. instrument control software) runs",
+      "explanation": "An operating system manages memory, storage, and peripherals, and provides the environment in which instrument-control and data-analysis software run.",
+      "topic": "Computer fundamentals",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A barcode or RFID tag attached to a sample container is primarily used to:",
+      "options": ["Sterilize the sample", "Uniquely identify and track the sample through the laboratory workflow via a LIMS", "Change the sample's pH", "Replace the need for a sample label entirely with no identifying data"],
+      "correct_answer": "Uniquely identify and track the sample through the laboratory workflow via a LIMS",
+      "explanation": "Barcodes and RFID tags carry a unique sample ID that a LIMS can scan to track chain-of-custody, location, and status automatically, reducing manual logging errors.",
+      "topic": "Sample tracking",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Why is a scheduled, verified data backup important for a laboratory's electronic records?",
+      "options": ["It is not important since paper copies are always kept instead", "It protects against data loss from hardware failure, corruption, or accidental deletion", "It slows the computer down for no benefit", "It is required only for image files"],
+      "correct_answer": "It protects against data loss from hardware failure, corruption, or accidental deletion",
+      "explanation": "Regular verified backups ensure that critical test results and records can be recovered if original files are lost to hardware failure, corruption, or human error.",
+      "topic": "Data integrity",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is a Local Area Network (LAN) in the context of a laboratory's ICT infrastructure?",
+      "options": ["A network confined to a limited area, such as one building, connecting lab computers and instruments together", "A single standalone computer with no connections", "An instrument that only works when powered off", "A type of glassware calibration standard"],
+      "correct_answer": "A network confined to a limited area, such as one building, connecting lab computers and instruments together",
+      "explanation": "A LAN connects computers, servers, and networked instruments within a limited geographic area (e.g. one lab or building) so data and resources can be shared.",
+      "topic": "Networking",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Why is basic cybersecurity (e.g. strong passwords, restricted user access) important for a LIMS or lab computer network?",
+      "options": ["It has no relevance to laboratory work", "It protects patient/client confidentiality and prevents unauthorized alteration or loss of test data", "It is required only for social media accounts", "It replaces the need for calibration"],
+      "correct_answer": "It protects patient/client confidentiality and prevents unauthorized alteration or loss of test data",
+      "explanation": "Restricting access and using strong authentication protects sensitive results from unauthorized viewing, tampering, or deletion, preserving data confidentiality and integrity.",
+      "topic": "Data integrity",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which interface/port type has historically been used to connect older laboratory instruments to a computer for data transfer, alongside modern USB connections?",
+      "options": ["RS-232 (serial) port", "HDMI audio jack", "SIM card slot", "Ethernet power socket"],
+      "correct_answer": "RS-232 (serial) port",
+      "explanation": "RS-232 is a long-standing serial communication standard widely used to interface older analytical instruments (e.g. balances, pH meters) with computers.",
+      "topic": "Instrument interfacing",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Before relying on a new software update to control a critical laboratory instrument, what should be done first?",
+      "options": ["Install it directly onto the only working instrument with no testing", "Validate/verify the software update in a controlled way to confirm it performs as expected before routine use", "Delete all previous calibration records", "Skip any testing since software updates are always safe"],
+      "correct_answer": "Validate/verify the software update in a controlled way to confirm it performs as expected before routine use",
+      "explanation": "Software that controls or processes critical laboratory data should be validated/verified after any update to confirm correct, reliable performance before it is used for routine reporting.",
+      "topic": "Software validation",
+      "difficulty": "hard"
+    },
+    {
+      "question": "What is the primary purpose of an Uninterruptible Power Supply (UPS) connected to a laboratory computer or instrument?",
+      "options": ["To increase the instrument's analytical sensitivity", "To provide short-term backup power and protect against data loss during a power outage or surge", "To calibrate the instrument automatically", "To replace the need for an operating system"],
+      "correct_answer": "To provide short-term backup power and protect against data loss during a power outage or surge",
+      "explanation": "A UPS bridges brief power interruptions and buffers against surges, giving time to save data or shut down safely and protecting sensitive electronics from power fluctuation damage.",
+      "topic": "Computer fundamentals",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In statistical software (e.g. SPSS, Minitab) used to analyze replicate laboratory results, which function is most directly useful for comparing the means of two independent sample groups?",
+      "options": ["An independent-samples t-test", "A spell-check function", "A font formatting tool", "An image compression tool"],
+      "correct_answer": "An independent-samples t-test",
+      "explanation": "An independent-samples t-test statistically compares the means of two unrelated groups, a common task when comparing analytical results between two methods or conditions.",
+      "topic": "Lab software tools",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Why do laboratories increasingly use automated liquid-handling robots for sample preparation in high-throughput testing?",
+      "options": ["Robots cannot pipette accurately", "They increase throughput and reduce pipetting variability and operator fatigue compared to manual repetitive pipetting", "They eliminate the need for any quality control checks", "They are required only for qualitative tests"],
+      "correct_answer": "They increase throughput and reduce pipetting variability and operator fatigue compared to manual repetitive pipetting",
+      "explanation": "Automated liquid handlers perform repetitive pipetting with high reproducibility and speed, reducing human error and fatigue in high-volume sample preparation.",
+      "topic": "Laboratory automation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the main purpose of version/document control (e.g. numbered SOP revisions) in a laboratory's ICT/document system?",
+      "options": ["To make old documents impossible to retrieve", "To ensure only the current, approved version of a procedure is in active use and superseded versions are withdrawn", "To increase the file size of documents", "To prevent any document from ever being updated"],
+      "correct_answer": "To ensure only the current, approved version of a procedure is in active use and superseded versions are withdrawn",
+      "explanation": "Version control ensures every user references the current, approved procedure, preventing outdated or superseded methods from being followed in error.",
+      "topic": "Document control",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the main purpose of read-only or restricted-permission settings applied to finalized instrument result files?",
+      "options": ["To prevent the file from ever being viewed again", "To prevent unauthorized editing of results after they have been recorded, preserving data integrity", "To make the file load faster", "To automatically delete the file after 24 hours"],
+      "correct_answer": "To prevent unauthorized editing of results after they have been recorded, preserving data integrity",
+      "explanation": "Locking finalized result files against editing protects the original recorded data from accidental or deliberate alteration, a core data-integrity control.",
+      "topic": "Data integrity",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A technologist wants to automatically flag any result that falls outside a defined acceptable range in a spreadsheet. Which spreadsheet feature is best suited for this?",
+      "options": ["Conditional formatting combined with an IF function", "Changing the file extension", "Printing the spreadsheet on colored paper", "Increasing the font size"],
+      "correct_answer": "Conditional formatting combined with an IF function",
+      "explanation": "Conditional formatting paired with a logical IF function can automatically highlight or flag cells whose values fall outside specified control limits.",
+      "topic": "Lab software tools",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In computer terminology, RAM (Random Access Memory) is best described as:",
+      "options": ["Permanent storage that keeps data after the computer is switched off", "Fast, temporary working memory the CPU uses to run active programs and data", "A type of printer", "A network cable"],
+      "correct_answer": "Fast, temporary working memory the CPU uses to run active programs and data",
+      "explanation": "RAM temporarily holds data and instructions that the CPU is actively using; its contents are lost when power is removed, unlike permanent storage such as a hard drive.",
+      "topic": "Computer fundamentals",
+      "difficulty": "easy"
+    }
+  ]
+}

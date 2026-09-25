@@ -1,0 +1,457 @@
+{
+  "course_code": "MTH102",
+  "title": "Elementary Mathematics II",
+  "level": "100",
+  "source_note": "Standard NUC-aligned Nigerian university 100L second-semester calculus curriculum, as used at LASU: limits and continuity, differentiation techniques and applications, and integration techniques and applications. This course is treated as the calculus half of the Elementary Mathematics sequence, distinct from MTH101 (algebra/trig/functions) and MTH103 (coordinate geometry, vectors, sequences & series, complex numbers).",
+  "questions": [
+    {
+      "question": "What is lim(x→2) (x^2 - 4)/(x - 2)?",
+      "options": ["4", "2", "0", "Undefined"],
+      "correct_answer": "4",
+      "explanation": "Factor the numerator as (x-2)(x+2), cancel (x-2), and substitute x=2 to get 2+2=4.",
+      "topic": "Limits",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A function f(x) is continuous at x = a if which condition holds?",
+      "options": [
+        "f(a) is defined, lim(x→a) f(x) exists, and lim(x→a) f(x) = f(a)",
+        "f(a) is defined only",
+        "lim(x→a) f(x) exists only",
+        "f(x) is differentiable at x = a"
+      ],
+      "correct_answer": "f(a) is defined, lim(x→a) f(x) exists, and lim(x→a) f(x) = f(a)",
+      "explanation": "Continuity at a point requires the function value, the limit, and their equality all to hold.",
+      "topic": "Continuity",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is lim(x→0) (sin x)/x?",
+      "options": ["1", "0", "∞", "x"],
+      "correct_answer": "1",
+      "explanation": "This is a standard trigonometric limit proven using the squeeze theorem, and it equals 1.",
+      "topic": "Limits",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is lim(x→∞) (3x^2 + 2x)/(x^2 - 5)?",
+      "options": ["3", "0", "∞", "2/5"],
+      "correct_answer": "3",
+      "explanation": "Dividing numerator and denominator by x^2 leaves the ratio of leading coefficients, 3/1 = 3, as x→∞.",
+      "topic": "Limits",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Using first principles, the derivative of f(x) is defined as:",
+      "options": [
+        "lim(h→0) [f(x+h) - f(x)]/h",
+        "lim(h→0) [f(x) - f(x+h)]/h",
+        "lim(x→0) [f(x+h) - f(x)]/x",
+        "[f(x+h) - f(x)]/h"
+      ],
+      "correct_answer": "lim(h→0) [f(x+h) - f(x)]/h",
+      "explanation": "This is the formal first-principles (limit) definition of the derivative.",
+      "topic": "Differentiation from first principles",
+      "difficulty": "easy"
+    },
+    {
+      "question": "If f(x) = x^3, what is f'(x) using first principles?",
+      "options": ["3x^2", "x^2", "3x", "x^3"],
+      "correct_answer": "3x^2",
+      "explanation": "Expanding (x+h)^3 - x^3, dividing by h, and letting h→0 gives 3x^2.",
+      "topic": "Differentiation from first principles",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is d/dx (x^5)?",
+      "options": ["5x^4", "x^4", "5x^5", "x^5/5"],
+      "correct_answer": "5x^4",
+      "explanation": "By the power rule, d/dx(x^n) = n x^(n-1), so d/dx(x^5) = 5x^4.",
+      "topic": "Rules of differentiation",
+      "difficulty": "easy"
+    },
+    {
+      "question": "If y = (3x^2 + 1)(x - 4), what rule is used to differentiate y directly?",
+      "options": ["Product rule", "Quotient rule", "Chain rule", "Power rule alone"],
+      "correct_answer": "Product rule",
+      "explanation": "y is a product of two functions of x, so the product rule (uv)' = u'v + uv' applies.",
+      "topic": "Rules of differentiation",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Differentiate y = (2x+1)/(x-3) using the quotient rule.",
+      "options": [
+        "-7/(x-3)^2",
+        "7/(x-3)^2",
+        "2/(x-3)^2",
+        "-2/(x-3)^2"
+      ],
+      "correct_answer": "-7/(x-3)^2",
+      "explanation": "Using (u/v)' = (u'v - uv')/v^2 with u=2x+1, v=x-3: [2(x-3) - (2x+1)(1)]/(x-3)^2 = (2x-6-2x-1)/(x-3)^2 = -7/(x-3)^2.",
+      "topic": "Rules of differentiation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "If y = (3x + 2)^4, what is dy/dx by the chain rule?",
+      "options": ["12(3x+2)^3", "4(3x+2)^3", "3(3x+2)^3", "12(3x+2)^4"],
+      "correct_answer": "12(3x+2)^3",
+      "explanation": "By the chain rule, dy/dx = 4(3x+2)^3 · 3 = 12(3x+2)^3.",
+      "topic": "Rules of differentiation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is d/dx (sin x)?",
+      "options": ["cos x", "-cos x", "-sin x", "sec^2 x"],
+      "correct_answer": "cos x",
+      "explanation": "This is a standard derivative from calculus: the derivative of sin x is cos x.",
+      "topic": "Derivatives of trig functions",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is d/dx (tan x)?",
+      "options": ["sec^2 x", "-sec^2 x", "sec x tan x", "cot x"],
+      "correct_answer": "sec^2 x",
+      "explanation": "Differentiating tan x = sin x/cos x with the quotient rule gives sec^2 x.",
+      "topic": "Derivatives of trig functions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is d/dx (e^(2x))?",
+      "options": ["2e^(2x)", "e^(2x)", "2xe^(2x-1)", "e^2"],
+      "correct_answer": "2e^(2x)",
+      "explanation": "By the chain rule, the derivative of e^(kx) is k·e^(kx), so here it is 2e^(2x).",
+      "topic": "Derivatives of exponential/log functions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is d/dx (ln x)?",
+      "options": ["1/x", "x", "ln x", "1/x^2"],
+      "correct_answer": "1/x",
+      "explanation": "The derivative of the natural logarithm function ln x is 1/x for x > 0.",
+      "topic": "Derivatives of exponential/log functions",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Find dy/dx if x^2 + y^2 = 25 (implicit differentiation).",
+      "options": ["-x/y", "x/y", "-y/x", "2x"],
+      "correct_answer": "-x/y",
+      "explanation": "Differentiating both sides implicitly: 2x + 2y(dy/dx) = 0, so dy/dx = -x/y.",
+      "topic": "Implicit differentiation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "If y = x^3 - 6x^2 + 9x, what is the second derivative y''?",
+      "options": ["6x - 12", "3x^2 - 12x + 9", "6x", "x - 12"],
+      "correct_answer": "6x - 12",
+      "explanation": "y' = 3x^2 - 12x + 9, and differentiating again gives y'' = 6x - 12.",
+      "topic": "Higher-order derivatives",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The gradient of the tangent to a curve y = f(x) at a point is given by:",
+      "options": ["f'(x) evaluated at that point", "f(x) evaluated at that point", "f''(x) evaluated at that point", "The average rate of change over the domain"],
+      "correct_answer": "f'(x) evaluated at that point",
+      "explanation": "The derivative f'(x) gives the slope of the tangent line to the curve at any given x.",
+      "topic": "Applications of differentiation",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Find the equation of the tangent to y = x^2 at the point (2, 4).",
+      "options": ["y = 4x - 4", "y = 2x", "y = 4x + 4", "y = x - 2"],
+      "correct_answer": "y = 4x - 4",
+      "explanation": "y' = 2x, so gradient at x=2 is 4. Using y - 4 = 4(x - 2) gives y = 4x - 4.",
+      "topic": "Applications of differentiation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "At a stationary (turning) point of a curve, what must be true?",
+      "options": ["dy/dx = 0", "dy/dx = 1", "y = 0", "d^2y/dx^2 = 0"],
+      "correct_answer": "dy/dx = 0",
+      "explanation": "Stationary points occur where the first derivative (the gradient) equals zero.",
+      "topic": "Maxima and minima",
+      "difficulty": "easy"
+    },
+    {
+      "question": "For a stationary point to be a local maximum, the second derivative test requires:",
+      "options": ["d^2y/dx^2 < 0", "d^2y/dx^2 > 0", "d^2y/dx^2 = 0", "dy/dx > 0"],
+      "correct_answer": "d^2y/dx^2 < 0",
+      "explanation": "A negative second derivative at a stationary point indicates the curve is concave down, i.e. a local maximum.",
+      "topic": "Maxima and minima",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Find the stationary points of y = x^2 - 4x + 3.",
+      "options": ["x = 2 (minimum)", "x = -2 (minimum)", "x = 2 (maximum)", "x = 4 (minimum)"],
+      "correct_answer": "x = 2 (minimum)",
+      "explanation": "y' = 2x - 4 = 0 gives x = 2. Since y'' = 2 > 0, this is a minimum point.",
+      "topic": "Maxima and minima",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A particle's displacement is s(t) = t^3 - 3t^2. What is its velocity function v(t)?",
+      "options": ["3t^2 - 6t", "t^2 - 3t", "3t - 6", "6t - 6"],
+      "correct_answer": "3t^2 - 6t",
+      "explanation": "Velocity is the first derivative of displacement with respect to time: v(t) = ds/dt = 3t^2 - 6t.",
+      "topic": "Rates of change",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For the displacement s(t) = t^3 - 3t^2, what is the acceleration function a(t)?",
+      "options": ["6t - 6", "3t^2 - 6t", "6t", "t - 3"],
+      "correct_answer": "6t - 6",
+      "explanation": "Acceleration is the derivative of velocity (the second derivative of displacement): a(t) = dv/dt = 6t - 6.",
+      "topic": "Rates of change",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What does ∫f(x)dx represent?",
+      "options": [
+        "The antiderivative (indefinite integral) of f(x)",
+        "The derivative of f(x)",
+        "The limit of f(x)",
+        "The value of f(x) at a point"
+      ],
+      "correct_answer": "The antiderivative (indefinite integral) of f(x)",
+      "explanation": "Integration is the reverse process of differentiation; ∫f(x)dx gives the family of antiderivatives of f(x).",
+      "topic": "Indefinite integration",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Evaluate ∫x^3 dx.",
+      "options": ["x^4/4 + C", "3x^2 + C", "x^4 + C", "4x^3 + C"],
+      "correct_answer": "x^4/4 + C",
+      "explanation": "Using the power rule for integration, ∫x^n dx = x^(n+1)/(n+1) + C, so ∫x^3 dx = x^4/4 + C.",
+      "topic": "Indefinite integration",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Evaluate ∫(4x^3 - 2x + 5) dx.",
+      "options": ["x^4 - x^2 + 5x + C", "4x^4 - x^2 + 5x + C", "x^4 - 2x^2 + 5x + C", "12x^2 - 2 + C"],
+      "correct_answer": "x^4 - x^2 + 5x + C",
+      "explanation": "Integrating term by term: ∫4x^3dx = x^4, ∫-2x dx = -x^2, ∫5 dx = 5x, giving x^4 - x^2 + 5x + C.",
+      "topic": "Indefinite integration",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Evaluate ∫cos x dx.",
+      "options": ["sin x + C", "-sin x + C", "cos x + C", "-cos x + C"],
+      "correct_answer": "sin x + C",
+      "explanation": "The antiderivative of cos x is sin x, since d/dx(sin x) = cos x.",
+      "topic": "Indefinite integration",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Evaluate ∫e^(3x) dx.",
+      "options": ["(1/3)e^(3x) + C", "3e^(3x) + C", "e^(3x) + C", "e^(3x)/x + C"],
+      "correct_answer": "(1/3)e^(3x) + C",
+      "explanation": "Since d/dx[(1/3)e^(3x)] = e^(3x), the integral of e^(3x) is (1/3)e^(3x) + C.",
+      "topic": "Indefinite integration",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which technique is most appropriate for evaluating ∫2x(x^2 + 1)^5 dx?",
+      "options": [
+        "Integration by substitution, letting u = x^2 + 1",
+        "Integration by parts",
+        "Partial fractions",
+        "Direct power rule"
+      ],
+      "correct_answer": "Integration by substitution, letting u = x^2 + 1",
+      "explanation": "The integrand contains 2x, the derivative of (x^2+1), which is the hallmark of a substitution integral.",
+      "topic": "Integration by substitution",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Evaluate ∫2x(x^2 + 1)^5 dx using substitution u = x^2 + 1.",
+      "options": ["(x^2+1)^6/6 + C", "(x^2+1)^5/5 + C", "6(x^2+1)^6 + C", "2(x^2+1)^6 + C"],
+      "correct_answer": "(x^2+1)^6/6 + C",
+      "explanation": "With u = x^2+1, du = 2x dx, so the integral becomes ∫u^5 du = u^6/6 + C = (x^2+1)^6/6 + C.",
+      "topic": "Integration by substitution",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which pair of functions is typically integrated using integration by parts, e.g. ∫x e^x dx?",
+      "options": [
+        "A polynomial multiplied by an exponential/trig/log function",
+        "Two polynomials added together",
+        "A single power function",
+        "A constant function"
+      ],
+      "correct_answer": "A polynomial multiplied by an exponential/trig/log function",
+      "explanation": "Integration by parts, ∫u dv = uv - ∫v du, is the standard technique for products like x e^x where substitution does not directly apply.",
+      "topic": "Integration by parts",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Using integration by parts, evaluate ∫x e^x dx.",
+      "options": ["xe^x - e^x + C", "xe^x + e^x + C", "e^x + C", "x^2e^x/2 + C"],
+      "correct_answer": "xe^x - e^x + C",
+      "explanation": "Let u = x, dv = e^x dx. Then du = dx, v = e^x, and ∫x e^x dx = xe^x - ∫e^x dx = xe^x - e^x + C.",
+      "topic": "Integration by parts",
+      "difficulty": "hard"
+    },
+    {
+      "question": "What is the fundamental theorem of calculus concerned with?",
+      "options": [
+        "The relationship between differentiation and integration",
+        "The relationship between limits and continuity",
+        "The convergence of infinite series",
+        "The solution of algebraic equations"
+      ],
+      "correct_answer": "The relationship between differentiation and integration",
+      "explanation": "The fundamental theorem of calculus establishes that integration and differentiation are inverse operations.",
+      "topic": "Definite integration",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Evaluate the definite integral ∫ from 0 to 2 of x^2 dx.",
+      "options": ["8/3", "4", "2", "8"],
+      "correct_answer": "8/3",
+      "explanation": "∫x^2 dx = x^3/3, evaluated from 0 to 2 gives 8/3 - 0 = 8/3.",
+      "topic": "Definite integration",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Evaluate ∫ from 1 to 3 of (2x + 1) dx.",
+      "options": ["10", "12", "8", "6"],
+      "correct_answer": "10",
+      "explanation": "The antiderivative is x^2 + x. Evaluating at 3: 9+3=12; at 1: 1+1=2. So 12 - 2 = 10.",
+      "topic": "Definite integration",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The area bounded by the curve y = f(x), the x-axis, and the lines x = a and x = b (with f(x) ≥ 0) is given by:",
+      "options": [
+        "∫ from a to b of f(x) dx",
+        "f(b) - f(a)",
+        "f'(b) - f'(a)",
+        "∫ from a to b of f'(x) dx"
+      ],
+      "correct_answer": "∫ from a to b of f(x) dx",
+      "explanation": "The area under a non-negative curve between two vertical lines is computed by the definite integral of the function over that interval.",
+      "topic": "Applications of integration",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Find the area under y = x^2 between x = 0 and x = 3.",
+      "options": ["9", "27", "3", "27/3"],
+      "correct_answer": "9",
+      "explanation": "Area = ∫ from 0 to 3 of x^2 dx = [x^3/3] from 0 to 3 = 27/3 - 0 = 9.",
+      "topic": "Applications of integration",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The area between two curves y = f(x) and y = g(x) (with f(x) ≥ g(x)) on [a,b] is given by:",
+      "options": [
+        "∫ from a to b of [f(x) - g(x)] dx",
+        "∫ from a to b of [f(x) + g(x)] dx",
+        "f(b) - g(a)",
+        "∫ from a to b of f(x)g(x) dx"
+      ],
+      "correct_answer": "∫ from a to b of [f(x) - g(x)] dx",
+      "explanation": "The area between two curves is the integral of the difference of the upper and lower functions over the interval.",
+      "topic": "Applications of integration",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is d/dx (cos x)?",
+      "options": ["-sin x", "sin x", "cos x", "-cos x"],
+      "correct_answer": "-sin x",
+      "explanation": "The derivative of cos x is -sin x, a standard result in differential calculus.",
+      "topic": "Derivatives of trig functions",
+      "difficulty": "easy"
+    },
+    {
+      "question": "If f(x) is differentiable at x = a, what can be concluded about continuity at x = a?",
+      "options": [
+        "f(x) must also be continuous at x = a",
+        "f(x) need not be continuous at x = a",
+        "f(x) is discontinuous at x = a",
+        "Nothing can be concluded"
+      ],
+      "correct_answer": "f(x) must also be continuous at x = a",
+      "explanation": "Differentiability implies continuity: every differentiable function is continuous at that point, though the converse is not always true.",
+      "topic": "Continuity",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A function has a removable discontinuity at x = a when:",
+      "options": [
+        "lim(x→a) f(x) exists but does not equal f(a), or f(a) is undefined",
+        "lim(x→a) f(x) does not exist at all",
+        "f(x) is a polynomial",
+        "f(x) is always increasing"
+      ],
+      "correct_answer": "lim(x→a) f(x) exists but does not equal f(a), or f(a) is undefined",
+      "explanation": "A removable discontinuity occurs when the limit exists but there is a 'hole' because the function value differs from or is undefined at that point.",
+      "topic": "Continuity",
+      "difficulty": "hard"
+    },
+    {
+      "question": "What is the derivative of y = ln(3x^2 + 1)?",
+      "options": ["6x/(3x^2+1)", "6x", "1/(3x^2+1)", "3x^2/(3x^2+1)"],
+      "correct_answer": "6x/(3x^2+1)",
+      "explanation": "By the chain rule, d/dx[ln(u)] = u'/u, so with u = 3x^2+1, u' = 6x, giving 6x/(3x^2+1).",
+      "topic": "Derivatives of exponential/log functions",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A rectangular field is to be fenced with 200 m of fencing to maximize area. What optimization concept is applied to solve this?",
+      "options": [
+        "Setting the derivative of the area function to zero to find the maximum",
+        "Integrating the perimeter function",
+        "Finding the limit of the area as the sides approach zero",
+        "Using the quotient rule on the perimeter"
+      ],
+      "correct_answer": "Setting the derivative of the area function to zero to find the maximum",
+      "explanation": "Optimization problems express the quantity to be maximized/minimized as a function of one variable, then use dy/dx = 0 to find critical points.",
+      "topic": "Applications of differentiation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Find dy/dx if y = sin(x^2).",
+      "options": ["2x cos(x^2)", "cos(x^2)", "2x sin(x^2)", "x^2 cos(x^2)"],
+      "correct_answer": "2x cos(x^2)",
+      "explanation": "By the chain rule, dy/dx = cos(x^2) · d/dx(x^2) = cos(x^2) · 2x = 2x cos(x^2).",
+      "topic": "Rules of differentiation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is lim(x→0) (1 - cos x)/x?",
+      "options": ["0", "1", "∞", "-1"],
+      "correct_answer": "0",
+      "explanation": "Using standard limits, (1-cos x)/x → 0 as x→0 (it can be shown via (1-cos x)/x = x·[(1-cos x)/x^2] and known limits).",
+      "topic": "Limits",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In Leibniz notation, the second derivative of y with respect to x is written as:",
+      "options": ["d^2y/dx^2", "dy^2/dx", "(dy/dx)^2", "d^2y/d^2x"],
+      "correct_answer": "d^2y/dx^2",
+      "explanation": "The standard Leibniz notation for the second derivative is d^2y/dx^2.",
+      "topic": "Higher-order derivatives",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Evaluate ∫ 1/x dx.",
+      "options": ["ln|x| + C", "1/x^2 + C", "x ln x + C", "-1/x^2 + C"],
+      "correct_answer": "ln|x| + C",
+      "explanation": "The integral of 1/x is the natural logarithm of the absolute value of x, plus a constant.",
+      "topic": "Indefinite integration",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For y = x^2 - 4x + 3, at which point does an inflection point NOT occur, given that y'' = 2 (a nonzero constant)?",
+      "options": [
+        "Anywhere, since y'' never equals zero for this function",
+        "At x = 2",
+        "At x = 0",
+        "At x = 4"
+      ],
+      "correct_answer": "Anywhere, since y'' never equals zero for this function",
+      "explanation": "An inflection point requires y'' = 0 and a sign change; since y'' = 2 is constant and never zero, this parabola has no inflection point.",
+      "topic": "Maxima and minima",
+      "difficulty": "hard"
+    }
+  ]
+}

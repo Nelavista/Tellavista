@@ -1,0 +1,304 @@
+{
+  "course_code": "STA312",
+  "title": "Distribution Theory I",
+  "level": "300",
+  "source_note": "Standard NUC-aligned 300L distribution theory curriculum: discrete distributions (Bernoulli, binomial, Poisson, geometric, negative binomial, hypergeometric, uniform) and continuous distributions (uniform, exponential, normal, gamma, beta), their derivations, parameters, means/variances, moment generating functions, and relationships/approximations between them.",
+  "questions": [
+    {
+      "question": "A Bernoulli random variable X takes the value 1 (success) with probability p and 0 (failure) with probability 1-p. What is E(X)?",
+      "options": ["p", "1-p", "p(1-p)", "1"],
+      "correct_answer": "p",
+      "explanation": "For a Bernoulli variable, E(X) = 1.p + 0.(1-p) = p.",
+      "topic": "Bernoulli distribution",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is the variance of a Bernoulli random variable with success probability p?",
+      "options": ["p(1-p)", "p", "1-p", "p^2"],
+      "correct_answer": "p(1-p)",
+      "explanation": "Var(X) = E(X^2) - [E(X)]^2 = p - p^2 = p(1-p) for a Bernoulli random variable.",
+      "topic": "Bernoulli distribution",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A binomial random variable X ~ Binomial(n, p) represents:",
+      "options": ["The number of successes in n independent Bernoulli trials with constant success probability p", "The number of trials needed to get the first success", "The number of successes before a fixed number of failures", "The proportion of successes in an infinite sequence of trials"],
+      "correct_answer": "The number of successes in n independent Bernoulli trials with constant success probability p",
+      "explanation": "The binomial distribution counts the number of successes in a fixed number n of independent, identically distributed Bernoulli trials.",
+      "topic": "Binomial distribution",
+      "difficulty": "easy"
+    },
+    {
+      "question": "For X ~ Binomial(n, p), the mean and variance are respectively:",
+      "options": ["E(X) = np, Var(X) = np(1-p)", "E(X) = np(1-p), Var(X) = np", "E(X) = p, Var(X) = np", "E(X) = n, Var(X) = p(1-p)"],
+      "correct_answer": "E(X) = np, Var(X) = np(1-p)",
+      "explanation": "For a binomial distribution, the mean is np and the variance is np(1-p), reflecting the sum of n independent Bernoulli trials.",
+      "topic": "Binomial distribution",
+      "difficulty": "medium"
+    },
+    {
+      "question": "If X ~ Binomial(5, 0.4), what is P(X = 2), given C(5,2) = 10?",
+      "options": ["0.3456", "0.2304", "0.4000", "0.0778"],
+      "correct_answer": "0.3456",
+      "explanation": "P(X=2) = C(5,2).(0.4)^2.(0.6)^3 = 10 x 0.16 x 0.216 = 0.3456.",
+      "topic": "Binomial distribution",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The moment generating function of a Binomial(n, p) random variable is:",
+      "options": ["M_X(t) = [pe^t + (1-p)]^n", "M_X(t) = [pe^t]^n", "M_X(t) = np.e^t", "M_X(t) = (1-p)e^{tn}"],
+      "correct_answer": "M_X(t) = [pe^t + (1-p)]^n",
+      "explanation": "The binomial MGF is derived from the sum of n iid Bernoulli MGFs: M_X(t) = [pe^t + (1-p)]^n.",
+      "topic": "Binomial distribution",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The Poisson distribution is often used to model:",
+      "options": ["The number of rare, independent events occurring in a fixed interval of time or space", "The number of successes in a fixed number of trials", "A continuous measurement such as height", "The proportion of successes out of infinite trials"],
+      "correct_answer": "The number of rare, independent events occurring in a fixed interval of time or space",
+      "explanation": "The Poisson distribution models counts of events that occur independently and at a constant average rate over a fixed interval, such as calls received per hour.",
+      "topic": "Poisson distribution",
+      "difficulty": "easy"
+    },
+    {
+      "question": "For a Poisson random variable X with parameter lambda, the mean and variance are:",
+      "options": ["Both equal to lambda", "Mean = lambda, Variance = lambda^2", "Mean = lambda^2, Variance = lambda", "Mean = 1/lambda, Variance = lambda"],
+      "correct_answer": "Both equal to lambda",
+      "explanation": "A defining property of the Poisson distribution is that its mean and variance are both equal to the parameter lambda.",
+      "topic": "Poisson distribution",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The probability mass function of a Poisson random variable with parameter lambda is:",
+      "options": ["P(X=x) = (e^{-lambda} . lambda^x) / x!", "P(X=x) = lambda^x / x!", "P(X=x) = e^{-lambda x}", "P(X=x) = C(n,x) lambda^x (1-lambda)^{n-x}"],
+      "correct_answer": "P(X=x) = (e^{-lambda} . lambda^x) / x!",
+      "explanation": "The Poisson pmf is P(X=x) = e^{-lambda} lambda^x / x! for x = 0, 1, 2, ..., defined by the single parameter lambda.",
+      "topic": "Poisson distribution",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Poisson distribution can be used as an approximation to the binomial distribution when:",
+      "options": ["n is large and p is small, such that np remains moderate", "n is small and p is close to 0.5", "n equals p", "The variance exceeds the mean substantially"],
+      "correct_answer": "n is large and p is small, such that np remains moderate",
+      "explanation": "When n is large and p is small (rare events), the binomial distribution can be well approximated by a Poisson distribution with lambda = np.",
+      "topic": "Poisson distribution",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A geometric random variable X models:",
+      "options": ["The number of trials needed to obtain the first success in repeated independent Bernoulli trials", "The number of successes in a fixed number of trials", "The number of successes before a fixed number of failures", "A continuous waiting time"],
+      "correct_answer": "The number of trials needed to obtain the first success in repeated independent Bernoulli trials",
+      "explanation": "The geometric distribution counts the number of trials (or failures, depending on convention) until the first success occurs in a sequence of independent Bernoulli trials.",
+      "topic": "Geometric distribution",
+      "difficulty": "easy"
+    },
+    {
+      "question": "For a geometric distribution with success probability p (counting number of trials until first success), the mean is:",
+      "options": ["1/p", "p", "(1-p)/p", "p(1-p)"],
+      "correct_answer": "1/p",
+      "explanation": "The expected number of trials until the first success in a geometric distribution is 1/p.",
+      "topic": "Geometric distribution",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The negative binomial distribution generalizes the geometric distribution by modeling:",
+      "options": ["The number of trials needed to obtain a fixed number r of successes", "The number of successes in a fixed number of independent trials", "The waiting time for a continuous process", "The probability of exactly one success"],
+      "correct_answer": "The number of trials needed to obtain a fixed number r of successes",
+      "explanation": "The negative binomial distribution extends the geometric distribution to count the number of trials required to achieve r successes, rather than just the first success.",
+      "topic": "Negative binomial distribution",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The hypergeometric distribution differs from the binomial distribution primarily because it models sampling:",
+      "options": ["Without replacement from a finite population", "With replacement from an infinite population", "From a continuous population", "With a constant, unchanging probability across draws"],
+      "correct_answer": "Without replacement from a finite population",
+      "explanation": "The hypergeometric distribution applies when sampling without replacement from a finite population, so the probability of success changes with each draw, unlike the binomial.",
+      "topic": "Hypergeometric distribution",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a hypergeometric setting, a population of N items contains K 'successes.' A sample of size n is drawn without replacement. The probability of exactly x successes is given by:",
+      "options": ["[C(K,x) . C(N-K, n-x)] / C(N,n)", "C(n,x) . p^x . (1-p)^{n-x}", "e^{-lambda} lambda^x / x!", "[C(N,x) . C(K,n-x)] / C(n,K)"],
+      "correct_answer": "[C(K,x) . C(N-K, n-x)] / C(N,n)",
+      "explanation": "The hypergeometric pmf uses combinatorics to count ways of choosing x successes from K available and n-x failures from N-K, divided by all ways of choosing n from N.",
+      "topic": "Hypergeometric distribution",
+      "difficulty": "hard"
+    },
+    {
+      "question": "For a discrete uniform distribution on the integers 1 to n, each outcome has probability:",
+      "options": ["1/n", "n", "1/n^2", "p(1-p)"],
+      "correct_answer": "1/n",
+      "explanation": "In a discrete uniform distribution over n equally likely outcomes, each outcome has probability 1/n.",
+      "topic": "Uniform distribution",
+      "difficulty": "easy"
+    },
+    {
+      "question": "For a continuous random variable X uniformly distributed on the interval [a, b], the probability density function is:",
+      "options": ["f(x) = 1/(b-a) for a <= x <= b", "f(x) = (b-a) for a <= x <= b", "f(x) = x/(b-a)", "f(x) = 1/b - 1/a"],
+      "correct_answer": "f(x) = 1/(b-a) for a <= x <= b",
+      "explanation": "The continuous uniform distribution has a constant density of 1/(b-a) over the interval [a,b], so total area under the curve equals 1.",
+      "topic": "Uniform distribution",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For X uniformly distributed on [a, b], the mean is:",
+      "options": ["(a+b)/2", "(b-a)/2", "(b-a)^2/12", "ab/2"],
+      "correct_answer": "(a+b)/2",
+      "explanation": "The mean of the continuous uniform distribution is the midpoint of the interval: (a+b)/2.",
+      "topic": "Uniform distribution",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The exponential distribution with rate parameter lambda is commonly used to model:",
+      "options": ["The waiting time between independent events occurring at a constant average rate", "The number of events in a fixed interval", "A bounded random variable on [0,1]", "The number of trials until r successes occur"],
+      "correct_answer": "The waiting time between independent events occurring at a constant average rate",
+      "explanation": "The exponential distribution models continuous waiting times between successive events in a Poisson process with rate lambda.",
+      "topic": "Exponential distribution",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The probability density function of an exponential distribution with rate parameter lambda is:",
+      "options": ["f(x) = lambda . e^{-lambda x} for x >= 0", "f(x) = e^{-lambda x}", "f(x) = lambda . x . e^{-x}", "f(x) = 1/lambda . e^{x/lambda}"],
+      "correct_answer": "f(x) = lambda . e^{-lambda x} for x >= 0",
+      "explanation": "The exponential pdf is f(x) = lambda.e^{-lambda x} for x >= 0, with mean 1/lambda and variance 1/lambda^2.",
+      "topic": "Exponential distribution",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The 'memoryless property' of the exponential distribution means that:",
+      "options": ["P(X > s+t | X > s) = P(X > t) for all s, t >= 0", "The distribution has no defined mean", "The variance changes over time", "The distribution is symmetric about its mean"],
+      "correct_answer": "P(X > s+t | X > s) = P(X > t) for all s, t >= 0",
+      "explanation": "The memoryless property states that the probability of waiting an additional time t, given that time s has already elapsed without an event, is the same as the original probability of waiting t -- past waiting time gives no information about future waiting.",
+      "topic": "Exponential distribution",
+      "difficulty": "hard"
+    },
+    {
+      "question": "If X ~ Exponential(lambda = 2), what is E(X)?",
+      "options": ["0.5", "2", "4", "1"],
+      "correct_answer": "0.5",
+      "explanation": "For an exponential distribution, E(X) = 1/lambda = 1/2 = 0.5.",
+      "topic": "Exponential distribution",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The normal (Gaussian) distribution's probability density function is characterized by which two parameters?",
+      "options": ["Mean (mu) and variance (sigma^2)", "Rate (lambda) and shape (k)", "Number of trials (n) and probability (p)", "Minimum and maximum values"],
+      "correct_answer": "Mean (mu) and variance (sigma^2)",
+      "explanation": "The normal distribution N(mu, sigma^2) is fully described by its mean mu (location) and variance sigma^2 (spread).",
+      "topic": "Normal distribution",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The standard normal distribution has which mean and variance?",
+      "options": ["Mean = 0, Variance = 1", "Mean = 1, Variance = 0", "Mean = 0, Variance = 0", "Mean = 1, Variance = 1"],
+      "correct_answer": "Mean = 0, Variance = 1",
+      "explanation": "The standard normal distribution Z ~ N(0,1) is the normal distribution with mean 0 and variance 1, obtained by standardizing any normal variable.",
+      "topic": "Normal distribution",
+      "difficulty": "easy"
+    },
+    {
+      "question": "To standardize a normal random variable X ~ N(mu, sigma^2) into Z ~ N(0,1), the transformation used is:",
+      "options": ["Z = (X - mu) / sigma", "Z = X - mu", "Z = X / sigma", "Z = (X + mu) . sigma"],
+      "correct_answer": "Z = (X - mu) / sigma",
+      "explanation": "Subtracting the mean and dividing by the standard deviation converts any normal random variable into the standard normal distribution.",
+      "topic": "Normal distribution",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The normal distribution's probability density curve is:",
+      "options": ["Symmetric and bell-shaped about the mean", "Skewed to the right", "Uniform across its entire range", "Only defined for positive values"],
+      "correct_answer": "Symmetric and bell-shaped about the mean",
+      "explanation": "The normal distribution is symmetric around its mean, producing the characteristic bell-shaped curve.",
+      "topic": "Normal distribution",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The Gamma distribution with shape parameter alpha and rate parameter beta reduces to the exponential distribution when:",
+      "options": ["alpha = 1", "beta = 1", "alpha = beta", "alpha = 0"],
+      "correct_answer": "alpha = 1",
+      "explanation": "When the shape parameter alpha = 1, the Gamma distribution simplifies exactly to the exponential distribution with rate beta.",
+      "topic": "Gamma distribution",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The Gamma function Gamma(n), for a positive integer n, satisfies:",
+      "options": ["Gamma(n) = (n-1)!", "Gamma(n) = n!", "Gamma(n) = n", "Gamma(n) = 1/n!"],
+      "correct_answer": "Gamma(n) = (n-1)!",
+      "explanation": "For positive integers, the Gamma function generalizes the factorial such that Gamma(n) = (n-1)!.",
+      "topic": "Gamma distribution",
+      "difficulty": "hard"
+    },
+    {
+      "question": "For a Gamma random variable with shape alpha and rate beta, the mean is:",
+      "options": ["alpha/beta", "alpha.beta", "beta/alpha", "alpha + beta"],
+      "correct_answer": "alpha/beta",
+      "explanation": "The Gamma distribution with shape alpha and rate beta has mean alpha/beta and variance alpha/beta^2.",
+      "topic": "Gamma distribution",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The Beta distribution is typically used to model random variables that are:",
+      "options": ["Bounded between 0 and 1, such as proportions or probabilities", "Unbounded and symmetric", "Strictly integer-valued counts", "Always equal to their mean"],
+      "correct_answer": "Bounded between 0 and 1, such as proportions or probabilities",
+      "explanation": "The Beta distribution has support on the interval [0,1], making it a natural model for probabilities, proportions, and rates.",
+      "topic": "Beta distribution",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Beta distribution with both shape parameters alpha = beta = 1 reduces to:",
+      "options": ["The uniform distribution on [0,1]", "The standard normal distribution", "The exponential distribution", "The binomial distribution"],
+      "correct_answer": "The uniform distribution on [0,1]",
+      "explanation": "When alpha = beta = 1, the Beta(1,1) distribution has constant density 1 on [0,1], which is exactly the uniform distribution.",
+      "topic": "Beta distribution",
+      "difficulty": "hard"
+    },
+    {
+      "question": "By the Central Limit Theorem, the binomial distribution Binomial(n,p) can be approximated by a normal distribution when:",
+      "options": ["n is large and both np and n(1-p) are sufficiently large (commonly >= 5)", "n is small and p is close to 0", "p equals exactly 0.5 only", "The variance is zero"],
+      "correct_answer": "n is large and both np and n(1-p) are sufficiently large (commonly >= 5)",
+      "explanation": "The normal approximation to the binomial is valid when n is large and np and n(1-p) are both reasonably large, ensuring the distribution is not too skewed.",
+      "topic": "Approximations between distributions",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Which distribution arises as the limiting distribution of the sample mean of a large number of independent, identically distributed random variables with finite variance, regardless of their original distribution?",
+      "options": ["Normal distribution", "Poisson distribution", "Exponential distribution", "Uniform distribution"],
+      "correct_answer": "Normal distribution",
+      "explanation": "This is the essence of the Central Limit Theorem: the sample mean tends toward a normal distribution as sample size grows, irrespective of the underlying population distribution.",
+      "topic": "Approximations between distributions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The sum of n independent and identically distributed Exponential(lambda) random variables follows which distribution?",
+      "options": ["Gamma distribution with shape n and rate lambda", "Exponential distribution with rate n.lambda", "Normal distribution with mean n/lambda", "Poisson distribution with parameter n.lambda"],
+      "correct_answer": "Gamma distribution with shape n and rate lambda",
+      "explanation": "The sum of n iid exponential random variables with rate lambda follows a Gamma distribution with shape parameter n and rate lambda (this special case is also called the Erlang distribution).",
+      "topic": "Gamma distribution",
+      "difficulty": "hard"
+    },
+    {
+      "question": "For which distribution does the parameter lambda represent both the mean number of events and, via 1/lambda, the mean waiting time between events, depending on whether it is applied to counts or to time intervals respectively?",
+      "options": ["Poisson (counts) and Exponential (waiting time)", "Binomial (counts) and Normal (waiting time)", "Geometric (counts) and Uniform (waiting time)", "Hypergeometric (counts) and Gamma (waiting time)"],
+      "correct_answer": "Poisson (counts) and Exponential (waiting time)",
+      "explanation": "The Poisson process links two distributions: the Poisson distribution counts events with mean lambda in an interval, while the Exponential distribution models the waiting time between those events with mean 1/lambda.",
+      "topic": "Approximations between distributions",
+      "difficulty": "hard"
+    },
+    {
+      "question": "If X ~ Uniform(0, 10), what is P(3 < X < 7)?",
+      "options": ["0.4", "0.3", "0.7", "0.5"],
+      "correct_answer": "0.4",
+      "explanation": "For a continuous uniform distribution, P(3<X<7) = (7-3)/(10-0) = 4/10 = 0.4.",
+      "topic": "Uniform distribution",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which of these distributions is discrete rather than continuous?",
+      "options": ["Negative binomial distribution", "Gamma distribution", "Beta distribution", "Exponential distribution"],
+      "correct_answer": "Negative binomial distribution",
+      "explanation": "The negative binomial distribution models a count (number of trials to achieve r successes) and is discrete, unlike the Gamma, Beta, and Exponential distributions, which are continuous.",
+      "topic": "Discrete vs continuous distributions",
+      "difficulty": "easy"
+    }
+  ]
+}

@@ -1,0 +1,261 @@
+{
+  "course_code": "MTH314",
+  "title": "Analytical Dynamics I",
+  "level": "300",
+  "source_note": "Standard NUC-aligned Nigerian university 300L applied mathematics/mechanics curriculum: kinematics and dynamics of a particle, Newton's laws, work-energy and momentum principles, simple harmonic motion, and central-force motion, forming the foundation for Analytical Dynamics II (MTH411).",
+  "questions": [
+    {
+      "question": "Newton's Second Law of motion states that the net force F on a particle of mass m is related to its acceleration a by:",
+      "options": ["F = ma", "F = mv", "F = ma^2", "F = m/a"],
+      "correct_answer": "F = ma",
+      "explanation": "Newton's second law defines force as the rate of change of momentum, which for constant mass reduces to F = ma.",
+      "topic": "Newton's laws",
+      "difficulty": "easy"
+    },
+    {
+      "question": "For a particle moving with position x(t), the instantaneous velocity is defined as:",
+      "options": ["v = dx/dt", "v = d^2x/dt^2", "v = x/t", "v = ∫x dt"],
+      "correct_answer": "v = dx/dt",
+      "explanation": "Velocity is the time rate of change of position, i.e. the first derivative of the position function.",
+      "topic": "Kinematics",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Acceleration is related to velocity by:",
+      "options": ["a = dv/dt", "a = v/t", "a = ∫v dt", "a = v^2"],
+      "correct_answer": "a = dv/dt",
+      "explanation": "Acceleration is the time derivative of velocity, describing the rate of change of velocity.",
+      "topic": "Kinematics",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A particle undergoes motion with constant acceleration a, initial velocity u. Which kinematic equation correctly gives the velocity v after time t?",
+      "options": ["v = u + at", "v = u - at^2", "v = ut^2", "v = u/a"],
+      "correct_answer": "v = u + at",
+      "explanation": "This is the standard equation of motion under constant acceleration, derived by integrating a = dv/dt.",
+      "topic": "Kinematics",
+      "difficulty": "easy"
+    },
+    {
+      "question": "For constant acceleration, the displacement s after time t, starting with initial velocity u, is given by:",
+      "options": ["s = ut + (1/2)at^2", "s = ut - at", "s = u + at", "s = (1/2)at"],
+      "correct_answer": "s = ut + (1/2)at^2",
+      "explanation": "Integrating v = u + at with respect to time from 0 to t gives this standard displacement equation.",
+      "topic": "Kinematics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A ball is thrown vertically upward with initial speed u. Ignoring air resistance, the maximum height reached is:",
+      "options": ["u^2/(2g)", "u/g", "2u/g", "u^2/g"],
+      "correct_answer": "u^2/(2g)",
+      "explanation": "Using v^2 = u^2 - 2gh with v = 0 at maximum height gives h = u^2/(2g).",
+      "topic": "Projectile motion",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For a projectile launched with speed u at angle θ to the horizontal (no air resistance), the time of flight (returning to launch height) is:",
+      "options": ["2u sinθ / g", "u sinθ / g", "u cosθ / g", "2u cosθ / g"],
+      "correct_answer": "2u sinθ / g",
+      "explanation": "The vertical component of velocity is u sinθ; the projectile returns to the same height after twice the time it takes to reach the top, giving 2u sinθ/g.",
+      "topic": "Projectile motion",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The horizontal range of a projectile launched at angle θ with speed u on level ground is:",
+      "options": ["u^2 sin(2θ) / g", "u^2 sinθ / g", "u^2 cos(2θ) / g", "2u^2/g"],
+      "correct_answer": "u^2 sin(2θ) / g",
+      "explanation": "Multiplying the horizontal velocity component by the time of flight and simplifying using the double-angle identity yields R = u^2 sin(2θ)/g.",
+      "topic": "Projectile motion",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The work-energy theorem states that the work done by the net force on a particle equals:",
+      "options": ["The change in the particle's kinetic energy", "The change in the particle's potential energy", "The particle's total momentum", "The particle's mass times displacement"],
+      "correct_answer": "The change in the particle's kinetic energy",
+      "explanation": "W = ∫F.dx = ∫ma.dx = ∫mv dv = (1/2)mv2^2 - (1/2)mv1^2, i.e. the net work equals the change in kinetic energy.",
+      "topic": "Work and energy",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Kinetic energy of a particle of mass m moving with speed v is given by:",
+      "options": ["(1/2)mv^2", "mv^2", "mv", "(1/2)mv"],
+      "correct_answer": "(1/2)mv^2",
+      "explanation": "This is the standard definition of translational kinetic energy in classical mechanics.",
+      "topic": "Work and energy",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A force F is conservative if:",
+      "options": [
+        "The work it does on a particle moving between two points is independent of the path taken",
+        "It always points in the same direction",
+        "It depends explicitly on time",
+        "It is always equal to zero"
+      ],
+      "correct_answer": "The work it does on a particle moving between two points is independent of the path taken",
+      "explanation": "Path-independence of work is the defining property of conservative forces, equivalent to the force being derivable from a potential function.",
+      "topic": "Conservative forces and potential energy",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For a conservative force F acting in one dimension, the relationship between F and the potential energy V(x) is:",
+      "options": ["F = -dV/dx", "F = dV/dx", "F = V(x)/x", "F = -∫V dx"],
+      "correct_answer": "F = -dV/dx",
+      "explanation": "The force is the negative gradient (here, negative derivative) of the potential energy function.",
+      "topic": "Conservative forces and potential energy",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The principle of conservation of mechanical energy states that, in the absence of non-conservative forces:",
+      "options": ["The sum of kinetic and potential energy remains constant", "Kinetic energy alone remains constant", "Potential energy alone remains constant", "Momentum equals energy"],
+      "correct_answer": "The sum of kinetic and potential energy remains constant",
+      "explanation": "When only conservative forces act, total mechanical energy (KE + PE) is conserved throughout the motion.",
+      "topic": "Conservation of energy",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The linear momentum of a particle of mass m and velocity v is defined as:",
+      "options": ["p = mv", "p = mv^2", "p = m/v", "p = (1/2)mv^2"],
+      "correct_answer": "p = mv",
+      "explanation": "Linear momentum is defined as the product of mass and velocity.",
+      "topic": "Momentum",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The law of conservation of linear momentum applies to an isolated system (no external force) and states that:",
+      "options": ["The total momentum of the system remains constant", "The total kinetic energy is always conserved", "Each particle's individual momentum is constant", "Momentum increases over time"],
+      "correct_answer": "The total momentum of the system remains constant",
+      "explanation": "In the absence of external forces, the total momentum of a system of particles is conserved, though kinetic energy may not be (e.g. inelastic collisions).",
+      "topic": "Momentum",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a perfectly elastic collision between two particles, which quantities are conserved?",
+      "options": ["Both momentum and kinetic energy", "Momentum only", "Kinetic energy only", "Neither momentum nor kinetic energy"],
+      "correct_answer": "Both momentum and kinetic energy",
+      "explanation": "An elastic collision is defined precisely by the conservation of both total momentum and total kinetic energy.",
+      "topic": "Collisions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a perfectly inelastic collision, the two colliding bodies:",
+      "options": ["Stick together and move with a common final velocity, conserving momentum but not kinetic energy", "Bounce apart, conserving kinetic energy", "Conserve both momentum and kinetic energy", "Experience no interaction force"],
+      "correct_answer": "Stick together and move with a common final velocity, conserving momentum but not kinetic energy",
+      "explanation": "Perfectly inelastic collisions conserve total momentum, but some kinetic energy is lost to deformation, heat, or sound.",
+      "topic": "Collisions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Simple harmonic motion (SHM) is characterized by the differential equation:",
+      "options": ["d^2x/dt^2 = -ω^2 x", "d^2x/dt^2 = ω^2 x", "dx/dt = -ω^2 x", "d^2x/dt^2 = -ω x^2"],
+      "correct_answer": "d^2x/dt^2 = -ω^2 x",
+      "explanation": "SHM is defined by an acceleration proportional to, and directed opposite to, the displacement from equilibrium.",
+      "topic": "Simple harmonic motion",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The general solution to the SHM equation d^2x/dt^2 = -ω^2x is:",
+      "options": ["x(t) = A cos(ωt) + B sin(ωt)", "x(t) = Ae^{ωt}", "x(t) = At + B", "x(t) = A/ω^2"],
+      "correct_answer": "x(t) = A cos(ωt) + B sin(ωt)",
+      "explanation": "This general solution follows from solving the second-order linear ODE with constant coefficients characteristic of SHM.",
+      "topic": "Simple harmonic motion",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For a mass m attached to a spring of stiffness k undergoing SHM, the angular frequency ω is given by:",
+      "options": ["ω = √(k/m)", "ω = k/m", "ω = √(m/k)", "ω = km"],
+      "correct_answer": "ω = √(k/m)",
+      "explanation": "Applying Newton's second law to the spring force F = -kx gives m(d^2x/dt^2) = -kx, so ω^2 = k/m.",
+      "topic": "Simple harmonic motion",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The period T of a simple pendulum of length L undergoing small oscillations is approximately:",
+      "options": ["T = 2π√(L/g)", "T = 2π√(g/L)", "T = π√(L/g)", "T = 2πL/g"],
+      "correct_answer": "T = 2π√(L/g)",
+      "explanation": "For small-angle oscillations, a simple pendulum behaves as SHM with ω = √(g/L), giving period T = 2π/ω = 2π√(L/g).",
+      "topic": "Simple harmonic motion",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A central force acting on a particle is one that:",
+      "options": ["Always points toward (or away from) a fixed centre and depends only on the distance from that centre", "Is always constant in magnitude and direction", "Acts perpendicular to the radius vector", "Depends only on time"],
+      "correct_answer": "Always points toward (or away from) a fixed centre and depends only on the distance from that centre",
+      "explanation": "This defining property (F = f(r) r̂) makes gravitational and Coulomb forces classic examples of central forces.",
+      "topic": "Central force motion",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For motion under a central force, which quantity is always conserved?",
+      "options": ["Angular momentum about the force centre", "Linear momentum", "Kinetic energy alone", "Speed"],
+      "correct_answer": "Angular momentum about the force centre",
+      "explanation": "Since a central force exerts zero torque about its own centre, angular momentum about that centre is conserved throughout the motion.",
+      "topic": "Central force motion",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Kepler's Second Law, that a planet sweeps out equal areas in equal times, is a direct geometric consequence of:",
+      "options": ["Conservation of angular momentum under the Sun's central gravitational force", "Conservation of linear momentum", "Newton's third law only", "The inverse-square nature of gravity specifically"],
+      "correct_answer": "Conservation of angular momentum under the Sun's central gravitational force",
+      "explanation": "The equal-areas law follows purely from angular momentum conservation, which holds for any central force, not only the inverse-square law.",
+      "topic": "Central force motion",
+      "difficulty": "hard"
+    },
+    {
+      "question": "For a particle moving in a circle of radius r at constant speed v, the centripetal acceleration is directed:",
+      "options": ["Toward the centre of the circle, with magnitude v^2/r", "Tangent to the circle, with magnitude v/r", "Away from the centre, with magnitude v^2/r", "Along the axis of rotation"],
+      "correct_answer": "Toward the centre of the circle, with magnitude v^2/r",
+      "explanation": "Uniform circular motion requires a centripetal (centre-seeking) acceleration of magnitude v^2/r to continuously change the direction of velocity.",
+      "topic": "Circular motion",
+      "difficulty": "medium"
+    },
+    {
+      "question": "D'Alembert's principle reformulates dynamics as a statics problem by introducing:",
+      "options": ["A fictitious inertial force -ma, so that F - ma = 0 is treated as an equilibrium condition", "An extra external force equal to gravity", "The concept of angular momentum", "A constraint-free system only"],
+      "correct_answer": "A fictitious inertial force -ma, so that F - ma = 0 is treated as an equilibrium condition",
+      "explanation": "D'Alembert's principle converts Newton's second law into an equivalent statement of dynamic equilibrium by including the reversed effective (inertial) force.",
+      "topic": "D'Alembert's principle",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Generalized coordinates in analytical mechanics are used to:",
+      "options": ["Describe the configuration of a system with the minimum number of independent variables consistent with its constraints", "Replace Newton's laws entirely with new physical laws", "Always correspond to Cartesian x, y, z coordinates", "Eliminate the need for any coordinate system"],
+      "correct_answer": "Describe the configuration of a system with the minimum number of independent variables consistent with its constraints",
+      "explanation": "Generalized coordinates (e.g. angles, arc lengths) simplify the description of constrained mechanical systems, forming the basis for later Lagrangian formulations.",
+      "topic": "Generalized coordinates",
+      "difficulty": "hard"
+    },
+    {
+      "question": "For a particle moving along a straight line under a resisting force proportional to velocity (F = -kv), the motion is best described as:",
+      "options": ["Exponentially decaying velocity over time", "Simple harmonic motion", "Uniformly accelerated motion", "Circular motion"],
+      "correct_answer": "Exponentially decaying velocity over time",
+      "explanation": "Solving m(dv/dt) = -kv gives v(t) = v0 e^{-kt/m}, an exponential decay characteristic of linear resistance/damping.",
+      "topic": "Motion with resistance",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Newton's Third Law states that:",
+      "options": ["For every action force there is an equal and opposite reaction force", "Force equals mass times acceleration", "A body remains at rest unless acted upon by a force", "Momentum is always conserved"],
+      "correct_answer": "For every action force there is an equal and opposite reaction force",
+      "explanation": "Newton's third law describes the mutual, equal-and-opposite nature of forces between interacting bodies.",
+      "topic": "Newton's laws",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A body moving under gravity alone (projectile motion, no air resistance) has which component of its motion remaining constant throughout the flight?",
+      "options": ["The horizontal component of velocity", "The vertical component of velocity", "The speed", "The total displacement"],
+      "correct_answer": "The horizontal component of velocity",
+      "explanation": "Since gravity acts only vertically, there is no horizontal acceleration, so the horizontal velocity component stays constant.",
+      "topic": "Projectile motion",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The impulse-momentum theorem states that the impulse of a force acting on a particle equals:",
+      "options": ["The change in the particle's momentum", "The change in the particle's kinetic energy", "The particle's displacement", "The average force multiplied by distance"],
+      "correct_answer": "The change in the particle's momentum",
+      "explanation": "Impulse is defined as J = ∫F dt = Δp, directly linking the time-integral of force to the change in momentum.",
+      "topic": "Momentum",
+      "difficulty": "medium"
+    }
+  ]
+}

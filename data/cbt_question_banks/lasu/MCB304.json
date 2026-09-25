@@ -1,0 +1,256 @@
+{
+  "course_code": "MCB304",
+  "title": "Molecular Biology",
+  "level": "300",
+  "source_note": "Standard NUC-aligned Nigerian university 300L Molecular Biology curriculum: the biochemical machinery of DNA replication, transcription and translation, gene regulation at the molecular level, and core recombinant DNA/biotechnology techniques (restriction enzymes, cloning vectors, PCR, gel electrophoresis, blotting) -- builds on the classical bacterial genetics of Microbial Genetics (200 level) with the molecular enzymology and biotechnology detail that course does not cover.",
+  "questions": [
+    {
+      "question": "The enzyme primarily responsible for unwinding the DNA double helix ahead of the replication fork is:",
+      "options": ["Helicase", "DNA polymerase", "DNA ligase", "Primase"],
+      "correct_answer": "Helicase",
+      "explanation": "Helicase uses ATP hydrolysis to break the hydrogen bonds between complementary base pairs, unwinding the parental DNA double helix and creating the single-stranded template needed for replication.",
+      "topic": "DNA replication enzymes",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Because DNA polymerase cannot initiate synthesis de novo, replication requires a short RNA primer synthesised by the enzyme:",
+      "options": ["Primase", "Helicase", "Ligase", "Topoisomerase"],
+      "correct_answer": "Primase",
+      "explanation": "Primase is an RNA polymerase that synthesises short RNA primers, providing the free 3'-OH group that DNA polymerase requires to begin adding nucleotides, since DNA polymerases can only extend an existing strand.",
+      "topic": "DNA replication enzymes",
+      "difficulty": "medium"
+    },
+    {
+      "question": "DNA polymerase synthesises new DNA strands in which direction relative to the template?",
+      "options": ["5' to 3', reading the template strand 3' to 5'", "3' to 5' only", "In both directions simultaneously on both strands", "Randomly, with no fixed directionality"],
+      "correct_answer": "5' to 3', reading the template strand 3' to 5'",
+      "explanation": "All known DNA polymerases synthesise new DNA strictly in the 5' to 3' direction, adding nucleotides to the free 3'-OH end, while reading the template strand in the 3' to 5' direction.",
+      "topic": "DNA replication enzymes",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Because DNA polymerase synthesises only in the 5' to 3' direction, one of the two new strands, the lagging strand, is synthesised discontinuously as short fragments called:",
+      "options": ["Okazaki fragments", "Exons", "Codons", "Primosomes"],
+      "correct_answer": "Okazaki fragments",
+      "explanation": "The lagging strand is synthesised discontinuously in short segments (Okazaki fragments), each requiring its own RNA primer, because overall replication fork movement runs opposite to this strand's required 5' to 3' synthesis direction.",
+      "topic": "DNA replication enzymes",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The enzyme that joins Okazaki fragments together by sealing nicks in the sugar-phosphate backbone is:",
+      "options": ["DNA ligase", "DNA polymerase III", "Helicase", "Primase"],
+      "correct_answer": "DNA ligase",
+      "explanation": "After RNA primers are removed and replaced with DNA, DNA ligase seals the remaining nick between adjacent Okazaki fragments by forming a phosphodiester bond, completing a continuous lagging strand.",
+      "topic": "DNA replication enzymes",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In bacteria, the enzyme that relieves the topological strain (supercoiling) generated ahead of the replication fork is:",
+      "options": ["DNA gyrase (a type II topoisomerase)", "DNA ligase", "Reverse transcriptase", "RNA polymerase"],
+      "correct_answer": "DNA gyrase (a type II topoisomerase)",
+      "explanation": "As helicase unwinds the double helix, positive supercoils accumulate ahead of the fork; DNA gyrase relieves this strain by transiently cutting and rejoining the DNA strands, a target exploited by fluoroquinolone antibiotics.",
+      "topic": "DNA replication enzymes",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The synthesis of an RNA molecule from a DNA template is called:",
+      "options": ["Transcription", "Translation", "Replication", "Reverse transcription"],
+      "correct_answer": "Transcription",
+      "explanation": "Transcription is the process by which RNA polymerase synthesises a complementary RNA strand using one strand of DNA as a template, the first major step in gene expression.",
+      "topic": "Transcription",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In bacteria, the DNA sequence located upstream of a gene where RNA polymerase binds to initiate transcription is called the:",
+      "options": ["Promoter", "Terminator", "Operator", "Enhancer"],
+      "correct_answer": "Promoter",
+      "explanation": "The promoter is a specific DNA sequence upstream of the transcription start site that RNA polymerase (with the help of sigma factor in bacteria) recognises and binds to initiate transcription of the downstream gene.",
+      "topic": "Transcription",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The bacterial RNA polymerase subunit that confers promoter specificity, directing the core enzyme to the correct transcription start site, is the:",
+      "options": ["Sigma factor", "Beta subunit", "Alpha subunit", "Omega subunit"],
+      "correct_answer": "Sigma factor",
+      "explanation": "Sigma factor associates with the RNA polymerase core enzyme to form the holoenzyme, enabling specific recognition of promoter sequences; different sigma factors can direct transcription of different sets of genes in response to cellular conditions.",
+      "topic": "Transcription",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In eukaryotic cells, the primary RNA transcript undergoes processing, including the addition of a 5' cap and a poly-A tail, and removal of introns by a process called:",
+      "options": ["RNA splicing", "Translation", "Replication", "Transformation"],
+      "correct_answer": "RNA splicing",
+      "explanation": "RNA splicing removes non-coding intron sequences from the primary transcript and joins the coding exons together, a key eukaryotic mRNA processing step largely absent in bacterial gene expression.",
+      "topic": "Transcription",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A major difference between bacterial and eukaryotic gene expression is that in bacteria, translation can begin:",
+      "options": ["Before transcription of the mRNA is even complete, since there is no nuclear membrane separating the processes", "Only after the mRNA has been exported from a nucleus", "Only after extensive intron splicing", "Only using a completely different genetic code"],
+      "correct_answer": "Before transcription of the mRNA is even complete, since there is no nuclear membrane separating the processes",
+      "explanation": "Because bacteria lack a nucleus, transcription and translation occur in the same cytoplasmic compartment and can be coupled, with ribosomes beginning translation on an mRNA molecule while RNA polymerase is still transcribing further downstream sequence.",
+      "topic": "Translation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The synthesis of a polypeptide chain from an mRNA template, carried out by ribosomes, is called:",
+      "options": ["Translation", "Transcription", "Replication", "Recombination"],
+      "correct_answer": "Translation",
+      "explanation": "Translation is the process by which ribosomes decode the sequence of codons in mRNA to assemble a corresponding sequence of amino acids into a polypeptide chain.",
+      "topic": "Translation",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A codon consists of a sequence of how many nucleotides that specifies a particular amino acid (or a stop signal)?",
+      "options": ["Three", "One", "Two", "Four"],
+      "correct_answer": "Three",
+      "explanation": "The genetic code is read in triplets called codons; each set of three consecutive mRNA nucleotides specifies either a particular amino acid or a stop signal for translation.",
+      "topic": "Translation",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The molecule that recognises a specific mRNA codon via its anticodon and delivers the corresponding amino acid to the ribosome is:",
+      "options": ["Transfer RNA (tRNA)", "Messenger RNA (mRNA)", "Ribosomal RNA (rRNA)", "DNA polymerase"],
+      "correct_answer": "Transfer RNA (tRNA)",
+      "explanation": "Each tRNA molecule carries a specific amino acid at its 3' end and has an anticodon loop that base-pairs with the complementary codon on the mRNA, ensuring the correct amino acid is added to the growing polypeptide.",
+      "topic": "Translation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In bacteria, translation typically begins at an AUG start codon that is preceded by a ribosome-binding sequence called the:",
+      "options": ["Shine-Dalgarno sequence", "TATA box", "Kozak sequence", "Poly-A signal"],
+      "correct_answer": "Shine-Dalgarno sequence",
+      "explanation": "The Shine-Dalgarno sequence is a purine-rich ribosome-binding site upstream of the start codon in bacterial mRNA that base-pairs with the 16S rRNA of the small ribosomal subunit, positioning the ribosome to begin translation accurately at the AUG codon.",
+      "topic": "Translation",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The genetic code is described as degenerate (redundant) because:",
+      "options": ["Most amino acids are specified by more than one codon", "Every codon specifies a unique, different amino acid with no overlap", "Only start and stop codons exist in the code", "The code differs completely between every species"],
+      "correct_answer": "Most amino acids are specified by more than one codon",
+      "explanation": "With 61 sense codons available to specify only 20 standard amino acids, most amino acids are encoded by more than one codon (synonymous codons), a redundancy that provides some buffering against the effects of point mutations.",
+      "topic": "Translation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Restriction enzymes, essential tools in recombinant DNA technology, function by:",
+      "options": ["Cutting double-stranded DNA at specific recognition sequences", "Joining DNA fragments together permanently", "Synthesising new DNA strands from a template", "Unwinding the DNA double helix"],
+      "correct_answer": "Cutting double-stranded DNA at specific recognition sequences",
+      "explanation": "Restriction endonucleases recognise short, specific palindromic DNA sequences and cleave the DNA backbone at or near that site, a natural bacterial defence against phage DNA that has been harnessed as a key molecular cloning tool.",
+      "topic": "Recombinant DNA technology",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Restriction enzymes that cut DNA leaving short, single-stranded, complementary overhangs are said to produce:",
+      "options": ["Sticky (cohesive) ends", "Blunt ends", "Nicked ends", "Circular ends"],
+      "correct_answer": "Sticky (cohesive) ends",
+      "explanation": "Many restriction enzymes cut DNA asymmetrically at their recognition site, generating short single-stranded overhangs ('sticky ends') that can base-pair with complementary overhangs on another DNA fragment cut by the same enzyme, facilitating ligation.",
+      "topic": "Recombinant DNA technology",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In molecular cloning, a small, self-replicating circular DNA molecule used to carry and introduce a foreign gene into a host cell is called a:",
+      "options": ["Vector (e.g., plasmid vector)", "Ribosome", "Restriction enzyme", "Primer"],
+      "correct_answer": "Vector (e.g., plasmid vector)",
+      "explanation": "A cloning vector, commonly a modified bacterial plasmid, carries an origin of replication, a selectable marker, and a site into which a gene of interest can be inserted, allowing the recombinant construct to be propagated in a host cell.",
+      "topic": "Recombinant DNA technology",
+      "difficulty": "easy"
+    },
+    {
+      "question": "After restriction digestion of a vector and an insert with the same enzyme, the fragments are joined together permanently by the enzyme:",
+      "options": ["DNA ligase", "Restriction endonuclease", "DNA polymerase alone", "Reverse transcriptase"],
+      "correct_answer": "DNA ligase",
+      "explanation": "DNA ligase catalyses the formation of phosphodiester bonds between the vector and insert fragments, sealing them into a single continuous recombinant DNA molecule after their complementary sticky ends have annealed.",
+      "topic": "Recombinant DNA technology",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Selectable marker genes, such as antibiotic-resistance genes, are included on cloning vectors mainly to:",
+      "options": ["Allow identification of host cells that have successfully taken up the vector", "Provide the vector's origin of replication", "Directly encode the protein of interest being cloned", "Prevent the vector from replicating at all"],
+      "correct_answer": "Allow identification of host cells that have successfully taken up the vector",
+      "explanation": "Selectable markers allow researchers to distinguish transformed cells (which survive on selective medium, e.g., containing the relevant antibiotic) from the majority of cells that did not take up the vector.",
+      "topic": "Recombinant DNA technology",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The polymerase chain reaction (PCR) is used to:",
+      "options": ["Exponentially amplify a specific target DNA sequence in vitro", "Sequence an entire genome directly without amplification", "Separate DNA fragments by size", "Permanently join two unrelated DNA molecules"],
+      "correct_answer": "Exponentially amplify a specific target DNA sequence in vitro",
+      "explanation": "PCR uses repeated cycles of denaturation, primer annealing and extension by a thermostable DNA polymerase to exponentially amplify a specific DNA region, producing millions of copies from a minute starting amount of template.",
+      "topic": "PCR",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The heat-stable DNA polymerase commonly used in PCR, originally isolated from the thermophilic bacterium Thermus aquaticus, is called:",
+      "options": ["Taq polymerase", "DNA ligase", "Reverse transcriptase", "RNA polymerase II"],
+      "correct_answer": "Taq polymerase",
+      "explanation": "Taq polymerase, isolated from the hot-spring thermophile Thermus aquaticus, withstands the repeated high-temperature denaturation steps of PCR without being destroyed, eliminating the need to add fresh enzyme after every cycle.",
+      "topic": "PCR",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The three basic steps repeated in each cycle of a standard PCR reaction are:",
+      "options": ["Denaturation, annealing, and extension", "Transcription, translation, and replication", "Digestion, ligation, and transformation", "Centrifugation, filtration, and elution"],
+      "correct_answer": "Denaturation, annealing, and extension",
+      "explanation": "Each PCR cycle consists of denaturation (heating to separate DNA strands), annealing (cooling to allow primers to bind complementary sequences), and extension (the polymerase synthesising new DNA from the primers).",
+      "topic": "PCR",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Short, single-stranded DNA sequences designed to flank and bind specifically to the target region at the start of each PCR cycle are called:",
+      "options": ["Primers", "Probes only", "Vectors", "Plasmids"],
+      "correct_answer": "Primers",
+      "explanation": "PCR primers are short synthetic oligonucleotides complementary to sequences flanking the target region; they anneal to the denatured template and provide the free 3'-OH ends needed for Taq polymerase to begin DNA synthesis.",
+      "topic": "PCR",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Agarose gel electrophoresis separates DNA fragments primarily on the basis of:",
+      "options": ["Size, as smaller fragments migrate faster through the gel matrix toward the positive electrode", "Their exact nucleotide sequence", "Their three-dimensional protein structure", "Their solubility in ethanol"],
+      "correct_answer": "Size, as smaller fragments migrate faster through the gel matrix toward the positive electrode",
+      "explanation": "DNA is uniformly negatively charged, so in an electric field all fragments migrate toward the anode; the porous agarose matrix impedes larger fragments more than smaller ones, separating them by size.",
+      "topic": "Molecular biology techniques",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Southern blot technique is used specifically to detect a particular:",
+      "options": ["DNA sequence within a complex mixture, using a labelled complementary probe", "Protein within a cell extract", "RNA transcript within a sample", "Bacterial colony on an agar plate"],
+      "correct_answer": "DNA sequence within a complex mixture, using a labelled complementary probe",
+      "explanation": "In Southern blotting, DNA fragments are separated by gel electrophoresis, transferred (blotted) onto a membrane, and probed with a labelled complementary sequence to detect and locate a specific target DNA sequence.",
+      "topic": "Molecular biology techniques",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Northern blotting differs from Southern blotting in that it is used to detect and analyse:",
+      "options": ["RNA molecules, such as specific mRNA transcripts", "DNA fragments only", "Proteins using antibodies", "Bacterial cell wall components"],
+      "correct_answer": "RNA molecules, such as specific mRNA transcripts",
+      "explanation": "Northern blotting follows the same general blotting principle as Southern blotting, but the sample analysed is RNA rather than DNA, commonly used to detect and quantify the expression of a specific gene's mRNA transcript.",
+      "topic": "Molecular biology techniques",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Western blotting is used to detect and analyse specific:",
+      "options": ["Proteins, typically using labelled antibodies", "DNA fragments", "RNA transcripts", "Whole intact cells"],
+      "correct_answer": "Proteins, typically using labelled antibodies",
+      "explanation": "Western blotting separates proteins by gel electrophoresis, transfers them to a membrane, and detects a specific target protein using a labelled antibody, widely used for confirming protein expression or diagnosing infections such as HIV.",
+      "topic": "Molecular biology techniques",
+      "difficulty": "medium"
+    },
+    {
+      "question": "DNA sequencing methods such as the Sanger (chain-termination) method rely on the incorporation of:",
+      "options": ["Dideoxynucleotides, which lack the 3'-OH group needed for further chain extension", "Only ribonucleotides instead of deoxyribonucleotides", "Restriction enzymes to cut the DNA into single bases", "Amino acids directly into the growing DNA strand"],
+      "correct_answer": "Dideoxynucleotides, which lack the 3'-OH group needed for further chain extension",
+      "explanation": "In Sanger sequencing, chain-terminating dideoxynucleotides (ddNTPs) lack the 3'-OH group required to add the next nucleotide, so their random incorporation during synthesis halts strand elongation at defined points, generating fragments whose lengths reveal the sequence.",
+      "topic": "Molecular biology techniques",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A key regulatory mechanism in eukaryotic gene expression, not found in prokaryotes, involves chemical modification of DNA and histone proteins (e.g., methylation, acetylation) that can silence or activate genes without altering the underlying sequence, known as:",
+      "options": ["Epigenetic regulation", "Transformation", "Transduction", "Semi-conservative replication"],
+      "correct_answer": "Epigenetic regulation",
+      "explanation": "Epigenetic regulation involves heritable changes in gene expression caused by mechanisms such as DNA methylation and histone modification, rather than changes in the DNA sequence itself, and plays a major role in eukaryotic gene regulation and development.",
+      "topic": "Gene regulation",
+      "difficulty": "hard"
+    }
+  ]
+}

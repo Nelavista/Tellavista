@@ -1,0 +1,395 @@
+{
+  "course_code": "PHY302",
+  "title": "Quantum Mechanics II",
+  "level": "300",
+  "source_note": "Standard NUC-aligned Nigerian university 300L Quantum Mechanics II curriculum, building directly on PHY301: orbital angular momentum operators and quantum numbers, spherical harmonics, the hydrogen atom (3D Schrodinger equation, radial and angular wave functions, energy levels), electron spin and the Stern-Gerlach experiment, identical particles and the Pauli exclusion principle, addition of angular momenta, and an introduction to time-independent perturbation theory. 1D Schrodinger-equation basics from PHY301 are assumed and not re-taught.",
+  "questions": [
+    {
+      "question": "The quantum mechanical orbital angular momentum operator L_hat is defined analogously to the classical angular momentum as",
+      "options": ["L_hat = r_hat x p_hat", "L_hat = r_hat . p_hat", "L_hat = p_hat / r_hat", "L_hat = r_hat + p_hat"],
+      "correct_answer": "L_hat = r_hat x p_hat",
+      "explanation": "Just as in classical mechanics, orbital angular momentum is defined as the cross product of the position and momentum operators, L_hat = r_hat x p_hat, with components Lx, Ly, Lz.",
+      "topic": "Orbital angular momentum",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The components of the orbital angular momentum operator satisfy the commutation relation",
+      "options": ["[Lx, Ly] = i*hbar*Lz (and cyclic permutations)", "[Lx, Ly] = 0 for all components", "[Lx, Ly] = Lz^2", "[Lx, Ly] = -i*hbar"],
+      "correct_answer": "[Lx, Ly] = i*hbar*Lz (and cyclic permutations)",
+      "explanation": "This is the fundamental angular momentum commutation algebra; because the components do not commute, Lx, Ly, and Lz cannot all be known simultaneously with precision.",
+      "topic": "Orbital angular momentum",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Although the three components of L_hat do not commute with each other, which operator commutes with all of them and can therefore be measured simultaneously with any one component (conventionally Lz)?",
+      "options": ["L^2 (the total angular momentum squared operator)", "The momentum operator p_hat", "The position operator x_hat", "The Hamiltonian for a free particle"],
+      "correct_answer": "L^2 (the total angular momentum squared operator)",
+      "explanation": "L^2 = Lx^2+Ly^2+Lz^2 commutes with each individual component, so L^2 and one component (usually Lz) form a compatible set of observables with simultaneous eigenstates.",
+      "topic": "Orbital angular momentum",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The eigenvalues of the operator L^2 are given by",
+      "options": ["l(l+1)*hbar^2, where l = 0,1,2,3,...", "l*hbar, where l = 0,1,2,3,...", "n^2*hbar^2, where n = 1,2,3,...", "l*hbar^2/2"],
+      "correct_answer": "l(l+1)*hbar^2, where l = 0,1,2,3,...",
+      "explanation": "The orbital angular momentum quantum number l labels the eigenvalues of L^2 as l(l+1)hbar^2, a result obtained by solving the eigenvalue problem using ladder operators or the angular Schrodinger equation.",
+      "topic": "Orbital angular momentum",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The eigenvalues of the z-component of orbital angular momentum, Lz, are",
+      "options": ["m*hbar, where m = -l, -l+1, ..., 0, ..., l-1, l", "l*hbar, independent of m", "m^2*hbar", "n*hbar, where n is the principal quantum number"],
+      "correct_answer": "m*hbar, where m = -l, -l+1, ..., 0, ..., l-1, l",
+      "explanation": "The magnetic quantum number m (sometimes written m_l) takes 2l+1 integer values ranging from -l to +l, giving the quantized projections of angular momentum along the z-axis.",
+      "topic": "Orbital angular momentum",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For a given value of the orbital angular momentum quantum number l, the number of allowed values of the magnetic quantum number m is",
+      "options": ["2l + 1", "l", "l^2", "2l - 1"],
+      "correct_answer": "2l + 1",
+      "explanation": "Since m ranges over integers from -l to +l inclusive, there are exactly 2l+1 possible values, giving the degeneracy of each l-subshell with respect to orientation.",
+      "topic": "Orbital angular momentum",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The angular part of the hydrogen atom wave function, which are simultaneous eigenfunctions of L^2 and Lz, are known as",
+      "options": ["Spherical harmonics, Y_l^m(theta, phi)", "Legendre polynomials only", "Laguerre polynomials", "Hermite polynomials"],
+      "correct_answer": "Spherical harmonics, Y_l^m(theta, phi)",
+      "explanation": "Spherical harmonics Y_l^m(theta,phi) are the standard angular eigenfunctions arising from separating the angular part of the Schrodinger equation in spherical coordinates for any central potential.",
+      "topic": "Orbital angular momentum",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In solving the Schrodinger equation for the hydrogen atom, the Coulomb potential energy between the electron and proton is",
+      "options": ["V(r) = -e^2/(4*pi*epsilon0*r)", "V(r) = -e^2*r/(4*pi*epsilon0)", "V(r) = e^2/(4*pi*epsilon0*r^2)", "V(r) = -(1/2)*m*omega^2*r^2"],
+      "correct_answer": "V(r) = -e^2/(4*pi*epsilon0*r)",
+      "explanation": "The hydrogen atom potential is the attractive Coulomb interaction between the positively charged proton and negatively charged electron, depending only on the radial separation r, making it a central potential problem.",
+      "topic": "Hydrogen atom",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Because the hydrogen atom potential V(r) depends only on the radial coordinate r, the three-dimensional Schrodinger equation can be solved by",
+      "options": [
+        "Separation of variables in spherical coordinates, writing psi(r,theta,phi) = R(r)*Y_l^m(theta,phi)",
+        "Assuming the wave function is identical in all three Cartesian directions",
+        "Ignoring the angular dependence entirely",
+        "Using only Cartesian coordinates with no separation"
+      ],
+      "correct_answer": "Separation of variables in spherical coordinates, writing psi(r,theta,phi) = R(r)*Y_l^m(theta,phi)",
+      "explanation": "Central (spherically symmetric) potentials are naturally treated in spherical coordinates, where the wave function factorizes into a radial function R(r) and the angular spherical harmonics.",
+      "topic": "Hydrogen atom",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The allowed energy levels of the hydrogen atom (nonrelativistic, ignoring fine structure) are given by",
+      "options": [
+        "E_n = -13.6 eV / n^2, n = 1,2,3,...",
+        "E_n = -13.6 eV * n^2",
+        "E_n = -13.6 eV / n",
+        "E_n = n^2*pi^2*hbar^2/(2mL^2)"
+      ],
+      "correct_answer": "E_n = -13.6 eV / n^2, n = 1,2,3,...",
+      "explanation": "Solving the radial Schrodinger equation for the Coulomb potential yields quantized energies depending only on the principal quantum number n, with -13.6 eV (the Rydberg energy) being the ground state energy.",
+      "topic": "Hydrogen atom",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In the hydrogen atom, the three quantum numbers that arise from solving the time-independent Schrodinger equation are",
+      "options": [
+        "The principal quantum number n, orbital angular momentum quantum number l, and magnetic quantum number m",
+        "The spin quantum number, principal quantum number, and mass number",
+        "Only the principal quantum number n",
+        "The energy, momentum, and position quantum numbers"
+      ],
+      "correct_answer": "The principal quantum number n, orbital angular momentum quantum number l, and magnetic quantum number m",
+      "explanation": "Solving the 3D Schrodinger equation for hydrogen naturally produces three quantum numbers (n, l, m) from the radial equation and the angular (spherical harmonic) equation; spin is a separate, additional degree of freedom.",
+      "topic": "Hydrogen atom",
+      "difficulty": "easy"
+    },
+    {
+      "question": "For a given principal quantum number n in the hydrogen atom, the allowed values of the orbital angular momentum quantum number l are restricted to",
+      "options": ["l = 0, 1, 2, ..., n-1", "l = 1, 2, ..., n", "l = -n to +n", "l = n only"],
+      "correct_answer": "l = 0, 1, 2, ..., n-1",
+      "explanation": "The radial equation's boundary conditions restrict l to integer values from 0 up to n-1 for each principal quantum number n, giving n possible values of l per shell.",
+      "topic": "Hydrogen atom",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The total degeneracy of the hydrogen atom energy level E_n (ignoring electron spin) is",
+      "options": ["n^2", "2n+1", "n", "n(n-1)/2"],
+      "correct_answer": "n^2",
+      "explanation": "Summing 2l+1 over all allowed l from 0 to n-1 gives n^2, reflecting the fact that hydrogen's energy depends only on n despite multiple (l,m) combinations existing for each n; this is called accidental (Coulomb) degeneracy.",
+      "topic": "Hydrogen atom",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The radial probability distribution function for the hydrogen atom, P(r) = r^2|R(r)|^2, is used because",
+      "options": [
+        "It accounts for the increasing volume of a spherical shell at radius r, giving the probability of finding the electron at a distance r from the nucleus regardless of direction",
+        "|R(r)|^2 alone already gives the correct radial probability without any r^2 factor",
+        "It only applies to the ground state and no other states",
+        "It replaces the need for the angular wave function entirely"
+      ],
+      "correct_answer": "It accounts for the increasing volume of a spherical shell at radius r, giving the probability of finding the electron at a distance r from the nucleus regardless of direction",
+      "explanation": "The volume element in spherical coordinates includes a factor of r^2 dr (after integrating over angles), so the radial probability density must include this Jacobian factor.",
+      "topic": "Hydrogen atom",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For the hydrogen atom ground state (n=1, l=0, m=0), the most probable radius at which the electron is found equals",
+      "options": ["The Bohr radius, a0", "Zero (the electron is most likely found at the nucleus)", "Infinity", "2*a0"],
+      "correct_answer": "The Bohr radius, a0",
+      "explanation": "Maximizing the radial probability distribution P(r) for the 1s state shows the peak occurs exactly at r = a0 (about 0.529 angstroms), matching the radius predicted by the older Bohr model.",
+      "topic": "Hydrogen atom",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The subshell notation s, p, d, f used in atomic physics corresponds to the orbital angular momentum quantum number values",
+      "options": ["l = 0, 1, 2, 3 respectively", "l = 1, 2, 3, 4 respectively", "n = 0, 1, 2, 3 respectively", "m = 0, 1, 2, 3 respectively"],
+      "correct_answer": "l = 0, 1, 2, 3 respectively",
+      "explanation": "The spectroscopic notation s,p,d,f (from sharp, principal, diffuse, fundamental spectral series) is a historical labeling directly corresponding to l = 0,1,2,3.",
+      "topic": "Hydrogen atom",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The Stern-Gerlach experiment, which passed a beam of silver atoms through an inhomogeneous magnetic field, provided direct experimental evidence for",
+      "options": [
+        "The quantization of angular momentum (specifically electron spin), by splitting the beam into two discrete spots",
+        "The wave nature of electrons via diffraction",
+        "The existence of the photoelectric effect",
+        "The quantization of orbital angular momentum l into continuous values"
+      ],
+      "correct_answer": "The quantization of angular momentum (specifically electron spin), by splitting the beam into two discrete spots",
+      "explanation": "The observation of exactly two discrete spots (rather than a continuous spread) demonstrated space quantization and, since silver's outer electron has l=0, revealed the existence of a new, intrinsically two-valued angular momentum: spin.",
+      "topic": "Electron spin",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Electron spin is characterized by a spin quantum number s equal to",
+      "options": ["1/2", "1", "0", "3/2"],
+      "correct_answer": "1/2",
+      "explanation": "Electrons are spin-1/2 particles (fermions); the spin quantum number s=1/2 gives 2s+1=2 possible spin projection states, ms = +1/2 and ms = -1/2.",
+      "topic": "Electron spin",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The magnitude of the electron's intrinsic spin angular momentum is given by",
+      "options": ["sqrt(s(s+1))*hbar = sqrt(3)/2 * hbar", "s*hbar = (1/2)*hbar", "hbar exactly", "2*hbar"],
+      "correct_answer": "sqrt(s(s+1))*hbar = sqrt(3)/2 * hbar",
+      "explanation": "Spin angular momentum follows the same mathematical structure as orbital angular momentum, so |S| = sqrt(s(s+1))*hbar, which for s=1/2 gives (sqrt3)/2 * hbar.",
+      "topic": "Electron spin",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The two possible eigenvalues of the spin projection operator Sz for an electron are",
+      "options": ["+hbar/2 and -hbar/2", "+hbar and -hbar", "+hbar/2 and 0", "+1 and -1 (dimensionless)"],
+      "correct_answer": "+hbar/2 and -hbar/2",
+      "explanation": "The spin magnetic quantum number ms takes values +1/2 and -1/2, giving Sz eigenvalues of +hbar/2 (spin up) and -hbar/2 (spin down).",
+      "topic": "Electron spin",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Spin angular momentum differs fundamentally from orbital angular momentum in that",
+      "options": [
+        "Spin is an intrinsic property of the particle with no classical analogue in terms of physical rotation, and its quantum number can be half-integer",
+        "Spin arises directly from the particle's spatial motion around the nucleus",
+        "Spin can only take integer values, just like l",
+        "Spin has no associated magnetic moment"
+      ],
+      "correct_answer": "Spin is an intrinsic property of the particle with no classical analogue in terms of physical rotation, and its quantum number can be half-integer",
+      "explanation": "Unlike orbital angular momentum (which depends on spatial wave function and is restricted to integers), spin is an intrinsic quantum degree of freedom that can take half-integer values such as 1/2.",
+      "topic": "Electron spin",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Identical particles in quantum mechanics are fundamentally different from identical classical objects because",
+      "options": [
+        "Identical quantum particles are truly indistinguishable, so swapping any two of them cannot lead to a physically different state",
+        "Identical quantum particles can always be individually tracked and labeled",
+        "Identical quantum particles must always have different energies",
+        "Identical quantum particles never interact with each other"
+      ],
+      "correct_answer": "Identical quantum particles are truly indistinguishable, so swapping any two of them cannot lead to a physically different state",
+      "explanation": "In quantum mechanics, identical particles are fundamentally indistinguishable (unlike classical particles which can in principle be tracked by continuous trajectories), which has deep consequences for the symmetry of many-particle wave functions.",
+      "topic": "Identical particles",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Fermions (particles with half-integer spin, such as electrons) must have a total wave function that is",
+      "options": ["Antisymmetric under the exchange of any two identical particles", "Symmetric under the exchange of any two identical particles", "Always real-valued", "Unaffected by the choice of coordinate system only"],
+      "correct_answer": "Antisymmetric under the exchange of any two identical particles",
+      "explanation": "The spin-statistics theorem requires fermion wave functions to change sign upon exchanging any two identical fermions, which is the fundamental origin of the Pauli exclusion principle.",
+      "topic": "Identical particles",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Bosons (particles with integer spin, such as photons) must have a total wave function that is",
+      "options": ["Symmetric under the exchange of any two identical particles", "Antisymmetric under the exchange of any two identical particles", "Zero under any particle exchange", "Undefined under particle exchange"],
+      "correct_answer": "Symmetric under the exchange of any two identical particles",
+      "explanation": "Unlike fermions, bosons have wave functions that remain unchanged (symmetric) when any two identical bosons are exchanged, allowing multiple bosons to occupy the same quantum state.",
+      "topic": "Identical particles",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Pauli exclusion principle states that",
+      "options": [
+        "No two identical fermions can occupy the same complete quantum state simultaneously",
+        "No two identical bosons can occupy the same quantum state simultaneously",
+        "All particles, regardless of spin, must obey exclusion from identical states",
+        "Only electrons in the same atom are affected; electrons in different atoms are exempt"
+      ],
+      "correct_answer": "No two identical fermions can occupy the same complete quantum state simultaneously",
+      "explanation": "Because the total wave function of identical fermions must be antisymmetric, two fermions cannot share all the same quantum numbers, which directly explains the structure of the periodic table and electron shell filling.",
+      "topic": "Identical particles",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In an atom, the Pauli exclusion principle implies that no two electrons can have the same set of",
+      "options": ["All four quantum numbers n, l, m_l, and m_s", "Only the principal quantum number n", "Only the spin quantum number m_s", "Only the orbital angular momentum quantum number l"],
+      "correct_answer": "All four quantum numbers n, l, m_l, and m_s",
+      "explanation": "Each electron in an atom must have a unique combination of n, l, m_l, and m_s; this restriction directly governs the electron configuration and shell/subshell filling order in atoms.",
+      "topic": "Identical particles",
+      "difficulty": "medium"
+    },
+    {
+      "question": "When adding two angular momenta j1 and j2 in quantum mechanics, the possible values of the resultant total angular momentum quantum number J range over",
+      "options": ["J = |j1 - j2|, |j1-j2|+1, ..., j1+j2", "J = j1 + j2 only", "J = j1 * j2", "J = j1 - j2 only, with no other allowed values"],
+      "correct_answer": "J = |j1 - j2|, |j1-j2|+1, ..., j1+j2",
+      "explanation": "The Clebsch-Gordan rule for combining two angular momenta gives a set of allowed total J values in integer steps from |j1-j2| up to j1+j2.",
+      "topic": "Addition of angular momenta",
+      "difficulty": "hard"
+    },
+    {
+      "question": "For an electron with orbital angular momentum quantum number l and spin s=1/2, the possible values of the total angular momentum quantum number j are",
+      "options": ["j = l + 1/2 and j = l - 1/2 (for l > 0)", "j = l only", "j = 2l + 1", "j = l^2 - 1/4"],
+      "correct_answer": "j = l + 1/2 and j = l - 1/2 (for l > 0)",
+      "explanation": "Combining orbital angular momentum l with spin 1/2 using the addition rule gives exactly two possible total angular momentum values, j = l+1/2 and j = l-1/2, which underlies spin-orbit coupling and fine structure.",
+      "topic": "Addition of angular momenta",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In time-independent perturbation theory, the total Hamiltonian is written as H = H0 + H', where",
+      "options": [
+        "H0 is an exactly solvable unperturbed Hamiltonian and H' is a small perturbation whose effect is treated approximately",
+        "H0 and H' must both be time-dependent",
+        "H' is always larger in magnitude than H0",
+        "H0 has no known eigenstates or eigenvalues"
+      ],
+      "correct_answer": "H0 is an exactly solvable unperturbed Hamiltonian and H' is a small perturbation whose effect is treated approximately",
+      "explanation": "Perturbation theory approximates the solution to a Hamiltonian that is close to one already solved exactly (H0), treating the extra term H' as a small correction so the corrections can be computed order by order.",
+      "topic": "Perturbation theory",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In first-order non-degenerate time-independent perturbation theory, the first-order correction to the energy of state n is given by",
+      "options": [
+        "E_n^(1) = <psi_n^(0)| H' |psi_n^(0)>",
+        "E_n^(1) = <psi_n^(0)| H0 |psi_n^(0)>",
+        "E_n^(1) = |H'|^2",
+        "E_n^(1) = sum over m of <psi_m|H'|psi_n>"
+      ],
+      "correct_answer": "E_n^(1) = <psi_n^(0)| H' |psi_n^(0)>",
+      "explanation": "The standard result of first-order perturbation theory is that the energy shift equals the expectation value of the perturbing Hamiltonian evaluated in the unperturbed eigenstate.",
+      "topic": "Perturbation theory",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Perturbation theory is applicable and gives reliable results only when",
+      "options": [
+        "The perturbation H' is small compared to the energy level spacings of the unperturbed Hamiltonian H0",
+        "The perturbation is exactly equal to H0",
+        "The system has no unperturbed solvable Hamiltonian at all",
+        "The perturbation is always time-dependent"
+      ],
+      "correct_answer": "The perturbation H' is small compared to the energy level spacings of the unperturbed Hamiltonian H0",
+      "explanation": "The perturbative expansion is a series in the strength of H' relative to the unperturbed energy scale; if H' is too large, the series does not converge well and the approximation breaks down.",
+      "topic": "Perturbation theory",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A classic example commonly analyzed using time-independent perturbation theory in the hydrogen atom is",
+      "options": [
+        "The Stark effect (energy level shifts due to an applied external electric field)",
+        "The photoelectric effect",
+        "Radioactive alpha decay",
+        "The infinite square well problem"
+      ],
+      "correct_answer": "The Stark effect (energy level shifts due to an applied external electric field)",
+      "explanation": "The Stark effect treats the interaction of the hydrogen atom with a weak external electric field as a perturbation to the unperturbed Coulomb Hamiltonian, a standard application of perturbation theory.",
+      "topic": "Perturbation theory",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For a hydrogen-like ion with nuclear charge +Ze (single electron, e.g. He+), the energy levels scale relative to hydrogen as",
+      "options": ["E_n = -13.6 eV * Z^2 / n^2", "E_n = -13.6 eV * Z / n^2", "E_n = -13.6 eV / (Z^2 * n^2)", "E_n = -13.6 eV * Z^2 * n^2"],
+      "correct_answer": "E_n = -13.6 eV * Z^2 / n^2",
+      "explanation": "Solving the Schrodinger equation for a Coulomb potential with nuclear charge Ze shows the energy levels scale as Z^2, since the potential strength scales linearly with Z and the Bohr-like energy formula involves the square of the coupling.",
+      "topic": "Hydrogen atom",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The ground state electron configuration of the neutral lithium atom (Z=3) is 1s^2 2s^1 rather than 1s^3, directly because of",
+      "options": [
+        "The Pauli exclusion principle, which prevents more than two electrons (with opposite spins) from occupying the 1s orbital",
+        "The Heisenberg uncertainty principle acting alone",
+        "Electron spin having no influence on orbital occupation",
+        "The hydrogen atom energy formula predicting three degenerate 1s states"
+      ],
+      "correct_answer": "The Pauli exclusion principle, which prevents more than two electrons (with opposite spins) from occupying the 1s orbital",
+      "explanation": "Since the 1s orbital (n=1,l=0,m=0) can only host two electrons with opposite spin (ms=+1/2 and -1/2) without violating the Pauli principle, the third electron of lithium must occupy the next available state, 2s.",
+      "topic": "Identical particles",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Two identical bosons can occupy the exact same single-particle quantum state simultaneously. This principle underlies which of the following phenomena?",
+      "options": ["Bose-Einstein condensation and laser operation (stimulated emission)", "The structure of the periodic table", "Nuclear alpha decay", "The photoelectric effect threshold frequency"],
+      "correct_answer": "Bose-Einstein condensation and laser operation (stimulated emission)",
+      "explanation": "Because bosons are not restricted by the Pauli exclusion principle, macroscopic numbers of them can condense into the same state, which is the basis of Bose-Einstein condensates and coherent laser light via stimulated emission.",
+      "topic": "Identical particles",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For two non-interacting identical fermions in states psi_a and psi_b, the correctly antisymmetrized two-particle wave function (ignoring spin) is proportional to",
+      "options": [
+        "psi_a(1)psi_b(2) - psi_a(2)psi_b(1)",
+        "psi_a(1)psi_b(2) + psi_a(2)psi_b(1)",
+        "psi_a(1)psi_b(1)",
+        "psi_a(1) + psi_b(2)"
+      ],
+      "correct_answer": "psi_a(1)psi_b(2) - psi_a(2)psi_b(1)",
+      "explanation": "This antisymmetric combination (a Slater determinant for two particles) ensures the total wave function changes sign upon exchange of particle labels 1 and 2, as required for fermions.",
+      "topic": "Identical particles",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The spherical harmonic Y_0^0(theta,phi) corresponding to l=0, m=0 is",
+      "options": ["A constant, independent of theta and phi", "Proportional to cos(theta)", "Proportional to sin(theta)*e^(i*phi)", "Zero everywhere"],
+      "correct_answer": "A constant, independent of theta and phi",
+      "explanation": "For l=0 (s-states), there is no angular dependence at all; Y_0^0 = 1/sqrt(4*pi), reflecting spherical symmetry of s-orbitals.",
+      "topic": "Orbital angular momentum",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A hydrogen atom electron is in a state with l=2. Which of the following is a valid value of the magnetic quantum number m for this state?",
+      "options": ["-1", "3", "-3", "4"],
+      "correct_answer": "-1",
+      "explanation": "For l=2, m can only take integer values from -2 to +2 (i.e., -2,-1,0,1,2); of the given choices only -1 lies in this allowed range.",
+      "topic": "Orbital angular momentum",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In the vector model picture of angular momentum, the fact that Lz can equal l*hbar at most (never the full magnitude sqrt(l(l+1))*hbar) reflects that",
+      "options": [
+        "The angular momentum vector can never point exactly along the z-axis, consistent with the uncertainty principle for Lx and Ly",
+        "Lz is always exactly equal to the total angular momentum magnitude",
+        "Only Lx and Ly are quantized, not Lz",
+        "l and m must always be equal"
+      ],
+      "correct_answer": "The angular momentum vector can never point exactly along the z-axis, consistent with the uncertainty principle for Lx and Ly",
+      "explanation": "Since Lx and Ly do not commute with Lz, they cannot both be zero simultaneously with a definite Lz, so the angular momentum vector always has some nonzero transverse component, precluding perfect alignment with the z-axis.",
+      "topic": "Orbital angular momentum",
+      "difficulty": "hard"
+    }
+  ]
+}

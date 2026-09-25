@@ -1,0 +1,409 @@
+{
+  "course_code": "BIO203",
+  "title": "Introductory Genetics",
+  "level": "200",
+  "source_note": "Standard NUC-aligned 200L Biology genetics curriculum: Mendelian inheritance, chromosome theory of heredity, DNA structure and replication basics, non-Mendelian inheritance patterns, sex-linked inheritance, mutation, chromosomal aberrations, linkage, and elementary population genetics.",
+  "questions": [
+    {
+      "question": "Who is credited as the father of modern genetics, based on his experiments with garden pea plants?",
+      "options": ["Charles Darwin", "Gregor Mendel", "Thomas Hunt Morgan", "James Watson"],
+      "correct_answer": "Gregor Mendel",
+      "explanation": "Gregor Mendel's pea plant experiments in the 1860s established the basic laws of inheritance, earning him the title 'father of genetics'.",
+      "topic": "History and foundations",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Mendel's Law of Segregation states that:",
+      "options": [
+        "Genes for different traits assort independently of one another during gamete formation",
+        "The two alleles for a gene separate from each other during gamete formation, so each gamete carries only one allele",
+        "Dominant alleles always mask recessive alleles completely",
+        "Traits are inherited in blended form from both parents"
+      ],
+      "correct_answer": "The two alleles for a gene separate from each other during gamete formation, so each gamete carries only one allele",
+      "explanation": "The Law of Segregation describes how paired alleles separate during meiosis, so each gamete receives only one allele of each gene.",
+      "topic": "Mendelian genetics",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The Law of Independent Assortment applies most directly to:",
+      "options": [
+        "Genes located on the same chromosome close together",
+        "Genes located on different chromosomes, or far apart on the same chromosome",
+        "Alleles of the same gene",
+        "Mitochondrial genes only"
+      ],
+      "correct_answer": "Genes located on different chromosomes, or far apart on the same chromosome",
+      "explanation": "Independent assortment holds for genes on separate chromosome pairs (or far apart on one chromosome) because they segregate independently during meiosis; tightly linked genes violate this law.",
+      "topic": "Mendelian genetics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a monohybrid cross between two heterozygous (Aa x Aa) individuals, what is the expected phenotypic ratio in the offspring?",
+      "options": ["1:1", "1:2:1", "3:1", "9:3:3:1"],
+      "correct_answer": "3:1",
+      "explanation": "Crossing Aa x Aa produces genotypes 1 AA : 2 Aa : 1 aa, which gives a 3 dominant : 1 recessive phenotypic ratio.",
+      "topic": "Mendelian genetics",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In a dihybrid cross between two individuals heterozygous for two independently assorting genes (AaBb x AaBb), what is the expected phenotypic ratio?",
+      "options": ["3:1", "1:2:1", "9:3:3:1", "1:1:1:1"],
+      "correct_answer": "9:3:3:1",
+      "explanation": "A dihybrid cross of AaBb x AaBb yields four phenotypic classes in a 9:3:3:1 ratio when the two genes assort independently.",
+      "topic": "Mendelian genetics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A test cross is performed by crossing an individual of unknown genotype with:",
+      "options": [
+        "A homozygous dominant individual",
+        "A homozygous recessive individual",
+        "Another individual of unknown genotype",
+        "An individual of the same phenotype"
+      ],
+      "correct_answer": "A homozygous recessive individual",
+      "explanation": "A test cross uses a homozygous recessive individual because it reveals the unknown genotype through the phenotypic ratio of the offspring.",
+      "topic": "Mendelian genetics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which term describes an organism that has two different alleles for a particular gene?",
+      "options": ["Homozygous", "Heterozygous", "Hemizygous", "Homogenous"],
+      "correct_answer": "Heterozygous",
+      "explanation": "Heterozygous describes an individual carrying two different alleles (e.g., Aa) at a given gene locus.",
+      "topic": "Basic terminology",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The physical appearance or observable characteristics of an organism resulting from its genetic makeup is called its:",
+      "options": ["Genotype", "Phenotype", "Karyotype", "Chromotype"],
+      "correct_answer": "Phenotype",
+      "explanation": "Phenotype refers to the observable traits of an organism, produced by the interaction of its genotype with the environment.",
+      "topic": "Basic terminology",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In incomplete dominance, the heterozygote phenotype:",
+      "options": [
+        "Is identical to one of the homozygous parents",
+        "Shows a blended or intermediate phenotype between the two homozygous parents",
+        "Shows both parental phenotypes simultaneously and distinctly",
+        "Is always lethal"
+      ],
+      "correct_answer": "Shows a blended or intermediate phenotype between the two homozygous parents",
+      "explanation": "In incomplete dominance neither allele is fully dominant, so the heterozygote displays a phenotype intermediate between the two homozygotes, as in pink flowers from red x white crosses.",
+      "topic": "Non-Mendelian inheritance",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Codominance differs from incomplete dominance in that:",
+      "options": [
+        "Both alleles are fully and separately expressed in the heterozygote rather than blending",
+        "One allele completely masks the other",
+        "The heterozygote phenotype is always intermediate",
+        "Codominance only occurs in sex-linked genes"
+      ],
+      "correct_answer": "Both alleles are fully and separately expressed in the heterozygote rather than blending",
+      "explanation": "In codominance, such as AB blood type, both alleles are simultaneously and fully expressed, producing a phenotype showing both traits distinctly rather than a blend.",
+      "topic": "Non-Mendelian inheritance",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The human ABO blood group system is an example of:",
+      "options": [
+        "Simple dominant-recessive inheritance with two alleles",
+        "Multiple allelism with codominance between two of the three alleles",
+        "Sex-linked inheritance",
+        "Cytoplasmic inheritance"
+      ],
+      "correct_answer": "Multiple allelism with codominance between two of the three alleles",
+      "explanation": "The ABO system has three alleles (IA, IB, i) in the population; IA and IB are codominant with each other and both dominant to i.",
+      "topic": "Non-Mendelian inheritance",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Epistasis refers to a genetic phenomenon in which:",
+      "options": [
+        "Two genes are located on the same chromosome",
+        "One gene masks or modifies the phenotypic expression of another, non-allelic gene",
+        "A single gene controls multiple unrelated traits",
+        "Alleles blend to produce an intermediate phenotype"
+      ],
+      "correct_answer": "One gene masks or modifies the phenotypic expression of another, non-allelic gene",
+      "explanation": "Epistasis occurs when the alleles of one gene locus mask or alter the phenotypic effect of alleles at a different locus, as seen in coat colour determination in some animals.",
+      "topic": "Non-Mendelian inheritance",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A single gene that affects several apparently unrelated phenotypic traits is said to be exhibiting:",
+      "options": ["Polygenic inheritance", "Pleiotropy", "Linkage", "Epistasis"],
+      "correct_answer": "Pleiotropy",
+      "explanation": "Pleiotropy is the phenomenon where one gene influences multiple, seemingly unrelated phenotypic traits, as seen in sickle cell disease affecting red blood cells, organs, and joints.",
+      "topic": "Non-Mendelian inheritance",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In humans, red-green colour blindness is inherited as an X-linked recessive trait. A colour-blind man marries a woman who is homozygous normal. What proportion of their sons will be colour blind?",
+      "options": ["0%", "25%", "50%", "100%"],
+      "correct_answer": "0%",
+      "explanation": "Sons receive their X chromosome from the mother, who is homozygous normal, so all sons will be phenotypically normal (though all daughters will be carriers).",
+      "topic": "Sex-linked inheritance",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In humans, sex is normally determined by which chromosome combination in males?",
+      "options": ["XX", "XY", "XO", "XXY"],
+      "correct_answer": "XY",
+      "explanation": "Human males normally carry one X and one Y chromosome (XY), while females carry two X chromosomes (XX).",
+      "topic": "Sex-linked inheritance",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Haemophilia in humans is an example of a disorder that is:",
+      "options": [
+        "Autosomal dominant",
+        "Autosomal recessive",
+        "X-linked recessive",
+        "Y-linked"
+      ],
+      "correct_answer": "X-linked recessive",
+      "explanation": "Haemophilia is caused by a recessive allele on the X chromosome, which is why it occurs far more frequently in males than females.",
+      "topic": "Sex-linked inheritance",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The chromosome theory of heredity, proposed largely from the work of Sutton and Boveri and confirmed by Morgan's fruit fly experiments, states that:",
+      "options": [
+        "Genes are carried on chromosomes, which behave in a manner consistent with Mendel's laws",
+        "Genes are located only in the cytoplasm",
+        "Chromosomes have no role in inheritance",
+        "All genes assort independently regardless of chromosome location"
+      ],
+      "correct_answer": "Genes are carried on chromosomes, which behave in a manner consistent with Mendel's laws",
+      "explanation": "The chromosome theory of heredity unified Mendel's abstract 'factors' with the physical behaviour of chromosomes during meiosis, explaining segregation and independent assortment.",
+      "topic": "Chromosome theory",
+      "difficulty": "medium"
+    },
+    {
+      "question": "According to the Watson-Crick model of DNA, adenine pairs with which base, and how many hydrogen bonds form between them?",
+      "options": ["Guanine, 3 bonds", "Thymine, 2 bonds", "Cytosine, 3 bonds", "Uracil, 1 bond"],
+      "correct_answer": "Thymine, 2 bonds",
+      "explanation": "In DNA, adenine pairs with thymine via two hydrogen bonds, while guanine pairs with cytosine via three hydrogen bonds.",
+      "topic": "DNA structure",
+      "difficulty": "medium"
+    },
+    {
+      "question": "DNA replication is described as 'semiconservative' because:",
+      "options": [
+        "Each new DNA molecule contains one original (parental) strand and one newly synthesised strand",
+        "Both strands of the new DNA molecule are entirely new",
+        "Only half of the DNA molecule is replicated at a time",
+        "Both parental strands remain together in the new molecule"
+      ],
+      "correct_answer": "Each new DNA molecule contains one original (parental) strand and one newly synthesised strand",
+      "explanation": "Semiconservative replication, demonstrated by Meselson and Stahl, means each daughter DNA molecule retains one parental strand paired with one newly synthesised strand.",
+      "topic": "DNA replication",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which enzyme is primarily responsible for synthesising new DNA strands by adding nucleotides during replication?",
+      "options": ["DNA ligase", "DNA polymerase", "Helicase", "RNA primase"],
+      "correct_answer": "DNA polymerase",
+      "explanation": "DNA polymerase catalyses the addition of complementary nucleotides to a growing DNA strand using the template strand as a guide.",
+      "topic": "DNA replication",
+      "difficulty": "easy"
+    },
+    {
+      "question": "During meiosis, crossing over (exchange of genetic material between homologous chromosomes) occurs during:",
+      "options": ["Prophase I", "Metaphase II", "Anaphase I", "Telophase II"],
+      "correct_answer": "Prophase I",
+      "explanation": "Crossing over between non-sister chromatids of homologous chromosomes occurs during prophase I of meiosis, at the stage when tetrads form and chiasmata become visible.",
+      "topic": "Meiosis and recombination",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The main biological significance of crossing over during meiosis is that it:",
+      "options": [
+        "Reduces the chromosome number by half",
+        "Generates new combinations of alleles, increasing genetic variation",
+        "Ensures identical gametes are produced",
+        "Prevents independent assortment"
+      ],
+      "correct_answer": "Generates new combinations of alleles, increasing genetic variation",
+      "explanation": "Crossing over recombines alleles on homologous chromosomes, producing recombinant chromatids and increasing genetic diversity among gametes.",
+      "topic": "Meiosis and recombination",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Two genes are said to be linked when they:",
+      "options": [
+        "Are located on different chromosomes",
+        "Are located close together on the same chromosome and tend to be inherited together",
+        "Always show independent assortment",
+        "Cannot recombine under any circumstance"
+      ],
+      "correct_answer": "Are located close together on the same chromosome and tend to be inherited together",
+      "explanation": "Linked genes lie near each other on the same chromosome, so they are inherited together more often than predicted by independent assortment, except when separated by crossing over.",
+      "topic": "Linkage and mapping",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In genetic mapping, one map unit (centimorgan) corresponds to:",
+      "options": [
+        "1% recombination frequency between two genes",
+        "100% recombination frequency",
+        "A physical distance of exactly 1 micrometre on the chromosome",
+        "One full crossover event only"
+      ],
+      "correct_answer": "1% recombination frequency between two genes",
+      "explanation": "Genetic map distance is measured in map units (centimorgans), where one map unit equals a 1% recombination frequency between two loci.",
+      "topic": "Linkage and mapping",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A change in the nucleotide sequence of DNA is referred to as a:",
+      "options": ["Translocation", "Mutation", "Recombination", "Transcription"],
+      "correct_answer": "Mutation",
+      "explanation": "A mutation is any heritable change in the nucleotide sequence of an organism's DNA, which may arise spontaneously or be induced by mutagens.",
+      "topic": "Mutation",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A frameshift mutation is most likely to be caused by:",
+      "options": [
+        "Substitution of one base for another",
+        "Insertion or deletion of a number of nucleotides that is not a multiple of three",
+        "Silent mutations that do not change the amino acid",
+        "Duplication of an entire chromosome"
+      ],
+      "correct_answer": "Insertion or deletion of a number of nucleotides that is not a multiple of three",
+      "explanation": "Insertions or deletions not in multiples of three shift the reading frame downstream of the mutation, typically altering every subsequent codon and often producing a non-functional protein.",
+      "topic": "Mutation",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Sickle cell anaemia in humans results from:",
+      "options": [
+        "A chromosomal deletion removing the beta-globin gene entirely",
+        "A single point mutation in the beta-globin gene causing substitution of valine for glutamic acid",
+        "Trisomy of chromosome 21",
+        "A frameshift mutation in the alpha-globin gene"
+      ],
+      "correct_answer": "A single point mutation in the beta-globin gene causing substitution of valine for glutamic acid",
+      "explanation": "Sickle cell anaemia results from a missense point mutation in the beta-globin gene that substitutes valine for glutamic acid at position 6, altering haemoglobin structure.",
+      "topic": "Mutation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Down syndrome in humans is caused by:",
+      "options": [
+        "Deletion of part of chromosome 21",
+        "Trisomy of chromosome 21 (three copies instead of two)",
+        "A point mutation on the X chromosome",
+        "Monosomy of chromosome 21"
+      ],
+      "correct_answer": "Trisomy of chromosome 21 (three copies instead of two)",
+      "explanation": "Down syndrome typically results from nondisjunction during meiosis leading to an extra copy of chromosome 21 (trisomy 21).",
+      "topic": "Chromosomal aberrations",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A chromosomal aberration in which a segment of a chromosome is reversed end-to-end is called:",
+      "options": ["Duplication", "Deletion", "Inversion", "Translocation"],
+      "correct_answer": "Inversion",
+      "explanation": "An inversion occurs when a chromosome segment breaks off, flips 180 degrees, and reattaches in the reverse orientation.",
+      "topic": "Chromosomal aberrations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Klinefelter syndrome in humans results from the karyotype:",
+      "options": ["XO", "XXY", "XYY", "XXX"],
+      "correct_answer": "XXY",
+      "explanation": "Klinefelter syndrome arises from nondisjunction producing males with an extra X chromosome, giving a 47,XXY karyotype.",
+      "topic": "Chromosomal aberrations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "An individual with Turner syndrome has which karyotype?",
+      "options": ["45, X (XO)", "47, XXY", "47, XYY", "47, XXX"],
+      "correct_answer": "45, X (XO)",
+      "explanation": "Turner syndrome results from the presence of only one X chromosome (45,X), typically due to nondisjunction, producing a female with distinctive developmental features.",
+      "topic": "Chromosomal aberrations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Polyploidy refers to a condition in which an organism has:",
+      "options": [
+        "One extra chromosome",
+        "One missing chromosome",
+        "More than two complete sets of chromosomes",
+        "A rearranged chromosome structure only"
+      ],
+      "correct_answer": "More than two complete sets of chromosomes",
+      "explanation": "Polyploidy is the possession of three or more complete chromosome sets (e.g., triploid, tetraploid), common in plants and important in crop breeding.",
+      "topic": "Chromosomal aberrations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A pedigree chart is used in human genetics primarily to:",
+      "options": [
+        "Determine the exact DNA sequence of a gene",
+        "Trace the pattern of inheritance of a trait through a family over generations",
+        "Measure recombination frequency between two genes",
+        "Count the number of chromosomes in a cell"
+      ],
+      "correct_answer": "Trace the pattern of inheritance of a trait through a family over generations",
+      "explanation": "Pedigree analysis uses family trees with standard symbols to track how a trait or disorder is inherited, helping determine its mode of inheritance.",
+      "topic": "Pedigree analysis",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In a pedigree, an affected individual whose parents are both unaffected, with the trait skipping generations, most likely indicates the trait is:",
+      "options": ["Autosomal dominant", "Autosomal recessive", "Y-linked", "Mitochondrial"],
+      "correct_answer": "Autosomal recessive",
+      "explanation": "A trait appearing in offspring of unaffected parents, and skipping generations, is characteristic of autosomal recessive inheritance where both parents are unaffected carriers.",
+      "topic": "Pedigree analysis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Hardy-Weinberg principle predicts that allele and genotype frequencies in a population will remain constant across generations provided that:",
+      "options": [
+        "Mutation, migration, natural selection, and genetic drift are all absent and mating is random",
+        "The population undergoes strong natural selection",
+        "The population size is very small",
+        "Non-random mating occurs consistently"
+      ],
+      "correct_answer": "Mutation, migration, natural selection, and genetic drift are all absent and mating is random",
+      "explanation": "The Hardy-Weinberg equilibrium is a theoretical baseline requiring no mutation, no migration, no selection, no genetic drift (infinite population), and random mating.",
+      "topic": "Population genetics",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Cytoplasmic (extranuclear) inheritance, such as of mitochondrial DNA in humans, typically follows which pattern?",
+      "options": [
+        "Strictly paternal inheritance",
+        "Maternal inheritance, since mitochondria are inherited almost exclusively from the egg",
+        "Equal contribution from both parents",
+        "Random assortment identical to nuclear genes"
+      ],
+      "correct_answer": "Maternal inheritance, since mitochondria are inherited almost exclusively from the egg",
+      "explanation": "Mitochondria (and their DNA) are passed almost entirely through the cytoplasm of the egg cell, so mitochondrial traits are inherited maternally.",
+      "topic": "Cytoplasmic inheritance",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In pea plants, Mendel found that the allele for tall stem (T) was dominant to short stem (t). A cross between a homozygous tall plant and a homozygous short plant produces F1 offspring that are:",
+      "options": [
+        "All tall, heterozygous (Tt)",
+        "All short, homozygous (tt)",
+        "Half tall, half short",
+        "A blend of intermediate height"
+      ],
+      "correct_answer": "All tall, heterozygous (Tt)",
+      "explanation": "Crossing homozygous dominant (TT) with homozygous recessive (tt) produces all heterozygous (Tt) offspring, which display the dominant tall phenotype.",
+      "topic": "Mendelian genetics",
+      "difficulty": "easy"
+    }
+  ]
+}

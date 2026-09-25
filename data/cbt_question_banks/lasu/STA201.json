@@ -1,0 +1,304 @@
+{
+  "course_code": "STA201",
+  "title": "Statistics for Biological Students",
+  "level": "300",
+  "source_note": "Standard NUC-aligned biostatistics service course for biological science students: data types and collection in biology, descriptive statistics, probability basics, the normal distribution, estimation, hypothesis testing (t-tests, chi-square), correlation and regression, and ANOVA, all framed with biological/ecological examples and calculations.",
+  "questions": [
+    {
+      "question": "A biologist records the number of offspring produced by each of 50 female fruit flies. This variable is best classified as:",
+      "options": ["Discrete quantitative data", "Continuous quantitative data", "Nominal qualitative data", "Ordinal qualitative data"],
+      "correct_answer": "Discrete quantitative data",
+      "explanation": "Number of offspring is a count that can only take whole-number values, making it discrete quantitative data.",
+      "topic": "Data types in biology",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Blood type (A, B, AB, O) recorded for a sample of patients is an example of:",
+      "options": ["Nominal data", "Ordinal data", "Discrete numerical data", "Continuous numerical data"],
+      "correct_answer": "Nominal data",
+      "explanation": "Blood type categories have no inherent order or numerical meaning, so they are nominal (categorical) data.",
+      "topic": "Data types in biology",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The leaf lengths (in cm) of 8 plants are: 4, 6, 6, 7, 8, 9, 9, 9. What is the mode?",
+      "options": ["9", "8", "7", "6"],
+      "correct_answer": "9",
+      "explanation": "9 appears three times, more than any other value, so it is the mode.",
+      "topic": "Descriptive statistics",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The leaf lengths (in cm) of 8 plants are: 4, 6, 6, 7, 8, 9, 9, 9. What is the median?",
+      "options": ["7.5", "7", "8", "6"],
+      "correct_answer": "7.5",
+      "explanation": "With 8 ordered values, the median is the average of the 4th and 5th values: (7 + 8) / 2 = 7.5.",
+      "topic": "Descriptive statistics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A sample of 5 plant heights (cm) is: 10, 12, 14, 16, 18. What is the sample mean?",
+      "options": ["14", "12", "16", "15"],
+      "correct_answer": "14",
+      "explanation": "The mean is the sum of values divided by the count: (10+12+14+16+18)/5 = 70/5 = 14.",
+      "topic": "Descriptive statistics",
+      "difficulty": "easy"
+    },
+    {
+      "question": "For the sample 10, 12, 14, 16, 18 (mean = 14), what is the sample variance (using n-1 in the denominator)?",
+      "options": ["10", "16", "20", "40"],
+      "correct_answer": "10",
+      "explanation": "Sum of squared deviations = 16+4+0+4+16 = 40; dividing by n-1 = 4 gives a sample variance of 10.",
+      "topic": "Descriptive statistics",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Which measure of central tendency is most appropriate for summarizing a strongly right-skewed distribution of parasite counts per host?",
+      "options": ["Median", "Arithmetic mean", "Midrange", "Geometric mean of raw counts including zeros"],
+      "correct_answer": "Median",
+      "explanation": "The median is resistant to extreme values and skew, making it more representative than the mean for skewed count data such as parasite loads.",
+      "topic": "Descriptive statistics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The coefficient of variation (CV) is useful in biology because it:",
+      "options": ["Allows comparison of variability between datasets with different units or means", "Measures the central tendency of a dataset", "Is always equal to the standard deviation", "Cannot be expressed as a percentage"],
+      "correct_answer": "Allows comparison of variability between datasets with different units or means",
+      "explanation": "CV = (standard deviation / mean) x 100% is a relative measure of dispersion, allowing fair comparison across variables with different scales, such as comparing variability in fish weight versus fish length.",
+      "topic": "Descriptive statistics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a biological experiment, the population from which a sample is drawn refers to:",
+      "options": ["The entire group of individuals or items of interest to the study", "Only the individuals actually measured", "A theoretical distribution with mean zero", "The control group only"],
+      "correct_answer": "The entire group of individuals or items of interest to the study",
+      "explanation": "In statistics, the population is the complete set of individuals or items about which conclusions are to be drawn, while a sample is a subset of it.",
+      "topic": "Sampling in biology",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Randomly assigning plots in a field to different fertilizer treatments before the experiment begins is an example of:",
+      "options": ["Randomization in experimental design", "Stratified sampling after the fact", "Systematic bias", "Convenience sampling"],
+      "correct_answer": "Randomization in experimental design",
+      "explanation": "Randomly assigning treatments to experimental units controls for confounding variables and is a core principle of sound experimental design in biology.",
+      "topic": "Sampling in biology",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which sampling method involves dividing a habitat into sub-regions (e.g., by vegetation type) and sampling within each sub-region separately?",
+      "options": ["Stratified sampling", "Simple random sampling", "Cluster sampling", "Convenience sampling"],
+      "correct_answer": "Stratified sampling",
+      "explanation": "Stratified sampling divides a heterogeneous population into homogeneous strata (e.g., habitat types) and samples from each, improving precision when subgroups differ.",
+      "topic": "Sampling in biology",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A continuous random variable representing the height of adult maize plants is best modeled by which distribution, assuming symmetry around the mean?",
+      "options": ["Normal distribution", "Binomial distribution", "Poisson distribution", "Uniform discrete distribution"],
+      "correct_answer": "Normal distribution",
+      "explanation": "Continuous biological measurements like height that cluster symmetrically around a mean are commonly approximated by the normal (Gaussian) distribution.",
+      "topic": "Probability distributions",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In a standard normal distribution, approximately what percentage of observations fall within one standard deviation of the mean?",
+      "options": ["68%", "95%", "99.7%", "50%"],
+      "correct_answer": "68%",
+      "explanation": "The empirical (68-95-99.7) rule states that about 68% of normally distributed data lie within one standard deviation of the mean.",
+      "topic": "Probability distributions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The number of bacterial colonies observed per petri dish, where colonies are rare and independent events over a fixed area, is best modeled by the:",
+      "options": ["Poisson distribution", "Normal distribution", "Uniform distribution", "t-distribution"],
+      "correct_answer": "Poisson distribution",
+      "explanation": "The Poisson distribution models the count of rare, independent events occurring in a fixed area or interval, such as bacterial colonies per plate.",
+      "topic": "Probability distributions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A plant height X has mean 150 cm and standard deviation 10 cm. What is the z-score for a plant of height 165 cm?",
+      "options": ["1.5", "0.5", "15", "2.5"],
+      "correct_answer": "1.5",
+      "explanation": "z = (X - mean) / SD = (165 - 150) / 10 = 15/10 = 1.5.",
+      "topic": "Probability distributions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The standard error of the sample mean is calculated as:",
+      "options": ["Sample standard deviation divided by the square root of sample size", "Sample standard deviation multiplied by sample size", "Population variance divided by sample size", "Sample mean divided by sample size"],
+      "correct_answer": "Sample standard deviation divided by the square root of sample size",
+      "explanation": "The standard error of the mean, SE = s / sqrt(n), quantifies how much sample means would vary from sample to sample.",
+      "topic": "Estimation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A sample of 25 leaf widths has mean 8 cm and standard deviation 2.5 cm. What is the standard error of the mean?",
+      "options": ["0.5", "2.5", "0.1", "5.0"],
+      "correct_answer": "0.5",
+      "explanation": "SE = s / sqrt(n) = 2.5 / sqrt(25) = 2.5 / 5 = 0.5.",
+      "topic": "Estimation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A 95% confidence interval for a population mean means that:",
+      "options": ["If the sampling were repeated many times, about 95% of such intervals would contain the true population mean", "There is a 95% probability that the sample mean equals the population mean", "95% of the data values fall within the interval", "The interval contains 95% of all possible sample means exactly"],
+      "correct_answer": "If the sampling were repeated many times, about 95% of such intervals would contain the true population mean",
+      "explanation": "This is the correct frequentist interpretation of a confidence interval based on repeated sampling, not a probability statement about one fixed interval.",
+      "topic": "Estimation",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In hypothesis testing, the null hypothesis (H0) in a study comparing two fertilizer treatments' mean plant growth typically states that:",
+      "options": ["There is no difference between the mean growth of the two treatment groups", "There is a significant difference between the two treatment groups", "The sample size is too small to detect a difference", "The variances of the two groups are unequal"],
+      "correct_answer": "There is no difference between the mean growth of the two treatment groups",
+      "explanation": "The null hypothesis represents the default assumption of no effect or no difference, which the test seeks to reject or fail to reject.",
+      "topic": "Hypothesis testing",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A Type I error in a biological hypothesis test occurs when:",
+      "options": ["The null hypothesis is rejected when it is actually true", "The null hypothesis is accepted when it is actually true", "The null hypothesis is rejected when it is actually false", "The sample size is too small"],
+      "correct_answer": "The null hypothesis is rejected when it is actually true",
+      "explanation": "A Type I error (false positive) occurs when a true null hypothesis is incorrectly rejected, with probability equal to the significance level alpha.",
+      "topic": "Hypothesis testing",
+      "difficulty": "medium"
+    },
+    {
+      "question": "At a significance level of alpha = 0.05, a calculated p-value of 0.02 leads to which decision?",
+      "options": ["Reject the null hypothesis", "Fail to reject the null hypothesis", "Accept the alternative hypothesis as absolutely true with certainty", "The test is inconclusive regardless of the p-value"],
+      "correct_answer": "Reject the null hypothesis",
+      "explanation": "Since p (0.02) is less than alpha (0.05), the result is statistically significant, so the null hypothesis is rejected.",
+      "topic": "Hypothesis testing",
+      "difficulty": "medium"
+    },
+    {
+      "question": "To compare the mean weight gain of two independent groups of rats (control vs. treated) with small sample sizes and unknown population variance, the appropriate test is:",
+      "options": ["Independent samples t-test", "Chi-square goodness-of-fit test", "One-sample z-test", "Pearson correlation test"],
+      "correct_answer": "Independent samples t-test",
+      "explanation": "The independent (two-sample) t-test compares means of two unrelated groups when sample sizes are small and population variance is unknown, estimated from the sample.",
+      "topic": "Hypothesis testing",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A paired t-test would be most appropriate for comparing:",
+      "options": ["Blood pressure of the same patients before and after treatment", "Heights of two different unrelated species", "Weights of male versus female animals from different populations", "Leaf counts of plants from two separate, unrelated fields"],
+      "correct_answer": "Blood pressure of the same patients before and after treatment",
+      "explanation": "A paired t-test is used when the same subjects are measured twice (before/after), so the two sets of observations are dependent.",
+      "topic": "Hypothesis testing",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In testing whether observed offspring phenotype ratios fit a Mendelian expected ratio (e.g., 3:1), the appropriate statistical test is:",
+      "options": ["Chi-square goodness-of-fit test", "Independent t-test", "Pearson correlation", "ANOVA"],
+      "correct_answer": "Chi-square goodness-of-fit test",
+      "explanation": "The chi-square goodness-of-fit test compares observed categorical frequencies (e.g., phenotype counts) against theoretically expected frequencies such as Mendelian ratios.",
+      "topic": "Chi-square tests",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a chi-square test, if observed offspring counts are 90 tall and 30 short against an expected 3:1 ratio in a total of 120 offspring, what are the expected counts?",
+      "options": ["90 tall and 30 short", "80 tall and 40 short", "60 tall and 60 short", "100 tall and 20 short"],
+      "correct_answer": "90 tall and 30 short",
+      "explanation": "A 3:1 ratio of 120 total offspring gives expected counts of (3/4)x120=90 tall and (1/4)x120=30 short, which in this case exactly matches the observed data (chi-square = 0).",
+      "topic": "Chi-square tests",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The chi-square test of independence is used to determine whether:",
+      "options": ["Two categorical variables are associated with each other", "Two continuous variables are linearly related", "A sample mean differs from a population mean", "Three or more group means differ"],
+      "correct_answer": "Two categorical variables are associated with each other",
+      "explanation": "The chi-square test of independence examines whether there is a statistically significant association between two categorical variables, such as habitat type and species presence.",
+      "topic": "Chi-square tests",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A Pearson correlation coefficient (r) of -0.85 between temperature and enzyme activity indicates:",
+      "options": ["A strong negative linear relationship", "A strong positive linear relationship", "No relationship between the variables", "A weak, non-significant relationship"],
+      "correct_answer": "A strong negative linear relationship",
+      "explanation": "A correlation coefficient close to -1 indicates a strong negative (inverse) linear relationship: as one variable increases, the other tends to decrease.",
+      "topic": "Correlation and regression",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The coefficient of determination (r-squared) represents:",
+      "options": ["The proportion of variance in the dependent variable explained by the independent variable", "The slope of the regression line", "The correlation coefficient itself", "The standard error of the regression"],
+      "correct_answer": "The proportion of variance in the dependent variable explained by the independent variable",
+      "explanation": "R-squared quantifies how much of the variability in the response variable is accounted for by the predictor variable in a regression model.",
+      "topic": "Correlation and regression",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In simple linear regression Y = a + bX describing plant growth (Y) versus fertilizer dose (X), the slope (b) represents:",
+      "options": ["The expected change in Y for a one-unit increase in X", "The value of Y when X equals zero", "The correlation between X and Y", "The variance of the residuals"],
+      "correct_answer": "The expected change in Y for a one-unit increase in X",
+      "explanation": "The regression slope b quantifies the average change in the dependent variable Y for each one-unit increase in the independent variable X.",
+      "topic": "Correlation and regression",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which statistical technique would be used to compare the mean growth of plants under four different fertilizer treatments simultaneously?",
+      "options": ["One-way analysis of variance (ANOVA)", "Independent samples t-test", "Chi-square test of independence", "Simple linear regression"],
+      "correct_answer": "One-way analysis of variance (ANOVA)",
+      "explanation": "One-way ANOVA is designed to compare means across three or more groups simultaneously while controlling the overall Type I error rate, unlike repeated t-tests.",
+      "topic": "Analysis of variance",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a one-way ANOVA, a significant F-statistic indicates that:",
+      "options": ["At least one group mean differs significantly from the others", "All group means are exactly equal", "The experiment has too few replicates", "The data are not normally distributed"],
+      "correct_answer": "At least one group mean differs significantly from the others",
+      "explanation": "A significant F-test in ANOVA indicates that not all group means are equal, though it does not identify which specific groups differ (post-hoc tests are needed for that).",
+      "topic": "Analysis of variance",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Why are post-hoc tests (e.g., Tukey's test) used after a significant ANOVA result?",
+      "options": ["To identify which specific pairs of group means differ significantly", "To calculate the overall sample mean", "To replace the need for an F-test", "To test for normality of the residuals"],
+      "correct_answer": "To identify which specific pairs of group means differ significantly",
+      "explanation": "Post-hoc tests perform pairwise comparisons after a significant ANOVA to pinpoint exactly which group means differ, while controlling for multiple comparisons.",
+      "topic": "Analysis of variance",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A biologist wants to test whether the mean petal length of a flower species differs between two ecological zones using a two-tailed test at alpha = 0.05 with a calculated t-statistic exceeding the critical t-value. The correct conclusion is:",
+      "options": ["Reject H0; there is a significant difference in mean petal length between the zones", "Fail to reject H0; there is no significant difference", "The test is invalid because t-tests cannot be two-tailed", "Increase alpha to 0.10 to get a valid result"],
+      "correct_answer": "Reject H0; there is a significant difference in mean petal length between the zones",
+      "explanation": "When the calculated test statistic exceeds the critical value, the result falls in the rejection region, so the null hypothesis of no difference is rejected.",
+      "topic": "Hypothesis testing",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Degrees of freedom for an independent two-sample t-test with sample sizes n1 = 10 and n2 = 12 (assuming pooled variance) is:",
+      "options": ["20", "22", "21", "18"],
+      "correct_answer": "20",
+      "explanation": "Degrees of freedom = n1 + n2 - 2 = 10 + 12 - 2 = 20.",
+      "topic": "Hypothesis testing",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which of the following best describes a 'skewed to the right' (positively skewed) distribution of clutch sizes in birds?",
+      "options": ["A long tail extending toward higher values, with mean greater than median", "A long tail extending toward lower values, with mean less than median", "A perfectly symmetric bell-shaped distribution", "A distribution with two equal peaks"],
+      "correct_answer": "A long tail extending toward higher values, with mean greater than median",
+      "explanation": "In a right (positively) skewed distribution, the tail extends toward higher values and the mean is pulled above the median by the extreme high values.",
+      "topic": "Descriptive statistics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In biological research, replication (repeating measurements or treatments) is important primarily because it:",
+      "options": ["Allows estimation of variability and increases statistical power", "Eliminates the need for a control group", "Guarantees a significant result", "Removes the need for randomization"],
+      "correct_answer": "Allows estimation of variability and increases statistical power",
+      "explanation": "Replication provides an estimate of natural variability among experimental units and increases the power to detect true treatment effects.",
+      "topic": "Sampling in biology",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A researcher records both the height and leaf number of the same set of plants to see if taller plants tend to have more leaves. The most appropriate first statistical step is to:",
+      "options": ["Compute a scatter plot and correlation coefficient between height and leaf number", "Run a chi-square goodness-of-fit test", "Compute separate means for height and leaf number with no comparison", "Use a paired t-test"],
+      "correct_answer": "Compute a scatter plot and correlation coefficient between height and leaf number",
+      "explanation": "To explore the relationship between two continuous variables measured on the same subjects, a scatter plot and correlation coefficient are the appropriate first tools.",
+      "topic": "Correlation and regression",
+      "difficulty": "medium"
+    }
+  ]
+}

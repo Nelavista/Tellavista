@@ -1,0 +1,408 @@
+{
+  "course_code": "BCH401",
+  "title": "Advanced Enzymology",
+  "level": "400",
+  "source_note": "Standard NUC-aligned Nigerian university 400L Advanced Enzymology curriculum building on 200/300L general biochemistry (enzyme structure/function basics): enzyme kinetics and inhibition, allosteric regulation, multi-substrate mechanisms, catalytic mechanisms, coenzymes, enzyme regulation, and industrial/clinical enzymology.",
+  "questions": [
+    {
+      "question": "In the Michaelis-Menten equation, what does Km represent?",
+      "options": [
+        "The maximum velocity of the reaction",
+        "The substrate concentration at which the reaction velocity is half of Vmax",
+        "The enzyme concentration required for saturation",
+        "The equilibrium constant of the reaction"
+      ],
+      "correct_answer": "The substrate concentration at which the reaction velocity is half of Vmax",
+      "explanation": "Km, the Michaelis constant, is defined as the substrate concentration at which reaction velocity equals half of Vmax; it reflects the apparent affinity of the enzyme for its substrate.",
+      "topic": "Enzyme kinetics",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A low Km value for an enzyme-substrate pair generally indicates:",
+      "options": [
+        "Low affinity of the enzyme for the substrate",
+        "High affinity of the enzyme for the substrate",
+        "The enzyme is not saturated",
+        "The reaction is irreversible"
+      ],
+      "correct_answer": "High affinity of the enzyme for the substrate",
+      "explanation": "A low Km means the enzyme reaches half-maximal velocity at a low substrate concentration, implying the enzyme binds substrate tightly, i.e., high apparent affinity.",
+      "topic": "Enzyme kinetics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a Lineweaver-Burk (double reciprocal) plot of 1/v against 1/[S], the y-intercept corresponds to:",
+      "options": ["-1/Km", "1/Vmax", "Km/Vmax", "Vmax"],
+      "correct_answer": "1/Vmax",
+      "explanation": "The Lineweaver-Burk equation 1/v = (Km/Vmax)(1/[S]) + 1/Vmax gives a y-intercept of 1/Vmax and an x-intercept of -1/Km.",
+      "topic": "Enzyme kinetics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In competitive enzyme inhibition, the inhibitor typically:",
+      "options": [
+        "Binds only to the enzyme-substrate complex, never to free enzyme",
+        "Binds to the active site, competing with substrate, and its effect can be overcome by increasing substrate concentration",
+        "Decreases Vmax while leaving Km unchanged",
+        "Binds to an allosteric site distinct from the active site"
+      ],
+      "correct_answer": "Binds to the active site, competing with substrate, and its effect can be overcome by increasing substrate concentration",
+      "explanation": "A competitive inhibitor structurally resembles the substrate and competes for the active site; increasing [S] can outcompete the inhibitor, so Vmax is unchanged but apparent Km increases.",
+      "topic": "Enzyme inhibition",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which type of reversible enzyme inhibition decreases both the apparent Vmax and Km by the same factor, leaving the Km/Vmax ratio unchanged?",
+      "options": ["Competitive inhibition", "Non-competitive inhibition (pure)", "Uncompetitive inhibition", "Irreversible inhibition"],
+      "correct_answer": "Uncompetitive inhibition",
+      "explanation": "Uncompetitive inhibitors bind only to the ES complex; both Vmax(app) and Km(app) decrease by the same factor (1+[I]/Ki'), so parallel lines are seen on a Lineweaver-Burk plot.",
+      "topic": "Enzyme inhibition",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Pure non-competitive inhibition is characterised kinetically by:",
+      "options": [
+        "A decrease in Vmax with Km unchanged",
+        "An increase in Km with Vmax unchanged",
+        "No effect on either Km or Vmax",
+        "An increase in both Km and Vmax"
+      ],
+      "correct_answer": "A decrease in Vmax with Km unchanged",
+      "explanation": "In pure non-competitive inhibition the inhibitor binds equally well to E and ES at a site distinct from the active site, reducing catalytic turnover (lowering Vmax) without affecting substrate binding affinity (Km unchanged).",
+      "topic": "Enzyme inhibition",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Organophosphate compounds such as diisopropylfluorophosphate (DIPF) inhibit serine proteases by:",
+      "options": [
+        "Reversibly competing at the active site",
+        "Covalently and irreversibly modifying the catalytic serine residue",
+        "Chelating the enzyme's metal cofactor",
+        "Binding a distant allosteric regulatory site"
+      ],
+      "correct_answer": "Covalently and irreversibly modifying the catalytic serine residue",
+      "explanation": "Organophosphates form a stable covalent phosphoester bond with the active-site serine hydroxyl of serine proteases (e.g. acetylcholinesterase, chymotrypsin), irreversibly inactivating the enzyme.",
+      "topic": "Enzyme inhibition",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Allosteric enzymes typically display which type of substrate saturation kinetics, rather than classical Michaelis-Menten hyperbolic kinetics?",
+      "options": ["Linear kinetics", "Sigmoidal (S-shaped) kinetics", "Zero-order kinetics only", "First-order exponential decay"],
+      "correct_answer": "Sigmoidal (S-shaped) kinetics",
+      "explanation": "Allosteric enzymes with multiple interacting subunits show cooperative substrate binding, producing a sigmoidal velocity-versus-substrate-concentration curve rather than the hyperbolic curve of Michaelis-Menten kinetics.",
+      "topic": "Allosteric regulation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the Hill equation used to quantify cooperativity, a Hill coefficient (nH) greater than 1 indicates:",
+      "options": ["Negative cooperativity", "No cooperativity (Michaelis-Menten behaviour)", "Positive cooperativity among binding sites", "The enzyme is monomeric"],
+      "correct_answer": "Positive cooperativity among binding sites",
+      "explanation": "A Hill coefficient greater than 1 indicates positive cooperativity, meaning binding of substrate at one site increases the affinity of other sites for subsequent substrate molecules.",
+      "topic": "Allosteric regulation",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In the Monod-Wyman-Changeux (MWC) concerted model of allosteric enzymes, the enzyme oligomer exists in equilibrium between which two conformational states?",
+      "options": ["Active (A) and inactive (I) states, interconverting individually per subunit", "Tense (T) and Relaxed (R) states, with all subunits changing conformation together", "Phosphorylated and dephosphorylated states only", "Monomer and dimer states"],
+      "correct_answer": "Tense (T) and Relaxed (R) states, with all subunits changing conformation together",
+      "explanation": "The MWC concerted model proposes that all subunits of an allosteric oligomer switch simultaneously between a low-affinity Tense (T) state and a high-affinity Relaxed (R) state.",
+      "topic": "Allosteric regulation",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Feedback (end-product) inhibition in a metabolic pathway is an example of:",
+      "options": [
+        "Covalent modification of the enzyme",
+        "Allosteric regulation, where the pathway's end product inhibits an early regulatory enzyme",
+        "Irreversible proteolytic activation",
+        "Isoenzyme substitution"
+      ],
+      "correct_answer": "Allosteric regulation, where the pathway's end product inhibits an early regulatory enzyme",
+      "explanation": "Feedback inhibition is a classic allosteric control mechanism: the final product of a pathway binds an allosteric site on an early (often the first committed) enzyme, reducing flux through the pathway.",
+      "topic": "Enzyme regulation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Zymogens (proenzymes) such as trypsinogen and pepsinogen are activated by:",
+      "options": [
+        "Reversible allosteric binding of an activator molecule",
+        "Irreversible proteolytic cleavage that removes a peptide segment, generating the active enzyme conformation",
+        "Phosphorylation by a protein kinase",
+        "Binding of a coenzyme"
+      ],
+      "correct_answer": "Irreversible proteolytic cleavage that removes a peptide segment, generating the active enzyme conformation",
+      "explanation": "Zymogens are inactive precursors activated by limited, irreversible proteolysis that removes an inhibitory propeptide, exposing/forming the functional active site.",
+      "topic": "Enzyme regulation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Covalent modification by reversible phosphorylation (e.g. by protein kinases and phosphatases) regulates many metabolic enzymes such as glycogen phosphorylase. This mechanism is significant because it:",
+      "options": [
+        "Permanently destroys the enzyme",
+        "Allows rapid, reversible switching of enzyme activity in response to hormonal or cellular signals",
+        "Only occurs in prokaryotes",
+        "Always activates the enzyme, never inactivates it"
+      ],
+      "correct_answer": "Allows rapid, reversible switching of enzyme activity in response to hormonal or cellular signals",
+      "explanation": "Reversible covalent phosphorylation/dephosphorylation provides a fast, reversible switch that integrates hormonal signals (e.g. glucagon, insulin) with metabolic enzyme activity, unlike irreversible proteolytic activation.",
+      "topic": "Enzyme regulation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Isoenzymes (isozymes) such as the five forms of lactate dehydrogenase (LDH1-LDH5) are best described as:",
+      "options": [
+        "Different enzymes catalysing entirely unrelated reactions",
+        "Multiple forms of an enzyme that catalyse the same reaction but differ in structure, kinetic properties, or tissue distribution",
+        "Denatured, inactive forms of a single enzyme",
+        "Coenzymes required by a single enzyme"
+      ],
+      "correct_answer": "Multiple forms of an enzyme that catalyse the same reaction but differ in structure, kinetic properties, or tissue distribution",
+      "explanation": "Isoenzymes catalyse the same reaction but are distinct protein forms, often tetramers of different subunit combinations (e.g. LDH-H and LDH-M subunits), useful clinically to localise tissue damage.",
+      "topic": "Isoenzymes",
+      "difficulty": "medium"
+    },
+    {
+      "question": "According to the Enzyme Commission (EC) classification system, an enzyme catalysing the transfer of a phosphate group from ATP to a substrate belongs to which class?",
+      "options": ["Oxidoreductases (EC 1)", "Transferases (EC 2)", "Hydrolases (EC 3)", "Lyases (EC 4)"],
+      "correct_answer": "Transferases (EC 2)",
+      "explanation": "Kinases transfer a phosphate group from a donor (typically ATP) to an acceptor molecule, classifying them as transferases, EC class 2 (specifically phosphotransferases, EC 2.7).",
+      "topic": "Enzyme classification",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Enzymes that catalyse the addition or removal of a group to form a double bond, or addition of water/ammonia across a double bond, WITHOUT hydrolysis or oxidation, belong to which EC class?",
+      "options": ["Isomerases (EC 5)", "Lyases (EC 4)", "Ligases (EC 6)", "Hydrolases (EC 3)"],
+      "correct_answer": "Lyases (EC 4)",
+      "explanation": "Lyases (EC 4) catalyse non-hydrolytic, non-oxidative cleavage or formation of bonds, often generating a double bond or ring, such as decarboxylases and aldolases (e.g. fructose-bisphosphate aldolase).",
+      "topic": "Enzyme classification",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the catalytic triad of chymotrypsin (Ser195-His57-Asp102), what is the primary role of the histidine residue during catalysis?",
+      "options": [
+        "It directly attacks the substrate's carbonyl carbon as a nucleophile",
+        "It acts as a general base, accepting a proton from serine to enhance its nucleophilicity, and later donates a proton to the leaving group",
+        "It forms an ionic bond that anchors the substrate",
+        "It is the site of substrate binding via hydrophobic interactions only"
+      ],
+      "correct_answer": "It acts as a general base, accepting a proton from serine to enhance its nucleophilicity, and later donates a proton to the leaving group",
+      "explanation": "His57 acts as a general acid/base: it deprotonates Ser195's hydroxyl to increase its nucleophilic attack on the substrate carbonyl, then protonates the leaving amine group, with Asp102 stabilising the protonated histidine.",
+      "topic": "Catalytic mechanisms",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The 'induced fit' model of enzyme-substrate binding, proposed by Koshland, differs from the earlier 'lock and key' model in proposing that:",
+      "options": [
+        "The active site is rigid and perfectly complementary to the substrate before binding",
+        "The enzyme's active site undergoes a conformational change upon substrate binding to achieve optimal fit and catalytic geometry",
+        "Substrates change shape but the enzyme remains rigid",
+        "No conformational changes occur anywhere in the enzyme-substrate complex"
+      ],
+      "correct_answer": "The enzyme's active site undergoes a conformational change upon substrate binding to achieve optimal fit and catalytic geometry",
+      "explanation": "Koshland's induced-fit model proposes that substrate binding induces a conformational change in the enzyme's active site, improving complementarity and often aligning catalytic groups, as seen classically in hexokinase.",
+      "topic": "Catalytic mechanisms",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Transition-state stabilisation theory explains enzyme catalysis primarily by proposing that enzymes:",
+      "options": [
+        "Bind and stabilise the substrate's ground state more tightly than the transition state",
+        "Bind the transition state of the reaction more tightly than the substrate or product, lowering the activation energy",
+        "Increase the free energy difference between substrate and product",
+        "Have no effect on activation energy, only on reaction equilibrium"
+      ],
+      "correct_answer": "Bind the transition state of the reaction more tightly than the substrate or product, lowering the activation energy",
+      "explanation": "Enzymes accelerate reactions by preferentially binding and stabilising the high-energy transition state relative to the ground state, which lowers the activation energy without altering the reaction's overall thermodynamics or equilibrium.",
+      "topic": "Enzyme thermodynamics",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Enzymes increase reaction rate without altering the equilibrium constant of the reaction because they:",
+      "options": [
+        "Change the free energy of the substrate and product equally, leaving DeltaG unchanged, while lowering activation energy for both forward and reverse reactions",
+        "Only speed up the forward reaction, not the reverse",
+        "Change the standard free energy change (DeltaG degree) of the reaction",
+        "Add energy to the system"
+      ],
+      "correct_answer": "Change the free energy of the substrate and product equally, leaving DeltaG unchanged, while lowering activation energy for both forward and reverse reactions",
+      "explanation": "Catalysts, including enzymes, accelerate both forward and reverse reactions equally by lowering the activation energy barrier; they do not change the overall DeltaG or equilibrium constant of the reaction.",
+      "topic": "Enzyme thermodynamics",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A ping-pong (double-displacement) bi-bi mechanism in multi-substrate enzyme kinetics is characterised by:",
+      "options": [
+        "Both substrates binding to the enzyme simultaneously before any product is released",
+        "One substrate binding and a product being released BEFORE the second substrate binds, often involving a covalently modified enzyme intermediate",
+        "Random order binding of substrates with no intermediate",
+        "The enzyme requiring no substrate at all"
+      ],
+      "correct_answer": "One substrate binding and a product being released BEFORE the second substrate binds, often involving a covalently modified enzyme intermediate",
+      "explanation": "In ping-pong mechanisms (e.g. transaminases), the first substrate binds and a product is released, leaving a modified enzyme form (e.g. carrying an amino group), before the second substrate binds and reacts.",
+      "topic": "Multi-substrate kinetics",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In an 'ordered sequential' bi-bi mechanism, which statement is correct?",
+      "options": [
+        "Both substrates can bind in either order randomly",
+        "A ternary complex of enzyme with both substrates forms, and the substrates must bind in a specific, obligatory order",
+        "No ternary complex ever forms",
+        "Products are released before either substrate binds"
+      ],
+      "correct_answer": "A ternary complex of enzyme with both substrates forms, and the substrates must bind in a specific, obligatory order",
+      "explanation": "Ordered sequential mechanisms require substrates to bind in a defined sequence to form a ternary enzyme-substrate complex before any product is released, unlike random sequential mechanisms where order is not fixed.",
+      "topic": "Multi-substrate kinetics",
+      "difficulty": "hard"
+    },
+    {
+      "question": "NAD+ and FAD function as coenzymes primarily in which type of enzymatic reaction?",
+      "options": ["Hydrolysis reactions", "Oxidation-reduction (redox) reactions", "Isomerisation reactions", "Ligation reactions requiring ATP"],
+      "correct_answer": "Oxidation-reduction (redox) reactions",
+      "explanation": "NAD+/NADH and FAD/FADH2 serve as electron/hydride carriers in redox reactions catalysed by dehydrogenases and oxidases throughout metabolism.",
+      "topic": "Coenzymes and cofactors",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Pyridoxal phosphate (PLP), derived from vitamin B6, is the essential coenzyme for which class of enzyme reactions?",
+      "options": ["Carboxylation reactions only", "Transamination and decarboxylation of amino acids", "Methyl group transfer", "Peptide bond hydrolysis"],
+      "correct_answer": "Transamination and decarboxylation of amino acids",
+      "explanation": "PLP forms a Schiff base with amino acid substrates and is the essential coenzyme for aminotransferases (transaminases) and amino acid decarboxylases.",
+      "topic": "Coenzymes and cofactors",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Biotin functions as a coenzyme in enzymatic reactions primarily by acting as a carrier of:",
+      "options": ["Acyl groups", "Carbon dioxide (carboxyl groups) in carboxylation reactions", "Methyl groups", "Electrons in the electron transport chain"],
+      "correct_answer": "Carbon dioxide (carboxyl groups) in carboxylation reactions",
+      "explanation": "Biotin is covalently attached to carboxylase enzymes (e.g. pyruvate carboxylase, acetyl-CoA carboxylase) and carries activated CO2 for transfer to substrates.",
+      "topic": "Coenzymes and cofactors",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Thiamine pyrophosphate (TPP), derived from vitamin B1, is an essential cofactor for enzymes such as pyruvate dehydrogenase and alpha-ketoglutarate dehydrogenase because it:",
+      "options": [
+        "Stabilises a carbanion intermediate formed after decarboxylation, facilitating transfer of the resulting acyl group",
+        "Directly donates electrons to oxygen",
+        "Forms disulfide bonds with cysteine residues",
+        "Acts solely as a structural cofactor with no chemical role"
+      ],
+      "correct_answer": "Stabilises a carbanion intermediate formed after decarboxylation, facilitating transfer of the resulting acyl group",
+      "explanation": "TPP's thiazole ring forms a reactive ylide carbanion that attacks the carbonyl carbon of alpha-keto acids; after decarboxylation, TPP stabilises the resulting carbanion (hydroxyethyl-TPP) intermediate.",
+      "topic": "Coenzymes and cofactors",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Ribozymes, such as the ribosomal peptidyl transferase center, are significant in enzymology because they demonstrate that:",
+      "options": [
+        "All enzymes are proteins without exception",
+        "RNA molecules, not just proteins, can possess catalytic activity",
+        "Enzymes cannot catalyse peptide bond formation",
+        "DNA is the only catalytic biomolecule"
+      ],
+      "correct_answer": "RNA molecules, not just proteins, can possess catalytic activity",
+      "explanation": "Ribozymes such as RNase P and the ribosome's peptidyl transferase center show that RNA can act as a biological catalyst, challenging the earlier assumption that all enzymes are proteins.",
+      "topic": "Ribozymes",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Immobilised enzymes are widely used in industrial biotechnology (e.g. glucose isomerase for high-fructose corn syrup production) mainly because immobilisation:",
+      "options": [
+        "Permanently denatures the enzyme, improving safety",
+        "Allows the enzyme to be reused repeatedly and easily separated from the product stream, improving process economics and stability",
+        "Eliminates the need for substrate entirely",
+        "Always increases the enzyme's Km, improving efficiency"
+      ],
+      "correct_answer": "Allows the enzyme to be reused repeatedly and easily separated from the product stream, improving process economics and stability",
+      "explanation": "Immobilisation (e.g. on beads, membranes, or entrapment in gels) enables continuous industrial use, easy recovery, and often improved thermal/operational stability of the enzyme, reducing production costs.",
+      "topic": "Industrial enzymology",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In enzyme purification, ion-exchange chromatography separates proteins primarily on the basis of:",
+      "options": [
+        "Molecular size",
+        "Net surface charge at a given pH",
+        "Specific binding affinity to an immobilised ligand",
+        "Hydrophobicity"
+      ],
+      "correct_answer": "Net surface charge at a given pH",
+      "explanation": "Ion-exchange chromatography separates proteins according to differences in net surface charge, which determines their interaction with a charged stationary phase (cation or anion exchanger) at a given buffer pH.",
+      "topic": "Enzyme purification",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Affinity chromatography for purifying a specific enzyme relies on:",
+      "options": [
+        "The enzyme's molecular weight relative to a sizing gel",
+        "Specific, reversible binding between the enzyme and an immobilised ligand (e.g. substrate analogue, cofactor, or antibody) on the column matrix",
+        "Random adsorption of all proteins in the sample",
+        "Precipitation of the enzyme by ammonium sulfate"
+      ],
+      "correct_answer": "Specific, reversible binding between the enzyme and an immobilised ligand (e.g. substrate analogue, cofactor, or antibody) on the column matrix",
+      "explanation": "Affinity chromatography exploits the enzyme's specific, reversible binding to an immobilised ligand related to its natural substrate, cofactor, or a specific antibody, allowing highly selective purification.",
+      "topic": "Enzyme purification",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Most enzymes show a bell-shaped curve of activity versus pH. This is primarily because:",
+      "options": [
+        "Extreme pH always denatures all proteins instantly regardless of the enzyme",
+        "The ionisation state of catalytic and substrate-binding amino acid side chains changes with pH, altering activity and binding away from the optimum",
+        "pH has no real effect on enzyme activity",
+        "Only temperature, not pH, affects enzyme conformation"
+      ],
+      "correct_answer": "The ionisation state of catalytic and substrate-binding amino acid side chains changes with pH, altering activity and binding away from the optimum",
+      "explanation": "Catalytic residues (e.g. active-site His, Asp, Glu, Cys) and substrate-binding groups have specific ionisation states required for activity; deviation from optimal pH alters their charge state, reducing binding or catalysis.",
+      "topic": "Factors affecting enzyme activity",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Beyond an enzyme's optimum temperature, reaction rate typically falls sharply mainly because:",
+      "options": [
+        "Substrate concentration automatically decreases at high temperature",
+        "The enzyme begins to denature, disrupting the tertiary structure of the active site",
+        "The reaction becomes exothermic",
+        "Water molecules stop participating in the reaction"
+      ],
+      "correct_answer": "The enzyme begins to denature, disrupting the tertiary structure of the active site",
+      "explanation": "Above the optimum temperature, thermal energy disrupts the weak non-covalent interactions maintaining tertiary/quaternary structure, denaturing the enzyme and destroying the precise active-site geometry needed for catalysis.",
+      "topic": "Factors affecting enzyme activity",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Metabolic control analysis introduces the 'flux control coefficient' to describe:",
+      "options": [
+        "The absolute rate of a single isolated enzyme reaction only",
+        "The fractional change in overall pathway flux resulting from a small fractional change in the activity of a particular enzyme in the pathway",
+        "The molecular weight of the rate-limiting enzyme",
+        "The total number of enzymes in a pathway"
+      ],
+      "correct_answer": "The fractional change in overall pathway flux resulting from a small fractional change in the activity of a particular enzyme in the pathway",
+      "explanation": "The flux control coefficient quantifies how much control a given enzyme exerts over the flux through a metabolic pathway, replacing the older, less precise notion of a single 'rate-limiting step'.",
+      "topic": "Metabolic control analysis",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Lysozyme catalyses hydrolysis of the beta-1,4-glycosidic bond in bacterial peptidoglycan primarily through a mechanism involving which two catalytic residues acting as general acid and nucleophile/general base?",
+      "options": ["Ser and His", "Glu35 and Asp52", "Cys and His", "Lys and Arg"],
+      "correct_answer": "Glu35 and Asp52",
+      "explanation": "In hen egg-white lysozyme, Glu35 (in a hydrophobic, protonated environment) acts as a general acid catalyst, while Asp52 (in a polar, ionised environment) stabilises the oxocarbenium-like transition state/acts as nucleophile.",
+      "topic": "Catalytic mechanisms",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Chemical modification (active-site labelling) with reagents such as iodoacetamide is used in enzymology mainly to:",
+      "options": [
+        "Increase enzyme substrate specificity permanently",
+        "Identify and characterise specific catalytic amino acid residues (e.g. cysteine) essential for activity",
+        "Replace the enzyme's coenzyme",
+        "Measure the enzyme's molecular weight directly"
+      ],
+      "correct_answer": "Identify and characterise specific catalytic amino acid residues (e.g. cysteine) essential for activity",
+      "explanation": "Group-specific chemical modifying reagents (e.g. iodoacetamide for cysteine thiols, DEPC for histidine) react covalently with particular residue types, and loss of activity after modification helps identify residues essential for catalysis.",
+      "topic": "Enzyme structure-function studies",
+      "difficulty": "medium"
+    }
+  ]
+}

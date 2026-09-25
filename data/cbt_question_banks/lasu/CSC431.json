@@ -1,0 +1,450 @@
+{
+  "course_code": "CSC431",
+  "title": "Cybersecurity",
+  "level": "400",
+  "source_note": "Grounded in standard undergraduate cybersecurity curricula covering the CIA triad, cryptography, network security, malware, access control, and security operations, consistent with NUC-aligned Computer Science courses.",
+  "questions": [
+    {
+      "question": "The CIA triad in information security stands for:",
+      "options": [
+        "Confidentiality, Integrity, Availability",
+        "Cryptography, Identity, Authentication",
+        "Control, Inspection, Auditing",
+        "Confidentiality, Inspection, Access"
+      ],
+      "correct_answer": "Confidentiality, Integrity, Availability",
+      "explanation": "The CIA triad is the foundational model of information security: keeping data confidential, accurate/unaltered, and accessible when needed.",
+      "topic": "Security fundamentals",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In the CIA triad, 'integrity' refers to:",
+      "options": [
+        "Ensuring data is accurate and has not been altered without authorization",
+        "Ensuring only authorized users can view the data",
+        "Ensuring systems remain accessible at all times",
+        "Ensuring data is encrypted during transmission only"
+      ],
+      "correct_answer": "Ensuring data is accurate and has not been altered without authorization",
+      "explanation": "Integrity protects data from unauthorized modification, ensuring it remains trustworthy and accurate.",
+      "topic": "Security fundamentals",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which of the following best describes symmetric encryption?",
+      "options": [
+        "The same key is used for both encryption and decryption",
+        "A public key encrypts and a different private key decrypts",
+        "No key is required for encryption",
+        "Encryption keys change automatically every second"
+      ],
+      "correct_answer": "The same key is used for both encryption and decryption",
+      "explanation": "Symmetric encryption algorithms, such as AES, use one shared secret key for both encrypting and decrypting data.",
+      "topic": "Cryptography",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In asymmetric (public-key) cryptography, which statement is correct?",
+      "options": [
+        "A public key encrypts data and only the corresponding private key can decrypt it",
+        "The same key is used for both encryption and decryption",
+        "Public keys must always be kept secret",
+        "Asymmetric cryptography cannot be used for digital signatures"
+      ],
+      "correct_answer": "A public key encrypts data and only the corresponding private key can decrypt it",
+      "explanation": "Asymmetric cryptography uses a key pair: data encrypted with the public key can only be decrypted with the matching private key, enabling secure communication without sharing a secret key.",
+      "topic": "Cryptography",
+      "difficulty": "medium"
+    },
+    {
+      "question": "AES (Advanced Encryption Standard) is an example of which type of cipher?",
+      "options": [
+        "Symmetric block cipher",
+        "Asymmetric stream cipher",
+        "Hashing algorithm",
+        "Digital signature algorithm only"
+      ],
+      "correct_answer": "Symmetric block cipher",
+      "explanation": "AES is a widely used symmetric-key block cipher that encrypts data in fixed-size blocks using the same key for encryption and decryption.",
+      "topic": "Cryptography",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A cryptographic hash function is primarily used to:",
+      "options": [
+        "Produce a fixed-size digest that verifies data integrity and cannot be feasibly reversed",
+        "Encrypt data so it can later be decrypted with a private key",
+        "Compress files to save storage space",
+        "Generate random network traffic for testing"
+      ],
+      "correct_answer": "Produce a fixed-size digest that verifies data integrity and cannot be feasibly reversed",
+      "explanation": "Hash functions like SHA-256 create a unique fixed-length fingerprint of data used to verify integrity; they are one-way and not meant to be reversed.",
+      "topic": "Cryptography",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A digital signature primarily provides which security guarantees?",
+      "options": [
+        "Authentication and non-repudiation of the signed message",
+        "Only confidentiality of the message content",
+        "Automatic encryption of all network traffic",
+        "Protection against hardware failure"
+      ],
+      "correct_answer": "Authentication and non-repudiation of the signed message",
+      "explanation": "A digital signature, created with a sender's private key, proves the message came from that sender and that the sender cannot later deny having signed it.",
+      "topic": "Cryptography",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A Public Key Infrastructure (PKI) primarily provides:",
+      "options": [
+        "A framework for issuing, managing, and validating digital certificates that bind public keys to identities",
+        "A method for compressing large files",
+        "A way to physically secure server rooms",
+        "A protocol for routing network packets"
+      ],
+      "correct_answer": "A framework for issuing, managing, and validating digital certificates that bind public keys to identities",
+      "explanation": "PKI uses certificate authorities to issue digital certificates that verify the ownership of public keys, enabling trust in secure communications.",
+      "topic": "Cryptography",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Malware that disguises itself as legitimate software while performing malicious actions in the background is called a:",
+      "options": [
+        "Trojan horse",
+        "Worm",
+        "Adware banner",
+        "Firewall"
+      ],
+      "correct_answer": "Trojan horse",
+      "explanation": "A Trojan horse appears to be legitimate or useful software but secretly performs malicious actions once installed, unlike worms which self-replicate.",
+      "topic": "Malware",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What distinguishes a computer worm from a virus?",
+      "options": [
+        "A worm can self-replicate and spread across networks without needing to attach itself to a host file",
+        "A worm requires a host program to attach to before it can spread",
+        "A worm can only infect one computer and cannot spread",
+        "A worm is a type of hardware failure, not software"
+      ],
+      "correct_answer": "A worm can self-replicate and spread across networks without needing to attach itself to a host file",
+      "explanation": "Unlike viruses, which need to attach to a host file or program, worms are standalone malware that self-propagate across networks.",
+      "topic": "Malware",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Ransomware is malicious software that typically:",
+      "options": [
+        "Encrypts a victim's files and demands payment for the decryption key",
+        "Only displays unwanted advertisements",
+        "Improves system performance while hidden",
+        "Automatically updates antivirus software"
+      ],
+      "correct_answer": "Encrypts a victim's files and demands payment for the decryption key",
+      "explanation": "Ransomware encrypts victim data and extorts payment, usually in cryptocurrency, in exchange for the decryption key.",
+      "topic": "Malware",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A keylogger is a type of malware designed to:",
+      "options": [
+        "Secretly record keystrokes to capture sensitive information like passwords",
+        "Block access to a website using excessive requests",
+        "Encrypt network traffic between two hosts",
+        "Scan a network for open ports"
+      ],
+      "correct_answer": "Secretly record keystrokes to capture sensitive information like passwords",
+      "explanation": "Keyloggers covertly capture everything a user types, often to steal credentials and other sensitive data.",
+      "topic": "Malware",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Phishing is best described as:",
+      "options": [
+        "A social engineering attack that tricks users into revealing sensitive information via fraudulent communication",
+        "A technique for encrypting emails automatically",
+        "A hardware-based network intrusion detection method",
+        "A method of compressing large attachments"
+      ],
+      "correct_answer": "A social engineering attack that tricks users into revealing sensitive information via fraudulent communication",
+      "explanation": "Phishing uses deceptive emails, messages, or websites impersonating trusted entities to trick victims into disclosing credentials or sensitive data.",
+      "topic": "Social engineering",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Spear phishing differs from generic phishing in that it:",
+      "options": [
+        "Is a highly targeted attack customized for a specific individual or organization",
+        "Only targets random unknown victims with generic messages",
+        "Never uses email as an attack vector",
+        "Is purely a hardware-based attack"
+      ],
+      "correct_answer": "Is a highly targeted attack customized for a specific individual or organization",
+      "explanation": "Spear phishing attackers research their targets to craft personalized, convincing messages, increasing the likelihood of success.",
+      "topic": "Social engineering",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A Denial-of-Service (DoS) attack aims to:",
+      "options": [
+        "Overwhelm a system's resources so legitimate users cannot access its services",
+        "Steal encrypted data by breaking the encryption algorithm",
+        "Silently record user keystrokes over time",
+        "Physically damage computer hardware components"
+      ],
+      "correct_answer": "Overwhelm a system's resources so legitimate users cannot access its services",
+      "explanation": "DoS attacks flood a target with excessive traffic or requests, exhausting resources and denying service to legitimate users.",
+      "topic": "Network attacks",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A Distributed Denial-of-Service (DDoS) attack differs from a standard DoS attack because it:",
+      "options": [
+        "Uses multiple compromised systems (often a botnet) to launch the attack simultaneously",
+        "Uses only a single attacking machine",
+        "Targets only the victim's physical hardware",
+        "Requires no network connection at all"
+      ],
+      "correct_answer": "Uses multiple compromised systems (often a botnet) to launch the attack simultaneously",
+      "explanation": "DDoS attacks leverage many distributed, often compromised, machines (a botnet) to flood a target, making them harder to block than single-source DoS attacks.",
+      "topic": "Network attacks",
+      "difficulty": "medium"
+    },
+    {
+      "question": "SQL injection is an attack technique that exploits:",
+      "options": [
+        "Poorly sanitized user input in database queries to execute unintended SQL commands",
+        "Weaknesses in physical network cabling",
+        "Vulnerabilities in printer firmware",
+        "Flaws in the TCP three-way handshake"
+      ],
+      "correct_answer": "Poorly sanitized user input in database queries to execute unintended SQL commands",
+      "explanation": "SQL injection occurs when unsanitized user input is concatenated into SQL queries, allowing attackers to manipulate or extract database data.",
+      "topic": "Application security",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Cross-Site Scripting (XSS) attacks typically work by:",
+      "options": [
+        "Injecting malicious scripts into web pages viewed by other users",
+        "Physically intercepting network cables",
+        "Cracking password hashes offline",
+        "Disabling a firewall remotely"
+      ],
+      "correct_answer": "Injecting malicious scripts into web pages viewed by other users",
+      "explanation": "XSS attacks inject malicious client-side scripts into trusted websites, which then execute in the browsers of unsuspecting visitors.",
+      "topic": "Application security",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The best defense against SQL injection attacks is to:",
+      "options": [
+        "Use parameterized queries (prepared statements) and validate/sanitize all user input",
+        "Disable the database entirely",
+        "Only use plaintext passwords",
+        "Allow unrestricted direct SQL input from users"
+      ],
+      "correct_answer": "Use parameterized queries (prepared statements) and validate/sanitize all user input",
+      "explanation": "Parameterized queries separate SQL code from data, preventing malicious input from being interpreted as executable SQL commands.",
+      "topic": "Application security",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A firewall's primary function in network security is to:",
+      "options": [
+        "Filter incoming and outgoing network traffic based on defined security rules",
+        "Encrypt all files stored on a hard disk",
+        "Physically prevent unauthorized building access",
+        "Detect malware signatures in email attachments only"
+      ],
+      "correct_answer": "Filter incoming and outgoing network traffic based on defined security rules",
+      "explanation": "Firewalls act as a barrier between trusted and untrusted networks, allowing or blocking traffic based on configured rules.",
+      "topic": "Network security",
+      "difficulty": "easy"
+    },
+    {
+      "question": "An Intrusion Detection System (IDS) differs from an Intrusion Prevention System (IPS) in that:",
+      "options": [
+        "An IDS monitors and alerts on suspicious activity, while an IPS can actively block or prevent detected threats",
+        "An IDS actively blocks traffic while an IPS only alerts",
+        "IDS and IPS perform identical functions with no difference",
+        "IDS is a hardware-only device while IPS is software-only"
+      ],
+      "correct_answer": "An IDS monitors and alerts on suspicious activity, while an IPS can actively block or prevent detected threats",
+      "explanation": "IDS is a passive/detective control that generates alerts, while IPS is inline and can actively take preventive action against detected threats.",
+      "topic": "Network security",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A Virtual Private Network (VPN) primarily provides:",
+      "options": [
+        "An encrypted tunnel for secure communication over an untrusted network like the internet",
+        "Physical isolation of a computer from the internet",
+        "Automatic virus removal from infected files",
+        "A method to bypass all authentication requirements"
+      ],
+      "correct_answer": "An encrypted tunnel for secure communication over an untrusted network like the internet",
+      "explanation": "VPNs encrypt data in transit and mask the user's network origin, protecting communications over public or untrusted networks.",
+      "topic": "Network security",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Multi-factor authentication (MFA) improves security by:",
+      "options": [
+        "Requiring two or more independent forms of verification before granting access",
+        "Allowing access with a username alone",
+        "Removing the need for passwords entirely with no replacement",
+        "Storing passwords in plaintext for faster verification"
+      ],
+      "correct_answer": "Requiring two or more independent forms of verification before granting access",
+      "explanation": "MFA combines something you know (password), something you have (token/phone), or something you are (biometric), making unauthorized access much harder.",
+      "topic": "Authentication",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which access control model grants permissions based on a user's role within an organization?",
+      "options": [
+        "Role-Based Access Control (RBAC)",
+        "Discretionary Access Control (DAC) only",
+        "Mandatory Access Control (MAC) only",
+        "No access control model addresses this"
+      ],
+      "correct_answer": "Role-Based Access Control (RBAC)",
+      "explanation": "RBAC assigns permissions to roles (e.g., admin, staff), and users inherit permissions based on their assigned role, simplifying access management.",
+      "topic": "Access control",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In Mandatory Access Control (MAC), access decisions are made based on:",
+      "options": [
+        "Fixed security labels/classifications set by a central authority, not by individual resource owners",
+        "The discretion of each individual file owner",
+        "Random assignment with no policy",
+        "Only the requesting user's job title with no formal classification"
+      ],
+      "correct_answer": "Fixed security labels/classifications set by a central authority, not by individual resource owners",
+      "explanation": "MAC enforces access based on centrally defined classifications (e.g., confidential, secret), unlike DAC where owners control access at their discretion.",
+      "topic": "Access control",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The principle of 'least privilege' in security means:",
+      "options": [
+        "Users and systems should be granted only the minimum access necessary to perform their tasks",
+        "All users should be granted administrator rights by default",
+        "Security policies should be reviewed as infrequently as possible",
+        "Passwords should never be changed once set"
+      ],
+      "correct_answer": "Users and systems should be granted only the minimum access necessary to perform their tasks",
+      "explanation": "Least privilege minimizes the attack surface and potential damage by limiting users' access rights to only what is strictly required.",
+      "topic": "Security principles",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Steganography, as used in security contexts, refers to:",
+      "options": [
+        "Hiding the existence of a message within another file, such as an image, rather than encrypting it",
+        "A method of breaking encryption keys using brute force",
+        "A type of firewall configuration",
+        "A protocol for securely routing emails"
+      ],
+      "correct_answer": "Hiding the existence of a message within another file, such as an image, rather than encrypting it",
+      "explanation": "Unlike encryption, which scrambles content, steganography conceals the very existence of a hidden message inside another medium.",
+      "topic": "Cryptography",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A brute-force attack attempts to gain access by:",
+      "options": [
+        "Systematically trying every possible password or key combination until the correct one is found",
+        "Exploiting a software bug to bypass authentication entirely",
+        "Intercepting network packets passively without decrypting them",
+        "Sending fraudulent emails to trick a victim"
+      ],
+      "correct_answer": "Systematically trying every possible password or key combination until the correct one is found",
+      "explanation": "Brute-force attacks exhaustively try combinations of credentials or keys, which is why strong, long passwords and account lockout policies are important defenses.",
+      "topic": "Authentication",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A 'man-in-the-middle' (MITM) attack occurs when:",
+      "options": [
+        "An attacker secretly intercepts and possibly alters communication between two parties who believe they are communicating directly",
+        "A user forgets their password and must reset it",
+        "A firewall blocks all traffic to a server",
+        "Two systems use the same encryption key by design"
+      ],
+      "correct_answer": "An attacker secretly intercepts and possibly alters communication between two parties who believe they are communicating directly",
+      "explanation": "In a MITM attack, the attacker positions themselves between two communicating parties, potentially eavesdropping or altering the exchanged data undetected.",
+      "topic": "Network attacks",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Penetration testing is best described as:",
+      "options": [
+        "An authorized simulated attack on a system to identify exploitable vulnerabilities",
+        "An illegal attempt to break into a system for personal gain",
+        "A routine software update process",
+        "A method for encrypting stored backups"
+      ],
+      "correct_answer": "An authorized simulated attack on a system to identify exploitable vulnerabilities",
+      "explanation": "Penetration testing is conducted with explicit authorization to proactively find and fix security weaknesses before malicious actors can exploit them.",
+      "topic": "Security operations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In incident response, the phase focused on removing the cause of a security incident from affected systems is called:",
+      "options": [
+        "Eradication",
+        "Identification",
+        "Preparation",
+        "Lessons learned"
+      ],
+      "correct_answer": "Eradication",
+      "explanation": "The eradication phase involves removing malware, closing vulnerabilities, and eliminating the root cause after containment, prior to recovery.",
+      "topic": "Security operations",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A honeypot in cybersecurity is used to:",
+      "options": [
+        "Act as a decoy system to attract and study attacker behavior",
+        "Permanently store encrypted backups",
+        "Serve as the primary production database",
+        "Replace the need for firewalls entirely"
+      ],
+      "correct_answer": "Act as a decoy system to attract and study attacker behavior",
+      "explanation": "Honeypots are intentionally vulnerable decoy systems used to lure attackers, allowing defenders to study attack techniques without risking real assets.",
+      "topic": "Security operations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Social engineering attacks primarily exploit:",
+      "options": [
+        "Human psychology and trust rather than technical vulnerabilities",
+        "Weaknesses in hardware chip design only",
+        "Flaws in cryptographic algorithms exclusively",
+        "Bugs in compiled machine code"
+      ],
+      "correct_answer": "Human psychology and trust rather than technical vulnerabilities",
+      "explanation": "Social engineering manipulates people into breaking normal security procedures, exploiting trust, urgency, or authority rather than technical flaws.",
+      "topic": "Social engineering",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Data at rest refers to:",
+      "options": [
+        "Data stored on a physical medium such as a hard drive or database, not actively moving through a network",
+        "Data actively being transmitted between two hosts",
+        "Data that has been permanently deleted",
+        "Data that exists only in RAM during processing"
+      ],
+      "correct_answer": "Data stored on a physical medium such as a hard drive or database, not actively moving through a network",
+      "explanation": "Data at rest is stored data, as opposed to data in transit (being transmitted) or data in use (being processed), each requiring different protection strategies.",
+      "topic": "Security fundamentals",
+      "difficulty": "easy"
+    }
+  ]
+}

@@ -1,0 +1,427 @@
+{
+  "course_code": "MCB401",
+  "title": "Advanced Microbial Genetics",
+  "level": "400",
+  "source_note": "Standard NUC-aligned Nigerian university 400L Advanced Microbial Genetics curriculum: gene regulation (operon models, attenuation), mutation and DNA repair mechanisms, horizontal gene transfer (transformation, conjugation, transduction), plasmids and transposons, bacteriophage genetics, and recombinant DNA/gene cloning technology -- building on introductory genetics with molecular mechanistic depth.",
+  "questions": [
+    {
+      "question": "In the lac operon model of gene regulation in E. coli, in the absence of lactose (and allolactose), the lac repressor protein:",
+      "options": [
+        "Is inactive and cannot bind DNA",
+        "Binds the operator sequence, physically blocking RNA polymerase from transcribing the structural genes (lacZ, lacY, lacA)",
+        "Binds directly to the promoter and enhances transcription",
+        "Degrades the lac mRNA after it is made"
+      ],
+      "correct_answer": "Binds the operator sequence, physically blocking RNA polymerase from transcribing the structural genes (lacZ, lacY, lacA)",
+      "explanation": "In the absence of an inducer, the active lac repressor binds tightly to the operator, sterically blocking RNA polymerase from proceeding into the structural genes, keeping the operon off (negative control).",
+      "topic": "Operon models",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Allolactose, the natural inducer of the lac operon, activates the operon by:",
+      "options": [
+        "Binding the lac repressor and causing a conformational change that reduces its affinity for the operator, releasing it from the DNA",
+        "Binding directly to RNA polymerase",
+        "Destroying the operator sequence permanently",
+        "Binding CAP (catabolite activator protein) to inactivate it"
+      ],
+      "correct_answer": "Binding the lac repressor and causing a conformational change that reduces its affinity for the operator, releasing it from the DNA",
+      "explanation": "Allolactose binds an allosteric site on the lac repressor, changing its shape so it can no longer bind the operator with high affinity; the repressor dissociates from the DNA, allowing transcription to proceed.",
+      "topic": "Operon models",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Catabolite repression of the lac operon (glucose effect) works through the cAMP-CAP (catabolite activator protein) system: when glucose is abundant, intracellular cAMP levels are:",
+      "options": [
+        "High, strongly activating CAP-dependent transcription",
+        "Low, so CAP cannot bind cAMP and activate transcription, keeping catabolic operons for alternative sugars like lactose only weakly transcribed even if the inducer is present",
+        "Unaffected by glucose availability",
+        "Irrelevant, since CAP does not require cAMP to function"
+      ],
+      "correct_answer": "Low, so CAP cannot bind cAMP and activate transcription, keeping catabolic operons for alternative sugars like lactose only weakly transcribed even if the inducer is present",
+      "explanation": "High glucose lowers cAMP levels; with little cAMP available, CAP cannot form the active cAMP-CAP complex needed to bind its DNA site and enhance RNA polymerase binding at the lac promoter, so lac operon expression stays low even when lactose/inducer is present, ensuring glucose is used preferentially.",
+      "topic": "Operon models",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The trp operon, which encodes enzymes for tryptophan biosynthesis, is primarily regulated by:",
+      "options": [
+        "Positive control only, with no repressor",
+        "A repressor that becomes active (able to bind the operator) only when bound to tryptophan itself (a corepressor), shutting off the operon when tryptophan is abundant",
+        "A repressor that is inactivated by tryptophan binding",
+        "Catabolite repression exclusively"
+      ],
+      "correct_answer": "A repressor that becomes active (able to bind the operator) only when bound to tryptophan itself (a corepressor), shutting off the operon when tryptophan is abundant",
+      "explanation": "The trp repressor is inactive alone; when tryptophan (the pathway's end product) is plentiful, it binds the repressor as a corepressor, activating it to bind the operator and repress further trp operon transcription -- classic end-product-mediated negative feedback control.",
+      "topic": "Operon models",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Attenuation, an additional fine-tuning mechanism controlling the trp operon beyond repression, works at the level of:",
+      "options": [
+        "DNA replication",
+        "Premature termination of transcription in the leader region, modulated by the ribosome's translation rate over a leader peptide sequence rich in tryptophan codons, coupling transcription to translation",
+        "Post-translational protein degradation",
+        "mRNA capping in the nucleus"
+      ],
+      "correct_answer": "Premature termination of transcription in the leader region, modulated by the ribosome's translation rate over a leader peptide sequence rich in tryptophan codons, coupling transcription to translation",
+      "explanation": "Attenuation exploits coupled transcription-translation in bacteria: when tryptophan (and charged tRNA-Trp) is abundant, the ribosome translates the leader peptide's Trp codons quickly, favouring formation of a terminator hairpin that halts transcription; when tryptophan is scarce, ribosome stalling favours an antiterminator structure, allowing transcription to continue.",
+      "topic": "Gene regulation",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A point mutation that changes a codon so that it now specifies a different amino acid is classified as a:",
+      "options": ["Silent mutation", "Missense mutation", "Nonsense mutation", "Frameshift mutation"],
+      "correct_answer": "Missense mutation",
+      "explanation": "A missense mutation is a base substitution that alters a codon such that a different amino acid is incorporated into the protein, potentially affecting protein structure/function, in contrast to a silent mutation (no amino acid change) or nonsense mutation (premature stop codon).",
+      "topic": "Mutation",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A nonsense mutation results in:",
+      "options": [
+        "No change in the encoded protein",
+        "A premature stop codon, causing truncation of the protein at that point",
+        "Insertion of an extra amino acid",
+        "A shift in the reading frame of the entire downstream sequence"
+      ],
+      "correct_answer": "A premature stop codon, causing truncation of the protein at that point",
+      "explanation": "Nonsense mutations convert a sense codon into one of the three stop codons (UAA, UAG, UGA), causing translation to terminate prematurely and producing a truncated, usually non-functional, protein.",
+      "topic": "Mutation",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Insertion or deletion of a number of nucleotides that is not a multiple of three within a coding sequence causes a:",
+      "options": [
+        "Silent mutation with no phenotypic effect",
+        "Frameshift mutation, altering the reading frame for all downstream codons and usually producing a severely altered, non-functional protein",
+        "Missense mutation affecting only a single codon",
+        "Reversion to wild type"
+      ],
+      "correct_answer": "Frameshift mutation, altering the reading frame for all downstream codons and usually producing a severely altered, non-functional protein",
+      "explanation": "Because codons are read as non-overlapping triplets, insertion or deletion of a number of bases not divisible by three shifts the reading frame from that point onward, typically scrambling the amino acid sequence and often introducing a premature stop codon.",
+      "topic": "Mutation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Ultraviolet (UV) light is mutagenic mainly because it induces formation of:",
+      "options": [
+        "Double-strand breaks exclusively",
+        "Pyrimidine (commonly thymine) dimers, covalent linkages between adjacent pyrimidine bases on the same DNA strand that distort the helix and block replication/transcription unless repaired",
+        "Alkylated purine bases",
+        "Deletion of entire genes"
+      ],
+      "correct_answer": "Pyrimidine (commonly thymine) dimers, covalent linkages between adjacent pyrimidine bases on the same DNA strand that distort the helix and block replication/transcription unless repaired",
+      "explanation": "UV radiation is absorbed by DNA and promotes covalent bonding between adjacent pyrimidine bases, forming dimers (most commonly thymine dimers) that distort the double helix and stall replication or transcription unless removed by repair mechanisms.",
+      "topic": "Mutation and DNA repair",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Nucleotide excision repair (NER) corrects bulky DNA lesions such as UV-induced pyrimidine dimers by:",
+      "options": [
+        "Directly reversing the dimer back to two separate bases using a single enzyme, without removing any DNA",
+        "Excising a short single-stranded segment of DNA containing the lesion and resynthesising it using the undamaged complementary strand as a template",
+        "Deleting the entire chromosome",
+        "Converting the damaged base into a different, harmless base chemically"
+      ],
+      "correct_answer": "Excising a short single-stranded segment of DNA containing the lesion and resynthesising it using the undamaged complementary strand as a template",
+      "explanation": "NER uses a multi-enzyme complex to recognise a helix-distorting lesion, cut the damaged strand on both sides of it, remove the segment, and use DNA polymerase and ligase to fill and seal the gap using the intact complementary strand as template.",
+      "topic": "Mutation and DNA repair",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Photoreactivation (light repair) of UV-induced pyrimidine dimers is carried out by the enzyme:",
+      "options": [
+        "DNA polymerase I only",
+        "Photolyase, which uses energy absorbed from visible light to directly reverse (split) the dimer back into two normal, separate bases",
+        "Ligase, independent of any light",
+        "Reverse transcriptase"
+      ],
+      "correct_answer": "Photolyase, which uses energy absorbed from visible light to directly reverse (split) the dimer back into two normal, separate bases",
+      "explanation": "Photolyase binds a pyrimidine dimer and, using energy captured from visible/blue light, directly breaks the covalent bonds joining the two pyrimidines, restoring the original bases without excising any DNA -- a light-dependent repair mechanism distinct from excision repair.",
+      "topic": "Mutation and DNA repair",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The SOS response in bacteria, triggered by extensive DNA damage, involves:",
+      "options": [
+        "Permanent shutdown of all DNA repair genes",
+        "Induction of a coordinated set of DNA repair and damage-tolerance genes, controlled by cleavage of the LexA repressor mediated by activated RecA, sometimes including error-prone translesion synthesis",
+        "Immediate cell death with no attempt at repair",
+        "Complete replication arrest with no gene expression changes"
+      ],
+      "correct_answer": "Induction of a coordinated set of DNA repair and damage-tolerance genes, controlled by cleavage of the LexA repressor mediated by activated RecA, sometimes including error-prone translesion synthesis",
+      "explanation": "Extensive DNA damage activates RecA, which promotes autocleavage of the LexA repressor; this derepresses a regulon of SOS genes including additional repair enzymes and, in extreme cases, error-prone DNA polymerases that allow replication past unrepaired lesions at the cost of increased mutation rate.",
+      "topic": "Mutation and DNA repair",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Bacterial transformation refers to the process by which a bacterium:",
+      "options": [
+        "Acquires new genetic material by direct cell-to-cell contact through a pilus",
+        "Takes up free (naked) DNA from its surrounding environment and incorporates it into its genome or maintains it as a plasmid",
+        "Receives DNA injected by a bacteriophage",
+        "Randomly mutates its own DNA without any external source"
+      ],
+      "correct_answer": "Takes up free (naked) DNA from its surrounding environment and incorporates it into its genome or maintains it as a plasmid",
+      "explanation": "Transformation is the uptake of extracellular, cell-free DNA (released, for example, from lysed cells) by a competent recipient bacterium, which may then recombine the DNA into its chromosome or maintain it episomally.",
+      "topic": "Horizontal gene transfer",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Natural genetic competence, the physiological state allowing a bacterium to take up extracellular DNA, is a well-studied trait of organisms such as:",
+      "options": ["Streptococcus pneumoniae and Bacillus subtilis", "Saccharomyces cerevisiae", "Human erythrocytes", "Bacteriophage lambda"],
+      "correct_answer": "Streptococcus pneumoniae and Bacillus subtilis",
+      "explanation": "Streptococcus pneumoniae (the organism in which transformation was first discovered by Griffith and later molecularly explained by Avery, MacLeod, and McCarty) and Bacillus subtilis are classic model organisms exhibiting natural genetic competence.",
+      "topic": "Horizontal gene transfer",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Bacterial conjugation, the transfer of DNA from a donor to a recipient cell via direct cell-to-cell contact, requires the donor to possess:",
+      "options": [
+        "A bacteriophage genome integrated into its chromosome",
+        "A conjugative (fertility) plasmid, such as the F plasmid, that encodes the machinery (including the sex pilus) needed to form a mating bridge with the recipient",
+        "No special genetic elements at all",
+        "A capsule"
+      ],
+      "correct_answer": "A conjugative (fertility) plasmid, such as the F plasmid, that encodes the machinery (including the sex pilus) needed to form a mating bridge with the recipient",
+      "explanation": "Conjugation requires the donor cell to carry a conjugative plasmid (the classic example being the F plasmid), whose tra genes encode the sex pilus and transfer apparatus that establish contact with, and transfer DNA into, the recipient cell.",
+      "topic": "Horizontal gene transfer",
+      "difficulty": "medium"
+    },
+    {
+      "question": "An Hfr (high-frequency recombination) strain of E. coli arises when:",
+      "options": [
+        "The F plasmid is lost entirely from the cell",
+        "The F plasmid integrates into the bacterial chromosome, so that conjugation can transfer chromosomal genes at high frequency starting from the integration site",
+        "A bacteriophage infects the cell and lysogenises it",
+        "The cell undergoes binary fission twice in succession"
+      ],
+      "correct_answer": "The F plasmid integrates into the bacterial chromosome, so that conjugation can transfer chromosomal genes at high frequency starting from the integration site",
+      "explanation": "When the F plasmid recombines into the host chromosome (via homologous IS sequences), the resulting Hfr strain, during conjugation, transfers chromosomal DNA (rather than just plasmid DNA) into the recipient starting from the integration point, enabling chromosomal gene mapping by timed mating experiments.",
+      "topic": "Horizontal gene transfer",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Generalized transduction is a mechanism of horizontal gene transfer in which:",
+      "options": [
+        "A bacteriophage mistakenly packages a random fragment of host bacterial DNA instead of (or along with) its own genome during the lytic cycle, and transfers this to a new host upon infection",
+        "DNA passes directly between two bacteria through a conjugation pilus",
+        "Free DNA is taken up from the environment",
+        "Only phage genes, never host genes, are transferred"
+      ],
+      "correct_answer": "A bacteriophage mistakenly packages a random fragment of host bacterial DNA instead of (or along with) its own genome during the lytic cycle, and transfers this to a new host upon infection",
+      "explanation": "During generalized transduction, errors in the phage packaging machinery cause random host chromosomal DNA fragments to be encapsulated into phage particles instead of phage DNA; when such a particle infects a new host, it can inject the donor's bacterial DNA, allowing recombination into the recipient's genome.",
+      "topic": "Horizontal gene transfer",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Specialized transduction, in contrast to generalized transduction, transfers only specific host genes because it occurs when:",
+      "options": [
+        "A lysogenic (temperate) phage's prophage excises imprecisely from a specific chromosomal location, carrying adjacent host genes along with phage DNA into new virions",
+        "Any random phage infects a cell lytically",
+        "Conjugation occurs between an Hfr donor and F- recipient",
+        "A plasmid is lost during cell division"
+      ],
+      "correct_answer": "A lysogenic (temperate) phage's prophage excises imprecisely from a specific chromosomal location, carrying adjacent host genes along with phage DNA into new virions",
+      "explanation": "Specialized transduction depends on a temperate phage's prophage, integrated at a fixed chromosomal site; occasional imprecise excision picks up host genes flanking that specific integration site, so only those particular genes (not random ones) are transferred, unlike generalized transduction.",
+      "topic": "Horizontal gene transfer",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Plasmids are defined as:",
+      "options": [
+        "Essential chromosomal genes required for basic cell survival",
+        "Extrachromosomal, typically circular, double-stranded DNA molecules capable of autonomous (independent) replication, often carrying non-essential but potentially advantageous genes such as antibiotic resistance",
+        "Fragments of RNA found only in viruses",
+        "Structural proteins of the bacterial cell wall"
+      ],
+      "correct_answer": "Extrachromosomal, typically circular, double-stranded DNA molecules capable of autonomous (independent) replication, often carrying non-essential but potentially advantageous genes such as antibiotic resistance",
+      "explanation": "Plasmids are self-replicating extrachromosomal DNA elements, usually circular, that are not essential for basic cell viability but often confer selective advantages, such as antibiotic resistance (R plasmids) or virulence factors.",
+      "topic": "Plasmids and transposons",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Transposons ('jumping genes') differ from plasmids in that transposons:",
+      "options": [
+        "Are always circular and replicate independently of the chromosome",
+        "Are DNA segments that can move from one location to another within or between DNA molecules (chromosome/plasmid) via a cut-and-paste or copy-and-paste mechanism, without independent replication of their own",
+        "Cannot carry any genes",
+        "Only exist in eukaryotic cells"
+      ],
+      "correct_answer": "Are DNA segments that can move from one location to another within or between DNA molecules (chromosome/plasmid) via a cut-and-paste or copy-and-paste mechanism, without independent replication of their own",
+      "explanation": "Transposons are mobile genetic elements that relocate within a genome (or between chromosome and plasmid) using transposase-mediated mechanisms, but unlike plasmids they do not replicate autonomously as independent replicons; they are replicated as part of whatever DNA molecule currently carries them.",
+      "topic": "Plasmids and transposons",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Insertion sequences (IS elements), the simplest type of bacterial transposable element, typically contain:",
+      "options": [
+        "Only genes for antibiotic resistance",
+        "A gene encoding transposase flanked by inverted repeat sequences, with no additional accessory genes",
+        "A complete bacteriophage genome",
+        "An entire set of ribosomal RNA genes"
+      ],
+      "correct_answer": "A gene encoding transposase flanked by inverted repeat sequences, with no additional accessory genes",
+      "explanation": "IS elements are the simplest transposons, consisting essentially of a transposase gene flanked by short inverted repeats that are recognised by the transposase; unlike composite transposons, they do not carry additional accessory genes such as antibiotic resistance markers.",
+      "topic": "Plasmids and transposons",
+      "difficulty": "medium"
+    },
+    {
+      "question": "R plasmids (resistance plasmids), of major clinical and public health concern, typically carry genes that:",
+      "options": [
+        "Confer resistance to one or more antibiotics and can be transferred between bacteria, including different species, via conjugation",
+        "Are essential for basic bacterial metabolism and cannot be lost",
+        "Encode only bacteriophage receptor proteins",
+        "Cannot be transferred between cells under any circumstances"
+      ],
+      "correct_answer": "Confer resistance to one or more antibiotics and can be transferred between bacteria, including different species, via conjugation",
+      "explanation": "R plasmids carry one or more antibiotic resistance genes and, if conjugative, can spread these resistance traits horizontally between bacterial cells and even across species boundaries, a major driver of the spread of antimicrobial resistance.",
+      "topic": "Plasmids and transposons",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A lytic bacteriophage, upon infecting a susceptible bacterial host, characteristically:",
+      "options": [
+        "Integrates its genome into the host chromosome and remains dormant indefinitely",
+        "Replicates immediately, directs the host machinery to produce new phage particles, and then lyses the host cell to release progeny virions",
+        "Never produces new phage particles",
+        "Converts the host into a plant cell"
+      ],
+      "correct_answer": "Replicates immediately, directs the host machinery to produce new phage particles, and then lyses the host cell to release progeny virions",
+      "explanation": "In the lytic cycle, the phage hijacks host replication and translation machinery to produce many copies of itself, then triggers cell lysis (often via phage-encoded lysozyme-like enzymes) to release the new virions to infect further host cells.",
+      "topic": "Bacteriophage genetics",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A temperate bacteriophage such as lambda phage differs from a strictly lytic phage in that it can also:",
+      "options": [
+        "Only infect eukaryotic cells",
+        "Establish lysogeny, integrating its genome into the host chromosome as a prophage that is replicated passively along with the host DNA, until induced to enter the lytic cycle",
+        "Never replicate its DNA at all",
+        "Only exist as free RNA in the cytoplasm"
+      ],
+      "correct_answer": "Establish lysogeny, integrating its genome into the host chromosome as a prophage that is replicated passively along with the host DNA, until induced to enter the lytic cycle",
+      "explanation": "Temperate phages can choose between the lytic cycle and lysogeny; in lysogeny, the phage genome integrates as a prophage and is stably replicated with the host chromosome across generations, until an inducing signal (e.g. DNA damage/SOS response) triggers excision and entry into the lytic cycle.",
+      "topic": "Bacteriophage genetics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Lysogenic conversion refers to the phenomenon in which:",
+      "options": [
+        "A prophage confers a new phenotype on its lysogenic host, such as toxin production, by genes it carries (e.g. diphtheria toxin encoded by a prophage in Corynebacterium diphtheriae)",
+        "A phage loses its ability to lyse host cells permanently",
+        "Bacteria become resistant to all phages after lysogeny",
+        "A plasmid is converted into a phage"
+      ],
+      "correct_answer": "A prophage confers a new phenotype on its lysogenic host, such as toxin production, by genes it carries (e.g. diphtheria toxin encoded by a prophage in Corynebacterium diphtheriae)",
+      "explanation": "Lysogenic conversion occurs when a prophage carries and expresses genes that change the host's phenotype; a classic example is the tox gene carried by a lysogenic corynebacteriophage, which enables Corynebacterium diphtheriae to produce diphtheria toxin.",
+      "topic": "Bacteriophage genetics",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Restriction endonucleases, essential tools in recombinant DNA technology, function by:",
+      "options": [
+        "Joining DNA fragments together permanently",
+        "Recognising specific short DNA sequences and cleaving the DNA at or near that sequence, often generating fragments with complementary 'sticky ends'",
+        "Synthesising new DNA strands from a template",
+        "Amplifying DNA exponentially using thermal cycling"
+      ],
+      "correct_answer": "Recognising specific short DNA sequences and cleaving the DNA at or near that sequence, often generating fragments with complementary 'sticky ends'",
+      "explanation": "Restriction endonucleases recognise specific palindromic DNA sequences and cut the DNA backbone at defined positions; many produce staggered cuts leaving short single-stranded 'sticky ends' that can base-pair with complementary ends generated by the same enzyme, facilitating recombinant DNA construction.",
+      "topic": "Recombinant DNA technology",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In molecular cloning, DNA ligase is used to:",
+      "options": [
+        "Cut DNA at specific recognition sites",
+        "Covalently join (seal) the phosphodiester backbone between a DNA insert and a vector, forming a stable recombinant DNA molecule",
+        "Amplify DNA fragments exponentially",
+        "Separate DNA fragments by size on a gel"
+      ],
+      "correct_answer": "Covalently join (seal) the phosphodiester backbone between a DNA insert and a vector, forming a stable recombinant DNA molecule",
+      "explanation": "DNA ligase catalyses formation of phosphodiester bonds between adjacent nucleotides, sealing nicks where a DNA insert (e.g. a gene of interest) has been annealed to a cut vector, producing an intact, covalently closed recombinant DNA molecule.",
+      "topic": "Recombinant DNA technology",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A plasmid cloning vector used in recombinant DNA work should ideally possess:",
+      "options": [
+        "No selectable marker genes at all",
+        "An origin of replication, one or more selectable marker genes (e.g. antibiotic resistance), and unique restriction sites (often within a multiple cloning site) for inserting foreign DNA",
+        "The ability to integrate randomly into any host chromosome, destroying host genes",
+        "A requirement for host cell death to replicate"
+      ],
+      "correct_answer": "An origin of replication, one or more selectable marker genes (e.g. antibiotic resistance), and unique restriction sites (often within a multiple cloning site) for inserting foreign DNA",
+      "explanation": "A good plasmid cloning vector needs an origin of replication for autonomous propagation in the host, a selectable marker to identify cells that have taken up the plasmid, and convenient unique restriction sites to allow insertion of foreign DNA fragments.",
+      "topic": "Recombinant DNA technology",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The polymerase chain reaction (PCR) exponentially amplifies a specific DNA sequence in vitro using repeated cycles of:",
+      "options": [
+        "Restriction digestion, ligation, and transformation",
+        "Denaturation (heating to separate DNA strands), primer annealing (cooling to allow specific primers to bind), and extension (heat-stable DNA polymerase synthesising new complementary strands)",
+        "Gel electrophoresis followed by Southern blotting",
+        "Conjugation between bacterial donor and recipient cells"
+      ],
+      "correct_answer": "Denaturation (heating to separate DNA strands), primer annealing (cooling to allow specific primers to bind), and extension (heat-stable DNA polymerase synthesising new complementary strands)",
+      "explanation": "PCR uses repeated thermal cycles of denaturation, primer annealing, and extension by a thermostable DNA polymerase (commonly Taq polymerase), doubling the target DNA sequence with each cycle to achieve exponential amplification of a specific region.",
+      "topic": "Recombinant DNA technology",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Taq DNA polymerase, widely used in PCR, is prized for its:",
+      "options": [
+        "Inability to withstand heat, requiring fresh enzyme every cycle",
+        "Thermostability, allowing it to survive repeated cycles of high-temperature DNA denaturation (around 94-98°C) without being destroyed",
+        "Ability to repair mutations perfectly with zero error rate",
+        "Requirement for a eukaryotic host cell to function"
+      ],
+      "correct_answer": "Thermostability, allowing it to survive repeated cycles of high-temperature DNA denaturation (around 94-98°C) without being destroyed",
+      "explanation": "Taq polymerase, originally isolated from the thermophilic bacterium Thermus aquaticus, remains active despite the repeated high-temperature denaturation steps of PCR, eliminating the need to add fresh enzyme after each cycle, unlike heat-labile polymerases.",
+      "topic": "Recombinant DNA technology",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The CRISPR-Cas9 system, originally a bacterial/archaeal adaptive immune mechanism against bacteriophages, has been adapted as a genome-editing tool because Cas9:",
+      "options": [
+        "Is a restriction enzyme that only cuts plasmid DNA",
+        "Can be guided by a programmable RNA sequence (guide RNA) to introduce a precise double-strand break at a specific, complementary DNA target sequence",
+        "Only functions to ligate DNA fragments together",
+        "Cannot be reprogrammed to target new sequences"
+      ],
+      "correct_answer": "Can be guided by a programmable RNA sequence (guide RNA) to introduce a precise double-strand break at a specific, complementary DNA target sequence",
+      "explanation": "Cas9 is an RNA-guided endonuclease: a synthetic guide RNA directs it to bind a complementary DNA sequence (adjacent to a PAM site) and introduce a targeted double-strand break, which can then be exploited for gene disruption or precise editing via cellular repair pathways.",
+      "topic": "Recombinant DNA technology",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In bacteria, CRISPR loci naturally function as an adaptive immune system by:",
+      "options": [
+        "Permanently silencing all foreign DNA regardless of sequence",
+        "Storing short sequences ('spacers') derived from previously encountered phage or plasmid DNA, which are later transcribed and used by Cas proteins to recognise and cleave matching invading DNA upon reinfection",
+        "Producing antibodies against phage proteins",
+        "Preventing conjugation entirely"
+      ],
+      "correct_answer": "Storing short sequences ('spacers') derived from previously encountered phage or plasmid DNA, which are later transcribed and used by Cas proteins to recognise and cleave matching invading DNA upon reinfection",
+      "explanation": "CRISPR arrays incorporate short spacer sequences captured from past invading genetic elements; these are transcribed into guide RNAs that direct Cas nucleases to recognise and destroy matching sequences in subsequently invading phage or plasmid DNA, providing sequence-specific, heritable immunity.",
+      "topic": "Recombinant DNA technology",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Riboswitches, found in the untranslated regions of some bacterial mRNAs, regulate gene expression by:",
+      "options": [
+        "Requiring a separate regulatory protein to bind DNA",
+        "Directly binding a small metabolite ligand, causing a conformational change in the mRNA that affects transcription termination or translation initiation without any protein intermediate",
+        "Encoding a transposase enzyme",
+        "Functioning only in eukaryotic cells"
+      ],
+      "correct_answer": "Directly binding a small metabolite ligand, causing a conformational change in the mRNA that affects transcription termination or translation initiation without any protein intermediate",
+      "explanation": "Riboswitches are RNA elements that directly sense small metabolites (e.g. amino acids, vitamins, nucleotides); ligand binding changes the mRNA's secondary structure, altering whether transcription is terminated prematurely or the ribosome-binding site is accessible, regulating gene expression without needing a protein sensor.",
+      "topic": "Gene regulation",
+      "difficulty": "hard"
+    }
+  ]
+}

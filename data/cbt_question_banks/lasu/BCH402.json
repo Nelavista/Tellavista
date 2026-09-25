@@ -1,0 +1,516 @@
+{
+  "course_code": "BCH402",
+  "title": "Biosynthesis of Macromolecules",
+  "level": "400",
+  "source_note": "Questions are grounded in standard NUC-aligned 400-level biochemistry curriculum content on nucleic acid, protein, nucleotide, polysaccharide and lipid biosynthesis, drawing on established facts consistent with major biochemistry texts (e.g., Lehninger, Voet & Voet). No LASU-specific institutional facts are used.",
+  "questions": [
+    {
+      "question": "In E. coli, which enzyme is primarily responsible for the processive, high-fidelity synthesis of new DNA strands at the replication fork?",
+      "options": ["DNA polymerase I", "DNA polymerase III", "DNA primase", "DNA ligase"],
+      "correct_answer": "DNA polymerase III",
+      "explanation": "DNA polymerase III holoenzyme is the main replicative polymerase in bacteria, extending both leading and lagging strands with high processivity and 3'->5' proofreading activity.",
+      "topic": "DNA replication",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which enzyme removes RNA primers from Okazaki fragments and fills the resulting gaps with DNA in bacterial replication?",
+      "options": ["DNA polymerase III", "DNA polymerase I", "Primase", "Topoisomerase II"],
+      "correct_answer": "DNA polymerase I",
+      "explanation": "DNA polymerase I has 5'->3' exonuclease activity that excises RNA primers and simultaneously fills the gap with DNA before ligase seals the remaining nick.",
+      "topic": "DNA replication",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Why is the lagging strand synthesized discontinuously as Okazaki fragments?",
+      "options": [
+        "Because DNA polymerases can only synthesize DNA in the 5'->3' direction while the fork opens in one continuous direction",
+        "Because the lagging strand template lacks a promoter for primase binding",
+        "Because DNA ligase cannot join long continuous stretches of DNA",
+        "Because topoisomerase blocks continuous synthesis on one strand only"
+      ],
+      "correct_answer": "Because DNA polymerases can only synthesize DNA in the 5'->3' direction while the fork opens in one continuous direction",
+      "explanation": "Since replication forks move in one direction but polymerases add nucleotides only 5' to 3', the strand running 3'->5' relative to fork movement must be made in short, primed fragments.",
+      "topic": "DNA replication",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What type of bond does DNA ligase form to seal a nick between adjacent DNA fragments?",
+      "options": [
+        "A phosphodiester bond between a 3'-OH and a 5'-phosphate",
+        "A hydrogen bond between complementary bases",
+        "A glycosidic bond between sugar and base",
+        "An ester bond between two ribose sugars"
+      ],
+      "correct_answer": "A phosphodiester bond between a 3'-OH and a 5'-phosphate",
+      "explanation": "DNA ligase catalyzes formation of a new phosphodiester bond linking the 3'-hydroxyl of one fragment to the 5'-phosphate of the adjacent fragment, sealing the nick.",
+      "topic": "DNA replication",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Bacterial DNA ligase typically uses which cofactor as its energy source, in contrast to eukaryotic DNA ligase which uses ATP?",
+      "options": ["NAD+", "FAD", "Coenzyme A", "Biotin"],
+      "correct_answer": "NAD+",
+      "explanation": "Most bacterial DNA ligases derive the energy for phosphodiester bond formation from NAD+, cleaving it to nicotinamide mononucleotide and AMP, whereas eukaryotic ligases use ATP.",
+      "topic": "DNA replication",
+      "difficulty": "hard"
+    },
+    {
+      "question": "What is the main function of DNA gyrase (a type II topoisomerase) during replication?",
+      "options": [
+        "It unwinds the double helix at the replication fork",
+        "It introduces negative supercoils ahead of the fork to relieve torsional strain",
+        "It synthesizes RNA primers",
+        "It proofreads newly synthesized DNA"
+      ],
+      "correct_answer": "It introduces negative supercoils ahead of the fork to relieve torsional strain",
+      "explanation": "As helicase unwinds DNA, positive supercoils accumulate ahead of the fork; DNA gyrase uses ATP to introduce compensatory negative supercoils and prevent replication from stalling.",
+      "topic": "DNA replication",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Single-strand binding (SSB) proteins contribute to DNA replication by:",
+      "options": [
+        "Synthesizing the RNA primer for each Okazaki fragment",
+        "Coating single-stranded DNA to prevent reannealing and protect it from nucleases",
+        "Catalyzing the formation of phosphodiester bonds between Okazaki fragments",
+        "Relieving supercoiling ahead of the replication fork"
+      ],
+      "correct_answer": "Coating single-stranded DNA to prevent reannealing and protect it from nucleases",
+      "explanation": "SSB proteins bind and stabilize single-stranded template DNA exposed by helicase, keeping it accessible to polymerase and preventing it from re-forming a duplex or being degraded.",
+      "topic": "DNA replication",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The Meselson-Stahl experiment, using 15N/14N density-gradient centrifugation, provided direct evidence that DNA replication is:",
+      "options": ["Conservative", "Semiconservative", "Dispersive", "Semi-discontinuous"],
+      "correct_answer": "Semiconservative",
+      "explanation": "After one round of replication in 14N medium, hybrid-density DNA was observed, showing each daughter duplex retains one parental strand and gains one newly synthesized strand.",
+      "topic": "DNA replication",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In eukaryotic pre-replication complex assembly, which protein complex first recognizes and binds replication origins before helicase loading?",
+      "options": ["Origin recognition complex (ORC)", "RNA polymerase II", "Spliceosome", "Ribonucleotide reductase"],
+      "correct_answer": "Origin recognition complex (ORC)",
+      "explanation": "ORC binds replication origins throughout the cell cycle and, together with Cdc6 and Cdt1, recruits the MCM helicase to license the origin for a single round of replication.",
+      "topic": "DNA replication",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Telomerase solves the end-replication problem primarily by:",
+      "options": [
+        "Using its own RNA template as a reverse transcriptase to extend the 3' overhang of chromosome ends",
+        "Recruiting DNA polymerase III to synthesize the lagging strand at chromosome ends",
+        "Circularizing linear chromosomes",
+        "Degrading excess single-stranded DNA at telomeres"
+      ],
+      "correct_answer": "Using its own RNA template as a reverse transcriptase to extend the 3' overhang of chromosome ends",
+      "explanation": "Telomerase is a ribonucleoprotein reverse transcriptase that carries an internal RNA template, allowing it to add telomeric repeats to the 3' end without needing a DNA template, compensating for the inability to fully replicate chromosome ends.",
+      "topic": "DNA replication",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In bacterial transcription, which subunit of RNA polymerase holoenzyme is responsible for promoter recognition (e.g., the -10 and -35 sequences)?",
+      "options": ["Beta subunit", "Alpha subunit", "Sigma factor", "Rho factor"],
+      "correct_answer": "Sigma factor",
+      "explanation": "Sigma (σ) factor associates with the core RNA polymerase to form the holoenzyme and directs it to specific promoter sequences, after which it typically dissociates once elongation begins.",
+      "topic": "Transcription",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which structure is added to the 5' end of a eukaryotic pre-mRNA co-transcriptionally, and what is its main function?",
+      "options": [
+        "A 7-methylguanosine cap linked via a 5'-5' triphosphate bridge, which protects mRNA and aids ribosome recognition",
+        "A poly-A tail, which signals the end of transcription",
+        "A lariat structure, which marks intron boundaries",
+        "A Shine-Dalgarno sequence, which recruits the small ribosomal subunit"
+      ],
+      "correct_answer": "A 7-methylguanosine cap linked via a 5'-5' triphosphate bridge, which protects mRNA and aids ribosome recognition",
+      "explanation": "The 5' cap is added shortly after transcription initiation, protects the transcript from exonucleases, and is recognized by eIF4E during translation initiation.",
+      "topic": "Transcription and RNA processing",
+      "difficulty": "medium"
+    },
+    {
+      "question": "During pre-mRNA splicing, the spliceosome removes introns via a two-step transesterification reaction that generates a characteristic intermediate structure known as a:",
+      "options": ["Hairpin loop", "Lariat", "Okazaki fragment", "Replication bubble"],
+      "correct_answer": "Lariat",
+      "explanation": "The intron is looped out and its 5' splice site is joined to a branch-point adenosine within the intron, forming a lariat-shaped intermediate that is later excised as splicing completes.",
+      "topic": "Transcription and RNA processing",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In rho-independent (intrinsic) termination of bacterial transcription, RNA polymerase dissociates from the template mainly because of:",
+      "options": [
+        "A GC-rich hairpin followed by a run of U residues that destabilizes the RNA-DNA hybrid",
+        "The action of the Rho protein binding upstream of the terminator",
+        "Cleavage by RNase H at the promoter",
+        "Binding of poly-A polymerase to the 3' end"
+      ],
+      "correct_answer": "A GC-rich hairpin followed by a run of U residues that destabilizes the RNA-DNA hybrid",
+      "explanation": "The stable hairpin causes RNA polymerase to pause, and the weak A-U base pairing in the following U-rich stretch allows the transcript to dissociate without requiring an accessory protein.",
+      "topic": "Transcription",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Bacterial ribosomes (70S) are composed of which two subunits?",
+      "options": ["40S and 60S", "30S and 50S", "40S and 50S", "30S and 60S"],
+      "correct_answer": "30S and 50S",
+      "explanation": "The bacterial 70S ribosome assembles from a small 30S subunit (16S rRNA plus proteins) and a large 50S subunit (23S and 5S rRNA plus proteins).",
+      "topic": "Protein biosynthesis",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Aminoacyl-tRNA synthetases catalyze which key reaction in protein synthesis?",
+      "options": [
+        "Attachment of the correct amino acid to its cognate tRNA, using ATP",
+        "Formation of peptide bonds between adjacent amino acids on the ribosome",
+        "Removal of the initiator methionine from nascent polypeptides",
+        "Recognition of the stop codon during termination"
+      ],
+      "correct_answer": "Attachment of the correct amino acid to its cognate tRNA, using ATP",
+      "explanation": "Each aminoacyl-tRNA synthetase activates its specific amino acid using ATP to form an aminoacyl-AMP intermediate, then transfers the amino acid to the 3' end of the matching tRNA; many also proofread to ensure fidelity.",
+      "topic": "Protein biosynthesis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Shine-Dalgarno sequence functions in bacterial translation initiation by:",
+      "options": [
+        "Base-pairing with the 3' end of 16S rRNA to correctly position the 30S subunit at the start codon",
+        "Recruiting eIF4E to the 5' cap of mRNA",
+        "Serving as the site of poly-A tail addition",
+        "Acting as a splice acceptor site"
+      ],
+      "correct_answer": "Base-pairing with the 3' end of 16S rRNA to correctly position the 30S subunit at the start codon",
+      "explanation": "The Shine-Dalgarno sequence, located upstream of the start codon in bacterial mRNA, is complementary to a sequence near the 3' end of 16S rRNA, helping align the ribosome for accurate initiation.",
+      "topic": "Protein biosynthesis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What distinguishes the initiator tRNA in bacteria from that in eukaryotic cytosolic translation?",
+      "options": [
+        "Bacteria carry N-formylmethionine on the initiator tRNA, while eukaryotes carry unformylated methionine",
+        "Bacteria use tryptophan as the initiating amino acid, while eukaryotes use methionine",
+        "Eukaryotic initiator tRNA lacks an anticodon",
+        "Bacteria initiate translation without any initiator tRNA"
+      ],
+      "correct_answer": "Bacteria carry N-formylmethionine on the initiator tRNA, while eukaryotes carry unformylated methionine",
+      "explanation": "In bacteria (and mitochondria/chloroplasts), the initiator methionine is formylated to fMet-tRNAi, whereas cytosolic eukaryotic translation initiates with unmodified Met-tRNAi.",
+      "topic": "Protein biosynthesis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "During translation elongation, which factor delivers aminoacyl-tRNA to the ribosomal A site in a GTP-dependent manner?",
+      "options": ["EF-Tu (or eEF1A in eukaryotes)", "EF-G (or eEF2 in eukaryotes)", "Release factor 1", "Sigma factor"],
+      "correct_answer": "EF-Tu (or eEF1A in eukaryotes)",
+      "explanation": "EF-Tu (bacteria) or eEF1A (eukaryotes) forms a ternary complex with GTP and aminoacyl-tRNA and delivers it to the A site, hydrolyzing GTP upon correct codon-anticodon pairing.",
+      "topic": "Protein biosynthesis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Translocation of the ribosome along mRNA after peptide bond formation is catalyzed by:",
+      "options": ["EF-G (or eEF2)", "EF-Tu (or eEF1A)", "A release factor", "An aminoacyl-tRNA synthetase"],
+      "correct_answer": "EF-G (or eEF2)",
+      "explanation": "EF-G (bacteria) or eEF2 (eukaryotes) uses GTP hydrolysis to drive movement of the ribosome by one codon, shifting the tRNAs from the A and P sites to the P and E sites.",
+      "topic": "Protein biosynthesis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Translation termination occurs when a stop codon (UAA, UAG, or UGA) enters the A site because:",
+      "options": [
+        "No tRNA has an anticodon complementary to stop codons, so release factors bind instead and trigger polypeptide release",
+        "The ribosome runs out of GTP at that point",
+        "DNA polymerase signals the ribosome to stop",
+        "The poly-A tail physically blocks further translation"
+      ],
+      "correct_answer": "No tRNA has an anticodon complementary to stop codons, so release factors bind instead and trigger polypeptide release",
+      "explanation": "Stop codons are not recognized by any aminoacyl-tRNA; instead, release factors (RF1/RF2 in bacteria, eRF1 in eukaryotes) recognize them and promote hydrolysis of the peptidyl-tRNA bond.",
+      "topic": "Protein biosynthesis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The wobble hypothesis explains how:",
+      "options": [
+        "A single tRNA anticodon can pair with more than one codon differing only at the third position",
+        "Ribosomes shift reading frames during elongation",
+        "Introns are removed from pre-mRNA",
+        "Amino acids are attached to the wrong tRNA during proofreading"
+      ],
+      "correct_answer": "A single tRNA anticodon can pair with more than one codon differing only at the third position",
+      "explanation": "Non-standard base pairing at the third (wobble) position of the codon allows fewer tRNA species than the 61 sense codons to still accurately decode the genetic code.",
+      "topic": "Protein biosynthesis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A newly synthesized secretory protein has an N-terminal hydrophobic signal sequence. Which cellular component recognizes this sequence to direct co-translational translocation into the endoplasmic reticulum?",
+      "options": ["Signal recognition particle (SRP)", "Spliceosome", "Glycogenin", "Ribonucleotide reductase"],
+      "correct_answer": "Signal recognition particle (SRP)",
+      "explanation": "SRP binds the emerging signal sequence, pauses translation, and escorts the ribosome-nascent chain complex to the SRP receptor on the ER membrane, where translation resumes and the protein is translocated.",
+      "topic": "Protein biosynthesis and targeting",
+      "difficulty": "medium"
+    },
+    {
+      "question": "N-linked glycosylation of proteins destined for secretion typically occurs on which residue and in which compartment?",
+      "options": [
+        "Asparagine residues within an Asn-X-Ser/Thr motif, beginning in the endoplasmic reticulum",
+        "Serine or threonine residues, exclusively in the cytosol",
+        "Lysine residues, in the mitochondrial matrix",
+        "Cysteine residues, in the nucleus"
+      ],
+      "correct_answer": "Asparagine residues within an Asn-X-Ser/Thr motif, beginning in the endoplasmic reticulum",
+      "explanation": "N-linked glycosylation attaches a pre-assembled oligosaccharide to the amide nitrogen of asparagine within the consensus sequon, initiated co-translationally in the ER lumen and further modified in the Golgi.",
+      "topic": "Post-translational modification",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Molecular chaperones such as the GroEL/GroES (Hsp60/Hsp10) complex assist protein biosynthesis by:",
+      "options": [
+        "Providing an enclosed chamber that promotes correct folding of nascent or denatured polypeptides",
+        "Catalyzing peptide bond formation on the ribosome",
+        "Removing introns from the polypeptide",
+        "Charging tRNAs with amino acids"
+      ],
+      "correct_answer": "Providing an enclosed chamber that promotes correct folding of nascent or denatured polypeptides",
+      "explanation": "GroEL forms a barrel-shaped cavity, capped by GroES, in which an unfolded or misfolded protein can fold correctly in an ATP-dependent cycle, shielded from aggregation.",
+      "topic": "Post-translational modification",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A 300-amino-acid protein is translated from its mRNA. Approximately how many nucleotides make up the coding sequence, including the stop codon?",
+      "options": ["300", "600", "903", "1200"],
+      "correct_answer": "903",
+      "explanation": "Each amino acid is specified by a triplet codon, so 300 amino acids require 900 nucleotides, plus 3 more for the stop codon, giving 903 nucleotides.",
+      "topic": "Protein biosynthesis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which activated intermediate serves as the common ribose-phosphate donor for both de novo purine and pyrimidine nucleotide biosynthesis?",
+      "options": ["PRPP (5-phosphoribosyl-1-pyrophosphate)", "UDP-glucose", "Acetyl-CoA", "S-adenosylmethionine"],
+      "correct_answer": "PRPP (5-phosphoribosyl-1-pyrophosphate)",
+      "explanation": "PRPP, formed from ribose-5-phosphate and ATP by PRPP synthetase, provides the activated ribose-phosphate unit onto which purine and pyrimidine bases are built or attached.",
+      "topic": "Nucleotide biosynthesis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In de novo purine biosynthesis, which nucleotide is the first fully formed purine product of the pathway?",
+      "options": ["AMP", "GMP", "IMP", "UMP"],
+      "correct_answer": "IMP",
+      "explanation": "Inosine monophosphate (IMP), bearing the base hypoxanthine, is assembled step-by-step on PRPP and serves as the branch-point precursor that is subsequently converted to either AMP or GMP.",
+      "topic": "Nucleotide biosynthesis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which of the following amino acids does NOT directly contribute atoms to the purine ring during de novo synthesis?",
+      "options": ["Glycine", "Aspartate", "Glutamine", "Alanine"],
+      "correct_answer": "Alanine",
+      "explanation": "Glycine, aspartate (amino nitrogen), and glutamine (amide nitrogen) all donate atoms to the purine ring, along with CO2 and formyl groups from N10-formyl-tetrahydrofolate; alanine plays no role in this pathway.",
+      "topic": "Nucleotide biosynthesis",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The cytosolic enzyme that initiates de novo pyrimidine synthesis by producing carbamoyl phosphate uses which nitrogen donor, distinguishing it from the mitochondrial urea-cycle enzyme?",
+      "options": ["Free ammonia", "Glutamine", "Aspartate", "Glycine"],
+      "correct_answer": "Glutamine",
+      "explanation": "Carbamoyl phosphate synthetase II (CPS II), located in the cytosol, uses glutamine as the nitrogen source for pyrimidine synthesis, whereas mitochondrial CPS I (urea cycle) uses free ammonia.",
+      "topic": "Nucleotide biosynthesis",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In pyrimidine biosynthesis, orotate is attached to PRPP and then decarboxylated to yield which nucleotide, the precursor of UTP and CTP?",
+      "options": ["OMP (orotidine monophosphate) leading to UMP", "IMP", "GMP", "dTMP"],
+      "correct_answer": "OMP (orotidine monophosphate) leading to UMP",
+      "explanation": "Orotate phosphoribosyltransferase links orotate to PRPP to form OMP, which is then decarboxylated by OMP decarboxylase to give UMP, the parent pyrimidine nucleotide.",
+      "topic": "Nucleotide biosynthesis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Ribonucleotide reductase is essential for DNA biosynthesis because it:",
+      "options": [
+        "Converts ribonucleoside diphosphates to deoxyribonucleoside diphosphates",
+        "Adds the 5' cap to mRNA",
+        "Synthesizes RNA primers for Okazaki fragments",
+        "Removes uracil from DNA"
+      ],
+      "correct_answer": "Converts ribonucleoside diphosphates to deoxyribonucleoside diphosphates",
+      "explanation": "Ribonucleotide reductase reduces the 2'-OH of ribonucleotides to produce deoxyribonucleotides, using reducing equivalents from thioredoxin or glutaredoxin, and is tightly regulated to balance dNTP pools.",
+      "topic": "Nucleotide biosynthesis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A deficiency in hypoxanthine-guanine phosphoribosyltransferase (HGPRT), which normally salvages purine bases by attaching them to PRPP, is associated with which clinical condition?",
+      "options": ["Lesch-Nyhan syndrome", "Sickle cell disease", "Albinism", "Phenylketonuria"],
+      "correct_answer": "Lesch-Nyhan syndrome",
+      "explanation": "Loss of HGPRT activity impairs purine salvage, causing excess purine degradation to uric acid and neurological/behavioral abnormalities characteristic of Lesch-Nyhan syndrome.",
+      "topic": "Nucleotide biosynthesis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Methotrexate inhibits nucleotide biosynthesis mainly by blocking which enzyme?",
+      "options": ["Dihydrofolate reductase", "Thymidylate synthase", "Ribonucleotide reductase", "PRPP synthetase"],
+      "correct_answer": "Dihydrofolate reductase",
+      "explanation": "Methotrexate is a folate analog that competitively inhibits dihydrofolate reductase, preventing regeneration of tetrahydrofolate needed as a one-carbon donor for thymidylate (dTMP) synthesis.",
+      "topic": "Nucleotide biosynthesis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "5-Fluorouracil exerts its anticancer effect by being converted to F-dUMP, which acts as a suicide inhibitor of:",
+      "options": ["Thymidylate synthase", "DNA polymerase III", "HGPRT", "Ribonucleotide reductase"],
+      "correct_answer": "Thymidylate synthase",
+      "explanation": "F-dUMP forms a stable covalent complex with thymidylate synthase and its folate cofactor, irreversibly blocking conversion of dUMP to dTMP and starving cells of thymidylate for DNA synthesis.",
+      "topic": "Nucleotide biosynthesis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Hydroxyurea is used clinically (e.g., in sickle cell disease) because it inhibits:",
+      "options": ["Ribonucleotide reductase", "Thymidylate synthase", "Dihydrofolate reductase", "Fatty acid synthase"],
+      "correct_answer": "Ribonucleotide reductase",
+      "explanation": "Hydroxyurea scavenges the tyrosyl free radical required for ribonucleotide reductase activity, reducing dNTP supply and slowing DNA replication.",
+      "topic": "Nucleotide biosynthesis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the pyrimidine pathway, aspartate transcarbamoylase (ATCase) is a classic example of allosteric regulation because it is:",
+      "options": [
+        "Inhibited by CTP, the end product of the pathway, and activated by ATP",
+        "Inhibited by AMP and activated by GMP",
+        "Activated by glucose-6-phosphate",
+        "Inhibited only by covalent phosphorylation"
+      ],
+      "correct_answer": "Inhibited by CTP, the end product of the pathway, and activated by ATP",
+      "explanation": "CTP accumulation signals sufficient pyrimidine nucleotide supply and feedback-inhibits ATCase, while ATP (signaling purine sufficiency) activates it, helping balance purine and pyrimidine pools.",
+      "topic": "Nucleotide biosynthesis",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Which enzyme catalyzes formation of the alpha-1,4-glycosidic bonds that extend glycogen chains during glycogenesis?",
+      "options": ["Glycogen synthase", "Glycogen phosphorylase", "Branching enzyme", "Debranching enzyme"],
+      "correct_answer": "Glycogen synthase",
+      "explanation": "Glycogen synthase transfers glucose units from UDP-glucose onto the non-reducing end of a growing glycogen chain, forming alpha-1,4 linkages, and is the rate-limiting enzyme of glycogenesis.",
+      "topic": "Polysaccharide biosynthesis",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The branch points (alpha-1,6-glycosidic bonds) in glycogen are introduced by:",
+      "options": ["Branching enzyme", "Glycogen synthase", "UDP-glucose pyrophosphorylase", "Glycogenin"],
+      "correct_answer": "Branching enzyme",
+      "explanation": "Branching enzyme transfers a block of glucose residues from the end of a linear chain to an interior position, creating an alpha-1,6 linkage that increases the number of non-reducing ends for rapid synthesis and degradation.",
+      "topic": "Polysaccharide biosynthesis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Glycogen synthesis cannot begin on a completely bare substrate; instead, the protein ______ autoglucosylates itself to provide the initial primer for glycogen synthase.",
+      "options": ["Glycogenin", "Hexokinase", "Phosphoglucomutase", "UDP-glucose pyrophosphorylase"],
+      "correct_answer": "Glycogenin",
+      "explanation": "Glycogenin is a self-glucosylating enzyme that adds the first several glucose units to one of its own tyrosine residues, creating a short primer chain that glycogen synthase can then extend.",
+      "topic": "Polysaccharide biosynthesis",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Insulin promotes glycogen synthesis mainly by triggering:",
+      "options": [
+        "Dephosphorylation and activation of glycogen synthase",
+        "Phosphorylation and activation of glycogen phosphorylase",
+        "Increased transcription of DNA polymerase III",
+        "Inhibition of UDP-glucose pyrophosphorylase"
+      ],
+      "correct_answer": "Dephosphorylation and activation of glycogen synthase",
+      "explanation": "Insulin signaling activates protein phosphatase 1, which dephosphorylates glycogen synthase into its active form while simultaneously inactivating glycogen phosphorylase, favoring net glycogen synthesis.",
+      "topic": "Polysaccharide biosynthesis and regulation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which enzyme catalyzes the committed, rate-limiting step of fatty acid biosynthesis by carboxylating acetyl-CoA to malonyl-CoA?",
+      "options": ["Acetyl-CoA carboxylase", "Fatty acid synthase", "Citrate synthase", "Acyl-CoA dehydrogenase"],
+      "correct_answer": "Acetyl-CoA carboxylase",
+      "explanation": "Acetyl-CoA carboxylase (ACC), a biotin-dependent enzyme, catalyzes the ATP-dependent carboxylation of acetyl-CoA to malonyl-CoA, the committed step that controls the overall rate of fatty acid synthesis.",
+      "topic": "Lipid biosynthesis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Acetyl-CoA carboxylase activity is allosterically increased by high levels of which metabolite, signaling abundant carbon for fat synthesis?",
+      "options": ["Citrate", "Palmitoyl-CoA", "AMP", "Malonyl-CoA"],
+      "correct_answer": "Citrate",
+      "explanation": "Citrate accumulation, which occurs when acetyl-CoA and ATP are abundant, allosterically activates acetyl-CoA carboxylase by promoting its polymerization into an active filamentous form, while the end product palmitoyl-CoA inhibits it.",
+      "topic": "Lipid biosynthesis",
+      "difficulty": "hard"
+    },
+    {
+      "question": "To synthesize one molecule of palmitate (16:0) via the fatty acid synthase complex, how many molecules of malonyl-CoA are consumed?",
+      "options": ["5", "6", "7", "8"],
+      "correct_answer": "7",
+      "explanation": "Palmitate synthesis starts with one acetyl-CoA primer and adds seven 2-carbon units, each contributed by a malonyl-CoA, to build the 16-carbon chain over seven elongation cycles.",
+      "topic": "Lipid biosynthesis",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The NADPH required for reductive steps in fatty acid synthesis is mainly supplied by which pathway(s)?",
+      "options": [
+        "The pentose phosphate pathway and the malic enzyme reaction",
+        "Glycolysis and the citric acid cycle",
+        "Beta-oxidation of fatty acids",
+        "The urea cycle"
+      ],
+      "correct_answer": "The pentose phosphate pathway and the malic enzyme reaction",
+      "explanation": "Glucose-6-phosphate dehydrogenase in the pentose phosphate pathway and cytosolic malic enzyme (converting malate to pyruvate) are the principal cytosolic sources of NADPH for fatty acid and cholesterol biosynthesis.",
+      "topic": "Lipid biosynthesis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Humans cannot synthesize linoleic acid (an omega-6 fatty acid) de novo because they lack which type of enzyme?",
+      "options": ["Delta-12 desaturase", "Delta-9 desaturase", "Elongase", "Thioesterase"],
+      "correct_answer": "Delta-12 desaturase",
+      "explanation": "Mammals lack desaturases that introduce double bonds beyond carbon 9 from the carboxyl end (such as delta-12 and delta-15 desaturases), making linoleic and alpha-linolenic acid essential dietary fatty acids.",
+      "topic": "Lipid biosynthesis",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In the Kennedy pathway for phosphatidylcholine synthesis, which activated intermediate directly donates the phosphocholine head group to diacylglycerol?",
+      "options": ["CDP-choline", "UDP-glucose", "Acetyl-CoA", "PRPP"],
+      "correct_answer": "CDP-choline",
+      "explanation": "In the CDP-choline (Kennedy) pathway, choline is phosphorylated and then activated with CTP to form CDP-choline, which reacts with diacylglycerol to produce phosphatidylcholine.",
+      "topic": "Lipid biosynthesis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which enzyme catalyzes the rate-limiting step of cholesterol biosynthesis and is the pharmacological target of statin drugs?",
+      "options": ["HMG-CoA reductase", "Squalene epoxidase", "Acetyl-CoA carboxylase", "HMG-CoA synthase"],
+      "correct_answer": "HMG-CoA reductase",
+      "explanation": "HMG-CoA reductase catalyzes the committed, rate-limiting conversion of HMG-CoA to mevalonate in the cholesterol biosynthetic pathway; statins competitively inhibit this enzyme to lower cholesterol synthesis.",
+      "topic": "Lipid biosynthesis",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Isopentenyl pyrophosphate (IPP), generated in the mevalonate pathway, serves as the building block for which group of biomolecules besides cholesterol?",
+      "options": ["Isoprenoid compounds such as dolichol and ubiquinone", "Fatty acids and triacylglycerols", "Purine and pyrimidine bases", "Glycogen"],
+      "correct_answer": "Isoprenoid compounds such as dolichol and ubiquinone",
+      "explanation": "IPP and its isomer dimethylallyl pyrophosphate condense to form the isoprenoid units used not only for cholesterol but also for dolichol (used in glycosylation), ubiquinone (coenzyme Q), and protein prenylation.",
+      "topic": "Lipid biosynthesis",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Why must fatty acid synthesis (cytosolic) and beta-oxidation (mitochondrial) be spatially separated within the cell?",
+      "options": [
+        "To prevent a futile cycle of simultaneous fatty acid synthesis and degradation, allowing independent hormonal regulation of each pathway",
+        "Because fatty acid synthase cannot tolerate the pH of the mitochondrial matrix",
+        "Because malonyl-CoA is unstable outside the mitochondria",
+        "Because ribosomes required for fatty acid synthase assembly are only found in the cytosol"
+      ],
+      "correct_answer": "To prevent a futile cycle of simultaneous fatty acid synthesis and degradation, allowing independent hormonal regulation of each pathway",
+      "explanation": "Compartmentalizing the anabolic and catabolic pathways in different organelles, with malonyl-CoA also inhibiting carnitine transport into mitochondria, prevents wasteful simultaneous operation of both pathways.",
+      "topic": "Regulation and integration of biosynthesis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A patient given high-dose insulin experiences overall metabolic shifts favoring biosynthesis. Which combination of effects best reflects insulin's action on macromolecule biosynthesis?",
+      "options": [
+        "Increased glycogen synthesis, increased fatty acid synthesis, and increased protein synthesis",
+        "Increased glycogen breakdown and decreased fatty acid synthesis",
+        "Decreased glycogen synthesis but increased gluconeogenesis",
+        "No effect on biosynthetic pathways, only on glucose uptake"
+      ],
+      "correct_answer": "Increased glycogen synthesis, increased fatty acid synthesis, and increased protein synthesis",
+      "explanation": "Insulin broadly favors the fed, anabolic state, activating glycogen synthase, acetyl-CoA carboxylase (indirectly via dephosphorylation), and translation initiation factors to promote biosynthesis of glycogen, lipid, and protein.",
+      "topic": "Regulation and integration of biosynthesis",
+      "difficulty": "medium"
+    }
+  ]
+}

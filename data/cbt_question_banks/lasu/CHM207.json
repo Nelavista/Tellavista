@@ -1,0 +1,280 @@
+{
+  "course_code": "CHM207",
+  "title": "Analytical Chemistry I",
+  "level": "200",
+  "source_note": "Standard NUC-aligned Nigerian university 200L introductory analytical chemistry curriculum: principles of quantitative analysis, errors and statistical treatment of data, volumetric (titrimetric) analysis (acid-base, redox, complexometric, precipitation titrations), primary and secondary standards, and gravimetric analysis. Instrumental methods of analysis (spectroscopy, electroanalysis, chromatography) are reserved for CHM208.",
+  "questions": [
+    {
+      "question": "What is the main distinction between qualitative and quantitative analysis in analytical chemistry?",
+      "options": ["Qualitative analysis identifies what substances are present, while quantitative analysis determines how much of each substance is present", "Qualitative analysis always uses instruments, while quantitative analysis never does", "Qualitative analysis measures mass, while quantitative analysis measures colour only", "There is no meaningful difference between the two"],
+      "correct_answer": "Qualitative analysis identifies what substances are present, while quantitative analysis determines how much of each substance is present",
+      "explanation": "Qualitative analysis is concerned with the identity of the components of a sample, whereas quantitative analysis measures the amount or concentration of a known component.",
+      "topic": "Principles of quantitative analysis",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In analytical measurements, what is the difference between accuracy and precision?",
+      "options": ["Accuracy is how close a measurement is to the true value; precision is how close repeated measurements are to each other", "Accuracy and precision mean exactly the same thing", "Precision refers only to the true value, while accuracy refers to reproducibility", "Accuracy applies only to volumetric analysis and precision only to gravimetric analysis"],
+      "correct_answer": "Accuracy is how close a measurement is to the true value; precision is how close repeated measurements are to each other",
+      "explanation": "Accuracy reflects agreement between a measured value and the accepted true value, while precision reflects the reproducibility (closeness of agreement) among a set of repeated measurements, regardless of whether they are close to the true value.",
+      "topic": "Errors and data treatment",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is a systematic (determinate) error in analytical chemistry?",
+      "options": ["An error that has a definite, identifiable cause and consistently affects results in one direction", "An error that varies randomly in magnitude and direction with no identifiable cause", "An error that only occurs during titration", "An error that cancels itself out over many repeated measurements"],
+      "correct_answer": "An error that has a definite, identifiable cause and consistently affects results in one direction",
+      "explanation": "Systematic errors arise from an identifiable, consistent source (such as an uncalibrated instrument or a persistent procedural flaw) and bias results consistently high or low, unlike random errors, which fluctuate unpredictably.",
+      "topic": "Errors and data treatment",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Random (indeterminate) errors in a set of measurements are best minimized in their effect on the reported result by which approach?",
+      "options": ["Taking the mean of several replicate measurements", "Using a single measurement only", "Ignoring the smallest and largest values without calculation", "Increasing the concentration of the analyte"],
+      "correct_answer": "Taking the mean of several replicate measurements",
+      "explanation": "Because random errors scatter measurements above and below the true value in an unpredictable way, averaging several replicate measurements tends to cancel out this scatter and gives a more reliable estimate of the true value.",
+      "topic": "Errors and data treatment",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What five properties must a substance have to be suitable as a primary standard in volumetric analysis?",
+      "options": ["High purity, stability in air, known and constant composition, reasonably high molar mass, and good solubility", "Low cost only, regardless of purity", "Strong colour so it can act as its own indicator", "High volatility so it evaporates completely during weighing"],
+      "correct_answer": "High purity, stability in air, known and constant composition, reasonably high molar mass, and good solubility",
+      "explanation": "A good primary standard must be obtainable in high purity, stable (not hygroscopic or reactive with air), of definite known composition, have a high enough molar mass to minimize relative weighing error, and dissolve readily in the chosen solvent.",
+      "topic": "Standards and standardization",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which compound is a commonly used primary standard for standardizing solutions of strong acids?",
+      "options": ["Anhydrous sodium carbonate, Na2CO3", "Sodium hydroxide pellets", "Concentrated hydrochloric acid", "Potassium permanganate"],
+      "correct_answer": "Anhydrous sodium carbonate, Na2CO3",
+      "explanation": "Anhydrous sodium carbonate is available in high purity, is stable, and reacts in a known stoichiometry with acids, making it a widely used primary standard for standardizing solutions of strong acids such as HCl.",
+      "topic": "Standards and standardization",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Potassium hydrogen phthalate (KHP) is a widely used primary standard for standardizing which type of solution?",
+      "options": ["Standard base solutions, such as sodium hydroxide", "Standard oxidizing solutions, such as potassium permanganate", "Standard complexing solutions, such as EDTA", "Standard precipitating solutions, such as silver nitrate"],
+      "correct_answer": "Standard base solutions, such as sodium hydroxide",
+      "explanation": "KHP is a stable, high-purity monoprotic acid solid with a high molar mass, making it an ideal primary standard against which solutions of strong bases like NaOH are standardized.",
+      "topic": "Standards and standardization",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Why must a sodium hydroxide solution be standardized against a primary standard before use, rather than being used directly from a freshly prepared solution of known mass?",
+      "options": ["Solid NaOH is hygroscopic and readily absorbs carbon dioxide and moisture from air, so its exact purity and mass are uncertain", "Sodium hydroxide is a primary standard itself and never needs standardization", "Standardization is required only for acids, never for bases", "NaOH solutions never change concentration over time"],
+      "correct_answer": "Solid NaOH is hygroscopic and readily absorbs carbon dioxide and moisture from air, so its exact purity and mass are uncertain",
+      "explanation": "Because solid sodium hydroxide absorbs atmospheric moisture and CO2, its true purity is never exactly known, so a solution of NaOH is termed a secondary standard and must be standardized against a primary standard, such as KHP, to establish its exact concentration.",
+      "topic": "Standards and standardization",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a titration, what is the term for the point at which the indicator visibly changes colour, signalling the analyst to stop adding titrant?",
+      "options": ["The endpoint", "The equivalence point", "The stoichiometric point", "The blank point"],
+      "correct_answer": "The endpoint",
+      "explanation": "The endpoint is the experimentally observed point (usually a colour change) at which the titration is stopped, which is distinct from, but ideally very close to, the true equivalence point where stoichiometrically equal amounts of titrant and analyte have reacted.",
+      "topic": "Volumetric analysis",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is the equivalence point of a titration?",
+      "options": ["The point at which the amount of titrant added is exactly chemically equivalent to the amount of analyte originally present", "The point at which the indicator is added to the solution", "The point at which the titration flask is exactly half full", "The point at which the titrant runs out completely"],
+      "correct_answer": "The point at which the amount of titrant added is exactly chemically equivalent to the amount of analyte originally present",
+      "explanation": "The equivalence point is a theoretical point defined by stoichiometry, at which moles of titrant added exactly match the moles of analyte according to the balanced reaction equation.",
+      "topic": "Volumetric analysis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Phenolphthalein is colourless in acidic solution and pink in basic solution, changing over approximately pH 8.2 to 10. For which type of acid-base titration is phenolphthalein the most suitable indicator?",
+      "options": ["Titration of a weak acid with a strong base, where the equivalence point pH is above 7", "Titration of a strong acid with a strong base only, never for weak acid systems", "Titration of a weak base with a strong acid, where the equivalence point pH is below 7", "It is unsuitable for any acid-base titration"],
+      "correct_answer": "Titration of a weak acid with a strong base, where the equivalence point pH is above 7",
+      "explanation": "When a weak acid is titrated with a strong base, the solution at the equivalence point is basic (due to hydrolysis of the conjugate base), so an indicator changing colour in the basic range, such as phenolphthalein, is appropriate.",
+      "topic": "Volumetric analysis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Methyl orange changes colour over approximately pH 3.1 to 4.4. For which type of titration is methyl orange the most suitable indicator?",
+      "options": ["Titration of a weak base with a strong acid, where the equivalence point pH is below 7", "Titration of a weak acid with a strong base, where the equivalence point pH is above 7", "Any titration between two weak species", "Titration where no colour change is expected"],
+      "correct_answer": "Titration of a weak base with a strong acid, where the equivalence point pH is below 7",
+      "explanation": "When a weak base is titrated with a strong acid, hydrolysis of the resulting conjugate acid makes the solution acidic at the equivalence point, so an indicator that changes colour in the acidic range, such as methyl orange, is appropriate.",
+      "topic": "Volumetric analysis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a redox titration using potassium permanganate (KMnO4) as the titrant, why is a separate indicator often unnecessary?",
+      "options": ["KMnO4 is intensely purple and its own colour disappears until the endpoint, when excess titrant produces a persistent faint pink colour (it is self-indicating)", "Permanganate never changes colour under any conditions", "All redox titrations require exactly the same indicator regardless of titrant", "KMnO4 reacts with all indicators, destroying them instantly"],
+      "correct_answer": "KMnO4 is intensely purple and its own colour disappears until the endpoint, when excess titrant produces a persistent faint pink colour (it is self-indicating)",
+      "explanation": "As permanganate is reduced during the titration its intense purple colour is discharged; once all the analyte is consumed, the first slight excess of KMnO4 imparts a persistent faint pink colour to the solution, making it self-indicating.",
+      "topic": "Volumetric analysis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In iodometric titrations, iodine liberated in a reaction is titrated against standard sodium thiosulfate solution. What indicator is characteristically used near the endpoint of this titration?",
+      "options": ["Starch indicator, which forms an intense blue-black complex with iodine that disappears at the endpoint", "Phenolphthalein", "Methyl orange", "Potassium chromate"],
+      "correct_answer": "Starch indicator, which forms an intense blue-black complex with iodine that disappears at the endpoint",
+      "explanation": "Starch forms a characteristic deep blue-black complex with tri-iodide/iodine; it is added near the endpoint of an iodometric titration so that its sudden disappearance sharply signals that all the iodine has been consumed by the thiosulfate titrant.",
+      "topic": "Volumetric analysis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Complexometric titrations, such as the determination of water hardness, commonly use EDTA (ethylenediaminetetraacetic acid) as the titrant. What is the role of EDTA in this titration?",
+      "options": ["EDTA forms a stable 1:1 chelate complex with metal ions such as Ca2+ and Mg2+", "EDTA precipitates the metal ions as an insoluble salt", "EDTA oxidizes the metal ions to a higher oxidation state", "EDTA acts purely as a pH buffer with no direct reaction with the metal ion"],
+      "correct_answer": "EDTA forms a stable 1:1 chelate complex with metal ions such as Ca2+ and Mg2+",
+      "explanation": "EDTA is a hexadentate ligand that forms very stable 1:1 chelate complexes with most metal cations, which is the basis for its use as a titrant in complexometric determination of metals such as calcium and magnesium (water hardness).",
+      "topic": "Volumetric analysis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Eriochrome Black T is commonly used as an indicator in EDTA titrations for water hardness. How does it function?",
+      "options": ["It forms a wine-red complex with free Ca2+/Mg2+ ions and turns blue once EDTA has complexed all the metal ions", "It permanently precipitates all metal ions in solution", "It changes colour based on pH alone, independent of metal ion concentration", "It reacts irreversibly with EDTA before any metal ion is present"],
+      "correct_answer": "It forms a wine-red complex with free Ca2+/Mg2+ ions and turns blue once EDTA has complexed all the metal ions",
+      "explanation": "Eriochrome Black T binds free metal ions to give a wine-red colour; as EDTA is added it preferentially binds the metal ions (forming a more stable complex than with the indicator), releasing the free indicator, which is blue, giving a sharp colour change at the endpoint.",
+      "topic": "Volumetric analysis",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In Mohr's method for the volumetric determination of chloride ion, silver nitrate is used as the titrant with potassium chromate as indicator. What signals the endpoint?",
+      "options": ["Formation of a reddish-brown precipitate of silver chromate once all the chloride has precipitated as silver chloride", "The solution turning completely colourless", "Formation of a blue-black starch-iodine complex", "A sudden drop in pH"],
+      "correct_answer": "Formation of a reddish-brown precipitate of silver chromate once all the chloride has precipitated as silver chloride",
+      "explanation": "In Mohr's method, silver ions preferentially precipitate the more insoluble silver chloride first; once chloride is exhausted, the next drop of AgNO3 reacts with the chromate indicator to form a reddish-brown silver chromate precipitate, signalling the endpoint.",
+      "topic": "Volumetric analysis",
+      "difficulty": "hard"
+    },
+    {
+      "question": "What is the fundamental principle underlying gravimetric analysis?",
+      "options": ["The analyte is converted into a pure, insoluble compound of known composition, which is then isolated and weighed to determine the amount of analyte", "The analyte is titrated against a coloured indicator until a colour change is observed", "The analyte's absorbance of light is measured at a specific wavelength", "The analyte's electrical conductivity is measured directly"],
+      "correct_answer": "The analyte is converted into a pure, insoluble compound of known composition, which is then isolated and weighed to determine the amount of analyte",
+      "explanation": "Gravimetric analysis determines the quantity of an analyte by converting it quantitatively into a stable, pure, weighable compound of known stoichiometry, which is filtered, dried (or ignited), and weighed.",
+      "topic": "Gravimetric analysis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In gravimetric analysis, why is a precipitate typically washed with a dilute electrolyte solution rather than pure water?",
+      "options": ["Pure water can cause peptization, redispersing the precipitate into a colloidal form that passes through the filter", "Pure water reacts chemically with all precipitates", "Washing with water always dissolves the precipitate completely", "Electrolyte solutions are cheaper to prepare than water"],
+      "correct_answer": "Pure water can cause peptization, redispersing the precipitate into a colloidal form that passes through the filter",
+      "explanation": "Washing a freshly formed precipitate with pure water can strip away the adsorbed electrolyte layer that keeps colloidal particles coagulated, causing peptization (the precipitate breaking back into a colloid) and loss of sample through the filter; a dilute solution of a volatile electrolyte avoids this while still removing impurities.",
+      "topic": "Gravimetric analysis",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In gravimetric analysis, a precipitate is dried or ignited until it reaches 'constant weight.' What does this term mean?",
+      "options": ["Successive weighings after further heating give the same mass within experimental limits, showing that all moisture/volatile matter has been removed", "The precipitate has reached its melting point", "The mass of the precipitate has doubled from its initial wet mass", "The crucible itself has stopped losing mass regardless of the precipitate"],
+      "correct_answer": "Successive weighings after further heating give the same mass within experimental limits, showing that all moisture/volatile matter has been removed",
+      "explanation": "Constant weight is confirmed when repeated cycles of heating, cooling, and weighing produce essentially unchanged mass readings, indicating that all water and volatile impurities have been driven off and the precipitate's composition is stable.",
+      "topic": "Gravimetric analysis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is a standard solution in analytical chemistry?",
+      "options": ["A solution whose exact concentration is precisely known", "Any solution prepared by dissolving a solid in water", "A solution that has been left to stand for 24 hours", "A saturated solution of any salt"],
+      "correct_answer": "A solution whose exact concentration is precisely known",
+      "explanation": "A standard solution is one whose concentration has been accurately established, either by direct preparation from a primary standard or by standardization against one, and is used as a reference in titrations.",
+      "topic": "Standards and standardization",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is the relationship between the normality (N) and molarity (M) of a solution?",
+      "options": ["N = M multiplied by the number of equivalents (reacting units) per mole of solute", "N and M are always numerically identical for every solute", "N is always half of M regardless of the solute", "Normality applies only to gases, never to solutions"],
+      "correct_answer": "N = M multiplied by the number of equivalents (reacting units) per mole of solute",
+      "explanation": "Normality expresses concentration in terms of reactive equivalents; it equals molarity multiplied by the number of equivalents each mole of solute provides in the specific reaction (e.g., for H2SO4 in an acid-base reaction, N = 2M since it can donate two protons per mole).",
+      "topic": "Principles of quantitative analysis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is a buffer solution?",
+      "options": ["A solution that resists changes in pH when small amounts of acid or base are added", "A solution that changes colour sharply at a fixed pH", "A solution containing only a strong acid and no other species", "A solution used exclusively for gravimetric precipitation"],
+      "correct_answer": "A solution that resists changes in pH when small amounts of acid or base are added",
+      "explanation": "A buffer solution, typically a mixture of a weak acid and its conjugate base (or a weak base and its conjugate acid), resists significant pH change upon the addition of small amounts of strong acid or base.",
+      "topic": "Acid-base equilibria",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The Henderson-Hasselbalch equation, pH = pKa + log([A-]/[HA]), is used to calculate the pH of which type of solution?",
+      "options": ["A buffer solution containing a weak acid and its conjugate base", "A solution of a strong acid only", "A solution of a strong base only", "Pure water at 25 degC"],
+      "correct_answer": "A buffer solution containing a weak acid and its conjugate base",
+      "explanation": "The Henderson-Hasselbalch equation relates the pH of a buffer to the pKa of the weak acid and the ratio of conjugate base to weak acid concentrations, and is the standard tool for calculating or designing buffer pH.",
+      "topic": "Acid-base equilibria",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What does the solubility product constant, Ksp, describe for a sparingly soluble salt such as AgCl?",
+      "options": ["The equilibrium constant for the dissolution of the solid into its constituent ions in a saturated solution", "The rate at which the salt dissolves in water", "The total mass of salt that can dissolve in one litre regardless of temperature", "The melting point of the solid salt"],
+      "correct_answer": "The equilibrium constant for the dissolution of the solid into its constituent ions in a saturated solution",
+      "explanation": "Ksp is the equilibrium constant for the dissolution equilibrium of a sparingly soluble salt, equal to the product of the molar concentrations of its constituent ions (each raised to the power of its stoichiometric coefficient) in a saturated solution.",
+      "topic": "Solubility equilibria",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the common ion effect, as observed when solid NaCl is added to a saturated solution of AgCl?",
+      "options": ["The added common ion (Cl-) suppresses further dissolution of AgCl, decreasing its solubility", "The added ion has absolutely no effect on the equilibrium", "The common ion always increases the solubility of the sparingly soluble salt", "The common ion reacts explosively with the solvent"],
+      "correct_answer": "The added common ion (Cl-) suppresses further dissolution of AgCl, decreasing its solubility",
+      "explanation": "By Le Chatelier's principle, adding a common ion already present in the solubility equilibrium (Cl- from NaCl, also produced by AgCl) shifts the equilibrium to favour the solid, decreasing the overall solubility of AgCl.",
+      "topic": "Solubility equilibria",
+      "difficulty": "medium"
+    },
+    {
+      "question": "When a set of replicate titration values is reported, why is the mean generally preferred over any single measurement as the best estimate of the true value?",
+      "options": ["Averaging reduces the influence of random error scattered around the true value", "A single measurement is always more accurate than an average", "The mean is easier to calculate than a single reading", "Replicate measurements are never expected to agree with each other"],
+      "correct_answer": "Averaging reduces the influence of random error scattered around the true value",
+      "explanation": "Because random errors are equally likely to push an individual reading above or below the true value, averaging several replicate measurements tends to cancel out this scatter, giving a value closer to the true result than any single reading alone.",
+      "topic": "Errors and data treatment",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What does the standard deviation of a set of replicate measurements indicate?",
+      "options": ["The spread or dispersion of individual measurements around the mean", "The exact true value of the quantity being measured", "The total number of measurements taken", "The systematic error present in the measurements"],
+      "correct_answer": "The spread or dispersion of individual measurements around the mean",
+      "explanation": "Standard deviation is a statistical measure of how much individual data points in a set deviate from the mean, giving a quantitative measure of precision (scatter) rather than accuracy.",
+      "topic": "Errors and data treatment",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is a 'blank titration' and why is it sometimes performed?",
+      "options": ["A titration carried out on all reagents except the analyte, to correct for any titrant consumed by the reagents/indicator alone", "A titration performed without recording any volume readings", "A titration in which the burette contains only distilled water", "A titration used only to clean glassware"],
+      "correct_answer": "A titration carried out on all reagents except the analyte, to correct for any titrant consumed by the reagents/indicator alone",
+      "explanation": "A blank titration measures the volume of titrant needed to produce the endpoint colour change in the absence of analyte (e.g., due to the indicator itself or impurities in reagents), and this volume is subtracted from the sample titration to correct for that systematic contribution.",
+      "topic": "Volumetric analysis",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In a back titration, why is an excess of a standard reagent first added to the analyte, with the unreacted excess then titrated with a second standard solution?",
+      "options": ["It is useful when the analyte reacts too slowly, is a gas, or its reaction endpoint with a direct titrant is otherwise hard to detect", "Back titration is only used when no indicator exists for any titration", "Back titration always requires exactly the same reagent for both titration steps", "It is used to deliberately introduce more random error into the result"],
+      "correct_answer": "It is useful when the analyte reacts too slowly, is a gas, or its reaction endpoint with a direct titrant is otherwise hard to detect",
+      "explanation": "Back titration is a useful strategy when a direct titration is impractical, for example when the analyte is volatile, insoluble, or reacts too slowly with the titrant; an excess of a known standard is added to react completely, and the leftover excess is titrated to calculate, by difference, how much reacted with the analyte.",
+      "topic": "Volumetric analysis",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Which piece of volumetric glassware is designed to deliver one precise, fixed volume of liquid with high accuracy, such as 25.00 mL?",
+      "options": ["A volumetric (transfer) pipette", "A conical (Erlenmeyer) flask", "A measuring cylinder", "A beaker"],
+      "correct_answer": "A volumetric (transfer) pipette",
+      "explanation": "A volumetric pipette is calibrated to deliver a single, fixed, precisely known volume, making it far more accurate for this purpose than a measuring cylinder or beaker, which are only approximate.",
+      "topic": "Volumetric analysis",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Why must the meniscus of a liquid in a burette or volumetric flask be read at eye level?",
+      "options": ["Reading from above or below introduces parallax error, giving an inaccurate volume reading", "The liquid colour changes depending on viewing angle", "Volumetric glassware is only calibrated to be read from an angle", "Eye-level reading has no effect on accuracy"],
+      "correct_answer": "Reading from above or below introduces parallax error, giving an inaccurate volume reading",
+      "explanation": "Viewing the meniscus at an angle other than perpendicular to the graduation marks introduces parallax error, causing the volume to be misread; reading at eye level, level with the bottom of the meniscus, minimizes this error.",
+      "topic": "Volumetric analysis",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Why is oxalic acid, or ammonium iron(II) sulfate (Mohr's salt), often used to standardize a potassium permanganate solution?",
+      "options": ["Permanganate is not stable enough in pure form to serve as a primary standard itself, so it must be standardized against a suitable reducing primary standard", "Potassium permanganate reacts with water to form a completely new compound", "Oxalic acid is an oxidizing agent stronger than permanganate", "Permanganate solutions never change concentration over time"],
+      "correct_answer": "Permanganate is not stable enough in pure form to serve as a primary standard itself, so it must be standardized against a suitable reducing primary standard",
+      "explanation": "KMnO4 solutions slowly decompose (partly catalyzed by light and by MnO2 formed during preparation), so despite being commercially available fairly pure, it is treated as a secondary standard and its exact concentration is established by titrating against a reducing primary standard such as oxalic acid.",
+      "topic": "Standards and standardization",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In quantitative analysis, what does the term 'aliquot' refer to?",
+      "options": ["A known, accurately measured portion of a larger sample or solution", "The total volume of titrant used in a titration", "An indicator solution added to detect the endpoint", "A precipitate formed during gravimetric analysis"],
+      "correct_answer": "A known, accurately measured portion of a larger sample or solution",
+      "explanation": "An aliquot is a precisely known fraction (portion) taken from a larger, homogeneous sample or stock solution, typically measured out using a pipette, for use in an individual analysis or titration.",
+      "topic": "Principles of quantitative analysis",
+      "difficulty": "easy"
+    }
+  ]
+}

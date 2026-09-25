@@ -1,0 +1,248 @@
+{
+  "course_code": "MTH207",
+  "title": "Real Analysis I",
+  "level": "200",
+  "source_note": "Standard NUC-aligned Nigerian university 200L Real Analysis I curriculum: the real number system and completeness, bounds/supremum/infimum, sequences and their limits, convergence tests, Cauchy sequences, infinite series, and continuity of real functions.",
+  "questions": [
+    {
+      "question": "Which property distinguishes the real numbers ℝ from the rational numbers ℚ?",
+      "options": ["ℝ is complete (every non-empty bounded-above subset has a least upper bound); ℚ is not", "ℝ is countable while ℚ is not", "ℝ contains no irrational numbers", "ℚ is closed under addition while ℝ is not"],
+      "correct_answer": "ℝ is complete (every non-empty bounded-above subset has a least upper bound); ℚ is not",
+      "explanation": "The Completeness (Least Upper Bound) Axiom is the defining property that separates ℝ from ℚ, e.g. √2 is a supremum in ℝ but has no rational supremum in ℚ.",
+      "topic": "Real number system",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The supremum (least upper bound) of the set A = {x ∈ ℝ : x < 3} is:",
+      "options": ["3", "2.999...", "There is no supremum", "0"],
+      "correct_answer": "3",
+      "explanation": "Although 3 is not in A, it is the smallest number that is an upper bound for every element of A, so sup(A) = 3.",
+      "topic": "Bounds, supremum and infimum",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A set S ⊆ ℝ is bounded above if:",
+      "options": ["There exists M ∈ ℝ such that x ≤ M for all x ∈ S", "S contains its own supremum", "S is a finite set", "There exists m ∈ ℝ such that x ≥ m for all x ∈ S"],
+      "correct_answer": "There exists M ∈ ℝ such that x ≤ M for all x ∈ S",
+      "explanation": "Boundedness above means some real number M is at least as large as every element of S; such an M is called an upper bound.",
+      "topic": "Bounds, supremum and infimum",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The infimum of the set S = {1/n : n ∈ ℕ, n ≥ 1} is:",
+      "options": ["0", "1", "There is no infimum", "−1"],
+      "correct_answer": "0",
+      "explanation": "The values 1/n approach 0 as n increases without ever reaching it, and 0 is the greatest lower bound of the set.",
+      "topic": "Bounds, supremum and infimum",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A sequence (an) is said to converge to a limit L if:",
+      "options": ["For every ε > 0, there exists N ∈ ℕ such that |an − L| < ε for all n > N", "an = L for all n", "The sequence is bounded", "an is a monotonic sequence"],
+      "correct_answer": "For every ε > 0, there exists N ∈ ℕ such that |an − L| < ε for all n > N",
+      "explanation": "This is the formal epsilon-N definition of convergence: eventually, all terms lie within any prescribed distance ε of the limit L.",
+      "topic": "Sequences",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is lim(n→∞) 1/n?",
+      "options": ["0", "1", "∞", "It does not exist"],
+      "correct_answer": "0",
+      "explanation": "As n grows without bound, the terms 1/n shrink toward zero, so the sequence converges to 0.",
+      "topic": "Sequences",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is lim(n→∞) (n+1)/n?",
+      "options": ["1", "0", "∞", "2"],
+      "correct_answer": "1",
+      "explanation": "(n+1)/n = 1 + 1/n, and as n → ∞, 1/n → 0, so the whole expression approaches 1.",
+      "topic": "Sequences",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Every convergent sequence of real numbers is necessarily:",
+      "options": ["Bounded", "Monotonic", "Eventually constant", "Divergent"],
+      "correct_answer": "Bounded",
+      "explanation": "A standard theorem states convergence implies boundedness, though the converse is false (a bounded sequence need not converge).",
+      "topic": "Sequences",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Monotone Convergence Theorem states that:",
+      "options": ["Every bounded, monotonic sequence of real numbers converges", "Every sequence converges", "Every increasing sequence diverges to infinity", "Only decreasing sequences can converge"],
+      "correct_answer": "Every bounded, monotonic sequence of real numbers converges",
+      "explanation": "A sequence that is both monotonic (increasing or decreasing) and bounded is guaranteed to converge, by completeness of ℝ.",
+      "topic": "Sequences",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A sequence (an) is called a Cauchy sequence if:",
+      "options": ["For every ε > 0, there exists N such that |am − an| < ε for all m, n > N", "an converges to 0", "an is bounded above only", "an is strictly increasing"],
+      "correct_answer": "For every ε > 0, there exists N such that |am − an| < ε for all m, n > N",
+      "explanation": "A Cauchy sequence has terms that get arbitrarily close to each other (not just to a fixed limit) as the index grows.",
+      "topic": "Cauchy sequences",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In ℝ, a sequence converges if and only if it is:",
+      "options": ["A Cauchy sequence", "Bounded but not necessarily Cauchy", "Monotonic only", "Unbounded"],
+      "correct_answer": "A Cauchy sequence",
+      "explanation": "By the completeness of ℝ, a sequence of real numbers converges precisely when it is Cauchy; this is the Cauchy Criterion.",
+      "topic": "Cauchy sequences",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The sequence an = (−1)^n is:",
+      "options": ["Bounded but divergent (it oscillates between −1 and 1)", "Convergent to 0", "Convergent to 1", "Unbounded"],
+      "correct_answer": "Bounded but divergent (it oscillates between −1 and 1)",
+      "explanation": "The sequence alternates between −1 and 1 forever without settling on a single limit, so it is bounded but does not converge.",
+      "topic": "Sequences",
+      "difficulty": "easy"
+    },
+    {
+      "question": "An infinite series Σan is said to converge if:",
+      "options": ["The sequence of partial sums Sn = a1 + a2 + ... + an converges to a finite limit", "Every term an equals zero eventually", "an is a decreasing sequence", "The series has finitely many nonzero terms"],
+      "correct_answer": "The sequence of partial sums Sn = a1 + a2 + ... + an converges to a finite limit",
+      "explanation": "Convergence of a series is defined via the limit of its sequence of partial sums.",
+      "topic": "Infinite series",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The geometric series Σ r^n (n = 0 to ∞) converges if and only if:",
+      "options": ["|r| < 1", "r > 1", "r is a positive integer", "r = 1"],
+      "correct_answer": "|r| < 1",
+      "explanation": "A geometric series converges exactly when the common ratio has absolute value less than 1, in which case it sums to 1/(1−r).",
+      "topic": "Infinite series",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The sum of the geometric series 1 + 1/2 + 1/4 + 1/8 + ... is:",
+      "options": ["2", "1", "∞", "1.5"],
+      "correct_answer": "2",
+      "explanation": "This is a geometric series with a = 1 and r = 1/2, so the sum is a/(1−r) = 1/(1− 0.5) = 2.",
+      "topic": "Infinite series",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The harmonic series Σ 1/n (n = 1 to ∞):",
+      "options": ["Diverges, even though its terms tend to 0", "Converges to 1", "Converges to 0", "Converges to π"],
+      "correct_answer": "Diverges, even though its terms tend to 0",
+      "explanation": "A classical result: although 1/n → 0, the harmonic series' partial sums grow without bound, so the series diverges.",
+      "topic": "Infinite series",
+      "difficulty": "medium"
+    },
+    {
+      "question": "According to the nth-term (divergence) test, if lim(n→∞) an ≠ 0, then the series Σan:",
+      "options": ["Must diverge", "Must converge", "Converges to zero", "Cannot be determined"],
+      "correct_answer": "Must diverge",
+      "explanation": "If the terms of a series do not tend to zero, the series cannot converge; this is a necessary (not sufficient) condition for convergence.",
+      "topic": "Infinite series",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The p-series Σ 1/n^p (n = 1 to ∞) converges if and only if:",
+      "options": ["p > 1", "p < 1", "p = 1", "p is a negative integer"],
+      "correct_answer": "p > 1",
+      "explanation": "The p-series test states convergence occurs precisely when the exponent p exceeds 1; p = 1 gives the divergent harmonic series.",
+      "topic": "Infinite series",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A series Σan is called absolutely convergent if:",
+      "options": ["Σ|an| converges", "Σan converges but Σ|an| diverges", "an → 0", "an is always positive"],
+      "correct_answer": "Σ|an| converges",
+      "explanation": "Absolute convergence requires the series of absolute values to converge, which is a stronger condition than ordinary convergence.",
+      "topic": "Infinite series",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A function f is continuous at a point c if:",
+      "options": ["lim(x→c) f(x) = f(c)", "f is differentiable at c", "f(c) = 0", "f is defined only at c"],
+      "correct_answer": "lim(x→c) f(x) = f(c)",
+      "explanation": "Continuity at a point requires that the limit as x approaches c exists and equals the function's actual value there.",
+      "topic": "Continuity",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Using the epsilon-delta definition, f is continuous at c if for every ε > 0 there exists δ > 0 such that:",
+      "options": ["|x − c| < δ implies |f(x) − f(c)| < ε", "|f(x) − f(c)| < δ implies |x − c| < ε", "f(x) = f(c) for all x", "δ depends only on f(c), not on ε"],
+      "correct_answer": "|x − c| < δ implies |f(x) − f(c)| < ε",
+      "explanation": "This is the precise epsilon-delta formulation: x sufficiently close to c (within δ) forces f(x) to be within ε of f(c).",
+      "topic": "Continuity",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The function f(x) = 1/x is discontinuous at x = 0 because:",
+      "options": ["f is not defined at x = 0", "f(0) = 0 but the limit is different", "f is continuous everywhere including x = 0", "The limit as x → 0 equals 1"],
+      "correct_answer": "f is not defined at x = 0",
+      "explanation": "Since 1/x has no value at x = 0 (division by zero is undefined), continuity there fails trivially, and the limit also does not exist as a finite number.",
+      "topic": "Continuity",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The Intermediate Value Theorem states that if f is continuous on [a, b] and k is any value between f(a) and f(b), then:",
+      "options": ["There exists c ∈ [a, b] such that f(c) = k", "f(a) must equal f(b)", "f is differentiable on (a, b)", "k must equal zero"],
+      "correct_answer": "There exists c ∈ [a, b] such that f(c) = k",
+      "explanation": "The IVT guarantees a continuous function on a closed interval attains every value between its endpoint values.",
+      "topic": "Continuity",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Extreme Value Theorem guarantees that a continuous function on a closed, bounded interval [a, b]:",
+      "options": ["Attains both a maximum and a minimum value on [a, b]", "Is unbounded on [a, b]", "Has no roots on [a, b]", "Is strictly increasing on [a, b]"],
+      "correct_answer": "Attains both a maximum and a minimum value on [a, b]",
+      "explanation": "Continuity on a compact (closed and bounded) interval ensures the function achieves both its supremum and infimum as actual values.",
+      "topic": "Continuity",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A set S ⊆ ℝ is called dense in ℝ if:",
+      "options": ["Every open interval of ℝ contains an element of S", "S = ℝ", "S is a finite set", "S contains only integers"],
+      "correct_answer": "Every open interval of ℝ contains an element of S",
+      "explanation": "Density means elements of S can be found arbitrarily close to any real number; the rationals ℚ are a classic dense subset of ℝ.",
+      "topic": "Real number system",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The Bolzano-Weierstrass Theorem states that:",
+      "options": ["Every bounded sequence of real numbers has a convergent subsequence", "Every sequence converges", "Every unbounded sequence has a limit", "Every convergent sequence is monotonic"],
+      "correct_answer": "Every bounded sequence of real numbers has a convergent subsequence",
+      "explanation": "This foundational compactness result guarantees a convergent subsequence exists whenever the original sequence is bounded.",
+      "topic": "Sequences",
+      "difficulty": "hard"
+    },
+    {
+      "question": "If lim(n→∞) an = L and lim(n→∞) bn = M, then lim(n→∞) (an + bn) equals:",
+      "options": ["L + M", "L × M", "L − M", "It cannot be determined"],
+      "correct_answer": "L + M",
+      "explanation": "By the algebra-of-limits theorem, the limit of a sum of convergent sequences equals the sum of their individual limits.",
+      "topic": "Sequences",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The set of natural numbers ℕ is:",
+      "options": ["Unbounded above in ℝ, by the Archimedean Property", "Bounded above in ℝ", "Equal to ℝ", "A finite set"],
+      "correct_answer": "Unbounded above in ℝ, by the Archimedean Property",
+      "explanation": "The Archimedean Property states that for any real number x, there exists a natural number n greater than x, so ℕ has no upper bound in ℝ.",
+      "topic": "Real number system",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Alternating series test: the series Σ(−1)^n / n converges because:",
+      "options": ["Its terms decrease in absolute value to 0 while alternating in sign", "All its terms are positive", "It is a geometric series", "It is absolutely convergent"],
+      "correct_answer": "Its terms decrease in absolute value to 0 while alternating in sign",
+      "explanation": "The Alternating Series Test guarantees convergence when terms alternate in sign, decrease in magnitude, and tend to zero — conditions satisfied by 1/n; note this series is only conditionally, not absolutely, convergent.",
+      "topic": "Infinite series",
+      "difficulty": "hard"
+    },
+    {
+      "question": "If f and g are both continuous at x = c, then which of the following is also necessarily continuous at c?",
+      "options": ["f + g", "f / g, even when g(c) = 0", "1/f, even when f(c) = 0", "None of these combinations are continuous"],
+      "correct_answer": "f + g",
+      "explanation": "Sums of continuous functions are always continuous; quotients require the denominator to be nonzero at the point in question.",
+      "topic": "Continuity",
+      "difficulty": "medium"
+    }
+  ]
+}

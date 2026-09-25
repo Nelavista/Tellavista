@@ -1,0 +1,365 @@
+{
+  "course_code": "PHY104",
+  "title": "Heat & Thermodynamics",
+  "level": "100",
+  "source_note": "Standard NUC-aligned Nigerian university 100L Heat & Thermodynamics curriculum: temperature and thermometry, thermal expansion, calorimetry, gas laws, kinetic theory of gases, laws of thermodynamics, and heat transfer.",
+  "questions": [
+    {
+      "question": "On the Kelvin temperature scale, absolute zero corresponds to approximately:",
+      "options": ["-273 degrees Celsius", "0 degrees Celsius", "-100 degrees Celsius", "100 degrees Celsius"],
+      "correct_answer": "-273 degrees Celsius",
+      "explanation": "Absolute zero, the temperature at which molecular kinetic energy is theoretically minimum, is 0 K, which equals -273.15 degrees Celsius.",
+      "topic": "Temperature and thermometry",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Convert 100 degrees Celsius to Kelvin.",
+      "options": ["373 K", "273 K", "100 K", "473 K"],
+      "correct_answer": "373 K",
+      "explanation": "T(K) = T(C) + 273, so 100 degrees Celsius = 100 + 273 = 373 K.",
+      "topic": "Temperature and thermometry",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A thermometer used to measure very high temperatures, such as in furnaces, without direct contact, is a:",
+      "options": ["Pyrometer", "Mercury-in-glass thermometer", "Alcohol thermometer", "Clinical thermometer"],
+      "correct_answer": "Pyrometer",
+      "explanation": "A pyrometer measures very high temperatures remotely by detecting the thermal radiation emitted by a hot body.",
+      "topic": "Temperature and thermometry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The property used in a mercury-in-glass thermometer to measure temperature is:",
+      "options": ["Thermal expansion of mercury", "Electrical resistance of mercury", "Pressure of mercury vapour", "Colour change of mercury"],
+      "correct_answer": "Thermal expansion of mercury",
+      "explanation": "As temperature rises, mercury expands in a fairly uniform way and rises up the capillary tube, giving a reading proportional to temperature.",
+      "topic": "Temperature and thermometry",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A steel rod of length 2 m and linear expansivity 1.2 x 10^-5 /K is heated through a temperature rise of 50 K. What is its increase in length?",
+      "options": ["1.2 x 10^-3 m", "1.2 x 10^-5 m", "6.0 x 10^-2 m", "2.4 x 10^-3 m"],
+      "correct_answer": "1.2 x 10^-3 m",
+      "explanation": "Increase in length = original length x linear expansivity x temperature change = 2 x 1.2x10^-5 x 50 = 1.2x10^-3 m.",
+      "topic": "Thermal expansion",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The anomalous expansion of water refers to the fact that water:",
+      "options": [
+        "Contracts as it is heated from 0 degrees Celsius to 4 degrees Celsius, then expands above 4 degrees Celsius",
+        "Expands continuously as temperature rises from 0 degrees Celsius",
+        "Does not expand at any temperature",
+        "Has a constant density at all temperatures"
+      ],
+      "correct_answer": "Contracts as it is heated from 0 degrees Celsius to 4 degrees Celsius, then expands above 4 degrees Celsius",
+      "explanation": "Water has its maximum density at 4 degrees Celsius; between 0 and 4 degrees Celsius it contracts on heating, unlike most substances, before expanding normally above 4 degrees Celsius.",
+      "topic": "Thermal expansion",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The specific heat capacity of a substance is defined as:",
+      "options": [
+        "The heat energy required to raise the temperature of a unit mass of the substance by one degree",
+        "The total heat energy contained in a substance",
+        "The heat energy required to melt a unit mass of the substance",
+        "The heat energy lost per second by the substance"
+      ],
+      "correct_answer": "The heat energy required to raise the temperature of a unit mass of the substance by one degree",
+      "explanation": "Specific heat capacity c is defined by Q = mcΔT, the energy needed to raise one kilogram of a substance by one Kelvin (or degree Celsius).",
+      "topic": "Calorimetry",
+      "difficulty": "easy"
+    },
+    {
+      "question": "How much heat energy is required to raise the temperature of 2 kg of water from 20 degrees Celsius to 40 degrees Celsius? (specific heat capacity of water = 4200 J/kgK)",
+      "options": ["168000 J", "84000 J", "8400 J", "336000 J"],
+      "correct_answer": "168000 J",
+      "explanation": "Q = mcΔT = 2 x 4200 x (40-20) = 2 x 4200 x 20 = 168000 J.",
+      "topic": "Calorimetry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the method of mixtures used to determine specific heat capacity, the underlying principle is that:",
+      "options": [
+        "Heat lost by the hotter substance equals heat gained by the colder substance (assuming no losses to surroundings)",
+        "The final temperature always equals the average of the initial temperatures",
+        "Heat lost is always greater than heat gained",
+        "Specific heat capacity does not affect the final temperature"
+      ],
+      "correct_answer": "Heat lost by the hotter substance equals heat gained by the colder substance (assuming no losses to surroundings)",
+      "explanation": "The method of mixtures relies on conservation of energy: in an insulated system, heat lost by the hot body equals heat gained by the cold body and calorimeter.",
+      "topic": "Calorimetry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Latent heat of fusion is the heat energy required to:",
+      "options": [
+        "Change a unit mass of a substance from solid to liquid at constant temperature",
+        "Raise the temperature of a substance by one degree",
+        "Change a unit mass of a substance from liquid to gas",
+        "Cool a substance from liquid to solid"
+      ],
+      "correct_answer": "Change a unit mass of a substance from solid to liquid at constant temperature",
+      "explanation": "Latent heat of fusion is the energy absorbed to melt a unit mass of a solid into liquid at its melting point, without a change in temperature.",
+      "topic": "Calorimetry - latent heat",
+      "difficulty": "easy"
+    },
+    {
+      "question": "How much heat is required to completely melt 0.5 kg of ice at 0 degrees Celsius? (specific latent heat of fusion of ice = 334000 J/kg)",
+      "options": ["167000 J", "334000 J", "668000 J", "16700 J"],
+      "correct_answer": "167000 J",
+      "explanation": "Heat required = mass x specific latent heat of fusion = 0.5 x 334000 = 167000 J.",
+      "topic": "Calorimetry - latent heat",
+      "difficulty": "medium"
+    },
+    {
+      "question": "During a change of state (e.g. melting or boiling) at constant pressure, the temperature of the substance:",
+      "options": ["Remains constant", "Increases steadily", "Decreases steadily", "Fluctuates randomly"],
+      "correct_answer": "Remains constant",
+      "explanation": "During a phase change, all the heat energy supplied goes into breaking intermolecular bonds rather than raising kinetic energy, so temperature stays constant.",
+      "topic": "Calorimetry - latent heat",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Boyle's law states that, at constant temperature, the pressure of a fixed mass of gas is:",
+      "options": [
+        "Inversely proportional to its volume",
+        "Directly proportional to its volume",
+        "Directly proportional to the square of its volume",
+        "Independent of its volume"
+      ],
+      "correct_answer": "Inversely proportional to its volume",
+      "explanation": "Boyle's law states PV = constant at constant temperature, so pressure and volume are inversely proportional.",
+      "topic": "Gas laws",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A gas occupies 4 litres at a pressure of 200 kPa. What will its volume be if the pressure is increased to 400 kPa at constant temperature?",
+      "options": ["2 litres", "8 litres", "4 litres", "1 litre"],
+      "correct_answer": "2 litres",
+      "explanation": "By Boyle's law, P1V1 = P2V2, so 200x4 = 400xV2, giving V2 = 800/400 = 2 litres.",
+      "topic": "Gas laws",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Charles's law states that, at constant pressure, the volume of a fixed mass of gas is:",
+      "options": [
+        "Directly proportional to its absolute (Kelvin) temperature",
+        "Inversely proportional to its absolute temperature",
+        "Independent of its temperature",
+        "Directly proportional to its temperature in Celsius"
+      ],
+      "correct_answer": "Directly proportional to its absolute (Kelvin) temperature",
+      "explanation": "Charles's law states V/T = constant at constant pressure, where T must be measured in Kelvin.",
+      "topic": "Gas laws",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The pressure law (Gay-Lussac's law) states that, at constant volume, the pressure of a fixed mass of gas is:",
+      "options": [
+        "Directly proportional to its absolute temperature",
+        "Inversely proportional to its absolute temperature",
+        "Independent of temperature",
+        "Inversely proportional to its volume"
+      ],
+      "correct_answer": "Directly proportional to its absolute temperature",
+      "explanation": "The pressure law states P/T = constant at constant volume, meaning pressure rises proportionally with absolute temperature.",
+      "topic": "Gas laws",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which equation correctly represents the ideal gas equation for n moles of gas?",
+      "options": ["PV = nRT", "PV = nR/T", "P/V = nRT", "PVT = nR"],
+      "correct_answer": "PV = nRT",
+      "explanation": "The ideal gas equation combines Boyle's, Charles's, and Avogadro's laws into PV = nRT, where R is the universal gas constant.",
+      "topic": "Gas laws",
+      "difficulty": "medium"
+    },
+    {
+      "question": "According to the kinetic theory of gases, the pressure exerted by a gas on the walls of its container is due to:",
+      "options": [
+        "Continuous collisions of gas molecules with the walls of the container",
+        "The weight of the gas molecules",
+        "Chemical reactions between gas molecules and the container",
+        "The viscosity of the gas"
+      ],
+      "correct_answer": "Continuous collisions of gas molecules with the walls of the container",
+      "explanation": "Kinetic theory explains gas pressure as the result of the rapid, random collisions of gas molecules against the container walls, transferring momentum.",
+      "topic": "Kinetic theory of gases",
+      "difficulty": "medium"
+    },
+    {
+      "question": "According to the kinetic theory of gases, the absolute temperature of a gas is directly related to:",
+      "options": [
+        "The average kinetic energy of its molecules",
+        "The total volume of the gas",
+        "The pressure of the gas alone",
+        "The mass of individual molecules only"
+      ],
+      "correct_answer": "The average kinetic energy of its molecules",
+      "explanation": "Kinetic theory shows that absolute temperature is proportional to the average translational kinetic energy of the gas molecules.",
+      "topic": "Kinetic theory of gases",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The zeroth law of thermodynamics states that:",
+      "options": [
+        "If two systems are each in thermal equilibrium with a third system, they are in thermal equilibrium with each other",
+        "Energy can neither be created nor destroyed",
+        "Entropy of an isolated system never decreases",
+        "Absolute zero cannot be reached in a finite number of steps"
+      ],
+      "correct_answer": "If two systems are each in thermal equilibrium with a third system, they are in thermal equilibrium with each other",
+      "explanation": "The zeroth law establishes the concept of temperature: thermal equilibrium is transitive between systems, which underlies the use of thermometers.",
+      "topic": "Laws of thermodynamics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The first law of thermodynamics is an expression of:",
+      "options": [
+        "The conservation of energy",
+        "The conservation of momentum",
+        "The increase of entropy in isolated systems",
+        "Thermal equilibrium between systems"
+      ],
+      "correct_answer": "The conservation of energy",
+      "explanation": "The first law states that the change in internal energy of a system equals the heat added to it minus the work done by it (ΔU = Q - W), reflecting energy conservation.",
+      "topic": "Laws of thermodynamics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the first law of thermodynamics expression ΔU = Q - W, what does W represent?",
+      "options": [
+        "Work done by the system on its surroundings",
+        "Weight of the system",
+        "Work done on the system by the surroundings",
+        "The change in temperature"
+      ],
+      "correct_answer": "Work done by the system on its surroundings",
+      "explanation": "In this standard convention, W is the work done by the system, Q is heat added to the system, and ΔU is the resulting change in internal energy.",
+      "topic": "Laws of thermodynamics",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The second law of thermodynamics implies that:",
+      "options": [
+        "Heat cannot spontaneously flow from a colder body to a hotter body without external work",
+        "Energy can be created from nothing",
+        "The internal energy of an isolated system is always zero",
+        "All processes are perfectly reversible"
+      ],
+      "correct_answer": "Heat cannot spontaneously flow from a colder body to a hotter body without external work",
+      "explanation": "One statement of the second law (Clausius statement) is that heat flows naturally from hot to cold, and moving it the other way requires external work, as in a refrigerator.",
+      "topic": "Laws of thermodynamics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Entropy, as used in thermodynamics, is best described as a measure of:",
+      "options": ["The degree of disorder or randomness of a system", "The total heat content of a system", "The pressure of a system", "The temperature of a system"],
+      "correct_answer": "The degree of disorder or randomness of a system",
+      "explanation": "Entropy quantifies the disorder of a system; the second law states that the total entropy of an isolated system never decreases over time.",
+      "topic": "Laws of thermodynamics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In an isothermal process, which quantity remains constant?",
+      "options": ["Temperature", "Pressure", "Volume", "Heat"],
+      "correct_answer": "Temperature",
+      "explanation": "An isothermal process occurs at constant temperature, so the internal energy of an ideal gas does not change and all heat input goes into work done.",
+      "topic": "Thermodynamic processes",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In an adiabatic process, which of the following is true?",
+      "options": [
+        "No heat is exchanged between the system and its surroundings",
+        "Temperature remains constant",
+        "Pressure remains constant",
+        "Volume remains constant"
+      ],
+      "correct_answer": "No heat is exchanged between the system and its surroundings",
+      "explanation": "An adiabatic process is defined by Q = 0; any change in internal energy comes solely from work done on or by the system.",
+      "topic": "Thermodynamic processes",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Heat transfer through a solid material, without bulk movement of the material itself, occurs mainly by:",
+      "options": ["Conduction", "Convection", "Radiation", "Evaporation"],
+      "correct_answer": "Conduction",
+      "explanation": "Conduction transfers heat through a material via molecular and electron collisions without the material itself moving, as in a metal rod heated at one end.",
+      "topic": "Heat transfer",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Convection as a mode of heat transfer occurs mainly in:",
+      "options": ["Fluids (liquids and gases)", "Solids only", "A vacuum", "Perfectly rigid bodies"],
+      "correct_answer": "Fluids (liquids and gases)",
+      "explanation": "Convection involves the bulk movement of heated fluid (liquid or gas) carrying thermal energy from one place to another, and cannot occur in rigid solids or a vacuum.",
+      "topic": "Heat transfer",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Heat from the Sun reaches the Earth mainly through:",
+      "options": ["Radiation", "Conduction", "Convection", "Diffusion"],
+      "correct_answer": "Radiation",
+      "explanation": "Since space is essentially a vacuum, energy from the Sun travels to Earth as electromagnetic radiation, which requires no medium.",
+      "topic": "Heat transfer",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A good thermal conductor generally has:",
+      "options": ["Free electrons that can transfer kinetic energy rapidly", "No free electrons at all", "Low density and high porosity", "A crystalline, insulating lattice only"],
+      "correct_answer": "Free electrons that can transfer kinetic energy rapidly",
+      "explanation": "Metals are good thermal conductors largely because their free (delocalised) electrons can rapidly transfer kinetic energy through the material.",
+      "topic": "Heat transfer",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which material below would be the best thermal insulator?",
+      "options": ["Wool", "Copper", "Aluminium", "Silver"],
+      "correct_answer": "Wool",
+      "explanation": "Wool traps air within its fibres and, unlike metals, has no free electrons to conduct heat efficiently, making it a good thermal insulator.",
+      "topic": "Heat transfer",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A calorimeter is used in experiments primarily to:",
+      "options": [
+        "Measure quantities of heat exchanged during physical or chemical processes",
+        "Measure the pressure of a gas",
+        "Measure the volume of a liquid",
+        "Measure electrical resistance"
+      ],
+      "correct_answer": "Measure quantities of heat exchanged during physical or chemical processes",
+      "explanation": "A calorimeter is an insulated vessel used to measure heat transferred during processes such as mixing substances at different temperatures or combustion.",
+      "topic": "Calorimetry",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Why is a calorimeter usually made with a polished, shiny outer surface?",
+      "options": [
+        "To minimise heat loss by radiation from its surface",
+        "To increase its thermal conductivity",
+        "To increase heat loss by radiation",
+        "To make it lighter in weight"
+      ],
+      "correct_answer": "To minimise heat loss by radiation from its surface",
+      "explanation": "A polished, shiny surface is a poor emitter (and absorber) of thermal radiation, which helps minimise unwanted heat exchange with the surroundings during calorimetry experiments.",
+      "topic": "Calorimetry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The triple point of water is the unique condition at which:",
+      "options": [
+        "Solid, liquid, and gaseous water coexist in equilibrium",
+        "Water boils at sea level pressure",
+        "Water freezes at any pressure",
+        "Water has its maximum density"
+      ],
+      "correct_answer": "Solid, liquid, and gaseous water coexist in equilibrium",
+      "explanation": "The triple point of water occurs at a specific temperature (0.01 degrees Celsius) and pressure where ice, liquid water, and water vapour exist simultaneously in equilibrium, and is used to define the Kelvin scale.",
+      "topic": "Temperature and thermometry",
+      "difficulty": "hard"
+    }
+  ]
+}

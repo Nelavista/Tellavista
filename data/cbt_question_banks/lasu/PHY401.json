@@ -1,0 +1,450 @@
+{
+  "course_code": "PHY401",
+  "title": "Advanced Quantum Mechanics",
+  "level": "400",
+  "source_note": "Graduate-entry-level advanced quantum mechanics topics (perturbation theory, variational method, WKB, angular momentum addition, identical particles, scattering theory, introductory relativistic quantum mechanics) building on PHY301/302, following standard texts such as Griffiths' Introduction to Quantum Mechanics and Sakurai's Modern Quantum Mechanics.",
+  "questions": [
+    {
+      "question": "In time-independent (Rayleigh-Schrodinger) perturbation theory, the first-order correction to the energy of a non-degenerate state |n> is given by:",
+      "options": [
+        "E_n^(1) = <n|H'|n>, the expectation value of the perturbation in the unperturbed state",
+        "E_n^(1) = <n|H0|n>",
+        "E_n^(1) = sum over m of |<m|H'|n>|^2",
+        "E_n^(1) = 0 always"
+      ],
+      "correct_answer": "E_n^(1) = <n|H'|n>, the expectation value of the perturbation in the unperturbed state",
+      "explanation": "The first-order energy correction in non-degenerate perturbation theory is simply the expectation value of the perturbing Hamiltonian H' evaluated in the unperturbed eigenstate |n>.",
+      "topic": "Time-independent perturbation theory",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In non-degenerate perturbation theory, the first-order correction to the wavefunction |n^(1)> is expressed as an expansion over:",
+      "options": [
+        "Only the state |n> itself",
+        "All other unperturbed eigenstates |m> (m ≠ n), weighted by matrix elements <m|H'|n> divided by energy differences",
+        "The perturbing potential eigenstates only",
+        "A single arbitrary state chosen freely"
+      ],
+      "correct_answer": "All other unperturbed eigenstates |m> (m ≠ n), weighted by matrix elements <m|H'|n> divided by energy differences",
+      "explanation": "The first-order wavefunction correction mixes in contributions from all other unperturbed states, with coefficients <m|H'|n>/(E_n^(0) - E_m^(0)), m ≠ n.",
+      "topic": "Time-independent perturbation theory",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Degenerate perturbation theory differs from the non-degenerate case mainly because:",
+      "options": [
+        "One must first diagonalize the perturbation within the degenerate subspace to find the 'good' zeroth-order states before applying standard perturbative formulas",
+        "No perturbative correction to energy is possible for degenerate states",
+        "The unperturbed Hamiltonian is ignored entirely",
+        "Only the second-order energy correction needs to be computed"
+      ],
+      "correct_answer": "One must first diagonalize the perturbation within the degenerate subspace to find the 'good' zeroth-order states before applying standard perturbative formulas",
+      "explanation": "When degeneracy is present, the standard formulas diverge (energy denominators vanish) unless the perturbation is first diagonalized within the degenerate subspace to identify the correct zeroth-order linear combinations.",
+      "topic": "Degenerate perturbation theory",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The linear Stark effect (first-order energy shift linear in the applied electric field) is observed in the hydrogen atom's excited states because:",
+      "options": [
+        "Hydrogen's excited states with the same n but different l are degenerate, allowing a non-zero first-order matrix element of the perturbation",
+        "Hydrogen has no degenerate states at all",
+        "The electric field has no effect on hydrogen",
+        "Only the ground state responds to an electric field"
+      ],
+      "correct_answer": "Hydrogen's excited states with the same n but different l are degenerate, allowing a non-zero first-order matrix element of the perturbation",
+      "explanation": "Because states of the same n but different l are degenerate in hydrogen, degenerate perturbation theory applies, and certain matrix elements of the electric dipole perturbation are non-zero, producing a shift linear in the field (unlike most other atoms, which show only a quadratic, second-order Stark effect).",
+      "topic": "Time-independent perturbation theory",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Time-dependent perturbation theory is primarily used to calculate:",
+      "options": [
+        "The static energy levels of a time-independent Hamiltonian",
+        "Transition probabilities between quantum states induced by a time-varying perturbation",
+        "The ground state energy using a trial wavefunction",
+        "The classical trajectory of a particle"
+      ],
+      "correct_answer": "Transition probabilities between quantum states induced by a time-varying perturbation",
+      "explanation": "Time-dependent perturbation theory computes the probability amplitude for a system to transition from an initial state to a final state under the influence of a time-dependent perturbing potential.",
+      "topic": "Time-dependent perturbation theory",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Fermi's golden rule gives the transition rate for a system under a time-dependent perturbation as proportional to:",
+      "options": [
+        "The square of the matrix element of the perturbation between initial and final states, times the density of final states",
+        "The perturbation matrix element to the first power only, independent of the density of states",
+        "The energy of the initial state alone",
+        "The inverse of Planck's constant squared, with no dependence on matrix elements"
+      ],
+      "correct_answer": "The square of the matrix element of the perturbation between initial and final states, times the density of final states",
+      "explanation": "Fermi's golden rule states that the transition rate W = (2*pi/h-bar) * |<f|H'|i>|^2 * rho(E_f), proportional to the squared matrix element and the density of final states rho(E_f).",
+      "topic": "Time-dependent perturbation theory",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In the interaction of an atom with an oscillating electromagnetic field, the electric dipole approximation assumes that:",
+      "options": [
+        "The wavelength of the radiation is much larger than the size of the atom, so the field is treated as spatially uniform over the atom",
+        "The atom has no electric dipole moment",
+        "The field varies extremely rapidly within the atomic dimensions",
+        "Only magnetic interactions are considered"
+      ],
+      "correct_answer": "The wavelength of the radiation is much larger than the size of the atom, so the field is treated as spatially uniform over the atom",
+      "explanation": "The dipole approximation is valid when the radiation wavelength greatly exceeds atomic dimensions, allowing the spatial variation of the field across the atom to be neglected, simplifying the interaction to an electric dipole coupling.",
+      "topic": "Time-dependent perturbation theory",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The variational method for estimating the ground state energy of a system relies on the theorem that:",
+      "options": [
+        "The expectation value of the Hamiltonian for any normalized trial wavefunction is always greater than or equal to the true ground state energy",
+        "Any trial wavefunction gives exactly the true ground state energy",
+        "The expectation value of H for a trial function is always less than the true ground state energy",
+        "Trial wavefunctions cannot be used to estimate energies"
+      ],
+      "correct_answer": "The expectation value of the Hamiltonian for any normalized trial wavefunction is always greater than or equal to the true ground state energy",
+      "explanation": "The variational principle guarantees that <psi_trial|H|psi_trial> ≥ E_ground for any normalized trial wavefunction, so minimizing this expectation value over a family of trial functions gives an upper bound estimate of the true ground state energy.",
+      "topic": "Variational method",
+      "difficulty": "medium"
+    },
+    {
+      "question": "When applying the variational method, improving the estimate of the ground state energy is typically achieved by:",
+      "options": [
+        "Using a trial wavefunction with more adjustable (variational) parameters and minimizing the energy expectation value over them",
+        "Ignoring the normalization of the trial wavefunction",
+        "Choosing a trial function orthogonal to the true ground state",
+        "Increasing the mass of the particle in the calculation"
+      ],
+      "correct_answer": "Using a trial wavefunction with more adjustable (variational) parameters and minimizing the energy expectation value over them",
+      "explanation": "A more flexible trial wavefunction (with additional variational parameters) can better approximate the true ground state, and minimizing <H> over these parameters generally yields a lower, more accurate upper-bound energy estimate.",
+      "topic": "Variational method",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The WKB (Wentzel-Kramers-Brillouin) approximation is most useful for finding approximate solutions to the Schrodinger equation when:",
+      "options": [
+        "The potential varies slowly (quasi-classically) compared to the particle's de Broglie wavelength",
+        "The potential is exactly constant everywhere",
+        "The system has no classical analogue at all",
+        "The particle is at rest"
+      ],
+      "correct_answer": "The potential varies slowly (quasi-classically) compared to the particle's de Broglie wavelength",
+      "explanation": "The WKB approximation is a semiclassical method valid when the potential changes slowly on the scale of the local de Broglie wavelength, allowing an approximate solution expressed in terms of a classical action integral.",
+      "topic": "WKB approximation",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The WKB quantization condition for a particle bound in a potential well with two classical turning points is:",
+      "options": [
+        "The integral of the momentum p(x) over one period equals (n + 1/2)*h, for n = 0, 1, 2, ...",
+        "The integral of p(x) equals zero always",
+        "The energy must equal the potential at the turning points exactly, with no integral condition",
+        "p(x) must be constant throughout the well"
+      ],
+      "correct_answer": "The integral of the momentum p(x) over one period equals (n + 1/2)*h, for n = 0, 1, 2, ...",
+      "explanation": "The WKB (Bohr-Sommerfeld) quantization condition states that the closed-path integral of p(x)dx between turning points equals (n+1/2)h, incorporating the Maslov correction from the two turning points.",
+      "topic": "WKB approximation",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The WKB approximation is commonly applied to estimate the tunnelling probability through a potential barrier by evaluating:",
+      "options": [
+        "An exponential decay factor involving the integral of the imaginary local momentum through the classically forbidden region",
+        "The reflection coefficient using only classical mechanics",
+        "The barrier height alone, with no integral needed",
+        "The particle's rest mass energy"
+      ],
+      "correct_answer": "An exponential decay factor involving the integral of the imaginary local momentum through the classically forbidden region",
+      "explanation": "In WKB tunnelling, the transmission probability is approximately exp(-2*integral of |p(x)|/h-bar dx) evaluated across the classically forbidden region where the kinetic energy is negative.",
+      "topic": "WKB approximation",
+      "difficulty": "hard"
+    },
+    {
+      "question": "When adding two angular momenta j1 and j2 quantum mechanically, the total angular momentum quantum number j can take values:",
+      "options": [
+        "j = j1 + j2 only",
+        "j = |j1 - j2|, |j1 - j2| + 1, ..., j1 + j2",
+        "j = j1 * j2",
+        "j = 0 only, regardless of j1 and j2"
+      ],
+      "correct_answer": "j = |j1 - j2|, |j1 - j2| + 1, ..., j1 + j2",
+      "explanation": "The rule for combining two angular momenta gives total j ranging in integer steps from |j1 - j2| to j1 + j2, consistent with the triangle inequality.",
+      "topic": "Angular momentum addition",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Clebsch-Gordan coefficients are used to:",
+      "options": [
+        "Express the coupled total angular momentum eigenstates |j,m> as linear combinations of the uncoupled product states |j1,m1>|j2,m2>",
+        "Calculate the energy eigenvalues of the hydrogen atom directly",
+        "Determine the spin of a single free electron",
+        "Compute the normalization of the wavefunction only"
+      ],
+      "correct_answer": "Express the coupled total angular momentum eigenstates |j,m> as linear combinations of the uncoupled product states |j1,m1>|j2,m2>",
+      "explanation": "Clebsch-Gordan coefficients are the expansion coefficients that transform between the uncoupled basis |j1,m1;j2,m2> and the coupled basis |j,m> of total angular momentum.",
+      "topic": "Angular momentum addition",
+      "difficulty": "hard"
+    },
+    {
+      "question": "For two spin-1/2 particles, combining their spins gives total spin states with S equal to:",
+      "options": [
+        "S = 0 (singlet) and S = 1 (triplet)",
+        "S = 1/2 only",
+        "S = 1 only",
+        "S = 0, 1/2, and 1"
+      ],
+      "correct_answer": "S = 0 (singlet) and S = 1 (triplet)",
+      "explanation": "Combining two spin-1/2 particles yields a total spin S = 0 state (the antisymmetric singlet) and S = 1 states (the symmetric triplet, with three m_s values: -1, 0, +1).",
+      "topic": "Angular momentum addition",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Pauli exclusion principle, in its general quantum mechanical form, requires that the total wavefunction of a system of identical fermions be:",
+      "options": [
+        "Symmetric under exchange of any two particles",
+        "Antisymmetric under exchange of any two particles",
+        "Unchanged in magnitude but arbitrary in phase under particle exchange",
+        "Zero everywhere"
+      ],
+      "correct_answer": "Antisymmetric under exchange of any two particles",
+      "explanation": "For identical fermions (half-integer spin particles), the total wavefunction must be antisymmetric under the exchange of any two particles, which is the general statement underlying the Pauli exclusion principle.",
+      "topic": "Identical particles",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Identical bosons (integer spin particles), unlike fermions, require the total wavefunction to be:",
+      "options": [
+        "Antisymmetric under particle exchange",
+        "Symmetric under particle exchange",
+        "Always zero when two bosons occupy the same state",
+        "Undefined under exchange"
+      ],
+      "correct_answer": "Symmetric under particle exchange",
+      "explanation": "Bosons (integer spin) must have a totally symmetric wavefunction under exchange of any two identical particles, which allows multiple bosons to occupy the same quantum state (unlike fermions).",
+      "topic": "Identical particles",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Slater determinant is a mathematical construction used to:",
+      "options": [
+        "Automatically generate a properly antisymmetrized many-fermion wavefunction from a set of single-particle states",
+        "Symmetrize a many-boson wavefunction",
+        "Calculate the expectation value of momentum",
+        "Solve the free-particle Schrodinger equation in one dimension"
+      ],
+      "correct_answer": "Automatically generate a properly antisymmetrized many-fermion wavefunction from a set of single-particle states",
+      "explanation": "A Slater determinant, formed from single-particle orbitals arranged in a determinant, automatically satisfies antisymmetry under particle exchange, providing a convenient many-fermion wavefunction that respects the Pauli principle.",
+      "topic": "Identical particles",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The exchange interaction, an effect with no classical analogue, arises in systems of identical particles due to:",
+      "options": [
+        "The requirement of a (anti)symmetric wavefunction, which introduces an effective interaction-like energy term even without a direct physical force",
+        "A newly discovered fundamental force distinct from electromagnetism and gravity",
+        "The particles literally exchanging physical positions in space at a finite rate",
+        "Relativistic effects only"
+      ],
+      "correct_answer": "The requirement of a (anti)symmetric wavefunction, which introduces an effective interaction-like energy term even without a direct physical force",
+      "explanation": "Exchange effects arise purely from the symmetrization postulate applied to identical particles' wavefunctions; they alter expectation values of energy (e.g., in helium or ferromagnetism) without being a distinct physical force.",
+      "topic": "Identical particles",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In quantum scattering theory, the differential cross-section dsigma/dOmega is related to the scattering amplitude f(theta) by:",
+      "options": [
+        "dsigma/dOmega = |f(theta)|^2",
+        "dsigma/dOmega = f(theta)",
+        "dsigma/dOmega = 1/f(theta)",
+        "dsigma/dOmega = f(theta)^3"
+      ],
+      "correct_answer": "dsigma/dOmega = |f(theta)|^2",
+      "explanation": "The differential scattering cross-section is given by the modulus squared of the scattering amplitude, dsigma/dOmega = |f(theta)|^2, analogous to how probability relates to a wavefunction's modulus squared.",
+      "topic": "Scattering theory",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The first Born approximation in scattering theory assumes that:",
+      "options": [
+        "The scattering potential is weak enough that the incident wave is only slightly perturbed, allowing the scattered wave to be computed using the unperturbed incident wave inside the interaction integral",
+        "The potential is infinitely strong",
+        "The particle has zero incident energy",
+        "Scattering occurs only at exactly 180 degrees"
+      ],
+      "correct_answer": "The scattering potential is weak enough that the incident wave is only slightly perturbed, allowing the scattered wave to be computed using the unperturbed incident wave inside the interaction integral",
+      "explanation": "The Born approximation treats the scattering potential perturbatively, replacing the exact wavefunction inside the integral for the scattering amplitude with the unperturbed incident plane wave, valid for weak potentials or high energy.",
+      "topic": "Scattering theory",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In the Born approximation, the scattering amplitude f(theta) is essentially the Fourier transform of:",
+      "options": [
+        "The scattering potential V(r)",
+        "The incident particle's kinetic energy",
+        "The total cross-section only",
+        "The particle's spin state"
+      ],
+      "correct_answer": "The scattering potential V(r)",
+      "explanation": "In the first Born approximation, the scattering amplitude is proportional to the three-dimensional Fourier transform of the scattering potential V(r) with respect to the momentum transfer vector.",
+      "topic": "Scattering theory",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The partial wave analysis method for scattering decomposes the incident and scattered waves into components of definite:",
+      "options": [
+        "Orbital angular momentum l",
+        "Spin only",
+        "Electric charge",
+        "Rest mass"
+      ],
+      "correct_answer": "Orbital angular momentum l",
+      "explanation": "Partial wave analysis expands the scattering wavefunction in terms of Legendre polynomials corresponding to definite orbital angular momentum quantum numbers l, useful particularly for low-energy, spherically symmetric potential scattering.",
+      "topic": "Scattering theory",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In partial wave analysis, the phase shift delta_l for each partial wave characterizes:",
+      "options": [
+        "The change in phase of the l-th partial wave caused by the scattering potential, relative to the free-particle wave",
+        "The total energy of the incident particle",
+        "The mass of the target particle",
+        "The exact position of the scattered particle"
+      ],
+      "correct_answer": "The change in phase of the l-th partial wave caused by the scattering potential, relative to the free-particle wave",
+      "explanation": "The phase shift delta_l quantifies how much the scattering potential shifts the phase of the asymptotic radial wavefunction for angular momentum l compared to the free-particle case, and the full set of phase shifts determines the scattering amplitude and cross-section.",
+      "topic": "Scattering theory",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The optical theorem in scattering theory relates the total scattering cross-section to:",
+      "options": [
+        "The imaginary part of the forward (theta = 0) scattering amplitude",
+        "The real part of the backward scattering amplitude",
+        "The particle's rest mass only",
+        "The scattering angle theta = 90 degrees exclusively"
+      ],
+      "correct_answer": "The imaginary part of the forward (theta = 0) scattering amplitude",
+      "explanation": "The optical theorem states that the total cross-section sigma_total is proportional to the imaginary part of the forward scattering amplitude f(0), reflecting conservation of probability (unitarity) in the scattering process.",
+      "topic": "Scattering theory",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The Klein-Gordon equation is a relativistic wave equation that describes:",
+      "options": [
+        "Spin-1/2 particles exclusively",
+        "Spin-0 (scalar) particles, obtained by relativistically quantizing the energy-momentum relation E^2 = p^2*c^2 + m^2*c^4",
+        "Only massless particles",
+        "Classical, non-quantum fields exclusively"
+      ],
+      "correct_answer": "Spin-0 (scalar) particles, obtained by relativistically quantizing the energy-momentum relation E^2 = p^2*c^2 + m^2*c^4",
+      "explanation": "The Klein-Gordon equation is the relativistic wave equation for spin-0 particles, derived by applying the quantum operator substitutions to the relativistic energy-momentum relation E^2 = p^2c^2 + m^2c^4.",
+      "topic": "Relativistic quantum mechanics",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A key historical problem with the Klein-Gordon equation, when first interpreted as a single-particle wave equation, was that:",
+      "options": [
+        "It gave rise to a probability density that could become negative, so it could not be interpreted the same way as the Schrodinger probability density",
+        "It could not describe any particle with nonzero mass",
+        "It violated Newton's laws of motion",
+        "It had no solutions at all"
+      ],
+      "correct_answer": "It gave rise to a probability density that could become negative, so it could not be interpreted the same way as the Schrodinger probability density",
+      "explanation": "Because the Klein-Gordon equation is second-order in time, its associated conserved current can have a density that is not positive-definite, undermining a direct single-particle probability interpretation (later resolved by reinterpreting it as a field equation).",
+      "topic": "Relativistic quantum mechanics",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The Dirac equation was formulated to describe relativistic spin-1/2 particles and, unlike the Klein-Gordon equation, is:",
+      "options": [
+        "Second order in time derivatives, just like Klein-Gordon",
+        "First order in both space and time derivatives, and naturally incorporates electron spin",
+        "Applicable only to spin-0 particles",
+        "A purely classical (non-quantum) equation"
+      ],
+      "correct_answer": "First order in both space and time derivatives, and naturally incorporates electron spin",
+      "explanation": "The Dirac equation is linear (first order) in both time and spatial derivatives, and its four-component spinor solutions naturally include electron spin as well as predicting the existence of antiparticles.",
+      "topic": "Relativistic quantum mechanics",
+      "difficulty": "hard"
+    },
+    {
+      "question": "One of the notable theoretical predictions of the Dirac equation, later confirmed experimentally, was:",
+      "options": [
+        "The existence of antiparticles (such as the positron)",
+        "The exact value of the fine structure constant",
+        "The non-existence of electron spin",
+        "That all particles must be massless"
+      ],
+      "correct_answer": "The existence of antiparticles (such as the positron)",
+      "explanation": "The Dirac equation's negative-energy solutions led Dirac to predict the existence of a positively charged counterpart to the electron, the positron, which was subsequently discovered experimentally by Anderson in 1932.",
+      "topic": "Relativistic quantum mechanics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Second quantization (the formalism of creation and annihilation operators) is particularly useful for describing:",
+      "options": [
+        "Single, isolated particles with no interactions",
+        "Many-particle systems where the number of particles can change, and for handling identical particle statistics systematically",
+        "Purely classical fields with no quantum behaviour",
+        "Only systems with exactly one fermion and one boson"
+      ],
+      "correct_answer": "Many-particle systems where the number of particles can change, and for handling identical particle statistics systematically",
+      "explanation": "Second quantization uses creation and annihilation operators acting on Fock space to elegantly describe systems with variable particle number, automatically encoding the correct (anti)symmetrization for bosons and fermions.",
+      "topic": "Second quantization",
+      "difficulty": "hard"
+    },
+    {
+      "question": "For bosonic creation and annihilation operators a-dagger and a, the fundamental commutation relation is:",
+      "options": [
+        "[a, a-dagger] = 1",
+        "{a, a-dagger} = 1 (anticommutator)",
+        "[a, a-dagger] = 0",
+        "a*a-dagger = 0"
+      ],
+      "correct_answer": "[a, a-dagger] = 1",
+      "explanation": "Bosonic ladder operators satisfy the commutation relation [a, a-dagger] = a*a-dagger - a-dagger*a = 1, which underlies the quantization of the harmonic oscillator and bosonic field theories.",
+      "topic": "Second quantization",
+      "difficulty": "hard"
+    },
+    {
+      "question": "For fermionic creation and annihilation operators, the Pauli exclusion principle is naturally encoded through:",
+      "options": [
+        "Commutation relations identical to those of bosons",
+        "Anticommutation relations, such that applying the same creation operator twice gives zero",
+        "The requirement that all fermion operators commute with the Hamiltonian",
+        "There being no algebraic relation at all between fermionic operators"
+      ],
+      "correct_answer": "Anticommutation relations, such that applying the same creation operator twice gives zero",
+      "explanation": "Fermionic operators satisfy anticommutation relations {a_i, a_j-dagger} = delta_ij, which implies (a-dagger)^2 = 0, automatically preventing two fermions from occupying the same quantum state, consistent with the Pauli exclusion principle.",
+      "topic": "Second quantization",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The Zeeman effect on an atom placed in a weak external magnetic field is treated, in advanced quantum mechanics, as an example of:",
+      "options": [
+        "A time-dependent perturbation with no analytical solution",
+        "A perturbation to the atomic Hamiltonian via degenerate (or near-degenerate) perturbation theory, splitting the otherwise degenerate m_j sublevels",
+        "A purely classical phenomenon unrelated to quantum perturbation theory",
+        "The WKB approximation applied to a free particle"
+      ],
+      "correct_answer": "A perturbation to the atomic Hamiltonian via degenerate (or near-degenerate) perturbation theory, splitting the otherwise degenerate m_j sublevels",
+      "explanation": "The weak-field Zeeman effect is analysed using perturbation theory, treating the interaction of the atom's magnetic moment with the external field as a perturbation that lifts the degeneracy among different m_j sublevels within a given J level.",
+      "topic": "Time-independent perturbation theory",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The helium atom's ground state energy cannot be found exactly analytically because:",
+      "options": [
+        "It is a three-body problem (two electrons and the nucleus) with an electron-electron repulsion term that makes the Schrodinger equation non-separable",
+        "Helium has no ground state",
+        "The Schrodinger equation does not apply to multi-electron atoms",
+        "Helium's nucleus has no charge"
+      ],
+      "correct_answer": "It is a three-body problem (two electrons and the nucleus) with an electron-electron repulsion term that makes the Schrodinger equation non-separable",
+      "explanation": "The electron-electron Coulomb repulsion term in helium's Hamiltonian prevents exact separation of variables, so approximate methods (perturbation theory, the variational method) are needed to estimate its ground state energy.",
+      "topic": "Variational method",
+      "difficulty": "medium"
+    }
+  ]
+}

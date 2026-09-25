@@ -1,0 +1,404 @@
+{
+  "course_code": "BOT401",
+  "title": "Plant Breeding",
+  "level": "400",
+  "source_note": "Standard NUC-aligned Nigerian university 400L Botany/Plant Science Plant Breeding curriculum building on 200/300L genetics and plant physiology: modes of reproduction, breeding methods for self- and cross-pollinated crops, heterosis and hybrid seed production, mutation and polyploidy breeding, germplasm resources, molecular/marker-assisted breeding, and breeding for resistance and quality traits.",
+  "questions": [
+    {
+      "question": "Which of the following is a self-pollinated crop, requiring breeding methods (e.g. pedigree, bulk) suited to largely homozygous populations?",
+      "options": ["Maize", "Rice", "Pearl millet", "Sugar beet"],
+      "correct_answer": "Rice",
+      "explanation": "Rice is predominantly self-pollinated (autogamous), producing highly homozygous inbred lines, unlike cross-pollinated crops such as maize and pearl millet which are naturally outbred.",
+      "topic": "Modes of reproduction",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Apomixis in plant breeding refers to:",
+      "options": [
+        "Sexual reproduction involving fusion of gametes",
+        "Asexual reproduction through seed, producing offspring genetically identical to the maternal parent without fertilisation",
+        "Artificial cross-pollination by hand",
+        "The process of doubling chromosome number using colchicine"
+      ],
+      "correct_answer": "Asexual reproduction through seed, producing offspring genetically identical to the maternal parent without fertilisation",
+      "explanation": "Apomixis is a form of asexual (agamic) reproduction in which seeds are formed without meiosis and fertilisation, producing progeny that are genetic clones of the mother plant -- of great interest for fixing hybrid vigour.",
+      "topic": "Modes of reproduction",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The pure line theory, formulated by Wilhelm Johannsen, established that within a pure line (derived from a single self-pollinated homozygous plant):",
+      "options": [
+        "Further selection is effective in changing the population's genetic mean",
+        "Selection is ineffective in altering the genotype because all individuals are genetically identical, and observed variation is purely environmental",
+        "All individuals are heterozygous",
+        "Mutation rate is zero"
+      ],
+      "correct_answer": "Selection is ineffective in altering the genotype because all individuals are genetically identical, and observed variation is purely environmental",
+      "explanation": "Johannsen's pure line theory showed that within a genetically homozygous pure line, phenotypic variation is entirely environmental, so selection within the pure line cannot shift the population's genetic mean; selection is only effective among pure lines, not within one.",
+      "topic": "Breeding methods for self-pollinated crops",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In the pedigree method of breeding self-pollinated crops, a key feature is that:",
+      "options": [
+        "No record of ancestry is kept from generation to generation",
+        "Individual plant selection is practised in segregating generations (from F2 onward) with detailed records of ancestry maintained",
+        "Selection is delayed until the F10 generation",
+        "It is used exclusively for hybrid seed production in cross-pollinated crops"
+      ],
+      "correct_answer": "Individual plant selection is practised in segregating generations (from F2 onward) with detailed records of ancestry maintained",
+      "explanation": "The pedigree method involves selecting individual plants in each segregating generation starting from F2, with careful pedigree records kept to track the ancestry and performance of each selected line.",
+      "topic": "Breeding methods for self-pollinated crops",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The bulk population method of breeding differs from the pedigree method primarily in that:",
+      "options": [
+        "Selection is delayed until later generations (often F5-F6) when the population has become largely homozygous, and individual selection/pedigree records are not maintained in early generations",
+        "Selection begins immediately in the F1 generation",
+        "It can only be applied to cross-pollinated crops",
+        "It requires continuous backcrossing to a recurrent parent"
+      ],
+      "correct_answer": "Selection is delayed until later generations (often F5-F6) when the population has become largely homozygous, and individual selection/pedigree records are not maintained in early generations",
+      "explanation": "In the bulk method, segregating generations are grown in bulk (harvested and advanced as a mixed population) without individual selection or pedigree records until the population reaches near-homozygosity, allowing natural selection to act.",
+      "topic": "Breeding methods for self-pollinated crops",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The backcross breeding method is most appropriate for:",
+      "options": [
+        "Combining many desirable traits from several unrelated parents simultaneously",
+        "Transferring one or a few simply inherited traits (e.g. disease resistance) from a donor parent into an otherwise well-adapted recurrent parent variety",
+        "Developing entirely new genotypes with no resemblance to either parent",
+        "Producing hybrid vigour in a single generation"
+      ],
+      "correct_answer": "Transferring one or a few simply inherited traits (e.g. disease resistance) from a donor parent into an otherwise well-adapted recurrent parent variety",
+      "explanation": "Backcrossing repeatedly crosses progeny to the recurrent (adapted) parent while selecting for the trait of interest from the donor parent, efficiently transferring simply inherited traits while recovering the recurrent parent's genome.",
+      "topic": "Backcross breeding",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a backcross breeding programme, after 'n' backcrosses to the recurrent parent, the expected proportion of the recurrent parent genome recovered in the progeny is approximately:",
+      "options": ["50%", "1 - (1/2)^(n+1)", "(1/2)^n", "100% after just one backcross"],
+      "correct_answer": "1 - (1/2)^(n+1)",
+      "explanation": "The expected recurrent parent genome recovery after n backcrosses is 1 - (1/2)^(n+1); e.g. after BC1 it is about 75%, after BC5 about 98.4%, approaching but never fully reaching 100%.",
+      "topic": "Backcross breeding",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Heterosis (hybrid vigour) refers to the phenomenon in which:",
+      "options": [
+        "The F1 hybrid performs inferior to both parents",
+        "The F1 hybrid exhibits superior performance (e.g. yield, vigour) compared to the mean or better parent",
+        "Inbreeding increases vigour indefinitely",
+        "Hybrids are always sterile"
+      ],
+      "correct_answer": "The F1 hybrid exhibits superior performance (e.g. yield, vigour) compared to the mean or better parent",
+      "explanation": "Heterosis is the superiority of the F1 hybrid over its parents in traits such as yield, vigour, or stress tolerance, commonly exploited commercially in crops like maize.",
+      "topic": "Hybridization and heterosis",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The dominance hypothesis is one proposed genetic explanation for heterosis. It attributes hybrid vigour to:",
+      "options": [
+        "The masking of deleterious recessive alleles from one parent by dominant favourable alleles from the other parent, concentrated in the heterozygous F1",
+        "Overdominance at every single locus without exception",
+        "Complete absence of gene interaction",
+        "Increased mutation rate in the hybrid"
+      ],
+      "correct_answer": "The masking of deleterious recessive alleles from one parent by dominant favourable alleles from the other parent, concentrated in the heterozygous F1",
+      "explanation": "The dominance hypothesis explains heterosis as resulting from linked dominant favourable alleles from both parents complementing each other in the F1, masking the expression of deleterious recessive alleles carried by either parent.",
+      "topic": "Hybridization and heterosis",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Cytoplasmic male sterility (CMS) is exploited commercially in hybrid seed production mainly to:",
+      "options": [
+        "Increase the plant's photosynthetic rate",
+        "Avoid the need for labour-intensive manual emasculation when producing hybrid seed on a large scale",
+        "Make the plant resistant to herbicides",
+        "Induce polyploidy in the seed parent"
+      ],
+      "correct_answer": "Avoid the need for labour-intensive manual emasculation when producing hybrid seed on a large scale",
+      "explanation": "CMS lines are pollen-sterile due to cytoplasmic (mitochondrial) genes, so they cannot self-pollinate; this eliminates the need for hand emasculation of the female parent in large-scale hybrid seed production, such as for maize, sorghum, and pearl millet.",
+      "topic": "Hybrid seed production",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a cytoplasmic-genetic male sterility (CMS) hybrid seed production system, a 'restorer line' is used to:",
+      "options": [
+        "Maintain male sterility in the seed parent",
+        "Carry a dominant fertility-restorer (Rf) nuclear gene that restores pollen fertility in the F1 hybrid grown by farmers",
+        "Serve as the female parent exclusively",
+        "Prevent cross-pollination entirely"
+      ],
+      "correct_answer": "Carry a dominant fertility-restorer (Rf) nuclear gene that restores pollen fertility in the F1 hybrid grown by farmers",
+      "explanation": "The restorer line carries dominant Rf nuclear genes that restore normal pollen fertility when crossed onto a CMS line, so the resulting F1 hybrid seed sold to farmers is fertile and can set seed/grain normally.",
+      "topic": "Hybrid seed production",
+      "difficulty": "hard"
+    },
+    {
+      "question": "General combining ability (GCA) of an inbred line refers to:",
+      "options": [
+        "Its average performance in hybrid combination across a series of crosses with other lines",
+        "The performance of a specific single cross only",
+        "Its performance when self-pollinated",
+        "Its resistance to a specific pathogen strain"
+      ],
+      "correct_answer": "Its average performance in hybrid combination across a series of crosses with other lines",
+      "explanation": "GCA is the average performance of a line in a series of hybrid combinations (crosses), largely attributed to additive gene action, as distinguished from specific combining ability (SCA) which reflects the performance of a particular cross.",
+      "topic": "Combining ability",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Specific combining ability (SCA) is primarily attributed to which type of gene action?",
+      "options": ["Purely additive gene action", "Non-additive gene action, particularly dominance and epistasis", "Cytoplasmic inheritance only", "Environmental variance only"],
+      "correct_answer": "Non-additive gene action, particularly dominance and epistasis",
+      "explanation": "SCA reflects the deviation of a specific cross's performance from what would be predicted by the GCA of its parents, and is largely due to non-additive gene effects (dominance and epistasis).",
+      "topic": "Combining ability",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Inbreeding depression, commonly observed when normally cross-pollinated crops such as maize are self-pollinated, is characterised by:",
+      "options": [
+        "An increase in vigour and yield with successive generations of selfing",
+        "A progressive decline in vigour, yield, and fertility as heterozygosity decreases and deleterious recessive alleles become homozygous",
+        "No change in the population at all",
+        "Complete sterility after a single generation of selfing"
+      ],
+      "correct_answer": "A progressive decline in vigour, yield, and fertility as heterozygosity decreases and deleterious recessive alleles become homozygous",
+      "explanation": "Inbreeding depression results from increased homozygosity exposing deleterious recessive alleles, causing reduced vigour and yield in normally outcrossing species -- the flip side of heterosis seen when inbred lines are subsequently hybridised.",
+      "topic": "Hybridization and heterosis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Recurrent selection is a breeding scheme mainly used for improving cross-pollinated (outbreeding) crops. Its main objective is to:",
+      "options": [
+        "Fix a single homozygous line as quickly as possible",
+        "Gradually increase the frequency of favourable alleles in a population through repeated cycles of selection and intermating, while maintaining genetic variability",
+        "Eliminate all genetic variation in one generation",
+        "Only be used for vegetatively propagated crops"
+      ],
+      "correct_answer": "Gradually increase the frequency of favourable alleles in a population through repeated cycles of selection and intermating, while maintaining genetic variability",
+      "explanation": "Recurrent selection cycles selection of superior individuals with subsequent intermating among them, progressively improving population mean performance while preserving sufficient genetic variability for continued gains.",
+      "topic": "Population improvement",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A synthetic variety in plant breeding is developed by:",
+      "options": [
+        "Intercrossing a number of genotypes with good combining ability, and the resulting population can be maintained by farmers through open pollination for several generations",
+        "Doubling the chromosome number of a diploid species",
+        "Cloning a single elite plant vegetatively",
+        "Mutagenic treatment of seeds with gamma radiation"
+      ],
+      "correct_answer": "Intercrossing a number of genotypes with good combining ability, and the resulting population can be maintained by farmers through open pollination for several generations",
+      "explanation": "A synthetic variety is produced by intermating several selected lines/clones with good general combining ability; unlike a single-cross hybrid, farmers can save and replant synthetic seed for a few generations with only gradual loss of vigour.",
+      "topic": "Population improvement",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Mutation breeding, using agents such as gamma rays, X-rays, or chemical mutagens like ethyl methanesulfonate (EMS), is primarily employed to:",
+      "options": [
+        "Transfer entire chromosomes from a wild relative",
+        "Induce novel genetic variation for traits not available in existing germplasm, which can then be selected and incorporated into breeding programmes",
+        "Guarantee that all resulting mutants are beneficial",
+        "Eliminate the need for any subsequent selection"
+      ],
+      "correct_answer": "Induce novel genetic variation for traits not available in existing germplasm, which can then be selected and incorporated into breeding programmes",
+      "explanation": "Mutation breeding uses physical or chemical mutagens to induce random mutations, creating new genetic variability (most mutations are neutral or deleterious, but rare useful mutants, e.g. for plant height or disease resistance, can be selected).",
+      "topic": "Mutation breeding",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Colchicine is widely used in plant breeding, particularly in polyploidy breeding, because it:",
+      "options": [
+        "Inhibits spindle fibre formation during mitosis, preventing chromosome separation and resulting in chromosome doubling",
+        "Induces point mutations in DNA bases",
+        "Acts as a selective herbicide",
+        "Promotes cross-pollination in self-pollinated crops"
+      ],
+      "correct_answer": "Inhibits spindle fibre formation during mitosis, preventing chromosome separation and resulting in chromosome doubling",
+      "explanation": "Colchicine disrupts microtubule/spindle formation during cell division, so replicated chromosomes fail to separate into daughter cells, doubling the chromosome number -- widely used to convert diploids to tetraploids or to restore fertility in wide hybrids.",
+      "topic": "Polyploidy breeding",
+      "difficulty": "medium"
+    },
+    {
+      "question": "An allopolyploid, such as bread wheat (Triticum aestivum, hexaploid), arises from:",
+      "options": [
+        "Doubling of the chromosome number of a single species (autopolyploidy)",
+        "Chromosome doubling following hybridisation between two or more different species, combining and doubling their distinct genomes",
+        "Simple mitotic division without any hybridisation",
+        "Loss of an entire chromosome set"
+      ],
+      "correct_answer": "Chromosome doubling following hybridisation between two or more different species, combining and doubling their distinct genomes",
+      "explanation": "Allopolyploids result from interspecific hybridisation followed by chromosome doubling, combining complete diploid genome sets from different parental species; bread wheat is a classic hexaploid allopolyploid derived from three ancestral grass genomes.",
+      "topic": "Polyploidy breeding",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Wide (distant) hybridisation, crossing genetically distant species or genera, often results in weak or aborted hybrid embryos. Which technique is commonly used to rescue such crosses?",
+      "options": ["Grafting", "Embryo culture (embryo rescue)", "Seed dormancy breaking with cold stratification only", "Vernalisation"],
+      "correct_answer": "Embryo culture (embryo rescue)",
+      "explanation": "Embryo rescue involves excising immature or weak hybrid embryos from wide crosses and culturing them in vitro on nutrient media, bypassing endosperm failure or other barriers that would otherwise abort the embryo in planta.",
+      "topic": "Wide hybridization",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Germplasm collections held in seed genebanks are primarily important to plant breeders because they:",
+      "options": [
+        "Guarantee immediate release of new varieties without further testing",
+        "Preserve genetic diversity, including landraces and wild relatives, as a reservoir of useful alleles for future breeding needs",
+        "Eliminate the need for field trials",
+        "Are used only for ornamental purposes"
+      ],
+      "correct_answer": "Preserve genetic diversity, including landraces and wild relatives, as a reservoir of useful alleles for future breeding needs",
+      "explanation": "Germplasm banks conserve the genetic diversity of crop landraces, wild relatives, and breeding lines, serving as a critical resource of alleles (e.g. for disease resistance, stress tolerance) that breeders can draw upon.",
+      "topic": "Germplasm resources",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Marker-assisted selection (MAS) in modern plant breeding uses molecular markers primarily to:",
+      "options": [
+        "Directly alter the plant's DNA sequence",
+        "Track and select for genomic regions linked to a desired trait, without needing to phenotype the trait directly in every generation",
+        "Replace the need for any phenotypic evaluation permanently",
+        "Only be applicable to traits controlled by a single visible morphological marker"
+      ],
+      "correct_answer": "Track and select for genomic regions linked to a desired trait, without needing to phenotype the trait directly in every generation",
+      "explanation": "MAS uses DNA markers (e.g. SSRs, SNPs) tightly linked to genes/QTLs controlling a trait of interest, allowing breeders to select plants carrying the desired allele at the seedling stage without waiting for the trait to be expressed phenotypically.",
+      "topic": "Molecular breeding",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Quantitative trait loci (QTL) mapping is used in plant breeding to:",
+      "options": [
+        "Identify chromosomal regions associated with the variation in a quantitatively inherited (polygenic) trait, such as yield or drought tolerance",
+        "Study traits controlled by a single Mendelian gene only",
+        "Eliminate genetic recombination entirely",
+        "Directly measure protein content without genetics"
+      ],
+      "correct_answer": "Identify chromosomal regions associated with the variation in a quantitatively inherited (polygenic) trait, such as yield or drought tolerance",
+      "explanation": "QTL mapping uses molecular markers and statistical linkage analysis to locate genomic regions contributing to variation in complex, polygenic quantitative traits like yield, plant height, or stress tolerance.",
+      "topic": "Molecular breeding",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Transgenic (genetically modified) crops such as Bt cotton incorporate a gene from Bacillus thuringiensis primarily to confer:",
+      "options": [
+        "Herbicide tolerance",
+        "Resistance to specific insect pests through production of an insecticidal crystal (Cry) protein toxic to target larvae",
+        "Drought tolerance",
+        "Increased seed size only"
+      ],
+      "correct_answer": "Resistance to specific insect pests through production of an insecticidal crystal (Cry) protein toxic to target larvae",
+      "explanation": "Bt crops express Cry (crystal) proteins from Bacillus thuringiensis that are toxic when ingested by specific lepidopteran or coleopteran insect pests, providing built-in insect resistance and reducing reliance on chemical insecticides.",
+      "topic": "Genetic engineering in breeding",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Breeding for horizontal (durable) disease resistance, as opposed to vertical (race-specific) resistance, is generally preferred by breeders in the long term because horizontal resistance:",
+      "options": [
+        "Is controlled by a single major gene and is easily overcome by new pathogen races",
+        "Is typically polygenic, providing partial but more durable resistance against a broad range of pathogen races",
+        "Guarantees complete immunity against every pathogen",
+        "Cannot be combined with agronomic traits"
+      ],
+      "correct_answer": "Is typically polygenic, providing partial but more durable resistance against a broad range of pathogen races",
+      "explanation": "Horizontal resistance, conferred by multiple genes with small additive effects, tends to be more durable because it is harder for a pathogen to overcome simultaneously, unlike single-gene (vertical) resistance which pathogens can defeat via a single mutation.",
+      "topic": "Breeding for disease resistance",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The 'gene-for-gene' hypothesis, proposed by Flor from studies of flax rust, describes the relationship between:",
+      "options": [
+        "A host resistance (R) gene and a corresponding pathogen avirulence (Avr) gene, whose interaction determines resistance or susceptibility",
+        "Two unrelated genes in the same host with no pathogen involvement",
+        "The number of chromosomes in a polyploid series",
+        "Cytoplasmic and nuclear male sterility genes only"
+      ],
+      "correct_answer": "A host resistance (R) gene and a corresponding pathogen avirulence (Avr) gene, whose interaction determines resistance or susceptibility",
+      "explanation": "The gene-for-gene hypothesis proposes that for each host resistance gene, there is a corresponding pathogen avirulence gene; resistance occurs only when the specific R gene product recognises the specific Avr gene product, triggering a defence response.",
+      "topic": "Breeding for disease resistance",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In breeding for abiotic stress tolerance such as drought, a commonly used indirect selection trait in cereals is:",
+      "options": [
+        "Flower colour",
+        "Root system architecture and osmotic adjustment capacity",
+        "Seed coat thickness alone",
+        "Leaf shape only"
+      ],
+      "correct_answer": "Root system architecture and osmotic adjustment capacity",
+      "explanation": "Deep, extensive root systems and the capacity for osmotic adjustment (accumulating solutes to maintain cell turgor under water deficit) are important physiological traits breeders select for or use as indirect indicators of drought tolerance.",
+      "topic": "Breeding for abiotic stress tolerance",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Before a newly developed crop variety can be officially released for commercial cultivation in most national systems (including Nigeria's National Variety Release Committee process), it must undergo:",
+      "options": [
+        "No formal evaluation; any breeder line can be sold directly",
+        "Multi-locational performance trials to confirm Distinctness, Uniformity, and Stability (DUS) and superior performance over existing checks",
+        "Only a single season's trial at the breeder's home station",
+        "Certification is unnecessary if the variety is a hybrid"
+      ],
+      "correct_answer": "Multi-locational performance trials to confirm Distinctness, Uniformity, and Stability (DUS) and superior performance over existing checks",
+      "explanation": "Formal variety release requires multi-locational, multi-year trials demonstrating the new variety's Distinctness, Uniformity and Stability (DUS) and its agronomic superiority over existing released check varieties, before national release and seed certification.",
+      "topic": "Variety release and seed certification",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Plant Breeders' Rights (PBR), a form of intellectual property protection, are granted to breeders primarily to:",
+      "options": [
+        "Give the breeder exclusive commercial rights over propagation and sale of a new, distinct, uniform, and stable variety for a defined period",
+        "Prevent any farmer anywhere from ever growing the variety",
+        "Grant patent rights over the plant species as a whole, including all future varieties",
+        "Replace the need for variety registration"
+      ],
+      "correct_answer": "Give the breeder exclusive commercial rights over propagation and sale of a new, distinct, uniform, and stable variety for a defined period",
+      "explanation": "Plant Breeders' Rights, as under UPOV-type frameworks, grant the breeder of a new, distinct, uniform, and stable variety exclusive rights to control its commercial propagation and marketing for a set number of years, incentivising investment in breeding.",
+      "topic": "Plant breeders' rights",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Tissue culture techniques such as anther/microspore culture are valuable in plant breeding mainly because they can be used to:",
+      "options": [
+        "Produce haploid plants that, after chromosome doubling, yield completely homozygous (doubled haploid) lines in a single generation",
+        "Increase the natural rate of cross-pollination",
+        "Eliminate the need for any field evaluation",
+        "Convert a cross-pollinated crop into an apomictic one"
+      ],
+      "correct_answer": "Produce haploid plants that, after chromosome doubling, yield completely homozygous (doubled haploid) lines in a single generation",
+      "explanation": "Anther or microspore culture regenerates haploid plantlets from pollen; doubling their chromosomes (e.g. with colchicine) produces fully homozygous doubled-haploid lines much faster than the 6-8 generations of selfing normally needed in pedigree breeding.",
+      "topic": "Tissue culture in plant breeding",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In quantitative genetics, broad-sense heritability (H^2) of a trait is defined as:",
+      "options": [
+        "The ratio of additive genetic variance to total phenotypic variance",
+        "The ratio of total genotypic variance to total phenotypic variance",
+        "The ratio of environmental variance to genotypic variance",
+        "Always equal to 1.0 for any trait"
+      ],
+      "correct_answer": "The ratio of total genotypic variance to total phenotypic variance",
+      "explanation": "Broad-sense heritability (H^2 = VG/VP) is the proportion of total phenotypic variance attributable to all genetic causes (additive, dominance, and epistatic variance combined), as opposed to narrow-sense heritability which uses only additive variance.",
+      "topic": "Quantitative genetics in breeding",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Narrow-sense heritability (h^2), the ratio of additive genetic variance to total phenotypic variance, is of particular importance to plant breeders because it:",
+      "options": [
+        "Has no bearing on breeding progress",
+        "Predicts the response to selection, since only additive genetic effects are reliably transmitted from parent to offspring",
+        "Is always higher than broad-sense heritability",
+        "Only applies to asexually propagated crops"
+      ],
+      "correct_answer": "Predicts the response to selection, since only additive genetic effects are reliably transmitted from parent to offspring",
+      "explanation": "Narrow-sense heritability estimates the additive genetic component that offspring reliably inherit from their parents, making it directly useful for predicting the expected genetic gain (response) from a given selection intensity.",
+      "topic": "Quantitative genetics in breeding",
+      "difficulty": "hard"
+    }
+  ]
+}

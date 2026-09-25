@@ -1,0 +1,398 @@
+{
+  "course_code": "MTH103",
+  "title": "Elementary Mathematics III",
+  "level": "100",
+  "source_note": "Standard NUC-aligned Nigerian university 100L second/third-semester mathematics curriculum, as used at LASU: sequences and series, coordinate/analytic geometry (lines, circles, conic sections), vectors in 2D/3D, and complex numbers (polar form and De Moivre's theorem). This continues the Elementary Mathematics sequence after MTH101 (algebra/trig basics) and MTH102 (differentiation/integration), deliberately avoiding overlap with either.",
+  "questions": [
+    {
+      "question": "What is the nth term of the arithmetic progression 3, 7, 11, 15, ...?",
+      "options": ["4n - 1", "3n + 4", "4n + 3", "n + 4"],
+      "correct_answer": "4n - 1",
+      "explanation": "First term a=3, common difference d=4, so the nth term is a+(n-1)d = 3+4(n-1) = 4n-1.",
+      "topic": "Sequences and series",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Find the sum of the first 20 terms of the arithmetic progression 3, 7, 11, 15, ...",
+      "options": ["820", "800", "780", "760"],
+      "correct_answer": "820",
+      "explanation": "S_n = n/2[2a+(n-1)d] = 20/2[2(3)+19(4)] = 10[6+76] = 10(82) = 820.",
+      "topic": "Sequences and series",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the common ratio of the geometric progression 2, 6, 18, 54, ...?",
+      "options": ["3", "4", "2", "6"],
+      "correct_answer": "3",
+      "explanation": "Dividing any term by the preceding term gives the common ratio: 6/2 = 3.",
+      "topic": "Sequences and series",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Find the sum to infinity of the geometric series 8 + 4 + 2 + 1 + ...",
+      "options": ["16", "8", "12", "Does not exist"],
+      "correct_answer": "16",
+      "explanation": "Since |r| = 1/2 < 1, S∞ = a/(1-r) = 8/(1-0.5) = 16.",
+      "topic": "Sequences and series",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A geometric series has sum to infinity only when:",
+      "options": ["|r| < 1", "|r| > 1", "r = 1", "r is a negative integer"],
+      "correct_answer": "|r| < 1",
+      "explanation": "The infinite geometric series converges to a finite sum only when the absolute value of the common ratio is less than 1.",
+      "topic": "Sequences and series",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Find the 6th term of the geometric progression 3, 6, 12, 24, ...",
+      "options": ["96", "48", "192", "64"],
+      "correct_answer": "96",
+      "explanation": "nth term = ar^(n-1) = 3(2)^5 = 3(32) = 96.",
+      "topic": "Sequences and series",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the binomial expansion of (1 + x)^n, the general term is given by:",
+      "options": ["C(n,r) x^r", "n! x^r", "C(n,r) x^n", "r! x^(n-r)"],
+      "correct_answer": "C(n,r) x^r",
+      "explanation": "The general (r+1)th term in the binomial expansion of (1+x)^n is C(n,r)x^r, where C(n,r) is the binomial coefficient.",
+      "topic": "Binomial series",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Expand (1 + x)^3 using the binomial theorem.",
+      "options": ["1 + 3x + 3x^2 + x^3", "1 + 3x + x^2 + x^3", "1 + x + x^2 + x^3", "1 + 3x + 3x^2 + 3x^3"],
+      "correct_answer": "1 + 3x + 3x^2 + x^3",
+      "explanation": "Using binomial coefficients C(3,0)=1, C(3,1)=3, C(3,2)=3, C(3,3)=1 gives 1+3x+3x^2+x^3.",
+      "topic": "Binomial series",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the gradient (slope) of the line joining points (1, 2) and (5, 10)?",
+      "options": ["2", "4", "1/2", "8"],
+      "correct_answer": "2",
+      "explanation": "Gradient = (y2-y1)/(x2-x1) = (10-2)/(5-1) = 8/4 = 2.",
+      "topic": "Coordinate geometry: straight lines",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Find the equation of the straight line with gradient 3 passing through (2, 1).",
+      "options": ["y = 3x - 5", "y = 3x + 5", "y = 3x - 1", "y = x - 5"],
+      "correct_answer": "y = 3x - 5",
+      "explanation": "Using y - y1 = m(x - x1): y - 1 = 3(x - 2), giving y = 3x - 6 + 1 = 3x - 5.",
+      "topic": "Coordinate geometry: straight lines",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Two lines are perpendicular if the product of their gradients equals:",
+      "options": ["-1", "1", "0", "Undefined"],
+      "correct_answer": "-1",
+      "explanation": "Perpendicular lines have gradients that are negative reciprocals of each other, so m1 × m2 = -1.",
+      "topic": "Coordinate geometry: straight lines",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is the equation of a circle with centre (a, b) and radius r?",
+      "options": [
+        "(x-a)^2 + (y-b)^2 = r^2",
+        "(x+a)^2 + (y+b)^2 = r^2",
+        "x^2 + y^2 = r^2",
+        "(x-a) + (y-b) = r"
+      ],
+      "correct_answer": "(x-a)^2 + (y-b)^2 = r^2",
+      "explanation": "This is the standard Cartesian equation for a circle centred at (a,b) with radius r.",
+      "topic": "Coordinate geometry: circles",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Find the centre and radius of the circle x^2 + y^2 - 4x + 6y - 12 = 0.",
+      "options": [
+        "Centre (2, -3), radius 5",
+        "Centre (-2, 3), radius 5",
+        "Centre (2, -3), radius 25",
+        "Centre (4, -6), radius 5"
+      ],
+      "correct_answer": "Centre (2, -3), radius 5",
+      "explanation": "Completing the square: (x-2)^2 + (y+3)^2 = 12+4+9 = 25, so centre (2,-3), radius √25 = 5.",
+      "topic": "Coordinate geometry: circles",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The standard equation of a parabola with vertex at the origin opening to the right is:",
+      "options": ["y^2 = 4ax", "x^2 = 4ay", "x^2/a^2 + y^2/b^2 = 1", "x^2 - y^2 = a^2"],
+      "correct_answer": "y^2 = 4ax",
+      "explanation": "y^2 = 4ax is the standard form of a parabola opening rightward with vertex at the origin and focus at (a,0).",
+      "topic": "Conic sections",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The standard equation of an ellipse centred at the origin is:",
+      "options": ["x^2/a^2 + y^2/b^2 = 1", "y^2 = 4ax", "x^2/a^2 - y^2/b^2 = 1", "x^2 + y^2 = a^2"],
+      "correct_answer": "x^2/a^2 + y^2/b^2 = 1",
+      "explanation": "This is the standard Cartesian form of an ellipse with semi-axes a and b centred at the origin.",
+      "topic": "Conic sections",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The standard equation of a hyperbola centred at the origin (opening left-right) is:",
+      "options": ["x^2/a^2 - y^2/b^2 = 1", "x^2/a^2 + y^2/b^2 = 1", "y^2 = 4ax", "x^2 + y^2 = a^2"],
+      "correct_answer": "x^2/a^2 - y^2/b^2 = 1",
+      "explanation": "The hyperbola's standard form has a minus sign between the squared terms, distinguishing it from the ellipse.",
+      "topic": "Conic sections",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For the ellipse x^2/25 + y^2/16 = 1, what is the length of the semi-major axis?",
+      "options": ["5", "4", "25", "16"],
+      "correct_answer": "5",
+      "explanation": "Since a^2=25 > b^2=16, a=5 is the semi-major axis (along the x-axis here).",
+      "topic": "Conic sections",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A vector has magnitude 5 and direction along the positive x-axis. What is its component form in 2D?",
+      "options": ["(5, 0)", "(0, 5)", "(5, 5)", "(0, 0)"],
+      "correct_answer": "(5, 0)",
+      "explanation": "A vector of magnitude 5 pointing along the positive x-axis has x-component 5 and y-component 0.",
+      "topic": "Vectors",
+      "difficulty": "easy"
+    },
+    {
+      "question": "If a = (2, 3, -1) and b = (1, -2, 4), what is a + b?",
+      "options": ["(3, 1, 3)", "(3, 1, -3)", "(1, 5, -5)", "(3, -1, 3)"],
+      "correct_answer": "(3, 1, 3)",
+      "explanation": "Vector addition is componentwise: (2+1, 3-2, -1+4) = (3, 1, 3).",
+      "topic": "Vectors",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is the magnitude of the vector v = (3, 4)?",
+      "options": ["5", "7", "25", "1"],
+      "correct_answer": "5",
+      "explanation": "|v| = √(3^2 + 4^2) = √25 = 5.",
+      "topic": "Vectors",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The dot product of a = (1, 2, 3) and b = (4, -5, 6) is:",
+      "options": ["12", "0", "5", "20"],
+      "correct_answer": "12",
+      "explanation": "a·b = (1)(4) + (2)(-5) + (3)(6) = 4 - 10 + 18 = 12.",
+      "topic": "Vectors",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Two vectors a and b are perpendicular (orthogonal) if:",
+      "options": ["a·b = 0", "a·b = 1", "|a| = |b|", "a × b = 0"],
+      "correct_answer": "a·b = 0",
+      "explanation": "The dot product of two perpendicular vectors is zero, since cos(90°) = 0.",
+      "topic": "Vectors",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is the cross product a × b used to find, geometrically, for two 3D vectors?",
+      "options": [
+        "A vector perpendicular to both a and b",
+        "The angle between a and b",
+        "The sum of a and b",
+        "A scalar equal to |a||b|"
+      ],
+      "correct_answer": "A vector perpendicular to both a and b",
+      "explanation": "The cross product of two vectors yields a new vector orthogonal to the plane containing the original two vectors.",
+      "topic": "Vectors",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Compute the cross product of a = (1, 0, 0) and b = (0, 1, 0).",
+      "options": ["(0, 0, 1)", "(1, 1, 0)", "(0, 0, 0)", "(1, 0, 1)"],
+      "correct_answer": "(0, 0, 1)",
+      "explanation": "By the right-hand rule (or determinant formula), i × j = k, i.e. (1,0,0) × (0,1,0) = (0,0,1).",
+      "topic": "Vectors",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The angle θ between two vectors a and b can be found using:",
+      "options": ["cos θ = (a·b)/(|a||b|)", "sin θ = (a·b)/(|a||b|)", "tan θ = a·b", "cos θ = a×b"],
+      "correct_answer": "cos θ = (a·b)/(|a||b|)",
+      "explanation": "This formula relates the dot product to the cosine of the angle between two vectors.",
+      "topic": "Vectors",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A complex number z = a + bi has modulus |z| given by:",
+      "options": ["√(a^2 + b^2)", "a + b", "a^2 + b^2", "√(a - b)"],
+      "correct_answer": "√(a^2 + b^2)",
+      "explanation": "The modulus of a complex number is the distance from the origin in the Argand plane, computed as √(a^2+b^2).",
+      "topic": "Complex numbers",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is the modulus of z = 3 + 4i?",
+      "options": ["5", "7", "25", "1"],
+      "correct_answer": "5",
+      "explanation": "|z| = √(3^2+4^2) = √25 = 5.",
+      "topic": "Complex numbers",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Express z = 1 + i in polar form.",
+      "options": ["√2(cos45° + i sin45°)", "2(cos45° + i sin45°)", "√2(cos90° + i sin90°)", "1(cos45° + i sin45°)"],
+      "correct_answer": "√2(cos45° + i sin45°)",
+      "explanation": "|z| = √(1^2+1^2) = √2, and arg(z) = arctan(1/1) = 45°, giving the polar form √2(cos45°+i sin45°).",
+      "topic": "Complex numbers",
+      "difficulty": "medium"
+    },
+    {
+      "question": "De Moivre's theorem states that (cos θ + i sin θ)^n equals:",
+      "options": ["cos(nθ) + i sin(nθ)", "n(cos θ + i sin θ)", "cos θ^n + i sin θ^n", "cos(nθ) - i sin(nθ)"],
+      "correct_answer": "cos(nθ) + i sin(nθ)",
+      "explanation": "De Moivre's theorem gives this identity, useful for raising complex numbers to powers and finding roots.",
+      "topic": "Complex numbers",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Using De Moivre's theorem, evaluate (cos30° + i sin30°)^3.",
+      "options": ["cos90° + i sin90°", "cos30° + i sin30°", "cos10° + i sin10°", "3(cos30° + i sin30°)"],
+      "correct_answer": "cos90° + i sin90°",
+      "explanation": "By De Moivre's theorem, (cosθ+isinθ)^n = cos(nθ)+isin(nθ), so with θ=30°, n=3: cos90°+isin90°.",
+      "topic": "Complex numbers",
+      "difficulty": "hard"
+    },
+    {
+      "question": "What is i^2 equal to (where i is the imaginary unit)?",
+      "options": ["-1", "1", "i", "-i"],
+      "correct_answer": "-1",
+      "explanation": "By definition, the imaginary unit i satisfies i^2 = -1.",
+      "topic": "Complex numbers",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The complex conjugate of z = 5 - 3i is:",
+      "options": ["5 + 3i", "-5 - 3i", "-5 + 3i", "3 - 5i"],
+      "correct_answer": "5 + 3i",
+      "explanation": "The conjugate of a + bi is a - bi, so for 5 - 3i the conjugate is 5 + 3i.",
+      "topic": "Complex numbers",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Simplify (2 + 3i)(1 - i).",
+      "options": ["5 + i", "2 - 3i", "5 - i", "-1 + i"],
+      "correct_answer": "5 + i",
+      "explanation": "(2+3i)(1-i) = 2 - 2i + 3i - 3i^2 = 2 + i + 3 = 5 + i.",
+      "topic": "Complex numbers",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A sequence {an} converges if:",
+      "options": [
+        "lim(n→∞) an exists and is finite",
+        "an is always increasing",
+        "an is always positive",
+        "an = a1 for all n"
+      ],
+      "correct_answer": "lim(n→∞) an exists and is finite",
+      "explanation": "Convergence of a sequence means its terms approach a single finite limit as n tends to infinity.",
+      "topic": "Sequences and series",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What test is commonly used to check convergence of a series like Σ(1/n^2)?",
+      "options": ["Comparison test / p-series test", "Substitution rule", "Chain rule", "Quotient rule"],
+      "correct_answer": "Comparison test / p-series test",
+      "explanation": "Σ(1/n^p) converges for p>1; the p-series test (or comparison test) is used to establish convergence for such series.",
+      "topic": "Sequences and series",
+      "difficulty": "hard"
+    },
+    {
+      "question": "What is the equation of the perpendicular bisector concept used for two points A and B in coordinate geometry?",
+      "options": [
+        "The line equidistant from A and B, perpendicular to AB through its midpoint",
+        "The line joining A and B directly",
+        "A line parallel to AB through the origin",
+        "The circle passing through A and B"
+      ],
+      "correct_answer": "The line equidistant from A and B, perpendicular to AB through its midpoint",
+      "explanation": "The perpendicular bisector of a segment AB consists of all points equidistant from A and B, and passes through the midpoint at right angles to AB.",
+      "topic": "Coordinate geometry: straight lines",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Find the distance between the points (2, 3) and (6, 6).",
+      "options": ["5", "7", "4", "25"],
+      "correct_answer": "5",
+      "explanation": "Distance = √[(6-2)^2+(6-3)^2] = √(16+9) = √25 = 5.",
+      "topic": "Coordinate geometry: straight lines",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A vector r = (2, -1, 3) is scaled by 3. What is 3r?",
+      "options": ["(6, -3, 9)", "(6, -1, 3)", "(2, -3, 9)", "(5, 2, 6)"],
+      "correct_answer": "(6, -3, 9)",
+      "explanation": "Scalar multiplication multiplies every component of the vector by the scalar: 3(2,-1,3) = (6,-3,9).",
+      "topic": "Vectors",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Find the position vector from point A(1, 2, 3) to point B(4, 6, 8).",
+      "options": ["(3, 4, 5)", "(5, 8, 11)", "(-3, -4, -5)", "(4, 6, 8)"],
+      "correct_answer": "(3, 4, 5)",
+      "explanation": "The vector AB = B - A = (4-1, 6-2, 8-3) = (3, 4, 5).",
+      "topic": "Vectors",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A unit vector in the direction of v = (3, 4) is:",
+      "options": ["(3/5, 4/5)", "(3, 4)", "(1/3, 1/4)", "(4/5, 3/5)"],
+      "correct_answer": "(3/5, 4/5)",
+      "explanation": "A unit vector is v/|v|; since |v|=5, the unit vector is (3/5, 4/5).",
+      "topic": "Vectors",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the sum of the interior angles used implicitly when finding the argument of a complex number in the second quadrant (a<0, b>0)?",
+      "options": [
+        "arg(z) = 180° - reference angle",
+        "arg(z) = reference angle",
+        "arg(z) = 90° - reference angle",
+        "arg(z) = 360° - reference angle"
+      ],
+      "correct_answer": "arg(z) = 180° - reference angle",
+      "explanation": "For a complex number in the second quadrant, the argument is measured as 180° minus the acute reference angle from the negative real axis adjustment.",
+      "topic": "Complex numbers",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The sum of the first n natural numbers, 1+2+3+...+n, equals:",
+      "options": ["n(n+1)/2", "n(n-1)/2", "n^2", "n(n+1)"],
+      "correct_answer": "n(n+1)/2",
+      "explanation": "This is the well-known formula for the sum of the first n positive integers, derivable as an arithmetic series.",
+      "topic": "Sequences and series",
+      "difficulty": "easy"
+    },
+    {
+      "question": "For an ellipse x^2/a^2 + y^2/b^2 = 1 with a > b, the eccentricity e is given by:",
+      "options": ["e = √(1 - b^2/a^2)", "e = √(1 + b^2/a^2)", "e = a/b", "e = b/a"],
+      "correct_answer": "e = √(1 - b^2/a^2)",
+      "explanation": "The eccentricity of an ellipse measures its deviation from a circle and is given by e = √(1 - b^2/a^2), where 0 < e < 1.",
+      "topic": "Conic sections",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The focus of the parabola y^2 = 4ax is located at:",
+      "options": ["(a, 0)", "(0, a)", "(-a, 0)", "(a, a)"],
+      "correct_answer": "(a, 0)",
+      "explanation": "For the standard parabola y^2 = 4ax opening rightward, the focus lies at (a, 0) on the axis of symmetry.",
+      "topic": "Conic sections",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Given the vectors a = (2,1,-1) and b = (1,3,2), find a·b + |a|.",
+      "options": ["3 + √6", "7", "√6", "3 - √6"],
+      "correct_answer": "3 + √6",
+      "explanation": "a·b = 2(1)+1(3)+(-1)(2) = 2+3-2 = 3, and |a| = √(2^2+1^2+(-1)^2) = √6, so a·b + |a| = 3 + √6.",
+      "topic": "Vectors",
+      "difficulty": "hard"
+    }
+  ]
+}

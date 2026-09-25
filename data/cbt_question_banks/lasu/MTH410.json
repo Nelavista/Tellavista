@@ -1,0 +1,280 @@
+{
+  "course_code": "MTH410",
+  "title": "Electromagnetism",
+  "level": "400",
+  "source_note": "This is the Mathematics department's mathematical treatment of electromagnetism (standard NUC-aligned 400L content), built on vector calculus: gradient/divergence/curl and the integral theorems, Gauss's, Faraday's and Ampere's laws in integral and differential form, Maxwell's equations and the electromagnetic wave equation, the Poynting vector, electric/magnetic potentials, gauge choices, and boundary conditions.",
+  "questions": [
+    {
+      "question": "The gradient of a scalar field phi, written grad(phi), points in the direction of:",
+      "options": ["The steepest increase of phi, with magnitude equal to the rate of increase", "The steepest decrease of phi", "Zero change in phi", "The average value of phi"],
+      "correct_answer": "The steepest increase of phi, with magnitude equal to the rate of increase",
+      "explanation": "The gradient vector always points toward the direction of fastest increase of a scalar field, with magnitude equal to that maximal rate.",
+      "topic": "Vector calculus",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The divergence of a vector field F, written div(F), at a point measures:",
+      "options": ["The net outward flux per unit volume at that point", "The rotation of F", "The magnitude of F", "The gradient of F"],
+      "correct_answer": "The net outward flux per unit volume at that point",
+      "explanation": "Divergence quantifies how much a vector field spreads out from (or converges into) a given point.",
+      "topic": "Vector calculus",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The curl of a vector field F, written curl(F), measures:",
+      "options": ["The local rotation or circulation density of F", "The net flux of F", "The magnitude of F", "The potential of F"],
+      "correct_answer": "The local rotation or circulation density of F",
+      "explanation": "Curl captures the tendency of a vector field to rotate about a point.",
+      "topic": "Vector calculus",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The Divergence Theorem (Gauss's theorem) relates a volume integral of div(F) to:",
+      "options": ["The flux of F through the closed surface bounding the volume", "A line integral of F", "The curl of F", "The gradient of |F|"],
+      "correct_answer": "The flux of F through the closed surface bounding the volume",
+      "explanation": "This theorem converts a volume integral of divergence into a surface integral of flux, essential for deriving Gauss's law.",
+      "topic": "Vector calculus",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Stokes' Theorem relates the surface integral of curl(F) to:",
+      "options": ["The line integral (circulation) of F around the boundary curve of the surface", "The volume integral of F", "The divergence of F", "A single point value of F"],
+      "correct_answer": "The line integral (circulation) of F around the boundary curve of the surface",
+      "explanation": "Stokes' Theorem converts a surface integral of curl into a line integral around the boundary of that surface, essential for deriving Faraday's and Ampere's laws.",
+      "topic": "Vector calculus",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Gauss's Law in integral form states that the total electric flux through a closed surface equals:",
+      "options": ["The enclosed charge divided by epsilon_0", "The enclosed charge multiplied by epsilon_0", "Zero always", "The surface area times the charge"],
+      "correct_answer": "The enclosed charge divided by epsilon_0",
+      "explanation": "This law directly relates electric flux through any closed surface to the total charge enclosed within it.",
+      "topic": "Gauss's law",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The differential form of Gauss's Law for the electric field is:",
+      "options": ["div(E) = rho / epsilon_0", "curl(E) = rho / epsilon_0", "div(E) = 0 always", "The Laplacian of E equals rho"],
+      "correct_answer": "div(E) = rho / epsilon_0",
+      "explanation": "This local form relates the divergence of the electric field directly to the local charge density.",
+      "topic": "Gauss's law",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Gauss's Law for magnetism, div(B) = 0, expresses the physical fact that:",
+      "options": ["There are no magnetic monopoles", "Magnetic fields are always uniform", "Magnetic flux is never conserved", "B is always zero"],
+      "correct_answer": "There are no magnetic monopoles",
+      "explanation": "The vanishing divergence of B reflects that magnetic field lines have no sources or sinks, unlike electric field lines which begin and end on charges.",
+      "topic": "Gauss's law for magnetism",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Faraday's Law of induction in differential form is written as:",
+      "options": ["curl(E) = -dB/dt", "curl(E) = dB/dt", "div(E) = -dB/dt", "curl(B) = -dE/dt"],
+      "correct_answer": "curl(E) = -dB/dt",
+      "explanation": "Faraday's law states that a time-varying magnetic field induces a circulating electric field, with the negative sign encoding Lenz's law.",
+      "topic": "Faraday's law",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Faraday's Law implies that a time-varying magnetic field:",
+      "options": ["Induces a circulating (non-conservative) electric field", "Has no physical effect", "Only affects magnetic materials", "Cancels Gauss's law"],
+      "correct_answer": "Induces a circulating (non-conservative) electric field",
+      "explanation": "Unlike the conservative electrostatic field, the induced electric field from a changing B has nonzero curl and circulates around the changing flux.",
+      "topic": "Faraday's law",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The original (pre-Maxwell) form of Ampere's Law related the curl of B to:",
+      "options": ["The conduction current density, curl(B) = mu_0 J", "The electric field only", "Zero current", "The magnetic charge"],
+      "correct_answer": "The conduction current density, curl(B) = mu_0 J",
+      "explanation": "Ampere's original law connected the circulation of the magnetic field to the electric current passing through the enclosed surface.",
+      "topic": "Ampere's law",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Maxwell's correction to Ampere's Law added a term called the displacement current, giving:",
+      "options": ["curl(B) = mu_0 J + mu_0 epsilon_0 dE/dt", "curl(B) = mu_0 J only", "curl(B) = 0", "curl(B) = -dE/dt"],
+      "correct_answer": "curl(B) = mu_0 J + mu_0 epsilon_0 dE/dt",
+      "explanation": "Maxwell added the displacement current term to restore consistency with charge conservation in situations with time-varying fields.",
+      "topic": "Ampere-Maxwell law",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The displacement current term was introduced by Maxwell primarily to:",
+      "options": ["Make Ampere's Law consistent with charge conservation in time-varying situations", "Simplify Coulomb's law", "Eliminate the need for Gauss's law", "Remove the magnetic field from the equations"],
+      "correct_answer": "Make Ampere's Law consistent with charge conservation in time-varying situations",
+      "explanation": "Without the displacement current, Ampere's law would contradict the continuity equation whenever charge density changes with time, as in a charging capacitor.",
+      "topic": "Ampere-Maxwell law",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The four Maxwell's equations in differential form, in vacuum, together with the Lorentz force law, fully determine the:",
+      "options": ["Classical dynamics of electric and magnetic fields and their interaction with charges", "Only static electric fields", "Only magnetic fields", "Only relativistic quantum effects"],
+      "correct_answer": "Classical dynamics of electric and magnetic fields and their interaction with charges",
+      "explanation": "Maxwell's equations, combined with the Lorentz force law, constitute the complete classical theory of electromagnetism.",
+      "topic": "Maxwell's equations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Taking the curl of Faraday's Law and combining it with the Ampere-Maxwell Law in a source-free region (rho=0, J=0) leads to:",
+      "options": ["A wave equation for E (and similarly for B)", "A conservation law for charge only", "Gauss's law", "The Lorentz force law"],
+      "correct_answer": "A wave equation for E (and similarly for B)",
+      "explanation": "Combining these two curl equations eliminates one field and produces the classical electromagnetic wave equation.",
+      "topic": "Electromagnetic waves",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The speed of electromagnetic waves in vacuum, derived from Maxwell's equations, is given by:",
+      "options": ["c = 1 / square root of (mu_0 epsilon_0)", "c = mu_0 epsilon_0", "c = mu_0 / epsilon_0", "c = square root of (mu_0 / epsilon_0)"],
+      "correct_answer": "c = 1 / square root of (mu_0 epsilon_0)",
+      "explanation": "This result, obtained purely from the constants in Maxwell's equations, was a triumph predicting that light itself is an electromagnetic wave.",
+      "topic": "Electromagnetic waves",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a plane electromagnetic wave in vacuum, the electric field E, magnetic field B, and direction of propagation k are:",
+      "options": ["Mutually perpendicular", "Parallel to each other", "Antiparallel to each other", "Unrelated in direction"],
+      "correct_answer": "Mutually perpendicular",
+      "explanation": "Plane electromagnetic waves are transverse, with E, B, and the propagation direction forming a mutually orthogonal set.",
+      "topic": "Electromagnetic waves",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Poynting vector S = (1/mu_0) E cross B represents:",
+      "options": ["The energy flux density (power per unit area) carried by the electromagnetic field", "The electric charge density", "The magnetic moment", "The current density"],
+      "correct_answer": "The energy flux density (power per unit area) carried by the electromagnetic field",
+      "explanation": "The Poynting vector describes the direction and magnitude of electromagnetic energy transport.",
+      "topic": "Poynting vector",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The electric potential V is related to the electric field E (in electrostatics) by:",
+      "options": ["E = -grad(V)", "E = grad(V)", "E = curl(V)", "V = div(E)"],
+      "correct_answer": "E = -grad(V)",
+      "explanation": "In electrostatics, the electric field is the negative gradient of the scalar potential, pointing from high to low potential.",
+      "topic": "Electric potential",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In regions of empty space with no charge, the electrostatic potential V satisfies:",
+      "options": ["Laplace's equation, the Laplacian of V equals 0", "Poisson's equation with a nonzero source always", "The wave equation", "grad(V) = 0 identically"],
+      "correct_answer": "Laplace's equation, the Laplacian of V equals 0",
+      "explanation": "In charge-free regions, Poisson's equation reduces to Laplace's equation for the potential.",
+      "topic": "Electric potential",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a region with charge density rho, the electrostatic potential satisfies Poisson's equation:",
+      "options": ["The Laplacian of V equals -rho/epsilon_0", "The Laplacian of V equals rho", "The Laplacian of V equals 0", "grad(V) equals -rho/epsilon_0"],
+      "correct_answer": "The Laplacian of V equals -rho/epsilon_0",
+      "explanation": "Poisson's equation relates the curvature of the potential field directly to the local charge density.",
+      "topic": "Electric potential",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The magnetic field can be written in terms of a vector potential A such that:",
+      "options": ["B = curl(A)", "B = grad(A)", "B = -div(A)", "B = A cross A"],
+      "correct_answer": "B = curl(A)",
+      "explanation": "Defining B as the curl of a vector potential automatically satisfies Gauss's law for magnetism, since the divergence of a curl is always zero.",
+      "topic": "Vector potential",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Because div(curl(A)) = 0 for any vector field A, defining B = curl(A) automatically guarantees:",
+      "options": ["Gauss's law for magnetism, div(B) = 0", "Faraday's law", "Gauss's law for E", "Ampere's law"],
+      "correct_answer": "Gauss's law for magnetism, div(B) = 0",
+      "explanation": "This vector calculus identity is precisely why the vector potential formulation automatically respects the absence of magnetic monopoles.",
+      "topic": "Vector potential",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The Coulomb gauge condition on the vector potential A is:",
+      "options": ["div(A) = 0", "curl(A) = 0", "A = 0", "dA/dt = 0"],
+      "correct_answer": "div(A) = 0",
+      "explanation": "The Coulomb gauge fixes the freedom in choosing A by requiring its divergence to vanish, simplifying certain calculations.",
+      "topic": "Gauge choices",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The Lorenz gauge condition, often convenient in electrodynamics, is:",
+      "options": ["div(A) + (1/c^2) dV/dt = 0", "div(A) = 0 only", "curl(A) = 0", "V = 0"],
+      "correct_answer": "div(A) + (1/c^2) dV/dt = 0",
+      "explanation": "The Lorenz gauge treats space and time symmetrically and decouples the wave equations for the scalar and vector potentials.",
+      "topic": "Gauge choices",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The Biot-Savart Law gives the magnetic field due to a steady current element I dl as being proportional to:",
+      "options": ["(I dl cross r-hat) / r^2", "I dl / r", "I dl cross r", "(I dl)^2 / r"],
+      "correct_answer": "(I dl cross r-hat) / r^2",
+      "explanation": "This is the magnetostatic analogue of Coulomb's law, giving the contribution of a current element to the magnetic field at a field point.",
+      "topic": "Biot-Savart law",
+      "difficulty": "medium"
+    },
+    {
+      "question": "At the boundary between two different dielectric media with no free surface charge, the boundary conditions require that:",
+      "options": ["The tangential component of E and the normal component of D are continuous", "E and B are both discontinuous", "Only the magnetic field is continuous", "Nothing is continuous across the boundary"],
+      "correct_answer": "The tangential component of E and the normal component of D are continuous",
+      "explanation": "These continuity conditions follow directly from applying the integral forms of Faraday's law and Gauss's law across the interface.",
+      "topic": "Boundary conditions",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The electric displacement field D is related to E and the polarization P by:",
+      "options": ["D = epsilon_0 E + P", "D = epsilon_0 E - P", "D = P / epsilon_0", "D = E / P"],
+      "correct_answer": "D = epsilon_0 E + P",
+      "explanation": "This relation accounts for the response of a dielectric medium, where P represents the induced electric dipole moment per unit volume.",
+      "topic": "Electric displacement",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The Lorentz force on a charge q moving with velocity v in fields E and B is:",
+      "options": ["F = q(E + v cross B)", "F = qE only", "F = q(v cross B) only", "F = q(E - v cross B)"],
+      "correct_answer": "F = q(E + v cross B)",
+      "explanation": "The Lorentz force law combines the electric force qE with the magnetic force q(v cross B) into a single expression.",
+      "topic": "Lorentz force",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Since curl(grad(V)) = 0 for any scalar V, defining E = -grad(V) in electrostatics automatically guarantees:",
+      "options": ["That the electrostatic field is curl-free, consistent with Faraday's law in the static case", "Ampere's law", "Gauss's law for B", "The wave equation"],
+      "correct_answer": "That the electrostatic field is curl-free, consistent with Faraday's law in the static case",
+      "explanation": "In the time-independent case Faraday's law reduces to curl(E)=0, which is automatically satisfied whenever E is derived from a scalar potential.",
+      "topic": "Electric potential",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The continuity equation d(rho)/dt + div(J) = 0 expresses:",
+      "options": ["Local conservation of electric charge", "Conservation of magnetic flux", "Conservation of energy only", "The definition of current"],
+      "correct_answer": "Local conservation of electric charge",
+      "explanation": "This equation states that any local decrease in charge density must be balanced by a diverging current flow, i.e. charge cannot be created or destroyed locally.",
+      "topic": "Continuity equation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The unit vector r-hat in Coulomb's Law for the electric field of a point charge points:",
+      "options": ["From the source charge to the field point", "From the field point to the source charge", "Perpendicular to the line joining the charges", "In an arbitrary fixed direction"],
+      "correct_answer": "From the source charge to the field point",
+      "explanation": "By convention, r-hat is directed away from the source charge toward the point where the field is evaluated, giving repulsive fields for positive charges.",
+      "topic": "Coulomb's law",
+      "difficulty": "easy"
+    },
+    {
+      "question": "For an electromagnetic wave in vacuum, the magnitudes of E and B are related by:",
+      "options": ["E = cB", "E = B/c", "E = B", "E = c^2 B"],
+      "correct_answer": "E = cB",
+      "explanation": "This relation follows directly from applying Faraday's law to a plane wave solution of Maxwell's equations in vacuum.",
+      "topic": "Electromagnetic waves",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The Laplacian operator acting on a scalar function in Cartesian coordinates is:",
+      "options": ["The sum of the second partial derivatives with respect to x, y, and z", "The sum of the first partial derivatives with respect to x, y, and z", "The mixed second partial derivative with respect to x and y", "div of curl"],
+      "correct_answer": "The sum of the second partial derivatives with respect to x, y, and z",
+      "explanation": "The Laplacian is the divergence of the gradient, expressed in Cartesian coordinates as the sum of unmixed second partial derivatives.",
+      "topic": "Vector calculus",
+      "difficulty": "easy"
+    }
+  ]
+}

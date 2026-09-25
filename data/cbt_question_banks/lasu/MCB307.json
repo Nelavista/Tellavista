@@ -1,0 +1,424 @@
+{
+  "course_code": "MCB307",
+  "title": "Microbial Biochemistry",
+  "level": "300",
+  "source_note": "Standard NUC-aligned Nigerian university 300L Microbial Biochemistry curriculum: enzyme structure/kinetics, bioenergetics, central carbon metabolism (glycolysis, TCA cycle, electron transport, chemiosmosis), fermentation pathways, autotrophic metabolism, nitrogen metabolism, and biosynthesis/regulation of macromolecules in microorganisms.",
+  "questions": [
+    {
+      "question": "Enzymes increase the rate of biochemical reactions mainly by:",
+      "options": [
+        "Increasing the free energy of the products",
+        "Lowering the activation energy required for the reaction to proceed",
+        "Shifting the equilibrium constant of the reaction",
+        "Increasing the temperature of the reaction mixture"
+      ],
+      "correct_answer": "Lowering the activation energy required for the reaction to proceed",
+      "explanation": "Enzymes act as biological catalysts by stabilising the transition state, thereby lowering the activation energy needed for substrate to be converted to product, without changing the reaction's overall free energy change or equilibrium.",
+      "topic": "Enzymes",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In Michaelis-Menten enzyme kinetics, Km (the Michaelis constant) represents:",
+      "options": [
+        "The maximum reaction velocity attainable",
+        "The substrate concentration at which reaction velocity is half of Vmax",
+        "The total amount of enzyme present",
+        "The number of active sites per enzyme molecule"
+      ],
+      "correct_answer": "The substrate concentration at which reaction velocity is half of Vmax",
+      "explanation": "Km is defined as the substrate concentration at which the reaction proceeds at half its maximum velocity (Vmax/2) and is a measure of an enzyme's affinity for its substrate: a low Km indicates high affinity.",
+      "topic": "Enzyme kinetics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A competitive enzyme inhibitor typically:",
+      "options": [
+        "Binds the active site and can be overcome by increasing substrate concentration, raising apparent Km while Vmax stays unchanged",
+        "Binds only to the enzyme-substrate complex and lowers Vmax without affecting Km",
+        "Permanently destroys the enzyme's active site",
+        "Increases the enzyme's affinity for substrate"
+      ],
+      "correct_answer": "Binds the active site and can be overcome by increasing substrate concentration, raising apparent Km while Vmax stays unchanged",
+      "explanation": "Competitive inhibitors compete with substrate for the active site; because the inhibition can be outcompeted by excess substrate, Vmax remains achievable but a higher substrate concentration is needed, so apparent Km increases while Vmax is unchanged.",
+      "topic": "Enzyme kinetics",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Allosteric enzymes, which are often the target of feedback inhibition in biosynthetic pathways, are characterised by:",
+      "options": [
+        "Having only one substrate-binding site that also binds regulatory molecules",
+        "Binding regulatory effector molecules at a site distinct from the active site, altering enzyme activity through conformational change",
+        "Being unaffected by any small-molecule regulators",
+        "Functioning only as single-subunit proteins"
+      ],
+      "correct_answer": "Binding regulatory effector molecules at a site distinct from the active site, altering enzyme activity through conformational change",
+      "explanation": "Allosteric enzymes possess a regulatory (allosteric) site separate from the catalytic site; binding of an effector there changes the enzyme's conformation and activity, a mechanism commonly used in end-product feedback inhibition.",
+      "topic": "Enzyme regulation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In feedback (end-product) inhibition of a microbial biosynthetic pathway, the final product of the pathway typically:",
+      "options": [
+        "Activates the first enzyme of the pathway",
+        "Inhibits an early, often the first, enzyme of its own biosynthetic pathway",
+        "Has no effect on any enzyme in the pathway",
+        "Only inhibits enzymes in unrelated pathways"
+      ],
+      "correct_answer": "Inhibits an early, often the first, enzyme of its own biosynthetic pathway",
+      "explanation": "Feedback inhibition allows a cell to conserve resources: accumulation of the pathway's end product allosterically inhibits an early committed enzyme in the same pathway, throttling further synthesis when enough product is present.",
+      "topic": "Enzyme regulation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The overall process by which cells extract energy from nutrients and use it to drive energy-requiring reactions is termed:",
+      "options": ["Anabolism", "Bioenergetics/metabolism", "Osmoregulation", "Chemotaxis"],
+      "correct_answer": "Bioenergetics/metabolism",
+      "explanation": "Metabolism (bioenergetics) encompasses all the chemical reactions of a cell, including catabolism (energy-yielding breakdown) and anabolism (energy-requiring synthesis).",
+      "topic": "Bioenergetics",
+      "difficulty": "easy"
+    },
+    {
+      "question": "ATP is often called the 'energy currency' of the cell because:",
+      "options": [
+        "It cannot be synthesised by microorganisms",
+        "Hydrolysis of its terminal phosphoanhydride bond releases free energy that is readily coupled to drive endergonic cellular reactions",
+        "It is the only molecule that can cross the plasma membrane",
+        "It is the final electron acceptor in all metabolic pathways"
+      ],
+      "correct_answer": "Hydrolysis of its terminal phosphoanhydride bond releases free energy that is readily coupled to drive endergonic cellular reactions",
+      "explanation": "ATP's high-energy phosphoanhydride bonds release substantial free energy on hydrolysis to ADP + Pi, and this energy is enzymatically coupled to power biosynthesis, transport, and motility.",
+      "topic": "Bioenergetics",
+      "difficulty": "easy"
+    },
+    {
+      "question": "During glycolysis, one molecule of glucose is broken down to yield a net of:",
+      "options": [
+        "2 pyruvate, net 2 ATP, and 2 NADH",
+        "1 pyruvate, net 4 ATP, and 1 NADH",
+        "2 pyruvate, net 4 ATP, and 4 NADH",
+        "2 pyruvate, no ATP, and 2 NADH"
+      ],
+      "correct_answer": "2 pyruvate, net 2 ATP, and 2 NADH",
+      "explanation": "Glycolysis converts one glucose into two pyruvate molecules, with a net gain of 2 ATP (4 produced minus 2 invested) and 2 NADH per glucose, occurring in the cytoplasm of both prokaryotes and eukaryotes.",
+      "topic": "Glycolysis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Substrate-level phosphorylation, as occurs during glycolysis, refers to:",
+      "options": [
+        "ATP synthesis driven directly by transfer of a phosphate group from a high-energy metabolic intermediate to ADP",
+        "ATP synthesis driven by the proton motive force across a membrane",
+        "Phosphorylation of glucose by hexokinase only",
+        "ATP breakdown to release energy for muscle contraction"
+      ],
+      "correct_answer": "ATP synthesis driven directly by transfer of a phosphate group from a high-energy metabolic intermediate to ADP",
+      "explanation": "Substrate-level phosphorylation generates ATP by direct enzymatic transfer of a phosphate group from a high-energy substrate (e.g. 1,3-bisphosphoglycerate, phosphoenolpyruvate) to ADP, distinct from membrane-based oxidative phosphorylation.",
+      "topic": "Glycolysis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Before entering the tricarboxylic acid (TCA/Krebs) cycle, pyruvate produced by glycolysis is first converted to:",
+      "options": ["Oxaloacetate", "Acetyl-CoA, via the pyruvate dehydrogenase complex, releasing CO2 and generating NADH", "Citrate directly", "Lactate"],
+      "correct_answer": "Acetyl-CoA, via the pyruvate dehydrogenase complex, releasing CO2 and generating NADH",
+      "explanation": "The multienzyme pyruvate dehydrogenase complex oxidatively decarboxylates pyruvate to acetyl-CoA, releasing one CO2 and reducing NAD+ to NADH, linking glycolysis to the TCA cycle.",
+      "topic": "TCA cycle",
+      "difficulty": "medium"
+    },
+    {
+      "question": "One complete turn of the TCA cycle, starting from acetyl-CoA, directly produces:",
+      "options": [
+        "3 NADH, 1 FADH2, 1 GTP/ATP, and 2 CO2",
+        "1 NADH, 3 FADH2, 1 ATP, and 1 CO2",
+        "2 NADH, 2 FADH2, 2 ATP, and no CO2",
+        "4 NADH, no FADH2, and 3 CO2"
+      ],
+      "correct_answer": "3 NADH, 1 FADH2, 1 GTP/ATP, and 2 CO2",
+      "explanation": "Each turn of the TCA cycle oxidises the two carbons of acetyl-CoA fully to CO2, generating 3 NADH, 1 FADH2, and 1 GTP (or ATP) by substrate-level phosphorylation, which together feed further ATP production via the electron transport chain.",
+      "topic": "TCA cycle",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In the electron transport chain (ETC) of aerobic respiration, the terminal electron acceptor is:",
+      "options": ["Oxygen", "NAD+", "Pyruvate", "Water"],
+      "correct_answer": "Oxygen",
+      "explanation": "In aerobic respiration, electrons passed along the ETC carriers are ultimately accepted by molecular oxygen, which is reduced to water; this is what distinguishes aerobic respiration from anaerobic respiration and fermentation.",
+      "topic": "Electron transport chain",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The chemiosmotic hypothesis explains ATP synthesis during oxidative phosphorylation as resulting from:",
+      "options": [
+        "Direct transfer of phosphate from ETC carriers to ADP",
+        "A proton gradient (proton motive force) generated across a membrane by electron transport, which drives ATP synthase to phosphorylate ADP",
+        "Simple diffusion of ATP across the membrane",
+        "Conversion of NADH directly into ATP without any intermediate steps"
+      ],
+      "correct_answer": "A proton gradient (proton motive force) generated across a membrane by electron transport, which drives ATP synthase to phosphorylate ADP",
+      "explanation": "As electrons flow through the ETC, protons are pumped across the membrane, creating an electrochemical (proton motive) gradient; the flow of protons back through ATP synthase drives ATP synthesis, as proposed in Peter Mitchell's chemiosmotic theory.",
+      "topic": "Electron transport chain",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In bacteria, unlike in eukaryotic mitochondria, the electron transport chain and ATP synthase are located in the:",
+      "options": ["Nucleoid", "Plasma (cytoplasmic) membrane", "Cell wall", "Ribosome"],
+      "correct_answer": "Plasma (cytoplasmic) membrane",
+      "explanation": "Bacteria lack mitochondria, so the electron transport chain components and ATP synthase are embedded in the plasma membrane, which functions analogously to the inner mitochondrial membrane.",
+      "topic": "Electron transport chain",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Anaerobic respiration differs from aerobic respiration in that it:",
+      "options": [
+        "Uses no electron transport chain at all",
+        "Uses an electron transport chain but with a terminal electron acceptor other than oxygen, such as nitrate, sulfate, or fumarate",
+        "Does not generate any ATP",
+        "Occurs only in eukaryotic cells"
+      ],
+      "correct_answer": "Uses an electron transport chain but with a terminal electron acceptor other than oxygen, such as nitrate, sulfate, or fumarate",
+      "explanation": "Anaerobic respiration still uses an electron transport chain and chemiosmosis to generate ATP, but substitutes an alternative terminal electron acceptor (e.g. NO3-, SO4^2-, CO2) for oxygen, typically yielding less ATP per glucose than aerobic respiration.",
+      "topic": "Anaerobic respiration",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Fermentation is distinguished from respiration in that fermentation:",
+      "options": [
+        "Uses an external inorganic terminal electron acceptor",
+        "Uses an organic molecule (often a product of the pathway itself, such as pyruvate) as the terminal electron acceptor, regenerating NAD+ without an electron transport chain",
+        "Always produces more ATP per glucose than aerobic respiration",
+        "Requires molecular oxygen"
+      ],
+      "correct_answer": "Uses an organic molecule (often a product of the pathway itself, such as pyruvate) as the terminal electron acceptor, regenerating NAD+ without an electron transport chain",
+      "explanation": "Fermentation regenerates NAD+ from NADH by transferring electrons to an organic acceptor (e.g. pyruvate to lactate, or acetaldehyde to ethanol) without an electron transport chain, yielding far less ATP (via substrate-level phosphorylation only) than respiration.",
+      "topic": "Fermentation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In homolactic fermentation, as performed by Lactobacillus species, pyruvate is reduced directly to:",
+      "options": ["Ethanol and CO2", "Lactate, with no CO2 released", "Acetone and butanol", "Propionate"],
+      "correct_answer": "Lactate, with no CO2 released",
+      "explanation": "Homolactic fermenters convert pyruvate essentially quantitatively to lactate via lactate dehydrogenase, regenerating NAD+, with lactic acid as virtually the sole end product and no CO2 evolved.",
+      "topic": "Fermentation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In alcoholic fermentation carried out by Saccharomyces cerevisiae, pyruvate is first decarboxylated to acetaldehyde, which is then reduced to:",
+      "options": ["Ethanol, by alcohol dehydrogenase, regenerating NAD+", "Lactate", "Acetate", "Butanol"],
+      "correct_answer": "Ethanol, by alcohol dehydrogenase, regenerating NAD+",
+      "explanation": "Yeast pyruvate decarboxylase converts pyruvate to acetaldehyde and CO2; alcohol dehydrogenase then reduces acetaldehyde to ethanol using NADH, regenerating NAD+ needed to sustain glycolysis.",
+      "topic": "Fermentation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The pentose phosphate pathway is important to microbial metabolism mainly because it generates:",
+      "options": [
+        "ATP only, with no other products",
+        "NADPH for biosynthetic reductive reactions and ribose-5-phosphate for nucleotide biosynthesis",
+        "Oxaloacetate for the TCA cycle",
+        "Molecular oxygen"
+      ],
+      "correct_answer": "NADPH for biosynthetic reductive reactions and ribose-5-phosphate for nucleotide biosynthesis",
+      "explanation": "The pentose phosphate pathway is primarily biosynthetic, supplying NADPH (used in reductive biosynthesis and antioxidant defence) and ribose-5-phosphate (a precursor for nucleotides and nucleic acids), rather than being a major ATP generator.",
+      "topic": "Pentose phosphate pathway",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Entner-Doudoroff pathway, found in certain bacteria such as Pseudomonas and Zymomonas as an alternative to glycolysis, characteristically yields:",
+      "options": [
+        "2 ATP, 2 NADH and 2 NADPH per glucose, the same as classical glycolysis",
+        "Only 1 net ATP per glucose (compared with the 2 net ATP of the Embden-Meyerhof pathway), along with NADPH and NADH",
+        "No pyruvate at all",
+        "Only CO2 and water as products"
+      ],
+      "correct_answer": "Only 1 net ATP per glucose (compared with the 2 net ATP of the Embden-Meyerhof pathway), along with NADPH and NADH",
+      "explanation": "The Entner-Doudoroff pathway converts glucose to pyruvate via a distinct route using key intermediates such as 6-phosphogluconate and 2-keto-3-deoxy-6-phosphogluconate, yielding only 1 net ATP per glucose (less than glycolysis) plus one NADPH and one NADH.",
+      "topic": "Alternative carbohydrate pathways",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Chemolithotrophic bacteria such as Nitrosomonas obtain energy by:",
+      "options": [
+        "Photosynthesis using chlorophyll",
+        "Oxidising inorganic compounds such as ammonia, and using the released energy to fix carbon dioxide",
+        "Fermenting organic acids",
+        "Direct absorption of ATP from the environment"
+      ],
+      "correct_answer": "Oxidising inorganic compounds such as ammonia, and using the released energy to fix carbon dioxide",
+      "explanation": "Chemolithotrophs derive energy by oxidising inorganic electron donors (e.g. NH3, NH4+, H2S, Fe2+); Nitrosomonas specifically oxidises ammonia to nitrite, coupling this oxidation to ATP generation and CO2 fixation.",
+      "topic": "Chemolithotrophy",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In oxygenic photosynthesis performed by cyanobacteria, the source of electrons used to reduce NADP+ and the source of the oxygen released are both:",
+      "options": ["Carbon dioxide", "Water", "Hydrogen sulfide", "Glucose"],
+      "correct_answer": "Water",
+      "explanation": "Cyanobacteria, like plants, use photosystem II to split water, releasing O2 as a byproduct and supplying electrons that are ultimately used, via photosystem I, to reduce NADP+ to NADPH.",
+      "topic": "Microbial photosynthesis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Purple and green sulfur bacteria perform anoxygenic photosynthesis using electron donors such as:",
+      "options": ["Water, releasing oxygen as in plants", "Hydrogen sulfide (H2S) or other reduced sulfur compounds, without producing oxygen", "Carbon dioxide only", "Glucose"],
+      "correct_answer": "Hydrogen sulfide (H2S) or other reduced sulfur compounds, without producing oxygen",
+      "explanation": "Anoxygenic phototrophic bacteria use reduced compounds such as H2S (often depositing elemental sulfur) rather than water as the electron donor for photosynthesis, and consequently do not evolve oxygen.",
+      "topic": "Microbial photosynthesis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Biological nitrogen fixation, the conversion of atmospheric N2 to ammonia, is catalysed by the enzyme complex:",
+      "options": ["Nitrogenase", "Nitrate reductase", "Glutamine synthetase", "Urease"],
+      "correct_answer": "Nitrogenase",
+      "explanation": "Nitrogenase, found in diazotrophic prokaryotes such as Rhizobium and Azotobacter, catalyses the highly energy-demanding reduction of atmospheric N2 to NH3, and is extremely sensitive to inactivation by oxygen.",
+      "topic": "Nitrogen metabolism",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Nitrification, the two-step microbial oxidation of ammonia to nitrate in soil and water, involves ammonia oxidation to nitrite followed by:",
+      "options": [
+        "Reduction of nitrite back to ammonia",
+        "Oxidation of nitrite to nitrate, typically by bacteria such as Nitrobacter",
+        "Reduction of nitrite to nitrogen gas",
+        "Conversion of nitrite directly to organic nitrogen"
+      ],
+      "correct_answer": "Oxidation of nitrite to nitrate, typically by bacteria such as Nitrobacter",
+      "explanation": "Nitrification proceeds in two stages performed by different chemolithotrophic genera: ammonia-oxidisers (e.g. Nitrosomonas) convert NH3 to nitrite, and nitrite-oxidisers (e.g. Nitrobacter) then oxidise nitrite to nitrate.",
+      "topic": "Nitrogen metabolism",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Denitrification, an important process in the nitrogen cycle carried out by bacteria such as Pseudomonas denitrificans, is defined as the:",
+      "options": [
+        "Fixation of atmospheric nitrogen into ammonia",
+        "Reduction of nitrate stepwise to nitrogen gas (or nitrous oxide), used as an anaerobic respiratory pathway",
+        "Oxidation of ammonia to nitrite",
+        "Assimilation of nitrate into amino acids"
+      ],
+      "correct_answer": "Reduction of nitrate stepwise to nitrogen gas (or nitrous oxide), used as an anaerobic respiratory pathway",
+      "explanation": "Denitrifying bacteria use nitrate (and its reduction intermediates) as terminal electron acceptors in anaerobic respiration, ultimately releasing N2 (or N2O) gas back to the atmosphere and completing the nitrogen cycle.",
+      "topic": "Nitrogen metabolism",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The building blocks (monomer units) used for peptidoglycan biosynthesis in the bacterial cell wall are:",
+      "options": [
+        "Glucose and fructose",
+        "N-acetylglucosamine (NAG) and N-acetylmuramic acid (NAM), cross-linked by short peptide chains",
+        "Chitin monomers only",
+        "Glycerol and fatty acids"
+      ],
+      "correct_answer": "N-acetylglucosamine (NAG) and N-acetylmuramic acid (NAM), cross-linked by short peptide chains",
+      "explanation": "Peptidoglycan is a polymer of alternating NAG and NAM sugar residues linked by beta-1,4 glycosidic bonds, with adjacent glycan strands cross-linked by short peptide chains attached to NAM, giving the wall its rigidity.",
+      "topic": "Macromolecule biosynthesis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Fatty acid biosynthesis in bacteria proceeds mainly by the stepwise, two-carbon-at-a-time addition of acetyl units, using which activated carrier molecule as the two-carbon donor for chain elongation?",
+      "options": ["Acetyl-CoA condensed via malonyl-CoA, formed by carboxylation of acetyl-CoA", "Pyruvate directly", "Glycerol-3-phosphate", "Citrate"],
+      "correct_answer": "Acetyl-CoA condensed via malonyl-CoA, formed by carboxylation of acetyl-CoA",
+      "explanation": "Fatty acid synthase elongates the growing acyl chain by repeatedly condensing it with malonyl-CoA (formed by carboxylating acetyl-CoA via acetyl-CoA carboxylase), releasing CO2 at each condensation and adding two carbons per cycle.",
+      "topic": "Macromolecule biosynthesis",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Amino acids are classified as essential in an organism when they:",
+      "options": [
+        "Are needed only in trace amounts",
+        "Cannot be synthesised by the organism and must be obtained from an external (dietary/environmental) source",
+        "Are exclusively used to build nucleic acids",
+        "Are synthesised in unlimited quantity by all organisms"
+      ],
+      "correct_answer": "Cannot be synthesised by the organism and must be obtained from an external (dietary/environmental) source",
+      "explanation": "Essential amino acids are those an organism lacks the biosynthetic pathway to make itself, so they must be supplied exogenously; many microorganisms, unlike humans, can synthesise all 20 amino acids de novo from simpler precursors.",
+      "topic": "Amino acid metabolism",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Transamination reactions in amino acid metabolism involve:",
+      "options": [
+        "Transfer of an amino group from one amino acid to an alpha-keto acid, forming a new amino acid and a new keto acid, catalysed by transaminases (aminotransferases)",
+        "Irreversible destruction of the amino acid's carbon skeleton",
+        "Direct conversion of amino acids into fatty acids",
+        "Hydrolysis of peptide bonds only"
+      ],
+      "correct_answer": "Transfer of an amino group from one amino acid to an alpha-keto acid, forming a new amino acid and a new keto acid, catalysed by transaminases (aminotransferases)",
+      "explanation": "Transamination, catalysed by pyridoxal-phosphate-dependent aminotransferases, interconverts amino acids and keto acids by shuttling amino groups, a key step in both amino acid synthesis and degradation.",
+      "topic": "Amino acid metabolism",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Oxidative deamination of glutamate by glutamate dehydrogenase releases nitrogen in the form of:",
+      "options": ["Free ammonia (NH3/NH4+), while regenerating alpha-ketoglutarate", "Nitrate", "Urea directly", "Nitrogen gas"],
+      "correct_answer": "Free ammonia (NH3/NH4+), while regenerating alpha-ketoglutarate",
+      "explanation": "Glutamate dehydrogenase removes the amino group from glutamate as free ammonia, regenerating alpha-ketoglutarate, a key TCA cycle intermediate, and linking amino acid catabolism to central carbon metabolism.",
+      "topic": "Amino acid metabolism",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Purine and pyrimidine nucleotide biosynthesis in microorganisms requires which class of molecule as the carbon/nitrogen skeleton precursor for the ring structures?",
+      "options": ["Fatty acids exclusively", "Amino acids (e.g. glycine, glutamine, aspartate), together with CO2 and one-carbon units", "Monosaccharides alone", "Steroids"],
+      "correct_answer": "Amino acids (e.g. glycine, glutamine, aspartate), together with CO2 and one-carbon units",
+      "explanation": "The purine and pyrimidine rings are built up from small precursors including the amino acids glycine, glutamine and aspartate, along with CO2 and one-carbon units donated by tetrahydrofolate derivatives.",
+      "topic": "Nucleotide metabolism",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Which statement correctly distinguishes catabolism from anabolism?",
+      "options": [
+        "Catabolism is energy-releasing (exergonic) breakdown of complex molecules; anabolism is energy-requiring (endergonic) synthesis of complex molecules from simpler ones",
+        "Catabolism only occurs in anaerobes, while anabolism only occurs in aerobes",
+        "Catabolism builds macromolecules while anabolism degrades them",
+        "There is no meaningful biochemical distinction between the two"
+      ],
+      "correct_answer": "Catabolism is energy-releasing (exergonic) breakdown of complex molecules; anabolism is energy-requiring (endergonic) synthesis of complex molecules from simpler ones",
+      "explanation": "Catabolic pathways break down nutrients to release free energy (often captured as ATP and reducing power), while anabolic pathways use that energy to build complex cellular components from simpler precursors.",
+      "topic": "Metabolism overview",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Amphibolic pathways, such as the TCA cycle, are so named because they:",
+      "options": [
+        "Function exclusively in catabolism",
+        "Serve both catabolic (energy-generating) and anabolic (biosynthetic precursor-supplying) roles",
+        "Occur only in amphibious organisms",
+        "Cannot be regulated"
+      ],
+      "correct_answer": "Serve both catabolic (energy-generating) and anabolic (biosynthetic precursor-supplying) roles",
+      "explanation": "The TCA cycle both oxidises acetyl-CoA to generate reducing equivalents and ATP (catabolic role) and supplies intermediates such as oxaloacetate and alpha-ketoglutarate as precursors for amino acid and other biosyntheses (anabolic role), making it amphibolic.",
+      "topic": "Metabolism overview",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Anaplerotic reactions, such as that catalysed by pyruvate carboxylase, function to:",
+      "options": [
+        "Replenish TCA cycle intermediates that have been withdrawn for biosynthesis",
+        "Break down TCA cycle intermediates completely to CO2",
+        "Synthesise fatty acids from acetyl-CoA",
+        "Convert glucose to pyruvate"
+      ],
+      "correct_answer": "Replenish TCA cycle intermediates that have been withdrawn for biosynthesis",
+      "explanation": "When TCA intermediates are drawn off for biosynthesis (e.g. oxaloacetate for amino acids), anaplerotic reactions such as carboxylation of pyruvate to oxaloacetate replenish the pool, keeping the cycle running.",
+      "topic": "Metabolism overview",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The glyoxylate cycle, present in many bacteria and fungi but absent in humans, allows microorganisms to:",
+      "options": [
+        "Grow using two-carbon compounds such as acetate as the sole carbon source, by bypassing the CO2-releasing steps of the TCA cycle",
+        "Fix atmospheric nitrogen",
+        "Synthesise peptidoglycan",
+        "Perform oxygenic photosynthesis"
+      ],
+      "correct_answer": "Grow using two-carbon compounds such as acetate as the sole carbon source, by bypassing the CO2-releasing steps of the TCA cycle",
+      "explanation": "The glyoxylate cycle uses isocitrate lyase and malate synthase to bypass the two decarboxylation steps of the TCA cycle, allowing net synthesis of four-carbon compounds from two-carbon acetyl-CoA units, enabling growth on acetate or fatty acids.",
+      "topic": "Metabolism overview",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A microorganism that can synthesise all its required organic cellular constituents from CO2 as the sole carbon source is described as:",
+      "options": ["Heterotrophic", "Autotrophic", "Auxotrophic", "Saprophytic"],
+      "correct_answer": "Autotrophic",
+      "explanation": "Autotrophs (whether photoautotrophic or chemoautotrophic) use CO2 as their carbon source, fixing it into organic molecules, in contrast to heterotrophs, which require pre-formed organic carbon compounds.",
+      "topic": "Microbial nutrition",
+      "difficulty": "easy"
+    }
+  ]
+}

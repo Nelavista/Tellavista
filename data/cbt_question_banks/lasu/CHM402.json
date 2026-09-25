@@ -1,0 +1,444 @@
+{
+  "course_code": "CHM402",
+  "title": "Chemical Kinetics",
+  "level": "400",
+  "source_note": "Standard physical-chemistry kinetics syllabus: rate laws and order, integrated rate equations, collision/transition-state theory, Arrhenius parameters, catalysis and enzyme kinetics, chain and complex reactions, and common experimental methods for fast reactions.",
+  "questions": [
+    {
+      "question": "The rate of a chemical reaction is best defined as:",
+      "options": [
+        "The change in concentration of a reactant or product per unit time",
+        "The total amount of product formed at the end of the reaction",
+        "The equilibrium constant of the reaction",
+        "The heat evolved per mole of reactant"
+      ],
+      "correct_answer": "The change in concentration of a reactant or product per unit time",
+      "explanation": "Reaction rate is defined as the rate of change of concentration of a reactant (decreasing) or product (increasing) with time.",
+      "topic": "Rate of reaction",
+      "difficulty": "easy"
+    },
+    {
+      "question": "For a reaction with rate law rate = k[A]^2, the order of the reaction with respect to A is:",
+      "options": ["2", "1", "0", "It cannot be determined from the rate law"],
+      "correct_answer": "2",
+      "explanation": "The exponent of the concentration term in the experimentally determined rate law gives the order with respect to that species; here it is 2.",
+      "topic": "Order of reaction",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The order of a reaction with respect to a species is determined by:",
+      "options": [
+        "Experiment, from the rate law",
+        "The stoichiometric coefficient of that species in the balanced equation",
+        "The number of moles of that species present initially",
+        "The molecularity of the elementary step alone, for any reaction"
+      ],
+      "correct_answer": "Experiment, from the rate law",
+      "explanation": "Unlike molecularity, reaction order is an empirical quantity obtained from the experimentally determined rate law and need not match the stoichiometric coefficients unless the reaction is a single elementary step.",
+      "topic": "Order of reaction",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Molecularity of an elementary reaction refers to:",
+      "options": [
+        "The number of reactant molecules/species that come together to react in that step",
+        "The overall reaction order determined experimentally",
+        "The number of products formed in the step",
+        "The number of moles of catalyst required"
+      ],
+      "correct_answer": "The number of reactant molecules/species that come together to react in that step",
+      "explanation": "Molecularity is a theoretical concept describing how many reactant species participate in a single elementary step (unimolecular, bimolecular, termolecular).",
+      "topic": "Order vs molecularity",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The units of the rate constant, k, for a zero-order reaction are:",
+      "options": ["mol dm⁻³ s⁻¹", "s⁻¹", "dm³ mol⁻¹ s⁻¹", "dm⁶ mol⁻² s⁻¹"],
+      "correct_answer": "mol dm⁻³ s⁻¹",
+      "explanation": "For a zero-order reaction, rate = k, so k has the same units as rate, mol dm⁻³ s⁻¹.",
+      "topic": "Rate constant units",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The units of the rate constant for a first-order reaction are:",
+      "options": ["s⁻¹", "mol dm⁻³ s⁻¹", "dm³ mol⁻¹ s⁻¹", "mol⁻¹ dm³ s"],
+      "correct_answer": "s⁻¹",
+      "explanation": "Since rate = k[A], and rate has units mol dm⁻³ s⁻¹ while [A] has units mol dm⁻³, k must have units of s⁻¹.",
+      "topic": "Rate constant units",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The units of the rate constant for a second-order reaction are:",
+      "options": ["dm³ mol⁻¹ s⁻¹", "s⁻¹", "mol dm⁻³ s⁻¹", "dm⁶ mol⁻² s⁻¹"],
+      "correct_answer": "dm³ mol⁻¹ s⁻¹",
+      "explanation": "For rate = k[A]^2, dividing rate (mol dm⁻³ s⁻¹) by concentration squared (mol² dm⁻⁶) gives k units of dm³ mol⁻¹ s⁻¹.",
+      "topic": "Rate constant units",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The integrated rate law for a first-order reaction A → products is:",
+      "options": [
+        "ln[A] = ln[A]₀ − kt",
+        "[A] = [A]₀ − kt",
+        "1/[A] = 1/[A]₀ + kt",
+        "[A] = [A]₀ e^(kt)"
+      ],
+      "correct_answer": "ln[A] = ln[A]₀ − kt",
+      "explanation": "Integrating the first-order differential rate law -d[A]/dt = k[A] gives ln[A] = ln[A]₀ − kt, i.e. a plot of ln[A] vs t is linear with slope −k.",
+      "topic": "Integrated rate laws",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For a first-order reaction, the half-life (t₁/₂):",
+      "options": [
+        "Is independent of the initial concentration",
+        "Doubles as the initial concentration doubles",
+        "Is inversely proportional to the initial concentration",
+        "Depends on the square of the initial concentration"
+      ],
+      "correct_answer": "Is independent of the initial concentration",
+      "explanation": "For first order, t₁/₂ = 0.693/k, which contains no concentration term, so it is constant regardless of starting concentration.",
+      "topic": "Half-life",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For a zero-order reaction, the half-life:",
+      "options": [
+        "Decreases as the reaction proceeds (is proportional to initial concentration)",
+        "Is constant, independent of concentration",
+        "Is given by 0.693/k",
+        "Cannot be defined"
+      ],
+      "correct_answer": "Decreases as the reaction proceeds (is proportional to initial concentration)",
+      "explanation": "For zero order, t₁/₂ = [A]₀/2k, which is directly proportional to the initial concentration, so successive half-lives get shorter.",
+      "topic": "Half-life",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In the method of initial rates, the order with respect to a reactant is found by:",
+      "options": [
+        "Measuring how the initial rate changes when that reactant's initial concentration is varied while others are held constant",
+        "Measuring the total time for the reaction to go to completion",
+        "Measuring the rate at exactly the half-life",
+        "Comparing the activation energies of forward and reverse reactions"
+      ],
+      "correct_answer": "Measuring how the initial rate changes when that reactant's initial concentration is varied while others are held constant",
+      "explanation": "The initial-rates method varies one reactant's starting concentration at a time and compares the resulting initial rates to deduce the order in that species.",
+      "topic": "Determining reaction order",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Arrhenius equation is expressed as:",
+      "options": [
+        "k = A e^(−Ea/RT)",
+        "k = A e^(Ea/RT)",
+        "k = Ea/(RT) + A",
+        "k = A − Ea/RT"
+      ],
+      "correct_answer": "k = A e^(−Ea/RT)",
+      "explanation": "The Arrhenius equation relates the rate constant k to the pre-exponential (frequency) factor A, activation energy Ea, gas constant R and absolute temperature T.",
+      "topic": "Arrhenius equation",
+      "difficulty": "easy"
+    },
+    {
+      "question": "According to the Arrhenius equation, a plot of ln k versus 1/T gives a straight line whose slope is:",
+      "options": ["−Ea/R", "Ea/R", "−A/R", "R/Ea"],
+      "correct_answer": "−Ea/R",
+      "explanation": "Taking natural logs of the Arrhenius equation gives ln k = ln A − Ea/(RT), so plotting ln k against 1/T is linear with slope −Ea/R, allowing Ea to be found.",
+      "topic": "Arrhenius equation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "As temperature increases, the rate constant of a reaction generally increases mainly because:",
+      "options": [
+        "A larger fraction of molecules possess kinetic energy equal to or greater than the activation energy",
+        "The activation energy of the reaction decreases",
+        "The concentration of reactants increases",
+        "The reaction becomes exothermic"
+      ],
+      "correct_answer": "A larger fraction of molecules possess kinetic energy equal to or greater than the activation energy",
+      "explanation": "Raising temperature shifts the Maxwell-Boltzmann distribution so more molecules have energy ≥ Ea, increasing the frequency of effective collisions and hence the rate constant.",
+      "topic": "Temperature dependence",
+      "difficulty": "medium"
+    },
+    {
+      "question": "According to collision theory, for a collision between reactant molecules to result in reaction, it must satisfy:",
+      "options": [
+        "Sufficient energy (≥ activation energy) and correct molecular orientation",
+        "Only sufficient energy, orientation is irrelevant",
+        "Only correct orientation, energy is irrelevant",
+        "Equal concentrations of both reactants"
+      ],
+      "correct_answer": "Sufficient energy (≥ activation energy) and correct molecular orientation",
+      "explanation": "Collision theory states that a reactive (effective) collision requires both that colliding molecules have combined energy at least equal to the activation energy and that they are oriented favourably.",
+      "topic": "Collision theory",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In transition state (activated complex) theory, the activated complex is best described as:",
+      "options": [
+        "A short-lived, high-energy species at the maximum of the reaction energy profile, in equilibrium with the reactants",
+        "A stable intermediate that can be isolated",
+        "The final product of the reaction",
+        "A catalyst that is regenerated at the end of the reaction"
+      ],
+      "correct_answer": "A short-lived, high-energy species at the maximum of the reaction energy profile, in equilibrium with the reactants",
+      "explanation": "Transition state theory postulates a transient activated complex at the potential energy maximum along the reaction coordinate, assumed to be in a quasi-equilibrium with reactants.",
+      "topic": "Transition state theory",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A catalyst increases the rate of a reaction by:",
+      "options": [
+        "Providing an alternative reaction pathway with lower activation energy",
+        "Increasing the enthalpy change of the reaction",
+        "Shifting the position of equilibrium towards products",
+        "Increasing the activation energy of the reverse reaction only"
+      ],
+      "correct_answer": "Providing an alternative reaction pathway with lower activation energy",
+      "explanation": "Catalysts speed up reactions by opening a mechanistic pathway with a lower activation energy barrier, without being consumed and without changing the equilibrium constant.",
+      "topic": "Catalysis",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A catalyst affects a reversible reaction by:",
+      "options": [
+        "Increasing the rates of both forward and reverse reactions equally, so equilibrium is reached faster but the equilibrium constant is unchanged",
+        "Increasing only the forward rate, thereby increasing the equilibrium constant",
+        "Shifting the equilibrium position to favour more products",
+        "Decreasing the equilibrium constant"
+      ],
+      "correct_answer": "Increasing the rates of both forward and reverse reactions equally, so equilibrium is reached faster but the equilibrium constant is unchanged",
+      "explanation": "A catalyst lowers the activation energy for both forward and reverse pathways equally, so it speeds up attainment of equilibrium without altering the equilibrium constant.",
+      "topic": "Catalysis",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In Michaelis-Menten enzyme kinetics, Km (the Michaelis constant) represents:",
+      "options": [
+        "The substrate concentration at which the reaction rate is half of Vmax",
+        "The maximum possible reaction velocity",
+        "The rate constant for enzyme-substrate complex formation only",
+        "The total enzyme concentration"
+      ],
+      "correct_answer": "The substrate concentration at which the reaction rate is half of Vmax",
+      "explanation": "Km is defined operationally as the substrate concentration giving half-maximal velocity, and it reflects the affinity of the enzyme for its substrate.",
+      "topic": "Enzyme kinetics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "At substrate concentrations far above Km, an enzyme-catalysed reaction approaches:",
+      "options": [
+        "Zero-order kinetics with respect to substrate, as the enzyme becomes saturated",
+        "First-order kinetics with respect to substrate",
+        "Second-order kinetics with respect to substrate",
+        "Negative-order kinetics with respect to substrate"
+      ],
+      "correct_answer": "Zero-order kinetics with respect to substrate, as the enzyme becomes saturated",
+      "explanation": "When [S] >> Km, essentially all enzyme active sites are occupied, so the rate plateaus at Vmax and becomes independent of further increases in substrate concentration (zero order).",
+      "topic": "Enzyme kinetics",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The Lineweaver-Burk plot linearises the Michaelis-Menten equation by plotting:",
+      "options": ["1/v against 1/[S]", "v against [S]", "log v against log[S]", "v against 1/[S]"],
+      "correct_answer": "1/v against 1/[S]",
+      "explanation": "The Lineweaver-Burk (double-reciprocal) plot graphs 1/v versus 1/[S], giving a straight line with y-intercept 1/Vmax and slope Km/Vmax.",
+      "topic": "Enzyme kinetics",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In a chain reaction such as the H₂-Br₂ reaction, the step that generates radicals from stable molecules is called:",
+      "options": ["Initiation", "Propagation", "Termination", "Inhibition"],
+      "correct_answer": "Initiation",
+      "explanation": "The initiation step generates the first reactive intermediates (radicals) from stable starting molecules, usually requiring an energy input such as heat or light.",
+      "topic": "Chain reactions",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In a radical chain mechanism, propagation steps are characterised by:",
+      "options": [
+        "A radical reacting with a stable molecule to give a product and regenerate another radical, sustaining the chain",
+        "Two radicals combining to give a stable, non-radical product",
+        "The complete consumption of all reactive intermediates",
+        "A decrease in the total number of molecules without forming any radical"
+      ],
+      "correct_answer": "A radical reacting with a stable molecule to give a product and regenerate another radical, sustaining the chain",
+      "explanation": "Propagation steps consume one radical and produce another, allowing the chain to continue while converting reactants to products.",
+      "topic": "Chain reactions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Termination steps in a chain reaction mechanism typically involve:",
+      "options": [
+        "Two radicals combining to form a stable molecule, removing reactive intermediates from the system",
+        "A stable molecule splitting into two radicals",
+        "A radical abstracting an atom from a stable molecule to form a new radical",
+        "The catalyst being regenerated"
+      ],
+      "correct_answer": "Two radicals combining to form a stable molecule, removing reactive intermediates from the system",
+      "explanation": "Termination steps remove chain carriers, typically by radical-radical recombination, ending the propagation cycle.",
+      "topic": "Chain reactions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The steady-state approximation, commonly used to derive rate laws for reactions with reactive intermediates, assumes that:",
+      "options": [
+        "The rate of formation of the intermediate equals its rate of consumption, so its concentration remains approximately constant during most of the reaction",
+        "The concentration of the intermediate is always zero",
+        "The intermediate reacts faster than it is formed",
+        "The reaction has reached chemical equilibrium"
+      ],
+      "correct_answer": "The rate of formation of the intermediate equals its rate of consumption, so its concentration remains approximately constant during most of the reaction",
+      "explanation": "The steady-state approximation sets d[intermediate]/dt ≈ 0 because a reactive intermediate is consumed almost as fast as it forms, simplifying the derivation of the overall rate law.",
+      "topic": "Steady-state approximation",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In a multi-step reaction mechanism, the rate-determining step is:",
+      "options": [
+        "The slowest step, which controls the overall observed rate",
+        "The fastest step in the mechanism",
+        "Always the first step written",
+        "The step with the lowest activation energy"
+      ],
+      "correct_answer": "The slowest step, which controls the overall observed rate",
+      "explanation": "Because the overall rate cannot exceed that of its slowest step, the rate-determining step is the bottleneck that dictates the observed rate law.",
+      "topic": "Reaction mechanisms",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A pseudo-first-order reaction arises when:",
+      "options": [
+        "One reactant is present in large excess so its concentration remains effectively constant, making the rate appear first order in the other reactant",
+        "The reaction is truly zero order but is mislabelled",
+        "Two reactants are present in exactly equal concentrations",
+        "The catalyst concentration changes during the reaction"
+      ],
+      "correct_answer": "One reactant is present in large excess so its concentration remains effectively constant, making the rate appear first order in the other reactant",
+      "explanation": "When one reactant (e.g. solvent water in hydrolysis) is in large excess, its concentration change is negligible, so the second-order rate law simplifies to an apparent first-order form in the limiting reactant.",
+      "topic": "Pseudo-order reactions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In parallel (competing) first-order reactions A → B and A → C, the ratio of products [B]/[C] formed at any time is given by:",
+      "options": [
+        "k1/k2, the ratio of the two rate constants",
+        "The ratio of the initial concentrations of B and C",
+        "Always 1:1 regardless of rate constants",
+        "The ratio of the activation energies"
+      ],
+      "correct_answer": "k1/k2, the ratio of the two rate constants",
+      "explanation": "For parallel first-order pathways from a common reactant, the product ratio is fixed by the ratio of the rate constants of the competing steps, independent of time.",
+      "topic": "Complex reactions",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In a consecutive (sequential) reaction A → B → C, the concentration of the intermediate B as a function of time:",
+      "options": [
+        "Rises to a maximum and then falls as B is converted to C",
+        "Increases continuously without ever decreasing",
+        "Remains constant throughout the reaction",
+        "Is always equal to the concentration of A"
+      ],
+      "correct_answer": "Rises to a maximum and then falls as B is converted to C",
+      "explanation": "In a consecutive reaction, B is formed from A and consumed to form C, so its concentration profile rises, peaks when its formation and consumption rates are equal, then declines.",
+      "topic": "Complex reactions",
+      "difficulty": "hard"
+    },
+    {
+      "question": "For a reversible first-order reaction A ⇌ B, equilibrium is reached when:",
+      "options": [
+        "The forward rate (kf[A]) equals the reverse rate (kr[B])",
+        "All of A has been converted to B",
+        "The rate constant kf becomes zero",
+        "The activation energy of the forward reaction equals that of the reverse reaction"
+      ],
+      "correct_answer": "The forward rate (kf[A]) equals the reverse rate (kr[B])",
+      "explanation": "Dynamic equilibrium in a reversible reaction is reached when the forward and reverse rates become equal, so the net concentrations of A and B stop changing.",
+      "topic": "Reversible reactions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The quantum yield of a photochemical reaction is defined as:",
+      "options": [
+        "The number of molecules reacted (or product formed) divided by the number of photons absorbed",
+        "The number of photons absorbed divided by the number of molecules reacted",
+        "The energy of the absorbed photon in electron-volts",
+        "The rate constant of the photochemical step"
+      ],
+      "correct_answer": "The number of molecules reacted (or product formed) divided by the number of photons absorbed",
+      "explanation": "Quantum yield (Φ) quantifies photochemical efficiency as the ratio of molecules that undergo reaction to the number of photons absorbed by the system.",
+      "topic": "Photochemical kinetics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A primary kinetic isotope effect (e.g. replacing C–H with C–D) that significantly slows a reaction is evidence that:",
+      "options": [
+        "The bond to the isotopically substituted atom is broken in the rate-determining step",
+        "The isotope does not participate in the reaction at all",
+        "The reaction mechanism does not involve bond breaking",
+        "The reaction is zero order"
+      ],
+      "correct_answer": "The bond to the isotopically substituted atom is broken in the rate-determining step",
+      "explanation": "A large primary kinetic isotope effect arises because the heavier C–D bond has a lower zero-point energy and is harder to break, so a slowed rate on deuteration indicates that bond cleavage occurs in the rate-determining step.",
+      "topic": "Kinetic isotope effect",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Stopped-flow and temperature-jump (T-jump) techniques are used in chemical kinetics mainly to:",
+      "options": [
+        "Study very fast reactions that occur on millisecond or shorter timescales",
+        "Slow down reactions so they can be studied conveniently over hours",
+        "Determine the molecular structure of the product",
+        "Measure the enthalpy of reaction directly"
+      ],
+      "correct_answer": "Study very fast reactions that occur on millisecond or shorter timescales",
+      "explanation": "Stopped-flow rapidly mixes reactants and T-jump rapidly perturbs an equilibrium; both allow the fast subsequent relaxation/reaction to be monitored on short timescales inaccessible to conventional mixing.",
+      "topic": "Fast reaction techniques",
+      "difficulty": "medium"
+    },
+    {
+      "question": "An autocatalytic reaction is one in which:",
+      "options": [
+        "One of the products acts as a catalyst for the reaction, so the rate increases as the reaction proceeds before eventually falling as reactant is depleted",
+        "The rate remains constant throughout because no catalyst is involved",
+        "The reactant itself inhibits the reaction",
+        "The reaction can only occur in the presence of an external catalyst"
+      ],
+      "correct_answer": "One of the products acts as a catalyst for the reaction, so the rate increases as the reaction proceeds before eventually falling as reactant is depleted",
+      "explanation": "In autocatalysis a product catalyses its own formation, giving a characteristic sigmoidal (S-shaped) concentration-time curve rather than the usual monotonic decay.",
+      "topic": "Autocatalysis",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The pre-equilibrium (fast equilibrium) approximation is applied to a mechanism when:",
+      "options": [
+        "A fast reversible step precedes a slow rate-determining step, allowing the intermediate's concentration to be expressed via the equilibrium constant of the fast step",
+        "All steps in the mechanism have equal rates",
+        "The overall reaction has no intermediates",
+        "The reaction is at true thermodynamic equilibrium throughout"
+      ],
+      "correct_answer": "A fast reversible step precedes a slow rate-determining step, allowing the intermediate's concentration to be expressed via the equilibrium constant of the fast step",
+      "explanation": "The pre-equilibrium approximation treats a rapidly established reversible step as essentially at equilibrium, so the intermediate concentration can be substituted using the fast step's equilibrium constant before the slow step is analysed.",
+      "topic": "Pre-equilibrium approximation",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A plot of concentration [A] versus time t that is linear (a straight line) indicates a reaction that is:",
+      "options": ["Zero order", "First order", "Second order", "Third order"],
+      "correct_answer": "Zero order",
+      "explanation": "The integrated zero-order rate law, [A] = [A]₀ − kt, is linear in [A] versus t, unlike first order (linear in ln[A] vs t) or second order (linear in 1/[A] vs t).",
+      "topic": "Integrated rate laws",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For a second-order reaction of the type 2A → products, a linear plot is obtained when:",
+      "options": ["1/[A] is plotted against t", "[A] is plotted against t", "ln[A] is plotted against t", "log(rate) is plotted against log t"],
+      "correct_answer": "1/[A] is plotted against t",
+      "explanation": "Integrating the second-order rate law -d[A]/dt = k[A]^2 gives 1/[A] = 1/[A]₀ + kt, so 1/[A] versus t is linear with slope k.",
+      "topic": "Integrated rate laws",
+      "difficulty": "medium"
+    }
+  ]
+}

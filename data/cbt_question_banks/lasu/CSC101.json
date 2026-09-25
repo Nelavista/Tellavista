@@ -1,0 +1,416 @@
+{
+  "course_code": "CSC101",
+  "title": "Introduction to Computer Science",
+  "level": "100",
+  "source_note": "Standard NUC-aligned Nigerian university 100L Intro to Computer Science curriculum: number systems, computer hardware/software fundamentals, history and generations of computers, Boolean logic, algorithms/flowcharts, operating systems, and basic networking concepts.",
+  "questions": [
+    {
+      "question": "Convert the binary number 1011 to its decimal equivalent.",
+      "options": ["11", "9", "13", "10"],
+      "correct_answer": "11",
+      "explanation": "1011 in binary = (1x8) + (0x4) + (1x2) + (1x1) = 8+0+2+1 = 11 in decimal.",
+      "topic": "Number systems",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Convert the decimal number 25 to its binary equivalent.",
+      "options": ["11001", "11010", "10101", "11100"],
+      "correct_answer": "11001",
+      "explanation": "25 = 16+8+1 = 2^4+2^3+2^0, which is 11001 in binary.",
+      "topic": "Number systems",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the base of the hexadecimal number system?",
+      "options": ["16", "8", "10", "2"],
+      "correct_answer": "16",
+      "explanation": "Hexadecimal is a base-16 number system using digits 0-9 and letters A-F.",
+      "topic": "Number systems",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is the octal equivalent of the decimal number 8?",
+      "options": ["10", "8", "1000", "11"],
+      "correct_answer": "10",
+      "explanation": "In base 8 (octal), the decimal number 8 is represented as 10, since octal has no digit '8'.",
+      "topic": "Number systems",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which generation of computers is characterized by the use of vacuum tubes?",
+      "options": ["First generation", "Second generation", "Third generation", "Fourth generation"],
+      "correct_answer": "First generation",
+      "explanation": "First generation computers (1940s-1950s) used vacuum tubes for circuitry, were large, and generated a lot of heat.",
+      "topic": "Computer history",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The introduction of the microprocessor marked the beginning of which generation of computers?",
+      "options": ["Fourth generation", "Second generation", "Third generation", "Fifth generation"],
+      "correct_answer": "Fourth generation",
+      "explanation": "Fourth generation computers (from the early 1970s) are defined by the use of microprocessors, which placed the entire CPU on a single chip.",
+      "topic": "Computer history",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which component of the computer is considered the 'brain' of the system, responsible for executing instructions?",
+      "options": ["Central Processing Unit (CPU)", "Random Access Memory (RAM)", "Hard disk drive", "Motherboard"],
+      "correct_answer": "Central Processing Unit (CPU)",
+      "explanation": "The CPU fetches, decodes, and executes instructions, coordinating all computer operations, earning it the description of the computer's 'brain'.",
+      "topic": "Hardware",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which type of memory is volatile, meaning it loses its data when the power is turned off?",
+      "options": ["RAM (Random Access Memory)", "ROM (Read-Only Memory)", "Hard disk", "Flash drive"],
+      "correct_answer": "RAM (Random Access Memory)",
+      "explanation": "RAM is volatile memory used for temporary storage of running programs and data; it loses contents when power is off, unlike ROM or secondary storage.",
+      "topic": "Hardware",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which of the following is an example of an input device?",
+      "options": ["Keyboard", "Monitor", "Printer", "Speaker"],
+      "correct_answer": "Keyboard",
+      "explanation": "A keyboard is used to input data and commands into a computer, unlike monitors, printers, and speakers which are output devices.",
+      "topic": "Hardware",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which of these is classified as system software rather than application software?",
+      "options": ["Operating system", "Microsoft Word", "Web browser (as an app)", "Spreadsheet program"],
+      "correct_answer": "Operating system",
+      "explanation": "System software (like an operating system) manages hardware and provides a platform for application software to run; application software performs specific user tasks.",
+      "topic": "Software",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is the primary function of an operating system?",
+      "options": ["To manage hardware resources and provide services for application programs", "To create documents and spreadsheets", "To browse the internet", "To compile programming code only"],
+      "correct_answer": "To manage hardware resources and provide services for application programs",
+      "explanation": "The operating system acts as an intermediary between hardware and application software, managing memory, processes, files, and devices.",
+      "topic": "Software",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which of the following is an example of a low-level programming language?",
+      "options": ["Assembly language", "Python", "Java", "C++"],
+      "correct_answer": "Assembly language",
+      "explanation": "Assembly language is a low-level language that closely corresponds to machine code instructions, unlike high-level languages such as Python, Java, and C++.",
+      "topic": "Programming languages",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A step-by-step procedure for solving a problem, independent of any specific programming language, is called a(n):",
+      "options": ["Algorithm", "Compiler", "Interpreter", "Operating system"],
+      "correct_answer": "Algorithm",
+      "explanation": "An algorithm is a finite, well-defined sequence of steps used to solve a problem or perform a computation.",
+      "topic": "Algorithms",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In flowcharting, which symbol is used to represent a decision point in a process?",
+      "options": ["Diamond (rhombus)", "Rectangle", "Oval", "Parallelogram"],
+      "correct_answer": "Diamond (rhombus)",
+      "explanation": "The diamond shape in a flowchart represents a decision point, typically with yes/no or true/false branches.",
+      "topic": "Algorithms",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In flowcharting, an oval/ellipse shape typically represents:",
+      "options": ["Start or end of the process", "A decision", "A process step", "Input/output"],
+      "correct_answer": "Start or end of the process",
+      "explanation": "The oval (terminator) symbol marks the beginning and end points of a flowchart.",
+      "topic": "Algorithms",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What does CPU stand for?",
+      "options": ["Central Processing Unit", "Computer Personal Unit", "Central Program Utility", "Central Processor Utility"],
+      "correct_answer": "Central Processing Unit",
+      "explanation": "CPU stands for Central Processing Unit, the primary component that performs most of the processing inside a computer.",
+      "topic": "Hardware",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which logic gate outputs TRUE only when both of its inputs are TRUE?",
+      "options": ["AND gate", "OR gate", "NOT gate", "XOR gate"],
+      "correct_answer": "AND gate",
+      "explanation": "An AND gate produces a high (1/TRUE) output only when all its inputs are high (1/TRUE).",
+      "topic": "Boolean logic",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which logic gate produces an output that is the inverse of its single input?",
+      "options": ["NOT gate", "AND gate", "OR gate", "NAND gate"],
+      "correct_answer": "NOT gate",
+      "explanation": "A NOT gate (inverter) takes one input and outputs its logical complement: a 1 becomes 0, and 0 becomes 1.",
+      "topic": "Boolean logic",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What does the OR gate output when at least one of its inputs is TRUE?",
+      "options": ["TRUE (1)", "FALSE (0)", "Undefined", "Always zero regardless of inputs"],
+      "correct_answer": "TRUE (1)",
+      "explanation": "An OR gate outputs TRUE (1) if at least one input is TRUE, and FALSE only when all inputs are FALSE.",
+      "topic": "Boolean logic",
+      "difficulty": "easy"
+    },
+    {
+      "question": "One byte is equal to how many bits?",
+      "options": ["8 bits", "4 bits", "16 bits", "10 bits"],
+      "correct_answer": "8 bits",
+      "explanation": "A byte is a standard unit of digital information consisting of 8 bits.",
+      "topic": "Data representation",
+      "difficulty": "easy"
+    },
+    {
+      "question": "How many bytes are in one kilobyte (using the common binary convention, 1 KB = 2^10 bytes)?",
+      "options": ["1,024 bytes", "1,000 bytes", "10,240 bytes", "100 bytes"],
+      "correct_answer": "1,024 bytes",
+      "explanation": "In the binary (IEC-informal) convention widely used in computing, one kilobyte equals 2^10 = 1,024 bytes.",
+      "topic": "Data representation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which coding scheme uses 7 or 8 bits to represent English characters, digits, and symbols in computers?",
+      "options": ["ASCII", "Unicode UTF-32", "Binary Coded Decimal", "Morse code"],
+      "correct_answer": "ASCII",
+      "explanation": "ASCII (American Standard Code for Information Interchange) uses 7 (or extended 8) bits to represent 128 (or 256) characters.",
+      "topic": "Data representation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which of the following best describes 'firmware'?",
+      "options": ["Software permanently stored in hardware such as ROM, providing low-level control", "A type of computer virus", "An application used for word processing", "A type of secondary storage device"],
+      "correct_answer": "Software permanently stored in hardware such as ROM, providing low-level control",
+      "explanation": "Firmware is a specific class of software permanently programmed into hardware (e.g., ROM) to control that hardware's basic functions.",
+      "topic": "Software",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which of the following is considered secondary (non-volatile) storage?",
+      "options": ["Hard disk drive (HDD)", "Cache memory", "RAM", "CPU registers"],
+      "correct_answer": "Hard disk drive (HDD)",
+      "explanation": "Hard disk drives provide permanent, non-volatile storage that retains data even when the power is off, unlike RAM, cache, or registers.",
+      "topic": "Hardware",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is the function of a compiler in software development?",
+      "options": ["It translates the entire high-level source code into machine code before execution", "It executes source code line-by-line without translation", "It only detects syntax errors without generating code", "It manages computer memory allocation"],
+      "correct_answer": "It translates the entire high-level source code into machine code before execution",
+      "explanation": "A compiler translates the whole source program into machine (object) code in one pass before the program is run, unlike an interpreter which translates line-by-line during execution.",
+      "topic": "Programming languages",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Unlike a compiler, an interpreter:",
+      "options": ["Translates and executes code line-by-line", "Produces a standalone executable file", "Only works with assembly language", "Compiles the entire program before execution"],
+      "correct_answer": "Translates and executes code line-by-line",
+      "explanation": "An interpreter reads and executes source code statement by statement, without producing a separate compiled executable.",
+      "topic": "Programming languages",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A network that covers a small geographic area such as a single building or campus is called a:",
+      "options": ["Local Area Network (LAN)", "Wide Area Network (WAN)", "Metropolitan Area Network (MAN)", "Personal Area Network (PAN) only"],
+      "correct_answer": "Local Area Network (LAN)",
+      "explanation": "A LAN connects computers within a limited area like an office, building, or campus.",
+      "topic": "Networking basics",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The internet is an example of which type of network?",
+      "options": ["Wide Area Network (WAN)", "Local Area Network (LAN)", "Personal Area Network (PAN)", "None of the above"],
+      "correct_answer": "Wide Area Network (WAN)",
+      "explanation": "The internet spans across countries and continents, making it the largest example of a Wide Area Network.",
+      "topic": "Networking basics",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which device is used to connect multiple networks and direct data packets between them based on IP addresses?",
+      "options": ["Router", "Switch", "Hub", "Modem only"],
+      "correct_answer": "Router",
+      "explanation": "A router forwards data packets between different networks by examining destination IP addresses, unlike a switch which operates within a single network.",
+      "topic": "Networking basics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is a computer virus?",
+      "options": ["A malicious program that can replicate itself and spread to other files or systems", "A hardware fault in the CPU", "A type of antivirus software", "A network cable defect"],
+      "correct_answer": "A malicious program that can replicate itself and spread to other files or systems",
+      "explanation": "A computer virus is malicious software designed to replicate itself and spread, often causing damage or disruption to systems.",
+      "topic": "Computer ethics and security",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which of these best describes 'software piracy'?",
+      "options": ["The unauthorized copying, use, or distribution of copyrighted software", "Writing new original software from scratch", "Installing legally purchased software on one authorized device", "Updating software to a newer licensed version"],
+      "correct_answer": "The unauthorized copying, use, or distribution of copyrighted software",
+      "explanation": "Software piracy refers to illegally copying, distributing, or using software without proper licensing or authorization from the copyright holder.",
+      "topic": "Computer ethics and security",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the stages of the Software Development Life Cycle (SDLC), which phase typically comes first?",
+      "options": ["Requirements/feasibility analysis", "Testing", "Deployment", "Maintenance"],
+      "correct_answer": "Requirements/feasibility analysis",
+      "explanation": "The SDLC typically begins with gathering and analyzing requirements before moving to design, implementation, testing, deployment, and maintenance.",
+      "topic": "Software development",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A set of instructions written in a form understandable by both humans (roughly) and eventually convertible to machine code, before actual coding begins, is called:",
+      "options": ["Pseudocode", "Machine code", "Object code", "Binary code"],
+      "correct_answer": "Pseudocode",
+      "explanation": "Pseudocode is an informal, high-level description of a program's logic used for planning before actual code is written in a specific language.",
+      "topic": "Algorithms",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which of the following is considered one of the five generations of computer programming languages, characterized by natural-language-like AI-oriented constructs?",
+      "options": ["Fifth generation languages (5GL)", "First generation languages (machine code) only", "Assembly language only", "Binary language"],
+      "correct_answer": "Fifth generation languages (5GL)",
+      "explanation": "Fifth generation languages are associated with artificial intelligence and constraint-based/declarative programming, such as Prolog.",
+      "topic": "Programming languages",
+      "difficulty": "hard"
+    },
+    {
+      "question": "What is the primary purpose of an antivirus program?",
+      "options": ["To detect, prevent, and remove malicious software", "To compile source code into an executable", "To manage computer memory allocation", "To format hard disks"],
+      "correct_answer": "To detect, prevent, and remove malicious software",
+      "explanation": "Antivirus software scans, detects, quarantines, and removes viruses and other malware from a computer system.",
+      "topic": "Computer ethics and security",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which of the following best defines 'data' in the context of computing?",
+      "options": ["Raw, unprocessed facts and figures", "Processed and organized information ready for decision-making", "A computer program", "An operating system function"],
+      "correct_answer": "Raw, unprocessed facts and figures",
+      "explanation": "Data refers to raw facts and figures that have not yet been processed; once processed and given context, data becomes information.",
+      "topic": "Data representation",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A computer's motherboard primarily serves what function?",
+      "options": ["It is the main circuit board that connects and allows communication between hardware components", "It stores permanent files for the user", "It generates electricity for the entire building", "It is a type of output device"],
+      "correct_answer": "It is the main circuit board that connects and allows communication between hardware components",
+      "explanation": "The motherboard is the primary printed circuit board that houses and interconnects the CPU, RAM, and other essential hardware components.",
+      "topic": "Hardware",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which of the following is an example of application software?",
+      "options": ["Microsoft Excel", "Windows Operating System", "Device driver", "Linux kernel"],
+      "correct_answer": "Microsoft Excel",
+      "explanation": "Microsoft Excel is application software designed to help users perform a specific task (spreadsheet calculations), unlike system software which manages the computer itself.",
+      "topic": "Software",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What term describes a collection of related data organized for easy access, management, and update, typically managed by a DBMS?",
+      "options": ["Database", "Algorithm", "Operating system", "Compiler"],
+      "correct_answer": "Database",
+      "explanation": "A database is an organized collection of structured data, typically managed using a Database Management System (DBMS).",
+      "topic": "Data representation",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is the primary difference between a hub and a switch in networking?",
+      "options": ["A switch sends data only to the intended recipient device, while a hub broadcasts to all connected devices", "A hub sends data only to the intended device while a switch broadcasts to all", "They perform identical functions with no difference", "A hub works only in wireless networks"],
+      "correct_answer": "A switch sends data only to the intended recipient device, while a hub broadcasts to all connected devices",
+      "explanation": "Unlike a hub which broadcasts incoming data to all ports, a switch intelligently forwards data only to the specific destination device using MAC addresses.",
+      "topic": "Networking basics",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Which term refers to the physical components of a computer system that can be touched, such as the CPU, monitor, and keyboard?",
+      "options": ["Hardware", "Software", "Firmware", "Middleware"],
+      "correct_answer": "Hardware",
+      "explanation": "Hardware refers to the tangible, physical parts of a computer system, as opposed to software which consists of intangible instructions/programs.",
+      "topic": "Hardware",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In Boolean algebra, what is the result of 1 XOR 1?",
+      "options": ["0", "1", "Undefined", "2"],
+      "correct_answer": "0",
+      "explanation": "XOR (exclusive OR) outputs TRUE only when the inputs differ; since both inputs are 1 (same), the result is 0 (FALSE).",
+      "topic": "Boolean logic",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which of these best describes 'cloud computing'?",
+      "options": ["Delivery of computing services (storage, processing, software) over the internet", "A method of physically cooling computer hardware", "A type of computer virus", "A programming language for weather applications"],
+      "correct_answer": "Delivery of computing services (storage, processing, software) over the internet",
+      "explanation": "Cloud computing refers to delivering on-demand computing resources -- servers, storage, databases, software -- over the internet rather than local hardware.",
+      "topic": "Networking basics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Who is widely regarded as the father of modern computing for his work on the concept of a programmable, stored-program computer?",
+      "options": ["Charles Babbage", "Bill Gates", "Steve Jobs", "Tim Berners-Lee"],
+      "correct_answer": "Charles Babbage",
+      "explanation": "Charles Babbage designed the Analytical Engine, a mechanical general-purpose computer concept, earning him recognition as a father of computing.",
+      "topic": "Computer history",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Ada Lovelace is historically recognized for being:",
+      "options": ["The first computer programmer, for her work on Babbage's Analytical Engine", "The inventor of the World Wide Web", "The founder of Microsoft", "The inventor of the transistor"],
+      "correct_answer": "The first computer programmer, for her work on Babbage's Analytical Engine",
+      "explanation": "Ada Lovelace wrote what is considered the first algorithm intended to be processed by a machine (Babbage's Analytical Engine), earning her recognition as the first computer programmer.",
+      "topic": "Computer history",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which of the following is NOT one of the primary functions of an operating system?",
+      "options": ["Compiling application source code into an executable", "Managing memory allocation", "Managing file systems", "Managing input/output devices"],
+      "correct_answer": "Compiling application source code into an executable",
+      "explanation": "Compiling source code is the job of a compiler (part of programming language tools), not a core operating system function like memory, file, or device management.",
+      "topic": "Software",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In an algorithm's flowchart, a parallelogram shape typically represents:",
+      "options": ["Input or output operation", "A decision", "The start or end of the process", "A processing step"],
+      "correct_answer": "Input or output operation",
+      "explanation": "The parallelogram symbol in flowcharts denotes input or output operations, such as reading data or displaying results.",
+      "topic": "Algorithms",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the main advantage of using binary (base-2) representation in digital computers?",
+      "options": ["It corresponds directly to the two-state (on/off) nature of electronic switches", "It uses fewer digits than decimal for all numbers", "It is easier for humans to read than decimal", "It requires no electrical circuitry"],
+      "correct_answer": "It corresponds directly to the two-state (on/off) nature of electronic switches",
+      "explanation": "Binary's two states (0 and 1) map naturally onto the on/off, high/low voltage states of electronic transistors and switches used in digital circuits.",
+      "topic": "Number systems",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What does 'GUI' stand for in computing?",
+      "options": ["Graphical User Interface", "General Utility Interface", "Global Unified Interface", "Graphic Utility Icon"],
+      "correct_answer": "Graphical User Interface",
+      "explanation": "GUI stands for Graphical User Interface, a visual way of interacting with a computer using icons, windows, and menus rather than text commands.",
+      "topic": "Software",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which of the following is the correct order of units from smallest to largest in data storage?",
+      "options": ["Bit, Byte, Kilobyte, Megabyte", "Byte, Bit, Megabyte, Kilobyte", "Kilobyte, Byte, Bit, Megabyte", "Megabyte, Kilobyte, Byte, Bit"],
+      "correct_answer": "Bit, Byte, Kilobyte, Megabyte",
+      "explanation": "The correct ascending order of data storage units is bit (smallest), byte (8 bits), kilobyte (1024 bytes), then megabyte (1024 kilobytes).",
+      "topic": "Data representation",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In computer ethics, what term describes gaining unauthorized access to a computer system?",
+      "options": ["Hacking", "Debugging", "Compiling", "Formatting"],
+      "correct_answer": "Hacking",
+      "explanation": "Hacking refers to gaining unauthorized access to computer systems or networks, often to steal, alter, or destroy data.",
+      "topic": "Computer ethics and security",
+      "difficulty": "easy"
+    }
+  ]
+}

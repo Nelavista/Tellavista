@@ -1,0 +1,296 @@
+{
+  "course_code": "BCH201",
+  "title": "General Biochemistry I",
+  "level": "200",
+  "source_note": "Standard NUC-aligned Nigerian university 200L General Biochemistry I curriculum: properties of water, pH and buffers, amino acid structure and acid-base behaviour, protein structure (primary to quaternary) and denaturation, and the classification/structure of carbohydrates and lipids. Bioenergetics, enzymes, vitamins, nucleotide structure and physiological acid-base balance are covered in the continuation course BCH202; detailed metabolic pathways are covered in the 300L metabolism courses.",
+  "questions": [
+    {
+      "question": "Water's unusually high boiling point relative to other molecules of similar molecular weight is mainly due to?",
+      "options": ["Hydrogen bonding between water molecules", "Its high molecular weight", "Covalent bonding between water molecules", "Its strong ionic character"],
+      "correct_answer": "Hydrogen bonding between water molecules",
+      "explanation": "The extensive hydrogen-bond network between water molecules requires substantial energy to break, raising the boiling point far above that of comparably sized nonpolar molecules.",
+      "topic": "Water and hydrogen bonding",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Water's ability to dissolve ionic compounds and polar molecules is best explained by its?",
+      "options": ["Polarity and hydrogen-bonding capacity", "High compressibility", "Low specific heat capacity", "High volatility"],
+      "correct_answer": "Polarity and hydrogen-bonding capacity",
+      "explanation": "Water's polar structure allows it to surround and stabilise ions and polar solutes through electrostatic interactions and hydrogen bonds, making it an excellent solvent.",
+      "topic": "Water and hydrogen bonding",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is the pH of a solution with a hydrogen ion concentration of 1 x 10^-4 M?",
+      "options": ["4", "10", "4 x 10^-4", "-4"],
+      "correct_answer": "4",
+      "explanation": "pH = -log[H+] = -log(10^-4) = 4.",
+      "topic": "pH and the pH scale",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A solution of pH 3 has how many times the hydrogen ion concentration of a solution of pH 6?",
+      "options": ["1000 times", "3 times", "100 times", "2 times"],
+      "correct_answer": "1000 times",
+      "explanation": "The pH scale is logarithmic (base 10); a difference of 3 pH units corresponds to a 10^3 = 1000-fold difference in [H+].",
+      "topic": "pH and the pH scale",
+      "difficulty": "medium"
+    },
+    {
+      "question": "According to the Henderson-Hasselbalch equation, a buffer resists pH change most effectively when?",
+      "options": ["The solution pH equals the pKa of the weak acid", "The solution pH is two units above the pKa", "The concentration of the weak acid is zero", "The solution pH equals 7.0 regardless of pKa"],
+      "correct_answer": "The solution pH equals the pKa of the weak acid",
+      "explanation": "At pH = pKa, the concentrations of conjugate acid and base are equal, giving the buffer its maximum capacity to absorb added acid or base.",
+      "topic": "Buffers and Henderson-Hasselbalch",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which equation relates the pH of a buffer to the pKa of its weak acid and the ratio of conjugate base to acid?",
+      "options": ["Henderson-Hasselbalch equation", "Michaelis-Menten equation", "Nernst equation", "Arrhenius equation"],
+      "correct_answer": "Henderson-Hasselbalch equation",
+      "explanation": "The Henderson-Hasselbalch equation, pH = pKa + log([A-]/[HA]), is used to calculate buffer pH.",
+      "topic": "Buffers and Henderson-Hasselbalch",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A buffer contains 0.2 M acetate (A-) and 0.1 M acetic acid (HA); the pKa of acetic acid is 4.76. Using log 2 (approximately 0.3), what is the approximate pH?",
+      "options": ["5.06", "4.46", "4.76", "5.36"],
+      "correct_answer": "5.06",
+      "explanation": "pH = pKa + log([A-]/[HA]) = 4.76 + log(2) = 4.76 + 0.3 = 5.06.",
+      "topic": "Buffers and Henderson-Hasselbalch",
+      "difficulty": "hard"
+    },
+    {
+      "question": "All 20 standard amino acids found in proteins share which common structural feature?",
+      "options": ["A central alpha-carbon bonded to an amino group, a carboxyl group, a hydrogen atom, and a variable R group", "A benzene ring in the side chain", "A sulfur atom in the backbone", "Two carboxyl groups"],
+      "correct_answer": "A central alpha-carbon bonded to an amino group, a carboxyl group, a hydrogen atom, and a variable R group",
+      "explanation": "Standard amino acids share this general alpha-amino acid structure; only the R group varies between them.",
+      "topic": "Amino acid structure and classification",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which amino acid is unique among the standard 20 in lacking a chiral (asymmetric) alpha-carbon?",
+      "options": ["Glycine", "Alanine", "Serine", "Cysteine"],
+      "correct_answer": "Glycine",
+      "explanation": "Glycine's R group is a hydrogen atom, so its alpha-carbon has two identical substituents (two H atoms) and is not a stereocentre.",
+      "topic": "Amino acid structure and classification",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which amino acid has a side chain that is positively charged (basic) at physiological pH?",
+      "options": ["Lysine", "Aspartate", "Serine", "Valine"],
+      "correct_answer": "Lysine",
+      "explanation": "Lysine's epsilon-amino group has a pKa around 10.5 and remains protonated (positively charged) at physiological pH.",
+      "topic": "Amino acid structure and classification",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which amino acid's side chain contains an indole ring?",
+      "options": ["Tryptophan", "Tyrosine", "Phenylalanine", "Histidine"],
+      "correct_answer": "Tryptophan",
+      "explanation": "Tryptophan's side chain is an indole ring fused to a methylene group, distinguishing it from the other aromatic amino acids.",
+      "topic": "Amino acid structure and classification",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which amino acid contains a thiol (-SH) group in its side chain and can form disulfide bonds?",
+      "options": ["Cysteine", "Methionine", "Serine", "Threonine"],
+      "correct_answer": "Cysteine",
+      "explanation": "Cysteine's side chain thiol group can be oxidised to form a disulfide bond with another cysteine, producing cystine.",
+      "topic": "Amino acid structure and classification",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The isoelectric point (pI) of an amino acid is the pH at which?",
+      "options": ["The amino acid carries no net charge and exists predominantly as a zwitterion", "The amino acid is fully protonated on both ends", "The amino acid precipitates irreversibly out of solution", "Only the carboxyl group is ionised"],
+      "correct_answer": "The amino acid carries no net charge and exists predominantly as a zwitterion",
+      "explanation": "At the pI, the amino and carboxyl groups are ionised oppositely so that the molecule's net charge is zero.",
+      "topic": "Amino acid acid-base properties",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The peptide bond linking two amino acids is formed by a condensation reaction between?",
+      "options": ["The carboxyl group of one amino acid and the amino group of the next, releasing water", "Two amino groups, releasing ammonia", "Two carboxyl groups, releasing carbon dioxide", "The R groups of both amino acids"],
+      "correct_answer": "The carboxyl group of one amino acid and the amino group of the next, releasing water",
+      "explanation": "Peptide bond formation is a dehydration (condensation) reaction that releases one molecule of water per bond formed.",
+      "topic": "Peptide bond and peptide structure",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The peptide bond has partial double-bond character due to resonance, which explains why it is?",
+      "options": ["Rigid and planar, restricting rotation", "Freely rotatable in either direction", "Spontaneously hydrolysed at room temperature", "Positively charged under all conditions"],
+      "correct_answer": "Rigid and planar, restricting rotation",
+      "explanation": "Resonance delocalisation between the carbonyl and nitrogen gives the C-N bond partial double-bond character, making it planar and largely non-rotatable, usually in the trans configuration.",
+      "topic": "Peptide bond and peptide structure",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The primary structure of a protein refers to?",
+      "options": ["The linear sequence of amino acids joined by peptide bonds", "The folding of the polypeptide into an alpha helix", "The association of multiple polypeptide subunits", "The overall three-dimensional shape stabilised by disulfide bonds"],
+      "correct_answer": "The linear sequence of amino acids joined by peptide bonds",
+      "explanation": "Primary structure is simply the order of amino acid residues along the polypeptide chain, encoded by the gene sequence.",
+      "topic": "Protein primary structure",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The alpha helix secondary structure of proteins is stabilised primarily by?",
+      "options": ["Hydrogen bonds between backbone C=O and N-H groups within the same strand", "Disulfide bonds between cysteine residues", "Ionic bonds between charged R groups", "Hydrophobic interactions between R groups only"],
+      "correct_answer": "Hydrogen bonds between backbone C=O and N-H groups within the same strand",
+      "explanation": "In an alpha helix, each backbone carbonyl oxygen hydrogen-bonds to the amide hydrogen four residues ahead, stabilising the helical coil.",
+      "topic": "Protein secondary structure",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a beta-pleated sheet, hydrogen bonds form mainly between?",
+      "options": ["Backbone atoms of adjacent, parallel or antiparallel polypeptide strands", "Side chains of adjacent residues within the same strand", "Only the sulfur atoms of cysteine residues", "Only the N- and C-termini of the protein"],
+      "correct_answer": "Backbone atoms of adjacent, parallel or antiparallel polypeptide strands",
+      "explanation": "Beta sheets are stabilised by inter-strand hydrogen bonds between the backbone carbonyl and amide groups of neighbouring strands.",
+      "topic": "Protein secondary structure",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which bond/interaction provides covalent cross-linking within or between polypeptide chains, formed by oxidation of two cysteine thiol groups?",
+      "options": ["Disulfide bond", "Hydrogen bond", "Ionic bond", "Van der Waals interaction"],
+      "correct_answer": "Disulfide bond",
+      "explanation": "Disulfide bonds (cystine) form covalently between the sulfur atoms of two cysteine residues, stabilising tertiary and quaternary structure.",
+      "topic": "Protein tertiary/quaternary structure",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Quaternary structure in proteins refers to?",
+      "options": ["The arrangement of two or more separate polypeptide subunits into a functional complex", "The sequence of amino acids in a single chain", "The local folding pattern of a single polypeptide", "The overall three-dimensional shape of a single polypeptide chain"],
+      "correct_answer": "The arrangement of two or more separate polypeptide subunits into a functional complex",
+      "explanation": "Quaternary structure only applies to proteins with more than one polypeptide subunit, such as haemoglobin's four subunits.",
+      "topic": "Protein tertiary/quaternary structure",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Protein denaturation typically involves?",
+      "options": ["Loss of secondary, tertiary and/or quaternary structure without breaking peptide bonds", "Complete hydrolysis of all peptide bonds in the chain", "Addition of new amino acids to the polypeptide", "Formation of new covalent disulfide bonds only"],
+      "correct_answer": "Loss of secondary, tertiary and/or quaternary structure without breaking peptide bonds",
+      "explanation": "Denaturation disrupts the non-covalent (and sometimes disulfide) interactions that maintain folded structure, while the primary sequence of peptide bonds remains intact.",
+      "topic": "Protein denaturation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which of the following is least likely to denature a protein?",
+      "options": ["Isotonic saline at room temperature", "Extreme heat", "Strong acids or bases", "Heavy metal ions"],
+      "correct_answer": "Isotonic saline at room temperature",
+      "explanation": "Isotonic saline approximates physiological conditions and does not disrupt protein structure, unlike heat, extreme pH, or heavy metals.",
+      "topic": "Protein denaturation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Glucose and galactose are both examples of?",
+      "options": ["Aldohexoses", "Ketohexoses", "Aldopentoses", "Disaccharides"],
+      "correct_answer": "Aldohexoses",
+      "explanation": "Both glucose and galactose are six-carbon sugars with an aldehyde functional group, making them aldohexoses.",
+      "topic": "Carbohydrate classification",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Fructose is classified as a?",
+      "options": ["Ketohexose", "Aldohexose", "Aldopentose", "Ketopentose"],
+      "correct_answer": "Ketohexose",
+      "explanation": "Fructose has six carbons and a ketone functional group at carbon 2, making it a ketohexose.",
+      "topic": "Carbohydrate classification",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Glucose and galactose, which differ only in the spatial configuration at carbon 4, are classified as?",
+      "options": ["Epimers", "Anomers", "Enantiomers", "Tautomers"],
+      "correct_answer": "Epimers",
+      "explanation": "Epimers are stereoisomers that differ in configuration at only one of several chiral centres; glucose and galactose differ only at C-4.",
+      "topic": "Carbohydrate structure and stereochemistry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The alpha and beta forms of D-glucose, which differ in configuration at the anomeric carbon (C-1), are known as?",
+      "options": ["Anomers", "Epimers", "Enantiomers", "Structural isomers"],
+      "correct_answer": "Anomers",
+      "explanation": "Anomers are cyclic sugar stereoisomers that differ only in the configuration at the newly formed anomeric carbon created during ring closure.",
+      "topic": "Carbohydrate structure and stereochemistry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Sucrose is a disaccharide composed of which two monosaccharides joined by a glycosidic bond?",
+      "options": ["Glucose and fructose", "Glucose and galactose", "Two glucose units", "Fructose and galactose"],
+      "correct_answer": "Glucose and fructose",
+      "explanation": "Sucrose (table sugar) is formed from an alpha-1,2-glycosidic bond between glucose and fructose.",
+      "topic": "Disaccharides and polysaccharides",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Lactose, the principal sugar in milk, is composed of which two monosaccharides?",
+      "options": ["Galactose and glucose", "Glucose and fructose", "Two galactose units", "Two fructose units"],
+      "correct_answer": "Galactose and glucose",
+      "explanation": "Lactose is formed from a beta-1,4-glycosidic bond between galactose and glucose.",
+      "topic": "Disaccharides and polysaccharides",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which polysaccharide is the primary storage form of glucose in animal liver and skeletal muscle?",
+      "options": ["Glycogen", "Starch", "Cellulose", "Chitin"],
+      "correct_answer": "Glycogen",
+      "explanation": "Glycogen, a highly branched polymer of glucose, is the main glucose storage polysaccharide in animals.",
+      "topic": "Disaccharides and polysaccharides",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Cellulose cannot be digested by humans, unlike starch, mainly because it contains?",
+      "options": ["Beta-1,4-glycosidic bonds that human digestive enzymes cannot hydrolyse", "Alpha-1,4-glycosidic bonds throughout", "No glycosidic bonds at all", "Only fructose units linked together"],
+      "correct_answer": "Beta-1,4-glycosidic bonds that human digestive enzymes cannot hydrolyse",
+      "explanation": "Human amylases can only cleave alpha-glycosidic bonds; cellulose's beta-1,4 linkages require cellulase, which humans lack.",
+      "topic": "Disaccharides and polysaccharides",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which class of lipids includes triglycerides and serves primarily as a long-term energy store?",
+      "options": ["Simple lipids (triacylglycerols)", "Phospholipids", "Steroids", "Glycolipids"],
+      "correct_answer": "Simple lipids (triacylglycerols)",
+      "explanation": "Triacylglycerols, esters of glycerol and three fatty acids, are the body's main energy-storage lipids, chiefly in adipose tissue.",
+      "topic": "Lipid classification",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Cholesterol belongs to which class of lipids, characterised by a four-fused-ring (steroid nucleus) structure?",
+      "options": ["Steroids", "Triacylglycerols", "Phospholipids", "Glycolipids"],
+      "correct_answer": "Steroids",
+      "explanation": "Cholesterol is a steroid, built on the characteristic four fused carbon rings of the steroid nucleus.",
+      "topic": "Lipid classification",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A fatty acid denoted 18:2 (omega-6) is best described as?",
+      "options": ["An 18-carbon polyunsaturated fatty acid with two double bonds", "A saturated 18-carbon fatty acid", "A 6-carbon fatty acid with two double bonds", "An 18-carbon fatty acid with two triple bonds"],
+      "correct_answer": "An 18-carbon polyunsaturated fatty acid with two double bonds",
+      "explanation": "In this shorthand, 18 is the number of carbons and 2 is the number of carbon-carbon double bonds, making it polyunsaturated; omega-6 locates the first double bond from the methyl end.",
+      "topic": "Fatty acid structure and nomenclature",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Saturated fatty acids differ from unsaturated fatty acids in that saturated fatty acids?",
+      "options": ["Contain no carbon-carbon double bonds", "Contain one or more carbon-carbon double bonds", "Are always shorter than 10 carbons in length", "Cannot be esterified to glycerol"],
+      "correct_answer": "Contain no carbon-carbon double bonds",
+      "explanation": "Saturated fatty acids have single bonds only between carbon atoms, allowing tighter packing than unsaturated fatty acids with double-bond kinks.",
+      "topic": "Fatty acid structure and nomenclature",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A triacylglycerol is formed by esterifying one glycerol molecule with?",
+      "options": ["Three fatty acid molecules", "One fatty acid and two phosphate groups", "Three phosphate groups", "Two fatty acids and one amino acid"],
+      "correct_answer": "Three fatty acid molecules",
+      "explanation": "Glycerol has three hydroxyl groups, each of which can be esterified to a fatty acid to form a triacylglycerol.",
+      "topic": "Triacylglycerols and phospholipids structure",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Phospholipids are described as amphipathic molecules because they have?",
+      "options": ["A hydrophilic phosphate-containing head and hydrophobic fatty acid tails", "Two hydrophilic heads and no hydrophobic region", "Only hydrophobic regions throughout", "Only hydrophilic regions throughout"],
+      "correct_answer": "A hydrophilic phosphate-containing head and hydrophobic fatty acid tails",
+      "explanation": "This dual character allows phospholipids to spontaneously form bilayers in aqueous environments, the basis of biological membranes.",
+      "topic": "Triacylglycerols and phospholipids structure",
+      "difficulty": "medium"
+    }
+  ]
+}

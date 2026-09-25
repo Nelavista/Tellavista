@@ -1,0 +1,489 @@
+{
+  "course_code": "PHY406",
+  "title": "Renewable Energy Physics",
+  "level": "400",
+  "source_note": "Standard NUC-aligned Nigerian university 400L Renewable Energy Physics curriculum: solar photovoltaic and thermal physics, wind energy physics and the Betz limit, hydroelectric power, geothermal energy, biomass energy, energy storage technologies, and comparative efficiency/capacity concepts across renewable sources.",
+  "questions": [
+    {
+      "question": "The photovoltaic effect is best described as:",
+      "options": [
+        "The generation of an electric voltage/current in a material upon exposure to light",
+        "The generation of heat when a material absorbs sound waves",
+        "The conversion of mechanical vibration directly into light",
+        "The cooling of a material when exposed to sunlight"
+      ],
+      "correct_answer": "The generation of an electric voltage/current in a material upon exposure to light",
+      "explanation": "The photovoltaic effect refers to the creation of voltage or current in a material (typically a semiconductor) when it absorbs photons of light, which is the basic operating principle of solar cells.",
+      "topic": "Solar energy: photovoltaic effect",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In a silicon solar cell, the p-n junction is essential because:",
+      "options": [
+        "The built-in electric field at the junction separates the light-generated electron-hole pairs before they can recombine, driving them to opposite terminals to produce current",
+        "It converts the cell's electrical energy directly into heat for storage",
+        "It amplifies incoming light intensity before absorption",
+        "It has no functional role; any junction of two identical materials would work equally well"
+      ],
+      "correct_answer": "The built-in electric field at the junction separates the light-generated electron-hole pairs before they can recombine, driving them to opposite terminals to produce current",
+      "explanation": "When a photon excites an electron across the bandgap, creating an electron-hole pair, the p-n junction's built-in field sweeps electrons to the n-side and holes to the p-side, generating a usable current rather than letting the pair recombine.",
+      "topic": "Solar energy: photovoltaic cell operation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For a photon to generate an electron-hole pair in a solar cell's semiconductor material, its energy must:",
+      "options": [
+        "Be greater than or equal to the semiconductor's bandgap energy",
+        "Be exactly equal to the speed of light",
+        "Always be less than the bandgap energy",
+        "Be independent of the semiconductor's bandgap"
+      ],
+      "correct_answer": "Be greater than or equal to the semiconductor's bandgap energy",
+      "explanation": "Only photons with energy hf ≥ E_g can excite an electron from the valence band to the conduction band, creating a mobile electron-hole pair; lower-energy photons pass through without being absorbed for this purpose.",
+      "topic": "Solar energy: photovoltaic cell operation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A key fundamental limit on the maximum theoretical efficiency of a single-junction solar cell (the Shockley-Queisser limit) arises mainly because:",
+      "options": [
+        "Photons with energy less than the bandgap are not absorbed, while photons with energy greater than the bandgap lose their excess energy as heat",
+        "Solar cells cannot absorb any visible light",
+        "The Earth's atmosphere blocks all solar radiation reaching the cell",
+        "Silicon has zero electrical resistance so no power can be extracted"
+      ],
+      "correct_answer": "Photons with energy less than the bandgap are not absorbed, while photons with energy greater than the bandgap lose their excess energy as heat",
+      "explanation": "The Shockley-Queisser limit (about 33% for a single silicon-like junction) results because sub-bandgap photons are not absorbed, and any photon energy above the bandgap is lost as heat (thermalization) rather than converted to usable electrical energy.",
+      "topic": "Solar energy: efficiency limits",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Multi-junction (tandem) solar cells achieve higher efficiency than single-junction cells primarily by:",
+      "options": [
+        "Stacking layers of different bandgap materials so that different parts of the solar spectrum are absorbed more efficiently by each layer",
+        "Using only one very large bandgap material to absorb all wavelengths equally well",
+        "Removing the p-n junction entirely",
+        "Operating exclusively at night to avoid photon energy losses"
+      ],
+      "correct_answer": "Stacking layers of different bandgap materials so that different parts of the solar spectrum are absorbed more efficiently by each layer",
+      "explanation": "By stacking cells of decreasing bandgap from top to bottom, each layer efficiently captures a different portion of the solar spectrum, reducing the thermalization and transmission losses inherent to a single bandgap and raising overall efficiency.",
+      "topic": "Solar energy: efficiency limits",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A solar thermal collector differs from a photovoltaic panel in that it:",
+      "options": [
+        "Absorbs sunlight to heat a fluid (such as water or air) directly, rather than converting light directly into electricity",
+        "Uses only semiconductor p-n junctions to produce heat",
+        "Converts heat into radio waves for transmission",
+        "Cannot be used to generate hot water"
+      ],
+      "correct_answer": "Absorbs sunlight to heat a fluid (such as water or air) directly, rather than converting light directly into electricity",
+      "explanation": "Solar thermal collectors use a dark absorber surface to capture solar radiation as heat, which is transferred to a circulating fluid, unlike photovoltaic cells which directly generate electricity via the photovoltaic effect.",
+      "topic": "Solar energy: solar thermal collectors",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In a flat-plate solar thermal collector, the glass cover primarily serves to:",
+      "options": [
+        "Trap heat inside via a greenhouse-like effect, reducing convective and radiative heat losses from the absorber",
+        "Reflect all incoming sunlight away from the absorber",
+        "Convert sunlight directly into electricity",
+        "Cool the absorber plate by conduction"
+      ],
+      "correct_answer": "Trap heat inside via a greenhouse-like effect, reducing convective and radiative heat losses from the absorber",
+      "explanation": "The glazing is transparent to incoming shortwave solar radiation but reduces convective heat loss and reflects/absorbs re-radiated longwave infrared from the absorber plate, improving the collector's thermal efficiency.",
+      "topic": "Solar energy: solar thermal collectors",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The kinetic energy available in wind flowing through an area A at speed v, per unit time (i.e., the power in the wind), is proportional to which power of the wind speed?",
+      "options": [
+        "The cube of the wind speed (v³)",
+        "The wind speed itself (v)",
+        "The square of the wind speed (v²)",
+        "The wind speed is not a factor at all"
+      ],
+      "correct_answer": "The cube of the wind speed (v³)",
+      "explanation": "Power in the wind is P = (1/2)ρAv³, since the mass flow rate scales with v (ρAv) and each unit mass carries kinetic energy proportional to v², giving an overall v³ dependence.",
+      "topic": "Wind energy: power in wind",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The full expression for the power available in wind of density ρ, passing through a cross-sectional area A at speed v, is:",
+      "options": [
+        "P = (1/2)ρAv³",
+        "P = ρAv",
+        "P = 2ρAv²",
+        "P = ρA/v³"
+      ],
+      "correct_answer": "P = (1/2)ρAv³",
+      "explanation": "This follows from computing the kinetic energy flux: mass flow rate ṁ = ρAv, and power = (1/2)ṁv² = (1/2)ρAv³.",
+      "topic": "Wind energy: power in wind",
+      "difficulty": "medium"
+    },
+    {
+      "question": "If wind speed doubles, the power available in the wind increases by a factor of approximately:",
+      "options": [
+        "8 (since power scales as v³)",
+        "2 (linear scaling)",
+        "4 (quadratic scaling)",
+        "16"
+      ],
+      "correct_answer": "8 (since power scales as v³)",
+      "explanation": "Because P ∝ v³, doubling v gives 2³ = 8 times the power, which is why turbine siting in consistently higher-wind locations dramatically increases energy yield.",
+      "topic": "Wind energy: power in wind",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Betz limit in wind turbine theory states that:",
+      "options": [
+        "No wind turbine can capture more than about 59.3% of the kinetic energy in the wind passing through its rotor swept area",
+        "Wind turbines can theoretically capture 100% of the wind's kinetic energy with a perfect design",
+        "Only 10% of wind energy can ever be captured by any turbine",
+        "The Betz limit applies only to hydroelectric turbines, not wind turbines"
+      ],
+      "correct_answer": "No wind turbine can capture more than about 59.3% of the kinetic energy in the wind passing through its rotor swept area",
+      "explanation": "The Betz limit (16/27 ≈ 59.3%) is the theoretical maximum fraction of kinetic energy extractable by an ideal turbine, derived from momentum theory, because the wind must retain some velocity downstream to keep flowing through the rotor.",
+      "topic": "Wind energy: Betz limit",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Betz limit arises fundamentally because:",
+      "options": [
+        "If a turbine extracted all the kinetic energy from the wind, the air would have to stop completely behind the rotor, which would block further airflow through the turbine, so an optimal trade-off exists between slowing the wind and maintaining flow",
+        "Air molecules physically cannot pass through any solid rotor blade",
+        "Wind turbines are always less than 1% efficient due to friction",
+        "The Betz limit is a legal regulatory restriction, not a physical one"
+      ],
+      "correct_answer": "If a turbine extracted all the kinetic energy from the wind, the air would have to stop completely behind the rotor, which would block further airflow through the turbine, so an optimal trade-off exists between slowing the wind and maintaining flow",
+      "explanation": "Betz's analysis of an idealized actuator disk shows that maximum power extraction occurs when the downstream wind speed is reduced to one-third of the upstream speed, giving the 16/27 coefficient of performance; extracting more would stop the flow entirely.",
+      "topic": "Wind energy: Betz limit",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A wind turbine's actual power coefficient, C_p, used in real designs is typically:",
+      "options": [
+        "Somewhat less than the Betz limit (around 0.35-0.45 in practice) due to mechanical, aerodynamic, and electrical losses",
+        "Always exactly equal to 1.0",
+        "Always greater than the Betz limit due to modern blade design",
+        "Zero, because turbines cannot extract any wind energy"
+      ],
+      "correct_answer": "Somewhat less than the Betz limit (around 0.35-0.45 in practice) due to mechanical, aerodynamic, and electrical losses",
+      "explanation": "Real turbines fall short of the theoretical Betz limit (0.593) because of blade aerodynamic imperfections, generator and gearbox losses, and other inefficiencies, so practical C_p values are commonly in the 0.35-0.45 range.",
+      "topic": "Wind energy: Betz limit",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In hydroelectric power generation, the electrical power output is fundamentally derived from:",
+      "options": [
+        "The gravitational potential energy of water at height, converted to kinetic energy as it falls and then to mechanical (turbine) and electrical energy",
+        "The thermal energy released by chemically burning water",
+        "Nuclear reactions occurring within the water molecules",
+        "Static electricity generated by friction between water and rock"
+      ],
+      "correct_answer": "The gravitational potential energy of water at height, converted to kinetic energy as it falls and then to mechanical (turbine) and electrical energy",
+      "explanation": "Hydropower works by allowing water to fall through a height (head), converting gravitational potential energy into kinetic energy that spins a turbine coupled to a generator, producing electricity.",
+      "topic": "Hydroelectric power",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The theoretical power available from a hydroelectric installation is given by P = ρgQh, where Q is the volumetric flow rate and h is the head (height of fall). This formula shows that power output increases with:",
+      "options": [
+        "Both greater flow rate and greater head (height difference)",
+        "Only greater flow rate, with head having no effect",
+        "Only greater head, with flow rate having no effect",
+        "Neither flow rate nor head, only turbine size"
+      ],
+      "correct_answer": "Both greater flow rate and greater head (height difference)",
+      "explanation": "P = ρgQh shows power is directly proportional to both the flow rate Q (how much water) and the head h (how far it falls), so sites are chosen to maximize both where possible.",
+      "topic": "Hydroelectric power",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A hydroelectric dam with water density ρ = 1000 kg/m³, flow rate Q = 50 m³/s, and head h = 40 m, assuming g = 9.8 m/s² and 100% ideal efficiency, produces theoretical power closest to:",
+      "options": [
+        "19.6 MW",
+        "1.96 MW",
+        "196 MW",
+        "1.96 kW"
+      ],
+      "correct_answer": "19.6 MW",
+      "explanation": "P = ρgQh = 1000 × 9.8 × 50 × 40 = 19,600,000 W = 19.6 MW.",
+      "topic": "Hydroelectric power",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Pumped-storage hydroelectricity works by:",
+      "options": [
+        "Pumping water uphill to a reservoir during low electricity demand, then releasing it downhill through turbines to generate power during high demand",
+        "Continuously generating power from a single one-way river flow with no storage capability",
+        "Storing electrical energy directly as static charge in the dam structure",
+        "Using geothermal heat to boil water for turbine operation"
+      ],
+      "correct_answer": "Pumping water uphill to a reservoir during low electricity demand, then releasing it downhill through turbines to generate power during high demand",
+      "explanation": "Pumped hydro storage acts as a large-scale energy storage system: excess (often off-peak or renewable) electricity pumps water to an elevated reservoir, effectively storing energy as gravitational potential energy, which is later released to generate power on demand.",
+      "topic": "Energy storage: pumped hydro",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Geothermal energy is fundamentally derived from:",
+      "options": [
+        "Heat stored within the Earth, originating from primordial formation heat and the radioactive decay of isotopes in the Earth's interior",
+        "Sunlight absorbed by the Earth's crust",
+        "Ocean tidal motion",
+        "Wind currents circulating underground"
+      ],
+      "correct_answer": "Heat stored within the Earth, originating from primordial formation heat and the radioactive decay of isotopes in the Earth's interior",
+      "explanation": "Geothermal energy originates mainly from residual heat from planetary formation and ongoing radioactive decay (of isotopes like uranium, thorium, and potassium) within the Earth's core and mantle, which conducts and convects heat toward the surface.",
+      "topic": "Geothermal energy",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A typical geothermal power plant extracts energy by:",
+      "options": [
+        "Using hot water or steam from underground reservoirs to drive a turbine connected to a generator",
+        "Burning geothermal rock directly as fuel",
+        "Converting underground pressure directly into electricity via piezoelectric crystals",
+        "Using solar panels placed underground"
+      ],
+      "correct_answer": "Using hot water or steam from underground reservoirs to drive a turbine connected to a generator",
+      "explanation": "Geothermal plants tap naturally occurring or engineered underground reservoirs of hot water/steam, which is brought to the surface to spin a turbine-generator, similarly in principle to a conventional thermal power plant but without combustion.",
+      "topic": "Geothermal energy",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The geothermal gradient refers to:",
+      "options": [
+        "The rate at which the Earth's temperature increases with depth below the surface",
+        "The rate at which wind speed changes with altitude",
+        "The variation of solar intensity with latitude",
+        "The change in ocean salinity with depth"
+      ],
+      "correct_answer": "The rate at which the Earth's temperature increases with depth below the surface",
+      "explanation": "The geothermal gradient (typically around 25-30°C per km in much of the Earth's crust, though higher in geologically active regions) describes how temperature rises with increasing depth, driving geothermal energy extraction feasibility.",
+      "topic": "Geothermal energy",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Binary-cycle geothermal power plants are used when the geothermal resource:",
+      "options": [
+        "Is at a moderate temperature, too low to efficiently flash into steam directly, so its heat is transferred to a secondary working fluid with a lower boiling point",
+        "Is hotter than any known geothermal resource on Earth",
+        "Does not involve any heat transfer at all",
+        "Only works with solid rock, not fluids"
+      ],
+      "correct_answer": "Is at a moderate temperature, too low to efficiently flash into steam directly, so its heat is transferred to a secondary working fluid with a lower boiling point",
+      "explanation": "In a binary-cycle plant, geothermal fluid heats a secondary working fluid (e.g., an organic fluid with a lower boiling point) via a heat exchanger, and it is this secondary fluid's vapor that drives the turbine, enabling use of lower-temperature resources.",
+      "topic": "Geothermal energy",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Biomass energy is derived from:",
+      "options": [
+        "Organic matter (plant and animal material) that stores chemical energy originally captured from sunlight via photosynthesis",
+        "Fossil fuels formed purely from inorganic minerals",
+        "Nuclear fission of biological tissue",
+        "Direct conversion of geothermal heat into biological material"
+      ],
+      "correct_answer": "Organic matter (plant and animal material) that stores chemical energy originally captured from sunlight via photosynthesis",
+      "explanation": "Biomass is organic material whose chemical energy traces back to photosynthesis; this stored chemical energy can be released as heat via combustion or converted into biofuels.",
+      "topic": "Biomass energy",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The energy content of biomass fuel is most directly quantified by its:",
+      "options": [
+        "Calorific (heating) value, typically expressed in megajoules per kilogram",
+        "Electrical resistance",
+        "Magnetic permeability",
+        "Refractive index"
+      ],
+      "correct_answer": "Calorific (heating) value, typically expressed in megajoules per kilogram",
+      "explanation": "The calorific (heating) value measures how much heat energy is released per unit mass of fuel when fully combusted, allowing comparison of energy content between different biomass fuels.",
+      "topic": "Biomass energy",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Anaerobic digestion of biomass to produce biogas (mainly methane and carbon dioxide) relies on:",
+      "options": [
+        "Microorganisms breaking down organic matter in the absence of oxygen",
+        "Direct combustion of biomass in an oxygen-rich furnace",
+        "Nuclear fission of carbon atoms in the biomass",
+        "Electrolysis of solid biomass using a high-voltage current"
+      ],
+      "correct_answer": "Microorganisms breaking down organic matter in the absence of oxygen",
+      "explanation": "Anaerobic digestion uses bacteria to decompose organic material without oxygen, producing biogas rich in methane, which can be burned as a fuel for heat or electricity generation.",
+      "topic": "Biomass energy",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A major physics-based drawback of most biomass combustion, compared to solar or wind energy conversion, is that:",
+      "options": [
+        "It releases carbon dioxide (and other combustion products) directly into the atmosphere during energy release, similar in this respect to fossil fuel combustion",
+        "Biomass cannot release any thermal energy when burned",
+        "Biomass combustion produces no usable heat at all",
+        "Biomass has a negative calorific value"
+      ],
+      "correct_answer": "It releases carbon dioxide (and other combustion products) directly into the atmosphere during energy release, similar in this respect to fossil fuel combustion",
+      "explanation": "Unlike photovoltaic or wind conversion, which involve no combustion, biomass combustion chemically oxidizes carbon-containing fuel and releases CO₂ directly, though it can be considered closer to carbon-neutral if regrowth reabsorbs an equivalent amount over time.",
+      "topic": "Biomass energy",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In an electrochemical battery, electrical energy is generated fundamentally through:",
+      "options": [
+        "Spontaneous oxidation-reduction (redox) reactions that drive electrons through an external circuit from the anode to the cathode",
+        "Direct absorption of light photons by metal plates",
+        "Mechanical friction between two electrodes",
+        "Nuclear decay of the electrode materials"
+      ],
+      "correct_answer": "Spontaneous oxidation-reduction (redox) reactions that drive electrons through an external circuit from the anode to the cathode",
+      "explanation": "Batteries convert chemical energy to electrical energy via spontaneous redox reactions: oxidation at the anode releases electrons that flow through the external circuit to the cathode, where reduction occurs, while ions move internally through the electrolyte.",
+      "topic": "Energy storage: batteries",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a lithium-ion battery, during discharge, lithium ions move:",
+      "options": [
+        "From the negative electrode (anode) through the electrolyte to the positive electrode (cathode)",
+        "From the cathode to the anode only during discharge",
+        "They do not move; only electrons move through the electrolyte",
+        "Directly through the external circuit along with the electrons"
+      ],
+      "correct_answer": "From the negative electrode (anode) through the electrolyte to the positive electrode (cathode)",
+      "explanation": "During discharge, lithium ions deintercalate from the anode material and migrate through the electrolyte/separator to the cathode, while the corresponding electrons travel through the external circuit to do useful work, and this reverses during charging.",
+      "topic": "Energy storage: batteries",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Why is energy storage considered essential for large-scale integration of solar and wind power into an electricity grid?",
+      "options": [
+        "Because solar and wind generation is intermittent and variable, storage helps balance supply and demand when the sun isn't shining or the wind isn't blowing",
+        "Because solar and wind power plants generate more electricity than any storage system could ever use",
+        "Because storage eliminates the need for any electrical transmission infrastructure",
+        "Because solar and wind energy cannot be converted into electricity without storage"
+      ],
+      "correct_answer": "Because solar and wind generation is intermittent and variable, storage helps balance supply and demand when the sun isn't shining or the wind isn't blowing",
+      "explanation": "Solar and wind output fluctuates with weather and time of day, so energy storage (batteries, pumped hydro, etc.) is needed to smooth out supply, store excess generation, and deliver power reliably when renewable output is low.",
+      "topic": "Energy storage",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The 'capacity factor' of a power plant is defined as:",
+      "options": [
+        "The ratio of the plant's actual energy output over a period to the maximum possible energy output if it operated at full rated capacity for the entire period",
+        "The total physical size (in square meters) of the power plant",
+        "The number of workers required to operate the plant",
+        "The plant's peak instantaneous power output only"
+      ],
+      "correct_answer": "The ratio of the plant's actual energy output over a period to the maximum possible energy output if it operated at full rated capacity for the entire period",
+      "explanation": "Capacity factor = (actual energy produced)/(rated power × total time), and it quantifies how much of the time, in effect, a plant operates at its full rated output; renewable sources like solar and wind typically have lower capacity factors than baseload thermal or nuclear plants due to their intermittency.",
+      "topic": "Comparing energy sources: capacity factor",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A wind farm rated at 100 MW capacity that actually produces an average of 35 MW over a year has a capacity factor of:",
+      "options": [
+        "35%",
+        "100%",
+        "65%",
+        "3.5%"
+      ],
+      "correct_answer": "35%",
+      "explanation": "Capacity factor = actual average output / rated capacity = 35 MW / 100 MW = 0.35 = 35%, a typical value for onshore wind.",
+      "topic": "Comparing energy sources: capacity factor",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Why do solar photovoltaic installations typically have a lower capacity factor than nuclear or coal power plants?",
+      "options": [
+        "Because solar panels only generate power during daylight hours and their output varies with weather and season, whereas thermal plants can run continuously",
+        "Because solar panels are always more efficient than thermal plants at converting energy",
+        "Because solar panels have no theoretical maximum power rating",
+        "Because coal plants only operate for a few hours each day"
+      ],
+      "correct_answer": "Because solar panels only generate power during daylight hours and their output varies with weather and season, whereas thermal plants can run continuously",
+      "explanation": "Since a solar array's output falls to zero at night and is reduced by clouds, its long-run average output is a smaller fraction of its rated peak capacity than a thermal plant designed to run near-continuously, giving solar a lower capacity factor.",
+      "topic": "Comparing energy sources: capacity factor",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The 'energy payback time' (EPBT) of a renewable energy system refers to:",
+      "options": [
+        "The time it takes for the system to generate as much energy as was consumed in manufacturing, installing, and decommissioning it",
+        "The time it takes to fully charge a battery from empty",
+        "The warranty period offered by the manufacturer",
+        "The time taken to construct the physical foundation of the installation only"
+      ],
+      "correct_answer": "The time it takes for the system to generate as much energy as was consumed in manufacturing, installing, and decommissioning it",
+      "explanation": "Energy payback time is a life-cycle metric: it measures how long a renewable energy system must operate before the cumulative energy it produces equals the total energy that was invested to produce, install, and eventually retire it.",
+      "topic": "Comparing energy sources: energy payback",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A shorter energy payback time for a renewable energy technology generally indicates:",
+      "options": [
+        "The technology is more energetically favourable, recovering its embodied energy investment more quickly and providing more net energy benefit over its lifetime",
+        "The technology will fail sooner than one with a longer payback time",
+        "The technology produces no usable energy at all",
+        "The technology requires no maintenance whatsoever"
+      ],
+      "correct_answer": "The technology is more energetically favourable, recovering its embodied energy investment more quickly and providing more net energy benefit over its lifetime",
+      "explanation": "A shorter EPBT means the system pays back its manufacturing energy cost sooner, after which it continues generating a net energy surplus for the remainder of its operational lifetime, making it a more favourable investment from an energy standpoint.",
+      "topic": "Comparing energy sources: energy payback",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The overall conversion efficiency of a solar photovoltaic system depends on which of the following factors?",
+      "options": [
+        "All of these: cell material bandgap, temperature, angle of incidence of sunlight, and inverter/wiring losses",
+        "Only the colour of the solar panel frame",
+        "Only the manufacturer's brand name",
+        "Only the geographic longitude of the installation, independent of all other factors"
+      ],
+      "correct_answer": "All of these: cell material bandgap, temperature, angle of incidence of sunlight, and inverter/wiring losses",
+      "explanation": "Real-world PV system efficiency depends on the semiconductor's intrinsic conversion limits, temperature effects (efficiency typically decreases as cell temperature rises), how directly sunlight strikes the panel, and downstream losses in inverters and cabling.",
+      "topic": "Solar energy: efficiency limits",
+      "difficulty": "medium"
+    },
+    {
+      "question": "As the temperature of a silicon solar cell increases (all else equal), its electrical conversion efficiency generally:",
+      "options": [
+        "Decreases, because the open-circuit voltage falls with increasing temperature",
+        "Increases without limit",
+        "Remains completely unaffected by temperature",
+        "Becomes infinite at high temperature"
+      ],
+      "correct_answer": "Decreases, because the open-circuit voltage falls with increasing temperature",
+      "explanation": "Silicon PV cells exhibit a negative temperature coefficient: as cell temperature rises, the open-circuit voltage decreases (due to increased intrinsic carrier concentration and reduced bandgap), lowering overall power output and efficiency, even though short-circuit current rises slightly.",
+      "topic": "Solar energy: efficiency limits",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Wind turbines are typically installed at significant height on towers primarily because:",
+      "options": [
+        "Wind speed generally increases with height above the ground due to reduced surface friction, and since power scales as v³, even modest gains in height substantially increase available energy",
+        "Taller towers are structurally weaker and thus need less material",
+        "Height has no effect on wind speed or turbine output",
+        "Regulations require all electrical equipment to be elevated"
+      ],
+      "correct_answer": "Wind speed generally increases with height above the ground due to reduced surface friction, and since power scales as v³, even modest gains in height substantially increase available energy",
+      "explanation": "Wind speed near the ground is slowed by friction with terrain and obstacles (the wind shear/boundary layer effect); because power in the wind depends on v³, placing turbines higher, where wind speeds are greater and steadier, significantly boosts energy capture.",
+      "topic": "Wind energy: physics of turbines",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The swept area of a wind turbine's rotor blades is important because:",
+      "options": [
+        "The power captured is directly proportional to the swept area, so larger rotor diameters capture proportionally more wind energy",
+        "Swept area has no effect on the power captured by the turbine",
+        "Only the rotor's colour affects the power captured",
+        "Swept area is inversely proportional to captured power"
+      ],
+      "correct_answer": "The power captured is directly proportional to the swept area, so larger rotor diameters capture proportionally more wind energy",
+      "explanation": "In P = (1/2)ρAv³, the swept area A = πr² appears linearly, so increasing blade length (and hence swept area) directly increases the power a turbine can extract from a given wind speed.",
+      "topic": "Wind energy: physics of turbines",
+      "difficulty": "medium"
+    }
+  ]
+}

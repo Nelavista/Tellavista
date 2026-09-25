@@ -1,5 +1,4 @@
 import random
-import re
 import traceback
 from datetime import datetime
 from flask import Blueprint, render_template, request, session, redirect, url_for, flash, jsonify
@@ -8,36 +7,15 @@ from app.models import User, CBTQuestion, CBTAttempt, CBTAnswer, UserPreferences
 from app.extensions import db, limiter
 from app.config import OPENROUTER_API_KEY
 from app.services.academic_context import resolve_academic_context, find_course
+from app.services.cbt_bank import normalize_course_code, question_bank_query, question_counts
 from app.services.progress_service import get_cbt_summary
 from app.services.notification_service import notify
 import requests
 
 cbt_bp = Blueprint('cbt', __name__)
 
-# Matches CBT.html's own subject-prefix extraction (course.match(/[A-Z]+/)) -- the
-# leading letters of a course code, e.g. "MAT101" -> "MAT". Kept in exact sync so a
-# course that resolves to a question bank client-side resolves to the same bank here.
-_SUBJECT_PREFIX_RE = re.compile(r'[A-Za-z]+')
-
 MAX_CBT_QUESTIONS = 50
 MAX_WRITTEN_QUESTIONS = 10
-
-
-def _subject_code_for(course_code):
-    m = _SUBJECT_PREFIX_RE.match(course_code or '')
-    return m.group(0).upper() if m else None
-
-
-def _scope_to_university(query, user):
-    """NULL university_id on a CBTQuestion means universal (every row today) -- same
-    'universal + specific' OR-pattern already proven by Material.university in
-    routes/materials_routes.py. Provably a no-op right now since nothing has been tagged
-    yet; only narrows once/if a question is later tagged to one school."""
-    if user and user.university_id:
-        return query.filter(
-            db.or_(CBTQuestion.university_id.is_(None), CBTQuestion.university_id == user.university_id)
-        )
-    return query
 
 
 @cbt_bp.route('/CBT', methods=['GET'])
@@ -75,18 +53,12 @@ def cbt_counts():
     screen to show real counts and honestly disable a card with no content, without ever
     shipping the questions (or answers) themselves before the student actually starts."""
     course_code = (request.args.get('course_code') or '').strip().upper()
-    subject_code = _subject_code_for(course_code)
-    if not subject_code:
+    if not normalize_course_code(course_code):
         return jsonify({'success': True, 'cbt_count': 0, 'written_count': 0})
     user = User.query.filter_by(username=session['user']['username']).first()
-    cbt_count = _scope_to_university(
-        CBTQuestion.query.filter_by(subject_code=subject_code, question_type='cbt', is_active=True), user
-    ).count()
-    written_count = _scope_to_university(
-        CBTQuestion.query.filter_by(subject_code=subject_code, question_type='written', is_active=True), user
-    ).count()
-    return jsonify({'success': True, 'cbt_count': min(cbt_count, MAX_CBT_QUESTIONS),
-                     'written_count': min(written_count, MAX_WRITTEN_QUESTIONS)})
+    counts = question_counts(course_code, user)
+    return jsonify({'success': True, 'cbt_count': min(counts['cbt'], MAX_CBT_QUESTIONS),
+                     'written_count': min(counts['written'], MAX_WRITTEN_QUESTIONS)})
 
 
 @cbt_bp.route('/api/cbt/mark-scheme')
@@ -123,9 +95,9 @@ def start_cbt_attempt():
     snapshots exactly which question ids were issued onto the new CBTAttempt row
     (issued_question_ids) so /CBT/submit/<id> can later verify every submitted answer
     belongs to a question that was actually handed out for this specific attempt, and
-    can never be substituted, duplicated, or invented by the client. Mirrors CBT.html's
-    own course-code -> subject-prefix mapping exactly (see _subject_code_for above) so
-    the same course always resolves to the same bank."""
+    can never be substituted, duplicated, or invented by the client. Bank is resolved by
+    exact course code (see app/services/cbt_bank.py) so the same course always resolves
+    to the same bank, never a bank shared with every other course under the subject."""
     data = request.get_json(silent=True) or {}
     username = session['user']['username']
     user = User.query.filter_by(username=username).first()
@@ -137,10 +109,7 @@ def start_cbt_attempt():
     if not course_code or question_type not in ('cbt', 'written'):
         return jsonify({'success': False, 'error': 'Missing/invalid course_code or question_type'}), 400
 
-    subject_code = _subject_code_for(course_code)
-    bank = _scope_to_university(
-        CBTQuestion.query.filter_by(subject_code=subject_code, question_type=question_type, is_active=True), user
-    ).all() if subject_code else []
+    bank = question_bank_query(course_code, question_type, user).all()
 
     if not bank:
         return jsonify({'success': False, 'error': 'no_questions',

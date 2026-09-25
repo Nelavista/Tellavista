@@ -1,0 +1,272 @@
+{
+  "course_code": "MTH411",
+  "title": "Analytical Dynamics II",
+  "level": "400",
+  "source_note": "Standard NUC-aligned Nigerian university 400L Analytical Dynamics II curriculum, building on MTH314's Newtonian treatment of a single particle: generalized coordinates and constraints, Lagrangian mechanics and the Euler-Lagrange equations, Hamilton's principle, Hamiltonian mechanics and canonical equations, Poisson brackets, rigid body dynamics, and small oscillations/normal modes.",
+  "questions": [
+    {
+      "question": "Generalized coordinates q_i are a set of independent variables that:",
+      "options": ["Completely specify the configuration of a system with the minimum number of coordinates needed", "Must always be Cartesian coordinates", "Are always equal in number to the physical dimensions of space", "Include only velocities, never positions"],
+      "correct_answer": "Completely specify the configuration of a system with the minimum number of coordinates needed",
+      "explanation": "Generalized coordinates are chosen to describe a system's configuration efficiently, often incorporating constraints automatically.",
+      "topic": "Generalized coordinates",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A constraint that can be expressed as an equation relating the coordinates (and possibly time) of the form f(q1,...,qn,t) = 0 is called:",
+      "options": ["A holonomic constraint", "A non-holonomic constraint", "A conservative force", "A generalized force"],
+      "correct_answer": "A holonomic constraint",
+      "explanation": "Holonomic constraints can be written as algebraic relations among the coordinates, allowing a reduction in the number of independent generalized coordinates.",
+      "topic": "Constraints",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A constraint that cannot be integrated into a relation purely among the coordinates, such as one involving a non-integrable velocity relation, is called:",
+      "options": ["Non-holonomic", "Holonomic", "Scleronomic", "Cyclic"],
+      "correct_answer": "Non-holonomic",
+      "explanation": "Non-holonomic constraints restrict the possible velocities of a system without reducing the configuration space itself, such as rolling-without-slipping constraints.",
+      "topic": "Constraints",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A constraint that does not explicitly depend on time is called:",
+      "options": ["Scleronomic", "Rheonomic", "Non-holonomic", "Cyclic"],
+      "correct_answer": "Scleronomic",
+      "explanation": "Scleronomic constraints are time-independent, in contrast to rheonomic constraints which vary explicitly with time.",
+      "topic": "Constraints",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The number of degrees of freedom of a system equals:",
+      "options": ["The number of independent generalized coordinates needed to specify its configuration", "The number of particles in the system", "The number of forces acting on the system", "Always three, regardless of the system"],
+      "correct_answer": "The number of independent generalized coordinates needed to specify its configuration",
+      "explanation": "Degrees of freedom count the independent ways a system's configuration can vary, after accounting for constraints.",
+      "topic": "Degrees of freedom",
+      "difficulty": "easy"
+    },
+    {
+      "question": "D'Alembert's principle states that the sum of the differences between the applied forces and the inertial (ma) terms, for virtual displacements consistent with constraints, is:",
+      "options": ["Zero", "Always positive", "Equal to the kinetic energy", "Equal to the potential energy"],
+      "correct_answer": "Zero",
+      "explanation": "D'Alembert's principle reformulates Newtonian dynamics in terms of virtual work, providing the starting point for deriving the Lagrangian formalism.",
+      "topic": "D'Alembert's principle",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The Lagrangian L of a system is defined as:",
+      "options": ["L = T - V, the kinetic energy minus the potential energy", "L = T + V", "L = V - T", "L = T times V"],
+      "correct_answer": "L = T - V, the kinetic energy minus the potential energy",
+      "explanation": "This scalar function of coordinates and velocities is the central object of the Lagrangian formulation of mechanics.",
+      "topic": "Lagrangian mechanics",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The Euler-Lagrange equations of motion for a system with generalized coordinates q_i are:",
+      "options": ["d/dt(dL/d(q_i-dot)) - dL/dq_i = 0", "dL/dq_i = 0 always", "d/dt(dL/dq_i) = 0", "L equals a constant"],
+      "correct_answer": "d/dt(dL/d(q_i-dot)) - dL/dq_i = 0",
+      "explanation": "This system of second-order differential equations, one for each generalized coordinate, gives the equations of motion in the Lagrangian formalism.",
+      "topic": "Euler-Lagrange equations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A key advantage of the Lagrangian formulation over Newtonian mechanics is that it:",
+      "options": ["Works directly with scalar energy quantities and generalized coordinates, automatically handling constraint forces", "Requires vector force analysis in all cases", "Cannot handle constrained systems", "Only applies to a single particle"],
+      "correct_answer": "Works directly with scalar energy quantities and generalized coordinates, automatically handling constraint forces",
+      "explanation": "By working with scalars (kinetic and potential energy) in generalized coordinates, the Lagrangian approach eliminates the need to explicitly compute constraint forces.",
+      "topic": "Lagrangian mechanics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A generalized coordinate q_i that does not appear explicitly in the Lagrangian, only its velocity q_i-dot appearing, is called:",
+      "options": ["Cyclic (or ignorable)", "Holonomic", "Rheonomic", "Canonical"],
+      "correct_answer": "Cyclic (or ignorable)",
+      "explanation": "Cyclic coordinates are absent from the Lagrangian itself, leading directly to a conserved conjugate momentum.",
+      "topic": "Cyclic coordinates",
+      "difficulty": "medium"
+    },
+    {
+      "question": "If a coordinate q_i is cyclic, then by the Euler-Lagrange equations, its conjugate momentum p_i = dL/d(q_i-dot) is:",
+      "options": ["Conserved (constant in time)", "Always zero", "Equal to the Hamiltonian", "Undefined"],
+      "correct_answer": "Conserved (constant in time)",
+      "explanation": "Since dL/dq_i = 0 for a cyclic coordinate, the Euler-Lagrange equation directly implies d(p_i)/dt = 0.",
+      "topic": "Cyclic coordinates",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Hamilton's Principle (the principle of stationary action) states that the actual path taken by a system between two times extremizes the action integral:",
+      "options": ["S = the integral of L dt", "S = the integral of T dt", "S = the integral of V dt", "S = the integral of H dt"],
+      "correct_answer": "S = the integral of L dt",
+      "explanation": "Hamilton's principle provides a variational foundation for classical mechanics, with the Euler-Lagrange equations arising as its stationarity condition.",
+      "topic": "Hamilton's principle",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The generalized (conjugate) momentum corresponding to coordinate q_i is defined as:",
+      "options": ["p_i = dL/d(q_i-dot)", "p_i = dL/dq_i", "p_i = m times q_i-dot, always", "p_i = dT/dq_i"],
+      "correct_answer": "p_i = dL/d(q_i-dot)",
+      "explanation": "This definition generalizes ordinary momentum to arbitrary generalized coordinates and underlies the transition to the Hamiltonian formalism.",
+      "topic": "Generalized momentum",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Hamiltonian H is obtained from the Lagrangian via the Legendre transformation:",
+      "options": ["H = the sum of p_i times q_i-dot, minus L", "H = L minus the sum of p_i times q_i-dot", "H = T + V, always identical to L", "H = dL/dt"],
+      "correct_answer": "H = the sum of p_i times q_i-dot, minus L",
+      "explanation": "This Legendre transform switches the description from coordinates and velocities (q, q-dot) to coordinates and momenta (q, p).",
+      "topic": "Hamiltonian mechanics",
+      "difficulty": "hard"
+    },
+    {
+      "question": "For a system where the kinetic energy is a homogeneous quadratic function of the velocities and the potential is velocity-independent, the Hamiltonian equals:",
+      "options": ["The total energy T + V", "Zero", "The Lagrangian L", "The generalized force"],
+      "correct_answer": "The total energy T + V",
+      "explanation": "Under these standard conditions, the Legendre transform simplifies so that H coincides with the total mechanical energy.",
+      "topic": "Hamiltonian mechanics",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Hamilton's canonical equations of motion are:",
+      "options": ["q_i-dot = dH/dp_i and p_i-dot = -dH/dq_i", "q_i-dot = dH/dq_i and p_i-dot = dH/dp_i", "q_i-dot = -dH/dp_i and p_i-dot = dH/dq_i", "Both q_i-dot and p_i-dot equal dL/dt"],
+      "correct_answer": "q_i-dot = dH/dp_i and p_i-dot = -dH/dq_i",
+      "explanation": "These first-order coupled equations replace the second-order Euler-Lagrange equations in the Hamiltonian formalism.",
+      "topic": "Hamilton's canonical equations",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The Poisson bracket of two phase-space functions f and g is defined as:",
+      "options": ["The sum over i of (df/dq_i times dg/dp_i minus df/dp_i times dg/dq_i)", "f times g minus g times f", "df/dt", "f plus g"],
+      "correct_answer": "The sum over i of (df/dq_i times dg/dp_i minus df/dp_i times dg/dq_i)",
+      "explanation": "This bilinear antisymmetric operation on phase-space functions is central to the Hamiltonian formalism and its quantum analogue.",
+      "topic": "Poisson brackets",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The time evolution of any phase-space function f(q,p,t) along the motion can be written using Poisson brackets as:",
+      "options": ["df/dt = the Poisson bracket {f,H} plus the explicit partial derivative df/dt", "df/dt = the Poisson bracket {f,H} only, ignoring explicit time dependence", "df/dt = H", "df/dt = 0 always"],
+      "correct_answer": "df/dt = the Poisson bracket {f,H} plus the explicit partial derivative df/dt",
+      "explanation": "This formula expresses the total time derivative of any observable in terms of its Poisson bracket with the Hamiltonian plus any explicit time dependence.",
+      "topic": "Poisson brackets",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A canonical transformation is a change of phase-space variables (q,p) to (Q,P) that:",
+      "options": ["Preserves the form of Hamilton's canonical equations", "Changes the number of degrees of freedom", "Is valid only for linear systems", "Eliminates the Hamiltonian entirely"],
+      "correct_answer": "Preserves the form of Hamilton's canonical equations",
+      "explanation": "Canonical transformations are the class of coordinate changes on phase space that keep the Hamiltonian structure intact.",
+      "topic": "Canonical transformations",
+      "difficulty": "hard"
+    },
+    {
+      "question": "For a rigid body, the moment of inertia tensor I relates the angular momentum L to the angular velocity omega by:",
+      "options": ["L = I omega, where in general L and omega need not be parallel", "L = omega/I", "L is always parallel to omega for any rigid body", "L = I + omega"],
+      "correct_answer": "L = I omega, where in general L and omega need not be parallel",
+      "explanation": "Because the moment of inertia tensor is generally not a multiple of the identity, angular momentum and angular velocity can point in different directions.",
+      "topic": "Rigid body dynamics",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The principal axes of a rigid body are the special set of axes for which:",
+      "options": ["The moment of inertia tensor is diagonal", "The angular velocity is zero", "The center of mass lies outside the body", "The kinetic energy is zero"],
+      "correct_answer": "The moment of inertia tensor is diagonal",
+      "explanation": "Principal axes are the eigenvectors of the moment of inertia tensor, along which the tensor takes a simple diagonal form.",
+      "topic": "Rigid body dynamics",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Euler's equations of motion for a rigid body rotating about its center of mass, in the body-fixed principal axis frame, describe how the angular velocity components evolve under the influence of:",
+      "options": ["Applied torques", "Applied forces only", "Linear momentum only", "The center of mass position"],
+      "correct_answer": "Applied torques",
+      "explanation": "Euler's equations are the rotational analogue of Newton's second law, relating the rate of change of angular velocity components to applied torques.",
+      "topic": "Euler's equations for rigid bodies",
+      "difficulty": "hard"
+    },
+    {
+      "question": "For a torque-free symmetric top (two equal principal moments of inertia), Euler's equations predict that the body:",
+      "options": ["Precesses steadily about the axis of angular momentum", "Remains perfectly stationary", "Immediately stops rotating", "Has completely undefined motion"],
+      "correct_answer": "Precesses steadily about the axis of angular momentum",
+      "explanation": "A torque-free symmetric top exhibits a characteristic free precession of its symmetry axis about the fixed direction of angular momentum.",
+      "topic": "Euler's equations for rigid bodies",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Small oscillations of a conservative system about a stable equilibrium can be analyzed by expanding the potential energy to second order and finding the:",
+      "options": ["Normal modes, via the eigenvalue problem of the mass and stiffness matrices", "First derivative of the potential only", "Lagrangian evaluated only at the equilibrium point", "Generalized momenta at t=0"],
+      "correct_answer": "Normal modes, via the eigenvalue problem of the mass and stiffness matrices",
+      "explanation": "Linearizing the equations of motion about equilibrium reduces the problem to a generalized eigenvalue problem whose solutions are the normal modes.",
+      "topic": "Small oscillations and normal modes",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In a normal mode of oscillation of a coupled system, all the generalized coordinates:",
+      "options": ["Oscillate with the same single frequency and fixed relative amplitudes/phases", "Oscillate independently at different frequencies", "Remain constant", "Grow without bound"],
+      "correct_answer": "Oscillate with the same single frequency and fixed relative amplitudes/phases",
+      "explanation": "A normal mode is a collective oscillation pattern in which every coordinate moves sinusoidally at the same frequency with a fixed amplitude ratio.",
+      "topic": "Small oscillations and normal modes",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The number of normal modes of a conservative system with n degrees of freedom undergoing small oscillations is:",
+      "options": ["n", "2n", "n squared", "Always 1"],
+      "correct_answer": "n",
+      "explanation": "The linearized eigenvalue problem for small oscillations has exactly n eigenvalue/eigenvector pairs, one per degree of freedom.",
+      "topic": "Small oscillations and normal modes",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A stable equilibrium point of a conservative system corresponds to a point where the potential energy has:",
+      "options": ["A local minimum", "A local maximum", "An inflection point", "No defined value"],
+      "correct_answer": "A local minimum",
+      "explanation": "At a local minimum of potential energy, small displacements experience a restoring force, giving rise to oscillatory (stable) motion.",
+      "topic": "Small oscillations and normal modes",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Lagrange multipliers can be introduced into the Euler-Lagrange formalism to handle:",
+      "options": ["Holonomic constraints explicitly, while also yielding the constraint forces", "Only non-conservative forces", "The kinetic energy", "Cyclic coordinates only"],
+      "correct_answer": "Holonomic constraints explicitly, while also yielding the constraint forces",
+      "explanation": "Using Lagrange multipliers keeps the constraint equations in the formalism explicitly, which is useful when the constraint forces themselves are of interest.",
+      "topic": "Constraints",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The Routhian procedure is useful for systems with some cyclic coordinates because it:",
+      "options": ["Eliminates the cyclic coordinates using their conserved momenta while retaining a Lagrangian-like treatment for the rest", "Applies only to rigid bodies", "Removes all coordinates from the problem", "Converts the system entirely to Newtonian form"],
+      "correct_answer": "Eliminates the cyclic coordinates using their conserved momenta while retaining a Lagrangian-like treatment for the rest",
+      "explanation": "The Routhian is a hybrid function that treats cyclic coordinates in Hamiltonian fashion while keeping the remaining coordinates in Lagrangian fashion, simplifying the analysis.",
+      "topic": "Cyclic coordinates",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Liouville's theorem in Hamiltonian mechanics states that the volume of a region in phase space, evolved under Hamilton's equations, is:",
+      "options": ["Conserved (constant) in time", "Always increasing", "Always decreasing to zero", "Undefined"],
+      "correct_answer": "Conserved (constant) in time",
+      "explanation": "Liouville's theorem reflects the incompressibility of Hamiltonian phase flow, a foundational result for statistical mechanics.",
+      "topic": "Hamiltonian mechanics",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Compared to MTH314's single-particle Newtonian treatment, MTH411's Lagrangian and Hamiltonian formalisms are especially powerful for:",
+      "options": ["Systems of many particles or rigid bodies with constraints, expressed in generalized coordinates", "Only free particles in a vacuum", "Systems with exactly one degree of freedom", "Static systems with no motion at all"],
+      "correct_answer": "Systems of many particles or rigid bodies with constraints, expressed in generalized coordinates",
+      "explanation": "The generalized-coordinate formalism scales naturally to complex, constrained, multi-body systems where vector force analysis becomes unwieldy.",
+      "topic": "Lagrangian mechanics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Hamilton-Jacobi equation reformulates dynamics as a single first-order partial differential equation for:",
+      "options": ["Hamilton's principal function S(q,t)", "The Lagrangian L", "The Poisson bracket", "The moment of inertia tensor"],
+      "correct_answer": "Hamilton's principal function S(q,t)",
+      "explanation": "The Hamilton-Jacobi equation recasts the equations of motion into a PDE for a generating function S, offering another route to solving mechanical problems.",
+      "topic": "Hamilton-Jacobi theory",
+      "difficulty": "hard"
+    },
+    {
+      "question": "If the Lagrangian of a system does not depend explicitly on time, then by Noether's theorem the associated conserved quantity is:",
+      "options": ["The Hamiltonian (total energy, when it equals T+V)", "The linear momentum only", "The angular momentum only", "Nothing is conserved in this case"],
+      "correct_answer": "The Hamiltonian (total energy, when it equals T+V)",
+      "explanation": "Time-translation symmetry of the Lagrangian corresponds, via Noether's theorem, to conservation of the Hamiltonian (energy).",
+      "topic": "Noether's theorem and conservation",
+      "difficulty": "hard"
+    }
+  ]
+}

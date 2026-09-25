@@ -1,0 +1,256 @@
+{
+  "course_code": "MCB206",
+  "title": "Industrial Microbiology",
+  "level": "200",
+  "source_note": "Standard NUC-aligned Nigerian university 200L Industrial Microbiology curriculum: principles of fermentation technology, industrially important microorganisms, bioreactor/fermenter design and operation, downstream processing, and commercial production of antibiotics, enzymes, organic acids, alcoholic beverages, single-cell protein and other microbial products.",
+  "questions": [
+    {
+      "question": "In industrial microbiology, the term 'fermentation' is used broadly to describe:",
+      "options": ["Any large-scale microbial or enzymatic process used to manufacture a commercial product", "Only the anaerobic breakdown of sugar to alcohol", "Only processes that occur in the complete absence of oxygen", "The sterilisation of culture media before inoculation"],
+      "correct_answer": "Any large-scale microbial or enzymatic process used to manufacture a commercial product",
+      "explanation": "In an industrial context, 'fermentation' broadly refers to any bioprocess -- aerobic or anaerobic -- in which microorganisms or their enzymes are used at scale to produce a commercially valuable product, distinct from the strict biochemical definition of fermentation as anaerobic metabolism.",
+      "topic": "Fermentation technology principles",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The vessel in which large-scale industrial microbial fermentation is carried out under controlled conditions is called a:",
+      "options": ["Bioreactor (fermenter)", "Autoclave", "Petri dish", "Incubator only"],
+      "correct_answer": "Bioreactor (fermenter)",
+      "explanation": "A bioreactor or fermenter is an engineered vessel designed to provide a controlled environment (temperature, pH, aeration, agitation) for large-scale microbial growth and product formation.",
+      "topic": "Fermenter design",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The device fitted to industrial fermenters to introduce sterile air into the culture broth for aerobic fermentations is called a/an:",
+      "options": ["Sparger", "Impeller", "Baffle", "Jacket"],
+      "correct_answer": "Sparger",
+      "explanation": "A sparger is a perforated device or nozzle that introduces sterile compressed air (or oxygen) as fine bubbles into the fermentation broth to support aerobic microbial growth.",
+      "topic": "Fermenter design",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Impellers (agitators) in a stirred-tank fermenter primarily serve to:",
+      "options": ["Mix the culture broth uniformly and improve oxygen transfer", "Sterilise the medium before inoculation", "Measure the pH of the broth", "Cool the fermenter jacket"],
+      "correct_answer": "Mix the culture broth uniformly and improve oxygen transfer",
+      "explanation": "Impellers agitate the broth to keep cells, nutrients and oxygen evenly distributed, preventing settling and improving mass transfer of oxygen from air bubbles into the liquid.",
+      "topic": "Fermenter design",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Baffles fitted to the inner wall of a stirred-tank fermenter mainly function to:",
+      "options": ["Prevent vortex formation and improve mixing efficiency", "Sterilise incoming air", "Provide a site for microbial attachment", "Measure dissolved oxygen"],
+      "correct_answer": "Prevent vortex formation and improve mixing efficiency",
+      "explanation": "Baffles disrupt the circular flow pattern created by the impeller, preventing a central vortex and promoting turbulent mixing, which improves aeration and nutrient distribution.",
+      "topic": "Fermenter design",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In a batch fermentation process, nutrients are:",
+      "options": ["Loaded at the start and not added during the run, with products harvested only at the end", "Continuously fed in and product continuously withdrawn", "Added only after the culture has already died", "Never sterilised before use"],
+      "correct_answer": "Loaded at the start and not added during the run, with products harvested only at the end",
+      "explanation": "Batch fermentation is a closed system: all nutrients are supplied at the beginning, the culture grows through its full growth cycle, and the vessel is emptied and the product harvested at the end of the run.",
+      "topic": "Fermentation processes",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Fed-batch fermentation differs from simple batch fermentation in that:",
+      "options": ["Nutrients are added incrementally during the run to extend productive growth and control substrate concentration", "The vessel is never inoculated with a starter culture", "Product is continuously removed while fresh medium is continuously added", "No sterilisation of the medium is required"],
+      "correct_answer": "Nutrients are added incrementally during the run to extend productive growth and control substrate concentration",
+      "explanation": "In fed-batch culture, selected nutrients are fed into the fermenter periodically or continuously during the run (without removing broth), which helps avoid substrate inhibition or catabolite repression and extends the productive phase.",
+      "topic": "Fermentation processes",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In continuous fermentation, the technique of maintaining a fixed cell density and growth rate by continuously adding fresh medium and removing spent culture at equal rates is called:",
+      "options": ["Chemostat culture", "Batch culture", "Static culture", "Slant culture"],
+      "correct_answer": "Chemostat culture",
+      "explanation": "A chemostat achieves a steady state by continuously supplying fresh, nutrient-limited medium while removing culture at the same rate, allowing the growth rate to be controlled by the dilution rate indefinitely.",
+      "topic": "Fermentation processes",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Which fungus is classically used in the industrial fermentation of beer and wine, converting sugars to ethanol and carbon dioxide?",
+      "options": ["Saccharomyces cerevisiae", "Aspergillus niger", "Penicillium notatum", "Rhizopus stolonifer"],
+      "correct_answer": "Saccharomyces cerevisiae",
+      "explanation": "Saccharomyces cerevisiae, brewer's/baker's yeast, ferments hexose sugars anaerobically to ethanol and CO2, forming the basis of beer, wine and bread production.",
+      "topic": "Industrially important microorganisms",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Citric acid, widely used in the food and beverage industry, is industrially produced mainly by fermentation using:",
+      "options": ["Aspergillus niger", "Saccharomyces cerevisiae", "Lactobacillus bulgaricus", "Escherichia coli"],
+      "correct_answer": "Aspergillus niger",
+      "explanation": "Aspergillus niger is the principal industrial organism for citric acid production, converting sucrose or molasses to citric acid via a modified tricarboxylic acid cycle under specific culture conditions.",
+      "topic": "Industrially important microorganisms",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The first commercially produced antibiotic, penicillin, is derived from the mould:",
+      "options": ["Penicillium chrysogenum (originally identified in P. notatum)", "Aspergillus niger", "Saccharomyces cerevisiae", "Streptococcus lactis"],
+      "correct_answer": "Penicillium chrysogenum (originally identified in P. notatum)",
+      "explanation": "Alexander Fleming first observed antibacterial activity in Penicillium notatum; industrial-scale penicillin production later shifted to the higher-yielding species Penicillium chrysogenum.",
+      "topic": "Industrially important microorganisms",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Streptomycin, the first effective antibiotic against tuberculosis, is produced industrially by a species of:",
+      "options": ["Streptomyces (actinomycete bacteria)", "Penicillium (mould)", "Saccharomyces (yeast)", "Lactobacillus (bacteria)"],
+      "correct_answer": "Streptomyces (actinomycete bacteria)",
+      "explanation": "Streptomyces species, filamentous soil actinomycetes, are the source of many clinically important antibiotics, including streptomycin, discovered by Selman Waksman.",
+      "topic": "Industrially important microorganisms",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Lactobacillus species are industrially important mainly for their role in:",
+      "options": ["Lactic acid fermentation used in yoghurt, cheese and pickle production", "Antibiotic production", "Single-cell protein production", "Enzyme production for detergents"],
+      "correct_answer": "Lactic acid fermentation used in yoghurt, cheese and pickle production",
+      "explanation": "Lactobacillus species ferment sugars to lactic acid, which lowers pH and coagulates milk proteins or preserves vegetables, underlying yoghurt, cheese and fermented vegetable production.",
+      "topic": "Industrially important microorganisms",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Microbial biomass grown specifically for use as a protein-rich food or feed supplement is known as:",
+      "options": ["Single-cell protein (SCP)", "Secondary metabolite", "Biosurfactant", "Bioplastic"],
+      "correct_answer": "Single-cell protein (SCP)",
+      "explanation": "Single-cell protein refers to dried microbial cells (bacteria, yeast, algae or fungi) grown on inexpensive substrates and harvested as a protein source for animal feed or human food supplementation.",
+      "topic": "Industrial products",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Enzymes such as amylases and proteases used industrially in detergents and food processing are typically obtained by:",
+      "options": ["Large-scale microbial fermentation and extraction/purification of the secreted enzyme", "Extraction directly from animal tissue only", "Chemical synthesis from simple organic precursors", "Extraction from plant seeds exclusively"],
+      "correct_answer": "Large-scale microbial fermentation and extraction/purification of the secreted enzyme",
+      "explanation": "Most industrial enzymes are produced by fermenting selected high-yield microbial strains (often Bacillus or Aspergillus species) that secrete the enzyme into the medium, from which it is recovered and purified.",
+      "topic": "Industrial products",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A microbial metabolite, such as an antibiotic, that is produced mainly during the stationary phase and is not essential for the organism's growth is called a:",
+      "options": ["Secondary metabolite", "Primary metabolite", "Structural protein", "Nucleic acid"],
+      "correct_answer": "Secondary metabolite",
+      "explanation": "Secondary metabolites (e.g., antibiotics, pigments, toxins) are typically synthesised after the main growth phase and are not required for the organism's basic growth and reproduction, unlike primary metabolites such as amino acids and nucleotides.",
+      "topic": "Fermentation technology principles",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Primary metabolites, such as ethanol, citric acid and amino acids, are characteristically produced:",
+      "options": ["During the active growth (log) phase, closely linked to cell growth", "Only after the cells have died", "Exclusively during the lag phase", "Only under anaerobic conditions regardless of the organism"],
+      "correct_answer": "During the active growth (log) phase, closely linked to cell growth",
+      "explanation": "Primary metabolites are essential products of normal metabolism produced in step with active cell growth, unlike secondary metabolites which typically accumulate later, during the stationary phase.",
+      "topic": "Fermentation technology principles",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Before an industrial fermentation run begins, the fermenter and medium are typically treated by which process to eliminate contaminating microorganisms?",
+      "options": ["Sterilisation, commonly by steam under pressure (autoclaving)", "Pasteurisation only", "Filtration through cheesecloth", "Refrigeration"],
+      "correct_answer": "Sterilisation, commonly by steam under pressure (autoclaving)",
+      "explanation": "Industrial fermenters and media are sterilised, typically using pressurised steam (autoclaving or in-place steam sterilisation), to eliminate contaminants that would compete with or spoil the desired production culture.",
+      "topic": "Fermentation technology principles",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The stage of industrial bioprocessing concerned with recovering and purifying the desired product after fermentation is complete is called:",
+      "options": ["Downstream processing", "Upstream processing", "Strain improvement", "Inoculum development"],
+      "correct_answer": "Downstream processing",
+      "explanation": "Downstream processing encompasses all steps after fermentation -- cell separation, extraction, purification and formulation -- used to recover the final product from the fermentation broth.",
+      "topic": "Downstream processing",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Upstream processing in industrial fermentation refers mainly to:",
+      "options": ["Strain selection, inoculum preparation and medium formulation before and during fermentation", "Purification of the final product after fermentation", "Packaging of the finished product", "Waste disposal after the process"],
+      "correct_answer": "Strain selection, inoculum preparation and medium formulation before and during fermentation",
+      "explanation": "Upstream processing covers everything from selecting and improving the production strain, preparing the inoculum, and formulating the growth medium, through to running the fermentation itself.",
+      "topic": "Fermentation technology principles",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Centrifugation and filtration are common downstream processing steps used mainly to:",
+      "options": ["Separate microbial cells (biomass) from the fermentation broth", "Sterilise the fermenter before use", "Increase the growth rate of the culture", "Introduce oxygen into the broth"],
+      "correct_answer": "Separate microbial cells (biomass) from the fermentation broth",
+      "explanation": "Centrifugation and filtration are used to physically separate cell biomass from the liquid broth, an early downstream step whether the desired product is intracellular (in the cells) or extracellular (in the filtrate).",
+      "topic": "Downstream processing",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Deliberately inducing mutations (e.g., with UV light or chemical mutagens) in an industrial microbial strain, then selecting variants with higher product yield, is a classical approach known as:",
+      "options": ["Strain improvement", "Bioaugmentation", "Bioremediation", "Sterilisation"],
+      "correct_answer": "Strain improvement",
+      "explanation": "Strain improvement programmes use mutagenesis (or genetic engineering) followed by screening/selection to obtain industrial strains with higher yields, faster growth, or resistance to feedback inhibition.",
+      "topic": "Strain improvement",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A small culture used to initiate growth in a large industrial fermenter, built up through progressively larger seed vessels, is called the:",
+      "options": ["Inoculum", "Effluent", "Filtrate", "Supernatant"],
+      "correct_answer": "Inoculum",
+      "explanation": "The inoculum is the starter culture, typically expanded through a series of increasingly large seed fermenters, used to introduce a healthy, actively growing population into the main production fermenter.",
+      "topic": "Fermentation technology principles",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Industrial ethanol production for biofuel commonly uses Saccharomyces cerevisiae to ferment sugars derived from feedstocks such as:",
+      "options": ["Sugarcane molasses or corn starch", "Crude petroleum", "Limestone", "Atmospheric nitrogen"],
+      "correct_answer": "Sugarcane molasses or corn starch",
+      "explanation": "Bioethanol production relies on fermentable sugars, commonly obtained from sugarcane molasses, corn starch (after enzymatic hydrolysis), or other starchy/sugary agricultural feedstocks.",
+      "topic": "Industrial products",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Monosodium glutamate (MSG), a widely used flavour enhancer, is industrially produced by fermentation using strains of:",
+      "options": ["Corynebacterium glutamicum", "Saccharomyces cerevisiae", "Penicillium chrysogenum", "Rhizopus oryzae"],
+      "correct_answer": "Corynebacterium glutamicum",
+      "explanation": "Corynebacterium glutamicum is the principal industrial organism engineered and cultured for large-scale fermentative production of glutamic acid, used to manufacture monosodium glutamate.",
+      "topic": "Industrially important microorganisms",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Insulin and other therapeutic proteins are today mass-produced industrially mainly by:",
+      "options": ["Genetically engineered bacteria (e.g., E. coli) or yeast expressing the human gene", "Extraction directly from animal pancreases only", "Chemical synthesis from amino acid building blocks alone", "Fermentation of Streptomyces species"],
+      "correct_answer": "Genetically engineered bacteria (e.g., E. coli) or yeast expressing the human gene",
+      "explanation": "Recombinant DNA technology allows the human insulin gene to be inserted into bacteria or yeast, which are then fermented industrially to produce large quantities of human insulin, replacing earlier extraction from animal pancreases.",
+      "topic": "Industrial products",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Immobilised enzyme or cell technology, widely used in industrial processes such as high-fructose corn syrup production, involves:",
+      "options": ["Physically confining enzymes or cells to a support so they can be reused and easily separated from the product stream", "Freezing cells permanently to halt all metabolism", "Removing all enzymes from a fermentation broth", "Genetically deleting an organism's enzymes"],
+      "correct_answer": "Physically confining enzymes or cells to a support so they can be reused and easily separated from the product stream",
+      "explanation": "Immobilisation (e.g., in alginate beads or on resin supports) confines catalytically active enzymes or whole cells to a fixed matrix, allowing continuous reuse, easier product separation and improved process economics.",
+      "topic": "Downstream processing",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In industrial fermentation, the dissolved oxygen level in an aerobic fermenter is a critical process parameter because:",
+      "options": ["Oxygen has low solubility in water and can become rate-limiting for aerobic microbial growth and product formation", "Oxygen is never required for large-scale fermentation", "Oxygen levels have no effect on secondary metabolite production", "All industrial fermentations are strictly anaerobic"],
+      "correct_answer": "Oxygen has low solubility in water and can become rate-limiting for aerobic microbial growth and product formation",
+      "explanation": "Because oxygen is poorly soluble in aqueous media, aerobic fermenters must be engineered (sparging, agitation, pressure) to maintain adequate oxygen transfer, which often limits achievable cell density and productivity if not managed well.",
+      "topic": "Fermenter design",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Vinegar (acetic acid) is produced industrially by the aerobic oxidation of ethanol to acetic acid, carried out mainly by bacteria of the genus:",
+      "options": ["Acetobacter", "Lactobacillus", "Clostridium", "Bacillus"],
+      "correct_answer": "Acetobacter",
+      "explanation": "Acetobacter species are acetic acid bacteria that aerobically oxidise ethanol to acetic acid, the process underlying industrial and traditional vinegar production.",
+      "topic": "Industrially important microorganisms",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which of the following is an example of an industrially significant organic acid, besides citric acid, produced by microbial fermentation and used widely in the food and polymer industries?",
+      "options": ["Lactic acid", "Sulfuric acid", "Hydrochloric acid", "Nitric acid"],
+      "correct_answer": "Lactic acid",
+      "explanation": "Lactic acid, produced by Lactobacillus fermentation, is used in food preservation and flavouring and, increasingly, as the monomer for biodegradable polylactic acid (PLA) plastics.",
+      "topic": "Industrial products",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Retention of a viable, genetically stable production strain over time in an industrial setting is typically ensured through:",
+      "options": ["Culture (strain) maintenance programmes, such as storage as lyophilised or cryopreserved stocks", "Discarding and re-isolating a new wild strain before every batch", "Exposing the strain to antibiotics continuously", "Growing the strain exclusively at its maximum tolerated temperature"],
+      "correct_answer": "Culture (strain) maintenance programmes, such as storage as lyophilised or cryopreserved stocks",
+      "explanation": "Industrial strains are preserved using methods such as freeze-drying (lyophilisation) or cryopreservation in liquid nitrogen to minimise genetic drift and contamination, ensuring a stable, reproducible production organism over time.",
+      "topic": "Strain improvement",
+      "difficulty": "medium"
+    }
+  ]
+}

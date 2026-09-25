@@ -3,8 +3,9 @@ from datetime import datetime
 from flask import Blueprint, render_template, session, request, jsonify, abort
 from sqlalchemy import or_
 from app.utils.helpers import login_required
-from app.models import User, Material, CBTQuestion, CBTAttempt, Course, Topic, TopicProgress, Notification
+from app.models import User, Material, CBTAttempt, Course, Topic, TopicProgress, Notification
 from app.services.academic_context import resolve_academic_context, find_course
+from app.services.cbt_bank import question_counts
 from app.services.progress_service import get_course_materials_progress, get_cbt_summary
 from app.services.notification_service import mark_all_read
 from app.extensions import db
@@ -35,13 +36,6 @@ def _split_school_vs_additional(materials):
     school = [m for m in materials if m.source == 'uploaded']
     additional = [m for m in materials if m.source != 'uploaded']
     return school, additional
-
-
-def _cbt_subject_prefix(course_code):
-    """Strip trailing digits: 'MAT101' -> 'MAT' -- matches CBT.html's own
-    createCbtSet()/createWrittenSet() regex (`code.match(/[A-Z]+/)[0]`)."""
-    prefix = course_code.rstrip('0123456789')
-    return prefix.upper()
 
 
 @academia_bp.route('/courses/<course_code>')
@@ -84,9 +78,8 @@ def course_detail(course_code):
                 ).all()
             }
 
-    subject = _cbt_subject_prefix(course_code)
-    cbt_count = CBTQuestion.query.filter_by(subject_code=subject, question_type='cbt', is_active=True).count()
-    written_count = CBTQuestion.query.filter_by(subject_code=subject, question_type='written', is_active=True).count()
+    counts = question_counts(course_code, user)
+    cbt_count, written_count = counts['cbt'], counts['written']
 
     recent_attempts = (
         CBTAttempt.query.filter_by(user_id=user.id, course_code=course_code.upper())
@@ -235,6 +228,26 @@ def browse_courses():
 @login_required
 def academic_search_page():
     return render_template('academic_search.html')
+
+
+@academia_bp.route('/api/courses/mine')
+@login_required
+def courses_mine():
+    """This student's own course list at one level (defaults to their profile level) --
+    real Course rows from the DB, replacing the old hardcoded per-department course list
+    that used to live in templates/CBT.html. An honest empty 'resolved: false' response
+    (never a fabricated course list) when the taxonomy doesn't cover this student's
+    university/department yet, same convention as academic_search above."""
+    username = session['user']['username']
+    user = User.query.filter_by(username=username).first()
+    level = (request.args.get('level') or '').strip() or None
+    ctx = resolve_academic_context(user, level=level)
+    if not ctx.department:
+        return jsonify({'resolved': False, 'courses': []})
+    return jsonify({
+        'resolved': True,
+        'courses': [{'code': c.code, 'title': c.title} for c in ctx.courses],
+    })
 
 
 @academia_bp.route('/api/academic-search')

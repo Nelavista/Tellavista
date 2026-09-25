@@ -1,0 +1,426 @@
+{
+  "course_code": "PHY303",
+  "title": "Statistical Mechanics",
+  "level": "300",
+  "source_note": "Standard NUC-aligned Nigerian university 300L Statistical Mechanics curriculum: thermodynamics review (state functions, entropy), microstates/macrostates and equal a priori probabilities, statistical ensembles (microcanonical and canonical), the Boltzmann distribution and partition function, connecting the partition function to thermodynamic quantities, the Maxwell-Boltzmann speed distribution, quantum statistics (Bose-Einstein and Fermi-Dirac, contrasted with classical statistics), and applications including the ideal gas law, specific heat of solids, and blackbody radiation.",
+  "questions": [
+    {
+      "question": "In thermodynamics, a 'state function' is a quantity that",
+      "options": [
+        "Depends only on the current equilibrium state of the system, not on the path taken to reach it",
+        "Depends only on the process or path by which the system reached its current state",
+        "Is always conserved during any thermodynamic process",
+        "Can only be defined for reversible processes"
+      ],
+      "correct_answer": "Depends only on the current equilibrium state of the system, not on the path taken to reach it",
+      "explanation": "State functions such as internal energy, entropy, and temperature are properties of the equilibrium state itself; unlike heat and work, their change between two states is independent of the process connecting them.",
+      "topic": "Thermodynamics review",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The thermodynamic entropy S of a system, in the framework connected to statistical mechanics, is fundamentally a measure of",
+      "options": [
+        "The number of microscopic configurations (microstates) consistent with the system's macroscopic state",
+        "The total kinetic energy of all particles in the system",
+        "The temperature of the system alone",
+        "The pressure exerted by the system on its container"
+      ],
+      "correct_answer": "The number of microscopic configurations (microstates) consistent with the system's macroscopic state",
+      "explanation": "Statistical mechanics gives entropy a microscopic meaning: it quantifies the multiplicity of accessible microstates, connecting thermodynamic disorder to statistical counting.",
+      "topic": "Thermodynamics review",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A 'microstate' of a system refers to",
+      "options": [
+        "A complete, detailed specification of the state of every individual particle in the system (e.g., position and momentum of each particle)",
+        "A macroscopic description using only pressure, volume, and temperature",
+        "The state of the system after it has been observed and collapsed",
+        "A state defined only for solids, not gases"
+      ],
+      "correct_answer": "A complete, detailed specification of the state of every individual particle in the system (e.g., position and momentum of each particle)",
+      "explanation": "Microstates specify the exact configuration of every constituent particle, in contrast to macrostates which are characterized by a small number of bulk (macroscopic) variables.",
+      "topic": "Microstates and macrostates",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A 'macrostate' is characterized by",
+      "options": [
+        "A small set of bulk thermodynamic variables such as total energy, volume, pressure, and temperature",
+        "The exact position and velocity of every particle in the system",
+        "A single microstate only",
+        "The quantum state of an individual particle"
+      ],
+      "correct_answer": "A small set of bulk thermodynamic variables such as total energy, volume, pressure, and temperature",
+      "explanation": "Macrostates describe the system at the level accessible to macroscopic measurement, and typically correspond to an enormous number of possible underlying microstates.",
+      "topic": "Microstates and macrostates",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The postulate of equal a priori probabilities in statistical mechanics states that",
+      "options": [
+        "For an isolated system in equilibrium, all accessible microstates consistent with the given macroscopic constraints are equally likely",
+        "Only the microstate of lowest energy is ever occupied",
+        "Microstates with higher energy are always more probable than those with lower energy",
+        "Probability only applies to quantum systems, not classical ones"
+      ],
+      "correct_answer": "For an isolated system in equilibrium, all accessible microstates consistent with the given macroscopic constraints are equally likely",
+      "explanation": "This is the foundational postulate of statistical mechanics: in the absence of any other information, an isolated system in equilibrium is assumed to be found with equal probability in any of its accessible microstates.",
+      "topic": "Postulate of equal a priori probabilities",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Boltzmann entropy formula relating entropy S to the number of accessible microstates Omega is",
+      "options": ["S = k_B * ln(Omega)", "S = k_B * Omega", "S = k_B / ln(Omega)", "S = Omega / k_B"],
+      "correct_answer": "S = k_B * ln(Omega)",
+      "explanation": "This is Boltzmann's famous formula, connecting the macroscopic thermodynamic entropy to the logarithm of the number of microstates Omega, with k_B the Boltzmann constant.",
+      "topic": "Thermodynamics review",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The microcanonical ensemble in statistical mechanics describes a system that is",
+      "options": [
+        "Isolated, with fixed total energy E, fixed volume V, and fixed particle number N",
+        "In thermal contact with a heat bath at fixed temperature T",
+        "Able to exchange both energy and particles with a reservoir",
+        "Always at zero temperature"
+      ],
+      "correct_answer": "Isolated, with fixed total energy E, fixed volume V, and fixed particle number N",
+      "explanation": "The microcanonical ensemble models a completely isolated system (constant E, V, N), where all accessible microstates of that fixed energy are equally probable, consistent with the equal a priori probability postulate.",
+      "topic": "Statistical ensembles",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The canonical ensemble in statistical mechanics describes a system that is",
+      "options": [
+        "In thermal equilibrium with a large heat reservoir at fixed temperature T, allowed to exchange energy but not particles",
+        "Completely isolated with no energy exchange of any kind",
+        "Allowed to exchange both particles and energy with a reservoir",
+        "Restricted to only a single accessible microstate"
+      ],
+      "correct_answer": "In thermal equilibrium with a large heat reservoir at fixed temperature T, allowed to exchange energy but not particles",
+      "explanation": "The canonical ensemble fixes N, V, and T (rather than E), representing a system in contact with a much larger heat bath, so its energy fluctuates but its temperature is well defined.",
+      "topic": "Statistical ensembles",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the canonical ensemble, the probability that a system is found in a particular microstate i with energy E_i is proportional to",
+      "options": ["exp(-E_i / (k_B*T))", "exp(+E_i / (k_B*T))", "E_i / (k_B*T)", "1/E_i"],
+      "correct_answer": "exp(-E_i / (k_B*T))",
+      "explanation": "This is the Boltzmann distribution: the probability of a microstate decreases exponentially with its energy, weighted by the thermal energy scale k_B*T.",
+      "topic": "Boltzmann distribution and partition function",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The canonical partition function Z is defined as",
+      "options": [
+        "Z = sum over all microstates i of exp(-E_i/(k_B*T))",
+        "Z = sum over all microstates i of E_i",
+        "Z = the total number of microstates only, without any Boltzmann weighting",
+        "Z = k_B*T * ln(Omega)"
+      ],
+      "correct_answer": "Z = sum over all microstates i of exp(-E_i/(k_B*T))",
+      "explanation": "The partition function is the normalization constant of the Boltzmann distribution, obtained by summing the Boltzmann factor over all accessible microstates; it encodes all the thermodynamic information of the system.",
+      "topic": "Boltzmann distribution and partition function",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Helmholtz free energy F of a system is related to the canonical partition function Z by",
+      "options": ["F = -k_B*T*ln(Z)", "F = k_B*T*Z", "F = -k_B*ln(Z)/T", "F = k_B*T/ln(Z)"],
+      "correct_answer": "F = -k_B*T*ln(Z)",
+      "explanation": "This key relation allows all thermodynamic quantities to be derived from the partition function, since F is a natural thermodynamic potential for systems held at constant N, V, T.",
+      "topic": "Partition function and thermodynamics",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The average (internal) energy U of a system can be obtained from the partition function Z by the relation",
+      "options": ["U = -d(ln Z)/d(beta), where beta = 1/(k_B*T)", "U = k_B*T*Z", "U = ln(Z)", "U = d(Z)/dT only, with no logarithm"],
+      "correct_answer": "U = -d(ln Z)/d(beta), where beta = 1/(k_B*T)",
+      "explanation": "Differentiating the logarithm of the partition function with respect to beta = 1/(k_B T) yields the average energy, a standard derivation connecting statistical and thermodynamic descriptions.",
+      "topic": "Partition function and thermodynamics",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The entropy S can be obtained from the Helmholtz free energy F via the thermodynamic relation",
+      "options": ["S = -(dF/dT) at constant volume", "S = F/T", "S = dF/dV", "S = -F*T"],
+      "correct_answer": "S = -(dF/dT) at constant volume",
+      "explanation": "This is a standard thermodynamic identity (from dF = -SdT - PdV) that allows entropy to be computed once the free energy is known as a function of temperature from the partition function.",
+      "topic": "Partition function and thermodynamics",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The pressure P of a system can be derived from the Helmholtz free energy F using",
+      "options": ["P = -(dF/dV) at constant temperature", "P = F*V", "P = dF/dT", "P = -F/V"],
+      "correct_answer": "P = -(dF/dV) at constant temperature",
+      "explanation": "From the thermodynamic identity dF = -SdT - PdV, pressure is obtained as the negative volume derivative of the Helmholtz free energy at fixed temperature, linking the partition function directly to the equation of state.",
+      "topic": "Partition function and thermodynamics",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The Maxwell-Boltzmann speed distribution describes",
+      "options": [
+        "The probability distribution of molecular speeds in a classical ideal gas at thermal equilibrium",
+        "The distribution of energy levels in a quantum harmonic oscillator",
+        "The distribution of electron spins in a magnetic field",
+        "The spatial distribution of photons in blackbody radiation only"
+      ],
+      "correct_answer": "The probability distribution of molecular speeds in a classical ideal gas at thermal equilibrium",
+      "explanation": "The Maxwell-Boltzmann distribution gives the probability density for molecular speeds in an ideal gas, derived by combining the Boltzmann factor with the density of states in velocity space.",
+      "topic": "Maxwell-Boltzmann distribution",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In the Maxwell-Boltzmann speed distribution, as temperature increases, the distribution of molecular speeds",
+      "options": [
+        "Broadens and shifts to higher speeds, with the peak (most probable speed) moving to larger values",
+        "Narrows and shifts to lower speeds",
+        "Remains completely unchanged",
+        "Becomes a delta function at a single fixed speed"
+      ],
+      "correct_answer": "Broadens and shifts to higher speeds, with the peak (most probable speed) moving to larger values",
+      "explanation": "Since the average kinetic energy scales with temperature, higher T increases both the mean speed and the spread of the speed distribution, flattening and shifting the curve rightward.",
+      "topic": "Maxwell-Boltzmann distribution",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The most probable speed v_p in the Maxwell-Boltzmann distribution for a gas of molecular mass m at temperature T is given by",
+      "options": ["v_p = sqrt(2*k_B*T/m)", "v_p = sqrt(3*k_B*T/m)", "v_p = sqrt(8*k_B*T/(pi*m))", "v_p = k_B*T/m"],
+      "correct_answer": "v_p = sqrt(2*k_B*T/m)",
+      "explanation": "The most probable speed is found by maximizing the Maxwell-Boltzmann speed distribution function, giving v_p = sqrt(2k_BT/m), which is smaller than both the average speed and the root-mean-square speed.",
+      "topic": "Maxwell-Boltzmann distribution",
+      "difficulty": "hard"
+    },
+    {
+      "question": "For a Maxwell-Boltzmann gas at a given temperature, ranking the characteristic speeds from smallest to largest gives",
+      "options": [
+        "Most probable speed < average speed < root-mean-square speed",
+        "Root-mean-square speed < average speed < most probable speed",
+        "Average speed < most probable speed < root-mean-square speed",
+        "All three speeds are always exactly equal"
+      ],
+      "correct_answer": "Most probable speed < average speed < root-mean-square speed",
+      "explanation": "Because the Maxwell-Boltzmann distribution is asymmetric (skewed toward high speeds), the three characteristic speeds differ, with v_p < v_avg < v_rms, a standard and testable result.",
+      "topic": "Maxwell-Boltzmann distribution",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Bose-Einstein statistics applies to particles known as bosons, which have",
+      "options": [
+        "Integer spin, and are not subject to the Pauli exclusion principle",
+        "Half-integer spin, and obey the Pauli exclusion principle",
+        "No spin under any circumstances",
+        "Only positive electric charge"
+      ],
+      "correct_answer": "Integer spin, and are not subject to the Pauli exclusion principle",
+      "explanation": "Bosons (e.g., photons, helium-4 atoms) have integer spin and can occupy the same quantum state in unlimited numbers, governed by Bose-Einstein statistics rather than the Pauli exclusion principle.",
+      "topic": "Quantum statistics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Fermi-Dirac statistics applies to particles known as fermions, which",
+      "options": [
+        "Have half-integer spin and obey the Pauli exclusion principle, so no two identical fermions can occupy the same quantum state",
+        "Have integer spin and can occupy the same state without limit",
+        "Never interact with electromagnetic fields",
+        "Always have zero rest mass"
+      ],
+      "correct_answer": "Have half-integer spin and obey the Pauli exclusion principle, so no two identical fermions can occupy the same quantum state",
+      "explanation": "Fermions (e.g., electrons, protons, neutrons) have half-integer spin and are restricted by the Pauli exclusion principle, which shapes the Fermi-Dirac distribution used to describe their statistical occupation of energy states.",
+      "topic": "Quantum statistics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Bose-Einstein distribution function giving the average occupation number of a single-particle state with energy epsilon is",
+      "options": [
+        "n(epsilon) = 1 / (exp((epsilon-mu)/(k_B*T)) - 1)",
+        "n(epsilon) = 1 / (exp((epsilon-mu)/(k_B*T)) + 1)",
+        "n(epsilon) = exp(-(epsilon-mu)/(k_B*T))",
+        "n(epsilon) = (epsilon - mu) / (k_B*T)"
+      ],
+      "correct_answer": "n(epsilon) = 1 / (exp((epsilon-mu)/(k_B*T)) - 1)",
+      "explanation": "The Bose-Einstein distribution has a minus sign in the denominator, distinguishing it from Fermi-Dirac (plus sign); mu is the chemical potential, and the distribution allows unlimited occupation of a state as epsilon approaches mu.",
+      "topic": "Quantum statistics",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The Fermi-Dirac distribution function giving the average occupation number of a single-particle state with energy epsilon is",
+      "options": [
+        "n(epsilon) = 1 / (exp((epsilon-mu)/(k_B*T)) + 1)",
+        "n(epsilon) = 1 / (exp((epsilon-mu)/(k_B*T)) - 1)",
+        "n(epsilon) = exp(-(epsilon-mu)/(k_B*T))",
+        "n(epsilon) = mu / epsilon"
+      ],
+      "correct_answer": "n(epsilon) = 1 / (exp((epsilon-mu)/(k_B*T)) + 1)",
+      "explanation": "The plus sign in the denominator ensures the Fermi-Dirac occupation number never exceeds 1, consistent with the Pauli exclusion principle limiting each state to at most one fermion.",
+      "topic": "Quantum statistics",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In the classical (Maxwell-Boltzmann) limit, both the Bose-Einstein and Fermi-Dirac distributions reduce to the Boltzmann distribution when",
+      "options": [
+        "The average occupation number per state is much less than 1 (low density or high temperature, so quantum degeneracy effects become negligible)",
+        "The temperature approaches absolute zero",
+        "The particles have exactly zero energy",
+        "The chemical potential mu is much greater than the particle energy epsilon"
+      ],
+      "correct_answer": "The average occupation number per state is much less than 1 (low density or high temperature, so quantum degeneracy effects become negligible)",
+      "explanation": "When exp((epsilon-mu)/k_BT) is much greater than 1, the +/-1 term in the denominator of both quantum distributions becomes negligible, and both reduce to the classical Boltzmann exponential form.",
+      "topic": "Quantum statistics",
+      "difficulty": "hard"
+    },
+    {
+      "question": "At absolute zero temperature, a system of fermions fills all available single-particle states up to a maximum energy known as the",
+      "options": ["Fermi energy", "Boltzmann energy", "Zero-point energy of the harmonic oscillator", "Rydberg energy"],
+      "correct_answer": "Fermi energy",
+      "explanation": "At T=0, the Pauli exclusion principle forces fermions to fill the lowest available energy states one by one, up to the Fermi energy, above which all states are empty.",
+      "topic": "Quantum statistics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The classical Maxwell-Boltzmann statistics differs from both quantum statistics (Bose-Einstein and Fermi-Dirac) in that it",
+      "options": [
+        "Treats identical particles as distinguishable and imposes no restriction on the number of particles per state",
+        "Applies the Pauli exclusion principle strictly to all particles",
+        "Allows only bosonic particles to be described",
+        "Predicts identical distributions to Fermi-Dirac statistics at all temperatures"
+      ],
+      "correct_answer": "Treats identical particles as distinguishable and imposes no restriction on the number of particles per state",
+      "explanation": "Classical statistics ignores quantum indistinguishability and exclusion effects, treating particles as labelable and allowing any occupation number per state, which is only a good approximation when quantum degeneracy is negligible.",
+      "topic": "Quantum statistics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Deriving the ideal gas law PV = Nk_BT from statistical mechanics typically starts from",
+      "options": [
+        "The classical canonical partition function of N non-interacting particles in a box, using the Maxwell-Boltzmann (classical) approximation",
+        "The Fermi-Dirac distribution at absolute zero only",
+        "The Bose-Einstein condensation temperature formula",
+        "The Planck blackbody radiation formula directly"
+      ],
+      "correct_answer": "The classical canonical partition function of N non-interacting particles in a box, using the Maxwell-Boltzmann (classical) approximation",
+      "explanation": "The ideal gas law emerges naturally from computing the partition function for N independent classical particles confined to a volume V and using thermodynamic relations (P = -dF/dV) to obtain the equation of state.",
+      "topic": "Ideal gas law derivation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Einstein model of the specific heat of solids treats each atom in the crystal lattice as",
+      "options": [
+        "An independent quantum harmonic oscillator, all vibrating at the same fixed frequency",
+        "A free classical particle with no restoring force",
+        "A fermion obeying the Pauli exclusion principle",
+        "A photon in a cavity"
+      ],
+      "correct_answer": "An independent quantum harmonic oscillator, all vibrating at the same fixed frequency",
+      "explanation": "Einstein modeled solid-state vibrations as 3N independent quantum harmonic oscillators of a single frequency, successfully explaining the qualitative drop in specific heat at low temperatures (unlike the classical Dulong-Petit prediction).",
+      "topic": "Specific heat of solids",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The classical Dulong-Petit law predicts that the molar specific heat of a solid at high temperature approaches",
+      "options": ["3R (where R is the universal gas constant)", "R/2", "0", "R^2"],
+      "correct_answer": "3R (where R is the universal gas constant)",
+      "explanation": "Classical equipartition of energy assigns (1/2)k_BT to each of the 6 quadratic degrees of freedom (3 kinetic + 3 potential) per atom in a lattice, giving a molar specific heat of 3R, which matches experiment at high temperature.",
+      "topic": "Specific heat of solids",
+      "difficulty": "medium"
+    },
+    {
+      "question": "At low temperatures, the Einstein model correctly predicts that the specific heat of a solid",
+      "options": [
+        "Decreases toward zero as temperature decreases, unlike the constant 3R predicted classically",
+        "Remains exactly constant at 3R at all temperatures",
+        "Increases without bound as temperature decreases",
+        "Becomes negative"
+      ],
+      "correct_answer": "Decreases toward zero as temperature decreases, unlike the constant 3R predicted classically",
+      "explanation": "Because vibrational energy levels are quantized (hbar*omega spacing), at low temperature most oscillators freeze into their ground state and cannot absorb thermal energy in small increments, so the specific heat drops toward zero, a key success of quantum statistical mechanics over the classical Dulong-Petit law.",
+      "topic": "Specific heat of solids",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Blackbody radiation is successfully explained using Bose-Einstein statistics because photons",
+      "options": [
+        "Are bosons with zero chemical potential (since photon number is not conserved), allowing derivation of the Planck spectral distribution",
+        "Are fermions that obey the Pauli exclusion principle",
+        "Have half-integer spin",
+        "Can only exist in a single quantum state at a given temperature"
+      ],
+      "correct_answer": "Are bosons with zero chemical potential (since photon number is not conserved), allowing derivation of the Planck spectral distribution",
+      "explanation": "Treating the photon gas in a cavity using Bose-Einstein statistics, with chemical potential set to zero because photons can be freely created and absorbed, reproduces Planck's blackbody radiation law.",
+      "topic": "Blackbody radiation",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Planck's law for the spectral energy density of blackbody radiation, derived using Bose-Einstein statistics, correctly predicts that at high frequencies the spectrum",
+      "options": [
+        "Falls off exponentially, avoiding the 'ultraviolet catastrophe' predicted by classical physics",
+        "Diverges to infinity, consistent with classical Rayleigh-Jeans predictions",
+        "Is independent of frequency entirely",
+        "Only applies to frequencies below the visible spectrum"
+      ],
+      "correct_answer": "Falls off exponentially, avoiding the 'ultraviolet catastrophe' predicted by classical physics",
+      "explanation": "Planck's quantization of radiation energy introduces an exponential suppression factor at high frequency, correcting the classical Rayleigh-Jeans law which incorrectly diverged (the ultraviolet catastrophe).",
+      "topic": "Blackbody radiation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Stefan-Boltzmann law, which states that the total power radiated per unit area by a blackbody is proportional to T^4, can be derived by",
+      "options": [
+        "Integrating the Planck spectral distribution over all frequencies",
+        "Applying the classical equipartition theorem alone",
+        "Using only the Fermi-Dirac distribution",
+        "Assuming radiation has zero energy at all temperatures"
+      ],
+      "correct_answer": "Integrating the Planck spectral distribution over all frequencies",
+      "explanation": "Integrating the Bose-Einstein-derived Planck spectral energy density over all frequencies yields the total radiated energy density, which is proportional to T^4, recovering the empirically known Stefan-Boltzmann law.",
+      "topic": "Blackbody radiation",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A key qualitative difference between the specific heat of a classical ideal gas and a system of electrons in a metal (Fermi gas) at ordinary temperatures is that",
+      "options": [
+        "The electronic contribution to specific heat is strongly suppressed because only electrons near the Fermi energy can be thermally excited, due to the Pauli exclusion principle",
+        "Electrons contribute exactly the same specific heat as predicted by classical equipartition",
+        "Electrons in metals do not obey any exclusion principle",
+        "The Fermi gas specific heat is always larger than the classical gas prediction"
+      ],
+      "correct_answer": "The electronic contribution to specific heat is strongly suppressed because only electrons near the Fermi energy can be thermally excited, due to the Pauli exclusion principle",
+      "explanation": "Because most electrons in a degenerate Fermi gas are already in filled states, only those within roughly k_BT of the Fermi energy can absorb thermal energy, drastically reducing the electronic specific heat compared to the classical equipartition prediction.",
+      "topic": "Quantum statistics",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In statistical mechanics, the term 'ensemble' refers to",
+      "options": [
+        "A large (conceptually infinite) collection of virtual copies of a system, each representing a possible microstate consistent with given macroscopic constraints",
+        "A single, specific microstate of one physical system",
+        "The collection of all possible macroscopic measuring instruments",
+        "A term used only in quantum statistics, not classical"
+      ],
+      "correct_answer": "A large (conceptually infinite) collection of virtual copies of a system, each representing a possible microstate consistent with given macroscopic constraints",
+      "explanation": "An ensemble is a statistical (mental) construct: many copies of the system, distributed over its accessible microstates, used to compute ensemble averages that correspond to measured macroscopic quantities.",
+      "topic": "Statistical ensembles",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The grand canonical ensemble differs from the canonical ensemble in that it allows a system to exchange",
+      "options": [
+        "Both energy and particles with a reservoir, at fixed chemical potential mu and temperature T",
+        "Only volume, but not energy or particles",
+        "Neither energy nor particles with any reservoir",
+        "Only particles, but never any energy"
+      ],
+      "correct_answer": "Both energy and particles with a reservoir, at fixed chemical potential mu and temperature T",
+      "explanation": "The grand canonical ensemble generalizes the canonical ensemble by also allowing particle exchange, introducing the chemical potential mu as the variable conjugate to particle number; it is the natural ensemble for deriving Bose-Einstein and Fermi-Dirac statistics.",
+      "topic": "Statistical ensembles",
+      "difficulty": "hard"
+    },
+    {
+      "question": "For an ideal gas of N molecules in the classical (Maxwell-Boltzmann) regime, the total partition function Z_N for indistinguishable particles is related to the single-particle partition function z by",
+      "options": ["Z_N = z^N / N!", "Z_N = N * z", "Z_N = z^N", "Z_N = z / N"],
+      "correct_answer": "Z_N = z^N / N!",
+      "explanation": "The factor of N! corrects for overcounting configurations that differ only by permuting identical, indistinguishable particles; omitting it leads to the unphysical Gibbs paradox in entropy calculations.",
+      "topic": "Partition function and thermodynamics",
+      "difficulty": "hard"
+    }
+  ]
+}

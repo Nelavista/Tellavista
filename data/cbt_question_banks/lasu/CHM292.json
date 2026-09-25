@@ -1,0 +1,256 @@
+{
+  "course_code": "CHM292",
+  "title": "Experimental Physical/Organic Chemistry",
+  "level": "200",
+  "source_note": "Standard NUC-aligned 200L laboratory curriculum pairing physical-chemistry measurement techniques (chemical kinetics, the distribution/partition law, phase equilibria, colligative properties) with basic organic synthesis and characterization (esterification, aspirin/soap preparation, derivative formation, and purity checks by melting point and colour tests).",
+  "questions": [
+    {
+      "question": "In the classic 'iodine clock' experiment used to study reaction kinetics, the sudden appearance of a blue-black colour marks the point at which:",
+      "options": ["All the reactants have been completely consumed", "A limiting reagent (e.g. thiosulfate) that was consuming the iodine as fast as it formed is used up, allowing free iodine to accumulate and react with starch", "The reaction mixture reaches its boiling point", "The starch indicator decomposes"],
+      "correct_answer": "A limiting reagent (e.g. thiosulfate) that was consuming the iodine as fast as it formed is used up, allowing free iodine to accumulate and react with starch",
+      "explanation": "While the limiting reagent lasts it reacts with iodine as fast as it is produced, keeping free iodine near zero; once it is exhausted, iodine accumulates and immediately forms the characteristic blue-black complex with starch, giving a sharp, measurable time interval.",
+      "topic": "Chemical kinetics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a kinetics experiment measuring how initial rate changes with reactant concentration, doubling the concentration of a reactant while the measured initial rate also doubles indicates that the reaction is:",
+      "options": ["Zero order with respect to that reactant", "First order with respect to that reactant", "Second order with respect to that reactant", "Third order with respect to that reactant"],
+      "correct_answer": "First order with respect to that reactant",
+      "explanation": "For a reaction first order in a given reactant, rate is directly proportional to that reactant's concentration, so doubling the concentration doubles the rate, consistent with rate = k[A]^1.",
+      "topic": "Chemical kinetics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "If doubling a reactant's concentration causes the initial rate of reaction to increase four-fold, the order of reaction with respect to that reactant is:",
+      "options": ["Zero", "One", "Two", "Three"],
+      "correct_answer": "Two",
+      "explanation": "For a reaction second order in a reactant, rate is proportional to [A]^2, so doubling [A] increases the rate by a factor of 2^2 = 4, consistent with the observed four-fold rate increase.",
+      "topic": "Chemical kinetics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The rate of a chemical reaction is generally measured experimentally by monitoring, over time, some property that changes as the reaction proceeds, such as:",
+      "options": ["Colour intensity, volume of gas evolved, pressure change, or concentration by titration of withdrawn samples", "The mass of the empty reaction vessel only", "The room temperature at the start of the experiment", "The colour of the reactant bottle label"],
+      "correct_answer": "Colour intensity, volume of gas evolved, pressure change, or concentration by titration of withdrawn samples",
+      "explanation": "Reaction rates are followed by tracking a measurable, changing physical or chemical property (e.g. gas volume in a reaction producing CO2, colour change, or titrimetric concentration determination) as a function of time.",
+      "topic": "Chemical kinetics",
+      "difficulty": "easy"
+    },
+    {
+      "question": "According to the Arrhenius equation, k = A exp(-Ea/RT), a plot of ln(k) versus 1/T for a reaction studied at several temperatures gives a straight line whose gradient allows calculation of:",
+      "options": ["The activation energy, Ea, of the reaction", "The equilibrium constant only", "The molar mass of the reactants", "The order of the reaction directly"],
+      "correct_answer": "The activation energy, Ea, of the reaction",
+      "explanation": "Taking natural logs of the Arrhenius equation gives ln(k) = ln(A) - (Ea/R)(1/T), a straight-line form whose slope equals -Ea/R, allowing Ea to be determined experimentally from rate constants measured at different temperatures.",
+      "topic": "Chemical kinetics",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In a rate-versus-temperature kinetics experiment, an increase in temperature generally increases the rate of reaction chiefly because:",
+      "options": ["A greater fraction of reacting molecules possess kinetic energy equal to or greater than the activation energy, and collision frequency also increases", "The activation energy of the reaction decreases automatically with temperature", "Molecules become smaller at higher temperature", "The reaction becomes exothermic instead of endothermic"],
+      "correct_answer": "A greater fraction of reacting molecules possess kinetic energy equal to or greater than the activation energy, and collision frequency also increases",
+      "explanation": "The Maxwell-Boltzmann distribution shifts to higher energies as temperature rises, so a much larger fraction of collisions have enough energy to overcome the (essentially unchanged) activation energy barrier, sharply increasing reaction rate.",
+      "topic": "Chemical kinetics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Nernst distribution (partition) law, verified experimentally by shaking iodine between water and carbon tetrachloride (or similar immiscible solvents) and titrating each layer, states that at a given temperature:",
+      "options": ["The solute distributes between the two immiscible solvents in a constant ratio of concentrations at equilibrium, provided its molecular state is the same in both solvents", "The solute dissolves completely in only one of the solvents", "The distribution ratio changes continuously with time and never reaches a constant value", "The two solvents become miscible once the solute is added"],
+      "correct_answer": "The solute distributes between the two immiscible solvents in a constant ratio of concentrations at equilibrium, provided its molecular state is the same in both solvents",
+      "explanation": "The Nernst distribution law states that at equilibrium and constant temperature, a solute distributes between two immiscible solvents such that the ratio of its concentrations in each solvent (the distribution coefficient) is constant, as long as the solute has the same molecular form in both phases.",
+      "topic": "Distribution/partition law",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the experimental determination of the distribution coefficient of iodine between water and an organic solvent, the concentration of iodine in each layer after shaking to equilibrium is usually found by:",
+      "options": ["Titrating each separated layer against standard sodium thiosulfate solution, using starch as indicator", "Weighing each layer only", "Measuring the volume of each layer only", "Measuring the boiling point of each layer"],
+      "correct_answer": "Titrating each separated layer against standard sodium thiosulfate solution, using starch as indicator",
+      "explanation": "Iodine is quantitatively determined by titration against standard sodium thiosulfate solution (with starch indicator near the endpoint), so titrating each separated, immiscible layer gives the iodine concentration in each phase.",
+      "topic": "Distribution/partition law",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A practical application of the distribution law demonstrated in this course is that solvent extraction using several smaller portions of extracting solvent removes:",
+      "options": ["Less total solute than one large single extraction of the same total volume", "More total solute than one large single extraction of the same total volume", "Exactly the same amount of solute regardless of how it is divided", "No solute at all if divided into portions"],
+      "correct_answer": "More total solute than one large single extraction of the same total volume",
+      "explanation": "Applying the distribution law repeatedly shows mathematically that multiple smaller extractions leave less residual solute in the original phase than a single extraction using the same total volume of solvent.",
+      "topic": "Distribution/partition law",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In studying a three-component liquid system (e.g. water-acetic acid-chloroform) using a triangular phase diagram, a point lying inside the binodal (miscibility) curve represents:",
+      "options": ["A single homogeneous liquid phase", "A region where the mixture separates into two immiscible liquid layers, whose compositions are given by the ends of a tie line", "A solid phase only", "A point where no acetic acid is present"],
+      "correct_answer": "A region where the mixture separates into two immiscible liquid layers, whose compositions are given by the ends of a tie line",
+      "explanation": "Inside the binodal curve of a partially miscible three-component system, the overall composition point corresponds to two coexisting liquid layers whose individual compositions are read from the two ends of the tie line passing through that point.",
+      "topic": "Phase equilibria",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In the water-acetic acid-chloroform ternary system, acetic acid is used as the third component in the experiment mainly because it:",
+      "options": ["Is completely insoluble in both water and chloroform", "Is miscible with both water and chloroform and so alters the mutual solubility of the water-chloroform pair, allowing the binodal curve to be mapped by titration", "Reacts chemically with chloroform to form a new immiscible layer", "Cannot be quantified by titration"],
+      "correct_answer": "Is miscible with both water and chloroform and so alters the mutual solubility of the water-chloroform pair, allowing the binodal curve to be mapped by titration",
+      "explanation": "Acetic acid is fully miscible with both partially miscible liquids (water and chloroform), so titrating mixtures of known water:chloroform ratio with acetic acid until turbidity just clears allows the whole binodal solubility curve to be constructed.",
+      "topic": "Phase equilibria",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Cryoscopy (freezing-point depression) is used in the laboratory as a physical method to determine a solute's:",
+      "options": ["Boiling point directly", "Approximate molar mass, using the relationship between the depression in freezing point of the solvent and the molality of the solute", "Colour and odour", "Electrical conductivity"],
+      "correct_answer": "Approximate molar mass, using the relationship between the depression in freezing point of the solvent and the molality of the solute",
+      "explanation": "Freezing-point depression (Delta Tf = Kf x m) is a colligative property proportional to the molality of dissolved solute particles; measuring Delta Tf for a solute of known mass in a solvent of known Kf allows calculation of its molar mass.",
+      "topic": "Colligative properties",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A Beckmann thermometer, traditionally used in cryoscopic molar-mass determinations, is designed to:",
+      "options": ["Measure very small differences in temperature with high precision over a limited, adjustable range, rather than giving an absolute temperature reading", "Measure temperatures from -273 degC to 1000 degC on a single scale", "Replace the need for a water bath in the experiment", "Only be used for measuring boiling points, never freezing points"],
+      "correct_answer": "Measure very small differences in temperature with high precision over a limited, adjustable range, rather than giving an absolute temperature reading",
+      "explanation": "The Beckmann thermometer has a very expanded scale covering only a few degrees and an adjustable mercury reservoir, allowing precise measurement of small temperature changes (such as freezing-point depression) rather than absolute temperature.",
+      "topic": "Colligative properties",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a cryoscopic molar-mass determination, the freezing point of the pure solvent must be measured first (and carefully, allowing for supercooling) because:",
+      "options": ["It provides the reference temperature from which the depression caused by the dissolved solute is calculated", "It has no relevance to the final calculation", "It determines the boiling point of the solution instead", "It is used only to calibrate the balance"],
+      "correct_answer": "It provides the reference temperature from which the depression caused by the dissolved solute is calculated",
+      "explanation": "The freezing-point depression, Delta Tf, is the difference between the pure solvent's freezing point and that of the solution, so an accurate measurement of the pure solvent's freezing point is essential before adding the solute.",
+      "topic": "Colligative properties",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the laboratory synthesis of aspirin (acetylsalicylic acid) from salicylic acid and acetic anhydride, a small amount of concentrated sulphuric (or phosphoric) acid is added mainly to act as:",
+      "options": ["A catalyst that speeds up the acetylation (esterification) reaction", "A drying agent for the final product", "An oxidising agent to convert the acid to an ester directly by oxidation", "A solvent for recrystallization"],
+      "correct_answer": "A catalyst that speeds up the acetylation (esterification) reaction",
+      "explanation": "Concentrated sulphuric or phosphoric acid catalyses the acetylation of the phenolic -OH group of salicylic acid by acetic anhydride, forming the acetate ester (aspirin) more rapidly than the uncatalysed reaction.",
+      "topic": "Organic synthesis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "After synthesizing aspirin, the crude product is typically purified by:",
+      "options": ["Recrystallization from a suitable solvent (e.g. hot water or ethanol/water mixture), followed by melting point determination to check purity", "Direct use without any further purification", "Dissolving in concentrated sulphuric acid and leaving unrecovered", "Boiling in air with no solvent at all"],
+      "correct_answer": "Recrystallization from a suitable solvent (e.g. hot water or ethanol/water mixture), followed by melting point determination to check purity",
+      "explanation": "The crude aspirin product is purified by recrystallization from a suitable solvent, and its purity is then checked by comparing its melting point with the accepted literature value (approximately 135 degC) for pure acetylsalicylic acid.",
+      "topic": "Organic synthesis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A student checks the purity of a synthesized aspirin sample by adding a few drops of neutral iron(III) chloride solution. A colour change to violet/purple would indicate:",
+      "options": ["Pure aspirin with no impurity", "The presence of residual unreacted salicylic acid (which has a free phenolic -OH group), since the acetylated product should not respond to this test", "That the product is actually acetic anhydride", "That the reaction did not proceed at all"],
+      "correct_answer": "The presence of residual unreacted salicylic acid (which has a free phenolic -OH group), since the acetylated product should not respond to this test",
+      "explanation": "Iron(III) chloride gives a characteristic violet colour with phenols; since acetylation converts salicylic acid's free -OH into an ester, pure aspirin should give no colour, so a positive test reveals unreacted salicylic acid impurity.",
+      "topic": "Organic synthesis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the laboratory preparation of soap by saponification, a triglyceride (fat or oil) is heated under reflux with:",
+      "options": ["Concentrated hydrochloric acid", "Concentrated (or strong) sodium hydroxide (or potassium hydroxide) solution, hydrolysing the ester bonds to give glycerol and sodium (or potassium) salts of the fatty acids", "Cold water only, with no other reagent", "Dilute sulphuric acid as catalyst"],
+      "correct_answer": "Concentrated (or strong) sodium hydroxide (or potassium hydroxide) solution, hydrolysing the ester bonds to give glycerol and sodium (or potassium) salts of the fatty acids",
+      "explanation": "Saponification is the base-catalysed hydrolysis of the ester linkages in a triglyceride, producing glycerol and the sodium (hard soap) or potassium (soft soap) salts of the constituent long-chain fatty acids.",
+      "topic": "Organic synthesis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In soap preparation, saturated sodium chloride (brine) solution is added to the reaction mixture after saponification mainly to:",
+      "options": ["'Salt out' the soap, reducing its solubility so it separates as a solid curd that can be filtered off from the glycerol-containing aqueous layer", "Dissolve the soap completely so it cannot be recovered", "Neutralize any excess sodium hydroxide chemically", "Act as the saponification catalyst"],
+      "correct_answer": "'Salt out' the soap, reducing its solubility so it separates as a solid curd that can be filtered off from the glycerol-containing aqueous layer",
+      "explanation": "Adding concentrated brine lowers the solubility of the soap (common-ion / salting-out effect), causing it to precipitate as a solid curd that floats and can be separated from the aqueous glycerol/lye solution by filtration.",
+      "topic": "Organic synthesis",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The synthesis of an ester such as ethyl ethanoate (ethyl acetate) from ethanol and acetic acid under reflux with a small amount of concentrated sulphuric acid is an example of:",
+      "options": ["Fischer esterification, an acid-catalysed, reversible equilibrium reaction between a carboxylic acid and an alcohol", "An irreversible oxidation reaction", "A saponification reaction", "A neutralization reaction with no organic product"],
+      "correct_answer": "Fischer esterification, an acid-catalysed, reversible equilibrium reaction between a carboxylic acid and an alcohol",
+      "explanation": "Fischer esterification is the classical acid-catalysed condensation of a carboxylic acid with an alcohol to form an ester and water; because it is an equilibrium reaction, conditions such as excess reactant or removal of water are used to improve the yield.",
+      "topic": "Organic synthesis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the esterification of ethanol with acetic acid, refluxing the reaction mixture (heating with a condenser returning vapour to the flask) is important because it:",
+      "options": ["Allows prolonged heating to drive the reaction toward equilibrium without losing volatile reactants or product by evaporation", "Prevents the reaction from occurring altogether", "Removes the sulphuric acid catalyst immediately", "Is done only to cool the reaction mixture rapidly"],
+      "correct_answer": "Allows prolonged heating to drive the reaction toward equilibrium without losing volatile reactants or product by evaporation",
+      "explanation": "Reflux condenses evaporated volatile reactants and product back into the flask, allowing the reaction to be heated for an extended period (needed since esterification is slow and reversible) without loss of material.",
+      "topic": "Organic synthesis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "After preparing an ester such as ethyl acetate, the crude organic product is typically washed with saturated sodium bicarbonate solution mainly to:",
+      "options": ["Remove unreacted acetic acid and the sulphuric acid catalyst by neutralization, releasing them as water-soluble salts (with CO2 effervescence)", "Increase the boiling point of the ester", "Dissolve the ester completely so it can be discarded", "Introduce more acid into the mixture"],
+      "correct_answer": "Remove unreacted acetic acid and the sulphuric acid catalyst by neutralization, releasing them as water-soluble salts (with CO2 effervescence)",
+      "explanation": "Sodium bicarbonate neutralizes residual acid impurities (acetic acid, sulphuric acid) in the crude ester, converting them to water-soluble sodium salts that partition into the aqueous layer and are washed away, purifying the organic ester layer.",
+      "topic": "Organic synthesis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A characteristic fruity smell is commonly used as a simple qualitative indication that an esterification reaction (e.g. formation of ethyl ethanoate or another simple ester) has occurred, because:",
+      "options": ["Many low-molecular-weight esters have pleasant, characteristic fruity odours, unlike the parent carboxylic acid and alcohol", "Esters are always colourless gases with no smell", "The starting carboxylic acid itself always smells fruity", "It indicates that no reaction has taken place"],
+      "correct_answer": "Many low-molecular-weight esters have pleasant, characteristic fruity odours, unlike the parent carboxylic acid and alcohol",
+      "explanation": "Many small esters (e.g. ethyl ethanoate, isoamyl acetate) have distinctive pleasant, fruity smells quite different from the often sharp or unpleasant odours of their parent acids and alcohols, providing a simple sensory check that esterification has occurred.",
+      "topic": "Organic synthesis",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Preparing a solid crystalline derivative (e.g. a 2,4-dinitrophenylhydrazone) of a liquid carbonyl compound and comparing its melting point with literature values is a technique used in this practical course primarily to:",
+      "options": ["Convert the liquid into a solid with a sharp, characteristic melting point that can help confirm the identity of the original unknown compound", "Permanently destroy the sample so it cannot be reused", "Increase the boiling point of the original liquid", "Remove all functional groups from the molecule"],
+      "correct_answer": "Convert the liquid into a solid with a sharp, characteristic melting point that can help confirm the identity of the original unknown compound",
+      "explanation": "Many liquid carbonyl compounds are hard to characterize directly, so converting them into a solid crystalline derivative with a well-documented, sharp melting point provides a convenient, reliable way to confirm the identity of the parent compound.",
+      "topic": "Organic synthesis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Monitoring an organic synthesis reaction's progress by taking small samples at intervals and running them on a TLC plate alongside the starting material allows a student to:",
+      "options": ["Determine when the starting material spot has disappeared (or is much reduced), indicating the reaction is essentially complete", "Directly measure the exact yield of the reaction without any further steps", "Replace the need for purifying the final product", "Measure the boiling point of the reaction mixture"],
+      "correct_answer": "Determine when the starting material spot has disappeared (or is much reduced), indicating the reaction is essentially complete",
+      "explanation": "Comparing the TLC spot pattern of reaction samples against the starting material over time shows the disappearance of the starting-material spot and appearance of a new product spot, a practical way to judge when a reaction has gone to completion.",
+      "topic": "Organic synthesis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Percentage yield in an organic preparative experiment (e.g. aspirin or ethyl acetate synthesis) is calculated using the theoretical yield, which is determined from:",
+      "options": ["The stoichiometry of the balanced equation and the amount (moles) of the limiting reagent used", "The total volume of solvent used in the reaction", "The melting point of the final product only", "The colour intensity of the final product"],
+      "correct_answer": "The stoichiometry of the balanced equation and the amount (moles) of the limiting reagent used",
+      "explanation": "Theoretical yield is calculated from the moles of the limiting reagent and the stoichiometric mole ratio in the balanced equation, giving the maximum possible mass of product, against which the actual mass obtained is compared to find percentage yield.",
+      "topic": "Organic synthesis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a kinetics experiment where hydrogen peroxide decomposition is catalysed by manganese(IV) oxide and the reaction is followed by measuring the volume of oxygen gas evolved over time, plotting volume of O2 against time typically gives a curve that:",
+      "options": ["Rises steeply at first and then levels off (plateaus) as the reactant is used up", "Is a straight horizontal line throughout", "Falls continuously from a high starting value to zero", "Is a perfect straight line with a constant positive slope until the reaction restarts"],
+      "correct_answer": "Rises steeply at first and then levels off (plateaus) as the reactant is used up",
+      "explanation": "As H2O2 is consumed, its concentration (and hence the rate of O2 evolution) decreases, so the volume-time curve is steep initially and gradually flattens as the reaction approaches completion, reaching a plateau at the final volume.",
+      "topic": "Chemical kinetics",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The half-life of a first-order reaction (the time for the reactant concentration to fall to half its initial value) has the characteristic property that it:",
+      "options": ["Depends on the initial concentration of the reactant", "Is independent of the initial concentration of the reactant, and is constant throughout the reaction", "Increases indefinitely as the reaction proceeds", "Is always exactly equal to the rate constant k"],
+      "correct_answer": "Is independent of the initial concentration of the reactant, and is constant throughout the reaction",
+      "explanation": "For a first-order reaction, t1/2 = 0.693/k, which contains no concentration term, so the half-life is constant regardless of the starting concentration, a defining kinetic signature of first-order behaviour.",
+      "topic": "Chemical kinetics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A catalyst such as MnO2 used in the decomposition of hydrogen peroxide increases the rate of reaction by:",
+      "options": ["Providing an alternative reaction pathway with a lower activation energy, without itself being permanently consumed", "Increasing the concentration of hydrogen peroxide present", "Shifting the final equilibrium position of the reaction", "Permanently reacting with and removing the product formed"],
+      "correct_answer": "Providing an alternative reaction pathway with a lower activation energy, without itself being permanently consumed",
+      "explanation": "A catalyst speeds up a reaction by offering a mechanistic pathway of lower activation energy, increasing the fraction of successful collisions, while being regenerated at the end of the catalytic cycle rather than consumed.",
+      "topic": "Chemical kinetics",
+      "difficulty": "easy"
+    },
+    {
+      "question": "When choosing a recrystallization solvent for purifying synthesized aspirin, water (used hot) is suitable mainly because aspirin is:",
+      "options": ["Insoluble in water at all temperatures", "Considerably more soluble in hot water than in cold water, allowing crystals to form cleanly on cooling", "Completely soluble in cold water and insoluble hot", "Chemically decomposed by water at any temperature"],
+      "correct_answer": "Considerably more soluble in hot water than in cold water, allowing crystals to form cleanly on cooling",
+      "explanation": "Aspirin's solubility in water rises sharply with temperature, so dissolving the crude product in the minimum volume of hot water and allowing it to cool slowly gives clean, well-formed crystals of the purified compound, satisfying the general requirement for a good recrystallization solvent.",
+      "topic": "Organic synthesis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In an extraction-efficiency calculation based on the distribution law, if a solute has a distribution coefficient favouring the organic solvent, extracting it from an aqueous solution using the organic solvent in two smaller successive portions instead of one large portion will:",
+      "options": ["Leave less unextracted solute in the aqueous layer than a single extraction of the same total solvent volume", "Leave exactly the same amount of unextracted solute either way", "Leave more unextracted solute in the aqueous layer than a single extraction", "Prevent any solute from being extracted at all"],
+      "correct_answer": "Leave less unextracted solute in the aqueous layer than a single extraction of the same total solvent volume",
+      "explanation": "Applying the distribution law repeatedly to successive smaller-volume extractions shows mathematically that they remove a larger total fraction of solute than one single extraction using the same overall solvent volume, leaving less behind in the aqueous phase.",
+      "topic": "Distribution/partition law",
+      "difficulty": "hard"
+    }
+  ]
+}

@@ -1,0 +1,264 @@
+{
+  "course_code": "MTH303",
+  "title": "Vector & Tensor Analysis",
+  "level": "300",
+  "source_note": "Standard NUC-aligned Nigerian university 300L Vector and Tensor Analysis curriculum: vector algebra (dot/cross/scalar triple products), vector differentiation, gradient/divergence/curl, line/surface/volume integrals, Green's/Stokes'/Gauss divergence theorems, curvilinear coordinates, and an introduction to tensor notation, tensor algebra, the metric tensor, and Christoffel symbols.",
+  "questions": [
+    {
+      "question": "For vectors A = (1,2,3) and B = (4,5,6), the dot product A·B equals:",
+      "options": ["32", "18", "21", "12"],
+      "correct_answer": "32",
+      "explanation": "A·B = (1)(4) + (2)(5) + (3)(6) = 4 + 10 + 18 = 32.",
+      "topic": "Vector algebra",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The cross product A × B of two vectors is:",
+      "options": ["a vector perpendicular to both A and B", "a scalar equal to |A||B|", "always the zero vector", "commutative (A×B = B×A)"],
+      "correct_answer": "a vector perpendicular to both A and B",
+      "explanation": "The cross product yields a vector orthogonal to the plane containing A and B, with magnitude |A||B|sinθ.",
+      "topic": "Vector algebra",
+      "difficulty": "easy"
+    },
+    {
+      "question": "For unit vectors, i × j equals:",
+      "options": ["k", "-k", "i", "0"],
+      "correct_answer": "k",
+      "explanation": "By the right-hand rule in a standard Cartesian frame, i × j = k.",
+      "topic": "Vector algebra",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The scalar triple product A·(B×C) geometrically represents:",
+      "options": ["the volume of the parallelepiped formed by A, B, and C", "the area of the parallelogram formed by A and B", "the angle between A and B", "the projection of A onto B"],
+      "correct_answer": "the volume of the parallelepiped formed by A, B, and C",
+      "explanation": "The scalar triple product A·(B×C) gives (up to sign) the volume of the parallelepiped spanned by the three vectors.",
+      "topic": "Vector algebra",
+      "difficulty": "medium"
+    },
+    {
+      "question": "If A·(B×C) = 0 for nonzero vectors A, B, C, then A, B, and C are:",
+      "options": ["coplanar", "mutually perpendicular", "parallel", "unit vectors"],
+      "correct_answer": "coplanar",
+      "explanation": "A zero scalar triple product means the parallelepiped has zero volume, so the three vectors lie in the same plane.",
+      "topic": "Vector algebra",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For a scalar field φ(x,y,z), the gradient ∇φ is a:",
+      "options": ["vector field pointing in the direction of steepest increase of φ", "scalar equal to the maximum value of φ", "vector field with zero divergence always", "constant vector"],
+      "correct_answer": "vector field pointing in the direction of steepest increase of φ",
+      "explanation": "The gradient of a scalar field is a vector field whose direction gives the direction of maximum rate of increase and whose magnitude gives that rate.",
+      "topic": "Gradient, divergence, curl",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For φ = x^2y + z^3, the gradient ∇φ is:",
+      "options": ["(2xy, x^2, 3z^2)", "(2xy, x^2, z^2)", "(x^2, 2xy, 3z^2)", "(2x, y, 3z)"],
+      "correct_answer": "(2xy, x^2, 3z^2)",
+      "explanation": "∇φ = (∂φ/∂x, ∂φ/∂y, ∂φ/∂z) = (2xy, x^2, 3z^2).",
+      "topic": "Gradient, divergence, curl",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The divergence of a vector field F, div F = ∇·F, measures:",
+      "options": ["the net outward flux per unit volume at a point", "the rotational tendency of the field", "the magnitude of F", "the direction of steepest ascent"],
+      "correct_answer": "the net outward flux per unit volume at a point",
+      "explanation": "Divergence quantifies the net rate of flux (source or sink strength) of a vector field diverging from a point per unit volume.",
+      "topic": "Gradient, divergence, curl",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For F = (x^2, y^2, z^2), the divergence ∇·F equals:",
+      "options": ["2x + 2y + 2z", "2x^2 + 2y^2 + 2z^2", "x^2+y^2+z^2", "6"],
+      "correct_answer": "2x + 2y + 2z",
+      "explanation": "∇·F = ∂(x^2)/∂x + ∂(y^2)/∂y + ∂(z^2)/∂z = 2x + 2y + 2z.",
+      "topic": "Gradient, divergence, curl",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The curl of a vector field, curl F = ∇×F, measures:",
+      "options": ["the rotational tendency (circulation density) of the field", "the total flux out of a surface", "the scalar magnitude of the field", "the divergence of the field"],
+      "correct_answer": "the rotational tendency (circulation density) of the field",
+      "explanation": "Curl measures the infinitesimal rotation or circulation of a vector field around a point.",
+      "topic": "Gradient, divergence, curl",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A vector field F is said to be irrotational if:",
+      "options": ["∇×F = 0", "∇·F = 0", "F = 0 everywhere", "∇F = constant"],
+      "correct_answer": "∇×F = 0",
+      "explanation": "A field with zero curl everywhere is called irrotational; such a field can be expressed as the gradient of a scalar potential.",
+      "topic": "Gradient, divergence, curl",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A vector field F is said to be solenoidal if:",
+      "options": ["∇·F = 0", "∇×F = 0", "F is constant", "F is a gradient field"],
+      "correct_answer": "∇·F = 0",
+      "explanation": "A solenoidal field has zero divergence everywhere, meaning it has no sources or sinks.",
+      "topic": "Gradient, divergence, curl",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The identity ∇×(∇φ) for any scalar field φ with continuous second partial derivatives equals:",
+      "options": ["0", "∇φ", "∇^2φ", "1"],
+      "correct_answer": "0",
+      "explanation": "The curl of any gradient field is identically zero, a standard vector calculus identity (assuming smoothness).",
+      "topic": "Gradient, divergence, curl",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A line integral of a vector field F along a curve C, ∫C F·dr, physically represents:",
+      "options": ["the work done by F along the path C", "the area enclosed by C", "the length of C", "the flux through C"],
+      "correct_answer": "the work done by F along the path C",
+      "explanation": "When F represents a force field, ∫C F·dr computes the work done moving a particle along the path C.",
+      "topic": "Line, surface, and volume integrals",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A line integral of a conservative vector field between two points is:",
+      "options": ["independent of the path taken", "always zero", "dependent only on the path length", "undefined"],
+      "correct_answer": "independent of the path taken",
+      "explanation": "For a conservative field (F = ∇φ), the line integral depends only on the endpoints, not the specific path.",
+      "topic": "Line, surface, and volume integrals",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A surface integral ∬S F·dS computes:",
+      "options": ["the flux of F through the surface S", "the circulation of F around S", "the area of S", "the divergence at a point on S"],
+      "correct_answer": "the flux of F through the surface S",
+      "explanation": "The surface integral of a vector field's dot product with the outward unit normal gives the total flux through the surface.",
+      "topic": "Line, surface, and volume integrals",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Green's Theorem relates a line integral around a simple closed curve C to:",
+      "options": ["a double integral over the plane region enclosed by C", "a triple integral over a volume", "a surface integral over a sphere", "a single integral along the x-axis"],
+      "correct_answer": "a double integral over the plane region enclosed by C",
+      "explanation": "Green's theorem converts a line integral around a closed curve in the plane into a double integral over the enclosed region.",
+      "topic": "Integral theorems",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Stokes' Theorem relates the surface integral of the curl of F over a surface S to:",
+      "options": ["the line integral of F around the boundary curve of S", "the divergence integral over the volume bounded by S", "the flux of F through a different surface", "zero, always"],
+      "correct_answer": "the line integral of F around the boundary curve of S",
+      "explanation": "Stokes' theorem states ∬S (∇×F)·dS = ∮C F·dr, where C is the boundary of S.",
+      "topic": "Integral theorems",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Gauss Divergence Theorem relates the flux of F through a closed surface S to:",
+      "options": ["the volume integral of ∇·F over the region V enclosed by S", "the line integral of F around S", "the surface area of S", "the curl of F at the centroid"],
+      "correct_answer": "the volume integral of ∇·F over the region V enclosed by S",
+      "explanation": "The divergence theorem states ∬S F·dS = ∭V (∇·F) dV, converting a surface flux integral into a volume integral.",
+      "topic": "Integral theorems",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In cylindrical coordinates (ρ, φ, z), the volume element dV is:",
+      "options": ["ρ dρ dφ dz", "dρ dφ dz", "ρ^2 dρ dφ dz", "ρ dρ dz"],
+      "correct_answer": "ρ dρ dφ dz",
+      "explanation": "The Jacobian for cylindrical coordinates introduces a factor of ρ, giving dV = ρ dρ dφ dz.",
+      "topic": "Curvilinear coordinates",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In spherical coordinates (r, θ, φ), the volume element dV is:",
+      "options": ["r^2 sinθ dr dθ dφ", "r sinθ dr dθ dφ", "r^2 dr dθ dφ", "sinθ dr dθ dφ"],
+      "correct_answer": "r^2 sinθ dr dθ dφ",
+      "explanation": "The Jacobian of the spherical coordinate transformation gives dV = r^2 sinθ dr dθ dφ.",
+      "topic": "Curvilinear coordinates",
+      "difficulty": "medium"
+    },
+    {
+      "question": "An orthogonal curvilinear coordinate system is one in which:",
+      "options": ["the coordinate surfaces intersect at right angles everywhere", "all coordinates are Cartesian", "only one coordinate is used", "the scale factors are all equal to 1"],
+      "correct_answer": "the coordinate surfaces intersect at right angles everywhere",
+      "explanation": "In an orthogonal curvilinear system, the three families of coordinate surfaces are mutually perpendicular at every point.",
+      "topic": "Curvilinear coordinates",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In tensor notation, a quantity with two lower indices, such as A_ij, is called a tensor of:",
+      "options": ["rank (order) 2, covariant type", "rank 1", "rank 0 (scalar)", "rank 2, contravariant type"],
+      "correct_answer": "rank (order) 2, covariant type",
+      "explanation": "Two subscript (lower) indices indicate a rank-2 covariant tensor; a rank-2 contravariant tensor would carry superscript indices, A^ij.",
+      "topic": "Tensor notation and rank",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Kronecker delta δ_ij is defined as:",
+      "options": ["1 if i = j, and 0 if i ≠ j", "always 1", "0 if i = j, and 1 if i ≠ j", "i multiplied by j"],
+      "correct_answer": "1 if i = j, and 0 if i ≠ j",
+      "explanation": "The Kronecker delta is the identity tensor component, equal to 1 for matching indices and 0 otherwise.",
+      "topic": "Tensor notation and rank",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Under the Einstein summation convention, the expression a_i b^i implies:",
+      "options": ["summation over the repeated index i", "no summation, just a product", "summation over all indices except i", "differentiation with respect to i"],
+      "correct_answer": "summation over the repeated index i",
+      "explanation": "Einstein's summation convention states that a repeated index (once as subscript, once as superscript) implies summation over that index.",
+      "topic": "Tensor notation and rank",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A contravariant vector A^i transforms under a coordinate change x^i → x'^i according to:",
+      "options": ["A'^i = (∂x'^i/∂x^j) A^j", "A'^i = (∂x^j/∂x'^i) A^j", "A'^i = A^i", "A'^i = (∂x'^j/∂x^i) A^j"],
+      "correct_answer": "A'^i = (∂x'^i/∂x^j) A^j",
+      "explanation": "Contravariant components transform using the Jacobian of the new coordinates with respect to the old, ∂x'^i/∂x^j.",
+      "topic": "Covariant and contravariant components",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A covariant vector A_i transforms under a coordinate change x^i → x'^i according to:",
+      "options": ["A'_i = (∂x^j/∂x'^i) A_j", "A'_i = (∂x'^i/∂x^j) A_j", "A'_i = A_i", "A'_i = (∂x'^j/∂x^i) A_j"],
+      "correct_answer": "A'_i = (∂x^j/∂x'^i) A_j",
+      "explanation": "Covariant components transform with the inverse Jacobian, ∂x^j/∂x'^i, opposite to contravariant components.",
+      "topic": "Covariant and contravariant components",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The operation of contraction in tensor algebra involves:",
+      "options": ["setting one upper and one lower index equal and summing", "adding two tensors of the same rank", "multiplying a tensor by a scalar", "raising every index of a tensor"],
+      "correct_answer": "setting one upper and one lower index equal and summing",
+      "explanation": "Contraction reduces the rank of a tensor by two, by equating one contravariant and one covariant index and summing over it.",
+      "topic": "Tensor algebra",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Two tensors can only be added or subtracted if they:",
+      "options": ["have the same rank and the same index structure (type)", "have different ranks", "are both scalars", "share no common indices"],
+      "correct_answer": "have the same rank and the same index structure (type)",
+      "explanation": "Tensor addition requires matching rank and matching arrangement of covariant/contravariant indices, so the result transforms consistently.",
+      "topic": "Tensor algebra",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The metric tensor g_ij is used primarily to:",
+      "options": ["define distances (line element) and raise/lower tensor indices", "define the coordinate origin", "represent only Cartesian coordinates", "compute the determinant of a matrix"],
+      "correct_answer": "define distances (line element) and raise/lower tensor indices",
+      "explanation": "The metric tensor determines the line element ds^2 = g_ij dx^i dx^j and is used to convert between covariant and contravariant components.",
+      "topic": "The metric tensor",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In ordinary flat Euclidean space using Cartesian coordinates, the metric tensor g_ij equals:",
+      "options": ["the Kronecker delta δ_ij", "the zero tensor", "a tensor with all entries equal to 1", "an antisymmetric tensor"],
+      "correct_answer": "the Kronecker delta δ_ij",
+      "explanation": "In Cartesian coordinates on flat space, the metric reduces to the identity, g_ij = δ_ij, since ds^2 = dx^2+dy^2+dz^2.",
+      "topic": "The metric tensor",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Christoffel symbols Γ^k_ij arise when differentiating tensor components in curvilinear coordinates because:",
+      "options": ["the basis vectors themselves change from point to point", "the metric tensor is always constant", "tensors cannot be differentiated", "coordinates are always orthogonal"],
+      "correct_answer": "the basis vectors themselves change from point to point",
+      "explanation": "In curvilinear coordinates, basis vectors vary in direction/magnitude across space, and the Christoffel symbols account for this variation in the covariant derivative.",
+      "topic": "Christoffel symbols",
+      "difficulty": "hard"
+    }
+  ]
+}

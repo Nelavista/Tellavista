@@ -1,0 +1,272 @@
+{
+  "course_code": "CSC301",
+  "title": "Software Engineering",
+  "level": "300",
+  "source_note": "Standard NUC-aligned 300L Software Engineering curriculum: process models, requirements engineering, design (including UML), testing, quality assurance, project estimation, and maintenance. Grounded against LASU's own CSC413 'Software Engineering' course description (software process, project planning, requirements engineering, system models/UML, verification and validation, testing, process improvement, cost estimation, architecture, patterns, reuse), authored here under the assigned code CSC301.",
+  "questions": [
+    {
+      "question": "What is the primary goal of software engineering as a discipline?",
+      "options": ["Applying systematic, disciplined engineering principles to the development, operation, and maintenance of software", "Writing code as quickly as possible without documentation", "Designing only the user interface of an application", "Testing software after it has been fully deployed to users"],
+      "correct_answer": "Applying systematic, disciplined engineering principles to the development, operation, and maintenance of software",
+      "explanation": "Software engineering applies engineering discipline -- planning, design, analysis, and quality control -- to building reliable, maintainable software systems.",
+      "topic": "Software process",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In the Waterfall model of software development, what is the defining characteristic?",
+      "options": ["Development proceeds through sequential, non-overlapping phases (requirements, design, implementation, testing, maintenance)", "Requirements are gathered continuously throughout development", "Small increments of working software are delivered every few weeks", "There is no formal requirements phase"],
+      "correct_answer": "Development proceeds through sequential, non-overlapping phases (requirements, design, implementation, testing, maintenance)",
+      "explanation": "The Waterfall model follows a strict linear sequence of phases, where each phase must be completed before the next begins, with limited ability to revisit earlier phases.",
+      "topic": "Software process models",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is a major drawback of the Waterfall model?",
+      "options": ["It is inflexible to changing requirements once a phase is completed", "It requires no documentation at all", "It cannot be used for any real-world project", "It has no distinct testing phase"],
+      "correct_answer": "It is inflexible to changing requirements once a phase is completed",
+      "explanation": "Because the Waterfall model moves linearly through phases, discovering a problem or requirement change late in the process is costly and difficult to accommodate.",
+      "topic": "Software process models",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the core principle behind Agile software development methodologies?",
+      "options": ["Iterative development with frequent delivery of working software and adaptability to changing requirements", "Completing all documentation before writing any code", "Avoiding customer involvement until the final release", "Following a strict, unchangeable project plan"],
+      "correct_answer": "Iterative development with frequent delivery of working software and adaptability to changing requirements",
+      "explanation": "Agile methodologies emphasize short iterations, continuous customer feedback, and the ability to adapt to changing requirements throughout development.",
+      "topic": "Software process models",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In the Spiral model of software development, what is emphasized at each cycle?",
+      "options": ["Risk analysis and management", "Only coding activities", "Complete elimination of testing", "A fixed, unchangeable scope"],
+      "correct_answer": "Risk analysis and management",
+      "explanation": "The Spiral model combines iterative development with systematic risk assessment at each loop, making it well-suited to large, risky projects.",
+      "topic": "Software process models",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the primary purpose of requirements engineering in software development?",
+      "options": ["To elicit, analyze, document, and validate what stakeholders need the system to do", "To write the source code for the system", "To design the database schema exclusively", "To test the final product before release"],
+      "correct_answer": "To elicit, analyze, document, and validate what stakeholders need the system to do",
+      "explanation": "Requirements engineering is the process of discovering, documenting, and agreeing on the services a system should provide and the constraints it must satisfy.",
+      "topic": "Requirements engineering",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is the difference between functional and non-functional requirements?",
+      "options": ["Functional requirements describe what the system should do; non-functional requirements describe qualities like performance, security, and usability", "Functional requirements are always optional", "Non-functional requirements describe only the user interface", "There is no meaningful difference between them"],
+      "correct_answer": "Functional requirements describe what the system should do; non-functional requirements describe qualities like performance, security, and usability",
+      "explanation": "Functional requirements specify system behaviors and features, while non-functional requirements specify constraints and quality attributes such as speed, reliability, and security.",
+      "topic": "Requirements engineering",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is a 'use case' in requirements analysis?",
+      "options": ["A description of how an actor interacts with a system to achieve a specific goal", "A section of source code implementing a feature", "A diagram showing only database tables", "A test case used solely for performance testing"],
+      "correct_answer": "A description of how an actor interacts with a system to achieve a specific goal",
+      "explanation": "Use cases capture functional requirements by describing sequences of interactions between an actor (user or external system) and the system to accomplish a goal.",
+      "topic": "Requirements engineering",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In UML, what does a Class Diagram primarily represent?",
+      "options": ["The static structure of a system, including classes, attributes, methods, and relationships", "The sequence of messages exchanged between objects over time", "The states an object can be in during its lifecycle", "The physical deployment of hardware components"],
+      "correct_answer": "The static structure of a system, including classes, attributes, methods, and relationships",
+      "explanation": "Class diagrams model the static structure of a system by showing classes, their attributes and operations, and the relationships (association, inheritance, etc.) between them.",
+      "topic": "System modeling (UML)",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What does a UML Sequence Diagram illustrate?",
+      "options": ["The order in which objects interact and exchange messages over time", "The static class hierarchy of a system", "The physical network topology", "The database entity-relationship structure"],
+      "correct_answer": "The order in which objects interact and exchange messages over time",
+      "explanation": "Sequence diagrams show a time-ordered sequence of message exchanges between objects, illustrating a specific scenario or use case flow.",
+      "topic": "System modeling (UML)",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What does a UML State (or State-transition) diagram model?",
+      "options": ["The different states an object can be in and the events that trigger transitions between them", "The classes and their static attributes", "The sequence of database queries", "The deployment of software across servers"],
+      "correct_answer": "The different states an object can be in and the events that trigger transitions between them",
+      "explanation": "State diagrams capture the lifecycle of an object, showing states and the events or conditions that cause it to transition from one state to another.",
+      "topic": "System modeling (UML)",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the main purpose of a Data Flow Diagram (DFD)?",
+      "options": ["To show how data moves through a system, including processes, data stores, and external entities", "To show the class hierarchy of an object-oriented system", "To display the timing of network packets", "To represent the physical layout of hardware"],
+      "correct_answer": "To show how data moves through a system, including processes, data stores, and external entities",
+      "explanation": "DFDs model the flow of data between processes, data stores, and external entities within a system, independent of implementation details.",
+      "topic": "System modeling",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is 'software verification'?",
+      "options": ["Checking whether the software is being built correctly according to its specification ('Are we building the product right?')", "Checking whether the software meets the actual needs of the user ('Are we building the right product?')", "The process of writing user documentation", "Deploying the software to a production server"],
+      "correct_answer": "Checking whether the software is being built correctly according to its specification ('Are we building the product right?')",
+      "explanation": "Verification confirms that each development phase's output correctly implements the specification from the prior phase, distinct from validation which checks the product meets user needs.",
+      "topic": "Verification and validation",
+      "difficulty": "hard"
+    },
+    {
+      "question": "What is 'software validation'?",
+      "options": ["Confirming that the software meets the actual needs and expectations of the customer ('Are we building the right product?')", "Compiling the source code without errors", "Writing the initial project proposal", "Encrypting sensitive data in the database"],
+      "correct_answer": "Confirming that the software meets the actual needs and expectations of the customer ('Are we building the right product?')",
+      "explanation": "Validation ensures that the final software actually satisfies the real-world needs of the customer, as opposed to verification, which checks conformance to specifications.",
+      "topic": "Verification and validation",
+      "difficulty": "hard"
+    },
+    {
+      "question": "What is the goal of unit testing?",
+      "options": ["To test individual components or functions in isolation for correctness", "To test the entire system as a whole after deployment", "To gather requirements from stakeholders", "To measure the aesthetic quality of the user interface"],
+      "correct_answer": "To test individual components or functions in isolation for correctness",
+      "explanation": "Unit testing verifies that the smallest testable parts of an application (functions, methods, or classes) work correctly in isolation from the rest of the system.",
+      "topic": "Software testing",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is the goal of integration testing?",
+      "options": ["To verify that different modules or components work correctly together when combined", "To test a single function in isolation", "To gather initial requirements", "To design the user interface layout"],
+      "correct_answer": "To verify that different modules or components work correctly together when combined",
+      "explanation": "Integration testing focuses on the interfaces and interactions between combined modules, catching issues that unit tests (which test modules in isolation) would miss.",
+      "topic": "Software testing",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What distinguishes black-box testing from white-box testing?",
+      "options": ["Black-box testing evaluates functionality without knowledge of internal code structure, while white-box testing examines the internal logic and code paths", "Black-box testing requires full access to source code, while white-box testing does not", "White-box testing is only done by end users", "There is no meaningful difference between the two"],
+      "correct_answer": "Black-box testing evaluates functionality without knowledge of internal code structure, while white-box testing examines the internal logic and code paths",
+      "explanation": "Black-box testing treats the system as a 'black box,' focusing only on inputs and outputs, while white-box testing requires knowledge of the internal code structure to design test cases.",
+      "topic": "Software testing",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is 'regression testing'?",
+      "options": ["Re-running existing tests after changes to ensure that new code has not broken previously working functionality", "Testing a system for the very first time", "Testing only the user interface", "Testing performed exclusively by end users after release"],
+      "correct_answer": "Re-running existing tests after changes to ensure that new code has not broken previously working functionality",
+      "explanation": "Regression testing re-executes previously passed test cases after code changes to catch any unintended side effects introduced by the modification.",
+      "topic": "Software testing",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is 'system testing'?",
+      "options": ["Testing the complete, integrated system to verify it meets specified requirements", "Testing a single class or function in isolation", "Testing conducted only during the requirements phase", "A synonym for code review"],
+      "correct_answer": "Testing the complete, integrated system to verify it meets specified requirements",
+      "explanation": "System testing evaluates the fully integrated software system as a whole to confirm it complies with the specified requirements.",
+      "topic": "Software testing",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the purpose of software configuration management?",
+      "options": ["To systematically track and control changes to software artifacts throughout the development lifecycle", "To configure network routers for a deployed application", "To manage employee salaries in a software company", "To design the visual theme of a user interface"],
+      "correct_answer": "To systematically track and control changes to software artifacts throughout the development lifecycle",
+      "explanation": "Configuration management tracks versions of code, documentation, and other artifacts, controlling changes to maintain consistency and traceability.",
+      "topic": "Configuration management",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is a 'version control system' used for in software configuration management?",
+      "options": ["Tracking changes to source code over time and enabling collaboration among developers", "Testing software performance under load", "Designing the database schema", "Managing project budgets"],
+      "correct_answer": "Tracking changes to source code over time and enabling collaboration among developers",
+      "explanation": "Version control systems (like Git) record changes to files over time, allowing teams to collaborate, track history, and revert to previous versions when needed.",
+      "topic": "Configuration management",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What does the COCOMO (Constructive Cost Model) primarily estimate?",
+      "options": ["Software development effort and cost based on project size and other factors", "The number of bugs a system will have after release", "The exact runtime performance of an algorithm", "The number of team members required for testing only"],
+      "correct_answer": "Software development effort and cost based on project size and other factors",
+      "explanation": "COCOMO is a parametric software cost estimation model that predicts effort, time, and cost based on estimated lines of code or function points and other project attributes.",
+      "topic": "Software cost estimation",
+      "difficulty": "hard"
+    },
+    {
+      "question": "What are 'software metrics' used for?",
+      "options": ["Quantitatively measuring properties of software or its development process, such as complexity or defect density", "Only measuring how visually appealing an interface is", "Determining employee salaries", "Choosing which programming language to use"],
+      "correct_answer": "Quantitatively measuring properties of software or its development process, such as complexity or defect density",
+      "explanation": "Software metrics provide quantitative measures (e.g., lines of code, cyclomatic complexity, defect density) used to assess quality, productivity, and project progress.",
+      "topic": "Software metrics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is 'software maintenance'?",
+      "options": ["The process of modifying software after delivery to correct faults, improve performance, or adapt to a new environment", "The initial phase of writing the very first version of a program", "A synonym for requirements gathering", "The process of deleting unused software"],
+      "correct_answer": "The process of modifying software after delivery to correct faults, improve performance, or adapt to a new environment",
+      "explanation": "Maintenance encompasses corrective (bug fixes), adaptive (environment changes), perfective (enhancements), and preventive activities performed on software after its initial release.",
+      "topic": "Software maintenance",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which type of software maintenance involves fixing defects discovered after deployment?",
+      "options": ["Corrective maintenance", "Adaptive maintenance", "Perfective maintenance", "Preventive maintenance"],
+      "correct_answer": "Corrective maintenance",
+      "explanation": "Corrective maintenance addresses bugs or faults identified in the software after it has been released to users.",
+      "topic": "Software maintenance",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which type of maintenance modifies software to work correctly in a new or changed operating environment (e.g., a new OS version)?",
+      "options": ["Adaptive maintenance", "Corrective maintenance", "Perfective maintenance", "Emergency maintenance"],
+      "correct_answer": "Adaptive maintenance",
+      "explanation": "Adaptive maintenance adjusts software so it continues to function correctly when its external environment (hardware, OS, other software) changes.",
+      "topic": "Software maintenance",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is a 'software architecture pattern' such as the layered (n-tier) architecture used for?",
+      "options": ["Providing a reusable, proven solution structure for organizing a system's high-level components", "Encrypting network traffic between servers", "Testing individual functions in isolation", "Managing version control branches"],
+      "correct_answer": "Providing a reusable, proven solution structure for organizing a system's high-level components",
+      "explanation": "Architecture patterns like layered, client-server, or microservices provide established templates for structuring a system's major components and their interactions.",
+      "topic": "Software architecture",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the Model-View-Controller (MVC) architectural pattern, what is the role of the 'Controller'?",
+      "options": ["It handles user input and coordinates updates between the Model and the View", "It stores and manages the application's data", "It is solely responsible for rendering the user interface", "It has no interaction with the Model or View"],
+      "correct_answer": "It handles user input and coordinates updates between the Model and the View",
+      "explanation": "In MVC, the Controller receives user input, processes it (often by updating the Model), and determines what the View should display in response.",
+      "topic": "Software architecture",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is 'software reuse'?",
+      "options": ["Using existing software components, libraries, or designs to build new systems instead of building everything from scratch", "Rewriting all code for every new project", "Deleting outdated code from a repository", "A synonym for software piracy"],
+      "correct_answer": "Using existing software components, libraries, or designs to build new systems instead of building everything from scratch",
+      "explanation": "Software reuse leverages pre-existing, tested components (libraries, frameworks, design patterns) to reduce development time and improve reliability.",
+      "topic": "Software reuse",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is a key benefit of open source software development?",
+      "options": ["Source code is publicly available, allowing broad collaboration, review, and reuse", "It guarantees zero bugs in the software", "It requires no licensing terms whatsoever", "It cannot be modified by anyone"],
+      "correct_answer": "Source code is publicly available, allowing broad collaboration, review, and reuse",
+      "explanation": "Open source software makes its source code publicly accessible, enabling community collaboration, peer review, and reuse, typically under a defined license.",
+      "topic": "Software reuse",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is a 'design pattern' in software engineering?",
+      "options": ["A general, reusable solution to a commonly occurring problem in software design", "A specific piece of code copied directly between unrelated projects without modification", "A type of database index", "A network communication protocol"],
+      "correct_answer": "A general, reusable solution to a commonly occurring problem in software design",
+      "explanation": "Design patterns (e.g., Singleton, Observer, Factory) are proven, general templates for solving recurring design problems, not specific code to be copied verbatim.",
+      "topic": "Software architecture",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the purpose of a feasibility study during project planning?",
+      "options": ["To assess whether a proposed project is technically, economically, and operationally viable before committing resources", "To write the final user manual", "To conduct final system testing", "To deploy the software to production"],
+      "correct_answer": "To assess whether a proposed project is technically, economically, and operationally viable before committing resources",
+      "explanation": "A feasibility study evaluates whether a project is achievable given technical constraints, budget, and organizational readiness before significant investment is made.",
+      "topic": "Project planning",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is 'cyclomatic complexity' a measure of?",
+      "options": ["The number of independent linear paths through a program's source code", "The number of lines of code in a file", "The number of developers who worked on a module", "The physical size of the compiled binary"],
+      "correct_answer": "The number of independent linear paths through a program's source code",
+      "explanation": "Cyclomatic complexity, based on a program's control flow graph, quantifies the number of independent execution paths, often used to indicate testing effort and maintainability.",
+      "topic": "Software metrics",
+      "difficulty": "hard"
+    }
+  ]
+}

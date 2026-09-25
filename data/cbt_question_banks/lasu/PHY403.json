@@ -1,0 +1,385 @@
+{
+  "course_code": "PHY403",
+  "title": "Advanced Solid State Physics",
+  "level": "400",
+  "source_note": "Advanced-level solid state physics topics building on PHY305: in-depth band theory, semiconductor device physics, superconductivity (BCS theory), magnetism, dielectric and optical properties, and an introduction to low-dimensional/nanostructured materials, following standard texts such as Kittel and Ashcroft & Mermin.",
+  "questions": [
+    {
+      "question": "In the nearly-free-electron model of band theory, energy gaps open up at the boundaries of the Brillouin zone because:",
+      "options": [
+        "Electrons are completely free with no interaction with the lattice",
+        "Bragg reflection of electron waves by the periodic lattice potential causes standing waves that split into two states of different energy at the zone boundary",
+        "Electrons lose all kinetic energy at the zone boundary",
+        "The lattice becomes amorphous at the zone edge"
+      ],
+      "correct_answer": "Bragg reflection of electron waves by the periodic lattice potential causes standing waves that split into two states of different energy at the zone boundary",
+      "explanation": "At the Brillouin zone boundary, the electron wave satisfies the Bragg condition and is strongly reflected, forming standing waves; the periodic potential then splits the degenerate energies of these standing waves into two distinct values, opening an energy gap.",
+      "topic": "Band theory",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The tight-binding (LCAO) model of band structure treats electrons as:",
+      "options": [
+        "Completely free particles unaffected by atomic potentials",
+        "Starting from atomic orbitals localized on each atom, with bands arising from the overlap and hopping of electrons between neighbouring atomic sites",
+        "Classical point charges with no wave nature",
+        "Only valid for metals, never for insulators or semiconductors"
+      ],
+      "correct_answer": "Starting from atomic orbitals localized on each atom, with bands arising from the overlap and hopping of electrons between neighbouring atomic sites",
+      "explanation": "The tight-binding model builds crystal wavefunctions as linear combinations of atomic orbitals (LCAO), with the bandwidth determined by the overlap (hopping) integral between orbitals on neighbouring atoms.",
+      "topic": "Band theory",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The effective mass of an electron near the bottom of a conduction band is related to the band structure by:",
+      "options": [
+        "m* is inversely proportional to the curvature (second derivative) of E(k) with respect to k",
+        "m* is always exactly equal to the free electron mass",
+        "m* depends only on the lattice constant, not on E(k)",
+        "m* is independent of the band structure entirely"
+      ],
+      "correct_answer": "m* is inversely proportional to the curvature (second derivative) of E(k) with respect to k",
+      "explanation": "The effective mass is defined as m* = h-bar^2 / (d^2E/dk^2), so bands with greater curvature (more free-electron-like) give smaller effective mass, while flatter bands give larger effective mass.",
+      "topic": "Band theory",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A hole in semiconductor physics represents:",
+      "options": [
+        "A literal empty physical cavity in the crystal lattice",
+        "The absence of an electron in an otherwise filled valence band, which behaves like a positively charged quasiparticle",
+        "An electron with negative mass and negative charge",
+        "A crystallographic point defect only"
+      ],
+      "correct_answer": "The absence of an electron in an otherwise filled valence band, which behaves like a positively charged quasiparticle",
+      "explanation": "A hole is a quasiparticle concept describing the collective effect of a missing electron in the valence band, which behaves as if it carries a positive charge and contributes to conduction.",
+      "topic": "Semiconductor physics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In an intrinsic semiconductor at a finite temperature, the number of conduction electrons equals:",
+      "options": [
+        "Zero always",
+        "The number of holes in the valence band",
+        "The total number of atoms in the crystal",
+        "A fixed constant independent of temperature"
+      ],
+      "correct_answer": "The number of holes in the valence band",
+      "explanation": "In an intrinsic (undoped) semiconductor, every electron thermally excited into the conduction band leaves behind exactly one hole in the valence band, so electron and hole concentrations are equal (n = p).",
+      "topic": "Semiconductor physics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Doping a semiconductor such as silicon with a pentavalent impurity (e.g., phosphorus) creates:",
+      "options": [
+        "A p-type semiconductor with excess holes",
+        "An n-type semiconductor with excess free electrons donated by the impurity",
+        "An intrinsic semiconductor unchanged from pure silicon",
+        "An insulator with no free carriers"
+      ],
+      "correct_answer": "An n-type semiconductor with excess free electrons donated by the impurity",
+      "explanation": "Pentavalent (Group V) donor atoms such as phosphorus contribute one extra electron beyond what is needed for covalent bonding with silicon, becoming a weakly bound donor electron that is easily ionized, producing an n-type semiconductor.",
+      "topic": "Semiconductor physics",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Doping silicon with a trivalent impurity (e.g., boron) creates:",
+      "options": [
+        "An n-type semiconductor with excess electrons",
+        "A p-type semiconductor with excess holes due to acceptor levels near the valence band",
+        "A superconducting material",
+        "No change to the semiconductor's properties"
+      ],
+      "correct_answer": "A p-type semiconductor with excess holes due to acceptor levels near the valence band",
+      "explanation": "Trivalent (Group III) acceptor atoms such as boron have one fewer valence electron than silicon, creating an acceptor level close to the valence band that readily accepts an electron, generating a mobile hole and producing p-type conductivity.",
+      "topic": "Semiconductor physics",
+      "difficulty": "easy"
+    },
+    {
+      "question": "At a p-n junction in thermal equilibrium (no applied bias), the built-in potential arises because:",
+      "options": [
+        "Diffusion of majority carriers across the junction leaves behind fixed ionized dopant charges, creating a depletion region and an internal electric field that opposes further diffusion",
+        "An external battery is always required to create the junction potential",
+        "The p-type and n-type regions have identical Fermi levels with no charge transfer",
+        "The junction has no space charge region at all"
+      ],
+      "correct_answer": "Diffusion of majority carriers across the junction leaves behind fixed ionized dopant charges, creating a depletion region and an internal electric field that opposes further diffusion",
+      "explanation": "At equilibrium, carrier diffusion across the junction exposes fixed ionized donor and acceptor charges, forming a depletion region whose internal field balances further diffusion, aligning the Fermi levels on both sides and establishing the built-in potential.",
+      "topic": "Semiconductor physics",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Applying a forward bias to a p-n junction diode:",
+      "options": [
+        "Widens the depletion region and increases the barrier to current flow",
+        "Narrows the depletion region and lowers the potential barrier, allowing significant current to flow",
+        "Has no effect on the depletion region width",
+        "Always destroys the junction immediately"
+      ],
+      "correct_answer": "Narrows the depletion region and lowers the potential barrier, allowing significant current to flow",
+      "explanation": "Forward bias (positive terminal to p-side) opposes the built-in field, reducing the depletion width and the potential barrier, which allows majority carrier diffusion current to increase exponentially with applied voltage.",
+      "topic": "Semiconductor physics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The critical temperature Tc of a superconductor is defined as the temperature:",
+      "options": [
+        "Below which the material's electrical resistance drops abruptly to zero",
+        "At which the material melts",
+        "Above which superconductivity always persists",
+        "At which the material becomes ferromagnetic"
+      ],
+      "correct_answer": "Below which the material's electrical resistance drops abruptly to zero",
+      "explanation": "The critical temperature Tc marks the sharp transition below which a superconducting material exhibits zero DC electrical resistance and the Meissner effect.",
+      "topic": "Superconductivity",
+      "difficulty": "easy"
+    },
+    {
+      "question": "According to BCS (Bardeen-Cooper-Schrieffer) theory, superconductivity arises from:",
+      "options": [
+        "Free electrons moving without any interactions in the lattice",
+        "The formation of Cooper pairs — bound pairs of electrons mediated by an effective attractive interaction through lattice phonons",
+        "Complete removal of all electrons from the conduction band",
+        "Strong repulsive Coulomb interactions between electrons only, with no role for phonons"
+      ],
+      "correct_answer": "The formation of Cooper pairs — bound pairs of electrons mediated by an effective attractive interaction through lattice phonons",
+      "explanation": "BCS theory explains conventional superconductivity as arising from Cooper pairs: electrons with opposite momenta and spins are weakly bound via an effective attractive interaction mediated by lattice vibrations (phonon exchange), condensing into a coherent macroscopic quantum state.",
+      "topic": "Superconductivity",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The BCS theory predicts an energy gap 2*Delta in the excitation spectrum of a superconductor, which represents:",
+      "options": [
+        "The energy required to break a Cooper pair into two normal (unpaired) electrons",
+        "The total kinetic energy of all conduction electrons",
+        "The lattice binding energy of the crystal",
+        "The work function of the material"
+      ],
+      "correct_answer": "The energy required to break a Cooper pair into two normal (unpaired) electrons",
+      "explanation": "The superconducting energy gap 2*Delta represents the minimum energy needed to break apart a Cooper pair and create two quasiparticle excitations, and it is responsible for the absence of low-energy electronic excitations (hence zero resistance) below Tc.",
+      "topic": "Superconductivity",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A Type I superconductor, when placed in an increasing external magnetic field, behaves by:",
+      "options": [
+        "Gradually allowing magnetic flux to penetrate as the field increases from zero",
+        "Completely expelling the magnetic field (Meissner effect) up to a critical field Hc, above which superconductivity is abruptly destroyed",
+        "Never expelling any magnetic field at any strength",
+        "Becoming ferromagnetic above Hc"
+      ],
+      "correct_answer": "Completely expelling the magnetic field (Meissner effect) up to a critical field Hc, above which superconductivity is abruptly destroyed",
+      "explanation": "Type I superconductors show a complete Meissner effect (perfect diamagnetism) up to a single critical field Hc, beyond which superconductivity is destroyed abruptly and the material reverts to its normal state.",
+      "topic": "Superconductivity",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A Type II superconductor differs from Type I in that it:",
+      "options": [
+        "Has only one critical field and no intermediate state",
+        "Exhibits a mixed (vortex) state between a lower critical field Hc1 and an upper critical field Hc2, in which magnetic flux partially penetrates as quantized flux lines",
+        "Cannot exhibit the Meissner effect at all",
+        "Has zero critical temperature"
+      ],
+      "correct_answer": "Exhibits a mixed (vortex) state between a lower critical field Hc1 and an upper critical field Hc2, in which magnetic flux partially penetrates as quantized flux lines",
+      "explanation": "Type II superconductors have two critical fields; below Hc1 they show the full Meissner effect, but between Hc1 and Hc2 they enter a mixed state where magnetic flux penetrates in quantized vortices while superconductivity persists in the surrounding material.",
+      "topic": "Superconductivity",
+      "difficulty": "hard"
+    },
+    {
+      "question": "High-temperature superconductors (such as the cuprates) are notable because:",
+      "options": [
+        "They can only be explained by conventional BCS phonon-mediated pairing, identical to low-Tc superconductors",
+        "They exhibit superconductivity at temperatures well above what conventional BCS phonon-coupling can easily explain, and the pairing mechanism is still an active research topic",
+        "They have Tc values below 4 K",
+        "They are always simple elemental metals"
+      ],
+      "correct_answer": "They exhibit superconductivity at temperatures well above what conventional BCS phonon-coupling can easily explain, and the pairing mechanism is still an active research topic",
+      "explanation": "Cuprate and related high-Tc superconductors have critical temperatures far exceeding what standard phonon-mediated BCS coupling would predict, and their exact pairing mechanism remains a major unsolved problem in condensed matter physics.",
+      "topic": "Superconductivity",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Ferromagnetic exchange interaction, which favours parallel alignment of neighbouring electron spins, originates fundamentally from:",
+      "options": [
+        "Direct magnetic dipole-dipole interaction between spins",
+        "The combination of the Pauli exclusion principle and Coulomb (electrostatic) repulsion between electrons, which is quantum mechanical in origin",
+        "Gravitational attraction between atoms",
+        "The nuclear strong force"
+      ],
+      "correct_answer": "The combination of the Pauli exclusion principle and Coulomb (electrostatic) repulsion between electrons, which is quantum mechanical in origin",
+      "explanation": "The exchange interaction is a purely quantum mechanical consequence of the antisymmetry requirement (Pauli principle) combined with electrostatic (Coulomb) repulsion; parallel spins keep electrons further apart spatially, lowering Coulomb energy, favouring ferromagnetic alignment when the exchange integral is positive.",
+      "topic": "Magnetism",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Magnetic domains in a ferromagnetic material are regions:",
+      "options": [
+        "Where all atomic magnetic moments are aligned in the same direction, though different domains may point in different directions, minimizing the total magnetostatic energy",
+        "Where no magnetic moments exist at all",
+        "That only exist above the Curie temperature",
+        "That are always aligned identically throughout the entire sample even without an applied field"
+      ],
+      "correct_answer": "Where all atomic magnetic moments are aligned in the same direction, though different domains may point in different directions, minimizing the total magnetostatic energy",
+      "explanation": "Ferromagnetic materials break up into domains, each uniformly magnetized, but oriented differently from neighbouring domains, which minimizes the overall magnetostatic (stray field) energy of the unmagnetized sample.",
+      "topic": "Magnetism",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Antiferromagnetism is characterized by:",
+      "options": [
+        "Neighbouring magnetic moments aligning parallel to each other",
+        "Neighbouring magnetic moments aligning antiparallel to each other, resulting in zero net magnetization below the Neel temperature",
+        "The complete absence of any magnetic ordering",
+        "Random, uncorrelated orientation of all spins at all temperatures"
+      ],
+      "correct_answer": "Neighbouring magnetic moments aligning antiparallel to each other, resulting in zero net magnetization below the Neel temperature",
+      "explanation": "In antiferromagnetic materials, exchange interactions favour antiparallel alignment of adjacent spins (negative exchange integral), producing an ordered state below the Neel temperature with zero net macroscopic magnetization.",
+      "topic": "Magnetism",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Above the Curie temperature, a ferromagnetic material's magnetic susceptibility follows the Curie-Weiss law:",
+      "options": [
+        "Chi = C / (T - Tc)",
+        "Chi = C * T",
+        "Chi = C / T^2",
+        "Chi is independent of temperature"
+      ],
+      "correct_answer": "Chi = C / (T - Tc)",
+      "explanation": "The Curie-Weiss law describes the paramagnetic susceptibility of a ferromagnet above its Curie temperature as Chi = C/(T - Tc), diverging as T approaches Tc from above.",
+      "topic": "Magnetism",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The dielectric constant (relative permittivity) of an insulating solid is a measure of:",
+      "options": [
+        "How much the material amplifies an applied electric field",
+        "How much the material becomes polarized (and thus reduces the internal electric field) in response to an applied external electric field",
+        "The material's electrical resistivity only",
+        "The material's magnetic permeability"
+      ],
+      "correct_answer": "How much the material becomes polarized (and thus reduces the internal electric field) in response to an applied external electric field",
+      "explanation": "The dielectric constant quantifies the extent to which a material's internal charge distribution polarizes in response to an applied field, effectively screening and reducing the net internal field compared to vacuum.",
+      "topic": "Dielectric properties",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Ferroelectric materials are distinguished by:",
+      "options": [
+        "Having zero polarization under any conditions",
+        "Exhibiting a spontaneous electric polarization that can be reversed by an applied electric field, analogous to ferromagnetism for magnetic moments",
+        "Being perfect electrical conductors",
+        "Losing all polarization above absolute zero"
+      ],
+      "correct_answer": "Exhibiting a spontaneous electric polarization that can be reversed by an applied electric field, analogous to ferromagnetism for magnetic moments",
+      "explanation": "Ferroelectric materials possess a spontaneous electric dipole polarization below a critical (Curie) temperature that can be switched in direction by an external electric field, in direct analogy to ferromagnetic spontaneous magnetization.",
+      "topic": "Dielectric properties",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The optical absorption edge in a semiconductor, corresponding to the onset of strong light absorption, occurs at a photon energy approximately equal to:",
+      "options": [
+        "The Fermi energy",
+        "The band gap energy Eg",
+        "The Debye energy",
+        "Zero, regardless of the material"
+      ],
+      "correct_answer": "The band gap energy Eg",
+      "explanation": "Strong optical absorption in a semiconductor begins when photon energy is sufficient to excite an electron from the valence band across the band gap into the conduction band, so the absorption edge corresponds approximately to Eg.",
+      "topic": "Optical properties of solids",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A direct band gap semiconductor (such as GaAs), compared to an indirect band gap semiconductor (such as silicon), is generally preferred for optoelectronic devices like LEDs and laser diodes because:",
+      "options": [
+        "Direct band gap materials require phonon participation for every optical transition",
+        "In a direct band gap material, the conduction band minimum and valence band maximum occur at the same crystal momentum k, allowing efficient photon emission without requiring a phonon to conserve momentum",
+        "Direct band gap materials cannot absorb light",
+        "Indirect band gap materials always have a larger band gap"
+      ],
+      "correct_answer": "In a direct band gap material, the conduction band minimum and valence band maximum occur at the same crystal momentum k, allowing efficient photon emission without requiring a phonon to conserve momentum",
+      "explanation": "In direct-gap semiconductors, electron-hole recombination can occur with simple photon emission conserving both energy and momentum, since both band extrema are at the same k; indirect-gap materials require a phonon to conserve momentum, making radiative recombination far less efficient.",
+      "topic": "Optical properties of solids",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In low-dimensional (nanostructured) semiconductor systems such as quantum wells, carriers are confined in one dimension, leading to:",
+      "options": [
+        "No change whatsoever in the electronic density of states compared to bulk",
+        "Quantization of energy levels in the confined direction and a step-like (staircase) density of states characteristic of two-dimensional systems",
+        "Complete loss of all electronic states",
+        "Identical behaviour to a three-dimensional bulk crystal"
+      ],
+      "correct_answer": "Quantization of energy levels in the confined direction and a step-like (staircase) density of states characteristic of two-dimensional systems",
+      "explanation": "Confining carriers in one spatial dimension (as in a quantum well) quantizes their motion along that axis into discrete subbands, and the resulting density of states for the remaining two free dimensions becomes a series of steps rather than the smooth sqrt(E) dependence of bulk 3D systems.",
+      "topic": "Nanomaterials and low-dimensional systems",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A quantum dot is often described as an 'artificial atom' because:",
+      "options": [
+        "It is confined in all three spatial dimensions, producing fully discrete, atom-like energy levels",
+        "It has no electrons at all",
+        "It behaves exactly like bulk semiconductor material with continuous energy bands",
+        "It only exists at absolute zero temperature"
+      ],
+      "correct_answer": "It is confined in all three spatial dimensions, producing fully discrete, atom-like energy levels",
+      "explanation": "Quantum dots confine charge carriers in all three dimensions on a nanometre scale, resulting in fully discrete (zero-dimensional) energy levels analogous to the discrete levels of a real atom, hence the term 'artificial atom'.",
+      "topic": "Nanomaterials and low-dimensional systems",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the two-fluid model description of a superconductor below Tc, the total electron density is treated as a mixture of:",
+      "options": [
+        "Only normal electrons, with no superconducting component",
+        "A superconducting (paired) component carrying current with zero resistance and a normal (unpaired) component behaving like ordinary conduction electrons",
+        "Only Cooper pairs, with zero normal electrons at any temperature below Tc",
+        "Photons and phonons only, with no electrons involved"
+      ],
+      "correct_answer": "A superconducting (paired) component carrying current with zero resistance and a normal (unpaired) component behaving like ordinary conduction electrons",
+      "explanation": "The phenomenological two-fluid model describes the electron system below Tc as a mixture of a dissipationless superconducting fraction and a normal (resistive) fraction, with the superconducting fraction growing as temperature decreases further below Tc.",
+      "topic": "Superconductivity",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The Meissner effect distinguishes a true superconductor from merely a 'perfect conductor' (hypothetical zero-resistance material) because:",
+      "options": [
+        "A perfect conductor would trap any magnetic flux present when it is cooled through its transition, whereas a true superconductor actively expels flux regardless of the field's history, indicating a genuine new thermodynamic phase",
+        "The Meissner effect has nothing to do with magnetic fields",
+        "A perfect conductor and a superconductor behave identically in every respect",
+        "The Meissner effect only occurs above the critical temperature"
+      ],
+      "correct_answer": "A perfect conductor would trap any magnetic flux present when it is cooled through its transition, whereas a true superconductor actively expels flux regardless of the field's history, indicating a genuine new thermodynamic phase",
+      "explanation": "A hypothetical perfect conductor (zero resistance only) would conserve whatever flux was present at the moment resistance vanished; superconductors instead actively expel all flux below Tc (Meissner effect) regardless of field history, proving superconductivity is a distinct equilibrium thermodynamic state, not just zero resistivity.",
+      "topic": "Superconductivity",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The London penetration depth in a superconductor describes:",
+      "options": [
+        "The depth to which an external magnetic field can penetrate the superconductor's surface before being exponentially screened out by surface supercurrents",
+        "The physical thickness of the superconducting sample",
+        "The distance an electron travels before scattering off the lattice",
+        "The wavelength of light absorbed by the material"
+      ],
+      "correct_answer": "The depth to which an external magnetic field can penetrate the superconductor's surface before being exponentially screened out by surface supercurrents",
+      "explanation": "The London penetration depth characterizes the exponential decay length of an external magnetic field just inside the surface of a superconductor, screened by persistent surface supercurrents that enforce the Meissner effect.",
+      "topic": "Superconductivity",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Substitutional doping in semiconductor crystal growth relies on which prerequisite understanding from basic solid state physics (PHY305)?",
+      "options": [
+        "The concept of crystal lattice sites and how impurity atoms can occupy a regular lattice position in place of a host atom",
+        "The theory of general relativity",
+        "Nuclear fission cross-sections",
+        "Fluid dynamics of the crystal melt only, with no lattice concept required"
+      ],
+      "correct_answer": "The concept of crystal lattice sites and how impurity atoms can occupy a regular lattice position in place of a host atom",
+      "explanation": "Understanding doping requires the foundational solid state concept (from PHY305) that a crystal lattice has well-defined atomic sites, and an impurity atom substituting at such a site (rather than sitting interstitially) alters the local bonding and electronic structure.",
+      "topic": "Semiconductor physics",
+      "difficulty": "medium"
+    }
+  ]
+}

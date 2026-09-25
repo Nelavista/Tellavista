@@ -1,0 +1,280 @@
+{
+  "course_code": "STA211",
+  "title": "Statistics for Biological Sciences",
+  "level": "200",
+  "source_note": "Standard NUC-aligned Nigerian university 200L introductory biostatistics curriculum: nature and scope of statistics, types and levels of data, sampling techniques, data presentation, measures of central tendency and dispersion, measures of position, elementary probability, and an introduction to common probability distributions -- deliberately more introductory than the 300L STA201, with no hypothesis testing, ANOVA, or regression.",
+  "questions": [
+    {
+      "question": "Statistics can be broadly divided into two branches: descriptive statistics, which summarises and organises data, and:",
+      "options": ["Inferential statistics, which draws conclusions about a population from a sample", "Applied statistics only", "Biostatistics only", "Non-parametric statistics only"],
+      "correct_answer": "Inferential statistics, which draws conclusions about a population from a sample",
+      "explanation": "Descriptive statistics summarises and presents data, while inferential statistics uses sample data to make generalisations or draw conclusions about a wider population.",
+      "topic": "Introduction to statistics",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Biostatistics (biometry) is best defined as:",
+      "options": ["The application of statistical methods to biological, medical, and health-related data", "The study of biology without any numerical data", "A branch of pure mathematics unrelated to biology", "The classification of living organisms"],
+      "correct_answer": "The application of statistical methods to biological, medical, and health-related data",
+      "explanation": "Biostatistics is the branch of statistics concerned with the design, analysis, and interpretation of data arising from biological, medical, and public health research.",
+      "topic": "Introduction to statistics",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Data such as blood group (A, B, AB, O) or flower colour are examples of:",
+      "options": ["Qualitative (categorical) data", "Quantitative discrete data", "Quantitative continuous data", "Ratio-scale data"],
+      "correct_answer": "Qualitative (categorical) data",
+      "explanation": "Qualitative (categorical) data describe attributes or categories rather than numerical quantities, such as blood group or colour.",
+      "topic": "Types of data",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The number of leaves on a plant is an example of:",
+      "options": ["Quantitative discrete data, since it can only take whole-number values", "Quantitative continuous data", "Qualitative nominal data", "Qualitative ordinal data"],
+      "correct_answer": "Quantitative discrete data, since it can only take whole-number values",
+      "explanation": "Discrete quantitative data can only take specific, countable (usually whole-number) values, such as a count of leaves, as opposed to continuous data which can take any value in a range.",
+      "topic": "Types of data",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Height of students measured in centimetres is an example of:",
+      "options": ["Quantitative continuous data, since it can take any value within a range", "Quantitative discrete data", "Qualitative data", "Nominal data"],
+      "correct_answer": "Quantitative continuous data, since it can take any value within a range",
+      "explanation": "Continuous quantitative data, such as height, can take any value (including fractions) within a given range, limited only by the precision of measurement.",
+      "topic": "Types of data",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The nominal scale of measurement classifies data into categories that:",
+      "options": ["Have no inherent order or ranking, e.g. sex or blood group", "Can be ranked from lowest to highest", "Have equal intervals with a true zero", "Represent counts only"],
+      "correct_answer": "Have no inherent order or ranking, e.g. sex or blood group",
+      "explanation": "The nominal scale is the simplest level of measurement, classifying observations into distinct, unordered categories such as sex, blood group, or species.",
+      "topic": "Levels of measurement",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The ordinal scale of measurement differs from the nominal scale in that it:",
+      "options": ["Allows categories to be ranked or ordered, e.g. disease severity (mild, moderate, severe)", "Has a true zero point", "Allows meaningful ratios between values", "Applies only to continuous data"],
+      "correct_answer": "Allows categories to be ranked or ordered, e.g. disease severity (mild, moderate, severe)",
+      "explanation": "The ordinal scale ranks categories in a meaningful order, but the intervals between ranks are not necessarily equal or precisely quantifiable.",
+      "topic": "Levels of measurement",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which of the following is a defining feature of the ratio scale of measurement, distinguishing it from the interval scale?",
+      "options": ["It has a true (absolute) zero point, so ratios between values are meaningful, e.g. weight or height", "It has no numerical values", "It cannot be added or subtracted", "It only classifies data into categories"],
+      "correct_answer": "It has a true (absolute) zero point, so ratios between values are meaningful, e.g. weight or height",
+      "explanation": "The ratio scale has all the properties of the interval scale plus a true zero point, meaning a value of zero represents the complete absence of the quantity, so ratios (e.g. twice as heavy) are meaningful.",
+      "topic": "Levels of measurement",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In statistics, a population refers to:",
+      "options": ["The entire set of individuals or items of interest in a study", "A small subset drawn from a larger group", "Only human subjects in a study", "A single observation"],
+      "correct_answer": "The entire set of individuals or items of interest in a study",
+      "explanation": "A population is the complete collection of all individuals, items, or observations that a researcher wants to study and draw conclusions about.",
+      "topic": "Population and sampling",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A numerical value that describes a characteristic of a sample (as opposed to the whole population) is called a:",
+      "options": ["Statistic", "Parameter", "Variable", "Census"],
+      "correct_answer": "Statistic",
+      "explanation": "A statistic is a numerical summary computed from sample data, while a parameter is the corresponding numerical summary for the entire population.",
+      "topic": "Population and sampling",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In simple random sampling, every member of the population:",
+      "options": ["Has an equal chance of being selected into the sample", "Must be selected in a fixed order", "Is selected based on convenience", "Is grouped before selection"],
+      "correct_answer": "Has an equal chance of being selected into the sample",
+      "explanation": "Simple random sampling gives every member of the population an equal and independent chance of being chosen, minimising selection bias.",
+      "topic": "Sampling techniques",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Stratified sampling involves:",
+      "options": ["Dividing the population into relevant subgroups (strata) and randomly sampling from each", "Selecting only the most accessible individuals", "Selecting every kth individual from a list", "Selecting whole clusters of the population at random"],
+      "correct_answer": "Dividing the population into relevant subgroups (strata) and randomly sampling from each",
+      "explanation": "Stratified sampling divides a heterogeneous population into more homogeneous subgroups (strata), such as by sex or age group, and samples randomly within each stratum to ensure representation.",
+      "topic": "Sampling techniques",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Systematic sampling involves selecting members from a population:",
+      "options": ["At regular intervals (e.g. every 5th individual) from a list, after a random starting point", "Purely by convenience", "By dividing into strata first", "By selecting entire pre-existing groups"],
+      "correct_answer": "At regular intervals (e.g. every 5th individual) from a list, after a random starting point",
+      "explanation": "Systematic sampling selects every kth individual from an ordered list following a randomly chosen starting point, providing a practical alternative to simple random sampling.",
+      "topic": "Sampling techniques",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Cluster sampling differs from stratified sampling in that:",
+      "options": ["Whole naturally occurring groups (clusters) are randomly selected and typically all members within chosen clusters are sampled", "Every stratum must be represented equally", "It requires a complete list of individual population members", "It cannot be used for large populations"],
+      "correct_answer": "Whole naturally occurring groups (clusters) are randomly selected and typically all members within chosen clusters are sampled",
+      "explanation": "Cluster sampling randomly selects entire naturally occurring groups (clusters), such as villages or classrooms, and samples all or most members within the chosen clusters, unlike stratified sampling which samples across all strata.",
+      "topic": "Sampling techniques",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Sampling error refers to:",
+      "options": ["The natural variation between a sample statistic and the true population parameter, arising because a sample rather than the whole population was studied", "A mistake made by the researcher in recording data", "The complete absence of variability in data", "An error only found in qualitative research"],
+      "correct_answer": "The natural variation between a sample statistic and the true population parameter, arising because a sample rather than the whole population was studied",
+      "explanation": "Sampling error is the unavoidable discrepancy between a sample statistic and the true population parameter, resulting purely from studying a subset rather than the entire population.",
+      "topic": "Sampling techniques",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A frequency distribution has classes 10-19, 20-29, 30-39. What is the class width?",
+      "options": ["10", "9", "19", "20"],
+      "correct_answer": "10",
+      "explanation": "Class width is found by subtracting the lower class limit of one class from the lower class limit of the next class: 20 - 10 = 10.",
+      "topic": "Data presentation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The key difference between a histogram and a bar chart is that a histogram:",
+      "options": ["Is used for continuous data with bars drawn without gaps to reflect continuity", "Is always drawn with gaps between bars", "Can only be used for categorical data", "Has no numerical scale on either axis"],
+      "correct_answer": "Is used for continuous data with bars drawn without gaps to reflect continuity",
+      "explanation": "A histogram displays continuous, grouped data with adjoining bars to reflect the continuous nature of the variable, while a bar chart is used for categorical data with bars typically separated by gaps.",
+      "topic": "Data presentation",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The birth weights (kg) of 5 babies are 2.8, 3.1, 3.4, 2.9, 3.3. What is the mean birth weight?",
+      "options": ["3.1 kg", "3.3 kg", "2.9 kg", "3.4 kg"],
+      "correct_answer": "3.1 kg",
+      "explanation": "The mean is the sum of the values divided by the number of values: (2.8+3.1+3.4+2.9+3.3)/5 = 15.5/5 = 3.1 kg.",
+      "topic": "Measures of central tendency",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Find the median of the data set: 12, 7, 15, 9, 11.",
+      "options": ["11", "9", "12", "10"],
+      "correct_answer": "11",
+      "explanation": "Arranged in order: 7, 9, 11, 12, 15. With 5 values, the median is the middle (3rd) value, which is 11.",
+      "topic": "Measures of central tendency",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Find the median of the data set: 4, 8, 6, 10, 12, 14.",
+      "options": ["9", "8", "10", "8.5"],
+      "correct_answer": "9",
+      "explanation": "Arranged in order: 4, 6, 8, 10, 12, 14. With 6 values, the median is the average of the 3rd and 4th values: (8+10)/2 = 9.",
+      "topic": "Measures of central tendency",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the data set 3, 5, 5, 7, 8, 5, 9, the mode is:",
+      "options": ["5", "7", "8", "9"],
+      "correct_answer": "5",
+      "explanation": "The mode is the value that occurs most frequently; 5 appears three times, more than any other value.",
+      "topic": "Measures of central tendency",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which measure of central tendency is most affected by extreme values (outliers) in a data set?",
+      "options": ["Mean", "Median", "Mode", "None of them are affected"],
+      "correct_answer": "Mean",
+      "explanation": "Because the mean uses every value in its calculation, it is highly sensitive to extreme values, unlike the median and mode which are more resistant to outliers.",
+      "topic": "Measures of central tendency",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For the data set 15, 22, 9, 30, 18, the range is:",
+      "options": ["21", "30", "9", "15"],
+      "correct_answer": "21",
+      "explanation": "The range is the difference between the maximum and minimum values: 30 - 9 = 21.",
+      "topic": "Measures of dispersion",
+      "difficulty": "easy"
+    },
+    {
+      "question": "For the data set 2, 4, 6, 8, 10, the sample variance (using n-1 in the denominator) is:",
+      "options": ["10", "8", "6", "40"],
+      "correct_answer": "10",
+      "explanation": "The mean is 6. Squared deviations from the mean are 16, 4, 0, 4, 16, summing to 40. Sample variance = 40/(5-1) = 10.",
+      "topic": "Measures of dispersion",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Using the same data set (2, 4, 6, 8, 10), the sample standard deviation is approximately:",
+      "options": ["3.16", "10", "2.83", "8.0"],
+      "correct_answer": "3.16",
+      "explanation": "The sample standard deviation is the square root of the sample variance: sqrt(10) ≈ 3.16.",
+      "topic": "Measures of dispersion",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The coefficient of variation (CV) is useful because it:",
+      "options": ["Expresses the standard deviation as a percentage of the mean, allowing comparison of variability between data sets with different units or scales", "Is always equal to the variance", "Cannot be used to compare two data sets", "Measures central tendency, not dispersion"],
+      "correct_answer": "Expresses the standard deviation as a percentage of the mean, allowing comparison of variability between data sets with different units or scales",
+      "explanation": "The coefficient of variation (CV = standard deviation/mean x 100%) is a unit-free relative measure of dispersion, making it useful for comparing variability across data sets measured in different units.",
+      "topic": "Measures of dispersion",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The interquartile range (IQR) is calculated as:",
+      "options": ["Q3 - Q1", "Q3 + Q1", "Q2 - Q1", "Q4 - Q1"],
+      "correct_answer": "Q3 - Q1",
+      "explanation": "The interquartile range measures the spread of the middle 50% of the data and is calculated as the third quartile minus the first quartile.",
+      "topic": "Measures of position",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Under the empirical (68-95-99.7) rule for an approximately normal distribution, what percentage of observations lie within one standard deviation of the mean?",
+      "options": ["Approximately 68%", "Approximately 95%", "Approximately 99.7%", "Approximately 50%"],
+      "correct_answer": "Approximately 68%",
+      "explanation": "For an approximately normal distribution, about 68% of observations fall within one standard deviation of the mean, about 95% within two, and about 99.7% within three.",
+      "topic": "Normal distribution basics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A fair six-sided die is rolled once. What is the probability of obtaining an even number?",
+      "options": ["1/2", "1/3", "1/6", "2/3"],
+      "correct_answer": "1/2",
+      "explanation": "The even numbers on a die are 2, 4, and 6, giving 3 favourable outcomes out of 6 equally likely outcomes: P = 3/6 = 1/2.",
+      "topic": "Basic probability",
+      "difficulty": "easy"
+    },
+    {
+      "question": "If events A and B are mutually exclusive with P(A) = 0.3 and P(B) = 0.25, what is P(A or B)?",
+      "options": ["0.55", "0.075", "0.05", "0.3"],
+      "correct_answer": "0.55",
+      "explanation": "For mutually exclusive events, P(A or B) = P(A) + P(B) = 0.3 + 0.25 = 0.55.",
+      "topic": "Basic probability",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Two independent events have P(A) = 0.4 and P(B) = 0.5. What is P(A and B)?",
+      "options": ["0.20", "0.90", "0.10", "0.45"],
+      "correct_answer": "0.20",
+      "explanation": "For independent events, P(A and B) = P(A) x P(B) = 0.4 x 0.5 = 0.20.",
+      "topic": "Basic probability",
+      "difficulty": "medium"
+    },
+    {
+      "question": "If the probability that a patient tests positive for a disease is 0.15, what is the probability that the patient tests negative?",
+      "options": ["0.85", "0.15", "1.15", "0.075"],
+      "correct_answer": "0.85",
+      "explanation": "By the complement rule, P(negative) = 1 - P(positive) = 1 - 0.15 = 0.85.",
+      "topic": "Basic probability",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A binomial distribution is appropriate for modelling an experiment that has:",
+      "options": ["A fixed number of independent trials, each with exactly two possible outcomes and a constant probability of success", "An infinite number of continuous outcomes", "Only one possible outcome", "Trials that influence each other's probabilities"],
+      "correct_answer": "A fixed number of independent trials, each with exactly two possible outcomes and a constant probability of success",
+      "explanation": "A binomial distribution models a fixed number of independent trials, each with two possible outcomes (success/failure) and a constant probability of success across trials.",
+      "topic": "Probability distributions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A distribution in which the tail extends further to the right, with the mean greater than the median, is described as:",
+      "options": ["Positively (right) skewed", "Negatively (left) skewed", "Symmetric", "Bimodal"],
+      "correct_answer": "Positively (right) skewed",
+      "explanation": "A positively (right) skewed distribution has a longer tail on the right side, pulling the mean above the median, unlike a symmetric distribution where mean and median coincide.",
+      "topic": "Shape of distributions",
+      "difficulty": "medium"
+    }
+  ]
+}

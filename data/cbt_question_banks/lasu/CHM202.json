@@ -1,0 +1,248 @@
+{
+  "course_code": "CHM202",
+  "title": "Physical Chemistry II",
+  "level": "200",
+  "source_note": "Standard NUC-aligned Nigerian university 200L physical chemistry curriculum, second semester: electrochemistry (cells, electrode potentials, Nernst equation, conductance), solutions and colligative properties, phase equilibria, and surface chemistry/catalysis. Builds on CHM201's thermodynamics/kinetics/gas-law/equilibrium foundation without repeating that material.",
+  "questions": [
+    {
+      "question": "In an electrochemical (galvanic) cell, at which electrode does oxidation occur?",
+      "options": ["The anode", "The cathode", "Both electrodes equally", "Neither electrode"],
+      "correct_answer": "The anode",
+      "explanation": "By convention, oxidation (loss of electrons) always occurs at the anode, while reduction occurs at the cathode, in both galvanic and electrolytic cells.",
+      "topic": "Electrochemistry",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is the function of a salt bridge in a galvanic cell such as the Daniell cell?",
+      "options": ["To maintain electrical neutrality by allowing ion flow between the two half-cells", "To supply electrons directly to the external circuit", "To increase the voltage produced by the cell", "To prevent any current from flowing"],
+      "correct_answer": "To maintain electrical neutrality by allowing ion flow between the two half-cells",
+      "explanation": "As the cell reaction proceeds, charge would build up in each half-cell without the salt bridge; it allows spectator ions to migrate and maintain electrical neutrality, keeping the cell functioning.",
+      "topic": "Electrochemistry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The standard hydrogen electrode (SHE) is assigned a standard reduction potential of what value, by convention?",
+      "options": ["0.00 V", "1.00 V", "-1.00 V", "2.00 V"],
+      "correct_answer": "0.00 V",
+      "explanation": "The standard hydrogen electrode is defined as the reference point with E° = 0.00 V, against which all other standard electrode potentials are measured.",
+      "topic": "Electrochemistry",
+      "difficulty": "easy"
+    },
+    {
+      "question": "For a cell with E°cell = E°cathode - E°anode, if E°cathode = +0.34 V (Cu2+/Cu) and E°anode = -0.76 V (Zn2+/Zn), what is E°cell?",
+      "options": ["+1.10 V", "-0.42 V", "+0.42 V", "-1.10 V"],
+      "correct_answer": "+1.10 V",
+      "explanation": "E°cell = E°cathode - E°anode = 0.34 - (-0.76) = 1.10 V, matching the well-known standard potential of the Daniell cell.",
+      "topic": "Electrochemistry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What does the Nernst equation allow chemists to calculate?",
+      "options": ["The cell potential under non-standard conditions of concentration and temperature", "The rate of an electrochemical reaction", "The equilibrium constant of a gas-phase reaction only", "The pH of a buffer solution"],
+      "correct_answer": "The cell potential under non-standard conditions of concentration and temperature",
+      "explanation": "The Nernst equation, E = E° - (RT/nF)lnQ, relates the actual cell potential to the standard potential, temperature, and the reaction quotient, allowing calculation under non-standard conditions.",
+      "topic": "Electrochemistry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the Nernst equation, what happens to the cell potential as the reaction quotient Q increases (i.e., as products accumulate)?",
+      "options": ["The cell potential decreases", "The cell potential increases", "The cell potential remains constant", "The cell potential becomes infinite"],
+      "correct_answer": "The cell potential decreases",
+      "explanation": "As Q increases toward the equilibrium constant K, the logarithmic term in the Nernst equation grows, reducing E; at equilibrium, Q = K and E = 0.",
+      "topic": "Electrochemistry",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Which law of electrolysis states that the mass of a substance liberated at an electrode is directly proportional to the quantity of electric charge passed?",
+      "options": ["Faraday's first law of electrolysis", "Faraday's second law of electrolysis", "Ohm's law", "Raoult's law"],
+      "correct_answer": "Faraday's first law of electrolysis",
+      "explanation": "Faraday's first law states that mass deposited or liberated (m) is proportional to the quantity of charge (Q) passed through the electrolyte, expressed as m = ZQ, where Z is the electrochemical equivalent.",
+      "topic": "Electrochemistry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is molar conductivity, and how does it typically change as the concentration of a weak electrolyte solution decreases?",
+      "options": ["Conductivity per mole of electrolyte; it increases with dilution due to greater degree of dissociation", "Conductivity per mole of electrolyte; it decreases with dilution", "Conductivity per litre of solvent only; unaffected by dilution", "Conductivity measured only at infinite concentration"],
+      "correct_answer": "Conductivity per mole of electrolyte; it increases with dilution due to greater degree of dissociation",
+      "explanation": "For weak electrolytes, dilution increases the degree of dissociation, releasing more ions per mole and thus increasing molar conductivity as concentration decreases.",
+      "topic": "Electrochemistry",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Which colligative property is defined as the lowering of the vapour pressure of a solvent caused by the addition of a non-volatile solute?",
+      "options": ["Relative lowering of vapour pressure", "Boiling point elevation", "Freezing point depression", "Osmotic pressure"],
+      "correct_answer": "Relative lowering of vapour pressure",
+      "explanation": "The relative lowering of vapour pressure is a colligative property describing how a non-volatile solute reduces the vapour pressure of the solvent, as described quantitatively by Raoult's law.",
+      "topic": "Solutions and colligative properties",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Raoult's law relates the partial vapour pressure of a component in an ideal solution to which quantity?",
+      "options": ["Its mole fraction in the solution multiplied by its pure vapour pressure", "Its mass fraction in the solution only", "The total pressure of the system", "The temperature of the solution only"],
+      "correct_answer": "Its mole fraction in the solution multiplied by its pure vapour pressure",
+      "explanation": "Raoult's law states that the partial vapour pressure of a solvent equals its mole fraction multiplied by the vapour pressure of the pure solvent, for an ideal solution.",
+      "topic": "Solutions and colligative properties",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Why does dissolving a non-volatile solute in a solvent raise the boiling point of the resulting solution compared to the pure solvent?",
+      "options": ["The solute lowers the vapour pressure, so a higher temperature is needed to reach atmospheric pressure and boil", "The solute increases the vapour pressure of the solvent", "The solute reacts chemically with the solvent to form a new compound with higher boiling point", "Boiling point elevation only occurs with volatile solutes"],
+      "correct_answer": "The solute lowers the vapour pressure, so a higher temperature is needed to reach atmospheric pressure and boil",
+      "explanation": "Since the non-volatile solute reduces the solvent's vapour pressure at any given temperature, a higher temperature is required for the vapour pressure to equal atmospheric pressure, elevating the boiling point.",
+      "topic": "Solutions and colligative properties",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is osmotic pressure?",
+      "options": ["The minimum pressure needed to prevent the net flow of solvent across a semipermeable membrane into a solution", "The pressure exerted by a gas trapped in a solution", "The vapour pressure of a pure solvent", "The pressure at which a solid melts"],
+      "correct_answer": "The minimum pressure needed to prevent the net flow of solvent across a semipermeable membrane into a solution",
+      "explanation": "Osmotic pressure is the external pressure that must be applied to a solution to just stop osmosis, the net movement of solvent molecules through a semipermeable membrane from a region of lower to higher solute concentration.",
+      "topic": "Solutions and colligative properties",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The van't Hoff factor (i) is used to correct colligative property equations for which type of solute?",
+      "options": ["Electrolytes that dissociate into multiple ions in solution", "Non-electrolytes that do not dissociate at all", "Solutes that are completely insoluble", "Gaseous solutes only"],
+      "correct_answer": "Electrolytes that dissociate into multiple ions in solution",
+      "explanation": "The van't Hoff factor accounts for the number of particles an electrolyte produces upon dissociation (e.g., i = 2 for NaCl), since colligative properties depend on the total number of solute particles.",
+      "topic": "Solutions and colligative properties",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A phase diagram of a pure substance typically shows the boundaries between solid, liquid, and gas phases. What does the triple point on a phase diagram represent?",
+      "options": ["The unique temperature and pressure at which all three phases coexist in equilibrium", "The temperature at which the substance decomposes", "The pressure at which the substance becomes an ideal gas", "The point at which the substance has zero entropy"],
+      "correct_answer": "The unique temperature and pressure at which all three phases coexist in equilibrium",
+      "explanation": "The triple point is a specific, unique combination of temperature and pressure at which solid, liquid, and gas phases of a pure substance exist simultaneously in equilibrium.",
+      "topic": "Phase equilibria",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the critical point on a phase diagram?",
+      "options": ["The temperature and pressure beyond which distinct liquid and gas phases no longer exist", "The point where a substance is completely solid", "The point at which a substance has its lowest possible temperature", "The point where two solids are in equilibrium"],
+      "correct_answer": "The temperature and pressure beyond which distinct liquid and gas phases no longer exist",
+      "explanation": "Above the critical temperature and pressure, the distinction between liquid and gas disappears, and the substance exists as a supercritical fluid.",
+      "topic": "Phase equilibria",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The Clausius-Clapeyron equation relates vapour pressure to which other variable, allowing prediction of how vapour pressure changes with conditions?",
+      "options": ["Temperature", "Molar mass", "Density", "Refractive index"],
+      "correct_answer": "Temperature",
+      "explanation": "The Clausius-Clapeyron equation describes how the vapour pressure of a substance varies with absolute temperature, incorporating the enthalpy of vaporization.",
+      "topic": "Phase equilibria",
+      "difficulty": "hard"
+    },
+    {
+      "question": "According to the phase rule, F = C - P + 2, for a single-component system (C=1) existing as two phases in equilibrium (P=2), how many degrees of freedom (F) does the system have?",
+      "options": ["1", "2", "0", "3"],
+      "correct_answer": "1",
+      "explanation": "F = C - P + 2 = 1 - 2 + 2 = 1, meaning only one intensive variable (e.g., temperature) can be varied independently while the two phases remain in equilibrium; pressure is then fixed.",
+      "topic": "Phase equilibria",
+      "difficulty": "hard"
+    },
+    {
+      "question": "What is the general term for a substance that lowers the surface tension of a liquid when dissolved in it, such as soap in water?",
+      "options": ["Surfactant", "Catalyst", "Electrolyte", "Buffer"],
+      "correct_answer": "Surfactant",
+      "explanation": "A surfactant (surface-active agent) reduces the surface tension between two phases by adsorbing at the interface, as soap molecules do at the air-water interface.",
+      "topic": "Surface chemistry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In heterogeneous catalysis, such as the Haber process using an iron catalyst, where does the catalytic reaction primarily take place?",
+      "options": ["On the surface of the solid catalyst, where gas molecules are adsorbed", "Throughout the entire volume of the catalyst uniformly", "In the gas phase only, away from the catalyst surface", "Inside the crystal lattice of the catalyst"],
+      "correct_answer": "On the surface of the solid catalyst, where gas molecules are adsorbed",
+      "explanation": "Heterogeneous catalysis occurs at the catalyst surface, where reactant gas molecules are adsorbed, weakening their bonds and lowering the activation energy for reaction before products desorb.",
+      "topic": "Surface chemistry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What distinguishes physical adsorption (physisorption) from chemical adsorption (chemisorption) on a solid surface?",
+      "options": ["Physisorption involves weak van der Waals forces, while chemisorption involves the formation of chemical bonds", "Physisorption always requires higher temperatures than chemisorption", "Chemisorption is always reversible while physisorption is not", "There is no meaningful difference between the two"],
+      "correct_answer": "Physisorption involves weak van der Waals forces, while chemisorption involves the formation of chemical bonds",
+      "explanation": "Physisorption is a weak, reversible interaction due to van der Waals forces with low enthalpy of adsorption, while chemisorption involves stronger, often irreversible chemical bond formation with much higher enthalpy of adsorption.",
+      "topic": "Surface chemistry",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Which type of colloid is formed when a liquid is dispersed in a gas, such as fog or mist?",
+      "options": ["Aerosol", "Emulsion", "Sol", "Gel"],
+      "correct_answer": "Aerosol",
+      "explanation": "An aerosol is a colloidal dispersion of liquid or solid particles in a gas; fog is specifically a liquid-in-gas aerosol.",
+      "topic": "Surface chemistry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Tyndall effect, the scattering of light by colloidal particles, is used to distinguish a colloid from what other type of mixture?",
+      "options": ["A true solution", "Another colloid", "A pure element", "A pure compound"],
+      "correct_answer": "A true solution",
+      "explanation": "Colloidal particles are large enough to scatter light (Tyndall effect), while true solutions have particles too small to scatter light, so a visible light beam passes through a true solution without scattering.",
+      "topic": "Surface chemistry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For a weak electrolyte such as acetic acid, how does molar conductivity at infinite dilution relate to Kohlrausch's law?",
+      "options": ["It can be calculated by summing the individual ionic conductivities at infinite dilution", "It is always equal to zero", "It cannot be determined for weak electrolytes at all", "It equals the molar conductivity at any concentration"],
+      "correct_answer": "It can be calculated by summing the individual ionic conductivities at infinite dilution",
+      "explanation": "Kohlrausch's law of independent migration of ions allows the molar conductivity at infinite dilution for a weak electrolyte to be calculated by combining the limiting ionic conductivities of its constituent ions, even though it cannot be measured directly by extrapolation for weak electrolytes.",
+      "topic": "Electrochemistry",
+      "difficulty": "hard"
+    },
+    {
+      "question": "What happens to the freezing point of a solvent when a non-volatile solute is dissolved in it, compared to the pure solvent?",
+      "options": ["The freezing point is depressed (lowered)", "The freezing point is elevated (raised)", "The freezing point remains exactly the same", "The freezing point becomes impossible to measure"],
+      "correct_answer": "The freezing point is depressed (lowered)",
+      "explanation": "Dissolving a solute disrupts the regular arrangement needed for the solvent to freeze, so a lower temperature is required to establish equilibrium between solid and liquid phases, depressing the freezing point.",
+      "topic": "Solutions and colligative properties",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which electrode reaction correctly represents reduction at the cathode of a standard Daniell cell (Zn/Zn2+ || Cu2+/Cu)?",
+      "options": ["Cu2+(aq) + 2e- -> Cu(s)", "Zn(s) -> Zn2+(aq) + 2e-", "Cu(s) -> Cu2+(aq) + 2e-", "Zn2+(aq) + 2e- -> Zn(s)"],
+      "correct_answer": "Cu2+(aq) + 2e- -> Cu(s)",
+      "explanation": "In the Daniell cell, copper is the cathode where reduction of Cu2+ ions to solid copper occurs, while zinc is the anode where oxidation takes place.",
+      "topic": "Electrochemistry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What term describes a solution that obeys Raoult's law across the entire range of concentration?",
+      "options": ["An ideal solution", "A saturated solution", "A supersaturated solution", "A colloidal solution"],
+      "correct_answer": "An ideal solution",
+      "explanation": "An ideal solution is one in which the interactions between different molecules are essentially the same as between like molecules, so the solution obeys Raoult's law over the whole concentration range.",
+      "topic": "Solutions and colligative properties",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A solution of glucose is separated from pure water by a semipermeable membrane. In which direction does osmosis cause net water movement?",
+      "options": ["From the pure water into the glucose solution", "From the glucose solution into the pure water", "There is no net movement since glucose is a non-electrolyte", "Water moves equally in both directions with no net flow"],
+      "correct_answer": "From the pure water into the glucose solution",
+      "explanation": "Osmosis drives solvent (water) to move from a region of lower solute concentration (pure water) to higher solute concentration (glucose solution) across the semipermeable membrane, diluting the solution.",
+      "topic": "Solutions and colligative properties",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In electrolysis of molten sodium chloride, what product forms at the cathode?",
+      "options": ["Sodium metal, by reduction of Na+ ions", "Chlorine gas, by oxidation of Cl- ions", "Oxygen gas", "Hydrogen gas"],
+      "correct_answer": "Sodium metal, by reduction of Na+ ions",
+      "explanation": "During electrolysis of molten NaCl, Na+ ions migrate to the cathode and are reduced to sodium metal, while Cl- ions migrate to the anode and are oxidized to chlorine gas.",
+      "topic": "Electrochemistry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the significance of the electrochemical series, a ranking of standard electrode potentials?",
+      "options": ["It allows prediction of the relative oxidizing and reducing strengths of different species and the feasibility of redox reactions", "It ranks elements only by atomic mass", "It shows only the melting points of metals", "It has no practical predictive use in chemistry"],
+      "correct_answer": "It allows prediction of the relative oxidizing and reducing strengths of different species and the feasibility of redox reactions",
+      "explanation": "The electrochemical series orders half-reactions by standard reduction potential, allowing chemists to predict which species will act as oxidizing or reducing agents and whether a redox reaction is thermodynamically feasible.",
+      "topic": "Electrochemistry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Why do catalysts not appear in the overall balanced equation of a reaction despite taking part in the reaction mechanism?",
+      "options": ["A catalyst is regenerated unchanged at the end of the reaction, so it cancels out of the overall equation", "Catalysts do not actually participate in the reaction mechanism at all", "Catalysts are always gases and are ignored in equations", "Catalysts change into completely different substances that are not written"],
+      "correct_answer": "A catalyst is regenerated unchanged at the end of the reaction, so it cancels out of the overall equation",
+      "explanation": "Although a catalyst actively participates in intermediate steps of the mechanism, it is fully regenerated by the end of the reaction, so it does not appear as a net reactant or product in the overall equation.",
+      "topic": "Surface chemistry",
+      "difficulty": "medium"
+    }
+  ]
+}

@@ -1,0 +1,504 @@
+{
+  "course_code": "PHY108",
+  "title": "General Practical Physics II",
+  "level": "100",
+  "source_note": "Standard NUC-aligned Nigerian university 100L Practical Physics II curriculum: the second-semester practical companion to PHY107, covering electricity experiments (Ohm's law, series/parallel resistors, EMF and internal resistance, potentiometer, meter bridge), optics experiments (lens and mirror focal length, refractive index, prism spectrometer), waves experiments (resonance tube, sonometer), and basic magnetism/galvanometer lab skills.",
+  "questions": [
+    {
+      "question": "In an experiment to verify Ohm's law, a student plots a graph of potential difference (V) against current (I) for a metallic conductor at constant temperature. The expected shape of the graph is:",
+      "options": ["A straight line through the origin", "A straight line with a positive y-intercept", "A curve that bends upward", "A curve that bends downward"],
+      "correct_answer": "A straight line through the origin",
+      "explanation": "Ohm's law states V = IR, so for a conductor held at constant temperature, V is directly proportional to I, giving a straight line through the origin whose gradient equals the resistance.",
+      "topic": "Ohm's law verification",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In the Ohm's law experiment, the resistance of the conductor under test is obtained from the V-I graph as:",
+      "options": ["The gradient (slope) of the straight line", "The y-intercept of the line", "The x-intercept of the line", "The area under the line"],
+      "correct_answer": "The gradient (slope) of the straight line",
+      "explanation": "Since V = IR, R is the gradient of the V against I graph (change in V divided by change in I).",
+      "topic": "Ohm's law verification",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In a circuit to verify Ohm's law, the ammeter must be connected:",
+      "options": ["In series with the conductor under test", "In parallel with the conductor under test", "In parallel with the battery only", "In series with the voltmeter"],
+      "correct_answer": "In series with the conductor under test",
+      "explanation": "An ammeter measures current, so it must be connected in series so that the full current through the conductor flows through it.",
+      "topic": "Circuit diagram interpretation",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In a circuit to verify Ohm's law, the voltmeter must be connected:",
+      "options": ["In parallel with the conductor under test", "In series with the conductor under test", "In series with the ammeter", "Directly across the battery terminals only, never across the resistor"],
+      "correct_answer": "In parallel with the conductor under test",
+      "explanation": "A voltmeter measures potential difference across a component, so it must be connected in parallel (across) that component.",
+      "topic": "Circuit diagram interpretation",
+      "difficulty": "easy"
+    },
+    {
+      "question": "An ideal ammeter should have:",
+      "options": ["Very low (ideally zero) resistance", "Very high (ideally infinite) resistance", "Resistance equal to the circuit's total resistance", "Resistance that increases with current"],
+      "correct_answer": "Very low (ideally zero) resistance",
+      "explanation": "An ammeter is connected in series, so it must have negligible resistance to avoid altering the current it is meant to measure.",
+      "topic": "Choosing meter ranges",
+      "difficulty": "medium"
+    },
+    {
+      "question": "An ideal voltmeter should have:",
+      "options": ["Very high (ideally infinite) resistance", "Very low (ideally zero) resistance", "Resistance equal to the resistor it measures", "Zero resistance when reversed"],
+      "correct_answer": "Very high (ideally infinite) resistance",
+      "explanation": "A voltmeter is connected in parallel, so it must draw negligible current from the branch to avoid disturbing the measured potential difference.",
+      "topic": "Choosing meter ranges",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Before starting a reading with an analogue ammeter or voltmeter of unknown magnitude, a student should:",
+      "options": ["Start on the highest current/voltage range and switch down as needed", "Start on the lowest range to get maximum deflection immediately", "Short-circuit the meter first to test it", "Remove the meter's internal fuse"],
+      "correct_answer": "Start on the highest current/voltage range and switch down as needed",
+      "explanation": "Starting on the highest range protects the meter from damage due to an unexpectedly large current or voltage; the range is then reduced to get a readable deflection.",
+      "topic": "Choosing meter ranges",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Two resistors of resistance 4 ohm and 6 ohm are connected in series. Their effective (equivalent) resistance is:",
+      "options": ["10 ohm", "2.4 ohm", "24 ohm", "5 ohm"],
+      "correct_answer": "10 ohm",
+      "explanation": "In series, resistances simply add: R = R1 + R2 = 4 + 6 = 10 ohm.",
+      "topic": "Resistors in series and parallel",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Two resistors of resistance 4 ohm and 6 ohm are connected in parallel. Their effective (equivalent) resistance is closest to:",
+      "options": ["2.4 ohm", "10 ohm", "24 ohm", "1.5 ohm"],
+      "correct_answer": "2.4 ohm",
+      "explanation": "For parallel resistors, 1/R = 1/4 + 1/6 = 5/12, so R = 12/5 = 2.4 ohm.",
+      "topic": "Resistors in series and parallel",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the series-resistors experiment, the equivalent resistance is verified by measuring the total voltage across the combination and:",
+      "options": ["The single current flowing through the whole series chain", "The sum of the individual voltmeter readings only", "The current at each resistor separately, since they differ", "The resistance of the ammeter"],
+      "correct_answer": "The single current flowing through the whole series chain",
+      "explanation": "In a series circuit the current is the same at every point, so R(total) = V(total)/I is obtained using the one common current value.",
+      "topic": "Resistors in series and parallel",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the parallel-resistors experiment, which quantity is the same across each branch of the combination?",
+      "options": ["The potential difference (voltage)", "The current", "The resistance", "The power dissipated"],
+      "correct_answer": "The potential difference (voltage)",
+      "explanation": "Resistors in parallel share the same two nodes, so the voltage across each branch is identical, while the current divides between branches according to each branch's resistance.",
+      "topic": "Resistors in series and parallel",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the experiment to determine the EMF and internal resistance of a cell, a graph of terminal potential difference (V) against current (I) is plotted. The EMF is obtained from this graph as:",
+      "options": ["The y-intercept (V when I = 0)", "The gradient of the line", "The x-intercept (I when V = 0)", "The area under the graph"],
+      "correct_answer": "The y-intercept (V when I = 0)",
+      "explanation": "From V = E - Ir, when I = 0 (no current drawn), V equals the EMF E, so the y-intercept of the V-I graph gives the EMF.",
+      "topic": "EMF and internal resistance",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the experiment to determine the EMF and internal resistance of a cell, the internal resistance is obtained from the V-I graph as:",
+      "options": ["The magnitude of the gradient of the line", "The y-intercept of the line", "The reciprocal of the y-intercept", "The product of V and I at any point"],
+      "correct_answer": "The magnitude of the gradient of the line",
+      "explanation": "Since V = E - Ir, the equation has the form of a straight line with gradient -r; the internal resistance r is the magnitude of that negative gradient.",
+      "topic": "EMF and internal resistance",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the EMF and internal resistance experiment, as more current is drawn from the cell by reducing an external variable resistor, the terminal potential difference:",
+      "options": ["Decreases, because more voltage is dropped across the internal resistance", "Increases, because the cell works harder", "Remains exactly constant and equal to the EMF", "Becomes negative"],
+      "correct_answer": "Decreases, because more voltage is dropped across the internal resistance",
+      "explanation": "As current increases, the voltage drop Ir across the cell's internal resistance increases, so the terminal voltage V = E - Ir falls below the EMF.",
+      "topic": "EMF and internal resistance",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A potentiometer is preferred over a voltmeter for accurately measuring the EMF of a cell because, at balance:",
+      "options": ["No current is drawn from the cell being measured", "It has a lower resistance than a voltmeter", "It can measure current directly", "It requires no calibration"],
+      "correct_answer": "No current is drawn from the cell being measured",
+      "explanation": "At the balance (null) point, no current flows through the galvanometer branch and hence none is drawn from the cell under test, so its EMF is measured without a voltage drop due to internal resistance.",
+      "topic": "Potentiometer",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In a potentiometer experiment comparing the EMFs of two cells, the ratio of the EMFs equals the ratio of:",
+      "options": ["Their respective balance lengths on the potentiometer wire", "Their internal resistances", "The currents drawn from each cell", "The diameters of the potentiometer wire at balance"],
+      "correct_answer": "Their respective balance lengths on the potentiometer wire",
+      "explanation": "Since the potential drop per unit length of the wire is uniform and constant, EMF is proportional to balance length, so E1/E2 = l1/l2.",
+      "topic": "Potentiometer",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The galvanometer in a potentiometer or Wheatstone bridge circuit is used primarily to:",
+      "options": ["Detect the null (zero-current) point", "Measure the exact value of current flowing", "Supply current to the circuit", "Measure resistance directly in ohms"],
+      "correct_answer": "Detect the null (zero-current) point",
+      "explanation": "A galvanometer is a sensitive current detector; in bridge and potentiometer circuits it is used to detect when the current through it is zero (balance), not to read an exact current value.",
+      "topic": "Galvanometer use",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a metre bridge (Wheatstone bridge form) experiment to find an unknown resistance, the bridge is said to be balanced when:",
+      "options": ["The galvanometer shows zero deflection", "The galvanometer shows maximum deflection", "The jockey is at the 100 cm end", "The current through the unknown resistance is zero"],
+      "correct_answer": "The galvanometer shows zero deflection",
+      "explanation": "Balance in a Wheatstone/metre bridge occurs when no current flows through the galvanometer branch, which is observed as zero deflection.",
+      "topic": "Wheatstone/meter bridge",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a metre bridge experiment, if the balance point is at a distance l cm from the end where the known resistance R is connected, and the bridge wire has total length 100 cm, the unknown resistance X is given by:",
+      "options": ["X = R(100 - l)/l", "X = Rl/(100 - l)", "X = R(100 + l)/l", "X = Rl/100"],
+      "correct_answer": "X = R(100 - l)/l",
+      "explanation": "At balance, R/X equals the ratio of the wire lengths on each side, l/(100-l) on the R side and the remainder on the X side; rearranging the standard metre-bridge balance condition R/l = X/(100-l) gives X = R(100-l)/l.",
+      "topic": "Wheatstone/meter bridge",
+      "difficulty": "hard"
+    },
+    {
+      "question": "To improve the accuracy of a metre bridge experiment, the balance point (jockey position) should ideally be located:",
+      "options": ["Near the middle of the wire (around 40-60 cm)", "As close to the 0 cm end as possible", "As close to the 100 cm end as possible", "It does not matter where the balance point falls"],
+      "correct_answer": "Near the middle of the wire (around 40-60 cm)",
+      "explanation": "Percentage error in reading the balance length is minimized when the balance point falls near the middle of the wire, so the known resistance box is adjusted until this occurs.",
+      "topic": "Wheatstone/meter bridge",
+      "difficulty": "hard"
+    },
+    {
+      "question": "To find the focal length of a converging (convex) lens by the no-parallax (plane mirror) method, the object pin and its image are coincident and free of parallax when:",
+      "options": ["The image pin does not appear to move relative to the object pin as the observer's eye is moved sideways", "The image pin is exactly twice as tall as the object pin", "The two pins touch each other physically", "The lens is removed from the setup"],
+      "correct_answer": "The image pin does not appear to move relative to the object pin as the observer's eye is moved sideways",
+      "explanation": "Parallax is the apparent relative displacement of two objects at different distances when the observer's viewpoint shifts; no-parallax means the image and search pin lie at exactly the same distance from the eye.",
+      "topic": "Focal length of lenses",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the plane-mirror (no-parallax) method for a convex lens, a plane mirror is placed behind the lens because at the position where the object coincides with its own image, the light must be:",
+      "options": ["Reflected straight back along its original path, meaning it struck the mirror normally after leaving the lens as a parallel beam", "Refracted twice by the lens only", "Diverging strongly from the mirror", "Totally internally reflected inside the lens"],
+      "correct_answer": "Reflected straight back along its original path, meaning it struck the mirror normally after leaving the lens as a parallel beam",
+      "explanation": "When the object pin is at the focal point of the lens, rays emerge parallel, strike the plane mirror normally, and retrace their path, forming a coincident image at the object pin itself -- so the object distance at coincidence equals the focal length.",
+      "topic": "Focal length of lenses",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In the lens formula method for determining the focal length of a converging lens, a graph is often plotted of 1/v against 1/u. This graph is expected to be:",
+      "options": ["A straight line with intercepts of magnitude 1/f on both axes", "A straight line passing through the origin", "A parabola opening upward", "A hyperbola with no intercepts"],
+      "correct_answer": "A straight line with intercepts of magnitude 1/f on both axes",
+      "explanation": "The lens formula 1/v - 1/u = 1/f (real-is-positive convention) rearranges to 1/v = 1/u + 1/f-type linear relation, so a graph of 1/v against 1/u is a straight line whose intercepts give 1/f.",
+      "topic": "Focal length of lenses",
+      "difficulty": "hard"
+    },
+    {
+      "question": "For a diverging (concave) lens, which method is typically used to determine its focal length experimentally, since it cannot form a real image of a real object alone?",
+      "options": ["Combining it with a converging lens (or using a real image as a virtual object) so a real final image is formed", "Placing it directly in sunlight to burn a mark on paper", "Using the no-parallax method exactly as for a convex lens with no modification", "Measuring only its physical thickness with a micrometer"],
+      "correct_answer": "Combining it with a converging lens (or using a real image as a virtual object) so a real final image is formed",
+      "explanation": "A diverging lens alone only forms virtual images of real objects, so it is combined with a converging lens (or a convergent beam is used) to create a real object/image situation from which the lens formula can be applied.",
+      "topic": "Focal length of lenses",
+      "difficulty": "hard"
+    },
+    {
+      "question": "To determine the focal length of a concave mirror using the no-parallax method, the object pin is adjusted until its position coincides with its own inverted image. At this position, the object distance from the mirror equals:",
+      "options": ["The radius of curvature of the mirror", "The focal length of the mirror", "Twice the focal length plus the radius", "Half the focal length"],
+      "correct_answer": "The radius of curvature of the mirror",
+      "explanation": "A concave mirror forms a real, inverted image coincident with the object only when the object is placed at the centre of curvature, where the object distance equals the radius of curvature R = 2f.",
+      "topic": "Focal length of mirrors",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the mirror formula experiment (1/v + 1/u = 1/f) for a concave mirror, a graph of 1/v against 1/u gives a straight line. The focal length is obtained from this graph as:",
+      "options": ["The reciprocal of either intercept on the axes", "The gradient of the line", "The reciprocal of the gradient", "The area enclosed by the line and the axes"],
+      "correct_answer": "The reciprocal of either intercept on the axes",
+      "explanation": "The line has gradient -1 and intercepts of magnitude 1/f on both the 1/u and 1/v axes, so f is obtained by taking the reciprocal of an intercept.",
+      "topic": "Focal length of mirrors",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A convex mirror always forms a virtual, diminished, upright image of a real object, so its focal length is typically determined by:",
+      "options": ["Using it in combination with a converging lens or mirror to produce a real final image", "Direct no-parallax coincidence with a real object", "Placing the object exactly at the pole of the mirror", "Measuring the mirror's physical curvature only with a ruler"],
+      "correct_answer": "Using it in combination with a converging lens or mirror to produce a real final image",
+      "explanation": "Because a convex mirror alone cannot form a real image of a real object, an auxiliary converging lens or mirror is used to first form a real image that then acts as a virtual object for the convex mirror, allowing the mirror formula to be applied.",
+      "topic": "Focal length of mirrors",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In the real-depth/apparent-depth experiment to find the refractive index of a glass block using a travelling microscope or pins, the refractive index is calculated as:",
+      "options": ["Real depth divided by apparent depth", "Apparent depth divided by real depth", "Real depth minus apparent depth", "The sum of real and apparent depth"],
+      "correct_answer": "Real depth divided by apparent depth",
+      "explanation": "For near-normal viewing, the refractive index of the medium is given by n = real depth / apparent depth, since the glass block makes the mark appear closer to the surface than it really is.",
+      "topic": "Refractive index (real/apparent depth)",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the real/apparent depth experiment, the apparent depth is measured by locating the position where a travelling microscope, focused through the glass block, shows no parallax between the observed image and:",
+      "options": ["A search pin viewed above the glass block", "The top surface of the glass block itself", "A mark on the base of the microscope stand", "The edge of the glass block"],
+      "correct_answer": "A search pin viewed above the glass block",
+      "explanation": "A search pin is raised or lowered above the glass block until it shows no parallax with the image of the mark seen through the block, locating the apparent position of the mark.",
+      "topic": "Refractive index (real/apparent depth)",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A student uses a glass block of real thickness 6.0 cm and measures an apparent thickness of 4.0 cm when viewed from directly above. The refractive index of the glass is:",
+      "options": ["1.5", "0.67", "2.0", "1.2"],
+      "correct_answer": "1.5",
+      "explanation": "Refractive index n = real depth / apparent depth = 6.0/4.0 = 1.5, a typical value for glass.",
+      "topic": "Refractive index (real/apparent depth)",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the glass-block experiment for finding refractive index by tracing a ray with pins (incident and emergent ray method), the refractive index is calculated using:",
+      "options": ["Snell's law, from the measured angle of incidence and angle of refraction", "The block's physical mass and volume", "The distance between the two surfaces of the block only", "The colour of the light source used"],
+      "correct_answer": "Snell's law, from the measured angle of incidence and angle of refraction",
+      "explanation": "By tracing the incident and emergent rays with pins and measuring the angle of incidence and angle of refraction at the first surface, n = sin(i)/sin(r) is calculated directly from Snell's law.",
+      "topic": "Refractive index (pin method)",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the glass-block ray-tracing experiment, the lateral displacement of the emergent ray relative to the incident ray occurs because:",
+      "options": ["The ray refracts on entering and leaving the block along parallel surfaces, shifting its path sideways", "Light travels faster inside glass than in air", "The block absorbs part of the light beam", "The emergent ray reflects internally before leaving"],
+      "correct_answer": "The ray refracts on entering and leaving the block along parallel surfaces, shifting its path sideways",
+      "explanation": "Because the two faces of the block are parallel, the emergent ray leaves parallel to the incident ray but is laterally displaced due to the bending at each refracting surface.",
+      "topic": "Refractive index (pin method)",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the prism spectrometer experiment to determine the angle of minimum deviation, the deviation of a ray passing through a prism is at its minimum when:",
+      "options": ["The ray passes symmetrically through the prism, with the angle of incidence equal to the angle of emergence", "The prism is rotated to its maximum possible angle", "The angle of incidence is exactly 90 degrees (grazing incidence)", "The ray does not enter the prism at all"],
+      "correct_answer": "The ray passes symmetrically through the prism, with the angle of incidence equal to the angle of emergence",
+      "explanation": "Minimum deviation occurs at the symmetric ray path through the prism, where the angle of incidence equals the angle of emergence and the ray inside the prism is parallel to the base.",
+      "topic": "Prism spectrometer",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Using a spectrometer, the refractive index of a prism material is calculated from the measured angle of the prism (A) and the angle of minimum deviation (D_min) using the formula:",
+      "options": ["n = sin[(A + D_min)/2] / sin(A/2)", "n = sin(A) / sin(D_min)", "n = sin(D_min) / sin(A)", "n = sin[(A - D_min)/2] / sin(A/2)"],
+      "correct_answer": "n = sin[(A + D_min)/2] / sin(A/2)",
+      "explanation": "This is the standard prism formula relating refractive index to the prism angle A and the angle of minimum deviation D_min, derived from Snell's law applied at both faces under the symmetric minimum-deviation condition.",
+      "topic": "Prism spectrometer",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Before taking readings with a prism spectrometer, the telescope and collimator must first be adjusted to be:",
+      "options": ["Focused for parallel rays (adjusted for infinity)", "Focused for the nearest possible object", "Tilted at 45 degrees to the bench", "Pointed directly at the light source with the prism removed and left uncollimated"],
+      "correct_answer": "Focused for parallel rays (adjusted for infinity)",
+      "explanation": "The collimator must produce a parallel beam and the telescope must be focused for parallel rays (set to infinity) so that accurate angle measurements can be made with the prism in the light path.",
+      "topic": "Prism spectrometer",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In the prism angle (A) determination using a spectrometer, the prism angle is found by measuring the angle between two reflected images of the collimator slit from the two polished faces of the prism, and:",
+      "options": ["Halving the angle turned through by the telescope between the two reflected images", "Doubling the angle turned through by the telescope", "Reading it directly off the prism's engraved label", "Measuring the base length of the prism with a ruler"],
+      "correct_answer": "Halving the angle turned through by the telescope between the two reflected images",
+      "explanation": "The angle the telescope turns through between the two reflections is twice the prism angle A (by the geometry of reflection at each face), so A is obtained by halving the measured angle.",
+      "topic": "Prism spectrometer",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In the resonance tube experiment to determine the velocity of sound in air, the air column is gradually lengthened by lowering the water level until the first position of resonance (loudest sound) is heard. This first resonance corresponds to an air column length of approximately:",
+      "options": ["A quarter of the wavelength of the sound (plus a small end correction)", "Half the wavelength of the sound", "The full wavelength of the sound", "Twice the wavelength of the sound"],
+      "correct_answer": "A quarter of the wavelength of the sound (plus a small end correction)",
+      "explanation": "A resonance tube closed at the water end and open at the top behaves as a closed pipe; its first resonance occurs when the air column length is one quarter of the wavelength, with a small end correction added for the antinode position just above the open end.",
+      "topic": "Resonance tube (velocity of sound)",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the resonance tube experiment, the difference in air column length between the first and second resonance positions for the same tuning fork corresponds to:",
+      "options": ["Half the wavelength of the sound", "The full wavelength of the sound", "A quarter of the wavelength of the sound", "Twice the wavelength of the sound"],
+      "correct_answer": "Half the wavelength of the sound",
+      "explanation": "Successive resonance positions in a closed pipe occur half a wavelength apart, so measuring the two resonance lengths and taking the difference doubles to give the wavelength, cancelling out the end correction.",
+      "topic": "Resonance tube (velocity of sound)",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Using the resonance tube method, a student finds the first and second resonance lengths to be 18.0 cm and 56.0 cm for a tuning fork of frequency 512 Hz. The wavelength of the sound is:",
+      "options": ["76.0 cm", "38.0 cm", "18.0 cm", "56.0 cm"],
+      "correct_answer": "76.0 cm",
+      "explanation": "The distance between successive resonances equals half a wavelength: 56.0 - 18.0 = 38.0 cm = lambda/2, so lambda = 76.0 cm.",
+      "topic": "Resonance tube (velocity of sound)",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Using the wavelength found from resonance-tube data (76.0 cm) with a tuning fork frequency of 512 Hz, the speed of sound in air is calculated as approximately:",
+      "options": ["389 m/s", "512 m/s", "76 m/s", "674 m/s"],
+      "correct_answer": "389 m/s",
+      "explanation": "Speed v = f x lambda = 512 Hz x 0.76 m = 389.1 m/s.",
+      "topic": "Resonance tube (velocity of sound)",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The main source of systematic error to correct for in the simple resonance tube experiment (single closed-tube method, using only the first resonance) is:",
+      "options": ["The end correction, since the antinode forms slightly above the tube's open end", "The speed of the water draining from the tube", "The colour of the tube material", "Air resistance acting on the water surface"],
+      "correct_answer": "The end correction, since the antinode forms slightly above the tube's open end",
+      "explanation": "The pressure antinode does not form exactly at the open end of the tube but a small distance above it, so the effective length exceeds the measured air column length by this end correction, which the two-resonance method automatically cancels.",
+      "topic": "Resonance tube (velocity of sound)",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In the sonometer experiment investigating the relationship between the frequency of a vibrating string and its length (at constant tension), the wire is adjusted until it resonates with a tuning fork, which is detected by:",
+      "options": ["A small paper rider placed on the wire being thrown off at resonance", "The wire changing colour", "The bridge under the wire melting", "The wire becoming permanently magnetized"],
+      "correct_answer": "A small paper rider placed on the wire being thrown off at resonance",
+      "explanation": "A light paper rider is placed on the sonometer wire; when the wire's vibration frequency matches the tuning fork's frequency, the wire vibrates with maximum amplitude at that point and throws the rider off, indicating resonance.",
+      "topic": "Sonometer",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the sonometer experiment, at constant tension, the frequency of vibration of a stretched wire is found to be:",
+      "options": ["Inversely proportional to its vibrating length", "Directly proportional to its vibrating length", "Independent of its vibrating length", "Proportional to the square of its vibrating length"],
+      "correct_answer": "Inversely proportional to its vibrating length",
+      "explanation": "For a stretched string, f = (1/2L) x sqrt(T/mu); at constant tension T and linear density mu, frequency f is inversely proportional to the vibrating length L.",
+      "topic": "Sonometer",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the sonometer experiment investigating frequency against tension (at constant length), a graph of frequency (f) against the square root of tension (sqrt(T)) is expected to be:",
+      "options": ["A straight line through the origin", "A straight line with a non-zero intercept", "A parabola", "A horizontal straight line"],
+      "correct_answer": "A straight line through the origin",
+      "explanation": "Since f = (1/2L) x sqrt(T/mu), at constant L and mu, f is directly proportional to sqrt(T), giving a straight line through the origin when f is plotted against sqrt(T).",
+      "topic": "Sonometer",
+      "difficulty": "hard"
+    },
+    {
+      "question": "On a sonometer, tension in the wire is typically applied and measured using:",
+      "options": ["Slotted masses hung over a pulley at one end of the wire", "A spring embedded inside the wire itself", "The weight of the bridges only", "An electric motor that twists the wire"],
+      "correct_answer": "Slotted masses hung over a pulley at one end of the wire",
+      "explanation": "In the standard sonometer setup, one end of the wire passes over a pulley and known slotted masses are hung from it, so the tension equals the weight of the masses (mg).",
+      "topic": "Sonometer",
+      "difficulty": "easy"
+    },
+    {
+      "question": "When plotting magnetic field lines around a bar magnet using a plotting compass and iron filings, the field lines are drawn such that they:",
+      "options": ["Emerge from the north pole and re-enter at the south pole outside the magnet", "Emerge from the south pole and re-enter at the north pole", "Form closed loops that never touch the magnet", "Are always straight and parallel regardless of magnet shape"],
+      "correct_answer": "Emerge from the north pole and re-enter at the south pole outside the magnet",
+      "explanation": "By convention, magnetic field lines outside a magnet run from the north pole to the south pole, and continue through the interior of the magnet from south back to north, forming closed loops.",
+      "topic": "Magnetic field lines",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In the plotting-compass method for tracing magnetic field lines, the neutral point (where the magnet's field exactly cancels the Earth's horizontal magnetic field) is identified as the point where:",
+      "options": ["The compass needle shows no preferred direction and can point any way", "The compass needle points due north regardless of position", "The compass needle spins continuously", "Iron filings refuse to align at all points on the paper"],
+      "correct_answer": "The compass needle shows no preferred direction and can point any way",
+      "explanation": "At a neutral point, the magnet's field and the Earth's horizontal field are equal and opposite, cancelling to zero net field, so the compass needle has no restoring torque and can rest in any orientation.",
+      "topic": "Magnetic field lines",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A moving-coil galvanometer is converted into an ammeter of a required range by connecting:",
+      "options": ["A low-resistance shunt in parallel with the galvanometer", "A high-resistance multiplier in series with the galvanometer", "A capacitor in series with the galvanometer", "Nothing; the galvanometer is used directly"],
+      "correct_answer": "A low-resistance shunt in parallel with the galvanometer",
+      "explanation": "A shunt resistor of low resistance is connected in parallel with the galvanometer coil so that most of the current bypasses the coil, extending its range to read larger currents as an ammeter.",
+      "topic": "Galvanometer use",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A moving-coil galvanometer is converted into a voltmeter of a required range by connecting:",
+      "options": ["A high-resistance multiplier (resistor) in series with the galvanometer", "A low-resistance shunt in parallel with the galvanometer", "An inductor in parallel with the galvanometer", "The galvanometer directly across the supply with no extra component"],
+      "correct_answer": "A high-resistance multiplier (resistor) in series with the galvanometer",
+      "explanation": "A high-value resistor (multiplier) is connected in series with the galvanometer so that only a small, proportional fraction of the total voltage appears across the sensitive coil, allowing it to read larger voltages as a voltmeter.",
+      "topic": "Galvanometer use",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In an experiment involving a delicate galvanometer, before switching on the circuit for the first time a student should include a high protective resistance in the circuit mainly to:",
+      "options": ["Limit the initial current and prevent damage to the galvanometer coil", "Increase the sensitivity of the reading", "Reduce the EMF of the battery", "Make the pointer move faster"],
+      "correct_answer": "Limit the initial current and prevent damage to the galvanometer coil",
+      "explanation": "A protective (safety) resistance limits the current when the circuit is first closed or when far from balance, preventing an excessive current from damaging the sensitive galvanometer coil.",
+      "topic": "Galvanometer use",
+      "difficulty": "medium"
+    },
+    {
+      "question": "When recording data in any of these practical experiments (electricity, optics, waves), the recommended practice for uncertainty in a repeated measurement is to:",
+      "options": ["Take several readings, average them, and estimate the uncertainty from the spread of the readings", "Take only one reading and assume it is exact", "Discard all readings except the first one taken", "Record only the final calculated result, without the raw readings"],
+      "correct_answer": "Take several readings, average them, and estimate the uncertainty from the spread of the readings",
+      "explanation": "Good experimental practice requires repeated readings to reduce the effect of random error, with the average taken as the best estimate and the spread used to estimate the associated uncertainty.",
+      "topic": "Error propagation in experiments",
+      "difficulty": "medium"
+    },
+    {
+      "question": "If the fractional (percentage) errors in two independently measured quantities x and y are combined to find the fractional error in a derived quantity Q = xy, the correct approach is to:",
+      "options": ["Add the fractional errors in x and y", "Multiply the fractional errors in x and y", "Subtract the fractional errors in x and y", "Take the average of the absolute errors in x and y"],
+      "correct_answer": "Add the fractional errors in x and y",
+      "explanation": "For a quantity formed by multiplying (or dividing) measured quantities, the fractional (relative) errors are added in quadrature or simply added as an upper-bound estimate; multiplying or subtracting them is not correct error propagation.",
+      "topic": "Error propagation in experiments",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A student obtains a very scattered set of points when plotting a V-I graph for the Ohm's law experiment, with no clear straight-line trend. The most likely cause is:",
+      "options": ["Poor contact in the circuit or a faulty/loose connection causing unstable readings", "The conductor obeying Ohm's law too precisely", "The ammeter and voltmeter being too accurate", "Using graph paper instead of plain paper"],
+      "correct_answer": "Poor contact in the circuit or a faulty/loose connection causing unstable readings",
+      "explanation": "Scattered, inconsistent readings in a circuit experiment most commonly result from loose or dirty connections causing intermittent contact resistance, rather than a genuine departure from Ohm's law.",
+      "topic": "Sources of error",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the no-parallax method for lenses and mirrors, a common source of error is:",
+      "options": ["Parallax not being fully eliminated, so the search pin position is misjudged", "The pin being made of metal", "The bench being too long", "Using a lens holder instead of holding the lens by hand"],
+      "correct_answer": "Parallax not being fully eliminated, so the search pin position is misjudged",
+      "explanation": "If the observer does not carefully check for relative movement between the image and the search pin from several viewing angles, residual parallax leads to an incorrect location of the image, introducing error into u, v, or f.",
+      "topic": "Sources of error",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the metre bridge experiment, a systematic error known as 'end error' or 'end resistance' arises mainly from:",
+      "options": ["Contact resistance at the copper strip junctions near the ends of the bridge wire", "The colour of the bridge wire", "The length of the connecting leads to the battery", "The type of galvanometer used"],
+      "correct_answer": "Contact resistance at the copper strip junctions near the ends of the bridge wire",
+      "explanation": "Small, often unequal contact resistances at the metal strip-to-wire junctions near the two ends of the bridge wire introduce a systematic 'end error', which can be corrected for by interchanging the resistances and averaging.",
+      "topic": "Sources of error",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In the resonance tube and sonometer experiments, a key source of error affecting frequency-related results is:",
+      "options": ["Using a tuning fork whose frequency is not accurately known, or one that has decayed in amplitude", "The colour of the tuning fork", "Using a wooden retort stand instead of a metal one", "Measuring length with a ruler instead of a stopwatch"],
+      "correct_answer": "Using a tuning fork whose frequency is not accurately known, or one that has decayed in amplitude",
+      "explanation": "The accuracy of derived quantities like the speed of sound or wire tension relies directly on the stated frequency of the tuning fork being correct and the fork being struck to give a clear, sustained tone.",
+      "topic": "Sources of error",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the prism spectrometer experiment, parallax error between the cross-wires of the telescope and the image of the slit is minimized by:",
+      "options": ["Adjusting the eyepiece so the cross-wires are sharply focused and coincide with the image with no relative shift on eye movement", "Using a brighter light source only", "Increasing the prism angle", "Reducing the collimator slit width to zero"],
+      "correct_answer": "Adjusting the eyepiece so the cross-wires are sharply focused and coincide with the image with no relative shift on eye movement",
+      "explanation": "As with other optical no-parallax checks, the eyepiece cross-wires must be focused so that they show no relative displacement with the slit image as the observer's eye moves, ensuring accurate angular readings.",
+      "topic": "Sources of error",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A student measures a resistor using a metre bridge and obtains 100 cm exactly as the balance length (i.e., the balance point falls right at the very end of the wire). This result should be treated with suspicion mainly because:",
+      "options": ["The known resistance in the resistance box is likely far too small or too large relative to the unknown, pushing the balance point to an extreme where percentage error is largest", "It is a perfectly valid and highly accurate reading", "The bridge wire is too short to be used at all", "The galvanometer must be broken"],
+      "correct_answer": "The known resistance in the resistance box is likely far too small or too large relative to the unknown, pushing the balance point to an extreme where percentage error is largest",
+      "explanation": "A balance point at or very near either end of the wire indicates a poor choice of comparison resistance, and readings near the ends carry the largest relative error in length measurement; the resistance box value should be adjusted to bring balance nearer the middle.",
+      "topic": "Sources of error",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Which of the following apparatus is essential for the experiment to determine the focal length of a converging lens by the no-parallax method?",
+      "options": ["An optical pin (object pin), a search pin, a plane mirror, and a metre rule", "A prism, a spectrometer, and a sodium lamp", "A sonometer wire and slotted masses", "An ammeter, voltmeter, and rheostat"],
+      "correct_answer": "An optical pin (object pin), a search pin, a plane mirror, and a metre rule",
+      "explanation": "The plane-mirror no-parallax method for a convex lens requires an object pin, a search pin to locate the image, a plane mirror placed behind the lens, and a metre rule to measure distances.",
+      "topic": "Focal length of lenses",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In an experiment on resistors in parallel, three resistors of 2 ohm, 3 ohm, and 6 ohm are connected in parallel. The equivalent resistance is:",
+      "options": ["1 ohm", "11 ohm", "0.33 ohm", "3 ohm"],
+      "correct_answer": "1 ohm",
+      "explanation": "1/R = 1/2 + 1/3 + 1/6 = 3/6 + 2/6 + 1/6 = 6/6 = 1, so R = 1 ohm.",
+      "topic": "Resistors in series and parallel",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the potentiometer experiment for measuring internal resistance of a cell, a balance length l1 is obtained with the cell on open circuit, and a shorter balance length l2 is obtained when a known resistance R is connected across the cell as an external load. The internal resistance r is given by:",
+      "options": ["r = R(l1 - l2)/l2", "r = R(l1 + l2)/l2", "r = Rl2/l1", "r = R(l1 - l2)/l1"],
+      "correct_answer": "r = R(l1 - l2)/l2",
+      "explanation": "Since balance length is proportional to potential difference, l1 corresponds to the EMF and l2 to the terminal p.d. across R; using E = I(R + r) and V = IR with lengths substituted for potentials gives r = R(l1 - l2)/l2.",
+      "topic": "Potentiometer",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In the sonometer experiment, the linear density (mass per unit length) of the wire, mu, affects the resonant frequency such that, at constant length and tension, frequency is:",
+      "options": ["Inversely proportional to the square root of mu", "Directly proportional to mu", "Independent of mu", "Directly proportional to the square root of mu"],
+      "correct_answer": "Inversely proportional to the square root of mu",
+      "explanation": "From f = (1/2L) x sqrt(T/mu), at constant L and T, frequency decreases as mu increases, following an inverse square-root relationship -- this is why thicker (higher mass per length) strings give lower notes.",
+      "topic": "Sonometer",
+      "difficulty": "hard"
+    }
+  ]
+}

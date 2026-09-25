@@ -1,0 +1,280 @@
+{
+  "course_code": "BCH391",
+  "title": "General Biochemical Methods",
+  "level": "300",
+  "source_note": "Grounded in standard undergraduate biochemistry practical/methods curricula covering spectrophotometry, chromatography, electrophoresis, centrifugation, protein quantification, and basic laboratory calculations (Wilson & Walker, Plummer's Introduction to Practical Biochemistry).",
+  "questions": [
+    {
+      "question": "The Beer-Lambert law relates absorbance to which of the following?",
+      "options": ["Concentration, path length, and molar absorptivity", "Temperature and pressure only", "Wavelength of light alone", "Refractive index of the solvent"],
+      "correct_answer": "Concentration, path length, and molar absorptivity",
+      "explanation": "The Beer-Lambert law states A = εcl, where absorbance depends on the molar absorptivity (ε), concentration (c), and path length (l) of the sample.",
+      "topic": "Spectrophotometry",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In a spectrophotometer, the 'blank' solution is used to:",
+      "options": ["Zero the instrument by accounting for background absorbance", "Increase the sensitivity of detection", "Replace the need for a standard curve", "Calibrate the wavelength selector only"],
+      "correct_answer": "Zero the instrument by accounting for background absorbance",
+      "explanation": "A blank (containing all components except the analyte) is used to set the absorbance to zero, correcting for absorbance from the solvent, cuvette, and reagents.",
+      "topic": "Spectrophotometry",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which protein quantification method relies on the reduction of Cu2+ to Cu+ by peptide bonds under alkaline conditions, followed by reaction with Folin-Ciocalteu reagent?",
+      "options": ["Lowry method", "Bradford method", "Biuret method", "UV absorbance at 280 nm"],
+      "correct_answer": "Lowry method",
+      "explanation": "The Lowry method combines the biuret reaction (Cu2+ reduction by peptide bonds) with the Folin-Ciocalteu reagent, which reacts with aromatic residues, giving high sensitivity.",
+      "topic": "Protein quantification",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Bradford assay for protein quantification is based on:",
+      "options": ["Binding of Coomassie Brilliant Blue dye to proteins, causing a shift in absorbance maximum", "Direct measurement of peptide bond absorbance at 210 nm", "Formation of a purple complex between Cu2+ and peptide bonds", "Reaction of ninhydrin with free amino groups"],
+      "correct_answer": "Binding of Coomassie Brilliant Blue dye to proteins, causing a shift in absorbance maximum",
+      "explanation": "Coomassie Brilliant Blue G-250 binds to basic and aromatic amino acid residues, shifting its absorbance maximum from 465 nm to 595 nm, which is measured in the Bradford assay.",
+      "topic": "Protein quantification",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The simple Biuret test detects proteins by forming a violet color due to:",
+      "options": ["Complexation of Cu2+ with peptide bonds in alkaline solution", "Oxidation of tryptophan residues", "Binding of iodine to protein helices", "Precipitation of protein by acid"],
+      "correct_answer": "Complexation of Cu2+ with peptide bonds in alkaline solution",
+      "explanation": "In the Biuret test, Cu2+ ions form a coordination complex with peptide bond nitrogens in alkaline solution, producing a violet color proportional to protein concentration.",
+      "topic": "Protein quantification",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In gel filtration (size exclusion) chromatography, larger molecules elute:",
+      "options": ["Earlier, because they are excluded from the pores of the gel matrix", "Later, because they diffuse fastest into pores", "At the same time as small molecules always", "Only after the column is washed with acid"],
+      "correct_answer": "Earlier, because they are excluded from the pores of the gel matrix",
+      "explanation": "In gel filtration, large molecules cannot enter the pores of the stationary phase beads and thus travel through the column faster, eluting earlier than smaller molecules.",
+      "topic": "Chromatography",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Ion-exchange chromatography separates molecules primarily based on:",
+      "options": ["Net surface charge", "Molecular size only", "Hydrophobicity only", "Specific ligand-binding affinity"],
+      "correct_answer": "Net surface charge",
+      "explanation": "Ion-exchange chromatography uses charged stationary phases to bind and separate molecules according to their net surface charge at a given pH.",
+      "topic": "Chromatography",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Affinity chromatography separates a target molecule from a mixture based on:",
+      "options": ["Specific, reversible binding to an immobilized ligand", "Differences in molecular weight alone", "Differences in isoelectric point", "Random adsorption to a stationary phase"],
+      "correct_answer": "Specific, reversible binding to an immobilized ligand",
+      "explanation": "Affinity chromatography exploits a highly specific and reversible interaction (e.g., antigen-antibody, enzyme-substrate analog) between the target molecule and an immobilized ligand.",
+      "topic": "Chromatography",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In thin-layer chromatography (TLC), the retardation factor (Rf) is calculated as:",
+      "options": ["Distance moved by the compound divided by distance moved by the solvent front", "Distance moved by the solvent front divided by distance moved by the compound", "Total plate length divided by compound distance", "Time taken for the compound to migrate"],
+      "correct_answer": "Distance moved by the compound divided by distance moved by the solvent front",
+      "explanation": "Rf = distance traveled by the solute / distance traveled by the solvent front, a characteristic value used to identify compounds under given TLC conditions.",
+      "topic": "Chromatography",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In SDS-PAGE, proteins are separated primarily according to:",
+      "options": ["Molecular weight", "Native charge only", "Isoelectric point", "Biological activity"],
+      "correct_answer": "Molecular weight",
+      "explanation": "SDS coats proteins with a uniform negative charge proportional to their mass, so migration through the polyacrylamide gel under an electric field depends almost solely on molecular size.",
+      "topic": "Electrophoresis",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The role of sodium dodecyl sulfate (SDS) in SDS-PAGE is to:",
+      "options": ["Denature proteins and confer a uniform negative charge per unit mass", "Stain the proteins for visualization", "Cross-link the polyacrylamide gel", "Act as a running buffer conductor only"],
+      "correct_answer": "Denature proteins and confer a uniform negative charge per unit mass",
+      "explanation": "SDS is an anionic detergent that denatures proteins and binds proportionally to polypeptide length, masking intrinsic charge so separation depends on size alone.",
+      "topic": "Electrophoresis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Isoelectric focusing separates proteins based on their:",
+      "options": ["Isoelectric point (pI)", "Molecular weight only", "Solubility in organic solvents", "Enzymatic activity"],
+      "correct_answer": "Isoelectric point (pI)",
+      "explanation": "Isoelectric focusing uses a pH gradient in the gel; proteins migrate until they reach the pH equal to their isoelectric point, where they have zero net charge and stop moving.",
+      "topic": "Electrophoresis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Agarose gel electrophoresis is most commonly used to separate:",
+      "options": ["Nucleic acids (DNA/RNA)", "Small organic acids", "Lipids exclusively", "Inorganic salts"],
+      "correct_answer": "Nucleic acids (DNA/RNA)",
+      "explanation": "Agarose gels have larger pore sizes suited to resolving nucleic acid fragments by size, as they migrate toward the anode due to their negatively charged phosphate backbone.",
+      "topic": "Electrophoresis",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In differential centrifugation, which cellular component typically pellets first at the lowest centrifugal force?",
+      "options": ["Nuclei", "Ribosomes", "Mitochondria", "Microsomes"],
+      "correct_answer": "Nuclei",
+      "explanation": "Differential centrifugation separates organelles by size and density using increasing speeds; the largest, densest structures (nuclei and cell debris) pellet first at low speed.",
+      "topic": "Centrifugation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Density gradient (e.g., sucrose gradient) ultracentrifugation separates particles primarily based on:",
+      "options": ["Their sedimentation coefficient (size, shape, and density)", "Their absorbance at 260 nm only", "Their solubility in ethanol", "Their electrical charge alone"],
+      "correct_answer": "Their sedimentation coefficient (size, shape, and density)",
+      "explanation": "In density gradient centrifugation, particles sediment through a gradient at rates determined by their size, shape, and density, expressed as the sedimentation coefficient (Svedberg units).",
+      "topic": "Centrifugation",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The pH of a buffer solution is best calculated using which equation?",
+      "options": ["Henderson-Hasselbalch equation", "Michaelis-Menten equation", "Beer-Lambert law", "Nernst equation"],
+      "correct_answer": "Henderson-Hasselbalch equation",
+      "explanation": "The Henderson-Hasselbalch equation, pH = pKa + log([A-]/[HA]), relates the pH of a buffer to the ratio of conjugate base to weak acid concentrations.",
+      "topic": "Buffers and pH",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A buffer is most effective at resisting pH change when the pH of the solution is:",
+      "options": ["Close to the pKa of the buffering acid", "Far above the pKa by at least 3 units", "Far below the pKa by at least 3 units", "Equal to 7.0 regardless of the buffer used"],
+      "correct_answer": "Close to the pKa of the buffering acid",
+      "explanation": "Buffering capacity is maximal when pH equals pKa, as the concentrations of weak acid and conjugate base are equal, providing maximal resistance to pH change.",
+      "topic": "Buffers and pH",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Dialysis is a technique used in biochemistry primarily to:",
+      "options": ["Remove small molecules (e.g., salts) from a solution containing macromolecules", "Separate proteins by molecular weight on a gel", "Concentrate a protein sample using centrifugal force", "Denature nucleic acids for sequencing"],
+      "correct_answer": "Remove small molecules (e.g., salts) from a solution containing macromolecules",
+      "explanation": "Dialysis uses a semipermeable membrane that allows small solutes and ions to diffuse out while retaining large macromolecules like proteins, commonly used for desalting.",
+      "topic": "Sample preparation",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Ammonium sulfate precipitation ('salting out') is used to purify proteins based on:",
+      "options": ["Differential solubility of proteins at high salt concentrations", "Their specific antigen-antibody interactions", "Their molecular charge at neutral pH only", "Their absorbance at 280 nm"],
+      "correct_answer": "Differential solubility of proteins at high salt concentrations",
+      "explanation": "High salt concentrations compete for water molecules, reducing protein solubility and causing proteins to precipitate out at different salt concentrations depending on their surface properties.",
+      "topic": "Protein purification",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A calibration (standard) curve in quantitative analysis is constructed by plotting:",
+      "options": ["Absorbance (or signal) against known concentrations of standards", "Time against temperature", "pH against volume of titrant added", "Molecular weight against migration distance only"],
+      "correct_answer": "Absorbance (or signal) against known concentrations of standards",
+      "explanation": "A calibration curve relates a measurable signal (e.g., absorbance) to known standard concentrations, allowing unknown sample concentrations to be interpolated.",
+      "topic": "Quantitative analysis",
+      "difficulty": "easy"
+    },
+    {
+      "question": "During an acid-base titration, the equivalence point is reached when:",
+      "options": ["Moles of acid exactly equal moles of base added", "The pH is always exactly 7", "The indicator changes color permanently at the start", "The solution becomes saturated"],
+      "correct_answer": "Moles of acid exactly equal moles of base added",
+      "explanation": "The equivalence point occurs when the amount of titrant added is stoichiometrically equivalent to the amount of analyte present, which is not always at pH 7 (depends on the acid/base strength).",
+      "topic": "Titration",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Column chromatography resolution can generally be improved by:",
+      "options": ["Increasing column length and using a finer, more uniform stationary phase", "Using the widest possible column diameter only", "Eliminating the mobile phase flow entirely", "Reducing sample application volume to zero"],
+      "correct_answer": "Increasing column length and using a finer, more uniform stationary phase",
+      "explanation": "Longer columns and finer, more uniformly packed stationary phase particles increase the number of theoretical plates, improving separation resolution.",
+      "topic": "Chromatography",
+      "difficulty": "hard"
+    },
+    {
+      "question": "High-performance liquid chromatography (HPLC) improves on classical column chromatography mainly by:",
+      "options": ["Using high pressure to force mobile phase through a tightly packed column for faster, higher-resolution separation", "Eliminating the need for a stationary phase", "Using only gaseous mobile phases", "Requiring no detector for analysis"],
+      "correct_answer": "Using high pressure to force mobile phase through a tightly packed column for faster, higher-resolution separation",
+      "explanation": "HPLC uses high-pressure pumps to push solvent through densely packed columns with small particle sizes, achieving faster runs and much higher resolution than gravity-fed columns.",
+      "topic": "Chromatography",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In gas chromatography (GC), samples must be:",
+      "options": ["Volatile and thermally stable", "Highly polar and non-volatile", "Radioactively labeled", "Dissolved in a buffer of pH 7"],
+      "correct_answer": "Volatile and thermally stable",
+      "explanation": "GC separates compounds in the gas phase, so analytes must be volatile or made volatile (e.g., via derivatization) and stable at the operating temperature without decomposing.",
+      "topic": "Chromatography",
+      "difficulty": "medium"
+    },
+    {
+      "question": "An enzyme assay that measures the rate of product formation by monitoring absorbance change over time is called a:",
+      "options": ["Continuous (kinetic) assay", "Endpoint assay", "Qualitative spot test", "Gravimetric assay"],
+      "correct_answer": "Continuous (kinetic) assay",
+      "explanation": "A continuous assay tracks the reaction in real time, typically via absorbance change, allowing calculation of initial velocity directly from the slope of the progress curve.",
+      "topic": "Enzyme assay techniques",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In an endpoint enzyme assay, the reaction is typically stopped by:",
+      "options": ["Adding a denaturant such as acid, base, or heat", "Increasing substrate concentration indefinitely", "Removing all cofactors before starting", "Cooling to exactly 37°C"],
+      "correct_answer": "Adding a denaturant such as acid, base, or heat",
+      "explanation": "Endpoint assays measure the amount of product formed after a fixed time, requiring the reaction to be halted (quenched) by denaturing the enzyme, commonly with acid, base, or heat.",
+      "topic": "Enzyme assay techniques",
+      "difficulty": "medium"
+    },
+    {
+      "question": "An ELISA (enzyme-linked immunosorbent assay) detects and quantifies analytes using:",
+      "options": ["Antibody-antigen recognition coupled to an enzyme-catalyzed colorimetric or fluorescent signal", "Migration through a polyacrylamide gel", "Sedimentation velocity in a centrifuge", "Retention time on a GC column"],
+      "correct_answer": "Antibody-antigen recognition coupled to an enzyme-catalyzed colorimetric or fluorescent signal",
+      "explanation": "ELISA relies on specific antibody-antigen binding, with an enzyme-linked secondary antibody producing a measurable colored or fluorescent product proportional to analyte amount.",
+      "topic": "Immunoassays",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Western blotting is used to detect a specific:",
+      "options": ["Protein within a complex mixture using a specific antibody", "DNA sequence using a labeled probe", "Small molecule using mass spectrometry", "Ion concentration using a selective electrode"],
+      "correct_answer": "Protein within a complex mixture using a specific antibody",
+      "explanation": "Western blotting transfers proteins separated by SDS-PAGE onto a membrane, which is then probed with a specific antibody to detect the protein of interest.",
+      "topic": "Immunoassays",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which safety practice is essential when handling concentrated acids in the biochemistry laboratory?",
+      "options": ["Always add acid to water slowly, never water to acid", "Always add water to concentrated acid rapidly", "Mix acids and bases together to neutralize before disposal without ventilation", "Store concentrated acids in unlabeled containers"],
+      "correct_answer": "Always add acid to water slowly, never water to acid",
+      "explanation": "Adding acid to water slowly dissipates heat safely; adding water to concentrated acid can cause violent, exothermic splattering, posing a serious safety hazard.",
+      "topic": "Laboratory safety",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Molarity is defined as:",
+      "options": ["Moles of solute per liter of solution", "Grams of solute per liter of solvent", "Moles of solute per kilogram of solvent", "Equivalents of solute per liter of solution"],
+      "correct_answer": "Moles of solute per liter of solution",
+      "explanation": "Molarity (M) is a concentration unit defined as the number of moles of solute dissolved per liter of total solution.",
+      "topic": "Laboratory calculations",
+      "difficulty": "easy"
+    },
+    {
+      "question": "How many grams of NaOH (molar mass 40 g/mol) are needed to prepare 500 mL of a 0.2 M solution?",
+      "options": ["4 g", "8 g", "2 g", "40 g"],
+      "correct_answer": "4 g",
+      "explanation": "Moles needed = 0.2 M x 0.5 L = 0.1 mol; mass = 0.1 mol x 40 g/mol = 4 g.",
+      "topic": "Laboratory calculations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Radioisotope tracer techniques in biochemistry are used mainly to:",
+      "options": ["Track the metabolic fate of labeled molecules within biological pathways", "Directly visualize protein tertiary structure", "Measure pH changes in real time", "Replace the need for chromatographic separation"],
+      "correct_answer": "Track the metabolic fate of labeled molecules within biological pathways",
+      "explanation": "Radiolabeled compounds (e.g., 14C or 32P labeled substrates) allow researchers to trace the pathway and fate of specific molecules through metabolic reactions.",
+      "topic": "Radioisotope techniques",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The extinction coefficient (molar absorptivity) of a compound is:",
+      "options": ["A constant that indicates how strongly a substance absorbs light at a given wavelength", "The same for all compounds regardless of structure", "Independent of wavelength", "Measured in units of grams per liter"],
+      "correct_answer": "A constant that indicates how strongly a substance absorbs light at a given wavelength",
+      "explanation": "The molar extinction coefficient (ε) is a wavelength-specific, compound-specific constant that quantifies how strongly a substance absorbs light, used in the Beer-Lambert law.",
+      "topic": "Spectrophotometry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which of the following is the correct order of centrifugal force typically applied in differential centrifugation to sequentially pellet nuclei, mitochondria, microsomes, and ribosomes?",
+      "options": ["Low speed, then medium speed, then high speed, then very high speed", "Very high speed followed by low speed throughout", "The same constant speed for all fractions", "Random speeds with no particular sequence"],
+      "correct_answer": "Low speed, then medium speed, then high speed, then very high speed",
+      "explanation": "Differential centrifugation uses progressively increasing centrifugal force to sequentially sediment larger/denser components first (nuclei), then mitochondria, then microsomes, and finally ribosomes at the highest speeds.",
+      "topic": "Centrifugation",
+      "difficulty": "hard"
+    }
+  ]
+}

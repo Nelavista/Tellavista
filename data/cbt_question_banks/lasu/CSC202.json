@@ -1,0 +1,394 @@
+{
+  "course_code": "CSC202",
+  "title": "Computer Programming II",
+  "level": "200",
+  "source_note": "Standard NUC-aligned second-course programming curriculum (functions, arrays, pointers, structures, recursion, file handling, and an introduction to object-oriented concepts), grounded in LASU's CSC218 'Foundation of Sequential Program' and CSC226 'Object Oriented Programming I (C++)' course descriptions as the natural continuation after an introductory programming course.",
+  "questions": [
+    {
+      "question": "What is the main advantage of using functions (or procedures) in a program?",
+      "options": [
+        "They allow code reuse and break a program into manageable, modular units",
+        "They make a program run only once",
+        "They automatically fix all logic errors",
+        "They remove the need for variables"
+      ],
+      "correct_answer": "They allow code reuse and break a program into manageable, modular units",
+      "explanation": "Functions enable modular programming by allowing a block of code to be written once and reused multiple times, improving readability and maintainability.",
+      "topic": "Functions and modular programming",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In programming, what is the difference between 'pass by value' and 'pass by reference' when calling a function?",
+      "options": [
+        "Pass by value copies the argument's data, while pass by reference gives the function direct access to the original variable",
+        "Pass by value and pass by reference always behave identically",
+        "Pass by reference only works with numeric data types",
+        "Pass by value permanently deletes the original variable"
+      ],
+      "correct_answer": "Pass by value copies the argument's data, while pass by reference gives the function direct access to the original variable",
+      "explanation": "Pass by value sends a copy of the argument's data to the function, so changes inside the function do not affect the original; pass by reference allows the function to modify the original variable.",
+      "topic": "Functions and modular programming",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is recursion in programming?",
+      "options": [
+        "A technique where a function calls itself to solve a smaller instance of the same problem",
+        "A method of sorting an array in reverse order",
+        "A type of syntax error",
+        "A way to permanently store data on disk"
+      ],
+      "correct_answer": "A technique where a function calls itself to solve a smaller instance of the same problem",
+      "explanation": "Recursion occurs when a function invokes itself, typically to break a problem into smaller sub-problems, until it reaches a base case that stops the recursive calls.",
+      "topic": "Recursion",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Every correctly written recursive function must have which essential component to avoid infinite recursion?",
+      "options": ["A base case that terminates the recursive calls", "A global variable", "A loop statement", "A pointer variable"],
+      "correct_answer": "A base case that terminates the recursive calls",
+      "explanation": "A base case provides a condition under which the function stops calling itself, preventing infinite recursion and eventual stack overflow.",
+      "topic": "Recursion",
+      "difficulty": "medium"
+    },
+    {
+      "question": "An array is best described as:",
+      "options": [
+        "A collection of elements of the same data type stored in contiguous memory locations",
+        "A single variable that can hold only one value",
+        "A function that returns multiple data types",
+        "A file used to store program output"
+      ],
+      "correct_answer": "A collection of elements of the same data type stored in contiguous memory locations",
+      "explanation": "An array is a data structure that stores a fixed-size, ordered collection of elements of the same type, contiguous in memory, accessed via an index.",
+      "topic": "Arrays",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In most programming languages, what is the index of the first element in an array?",
+      "options": ["0", "1", "-1", "It depends only on the array's data type"],
+      "correct_answer": "0",
+      "explanation": "Most programming languages (such as C, C++, and Java) use zero-based indexing, meaning the first element of an array is accessed with index 0.",
+      "topic": "Arrays",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is a two-dimensional array typically used to represent?",
+      "options": ["Data arranged in rows and columns, such as a matrix or table", "A single list of numbers only", "A function with two parameters", "A file with two lines of text"],
+      "correct_answer": "Data arranged in rows and columns, such as a matrix or table",
+      "explanation": "A two-dimensional array organizes data in a grid-like structure with rows and columns, making it suitable for representing matrices, tables, and grids.",
+      "topic": "Arrays",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A pointer variable in languages like C/C++ is used to:",
+      "options": [
+        "Store the memory address of another variable",
+        "Store only text strings",
+        "Automatically sort an array",
+        "Replace the need for functions"
+      ],
+      "correct_answer": "Store the memory address of another variable",
+      "explanation": "A pointer is a variable that holds the memory address of another variable, allowing indirect access to and manipulation of that variable's data.",
+      "topic": "Pointers",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In C, what does the dereference operator (*) do when applied to a pointer?",
+      "options": [
+        "It accesses the value stored at the memory address the pointer refers to",
+        "It converts the pointer into an integer permanently",
+        "It deletes the pointer from memory",
+        "It multiplies the pointer's address by two"
+      ],
+      "correct_answer": "It accesses the value stored at the memory address the pointer refers to",
+      "explanation": "The dereference operator (*) retrieves or sets the value at the memory location that a pointer is pointing to.",
+      "topic": "Pointers",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is 'dynamic memory allocation'?",
+      "options": [
+        "Allocating memory for variables at runtime rather than at compile time",
+        "Allocating memory only when the computer is first powered on",
+        "A technique that removes the need for the operating system",
+        "A way to permanently prevent memory from being freed"
+      ],
+      "correct_answer": "Allocating memory for variables at runtime rather than at compile time",
+      "explanation": "Dynamic memory allocation allows a program to request and release memory while it is running, offering flexibility that static, compile-time allocation does not provide.",
+      "topic": "Dynamic memory allocation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In C, which function is commonly used to dynamically allocate memory on the heap?",
+      "options": ["malloc()", "printf()", "scanf()", "main()"],
+      "correct_answer": "malloc()",
+      "explanation": "The malloc() function in C dynamically allocates a specified number of bytes on the heap and returns a pointer to the allocated memory block.",
+      "topic": "Dynamic memory allocation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What can happen if dynamically allocated memory is not freed after use?",
+      "options": [
+        "A memory leak, where unused memory remains reserved and unavailable for reuse",
+        "The program automatically runs faster",
+        "The compiler will refuse to compile the program",
+        "The operating system will immediately crash"
+      ],
+      "correct_answer": "A memory leak, where unused memory remains reserved and unavailable for reuse",
+      "explanation": "Failing to free dynamically allocated memory causes a memory leak, where that memory remains reserved but inaccessible, potentially exhausting available memory over time.",
+      "topic": "Dynamic memory allocation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A structure (struct) in programming is used to:",
+      "options": [
+        "Group related variables of different data types under a single name",
+        "Store only a single integer value",
+        "Automatically generate a graphical user interface",
+        "Compile source code into machine language"
+      ],
+      "correct_answer": "Group related variables of different data types under a single name",
+      "explanation": "A struct is a user-defined data type that groups variables of possibly different types together under one name, useful for representing composite records.",
+      "topic": "Structures and records",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which of the following best describes file handling in programming?",
+      "options": [
+        "The process of creating, reading, writing, and closing files from within a program",
+        "The process of designing a computer's physical case",
+        "The process of compiling source code",
+        "The process of installing an operating system"
+      ],
+      "correct_answer": "The process of creating, reading, writing, and closing files from within a program",
+      "explanation": "File handling refers to the operations a program performs to interact with files, including opening, reading data from, writing data to, and closing them.",
+      "topic": "File handling",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Why is it important to close a file after a program finishes using it?",
+      "options": [
+        "To ensure all buffered data is written to disk and system resources are released",
+        "To permanently delete the file",
+        "To convert the file into an executable program",
+        "To prevent the file from ever being opened again"
+      ],
+      "correct_answer": "To ensure all buffered data is written to disk and system resources are released",
+      "explanation": "Closing a file flushes any buffered output to disk and releases the file handle/resources back to the operating system, preventing data loss or resource leaks.",
+      "topic": "File handling",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What distinguishes a text file from a binary file?",
+      "options": [
+        "A text file stores human-readable characters, while a binary file stores data in a non-human-readable, raw format",
+        "A binary file can only store the numbers 0 and 1 as separate characters",
+        "A text file cannot be opened by any program",
+        "There is no real difference between the two"
+      ],
+      "correct_answer": "A text file stores human-readable characters, while a binary file stores data in a non-human-readable, raw format",
+      "explanation": "Text files store data as readable characters (like ASCII), while binary files store data in a raw, often non-readable format that closely mirrors how data is represented in memory.",
+      "topic": "File handling",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is 'encapsulation' in object-oriented programming?",
+      "options": [
+        "Bundling data and the methods that operate on that data within a single unit (class), often restricting direct access to some components",
+        "The process of compiling a program into machine code",
+        "A technique for connecting to the internet",
+        "The process of deleting unused classes"
+      ],
+      "correct_answer": "Bundling data and the methods that operate on that data within a single unit (class), often restricting direct access to some components",
+      "explanation": "Encapsulation combines data and the functions that operate on it into a single class, while restricting direct external access to some of the object's internal details.",
+      "topic": "Introduction to object-oriented programming",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In object-oriented programming, what is a 'class'?",
+      "options": [
+        "A blueprint or template that defines the properties and behaviors of objects",
+        "A single instance of a running program",
+        "A type of loop structure",
+        "A file extension for compiled code"
+      ],
+      "correct_answer": "A blueprint or template that defines the properties and behaviors of objects",
+      "explanation": "A class is a template that defines the attributes (data) and methods (behavior) that its instances (objects) will have.",
+      "topic": "Introduction to object-oriented programming",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is the relationship between a class and an object?",
+      "options": [
+        "An object is an instance of a class",
+        "A class is an instance of an object",
+        "Classes and objects are unrelated concepts",
+        "A class can only exist after all objects are deleted"
+      ],
+      "correct_answer": "An object is an instance of a class",
+      "explanation": "An object is a concrete instantiation of a class, created using the structure and behavior defined by that class.",
+      "topic": "Introduction to object-oriented programming",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What programming concept allows a subclass to acquire properties and behaviors from a parent class?",
+      "options": ["Inheritance", "Encapsulation", "Recursion", "Iteration"],
+      "correct_answer": "Inheritance",
+      "explanation": "Inheritance allows a new class (subclass) to reuse, extend, or modify the behavior defined in another class (superclass), promoting code reuse.",
+      "topic": "Introduction to object-oriented programming",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What does 'polymorphism' allow in object-oriented programming?",
+      "options": [
+        "Objects of different classes to be treated through a common interface, often responding differently to the same method call",
+        "A program to run without ever being compiled",
+        "Variables to change their data type permanently at runtime only once",
+        "Files to be automatically encrypted"
+      ],
+      "correct_answer": "Objects of different classes to be treated through a common interface, often responding differently to the same method call",
+      "explanation": "Polymorphism allows objects of different classes to be accessed through a common interface, with each class providing its own specific implementation of shared methods.",
+      "topic": "Introduction to object-oriented programming",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is 'data abstraction' in programming?",
+      "options": [
+        "Hiding complex implementation details and exposing only the essential features of an object",
+        "Converting analog data into digital data",
+        "Deleting all comments from source code",
+        "Storing data permanently on a hard disk"
+      ],
+      "correct_answer": "Hiding complex implementation details and exposing only the essential features of an object",
+      "explanation": "Data abstraction focuses on exposing only the necessary, relevant details of an object to the user while hiding the internal implementation complexity.",
+      "topic": "Introduction to object-oriented programming",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the purpose of a linked list compared to an array?",
+      "options": [
+        "A linked list allows dynamic growth and efficient insertion/deletion without shifting elements, unlike a fixed-size array",
+        "A linked list must always be a fixed size like an array",
+        "A linked list can only store one element at a time",
+        "A linked list is always faster to search than an array"
+      ],
+      "correct_answer": "A linked list allows dynamic growth and efficient insertion/deletion without shifting elements, unlike a fixed-size array",
+      "explanation": "Linked lists use nodes connected by pointers, allowing dynamic resizing and efficient insertions/deletions, whereas arrays have fixed sizes and require shifting elements for insertion/deletion.",
+      "topic": "Introduction to data structures in programming",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is a string in most high-level programming languages?",
+      "options": [
+        "A sequence of characters typically used to represent text",
+        "A single numeric digit",
+        "A type of loop construct",
+        "A memory address pointing to hardware"
+      ],
+      "correct_answer": "A sequence of characters typically used to represent text",
+      "explanation": "A string is a data type representing a sequence of characters, commonly used to store and manipulate textual data in programs.",
+      "topic": "String handling",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which built-in operation is commonly used to join two or more strings together?",
+      "options": ["Concatenation", "Differentiation", "Normalization", "Compilation"],
+      "correct_answer": "Concatenation",
+      "explanation": "Concatenation is the operation of joining two or more strings end-to-end to form a single combined string.",
+      "topic": "String handling",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is the purpose of exception handling (e.g. try-catch blocks) in a program?",
+      "options": [
+        "To detect and gracefully handle runtime errors without abruptly crashing the program",
+        "To speed up compilation time",
+        "To automatically translate code between programming languages",
+        "To permanently disable all error messages"
+      ],
+      "correct_answer": "To detect and gracefully handle runtime errors without abruptly crashing the program",
+      "explanation": "Exception handling mechanisms allow a program to detect runtime errors (exceptions) and respond to them gracefully, rather than terminating unexpectedly.",
+      "topic": "Error handling",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the difference between a compile-time error and a runtime error?",
+      "options": [
+        "A compile-time error is detected before the program runs, while a runtime error occurs while the program is executing",
+        "A runtime error always prevents the program from compiling",
+        "A compile-time error only occurs in interpreted languages",
+        "There is no difference between them"
+      ],
+      "correct_answer": "A compile-time error is detected before the program runs, while a runtime error occurs while the program is executing",
+      "explanation": "Compile-time errors (e.g. syntax errors) are caught by the compiler before execution, while runtime errors (e.g. division by zero) occur while the program is running.",
+      "topic": "Error handling",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What does 'modular programming' emphasize?",
+      "options": [
+        "Dividing a program into separate, independent modules or functions that each handle a specific task",
+        "Writing an entire program as a single continuous block of code with no functions",
+        "Avoiding the use of variables entirely",
+        "Using only global variables throughout the program"
+      ],
+      "correct_answer": "Dividing a program into separate, independent modules or functions that each handle a specific task",
+      "explanation": "Modular programming breaks a program into smaller, self-contained modules (functions or units), improving organization, reusability, and maintainability.",
+      "topic": "Functions and modular programming",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is a 'local variable' in the context of function scope?",
+      "options": [
+        "A variable declared inside a function that is only accessible within that function",
+        "A variable that can be accessed from any part of the program",
+        "A variable stored permanently on a hard disk",
+        "A variable that never changes its value"
+      ],
+      "correct_answer": "A variable declared inside a function that is only accessible within that function",
+      "explanation": "A local variable is declared within a function or block and exists only within that scope, becoming inaccessible once the function finishes executing.",
+      "topic": "Functions and modular programming",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is a 'global variable'?",
+      "options": [
+        "A variable declared outside all functions, accessible from anywhere in the program",
+        "A variable that only exists inside one specific loop",
+        "A variable that automatically deletes itself after one use",
+        "A variable that can only store Boolean values"
+      ],
+      "correct_answer": "A variable declared outside all functions, accessible from anywhere in the program",
+      "explanation": "A global variable is declared outside of any function, giving it program-wide scope so it can be accessed and modified from any part of the code.",
+      "topic": "Functions and modular programming",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In sorting an array of numbers using a simple exchange-based algorithm, what is the primary operation repeated in bubble sort?",
+      "options": [
+        "Comparing adjacent elements and swapping them if they are in the wrong order",
+        "Dividing the array in half recursively",
+        "Selecting a random pivot element",
+        "Hashing each element to a bucket"
+      ],
+      "correct_answer": "Comparing adjacent elements and swapping them if they are in the wrong order",
+      "explanation": "Bubble sort repeatedly steps through the array, comparing each pair of adjacent elements and swapping them if they are out of order, until the array is sorted.",
+      "topic": "Basic sorting and searching",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the purpose of a linear search algorithm?",
+      "options": [
+        "To sequentially check each element of a list until the target value is found or the list ends",
+        "To sort a list in ascending order only",
+        "To divide a sorted list in half repeatedly",
+        "To permanently delete elements from a list"
+      ],
+      "correct_answer": "To sequentially check each element of a list until the target value is found or the list ends",
+      "explanation": "Linear search checks each element of a list one by one, in order, until it finds the target value or reaches the end of the list.",
+      "topic": "Basic sorting and searching",
+      "difficulty": "easy"
+    }
+  ]
+}

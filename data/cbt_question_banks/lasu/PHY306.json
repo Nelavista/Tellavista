@@ -1,0 +1,386 @@
+{
+  "course_code": "PHY306",
+  "title": "Atomic & Molecular Physics",
+  "level": "300",
+  "source_note": "Standard undergraduate atomic and molecular physics content (Bohr theory, quantum numbers, spectra, fine structure, coupling schemes, molecular spectroscopy) as covered in texts such as Eisberg & Resnick and typical NUC-aligned Nigerian physics curricula.",
+  "questions": [
+    {
+      "question": "In the Bohr model of the hydrogen atom, the angular momentum of the electron in the nth orbit is quantised as:",
+      "options": ["L = n*h", "L = n*h/(2*pi)", "L = n^2*h", "L = h/(2*pi*n)"],
+      "correct_answer": "L = n*h/(2*pi)",
+      "explanation": "Bohr postulated that orbital angular momentum is quantised in integer multiples of h-bar, i.e., L = n*(h/2*pi) = n*h-bar.",
+      "topic": "Bohr model",
+      "difficulty": "easy"
+    },
+    {
+      "question": "According to the Bohr model, the radius of the nth orbit of hydrogen is proportional to:",
+      "options": ["n", "n^2", "1/n", "1/n^2"],
+      "correct_answer": "n^2",
+      "explanation": "The Bohr radius formula gives r_n = n^2 * a_0, where a_0 is the Bohr radius (0.529 angstrom), so orbit radius scales as n^2.",
+      "topic": "Bohr model",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The energy of the hydrogen atom in the nth Bohr orbit is given by:",
+      "options": [
+        "E_n = -13.6 eV / n",
+        "E_n = -13.6 eV / n^2",
+        "E_n = -13.6 eV * n^2",
+        "E_n = 13.6 eV / n^2"
+      ],
+      "correct_answer": "E_n = -13.6 eV / n^2",
+      "explanation": "The Bohr energy levels of hydrogen follow E_n = -13.6 eV/n^2, negative because the electron is bound to the nucleus.",
+      "topic": "Bohr model",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which spectral series of hydrogen involves electron transitions ending at n = 1 and lies in the ultraviolet region?",
+      "options": ["Balmer series", "Lyman series", "Paschen series", "Brackett series"],
+      "correct_answer": "Lyman series",
+      "explanation": "The Lyman series corresponds to transitions from higher levels down to n=1, producing spectral lines in the ultraviolet.",
+      "topic": "Atomic spectra",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The Balmer series of hydrogen, observed in the visible region, corresponds to transitions ending at:",
+      "options": ["n = 1", "n = 2", "n = 3", "n = 4"],
+      "correct_answer": "n = 2",
+      "explanation": "Balmer series lines arise from transitions from n = 3, 4, 5... down to n = 2, with several lines falling in the visible spectrum.",
+      "topic": "Atomic spectra",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which set of quantum numbers correctly describes an electron's quantum state in an atom?",
+      "options": [
+        "n, l, m_l, m_s (principal, orbital, magnetic, spin)",
+        "n, Z, A, m_s (principal, atomic number, mass number, spin)",
+        "l, m_l only (orbital and magnetic quantum numbers)",
+        "n only (principal quantum number)"
+      ],
+      "correct_answer": "n, l, m_l, m_s (principal, orbital, magnetic, spin)",
+      "explanation": "A complete description of an atomic electron's state requires four quantum numbers: principal (n), orbital angular momentum (l), magnetic (m_l), and spin magnetic (m_s).",
+      "topic": "Quantum numbers",
+      "difficulty": "easy"
+    },
+    {
+      "question": "For a given principal quantum number n, the orbital angular momentum quantum number l can take values:",
+      "options": ["l = n only", "l = 0, 1, 2, ..., n-1", "l = 1, 2, ..., n", "l = -n to +n"],
+      "correct_answer": "l = 0, 1, 2, ..., n-1",
+      "explanation": "For each n, the allowed values of the azimuthal (orbital) quantum number l range from 0 to n-1.",
+      "topic": "Quantum numbers",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For a given value of l, the magnetic quantum number m_l can take how many possible values?",
+      "options": ["l values", "l+1 values", "2l+1 values", "2l values"],
+      "correct_answer": "2l+1 values",
+      "explanation": "m_l ranges from -l to +l in integer steps, giving 2l+1 possible values.",
+      "topic": "Quantum numbers",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Pauli exclusion principle states that:",
+      "options": [
+        "Two electrons in the same atom cannot have identical values of all four quantum numbers",
+        "Electrons must always occupy the lowest energy states",
+        "All electrons in an atom have the same spin",
+        "Only two electrons can occupy any single atom"
+      ],
+      "correct_answer": "Two electrons in the same atom cannot have identical values of all four quantum numbers",
+      "explanation": "The Pauli exclusion principle forbids any two electrons in the same atom from having an identical set of the four quantum numbers n, l, m_l, m_s.",
+      "topic": "Pauli exclusion principle",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The electron spin quantum number s has the fixed value:",
+      "options": ["0", "1/2", "1", "3/2"],
+      "correct_answer": "1/2",
+      "explanation": "All electrons have an intrinsic spin quantum number s = 1/2, giving spin magnetic quantum number m_s = +1/2 or -1/2.",
+      "topic": "Electron spin",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The experiment that provided direct evidence for space quantisation of atomic magnetic moments (electron spin) was the:",
+      "options": ["Michelson-Morley experiment", "Stern-Gerlach experiment", "Millikan oil-drop experiment", "Rutherford scattering experiment"],
+      "correct_answer": "Stern-Gerlach experiment",
+      "explanation": "The Stern-Gerlach experiment passed silver atoms through an inhomogeneous magnetic field and observed discrete splitting of the beam, demonstrating space quantisation of magnetic moment (spin).",
+      "topic": "Electron spin",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The splitting of atomic spectral lines when an atom is placed in an external magnetic field is known as the:",
+      "options": ["Stark effect", "Zeeman effect", "Compton effect", "Doppler effect"],
+      "correct_answer": "Zeeman effect",
+      "explanation": "The Zeeman effect is the splitting of spectral lines into multiple components in the presence of an external magnetic field, due to the interaction of the field with the atom's magnetic moment.",
+      "topic": "Zeeman effect",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The splitting of spectral lines due to an external electric field is called the:",
+      "options": ["Zeeman effect", "Stark effect", "Photoelectric effect", "Raman effect"],
+      "correct_answer": "Stark effect",
+      "explanation": "The Stark effect refers to the shifting and splitting of spectral lines caused by the presence of an external electric field.",
+      "topic": "Stark effect",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In the normal Zeeman effect, a spectral line splits into how many components when viewed transverse to the magnetic field?",
+      "options": ["Two", "Three", "Four", "Five"],
+      "correct_answer": "Three",
+      "explanation": "The normal Zeeman effect (ignoring electron spin) produces a triplet: one unshifted pi component and two shifted sigma components, when viewed perpendicular to the field.",
+      "topic": "Zeeman effect",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Spin-orbit coupling in an atom arises from the interaction between:",
+      "options": [
+        "The electron's spin magnetic moment and the magnetic field generated by its own orbital motion",
+        "Two different electrons' spins",
+        "The nuclear spin and an external magnetic field",
+        "The electron's charge and the nuclear charge"
+      ],
+      "correct_answer": "The electron's spin magnetic moment and the magnetic field generated by its own orbital motion",
+      "explanation": "Spin-orbit coupling is the interaction between an electron's intrinsic spin magnetic moment and the internal magnetic field it experiences due to its orbital motion around the nucleus, producing fine structure splitting.",
+      "topic": "Fine structure",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Fine structure splitting of spectral lines in hydrogen is a consequence of:",
+      "options": [
+        "Nuclear spin interactions only",
+        "Spin-orbit coupling and relativistic corrections",
+        "External magnetic fields applied to the sample",
+        "Doppler broadening due to thermal motion"
+      ],
+      "correct_answer": "Spin-orbit coupling and relativistic corrections",
+      "explanation": "Fine structure arises intrinsically from relativistic kinetic energy corrections and spin-orbit interaction, splitting energy levels that Bohr theory predicts as degenerate.",
+      "topic": "Fine structure",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In LS (Russell-Saunders) coupling, the total orbital angular momentum L and total spin angular momentum S of the electrons are first combined separately, and then coupled to give:",
+      "options": ["The total angular momentum J = L + S", "The principal quantum number n", "The magnetic quantum number m_l", "The nuclear spin I"],
+      "correct_answer": "The total angular momentum J = L + S",
+      "explanation": "In LS coupling (valid for light atoms), individual l_i are summed to L and individual s_i summed to S, and L and S then couple to give total angular momentum J.",
+      "topic": "Angular momentum coupling",
+      "difficulty": "medium"
+    },
+    {
+      "question": "jj coupling, as opposed to LS coupling, is more applicable to:",
+      "options": [
+        "Light atoms with weak spin-orbit interaction",
+        "Heavy atoms where spin-orbit interaction is strong compared to electrostatic coupling between electrons",
+        "Molecules only",
+        "Free electrons in a metal"
+      ],
+      "correct_answer": "Heavy atoms where spin-orbit interaction is strong compared to electrostatic coupling between electrons",
+      "explanation": "In heavy atoms, spin-orbit coupling for each electron dominates over the electrostatic coupling between electrons, so individual j_i = l_i + s_i are formed first, then combined to give total J (jj coupling).",
+      "topic": "Angular momentum coupling",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In spectroscopic term symbol notation ^(2S+1)L_J, the superscript (2S+1) represents the:",
+      "options": ["Orbital angular momentum", "Spin multiplicity", "Total angular momentum", "Principal quantum number"],
+      "correct_answer": "Spin multiplicity",
+      "explanation": "The superscript 2S+1 in a term symbol denotes the spin multiplicity, indicating the number of possible J values for a given L and S (e.g., singlet, doublet, triplet).",
+      "topic": "Term symbols",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In term symbol notation, what does the letter 'D' represent for the total orbital angular momentum L?",
+      "options": ["L = 0", "L = 1", "L = 2", "L = 3"],
+      "correct_answer": "L = 2",
+      "explanation": "Term symbol letters follow S, P, D, F,... for L = 0, 1, 2, 3,..., so D corresponds to L = 2.",
+      "topic": "Term symbols",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Hund's first rule states that for a given electron configuration, the term with the lowest energy is the one with:",
+      "options": [
+        "The smallest value of total spin S",
+        "The largest value of total spin S (maximum multiplicity)",
+        "The smallest value of total orbital angular momentum L",
+        "Zero total angular momentum J"
+      ],
+      "correct_answer": "The largest value of total spin S (maximum multiplicity)",
+      "explanation": "Hund's first rule states that, among terms of a given configuration, the one with maximum spin multiplicity (largest S) has the lowest energy, minimizing electron-electron repulsion.",
+      "topic": "Hund's rules",
+      "difficulty": "medium"
+    },
+    {
+      "question": "According to Hund's second rule, for terms with the same maximum spin multiplicity, the lowest energy corresponds to:",
+      "options": [
+        "The smallest value of L",
+        "The largest value of L",
+        "J = 0 always",
+        "The largest value of n"
+      ],
+      "correct_answer": "The largest value of L",
+      "explanation": "Hund's second rule states that among terms with the same (maximum) multiplicity, the term with the largest L has the lowest energy.",
+      "topic": "Hund's rules",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Moseley's law relates the frequency of characteristic X-ray emission lines to the atomic number Z by an expression of the form:",
+      "options": [
+        "sqrt(nu) proportional to (Z - sigma), where sigma is a screening constant",
+        "nu proportional to Z^3",
+        "nu proportional to 1/Z",
+        "sqrt(nu) proportional to n only, independent of Z"
+      ],
+      "correct_answer": "sqrt(nu) proportional to (Z - sigma), where sigma is a screening constant",
+      "explanation": "Moseley's law states that the square root of the frequency of characteristic X-ray lines is linearly related to (Z - sigma), allowing determination of atomic number from X-ray spectra.",
+      "topic": "X-ray spectra",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Characteristic X-ray K-alpha emission occurs when:",
+      "options": [
+        "An electron falls from the L shell to fill a vacancy in the K shell",
+        "An electron is ejected from the outermost shell",
+        "Two K-shell electrons collide",
+        "An electron falls from the K shell to the M shell"
+      ],
+      "correct_answer": "An electron falls from the L shell to fill a vacancy in the K shell",
+      "explanation": "K-alpha X-rays are emitted when an inner K-shell vacancy (created by ionisation) is filled by an electron transitioning from the adjacent L shell.",
+      "topic": "X-ray spectra",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which type of chemical/molecular bond involves the sharing of electron pairs between atoms?",
+      "options": ["Ionic bond", "Covalent bond", "Metallic bond", "Van der Waals bond"],
+      "correct_answer": "Covalent bond",
+      "explanation": "A covalent bond forms when two atoms share one or more pairs of electrons, as in the H2 molecule.",
+      "topic": "Molecular bonding",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The rotational energy levels of a rigid diatomic molecule are given by E_J = B*J(J+1), where J is the rotational quantum number. What determines the rotational constant B?",
+      "options": [
+        "The molecule's moment of inertia",
+        "The molecule's electric dipole moment only",
+        "The molecule's vibrational frequency",
+        "The molecule's electronic configuration only"
+      ],
+      "correct_answer": "The molecule's moment of inertia",
+      "explanation": "The rotational constant B = h-bar^2/(2*I), where I is the molecule's moment of inertia about the rotation axis; larger moment of inertia gives smaller B and more closely spaced rotational levels.",
+      "topic": "Molecular spectra",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In a pure rotational (microwave) absorption spectrum of a diatomic molecule, successive spectral lines are approximately:",
+      "options": ["Randomly spaced", "Equally spaced in frequency", "Exponentially spaced", "Only a single line exists"],
+      "correct_answer": "Equally spaced in frequency",
+      "explanation": "For a rigid rotor, allowed transitions (J to J+1) produce spectral lines approximately equally spaced by 2B in frequency.",
+      "topic": "Molecular spectra",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For a rotational transition to be observed via absorption of microwave/far-infrared radiation, the molecule must possess:",
+      "options": [
+        "A permanent electric dipole moment",
+        "A permanent magnetic dipole moment",
+        "Zero moment of inertia",
+        "An odd number of electrons"
+      ],
+      "correct_answer": "A permanent electric dipole moment",
+      "explanation": "Only molecules with a permanent electric dipole moment (heteronuclear diatomics, for instance) show pure rotational spectra; homonuclear diatomics like N2 or O2 are rotationally inactive in the infrared/microwave.",
+      "topic": "Molecular spectra",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The vibrational energy levels of a diatomic molecule modelled as a simple harmonic oscillator are given by:",
+      "options": [
+        "E_v = (v + 1/2) * h * nu, v = 0, 1, 2, ...",
+        "E_v = v^2 * h * nu",
+        "E_v = v * h * nu / 2",
+        "E_v = h * nu / v"
+      ],
+      "correct_answer": "E_v = (v + 1/2) * h * nu, v = 0, 1, 2, ...",
+      "explanation": "The quantum harmonic oscillator model of molecular vibration gives evenly spaced energy levels E_v = (v + 1/2)*h*nu, including a non-zero zero-point energy at v = 0.",
+      "topic": "Molecular spectra",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Raman effect involves:",
+      "options": [
+        "Elastic scattering of light with no change in frequency",
+        "Inelastic scattering of light in which the scattered photon has a different frequency than the incident photon due to molecular energy transitions",
+        "Absorption of light followed by re-emission at exactly the same frequency",
+        "Total internal reflection of light in a molecule"
+      ],
+      "correct_answer": "Inelastic scattering of light in which the scattered photon has a different frequency than the incident photon due to molecular energy transitions",
+      "explanation": "The Raman effect is inelastic scattering where the molecule gains or loses vibrational/rotational energy, so the scattered light is shifted in frequency (Stokes and anti-Stokes lines) relative to the incident light.",
+      "topic": "Raman effect",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In Raman scattering, 'Stokes lines' refer to scattered radiation that is:",
+      "options": [
+        "Shifted to lower frequency (longer wavelength) than the incident light",
+        "Shifted to higher frequency than the incident light",
+        "Identical in frequency to the incident light",
+        "Always in the X-ray region"
+      ],
+      "correct_answer": "Shifted to lower frequency (longer wavelength) than the incident light",
+      "explanation": "Stokes lines occur when the molecule absorbs energy from the photon (ending in a higher vibrational/rotational state), so the scattered photon has lower frequency than the incident photon.",
+      "topic": "Raman effect",
+      "difficulty": "hard"
+    },
+    {
+      "question": "For a molecule to be Raman active, a vibration must produce:",
+      "options": [
+        "A change in the molecule's electric dipole moment",
+        "A change in the molecule's polarizability",
+        "No change in molecular symmetry",
+        "A permanent magnetic moment"
+      ],
+      "correct_answer": "A change in the molecule's polarizability",
+      "explanation": "Raman activity requires that molecular vibration produce a change in polarizability, whereas infrared activity requires a change in dipole moment; these selection rules can make a mode active in one technique but not the other.",
+      "topic": "Raman effect",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The exchange of energy between electronic, vibrational, and rotational degrees of freedom in a molecule means that electronic transitions in molecular spectra typically show:",
+      "options": [
+        "A single sharp line",
+        "Vibrational and rotational fine structure (band spectra)",
+        "Only continuous background radiation",
+        "No dependence on temperature"
+      ],
+      "correct_answer": "Vibrational and rotational fine structure (band spectra)",
+      "explanation": "Because electronic transitions are accompanied by simultaneous changes in vibrational and rotational states, molecular electronic spectra appear as bands composed of many closely spaced lines rather than single sharp atomic-like lines.",
+      "topic": "Molecular spectra",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which principle explains why the ground state electron configuration of atoms is built up by filling the lowest available energy orbitals first?",
+      "options": ["Hund's rule", "The Aufbau principle", "The Pauli exclusion principle", "Heisenberg's uncertainty principle"],
+      "correct_answer": "The Aufbau principle",
+      "explanation": "The Aufbau ('building up') principle states that electrons occupy the lowest energy orbitals available before filling higher energy ones, subject to the Pauli exclusion principle.",
+      "topic": "Multi-electron atoms",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The shielding (screening) effect in multi-electron atoms refers to:",
+      "options": [
+        "Inner electrons reducing the effective nuclear charge felt by outer electrons",
+        "The nucleus repelling all electrons equally",
+        "Outer electrons blocking X-rays from escaping the atom",
+        "The complete cancellation of nuclear charge by electrons"
+      ],
+      "correct_answer": "Inner electrons reducing the effective nuclear charge felt by outer electrons",
+      "explanation": "Inner-shell electrons partially screen the nuclear charge, so outer electrons experience a reduced effective nuclear charge (Z_eff) rather than the full nuclear charge Z.",
+      "topic": "Multi-electron atoms",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The ground state term symbol of the hydrogen atom (1 electron, l=0, s=1/2) is:",
+      "options": ["^2S_(1/2)", "^1S_0", "^2P_(3/2)", "^3S_1"],
+      "correct_answer": "^2S_(1/2)",
+      "explanation": "For hydrogen's single electron in the 1s state, L=0 (S term), S=1/2 giving multiplicity 2S+1=2, and J=L+S=1/2, giving the term symbol ^2S_(1/2).",
+      "topic": "Term symbols",
+      "difficulty": "hard"
+    }
+  ]
+}

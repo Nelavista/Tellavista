@@ -30,6 +30,17 @@
         .resume-exam-discard { background:transparent; border:1px solid var(--sk-border); color:var(--text-secondary); padding:8px 16px; border-radius:30px; font-size:0.82rem; cursor:pointer; }
         .resume-exam-discard:hover { border-color:var(--sk-danger); color:var(--sk-danger); }
         .resume-exam-continue { background:var(--sk-accent); border:none; color:var(--bg-deep); padding:8px 18px; border-radius:30px; font-size:0.82rem; font-weight:700; cursor:pointer; }
+        .course-search-wrap { position:relative; margin-bottom:16px; }
+        .course-search-icon { position:absolute; left:16px; top:50%; transform:translateY(-50%); color:var(--text-muted); font-size:1rem; }
+        .course-search-input { width:100%; background:var(--sk-card); border:1px solid var(--sk-border); border-radius:12px; padding:12px 16px 12px 42px; font-size:0.92rem; color:var(--text-primary); outline:none; transition:border 0.2s; font-family:inherit; }
+        .course-search-input:focus { border-color:var(--sk-accent); }
+        .course-search-results { position:absolute; top:calc(100% + 6px); left:0; right:0; background:var(--sk-card); border:1px solid var(--sk-border); border-radius:12px; max-height:280px; overflow-y:auto; z-index:20; box-shadow:0 8px 24px rgba(0,0,0,0.2); }
+        .course-search-row { display:flex; align-items:center; gap:10px; padding:10px 16px; cursor:pointer; border-bottom:1px solid var(--sk-border); }
+        .course-search-row:last-child { border-bottom:none; }
+        .course-search-row:hover { background:var(--bg-deep); }
+        .course-search-row .chip-code { font-weight:700; font-size:0.85rem; flex-shrink:0; }
+        .course-search-row .chip-name { font-size:0.78rem; color:var(--text-secondary); margin:0; }
+        .course-search-empty { padding:14px 16px; font-size:0.82rem; color:var(--text-secondary); }
         .courses-grid { display:flex; flex-wrap:wrap; gap:10px; margin-bottom:20px; }
         .course-chip { background:var(--sk-card); border:2px solid var(--sk-border); border-radius:12px; padding:12px 16px; cursor:pointer; transition:all 0.18s; min-width:150px; flex:1 0 auto; max-width:210px; position:relative; }
         .course-chip:hover { border-color:var(--sk-border); }
@@ -237,6 +248,11 @@
             </div>
         </div>
         <div class="dept-pill"><i class="ri-graduation-cap-line"></i> <span id="deptLabel">Loading profile...</span></div>
+        <div class="course-search-wrap">
+            <i class="ri-search-line course-search-icon"></i>
+            <input type="text" id="courseSearchInput" class="course-search-input" placeholder="Search any course code, e.g. GST101" autocomplete="off">
+            <div class="course-search-results" id="courseSearchResults" style="display:none;"></div>
+        </div>
         <div id="noCourseWarning" class="no-profile-warning" style="display:none;"></div>
         <div class="ob-meta">
             <div class="section-label">Your courses this semester</div>
@@ -373,96 +389,11 @@ let USER_LEVEL_NUM = USER_LEVEL.replace(/[^0-9]/g, '') || '';
 const PREFERRED_EXAM_MODE = "{{ preferred_mode }}";
 
 // ══════════════════════════════════════════════════════
-//  COMPLETE COURSE CODES DATABASE
+//  COURSE CODES -- fetched from the real Course table (see /api/courses/mine and
+//  /api/academic-search in routes/academia_routes.py), never hardcoded here. A
+//  department/level combo the taxonomy doesn't cover yet honestly shows the "no course
+//  codes found" warning below instead of silently listing invented courses.
 // ══════════════════════════════════════════════════════
-const COURSE_CODES_DB = {
-    "Mathematics": {
-        "100": [
-            {code:"MTH101",name:"Elementary Mathematics I"}, {code:"MTH102",name:"Elementary Mathematics II"},
-            {code:"MTH103",name:"Elementary Mathematics III"}, {code:"STA112",name:"Probability I"},
-            {code:"PHY101",name:"General Physics I"}, {code:"PHY102",name:"General Physics II"},
-            {code:"CSC101",name:"Introduction to Computer Science"}, {code:"GST111",name:"Communication in English I"}
-        ],
-        "200": [
-            {code:"MTH201",name:"Mathematical Methods I"}, {code:"MTH202",name:"Elementary Differential Equations"},
-            {code:"MTH203",name:"Sets Logic & Algebra I"}, {code:"MTH204",name:"Linear Algebra I"},
-            {code:"MTH205",name:"Linear Algebra II"}, {code:"MTH207",name:"Real Analysis I"},
-            {code:"MTH209",name:"Introduction to Numerical Analysis"}, {code:"CSC201",name:"Computer Programming I"}
-        ],
-        "300": [
-            {code:"MTH300",name:"Abstract Algebra I"}, {code:"MTH301",name:"Metric Space Topology"},
-            {code:"MTH302",name:"Ordinary Differential Equations"}, {code:"MTH304",name:"Complex Analysis I"},
-            {code:"MTH306",name:"Abstract Algebra II"}, {code:"MTH319",name:"Numerical Analysis I"}
-        ],
-        "400": [
-            {code:"MTH401",name:"Theory of Ordinary Differential Equations"}, {code:"MTH403",name:"Functional Analysis"},
-            {code:"MTH404",name:"Project"}, {code:"MTH418",name:"Advanced Algebra"}
-        ]
-    },
-    "Biochemistry": {
-        "100": [
-            {code:"BCH101",name:"General Biochemistry I"}, {code:"BCH102",name:"General Biochemistry II"},
-            {code:"CHM101",name:"General Chemistry I"}, {code:"CHM102",name:"General Chemistry II"},
-            {code:"PHY101",name:"General Physics I"}, {code:"PHY102",name:"General Physics II"},
-            {code:"BIO101",name:"Basic Biology I"}, {code:"BIO102",name:"Basic Biology II"},
-            {code:"MTH101",name:"General Mathematics I"}, {code:"MTH102",name:"General Mathematics II"}
-        ],
-        "200": [
-            {code:"BCH201",name:"General Biochemistry I"}, {code:"BCH203",name:"Metabolism of Carbohydrates"},
-            {code:"MCB201",name:"General Microbiology I"}, {code:"CHM205",name:"Physical Chemistry I"}
-        ],
-        "300": [
-            {code:"BCH301",name:"Enzymology"}, {code:"BCH303",name:"Metabolism of Lipids"},
-            {code:"BCH305",name:"Metabolism of Nucleic Acids"}
-        ],
-        "400": [
-            {code:"BCH401",name:"Advanced Enzymology"}, {code:"BCH405",name:"Biotechnology"}
-        ]
-    },
-    "Computer Science": {
-        "100": [
-            {code:"CSC101",name:"Introduction to Computer Science"}, {code:"CSC111",name:"Computer Programming I"},
-            {code:"MTH101",name:"Elementary Mathematics I"}, {code:"PHY101",name:"General Physics I"},
-            {code:"CHM101",name:"General Chemistry I"}, {code:"GST111",name:"Communication in English I"}
-        ],
-        "200": [
-            {code:"CSC201",name:"Computer Programming II"}, {code:"CSC203",name:"Data Structures"},
-            {code:"CSC205",name:"Operating Systems"}, {code:"CSC207",name:"Computer Architecture"}
-        ],
-        "300": [
-            {code:"CSC301",name:"Algorithm Analysis"}, {code:"CSC303",name:"Database Systems"},
-            {code:"CSC305",name:"Software Engineering"}
-        ],
-        "400": [
-            {code:"CSC401",name:"Artificial Intelligence"}, {code:"CSC403",name:"Machine Learning"},
-            {code:"CSC499",name:"Project"}
-        ]
-    },
-    "Physics": {
-        "100": [
-            {code:"PHY101",name:"General Physics I"}, {code:"PHY102",name:"General Physics II"},
-            {code:"MTH101",name:"Elementary Maths I"}, {code:"CHM101",name:"General Chemistry I"}
-        ],
-        "200": [{code:"PHY201",name:"Electricity & Magnetism I"}, {code:"PHY203",name:"Waves & Optics"}],
-        "300": [{code:"PHY301",name:"Quantum Mechanics I"}, {code:"PHY303",name:"Statistical Mechanics"}],
-        "400": [{code:"PHY401",name:"Advanced Quantum Mechanics"}, {code:"PHY404",name:"Research Project"}]
-    },
-    "Chemistry": {
-        "100": [
-            {code:"CHM101",name:"General Chemistry I"}, {code:"CHM102",name:"General Chemistry II"},
-            {code:"PHY101",name:"General Physics I"}, {code:"MTH101",name:"Elementary Maths I"}
-        ],
-        "200": [{code:"CHM201",name:"Physical Chemistry I"}, {code:"CHM203",name:"Inorganic Chemistry"}],
-        "300": [{code:"CHM301",name:"Physical Chemistry II"}, {code:"CHM303",name:"Organic Chemistry"}],
-        "400": [{code:"CHM401",name:"Advanced Physical Chem"}, {code:"CHM404",name:"Research Project"}]
-    },
-    "Microbiology": {
-        "100": [{code:"MCB101",name:"Intro to Microbiology"}, {code:"BIO101",name:"General Biology I"}, {code:"CHM101",name:"General Chemistry I"}],
-        "200": [{code:"MCB201",name:"General Microbiology"}, {code:"MCB203",name:"Immunology"}],
-        "300": [{code:"MCB301",name:"Bacteriology"}, {code:"MCB303",name:"Virology"}],
-        "400": [{code:"MCB401",name:"Advanced Microbial Genetics"}, {code:"MCB404",name:"Research Project"}]
-    }
-};
 
 // ══════════════════════════════════════════════════════
 //  QUESTION BANK
@@ -590,7 +521,32 @@ function initResumeBanner() {
 // ══════════════════════════════════════════════════════
 //  SCREEN 1 - COURSE SELECTION
 // ══════════════════════════════════════════════════════
-function initCourseSelect() {
+function selectCourseChip(chip, code) {
+    // Practice is always exactly one course at a time (the /api/cbt/start endpoint
+    // takes a single course_code) -- so selecting a course here is a radio choice, not
+    // a multi-select checkbox: picking one clears any other selection instead of
+    // letting the student believe several are queued up.
+    const alreadySelected = chip.classList.contains('selected');
+    document.querySelectorAll('.course-chip').forEach(other => other.classList.remove('selected'));
+    if (alreadySelected) {
+        selectedCourses = [];
+    } else {
+        chip.classList.add('selected');
+        selectedCourses = [code];
+    }
+    updateSelCount();
+}
+
+function renderCourseChip(grid, code, title) {
+    const chip = document.createElement('div');
+    chip.className = 'course-chip';
+    chip.innerHTML = `<span class="chip-code">${code}</span><span class="chip-name">${title}</span><span class="chip-check">✓</span>`;
+    chip.addEventListener('click', () => selectCourseChip(chip, code));
+    grid.appendChild(chip);
+    return chip;
+}
+
+async function initCourseSelect() {
     initResumeBanner();
 
     const deptLabel = document.getElementById('deptLabel');
@@ -606,38 +562,25 @@ function initCourseSelect() {
 
     deptLabel.textContent = `${USER_DEPT} · Level ${USER_LEVEL_NUM}`;
 
-    const list = (COURSE_CODES_DB[USER_DEPT]||{})[USER_LEVEL_NUM] || [];
+    let list = [];
+    try {
+        const res = await fetch(`/api/courses/mine?level=${encodeURIComponent(USER_LEVEL_NUM)}`);
+        const data = await res.json();
+        list = data.resolved ? (data.courses || []).map(c => ({code: c.code, name: c.title})) : [];
+    } catch (e) {
+        list = [];
+    }
 
     if (!list.length) {
         warning.style.display = 'flex';
-        warning.innerHTML = `<i class="ri-error-warning-line"></i> No course codes found for ${USER_DEPT} Level ${USER_LEVEL_NUM}. <a href="/profile" style="color:var(--sk-warn);text-decoration:underline;margin-left:4px;">Update profile →</a>`;
-        return;
+        warning.innerHTML = `<i class="ri-error-warning-line"></i> No course codes found for ${USER_DEPT} Level ${USER_LEVEL_NUM} yet. <a href="/profile" style="color:var(--sk-warn);text-decoration:underline;margin-left:4px;">Update profile →</a>`;
+    } else {
+        grid.innerHTML = '';
+        list.forEach(c => renderCourseChip(grid, c.code, c.name));
     }
 
-    grid.innerHTML = '';
-    list.forEach(c => {
-        const chip = document.createElement('div');
-        chip.className = 'course-chip';
-        chip.innerHTML = `<span class="chip-code">${c.code}</span><span class="chip-name">${c.name}</span><span class="chip-check">✓</span>`;
-        chip.addEventListener('click', () => {
-            // Practice is always exactly one course at a time (the /api/cbt/start
-            // endpoint takes a single course_code) -- so selecting a course here is a
-            // radio choice, not a multi-select checkbox: picking one clears any other
-            // selection instead of letting the student believe several are queued up.
-            const alreadySelected = chip.classList.contains('selected');
-            document.querySelectorAll('.course-chip').forEach(other => other.classList.remove('selected'));
-            if (alreadySelected) {
-                selectedCourses = [];
-            } else {
-                chip.classList.add('selected');
-                selectedCourses = [c.code];
-            }
-            updateSelCount();
-        });
-        grid.appendChild(chip);
-    });
-
     updateSelCount();
+    initCourseSearch();
 
     document.getElementById('toCourseTypeBtn').addEventListener('click', () => {
         if(!selectedCourses.length) return;
@@ -655,6 +598,64 @@ function initCourseSelect() {
             showExamTypeSelect();
         }
     }
+}
+
+// ══════════════════════════════════════════════════════
+//  COURSE-CODE SEARCH -- finds any LASU course (not just this student's own
+//  department/level), e.g. a shared GST/MTH/PHY code taken outside their own
+//  department. Reuses the existing /api/academic-search endpoint (already
+//  case-insensitive, already scoped to the student's resolved university) rather than
+//  a second search backend.
+// ══════════════════════════════════════════════════════
+let courseSearchDebounce = null;
+
+function initCourseSearch() {
+    const input = document.getElementById('courseSearchInput');
+    const results = document.getElementById('courseSearchResults');
+    if (!input) return;
+
+    input.addEventListener('input', () => {
+        clearTimeout(courseSearchDebounce);
+        const q = input.value.trim();
+        if (!q) { results.style.display = 'none'; results.innerHTML = ''; return; }
+        courseSearchDebounce = setTimeout(() => runCourseSearch(q, results), 250);
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!results.contains(e.target) && e.target !== input) results.style.display = 'none';
+    });
+}
+
+async function runCourseSearch(q, results) {
+    let courses = [];
+    try {
+        const res = await fetch(`/api/academic-search?q=${encodeURIComponent(q)}`);
+        const data = await res.json();
+        courses = data.resolved ? (data.courses || []) : [];
+    } catch (e) {
+        courses = [];
+    }
+
+    if (!courses.length) {
+        results.innerHTML = `<div class="course-search-empty">No course code matching "${q}" found.</div>`;
+        results.style.display = 'block';
+        return;
+    }
+
+    results.innerHTML = '';
+    courses.forEach(c => {
+        const row = document.createElement('div');
+        row.className = 'course-search-row';
+        row.innerHTML = `<span class="chip-code">${c.code}</span><span class="chip-name">${c.title}</span>`;
+        row.addEventListener('click', () => {
+            selectedCourses = [c.code];
+            results.style.display = 'none';
+            document.getElementById('courseSearchInput').value = '';
+            showExamTypeSelect();
+        });
+        results.appendChild(row);
+    });
+    results.style.display = 'block';
 }
 
 function updateSelCount() {

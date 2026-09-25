@@ -1,0 +1,272 @@
+{
+  "course_code": "MTH419",
+  "title": "Complex Analysis",
+  "level": "400",
+  "source_note": "Standard NUC-aligned Nigerian university 400L advanced Complex Analysis curriculum, building on MTH304/MTH305's introductory treatment (analyticity, Cauchy-Riemann equations, Cauchy's integral theorem/formula, Taylor series): Laurent series and classification of isolated singularities, residue calculus and its use in evaluating real integrals, conformal mapping and Mobius transformations, the Schwarz Lemma, the Argument Principle and Rouche's Theorem, analytic continuation, harmonic functions, and branch cuts for multivalued functions. Deliberately does not repeat MTH304/305's introductory content.",
+  "questions": [
+    {
+      "question": "A Laurent series of a function f(z) analytic in an annulus r < |z-z0| < R represents f as:",
+      "options": ["The sum from n = -infinity to infinity of a_n (z-z0)^n, including possibly negative powers", "Only a Taylor series with nonnegative powers", "A finite polynomial", "A Fourier series in theta only"],
+      "correct_answer": "The sum from n = -infinity to infinity of a_n (z-z0)^n, including possibly negative powers",
+      "explanation": "Laurent series generalize Taylor series to allow negative-power terms, valid on an annular region around a singularity.",
+      "topic": "Laurent series",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the Laurent expansion of f(z) about an isolated singularity z0, the coefficient a_(-1) of (z-z0)^(-1) is called the:",
+      "options": ["Residue of f at z0", "Principal value", "Order of the pole", "Winding number"],
+      "correct_answer": "Residue of f at z0",
+      "explanation": "The residue is the key coefficient extracted from the Laurent series that determines the contour integral around the singularity.",
+      "topic": "Residues",
+      "difficulty": "easy"
+    },
+    {
+      "question": "An isolated singularity z0 of f is called a removable singularity if:",
+      "options": ["The Laurent series has no negative-power terms, i.e. the principal part is zero", "The Laurent series has infinitely many negative-power terms", "f(z0) is infinite", "f has a branch cut at z0"],
+      "correct_answer": "The Laurent series has no negative-power terms, i.e. the principal part is zero",
+      "explanation": "A removable singularity is one where f can be redefined at z0 to make it analytic there, corresponding to a vanishing principal part.",
+      "topic": "Classification of singularities",
+      "difficulty": "medium"
+    },
+    {
+      "question": "An isolated singularity z0 is called a pole of order m if:",
+      "options": ["The Laurent series' principal part terminates at (z-z0)^(-m), with a_(-m) not equal to 0 and a_n = 0 for n less than -m", "The Laurent series has infinitely many negative terms", "f is analytic at z0", "The residue is always zero"],
+      "correct_answer": "The Laurent series' principal part terminates at (z-z0)^(-m), with a_(-m) not equal to 0 and a_n = 0 for n less than -m",
+      "explanation": "A pole of order m has a Laurent series whose most singular term is exactly (z-z0)^(-m).",
+      "topic": "Classification of singularities",
+      "difficulty": "medium"
+    },
+    {
+      "question": "An isolated singularity z0 is called essential if:",
+      "options": ["The principal part of the Laurent series has infinitely many nonzero terms", "The principal part has exactly one nonzero term", "f is bounded near z0", "z0 is not a singularity at all"],
+      "correct_answer": "The principal part of the Laurent series has infinitely many nonzero terms",
+      "explanation": "Essential singularities are the most severe type, exhibiting extremely wild behavior described by the Casorati-Weierstrass theorem.",
+      "topic": "Classification of singularities",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Near an essential singularity, the Casorati-Weierstrass theorem states that f(z) comes arbitrarily close to:",
+      "options": ["Every complex value, with possibly one exception, by Picard's theorem", "Only the value zero", "Only infinity", "A single fixed value"],
+      "correct_answer": "Every complex value, with possibly one exception, by Picard's theorem",
+      "explanation": "This remarkable result shows that in any neighbourhood of an essential singularity, f takes values arbitrarily close to almost every complex number.",
+      "topic": "Classification of singularities",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The residue at a simple pole z0 of f(z) = g(z)/h(z), where g(z0) is not equal to 0 and h has a simple zero at z0, can be computed as:",
+      "options": ["g(z0) / h'(z0)", "g'(z0) / h(z0)", "g(z0) times h(z0)", "g(z0) / h(z0)"],
+      "correct_answer": "g(z0) / h'(z0)",
+      "explanation": "This convenient formula follows from expanding h(z) in a Taylor series about its simple zero at z0.",
+      "topic": "Computing residues",
+      "difficulty": "hard"
+    },
+    {
+      "question": "For a pole of order m at z0, the residue is given by:",
+      "options": ["1/(m-1)! times the limit as z approaches z0 of the (m-1)-th derivative of (z-z0)^m f(z)", "f(z0)", "The m-th derivative of f at z0", "(z-z0)^m evaluated at z0"],
+      "correct_answer": "1/(m-1)! times the limit as z approaches z0 of the (m-1)-th derivative of (z-z0)^m f(z)",
+      "explanation": "Multiplying by (z-z0)^m removes the singular part, and differentiating m-1 times then isolates the residue coefficient.",
+      "topic": "Computing residues",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The Residue Theorem states that for f analytic inside and on a simple closed contour C except for finitely many isolated singularities inside C:",
+      "options": ["The contour integral of f around C equals 2 pi i times the sum of the residues of f at the singularities inside C", "The contour integral of f around C is always zero", "The contour integral equals the sum of residues, without the factor 2 pi i", "The contour integral equals pi i times the sum of residues"],
+      "correct_answer": "The contour integral of f around C equals 2 pi i times the sum of the residues of f at the singularities inside C",
+      "explanation": "This is the central theorem of residue calculus, generalizing the Cauchy Integral Formula to functions with isolated singularities.",
+      "topic": "Residue theorem",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Residue Theorem is commonly used to evaluate real definite integrals, such as integrals over the whole real line, by:",
+      "options": ["Closing the contour with a large semicircular arc and applying the residue theorem, then showing the arc's contribution vanishes", "Direct substitution only", "Differentiating under the integral sign", "Using only the Cauchy integral formula"],
+      "correct_answer": "Closing the contour with a large semicircular arc and applying the residue theorem, then showing the arc's contribution vanishes",
+      "explanation": "This is the standard technique for using complex analysis to evaluate otherwise difficult real improper integrals.",
+      "topic": "Applications of residue calculus",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Jordan's Lemma is used to justify that the contribution from a large semicircular arc vanishes when evaluating integrals containing a factor:",
+      "options": ["e^(iaz) for real a greater than 0, as the radius tends to infinity in the upper half-plane", "z squared only", "1/z", "e^(-z)"],
+      "correct_answer": "e^(iaz) for real a greater than 0, as the radius tends to infinity in the upper half-plane",
+      "explanation": "Jordan's Lemma handles the oscillatory decay of e^(iaz) on the arc, which a naive bound cannot establish directly.",
+      "topic": "Applications of residue calculus",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A conformal map is a function f(z) that:",
+      "options": ["Preserves angles, both magnitude and orientation, between curves at points where f is analytic and f' is not zero", "Reverses all angles", "Maps circles to squares", "Is never analytic"],
+      "correct_answer": "Preserves angles, both magnitude and orientation, between curves at points where f is analytic and f' is not zero",
+      "explanation": "Conformality is a local angle-preserving property that holds for analytic functions wherever their derivative does not vanish.",
+      "topic": "Conformal mapping",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A Mobius (linear fractional) transformation has the general form:",
+      "options": ["f(z) = (az+b)/(cz+d), with ad - bc not equal to 0", "f(z) = az + b only", "f(z) = z squared", "f(z) = 1/z only"],
+      "correct_answer": "f(z) = (az+b)/(cz+d), with ad - bc not equal to 0",
+      "explanation": "This is the general form of a Mobius transformation, with the nonzero determinant condition ensuring it is not degenerate.",
+      "topic": "Mobius transformations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Mobius transformations map the extended complex plane's circles and lines to:",
+      "options": ["Circles or lines", "Only circles", "Only straight lines", "Ellipses"],
+      "correct_answer": "Circles or lines",
+      "explanation": "On the Riemann sphere, circles and lines are treated as a single family, and Mobius transformations map this family to itself.",
+      "topic": "Mobius transformations",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Any Mobius transformation can be expressed as a composition of:",
+      "options": ["Translations, rotations, scalings, and inversions", "Only rotations", "Only scalings", "Polynomial maps of high degree"],
+      "correct_answer": "Translations, rotations, scalings, and inversions",
+      "explanation": "Every Mobius transformation decomposes into these elementary building blocks, which is useful for understanding its geometric effect.",
+      "topic": "Mobius transformations",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The standard Mobius transformation w = (z - i)/(z + i) maps:",
+      "options": ["The upper half-plane onto the unit disk", "The unit disk onto itself trivially", "The real axis to the imaginary axis only", "The origin to infinity"],
+      "correct_answer": "The upper half-plane onto the unit disk",
+      "explanation": "This is a classical canonical conformal map between the upper half-plane and the unit disk, used widely in boundary value problems.",
+      "topic": "Mobius transformations",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The Schwarz Lemma applies to analytic functions f mapping the unit disk to itself with f(0)=0, and concludes that:",
+      "options": ["|f(z)| <= |z| for all z in the disk, and |f'(0)| <= 1", "f must be a Mobius transformation", "f(z) = z always", "f is never analytic"],
+      "correct_answer": "|f(z)| <= |z| for all z in the disk, and |f'(0)| <= 1",
+      "explanation": "The Schwarz Lemma is a foundational result constraining self-maps of the disk that fix the origin, proved using the maximum modulus principle.",
+      "topic": "Schwarz lemma",
+      "difficulty": "hard"
+    },
+    {
+      "question": "If equality |f'(0)| = 1 holds in the Schwarz Lemma, then f must be:",
+      "options": ["A rotation, f(z) = e^(i theta) z", "A constant function", "The zero function", "Undefined"],
+      "correct_answer": "A rotation, f(z) = e^(i theta) z",
+      "explanation": "The equality case of the Schwarz Lemma is achieved precisely by rotations of the disk about the origin.",
+      "topic": "Schwarz lemma",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The Argument Principle states that for f meromorphic inside and on a simple closed contour C, with no zeros or poles on C, the number of zeros minus the number of poles of f inside C, counted with multiplicity, equals:",
+      "options": ["(1/(2 pi i)) times the contour integral of f'(z)/f(z) dz", "The contour integral of f(z) dz", "The residue of f at the origin", "Zero, always"],
+      "correct_answer": "(1/(2 pi i)) times the contour integral of f'(z)/f(z) dz",
+      "explanation": "This formula connects the winding number of f around the origin to the difference between its zero and pole counts inside the contour.",
+      "topic": "Argument principle",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Rouche's Theorem states that if |f(z)| > |g(z)| on a simple closed contour C, then f(z) and f(z)+g(z) have:",
+      "options": ["The same number of zeros inside C, counted with multiplicity", "Different numbers of zeros inside C", "The same number of poles only", "No relationship in general"],
+      "correct_answer": "The same number of zeros inside C, counted with multiplicity",
+      "explanation": "Rouche's Theorem is a powerful tool for locating zeros, since a dominant term determines the zero count of a perturbed function.",
+      "topic": "Rouche's theorem",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Rouche's Theorem is often used to:",
+      "options": ["Determine the number of zeros of a polynomial or analytic function inside a given contour", "Compute residues directly", "Find conformal maps", "Determine convergence of a Laurent series"],
+      "correct_answer": "Determine the number of zeros of a polynomial or analytic function inside a given contour",
+      "explanation": "A common application is proving results like the Fundamental Theorem of Algebra or locating roots within specific regions.",
+      "topic": "Rouche's theorem",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Analytic continuation refers to the process of:",
+      "options": ["Extending the domain of an analytic function beyond its original region while preserving analyticity", "Making a function discontinuous", "Restricting a function's domain", "Computing residues"],
+      "correct_answer": "Extending the domain of an analytic function beyond its original region while preserving analyticity",
+      "explanation": "Analytic continuation allows a function originally defined on a small region to be extended to a larger domain, such as extending the Riemann zeta function.",
+      "topic": "Analytic continuation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Identity Theorem states that if two analytic functions agree on a set with a limit point in their common domain, then they:",
+      "options": ["Are identical throughout the entire connected domain", "May still differ elsewhere in the domain", "Must both be constant functions", "Have no relation elsewhere"],
+      "correct_answer": "Are identical throughout the entire connected domain",
+      "explanation": "This powerful rigidity theorem shows that analytic functions are determined completely by their values on even a small set with an accumulation point.",
+      "topic": "Analytic continuation",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The Identity Theorem is the theoretical foundation that makes analytic continuation:",
+      "options": ["Unique, when it exists along a given path", "Non-unique in every case", "Impossible in general", "Only valid for polynomials"],
+      "correct_answer": "Unique, when it exists along a given path",
+      "explanation": "Because two analytic continuations agreeing on an open set must coincide everywhere they are both defined, any continuation along a fixed path is unique.",
+      "topic": "Analytic continuation",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A harmonic function u(x,y) satisfies Laplace's equation:",
+      "options": ["The sum of the second partial derivatives of u with respect to x and y equals 0", "The sum of the first partial derivatives of u with respect to x and y equals 0", "The second partial derivative with respect to x equals the second partial derivative with respect to y", "u equals 0 everywhere"],
+      "correct_answer": "The sum of the second partial derivatives of u with respect to x and y equals 0",
+      "explanation": "Laplace's equation is the defining PDE of a harmonic function, connecting complex analysis to potential theory.",
+      "topic": "Harmonic functions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "If f(z) = u(x,y) + i v(x,y) is analytic, then both u and v are automatically:",
+      "options": ["Harmonic functions", "Never differentiable", "Equal to each other", "Constant"],
+      "correct_answer": "Harmonic functions",
+      "explanation": "The Cauchy-Riemann equations, combined with the smoothness of analytic functions, imply that both the real and imaginary parts satisfy Laplace's equation.",
+      "topic": "Harmonic functions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Given a harmonic function u, a function v such that f = u + iv is analytic is called the:",
+      "options": ["Harmonic conjugate of u", "Inverse of u", "Residue of u", "Laurent series of u"],
+      "correct_answer": "Harmonic conjugate of u",
+      "explanation": "The harmonic conjugate, when it exists, pairs with u via the Cauchy-Riemann equations to form an analytic function.",
+      "topic": "Harmonic functions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Mean Value Property of harmonic functions states that the value of a harmonic function at the center of a disk equals:",
+      "options": ["The average of its values on the boundary circle", "Its maximum value on the disk", "Zero", "Its minimum value on the disk"],
+      "correct_answer": "The average of its values on the boundary circle",
+      "explanation": "This property, which follows from the Cauchy Integral Formula applied to an associated analytic function, underlies the maximum principle for harmonic functions.",
+      "topic": "Harmonic functions",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A branch cut is introduced for multivalued functions such as log(z) or the square root of z in order to:",
+      "options": ["Restrict the domain so that a single-valued, analytic branch of the function can be defined", "Make the function multivalued everywhere", "Eliminate all singularities", "Convert the function into a polynomial"],
+      "correct_answer": "Restrict the domain so that a single-valued, analytic branch of the function can be defined",
+      "explanation": "A branch cut removes a curve from the domain so that the remaining region admits a well-defined, single-valued analytic branch.",
+      "topic": "Branch cuts and multivalued functions",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A common choice of branch cut for the principal logarithm Log(z) is along:",
+      "options": ["The negative real axis, including 0, where the argument of z is discontinuous", "The positive real axis", "The imaginary axis", "No branch cut is ever needed"],
+      "correct_answer": "The negative real axis, including 0, where the argument of z is discontinuous",
+      "explanation": "The principal branch of the logarithm is conventionally defined with a cut along the negative real axis, giving arg(z) in (-pi, pi].",
+      "topic": "Branch cuts and multivalued functions",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A point around which a multivalued function like the square root of z fails to return to its original value after a full loop is called a:",
+      "options": ["Branch point", "Removable singularity", "Pole", "Essential singularity"],
+      "correct_answer": "Branch point",
+      "explanation": "Branch points are the special points around which a multivalued function's different branches interchange when traversed by a closed loop.",
+      "topic": "Branch cuts and multivalued functions",
+      "difficulty": "hard"
+    },
+    {
+      "question": "When evaluating a real integral of the form the integral from 0 to 2 pi of R(cos theta, sin theta) d theta using residues, the standard substitution is:",
+      "options": ["z = e^(i theta), converting the integral into a contour integral around the unit circle", "z = theta", "z = cos theta only", "z = e^theta"],
+      "correct_answer": "z = e^(i theta), converting the integral into a contour integral around the unit circle",
+      "explanation": "This substitution converts trigonometric integrals over a full period into contour integrals that can be evaluated with the residue theorem.",
+      "topic": "Applications of residue calculus",
+      "difficulty": "hard"
+    },
+    {
+      "question": "When a contour integral involves a branch cut, such as for integrals of the form the integral from 0 to infinity of x^(a-1)/(1+x) dx using z^(a-1), the standard technique uses a:",
+      "options": ["Keyhole contour that avoids crossing the branch cut", "Simple circular contour only", "Straight-line contour on the real axis only", "A contour that must cross the branch cut"],
+      "correct_answer": "Keyhole contour that avoids crossing the branch cut",
+      "explanation": "The keyhole contour wraps around the branch cut without crossing it, allowing residue methods to be applied to functions with branch points.",
+      "topic": "Applications of residue calculus",
+      "difficulty": "hard"
+    }
+  ]
+}

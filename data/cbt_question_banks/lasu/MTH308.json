@@ -1,0 +1,248 @@
+{
+  "course_code": "MTH308",
+  "title": "Introduction to Mathematical Modelling",
+  "level": "300",
+  "source_note": "Standard NUC-aligned Nigerian university 300L Introduction to Mathematical Modelling curriculum: the modelling process (formulation, solution, validation, refinement), classification of models, dimensional analysis, exponential and logistic growth models, predator-prey and compartmental (epidemic) models, difference equation models, an introduction to optimization models, and model validation/sensitivity analysis.",
+  "questions": [
+    {
+      "question": "A mathematical model is best described as:",
+      "options": ["a mathematical representation of a real-world system used to analyze or predict its behavior", "an exact physical replica of a system", "a purely abstract concept with no real-world use", "a computer program only"],
+      "correct_answer": "a mathematical representation of a real-world system used to analyze or predict its behavior",
+      "explanation": "A mathematical model translates a real-world problem into mathematical structures (equations, functions, relations) to study and predict its behavior.",
+      "topic": "The modelling process",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The typical mathematical modelling cycle proceeds in the order:",
+      "options": ["problem formulation → mathematical formulation → solution → validation → interpretation/refinement", "solution → problem formulation → validation", "validation → formulation → solution", "interpretation → formulation → solution"],
+      "correct_answer": "problem formulation → mathematical formulation → solution → validation → interpretation/refinement",
+      "explanation": "The standard modelling cycle begins with identifying the real problem, translating it mathematically, solving it, checking the solution against reality, and refining as needed.",
+      "topic": "The modelling process",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Validating a mathematical model primarily involves:",
+      "options": ["comparing model predictions with observed/experimental data", "proving the model's equations are solvable", "simplifying the model further", "increasing the number of variables"],
+      "correct_answer": "comparing model predictions with observed/experimental data",
+      "explanation": "Validation checks whether the model's outputs are consistent with real-world observations, determining whether it adequately represents the system.",
+      "topic": "The modelling process",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Simplifying assumptions are made during model formulation primarily to:",
+      "options": ["make the problem mathematically tractable while retaining essential features", "make the model unsolvable", "eliminate all variables", "guarantee a unique numerical answer"],
+      "correct_answer": "make the problem mathematically tractable while retaining essential features",
+      "explanation": "Every model involves trade-offs between realism and tractability; assumptions strip away less important complexity so the essential behavior can be analyzed.",
+      "topic": "The modelling process",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A deterministic model, as opposed to a stochastic model, is one in which:",
+      "options": ["outputs are completely determined by the inputs and parameters, with no randomness", "outputs involve probability distributions", "the model changes randomly over time", "there are no input variables"],
+      "correct_answer": "outputs are completely determined by the inputs and parameters, with no randomness",
+      "explanation": "A deterministic model produces the same output every time for a given set of inputs, in contrast to a stochastic model, which incorporates randomness.",
+      "topic": "Classification of models",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A model based on difference equations (updating variables at discrete time steps) is called a:",
+      "options": ["discrete model", "continuous model", "static model", "linear model only"],
+      "correct_answer": "discrete model",
+      "explanation": "Discrete models update state variables at distinct time steps (e.g. yearly), typically formulated with difference equations, as opposed to continuous models using differential equations.",
+      "topic": "Classification of models",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Dimensional analysis in mathematical modelling is primarily used to:",
+      "options": ["check the consistency of units in an equation and derive relationships between variables", "solve differential equations exactly", "eliminate all parameters from a model", "guarantee the model is linear"],
+      "correct_answer": "check the consistency of units in an equation and derive relationships between variables",
+      "explanation": "Dimensional analysis ensures every term in an equation has consistent physical units and can reveal the functional form relating variables (e.g. via the Buckingham Pi theorem).",
+      "topic": "Dimensional analysis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "If an equation models a physical process and its terms do not have consistent dimensions, this indicates:",
+      "options": ["an error in the formulation of the model", "the model must be nonlinear", "the model is stochastic", "the model needs more variables"],
+      "correct_answer": "an error in the formulation of the model",
+      "explanation": "Dimensional homogeneity is a necessary condition for a physically meaningful equation; a mismatch signals an error in derivation or formulation.",
+      "topic": "Dimensional analysis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The exponential growth model dP/dt = kP (k > 0) predicts a population that:",
+      "options": ["grows without bound over time", "eventually stabilizes at a carrying capacity", "oscillates periodically", "decreases to zero"],
+      "correct_answer": "grows without bound over time",
+      "explanation": "The solution P(t) = P0 e^{kt} increases without bound as t → ∞ when k > 0, since there is no limiting mechanism in this simple model.",
+      "topic": "Exponential and logistic growth models",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The logistic growth model dP/dt = kP(1 - P/M) differs from the exponential model by including:",
+      "options": ["a carrying capacity M that limits growth as P approaches M", "a time delay term", "random noise", "a negative growth rate always"],
+      "correct_answer": "a carrying capacity M that limits growth as P approaches M",
+      "explanation": "The logistic model incorporates a carrying capacity M; the growth rate slows as P approaches M, producing an S-shaped (sigmoid) curve instead of unbounded growth.",
+      "topic": "Exponential and logistic growth models",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the logistic model dP/dt = kP(1 - P/M), the population growth rate is maximum when:",
+      "options": ["P = M/2", "P = M", "P = 0", "P = 2M"],
+      "correct_answer": "P = M/2",
+      "explanation": "Differentiating kP(1-P/M) with respect to P and setting it to zero shows the growth rate dP/dt is maximized at the inflection point P = M/2.",
+      "topic": "Exponential and logistic growth models",
+      "difficulty": "hard"
+    },
+    {
+      "question": "As t → ∞, solutions of the logistic model dP/dt = kP(1 - P/M) with P(0) > 0 approach:",
+      "options": ["the carrying capacity M", "zero", "infinity", "a value independent of M"],
+      "correct_answer": "the carrying capacity M",
+      "explanation": "For any positive initial population, the logistic solution asymptotically approaches the stable equilibrium at the carrying capacity M.",
+      "topic": "Exponential and logistic growth models",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Lotka-Volterra predator-prey model consists of a coupled system of equations describing:",
+      "options": ["the interacting population dynamics of a predator and prey species", "the spread of infectious disease", "chemical reaction rates only", "the motion of a single isolated species"],
+      "correct_answer": "the interacting population dynamics of a predator and prey species",
+      "explanation": "The Lotka-Volterra equations model how prey and predator populations change over time due to their interaction, typically producing oscillatory dynamics.",
+      "topic": "Predator-prey models",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the classical Lotka-Volterra equations dx/dt = ax - bxy and dy/dt = -cy + dxy, the term -bxy represents:",
+      "options": ["the reduction of prey population due to predation", "natural prey growth", "predator death rate", "immigration of prey"],
+      "correct_answer": "the reduction of prey population due to predation",
+      "explanation": "The interaction term -bxy models the rate at which prey (x) are consumed by predators (y), proportional to the product of both populations.",
+      "topic": "Predator-prey models",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A key qualitative feature of solutions to the standard Lotka-Volterra model is that populations:",
+      "options": ["oscillate periodically over time", "both grow exponentially forever", "both decay to zero", "reach a single stable equilibrium immediately"],
+      "correct_answer": "oscillate periodically over time",
+      "explanation": "The classic Lotka-Volterra system produces closed, periodic orbits in the phase plane, so predator and prey populations cycle over time.",
+      "topic": "Predator-prey models",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In an SIR compartmental epidemic model, the population is divided into which three compartments?",
+      "options": ["Susceptible, Infected, Recovered", "Sick, Immune, Resistant", "Symptomatic, Isolated, Removed", "Source, Infected, Reservoir"],
+      "correct_answer": "Susceptible, Infected, Recovered",
+      "explanation": "SIR models split the population into Susceptible (S), Infected (I), and Recovered (R) groups, tracking flow between them over time.",
+      "topic": "Compartmental (epidemic) models",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In the basic SIR model dS/dt = -βSI, the parameter β represents:",
+      "options": ["the transmission (infection) rate", "the recovery rate", "the birth rate", "the death rate"],
+      "correct_answer": "the transmission (infection) rate",
+      "explanation": "β controls how quickly susceptible individuals become infected upon contact with infected individuals in the model.",
+      "topic": "Compartmental (epidemic) models",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The basic reproduction number R0 in epidemic modelling represents:",
+      "options": ["the average number of secondary infections produced by one infected individual in a fully susceptible population", "the total population size", "the recovery rate divided by transmission rate", "the number of initial infected individuals"],
+      "correct_answer": "the average number of secondary infections produced by one infected individual in a fully susceptible population",
+      "explanation": "R0 is a key epidemiological threshold quantity: if R0 > 1, an outbreak can grow; if R0 < 1, the infection dies out.",
+      "topic": "Compartmental (epidemic) models",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A difference equation model, such as the population model P_{n+1} = rP_n(1-P_n), updates the state variable:",
+      "options": ["at discrete time steps based on its previous value", "continuously with respect to time", "only once", "independently of previous values"],
+      "correct_answer": "at discrete time steps based on its previous value",
+      "explanation": "Difference equations describe how a quantity at step n+1 depends on its value(s) at earlier steps, appropriate for modelling seasonal or generational data.",
+      "topic": "Difference equation models",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The logistic difference (discrete logistic) map P_{n+1} = rP_n(1-P_n) is well known in modelling for exhibiting, at certain values of r:",
+      "options": ["chaotic behavior", "guaranteed convergence to a fixed point for all r", "only linear growth", "no dependence on initial conditions"],
+      "correct_answer": "chaotic behavior",
+      "explanation": "For sufficiently large r, the discrete logistic map famously exhibits period-doubling bifurcations leading to chaos, unlike its smooth continuous counterpart.",
+      "topic": "Difference equation models",
+      "difficulty": "hard"
+    },
+    {
+      "question": "An equilibrium (fixed point) of a difference equation P_{n+1} = f(P_n) satisfies:",
+      "options": ["P* = f(P*)", "P* = 0 always", "f(P*) = 1", "P_{n+1} - P_n = 1"],
+      "correct_answer": "P* = f(P*)",
+      "explanation": "An equilibrium value P* is unchanged by the update rule, so it must satisfy P* = f(P*).",
+      "topic": "Difference equation models",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In model-based optimization, a constrained optimization problem seeks to:",
+      "options": ["maximize or minimize an objective function subject to given constraints", "solve an equation with no restrictions", "find any solution regardless of feasibility", "always minimize the number of variables"],
+      "correct_answer": "maximize or minimize an objective function subject to given constraints",
+      "explanation": "Constrained optimization models an objective (cost, profit, etc.) that must be optimized while satisfying resource, physical, or budget constraints.",
+      "topic": "Optimization models",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The method of Lagrange multipliers is used to solve optimization problems that involve:",
+      "options": ["equality constraints", "no constraints at all", "only linear objective functions", "discrete variables only"],
+      "correct_answer": "equality constraints",
+      "explanation": "Lagrange multipliers introduce auxiliary variables to find extrema of a function subject to one or more equality constraints.",
+      "topic": "Optimization models",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a linear programming model, the feasible region is defined by:",
+      "options": ["the set of points satisfying all the linear constraints simultaneously", "the objective function alone", "a single equation", "any arbitrary region chosen by the modeller"],
+      "correct_answer": "the set of points satisfying all the linear constraints simultaneously",
+      "explanation": "The feasible region is the intersection of all constraint half-planes (or hyperplanes), within which the optimal solution is sought.",
+      "topic": "Optimization models",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Sensitivity analysis in mathematical modelling investigates:",
+      "options": ["how changes in model parameters affect the model's output", "how to formulate the original problem", "the computational speed of solving the model", "whether the model is written correctly in code"],
+      "correct_answer": "how changes in model parameters affect the model's output",
+      "explanation": "Sensitivity analysis identifies which parameters most strongly influence model predictions, informing which estimates need the most precision.",
+      "topic": "Model validation and sensitivity analysis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "If a mathematical model consistently produces predictions far from observed data despite reasonable parameter estimates, the appropriate next step is usually to:",
+      "options": ["revisit and refine the model's assumptions or structure", "discard all data as unreliable", "increase only the precision of the numerical solver", "declare the model correct regardless"],
+      "correct_answer": "revisit and refine the model's assumptions or structure",
+      "explanation": "Persistent disagreement with data typically indicates the model's assumptions or structure need revision, which is the refinement step of the modelling cycle.",
+      "topic": "Model validation and sensitivity analysis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A mixing tank problem, where brine flows in and out of a tank at given rates, is typically modelled using:",
+      "options": ["a first-order ordinary differential equation for the amount of solute over time", "a system of algebraic equations only", "a purely geometric model", "a Boolean logic model"],
+      "correct_answer": "a first-order ordinary differential equation for the amount of solute over time",
+      "explanation": "Mixing problems balance the rate of solute entering versus leaving the tank, naturally leading to a first-order linear ODE for the amount of dissolved substance.",
+      "topic": "Case studies in modelling",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In modelling projectile motion with air resistance proportional to velocity, the resulting differential equation for velocity becomes:",
+      "options": ["a first-order linear ODE with an exponential-decay-type solution", "an algebraic equation with no time dependence", "a purely trigonometric identity", "unsolvable in principle"],
+      "correct_answer": "a first-order linear ODE with an exponential-decay-type solution",
+      "explanation": "Including linear drag (proportional to velocity) in Newton's second law yields a first-order linear ODE, m dv/dt = -mg - kv, solvable by standard integrating-factor methods.",
+      "topic": "Case studies in modelling",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A key benefit of using a simple model before a complex one in the modelling process is that:",
+      "options": ["it builds intuition and identifies dominant effects before adding complexity", "complex models are always wrong", "simple models are always more accurate", "simple models require no assumptions"],
+      "correct_answer": "it builds intuition and identifies dominant effects before adding complexity",
+      "explanation": "Starting simple helps modellers understand core mechanisms and check reasonableness before layering in additional complexity, which aids both interpretation and debugging.",
+      "topic": "The modelling process",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A model is considered robust if:",
+      "options": ["its qualitative predictions remain valid under small changes in parameters or assumptions", "it uses the maximum possible number of variables", "it produces different results each time it is run", "it cannot be validated"],
+      "correct_answer": "its qualitative predictions remain valid under small changes in parameters or assumptions",
+      "explanation": "Robustness reflects the model's insensitivity to minor perturbations, indicating that its conclusions are not fragile artifacts of specific parameter choices.",
+      "topic": "Model validation and sensitivity analysis",
+      "difficulty": "medium"
+    }
+  ]
+}

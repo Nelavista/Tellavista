@@ -1,0 +1,324 @@
+{
+  "course_code": "BCH305",
+  "title": "Metabolism of Nucleic Acids",
+  "level": "300",
+  "source_note": "Standard NUC-aligned Nigerian university 300L Metabolism of Nucleic Acids curriculum: nucleotide structure, de novo purine and pyrimidine biosynthesis, salvage pathways, nucleotide interconversion, ribonucleotide reduction to deoxyribonucleotides, thymidylate synthesis, purine/pyrimidine catabolism (uric acid formation, gout, Lesch-Nyhan syndrome), and regulation. Scope is the metabolism/biosynthesis-and-breakdown of nucleotides, kept distinct from lipid/amino-acid/carbohydrate metabolism courses.",
+  "questions": [
+    {
+      "question": "A nucleotide is structurally composed of:",
+      "options": [
+        "A nitrogenous base and a phosphate group only",
+        "A pentose sugar and a nitrogenous base only",
+        "A nitrogenous base, a pentose sugar, and one or more phosphate groups",
+        "Two nitrogenous bases joined by a phosphodiester bond"
+      ],
+      "correct_answer": "A nitrogenous base, a pentose sugar, and one or more phosphate groups",
+      "explanation": "A nucleotide consists of a nitrogenous base (purine or pyrimidine) attached to a pentose sugar (ribose or deoxyribose) via an N-glycosidic bond, with one, two, or three phosphate groups esterified to the sugar's 5' carbon.",
+      "topic": "Nucleotide structure",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The immediate activated form of ribose used in both de novo purine and pyrimidine nucleotide synthesis is:",
+      "options": ["Ribose-5-phosphate", "5-phosphoribosyl-1-pyrophosphate (PRPP)", "Ribulose-5-phosphate", "Deoxyribose-5-phosphate"],
+      "correct_answer": "5-phosphoribosyl-1-pyrophosphate (PRPP)",
+      "explanation": "PRPP, formed from ribose-5-phosphate and ATP by PRPP synthetase, supplies the activated ribose-phosphate unit onto which purine bases are built de novo, and onto which pyrimidine bases are attached after ring formation.",
+      "topic": "Nucleotide biosynthesis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In de novo purine biosynthesis, the purine ring is built up step by step directly on:",
+      "options": ["Free purine base, later attached to ribose", "PRPP itself, giving ribose-attached intermediates throughout", "A pyrimidine ring that is later converted", "Deoxyribose-1-phosphate"],
+      "correct_answer": "PRPP itself, giving ribose-attached intermediates throughout",
+      "explanation": "Unlike pyrimidine synthesis, de novo purine biosynthesis builds the purine ring atom-by-atom directly onto PRPP, so all intermediates from the first step (formation of 5-phosphoribosylamine) through IMP remain ribose-5-phosphate-linked.",
+      "topic": "Purine biosynthesis",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The first committed and rate-limiting step of de novo purine nucleotide synthesis, catalyzed by glutamine-PRPP amidotransferase, produces:",
+      "options": ["Inosine monophosphate (IMP)", "5-phosphoribosylamine", "Orotidine monophosphate", "Xanthosine monophosphate"],
+      "correct_answer": "5-phosphoribosylamine",
+      "explanation": "Glutamine-PRPP amidotransferase transfers an amide nitrogen from glutamine to PRPP, displacing pyrophosphate and forming 5-phosphoribosylamine; this is the committed, feedback-regulated first step of purine synthesis.",
+      "topic": "Purine biosynthesis",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The first purine nucleotide formed by the de novo pathway, from which both AMP and GMP are subsequently derived, is:",
+      "options": ["ATP", "Inosine monophosphate (IMP)", "GTP", "Adenylosuccinate"],
+      "correct_answer": "Inosine monophosphate (IMP)",
+      "explanation": "The ten-step de novo purine pathway produces inosine monophosphate (IMP, the nucleotide of hypoxanthine) as the common branch-point precursor, which is then converted separately to AMP (via adenylosuccinate) and GMP (via xanthosine monophosphate).",
+      "topic": "Purine biosynthesis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In contrast to purine biosynthesis, de novo pyrimidine biosynthesis differs in that:",
+      "options": [
+        "The pyrimidine ring is fully assembled first (from carbamoyl phosphate and aspartate) and then attached to PRPP",
+        "It does not require PRPP at any stage",
+        "It occurs only in mitochondria",
+        "It uses glycine as the first ring atom, exactly as in purine synthesis"
+      ],
+      "correct_answer": "The pyrimidine ring is fully assembled first (from carbamoyl phosphate and aspartate) and then attached to PRPP",
+      "explanation": "Pyrimidine synthesis first builds the six-membered orotate ring from carbamoyl phosphate and aspartate, and only afterward attaches it to PRPP (forming orotidine monophosphate), the reverse order from purine synthesis.",
+      "topic": "Pyrimidine biosynthesis",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The carbamoyl phosphate used in cytosolic de novo pyrimidine synthesis is produced by:",
+      "options": [
+        "Carbamoyl phosphate synthetase I in mitochondria",
+        "Carbamoyl phosphate synthetase II in the cytosol, using glutamine as the nitrogen source",
+        "Ornithine transcarbamoylase",
+        "Aspartate transcarbamoylase directly from CO2 and ammonia"
+      ],
+      "correct_answer": "Carbamoyl phosphate synthetase II in the cytosol, using glutamine as the nitrogen source",
+      "explanation": "Cytosolic carbamoyl phosphate synthetase II (CPS II) uses glutamine's amide nitrogen (unlike the mitochondrial urea-cycle CPS I, which uses free ammonia) to generate carbamoyl phosphate for pyrimidine synthesis.",
+      "topic": "Pyrimidine biosynthesis",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Aspartate transcarbamoylase (ATCase), a classic allosteric enzyme, catalyzes condensation of carbamoyl phosphate with aspartate to form:",
+      "options": ["Orotate", "Carbamoyl aspartate", "Dihydroorotate", "Orotidine monophosphate"],
+      "correct_answer": "Carbamoyl aspartate",
+      "explanation": "ATCase catalyzes the committed step of pyrimidine synthesis, joining carbamoyl phosphate and aspartate to form N-carbamoylaspartate, which is subsequently cyclized (by dihydroorotase) and oxidized to orotate.",
+      "topic": "Pyrimidine biosynthesis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Orotate acquires its ribose-phosphate unit and is converted to uridine monophosphate (UMP) through the action of:",
+      "options": ["Orotate phosphoribosyltransferase, then orotidylate decarboxylase", "Thymidylate synthase", "PRPP synthetase alone", "Carbamoyl phosphate synthetase II"],
+      "correct_answer": "Orotate phosphoribosyltransferase, then orotidylate decarboxylase",
+      "explanation": "Orotate phosphoribosyltransferase attaches PRPP to orotate to form orotidine-5'-monophosphate (OMP), which orotidylate (OMP) decarboxylase then decarboxylates to yield UMP, the parent pyrimidine ribonucleotide.",
+      "topic": "Pyrimidine biosynthesis",
+      "difficulty": "hard"
+    },
+    {
+      "question": "All other pyrimidine and purine ribo- and deoxyribonucleotides (di- and triphosphates) are ultimately derived from the monophosphates by:",
+      "options": [
+        "Direct de novo synthesis of each nucleotide independently",
+        "Sequential phosphorylation by nucleoside monophosphate kinases and nucleoside diphosphate kinase",
+        "Reverse of the salvage pathway",
+        "Hydrolysis of RNA"
+      ],
+      "correct_answer": "Sequential phosphorylation by nucleoside monophosphate kinases and nucleoside diphosphate kinase",
+      "explanation": "Nucleoside monophosphates (e.g., UMP, AMP) are phosphorylated to diphosphates by specific NMP kinases, and diphosphates to triphosphates by the broadly specific nucleoside diphosphate kinase, using ATP as phosphate donor.",
+      "topic": "Nucleotide interconversion",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The purine salvage pathway enzyme hypoxanthine-guanine phosphoribosyltransferase (HGPRT) functions to:",
+      "options": [
+        "Degrade purines to uric acid",
+        "Recycle free hypoxanthine and guanine bases back into nucleotides (IMP and GMP) using PRPP",
+        "Synthesize purines entirely de novo",
+        "Convert ribonucleotides to deoxyribonucleotides"
+      ],
+      "correct_answer": "Recycle free hypoxanthine and guanine bases back into nucleotides (IMP and GMP) using PRPP",
+      "explanation": "HGPRT salvages free purine bases released from nucleotide turnover, reattaching them to PRPP to regenerate IMP (from hypoxanthine) or GMP (from guanine), sparing the energetically costly de novo pathway.",
+      "topic": "Salvage pathways",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A near-total deficiency of HGPRT causes Lesch-Nyhan syndrome, characterized by hyperuricemia together with:",
+      "options": [
+        "Severe combined immunodeficiency",
+        "Compulsive self-injurious behaviour, choreoathetosis, and intellectual disability",
+        "Megaloblastic anemia",
+        "Albinism"
+      ],
+      "correct_answer": "Compulsive self-injurious behaviour, choreoathetosis, and intellectual disability",
+      "explanation": "Lesch-Nyhan syndrome, an X-linked disorder from HGPRT deficiency, causes excess purine degradation to uric acid (gout, urate nephropathy) plus a distinctive neurological/behavioural phenotype including self-mutilation and choreoathetosis.",
+      "topic": "Salvage pathways",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In humans, the end product of purine catabolism, excreted in urine, is:",
+      "options": ["Urea", "Uric acid", "Allantoin", "Ammonia"],
+      "correct_answer": "Uric acid",
+      "explanation": "Humans lack uricase, so purine catabolism (of adenine and guanine, via hypoxanthine/xanthine) terminates at uric acid, which is excreted in urine; many other mammals possess uricase and further degrade it to the more soluble allantoin.",
+      "topic": "Purine catabolism",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Xanthine oxidase, the enzyme inhibited by the anti-gout drug allopurinol, catalyzes the conversion of:",
+      "options": ["Hypoxanthine to xanthine, and xanthine to uric acid", "Uric acid to allantoin", "Adenine to hypoxanthine", "Guanine to xanthine"],
+      "correct_answer": "Hypoxanthine to xanthine, and xanthine to uric acid",
+      "explanation": "Xanthine oxidase catalyzes both terminal oxidation steps of purine catabolism (hypoxanthine to xanthine, then xanthine to uric acid); allopurinol, a hypoxanthine analogue, inhibits this enzyme, lowering uric acid production in gout.",
+      "topic": "Purine catabolism",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Gout results from the deposition of needle-shaped crystals of which substance in joints, causing acute inflammatory arthritis?",
+      "options": ["Calcium oxalate", "Monosodium urate", "Cholesterol", "Calcium pyrophosphate exclusively"],
+      "correct_answer": "Monosodium urate",
+      "explanation": "Gout is caused by hyperuricemia leading to precipitation of monosodium urate crystals in joints (classically the first metatarsophalangeal joint), triggering an acute inflammatory response.",
+      "topic": "Purine catabolism",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Adenosine deaminase (ADA) deficiency, which causes severe combined immunodeficiency (SCID), leads to immune cell toxicity because:",
+      "options": [
+        "Deoxyadenosine and dATP accumulate to toxic levels, inhibiting ribonucleotide reductase and impairing lymphocyte DNA synthesis",
+        "Uric acid production stops entirely, starving cells of purines",
+        "Guanine accumulates and is directly cytotoxic",
+        "ADA deficiency blocks pyrimidine synthesis"
+      ],
+      "correct_answer": "Deoxyadenosine and dATP accumulate to toxic levels, inhibiting ribonucleotide reductase and impairing lymphocyte DNA synthesis",
+      "explanation": "Without ADA to deaminate deoxyadenosine, it is phosphorylated to dATP, which accumulates especially in lymphocytes and allosterically inhibits ribonucleotide reductase, blocking deoxyribonucleotide production needed for lymphocyte proliferation, producing SCID.",
+      "topic": "Purine catabolism",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Deoxyribonucleotides required for DNA synthesis are formed from ribonucleotides by direct reduction of the 2'-hydroxyl of the ribose, catalyzed by:",
+      "options": ["Thymidylate synthase", "Ribonucleotide reductase", "DNA polymerase", "Dihydrofolate reductase"],
+      "correct_answer": "Ribonucleotide reductase",
+      "explanation": "Ribonucleotide reductase converts ribonucleoside diphosphates (NDPs) directly to the corresponding 2'-deoxyribonucleoside diphosphates (dNDPs), the committed step supplying precursors for DNA replication and repair.",
+      "topic": "Deoxyribonucleotide formation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Ribonucleotide reductase uses electrons ultimately supplied by NADPH, delivered through a small protein cofactor called:",
+      "options": ["Ferredoxin", "Thioredoxin (or glutaredoxin)", "Cytochrome c", "Flavodoxin only"],
+      "correct_answer": "Thioredoxin (or glutaredoxin)",
+      "explanation": "Thioredoxin (regenerated by thioredoxin reductase using NADPH), or alternatively glutaredoxin, supplies the reducing equivalents that ribonucleotide reductase uses to reduce the ribose 2'-OH to a deoxyribose.",
+      "topic": "Deoxyribonucleotide formation",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Thymidylate synthase converts dUMP to dTMP using which one-carbon donor?",
+      "options": ["S-adenosylmethionine", "N5,N10-methylenetetrahydrofolate", "N5-methyltetrahydrofolate", "Biotin"],
+      "correct_answer": "N5,N10-methylenetetrahydrofolate",
+      "explanation": "Thymidylate synthase methylates dUMP to dTMP, transferring and reducing a one-carbon unit from N5,N10-methylenetetrahydrofolate, which is oxidized to dihydrofolate in the process.",
+      "topic": "Thymidylate synthesis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Dihydrofolate reductase regenerates tetrahydrofolate from dihydrofolate after the thymidylate synthase reaction, and is the target of which anticancer/antifolate drug?",
+      "options": ["Allopurinol", "Methotrexate", "5-Fluorouracil (indirectly, not via DHFR)", "Hydroxyurea"],
+      "correct_answer": "Methotrexate",
+      "explanation": "Methotrexate, a folate analogue, competitively inhibits dihydrofolate reductase, preventing regeneration of tetrahydrofolate and thus blocking thymidylate (and purine) synthesis, which is exploited to kill rapidly dividing cancer cells.",
+      "topic": "Thymidylate synthesis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "5-Fluorouracil, an anticancer drug, exerts its effect on nucleotide metabolism mainly by:",
+      "options": [
+        "Being converted to F-dUMP, which forms an irreversible covalent complex with thymidylate synthase and folate, inhibiting the enzyme",
+        "Directly inhibiting DNA polymerase",
+        "Inhibiting ribonucleotide reductase",
+        "Blocking purine salvage"
+      ],
+      "correct_answer": "Being converted to F-dUMP, which forms an irreversible covalent complex with thymidylate synthase and folate, inhibiting the enzyme",
+      "explanation": "5-Fluorouracil is converted intracellularly to fluorodeoxyuridine monophosphate (F-dUMP), a suicide substrate that traps thymidylate synthase in an inactive ternary complex with the folate cofactor, blocking dTMP (and thus DNA) synthesis.",
+      "topic": "Thymidylate synthesis",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Pyrimidine catabolism (of cytosine, uracil, and thymine) differs from purine catabolism in that the pyrimidine ring is:",
+      "options": [
+        "Excreted intact as uric acid",
+        "Opened and degraded to soluble products such as beta-alanine and beta-aminoisobutyrate, which enter general metabolism",
+        "Never degraded, only reused",
+        "Converted directly to urea"
+      ],
+      "correct_answer": "Opened and degraded to soluble products such as beta-alanine and beta-aminoisobutyrate, which enter general metabolism",
+      "explanation": "Unlike purines, which yield the poorly soluble uric acid, pyrimidine rings are reduced and opened during catabolism to highly soluble products (beta-alanine from cytosine/uracil, beta-aminoisobutyrate from thymine) that feed into other metabolic pathways, so pyrimidine catabolism rarely causes disease.",
+      "topic": "Pyrimidine catabolism",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In humans, the pathway of purine nucleotide degradation of AMP proceeds through which base before forming uric acid?",
+      "options": ["Guanine only", "Hypoxanthine", "Cytosine", "Thymine"],
+      "correct_answer": "Hypoxanthine",
+      "explanation": "AMP is deaminated (directly or via adenosine) to IMP/inosine and then to the free base hypoxanthine, which xanthine oxidase oxidizes to xanthine and then uric acid.",
+      "topic": "Purine catabolism",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The committed, rate-limiting step of de novo purine biosynthesis (glutamine-PRPP amidotransferase) is feedback-inhibited allosterically by:",
+      "options": ["Glucose-6-phosphate", "IMP, AMP, and GMP (the pathway's end products)", "Pyruvate", "Acetyl-CoA"],
+      "correct_answer": "IMP, AMP, and GMP (the pathway's end products)",
+      "explanation": "Glutamine-PRPP amidotransferase is allosterically inhibited by the purine nucleotide end products IMP, AMP, and GMP, providing classic feedback regulation that matches purine synthesis to cellular need.",
+      "topic": "Regulation of nucleotide metabolism",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In de novo pyrimidine biosynthesis, the mammalian regulatory enzyme most sensitive to feedback inhibition by the end product UTP (or CTP) is:",
+      "options": ["Aspartate transcarbamoylase / the CPS II component of the CAD complex", "Orotate phosphoribosyltransferase", "Dihydroorotase", "Thymidylate synthase"],
+      "correct_answer": "Aspartate transcarbamoylase / the CPS II component of the CAD complex",
+      "explanation": "In mammals, carbamoyl phosphate synthetase II (part of the trifunctional CAD complex, which also includes aspartate transcarbamoylase) is allosterically inhibited by UTP and activated by PRPP, providing the main feedback control point of the pyrimidine pathway.",
+      "topic": "Regulation of nucleotide metabolism",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Adenine, guanine, and cytosine can all be classified biochemically as derivatives of which parent heterocyclic ring system(s)?",
+      "options": ["Adenine and guanine from purine; cytosine from pyrimidine", "All three from purine", "All three from pyrimidine", "Adenine from pyrimidine; guanine and cytosine from purine"],
+      "correct_answer": "Adenine and guanine from purine; cytosine from pyrimidine",
+      "explanation": "Adenine and guanine are purines (fused imidazole-pyrimidine bicyclic rings); cytosine, along with thymine and uracil, is a pyrimidine (single six-membered ring).",
+      "topic": "Nucleotide structure",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Uracil is the pyrimidine base characteristic of RNA, whereas DNA instead contains:",
+      "options": ["Cytosine in its place", "Thymine (5-methyluracil) in its place", "Guanine in its place", "No pyrimidine bases"],
+      "correct_answer": "Thymine (5-methyluracil) in its place",
+      "explanation": "DNA uses thymine (5-methyluracil) instead of the uracil found in RNA; thymine is formed by methylation of dUMP by thymidylate synthase, providing a distinguishing, more chemically stable base for the genetic material.",
+      "topic": "Nucleotide structure",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Ribonucleotide reductase activity, and hence deoxyribonucleotide supply, rises sharply during which phase of the cell cycle?",
+      "options": ["G1 phase", "S phase, coinciding with active DNA replication", "M phase", "G0 (quiescence)"],
+      "correct_answer": "S phase, coinciding with active DNA replication",
+      "explanation": "Ribonucleotide reductase expression and activity peak in S phase, when cells actively replicate DNA and therefore require a large, balanced supply of all four deoxyribonucleotides.",
+      "topic": "Deoxyribonucleotide formation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Hydroxyurea, used clinically (e.g., in sickle cell disease and some leukemias), acts on nucleotide metabolism by:",
+      "options": [
+        "Inhibiting ribonucleotide reductase by scavenging the tyrosyl free radical required for its activity",
+        "Inhibiting HGPRT",
+        "Activating xanthine oxidase",
+        "Blocking bile acid synthesis"
+      ],
+      "correct_answer": "Inhibiting ribonucleotide reductase by scavenging the tyrosyl free radical required for its activity",
+      "explanation": "Hydroxyurea quenches the tyrosyl radical essential for the catalytic mechanism of ribonucleotide reductase, blocking deoxyribonucleotide production and thereby inhibiting DNA synthesis.",
+      "topic": "Deoxyribonucleotide formation",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Orotic aciduria, an inherited disorder of pyrimidine metabolism, results from a deficiency of the bifunctional enzyme UMP synthase (orotate phosphoribosyltransferase / orotidylate decarboxylase), causing:",
+      "options": [
+        "Hyperuricemia and gout",
+        "Megaloblastic anemia and excess urinary orotic acid, unresponsive to vitamin B12",
+        "Excess uric acid crystal deposition in joints",
+        "Failure of purine salvage"
+      ],
+      "correct_answer": "Megaloblastic anemia and excess urinary orotic acid, unresponsive to vitamin B12",
+      "explanation": "Hereditary orotic aciduria impairs conversion of orotate to UMP, causing orotate accumulation and excretion plus a megaloblastic anemia (due to impaired pyrimidine, hence nucleic acid, synthesis) that does not respond to B12 or folate, but improves with uridine supplementation.",
+      "topic": "Pyrimidine biosynthesis",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Adenosine phosphoribosyltransferase (APRT), analogous to HGPRT but specific for adenine, salvages free adenine base by combining it with PRPP to regenerate:",
+      "options": ["GMP", "AMP", "IMP", "UMP"],
+      "correct_answer": "AMP",
+      "explanation": "APRT catalyzes the salvage reaction adenine + PRPP → AMP + PPi, recycling free adenine (released during nucleic acid/nucleotide turnover) directly back into the adenine nucleotide pool.",
+      "topic": "Salvage pathways",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Compared with de novo nucleotide synthesis, salvage pathways are metabolically advantageous mainly because they:",
+      "options": [
+        "Use far less ATP/energy than building nucleotides from simple precursors",
+        "Are the only pathways capable of producing purines in humans",
+        "Produce nucleotides with different bases than de novo synthesis",
+        "Occur only in the liver"
+      ],
+      "correct_answer": "Use far less ATP/energy than building nucleotides from simple precursors",
+      "explanation": "Salvage pathways recycle preformed bases and nucleosides released from nucleic acid turnover, bypassing the many ATP- and amino-acid-consuming steps of de novo synthesis, making them energetically far cheaper, especially important in tissues like brain and erythrocytes with limited de novo capacity.",
+      "topic": "Salvage pathways",
+      "difficulty": "medium"
+    }
+  ]
+}

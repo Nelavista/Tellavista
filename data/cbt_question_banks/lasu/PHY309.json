@@ -1,0 +1,488 @@
+{
+  "course_code": "PHY309",
+  "title": "Nuclear Physics",
+  "level": "300",
+  "source_note": "Standard NUC-aligned Nigerian university 300L Nuclear Physics curriculum: nuclear structure and notation, binding energy and mass defect, radioactivity and decay law, nuclear reactions (fission/fusion), nuclear models, and applications (reactors, detectors, dosimetry, medical/industrial isotopes).",
+  "questions": [
+    {
+      "question": "In the standard nuclear notation ZAX, what does the subscript Z represent?",
+      "options": ["The atomic number (number of protons)", "The mass number (number of nucleons)", "The number of neutrons", "The number of electrons in the neutral atom"],
+      "correct_answer": "The atomic number (number of protons)",
+      "explanation": "Z is the atomic number, equal to the number of protons in the nucleus, which also fixes the element's identity.",
+      "topic": "Nuclear structure and notation",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What does the mass number A of a nuclide represent?",
+      "options": ["The total number of protons and neutrons (nucleons)", "The number of protons only", "The number of neutrons only", "The atomic weight in grams"],
+      "correct_answer": "The total number of protons and neutrons (nucleons)",
+      "explanation": "The mass number A = Z + N, the sum of protons and neutrons in the nucleus.",
+      "topic": "Nuclear structure and notation",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Isotopes of an element differ in which quantity?",
+      "options": ["Number of neutrons", "Number of protons", "Number of electrons in the neutral atom", "Atomic number"],
+      "correct_answer": "Number of neutrons",
+      "explanation": "Isotopes have the same number of protons (same Z, same element) but different numbers of neutrons, giving different mass numbers.",
+      "topic": "Isotopes, isotones, isobars",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Nuclides that have the same mass number A but different atomic number Z are called:",
+      "options": ["Isobars", "Isotopes", "Isotones", "Isomers"],
+      "correct_answer": "Isobars",
+      "explanation": "Isobars share the same total nucleon number A but differ in proton number Z, e.g. carbon-14 and nitrogen-14.",
+      "topic": "Isotopes, isotones, isobars",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Nuclides that have the same number of neutrons but different atomic numbers are called:",
+      "options": ["Isotones", "Isotopes", "Isobars", "Nuclear isomers"],
+      "correct_answer": "Isotones",
+      "explanation": "Isotones share the same neutron number N = A - Z but differ in proton number and element.",
+      "topic": "Isotopes, isotones, isobars",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The empirical formula for nuclear radius is commonly written as R = R0A^(1/3). What does this relationship imply about nuclear density?",
+      "options": ["Nuclear density is approximately constant for all nuclei", "Nuclear density increases linearly with mass number", "Nuclear density decreases with increasing A", "Nuclear density depends only on Z, not A"],
+      "correct_answer": "Nuclear density is approximately constant for all nuclei",
+      "explanation": "Since nuclear volume scales as A (R^3 proportional to A) while nuclear mass also scales as A, the mass-to-volume ratio (density) is roughly constant across nuclei, around 2.3 x 10^17 kg/m^3.",
+      "topic": "Nuclear size and density",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The approximate value of the nuclear radius constant R0 in the formula R = R0A^(1/3) is:",
+      "options": ["1.2 fm", "1.2 nm", "1.2 pm", "1.2 m"],
+      "correct_answer": "1.2 fm",
+      "explanation": "R0 is approximately 1.2 femtometres (1.2 x 10^-15 m), consistent with nuclear dimensions on the order of a few femtometres.",
+      "topic": "Nuclear size and density",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The mass defect of a nucleus is defined as:",
+      "options": ["The difference between the sum of masses of individual free nucleons and the actual mass of the nucleus", "The mass of the nucleus divided by its volume", "The difference in mass between two isotopes", "The mass lost during beta decay only"],
+      "correct_answer": "The difference between the sum of masses of individual free nucleons and the actual mass of the nucleus",
+      "explanation": "Mass defect (Delta m) = Zm_p + Nm_n - M(nucleus); the bound nucleus has less mass than its separated constituent nucleons.",
+      "topic": "Binding energy and mass defect",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The binding energy of a nucleus is related to its mass defect by which equation?",
+      "options": ["E = (Delta m)c^2", "E = mc", "E = Delta m / c^2", "E = mc^3"],
+      "correct_answer": "E = (Delta m)c^2",
+      "explanation": "Einstein's mass-energy relation converts the mass defect into the equivalent binding energy released when the nucleus is formed from free nucleons.",
+      "topic": "Binding energy and mass defect",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A nucleus has a mass defect of 0.03 u. Given 1 u = 931.5 MeV/c^2, what is its binding energy?",
+      "options": ["27.9 MeV", "0.03 MeV", "931.5 MeV", "310.5 MeV"],
+      "correct_answer": "27.9 MeV",
+      "explanation": "Binding energy = 0.03 x 931.5 MeV = 27.945 MeV, approximately 27.9 MeV.",
+      "topic": "Binding energy and mass defect",
+      "difficulty": "hard"
+    },
+    {
+      "question": "On the binding energy per nucleon curve, which region of nuclei has the highest (most negative, most stable) binding energy per nucleon?",
+      "options": ["Nuclei with mass number around A = 56 (iron region)", "The lightest nuclei such as hydrogen", "The heaviest nuclei such as uranium", "Nuclei with A between 1 and 10 only"],
+      "correct_answer": "Nuclei with mass number around A = 56 (iron region)",
+      "explanation": "The binding energy per nucleon peaks near iron-56 (about 8.8 MeV/nucleon), making iron-group nuclei the most tightly bound and stable.",
+      "topic": "Binding energy per nucleon curve",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The shape of the binding energy per nucleon curve explains why both fission and fusion can release energy. Why?",
+      "options": ["Because both heavy and light nuclei have lower binding energy per nucleon than mid-mass nuclei, so moving toward mid-mass increases binding energy and releases energy", "Because binding energy per nucleon is the same for all nuclei", "Because only fusion releases energy; fission always absorbs energy", "Because heavy nuclei always have the highest binding energy per nucleon"],
+      "correct_answer": "Because both heavy and light nuclei have lower binding energy per nucleon than mid-mass nuclei, so moving toward mid-mass increases binding energy and releases energy",
+      "explanation": "Fission splits heavy nuclei into products with higher binding energy per nucleon, and fusion combines light nuclei into products with higher binding energy per nucleon; both processes move toward the more stable iron-region peak.",
+      "topic": "Binding energy per nucleon curve",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In alpha decay, the emitted alpha particle consists of:",
+      "options": ["2 protons and 2 neutrons (a helium-4 nucleus)", "1 proton and 1 neutron", "2 electrons and 2 protons", "4 neutrons only"],
+      "correct_answer": "2 protons and 2 neutrons (a helium-4 nucleus)",
+      "explanation": "An alpha particle is identical to a helium-4 nucleus, consisting of two protons and two neutrons tightly bound together.",
+      "topic": "Alpha decay",
+      "difficulty": "easy"
+    },
+    {
+      "question": "When a nucleus undergoes alpha decay, how do its mass number and atomic number change?",
+      "options": ["Mass number decreases by 4 and atomic number decreases by 2", "Mass number decreases by 2 and atomic number decreases by 4", "Mass number stays the same and atomic number decreases by 2", "Mass number decreases by 4 and atomic number stays the same"],
+      "correct_answer": "Mass number decreases by 4 and atomic number decreases by 2",
+      "explanation": "Emission of an alpha particle (A=4, Z=2) reduces the parent's mass number by 4 and atomic number by 2.",
+      "topic": "Alpha decay",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In beta-minus (beta-negative) decay, what transformation occurs inside the nucleus?",
+      "options": ["A neutron converts into a proton, emitting an electron and an antineutrino", "A proton converts into a neutron, emitting a positron and a neutrino", "A proton captures an orbital electron", "Two neutrons combine into a proton and an alpha particle"],
+      "correct_answer": "A neutron converts into a proton, emitting an electron and an antineutrino",
+      "explanation": "Beta-minus decay is n -> p + e^- + antineutrino, increasing the atomic number by 1 while the mass number stays the same.",
+      "topic": "Beta decay",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In beta-plus (positron) decay, what happens to the atomic number of the nucleus?",
+      "options": ["It decreases by 1", "It increases by 1", "It stays the same", "It decreases by 2"],
+      "correct_answer": "It decreases by 1",
+      "explanation": "Beta-plus decay is p -> n + e^+ + neutrino, so a proton is converted to a neutron and the atomic number decreases by 1 while mass number is unchanged.",
+      "topic": "Beta decay",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the primary role of the neutrino/antineutrino emitted in beta decay?",
+      "options": ["It carries away energy and momentum to conserve these quantities in the decay", "It provides the binding energy for the daughter nucleus", "It converts into the emitted alpha particle", "It is responsible for gamma ray emission"],
+      "correct_answer": "It carries away energy and momentum to conserve these quantities in the decay",
+      "explanation": "The neutrino was postulated by Pauli to account for the continuous energy spectrum of beta particles, ensuring conservation of energy, momentum, and angular momentum in the three-body decay.",
+      "topic": "Beta decay",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Gamma decay differs from alpha and beta decay in that it:",
+      "options": ["Does not change the mass number or atomic number of the nucleus", "Changes both the mass number and atomic number", "Only occurs in odd-mass nuclei", "Always accompanies nuclear fission but never radioactive decay"],
+      "correct_answer": "Does not change the mass number or atomic number of the nucleus",
+      "explanation": "Gamma decay is the emission of a high-energy photon as an excited nucleus (often left after alpha or beta decay) drops to a lower energy state, with no change in Z or A.",
+      "topic": "Gamma decay",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Gamma rays are best described as:",
+      "options": ["High-energy electromagnetic radiation emitted from the nucleus", "Streams of fast electrons", "Streams of helium nuclei", "Low-energy visible light photons"],
+      "correct_answer": "High-energy electromagnetic radiation emitted from the nucleus",
+      "explanation": "Gamma rays are photons, part of the electromagnetic spectrum, with energies typically in the keV to MeV range, originating from nuclear de-excitation.",
+      "topic": "Gamma decay",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which of the three main types of radioactive radiation has the greatest penetrating power but the least ionizing power?",
+      "options": ["Gamma radiation", "Alpha radiation", "Beta radiation", "All three are equal"],
+      "correct_answer": "Gamma radiation",
+      "explanation": "Gamma rays penetrate matter deeply (requiring thick lead or concrete to stop) but ionize weakly per unit path length compared to alpha or beta particles.",
+      "topic": "Properties of radiation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Alpha particles are typically stopped by:",
+      "options": ["A sheet of paper or a few centimetres of air", "Several centimetres of lead", "A few millimetres of aluminium", "Nothing; they penetrate all matter"],
+      "correct_answer": "A sheet of paper or a few centimetres of air",
+      "explanation": "Alpha particles, being heavy and doubly charged, lose energy rapidly and have a very short range, stopped by paper or a few cm of air.",
+      "topic": "Properties of radiation",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The radioactive decay law states that the number of undecayed nuclei N(t) at time t is given by:",
+      "options": ["N(t) = N0 e^(-lambda t)", "N(t) = N0 (1 - lambda t)", "N(t) = N0 e^(lambda t)", "N(t) = N0 - lambda t"],
+      "correct_answer": "N(t) = N0 e^(-lambda t)",
+      "explanation": "Radioactive decay follows an exponential law, derived from the fact that the decay rate is proportional to the number of remaining undecayed nuclei, dN/dt = -lambda N.",
+      "topic": "Radioactive decay law",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the decay law, lambda represents:",
+      "options": ["The decay constant, the probability of decay per unit time for a nucleus", "The half-life of the substance", "The total activity at time zero", "The mean life divided by half-life"],
+      "correct_answer": "The decay constant, the probability of decay per unit time for a nucleus",
+      "explanation": "Lambda is a characteristic constant for each radioactive species, representing the fraction of nuclei decaying per unit time.",
+      "topic": "Radioactive decay law",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The half-life T(1/2) of a radioactive substance is related to the decay constant lambda by:",
+      "options": ["T(1/2) = ln(2)/lambda", "T(1/2) = lambda/ln(2)", "T(1/2) = 1/lambda", "T(1/2) = lambda x ln(2)"],
+      "correct_answer": "T(1/2) = ln(2)/lambda",
+      "explanation": "Setting N(t)/N0 = 1/2 in the exponential decay law gives T(1/2) = ln(2)/lambda ≈ 0.693/lambda.",
+      "topic": "Half-life and mean life",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The mean life (average lifetime) tau of a radioactive nuclide is related to the decay constant by:",
+      "options": ["tau = 1/lambda", "tau = lambda", "tau = ln(2) x lambda", "tau = lambda^2"],
+      "correct_answer": "tau = 1/lambda",
+      "explanation": "The mean life is the reciprocal of the decay constant and is always longer than the half-life, with tau = T(1/2)/ln(2).",
+      "topic": "Half-life and mean life",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A radioactive sample has a half-life of 8 days. Approximately what fraction of the original sample remains after 24 days?",
+      "options": ["1/8", "1/3", "1/16", "1/24"],
+      "correct_answer": "1/8",
+      "explanation": "24 days corresponds to 3 half-lives (24/8 = 3), so the remaining fraction is (1/2)^3 = 1/8.",
+      "topic": "Half-life and mean life",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The activity of a radioactive sample is defined as:",
+      "options": ["The number of decays occurring per unit time", "The total number of undecayed nuclei present", "The energy released per decay", "The half-life of the sample"],
+      "correct_answer": "The number of decays occurring per unit time",
+      "explanation": "Activity A = lambda N, measuring the rate of decay events, not the total quantity of material.",
+      "topic": "Activity and units",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The SI unit of radioactive activity is the:",
+      "options": ["Becquerel (Bq), equal to one decay per second", "Curie (Ci)", "Gray (Gy)", "Sievert (Sv)"],
+      "correct_answer": "Becquerel (Bq), equal to one decay per second",
+      "explanation": "The becquerel is the SI unit of activity, defined as exactly one nuclear decay (disintegration) per second.",
+      "topic": "Activity and units",
+      "difficulty": "easy"
+    },
+    {
+      "question": "One curie (Ci), the older non-SI unit of activity, is equivalent to approximately:",
+      "options": ["3.7 x 10^10 Bq", "1 Bq", "3.7 x 10^6 Bq", "1 x 10^3 Bq"],
+      "correct_answer": "3.7 x 10^10 Bq",
+      "explanation": "The curie was originally defined based on the activity of 1 gram of radium-226, equal to 3.7 x 10^10 disintegrations per second.",
+      "topic": "Activity and units",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a radioactive decay chain (series), the process continues through successive decays until it reaches:",
+      "options": ["A stable (non-radioactive) nuclide", "The original parent nuclide again", "A nuclide with zero mass number", "An element with atomic number zero"],
+      "correct_answer": "A stable (non-radioactive) nuclide",
+      "explanation": "Decay chains, such as the uranium-238 series, proceed through a sequence of alpha and beta decays until a stable end product (e.g. lead-206) is reached.",
+      "topic": "Decay chains",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Q-value of a nuclear reaction represents:",
+      "options": ["The net energy released or absorbed in the reaction, calculated from the mass difference of reactants and products", "The total charge of the reactants", "The quantum number of the emitted particle", "The quenching factor of a detector"],
+      "correct_answer": "The net energy released or absorbed in the reaction, calculated from the mass difference of reactants and products",
+      "explanation": "Q = (sum of reactant masses - sum of product masses)c^2; a positive Q indicates an exothermic (energy-releasing) reaction, a negative Q an endothermic one.",
+      "topic": "Nuclear reactions and Q-value",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In any nuclear reaction, which of the following quantities must be conserved?",
+      "options": ["Mass-energy, momentum, charge, and nucleon number", "Only the total number of protons", "Only kinetic energy", "Only the mass number, not charge"],
+      "correct_answer": "Mass-energy, momentum, charge, and nucleon number",
+      "explanation": "Nuclear reactions obey conservation of total mass-energy, linear momentum, electric charge, and total nucleon (baryon) number.",
+      "topic": "Conservation laws in nuclear reactions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the notation for a nuclear reaction such as ^14N(alpha, p)^17O, what does this shorthand mean?",
+      "options": ["Nitrogen-14 is bombarded by an alpha particle, producing a proton and oxygen-17", "Nitrogen-14 decays by alpha emission to produce oxygen-17", "An alpha particle and a proton collide to produce nitrogen-14 and oxygen-17", "Oxygen-17 decays to nitrogen-14 by proton emission"],
+      "correct_answer": "Nitrogen-14 is bombarded by an alpha particle, producing a proton and oxygen-17",
+      "explanation": "The compact notation X(a,b)Y means target X is bombarded by projectile a, ejecting particle b and leaving residual nucleus Y; this was Rutherford's first artificial nuclear transmutation.",
+      "topic": "Nuclear reactions and Q-value",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Nuclear fission is best described as:",
+      "options": ["The splitting of a heavy nucleus into two lighter nuclei, usually initiated by neutron absorption", "The combination of two light nuclei into a heavier nucleus", "The emission of a single alpha particle from a heavy nucleus", "The capture of an electron by a proton"],
+      "correct_answer": "The splitting of a heavy nucleus into two lighter nuclei, usually initiated by neutron absorption",
+      "explanation": "In fission, a heavy nucleus such as uranium-235 absorbs a neutron, becomes unstable, and splits into two smaller fission fragments plus additional neutrons and energy.",
+      "topic": "Nuclear fission",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In a fission chain reaction, what is essential for the reaction to become self-sustaining?",
+      "options": ["Each fission event must release neutrons that go on to induce further fission events", "The fissile material must be cooled to absolute zero", "Only gamma rays are needed to sustain the reaction", "The fuel must be non-radioactive"],
+      "correct_answer": "Each fission event must release neutrons that go on to induce further fission events",
+      "explanation": "A self-sustaining chain reaction requires that, on average, at least one neutron from each fission event causes another fission event (criticality).",
+      "topic": "Nuclear fission",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In reactor terminology, what does a 'critical' reactor state mean?",
+      "options": ["The neutron population remains steady, with exactly one neutron from each fission causing one further fission on average", "The reactor is about to explode uncontrollably", "The reactor has run out of fuel", "The reactor is shut down completely"],
+      "correct_answer": "The neutron population remains steady, with exactly one neutron from each fission causing one further fission on average",
+      "explanation": "Criticality (multiplication factor k=1) describes steady-state operation; k>1 is supercritical (increasing power) and k<1 is subcritical (decreasing power).",
+      "topic": "Nuclear fission",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Nuclear fusion is the process by which:",
+      "options": ["Light nuclei combine to form a heavier nucleus, releasing energy", "A heavy nucleus splits into lighter fragments", "A nucleus emits a gamma ray to lose excess energy", "An electron is captured by the nucleus"],
+      "correct_answer": "Light nuclei combine to form a heavier nucleus, releasing energy",
+      "explanation": "Fusion combines light nuclei (e.g. hydrogen isotopes) into a heavier nucleus, releasing energy because the product has greater binding energy per nucleon.",
+      "topic": "Nuclear fusion",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Fusion reactions require extremely high temperatures and pressures primarily because:",
+      "options": ["The nuclei must overcome strong mutual electrostatic (Coulomb) repulsion to get close enough for the strong nuclear force to act", "Cold nuclei have too much binding energy already", "High temperature converts protons directly into neutrons", "Fusion only occurs in the presence of free electrons"],
+      "correct_answer": "The nuclei must overcome strong mutual electrostatic (Coulomb) repulsion to get close enough for the strong nuclear force to act",
+      "explanation": "Positively charged nuclei repel each other electrostatically; high kinetic energy (temperature) is needed to bring them within range of the short-range attractive strong nuclear force.",
+      "topic": "Nuclear fusion",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Sun and most main-sequence stars generate energy primarily through:",
+      "options": ["Fusion of hydrogen nuclei into helium", "Fission of heavy elements", "Radioactive decay of uranium", "Gravitational contraction alone"],
+      "correct_answer": "Fusion of hydrogen nuclei into helium",
+      "explanation": "Stellar energy comes mainly from the proton-proton chain (and CNO cycle in heavier stars), fusing hydrogen into helium in the core.",
+      "topic": "Nuclear fusion",
+      "difficulty": "easy"
+    },
+    {
+      "question": "According to the liquid drop model of the nucleus, the nucleus is treated analogously to:",
+      "options": ["A drop of incompressible liquid held together by short-range forces resembling surface tension", "A rigid crystalline lattice", "A cloud of independently orbiting particles with no mutual interaction", "A single point particle with no internal structure"],
+      "correct_answer": "A drop of incompressible liquid held together by short-range forces resembling surface tension",
+      "explanation": "The liquid drop model treats nucleons like molecules in a liquid drop, explaining bulk properties such as binding energy trends, nuclear deformation, and fission via the semi-empirical mass formula.",
+      "topic": "Nuclear models",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the semi-empirical mass formula (Weizsacker formula), which term accounts for the reduced binding of nucleons at the nuclear surface?",
+      "options": ["The surface term", "The volume term", "The Coulomb term", "The pairing term"],
+      "correct_answer": "The surface term",
+      "explanation": "The surface term is a negative correction to the volume term because nucleons at the surface have fewer neighbours and are less tightly bound, analogous to surface tension in a liquid drop.",
+      "topic": "Binding energy and mass defect",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In the semi-empirical mass formula, the Coulomb term arises from:",
+      "options": ["Electrostatic repulsion between protons in the nucleus", "Attraction between neutrons and protons", "Surface tension effects", "Pairing of like nucleons"],
+      "correct_answer": "Electrostatic repulsion between protons in the nucleus",
+      "explanation": "The Coulomb term is a negative (destabilizing) contribution to binding energy caused by mutual electrostatic repulsion among the Z protons, and it grows with Z^2.",
+      "topic": "Binding energy and mass defect",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The nuclear shell model, analogous to the electron shell model in atoms, proposes that:",
+      "options": ["Nucleons occupy discrete energy levels (shells), and nuclei with certain 'magic numbers' of protons or neutrons are especially stable", "All nucleons move together as a single rigid liquid drop with no individual quantum states", "Only protons occupy quantized energy levels; neutrons move freely", "Nuclear stability is unrelated to the number of protons or neutrons"],
+      "correct_answer": "Nucleons occupy discrete energy levels (shells), and nuclei with certain 'magic numbers' of protons or neutrons are especially stable",
+      "explanation": "The shell model explains extra stability at magic numbers by nucleons filling closed quantum shells, similar to noble gas electron configurations in atoms.",
+      "topic": "Nuclear models",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which of the following is one of the recognized 'magic numbers' in the nuclear shell model?",
+      "options": ["82", "50 and 100 only", "10", "7"],
+      "correct_answer": "82",
+      "explanation": "The standard magic numbers are 2, 8, 20, 28, 50, 82, and 126; nuclei with proton or neutron numbers equal to these values show enhanced stability.",
+      "topic": "Nuclear models",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A nucleus is described as 'doubly magic' when:",
+      "options": ["Both its proton number and neutron number equal magic numbers", "It has an odd number of both protons and neutrons", "Its mass number is exactly double that of helium", "It undergoes both alpha and beta decay simultaneously"],
+      "correct_answer": "Both its proton number and neutron number equal magic numbers",
+      "explanation": "Doubly magic nuclei, such as helium-4, oxygen-16, calcium-40, and lead-208, have both Z and N at magic numbers, giving them exceptional stability.",
+      "topic": "Nuclear models",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In a typical nuclear (fission) reactor, what is the primary role of the moderator?",
+      "options": ["To slow down fast neutrons to thermal energies so they are more likely to induce further fission in uranium-235", "To absorb all neutrons and stop the chain reaction permanently", "To generate the initial neutrons for the reaction", "To convert gamma rays into electricity directly"],
+      "correct_answer": "To slow down fast neutrons to thermal energies so they are more likely to induce further fission in uranium-235",
+      "explanation": "Materials like water or graphite moderate (slow) fast fission neutrons via elastic collisions, since slow (thermal) neutrons have a much higher probability of causing further fission in U-235.",
+      "topic": "Nuclear reactors",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a nuclear reactor, control rods (often made of boron or cadmium) function to:",
+      "options": ["Absorb excess neutrons to regulate and control the rate of the chain reaction", "Moderate (slow down) neutrons", "Act as the primary fuel source", "Cool the reactor core directly"],
+      "correct_answer": "Absorb excess neutrons to regulate and control the rate of the chain reaction",
+      "explanation": "Control rods contain strong neutron absorbers; inserting or withdrawing them adjusts the neutron population and hence the reactor's power level.",
+      "topic": "Nuclear reactors",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Geiger-Muller (GM) counter detects ionizing radiation primarily by:",
+      "options": ["Using the ionization produced in a gas-filled tube to trigger an electrical avalanche detected as a pulse", "Measuring the light flashes produced when radiation strikes a scintillating crystal", "Directly weighing the radioactive sample", "Measuring temperature changes caused by absorbed radiation"],
+      "correct_answer": "Using the ionization produced in a gas-filled tube to trigger an electrical avalanche detected as a pulse",
+      "explanation": "In a GM tube, incoming radiation ionizes the fill gas; the strong applied electric field accelerates these ions/electrons, causing a Townsend avalanche that produces a detectable current pulse.",
+      "topic": "Radiation detection",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A scintillation counter detects radiation by:",
+      "options": ["Converting the energy of incident radiation into flashes of light, which are then amplified by a photomultiplier tube", "Directly measuring nuclear mass defect", "Using a gas discharge avalanche exactly like a GM tube with no other components", "Cooling the sample to cryogenic temperatures to detect heat pulses"],
+      "correct_answer": "Converting the energy of incident radiation into flashes of light, which are then amplified by a photomultiplier tube",
+      "explanation": "A scintillator material emits light (scintillates) when radiation deposits energy in it; a photomultiplier tube converts and amplifies this light into a measurable electrical signal, also allowing energy discrimination.",
+      "topic": "Radiation detection",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In radiation dosimetry, the absorbed dose is measured in which SI unit?",
+      "options": ["Gray (Gy), equal to one joule of energy absorbed per kilogram of tissue", "Becquerel (Bq)", "Curie (Ci)", "Sievert per second"],
+      "correct_answer": "Gray (Gy), equal to one joule of energy absorbed per kilogram of tissue",
+      "explanation": "The gray measures absorbed dose (energy deposited per unit mass), distinct from the becquerel (activity) and the sievert (biologically weighted equivalent dose).",
+      "topic": "Radiation dosimetry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The sievert (Sv) is the SI unit used to express:",
+      "options": ["Equivalent dose, which accounts for the biological effectiveness of different radiation types", "Activity of a radioactive source", "Nuclear binding energy", "The half-life of a radioisotope"],
+      "correct_answer": "Equivalent dose, which accounts for the biological effectiveness of different radiation types",
+      "explanation": "The sievert weights the absorbed dose (gray) by a radiation quality factor to estimate the biological risk, since alpha, beta, and gamma radiation differ in harmfulness per unit absorbed energy.",
+      "topic": "Radiation dosimetry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Cobalt-60 is widely used in medicine and industry primarily as a source of:",
+      "options": ["Gamma radiation, used in radiotherapy and industrial sterilization/radiography", "Alpha particles for smoke detectors", "Thermal neutrons for reactor moderation", "Beta particles for thickness gauging only"],
+      "correct_answer": "Gamma radiation, used in radiotherapy and industrial sterilization/radiography",
+      "explanation": "Cobalt-60 decays by beta emission followed by two gamma rays of significant energy, widely exploited for cancer radiotherapy, food/equipment sterilization, and industrial radiography.",
+      "topic": "Applications of radioisotopes",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Technetium-99m is widely used in nuclear medicine mainly because:",
+      "options": ["It emits gamma rays suitable for imaging with a short half-life, minimizing patient radiation exposure", "It emits high-energy alpha particles ideal for deep tissue therapy", "It has an extremely long half-life of thousands of years", "It is chemically identical to iodine and used only for thyroid treatment"],
+      "correct_answer": "It emits gamma rays suitable for imaging with a short half-life, minimizing patient radiation exposure",
+      "explanation": "Technetium-99m (a metastable isomer) emits a 140 keV gamma ray ideal for gamma camera imaging and has a short half-life of about 6 hours, limiting the radiation dose to patients.",
+      "topic": "Applications of radioisotopes",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Carbon-14 dating is used to determine the age of organic materials based on:",
+      "options": ["The known half-life of carbon-14 and the measured remaining ratio of carbon-14 to stable carbon-12", "The total mass of carbon in the sample", "The amount of oxygen-18 present in the sample", "Direct measurement of the sample's binding energy"],
+      "correct_answer": "The known half-life of carbon-14 and the measured remaining ratio of carbon-14 to stable carbon-12",
+      "explanation": "Living organisms maintain a roughly constant C-14/C-12 ratio; after death, C-14 decays with a half-life of about 5730 years, so measuring the remaining ratio allows age estimation.",
+      "topic": "Applications of radioisotopes",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In industrial thickness gauging, beta or gamma sources are used because:",
+      "options": ["The amount of radiation transmitted through or absorbed by a material varies predictably with its thickness, allowing non-contact measurement", "Radioactive sources are the only way to measure electrical resistivity", "They permanently alter the material being measured", "They can only measure the temperature of the material"],
+      "correct_answer": "The amount of radiation transmitted through or absorbed by a material varies predictably with its thickness, allowing non-contact measurement",
+      "explanation": "As material thickness increases, radiation attenuation increases in a known relationship, enabling continuous, non-contact thickness monitoring in industrial processes such as rolling mills.",
+      "topic": "Applications of radioisotopes",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which particle emitted in beta-plus decay eventually annihilates with an electron to produce two gamma photons, a phenomenon exploited in PET (positron emission tomography) scanning?",
+      "options": ["The positron", "The neutrino", "The alpha particle", "The neutron"],
+      "correct_answer": "The positron",
+      "explanation": "A positron emitted by a PET tracer isotope quickly annihilates with a nearby electron, producing two 511 keV gamma photons travelling in nearly opposite directions, which are detected to localize the source.",
+      "topic": "Applications of radioisotopes",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Background correction is important in radioactivity measurements because:",
+      "options": ["Natural and cosmic sources contribute a baseline count rate that must be subtracted to find the true count rate from the sample", "Background radiation increases the measured half-life of the sample", "It eliminates the need for a Geiger-Muller counter", "It converts activity from becquerels to curies automatically"],
+      "correct_answer": "Natural and cosmic sources contribute a baseline count rate that must be subtracted to find the true count rate from the sample",
+      "explanation": "Ambient background radiation (cosmic rays, natural radioactivity in materials) adds counts unrelated to the sample, so the background count rate is measured separately and subtracted from the total.",
+      "topic": "Applications of radioisotopes",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which of the following best explains why heavy nuclei (high Z) tend to be unstable and radioactive?",
+      "options": ["The increasing Coulomb repulsion among many protons outweighs the short-range strong nuclear force binding the nucleus together", "Heavy nuclei have no neutrons to help bind them", "Heavy nuclei always have magic numbers of protons", "The strong force increases without limit as more nucleons are added"],
+      "correct_answer": "The increasing Coulomb repulsion among many protons outweighs the short-range strong nuclear force binding the nucleus together",
+      "explanation": "The strong force is short-range and roughly saturates, while the Coulomb force is long-range and grows with Z^2, making very heavy nuclei progressively less stable and prone to alpha decay or fission.",
+      "topic": "Nuclear structure and notation",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A radioactive isotope has an initial activity of 800 Bq. After two half-lives, what is its activity?",
+      "options": ["200 Bq", "400 Bq", "100 Bq", "0 Bq"],
+      "correct_answer": "200 Bq",
+      "explanation": "Activity halves with each half-life: after one half-life 400 Bq, after two half-lives 800/4 = 200 Bq.",
+      "topic": "Activity and units",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which statement correctly distinguishes nuclear isomers from isotopes?",
+      "options": ["Isomers have the same Z and A but exist in different (often metastable excited) energy states, while isotopes have the same Z but different A", "Isomers have different Z but the same A", "Isomers and isotopes are the same concept with different names", "Isomers always have shorter half-lives than the ground state by definition of the term"],
+      "correct_answer": "Isomers have the same Z and A but exist in different (often metastable excited) energy states, while isotopes have the same Z but different A",
+      "explanation": "Nuclear isomers, such as technetium-99m versus technetium-99, share identical proton and neutron numbers but differ in internal nuclear energy state and often decay by gamma emission to the ground state.",
+      "topic": "Nuclear structure and notation",
+      "difficulty": "hard"
+    }
+  ]
+}

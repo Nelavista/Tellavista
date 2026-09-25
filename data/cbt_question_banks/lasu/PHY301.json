@@ -1,0 +1,585 @@
+{
+  "course_code": "PHY301",
+  "title": "Quantum Mechanics I",
+  "level": "300",
+  "source_note": "Standard NUC-aligned Nigerian university 300L Quantum Mechanics I curriculum: brief historical motivation, the Schrodinger equation (time-dependent and time-independent), wave function interpretation, operators and expectation values, the infinite square well, the quantum harmonic oscillator, potential step/barrier and tunneling, the Heisenberg uncertainty principle, and the postulates of quantum mechanics. Angular momentum, the hydrogen atom, and spin are deliberately excluded (covered in PHY302).",
+  "questions": [
+    {
+      "question": "Which experimental observation could NOT be explained by classical wave theory of light and motivated the idea of light quanta?",
+      "options": ["The photoelectric effect", "Diffraction of light through a slit", "Interference of light in Young's double-slit experiment", "Polarization of light"],
+      "correct_answer": "The photoelectric effect",
+      "explanation": "Classical wave theory predicted that the kinetic energy of ejected electrons should depend on light intensity, not frequency, but experiment showed a frequency-dependent threshold, which Einstein explained using light quanta (photons).",
+      "topic": "Historical motivation",
+      "difficulty": "easy"
+    },
+    {
+      "question": "According to the de Broglie hypothesis, a particle of momentum p has an associated wavelength given by",
+      "options": ["lambda = h/p", "lambda = p/h", "lambda = hp", "lambda = h/E"],
+      "correct_answer": "lambda = h/p",
+      "explanation": "De Broglie proposed that matter has wave-like properties with wavelength lambda = h/p, where h is Planck's constant, extending wave-particle duality to matter.",
+      "topic": "Historical motivation",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The time-dependent Schrodinger equation in one dimension for a particle of mass m in a potential V(x,t) is",
+      "options": [
+        "i*hbar * (dPsi/dt) = -(hbar^2/2m)(d^2Psi/dx^2) + V(x,t)Psi",
+        "hbar * (d^2Psi/dt^2) = -(hbar^2/2m)(dPsi/dx) + V(x,t)Psi",
+        "i*hbar * (dPsi/dx) = -(hbar^2/2m)(d^2Psi/dt^2) + V(x,t)Psi",
+        "E*Psi = -(hbar^2/2m)(d^2Psi/dx^2)"
+      ],
+      "correct_answer": "i*hbar * (dPsi/dt) = -(hbar^2/2m)(d^2Psi/dx^2) + V(x,t)Psi",
+      "explanation": "This is the standard form of the time-dependent Schrodinger equation, a first-order-in-time, second-order-in-space linear partial differential equation governing the evolution of the wave function.",
+      "topic": "Schrodinger equation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The time-independent Schrodinger equation is obtained from the time-dependent equation by assuming",
+      "options": [
+        "The potential V is independent of time, allowing separation of variables Psi(x,t) = psi(x)f(t)",
+        "The particle has zero potential energy everywhere",
+        "The wave function is real-valued",
+        "The mass of the particle is negligible"
+      ],
+      "correct_answer": "The potential V is independent of time, allowing separation of variables Psi(x,t) = psi(x)f(t)",
+      "explanation": "When V(x,t) = V(x), the Schrodinger equation is separable; substituting Psi(x,t) = psi(x)f(t) yields the time-independent Schrodinger equation for psi(x) and f(t) = exp(-iEt/hbar).",
+      "topic": "Schrodinger equation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For a stationary state with energy E, the time dependence of the full wave function Psi(x,t) = psi(x)e^(-iEt/hbar) means that",
+      "options": [
+        "The probability density |Psi(x,t)|^2 is independent of time",
+        "The probability density oscillates sinusoidally with time",
+        "The wave function itself is time-independent in all respects",
+        "The particle's position is exactly known at all times"
+      ],
+      "correct_answer": "The probability density |Psi(x,t)|^2 is independent of time",
+      "explanation": "Since |e^(-iEt/hbar)|^2 = 1, the phase factor cancels in |Psi|^2 = psi*(x)psi(x), so stationary states have time-independent probability densities.",
+      "topic": "Schrodinger equation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Born's statistical interpretation of the wave function states that",
+      "options": [
+        "|Psi(x,t)|^2 dx gives the probability of finding the particle between x and x+dx at time t",
+        "Psi(x,t) directly represents the position of the particle",
+        "Psi(x,t) is a measurable physical field like the electric field",
+        "The wave function determines the exact trajectory of the particle"
+      ],
+      "correct_answer": "|Psi(x,t)|^2 dx gives the probability of finding the particle between x and x+dx at time t",
+      "explanation": "Max Born interpreted the squared modulus of the wave function as a probability density, making quantum mechanics inherently probabilistic rather than deterministic in the classical sense.",
+      "topic": "Wave function interpretation",
+      "difficulty": "easy"
+    },
+    {
+      "question": "For a wave function to be physically acceptable in quantum mechanics, it must be",
+      "options": [
+        "Single-valued, finite, continuous, and square-integrable (normalizable)",
+        "Real-valued and periodic",
+        "Equal to zero everywhere except at one point",
+        "Independent of the potential energy function"
+      ],
+      "correct_answer": "Single-valued, finite, continuous, and square-integrable (normalizable)",
+      "explanation": "These conditions ensure the wave function and its interpretation as a probability amplitude make physical sense, and that expectation values of observables are well defined.",
+      "topic": "Wave function interpretation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Normalization of a wave function requires that",
+      "options": [
+        "The integral of |Psi(x,t)|^2 over all space equals 1",
+        "The integral of Psi(x,t) over all space equals 1",
+        "Psi(x,t) equals 1 at x = 0",
+        "The maximum value of |Psi(x,t)|^2 equals 1"
+      ],
+      "correct_answer": "The integral of |Psi(x,t)|^2 over all space equals 1",
+      "explanation": "Since |Psi|^2 is a probability density, the total probability of finding the particle somewhere in space must equal 1, which fixes the normalization constant of the wave function.",
+      "topic": "Wave function interpretation",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A particle is described by the wave function psi(x) = N*exp(-x^2/2a^2) for -infinity < x < infinity. What determines the normalization constant N?",
+      "options": [
+        "Setting the integral of |psi(x)|^2 dx from -infinity to infinity equal to 1",
+        "Setting psi(0) equal to 1",
+        "Setting the integral of psi(x) dx from -infinity to infinity equal to 1",
+        "Setting the derivative of psi(x) at x=0 equal to zero"
+      ],
+      "correct_answer": "Setting the integral of |psi(x)|^2 dx from -infinity to infinity equal to 1",
+      "explanation": "N is fixed by the normalization condition that total probability equals 1; for a Gaussian this gives N = (1/(pi a^2))^(1/4).",
+      "topic": "Wave function interpretation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In quantum mechanics, a physical observable (such as position, momentum, or energy) is represented mathematically by",
+      "options": ["A Hermitian (self-adjoint) linear operator", "A scalar constant", "A classical trajectory function", "An ordinary complex number"],
+      "correct_answer": "A Hermitian (self-adjoint) linear operator",
+      "explanation": "Observables are represented by Hermitian operators because Hermiticity guarantees real eigenvalues, which correspond to the actual measured values of the observable.",
+      "topic": "Operators and observables",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The quantum mechanical momentum operator in the position representation (1D) is",
+      "options": ["p_hat = -i*hbar*(d/dx)", "p_hat = i*hbar*x", "p_hat = -hbar^2*(d^2/dx^2)", "p_hat = hbar*(d/dt)"],
+      "correct_answer": "p_hat = -i*hbar*(d/dx)",
+      "explanation": "The momentum operator is defined as -i*hbar times the spatial derivative, which is consistent with the plane wave eigenfunctions exp(ikx) having momentum eigenvalue hbar*k.",
+      "topic": "Operators and observables",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Hamiltonian operator for a particle of mass m in one dimension moving in potential V(x) is",
+      "options": [
+        "H_hat = -(hbar^2/2m)(d^2/dx^2) + V(x)",
+        "H_hat = -i*hbar*(d/dx) + V(x)",
+        "H_hat = (hbar^2/2m)(d/dx) - V(x)",
+        "H_hat = p_hat*x_hat"
+      ],
+      "correct_answer": "H_hat = -(hbar^2/2m)(d^2/dx^2) + V(x)",
+      "explanation": "The Hamiltonian is the sum of the kinetic energy operator (p_hat^2/2m, which becomes -(hbar^2/2m)d^2/dx^2) and the potential energy operator V(x); it generates time evolution and its eigenvalues are the allowed energies.",
+      "topic": "Operators and observables",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The commutator of position and momentum operators, [x_hat, p_hat], in one-dimensional quantum mechanics equals",
+      "options": ["i*hbar", "hbar", "0", "-i*hbar*x"],
+      "correct_answer": "i*hbar",
+      "explanation": "The canonical commutation relation [x_hat, p_hat] = i*hbar is fundamental to quantum mechanics and is the operator-algebra origin of the Heisenberg uncertainty principle.",
+      "topic": "Operators and observables",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The expectation value of an observable A represented by operator A_hat, for a normalized state psi, is given by",
+      "options": [
+        "<A> = integral of psi*(x) A_hat psi(x) dx",
+        "<A> = integral of A_hat psi(x) dx",
+        "<A> = psi*(x) psi(x)",
+        "<A> = A_hat evaluated at the peak of |psi|^2"
+      ],
+      "correct_answer": "<A> = integral of psi*(x) A_hat psi(x) dx",
+      "explanation": "The expectation value is the probability-weighted average of possible measurement outcomes, computed by sandwiching the operator between the conjugate and the wave function and integrating over all space.",
+      "topic": "Operators and observables",
+      "difficulty": "medium"
+    },
+    {
+      "question": "If psi(x) is an eigenfunction of the Hamiltonian operator with eigenvalue E, then a measurement of energy on this state will",
+      "options": [
+        "Always yield exactly the value E with certainty",
+        "Yield a random value with mean E and nonzero spread",
+        "Never yield the value E",
+        "Yield a value that depends only on the normalization constant"
+      ],
+      "correct_answer": "Always yield exactly the value E with certainty",
+      "explanation": "For an eigenstate of an operator, every measurement of that observable yields the corresponding eigenvalue with probability 1, and the variance of the measurement is zero.",
+      "topic": "Operators and observables",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For a particle in an infinite square well of width L (walls at x=0 and x=L), the boundary conditions require that",
+      "options": [
+        "psi(0) = 0 and psi(L) = 0",
+        "psi'(0) = 0 and psi'(L) = 0",
+        "psi(0) = psi(L) = 1",
+        "psi is undefined at the walls"
+      ],
+      "correct_answer": "psi(0) = 0 and psi(L) = 0",
+      "explanation": "Since the potential is infinite outside the well, the wave function must vanish at and beyond the walls; continuity then forces psi(0) = psi(L) = 0.",
+      "topic": "Infinite square well",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The allowed energy levels of a particle of mass m in an infinite square well of width L are",
+      "options": [
+        "E_n = n^2*pi^2*hbar^2/(2mL^2), n = 1,2,3,...",
+        "E_n = n*hbar*omega, n = 0,1,2,...",
+        "E_n = -13.6/n^2 eV, n = 1,2,3,...",
+        "E_n = n*pi*hbar/(mL), n = 1,2,3,..."
+      ],
+      "correct_answer": "E_n = n^2*pi^2*hbar^2/(2mL^2), n = 1,2,3,...",
+      "explanation": "Solving the time-independent Schrodinger equation inside the well with boundary conditions psi(0)=psi(L)=0 gives quantized sinusoidal solutions with this energy spectrum, which grows as n^2.",
+      "topic": "Infinite square well",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The normalized ground state (n=1) wave function for a particle in an infinite square well of width L is",
+      "options": [
+        "psi_1(x) = sqrt(2/L) * sin(pi*x/L)",
+        "psi_1(x) = sqrt(2/L) * cos(pi*x/L)",
+        "psi_1(x) = (1/L) * sin(pi*x/L)",
+        "psi_1(x) = sqrt(2/L) * sin(2*pi*x/L)"
+      ],
+      "correct_answer": "psi_1(x) = sqrt(2/L) * sin(pi*x/L)",
+      "explanation": "The general normalized solutions are psi_n(x) = sqrt(2/L) sin(n*pi*x/L); for n=1, this gives the nodeless ground state satisfying the boundary conditions.",
+      "topic": "Infinite square well",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For a particle in an infinite square well, the ground state energy is nonzero (E_1 > 0) rather than zero. This is a direct consequence of",
+      "options": [
+        "The Heisenberg uncertainty principle, since confining the particle limits its position uncertainty and forces a nonzero momentum uncertainty",
+        "The particle having intrinsic spin angular momentum",
+        "The well width being infinite",
+        "Relativistic corrections to the kinetic energy"
+      ],
+      "correct_answer": "The Heisenberg uncertainty principle, since confining the particle limits its position uncertainty and forces a nonzero momentum uncertainty",
+      "explanation": "Confinement reduces position uncertainty; the uncertainty principle then requires a minimum momentum spread, giving a minimum (zero-point) kinetic energy greater than zero.",
+      "topic": "Infinite square well",
+      "difficulty": "hard"
+    },
+    {
+      "question": "For the n=2 state of a particle in an infinite square well of width L, the number of nodes (points of zero probability, excluding the endpoints) inside the well is",
+      "options": ["1", "0", "2", "3"],
+      "correct_answer": "1",
+      "explanation": "The n-th eigenstate psi_n(x) = sqrt(2/L) sin(n*pi*x/L) has (n-1) internal nodes; for n=2 there is exactly one node, at x = L/2.",
+      "topic": "Infinite square well",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A particle is in the ground state of an infinite square well of width L = 1 nm. If the well width is halved to L = 0.5 nm, the ground state energy",
+      "options": [
+        "Increases by a factor of 4",
+        "Decreases by a factor of 4",
+        "Increases by a factor of 2",
+        "Remains unchanged"
+      ],
+      "correct_answer": "Increases by a factor of 4",
+      "explanation": "Since E_n is proportional to 1/L^2, halving L increases the energy by a factor of (1/0.5)^2 = 4.",
+      "topic": "Infinite square well",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The classical potential energy of a simple harmonic oscillator of mass m and angular frequency omega is V(x) = (1/2)m*omega^2*x^2. The corresponding quantum mechanical energy eigenvalues are",
+      "options": [
+        "E_n = (n + 1/2)*hbar*omega, n = 0,1,2,...",
+        "E_n = n*hbar*omega, n = 1,2,3,...",
+        "E_n = n^2*hbar*omega/2, n = 0,1,2,...",
+        "E_n = (n - 1/2)*hbar*omega, n = 1,2,3,..."
+      ],
+      "correct_answer": "E_n = (n + 1/2)*hbar*omega, n = 0,1,2,...",
+      "explanation": "Solving the Schrodinger equation for the quadratic potential gives equally spaced energy levels separated by hbar*omega, with a nonzero ground state (zero-point) energy of (1/2)hbar*omega.",
+      "topic": "Quantum harmonic oscillator",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The zero-point energy of the quantum harmonic oscillator ground state (n=0) is",
+      "options": ["hbar*omega/2", "0", "hbar*omega", "3*hbar*omega/2"],
+      "correct_answer": "hbar*omega/2",
+      "explanation": "Unlike a classical oscillator which can be at rest with zero energy, the quantum oscillator has a minimum energy of hbar*omega/2 even in its lowest state, consistent with the uncertainty principle.",
+      "topic": "Quantum harmonic oscillator",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the quantum harmonic oscillator, the energy spacing between adjacent levels E_(n+1) - E_n is",
+      "options": ["hbar*omega (constant, independent of n)", "Increases linearly with n", "Decreases as n increases", "Equal to n*hbar*omega"],
+      "correct_answer": "hbar*omega (constant, independent of n)",
+      "explanation": "Because E_n = (n+1/2)hbar*omega is linear in n, the spacing between any two consecutive levels is always exactly hbar*omega, unlike the square well where spacing grows with n.",
+      "topic": "Quantum harmonic oscillator",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The ground state wave function of the quantum harmonic oscillator has the mathematical form of a",
+      "options": ["Gaussian function", "Sine function", "Exponential decay with a sharp cusp at x=0", "Step function"],
+      "correct_answer": "Gaussian function",
+      "explanation": "The ground state solution psi_0(x) is proportional to exp(-m*omega*x^2/(2hbar)), a smooth bell-shaped Gaussian centered at x=0 with no nodes.",
+      "topic": "Quantum harmonic oscillator",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The raising and lowering (ladder) operators a-dagger and a used to solve the quantum harmonic oscillator algebraically satisfy the commutation relation",
+      "options": ["[a, a-dagger] = 1", "[a, a-dagger] = 0", "[a, a-dagger] = i*hbar", "[a, a-dagger] = -1"],
+      "correct_answer": "[a, a-dagger] = 1",
+      "explanation": "This commutation relation is central to the algebraic (operator) method of solving the harmonic oscillator, allowing energy eigenstates to be built by repeated application of a-dagger on the ground state.",
+      "topic": "Quantum harmonic oscillator",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In classical mechanics, a particle with total energy E less than the height V0 of a potential barrier cannot be found beyond the barrier. In quantum mechanics, this classically forbidden region",
+      "options": [
+        "Allows a nonzero probability of finding the particle, with the wave function decaying exponentially inside the barrier",
+        "Is completely inaccessible, exactly as in classical mechanics",
+        "Can only be reached if the particle's energy exceeds V0",
+        "Has a wave function that oscillates with the same amplitude as outside the barrier"
+      ],
+      "correct_answer": "Allows a nonzero probability of finding the particle, with the wave function decaying exponentially inside the barrier",
+      "explanation": "Inside a classically forbidden region, the Schrodinger equation yields real exponential (not oscillatory) solutions, giving a nonzero but decaying probability amplitude, which underlies the tunneling phenomenon.",
+      "topic": "Potential step and barrier",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For a particle of energy E incident on a potential step of height V0, with E > V0, quantum mechanics predicts that",
+      "options": [
+        "There is a nonzero probability of reflection at the step, unlike the classical prediction of certain transmission",
+        "The particle is always transmitted with certainty, just as classical mechanics predicts",
+        "The particle is always reflected",
+        "The wave function becomes zero beyond the step"
+      ],
+      "correct_answer": "There is a nonzero probability of reflection at the step, unlike the classical prediction of certain transmission",
+      "explanation": "Even when E > V0, the discontinuity in potential causes partial reflection of the matter wave, a purely quantum effect with no classical analogue for point particles.",
+      "topic": "Potential step and barrier",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Quantum tunneling refers to the phenomenon in which",
+      "options": [
+        "A particle has a nonzero probability of being transmitted through a potential barrier even when its energy is less than the barrier height",
+        "A particle gains extra energy from the vacuum to cross a barrier classically",
+        "A particle's wave function becomes exactly zero at the barrier",
+        "A particle's momentum becomes infinite at the barrier edge"
+      ],
+      "correct_answer": "A particle has a nonzero probability of being transmitted through a potential barrier even when its energy is less than the barrier height",
+      "explanation": "Tunneling arises because the wave function does not vanish abruptly at a finite barrier; it decays exponentially within the barrier but can retain a nonzero oscillatory amplitude beyond it, giving finite transmission probability.",
+      "topic": "Potential step and barrier",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In the quantum tunneling of a particle through a rectangular barrier, the transmission probability decreases exponentially with",
+      "options": [
+        "The barrier width and the square root of (V0 - E)",
+        "The particle's charge only",
+        "The particle's spin quantum number",
+        "The time the particle spends outside the barrier"
+      ],
+      "correct_answer": "The barrier width and the square root of (V0 - E)",
+      "explanation": "The transmission coefficient for a rectangular barrier has the approximate form T ~ exp(-2*kappa*L), where kappa is proportional to sqrt(2m(V0-E))/hbar and L is the barrier width, so wider or higher barriers suppress tunneling exponentially.",
+      "topic": "Potential step and barrier",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Which of the following is a real-world phenomenon commonly explained using quantum tunneling?",
+      "options": [
+        "Alpha decay of radioactive nuclei",
+        "The photoelectric effect",
+        "Blackbody radiation spectrum",
+        "The Compton effect"
+      ],
+      "correct_answer": "Alpha decay of radioactive nuclei",
+      "explanation": "Alpha particles tunnel through the Coulomb potential barrier of the nucleus; Gamow's theory of alpha decay using tunneling successfully explains the wide range of observed nuclear half-lives.",
+      "topic": "Potential step and barrier",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Heisenberg uncertainty principle for position and momentum is formally stated as",
+      "options": [
+        "Delta_x * Delta_p >= hbar/2",
+        "Delta_x * Delta_p = 0",
+        "Delta_x + Delta_p >= hbar",
+        "Delta_x * Delta_p <= hbar/2"
+      ],
+      "correct_answer": "Delta_x * Delta_p >= hbar/2",
+      "explanation": "This inequality sets a fundamental lower bound on the product of the standard deviations of position and momentum measurements, derivable formally from the non-commutativity of x_hat and p_hat.",
+      "topic": "Uncertainty principle",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The general form of the Heisenberg uncertainty relation for two observables A and B, derived from their commutator, is",
+      "options": [
+        "Delta_A * Delta_B >= (1/2)|<[A_hat, B_hat]>|",
+        "Delta_A * Delta_B = [A_hat, B_hat]",
+        "Delta_A + Delta_B >= |<[A_hat, B_hat]>|",
+        "Delta_A * Delta_B <= (1/2)|<[A_hat, B_hat]>|"
+      ],
+      "correct_answer": "Delta_A * Delta_B >= (1/2)|<[A_hat, B_hat]>|",
+      "explanation": "This is the generalized uncertainty relation; when A_hat=x_hat and B_hat=p_hat, [x_hat,p_hat]=i*hbar gives the familiar Delta_x*Delta_p >= hbar/2.",
+      "topic": "Uncertainty principle",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The energy-time uncertainty relation Delta_E * Delta_t >= hbar/2 implies that",
+      "options": [
+        "A state with a very short lifetime has a correspondingly large uncertainty (spread) in its energy",
+        "Energy can never be measured precisely under any circumstances",
+        "Time is an operator with the same status as position in quantum mechanics",
+        "Energy conservation is violated in quantum mechanics"
+      ],
+      "correct_answer": "A state with a very short lifetime has a correspondingly large uncertainty (spread) in its energy",
+      "explanation": "Short-lived excited states or unstable particles have broadened energy levels (linewidths) because Delta_t (the lifetime) is small, forcing Delta_E to be correspondingly large.",
+      "topic": "Uncertainty principle",
+      "difficulty": "medium"
+    },
+    {
+      "question": "According to the Heisenberg uncertainty principle, two observables can be measured simultaneously with arbitrary precision if and only if",
+      "options": [
+        "Their corresponding operators commute",
+        "Their corresponding operators anticommute",
+        "They have the same physical units",
+        "They are both Hermitian, regardless of commutation"
+      ],
+      "correct_answer": "Their corresponding operators commute",
+      "explanation": "If [A_hat, B_hat] = 0, the right-hand side of the generalized uncertainty relation vanishes, so there is no fundamental lower bound on the product of uncertainties, and simultaneous eigenstates exist.",
+      "topic": "Uncertainty principle",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Since position and momentum operators do not commute ([x_hat,p_hat] = i*hbar not 0), it follows that",
+      "options": [
+        "Position and momentum cannot simultaneously have precisely defined values",
+        "Position and momentum can always be measured together with perfect precision",
+        "Momentum is not a valid observable in quantum mechanics",
+        "The particle has no well-defined momentum at all times"
+      ],
+      "correct_answer": "Position and momentum cannot simultaneously have precisely defined values",
+      "explanation": "Non-commuting operators lack a complete set of simultaneous eigenstates, so a state with a sharply defined position necessarily has a broad spread in momentum, and vice versa.",
+      "topic": "Uncertainty principle",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which of the following is one of the fundamental postulates of quantum mechanics regarding the state of a physical system?",
+      "options": [
+        "The state of a system is completely described by a wave function (state vector) in a Hilbert space",
+        "The state of a system is described only by its classical position and momentum",
+        "A system has no definite state until it is named by an observer",
+        "The wave function must always be real and positive"
+      ],
+      "correct_answer": "The state of a system is completely described by a wave function (state vector) in a Hilbert space",
+      "explanation": "This is a core postulate: all the physically accessible information about a quantum system is encoded in its state vector (wave function), which belongs to an abstract Hilbert space.",
+      "topic": "Postulates of quantum mechanics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "According to the postulates of quantum mechanics, the only possible results of a measurement of an observable A are",
+      "options": [
+        "The eigenvalues of the corresponding Hermitian operator A_hat",
+        "Any real number chosen at random",
+        "The expectation value of A_hat only",
+        "The normalization constant of the wave function"
+      ],
+      "correct_answer": "The eigenvalues of the corresponding Hermitian operator A_hat",
+      "explanation": "Quantum measurement postulate: measuring an observable always yields one of the eigenvalues of its associated Hermitian operator, and these eigenvalues are necessarily real.",
+      "topic": "Postulates of quantum mechanics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The quantum measurement postulate states that immediately after a measurement of observable A yields eigenvalue a_n, the system's state",
+      "options": [
+        "Collapses to the corresponding eigenstate psi_n associated with eigenvalue a_n",
+        "Remains completely unchanged from before the measurement",
+        "Becomes a uniform superposition of all possible eigenstates",
+        "Is destroyed and cannot be described by any wave function"
+      ],
+      "correct_answer": "Collapses to the corresponding eigenstate psi_n associated with eigenvalue a_n",
+      "explanation": "This is the postulate of wave function collapse: measurement forces the system out of a superposition into the specific eigenstate corresponding to the observed eigenvalue.",
+      "topic": "Postulates of quantum mechanics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "If a system is in a superposition state Psi = c1*psi1 + c2*psi2, where psi1 and psi2 are normalized eigenstates of observable A with distinct eigenvalues a1 and a2, the probability of measuring a1 is",
+      "options": ["|c1|^2 (assuming Psi is normalized so |c1|^2+|c2|^2=1)", "c1", "|c1|", "c1 + c2"],
+      "correct_answer": "|c1|^2 (assuming Psi is normalized so |c1|^2+|c2|^2=1)",
+      "explanation": "The Born rule postulate states that the probability of obtaining eigenvalue a_n from a superposition is the squared modulus of the expansion coefficient of the corresponding eigenstate.",
+      "topic": "Postulates of quantum mechanics",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The postulate governing the time evolution of a quantum state between measurements states that the wave function evolves according to",
+      "options": [
+        "The time-dependent Schrodinger equation, which is deterministic and linear",
+        "A random process with no governing equation",
+        "Newton's second law applied directly to the wave function",
+        "The uncertainty principle alone"
+      ],
+      "correct_answer": "The time-dependent Schrodinger equation, which is deterministic and linear",
+      "explanation": "Between measurements, the evolution of the wave function is fully deterministic and given by the time-dependent Schrodinger equation; the probabilistic aspect enters only upon measurement.",
+      "topic": "Postulates of quantum mechanics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For a Hermitian operator, eigenfunctions corresponding to different (non-degenerate) eigenvalues are",
+      "options": ["Orthogonal to each other", "Always identical", "Necessarily complex conjugates of each other", "Never normalizable"],
+      "correct_answer": "Orthogonal to each other",
+      "explanation": "A key mathematical property used throughout quantum mechanics is that distinct eigenfunctions of a Hermitian operator are orthogonal, which underlies the completeness and orthonormality used to expand arbitrary states.",
+      "topic": "Operators and observables",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A wave packet describing a free particle is constructed as a superposition of plane waves of different wave numbers k. As the spread in k (Delta_k) increases, the spatial width of the wave packet (Delta_x)",
+      "options": [
+        "Decreases, since Delta_x and Delta_k are inversely related",
+        "Increases proportionally with Delta_k",
+        "Stays exactly the same regardless of Delta_k",
+        "Becomes infinite"
+      ],
+      "correct_answer": "Decreases, since Delta_x and Delta_k are inversely related",
+      "explanation": "This is a Fourier-transform property directly connected to the uncertainty principle: a broader distribution of momenta (wave numbers) is needed to localize a particle into a narrower spatial region.",
+      "topic": "Uncertainty principle",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The probability current (probability flux) density j(x,t) in quantum mechanics is important because it",
+      "options": [
+        "Satisfies a continuity equation with the probability density, expressing local conservation of probability",
+        "Represents the actual velocity of the particle at every instant",
+        "Is always zero for any physically valid wave function",
+        "Only applies to charged particles"
+      ],
+      "correct_answer": "Satisfies a continuity equation with the probability density, expressing local conservation of probability",
+      "explanation": "The probability current j(x,t) and density rho(x,t)=|Psi|^2 obey d(rho)/dt + d(j)/dx = 0, ensuring that probability is conserved locally, analogous to conservation laws in electromagnetism and fluid dynamics.",
+      "topic": "Wave function interpretation",
+      "difficulty": "hard"
+    },
+    {
+      "question": "For a finite (rather than infinite) potential well, compared to the infinite square well of the same width, the bound state energies are",
+      "options": [
+        "Lower, and the wave function penetrates into the classically forbidden region outside the well",
+        "Higher, and the wave function is exactly zero outside the well",
+        "Identical, since the well width is the same",
+        "Undefined, because finite wells have no bound states"
+      ],
+      "correct_answer": "Lower, and the wave function penetrates into the classically forbidden region outside the well",
+      "explanation": "Because the wave function can leak (decay exponentially) into the classically forbidden region beyond a finite wall, the effective confinement is weaker, lowering the energy levels relative to the infinite well.",
+      "topic": "Infinite square well",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The parity of the harmonic oscillator eigenfunctions psi_n(x) is such that",
+      "options": [
+        "psi_n(x) is even for even n and odd for odd n",
+        "All psi_n(x) are even functions regardless of n",
+        "All psi_n(x) are odd functions regardless of n",
+        "Parity is undefined for the harmonic oscillator"
+      ],
+      "correct_answer": "psi_n(x) is even for even n and odd for odd n",
+      "explanation": "Because V(x)=(1/2)m*omega^2*x^2 is symmetric, the Hamiltonian commutes with the parity operator, and the eigenfunctions alternate between even and odd symmetry as n increases.",
+      "topic": "Quantum harmonic oscillator",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In a scenario where an electron is confined to a 1D infinite square well of width 2 A (0.2 nm) to model a very tightly bound state, the ground state energy would be",
+      "options": [
+        "On the order of several eV to tens of eV, much larger than the well width used in the analogous but wider nanoscale wells",
+        "Exactly zero, since energy cannot be quantized at such small scales",
+        "Negative, indicating an unbound state",
+        "Independent of the well width entirely"
+      ],
+      "correct_answer": "On the order of several eV to tens of eV, much larger than the well width used in the analogous but wider nanoscale wells",
+      "explanation": "Since E_1 is proportional to 1/L^2, shrinking the well to atomic dimensions (~0.2 nm) dramatically raises the ground-state energy compared to wider quantum-dot-scale wells (a few nm), consistent with confinement estimates.",
+      "topic": "Infinite square well",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A hallmark difference between classical and quantum mechanical description of a particle in a box is that",
+      "options": [
+        "Classically the particle can have any energy and is equally likely to be found anywhere in the box, while quantum mechanically only discrete energies are allowed and the probability density varies with position",
+        "Classically the particle's energy is quantized, but quantum mechanically it is continuous",
+        "Both descriptions predict identical, continuous energy spectra",
+        "Quantum mechanics predicts the particle is always found at the center of the box"
+      ],
+      "correct_answer": "Classically the particle can have any energy and is equally likely to be found anywhere in the box, while quantum mechanically only discrete energies are allowed and the probability density varies with position",
+      "explanation": "This contrast is a central conceptual result of the particle-in-a-box problem, illustrating quantization of energy and non-uniform probability distributions as genuinely quantum features absent in the classical treatment.",
+      "topic": "Infinite square well",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The correspondence principle in quantum mechanics states that",
+      "options": [
+        "Quantum mechanical predictions must approach classical predictions in the limit of large quantum numbers (or macroscopic scales)",
+        "Quantum mechanics and classical mechanics always give identical results at all scales",
+        "Classical mechanics is always more accurate than quantum mechanics",
+        "There is no relationship between quantum and classical descriptions"
+      ],
+      "correct_answer": "Quantum mechanical predictions must approach classical predictions in the limit of large quantum numbers (or macroscopic scales)",
+      "explanation": "Bohr's correspondence principle is a consistency requirement: for large n, quantum results (such as the near-uniform probability distribution in a box) should reproduce familiar classical behavior.",
+      "topic": "Historical motivation",
+      "difficulty": "medium"
+    }
+  ]
+}

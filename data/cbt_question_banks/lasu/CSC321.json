@@ -1,0 +1,256 @@
+{
+  "course_code": "CSC321",
+  "title": "Computer Networks",
+  "level": "300",
+  "source_note": "Standard NUC-aligned Computer Networks curriculum: OSI/TCP-IP models, transmission media, switching, addressing, protocols, and network devices. Grounded against LASU's own CSC438 'Computer Network and Data Communication' course description (layering and OSI model, switching, LAN/MAN/WAN, datagrams and virtual circuits, internetworking, transmission media, modulation/multiplexing, protocols), authored here under the assigned code CSC321.",
+  "questions": [
+    {
+      "question": "How many layers does the OSI reference model have?",
+      "options": ["7", "5", "4", "6"],
+      "correct_answer": "7",
+      "explanation": "The OSI model consists of 7 layers: Physical, Data Link, Network, Transport, Session, Presentation, and Application.",
+      "topic": "Network models",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which OSI layer is responsible for routing packets between different networks based on logical addressing?",
+      "options": ["Network layer", "Data Link layer", "Transport layer", "Physical layer"],
+      "correct_answer": "Network layer",
+      "explanation": "The Network layer (Layer 3) handles logical addressing (e.g., IP addresses) and routing of packets across interconnected networks.",
+      "topic": "Network models",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which OSI layer is responsible for reliable end-to-end data delivery, including error recovery and flow control?",
+      "options": ["Transport layer", "Network layer", "Data Link layer", "Session layer"],
+      "correct_answer": "Transport layer",
+      "explanation": "The Transport layer (Layer 4) ensures reliable, ordered delivery of data between end systems, using protocols like TCP for error recovery and flow control.",
+      "topic": "Network models",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which OSI layer deals with the physical transmission of raw bits over a communication medium?",
+      "options": ["Physical layer", "Application layer", "Presentation layer", "Network layer"],
+      "correct_answer": "Physical layer",
+      "explanation": "The Physical layer (Layer 1) is concerned with the transmission of raw, unstructured bit streams over a physical medium such as cables or radio waves.",
+      "topic": "Network models",
+      "difficulty": "easy"
+    },
+    {
+      "question": "How many layers does the TCP/IP reference model typically have (in its common simplified form)?",
+      "options": ["4", "7", "3", "5"],
+      "correct_answer": "4",
+      "explanation": "The TCP/IP model is commonly described with 4 layers: Network Interface (Link), Internet, Transport, and Application, condensing several OSI layers.",
+      "topic": "Network models",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the primary difference between circuit switching and packet switching?",
+      "options": ["Circuit switching reserves a dedicated communication path for the duration of a session, while packet switching breaks data into packets routed independently", "Packet switching requires a dedicated physical circuit for every transmission", "Circuit switching is used exclusively for wireless networks", "There is no functional difference between the two"],
+      "correct_answer": "Circuit switching reserves a dedicated communication path for the duration of a session, while packet switching breaks data into packets routed independently",
+      "explanation": "Circuit switching (as in traditional telephone networks) establishes a dedicated end-to-end path, while packet switching (as in the Internet) splits data into packets that may take different routes.",
+      "topic": "Switching",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is a 'virtual circuit' in packet-switched networking?",
+      "options": ["A logical connection established between two endpoints before data transfer, where all packets follow the same path", "A physical cable dedicated to a single user", "A wireless-only connection type", "A connection that requires no addressing scheme"],
+      "correct_answer": "A logical connection established between two endpoints before data transfer, where all packets follow the same path",
+      "explanation": "In virtual-circuit packet switching, a logical path is set up before data transmission, and all packets for that session follow the same predetermined route.",
+      "topic": "Switching",
+      "difficulty": "hard"
+    },
+    {
+      "question": "What is the difference between a LAN and a WAN?",
+      "options": ["A LAN covers a small geographic area like a single building, while a WAN spans large geographic distances, often connecting multiple LANs", "A LAN always uses wireless technology while a WAN is always wired", "A WAN can only connect two computers", "There is no difference in geographic scope between them"],
+      "correct_answer": "A LAN covers a small geographic area like a single building, while a WAN spans large geographic distances, often connecting multiple LANs",
+      "explanation": "A Local Area Network (LAN) typically covers a limited area (office, campus), while a Wide Area Network (WAN) spans cities, countries, or continents, often linking multiple LANs together.",
+      "topic": "Network types",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What best describes a Metropolitan Area Network (MAN)?",
+      "options": ["A network spanning a city or large campus, larger than a LAN but smaller than a WAN", "A network confined to a single room", "A network that only uses satellite links", "A synonym for the Internet itself"],
+      "correct_answer": "A network spanning a city or large campus, larger than a LAN but smaller than a WAN",
+      "explanation": "A MAN covers a geographic area larger than a LAN, such as a city, but smaller than the scope typically covered by a WAN.",
+      "topic": "Network types",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the primary function of the TCP (Transmission Control Protocol)?",
+      "options": ["To provide reliable, ordered, and error-checked delivery of a stream of data between applications", "To provide connectionless, best-effort delivery of individual packets", "To assign IP addresses to devices automatically", "To resolve domain names into IP addresses"],
+      "correct_answer": "To provide reliable, ordered, and error-checked delivery of a stream of data between applications",
+      "explanation": "TCP is a connection-oriented transport protocol that guarantees reliable, ordered delivery of data through mechanisms like acknowledgments and retransmission.",
+      "topic": "Protocols",
+      "difficulty": "medium"
+    },
+    {
+      "question": "How does UDP (User Datagram Protocol) differ from TCP?",
+      "options": ["UDP is connectionless and does not guarantee reliable delivery or ordering of packets", "UDP guarantees reliable delivery like TCP", "UDP establishes a connection before sending data", "UDP is slower than TCP in all cases"],
+      "correct_answer": "UDP is connectionless and does not guarantee reliable delivery or ordering of packets",
+      "explanation": "UDP is a lightweight, connectionless protocol that sends datagrams without establishing a connection or guaranteeing delivery, ordering, or error correction, trading reliability for speed.",
+      "topic": "Protocols",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the primary function of the DNS (Domain Name System)?",
+      "options": ["To translate human-readable domain names into IP addresses", "To encrypt data transmitted over the network", "To assign MAC addresses to network cards", "To control the flow of traffic on a LAN"],
+      "correct_answer": "To translate human-readable domain names into IP addresses",
+      "explanation": "DNS acts like a phonebook for the Internet, resolving domain names (e.g., example.com) into their corresponding numeric IP addresses.",
+      "topic": "Protocols",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is the primary purpose of HTTP (Hypertext Transfer Protocol)?",
+      "options": ["To define how web browsers and servers communicate to request and transfer web content", "To manage email transmission between mail servers", "To assign IP addresses dynamically", "To provide secure remote terminal access"],
+      "correct_answer": "To define how web browsers and servers communicate to request and transfer web content",
+      "explanation": "HTTP is an application-layer protocol that governs how clients (browsers) and web servers exchange requests and responses for web resources.",
+      "topic": "Protocols",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is the purpose of FTP (File Transfer Protocol)?",
+      "options": ["To transfer files between a client and a server over a network", "To translate domain names into IP addresses", "To route packets between different autonomous systems", "To provide voice-over-IP communication"],
+      "correct_answer": "To transfer files between a client and a server over a network",
+      "explanation": "FTP is a standard network protocol used to transfer files between a client and server over a TCP-based network.",
+      "topic": "Protocols",
+      "difficulty": "easy"
+    },
+    {
+      "question": "How many bits make up a standard IPv4 address?",
+      "options": ["32", "64", "128", "16"],
+      "correct_answer": "32",
+      "explanation": "IPv4 addresses are 32 bits long, typically expressed as four decimal octets separated by dots (e.g., 192.168.1.1).",
+      "topic": "IP addressing",
+      "difficulty": "medium"
+    },
+    {
+      "question": "How many bits make up a standard IPv6 address?",
+      "options": ["128", "32", "64", "256"],
+      "correct_answer": "128",
+      "explanation": "IPv6 addresses are 128 bits long, providing a vastly larger address space than the 32-bit IPv4, to accommodate the growing number of networked devices.",
+      "topic": "IP addressing",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the purpose of subnetting in IP networking?",
+      "options": ["To divide a larger network into smaller, more manageable sub-networks", "To encrypt data being transmitted over the network", "To combine multiple networks into a single flat network with no divisions", "To convert IPv4 addresses into IPv6 addresses"],
+      "correct_answer": "To divide a larger network into smaller, more manageable sub-networks",
+      "explanation": "Subnetting splits a network into smaller subnetworks, improving address utilization, organization, and traffic management.",
+      "topic": "IP addressing",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the function of a subnet mask?",
+      "options": ["To distinguish the network portion of an IP address from the host portion", "To encrypt an IP address for secure transmission", "To assign a random IP address to each new device", "To translate a MAC address into an IP address"],
+      "correct_answer": "To distinguish the network portion of an IP address from the host portion",
+      "explanation": "A subnet mask indicates which bits of an IP address represent the network and which represent the specific host within that network.",
+      "topic": "IP addressing",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the main function of a router in a computer network?",
+      "options": ["To forward data packets between different networks based on IP addresses", "To amplify electrical signals on a single cable segment", "To translate domain names to IP addresses", "To provide physical cabling connections only, with no intelligence"],
+      "correct_answer": "To forward data packets between different networks based on IP addresses",
+      "explanation": "Routers operate at the Network layer, using routing tables and IP addressing to determine the best path to forward packets between different networks.",
+      "topic": "Network devices",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is the main function of a network switch?",
+      "options": ["To forward data frames between devices on the same local network based on MAC addresses", "To connect entirely separate wide area networks together", "To assign domain names to IP addresses", "To provide wireless-only connectivity exclusively"],
+      "correct_answer": "To forward data frames between devices on the same local network based on MAC addresses",
+      "explanation": "A switch operates at the Data Link layer, using MAC addresses to intelligently forward frames only to the intended destination port within a LAN.",
+      "topic": "Network devices",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the key difference between a hub and a switch?",
+      "options": ["A hub broadcasts incoming data to all connected ports, while a switch intelligently forwards data only to the intended destination port", "A switch broadcasts data to all ports while a hub is selective", "A hub operates at the Network layer while a switch operates at the Physical layer", "There is no functional difference between them"],
+      "correct_answer": "A hub broadcasts incoming data to all connected ports, while a switch intelligently forwards data only to the intended destination port",
+      "explanation": "A hub is a simple, non-intelligent device that repeats incoming signals to every port, while a switch learns MAC addresses and forwards frames only where needed, improving efficiency and security.",
+      "topic": "Network devices",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is 'multiplexing' in data communication?",
+      "options": ["Combining multiple signals into a single transmission channel to be sent simultaneously", "Encrypting a single signal multiple times", "Splitting a single signal into multiple duplicate copies for redundancy", "The process of assigning IP addresses to a network"],
+      "correct_answer": "Combining multiple signals into a single transmission channel to be sent simultaneously",
+      "explanation": "Multiplexing allows multiple signals or data streams to share a single communication channel efficiently, using techniques such as Time Division Multiplexing (TDM) or Frequency Division Multiplexing (FDM).",
+      "topic": "Transmission concepts",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What does TDM (Time Division Multiplexing) do?",
+      "options": ["Allocates each signal a specific time slot to share a single transmission channel", "Assigns each signal its own dedicated frequency band", "Compresses data before transmission", "Converts analog signals into digital signals"],
+      "correct_answer": "Allocates each signal a specific time slot to share a single transmission channel",
+      "explanation": "TDM divides the transmission channel into discrete time slots, cycling through each signal source in turn so multiple signals can share the same medium.",
+      "topic": "Transmission concepts",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the purpose of modulation in data communication?",
+      "options": ["To convert digital or analog signals into a form suitable for transmission over a physical medium, typically by varying a carrier wave", "To detect errors in received data", "To assign logical addresses to network devices", "To compress files before storage"],
+      "correct_answer": "To convert digital or analog signals into a form suitable for transmission over a physical medium, typically by varying a carrier wave",
+      "explanation": "Modulation encodes information onto a carrier signal by varying its amplitude, frequency, or phase, enabling transmission over a given medium (e.g., radio waves, telephone lines).",
+      "topic": "Transmission concepts",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which transmission medium is generally the least susceptible to electromagnetic interference?",
+      "options": ["Fiber optic cable", "Twisted pair copper cable", "Coaxial cable", "Radio waves"],
+      "correct_answer": "Fiber optic cable",
+      "explanation": "Fiber optic cable transmits data as light pulses rather than electrical signals, making it immune to electromagnetic interference that affects copper-based media.",
+      "topic": "Transmission media",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is 'noise' in the context of data transmission?",
+      "options": ["Unwanted signals or disturbances that can corrupt or degrade the quality of a transmitted signal", "The intended data payload of a message", "A type of network topology", "A protocol used for error correction"],
+      "correct_answer": "Unwanted signals or disturbances that can corrupt or degrade the quality of a transmitted signal",
+      "explanation": "Noise refers to any undesired electrical or electromagnetic disturbance that can interfere with and degrade a transmitted signal's quality.",
+      "topic": "Transmission concepts",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is a common technique for detecting errors introduced during data transmission?",
+      "options": ["Checksum (or Cyclic Redundancy Check, CRC)", "Modulation", "Subnetting", "Multiplexing"],
+      "correct_answer": "Checksum (or Cyclic Redundancy Check, CRC)",
+      "explanation": "Checksums and CRCs compute a value from the transmitted data that the receiver can recompute and compare, detecting most transmission errors.",
+      "topic": "Error detection",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is 'congestion control' concerned with in networking?",
+      "options": ["Preventing network performance from degrading due to excessive traffic overwhelming the network's capacity", "Assigning domain names to servers", "Encrypting data for secure transmission", "Determining the physical layout of network cables"],
+      "correct_answer": "Preventing network performance from degrading due to excessive traffic overwhelming the network's capacity",
+      "explanation": "Congestion control mechanisms (used by protocols like TCP) regulate the rate of data transmission to avoid overwhelming network links and routers, which would degrade performance for all users.",
+      "topic": "Protocols",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What does 'internetworking' refer to?",
+      "options": ["Connecting multiple distinct computer networks together to function as a single, larger network", "Configuring a single computer's internal components", "Writing application-level code for a single server", "Establishing a physical connection between two ports on the same switch"],
+      "correct_answer": "Connecting multiple distinct computer networks together to function as a single, larger network",
+      "explanation": "Internetworking involves linking separate networks (often using routers) so that they can communicate as though they were one unified network, as exemplified by the Internet itself.",
+      "topic": "Network types",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a bus network topology, how are devices connected?",
+      "options": ["All devices share a single common communication line (the bus)", "Each device is connected to a central hub only", "Devices form a closed loop, each connected to two neighbors", "Every device is directly connected to every other device"],
+      "correct_answer": "All devices share a single common communication line (the bus)",
+      "explanation": "In a bus topology, all network devices connect to and share a single central cable (the bus), with data traveling along its length to all connected devices.",
+      "topic": "Network topologies",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is the main characteristic of a star network topology?",
+      "options": ["All devices connect individually to a central node, such as a switch or hub", "All devices are connected in a single closed loop", "There is no central connection point", "Every device is wired directly to every other device"],
+      "correct_answer": "All devices connect individually to a central node, such as a switch or hub",
+      "explanation": "In a star topology, each device has a dedicated connection to a central device (hub or switch), which manages all communication between nodes.",
+      "topic": "Network topologies",
+      "difficulty": "easy"
+    }
+  ]
+}

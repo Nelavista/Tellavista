@@ -1,0 +1,505 @@
+{
+  "course_code": "PHY102",
+  "title": "General Physics II",
+  "level": "100",
+  "source_note": "Standard NUC-aligned Nigerian university 100L General Physics II curriculum (broad survey second-semester course): electrostatics, current electricity and circuits, magnetism, wave motion and sound, geometric optics, and an introduction to modern physics -- complementing the more focused 100L Mechanics (PHY103) and Heat (PHY104) courses and preceding the deeper 200L E&M, Waves & Optics courses.",
+  "questions": [
+    {
+      "question": "Like electric charges placed near each other will:",
+      "options": ["Repel each other", "Attract each other", "Have no effect on each other", "Cancel each other out completely"],
+      "correct_answer": "Repel each other",
+      "explanation": "Like charges (both positive or both negative) exert a repulsive force on each other, while unlike charges attract.",
+      "topic": "Electrostatics",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Coulomb's law states that the force between two point charges is:",
+      "options": [
+        "Directly proportional to the product of the charges and inversely proportional to the square of the distance between them",
+        "Inversely proportional to the product of the charges",
+        "Directly proportional to the distance between them",
+        "Independent of the distance between the charges"
+      ],
+      "correct_answer": "Directly proportional to the product of the charges and inversely proportional to the square of the distance between them",
+      "explanation": "Coulomb's law gives F = kq1q2/r^2, showing the force depends on the product of the charge magnitudes and falls off with the square of separation.",
+      "topic": "Electrostatics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Electric field intensity at a point is defined as:",
+      "options": [
+        "The force per unit positive charge placed at that point",
+        "The total charge enclosed at that point",
+        "The potential energy per unit volume",
+        "The distance from the nearest charge"
+      ],
+      "correct_answer": "The force per unit positive charge placed at that point",
+      "explanation": "Electric field E = F/q, the force experienced by a small positive test charge placed at that point in the field.",
+      "topic": "Electrostatics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Electric potential difference between two points is defined as:",
+      "options": [
+        "The work done in moving a unit positive charge from one point to the other",
+        "The total charge that flows between the two points",
+        "The current flowing between the two points",
+        "The distance between the two points"
+      ],
+      "correct_answer": "The work done in moving a unit positive charge from one point to the other",
+      "explanation": "Potential difference V = W/q, the work done per unit charge in moving a positive test charge between two points in an electric field.",
+      "topic": "Electrostatics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A parallel-plate capacitor's capacitance can be increased by:",
+      "options": [
+        "Decreasing the separation between the plates",
+        "Increasing the separation between the plates",
+        "Decreasing the area of the plates",
+        "Removing the dielectric material between the plates"
+      ],
+      "correct_answer": "Decreasing the separation between the plates",
+      "explanation": "Capacitance C = epsilon*A/d, so reducing the plate separation d (or increasing plate area A, or the dielectric constant) increases capacitance.",
+      "topic": "Electrostatics - capacitors",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Ohm's law states that, at constant temperature, the current through a conductor is:",
+      "options": [
+        "Directly proportional to the potential difference across it",
+        "Inversely proportional to the potential difference across it",
+        "Independent of the potential difference across it",
+        "Directly proportional to the square of the potential difference"
+      ],
+      "correct_answer": "Directly proportional to the potential difference across it",
+      "explanation": "Ohm's law states V = IR, meaning current I is directly proportional to voltage V for a conductor at constant temperature, with resistance R as the constant of proportionality.",
+      "topic": "Current electricity",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A resistor of 12 ohms is connected to a 6 V battery. What current flows through it?",
+      "options": ["0.5 A", "2 A", "72 A", "6 A"],
+      "correct_answer": "0.5 A",
+      "explanation": "By Ohm's law, I = V/R = 6/12 = 0.5 A.",
+      "topic": "Current electricity",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Two resistors of 4 ohms and 6 ohms are connected in series. What is their total resistance?",
+      "options": ["10 ohms", "2.4 ohms", "24 ohms", "2 ohms"],
+      "correct_answer": "10 ohms",
+      "explanation": "For resistors in series, the total resistance is the sum of individual resistances: R = 4 + 6 = 10 ohms.",
+      "topic": "Current electricity",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Two resistors of 4 ohms and 4 ohms are connected in parallel. What is their combined resistance?",
+      "options": ["2 ohms", "8 ohms", "1 ohm", "16 ohms"],
+      "correct_answer": "2 ohms",
+      "explanation": "For two equal resistors in parallel, the combined resistance is half of one resistor: (4x4)/(4+4) = 16/8 = 2 ohms.",
+      "topic": "Current electricity",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The electrical resistance of a wire is directly proportional to its length and inversely proportional to its:",
+      "options": ["Cross-sectional area", "Resistivity", "Temperature", "Voltage"],
+      "correct_answer": "Cross-sectional area",
+      "explanation": "Resistance R = rho*L/A, so resistance increases with length L but decreases as the cross-sectional area A increases.",
+      "topic": "Current electricity",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The EMF of a cell is best described as:",
+      "options": [
+        "The total energy supplied by the cell per unit charge, including energy lost to internal resistance",
+        "The potential difference across the terminals when current flows",
+        "The current the cell can supply",
+        "The resistance of the cell only"
+      ],
+      "correct_answer": "The total energy supplied by the cell per unit charge, including energy lost to internal resistance",
+      "explanation": "EMF (electromotive force) is the total energy converted per unit charge by the source, equal to terminal voltage plus the voltage drop across internal resistance when current flows.",
+      "topic": "Current electricity",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A cell of EMF 12 V and internal resistance 1 ohm is connected to an external resistor of 5 ohms. What current flows in the circuit?",
+      "options": ["2 A", "12 A", "2.4 A", "60 A"],
+      "correct_answer": "2 A",
+      "explanation": "Total resistance = internal + external = 1 + 5 = 6 ohms. Current I = EMF/total resistance = 12/6 = 2 A.",
+      "topic": "Current electricity",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Electrical power dissipated in a resistor can be calculated using the formula:",
+      "options": ["P = I^2R", "P = I/R", "P = IR^2", "P = R/I"],
+      "correct_answer": "P = I^2R",
+      "explanation": "Electrical power dissipated as heat in a resistor is given by P = I^2R (equivalently P = VI = V^2/R).",
+      "topic": "Current electricity",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A 60 W electrical appliance operates on a 220 V supply for 2 hours. How much energy does it consume, in joules?",
+      "options": ["432000 J", "120 J", "60 J", "27500 J"],
+      "correct_answer": "432000 J",
+      "explanation": "Energy = Power x time = 60 W x (2 x 3600 s) = 60 x 7200 = 432000 J.",
+      "topic": "Current electricity",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Kirchhoff's current law (junction rule) states that:",
+      "options": [
+        "The sum of currents entering a junction equals the sum of currents leaving it",
+        "The sum of EMFs in a loop equals zero",
+        "Current is always constant throughout a circuit regardless of branching",
+        "Voltage is conserved at every junction"
+      ],
+      "correct_answer": "The sum of currents entering a junction equals the sum of currents leaving it",
+      "explanation": "Kirchhoff's current law is a statement of charge conservation: total current flowing into a junction must equal total current flowing out.",
+      "topic": "Current electricity",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A material that offers very high resistance to the flow of electric current is called a(n):",
+      "options": ["Insulator", "Conductor", "Semiconductor", "Superconductor"],
+      "correct_answer": "Insulator",
+      "explanation": "Insulators, such as rubber and glass, have very few free charge carriers and strongly resist current flow, unlike conductors.",
+      "topic": "Current electricity",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The region around a magnet where its magnetic influence can be detected is called the:",
+      "options": ["Magnetic field", "Electric field", "Gravitational field", "Magnetic pole"],
+      "correct_answer": "Magnetic field",
+      "explanation": "The magnetic field is the region of space surrounding a magnet or current-carrying conductor within which a magnetic force can be detected on another magnet or moving charge.",
+      "topic": "Magnetism",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A current-carrying conductor placed in a magnetic field experiences a force whose direction can be found using:",
+      "options": ["Fleming's left-hand rule", "Fleming's right-hand rule", "Lenz's law only", "The right-hand grip rule only"],
+      "correct_answer": "Fleming's left-hand rule",
+      "explanation": "Fleming's left-hand rule (motor rule) gives the direction of the force on a current-carrying conductor in a magnetic field, using thumb (force), first finger (field), and second finger (current).",
+      "topic": "Magnetism",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Electromagnetic induction is the process by which:",
+      "options": [
+        "An EMF is generated in a conductor due to a changing magnetic flux",
+        "A magnet is created by passing current through a coil",
+        "Two magnets attract each other",
+        "Electric charge flows through a conductor at constant flux"
+      ],
+      "correct_answer": "An EMF is generated in a conductor due to a changing magnetic flux",
+      "explanation": "Electromagnetic induction, described by Faraday's law, occurs when a changing magnetic flux through a circuit induces an electromotive force in that circuit.",
+      "topic": "Magnetism - electromagnetic induction",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Lenz's law states that the direction of an induced EMF is such that it:",
+      "options": [
+        "Opposes the change in magnetic flux that produced it",
+        "Always aids the change in magnetic flux that produced it",
+        "Is independent of the change in flux",
+        "Is always in the same direction as the applied current"
+      ],
+      "correct_answer": "Opposes the change in magnetic flux that produced it",
+      "explanation": "Lenz's law is a consequence of energy conservation: the induced current flows in a direction that opposes the change in flux causing it.",
+      "topic": "Magnetism - electromagnetic induction",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which of the following best describes a transverse wave?",
+      "options": [
+        "A wave in which particle vibrations are perpendicular to the direction of wave travel",
+        "A wave in which particle vibrations are parallel to the direction of wave travel",
+        "A wave that can only travel through solids",
+        "A wave with no energy transfer"
+      ],
+      "correct_answer": "A wave in which particle vibrations are perpendicular to the direction of wave travel",
+      "explanation": "In a transverse wave, such as light or a wave on a string, the medium's particles oscillate at right angles to the direction the wave propagates.",
+      "topic": "Wave motion",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Sound waves are classified as:",
+      "options": ["Longitudinal waves", "Transverse waves", "Electromagnetic waves", "Standing waves only"],
+      "correct_answer": "Longitudinal waves",
+      "explanation": "Sound waves travel through a medium as a series of compressions and rarefactions, with particle oscillations parallel to the direction of wave travel, making them longitudinal.",
+      "topic": "Wave motion",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The relationship between wave speed v, frequency f, and wavelength lambda is given by:",
+      "options": ["v = f x lambda", "v = f / lambda", "v = f + lambda", "v = lambda / f"],
+      "correct_answer": "v = f x lambda",
+      "explanation": "The universal wave equation states that wave speed equals the product of frequency and wavelength.",
+      "topic": "Wave motion",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A wave has a frequency of 50 Hz and a wavelength of 4 m. What is its speed?",
+      "options": ["200 m/s", "12.5 m/s", "54 m/s", "0.08 m/s"],
+      "correct_answer": "200 m/s",
+      "explanation": "Speed = frequency x wavelength = 50 x 4 = 200 m/s.",
+      "topic": "Wave motion",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The principle of superposition of waves states that when two or more waves overlap:",
+      "options": [
+        "The resultant displacement is the vector sum of the individual displacements",
+        "The waves cancel each other out permanently",
+        "Only the wave with greater amplitude survives",
+        "The waves must have the same frequency to combine"
+      ],
+      "correct_answer": "The resultant displacement is the vector sum of the individual displacements",
+      "explanation": "The principle of superposition states that at any point where waves overlap, the resultant displacement equals the algebraic (vector) sum of the individual wave displacements.",
+      "topic": "Wave motion",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A standing (stationary) wave is formed when:",
+      "options": [
+        "Two waves of the same frequency and amplitude travel in opposite directions and superpose",
+        "A single wave travels through a vacuum",
+        "Two waves of different frequencies travel in the same direction",
+        "A wave reflects off a perfectly absorbing surface"
+      ],
+      "correct_answer": "Two waves of the same frequency and amplitude travel in opposite directions and superpose",
+      "explanation": "A standing wave results from the interference of two identical waves travelling in opposite directions, producing fixed nodes and antinodes.",
+      "topic": "Wave motion",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Doppler effect refers to the:",
+      "options": [
+        "Apparent change in frequency of a wave due to relative motion between source and observer",
+        "Bending of waves around obstacles",
+        "Change in wave amplitude with distance",
+        "Splitting of white light into its component colours"
+      ],
+      "correct_answer": "Apparent change in frequency of a wave due to relative motion between source and observer",
+      "explanation": "The Doppler effect describes the change in observed frequency of a wave when the source and observer are moving relative to each other, such as a siren sounding higher-pitched as it approaches.",
+      "topic": "Wave motion",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The speed of sound in air at room temperature is approximately:",
+      "options": ["340 m/s", "3x10^8 m/s", "1500 m/s", "34 m/s"],
+      "correct_answer": "340 m/s",
+      "explanation": "Sound travels through air at roughly 340 m/s at room temperature, much slower than light (3x10^8 m/s) or sound in water (~1500 m/s).",
+      "topic": "Sound",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The loudness of a sound is most closely related to the wave's:",
+      "options": ["Amplitude", "Frequency", "Wavelength", "Speed"],
+      "correct_answer": "Amplitude",
+      "explanation": "Loudness depends primarily on the amplitude (intensity) of the sound wave, while pitch depends on frequency.",
+      "topic": "Sound",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Resonance occurs when a system is driven at a frequency:",
+      "options": [
+        "Equal to its natural frequency, causing a large increase in amplitude",
+        "Much lower than its natural frequency",
+        "Random and unrelated to its natural frequency",
+        "Equal to zero"
+      ],
+      "correct_answer": "Equal to its natural frequency, causing a large increase in amplitude",
+      "explanation": "Resonance occurs when the driving frequency matches the natural frequency of a system, producing a large build-up in amplitude of oscillation.",
+      "topic": "Sound",
+      "difficulty": "medium"
+    },
+    {
+      "question": "An echo is heard because sound waves:",
+      "options": [
+        "Reflect off a distant hard surface and return to the listener after a time delay",
+        "Travel faster than the speed of light",
+        "Are absorbed completely by the air",
+        "Change frequency upon reflection"
+      ],
+      "correct_answer": "Reflect off a distant hard surface and return to the listener after a time delay",
+      "explanation": "An echo results when sound waves reflect off a distant, rigid surface and reach the observer's ear after the direct sound, with a perceptible time delay.",
+      "topic": "Sound",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The laws of reflection state that the angle of incidence equals the angle of reflection, and that the incident ray, reflected ray, and normal:",
+      "options": ["All lie in the same plane", "Are always perpendicular to each other", "Lie on opposite sides of the mirror surface", "Are parallel to each other"],
+      "correct_answer": "All lie in the same plane",
+      "explanation": "The second law of reflection states that the incident ray, the reflected ray, and the normal at the point of incidence all lie in the same plane.",
+      "topic": "Optics - reflection",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Snell's law of refraction relates the angles of incidence and refraction to the:",
+      "options": ["Refractive indices of the two media", "Wavelengths of the two media only", "Speeds of light in a vacuum only", "Colours of the light rays"],
+      "correct_answer": "Refractive indices of the two media",
+      "explanation": "Snell's law states n1 sin(theta1) = n2 sin(theta2), relating the angles of incidence and refraction to the refractive indices of the two media.",
+      "topic": "Optics - refraction",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Total internal reflection can occur when light travels from a:",
+      "options": [
+        "Denser medium to a less dense medium, at an angle greater than the critical angle",
+        "Less dense medium to a denser medium at any angle",
+        "Vacuum into a denser medium",
+        "Denser medium to a less dense medium at an angle smaller than the critical angle"
+      ],
+      "correct_answer": "Denser medium to a less dense medium, at an angle greater than the critical angle",
+      "explanation": "Total internal reflection occurs only when light travels from an optically denser to a less dense medium and the angle of incidence exceeds the critical angle for that boundary.",
+      "topic": "Optics - refraction",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A converging (convex) lens forms a real, inverted image of an object placed:",
+      "options": ["Beyond the focal point of the lens", "Exactly at the focal point", "Between the lens and its focal point", "At the centre of the lens"],
+      "correct_answer": "Beyond the focal point of the lens",
+      "explanation": "When an object is placed beyond the focal length of a converging lens, the lens forms a real, inverted image on the opposite side; an object within the focal length produces a virtual, upright, magnified image.",
+      "topic": "Optics - lenses",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The lens formula relating object distance u, image distance v, and focal length f is:",
+      "options": ["1/f = 1/u + 1/v", "f = u + v", "1/f = 1/u - 1/v", "f = uv"],
+      "correct_answer": "1/f = 1/u + 1/v",
+      "explanation": "The thin lens formula relates focal length, object distance, and image distance as 1/f = 1/u + 1/v (using the real-is-positive convention).",
+      "topic": "Optics - lenses",
+      "difficulty": "medium"
+    },
+    {
+      "question": "An object is placed 20 cm from a converging lens of focal length 10 cm. Using 1/f = 1/u + 1/v, what is the image distance?",
+      "options": ["20 cm", "10 cm", "5 cm", "30 cm"],
+      "correct_answer": "20 cm",
+      "explanation": "1/v = 1/f - 1/u = 1/10 - 1/20 = 1/20, so v = 20 cm.",
+      "topic": "Optics - lenses",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A diverging (concave) lens always forms images that are:",
+      "options": ["Virtual, upright, and diminished", "Real, inverted, and magnified", "Real and upright", "Virtual and inverted"],
+      "correct_answer": "Virtual, upright, and diminished",
+      "explanation": "A diverging lens spreads out parallel rays and always produces a virtual, upright, smaller image regardless of the object's position.",
+      "topic": "Optics - lenses",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A concave mirror used as a shaving or make-up mirror works because, when the face is placed within its focal length, it produces an image that is:",
+      "options": ["Virtual, upright, and magnified", "Real, inverted, and diminished", "Real and upright", "Virtual and inverted"],
+      "correct_answer": "Virtual, upright, and magnified",
+      "explanation": "When an object is placed between a concave mirror and its focal point, the mirror produces a magnified, upright, virtual image, useful for shaving or make-up mirrors.",
+      "topic": "Optics - mirrors",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A convex mirror is commonly used as a vehicle side mirror because it:",
+      "options": [
+        "Produces a diminished, upright image over a wide field of view",
+        "Produces a magnified, inverted image",
+        "Focuses light to a single point",
+        "Cannot form any image"
+      ],
+      "correct_answer": "Produces a diminished, upright image over a wide field of view",
+      "explanation": "A convex mirror always forms a smaller, upright, virtual image and gives a wider field of view, which is why it is used in vehicle side mirrors.",
+      "topic": "Optics - mirrors",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The splitting of white light into its component colours when passed through a prism is called:",
+      "options": ["Dispersion", "Reflection", "Polarization", "Diffraction"],
+      "correct_answer": "Dispersion",
+      "explanation": "Dispersion occurs because different wavelengths (colours) of light refract by slightly different amounts in a medium such as glass, spreading white light into a spectrum.",
+      "topic": "Optics - dispersion",
+      "difficulty": "easy"
+    },
+    {
+      "question": "According to the Bohr model of the atom, electrons occupy:",
+      "options": [
+        "Discrete (quantised) energy levels around the nucleus",
+        "Any continuous energy level around the nucleus",
+        "A single fixed orbit only",
+        "Positions inside the nucleus"
+      ],
+      "correct_answer": "Discrete (quantised) energy levels around the nucleus",
+      "explanation": "The Bohr model proposes that electrons can only occupy specific, quantised orbits/energy levels, emitting or absorbing photons when transitioning between them.",
+      "topic": "Modern physics - atomic structure",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the photoelectric effect, electrons are emitted from a metal surface when light:",
+      "options": [
+        "Of frequency above a certain threshold value strikes the surface",
+        "Of any frequency strikes the surface, regardless of intensity",
+        "Is completely absorbed by the metal's nucleus",
+        "Has a wavelength longer than the threshold wavelength"
+      ],
+      "correct_answer": "Of frequency above a certain threshold value strikes the surface",
+      "explanation": "The photoelectric effect shows that electron emission occurs only when incident light frequency exceeds a metal-specific threshold frequency, regardless of the light's intensity, supporting the photon (particle) model of light.",
+      "topic": "Modern physics - photoelectric effect",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Which type of radioactive emission consists of helium nuclei (two protons and two neutrons)?",
+      "options": ["Alpha particles", "Beta particles", "Gamma rays", "X-rays"],
+      "correct_answer": "Alpha particles",
+      "explanation": "An alpha particle is identical to a helium-4 nucleus, consisting of two protons and two neutrons, and is the least penetrating of the common radioactive emissions.",
+      "topic": "Modern physics - radioactivity",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which type of radioactive emission is a high-energy electromagnetic wave with no mass or charge?",
+      "options": ["Gamma rays", "Alpha particles", "Beta particles", "Neutrons"],
+      "correct_answer": "Gamma rays",
+      "explanation": "Gamma rays are high-frequency electromagnetic radiation emitted from an unstable nucleus, carrying no charge or rest mass, and are the most penetrating type of nuclear radiation.",
+      "topic": "Modern physics - radioactivity",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The half-life of a radioactive substance is defined as the time taken for:",
+      "options": [
+        "Half of the radioactive nuclei in a sample to decay",
+        "All the radioactive nuclei in a sample to decay",
+        "The sample's mass to double",
+        "The sample's temperature to fall by half"
+      ],
+      "correct_answer": "Half of the radioactive nuclei in a sample to decay",
+      "explanation": "Half-life is the characteristic time required for the number of undecayed radioactive nuclei in a sample to reduce to half its original value.",
+      "topic": "Modern physics - radioactivity",
+      "difficulty": "easy"
+    },
+    {
+      "question": "X-rays are best described as:",
+      "options": [
+        "High-frequency electromagnetic waves produced when fast electrons are suddenly decelerated",
+        "Streams of helium nuclei",
+        "Streams of high-speed electrons",
+        "Low-frequency radio waves"
+      ],
+      "correct_answer": "High-frequency electromagnetic waves produced when fast electrons are suddenly decelerated",
+      "explanation": "X-rays are electromagnetic radiation of very short wavelength, typically produced when high-speed electrons are rapidly decelerated upon striking a metal target, as in an X-ray tube.",
+      "topic": "Modern physics - X-rays",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The atomic number of an element represents the number of:",
+      "options": ["Protons in the nucleus", "Neutrons in the nucleus", "Protons plus neutrons in the nucleus", "Electrons plus neutrons"],
+      "correct_answer": "Protons in the nucleus",
+      "explanation": "The atomic number Z is defined as the number of protons in the nucleus, which also determines the element's identity and, in a neutral atom, equals the number of electrons.",
+      "topic": "Modern physics - atomic structure",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The mass number of an atom is the sum of the number of:",
+      "options": ["Protons and neutrons in the nucleus", "Protons and electrons", "Neutrons and electrons only", "Protons only"],
+      "correct_answer": "Protons and neutrons in the nucleus",
+      "explanation": "The mass number A is the total count of protons and neutrons (nucleons) in the nucleus of an atom.",
+      "topic": "Modern physics - atomic structure",
+      "difficulty": "easy"
+    }
+  ]
+}

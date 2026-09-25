@@ -1,0 +1,387 @@
+{
+  "course_code": "BIO301",
+  "title": "Molecular Biology",
+  "level": "300",
+  "source_note": "Standard NUC-aligned 300L Biology molecular biology curriculum: DNA replication mechanics, transcription and RNA processing, the genetic code and translation, prokaryotic and eukaryotic gene regulation, recombinant DNA techniques, and common molecular biology laboratory methods.",
+  "questions": [
+    {
+      "question": "The central dogma of molecular biology describes the general flow of genetic information as:",
+      "options": [
+        "Protein to RNA to DNA",
+        "DNA to RNA to protein",
+        "RNA to DNA to protein",
+        "DNA directly to protein without an RNA intermediate"
+      ],
+      "correct_answer": "DNA to RNA to protein",
+      "explanation": "The central dogma states that genetic information generally flows from DNA, which is transcribed into RNA, which is then translated into protein.",
+      "topic": "Central dogma",
+      "difficulty": "easy"
+    },
+    {
+      "question": "At the replication fork, DNA polymerase synthesises the leading strand continuously, while the lagging strand is synthesised discontinuously as short fragments called:",
+      "options": ["Primers", "Okazaki fragments", "Replicons", "Telomeres"],
+      "correct_answer": "Okazaki fragments",
+      "explanation": "Because DNA polymerase only synthesises 5' to 3', the lagging strand is made in short discontinuous Okazaki fragments that are later joined by DNA ligase.",
+      "topic": "DNA replication",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which enzyme unwinds the DNA double helix ahead of the replication fork by breaking hydrogen bonds between base pairs?",
+      "options": ["DNA ligase", "Helicase", "Topoisomerase", "Primase"],
+      "correct_answer": "Helicase",
+      "explanation": "Helicase uses ATP hydrolysis to unwind the double helix at the replication fork, separating the two parental strands for copying.",
+      "topic": "DNA replication",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Primase is required during DNA replication because:",
+      "options": [
+        "DNA polymerase cannot begin synthesis without a free 3'-OH group provided by a short RNA primer",
+        "It unwinds the double helix",
+        "It joins Okazaki fragments together",
+        "It relieves supercoiling ahead of the replication fork"
+      ],
+      "correct_answer": "DNA polymerase cannot begin synthesis without a free 3'-OH group provided by a short RNA primer",
+      "explanation": "DNA polymerases can only extend an existing strand, so primase synthesises a short RNA primer that provides the free 3'-OH group needed to begin DNA synthesis.",
+      "topic": "DNA replication",
+      "difficulty": "medium"
+    },
+    {
+      "question": "DNA ligase functions in replication and repair by:",
+      "options": [
+        "Unwinding the DNA helix",
+        "Sealing nicks in the sugar-phosphate backbone by forming phosphodiester bonds between adjacent fragments",
+        "Removing RNA primers",
+        "Synthesising RNA primers"
+      ],
+      "correct_answer": "Sealing nicks in the sugar-phosphate backbone by forming phosphodiester bonds between adjacent fragments",
+      "explanation": "DNA ligase catalyses the formation of a phosphodiester bond to join adjacent Okazaki fragments (after primer removal and gap filling) into a continuous strand.",
+      "topic": "DNA replication",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In prokaryotic transcription, the enzyme RNA polymerase binds to a specific DNA sequence to initiate transcription, called the:",
+      "options": ["Operator", "Promoter", "Terminator", "Enhancer"],
+      "correct_answer": "Promoter",
+      "explanation": "The promoter is the DNA sequence upstream of a gene where RNA polymerase (aided by sigma factor in bacteria) binds to initiate transcription.",
+      "topic": "Transcription",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In eukaryotic mRNA processing, the removal of non-coding intron sequences and joining of exons is called:",
+      "options": ["Capping", "Polyadenylation", "Splicing", "Transcription termination"],
+      "correct_answer": "Splicing",
+      "explanation": "Splicing, carried out by the spliceosome, removes introns from the pre-mRNA and joins exons together to form mature mRNA.",
+      "topic": "RNA processing",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The addition of a 7-methylguanosine cap to the 5' end of eukaryotic pre-mRNA primarily serves to:",
+      "options": [
+        "Signal the end of transcription",
+        "Protect the mRNA from degradation and aid ribosome binding during translation initiation",
+        "Remove introns from the transcript",
+        "Add a poly-A tail to the 3' end"
+      ],
+      "correct_answer": "Protect the mRNA from degradation and aid ribosome binding during translation initiation",
+      "explanation": "The 5' cap protects mRNA from exonuclease degradation and is recognised by translation initiation factors that help recruit the ribosome.",
+      "topic": "RNA processing",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The genetic code is described as 'degenerate' because:",
+      "options": [
+        "Some amino acids are specified by more than one codon",
+        "Some codons specify no amino acid at all",
+        "The code differs completely between all species",
+        "Each amino acid has exactly one unique codon"
+      ],
+      "correct_answer": "Some amino acids are specified by more than one codon",
+      "explanation": "Degeneracy (redundancy) of the genetic code means most amino acids are encoded by more than one triplet codon, which helps buffer against some point mutations.",
+      "topic": "Genetic code",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which of the following is a start codon that also codes for the amino acid methionine in most organisms?",
+      "options": ["UAA", "UAG", "AUG", "UGA"],
+      "correct_answer": "AUG",
+      "explanation": "AUG is the near-universal start codon signalling the beginning of translation and coding for methionine (or formylmethionine in bacteria).",
+      "topic": "Genetic code",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The 'wobble hypothesis' explains why:",
+      "options": [
+        "Ribosomes can move along mRNA in either direction",
+        "A single tRNA can pair with more than one codon due to flexible base pairing at the third codon position",
+        "DNA polymerase makes replication errors",
+        "Introns are removed from pre-mRNA"
+      ],
+      "correct_answer": "A single tRNA can pair with more than one codon due to flexible base pairing at the third codon position",
+      "explanation": "Wobble base pairing allows non-standard pairing at the third position of the codon-anticodon interaction, letting one tRNA recognise multiple synonymous codons.",
+      "topic": "Genetic code",
+      "difficulty": "hard"
+    },
+    {
+      "question": "During translation, the ribosomal site where a new incoming aminoacyl-tRNA first binds is called the:",
+      "options": ["P site", "A site", "E site", "T site"],
+      "correct_answer": "A site",
+      "explanation": "The A (aminoacyl) site is where each new charged tRNA enters the ribosome to pair with the mRNA codon before peptide bond formation.",
+      "topic": "Translation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Translation terminates when the ribosome encounters a stop codon (UAA, UAG, or UGA) because:",
+      "options": [
+        "A special tRNA with an anticodon for the stop codon binds and adds a stop amino acid",
+        "No tRNA normally recognises stop codons; instead release factors bind and trigger release of the polypeptide",
+        "The ribosome runs out of ATP",
+        "RNA polymerase detaches from the DNA"
+      ],
+      "correct_answer": "No tRNA normally recognises stop codons; instead release factors bind and trigger release of the polypeptide",
+      "explanation": "Stop codons are not recognised by tRNAs but by release factors, which promote hydrolysis of the bond between the polypeptide and the tRNA, releasing the finished protein.",
+      "topic": "Translation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the lac operon of E. coli, in the absence of lactose, the lac repressor protein:",
+      "options": [
+        "Binds to the operator and blocks RNA polymerase from transcribing the structural genes",
+        "Binds to the promoter and enhances transcription",
+        "Degrades the lac mRNA",
+        "Activates transcription of the structural genes"
+      ],
+      "correct_answer": "Binds to the operator and blocks RNA polymerase from transcribing the structural genes",
+      "explanation": "Without lactose, the lac repressor binds the operator sequence and sterically blocks RNA polymerase, keeping the lac operon genes (lacZ, lacY, lacA) off.",
+      "topic": "Gene regulation (prokaryotes)",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the lac operon system, allolactose (derived from lactose) induces transcription by:",
+      "options": [
+        "Binding directly to RNA polymerase",
+        "Binding to the lac repressor, changing its shape so it can no longer bind the operator",
+        "Destroying the operator sequence",
+        "Binding to the promoter to recruit sigma factor"
+      ],
+      "correct_answer": "Binding to the lac repressor, changing its shape so it can no longer bind the operator",
+      "explanation": "Allolactose acts as an inducer that binds the repressor allosterically, causing it to release the operator and allowing transcription of the lac operon to proceed.",
+      "topic": "Gene regulation (prokaryotes)",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The trp operon of E. coli is an example of a repressible operon, meaning that:",
+      "options": [
+        "Transcription is normally off and is switched on by an inducer",
+        "Transcription is normally on and is switched off when tryptophan levels are high, acting as a corepressor",
+        "It has no regulatory protein at all",
+        "It is regulated only by catabolite repression"
+      ],
+      "correct_answer": "Transcription is normally on and is switched off when tryptophan levels are high, acting as a corepressor",
+      "explanation": "In the trp operon, tryptophan itself acts as a corepressor that binds the trp repressor, activating it to bind the operator and shut down transcription when tryptophan is abundant.",
+      "topic": "Gene regulation (prokaryotes)",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In eukaryotic gene regulation, enhancers can influence transcription of a gene even though they are located far from the promoter, because:",
+      "options": [
+        "They directly code for the protein",
+        "DNA looping brings transcription factors bound at the enhancer into contact with the promoter-bound transcription machinery",
+        "They are transcribed into the mRNA itself",
+        "They physically move along the chromosome to the promoter"
+      ],
+      "correct_answer": "DNA looping brings transcription factors bound at the enhancer into contact with the promoter-bound transcription machinery",
+      "explanation": "Enhancers work at a distance because the DNA between them and the promoter loops out, allowing enhancer-bound activator proteins to interact directly with the transcription initiation complex.",
+      "topic": "Gene regulation (eukaryotes)",
+      "difficulty": "hard"
+    },
+    {
+      "question": "DNA methylation, typically at cytosine bases in CpG islands, generally has which effect on gene expression?",
+      "options": [
+        "It activates transcription strongly",
+        "It is commonly associated with gene silencing/repression of transcription",
+        "It has no known effect on transcription",
+        "It converts DNA into RNA"
+      ],
+      "correct_answer": "It is commonly associated with gene silencing/repression of transcription",
+      "explanation": "DNA methylation of promoter CpG islands is an epigenetic modification generally correlated with transcriptional repression and heterochromatin formation.",
+      "topic": "Gene regulation (eukaryotes)",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Restriction endonucleases are enzymes used in recombinant DNA technology because they:",
+      "options": [
+        "Join DNA fragments together at their ends",
+        "Cut DNA at specific recognition sequences, producing fragments with defined ends",
+        "Synthesise new DNA strands from a template",
+        "Amplify DNA exponentially using heat cycling"
+      ],
+      "correct_answer": "Cut DNA at specific recognition sequences, producing fragments with defined ends",
+      "explanation": "Restriction enzymes recognise specific palindromic DNA sequences and cleave the DNA there, generating fragments (often with sticky ends) useful for cloning.",
+      "topic": "Recombinant DNA technology",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In molecular cloning, a plasmid vector must contain which of the following to be useful for selecting bacteria that have taken it up?",
+      "options": [
+        "A selectable marker gene, such as antibiotic resistance",
+        "A ribosome only",
+        "A complete bacterial chromosome",
+        "A nucleus"
+      ],
+      "correct_answer": "A selectable marker gene, such as antibiotic resistance",
+      "explanation": "A selectable marker, commonly an antibiotic resistance gene, allows researchers to identify and select only the bacterial cells that have successfully taken up the recombinant plasmid.",
+      "topic": "Recombinant DNA technology",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The polymerase chain reaction (PCR) amplifies a specific DNA segment through repeated cycles of:",
+      "options": [
+        "Transcription, translation, and replication",
+        "Denaturation, primer annealing, and extension",
+        "Restriction digestion, ligation, and transformation",
+        "Electrophoresis, staining, and visualisation"
+      ],
+      "correct_answer": "Denaturation, primer annealing, and extension",
+      "explanation": "PCR cycles through heat denaturation to separate DNA strands, cooling to allow primers to anneal, and extension by a heat-stable DNA polymerase (e.g., Taq) to copy the target sequence.",
+      "topic": "Molecular techniques",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Taq polymerase is favoured for PCR because it is:",
+      "options": [
+        "Isolated from a human cell line",
+        "A heat-stable DNA polymerase derived from the thermophilic bacterium Thermus aquaticus, able to survive repeated denaturation temperatures",
+        "An RNA polymerase that does not require primers",
+        "Capable of proofreading and error correction, unlike all other polymerases"
+      ],
+      "correct_answer": "A heat-stable DNA polymerase derived from the thermophilic bacterium Thermus aquaticus, able to survive repeated denaturation temperatures",
+      "explanation": "Taq polymerase, from the thermophile Thermus aquaticus, withstands the high temperatures (around 94-98 degrees Celsius) used to denature DNA in each PCR cycle without being destroyed.",
+      "topic": "Molecular techniques",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Agarose gel electrophoresis separates DNA fragments primarily on the basis of:",
+      "options": [
+        "Their nucleotide sequence",
+        "Their size, with smaller fragments migrating faster through the gel matrix toward the positive electrode",
+        "Their overall charge to mass ratio, which varies widely among DNA fragments",
+        "Their base composition (GC versus AT content) alone"
+      ],
+      "correct_answer": "Their size, with smaller fragments migrating faster through the gel matrix toward the positive electrode",
+      "explanation": "Because DNA has a uniform negative charge per unit length, electrophoresis separates fragments mainly by size as they move through the gel matrix toward the anode, smaller fragments moving faster.",
+      "topic": "Molecular techniques",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Southern blotting technique is used to detect specific:",
+      "options": ["RNA sequences", "Protein molecules", "DNA sequences", "Lipid molecules"],
+      "correct_answer": "DNA sequences",
+      "explanation": "Southern blotting transfers separated DNA fragments to a membrane and probes for a specific DNA sequence using a labelled complementary probe.",
+      "topic": "Molecular techniques",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Northern blotting is analogous to Southern blotting but is used specifically to detect:",
+      "options": ["DNA fragments", "RNA transcripts", "Proteins", "Lipids"],
+      "correct_answer": "RNA transcripts",
+      "explanation": "Northern blotting follows the same principle as Southern blotting but is applied to RNA, allowing detection and study of specific gene transcripts.",
+      "topic": "Molecular techniques",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Western blotting is used to detect and analyse specific:",
+      "options": ["DNA fragments", "RNA molecules", "Proteins", "Carbohydrates"],
+      "correct_answer": "Proteins",
+      "explanation": "Western blotting uses antibodies to detect specific proteins that have been separated by gel electrophoresis and transferred to a membrane.",
+      "topic": "Molecular techniques",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Sanger (chain-termination) DNA sequencing relies on the incorporation of:",
+      "options": [
+        "Dideoxynucleotides (ddNTPs) lacking a 3'-OH group, which terminate strand elongation when incorporated",
+        "Only ribonucleotides",
+        "Restriction enzymes to cut at every base",
+        "Methylated nucleotides only"
+      ],
+      "correct_answer": "Dideoxynucleotides (ddNTPs) lacking a 3'-OH group, which terminate strand elongation when incorporated",
+      "explanation": "Sanger sequencing mixes normal dNTPs with chain-terminating ddNTPs; incorporation of a ddNTP halts further extension, producing fragments of varying length that reveal the sequence when separated by size.",
+      "topic": "Molecular techniques",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A silent mutation is one in which a nucleotide change:",
+      "options": [
+        "Alters the amino acid sequence of the resulting protein",
+        "Does not change the amino acid encoded, usually due to codon degeneracy",
+        "Introduces a premature stop codon",
+        "Always causes a frameshift"
+      ],
+      "correct_answer": "Does not change the amino acid encoded, usually due to codon degeneracy",
+      "explanation": "A silent mutation changes a codon to a synonymous one that still specifies the same amino acid, so the protein sequence is unaffected.",
+      "topic": "Mutation at the molecular level",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A nonsense mutation converts a codon that normally specifies an amino acid into:",
+      "options": ["A start codon", "A stop codon, causing premature termination of translation", "A silent codon", "An intron"],
+      "correct_answer": "A stop codon, causing premature termination of translation",
+      "explanation": "A nonsense mutation changes a sense codon into a premature stop codon, truncating the resulting polypeptide, usually producing a non-functional protein.",
+      "topic": "Mutation at the molecular level",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Nucleotide excision repair is a DNA repair mechanism primarily used to correct:",
+      "options": [
+        "Single mismatched bases caused by replication errors",
+        "Bulky helix-distorting DNA lesions such as thymine dimers caused by UV light",
+        "Double-strand breaks only",
+        "Errors in RNA splicing"
+      ],
+      "correct_answer": "Bulky helix-distorting DNA lesions such as thymine dimers caused by UV light",
+      "explanation": "Nucleotide excision repair removes a short single-stranded segment containing a bulky lesion, such as a UV-induced pyrimidine dimer, and resynthesises it using the intact complementary strand as template.",
+      "topic": "DNA repair",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Mismatch repair systems correct errors that:",
+      "options": [
+        "Occur when DNA polymerase incorporates an incorrect, non-complementary base during replication and it escapes proofreading",
+        "Are caused only by ionising radiation",
+        "Occur exclusively in RNA molecules",
+        "Result from chromosomal nondisjunction"
+      ],
+      "correct_answer": "Occur when DNA polymerase incorporates an incorrect, non-complementary base during replication and it escapes proofreading",
+      "explanation": "Mismatch repair scans newly replicated DNA for base-pairing errors missed by polymerase proofreading and corrects the mismatched base using the parental strand as the reference.",
+      "topic": "DNA repair",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Which of the following best describes the function of a signal peptide/sequence found on some newly synthesised proteins?",
+      "options": [
+        "It directs the protein to its correct cellular destination, such as the endoplasmic reticulum",
+        "It provides the start codon for translation",
+        "It terminates transcription",
+        "It codes for a regulatory RNA molecule"
+      ],
+      "correct_answer": "It directs the protein to its correct cellular destination, such as the endoplasmic reticulum",
+      "explanation": "A signal sequence at the N-terminus of a nascent polypeptide is recognised by the signal recognition particle and directs the ribosome-protein complex to the endoplasmic reticulum for further processing.",
+      "topic": "Protein targeting",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Reverse transcriptase, an enzyme used in molecular biology to synthesise cDNA, catalyses the synthesis of:",
+      "options": [
+        "DNA from an RNA template",
+        "RNA from a DNA template",
+        "Protein from an mRNA template",
+        "RNA from an RNA template"
+      ],
+      "correct_answer": "DNA from an RNA template",
+      "explanation": "Reverse transcriptase, originally identified in retroviruses, synthesises complementary DNA (cDNA) using an RNA template, which is widely used to clone expressed genes.",
+      "topic": "Molecular techniques",
+      "difficulty": "medium"
+    }
+  ]
+}

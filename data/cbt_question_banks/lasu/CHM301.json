@@ -1,0 +1,351 @@
+{
+  "course_code": "CHM301",
+  "title": "Physical Chemistry III",
+  "level": "300",
+  "source_note": "Standard NUC-aligned Nigerian university 300L Physical Chemistry III curriculum: quantum chemistry and atomic structure, chemical bonding theories (VBT/MOT), molecular symmetry, photochemistry, and surface chemistry/catalysis. Chemical kinetics and spectroscopy are treated as dedicated courses elsewhere (CHM402, CHM410) so are only touched lightly here.",
+  "questions": [
+    {
+      "question": "De Broglie's hypothesis proposes that a particle of momentum p has an associated wavelength given by:",
+      "options": ["λ = h/p", "λ = p/h", "λ = hp", "λ = h²/p"],
+      "correct_answer": "λ = h/p",
+      "explanation": "De Broglie's relation λ = h/p (h = Planck's constant) assigns a wave character to moving particles, unifying wave and particle descriptions of matter.",
+      "topic": "Quantum chemistry",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The Heisenberg uncertainty principle states that:",
+      "options": [
+        "Energy of an electron in an atom is always quantized",
+        "It is impossible to simultaneously know the exact position and exact momentum of a particle",
+        "Electrons always occupy the lowest available energy orbital",
+        "No two electrons in an atom can have identical quantum numbers"
+      ],
+      "correct_answer": "It is impossible to simultaneously know the exact position and exact momentum of a particle",
+      "explanation": "The uncertainty principle sets a fundamental limit: Δx·Δp ≥ h/4π, so position and momentum cannot both be known with arbitrary precision.",
+      "topic": "Quantum chemistry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Schrödinger wave equation, when solved for a given system, yields:",
+      "options": [
+        "The exact trajectory of an electron",
+        "Wavefunctions (ψ) and corresponding allowed energy values",
+        "Only the mass of the particle",
+        "The rate constant of a chemical reaction"
+      ],
+      "correct_answer": "Wavefunctions (ψ) and corresponding allowed energy values",
+      "explanation": "Solving the Schrödinger equation for a system gives permissible wavefunctions and their associated quantized energies; ψ² gives the probability density of finding the particle.",
+      "topic": "Quantum chemistry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The principal quantum number (n) of an atomic orbital primarily determines:",
+      "options": ["The shape of the orbital", "The orientation of the orbital in space", "The overall size and energy of the orbital", "The spin of the electron"],
+      "correct_answer": "The overall size and energy of the orbital",
+      "explanation": "n specifies the shell (energy level); larger n means a larger, higher-energy orbital.",
+      "topic": "Quantum chemistry",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The azimuthal (angular momentum) quantum number, l, determines:",
+      "options": ["The shape of the subshell/orbital", "The exact energy of a multi-electron atom's orbital only", "The spin direction of the electron", "The number of protons in the nucleus"],
+      "correct_answer": "The shape of the subshell/orbital",
+      "explanation": "l defines the orbital's angular momentum and hence its shape (l = 0, 1, 2, 3 correspond to s, p, d, f subshells).",
+      "topic": "Quantum chemistry",
+      "difficulty": "easy"
+    },
+    {
+      "question": "According to the Pauli exclusion principle:",
+      "options": [
+        "Electrons fill degenerate orbitals singly before pairing",
+        "No two electrons in the same atom can have an identical set of all four quantum numbers",
+        "Every orbital can hold a maximum of one electron",
+        "Electrons occupy the highest energy orbital available"
+      ],
+      "correct_answer": "No two electrons in the same atom can have an identical set of all four quantum numbers",
+      "explanation": "The Pauli exclusion principle limits each orbital to at most two electrons, which must have opposite spins.",
+      "topic": "Quantum chemistry",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Hund's rule of maximum multiplicity states that:",
+      "options": [
+        "Electrons pair up in an orbital before occupying a new one of equal energy",
+        "Degenerate orbitals are singly occupied with parallel spins before any pairing occurs",
+        "Lower energy orbitals are always filled last",
+        "Electron spin has no effect on orbital filling order"
+      ],
+      "correct_answer": "Degenerate orbitals are singly occupied with parallel spins before any pairing occurs",
+      "explanation": "Hund's rule minimises electron-electron repulsion by spreading electrons singly across degenerate orbitals with parallel spin before pairing begins.",
+      "topic": "Quantum chemistry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Einstein's explanation of the photoelectric effect established that:",
+      "options": [
+        "Light behaves purely as a continuous wave with no particle character",
+        "Electrons are ejected only if the frequency of incident light exceeds a threshold value, regardless of intensity",
+        "Increasing light intensity alone can eject electrons at any frequency",
+        "The kinetic energy of ejected electrons depends only on the light's intensity"
+      ],
+      "correct_answer": "Electrons are ejected only if the frequency of incident light exceeds a threshold value, regardless of intensity",
+      "explanation": "Einstein showed light is quantized into photons of energy hf; electron ejection requires hf to exceed the metal's work function, independent of intensity.",
+      "topic": "Quantum chemistry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A photon has a wavelength of 400 nm. Using E = hc/λ (h = 6.63 × 10⁻³⁴ J·s, c = 3.0 × 10⁸ m/s), its energy is approximately:",
+      "options": ["4.97 × 10⁻¹⁹ J", "4.97 × 10⁻²⁵ J", "1.99 × 10⁻¹⁹ J", "8.0 × 10⁻¹⁹ J"],
+      "correct_answer": "4.97 × 10⁻¹⁹ J",
+      "explanation": "E = hc/λ = (6.63×10⁻³⁴ × 3.0×10⁸)/(400×10⁻⁹) = 1.989×10⁻²⁵/4.0×10⁻⁷ ≈ 4.97×10⁻¹⁹ J.",
+      "topic": "Quantum chemistry",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In molecular orbital theory, a bonding molecular orbital is:",
+      "options": [
+        "Higher in energy than the atomic orbitals that formed it",
+        "Lower in energy than the atomic orbitals that formed it, increasing electron density between nuclei",
+        "Always empty in a stable molecule",
+        "Formed only from destructive overlap of atomic orbitals"
+      ],
+      "correct_answer": "Lower in energy than the atomic orbitals that formed it, increasing electron density between nuclei",
+      "explanation": "Constructive overlap of atomic orbitals produces a bonding MO of lower energy, stabilising the molecule by concentrating electron density between the nuclei.",
+      "topic": "Chemical bonding (MOT)",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Using molecular orbital theory, the bond order of the O2 molecule is:",
+      "options": ["1", "2", "3", "0"],
+      "correct_answer": "2",
+      "explanation": "O2's MO configuration gives 8 bonding and 4 antibonding valence electrons; bond order = (8−4)/2 = 2.",
+      "topic": "Chemical bonding (MOT)",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Molecular orbital theory correctly predicts a property of O2 that valence bond theory fails to explain, namely that O2 is:",
+      "options": ["Colourless", "Paramagnetic, due to two unpaired electrons in π* antibonding orbitals", "Diamagnetic", "Non-polar"],
+      "correct_answer": "Paramagnetic, due to two unpaired electrons in π* antibonding orbitals",
+      "explanation": "MOT places two electrons singly in degenerate π*2p orbitals, correctly predicting O2's observed paramagnetism, which simple Lewis/VBT structures miss.",
+      "topic": "Chemical bonding (MOT)",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A sigma (σ) bond, compared to a pi (π) bond, is best described as:",
+      "options": [
+        "Formed by sideways overlap of p orbitals and weaker",
+        "Formed by head-on (axial) overlap of orbitals and generally stronger, with free rotation possible about it",
+        "Always formed only between two s orbitals",
+        "Present only in ionic compounds"
+      ],
+      "correct_answer": "Formed by head-on (axial) overlap of orbitals and generally stronger, with free rotation possible about it",
+      "explanation": "σ bonds arise from direct end-on orbital overlap along the internuclear axis, giving a stronger bond that permits free rotation, unlike the sideways-overlapping π bond.",
+      "topic": "Chemical bonding",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The central carbon atom in methane (CH4) is best described, using valence bond theory, as:",
+      "options": ["sp hybridised, linear", "sp² hybridised, trigonal planar", "sp³ hybridised, tetrahedral", "sp³d hybridised, trigonal bipyramidal"],
+      "correct_answer": "sp³ hybridised, tetrahedral",
+      "explanation": "Carbon in methane forms four equivalent σ bonds using four sp³ hybrid orbitals arranged tetrahedrally (bond angle ~109.5°).",
+      "topic": "Chemical bonding",
+      "difficulty": "easy"
+    },
+    {
+      "question": "By VSEPR theory, the molecular geometry of ammonia (NH3), which has one lone pair on nitrogen, is:",
+      "options": ["Trigonal planar", "Tetrahedral", "Trigonal pyramidal", "Linear"],
+      "correct_answer": "Trigonal pyramidal",
+      "explanation": "Nitrogen has four electron domains (3 bonding pairs, 1 lone pair) arranged tetrahedrally, but the molecular shape (ignoring the lone pair) is trigonal pyramidal.",
+      "topic": "Chemical bonding",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In molecular symmetry, a C2 rotation axis is a symmetry element about which rotation by:",
+      "options": ["360° restores the original molecule and no other angle does", "180° restores the molecule to an indistinguishable orientation", "90° restores the molecule", "60° restores the molecule"],
+      "correct_answer": "180° restores the molecule to an indistinguishable orientation",
+      "explanation": "A Cn axis corresponds to rotation by 360°/n giving an equivalent configuration; for C2, that angle is 180°.",
+      "topic": "Molecular symmetry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The point group of a water molecule (bent, with two mirror planes and a C2 axis) is:",
+      "options": ["C2v", "D2h", "Td", "C3v"],
+      "correct_answer": "C2v",
+      "explanation": "Water has a C2 principal axis and two vertical mirror planes (σv), placing it in the C2v point group.",
+      "topic": "Molecular symmetry",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The Grotthuss–Draper law of photochemistry states that:",
+      "options": [
+        "Every photon absorbed activates exactly two molecules",
+        "Only light that is absorbed by a system can bring about a photochemical change in it",
+        "Photochemical reactions can occur without light absorption",
+        "The quantum yield of every reaction must equal 1"
+      ],
+      "correct_answer": "Only light that is absorbed by a system can bring about a photochemical change in it",
+      "explanation": "This first law of photochemistry establishes that unabsorbed light (reflected or transmitted) has no photochemical effect.",
+      "topic": "Photochemistry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Stark–Einstein law of photochemical equivalence states that:",
+      "options": [
+        "Each molecule taking part in a photochemical reaction absorbs one photon (quantum) of the radiation causing the reaction",
+        "The energy of a photon is independent of its frequency",
+        "All absorbed photons must produce a reaction",
+        "Quantum yield can never exceed 0.5"
+      ],
+      "correct_answer": "Each molecule taking part in a photochemical reaction absorbs one photon (quantum) of the radiation causing the reaction",
+      "explanation": "This second law of photochemistry states the primary photochemical act involves absorption of one photon per activated molecule.",
+      "topic": "Photochemistry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Quantum yield (Φ) in photochemistry is defined as:",
+      "options": [
+        "The number of photons absorbed divided by the number of molecules reacted",
+        "The number of molecules reacted (or product formed) divided by the number of photons absorbed",
+        "The total energy of light absorbed",
+        "The rate constant of the photochemical reaction"
+      ],
+      "correct_answer": "The number of molecules reacted (or product formed) divided by the number of photons absorbed",
+      "explanation": "Φ = (molecules reacted)/(photons absorbed); chain reactions can give Φ >> 1, while inefficient processes give Φ < 1.",
+      "topic": "Photochemistry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The key distinction between fluorescence and phosphorescence is that:",
+      "options": [
+        "Fluorescence involves emission from a triplet state and persists after the light source is removed",
+        "Phosphorescence is emission from an excited singlet state and stops immediately when excitation ends",
+        "Fluorescence is a rapid singlet-to-singlet emission that stops almost immediately when excitation ends, while phosphorescence involves a triplet state and can persist afterward",
+        "There is no fundamental difference between the two phenomena"
+      ],
+      "correct_answer": "Fluorescence is a rapid singlet-to-singlet emission that stops almost immediately when excitation ends, while phosphorescence involves a triplet state and can persist afterward",
+      "explanation": "Fluorescence is a spin-allowed S1→S0 transition (fast, ~ns), while phosphorescence requires intersystem crossing to a triplet state, making the spin-forbidden T1→S0 emission much slower and longer-lived.",
+      "topic": "Photochemistry",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Adsorption in surface chemistry is best defined as:",
+      "options": [
+        "The uniform distribution of a substance throughout the bulk of another",
+        "The accumulation of a substance at the surface or interface of two phases",
+        "The dissolution of a gas completely into a liquid",
+        "A change of state from liquid to gas"
+      ],
+      "correct_answer": "The accumulation of a substance at the surface or interface of two phases",
+      "explanation": "Adsorption is a surface phenomenon where adsorbate molecules concentrate at the surface of an adsorbent, distinct from absorption which is a bulk phenomenon.",
+      "topic": "Surface chemistry",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Compared with physisorption, chemisorption is characterised by:",
+      "options": [
+        "Weak van der Waals forces, low heat of adsorption, and easy reversibility",
+        "Formation of chemical bonds, higher heat of adsorption, and being largely irreversible and specific",
+        "No dependence on temperature at all",
+        "Occurring only above the boiling point of the adsorbate"
+      ],
+      "correct_answer": "Formation of chemical bonds, higher heat of adsorption, and being largely irreversible and specific",
+      "explanation": "Chemisorption involves actual chemical bond formation between adsorbate and adsorbent, giving much higher adsorption enthalpies (40-400 kJ/mol) than physisorption and strong specificity.",
+      "topic": "Surface chemistry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Langmuir adsorption isotherm is derived assuming:",
+      "options": [
+        "Multilayer adsorption with unlimited adsorption sites",
+        "Adsorption occurs as a monolayer on identical, energetically equivalent sites with no interaction between adsorbed molecules",
+        "Adsorption is independent of pressure/concentration",
+        "The adsorbent surface is heterogeneous with sites of widely varying energy"
+      ],
+      "correct_answer": "Adsorption occurs as a monolayer on identical, energetically equivalent sites with no interaction between adsorbed molecules",
+      "explanation": "Langmuir's model assumes a fixed number of equivalent surface sites, monolayer coverage, and no lateral interaction between adsorbed species.",
+      "topic": "Surface chemistry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Freundlich adsorption isotherm is an empirical relationship of the form x/m = kP^(1/n), which, unlike the Langmuir isotherm:",
+      "options": [
+        "Assumes a perfectly homogeneous surface with a saturation limit",
+        "Does not predict a true saturation (maximum adsorption) limit and fits heterogeneous surfaces better at intermediate pressures",
+        "Applies only to chemisorption",
+        "Requires no experimental constants"
+      ],
+      "correct_answer": "Does not predict a true saturation (maximum adsorption) limit and fits heterogeneous surfaces better at intermediate pressures",
+      "explanation": "The Freundlich isotherm is purely empirical, with constants k and n fitted from data, and does not level off to a fixed saturation value the way the Langmuir isotherm does.",
+      "topic": "Surface chemistry",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In heterogeneous catalysis, the general mechanism proceeds through the sequence:",
+      "options": [
+        "Desorption, then reaction, then adsorption",
+        "Adsorption of reactants onto the catalyst surface, surface reaction, then desorption of products",
+        "The catalyst is consumed permanently in the first step",
+        "Reaction occurs entirely in the gas phase away from the catalyst surface"
+      ],
+      "correct_answer": "Adsorption of reactants onto the catalyst surface, surface reaction, then desorption of products",
+      "explanation": "Heterogeneous catalysis lowers activation energy by first adsorbing reactants onto active sites, allowing reaction to occur on the surface before products desorb, regenerating the catalyst.",
+      "topic": "Surface chemistry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The BET (Brunauer–Emmett–Teller) theory extends the Langmuir model primarily to:",
+      "options": [
+        "Describe chemisorption kinetics",
+        "Account for multilayer physical adsorption, enabling determination of a solid's surface area",
+        "Explain colligative properties of solutions",
+        "Predict reaction rate constants"
+      ],
+      "correct_answer": "Account for multilayer physical adsorption, enabling determination of a solid's surface area",
+      "explanation": "BET theory generalises Langmuir's monolayer treatment to multilayer physisorption, and BET plots are the standard method for measuring specific surface area of porous solids.",
+      "topic": "Surface chemistry",
+      "difficulty": "hard"
+    },
+    {
+      "question": "According to the Maxwell–Boltzmann distribution, as temperature increases, the fraction of molecules possessing energy greater than a fixed activation energy Ea:",
+      "options": ["Decreases", "Increases", "Remains exactly constant", "Becomes zero"],
+      "correct_answer": "Increases",
+      "explanation": "Raising temperature broadens and shifts the Maxwell–Boltzmann energy distribution, increasing the fraction of molecules with energy above any fixed threshold, which is why reaction rates rise with temperature.",
+      "topic": "Statistical/molecular basis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A colloidal catalyst such as finely divided platinum is effective mainly because:",
+      "options": [
+        "It increases the surface area available for adsorption of reactants, providing more active sites",
+        "It changes the thermodynamic equilibrium position of the reaction",
+        "It permanently reacts with and is consumed by the reactant",
+        "It lowers the temperature of the reaction mixture"
+      ],
+      "correct_answer": "It increases the surface area available for adsorption of reactants, providing more active sites",
+      "explanation": "Finely divided catalysts expose a much larger surface area per unit mass, increasing the number of active adsorption sites and hence the catalytic rate, without shifting the equilibrium.",
+      "topic": "Surface chemistry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In an octahedral field for a d-orbital set (relevant to bonding of transition-metal-containing systems), the electron configuration term used to describe the ground electronic state of a molecule is called a:",
+      "options": ["Rate law", "Term symbol", "Rydberg constant", "Partition function"],
+      "correct_answer": "Term symbol",
+      "explanation": "A term symbol summarises the total orbital and spin angular momentum of an electronic state, a concept from atomic/quantum theory used to classify electronic states.",
+      "topic": "Quantum chemistry",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The energy levels of a particle confined in a one-dimensional 'particle in a box' model are:",
+      "options": [
+        "Continuous, with all energies allowed",
+        "Quantized, proportional to n², where n is a positive integer quantum number",
+        "Independent of the box length",
+        "Always equal to zero"
+      ],
+      "correct_answer": "Quantized, proportional to n², where n is a positive integer quantum number",
+      "explanation": "Solving the Schrödinger equation for a particle in a box gives En = n²h²/8mL², showing quantized energies that increase with the square of the quantum number n.",
+      "topic": "Quantum chemistry",
+      "difficulty": "hard"
+    }
+  ]
+}

@@ -1,0 +1,384 @@
+{
+  "course_code": "STA112",
+  "title": "Probability I",
+  "level": "100",
+  "source_note": "Standard NUC-aligned Nigerian university 100L Probability I curriculum: basic set theory, counting techniques (permutations and combinations), sample spaces and events, axioms of probability, conditional probability, independence, Bayes' theorem, random variables, and elementary probability distributions.",
+  "questions": [
+    {
+      "question": "In probability, the set of all possible outcomes of an experiment is called the:",
+      "options": ["Sample space", "Event", "Random variable", "Population"],
+      "correct_answer": "Sample space",
+      "explanation": "The sample space is the complete set of all possible outcomes of a random experiment, usually denoted S or Omega.",
+      "topic": "Basic probability concepts",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A subset of the sample space is called a(n):",
+      "options": ["Event", "Trial", "Parameter", "Statistic"],
+      "correct_answer": "Event",
+      "explanation": "An event is any subset of the sample space -- a collection of one or more possible outcomes of an experiment.",
+      "topic": "Basic probability concepts",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is the probability of an impossible event?",
+      "options": ["0", "1", "0.5", "Undefined"],
+      "correct_answer": "0",
+      "explanation": "By the axioms of probability, an impossible event (one that cannot occur) is assigned a probability of exactly 0.",
+      "topic": "Basic probability concepts",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is the probability of a certain (sure) event?",
+      "options": ["1", "0", "0.5", "Infinity"],
+      "correct_answer": "1",
+      "explanation": "A certain event, one that is guaranteed to occur, has a probability of exactly 1 under the axioms of probability.",
+      "topic": "Basic probability concepts",
+      "difficulty": "easy"
+    },
+    {
+      "question": "For any event A, the probability P(A) must satisfy which condition?",
+      "options": ["0 <= P(A) <= 1", "-1 <= P(A) <= 1", "P(A) >= 1", "P(A) can be any real number"],
+      "correct_answer": "0 <= P(A) <= 1",
+      "explanation": "One of the fundamental axioms of probability is that the probability of any event must lie between 0 and 1, inclusive.",
+      "topic": "Basic probability concepts",
+      "difficulty": "easy"
+    },
+    {
+      "question": "If A is an event, what is the relationship between P(A) and P(A'), the complement of A?",
+      "options": ["P(A) + P(A') = 1", "P(A) x P(A') = 1", "P(A) - P(A') = 1", "P(A) = P(A')"],
+      "correct_answer": "P(A) + P(A') = 1",
+      "explanation": "The complement rule states that the probability of an event and its complement always sum to 1, since together they cover the entire sample space.",
+      "topic": "Basic probability concepts",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A fair coin is tossed once. What is the probability of getting a head?",
+      "options": ["1/2", "1/4", "1", "0"],
+      "correct_answer": "1/2",
+      "explanation": "A fair coin has two equally likely outcomes (head, tail), so the probability of a head is 1/2.",
+      "topic": "Basic probability concepts",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A fair six-sided die is rolled once. What is the probability of getting a number greater than 4?",
+      "options": ["1/3", "1/2", "2/3", "1/6"],
+      "correct_answer": "1/3",
+      "explanation": "Numbers greater than 4 on a die are 5 and 6, giving 2 favorable outcomes out of 6 total, so P = 2/6 = 1/3.",
+      "topic": "Basic probability concepts",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In set theory, the union of two sets A and B (A ∪ B) consists of:",
+      "options": ["All elements that are in A, in B, or in both", "Only elements common to both A and B", "Elements only in A but not B", "Elements in neither A nor B"],
+      "correct_answer": "All elements that are in A, in B, or in both",
+      "explanation": "The union of two sets combines all elements from both sets, including those shared, without duplication.",
+      "topic": "Set theory",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In set theory, the intersection of two sets A and B (A ∩ B) consists of:",
+      "options": ["Only the elements common to both A and B", "All elements in either A or B", "Elements only in A", "The empty set always"],
+      "correct_answer": "Only the elements common to both A and B",
+      "explanation": "The intersection of two sets contains only the elements that belong to both sets simultaneously.",
+      "topic": "Set theory",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Two events A and B are said to be mutually exclusive (disjoint) if:",
+      "options": ["They cannot occur at the same time, i.e., A ∩ B = empty set", "They always occur together", "P(A) = P(B)", "They are independent of each other"],
+      "correct_answer": "They cannot occur at the same time, i.e., A ∩ B = empty set",
+      "explanation": "Mutually exclusive events have no outcomes in common; if one occurs, the other cannot, so their intersection is the empty set.",
+      "topic": "Set theory",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For mutually exclusive events A and B, what is P(A ∪ B)?",
+      "options": ["P(A) + P(B)", "P(A) x P(B)", "P(A) - P(B)", "P(A) + P(B) - P(A ∩ B)"],
+      "correct_answer": "P(A) + P(B)",
+      "explanation": "For mutually exclusive events, since P(A ∩ B) = 0, the addition rule simplifies to P(A ∪ B) = P(A) + P(B).",
+      "topic": "Addition rule",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For any two events A and B (not necessarily mutually exclusive), the general addition rule states:",
+      "options": ["P(A ∪ B) = P(A) + P(B) - P(A ∩ B)", "P(A ∪ B) = P(A) + P(B)", "P(A ∪ B) = P(A) x P(B)", "P(A ∪ B) = P(A) - P(B)"],
+      "correct_answer": "P(A ∪ B) = P(A) + P(B) - P(A ∩ B)",
+      "explanation": "The general addition rule subtracts the intersection to avoid double-counting outcomes that belong to both A and B.",
+      "topic": "Addition rule",
+      "difficulty": "medium"
+    },
+    {
+      "question": "If P(A) = 0.4, P(B) = 0.5, and P(A ∩ B) = 0.2, what is P(A ∪ B)?",
+      "options": ["0.7", "0.9", "0.2", "0.1"],
+      "correct_answer": "0.7",
+      "explanation": "P(A ∪ B) = P(A) + P(B) - P(A ∩ B) = 0.4 + 0.5 - 0.2 = 0.7.",
+      "topic": "Addition rule",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Two events A and B are independent if and only if:",
+      "options": ["P(A ∩ B) = P(A) x P(B)", "P(A ∩ B) = P(A) + P(B)", "P(A ∩ B) = 0", "P(A) = P(B)"],
+      "correct_answer": "P(A ∩ B) = P(A) x P(B)",
+      "explanation": "Two events are statistically independent if and only if the probability of their joint occurrence equals the product of their individual probabilities.",
+      "topic": "Independence",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The multiplication rule for independent events A and B states that P(A and B) equals:",
+      "options": ["P(A) x P(B)", "P(A) + P(B)", "P(A) / P(B)", "P(A) - P(B)"],
+      "correct_answer": "P(A) x P(B)",
+      "explanation": "For independent events, the multiplication rule states the joint probability equals the product of the individual probabilities.",
+      "topic": "Multiplication rule",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The conditional probability of event A given event B, P(A|B), is defined as:",
+      "options": ["P(A ∩ B) / P(B), provided P(B) > 0", "P(A) / P(B)", "P(A ∩ B) x P(B)", "P(A) + P(B)"],
+      "correct_answer": "P(A ∩ B) / P(B), provided P(B) > 0",
+      "explanation": "Conditional probability is defined as the probability of the intersection of A and B, divided by the probability of the conditioning event B (assuming P(B) is not zero).",
+      "topic": "Conditional probability",
+      "difficulty": "medium"
+    },
+    {
+      "question": "If A and B are independent events, what is P(A|B)?",
+      "options": ["P(A)", "P(B)", "P(A ∩ B)", "0"],
+      "correct_answer": "P(A)",
+      "explanation": "When A and B are independent, knowledge of B does not change the probability of A, so P(A|B) = P(A).",
+      "topic": "Conditional probability",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A bag contains 5 red balls and 3 blue balls. If two balls are drawn without replacement, what is the probability that both are red?",
+      "options": ["5/14", "5/8", "25/64", "3/8"],
+      "correct_answer": "5/14",
+      "explanation": "P(first red) = 5/8. P(second red | first red) = 4/7. P(both red) = (5/8)(4/7) = 20/56 = 5/14.",
+      "topic": "Conditional probability",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Bayes' Theorem is primarily used to:",
+      "options": ["Update the probability of a hypothesis based on new evidence", "Calculate the mean of a probability distribution", "Determine if two events are mutually exclusive", "Calculate the variance of a random variable"],
+      "correct_answer": "Update the probability of a hypothesis based on new evidence",
+      "explanation": "Bayes' Theorem provides a way to revise (update) the probability of a hypothesis or event given new observed evidence, by relating conditional probabilities.",
+      "topic": "Bayes' theorem",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Bayes' Theorem is expressed as P(A|B) = ?",
+      "options": ["[P(B|A) x P(A)] / P(B)", "[P(A) x P(B)] / P(A ∩ B)", "P(A) + P(B) - P(A ∩ B)", "P(B|A) / P(A)"],
+      "correct_answer": "[P(B|A) x P(A)] / P(B)",
+      "explanation": "Bayes' Theorem states P(A|B) = P(B|A)P(A) / P(B), relating the conditional probability of A given B to that of B given A.",
+      "topic": "Bayes' theorem",
+      "difficulty": "hard"
+    },
+    {
+      "question": "How many ways can 4 distinct books be arranged in a row on a shelf?",
+      "options": ["24", "16", "12", "8"],
+      "correct_answer": "24",
+      "explanation": "The number of arrangements (permutations) of 4 distinct objects is 4! = 4x3x2x1 = 24.",
+      "topic": "Permutations and combinations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the formula for the number of permutations of n distinct objects taken r at a time?",
+      "options": ["nPr = n! / (n-r)!", "nCr = n! / [r!(n-r)!]", "nPr = n! x r!", "nPr = n! / r!"],
+      "correct_answer": "nPr = n! / (n-r)!",
+      "explanation": "Permutations, which account for order, are calculated as nPr = n!/(n-r)!, where n is the total number of items and r is the number selected.",
+      "topic": "Permutations and combinations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the formula for the number of combinations of n distinct objects taken r at a time?",
+      "options": ["nCr = n! / [r!(n-r)!]", "nCr = n! / (n-r)!", "nCr = n! x r!", "nCr = r! / n!"],
+      "correct_answer": "nCr = n! / [r!(n-r)!]",
+      "explanation": "Combinations, which do not account for order, are given by nCr = n!/[r!(n-r)!], distinguishing them from permutations which do consider order.",
+      "topic": "Permutations and combinations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In how many ways can a committee of 3 people be selected from a group of 6 people (order does not matter)?",
+      "options": ["20", "120", "18", "216"],
+      "correct_answer": "20",
+      "explanation": "6C3 = 6!/(3!3!) = 720/(6x6) = 720/36 = 20.",
+      "topic": "Permutations and combinations",
+      "difficulty": "hard"
+    },
+    {
+      "question": "What is the value of 5! (5 factorial)?",
+      "options": ["120", "20", "25", "60"],
+      "correct_answer": "120",
+      "explanation": "5! = 5x4x3x2x1 = 120.",
+      "topic": "Permutations and combinations",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A random variable that can take only a countable (finite or countably infinite) number of values is called a:",
+      "options": ["Discrete random variable", "Continuous random variable", "Deterministic variable", "Categorical constant"],
+      "correct_answer": "Discrete random variable",
+      "explanation": "A discrete random variable takes on distinct, countable values (e.g., number of heads in coin tosses), unlike a continuous random variable which can take any value within a range.",
+      "topic": "Random variables",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A random variable that can take any value within a given range (an uncountable, infinite set of values) is called a:",
+      "options": ["Continuous random variable", "Discrete random variable", "Binary variable", "Nominal variable"],
+      "correct_answer": "Continuous random variable",
+      "explanation": "A continuous random variable can assume any value within an interval, such as height or time, unlike discrete variables which take only countable values.",
+      "topic": "Random variables",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The expected value (mean) of a discrete random variable X is calculated as:",
+      "options": ["Sum of [x times P(x)] for all possible values of x", "The most frequently occurring value of x", "The middle value when data is arranged in order", "The square root of the variance"],
+      "correct_answer": "Sum of [x times P(x)] for all possible values of x",
+      "explanation": "The expected value E(X) is the probability-weighted average of all possible values of the random variable, calculated as the sum of x*P(x).",
+      "topic": "Random variables",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which of the following is a characteristic of a binomial probability distribution?",
+      "options": ["A fixed number of independent trials, each with only two possible outcomes", "An infinite number of trials with continuous outcomes", "Trials that must be dependent on each other", "Outcomes that can take any real-numbered value"],
+      "correct_answer": "A fixed number of independent trials, each with only two possible outcomes",
+      "explanation": "A binomial distribution models a fixed number (n) of independent trials, each with two possible outcomes (success/failure) and a constant probability of success.",
+      "topic": "Probability distributions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a binomial distribution with n trials and probability of success p, the formula for P(X=x) is:",
+      "options": ["nCx * p^x * (1-p)^(n-x)", "n! * p^x", "nPx * p^x", "p^x / n"],
+      "correct_answer": "nCx * p^x * (1-p)^(n-x)",
+      "explanation": "The binomial probability mass function is P(X=x) = nCx * p^x * (1-p)^(n-x), giving the probability of exactly x successes in n trials.",
+      "topic": "Probability distributions",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The Poisson distribution is typically used to model:",
+      "options": ["The number of rare, independent events occurring in a fixed interval of time or space", "The outcome of a single coin toss", "Continuous measurements like height or weight", "The probability of exactly two outcomes only"],
+      "correct_answer": "The number of rare, independent events occurring in a fixed interval of time or space",
+      "explanation": "The Poisson distribution models the count of discrete events that occur independently and at a constant average rate within a fixed interval, such as the number of calls received per hour.",
+      "topic": "Probability distributions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the normal (Gaussian) probability distribution, the curve is:",
+      "options": ["Symmetric and bell-shaped about the mean", "Skewed heavily to the right", "Uniform across all values", "Bimodal with two peaks"],
+      "correct_answer": "Symmetric and bell-shaped about the mean",
+      "explanation": "The normal distribution produces a symmetric, bell-shaped curve centered on the mean, with the mean, median, and mode all equal.",
+      "topic": "Probability distributions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a standard normal distribution, what are the mean and standard deviation?",
+      "options": ["Mean = 0, Standard deviation = 1", "Mean = 1, Standard deviation = 0", "Mean = 0, Standard deviation = 0", "Mean = 100, Standard deviation = 15"],
+      "correct_answer": "Mean = 0, Standard deviation = 1",
+      "explanation": "The standard normal distribution is a special case of the normal distribution with a mean of 0 and standard deviation of 1, used as a reference for z-scores.",
+      "topic": "Probability distributions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The variance of a random variable measures:",
+      "options": ["The average squared deviation of the values from the mean", "The most likely single outcome", "The total number of possible outcomes", "The sum of all probabilities"],
+      "correct_answer": "The average squared deviation of the values from the mean",
+      "explanation": "Variance quantifies the spread or dispersion of a random variable's values around its expected value (mean), calculated as the expected squared deviation from the mean.",
+      "topic": "Random variables",
+      "difficulty": "medium"
+    },
+    {
+      "question": "If two dice are rolled, what is the probability that the sum of the two numbers shown is 7?",
+      "options": ["1/6", "1/12", "1/36", "7/36"],
+      "correct_answer": "1/6",
+      "explanation": "There are 6 combinations (1,6),(2,5),(3,4),(4,3),(5,2),(6,1) that sum to 7 out of 36 total outcomes: 6/36 = 1/6.",
+      "topic": "Basic probability concepts",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A card is drawn at random from a standard 52-card deck. What is the probability of drawing a king?",
+      "options": ["1/13", "1/52", "4/13", "1/4"],
+      "correct_answer": "1/13",
+      "explanation": "There are 4 kings in a 52-card deck, so P(king) = 4/52 = 1/13.",
+      "topic": "Basic probability concepts",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which of the following statements about the empty set (null set) in probability is correct?",
+      "options": ["P(empty set) = 0", "P(empty set) = 1", "P(empty set) is undefined", "P(empty set) equals the sample space probability"],
+      "correct_answer": "P(empty set) = 0",
+      "explanation": "The empty set represents an event that contains no outcomes, so by the axioms of probability, it always has a probability of 0.",
+      "topic": "Set theory",
+      "difficulty": "easy"
+    },
+    {
+      "question": "If events A and B are collectively exhaustive and mutually exclusive, then P(A) + P(B) equals:",
+      "options": ["1", "0", "0.5", "Cannot be determined"],
+      "correct_answer": "1",
+      "explanation": "If A and B are collectively exhaustive (cover the entire sample space) and mutually exclusive, their probabilities must sum to exactly 1.",
+      "topic": "Set theory",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In an experiment of tossing a fair coin three times, how many total possible outcomes are there in the sample space?",
+      "options": ["8", "6", "3", "9"],
+      "correct_answer": "8",
+      "explanation": "Each toss has 2 possible outcomes, so for 3 tosses: 2 x 2 x 2 = 2^3 = 8 total outcomes.",
+      "topic": "Basic probability concepts",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The multiplication (counting) principle states that if one task can be done in m ways and a second independent task can be done in n ways, the two tasks together can be done in:",
+      "options": ["m x n ways", "m + n ways", "m - n ways", "m/n ways"],
+      "correct_answer": "m x n ways",
+      "explanation": "The fundamental counting principle states that the total number of ways to perform two independent sequential tasks is the product of the number of ways to do each task.",
+      "topic": "Permutations and combinations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "How many different 4-digit codes can be formed using digits 0-9 if repetition of digits is allowed?",
+      "options": ["10,000", "5,040", "210", "40"],
+      "correct_answer": "10,000",
+      "explanation": "With repetition allowed, each of the 4 positions has 10 possible digits: 10x10x10x10 = 10,000.",
+      "topic": "Permutations and combinations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which of the following best distinguishes a permutation from a combination?",
+      "options": ["A permutation considers order, while a combination does not", "A combination considers order, while a permutation does not", "Both always give the same numerical result", "Permutations only apply to numbers, combinations only to letters"],
+      "correct_answer": "A permutation considers order, while a combination does not",
+      "explanation": "Permutations count distinct orderings/arrangements of selected items, while combinations count selections without regard to order.",
+      "topic": "Permutations and combinations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For any two events A and B, P(A ∩ B') (A occurring but not B) can be expressed as:",
+      "options": ["P(A) - P(A ∩ B)", "P(A) + P(B)", "P(A) x P(B')", "P(B) - P(A ∩ B)"],
+      "correct_answer": "P(A) - P(A ∩ B)",
+      "explanation": "The event 'A but not B' is found by removing the overlapping region (A ∩ B) from the total probability of A.",
+      "topic": "Set theory",
+      "difficulty": "hard"
+    },
+    {
+      "question": "If P(A) = 0.3 and A and B are mutually exclusive with P(B) = 0.4, what is P(A ∩ B)?",
+      "options": ["0", "0.12", "0.7", "1"],
+      "correct_answer": "0",
+      "explanation": "By definition, mutually exclusive events cannot occur simultaneously, so their intersection probability is always 0, regardless of individual probabilities.",
+      "topic": "Set theory",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A probability of 0.5 for an event indicates that the event is:",
+      "options": ["Equally likely to occur or not occur", "Certain to occur", "Impossible", "More likely to occur than not"],
+      "correct_answer": "Equally likely to occur or not occur",
+      "explanation": "A probability of 0.5 means the event has a 50% chance of occurring, making it equally likely to happen or not happen.",
+      "topic": "Basic probability concepts",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which term describes a single performance of a random experiment, such as one toss of a coin?",
+      "options": ["Trial", "Outcome", "Population", "Statistic"],
+      "correct_answer": "Trial",
+      "explanation": "A trial refers to a single execution of a random experiment, which produces one outcome from the sample space.",
+      "topic": "Basic probability concepts",
+      "difficulty": "easy"
+    }
+  ]
+}

@@ -1,0 +1,288 @@
+{
+  "course_code": "PHY205",
+  "title": "Classical Mechanics I",
+  "level": "200",
+  "source_note": "Standard NUC-aligned Nigerian university 200L Classical Mechanics I curriculum: vector kinematics, Newton's laws and their applications, work-energy theorem, linear momentum and collisions, systems of particles and center of mass, rotational dynamics and moment of inertia, angular momentum, central forces and Kepler's laws, gravitation, simple harmonic motion, damped and forced oscillations, and non-inertial reference frames.",
+  "questions": [
+    {
+      "question": "For a particle moving along a curved path, the velocity vector is always directed",
+      "options": ["tangent to the path", "perpendicular to the path", "along the radius vector", "opposite to the acceleration"],
+      "correct_answer": "tangent to the path",
+      "explanation": "Velocity is defined as dr/dt, which points along the direction of instantaneous motion, i.e., tangent to the trajectory.",
+      "topic": "Vector kinematics",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In uniform circular motion, the centripetal acceleration has magnitude a = v^2/r and is directed",
+      "options": ["toward the center of the circle", "away from the center of the circle", "tangent to the circle", "perpendicular to the plane of motion"],
+      "correct_answer": "toward the center of the circle",
+      "explanation": "Centripetal acceleration arises from the continuous change in direction of the velocity vector and always points toward the center of the circular path.",
+      "topic": "Vector kinematics",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A projectile is launched with initial speed u at angle theta above the horizontal (no air resistance). Its time of flight is given by",
+      "options": ["T = 2u sin(theta)/g", "T = u sin(theta)/g", "T = 2u cos(theta)/g", "T = u^2 sin(2theta)/g"],
+      "correct_answer": "T = 2u sin(theta)/g",
+      "explanation": "The vertical velocity component u sin(theta) is reduced to zero and reversed by gravity; the total time of flight is twice the time to reach maximum height, giving T = 2u sin(theta)/g.",
+      "topic": "Vector kinematics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Newton's second law, in its most general form applicable even to variable-mass systems, states that the net force equals",
+      "options": ["the time rate of change of momentum, dp/dt", "mass times acceleration, ma, always", "the product of mass and velocity", "the rate of change of kinetic energy"],
+      "correct_answer": "the time rate of change of momentum, dp/dt",
+      "explanation": "F = ma is only the special case of F = dp/dt when mass is constant; the momentum form is the general statement of Newton's second law.",
+      "topic": "Newton's laws",
+      "difficulty": "medium"
+    },
+    {
+      "question": "According to Newton's third law, the action and reaction force pair act on",
+      "options": ["two different bodies", "the same body", "the center of mass only", "neither body, only on the field"],
+      "correct_answer": "two different bodies",
+      "explanation": "Newton's third law states that for every action force exerted by body A on body B, there is an equal and opposite reaction force exerted by B on A; the two forces act on different bodies and so never cancel for a single object.",
+      "topic": "Newton's laws",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A block slides down a frictionless incline of angle theta. Its acceleration along the incline is",
+      "options": ["g sin(theta)", "g cos(theta)", "g tan(theta)", "g"],
+      "correct_answer": "g sin(theta)",
+      "explanation": "Resolving gravity along the incline gives a component mg sin(theta), so by Newton's second law the acceleration along the slope is g sin(theta).",
+      "topic": "Newton's laws",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The work-energy theorem states that the net work done by all forces acting on a particle equals",
+      "options": ["the change in its kinetic energy", "the change in its potential energy", "the change in its momentum", "the total mechanical energy"],
+      "correct_answer": "the change in its kinetic energy",
+      "explanation": "Integrating Newton's second law over displacement gives W_net = Delta(KE), the work-energy theorem.",
+      "topic": "Work-energy theorem",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A force is conservative if and only if",
+      "options": ["the work it does on a particle moving between two points is independent of the path taken", "its magnitude is constant everywhere in space", "it acts only on charged particles", "it can never do negative work"],
+      "correct_answer": "the work it does on a particle moving between two points is independent of the path taken",
+      "explanation": "Path-independence of work is equivalent to the force being derivable from a scalar potential (F = -grad U) and having zero curl.",
+      "topic": "Work-energy theorem",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A constant net force of 10 N acts on a 2 kg object initially at rest, displacing it 5 m in the direction of the force. What is the object's final kinetic energy?",
+      "options": ["50 J", "25 J", "100 J", "10 J"],
+      "correct_answer": "50 J",
+      "explanation": "Work done W = F*d = 10 N x 5 m = 50 J, and by the work-energy theorem this equals the kinetic energy gained since the object started from rest.",
+      "topic": "Work-energy theorem",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In an elastic collision between two particles,",
+      "options": ["both momentum and kinetic energy are conserved", "only momentum is conserved", "only kinetic energy is conserved", "neither momentum nor kinetic energy is conserved"],
+      "correct_answer": "both momentum and kinetic energy are conserved",
+      "explanation": "An elastic collision is defined precisely as one in which total kinetic energy is conserved in addition to the always-conserved total momentum.",
+      "topic": "Momentum and collisions",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In a perfectly inelastic collision, the colliding bodies",
+      "options": ["stick together and move with a common velocity after collision, conserving momentum but not kinetic energy", "separate with equal and opposite velocities", "conserve both momentum and kinetic energy", "have zero total momentum after collision"],
+      "correct_answer": "stick together and move with a common velocity after collision, conserving momentum but not kinetic energy",
+      "explanation": "In a perfectly inelastic collision the bodies coalesce; momentum is still conserved but some kinetic energy is converted to heat, sound, or deformation.",
+      "topic": "Momentum and collisions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A 1 kg ball moving at 4 m/s collides head-on and sticks to an identical stationary 1 kg ball. What is their common velocity after collision?",
+      "options": ["2 m/s", "4 m/s", "1 m/s", "8 m/s"],
+      "correct_answer": "2 m/s",
+      "explanation": "By conservation of momentum, m1*v1 = (m1+m2)*v_f, so v_f = (1 x 4)/(1+1) = 2 m/s.",
+      "topic": "Momentum and collisions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The moment of inertia of a uniform solid sphere of mass M and radius R about an axis through its center is",
+      "options": ["(2/5)MR^2", "(1/2)MR^2", "(2/3)MR^2", "MR^2"],
+      "correct_answer": "(2/5)MR^2",
+      "explanation": "Integrating the mass distribution of a uniform solid sphere about a diameter gives the standard result I = (2/5)MR^2.",
+      "topic": "Rotational dynamics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The moment of inertia of a thin uniform ring (hoop) of mass M and radius R about an axis through its center, perpendicular to its plane, is",
+      "options": ["MR^2", "(1/2)MR^2", "(1/4)MR^2", "(2/3)MR^2"],
+      "correct_answer": "MR^2",
+      "explanation": "Every mass element of a thin hoop lies at the same distance R from the central axis, so I = integral(r^2 dm) = MR^2.",
+      "topic": "Rotational dynamics",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The rotational analogue of Newton's second law, relating net torque tau to angular acceleration alpha, is",
+      "options": ["tau = I*alpha", "tau = I*omega", "tau = (1/2)I*omega^2", "tau = I*v"],
+      "correct_answer": "tau = I*alpha",
+      "explanation": "Just as F = ma governs linear motion, tau = I*alpha governs rotational motion, with moment of inertia I playing the role of rotational inertia.",
+      "topic": "Rotational dynamics",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The parallel axis theorem for moment of inertia states that I = I_cm + Md^2, where d is",
+      "options": ["the perpendicular distance between the new axis and the axis through the center of mass", "the radius of gyration", "the distance from the axis to the edge of the body", "the total length of the body"],
+      "correct_answer": "the perpendicular distance between the new axis and the axis through the center of mass",
+      "explanation": "The parallel axis theorem relates the moment of inertia about any axis to the moment about a parallel axis through the center of mass plus Md^2, where d is the perpendicular separation between the two parallel axes.",
+      "topic": "Rotational dynamics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "An ice skater spinning with arms outstretched pulls her arms in. Assuming negligible external torque, her angular velocity",
+      "options": ["increases, since angular momentum L = I*omega is conserved and I decreases", "decreases, since I increases", "stays the same, since L is not conserved", "becomes zero"],
+      "correct_answer": "increases, since angular momentum L = I*omega is conserved and I decreases",
+      "explanation": "With no external torque, angular momentum L = I*omega is conserved; reducing the moment of inertia I by pulling in the arms forces omega to increase.",
+      "topic": "Angular momentum",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The angular momentum of a particle about a point is defined as",
+      "options": ["L = r x p, the cross product of its position and linear momentum vectors", "L = r . p, the dot product of position and momentum", "L = m*v, its linear momentum", "L = I + omega"],
+      "correct_answer": "L = r x p, the cross product of its position and linear momentum vectors",
+      "explanation": "Angular momentum about a chosen origin is defined as the cross product of the position vector and the linear momentum vector.",
+      "topic": "Angular momentum",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Kepler's second law (equal areas swept in equal times by a planet's radius vector) is a direct consequence of",
+      "options": ["conservation of angular momentum under a central force", "conservation of linear momentum", "Newton's third law", "conservation of mechanical energy alone"],
+      "correct_answer": "conservation of angular momentum under a central force",
+      "explanation": "Since gravity is a central force producing zero torque about the Sun, angular momentum L = m*r^2*(dtheta/dt) is constant, which is equivalent to the radius vector sweeping out equal areas in equal times.",
+      "topic": "Central forces and Kepler's laws",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Kepler's third law states that the square of a planet's orbital period is proportional to",
+      "options": ["the cube of the semi-major axis of its orbit", "the square of the semi-major axis", "the semi-major axis itself", "the planet's mass"],
+      "correct_answer": "the cube of the semi-major axis of its orbit",
+      "explanation": "Kepler's third law, T^2 proportional to a^3, follows from applying Newton's law of gravitation to a body in a bound orbit around a much larger central mass.",
+      "topic": "Central forces and Kepler's laws",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A central force acting on a particle is one that",
+      "options": ["is always directed along the line joining the particle to a fixed center and depends only on the distance r", "always points in a fixed direction in space", "depends on the particle's velocity only", "acts perpendicular to the position vector"],
+      "correct_answer": "is always directed along the line joining the particle to a fixed center and depends only on the distance r",
+      "explanation": "By definition a central force F(r) = f(r)*r-hat is radial and its magnitude depends only on the separation r from the force center, which is why it produces zero torque about that center.",
+      "topic": "Central forces and Kepler's laws",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For two particles of masses m1 and m2 interacting via a central force, the reduced mass used to convert the problem into an equivalent one-body problem is defined as",
+      "options": ["mu = m1*m2/(m1+m2)", "mu = m1+m2", "mu = (m1+m2)/2", "mu = m1*m2"],
+      "correct_answer": "mu = m1*m2/(m1+m2)",
+      "explanation": "Separating the two-body problem into center-of-mass and relative motion shows the relative coordinate obeys the equation of a single particle of reduced mass mu = m1*m2/(m1+m2) moving under the interaction force.",
+      "topic": "Central forces and Kepler's laws",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Newton's law of universal gravitation states that the gravitational force between two point masses is",
+      "options": ["directly proportional to the product of the masses and inversely proportional to the square of their separation", "directly proportional to the sum of the masses and the separation", "inversely proportional to the product of the masses", "independent of separation"],
+      "correct_answer": "directly proportional to the product of the masses and inversely proportional to the square of their separation",
+      "explanation": "Newton's law of gravitation is F = G*m1*m2/r^2, an inverse-square law in the separation r and directly proportional to each mass.",
+      "topic": "Gravitation",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The minimum speed needed for an object to escape a planet's gravitational field from its surface, ignoring air resistance, is",
+      "options": ["v = sqrt(2GM/R)", "v = sqrt(GM/R)", "v = GM/R^2", "v = sqrt(GM/R^2)"],
+      "correct_answer": "v = sqrt(2GM/R)",
+      "explanation": "Escape velocity is found by setting the total mechanical energy (kinetic plus gravitational potential) equal to zero at infinity, giving v_esc = sqrt(2GM/R).",
+      "topic": "Gravitation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The gravitational potential energy of two point masses M and m separated by distance r, taking U = 0 at infinite separation, is",
+      "options": ["U = -GMm/r", "U = GMm/r", "U = -GMm/r^2", "U = GMm*r"],
+      "correct_answer": "U = -GMm/r",
+      "explanation": "Integrating the attractive gravitational force with the convention U(infinity) = 0 gives the negative potential energy U = -GMm/r.",
+      "topic": "Gravitation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A particle undergoes simple harmonic motion if its acceleration satisfies",
+      "options": ["a = -omega^2*x, i.e., acceleration is proportional to and directed opposite to displacement", "a = constant", "a = omega*x", "a = -omega^2*v"],
+      "correct_answer": "a = -omega^2*x, i.e., acceleration is proportional to and directed opposite to displacement",
+      "explanation": "This defining differential equation, a restoring acceleration proportional to displacement from equilibrium, has the general solution x(t) = A cos(omega*t + phi).",
+      "topic": "Simple harmonic motion",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The period of a simple pendulum of length L undergoing small oscillations is",
+      "options": ["T = 2*pi*sqrt(L/g)", "T = 2*pi*sqrt(g/L)", "T = pi*sqrt(L/g)", "T = 2*pi*(L/g)"],
+      "correct_answer": "T = 2*pi*sqrt(L/g)",
+      "explanation": "For small angular displacements, the pendulum's equation of motion reduces to SHM with angular frequency omega = sqrt(g/L), giving period T = 2*pi*sqrt(L/g).",
+      "topic": "Simple harmonic motion",
+      "difficulty": "easy"
+    },
+    {
+      "question": "For a mass-spring system undergoing SHM with amplitude A and spring constant k, the total mechanical energy is",
+      "options": ["(1/2)kA^2, and remains constant throughout the motion", "(1/2)kA^2, but decreases as the mass moves toward equilibrium", "kA, which is time-dependent", "zero at all times"],
+      "correct_answer": "(1/2)kA^2, and remains constant throughout the motion",
+      "explanation": "In ideal (undamped) SHM, kinetic and potential energy continuously interconvert but their sum, (1/2)kA^2, remains constant since no energy is dissipated.",
+      "topic": "Simple harmonic motion",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A damped oscillator is said to be critically damped when it",
+      "options": ["returns to equilibrium in the shortest time possible without oscillating", "oscillates with slowly decreasing amplitude", "takes an infinitely long time to reach equilibrium while oscillating", "oscillates forever with constant amplitude"],
+      "correct_answer": "returns to equilibrium in the shortest time possible without oscillating",
+      "explanation": "Critical damping is the boundary case between underdamping (oscillatory decay) and overdamping (slow non-oscillatory decay) and gives the fastest non-oscillatory return to equilibrium.",
+      "topic": "Damped and forced oscillations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Resonance in a forced, lightly damped oscillator occurs when",
+      "options": ["the driving frequency is close to the system's natural frequency, producing maximum amplitude", "the driving frequency is zero", "the damping force is maximum", "the driving frequency is much greater than the natural frequency"],
+      "correct_answer": "the driving frequency is close to the system's natural frequency, producing maximum amplitude",
+      "explanation": "When the driving frequency approaches the natural (undamped) frequency of the system, the steady-state amplitude of forced oscillation reaches a sharp maximum, a phenomenon called resonance.",
+      "topic": "Damped and forced oscillations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "An overdamped oscillator, compared to a critically damped one,",
+      "options": ["returns to equilibrium more slowly without oscillating", "oscillates with increasing amplitude", "reaches equilibrium in the shortest possible time", "oscillates with constant amplitude forever"],
+      "correct_answer": "returns to equilibrium more slowly without oscillating",
+      "explanation": "Overdamping corresponds to very large damping; the system still does not oscillate, but it approaches equilibrium more slowly than in the critically damped case.",
+      "topic": "Damped and forced oscillations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Coriolis force experienced by an object moving in a rotating reference frame is",
+      "options": ["a fictitious force proportional to the object's velocity relative to the rotating frame, perpendicular to that velocity", "a real force acting only on charged particles", "proportional to the square of the angular velocity only", "identical to the centrifugal force"],
+      "correct_answer": "a fictitious force proportional to the object's velocity relative to the rotating frame, perpendicular to that velocity",
+      "explanation": "The Coriolis pseudo-force, -2m(omega x v'), appears only for objects moving relative to a rotating frame and acts perpendicular to both the rotation axis and the relative velocity.",
+      "topic": "Non-inertial reference frames",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The centrifugal force in a rotating reference frame is a fictitious (pseudo) force that",
+      "options": ["appears to push objects outward, away from the axis of rotation, and exists only in the rotating (non-inertial) frame", "is a real force that exists in all reference frames", "acts toward the axis of rotation in the rotating frame", "only affects objects at rest in the inertial frame"],
+      "correct_answer": "appears to push objects outward, away from the axis of rotation, and exists only in the rotating (non-inertial) frame",
+      "explanation": "Centrifugal force is introduced to make Newton's second law work in a rotating frame; it has no counterpart force pair and vanishes when viewed from an inertial frame.",
+      "topic": "Non-inertial reference frames",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A reference frame is called inertial if",
+      "options": ["Newton's first law holds in it, i.e., it is not accelerating relative to other inertial frames", "it is rotating uniformly", "it is always at rest relative to Earth", "fictitious forces must be added to describe motion within it"],
+      "correct_answer": "Newton's first law holds in it, i.e., it is not accelerating relative to other inertial frames",
+      "explanation": "An inertial frame is one in which a body free of net force moves at constant velocity (Newton's first law); accelerating or rotating frames are non-inertial and require fictitious forces.",
+      "topic": "Non-inertial reference frames",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The center of mass of a system of particles moves as though",
+      "options": ["all the mass were concentrated there and all external forces were applied there", "it were fixed in space regardless of external forces", "the total momentum of the system depends on internal forces only", "each particle's individual motion is duplicated at that point"],
+      "correct_answer": "all the mass were concentrated there and all external forces were applied there",
+      "explanation": "Summing Newton's second law over all particles shows that internal forces cancel in pairs (Newton's third law), leaving M*a_cm = F_external, so the center of mass behaves like a single particle of the total mass under the net external force.",
+      "topic": "Systems of particles",
+      "difficulty": "medium"
+    }
+  ]
+}

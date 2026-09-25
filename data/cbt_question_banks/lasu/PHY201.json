@@ -1,0 +1,416 @@
+{
+  "course_code": "PHY201",
+  "title": "Electricity & Magnetism I",
+  "level": "200",
+  "source_note": "Standard NUC-aligned Nigerian university 200L Electricity and Magnetism I curriculum: electrostatics (Coulomb's law, electric field and potential, Gauss's law, capacitors and dielectrics, energy storage) and DC circuit theory (Ohm's law, resistivity, Kirchhoff's laws, series/parallel networks, EMF and internal resistance, RC transients). Magnetism, AC circuits, and electromagnetic induction are deliberately excluded, as they belong to PHY202.",
+  "questions": [
+    {
+      "question": "Coulomb's law states that the electrostatic force between two point charges is:",
+      "options": ["Directly proportional to the product of the charges and inversely proportional to the square of the distance between them", "Directly proportional to the sum of the charges and inversely proportional to the distance between them", "Inversely proportional to the product of the charges", "Independent of the distance between the charges"],
+      "correct_answer": "Directly proportional to the product of the charges and inversely proportional to the square of the distance between them",
+      "explanation": "Coulomb's law is F = kq1q2/r^2, so the force is proportional to the product of the two charges and inversely proportional to the square of their separation.",
+      "topic": "Coulomb's law",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Two point charges of +2 microcoulombs and +3 microcoulombs are separated by 0.3 m in vacuum. Using k = 9 x 10^9 N m^2/C^2, the magnitude of the force between them is approximately:",
+      "options": ["0.6 N", "6.0 N", "0.06 N", "60 N"],
+      "correct_answer": "0.6 N",
+      "explanation": "F = kq1q2/r^2 = (9x10^9)(2x10^-6)(3x10^-6)/(0.3)^2 = (9x10^9 x 6x10^-12)/0.09 = 0.054/0.09 = 0.6 N.",
+      "topic": "Coulomb's law",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The electric field at a point in space is defined as:",
+      "options": ["The force per unit positive test charge placed at that point", "The total charge enclosed at that point", "The potential energy per unit volume at that point", "The rate of change of current at that point"],
+      "correct_answer": "The force per unit positive test charge placed at that point",
+      "explanation": "Electric field E = F/q, the force experienced by a small positive test charge divided by the magnitude of that charge.",
+      "topic": "Electric field",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The electric field due to an isolated point charge Q at a distance r from it is given by:",
+      "options": ["E = kQ/r^2", "E = kQ/r", "E = kQr", "E = kQ^2/r"],
+      "correct_answer": "E = kQ/r^2",
+      "explanation": "This follows directly from Coulomb's law divided by a unit test charge: E = F/q = kQq/(r^2 q) = kQ/r^2.",
+      "topic": "Electric field",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Electric field lines around an isolated positive point charge:",
+      "options": ["Point radially outward from the charge", "Point radially inward toward the charge", "Form closed loops around the charge", "Are always parallel straight lines regardless of position"],
+      "correct_answer": "Point radially outward from the charge",
+      "explanation": "By convention, field lines point in the direction a positive test charge would move, which is radially away from an isolated positive charge.",
+      "topic": "Electric field",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Electric potential at a point due to a point charge Q is defined as:",
+      "options": ["The work done per unit positive charge in bringing a test charge from infinity to that point", "The force per unit charge at that point", "The total charge enclosed within a sphere of that radius", "The kinetic energy of a charge at that point"],
+      "correct_answer": "The work done per unit positive charge in bringing a test charge from infinity to that point",
+      "explanation": "Electric potential V = W/q, the work done against the electric field per unit charge to bring a test charge from infinity (reference of zero potential) to the point.",
+      "topic": "Electric potential",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The electric potential due to a point charge Q at a distance r is given by:",
+      "options": ["V = kQ/r", "V = kQ/r^2", "V = kQr", "V = kQ^2/r"],
+      "correct_answer": "V = kQ/r",
+      "explanation": "Electric potential from a point charge falls off as 1/r, unlike the electric field, which falls off as 1/r^2.",
+      "topic": "Electric potential",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A point charge of 4 microcoulombs is placed at a certain point. Using k = 9 x 10^9 N m^2/C^2, the electric potential at a distance of 0.2 m from the charge is:",
+      "options": ["1.8 x 10^5 V", "1.8 x 10^4 V", "3.6 x 10^5 V", "9.0 x 10^4 V"],
+      "correct_answer": "1.8 x 10^5 V",
+      "explanation": "V = kQ/r = (9x10^9)(4x10^-6)/0.2 = (3.6x10^4)/0.2 = 1.8x10^5 V.",
+      "topic": "Electric potential",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The relationship between electric field E and electric potential V along a direction x is given by:",
+      "options": ["E = -dV/dx", "E = dV/dx", "V = -dE/dx", "E = V/dx^2"],
+      "correct_answer": "E = -dV/dx",
+      "explanation": "The electric field is the negative gradient of the potential, pointing in the direction of decreasing potential.",
+      "topic": "Electric potential",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Electric potential energy of a system of two point charges q1 and q2 separated by distance r is given by:",
+      "options": ["U = kq1q2/r", "U = kq1q2/r^2", "U = k(q1+q2)/r", "U = kq1q2 r"],
+      "correct_answer": "U = kq1q2/r",
+      "explanation": "Potential energy of two point charges is the work needed to assemble them from infinite separation, U = kq1q2/r, following directly from the definition of potential.",
+      "topic": "Electric potential",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Gauss's law relates the electric flux through a closed surface to:",
+      "options": ["The total charge enclosed within that surface, divided by the permittivity of free space", "The total charge on the surface itself only", "The distance from the surface to the nearest charge", "The area of the surface only"],
+      "correct_answer": "The total charge enclosed within that surface, divided by the permittivity of free space",
+      "explanation": "Gauss's law states that the total electric flux through a closed (Gaussian) surface equals Q(enclosed)/epsilon_0, independent of the surface's shape.",
+      "topic": "Gauss's law",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Gauss's law is most useful for calculating electric fields in situations with:",
+      "options": ["High symmetry, such as spherical, cylindrical, or planar charge distributions", "Completely random, asymmetric charge distributions", "Only single point charges in a vacuum with no other charges nearby", "Only charges on the surface of conductors of arbitrary shape"],
+      "correct_answer": "High symmetry, such as spherical, cylindrical, or planar charge distributions",
+      "explanation": "Gauss's law becomes a powerful shortcut for computing E only when a Gaussian surface can be chosen so that E is constant and either parallel or perpendicular to the surface everywhere, which happens for highly symmetric charge distributions.",
+      "topic": "Gauss's law",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Using Gauss's law, the electric field just outside the surface of a uniformly charged conducting sphere of total charge Q and radius R, at a point a distance r > R from the centre, is:",
+      "options": ["E = kQ/r^2, identical in form to that of a point charge Q at the centre", "E = kQ/R^2 regardless of r", "Zero, since the sphere is a conductor", "E = kQr, increasing linearly with r"],
+      "correct_answer": "E = kQ/r^2, identical in form to that of a point charge Q at the centre",
+      "explanation": "By the symmetry of the sphere and Gauss's law, the external field of a uniformly charged sphere behaves exactly as though all the charge were concentrated at its centre.",
+      "topic": "Gauss's law",
+      "difficulty": "hard"
+    },
+    {
+      "question": "According to Gauss's law, the electric field inside a hollow, uniformly charged conducting sphere (with no charge inside the cavity) is:",
+      "options": ["Zero everywhere inside the cavity", "Equal to the field just outside the sphere", "Maximum at the centre of the cavity", "Directed radially inward"],
+      "correct_answer": "Zero everywhere inside the cavity",
+      "explanation": "Since no charge is enclosed by a Gaussian surface drawn inside the cavity, the net flux (and hence the field) through it is zero, consistent with electrostatic shielding.",
+      "topic": "Gauss's law",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A capacitor is a device that:",
+      "options": ["Stores electric charge and energy in the electric field between two conductors", "Converts electrical energy directly into mechanical energy", "Only allows current to flow in one direction", "Amplifies an electric signal"],
+      "correct_answer": "Stores electric charge and energy in the electric field between two conductors",
+      "explanation": "A capacitor consists of two conductors separated by an insulator (dielectric); it stores charge (and hence energy) in the electric field set up between them when a potential difference is applied.",
+      "topic": "Capacitors",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The capacitance of a capacitor is defined as:",
+      "options": ["The charge stored per unit potential difference across it", "The potential difference per unit charge across it", "The energy stored per unit charge", "The current flowing per unit time"],
+      "correct_answer": "The charge stored per unit potential difference across it",
+      "explanation": "Capacitance C = Q/V, the ratio of the charge stored on either plate to the potential difference between the plates.",
+      "topic": "Capacitors",
+      "difficulty": "easy"
+    },
+    {
+      "question": "For a parallel-plate capacitor with plate area A and plate separation d in vacuum, the capacitance is given by:",
+      "options": ["C = epsilon_0 A/d", "C = epsilon_0 d/A", "C = epsilon_0 A d", "C = A/(epsilon_0 d)"],
+      "correct_answer": "C = epsilon_0 A/d",
+      "explanation": "This is the standard formula for a parallel-plate capacitor, showing capacitance increases with plate area and decreases with plate separation.",
+      "topic": "Capacitors",
+      "difficulty": "medium"
+    },
+    {
+      "question": "When a dielectric material is inserted between the plates of an isolated (charge-fixed) parallel-plate capacitor, the capacitance:",
+      "options": ["Increases, because the dielectric reduces the electric field for a given charge", "Decreases, because the dielectric blocks the field entirely", "Stays exactly the same regardless of the dielectric used", "Becomes infinite"],
+      "correct_answer": "Increases, because the dielectric reduces the electric field for a given charge",
+      "explanation": "A dielectric polarizes in response to the field, partially cancelling it and reducing the voltage needed for a given charge, thereby increasing C = Q/V by a factor equal to the dielectric constant.",
+      "topic": "Capacitors and dielectrics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The dielectric constant (relative permittivity) of a material is defined as the ratio of:",
+      "options": ["The capacitance with the dielectric present to the capacitance with vacuum (or air) between the plates", "The charge stored to the plate area", "The applied voltage to the plate separation", "The dielectric's thickness to the plate separation"],
+      "correct_answer": "The capacitance with the dielectric present to the capacitance with vacuum (or air) between the plates",
+      "explanation": "The dielectric constant k = C(with dielectric)/C(vacuum), a dimensionless factor greater than 1 for all real dielectric materials.",
+      "topic": "Capacitors and dielectrics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For capacitors connected in series, the equivalent (total) capacitance is calculated using:",
+      "options": ["1/C(total) = 1/C1 + 1/C2 + ...", "C(total) = C1 + C2 + ...", "C(total) = C1 x C2 x ...", "C(total) = (C1 + C2)/2"],
+      "correct_answer": "1/C(total) = 1/C1 + 1/C2 + ...",
+      "explanation": "Series-connected capacitors combine their reciprocals, analogous to parallel resistors, because they carry the same charge but share the total voltage.",
+      "topic": "Capacitors",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For capacitors connected in parallel, the equivalent (total) capacitance is calculated using:",
+      "options": ["C(total) = C1 + C2 + ...", "1/C(total) = 1/C1 + 1/C2 + ...", "C(total) = C1 x C2 / (C1 + C2)", "C(total) = (C1 - C2)"],
+      "correct_answer": "C(total) = C1 + C2 + ...",
+      "explanation": "Parallel-connected capacitors share the same voltage and their charges (and hence capacitances) add directly.",
+      "topic": "Capacitors",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Two capacitors of 4 microfarads and 12 microfarads are connected in series. Their equivalent capacitance is:",
+      "options": ["3 microfarads", "16 microfarads", "8 microfarads", "48 microfarads"],
+      "correct_answer": "3 microfarads",
+      "explanation": "1/C = 1/4 + 1/12 = 3/12 + 1/12 = 4/12 = 1/3, so C = 3 microfarads.",
+      "topic": "Capacitors",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The energy stored in a charged capacitor of capacitance C carrying charge Q at potential difference V is given by:",
+      "options": ["U = (1/2)CV^2", "U = CV^2", "U = (1/2)QV^2", "U = 2CV"],
+      "correct_answer": "U = (1/2)CV^2",
+      "explanation": "The energy stored equals the work done charging the capacitor, U = (1/2)QV = (1/2)CV^2 = Q^2/(2C), since voltage rises linearly from 0 to V as charge is added.",
+      "topic": "Capacitors",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A 10 microfarad capacitor is charged to a potential difference of 50 V. The energy stored in the capacitor is:",
+      "options": ["0.0125 J", "0.025 J", "0.5 J", "125 J"],
+      "correct_answer": "0.0125 J",
+      "explanation": "U = (1/2)CV^2 = 0.5 x (10x10^-6) x (50)^2 = 0.5 x 10x10^-6 x 2500 = 0.0125 J.",
+      "topic": "Capacitors",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Ohm's law states that, for a conductor at constant temperature, the current flowing through it is:",
+      "options": ["Directly proportional to the potential difference across it", "Inversely proportional to the potential difference across it", "Independent of the potential difference across it", "Proportional to the square of the potential difference"],
+      "correct_answer": "Directly proportional to the potential difference across it",
+      "explanation": "Ohm's law is V = IR, so at constant resistance (constant temperature for an ohmic conductor), current is directly proportional to voltage.",
+      "topic": "Ohm's law and resistivity",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The resistance R of a uniform conducting wire of length L, cross-sectional area A, and resistivity rho is given by:",
+      "options": ["R = rho L / A", "R = rho A / L", "R = rho L A", "R = L / (rho A)"],
+      "correct_answer": "R = rho L / A",
+      "explanation": "Resistance increases with the length of the conductor and decreases with its cross-sectional area, scaled by the material's resistivity: R = rho L/A.",
+      "topic": "Ohm's law and resistivity",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The resistivity of a material is a property that primarily depends on:",
+      "options": ["The material itself and its temperature, but not on its length or cross-sectional area", "Only the length of the sample", "Only the cross-sectional area of the sample", "The shape of the sample only, not the material"],
+      "correct_answer": "The material itself and its temperature, but not on its length or cross-sectional area",
+      "explanation": "Resistivity is an intrinsic property of the material (and depends on temperature), unlike resistance, which also depends on the sample's dimensions.",
+      "topic": "Ohm's law and resistivity",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For most metallic conductors, as temperature increases, resistivity generally:",
+      "options": ["Increases, due to increased lattice vibrations scattering electrons", "Decreases, due to increased electron mobility", "Remains completely unchanged", "Drops to exactly zero"],
+      "correct_answer": "Increases, due to increased lattice vibrations scattering electrons",
+      "explanation": "In metals, higher temperature increases the thermal vibration of the lattice ions, scattering conduction electrons more frequently and raising resistivity.",
+      "topic": "Ohm's law and resistivity",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A copper wire has a resistance of 8 ohm. If the wire is stretched uniformly to twice its original length (with volume constant, so the cross-sectional area halves), its new resistance becomes:",
+      "options": ["32 ohm", "16 ohm", "4 ohm", "8 ohm"],
+      "correct_answer": "32 ohm",
+      "explanation": "R = rho L/A. Doubling L and halving A (since volume is constant) means the new R = rho(2L)/(A/2) = 4 x rho L/A = 4 x 8 = 32 ohm.",
+      "topic": "Ohm's law and resistivity",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Kirchhoff's current law (junction rule) states that at any junction in a circuit:",
+      "options": ["The sum of currents entering the junction equals the sum of currents leaving it", "The sum of all currents at the junction is always zero regardless of direction convention", "Current only flows into a junction, never out", "The junction must have equal resistance on all branches"],
+      "correct_answer": "The sum of currents entering the junction equals the sum of currents leaving it",
+      "explanation": "Kirchhoff's current law is a statement of conservation of charge: charge cannot accumulate at a junction, so current in must equal current out.",
+      "topic": "Kirchhoff's laws",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Kirchhoff's voltage law (loop rule) states that around any closed loop in a circuit:",
+      "options": ["The algebraic sum of the potential differences (EMFs and IR drops) is zero", "The total current in the loop is zero", "The total resistance in the loop must equal zero", "Only EMF sources contribute; resistors are ignored"],
+      "correct_answer": "The algebraic sum of the potential differences (EMFs and IR drops) is zero",
+      "explanation": "Kirchhoff's voltage law is a statement of conservation of energy: going around any closed loop and back to the starting point, the net change in electric potential is zero.",
+      "topic": "Kirchhoff's laws",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Three resistors of 2 ohm, 3 ohm, and 5 ohm are connected in series across a 20 V battery of negligible internal resistance. The current flowing in the circuit is:",
+      "options": ["2 A", "4 A", "10 A", "0.5 A"],
+      "correct_answer": "2 A",
+      "explanation": "Total resistance = 2 + 3 + 5 = 10 ohm. Current I = V/R = 20/10 = 2 A.",
+      "topic": "DC circuit analysis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Two resistors of 6 ohm and 12 ohm are connected in parallel and this combination is connected to a 24 V supply. The total current drawn from the supply is:",
+      "options": ["6 A", "2 A", "4 A", "8 A"],
+      "correct_answer": "6 A",
+      "explanation": "Equivalent resistance = (6x12)/(6+12) = 72/18 = 4 ohm. Total current I = V/R = 24/4 = 6 A.",
+      "topic": "DC circuit analysis",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The EMF of a cell is defined as:",
+      "options": ["The total energy supplied by the cell per unit charge passing through it, including work done against internal resistance", "The potential difference measured across the terminals when current is flowing", "The current the cell can supply at maximum", "The resistance of the cell's electrodes only"],
+      "correct_answer": "The total energy supplied by the cell per unit charge passing through it, including work done against internal resistance",
+      "explanation": "EMF (electromotive force) is the total energy converted per unit charge by the source, equal to the terminal voltage only when no current flows (open circuit).",
+      "topic": "EMF and internal resistance",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A cell of EMF E and internal resistance r delivers current I to an external resistor R. The terminal potential difference V across the cell is given by:",
+      "options": ["V = E - Ir", "V = E + Ir", "V = E/r", "V = Er"],
+      "correct_answer": "V = E - Ir",
+      "explanation": "Some of the EMF is used to drive current through the cell's own internal resistance, so the terminal voltage delivered to the external circuit is reduced by the amount Ir.",
+      "topic": "EMF and internal resistance",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A cell of EMF 6 V and internal resistance 0.5 ohm is connected to an external resistor of 2.5 ohm. The current flowing in the circuit is:",
+      "options": ["2 A", "3 A", "12 A", "1.5 A"],
+      "correct_answer": "2 A",
+      "explanation": "Total circuit resistance = R + r = 2.5 + 0.5 = 3 ohm. I = E/(R+r) = 6/3 = 2 A.",
+      "topic": "EMF and internal resistance",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For the cell in the previous scenario (EMF 6 V, internal resistance 0.5 ohm, current 2 A), the terminal potential difference across the cell is:",
+      "options": ["5 V", "6 V", "1 V", "7 V"],
+      "correct_answer": "5 V",
+      "explanation": "V = E - Ir = 6 - (2 x 0.5) = 6 - 1 = 5 V.",
+      "topic": "EMF and internal resistance",
+      "difficulty": "medium"
+    },
+    {
+      "question": "When a capacitor charges through a resistor R from a battery of EMF E in an RC circuit, the voltage across the capacitor as a function of time is given by:",
+      "options": ["V(t) = E(1 - e^(-t/RC))", "V(t) = E e^(-t/RC)", "V(t) = E(1 + e^(-t/RC))", "V(t) = Et/RC"],
+      "correct_answer": "V(t) = E(1 - e^(-t/RC))",
+      "explanation": "During charging, the capacitor voltage rises from 0 toward E, following an exponential approach described by V(t) = E(1 - e^(-t/RC)).",
+      "topic": "RC transients",
+      "difficulty": "hard"
+    },
+    {
+      "question": "When a charged capacitor discharges through a resistor R, the voltage across the capacitor as a function of time is given by:",
+      "options": ["V(t) = V0 e^(-t/RC)", "V(t) = V0 (1 - e^(-t/RC))", "V(t) = V0 (1 + t/RC)", "V(t) = V0/RC"],
+      "correct_answer": "V(t) = V0 e^(-t/RC)",
+      "explanation": "During discharge, the voltage decays exponentially from its initial value V0 toward zero, described by V(t) = V0 e^(-t/RC).",
+      "topic": "RC transients",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In an RC circuit, the time constant tau = RC represents:",
+      "options": ["The time taken for the capacitor voltage to fall (or rise) to about 37% (or 63%) of its initial (or final) value", "The total time for the capacitor to charge or discharge completely", "The resistance divided by the capacitance", "The maximum voltage the capacitor can hold"],
+      "correct_answer": "The time taken for the capacitor voltage to fall (or rise) to about 37% (or 63%) of its initial (or final) value",
+      "explanation": "At t = RC, e^(-1) is approximately 0.37, so a discharging capacitor has fallen to about 37% of its initial voltage, and a charging capacitor has risen to about 63% of its final voltage.",
+      "topic": "RC transients",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A resistor of 2000 ohm is connected in series with a 5 microfarad capacitor to form an RC circuit. The time constant of this circuit is:",
+      "options": ["0.01 s", "0.001 s", "10 s", "0.1 s"],
+      "correct_answer": "0.01 s",
+      "explanation": "tau = RC = 2000 x 5x10^-6 = 0.01 s.",
+      "topic": "RC transients",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In practice, a fully charged (or fully discharged) capacitor in an RC circuit is considered to have effectively reached its final state after approximately:",
+      "options": ["5 time constants (5RC)", "1 time constant (RC)", "0.5 time constant", "10 seconds, regardless of RC"],
+      "correct_answer": "5 time constants (5RC)",
+      "explanation": "After 5 time constants, e^(-5) is approximately 0.007, so the capacitor has reached about 99.3% of its final voltage, which is conventionally treated as 'fully' charged or discharged.",
+      "topic": "RC transients",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Which statement correctly distinguishes electric potential from electric potential energy?",
+      "options": ["Potential is potential energy per unit charge, a property of the field at a point, while potential energy depends on the actual charge placed there", "Potential and potential energy are always numerically identical for any charge", "Potential energy is measured in volts, while potential is measured in joules", "Potential only exists near conductors, while potential energy exists everywhere"],
+      "correct_answer": "Potential is potential energy per unit charge, a property of the field at a point, while potential energy depends on the actual charge placed there",
+      "explanation": "V = U/q; potential is an intrinsic property of the field's configuration at a point, whereas potential energy U = qV depends on the magnitude of the charge actually placed at that point.",
+      "topic": "Electric potential",
+      "difficulty": "medium"
+    },
+    {
+      "question": "An equipotential surface is a surface on which:",
+      "options": ["Every point has the same electric potential", "The electric field is always zero", "Only positive charges can exist", "The charge density is constant"],
+      "correct_answer": "Every point has the same electric potential",
+      "explanation": "By definition, no work is done moving a charge along an equipotential surface, since the potential (and hence potential energy per unit charge) does not change.",
+      "topic": "Electric potential",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Electric field lines and equipotential surfaces are related such that:",
+      "options": ["Field lines are always perpendicular to equipotential surfaces", "Field lines are always parallel to equipotential surfaces", "Field lines and equipotential surfaces coincide exactly", "There is no general relationship between them"],
+      "correct_answer": "Field lines are always perpendicular to equipotential surfaces",
+      "explanation": "Since no work is done moving along an equipotential surface, the field (which does work) must have no component along the surface, meaning it is everywhere perpendicular to it.",
+      "topic": "Electric potential",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A student wants to measure the resistance of an unknown resistor using an ammeter and a voltmeter in the laboratory. Applying Ohm's law, the resistance is calculated as:",
+      "options": ["The voltmeter reading divided by the ammeter reading", "The ammeter reading divided by the voltmeter reading", "The product of the voltmeter and ammeter readings", "The sum of the voltmeter and ammeter readings"],
+      "correct_answer": "The voltmeter reading divided by the ammeter reading",
+      "explanation": "By Ohm's law R = V/I, so the resistance is found by dividing the measured potential difference by the measured current.",
+      "topic": "Ohm's law and resistivity",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In a circuit with several resistors in series, if one resistor's connection breaks completely (open circuit), the current in the rest of the series loop:",
+      "options": ["Drops to zero everywhere in that loop", "Increases in the remaining resistors", "Stays exactly the same as before the break", "Only decreases in resistors downstream of the break"],
+      "correct_answer": "Drops to zero everywhere in that loop",
+      "explanation": "In a series circuit, there is only one path for current; breaking that path anywhere stops current flow throughout the entire loop.",
+      "topic": "DC circuit analysis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a circuit with several resistors in parallel, if one branch's resistor develops an open circuit (breaks), the current in the other parallel branches:",
+      "options": ["Is unaffected and continues to flow as before, since each branch has its own independent path", "Also drops to zero", "Reverses direction", "Becomes infinite"],
+      "correct_answer": "Is unaffected and continues to flow as before, since each branch has its own independent path",
+      "explanation": "Parallel branches are independent current paths between the same two nodes; an open circuit in one branch does not affect current flow in the others, as long as the supply voltage is maintained.",
+      "topic": "DC circuit analysis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The unit of capacitance, the farad, is equivalent to:",
+      "options": ["Coulomb per volt", "Volt per coulomb", "Joule per coulomb", "Coulomb per second"],
+      "correct_answer": "Coulomb per volt",
+      "explanation": "Since C = Q/V, one farad is defined as one coulomb of charge stored per volt of potential difference.",
+      "topic": "Capacitors",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Four identical capacitors, each of capacitance C, are connected all in parallel. The equivalent capacitance of the combination is:",
+      "options": ["4C", "C/4", "C", "2C"],
+      "correct_answer": "4C",
+      "explanation": "Parallel capacitances add directly, so four identical capacitors in parallel give 4C.",
+      "topic": "Capacitors",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A parallel-plate capacitor is connected to a battery that maintains a constant voltage V across it. If the plate separation is doubled while the battery remains connected, the charge stored on the capacitor:",
+      "options": ["Halves, because capacitance halves while voltage stays fixed", "Doubles, because the field region increases", "Stays exactly the same", "Quadruples"],
+      "correct_answer": "Halves, because capacitance halves while voltage stays fixed",
+      "explanation": "C = epsilon_0 A/d, so doubling d halves C; since Q = CV and V is held fixed by the battery, Q also halves.",
+      "topic": "Capacitors",
+      "difficulty": "hard"
+    }
+  ]
+}

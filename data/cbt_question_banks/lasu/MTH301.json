@@ -1,0 +1,248 @@
+{
+  "course_code": "MTH301",
+  "title": "Metric Space Topology",
+  "level": "300",
+  "source_note": "Standard NUC-aligned Nigerian university 300L Metric Space Topology curriculum: metric space axioms and examples, open/closed sets, convergence of sequences, completeness, compactness, connectedness, and continuity of functions between metric spaces.",
+  "questions": [
+    {
+      "question": "A metric d on a set X must satisfy which of the following for all x, y, z ∈ X?",
+      "options": ["d(x,y) ≥ 0 with equality iff x=y; d(x,y)=d(y,x); and the triangle inequality d(x,z) ≤ d(x,y)+d(y,z)", "d(x,y) can be negative", "d(x,x) = 1 for all x", "d(x,y) = d(y,x) only, with no other requirement"],
+      "correct_answer": "d(x,y) ≥ 0 with equality iff x=y; d(x,y)=d(y,x); and the triangle inequality d(x,z) ≤ d(x,y)+d(y,z)",
+      "explanation": "These are the three defining axioms of a metric: non-negativity/identity of indiscernibles, symmetry, and the triangle inequality.",
+      "topic": "Metric space axioms",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The usual (Euclidean) metric on ℝ is given by d(x,y) =",
+      "options": ["|x − y|", "x − y", "x² − y²", "√(x+y)"],
+      "correct_answer": "|x − y|",
+      "explanation": "The standard metric on the real line is the absolute value of the difference, which satisfies all metric axioms.",
+      "topic": "Metric space axioms",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The discrete metric on a set X is defined by d(x,y) = 0 if x = y and d(x,y) = 1 otherwise. Under this metric, every subset of X is:",
+      "options": ["Both open and closed", "Neither open nor closed", "Open only if finite", "Closed only if infinite"],
+      "correct_answer": "Both open and closed",
+      "explanation": "In the discrete metric, every singleton {x} is open (it is a ball of radius less than 1), so every subset (a union of singletons) is open, and hence also closed as the complement of an open set.",
+      "topic": "Metric space axioms",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In a metric space (X, d), the open ball B(x0, r) is defined as:",
+      "options": ["{x ∈ X : d(x, x0) < r}", "{x ∈ X : d(x, x0) ≤ r}", "{x ∈ X : d(x, x0) = r}", "{x ∈ X : d(x, x0) > r}"],
+      "correct_answer": "{x ∈ X : d(x, x0) < r}",
+      "explanation": "The open ball centered at x0 with radius r consists of all points strictly closer to x0 than r.",
+      "topic": "Open and closed sets",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A subset U of a metric space X is called open if:",
+      "options": ["For every point x ∈ U, there exists r > 0 such that B(x, r) ⊆ U", "U contains all its limit points", "U is a finite set", "U equals the whole space X"],
+      "correct_answer": "For every point x ∈ U, there exists r > 0 such that B(x, r) ⊆ U",
+      "explanation": "Openness means every point of U has some open ball around it entirely contained within U.",
+      "topic": "Open and closed sets",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A subset F of a metric space X is called closed if:",
+      "options": ["Its complement X \\ F is open", "It is bounded", "It contains no interior points", "It is always a finite set"],
+      "correct_answer": "Its complement X \\ F is open",
+      "explanation": "By definition, a closed set is one whose complement in X is an open set.",
+      "topic": "Open and closed sets",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which of the following is true of arbitrary unions and finite intersections of open sets in a metric space?",
+      "options": ["Both arbitrary unions and finite intersections of open sets are open", "Only unions are open; intersections are never open", "Only finite intersections are open; unions are never open", "Neither unions nor intersections of open sets are open"],
+      "correct_answer": "Both arbitrary unions and finite intersections of open sets are open",
+      "explanation": "This is a fundamental topological property: any union of open sets is open, and any finite intersection of open sets is also open.",
+      "topic": "Open and closed sets",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A point x is called a limit point (accumulation point) of a set A in a metric space if:",
+      "options": ["Every open ball around x contains a point of A different from x", "x ∈ A only", "x is isolated from A", "A is empty"],
+      "correct_answer": "Every open ball around x contains a point of A different from x",
+      "explanation": "A limit point is one that can be approximated arbitrarily closely by other points of A, distinct from x itself.",
+      "topic": "Open and closed sets",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A set A in a metric space is closed if and only if:",
+      "options": ["A contains all of its limit points", "A has no limit points", "A is open", "A is bounded"],
+      "correct_answer": "A contains all of its limit points",
+      "explanation": "A classical characterization: a set is closed precisely when it contains every point that is a limit of points from within the set.",
+      "topic": "Open and closed sets",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A sequence (xn) in a metric space (X, d) converges to x if:",
+      "options": ["d(xn, x) → 0 as n → ∞", "xn = x for all n", "d(xn, x) is constant", "The sequence is bounded"],
+      "correct_answer": "d(xn, x) → 0 as n → ∞",
+      "explanation": "Convergence in a metric space means the distance between the sequence terms and the limit point shrinks to zero.",
+      "topic": "Convergence",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In a metric space, the limit of a convergent sequence, if it exists, is:",
+      "options": ["Unique", "Always the identity element", "Not necessarily unique", "Equal to the diameter of the space"],
+      "correct_answer": "Unique",
+      "explanation": "Using the triangle inequality, one can show that a sequence in a metric space cannot converge to two distinct limits.",
+      "topic": "Convergence",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A sequence (xn) in a metric space is called a Cauchy sequence if:",
+      "options": ["For every ε > 0, there exists N such that d(xm, xn) < ε for all m, n > N", "It converges to 0", "It is bounded above only", "d(xn, xn+1) = 0 for all n"],
+      "correct_answer": "For every ε > 0, there exists N such that d(xm, xn) < ε for all m, n > N",
+      "explanation": "The Cauchy condition requires terms to become arbitrarily close to each other, not merely to a specific limit.",
+      "topic": "Completeness",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A metric space (X, d) is called complete if:",
+      "options": ["Every Cauchy sequence in X converges to a point in X", "Every sequence in X is bounded", "X has only finitely many points", "X contains the empty set"],
+      "correct_answer": "Every Cauchy sequence in X converges to a point in X",
+      "explanation": "Completeness means there are no 'missing' limit points — every Cauchy sequence actually converges within the space.",
+      "topic": "Completeness",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which of the following metric spaces is NOT complete?",
+      "options": ["The rational numbers ℚ with the usual metric", "The real numbers ℝ with the usual metric", "ℝ^n with the Euclidean metric", "Any finite metric space"],
+      "correct_answer": "The rational numbers ℚ with the usual metric",
+      "explanation": "ℚ is not complete because Cauchy sequences of rationals can converge to irrational numbers (e.g. approximations of √2), which lie outside ℚ.",
+      "topic": "Completeness",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Every convergent sequence in a metric space is necessarily:",
+      "options": ["A Cauchy sequence", "Divergent", "Unbounded", "Constant"],
+      "correct_answer": "A Cauchy sequence",
+      "explanation": "If a sequence converges to a limit x, its terms become arbitrarily close to x, and hence arbitrarily close to each other, satisfying the Cauchy condition.",
+      "topic": "Completeness",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A subset K of a metric space X is called compact if:",
+      "options": ["Every open cover of K has a finite subcover", "K is bounded only", "K is closed only", "K contains only one point"],
+      "correct_answer": "Every open cover of K has a finite subcover",
+      "explanation": "This is the general (Heine-Borel style) topological definition of compactness in terms of open covers.",
+      "topic": "Compactness",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Heine-Borel Theorem states that a subset of ℝ^n (with the usual metric) is compact if and only if it is:",
+      "options": ["Closed and bounded", "Open and unbounded", "Connected only", "Finite"],
+      "correct_answer": "Closed and bounded",
+      "explanation": "In Euclidean space ℝ^n, compactness is precisely equivalent to being both closed and bounded, a special case not true in general metric spaces.",
+      "topic": "Compactness",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Every compact metric space is necessarily:",
+      "options": ["Complete", "Discrete", "Countable", "Disconnected"],
+      "correct_answer": "Complete",
+      "explanation": "Compactness implies completeness: any Cauchy sequence in a compact space has a convergent subsequence, which forces the whole sequence to converge.",
+      "topic": "Compactness",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The open interval (0, 1) with the usual metric on ℝ is:",
+      "options": ["Not compact, since it is bounded but not closed in ℝ", "Compact", "Discrete", "Complete"],
+      "correct_answer": "Not compact, since it is bounded but not closed in ℝ",
+      "explanation": "Although bounded, (0,1) fails to be closed (it does not contain its limit points 0 and 1), so by Heine-Borel it is not compact; it is also not complete as a metric space in its own right.",
+      "topic": "Compactness",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A metric space X is called connected if:",
+      "options": ["X cannot be written as the union of two disjoint nonempty open sets", "X has only one point", "X is bounded", "Every subset of X is open"],
+      "correct_answer": "X cannot be written as the union of two disjoint nonempty open sets",
+      "explanation": "Connectedness means there is no way to 'split' the space into two separate open pieces; such a split is called a disconnection.",
+      "topic": "Connectedness",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A subset of ℝ with the usual metric is connected if and only if it is:",
+      "options": ["An interval (including degenerate ones like a single point)", "A finite set", "An open set only", "A closed set only"],
+      "correct_answer": "An interval (including degenerate ones like a single point)",
+      "explanation": "In ℝ, the connected subsets are exactly the intervals — sets with no 'gaps' — due to the order structure of the real line.",
+      "topic": "Connectedness",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A function f: X → Y between metric spaces is continuous at x0 if:",
+      "options": ["For every ε > 0 there exists δ > 0 such that d_X(x,x0) < δ implies d_Y(f(x), f(x0)) < ε", "f(x0) = 0", "f is a bijection", "d_X(x, x0) = d_Y(f(x), f(x0)) for all x"],
+      "correct_answer": "For every ε > 0 there exists δ > 0 such that d_X(x,x0) < δ implies d_Y(f(x), f(x0)) < ε",
+      "explanation": "This is the metric-space generalization of the epsilon-delta definition of continuity from real analysis.",
+      "topic": "Continuity",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A function f: X → Y between metric spaces is continuous on X if and only if:",
+      "options": ["The preimage of every open set in Y is open in X", "f is bounded", "The image of every open set in X is open in Y", "f is injective"],
+      "correct_answer": "The preimage of every open set in Y is open in X",
+      "explanation": "This topological characterization of continuity is equivalent to the epsilon-delta definition and is often more convenient for proofs.",
+      "topic": "Continuity",
+      "difficulty": "hard"
+    },
+    {
+      "question": "If f: X → Y is continuous and K ⊆ X is compact, then f(K) is:",
+      "options": ["Compact in Y", "Open in Y", "Empty", "Disconnected"],
+      "correct_answer": "Compact in Y",
+      "explanation": "Continuous images of compact sets are always compact, a key preservation theorem in metric space topology.",
+      "topic": "Continuity",
+      "difficulty": "hard"
+    },
+    {
+      "question": "If f: X → Y is continuous and X is connected, then f(X) is:",
+      "options": ["Connected in Y", "Compact in Y", "Discrete", "Always equal to Y"],
+      "correct_answer": "Connected in Y",
+      "explanation": "Continuous functions preserve connectedness: the continuous image of a connected space is always connected.",
+      "topic": "Continuity",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The interior of a set A in a metric space is defined as:",
+      "options": ["The union of all open sets contained in A", "The set of all limit points of A", "The complement of A", "The boundary of A"],
+      "correct_answer": "The union of all open sets contained in A",
+      "explanation": "The interior int(A) is the largest open set contained within A, consisting of points that have an open ball entirely inside A.",
+      "topic": "Open and closed sets",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The closure of a set A in a metric space is defined as:",
+      "options": ["The intersection of all closed sets containing A (equivalently, A together with its limit points)", "The interior of A", "The complement of A", "The empty set"],
+      "correct_answer": "The intersection of all closed sets containing A (equivalently, A together with its limit points)",
+      "explanation": "The closure of A is the smallest closed set containing A, obtained by adding all of A's limit points.",
+      "topic": "Open and closed sets",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A subset A of a metric space X is called dense in X if:",
+      "options": ["The closure of A equals X", "A is open", "A is finite", "A = X exactly, with no closure needed"],
+      "correct_answer": "The closure of A equals X",
+      "explanation": "Density means every point of X can be approximated arbitrarily well by points of A; e.g. ℚ is dense in ℝ.",
+      "topic": "Open and closed sets",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Two metrics d1 and d2 on a set X are called equivalent if:",
+      "options": ["They induce the same open sets (the same topology) on X", "d1(x,y) = d2(x,y) for all x, y", "One of them is always zero", "They have different completeness properties by definition"],
+      "correct_answer": "They induce the same open sets (the same topology) on X",
+      "explanation": "Equivalent metrics may differ numerically but generate identical notions of open sets, convergence, and continuity.",
+      "topic": "Metric space axioms",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The distance function d(x, y) = |x1 − y1| + |x2 − y2| on ℝ² (the taxicab/Manhattan metric) is:",
+      "options": ["A valid metric on ℝ²", "Not a valid metric because it can be negative", "The same as the Euclidean metric numerically", "Undefined for points with negative coordinates"],
+      "correct_answer": "A valid metric on ℝ²",
+      "explanation": "The taxicab metric satisfies all three metric axioms (non-negativity, symmetry, triangle inequality), making it a legitimate alternative metric on ℝ².",
+      "topic": "Metric space axioms",
+      "difficulty": "medium"
+    }
+  ]
+}

@@ -1,0 +1,240 @@
+{
+  "course_code": "FIS403",
+  "title": "Fish Stock Assessment",
+  "level": "400",
+  "source_note": "Standard NUC-aligned Nigerian university 400L Fish Stock Assessment curriculum: catch-per-unit-effort (CPUE), growth models (von Bertalanffy), natural and fishing mortality, recruitment, surplus production models (Schaefer/Fox), yield-per-recruit concepts, length-frequency-based methods, and basic stock assessment calculations. Includes worked calculation and data-interpretation questions as required for this quantitative course. Kept distinct from Fisheries Management (FIS305) and Sustainable Fisheries Management (FIS408) by focusing on the quantitative/analytical methods themselves.",
+  "questions": [
+    {
+      "question": "Catch per unit effort (CPUE) is calculated as:",
+      "options": ["Total catch divided by total fishing effort", "Total fishing effort divided by total catch", "Total catch multiplied by total fishing effort", "Total catch minus total fishing effort"],
+      "correct_answer": "Total catch divided by total fishing effort",
+      "explanation": "CPUE = Catch / Effort, and it is widely used as an index proportional to stock abundance, assuming catchability remains constant.",
+      "topic": "CPUE and abundance indices",
+      "difficulty": "easy"
+    },
+    {
+      "question": "If a fishing fleet lands 5,000 kg of fish after applying 250 boat-days of fishing effort, the CPUE is:",
+      "options": ["20 kg per boat-day", "1,250,000 kg per boat-day", "0.05 kg per boat-day", "5,250 kg per boat-day"],
+      "correct_answer": "20 kg per boat-day",
+      "explanation": "CPUE = Catch / Effort = 5,000 kg / 250 boat-days = 20 kg per boat-day.",
+      "topic": "CPUE and abundance indices",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In stock assessment, the underlying assumption behind using CPUE as an abundance index is that:",
+      "options": ["Catchability (the fraction of the stock caught per unit effort) remains roughly constant over time", "Catch is always completely unrelated to the size of the fish stock", "Fishing effort has no bearing on the amount of fish caught", "CPUE always increases regardless of changes in stock size"],
+      "correct_answer": "Catchability (the fraction of the stock caught per unit effort) remains roughly constant over time",
+      "explanation": "CPUE is used as a proxy for abundance based on the assumption that catchability (q) is constant, so that CPUE = q × Biomass; if catchability changes, CPUE becomes a less reliable abundance indicator.",
+      "topic": "CPUE and abundance indices",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The von Bertalanffy growth function (VBGF) is widely used in fish stock assessment to model:",
+      "options": ["The change in fish length (or weight) as a function of age", "The number of eggs a female fish produces per spawning event", "The total biomass of an entire fish stock at one point in time", "The exact geographic distribution of a fish population"],
+      "correct_answer": "The change in fish length (or weight) as a function of age",
+      "explanation": "The VBGF is a mathematical growth model describing how fish length (or weight) increases with age, typically approaching an asymptotic maximum length (L-infinity) at a species- and stock-specific rate (K).",
+      "topic": "Growth models",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the von Bertalanffy growth equation, the parameter L-infinity (L∞) represents:",
+      "options": ["The theoretical asymptotic (maximum) length the fish would reach if it grew indefinitely", "The exact length of the fish at hatching", "The growth rate coefficient", "The age at first maturity"],
+      "correct_answer": "The theoretical asymptotic (maximum) length the fish would reach if it grew indefinitely",
+      "explanation": "L∞ is the asymptotic length parameter in the VBGF, representing the theoretical maximum average length the fish approaches as age increases, though individual fish may not literally reach it.",
+      "topic": "Growth models",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the von Bertalanffy growth equation, the parameter K represents:",
+      "options": ["The rate at which the fish approaches its asymptotic length", "The fish's total biomass", "The number of fish caught per year", "The exact hatching date of the fish"],
+      "correct_answer": "The rate at which the fish approaches its asymptotic length",
+      "explanation": "K is the growth coefficient describing how quickly a fish approaches its asymptotic length L∞; a higher K means the fish reaches close to L∞ more rapidly.",
+      "topic": "Growth models",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Total mortality (Z) in a fish stock is generally partitioned into which two components?",
+      "options": ["Natural mortality (M) and fishing mortality (F)", "Growth mortality and recruitment mortality", "Larval mortality and egg mortality only", "Predation mortality and migration mortality only"],
+      "correct_answer": "Natural mortality (M) and fishing mortality (F)",
+      "explanation": "Total mortality rate Z is conventionally decomposed as Z = M + F, where M represents deaths from natural causes (predation, disease, old age) and F represents deaths caused by fishing.",
+      "topic": "Mortality estimation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "If total mortality (Z) for a fish stock is estimated at 1.2 per year and natural mortality (M) is estimated at 0.4 per year, the fishing mortality (F) is:",
+      "options": ["0.8 per year", "1.6 per year", "0.4 per year", "3.0 per year"],
+      "correct_answer": "0.8 per year",
+      "explanation": "Since Z = M + F, F = Z - M = 1.2 - 0.4 = 0.8 per year.",
+      "topic": "Mortality estimation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The exploitation rate (E) of a fish stock is commonly expressed as:",
+      "options": ["The ratio of fishing mortality to total mortality, F/Z", "The ratio of natural mortality to fishing mortality, M/F", "The absolute number of fish caught in a single day", "The percentage of fish that survive natural predation only"],
+      "correct_answer": "The ratio of fishing mortality to total mortality, F/Z",
+      "explanation": "Exploitation rate E = F/Z expresses what fraction of total mortality in the stock is attributable to fishing, commonly used to judge whether a stock is over- or under-exploited relative to a reference level (often around E=0.5).",
+      "topic": "Mortality estimation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Using the exploitation rate example above (F=0.8, Z=1.2), the exploitation rate E is:",
+      "options": ["Approximately 0.67", "Approximately 0.33", "Approximately 1.5", "Approximately 0.4"],
+      "correct_answer": "Approximately 0.67",
+      "explanation": "E = F/Z = 0.8 / 1.2 ≈ 0.67, suggesting fishing accounts for about 67% of total mortality, which by the common E=0.5 rule-of-thumb would suggest the stock may be heavily exploited.",
+      "topic": "Mortality estimation",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Recruitment, in fish stock assessment terminology, refers to:",
+      "options": ["The number of young fish surviving to enter the exploitable (catchable) part of the stock", "The total number of eggs spawned by adult females", "The process of hiring new fisheries personnel", "The rate at which fish escape from a trawl net"],
+      "correct_answer": "The number of young fish surviving to enter the exploitable (catchable) part of the stock",
+      "explanation": "Recruitment describes the number of juvenile fish that survive early life stages and grow large enough to become vulnerable to the fishing gear, effectively joining the exploitable stock.",
+      "topic": "Recruitment",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A stock-recruitment relationship in fisheries science attempts to describe how:",
+      "options": ["The size of the spawning stock relates to the number of recruits produced", "Fish migrate between different water bodies", "Fishing gear selectivity changes with mesh size", "Water temperature affects gill structure"],
+      "correct_answer": "The size of the spawning stock relates to the number of recruits produced",
+      "explanation": "Stock-recruitment models (e.g., Beverton-Holt, Ricker) attempt to quantify the relationship between the size of the spawning biomass and the resulting number of recruits to the fishery in subsequent years.",
+      "topic": "Recruitment",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Surplus production models (e.g., Schaefer model) in fisheries stock assessment are distinguished from age-structured models mainly because they:",
+      "options": ["Treat the stock as a single biomass pool without explicitly tracking individual age classes", "Require detailed data on the age of every individual fish caught", "Can only be applied to a single fish species worldwide", "Ignore fishing effort entirely in their calculations"],
+      "correct_answer": "Treat the stock as a single biomass pool without explicitly tracking individual age classes",
+      "explanation": "Surplus production (biomass dynamic) models like the Schaefer model simplify the stock into a single aggregated biomass pool, relating catch, effort, and biomass without requiring age-structured data, unlike more data-intensive age-structured models.",
+      "topic": "Surplus production models",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In the Schaefer surplus production model, Maximum Sustainable Yield (MSY) is predicted to occur at approximately:",
+      "options": ["Half of the stock's unexploited (virgin) biomass", "The full unexploited virgin biomass with no fishing at all", "Zero biomass, i.e., complete stock collapse", "Twice the unexploited virgin biomass"],
+      "correct_answer": "Half of the stock's unexploited (virgin) biomass",
+      "explanation": "The Schaefer (logistic) surplus production model predicts that population growth, and therefore sustainable yield, is maximized when the stock biomass is at about half of its carrying capacity (unexploited biomass).",
+      "topic": "Surplus production models",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Maximum Sustainable Yield (MSY) is generally defined as:",
+      "options": ["The largest long-term average catch that can be taken from a stock without depleting it", "The absolute maximum catch achievable in a single fishing trip regardless of future stock impact", "The total historical catch ever recorded from a fishery", "A catch level that always causes stock collapse"],
+      "correct_answer": "The largest long-term average catch that can be taken from a stock without depleting it",
+      "explanation": "MSY is the theoretical maximum yield that can be harvested from a stock indefinitely without causing long-term decline, based on the stock's biological growth potential.",
+      "topic": "Surplus production models",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Yield-per-recruit (Y/R) analysis in stock assessment is primarily used to examine how:",
+      "options": ["Fishing mortality and age/size at first capture jointly affect the total yield obtainable from each recruit", "Water temperature alone determines total catch", "The number of fishing licenses issued affects fish coloration", "Fish species are taxonomically classified"],
+      "correct_answer": "Fishing mortality and age/size at first capture jointly affect the total yield obtainable from each recruit",
+      "explanation": "Yield-per-recruit models examine the combined effect of fishing mortality rate and the age/size at which fish are first captured on the total yield that can be extracted, on average, from each fish that recruits to the stock.",
+      "topic": "Yield-per-recruit analysis",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Growth overfishing occurs when fish are harvested:",
+      "options": ["At too small a size/young an age, before they have grown enough to maximize yield per recruit", "Only after they have reached their maximum possible size", "At exactly the size that maximizes long-term yield", "Only during a legally mandated closed season"],
+      "correct_answer": "At too small a size/young an age, before they have grown enough to maximize yield per recruit",
+      "explanation": "Growth overfishing happens when fish are caught before reaching a size that would have contributed more total yield through further growth, reducing the yield obtainable per recruit compared to fishing at an optimal size.",
+      "topic": "Yield-per-recruit analysis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Recruitment overfishing, as distinct from growth overfishing, occurs when:",
+      "options": ["Fishing pressure reduces the spawning stock to a level where recruitment of new fish is significantly impaired", "Fish are harvested too late in life, after their optimal size", "The stock has no fishing pressure applied at all", "Recruitment is unaffected by any level of fishing mortality"],
+      "correct_answer": "Fishing pressure reduces the spawning stock to a level where recruitment of new fish is significantly impaired",
+      "explanation": "Recruitment overfishing occurs when the spawning stock biomass is reduced so much by fishing that the stock's ability to produce sufficient offspring (recruits) to sustain itself is compromised.",
+      "topic": "Recruitment",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Length-frequency analysis, commonly used in data-limited tropical fisheries like those in Nigeria, estimates growth parameters by:",
+      "options": ["Tracking modal progressions of length classes in samples collected over time", "Directly counting growth rings (annuli) on fish scales or otoliths exclusively", "Measuring only the total weight of the catch", "Analyzing DNA sequences of individual fish"],
+      "correct_answer": "Tracking modal progressions of length classes in samples collected over time",
+      "explanation": "Length-frequency-based methods (such as those used in the ELEFAN technique) track how modal peaks in length-frequency distributions shift over successive sampling periods, inferring growth parameters where direct aging (e.g., via otoliths) is difficult, as is often the case for many tropical species.",
+      "topic": "Length-frequency methods",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Otolith reading, used to age fish in temperate stock assessment, relies on:",
+      "options": ["Counting growth rings (annuli) deposited in the ear bone that correspond to annual growth cycles", "Measuring the fish's total length only", "Counting the number of scales on the fish's body", "Weighing the whole fish including internal organs"],
+      "correct_answer": "Counting growth rings (annuli) deposited in the ear bone that correspond to annual growth cycles",
+      "explanation": "Otoliths (ear bones) accumulate growth rings analogous to tree rings, often laid down annually or seasonally, allowing direct age determination in many fish species, though this method is more reliable in seasonal (often temperate) than tropical environments.",
+      "topic": "Length-frequency methods",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A declining trend in CPUE over several years, with fishing effort remaining constant or increasing, is generally interpreted in stock assessment as a potential sign of:",
+      "options": ["Declining stock abundance", "Increasing stock abundance", "No possible relationship to stock status", "Guaranteed recovery of the stock in the following year"],
+      "correct_answer": "Declining stock abundance",
+      "explanation": "Assuming catchability is roughly constant, a falling CPUE over time (especially with stable or rising effort) is commonly interpreted as an indicator of declining stock abundance, prompting closer management scrutiny.",
+      "topic": "CPUE and abundance indices",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Virtual Population Analysis (VPA), used in age-structured stock assessment, works by:",
+      "options": ["Reconstructing historical stock size and fishing mortality backward from catch-at-age data", "Directly counting every living fish in the ocean", "Ignoring catch data entirely in favor of only effort data", "Predicting future recruitment with no reference to past catches"],
+      "correct_answer": "Reconstructing historical stock size and fishing mortality backward from catch-at-age data",
+      "explanation": "VPA uses recorded catch-at-age data, working backward cohort by cohort, to reconstruct estimates of historical population size and fishing mortality rates for each age class.",
+      "topic": "Age-structured assessment",
+      "difficulty": "hard"
+    },
+    {
+      "question": "If a fish stock has an estimated natural mortality (M) of 0.5/year and fishing is stopped completely (F=0), the total mortality (Z) of the stock becomes:",
+      "options": ["0.5 per year", "0 per year", "1.0 per year", "Undefined and cannot be calculated"],
+      "correct_answer": "0.5 per year",
+      "explanation": "With Z = M + F, if F = 0 (no fishing), then Z = M = 0.5 per year, reflecting mortality from natural causes alone.",
+      "topic": "Mortality estimation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A survival rate (S) can be calculated from total mortality (Z) using the relationship:",
+      "options": ["S = e^(-Z)", "S = Z + 1", "S = 1/Z", "S = Z × 2"],
+      "correct_answer": "S = e^(-Z)",
+      "explanation": "In exponential mortality models, the annual survival rate is S = e^(-Z), where Z is the instantaneous total mortality rate; this is a standard relationship in fisheries population dynamics.",
+      "topic": "Mortality estimation",
+      "difficulty": "hard"
+    },
+    {
+      "question": "If total mortality Z = 0.9 per year, using S = e^(-Z), the approximate annual survival rate is:",
+      "options": ["About 41%", "About 90%", "About 10%", "About 141%"],
+      "correct_answer": "About 41%",
+      "explanation": "S = e^(-0.9) ≈ 0.407, or approximately 41%, meaning about 41% of the stock is expected to survive from one year to the next given Z = 0.9.",
+      "topic": "Mortality estimation",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In fisheries stock assessment, 'selectivity' of a fishing gear refers to:",
+      "options": ["The probability that a fish of a given size or age will be captured by the gear if encountered", "The total number of vessels licensed to use that gear", "The market price paid for fish caught with that gear", "The exact color of the net material used"],
+      "correct_answer": "The probability that a fish of a given size or age will be captured by the gear if encountered",
+      "explanation": "Gear selectivity describes how the probability of capture varies with fish size or age (e.g., larger mesh nets are less likely to retain small fish), a key input into yield-per-recruit and other assessment models.",
+      "topic": "Yield-per-recruit analysis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In data-limited fisheries typical of much of Nigeria's inland and artisanal marine sectors, stock assessment scientists often rely more heavily on:",
+      "options": ["Length-based and catch/effort-based methods rather than full age-structured models requiring extensive historical data", "Only satellite-based direct fish counting with no other data", "Genetic sequencing as the sole assessment method", "Complete absence of any assessment approach whatsoever"],
+      "correct_answer": "Length-based and catch/effort-based methods rather than full age-structured models requiring extensive historical data",
+      "explanation": "Because comprehensive long-term catch-at-age and effort datasets are often unavailable in data-limited tropical fisheries, assessment commonly relies on simpler length-based and CPUE/production model approaches that require less extensive input data.",
+      "topic": "Length-frequency methods",
+      "difficulty": "medium"
+    },
+    {
+      "question": "If a fish population's exploitable biomass is estimated at 10,000 tonnes and its estimated instantaneous fishing mortality rate F is 0.3/year, a very rough estimate of the annual catch (using Baranov-type approximation C ≈ F × B for low F) would be approximately:",
+      "options": ["3,000 tonnes", "300 tonnes", "30,000 tonnes", "10,300 tonnes"],
+      "correct_answer": "3,000 tonnes",
+      "explanation": "As a simplified approximation for relatively low fishing mortality, catch C ≈ F × B = 0.3 × 10,000 tonnes = 3,000 tonnes; more precise catch equations account for both F and M simultaneously, but this approximation illustrates the basic relationship.",
+      "topic": "Mortality estimation",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A key data requirement for constructing a reliable stock-recruitment relationship is:",
+      "options": ["A time series of paired spawning stock biomass and resulting recruitment estimates across multiple years", "A single year of catch data with no biomass information", "Only the market price of fish over time", "The GPS coordinates of the fishing vessels used"],
+      "correct_answer": "A time series of paired spawning stock biomass and resulting recruitment estimates across multiple years",
+      "explanation": "Estimating a stock-recruitment relationship requires multiple years of data pairing spawning stock size with the resulting recruitment, since a single year's data point cannot reveal the underlying relationship.",
+      "topic": "Recruitment",
+      "difficulty": "medium"
+    }
+  ]
+}

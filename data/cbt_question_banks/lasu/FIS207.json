@@ -1,0 +1,264 @@
+{
+  "course_code": "FIS207",
+  "title": "Fisheries Statistics",
+  "level": "200",
+  "source_note": "Standard NUC-aligned 200L Fisheries Statistics curriculum: descriptive statistics (mean, median, mode, range, variance, standard deviation), sampling techniques, probability basics, correlation and regression, catch-per-unit-effort (CPUE), and applied calculation problems using typical fisheries data (catch, length, survival rate).",
+  "questions": [
+    {
+      "question": "Fisheries statistics is primarily concerned with:",
+      "options": ["The collection, analysis, and interpretation of numerical data related to fish populations and fisheries activities", "The classification of fish species by external morphology", "The construction of fishing gear", "The study of fish diseases"],
+      "correct_answer": "The collection, analysis, and interpretation of numerical data related to fish populations and fisheries activities",
+      "explanation": "Fisheries statistics applies statistical methods to fisheries and aquaculture data, such as catch records, growth measurements, and survey results, to support scientific analysis and management decisions.",
+      "topic": "Scope of fisheries statistics",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The arithmetic mean of a data set is calculated as:",
+      "options": ["The sum of all values divided by the number of values", "The middle value when data are arranged in order", "The most frequently occurring value", "The difference between the highest and lowest values"],
+      "correct_answer": "The sum of all values divided by the number of values",
+      "explanation": "The arithmetic mean (average) is obtained by summing all observations and dividing by the total number of observations in the data set.",
+      "topic": "Descriptive statistics",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Given the fish weights (in grams): 120, 150, 130, 140, 160, what is the mean weight?",
+      "options": ["140", "130", "150", "145"],
+      "correct_answer": "140",
+      "explanation": "Sum = 120+150+130+140+160 = 700. Mean = 700/5 = 140 grams.",
+      "topic": "Descriptive statistics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The median of a data set is defined as:",
+      "options": ["The middle value when the data are arranged in ascending or descending order", "The sum of all values divided by their count", "The value that occurs most frequently", "The largest value in the data set"],
+      "correct_answer": "The middle value when the data are arranged in ascending or descending order",
+      "explanation": "The median splits an ordered data set into two equal halves; for an odd number of observations it is the single middle value, and for an even number it is the average of the two middle values.",
+      "topic": "Descriptive statistics",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Given the fish lengths (in cm): 22, 25, 21, 28, 24, what is the median length?",
+      "options": ["24", "22", "25", "23"],
+      "correct_answer": "24",
+      "explanation": "Arranged in order: 21, 22, 24, 25, 28. With five values, the median is the middle (3rd) value, which is 24.",
+      "topic": "Descriptive statistics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The mode of a data set refers to:",
+      "options": ["The value that occurs most frequently in the data set", "The average of all values", "The middle value in an ordered data set", "The range of the data"],
+      "correct_answer": "The value that occurs most frequently in the data set",
+      "explanation": "The mode is the most commonly occurring value(s) in a data set, and a data set can have one mode, more than one mode, or no mode at all.",
+      "topic": "Descriptive statistics",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Given the catch data (number of fish per net haul): 5, 7, 7, 8, 9, 7, 10, what is the mode?",
+      "options": ["7", "8", "9", "10"],
+      "correct_answer": "7",
+      "explanation": "The value 7 appears three times, more than any other value in the data set, making it the mode.",
+      "topic": "Descriptive statistics",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The 'range' of a data set is calculated as:",
+      "options": ["The difference between the highest and lowest values", "The sum of all values", "The average of all values", "The middle value of the data set"],
+      "correct_answer": "The difference between the highest and lowest values",
+      "explanation": "Range is a simple measure of dispersion calculated by subtracting the minimum value from the maximum value in a data set.",
+      "topic": "Descriptive statistics",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Given fish weights (in grams): 90, 110, 105, 130, 95, what is the range?",
+      "options": ["40", "130", "90", "105"],
+      "correct_answer": "40",
+      "explanation": "Range = maximum - minimum = 130 - 90 = 40 grams.",
+      "topic": "Descriptive statistics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Variance in statistics measures:",
+      "options": ["The average of the squared deviations of each value from the mean", "The most frequent value in the data set", "The middle value in an ordered data set", "The total sum of all data values"],
+      "correct_answer": "The average of the squared deviations of each value from the mean",
+      "explanation": "Variance quantifies how spread out data values are around the mean by averaging the squared differences between each observation and the mean.",
+      "topic": "Descriptive statistics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Standard deviation is best described as:",
+      "options": ["The square root of the variance, expressed in the same units as the original data", "The same as the mean", "The square of the variance", "A measure of central tendency, not dispersion"],
+      "correct_answer": "The square root of the variance, expressed in the same units as the original data",
+      "explanation": "Standard deviation is derived by taking the square root of the variance, making it more interpretable since it shares the same units as the original measurements.",
+      "topic": "Descriptive statistics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A small standard deviation in a sample of fish lengths indicates that:",
+      "options": ["The individual lengths are clustered closely around the mean", "The lengths are widely and evenly spread out", "All the fish are of different species", "The sample size is definitely too small to be valid"],
+      "correct_answer": "The individual lengths are clustered closely around the mean",
+      "explanation": "A low standard deviation reflects low variability, meaning most observed values lie close to the mean, whereas a high standard deviation indicates greater spread.",
+      "topic": "Descriptive statistics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In fisheries sampling, 'random sampling' is a technique in which:",
+      "options": ["Every individual (or sampling unit) in the population has an equal chance of being selected", "Only the largest fish are deliberately selected", "Samples are chosen based on convenience only, regardless of representativeness", "Only fish from a single specific location are ever selected"],
+      "correct_answer": "Every individual (or sampling unit) in the population has an equal chance of being selected",
+      "explanation": "Random sampling ensures each unit in the population has an equal probability of selection, minimizing selection bias and improving the representativeness of the sample.",
+      "topic": "Sampling techniques",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Stratified sampling in fisheries surveys involves:",
+      "options": ["Dividing the population into distinct subgroups (strata) and sampling from each subgroup", "Selecting only one sample from the entire population regardless of subgroup", "Sampling exclusively from the largest subgroup available", "Avoiding any form of subdivision of the population"],
+      "correct_answer": "Dividing the population into distinct subgroups (strata) and sampling from each subgroup",
+      "explanation": "Stratified sampling divides a heterogeneous population into more homogeneous strata (e.g. by depth zone or gear type) and samples each separately, improving precision of overall estimates.",
+      "topic": "Sampling techniques",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A key advantage of random sampling over convenience/haphazard sampling in a fish stock survey is that random sampling:",
+      "options": ["Reduces bias and allows valid statistical inference about the whole population", "Is always cheaper to conduct regardless of circumstances", "Guarantees a sample with no variability at all", "Eliminates the need for any data analysis"],
+      "correct_answer": "Reduces bias and allows valid statistical inference about the whole population",
+      "explanation": "Because random sampling gives every unit an equal chance of selection, it minimizes systematic bias and provides a statistically valid basis for generalizing results to the broader population.",
+      "topic": "Sampling techniques",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Catch per unit effort (CPUE) is calculated as:",
+      "options": ["Total catch divided by the amount of fishing effort expended", "Total fishing effort divided by total catch", "The number of fishers involved multiplied by catch", "The market price divided by catch weight"],
+      "correct_answer": "Total catch divided by the amount of fishing effort expended",
+      "explanation": "CPUE = catch / effort (e.g. kg of fish per net-hour or per boat-day), and is commonly used as an index of relative fish stock abundance.",
+      "topic": "CPUE and stock indices",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A fisher catches 60 kg of fish after fishing for 5 hours with one gillnet. What is the catch per unit effort (CPUE) in kg per hour?",
+      "options": ["12 kg/hour", "300 kg/hour", "5 kg/hour", "60 kg/hour"],
+      "correct_answer": "12 kg/hour",
+      "explanation": "CPUE = total catch / effort = 60 kg / 5 hours = 12 kg per hour.",
+      "topic": "CPUE and stock indices",
+      "difficulty": "medium"
+    },
+    {
+      "question": "If a fleet of 10 boats fishes for 4 days each and lands a total of 4,000 kg of fish, what is the CPUE in kg per boat-day?",
+      "options": ["100 kg/boat-day", "400 kg/boat-day", "40 kg/boat-day", "1,000 kg/boat-day"],
+      "correct_answer": "100 kg/boat-day",
+      "explanation": "Total effort = 10 boats x 4 days = 40 boat-days. CPUE = 4,000 kg / 40 boat-days = 100 kg per boat-day.",
+      "topic": "CPUE and stock indices",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A declining CPUE trend over several years, assuming fishing methods remain constant, is generally interpreted as an indicator of:",
+      "options": ["A possible decline in fish stock abundance", "An increase in fish stock abundance", "Improved water quality", "No relationship to stock abundance whatsoever"],
+      "correct_answer": "A possible decline in fish stock abundance",
+      "explanation": "Since CPUE is often used as a proxy for stock abundance, a sustained decline (with constant gear/effort standardization) suggests the underlying fish population may be shrinking, possibly due to overfishing.",
+      "topic": "CPUE and stock indices",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Correlation analysis in fisheries statistics is used to determine:",
+      "options": ["The strength and direction of a linear relationship between two variables", "The exact cause-and-effect relationship between two variables", "The total sample size needed for a survey", "The mode of a single data set"],
+      "correct_answer": "The strength and direction of a linear relationship between two variables",
+      "explanation": "Correlation quantifies how strongly two variables (e.g. fish length and weight) are linearly associated and whether that association is positive or negative, without implying causation.",
+      "topic": "Correlation and regression",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A correlation coefficient (r) close to +1 between fish length and weight indicates:",
+      "options": ["A strong positive linear relationship, where weight tends to increase as length increases", "No relationship at all between the two variables", "A strong negative relationship between the two variables", "That length and weight are measured in identical units"],
+      "correct_answer": "A strong positive linear relationship, where weight tends to increase as length increases",
+      "explanation": "A correlation coefficient near +1 signifies that as one variable increases, the other tends to increase proportionally as well, indicating a strong positive linear association.",
+      "topic": "Correlation and regression",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A correlation coefficient (r) of 0 between two variables suggests:",
+      "options": ["No linear relationship exists between the two variables", "A perfect positive linear relationship", "A perfect negative linear relationship", "The two variables are identical"],
+      "correct_answer": "No linear relationship exists between the two variables",
+      "explanation": "An r value of 0 indicates the absence of any linear association between the variables, though a non-linear relationship could still exist.",
+      "topic": "Correlation and regression",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In regression analysis, the 'dependent variable' is:",
+      "options": ["The variable whose value is predicted or explained by the independent variable(s)", "The variable used to predict outcomes but not itself predicted", "A variable with no relationship to the analysis", "Always measured in kilograms"],
+      "correct_answer": "The variable whose value is predicted or explained by the independent variable(s)",
+      "explanation": "The dependent variable is the outcome being modeled or predicted (e.g. fish weight), while the independent variable (e.g. fish length) is used to explain or predict it.",
+      "topic": "Correlation and regression",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A survival rate calculation in a hatchery trial: 800 fry were stocked and 640 survived to fingerling stage. What is the percentage survival rate?",
+      "options": ["80%", "64%", "85%", "75%"],
+      "correct_answer": "80%",
+      "explanation": "Survival rate = (number surviving / number stocked) x 100 = (640/800) x 100 = 80%.",
+      "topic": "Applied calculations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A fish farmer stocks 1,200 fingerlings and harvests 900 fish after six months. What is the percentage mortality?",
+      "options": ["25%", "75%", "33%", "10%"],
+      "correct_answer": "25%",
+      "explanation": "Number of deaths = 1,200 - 900 = 300. Mortality rate = (300/1,200) x 100 = 25%.",
+      "topic": "Applied calculations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A pond stocked with 5,000 fingerlings yields a total harvest weight of 2,500 kg after eight months. What is the average weight per fish at harvest?",
+      "options": ["0.5 kg", "5 kg", "2 kg", "0.2 kg"],
+      "correct_answer": "0.5 kg",
+      "explanation": "Average weight = total harvest weight / number of fish = 2,500 kg / 5,000 = 0.5 kg per fish.",
+      "topic": "Applied calculations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a sample of 50 fish, 30 are female and 20 are male. What percentage of the sample is female?",
+      "options": ["60%", "40%", "50%", "30%"],
+      "correct_answer": "60%",
+      "explanation": "Percentage female = (30/50) x 100 = 60%.",
+      "topic": "Applied calculations",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A researcher records the following fish counts caught in five successive net hauls: 12, 15, 18, 10, 20. What is the mean catch per haul?",
+      "options": ["15", "18", "12", "14"],
+      "correct_answer": "15",
+      "explanation": "Sum = 12+15+18+10+20 = 75. Mean = 75/5 = 15 fish per haul.",
+      "topic": "Applied calculations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A hypothesis test in fisheries research is used to:",
+      "options": ["Statistically evaluate whether an observed pattern in the data is likely due to chance or reflects a real effect", "Always prove a theory is absolutely true with complete certainty", "Replace the need for any data collection", "Determine only the mean of a data set"],
+      "correct_answer": "Statistically evaluate whether an observed pattern in the data is likely due to chance or reflects a real effect",
+      "explanation": "Hypothesis testing uses probability-based statistical methods to assess whether observed differences or relationships in sample data are likely to reflect a genuine effect in the population, rather than random variation.",
+      "topic": "Probability and hypothesis testing",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In probability, an event with a probability of 0 means:",
+      "options": ["The event will never occur", "The event will always occur", "The event has a 50% chance of occurring", "The probability cannot be determined"],
+      "correct_answer": "The event will never occur",
+      "explanation": "A probability of 0 indicates impossibility, while a probability of 1 indicates certainty; probabilities range from 0 to 1.",
+      "topic": "Probability and hypothesis testing",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which of the following best describes a 'sample' as opposed to a 'population' in fisheries statistics?",
+      "options": ["A subset of individuals selected from the entire population for study", "The complete set of all individuals of interest", "A term used only for laboratory-reared fish", "A synonym for the word 'species'"],
+      "correct_answer": "A subset of individuals selected from the entire population for study",
+      "explanation": "A sample is a manageable subset drawn from the larger population, used to make inferences about that population without needing to study every individual.",
+      "topic": "Sampling techniques",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A frequency distribution table in fisheries data analysis is used to:",
+      "options": ["Organize data by showing how often each value or range of values occurs", "Calculate the exact market price of fish", "Replace the need for graphical presentation entirely", "Determine the geographic origin of the fish sample"],
+      "correct_answer": "Organize data by showing how often each value or range of values occurs",
+      "explanation": "A frequency distribution summarizes raw data by tallying how many times each value (or class interval) occurs, making patterns in the data easier to see and analyze.",
+      "topic": "Descriptive statistics",
+      "difficulty": "medium"
+    }
+  ]
+}

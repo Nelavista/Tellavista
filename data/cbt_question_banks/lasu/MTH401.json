@@ -1,0 +1,288 @@
+{
+  "course_code": "MTH401",
+  "title": "Theory of Ordinary Differential Equations",
+  "level": "400",
+  "source_note": "Standard NUC-aligned Nigerian university 400L Theory of ODEs curriculum: existence and uniqueness theory (Picard-Lindelof, Lipschitz condition), linear systems and fundamental matrices, series solutions about ordinary and regular singular points (Frobenius method), Sturm-Liouville theory and boundary value problems, and qualitative/stability theory (phase plane, linearization, Lyapunov methods).",
+  "questions": [
+    {
+      "question": "The Picard-Lindelof existence and uniqueness theorem for y' = f(x,y), y(x0)=y0 requires f to be:",
+      "options": ["Continuous and Lipschitz continuous in y on a region containing (x0,y0)", "Continuous only", "Differentiable everywhere", "Bounded only"],
+      "correct_answer": "Continuous and Lipschitz continuous in y on a region containing (x0,y0)",
+      "explanation": "Continuity gives existence and the Lipschitz condition in y gives uniqueness of the solution near (x0,y0).",
+      "topic": "Existence and uniqueness",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A function f(x,y) satisfies a Lipschitz condition in y on a region D if there exists a constant L such that:",
+      "options": ["|f(x,y1) - f(x,y2)| <= L|y1 - y2| for all (x,y1),(x,y2) in D", "f(x,y) <= L for all (x,y) in D", "f is differentiable with f'(y) = L", "f(x,y1) = f(x,y2) whenever y1 = y2"],
+      "correct_answer": "|f(x,y1) - f(x,y2)| <= L|y1 - y2| for all (x,y1),(x,y2) in D",
+      "explanation": "This is the defining inequality of a Lipschitz condition, bounding how fast f can change with y.",
+      "topic": "Lipschitz condition",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Picard iteration scheme for solving y' = f(x,y), y(x0)=y0 constructs successive approximations by:",
+      "options": ["y_(n+1)(x) = y0 + integral from x0 to x of f(t, y_n(t)) dt", "y_(n+1)(x) = f(x, y_n(x))", "y_(n+1)(x) = y0 + f'(x0)", "y_(n+1)(x) = y_n(x0)"],
+      "correct_answer": "y_(n+1)(x) = y0 + integral from x0 to x of f(t, y_n(t)) dt",
+      "explanation": "Picard iteration converts the IVP into an integral equation and generates successive approximations by repeated integration.",
+      "topic": "Picard iteration",
+      "difficulty": "medium"
+    },
+    {
+      "question": "If df/dy is continuous and bounded on a rectangle containing (x0,y0), then f automatically satisfies:",
+      "options": ["A Lipschitz condition in y", "Only continuity, never a Lipschitz condition", "A Lipschitz condition in x instead", "Boundedness in x"],
+      "correct_answer": "A Lipschitz condition in y",
+      "explanation": "By the Mean Value Theorem, a bounded continuous partial derivative in y implies f is Lipschitz in y with L equal to the bound.",
+      "topic": "Lipschitz condition",
+      "difficulty": "hard"
+    },
+    {
+      "question": "For a linear system X' = A(t)X where A(t) is an n by n matrix of continuous functions, a fundamental matrix Phi(t) is a matrix whose columns:",
+      "options": ["Form a set of n linearly independent solutions of the system", "Are eigenvectors of A(t)", "Sum to zero for all t", "Are constant vectors"],
+      "correct_answer": "Form a set of n linearly independent solutions of the system",
+      "explanation": "A fundamental matrix is built from n linearly independent solution vectors, and every solution is a linear combination of its columns.",
+      "topic": "Linear systems",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Wronskian W(t) of n solutions of the linear system X' = A(t)X satisfies Abel's formula:",
+      "options": ["W(t) = W(t0) exp(integral from t0 to t of trace A(s) ds)", "W(t) = W(t0) + trace A(t)", "W(t) = 0 for all t", "W(t) = W(t0) times det A(t)"],
+      "correct_answer": "W(t) = W(t0) exp(integral from t0 to t of trace A(s) ds)",
+      "explanation": "Abel's formula expresses the Wronskian's evolution in terms of the trace of the coefficient matrix.",
+      "topic": "Wronskian and Abel's formula",
+      "difficulty": "hard"
+    },
+    {
+      "question": "If the Wronskian of n solutions of a linear homogeneous system is nonzero at one point t0 in the interval of continuity of A(t), then:",
+      "options": ["It is nonzero for all t in that interval, and the solutions are linearly independent", "It must be zero for all other t", "The system then has no unique solution", "The solutions are linearly dependent"],
+      "correct_answer": "It is nonzero for all t in that interval, and the solutions are linearly independent",
+      "explanation": "By Abel's formula the Wronskian is either identically zero or never zero on the interval, so nonvanishing at one point implies linear independence throughout.",
+      "topic": "Wronskian and Abel's formula",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A point x0 is called an ordinary point of the ODE y'' + p(x)y' + q(x)y = 0 if:",
+      "options": ["Both p(x) and q(x) are analytic at x0", "p(x) has a pole at x0", "q(x0) = 0", "y(x0) = 0"],
+      "correct_answer": "Both p(x) and q(x) are analytic at x0",
+      "explanation": "An ordinary point is one where the coefficient functions have convergent power series expansions, allowing a standard power series solution.",
+      "topic": "Series solutions",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A point x0 is a regular singular point of y'' + p(x)y' + q(x)y = 0 if p or q is singular there but:",
+      "options": ["(x - x0)p(x) and (x - x0)^2 q(x) are both analytic at x0", "p(x) is bounded near x0", "q(x) is identically zero", "x0 is an ordinary point of q(x) only"],
+      "correct_answer": "(x - x0)p(x) and (x - x0)^2 q(x) are both analytic at x0",
+      "explanation": "This is the standard test for a regular singular point, permitting a Frobenius-type series solution.",
+      "topic": "Singular points",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The method used to find series solutions about a regular singular point is called:",
+      "options": ["The Frobenius method", "Picard iteration", "The method of undetermined coefficients", "Variation of parameters"],
+      "correct_answer": "The Frobenius method",
+      "explanation": "The Frobenius method generalizes power series solutions to allow a leading factor x^r, needed at regular singular points.",
+      "topic": "Frobenius method",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In the Frobenius method, one seeks a solution of the form y = sum of a_n x^(n+r), where r is determined by:",
+      "options": ["The indicial equation", "Setting a0 = 1 arbitrarily", "The Wronskian of the equation", "Direct integration of q(x)"],
+      "correct_answer": "The indicial equation",
+      "explanation": "Substituting the trial series and collecting the lowest-order term gives the indicial equation, a quadratic in r.",
+      "topic": "Frobenius method",
+      "difficulty": "medium"
+    },
+    {
+      "question": "If the two roots r1, r2 (r1 > r2) of the indicial equation differ by a positive integer, the second Frobenius solution generally:",
+      "options": ["May require a logarithmic term", "Is always a simple power series with no modification needed", "Does not exist", "Equals the first solution exactly"],
+      "correct_answer": "May require a logarithmic term",
+      "explanation": "When roots differ by a positive integer, the recursion for the second solution can break down, requiring a log(x) term to complete the second independent solution.",
+      "topic": "Frobenius method",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A Sturm-Liouville problem is a boundary value problem of the form:",
+      "options": ["d/dx[p(x) y'] + [q(x) + lambda w(x)] y = 0 with boundary conditions", "y'' = lambda y only, with no boundary conditions", "y' = lambda y with no boundary conditions", "An arbitrary nonlinear ODE"],
+      "correct_answer": "d/dx[p(x) y'] + [q(x) + lambda w(x)] y = 0 with boundary conditions",
+      "explanation": "This self-adjoint form, together with separated boundary conditions, defines a regular Sturm-Liouville problem.",
+      "topic": "Sturm-Liouville theory",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For a regular Sturm-Liouville problem, eigenfunctions corresponding to distinct eigenvalues are:",
+      "options": ["Orthogonal with respect to the weight function w(x)", "Always identical", "Linearly dependent", "Never continuous"],
+      "correct_answer": "Orthogonal with respect to the weight function w(x)",
+      "explanation": "This orthogonality follows from the self-adjointness of the Sturm-Liouville operator and underlies eigenfunction expansions.",
+      "topic": "Sturm-Liouville theory",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The eigenvalues of a regular Sturm-Liouville problem are:",
+      "options": ["Real, and can be ordered as an increasing sequence tending to infinity", "Always complex", "Always negative", "All equal to each other"],
+      "correct_answer": "Real, and can be ordered as an increasing sequence tending to infinity",
+      "explanation": "Self-adjointness guarantees real eigenvalues, and regular Sturm-Liouville theory gives a discrete increasing sequence lambda_1 < lambda_2 < ... to infinity.",
+      "topic": "Sturm-Liouville theory",
+      "difficulty": "medium"
+    },
+    {
+      "question": "An equilibrium point of an autonomous system X' = F(X) is a point X* such that:",
+      "options": ["F(X*) = 0", "X*(t) = t", "F(X*) is undefined", "X* is a solution passing through the origin only"],
+      "correct_answer": "F(X*) = 0",
+      "explanation": "At an equilibrium point the vector field vanishes, so a solution starting there stays there for all time.",
+      "topic": "Phase plane analysis",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Near an equilibrium point, the local behavior of a nonlinear autonomous system can often be approximated by studying:",
+      "options": ["The linearization given by the Jacobian matrix of F at the equilibrium", "The Wronskian of the system", "The Laplace transform of F", "The system's Fourier series"],
+      "correct_answer": "The linearization given by the Jacobian matrix of F at the equilibrium",
+      "explanation": "The Hartman-Grobman theorem justifies using the linearized (Jacobian) system to describe local behavior near hyperbolic equilibria.",
+      "topic": "Linearization and stability",
+      "difficulty": "medium"
+    },
+    {
+      "question": "If the Jacobian matrix at an equilibrium point has eigenvalues with strictly negative real parts, the equilibrium is classified as:",
+      "options": ["Asymptotically stable", "Unstable", "A saddle point", "A center"],
+      "correct_answer": "Asymptotically stable",
+      "explanation": "Negative real parts of all eigenvalues mean nearby trajectories decay exponentially toward the equilibrium.",
+      "topic": "Stability of equilibria",
+      "difficulty": "medium"
+    },
+    {
+      "question": "If the Jacobian at an equilibrium of a 2D system has one positive and one negative real eigenvalue, the equilibrium is a:",
+      "options": ["Saddle point", "Stable node", "Center", "Stable spiral"],
+      "correct_answer": "Saddle point",
+      "explanation": "Mixed-sign real eigenvalues produce trajectories that approach along one eigendirection and depart along the other, the hallmark of a saddle.",
+      "topic": "Classification of equilibria",
+      "difficulty": "medium"
+    },
+    {
+      "question": "If the Jacobian eigenvalues at an equilibrium are purely imaginary and nonzero, the linearized system predicts a:",
+      "options": ["Center", "Node", "Saddle point", "Improper node"],
+      "correct_answer": "Center",
+      "explanation": "Purely imaginary eigenvalues give closed elliptical trajectories around the equilibrium in the linear approximation.",
+      "topic": "Classification of equilibria",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In Lyapunov's direct (second) method, if a function V(X) is positive definite near an equilibrium and its derivative along trajectories dV/dt is negative semi-definite, the equilibrium is:",
+      "options": ["Stable", "Automatically unstable", "Undefined", "A saddle point"],
+      "correct_answer": "Stable",
+      "explanation": "A Lyapunov function that is positive definite with non-increasing value along trajectories certifies stability without solving the system.",
+      "topic": "Lyapunov stability",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A Lyapunov function V(X) used to prove asymptotic stability of an equilibrium at the origin must satisfy:",
+      "options": ["V(0)=0, V(X)>0 for X not equal to 0 near the origin, and dV/dt < 0 along trajectories near the origin", "V(X) = 0 everywhere", "V(X) is negative for all X", "dV/dt > 0 everywhere"],
+      "correct_answer": "V(0)=0, V(X)>0 for X not equal to 0 near the origin, and dV/dt < 0 along trajectories near the origin",
+      "explanation": "These conditions ensure V acts as a strictly decreasing energy-like function, forcing trajectories to converge to the origin.",
+      "topic": "Lyapunov stability",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The general solution of the linear system X' = AX, where A is a constant n by n matrix, can be written as:",
+      "options": ["X(t) = e^(At) X(0)", "X(t) = At + X(0)", "X(t) = X(0)/A", "X(t) = integral of A dt"],
+      "correct_answer": "X(t) = e^(At) X(0)",
+      "explanation": "The matrix exponential e^(At) is the fundamental matrix solution of a constant-coefficient linear system, satisfying it directly.",
+      "topic": "Linear systems",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For a 2 by 2 constant matrix A with real distinct eigenvalues lambda1 and lambda2, both negative, the equilibrium at the origin of X'=AX is a:",
+      "options": ["Stable node", "Unstable node", "Saddle point", "Center"],
+      "correct_answer": "Stable node",
+      "explanation": "Two distinct negative real eigenvalues mean trajectories decay along both eigendirections, giving a stable node.",
+      "topic": "Classification of equilibria",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The variation of parameters formula for the nonhomogeneous linear system X' = A(t)X + g(t), given a fundamental matrix Phi(t), gives the solution as:",
+      "options": ["X(t) = Phi(t)Phi(t0)^(-1)X0 + Phi(t) times the integral from t0 to t of Phi(s)^(-1) g(s) ds", "X(t) = Phi(t) g(t)", "X(t) = Phi(t)^(-1) X0", "X(t) = X0 + g(t)"],
+      "correct_answer": "X(t) = Phi(t)Phi(t0)^(-1)X0 + Phi(t) times the integral from t0 to t of Phi(s)^(-1) g(s) ds",
+      "explanation": "This is the matrix analogue of the scalar variation of parameters formula, built from the fundamental matrix.",
+      "topic": "Variation of parameters",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The Legendre differential equation (1-x^2)y'' - 2xy' + n(n+1)y = 0 has x = 0 as:",
+      "options": ["An ordinary point", "An irregular singular point", "A regular singular point", "A point where no solution exists"],
+      "correct_answer": "An ordinary point",
+      "explanation": "The coefficient of y'' is nonzero and both coefficients are analytic at x = 0, so it is an ordinary point.",
+      "topic": "Series solutions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Legendre equation has regular singular points at:",
+      "options": ["x = 1 and x = -1", "x = 0 only", "x = infinity only", "It has no singular points"],
+      "correct_answer": "x = 1 and x = -1",
+      "explanation": "The leading coefficient (1-x^2) vanishes at x = 1 and x = -1, and both are regular singular points of the equation.",
+      "topic": "Singular points",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Bessel's equation x^2 y'' + xy' + (x^2 - n^2)y = 0 has x = 0 as:",
+      "options": ["A regular singular point", "An ordinary point", "An irregular singular point", "A point where the equation is undefined"],
+      "correct_answer": "A regular singular point",
+      "explanation": "Dividing through shows p(x) and q(x) are singular at x=0 but xp(x) and x^2 q(x) remain analytic there, satisfying the regular singular point test.",
+      "topic": "Singular points",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For Bessel's equation, the indicial equation gives roots r = plus or minus n. When 2n is not an integer, the two independent solutions are:",
+      "options": ["J_n(x) and J_(-n)(x)", "Only J_n(x)", "e^(nx) and e^(-nx)", "sin(nx) and cos(nx)"],
+      "correct_answer": "J_n(x) and J_(-n)(x)",
+      "explanation": "When 2n is not an integer, both Frobenius series J_n and J_(-n) converge and are linearly independent.",
+      "topic": "Bessel's equation",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A boundary value problem differs from an initial value problem in that its auxiliary conditions are specified:",
+      "options": ["At two (or more) different points of the independent variable", "Only at a single point", "Only for the derivative", "Never explicitly"],
+      "correct_answer": "At two (or more) different points of the independent variable",
+      "explanation": "BVPs impose conditions at distinct points, such as the two endpoints of an interval, unlike IVPs which specify everything at one point.",
+      "topic": "Boundary value problems",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A homogeneous Sturm-Liouville boundary value problem has a nontrivial solution only for certain special values of lambda, called:",
+      "options": ["Eigenvalues", "Wronskians", "Ordinary points", "Lipschitz constants"],
+      "correct_answer": "Eigenvalues",
+      "explanation": "These special values, together with their corresponding nontrivial solutions (eigenfunctions), are the central objects of Sturm-Liouville theory.",
+      "topic": "Sturm-Liouville theory",
+      "difficulty": "easy"
+    },
+    {
+      "question": "For the two-point BVP y'' + lambda y = 0, y(0)=0, y(L)=0, the eigenvalues are:",
+      "options": ["lambda_n = (n pi / L)^2 for n = 1,2,3,...", "lambda_n = n for n = 1,2,3,...", "lambda_n = n pi / L", "lambda_n = 0 for all n"],
+      "correct_answer": "lambda_n = (n pi / L)^2 for n = 1,2,3,...",
+      "explanation": "Solving this classic Sturm-Liouville problem with sine solutions vanishing at both endpoints yields lambda_n = (n pi/L)^2.",
+      "topic": "Sturm-Liouville theory",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The general solution of a second-order linear homogeneous ODE with constant coefficients whose characteristic equation has complex conjugate roots alpha plus or minus i beta is:",
+      "options": ["y = e^(alpha x)(C1 cos(beta x) + C2 sin(beta x))", "y = C1 e^(alpha x) + C2 e^(beta x)", "y = C1 x e^(alpha x)", "y = C1 cos(alpha x) + C2 sin(beta x)"],
+      "correct_answer": "y = e^(alpha x)(C1 cos(beta x) + C2 sin(beta x))",
+      "explanation": "Complex conjugate roots produce oscillatory solutions modulated by an exponential envelope determined by the real part alpha.",
+      "topic": "Linear ODEs with constant coefficients",
+      "difficulty": "medium"
+    },
+    {
+      "question": "If f(x,y) fails to satisfy a Lipschitz condition in y near (x0,y0), the IVP y'=f(x,y), y(x0)=y0 may:",
+      "options": ["Have more than one solution through (x0,y0)", "Always have a unique solution regardless", "Have no solution ever", "Always be linear"],
+      "correct_answer": "Have more than one solution through (x0,y0)",
+      "explanation": "A classic example is y' = y^(1/3), y(0)=0, which fails the Lipschitz condition at y=0 and has multiple solutions through the origin.",
+      "topic": "Existence and uniqueness",
+      "difficulty": "hard"
+    },
+    {
+      "question": "An n-th order linear ODE can always be rewritten as a first-order system of:",
+      "options": ["n coupled first-order equations", "n independent uncoupled equations", "2n equations", "A single nonlinear equation"],
+      "correct_answer": "n coupled first-order equations",
+      "explanation": "Introducing the function and its first n-1 derivatives as new variables converts an n-th order ODE into an equivalent first-order system in n unknowns.",
+      "topic": "Linear systems",
+      "difficulty": "easy"
+    }
+  ]
+}

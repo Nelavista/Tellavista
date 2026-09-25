@@ -1,0 +1,325 @@
+{
+  "course_code": "BCH303",
+  "title": "Metabolism of Lipids",
+  "level": "300",
+  "source_note": "Standard NUC-aligned Nigerian university 300L Metabolism of Lipids curriculum: lipid classification and fatty acid nomenclature, digestion/absorption, beta-oxidation and ketogenesis, fatty acid and triacylglycerol biosynthesis, cholesterol synthesis and regulation, lipoprotein transport, phospholipid metabolism, eicosanoids, and essential fatty acids/lipid disorders. Content is kept to the lipid class only, distinct from carbohydrate/protein/nucleic-acid metabolism courses.",
+  "questions": [
+    {
+      "question": "In fatty acid nomenclature, the notation 18:2(n-6) (linoleic acid) indicates a fatty acid with:",
+      "options": [
+        "18 carbons, 2 double bonds, first double bond 6 carbons from the carboxyl end",
+        "18 carbons, 2 double bonds, first double bond 6 carbons from the methyl (omega) end",
+        "18 double bonds, 2 carbons",
+        "2 carbons, 18 double bonds from the carboxyl end"
+      ],
+      "correct_answer": "18 carbons, 2 double bonds, first double bond 6 carbons from the methyl (omega) end",
+      "explanation": "The format is (carbon number):(number of double bonds)(n-x), where n-x counts from the methyl (omega) end; 18:2(n-6) means an 18-carbon chain with 2 double bonds, the first located at carbon 6 from the omega end.",
+      "topic": "Fatty acid structure and nomenclature",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which of the following is classified as an essential fatty acid that must be obtained from the diet because humans lack the enzymes to synthesize it?",
+      "options": ["Palmitic acid", "Oleic acid", "Linoleic acid", "Stearic acid"],
+      "correct_answer": "Linoleic acid",
+      "explanation": "Humans lack desaturase enzymes able to introduce double bonds beyond carbon 9 (counting from the carboxyl end), so linoleic acid (18:2, n-6) and alpha-linolenic acid (18:3, n-3) cannot be synthesized de novo and are dietary essentials.",
+      "topic": "Essential fatty acids",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Dietary triacylglycerols are digested in the small intestine primarily by which enzyme?",
+      "options": ["Salivary amylase", "Pancreatic lipase", "Pepsin", "Lactase"],
+      "correct_answer": "Pancreatic lipase",
+      "explanation": "Pancreatic lipase, acting with colipase at the oil-water interface of bile-salt-emulsified fat droplets, hydrolyzes dietary triacylglycerols mainly to 2-monoacylglycerol and free fatty acids.",
+      "topic": "Lipid digestion and absorption",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Bile salts aid fat digestion mainly by:",
+      "options": [
+        "Directly hydrolyzing ester bonds in triacylglycerols",
+        "Emulsifying dietary fat into small micelles/droplets, increasing surface area for lipase action",
+        "Converting triacylglycerols into cholesterol",
+        "Inhibiting pancreatic lipase to slow digestion"
+      ],
+      "correct_answer": "Emulsifying dietary fat into small micelles/droplets, increasing surface area for lipase action",
+      "explanation": "Bile salts are amphipathic molecules that emulsify large fat globules into smaller droplets and form mixed micelles, greatly increasing the surface area accessible to pancreatic lipase and aiding absorption of digestion products.",
+      "topic": "Lipid digestion and absorption",
+      "difficulty": "medium"
+    },
+    {
+      "question": "After absorption by intestinal mucosal cells, resynthesized triacylglycerols are packaged with proteins into which lipoprotein particle for transport via the lymphatics?",
+      "options": ["VLDL", "Chylomicron", "LDL", "HDL"],
+      "correct_answer": "Chylomicron",
+      "explanation": "Enterocytes resynthesize triacylglycerols from absorbed monoacylglycerol and fatty acids and package them, with apolipoprotein B-48 and cholesterol, into chylomicrons, which enter the lymphatic lacteals before reaching the bloodstream.",
+      "topic": "Lipoprotein metabolism",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Before a long-chain fatty acid can be beta-oxidized in the mitochondrial matrix, it must first be activated in the cytosol to form:",
+      "options": ["Fatty acyl-CoA", "Fatty acyl-carnitine", "Fatty acyl-phosphate", "Acetyl-CoA"],
+      "correct_answer": "Fatty acyl-CoA",
+      "explanation": "Fatty acid activation, catalyzed by acyl-CoA synthetase (thiokinase) using ATP and coenzyme A, converts a free fatty acid into fatty acyl-CoA, the form required for entry into beta-oxidation.",
+      "topic": "Beta-oxidation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Long-chain fatty acyl-CoA is transported into the mitochondrial matrix for beta-oxidation via the:",
+      "options": ["Malate-aspartate shuttle", "Carnitine shuttle (CAT I/CAT II system)", "Glycerol-3-phosphate shuttle", "Citrate shuttle"],
+      "correct_answer": "Carnitine shuttle (CAT I/CAT II system)",
+      "explanation": "Because the inner mitochondrial membrane is impermeable to long-chain acyl-CoA, carnitine palmitoyltransferase I (CPT I) converts it to acylcarnitine, which crosses via a translocase, and CPT II regenerates acyl-CoA in the matrix.",
+      "topic": "Beta-oxidation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Each cycle of beta-oxidation of a fatty acid removes how many carbons, in the form of acetyl-CoA, from the acyl chain?",
+      "options": ["One", "Two", "Three", "Four"],
+      "correct_answer": "Two",
+      "explanation": "Each round of the four-step beta-oxidation spiral (oxidation, hydration, oxidation, thiolytic cleavage) shortens the fatty acyl chain by two carbons, released as one molecule of acetyl-CoA.",
+      "topic": "Beta-oxidation",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In the beta-oxidation spiral, the enzyme acyl-CoA dehydrogenase catalyzes the first oxidative step, transferring electrons directly to:",
+      "options": ["NAD+", "FAD (via electron-transferring flavoprotein)", "Oxygen directly", "Cytochrome c directly"],
+      "correct_answer": "FAD (via electron-transferring flavoprotein)",
+      "explanation": "Acyl-CoA dehydrogenase introduces a trans double bond between C2-C3 while reducing its FAD prosthetic group; the electrons are then passed to electron-transferring flavoprotein (ETF) and into the electron transport chain.",
+      "topic": "Beta-oxidation",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Complete beta-oxidation of palmitic acid (C16) yields how many molecules of acetyl-CoA?",
+      "options": ["6", "7", "8", "9"],
+      "correct_answer": "8",
+      "explanation": "A 16-carbon fatty acid undergoes 7 rounds of beta-oxidation, cleaving the chain into 8 two-carbon acetyl-CoA units.",
+      "topic": "Beta-oxidation",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Ketone bodies (acetoacetate, beta-hydroxybutyrate, acetone) are synthesized primarily in the:",
+      "options": ["Liver mitochondria", "Skeletal muscle cytosol", "Kidney cortex", "Adipose tissue"],
+      "correct_answer": "Liver mitochondria",
+      "explanation": "Ketogenesis occurs in hepatic mitochondria, especially during prolonged fasting or uncontrolled diabetes, when excess acetyl-CoA from fatty acid oxidation exceeds the capacity of the TCA cycle (limited oxaloacetate).",
+      "topic": "Ketogenesis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The rate-limiting/regulatory enzyme of ketogenesis, which condenses acetoacetyl-CoA and acetyl-CoA to form HMG-CoA, is:",
+      "options": ["HMG-CoA reductase", "HMG-CoA synthase (mitochondrial)", "HMG-CoA lyase", "Thiolase"],
+      "correct_answer": "HMG-CoA synthase (mitochondrial)",
+      "explanation": "Mitochondrial HMG-CoA synthase catalyzes the key regulatory step of ketogenesis, forming HMG-CoA, which HMG-CoA lyase then cleaves to acetoacetate and acetyl-CoA.",
+      "topic": "Ketogenesis",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Why can the liver produce ketone bodies for other tissues but cannot itself use them for energy?",
+      "options": [
+        "The liver lacks succinyl-CoA:3-ketoacid CoA transferase (thiophorase), needed to reactivate acetoacetate to acetoacetyl-CoA",
+        "The liver lacks mitochondria",
+        "Ketone bodies are toxic to hepatocytes",
+        "The liver cannot transport ketone bodies out of the cell"
+      ],
+      "correct_answer": "The liver lacks succinyl-CoA:3-ketoacid CoA transferase (thiophorase), needed to reactivate acetoacetate to acetoacetyl-CoA",
+      "explanation": "Extrahepatic tissues (muscle, brain) use thiophorase to convert acetoacetate back to acetoacetyl-CoA for entry into the TCA cycle; hepatocytes lack this enzyme, so the liver exports ketone bodies rather than oxidizing them.",
+      "topic": "Ketogenesis",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The rate-limiting enzyme of de novo fatty acid synthesis, which carboxylates acetyl-CoA to malonyl-CoA, is:",
+      "options": ["Fatty acid synthase", "Acetyl-CoA carboxylase", "Citrate lyase", "Pyruvate dehydrogenase"],
+      "correct_answer": "Acetyl-CoA carboxylase",
+      "explanation": "Acetyl-CoA carboxylase (ACC), a biotin-dependent enzyme, catalyzes the committed, rate-limiting step of fatty acid synthesis: carboxylation of acetyl-CoA to malonyl-CoA, using ATP and CO2/bicarbonate.",
+      "topic": "Fatty acid biosynthesis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Fatty acid synthase uses which reduced coenzyme as the source of reducing power for chain elongation?",
+      "options": ["NADH", "NADPH", "FADH2", "FMNH2"],
+      "correct_answer": "NADPH",
+      "explanation": "Unlike beta-oxidation, which produces NADH and FADH2, fatty acid synthesis is reductive and consumes NADPH (largely supplied by the pentose phosphate pathway and the malic enzyme reaction) at both reduction steps of each elongation cycle.",
+      "topic": "Fatty acid biosynthesis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Citrate serves a key role in cytosolic fatty acid synthesis by:",
+      "options": [
+        "Directly acting as the carbon donor for chain elongation",
+        "Being transported from mitochondria to cytosol, where ATP-citrate lyase cleaves it to yield acetyl-CoA and oxaloacetate",
+        "Inhibiting fatty acid synthase allosterically",
+        "Serving as the coenzyme for acetyl-CoA carboxylase"
+      ],
+      "correct_answer": "Being transported from mitochondria to cytosol, where ATP-citrate lyase cleaves it to yield acetyl-CoA and oxaloacetate",
+      "explanation": "Mitochondrial acetyl-CoA (from pyruvate or fatty acid oxidation) cannot cross the inner mitochondrial membrane directly, so it condenses with oxaloacetate to citrate, which is exported and cleaved by ATP-citrate lyase in the cytosol to regenerate acetyl-CoA for fatty acid synthesis.",
+      "topic": "Fatty acid biosynthesis",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Malonyl-CoA, in addition to being a fatty acid synthesis intermediate, also regulates beta-oxidation by:",
+      "options": [
+        "Activating carnitine palmitoyltransferase I (CPT I)",
+        "Allosterically inhibiting carnitine palmitoyltransferase I (CPT I), preventing simultaneous synthesis and oxidation of fatty acids",
+        "Directly inhibiting acetyl-CoA carboxylase",
+        "Activating HMG-CoA reductase"
+      ],
+      "correct_answer": "Allosterically inhibiting carnitine palmitoyltransferase I (CPT I), preventing simultaneous synthesis and oxidation of fatty acids",
+      "explanation": "Malonyl-CoA inhibits CPT I on the outer mitochondrial membrane, blocking fatty acid entry into mitochondria for oxidation whenever fatty acid synthesis is active, avoiding a futile cycle.",
+      "topic": "Fatty acid biosynthesis",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The final step of triacylglycerol synthesis involves the addition of a fatty acyl group to which intermediate?",
+      "options": ["Glycerol-3-phosphate", "1,2-diacylglycerol", "Glycerol", "Phosphatidic acid"],
+      "correct_answer": "1,2-diacylglycerol",
+      "explanation": "Triacylglycerol synthesis proceeds via glycerol-3-phosphate to phosphatidic acid, which is dephosphorylated to 1,2-diacylglycerol; diacylglycerol acyltransferase then adds a third fatty acyl group to form triacylglycerol.",
+      "topic": "Triacylglycerol metabolism",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Hormone-sensitive lipase in adipose tissue, which mobilizes stored fat by hydrolyzing triacylglycerols, is activated by:",
+      "options": [
+        "Insulin, via dephosphorylation",
+        "Glucagon and epinephrine, via cAMP-dependent protein kinase A phosphorylation",
+        "Direct binding of glucose",
+        "Acetyl-CoA carboxylase"
+      ],
+      "correct_answer": "Glucagon and epinephrine, via cAMP-dependent protein kinase A phosphorylation",
+      "explanation": "During fasting or stress, glucagon/epinephrine raise cAMP and activate PKA, which phosphorylates and activates hormone-sensitive lipase (and perilipin), promoting lipolysis of stored triacylglycerol; insulin has the opposite, inhibitory effect.",
+      "topic": "Triacylglycerol metabolism",
+      "difficulty": "medium"
+    },
+    {
+      "question": "VLDL particles, synthesized in the liver, function mainly to:",
+      "options": [
+        "Transport dietary lipids from the intestine",
+        "Transport endogenously synthesized triacylglycerols from the liver to peripheral tissues",
+        "Return excess cholesterol from peripheral tissues to the liver",
+        "Digest dietary fat in the intestinal lumen"
+      ],
+      "correct_answer": "Transport endogenously synthesized triacylglycerols from the liver to peripheral tissues",
+      "explanation": "VLDL (very-low-density lipoprotein), assembled in hepatocytes with apoB-100, carries newly synthesized triacylglycerol and cholesterol from the liver to peripheral tissues, where lipoprotein lipase releases fatty acids.",
+      "topic": "Lipoprotein metabolism",
+      "difficulty": "medium"
+    },
+    {
+      "question": "As VLDL loses triacylglycerol via the action of lipoprotein lipase in capillary beds, it is progressively converted to intermediate-density lipoprotein and finally to:",
+      "options": ["Chylomicron remnants", "LDL, rich in cholesteryl esters", "HDL", "Albumin-bound free fatty acids"],
+      "correct_answer": "LDL, rich in cholesteryl esters",
+      "explanation": "As VLDL is progressively depleted of triacylglycerol by lipoprotein lipase, it becomes IDL and then LDL, a cholesterol-ester-rich particle that delivers cholesterol to peripheral tissues via LDL receptor-mediated endocytosis.",
+      "topic": "Lipoprotein metabolism",
+      "difficulty": "medium"
+    },
+    {
+      "question": "HDL particles contribute to reverse cholesterol transport largely through the action of which enzyme, which esterifies free cholesterol on the HDL surface?",
+      "options": ["Lipoprotein lipase", "Lecithin-cholesterol acyltransferase (LCAT)", "HMG-CoA reductase", "Cholesteryl ester transfer protein"],
+      "correct_answer": "Lecithin-cholesterol acyltransferase (LCAT)",
+      "explanation": "LCAT, activated by apoA-I on nascent HDL, transfers a fatty acyl group from lecithin (phosphatidylcholine) to free cholesterol, forming cholesteryl esters that are sequestered in the HDL core, driving reverse cholesterol transport to the liver.",
+      "topic": "Lipoprotein metabolism",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The rate-limiting enzyme of cholesterol biosynthesis, the major site of statin drug action, is:",
+      "options": ["HMG-CoA synthase", "HMG-CoA reductase", "Squalene epoxidase", "Acetyl-CoA carboxylase"],
+      "correct_answer": "HMG-CoA reductase",
+      "explanation": "HMG-CoA reductase catalyzes the committed, rate-limiting step of cholesterol synthesis (reduction of HMG-CoA to mevalonate) and is the target of statin drugs, which competitively inhibit it to lower plasma cholesterol.",
+      "topic": "Cholesterol metabolism",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Cellular cholesterol levels feedback-regulate HMG-CoA reductase mainly by:",
+      "options": [
+        "Increasing transcription of the HMG-CoA reductase gene as cholesterol rises",
+        "Suppressing SREBP-mediated transcription and promoting degradation of HMG-CoA reductase as cholesterol accumulates",
+        "Having no effect on the enzyme",
+        "Directly phosphorylating cholesterol"
+      ],
+      "correct_answer": "Suppressing SREBP-mediated transcription and promoting degradation of HMG-CoA reductase as cholesterol accumulates",
+      "explanation": "Rising intracellular cholesterol inhibits proteolytic activation of SREBP-2 (reducing transcription of HMG-CoA reductase and the LDL receptor) and accelerates HMG-CoA reductase degradation, providing tight feedback control of cholesterol synthesis.",
+      "topic": "Cholesterol metabolism",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Cholesterol serves as the metabolic precursor for all of the following EXCEPT:",
+      "options": ["Bile acids", "Steroid hormones", "Vitamin D", "Heme"],
+      "correct_answer": "Heme",
+      "explanation": "Cholesterol is the precursor of bile acids, steroid hormones (glucocorticoids, mineralocorticoids, sex hormones), and vitamin D; heme, by contrast, is synthesized from glycine and succinyl-CoA, not from cholesterol.",
+      "topic": "Cholesterol metabolism",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In phospholipid (phosphatidylcholine) biosynthesis via the CDP-choline (Kennedy) pathway, choline must first be activated by combining with:",
+      "options": ["ATP to form phosphocholine, then CTP to form CDP-choline", "Acetyl-CoA directly", "UDP-glucose", "NADPH"],
+      "correct_answer": "ATP to form phosphocholine, then CTP to form CDP-choline",
+      "explanation": "In the Kennedy pathway, choline kinase phosphorylates choline using ATP to form phosphocholine, which is then activated by CTP (via CTP:phosphocholine cytidylyltransferase) to CDP-choline before transfer onto diacylglycerol.",
+      "topic": "Phospholipid metabolism",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Phospholipase A2 catalyzes the hydrolysis of membrane phospholipids to release which important eicosanoid precursor?",
+      "options": ["Cholesterol", "Arachidonic acid", "Glycerol", "Sphingosine"],
+      "correct_answer": "Arachidonic acid",
+      "explanation": "Phospholipase A2 cleaves the sn-2 ester bond of membrane phospholipids, liberating arachidonic acid, the principal 20-carbon polyunsaturated fatty acid substrate for prostaglandin, thromboxane, and leukotriene synthesis.",
+      "topic": "Eicosanoid metabolism",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Cyclooxygenase (COX) converts arachidonic acid into which class of eicosanoids?",
+      "options": ["Leukotrienes", "Prostaglandins and thromboxanes", "Sphingolipids", "Bile acids"],
+      "correct_answer": "Prostaglandins and thromboxanes",
+      "explanation": "COX (prostaglandin H synthase) oxidizes and cyclizes arachidonic acid to prostaglandin H2, the common precursor of prostaglandins and thromboxanes, while the lipoxygenase pathway produces leukotrienes.",
+      "topic": "Eicosanoid metabolism",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Thromboxane A2, produced mainly by platelets, has which principal physiological effect?",
+      "options": ["Vasodilation and inhibition of platelet aggregation", "Vasoconstriction and promotion of platelet aggregation", "Relaxation of bronchial smooth muscle", "Stimulation of gastric acid secretion"],
+      "correct_answer": "Vasoconstriction and promotion of platelet aggregation",
+      "explanation": "Thromboxane A2 promotes platelet aggregation and vasoconstriction, contributing to blood clot formation, in contrast to prostacyclin (PGI2) from vascular endothelium, which has opposing vasodilatory, anti-aggregatory effects.",
+      "topic": "Eicosanoid metabolism",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A patient presenting with recurrent episodes of severe abdominal pain, eruptive skin xanthomas, and grossly elevated fasting plasma chylomicrons is most consistent with a deficiency of:",
+      "options": ["LDL receptor", "Lipoprotein lipase (or its cofactor apoC-II)", "HMG-CoA reductase", "Apolipoprotein B-100"],
+      "correct_answer": "Lipoprotein lipase (or its cofactor apoC-II)",
+      "explanation": "Familial lipoprotein lipase deficiency (or apoC-II deficiency, its activator) impairs clearance of chylomicrons and VLDL triacylglycerol, causing severe hypertriglyceridemia (type I hyperlipoproteinemia) with abdominal pain, eruptive xanthomas, and lipemic plasma.",
+      "topic": "Lipid disorders",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Familial hypercholesterolemia, a common inherited dyslipidemia causing premature atherosclerosis, most often results from mutations affecting:",
+      "options": ["Lipoprotein lipase", "The LDL receptor", "HMG-CoA synthase", "Lecithin-cholesterol acyltransferase"],
+      "correct_answer": "The LDL receptor",
+      "explanation": "Familial hypercholesterolemia is classically caused by mutations in the LDL receptor gene, impairing hepatic clearance of LDL from plasma and leading to markedly elevated LDL cholesterol and early atherosclerosis.",
+      "topic": "Lipid disorders",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Sphingolipids, structural components of cell membranes and myelin, are built on a backbone of:",
+      "options": ["Glycerol", "Sphingosine", "Cholesterol", "Inositol"],
+      "correct_answer": "Sphingosine",
+      "explanation": "Unlike glycerophospholipids, sphingolipids (sphingomyelin, cerebrosides, gangliosides) are built on the amino-alcohol backbone sphingosine rather than glycerol.",
+      "topic": "Phospholipid metabolism",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In beta-oxidation of odd-chain fatty acids, the final propionyl-CoA product is converted, via methylmalonyl-CoA, into succinyl-CoA by a reaction that requires which vitamin-derived coenzyme?",
+      "options": ["Thiamine pyrophosphate", "Vitamin B12 (adenosylcobalamin, for methylmalonyl-CoA mutase)", "Biotin only, with no B12 requirement", "Pyridoxal phosphate"],
+      "correct_answer": "Vitamin B12 (adenosylcobalamin, for methylmalonyl-CoA mutase)",
+      "explanation": "Propionyl-CoA is carboxylated (biotin-dependent) to methylmalonyl-CoA, which methylmalonyl-CoA mutase, a vitamin B12 (adenosylcobalamin)-dependent enzyme, isomerizes to succinyl-CoA for entry into the TCA cycle.",
+      "topic": "Beta-oxidation",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Compared with saturated fatty acid oxidation, beta-oxidation of an unsaturated fatty acid such as oleic acid requires an additional enzyme, isomerase, mainly because:",
+      "options": [
+        "Unsaturated fatty acids cannot be activated to acyl-CoA",
+        "The naturally occurring cis double bond must be repositioned/converted to the trans configuration recognized by the normal beta-oxidation enzymes",
+        "Unsaturated fatty acids are not transported by carnitine",
+        "Unsaturated fatty acids yield propionyl-CoA instead of acetyl-CoA"
+      ],
+      "correct_answer": "The naturally occurring cis double bond must be repositioned/converted to the trans configuration recognized by the normal beta-oxidation enzymes",
+      "explanation": "When beta-oxidation reaches a cis double bond at an odd-numbered carbon, enoyl-CoA isomerase repositions/converts it to the trans-Δ2 configuration so that the standard hydratase can act, allowing oxidation to continue.",
+      "topic": "Beta-oxidation",
+      "difficulty": "hard"
+    }
+  ]
+}

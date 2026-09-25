@@ -1,0 +1,408 @@
+{
+  "course_code": "PHY101",
+  "title": "General Physics I",
+  "level": "100",
+  "source_note": "Standard NUC-aligned Nigerian university 100L General Physics I (mechanics and properties of matter) curriculum: units and dimensions, vectors, kinematics, Newton's laws, work-energy-power, momentum, circular motion, gravitation, elasticity, simple harmonic motion, and basic heat/fluid concepts.",
+  "questions": [
+    {
+      "question": "What is the SI unit of force?",
+      "options": ["Newton", "Joule", "Watt", "Pascal"],
+      "correct_answer": "Newton",
+      "explanation": "The newton (N) is the SI derived unit of force, defined as the force needed to accelerate 1 kg of mass at 1 m/s^2.",
+      "topic": "Units and dimensions",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which of the following is a base (fundamental) SI unit?",
+      "options": ["Kilogram", "Newton", "Joule", "Watt"],
+      "correct_answer": "Kilogram",
+      "explanation": "The kilogram is one of the seven SI base units (for mass); newton, joule, and watt are all derived units.",
+      "topic": "Units and dimensions",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is the dimensional formula for velocity?",
+      "options": ["[LT^-1]", "[LT^-2]", "[MLT^-1]", "[L^2T^-1]"],
+      "correct_answer": "[LT^-1]",
+      "explanation": "Velocity is displacement (length, L) per unit time (T), giving the dimensional formula [LT^-1].",
+      "topic": "Units and dimensions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which of the following is a scalar quantity?",
+      "options": ["Speed", "Velocity", "Displacement", "Force"],
+      "correct_answer": "Speed",
+      "explanation": "Speed has only magnitude (no direction), making it a scalar quantity, unlike velocity, displacement, and force which are vectors.",
+      "topic": "Vectors",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Two forces of 3 N and 4 N act perpendicular to each other on an object. What is the magnitude of the resultant force?",
+      "options": ["5 N", "7 N", "1 N", "12 N"],
+      "correct_answer": "5 N",
+      "explanation": "Using Pythagoras' theorem for perpendicular vectors: resultant = sqrt(3^2 + 4^2) = sqrt(9+16) = sqrt(25) = 5 N.",
+      "topic": "Vectors",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A car accelerates uniformly from rest to 20 m/s in 5 seconds. What is its acceleration?",
+      "options": ["4 m/s^2", "5 m/s^2", "100 m/s^2", "0.25 m/s^2"],
+      "correct_answer": "4 m/s^2",
+      "explanation": "Acceleration = change in velocity / time = (20 - 0) / 5 = 4 m/s^2.",
+      "topic": "Kinematics",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Using v^2 = u^2 + 2as, find the final velocity of an object starting from rest and traveling 50 m with an acceleration of 4 m/s^2.",
+      "options": ["20 m/s", "10 m/s", "200 m/s", "400 m/s"],
+      "correct_answer": "20 m/s",
+      "explanation": "v^2 = 0 + 2(4)(50) = 400, so v = sqrt(400) = 20 m/s.",
+      "topic": "Kinematics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What does the area under a velocity-time graph represent?",
+      "options": ["Displacement", "Acceleration", "Force", "Momentum"],
+      "correct_answer": "Displacement",
+      "explanation": "The area under a velocity-time graph gives the displacement of the object over that time interval.",
+      "topic": "Kinematics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Newton's First Law of Motion states that an object will remain at rest or in uniform motion unless:",
+      "options": ["Acted upon by a net external force", "It has mass", "It is on Earth", "It has kinetic energy"],
+      "correct_answer": "Acted upon by a net external force",
+      "explanation": "Newton's First Law (law of inertia) states an object maintains its state of rest or uniform velocity unless acted upon by an unbalanced external force.",
+      "topic": "Newton's laws",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Newton's Second Law of Motion is mathematically expressed as:",
+      "options": ["F = ma", "F = mv", "F = m/a", "F = ma^2"],
+      "correct_answer": "F = ma",
+      "explanation": "Newton's Second Law states that force equals mass times acceleration (F = ma), describing how force changes an object's motion.",
+      "topic": "Newton's laws",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Newton's Third Law of Motion states that:",
+      "options": ["For every action, there is an equal and opposite reaction", "Force equals mass times acceleration", "An object in motion stays in motion unless acted on", "Energy cannot be created or destroyed"],
+      "correct_answer": "For every action, there is an equal and opposite reaction",
+      "explanation": "Newton's Third Law states that forces occur in pairs: every action force has an equal magnitude, opposite direction reaction force.",
+      "topic": "Newton's laws",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What net force is required to accelerate a 10 kg object at 5 m/s^2?",
+      "options": ["50 N", "2 N", "15 N", "5 N"],
+      "correct_answer": "50 N",
+      "explanation": "Using F = ma: F = 10 kg x 5 m/s^2 = 50 N.",
+      "topic": "Newton's laws",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Work done is defined as the product of force and:",
+      "options": ["Displacement in the direction of the force", "Time taken", "Mass of the object", "Velocity of the object"],
+      "correct_answer": "Displacement in the direction of the force",
+      "explanation": "Work = Force x displacement x cos(theta), where theta is the angle between force and displacement direction.",
+      "topic": "Work, energy and power",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is the SI unit of energy?",
+      "options": ["Joule", "Newton", "Watt", "Pascal"],
+      "correct_answer": "Joule",
+      "explanation": "The joule (J) is the SI unit of energy and work, equal to one newton-metre.",
+      "topic": "Work, energy and power",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The kinetic energy of an object is given by the formula:",
+      "options": ["KE = (1/2)mv^2", "KE = mgh", "KE = mv", "KE = m/v^2"],
+      "correct_answer": "KE = (1/2)mv^2",
+      "explanation": "Kinetic energy, the energy of motion, is given by KE = (1/2)mv^2, where m is mass and v is velocity.",
+      "topic": "Work, energy and power",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A 2 kg object moving at 3 m/s has what kinetic energy?",
+      "options": ["9 J", "6 J", "18 J", "3 J"],
+      "correct_answer": "9 J",
+      "explanation": "KE = (1/2)(2)(3)^2 = (1/2)(2)(9) = 9 J.",
+      "topic": "Work, energy and power",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Power is defined as the rate of doing:",
+      "options": ["Work", "Force", "Mass", "Displacement"],
+      "correct_answer": "Work",
+      "explanation": "Power is the rate at which work is done or energy is transferred, measured as Power = Work/Time, with the SI unit watt.",
+      "topic": "Work, energy and power",
+      "difficulty": "easy"
+    },
+    {
+      "question": "According to the law of conservation of energy, the total energy of an isolated system:",
+      "options": ["Remains constant, only changing form", "Continuously increases over time", "Continuously decreases over time", "Is always zero"],
+      "correct_answer": "Remains constant, only changing form",
+      "explanation": "The law of conservation of energy states that energy cannot be created or destroyed, only transformed from one form to another, with total energy remaining constant in an isolated system.",
+      "topic": "Work, energy and power",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Momentum is defined as the product of an object's:",
+      "options": ["Mass and velocity", "Mass and acceleration", "Force and time", "Mass and displacement"],
+      "correct_answer": "Mass and velocity",
+      "explanation": "Momentum (p) is defined as p = mv, the product of an object's mass and its velocity.",
+      "topic": "Momentum",
+      "difficulty": "easy"
+    },
+    {
+      "question": "According to the law of conservation of linear momentum, in a closed system with no external forces, the total momentum:",
+      "options": ["Remains constant before and after a collision", "Always increases after collision", "Always decreases after collision", "Is only conserved in elastic collisions"],
+      "correct_answer": "Remains constant before and after a collision",
+      "explanation": "The law of conservation of momentum states total momentum of a closed system is conserved (unchanged) as long as no external forces act, applying to both elastic and inelastic collisions.",
+      "topic": "Momentum",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a perfectly elastic collision, which of the following is conserved?",
+      "options": ["Both momentum and kinetic energy", "Only momentum, not kinetic energy", "Only kinetic energy, not momentum", "Neither momentum nor kinetic energy"],
+      "correct_answer": "Both momentum and kinetic energy",
+      "explanation": "A perfectly elastic collision conserves both total momentum and total kinetic energy, unlike inelastic collisions where kinetic energy is lost (though momentum is still conserved).",
+      "topic": "Momentum",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The force that keeps an object moving in a circular path, directed toward the center of the circle, is called:",
+      "options": ["Centripetal force", "Centrifugal force", "Gravitational force only", "Frictional force only"],
+      "correct_answer": "Centripetal force",
+      "explanation": "Centripetal force is the net force directed toward the center of a circular path that keeps an object moving in that circle.",
+      "topic": "Circular motion",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The formula for centripetal acceleration of an object moving in a circle of radius r with speed v is:",
+      "options": ["a = v^2/r", "a = v/r", "a = vr", "a = v^2 r"],
+      "correct_answer": "a = v^2/r",
+      "explanation": "Centripetal acceleration is given by a = v^2/r, directed toward the center of the circular path.",
+      "topic": "Circular motion",
+      "difficulty": "medium"
+    },
+    {
+      "question": "According to Newton's Law of Universal Gravitation, the gravitational force between two masses is:",
+      "options": ["Directly proportional to the product of the masses and inversely proportional to the square of the distance between them", "Inversely proportional to the product of the masses", "Directly proportional to the distance between them", "Independent of the distance between them"],
+      "correct_answer": "Directly proportional to the product of the masses and inversely proportional to the square of the distance between them",
+      "explanation": "Newton's Law of Universal Gravitation: F = Gm1m2/r^2, meaning force increases with mass and decreases with the square of separation distance.",
+      "topic": "Gravitation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The approximate value of acceleration due to gravity (g) near the Earth's surface is:",
+      "options": ["9.8 m/s^2", "6.67 m/s^2", "10.8 m/s^2", "8.9 m/s^2"],
+      "correct_answer": "9.8 m/s^2",
+      "explanation": "Near the Earth's surface, the acceleration due to gravity is approximately 9.8 m/s^2 (often approximated as 10 m/s^2 in calculations).",
+      "topic": "Gravitation",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What term describes the point where the entire weight of a body appears to act?",
+      "options": ["Centre of gravity", "Centre of momentum", "Centroid of mass flow", "Point of inertia"],
+      "correct_answer": "Centre of gravity",
+      "explanation": "The centre of gravity is the point through which the resultant force of gravity (weight) is considered to act on a body.",
+      "topic": "Gravitation",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Hooke's Law states that the extension of an elastic material is directly proportional to the:",
+      "options": ["Applied force (load), within the elastic limit", "Mass of the material", "Temperature of the material", "Time the force is applied"],
+      "correct_answer": "Applied force (load), within the elastic limit",
+      "explanation": "Hooke's Law states F = kx, where the extension (x) of a spring or elastic material is directly proportional to the applied force (F), provided the elastic limit is not exceeded.",
+      "topic": "Elasticity",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In Hooke's Law, F = kx, what does 'k' represent?",
+      "options": ["The spring constant (stiffness)", "The mass of the object", "The gravitational constant", "The coefficient of friction"],
+      "correct_answer": "The spring constant (stiffness)",
+      "explanation": "The constant k in Hooke's Law is the spring constant, representing the stiffness of the elastic material -- a higher k means a stiffer spring.",
+      "topic": "Elasticity",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the elastic limit of a material?",
+      "options": ["The maximum stress a material can withstand and still return to its original shape when the force is removed", "The point at which a material breaks completely", "The minimum force needed to deform a material", "The temperature at which a material melts"],
+      "correct_answer": "The maximum stress a material can withstand and still return to its original shape when the force is removed",
+      "explanation": "The elastic limit is the maximum extent to which a material can be deformed while still being able to return to its original shape once the deforming force is removed.",
+      "topic": "Elasticity",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A motion in which an object oscillates back and forth about an equilibrium position, with restoring force proportional to displacement, is called:",
+      "options": ["Simple harmonic motion", "Uniform circular motion", "Projectile motion", "Random motion"],
+      "correct_answer": "Simple harmonic motion",
+      "explanation": "Simple harmonic motion (SHM) occurs when the restoring force is directly proportional to displacement and directed toward the equilibrium position, as in a pendulum or spring-mass system.",
+      "topic": "Simple harmonic motion",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For a simple pendulum, the period of oscillation depends primarily on:",
+      "options": ["The length of the pendulum and gravitational acceleration", "The mass of the bob only", "The amplitude of swing only", "The color of the bob"],
+      "correct_answer": "The length of the pendulum and gravitational acceleration",
+      "explanation": "The period of a simple pendulum is T = 2*pi*sqrt(L/g), depending on the length (L) and gravitational acceleration (g), and is independent of the mass of the bob for small oscillations.",
+      "topic": "Simple harmonic motion",
+      "difficulty": "medium"
+    },
+    {
+      "question": "At the equilibrium position of a simple harmonic oscillator, the velocity is:",
+      "options": ["Maximum", "Zero", "Minimum but nonzero", "Undefined"],
+      "correct_answer": "Maximum",
+      "explanation": "In SHM, velocity is maximum at the equilibrium position (where displacement is zero) and zero at the extreme positions of maximum displacement.",
+      "topic": "Simple harmonic motion",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The Celsius and Kelvin temperature scales are related by which formula?",
+      "options": ["K = C + 273", "K = C - 273", "K = C x 273", "K = C / 273"],
+      "correct_answer": "K = C + 273",
+      "explanation": "To convert Celsius to Kelvin, add 273 (more precisely 273.15): K = C + 273.",
+      "topic": "Heat and temperature",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The quantity of heat required to raise the temperature of 1 kg of a substance by 1 Kelvin is called:",
+      "options": ["Specific heat capacity", "Latent heat", "Thermal conductivity", "Heat capacity of the universe"],
+      "correct_answer": "Specific heat capacity",
+      "explanation": "Specific heat capacity is defined as the amount of heat energy required to raise the temperature of one kilogram of a substance by one degree Kelvin (or Celsius).",
+      "topic": "Heat and temperature",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The heat energy required to change a substance from one state to another without a change in temperature is called:",
+      "options": ["Latent heat", "Specific heat capacity", "Sensible heat", "Radiant heat"],
+      "correct_answer": "Latent heat",
+      "explanation": "Latent heat is the heat absorbed or released during a phase change (e.g., melting, boiling) at constant temperature, without changing the temperature of the substance.",
+      "topic": "Heat and temperature",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Density is defined as:",
+      "options": ["Mass per unit volume", "Weight per unit area", "Force per unit area", "Volume per unit mass"],
+      "correct_answer": "Mass per unit volume",
+      "explanation": "Density (rho) is defined as mass divided by volume (rho = m/V), typically measured in kg/m^3.",
+      "topic": "Fluids",
+      "difficulty": "easy"
+    },
+    {
+      "question": "According to Archimedes' Principle, the upthrust (buoyant force) on a body submerged in a fluid equals:",
+      "options": ["The weight of the fluid displaced by the body", "The total weight of the body", "The volume of the body", "The density of the fluid alone"],
+      "correct_answer": "The weight of the fluid displaced by the body",
+      "explanation": "Archimedes' Principle states that the upward buoyant force on a submerged (or floating) object equals the weight of the fluid that the object displaces.",
+      "topic": "Fluids",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Pressure is defined as force applied per unit:",
+      "options": ["Area", "Volume", "Length", "Mass"],
+      "correct_answer": "Area",
+      "explanation": "Pressure is defined as P = F/A, the force applied divided by the area over which it acts, measured in pascals (Pa).",
+      "topic": "Fluids",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Pascal's Principle states that pressure applied to an enclosed, incompressible fluid is:",
+      "options": ["Transmitted equally in all directions throughout the fluid", "Only transmitted downward due to gravity", "Absorbed completely by the container walls", "Lost as heat within the fluid"],
+      "correct_answer": "Transmitted equally in all directions throughout the fluid",
+      "explanation": "Pascal's Principle states that pressure applied to an enclosed fluid is transmitted undiminished and equally in all directions, the basis for hydraulic systems.",
+      "topic": "Fluids",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A wave in which the particle displacement is perpendicular to the direction of wave propagation is called a:",
+      "options": ["Transverse wave", "Longitudinal wave", "Standing wave only", "Mechanical wave only"],
+      "correct_answer": "Transverse wave",
+      "explanation": "In a transverse wave, particles oscillate perpendicular to the direction of energy/wave travel, as seen in light waves and waves on a string.",
+      "topic": "Waves",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Sound waves are an example of which type of wave?",
+      "options": ["Longitudinal wave", "Transverse wave", "Electromagnetic wave", "Standing wave exclusively"],
+      "correct_answer": "Longitudinal wave",
+      "explanation": "Sound waves are longitudinal waves, where particle vibrations occur parallel to the direction of wave propagation, via compressions and rarefactions.",
+      "topic": "Waves",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The relationship between wave speed (v), frequency (f), and wavelength (lambda) is given by:",
+      "options": ["v = f x lambda", "v = f / lambda", "v = f + lambda", "v = f - lambda"],
+      "correct_answer": "v = f x lambda",
+      "explanation": "The wave equation states that wave speed equals frequency multiplied by wavelength: v = f x lambda.",
+      "topic": "Waves",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A projectile launched horizontally from a height experiences which type of vertical motion (ignoring air resistance)?",
+      "options": ["Uniform acceleration due to gravity", "Constant velocity", "Zero acceleration", "Decreasing acceleration over time"],
+      "correct_answer": "Uniform acceleration due to gravity",
+      "explanation": "In projectile motion, the vertical component of motion undergoes uniform acceleration due to gravity (g), while the horizontal component moves at constant velocity, ignoring air resistance.",
+      "topic": "Kinematics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the weight of a 5 kg mass on Earth, taking g = 10 m/s^2?",
+      "options": ["50 N", "5 N", "0.5 N", "500 N"],
+      "correct_answer": "50 N",
+      "explanation": "Weight = mass x g = 5 kg x 10 m/s^2 = 50 N.",
+      "topic": "Newton's laws",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which quantity remains unchanged for an object undergoing uniform circular motion at constant speed?",
+      "options": ["The magnitude of its velocity (speed)", "The direction of its velocity", "Its acceleration", "Its centripetal force"],
+      "correct_answer": "The magnitude of its velocity (speed)",
+      "explanation": "In uniform circular motion, speed (magnitude of velocity) stays constant even though the direction of velocity continuously changes, producing centripetal acceleration.",
+      "topic": "Circular motion",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The moment (torque) of a force about a point is defined as the product of the force and the:",
+      "options": ["Perpendicular distance from the point to the line of action of the force", "Mass of the object experiencing the force", "Time for which the force acts", "Velocity of the object"],
+      "correct_answer": "Perpendicular distance from the point to the line of action of the force",
+      "explanation": "Torque (moment) = Force x perpendicular distance from the pivot to the line of action of the force, measuring the turning effect of a force.",
+      "topic": "Newton's laws",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For a system in rotational equilibrium, the principle of moments states that:",
+      "options": ["The sum of clockwise moments equals the sum of anticlockwise moments about any point", "All forces must be equal in magnitude", "The object must be stationary at all times", "Only one force can act on the object"],
+      "correct_answer": "The sum of clockwise moments equals the sum of anticlockwise moments about any point",
+      "explanation": "The principle of moments states that for a body in rotational equilibrium, the sum of clockwise moments about a pivot equals the sum of anticlockwise moments about the same pivot.",
+      "topic": "Newton's laws",
+      "difficulty": "hard"
+    },
+    {
+      "question": "What is the term for the resistance of a fluid to flow, arising from internal friction between fluid layers?",
+      "options": ["Viscosity", "Density", "Surface tension", "Buoyancy"],
+      "correct_answer": "Viscosity",
+      "explanation": "Viscosity describes a fluid's internal resistance to flow, caused by friction between adjacent layers of the fluid moving at different velocities.",
+      "topic": "Fluids",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A block is pushed with a force of 20 N across a floor and moves 5 m in the direction of the force. How much work is done?",
+      "options": ["100 J", "25 J", "4 J", "15 J"],
+      "correct_answer": "100 J",
+      "explanation": "Work = Force x displacement = 20 N x 5 m = 100 J, since the force and displacement are in the same direction.",
+      "topic": "Work, energy and power",
+      "difficulty": "easy"
+    },
+    {
+      "question": "An object falls freely from rest. What is its velocity after falling for 3 seconds, taking g = 10 m/s^2?",
+      "options": ["30 m/s", "10 m/s", "3 m/s", "13 m/s"],
+      "correct_answer": "30 m/s",
+      "explanation": "Using v = u + gt = 0 + (10)(3) = 30 m/s, since the object starts from rest under free fall.",
+      "topic": "Kinematics",
+      "difficulty": "medium"
+    }
+  ]
+}

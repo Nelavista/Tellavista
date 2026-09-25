@@ -1,0 +1,261 @@
+{
+  "course_code": "MTH313",
+  "title": "Geometry",
+  "level": "300",
+  "source_note": "Standard NUC-aligned Nigerian university 300L geometry curriculum: coordinate and analytic geometry of conics, geometric transformations (isometries, similarities, affine maps), vectors in geometry, and an introduction to non-Euclidean geometry.",
+  "questions": [
+    {
+      "question": "The standard equation of a circle with centre (a,b) and radius r is:",
+      "options": ["(x-a)^2 + (y-b)^2 = r^2", "(x-a) + (y-b) = r", "x^2 + y^2 = a + b", "(x+a)^2 - (y+b)^2 = r^2"],
+      "correct_answer": "(x-a)^2 + (y-b)^2 = r^2",
+      "explanation": "This is the locus of points at fixed distance r from the centre (a,b), derived directly from the distance formula.",
+      "topic": "Conics: circle",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The standard form of an ellipse centred at the origin with semi-major axis a and semi-minor axis b is:",
+      "options": ["x^2/a^2 + y^2/b^2 = 1", "x^2/a^2 - y^2/b^2 = 1", "y = ax^2 + b", "x^2 + y^2 = a^2 - b^2"],
+      "correct_answer": "x^2/a^2 + y^2/b^2 = 1",
+      "explanation": "This is the standard Cartesian equation of an ellipse, reducing to a circle when a = b.",
+      "topic": "Conics: ellipse",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The eccentricity e of an ellipse satisfies:",
+      "options": ["0 < e < 1", "e = 1", "e > 1", "e = 0 always"],
+      "correct_answer": "0 < e < 1",
+      "explanation": "An ellipse has eccentricity strictly between 0 (a circle) and 1 (the parabolic limit), distinguishing it from parabolas (e=1) and hyperbolas (e>1).",
+      "topic": "Conics: ellipse",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The standard form of a hyperbola centred at the origin, opening along the x-axis, is:",
+      "options": ["x^2/a^2 - y^2/b^2 = 1", "x^2/a^2 + y^2/b^2 = 1", "y^2 = 4ax", "x^2 + y^2 = a^2"],
+      "correct_answer": "x^2/a^2 - y^2/b^2 = 1",
+      "explanation": "The minus sign between the squared terms is the defining algebraic feature that distinguishes a hyperbola from an ellipse.",
+      "topic": "Conics: hyperbola",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The asymptotes of the hyperbola x^2/a^2 - y^2/b^2 = 1 are given by:",
+      "options": ["y = ±(b/a)x", "y = ±(a/b)x", "y = a + b", "x = ±a"],
+      "correct_answer": "y = ±(b/a)x",
+      "explanation": "As x and y grow large, the hyperbola approaches the lines obtained by setting the equation's right-hand side to zero, giving y = ±(b/a)x.",
+      "topic": "Conics: hyperbola",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The standard form of a parabola with vertex at the origin opening rightward is:",
+      "options": ["y^2 = 4ax", "x^2 = 4ay", "x^2 + y^2 = a^2", "y = ax + b"],
+      "correct_answer": "y^2 = 4ax",
+      "explanation": "This equation describes all points equidistant from the focus (a,0) and the directrix x = -a, the defining property of a parabola.",
+      "topic": "Conics: parabola",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A parabola is defined as the locus of points equidistant from:",
+      "options": ["A fixed point (focus) and a fixed line (directrix)", "Two fixed points (foci)", "Three fixed points", "A fixed line only"],
+      "correct_answer": "A fixed point (focus) and a fixed line (directrix)",
+      "explanation": "This focus-directrix property is the fundamental defining characteristic of a parabola, and of conics generally in terms of eccentricity.",
+      "topic": "Conics: parabola",
+      "difficulty": "easy"
+    },
+    {
+      "question": "An ellipse is defined as the locus of points where:",
+      "options": ["The sum of distances to two fixed foci is constant", "The difference of distances to two fixed foci is constant", "The distance to a single focus is constant", "The product of distances to two foci is constant"],
+      "correct_answer": "The sum of distances to two fixed foci is constant",
+      "explanation": "This sum-of-distances property (equal to 2a, the major axis length) is the classical definition of an ellipse.",
+      "topic": "Conics: ellipse",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A hyperbola is defined as the locus of points where:",
+      "options": ["The absolute difference of distances to two fixed foci is constant", "The sum of distances to two fixed foci is constant", "All points are equidistant from one fixed point", "The distance to the origin is constant"],
+      "correct_answer": "The absolute difference of distances to two fixed foci is constant",
+      "explanation": "This difference-of-distances property distinguishes the hyperbola from the ellipse's sum-of-distances property.",
+      "topic": "Conics: hyperbola",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A translation in the plane that maps point (x,y) to (x+h, y+k) is an example of:",
+      "options": ["An isometry (rigid transformation) that preserves distance and shape", "A transformation that changes the size of a figure", "A projection onto a line", "A shear transformation"],
+      "correct_answer": "An isometry (rigid transformation) that preserves distance and shape",
+      "explanation": "Translations preserve all distances between points and hence preserve shape and orientation, making them rigid motions.",
+      "topic": "Transformations: translation",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Under a rotation about the origin by angle θ, the point (x,y) maps to:",
+      "options": ["(x cosθ − y sinθ, x sinθ + y cosθ)", "(x cosθ + y sinθ, x sinθ − y cosθ)", "(x + cosθ, y + sinθ)", "(xθ, yθ)"],
+      "correct_answer": "(x cosθ − y sinθ, x sinθ + y cosθ)",
+      "explanation": "This is the standard 2D rotation matrix applied to the point, derived from combining the components along the rotated axes.",
+      "topic": "Transformations: rotation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Reflecting the point (x,y) across the x-axis gives:",
+      "options": ["(x, -y)", "(-x, y)", "(-x, -y)", "(y, x)"],
+      "correct_answer": "(x, -y)",
+      "explanation": "Reflection across the x-axis keeps the x-coordinate fixed and negates the y-coordinate.",
+      "topic": "Transformations: reflection",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A dilation (scaling) transformation with scale factor k about the origin maps (x,y) to:",
+      "options": ["(kx, ky)", "(x+k, y+k)", "(x/k, y/k) only if k<1", "(k, k)"],
+      "correct_answer": "(kx, ky)",
+      "explanation": "A dilation uniformly scales the coordinates by the factor k, enlarging (k>1) or shrinking (0<k<1) the figure while preserving shape.",
+      "topic": "Transformations: dilation",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which of the following is preserved under a similarity transformation but not necessarily under a general affine transformation?",
+      "options": ["Angles between lines", "Parallelism of lines", "Ratios of lengths along a line", "Collinearity of points"],
+      "correct_answer": "Angles between lines",
+      "explanation": "Similarity transformations (isometries composed with uniform scaling) preserve angles, while general affine maps preserve parallelism and ratios along lines but can distort angles.",
+      "topic": "Transformations: affine geometry",
+      "difficulty": "hard"
+    },
+    {
+      "question": "An affine transformation of the plane can be written in the form:",
+      "options": ["T(x) = Ax + b, where A is an invertible matrix and b a translation vector", "T(x) = Ax only, with A orthogonal", "T(x) = x^2 + b", "T(x) = x/A"],
+      "correct_answer": "T(x) = Ax + b, where A is an invertible matrix and b a translation vector",
+      "explanation": "General affine maps combine a linear transformation (matrix A) with a translation (vector b), generalizing isometries and dilations.",
+      "topic": "Transformations: affine geometry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The composition of two rotations about the same point, by angles θ1 and θ2, results in:",
+      "options": ["A single rotation by angle θ1 + θ2 about that point", "A translation", "A reflection", "The identity transformation always"],
+      "correct_answer": "A single rotation by angle θ1 + θ2 about that point",
+      "explanation": "Rotations about a common centre compose by simply adding their angles.",
+      "topic": "Transformations: composition",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Two triangles are said to be congruent if:",
+      "options": ["One can be mapped onto the other by an isometry (preserving both shape and size)", "They have the same shape but possibly different sizes", "They have equal areas only", "Their angles sum to 180 degrees"],
+      "correct_answer": "One can be mapped onto the other by an isometry (preserving both shape and size)",
+      "explanation": "Congruence requires an exact match under a rigid motion, unlike similarity which only requires equal shape.",
+      "topic": "Congruence and similarity",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Two figures are similar if:",
+      "options": ["One can be mapped to the other by a similarity transformation (isometry combined with uniform scaling)", "They are congruent", "They have equal perimeters", "They lie on the same line"],
+      "correct_answer": "One can be mapped to the other by a similarity transformation (isometry combined with uniform scaling)",
+      "explanation": "Similar figures have the same shape (equal corresponding angles, proportional sides) but not necessarily the same size.",
+      "topic": "Congruence and similarity",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Given position vectors a and b of two points A and B, the vector representing the displacement from A to B is:",
+      "options": ["b - a", "a - b", "a + b", "a × b"],
+      "correct_answer": "b - a",
+      "explanation": "The vector from A to B is found by subtracting the initial point's position vector from the terminal point's.",
+      "topic": "Vectors in geometry",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The midpoint M of the segment joining points with position vectors a and b is given by:",
+      "options": ["M = (a + b)/2", "M = a - b", "M = 2(a+b)", "M = (a+b)"],
+      "correct_answer": "M = (a + b)/2",
+      "explanation": "The midpoint's position vector is the average of the two endpoint position vectors.",
+      "topic": "Vectors in geometry",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Vectors u and v are perpendicular if and only if:",
+      "options": ["u . v = 0 (their dot product vanishes)", "u × v = 0", "|u| = |v|", "u + v = 0"],
+      "correct_answer": "u . v = 0 (their dot product vanishes)",
+      "explanation": "The dot product of two vectors equals |u||v|cosθ, which is zero exactly when θ = 90 degrees.",
+      "topic": "Vectors in geometry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The locus of points equidistant from two fixed points A and B is:",
+      "options": ["The perpendicular bisector of segment AB", "A circle centred at A", "A line through A and B", "A parabola"],
+      "correct_answer": "The perpendicular bisector of segment AB",
+      "explanation": "Every point equidistant from A and B lies on the line that is perpendicular to AB and passes through its midpoint.",
+      "topic": "Loci",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In spherical (non-Euclidean) geometry, the sum of the interior angles of a triangle is:",
+      "options": ["Always greater than 180 degrees", "Always exactly 180 degrees", "Always less than 180 degrees", "Undefined"],
+      "correct_answer": "Always greater than 180 degrees",
+      "explanation": "On a sphere, positive curvature causes triangle angle sums to exceed the Euclidean value of 180 degrees, growing with the triangle's area.",
+      "topic": "Non-Euclidean geometry",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In hyperbolic geometry, the sum of the interior angles of a triangle is:",
+      "options": ["Always less than 180 degrees", "Always exactly 180 degrees", "Always greater than 180 degrees", "Exactly 360 degrees"],
+      "correct_answer": "Always less than 180 degrees",
+      "explanation": "Hyperbolic geometry has negative curvature, which causes triangle angle sums to fall short of the Euclidean 180 degrees.",
+      "topic": "Non-Euclidean geometry",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Euclid's parallel postulate, whose modification distinguishes non-Euclidean from Euclidean geometry, states that:",
+      "options": [
+        "Through a point not on a given line, exactly one line can be drawn parallel to the given line",
+        "All lines eventually intersect",
+        "Parallel lines are always the same length",
+        "Every triangle has exactly one right angle"
+      ],
+      "correct_answer": "Through a point not on a given line, exactly one line can be drawn parallel to the given line",
+      "explanation": "Non-Euclidean geometries arise by replacing this postulate: hyperbolic geometry allows infinitely many such parallels, spherical geometry allows none.",
+      "topic": "Non-Euclidean geometry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The set of all isometries of the plane that map a given regular polygon onto itself forms:",
+      "options": ["A symmetry group (dihedral group) of the polygon", "A vector space", "A single rotation only", "An open interval"],
+      "correct_answer": "A symmetry group (dihedral group) of the polygon",
+      "explanation": "The collection of rotations and reflections preserving a regular n-gon forms the dihedral group of order 2n under composition.",
+      "topic": "Symmetry groups",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In projective geometry, two distinct lines in the projective plane:",
+      "options": ["Always meet at exactly one point (including points at infinity)", "Never meet", "Meet at exactly two points", "Are always parallel"],
+      "correct_answer": "Always meet at exactly one point (including points at infinity)",
+      "explanation": "Projective geometry extends the Euclidean plane with points at infinity so that even parallel Euclidean lines meet there, eliminating the exception of non-intersecting lines.",
+      "topic": "Projective geometry",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A shear transformation of the plane, e.g. (x,y) -> (x + ky, y), preserves:",
+      "options": ["Area, but not necessarily angles", "Angles, but not area", "Both area and angles", "Neither area nor angles"],
+      "correct_answer": "Area, but not necessarily angles",
+      "explanation": "A shear has determinant 1 (area-preserving) but is not an isometry, so it generally distorts angles between lines.",
+      "topic": "Transformations: affine geometry",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The distance between two points (x1,y1) and (x2,y2) in the Cartesian plane is given by:",
+      "options": ["√[(x2-x1)^2 + (y2-y1)^2]", "(x2-x1) + (y2-y1)", "(x2-x1)(y2-y1)", "|x2-x1| + |y2-y1|"],
+      "correct_answer": "√[(x2-x1)^2 + (y2-y1)^2]",
+      "explanation": "This is the Euclidean distance formula, derived from the Pythagorean theorem applied to the coordinate differences.",
+      "topic": "Coordinate geometry",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A general second-degree equation Ax^2 + Bxy + Cy^2 + Dx + Ey + F = 0 represents an ellipse when the discriminant B^2 - 4AC is:",
+      "options": ["Negative (and A ≠ C or B ≠ 0)", "Zero", "Positive", "Undefined"],
+      "correct_answer": "Negative (and A ≠ C or B ≠ 0)",
+      "explanation": "The sign of the discriminant B^2 - 4AC classifies the conic: negative for an ellipse, zero for a parabola, positive for a hyperbola.",
+      "topic": "Conics: general classification",
+      "difficulty": "hard"
+    },
+    {
+      "question": "For the general second-degree conic equation, a positive discriminant B^2 - 4AC indicates the conic is:",
+      "options": ["A hyperbola", "An ellipse", "A parabola", "A circle"],
+      "correct_answer": "A hyperbola",
+      "explanation": "A positive discriminant value in the general conic equation signals hyperbolic type.",
+      "topic": "Conics: general classification",
+      "difficulty": "hard"
+    }
+  ]
+}

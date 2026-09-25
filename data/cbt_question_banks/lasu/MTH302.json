@@ -1,0 +1,264 @@
+{
+  "course_code": "MTH302",
+  "title": "Ordinary Differential Equations",
+  "level": "300",
+  "source_note": "Standard NUC-aligned Nigerian university 300L Ordinary Differential Equations curriculum: classification of ODEs, first-order equations (separable, linear, exact, homogeneous), second-order linear equations with constant coefficients (homogeneous and non-homogeneous via undetermined coefficients and variation of parameters), Cauchy-Euler equations, the Wronskian, reduction of order, Laplace transform methods, and standard applications (growth/decay, cooling, circuits, vibrations).",
+  "questions": [
+    {
+      "question": "The order of a differential equation is determined by:",
+      "options": ["the highest derivative present in the equation", "the highest power of the dependent variable", "the number of terms in the equation", "the number of independent variables"],
+      "correct_answer": "the highest derivative present in the equation",
+      "explanation": "The order of an ODE is defined as the order of the highest-order derivative appearing in it.",
+      "topic": "Classification of ODEs",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The differential equation dy/dx + y^2 = x is classified as:",
+      "options": ["nonlinear", "linear", "separable", "exact"],
+      "correct_answer": "nonlinear",
+      "explanation": "The equation is nonlinear because the dependent variable y appears raised to the second power (y^2).",
+      "topic": "Classification of ODEs",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Solve the separable equation dy/dx = xy, expressing y in terms of x.",
+      "options": ["y = C e^{x^2/2}", "y = C e^x", "y = Cx^2", "y = C + x^2/2"],
+      "correct_answer": "y = C e^{x^2/2}",
+      "explanation": "Separating variables: dy/y = x dx, integrating gives ln|y| = x^2/2 + c, so y = C e^{x^2/2}.",
+      "topic": "First-order: separable equations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For the linear first-order equation dy/dx + P(x)y = Q(x), the integrating factor is:",
+      "options": ["e^{∫P(x)dx}", "e^{∫Q(x)dx}", "∫P(x)dx", "P(x) e^x"],
+      "correct_answer": "e^{∫P(x)dx}",
+      "explanation": "The standard integrating factor for a first-order linear ODE in this form is μ(x) = e^{∫P(x)dx}.",
+      "topic": "First-order: linear equations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Solve dy/dx + y = e^x using an integrating factor, given y(0) = 1.",
+      "options": ["y = e^x + e^{-x}", "y = e^x/2 + e^{-x}/2", "y = xe^x", "y = e^{2x}"],
+      "correct_answer": "y = e^x/2 + e^{-x}/2",
+      "explanation": "Using integrating factor e^x: (ye^x)' = e^{2x}, so ye^x = e^{2x}/2 + C; applying y(0)=1 gives C = 1/2, so y = e^x/2 + e^{-x}/2.",
+      "topic": "First-order: linear equations",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A first-order equation M(x,y)dx + N(x,y)dy = 0 is exact if:",
+      "options": ["∂M/∂y = ∂N/∂x", "M = N", "∂M/∂x = ∂N/∂y", "M/N is constant"],
+      "correct_answer": "∂M/∂y = ∂N/∂x",
+      "explanation": "The exactness test requires the partial derivative of M with respect to y to equal the partial derivative of N with respect to x.",
+      "topic": "First-order: exact equations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The equation dy/dx = (x^2 + y^2)/(xy) is an example of a:",
+      "options": ["homogeneous first-order equation", "exact equation", "linear equation", "second-order equation"],
+      "correct_answer": "homogeneous first-order equation",
+      "explanation": "Since the right-hand side can be written as a function of y/x alone (dividing numerator and denominator by x^2), this is a homogeneous first-order ODE.",
+      "topic": "First-order: homogeneous equations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For a homogeneous first-order equation, the standard substitution used to solve it is:",
+      "options": ["y = vx", "y = v + x", "x = vy^2", "y = v/x^2"],
+      "correct_answer": "y = vx",
+      "explanation": "The substitution y = vx (with v a function of x) reduces a homogeneous equation to a separable equation in v and x.",
+      "topic": "First-order: homogeneous equations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The characteristic (auxiliary) equation for y'' - 5y' + 6y = 0 is:",
+      "options": ["m^2 - 5m + 6 = 0", "m^2 + 5m + 6 = 0", "m - 5m + 6 = 0", "m^2 - 5m - 6 = 0"],
+      "correct_answer": "m^2 - 5m + 6 = 0",
+      "explanation": "Substituting y = e^{mx} into the homogeneous linear ODE gives the auxiliary equation m^2 - 5m + 6 = 0.",
+      "topic": "Second-order linear: constant coefficients",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The general solution of y'' - 5y' + 6y = 0 is:",
+      "options": ["y = C1e^{2x} + C2e^{3x}", "y = C1e^{-2x} + C2e^{-3x}", "y = (C1 + C2x)e^{2x}", "y = C1cos2x + C2sin3x"],
+      "correct_answer": "y = C1e^{2x} + C2e^{3x}",
+      "explanation": "The auxiliary equation m^2-5m+6=0 factors as (m-2)(m-3)=0, giving real distinct roots m=2, m=3, so y = C1e^{2x} + C2e^{3x}.",
+      "topic": "Second-order linear: constant coefficients",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For a repeated root m = r of the characteristic equation, the general solution of the second-order ODE includes the term:",
+      "options": ["(C1 + C2x)e^{rx}", "C1e^{rx} + C2e^{rx}", "C1e^{rx} + C2xe^{2rx}", "C1x e^{rx}"],
+      "correct_answer": "(C1 + C2x)e^{rx}",
+      "explanation": "A repeated root requires a second linearly independent solution xe^{rx}, giving the combined solution (C1 + C2x)e^{rx}.",
+      "topic": "Second-order linear: constant coefficients",
+      "difficulty": "hard"
+    },
+    {
+      "question": "If the characteristic equation of y'' + 4y = 0 has roots m = ±2i, the general solution is:",
+      "options": ["y = C1cos2x + C2sin2x", "y = C1e^{2x} + C2e^{-2x}", "y = C1cosx + C2sinx", "y = (C1+C2x)e^{2x}"],
+      "correct_answer": "y = C1cos2x + C2sin2x",
+      "explanation": "Complex conjugate roots ±βi yield a solution of the form C1cos(βx) + C2sin(βx); here β = 2.",
+      "topic": "Second-order linear: constant coefficients",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the method of undetermined coefficients, if the RHS of a non-homogeneous ODE is a polynomial and the corresponding term already appears in the complementary solution, the trial particular solution must be:",
+      "options": ["multiplied by x (or x^2 as needed) to remove duplication", "left unchanged", "replaced with an exponential", "divided by x"],
+      "correct_answer": "multiplied by x (or x^2 as needed) to remove duplication",
+      "explanation": "When a trial term duplicates part of the complementary function, it must be multiplied by the lowest power of x that removes the duplication.",
+      "topic": "Undetermined coefficients",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Using undetermined coefficients, the correct trial particular solution for y'' - y' - 2y = e^{3x} is:",
+      "options": ["y_p = Ae^{3x}", "y_p = Axe^{3x}", "y_p = A + Bx", "y_p = A cos3x"],
+      "correct_answer": "y_p = Ae^{3x}",
+      "explanation": "Since e^{3x} is not part of the complementary solution (roots m=2,-1), the simple trial Ae^{3x} is appropriate.",
+      "topic": "Undetermined coefficients",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The method of variation of parameters is generally preferred over undetermined coefficients when:",
+      "options": ["the non-homogeneous term is not a polynomial, exponential, sine, cosine, or product of these", "the equation is first order", "the coefficients are variable", "the equation is homogeneous"],
+      "correct_answer": "the non-homogeneous term is not a polynomial, exponential, sine, cosine, or product of these",
+      "explanation": "Undetermined coefficients only works for a limited class of forcing functions; variation of parameters works for any continuous forcing function, e.g. tan x or ln x.",
+      "topic": "Variation of parameters",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The Wronskian of two solutions y1 and y2 of a second-order linear homogeneous ODE is defined as:",
+      "options": ["y1 y2' - y2 y1'", "y1 y2 - y1' y2'", "y1 + y2", "y1' y2' - y1 y2"],
+      "correct_answer": "y1 y2' - y2 y1'",
+      "explanation": "The Wronskian W(y1,y2) = y1y2' - y2y1' tests linear independence of two solutions of a second-order linear ODE.",
+      "topic": "Wronskian and linear independence",
+      "difficulty": "medium"
+    },
+    {
+      "question": "If the Wronskian of two solutions of a linear homogeneous ODE is identically zero on an interval, the solutions are:",
+      "options": ["linearly dependent", "linearly independent", "both zero", "orthogonal"],
+      "correct_answer": "linearly dependent",
+      "explanation": "A vanishing Wronskian on an interval (for solutions of a linear ODE) indicates the two solutions are linearly dependent.",
+      "topic": "Wronskian and linear independence",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The reduction of order technique is used to find a second solution of a linear ODE when:",
+      "options": ["one solution is already known", "the equation is nonlinear", "the equation has constant coefficients only", "the Wronskian is undefined"],
+      "correct_answer": "one solution is already known",
+      "explanation": "Given one known solution y1, reduction of order uses the substitution y2 = v(x)y1 to find a second, independent solution.",
+      "topic": "Reduction of order",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A Cauchy-Euler (equidimensional) equation has the general second-order form:",
+      "options": ["ax^2y'' + bxy' + cy = 0", "ay'' + by' + cy = 0", "axy'' + by' = 0", "ay'' + bxy = 0"],
+      "correct_answer": "ax^2y'' + bxy' + cy = 0",
+      "explanation": "A Cauchy-Euler equation has coefficients that are powers of x matching the derivative order, giving the standard form ax^2y'' + bxy' + cy = 0.",
+      "topic": "Cauchy-Euler equations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "To solve a Cauchy-Euler equation, the standard trial substitution is:",
+      "options": ["y = x^m", "y = e^{mx}", "y = mx", "y = sin(mx)"],
+      "correct_answer": "y = x^m",
+      "explanation": "Substituting y = x^m into a Cauchy-Euler equation converts it into an algebraic equation for m, analogous to the auxiliary equation for constant-coefficient ODEs.",
+      "topic": "Cauchy-Euler equations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Laplace transform of f(t) = e^{at} is:",
+      "options": ["1/(s-a), for s > a", "1/(s+a)", "s/(s-a)", "a/s"],
+      "correct_answer": "1/(s-a), for s > a",
+      "explanation": "By definition L{e^{at}} = ∫0^∞ e^{-st}e^{at}dt = 1/(s-a) for s > a.",
+      "topic": "Laplace transforms",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Laplace transform of the second derivative y''(t) is:",
+      "options": ["s^2 Y(s) - s y(0) - y'(0)", "s Y(s) - y(0)", "s^2 Y(s)", "Y(s)/s^2"],
+      "correct_answer": "s^2 Y(s) - s y(0) - y'(0)",
+      "explanation": "The Laplace transform of y'' incorporates the initial conditions: L{y''} = s^2Y(s) - sy(0) - y'(0).",
+      "topic": "Laplace transforms",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Using Laplace transforms is especially useful for solving linear ODEs with constant coefficients because it converts:",
+      "options": ["differential equations into algebraic equations", "algebraic equations into differential equations", "nonlinear equations into linear ones", "initial value problems into boundary value problems"],
+      "correct_answer": "differential equations into algebraic equations",
+      "explanation": "The Laplace transform turns derivatives into polynomial expressions in s, reducing the ODE (with initial conditions) to an algebraic equation for Y(s).",
+      "topic": "Laplace transforms",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Laplace transform of sin(ωt) is:",
+      "options": ["ω/(s^2 + ω^2)", "s/(s^2 + ω^2)", "1/(s^2 + ω^2)", "ω/(s^2 - ω^2)"],
+      "correct_answer": "ω/(s^2 + ω^2)",
+      "explanation": "This is a standard Laplace transform pair: L{sin(ωt)} = ω/(s^2+ω^2).",
+      "topic": "Laplace transforms",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A population growing at a rate proportional to its current size is modelled by the differential equation:",
+      "options": ["dP/dt = kP", "dP/dt = kt", "d^2P/dt^2 = kP", "dP/dt = k/P"],
+      "correct_answer": "dP/dt = kP",
+      "explanation": "Exponential growth/decay is characterized by a rate of change proportional to the current amount, dP/dt = kP, with solution P = P0 e^{kt}.",
+      "topic": "Applications: growth and decay",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Newton's Law of Cooling states that the rate of change of an object's temperature T is proportional to:",
+      "options": ["the difference between T and the ambient temperature", "T alone", "time t", "the square of T"],
+      "correct_answer": "the difference between T and the ambient temperature",
+      "explanation": "Newton's law of cooling gives dT/dt = -k(T - T_ambient), where the cooling rate depends on the temperature difference.",
+      "topic": "Applications: cooling models",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For an undamped mechanical spring-mass system, the equation of motion mx'' + kx = 0 produces motion described as:",
+      "options": ["simple harmonic motion", "exponential decay", "critically damped motion", "unbounded growth"],
+      "correct_answer": "simple harmonic motion",
+      "explanation": "With no damping term, the equation mx'' + kx = 0 has purely oscillatory (sinusoidal) solutions, i.e. simple harmonic motion.",
+      "topic": "Applications: mechanical vibrations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In an RL series circuit with resistance R, inductance L, and applied voltage E(t), the governing first-order ODE for current i(t) is:",
+      "options": ["L di/dt + Ri = E(t)", "R di/dt + Li = E(t)", "LC di/dt = E(t)", "L d^2i/dt^2 + Ri = E(t)"],
+      "correct_answer": "L di/dt + Ri = E(t)",
+      "explanation": "Applying Kirchhoff's voltage law to a series RL circuit gives L di/dt + Ri = E(t), a first-order linear ODE.",
+      "topic": "Applications: electrical circuits",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For a damped spring-mass system mx'' + cx' + kx = 0, the system is critically damped when:",
+      "options": ["c^2 = 4mk", "c^2 > 4mk", "c^2 < 4mk", "c = 0"],
+      "correct_answer": "c^2 = 4mk",
+      "explanation": "Critical damping occurs exactly when the discriminant of the characteristic equation is zero, i.e. c^2 = 4mk, giving a repeated real root.",
+      "topic": "Applications: mechanical vibrations",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The Existence and Uniqueness Theorem (Picard-Lindelöf) for the IVP y' = f(x,y), y(x0) = y0 guarantees a unique solution near x0 provided:",
+      "options": ["f and ∂f/∂y are continuous in a region containing (x0, y0)", "f is a polynomial", "y0 = 0", "f is linear only"],
+      "correct_answer": "f and ∂f/∂y are continuous in a region containing (x0, y0)",
+      "explanation": "The standard existence-uniqueness theorem requires continuity of f and its partial derivative with respect to y near the initial point.",
+      "topic": "Existence and uniqueness",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A power series solution of an ODE about an ordinary point x0 can be assumed in the form:",
+      "options": ["y = Σ an(x - x0)^n", "y = Σ an x^{-n}", "y = an e^{nx}", "y = Σ n! an"],
+      "correct_answer": "y = Σ an(x - x0)^n",
+      "explanation": "Near an ordinary point, solutions of a linear ODE can be represented as a power series expanded about that point.",
+      "topic": "Series solutions",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A point x0 is called a singular point of a linear ODE y'' + P(x)y' + Q(x)y = 0 if:",
+      "options": ["P(x) or Q(x) is not analytic at x0", "y(x0) = 0", "x0 = 0 always", "the equation has constant coefficients"],
+      "correct_answer": "P(x) or Q(x) is not analytic at x0",
+      "explanation": "A singular point is where at least one of the coefficient functions P(x) or Q(x) fails to be analytic (e.g., has a pole).",
+      "topic": "Series solutions",
+      "difficulty": "hard"
+    }
+  ]
+}

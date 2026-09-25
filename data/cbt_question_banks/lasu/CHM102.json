@@ -1,0 +1,495 @@
+{
+  "course_code": "CHM102",
+  "title": "General Chemistry II",
+  "level": "100",
+  "source_note": "Standard NUC-aligned Nigerian university 100L second-semester General Chemistry curriculum: thermochemistry, chemical equilibrium, acid-base theory, redox/electrochemistry, reaction kinetics, solutions and colligative properties, gas laws, and solid-state basics.",
+  "questions": [
+    {
+      "question": "In thermodynamics, a reaction that releases heat to the surroundings is described as:",
+      "options": ["Endothermic", "Exothermic", "Isothermal", "Adiabatic"],
+      "correct_answer": "Exothermic",
+      "explanation": "An exothermic reaction has a negative enthalpy change (ΔH < 0) because heat flows from the system to the surroundings.",
+      "topic": "Thermochemistry",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Hess's Law states that the total enthalpy change for a reaction is:",
+      "options": [
+        "Dependent only on the temperature of the reaction",
+        "The same regardless of the number of steps taken, as long as initial and final states are the same",
+        "Always positive for spontaneous reactions",
+        "Equal to the sum of the bond energies of the reactants only"
+      ],
+      "correct_answer": "The same regardless of the number of steps taken, as long as initial and final states are the same",
+      "explanation": "Hess's Law is a consequence of enthalpy being a state function, so the overall ΔH depends only on initial and final states, not the pathway.",
+      "topic": "Thermochemistry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The standard enthalpy of formation of an element in its most stable form under standard conditions is:",
+      "options": ["+1 kJ/mol", "Undefined", "Zero", "Equal to its heat of combustion"],
+      "correct_answer": "Zero",
+      "explanation": "By convention, elements in their standard states are assigned a standard enthalpy of formation of zero, serving as the reference point.",
+      "topic": "Thermochemistry",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A 50.0 g sample of water absorbs 2090 J of heat, raising its temperature. Using c = 4.18 J/g°C, the temperature rise is approximately:",
+      "options": ["10.0°C", "5.0°C", "20.0°C", "1.0°C"],
+      "correct_answer": "10.0°C",
+      "explanation": "ΔT = q/(mc) = 2090/(50.0 × 4.18) = 2090/209 = 10.0°C.",
+      "topic": "Thermochemistry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a reaction A + B → C + D, if the sum of bond energies broken (reactants) exceeds the sum of bond energies formed (products), the reaction is:",
+      "options": ["Exothermic", "Endothermic", "At equilibrium", "Non-spontaneous under all conditions"],
+      "correct_answer": "Endothermic",
+      "explanation": "If more energy is required to break bonds than is released forming new ones, the reaction absorbs net energy and is endothermic.",
+      "topic": "Thermochemistry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A calorimeter is primarily used to measure:",
+      "options": ["The rate of a chemical reaction", "The pH of a solution", "Heat changes accompanying a chemical or physical process", "The concentration of ions in solution"],
+      "correct_answer": "Heat changes accompanying a chemical or physical process",
+      "explanation": "Calorimetry measures the heat absorbed or released, allowing calculation of enthalpy changes.",
+      "topic": "Thermochemistry",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which statement correctly relates internal energy (ΔU) and enthalpy (ΔH) at constant pressure for a reaction involving gases?",
+      "options": ["ΔH = ΔU always, regardless of gas moles", "ΔH = ΔU + Δ(PV), which equals ΔU + ΔnRT for ideal gases", "ΔH is always smaller than ΔU", "ΔU has no relation to ΔH"],
+      "correct_answer": "ΔH = ΔU + Δ(PV), which equals ΔU + ΔnRT for ideal gases",
+      "explanation": "By definition H = U + PV, so at constant pressure and temperature, ΔH = ΔU + Δn(gas)RT for ideal gases.",
+      "topic": "Thermochemistry",
+      "difficulty": "hard"
+    },
+    {
+      "question": "According to Le Chatelier's principle, increasing the pressure on the equilibrium N2(g) + 3H2(g) ⇌ 2NH3(g) will shift the equilibrium:",
+      "options": ["Towards the reactants", "Towards the products, since there are fewer moles of gas on that side", "No shift occurs", "Towards products only if a catalyst is present"],
+      "correct_answer": "Towards the products, since there are fewer moles of gas on that side",
+      "explanation": "Increasing pressure shifts equilibrium toward the side with fewer gas moles; the product side has 2 moles versus 4 moles of reactants.",
+      "topic": "Chemical equilibrium",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For an exothermic reaction at equilibrium, increasing the temperature will:",
+      "options": ["Shift equilibrium towards products, increasing Keq", "Shift equilibrium towards reactants, decreasing Keq", "Have no effect on the position of equilibrium", "Only affect the rate, not the equilibrium position"],
+      "correct_answer": "Shift equilibrium towards reactants, decreasing Keq",
+      "explanation": "Raising temperature favors the endothermic (reverse) direction for an exothermic reaction, shifting equilibrium back toward reactants and lowering Keq.",
+      "topic": "Chemical equilibrium",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For the reaction 2SO2(g) + O2(g) ⇌ 2SO3(g), the equilibrium constant expression Kc is:",
+      "options": [
+        "Kc = [SO3]²/([SO2]²[O2])",
+        "Kc = [SO2]²[O2]/[SO3]²",
+        "Kc = [SO3]/([SO2][O2])",
+        "Kc = [SO2][O2]/[SO3]"
+      ],
+      "correct_answer": "Kc = [SO3]²/([SO2]²[O2])",
+      "explanation": "Kc is written as products over reactants, each raised to the power of its stoichiometric coefficient.",
+      "topic": "Chemical equilibrium",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The relationship between Kp and Kc for a gas-phase reaction is given by:",
+      "options": ["Kp = Kc", "Kp = Kc(RT)^Δn", "Kp = Kc/RT", "Kp = Kc + Δn"],
+      "correct_answer": "Kp = Kc(RT)^Δn",
+      "explanation": "Kp = Kc(RT)^Δn, where Δn is the change in moles of gas (moles of gaseous products minus moles of gaseous reactants).",
+      "topic": "Chemical equilibrium",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Adding a catalyst to a reversible reaction at equilibrium:",
+      "options": [
+        "Shifts the equilibrium towards products",
+        "Shifts the equilibrium towards reactants",
+        "Has no effect on the position of equilibrium, only speeds up attainment of equilibrium",
+        "Increases the value of Keq"
+      ],
+      "correct_answer": "Has no effect on the position of equilibrium, only speeds up attainment of equilibrium",
+      "explanation": "A catalyst lowers the activation energy for both forward and reverse reactions equally, so it speeds up reaching equilibrium without changing its position or Keq.",
+      "topic": "Chemical equilibrium",
+      "difficulty": "medium"
+    },
+    {
+      "question": "If the reaction quotient Q is greater than Keq, the reaction will proceed:",
+      "options": ["In the forward direction to form more products", "In the reverse direction to form more reactants", "Not at all, it is already at equilibrium", "In both directions simultaneously at equal rates"],
+      "correct_answer": "In the reverse direction to form more reactants",
+      "explanation": "When Q > K, there is too much product relative to equilibrium, so the reaction shifts in reverse to restore equilibrium.",
+      "topic": "Chemical equilibrium",
+      "difficulty": "medium"
+    },
+    {
+      "question": "According to the Bronsted-Lowry theory, an acid is defined as a species that:",
+      "options": ["Accepts electron pairs", "Donates a proton (H+)", "Donates electron pairs", "Accepts a proton (H+)"],
+      "correct_answer": "Donates a proton (H+)",
+      "explanation": "Bronsted-Lowry acids are proton donors, while Bronsted-Lowry bases are proton acceptors.",
+      "topic": "Acid-base theory",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In the reaction NH3 + H2O ⇌ NH4+ + OH-, the conjugate acid-base pair is:",
+      "options": ["NH3 and OH-", "NH3 and NH4+", "H2O and NH4+", "NH4+ and OH-"],
+      "correct_answer": "NH3 and NH4+",
+      "explanation": "NH3 gains a proton to become NH4+, making NH3/NH4+ a conjugate acid-base pair; similarly H2O/OH- is the other pair.",
+      "topic": "Acid-base theory",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the pH of a solution with [H+] = 1.0 × 10⁻³ mol/dm³?",
+      "options": ["3", "11", "-3", "10"],
+      "correct_answer": "3",
+      "explanation": "pH = -log[H+] = -log(1.0 × 10⁻³) = 3.",
+      "topic": "Acid-base theory",
+      "difficulty": "easy"
+    },
+    {
+      "question": "If a solution has a pH of 4, its pOH is:",
+      "options": ["4", "10", "14", "0"],
+      "correct_answer": "10",
+      "explanation": "At 25°C, pH + pOH = 14, so pOH = 14 - 4 = 10.",
+      "topic": "Acid-base theory",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which of the following best distinguishes a strong acid from a weak acid?",
+      "options": [
+        "Strong acids have a lower molar mass than weak acids",
+        "Strong acids ionize completely in water while weak acids ionize only partially",
+        "Strong acids always have higher concentration than weak acids",
+        "Strong acids do not conduct electricity in solution"
+      ],
+      "correct_answer": "Strong acids ionize completely in water while weak acids ionize only partially",
+      "explanation": "Strength refers to the degree of ionization: strong acids dissociate fully, weak acids establish an equilibrium with only partial dissociation.",
+      "topic": "Acid-base theory",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A buffer solution is best described as a mixture that:",
+      "options": [
+        "Has a pH of exactly 7 at all times",
+        "Resists changes in pH upon addition of small amounts of acid or base",
+        "Consists only of a strong acid and strong base",
+        "Cannot be prepared from a weak acid and its conjugate base"
+      ],
+      "correct_answer": "Resists changes in pH upon addition of small amounts of acid or base",
+      "explanation": "A buffer, typically a weak acid with its conjugate base (or weak base with its conjugate acid), maintains a relatively stable pH when small amounts of acid or base are added.",
+      "topic": "Acid-base theory",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the pH of a 0.01 mol/dm³ solution of HCl, a strong acid?",
+      "options": ["1", "2", "12", "0.01"],
+      "correct_answer": "2",
+      "explanation": "HCl ionizes completely, so [H+] = 0.01 = 1.0 × 10⁻², giving pH = -log(1.0 × 10⁻²) = 2.",
+      "topic": "Acid-base theory",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the reaction Zn + Cu²⁺ → Zn²⁺ + Cu, the oxidation number of zinc changes from:",
+      "options": ["0 to +2 (oxidation)", "+2 to 0 (reduction)", "0 to -2 (reduction)", "+2 to +2 (no change)"],
+      "correct_answer": "0 to +2 (oxidation)",
+      "explanation": "Zinc metal (oxidation state 0) loses two electrons to form Zn²⁺, an increase in oxidation number, which is oxidation.",
+      "topic": "Redox and electrochemistry",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In a redox reaction, the oxidizing agent is the species that:",
+      "options": ["Is itself oxidized", "Is itself reduced, gaining electrons", "Remains unchanged throughout the reaction", "Always contains only hydrogen and oxygen"],
+      "correct_answer": "Is itself reduced, gaining electrons",
+      "explanation": "The oxidizing agent causes oxidation in another species by accepting electrons, and is itself reduced in the process.",
+      "topic": "Redox and electrochemistry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a galvanic (voltaic) cell, oxidation occurs at the:",
+      "options": ["Cathode", "Anode", "Salt bridge", "External wire only"],
+      "correct_answer": "Anode",
+      "explanation": "By convention, oxidation always occurs at the anode and reduction at the cathode, in both galvanic and electrolytic cells.",
+      "topic": "Redox and electrochemistry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A species with a more positive standard reduction potential compared to another is:",
+      "options": ["A weaker oxidizing agent", "A stronger oxidizing agent", "Always a stronger reducing agent", "Not comparable without knowing concentration"],
+      "correct_answer": "A stronger oxidizing agent",
+      "explanation": "A higher (more positive) standard reduction potential indicates a greater tendency to be reduced, i.e., a stronger oxidizing agent.",
+      "topic": "Redox and electrochemistry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Given E°(Cu²⁺/Cu) = +0.34 V and E°(Zn²⁺/Zn) = -0.76 V, the standard cell EMF for the Daniell cell (Zn anode, Cu cathode) is:",
+      "options": ["-0.42 V", "1.10 V", "0.42 V", "-1.10 V"],
+      "correct_answer": "1.10 V",
+      "explanation": "E°cell = E°cathode - E°anode = 0.34 - (-0.76) = 1.10 V.",
+      "topic": "Redox and electrochemistry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In electrolysis, the amount of substance deposited at an electrode is, according to Faraday's first law, directly proportional to:",
+      "options": ["The temperature of the electrolyte", "The quantity of electricity (charge) passed through the electrolyte", "The volume of the electrolyte solution", "The distance between the electrodes"],
+      "correct_answer": "The quantity of electricity (charge) passed through the electrolyte",
+      "explanation": "Faraday's first law of electrolysis states that the mass of substance liberated at an electrode is directly proportional to the quantity of electricity passed.",
+      "topic": "Redox and electrochemistry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The function of a salt bridge in a galvanic cell is to:",
+      "options": [
+        "Increase the voltage produced by the cell",
+        "Maintain electrical neutrality by allowing ion flow between the two half-cells",
+        "Act as the external circuit connecting the electrodes",
+        "Prevent any current from flowing in the cell"
+      ],
+      "correct_answer": "Maintain electrical neutrality by allowing ion flow between the two half-cells",
+      "explanation": "The salt bridge allows ions to migrate between half-cells to balance charge as electrons flow through the external circuit, completing the circuit and maintaining neutrality.",
+      "topic": "Redox and electrochemistry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The rate of a chemical reaction is best defined as:",
+      "options": [
+        "The time taken for the reaction to reach equilibrium",
+        "The change in concentration of a reactant or product per unit time",
+        "The total energy released by the reaction",
+        "The number of collisions between reactant molecules"
+      ],
+      "correct_answer": "The change in concentration of a reactant or product per unit time",
+      "explanation": "Reaction rate is defined as the rate of change of concentration of a reactant (decreasing) or product (increasing) with time.",
+      "topic": "Reaction kinetics",
+      "difficulty": "easy"
+    },
+    {
+      "question": "For a reaction with rate law Rate = k[A]²[B], the overall order of the reaction is:",
+      "options": ["1", "2", "3", "0"],
+      "correct_answer": "3",
+      "explanation": "The overall order is the sum of the exponents in the rate law: 2 (for A) + 1 (for B) = 3.",
+      "topic": "Reaction kinetics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "According to collision theory, increasing temperature increases the rate of reaction mainly because:",
+      "options": [
+        "It decreases the activation energy of the reaction",
+        "It increases the fraction of molecules with energy equal to or greater than the activation energy",
+        "It increases the volume of the reaction vessel",
+        "It converts reactants directly into products without collisions"
+      ],
+      "correct_answer": "It increases the fraction of molecules with energy equal to or greater than the activation energy",
+      "explanation": "Higher temperature raises average kinetic energy, increasing the proportion of molecules with sufficient energy to overcome the activation energy barrier, and also increases collision frequency.",
+      "topic": "Reaction kinetics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A catalyst increases the rate of a reaction by:",
+      "options": [
+        "Increasing the temperature of the reactants",
+        "Providing an alternative pathway with lower activation energy",
+        "Increasing the concentration of reactants",
+        "Shifting the equilibrium position towards products"
+      ],
+      "correct_answer": "Providing an alternative pathway with lower activation energy",
+      "explanation": "Catalysts speed up reactions by offering a reaction pathway with a lower activation energy, without being consumed in the process.",
+      "topic": "Reaction kinetics",
+      "difficulty": "easy"
+    },
+    {
+      "question": "For a first-order reaction, the half-life is:",
+      "options": [
+        "Dependent on the initial concentration of reactant",
+        "Independent of the initial concentration of reactant",
+        "Always equal to the rate constant k",
+        "Only defined for zero-order reactions"
+      ],
+      "correct_answer": "Independent of the initial concentration of reactant",
+      "explanation": "For a first-order reaction, t½ = 0.693/k, a constant that does not depend on the starting concentration.",
+      "topic": "Reaction kinetics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In an experiment, doubling the concentration of reactant A while keeping B constant quadruples the rate. The order of reaction with respect to A is:",
+      "options": ["0", "1", "2", "4"],
+      "correct_answer": "2",
+      "explanation": "Since rate is proportional to [A]ⁿ, and doubling [A] gives a 4-fold (2²) increase in rate, n = 2.",
+      "topic": "Reaction kinetics",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In a reaction energy profile diagram, the activation energy is represented as the difference between the energy of the reactants and the energy of:",
+      "options": ["The products", "The transition state (activated complex)", "The surroundings", "The catalyst"],
+      "correct_answer": "The transition state (activated complex)",
+      "explanation": "Activation energy is the energy barrier between reactants and the high-energy transition state that must be overcome for the reaction to proceed.",
+      "topic": "Reaction kinetics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The molarity of a solution prepared by dissolving 4.0 g of NaOH (molar mass 40 g/mol) in enough water to make 500 cm³ of solution is:",
+      "options": ["0.1 mol/dm³", "0.2 mol/dm³", "0.5 mol/dm³", "2.0 mol/dm³"],
+      "correct_answer": "0.2 mol/dm³",
+      "explanation": "Moles = 4.0/40 = 0.1 mol; Molarity = moles/volume(dm³) = 0.1/0.5 = 0.2 mol/dm³.",
+      "topic": "Solutions and colligative properties",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Molality of a solution is defined as:",
+      "options": [
+        "Moles of solute per litre of solution",
+        "Moles of solute per kilogram of solvent",
+        "Grams of solute per litre of solvent",
+        "Moles of solute per mole of solvent"
+      ],
+      "correct_answer": "Moles of solute per kilogram of solvent",
+      "explanation": "Molality (m) is defined as moles of solute divided by the mass of solvent in kilograms, and unlike molarity, is independent of temperature.",
+      "topic": "Solutions and colligative properties",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Raoult's Law states that the vapour pressure of a solvent above a solution is:",
+      "options": [
+        "Independent of the solute concentration",
+        "Proportional to the mole fraction of the solvent in the solution",
+        "Proportional to the mole fraction of the solute only",
+        "Always equal to the vapour pressure of the pure solvent"
+      ],
+      "correct_answer": "Proportional to the mole fraction of the solvent in the solution",
+      "explanation": "Raoult's Law: P(solution) = X(solvent) × P°(pure solvent), meaning vapour pressure lowering is proportional to solute mole fraction.",
+      "topic": "Solutions and colligative properties",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Boiling point elevation (ΔTb) of a solution is calculated using the formula:",
+      "options": ["ΔTb = Kb × m", "ΔTb = Kb/m", "ΔTb = Kb + m", "ΔTb = Kb × V"],
+      "correct_answer": "ΔTb = Kb × m",
+      "explanation": "Boiling point elevation is a colligative property calculated as the ebullioscopic constant (Kb) multiplied by the molality (m) of the solution (and by the van't Hoff factor for electrolytes).",
+      "topic": "Solutions and colligative properties",
+      "difficulty": "medium"
+    },
+    {
+      "question": "When a solute is dissolved in a solvent, the freezing point of the resulting solution, compared to the pure solvent, is:",
+      "options": ["Higher", "Lower", "Unchanged", "Equal to the boiling point"],
+      "correct_answer": "Lower",
+      "explanation": "Freezing point depression occurs because the solute disrupts the solvent's ability to form its ordered solid lattice, lowering the freezing point.",
+      "topic": "Solutions and colligative properties",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Osmotic pressure (π) of an ideal dilute solution is given by the formula:",
+      "options": ["π = MRT", "π = M/RT", "π = M + RT", "π = MR/T"],
+      "correct_answer": "π = MRT",
+      "explanation": "Osmotic pressure follows an equation analogous to the ideal gas law: π = MRT, where M is molarity, R is the gas constant, and T is absolute temperature.",
+      "topic": "Solutions and colligative properties",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Colligative properties of a solution depend primarily on:",
+      "options": [
+        "The chemical identity of the solute",
+        "The number of solute particles present in the solution, not their identity",
+        "The color of the solute",
+        "The molar mass of the solvent only"
+      ],
+      "correct_answer": "The number of solute particles present in the solution, not their identity",
+      "explanation": "Colligative properties (boiling point elevation, freezing point depression, vapour pressure lowering, osmotic pressure) depend on the number of dissolved particles, which is why the van't Hoff factor matters for electrolytes.",
+      "topic": "Solutions and colligative properties",
+      "difficulty": "medium"
+    },
+    {
+      "question": "According to the ideal gas equation PV = nRT, if the temperature and number of moles of a gas remain constant, doubling the pressure will:",
+      "options": ["Double the volume", "Halve the volume", "Leave the volume unchanged", "Quadruple the volume"],
+      "correct_answer": "Halve the volume",
+      "explanation": "At constant n and T, PV = constant (Boyle's Law), so doubling P halves V.",
+      "topic": "Gas laws",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Real gases deviate from ideal gas behaviour mainly because ideal gas assumptions ignore:",
+      "options": [
+        "The existence of intermolecular forces and the finite volume of gas molecules",
+        "The temperature of the gas",
+        "The number of moles of gas present",
+        "The identity of the container material"
+      ],
+      "correct_answer": "The existence of intermolecular forces and the finite volume of gas molecules",
+      "explanation": "The van der Waals equation corrects the ideal gas law for intermolecular attractions and the finite volume occupied by gas molecules, both ignored in the ideal gas model.",
+      "topic": "Gas laws",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Dalton's Law of Partial Pressures states that the total pressure of a mixture of non-reacting gases is:",
+      "options": [
+        "Equal to the pressure of the gas present in the largest amount",
+        "The sum of the partial pressures of each individual gas",
+        "The average of the partial pressures of each gas",
+        "Independent of the individual gas pressures"
+      ],
+      "correct_answer": "The sum of the partial pressures of each individual gas",
+      "explanation": "Dalton's Law states that the total pressure exerted by a mixture of gases equals the sum of the partial pressures each gas would exert alone.",
+      "topic": "Gas laws",
+      "difficulty": "easy"
+    },
+    {
+      "question": "According to Graham's Law of effusion, a lighter gas will effuse through a small opening:",
+      "options": [
+        "More slowly than a heavier gas",
+        "Faster than a heavier gas, at a rate inversely proportional to the square root of its molar mass",
+        "At the same rate as any other gas",
+        "Only if the temperature is very low"
+      ],
+      "correct_answer": "Faster than a heavier gas, at a rate inversely proportional to the square root of its molar mass",
+      "explanation": "Graham's Law: rate of effusion ∝ 1/√M, so lighter gases (lower molar mass) effuse faster than heavier ones.",
+      "topic": "Gas laws",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which of the following is an example of a covalent (network) crystalline solid?",
+      "options": ["Sodium chloride", "Diamond", "Solid carbon dioxide (dry ice)", "Copper metal"],
+      "correct_answer": "Diamond",
+      "explanation": "Diamond is a covalent network solid where each carbon atom is covalently bonded to four others in a rigid three-dimensional lattice, giving it extreme hardness and a very high melting point.",
+      "topic": "Solid state",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A unit cell is best described as:",
+      "options": [
+        "The smallest repeating unit that shows the full symmetry of a crystal lattice",
+        "A single atom within a crystal",
+        "The total volume of a crystalline solid",
+        "A defect within a crystal structure"
+      ],
+      "correct_answer": "The smallest repeating unit that shows the full symmetry of a crystal lattice",
+      "explanation": "The unit cell is the basic repeating structural unit of a crystal lattice, which when repeated in three dimensions generates the entire crystal structure.",
+      "topic": "Solid state",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Lattice energy of an ionic solid generally increases with:",
+      "options": [
+        "Increasing ionic radius and decreasing ionic charge",
+        "Decreasing ionic radius and increasing ionic charge",
+        "Increasing temperature only",
+        "Decreasing electronegativity difference between ions"
+      ],
+      "correct_answer": "Decreasing ionic radius and increasing ionic charge",
+      "explanation": "Lattice energy is inversely related to the distance between ions (smaller ionic radius means stronger attraction) and directly related to the product of ionic charges.",
+      "topic": "Solid state",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A colloid differs from a true solution mainly in that colloidal particles are:",
+      "options": [
+        "Smaller than particles in a true solution",
+        "Larger than in a true solution but still small enough to remain suspended and not settle out readily",
+        "Always visible to the naked eye and settle out quickly",
+        "Identical in size to particles in a true solution"
+      ],
+      "correct_answer": "Larger than in a true solution but still small enough to remain suspended and not settle out readily",
+      "explanation": "Colloidal particles (roughly 1-1000 nm) are larger than ions/molecules in true solutions but small enough that they do not settle under gravity, unlike suspensions.",
+      "topic": "Solid state",
+      "difficulty": "medium"
+    }
+  ]
+}

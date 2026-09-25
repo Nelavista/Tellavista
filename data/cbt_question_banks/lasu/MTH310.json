@@ -1,0 +1,256 @@
+{
+  "course_code": "MTH310",
+  "title": "Mathematical Methods II",
+  "level": "300",
+  "source_note": "Standard NUC-aligned Nigerian university 300L Mathematical Methods II curriculum: Fourier series and Fourier transforms, classification of second-order partial differential equations, the heat, wave, and Laplace equations solved by separation of variables, Sturm-Liouville theory, and an introduction to special functions (Legendre polynomials and Bessel functions) and orthogonal function expansions.",
+  "questions": [
+    {
+      "question": "A Fourier series represents a periodic function f(x) with period 2L as a sum of:",
+      "options": ["sine and cosine terms with frequencies that are integer multiples of the fundamental frequency", "only exponential terms", "a single polynomial", "random trigonometric terms"],
+      "correct_answer": "sine and cosine terms with frequencies that are integer multiples of the fundamental frequency",
+      "explanation": "A Fourier series expresses a periodic function as an infinite sum of sines and cosines (harmonics) of the fundamental frequency π/L.",
+      "topic": "Fourier series",
+      "difficulty": "easy"
+    },
+    {
+      "question": "For a function f(x) with period 2L, the Fourier coefficient a0 is computed as:",
+      "options": ["(1/L) ∫_{-L}^{L} f(x) dx", "(1/2L) ∫_{-L}^{L} f(x) dx", "∫_{-L}^{L} f(x) dx", "(1/L) ∫_{0}^{L} f(x) dx"],
+      "correct_answer": "(1/L) ∫_{-L}^{L} f(x) dx",
+      "explanation": "The standard Fourier coefficient formula gives a0 = (1/L)∫_{-L}^{L} f(x)dx, representing twice the average value of f over one period.",
+      "topic": "Fourier series",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Fourier coefficients an for n ≥ 1 are computed using the formula:",
+      "options": ["an = (1/L) ∫_{-L}^{L} f(x) cos(nπx/L) dx", "an = (1/L) ∫_{-L}^{L} f(x) sin(nπx/L) dx", "an = ∫_{-L}^{L} f(x) dx", "an = (1/L) ∫_{-L}^{L} f(x) dx"],
+      "correct_answer": "an = (1/L) ∫_{-L}^{L} f(x) cos(nπx/L) dx",
+      "explanation": "The cosine coefficients are found by projecting f onto cos(nπx/L) using the standard Fourier integral formula.",
+      "topic": "Fourier series",
+      "difficulty": "medium"
+    },
+    {
+      "question": "If f(x) is an odd function, its Fourier series on a symmetric interval contains only:",
+      "options": ["sine terms", "cosine terms", "the constant term only", "both sine and cosine terms equally"],
+      "correct_answer": "sine terms",
+      "explanation": "Since cosine is even and sine is odd, an odd function's Fourier expansion has all an = 0, leaving only the sine (bn) terms.",
+      "topic": "Fourier series",
+      "difficulty": "medium"
+    },
+    {
+      "question": "If f(x) is an even function, its Fourier series on a symmetric interval contains only:",
+      "options": ["cosine terms (and possibly a constant)", "sine terms only", "no terms at all", "an equal mix of sine and cosine"],
+      "correct_answer": "cosine terms (and possibly a constant)",
+      "explanation": "For an even function, all bn = 0 since sine is odd, leaving only the a0 and an cosine terms.",
+      "topic": "Fourier series",
+      "difficulty": "medium"
+    },
+    {
+      "question": "At a jump discontinuity x0, the Fourier series of f converges to:",
+      "options": ["the average of the left- and right-hand limits, [f(x0⁻) + f(x0⁺)]/2", "f(x0) exactly, even if discontinuous", "zero always", "the left-hand limit only"],
+      "correct_answer": "the average of the left- and right-hand limits, [f(x0⁻) + f(x0⁺)]/2",
+      "explanation": "By the Dirichlet convergence theorem, at a jump discontinuity the Fourier series converges to the midpoint of the left and right limits.",
+      "topic": "Fourier series",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A half-range Fourier sine series is used to represent a function defined on [0, L] by:",
+      "options": ["extending it as an odd function about x = 0 and periodically", "extending it as an even function", "restricting it to negative x only", "ignoring boundary conditions entirely"],
+      "correct_answer": "extending it as an odd function about x = 0 and periodically",
+      "explanation": "A half-range sine expansion treats f as though it were the restriction of an odd, 2L-periodic extension, yielding a pure sine series.",
+      "topic": "Fourier series",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The Fourier transform of a function f(t) is defined (in one common convention) as:",
+      "options": ["F(ω) = ∫_{-∞}^{∞} f(t) e^{-iωt} dt", "F(ω) = ∫_{0}^{∞} f(t) dt", "F(ω) = f(t) e^{iω}", "F(ω) = Σ f(nω)"],
+      "correct_answer": "F(ω) = ∫_{-∞}^{∞} f(t) e^{-iωt} dt",
+      "explanation": "This is the standard integral definition of the Fourier transform, converting a time-domain function into a frequency-domain representation.",
+      "topic": "Fourier transforms",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Fourier transform generalizes the Fourier series concept from periodic functions to:",
+      "options": ["non-periodic functions defined over the entire real line", "only discrete sequences", "functions defined on a finite interval only", "polynomials only"],
+      "correct_answer": "non-periodic functions defined over the entire real line",
+      "explanation": "While Fourier series decompose periodic functions into discrete harmonics, the Fourier transform decomposes general (non-periodic) functions into a continuous spectrum of frequencies.",
+      "topic": "Fourier transforms",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Fourier transform of the derivative f'(t), assuming f decays at infinity, satisfies:",
+      "options": ["F{f'(t)} = iω F(ω)", "F{f'(t)} = F(ω)", "F{f'(t)} = ω^2 F(ω)", "F{f'(t)} = -F(ω)"],
+      "correct_answer": "F{f'(t)} = iω F(ω)",
+      "explanation": "This is a key property of the Fourier transform: differentiation in the time domain corresponds to multiplication by iω in the frequency domain.",
+      "topic": "Fourier transforms",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The Convolution Theorem for Fourier transforms states that the Fourier transform of a convolution of two functions equals:",
+      "options": ["the product of their individual Fourier transforms", "the sum of their Fourier transforms", "the convolution of their transforms", "zero"],
+      "correct_answer": "the product of their individual Fourier transforms",
+      "explanation": "Convolution in the time/space domain corresponds to simple multiplication in the frequency domain, a central result used in signal processing and solving PDEs.",
+      "topic": "Fourier transforms",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A second-order linear PDE Auxx + Buxy + Cuyy + ... = 0 is classified as parabolic if:",
+      "options": ["B^2 - 4AC = 0", "B^2 - 4AC > 0", "B^2 - 4AC < 0", "A = B = C = 0"],
+      "correct_answer": "B^2 - 4AC = 0",
+      "explanation": "This discriminant condition B^2-4AC=0 classifies the PDE as parabolic, analogous to the discriminant test for conic sections; the heat equation is the classic example.",
+      "topic": "Classification of PDEs",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The one-dimensional heat equation ut = k uxx is classified as:",
+      "options": ["parabolic", "elliptic", "hyperbolic", "nonlinear"],
+      "correct_answer": "parabolic",
+      "explanation": "The heat/diffusion equation is the standard example of a parabolic PDE, describing irreversible diffusion processes.",
+      "topic": "The heat equation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The one-dimensional wave equation utt = c^2 uxx is classified as:",
+      "options": ["hyperbolic", "parabolic", "elliptic", "algebraic"],
+      "correct_answer": "hyperbolic",
+      "explanation": "The wave equation is the canonical hyperbolic PDE, modelling phenomena with finite-speed propagation such as vibrating strings.",
+      "topic": "The wave equation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Laplace's equation, uxx + uyy = 0, is classified as:",
+      "options": ["elliptic", "parabolic", "hyperbolic", "first-order"],
+      "correct_answer": "elliptic",
+      "explanation": "Laplace's equation is the standard elliptic PDE, describing steady-state (time-independent) phenomena such as electrostatic potential.",
+      "topic": "Laplace's equation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The method of separation of variables assumes a solution to a PDE u(x,t) can be written as:",
+      "options": ["u(x,t) = X(x)T(t), a product of single-variable functions", "u(x,t) = X(x) + T(t)", "u(x,t) = constant", "u(x,t) = X(t)T(x)^2"],
+      "correct_answer": "u(x,t) = X(x)T(t), a product of single-variable functions",
+      "explanation": "Separation of variables seeks solutions in product form, which reduces the PDE to a pair of ordinary differential equations linked by a separation constant.",
+      "topic": "Separation of variables",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Applying separation of variables to the heat equation ut = k uxx with u=XT leads to the relation:",
+      "options": ["T'/(kT) = X''/X = -λ (a constant)", "T' = X''", "X = T always", "the equation cannot be separated"],
+      "correct_answer": "T'/(kT) = X''/X = -λ (a constant)",
+      "explanation": "Separating variables gives an expression depending only on t equal to one depending only on x; since they're independent variables, both must equal a constant, conventionally written -λ.",
+      "topic": "Separation of variables",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In solving the heat equation on a finite rod with fixed-temperature (Dirichlet) boundary conditions u(0,t)=u(L,t)=0, the spatial eigenfunctions obtained are:",
+      "options": ["sin(nπx/L) for n = 1, 2, 3, ...", "cos(nπx/L) for all n", "e^{nx}", "polynomials of degree n"],
+      "correct_answer": "sin(nπx/L) for n = 1, 2, 3, ...",
+      "explanation": "Homogeneous Dirichlet boundary conditions force the spatial solutions to be sine functions satisfying X(0)=X(L)=0, giving eigenfunctions sin(nπx/L).",
+      "topic": "Boundary value problems",
+      "difficulty": "hard"
+    },
+    {
+      "question": "For Laplace's equation on a rectangle with given boundary values, the solution method typically combines:",
+      "options": ["separation of variables with a Fourier series expansion matching the boundary conditions", "only numerical integration", "the residue theorem", "Laplace transforms exclusively"],
+      "correct_answer": "separation of variables with a Fourier series expansion matching the boundary conditions",
+      "explanation": "Boundary value problems for Laplace's equation on rectangular domains are classically solved by separating variables and expanding the boundary data in a Fourier series to determine coefficients.",
+      "topic": "Boundary value problems",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A Sturm-Liouville problem has the standard form:",
+      "options": ["d/dx[p(x)y'] + [q(x) + λw(x)]y = 0, with boundary conditions", "y'' = 0 only", "y' = λy without boundary conditions", "a purely algebraic eigenvalue equation"],
+      "correct_answer": "d/dx[p(x)y'] + [q(x) + λw(x)]y = 0, with boundary conditions",
+      "explanation": "This is the standard Sturm-Liouville differential equation form, where λ is the eigenvalue parameter and w(x) is the weight function.",
+      "topic": "Sturm-Liouville theory",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The eigenvalues of a regular Sturm-Liouville problem are:",
+      "options": ["real and can be ordered as an increasing sequence", "always complex", "always negative", "finite in number only"],
+      "correct_answer": "real and can be ordered as an increasing sequence",
+      "explanation": "A key result of Sturm-Liouville theory is that eigenvalues are real and form an increasing, unbounded sequence λ1 < λ2 < λ3 < ...",
+      "topic": "Sturm-Liouville theory",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Eigenfunctions of a Sturm-Liouville problem corresponding to distinct eigenvalues are:",
+      "options": ["orthogonal with respect to the weight function w(x)", "always identical", "never differentiable", "linearly dependent"],
+      "correct_answer": "orthogonal with respect to the weight function w(x)",
+      "explanation": "A central result of Sturm-Liouville theory is the orthogonality of eigenfunctions belonging to different eigenvalues, under the inner product weighted by w(x).",
+      "topic": "Sturm-Liouville theory",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Legendre's differential equation (1-x^2)y'' - 2xy' + n(n+1)y = 0 arises naturally in problems with:",
+      "options": ["spherical symmetry (e.g. solving Laplace's equation in spherical coordinates)", "purely one-dimensional Cartesian problems", "discrete probability", "graph theory"],
+      "correct_answer": "spherical symmetry (e.g. solving Laplace's equation in spherical coordinates)",
+      "explanation": "Legendre's equation appears when separating variables for Laplace's equation in spherical coordinates, with solutions the Legendre polynomials Pn(cosθ).",
+      "topic": "Legendre polynomials",
+      "difficulty": "hard"
+    },
+    {
+      "question": "For nonnegative integer n, the solutions of Legendre's equation that are finite (polynomial) at x = ±1 are called:",
+      "options": ["Legendre polynomials Pn(x)", "Bessel functions", "Chebyshev polynomials", "Hermite polynomials"],
+      "correct_answer": "Legendre polynomials Pn(x)",
+      "explanation": "When n is a nonnegative integer, one solution of Legendre's equation reduces to a polynomial of degree n, called the Legendre polynomial Pn(x).",
+      "topic": "Legendre polynomials",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Legendre polynomials Pn(x) satisfy the orthogonality relation on [-1,1]:",
+      "options": ["∫_{-1}^{1} Pm(x)Pn(x) dx = 0 for m ≠ n", "∫_{-1}^{1} Pm(x)Pn(x) dx = 1 always", "Pn(x) = Pm(x) for all m, n", "Pn(x) is never orthogonal to Pm(x)"],
+      "correct_answer": "∫_{-1}^{1} Pm(x)Pn(x) dx = 0 for m ≠ n",
+      "explanation": "As eigenfunctions of a Sturm-Liouville problem, distinct Legendre polynomials are orthogonal on [-1,1] with weight function 1.",
+      "topic": "Legendre polynomials",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The first two Legendre polynomials are P0(x) = 1 and P1(x) =:",
+      "options": ["x", "1", "x^2", "2x"],
+      "correct_answer": "x",
+      "explanation": "By definition/normalization, P0(x)=1 and P1(x)=x are the first two Legendre polynomials.",
+      "topic": "Legendre polynomials",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Bessel's differential equation x^2y'' + xy' + (x^2 - n^2)y = 0 arises typically in problems with:",
+      "options": ["cylindrical symmetry", "purely spherical symmetry", "linear one-dimensional heat flow only", "discrete combinatorics"],
+      "correct_answer": "cylindrical symmetry",
+      "explanation": "Bessel's equation arises when separating variables for the Laplacian in cylindrical coordinates, with solutions Jn(x) called Bessel functions of the first kind.",
+      "topic": "Bessel functions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The solutions of Bessel's equation that remain finite at x = 0 (for integer order n) are called:",
+      "options": ["Bessel functions of the first kind, Jn(x)", "Bessel functions of the second kind, Yn(x)", "Legendre functions", "Hermite functions"],
+      "correct_answer": "Bessel functions of the first kind, Jn(x)",
+      "explanation": "Jn(x), the Bessel function of the first kind, is the solution that stays bounded at the origin; the second-kind solution Yn(x) diverges there.",
+      "topic": "Bessel functions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Bessel functions Jn(x) of different order n satisfy an orthogonality relation with respect to:",
+      "options": ["a weight function x, over an interval determined by the zeros of Jn", "no weight function at all", "the interval (-∞, ∞) with weight 1", "an exponential weight e^x"],
+      "correct_answer": "a weight function x, over an interval determined by the zeros of Jn",
+      "explanation": "Bessel functions form an orthogonal set (for fixed order, over different zeros) with respect to the weight x on a finite interval, arising from their Sturm-Liouville structure.",
+      "topic": "Bessel functions",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A set of functions {φn(x)} is called orthogonal on [a,b] with respect to weight w(x) if:",
+      "options": ["∫a^b w(x)φm(x)φn(x) dx = 0 for m ≠ n", "φn(x) = φm(x) for all n, m", "∫a^b φn(x) dx = 1", "φn(x) is a polynomial"],
+      "correct_answer": "∫a^b w(x)φm(x)φn(x) dx = 0 for m ≠ n",
+      "explanation": "This weighted integral vanishing for distinct indices is the defining condition of orthogonality for a function set.",
+      "topic": "Orthogonal function expansions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Expanding a function f(x) in terms of an orthogonal set {φn(x)} (a generalized Fourier series) computes the coefficients cn using:",
+      "options": ["cn = (∫ w f φn dx) / (∫ w φn^2 dx)", "cn = f(0)", "cn = ∫ f dx only", "cn is always 1"],
+      "correct_answer": "cn = (∫ w f φn dx) / (∫ w φn^2 dx)",
+      "explanation": "This generalized Fourier coefficient formula projects f onto each basis function φn, normalized by the squared norm of φn.",
+      "topic": "Orthogonal function expansions",
+      "difficulty": "hard"
+    }
+  ]
+}

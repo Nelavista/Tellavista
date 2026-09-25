@@ -1,0 +1,272 @@
+{
+  "course_code": "MTH418",
+  "title": "Advanced Algebra",
+  "level": "400",
+  "source_note": "Standard NUC-aligned Nigerian university 400L Advanced Algebra curriculum, building on the group theory foundation of MTH300 and the ring/field foundation of MTH306: group actions and Sylow theory beyond basic group axioms/subgroups/Lagrange, followed by ring theory (ideals, quotient rings, integral domains, PIDs/UFDs), polynomial rings, field extensions, finite fields, and an introduction to modules. Content deliberately avoids repeating MTH300's basic group-axiom material.",
+  "questions": [
+    {
+      "question": "A group action of a group G on a set X is a map G times X to X satisfying:",
+      "options": ["e times x = x for the identity e, and (gh) times x = g times (h times x) for all g,h in G, x in X", "g times x = x for all g", "Only closure is required", "g times x = e for all x"],
+      "correct_answer": "e times x = x for the identity e, and (gh) times x = g times (h times x) for all g,h in G, x in X",
+      "explanation": "These two axioms define a group action, generalizing how permutations or symmetries act on a set.",
+      "topic": "Group actions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The orbit of an element x under a group action of G is defined as:",
+      "options": ["{g times x : g in G}", "{x} only", "G itself", "The stabilizer of x"],
+      "correct_answer": "{g times x : g in G}",
+      "explanation": "The orbit collects all elements reachable from x under the action of every group element.",
+      "topic": "Group actions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The stabilizer of an element x under a group action is defined as:",
+      "options": ["{g in G : g times x = x}", "{g times x : g in G}", "G itself, always", "The empty set"],
+      "correct_answer": "{g in G : g times x = x}",
+      "explanation": "The stabilizer consists of exactly those group elements that fix x, and it forms a subgroup of G.",
+      "topic": "Group actions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Orbit-Stabilizer Theorem states that for a finite group G acting on a set X and x in X:",
+      "options": ["|G| = |orbit of x| times |stabilizer of x|", "|G| = |orbit of x| + |stabilizer of x|", "|orbit of x| = |G| always", "|stabilizer of x| = 1 always"],
+      "correct_answer": "|G| = |orbit of x| times |stabilizer of x|",
+      "explanation": "This theorem relates the size of a group to the sizes of an orbit and its corresponding stabilizer subgroup.",
+      "topic": "Orbit-Stabilizer theorem",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A group G acting on itself by conjugation partitions G into equivalence classes called:",
+      "options": ["Conjugacy classes", "Cosets", "Ideals", "Subrings"],
+      "correct_answer": "Conjugacy classes",
+      "explanation": "Conjugation is a group action of G on itself, and its orbits are precisely the conjugacy classes.",
+      "topic": "Conjugacy classes",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The center Z(G) of a group G, consisting of elements commuting with every element of G, is:",
+      "options": ["A normal subgroup of G", "Never a subgroup", "Equal to G only if G is trivial", "Always empty"],
+      "correct_answer": "A normal subgroup of G",
+      "explanation": "The center is always a normal subgroup, since conjugating a central element by any group element leaves it unchanged.",
+      "topic": "Conjugacy classes",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For a prime p, a Sylow p-subgroup of a finite group G is defined as:",
+      "options": ["A subgroup of order p^n, where p^n is the highest power of p dividing |G|", "Any subgroup whose order is a multiple of p", "The whole group G", "A subgroup of index p"],
+      "correct_answer": "A subgroup of order p^n, where p^n is the highest power of p dividing |G|",
+      "explanation": "Sylow p-subgroups are maximal p-subgroups of G, with order exactly the largest power of p dividing |G|.",
+      "topic": "Sylow theorems",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Sylow's First Theorem guarantees that for a finite group G and prime p dividing |G|:",
+      "options": ["At least one Sylow p-subgroup exists", "Every subgroup is a Sylow subgroup", "No Sylow subgroups exist", "G must be abelian"],
+      "correct_answer": "At least one Sylow p-subgroup exists",
+      "explanation": "This existence theorem is the starting point of Sylow theory, guaranteeing subgroups of the maximal prime-power order.",
+      "topic": "Sylow theorems",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Sylow's Third Theorem states that the number of Sylow p-subgroups, n_p, satisfies:",
+      "options": ["n_p is congruent to 1 modulo p, and n_p divides |G|/p^n", "n_p is always 1", "n_p equals |G|", "n_p never divides |G|"],
+      "correct_answer": "n_p is congruent to 1 modulo p, and n_p divides |G|/p^n",
+      "explanation": "This congruence and divisibility condition strongly constrains the possible number of Sylow p-subgroups.",
+      "topic": "Sylow theorems",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A group is called simple if:",
+      "options": ["Its only normal subgroups are the trivial subgroup and the group itself", "It has exactly two subgroups", "It is abelian", "It has prime order only"],
+      "correct_answer": "Its only normal subgroups are the trivial subgroup and the group itself",
+      "explanation": "Simple groups are the building blocks of finite group theory, analogous to prime numbers in arithmetic.",
+      "topic": "Simple groups",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A composition series of a group G is a chain of subgroups where each is a normal subgroup of the next, and each successive quotient is:",
+      "options": ["A simple group", "Trivial", "Always cyclic of prime order", "Isomorphic to G"],
+      "correct_answer": "A simple group",
+      "explanation": "The composition factors (successive quotients) of a composition series are simple groups, and by the Jordan-Holder theorem this list is essentially unique.",
+      "topic": "Composition series",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The external direct product G times H of two groups G and H, with componentwise operation, has order:",
+      "options": ["|G| times |H|", "|G| + |H|", "max(|G|,|H|)", "|G| only"],
+      "correct_answer": "|G| times |H|",
+      "explanation": "Each element of the direct product is an ordered pair, so the total count is the product of the individual group orders.",
+      "topic": "Direct products",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A ring (R, +, times) is an algebraic structure in which (R, +) is an abelian group and multiplication is:",
+      "options": ["Associative and distributes over addition", "Commutative only, with no other requirement", "Always invertible", "Left undefined"],
+      "correct_answer": "Associative and distributes over addition",
+      "explanation": "These are the minimal axioms required of multiplication in a ring, beyond the additive abelian group structure.",
+      "topic": "Ring theory basics",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A commutative ring with unity that has no zero divisors is called:",
+      "options": ["An integral domain", "A field", "A group", "An ideal"],
+      "correct_answer": "An integral domain",
+      "explanation": "Integral domains generalize the arithmetic of the integers, where the product of two nonzero elements is never zero.",
+      "topic": "Integral domains",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A field is a commutative ring with unity in which:",
+      "options": ["Every nonzero element has a multiplicative inverse", "Every element is zero", "There are zero divisors", "Addition is not commutative"],
+      "correct_answer": "Every nonzero element has a multiplicative inverse",
+      "explanation": "This invertibility condition on all nonzero elements is what distinguishes a field from a general ring or integral domain.",
+      "topic": "Fields",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Every field is automatically:",
+      "options": ["An integral domain", "Not an integral domain", "A group under multiplication including zero", "Finite"],
+      "correct_answer": "An integral domain",
+      "explanation": "Since every nonzero element of a field is invertible, a product of nonzero elements cannot be zero, satisfying the integral domain property.",
+      "topic": "Fields",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A subset I of a ring R is called an ideal if:",
+      "options": ["I is an additive subgroup of R, and rI is contained in I and Ir is contained in I for all r in R", "I is any subring of R", "I contains only 0", "I equals R"],
+      "correct_answer": "I is an additive subgroup of R, and rI is contained in I and Ir is contained in I for all r in R",
+      "explanation": "An ideal must absorb multiplication by any ring element, a stronger condition than just being a subring.",
+      "topic": "Ideals",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The quotient ring R/I, for an ideal I of R, consists of:",
+      "options": ["Cosets r + I with addition and multiplication induced from R", "Only elements of I", "Only elements not in I", "The set I itself"],
+      "correct_answer": "Cosets r + I with addition and multiplication induced from R",
+      "explanation": "The ideal property ensures that multiplication of cosets is well defined, making R/I a ring in its own right.",
+      "topic": "Quotient rings",
+      "difficulty": "medium"
+    },
+    {
+      "question": "An ideal M of a ring R is called maximal if:",
+      "options": ["M is not equal to R, and there is no ideal strictly between M and R", "M is the zero ideal", "M equals R", "M has exactly one element"],
+      "correct_answer": "M is not equal to R, and there is no ideal strictly between M and R",
+      "explanation": "Maximal ideals are the largest proper ideals possible, with no other ideal fitting strictly between them and the whole ring.",
+      "topic": "Maximal and prime ideals",
+      "difficulty": "hard"
+    },
+    {
+      "question": "If M is a maximal ideal of a commutative ring R with unity, then the quotient ring R/M is:",
+      "options": ["A field", "Never a field", "A zero ring", "An integral domain but never a field"],
+      "correct_answer": "A field",
+      "explanation": "Maximality of M is exactly the condition needed for R/M to have every nonzero element invertible.",
+      "topic": "Maximal and prime ideals",
+      "difficulty": "hard"
+    },
+    {
+      "question": "An ideal P of a commutative ring R is called prime if P is not equal to R and whenever the product ab lies in P:",
+      "options": ["Either a is in P or b is in P", "Both a and b must be in P", "Neither a nor b is in P", "a must equal b"],
+      "correct_answer": "Either a is in P or b is in P",
+      "explanation": "This condition generalizes the notion of a prime number's defining property to ideals of a general ring.",
+      "topic": "Maximal and prime ideals",
+      "difficulty": "hard"
+    },
+    {
+      "question": "If P is a prime ideal of a commutative ring R with unity, then R/P is:",
+      "options": ["An integral domain", "Always a field", "Never an integral domain", "The zero ring"],
+      "correct_answer": "An integral domain",
+      "explanation": "Primality of P exactly corresponds to R/P having no zero divisors, i.e. being an integral domain.",
+      "topic": "Maximal and prime ideals",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A ring homomorphism phi: R to S is a map that preserves:",
+      "options": ["Both addition and multiplication", "Only addition", "Only multiplication", "Neither operation"],
+      "correct_answer": "Both addition and multiplication",
+      "explanation": "A ring homomorphism must respect both of the ring's operations to be a structure-preserving map.",
+      "topic": "Ring homomorphisms",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The kernel of a ring homomorphism phi: R to S is always:",
+      "options": ["An ideal of R", "A subring of S", "The empty set", "Equal to R"],
+      "correct_answer": "An ideal of R",
+      "explanation": "The kernel absorbs multiplication by elements of R, satisfying the defining property of an ideal, and R/ker(phi) is isomorphic to the image of phi.",
+      "topic": "Ring homomorphisms",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A principal ideal domain (PID) is an integral domain in which:",
+      "options": ["Every ideal is generated by a single element", "Every ideal has infinitely many generators", "There are no ideals at all", "Every element is a unit"],
+      "correct_answer": "Every ideal is generated by a single element",
+      "explanation": "PIDs are integral domains with the strong structural property that all their ideals are principal, i.e. generated by one element.",
+      "topic": "PIDs and UFDs",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A unique factorization domain (UFD) is an integral domain in which every nonzero non-unit element:",
+      "options": ["Can be written as a product of irreducibles, uniquely up to order and units", "Cannot be factored at all", "Is itself irreducible", "Is a unit"],
+      "correct_answer": "Can be written as a product of irreducibles, uniquely up to order and units",
+      "explanation": "This generalizes the Fundamental Theorem of Arithmetic (unique prime factorization of integers) to a broader class of rings.",
+      "topic": "PIDs and UFDs",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The ring of polynomials F[x] over a field F is an example of a:",
+      "options": ["Principal ideal domain", "Field", "Finite ring", "Non-commutative ring"],
+      "correct_answer": "Principal ideal domain",
+      "explanation": "Because F[x] has a division algorithm, every ideal is generated by a single polynomial (the one of least degree in the ideal), making it a PID.",
+      "topic": "Polynomial rings",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A polynomial p(x) over a field F is called irreducible if:",
+      "options": ["It cannot be factored into a product of two polynomials of lower positive degree over F", "It has no roots in F", "It is always linear", "It has degree zero"],
+      "correct_answer": "It cannot be factored into a product of two polynomials of lower positive degree over F",
+      "explanation": "Irreducible polynomials play the role of primes within the polynomial ring, forming the basis of unique factorization there.",
+      "topic": "Polynomial rings",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A field extension K of a field F is called algebraic if every element of K:",
+      "options": ["Is a root of some nonzero polynomial with coefficients in F", "Is transcendental over F", "Equals an element of F", "Is irrational"],
+      "correct_answer": "Is a root of some nonzero polynomial with coefficients in F",
+      "explanation": "This is the defining property of an algebraic extension, contrasting with transcendental extensions.",
+      "topic": "Field extensions",
+      "difficulty": "hard"
+    },
+    {
+      "question": "An element that is not algebraic over a field F is called:",
+      "options": ["Transcendental over F", "Prime over F", "Maximal over F", "A unit of F"],
+      "correct_answer": "Transcendental over F",
+      "explanation": "Transcendental elements, such as pi over the rational numbers, satisfy no nonzero polynomial equation with coefficients in F.",
+      "topic": "Field extensions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The degree [K:F] of a field extension K over F is defined as:",
+      "options": ["The dimension of K as a vector space over F", "The number of elements in K", "The number of subfields of K", "Always 1"],
+      "correct_answer": "The dimension of K as a vector space over F",
+      "explanation": "Since K is naturally a vector space over F, its degree is defined as this vector space dimension.",
+      "topic": "Field extensions",
+      "difficulty": "hard"
+    },
+    {
+      "question": "For any prime p and positive integer n, there exists a unique (up to isomorphism) finite field with:",
+      "options": ["p^n elements", "p elements only", "n elements", "p+n elements"],
+      "correct_answer": "p^n elements",
+      "explanation": "This classification theorem for finite fields shows that every finite field has prime-power order and is essentially unique for that order.",
+      "topic": "Finite fields",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A module over a ring R generalizes the notion of a vector space by replacing the field of scalars with:",
+      "options": ["An arbitrary ring R", "A group", "A finite set", "Another module"],
+      "correct_answer": "An arbitrary ring R",
+      "explanation": "Modules extend the vector space concept by allowing scalars from any ring rather than requiring a field, giving up guaranteed properties like bases.",
+      "topic": "Modules",
+      "difficulty": "medium"
+    }
+  ]
+}

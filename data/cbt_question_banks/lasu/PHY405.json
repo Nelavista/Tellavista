@@ -1,0 +1,476 @@
+{
+  "course_code": "PHY405",
+  "title": "Plasma Physics",
+  "level": "400",
+  "source_note": "Standard NUC-aligned Nigerian university 400L introductory Plasma Physics curriculum: plasma definition and criteria (quasi-neutrality, Debye shielding, plasma frequency, plasma parameter), single-particle motion in E and B fields (gyration, drifts, magnetic mirrors), basic magnetohydrodynamics, and applications in fusion, astrophysics, and industry.",
+  "questions": [
+    {
+      "question": "Which of the following best defines a plasma?",
+      "options": [
+        "A quasi-neutral gas of charged and neutral particles that exhibits collective behaviour",
+        "Any gas that has been heated above room temperature",
+        "A liquid that conducts electricity due to dissolved ions",
+        "A solid lattice of ionized atoms held in fixed positions"
+      ],
+      "correct_answer": "A quasi-neutral gas of charged and neutral particles that exhibits collective behaviour",
+      "explanation": "A plasma is formally defined as a quasi-neutral gas of charged (and often neutral) particles that displays collective behaviour, meaning long-range electromagnetic forces dominate over binary collisions.",
+      "topic": "Plasma definition",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Why is plasma often called the 'fourth state of matter'?",
+      "options": [
+        "It is obtained by adding enough energy to a gas to ionize a significant fraction of its atoms, giving it distinct collective electromagnetic properties beyond solid, liquid, and gas",
+        "It only exists at absolute zero temperature",
+        "It has a fixed shape and volume like a solid",
+        "It cannot conduct electricity unlike ordinary gases"
+      ],
+      "correct_answer": "It is obtained by adding enough energy to a gas to ionize a significant fraction of its atoms, giving it distinct collective electromagnetic properties beyond solid, liquid, and gas",
+      "explanation": "Progressively heating a solid yields liquid, then gas, then plasma; the ionized gas has qualitatively different (electromagnetic, collective) behaviour, justifying its own state-of-matter classification.",
+      "topic": "Plasma as fourth state of matter",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is 'quasi-neutrality' in a plasma?",
+      "options": [
+        "Over length scales larger than the Debye length, the positive and negative charge densities are approximately equal",
+        "The plasma has exactly zero free electrons",
+        "The plasma alternates between positive and negative charge every second",
+        "The plasma has no magnetic field associated with it"
+      ],
+      "correct_answer": "Over length scales larger than the Debye length, the positive and negative charge densities are approximately equal",
+      "explanation": "Quasi-neutrality means that on scales larger than the Debye length the plasma appears electrically neutral overall, even though locally, on smaller scales, charge separation occurs.",
+      "topic": "Quasi-neutrality",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Debye length in a plasma represents:",
+      "options": [
+        "The characteristic distance over which the electric field of a charged particle is screened out by surrounding charges",
+        "The average distance between collisions of electrons with ions",
+        "The radius of gyration of an ion in a magnetic field",
+        "The distance light travels in one plasma oscillation period"
+      ],
+      "correct_answer": "The characteristic distance over which the electric field of a charged particle is screened out by surrounding charges",
+      "explanation": "The Debye length quantifies the distance over which mobile charges rearrange themselves to shield out (screen) the electric potential of a given charge, a process called Debye shielding.",
+      "topic": "Debye length and shielding",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which expression correctly gives the Debye length, λ_D, for an electron-dominated plasma (in terms of permittivity ε₀, electron temperature T_e in energy units, electron density n_e, and electron charge e)?",
+      "options": [
+        "λ_D = √(ε₀ T_e / (n_e e²))",
+        "λ_D = n_e e² / (ε₀ T_e)",
+        "λ_D = ε₀ n_e / (e² T_e)",
+        "λ_D = e² T_e / (ε₀ n_e)"
+      ],
+      "correct_answer": "λ_D = √(ε₀ T_e / (n_e e²))",
+      "explanation": "The standard Debye length formula is λ_D = √(ε₀ k_B T_e / (n_e e²)); it increases with temperature (more thermal motion resists shielding) and decreases with density (more charges available to shield).",
+      "topic": "Debye length and shielding",
+      "difficulty": "hard"
+    },
+    {
+      "question": "For a collection of ionized particles to be classified as a true plasma (not merely an ionized gas), which criterion must the physical size L of the system satisfy?",
+      "options": [
+        "L must be much larger than the Debye length, λ_D",
+        "L must be much smaller than the Debye length, λ_D",
+        "L must equal the mean free path exactly",
+        "L must be smaller than the electron radius"
+      ],
+      "correct_answer": "L must be much larger than the Debye length, λ_D",
+      "explanation": "One of the plasma criteria is L ≫ λ_D, ensuring that shielding effects occur well within the bulk of the system so quasi-neutrality holds overall.",
+      "topic": "Plasma criteria",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What does the 'plasma parameter' (number of particles in a Debye sphere), N_D, describe, and what value must it have for collective behaviour to dominate over individual collisions?",
+      "options": [
+        "N_D is the number of charged particles inside a sphere of radius one Debye length, and it must be much greater than 1",
+        "N_D is the number of neutral atoms in the plasma, and it must be zero",
+        "N_D is the ratio of ion mass to electron mass, and it must equal 1836",
+        "N_D is the number of magnetic field lines threading the plasma, and it must be less than 1"
+      ],
+      "correct_answer": "N_D is the number of charged particles inside a sphere of radius one Debye length, and it must be much greater than 1",
+      "explanation": "N_D ≫ 1 (the Debye sphere contains many particles) ensures that statistical, collective shielding is valid rather than the physics being dominated by discrete close encounters.",
+      "topic": "Plasma parameter",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The plasma (electron) frequency, ω_pe, physically represents:",
+      "options": [
+        "The natural frequency of oscillation of electrons when displaced from equilibrium and pulled back by the resulting electric field from the ions",
+        "The frequency at which ions collide with neutral atoms",
+        "The rotational frequency of the entire plasma column",
+        "The frequency of photons emitted during recombination"
+      ],
+      "correct_answer": "The natural frequency of oscillation of electrons when displaced from equilibrium and pulled back by the resulting electric field from the ions",
+      "explanation": "If electrons are displaced from the (heavier, nearly stationary) ion background, the restoring electrostatic force causes them to oscillate at the characteristic plasma frequency ω_pe = √(n_e e² / (ε₀ m_e)).",
+      "topic": "Plasma frequency",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For a plasma to behave as a plasma rather than a weakly ionized gas dominated by collisions, which relation between plasma frequency ω_pe and mean collision frequency ν_coll must hold?",
+      "options": [
+        "ω_pe τ > 1, i.e., ω_pe must be greater than the collision frequency ν_coll",
+        "ω_pe must be exactly equal to ν_coll",
+        "ω_pe must be much smaller than ν_coll",
+        "ω_pe has no relation to ν_coll"
+      ],
+      "correct_answer": "ω_pe τ > 1, i.e., ω_pe must be greater than the collision frequency ν_coll",
+      "explanation": "Collective plasma oscillations must complete before a collision randomizes particle motion, so ω_pe must exceed the collision frequency (equivalently ω_pe times the mean free time between collisions must exceed unity).",
+      "topic": "Plasma criteria",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Which of the following is NOT a natural or man-made location where plasma commonly occurs?",
+      "options": [
+        "A block of ice at -10°C",
+        "The interior and atmosphere of stars, including the Sun",
+        "The Earth's ionosphere",
+        "The interior of a fusion tokamak"
+      ],
+      "correct_answer": "A block of ice at -10°C",
+      "explanation": "Ice is an ordinary solid with no significant ionization; stars, the ionosphere, and tokamaks all contain ionized gas that satisfies plasma criteria.",
+      "topic": "Occurrence of plasma",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The characteristic glow of a neon sign is produced by:",
+      "options": [
+        "Excited neon atoms in a low-pressure gas discharge (plasma) emitting photons as electrons fall back to lower energy states",
+        "Combustion of neon gas with oxygen in the tube",
+        "Blackbody radiation from a heated filament only",
+        "Nuclear fission occurring within the gas"
+      ],
+      "correct_answer": "Excited neon atoms in a low-pressure gas discharge (plasma) emitting photons as electrons fall back to lower energy states",
+      "explanation": "An applied voltage ionizes the neon gas, creating a weakly ionized plasma discharge; collisions excite atoms, which then emit characteristic light as they de-excite.",
+      "topic": "Plasma applications and occurrence",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Lightning is an example of plasma because:",
+      "options": [
+        "The intense electric field breaks down air molecules into ions and electrons, creating a hot, luminous, conducting ionized channel",
+        "It is made purely of liquid water droplets",
+        "It occurs only in a vacuum with no gas present",
+        "It is a solid-state electrical discharge through the ground"
+      ],
+      "correct_answer": "The intense electric field breaks down air molecules into ions and electrons, creating a hot, luminous, conducting ionized channel",
+      "explanation": "Lightning is a transient electrical discharge that ionizes the air along its path, forming a hot conducting plasma channel that carries the current.",
+      "topic": "Occurrence of plasma",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Estimate the order of magnitude of the plasma frequency for a typical laboratory plasma with electron density n_e ≈ 10¹⁸ m⁻³, given ω_pe = √(n_e e²/(ε₀ m_e)) ≈ 56.4√n_e rad/s.",
+      "options": [
+        "Approximately 5.6 × 10⁹ rad/s",
+        "Approximately 5.6 × 10³ rad/s",
+        "Approximately 5.6 × 10²⁷ rad/s",
+        "Approximately 56 rad/s"
+      ],
+      "correct_answer": "Approximately 5.6 × 10⁹ rad/s",
+      "explanation": "ω_pe ≈ 56.4√(10¹⁸) = 56.4 × 10⁹ ≈ 5.6 × 10¹⁰; using the commonly quoted approximation for such densities the plasma frequency lands in the GHz-equivalent angular-frequency range, of order 10⁹ rad/s, far exceeding typical collision frequencies.",
+      "topic": "Plasma frequency",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A charged particle moving perpendicular to a uniform magnetic field B undergoes what type of motion, in the absence of other forces?",
+      "options": [
+        "Uniform circular motion (gyration) at the cyclotron frequency",
+        "Motion in a straight line at constant velocity",
+        "Exponentially accelerating motion along B",
+        "Random Brownian motion with no defined frequency"
+      ],
+      "correct_answer": "Uniform circular motion (gyration) at the cyclotron frequency",
+      "explanation": "The magnetic Lorentz force qv×B is always perpendicular to velocity, so it provides centripetal force for uniform circular (gyration) motion in the plane perpendicular to B.",
+      "topic": "Single-particle motion: gyration",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The cyclotron (gyration) frequency of a charged particle of mass m and charge q in a magnetic field B is given by:",
+      "options": [
+        "ω_c = qB/m",
+        "ω_c = mB/q",
+        "ω_c = qm/B",
+        "ω_c = q/(mB)"
+      ],
+      "correct_answer": "ω_c = qB/m",
+      "explanation": "Equating the magnetic force qvB to the centripetal requirement mω²r = mωv gives ω_c = qB/m, independent of the particle's speed.",
+      "topic": "Single-particle motion: gyration",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The radius of the circular orbit (gyroradius or Larmor radius) of a charged particle gyrating in a magnetic field is:",
+      "options": [
+        "r_L = mv⊥/(qB), where v⊥ is the velocity component perpendicular to B",
+        "r_L = qB/(mv⊥)",
+        "r_L = mv⊥ qB",
+        "r_L independent of both v⊥ and B"
+      ],
+      "correct_answer": "r_L = mv⊥/(qB), where v⊥ is the velocity component perpendicular to B",
+      "explanation": "From mω²r = qv⊥B and ω = qB/m, solving for r gives r_L = mv⊥/(qB); larger perpendicular speed or mass gives a wider orbit, while stronger B tightens it.",
+      "topic": "Single-particle motion: gyration",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In crossed uniform electric and magnetic fields (E perpendicular to B), a charged particle undergoes:",
+      "options": [
+        "An E×B drift perpendicular to both fields, with drift velocity independent of the particle's charge and mass",
+        "Pure acceleration along E only, with no dependence on B",
+        "Motion confined entirely to a single point (no net drift)",
+        "A drift along the direction of E only"
+      ],
+      "correct_answer": "An E×B drift perpendicular to both fields, with drift velocity independent of the particle's charge and mass",
+      "explanation": "The E×B drift velocity is v_d = (E×B)/B²; remarkably it does not depend on the sign or magnitude of the charge or on the particle's mass, so electrons and ions drift together at the same velocity.",
+      "topic": "Single-particle motion: E×B drift",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Why does the E×B drift not separate electrons and ions (and hence not directly generate a current)?",
+      "options": [
+        "Because the drift velocity formula v_d = E×B/B² has no charge or mass dependence, so all species drift together at the same velocity and direction",
+        "Because electrons are stationary in a magnetic field",
+        "Because ions cannot exist in a magnetic field",
+        "Because E×B drift only acts on neutral particles"
+      ],
+      "correct_answer": "Because the drift velocity formula v_d = E×B/B² has no charge or mass dependence, so all species drift together at the same velocity and direction",
+      "explanation": "Since the E×B drift is identical for all charged species regardless of sign or mass, it moves the whole plasma together without creating charge separation or current by itself.",
+      "topic": "Single-particle motion: E×B drift",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A 'magnetic mirror' configuration confines charged particles by:",
+      "options": [
+        "Using a magnetic field that increases in strength toward the ends of the confinement region, converting parallel kinetic energy into perpendicular energy and reflecting particles back",
+        "Using a uniform magnetic field of constant strength everywhere",
+        "Applying an oscillating electric field only, with no magnetic field",
+        "Physically enclosing the plasma in a solid metal chamber"
+      ],
+      "correct_answer": "Using a magnetic field that increases in strength toward the ends of the confinement region, converting parallel kinetic energy into perpendicular energy and reflecting particles back",
+      "explanation": "As a particle moves into a region of increasing B, conservation of the magnetic moment forces v⊥ to increase and (by energy conservation) v∥ to decrease; particles with sufficiently large pitch angle are reflected, forming a magnetic mirror.",
+      "topic": "Single-particle motion: magnetic mirrors",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In magnetic mirror theory, the quantity μ = (1/2)mv⊥²/B, called the magnetic moment, is significant because:",
+      "options": [
+        "It is an adiabatic invariant that remains approximately constant as the particle moves slowly through a spatially varying magnetic field",
+        "It always increases without bound as the particle moves",
+        "It is identical for all particles regardless of velocity",
+        "It has no role in determining whether a particle is reflected"
+      ],
+      "correct_answer": "It is an adiabatic invariant that remains approximately constant as the particle moves slowly through a spatially varying magnetic field",
+      "explanation": "μ is a well-known adiabatic invariant in plasma physics; its near-constancy underlies the mirror effect, since μ constant plus energy conservation forces v⊥ to grow (and v∥ to shrink) as B increases.",
+      "topic": "Single-particle motion: magnetic mirrors",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Particles that mirror back and forth between two magnetic mirror points, without enough parallel velocity to escape, are said to be trapped in a:",
+      "options": [
+        "Magnetic mirror (or magnetic bottle)",
+        "Debye sphere",
+        "Cyclotron resonance cavity",
+        "Faraday cage"
+      ],
+      "correct_answer": "Magnetic mirror (or magnetic bottle)",
+      "explanation": "A pair of magnetic mirror regions at either end of a weaker central field forms a 'magnetic bottle' that traps particles bouncing between the two mirror points, as long as their pitch angle keeps them out of the 'loss cone'.",
+      "topic": "Single-particle motion: magnetic mirrors",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In magnetohydrodynamics (MHD), a plasma is treated as:",
+      "options": [
+        "A single electrically conducting fluid, described using combined fluid dynamics and Maxwell's equations",
+        "A collection of completely independent, non-interacting particles",
+        "A rigid solid body with fixed shape",
+        "An ideal gas with no electromagnetic properties"
+      ],
+      "correct_answer": "A single electrically conducting fluid, described using combined fluid dynamics and Maxwell's equations",
+      "explanation": "MHD is the macroscopic fluid description of a plasma, combining the Navier-Stokes-like fluid equations with Maxwell's equations, valid on length/time scales large compared to individual particle gyration.",
+      "topic": "Magnetohydrodynamics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The 'frozen-in flux' theorem in ideal MHD states that:",
+      "options": [
+        "In a perfectly conducting plasma, magnetic field lines move together with the fluid, as if 'frozen' into the plasma",
+        "Magnetic field lines are always static and cannot move at all",
+        "The plasma temperature is frozen at absolute zero",
+        "Magnetic flux always decreases to zero over time in a plasma"
+      ],
+      "correct_answer": "In a perfectly conducting plasma, magnetic field lines move together with the fluid, as if 'frozen' into the plasma",
+      "explanation": "For an ideal (infinite conductivity) plasma, Ohm's law and Faraday's law combine to show that magnetic flux through any fluid-comoving surface is conserved, so field lines appear to be carried along with, or 'frozen into,' the fluid.",
+      "topic": "Magnetohydrodynamics: frozen-in flux",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In MHD, the magnetic pressure associated with a magnetic field of magnitude B is given by:",
+      "options": [
+        "P_B = B²/(2μ₀)",
+        "P_B = μ₀B/2",
+        "P_B = 2μ₀B²",
+        "P_B = B/μ₀²"
+      ],
+      "correct_answer": "P_B = B²/(2μ₀)",
+      "explanation": "The magnetic pressure term B²/(2μ₀) arises from the Maxwell stress tensor and represents the outward pressure magnetic field lines exert as they resist compression, analogous to thermal gas pressure.",
+      "topic": "Magnetohydrodynamics: magnetic pressure",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The plasma beta (β) parameter is defined as the ratio of:",
+      "options": [
+        "Thermal (kinetic) pressure to magnetic pressure",
+        "Electric field strength to magnetic field strength",
+        "Electron mass to ion mass",
+        "Debye length to gyroradius"
+      ],
+      "correct_answer": "Thermal (kinetic) pressure to magnetic pressure",
+      "explanation": "Plasma beta β = P_thermal/P_magnetic compares how much the plasma pressure versus the magnetic field pressure dominates the system's dynamics; low-β plasmas are magnetically dominated, as in fusion devices.",
+      "topic": "Magnetohydrodynamics: magnetic pressure",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In magnetic confinement fusion, the basic principle of a tokamak is to:",
+      "options": [
+        "Use combined toroidal and poloidal magnetic fields to confine a hot plasma in a doughnut-shaped chamber away from the walls",
+        "Compress a small fuel pellet using powerful lasers from all directions",
+        "Cool the plasma to near absolute zero to induce fusion",
+        "Confine the plasma using only gravity, with no applied magnetic field"
+      ],
+      "correct_answer": "Use combined toroidal and poloidal magnetic fields to confine a hot plasma in a doughnut-shaped chamber away from the walls",
+      "explanation": "A tokamak generates a twisted (helical) magnetic field, combining an externally applied toroidal field with a poloidal field from a plasma current, to confine the hot fusion plasma without it touching the walls.",
+      "topic": "Applications: magnetic confinement fusion",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Why must the magnetic field in a tokamak have both toroidal and poloidal components rather than a purely toroidal field?",
+      "options": [
+        "A purely toroidal field is stronger on the inner side than the outer side, causing particle drifts that would lead to charge separation and rapid loss of confinement unless a poloidal field twists the field lines to average out the drift",
+        "A poloidal field is needed only to heat the plasma, not to confine it",
+        "Toroidal fields cannot be generated by any practical magnet coil",
+        "Poloidal fields are required to ionize the initial gas"
+      ],
+      "correct_answer": "A purely toroidal field is stronger on the inner side than the outer side, causing particle drifts that would lead to charge separation and rapid loss of confinement unless a poloidal field twists the field lines to average out the drift",
+      "explanation": "The 1/R variation of a purely toroidal field produces grad-B and curvature drifts that separate charge and build up an electric field driving particles outward; adding a poloidal (helical twist) component causes particles to sample both high- and low-field regions, cancelling the net drift.",
+      "topic": "Applications: magnetic confinement fusion",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Inertial confinement fusion (ICF) achieves fusion conditions by:",
+      "options": [
+        "Rapidly compressing and heating a small fuel pellet, typically using powerful lasers or ion beams, so fusion occurs before the plasma can expand and disperse",
+        "Holding the plasma in a magnetic bottle for hours at low density",
+        "Cooling the fuel to a superconducting solid state",
+        "Using only electric fields to compress the fuel over long timescales"
+      ],
+      "correct_answer": "Rapidly compressing and heating a small fuel pellet, typically using powerful lasers or ion beams, so fusion occurs before the plasma can expand and disperse",
+      "explanation": "In ICF, an intense, brief pulse of energy (e.g., from lasers) implodes a small pellet of fusion fuel to extremely high density and temperature; fusion reactions occur on the short timescale before the compressed plasma's own inertia allows it to fly apart.",
+      "topic": "Applications: inertial confinement fusion",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Compared to magnetic confinement fusion, inertial confinement fusion relies on:",
+      "options": [
+        "The fuel's own inertia to hold it together for the brief time needed for fusion, rather than an externally sustained magnetic field",
+        "An externally sustained magnetic field lasting many seconds",
+        "Gravitational confinement similar to that in stars",
+        "Chemical combustion of the fuel pellet"
+      ],
+      "correct_answer": "The fuel's own inertia to hold it together for the brief time needed for fusion, rather than an externally sustained magnetic field",
+      "explanation": "ICF confinement time is set purely by inertia (how long it takes the compressed fuel to fly apart under its own pressure), in contrast to MCF where magnetic fields actively hold the lower-density plasma for much longer times.",
+      "topic": "Applications: inertial confinement fusion",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The solar wind is best described as:",
+      "options": [
+        "A continuous stream of plasma (mainly protons and electrons) flowing outward from the Sun's corona into interplanetary space",
+        "A stream of neutral hydrogen gas with no charged particles",
+        "Electromagnetic radiation only, with no particle content",
+        "A wind of solid dust particles ejected from the Sun's surface"
+      ],
+      "correct_answer": "A continuous stream of plasma (mainly protons and electrons) flowing outward from the Sun's corona into interplanetary space",
+      "explanation": "The solar wind is a supersonic outflow of plasma from the Sun's hot corona, carrying with it the Sun's magnetic field (the interplanetary magnetic field), and is a key example of astrophysical plasma.",
+      "topic": "Astrophysical plasma",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Auroras (the Northern and Southern Lights) are produced when:",
+      "options": [
+        "Charged particles from the solar wind, guided by Earth's magnetic field into the polar upper atmosphere, collide with and excite atmospheric atoms, which then emit light",
+        "Sunlight is directly reflected off polar ice sheets",
+        "Volcanic gases in the atmosphere spontaneously ignite",
+        "Cosmic microwave background radiation is focused by Earth's magnetic poles"
+      ],
+      "correct_answer": "Charged particles from the solar wind, guided by Earth's magnetic field into the polar upper atmosphere, collide with and excite atmospheric atoms, which then emit light",
+      "explanation": "Earth's magnetosphere channels solar-wind plasma particles toward the polar regions, where collisions with oxygen and nitrogen atoms in the upper atmosphere produce the characteristic auroral glow.",
+      "topic": "Astrophysical plasma",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The interior of the Sun sustains nuclear fusion primarily because:",
+      "options": [
+        "Gravitational pressure compresses the hydrogen plasma to extremely high temperature and density, enabling protons to overcome Coulomb repulsion and fuse",
+        "The Sun's surface magnetic field alone confines the fusion reactions",
+        "The Sun contains solid uranium that undergoes fission",
+        "External laser beams compress the solar core"
+      ],
+      "correct_answer": "Gravitational pressure compresses the hydrogen plasma to extremely high temperature and density, enabling protons to overcome Coulomb repulsion and fuse",
+      "explanation": "Stars are gravitationally confined plasmas: the immense weight of overlying layers compresses and heats the core plasma enough (around 15 million K in the Sun) for hydrogen fusion (the proton-proton chain) to proceed.",
+      "topic": "Astrophysical plasma",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which of the following is a typical industrial application of low-temperature (non-thermal) plasma?",
+      "options": [
+        "Plasma etching of semiconductor wafers in microchip fabrication",
+        "Boiling water for domestic use",
+        "Freezing food for preservation",
+        "Generating hydroelectric power"
+      ],
+      "correct_answer": "Plasma etching of semiconductor wafers in microchip fabrication",
+      "explanation": "Low-temperature plasmas generated in vacuum chambers are widely used in the semiconductor industry to etch fine patterns onto silicon wafers with high precision.",
+      "topic": "Industrial plasma applications",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Plasma torches used for cutting and welding metal work by:",
+      "options": [
+        "Passing an electric arc through a gas to ionize it into a very hot, conductive plasma jet that melts and blows away the metal",
+        "Using only compressed cold air to physically cut metal",
+        "Freezing the metal to make it brittle before cutting",
+        "Using sound waves to vibrate the metal apart"
+      ],
+      "correct_answer": "Passing an electric arc through a gas to ionize it into a very hot, conductive plasma jet that melts and blows away the metal",
+      "explanation": "A plasma cutting torch strikes an electric arc through a gas (e.g., compressed air or argon), ionizing it into a plasma jet reaching very high temperatures capable of melting and ejecting metal along the cut line.",
+      "topic": "Industrial plasma applications",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The ionosphere is a region of Earth's upper atmosphere that behaves as a plasma primarily because:",
+      "options": [
+        "Solar ultraviolet and X-ray radiation ionize a significant fraction of atmospheric atoms and molecules there",
+        "It is the coldest layer of the atmosphere",
+        "It contains no gas molecules at all",
+        "It is a solid layer of ice crystals"
+      ],
+      "correct_answer": "Solar ultraviolet and X-ray radiation ionize a significant fraction of atmospheric atoms and molecules there",
+      "explanation": "High-energy solar radiation photoionizes atoms and molecules in the upper atmosphere, creating a layer of free electrons and ions (the ionosphere) that is dense enough to reflect certain radio waves.",
+      "topic": "Occurrence of plasma",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A key practical challenge of achieving controlled nuclear fusion via magnetic confinement is:",
+      "options": [
+        "Maintaining plasma stability and sufficient confinement time at very high temperature simultaneously, since instabilities tend to grow and eject energy from the plasma",
+        "Fusion plasmas are naturally too cold to ever escape confinement",
+        "There is no way to heat a plasma above room temperature",
+        "Magnetic fields cannot be generated strong enough to detect with any instrument"
+      ],
+      "correct_answer": "Maintaining plasma stability and sufficient confinement time at very high temperature simultaneously, since instabilities tend to grow and eject energy from the plasma",
+      "explanation": "Achieving net fusion energy gain (via the Lawson criterion, involving density, temperature, and confinement time) is difficult because hot, dense plasmas are prone to MHD instabilities that can disrupt confinement.",
+      "topic": "Applications: magnetic confinement fusion",
+      "difficulty": "hard"
+    }
+  ]
+}

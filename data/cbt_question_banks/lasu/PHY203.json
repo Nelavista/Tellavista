@@ -1,0 +1,462 @@
+{
+  "course_code": "PHY203",
+  "title": "Waves & Optics I",
+  "level": "200",
+  "source_note": "Standard NUC-aligned Nigerian university 200L Physics curriculum for the first half of a Waves & Optics sequence: wave motion fundamentals, sound waves, and geometric (ray) optics only. Physical/wave optics (interference, diffraction, polarization) is deliberately excluded and reserved for PHY204.",
+  "questions": [
+    {
+      "question": "What distinguishes a transverse wave from a longitudinal wave?",
+      "options": [
+        "In a transverse wave, particle oscillation is perpendicular to the direction of wave travel; in a longitudinal wave it is parallel to it",
+        "Transverse waves travel faster than longitudinal waves in all media",
+        "Longitudinal waves can only travel through solids while transverse waves travel through all media",
+        "Transverse waves carry no energy while longitudinal waves do"
+      ],
+      "correct_answer": "In a transverse wave, particle oscillation is perpendicular to the direction of wave travel; in a longitudinal wave it is parallel to it",
+      "explanation": "This is the defining geometric distinction between the two wave types, illustrated by waves on a string (transverse) versus sound in air (longitudinal).",
+      "topic": "Wave motion fundamentals",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which of the following is a longitudinal wave?",
+      "options": ["Sound wave in air", "Wave on a stretched string", "Light wave", "Electromagnetic wave in vacuum"],
+      "correct_answer": "Sound wave in air",
+      "explanation": "Sound propagates through compressions and rarefactions of the medium, with particle motion parallel to the direction of propagation, making it longitudinal.",
+      "topic": "Wave motion fundamentals",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The general one-dimensional wave equation is given by which relation?",
+      "options": [
+        "∂²y/∂x² = (1/v²) ∂²y/∂t²",
+        "∂y/∂x = (1/v) ∂y/∂t",
+        "∂²y/∂t² = v ∂y/∂x",
+        "y = v²x²t²"
+      ],
+      "correct_answer": "∂²y/∂x² = (1/v²) ∂²y/∂t²",
+      "explanation": "This second-order partial differential equation governs wave propagation, where v is the wave speed and any function of the form f(x ± vt) is a solution.",
+      "topic": "Wave equation",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A wave has a wavelength of 2 m and a frequency of 5 Hz. What is its speed?",
+      "options": ["10 m/s", "2.5 m/s", "0.4 m/s", "7 m/s"],
+      "correct_answer": "10 m/s",
+      "explanation": "Wave speed v = fλ = 5 Hz × 2 m = 10 m/s.",
+      "topic": "Wave speed, frequency and wavelength",
+      "difficulty": "easy"
+    },
+    {
+      "question": "If the frequency of a wave is doubled while its speed in the medium remains constant, what happens to its wavelength?",
+      "options": ["It is halved", "It is doubled", "It stays the same", "It quadruples"],
+      "correct_answer": "It is halved",
+      "explanation": "Since v = fλ and v is constant, λ is inversely proportional to f; doubling f halves λ.",
+      "topic": "Wave speed, frequency and wavelength",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The period of a wave is 0.02 s. What is its frequency?",
+      "options": ["50 Hz", "0.02 Hz", "20 Hz", "5 Hz"],
+      "correct_answer": "50 Hz",
+      "explanation": "Frequency f = 1/T = 1/0.02 = 50 Hz.",
+      "topic": "Wave speed, frequency and wavelength",
+      "difficulty": "easy"
+    },
+    {
+      "question": "According to the principle of superposition, when two or more waves overlap at a point, the resultant displacement is:",
+      "options": [
+        "The vector (algebraic) sum of the individual displacements",
+        "The average of the individual displacements",
+        "The product of the individual displacements",
+        "Always zero regardless of the individual displacements"
+      ],
+      "correct_answer": "The vector (algebraic) sum of the individual displacements",
+      "explanation": "The superposition principle states that the net displacement at any point is the algebraic sum of the displacements each wave would produce independently.",
+      "topic": "Superposition principle",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Constructive superposition of two waves occurs when they meet:",
+      "options": ["In phase, crest meeting crest", "Exactly out of phase", "At a node", "With perpendicular polarizations"],
+      "correct_answer": "In phase, crest meeting crest",
+      "explanation": "When waves are in phase, their displacements add together to give a resultant of larger amplitude (constructive superposition).",
+      "topic": "Superposition principle",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A standing wave on a stretched string is produced by:",
+      "options": [
+        "The superposition of two identical waves travelling in opposite directions",
+        "A single wave travelling in one direction only",
+        "Two waves of different frequencies travelling in the same direction",
+        "Reflection of a wave into a vacuum"
+      ],
+      "correct_answer": "The superposition of two identical waves travelling in opposite directions",
+      "explanation": "Standing waves arise from the interference of an incident wave and its reflection travelling in the opposite direction along the same medium.",
+      "topic": "Standing waves on strings",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a standing wave, the points of zero displacement are called:",
+      "options": ["Nodes", "Antinodes", "Crests", "Troughs"],
+      "correct_answer": "Nodes",
+      "explanation": "Nodes are points that remain stationary at all times because the two superposing waves always cancel there.",
+      "topic": "Standing waves on strings",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A string of length L, fixed at both ends, vibrates in its fundamental mode. What is the wavelength of this mode?",
+      "options": ["2L", "L", "L/2", "4L"],
+      "correct_answer": "2L",
+      "explanation": "For a string fixed at both ends, the fundamental (first harmonic) has a node at each end and one antinode in the middle, corresponding to half a wavelength fitting the length, so λ = 2L.",
+      "topic": "Harmonics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A string fixed at both ends has fundamental frequency f₁. What is the frequency of its third harmonic?",
+      "options": ["3f₁", "f₁/3", "9f₁", "1.5f₁"],
+      "correct_answer": "3f₁",
+      "explanation": "For a string fixed at both ends, harmonics occur at integer multiples of the fundamental frequency: f_n = nf₁, so the third harmonic is 3f₁.",
+      "topic": "Harmonics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A stretched string of length 0.6 m has a fundamental frequency of 250 Hz. What is the speed of the transverse wave on the string?",
+      "options": ["300 m/s", "150 m/s", "416.7 m/s", "600 m/s"],
+      "correct_answer": "300 m/s",
+      "explanation": "λ = 2L = 1.2 m for the fundamental; v = fλ = 250 × 1.2 = 300 m/s.",
+      "topic": "Harmonics",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The speed of sound in a medium generally depends on:",
+      "options": [
+        "The elasticity and density of the medium",
+        "The colour of the medium only",
+        "The loudness of the source only",
+        "The wavelength of light in the medium"
+      ],
+      "correct_answer": "The elasticity and density of the medium",
+      "explanation": "The speed of sound is determined by the elastic properties (modulus of elasticity or bulk modulus) and density of the medium through which it travels.",
+      "topic": "Speed of sound",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The speed of sound is generally greatest in which of the following media?",
+      "options": ["Solids", "Liquids", "Gases", "Vacuum"],
+      "correct_answer": "Solids",
+      "explanation": "Solids have higher elastic moduli relative to density than liquids or gases, so sound travels fastest in solids, slower in liquids, and slowest in gases; sound cannot travel through a vacuum at all.",
+      "topic": "Speed of sound",
+      "difficulty": "easy"
+    },
+    {
+      "question": "As air temperature increases, the speed of sound in air:",
+      "options": ["Increases", "Decreases", "Remains constant", "Becomes zero"],
+      "correct_answer": "Increases",
+      "explanation": "The speed of sound in an ideal gas increases with the square root of absolute temperature because molecules move faster and transmit vibrations more quickly.",
+      "topic": "Speed of sound",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Doppler effect refers to:",
+      "options": [
+        "The apparent change in frequency of a wave due to relative motion between source and observer",
+        "The bending of waves around obstacles",
+        "The splitting of white light into colours",
+        "The absorption of sound by a medium"
+      ],
+      "correct_answer": "The apparent change in frequency of a wave due to relative motion between source and observer",
+      "explanation": "The Doppler effect describes how observed frequency shifts higher when source and observer approach each other and lower when they recede.",
+      "topic": "Doppler effect",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A police siren appears higher in pitch as the car approaches you and lower as it moves away. This is an example of:",
+      "options": ["The Doppler effect", "Resonance", "Beats", "Total internal reflection"],
+      "correct_answer": "The Doppler effect",
+      "explanation": "The relative motion between the moving source (siren) and the stationary observer causes the apparent frequency shift characteristic of the Doppler effect.",
+      "topic": "Doppler effect",
+      "difficulty": "easy"
+    },
+    {
+      "question": "For a sound source moving towards a stationary observer, the apparent (observed) frequency f' is given by (v = speed of sound, v_s = source speed, f = true frequency):",
+      "options": ["f' = fv/(v − v_s)", "f' = fv/(v + v_s)", "f' = f(v − v_s)/v", "f' = f v_s/v"],
+      "correct_answer": "f' = fv/(v − v_s)",
+      "explanation": "When the source moves toward a stationary observer, wavefronts bunch up ahead of it, raising the observed frequency, given by f' = fv/(v − v_s).",
+      "topic": "Doppler effect",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Beats are produced when:",
+      "options": [
+        "Two sound waves of slightly different frequencies superpose",
+        "Two sound waves of exactly the same frequency and phase superpose",
+        "A wave reflects off a rigid boundary",
+        "A wave passes through a narrow slit"
+      ],
+      "correct_answer": "Two sound waves of slightly different frequencies superpose",
+      "explanation": "Beats arise from periodic constructive and destructive interference between two waves of close but unequal frequencies, producing a periodic variation in amplitude (loudness).",
+      "topic": "Beats",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Two tuning forks of frequency 256 Hz and 260 Hz are sounded together. What is the beat frequency heard?",
+      "options": ["4 Hz", "258 Hz", "516 Hz", "2 Hz"],
+      "correct_answer": "4 Hz",
+      "explanation": "Beat frequency equals the absolute difference between the two frequencies: |260 − 256| = 4 Hz.",
+      "topic": "Beats",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Resonance in a closed pipe (closed at one end, open at the other) occurs at which harmonics of the fundamental frequency?",
+      "options": ["Odd harmonics only (1st, 3rd, 5th, ...)", "Even harmonics only", "All integer harmonics", "Only the fundamental, no higher harmonics"],
+      "correct_answer": "Odd harmonics only (1st, 3rd, 5th, ...)",
+      "explanation": "A pipe closed at one end has a node at the closed end and an antinode at the open end, which supports only odd-numbered harmonics of the fundamental.",
+      "topic": "Resonance in pipes",
+      "difficulty": "hard"
+    },
+    {
+      "question": "For an open pipe (open at both ends) of length L, the fundamental wavelength is:",
+      "options": ["2L", "4L", "L", "L/2"],
+      "correct_answer": "2L",
+      "explanation": "An open-open pipe has antinodes at both ends, so the fundamental mode fits half a wavelength into the pipe length, giving λ = 2L, analogous to a string fixed at both ends.",
+      "topic": "Resonance in pipes",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A pipe closed at one end has length 0.5 m. Taking the speed of sound as 340 m/s, what is its fundamental frequency?",
+      "options": ["170 Hz", "340 Hz", "680 Hz", "85 Hz"],
+      "correct_answer": "170 Hz",
+      "explanation": "For a closed pipe, λ = 4L = 2 m, so f = v/λ = 340/2 = 170 Hz.",
+      "topic": "Resonance in pipes",
+      "difficulty": "hard"
+    },
+    {
+      "question": "According to the law of reflection, the angle of incidence equals the angle of reflection, both measured from:",
+      "options": ["The normal to the reflecting surface", "The reflecting surface itself", "The direction of the incident ray", "An arbitrary fixed reference line"],
+      "correct_answer": "The normal to the reflecting surface",
+      "explanation": "Both angles are conventionally measured from the normal (a line perpendicular to the surface at the point of incidence), not from the surface itself.",
+      "topic": "Laws of reflection",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Snell's law relating the angle of incidence θ₁ and angle of refraction θ₂ at a boundary between two media of refractive indices n₁ and n₂ is:",
+      "options": ["n₁ sinθ₁ = n₂ sinθ₂", "n₁ cosθ₁ = n₂ cosθ₂", "n₁/θ₁ = n₂/θ₂", "n₁ sinθ₂ = n₂ sinθ₁"],
+      "correct_answer": "n₁ sinθ₁ = n₂ sinθ₂",
+      "explanation": "Snell's law describes how a light ray bends at an interface between two media of different refractive indices.",
+      "topic": "Refraction and Snell's law",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Light travels from air (n = 1.0) into glass (n = 1.5) at an angle of incidence of 30°. Which statement is correct about the refracted ray?",
+      "options": [
+        "It bends towards the normal, with angle of refraction less than 30°",
+        "It bends away from the normal, with angle of refraction greater than 30°",
+        "It is not refracted at all and continues at 30°",
+        "It travels along the boundary at 90°"
+      ],
+      "correct_answer": "It bends towards the normal, with angle of refraction less than 30°",
+      "explanation": "Going from a less dense (optically) medium to a denser one, light slows down and bends towards the normal, so the refraction angle is smaller than the incidence angle.",
+      "topic": "Refraction and Snell's law",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The refractive index of a medium is defined as:",
+      "options": [
+        "The ratio of the speed of light in vacuum to the speed of light in the medium",
+        "The ratio of the speed of light in the medium to the speed of light in vacuum",
+        "The ratio of the angle of incidence to the angle of refraction",
+        "The density of the medium divided by the density of water"
+      ],
+      "correct_answer": "The ratio of the speed of light in vacuum to the speed of light in the medium",
+      "explanation": "By definition, n = c/v, where c is the speed of light in vacuum and v is the speed of light in the medium.",
+      "topic": "Refraction and Snell's law",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Total internal reflection can occur only when light travels:",
+      "options": [
+        "From a denser (optically) medium to a less dense medium, and the angle of incidence exceeds the critical angle",
+        "From a less dense medium to a denser medium, at any angle",
+        "Through a vacuum only",
+        "Perpendicular to the boundary between two media"
+      ],
+      "correct_answer": "From a denser (optically) medium to a less dense medium, and the angle of incidence exceeds the critical angle",
+      "explanation": "Total internal reflection requires light moving from a higher to a lower refractive index medium, with the angle of incidence greater than the critical angle, so no light is transmitted and all is reflected.",
+      "topic": "Total internal reflection",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The critical angle θ_c for total internal reflection between a medium of refractive index n and air is given by:",
+      "options": ["sinθ_c = 1/n", "sinθ_c = n", "cosθ_c = 1/n", "tanθ_c = n"],
+      "correct_answer": "sinθ_c = 1/n",
+      "explanation": "The critical angle is found by setting the refraction angle to 90° in Snell's law: n sinθ_c = 1 × sin90°, giving sinθ_c = 1/n.",
+      "topic": "Total internal reflection",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Optical fibres transmit light along their length mainly by relying on which phenomenon?",
+      "options": ["Total internal reflection", "Diffraction", "Polarization", "Dispersion"],
+      "correct_answer": "Total internal reflection",
+      "explanation": "Optical fibres are designed with a core of higher refractive index than the cladding so that light undergoes repeated total internal reflection and is guided along the fibre with minimal loss.",
+      "topic": "Total internal reflection",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The mirror formula relating object distance u, image distance v, and focal length f for a spherical mirror is:",
+      "options": ["1/f = 1/u + 1/v", "f = u + v", "1/f = 1/u − 1/v", "f = uv"],
+      "correct_answer": "1/f = 1/u + 1/v",
+      "explanation": "This is the standard mirror formula used with the appropriate sign convention for spherical mirrors.",
+      "topic": "Mirror formula",
+      "difficulty": "easy"
+    },
+    {
+      "question": "An object is placed 30 cm from a concave mirror of focal length 10 cm. Where is the image formed?",
+      "options": ["15 cm from the mirror", "20 cm from the mirror", "30 cm from the mirror", "10 cm from the mirror"],
+      "correct_answer": "15 cm from the mirror",
+      "explanation": "Using 1/f = 1/u + 1/v: 1/10 = 1/30 + 1/v, so 1/v = 1/10 − 1/30 = 2/30, giving v = 15 cm.",
+      "topic": "Mirror formula",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The magnification produced by a spherical mirror is given by m = −v/u. A magnification of −2 means the image is:",
+      "options": ["Real, inverted, and twice the size of the object", "Virtual, upright, and twice the size of the object", "Real, upright, and half the size of the object", "Virtual, inverted, and the same size as the object"],
+      "correct_answer": "Real, inverted, and twice the size of the object",
+      "explanation": "A negative magnification indicates an inverted (real) image, and a magnitude of 2 means it is twice the size of the object.",
+      "topic": "Magnification",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The lens maker's equation for a thin lens in air is:",
+      "options": [
+        "1/f = (n − 1)(1/R₁ − 1/R₂)",
+        "1/f = n(1/R₁ + 1/R₂)",
+        "1/f = (n − 1)(R₁ + R₂)",
+        "f = (n − 1)(R₁ − R₂)"
+      ],
+      "correct_answer": "1/f = (n − 1)(1/R₁ − 1/R₂)",
+      "explanation": "The lens maker's equation relates the focal length of a thin lens to its refractive index n and the radii of curvature R₁ and R₂ of its two surfaces.",
+      "topic": "Thin lenses",
+      "difficulty": "hard"
+    },
+    {
+      "question": "For a thin lens, the lens formula relating object distance u, image distance v and focal length f is:",
+      "options": ["1/f = 1/v − 1/u", "1/f = 1/v + 1/u", "1/f = 1/u − 1/v", "f = uv/(u+v) only for convex lenses"],
+      "correct_answer": "1/f = 1/v − 1/u",
+      "explanation": "This is the standard thin lens formula under the real-is-positive or Cartesian sign convention commonly used in introductory optics.",
+      "topic": "Thin lenses",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A converging lens has a focal length of 20 cm. An object is placed 40 cm from the lens. Where is the image formed?",
+      "options": ["40 cm on the other side of the lens", "20 cm on the other side of the lens", "13.3 cm on the other side of the lens", "40 cm on the same side as the object"],
+      "correct_answer": "40 cm on the other side of the lens",
+      "explanation": "Using 1/f = 1/v − 1/u with u = −40 cm (Cartesian convention) gives 1/20 = 1/v + 1/40, so 1/v = 1/20 − 1/40 = 1/40, and v = 40 cm.",
+      "topic": "Thin lenses",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A diverging (concave) lens always produces images that are:",
+      "options": ["Virtual, upright, and diminished", "Real, inverted, and magnified", "Real, upright, and the same size", "Virtual, inverted, and magnified"],
+      "correct_answer": "Virtual, upright, and diminished",
+      "explanation": "A single diverging lens can never form a real image of a real object; it always forms a virtual, upright, and reduced image.",
+      "topic": "Thin lenses",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The power of a lens in dioptres is defined as:",
+      "options": ["The reciprocal of its focal length in metres", "Its focal length in metres", "Its focal length in centimetres", "The product of its refractive index and focal length"],
+      "correct_answer": "The reciprocal of its focal length in metres",
+      "explanation": "Power P = 1/f, where f is measured in metres, giving power in dioptres (D).",
+      "topic": "Thin lenses",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In a simple microscope (magnifying glass), the object is placed:",
+      "options": [
+        "Within the focal length of the converging lens, forming a virtual, magnified image",
+        "Beyond twice the focal length, forming a real, diminished image",
+        "At the focal point, forming an image at infinity",
+        "Beyond the focal length but within twice the focal length"
+      ],
+      "correct_answer": "Within the focal length of the converging lens, forming a virtual, magnified image",
+      "explanation": "A simple microscope uses a single converging lens with the object placed closer than the focal length so that a magnified, upright, virtual image is formed for the eye to view comfortably.",
+      "topic": "Simple microscope",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The angular magnification of a simple microscope when the image is formed at the near point (D = 25 cm) is approximately:",
+      "options": ["1 + D/f", "D/f only", "f/D", "1 − D/f"],
+      "correct_answer": "1 + D/f",
+      "explanation": "When the virtual image is formed at the near point, the angular magnification of a simple magnifier is M = 1 + D/f, where D is the near point distance and f is the lens focal length.",
+      "topic": "Simple microscope",
+      "difficulty": "hard"
+    },
+    {
+      "question": "An astronomical telescope in normal adjustment consists of:",
+      "options": [
+        "An objective lens of long focal length and an eyepiece of short focal length, with their focal points coinciding",
+        "Two identical converging lenses placed in contact",
+        "A single converging lens and a plane mirror",
+        "An objective of short focal length and an eyepiece of long focal length"
+      ],
+      "correct_answer": "An objective lens of long focal length and an eyepiece of short focal length, with their focal points coinciding",
+      "explanation": "In normal adjustment, the astronomical telescope is arranged so the image formed by the objective lies at the focal point of the eyepiece, producing a final image at infinity.",
+      "topic": "Astronomical telescope",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The magnifying power of an astronomical telescope in normal adjustment is given by:",
+      "options": ["f_o/f_e (objective focal length divided by eyepiece focal length)", "f_e/f_o", "f_o + f_e", "f_o × f_e"],
+      "correct_answer": "f_o/f_e (objective focal length divided by eyepiece focal length)",
+      "explanation": "The angular magnification of an astronomical telescope in normal adjustment equals the ratio of the objective's focal length to the eyepiece's focal length.",
+      "topic": "Astronomical telescope",
+      "difficulty": "medium"
+    },
+    {
+      "question": "An astronomical telescope has an objective of focal length 100 cm and an eyepiece of focal length 5 cm. What is its magnifying power in normal adjustment?",
+      "options": ["20", "5", "100", "0.05"],
+      "correct_answer": "20",
+      "explanation": "M = f_o/f_e = 100/5 = 20.",
+      "topic": "Astronomical telescope",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Compared to the object, the final image seen through an astronomical telescope in normal adjustment (using two converging lenses) is:",
+      "options": ["Inverted relative to the object", "Upright relative to the object", "The same orientation as in a simple microscope", "Rotated 90 degrees"],
+      "correct_answer": "Inverted relative to the object",
+      "explanation": "A simple astronomical telescope with two converging lenses produces a final image that is inverted with respect to the object; an erecting lens or prism system is needed to produce an upright image, as in terrestrial telescopes.",
+      "topic": "Astronomical telescope",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Which of the following best describes the amplitude of a wave?",
+      "options": [
+        "The maximum displacement of a particle from its equilibrium position",
+        "The distance between two successive crests",
+        "The number of oscillations per second",
+        "The time taken for one complete oscillation"
+      ],
+      "correct_answer": "The maximum displacement of a particle from its equilibrium position",
+      "explanation": "Amplitude is the maximum displacement of an oscillating particle in the medium from its rest (equilibrium) position.",
+      "topic": "Wave motion fundamentals",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Two points on a wave that are exactly one wavelength apart are said to be:",
+      "options": ["In phase", "Out of phase by 90°", "Out of phase by 180°", "Unrelated in phase"],
+      "correct_answer": "In phase",
+      "explanation": "Points separated by a whole number of wavelengths have identical displacement and velocity at every instant, meaning they oscillate in phase.",
+      "topic": "Wave motion fundamentals",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A plane mirror forms an image of an object that is:",
+      "options": ["Virtual, upright, and the same size as the object, laterally inverted", "Real, inverted, and magnified", "Virtual, inverted, and diminished", "Real, upright, and the same size"],
+      "correct_answer": "Virtual, upright, and the same size as the object, laterally inverted",
+      "explanation": "A plane mirror always forms a virtual, upright image equal in size to the object, located as far behind the mirror as the object is in front, with left-right reversal.",
+      "topic": "Laws of reflection",
+      "difficulty": "easy"
+    }
+  ]
+}

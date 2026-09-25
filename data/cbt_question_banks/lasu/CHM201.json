@@ -1,0 +1,264 @@
+{
+  "course_code": "CHM201",
+  "title": "Physical Chemistry I",
+  "level": "200",
+  "source_note": "Standard NUC-aligned Nigerian university 200L physical chemistry curriculum, first semester: gas laws and kinetic theory, chemical thermodynamics (first law, enthalpy, Hess's law, thermochemistry), and introductory chemical equilibrium. Kinetics and thermodynamics are covered at an introductory level here; electrochemistry, solutions, and phase equilibria are reserved for CHM202.",
+  "questions": [
+    {
+      "question": "According to Boyle's law, at constant temperature, how are the pressure and volume of a fixed mass of gas related?",
+      "options": ["Pressure is inversely proportional to volume", "Pressure is directly proportional to volume", "Pressure is independent of volume", "Pressure is proportional to the square of volume"],
+      "correct_answer": "Pressure is inversely proportional to volume",
+      "explanation": "Boyle's law states that PV = constant at constant temperature for a fixed amount of gas, meaning pressure and volume are inversely proportional.",
+      "topic": "Gas laws",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A sample of gas occupies 2.0 dm3 at 1.0 atm. What volume will it occupy at 2.5 atm if temperature is held constant?",
+      "options": ["0.80 dm3", "5.0 dm3", "1.25 dm3", "2.5 dm3"],
+      "correct_answer": "0.80 dm3",
+      "explanation": "By Boyle's law, P1V1 = P2V2: (1.0)(2.0) = (2.5)(V2), so V2 = 2.0/2.5 = 0.80 dm3.",
+      "topic": "Gas laws",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The ideal gas equation is given as PV = nRT. What does the symbol 'n' represent?",
+      "options": ["Number of moles of gas", "Number of gas particles", "Normality of the solution", "Newtons of force applied"],
+      "correct_answer": "Number of moles of gas",
+      "explanation": "In the ideal gas equation, n is the amount of gas expressed in moles, R is the universal gas constant, T is absolute temperature, P is pressure, and V is volume.",
+      "topic": "Gas laws",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Calculate the volume occupied by 2 moles of an ideal gas at 273 K and 1 atm pressure (R = 0.0821 dm3 atm mol-1 K-1).",
+      "options": ["44.8 dm3", "22.4 dm3", "11.2 dm3", "89.6 dm3"],
+      "correct_answer": "44.8 dm3",
+      "explanation": "Using PV = nRT: V = nRT/P = (2)(0.0821)(273)/1 = 44.8 dm3, twice the molar volume of an ideal gas at STP (22.4 dm3/mol).",
+      "topic": "Gas laws",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which postulate of the kinetic theory of gases explains why real gases deviate from ideal behaviour at high pressure?",
+      "options": ["The assumption that gas molecules have negligible volume breaks down when molecules are forced close together", "Gas molecules are assumed to be in constant random motion", "Collisions between gas molecules are assumed to be perfectly elastic", "Gas molecules exert no attractive forces on each other at any distance"],
+      "correct_answer": "The assumption that gas molecules have negligible volume breaks down when molecules are forced close together",
+      "explanation": "At high pressure, gas molecules are compressed closer together, so their actual volume becomes significant relative to the container volume, causing deviation from ideal gas behaviour.",
+      "topic": "Kinetic theory of gases",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The van der Waals equation modifies the ideal gas law to account for which two real-gas effects?",
+      "options": ["Intermolecular forces of attraction and the finite volume of gas molecules", "Temperature and pressure only", "The mass and charge of gas molecules", "The colour and odour of the gas"],
+      "correct_answer": "Intermolecular forces of attraction and the finite volume of gas molecules",
+      "explanation": "The van der Waals equation, (P + an2/V2)(V - nb) = nRT, introduces correction terms 'a' for intermolecular attraction and 'b' for the finite molecular volume, both ignored in the ideal gas law.",
+      "topic": "Kinetic theory of gases",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In thermodynamics, what is the first law essentially a statement of?",
+      "options": ["Conservation of energy: energy cannot be created or destroyed, only transformed", "Entropy of the universe always increases", "Heat always flows from cold to hot bodies spontaneously", "The volume of a system is always constant"],
+      "correct_answer": "Conservation of energy: energy cannot be created or destroyed, only transformed",
+      "explanation": "The first law of thermodynamics states that the change in internal energy of a system equals heat added minus work done by the system, reflecting the conservation of energy.",
+      "topic": "First law of thermodynamics",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which mathematical expression correctly represents the first law of thermodynamics?",
+      "options": ["Delta U = q + w", "Delta U = q - Delta S", "Delta U = w/q", "Delta U = PV/T"],
+      "correct_answer": "Delta U = q + w",
+      "explanation": "The change in internal energy (Delta U) equals the heat added to the system (q) plus the work done on the system (w), using the convention where work done on the system is positive.",
+      "topic": "First law of thermodynamics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the definition of enthalpy (H) in terms of internal energy (U), pressure (P), and volume (V)?",
+      "options": ["H = U + PV", "H = U - PV", "H = U x PV", "H = U/PV"],
+      "correct_answer": "H = U + PV",
+      "explanation": "Enthalpy is defined as H = U + PV, and at constant pressure, the change in enthalpy equals the heat absorbed or released by the system.",
+      "topic": "Enthalpy",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A reaction releases heat to the surroundings and has a negative enthalpy change. What term describes this type of reaction?",
+      "options": ["Exothermic", "Endothermic", "Isothermal", "Adiabatic"],
+      "correct_answer": "Exothermic",
+      "explanation": "Exothermic reactions release heat to the surroundings, resulting in a negative Delta H, while endothermic reactions absorb heat and have a positive Delta H.",
+      "topic": "Enthalpy",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Hess's law states that the total enthalpy change for a reaction is the same regardless of the route taken. What thermodynamic principle underlies this law?",
+      "options": ["Enthalpy is a state function, depending only on initial and final states", "Enthalpy depends only on the reaction mechanism used", "Enthalpy changes only when a catalyst is present", "Enthalpy is always zero for multi-step reactions"],
+      "correct_answer": "Enthalpy is a state function, depending only on initial and final states",
+      "explanation": "Because enthalpy is a state function, its change depends only on the initial and final states of the system, not on the path taken, which is the theoretical basis for Hess's law.",
+      "topic": "Hess's law",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Given: C(s) + O2(g) -> CO2(g), Delta H = -393.5 kJ/mol, and CO(g) + 1/2O2(g) -> CO2(g), Delta H = -283.0 kJ/mol. Use Hess's law to calculate Delta H for C(s) + 1/2O2(g) -> CO(g).",
+      "options": ["-110.5 kJ/mol", "-676.5 kJ/mol", "+110.5 kJ/mol", "-393.5 kJ/mol"],
+      "correct_answer": "-110.5 kJ/mol",
+      "explanation": "Subtracting the second equation from the first: Delta H = -393.5 - (-283.0) = -110.5 kJ/mol, giving the enthalpy of formation of carbon monoxide.",
+      "topic": "Hess's law",
+      "difficulty": "hard"
+    },
+    {
+      "question": "What is the standard enthalpy of formation of an element in its most stable standard state, such as O2(g) at 298 K and 1 atm?",
+      "options": ["Zero", "One kJ/mol", "Equal to its molar mass", "Always negative"],
+      "correct_answer": "Zero",
+      "explanation": "By convention, the standard enthalpy of formation of any element in its most stable form under standard conditions is defined as zero, serving as the reference point for enthalpy calculations.",
+      "topic": "Thermochemistry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A bomb calorimeter is used to measure the heat released by a combustion reaction at constant volume. Which quantity is directly measured?",
+      "options": ["Change in internal energy (Delta U) of the reaction", "Change in entropy of the surroundings", "Change in Gibbs free energy", "The equilibrium constant of the reaction"],
+      "correct_answer": "Change in internal energy (Delta U) of the reaction",
+      "explanation": "Because a bomb calorimeter operates at constant volume, no PV work is done, so the heat measured directly equals the change in internal energy of the reaction.",
+      "topic": "Thermochemistry",
+      "difficulty": "hard"
+    },
+    {
+      "question": "What is the term for the minimum energy that colliding particles must possess for a reaction to occur?",
+      "options": ["Activation energy", "Enthalpy of reaction", "Bond dissociation energy", "Ionization energy"],
+      "correct_answer": "Activation energy",
+      "explanation": "Activation energy is the energy barrier that reactant particles must overcome for effective collisions to result in a chemical reaction.",
+      "topic": "Chemical kinetics",
+      "difficulty": "easy"
+    },
+    {
+      "question": "For the reaction A + B -> products, the rate law is found experimentally to be rate = k[A]^2[B]. What is the overall order of the reaction?",
+      "options": ["Third order", "Second order", "First order", "Zero order"],
+      "correct_answer": "Third order",
+      "explanation": "The overall order of reaction is the sum of the individual orders with respect to each reactant: 2 (for A) + 1 (for B) = 3, so the reaction is third order overall.",
+      "topic": "Chemical kinetics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a zero-order reaction, how does the rate of reaction depend on the concentration of the reactant?",
+      "options": ["The rate is independent of the reactant concentration", "The rate is directly proportional to the reactant concentration", "The rate is proportional to the square of the reactant concentration", "The rate decreases as reactant concentration increases"],
+      "correct_answer": "The rate is independent of the reactant concentration",
+      "explanation": "In a zero-order reaction, rate = k[A]^0 = k, meaning the rate remains constant regardless of how the reactant concentration changes.",
+      "topic": "Chemical kinetics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which factor increases the rate of a chemical reaction by providing an alternative pathway with lower activation energy, without itself being consumed?",
+      "options": ["A catalyst", "An inhibitor", "A decrease in temperature", "A decrease in concentration"],
+      "correct_answer": "A catalyst",
+      "explanation": "A catalyst speeds up a reaction by providing an alternative reaction pathway with lower activation energy, and it is regenerated at the end of the reaction, remaining chemically unchanged overall.",
+      "topic": "Chemical kinetics",
+      "difficulty": "easy"
+    },
+    {
+      "question": "For a first-order reaction, what is the relationship between the half-life and the rate constant k?",
+      "options": ["t(1/2) = 0.693/k, independent of initial concentration", "t(1/2) = k/0.693, dependent on initial concentration", "t(1/2) = 1/(k[A]0)", "t(1/2) = k x [A]0"],
+      "correct_answer": "t(1/2) = 0.693/k, independent of initial concentration",
+      "explanation": "For first-order kinetics, the half-life t(1/2) = ln2/k = 0.693/k is a constant that does not depend on the initial concentration of reactant, unlike zero- or second-order reactions.",
+      "topic": "Chemical kinetics",
+      "difficulty": "hard"
+    },
+    {
+      "question": "What does Le Chatelier's principle state about a system at equilibrium when subjected to a stress such as a change in concentration, pressure, or temperature?",
+      "options": ["The equilibrium shifts in the direction that tends to counteract the applied stress", "The equilibrium remains completely unaffected by any external stress", "The rate constant of the reaction changes permanently", "The system stops reacting entirely"],
+      "correct_answer": "The equilibrium shifts in the direction that tends to counteract the applied stress",
+      "explanation": "Le Chatelier's principle predicts that a system at equilibrium responds to a disturbance by shifting in the direction that partially opposes the change, restoring a new equilibrium.",
+      "topic": "Chemical equilibrium",
+      "difficulty": "easy"
+    },
+    {
+      "question": "For the exothermic reaction N2(g) + 3H2(g) <-> 2NH3(g), what effect does increasing the temperature have on the position of equilibrium?",
+      "options": ["The equilibrium shifts to the left (towards reactants), decreasing NH3 yield", "The equilibrium shifts to the right (towards products), increasing NH3 yield", "The equilibrium position is unaffected by temperature", "The reaction stops completely at higher temperature"],
+      "correct_answer": "The equilibrium shifts to the left (towards reactants), decreasing NH3 yield",
+      "explanation": "Since the forward reaction is exothermic, increasing temperature favours the endothermic reverse reaction according to Le Chatelier's principle, shifting equilibrium towards reactants and reducing NH3 yield, even though it increases the rate.",
+      "topic": "Chemical equilibrium",
+      "difficulty": "hard"
+    },
+    {
+      "question": "For the equilibrium reaction 2SO2(g) + O2(g) <-> 2SO3(g), how is the equilibrium constant Kc correctly expressed?",
+      "options": ["Kc = [SO3]^2 / ([SO2]^2[O2])", "Kc = [SO2]^2[O2] / [SO3]^2", "Kc = [SO3] / ([SO2][O2])", "Kc = [SO2][O2] / [SO3]"],
+      "correct_answer": "Kc = [SO3]^2 / ([SO2]^2[O2])",
+      "explanation": "The equilibrium constant expression places product concentrations (raised to their stoichiometric coefficients) in the numerator and reactant concentrations in the denominator.",
+      "topic": "Chemical equilibrium",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A reaction has a very large equilibrium constant (Kc >> 1). What does this indicate about the position of equilibrium?",
+      "options": ["The equilibrium lies far to the right, favouring products", "The equilibrium lies far to the left, favouring reactants", "The reaction has not yet started", "The reaction rate is extremely slow"],
+      "correct_answer": "The equilibrium lies far to the right, favouring products",
+      "explanation": "A large Kc value means the product concentrations at equilibrium are much greater than reactant concentrations, indicating the equilibrium strongly favours the products.",
+      "topic": "Chemical equilibrium",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the relationship between Kp and Kc for a gas-phase reaction, where Delta n is the change in moles of gas (products minus reactants)?",
+      "options": ["Kp = Kc(RT)^(Delta n)", "Kp = Kc + RT(Delta n)", "Kp = Kc/(RT)", "Kp = Kc x Delta n"],
+      "correct_answer": "Kp = Kc(RT)^(Delta n)",
+      "explanation": "Kp relates to Kc through the ideal gas law by Kp = Kc(RT)^(Delta n), where Delta n is the difference between moles of gaseous products and reactants.",
+      "topic": "Chemical equilibrium",
+      "difficulty": "hard"
+    },
+    {
+      "question": "According to Charles's law, at constant pressure, how does the volume of a fixed mass of gas vary with absolute temperature?",
+      "options": ["Volume is directly proportional to absolute temperature", "Volume is inversely proportional to absolute temperature", "Volume is independent of temperature", "Volume is proportional to the square of temperature"],
+      "correct_answer": "Volume is directly proportional to absolute temperature",
+      "explanation": "Charles's law states that V/T = constant at constant pressure, meaning volume increases proportionally as absolute temperature increases.",
+      "topic": "Gas laws",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What does the second law of thermodynamics state about the entropy of an isolated system undergoing a spontaneous process?",
+      "options": ["The entropy of the system tends to increase", "The entropy of the system always remains constant", "The entropy of the system always decreases", "Entropy has no relevance to spontaneity"],
+      "correct_answer": "The entropy of the system tends to increase",
+      "explanation": "The second law of thermodynamics states that for spontaneous processes in an isolated system, the total entropy increases, reflecting the natural tendency toward disorder.",
+      "topic": "Second law of thermodynamics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Gibbs free energy (G) combines enthalpy and entropy to predict spontaneity. Which condition indicates a spontaneous process at constant temperature and pressure?",
+      "options": ["Delta G is negative", "Delta G is positive", "Delta G is zero", "Delta H is positive"],
+      "correct_answer": "Delta G is negative",
+      "explanation": "A negative Delta G indicates that a process is thermodynamically spontaneous at constant temperature and pressure, following the relation Delta G = Delta H - T Delta S.",
+      "topic": "Gibbs free energy",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which term describes a process that occurs without any transfer of heat between the system and its surroundings?",
+      "options": ["Adiabatic process", "Isothermal process", "Isobaric process", "Isochoric process"],
+      "correct_answer": "Adiabatic process",
+      "explanation": "An adiabatic process is one in which no heat (q = 0) is exchanged between the system and surroundings, so any change in internal energy is entirely due to work done.",
+      "topic": "First law of thermodynamics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "According to the Arrhenius equation, k = Ae^(-Ea/RT), what happens to the rate constant k as temperature T increases?",
+      "options": ["k increases, because a larger fraction of molecules have energy exceeding the activation energy", "k decreases as temperature increases", "k remains completely unaffected by temperature", "k becomes negative at high temperature"],
+      "correct_answer": "k increases, because a larger fraction of molecules have energy exceeding the activation energy",
+      "explanation": "As temperature rises, more molecules possess kinetic energy equal to or greater than the activation energy, increasing the exponential term and thus the rate constant k.",
+      "topic": "Chemical kinetics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the Maxwell-Boltzmann distribution of molecular energies, what happens to the distribution curve as temperature increases?",
+      "options": ["The curve broadens and shifts to higher energies, with more molecules exceeding the activation energy", "The curve narrows and shifts to lower energies", "The curve remains completely unchanged with temperature", "All molecules acquire exactly the same energy"],
+      "correct_answer": "The curve broadens and shifts to higher energies, with more molecules exceeding the activation energy",
+      "explanation": "Increasing temperature broadens the Maxwell-Boltzmann distribution and shifts it toward higher energies, increasing the fraction of molecules with energy greater than or equal to the activation energy.",
+      "topic": "Chemical kinetics",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Which of the following correctly states the combined gas law relating pressure, volume, and temperature for a fixed amount of gas?",
+      "options": ["P1V1/T1 = P2V2/T2", "P1V1 = P2V2 regardless of temperature", "V1/T1 = V2/T2 regardless of pressure", "P1/V1 = P2/V2 regardless of temperature"],
+      "correct_answer": "P1V1/T1 = P2V2/T2",
+      "explanation": "The combined gas law merges Boyle's, Charles's, and Gay-Lussac's laws into one expression that holds for a fixed mass of gas when pressure, volume, and temperature all change.",
+      "topic": "Gas laws",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The specific heat capacity of water is approximately 4.18 J g-1 K-1. How much heat is required to raise the temperature of 100 g of water from 25 degC to 45 degC?",
+      "options": ["8360 J", "4180 J", "418 J", "2090 J"],
+      "correct_answer": "8360 J",
+      "explanation": "q = mcDelta T = (100 g)(4.18 J g-1 K-1)(20 K) = 8360 J.",
+      "topic": "Thermochemistry",
+      "difficulty": "medium"
+    }
+  ]
+}

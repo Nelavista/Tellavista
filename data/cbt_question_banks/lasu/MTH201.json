@@ -1,0 +1,427 @@
+{
+  "course_code": "MTH201",
+  "title": "Mathematical Methods I",
+  "level": "200",
+  "source_note": "Standard NUC-aligned Nigerian university 200L mathematics curriculum, as used at LASU: functions of several variables, partial differentiation, total differentials, multiple (double) integrals, infinite series expansions (Taylor/Maclaurin), and applications such as unconstrained and constrained (Lagrange multiplier) optimization of multivariable functions.",
+  "questions": [
+    {
+      "question": "For a function of two variables z = f(x, y), what does ∂z/∂x represent?",
+      "options": [
+        "The rate of change of z with respect to x, holding y constant",
+        "The rate of change of z with respect to y, holding x constant",
+        "The total derivative of z",
+        "The average value of z over x"
+      ],
+      "correct_answer": "The rate of change of z with respect to x, holding y constant",
+      "explanation": "Partial differentiation with respect to x treats all other variables (here y) as constants.",
+      "topic": "Partial differentiation",
+      "difficulty": "easy"
+    },
+    {
+      "question": "If z = x^2y + 3xy^2, find ∂z/∂x.",
+      "options": ["2xy + 3y^2", "x^2 + 6xy", "2xy + 3xy", "x^2y"],
+      "correct_answer": "2xy + 3y^2",
+      "explanation": "Differentiating with respect to x while treating y as constant: ∂z/∂x = 2xy + 3y^2.",
+      "topic": "Partial differentiation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For z = x^2y + 3xy^2, find ∂z/∂y.",
+      "options": ["x^2 + 6xy", "2xy + 3y^2", "x^2y", "6xy"],
+      "correct_answer": "x^2 + 6xy",
+      "explanation": "Differentiating with respect to y while treating x as constant: ∂z/∂y = x^2 + 6xy.",
+      "topic": "Partial differentiation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What does Clairaut's (Schwarz's) theorem state about mixed partial derivatives?",
+      "options": [
+        "∂²z/∂x∂y = ∂²z/∂y∂x, provided both are continuous",
+        "∂²z/∂x∂y is always zero",
+        "∂z/∂x = ∂z/∂y always",
+        "Mixed partials cannot be computed"
+      ],
+      "correct_answer": "∂²z/∂x∂y = ∂²z/∂y∂x, provided both are continuous",
+      "explanation": "This theorem states that the order of taking mixed partial derivatives does not matter when they are continuous.",
+      "topic": "Partial differentiation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For z = x^3 + y^3 - 3xy, find ∂²z/∂x².",
+      "options": ["6x", "6y", "3x^2 - 3y", "6x - 3y"],
+      "correct_answer": "6x",
+      "explanation": "∂z/∂x = 3x^2 - 3y, and differentiating again with respect to x gives ∂²z/∂x² = 6x.",
+      "topic": "Partial differentiation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The total differential dz of z = f(x, y) is given by:",
+      "options": [
+        "dz = (∂z/∂x)dx + (∂z/∂y)dy",
+        "dz = (∂z/∂x)dx - (∂z/∂y)dy",
+        "dz = (∂z/∂x)(∂z/∂y)",
+        "dz = dx + dy"
+      ],
+      "correct_answer": "dz = (∂z/∂x)dx + (∂z/∂y)dy",
+      "explanation": "The total differential sums the contribution to the change in z from small changes in each independent variable.",
+      "topic": "Total differentials",
+      "difficulty": "medium"
+    },
+    {
+      "question": "If z = f(x, y) where x = g(t) and y = h(t), the chain rule for dz/dt is:",
+      "options": [
+        "dz/dt = (∂z/∂x)(dx/dt) + (∂z/∂y)(dy/dt)",
+        "dz/dt = (∂z/∂x) + (∂z/∂y)",
+        "dz/dt = (dx/dt)(dy/dt)",
+        "dz/dt = ∂z/∂x · ∂z/∂y"
+      ],
+      "correct_answer": "dz/dt = (∂z/∂x)(dx/dt) + (∂z/∂y)(dy/dt)",
+      "explanation": "This is the multivariable chain rule for a composite function where both x and y depend on a single parameter t.",
+      "topic": "Chain rule for several variables",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A function f(x, y) has a stationary point where:",
+      "options": [
+        "∂f/∂x = 0 and ∂f/∂y = 0 simultaneously",
+        "∂f/∂x = ∂f/∂y",
+        "f(x,y) = 0",
+        "∂²f/∂x² = 0 only"
+      ],
+      "correct_answer": "∂f/∂x = 0 and ∂f/∂y = 0 simultaneously",
+      "explanation": "Stationary (critical) points of a multivariable function occur where both first-order partial derivatives vanish.",
+      "topic": "Optimization of multivariable functions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the second derivative test for f(x,y), the discriminant is D = f_xx·f_yy - (f_xy)^2. If D > 0 and f_xx > 0, the critical point is a:",
+      "options": ["Local minimum", "Local maximum", "Saddle point", "Inflection point"],
+      "correct_answer": "Local minimum",
+      "explanation": "When D > 0 and f_xx > 0, the surface curves upward in all directions at that point, making it a local minimum.",
+      "topic": "Optimization of multivariable functions",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In the second derivative test for f(x,y), if D = f_xx·f_yy - (f_xy)^2 < 0, the critical point is:",
+      "options": ["A saddle point", "A local maximum", "A local minimum", "Undetermined"],
+      "correct_answer": "A saddle point",
+      "explanation": "A negative discriminant indicates the surface curves upward in one direction and downward in another, i.e. a saddle point.",
+      "topic": "Optimization of multivariable functions",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Find the critical point of f(x, y) = x^2 + y^2 - 4x - 6y.",
+      "options": ["(2, 3)", "(4, 6)", "(-2, -3)", "(0, 0)"],
+      "correct_answer": "(2, 3)",
+      "explanation": "Setting f_x = 2x-4=0 gives x=2, and f_y = 2y-6=0 gives y=3, so the critical point is (2,3).",
+      "topic": "Optimization of multivariable functions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The method of Lagrange multipliers is used to:",
+      "options": [
+        "Find extrema of a function subject to a constraint",
+        "Solve unconstrained optimization problems only",
+        "Differentiate implicit functions",
+        "Evaluate definite integrals"
+      ],
+      "correct_answer": "Find extrema of a function subject to a constraint",
+      "explanation": "Lagrange multipliers introduce an auxiliary variable λ to find extrema of f(x,y) subject to a constraint g(x,y)=c.",
+      "topic": "Lagrange multipliers",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the Lagrange multiplier method, the key equation relating f and the constraint g is:",
+      "options": [
+        "∇f = λ∇g",
+        "f = λg",
+        "∇f = ∇g",
+        "f + g = λ"
+      ],
+      "correct_answer": "∇f = λ∇g",
+      "explanation": "At an extremum subject to a constraint, the gradient of f is parallel to the gradient of g, giving ∇f = λ∇g.",
+      "topic": "Lagrange multipliers",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is a double integral ∬_R f(x,y) dA used to compute?",
+      "options": [
+        "The volume under a surface z = f(x,y) over a region R",
+        "The arc length of a curve",
+        "The gradient of f",
+        "A single-variable antiderivative"
+      ],
+      "correct_answer": "The volume under a surface z = f(x,y) over a region R",
+      "explanation": "A double integral over a region R gives the signed volume between the surface z=f(x,y) and the xy-plane over R.",
+      "topic": "Multiple integrals",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Evaluate the double integral ∫₀¹∫₀² xy dx dy.",
+      "options": ["1", "2", "0.5", "4"],
+      "correct_answer": "1",
+      "explanation": "Inner integral: ∫₀² xy dx = [x^2y/2]₀² = 2y. Then ∫₀¹ 2y dy = [y^2]₀¹ = 1.",
+      "topic": "Multiple integrals",
+      "difficulty": "medium"
+    },
+    {
+      "question": "When evaluating a double integral over a rectangular region, changing the order of integration (Fubini's theorem) is valid when:",
+      "options": [
+        "The integrand is continuous on the region",
+        "The region is a circle",
+        "The limits are both infinite",
+        "It is never valid"
+      ],
+      "correct_answer": "The integrand is continuous on the region",
+      "explanation": "Fubini's theorem guarantees that iterated integrals can be swapped in order when the function is continuous (or absolutely integrable) on the region.",
+      "topic": "Multiple integrals",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Evaluate ∫₀¹∫₀¹ (x + y) dx dy.",
+      "options": ["1", "2", "0.5", "1.5"],
+      "correct_answer": "1",
+      "explanation": "Inner: ∫₀¹(x+y)dx = [x²/2 + xy]₀¹ = 1/2 + y. Then ∫₀¹(1/2+y)dy = 1/2 + 1/2 = 1.",
+      "topic": "Multiple integrals",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Maclaurin series is a special case of the Taylor series expanded about:",
+      "options": ["x = 0", "x = 1", "x = a (any point)", "x = ∞"],
+      "correct_answer": "x = 0",
+      "explanation": "A Maclaurin series is a Taylor series centred specifically at x = 0.",
+      "topic": "Taylor and Maclaurin series",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The general Taylor series expansion of f(x) about x = a is:",
+      "options": [
+        "f(a) + f'(a)(x-a) + f''(a)(x-a)²/2! + ...",
+        "f(a) + f'(x)(x-a)",
+        "f(x) = f(a) + f(a)(x-a)",
+        "f(a) - f'(a)(x-a) + ..."
+      ],
+      "correct_answer": "f(a) + f'(a)(x-a) + f''(a)(x-a)²/2! + ...",
+      "explanation": "This is the standard Taylor series formula, expressing f(x) as an infinite sum of derivatives evaluated at a, weighted by powers of (x-a).",
+      "topic": "Taylor and Maclaurin series",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the Maclaurin series expansion of e^x?",
+      "options": [
+        "1 + x + x²/2! + x³/3! + ...",
+        "x - x²/2 + x³/3 - ...",
+        "1 - x + x²/2! - ...",
+        "x + x³/3! + x⁵/5! + ..."
+      ],
+      "correct_answer": "1 + x + x²/2! + x³/3! + ...",
+      "explanation": "Since every derivative of e^x equals e^x and e^0=1, the Maclaurin series is Σ x^n/n! = 1+x+x²/2!+...",
+      "topic": "Taylor and Maclaurin series",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the Maclaurin series expansion of sin x (first three nonzero terms)?",
+      "options": [
+        "x - x³/3! + x⁵/5!",
+        "1 - x²/2! + x⁴/4!",
+        "x + x²/2! + x³/3!",
+        "x - x²/2 + x³/3"
+      ],
+      "correct_answer": "x - x³/3! + x⁵/5!",
+      "explanation": "The Maclaurin series for sin x contains only odd powers of x with alternating signs: x - x³/3! + x⁵/5! - ...",
+      "topic": "Taylor and Maclaurin series",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the Maclaurin series expansion of cos x (first three terms)?",
+      "options": [
+        "1 - x²/2! + x⁴/4!",
+        "x - x³/3! + x⁵/5!",
+        "1 + x²/2! + x⁴/4!",
+        "1 - x + x²/2!"
+      ],
+      "correct_answer": "1 - x²/2! + x⁴/4!",
+      "explanation": "cos x's Maclaurin series contains only even powers with alternating signs: 1 - x²/2! + x⁴/4! - ...",
+      "topic": "Taylor and Maclaurin series",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For the Maclaurin series of ln(1+x), which restriction on x is required for convergence?",
+      "options": ["-1 < x ≤ 1", "All real x", "x > 1", "x < -1"],
+      "correct_answer": "-1 < x ≤ 1",
+      "explanation": "The series ln(1+x) = x - x²/2 + x³/3 - ... converges only for -1 < x ≤ 1.",
+      "topic": "Taylor and Maclaurin series",
+      "difficulty": "hard"
+    },
+    {
+      "question": "An infinite series Σaₙ is said to converge absolutely if:",
+      "options": [
+        "Σ|aₙ| converges",
+        "Σaₙ converges but Σ|aₙ| diverges",
+        "aₙ → 0 as n → ∞",
+        "aₙ is always positive"
+      ],
+      "correct_answer": "Σ|aₙ| converges",
+      "explanation": "Absolute convergence means the series of absolute values also converges, which is a stronger condition than plain convergence.",
+      "topic": "Infinite series",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The ratio test for convergence of Σaₙ examines the limit:",
+      "options": [
+        "L = lim(n→∞) |a_(n+1)/aₙ|",
+        "L = lim(n→∞) aₙ",
+        "L = lim(n→∞) n·aₙ",
+        "L = Σaₙ"
+      ],
+      "correct_answer": "L = lim(n→∞) |a_(n+1)/aₙ|",
+      "explanation": "The ratio test computes this limit L: the series converges absolutely if L<1, diverges if L>1, and is inconclusive if L=1.",
+      "topic": "Infinite series",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Using the ratio test, what is the radius of convergence of the series Σ xⁿ/n!?",
+      "options": ["Infinite (converges for all x)", "1", "0", "e"],
+      "correct_answer": "Infinite (converges for all x)",
+      "explanation": "Applying the ratio test to xⁿ/n! gives lim|x|/(n+1) = 0 for any finite x, so the series converges for all real x, matching e^x.",
+      "topic": "Infinite series",
+      "difficulty": "hard"
+    },
+    {
+      "question": "For z = f(x,y), the gradient vector ∇f is defined as:",
+      "options": [
+        "(∂f/∂x, ∂f/∂y)",
+        "∂f/∂x + ∂f/∂y",
+        "(∂f/∂x)(∂f/∂y)",
+        "∂²f/∂x∂y"
+      ],
+      "correct_answer": "(∂f/∂x, ∂f/∂y)",
+      "explanation": "The gradient is the vector of first-order partial derivatives, pointing in the direction of steepest increase of f.",
+      "topic": "Partial differentiation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "If w = x²y + z³ where x = t, y = t², z = t, find dw/dt using the chain rule.",
+      "options": [
+        "2ty·1 + x²·2t + 3z²·1, i.e. 2t(t²) + t²(2t) + 3t²",
+        "2xy + x² + 3z²",
+        "2t + 2t + 3t",
+        "x² + y + z³"
+      ],
+      "correct_answer": "2ty·1 + x²·2t + 3z²·1, i.e. 2t(t²) + t²(2t) + 3t²",
+      "explanation": "By the multivariable chain rule, dw/dt = ∂w/∂x·dx/dt + ∂w/∂y·dy/dt + ∂w/∂z·dz/dt = 2xy(1) + x²(2t) + 3z²(1), substituting x=t,y=t²,z=t.",
+      "topic": "Chain rule for several variables",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A function f(x,y) is homogeneous of degree n if it satisfies:",
+      "options": [
+        "f(tx, ty) = tⁿf(x,y)",
+        "f(x,y) = nf(x,y)",
+        "f(tx,ty) = tf(x,y)",
+        "f(x+t, y+t) = f(x,y)"
+      ],
+      "correct_answer": "f(tx, ty) = tⁿf(x,y)",
+      "explanation": "This is the definition of a homogeneous function of degree n, a concept used with Euler's theorem for partial derivatives.",
+      "topic": "Partial differentiation",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Euler's theorem for a homogeneous function f(x,y) of degree n states:",
+      "options": [
+        "x(∂f/∂x) + y(∂f/∂y) = nf",
+        "x(∂f/∂x) - y(∂f/∂y) = nf",
+        "∂f/∂x + ∂f/∂y = n",
+        "f(x,y) = n(x+y)"
+      ],
+      "correct_answer": "x(∂f/∂x) + y(∂f/∂y) = nf",
+      "explanation": "Euler's homogeneous function theorem relates the partial derivatives of a homogeneous function to the function itself scaled by its degree n.",
+      "topic": "Partial differentiation",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The area of a region R in the xy-plane can be computed by which double integral?",
+      "options": ["∬_R dA", "∬_R f(x,y) dA", "∫_R f'(x) dx", "∬_R xy dA"],
+      "correct_answer": "∬_R dA",
+      "explanation": "Setting the integrand to 1 and integrating over the region R gives its area directly.",
+      "topic": "Multiple integrals",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which coordinate system is most convenient for evaluating double integrals over circular regions?",
+      "options": ["Polar coordinates", "Cartesian coordinates", "Spherical coordinates", "Cylindrical coordinates"],
+      "correct_answer": "Polar coordinates",
+      "explanation": "Polar coordinates (r, θ) naturally match the symmetry of circular or annular regions, simplifying the limits of integration.",
+      "topic": "Multiple integrals",
+      "difficulty": "medium"
+    },
+    {
+      "question": "When converting a double integral to polar coordinates, dA becomes:",
+      "options": ["r dr dθ", "dr dθ", "r² dr dθ", "dx dy"],
+      "correct_answer": "r dr dθ",
+      "explanation": "The Jacobian of the transformation from Cartesian to polar coordinates introduces a factor of r, so dA = r dr dθ.",
+      "topic": "Multiple integrals",
+      "difficulty": "hard"
+    },
+    {
+      "question": "What is a directional derivative of f(x,y) at a point, in the direction of a unit vector u?",
+      "options": [
+        "The rate of change of f in the direction u, given by ∇f·u",
+        "The partial derivative with respect to x only",
+        "The total differential of f",
+        "The magnitude of the gradient"
+      ],
+      "correct_answer": "The rate of change of f in the direction u, given by ∇f·u",
+      "explanation": "The directional derivative generalizes partial derivatives to any direction and is computed as the dot product of the gradient with the unit direction vector.",
+      "topic": "Partial differentiation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The gradient vector ∇f at a point is known to point in the direction of:",
+      "options": [
+        "The steepest ascent (maximum rate of increase) of f",
+        "The steepest descent of f",
+        "Zero rate of change",
+        "The x-axis always"
+      ],
+      "correct_answer": "The steepest ascent (maximum rate of increase) of f",
+      "explanation": "The gradient vector always points in the direction in which the function increases most rapidly.",
+      "topic": "Partial differentiation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Find all critical points of f(x,y) = x² + y² (no constraint) and classify.",
+      "options": [
+        "(0,0), a local minimum",
+        "(0,0), a saddle point",
+        "(1,1), a local maximum",
+        "No critical points exist"
+      ],
+      "correct_answer": "(0,0), a local minimum",
+      "explanation": "f_x=2x=0 and f_y=2y=0 give (0,0); since f_xx=2>0 and D=4>0, it is a local minimum (in fact the global minimum).",
+      "topic": "Optimization of multivariable functions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Use Lagrange multipliers to find the extremum of f(x,y)=xy subject to x+y=10. What is the critical relation obtained from ∇f=λ∇g?",
+      "options": [
+        "y = λ and x = λ, giving x = y",
+        "x = 10 - λ",
+        "y = 10λ",
+        "x + y = λ"
+      ],
+      "correct_answer": "y = λ and x = λ, giving x = y",
+      "explanation": "∇f=(y,x), ∇g=(1,1), so y=λ and x=λ, meaning x=y; combined with x+y=10 gives x=y=5.",
+      "topic": "Lagrange multipliers",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Evaluate ∬_R 1 dA where R is the rectangle 0≤x≤3, 0≤y≤2 (i.e., find the area of R).",
+      "options": ["6", "5", "3", "2"],
+      "correct_answer": "6",
+      "explanation": "The area of the rectangle is simply length × width = 3 × 2 = 6.",
+      "topic": "Multiple integrals",
+      "difficulty": "easy"
+    }
+  ]
+}

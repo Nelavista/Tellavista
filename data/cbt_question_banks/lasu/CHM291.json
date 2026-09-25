@@ -1,0 +1,256 @@
+{
+  "course_code": "CHM291",
+  "title": "Experimental Physical/Inorganic Chemistry",
+  "level": "200",
+  "source_note": "Standard NUC-aligned 200L laboratory curriculum pairing physical-chemistry measurement techniques (viscosity, surface tension, conductometry, potentiometry/pH-metry, adsorption) with systematic qualitative inorganic analysis (cation/anion group tests, flame tests, confirmatory tests, and simple inorganic complex preparation).",
+  "questions": [
+    {
+      "question": "In the Ostwald viscometer method, the relative viscosity of a liquid compared with water is determined mainly by measuring:",
+      "options": ["The mass of each liquid at a fixed volume only", "The time taken for a fixed volume of each liquid to flow between two calibration marks under its own weight, at the same temperature", "The colour intensity of each liquid", "The boiling point of each liquid"],
+      "correct_answer": "The time taken for a fixed volume of each liquid to flow between two calibration marks under its own weight, at the same temperature",
+      "explanation": "In Poiseuille-based viscometry, viscosity is proportional to the flow time and density of the liquid for a fixed viscometer geometry, so relative viscosity is obtained by comparing flow times (and densities) of the test liquid and a reference liquid such as water.",
+      "topic": "Viscosity",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Why must the Ostwald viscometer and the liquids being compared be kept at a constant, controlled temperature (e.g. in a thermostatted water bath) during the experiment?",
+      "options": ["Viscosity is essentially independent of temperature so this step is unnecessary", "Viscosity is strongly temperature-dependent (generally decreasing as temperature rises), so uncontrolled temperature variation would introduce significant error", "It only affects the colour of the liquid", "It is required solely to dissolve the sample"],
+      "correct_answer": "Viscosity is strongly temperature-dependent (generally decreasing as temperature rises), so uncontrolled temperature variation would introduce significant error",
+      "explanation": "Liquid viscosity decreases markedly with increasing temperature as intermolecular forces are more easily overcome, so precise, reproducible viscosity measurements require a constant-temperature bath.",
+      "topic": "Viscosity",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A stalagmometer is used in the laboratory to measure a liquid's:",
+      "options": ["Viscosity directly", "Surface tension, by counting the number of drops formed from a fixed volume of liquid", "Refractive index", "Electrical conductivity"],
+      "correct_answer": "Surface tension, by counting the number of drops formed from a fixed volume of liquid",
+      "explanation": "A stalagmometer measures surface tension by comparing the number of drops (or drop weight) formed by a fixed volume of the test liquid with that of a reference liquid of known surface tension, since drop size depends on surface tension.",
+      "topic": "Surface tension",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Adding a small amount of soap or detergent (a surfactant) to water generally causes its surface tension to:",
+      "options": ["Increase sharply", "Decrease, because surfactant molecules accumulate at the surface and reduce intermolecular attraction there", "Remain completely unchanged", "Become impossible to measure"],
+      "correct_answer": "Decrease, because surfactant molecules accumulate at the surface and reduce intermolecular attraction there",
+      "explanation": "Surfactants are amphiphilic and preferentially orient at the air-water interface, disrupting the cohesive hydrogen-bonding network of water molecules at the surface and lowering the surface tension.",
+      "topic": "Surface tension",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a conductometric titration of a strong acid with a strong base, the conductance of the solution initially falls as the base is added, mainly because:",
+      "options": ["The highly mobile H+ ions are progressively replaced by the much less mobile cation of the base's salt", "Water is being removed from the solution", "The temperature of the solution decreases rapidly", "No ions are present in the solution at any stage"],
+      "correct_answer": "The highly mobile H+ ions are progressively replaced by the much less mobile cation of the base's salt",
+      "explanation": "H+ (and OH-) ions have unusually high ionic mobility due to the Grotthuss mechanism; as they are consumed and replaced by ordinary, less mobile cations/anions, the overall conductance decreases until the equivalence point.",
+      "topic": "Conductometry",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In the conductometric titration described above, after the equivalence point the conductance of the solution starts to:",
+      "options": ["Continue decreasing indefinitely", "Rise again sharply, as excess highly mobile OH- ions from the added base accumulate in solution", "Immediately drop to zero", "Remain perfectly constant"],
+      "correct_answer": "Rise again sharply, as excess highly mobile OH- ions from the added base accumulate in solution",
+      "explanation": "Beyond the equivalence point, further base adds excess OH- ions (also highly mobile) without any further neutralization, so the conductance rises again, giving the characteristic V-shaped conductometric titration curve.",
+      "topic": "Conductometry",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The 'cell constant' of a conductivity cell, used to convert a measured conductance into specific conductance (conductivity), is defined as:",
+      "options": ["The ratio of the distance between the electrodes to their cross-sectional area", "The resistance of pure water in the cell", "The molar mass of the electrolyte used to calibrate it", "The applied voltage during measurement"],
+      "correct_answer": "The ratio of the distance between the electrodes to their cross-sectional area",
+      "explanation": "The cell constant (l/A) relates the measured conductance of a solution to its intrinsic specific conductance (kappa), and is determined by calibrating the cell with a standard KCl solution of known conductivity.",
+      "topic": "Conductometry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A glass electrode used in pH measurement must be calibrated against standard buffer solutions of known pH before use, mainly because:",
+      "options": ["The electrode's response (slope and offset) can drift and vary between electrodes, so calibration corrects the meter reading to a true pH scale", "Buffers are needed to clean the electrode surface only", "Glass electrodes cannot measure pH without added buffer in the test sample itself", "Calibration changes the chemical composition of the sample being tested"],
+      "correct_answer": "The electrode's response (slope and offset) can drift and vary between electrodes, so calibration corrects the meter reading to a true pH scale",
+      "explanation": "The glass electrode generates a potential related to pH via the Nernst equation, but its exact slope and offset vary with age and condition, so calibration against standard buffers of known pH ensures accurate readings.",
+      "topic": "pH-metry / potentiometry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a potentiometric (pH-metric) titration of a weak acid with a strong base, the pKa of the weak acid can be estimated directly from the titration curve as the pH at:",
+      "options": ["The very start of the titration, before any base is added", "The half-equivalence point, where half of the acid has been neutralized", "The point of maximum conductance", "A pH of exactly 7.00 in all cases"],
+      "correct_answer": "The half-equivalence point, where half of the acid has been neutralized",
+      "explanation": "At the half-equivalence point, the concentrations of the weak acid and its conjugate base are equal, so by the Henderson-Hasselbalch equation, pH = pKa at this point on the titration curve.",
+      "topic": "pH-metry / potentiometry",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Compared with an indicator-based acid-base titration, a potentiometric (pH-metric) titration has the practical advantage that it:",
+      "options": ["Can be used with coloured or turbid solutions where a visual indicator colour change would be hard to see", "Never requires any calibration", "Cannot give the equivalence point at all", "Requires no electrical equipment"],
+      "correct_answer": "Can be used with coloured or turbid solutions where a visual indicator colour change would be hard to see",
+      "explanation": "Because the endpoint is located from the inflection of a measured pH curve rather than a visual colour change, potentiometric titration works well even for deeply coloured or turbid solutions where indicators are unreliable.",
+      "topic": "pH-metry / potentiometry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the adsorption of acetic acid from solution onto activated charcoal, the extent of adsorption at constant temperature is commonly described by the empirical Freundlich isotherm:",
+      "options": ["x/m = k C^(1/n), relating the mass adsorbed per gram of adsorbent (x/m) to the equilibrium solution concentration (C)", "x/m = kT, relating adsorption only to temperature", "x/m is always independent of the equilibrium concentration", "x/m = k/V, relating adsorption only to the volume of solution used"],
+      "correct_answer": "x/m = k C^(1/n), relating the mass adsorbed per gram of adsorbent (x/m) to the equilibrium solution concentration (C)",
+      "explanation": "The Freundlich adsorption isotherm is an empirical power-law relationship between the amount adsorbed per unit mass of adsorbent and the equilibrium concentration of adsorbate remaining in solution, with k and n as empirical constants.",
+      "topic": "Adsorption",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In the acetic acid/activated-charcoal adsorption experiment, the equilibrium concentration of acetic acid remaining in solution after adsorption is typically determined by:",
+      "options": ["Titrating a filtered portion of the solution against standard sodium hydroxide", "Measuring the colour intensity of the solution", "Weighing the charcoal before and after only", "Measuring the boiling point of the filtrate"],
+      "correct_answer": "Titrating a filtered portion of the solution against standard sodium hydroxide",
+      "explanation": "After the charcoal has adsorbed some acetic acid and equilibrium is reached, the mixture is filtered and the remaining acid concentration in the filtrate is found by acid-base titration with standard NaOH.",
+      "topic": "Adsorption",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In systematic qualitative cation analysis, dilute hydrochloric acid is added first to the sample solution to precipitate 'Group I' cations. Which of the following cations belongs to this group, precipitating as an insoluble chloride?",
+      "options": ["Pb2+ (forming insoluble PbCl2)", "Na+", "Ca2+", "Al3+"],
+      "correct_answer": "Pb2+ (forming insoluble PbCl2)",
+      "explanation": "Group I cations (Ag+, Hg2^2+, Pb2+) form insoluble chlorides with dilute HCl and are precipitated out first in the classical qualitative analysis scheme, before any other group reagent is applied.",
+      "topic": "Qualitative cation analysis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the classical qualitative analysis scheme, 'Group II' cations (e.g. Cu2+, Pb2+ remainder, Cd2+) are precipitated as insoluble sulphides by passing H2S gas into the solution under conditions of:",
+      "options": ["Dilute mineral acid (acidic medium)", "Strong ammonia solution (basic medium) only", "Pure distilled water with no acid or base", "Concentrated sodium hydroxide only"],
+      "correct_answer": "Dilute mineral acid (acidic medium)",
+      "explanation": "Group II sulphides are much less soluble than Group III-IV sulphides, so they precipitate even in the presence of dilute acid, which suppresses precipitation of the more soluble sulphides of later groups.",
+      "topic": "Qualitative cation analysis",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Ammonium chloride is added along with ammonium hydroxide before precipitating 'Group III' cations (e.g. Fe3+, Al3+, Cr3+) as hydroxides, mainly to:",
+      "options": ["Suppress the ionization/concentration of OH- (via the common-ion effect) so that only Group III hydroxides, and not Group IV/V hydroxides such as Mg(OH)2, are precipitated", "Increase the solubility of Group III hydroxides so nothing precipitates", "Change the colour of the precipitate", "Act only as a drying agent for the final precipitate"],
+      "correct_answer": "Suppress the ionization/concentration of OH- (via the common-ion effect) so that only Group III hydroxides, and not Group IV/V hydroxides such as Mg(OH)2, are precipitated",
+      "explanation": "NH4Cl provides a common NH4+ ion that suppresses further ionization of NH4OH, keeping the OH- concentration low enough to precipitate only the very insoluble Group III hydroxides while more soluble hydroxides like Mg(OH)2 remain in solution.",
+      "topic": "Qualitative cation analysis",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In qualitative analysis, addition of potassium iodide (KI) solution to a solution containing Pb2+ ions gives a characteristic:",
+      "options": ["Deep blue solution", "Bright yellow precipitate of lead(II) iodide (PbI2)", "White precipitate that dissolves in excess KI", "Colourless solution with no precipitate"],
+      "correct_answer": "Bright yellow precipitate of lead(II) iodide (PbI2)",
+      "explanation": "Pb2+ reacts with iodide ions to form a bright yellow, sparingly soluble precipitate of lead(II) iodide, a classic confirmatory test for lead ions ('golden rain' when redissolved hot and recrystallized).",
+      "topic": "Confirmatory cation tests",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Addition of excess ammonium hydroxide to a solution of Cu2+ ions produces a characteristic:",
+      "options": ["Deep blue solution due to formation of the tetraamminecopper(II) complex ion, [Cu(NH3)4]2+", "White precipitate insoluble in excess ammonia", "Brick-red precipitate", "Colourless, odourless gas"],
+      "correct_answer": "Deep blue solution due to formation of the tetraamminecopper(II) complex ion, [Cu(NH3)4]2+",
+      "explanation": "Cu2+ first forms a pale blue Cu(OH)2 precipitate with a little ammonia, which then dissolves in excess ammonia to give the characteristic deep (royal) blue tetraamminecopper(II) complex ion.",
+      "topic": "Confirmatory cation tests",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Addition of potassium thiocyanate (KSCN) solution to a solution suspected of containing Fe3+ ions produces a characteristic:",
+      "options": ["Blood-red colouration due to formation of the [Fe(SCN)]2+ complex", "Pale green precipitate", "No colour change at all", "Yellow precipitate insoluble in acid"],
+      "correct_answer": "Blood-red colouration due to formation of the [Fe(SCN)]2+ complex",
+      "explanation": "Fe3+ ions form an intensely coloured blood-red thiocyanatoiron(III) complex with SCN-, one of the most sensitive and characteristic confirmatory tests for ferric ions.",
+      "topic": "Confirmatory cation tests",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Addition of aqueous ammonia (NH4OH) to a solution of Al3+ ions gives:",
+      "options": ["A white, gelatinous precipitate of Al(OH)3 that is insoluble in excess ammonia", "A deep blue solution", "A yellow precipitate", "No visible reaction"],
+      "correct_answer": "A white, gelatinous precipitate of Al(OH)3 that is insoluble in excess ammonia",
+      "explanation": "Al3+ forms a white, gelatinous aluminium hydroxide precipitate with ammonia; unlike some other hydroxides, it does not redissolve in excess ammonia, which helps distinguish Al3+ from cations like Zn2+ or Cu2+ that form soluble ammine complexes.",
+      "topic": "Confirmatory cation tests",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a flame test for qualitative cation identification, a persistent brick-red flame colouration is characteristic of the presence of:",
+      "options": ["Calcium ions", "Sodium ions", "Potassium ions", "Barium ions"],
+      "correct_answer": "Calcium ions",
+      "explanation": "Calcium salts impart a characteristic brick-red colour to a non-luminous Bunsen flame, resulting from the specific electronic transitions of thermally excited calcium atoms.",
+      "topic": "Flame tests",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In a flame test, a persistent apple-green (or yellowish-green) flame colouration is characteristic of the presence of:",
+      "options": ["Barium ions", "Sodium ions", "Lithium ions", "Copper(II) ions giving a blue-green flame instead"],
+      "correct_answer": "Barium ions",
+      "explanation": "Barium salts give a characteristic yellowish-green (apple-green) flame colour, one of the standard confirmatory flame tests used in qualitative inorganic analysis.",
+      "topic": "Flame tests",
+      "difficulty": "medium"
+    },
+    {
+      "question": "An intense persistent yellow flame colour that can mask other, fainter flame colours (and requires viewing through blue cobalt glass to filter it out) is characteristic of:",
+      "options": ["Sodium ions", "Potassium ions", "Calcium ions", "Strontium ions"],
+      "correct_answer": "Sodium ions",
+      "explanation": "Even trace amounts of sodium give an intense, persistent yellow flame that can swamp weaker flame colours from other cations, so blue cobalt glass is used to filter out the sodium yellow and reveal, for example, potassium's lilac colour.",
+      "topic": "Flame tests",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Addition of dilute hydrochloric acid followed by barium chloride solution to a solution suspected of containing sulphate (SO4^2-) ions produces:",
+      "options": ["A dense white precipitate of barium sulphate that remains insoluble even in excess dilute acid", "A yellow precipitate", "Effervescence of a colourless gas", "No reaction at all"],
+      "correct_answer": "A dense white precipitate of barium sulphate that remains insoluble even in excess dilute acid",
+      "explanation": "Sulphate ions give a characteristic dense white precipitate of BaSO4 with barium chloride, which (unlike sulphite or carbonate precipitates) does not dissolve in dilute hydrochloric acid, distinguishing sulphate from these other anions.",
+      "topic": "Qualitative anion analysis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Addition of dilute acid to a solid or solution suspected of containing carbonate (CO3^2-) ions produces brisk effervescence of a gas that:",
+      "options": ["Turns limewater milky (forms a white precipitate of CaCO3), confirming carbon dioxide", "Relights a glowing splint", "Has a strong pungent, choking smell characteristic of ammonia", "Burns with a pop sound when ignited"],
+      "correct_answer": "Turns limewater milky (forms a white precipitate of CaCO3), confirming carbon dioxide",
+      "explanation": "Carbonates react with dilute acids to liberate CO2 gas, which is confirmed by passing it through limewater (calcium hydroxide solution), turning it milky due to formation of insoluble CaCO3.",
+      "topic": "Qualitative anion analysis",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Addition of silver nitrate (AgNO3) solution to a solution containing chloride (Cl-) ions produces a white precipitate that:",
+      "options": ["Is insoluble in dilute nitric acid but readily dissolves in excess dilute/concentrated ammonia solution", "Is bright yellow in colour", "Dissolves readily in dilute nitric acid", "Turns black immediately in the dark"],
+      "correct_answer": "Is insoluble in dilute nitric acid but readily dissolves in excess dilute/concentrated ammonia solution",
+      "explanation": "AgCl is a white precipitate insoluble in dilute HNO3 (ruling out carbonate/sulphite interference) but soluble in excess ammonia due to formation of the diamminesilver(I) complex, a standard confirmatory test for chloride.",
+      "topic": "Qualitative anion analysis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The brown-ring test is a classical confirmatory test for the presence of:",
+      "options": ["Nitrate (NO3-) ions, using freshly prepared iron(II) sulphate solution and concentrated sulphuric acid added carefully down the side of the tube", "Sulphate ions only", "Chloride ions only", "Phosphate ions only"],
+      "correct_answer": "Nitrate (NO3-) ions, using freshly prepared iron(II) sulphate solution and concentrated sulphuric acid added carefully down the side of the tube",
+      "explanation": "In the brown-ring test, NO3- is reduced by Fe2+ in the presence of concentrated H2SO4 to nitric oxide, which forms a brown ring of the [Fe(NO)]2+ complex at the interface between the two liquid layers, confirming nitrate.",
+      "topic": "Qualitative anion analysis",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Addition of ammonium molybdate solution and dilute nitric acid to a solution containing phosphate (PO4^3-) ions, followed by gentle warming, produces:",
+      "options": ["A canary-yellow precipitate of ammonium phosphomolybdate", "A blood-red colouration", "Effervescence of a colourless gas", "A deep blue precipitate"],
+      "correct_answer": "A canary-yellow precipitate of ammonium phosphomolybdate",
+      "explanation": "Phosphate ions react with ammonium molybdate in acidic, warm conditions to form a characteristic canary-yellow crystalline precipitate of ammonium phosphomolybdate, a classical confirmatory test for phosphate.",
+      "topic": "Qualitative anion analysis",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In the preparation of a simple inorganic double salt such as ferrous ammonium sulphate (Mohr's salt), the compound is typically crystallized from a solution containing stoichiometric amounts of iron(II) sulphate and ammonium sulphate because the double salt:",
+      "options": ["Is more stable to air oxidation and easier to obtain in pure crystalline form than iron(II) sulphate alone", "Cannot be formed from a mixed solution at all", "Must be prepared entirely without water", "Only forms above 200 degC"],
+      "correct_answer": "Is more stable to air oxidation and easier to obtain in pure crystalline form than iron(II) sulphate alone",
+      "explanation": "Mohr's salt, FeSO4.(NH4)2SO4.6H2O, is considerably more resistant to aerial oxidation of Fe2+ than simple iron(II) sulphate, making it a more stable, easily purified primary standard for iron(II) in volumetric analysis.",
+      "topic": "Inorganic preparations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In redox confirmatory testing of Fe2+ ions, addition of potassium permanganate solution (acidified with dilute sulphuric acid) to a solution containing Fe2+ results in:",
+      "options": ["Decolourization of the purple permanganate as Fe2+ is oxidised to Fe3+ and Mn7+ is reduced to Mn2+", "No visible reaction of any kind", "Formation of a permanent purple colour throughout", "Immediate formation of a black precipitate"],
+      "correct_answer": "Decolourization of the purple permanganate as Fe2+ is oxidised to Fe3+ and Mn7+ is reduced to Mn2+",
+      "explanation": "Acidified permanganate oxidises Fe2+ to Fe3+ while itself being reduced from intensely purple MnO4- to nearly colourless Mn2+, so the purple colour disappears as it reacts, until an excess gives a persistent pink tinge at the end point.",
+      "topic": "Redox tests of inorganic ions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The borax bead test used in qualitative inorganic analysis identifies certain metal ions by:",
+      "options": ["The characteristic colour of the glassy bead formed when a metal salt is fused with borax in a Bunsen flame, in oxidising and reducing flame conditions", "Measuring the melting point of the metal salt directly", "Dissolving the salt in water and measuring its pH", "Weighing the bead before and after heating"],
+      "correct_answer": "The characteristic colour of the glassy bead formed when a metal salt is fused with borax in a Bunsen flame, in oxidising and reducing flame conditions",
+      "explanation": "Borax fuses to a clear glassy bead that dissolves small amounts of metal salts, giving characteristic colours (e.g. blue for cobalt, green for chromium/copper in the oxidising flame) that help identify the metal ion present.",
+      "topic": "Qualitative cation analysis",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In the systematic scheme of qualitative inorganic analysis, a 'group reagent' is added at each stage primarily to:",
+      "options": ["Precipitate a specific group of cations together under defined conditions, separating them from cations belonging to later groups", "Dissolve all cations present simultaneously", "Change the colour of the solution for aesthetic purposes", "Neutralize the entire solution to exactly pH 7"],
+      "correct_answer": "Precipitate a specific group of cations together under defined conditions, separating them from cations belonging to later groups",
+      "explanation": "Each group reagent (e.g. dilute HCl, H2S in acid, NH4OH/NH4Cl) is chosen and applied under specific conditions so that only the cations of that particular group precipitate, allowing systematic, sequential separation and identification.",
+      "topic": "Qualitative cation analysis",
+      "difficulty": "medium"
+    }
+  ]
+}

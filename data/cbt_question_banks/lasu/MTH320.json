@@ -1,0 +1,283 @@
+{
+  "course_code": "MTH320",
+  "title": "Computational Techniques in Mathematics",
+  "level": "300",
+  "source_note": "Standard NUC-aligned Nigerian university 300L computational mathematics curriculum: algorithm design for mathematical problems, floating-point representation and computational error, matrix computations, computational complexity, and numerical solution of ordinary differential equations (Euler and Runge-Kutta methods) -- distinct from MTH319's focus on root-finding, interpolation and quadrature.",
+  "questions": [
+    {
+      "question": "An algorithm in computational mathematics is best defined as:",
+      "options": [
+        "A finite, well-defined sequence of steps that solves a problem or computes a result",
+        "Any mathematical formula regardless of whether it terminates",
+        "A programming language",
+        "A single arithmetic operation"
+      ],
+      "correct_answer": "A finite, well-defined sequence of steps that solves a problem or computes a result",
+      "explanation": "An algorithm must be finite, unambiguous, and guaranteed to terminate, distinguishing it from an open-ended mathematical expression.",
+      "topic": "Algorithms",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In IEEE floating-point representation, a real number is stored using:",
+      "options": ["A sign bit, an exponent field, and a mantissa (significand)", "Only an integer part", "A fixed number of decimal digits with no exponent", "Two separate integers with no fractional representation"],
+      "correct_answer": "A sign bit, an exponent field, and a mantissa (significand)",
+      "explanation": "IEEE 754 floating-point numbers are represented in scientific-notation-like form using sign, exponent, and mantissa fields.",
+      "topic": "Floating-point representation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Machine epsilon (unit round-off) is best described as:",
+      "options": ["The smallest number that, when added to 1, produces a result different from 1 in floating-point arithmetic", "The largest number representable by the computer", "The smallest positive representable number", "The number of bits in a byte"],
+      "correct_answer": "The smallest number that, when added to 1, produces a result different from 1 in floating-point arithmetic",
+      "explanation": "Machine epsilon characterizes the precision limit of floating-point arithmetic and bounds relative round-off error.",
+      "topic": "Floating-point representation",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Catastrophic cancellation in floating-point computation occurs when:",
+      "options": [
+        "Subtracting two nearly equal floating-point numbers, causing a large relative loss of significant digits",
+        "Adding two very small numbers together",
+        "Multiplying two large numbers",
+        "Dividing by a large number"
+      ],
+      "correct_answer": "Subtracting two nearly equal floating-point numbers, causing a large relative loss of significant digits",
+      "explanation": "When nearly equal numbers are subtracted, the significant leading digits cancel, magnifying the relative effect of round-off error in the remaining digits.",
+      "topic": "Computational error",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Computational (algorithmic) complexity, typically expressed in Big-O notation, measures:",
+      "options": ["How the number of operations (or memory) required by an algorithm grows with input size", "The exact running time in seconds on a specific machine", "The number of lines of code", "The accuracy of the final numerical result"],
+      "correct_answer": "How the number of operations (or memory) required by an algorithm grows with input size",
+      "explanation": "Big-O notation describes the asymptotic growth rate of an algorithm's resource requirements as a function of problem size.",
+      "topic": "Computational complexity",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Standard Gaussian elimination to solve an n x n linear system has computational complexity of order:",
+      "options": ["O(n^3)", "O(n)", "O(n^2)", "O(log n)"],
+      "correct_answer": "O(n^3)",
+      "explanation": "Gaussian elimination requires roughly n^3/3 arithmetic operations for an n x n system, so its complexity is cubic in n.",
+      "topic": "Computational complexity",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Multiplying two n x n matrices using the standard (naive) algorithm has complexity:",
+      "options": ["O(n^3)", "O(n^2)", "O(n)", "O(2^n)"],
+      "correct_answer": "O(n^3)",
+      "explanation": "The naive matrix multiplication algorithm computes n^2 entries, each requiring n multiplications and additions, giving O(n^3) total operations.",
+      "topic": "Matrix computations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "LU decomposition factors a matrix A as:",
+      "options": ["A = LU, where L is lower triangular and U is upper triangular", "A = L + U, a sum of two triangular matrices", "A = L^{-1}U^{-1}", "A = LUL"],
+      "correct_answer": "A = LU, where L is lower triangular and U is upper triangular",
+      "explanation": "LU decomposition expresses A as a product of a lower and an upper triangular matrix, enabling efficient repeated solving of Ax=b for multiple b vectors.",
+      "topic": "Matrix computations: LU decomposition",
+      "difficulty": "medium"
+    },
+    {
+      "question": "One major computational advantage of LU decomposition over repeated Gaussian elimination is that:",
+      "options": [
+        "Once computed, it allows solving Ax=b for many different b vectors efficiently without redoing the full elimination",
+        "It eliminates the need for a computer altogether",
+        "It only works for singular matrices",
+        "It always produces a diagonal matrix"
+      ],
+      "correct_answer": "Once computed, it allows solving Ax=b for many different b vectors efficiently without redoing the full elimination",
+      "explanation": "Since the factorization is independent of b, solving for new right-hand sides only requires forward and backward substitution, saving computation.",
+      "topic": "Matrix computations: LU decomposition",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The condition number of a matrix A is used to measure:",
+      "options": [
+        "How sensitive the solution of Ax=b is to small perturbations in A or b",
+        "The determinant of A",
+        "The number of nonzero entries in A",
+        "The rank of A only"
+      ],
+      "correct_answer": "How sensitive the solution of Ax=b is to small perturbations in A or b",
+      "explanation": "A large condition number indicates an ill-conditioned system where small input errors can produce large errors in the computed solution.",
+      "topic": "Matrix computations: conditioning",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A matrix is said to be ill-conditioned when:",
+      "options": ["It has a very large condition number, making numerical solutions unreliable", "Its determinant is exactly 1", "It is symmetric", "It has only integer entries"],
+      "correct_answer": "It has a very large condition number, making numerical solutions unreliable",
+      "explanation": "Ill-conditioning means small changes in input data can cause disproportionately large changes in the computed solution.",
+      "topic": "Matrix computations: conditioning",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Euler's method for numerically solving the initial value problem dy/dx = f(x,y), y(x0)=y0 uses the update formula:",
+      "options": ["y_{n+1} = y_n + h.f(x_n, y_n)", "y_{n+1} = y_n - h.f(x_n, y_n)", "y_{n+1} = y_n * f(x_n, y_n)", "y_{n+1} = h.f(x_n, y_n)"],
+      "correct_answer": "y_{n+1} = y_n + h.f(x_n, y_n)",
+      "explanation": "Euler's method takes a step of size h in the direction of the slope f(x_n, y_n) given by the differential equation, approximating the solution curve.",
+      "topic": "Numerical solution of ODEs: Euler's method",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Euler's method has a local truncation error of order:",
+      "options": ["O(h^2)", "O(h)", "O(h^4)", "O(1)"],
+      "correct_answer": "O(h^2)",
+      "explanation": "Euler's method truncates the Taylor series after the first-order term, giving a local truncation error proportional to h^2 (and global error of order h).",
+      "topic": "Numerical solution of ODEs: Euler's method",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The classical fourth-order Runge-Kutta method (RK4) improves on Euler's method by:",
+      "options": [
+        "Evaluating the slope function at several intermediate points within each step and combining them in a weighted average",
+        "Using a larger step size only",
+        "Ignoring the function f(x,y) entirely",
+        "Requiring the exact analytical solution as input"
+      ],
+      "correct_answer": "Evaluating the slope function at several intermediate points within each step and combining them in a weighted average",
+      "explanation": "RK4 computes four slope estimates (k1 through k4) per step and combines them, achieving much higher accuracy (local error O(h^5)) than Euler's method.",
+      "topic": "Numerical solution of ODEs: Runge-Kutta methods",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The classical RK4 method has a global truncation error of order:",
+      "options": ["O(h^4)", "O(h)", "O(h^2)", "O(h^5)"],
+      "correct_answer": "O(h^4)",
+      "explanation": "RK4's global error is fourth-order in the step size h, making it substantially more accurate than the first-order global error of Euler's method for comparable step sizes.",
+      "topic": "Numerical solution of ODEs: Runge-Kutta methods",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In the RK4 method, the four slope estimates k1, k2, k3, k4 are combined using weights:",
+      "options": ["1, 2, 2, 1 (divided by 6)", "1, 1, 1, 1 (divided by 4)", "1, 3, 3, 1 (divided by 8)", "2, 2, 2, 2 (divided by 8)"],
+      "correct_answer": "1, 2, 2, 1 (divided by 6)",
+      "explanation": "The classical RK4 formula is y_{n+1} = y_n + (h/6)(k1 + 2k2 + 2k3 + k4), which matches the Taylor expansion to fourth order.",
+      "topic": "Numerical solution of ODEs: Runge-Kutta methods",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A key trade-off of using a smaller step size h in Euler's or Runge-Kutta methods is:",
+      "options": ["Reduced truncation error but increased computational cost and accumulated round-off error", "No effect on accuracy at all", "Guaranteed elimination of all error", "Always faster computation"],
+      "correct_answer": "Reduced truncation error but increased computational cost and accumulated round-off error",
+      "explanation": "Smaller h reduces truncation error per step but requires more steps (more computation) and can allow round-off error to accumulate.",
+      "topic": "Numerical solution of ODEs: error and step size",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Numerical stability of an algorithm refers to:",
+      "options": ["Whether errors introduced during computation remain bounded rather than growing uncontrollably", "Whether the algorithm runs without a computer crashing", "Whether the algorithm is written in a stable programming language", "The physical stability of the hardware"],
+      "correct_answer": "Whether errors introduced during computation remain bounded rather than growing uncontrollably",
+      "explanation": "A numerically stable algorithm keeps the propagation of small errors (round-off or truncation) under control rather than amplifying them.",
+      "topic": "Computational error",
+      "difficulty": "medium"
+    },
+    {
+      "question": "An iterative algorithm's rate of convergence is important in computational mathematics because:",
+      "options": [
+        "It determines how many iterations (and thus how much computation) are needed to reach a desired accuracy",
+        "It has no effect on total computation time",
+        "It only matters for direct (non-iterative) methods",
+        "It determines the sign of the final answer"
+      ],
+      "correct_answer": "It determines how many iterations (and thus how much computation) are needed to reach a desired accuracy",
+      "explanation": "Faster-converging methods reach a given accuracy in fewer iterations, directly affecting computational efficiency.",
+      "topic": "Computational complexity",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In representing an algorithm before coding, a flowchart or pseudocode is useful because it:",
+      "options": ["Describes the logical steps of the algorithm independent of any specific programming language", "Is required by all compilers", "Automatically computes the algorithm's complexity", "Replaces the need for testing"],
+      "correct_answer": "Describes the logical steps of the algorithm independent of any specific programming language",
+      "explanation": "Pseudocode and flowcharts express algorithmic logic in a language-agnostic form, aiding design and communication before implementation.",
+      "topic": "Algorithms",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The determinant of a triangular matrix (upper or lower) can be computed efficiently as:",
+      "options": ["The product of its diagonal entries", "The sum of its diagonal entries", "The product of all its entries", "Zero, always"],
+      "correct_answer": "The product of its diagonal entries",
+      "explanation": "For triangular matrices, the determinant reduces to the product of the diagonal elements, which is why LU decomposition provides an efficient way to compute determinants.",
+      "topic": "Matrix computations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which numerical method for solving Ax=b is generally preferred for very large, sparse systems over direct methods like Gaussian elimination?",
+      "options": ["Iterative methods such as Gauss-Seidel or conjugate gradient", "Cramer's Rule", "Cofactor expansion", "Direct matrix inversion"],
+      "correct_answer": "Iterative methods such as Gauss-Seidel or conjugate gradient",
+      "explanation": "For large sparse systems, iterative methods exploit sparsity and avoid the prohibitive memory/computation costs of direct methods like Gaussian elimination or explicit inversion.",
+      "topic": "Matrix computations",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Cramer's Rule for solving a linear system using determinants is computationally impractical for large systems mainly because:",
+      "options": ["Computing determinants directly (via cofactor expansion) has factorial or exponential complexity, far worse than Gaussian elimination's O(n^3)", "It never gives the correct answer", "It cannot be programmed", "It only works for 2x2 systems"],
+      "correct_answer": "Computing determinants directly (via cofactor expansion) has factorial or exponential complexity, far worse than Gaussian elimination's O(n^3)",
+      "explanation": "Naive cofactor-expansion computation of determinants grows factorially with matrix size, making Cramer's Rule impractical for anything but small systems.",
+      "topic": "Computational complexity",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Absolute error in a numerical approximation is defined as:",
+      "options": ["|true value - approximate value|", "true value / approximate value", "approximate value - true value, without taking absolute value", "The percentage difference only"],
+      "correct_answer": "|true value - approximate value|",
+      "explanation": "Absolute error measures the magnitude of the discrepancy between the true and computed values.",
+      "topic": "Computational error",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Relative error is generally more informative than absolute error when:",
+      "options": ["Comparing errors across quantities of very different magnitudes", "The true value is exactly zero", "Only integers are involved", "The computation involves no approximation"],
+      "correct_answer": "Comparing errors across quantities of very different magnitudes",
+      "explanation": "Relative error (absolute error divided by the true value) normalizes the error, making it meaningful when comparing across different scales.",
+      "topic": "Computational error",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A recursive algorithm is one that:",
+      "options": ["Solves a problem by calling itself on smaller instances of the same problem", "Never terminates", "Uses only loops and no function calls", "Cannot be used for mathematical computations"],
+      "correct_answer": "Solves a problem by calling itself on smaller instances of the same problem",
+      "explanation": "Recursion breaks a problem into smaller subproblems of the same type, each solved by the same algorithm, until a base case is reached.",
+      "topic": "Algorithms",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The improved Euler method (Heun's method) refines the basic Euler method by:",
+      "options": [
+        "Averaging the slope at the beginning and (predicted) end of the interval to estimate the next value",
+        "Using only the slope at the end of the interval",
+        "Ignoring the differential equation entirely",
+        "Requiring second derivatives explicitly"
+      ],
+      "correct_answer": "Averaging the slope at the beginning and (predicted) end of the interval to estimate the next value",
+      "explanation": "Heun's method is a predictor-corrector scheme: it predicts with Euler's method, then corrects using the average of the slopes at both endpoints, improving accuracy to second order.",
+      "topic": "Numerical solution of ODEs: predictor-corrector methods",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In computational mathematics, 'overflow' error occurs when:",
+      "options": ["A computed value exceeds the largest number representable in the given floating-point format", "A number is too small to be distinguished from zero", "A loop runs one too few times", "An algorithm requires too many input variables"],
+      "correct_answer": "A computed value exceeds the largest number representable in the given floating-point format",
+      "explanation": "Overflow occurs when a computation produces a result too large in magnitude for the number format to store, in contrast to underflow for very small values.",
+      "topic": "Floating-point representation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which best distinguishes 'underflow' from 'overflow' in floating-point computation?",
+      "options": ["Underflow occurs when a result is too small in magnitude to be represented (often rounded to zero), while overflow occurs when a result is too large", "They are the same phenomenon", "Underflow only occurs with integers", "Overflow always produces zero as a result"],
+      "correct_answer": "Underflow occurs when a result is too small in magnitude to be represented (often rounded to zero), while overflow occurs when a result is too large",
+      "explanation": "Both are floating-point range limitations, but at opposite ends: underflow near zero, overflow near the largest representable magnitude.",
+      "topic": "Floating-point representation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Given the IVP dy/dx = x + y, y(0) = 1, using Euler's method with step size h = 0.1, the first approximation y1 is computed as:",
+      "options": ["y1 = 1 + 0.1(0 + 1) = 1.1", "y1 = 1 + 0.1(1) = 1.1 using only y", "y1 = 1 - 0.1(0+1) = 0.9", "y1 = 0.1(0+1) = 0.1"],
+      "correct_answer": "y1 = 1 + 0.1(0 + 1) = 1.1",
+      "explanation": "Applying y1 = y0 + h.f(x0,y0) with f(x,y) = x+y, x0=0, y0=1 gives y1 = 1 + 0.1(0+1) = 1.1.",
+      "topic": "Numerical solution of ODEs: Euler's method",
+      "difficulty": "medium"
+    }
+  ]
+}

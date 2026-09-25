@@ -1,0 +1,344 @@
+{
+  "course_code": "CSC401",
+  "title": "Advanced Algorithms",
+  "level": "400",
+  "source_note": "Standard NUC-aligned 400L Advanced Algorithms curriculum: asymptotic analysis, divide-and-conquer, dynamic programming, greedy algorithms, graph algorithms (shortest paths, minimum spanning trees, max flow), amortized analysis, NP-completeness, and approximation/randomized algorithms, consistent with a rigorous CS algorithms sequence following an introductory data structures/algorithms course.",
+  "questions": [
+    {
+      "question": "What does it mean for an algorithm to run in O(n log n) time?",
+      "options": ["Its running time grows no faster than a constant multiple of n log n as input size n increases", "It always takes exactly n log n operations regardless of input", "It runs in constant time for all inputs", "It requires n log n bytes of memory only"],
+      "correct_answer": "Its running time grows no faster than a constant multiple of n log n as input size n increases",
+      "explanation": "Big-O notation gives an asymptotic upper bound on growth rate, meaning the algorithm's time does not exceed c*n log n for large n and some constant c.",
+      "topic": "Asymptotic analysis",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is the difference between Big-O, Big-Omega, and Big-Theta notation?",
+      "options": ["Big-O is an upper bound, Big-Omega is a lower bound, and Big-Theta is a tight bound (both upper and lower)", "They are all identical notations with different symbols", "Big-O is a lower bound and Big-Omega is an upper bound", "Big-Theta only applies to recursive algorithms"],
+      "correct_answer": "Big-O is an upper bound, Big-Omega is a lower bound, and Big-Theta is a tight bound (both upper and lower)",
+      "explanation": "Big-O bounds growth from above, Big-Omega bounds it from below, and Big-Theta applies when both bounds match, giving an exact asymptotic characterization.",
+      "topic": "Asymptotic analysis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Using the Master Theorem, what is the time complexity of a recurrence T(n) = 2T(n/2) + O(n)?",
+      "options": ["O(n log n)", "O(n)", "O(n^2)", "O(log n)"],
+      "correct_answer": "O(n log n)",
+      "explanation": "This recurrence fits Case 2 of the Master Theorem (a=2, b=2, f(n)=n matches n^log_b(a)=n), giving T(n) = O(n log n), as in merge sort.",
+      "topic": "Divide and conquer",
+      "difficulty": "hard"
+    },
+    {
+      "question": "What is the time complexity of the divide-and-conquer algorithm for finding the closest pair of points in a plane?",
+      "options": ["O(n log n)", "O(n^2)", "O(n)", "O(n^3)"],
+      "correct_answer": "O(n log n)",
+      "explanation": "The classic closest-pair algorithm recursively divides points, solves subproblems, and merges using a strip check bounded by a constant number of comparisons per point, achieving O(n log n).",
+      "topic": "Divide and conquer",
+      "difficulty": "hard"
+    },
+    {
+      "question": "What is the key idea behind dynamic programming?",
+      "options": ["Breaking a problem into overlapping subproblems and storing their solutions to avoid redundant computation", "Always choosing the locally optimal choice at each step without reconsideration", "Solving a problem by trying every possible permutation exhaustively", "Using recursion without any memoization or storage of results"],
+      "correct_answer": "Breaking a problem into overlapping subproblems and storing their solutions to avoid redundant computation",
+      "explanation": "Dynamic programming exploits overlapping subproblems and optimal substructure, caching (memoizing) subproblem results to avoid recomputation, unlike plain divide-and-conquer.",
+      "topic": "Dynamic programming",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is 'optimal substructure' as a property required for dynamic programming?",
+      "options": ["An optimal solution to the problem can be constructed from optimal solutions to its subproblems", "The problem must have exactly one subproblem", "The problem cannot be divided into smaller parts", "Every subproblem must have a unique unrelated solution"],
+      "correct_answer": "An optimal solution to the problem can be constructed from optimal solutions to its subproblems",
+      "explanation": "Optimal substructure means the globally optimal solution incorporates optimal solutions of its subproblems, which is necessary for dynamic programming to apply correctly.",
+      "topic": "Dynamic programming",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the 0/1 Knapsack problem solved via dynamic programming, what is the time complexity using the standard table-based approach?",
+      "options": ["O(nW), where n is the number of items and W is the knapsack capacity", "O(n log n)", "O(2^n) always, with no improvement possible", "O(n)"],
+      "correct_answer": "O(nW), where n is the number of items and W is the knapsack capacity",
+      "explanation": "The DP table has dimensions n x W, and each cell is filled in constant time, giving pseudo-polynomial time complexity O(nW).",
+      "topic": "Dynamic programming",
+      "difficulty": "hard"
+    },
+    {
+      "question": "What distinguishes a greedy algorithm from a dynamic programming approach?",
+      "options": ["A greedy algorithm makes a single locally optimal choice at each step without reconsidering previous choices, while DP considers overlapping subproblems", "Greedy algorithms always explore all possible solutions exhaustively", "Dynamic programming never revisits any subproblem", "There is no meaningful difference between the two approaches"],
+      "correct_answer": "A greedy algorithm makes a single locally optimal choice at each step without reconsidering previous choices, while DP considers overlapping subproblems",
+      "explanation": "Greedy algorithms commit to the best immediate choice hoping it leads to a global optimum, whereas DP systematically evaluates subproblem combinations, which is necessary when the greedy choice property doesn't hold.",
+      "topic": "Greedy algorithms",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What property must a problem have for a greedy algorithm to guarantee an optimal solution?",
+      "options": ["The greedy-choice property and optimal substructure", "Only a large input size", "The problem must be NP-complete", "The problem must have no subproblems"],
+      "correct_answer": "The greedy-choice property and optimal substructure",
+      "explanation": "A greedy algorithm produces a globally optimal solution only if the problem exhibits the greedy-choice property (a locally optimal choice leads to a global optimum) and optimal substructure.",
+      "topic": "Greedy algorithms",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In Huffman coding, why are characters with higher frequency assigned shorter codes?",
+      "options": ["To minimize the total weighted length (and thus overall size) of the encoded message", "To make the algorithm run faster regardless of output size", "Because shorter codes are always easier to encrypt", "To ensure every character has a code of the same length"],
+      "correct_answer": "To minimize the total weighted length (and thus overall size) of the encoded message",
+      "explanation": "Huffman coding greedily builds a prefix-free binary tree that assigns shorter bit strings to more frequent symbols, minimizing the expected encoded length.",
+      "topic": "Greedy algorithms",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the time complexity of Dijkstra's shortest-path algorithm using a binary heap priority queue?",
+      "options": ["O((V + E) log V)", "O(V^3)", "O(V + E)", "O(V^2 log E)"],
+      "correct_answer": "O((V + E) log V)",
+      "explanation": "With a binary heap, each of the V extract-min operations costs O(log V) and each of the E edge relaxations may trigger a decrease-key in O(log V), giving O((V+E) log V).",
+      "topic": "Graph algorithms - shortest paths",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Why can't Dijkstra's algorithm be used correctly on graphs with negative edge weights?",
+      "options": ["It assumes once a vertex's shortest distance is finalized it cannot be improved, which negative weights can violate", "Dijkstra's algorithm cannot handle any weighted graph at all", "Negative weights make the graph disconnected automatically", "Dijkstra's algorithm only works on trees, not general graphs"],
+      "correct_answer": "It assumes once a vertex's shortest distance is finalized it cannot be improved, which negative weights can violate",
+      "explanation": "Dijkstra's greedy approach finalizes the shortest known distance to a vertex once dequeued, an invariant that negative edges can break by later producing a shorter path.",
+      "topic": "Graph algorithms - shortest paths",
+      "difficulty": "hard"
+    },
+    {
+      "question": "What algorithm is used to find shortest paths in a graph that may contain negative edge weights (but no negative cycles)?",
+      "options": ["Bellman-Ford algorithm", "Dijkstra's algorithm", "Prim's algorithm", "Kruskal's algorithm"],
+      "correct_answer": "Bellman-Ford algorithm",
+      "explanation": "The Bellman-Ford algorithm correctly computes shortest paths even with negative edge weights by relaxing all edges V-1 times, and can also detect negative cycles.",
+      "topic": "Graph algorithms - shortest paths",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the time complexity of the Bellman-Ford algorithm?",
+      "options": ["O(VE)", "O(E log V)", "O(V^2)", "O(V + E)"],
+      "correct_answer": "O(VE)",
+      "explanation": "Bellman-Ford relaxes all E edges in each of V-1 iterations, giving a time complexity of O(VE).",
+      "topic": "Graph algorithms - shortest paths",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What does the Floyd-Warshall algorithm compute?",
+      "options": ["All-pairs shortest paths between every pair of vertices in a weighted graph", "Only the single-source shortest path from one vertex", "The minimum spanning tree of a graph", "The maximum flow through a network"],
+      "correct_answer": "All-pairs shortest paths between every pair of vertices in a weighted graph",
+      "explanation": "Floyd-Warshall is a dynamic programming algorithm that computes shortest paths between all pairs of vertices, running in O(V^3) time.",
+      "topic": "Graph algorithms - shortest paths",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is a minimum spanning tree (MST) of a connected, weighted, undirected graph?",
+      "options": ["A subset of edges that connects all vertices with the minimum possible total edge weight and no cycles", "A tree that contains only the highest-weight edges", "Any subgraph containing all vertices and all edges", "A tree with exactly one vertex and no edges"],
+      "correct_answer": "A subset of edges that connects all vertices with the minimum possible total edge weight and no cycles",
+      "explanation": "An MST spans all vertices using the fewest edges (V-1 for V vertices) that form a tree while minimizing the sum of edge weights.",
+      "topic": "Graph algorithms - MST",
+      "difficulty": "easy"
+    },
+    {
+      "question": "How does Kruskal's algorithm construct a minimum spanning tree?",
+      "options": ["It sorts all edges by weight and greedily adds each edge that does not form a cycle, using a union-find structure", "It starts from a single vertex and always adds the nearest unvisited vertex", "It removes edges one at a time from the full graph until an MST remains", "It requires the graph to be directed"],
+      "correct_answer": "It sorts all edges by weight and greedily adds each edge that does not form a cycle, using a union-find structure",
+      "explanation": "Kruskal's algorithm is edge-based: it processes edges in increasing weight order and uses a disjoint-set (union-find) structure to detect and avoid cycles.",
+      "topic": "Graph algorithms - MST",
+      "difficulty": "medium"
+    },
+    {
+      "question": "How does Prim's algorithm construct a minimum spanning tree, in contrast to Kruskal's?",
+      "options": ["It grows the MST one vertex at a time, always adding the cheapest edge that connects a new vertex to the existing tree", "It sorts all edges globally before doing anything else", "It only works on directed acyclic graphs", "It requires computing all-pairs shortest paths first"],
+      "correct_answer": "It grows the MST one vertex at a time, always adding the cheapest edge that connects a new vertex to the existing tree",
+      "explanation": "Prim's algorithm is vertex-based, expanding a single growing tree by repeatedly adding the minimum-weight edge that connects a tree vertex to a non-tree vertex.",
+      "topic": "Graph algorithms - MST",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What data structure is essential for an efficient implementation of Kruskal's algorithm to detect cycles?",
+      "options": ["Disjoint-set (union-find) data structure", "A max-heap", "A doubly linked list", "A hash table alone"],
+      "correct_answer": "Disjoint-set (union-find) data structure",
+      "explanation": "Union-find allows Kruskal's algorithm to efficiently check whether adding an edge would create a cycle by testing if its endpoints are already in the same connected component.",
+      "topic": "Graph algorithms - MST",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What does the Ford-Fulkerson method compute in a flow network?",
+      "options": ["The maximum flow from a source vertex to a sink vertex", "The shortest path between two vertices", "The minimum spanning tree of the network", "The chromatic number of the graph"],
+      "correct_answer": "The maximum flow from a source vertex to a sink vertex",
+      "explanation": "Ford-Fulkerson repeatedly finds augmenting paths from source to sink in a residual graph and increases flow along them until no augmenting path remains, yielding the maximum flow.",
+      "topic": "Graph algorithms - max flow",
+      "difficulty": "hard"
+    },
+    {
+      "question": "According to the Max-Flow Min-Cut theorem, what is true about the maximum flow in a network?",
+      "options": ["It equals the capacity of the minimum cut separating the source from the sink", "It always equals the number of vertices in the graph", "It is always infinite for connected graphs", "It equals the number of edges in the graph"],
+      "correct_answer": "It equals the capacity of the minimum cut separating the source from the sink",
+      "explanation": "The Max-Flow Min-Cut theorem states that the maximum feasible flow from source to sink equals the minimum total capacity of edges that, if removed, would disconnect the source from the sink.",
+      "topic": "Graph algorithms - max flow",
+      "difficulty": "hard"
+    },
+    {
+      "question": "What is 'amortized analysis' used for in algorithm analysis?",
+      "options": ["Determining the average performance of an operation over a sequence of operations, even if individual operations vary in cost", "Measuring only the worst possible single operation cost", "Calculating the exact memory address of variables", "Estimating compiler optimization levels"],
+      "correct_answer": "Determining the average performance of an operation over a sequence of operations, even if individual operations vary in cost",
+      "explanation": "Amortized analysis averages the cost of expensive but infrequent operations over a sequence, giving a tighter bound than worst-case-per-operation analysis, as used in dynamic array resizing.",
+      "topic": "Amortized analysis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the amortized analysis of a dynamic array that doubles in size when full, what is the amortized cost per insertion?",
+      "options": ["O(1)", "O(n)", "O(log n)", "O(n^2)"],
+      "correct_answer": "O(1)",
+      "explanation": "Although occasional resizes cost O(n), doubling ensures resizes become increasingly rare, so the total cost over n insertions is O(n), giving an amortized O(1) per insertion.",
+      "topic": "Amortized analysis",
+      "difficulty": "hard"
+    },
+    {
+      "question": "What does it mean for a decision problem to be in the complexity class P?",
+      "options": ["It can be solved by a deterministic algorithm in polynomial time", "It can only be solved by exhaustive brute force", "It requires exponential time to solve on any computer", "It cannot be solved by any algorithm"],
+      "correct_answer": "It can be solved by a deterministic algorithm in polynomial time",
+      "explanation": "Class P consists of decision problems solvable by a deterministic Turing machine (or standard computer) in time polynomial in the input size.",
+      "topic": "NP-completeness",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What does it mean for a decision problem to be in the complexity class NP?",
+      "options": ["A proposed solution can be verified in polynomial time, even if finding the solution may take longer", "It can never be solved by any computer", "It is always solvable in polynomial time", "It requires infinite memory to solve"],
+      "correct_answer": "A proposed solution can be verified in polynomial time, even if finding the solution may take longer",
+      "explanation": "NP problems are those where, given a candidate solution (certificate), correctness can be verified by a deterministic algorithm in polynomial time.",
+      "topic": "NP-completeness",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What does it mean for a problem to be 'NP-complete'?",
+      "options": ["It is in NP and every other problem in NP can be reduced to it in polynomial time", "It can be solved in constant time", "It is impossible to verify solutions for it", "It belongs to class P by definition"],
+      "correct_answer": "It is in NP and every other problem in NP can be reduced to it in polynomial time",
+      "explanation": "NP-complete problems are the 'hardest' problems in NP: they are in NP, and any NP problem can be polynomial-time reduced to them, so a polynomial solution to one would solve all of NP.",
+      "topic": "NP-completeness",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Which of the following is a classic example of an NP-complete problem?",
+      "options": ["The Boolean satisfiability problem (SAT)", "Sorting an array of integers", "Finding the shortest path in a graph with non-negative weights", "Binary search in a sorted array"],
+      "correct_answer": "The Boolean satisfiability problem (SAT)",
+      "explanation": "SAT was the first problem proven NP-complete (Cook-Levin theorem), and it serves as the basis for proving other problems NP-complete via polynomial-time reductions.",
+      "topic": "NP-completeness",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Cook-Levin theorem is historically significant because it established that:",
+      "options": ["SAT is NP-complete, providing the first proof that an NP-complete problem exists", "P equals NP conclusively", "All problems can be solved in polynomial time", "Sorting algorithms cannot run faster than O(n log n)"],
+      "correct_answer": "SAT is NP-complete, providing the first proof that an NP-complete problem exists",
+      "explanation": "The Cook-Levin theorem (1971) proved that the Boolean satisfiability problem is NP-complete, laying the foundation for the theory of NP-completeness and subsequent reductions.",
+      "topic": "NP-completeness",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The Traveling Salesman Problem (decision version) is NP-complete. What does this imply for practical solving of large instances?",
+      "options": ["No known polynomial-time algorithm solves it exactly, so heuristics or approximation algorithms are often used for large instances", "It can always be solved instantly regardless of input size", "It has no valid solution for any input", "It can be solved in O(n) time with a simple loop"],
+      "correct_answer": "No known polynomial-time algorithm solves it exactly, so heuristics or approximation algorithms are often used for large instances",
+      "explanation": "Because TSP is NP-hard, exact algorithms have exponential worst-case time, so practitioners commonly use approximation algorithms or heuristics like nearest-neighbor or genetic algorithms for large instances.",
+      "topic": "NP-completeness",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the goal of an 'approximation algorithm' for an NP-hard optimization problem?",
+      "options": ["To find a solution that is provably close to optimal within polynomial time, even if not exactly optimal", "To find the exact optimal solution regardless of time taken", "To randomly guess a solution with no guarantees", "To only work on small graphs with fewer than 10 vertices"],
+      "correct_answer": "To find a solution that is provably close to optimal within polynomial time, even if not exactly optimal",
+      "explanation": "Approximation algorithms trade optimality for efficiency, providing a solution within a provable factor (approximation ratio) of the optimal value in polynomial time.",
+      "topic": "Approximation algorithms",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the approximation ratio of the standard greedy algorithm for the Vertex Cover problem that picks both endpoints of an uncovered edge?",
+      "options": ["A 2-approximation", "An exact optimal algorithm", "A 10-approximation", "It provides no guarantee at all"],
+      "correct_answer": "A 2-approximation",
+      "explanation": "The simple algorithm of repeatedly picking an uncovered edge and adding both endpoints to the cover produces a vertex cover at most twice the size of the optimal one.",
+      "topic": "Approximation algorithms",
+      "difficulty": "hard"
+    },
+    {
+      "question": "What characterizes a 'randomized algorithm' such as randomized QuickSort?",
+      "options": ["It makes random choices during execution to achieve good expected performance, even though its worst case may still be poor", "It always produces a different, unpredictable final result", "It cannot be analyzed for correctness or performance", "It only works on already-sorted input"],
+      "correct_answer": "It makes random choices during execution to achieve good expected performance, even though its worst case may still be poor",
+      "explanation": "Randomized algorithms use randomness (e.g., random pivot selection) to avoid consistently poor performance on adversarial inputs, giving good expected-case behavior.",
+      "topic": "Randomized algorithms",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Why does randomized QuickSort achieve expected O(n log n) time even though its worst case is O(n^2)?",
+      "options": ["Randomly selecting the pivot makes it highly unlikely to repeatedly choose consistently bad pivots across all recursive calls", "It sorts the array using merge sort internally", "It never actually partitions the array", "Randomization eliminates the need for comparisons"],
+      "correct_answer": "Randomly selecting the pivot makes it highly unlikely to repeatedly choose consistently bad pivots across all recursive calls",
+      "explanation": "By choosing pivots randomly, the probability of consistently poor splits (leading to O(n^2)) becomes vanishingly small, so the expected running time over all random choices is O(n log n).",
+      "topic": "Randomized algorithms",
+      "difficulty": "hard"
+    },
+    {
+      "question": "What is the longest common subsequence (LCS) problem typically solved with?",
+      "options": ["Dynamic programming, using a table indexed by prefixes of the two sequences", "A single greedy pass through both sequences", "Sorting both sequences and comparing directly", "A minimum spanning tree algorithm"],
+      "correct_answer": "Dynamic programming, using a table indexed by prefixes of the two sequences",
+      "explanation": "LCS exhibits optimal substructure and overlapping subproblems, solved by building a 2D DP table where each cell represents the LCS length of prefixes of the two input sequences.",
+      "topic": "Dynamic programming",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the time complexity of computing the LCS of two strings of length m and n using standard dynamic programming?",
+      "options": ["O(mn)", "O(m + n)", "O(m log n)", "O(2^(m+n))"],
+      "correct_answer": "O(mn)",
+      "explanation": "The standard DP table for LCS has m x n cells, each computed in constant time from previously computed cells, giving O(mn) time.",
+      "topic": "Dynamic programming",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is a key application of topological sorting in graph algorithms?",
+      "options": ["Ordering tasks with dependencies (a directed acyclic graph) so each task appears before those that depend on it", "Finding the shortest cycle in a graph", "Determining whether a graph is bipartite", "Computing the diameter of a tree"],
+      "correct_answer": "Ordering tasks with dependencies (a directed acyclic graph) so each task appears before those that depend on it",
+      "explanation": "Topological sorting produces a linear ordering of vertices in a DAG such that for every directed edge u->v, u comes before v, useful for scheduling tasks with prerequisites.",
+      "topic": "Graph algorithms",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Why can topological sorting only be performed on a directed acyclic graph (DAG)?",
+      "options": ["A cycle would create a contradiction where a vertex would need to appear both before and after another vertex in the ordering", "Topological sort works on any graph type without restriction", "Cycles make the graph disconnected", "Topological sort requires the graph to be weighted"],
+      "correct_answer": "A cycle would create a contradiction where a vertex would need to appear both before and after another vertex in the ordering",
+      "explanation": "If a graph has a cycle, there is no way to linearly order its vertices such that all directed edges point forward, since the cycle forces a circular dependency.",
+      "topic": "Graph algorithms",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What technique does the Rabin-Karp string matching algorithm primarily rely on?",
+      "options": ["Hashing substrings and comparing hash values to quickly rule out non-matches before verifying character by character", "Building a full suffix tree of the text before any comparison", "Only using brute-force character comparison with no optimization", "Sorting all substrings of the text lexicographically"],
+      "correct_answer": "Hashing substrings and comparing hash values to quickly rule out non-matches before verifying character by character",
+      "explanation": "Rabin-Karp computes a rolling hash of the pattern and each text window, comparing hashes first (cheap) and only verifying characters when hashes match, giving good average-case performance.",
+      "topic": "String algorithms",
+      "difficulty": "hard"
+    },
+    {
+      "question": "What is the purpose of the failure function (partial match table) in the Knuth-Morris-Pratt (KMP) string matching algorithm?",
+      "options": ["To avoid re-examining characters already matched by skipping ahead based on the pattern's own internal structure", "To generate random test strings for matching", "To sort the pattern's characters alphabetically", "To compute the hash value of the text"],
+      "correct_answer": "To avoid re-examining characters already matched by skipping ahead based on the pattern's own internal structure",
+      "explanation": "KMP precomputes a failure function describing the longest proper prefix of the pattern that is also a suffix, allowing the algorithm to skip redundant comparisons and achieve O(n+m) time.",
+      "topic": "String algorithms",
+      "difficulty": "hard"
+    },
+    {
+      "question": "What is the time complexity of the KMP string matching algorithm for a text of length n and pattern of length m?",
+      "options": ["O(n + m)", "O(nm)", "O(n log m)", "O(n^2)"],
+      "correct_answer": "O(n + m)",
+      "explanation": "KMP achieves linear time by preprocessing the pattern in O(m) and scanning the text in O(n), avoiding the quadratic worst case of naive string matching.",
+      "topic": "String algorithms",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In backtracking algorithms (such as solving the N-Queens problem), what is 'pruning' used for?",
+      "options": ["Abandoning a partial solution early once it is determined it cannot possibly lead to a valid or optimal solution", "Randomly discarding valid solutions to reduce output size", "Increasing the search space to guarantee correctness", "Sorting the final list of solutions found"],
+      "correct_answer": "Abandoning a partial solution early once it is determined it cannot possibly lead to a valid or optimal solution",
+      "explanation": "Pruning cuts off branches of the search tree that violate constraints early, significantly reducing the number of states explored compared to exhaustive search.",
+      "topic": "Backtracking",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the primary difference between 'branch and bound' and simple backtracking?",
+      "options": ["Branch and bound uses a bounding function to prune branches that cannot improve on the best solution found so far, targeting optimization problems", "Branch and bound never prunes any branch of the search tree", "Backtracking is only used for sorting algorithms", "There is no difference; they are the same technique"],
+      "correct_answer": "Branch and bound uses a bounding function to prune branches that cannot improve on the best solution found so far, targeting optimization problems",
+      "explanation": "Branch and bound extends backtracking by computing bounds on the best possible solution from a partial state, pruning branches whose bound is worse than the current best known solution.",
+      "topic": "Backtracking",
+      "difficulty": "hard"
+    }
+  ]
+}

@@ -1,0 +1,528 @@
+{
+  "course_code": "PHY407",
+  "title": "Computational Physics",
+  "level": "400",
+  "source_note": "Standard NUC-aligned Nigerian university 400L Computational Physics curriculum: numerical root-finding (bisection, Newton-Raphson), numerical integration (trapezoidal, Simpson's rule), numerical ODE solving (Euler, Runge-Kutta) applied to mechanics/decay problems, Monte Carlo methods, matrix/linear-algebra methods, and error/stability analysis, as applied to physics problems rather than generic programming syntax.",
+  "questions": [
+    {
+      "question": "The bisection method for finding a root of f(x) = 0 relies fundamentally on which principle?",
+      "options": [
+        "The Intermediate Value Theorem: if f(a) and f(b) have opposite signs and f is continuous, a root lies between a and b",
+        "The Fundamental Theorem of Calculus",
+        "Taylor's theorem for polynomial approximation",
+        "The Central Limit Theorem"
+      ],
+      "correct_answer": "The Intermediate Value Theorem: if f(a) and f(b) have opposite signs and f is continuous, a root lies between a and b",
+      "explanation": "The bisection method repeatedly halves an interval [a,b] on which f changes sign, relying on the Intermediate Value Theorem to guarantee a root exists within the bracket at every stage.",
+      "topic": "Root-finding: bisection method",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In the bisection method, after each iteration, the size of the interval containing the root:",
+      "options": [
+        "Is halved",
+        "Is doubled",
+        "Stays exactly the same",
+        "Is reduced to zero immediately"
+      ],
+      "correct_answer": "Is halved",
+      "explanation": "Each bisection step evaluates f at the midpoint and discards the half of the interval that cannot contain the root (based on the sign change), so the bracket width is halved every iteration, giving linear convergence.",
+      "topic": "Root-finding: bisection method",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A physics problem requires finding the equilibrium position x where a nonlinear restoring force F(x) = 0. If F(1) = 2 (positive) and F(3) = -5 (negative), and F is continuous on [1,3], applying bisection, what is the first midpoint tested and which sub-interval would be kept if F(2) turns out to be positive?",
+      "options": [
+        "Midpoint x = 2; keep [2, 3] since the sign change is between F(2) and F(3)",
+        "Midpoint x = 2; keep [1, 2] since the sign change is between F(1) and F(2)",
+        "Midpoint x = 1.5; keep [1, 1.5]",
+        "Midpoint x = 4; keep [3, 4]"
+      ],
+      "correct_answer": "Midpoint x = 2; keep [2, 3] since the sign change is between F(2) and F(3)",
+      "explanation": "The midpoint of [1,3] is (1+3)/2 = 2; since F(2) is positive and F(3) is negative, the sign change (and thus the root) lies in [2,3], so that sub-interval is retained.",
+      "topic": "Root-finding: bisection method",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Newton-Raphson method for root-finding uses the iteration formula:",
+      "options": [
+        "x_{n+1} = x_n - f(x_n)/f'(x_n)",
+        "x_{n+1} = x_n + f(x_n)/f'(x_n)",
+        "x_{n+1} = (x_n + f(x_n))/2",
+        "x_{n+1} = x_n × f'(x_n)/f(x_n)"
+      ],
+      "correct_answer": "x_{n+1} = x_n - f(x_n)/f'(x_n)",
+      "explanation": "Newton-Raphson approximates f near x_n by its tangent line and finds where that tangent crosses zero, giving x_{n+1} = x_n - f(x_n)/f'(x_n).",
+      "topic": "Root-finding: Newton-Raphson method",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Compared to the bisection method, the main advantage of the Newton-Raphson method, when it converges, is that:",
+      "options": [
+        "It typically converges much faster (quadratic convergence near the root) than bisection's linear convergence",
+        "It never requires knowledge of the function's derivative",
+        "It always converges regardless of the initial guess",
+        "It requires no continuity of the function"
+      ],
+      "correct_answer": "It typically converges much faster (quadratic convergence near the root) than bisection's linear convergence",
+      "explanation": "Newton-Raphson exhibits quadratic convergence near a simple root (the number of correct digits roughly doubles each iteration), which is much faster than bisection's linear convergence, though it requires the derivative and a good initial guess.",
+      "topic": "Root-finding: Newton-Raphson method",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A key risk of the Newton-Raphson method, not shared by bisection, is that:",
+      "options": [
+        "It can fail to converge or diverge entirely if the initial guess is far from the root or if f'(x_n) is close to zero at some iterate",
+        "It always requires more function evaluations per step than bisection",
+        "It can never be used for any physics problem",
+        "It always converges more slowly than bisection"
+      ],
+      "correct_answer": "It can fail to converge or diverge entirely if the initial guess is far from the root or if f'(x_n) is close to zero at some iterate",
+      "explanation": "Because Newton-Raphson uses local tangent-line information, a poor starting guess or a near-zero derivative can send iterates far from the root or cause division by a very small number, leading to divergence, unlike the guaranteed-bracket safety of bisection.",
+      "topic": "Root-finding: Newton-Raphson method",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In computational physics, the Newton-Raphson method might be used to find the energy eigenvalue E that satisfies a transcendental equation such as a quantization condition arising from a finite square well. This requires knowing:",
+      "options": [
+        "Both the function whose root is sought and its derivative with respect to E",
+        "Only the second derivative of the function, not the function itself",
+        "Nothing about the function except its value at one arbitrary point",
+        "The exact analytic solution, since Newton-Raphson only verifies known answers"
+      ],
+      "correct_answer": "Both the function whose root is sought and its derivative with respect to E",
+      "explanation": "Newton-Raphson explicitly requires evaluating both f(E) and f'(E) at each iterate to compute the next estimate, making it necessary to have (or numerically approximate) the derivative of the transcendental equation.",
+      "topic": "Root-finding: Newton-Raphson method",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The trapezoidal rule for numerical integration approximates the area under a curve by:",
+      "options": [
+        "Approximating the function as a series of straight line segments between sample points and summing the areas of the resulting trapezoids",
+        "Fitting a single high-degree polynomial through all data points",
+        "Randomly sampling points and averaging function values",
+        "Assuming the function is exactly constant between all sample points"
+      ],
+      "correct_answer": "Approximating the function as a series of straight line segments between sample points and summing the areas of the resulting trapezoids",
+      "explanation": "The trapezoidal rule connects consecutive sampled points with straight lines, forming trapezoids whose areas are summed to approximate the definite integral.",
+      "topic": "Numerical integration: trapezoidal rule",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The composite trapezoidal rule formula for approximating ∫ f(x) dx from a to b using n equal subintervals of width h = (b-a)/n is:",
+      "options": [
+        "(h/2)[f(x₀) + 2f(x₁) + 2f(x₂) + ... + 2f(x_{n-1}) + f(x_n)]",
+        "h[f(x₀) + f(x₁) + ... + f(x_n)]",
+        "(h/3)[f(x₀) + 4f(x₁) + f(x₂)]",
+        "h²[f(x₀) × f(x_n)]"
+      ],
+      "correct_answer": "(h/2)[f(x₀) + 2f(x₁) + 2f(x₂) + ... + 2f(x_{n-1}) + f(x_n)]",
+      "explanation": "Summing the areas of n trapezoids, each interior point is shared by two adjacent trapezoids (hence coefficient 2) while the endpoints are counted once, giving the standard composite trapezoidal rule formula.",
+      "topic": "Numerical integration: trapezoidal rule",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Using the trapezoidal rule with two subintervals (h = 1) to estimate ∫ from 0 to 2 of f(x) = x² dx, given f(0)=0, f(1)=1, f(2)=4, the approximate result is:",
+      "options": [
+        "3",
+        "2.67",
+        "4",
+        "2"
+      ],
+      "correct_answer": "3",
+      "explanation": "Trapezoidal rule: (h/2)[f(0) + 2f(1) + f(2)] = (1/2)[0 + 2(1) + 4] = (1/2)(6) = 3. (The exact integral is 8/3 ≈ 2.67, showing the trapezoidal rule's approximation error for a curved function.)",
+      "topic": "Numerical integration: trapezoidal rule",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Simpson's rule for numerical integration improves on the trapezoidal rule by:",
+      "options": [
+        "Fitting a parabola (quadratic polynomial) through each group of three consecutive points, rather than a straight line through two",
+        "Ignoring the function values entirely and using only the interval width",
+        "Requiring an odd number of subintervals only",
+        "Using cubic splines through every single data point"
+      ],
+      "correct_answer": "Fitting a parabola (quadratic polynomial) through each group of three consecutive points, rather than a straight line through two",
+      "explanation": "Simpson's rule approximates the integrand locally with a quadratic (parabolic) curve fitted through pairs of subintervals, generally giving higher accuracy than the trapezoidal rule's linear approximation for smooth functions.",
+      "topic": "Numerical integration: Simpson's rule",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Simpson's 1/3 rule requires which condition on the number of subintervals n?",
+      "options": [
+        "n must be even",
+        "n must be odd",
+        "n must be a prime number",
+        "n has no restriction; any positive integer works"
+      ],
+      "correct_answer": "n must be even",
+      "explanation": "Simpson's 1/3 rule groups subintervals in pairs (each pair fitted with a parabola), so the total number of subintervals n must be even for the method to apply directly.",
+      "topic": "Numerical integration: Simpson's rule",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Simpson's 1/3 rule formula for ∫ f(x) dx over [a,b] using n=2 subintervals (three points x₀, x₁, x₂, width h) is:",
+      "options": [
+        "(h/3)[f(x₀) + 4f(x₁) + f(x₂)]",
+        "(h/2)[f(x₀) + f(x₂)]",
+        "h[f(x₀) + f(x₁) + f(x₂)]",
+        "(h/3)[f(x₀) + 2f(x₁) + f(x₂)]"
+      ],
+      "correct_answer": "(h/3)[f(x₀) + 4f(x₁) + f(x₂)]",
+      "explanation": "Simpson's 1/3 rule weights the middle point by 4 and the endpoints by 1, scaled by h/3, derived from exactly integrating the interpolating parabola through the three points.",
+      "topic": "Numerical integration: Simpson's rule",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For a smooth, well-behaved function, Simpson's rule generally provides more accurate results than the trapezoidal rule for the same number of points because:",
+      "options": [
+        "Simpson's rule has a higher order of accuracy (error scales with h⁴) compared to the trapezoidal rule's error, which scales with h²",
+        "Simpson's rule uses fewer function evaluations than the trapezoidal rule",
+        "Simpson's rule does not require any function evaluations at all",
+        "Both methods always give identical results for any function"
+      ],
+      "correct_answer": "Simpson's rule has a higher order of accuracy (error scales with h⁴) compared to the trapezoidal rule's error, which scales with h²",
+      "explanation": "The global truncation error of the trapezoidal rule is O(h²), while Simpson's rule achieves O(h⁴) due to its use of quadratic interpolation, making it converge faster as the number of subintervals increases for smooth integrands.",
+      "topic": "Numerical integration: error comparison",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In physics, numerical integration methods like Simpson's rule are commonly applied to compute quantities such as:",
+      "options": [
+        "Work done by a variable force, or the centre of mass of an irregular object, when the integrand cannot be integrated analytically in closed form",
+        "The exact analytic value of every physics integral without approximation error",
+        "Only integrals that are already trivial to solve by hand",
+        "Quantities unrelated to any physical system"
+      ],
+      "correct_answer": "Work done by a variable force, or the centre of mass of an irregular object, when the integrand cannot be integrated analytically in closed form",
+      "explanation": "Numerical integration is essential in physics for evaluating integrals of complicated or tabulated (experimentally measured) functions, such as work done by a non-constant force or moments of irregular mass distributions, where an analytic antiderivative may not exist.",
+      "topic": "Numerical integration: physics applications",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Euler's method for solving the ordinary differential equation dy/dx = f(x,y) with step size h advances the solution using:",
+      "options": [
+        "y_{n+1} = y_n + h × f(x_n, y_n)",
+        "y_{n+1} = y_n × h × f(x_n, y_n)",
+        "y_{n+1} = y_n - h × f(x_n, y_n)²",
+        "y_{n+1} = y_n / (h × f(x_n, y_n))"
+      ],
+      "correct_answer": "y_{n+1} = y_n + h × f(x_n, y_n)",
+      "explanation": "Euler's method uses the derivative (slope) at the current point to linearly extrapolate the solution forward by one step of size h: y_{n+1} = y_n + h f(x_n, y_n).",
+      "topic": "ODE solving: Euler's method",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Euler's method is applied to model radioactive decay, dN/dt = -λN. Starting with N₀ = 1000 nuclei, λ = 0.1 per second, and step size h = 1 s, the estimated number of nuclei after one step (N₁) is:",
+      "options": [
+        "900",
+        "1000",
+        "1100",
+        "990"
+      ],
+      "correct_answer": "900",
+      "explanation": "N₁ = N₀ + h × (-λN₀) = 1000 + 1 × (-0.1 × 1000) = 1000 - 100 = 900.",
+      "topic": "ODE solving: Euler's method",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For projectile motion with air resistance, where the drag force depends nonlinearly on velocity, Euler's method (or a similar ODE solver) is preferred over an analytic solution because:",
+      "options": [
+        "The resulting equations of motion are generally nonlinear and do not have a simple closed-form analytic solution",
+        "Analytic solutions to projectile motion with drag are always simpler than numerical methods",
+        "Numerical methods cannot handle velocity-dependent forces",
+        "Air resistance has no effect on projectile trajectories"
+      ],
+      "correct_answer": "The resulting equations of motion are generally nonlinear and do not have a simple closed-form analytic solution",
+      "explanation": "Quadratic (or otherwise nonlinear) drag terms make the equations of motion for projectiles with air resistance analytically intractable in general, so numerical integration (e.g., Euler or Runge-Kutta methods) is used to simulate the trajectory.",
+      "topic": "ODE solving: physics applications",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A major weakness of the basic (forward) Euler method is that:",
+      "options": [
+        "It has only first-order accuracy, so its error per step is proportional to h² and it can accumulate significant error or become unstable over many steps unless h is very small",
+        "It is always more accurate than any Runge-Kutta method",
+        "It cannot be applied to any physics problem",
+        "It requires computing second derivatives of the function at every step"
+      ],
+      "correct_answer": "It has only first-order accuracy, so its error per step is proportional to h² and it can accumulate significant error or become unstable over many steps unless h is very small",
+      "explanation": "Forward Euler has local truncation error O(h²) per step (global error O(h)), making it relatively inaccurate and potentially numerically unstable for stiff problems or large step sizes, motivating higher-order methods.",
+      "topic": "ODE solving: Euler's method limitations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The improved Euler method (Heun's method) increases accuracy over basic Euler by:",
+      "options": [
+        "Averaging the slope at the beginning and the (estimated) slope at the end of the interval to get a better estimate of the average slope over the step",
+        "Ignoring the derivative function entirely",
+        "Using a much larger step size than basic Euler",
+        "Only evaluating the function at the midpoint of the previous step"
+      ],
+      "correct_answer": "Averaging the slope at the beginning and the (estimated) slope at the end of the interval to get a better estimate of the average slope over the step",
+      "explanation": "Heun's method first predicts y at the next step using basic Euler, then evaluates the slope there and averages it with the initial slope, giving a second-order accurate (predictor-corrector) method.",
+      "topic": "ODE solving: improved Euler / Runge-Kutta",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The classical fourth-order Runge-Kutta method (RK4) achieves higher accuracy than Euler's method primarily by:",
+      "options": [
+        "Evaluating the derivative function at several intermediate points within each step and combining them in a weighted average to better approximate the curve's behaviour over the interval",
+        "Using only the initial point's slope, just like basic Euler",
+        "Avoiding any evaluation of the derivative function",
+        "Increasing the step size to infinity"
+      ],
+      "correct_answer": "Evaluating the derivative function at several intermediate points within each step and combining them in a weighted average to better approximate the curve's behaviour over the interval",
+      "explanation": "RK4 computes four estimates of the slope (k₁ through k₄) at different points within the step and combines them with specific weights, achieving fourth-order accuracy (global error O(h⁴)), far more accurate than Euler for the same step size.",
+      "topic": "ODE solving: improved Euler / Runge-Kutta",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For simulating radioactive decay or projectile motion over long time intervals, Runge-Kutta methods are generally preferred over basic Euler because:",
+      "options": [
+        "They achieve much higher accuracy for a given step size, allowing larger steps to be used without sacrificing precision, and reducing the accumulation of truncation error",
+        "They require no computation of the governing differential equation",
+        "They are always less computationally expensive per step than Euler's method",
+        "They eliminate the need for an initial condition"
+      ],
+      "correct_answer": "They achieve much higher accuracy for a given step size, allowing larger steps to be used without sacrificing precision, and reducing the accumulation of truncation error",
+      "explanation": "Higher-order Runge-Kutta methods trade a higher per-step computational cost (multiple function evaluations) for dramatically reduced truncation error, which is advantageous for long simulations where Euler's error would otherwise accumulate significantly.",
+      "topic": "ODE solving: improved Euler / Runge-Kutta",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Monte Carlo methods in computational physics fundamentally rely on:",
+      "options": [
+        "Using repeated random sampling to obtain numerical estimates of quantities such as integrals or probabilities",
+        "Using only deterministic, fixed grid points with no randomness",
+        "Solving differential equations analytically without approximation",
+        "Direct measurement of physical quantities in a laboratory"
+      ],
+      "correct_answer": "Using repeated random sampling to obtain numerical estimates of quantities such as integrals or probabilities",
+      "explanation": "Monte Carlo methods use randomly generated numbers to simulate a process or estimate a quantity, relying on the law of large numbers so that averages over many random trials converge to the true expected value.",
+      "topic": "Monte Carlo methods",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A simple Monte Carlo approach to estimating the value of π involves:",
+      "options": [
+        "Randomly scattering points within a square that circumscribes a circle, and using the ratio of points landing inside the circle to the total number of points",
+        "Solving the wave equation for a circular drum",
+        "Measuring the circumference of a physical circle with a ruler",
+        "Computing an infinite Taylor series by hand"
+      ],
+      "correct_answer": "Randomly scattering points within a square that circumscribes a circle, and using the ratio of points landing inside the circle to the total number of points",
+      "explanation": "Since the ratio of the circle's area to the square's area is π/4, generating many uniformly random points in the square and computing the fraction that fall inside the inscribed circle provides a Monte Carlo estimate of π.",
+      "topic": "Monte Carlo methods",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For Monte Carlo integration to work correctly, the random numbers used to sample points must be:",
+      "options": [
+        "Generated from a well-defined probability distribution (commonly uniform) covering the domain of integration",
+        "Always integers greater than 1000",
+        "Generated using only even numbers",
+        "Identical at every sampled point"
+      ],
+      "correct_answer": "Generated from a well-defined probability distribution (commonly uniform) covering the domain of integration",
+      "explanation": "Monte Carlo integration relies on sampling points according to a known distribution (often uniform over the integration domain) so that the sample average of the integrand, scaled appropriately, converges to the true integral value.",
+      "topic": "Monte Carlo methods",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In statistical/computational physics, Monte Carlo methods are commonly used to simulate systems such as:",
+      "options": [
+        "The random walk of particles undergoing diffusion, or the thermal equilibrium configurations of a spin lattice (e.g., the Ising model)",
+        "Only perfectly deterministic systems with no randomness whatsoever",
+        "Systems that have already been fully solved analytically, purely for decoration",
+        "Systems with exactly one possible configuration"
+      ],
+      "correct_answer": "The random walk of particles undergoing diffusion, or the thermal equilibrium configurations of a spin lattice (e.g., the Ising model)",
+      "explanation": "Monte Carlo methods are widely applied to model stochastic physical processes (like diffusion via random walks) and to sample equilibrium states of statistical mechanics systems, such as the Ising model, where an exhaustive enumeration of states is computationally infeasible.",
+      "topic": "Monte Carlo methods: applications",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The accuracy of a Monte Carlo estimate generally improves (the statistical error decreases) as:",
+      "options": [
+        "The square root of the number of random samples used, N, increases (error ∝ 1/√N)",
+        "The number of samples decreases",
+        "The samples become less random and more predictable",
+        "The dimensionality of the problem increases, with no dependence on N"
+      ],
+      "correct_answer": "The square root of the number of random samples used, N, increases (error ∝ 1/√N)",
+      "explanation": "By the central limit theorem, the standard error of a Monte Carlo estimate scales as 1/√N, meaning that to halve the statistical error, the number of samples must be increased by a factor of four.",
+      "topic": "Monte Carlo methods: error analysis",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In computational physics, solving a system of linear equations (such as those arising from discretizing a boundary-value problem or Kirchhoff's circuit laws) can be represented in matrix form as:",
+      "options": [
+        "Ax = b, where A is a coefficient matrix, x is the unknown vector, and b is a known vector",
+        "A + x = b² only, with no matrix multiplication involved",
+        "A single scalar equation with no matrix structure at all",
+        "x = A/b using ordinary scalar division of matrices"
+      ],
+      "correct_answer": "Ax = b, where A is a coefficient matrix, x is the unknown vector, and b is a known vector",
+      "explanation": "Systems of linear equations arising in physics (e.g., from finite-difference discretization, circuit analysis, or coupled oscillator equations) are naturally expressed in matrix form Ax = b, which can be solved using methods like Gaussian elimination or LU decomposition.",
+      "topic": "Matrix methods",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Gaussian elimination is a numerical technique used to:",
+      "options": [
+        "Systematically reduce a matrix to row-echelon form in order to solve a system of linear equations",
+        "Randomly guess solutions to differential equations",
+        "Compute definite integrals using trapezoids",
+        "Generate normally distributed random numbers only"
+      ],
+      "correct_answer": "Systematically reduce a matrix to row-echelon form in order to solve a system of linear equations",
+      "explanation": "Gaussian elimination applies row operations to transform the augmented matrix [A|b] into row-echelon (or reduced row-echelon) form, from which the solution vector x can be obtained via back-substitution.",
+      "topic": "Matrix methods",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In physics, eigenvalue problems of the form Av = λv commonly arise in contexts such as:",
+      "options": [
+        "Finding the normal mode frequencies of coupled oscillators, or the stationary energy states of a quantum system represented in matrix form",
+        "Computing the average of a set of random numbers",
+        "Approximating the value of a definite integral",
+        "Determining the root of a single nonlinear scalar equation only"
+      ],
+      "correct_answer": "Finding the normal mode frequencies of coupled oscillators, or the stationary energy states of a quantum system represented in matrix form",
+      "explanation": "Eigenvalue problems Av = λv appear throughout physics: the eigenvalues of a dynamical matrix give normal mode frequencies for coupled oscillators, and in quantum mechanics, matrix representations of the Hamiltonian have eigenvalues corresponding to allowed energy levels.",
+      "topic": "Matrix methods: eigenvalue problems",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the eigenvalue equation Av = λv, the vector v (the eigenvector) has the special property that:",
+      "options": [
+        "Applying the matrix A to v produces a vector in the same direction as v, scaled by the factor λ",
+        "Applying A to v always produces the zero vector",
+        "v must always be the identity matrix",
+        "λ must always be a complex number with nonzero imaginary part"
+      ],
+      "correct_answer": "Applying the matrix A to v produces a vector in the same direction as v, scaled by the factor λ",
+      "explanation": "By definition, an eigenvector v of A is a nonzero vector whose direction is unchanged (only scaled by the eigenvalue λ) when A acts on it, which is the geometric meaning behind Av = λv.",
+      "topic": "Matrix methods: eigenvalue problems",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Truncation error in a numerical method refers to:",
+      "options": [
+        "The error arising from approximating a mathematical procedure (e.g., an infinite process like differentiation or integration) with a finite algorithm, such as using a finite step size h",
+        "The error caused solely by the computer's finite precision in representing numbers",
+        "An error that occurs only due to incorrect input data",
+        "An error that never depends on the step size used"
+      ],
+      "correct_answer": "The error arising from approximating a mathematical procedure (e.g., an infinite process like differentiation or integration) with a finite algorithm, such as using a finite step size h",
+      "explanation": "Truncation error comes from truncating an infinite process (such as a Taylor series or the limit definition of a derivative) to a finite number of terms or steps, distinct from round-off error, which arises from finite numerical precision.",
+      "topic": "Numerical error analysis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Round-off error in numerical computation arises because:",
+      "options": [
+        "Computers represent real numbers with finite precision (a limited number of significant digits), introducing small errors in every arithmetic operation",
+        "The mathematical formula being used is inherently wrong",
+        "The chosen step size h is always too large",
+        "The algorithm being used has an infinite number of steps by design"
+      ],
+      "correct_answer": "Computers represent real numbers with finite precision (a limited number of significant digits), introducing small errors in every arithmetic operation",
+      "explanation": "Because computers store floating-point numbers with a limited number of bits, most real numbers cannot be represented exactly, so round-off error accumulates from repeated arithmetic operations involving these approximate representations.",
+      "topic": "Numerical error analysis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "As the step size h in a numerical differentiation or ODE method is made smaller and smaller, which trade-off typically emerges?",
+      "options": [
+        "Truncation error decreases, but round-off error can increase (due to subtracting nearly equal numbers), so there is often an optimal intermediate h that minimizes total error",
+        "Both truncation error and round-off error always decrease indefinitely with no limit",
+        "Round-off error disappears entirely regardless of h",
+        "Truncation error increases while round-off error stays exactly constant"
+      ],
+      "correct_answer": "Truncation error decreases, but round-off error can increase (due to subtracting nearly equal numbers), so there is often an optimal intermediate h that minimizes total error",
+      "explanation": "Reducing h lowers truncation error (which typically scales with a positive power of h), but very small h can cause round-off error to grow because differences of nearly equal floating-point numbers lose significant digits, so total error is often minimized at some optimal, non-zero h.",
+      "topic": "Numerical error analysis",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A numerical scheme is said to be 'numerically stable' if:",
+      "options": [
+        "Small errors introduced at any stage of the computation do not grow uncontrollably as the calculation proceeds",
+        "It always produces the exact mathematical answer with zero error",
+        "It requires no floating-point arithmetic",
+        "It uses the largest possible step size regardless of the problem"
+      ],
+      "correct_answer": "Small errors introduced at any stage of the computation do not grow uncontrollably as the calculation proceeds",
+      "explanation": "Numerical stability means that errors (from truncation, round-off, or initial data) remain bounded and do not amplify exponentially through subsequent steps of the algorithm; an unstable scheme can produce wildly incorrect results even from a well-posed problem.",
+      "topic": "Numerical error analysis: stability",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For certain ODE problems (e.g., stiff differential equations), using the basic forward Euler method with too large a step size h can lead to:",
+      "options": [
+        "Numerical instability, where the computed solution oscillates or grows without bound, even though the true solution is well-behaved",
+        "A perfectly accurate solution regardless of h",
+        "Faster computation with no loss of accuracy",
+        "Complete elimination of round-off error"
+      ],
+      "correct_answer": "Numerical instability, where the computed solution oscillates or grows without bound, even though the true solution is well-behaved",
+      "explanation": "For stiff equations, forward Euler's stability region is limited, so if h exceeds a certain threshold relative to the problem's characteristic rates, the numerical solution can blow up or oscillate unphysically, even though the exact solution decays smoothly.",
+      "topic": "Numerical error analysis: stability",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In computational modeling of a physical system, 'discretization' refers to:",
+      "options": [
+        "Representing a continuous physical quantity or domain (such as space, time, or a differential equation) using a finite set of discrete points or values suitable for numerical computation",
+        "Converting all physical constants to exactly zero",
+        "Eliminating all approximation from the model entirely",
+        "Running the simulation only once with a single data point"
+      ],
+      "correct_answer": "Representing a continuous physical quantity or domain (such as space, time, or a differential equation) using a finite set of discrete points or values suitable for numerical computation",
+      "explanation": "Since computers cannot handle truly continuous mathematical objects, discretization breaks continuous space, time, or functions into a finite grid of points or discrete steps, on which numerical algorithms like finite differences or ODE solvers can operate.",
+      "topic": "Computational modeling: discretization",
+      "difficulty": "easy"
+    },
+    {
+      "question": "When choosing a numerical algorithm for a specific physics simulation, an important trade-off to consider is:",
+      "options": [
+        "Balancing computational cost (speed/memory) against accuracy and stability requirements of the specific problem being solved",
+        "Always choosing the algorithm with the smallest possible number of lines of code",
+        "Algorithms have no meaningful differences in accuracy or cost for any physics problem",
+        "Only the programming language used matters, not the algorithm itself"
+      ],
+      "correct_answer": "Balancing computational cost (speed/memory) against accuracy and stability requirements of the specific problem being solved",
+      "explanation": "Selecting a numerical method (e.g., Euler versus RK4, or trapezoidal versus Simpson's) involves trading off computational expense against the desired accuracy and stability, since higher-order or adaptive methods cost more per step but can allow larger step sizes or better precision.",
+      "topic": "Computational modeling: algorithm choice",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Adaptive step-size control in an ODE solver refers to:",
+      "options": [
+        "Automatically adjusting the step size h during the computation, using smaller steps where the solution changes rapidly and larger steps where it is smooth, to maintain accuracy efficiently",
+        "Using a single fixed step size determined before the simulation starts and never changing it",
+        "Ignoring the accuracy of the solution entirely",
+        "Randomly changing the step size with no regard to solution behaviour"
+      ],
+      "correct_answer": "Automatically adjusting the step size h during the computation, using smaller steps where the solution changes rapidly and larger steps where it is smooth, to maintain accuracy efficiently",
+      "explanation": "Adaptive step-size algorithms estimate the local error at each step and adjust h accordingly, using finer resolution during rapid changes in the solution and coarser steps when the solution varies slowly, improving efficiency without sacrificing accuracy.",
+      "topic": "Computational modeling: algorithm choice",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A physics student wants to numerically estimate the period of a simple pendulum with large amplitude (where the small-angle approximation fails) using computational methods. The most appropriate general approach would be to:",
+      "options": [
+        "Numerically solve the nonlinear pendulum ODE using a method such as RK4, then determine the period from the resulting time series",
+        "Assume the small-angle formula T = 2π√(L/g) is exact for all amplitudes",
+        "Use only the bisection method, since it is unrelated to solving differential equations",
+        "Use Monte Carlo integration exclusively, since ODEs cannot be solved numerically"
+      ],
+      "correct_answer": "Numerically solve the nonlinear pendulum ODE using a method such as RK4, then determine the period from the resulting time series",
+      "explanation": "For large-amplitude pendulum motion, the governing ODE d²θ/dt² = -(g/L)sinθ is nonlinear and lacks a simple closed-form period; numerically integrating it (e.g., with RK4) and then measuring the time between successive peaks gives an accurate numerical estimate of the period.",
+      "topic": "ODE solving: physics applications",
+      "difficulty": "hard"
+    }
+  ]
+}

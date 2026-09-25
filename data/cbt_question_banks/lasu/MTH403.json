@@ -1,0 +1,264 @@
+{
+  "course_code": "MTH403",
+  "title": "Functional Analysis",
+  "level": "400",
+  "source_note": "Standard NUC-aligned Nigerian university 400L Functional Analysis curriculum: normed and Banach spaces, inner product and Hilbert spaces, bounded linear operators and functionals, the major structural theorems (Hahn-Banach, Open Mapping, Closed Graph, Uniform Boundedness), orthogonality and the Riesz representation theorem, and an introduction to spectral and compact operator theory.",
+  "questions": [
+    {
+      "question": "A normed space is a vector space X equipped with a function ||.|| satisfying:",
+      "options": ["||x|| >= 0 with equality iff x = 0, ||ax|| = |a| ||x||, and ||x+y|| <= ||x|| + ||y||", "||x|| can be negative", "||x+y|| = ||x|| + ||y|| always", "||ax|| = a||x|| for all scalars a"],
+      "correct_answer": "||x|| >= 0 with equality iff x = 0, ||ax|| = |a| ||x||, and ||x+y|| <= ||x|| + ||y||",
+      "explanation": "These are the three defining norm axioms: positive definiteness, absolute homogeneity, and the triangle inequality.",
+      "topic": "Normed spaces",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A Banach space is defined as:",
+      "options": ["A complete normed vector space", "Any normed vector space", "A finite-dimensional vector space", "A vector space with an inner product only"],
+      "correct_answer": "A complete normed vector space",
+      "explanation": "Completeness means every Cauchy sequence in the space converges to a limit within the space.",
+      "topic": "Banach spaces",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A Hilbert space is defined as:",
+      "options": ["A complete inner product space", "Any vector space with a norm", "An incomplete metric space", "A finite normed space"],
+      "correct_answer": "A complete inner product space",
+      "explanation": "A Hilbert space is an inner product space that is complete with respect to the norm induced by the inner product.",
+      "topic": "Hilbert spaces",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Every inner product space induces a norm defined by:",
+      "options": ["||x|| = square root of <x,x>", "||x|| = <x,x>", "||x|| = <x,x> squared", "||x|| = |<x,x>|"],
+      "correct_answer": "||x|| = square root of <x,x>",
+      "explanation": "This is the standard norm induced by an inner product, which can be shown to satisfy all norm axioms.",
+      "topic": "Inner product spaces",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The Cauchy-Schwarz inequality in an inner product space states that:",
+      "options": ["|<x,y>| <= ||x|| ||y||", "<x,y> = ||x|| ||y||", "|<x,y>| >= ||x|| ||y||", "<x,y> <= ||x|| + ||y||"],
+      "correct_answer": "|<x,y>| <= ||x|| ||y||",
+      "explanation": "This fundamental inequality bounds the inner product of two vectors by the product of their norms, with equality iff the vectors are linearly dependent.",
+      "topic": "Inner product spaces",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The parallelogram law ||x+y||^2 + ||x-y||^2 = 2||x||^2 + 2||y||^2 holds:",
+      "options": ["In every inner product space, and characterizes norms that come from an inner product", "In every normed space, without exception", "Only in finite-dimensional spaces", "Only when x and y are orthogonal"],
+      "correct_answer": "In every inner product space, and characterizes norms that come from an inner product",
+      "explanation": "By the Jordan-von Neumann theorem, a norm satisfying the parallelogram law is precisely one that arises from an inner product.",
+      "topic": "Inner product spaces",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The space l^2 of square-summable sequences, with norm ||x|| = (sum of |x_n|^2)^(1/2), is an example of a:",
+      "options": ["Hilbert space", "Space that is not complete", "Finite-dimensional space", "Space without a norm"],
+      "correct_answer": "Hilbert space",
+      "explanation": "l^2 is complete under its natural norm and the norm arises from an inner product, making it a canonical infinite-dimensional Hilbert space.",
+      "topic": "Examples of Banach and Hilbert spaces",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The space C[a,b] of continuous functions on [a,b] with the sup norm ||f|| = sup|f(x)| is:",
+      "options": ["A Banach space but not a Hilbert space under this norm", "Not complete", "Finite-dimensional", "Not a normed space"],
+      "correct_answer": "A Banach space but not a Hilbert space under this norm",
+      "explanation": "C[a,b] is complete under the sup norm, but this norm does not satisfy the parallelogram law, so it is not induced by an inner product.",
+      "topic": "Examples of Banach and Hilbert spaces",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A linear operator T: X to Y between normed spaces is said to be bounded if there exists M >= 0 such that:",
+      "options": ["||Tx|| <= M ||x|| for all x in X", "||Tx|| = M for all x", "T(x) = Mx always", "||x|| <= M ||Tx||"],
+      "correct_answer": "||Tx|| <= M ||x|| for all x in X",
+      "explanation": "This inequality defines a bounded linear operator, meaning it cannot amplify the norm of a vector by more than a fixed factor M.",
+      "topic": "Bounded linear operators",
+      "difficulty": "easy"
+    },
+    {
+      "question": "For linear operators between normed spaces, boundedness is equivalent to:",
+      "options": ["Continuity", "Injectivity", "Surjectivity", "Compactness"],
+      "correct_answer": "Continuity",
+      "explanation": "For linear maps between normed spaces, boundedness and continuity are equivalent properties.",
+      "topic": "Bounded linear operators",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The operator norm of a bounded linear operator T is defined as:",
+      "options": ["||T|| = sup{||Tx|| : ||x|| <= 1}", "||T|| = inf{||Tx|| : ||x|| = 1}", "||T|| = ||T(0)||", "||T|| = trace(T)"],
+      "correct_answer": "||T|| = sup{||Tx|| : ||x|| <= 1}",
+      "explanation": "This is the smallest constant M for which the boundedness inequality ||Tx|| <= M||x|| holds for all x.",
+      "topic": "Operator norm",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The dual space X* of a normed space X consists of:",
+      "options": ["All bounded (continuous) linear functionals on X", "All linear operators from X to X", "All elements of X", "All unbounded functionals on X"],
+      "correct_answer": "All bounded (continuous) linear functionals on X",
+      "explanation": "The dual space is the space of continuous scalar-valued linear maps on X, itself a normed (in fact Banach) space under the operator norm.",
+      "topic": "Dual spaces",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The Hahn-Banach theorem guarantees that:",
+      "options": ["A bounded linear functional defined on a subspace can be extended to the whole space without increasing its norm", "Every operator is bounded", "Every space is a Hilbert space", "Every functional is zero"],
+      "correct_answer": "A bounded linear functional defined on a subspace can be extended to the whole space without increasing its norm",
+      "explanation": "This extension theorem is one of the cornerstone results of functional analysis, underpinning duality theory.",
+      "topic": "Hahn-Banach theorem",
+      "difficulty": "hard"
+    },
+    {
+      "question": "One important consequence of the Hahn-Banach theorem is that:",
+      "options": ["The dual space of a nontrivial normed space contains enough functionals to separate points", "All normed spaces are finite-dimensional", "Every linear functional is automatically bounded", "Every subspace is closed"],
+      "correct_answer": "The dual space of a nontrivial normed space contains enough functionals to separate points",
+      "explanation": "Hahn-Banach guarantees that for any nonzero x, there exists a bounded functional f with f(x) not equal to zero, so functionals separate distinct points.",
+      "topic": "Hahn-Banach theorem",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The Open Mapping Theorem states that a bounded linear surjective operator between Banach spaces:",
+      "options": ["Maps open sets to open sets", "Is never continuous", "Maps closed sets to open sets only", "Has a discontinuous inverse always"],
+      "correct_answer": "Maps open sets to open sets",
+      "explanation": "Completeness of both spaces is essential to this theorem, which fails in general incomplete normed spaces.",
+      "topic": "Open mapping theorem",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A corollary of the Open Mapping Theorem is the Bounded Inverse Theorem, which states that a bijective bounded linear operator between Banach spaces has:",
+      "options": ["A bounded inverse", "An unbounded inverse", "No inverse", "A discontinuous inverse"],
+      "correct_answer": "A bounded inverse",
+      "explanation": "Since the operator maps open sets to open sets, its set-theoretic inverse is automatically continuous, i.e. bounded.",
+      "topic": "Open mapping theorem",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The Closed Graph Theorem states that a linear operator T: X to Y between Banach spaces is bounded if and only if:",
+      "options": ["Its graph {(x, Tx) : x in X} is closed in X times Y", "T is injective", "T is surjective", "T(0) = 0"],
+      "correct_answer": "Its graph {(x, Tx) : x in X} is closed in X times Y",
+      "explanation": "This theorem lets one verify boundedness by checking a closedness condition on the graph, often easier than a direct estimate.",
+      "topic": "Closed graph theorem",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The Uniform Boundedness Principle (Banach-Steinhaus theorem) states that a family of bounded linear operators on a Banach space that is pointwise bounded is:",
+      "options": ["Uniformly bounded in operator norm", "Necessarily all equal", "Always compact", "Necessarily unbounded"],
+      "correct_answer": "Uniformly bounded in operator norm",
+      "explanation": "Pointwise boundedness for every x, combined with completeness (via the Baire Category Theorem), forces a uniform bound on the operator norms.",
+      "topic": "Uniform boundedness principle",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Two vectors x, y in an inner product space are said to be orthogonal if:",
+      "options": ["<x,y> = 0", "||x|| = ||y||", "x = y", "<x,y> = ||x|| ||y||"],
+      "correct_answer": "<x,y> = 0",
+      "explanation": "Orthogonality is defined directly by the vanishing of the inner product.",
+      "topic": "Orthogonality",
+      "difficulty": "easy"
+    },
+    {
+      "question": "An orthonormal set {e_n} in a Hilbert space satisfies:",
+      "options": ["<e_i,e_j> = 0 for i not equal to j, and ||e_i|| = 1 for all i", "<e_i,e_j> = 1 for all i,j", "e_i = e_j for all i,j", "||e_i|| = 0 for all i"],
+      "correct_answer": "<e_i,e_j> = 0 for i not equal to j, and ||e_i|| = 1 for all i",
+      "explanation": "This combines pairwise orthogonality with unit norm, the defining property of an orthonormal set.",
+      "topic": "Orthonormal bases",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Parseval's identity for an orthonormal basis {e_n} of a Hilbert space H states that for x in H:",
+      "options": ["||x||^2 = sum of |<x,e_n>|^2", "||x|| = sum of <x,e_n>", "||x||^2 = <x,e_1> only", "sum of <x,e_n> = 0"],
+      "correct_answer": "||x||^2 = sum of |<x,e_n>|^2",
+      "explanation": "Parseval's identity expresses the norm of x entirely in terms of its Fourier-type coefficients with respect to the orthonormal basis.",
+      "topic": "Orthonormal bases",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The Riesz Representation Theorem for Hilbert spaces states that every bounded linear functional f on a Hilbert space H can be represented as:",
+      "options": ["f(x) = <x,y> for a unique y in H", "f(x) = ||x||", "f(x) = 0 for all x", "f(x) = x for a scalar x"],
+      "correct_answer": "f(x) = <x,y> for a unique y in H",
+      "explanation": "This theorem identifies the dual of a Hilbert space with the space itself via the inner product.",
+      "topic": "Riesz representation theorem",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The orthogonal projection theorem states that for a closed subspace M of a Hilbert space H, every x in H can be uniquely written as:",
+      "options": ["x = m + n where m is in M and n is in the orthogonal complement of M", "x = m only, with m in M", "x is never decomposable in this way", "x = m times n for m in M"],
+      "correct_answer": "x = m + n where m is in M and n is in the orthogonal complement of M",
+      "explanation": "This decomposition exists and is unique precisely because M is a closed subspace of a Hilbert space.",
+      "topic": "Orthogonal projections",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A linear operator T on a Hilbert space is called self-adjoint if:",
+      "options": ["<Tx,y> = <x,Ty> for all x,y", "T squared equals T", "T is invertible", "T(0) is not equal to 0"],
+      "correct_answer": "<Tx,y> = <x,Ty> for all x,y",
+      "explanation": "This is the defining property of a self-adjoint (Hermitian) operator, equal to its own adjoint.",
+      "topic": "Self-adjoint operators",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The spectrum of a bounded linear operator T on a Banach space consists of all scalars lambda such that:",
+      "options": ["T minus lambda times the identity is not invertible (as a bounded operator)", "lambda is an eigenvalue only", "T equals lambda times the identity", "lambda equals 0"],
+      "correct_answer": "T minus lambda times the identity is not invertible (as a bounded operator)",
+      "explanation": "The spectrum generalizes the notion of eigenvalue and includes values where T minus lambda I fails to have a bounded inverse.",
+      "topic": "Spectral theory",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Every eigenvalue of an operator T lies in the spectrum of T, but in infinite dimensions the spectrum may also contain:",
+      "options": ["Values that are not eigenvalues, arising from the continuous or residual spectrum", "Only real numbers", "Nothing else beyond eigenvalues", "Complex conjugates of eigenvalues only"],
+      "correct_answer": "Values that are not eigenvalues, arising from the continuous or residual spectrum",
+      "explanation": "Unlike the finite-dimensional case, the spectrum of an infinite-dimensional operator can strictly contain the set of eigenvalues.",
+      "topic": "Spectral theory",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A compact linear operator T: X to Y is one for which:",
+      "options": ["The image of every bounded set has compact closure in Y", "T is always the identity operator", "T(X) is a finite set", "T is unbounded"],
+      "correct_answer": "The image of every bounded set has compact closure in Y",
+      "explanation": "Compact operators send bounded sets to relatively compact sets, a stronger property than mere boundedness.",
+      "topic": "Compact operators",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Every compact operator on an infinite-dimensional normed space is necessarily:",
+      "options": ["Bounded", "Invertible", "Equal to the identity", "Unbounded"],
+      "correct_answer": "Bounded",
+      "explanation": "Compactness is a stronger condition than boundedness, so every compact operator is in particular bounded.",
+      "topic": "Compact operators",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a finite-dimensional normed space, all norms are:",
+      "options": ["Equivalent", "Topologically different", "Never comparable", "Only defined for Euclidean space"],
+      "correct_answer": "Equivalent",
+      "explanation": "On a finite-dimensional vector space, any two norms induce the same topology and are related by fixed positive constants.",
+      "topic": "Normed spaces",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a finite-dimensional normed space, a subset is compact if and only if it is:",
+      "options": ["Closed and bounded", "Only closed", "Only bounded", "Open"],
+      "correct_answer": "Closed and bounded",
+      "explanation": "This is the Heine-Borel property, which holds in finite dimensions but fails in general infinite-dimensional normed spaces.",
+      "topic": "Compactness in normed spaces",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A sequence (x_n) in a normed space converges weakly to x if:",
+      "options": ["f(x_n) tends to f(x) for every bounded linear functional f", "||x_n - x|| tends to 0", "x_n = x for all large n", "f(x_n) = 0 for all f"],
+      "correct_answer": "f(x_n) tends to f(x) for every bounded linear functional f",
+      "explanation": "Weak convergence is defined via testing against all elements of the dual space, rather than requiring norm convergence.",
+      "topic": "Weak convergence",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Strong (norm) convergence in a normed space always implies:",
+      "options": ["Weak convergence", "The reverse implication: weak implies strong always", "Divergence of the sequence", "Nothing about weak convergence"],
+      "correct_answer": "Weak convergence",
+      "explanation": "If ||x_n - x|| tends to 0, then for any bounded functional f, |f(x_n)-f(x)| <= ||f|| ||x_n-x|| tends to 0, so strong convergence implies weak convergence.",
+      "topic": "Weak convergence",
+      "difficulty": "medium"
+    }
+  ]
+}

@@ -1,0 +1,405 @@
+{
+  "course_code": "PHY307",
+  "title": "Electronics II",
+  "level": "300",
+  "source_note": "Standard second electronics course building on PHY208 (Electronics I): operational amplifiers, feedback, oscillators, active filters, power supplies, and an introduction to digital electronics, as typically taught in NUC-aligned Nigerian physics programmes.",
+  "questions": [
+    {
+      "question": "An ideal operational amplifier is characterised by which of the following properties?",
+      "options": [
+        "Infinite input impedance, zero output impedance, and infinite open-loop gain",
+        "Zero input impedance and infinite output impedance",
+        "Finite gain of exactly 1 with no feedback",
+        "Infinite bandwidth only, with finite gain"
+      ],
+      "correct_answer": "Infinite input impedance, zero output impedance, and infinite open-loop gain",
+      "explanation": "An ideal op-amp has infinite input impedance (draws no input current), zero output impedance, and infinite open-loop voltage gain, along with infinite bandwidth.",
+      "topic": "Operational amplifiers",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In the 'virtual short' concept used to analyse an ideal op-amp with negative feedback, it is assumed that:",
+      "options": [
+        "The voltage at the inverting and non-inverting inputs are equal",
+        "Current flows freely between the two input terminals",
+        "The output voltage equals zero",
+        "The two inputs are physically connected by a wire"
+      ],
+      "correct_answer": "The voltage at the inverting and non-inverting inputs are equal",
+      "explanation": "Due to the very high open-loop gain and negative feedback, the op-amp drives its output so that V+ ≈ V-, a 'virtual short' with no actual current flowing between the inputs.",
+      "topic": "Operational amplifiers",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For an inverting amplifier with input resistor R1 and feedback resistor Rf, the closed-loop voltage gain is:",
+      "options": ["Av = Rf/R1", "Av = -Rf/R1", "Av = 1 + Rf/R1", "Av = R1/Rf"],
+      "correct_answer": "Av = -Rf/R1",
+      "explanation": "The inverting amplifier gain is Av = -Rf/R1, with the negative sign indicating a 180-degree phase inversion between input and output.",
+      "topic": "Operational amplifiers",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For a non-inverting amplifier with feedback resistor Rf and ground resistor R1, the closed-loop voltage gain is:",
+      "options": ["Av = -Rf/R1", "Av = Rf/R1", "Av = 1 + Rf/R1", "Av = 1 - Rf/R1"],
+      "correct_answer": "Av = 1 + Rf/R1",
+      "explanation": "In the non-inverting amplifier configuration, the closed-loop gain is Av = 1 + Rf/R1, and the output is in phase with the input.",
+      "topic": "Operational amplifiers",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A unity-gain buffer (voltage follower) op-amp circuit is used primarily to:",
+      "options": [
+        "Amplify the input signal by a large factor",
+        "Provide high input impedance and low output impedance for impedance matching, with gain of 1",
+        "Invert the phase of the input signal",
+        "Convert AC signals to DC"
+      ],
+      "correct_answer": "Provide high input impedance and low output impedance for impedance matching, with gain of 1",
+      "explanation": "The voltage follower has the output directly fed back to the inverting input, giving unity gain while isolating a high-impedance source from a low-impedance load.",
+      "topic": "Operational amplifiers",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A summing amplifier (adder) built with an op-amp produces an output that is:",
+      "options": [
+        "The product of the input voltages",
+        "The weighted sum (with inversion) of several input voltages, scaled by their respective resistor ratios",
+        "Equal to only the largest input voltage",
+        "The average of the input voltages without scaling"
+      ],
+      "correct_answer": "The weighted sum (with inversion) of several input voltages, scaled by their respective resistor ratios",
+      "explanation": "In an inverting summing amplifier, Vout = -Rf*(V1/R1 + V2/R2 + ...), giving a scaled, inverted sum of the input voltages.",
+      "topic": "Operational amplifiers",
+      "difficulty": "medium"
+    },
+    {
+      "question": "An op-amp integrator circuit uses a feedback capacitor instead of a resistor, producing an output that is proportional to:",
+      "options": [
+        "The derivative of the input voltage with respect to time",
+        "The time integral of the input voltage",
+        "The square of the input voltage",
+        "The input voltage with no phase change"
+      ],
+      "correct_answer": "The time integral of the input voltage",
+      "explanation": "An op-amp integrator produces Vout = -(1/RC) * integral of Vin dt, so the output voltage is proportional to the running integral of the input.",
+      "topic": "Operational amplifiers",
+      "difficulty": "medium"
+    },
+    {
+      "question": "An op-amp differentiator circuit uses an input capacitor and feedback resistor, producing an output proportional to:",
+      "options": [
+        "The time integral of the input voltage",
+        "The rate of change (derivative) of the input voltage",
+        "A constant DC offset only",
+        "The reciprocal of the input voltage"
+      ],
+      "correct_answer": "The rate of change (derivative) of the input voltage",
+      "explanation": "The differentiator gives Vout = -RC * (dVin/dt), producing an output proportional to how fast the input voltage is changing.",
+      "topic": "Operational amplifiers",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Negative feedback applied to an amplifier generally results in:",
+      "options": [
+        "Increased gain and increased distortion",
+        "Reduced gain but improved bandwidth, stability, and reduced distortion",
+        "No change in gain but increased noise",
+        "Oscillation at the output"
+      ],
+      "correct_answer": "Reduced gain but improved bandwidth, stability, and reduced distortion",
+      "explanation": "Negative feedback trades a reduction in overall gain for significant improvements in bandwidth, gain stability, linearity, and reduced distortion and noise.",
+      "topic": "Feedback in amplifiers",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For sustained oscillation to occur in a feedback oscillator circuit, the Barkhausen criterion requires that:",
+      "options": [
+        "The loop gain magnitude equals 1 and the total phase shift around the loop is 0 (or a multiple of 360 degrees)",
+        "The loop gain be less than 1 at all frequencies",
+        "The feedback must be negative",
+        "The amplifier must have infinite bandwidth"
+      ],
+      "correct_answer": "The loop gain magnitude equals 1 and the total phase shift around the loop is 0 (or a multiple of 360 degrees)",
+      "explanation": "The Barkhausen stability criterion for oscillation requires the closed-loop (feedback) gain to have magnitude of exactly 1 and a phase shift of 0 degrees (or an integer multiple of 360 degrees) at the oscillation frequency.",
+      "topic": "Oscillators",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A Wien bridge oscillator typically uses which type of feedback network to set its oscillation frequency?",
+      "options": ["An RC lead-lag network", "An LC tank circuit", "A crystal resonator", "A purely resistive network"],
+      "correct_answer": "An RC lead-lag network",
+      "explanation": "The Wien bridge oscillator uses a series-parallel RC lead-lag network that provides zero phase shift and 1/3 attenuation at the oscillation frequency f = 1/(2*pi*RC).",
+      "topic": "Oscillators",
+      "difficulty": "medium"
+    },
+    {
+      "question": "LC oscillators such as the Colpitts and Hartley oscillators use resonant tank circuits primarily for:",
+      "options": [
+        "Generating low-frequency oscillations only",
+        "Setting the oscillation frequency via the resonance of the inductor-capacitor combination",
+        "Rectifying the AC output to DC",
+        "Providing DC bias to the transistor only"
+      ],
+      "correct_answer": "Setting the oscillation frequency via the resonance of the inductor-capacitor combination",
+      "explanation": "LC oscillators rely on the resonant frequency f = 1/(2*pi*sqrt(LC)) of the tank circuit to determine the frequency of oscillation, commonly used for higher radio frequencies.",
+      "topic": "Oscillators",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Colpitts oscillator is distinguished from the Hartley oscillator mainly by:",
+      "options": [
+        "The Colpitts uses a capacitive voltage divider (two capacitors) in the tank circuit, while the Hartley uses an inductive (tapped-coil) divider",
+        "The Colpitts uses only resistors for frequency determination",
+        "The Hartley oscillator cannot operate at radio frequencies",
+        "The Colpitts oscillator requires no active device"
+      ],
+      "correct_answer": "The Colpitts uses a capacitive voltage divider (two capacitors) in the tank circuit, while the Hartley uses an inductive (tapped-coil) divider",
+      "explanation": "In the Colpitts oscillator the feedback is taken from a capacitive divider (two series capacitors), whereas the Hartley oscillator uses a tapped inductor (two series inductors) for feedback.",
+      "topic": "Oscillators",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Crystal oscillators are prized for their high frequency stability mainly because:",
+      "options": [
+        "Quartz crystals have an extremely high Q factor and a very stable mechanical resonance frequency",
+        "They require no power supply",
+        "They oscillate at any arbitrary frequency chosen by the user",
+        "They use only resistive feedback"
+      ],
+      "correct_answer": "Quartz crystals have an extremely high Q factor and a very stable mechanical resonance frequency",
+      "explanation": "Piezoelectric quartz crystals have a very sharp, stable mechanical resonance with high Q, making crystal oscillators far more frequency-stable than RC or LC oscillators.",
+      "topic": "Oscillators",
+      "difficulty": "medium"
+    },
+    {
+      "question": "An active low-pass filter built with an op-amp, compared to a passive RC low-pass filter, offers the advantage of:",
+      "options": [
+        "No voltage gain and infinite output impedance",
+        "Signal amplification along with filtering and low output impedance",
+        "Complete elimination of all frequencies",
+        "Operation without any power supply"
+      ],
+      "correct_answer": "Signal amplification along with filtering and low output impedance",
+      "explanation": "Active filters use op-amps to provide gain, buffering (low output impedance), and can achieve sharper roll-off, unlike purely passive RC filters which only attenuate and have no gain.",
+      "topic": "Active filters",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The cutoff frequency of a simple first-order RC low-pass filter is given by:",
+      "options": ["fc = 1/(2*pi*RC)", "fc = 2*pi*RC", "fc = RC", "fc = 1/(RC)"],
+      "correct_answer": "fc = 1/(2*pi*RC)",
+      "explanation": "For a first-order RC low-pass filter, the cutoff (-3 dB) frequency is fc = 1/(2*pi*RC).",
+      "topic": "Active filters",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A band-pass filter is designed to:",
+      "options": [
+        "Pass all frequencies equally",
+        "Attenuate frequencies outside a specified range while passing frequencies within that range",
+        "Pass only DC signals",
+        "Amplify high frequencies only, with no attenuation anywhere"
+      ],
+      "correct_answer": "Attenuate frequencies outside a specified range while passing frequencies within that range",
+      "explanation": "A band-pass filter allows a specific band of frequencies between a lower and upper cutoff frequency to pass while attenuating frequencies outside that band.",
+      "topic": "Active filters",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A full-wave bridge rectifier, compared to a half-wave rectifier, provides:",
+      "options": [
+        "Lower output ripple frequency and lower average DC output",
+        "Higher ripple frequency (twice the input frequency) and higher average DC output for the same input",
+        "No rectification at all",
+        "Output only during the negative half-cycle"
+      ],
+      "correct_answer": "Higher ripple frequency (twice the input frequency) and higher average DC output for the same input",
+      "explanation": "A full-wave bridge rectifier conducts on both half-cycles, producing an output ripple at twice the input frequency and a higher average DC output than a half-wave rectifier.",
+      "topic": "Power supplies and rectifiers",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a power supply circuit, the purpose of the smoothing (filter) capacitor placed after the rectifier is to:",
+      "options": [
+        "Convert AC to DC directly without a rectifier",
+        "Reduce the ripple in the rectified output by charging and discharging to maintain a smoother voltage",
+        "Increase the ripple frequency",
+        "Block DC and pass only AC to the load"
+      ],
+      "correct_answer": "Reduce the ripple in the rectified output by charging and discharging to maintain a smoother voltage",
+      "explanation": "The filter capacitor charges to the peak rectified voltage and discharges slowly through the load between peaks, smoothing the pulsating DC into a more constant voltage.",
+      "topic": "Power supplies and rectifiers",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A Zener diode voltage regulator maintains a stable output voltage by operating the diode in which region?",
+      "options": ["Forward-biased conduction region", "Reverse breakdown region", "Cut-off region with no current flow", "Saturation region of a transistor"],
+      "correct_answer": "Reverse breakdown region",
+      "explanation": "Zener diodes are designed to operate in reverse breakdown, where the voltage across the diode remains approximately constant over a range of currents, providing voltage regulation.",
+      "topic": "Power supplies and rectifiers",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A three-terminal linear IC voltage regulator (e.g., 7805) provides a fixed regulated output by:",
+      "options": [
+        "Switching the input on and off at high frequency",
+        "Continuously adjusting a series pass transistor to maintain constant output voltage despite input or load variations",
+        "Using only a capacitor with no active regulation",
+        "Rectifying an AC signal without any DC filtering"
+      ],
+      "correct_answer": "Continuously adjusting a series pass transistor to maintain constant output voltage despite input or load variations",
+      "explanation": "Linear regulators like the 7805 use a series-pass transistor controlled by feedback to continuously regulate and maintain a fixed output voltage against input and load variations.",
+      "topic": "Power supplies and rectifiers",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Boolean expression for the output of a two-input AND logic gate is:",
+      "options": ["Y = A + B", "Y = A * B", "Y = NOT A", "Y = A XOR B"],
+      "correct_answer": "Y = A * B",
+      "explanation": "An AND gate output is high only when both inputs A and B are high, represented by the Boolean product Y = A*B (or A AND B).",
+      "topic": "Digital electronics",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A NAND gate's output is the complement of which basic gate's output?",
+      "options": ["OR gate", "AND gate", "NOT gate", "XOR gate"],
+      "correct_answer": "AND gate",
+      "explanation": "NAND stands for 'NOT AND'; its output is the logical complement (inverse) of a standard AND gate's output.",
+      "topic": "Digital electronics",
+      "difficulty": "easy"
+    },
+    {
+      "question": "An SR (set-reset) flip-flop is a basic digital circuit used to:",
+      "options": [
+        "Amplify analogue signals",
+        "Store a single bit of binary information (memory element)",
+        "Convert digital signals to analogue",
+        "Rectify AC power"
+      ],
+      "correct_answer": "Store a single bit of binary information (memory element)",
+      "explanation": "A flip-flop is a bistable multivibrator that can store one bit of data, maintaining one of two stable output states (0 or 1) until triggered to change.",
+      "topic": "Digital electronics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A D flip-flop, on the active clock edge, transfers the value present at its D input to:",
+      "options": ["The clock input", "The Q output, holding it until the next clock edge", "Ground", "Both Q and its complement simultaneously with different values"],
+      "correct_answer": "The Q output, holding it until the next clock edge",
+      "explanation": "A D flip-flop captures the input D at the triggering clock edge and transfers it to output Q, holding that value stable until the next active clock edge.",
+      "topic": "Digital electronics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A chain of flip-flops connected to divide an input clock frequency and count pulses is called a:",
+      "options": ["Multiplexer", "Counter", "Comparator", "Rectifier"],
+      "correct_answer": "Counter",
+      "explanation": "A digital counter is built from a chain of flip-flops that sequentially change state with each clock pulse, counting the number of input pulses in binary form.",
+      "topic": "Digital electronics",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In a 555 timer IC configured in astable mode, the circuit produces:",
+      "options": [
+        "A single output pulse triggered once",
+        "A continuous rectangular output waveform (self-triggering oscillator)",
+        "A pure sine wave output",
+        "No output at all"
+      ],
+      "correct_answer": "A continuous rectangular output waveform (self-triggering oscillator)",
+      "explanation": "In astable mode, the 555 timer has no stable state and continuously switches between high and low, producing a repeating rectangular (square-ish) waveform without an external trigger.",
+      "topic": "Timers",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In monostable mode, a 555 timer produces an output pulse of a fixed duration determined mainly by:",
+      "options": [
+        "The supply voltage magnitude only",
+        "An external resistor-capacitor (RC) timing network",
+        "The frequency of the input trigger only",
+        "The ambient temperature"
+      ],
+      "correct_answer": "An external resistor-capacitor (RC) timing network",
+      "explanation": "In monostable (one-shot) mode, the 555 timer's output pulse width is set by the external RC time constant, approximately t = 1.1*R*C.",
+      "topic": "Timers",
+      "difficulty": "medium"
+    },
+    {
+      "question": "An analogue-to-digital converter (ADC) is a circuit that:",
+      "options": [
+        "Converts a continuous analogue voltage into a discrete digital (binary) representation",
+        "Converts a digital signal into a continuous analogue voltage",
+        "Amplifies a digital signal only",
+        "Filters out noise from a digital signal"
+      ],
+      "correct_answer": "Converts a continuous analogue voltage into a discrete digital (binary) representation",
+      "explanation": "An ADC samples and quantises a continuous analogue signal, converting it into a digital binary code suitable for processing by digital systems.",
+      "topic": "ADC and DAC",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The resolution of an n-bit ADC (the smallest change in input voltage it can distinguish) improves as:",
+      "options": [
+        "n decreases",
+        "n increases, giving 2^n discrete output levels",
+        "The reference voltage increases without limit",
+        "The sampling rate decreases"
+      ],
+      "correct_answer": "n increases, giving 2^n discrete output levels",
+      "explanation": "An n-bit ADC has 2^n possible output codes; increasing n increases resolution, allowing finer distinction between input voltage levels for a given voltage range.",
+      "topic": "ADC and DAC",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A digital-to-analogue converter (DAC) performs the function of:",
+      "options": [
+        "Converting a digital binary input into a corresponding proportional analogue voltage or current output",
+        "Converting analogue signals into binary code",
+        "Rectifying an AC waveform",
+        "Amplifying analogue signals without conversion"
+      ],
+      "correct_answer": "Converting a digital binary input into a corresponding proportional analogue voltage or current output",
+      "explanation": "A DAC takes a digital code as input and produces an analogue output signal (voltage or current) proportional to the value represented by that code.",
+      "topic": "ADC and DAC",
+      "difficulty": "easy"
+    },
+    {
+      "question": "When a bipolar junction transistor (BJT) is used as a digital switch, it operates by switching between which two regions of operation?",
+      "options": [
+        "Cut-off (fully off) and saturation (fully on)",
+        "Active region only",
+        "Breakdown region only",
+        "Only the linear amplification region"
+      ],
+      "correct_answer": "Cut-off (fully off) and saturation (fully on)",
+      "explanation": "As a switch, a BJT is driven between cut-off (no collector current, acts as an open switch) and saturation (maximum collector current, acts as a closed switch), avoiding the linear active region.",
+      "topic": "Transistor switching",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Slew rate in an op-amp is defined as:",
+      "options": [
+        "The maximum rate of change of the output voltage per unit time, usually in V/microsecond",
+        "The DC gain of the amplifier",
+        "The input offset voltage",
+        "The bandwidth at unity gain"
+      ],
+      "correct_answer": "The maximum rate of change of the output voltage per unit time, usually in V/microsecond",
+      "explanation": "Slew rate quantifies how fast an op-amp's output voltage can change in response to a fast input change, limiting large-signal high-frequency performance.",
+      "topic": "Operational amplifiers",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Common-mode rejection ratio (CMRR) of a differential/op-amp circuit is a measure of:",
+      "options": [
+        "The amplifier's ability to reject signals common to both inputs while amplifying the difference between them",
+        "The maximum output voltage swing",
+        "The input bias current",
+        "The total harmonic distortion"
+      ],
+      "correct_answer": "The amplifier's ability to reject signals common to both inputs while amplifying the difference between them",
+      "explanation": "CMRR is the ratio of differential gain to common-mode gain; a high CMRR indicates strong rejection of noise or signals appearing identically on both inputs (e.g., interference).",
+      "topic": "Operational amplifiers",
+      "difficulty": "hard"
+    }
+  ]
+}

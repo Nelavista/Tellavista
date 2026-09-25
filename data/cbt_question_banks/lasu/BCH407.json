@@ -1,0 +1,296 @@
+{
+  "course_code": "BCH407",
+  "title": "Plant Biochemistry",
+  "level": "400",
+  "source_note": "Standard NUC-aligned Nigerian university 400L Plant Biochemistry curriculum: photosynthesis (light reactions, Calvin cycle, C3/C4/CAM pathways, photorespiration), plant cell wall composition, secondary metabolites, plant hormone biochemistry, nitrogen fixation and assimilation, plant pigments, and stress/defense biochemistry, building on 200-300L general and plant-related biochemistry.",
+  "questions": [
+    {
+      "question": "During the light reactions of photosynthesis, photosystem II oxidizes water primarily to:",
+      "options": ["Replace electrons lost from the reaction center chlorophyll (P680) after light excitation, releasing O2 and protons", "Generate ATP directly without an electron transport chain", "Reduce NADP+ to NADPH directly", "Provide carbon skeletons for the Calvin cycle"],
+      "correct_answer": "Replace electrons lost from the reaction center chlorophyll (P680) after light excitation, releasing O2 and protons",
+      "explanation": "The oxygen-evolving complex of photosystem II splits water to replace electrons donated by excited P680, releasing O2 as a byproduct and contributing protons to the thylakoid lumen for the proton gradient.",
+      "topic": "Photosynthesis: light reactions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The 'Z-scheme' of photosynthetic electron transport describes the sequential flow of electrons through which order of components?",
+      "options": ["Water to PSII to plastoquinone to cytochrome b6f to plastocyanin to PSI to ferredoxin to NADP+", "NADPH to PSI to PSII to water", "CO2 to RuBisCO to PSII directly", "ATP synthase to PSI to PSII"],
+      "correct_answer": "Water to PSII to plastoquinone to cytochrome b6f to plastocyanin to PSI to ferredoxin to NADP+",
+      "explanation": "The Z-scheme depicts the redox potential changes as electrons flow from water (low potential after oxidation input) through PSII, the plastoquinone pool, cytochrome b6f complex, plastocyanin, PSI, ferredoxin, and finally to NADP+ via ferredoxin-NADP+ reductase.",
+      "topic": "Photosynthesis: light reactions",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Cyclic photophosphorylation differs from non-cyclic (linear) photophosphorylation in that it:",
+      "options": ["Generates ATP using only photosystem I, without producing NADPH or evolving O2", "Uses only photosystem II and produces both ATP and NADPH", "Requires no proton gradient", "Occurs only in the stroma, not the thylakoid membrane"],
+      "correct_answer": "Generates ATP using only photosystem I, without producing NADPH or evolving O2",
+      "explanation": "In cyclic photophosphorylation, electrons from excited PSI return to the cytochrome b6f complex and back to PSI instead of reducing NADP+, generating additional ATP to supplement the Calvin cycle's ATP:NADPH requirement without net O2 evolution.",
+      "topic": "Photosynthesis: light reactions",
+      "difficulty": "hard"
+    },
+    {
+      "question": "RuBisCO (ribulose-1,5-bisphosphate carboxylase/oxygenase) catalyzes the carboxylation of RuBP with CO2 to yield:",
+      "options": ["Two molecules of 3-phosphoglycerate", "One molecule of fructose-6-phosphate directly", "Glyceraldehyde-3-phosphate and ATP", "Oxaloacetate and phosphoenolpyruvate"],
+      "correct_answer": "Two molecules of 3-phosphoglycerate",
+      "explanation": "RuBisCO adds CO2 to ribulose-1,5-bisphosphate (a 5-carbon sugar), forming an unstable 6-carbon intermediate that immediately splits into two molecules of 3-phosphoglycerate (3-PGA), the first stable product of the Calvin cycle.",
+      "topic": "Calvin cycle",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The Calvin cycle can be divided into three phases: carboxylation, reduction, and regeneration. The reduction phase requires:",
+      "options": ["ATP and NADPH to convert 3-phosphoglycerate to glyceraldehyde-3-phosphate", "Only ATP, with NADPH used solely in regeneration", "Light directly acting on RuBisCO", "CO2 fixation without any cofactors"],
+      "correct_answer": "ATP and NADPH to convert 3-phosphoglycerate to glyceraldehyde-3-phosphate",
+      "explanation": "3-Phosphoglycerate is first phosphorylated by ATP to 1,3-bisphosphoglycerate, then reduced by NADPH (via glyceraldehyde-3-phosphate dehydrogenase) to glyceraldehyde-3-phosphate, consuming both ATP and NADPH generated in the light reactions.",
+      "topic": "Calvin cycle",
+      "difficulty": "medium"
+    },
+    {
+      "question": "RuBisCO's oxygenase activity, which competes with carboxylation and initiates photorespiration, produces which two products from RuBP and O2?",
+      "options": ["3-phosphoglycerate and 2-phosphoglycolate", "Two molecules of 3-phosphoglycerate", "Glycine and serine directly", "Glyoxylate and glycerate"],
+      "correct_answer": "3-phosphoglycerate and 2-phosphoglycolate",
+      "explanation": "When RuBisCO acts as an oxygenase, O2 reacts with RuBP to yield one molecule of 3-phosphoglycerate and one molecule of 2-phosphoglycolate, the latter entering the photorespiratory pathway across chloroplasts, peroxisomes, and mitochondria.",
+      "topic": "Photorespiration",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Photorespiration is considered metabolically wasteful for C3 plants mainly because it:",
+      "options": ["Consumes ATP and O2 while releasing previously fixed CO2, without net synthesis of carbohydrate", "Produces more ATP than the Calvin cycle itself", "Occurs only in darkness", "Directly increases RuBisCO's affinity for CO2"],
+      "correct_answer": "Consumes ATP and O2 while releasing previously fixed CO2, without net synthesis of carbohydrate",
+      "explanation": "Photorespiration salvages carbon from 2-phosphoglycolate but in doing so releases CO2 (in the mitochondrial glycine decarboxylase step) and consumes ATP and reducing power, resulting in a net energetic cost and loss of fixed carbon under high O2/low CO2 conditions.",
+      "topic": "Photorespiration",
+      "difficulty": "medium"
+    },
+    {
+      "question": "C4 plants such as maize and sugarcane minimize photorespiration by:",
+      "options": ["Spatially separating initial CO2 fixation (via PEP carboxylase in mesophyll cells) from the Calvin cycle (in bundle sheath cells), concentrating CO2 around RuBisCO", "Performing the entire Calvin cycle at night", "Eliminating RuBisCO entirely", "Using only photosystem I for carbon fixation"],
+      "correct_answer": "Spatially separating initial CO2 fixation (via PEP carboxylase in mesophyll cells) from the Calvin cycle (in bundle sheath cells), concentrating CO2 around RuBisCO",
+      "explanation": "In C4 photosynthesis, PEP carboxylase in mesophyll cells fixes CO2 as HCO3- into oxaloacetate/malate (or aspartate), which is transported to bundle sheath cells and decarboxylated to release CO2 at high concentration around RuBisCO, suppressing its oxygenase activity.",
+      "topic": "C4 photosynthesis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "PEP carboxylase, the primary carboxylating enzyme in C4 and CAM plants, differs functionally from RuBisCO in that it:",
+      "options": ["Fixes bicarbonate (HCO3-) rather than CO2 directly and has no oxygenase activity", "Also catalyzes an oxygenase reaction with O2", "Is located exclusively in bundle sheath chloroplasts", "Requires light for activation, unlike RuBisCO"],
+      "correct_answer": "Fixes bicarbonate (HCO3-) rather than CO2 directly and has no oxygenase activity",
+      "explanation": "PEP carboxylase uses HCO3- (formed from CO2 by carbonic anhydrase) as substrate to carboxylate phosphoenolpyruvate to oxaloacetate, and unlike RuBisCO it does not react with O2, giving it no competing oxygenase reaction.",
+      "topic": "C4 photosynthesis",
+      "difficulty": "hard"
+    },
+    {
+      "question": "CAM (Crassulacean Acid Metabolism) plants, adapted to arid environments, differ from C4 plants primarily in that they:",
+      "options": ["Temporally separate CO2 fixation (at night, stomata open) from the Calvin cycle (during the day, stomata closed), rather than spatially separating them", "Lack PEP carboxylase entirely", "Fix CO2 only during the day", "Perform C4-type fixation without ever using RuBisCO"],
+      "correct_answer": "Temporally separate CO2 fixation (at night, stomata open) from the Calvin cycle (during the day, stomata closed), rather than spatially separating them",
+      "explanation": "CAM plants (e.g. cacti, pineapple) open stomata at night to fix CO2 via PEP carboxylase into malate, stored in the vacuole; during the day, stomata close to minimize water loss while malate is decarboxylated to supply CO2 to RuBisCO for the light-dependent Calvin cycle.",
+      "topic": "CAM photosynthesis",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The primary structural polysaccharide of the plant primary cell wall, composed of beta-1,4-linked glucose units forming microfibrils, is:",
+      "options": ["Cellulose", "Starch", "Glycogen", "Chitin"],
+      "correct_answer": "Cellulose",
+      "explanation": "Cellulose consists of linear chains of beta-1,4-glucan that hydrogen-bond into crystalline microfibrils, providing the primary tensile strength of the plant cell wall, distinct from the alpha-1,4 linkages of storage starch.",
+      "topic": "Plant cell wall biochemistry",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Hemicelluloses in the plant cell wall function mainly to:",
+      "options": ["Cross-link cellulose microfibrils, forming a cohesive network with the wall matrix", "Serve as the main energy storage polysaccharide in seeds", "Replace cellulose in secondary walls entirely", "Act as the primary photosynthetic pigment carrier"],
+      "correct_answer": "Cross-link cellulose microfibrils, forming a cohesive network with the wall matrix",
+      "explanation": "Hemicelluloses such as xyloglucans hydrogen-bond to the surface of cellulose microfibrils, tethering them together and integrating them into the broader wall matrix alongside pectins.",
+      "topic": "Plant cell wall biochemistry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Lignin, deposited mainly in secondary cell walls of vascular plants, is a complex polymer synthesized from:",
+      "options": ["Phenylpropanoid monomers (monolignols) such as coniferyl, sinapyl, and coumaryl alcohols", "Glucose units linked by beta-1,4 bonds", "Amino acids linked by peptide bonds", "Fatty acid chains esterified to glycerol"],
+      "correct_answer": "Phenylpropanoid monomers (monolignols) such as coniferyl, sinapyl, and coumaryl alcohols",
+      "explanation": "Lignin is formed by oxidative radical polymerization of monolignols derived from the phenylpropanoid pathway, producing a rigid, hydrophobic polymer that provides mechanical strength and resistance to microbial degradation in woody tissue.",
+      "topic": "Plant cell wall biochemistry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Pectins, abundant in the middle lamella and primary cell wall, are rich in which sugar acid that gives them their gel-forming property?",
+      "options": ["Galacturonic acid", "Glucuronic acid only", "Gluconic acid", "Ascorbic acid"],
+      "correct_answer": "Galacturonic acid",
+      "explanation": "Pectins are largely composed of polygalacturonic acid chains (homogalacturonan); the carboxyl groups on galacturonic acid can be cross-linked by Ca2+ ions ('egg-box' model), giving pectin its characteristic gel-forming ability important in cell adhesion.",
+      "topic": "Plant cell wall biochemistry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The enzyme nitrogenase, responsible for biological nitrogen fixation in root-nodule bacteria such as Rhizobium, converts atmospheric N2 into:",
+      "options": ["Ammonia (NH3), consuming large amounts of ATP and reducing equivalents", "Nitrate (NO3-) directly", "Nitrous oxide (N2O) as the primary product", "Urea"],
+      "correct_answer": "Ammonia (NH3), consuming large amounts of ATP and reducing equivalents",
+      "explanation": "Nitrogenase reduces N2 to NH3 in an energetically expensive reaction requiring roughly 16 ATP and 8 electrons per N2 molecule, and is extremely oxygen-sensitive, which is why leghemoglobin in nodules helps maintain a low free-O2 environment.",
+      "topic": "Nitrogen fixation and assimilation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Leghemoglobin in root nodules serves the important function of:",
+      "options": ["Binding and buffering free oxygen to protect the oxygen-labile nitrogenase enzyme while still allowing sufficient O2 for bacteroid respiration", "Directly catalyzing the reduction of N2 to ammonia", "Transporting fixed nitrogen to the xylem", "Providing pigmentation for pollinator attraction"],
+      "correct_answer": "Binding and buffering free oxygen to protect the oxygen-labile nitrogenase enzyme while still allowing sufficient O2 for bacteroid respiration",
+      "explanation": "Leghemoglobin, synthesized cooperatively by plant and bacterial genes, has a high affinity for O2, keeping free O2 concentrations very low to protect nitrogenase while still delivering enough O2 to support bacteroid oxidative respiration for ATP.",
+      "topic": "Nitrogen fixation and assimilation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In plants, ammonia produced by nitrogen fixation or nitrate reduction is assimilated into organic form mainly through the sequential action of:",
+      "options": ["Glutamine synthetase and glutamate synthase (the GS-GOGAT pathway)", "Urease and arginase", "Glutamate dehydrogenase acting alone at physiological ammonia concentrations", "Nitrate reductase and nitrite reductase only"],
+      "correct_answer": "Glutamine synthetase and glutamate synthase (the GS-GOGAT pathway)",
+      "explanation": "Glutamine synthetase incorporates NH3 into glutamate to form glutamine (using ATP), and glutamate synthase (GOGAT) then transfers the amide nitrogen of glutamine to 2-oxoglutarate, regenerating two glutamates; this GS-GOGAT cycle is the primary route of ammonia assimilation in plants at physiological concentrations.",
+      "topic": "Nitrogen fixation and assimilation",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Nitrate reductase, the first enzyme in nitrate assimilation, reduces nitrate to nitrite using electrons from:",
+      "options": ["NADH (or NADPH in some species)", "Ferredoxin directly in the cytosol", "ATP hydrolysis", "Molecular oxygen"],
+      "correct_answer": "NADH (or NADPH in some species)",
+      "explanation": "Cytosolic nitrate reductase uses NADH (the more common electron donor in higher plants) to reduce NO3- to NO2-, which is then transported into the chloroplast where nitrite reductase, using reduced ferredoxin, further reduces it to NH3.",
+      "topic": "Nitrogen fixation and assimilation",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Chlorophyll a and b differ structurally in that chlorophyll b has:",
+      "options": ["A formyl group (-CHO) at the C7 position of the porphyrin ring in place of chlorophyll a's methyl group (-CH3)", "No magnesium in its porphyrin ring", "An additional phytol tail", "A carotenoid group attached directly to it"],
+      "correct_answer": "A formyl group (-CHO) at the C7 position of the porphyrin ring in place of chlorophyll a's methyl group (-CH3)",
+      "explanation": "This small substituent difference shifts chlorophyll b's absorption spectrum slightly relative to chlorophyll a, broadening the range of light wavelengths a plant can capture and funnel toward the reaction center as an accessory pigment.",
+      "topic": "Plant pigments",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Carotenoids in the photosynthetic apparatus serve two major functions:",
+      "options": ["Light-harvesting (accessory pigments) and photoprotection by quenching excess excitation energy and reactive oxygen species such as singlet oxygen", "Direct catalysis of water splitting and only that function", "Serving as the sole electron acceptor in photosystem I", "Structural support of the thylakoid membrane only"],
+      "correct_answer": "Light-harvesting (accessory pigments) and photoprotection by quenching excess excitation energy and reactive oxygen species such as singlet oxygen",
+      "explanation": "Carotenoids absorb light in the blue-green region (extending the light-harvesting range) and also dissipate excess absorbed energy as heat (non-photochemical quenching) and quench singlet oxygen and triplet chlorophyll, protecting the photosynthetic apparatus from photo-oxidative damage.",
+      "topic": "Plant pigments",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Anthocyanins, water-soluble pigments responsible for red, purple, and blue coloration in many fruits and flowers, are chemically classified as:",
+      "options": ["Flavonoids, derived from the phenylpropanoid pathway", "Carotenoids, derived from isoprenoid precursors", "Betalains, derived from tyrosine", "Chlorophyll derivatives"],
+      "correct_answer": "Flavonoids, derived from the phenylpropanoid pathway",
+      "explanation": "Anthocyanins are glycosylated anthocyanidins, a subclass of flavonoids synthesized via the phenylpropanoid and flavonoid biosynthetic pathway starting from phenylalanine, distinguishing them from carotenoids and betalains.",
+      "topic": "Secondary metabolites",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Alkaloids, a major class of nitrogen-containing plant secondary metabolites (e.g. caffeine, nicotine, morphine), are primarily derived biosynthetically from:",
+      "options": ["Amino acids such as lysine, tyrosine, and tryptophan", "Fatty acids exclusively", "The Calvin cycle intermediates directly", "Cellulose degradation products"],
+      "correct_answer": "Amino acids such as lysine, tyrosine, and tryptophan",
+      "explanation": "Most alkaloids are biosynthesized from amino acid precursors (e.g. tryptophan for indole alkaloids, tyrosine for isoquinoline alkaloids, lysine for piperidine alkaloids), often serving as chemical defenses against herbivores and pathogens.",
+      "topic": "Secondary metabolites",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Terpenoids (isoprenoids), one of the largest classes of plant secondary metabolites, are all built from repeating units of:",
+      "options": ["Isopentenyl pyrophosphate (IPP) and its isomer dimethylallyl pyrophosphate (DMAPP)", "Acetyl-CoA condensed directly without intermediates", "Glucose-1-phosphate", "Malonyl-CoA exclusively"],
+      "correct_answer": "Isopentenyl pyrophosphate (IPP) and its isomer dimethylallyl pyrophosphate (DMAPP)",
+      "explanation": "Terpenoids are synthesized by head-to-tail or other condensations of the five-carbon building blocks IPP and DMAPP, produced via either the cytosolic mevalonate pathway or the plastidial MEP (methylerythritol phosphate) pathway.",
+      "topic": "Secondary metabolites",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Phenylalanine ammonia-lyase (PAL), the entry-point enzyme of the phenylpropanoid pathway, catalyzes the conversion of phenylalanine to:",
+      "options": ["Cinnamic acid, by non-oxidative deamination", "Tyrosine, by hydroxylation", "Coumaric acid directly without intermediates", "Salicylic acid"],
+      "correct_answer": "Cinnamic acid, by non-oxidative deamination",
+      "explanation": "PAL removes an ammonia group from phenylalanine to form trans-cinnamic acid, the first committed step channeling primary metabolism (amino acid pool) into the phenylpropanoid pathway that produces lignin precursors, flavonoids, and other phenolics.",
+      "topic": "Secondary metabolites",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Tannins, a class of polyphenolic secondary metabolites, contribute to plant defense mainly by:",
+      "options": ["Binding and precipitating proteins (including herbivore digestive enzymes), reducing digestibility and imparting an astringent taste", "Acting as volatile signals for pollinator attraction", "Directly poisoning herbivores via cyanide release", "Serving as structural cell wall polysaccharides"],
+      "correct_answer": "Binding and precipitating proteins (including herbivore digestive enzymes), reducing digestibility and imparting an astringent taste",
+      "explanation": "Tannins form complexes with dietary proteins and digestive enzymes in herbivores, reducing protein digestibility and nutrient availability, which deters feeding, while also often having antimicrobial properties.",
+      "topic": "Secondary metabolites",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Auxin (indole-3-acetic acid, IAA) is synthesized in plants primarily via a pathway starting from:",
+      "options": ["Tryptophan", "Methionine", "Mevalonate", "Phenylalanine"],
+      "correct_answer": "Tryptophan",
+      "explanation": "The major auxin biosynthetic route in plants proceeds from the amino acid tryptophan via indole-3-pyruvate to indole-3-acetic acid (IAA), the principal naturally occurring auxin.",
+      "topic": "Plant hormone biochemistry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The polar transport of auxin from shoot apex toward the root, essential for tropisms and apical dominance, depends on:",
+      "options": ["Asymmetric localization of PIN efflux carrier proteins on the basal end of cells", "Passive diffusion alone with no carrier proteins", "Xylem sap flow exclusively", "Random Brownian motion between cells"],
+      "correct_answer": "Asymmetric localization of PIN efflux carrier proteins on the basal end of cells",
+      "explanation": "PIN (PIN-FORMED) auxin efflux carriers are polarly localized to one end of each cell, creating a directional, cell-to-cell transport stream ('polar auxin transport') that establishes concentration gradients guiding tropic growth responses.",
+      "topic": "Plant hormone biochemistry",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Gibberellins promote seed germination in cereal grains by inducing the aleurone layer to synthesize:",
+      "options": ["Alpha-amylase, which hydrolyzes starch in the endosperm to provide sugars for the growing embryo", "Chlorophyll for early photosynthesis", "Cellulose for new cell walls only", "Lignin to strengthen the seed coat"],
+      "correct_answer": "Alpha-amylase, which hydrolyzes starch in the endosperm to provide sugars for the growing embryo",
+      "explanation": "Gibberellin released from the germinating embryo diffuses to the aleurone layer, triggering de novo synthesis and secretion of alpha-amylase and other hydrolases that mobilize stored starch in the endosperm to nourish the emerging seedling.",
+      "topic": "Plant hormone biochemistry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Abscisic acid (ABA) plays a central role in plant water-stress responses primarily by:",
+      "options": ["Promoting stomatal closure via signaling that triggers efflux of K+ and anions from guard cells, reducing turgor", "Directly increasing chlorophyll synthesis under drought", "Stimulating cell elongation in roots under stress", "Inhibiting seed dormancy"],
+      "correct_answer": "Promoting stomatal closure via signaling that triggers efflux of K+ and anions from guard cells, reducing turgor",
+      "explanation": "Under water stress, ABA accumulates and binds receptors that activate signaling cascades (involving cytosolic Ca2+ and anion channel activation) in guard cells, causing loss of turgor and stomatal closure, reducing transpirational water loss.",
+      "topic": "Plant hormone biochemistry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Ethylene biosynthesis in plants proceeds via the pathway: methionine to S-adenosylmethionine (SAM) to 1-aminocyclopropane-1-carboxylic acid (ACC) to ethylene. The enzyme ACC oxidase catalyzes:",
+      "options": ["The final step converting ACC to ethylene", "The conversion of methionine to SAM", "The conversion of SAM to ACC", "Ethylene perception at the receptor"],
+      "correct_answer": "The final step converting ACC to ethylene",
+      "explanation": "ACC synthase converts SAM to ACC (often the rate-limiting step), and ACC oxidase then catalyzes the final oxidative step releasing ethylene gas, along with CO2 and cyanide (detoxified via beta-cyanoalanine synthase).",
+      "topic": "Plant hormone biochemistry",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In response to pathogen attack, plants often mount a hypersensitive response (HR) involving localized cell death, which is closely associated with a rapid burst of:",
+      "options": ["Reactive oxygen species (ROS), such as superoxide and hydrogen peroxide, generated by NADPH oxidases", "Increased chlorophyll synthesis at the infection site", "Massive starch accumulation", "Suppression of all defense gene expression"],
+      "correct_answer": "Reactive oxygen species (ROS), such as superoxide and hydrogen peroxide, generated by NADPH oxidases",
+      "explanation": "The oxidative burst, driven by plasma membrane NADPH oxidases (RBOH proteins) and apoplastic peroxidases, generates ROS that contribute directly to pathogen killing, cell wall cross-linking, and signaling that reinforces localized programmed cell death (HR) to contain infection.",
+      "topic": "Plant stress and defense biochemistry",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Salicylic acid functions as a key plant signaling molecule that mediates:",
+      "options": ["Systemic acquired resistance (SAR) against biotrophic pathogens, partly by inducing pathogenesis-related (PR) protein expression", "Stomatal closure during drought as the primary hormone", "Fruit ripening as the principal signal", "Cell elongation in the coleoptile"],
+      "correct_answer": "Systemic acquired resistance (SAR) against biotrophic pathogens, partly by inducing pathogenesis-related (PR) protein expression",
+      "explanation": "Following localized infection, salicylic acid accumulates and signals (partly via the NPR1 protein) to activate PR gene expression both locally and systemically, priming distal tissues for enhanced resistance to subsequent pathogen attack (SAR).",
+      "topic": "Plant stress and defense biochemistry",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Phytoalexins are best described as:",
+      "options": ["Low-molecular-weight antimicrobial compounds synthesized de novo by plants in response to pathogen attack or stress", "Constitutive structural compounds always present regardless of infection", "Storage proteins found in seeds", "Enzymes that degrade the pathogen's cell wall directly"],
+      "correct_answer": "Low-molecular-weight antimicrobial compounds synthesized de novo by plants in response to pathogen attack or stress",
+      "explanation": "Unlike constitutive (preformed) defense compounds, phytoalexins (e.g. pisatin in peas, camalexin in Arabidopsis) are induced and synthesized only after infection or elicitor exposure, accumulating locally to inhibit pathogen growth.",
+      "topic": "Plant stress and defense biochemistry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The plant vacuole, occupying a large proportion of mature cell volume, contributes to cellular biochemistry by all of the following EXCEPT:",
+      "options": ["Performing oxidative phosphorylation to generate ATP", "Storing secondary metabolites, pigments (e.g. anthocyanins), and ions", "Maintaining turgor pressure through osmotic water uptake", "Serving as a lytic compartment analogous to the lysosome"],
+      "correct_answer": "Performing oxidative phosphorylation to generate ATP",
+      "explanation": "Oxidative phosphorylation occurs in mitochondria, not the vacuole; the vacuole instead functions in storage (metabolites, pigments, ions), turgor maintenance, pH/ion homeostasis, and degradation of macromolecules via its hydrolytic enzymes.",
+      "topic": "Plant cell biochemistry",
+      "difficulty": "easy"
+    },
+    {
+      "question": "During seed germination, storage triglycerides in oil-rich seeds are converted to sucrose for transport to the growing embryo through a pathway that critically involves which specialized organelle performing the glyoxylate cycle?",
+      "options": ["Glyoxysomes", "Chloroplasts", "Golgi apparatus", "Nucleolus"],
+      "correct_answer": "Glyoxysomes",
+      "explanation": "Glyoxysomes, specialized peroxisome-like organelles in germinating oilseeds, house the glyoxylate cycle enzymes (isocitrate lyase and malate synthase) that allow net conversion of acetyl-CoA (from beta-oxidation of stored fats) into succinate, ultimately supporting gluconeogenesis to sucrose.",
+      "topic": "Seed germination biochemistry",
+      "difficulty": "hard"
+    },
+    {
+      "question": "The C4 photosynthetic decarboxylating enzyme NADP-malic enzyme, found in bundle sheath cells of many C4 plants (e.g. maize), catalyzes:",
+      "options": ["Oxidative decarboxylation of malate to pyruvate, CO2, and NADPH", "Carboxylation of PEP to oxaloacetate", "Reduction of oxaloacetate to malate", "Phosphorylation of pyruvate to PEP"],
+      "correct_answer": "Oxidative decarboxylation of malate to pyruvate, CO2, and NADPH",
+      "explanation": "In the NADP-malic enzyme subtype of C4 photosynthesis, malate transported into bundle sheath chloroplasts is oxidatively decarboxylated to release CO2 (for RuBisCO) and pyruvate, while generating NADPH usable in the Calvin cycle.",
+      "topic": "C4 photosynthesis",
+      "difficulty": "hard"
+    }
+  ]
+}

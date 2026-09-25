@@ -1,0 +1,684 @@
+{
+  "course_code": "MAT101",
+  "title": "Elementary Mathematics I",
+  "level": "100",
+  "source_note": "Standard NUC-aligned Nigerian university 100L Elementary Mathematics I curriculum: set theory, the real number system, indices and surds, logarithms, polynomials, partial fractions, quadratic equations and inequalities, sequences and series, the binomial theorem, permutations and combinations, elementary trigonometry, coordinate geometry of the straight line, functions, complex numbers, and mathematical induction. MAT101 is the same LASU course as MTH101 under the alternate department registrar code; question bank is identical.",
+  "questions": [
+    {
+      "question": "If A = {1, 2, 3, 4} and B = {3, 4, 5, 6}, what is A ∩ B?",
+      "options": [
+        "{3, 4}",
+        "{1, 2, 5, 6}",
+        "{1, 2, 3, 4, 5, 6}",
+        "{}"
+      ],
+      "correct_answer": "{3, 4}",
+      "explanation": "The intersection A ∩ B contains only the elements common to both sets, which are 3 and 4.",
+      "topic": "Set theory",
+      "difficulty": "easy"
+    },
+    {
+      "question": "If A = {1, 2, 3, 4} and B = {3, 4, 5, 6}, what is A ∪ B?",
+      "options": [
+        "{1, 2, 3, 4, 5, 6}",
+        "{3, 4}",
+        "{1, 2}",
+        "{5, 6}"
+      ],
+      "correct_answer": "{1, 2, 3, 4, 5, 6}",
+      "explanation": "The union A ∪ B contains every element that is in A or in B or both, listed once each.",
+      "topic": "Set theory",
+      "difficulty": "easy"
+    },
+    {
+      "question": "For a universal set U = {1,2,3,4,5,6,7,8} and A = {2,4,6,8}, what is the complement A'?",
+      "options": [
+        "{1, 3, 5, 7}",
+        "{2, 4, 6, 8}",
+        "{}",
+        "{1,2,3,4,5,6,7,8}"
+      ],
+      "correct_answer": "{1, 3, 5, 7}",
+      "explanation": "The complement of A relative to U consists of all elements of U that are not in A.",
+      "topic": "Set theory",
+      "difficulty": "easy"
+    },
+    {
+      "question": "How many subsets does a set with 5 elements have, including the empty set and the set itself?",
+      "options": [
+        "32",
+        "25",
+        "10",
+        "16"
+      ],
+      "correct_answer": "32",
+      "explanation": "A set with n elements has 2^n subsets; for n = 5, this is 2^5 = 32.",
+      "topic": "Set theory",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Simplify: a^5 × a^3 (a ≠ 0).",
+      "options": [
+        "a^8",
+        "a^15",
+        "a^2",
+        "a^{5/3}"
+      ],
+      "correct_answer": "a^8",
+      "explanation": "When multiplying powers with the same base, exponents are added: a^5 × a^3 = a^(5+3) = a^8.",
+      "topic": "Indices and surds",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Evaluate 2^{-3}.",
+      "options": [
+        "1/8",
+        "-8",
+        "-6",
+        "8"
+      ],
+      "correct_answer": "1/8",
+      "explanation": "A negative exponent means the reciprocal of the positive power: 2^{-3} = 1/2^3 = 1/8.",
+      "topic": "Indices and surds",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Rationalize the denominator of 1/√3.",
+      "options": [
+        "√3/3",
+        "1/3",
+        "√3",
+        "3/√3"
+      ],
+      "correct_answer": "√3/3",
+      "explanation": "Multiplying numerator and denominator by √3 gives √3/(√3×√3) = √3/3.",
+      "topic": "Indices and surds",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Simplify √50.",
+      "options": [
+        "5√2",
+        "2√5",
+        "10√5",
+        "25√2"
+      ],
+      "correct_answer": "5√2",
+      "explanation": "√50 = √(25×2) = √25 × √2 = 5√2.",
+      "topic": "Indices and surds",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which law of logarithms states that log(mn) = log m + log n?",
+      "options": [
+        "Product law",
+        "Quotient law",
+        "Power law",
+        "Change of base law"
+      ],
+      "correct_answer": "Product law",
+      "explanation": "The product law of logarithms converts the log of a product into the sum of the individual logs.",
+      "topic": "Logarithms",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Simplify log₂8.",
+      "options": [
+        "3",
+        "2",
+        "4",
+        "8"
+      ],
+      "correct_answer": "3",
+      "explanation": "log₂8 asks 2 raised to what power gives 8; since 2^3 = 8, log₂8 = 3.",
+      "topic": "Logarithms",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Using the change-of-base formula, log₄16 in terms of natural logarithms is:",
+      "options": [
+        "ln16/ln4",
+        "ln4/ln16",
+        "ln(16×4)",
+        "ln16 - ln4"
+      ],
+      "correct_answer": "ln16/ln4",
+      "explanation": "The change-of-base formula states log_b a = ln a / ln b, so log₄16 = ln16/ln4.",
+      "topic": "Logarithms",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Solve for x: log₃x = 4.",
+      "options": [
+        "81",
+        "12",
+        "64",
+        "7"
+      ],
+      "correct_answer": "81",
+      "explanation": "log₃x = 4 means 3^4 = x, so x = 81.",
+      "topic": "Logarithms",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the degree of the polynomial p(x) = 4x^5 - 3x^3 + 2x - 7?",
+      "options": [
+        "5",
+        "3",
+        "4",
+        "7"
+      ],
+      "correct_answer": "5",
+      "explanation": "The degree of a polynomial is the highest power of x present, which is 5 in this expression.",
+      "topic": "Polynomials",
+      "difficulty": "easy"
+    },
+    {
+      "question": "By the Remainder Theorem, the remainder when p(x) = x^3 - 2x^2 + 3x - 4 is divided by (x - 2) is:",
+      "options": [
+        "2",
+        "0",
+        "-4",
+        "6"
+      ],
+      "correct_answer": "2",
+      "explanation": "By the remainder theorem the remainder equals p(2) = 8 - 8 + 6 - 4 = 2.",
+      "topic": "Polynomials",
+      "difficulty": "medium"
+    },
+    {
+      "question": "By the Factor Theorem, (x - 1) is a factor of p(x) = x^3 - 6x^2 + 11x - 6 because:",
+      "options": [
+        "p(1) = 0",
+        "p(1) = 1",
+        "p(0) = 1",
+        "p(-1) = 0"
+      ],
+      "correct_answer": "p(1) = 0",
+      "explanation": "The factor theorem states (x - a) is a factor of p(x) if and only if p(a) = 0; here p(1) = 1 - 6 + 11 - 6 = 0.",
+      "topic": "Polynomials",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Dividing x^2 - 5x + 6 by (x - 2) gives:",
+      "options": [
+        "x - 3",
+        "x + 3",
+        "x - 2",
+        "x^2 - 3"
+      ],
+      "correct_answer": "x - 3",
+      "explanation": "x^2 - 5x + 6 factors as (x-2)(x-3), so dividing by (x-2) leaves (x-3).",
+      "topic": "Polynomials",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the partial fraction decomposition of (3x+5)/((x+1)(x+2)), the correct form is:",
+      "options": [
+        "A/(x+1) + B/(x+2)",
+        "A/(x+1)^2 + B/(x+2)",
+        "(Ax+B)/((x+1)(x+2))",
+        "A/(x+1) + B/(x+2)^2"
+      ],
+      "correct_answer": "A/(x+1) + B/(x+2)",
+      "explanation": "For distinct linear factors in the denominator, the partial fraction decomposition uses one constant over each linear factor.",
+      "topic": "Partial fractions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For a repeated linear factor (x-1)^2 in a denominator, the partial fraction expansion must include terms:",
+      "options": [
+        "A/(x-1) + B/(x-1)^2",
+        "A/(x-1)^2 only",
+        "A/(x-1) only",
+        "Ax/(x-1)^2"
+      ],
+      "correct_answer": "A/(x-1) + B/(x-1)^2",
+      "explanation": "A repeated linear factor (x-a)^2 requires both A/(x-a) and B/(x-a)^2 in the decomposition.",
+      "topic": "Partial fractions",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In the decomposition (2x+1)/((x+1)(x+2)) = A/(x+1) + B/(x+2), what is the value of A?",
+      "options": [
+        "-1",
+        "1",
+        "2",
+        "3"
+      ],
+      "correct_answer": "-1",
+      "explanation": "Setting x = -1: 2(-1)+1 = A(x+2) evaluated at x=-1 gives -1 = A(1), so A = -1.",
+      "topic": "Partial fractions",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Solve the quadratic equation x^2 - 5x + 6 = 0.",
+      "options": [
+        "x = 2 or x = 3",
+        "x = -2 or x = -3",
+        "x = 1 or x = 6",
+        "x = 2 or x = -3"
+      ],
+      "correct_answer": "x = 2 or x = 3",
+      "explanation": "Factoring gives (x-2)(x-3) = 0, so x = 2 or x = 3.",
+      "topic": "Quadratic equations",
+      "difficulty": "easy"
+    },
+    {
+      "question": "For the quadratic ax^2 + bx + c = 0, if the discriminant b^2 - 4ac is negative, the roots are:",
+      "options": [
+        "complex conjugates",
+        "real and equal",
+        "real and distinct",
+        "always zero"
+      ],
+      "correct_answer": "complex conjugates",
+      "explanation": "A negative discriminant means the square root involves an imaginary number, giving two complex conjugate roots.",
+      "topic": "Quadratic equations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For the equation 2x^2 - 7x + 3 = 0, the sum of the roots is:",
+      "options": [
+        "7/2",
+        "-7/2",
+        "3/2",
+        "2/7"
+      ],
+      "correct_answer": "7/2",
+      "explanation": "For ax^2+bx+c=0, sum of roots = -b/a = -(-7)/2 = 7/2.",
+      "topic": "Quadratic equations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Solve the inequality x^2 - 4 > 0.",
+      "options": [
+        "x < -2 or x > 2",
+        "-2 < x < 2",
+        "x > 2 only",
+        "x < -2 only"
+      ],
+      "correct_answer": "x < -2 or x > 2",
+      "explanation": "x^2 - 4 = (x-2)(x+2) > 0 when both factors are positive or both negative, i.e. x > 2 or x < -2.",
+      "topic": "Quadratic equations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In an arithmetic progression with first term a = 3 and common difference d = 4, the 10th term is:",
+      "options": [
+        "39",
+        "43",
+        "35",
+        "40"
+      ],
+      "correct_answer": "39",
+      "explanation": "The nth term of an AP is a + (n-1)d; the 10th term is 3 + 9(4) = 3 + 36 = 39.",
+      "topic": "Sequences and series",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The sum of the first n terms of an arithmetic progression is given by Sn = n/2 [2a + (n-1)d]. For a = 2, d = 3, n = 5, Sn equals:",
+      "options": [
+        "40",
+        "35",
+        "50",
+        "45"
+      ],
+      "correct_answer": "40",
+      "explanation": "Sn = 5/2[2(2) + 4(3)] = 2.5[4+12] = 2.5(16) = 40.",
+      "topic": "Sequences and series",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a geometric progression with first term a = 2 and common ratio r = 3, the 4th term is:",
+      "options": [
+        "54",
+        "18",
+        "6",
+        "162"
+      ],
+      "correct_answer": "54",
+      "explanation": "The nth term of a GP is ar^(n-1); the 4th term is 2(3)^3 = 2(27) = 54.",
+      "topic": "Sequences and series",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The sum to infinity of a geometric series exists only when:",
+      "options": [
+        "|r| < 1",
+        "|r| > 1",
+        "r = 1",
+        "r is any real number"
+      ],
+      "correct_answer": "|r| < 1",
+      "explanation": "An infinite GP converges only when the common ratio has magnitude less than 1, since terms shrink toward zero.",
+      "topic": "Sequences and series",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Find the sum to infinity of the GP with first term a = 8 and common ratio r = 1/2.",
+      "options": [
+        "16",
+        "8",
+        "4",
+        "12"
+      ],
+      "correct_answer": "16",
+      "explanation": "Sum to infinity S = a/(1-r) = 8/(1-0.5) = 8/0.5 = 16.",
+      "topic": "Sequences and series",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In the binomial expansion of (a+b)^n, the general term is given by:",
+      "options": [
+        "C(n,r) a^{n-r} b^r",
+        "C(n,r) a^r b^{n-r}",
+        "n! a^n b^r",
+        "C(n,r) (a+b)^r"
+      ],
+      "correct_answer": "C(n,r) a^{n-r} b^r",
+      "explanation": "The (r+1)th term of the binomial expansion of (a+b)^n is C(n,r) a^(n-r) b^r.",
+      "topic": "Binomial theorem",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the coefficient of x^2 in the expansion of (1+x)^5?",
+      "options": [
+        "10",
+        "5",
+        "20",
+        "1"
+      ],
+      "correct_answer": "10",
+      "explanation": "The coefficient of x^2 is C(5,2) = 10.",
+      "topic": "Binomial theorem",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Pascal's triangle is used to generate:",
+      "options": [
+        "binomial coefficients",
+        "logarithm tables",
+        "trigonometric ratios",
+        "prime numbers"
+      ],
+      "correct_answer": "binomial coefficients",
+      "explanation": "Each row of Pascal's triangle gives the coefficients C(n,0), C(n,1), ..., C(n,n) used in the binomial expansion.",
+      "topic": "Binomial theorem",
+      "difficulty": "easy"
+    },
+    {
+      "question": "For small x, the binomial approximation of (1+x)^n is approximately:",
+      "options": [
+        "1 + nx",
+        "1 + x^n",
+        "n + x",
+        "1 - nx"
+      ],
+      "correct_answer": "1 + nx",
+      "explanation": "For |x| small, (1+x)^n ≈ 1 + nx, keeping only the first-order term of the expansion.",
+      "topic": "Binomial theorem",
+      "difficulty": "medium"
+    },
+    {
+      "question": "How many ways can 3 letters be arranged (order matters) from the 5 letters A, B, C, D, E?",
+      "options": [
+        "60",
+        "10",
+        "20",
+        "125"
+      ],
+      "correct_answer": "60",
+      "explanation": "Number of permutations is P(5,3) = 5!/(5-3)! = 5×4×3 = 60.",
+      "topic": "Permutations and combinations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "How many ways can a committee of 3 people be chosen from a group of 6 (order does not matter)?",
+      "options": [
+        "20",
+        "120",
+        "18",
+        "6"
+      ],
+      "correct_answer": "20",
+      "explanation": "Number of combinations is C(6,3) = 6!/(3!3!) = 20.",
+      "topic": "Permutations and combinations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The key difference between a permutation and a combination is that:",
+      "options": [
+        "order matters in a permutation but not in a combination",
+        "combinations always use all items while permutations do not",
+        "permutations are only for numbers",
+        "combinations require repetition"
+      ],
+      "correct_answer": "order matters in a permutation but not in a combination",
+      "explanation": "Permutations count arrangements where order is significant; combinations count selections where order is irrelevant.",
+      "topic": "Permutations and combinations",
+      "difficulty": "easy"
+    },
+    {
+      "question": "How many distinct 4-digit codes can be formed using digits 0-9 if repetition is allowed?",
+      "options": [
+        "10,000",
+        "5,040",
+        "210",
+        "9,000"
+      ],
+      "correct_answer": "10,000",
+      "explanation": "With repetition allowed, each of the 4 positions has 10 choices, giving 10^4 = 10,000 codes.",
+      "topic": "Permutations and combinations",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a right-angled triangle, sine of an angle is defined as:",
+      "options": [
+        "opposite/hypotenuse",
+        "adjacent/hypotenuse",
+        "opposite/adjacent",
+        "hypotenuse/opposite"
+      ],
+      "correct_answer": "opposite/hypotenuse",
+      "explanation": "By definition, sin θ = length of the side opposite the angle divided by the hypotenuse.",
+      "topic": "Trigonometry",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which identity is always true for any angle θ?",
+      "options": [
+        "sin²θ + cos²θ = 1",
+        "sin θ + cos θ = 1",
+        "sin²θ - cos²θ = 1",
+        "tan θ = sin θ + cos θ"
+      ],
+      "correct_answer": "sin²θ + cos²θ = 1",
+      "explanation": "This is the fundamental Pythagorean trigonometric identity, derived from the Pythagorean theorem on the unit circle.",
+      "topic": "Trigonometry",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The compound angle formula for sin(A+B) is:",
+      "options": [
+        "sinA cosB + cosA sinB",
+        "sinA cosB - cosA sinB",
+        "cosA cosB - sinA sinB",
+        "sinA sinB + cosA cosB"
+      ],
+      "correct_answer": "sinA cosB + cosA sinB",
+      "explanation": "The standard compound (addition) formula for sine is sin(A+B) = sinA cosB + cosA sinB.",
+      "topic": "Trigonometry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the exact value of sin 30°?",
+      "options": [
+        "1/2",
+        "√3/2",
+        "1",
+        "√2/2"
+      ],
+      "correct_answer": "1/2",
+      "explanation": "sin 30° is a standard exact value equal to 1/2.",
+      "topic": "Trigonometry",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Solve for θ in the interval 0° ≤ θ ≤ 360°: 2sinθ - 1 = 0.",
+      "options": [
+        "θ = 30° or 150°",
+        "θ = 60° or 120°",
+        "θ = 30° only",
+        "θ = 90° or 270°"
+      ],
+      "correct_answer": "θ = 30° or 150°",
+      "explanation": "2sinθ = 1 gives sinθ = 1/2, which occurs at 30° and 150° in [0°,360°] since sine is positive in the first and second quadrants.",
+      "topic": "Trigonometry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The gradient (slope) of the line joining points (1,2) and (4,8) is:",
+      "options": [
+        "2",
+        "1/2",
+        "3",
+        "6"
+      ],
+      "correct_answer": "2",
+      "explanation": "Gradient = (y2-y1)/(x2-x1) = (8-2)/(4-1) = 6/3 = 2.",
+      "topic": "Coordinate geometry",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The equation of the straight line with gradient 3 passing through the point (0,2) is:",
+      "options": [
+        "y = 3x + 2",
+        "y = 2x + 3",
+        "y = 3x - 2",
+        "y = x + 3"
+      ],
+      "correct_answer": "y = 3x + 2",
+      "explanation": "Using y = mx + c with m = 3 and c = 2 (the y-intercept at x=0), the equation is y = 3x + 2.",
+      "topic": "Coordinate geometry",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The distance between points (0,0) and (3,4) is:",
+      "options": [
+        "5",
+        "7",
+        "4",
+        "3"
+      ],
+      "correct_answer": "5",
+      "explanation": "Distance = √((3-0)^2 + (4-0)^2) = √(9+16) = √25 = 5.",
+      "topic": "Coordinate geometry",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The midpoint of the line segment joining (2,3) and (6,7) is:",
+      "options": [
+        "(4,5)",
+        "(8,10)",
+        "(2,5)",
+        "(4,3)"
+      ],
+      "correct_answer": "(4,5)",
+      "explanation": "Midpoint = ((x1+x2)/2, (y1+y2)/2) = ((2+6)/2, (3+7)/2) = (4,5).",
+      "topic": "Coordinate geometry",
+      "difficulty": "easy"
+    },
+    {
+      "question": "For the function f(x) = 1/(x-3), the domain excludes:",
+      "options": [
+        "x = 3",
+        "x = 0",
+        "x = -3",
+        "x = 1"
+      ],
+      "correct_answer": "x = 3",
+      "explanation": "The function is undefined when the denominator is zero, i.e. at x = 3.",
+      "topic": "Functions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "If f(x) = x + 2 and g(x) = x^2, what is the composite function (g∘f)(x)?",
+      "options": [
+        "(x+2)^2",
+        "x^2 + 2",
+        "x^2 + 4x + 4",
+        "x + 4"
+      ],
+      "correct_answer": "(x+2)^2",
+      "explanation": "(g∘f)(x) = g(f(x)) = g(x+2) = (x+2)^2.",
+      "topic": "Functions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "If f(x) = 2x + 5, the inverse function f⁻¹(x) is:",
+      "options": [
+        "(x-5)/2",
+        "2x - 5",
+        "(x+5)/2",
+        "x/2 - 5"
+      ],
+      "correct_answer": "(x-5)/2",
+      "explanation": "Setting y = 2x+5 and solving for x gives x = (y-5)/2, so f⁻¹(x) = (x-5)/2.",
+      "topic": "Functions",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the value of i^2, where i is the imaginary unit?",
+      "options": [
+        "-1",
+        "1",
+        "i",
+        "-i"
+      ],
+      "correct_answer": "-1",
+      "explanation": "By definition, i = √(-1), so i^2 = -1.",
+      "topic": "Complex numbers",
+      "difficulty": "easy"
+    },
+    {
+      "question": "For the complex number z = 3 + 4i, the modulus |z| is:",
+      "options": [
+        "5",
+        "7",
+        "25",
+        "1"
+      ],
+      "correct_answer": "5",
+      "explanation": "The modulus is |z| = √(3^2 + 4^2) = √(9+16) = √25 = 5.",
+      "topic": "Complex numbers",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The complex conjugate of z = 2 - 5i is:",
+      "options": [
+        "2 + 5i",
+        "-2 - 5i",
+        "-2 + 5i",
+        "2 - 5i"
+      ],
+      "correct_answer": "2 + 5i",
+      "explanation": "The conjugate of a + bi is a - bi, so the conjugate of 2 - 5i is 2 + 5i.",
+      "topic": "Complex numbers",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In a proof by mathematical induction, the first step is to:",
+      "options": [
+        "verify the statement is true for the base case (usually n=1)",
+        "assume the statement is true for all n",
+        "prove the statement for n = ∞",
+        "differentiate the statement"
+      ],
+      "correct_answer": "verify the statement is true for the base case (usually n=1)",
+      "explanation": "Mathematical induction begins by establishing the base case, then shows that truth for n=k implies truth for n=k+1.",
+      "topic": "Mathematical induction",
+      "difficulty": "medium"
+    }
+  ]
+}

@@ -1,0 +1,272 @@
+{
+  "course_code": "BCH405",
+  "title": "Biotechnology & Genetic Engineering",
+  "level": "400",
+  "source_note": "Standard NUC-aligned Nigerian university 400L Biotechnology and Genetic Engineering curriculum: recombinant DNA technology, cloning vectors, PCR and sequencing, gene expression systems, blotting techniques, CRISPR gene editing, and applications in medicine, agriculture and industry, building on 200-300L molecular biology and biochemistry.",
+  "questions": [
+    {
+      "question": "Restriction endonucleases used in recombinant DNA technology recognize and cleave DNA at specific sequences called:",
+      "options": ["Palindromic recognition sites", "Shine-Dalgarno sequences", "TATA boxes", "Poly-A signals"],
+      "correct_answer": "Palindromic recognition sites",
+      "explanation": "Most type II restriction enzymes recognize short palindromic (reverse-complement symmetric) DNA sequences, such as EcoRI's GAATTC, and cleave both strands at defined positions within or near this site.",
+      "topic": "Restriction enzymes and cloning",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Restriction enzymes that cleave DNA to leave short single-stranded overhangs, useful for directional cloning, produce what are called:",
+      "options": ["Sticky ends", "Blunt ends", "Nicked ends", "Frayed ends"],
+      "correct_answer": "Sticky ends",
+      "explanation": "Enzymes like EcoRI cut asymmetrically within the recognition site, generating complementary single-stranded overhangs (sticky ends) that can base-pair with compatible ends for efficient ligation.",
+      "topic": "Restriction enzymes and cloning",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which enzyme is used to covalently join the sugar-phosphate backbones of DNA fragments after restriction digestion and annealing during cloning?",
+      "options": ["DNA ligase", "DNA polymerase I", "Reverse transcriptase", "Taq polymerase"],
+      "correct_answer": "DNA ligase",
+      "explanation": "DNA ligase catalyzes the formation of a phosphodiester bond between adjacent 3'-OH and 5'-phosphate ends, sealing nicks to covalently join a DNA insert into a vector.",
+      "topic": "Restriction enzymes and cloning",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Plasmid cloning vectors typically carry which two essential features for propagation and screening in bacterial hosts?",
+      "options": ["An origin of replication and a selectable marker gene", "A centromere and telomere", "A promoter for RNA polymerase II only", "A poly-A tail and 5' cap"],
+      "correct_answer": "An origin of replication and a selectable marker gene",
+      "explanation": "A plasmid vector needs an origin of replication to be maintained and copied within the host bacterium, and a selectable marker (commonly antibiotic resistance) to allow identification of transformed cells.",
+      "topic": "Cloning vectors",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Compared to plasmids, bacteriophage lambda vectors are advantageous for constructing genomic libraries mainly because they:",
+      "options": ["Can accommodate larger DNA inserts and package/infect host cells with high efficiency", "Replicate independently of the host chromosome only in eukaryotes", "Require no selectable marker", "Cannot be propagated in E. coli"],
+      "correct_answer": "Can accommodate larger DNA inserts and package/infect host cells with high efficiency",
+      "explanation": "Lambda phage vectors tolerate larger inserts than standard plasmids and use highly efficient in vitro packaging and phage infection to introduce DNA into host cells, making them well suited for genomic libraries.",
+      "topic": "Cloning vectors",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Cosmid and BAC (bacterial artificial chromosome) vectors were developed primarily to:",
+      "options": ["Clone very large DNA fragments (tens to hundreds of kilobases)", "Express proteins at very high levels in mammalian cells", "Replace the need for restriction enzymes in cloning", "Enable cloning without a bacterial host"],
+      "correct_answer": "Clone very large DNA fragments (tens to hundreds of kilobases)",
+      "explanation": "Cosmids (using lambda cos sites in a plasmid backbone) and BACs (based on the F-factor) were designed to stably carry much larger inserts than standard plasmids, essential for genome mapping and sequencing projects.",
+      "topic": "Cloning vectors",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In the polymerase chain reaction (PCR), the enzyme Taq polymerase is prized for its ability to:",
+      "options": ["Remain active after repeated exposure to high denaturation temperatures", "Proofread and correct all misincorporated bases", "Synthesize DNA in the absence of primers", "Replicate RNA templates directly"],
+      "correct_answer": "Remain active after repeated exposure to high denaturation temperatures",
+      "explanation": "Taq polymerase, isolated from the thermophilic bacterium Thermus aquaticus, is heat-stable and survives the ~95C denaturation step repeated in each PCR cycle, unlike typical mesophilic polymerases.",
+      "topic": "PCR",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The three repeated steps of a standard PCR cycle, in order, are:",
+      "options": ["Denaturation, annealing, extension", "Annealing, denaturation, ligation", "Extension, denaturation, annealing", "Transcription, translation, replication"],
+      "correct_answer": "Denaturation, annealing, extension",
+      "explanation": "Each PCR cycle denatures the double-stranded template (heat), anneals short primers to the single strands (cooling), and extends new DNA strands from the primers using thermostable polymerase.",
+      "topic": "PCR",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Reverse transcriptase-PCR (RT-PCR) is used to amplify and study gene expression by first converting which template into complementary DNA (cDNA)?",
+      "options": ["mRNA", "Genomic DNA", "tRNA", "rRNA (exclusively)"],
+      "correct_answer": "mRNA",
+      "explanation": "Reverse transcriptase synthesizes single-stranded cDNA using mRNA as a template, and this cDNA (lacking introns) can then be PCR-amplified to study or clone expressed genes.",
+      "topic": "PCR",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Sanger (chain-termination) DNA sequencing relies on the incorporation of which type of nucleotide analog to randomly halt DNA synthesis at each position?",
+      "options": ["Dideoxynucleotides (ddNTPs) lacking a 3'-OH group", "Ribonucleotides", "Methylated deoxynucleotides", "Phosphorothioate nucleotides"],
+      "correct_answer": "Dideoxynucleotides (ddNTPs) lacking a 3'-OH group",
+      "explanation": "ddNTPs lack the 3'-hydroxyl needed to form the next phosphodiester bond, so their random incorporation during in vitro DNA synthesis terminates chain elongation, producing fragments of varying length that reveal the sequence.",
+      "topic": "DNA sequencing",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Next-generation sequencing (NGS) platforms differ fundamentally from Sanger sequencing mainly by:",
+      "options": ["Sequencing millions of DNA fragments simultaneously (massively parallel sequencing)", "Requiring radioactive labeling of every nucleotide", "Sequencing only RNA, never DNA", "Eliminating the need for a DNA polymerase"],
+      "correct_answer": "Sequencing millions of DNA fragments simultaneously (massively parallel sequencing)",
+      "explanation": "NGS technologies achieve massively parallel sequencing of millions of clonally amplified DNA fragments at once, dramatically increasing throughput and lowering cost compared to the one-fragment-at-a-time Sanger method.",
+      "topic": "DNA sequencing",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A genomic DNA library differs from a cDNA library in that a genomic library contains:",
+      "options": ["Both coding (exon) and non-coding (intron/regulatory) sequences from the entire genome", "Only sequences that are actively expressed as mRNA", "Only fully processed, intron-free coding sequences", "Exclusively mitochondrial DNA"],
+      "correct_answer": "Both coding (exon) and non-coding (intron/regulatory) sequences from the entire genome",
+      "explanation": "A genomic library is made directly from an organism's genomic DNA and thus includes introns, promoters, and intergenic regions, whereas a cDNA library reflects only the spliced, expressed mRNA sequences of the tissue it was made from.",
+      "topic": "Gene libraries",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Southern blotting is a molecular technique used to detect specific sequences of which molecule?",
+      "options": ["DNA", "RNA", "Protein", "Carbohydrate"],
+      "correct_answer": "DNA",
+      "explanation": "Southern blotting transfers electrophoresed DNA fragments onto a membrane and probes them with a labeled complementary sequence, allowing detection of specific DNA sequences (e.g., in restriction fragment length analysis).",
+      "topic": "Blotting techniques",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Northern blotting is analogous to Southern blotting but is used to detect and analyze:",
+      "options": ["RNA transcripts", "Genomic DNA fragments", "Protein isoforms", "Post-translational modifications"],
+      "correct_answer": "RNA transcripts",
+      "explanation": "Northern blotting separates RNA by electrophoresis, transfers it to a membrane, and hybridizes it with a labeled probe, allowing researchers to detect and estimate the size/abundance of specific mRNA transcripts.",
+      "topic": "Blotting techniques",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Western blotting identifies specific proteins in a complex mixture primarily using:",
+      "options": ["Specific antibodies against the target protein", "Complementary DNA probes", "Restriction enzyme digestion patterns", "Fluorescent nucleotide analogs"],
+      "correct_answer": "Specific antibodies against the target protein",
+      "explanation": "After separating proteins by SDS-PAGE and transferring them to a membrane, Western blotting uses a primary antibody specific to the target protein, followed by a labeled secondary antibody, for detection.",
+      "topic": "Blotting techniques",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In the CRISPR-Cas9 gene editing system, the guide RNA (gRNA) functions to:",
+      "options": ["Direct the Cas9 nuclease to a specific complementary genomic DNA sequence", "Provide the energy for DNA cleavage", "Repair the double-strand break after cutting", "Serve as the template for homologous recombination in all cases"],
+      "correct_answer": "Direct the Cas9 nuclease to a specific complementary genomic DNA sequence",
+      "explanation": "The guide RNA base-pairs with a complementary target DNA sequence, positioning the Cas9 nuclease to introduce a double-strand break at that specific genomic locus.",
+      "topic": "CRISPR and gene editing",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Cas9-mediated DNA cleavage requires recognition of a short sequence immediately adjacent to the target site called the:",
+      "options": ["PAM (protospacer adjacent motif)", "TATA box", "Shine-Dalgarno sequence", "Kozak sequence"],
+      "correct_answer": "PAM (protospacer adjacent motif)",
+      "explanation": "Cas9 will only cleave DNA if the target sequence is immediately followed by a PAM sequence (commonly 5'-NGG-3' for Streptococcus pyogenes Cas9), which the enzyme uses to license cleavage and avoid self-targeting.",
+      "topic": "CRISPR and gene editing",
+      "difficulty": "hard"
+    },
+    {
+      "question": "After a CRISPR-Cas9-induced double-strand break, precise insertion of a desired sequence (knock-in) is typically achieved by exploiting which cellular repair pathway with a supplied donor template?",
+      "options": ["Homology-directed repair (HDR)", "Non-homologous end joining (NHEJ)", "Base excision repair", "Mismatch repair"],
+      "correct_answer": "Homology-directed repair (HDR)",
+      "explanation": "Supplying a donor DNA template with homology arms flanking the break allows the cell's HDR machinery to copy the desired sequence into the genome precisely, unlike error-prone NHEJ which is typically used for gene disruption.",
+      "topic": "CRISPR and gene editing",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Bacterial transformation with a recombinant plasmid is commonly enhanced in the laboratory by which treatment?",
+      "options": ["Heat shock of calcium chloride-treated competent cells", "Boiling the bacteria at 100C", "Freezing the plasmid DNA in liquid nitrogen without cells", "Autoclaving the transformation mixture"],
+      "correct_answer": "Heat shock of calcium chloride-treated competent cells",
+      "explanation": "CaCl2 treatment renders bacterial cell membranes permeable to DNA, and a brief heat shock (e.g., 42C) creates a thermal imbalance that drives plasmid DNA uptake into the competent cells.",
+      "topic": "Gene delivery methods",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Electroporation as a gene delivery method works by:",
+      "options": ["Using a brief electrical pulse to transiently create pores in the cell membrane for DNA entry", "Coating DNA onto gold particles fired into cells", "Packaging DNA into a viral capsid for infection", "Using lipid vesicles to fuse with the cell membrane"],
+      "correct_answer": "Using a brief electrical pulse to transiently create pores in the cell membrane for DNA entry",
+      "explanation": "Electroporation applies a short, high-voltage electrical pulse that destabilizes the lipid bilayer, creating transient pores through which DNA (or other molecules) can enter the cell before the membrane reseals.",
+      "topic": "Gene delivery methods",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which expression host is most commonly used for large-scale, low-cost production of simple recombinant proteins that do not require extensive post-translational modification?",
+      "options": ["Escherichia coli", "Mammalian CHO cells", "Insect cells with baculovirus", "Transgenic goats"],
+      "correct_answer": "Escherichia coli",
+      "explanation": "E. coli is fast-growing, genetically well-characterized, and inexpensive to culture, making it the default host for producing simple recombinant proteins such as insulin, though it cannot perform complex eukaryotic glycosylation.",
+      "topic": "Gene expression systems",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Recombinant proteins requiring proper eukaryotic post-translational modifications such as glycosylation are typically produced using which expression system?",
+      "options": ["Mammalian cell lines (e.g., CHO cells) or yeast", "E. coli alone", "Cell-free bacterial lysates only", "Agrobacterium tumefaciens in animal cells"],
+      "correct_answer": "Mammalian cell lines (e.g., CHO cells) or yeast",
+      "explanation": "Mammalian cells (and, to a lesser extent, yeast) possess the enzymatic machinery for complex glycosylation and other post-translational modifications needed for the correct folding and function of many therapeutic proteins, which bacteria lack.",
+      "topic": "Gene expression systems",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Recombinant human insulin, one of the first biotechnology products, was originally produced by expressing the A and B chains separately in which host organism before combining them?",
+      "options": ["Escherichia coli", "Saccharomyces cerevisiae exclusively", "Chinese hamster ovary cells", "Bacillus subtilis"],
+      "correct_answer": "Escherichia coli",
+      "explanation": "The pioneering recombinant insulin product (Humulin) was made by separately expressing the insulin A and B chains as fusion proteins in E. coli, then chemically combining and folding them via disulfide bond formation.",
+      "topic": "Biopharmaceuticals",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Monoclonal antibodies are traditionally produced by fusing an antibody-producing B lymphocyte with a myeloma cell to create a:",
+      "options": ["Hybridoma", "Plasmid vector", "Transgenic embryo", "Cosmid clone"],
+      "correct_answer": "Hybridoma",
+      "explanation": "Hybridoma technology (Kohler and Milstein) fuses a short-lived, antibody-secreting B cell with an immortal myeloma cell, yielding a hybridoma that both proliferates indefinitely and secretes a single, defined (monoclonal) antibody.",
+      "topic": "Monoclonal antibody technology",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In gene therapy, viral vectors such as modified adenoviruses or lentiviruses are commonly used because they:",
+      "options": ["Naturally and efficiently deliver genetic material into host cells", "Cannot infect any human cells", "Replicate independently of a host genome after packaging", "Always integrate randomly and cause no safety concerns"],
+      "correct_answer": "Naturally and efficiently deliver genetic material into host cells",
+      "explanation": "Viruses have evolved highly efficient mechanisms for entering cells and delivering their genetic material; gene therapy exploits this by replacing viral genes with a therapeutic gene while retaining the delivery machinery.",
+      "topic": "Gene therapy",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A key safety distinction in gene therapy vectors is that integrating vectors (e.g., retroviruses) carry a risk of insertional mutagenesis, whereas non-integrating vectors such as adeno-associated virus (AAV) mainly:",
+      "options": ["Persist as episomes without inserting into the host chromosome", "Always cause permanent, heritable germline changes", "Cannot express their transgene at all", "Replicate uncontrollably within the host cell"],
+      "correct_answer": "Persist as episomes without inserting into the host chromosome",
+      "explanation": "AAV vectors largely remain as extrachromosomal episomes rather than integrating into the host genome, reducing (though not eliminating) the risk of insertional mutagenesis compared to integrating retroviral/lentiviral vectors.",
+      "topic": "Gene therapy",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Transgenic plants engineered to express the Bacillus thuringiensis (Bt) toxin gene are valued agriculturally because the toxin:",
+      "options": ["Confers resistance to specific insect pests by disrupting their gut epithelium", "Increases the plant's photosynthetic rate directly", "Fixes atmospheric nitrogen for the plant", "Confers resistance to viral infection"],
+      "correct_answer": "Confers resistance to specific insect pests by disrupting their gut epithelium",
+      "explanation": "Bt delta-endotoxin is selectively toxic to certain insect larvae; upon ingestion it binds gut epithelial receptors and forms pores that lyse gut cells, killing the pest while being harmless to mammals, hence its use in insect-resistant GM crops.",
+      "topic": "Transgenic organisms and GMOs",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Agrobacterium tumefaciens is widely used as a natural vector for plant genetic engineering because it can transfer a segment of its Ti plasmid, called T-DNA, directly into:",
+      "options": ["The plant cell's nuclear genome", "The plant cell's chloroplast genome only", "The plant cell wall as a structural component", "The plant's mitochondrial genome exclusively"],
+      "correct_answer": "The plant cell's nuclear genome",
+      "explanation": "Agrobacterium naturally transfers and integrates T-DNA from its tumor-inducing (Ti) plasmid into the plant nuclear genome; biotechnologists replace the oncogenic T-DNA genes with genes of interest for stable plant transformation.",
+      "topic": "Transgenic organisms and GMOs",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Bioinformatics tools such as BLAST (Basic Local Alignment Search Tool) are used in biotechnology primarily to:",
+      "options": ["Compare a query DNA or protein sequence against databases to find similar sequences", "Physically synthesize DNA oligonucleotides", "Perform gel electrophoresis simulations only", "Replace the need for PCR amplification"],
+      "correct_answer": "Compare a query DNA or protein sequence against databases to find similar sequences",
+      "explanation": "BLAST algorithmically searches sequence databases for regions of local similarity to a query sequence, helping researchers identify gene function, homologs, and evolutionary relationships.",
+      "topic": "Bioinformatics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In an expression vector for recombinant protein production, the promoter sequence functions to:",
+      "options": ["Direct RNA polymerase to initiate transcription of the downstream gene", "Terminate translation at the correct codon", "Provide the origin of replication", "Encode the selectable antibiotic resistance marker"],
+      "correct_answer": "Direct RNA polymerase to initiate transcription of the downstream gene",
+      "explanation": "The promoter is the DNA sequence recognized by RNA polymerase (often with associated transcription factors) that determines where and how strongly transcription of the cloned gene begins.",
+      "topic": "Gene expression systems",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A major ethical and biosafety concern specifically associated with germline gene editing (as opposed to somatic gene editing) is that induced changes:",
+      "options": ["Are heritable and passed on to future generations", "Only affect a single treated individual temporarily", "Cannot be detected by any sequencing method", "Are automatically reversed after one generation"],
+      "correct_answer": "Are heritable and passed on to future generations",
+      "explanation": "Because germline editing alters the DNA of reproductive cells or embryos, any changes (intended or off-target) become heritable and can be transmitted to offspring, raising unique ethical concerns not present with somatic cell editing.",
+      "topic": "Ethics and biosafety",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Site-directed mutagenesis is a technique used to introduce a specific, defined change at a chosen position in a cloned gene, most commonly for the purpose of:",
+      "options": ["Studying the functional role of a specific amino acid residue in a protein", "Randomly amplifying multiple unrelated genes", "Sequencing an entire genome de novo", "Fusing two unrelated organisms' entire genomes"],
+      "correct_answer": "Studying the functional role of a specific amino acid residue in a protein",
+      "explanation": "By precisely changing a codon (e.g., via PCR-based mutagenesis) and expressing the mutant protein, researchers can directly test the contribution of a specific amino acid to enzyme catalysis, binding, or stability.",
+      "topic": "Genetic engineering techniques",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A recombinant protein expressed in E. coli is often fused to a polyhistidine (His) tag mainly to facilitate:",
+      "options": ["Purification by immobilized metal affinity chromatography", "Increased transcription rate of the gene", "Resistance to protease degradation exclusively", "Secretion into the culture medium in all cases"],
+      "correct_answer": "Purification by immobilized metal affinity chromatography",
+      "explanation": "A His-tag binds with high affinity to immobilized divalent metal ions (e.g., Ni2+) on a chromatography resin, allowing the tagged recombinant protein to be selectively captured and purified from a complex cell lysate.",
+      "topic": "Recombinant protein production",
+      "difficulty": "medium"
+    }
+  ]
+}

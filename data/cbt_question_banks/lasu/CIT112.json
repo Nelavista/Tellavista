@@ -1,0 +1,376 @@
+{
+  "course_code": "CIT112",
+  "title": "Intro to Computer Programming",
+  "level": "100",
+  "source_note": "Standard NUC-aligned 100-level introductory programming curriculum: language-agnostic coverage of algorithms, flowcharts, pseudocode, translators, variables/data types, operators, control structures, functions, arrays, and error types/debugging, as taught before students specialize in a specific language.",
+  "questions": [
+    {
+      "question": "What is a computer program?",
+      "options": ["A set of instructions that tells a computer what to do", "A hardware device", "A type of computer memory", "An input device"],
+      "correct_answer": "A set of instructions that tells a computer what to do",
+      "explanation": "A program is a sequence of instructions written to perform a specific task on a computer.",
+      "topic": "Programming fundamentals",
+      "difficulty": "easy"
+    },
+    {
+      "question": "An algorithm is best described as:",
+      "options": ["A step-by-step procedure for solving a problem", "A programming language", "A type of computer hardware", "An error in a program"],
+      "correct_answer": "A step-by-step procedure for solving a problem",
+      "explanation": "An algorithm is a finite, well-defined sequence of steps used to solve a problem or accomplish a task.",
+      "topic": "Programming fundamentals",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which of the following is a required characteristic of a good algorithm?",
+      "options": ["It must terminate after a finite number of steps", "It can run forever", "It must contain ambiguous steps", "It cannot accept any input"],
+      "correct_answer": "It must terminate after a finite number of steps",
+      "explanation": "A valid algorithm must be finite, unambiguous, and terminate after a definite number of steps.",
+      "topic": "Programming fundamentals",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A flowchart is a:",
+      "options": ["Graphical representation of an algorithm using symbols", "Type of programming language", "Compiler", "Data type"],
+      "correct_answer": "Graphical representation of an algorithm using symbols",
+      "explanation": "A flowchart visually represents the steps and logic of an algorithm using standardized symbols connected by arrows.",
+      "topic": "Algorithms and flowcharts",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In a flowchart, which symbol is used to represent a decision?",
+      "options": ["Diamond (rhombus)", "Rectangle", "Oval", "Parallelogram"],
+      "correct_answer": "Diamond (rhombus)",
+      "explanation": "The diamond shape in a flowchart represents a decision point where the flow branches based on a condition.",
+      "topic": "Algorithms and flowcharts",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In a flowchart, the oval (ellipse) shape represents:",
+      "options": ["Start and end (terminator)", "A process", "A decision", "Input/output"],
+      "correct_answer": "Start and end (terminator)",
+      "explanation": "The oval/terminator symbol marks the beginning and end points of a flowchart.",
+      "topic": "Algorithms and flowcharts",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In a flowchart, a parallelogram is used to represent:",
+      "options": ["Input or output", "Start/end", "Decision", "A process"],
+      "correct_answer": "Input or output",
+      "explanation": "The parallelogram symbol denotes input or output operations in a flowchart.",
+      "topic": "Algorithms and flowcharts",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a flowchart, a rectangle represents:",
+      "options": ["A process or processing step", "Input/output", "A decision", "Start/end"],
+      "correct_answer": "A process or processing step",
+      "explanation": "The rectangle symbol is used to show a process, such as a calculation or an assignment.",
+      "topic": "Algorithms and flowcharts",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Pseudocode is:",
+      "options": ["An informal, English-like way of describing an algorithm", "A machine language", "A compiled programming language", "A type of computer hardware"],
+      "correct_answer": "An informal, English-like way of describing an algorithm",
+      "explanation": "Pseudocode describes the logic of an algorithm in plain, structured language without following strict syntax rules.",
+      "topic": "Pseudocode",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which of these is NOT a benefit of using pseudocode?",
+      "options": ["It can be directly executed by a computer", "It helps plan program logic before coding", "It is largely language-independent", "It is easy for humans to read and review"],
+      "correct_answer": "It can be directly executed by a computer",
+      "explanation": "Pseudocode cannot be executed directly by a computer; it must first be translated into an actual programming language.",
+      "topic": "Pseudocode",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A programming language that is closer to machine code (0s and 1s) is called a:",
+      "options": ["Low-level language", "High-level language", "Fourth-generation language", "Natural language"],
+      "correct_answer": "Low-level language",
+      "explanation": "Low-level languages, such as machine language and assembly language, are closely tied to computer hardware.",
+      "topic": "Programming languages and translators",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which of the following is an example of a high-level programming language?",
+      "options": ["Python", "Machine language", "Assembly language", "Binary code"],
+      "correct_answer": "Python",
+      "explanation": "Python is a high-level language with English-like syntax that is easier for humans to read and write than machine or assembly language.",
+      "topic": "Programming languages and translators",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A program that translates an entire high-level source program into machine code before execution is called a:",
+      "options": ["Compiler", "Interpreter", "Assembler", "Linker"],
+      "correct_answer": "Compiler",
+      "explanation": "A compiler translates the whole source code into machine code in one pass before the program is run.",
+      "topic": "Programming languages and translators",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A program that translates and executes high-level code line by line is called a(n):",
+      "options": ["Interpreter", "Compiler", "Assembler", "Loader"],
+      "correct_answer": "Interpreter",
+      "explanation": "An interpreter reads, translates, and executes source code one statement at a time, rather than compiling it all at once.",
+      "topic": "Programming languages and translators",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Assembly language uses ___ to represent machine instructions in a more readable form.",
+      "options": ["Mnemonics", "Binary digits only", "English sentences", "Flowcharts"],
+      "correct_answer": "Mnemonics",
+      "explanation": "Assembly language uses short, symbolic mnemonics (such as ADD or MOV) to represent machine-level instructions.",
+      "topic": "Programming languages and translators",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A variable in programming is best described as:",
+      "options": ["A named storage location that can hold a value which may change", "A fixed value that never changes", "A type of loop", "A syntax error"],
+      "correct_answer": "A named storage location that can hold a value which may change",
+      "explanation": "A variable is a named memory location used to store data that can be changed during program execution.",
+      "topic": "Variables and data types",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A constant in programming is:",
+      "options": ["A value that does not change during program execution", "A value that changes every time it is used", "A type of variable name", "A loop control structure"],
+      "correct_answer": "A value that does not change during program execution",
+      "explanation": "Unlike a variable, a constant holds a fixed value that cannot be altered once it is set.",
+      "topic": "Variables and data types",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which of these is a valid basic data type in most programming languages?",
+      "options": ["Integer", "Loop", "Function", "Algorithm"],
+      "correct_answer": "Integer",
+      "explanation": "Integer is a fundamental data type used to represent whole numbers; loop, function, and algorithm are not data types.",
+      "topic": "Variables and data types",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which data type would be most appropriate for storing a person's name?",
+      "options": ["String", "Integer", "Float", "Boolean"],
+      "correct_answer": "String",
+      "explanation": "A string data type stores a sequence of characters, which is appropriate for text such as names.",
+      "topic": "Variables and data types",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A Boolean data type can hold which of the following values?",
+      "options": ["True or False", "Any whole number", "Any decimal number", "Any text"],
+      "correct_answer": "True or False",
+      "explanation": "A Boolean data type has only two possible values: true or false.",
+      "topic": "Variables and data types",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which of the following is an arithmetic operator?",
+      "options": ["+", "==", "&&", "="],
+      "correct_answer": "+",
+      "explanation": "The plus sign (+) is an arithmetic operator used for addition, unlike ==, &&, and = which are relational, logical, and assignment operators respectively.",
+      "topic": "Operators",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The operator \"==\" is typically used in programming to:",
+      "options": ["Compare two values for equality", "Assign a value to a variable", "Add two numbers", "Perform a logical AND"],
+      "correct_answer": "Compare two values for equality",
+      "explanation": "The relational operator == checks whether two values are equal and returns true or false.",
+      "topic": "Operators",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The simple assignment operator in most programming languages is:",
+      "options": ["=", "==", "!=", "&&"],
+      "correct_answer": "=",
+      "explanation": "The single equals sign (=) assigns the value on the right to the variable on the left.",
+      "topic": "Operators",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which logical operator returns true only if both of its conditions are true?",
+      "options": ["AND", "OR", "NOT", "XOR"],
+      "correct_answer": "AND",
+      "explanation": "The logical AND operator evaluates to true only when both connected conditions are true.",
+      "topic": "Operators",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which logical operator returns true if at least one of its conditions is true?",
+      "options": ["OR", "AND", "NOT", "Modulus"],
+      "correct_answer": "OR",
+      "explanation": "The logical OR operator returns true if either or both of its conditions are true.",
+      "topic": "Operators",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The modulus operator (%) is used to find:",
+      "options": ["The remainder of a division", "The sum of two numbers", "The product of two numbers", "The square root of a number"],
+      "correct_answer": "The remainder of a division",
+      "explanation": "The modulus operator returns the remainder left over after dividing one number by another.",
+      "topic": "Operators",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In programming, \"sequence\" as a control structure means:",
+      "options": ["Instructions are executed one after another in order", "Instructions repeat until a condition is false", "Instructions choose between alternative paths", "Instructions call other instructions"],
+      "correct_answer": "Instructions are executed one after another in order",
+      "explanation": "Sequence is the simplest control structure, where statements execute in the exact order they are written.",
+      "topic": "Control structures",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Selection (decision) control structures are used to:",
+      "options": ["Choose between two or more alternative paths of execution", "Repeat a set of instructions", "Execute instructions in strict order only", "Store data permanently"],
+      "correct_answer": "Choose between two or more alternative paths of execution",
+      "explanation": "Selection structures, such as if statements, allow a program to branch and choose a path based on a condition.",
+      "topic": "Control structures",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The \"if-else\" statement is an example of which control structure?",
+      "options": ["Selection", "Sequence", "Iteration", "Function definition"],
+      "correct_answer": "Selection",
+      "explanation": "The if-else statement lets a program choose between two branches of execution, making it a selection structure.",
+      "topic": "Control structures",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A loop that repeats a set of instructions is an example of which control structure?",
+      "options": ["Iteration (repetition)", "Sequence", "Selection", "Declaration"],
+      "correct_answer": "Iteration (repetition)",
+      "explanation": "Iteration, implemented through loops, repeats a block of instructions while or until a condition is met.",
+      "topic": "Control structures",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A loop that checks its condition before executing the loop body is called a:",
+      "options": ["Pre-test (entry-controlled) loop", "Post-test (exit-controlled) loop", "Infinite loop", "Nested loop"],
+      "correct_answer": "Pre-test (entry-controlled) loop",
+      "explanation": "A pre-test loop, such as a while loop, evaluates its condition before the loop body runs, so the body may not execute at all.",
+      "topic": "Control structures",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A loop that executes its body at least once before checking the condition is called a:",
+      "options": ["Post-test (exit-controlled) loop", "Pre-test (entry-controlled) loop", "Selection structure", "Sequential structure"],
+      "correct_answer": "Post-test (exit-controlled) loop",
+      "explanation": "A post-test loop, such as a do-while loop, always runs its body once before checking whether to continue.",
+      "topic": "Control structures",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A loop that never terminates because its condition is always true is called a(n):",
+      "options": ["Infinite loop", "Finite loop", "Nested loop", "Broken loop"],
+      "correct_answer": "Infinite loop",
+      "explanation": "An infinite loop keeps executing indefinitely because its terminating condition is never satisfied.",
+      "topic": "Control structures",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A loop placed inside the body of another loop is called a:",
+      "options": ["Nested loop", "Infinite loop", "Sequential loop", "Parallel loop"],
+      "correct_answer": "Nested loop",
+      "explanation": "When one loop is written inside another loop's body, the inner loop is referred to as a nested loop.",
+      "topic": "Control structures",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A reusable, named block of code designed to perform a specific task is called a:",
+      "options": ["Function (or procedure/subroutine)", "Variable", "Data type", "Operator"],
+      "correct_answer": "Function (or procedure/subroutine)",
+      "explanation": "A function (also called a procedure or subroutine) groups instructions for a specific task so they can be reused throughout a program.",
+      "topic": "Functions and subroutines",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The main advantage of using functions in a program is to:",
+      "options": ["Promote code reuse and reduce repetition", "Increase the number of syntax errors", "Slow down program execution", "Make code harder to read"],
+      "correct_answer": "Promote code reuse and reduce repetition",
+      "explanation": "Functions let a block of code be written once and called multiple times, improving reuse and reducing duplication.",
+      "topic": "Functions and subroutines",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A value sent back by a function to the part of the program that called it is called the:",
+      "options": ["Return value", "Parameter", "Argument", "Loop variable"],
+      "correct_answer": "Return value",
+      "explanation": "The return value is the result a function sends back to its caller after it finishes executing.",
+      "topic": "Functions and subroutines",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Values passed into a function when it is called are known as:",
+      "options": ["Arguments (or parameters)", "Return values", "Constants", "Comments"],
+      "correct_answer": "Arguments (or parameters)",
+      "explanation": "Arguments (also called parameters) are the values supplied to a function so it can perform its task.",
+      "topic": "Functions and subroutines",
+      "difficulty": "medium"
+    },
+    {
+      "question": "An array is best described as:",
+      "options": ["A collection of elements of the same data type stored under one variable name", "A single variable holding one value", "A type of loop", "A compiler error"],
+      "correct_answer": "A collection of elements of the same data type stored under one variable name",
+      "explanation": "An array groups multiple values of the same type together, accessible via a single variable name and index.",
+      "topic": "Arrays",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In most programming languages, array indexing typically starts at:",
+      "options": ["0", "1", "-1", "10"],
+      "correct_answer": "0",
+      "explanation": "Most programming languages, including C, Java, and Python, use zero-based indexing, so the first element is at index 0.",
+      "topic": "Arrays",
+      "difficulty": "medium"
+    },
+    {
+      "question": "An error that prevents a program from compiling or running because it breaks the grammar rules of the language is called a:",
+      "options": ["Syntax error", "Logic error", "Runtime error", "Successful compilation"],
+      "correct_answer": "Syntax error",
+      "explanation": "A syntax error occurs when code violates the grammatical rules of the programming language, preventing it from compiling or running.",
+      "topic": "Errors and debugging",
+      "difficulty": "easy"
+    },
+    {
+      "question": "An error where the program runs but produces incorrect results is called a:",
+      "options": ["Logic error", "Syntax error", "Compiler error", "Linker error"],
+      "correct_answer": "Logic error",
+      "explanation": "A logic error occurs when a program runs without crashing but produces wrong results due to flawed reasoning in the algorithm.",
+      "topic": "Errors and debugging",
+      "difficulty": "medium"
+    },
+    {
+      "question": "An error that occurs while a program is running, such as division by zero, is called a:",
+      "options": ["Runtime error", "Syntax error", "Design error", "Documentation error"],
+      "correct_answer": "Runtime error",
+      "explanation": "Runtime errors occur during program execution, such as attempting to divide by zero or accessing invalid memory.",
+      "topic": "Errors and debugging",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The process of finding and correcting errors in a program is called:",
+      "options": ["Debugging", "Compiling", "Coding", "Linking"],
+      "correct_answer": "Debugging",
+      "explanation": "Debugging is the systematic process of locating and fixing errors (bugs) in a program.",
+      "topic": "Errors and debugging",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Comments in source code are used to:",
+      "options": ["Explain the code for human readers and are ignored by the compiler/interpreter", "Execute additional instructions", "Increase program speed", "Cause syntax errors"],
+      "correct_answer": "Explain the code for human readers and are ignored by the compiler/interpreter",
+      "explanation": "Comments document code for programmers and are skipped over during compilation or interpretation.",
+      "topic": "Programming fundamentals",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which of the following best describes 'top-down design' in program development?",
+      "options": ["Breaking a large problem into smaller, more manageable sub-problems", "Writing the entire program in one single block", "Testing a program only after it is fully deployed", "Designing the user interface before the algorithm"],
+      "correct_answer": "Breaking a large problem into smaller, more manageable sub-problems",
+      "explanation": "Top-down design solves a complex problem by decomposing it into smaller, easier-to-solve sub-problems or modules.",
+      "topic": "Program development",
+      "difficulty": "medium"
+    }
+  ]
+}

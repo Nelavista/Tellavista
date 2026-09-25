@@ -2038,6 +2038,11 @@ class CBTQuestion(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     subject_code = db.Column(db.String(10), nullable=False, index=True)  # "MTH", "CSC", ...
+    # The real match key for a course-specific bank, e.g. "CSC101" (stored uppercase) --
+    # NULL only on legacy/never-course-scoped rows. subject_code above is kept in sync
+    # (its letter prefix) for backward compatibility but is no longer what selects a
+    # bank; see app/services/cbt_bank.py, the single place that queries this column.
+    course_code = db.Column(db.String(20), nullable=True, index=True)
     question_type = db.Column(db.String(10), nullable=False, default='cbt')  # 'cbt' | 'written'
     question_text = db.Column(db.Text, nullable=False)
     # MCQ-only fields (question_type='cbt'); left null for 'written'
@@ -2046,6 +2051,15 @@ class CBTQuestion(db.Model):
     explanation = db.Column(db.Text)
     # Written-only field (question_type='written'); left null for 'cbt'
     mark_scheme = db.Column(db.Text)
+    # Free-text topic within the course (e.g. "Cell membrane structure") and a rough
+    # difficulty band -- set by the content pipeline (scripts/seed/seed_lasu_cbt_questions.py),
+    # never shown to students; used for bank composition/audit only.
+    topic = db.Column(db.String(150), nullable=True)
+    difficulty = db.Column(db.String(10), nullable=True)  # 'easy' | 'medium' | 'hard'
+    # Internal audit trail: what grounded this course's bank (LASU handbook, NUC-aligned
+    # standard curriculum, etc.) -- never shown to students, lets an admin later verify
+    # or replace a course's content. See the task's own "record topic/source basis" ask.
+    source_note = db.Column(db.Text, nullable=True)
     is_active = db.Column(db.Boolean, default=True)
     # All nullable, all NULL on every row that exists today -- NULL means "universal",
     # shown to every school practicing this subject_code, identical to current behavior.

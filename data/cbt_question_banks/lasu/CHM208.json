@@ -1,0 +1,272 @@
+{
+  "course_code": "CHM208",
+  "title": "Analytical Chemistry II",
+  "level": "200",
+  "source_note": "Standard NUC-aligned Nigerian university 200L Analytical Chemistry II curriculum: introduction to instrumental methods of analysis, building on CHM207's classical (volumetric/gravimetric) treatment. Covers Beer-Lambert law and UV-Vis/colorimetric analysis, basic electroanalytical methods (potentiometry, conductometry), chromatographic principles (TLC, paper, column, ion-exchange), and solvent extraction. Deeper instrumentation detail (AAS, GC, HPLC, voltammetry) is reserved for CHM309.",
+  "questions": [
+    {
+      "question": "What broadly distinguishes an instrumental method of analysis from a classical (titrimetric/gravimetric) method?",
+      "options": ["An instrumental method measures a physical property (such as absorbance, potential, or conductance) that is related to analyte concentration, usually via an electronic instrument", "An instrumental method never requires a calibration standard", "Classical methods always give more precise results than any instrumental method", "Instrumental methods can only be used for qualitative, never quantitative, analysis"],
+      "correct_answer": "An instrumental method measures a physical property (such as absorbance, potential, or conductance) that is related to analyte concentration, usually via an electronic instrument",
+      "explanation": "Instrumental analysis relies on measuring a physical/physicochemical signal (absorbance, emf, conductance, etc.) that responds to analyte concentration, in contrast to classical methods based on stoichiometric reactions read out by mass or volume.",
+      "topic": "Introduction to instrumental analysis",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The Beer-Lambert law relates the absorbance (A) of a solution to concentration (c) and path length (b) by which expression?",
+      "options": ["A = εbc, where ε is the molar absorptivity", "A = ε/bc", "A = εb/c", "A = ε + b + c"],
+      "correct_answer": "A = εbc, where ε is the molar absorptivity",
+      "explanation": "The Beer-Lambert law states that absorbance is directly proportional to both the molar absorptivity of the absorbing species, the path length of the light through the sample, and its molar concentration.",
+      "topic": "Beer-Lambert law and spectrophotometry",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A solution has a molar absorptivity of 5000 dm3 mol-1 cm-1 at its absorption maximum, and is measured in a 1 cm cell giving an absorbance of 0.500. What is the concentration of the solution?",
+      "options": ["1.0 x 10^-4 mol/dm3", "2.5 x 10^-3 mol/dm3", "5.0 x 10^-2 mol/dm3", "1.0 x 10^-2 mol/dm3"],
+      "correct_answer": "1.0 x 10^-4 mol/dm3",
+      "explanation": "Using A = εbc: c = A/(εb) = 0.500/(5000 x 1) = 1.0 x 10^-4 mol/dm3.",
+      "topic": "Beer-Lambert law and spectrophotometry",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In UV-Visible spectrophotometry, why is the wavelength of maximum absorbance (λmax) normally chosen for quantitative measurements rather than a wavelength on the side of the absorption band?",
+      "options": ["At λmax, the change in absorbance per unit change in concentration is greatest and the reading is least sensitive to small wavelength errors, giving the best sensitivity and precision", "Measurements are only legally permitted at λmax", "λmax always corresponds to exactly 100% transmittance", "Using λmax eliminates the need for any calibration curve"],
+      "correct_answer": "At λmax, the change in absorbance per unit change in concentration is greatest and the reading is least sensitive to small wavelength errors, giving the best sensitivity and precision",
+      "explanation": "Because the absorption curve is flattest at its peak, small wavelength-setting errors cause minimal change in the measured absorbance at λmax, while sensitivity to concentration remains maximal, giving the most reliable quantitative readings.",
+      "topic": "Beer-Lambert law and spectrophotometry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A colourless analyte that does not itself absorb visible light can still be determined by colorimetry by which general strategy?",
+      "options": ["Reacting it with a suitable reagent to form a coloured complex or derivative whose absorbance is then measured", "Heating the sample until it spontaneously turns coloured", "Measuring its absorbance in the infrared region instead", "Colourless substances can never be analysed by colorimetry under any circumstances"],
+      "correct_answer": "Reacting it with a suitable reagent to form a coloured complex or derivative whose absorbance is then measured",
+      "explanation": "Colorimetric determination of a colourless species typically involves a selective chromogenic reaction (e.g., forming a coloured metal-ligand complex) so that the resulting colour intensity can be related to concentration.",
+      "topic": "Beer-Lambert law and spectrophotometry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In quantitative spectrophotometric analysis, a calibration curve is typically constructed by plotting:",
+      "options": ["Absorbance (y-axis) against known concentrations of standard solutions (x-axis)", "Wavelength against time", "Temperature against absorbance", "Volume of titrant against absorbance"],
+      "correct_answer": "Absorbance (y-axis) against known concentrations of standard solutions (x-axis)",
+      "explanation": "A calibration (Beer's law) plot of absorbance versus known concentration for a series of standards gives a straight line through the origin, from which the concentration of an unknown can be read off once its absorbance is measured.",
+      "topic": "Beer-Lambert law and spectrophotometry",
+      "difficulty": "easy"
+    },
+    {
+      "question": "The standard addition method is a calibration technique used mainly when:",
+      "options": ["The sample matrix itself affects the instrument response, so standards must be added directly into aliquots of the real sample rather than prepared separately", "The analyte concentration is already known exactly", "No instrument is available for the analysis", "The method is only applicable to titrimetric analysis"],
+      "correct_answer": "The sample matrix itself affects the instrument response, so standards must be added directly into aliquots of the real sample rather than prepared separately",
+      "explanation": "Standard addition compensates for matrix effects by spiking known amounts of analyte directly into portions of the actual sample, since preparing standards in a different (matrix-free) medium could give a biased calibration.",
+      "topic": "Beer-Lambert law and spectrophotometry",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In potentiometry, the analytical measurement made is:",
+      "options": ["The electrical potential (voltage) of an electrochemical cell under conditions of essentially zero current flow", "The mass of a precipitate formed at an electrode", "The colour intensity of a solution", "The volume of titrant needed to reach a colour-change endpoint"],
+      "correct_answer": "The electrical potential (voltage) of an electrochemical cell under conditions of essentially zero current flow",
+      "explanation": "Potentiometry measures the equilibrium cell potential between an indicator electrode and a reference electrode at (ideally) zero current, which is related to the activity/concentration of the analyte ion via the Nernst equation.",
+      "topic": "Electroanalytical methods",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a potentiometric setup for measuring pH, the glass electrode functions as the:",
+      "options": ["Indicator electrode, whose potential responds to hydrogen ion activity in solution", "Reference electrode, whose potential is fixed and independent of solution composition", "Counter electrode used only to complete the electrical circuit", "Auxiliary electrode used solely for electrolysis"],
+      "correct_answer": "Indicator electrode, whose potential responds to hydrogen ion activity in solution",
+      "explanation": "The glass electrode develops a potential across its thin glass membrane that varies with the hydrogen ion activity of the test solution, making it the indicator (sensing) electrode in a pH meter, paired with a stable reference electrode.",
+      "topic": "Electroanalytical methods",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A reference electrode used in potentiometric measurements, such as the saturated calomel electrode, must have which key property?",
+      "options": ["A stable, reproducible potential that does not change with the composition of the test solution", "A potential that varies strongly with the analyte concentration", "The ability to dissolve completely during each measurement", "A potential that changes with temperature but not with solution composition"],
+      "correct_answer": "A stable, reproducible potential that does not change with the composition of the test solution",
+      "explanation": "A reference electrode must maintain a known, constant potential regardless of the sample being measured, so that any change in overall cell potential can be attributed to the indicator electrode's response to the analyte.",
+      "topic": "Electroanalytical methods",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a potentiometric titration, the equivalence point is located by:",
+      "options": ["Plotting electrode potential (or pH) against volume of titrant added and identifying the point of steepest change (inflection point)", "Observing a permanent colour change of the solution", "Weighing the precipitate formed at the end of the titration", "Measuring the temperature rise of the solution"],
+      "correct_answer": "Plotting electrode potential (or pH) against volume of titrant added and identifying the point of steepest change (inflection point)",
+      "explanation": "As titrant is added, the measured potential (or pH) changes sharply near the equivalence point; plotting potential/pH versus volume and locating the inflection point (or maximum of its first derivative) pinpoints the equivalence point without needing a chemical indicator.",
+      "topic": "Electroanalytical methods",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Conductometry as an analytical technique measures:",
+      "options": ["The ability of an electrolyte solution to conduct electric current, which depends on the concentration and mobility of ions present", "The colour absorbance of a solution", "The mass of an electrodeposited metal", "The refractive index of a liquid"],
+      "correct_answer": "The ability of an electrolyte solution to conduct electric current, which depends on the concentration and mobility of ions present",
+      "explanation": "Conductometric analysis is based on measuring the electrical conductance of a solution, which increases with the concentration and mobility of the ions it contains.",
+      "topic": "Electroanalytical methods",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In a conductometric acid-base titration, the conductance typically falls during the initial stage of a strong acid being neutralized by a strong base, mainly because:",
+      "options": ["The highly mobile H+ ions are progressively replaced by the much less mobile cation of the base's salt", "Conductance always increases throughout any titration", "The solution's volume decreases during titration", "No ions are present in the initial acid solution"],
+      "correct_answer": "The highly mobile H+ ions are progressively replaced by the much less mobile cation of the base's salt",
+      "explanation": "H+ ions have an exceptionally high ionic mobility; as OH- is added and reacts with H+ to form water, the fast H+ ions are replaced by slower cations (e.g., Na+), so conductance decreases until the equivalence point, after which excess OH- causes it to rise again.",
+      "topic": "Electroanalytical methods",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In chromatography, the component of the system that remains fixed in place, over or through which the sample and solvent move, is called the:",
+      "options": ["Stationary phase", "Mobile phase", "Eluent", "Solute front"],
+      "correct_answer": "Stationary phase",
+      "explanation": "Chromatographic separation depends on the differential distribution of sample components between a stationary phase (fixed in a column or on a plate) and a mobile phase that flows over or through it.",
+      "topic": "Chromatography principles",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In chromatography, separation of the components of a mixture occurs primarily because:",
+      "options": ["Different components have different affinities for the stationary and mobile phases, causing them to travel through the system at different rates", "All components always move at exactly the same rate", "The stationary phase reacts chemically and destroys some components", "Chromatography can only separate coloured substances"],
+      "correct_answer": "Different components have different affinities for the stationary and mobile phases, causing them to travel through the system at different rates",
+      "explanation": "Each component distributes between the two phases according to its own partition or adsorption equilibrium; components that favour the mobile phase move faster, while those that favour the stationary phase are retained longer, resulting in separation.",
+      "topic": "Chromatography principles",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In thin-layer chromatography (TLC), the retardation factor (Rf) of a spot is calculated as:",
+      "options": ["Distance travelled by the spot divided by distance travelled by the solvent front", "Distance travelled by the solvent front divided by distance travelled by the spot", "Distance travelled by the spot multiplied by the plate length", "Time taken for the spot to appear"],
+      "correct_answer": "Distance travelled by the spot divided by distance travelled by the solvent front",
+      "explanation": "Rf is defined as the ratio of the distance moved by a given component from the origin to the distance moved by the solvent front, and is a characteristic (though not absolutely fixed) value for a compound under given conditions.",
+      "topic": "Chromatography principles",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In thin-layer chromatography, spots are typically applied to the plate at a point above the level of the developing solvent in the tank. Why must the initial solvent level be kept below the applied spots?",
+      "options": ["So that the spots are not directly dissolved and washed away into the bulk solvent before capillary action can carry the solvent front upward through them", "Because the solvent must never touch the plate at all", "To increase the temperature of the plate", "Because Rf values are undefined if the spot is above the solvent"],
+      "correct_answer": "So that the spots are not directly dissolved and washed away into the bulk solvent before capillary action can carry the solvent front upward through them",
+      "explanation": "If the applied spots were submerged in the developing solvent, the sample would simply dissolve into the bulk liquid instead of being carried up the plate by capillary action, ruining the separation.",
+      "topic": "Chromatography principles",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Paper chromatography separates components mainly on the basis of:",
+      "options": ["Partition between the mobile solvent and the water (or other liquid) held within the cellulose fibres of the paper, which acts as the stationary phase", "Differences in colour alone, with no underlying physical mechanism", "Differences in the boiling points of the components", "Electrical charge differences measured by a detector"],
+      "correct_answer": "Partition between the mobile solvent and the water (or other liquid) held within the cellulose fibres of the paper, which acts as the stationary phase",
+      "explanation": "Paper chromatography is fundamentally a partition technique: the moisture retained in the cellulose fibres of the paper serves as the stationary phase, and components partition between this and the flowing mobile solvent.",
+      "topic": "Chromatography principles",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In column chromatography, a mixture is typically separated by loading the sample at the top of a column packed with a stationary phase (such as silica or alumina) and then:",
+      "options": ["Passing a suitable solvent (eluent) through the column, collecting fractions as different components emerge at different times", "Heating the column until all components evaporate simultaneously", "Applying an electric current across the column", "Weighing the entire column without adding any solvent"],
+      "correct_answer": "Passing a suitable solvent (eluent) through the column, collecting fractions as different components emerge at different times",
+      "explanation": "In column chromatography, the eluent carries the sample components down the packed column at rates depending on their affinity for the stationary phase, and the separated components are collected in sequence as fractions.",
+      "topic": "Chromatography principles",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Ion-exchange chromatography separates ions in a mixture primarily based on:",
+      "options": ["Their differing electrostatic affinity for oppositely charged functional groups fixed on the stationary resin, causing them to be retained and eluted to different extents", "Their solubility in an organic solvent", "Their molecular colour", "Their melting points"],
+      "correct_answer": "Their differing electrostatic affinity for oppositely charged functional groups fixed on the stationary resin, causing them to be retained and eluted to different extents",
+      "explanation": "Ion-exchange resins carry fixed charged groups (e.g., sulfonate for cation exchange, quaternary ammonium for anion exchange); sample ions compete with mobile-phase counter-ions for these sites, and ions with stronger affinity are retained longer, giving separation.",
+      "topic": "Chromatography principles",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A cation-exchange resin used for softening hard water works by:",
+      "options": ["Exchanging its own mobile Na+ ions for the Ca2+ and Mg2+ ions present in the hard water, retaining the hardness-causing cations on the resin", "Removing all ions from the water by boiling", "Precipitating calcium and magnesium as insoluble carbonates", "Converting hard water directly into distilled water"],
+      "correct_answer": "Exchanging its own mobile Na+ ions for the Ca2+ and Mg2+ ions present in the hard water, retaining the hardness-causing cations on the resin",
+      "explanation": "A sodium-form cation-exchange resin releases Na+ ions into solution as it binds the divalent hardness ions (Ca2+, Mg2+) more strongly, effectively softening the water.",
+      "topic": "Chromatography principles",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In solvent extraction, the distribution (partition) coefficient, Kd, of a solute between two immiscible solvents is defined as:",
+      "options": ["The ratio of the solute's equilibrium concentration in the organic phase to its equilibrium concentration in the aqueous phase", "The total mass of solute extracted", "The boiling point difference between the two solvents", "The volume ratio of the two solvents used"],
+      "correct_answer": "The ratio of the solute's equilibrium concentration in the organic phase to its equilibrium concentration in the aqueous phase",
+      "explanation": "Kd (or the distribution ratio D) is defined by the Nernst distribution law as the ratio of equilibrium concentrations of a solute in the two immiscible phases at a fixed temperature, and governs how efficiently a solute can be extracted.",
+      "topic": "Solvent extraction",
+      "difficulty": "medium"
+    },
+    {
+      "question": "For a given total volume of extracting solvent, why is it generally more efficient to perform several successive small-volume extractions rather than one single extraction with the whole volume?",
+      "options": ["Multiple smaller extractions re-establish the partition equilibrium repeatedly, removing more total solute than a single extraction of the same total solvent volume", "A single large extraction always removes 100% of the solute regardless of Kd", "Multiple extractions change the distribution coefficient of the solute", "It has no effect on extraction efficiency; both approaches are always identical"],
+      "correct_answer": "Multiple smaller extractions re-establish the partition equilibrium repeatedly, removing more total solute than a single extraction of the same total solvent volume",
+      "explanation": "Because each extraction step re-establishes a fresh partition equilibrium, sequential smaller-volume extractions leave progressively less solute behind at each stage, giving a higher cumulative percentage extraction than one extraction using the same total solvent volume.",
+      "topic": "Solvent extraction",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A separating funnel used in liquid-liquid extraction allows the operator to:",
+      "options": ["Shake two immiscible liquids together to promote mass transfer of solute, then allow the layers to separate and drain the lower layer through the stopcock", "Filter solid particles from a liquid", "Measure the exact volume of a single liquid", "Heat a solution to its boiling point"],
+      "correct_answer": "Shake two immiscible liquids together to promote mass transfer of solute, then allow the layers to separate and drain the lower layer through the stopcock",
+      "explanation": "A separating funnel is used to mix two immiscible phases (extracting the solute into one of them), let the denser layer settle to the bottom, and then tap off that layer via the stopcock, leaving the other layer behind.",
+      "topic": "Solvent extraction",
+      "difficulty": "easy"
+    },
+    {
+      "question": "In flame photometry, a sample solution is aspirated into a flame, and the analytical signal measured is:",
+      "options": ["The intensity of light emitted at characteristic wavelengths as thermally excited atoms of the analyte element return to their ground state", "The mass of ash left after the flame is extinguished", "The colour of the flame as seen only by eye, with no quantitative measurement", "The pH of the resulting solution after flame exposure"],
+      "correct_answer": "The intensity of light emitted at characteristic wavelengths as thermally excited atoms of the analyte element return to their ground state",
+      "explanation": "Flame photometry (flame emission spectroscopy) thermally excites atoms in a flame; as excited electrons return to lower energy states they emit light at characteristic wavelengths, whose intensity is proportional to the concentration of the element present.",
+      "topic": "Flame photometry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Flame photometry is particularly well suited to the quantitative determination of which group of elements in solution?",
+      "options": ["Alkali and alkaline earth metals, such as sodium, potassium, and calcium", "Noble gases", "Covalently bonded organic molecules", "Halogens in their elemental form"],
+      "correct_answer": "Alkali and alkaline earth metals, such as sodium, potassium, and calcium",
+      "explanation": "Alkali and alkaline earth metals are readily and efficiently excited in a simple flame at relatively low temperatures and give strong, characteristic emission lines, making flame photometry a standard method for their determination (e.g., Na+ and K+ in biological fluids).",
+      "topic": "Flame photometry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In analytical instrumentation, the term 'sensitivity' of a method most precisely refers to:",
+      "options": ["The change in instrument signal (response) produced per unit change in analyte concentration", "The total number of samples that can be analysed per day", "The cost of running a single analysis", "The colour of the final solution"],
+      "correct_answer": "The change in instrument signal (response) produced per unit change in analyte concentration",
+      "explanation": "Sensitivity describes how strongly the measured signal (e.g., absorbance, potential, emission intensity) responds to a change in analyte concentration; it is often represented by the slope of a calibration curve.",
+      "topic": "Method performance characteristics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "The 'limit of detection' (LOD) of an analytical method is best described as:",
+      "options": ["The smallest concentration of analyte that can be reliably distinguished from the background (blank) signal", "The maximum concentration of analyte the instrument can measure at all", "The exact concentration used to prepare the calibration standards", "The concentration at which the instrument signal becomes negative"],
+      "correct_answer": "The smallest concentration of analyte that can be reliably distinguished from the background (blank) signal",
+      "explanation": "The limit of detection is the lowest analyte concentration that produces a signal statistically distinguishable from the noise/blank signal, commonly defined using a multiple of the standard deviation of blank measurements.",
+      "topic": "Method performance characteristics",
+      "difficulty": "hard"
+    },
+    {
+      "question": "'Selectivity' of an analytical method refers to its ability to:",
+      "options": ["Measure the analyte of interest accurately in the presence of other components (potential interferents) that may be present in the sample", "Give the highest possible absorbance for any sample", "Work only with pure, single-component samples", "Produce results in the shortest possible time regardless of accuracy"],
+      "correct_answer": "Measure the analyte of interest accurately in the presence of other components (potential interferents) that may be present in the sample",
+      "explanation": "Selectivity describes the extent to which a method responds specifically to the target analyte without being significantly affected by other substances that might also be present in a real sample matrix.",
+      "topic": "Method performance characteristics",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In practical UV-Vis spectrophotometry, a reagent 'blank' (containing all reagents except the analyte) is measured and used to:",
+      "options": ["Zero the instrument, correcting for absorbance contributed by the solvent, cell, and reagents rather than the analyte itself", "Replace the need for any standard solutions", "Increase the concentration of the analyte artificially", "Calibrate the wavelength scale of the instrument"],
+      "correct_answer": "Zero the instrument, correcting for absorbance contributed by the solvent, cell, and reagents rather than the analyte itself",
+      "explanation": "Setting the instrument to zero absorbance using a blank ensures that any absorbance recorded for samples and standards is due only to the analyte-derived species, not the solvent, cuvette, or added reagents.",
+      "topic": "Beer-Lambert law and spectrophotometry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Deviations from linearity in a Beer's law plot at high analyte concentrations are commonly attributed to:",
+      "options": ["Chemical or instrumental effects such as analyte association/dissociation equilibria shifting, or stray light in the instrument, that become significant at higher concentrations", "The Beer-Lambert law being valid only at zero concentration", "The cuvette changing shape as concentration increases", "Absorbance always being independent of concentration"],
+      "correct_answer": "Chemical or instrumental effects such as analyte association/dissociation equilibria shifting, or stray light in the instrument, that become significant at higher concentrations",
+      "explanation": "Beer's law strictly holds for dilute, non-interacting absorbing species under monochromatic light; at higher concentrations, chemical equilibria involving the absorbing species and instrumental limitations such as stray light can cause the absorbance-concentration relationship to deviate from linearity.",
+      "topic": "Beer-Lambert law and spectrophotometry",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Which cuvette (sample cell) material is appropriate for quantitative UV absorbance measurements below about 300 nm?",
+      "options": ["Ordinary glass, because it transmits equally well throughout the UV and visible regions", "Quartz (fused silica), because ordinary glass strongly absorbs UV radiation below about 300-320 nm", "Plastic disposable cuvettes only, for all UV and visible work", "No cell is required for UV measurements"],
+      "correct_answer": "Quartz (fused silica), because ordinary glass strongly absorbs UV radiation below about 300-320 nm",
+      "explanation": "Ordinary glass absorbs strongly in the UV region below roughly 300-320 nm, so quartz cuvettes, which are transparent well into the UV, must be used for accurate UV absorbance measurements.",
+      "topic": "Beer-Lambert law and spectrophotometry",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In an ion-selective electrode (such as a fluoride ISE), the membrane potential that develops is primarily a function of:",
+      "options": ["The activity of the specific ion to which the membrane is selectively responsive in the test solution", "The total mass of the electrode", "The colour of the test solution", "The volume of the test solution only"],
+      "correct_answer": "The activity of the specific ion to which the membrane is selectively responsive in the test solution",
+      "explanation": "An ion-selective electrode develops a membrane potential that follows a Nernstian response to the activity of one particular ion, allowing that ion's concentration to be determined potentiometrically with good selectivity.",
+      "topic": "Electroanalytical methods",
+      "difficulty": "hard"
+    }
+  ]
+}

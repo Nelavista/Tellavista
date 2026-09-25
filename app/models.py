@@ -1898,6 +1898,60 @@ class Department(db.Model):
         return {'id': self.id, 'faculty_id': self.faculty_id, 'name': self.name}
 
 
+class AcademicSession(db.Model):
+    """One academic year at one university, e.g. "2025/2026". Scoped per-university
+    because a session label is an institution's own convention (some schools write
+    "2025/2026", others "2025-2026") -- never shared across schools.
+
+    Deliberately not seeded: no sessions are invented, the same policy as
+    University.location and Course.semester, which stay blank until an admin enters
+    sourced data via /admin/academia. Rows appear when someone creates them.
+    """
+    __tablename__ = 'academic_sessions'
+
+    id = db.Column(db.Integer, primary_key=True)
+    university_id = db.Column(db.Integer, db.ForeignKey('universities.id'), nullable=False, index=True)
+    label = db.Column(db.String(40), nullable=False)  # e.g. "2025/2026"
+    start_date = db.Column(db.Date, nullable=True)
+    end_date = db.Column(db.Date, nullable=True)
+    is_active = db.Column(db.Boolean, nullable=False, default=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    university = db.relationship('University', backref=db.backref('academic_sessions', lazy='dynamic'))
+    semesters = db.relationship('Semester', backref='session', lazy='dynamic', cascade='all, delete-orphan')
+
+    __table_args__ = (db.UniqueConstraint('university_id', 'label', name='uq_academic_session_university_label'),)
+
+    def to_dict(self):
+        return {
+            'id': self.id, 'university_id': self.university_id, 'label': self.label,
+            'start_date': self.start_date.isoformat() if self.start_date else None,
+            'end_date': self.end_date.isoformat() if self.end_date else None,
+            'is_active': self.is_active,
+        }
+
+
+class Semester(db.Model):
+    """One semester inside an AcademicSession, e.g. "First Semester".
+
+    Same free-label shape as Course.semester (never a guessed enumeration, because
+    Nigerian university calendars are not uniformly "First, Second" across every
+    institution and the source data to prove otherwise isn't in hand) -- but as a real
+    row, so an Enrollment can point at one instead of comparing strings.
+    """
+    __tablename__ = 'semesters'
+
+    id = db.Column(db.Integer, primary_key=True)
+    session_id = db.Column(db.Integer, db.ForeignKey('academic_sessions.id'), nullable=False, index=True)
+    label = db.Column(db.String(40), nullable=False)  # e.g. "First Semester"
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    __table_args__ = (db.UniqueConstraint('session_id', 'label', name='uq_semester_session_label'),)
+
+    def to_dict(self):
+        return {'id': self.id, 'session_id': self.session_id, 'label': self.label}
+
+
 class Course(db.Model):
     __tablename__ = 'courses'
 
@@ -2022,15 +2076,62 @@ def _extract_youtube_id(url):
     return match.group(1) if match else None
 
 
+class Enrollment(db.Model):
+    """A student's registration for one Course in one session/semester -- the row the
+    PRD's data model was missing entirely.
+
+    Academic context previously existed only as free-text strings on User
+    (university/faculty/department/level/semester), so "which courses is this student
+    actually taking this semester" was unanswerable: MaterialView, CBTAttempt and the
+    tutor each had to find their own way back to a Course, and none of them agreed.
+
+    session_id / semester_id are nullable on purpose. A student can legitimately be
+    enrolled in a real Course before their school's sessions have been entered in
+    /admin/academia, and a NOT NULL there would block enrollment on data an admin
+    hasn't created yet -- the same "degrade to the honest partial answer, never invent
+    one" policy the rest of the taxonomy follows.
+
+    Note the UniqueConstraint is (user, course, session) and session_id is nullable: in
+    both Postgres and SQLite NULLs are distinct in a unique index, so the same student
+    may hold several session-less enrollments in one course. That is intentional --
+    re-taking a course in a later, not-yet-recorded session is real, and silently
+    collapsing those rows would lose the earlier attempt.
+    """
+    __tablename__ = 'enrollments'
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False, index=True)
+    course_id = db.Column(db.Integer, db.ForeignKey('courses.id'), nullable=False, index=True)
+    session_id = db.Column(db.Integer, db.ForeignKey('academic_sessions.id'), nullable=True, index=True)
+    semester_id = db.Column(db.Integer, db.ForeignKey('semesters.id'), nullable=True, index=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    user = db.relationship('User', backref=db.backref('enrollments', lazy='dynamic', cascade='all, delete-orphan'))
+    course = db.relationship('Course', backref=db.backref('enrollments', lazy='dynamic'))
+    session = db.relationship('AcademicSession')
+    semester = db.relationship('Semester')
+
+    __table_args__ = (db.UniqueConstraint('user_id', 'course_id', 'session_id', name='uq_enrollment_user_course_session'),)
+
+    def to_dict(self):
+        return {
+            'id': self.id, 'user_id': self.user_id, 'course_id': self.course_id,
+            'session_id': self.session_id, 'semester_id': self.semester_id,
+            'created_at': self.created_at.isoformat() if self.created_at else None,
+        }
+
+
 # ============================================================
 # ===== CBT PERSISTENCE: question bank + graded attempts =====
 # CBTQuestion is seeded from templates/CBT.html's generateFullQuestionBank() (hand-
 # authored, verified-accurate practice questions) via seed_cbt_questions.py -- no new
 # question content is invented here. Grain is subject_code (e.g. "MTH", "CSC"),
 # matching the JS bank's own design: a subject prefix with no entry deliberately has
-# no questions, never a silent substitution from a different subject. CBTAttempt links
-# to a free-string course_code (not a Course FK) so a student can still practice and
-# have it persisted even for a course/university the taxonomy above doesn't cover yet.
+# no questions, never a silent substitution from a different subject. CBTAttempt keeps
+# its free-string course_code as the authoritative value (not a Course FK) so a student
+# can still practice and have it persisted even for a course/university the taxonomy
+# above doesn't cover yet; the nullable course_id added alongside it is only an
+# optimistic pointer for per-course rollups -- see its own comment.
 # ============================================================
 
 class CBTQuestion(db.Model):
@@ -2090,6 +2191,14 @@ class CBTAttempt(db.Model):
     course_code = db.Column(db.String(20), nullable=False, index=True)  # free string, not a
     # Course FK -- a student can practice a subject the taxonomy doesn't cover yet
     # (e.g. a non-seeded university); forcing a FK would break CBT for exactly those students
+    #
+    # Nullable, best-effort pointer to the Course this attempt is actually about, added
+    # for PRD-style per-course performance rollups (course_code alone can't be joined
+    # reliably). Set only when course_code resolves to exactly ONE Course row -- several
+    # departments can share a code, and guessing between them would attribute a score to
+    # the wrong course. NULL means "not resolved", never "no course": course_code above
+    # stays authoritative, so behavior for unsupported courses is unchanged.
+    course_id = db.Column(db.Integer, db.ForeignKey('courses.id'), nullable=True, index=True)
     question_type = db.Column(db.String(10), nullable=False)  # 'cbt' | 'written'
     total_questions = db.Column(db.Integer, nullable=False)
     correct_count = db.Column(db.Integer, nullable=False, default=0)
@@ -2173,17 +2282,34 @@ class MaterialView(db.Model):
 
 
 class TopicProgress(db.Model):
-    """A student marking one Topic as studied/complete -- deliberately minimal (row
-    exists = complete, no partial-progress states, no streaks, no extra stats) per the
-    product principle that this should be basic completion tracking, not another
-    dashboard. Foundation for later per-topic quizzes/CBT without redesigning this
-    table -- see models.py's Topic docstring."""
+    """A student marking one Topic as studied/complete -- completion itself stays
+    deliberately minimal (row exists = complete, no partial-progress states, no
+    streaks) per the product principle that this should be basic completion tracking,
+    not another dashboard. See models.py's Topic docstring.
+
+    mastery_score / last_activity_at were added for the PRD's Progress entity, which
+    wants a measured strength signal per topic rather than a boolean -- and the
+    dashboard's recommendations need something to threshold against.
+
+    mastery_score is nullable and stays NULL until a real assessment produces it. It
+    is never seeded to a default like 0.0, because "measured and scored zero" and
+    "never measured" must not collapse into the same value: the recommendation engine
+    would then nag every student about every topic they haven't touched yet.
+    """
     __tablename__ = 'topic_progress'
 
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     topic_id = db.Column(db.Integer, db.ForeignKey('topics.id'), nullable=False)
     completed_at = db.Column(db.DateTime, default=datetime.utcnow)
+    # 0.0-1.0, NULL = not yet measured. The exact inputs (CBT/quiz results only, or
+    # also material completion and tutor engagement) are still an open product
+    # question -- the column exists now, populating it is a separate change, and
+    # nothing reads it yet.
+    mastery_score = db.Column(db.Float, nullable=True)
+    # Bumped on any real interaction with this topic (material view, quiz/CBT attempt),
+    # so "what was I last doing" doesn't depend on completion alone.
+    last_activity_at = db.Column(db.DateTime, nullable=True)
 
     user = db.relationship('User', backref=db.backref('topic_progress', lazy='dynamic'))
     topic = db.relationship('Topic', backref=db.backref('progress_rows', lazy='dynamic'))

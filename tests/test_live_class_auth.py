@@ -6,7 +6,7 @@ believed -- this is the red-team test for that fix (events.py's handle_join_room
 import uuid
 import pytest
 from app.extensions import db, socketio
-import events  # noqa: F401 -- registers @socketio.on handlers onto the shared socketio instance
+from app import events  # noqa: F401 -- registers @socketio.on handlers onto the shared socketio instance
 from app.models import Room
 
 

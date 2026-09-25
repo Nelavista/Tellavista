@@ -1,9 +1,13 @@
 # Nelavista — Legacy → Target Migration Map
 
-**Status:** Stage 0 deliverable, complete.
+**Status:** Stage 0 complete. Step 3 (missing data model) complete — see §7.
 **Source prompt:** *Nelavista Master Build Prompt v1.0*
 **Legacy app:** `Tellavista` (Flask + Jinja), main branch
 **Written:** 2026-09-25
+**Last updated:** 2026-09-25, after merging `main` (merge commit `2f6dc70`), which brought in
+migration `c8e51f3a9d76_add_cbt_question_course_code_fields.py` and `app/services/cbt_bank.py`.
+That merge gave `c8e51f3a9d76` the same parent as this work's new migration, producing two
+alembic heads until it was reparented — worth knowing if you branch again mid-migration.
 
 This is the one-time inventory Section 1 requires before any new code is written. It maps
 every existing route module and model class onto the PRD's target module structure and data
@@ -77,11 +81,11 @@ Legend: **Present** = usable as-is · **Partial** = exists but diverges from the
 | `Semester` | — | **Missing** | `User.semester` and `Course.semester` are free-text strings with no shared vocabulary |
 | `AcademicCourse` | `Course` | Present | `uq_course_dept_level_code`; has `source` to distinguish registrar data from `nuc_ccmas_core` |
 | `AcademicTopic` | `Topic` | Present | Has `order`, `explanation`, admin-pinned `video_url` |
-| `AcademicMaterial` | `Material` | Present | Scoped by `university` with NULL = universal (same pattern as `CBTQuestion`) |
+| `AcademicMaterial` | `Material` | Present | Scoped by `university` with NULL = universal. Carries both a legacy free-text `course_code` and real `course_id`/`topic_id`/`department_id` FKs (all nullable; see `d00f3200eb0b_add_topics_and_material_taxonomy_links.py`) |
 | `Enrollment` | `StudentOnboarding`, `CohortEnrollment` | **Partial** | No user↔course enrollment row carrying session/semester. `CohortEnrollment` is a different concept (cohort grouping) |
 | `Progress` | `TopicProgress`, `MaterialView` | **Partial** | `TopicProgress` is boolean-only (`completed_at`), missing the PRD's `mastery_score` and `last_activity_at`. `MaterialView` is a one-row-per-(user,material) visit tracker |
 | `Quiz` | `Quiz` (Skills), CBT subject grouping (Academia) | **Partial** | Two unrelated engines. Academia has no `Quiz` container row — `CBTAttempt.course_code` is a **free string, not an FK to `Course`** |
-| `Question` | `CBTQuestion`, `Quiz.question` | Present | `CBTQuestion` supports MCQ + written, with `mark_scheme` |
+| `Question` | `CBTQuestion`, `Quiz.question` | Present | Supports MCQ + written, with `mark_scheme`. Since `c8e51f3a9d76` a question is selected by `course_code` (its own per-course bank, via `services/cbt_bank.py`) — `subject_code` is still populated and returned by `to_dict()` for backward compatibility, but it no longer selects the bank |
 | `QuizAttempt` | `CBTAttempt`, `StudentQuizAttempt` | Present | `CBTAttempt` snapshots `issued_question_ids_json` so a client can't inject or substitute question IDs |
 | `QuizAnswer` | `CBTAnswer`, `StudentAnswer` | Present | Answers snapshot `question_text` at submit time, so later bank edits don't rewrite past results |
 | `AIConversation` | `TutorConversation` | Present | Already carries `course_id` / `topic_id` / `material_id` |
@@ -159,17 +163,22 @@ in-scope Academia code.
 | # | Gap | PRD ref |
 |---|---|---|
 | G1 | **No RAG — but less missing than it looks.** Text extraction already exists and is cached (`services/material_service.py` uses pdfplumber/PyMuPDF, caching into `Material.extracted_text` + `extracted_at`). What's actually missing is the RAG half: chunking, embeddings, vector storage, and semantic retrieval. No `pgvector` usage, no chunk table. | §5.5, §6 |
-| G2 | **No `AcademicSession` / `Semester` / `Enrollment`.** Session and semester are unvalidated free-text strings on `User` and `Course`. | §16 |
+| G2 | ~~No `AcademicSession` / `Semester` / `Enrollment`.~~ **Tables added in Step 3** and deliberately left unseeded. `User.semester` / `Course.semester` free-text columns remain and are untouched — moving readers onto the new tables, and backfilling, is follow-up work. | §16 |
 | G3 | **No provider-agnostic AI layer.** The OpenRouter endpoint URL is hardcoded in **13 places** in `services/ai_service.py` alone, plus `tutor_service.py`, `ai_grading.py`, and 4 route modules. No `AIProvider` interface. | §6 |
 | G4 | **No queued/background jobs.** No ARQ. Long AI generations run inside the request. | §19, §21 |
 | G5 | **No PostHog. Sentry is already fully wired** — `logging_config.py` initializes `sentry_sdk` whenever `SENTRY_DSN` is set, with `FlaskIntegration` + `LoggingIntegration` (ERROR events) and `SENTRY_TRACES_SAMPLE_RATE` for latency tracing. It needs the DSN configured, not new code. PostHog (funnels, retention, feature usage) is genuinely absent. | §21 |
 | G6 | **No AI usage/cost instrumentation.** No token or cost tracking per user or feature. | §21 |
 | G7 | **Keyword search is `ILIKE`, not Postgres full-text search.** `materials_routes.py:410` does three `ilike` ORs. No `to_tsvector` anywhere. | §5.3, §21 |
 | G8 | **No resume position.** `MaterialView` stores `(user_id, material_id, viewed_at)` — no page or scroll offset. "Continue learning" can return to the material but not to the position. | §5.3 AC |
-| G9 | **No `mastery_score`.** `TopicProgress` is boolean completion only; there is no per-topic mastery signal for recommendations to read. | §16, §21 |
+| G9 | **Column added in Step 3; semantics still open.** `TopicProgress.mastery_score` + `last_activity_at` exist and are nullable, never seeded — "not measured" stays distinct from "scored zero". Nothing writes or reads them yet, and the formula is still open question 4. | §16, §21 |
 | G10 | **Flagged-answer moderation queue** does not exist. Hallucination logging has no destination. | §6, §8 |
 | G11 | **Access-token + refresh rotation.** Auth is a Flask session cookie. | §5.1, §7 |
-| G12 | **`CBTAttempt.course_code` is a free string**, not an FK. Blocks reliable per-course performance rollups. | §16 |
+| G12 | ~~**`CBTAttempt.course_code` is a free string**, not an FK.~~ **Addressed in Step 3** — a nullable `course_id` FK now exists, backfilled only where a code resolves to exactly one Course. `course_code` stays authoritative (students at unseeded universities must keep working); rollups should use `course_id` and treat NULL as "unattributed", never "no course". | §16 |
+| G13 | **CBT has no countdown and no auto-submit.** `startTimer()` counts up with no limit; submission is manual. The §5.7 AC — auto-submit and score correctly at 0:00 with no student action — cannot be met by the current design. | §5.7 |
+| G14 | **Dashboard is missing two of its three required sections.** No Performance block (quiz average, CBT performance, weak/strong topics) and no AI Insights block. | §5.9 |
+| G15 | **No 7-step academic onboarding flow.** Academic context is captured in a profile-completion modal plus free-text fields resolved against the taxonomy, with no per-step filtering, no multi-select course step, and no "not in system yet" waitlist capture. | §5.2 |
+| G16 | **No true/false question type and no weak/strong topic reporting** after a quiz, so §5.6's post-quiz analysis is incomplete. | §5.6 |
+| G17 | **No access/refresh token rotation.** Auth is a Flask session cookie; there is no `/auth/refresh` and no short-lived token. | §5.1, §7 |
 
 ### Already present (do not rebuild)
 
@@ -179,17 +188,41 @@ in-scope Academia code.
 | Google OAuth sign-in | `User.google_sub`, `test_google_oauth_flow.py` |
 | Password recovery via emailed, hashed, expiring token | `auth_routes.py`, `User.reset_token_hash` |
 | Academic hierarchy CRUD + browse | `academia_routes.py`, `admin_academia_routes.py` |
-| Timed CBT with auto-submit, immediate scoring, history | `cbt_routes.py`, `test_cbt_integrity.py` |
+| CBT server-side grading, answer-injection defence, history + review screens | `cbt_routes.py`, `tests/test_cbt_integrity.py`, `cbt_history.html`, `cbt_attempt_review.html` — **but see the P0 verification below: there is no countdown and no auto-submit** |
 | Answer-injection defence on CBT submit | `CBTAttempt.issued_question_ids_json` |
 | AI tutor with auto-injected academic context + threads | `tutor_service.py`, `test_tutor_academic_scoping.py` |
 | Prompt-injection defence in AI grading | `ai_grading.py`, `test_ai_grading_injection_defense.py` |
 | Per-route AI rate limiting | `extensions.py` `Limiter`, `@limiter.limit` on 8+ AI routes |
-| Deterministic weak/strong topic detection (partial) | `services/progress_service.py` |
 | Notifications (in-app), audit logging, RBAC via `is_admin` | `notification_service.py`, `AdminAuditLog` |
 | Secrets via env only, CORS allow-list, upload validation | `config.py`, `__init__.py` |
 | Material scoping so students only see in-scope content | `test_materials_scoping.py`, `test_academic_scoping_ai_actions.py` |
 | Structured logging + Sentry error tracking (activates on `SENTRY_DSN`) | `logging_config.py`; `sentry-sdk[flask]` already in `requirements.txt` |
 | PDF text extraction with a DB cache | `services/material_service.py`, `Material.extracted_text` / `extracted_at` |
+
+### P0 acceptance-criteria verification
+
+**Read this before trusting the tables above.** An earlier revision of this map credited
+several P0 features as "present" on the strength of model names, route counts and test-file
+names, without checking PRD §5's acceptance criteria against the actual code. That was too
+generous. Re-checked line by line:
+
+| PRD §5 P0 | Verdict | Evidence |
+|---|---|---|
+| 5.1 Auth | **Mostly met** | `User.email_verified` gates features; `google_sub` + `routes/auth_routes.py` Google OAuth; reset token stored only as a SHA-256 hash with an expiry. Gaps: no access/refresh token rotation (Flask session cookie), and hashing is PBKDF2-SHA256, not bcrypt/argon2 |
+| 5.2 Onboarding | **Not met as specified** | No sequential 7-step flow with per-step filtering; academic context is `profile_completion_modal.html` plus free-text fields resolved against the taxonomy. No waitlist capture. The new `enrollments` table is not read by anything yet |
+| 5.3 Courses & materials | **Partly met** | Browse courses → topics → materials works, and an in-browser PDF viewer exists (`materials.html`, `#pdfViewerFrame`). Missing: Postgres FTS (still three `ILIKE` ORs at `materials_routes.py:410`) and resume-to-exact-position |
+| 5.4 AI Tutor | **Mostly met** | Threads persist (`TutorConversation`/`TutorMessage`), academic context auto-injected, streaming via `stream_chat_completion()`, CBT-mistake explanations in `cbt_attempt_review.html`. Gap: rate limiting is keyed on `get_remote_address`, so the "per-user rate limits" AC is unmet |
+| 5.5 Material RAG | **Not met** | The whole `Material.extracted_text` is passed to the model. No chunking, embeddings or retrieval — and so no way to honour "off-topic questions get an honest 'not covered' response", since nothing is retrieved that could be found absent |
+| 5.6 Quiz generation | **Partly met** | Generation exists, and the review screen shows per-question correctness + explanation. No true/false type (`'cbt'` \| `'written'` only), no weak/strong area reporting |
+| 5.7 CBT | **Not met** | `startTimer()` counts **up** (`elapsedSeconds++`) with no limit, and submission is manual via `confirmSubmit()`. There is no countdown and **no auto-submit at 0:00** — an explicit P0 acceptance criterion. Navigation (prev/next/jump/flag), server-side scoring, history and injection defence are all genuinely solid |
+| 5.8 Progress tracking | **Not met** | `services/progress_service.py` contains only `record_material_view`, `get_recent_material_views`, `get_cbt_summary` and course-materials-progress readers. No `mastery_score` (the column exists as of Step 3, but nothing writes it), no weak/strong topics, no actionable recommendation copy |
+| 5.9 Dashboard | **Not met** | Rendered sections are "Upcoming exams", "Continue studying", "My courses", "Recent materials". No Performance section (quiz average, CBT performance, weak/strong topics) and no AI Insights section. It also carries an "Upcoming exams" block that §5.9's "exactly these 3 sections" constraint excludes |
+
+**Net answer to "are the features already there?":** the *breadth* of the product exceeds the
+MVP — roughly half its routes implement Phase 2–4 marketplace, community and live-meeting
+features the PRD defers — while several *specific P0 acceptance criteria* above are unmet. So
+"already available" is true of many underlying models and services, and false of the acceptance
+criteria. Treat the gap list (G1–G17) as the actual work, not the section-3 entity table.
 
 ### Diverges from the PRD (decide, don't silently "fix")
 
@@ -219,10 +252,40 @@ substring matching, which also speeds up the existing `ILIKE` queries) and `unac
 *Still open:* whether the Redis instance is provisioned — it remains optional until a second
 gunicorn worker exists, but §19/§21's background-job and AI-cost work (Step 8) depends on it.
 
-**Step 3 — Missing data model (G2, G9, G12).** Add `academic_sessions`, `semesters`, and an
-`enrollments` table; add `mastery_score` + `last_activity_at` to `TopicProgress`; add a
-nullable `course_id` FK to `CBTAttempt` backfilled from `course_code`. One Alembic migration,
-additive only, no destructive column drops. *§16.*
+**Step 3 — Missing data model (G2, G9, G12). COMPLETE.** One additive migration,
+`migrations/versions/b3f7a91c4e28_add_sessions_enrollments_and_mastery.py`: creates
+`academic_sessions`, `semesters`, `enrollments`; adds `TopicProgress.mastery_score` +
+`last_activity_at`; adds a nullable `CBTAttempt.course_id` FK backfilled from `course_code`.
+No column is dropped, narrowed, or re-typed, so it is safe to deploy before any code reads the
+new fields. Covered by `tests/test_sessions_enrollment_migration.py` (upgrade, backfill
+conservatism, unique-constraint semantics, downgrade round-trip).
+
+Three things worth flagging for whoever applies it:
+
+- **It has not been run against any database.** The tests exercise it on a throwaway SQLite
+database; production is Postgres and will take the direct (non-recreating) ALTER path. Run it
+on staging first.
+- **`course_id` is nullable by design.** Codes shared across departments stay NULL rather than
+being attributed to an arbitrary course. Expect some NULLs on real data; that is the intended
+outcome, not a failed backfill. The migration prints a resolved/ambiguous/unmatched summary.
+- **Test isolation was broken and is now fixed.** `tests/conftest.py` avoided `import app` on
+the stated assumption that this prevented database access, but importing *any* `app.*`
+submodule executes `app/__init__.py`, whose module-level `init_database(app)` connects to the
+configured `DATABASE_URL` unless `SKIP_DB_INIT=1`. Compounding it, conftest forces
+`FLASK_DEBUG=True`, so the DEBUG-only `create_default_user()` ran too. The destructive path is
+narrower than it first appears: `_create_all_and_stamp_if_alembic_untracked()` skips
+`db.create_all()` and the stamp whenever `alembic_version` exists, which is true of any real
+deployed database — so production was not given new tables or a false revision stamp. What it
+did risk was a live connection plus the hardcoded `test`/`test123` account. conftest now sets
+`SKIP_DB_INIT=1` before its first `app.*` import; verified by A/B probe (74 tables auto-created
+with the guard off, 0 with it on). **Action: check production for a `test` user and remove it
+if present.**
+
+**Pre-existing test breakage, unrelated to this work (8 tests).** `test_live_class_auth.py` and
+`test_orphaned_live_room_reaper.py` fail at collection on `import events`, and 5 tests in
+`test_topics_and_course_taxonomy.py` fail on `backfill_material_taxonomy_links` — both modules
+have since moved (`app/events.py`, `scripts/maintenance/`). These were failing before this work
+and are not caused by it; they should be repointed or the imports fixed separately.
 
 **Step 4 — Provider-agnostic AI layer (G3).** Introduce the `AIProvider` interface with an
 `OpenRouterProvider` implementing today's behaviour, then collapse the 13+ duplicated

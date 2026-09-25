@@ -26,7 +26,10 @@ from app.extensions import db
 MIGRATIONS_DIR = os.path.join(
     os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'migrations'
 )
-PREVIOUS_REVISION = 'a7f2c9e14b83'
+# The revision this migration revises. Must track b3f7a91c4e28's down_revision: that
+# revision is a *sibling* of c8e51f3a9d76_add_cbt_question_course_code_fields, which
+# revised the same parent and briefly produced two alembic heads.
+PREVIOUS_REVISION = 'c8e51f3a9d76'
 
 # Only the columns the migration reads or alters. Deliberately not the full production
 # schema -- these tests are about this migration's own behavior, not a schema replica.

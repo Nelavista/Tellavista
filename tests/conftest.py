@@ -1,13 +1,21 @@
 """Shared pytest fixtures for the Level 1 production-readiness test suite.
 
-IMPORTANT: this deliberately does NOT `import app` (the real app.py module). app.py runs
-`init_database(app)` at import time against whatever DATABASE_URL happens to be
-configured in the local .env -- which, in this environment, is a real Postgres instance,
-not a disposable local one. Importing app.py from a test would attempt a real network
-connection to that database and (via db.create_all()) could create tables/columns
-against it. Instead, every fixture here builds its own throwaway Flask app bound to a
-temporary SQLite file, registers only the blueprints a given test needs, and calls
-db.create_all() directly -- never touching the real configured database at all.
+IMPORTANT: every fixture here builds its own throwaway Flask app bound to a temporary
+SQLite file, registers only the blueprints a given test needs, and calls db.create_all()
+directly -- no test reads or writes the configured database.
+
+That isolation does NOT come for free from avoiding `import app`. Importing *any* `app.*`
+submodule executes `app/__init__.py`, which ends with a module-level `app = create_app()`
+followed by `init_database(app)` unless SKIP_DB_INIT=1. So importing `app.extensions`
+below -- which every fixture needs -- would otherwise connect to whatever DATABASE_URL is
+in the local .env (a real Postgres in this environment). Two consequences that actually
+bit us: a routine `pytest` run opened a live connection to production, and because
+FLASK_DEBUG is forced on just below, the DEBUG-only `create_default_user()` ran against it
+and could create the hardcoded `test`/`test123` login there.
+
+Setting SKIP_DB_INIT=1 before the first `app.*` import is the supported way to prevent
+both: `database.py` and `app/__init__.py` already honour that variable for exactly this
+(migration scripts use it too). Do not remove it, and keep it above the app imports.
 """
 import os
 import sys
@@ -18,6 +26,12 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 os.environ.setdefault('SECRET_KEY', 'test-secret-key-for-pytest-only')
 os.environ.setdefault('FLASK_DEBUG', 'True')
+
+# Must be set before the first app.* import below: importing app.extensions executes
+# app/__init__.py, whose module-level init_database(app) otherwise connects to the real
+# DATABASE_URL from .env and (in DEBUG) seeds the test/test123 account there. See the
+# module docstring above.
+os.environ['SKIP_DB_INIT'] = '1'
 
 from flask import Flask
 from app.extensions import db, csrf, limiter, mail

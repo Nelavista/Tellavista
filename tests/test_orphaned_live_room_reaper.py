@@ -17,9 +17,9 @@ and separately confirm handle_disconnect actually wires it up.
 import uuid
 import pytest
 from app.extensions import db, socketio
-import events  # noqa: F401 -- registers @socketio.on handlers onto the shared socketio instance
+from app import events  # noqa: F401 -- registers @socketio.on handlers onto the shared socketio instance
 from app.models import Room
-import services.meeting_service as meeting_service
+import app.services.meeting_service as meeting_service
 from app.services.meeting_service import rooms, room_authority, _close_room_if_still_abandoned
 
 

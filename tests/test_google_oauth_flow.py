@@ -18,7 +18,7 @@ Both require faking Authlib's oauth.google client rather than a real Google roun
 from flask import redirect
 from app.extensions import db
 from app.models import User
-import routes.auth_routes as auth_routes
+import app.routes.auth_routes as auth_routes
 
 
 class _FakeGoogleClient:

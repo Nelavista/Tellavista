@@ -590,7 +590,7 @@ def test_backfill_resolves_department_scoped_to_university(app, make_course):
     make_course(university='Lagos State University', department='Computer Science', code='CSC213')
     make_course(university='University of Lagos', department='Computer Science', code='CSC101')
 
-    from backfill_material_taxonomy_links import _resolve_department
+    from scripts.maintenance.backfill_material_taxonomy_links import _resolve_department
     from app.models import Department, Faculty, University
 
     with app.app_context():
@@ -613,7 +613,7 @@ def test_backfill_leaves_department_unresolved_when_ambiguous_and_no_university_
     make_course(university='Lagos State University', department='Computer Science', code='CSC213')
     make_course(university='University of Lagos', department='Computer Science', code='CSC101')
 
-    from backfill_material_taxonomy_links import _resolve_department
+    from scripts.maintenance.backfill_material_taxonomy_links import _resolve_department
     from app.models import Department, Faculty, University
     from collections import defaultdict
 

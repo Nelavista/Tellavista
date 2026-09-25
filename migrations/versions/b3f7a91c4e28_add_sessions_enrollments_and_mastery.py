@@ -25,7 +25,7 @@ departments or levels is left NULL rather than attributed to an arbitrary course
 wrong course attribution is worse than a missing one.
 
 Revision ID: b3f7a91c4e28
-Revises: a7f2c9e14b83
+Revises: c8e51f3a9d76
 Create Date: 2026-09-25 00:00:00.000000
 
 """
@@ -33,7 +33,7 @@ from alembic import op
 import sqlalchemy as sa
 
 revision = 'b3f7a91c4e28'
-down_revision = 'a7f2c9e14b83'
+down_revision = 'c8e51f3a9d76'
 branch_labels = None
 depends_on = None
 

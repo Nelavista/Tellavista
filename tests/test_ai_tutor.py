@@ -1,8 +1,8 @@
 """Tests for the AI Tutor (routes/tutor_routes.py, services/tutor_service.py).
 
 OpenRouter is never called here -- stream_chat_completion / generate_conversation_title
-are monkeypatched at their routes.tutor_routes import site (not the defining module,
-since routes.tutor_routes already bound its own reference at import time).
+are monkeypatched at their app.routes.tutor_routes import site (not the defining module,
+since app.routes.tutor_routes already bound its own reference at import time).
 """
 import json
 from datetime import datetime
@@ -25,8 +25,8 @@ def _fake_stream(messages, **kwargs):
 
 
 def _stub_ai(monkeypatch, title="A Test Title", stream=_fake_stream):
-    monkeypatch.setattr('routes.tutor_routes.stream_chat_completion', stream)
-    monkeypatch.setattr('routes.tutor_routes.generate_conversation_title', lambda *a, **k: title)
+    monkeypatch.setattr('app.routes.tutor_routes.stream_chat_completion', stream)
+    monkeypatch.setattr('app.routes.tutor_routes.generate_conversation_title', lambda *a, **k: title)
 
 
 def _read_sse_events(response):
@@ -140,7 +140,7 @@ class TestMessaging:
         def _second_answer(messages, **kwargs):
             yield "A different "
             yield "answer."
-        monkeypatch.setattr('routes.tutor_routes.stream_chat_completion', _second_answer)
+        monkeypatch.setattr('app.routes.tutor_routes.stream_chat_completion', _second_answer)
 
         resp = client.post(f'/api/tutor/conversations/{conv_id}/messages', json={'regenerate': True})
         assert resp.status_code == 200
@@ -315,8 +315,8 @@ class TestMessagingCourseMaterialLookup:
         def _capturing_stream(messages, **kwargs):
             captured['system'] = messages[0]['content']
             yield "Found it."
-        monkeypatch.setattr('routes.tutor_routes.stream_chat_completion', _capturing_stream)
-        monkeypatch.setattr('routes.tutor_routes.generate_conversation_title', lambda *a, **k: 'title')
+        monkeypatch.setattr('app.routes.tutor_routes.stream_chat_completion', _capturing_stream)
+        monkeypatch.setattr('app.routes.tutor_routes.generate_conversation_title', lambda *a, **k: 'title')
 
         conv_id = client.post('/api/tutor/conversations').get_json()['conversation']['id']
         resp = client.post(f'/api/tutor/conversations/{conv_id}/messages',
@@ -345,8 +345,8 @@ class TestMessagingCourseMaterialLookup:
         def _capturing_stream(messages, **kwargs):
             captured['system'] = messages[0]['content']
             yield "Which one?"
-        monkeypatch.setattr('routes.tutor_routes.stream_chat_completion', _capturing_stream)
-        monkeypatch.setattr('routes.tutor_routes.generate_conversation_title', lambda *a, **k: 'title')
+        monkeypatch.setattr('app.routes.tutor_routes.stream_chat_completion', _capturing_stream)
+        monkeypatch.setattr('app.routes.tutor_routes.generate_conversation_title', lambda *a, **k: 'title')
 
         conv_id = client.post('/api/tutor/conversations').get_json()['conversation']['id']
         resp = client.post(f'/api/tutor/conversations/{conv_id}/messages',

@@ -420,6 +420,12 @@ let userMarks = {};
 let flagged = [];
 let timerInterval = null;
 let elapsedSeconds = 0;
+// PRD §5.7 -- CBT attempts are timed: counts DOWN from timeLimitSeconds and
+// auto-submits at 0:00 (null for written practice, which stays a count-up study
+// clock). Derived server-side from the question count (cbt_routes.py), so client
+// and server always agree on the limit.
+let timeLimitSeconds = null;
+let autoSubmitted = false;
 let currentAttemptId = null;    // server-issued attempt id for the exam in progress
 let currentCounts = { cbt: 0, written: 0 };  // last-fetched /api/cbt/counts result
 
@@ -451,6 +457,7 @@ function saveExamState() {
             userMarks,
             flagged,
             elapsedSeconds,
+            timeLimitSeconds,
             savedAt: Date.now(),
         }));
     } catch (e) { /* storage full/unavailable -- exam still works, just without recovery */ }
@@ -783,6 +790,8 @@ async function startExam() {
 
     goToScreen('screen-exam');
     resetExamState();
+    timeLimitSeconds = data.time_limit_seconds || null;  // set after reset, which clears it
+    autoSubmitted = false;
     renderExamUI();
     startTimer();
     saveExamState();
@@ -799,6 +808,8 @@ function resumeExamState(saved) {
     userAnswers = saved.userAnswers || {};
     userMarks = saved.userMarks || {};
     flagged = saved.flagged || [];
+    timeLimitSeconds = saved.timeLimitSeconds || null;
+    autoSubmitted = false;
     if (timerInterval) clearInterval(timerInterval);
 
     goToScreen('screen-exam');
@@ -813,6 +824,8 @@ function resetExamState() {
     userMarks = {};
     flagged = [];
     elapsedSeconds = 0;
+    timeLimitSeconds = null;
+    autoSubmitted = false;
     if(timerInterval) clearInterval(timerInterval);
 }
 
@@ -1004,18 +1017,58 @@ window.toggleFlag = function() {
 
 function startTimer(resumeFromSeconds) {
     elapsedSeconds = resumeFromSeconds || 0;
+    // A resumed attempt whose time already ran out (tab closed near the deadline,
+    // device clock unchanged) must still auto-submit -- the PRD §5.7 AC is "scores
+    // correctly at zero even with no student action".
+    if (timeLimitSeconds !== null && elapsedSeconds >= timeLimitSeconds) {
+        updateTimerDisplay();
+        expireAndSubmit();
+        return;
+    }
     updateTimerDisplay();
     timerInterval = setInterval(()=>{
         elapsedSeconds++;
         updateTimerDisplay();
         if (elapsedSeconds % 5 === 0) saveExamState(); // periodic save so elapsed time survives a refresh too, without writing every second
+        if (timeLimitSeconds !== null && elapsedSeconds >= timeLimitSeconds) {
+            expireAndSubmit();
+        }
     },1000);
 }
 
+// Countdown for timed CBT attempts (PRD §5.7), count-up for written practice.
+// The badge's warning/danger states (CSS already existed, unused) flag the last
+// 5 minutes / final minute.
 function updateTimerDisplay() {
-    const m = Math.floor(elapsedSeconds/60).toString().padStart(2,'0');
-    const s = (elapsedSeconds%60).toString().padStart(2,'0');
+    const badge = document.getElementById('timerBadge');
+    let seconds, remaining = null;
+    if (timeLimitSeconds !== null) {
+        remaining = Math.max(0, timeLimitSeconds - elapsedSeconds);
+        seconds = remaining;
+    } else {
+        seconds = elapsedSeconds;
+    }
+    const m = Math.floor(seconds/60).toString().padStart(2,'0');
+    const s = (seconds%60).toString().padStart(2,'0');
     document.getElementById('timerText').textContent = `${m}:${s}`;
+    if (badge) {
+        badge.classList.remove('warning', 'danger');
+        if (remaining !== null) {
+            if (remaining <= 60) badge.classList.add('danger');
+            else if (remaining <= 300) badge.classList.add('warning');
+        }
+    }
+}
+
+// Timer hit 0:00 -- submit immediately with no confirmation prompt (the student
+// cannot extend an expired exam by dismissing a dialog).
+function expireAndSubmit() {
+    if (timerInterval) clearInterval(timerInterval);
+    timerInterval = null;
+    if (autoSubmitted) return;   // a failed network attempt already has a retry pending
+    autoSubmitted = true;
+    saveExamState();
+    submitExam(true);
 }
 
 window.confirmSubmit = function() {
@@ -1027,7 +1080,7 @@ window.confirmSubmit = function() {
 // ══════════════════════════════════════════════════════
 let lastResults = [];  // server-graded per-question results, populated after a successful submit
 
-async function submitExam() {
+async function submitExam(timeExpired) {
     clearInterval(timerInterval);
     const submitBtn = document.getElementById('submitBtn');
     if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Submitting…'; }
@@ -1067,6 +1120,14 @@ async function submitExam() {
             window.location.href = '/CBT/history';
             return;
         }
+        if (timeExpired) {
+            // Time is already up -- restarting the clock would instantly re-expire and
+            // loop. Keep the answers (still in memory + localStorage) and retry the
+            // auto-submit quietly; grading is server-side, so retries are safe.
+            autoSubmitted = false;
+            setTimeout(() => submitExam(true), 3000);
+            return;
+        }
         alert("Couldn't submit your exam — check your connection and try again. Your answers are still here.");
         startTimer(elapsedSeconds);  // resume the clock from where it was; nothing was lost
         return;
@@ -1087,7 +1148,9 @@ async function submitExam() {
 
     document.getElementById('resultsEmoji').innerHTML = `<i class="${resultIcon}"></i>`;
     document.getElementById('resultsTitle').textContent = title;
-    document.getElementById('resultsSub').textContent = `${selectedCourseForExam} · ${examType==='cbt'?'CBT':'Written'}`;
+    document.getElementById('resultsSub').textContent =
+        `${selectedCourseForExam} · ${examType==='cbt'?'CBT':'Written'}` +
+        (timeExpired ? ' · Time expired — auto-submitted' : '');
     document.getElementById('scorePct').textContent = pct+'%';
     document.getElementById('statCorrect').textContent = correct;
     document.getElementById('statWrong').textContent = wrong;

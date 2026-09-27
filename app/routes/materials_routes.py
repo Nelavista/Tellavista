@@ -488,14 +488,24 @@ def _material_link(material):
 def track_material_view(material_id):
     """Fire-and-forget, called when a student actually opens a material -- powers
     Continue Studying / Recent Materials / progress counts. A failure here must never
-    block the student from reading the material they already opened."""
+    block the student from reading the material they already opened.
+
+    Optionally carries {page: N} from the in-app PDF viewer -- the PRD §5.3 resume
+    position. Ignored when absent/invalid so the older callers that post nothing keep
+    working unchanged."""
     username = session['user']['username']
     user = User.query.filter_by(username=username).first()
     material = Material.query.get(material_id)
     if not user or not material:
         return jsonify({'success': False}), 404
-    record_material_view(user, material)
-    return jsonify({'success': True})
+    data = request.get_json(silent=True) or {}
+    page = data.get('page')
+    if not isinstance(page, int) or isinstance(page, bool) or page < 1:
+        page = None
+    view = record_material_view(user, material, page=page)
+    # Echo back the stored resume page (after applying this request's `page`, if any)
+    # -- the viewer uses it to reopen at the last-read page (PRD §5.3).
+    return jsonify({'success': True, 'last_page': view.last_page})
 
 
 @materials_bp.route('/api/continue-studying')
@@ -511,6 +521,9 @@ def continue_studying():
     return jsonify({'material': {
         'title': m.title, 'course_code': m.course_code, 'department': m.department,
         'link': _material_link(m), 'viewed_ago': _time_ago(v.viewed_at),
+        # PRD §5.3 -- where in the material to resume; null when never recorded.
+        'last_page': v.last_page,
+        'material_id': m.id,
     }})
 
 

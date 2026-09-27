@@ -127,7 +127,7 @@
                 <div class="tp-material-title">{{ m.title }}</div>
                 <div class="tp-material-meta">{{ m.type_label }} &middot; {{ m.author or m.uploaded_by }}</div>
             </div>
-            <a href="{{ m.resolved_url or m.external_url }}" target="_blank" class="sk-btn small secondary" onclick="trackMaterialView({{ m.id }})">Open</a>
+            <a href="{{ resume_url(m, resume_pages) }}" target="_blank" class="sk-btn small secondary" onclick="trackMaterialView({{ m.id }})">Open</a>
         </div>
         {% endfor %}
         {% else %}
@@ -147,7 +147,7 @@
                     <div class="tp-material-title">{{ m.title }}</div>
                     <div class="tp-material-meta">{{ m.type_label }} &middot; {{ m.author or m.uploaded_by }}</div>
                 </div>
-                <a href="{{ m.resolved_url or m.external_url }}" target="_blank" class="sk-btn small secondary" onclick="trackMaterialView({{ m.id }})">Open</a>
+                <a href="{{ resume_url(m, resume_pages) }}" target="_blank" class="sk-btn small secondary" onclick="trackMaterialView({{ m.id }})">Open</a>
             </div>
             {% endfor %}
         </div>
@@ -172,7 +172,7 @@
                     <div class="tp-material-title">{{ m.title }}</div>
                     <div class="tp-material-meta">{{ m.source|capitalize }}</div>
                 </div>
-                <a href="{{ m.resolved_url or m.external_url }}" target="_blank" class="sk-btn small secondary" onclick="trackMaterialView({{ m.id }})">Open</a>
+                <a href="{{ resume_url(m, resume_pages) }}" target="_blank" class="sk-btn small secondary" onclick="trackMaterialView({{ m.id }})">Open</a>
             </div>
             {% endfor %}
         </div>

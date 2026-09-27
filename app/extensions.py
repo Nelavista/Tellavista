@@ -2,6 +2,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_socketio import SocketIO
 from flask_mail import Mail
 from flask_wtf import CSRFProtect
+from flask import session
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from authlib.integrations.flask_client import OAuth
@@ -22,8 +23,22 @@ csrf = CSRFProtect()
 # config.py's REDIS_URL comment. default_limits is empty here; every limited route sets
 # its own explicit limit (see routes/auth_routes.py, routes/ai_routes.py) rather than one
 # blanket number that would be wrong for most of them.
+def rate_limit_key():
+    """PRD §5.4/§7: rate limits must be per-user where a user exists, not just
+    per-IP. Keyed on the authenticated username (server-side session, not client-
+    tamperable) when logged in; falls back to the remote address for anonymous
+    traffic, which is what still protects the auth endpoints (login/signup/\
+    forgot-password) where no user exists yet. Per-user keying also means a shared
+    campus NAT -- many students behind one IP -- no longer throttles each other on
+    the AI endpoints, which was the concrete failure of the old per-IP-only key."""
+    user = session.get('user') if 'user' in session else None
+    if user and user.get('username'):
+        return f"user:{user['username']}"
+    return get_remote_address()
+
+
 limiter = Limiter(
-    key_func=get_remote_address,
+    key_func=rate_limit_key,
     storage_uri=(REDIS_URL if REDIS_URL else 'memory://'),
     default_limits=[],
 )

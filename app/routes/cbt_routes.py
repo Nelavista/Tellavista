@@ -17,6 +17,23 @@ cbt_bp = Blueprint('cbt', __name__)
 MAX_CBT_QUESTIONS = 50
 MAX_WRITTEN_QUESTIONS = 10
 
+# PRD §5.7 (CBT): a timed session with a visible countdown that auto-submits at 0:00.
+# The time limit is a pure function of the attempt's question count -- 1 minute per
+# question with a 5-minute floor for small sets -- deliberately derived rather than
+# stored, so the client (countdown display + auto-submit) and the server (duration
+# clamp below) always agree on the same number without a schema change or a round
+# trip. Written practice stays untimed (None): it is a study mode with a mark-scheme
+# reveal, not an exam.
+CBT_SECONDS_PER_QUESTION = 60
+CBT_MIN_TIME_SECONDS = 300
+
+
+def cbt_time_limit_seconds(question_type, total_questions):
+    """Time limit for one attempt, or None when the mode is untimed (written)."""
+    if question_type != 'cbt':
+        return None
+    return max(CBT_MIN_TIME_SECONDS, total_questions * CBT_SECONDS_PER_QUESTION)
+
 
 @cbt_bp.route('/CBT', methods=['GET'])
 @login_required
@@ -127,11 +144,15 @@ def start_cbt_attempt():
     db.session.add(attempt)
     db.session.commit()
 
+    time_limit = cbt_time_limit_seconds(question_type, len(selected))
     return jsonify({
         'success': True,
         'attempt_id': attempt.id,
         'course_code': course_code,
         'question_type': question_type,
+        # PRD §5.7 -- the client counts down from this and auto-submits at 0:00 (see
+        # CBT.html's startTimer). None for written practice, which stays untimed.
+        'time_limit_seconds': time_limit,
         # include_answer defaults to False -- correct_index/explanation/mark_scheme are
         # never sent here, only after the student submits (see /CBT/submit/<id> below).
         'questions': [q.to_dict() for q in selected],
@@ -220,7 +241,15 @@ def submit_cbt_attempt(attempt_id):
     total = len(issued_ids)
     attempt.correct_count = correct_count
     attempt.score_pct = round(correct_count / total * 100) if total and attempt.question_type == 'cbt' else 0
-    attempt.duration_seconds = data.get('duration_seconds')
+    # Clamp the reported duration to the same derived limit the client counted down
+    # from, so a tampered/stopped client clock can't record a 'duration' longer than
+    # the attempt was ever allowed. Non-numeric/absent values pass through unchanged
+    # (unchanged from before this feature -- duration is informational, never graded).
+    duration = data.get('duration_seconds')
+    limit = cbt_time_limit_seconds(attempt.question_type, total)
+    if limit is not None and isinstance(duration, (int, float)):
+        duration = min(duration, limit)
+    attempt.duration_seconds = duration
     attempt.submitted_at = datetime.utcnow()
     db.session.commit()
 

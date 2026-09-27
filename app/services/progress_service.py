@@ -9,18 +9,41 @@ from app.extensions import db
 from app.models import MaterialView, Material, CBTAttempt
 
 
-def record_material_view(user, material):
+def record_material_view(user, material, page=None):
     """Upsert one (user, material) view -- bumps the timestamp on repeat views rather
     than inserting duplicate rows, and increments Material.views (previously a dead
-    column, never incremented anywhere)."""
+    column, never incremented anywhere).
+
+    `page` (optional) is the resume position the viewer reported (PRD §5.3): written
+    only when actually provided and valid, and never cleared by a later view that
+    didn't report one -- "opened again without a position" must not erase the last
+    known position, or Continue Learning would lose the page it's supposed to return
+    the student to."""
     view = MaterialView.query.filter_by(user_id=user.id, material_id=material.id).first()
     if view:
         view.viewed_at = datetime.utcnow()
     else:
         view = MaterialView(user_id=user.id, material_id=material.id)
         db.session.add(view)
+    if isinstance(page, int) and not isinstance(page, bool) and page >= 1:
+        view.last_page = page
     material.views = (material.views or 0) + 1
     db.session.commit()
+    return view
+
+
+def get_resume_pages(user, material_ids):
+    """{material_id: last_page} for the given materials -- only rows that actually
+    have a recorded position (PRD §5.3). One query for a whole course/topic page's
+    material list, never one per row."""
+    if not material_ids:
+        return {}
+    rows = (
+        MaterialView.query
+        .filter(MaterialView.user_id == user.id, MaterialView.material_id.in_(material_ids))
+        .all()
+    )
+    return {r.material_id: r.last_page for r in rows if r.last_page}
 
 
 def get_recent_material_views(user, limit=5):

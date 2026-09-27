@@ -194,7 +194,7 @@
                                     <div class="cd-material-title">{{ m.title }}</div>
                                     <div class="cd-material-meta">{{ m.author or m.uploaded_by }} · {{ m.type_label }}{% if m.description %} · {{ m.description }}{% endif %}</div>
                                 </div>
-                                <a href="{{ m.resolved_url or m.external_url }}" target="_blank" class="sk-btn small secondary" onclick="trackMaterialView({{ m.id }})">Open</a>
+                                <a href="{{ resume_url(m, resume_pages) }}" target="_blank" class="sk-btn small secondary" onclick="trackMaterialView({{ m.id }})">Open</a>
                             </div>
                             <div class="cd-material-actions">
                                 <button class="cd-ai-btn" onclick="askAboutMaterial({{ m.id }}, 'explain', this)"><i class="ri-lightbulb-line"></i> Explain</button>
@@ -227,7 +227,7 @@
                                     <div class="cd-material-title">{{ m.title }}</div>
                                     <div class="cd-material-meta">{{ m.source|capitalize }}{% if m.description %} · {{ m.description }}{% endif %}</div>
                                 </div>
-                                <a href="{{ m.resolved_url or m.external_url }}" target="_blank" class="sk-btn small secondary" onclick="trackMaterialView({{ m.id }})">Open</a>
+                                <a href="{{ resume_url(m, resume_pages) }}" target="_blank" class="sk-btn small secondary" onclick="trackMaterialView({{ m.id }})">Open</a>
                             </div>
                         </div>
                     {% endfor %}

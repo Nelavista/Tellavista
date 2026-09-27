@@ -30,6 +30,12 @@ MIGRATIONS_DIR = os.path.join(
 # revision is a *sibling* of c8e51f3a9d76_add_cbt_question_course_code_fields, which
 # revised the same parent and briefly produced two alembic heads.
 PREVIOUS_REVISION = 'c8e51f3a9d76'
+# The revision this test drives upgrade() to -- pinned rather than 'head' (the
+# default), because upgrade() otherwise runs EVERYTHING newer than the stamp, and
+# migrations added after this one touch tables this throwaway database deliberately
+# doesn't have (see _PRE_MIGRATION_DDL below: only the tables this migration reads or
+# alters). Each migration's test upgrades to that migration's own revision.
+TARGET_REVISION = 'b3f7a91c4e28'
 
 # Only the columns the migration reads or alters. Deliberately not the full production
 # schema -- these tests are about this migration's own behavior, not a schema replica.
@@ -108,7 +114,7 @@ def _database_at_previous_revision():
             db.session.commit()
 
             stamp(revision=PREVIOUS_REVISION)
-            upgrade()
+            upgrade(revision=TARGET_REVISION)
             yield app
     finally:
         with app.app_context():
@@ -179,6 +185,8 @@ def test_enrollment_allows_repeat_rows_without_a_session_but_not_with_one():
 
 def test_downgrade_restores_the_previous_schema():
     with _database_at_previous_revision():
+        # '-1' (flask_migrate's default) = exactly one step back from wherever this
+        # database ends up, i.e. from TARGET_REVISION to PREVIOUS_REVISION.
         downgrade()
 
         assert not {'academic_sessions', 'semesters', 'enrollments'} & _tables()

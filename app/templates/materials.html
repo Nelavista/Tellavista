@@ -111,6 +111,15 @@
         .viewer-content { flex:1; position:relative; display:flex; align-items:center; justify-content:center; }
         .viewer-frame { position:absolute; width:100%; height:100%; border:none; opacity:0; transition:opacity 0.4s ease-in; }
         .viewer-frame.loaded { opacity:1; }
+        /* PDF.js page-tracking viewer (PRD §5.3 resume position): overlays the same
+           area as the iframe, but renders pages ourselves so the current page can be
+           read (the browser's native PDF viewer can't be inspected from script) and
+           restored on reopen. Hidden unless a PDF actually loads through it. */
+        .pdfjs-pages { position:absolute; inset:0; overflow:auto; background:#2f333b; padding:18px 0 40px; display:none; }
+        .pdfjs-pages.active { display:block; }
+        .pdfjs-page-wrap { margin:0 auto 14px; background:#fff; box-shadow:0 2px 10px rgba(0,0,0,0.45); overflow:hidden; }
+        .pdfjs-page-wrap canvas { display:block; width:100%; height:auto; }
+        .pdfjs-page-num { text-align:center; color:#94a3b8; font-size:0.72rem; padding-top:6px; }
         .pdf-loader { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; background:var(--bg-deep); pointer-events:none; opacity:1; transition:opacity 0.4s ease-out; }
         .pdf-loader.hidden { opacity:0; }
         .skeleton-container { width:90%; max-width:800px; }
@@ -153,6 +162,7 @@
             <div class="loader-text"><div class="loader-spinner"></div><span>Loading PDF...</span></div>
         </div>
         <iframe id="pdfViewerFrame" class="viewer-frame"></iframe>
+        <div class="pdfjs-pages" id="pdfjsPages"></div>
     </div>
     <div class="viewer-ai-row">
         <button class="viewer-ai-btn" onclick="askAboutCurrentMaterial('explain')"><i class="ri-lightbulb-line"></i> Explain this</button>
@@ -502,11 +512,186 @@ function openMaterialById(id) {
     if (material) openMaterial(material);
 }
 
+// ============================================================
+//  PDF.js page-tracking viewer (PRD §5.3 resume position).
+//  The browser's native PDF viewer lives in an opaque plugin document -- script can
+//  neither read which page the student is on nor scroll it -- so position tracking
+//  only works when WE render the pages. Whenever the PDF can't be fetched (CORS/CSP
+//  on an external host, CDN blocked, not actually a PDF), it falls back to the plain
+//  iframe: viewing always works, only position tracking is lost there.
+// ============================================================
+const PDFJS_SRC = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js';
+const PDFJS_WORKER = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js';
+let pdfjsLoadingPromise = null;
+
+function loadPdfjs() {
+    if (window.pdfjsLib) return Promise.resolve(window.pdfjsLib);
+    if (!pdfjsLoadingPromise) {
+        pdfjsLoadingPromise = new Promise((resolve, reject) => {
+            const s = document.createElement('script');
+            s.src = PDFJS_SRC;
+            s.onload = () => {
+                if (!window.pdfjsLib) { pdfjsLoadingPromise = null; reject(new Error('pdf.js missing')); return; }
+                window.pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJS_WORKER;
+                resolve(window.pdfjsLib);
+            };
+            s.onerror = () => { pdfjsLoadingPromise = null; reject(new Error('pdf.js failed to load')); };
+            document.head.appendChild(s);
+        });
+    }
+    return pdfjsLoadingPromise;
+}
+
+// Render-generation counter: every open bumps it, so any async callback (page fetch,
+// lazy page render, debounced save) from a previously-closed viewer checks this and
+// does nothing instead of writing into a viewer that now shows a different document.
+let pdfRenderGen = 0;
+let pdfDoc = null;
+let pdfPageObserver = null;
+let pdfCurrentPage = 1;
+let pdfSaveTimer = null;
+let pdfScrollHandler = null;
+
+function isPdfLink(link) { return /\.pdf($|[?#])/i.test(link); }
+
+function appendPageFragment(link, page) {
+    // Native PDF viewers restore position from `#page=N` -- used by the iframe
+    // fallback so even a non-tracked viewer reopens where the student left off.
+    // A URL that already has a fragment is left alone rather than mangled.
+    if (!page || link.includes('#')) return link;
+    return `${link}#page=${page}`;
+}
+
+function saveMaterialPage(page) {
+    if (!currentViewingMaterial || !currentViewingMaterial.id || !page) return;
+    fetch(`/api/materials/${currentViewingMaterial.id}/view`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ page }),
+    }).catch(() => {});
+}
+
+function showIframeViewer(link, resumePage) {
+    const iframe = document.getElementById('pdfViewerFrame');
+    const loader = document.getElementById('pdfLoader');
+    document.getElementById('pdfjsPages').classList.remove('active');
+    iframe.classList.remove('loaded');
+    loader.classList.remove('hidden');
+    iframe.src = '';
+    setTimeout(() => {
+        iframe.src = appendPageFragment(link, resumePage);
+        iframe.onload = () => { setTimeout(() => { loader.classList.add('hidden'); iframe.classList.add('loaded'); }, 300); };
+        setTimeout(() => { if (!iframe.classList.contains('loaded')) { loader.classList.add('hidden'); iframe.classList.add('loaded'); } }, 5000);
+    }, 100);
+}
+
+async function renderPdfjsViewer(link, resumePage, gen) {
+    const loader = document.getElementById('pdfLoader');
+    const iframe = document.getElementById('pdfViewerFrame');
+    const container = document.getElementById('pdfjsPages');
+    try {
+        const lib = await loadPdfjs();
+        if (gen !== pdfRenderGen) return;
+        const resp = await fetch(link);
+        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+        const buf = await resp.arrayBuffer();
+        if (gen !== pdfRenderGen) return;
+        pdfDoc = await lib.getDocument({ data: buf }).promise;
+        if (gen !== pdfRenderGen) return;
+
+        iframe.classList.remove('loaded');
+        iframe.src = '';
+        container.innerHTML = '';
+        container.classList.add('active');
+
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        const avail = container.clientWidth - 32;
+        const first = await pdfDoc.getPage(1);
+        const base = first.getViewport({ scale: 1 });
+        const scale = Math.max(0.5, (avail / base.width)) * dpr;
+        const wrappers = [];
+
+        for (let n = 1; n <= pdfDoc.numPages; n++) {
+            const page = await pdfDoc.getPage(n);
+            if (gen !== pdfRenderGen) return;
+            const vp = page.getViewport({ scale });
+            const wrap = document.createElement('div');
+            wrap.className = 'pdfjs-page-wrap';
+            wrap.dataset.page = n;
+            wrap.style.width = Math.round(vp.width / dpr) + 'px';
+            wrap.style.height = Math.round(vp.height / dpr) + 'px';
+            container.appendChild(wrap);
+            wrappers.push(wrap);
+        }
+        loader.classList.add('hidden');
+
+        // Lazy render: only pages near the viewport get a canvas, so a 200-page PDF
+        // doesn't rasterize 200 canvases up front on a phone.
+        const renderPage = async (wrap) => {
+            if (wrap.dataset.rendered || gen !== pdfRenderGen) return;
+            wrap.dataset.rendered = '1';
+            const page = await pdfDoc.getPage(Number(wrap.dataset.page));
+            if (gen !== pdfRenderGen) return;
+            const vp = page.getViewport({ scale });
+            const canvas = document.createElement('canvas');
+            canvas.width = Math.floor(vp.width);
+            canvas.height = Math.floor(vp.height);
+            wrap.appendChild(canvas);
+            await page.render({ canvasContext: canvas.getContext('2d'), viewport: vp }).promise;
+        };
+
+        pdfPageObserver = new IntersectionObserver((entries) => {
+            entries.forEach(e => { if (e.isIntersecting) renderPage(e.target); });
+        }, { root: container, rootMargin: '800px 0px' });
+        wrappers.forEach(w => pdfPageObserver.observe(w));
+
+        // Current-page tracking: whichever rendered-page boundary is nearest the
+        // container's centre wins; saves are debounced so scrolling never floods
+        // the endpoint.
+        pdfScrollHandler = () => {
+            if (gen !== pdfRenderGen) return;
+            const mid = container.scrollTop + container.clientHeight * 0.4;
+            let best = 1;
+            for (const w of wrappers) { if (w.offsetTop <= mid) best = Number(w.dataset.page); else break; }
+            if (best !== pdfCurrentPage) {
+                pdfCurrentPage = best;
+                clearTimeout(pdfSaveTimer);
+                pdfSaveTimer = setTimeout(() => saveMaterialPage(pdfCurrentPage), 1200);
+            }
+        };
+        container.addEventListener('scroll', pdfScrollHandler, { passive: true });
+
+        // Restore: scroll to the last-read page before marking anything visible.
+        const target = resumePage ? wrappers[Math.min(resumePage, wrappers.length) - 1] : null;
+        if (target) container.scrollTop = Math.max(0, target.offsetTop - 18);
+        pdfCurrentPage = resumePage ? Math.min(resumePage, wrappers.length) : 1;
+        renderPage(target || wrappers[0]);
+    } catch (e) {
+        if (gen !== pdfRenderGen) return;
+        // Any failure (CORS, CSP, blocked CDN, non-PDF bytes) -- plain iframe instead.
+        console.warn('PDF.js viewer unavailable, falling back to iframe:', e);
+        container.classList.remove('active');
+        showIframeViewer(link, resumePage);
+    }
+}
+
+function teardownPdfjsViewer() {
+    pdfRenderGen++;
+    clearTimeout(pdfSaveTimer);
+    pdfSaveTimer = null;
+    if (pdfPageObserver) { pdfPageObserver.disconnect(); pdfPageObserver = null; }
+    const container = document.getElementById('pdfjsPages');
+    if (pdfScrollHandler) { container.removeEventListener('scroll', pdfScrollHandler); pdfScrollHandler = null; }
+    container.innerHTML = '';
+    container.classList.remove('active');
+    pdfDoc = null;
+}
+
 function openMaterial(material) {
     const link = material.file_url || material.external_url;
     if (!link) return alert('File not available.');
     currentViewingMaterial = material;
-    if (material.id) fetch(`/api/materials/${material.id}/view`, { method: 'POST' }).catch(() => {});
+    teardownPdfjsViewer();
+    pdfCurrentPage = 1;
 
     const iframe = document.getElementById('pdfViewerFrame');
     const loader = document.getElementById('pdfLoader');
@@ -517,14 +702,28 @@ function openMaterial(material) {
     const sourceBadge = getSourceBadge(material.source);
     document.getElementById('viewerSourceBadge').innerHTML = `<span class="source-badge ${sourceBadge.class}">${sourceBadge.label}</span><span style="color:var(--text-muted);">${material.course_code || ''}</span>`;
     document.getElementById('pdfViewerModal').classList.add('show');
-    setTimeout(() => {
-        iframe.src = link;
-        iframe.onload = () => { setTimeout(() => { loader.classList.add('hidden'); iframe.classList.add('loaded'); }, 300); };
-        setTimeout(() => { if (!iframe.classList.contains('loaded')) { loader.classList.add('hidden'); iframe.classList.add('loaded'); } }, 5000);
-    }, 100);
+
+    // One request does both jobs: records the view (as before) and returns the stored
+    // resume page to open at. Non-viewer callers (no id) simply start at page 1.
+    const gen = pdfRenderGen;
+    const viewReq = material.id
+        ? fetch(`/api/materials/${material.id}/view`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' })
+            .then(r => (r.ok ? r.json() : null)).catch(() => null)
+        : Promise.resolve(null);
+
+    viewReq.then(data => {
+        if (gen !== pdfRenderGen) return;   // viewer was closed/switched meanwhile
+        const resumePage = (data && data.last_page) || null;
+        if (isPdfLink(link)) renderPdfjsViewer(link, resumePage, gen);
+        else showIframeViewer(link, resumePage);
+    });
 }
 
 function closePdfViewer() {
+    // Flush the last position before the container disappears -- a student closing
+    // the reader is exactly the moment "where they left off" is known.
+    if (pdfDoc && currentViewingMaterial) saveMaterialPage(pdfCurrentPage);
+    teardownPdfjsViewer();
     document.getElementById('pdfViewerModal').classList.remove('show');
     const iframe = document.getElementById('pdfViewerFrame');
     iframe.src = ''; iframe.classList.remove('loaded');

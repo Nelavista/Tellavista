@@ -2288,6 +2288,12 @@ class MaterialView(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     material_id = db.Column(db.Integer, db.ForeignKey('materials.id'), nullable=False)
     viewed_at = db.Column(db.DateTime, default=datetime.utcnow)
+    # PRD §5.3 resume position: the page this student last read this material at.
+    # NULL means "never recorded" (non-PDF resource, or the viewer couldn't report a
+    # position) and must stay distinct from page 1 -- see the migration docstring
+    # (c4d8e2f1a7b3). Updated by /api/materials/<id>/view when the in-app PDF viewer
+    # reports a page, and read by /api/continue-studying.
+    last_page = db.Column(db.Integer, nullable=True)
 
     user = db.relationship('User', backref=db.backref('material_views', lazy='dynamic'))
     material = db.relationship('Material')

@@ -1,4 +1,5 @@
 from datetime import datetime
+import re
 
 from flask import Blueprint, render_template, session, request, jsonify, abort
 from sqlalchemy import or_
@@ -6,7 +7,8 @@ from app.utils.helpers import login_required
 from app.models import User, Material, CBTAttempt, Course, Topic, TopicProgress, Notification
 from app.services.academic_context import resolve_academic_context, find_course
 from app.services.cbt_bank import question_counts
-from app.services.progress_service import get_course_materials_progress, get_cbt_summary
+from app.services.progress_service import (get_course_materials_progress, get_cbt_summary,
+                                         get_resume_pages)
 from app.services.notification_service import mark_all_read
 from app.extensions import db
 
@@ -22,6 +24,20 @@ def _course_materials_query(course):
         or_(Material.course_id == course.id, Material.course_code.ilike(course.code)),
         Material.is_approved == True,  # noqa: E712
     )
+
+
+def resume_url(material, resume_pages):
+    """Where this material's "Open" link should go -- its URL, plus the `#page=N`
+    fragment when the student has a recorded resume position (PRD §5.3's "returns to
+    exact material + page"). Native PDF viewers honour the fragment on load, so the
+    position survives even though those links open outside our in-app viewer. Only
+    PDF links get the fragment (a page anchor on an HTML resource would be meaningless)
+    and only when the URL has no fragment of its own (never mangle an existing one)."""
+    url = material.resolved_url or material.external_url or ''
+    page = (resume_pages or {}).get(material.id)
+    if page and url and '#' not in url and re.search(r'\.pdf($|[?#])', url, re.IGNORECASE):
+        return f"{url}#page={page}"
+    return url
 
 
 def _split_school_vs_additional(materials):
@@ -78,6 +94,8 @@ def course_detail(course_code):
                 ).all()
             }
 
+    resume_pages = get_resume_pages(user, [m.id for m in materials]) if course else {}
+
     counts = question_counts(course_code, user)
     cbt_count, written_count = counts['cbt'], counts['written']
 
@@ -103,6 +121,7 @@ def course_detail(course_code):
         cbt_count=cbt_count, written_count=written_count,
         recent_attempts=recent_attempts, materials_viewed=materials_viewed,
         materials_total=materials_total, cbt_progress=cbt_progress,
+        resume_pages=resume_pages, resume_url=resume_url,
     )
 
 
@@ -150,6 +169,7 @@ def topic_detail(course_code, topic_id):
     other_school_materials, other_additional_resources = _split_school_vs_additional(rest_of_course)
 
     is_complete = TopicProgress.query.filter_by(user_id=user.id, topic_id=topic.id).first() is not None
+    resume_pages = get_resume_pages(user, [m.id for m in all_course_materials])
 
     return render_template(
         'topic_detail.html',
@@ -157,6 +177,7 @@ def topic_detail(course_code, topic_id):
         topic_school_materials=topic_school_materials, topic_additional_resources=topic_additional_resources,
         other_school_materials=other_school_materials, other_additional_resources=other_additional_resources,
         next_topic=next_topic, prev_topic=prev_topic, is_complete=is_complete,
+        resume_pages=resume_pages, resume_url=resume_url,
     )
 
 

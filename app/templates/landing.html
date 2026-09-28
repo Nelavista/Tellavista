@@ -299,12 +299,16 @@
             <p class="campus-count mono">Live at {{ stats.university_count }} Nigerian universities, with more being added.</p>
             {% endif %}
           </div>
-          <div class="campus-visual reveal" aria-hidden="true">
-            <div class="cv-pin cv-pin-1"><i class="ri-map-pin-fill"></i></div>
-            <div class="cv-pin cv-pin-2"><i class="ri-map-pin-fill"></i></div>
-            <div class="cv-pin cv-pin-3"><i class="ri-map-pin-fill"></i></div>
-            <div class="cv-grid"></div>
-            <div class="cv-label mono">Faculty of Engineering</div>
+          <div class="campus-visual reveal">
+            <iframe
+              title="Lagos State University on Google Maps"
+              src="https://www.google.com/maps?q=Lagos%20State%20University%2C%20Ojo%2C%20Lagos&z=15&output=embed"
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+              allowfullscreen></iframe>
+            <a class="campus-map-link mono" href="https://www.google.com/maps/search/?api=1&query=Lagos+State+University%2C+Ojo%2C+Lagos" target="_blank" rel="noopener noreferrer">
+              Open campus map <i class="ri-arrow-up-right-line" aria-hidden="true"></i>
+            </a>
           </div>
         </div>
       </div>
@@ -330,7 +334,7 @@
     <section class="founder-section" id="about">
       <div class="container">
         <div class="founder-card reveal">
-          <div>
+          <div class="founder-content">
             <span class="section-label">Founder</span>
             <h2 class="section-title bg" style="font-size:clamp(1.6rem,4vw,2.1rem);margin-bottom:20px;">Built by a student who understands the problem.</h2>
             <p class="founder-quote">I built Nelavista because I experienced the same fragmented university life we're trying to fix: searching for materials, preparing for exams, learning skills independently, and trying to figure out what comes after graduation.</p>
@@ -338,7 +342,7 @@
             <div class="founder-name bg">Abdul Afeez Tella</div>
             <div class="founder-role">Founder &amp; CEO, Nelavista</div>
           </div>
-          <div>
+          <div class="founder-photo-wrap">
             <img src="{{ url_for('static', filename='media/founder.jpeg') }}" alt="Abdul Afeez Tella" class="founder-avatar">
           </div>
         </div>

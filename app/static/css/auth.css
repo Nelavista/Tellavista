@@ -23,10 +23,7 @@ body.auth-page {
   overflow-x: hidden;
   opacity: 0;
   animation: fadeIn 0.6s ease-out 0.1s forwards;
-  background:
-    radial-gradient(circle at 12% 15%, rgba(56, 189, 248, .16), transparent 28rem),
-    radial-gradient(circle at 88% 82%, rgba(45, 212, 191, .12), transparent 26rem),
-    var(--bg-deep);
+  background: var(--bg-deep);
 }
 
 body.auth-page::before {

@@ -767,6 +767,46 @@ _MATERIAL_AI_MODES = {
 }
 
 
+@ai_bp.route('/api/materials/<int:material_id>/ask', methods=['POST'])
+@login_required
+@limiter.limit('20 per hour')
+def ask_material_question(material_id):
+    """PRD §5.5 material-based AI: ask a question scoped to ONE material, answered
+    strictly from its retrieved chunks (RAG) -- with the model explicitly declining
+    when the material doesn't cover the question rather than fabricating. Access is
+    enforced twice: the material itself must pass the same visibility check the viewer
+    uses, and retrieval re-applies the same scoping rules."""
+    username = session['user']['username']
+    user = User.query.filter_by(username=username).first()
+    if not user:
+        return jsonify({'success': False, 'error': 'not_found'}), 401
+
+    material = Material.query.get(material_id)
+    if not material or not material.is_approved:
+        return jsonify({'success': False, 'error': 'not_found'}), 404
+    if user.university and material.university and material.university != user.university:
+        return jsonify({'success': False, 'error': 'not_found'}), 404
+
+    data = request.get_json(silent=True) or {}
+    question = (data.get('question') or '').strip()
+    if not question:
+        return jsonify({'success': False, 'error': 'Ask a question first.'}), 400
+    if len(question) > 1000:
+        return jsonify({'success': False, 'error': 'Question is too long.'}), 400
+
+    from app.services import rag_service
+    result = rag_service.answer_material_question(user, question, material=material)
+    if not result['ok']:
+        return jsonify({'success': False,
+                        'error': "Nelavista couldn't answer right now — please try again."}), 503
+    return jsonify({
+        'success': True,
+        'answer': result['answer'],
+        'declined': result['declined'],
+        'sources': result['sources'],
+    })
+
+
 @ai_bp.route('/api/materials/<int:material_id>/ai-action', methods=['POST'])
 @login_required
 @limiter.limit('30 per hour')

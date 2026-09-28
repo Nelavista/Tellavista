@@ -171,6 +171,40 @@
           </div>
         </div>
 
+        <!-- ===== §5.9 SECTION 2: PERFORMANCE (quiz avg, attempts, questions, weak/strong) ===== -->
+        <div class="ac-section-head">
+          <h2 class="sk-section-title" style="margin:0;">Performance</h2>
+        </div>
+        <div class="cards-row">
+          <div class="sk-card">
+            <div class="sk-eyebrow">Quiz average</div>
+            <div class="stat-number" id="perfQuizAvg" style="font-size:var(--text-lg);">—</div>
+            <div class="today-total" id="perfAttemptsSub">Loading…</div>
+          </div>
+          <div class="sk-card">
+            <div class="sk-eyebrow">Questions answered</div>
+            <div class="stat-number" id="perfQuestions" style="font-size:var(--text-lg);">—</div>
+            <div class="today-total">Across all submitted practice</div>
+          </div>
+        </div>
+        <div class="cards-row" style="margin-top:var(--space-4);">
+          <div class="sk-card">
+            <div class="sk-eyebrow">Needs attention</div>
+            <div id="perfWeakTopics"><div class="sk-sub">Loading…</div></div>
+          </div>
+          <div class="sk-card">
+            <div class="sk-eyebrow">Strong areas</div>
+            <div id="perfStrongTopics"><div class="sk-sub">Loading…</div></div>
+          </div>
+        </div>
+
+        <!-- ===== §5.9 SECTION 3: AI INSIGHTS (recommended revision, next topics) ===== -->
+        <div class="ac-section-head">
+          <h2 class="sk-section-title" style="margin:0;">AI Insights</h2>
+          <a href="/ai-tutor" class="sk-view-link">Ask the tutor →</a>
+        </div>
+        <div id="aiInsightsContainer"><div class="sk-sub">Loading insights…</div></div>
+
         <div class="ac-section-head">
           <h2 class="sk-section-title" style="margin:0;">Upcoming exams</h2>
           <button class="sk-btn ghost small" onclick="showAddExamForm()"><i class="ri-add-line"></i> Add exam</button>
@@ -498,6 +532,83 @@
     }
   }
 
+  // ===== §5.9: PERFORMANCE + AI INSIGHTS (one fetch powers both sections) =====
+  function topicChip(t, tone) {
+    const color = tone === 'weak' ? 'var(--sk-danger)' : 'var(--sk-success)';
+    const label = tone === 'weak' ? `${t.score_pct}% correct` : `${t.score_pct}% correct`;
+    const inner = `<div class="exam-title" style="font-size:0.9rem;">${t.topic}</div>` +
+      `<div class="course-sub">${t.course_code} · ${label} · ${t.answered} Qs</div>`;
+    return t.link
+      ? `<a href="${t.link}" class="exam-item" style="padding:10px 14px;border-left:3px solid ${color};">${inner}</a>`
+      : `<div class="exam-item" style="padding:10px 14px;border-left:3px solid ${color};">${inner}</div>`;
+  }
+
+  function insightCard(r) {
+    const icon = r.kind === 'revision' ? 'ri-error-warning-line' : 'ri-arrow-right-circle-line';
+    return `
+      <a href="${r.link}" class="exam-item">
+        <div class="exam-date" style="background:${r.kind === 'revision' ? 'var(--sk-danger)' : 'var(--sk-success)'};color:var(--bg-deep);"><i class="${icon}" style="font-size:1.2rem;"></i></div>
+        <div class="exam-info"><div class="exam-title">${r.message}</div><div class="course-sub">${r.kind === 'revision' ? 'Recommended revision' : 'Suggested next topic'}</div></div>
+        <button class="sk-btn small">Open →</button>
+      </a>`;
+  }
+
+  async function loadInsights() {
+    const container = document.getElementById('aiInsightsContainer');
+    try {
+      const res = await fetch('/api/insights');
+      if (!res.ok) throw new Error('insights fetch failed');
+      const data = await res.json();
+
+      // -- Performance numbers --
+      const quizAvg = document.getElementById('perfQuizAvg');
+      const attemptsSub = document.getElementById('perfAttemptsSub');
+      const questions = document.getElementById('perfQuestions');
+      if (data.performance.quiz_average !== null) {
+        quizAvg.textContent = `${data.performance.quiz_average}%`;
+        attemptsSub.textContent = `${data.performance.cbt_attempts} CBT attempt${data.performance.cbt_attempts === 1 ? '' : 's'}`;
+      } else if (data.performance.cbt_attempts > 0) {
+        quizAvg.textContent = '—';
+        attemptsSub.textContent = `${data.performance.cbt_attempts} written attempt${data.performance.cbt_attempts === 1 ? '' : 's'} (self-marked)`;
+      } else {
+        quizAvg.textContent = '—';
+        attemptsSub.innerHTML = `No attempts yet. <a href="/CBT" style="color:var(--sk-accent);">Practice →</a>`;
+      }
+      questions.textContent = data.performance.questions_answered;
+
+      // -- Weak / strong topics --
+      const weakEl = document.getElementById('perfWeakTopics');
+      const strongEl = document.getElementById('perfStrongTopics');
+      weakEl.innerHTML = data.weak.length
+        ? data.weak.map(t => topicChip(t, 'weak')).join('')
+        : `<div class="sk-sub">Nothing below threshold — keep practising to find your weak spots.</div>`;
+      strongEl.innerHTML = data.strong.length
+        ? data.strong.map(t => topicChip(t, 'strong')).join('')
+        : `<div class="sk-sub">Score 80%+ on a topic's questions to see it here.</div>`;
+
+      // -- AI Insights: deterministic recommendations, weakest topic first --
+      if (data.starter) {
+        container.innerHTML = `
+          <div class="no-exams-msg">
+            <p>No performance data yet.</p>
+            <p style="font-size:0.85rem;margin-top:6px;">Take a practice test and this section will tell you exactly what to revise next.</p>
+            <a href="/CBT" class="sk-btn small" style="margin-top:14px;">Take a practice test →</a>
+          </div>`;
+      } else if (data.recommendations.length) {
+        container.innerHTML = data.recommendations.map(insightCard).join('');
+      } else {
+        container.innerHTML = `
+          <div class="no-exams-msg">
+            <p>You're on track across everything measured.</p>
+            <p style="font-size:0.85rem;margin-top:6px;">Keep practising — new insights appear after each attempt.</p>
+          </div>`;
+      }
+    } catch(e) {
+      container.innerHTML = '<div class="sk-flash" style="border-color:rgba(245,158,11,0.35);background:rgba(245,158,11,0.12);">Could not load insights. <a href="" style="color:inherit;font-weight:600;text-decoration:underline;">Try again</a></div>';
+      document.getElementById('perfQuizAvg').textContent = '--';
+    }
+  }
+
   async function loadPracticeSummary() {
     try {
       const res = await fetch('/api/cbt-summary');
@@ -527,7 +638,8 @@
       loadCourses(),
       loadContinueStudying(),
       loadRecentMaterials(),
-      loadPracticeSummary()
+      loadPracticeSummary(),
+      loadInsights()
     ]);
   }
 

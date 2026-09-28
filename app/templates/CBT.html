@@ -280,6 +280,12 @@
                 <div class="type-desc">Multiple choice practice questions, shuffled into a random order each time you start.</div>
                 <span class="type-badge badge-cbt" id="cbtCountBadge">MCQ</span>
             </div>
+            <div class="type-card" id="card-truefalse" onclick="selectExamType('truefalse')">
+                <div class="type-icon"><i class="ri-toggle-line"></i></div>
+                <div class="type-title">True or False</div>
+                <div class="type-desc">Quick-fire true/false statements — decide if each one is correct. Auto-scored like CBT.</div>
+                <span class="type-badge badge-cbt" id="truefalseCountBadge">T/F</span>
+            </div>
             <div class="type-card" id="card-written" onclick="selectExamType('written')">
                 <div class="type-icon"><i class="ri-quill-pen-line"></i></div>
                 <div class="type-title">Written Practice</div>
@@ -514,7 +520,7 @@ function initResumeBanner() {
     const answered = Object.keys(saved.userAnswers || {}).length;
     const mins = Math.floor((saved.elapsedSeconds || 0) / 60);
     document.getElementById('resumeExamText').textContent =
-        `You have an unfinished ${saved.courseCode} ${saved.examType === 'cbt' ? 'CBT' : 'Written'} practice — ` +
+        `You have an unfinished ${saved.courseCode} ${saved.examType === 'cbt' ? 'CBT' : saved.examType === 'truefalse' ? 'True/False' : 'Written'} practice — ` +
         `${answered}/${saved.questions.length} answered, ${mins} min in.`;
     banner.style.display = 'flex';
 
@@ -688,6 +694,8 @@ async function updateCourseDisplay() {
 
     const cbtCard = document.getElementById('card-cbt');
     const cbtBadge = document.getElementById('cbtCountBadge');
+    const tfCard = document.getElementById('card-truefalse');
+    const tfBadge = document.getElementById('truefalseCountBadge');
     const writtenCard = document.getElementById('card-written');
     const writtenBadge = document.getElementById('writtenCountBadge');
 
@@ -696,26 +704,32 @@ async function updateCourseDisplay() {
     // can honestly disable a card with no content, same behavior as before, just sourced
     // from the server instead of a client-side answer bank.
     cbtBadge.textContent = 'Checking…';
+    tfBadge.textContent = 'Checking…';
     writtenBadge.textContent = 'Checking…';
     cbtCard.classList.add('disabled');
+    tfCard.classList.add('disabled');
     writtenCard.classList.add('disabled');
 
     try {
         const res = await fetch(`/api/cbt/counts?course_code=${encodeURIComponent(selectedCourseForExam)}`);
         const data = await res.json();
-        currentCounts = { cbt: data.cbt_count || 0, written: data.written_count || 0 };
+        currentCounts = { cbt: data.cbt_count || 0, written: data.written_count || 0, truefalse: data.truefalse_count || 0 };
     } catch (e) {
-        currentCounts = { cbt: 0, written: 0 };
+        currentCounts = { cbt: 0, written: 0, truefalse: 0 };
     }
 
-    const { cbt: cbtCount, written: writtenCount } = currentCounts;
+    const { cbt: cbtCount, written: writtenCount, truefalse: tfCount } = currentCounts;
     cbtBadge.textContent = cbtCount ? `${cbtCount} Question${cbtCount===1?'':'s'} · MCQ` : 'Not available yet';
     cbtCard.classList.toggle('disabled', !cbtCount);
+
+    tfBadge.textContent = tfCount ? `${tfCount} Question${tfCount===1?'':'s'} · T/F` : 'Not available yet';
+    tfCard.classList.toggle('disabled', !tfCount);
 
     writtenBadge.textContent = writtenCount ? `${writtenCount} Question${writtenCount===1?'':'s'} · Essay` : 'Not available yet';
     writtenCard.classList.toggle('disabled', !writtenCount);
 
     if (examType === 'cbt' && !cbtCount) { examType = null; document.getElementById('startExamBtn').disabled = true; cbtCard.classList.remove('selected'); }
+    if (examType === 'truefalse' && !tfCount) { examType = null; document.getElementById('startExamBtn').disabled = true; tfCard.classList.remove('selected'); }
     if (examType === 'written' && !writtenCount) { examType = null; document.getElementById('startExamBtn').disabled = true; writtenCard.classList.remove('selected'); }
 
     // Neither practice type has content for this course -- the Start Exam button stays
@@ -723,7 +737,7 @@ async function updateCourseDisplay() {
     // button alone gave no explanation of *why*, which read as a dead/broken control.
     // Say so explicitly instead of leaving the student to guess.
     const noContent = document.getElementById('noContentWarning');
-    if (!cbtCount && !writtenCount) {
+    if (!cbtCount && !writtenCount && !tfCount) {
         noContent.style.display = 'flex';
         noContent.innerHTML = `<i class="ri-error-warning-line"></i> Practice questions aren't available for ${selectedCourseForExam} yet. Try another course, or check back once your school's questions have been added.`;
     } else {
@@ -745,6 +759,7 @@ function selectExamType(type) {
     if (!count) return; // no honest content for this course/type -- ignore the click
     examType = type;
     document.getElementById('card-cbt').classList.toggle('selected', type==='cbt');
+    document.getElementById('card-truefalse').classList.toggle('selected', type==='truefalse');
     document.getElementById('card-written').classList.toggle('selected', type==='written');
     document.getElementById('startExamBtn').disabled = false;
 }
@@ -834,7 +849,7 @@ function renderExamUI() {
     document.getElementById('progTotal').textContent = total;
     document.getElementById('progAnswered').textContent = 0;
 
-    if (examType === 'cbt') {
+    if (isAutoScored()) {
         buildCbtNav(total);
         document.getElementById('cbtNav').style.display = 'flex';
         document.getElementById('progFlaggedWrap').style.display = '';
@@ -853,7 +868,7 @@ function buildCbtNav(total) {
         pill.className = 'q-pill' + (i===0?' current':'');
         pill.textContent = i+1;
         pill.id = `qpill-${i}`;
-        pill.addEventListener('click', ()=>{ if(examType==='cbt') jumpTo(i); });
+        pill.addEventListener('click', ()=>{ if(isAutoScored()) jumpTo(i); });
         nav.appendChild(pill);
     }
 }
@@ -878,13 +893,13 @@ function renderQuestion(idx) {
     document.getElementById('nextBtn').style.display = isLast ? 'none' : '';
     document.getElementById('submitBtn').style.display = isLast ? '' : 'none';
 
-    if (examType === 'cbt') {
+    if (isAutoScored()) {
         renderCbtOptions(q, idx);
     } else {
         renderWrittenQuestion(q, idx);
     }
 
-    if(examType==='cbt'){
+    if(isAutoScored()){
         document.querySelectorAll('.q-pill').forEach((p,i)=>{
             p.className = 'q-pill';
             if(i===idx) p.classList.add('current');
@@ -899,7 +914,9 @@ function renderQuestion(idx) {
 
 function renderCbtOptions(q, idx) {
     const area = document.getElementById('optionsArea');
-    const letters = ['A','B','C','D','E'];
+    // T/F questions are stored as two-option rows (0=True, 1=False) -- the letter
+    // block shows T/F instead of A/B so the format reads the way students expect.
+    const letters = examType === 'truefalse' ? ['T','F','\u2014','\u2014','\u2014'] : ['A','B','C','D','E'];
     area.innerHTML = `<div class="options-list">${q.opts.map((opt,oi)=>{
         let cls = 'option-btn';
         if(userAnswers[idx]===oi) cls += ' selected';
@@ -996,9 +1013,16 @@ function updateAnsweredCount() {
         return userAnswers[k] !== undefined;
     }).length;
     document.getElementById('progAnswered').textContent = count;
-    if(examType==='cbt'){
+    if(isAutoScored()){
         document.getElementById('progFlagged').textContent = flagged.length;
     }
+}
+
+// The two auto-scored formats share all exam mechanics (server-side index grading,
+// countdown, navigation, flagging); written is the odd one out (self-marked).
+function isAutoScored() { return examType === 'cbt' || examType === 'truefalse'; }
+function typeLabel() {
+    return examType === 'cbt' ? 'CBT' : examType === 'truefalse' ? 'True/False' : 'Written';
 }
 
 function jumpTo(idx) { renderQuestion(idx); }
@@ -1091,7 +1115,9 @@ async function submitExam(timeExpired) {
     // one from even if this code tried to.
     const answers = {};
     questions.forEach((q, i) => {
-        const val = examType === 'cbt' ? userAnswers[i] : (userAnswers[i] || '');
+        // Written answers are strings (empty ok = skipped); auto-scored formats send
+        // the selected index -- index 0 must pass through untouched, never `|| ''`.
+        const val = examType === 'written' ? (userAnswers[i] || '') : userAnswers[i];
         if (val !== undefined) answers[q.id] = val;
     });
 
@@ -1149,7 +1175,7 @@ async function submitExam(timeExpired) {
     document.getElementById('resultsEmoji').innerHTML = `<i class="${resultIcon}"></i>`;
     document.getElementById('resultsTitle').textContent = title;
     document.getElementById('resultsSub').textContent =
-        `${selectedCourseForExam} · ${examType==='cbt'?'CBT':'Written'}` +
+        `${selectedCourseForExam} · ${typeLabel()}` +
         (timeExpired ? ' · Time expired — auto-submitted' : '');
     document.getElementById('scorePct').textContent = pct+'%';
     document.getElementById('statCorrect').textContent = correct;
@@ -1170,9 +1196,10 @@ function buildReview() {
     // client-side `questions`/`userAnswers`, since those never carry correct answers.
     const body = document.getElementById('reviewBody');
     const letters = ['A','B','C','D'];
+    const reviewLetters = examType === 'truefalse' ? ['True','False'] : letters;
     body.innerHTML = lastResults.map((r,i)=>{
         let status='skipped', statusColor='var(--text-muted)', riClass='ri-skipped';
-        if(examType==='cbt'){
+        if(isAutoScored()){
             if(r.selected_index===null || r.selected_index===undefined){status='Skipped';statusColor='var(--text-muted)';riClass='ri-skipped';}
             else if(r.is_correct){status='Correct ✓';statusColor='var(--sk-success)';riClass='ri-correct';}
             else{status='Wrong ✗';statusColor='var(--sk-danger)';riClass='ri-wrong';}
@@ -1185,12 +1212,16 @@ function buildReview() {
         }
 
         let answerHtml = '';
-        if(examType==='cbt'){
+        if(isAutoScored()){
+            // T/F shows the plain option text ("True"/"False") -- "A. True" reads oddly.
+            const optLabel = (idx) => examType === 'truefalse'
+                ? r.options[idx]
+                : `${reviewLetters[idx]}. ${r.options[idx]}`;
             if(r.selected_index!==null && r.selected_index!==undefined){
-                answerHtml = `<div class="ri-answer your-ans">Your answer: ${letters[r.selected_index]}. ${r.options[r.selected_index]}</div>`;
+                answerHtml = `<div class="ri-answer your-ans">Your answer: ${optLabel(r.selected_index)}</div>`;
             }
             if(!r.is_correct){
-                answerHtml += `<div class="ri-answer correct-ans">Correct: ${letters[r.correct_index]}. ${r.options[r.correct_index]}</div>`;
+                answerHtml += `<div class="ri-answer correct-ans">Correct: ${optLabel(r.correct_index)}</div>`;
             }
             if(r.explanation){
                 answerHtml += `<div class="ri-answer" style="background:rgba(88,166,255,0.05);color:var(--text-secondary);margin-top:4px;font-size:0.75rem;"><i class="ri-lightbulb-line"></i> ${r.explanation}</div>`;

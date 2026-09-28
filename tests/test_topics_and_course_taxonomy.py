@@ -334,7 +334,7 @@ def test_upload_sets_uploaded_by_to_real_username_not_the_typed_author_name(
     login_as(client, user)
 
     monkeypatch.setattr(
-        'routes.materials_routes.cloudinary.uploader.upload',
+        'app.routes.materials_routes.cloudinary.uploader.upload',
         lambda *a, **kw: {'secure_url': 'https://res.cloudinary.com/fake/raw/upload/test.pdf'},
     )
 
@@ -499,7 +499,7 @@ def test_refresh_topic_videos_caches_search_results(app, client, make_user, make
     def fake_search(query, max_results=3):
         return fake_videos
 
-    monkeypatch.setattr('routes.admin_academia_routes.search_youtube_videos', fake_search)
+    monkeypatch.setattr('app.routes.admin_academia_routes.search_youtube_videos', fake_search)
 
     admin = make_user('video_admin', is_admin=True, university='Lagos State University',
                        department='Computer Science', level='200')
@@ -528,7 +528,7 @@ def test_quota_exceeded_video_search_is_not_cached_as_confirmed_empty(
         db.session.commit()
         topic_id = t.id
 
-    monkeypatch.setattr('routes.admin_academia_routes.search_youtube_videos', lambda query, max_results=3: None)
+    monkeypatch.setattr('app.routes.admin_academia_routes.search_youtube_videos', lambda query, max_results=3: None)
 
     admin = make_user('quota_admin', is_admin=True, university='Lagos State University',
                        department='Computer Science', level='200')

@@ -74,7 +74,9 @@ def get_cbt_summary(user, course_code=None):
         query = query.filter_by(course_code=course_code.upper())
     attempts = query.order_by(CBTAttempt.submitted_at.desc()).all()
 
-    scored = [a for a in attempts if a.question_type == 'cbt']
+    # Both auto-scored formats ('cbt' + §5.6 'truefalse') count toward the average;
+    # written practice is self-marked and never auto-scored.
+    scored = [a for a in attempts if a.question_type in ('cbt', 'truefalse')]
     average_score = round(sum(a.score_pct for a in scored) / len(scored)) if scored else None
 
     last = attempts[0] if attempts else None

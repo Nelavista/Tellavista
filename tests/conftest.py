@@ -74,9 +74,10 @@ def app():
     from app.routes.admin_academia_routes import admin_academia_bp
     from app.routes.ai_routes import ai_bp
     from app.routes.tutor_routes import tutor_bp
+    from app.routes.onboarding_routes import onboarding_bp
 
     for bp in (auth_bp, cbt_bp, skills_bp, materials_bp, live_bp, dashboard_bp, admin_skills_bp, admin_bp,
-               academia_bp, admin_academia_bp, ai_bp, tutor_bp):
+               academia_bp, admin_academia_bp, ai_bp, tutor_bp, onboarding_bp):
         flask_app.register_blueprint(bp, url_prefix='/')
 
     with flask_app.app_context():

@@ -63,11 +63,13 @@
                     <div class="ar-answer ar-correct">Correct answer: {{ opts[ans.question.correct_index] }}</div>
                     {% endif %}
                     <button class="ar-explain-btn" onclick="explainAnswer({{ attempt.id }}, {{ ans.id }}, this)"><i class="ri-lightbulb-line"></i> Explain this answer</button>
+                    <button class="ar-explain-btn" onclick="flagAnswer({{ ans.id }}, this)"><i class="ri-flag-line"></i> Report this explanation</button>
                     <div class="ar-explanation" id="explain-{{ ans.id }}"></div>
                 {% endif %}
             {% else %}
                 <div class="ar-answer ar-your">Your answer: {{ ans.written_answer or '(No answer written)' }}</div>
                 <button class="ar-explain-btn" onclick="explainAnswer({{ attempt.id }}, {{ ans.id }}, this)"><i class="ri-lightbulb-line"></i> Get feedback on this answer</button>
+                <button class="ar-explain-btn" onclick="flagAnswer({{ ans.id }}, this)"><i class="ri-flag-line"></i> Report this feedback</button>
                 <div class="ar-explanation" id="explain-{{ ans.id }}"></div>
             {% endif %}
         </div>
@@ -100,6 +102,24 @@ async function explainAnswer(attemptId, answerId, btn) {
     }
     btn.style.display = 'none';
 }
+
+// PRD §6 accuracy feedback loop: report an AI explanation as incorrect. One open
+// report per answer server-side -- re-clicking just confirms it's already queued.
+async function flagAnswer(answerId, btn) {
+    btn.disabled = true;
+    try {
+        const res = await fetch('/api/ai/flag', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ feature: 'cbt_explain', reference_id: answerId }),
+        });
+        const data = await res.json();
+        btn.textContent = data.success ? '✓ Reported' : 'Already reported';
+    } catch (e) {
+        btn.textContent = 'Report failed';
+        btn.disabled = false;
+    }
+}
+window.flagAnswer = flagAnswer;
 </script>
 {% include 'components/academia_footer.html' %}
 </body>

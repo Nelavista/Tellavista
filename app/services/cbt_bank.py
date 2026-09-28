@@ -35,9 +35,12 @@ def question_bank_query(course_code, question_type, user=None):
 
 
 def question_counts(course_code, user=None):
-    """{'cbt': n, 'written': n} for one course -- used to honestly show/disable the
-    exam-type cards without ever shipping the questions themselves."""
+    """{'cbt': n, 'written': n, 'truefalse': n} for one course -- used to honestly
+    show/disable the exam-type cards without ever shipping the questions themselves.
+    'truefalse' is a §5.6-required format: two-option MCQ (index 0=True, 1=False),
+    auto-scored exactly like 'cbt' but presented as its own practice mode."""
     return {
         'cbt': question_bank_query(course_code, 'cbt', user).count(),
         'written': question_bank_query(course_code, 'written', user).count(),
+        'truefalse': question_bank_query(course_code, 'truefalse', user).count(),
     }

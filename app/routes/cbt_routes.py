@@ -9,13 +9,19 @@ from app.config import OPENROUTER_API_KEY
 from app.services.academic_context import resolve_academic_context, find_course
 from app.services.cbt_bank import normalize_course_code, question_bank_query, question_counts
 from app.services.progress_service import get_cbt_summary
+from app.services.insights_service import update_topic_mastery_from_attempt
 from app.services.notification_service import notify
+from app.services import analytics
 import requests
 
 cbt_bp = Blueprint('cbt', __name__)
 
 MAX_CBT_QUESTIONS = 50
 MAX_WRITTEN_QUESTIONS = 10
+# §5.6 true/false practice: auto-scored like 'cbt' (two-option MCQ, index 0=True,
+# 1=False), but a distinct mode so results can be filtered per format.
+MAX_TRUEFALSE_QUESTIONS = 20
+AUTO_SCORED_TYPES = ('cbt', 'truefalse')
 
 # PRD §5.7 (CBT): a timed session with a visible countdown that auto-submits at 0:00.
 # The time limit is a pure function of the attempt's question count -- 1 minute per
@@ -29,8 +35,10 @@ CBT_MIN_TIME_SECONDS = 300
 
 
 def cbt_time_limit_seconds(question_type, total_questions):
-    """Time limit for one attempt, or None when the mode is untimed (written)."""
-    if question_type != 'cbt':
+    """Time limit for one attempt, or None when the mode is untimed (written).
+    True/false is auto-scored like CBT and gets the same timing (it's an exam-format
+    mode, not a study mode) -- usually maxing out at the floor anyway given the cap."""
+    if question_type not in AUTO_SCORED_TYPES:
         return None
     return max(CBT_MIN_TIME_SECONDS, total_questions * CBT_SECONDS_PER_QUESTION)
 
@@ -71,11 +79,12 @@ def cbt_counts():
     shipping the questions (or answers) themselves before the student actually starts."""
     course_code = (request.args.get('course_code') or '').strip().upper()
     if not normalize_course_code(course_code):
-        return jsonify({'success': True, 'cbt_count': 0, 'written_count': 0})
+        return jsonify({'success': True, 'cbt_count': 0, 'written_count': 0, 'truefalse_count': 0})
     user = User.query.filter_by(username=session['user']['username']).first()
     counts = question_counts(course_code, user)
     return jsonify({'success': True, 'cbt_count': min(counts['cbt'], MAX_CBT_QUESTIONS),
-                     'written_count': min(counts['written'], MAX_WRITTEN_QUESTIONS)})
+                     'written_count': min(counts['written'], MAX_WRITTEN_QUESTIONS),
+                     'truefalse_count': min(counts['truefalse'], MAX_TRUEFALSE_QUESTIONS)})
 
 
 @cbt_bp.route('/api/cbt/mark-scheme')
@@ -123,7 +132,7 @@ def start_cbt_attempt():
 
     course_code = (data.get('course_code') or '').strip().upper()
     question_type = data.get('question_type')
-    if not course_code or question_type not in ('cbt', 'written'):
+    if not course_code or question_type not in ('cbt', 'written', 'truefalse'):
         return jsonify({'success': False, 'error': 'Missing/invalid course_code or question_type'}), 400
 
     bank = question_bank_query(course_code, question_type, user).all()
@@ -132,7 +141,8 @@ def start_cbt_attempt():
         return jsonify({'success': False, 'error': 'no_questions',
                          'message': f'No {question_type} questions available for {course_code} yet.'}), 200
 
-    limit = MAX_CBT_QUESTIONS if question_type == 'cbt' else MAX_WRITTEN_QUESTIONS
+    limit = {'cbt': MAX_CBT_QUESTIONS, 'written': MAX_WRITTEN_QUESTIONS,
+             'truefalse': MAX_TRUEFALSE_QUESTIONS}[question_type]
     selected = random.sample(bank, min(limit, len(bank)))
 
     attempt = CBTAttempt(
@@ -213,7 +223,9 @@ def submit_cbt_attempt(attempt_id):
         is_correct = None
         selected_index, written_answer = None, None
 
-        if attempt.question_type == 'cbt':
+        if attempt.question_type in AUTO_SCORED_TYPES:
+            # 'cbt' MCQs and §5.6 'truefalse' (two-option: 0=True, 1=False) grade
+            # identically -- server-side index comparison against correct_index.
             try:
                 selected_index = int(answer_value) if answer_value is not None else None
             except (TypeError, ValueError):
@@ -240,7 +252,8 @@ def submit_cbt_attempt(attempt_id):
 
     total = len(issued_ids)
     attempt.correct_count = correct_count
-    attempt.score_pct = round(correct_count / total * 100) if total and attempt.question_type == 'cbt' else 0
+    attempt.score_pct = (round(correct_count / total * 100)
+                         if total and attempt.question_type in AUTO_SCORED_TYPES else 0)
     # Clamp the reported duration to the same derived limit the client counted down
     # from, so a tampered/stopped client clock can't record a 'duration' longer than
     # the attempt was ever allowed. Non-numeric/absent values pass through unchanged
@@ -253,7 +266,26 @@ def submit_cbt_attempt(attempt_id):
     attempt.submitted_at = datetime.utcnow()
     db.session.commit()
 
-    if attempt.question_type == 'cbt':
+    # PRD §5.8/§16: write the measured per-topic mastery signal (TopicProgress.
+    # mastery_score) from this attempt's graded answers. Best-effort -- it must never
+    # break a submission that already graded and notified fine.
+    update_topic_mastery_from_attempt(attempt, user)
+
+    # PRD §21 engagement funnel: one scored-practice event per attempt, with score as
+    # the engagement-quality signal. Auto-scored attempts only (written practice has
+    # no grade to measure). Best-effort/no-op without POSTHOG_API_KEY.
+    if attempt.question_type in AUTO_SCORED_TYPES:
+        analytics.capture_event_for_user(
+            user.username, analytics.EVENT_CBT_SUBMITTED,
+            {
+                'question_type': attempt.question_type,
+                'score_pct': attempt.score_pct,
+                'total_questions': total,
+                'duration_seconds': attempt.duration_seconds,
+            },
+        )
+
+    if attempt.question_type in AUTO_SCORED_TYPES:
         prefs = UserPreferences.query.filter_by(user_id=user.id).first()
         if not prefs or prefs.notify_cbt_results:
             notify(
@@ -312,6 +344,38 @@ def cbt_attempt_review(attempt_id):
                             study_link=study_link, auto_explain=auto_explain)
 
 
+@cbt_bp.route('/api/ai/flag', methods=['POST'])
+@login_required
+@limiter.limit('20 per hour')
+def flag_ai_answer():
+    """PRD §6 accuracy feedback loop: student reports an AI explanation as incorrect.
+    Ownership is verified before accepting the reference -- a student can only flag
+    explanations on their own attempts' answers."""
+    user = User.query.filter_by(username=session['user']['username']).first()
+    if not user:
+        return jsonify({'success': False, 'error': 'not_found'}), 401
+    data = request.get_json(silent=True) or {}
+    feature = (data.get('feature') or '').strip()
+    if feature != 'cbt_explain':
+        return jsonify({'success': False, 'error': 'Unknown feature'}), 400
+    try:
+        answer_id = int(data.get('reference_id'))
+    except (TypeError, ValueError):
+        return jsonify({'success': False, 'error': 'Invalid reference'}), 400
+
+    answer = CBTAnswer.query.get(answer_id)
+    if not answer:
+        return jsonify({'success': False, 'error': 'Not found'}), 404
+    attempt = CBTAttempt.query.filter_by(id=answer.attempt_id, user_id=user.id).first()
+    if not attempt:
+        return jsonify({'success': False, 'error': 'Not found'}), 404
+
+    from app.services.ai_monitoring import flag_answer
+    ok, message = flag_answer(user, feature, reference_id=answer_id,
+                              note=data.get('note'))
+    return jsonify({'success': ok, 'message': message})
+
+
 @cbt_bp.route('/api/cbt-summary')
 @login_required
 def cbt_summary():
@@ -335,7 +399,7 @@ def explain_cbt_answer(attempt_id, answer_id):
     attempt = CBTAttempt.query.filter_by(id=attempt_id, user_id=user.id).first_or_404()
     answer = CBTAnswer.query.filter_by(id=answer_id, attempt_id=attempt.id).first_or_404()
 
-    if attempt.question_type == 'cbt':
+    if attempt.question_type in AUTO_SCORED_TYPES:
         correct_text = ''
         if answer.question and answer.question.options:
             opts = answer.question.options
@@ -366,17 +430,20 @@ def explain_cbt_answer(attempt_id, answer_id):
         )
 
     try:
-        headers = {"Authorization": f"Bearer {OPENROUTER_API_KEY}", "Content-Type": "application/json",
-                   "HTTP-Referer": "https://nelavista.com", "X-Title": "Nelavista CBT Explain"}
-        payload = {"model": "openai/gpt-4o-mini",
-                   "messages": [{"role": "system", "content": "You are a concise, encouraging university tutor."},
-                                {"role": "user", "content": prompt}],
-                   "temperature": 0.4, "max_tokens": 300}
-        resp = requests.post("https://openrouter.ai/api/v1/chat/completions", headers=headers, json=payload, timeout=30)
-        if resp.status_code == 200:
-            explanation = resp.json()["choices"][0]["message"]["content"]
-            return jsonify({'success': True, 'explanation': explanation})
-        debug_print(f"CBT explain API returned {resp.status_code}")
+        # PRD §6 -- transport via the provider abstraction instead of a hardcoded
+        # OpenRouter URL + hand-built headers.
+        from app.services.ai_provider import get_ai_provider
+        explanation = get_ai_provider().chat(
+            [{"role": "system", "content": "You are a concise, encouraging university tutor."},
+             {"role": "user", "content": prompt}],
+            model="openai/gpt-4o-mini",
+            temperature=0.4,
+            max_tokens=300,
+            timeout=30,
+            feature='cbt_explain',
+            user_id=user.id,
+        )
+        return jsonify({'success': True, 'explanation': explanation})
     except Exception as e:
         debug_print(f"CBT explain failed: {e}")
         traceback.print_exc()

@@ -245,6 +245,41 @@ def admin_end_room(room_id):
 
 
 # ===== MATERIALS MODERATION (existing) =====
+@admin_bp.route('/admin/ai-flags')
+@login_required
+@admin_required
+def ai_flags():
+    """PRD §9: moderate AI-related content flagged by students (the §6 feedback
+    loop's review surface, migration-map gap G10)."""
+    from app.services.ai_monitoring import open_flags, usage_summary
+    from app.models import CBTAnswer
+    user = User.query.filter_by(username=session['user']['username']).first()
+    flags = open_flags()
+    # Resolve cbt_explain references to their actual question text so an admin can
+    # judge the report without leaving the page (missing ids render as "no longer
+    # exists" rather than breaking the loop).
+    ref_ids = [f.reference_id for f in flags if f.feature == 'cbt_explain' and f.reference_id]
+    reference_map = {}
+    if ref_ids:
+        reference_map = {a.id: a for a in CBTAnswer.query.filter(CBTAnswer.id.in_(ref_ids)).all()}
+    return render_template('admin_ai_flags.html', flags=flags, user=user,
+                           reference_map=reference_map,
+                           usage=usage_summary(days=30), active_page='ai_flags')
+
+
+@admin_bp.route('/admin/ai-flags/<int:flag_id>/resolve', methods=['POST'])
+@login_required
+@admin_required
+def resolve_ai_flag(flag_id):
+    from app.services.ai_monitoring import resolve_flag
+    data = request.get_json(silent=True) or {}
+    status = data.get('status') or 'resolved'
+    ok = resolve_flag(flag_id, User.query.filter_by(
+        username=session['user']['username']).first(),
+        status=status, resolution_note=data.get('note'))
+    return jsonify({'success': ok}), (200 if ok else 400)
+
+
 @admin_bp.route('/admin/materials')
 @login_required
 @admin_required
@@ -276,7 +311,41 @@ def approve_material(material_id):
     material.rejection_reason = None  # clears a prior rejection if this was re-reviewed
     db.session.commit()
 
-    return jsonify({'success': True, 'message': 'Material approved'})
+    # PRD §9 content pipeline: Moderation Review -> Tagged -> "Processed for RAG".
+    # Approval is the moderation gate, so indexing kicks off here. Best-effort: a
+    # failed extraction/embedding must not fail an approval that already committed.
+    rag_status = {'processed': False}
+    try:
+        from app.services.rag_service import process_material_for_rag
+        rag_status = process_material_for_rag(material)
+    except Exception:
+        from app.logging_config import logger
+        logger.exception('RAG processing failed for material %s', material.id)
+
+    message = 'Material approved'
+    if rag_status.get('processed'):
+        message += f" — indexed for AI Q&A ({rag_status['chunks']} chunks)"
+    elif rag_status.get('reason'):
+        message += f" — AI indexing skipped ({rag_status['reason']})"
+    return jsonify({'success': True, 'message': message, 'rag': rag_status})
+
+
+@admin_bp.route('/admin/materials/<int:material_id>/reindex-rag', methods=['POST'])
+@login_required
+@admin_required
+def reindex_material_rag(material_id):
+    """Re-run extraction -> chunking -> embedding for one material (e.g. after an
+    improved embedding model, or an earlier failure). Admin-only -- indexing content
+    before it passes moderation would defeat the retrieval-poisoning gate."""
+    material = Material.query.get(material_id)
+    if not material:
+        return jsonify({'error': 'Material not found'}), 404
+    from app.services.rag_service import process_material_for_rag
+    result = process_material_for_rag(material)
+    if not result['ok']:
+        return jsonify({'success': False, 'error': result['reason']}), 400
+    return jsonify({'success': True, 'chunks': result['chunks'],
+                    'message': f"Indexed {result['chunks']} chunks for AI Q&A."})
 
 
 @admin_bp.route('/admin/materials/<int:material_id>/edit', methods=['POST'])

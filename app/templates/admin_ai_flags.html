@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Answer Reports — Nelavista Admin</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/skills.css') }}">
+    <style>
+        .af-container { max-width: 860px; margin: 0 auto; padding: 24px 20px 60px; }
+        .af-back { display:inline-block; color:var(--sk-text-dim); text-decoration:none; font-size:0.85rem; margin-bottom:18px; }
+        .af-flag { background:var(--sk-card); border:1px solid var(--sk-border); border-radius:var(--sk-radius-sm,12px); padding:14px 16px; margin-bottom:10px; }
+        .af-meta { font-size:0.78rem; color:var(--sk-text-dim); margin-bottom:6px; }
+        .af-note { font-size:0.9rem; line-height:1.5; }
+        .af-actions { display:flex; gap:8px; margin-top:10px; }
+        .af-actions input { flex:1; background:var(--bg-elevated,#0f172a); border:1px solid var(--sk-border); border-radius:8px; padding:8px 10px; color:inherit; font-size:0.82rem; }
+        .af-btn { border:1px solid var(--sk-border); background:none; color:var(--sk-accent); border-radius:8px; padding:8px 14px; cursor:pointer; font-size:0.8rem; }
+        .af-btn:hover { border-color:var(--sk-accent); }
+        .usage-table { width:100%; border-collapse:collapse; font-size:0.85rem; margin-top:12px; }
+        .usage-table th, .usage-table td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--sk-border); }
+        .usage-table th { color:var(--sk-text-dim); font-size:0.75rem; text-transform:uppercase; letter-spacing:0.5px; }
+    </style>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
+</head>
+<body>
+{% set active_page = 'ai_flags' %}
+{% include 'components/admin_nav.html' %}
+
+<div class="af-container">
+    <a href="/admin" class="af-back">&larr; Admin dashboard</a>
+    <h1 style="font-size:1.4rem; margin-bottom:4px;">AI answer reports</h1>
+    <p style="color:var(--sk-text-dim); font-size:0.88rem; margin-bottom:18px;">
+        Explanations students reported as incorrect ({{ flags|length }} open). Review the answer, then resolve it once corrected — or dismiss it if the answer was actually right.
+    </p>
+
+    {% if not flags %}
+        <div class="af-flag" style="text-align:center; color:var(--sk-text-dim);">No open reports — the feedback loop is quiet.</div>
+    {% endif %}
+
+    {% for f in flags %}
+    <div class="af-flag" id="flag-{{ f.id }}">
+        <div class="af-meta">
+            {{ f.feature }} · report #{{ f.id }} · {{ f.user.username if f.user else 'unknown' }} · {{ f.created_at.strftime('%d %b %Y, %I:%M %p') if f.created_at else '' }}
+            {% if f.reference_id %} · reference #{{ f.reference_id }}{% endif %}
+        </div>
+        <div class="af-note">{{ f.note or '(no detail given)' }}</div>
+        {% if f.feature == 'cbt_explain' and f.reference_id %}
+        <div class="af-meta" style="margin-top:6px;">
+            {% set ans = reference_map.get(f.reference_id) if reference_map else None %}
+            {% if ans %}Question: {{ ans.question_text }}{% else %}Reference answer no longer exists.{% endif %}
+        </div>
+        {% endif %}
+        <div class="af-actions">
+            <input type="text" id="note-{{ f.id }}" placeholder="Resolution note (optional)">
+            <button class="af-btn" onclick="resolveFlag({{ f.id }}, 'resolved')">Mark resolved</button>
+            <button class="af-btn" onclick="resolveFlag({{ f.id }}, 'dismissed')">Dismiss</button>
+        </div>
+    </div>
+    {% endfor %}
+
+    <h2 style="font-size:1.1rem; margin:30px 0 4px;">AI usage (last 30 days)</h2>
+    <p style="color:var(--sk-text-dim); font-size:0.82rem;">Per-feature call counts and token totals — PRD §21 AI usage monitoring.</p>
+    {% if usage %}
+    <table class="usage-table">
+        <thead><tr><th>Feature</th><th>Calls</th><th>OK</th><th>Prompt tokens</th><th>Completion tokens</th><th>Users</th></tr></thead>
+        <tbody>
+        {% for feature, s in usage.items() %}
+        <tr><td>{{ feature }}</td><td>{{ s.calls }}</td><td>{{ s.ok_calls }}</td><td>{{ s.prompt_tokens }}</td><td>{{ s.completion_tokens }}</td><td>{{ s.users }}</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="af-flag" style="margin-top:12px; color:var(--sk-text-dim);">No AI usage recorded yet.</div>
+    {% endif %}
+</div>
+
+<script>
+async function resolveFlag(id, status) {
+    const note = document.getElementById('note-' + id)?.value || '';
+    const res = await fetch(`/admin/ai-flags/${id}/resolve`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status, note }),
+    });
+    if (res.ok) {
+        const el = document.getElementById('flag-' + id);
+        if (el) el.remove();
+    }
+}
+</script>
+{% include 'components/academia_footer.html' %}
+</body>
+</html>

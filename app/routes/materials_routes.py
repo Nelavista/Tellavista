@@ -11,6 +11,8 @@ from app.extensions import db
 from app.config import OPENROUTER_API_KEY
 from app.services.progress_service import record_material_view, get_recent_material_views
 from app.services.academic_context import resolve_academic_context, sync_user_university
+from app.services.insights_service import touch_topic_activity
+from app.services import search_service
 
 materials_bp = Blueprint('materials', __name__)
 
@@ -41,6 +43,12 @@ def enforce_profile_completion():
         # to /dashboard by this same hook, and the email was never actually verified.
         'auth.verify_email', 'auth.resend_verification_email', 'auth.resend_verification_public',
         'dashboard.dashboard', 'dashboard.landing',
+        # PRD §5.2's sequential onboarding wizard must be reachable from an incomplete
+        # profile (it IS the profile-editing surface for the academic fields) -- and it
+        # needs its four step APIs reachable too, or the wizard renders dead.
+        'onboarding.wizard', 'onboarding.api_faculties', 'onboarding.api_departments',
+        'onboarding.api_sessions', 'onboarding.api_courses', 'onboarding.api_enrolled',
+        'onboarding.api_save', 'onboarding.api_waitlist',
         'materials.complete_profile', 'static',
         'pwa.serve_manifest', 'pwa.serve_pwa_icons',
         'pages.about', 'pages.privacy_policy',
@@ -405,10 +413,12 @@ def fetch_materials():
             )
 
         if q:
-            like = f"%{q}%"
-            query = query.filter(
-                (Material.title.ilike(like)) | (Material.description.ilike(like)) | (Material.course_code.ilike(like))
-            )
+            # PRD §5.3 (gap G7): real full-text matching on Postgres (weighted
+            # tsvector + websearch_to_tsquery, GIN-indexed -- see services/
+            # search_service.py and the accompanying migration), degrading to the
+            # original ILIKE scan on SQLite. One helper so both search call sites
+            # (this and /api/academic-search) can't drift apart.
+            query = search_service.material_search_query(query, q)
 
         # `type` is now a real stored column (Material.material_type) for every row
         # created after the taxonomy migration -- filtered at the DB level. Legacy rows
@@ -445,7 +455,19 @@ def fetch_materials():
             # per-department/level so this was fine at today's per-department counts, but
             # scales linearly with content, not with what's actually shown.
             total = query.order_by(None).count()
-            page_results = query.offset(start).limit(per_page).all()
+            # With a search query on Postgres, matches are relevance-ranked (title hits
+            # above description hits) before recency; without one, the created_at order
+            # set above stands unchanged. None on SQLite (no tsvector there).
+            rank_clause = search_service.material_search_rank(q) if q else None
+            if rank_clause is not None:
+                # order_by(None) resets the created_at ordering applied above --
+                # SQLAlchemy *appends* order_by criteria, so without the reset the old
+                # recency sort would win and rank would never be felt.
+                ordered = query.order_by(None).order_by(
+                    rank_clause.desc(), Material.created_at.desc())
+            else:
+                ordered = query
+            page_results = ordered.offset(start).limit(per_page).all()
 
         return jsonify({
             'success': True,
@@ -503,9 +525,27 @@ def track_material_view(material_id):
     if not isinstance(page, int) or isinstance(page, bool) or page < 1:
         page = None
     view = record_material_view(user, material, page=page)
+    # §5.8 activity signal: viewing a topic-tagged material bumps that topic's
+    # last_activity_at (never creates a row -- a view is not completion).
+    touch_topic_activity(user, material.topic_id)
     # Echo back the stored resume page (after applying this request's `page`, if any)
     # -- the viewer uses it to reopen at the last-read page (PRD §5.3).
     return jsonify({'success': True, 'last_page': view.last_page})
+
+
+@materials_bp.route('/api/insights')
+@login_required
+def dashboard_insights():
+    """Performance rollup + weak/strong topics + deterministic recommendations for the
+    dashboard's Performance and AI Insights sections (PRD §5.8/§5.9) -- one fetch for
+    both sections. See services/insights_service.py for the rules; nothing here is
+    estimated."""
+    username = session['user']['username']
+    user = User.query.filter_by(username=username).first()
+    if not user:
+        return jsonify({'error': 'not_found'}), 404
+    from app.services.insights_service import get_insights
+    return jsonify(get_insights(user))
 
 
 @materials_bp.route('/api/continue-studying')

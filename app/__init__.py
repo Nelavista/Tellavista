@@ -46,6 +46,7 @@ from app.routes.admin_routes import admin_bp
 from app.routes.community_routes import community_bp
 from app.routes.academia_routes import academia_bp
 from app.routes.admin_academia_routes import admin_academia_bp
+from app.routes.onboarding_routes import onboarding_bp
 from app.routes.campus_map_routes import campus_map_bp
 # Skills is rebuilt around Learn -> Practice -> Build -> Verify -> Showcase -> Get
 # Discovered -> Earn. Employer (talent discovery + messaging) is back on, now reading the
@@ -295,6 +296,7 @@ def create_app():
     app.register_blueprint(community_bp, url_prefix='/')
     app.register_blueprint(academia_bp, url_prefix='/')
     app.register_blueprint(admin_academia_bp, url_prefix='/')
+    app.register_blueprint(onboarding_bp, url_prefix='/')
     app.register_blueprint(campus_map_bp, url_prefix='/')
     app.register_blueprint(skills_bp, url_prefix='/')
     app.register_blueprint(admin_skills_bp, url_prefix='/')

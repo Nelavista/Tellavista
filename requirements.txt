@@ -25,3 +25,6 @@ redis==6.4.0
 # Optional: only activates if SENTRY_DSN is set (see logging_config.py). Safe to leave
 # installed and unused.
 sentry-sdk[flask]==2.19.2
+# Optional product analytics: only activates if POSTHOG_API_KEY is set (see
+# services/analytics.py). Safe to leave installed and unused.
+posthog==6.7.4

@@ -81,6 +81,11 @@ def call_grading_model(system_prompt, user_prompt, *, title, max_tokens, timeout
     scored). Returns the parsed JSON object; callers still own validating its shape and
     clamping/reconciling any scores against their own ground truth (a rubric, a fixed
     dimension list) before persisting anything."""
+    # NOTE (PRD §6 migration): this stays a direct requests.post on purpose -- it is
+    # already THE single choke point for every scored evaluator (no duplication), and
+    # the existing test suites (test_ai_project_review.py,
+    # test_ai_grading_injection_defense.py) mock this exact call. Migrate it onto
+    # services/ai_provider.get_ai_provider() together with those tests' patch points.
     headers = {
         "Authorization": f"Bearer {OPENROUTER_API_KEY}",
         "Content-Type": "application/json",

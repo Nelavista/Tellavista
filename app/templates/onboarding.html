@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Set up your academics | Nelavista</title>
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { font-family:'Inter', system-ui, -apple-system, sans-serif; background:var(--bg-deep,#0b0f1a); color:var(--sk-text,#f0f3f8); min-height:100vh; padding:24px 16px; display:flex; align-items:center; justify-content:center; }
+        .wiz { width:100%; max-width:560px; background:var(--sk-card,#141b2e); border:1px solid var(--sk-border,#2d3a52); border-radius:24px; padding:28px; }
+        .wiz-eyebrow { font-size:.72rem; letter-spacing:1.5px; text-transform:uppercase; color:var(--sk-accent,#3b82f6); font-weight:700; }
+        .wiz h1 { font-size:1.5rem; margin:6px 0 4px; }
+        .wiz-sub { color:var(--sk-text-dim,#9ca3af); font-size:.9rem; line-height:1.5; margin-bottom:18px; }
+        .steps { display:flex; gap:6px; margin-bottom:22px; }
+        .steps span { flex:1; height:5px; border-radius:4px; background:var(--sk-border,#2d3a52); transition:background .25s; }
+        .steps span.done { background:linear-gradient(90deg,#3b82f6,#14b8a6); }
+        .step { display:none; }
+        .step.active { display:block; animation:fade .25s ease; }
+        @keyframes fade { from { opacity:0; transform:translateY(6px);} to { opacity:1; transform:none;} }
+        .f-label { display:block; font-size:.8rem; font-weight:600; color:var(--sk-text-dim,#9ca3af); text-transform:uppercase; letter-spacing:.5px; margin:14px 0 8px; }
+        select, input[type=text] { width:100%; background:var(--bg-elevated,#0f172a); border:2px solid var(--sk-border,#2d3a52); border-radius:14px; padding:13px 16px; font-size:.95rem; color:inherit; outline:none; font-family:inherit; }
+        select:focus, input:focus { border-color:var(--sk-accent,#3b82f6); }
+        .chips { display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:8px; max-height:260px; overflow-y:auto; padding:2px; }
+        .chip { background:var(--bg-elevated,#0f172a); border:2px solid var(--sk-border,#2d3a52); border-radius:14px; padding:12px 14px; cursor:pointer; text-align:left; color:inherit; font-family:inherit; font-size:.85rem; transition:all .15s; }
+        .chip:hover { border-color:var(--sk-accent,#3b82f6); }
+        .chip.selected { background:var(--sk-accent,#3b82f6); border-color:var(--sk-accent,#3b82f6); color:#fff; }
+        .chip .c-code { font-weight:800; display:block; font-size:.95rem; }
+        .chip .c-title { color:inherit; opacity:.85; font-size:.78rem; display:block; margin-top:2px; }
+        .empty { color:var(--text-muted,#6b7280); font-size:.88rem; padding:14px; border:1px dashed var(--sk-border,#2d3a52); border-radius:14px; line-height:1.5; }
+        .nav-row { display:flex; gap:10px; margin-top:22px; }
+        button.btn { flex:1; padding:14px; border-radius:14px; border:none; font-weight:700; font-size:.95rem; cursor:pointer; font-family:inherit; }
+        .btn-primary { background:linear-gradient(135deg,#3b82f6,#2563eb); color:#fff; }
+        .btn-primary:disabled { opacity:.45; cursor:not-allowed; }
+        .btn-ghost { background:transparent; border:1px solid var(--sk-border,#2d3a52); color:var(--sk-text-dim,#9ca3af); flex:0 0 auto; padding:14px 18px; }
+        .err { display:none; background:rgba(239,68,68,.1); border:1px solid var(--sk-danger,#ef4444); color:var(--sk-danger,#fca5a5); border-radius:12px; padding:11px 14px; font-size:.85rem; margin-top:14px; }
+        .err.show { display:block; }
+        .waitlist { background:rgba(249,115,22,.12); border:1px solid var(--sk-warn,#f97316); color:var(--sk-warn,#fbbf24); border-radius:12px; padding:12px 14px; font-size:.85rem; line-height:1.5; margin-top:14px; display:none; }
+        .waitlist.show { display:block; }
+        .count-hint { font-size:.75rem; color:var(--text-muted,#6b7280); margin-top:8px; }
+        a.back { color:var(--sk-text-dim,#9ca3af); font-size:.82rem; text-decoration:none; display:inline-block; margin-bottom:14px; }
+    </style>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
+</head>
+<body>
+<div class="wiz">
+    <a class="back" href="/dashboard">&larr; Back to dashboard</a>
+    <div class="wiz-eyebrow">Academic setup</div>
+    <h1>Tell us what you're studying</h1>
+    <p class="wiz-sub">Seven quick steps — each list is filtered by the one before it. You can come back and change this anytime.</p>
+
+    <div class="steps" id="stepsBar">
+        {% for _ in range(7) %}<span></span>{% endfor %}
+    </div>
+
+    <!-- STEP 1: UNIVERSITY -->
+    <div class="step active" data-step="1">
+        <label class="f-label">Step 1 · Your university</label>
+        <select id="selUniversity">
+            <option value="">Select your university</option>
+            {% for u in options.universities %}
+            <option value="{{ u.name }}" {% if options.current.university == u.name %}selected{% endif %}>{{ u.name }}{{ ' (' + u.short_name + ')' if u.short_name else '' }}</option>
+            {% endfor %}
+        </select>
+        <div class="waitlist" id="wlUniversity">
+            Your university isn't in our catalogue yet. You can still use Nelavista —
+            <button class="chip" style="display:inline-block;margin-top:8px;" onclick="requestWaitlist()">request your school &rarr;</button>
+            we'll prioritise adding it.
+        </div>
+    </div>
+
+    <!-- STEP 2: FACULTY -->
+    <div class="step" data-step="2">
+        <label class="f-label">Step 2 · Your faculty</label>
+        <div class="chips" id="facultyChips"><div class="empty">Loading…</div></div>
+    </div>
+
+    <!-- STEP 3: DEPARTMENT -->
+    <div class="step" data-step="3">
+        <label class="f-label">Step 3 · Your department</label>
+        <div class="chips" id="deptChips"><div class="empty">Loading…</div></div>
+        <div class="waitlist" id="wlDepartment">
+            Don't see your department? <button class="chip" style="display:inline-block;margin-top:8px;" onclick="requestWaitlist()">request it &rarr;</button>
+        </div>
+    </div>
+
+    <!-- STEP 4: LEVEL -->
+    <div class="step" data-step="4">
+        <label class="f-label">Step 4 · Your level</label>
+        <div class="chips" id="levelChips"></div>
+    </div>
+
+    <!-- STEP 5: SESSION -->
+    <div class="step" data-step="5">
+        <label class="f-label">Step 5 · Academic session</label>
+        <div class="chips" id="sessionChips"><div class="empty">Loading…</div></div>
+        <p class="count-hint">If your school's sessions haven't been added yet, you can skip this — it's optional.</p>
+    </div>
+
+    <!-- STEP 6: SEMESTER -->
+    <div class="step" data-step="6">
+        <label class="f-label">Step 6 · Semester</label>
+        <div class="chips" id="semesterChips"></div>
+        <p class="count-hint">Semesters appear once a session is selected and recorded.</p>
+    </div>
+
+    <!-- STEP 7: COURSES -->
+    <div class="step" data-step="7">
+        <label class="f-label">Step 7 · Pick your courses this semester</label>
+        <div class="chips" id="courseChips"><div class="empty">Loading…</div></div>
+        <div class="count-hint" id="courseCount">0 selected</div>
+    </div>
+
+    <div class="err" id="wizErr"></div>
+
+    <div class="nav-row">
+        <button class="btn btn-ghost" id="backBtn" onclick="go(-1)" style="display:none;">&larr; Back</button>
+        <button class="btn btn-primary" id="nextBtn" onclick="go(1)">Continue &rarr;</button>
+    </div>
+</div>
+
+<script>
+const CURRENT = {{ options.current | tojson }};
+const state = {
+    step: 1,
+    university: CURRENT.university || '',
+    faculty: CURRENT.faculty || '',
+    department: CURRENT.department || '',
+    level: CURRENT.level || '',
+    session_id: null,
+    semester_id: null,
+    semesterLabel: CURRENT.semester || '',
+    course_ids: [],
+    enrolled: [],
+};
+
+const TOTAL = 7;
+const bar = document.querySelectorAll('#stepsBar span');
+
+function showErr(msg) {
+    const el = document.getElementById('wizErr');
+    if (!msg) { el.classList.remove('show'); return; }
+    el.textContent = msg; el.classList.add('show');
+    setTimeout(() => el.classList.remove('show'), 4000);
+}
+
+function render() {
+    document.querySelectorAll('.step').forEach(s =>
+        s.classList.toggle('active', Number(s.dataset.step) === state.step));
+    bar.forEach((b, i) => b.classList.toggle('done', i < state.step));
+    document.getElementById('backBtn').style.display = state.step > 1 ? '' : 'none';
+    const next = document.getElementById('nextBtn');
+    next.innerHTML = state.step === TOTAL ? 'Save & finish ✓' : 'Continue &rarr;';
+    next.disabled = !canProceed();
+}
+
+function canProceed() {
+    switch (state.step) {
+        case 1: return !!state.university;
+        case 2: return !!state.faculty;
+        case 3: return !!state.department;
+        case 4: return !!state.level;
+        case 5: return true;   // session optional (may not be recorded yet)
+        case 6: return true;   // semester optional
+        case 7: return true;   // courses optional — some departments aren't seeded
+    }
+}
+
+async function go(dir) {
+    if (dir === 1 && !canProceed()) { showErr('Please make a selection to continue.'); return; }
+    if (dir === 1 && state.step === TOTAL) { return save(); }
+    state.step = Math.min(TOTAL, Math.max(1, state.step + dir));
+    if (state.step === 2) loadFaculties();
+    if (state.step === 3) loadDepartments();
+    if (state.step === 5) loadSessions();
+    if (state.step === 7) loadCourses();
+    render();
+}
+
+// ---------- step loaders (each filtered by prior selections, PRD §5.2) ----------
+const qs = (params) => '?' + new URLSearchParams(params).toString();
+
+async function loadFaculties() {
+    const el = document.getElementById('facultyChips');
+    const r = await fetch('/api/onboarding/faculties' + qs({ university: state.university }));
+    const list = (await r.json()).faculties;
+    if (!list.length) { el.innerHTML = '<div class="empty">No faculties recorded for ' + esc(state.university) + ' yet. <button class="chip" onclick="requestWaitlist()">Request yours &rarr;</button></div>'; return; }
+    el.innerHTML = list.map(f => chip(f.name, state.faculty === f.name, `pickFaculty(${JSON.stringify(f.name)})`)).join('');
+}
+
+async function loadDepartments() {
+    const el = document.getElementById('deptChips');
+    document.getElementById('wlDepartment').classList.remove('show');
+    const r = await fetch('/api/onboarding/departments' + qs({ university: state.university, faculty: state.faculty }));
+    const list = (await r.json()).departments;
+    if (!list.length) { document.getElementById('wlDepartment').classList.add('show'); el.innerHTML = '<div class="empty">No departments recorded for this faculty yet.</div>'; return; }
+    el.innerHTML = list.map(d => chip(d.name, state.department === d.name, `pickDepartment(${JSON.stringify(d.name)})`)).join('');
+}
+
+async function loadSessions() {
+    const el = document.getElementById('sessionChips');
+    const r = await fetch('/api/onboarding/sessions' + qs({ university: state.university }));
+    const list = (await r.json()).sessions;
+    if (!list.length) {
+        el.innerHTML = '<div class="empty">No academic sessions recorded for your school yet — skipping is fine.</div>';
+        state.session_id = null; state.semester_id = null; return;
+    }
+    el.innerHTML = list.map(s =>
+        chip(s.label, state.session_id === s.id, `pickSession(${s.id}, ${JSON.stringify(s.label)})`)).join('');
+}
+
+function renderSemesters(list) {
+    const el = document.getElementById('semesterChips');
+    if (!list.length) {
+        el.innerHTML = '<div class="empty">No semesters recorded under this session — skipping is fine.</div>';
+        return;
+    }
+    el.innerHTML = list.map(s =>
+        chip(s.label, state.semester_id === s.id, `pickSemester(${s.id}, ${JSON.stringify(s.label)})`)).join('');
+}
+
+async function loadCourses() {
+    const el = document.getElementById('courseChips');
+    const r = await fetch('/api/onboarding/courses' + qs({
+        university: state.university, department: state.department, level: state.level }));
+    const list = (await r.json()).courses;
+    if (!list.length) {
+        el.innerHTML = '<div class="empty">No courses catalogued for ' + esc(state.department) + ' ' +
+            esc(state.level) + ' level yet — your materials still appear as they are added.</div>';
+        return;
+    }
+    const enrolled = new Set(state.enrolled);
+    el.innerHTML = list.map(c =>
+        chip(`${c.code} — ${c.title}`, state.course_ids.includes(c.id) || (enrolled.has(c.id) && state.course_ids.includes(c.id)),
+             `toggleCourse(${c.id})`, c.code, c.title, enrolled.has(c.id))).join('');
+    updateCount();
+}
+
+function chip(label, selected, onclick, code, title, already) {
+    return `<button type="button" class="chip${selected ? ' selected' : ''}" onclick="${onclick}">
+        ${code ? `<span class="c-code">${esc(code)}</span><span class="c-title">${esc(title)}</span>` : esc(label)}
+        ${already && !selected ? '<span class="c-title">✓ already enrolled</span>' : ''}
+    </button>`;
+}
+
+// ---------- pickers ----------
+window.pickFaculty = (name) => {
+    state.faculty = name; state.department = '';
+    loadDepartments().then(() => { /* prefetch for smoothness */ });
+    go(1);
+};
+window.pickDepartment = (name) => { state.department = name; go(1); };
+window.pickLevel = (lv) => { state.level = lv; go(1); };
+window.pickSession = (id, label) => {
+    state.session_id = id;
+    const s = (window._sessions || []).find(x => x.id === id);
+    state.semester_id = null;
+    renderSemesters(s ? s.semesters : []);
+    go(1);
+};
+window.pickSemester = (id, label) => { state.semester_id = id; state.semesterLabel = label; go(1); };
+window.toggleCourse = (id) => {
+    const i = state.course_ids.indexOf(id);
+    if (i >= 0) state.course_ids.splice(i, 1); else state.course_ids.push(id);
+    loadCourses();
+};
+
+function updateCount() {
+    document.getElementById('courseCount').textContent =
+        state.course_ids.length + ' course' + (state.course_ids.length === 1 ? '' : 's') + ' selected';
+}
+
+// Level chips are static (no taxonomy dependency).
+document.getElementById('levelChips').innerHTML =
+    ['100','200','300','400','500'].map(lv =>
+        chip(lv + ' Level', CURRENT.level === lv, `pickLevel('${lv}')`)).join('');
+
+// University change resets everything downstream (per-step filtering).
+document.getElementById('selUniversity').addEventListener('change', (e) => {
+    state.university = e.target.value;
+    state.faculty = ''; state.department = '';
+    state.session_id = null; state.semester_id = null; state.semesterLabel = '';
+    document.getElementById('wlUniversity').classList.remove('show');
+    if (state.university) go(1);
+});
+
+// Mark the university waitlist hint if the school list is empty/small — keep it simple:
+// only shown when the selected university has no faculties at all (see loadFaculties).
+
+// ---------- waitlist (§5.2 graceful handling) ----------
+window.requestWaitlist = async () => {
+    const r = await fetch('/api/onboarding/waitlist', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ university: state.university, department: state.department, level: state.level }),
+    });
+    const d = await r.json();
+    showErr(d.status === 'exists'
+        ? 'Good news — that department is already catalogued. Step back and pick it.'
+        : 'Request received — we\'ve logged it and will prioritise adding it.');
+};
+
+// ---------- save ----------
+async function save() {
+    const btn = document.getElementById('nextBtn');
+    btn.disabled = true; btn.textContent = 'Saving…';
+    try {
+        const r = await fetch('/api/onboarding/save', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(state),
+        });
+        const d = await r.json();
+        if (!d.success) { showErr(d.error || 'Could not save.'); btn.disabled = false; render(); return; }
+        window.location.href = d.redirect;
+    } catch (e) {
+        showErr('Network error — please try again.');
+        btn.disabled = false; render();
+    }
+}
+
+function esc(s) {
+    const d = document.createElement('div');
+    d.textContent = s == null ? '' : String(s);
+    return d.innerHTML;
+}
+
+// Pre-fill: a student who already has a faculty selected gets its departments loaded
+// on the department step directly; sessions load on demand in go().
+(async function init() {
+    try {
+        const r = await fetch('/api/onboarding/enrolled');
+        state.enrolled = (await r.json()).course_ids || [];
+    } catch (e) { state.enrolled = []; }
+    // Warm the session cache for pickSession().
+    try {
+        const r = await fetch('/api/onboarding/sessions' + qs({ university: state.university }));
+        window._sessions = (await r.json()).sessions || [];
+    } catch (e) { window._sessions = []; }
+    // Patch loadSessions to reuse the cache.
+    const _orig = loadSessions;
+    loadSessions = async function() {
+        const el = document.getElementById('sessionChips');
+        if (!window._sessions.length) {
+            el.innerHTML = '<div class="empty">No academic sessions recorded for your school yet — skipping is fine.</div>';
+            return;
+        }
+        el.innerHTML = window._sessions.map(s =>
+            chip(s.label, state.session_id === s.id, `pickSession(${s.id}, ${JSON.stringify(s.label)})`)).join('');
+    };
+    render();
+})();
+</script>
+</body>
+</html>

@@ -10,6 +10,7 @@ from flask_mail import Message
 from app.logging_config import logger
 from app.config import GOOGLE_OAUTH_ENABLED
 from app.utils.validation import password_strength_error
+from app.services import analytics
 
 auth_bp = Blueprint('auth', __name__)
 
@@ -178,6 +179,10 @@ def signup():
             logger.exception('Failed to send verification email to new signup %s', user.id)
             flash('Account created successfully! We could not send a verification email '
                   'right now -- you can request one anytime from your dashboard.', 'success')
+
+        # Best-effort analytics (no-op without POSTHOG_API_KEY): password-signup
+        # completion is the top of the PRD §21 activation funnel.
+        analytics.capture_event_for_user(username, analytics.EVENT_SIGNUP, {'method': 'password'})
 
         # Brand-new account: preferred_path is always unset at this point, so
         # post_auth_redirect() sends them through path selection like any first-ever
@@ -352,6 +357,10 @@ def google_callback():
     # already had one -- is_new_account (set above, before the row could match anything
     # existing) tells these apart for real, not by which button the user clicked.
     flash('Account created with Google!' if is_new_account else 'Logged in with Google!', 'success')
+    if is_new_account:
+        # Same funnel event as password signup -- 'method' tells the two acquisition
+        # paths apart in PostHog (best-effort, no-op without POSTHOG_API_KEY).
+        analytics.capture_event_for_user(user.username, analytics.EVENT_SIGNUP, {'method': 'google'})
     return post_auth_redirect(user)
 
 

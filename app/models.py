@@ -2301,6 +2301,39 @@ class MaterialView(db.Model):
     __table_args__ = (db.UniqueConstraint('user_id', 'material_id', name='uq_material_view_user_material'),)
 
 
+class MaterialChunk(db.Model):
+    """One embedded chunk of one material's extracted text -- the vector-storage half
+    of the PRD §5.5 RAG pipeline (extraction already lives on Material.extracted_text;
+    this adds chunking + embeddings + semantic retrieval).
+
+    Dialect split, owned here and by migration d5e9f0a1b2c3: on Postgres (deploy
+    target) the embedding column is ALTERed to pgvector's vector(1536) and the
+    extension is enabled by the migration; on SQLite (test suite) it stays binary and
+    services/rag_service.py computes cosine similarity in Python. The float32
+    little-endian pack/unpack is identical on both, so services code never branches.
+
+    Chunk metadata deliberately carries material_id / course_code / topic_id /
+    page_number (denormalized, like Material's own course_code) so retrieval can scope
+    rows without joins, and future citation surfacing ("which material, which page")
+    needs no schema change.
+    """
+    __tablename__ = 'material_chunks'
+
+    id = db.Column(db.Integer, primary_key=True)
+    material_id = db.Column(db.Integer, db.ForeignKey('materials.id'), nullable=False, index=True)
+    chunk_index = db.Column(db.Integer, nullable=False, default=0)
+    content = db.Column(db.Text, nullable=False)
+    page_number = db.Column(db.Integer, nullable=True)
+    course_code = db.Column(db.String(20), nullable=True, index=True)
+    topic_id = db.Column(db.Integer, db.ForeignKey('topics.id'), nullable=True, index=True)
+    embedding_model = db.Column(db.String(120), nullable=True)
+    # float32 LE, EMBEDDING_DIM * 4 bytes -- see class docstring for the pgvector story.
+    embedding = db.Column(db.LargeBinary, nullable=True)
+    created_at = db.Column(db.DateTime, nullable=True)
+
+    material = db.relationship('Material')
+
+
 class TopicProgress(db.Model):
     """A student marking one Topic as studied/complete -- completion itself stays
     deliberately minimal (row exists = complete, no partial-progress states, no
@@ -2321,7 +2354,12 @@ class TopicProgress(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     topic_id = db.Column(db.Integer, db.ForeignKey('topics.id'), nullable=False)
-    completed_at = db.Column(db.DateTime, default=datetime.utcnow)
+    # No column default on purpose: the only writer that means "the student marked
+    # this complete" (routes/academia_routes.py's toggle) sets it explicitly, while
+    # the mastery write-back (services/insights_service.py) creates rows that are
+    # measurement only. A default here would stamp every measured row as completed --
+    # "measured" must never masquerade as "marked complete".
+    completed_at = db.Column(db.DateTime, nullable=True)
     # 0.0-1.0, NULL = not yet measured. The exact inputs (CBT/quiz results only, or
     # also material completion and tutor engagement) are still an open product
     # question -- the column exists now, populating it is a separate change, and
@@ -2740,6 +2778,58 @@ class Message(db.Model):
         return {
             'id': self.id, 'sender_id': self.sender_id, 'content': self.content,
             'is_read': self.is_read, 'created_at': self.created_at.isoformat() if self.created_at else None,
+        }
+
+
+class AIUsageLog(db.Model):
+    """One row per AI feature call: tokens in/out per user per feature (PRD §21's AI
+    usage monitoring -- requests/tokens per user/feature; the cost table G6 in the
+    migration map). Written best-effort by the provider layer's logging hook -- an
+    analytics write must never break the AI response it measured.
+
+    Retention note (PRD §7 data-privacy): rows are aggregate counters, not content --
+    no prompts or responses are stored, so this table is safe to keep long-term and
+    trivially prunable (delete older than N days) without touching user content.
+    """
+    __tablename__ = 'ai_usage_log'
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True, index=True)
+    feature = db.Column(db.String(40), nullable=False, index=True)   # 'tutor' | 'cbt_explain' | 'rag' | 'grading' | ...
+    model = db.Column(db.String(120), nullable=True)
+    prompt_tokens = db.Column(db.Integer, nullable=True)
+    completion_tokens = db.Column(db.Integer, nullable=True)
+    ok = db.Column(db.Boolean, nullable=True)          # NULL = unknown (streamed w/o usage)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow, index=True)
+
+
+class FlaggedAIAnswer(db.Model):
+    """A student-reported incorrect AI answer -- the §6 accuracy feedback loop's
+    destination (migration-map gap G10: "hallucination logging has no destination").
+    Students flag an answer; admins review the queue in /admin, then resolve it
+    (dismissed / fixed). Only references are stored (feature + ids + the student's
+    note), never the full conversation, per §7's data-privacy minimal-retention rule.
+    """
+    __tablename__ = 'flagged_ai_answers'
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False, index=True)
+    feature = db.Column(db.String(40), nullable=False)      # 'cbt_explain' | 'tutor' | 'rag' | ...
+    reference_id = db.Column(db.Integer, nullable=True)      # e.g. CBTAnswer.id, TutorMessage.id
+    note = db.Column(db.Text, nullable=True)                 # what the student says is wrong
+    status = db.Column(db.String(20), nullable=False, default='open', index=True)  # open|resolved|dismissed
+    resolution_note = db.Column(db.Text, nullable=True)
+    resolved_by = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    resolved_at = db.Column(db.DateTime, nullable=True)
+
+    user = db.relationship('User', foreign_keys=[user_id])
+
+    def to_dict(self):
+        return {
+            'id': self.id, 'user_id': self.user_id, 'feature': self.feature,
+            'reference_id': self.reference_id, 'note': self.note, 'status': self.status,
+            'created_at': self.created_at.isoformat() if self.created_at else None,
         }
 
 

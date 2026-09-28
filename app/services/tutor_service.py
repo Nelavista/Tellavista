@@ -255,59 +255,23 @@ Never mention that you are built on any particular AI provider or model -- you a
 
 
 def stream_chat_completion(messages, model=TUTOR_MODEL, temperature=0.5, max_tokens=1800):
-    """Generator yielding incremental text deltas from OpenRouter's streaming chat
-    completions endpoint. Yields a single fallback string and returns if the request
-    fails outright (mirrors the GRACEFUL_FALLBACK convention in routes/ai_routes.py) --
-    callers should treat every yielded chunk as literal text to append, not JSON.
+    """Generator yielding incremental text deltas for the tutor (routes/tutor_routes.py).
+
+    Transport now goes through the provider abstraction (services/ai_provider.py, PRD
+    §6) -- this wrapper keeps the exact same contract routes/tutor_routes.py and
+    tests/test_ai_tutor.py already rely on: yields text deltas, yields a single
+    user-facing fallback string on total failure, never raises mid-stream. The
+    module-level indirection (via _provider_stream) keeps tests' monkeypatch target
+    working.
     """
-    payload = {
-        "model": model,
-        "messages": messages,
-        "temperature": temperature,
-        "max_tokens": max_tokens,
-        "stream": True,
-    }
-    try:
-        response = requests.post(OPENROUTER_URL, headers=_headers(), json=payload, stream=True, timeout=120)
-    except requests.exceptions.RequestException:
-        yield "I'm having trouble reaching the tutor right now — please try again in a moment."
-        return
+    yield from _provider_stream(messages, model=model, temperature=temperature, max_tokens=max_tokens)
 
-    if response.status_code != 200:
-        yield "I'm having trouble reaching the tutor right now — please try again in a moment."
-        return
 
-    # OpenRouter's SSE stream has no charset in its Content-Type, and requests falls back
-    # to ISO-8859-1 (the HTTP default for text/*) whenever a response doesn't declare one --
-    # decode_unicode=True below would then mis-decode every multi-byte UTF-8 character (curly
-    # quotes, em dashes, accented letters) into 2-3 garbled/invisible-control-char codepoints,
-    # silently corrupting stored conversation history. Force the correct encoding explicitly.
-    response.encoding = 'utf-8'
-
-    got_any = False
-    try:
-        for raw_line in response.iter_lines(decode_unicode=True):
-            if not raw_line or not raw_line.startswith('data: '):
-                continue
-            data = raw_line[len('data: '):].strip()
-            if data == '[DONE]':
-                break
-            try:
-                obj = json.loads(data)
-            except ValueError:
-                continue
-            choices = obj.get('choices') or []
-            if not choices:
-                continue
-            delta = (choices[0].get('delta') or {}).get('content')
-            if delta:
-                got_any = True
-                yield delta
-    finally:
-        response.close()
-
-    if not got_any:
-        yield "I'm having trouble responding right now — please try again."
+def _provider_stream(messages, model, temperature, max_tokens):
+    from app.services.ai_provider import get_ai_provider
+    yield from get_ai_provider().stream_chat(
+        messages, model, temperature=temperature, max_tokens=max_tokens,
+    )
 
 
 def generate_conversation_title(first_user_message, course=None):
@@ -325,9 +289,9 @@ def generate_conversation_title(first_user_message, course=None):
         fallback = f"{course.code} — {fallback}"
 
     try:
-        payload = {
-            "model": TUTOR_MODEL,
-            "messages": [
+        from app.services.ai_provider import get_ai_provider
+        title = get_ai_provider().chat(
+            [
                 {"role": "system", "content": (
                     "Summarize the student's question below into a short conversation "
                     "title: 3-6 words, no trailing punctuation, no quotes, title case. "
@@ -335,14 +299,13 @@ def generate_conversation_title(first_user_message, course=None):
                 )},
                 {"role": "user", "content": snippet[:500]},
             ],
-            "temperature": 0.3,
-            "max_tokens": 20,
-        }
-        resp = requests.post(OPENROUTER_URL, headers=_headers(), json=payload, timeout=15)
-        if resp.status_code == 200:
-            title = resp.json()["choices"][0]["message"]["content"].strip().strip('"').strip("'")
-            if title:
-                return f"{course.code} — {title}" if course else title
+            model=TUTOR_MODEL,
+            temperature=0.3,
+            max_tokens=20,
+            timeout=15,
+        ).strip().strip('"').strip("'")
+        if title:
+            return f"{course.code} — {title}" if course else title
     except Exception:
         pass
     return fallback

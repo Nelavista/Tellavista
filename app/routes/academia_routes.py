@@ -10,6 +10,7 @@ from app.services.cbt_bank import question_counts
 from app.services.progress_service import (get_course_materials_progress, get_cbt_summary,
                                          get_resume_pages)
 from app.services.notification_service import mark_all_read
+from app.services import search_service
 from app.extensions import db
 
 academia_bp = Blueprint('academia', __name__)
@@ -289,6 +290,8 @@ def academic_search():
         return jsonify({'courses': [], 'materials': [], 'resolved': False})
 
     like = f"%{q}%"
+    # Course rows are department-scoped (a few dozen at most), so the simple ILIKE
+    # pair here is fine; the G7 FTS work targets the open-ended Material table below.
     courses = (
         Course.query.filter(
             Course.department_id == ctx.department.id,
@@ -298,7 +301,10 @@ def academic_search():
     materials_query = Material.query.filter(
         Material.department == user.department,
         Material.is_approved == True,  # noqa: E712
-        or_(Material.title.ilike(like), Material.description.ilike(like), Material.course_code.ilike(like)),
+        # Same G7 helper as /materials: weighted full-text on Postgres, the original
+        # ILIKE scan on SQLite -- one implementation so the two search call sites
+        # can't drift apart.
+        search_service.material_search_filter(q),
     )
     if user.university:
         materials_query = materials_query.filter(

@@ -61,6 +61,15 @@ IS_PRODUCTION = ENVIRONMENT == 'production'
 # inconsistent across requests that land on different workers.
 REDIS_URL = os.getenv('REDIS_URL')
 
+# PostHog product analytics (PRD §21, migration-map gap G5) -- genuinely optional:
+# unset POSTHOG_API_KEY means no client is ever constructed and every capture() call is
+# a complete no-op (see services/analytics.py). POSTHOG_HOST defaults to PostHog's US
+# cloud; point it at 'https://eu.i.posthog.com' for an EU-project key (self-hosted
+# deployments use their own URL). No key, no network, no cost -- the pattern matches
+# Sentry's activate-on-DSN wiring in logging_config.py.
+POSTHOG_API_KEY = os.getenv('POSTHOG_API_KEY')
+POSTHOG_HOST = os.getenv('POSTHOG_HOST', 'https://us.i.posthog.com')
+
 # Comma-separated list of origins allowed to open a Socket.IO connection. Defaults to
 # the production frontend origin; add the local dev origin automatically in debug mode
 # so `python app.py` keeps working without extra config. Never "*" -- an unauthenticated,

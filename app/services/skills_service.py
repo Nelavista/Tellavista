@@ -9,9 +9,9 @@ from datetime import datetime, timedelta
 from app.extensions import db
 from sqlalchemy.exc import IntegrityError
 from app.models import (
-    Skill, SkillCourse, CourseModule, Lesson, LearningPathStep,
+    Skill, SkillCourse, CourseModule, Lesson,
     StudentLessonProgress, StudentSkill, ChallengeSubmission, StudentProject,
-    CareerTrackStep, Challenge, ProjectTemplate, Opportunity, OpportunityApplication,
+    Challenge, ProjectTemplate, Opportunity, OpportunityApplication,
     Rating, StudentOnboarding,
 )
 

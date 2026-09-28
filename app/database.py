@@ -1,6 +1,4 @@
-import os
 import re
-import time
 import psycopg2
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 from app.extensions import db

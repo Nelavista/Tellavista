@@ -285,6 +285,17 @@ body.light-mode #side-menu { background: rgba(255,255,255,0.98); }
 .sk-label { display: block; font-size: 0.9rem; font-weight: 600; color: var(--sk-text-dim); margin-bottom: 7px; }
 .sk-field { margin-bottom: 18px; }
 
+/* iOS Safari auto-zooms any focused control whose font-size is under 16px, which
+   zooms the whole page and leaves it zoomed (viewport trap). Auth pages already do
+   this in auth.css; this mirrors it for the app shell's controls on small screens. */
+@media (max-width: 768px) {
+  .sk-input, .sk-textarea, .sk-select, .sk-topsearch input { font-size: 16px; }
+}
+
+/* Horizontal-scroll wrapper for wide tables/keystrokes of dense data on narrow
+   screens: the content scrolls sideways, the page itself never overflows. */
+.tbl-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; max-width: 100%; }
+
 /* ===== LEARNING PATH (old vertical list — still used on skill_detail.html) ===== */
 .sk-path { list-style: none; }
 .sk-path-step { display: flex; gap: 16px; padding: 18px 0; border-bottom: 1px solid var(--sk-border); }

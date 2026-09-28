@@ -19,8 +19,7 @@ from datetime import datetime
 from sqlalchemy import case, func
 
 from app.extensions import db
-from app.models import (CBTAnswer, CBTAttempt, CBTQuestion, Course, Material,
-                        MaterialView, Topic, TopicProgress)
+from app.models import (CBTAnswer, CBTAttempt, CBTQuestion, Topic, TopicProgress)
 from app.services.academic_context import resolve_academic_context, find_course
 from app.services.progress_service import get_courses_materials_progress_bulk
 

@@ -5,7 +5,7 @@ alone).
 """
 from datetime import datetime
 from app.extensions import db
-from app.models import Skill, SkillCategory, SkillCourse, CourseModule, Lesson, StudentSkill, ProjectTemplate, StudentProject
+from app.models import Skill, SkillCategory, SkillCourse, CourseModule, Lesson, ProjectTemplate, StudentProject
 from app.services.skills_service import is_skill_verified, recompute_student_skill
 
 

@@ -1,7 +1,7 @@
 import os
 from datetime import datetime
-from flask import Blueprint, jsonify, send_from_directory, session, request, current_app
-from app.utils.helpers import login_required, debug_print
+from flask import Blueprint, jsonify, send_from_directory, session, current_app
+from app.utils.helpers import login_required
 
 core_bp = Blueprint('core', __name__)
 

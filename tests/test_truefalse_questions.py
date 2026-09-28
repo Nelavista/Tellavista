@@ -6,10 +6,9 @@ counts, mastery write-back and insights all treat them as first-class scored for
 """
 import json
 
-import pytest
 
 from app.extensions import db
-from app.models import CBTQuestion, CBTAttempt, CBTAnswer, User
+from app.models import CBTQuestion, CBTAttempt, User
 from app.services.cbt_bank import question_counts
 from app.routes.cbt_routes import cbt_time_limit_seconds
 from app.services.insights_service import get_performance_summary

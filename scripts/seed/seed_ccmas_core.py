@@ -26,11 +26,11 @@ Sources (fetched August 2026):
 - Agriculture:    https://www.nuc.edu.ng/wp-content/uploads/2026/03/Agriculture-2023.pdf
 
 Usage:
-    python seed_ccmas_core.py
+    python -m scripts.seed.seed_ccmas_core
 """
 from app import app, db
 from app.models import University, Faculty, Department, Course
-from seed_academia import FACULTY_MAP, GENERAL_STUDIES_FACULTY, GENERAL_STUDIES_DEPT
+from scripts.seed.seed_academia import FACULTY_MAP
 
 TARGET_UNIVERSITIES = [
     'Federal University Dutsin-Ma',

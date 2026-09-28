@@ -38,6 +38,9 @@
         {% if not courses %}
         <div class="empty">No courses yet for this department.</div>
         {% else %}
+        <!-- overflow-x wrapper so the 6-column course table scrolls sideways on small
+             screens instead of breaking the page layout (2026-09 mobile audit). -->
+        <div class="tbl-scroll">
         <table>
             <thead><tr><th>Code</th><th>Title</th><th>Level</th><th>Semester</th><th>Type</th><th></th></tr></thead>
             <tbody id="courseRows">
@@ -60,6 +63,7 @@
                 {% endfor %}
             </tbody>
         </table>
+        </div>
         {% endif %}
 
         <div class="add-form">

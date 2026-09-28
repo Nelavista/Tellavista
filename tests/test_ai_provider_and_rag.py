@@ -6,8 +6,6 @@ retrieval scoping (a student never retrieves across universities), and the
 hallucination-mitigation AC: an unrelated question must produce an explicit
 decline, not a fabricated answer.
 """
-import json
-import struct
 
 import pytest
 from unittest.mock import patch, MagicMock
@@ -15,9 +13,7 @@ from unittest.mock import patch, MagicMock
 from app.extensions import db
 from app.models import Material, MaterialChunk, User
 from app.services import rag_service
-from app.services.ai_provider import (OpenRouterProvider, AIProviderError,
-                                      set_ai_provider, get_ai_provider,
-                                      OpenRouterProvider as _ORP)
+from app.services.ai_provider import (OpenRouterProvider, AIProviderError)
 
 
 # ---------------------------------------------------------------------------

@@ -8,10 +8,10 @@ from app.utils.helpers import login_required
 from app.utils.validation import safe_external_url
 from app.logging_config import logger
 from app.models import (
-    User, SkillCategory, Skill, LearningPath, LearningPathStep, SkillCourse, CourseModule,
+    User, SkillCategory, Skill, SkillCourse, CourseModule,
     Lesson, Quiz, Challenge, ChallengeSubmission, ProjectTemplate, StudentProject,
     StudentSkill, StudentLessonProgress, StudentQuizAttempt, StudentOnboarding,
-    CareerTrack, CareerTrackStep, Assignment, AssignmentSubmission, StudentPrivacySettings,
+    CareerTrack, Assignment, AssignmentSubmission, StudentPrivacySettings,
     CohortEnrollment, ProjectFile, ProjectMessage,
 )
 from app.extensions import db, limiter
@@ -31,8 +31,8 @@ from app.services.daily_class_service import (
 )
 from app.services.gpa_service import compute_skill_gpa, recompute_and_cache_gpa, get_cohort_rank
 from app.services.skills_service import (
-    get_pipeline_state, get_pipeline_states_bulk, opportunity_match_pct, profile_completeness,
-    get_continue_learning_card, compute_payout_breakdown, get_talent_stats, get_verified_skills,
+    get_pipeline_states_bulk, opportunity_match_pct, profile_completeness,
+    get_continue_learning_card, compute_payout_breakdown, get_talent_stats,
     get_skill_scores, get_projects_empty_state_cta,
 )
 from app.services.ai_service import (
@@ -40,10 +40,10 @@ from app.services.ai_service import (
     PROJECT_REVIEW_DIMENSIONS, PROJECT_REVIEW_DIMENSION_LABELS,
 )
 from app.services.link_fetch_service import fetch_page_text, fetch_github_summary, is_figma_url
-from app.services.notification_service import notify, unread_count, mark_all_read
+from app.services.notification_service import notify, mark_all_read
 from app.services.messaging_service import get_or_create_thread, send_message, mark_thread_read
 from app.models import (
-    Opportunity, OpportunityApplication, ProjectMilestone, Rating, Competition,
+    Opportunity, OpportunityApplication, ProjectMilestone, Competition,
     CompetitionEntry, Notification, MessageThread, Message,
 )
 

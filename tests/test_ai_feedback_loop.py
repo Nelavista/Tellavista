@@ -5,13 +5,11 @@ in exactly one open queue entry per (user, feature, reference), and an admin res
 or dismisses it. Usage logging must count calls without ever storing prompt content.
 """
 import json
-from unittest.mock import patch, MagicMock
 
-import pytest
 
 from app.extensions import db
 from app.models import AIUsageLog, CBTAnswer, CBTAttempt, CBTQuestion, FlaggedAIAnswer, User
-from app.services.ai_monitoring import (flag_answer, open_flags, resolve_flag,
+from app.services.ai_monitoring import (flag_answer, open_flags,
                                         log_ai_usage, usage_summary)
 
 

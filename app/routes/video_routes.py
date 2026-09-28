@@ -1,6 +1,6 @@
 import os
 import requests
-from flask import Blueprint, render_template, request, redirect, url_for, session, flash, jsonify, current_app
+from flask import Blueprint, render_template, request, redirect, url_for, jsonify, current_app
 from app.models import Video
 from app.extensions import db
 from app.utils.helpers import login_required, admin_required

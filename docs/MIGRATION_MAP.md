@@ -59,9 +59,9 @@ Sentry, PostHog, ARQ) are still on the table — see §7.
 | Alembic migrations (`migrations/versions/`) | 45 |
 | Service modules (`app/services/`) | 19 |
 | Flask blueprints | 24 |
-| `frontend/` | empty scaffold — no `package.json`, empty `src/` |
+| `frontend/` | empty scaffold — no `package.json`, empty `src/` (**deleted 2026-09-28**, see §9) |
 
-The `frontend/` directory is inert. It holds no code and nothing imports it.
+The `frontend/` directory was inert while it existed: no code, nothing imported it.
 
 ---
 
@@ -166,9 +166,9 @@ in-scope Academia code.
 | G2 | ~~No `AcademicSession` / `Semester` / `Enrollment`.~~ **Tables added in Step 3** and deliberately left unseeded. `User.semester` / `Course.semester` free-text columns remain and are untouched — moving readers onto the new tables, and backfilling, is follow-up work. | §16 |
 | G3 | **No provider-agnostic AI layer.** The OpenRouter endpoint URL is hardcoded in **13 places** in `services/ai_service.py` alone, plus `tutor_service.py`, `ai_grading.py`, and 4 route modules. No `AIProvider` interface. | §6 |
 | G4 | **No queued/background jobs.** No ARQ. Long AI generations run inside the request. | §19, §21 |
-| G5 | **No PostHog. Sentry is already fully wired** — `logging_config.py` initializes `sentry_sdk` whenever `SENTRY_DSN` is set, with `FlaskIntegration` + `LoggingIntegration` (ERROR events) and `SENTRY_TRACES_SAMPLE_RATE` for latency tracing. It needs the DSN configured, not new code. PostHog (funnels, retention, feature usage) is genuinely absent. | §21 |
+| G5 | ~~**No PostHog.**~~ **Done (2026-09-28).** Sentry stays as-is (activates on `SENTRY_DSN`). PostHog product analytics now exists server-side in `services/analytics.py`: env-gated on `POSTHOG_API_KEY` (unset = complete no-op), emitting `user_signup` / `onboarding_completed` / `cbt_submitted` / `ai_call` from the routes that own them. No JS snippet (no shared base template; server events are ad-blocker-proof). | §21 |
 | G6 | **No AI usage/cost instrumentation.** No token or cost tracking per user or feature. | §21 |
-| G7 | **Keyword search is `ILIKE`, not Postgres full-text search.** `materials_routes.py:410` does three `ilike` ORs. No `to_tsvector` anywhere. | §5.3, §21 |
+| G7 | ~~**Keyword search is `ILIKE`, not Postgres full-text search.**~~ **Done (2026-09-28).** `services/search_service.py` builds a weighted-tsvector `websearch_to_tsquery` clause (title A / description B / course_code C) with the original ILIKE as the SQLite fallback; migration `f1b2c3d4e5f6` adds a matching expression GIN index (Postgres-only, no schema change); both call sites (`/api/fetch-materials`, `/api/academic-search`) rank by `ts_rank` on Postgres. | §5.3, §21 |
 | G8 | **No resume position.** `MaterialView` stores `(user_id, material_id, viewed_at)` — no page or scroll offset. "Continue learning" can return to the material but not to the position. | §5.3 AC |
 | G9 | **Column added in Step 3; semantics still open.** `TopicProgress.mastery_score` + `last_activity_at` exist and are nullable, never seeded — "not measured" stays distinct from "scored zero". Nothing writes or reads them yet, and the formula is still open question 4. | §16, §21 |
 | G10 | **Flagged-answer moderation queue** does not exist. Hallucination logging has no destination. | §6, §8 |
@@ -328,3 +328,49 @@ Explicitly deferred: everything in PRD §14 (§5 above), plus React/Tailwind/Fas
    re-baselining before Step 3.
 4. **`mastery_score` semantics:** sourced from CBT/quiz results only, or also material
    completion and tutor engagement? The PRD does not define the formula.
+
+---
+
+## 9. Cleanup & consistency pass (2026-09-28)
+
+A repository-wide cleanup/audit pass (dead code, structure, docs, config, security,
+link/feature consistency) produced the following record. Verification: the full pytest
+suite passes after these changes (see "Tests" below).
+
+**Removed (all traced to zero code references before deletion; git history retains them):**
+
+- `archive/` — 21 legacy/extracted templates (supersession recorded in
+  `docs/TEMPLATE_CLASSIFICATION.md`).
+- `frontend/` — empty Vite/TS scaffold, no `package.json`, no code (was already untracked).
+- `verify_email.com` — saved "Tawfiq AI" page at repo root, referenced nowhere.
+- `app/static/Androidfest.xml`, `app/static/MainActivity.kt.nelavista` — stray Android
+  experiment files, referenced nowhere.
+- `scripts/legacy/` — pre-Alembic one-offs (`migrate.py`, `fix_db.py`); Alembic plus
+  `database.py`'s create-and-stamp bridge supersede them.
+- Superseded seeders: `seed_30_courses.py` (→ `seed_materials.py`),
+  `seed_200_to_400_level_science.py` (→ `seed_200_to_400_COMPLETE.py`).
+- One-shot/misplaced maintenance: `download_git.py` (hardcoded installer URL),
+  `profile_health.py` (orphaned; needs `psutil`, which is not a dependency),
+  `resume_explanation_backfill.ps1` (another machine's hardcoded path),
+  `phase0_audit.py` (Step 8 precondition audit — executed and done).
+- ~87 unused imports across `app/`, `scripts/` and `tests/` (side-effect imports such as
+  `from . import events` kept deliberately).
+
+**Added:**
+
+- `scripts/audit/check_template_links.py` — cross-checks every href/action/fetch in
+  templates against the real Flask URL map + static files (375 references, all resolve).
+- `.env.example`: `POSTHOG_API_KEY`, `POSTHOG_HOST`.
+- Gaps closed earlier in this batch: G5 (PostHog), G7 (FTS), migration head
+  `f1b2c3d4e5f6`.
+
+**Config/docs:** `.gitignore` (added `.pytest_cache/`, coverage, `node_modules/`,
+`.freebuff/`, `*.log`; removed stale artifact entries and the resolved "Stage 12"
+comment), README rewritten to match the current implementation, this document's G5/G7
+rows updated, TEMPLATE_CLASSIFICATION annotated as historical.
+
+**Navbar/feature audit:** every navbar item resolves (public landing anchors
+`#platform/#skills/#opportunities/#campus` exist; `/skills` + the full Skills space is
+routed and rendered; `/search`, `/choose-path`, sidebars/footers all wired). The
+reported "Skills navbar item missing its section" issue does **not** reproduce against
+the current code — it is stale.

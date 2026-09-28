@@ -34,7 +34,7 @@ import sys
 from app import app, db
 from app.models import Course, Department, Faculty, University, Topic
 from app.services.ai_service import generate_course_topics
-from seed_materials import CORE_MATERIALS
+from scripts.seed.seed_materials import CORE_MATERIALS
 
 APPLY = '--apply' in sys.argv
 

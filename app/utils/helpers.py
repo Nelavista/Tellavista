@@ -1,10 +1,9 @@
 import os
 import time
 import base64
-import uuid
 from functools import wraps
 from flask import session, redirect, url_for, request, flash
-from app.config import DEBUG_MODE, ALLOWED_EXTENSIONS, ALLOWED_VIDEO_EXTENSIONS, allowed_file, allowed_video_file
+from app.config import DEBUG_MODE
 
 def debug_print(*args, **kwargs):
     if DEBUG_MODE:

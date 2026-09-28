@@ -8,6 +8,9 @@ __pycache__/
 *.pyc
 *.pyo
 *.egg-info/
+.pytest_cache/
+.coverage
+htmlcov/
 
 # Virtual environments
 venv/
@@ -44,34 +47,23 @@ Thumbs.db
 # Claude Code local tooling config (not project code)
 .claude/
 
+# Freebuff agent tooling (local session metadata, not project code)
+.freebuff/
+
+# Node (no frontend toolchain lives here today; this guards a stray install)
+node_modules/
+
 # Large stray downloads / installers (should never be committed)
 *.exe
 
-# Loose scratch/course-material PDFs accidentally dropped at repo root
-# (course.json and "cbt questions" are left tracked -- unused by live code today
-# but real content; their fate is decided in the Stage 12 dead-file review, not here)
+# Loose scratch/course-material PDFs accidentally dropped at repo root.
+# app/static/materials/ content and data/cbt questions stay tracked on purpose:
+# the seed scripts and CBT bank reads depend on them.
 /*.pdf
 /100 level pdfs/
 /SC COURSE CODE
-/tellavista_cache.json
-/tawfiq_cache.json
-
-# Accidental zero-byte / shell-redirect artifacts
-/0.5)
-/0.6)
-/0.7]
-/bool
-/dict
-/int
-/list
-/str
-/value
-/mvp
-/hhh
-/1000
-/2000
-/500
 
 # Local run output
 backfill_logs/
 pytest_single.txt
+*.log

@@ -6,7 +6,6 @@ and pre-fills the student's current context (get_onboarding_options).
 """
 from flask import Blueprint, render_template, request, session, jsonify, redirect, url_for, flash
 
-from app.extensions import db
 from app.models import User
 from app.utils.helpers import login_required
 from app.services import onboarding_service

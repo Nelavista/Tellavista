@@ -61,6 +61,9 @@
     <h2 style="font-size:1.1rem; margin:30px 0 4px;">AI usage (last 30 days)</h2>
     <p style="color:var(--sk-text-dim); font-size:0.82rem;">Per-feature call counts and token totals — PRD §21 AI usage monitoring.</p>
     {% if usage %}
+    <!-- overflow-x wrapper: a 6-column table must scroll sideways on mobile instead of
+         pushing the whole page into horizontal overflow (2026-09 mobile audit). -->
+    <div class="tbl-scroll">
     <table class="usage-table">
         <thead><tr><th>Feature</th><th>Calls</th><th>OK</th><th>Prompt tokens</th><th>Completion tokens</th><th>Users</th></tr></thead>
         <tbody>
@@ -69,6 +72,7 @@
         {% endfor %}
         </tbody>
     </table>
+    </div>
     {% else %}
     <div class="af-flag" style="margin-top:12px; color:var(--sk-text-dim);">No AI usage recorded yet.</div>
     {% endif %}

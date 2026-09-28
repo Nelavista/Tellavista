@@ -7,7 +7,6 @@ from app.extensions import db
 from app.models import (
     Skill, SkillCategory, SkillCourse, CourseModule, Lesson, Cohort, CohortEnrollment,
     GradeScale, GradeWeight, Assignment, AssignmentSubmission, Quiz, StudentQuizAttempt,
-    StudentLessonProgress,
 )
 from app.services.gpa_service import compute_skill_gpa, DEFAULT_GRADE_SCALE, DEFAULT_GRADE_WEIGHTS
 

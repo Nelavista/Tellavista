@@ -12,10 +12,9 @@ at 0:00. What the server must guarantee:
 """
 import json
 
-import pytest
 
 from app.extensions import db
-from app.models import CBTQuestion, CBTAttempt, User
+from app.models import CBTQuestion
 from app.routes.cbt_routes import (cbt_time_limit_seconds, CBT_MIN_TIME_SECONDS,
                                    CBT_SECONDS_PER_QUESTION)
 

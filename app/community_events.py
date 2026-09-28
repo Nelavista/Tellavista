@@ -1,4 +1,4 @@
-from flask import request, session
+from flask import session
 from flask_socketio import join_room, leave_room
 from app.extensions import socketio
 from app.models import GroupMember, User

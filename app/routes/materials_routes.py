@@ -8,7 +8,6 @@ from flask import (Blueprint, render_template, request, jsonify, session,
 from app.utils.helpers import login_required, admin_required, check_profile_complete
 from app.models import User, Material, Course, Topic, University
 from app.extensions import db
-from app.config import OPENROUTER_API_KEY
 from app.services.progress_service import record_material_view, get_recent_material_views
 from app.services.academic_context import resolve_academic_context, sync_user_university
 from app.services.insights_service import touch_topic_activity

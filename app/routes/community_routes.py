@@ -2,7 +2,7 @@ import os
 import time
 import cloudinary
 import cloudinary.uploader
-from flask import Blueprint, render_template, request, jsonify, session, redirect, url_for
+from flask import Blueprint, request, jsonify, session, redirect, url_for
 from app.utils.helpers import login_required
 from app.models import User, Group, GroupMember, GroupMessage, GroupFile
 from app.extensions import db, socketio

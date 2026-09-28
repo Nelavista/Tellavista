@@ -82,7 +82,6 @@ def test_signup_emits_event(client, monkeypatch):
 
 def test_cbt_submit_emits_scored_event(app, client, make_user, login_as, monkeypatch):
     """Route wiring: an auto-scored submit emits cbt_submitted with the score."""
-    from datetime import datetime
     import json as _json
     from app.models import CBTAttempt, CBTQuestion
 

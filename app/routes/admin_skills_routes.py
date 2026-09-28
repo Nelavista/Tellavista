@@ -5,8 +5,8 @@ from app.utils.helpers import login_required, admin_required
 from app.models import (
     SkillCategory, Skill, LearningPath, LearningPathStep, SkillCourse, CourseModule,
     Lesson, Quiz, Challenge, ChallengeSubmission, ProjectTemplate, StudentProject, StudentSkill,
-    StudentOnboarding, CareerTrack, CareerTrackStep, Assignment, AssignmentSubmission,
-    GradeScale, GradeWeight, Cohort, CohortEnrollment, EmployerProfile, User,
+    StudentOnboarding, CareerTrack, CareerTrackStep, Assignment,
+    GradeScale, GradeWeight, Cohort, CohortEnrollment, User,
     Opportunity, OpportunityApplication, Rating, Competition, CompetitionEntry,
 )
 from app.extensions import db

@@ -1,8 +1,7 @@
 """Finds (and optionally deactivates) Material rows whose file_url points at a local
 static file that does not exist on disk -- the root cause behind the Level 1 audit's
 "~88% of seeded material links are broken" finding. The seed scripts themselves
-(seed_materials.py, seed_100_level_science_500.py, seed_200_to_400_COMPLETE.py,
-seed_200_to_400_level_science.py, seed_30_courses.py) were fixed separately to stop
+(seed_materials.py, seed_100_level_science_500.py, seed_200_to_400_COMPLETE.py) were fixed separately to stop
 CREATING new dead-link rows going forward -- this script is for cleaning up rows that
 were already seeded into a real database before that fix existed.
 

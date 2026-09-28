@@ -1,9 +1,9 @@
 from flask import request, session, current_app
-from flask_socketio import emit, join_room, leave_room
+from flask_socketio import emit, join_room
 from app.extensions import socketio, db
 from app.models import Room, User
 from app.services.meeting_service import (
-    rooms, participants, room_authority,
+    rooms, participants,
     get_or_create_room, get_room_authority, get_participants_list,
     append_chat_message, cleanup_room, end_room_session, schedule_teacher_reconnect_check,
 )

@@ -6,7 +6,6 @@ regardless of thread count. Proves the inbox still shows the correct unread coun
 message, and other-party name after the refactor.
 """
 from app.extensions import db
-from app.models import MessageThread, Message
 from app.services.messaging_service import get_or_create_thread, send_message
 
 

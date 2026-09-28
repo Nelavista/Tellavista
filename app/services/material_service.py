@@ -10,14 +10,14 @@ implemented.".
 
 Deliberately NOT using pytesseract/Tesseract OCR here — that needs a system binary that
 isn't guaranteed to exist in every deployment environment (e.g. Render's default Python
-buildpack doesn't include it). extract_text_from_image() below degrades gracefully instead
-of crashing if Tesseract isn't installed; if OCR turns out to matter, install Tesseract in
-the deploy environment and this will pick it up automatically without further code changes.
+buildpack doesn't include it). The primary image-understanding path in
+routes/ai_routes.py's ask_with_files() sends images straight to a vision-capable model
+instead; if OCR turns out to matter, install Tesseract in the deploy environment and add
+a dedicated OCR helper then.
 """
 import io
 import os
 import re
-import time
 import uuid
 from datetime import datetime
 
@@ -303,32 +303,3 @@ def analyze_document_structure(text):
     }
 
 
-def is_diagram_or_visual(text):
-    """Heuristic: does this caption/alt text suggest a diagram/chart rather than a photo."""
-    if not text:
-        return False
-    keywords = ('diagram', 'chart', 'graph', 'figure', 'flowchart', 'schematic', 'illustration', 'plot')
-    return any(k in text.lower() for k in keywords)
-
-
-def extract_text_from_image(file):
-    """
-    OCR on a standalone image upload. Requires pytesseract + a system Tesseract install,
-    neither of which is guaranteed present in every deploy environment. Degrades gracefully
-    (returns a clear placeholder instead of crashing) if unavailable — the primary image
-    understanding path in routes/ai_routes.py's ask_with_files() already sends images
-    straight to a vision-capable model instead of relying on this function.
-    """
-    try:
-        import pytesseract
-        from PIL import Image
-        file.seek(0)
-        image = Image.open(file)
-        text = pytesseract.image_to_string(image)
-        return text.strip() or "DIAGRAM_OR_VISUAL_CONTENT"
-    except ImportError:
-        debug_print("⚠️ pytesseract/Tesseract not installed — OCR unavailable, skipping")
-        return "DIAGRAM_OR_VISUAL_CONTENT"
-    except Exception as e:
-        debug_print(f"❌ OCR failed: {e}")
-        return "DIAGRAM_OR_VISUAL_CONTENT"

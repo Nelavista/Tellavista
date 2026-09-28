@@ -15,12 +15,12 @@ if hasattr(sys.stdout, 'reconfigure'):
 
 import os
 from datetime import timedelta
-from flask import Flask, send_from_directory, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify
 from werkzeug.middleware.proxy_fix import ProxyFix
 from flask_migrate import Migrate
 from app.config import (DEBUG_MODE, SECRET_KEY, DATABASE_URL, MAX_CONTENT_LENGTH,
                      SESSION_COOKIE_SECURE, SESSION_COOKIE_SAMESITE, SESSION_COOKIE_HTTPONLY,
-                     PERMANENT_SESSION_LIFETIME_DAYS, SOCKETIO_CORS_ORIGINS, REDIS_URL, SUPPORT_EMAIL,
+                     PERMANENT_SESSION_LIFETIME_DAYS, REDIS_URL, SUPPORT_EMAIL,
                      GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET)
 from app.extensions import db, socketio, mail, csrf, limiter, oauth
 from . import logging_config

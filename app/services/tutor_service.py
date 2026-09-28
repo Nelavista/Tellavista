@@ -7,9 +7,7 @@ it builds the tutor's system prompt from live academic context, streams OpenRout
 response token-by-token over SSE, and derives conversation titles/quick-prompts from
 real course/topic data instead of anything hardcoded.
 """
-import json
 import re
-import requests
 from app.extensions import db
 from app.config import OPENROUTER_API_KEY
 from app.models import Topic, Course, Material

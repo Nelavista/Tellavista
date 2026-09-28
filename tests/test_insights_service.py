@@ -7,7 +7,6 @@ All numbers here must come from real rows; the thresholds follow the PRD's rules
 """
 import json
 
-import pytest
 
 from app.extensions import db
 from app.models import (CBTAnswer, CBTAttempt, CBTQuestion, Material,
@@ -132,7 +131,6 @@ def test_revision_recommendation_names_topic_and_links(app, make_user, make_cour
     user = make_user('insight5', university='Lagos State University')
     # Make the topic real in the taxonomy so the link can resolve.
     with app.app_context():
-        from app.models import Course as CourseModel
         t = Topic(course_id=course.id, title='Linked Lists', order=1)
         db.session.add(t)
         db.session.commit()

@@ -8,9 +8,8 @@ Red-team scenarios this file exercises directly:
   - one student cannot submit against another student's attempt_id (IDOR)
 """
 import json
-import pytest
 from app.extensions import db
-from app.models import CBTQuestion, CBTAttempt, User
+from app.models import CBTQuestion
 
 
 def _seed_mth_questions(app):

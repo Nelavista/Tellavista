@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, jsonify, redirect, url_for
+from flask import Blueprint, render_template, request, jsonify
 from sqlalchemy.exc import IntegrityError
 from app.utils.helpers import login_required, admin_required
 from app.models import University, Faculty, Department, Course, Topic, Material, TopicProgress, TutorConversation

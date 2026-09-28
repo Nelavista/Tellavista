@@ -8,14 +8,14 @@ import traceback
 from datetime import datetime
 from app.models import User, Material, AnalyzerSession, Topic
 from flask import Blueprint, render_template, request, session, jsonify, send_from_directory, current_app, redirect, url_for
-from app.utils.helpers import login_required, debug_print, get_session_memory, add_to_session_memory, cleanup_old_files, allowed_file
-from app.services.material_service import extract_text_from_pdf, extract_text_from_pdf_turbo, extract_images_from_pdf, extract_tables_from_pdf, analyze_document_structure, extract_text_from_image, is_diagram_or_visual
-from app.services.ai_service import generate_turbo_style_notes, safe_markdown_to_html, generate_test_questions
+from app.utils.helpers import login_required, debug_print, get_session_memory, add_to_session_memory, cleanup_old_files
+from app.services.material_service import extract_text_from_pdf, extract_text_from_pdf_turbo, extract_images_from_pdf, extract_tables_from_pdf, analyze_document_structure
+from app.services.ai_service import generate_turbo_style_notes, generate_test_questions
 from app.services.academic_context import resolve_academic_context, find_course
 from app.models import UserQuestions, UserPreferences
 from app.extensions import db, limiter
 import requests
-from app.config import OPENROUTER_API_KEY
+from app.config import OPENROUTER_API_KEY, allowed_file
 
 ai_bp = Blueprint('ai', __name__)
 

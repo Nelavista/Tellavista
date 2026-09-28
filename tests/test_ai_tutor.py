@@ -8,7 +8,6 @@ import json
 from datetime import datetime
 import pytest
 from app.extensions import db
-from app.models import TutorConversation, TutorMessage
 
 
 @pytest.fixture

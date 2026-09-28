@@ -17,8 +17,7 @@ import pytest
 from app.extensions import db
 from app.models import Material, MaterialView, User
 from app.routes.academia_routes import resume_url
-from app.services.progress_service import (record_material_view, get_resume_pages,
-                                           get_recent_material_views)
+from app.services.progress_service import record_material_view, get_resume_pages
 
 
 def _make_material(app, title='Data Structures Notes', **kw):

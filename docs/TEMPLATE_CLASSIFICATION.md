@@ -1,5 +1,16 @@
 # Template Classification Report
 
+> **Update (2026-09-28 cleanup pass):** the `archive/` directory has been **deleted**
+> (git history keeps it). Every template listed under **B — Legacy** and **C — Dead**
+> below, plus the Tawfiq-extraction files, is gone from the working tree; the tables are
+> retained as the record of *why* they were removed. Root-level strays the sweep also
+> identified (`utils.py`, `services.py`, backup `app.py` variants, duplicate `images/`
+> folders, `verify_email.com`) were already deleted — none exist anymore. The
+> authoritative liveness check today is `scripts/audit/check_template_links.py`
+> (every template link vs. the real Flask URL map) plus the whole-route sweep in
+> `tests/test_route_smoke.py`; re-run those instead of trusting this snapshot for
+> current template *counts* (the active set has grown since this file was written).
+
 Every template under `templates/` (51 files, plus the orphaned `templates/pages/settings.html`),
 classified per the decision in this refactor: **Active** (keep, currently rendered by a live
 route), **Legacy** (superseded but kept for reference, archived out of Flask's template path),

@@ -7,12 +7,12 @@ threaded conversations, streamed responses, and live academic-context grounding.
 """
 import json
 import traceback
-from datetime import datetime, timedelta
+from datetime import datetime
 
 from flask import Blueprint, render_template, request, session, jsonify, Response, stream_with_context
 
 from app.extensions import db, limiter
-from app.models import User, Course, Topic, Material, TutorConversation, TutorMessage, UserPreferences
+from app.models import User, Topic, Material, TutorConversation, TutorMessage, UserPreferences
 from app.utils.helpers import login_required, debug_print
 from app.services.academic_context import resolve_academic_context, find_course
 from app.services.material_service import get_or_extract_material_text

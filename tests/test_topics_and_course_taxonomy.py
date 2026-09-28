@@ -6,7 +6,6 @@ topic page rendering (including the "zero topics should not 404" empty state), a
 taxonomy backfill script's matching logic.
 """
 import io
-import json
 
 from app.extensions import db
 from app.models import Material, Topic, Course, TopicProgress

@@ -5,14 +5,12 @@ from flask import Blueprint, render_template, request, session, redirect, url_fo
 from app.utils.helpers import login_required, debug_print
 from app.models import User, CBTQuestion, CBTAttempt, CBTAnswer, UserPreferences
 from app.extensions import db, limiter
-from app.config import OPENROUTER_API_KEY
 from app.services.academic_context import resolve_academic_context, find_course
 from app.services.cbt_bank import normalize_course_code, question_bank_query, question_counts
 from app.services.progress_service import get_cbt_summary
 from app.services.insights_service import update_topic_mastery_from_attempt
 from app.services.notification_service import notify
 from app.services import analytics
-import requests
 
 cbt_bp = Blueprint('cbt', __name__)
 

@@ -7,8 +7,7 @@
    four auth screens never drift apart.
 
    Pairs with main.css for shared tokens (--bg-deep, --accent, --grad-main, etc.)
-   and components/navbar.html for the top bar (same public-site shell as landing,
-   about, privacy-policy, terms-of-service).
+   and the Nelavista home link, which replaces the public-site navbar here.
    ============================================================ */
 
 /* ─── BODY ─── */
@@ -39,8 +38,7 @@ body.auth-page::before {
   mask-image: linear-gradient(to bottom, black, transparent 80%);
 }
 
-/* z-index layering: navbar (1000) > auth content (1) */
-body.auth-page #top-bar,
+/* Keep form content above the decorative page background. */
 body.auth-page .logo-section,
 body.auth-page .login-container,
 body.auth-page .signup-container,
@@ -84,7 +82,7 @@ body.auth-page .auth-legal {
 /* ─── LOGO SECTION ─── */
 .auth-page .logo-section {
   text-align: center;
-  margin: 80px 0 20px;          /* 80px clears the fixed navbar */
+  margin: 0 0 20px;
   animation: fadeInUp 0.7s ease-out forwards;
   opacity: 0;
 }
@@ -101,6 +99,7 @@ body.auth-page .auth-legal {
   margin-bottom: 0.5rem;
   letter-spacing: -0.02em;
 }
+.auth-page a.logo { text-decoration: none; cursor: pointer; }
 
 .auth-page .logo img { width: 48px; height: 48px; border-radius: 12px; object-fit: cover; -webkit-text-fill-color: initial; }
 
@@ -489,7 +488,7 @@ body.light-theme.auth-page .logo {
 
 /* ─── RESPONSIVE ─── */
 @media (max-width: 768px) {
-  body.auth-page { padding: 88px 14px 24px; justify-content: flex-start; }
+  body.auth-page { padding: 24px 14px; justify-content: flex-start; }
   .auth-page .logo-section { margin-top: 24px; }
   .auth-page .logo { font-size: 2.4rem; }
   .auth-page .login-container,
@@ -524,9 +523,8 @@ i, .ri, .fas { font-style: normal; }
 /* Shared split image layout for login, signup, and password recovery screens. */
 body.auth-page { display: block; min-height: 100svh; padding: 0; overflow-x: clip; }
 body.auth-page::before { display: none; }
-body.auth-page #top-bar { position: fixed; z-index: 1000; }
 .auth-layout { display: grid; grid-template-columns: minmax(420px, 1fr) minmax(0, 1fr); min-height: 100svh; }
-.auth-content { display: flex; flex-direction: column; align-items: center; justify-content: center; min-width: 0; padding: 104px 28px 34px; }
+.auth-content { display: flex; flex-direction: column; align-items: center; justify-content: center; min-width: 0; padding: 34px 28px; }
 .auth-page .logo-section { width: 100%; margin: 0 0 22px; }
 .auth-page .tagline { max-width: 440px; }
 .auth-page .login-container, .auth-page .signup-container, .auth-page .reset-container { margin: 0 0 14px; }
@@ -541,6 +539,6 @@ body.auth-page #top-bar { position: fixed; z-index: 1000; }
 }
 @media (max-width: 760px) {
   .auth-layout { display: block; min-height: 100svh; }
-  .auth-content { min-height: 100svh; padding: 100px 20px 28px; }
+  .auth-content { min-height: 100svh; padding: 36px 20px 28px; }
   .auth-image-panel { display: none; }
 }

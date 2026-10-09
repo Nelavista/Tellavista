@@ -35,12 +35,11 @@
     <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
 </head>
 <body class="auth-page">
-    {% include 'components/navbar.html' %}
     <main class="auth-layout">
       <div class="auth-content">
 
     <div class="logo-section">
-        <div class="logo"><img src="{{ url_for('static', filename='images/nelavista-logo.png') }}" alt="">Nelavista for Employers</div>
+        <a class="logo" href="{{ url_for('dashboard.landing') }}" aria-label="Nelavista home"><img src="{{ url_for('static', filename='images/nelavista-logo.png') }}" alt="">Nelavista for Employers</a>
         <div class="tagline">Find students by what they've actually demonstrated — Skill GPA, real projects, and cohort rank — not self-reported skills.</div>
     </div>
 

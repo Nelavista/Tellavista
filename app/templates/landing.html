@@ -143,59 +143,81 @@
     <!-- ═══ JOURNEY ═══ -->
     <section class="journey-section">
       <div class="container">
-        <div class="section-head reveal">
-          <span class="section-label">The idea</span>
-          <h2 class="section-title bg">Learn something. Build something. Get somewhere.</h2>
-          <p class="section-desc">Nelavista is designed to help students move beyond consuming information. The goal is progress: from learning in university to developing valuable skills and accessing real opportunities.</p>
+        <div class="idea-layout">
+          <div class="idea-copy reveal">
+            <span class="section-label">The idea</span>
+            <h2 class="section-title bg">Learn something. Build something. Get somewhere.</h2>
+            <p class="section-desc">Nelavista is designed to help students move beyond consuming information. The goal is progress: from learning in university to developing valuable skills and accessing real opportunities.</p>
+          </div>
+          <div class="idea-crossing" role="group" aria-label="Learning journey: University, learn, build skills, build projects, discover opportunities, earn">
+            <div class="idea-strip idea-strip-a">
+              <div class="idea-marquee idea-marquee-left">
+                <ol class="idea-sequence">
+                  <li class="idea-chip"><span>01</span>University</li><li class="idea-chip"><span>02</span>Learn</li><li class="idea-chip"><span>03</span>Build skills</li><li class="idea-chip"><span>04</span>Build projects</li><li class="idea-chip"><span>05</span>Discover opportunities</li><li class="idea-chip idea-chip-payoff"><span>06</span>Earn</li>
+                </ol>
+                <ol class="idea-sequence" aria-hidden="true">
+                  <li class="idea-chip"><span>01</span>University</li><li class="idea-chip"><span>02</span>Learn</li><li class="idea-chip"><span>03</span>Build skills</li><li class="idea-chip"><span>04</span>Build projects</li><li class="idea-chip"><span>05</span>Discover opportunities</li><li class="idea-chip idea-chip-payoff"><span>06</span>Earn</li>
+                </ol>
+              </div>
+            </div>
+            <div class="idea-strip idea-strip-b">
+              <div class="idea-marquee idea-marquee-right">
+                <ol class="idea-sequence">
+                  <li class="idea-chip"><span>01</span>University</li><li class="idea-chip"><span>02</span>Learn</li><li class="idea-chip"><span>03</span>Build skills</li><li class="idea-chip"><span>04</span>Build projects</li><li class="idea-chip"><span>05</span>Discover opportunities</li><li class="idea-chip idea-chip-payoff"><span>06</span>Earn</li>
+                </ol>
+                <ol class="idea-sequence" aria-hidden="true">
+                  <li class="idea-chip"><span>01</span>University</li><li class="idea-chip"><span>02</span>Learn</li><li class="idea-chip"><span>03</span>Build skills</li><li class="idea-chip"><span>04</span>Build projects</li><li class="idea-chip"><span>05</span>Discover opportunities</li><li class="idea-chip idea-chip-payoff"><span>06</span>Earn</li>
+                </ol>
+              </div>
+            </div>
+          </div>
         </div>
-        <ol class="journey-track reveal">
-          <li>University</li>
-          <li>Learn</li>
-          <li>Build skills</li>
-          <li>Build projects</li>
-          <li>Discover opportunities</li>
-          <li>Earn</li>
-        </ol>
       </div>
     </section>
 
     <!-- ═══ ACADEMIC FEATURES ═══ -->
-    <section class="features-section">
+    <section class="features-section academics-section">
       <div class="container">
         <div class="features-header reveal">
           <span class="section-label">Academics</span>
           <h2 class="section-title bg">Your academic life, organized.</h2>
         </div>
-        <div class="features-grid">
-          <div class="feature-card reveal">
-            <div class="feature-icon"><i class="ri-chat-smile-2-line"></i></div>
-            <h3>Ask Nelavista</h3>
-            <p>Your academic assistant for understanding difficult concepts, courses, and study questions.</p>
+      </div>
+      <div class="academics-carousel" role="region" aria-label="Academic features">
+        <div class="academics-track">
+          <div class="academics-set" role="list">
+            <article class="academics-card" role="listitem">
+              <img src="{{ url_for('static', filename='images/landing/platform-discover.webp') }}" alt="Student using a computer to explore academic topics" loading="lazy" decoding="async">
+              <div class="academics-copy"><h3>Ask Nelavista</h3><p>Your academic assistant for understanding difficult concepts, courses, and study questions.</p></div>
+            </article>
+            <article class="academics-card" role="listitem">
+              <img src="{{ url_for('static', filename='images/landing/platform-learn.webp') }}" alt="Student learning and preparing for exams" loading="lazy" decoding="async">
+              <div class="academics-copy"><h3>CBT Practice</h3><p>Practice with exam-style questions and track your performance.</p></div>
+            </article>
+            <article class="academics-card" role="listitem">
+              <img src="{{ url_for('static', filename='images/landing/platform-build.webp') }}" alt="Organized student workspace with study resources" loading="lazy" decoding="async">
+              <div class="academics-copy"><h3>Study Materials</h3><p>Keep your academic resources organized in one place.</p></div>
+            </article>
+            <article class="academics-card" role="listitem">
+              <img src="{{ url_for('static', filename='images/landing/platform-campus.webp') }}" alt="Focused student reviewing study notes" loading="lazy" decoding="async">
+              <div class="academics-copy"><h3>Analyze Materials</h3><p>Upload notes, PDFs, and learning materials and make them easier to understand.</p></div>
+            </article>
+            <article class="academics-card" role="listitem">
+              <img src="{{ url_for('static', filename='images/landing/auth-campus.webp') }}" alt="Student studying on campus" loading="lazy" decoding="async">
+              <div class="academics-copy"><h3>Your Courses</h3><p>See your courses, topics, and learning resources in one structured environment.</p></div>
+            </article>
+            <article class="academics-card" role="listitem">
+              <img src="{{ url_for('static', filename='images/landing/hero-student.webp') }}" alt="Student looking ahead while working on a laptop" loading="lazy" decoding="async">
+              <div class="academics-copy"><h3>Progress</h3><p>Track your learning and improvement over time.</p></div>
+            </article>
           </div>
-          <div class="feature-card reveal">
-            <div class="feature-icon"><i class="ri-questionnaire-line"></i></div>
-            <h3>CBT Practice</h3>
-            <p>Practice with exam-style questions and track your performance.</p>
-          </div>
-          <div class="feature-card reveal">
-            <div class="feature-icon"><i class="ri-book-open-line"></i></div>
-            <h3>Study Materials</h3>
-            <p>Keep your academic resources organized in one place.</p>
-          </div>
-          <div class="feature-card reveal">
-            <div class="feature-icon"><i class="ri-file-search-line"></i></div>
-            <h3>Analyze Materials</h3>
-            <p>Upload notes, PDFs, and learning materials and make them easier to understand.</p>
-          </div>
-          <div class="feature-card reveal">
-            <div class="feature-icon"><i class="ri-book-open-line"></i></div>
-            <h3>Your Courses</h3>
-            <p>See your courses, topics, and learning resources in one structured environment.</p>
-          </div>
-          <div class="feature-card reveal">
-            <div class="feature-icon"><i class="ri-bar-chart-line"></i></div>
-            <h3>Progress</h3>
-            <p>Track your learning and improvement over time.</p>
+          <div class="academics-set" role="list" aria-hidden="true">
+            <article class="academics-card" role="listitem"><img src="{{ url_for('static', filename='images/landing/platform-discover.webp') }}" alt="" loading="lazy" decoding="async"><div class="academics-copy"><h3>Ask Nelavista</h3><p>Your academic assistant for understanding difficult concepts, courses, and study questions.</p></div></article>
+            <article class="academics-card" role="listitem"><img src="{{ url_for('static', filename='images/landing/platform-learn.webp') }}" alt="" loading="lazy" decoding="async"><div class="academics-copy"><h3>CBT Practice</h3><p>Practice with exam-style questions and track your performance.</p></div></article>
+            <article class="academics-card" role="listitem"><img src="{{ url_for('static', filename='images/landing/platform-build.webp') }}" alt="" loading="lazy" decoding="async"><div class="academics-copy"><h3>Study Materials</h3><p>Keep your academic resources organized in one place.</p></div></article>
+            <article class="academics-card" role="listitem"><img src="{{ url_for('static', filename='images/landing/platform-campus.webp') }}" alt="" loading="lazy" decoding="async"><div class="academics-copy"><h3>Analyze Materials</h3><p>Upload notes, PDFs, and learning materials and make them easier to understand.</p></div></article>
+            <article class="academics-card" role="listitem"><img src="{{ url_for('static', filename='images/landing/auth-campus.webp') }}" alt="" loading="lazy" decoding="async"><div class="academics-copy"><h3>Your Courses</h3><p>See your courses, topics, and learning resources in one structured environment.</p></div></article>
+            <article class="academics-card" role="listitem"><img src="{{ url_for('static', filename='images/landing/hero-student.webp') }}" alt="" loading="lazy" decoding="async"><div class="academics-copy"><h3>Progress</h3><p>Track your learning and improvement over time.</p></div></article>
           </div>
         </div>
       </div>
@@ -203,22 +225,20 @@
 
     <!-- ═══ OPPORTUNITIES ═══ -->
     <section class="opportunities-section" id="opportunities">
-      <div class="container">
-        <div class="opp-layout">
-          <div class="reveal">
-            <span class="section-label">Opportunities</span>
-            <h2 class="section-title bg">What you learn should take you somewhere.</h2>
-            <p class="section-desc">Discover internships, jobs, freelance work, competitions, scholarships, events, and other opportunities that help turn your skills into real-world experience.</p>
-            <a href="/signup" class="btn-ghost opp-cta">See opportunities <i class="ri-arrow-right-line"></i></a>
-          </div>
-          <div class="opp-types reveal">
-            <div class="opp-type"><i class="ri-briefcase-4-line"></i><span>Internships &amp; jobs</span></div>
-            <div class="opp-type"><i class="ri-macbook-line"></i><span>Freelance work</span></div>
-            <div class="opp-type"><i class="ri-trophy-line"></i><span>Competitions</span></div>
-            <div class="opp-type"><i class="ri-award-line"></i><span>Scholarships</span></div>
-            <div class="opp-type"><i class="ri-calendar-event-line"></i><span>Events &amp; fellowships</span></div>
-            <div class="opp-type"><i class="ri-seedling-line"></i><span>Entrepreneurship</span></div>
-          </div>
+      <div class="opportunities-stage" data-opportunity-reveal>
+        <div class="opp-center">
+          <span class="section-label">Opportunities</span>
+          <h2 class="section-title bg">What you learn should take you somewhere.</h2>
+          <p>Discover internships, jobs, freelance work, competitions, scholarships, events, and other opportunities that help turn your skills into real-world experience.</p>
+          <a href="{{ url_for('auth.signup') }}" class="btn-primary opp-cta">See opportunities <i class="ri-arrow-right-line" aria-hidden="true"></i></a>
+        </div>
+        <div class="opp-cards" aria-label="Types of opportunities">
+          <article class="opp-card opp-card-1"><div class="opp-card-arrival"><div class="opp-card-surface"><i class="ri-briefcase-4-line opp-card-icon" aria-hidden="true"></i><h3>Internships &amp; jobs</h3></div></div></article>
+          <article class="opp-card opp-card-2"><div class="opp-card-arrival"><div class="opp-card-surface"><i class="ri-laptop-line opp-card-icon" aria-hidden="true"></i><h3>Freelance work</h3></div></div></article>
+          <article class="opp-card opp-card-3"><div class="opp-card-arrival"><div class="opp-card-surface"><i class="ri-trophy-line opp-card-icon" aria-hidden="true"></i><h3>Competitions</h3></div></div></article>
+          <article class="opp-card opp-card-4"><div class="opp-card-arrival"><div class="opp-card-surface"><i class="ri-graduation-cap-line opp-card-icon" aria-hidden="true"></i><h3>Scholarships</h3></div></div></article>
+          <article class="opp-card opp-card-5"><div class="opp-card-arrival"><div class="opp-card-surface"><i class="ri-calendar-event-line opp-card-icon" aria-hidden="true"></i><h3>Events &amp; fellowships</h3></div></div></article>
+          <article class="opp-card opp-card-6"><div class="opp-card-arrival"><div class="opp-card-surface"><i class="ri-lightbulb-flash-line opp-card-icon" aria-hidden="true"></i><h3>Entrepreneurship</h3></div></div></article>
         </div>
       </div>
     </section>
@@ -256,36 +276,44 @@
     </section>
 
     <!-- ═══ WHY NELAVISTA ═══ -->
-    <section class="why-section">
+    <section class="why-founder-section" id="about">
       <div class="container">
-        <div class="why-layout">
-          <div class="reveal">
-            <span class="section-label">Why Nelavista</span>
-            <h2 class="section-title bg">Built around the real African student experience.</h2>
-          </div>
-          <div class="reveal">
-            <p class="why-copy">Students often have to jump between WhatsApp groups, Google, YouTube, PDFs, random websites, separate learning platforms, job boards, and campus information, just to get through a single semester.</p>
-            <p class="why-copy">Nelavista is bringing these experiences together, into one platform built for how African university students actually study, learn, and move forward.</p>
-          </div>
-        </div>
-      </div>
-    </section>
+        <div class="why-founder-layout">
+          <div class="why-founder-story">
+            <div class="why-founder-intro reveal">
+              <span class="section-label">Why Nelavista</span>
+              <h2 class="section-title bg">Built around the real African student experience.</h2>
+              <p class="why-copy">Students often have to jump between WhatsApp groups, Google, YouTube, PDFs, random websites, separate learning platforms, job boards, and campus information, just to get through a single semester.</p>
+            </div>
 
-    <!-- ═══ FOUNDER ═══ -->
-    <section class="founder-section" id="about">
-      <div class="container">
-        <div class="founder-card reveal">
-          <div class="founder-content">
-            <span class="section-label">Founder</span>
-            <h2 class="section-title bg" style="font-size:clamp(1.6rem,4vw,2.1rem);margin-bottom:20px;">Built by a student who understands the problem.</h2>
-            <p class="founder-quote">I built Nelavista because I experienced the same fragmented university life we're trying to fix: searching for materials, preparing for exams, learning skills independently, and trying to figure out what comes after graduation.</p>
-            <p class="founder-quote">Nelavista is my attempt to build the platform I wish I had as a student.</p>
-            <div class="founder-name bg">Abdul Afeez Tella</div>
-            <div class="founder-role">Founder &amp; CEO, Nelavista</div>
+            <div class="fragment-field" data-fragment-reveal role="img" aria-label="Many disconnected resources come together into one platform: Nelavista.">
+              <span class="fragment-chip" style="--tx:-176px;--ty:-54px;--tilt:-9deg">WhatsApp groups</span>
+              <span class="fragment-chip" style="--tx:-42px;--ty:-72px;--tilt:7deg">Google</span>
+              <span class="fragment-chip" style="--tx:112px;--ty:-62px;--tilt:-6deg">YouTube</span>
+              <span class="fragment-chip" style="--tx:195px;--ty:-4px;--tilt:8deg">PDFs</span>
+              <span class="fragment-chip" style="--tx:-194px;--ty:8px;--tilt:5deg">Random websites</span>
+              <span class="fragment-chip" style="--tx:-104px;--ty:66px;--tilt:-7deg">Learning platforms</span>
+              <span class="fragment-chip" style="--tx:64px;--ty:70px;--tilt:6deg">Job boards</span>
+              <span class="fragment-chip" style="--tx:194px;--ty:62px;--tilt:-8deg">Campus info</span>
+              <span class="unified-pill">Nelavista</span>
+            </div>
+
+            <p class="why-copy why-copy-last">Nelavista is bringing these experiences together, into one platform built for how African university students actually study, learn, and move forward.</p>
+
+            <div class="founder-divider"><span>Founder</span></div>
+            <h3 class="founder-story-heading">Built by a student who understands the problem.</h3>
+            <blockquote class="founder-quote-block">
+              <p>I built Nelavista because I experienced the same fragmented university life we're trying to fix: searching for materials, preparing for exams, learning skills independently, and trying to figure out what comes after graduation.</p>
+              <p>Nelavista is my attempt to build the platform I wish I had as a student.</p>
+            </blockquote>
           </div>
-          <div class="founder-photo-wrap">
-            <img src="{{ url_for('static', filename='media/founder.jpeg') }}" alt="Abdul Afeez Tella" class="founder-avatar">
-          </div>
+
+          <figure class="founder-portrait">
+            <span class="founder-pin-line" aria-hidden="true"></span>
+            <span class="founder-pin-dot" aria-hidden="true"></span>
+            <img src="{{ url_for('static', filename='images/landing/founder.webp') }}" alt="Nelavista founder Abdul Afeez Tella" loading="lazy" decoding="async">
+            <figcaption><strong>Abdul Afeez Tella</strong><span>Founder &amp; CEO, Nelavista</span></figcaption>
+          </figure>
         </div>
       </div>
     </section>
@@ -309,5 +337,6 @@
 
 
   <script src="{{ url_for('static', filename='js/nav.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/landing-story.js') }}" defer></script>
 </body>
 </html>

@@ -24,6 +24,9 @@
 <body class="auth-page">
   {% include 'components/navbar.html' %}
 
+  <main class="auth-layout">
+    <div class="auth-content">
+
   <div class="logo-section">
     <div class="logo"><img src="{{ url_for('static', filename='images/nelavista-logo.png') }}" alt="">Nelavista</div>
     <div class="tagline">Your AI-powered learning companion</div>
@@ -99,7 +102,13 @@
     </div>
   </div>
 
-  <p class="auth-legal"><a href="/privacy-policy">Privacy</a> · <a href="/terms-of-service">Terms</a></p>
+<p class="auth-legal"><a href="/privacy-policy">Privacy</a> &middot; <a href="/terms-of-service">Terms</a></p>
+    </div>
+    <aside class="auth-image-panel">
+      <img src="{{ url_for('static', filename='images/landing/auth-campus.webp') }}" alt="A focused student seated on campus steps, studying outdoors" loading="eager" decoding="async">
+      <div class="auth-image-caption"><span>Make university work for your future.</span></div>
+    </aside>
+  </main>
 
   <script src="{{ url_for('static', filename='js/nav.js') }}"></script>
   <script>

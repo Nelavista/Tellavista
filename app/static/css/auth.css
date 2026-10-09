@@ -520,3 +520,27 @@ body.light-theme.auth-page .logo {
 /* ─── UTILITIES ─── */
 button, input { -webkit-tap-highlight-color: transparent; }
 i, .ri, .fas { font-style: normal; }
+
+/* Shared split image layout for login, signup, and password recovery screens. */
+body.auth-page { display: block; min-height: 100svh; padding: 0; overflow-x: clip; }
+body.auth-page::before { display: none; }
+body.auth-page #top-bar { position: fixed; z-index: 1000; }
+.auth-layout { display: grid; grid-template-columns: minmax(420px, 1fr) minmax(0, 1fr); min-height: 100svh; }
+.auth-content { display: flex; flex-direction: column; align-items: center; justify-content: center; min-width: 0; padding: 104px 28px 34px; }
+.auth-page .logo-section { width: 100%; margin: 0 0 22px; }
+.auth-page .tagline { max-width: 440px; }
+.auth-page .login-container, .auth-page .signup-container, .auth-page .reset-container { margin: 0 0 14px; }
+.auth-page .auth-legal { margin: 0; }
+.auth-image-panel { position: sticky; top: 0; height: 100svh; min-height: 560px; overflow: hidden; isolation: isolate; background: #d7e1ef; }
+.auth-image-panel > img { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; object-fit: cover; object-position: center 42%; }
+.auth-image-panel::after { content: ''; position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, rgba(255,255,255,.34), rgba(255,255,255,.06) 42%, rgba(21,53,168,.2)); }
+.auth-image-caption { position: absolute; right: 32px; bottom: 34px; left: 32px; padding: 20px 22px; color: #1535a8; border: 1px solid rgba(255,255,255,.62); border-radius: 18px; background: rgba(255,255,255,.55); font-size: 1.02rem; font-weight: 700; backdrop-filter: blur(14px); }
+@media (max-width: 900px) {
+  .auth-layout { grid-template-columns: minmax(360px, 1fr) minmax(0, .82fr); }
+  .auth-content { padding-right: 20px; padding-left: 20px; }
+}
+@media (max-width: 760px) {
+  .auth-layout { display: block; min-height: 100svh; }
+  .auth-content { min-height: 100svh; padding: 100px 20px 28px; }
+  .auth-image-panel { display: none; }
+}

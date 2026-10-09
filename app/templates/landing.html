@@ -17,6 +17,7 @@
   <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css') }}">
+  <link rel="preload" as="image" href="{{ url_for('static', filename='images/landing/hero-student.webp') }}" fetchpriority="high">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
 </head>
@@ -26,82 +27,21 @@
 
   <main>
     <section class="hero-section" id="home">
+      <img class="hero-background" src="{{ url_for('static', filename='images/landing/hero-student.webp') }}" alt="" fetchpriority="high" decoding="async">
       <div class="container hero-container">
-        <h1 class="hero-headline bg reveal">The platform built for<br><em>African university students.</em></h1>
-        <p class="hero-sub reveal">Learn your courses. Build real-world skills. Find opportunities. Navigate campus. And move from student to professional, all in one place.</p>
+        <h1 class="hero-headline reveal">Your university journey is bigger than your degree.</h1>
+        <p class="hero-sub reveal">Learn better. Build valuable skills. Discover opportunities.</p>
         <div class="hero-actions reveal">
           <a href="/signup" class="btn-primary">Get started free <i class="ri-arrow-right-line"></i></a>
-          <a href="/#platform" class="btn-ghost">Explore Nelavista</a>
+          <a href="/login" class="hero-login">Already have an account? Log in</a>
         </div>
-        <p class="hero-note reveal">Free for students · Built for African universities</p>
+        <p class="hero-support reveal">Make university work for your future.</p>
+        <p class="hero-note reveal">Free for students &middot; No card required</p>
+        <div class="hero-badge reveal"><span class="hero-badge-dot" aria-hidden="true"></span>Free for students &middot; Built for African universities</div>
 
-        <div class="hero-visual reveal" aria-hidden="true">
-          <div class="hv-frame">
-            <div class="hv-titlebar">
-              <span class="hv-dot"></span><span class="hv-dot"></span><span class="hv-dot"></span>
-              <span class="hv-titlebar-label mono">nelavista.app</span>
-            </div>
-            <div class="hv-body">
-              <nav class="hv-sidebar">
-                <div class="hv-side-item active"><i class="ri-book-open-line"></i><span>Courses</span></div>
-                <div class="hv-side-item"><i class="ri-chat-smile-2-line"></i><span>Ask Nelavista</span></div>
-                <div class="hv-side-item"><i class="ri-stack-line"></i><span>Skills</span></div>
-                <div class="hv-side-item"><i class="ri-questionnaire-line"></i><span>CBT Practice</span></div>
-                <div class="hv-side-item"><i class="ri-briefcase-line"></i><span>Opportunities</span></div>
-                <div class="hv-side-item"><i class="ri-map-pin-line"></i><span>Campus Map</span></div>
-                <div class="hv-side-item"><i class="ri-bar-chart-line"></i><span>Progress</span></div>
-              </nav>
-              <div class="hv-main">
-                <div class="hv-card hv-card-wide">
-                  <div class="hv-card-head">
-                    <i class="ri-chat-smile-2-line"></i>
-                    <span>Ask Nelavista</span>
-                  </div>
-                  <div class="hv-chat-line hv-chat-user">Explain the difference between mitosis and meiosis</div>
-                  <div class="hv-chat-line hv-chat-reply">Mitosis produces two identical cells for growth and repair. Meiosis produces four genetically different cells for reproduction…</div>
-                </div>
-                <div class="hv-card">
-                  <div class="hv-card-head"><i class="ri-stack-line"></i><span>Skill path</span></div>
-                  <div class="hv-skill-name">UI/UX &amp; Product Design</div>
-                  <div class="hv-progress-track"><div class="hv-progress-fill" style="width:64%"></div></div>
-                  <div class="hv-card-meta">Day 19 of 34</div>
-                </div>
-                <div class="hv-card">
-                  <div class="hv-card-head"><i class="ri-questionnaire-line"></i><span>CBT Practice</span></div>
-                  <div class="hv-card-big">78%</div>
-                  <div class="hv-card-meta">Last attempt · MTH 201</div>
-                </div>
-                <div class="hv-card">
-                  <div class="hv-card-head"><i class="ri-briefcase-line"></i><span>Opportunity</span></div>
-                  <div class="hv-skill-name">Frontend gig · Remote</div>
-                  <div class="hv-card-meta">Matched from Web Development</div>
-                </div>
-                <div class="hv-card">
-                  <div class="hv-card-head"><i class="ri-map-pin-line"></i><span>Campus</span></div>
-                  <div class="hv-skill-name">Faculty of Science</div>
-                  <div class="hv-card-meta">4 min walk from Main Gate</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
 
-        {% if stats %}
-        <div class="stat-strip reveal">
-          <div class="stat-item">
-            <div class="stat-num"><span class="count-up" data-target="2500">0</span><span>+</span></div>
-            <div class="stat-label">Students</div>
-          </div>
-          <div class="stat-item">
-            <div class="stat-num"><span class="count-up" data-target="{{ stats.skill_count }}">0</span></div>
-            <div class="stat-label">Skill paths</div>
-          </div>
-          <div class="stat-item">
-            <div class="stat-num"><span class="count-up" data-target="{{ stats.university_count }}">0</span></div>
-            <div class="stat-label">Universities</div>
-          </div>
-        </div>
-        {% endif %}
+
+
       </div>
     </section>
 
@@ -116,6 +56,7 @@
 
         <div class="pillars-grid">
           <div class="pillar-card reveal">
+            <img class="pillar-image" src="{{ url_for('static', filename='images/landing/platform-learn.webp') }}" alt="Student learning on campus" loading="lazy" decoding="async">
             <span class="pillar-num mono">01 · Learn</span>
             <h3>Master your courses</h3>
             <p>Find your course materials, study topics, analyze lecture notes, practice CBT questions, and get academic guidance from Nelavista.</p>
@@ -129,6 +70,7 @@
             </ul>
           </div>
           <div class="pillar-card reveal">
+            <img class="pillar-image" src="{{ url_for('static', filename='images/landing/platform-build.webp') }}" alt="Modern student workspace for building practical skills" loading="lazy" decoding="async">
             <span class="pillar-num mono">02 · Build</span>
             <h3>Build skills that matter</h3>
             <p>Students shouldn't graduate with only academic knowledge. Learn practical, career-relevant skills through structured learning paths: the bridge between your degree and what companies actually need.</p>
@@ -142,6 +84,7 @@
             </ul>
           </div>
           <div class="pillar-card reveal">
+            <img class="pillar-image" src="{{ url_for('static', filename='images/landing/platform-discover.webp') }}" alt="Student discovering opportunities in a digital learning space" loading="lazy" decoding="async">
             <span class="pillar-num mono">03 · Discover</span>
             <h3>Find opportunities built around you</h3>
             <p>Turn what you learn into opportunities: internships, freelance work, competitions, and roles matched to the skills you're building, not a generic job board.</p>
@@ -154,6 +97,7 @@
             </ul>
           </div>
           <div class="pillar-card reveal">
+            <img class="pillar-image" src="{{ url_for('static', filename='images/landing/platform-campus.webp') }}" alt="Focused student studying in a modern study space" loading="lazy" decoding="async">
             <span class="pillar-num mono">04 · Navigate</span>
             <h3>Your university, in one place</h3>
             <p>Less confusion, more connection. Campus maps and university-specific information make everyday university life easier to navigate.</p>
@@ -287,28 +231,33 @@
 
     <!-- ═══ CAMPUS ═══ -->
     <section class="campus-section" id="campus">
-      <div class="container">
-        <div class="campus-layout">
-          <div class="reveal">
-            <span class="section-label">Campus</span>
-            <h2 class="section-title bg">Your campus is part of the platform.</h2>
-            <p class="section-desc">Nelavista is being built university by university, so students can access information relevant to their own institution: lecture locations, facilities, and university-specific academic content, in the same place as everything else.</p>
-            {% if stats %}
-            <p class="campus-count mono">Live at {{ stats.university_count }} Nigerian universities, with more being added.</p>
-            {% endif %}
-          </div>
-          <div class="campus-visual reveal">
-            <iframe
-              title="Lagos State University on Google Maps"
-              src="https://www.google.com/maps?q=Lagos%20State%20University%2C%20Ojo%2C%20Lagos&z=15&output=embed"
-              loading="lazy"
-              referrerpolicy="no-referrer-when-downgrade"
-              allowfullscreen></iframe>
-            <a class="campus-map-link mono" href="https://www.google.com/maps/search/?api=1&query=Lagos+State+University%2C+Ojo%2C+Lagos" target="_blank" rel="noopener noreferrer">
-              Open campus map <i class="ri-arrow-up-right-line" aria-hidden="true"></i>
-            </a>
+      <div class="campus-map-background" aria-hidden="true">
+        <iframe title="" src="https://www.google.com/maps?q=Lagos%20State%20University%2C%20Ojo%2C%20Lagos&z=15&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" tabindex="-1"></iframe>
+      </div>
+      <div class="campus-content">
+        <div class="campus-glass reveal">
+          <span class="section-label">Campus</span>
+          <h2 class="section-title">Your campus is part of the platform.</h2>
+          <p>Nelavista is being built university by university, so students can access relevant lecture locations, facilities, and academic content in the same place as everything else.</p>
+          {% if stats %}<p class="campus-count mono">Live at {{ stats.university_count }} Nigerian universities, with more being added.</p>{% endif %}
+        </div>
+        {% if stats %}
+        <div class="campus-carousel" aria-label="Nelavista platform statistics">
+          <div class="campus-stats-track">
+            <div class="campus-stat-set">
+              <div class="campus-stat"><strong><span class="count-up" data-target="2500">0</span>+</strong><span>Students</span></div>
+              <div class="campus-stat"><strong><span class="count-up" data-target="{{ stats.skill_count }}">0</span></strong><span>Skill paths</span></div>
+              <div class="campus-stat"><strong><span class="count-up" data-target="{{ stats.university_count }}">0</span></strong><span>Universities</span></div>
+            </div>
+            <div class="campus-stat-set" aria-hidden="true">
+              <div class="campus-stat"><strong>2,500+</strong><span>Students</span></div>
+              <div class="campus-stat"><strong>{{ stats.skill_count }}</strong><span>Skill paths</span></div>
+              <div class="campus-stat"><strong>{{ stats.university_count }}</strong><span>Universities</span></div>
+            </div>
           </div>
         </div>
+        {% endif %}
+        <a class="campus-map-link mono" href="https://www.google.com/maps/search/?api=1&query=Lagos+State+University%2C+Ojo%2C+Lagos" target="_blank" rel="noopener noreferrer">Open campus map <i class="ri-arrow-up-right-line" aria-hidden="true"></i></a>
       </div>
     </section>
 

@@ -8,6 +8,7 @@
     <title>Employer Sign Up · Nelavista</title>
     <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
     <style>
         body { min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 100px 20px 20px; }
         .logo-section { text-align: center; margin: 16px 0 24px; }
@@ -33,8 +34,10 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
 </head>
-<body>
+<body class="auth-page">
     {% include 'components/navbar.html' %}
+    <main class="auth-layout">
+      <div class="auth-content">
 
     <div class="logo-section">
         <div class="logo"><img src="{{ url_for('static', filename='images/nelavista-logo.png') }}" alt="">Nelavista for Employers</div>
@@ -70,7 +73,12 @@
         <div class="link-section">
             <p>Already have an account? <a href="{{ url_for('auth.login') }}">Log in</a></p>
         </div>
-    </div>
+      </div>
+      <aside class="auth-image-panel">
+        <img src="{{ url_for('static', filename='images/landing/auth-campus.webp') }}" alt="A focused student seated on campus steps, studying outdoors" loading="eager" decoding="async">
+        <div class="auth-image-caption"><span>Meet the next generation of talent.</span></div>
+      </aside>
+    </main>
 
     {% include 'components/footer.html' %}
 </body>

@@ -124,21 +124,22 @@
       display: inline-block;
       width: 100%;
       padding: 1rem;
-      background: var(--gradient-blue);
+      background: #1535A8;
+      background-image: none;
       color: white;
       border: none;
       border-radius: var(--radius-button);
       font-size: 1rem;
       font-weight: 600;
       cursor: pointer;
-      transition: var(--transition-smooth);
+      transition: background-color var(--t-fast) var(--ease), box-shadow var(--t-fast) var(--ease);
       text-decoration: none;
       box-shadow: var(--shadow-btn);
       letter-spacing: -0.01em;
       box-sizing: border-box;
     }
 
-    .action-btn:hover { transform: translateY(-2px); box-shadow: var(--shadow-btn-hover); filter: brightness(1.05); }
+    .action-btn:hover { background-color: #1d40b4; box-shadow: var(--shadow-btn-hover); }
 
     .resend-section {
       text-align: left;

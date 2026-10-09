@@ -23,10 +23,10 @@
         .form-row .form-group { flex: 1; }
         .form-group { margin-bottom: 1.2rem; }
         label { display: block; margin-bottom: 0.5rem; font-size: 0.88rem; font-weight: 500; color: var(--text-primary); }
-        .input-wrapper { background: var(--bg-deep); border-radius: var(--r-md); border: 1px solid var(--border-hard); }
+        .input-wrapper { background: var(--bg-deep); background-image: none; border-radius: var(--r-md); border: 1px solid var(--border-hard); transition: border-color .2s ease, box-shadow .2s ease; }
         input { width: 100%; padding: 0.85rem 1rem; background: transparent; border: none; outline: none; font-size: 0.95rem; color: var(--text-primary); font-family: inherit; }
-        .submit-btn { width: 100%; padding: 0.95rem; background: var(--grad-main); color: white; border: none; border-radius: var(--r-sm); font-size: 1rem; font-weight: 600; cursor: pointer; margin-top: 0.6rem; }
-        .submit-btn:hover { filter: brightness(1.05); }
+        .submit-btn { width: 100%; padding: 0.95rem; background: #1535A8; background-image: none; color: white; border: none; border-radius: var(--r-sm); font-size: 1rem; font-weight: 600; cursor: pointer; margin-top: 0.6rem; transition: background-color .2s ease, box-shadow .2s ease; }
+        .submit-btn:hover { background-color: #1d40b4; filter: none; }
         .link-section { text-align: center; margin-top: 1.8rem; padding-top: 1.4rem; border-top: 1px solid var(--border-hard); }
         .link-section a { color: var(--accent); text-decoration: none; font-weight: 600; }
         @media (max-width: 560px) { .form-row { flex-direction: column; gap: 0; } .signup-container { padding: 1.6rem 1.3rem; } body { padding: 84px 0 0; } }

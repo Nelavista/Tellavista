@@ -126,14 +126,14 @@ body.light-theme.auth-page .logo {
 .auth-page .login-container,
 .auth-page .signup-container,
 .auth-page .reset-container {
-  background: color-mix(in srgb, var(--bg-surface) 92%, transparent);
-  backdrop-filter: blur(18px);
+  background: var(--bg-surface);
+  backdrop-filter: none;
   padding: 2.5rem 2.2rem;
   border-radius: var(--r-lg);
   width: 100%;
   max-width: 440px;
   border: 1px solid var(--border-hard);
-  box-shadow: var(--shadow-card), var(--glow-accent);
+  box-shadow: var(--shadow-card);
   opacity: 0;
   transform: translateY(10px);
   animation: fadeInUp 0.7s ease-out 0.2s forwards;
@@ -230,15 +230,14 @@ body.light-theme.auth-page .logo {
   display: flex;
   align-items: center;
   background: var(--bg-deep);
+  background-image: none;
   border-radius: var(--r-md);
   border: 1px solid var(--border-hard);
-  transition: all var(--t-fast) var(--ease);
-  will-change: transform, border-color, box-shadow;
+  transition: border-color var(--t-fast) var(--ease), box-shadow var(--t-fast) var(--ease);
 }
 
 .auth-page .input-wrapper:focus-within {
   border-color: var(--accent);
-  transform: translateY(-2px);
   box-shadow: 0 8px 20px rgba(56, 189, 248, 0.12);
 }
 
@@ -252,6 +251,7 @@ body.light-theme.auth-page .logo {
   width: 100%;
   padding: 0.95rem 1.1rem;
   background: transparent;
+  background-image: none;
   border: none;
   outline: none;
   font-size: 1rem;
@@ -317,29 +317,28 @@ body.light-theme.auth-page .logo {
 .auth-page .submit-btn {
   width: 100%;
   padding: 1rem;
-  background: var(--grad-main);
+  background: #1535A8;
+  background-image: none;
   color: white;
   border: none;
   border-radius: var(--r-sm);
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all var(--t-fast) var(--ease);
+  transition: background-color var(--t-fast) var(--ease), box-shadow var(--t-fast) var(--ease);
   margin-top: 0.5rem;
   opacity: 0;
   animation: fadeInUp 0.6s ease-out 0.95s forwards;
-  will-change: transform, box-shadow;
   box-shadow: var(--shadow-btn);
   letter-spacing: -0.01em;
 }
 
 .auth-page .submit-btn:hover:not(:disabled) {
-  transform: translateY(-3px);
+  background-color: #1d40b4;
   box-shadow: var(--shadow-btn-hover);
-  filter: brightness(1.05);
 }
 
-.auth-page .submit-btn:active:not(:disabled) { transform: translateY(0); }
+.auth-page .submit-btn:active:not(:disabled) { background-color: #112d91; }
 .auth-page .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
 .auth-page .submit-btn.loading {
@@ -387,6 +386,7 @@ body.light-theme.auth-page .logo {
   gap: 0.6rem;
   padding: 0.9rem;
   background: var(--bg-deep);
+  background-image: none;
   color: var(--text-primary);
   border: 1px solid var(--border-hard);
   border-radius: var(--r-sm);
@@ -394,13 +394,13 @@ body.light-theme.auth-page .logo {
   font-weight: 600;
   text-decoration: none;
   cursor: pointer;
-  transition: all var(--t-fast) var(--ease);
+  transition: color var(--t-fast) var(--ease), background-color var(--t-fast) var(--ease), border-color var(--t-fast) var(--ease), box-shadow var(--t-fast) var(--ease);
   opacity: 0;
   animation: fadeInUp 0.6s ease-out 0.5s forwards;
 }
 
 .auth-page .google-btn:hover {
-  transform: translateY(-2px);
+  background-color: var(--bg-surface);
   border-color: var(--accent);
   box-shadow: var(--shadow-card);
 }

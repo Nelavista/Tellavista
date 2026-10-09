@@ -25,6 +25,7 @@
   --text-secondary: #8fa8c8;
   --text-muted: #4d6480;
   --accent: #1535A8;
+  --brand-logo-color: #ffffff;
   --accent-teal: #2dd4bf;
   --accent-warm: #f59e0b;
   --grad-main: linear-gradient(135deg, #1535A8 0%, #3159D8 100%);
@@ -113,6 +114,7 @@ body.light-mode {
   --text-secondary: #3f5470;
   --text-muted: #7a8da6;
   --accent: #1535A8;
+  --brand-logo-color: #1535A8;
   --accent-teal: #0d9488;
   --accent-warm: #b45309;
   --shadow-card: 0 1px 2px #0000000a, 0 12px 32px #0000000f;
@@ -179,7 +181,7 @@ table { max-width: 100%; }
 }
 .sidebar.active { left: 0; }
 .sidebar-header { padding: 22px 20px 16px; border-bottom: 1px solid var(--sk-border); }
-.sidebar-logo { display: inline-flex; align-items:center; gap:9px; font-family: 'Bricolage Grotesque', sans-serif; font-size: 1.35rem; font-weight: 800; background: var(--grad-hero); -webkit-background-clip: text; background-clip: text; color: transparent; letter-spacing: -0.3px; text-decoration: none; }
+.sidebar-logo { display: inline-flex; align-items:center; gap:9px; font-family: 'Bricolage Grotesque', sans-serif; font-size: 1.35rem; font-weight: 800; color: var(--brand-logo-color); letter-spacing: -0.3px; text-decoration: none; }
 .sidebar-logo img { width:34px; height:34px; object-fit:cover; border-radius:9px; }
 .sidebar-tagline { font-size: 0.74rem; color: var(--text-muted); margin-top: 4px; }
 .sidebar-nav { flex: 1; padding: 14px 0; overflow-y: auto; }

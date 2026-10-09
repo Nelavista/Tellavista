@@ -97,10 +97,7 @@ body.auth-page .auth-legal {
   font-family: 'Bricolage Grotesque', sans-serif;
   font-size: clamp(2.1rem, 5vw, 2.8rem);
   font-weight: 700;
-  background: linear-gradient(135deg, #ffffff, #a0c0ff);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: var(--brand-logo-color);
   margin-bottom: 0.5rem;
   letter-spacing: -0.02em;
 }
@@ -109,17 +106,11 @@ body.auth-page .auth-legal {
 
 body.auth-page .logo,
 body.light-theme.auth-page .logo {
-  background: linear-gradient(135deg, #ffffff, #a0c0ff);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: var(--brand-logo-color);
 }
 
 body.light-theme.auth-page .logo {
-  background: linear-gradient(135deg, #0f172a, #0284c7);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: #1535A8;
 }
 
 .auth-page .tagline {

@@ -17,6 +17,7 @@
       --text-secondary: #8fa8c8;
       --text-muted: #4d6480;
       --accent: #1535A8;
+      --brand-logo-color: #ffffff;
       --accent-teal: #2dd4bf;
       --accent-warm: #f59e0b;
       --grad-main: linear-gradient(135deg, #1535A8 0%, #3159D8 100%);
@@ -51,6 +52,7 @@
       --text-secondary: #3f5470;
       --text-muted: #7a8da6;
       --accent: #1535A8;
+      --brand-logo-color: #1535A8;
       --accent-teal: #0d9488;
       --shadow-card: 0 1px 2px rgba(0,0,0,0.04), 0 12px 32px rgba(0,0,0,0.06);
       --shadow-card-hover: 0 4px 8px rgba(0,0,0,0.06), 0 32px 64px rgba(15,35,60,0.1);
@@ -142,7 +144,7 @@
     .brand-logo { display:flex; align-items:center; gap:9px; font-size:1.5rem; font-weight:800; letter-spacing:-0.055em; color:var(--text-primary); line-height:1; }
     .brand-logo img { width:34px; height:34px; object-fit:cover; border-radius:9px; }
     .logo img { width:48px; height:48px; vertical-align:middle; object-fit:cover; border-radius:12px; }
-    .brand-logo span { color:var(--accent-teal); }
+    .brand-logo span { color:var(--brand-logo-color); }
 
     /* ─── DESKTOP NAV LINKS ─── */
     .nav-links {
@@ -267,7 +269,7 @@
     .sidebar-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:40px; padding-bottom:20px; border-bottom:1px solid var(--border-hard); }
     .side-logo { display:flex; align-items:center; gap:9px; font-size:1.1rem; font-weight:800; text-decoration:none; }
     .side-logo img { width:32px; height:32px; object-fit:cover; border-radius:8px; }
-    .side-logo span { color:var(--accent-teal); }
+    .side-logo span { color:var(--brand-logo-color); }
     .close-icon { font-size:1.3rem; cursor:pointer; color:var(--text-muted); width:34px; height:34px; display:flex; align-items:center; justify-content:center; border-radius:50%; transition:all 0.25s ease; border:1px solid var(--border-hard); }
     .close-icon:hover { color:var(--accent); border-color:var(--accent); transform: rotate(90deg); }
     .sidebar-nav { list-style:none; }
@@ -424,16 +426,16 @@
       border-right: none;
     }
     .stat-item:hover {
-      background: rgba(56,189,248,0.05);
+      background: color-mix(in srgb, var(--accent) 6%, transparent);
     }
     .stat-num {
       font-size: 1.6rem;
       font-weight: 800;
       letter-spacing: -0.04em;
-      color: var(--text-primary);
+      color: var(--brand-logo-color);
     }
     .stat-num span {
-      color: var(--accent-teal);
+      color: inherit;
     }
     .stat-label {
       font-size: 0.65rem;
@@ -756,7 +758,7 @@
     }
     .footer-logo img { width:30px; height:30px; object-fit:cover; border-radius:8px; }
     .footer-logo span {
-      color: var(--accent-teal);
+      color: var(--brand-logo-color);
     }
     .footer-tagline {
       font-size: 0.78rem;

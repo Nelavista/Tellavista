@@ -1,6 +1,6 @@
 <!-- Shared public-site footer — extracted from templates/landing.html.
      Include right before the closing </body> (or before the page's own <script> block). -->
-<footer>
+<footer class="site-footer">
   <div class="container">
     <div class="footer-inner">
       <div>
@@ -42,6 +42,27 @@
         </div>
       </div>
     </div>
-    <div class="footer-bottom">© 2026 Nelavista. Built in Africa, for African university students.</div>
+    <nav class="footer-social" aria-label="Nelavista social media">
+      <a class="footer-social-link footer-social-facebook" href="{{ config['SOCIAL_FACEBOOK_URL'] }}" aria-label="Nelavista on Facebook" target="_blank" rel="noopener noreferrer"><img src="{{ url_for('static', filename='images/social/facebook.svg') }}" alt=""></a>
+      <a class="footer-social-link footer-social-whatsapp" href="{{ config['SOCIAL_WHATSAPP_URL'] }}" aria-label="Nelavista on WhatsApp" target="_blank" rel="noopener noreferrer"><img src="{{ url_for('static', filename='images/social/whatsapp.svg') }}" alt=""></a>
+      <a class="footer-social-link footer-social-tiktok" href="{{ config['SOCIAL_TIKTOK_URL'] }}" aria-label="Nelavista on TikTok" target="_blank" rel="noopener noreferrer"><img src="{{ url_for('static', filename='images/social/tiktok.svg') }}" alt=""></a>
+      <a class="footer-social-link footer-social-telegram" href="{{ config['SOCIAL_TELEGRAM_URL'] }}" aria-label="Nelavista on Telegram" target="_blank" rel="noopener noreferrer"><img src="{{ url_for('static', filename='images/social/telegram.svg') }}" alt=""></a>
+    </nav>
   </div>
+  <div class="footer-wordmark-wrap" aria-hidden="true">
+    <svg class="footer-wordmark" viewBox="0 0 1600 250" role="presentation" focusable="false">
+      <defs>
+        <filter id="footer-wordmark-shadow" x="-10%" y="-10%" width="120%" height="120%">
+          <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#1535a8" flood-opacity=".35"></feDropShadow>
+        </filter>
+        <linearGradient id="footer-wordmark-stroke" x1="0" y1="0" x2="0" y2="1" gradientUnits="objectBoundingBox">
+          <stop offset="0%" stop-color="#4165d1" stop-opacity=".9"></stop>
+          <stop offset="68%" stop-color="#1535a8" stop-opacity=".5"></stop>
+          <stop offset="100%" stop-color="#1535a8" stop-opacity="0"></stop>
+        </linearGradient>
+      </defs>
+      <text x="50%" y="242" text-anchor="middle" fill="none" stroke="url(#footer-wordmark-stroke)" stroke-width="1.8" stroke-linejoin="round" filter="url(#footer-wordmark-shadow)">NELAVISTA</text>
+    </svg>
+  </div>
+  <div class="footer-bottom">© 2026</div>
 </footer>

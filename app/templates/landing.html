@@ -33,9 +33,31 @@
         <p class="hero-sub reveal">Learn your courses. Build real-world skills. Find opportunities. Navigate campus. And move from student to professional, all in one place.</p>
         <div class="hero-actions reveal">
           <a href="/signup" class="btn-primary">Get started free <i class="ri-arrow-right-line"></i></a>
-          <a href="/#platform" class="btn-ghost">Explore Nelavista</a>
+          <a href="/#platform" class="btn-ghost btn-explore">Explore Nelavista <i class="ri-arrow-right-line" aria-hidden="true"></i></a>
         </div>
-        <p class="hero-note reveal">Free for students &middot; Built for African universities</p>
+      </div>
+      <div class="hero-badge" data-hero-badge role="img" aria-label="Free for students. Built for African universities.">
+        <div class="hero-badge-state hero-badge-state-a" aria-hidden="true">
+          <svg class="hero-badge-curved-text hero-badge-curved-a" viewBox="0 0 160 160" aria-hidden="true">
+            <defs><path id="hero-badge-path-a" d="M 80 17 a 63 63 0 1 1 0 126 a 63 63 0 1 1 0 -126"></path></defs>
+            <text><textPath href="#hero-badge-path-a" startOffset="0%" textLength="370" lengthAdjust="spacing">FREE FOR STUDENTS · FREE FOR STUDENTS · FREE FOR STUDENTS ·</textPath></text>
+          </svg>
+          <span class="hero-badge-emblem hero-badge-smile">
+            <svg viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+              <circle cx="32" cy="32" r="25" fill="#ffd166"></circle>
+              <ellipse class="hero-badge-eye" cx="23" cy="26" rx="2.5" ry="3.5" fill="#27365c"></ellipse>
+              <ellipse class="hero-badge-eye" cx="41" cy="26" rx="2.5" ry="3.5" fill="#27365c"></ellipse>
+              <path d="M20 37c2.8 6.2 7 9.2 12 9.2s9.2-3 12-9.2" fill="none" stroke="#27365c" stroke-width="3.4" stroke-linecap="round"></path>
+            </svg>
+          </span>
+        </div>
+        <div class="hero-badge-state hero-badge-state-b" aria-hidden="true">
+          <svg class="hero-badge-curved-text hero-badge-curved-b" viewBox="0 0 160 160" aria-hidden="true">
+            <defs><path id="hero-badge-path-b" d="M 80 17 a 63 63 0 1 1 0 126 a 63 63 0 1 1 0 -126"></path></defs>
+            <text><textPath href="#hero-badge-path-b" startOffset="0%" textLength="370" lengthAdjust="spacing">BUILT FOR AFRICAN UNIVERSITIES · BUILT FOR AFRICAN UNIVERSITIES ·</textPath></text>
+          </svg>
+          <span class="hero-badge-emblem hero-badge-globe">🌍</span>
+        </div>
       </div>
     </section>
 
@@ -234,9 +256,9 @@
         </div>
         <div class="opp-cards" aria-label="Types of opportunities">
           <article class="opp-card opp-card-1"><div class="opp-card-arrival"><div class="opp-card-surface"><i class="ri-briefcase-4-line opp-card-icon" aria-hidden="true"></i><h3>Internships &amp; jobs</h3></div></div></article>
-          <article class="opp-card opp-card-2"><div class="opp-card-arrival"><div class="opp-card-surface"><i class="ri-laptop-line opp-card-icon" aria-hidden="true"></i><h3>Freelance work</h3></div></div></article>
+          <article class="opp-card opp-card-2"><div class="opp-card-arrival"><div class="opp-card-surface"><i class="ri-computer-line opp-card-icon" aria-hidden="true"></i><h3>Freelance work</h3></div></div></article>
           <article class="opp-card opp-card-3"><div class="opp-card-arrival"><div class="opp-card-surface"><i class="ri-trophy-line opp-card-icon" aria-hidden="true"></i><h3>Competitions</h3></div></div></article>
-          <article class="opp-card opp-card-4"><div class="opp-card-arrival"><div class="opp-card-surface"><i class="ri-graduation-cap-line opp-card-icon" aria-hidden="true"></i><h3>Scholarships</h3></div></div></article>
+          <article class="opp-card opp-card-4"><div class="opp-card-arrival"><div class="opp-card-surface"><i class="ri-award-line opp-card-icon" aria-hidden="true"></i><h3>Scholarships</h3></div></div></article>
           <article class="opp-card opp-card-5"><div class="opp-card-arrival"><div class="opp-card-surface"><i class="ri-calendar-event-line opp-card-icon" aria-hidden="true"></i><h3>Events &amp; fellowships</h3></div></div></article>
           <article class="opp-card opp-card-6"><div class="opp-card-arrival"><div class="opp-card-surface"><i class="ri-lightbulb-flash-line opp-card-icon" aria-hidden="true"></i><h3>Entrepreneurship</h3></div></div></article>
         </div>
@@ -295,7 +317,7 @@
               <span class="fragment-chip" style="--tx:-104px;--ty:66px;--tilt:-7deg">Learning platforms</span>
               <span class="fragment-chip" style="--tx:64px;--ty:70px;--tilt:6deg">Job boards</span>
               <span class="fragment-chip" style="--tx:194px;--ty:62px;--tilt:-8deg">Campus info</span>
-              <span class="unified-pill">Nelavista</span>
+              <span class="unified-pill"><img src="{{ url_for('static', filename='images/nelavista-logo.png') }}" alt="Nelavista"></span>
             </div>
 
             <p class="why-copy why-copy-last">Nelavista is bringing these experiences together, into one platform built for how African university students actually study, learn, and move forward.</p>
@@ -326,7 +348,6 @@
           <h2 class="cta-title bg">Your university journey is bigger than your degree.</h2>
           <p class="cta-desc">Learn better. Build valuable skills. Discover opportunities.<br>Make university work for your future.</p>
           <a href="/signup" class="cta-btn">Get started free <i class="ri-arrow-right-line"></i></a>
-          <p class="cta-note">Free for students &middot; No card required</p>
           <p class="cta-login">Already have an account? <a href="/login">Log in</a></p>
         </div>
       </div>

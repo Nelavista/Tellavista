@@ -21,6 +21,8 @@ from flask_migrate import Migrate
 from app.config import (DEBUG_MODE, SECRET_KEY, DATABASE_URL, MAX_CONTENT_LENGTH,
                      SESSION_COOKIE_SECURE, SESSION_COOKIE_SAMESITE, SESSION_COOKIE_HTTPONLY,
                      PERMANENT_SESSION_LIFETIME_DAYS, REDIS_URL, SUPPORT_EMAIL,
+                     SOCIAL_FACEBOOK_URL, SOCIAL_WHATSAPP_URL, SOCIAL_TIKTOK_URL,
+                     SOCIAL_TELEGRAM_URL,
                      GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, OPENROUTER_API_KEY)
 from app.extensions import db, socketio, mail, csrf, limiter, oauth
 from . import logging_config
@@ -76,6 +78,10 @@ def create_app():
     app.config['SESSION_COOKIE_SECURE'] = SESSION_COOKIE_SECURE
     app.config['SESSION_COOKIE_SAMESITE'] = SESSION_COOKIE_SAMESITE
     app.config['SESSION_COOKIE_HTTPONLY'] = SESSION_COOKIE_HTTPONLY
+    app.config['SOCIAL_FACEBOOK_URL'] = SOCIAL_FACEBOOK_URL
+    app.config['SOCIAL_WHATSAPP_URL'] = SOCIAL_WHATSAPP_URL
+    app.config['SOCIAL_TIKTOK_URL'] = SOCIAL_TIKTOK_URL
+    app.config['SOCIAL_TELEGRAM_URL'] = SOCIAL_TELEGRAM_URL
     app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=PERMANENT_SESSION_LIFETIME_DAYS)
     # Flask-WTF's CSRF token defaults to expiring after 1 hour. static/js/csrf.js reads the
     # token once from the page's <meta> tag and reuses it for every fetch() call on that

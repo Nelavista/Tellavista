@@ -84,6 +84,10 @@ SOCKETIO_CORS_ORIGINS = [o.strip() for o in os.getenv('SOCKETIO_CORS_ORIGINS', _
 # of a personal address. Set SUPPORT_EMAIL in production; this default is clearly a
 # placeholder rather than silently using someone's personal inbox.
 SUPPORT_EMAIL = os.getenv('SUPPORT_EMAIL', 'support@nelavista.com')
+SOCIAL_FACEBOOK_URL = os.getenv('SOCIAL_FACEBOOK_URL', 'https://example.com/nelavista-facebook')
+SOCIAL_WHATSAPP_URL = os.getenv('SOCIAL_WHATSAPP_URL', 'https://example.com/nelavista-whatsapp')
+SOCIAL_TIKTOK_URL = os.getenv('SOCIAL_TIKTOK_URL', 'https://example.com/nelavista-tiktok')
+SOCIAL_TELEGRAM_URL = os.getenv('SOCIAL_TELEGRAM_URL', 'https://example.com/nelavista-telegram')
 
 # Session cookie hardening — SESSION_COOKIE_SECURE requires HTTPS, so it's opt-in via env
 # for local HTTP development and forced on by default otherwise (real deploys are HTTPS).

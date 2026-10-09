@@ -21,6 +21,27 @@
 
       observer.observe(element);
     });
+
+    const badge = document.querySelector('[data-hero-badge]');
+    if (!badge) return;
+
+    if (reducedMotion) {
+      badge.classList.add('is-active', 'is-reduced');
+      return;
+    }
+
+    if (!('IntersectionObserver' in window)) {
+      badge.classList.add('is-active');
+      return;
+    }
+
+    const badgeObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.target === badge) badge.classList.toggle('is-active', entry.isIntersecting);
+      });
+    }, { threshold: 0.01 });
+
+    badgeObserver.observe(badge);
   }
 
   if (document.readyState === 'loading') {

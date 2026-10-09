@@ -24,12 +24,12 @@
   --text-primary: #eef2f7;
   --text-secondary: #8fa8c8;
   --text-muted: #4d6480;
-  --accent: #38bdf8;
+  --accent: #1535A8;
   --accent-teal: #2dd4bf;
   --accent-warm: #f59e0b;
-  --grad-main: linear-gradient(135deg, #38bdf8 0%, #3b82f6 100%);
+  --grad-main: linear-gradient(135deg, #1535A8 0%, #3159D8 100%);
   --grad-teal: linear-gradient(135deg, #2dd4bf 0%, #059669 100%);
-  --grad-hero: linear-gradient(135deg, #38bdf8, #2dd4bf);
+  --grad-hero: linear-gradient(135deg, #1535A8, #3159D8);
   --shadow-card: 0 1px 2px #0006, 0 12px 32px #00000059;
   --shadow-btn: 0 8px 24px #38bdf840;
   --r-sm: 12px;
@@ -112,7 +112,7 @@ body.light-mode {
   --text-primary: #0b1a2f;
   --text-secondary: #3f5470;
   --text-muted: #7a8da6;
-  --accent: #2563eb;
+  --accent: #1535A8;
   --accent-teal: #0d9488;
   --accent-warm: #b45309;
   --shadow-card: 0 1px 2px #0000000a, 0 12px 32px #0000000f;
@@ -130,7 +130,7 @@ body.light-mode {
   --sk-text: var(--text-primary);
   --sk-text-dim: var(--text-secondary);
   --sk-accent: var(--accent);
-  --sk-accent-hover: #1d4ed8;
+  --sk-accent-hover: #102A88;
   --sk-success: var(--accent-teal);
   --sk-warn: var(--accent-warm);
   --sk-danger: #dc2626;
@@ -147,6 +147,25 @@ body.light-mode .sk-ask-panel { box-shadow: 0 -8px 40px rgba(15,35,60,0.16); }
 /* Frosted panels (side-menu, drawers from main.css) also appear on authenticated pages
    that pull in the public nav partial — keep them in step with the app shell's white. */
 body.light-mode #side-menu { background: rgba(255,255,255,0.98); }
+
+/* Shared finishing layer: brand blue, calm surfaces, and legible native controls. */
+:root { color-scheme: dark; --accent-teal: #1535A8; --sk-success: #13805f; }
+body.light-mode { color-scheme: light; --accent: #1535A8; --accent-teal: #13795b; --sk-accent: #1535A8; }
+body { -webkit-font-smoothing: antialiased; }
+button, input, select, textarea { font: inherit; }
+button, [role="button"], a { -webkit-tap-highlight-color: transparent; }
+:focus-visible { outline: 3px solid #5578e8 !important; outline-offset: 3px; }
+input, select, textarea { max-width: 100%; }
+table { max-width: 100%; }
+@media (max-width: 640px) {
+  .main-content { min-width: 0; }
+  .app-wrapper { width: 100%; }
+  table { display: block; overflow-x: auto; }
+  .mobile-tabbar { padding-bottom: max(8px, env(safe-area-inset-bottom)); }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}
 
 /* ===== SHELL: sidebar + top bar ===== */
 .app-wrapper { display: flex; min-height: 100vh; }

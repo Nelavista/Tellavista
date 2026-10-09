@@ -124,22 +124,28 @@
     const b = document.body;
     const st = localStorage.getItem('theme');
     const pd = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    let ct = st || (pd ? 'dark' : 'light');
+    let ct = st || 'system';
 
     const icon = tt.querySelector('.theme-icon');
     function applyTheme(t) {
-      if (t === 'light') {
+      const effective = t === 'system' ? (pd ? 'dark' : 'light') : t;
+      if (effective === 'light') {
         b.classList.add('light-theme');
         if (icon) icon.innerHTML = '<i class="ri-sun-line"></i>';
       } else {
         b.classList.remove('light-theme');
         if (icon) icon.innerHTML = '<i class="ri-moon-line"></i>';
       }
-      localStorage.setItem('theme', t);
     }
     applyTheme(ct);
+    if (window.matchMedia) {
+      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+        if ((localStorage.getItem('theme') || 'system') === 'system') applyTheme('system');
+      });
+    }
     tt.addEventListener('click', () => {
       ct = b.classList.contains('light-theme') ? 'dark' : 'light';
+      localStorage.setItem('theme', ct);
       tt.classList.add('spin');
       applyTheme(ct);
       setTimeout(() => tt.classList.remove('spin'), 400);

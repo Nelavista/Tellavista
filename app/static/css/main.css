@@ -16,12 +16,12 @@
       --text-primary: #eef2f7;
       --text-secondary: #8fa8c8;
       --text-muted: #4d6480;
-      --accent: #38bdf8;
+      --accent: #1535A8;
       --accent-teal: #2dd4bf;
       --accent-warm: #f59e0b;
-      --grad-main: linear-gradient(135deg, #38bdf8 0%, #3b82f6 100%);
+      --grad-main: linear-gradient(135deg, #1535A8 0%, #3159D8 100%);
       --grad-teal: linear-gradient(135deg, #2dd4bf 0%, #059669 100%);
-      --grad-hero: linear-gradient(135deg, #38bdf8, #2dd4bf);
+      --grad-hero: linear-gradient(135deg, #1535A8, #3159D8);
       --shadow-card: 0 1px 2px rgba(0,0,0,0.4), 0 12px 32px rgba(0,0,0,0.35);
       --shadow-card-hover: 0 4px 8px rgba(0,0,0,0.5), 0 32px 64px rgba(0,0,0,0.5), 0 0 0 1px rgba(56,189,248,0.15);
       --shadow-btn: 0 8px 24px rgba(56,189,248,0.25);
@@ -50,7 +50,7 @@
       --text-primary: #0b1a2f;
       --text-secondary: #3f5470;
       --text-muted: #7a8da6;
-      --accent: #2563eb;
+      --accent: #1535A8;
       --accent-teal: #0d9488;
       --shadow-card: 0 1px 2px rgba(0,0,0,0.04), 0 12px 32px rgba(0,0,0,0.06);
       --shadow-card-hover: 0 4px 8px rgba(0,0,0,0.06), 0 32px 64px rgba(15,35,60,0.1);
@@ -840,6 +840,17 @@
         flex-direction: row;
         justify-content: space-between;
       }
+    }
+
+    /* Brand and usability defaults shared by every public and auth screen. */
+    :root { color-scheme: dark; }
+    body.light-theme { color-scheme: light; }
+    :focus-visible { outline: 3px solid #5578e8; outline-offset: 3px; }
+    input, select, textarea, button { font: inherit; }
+    img, video, canvas { max-width: 100%; }
+    @media (max-width: 600px) {
+      .container { padding-left: 20px; padding-right: 20px; }
+      table { display: block; max-width: 100%; overflow-x: auto; }
     }
     @media (min-width: 768px) {
       .features-grid {

@@ -17,12 +17,12 @@
 // (where shell.js's own copy of this same logic still runs, harmlessly re-applying the
 // same class) -- eliminates the dark-then-light flash a light-mode user used to see on
 // every navigation. Mirrors shell.js's skResolveTheme/skApplyTheme fallback exactly
-// (unset -> 'dark', not the OS preference) so this doesn't disagree with what shell.js
+// (unset -> 'system') so this doesn't disagree with what shell.js
 // settles into moments later. Kept deliberately tiny and inline -- no new theme system,
 // just the existing one applied earlier.
 (function () {
   try {
-    var pref = localStorage.getItem('theme') || 'dark';
+    var pref = localStorage.getItem('theme') || 'system';
     var light = pref === 'system'
       ? (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches)
       : pref === 'light';

@@ -21,11 +21,11 @@ function skApplyTheme(effective) {
   if (meta) meta.content = effective === 'light' ? '#f3f4f6' : '#050810';
 }
 (function () {
-  const pref = localStorage.getItem('theme') || 'dark';
+  const pref = localStorage.getItem('theme') || 'system';
   skApplyTheme(skResolveTheme(pref));
   if (window.matchMedia) {
     window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', () => {
-      if ((localStorage.getItem('theme') || 'dark') === 'system') {
+      if ((localStorage.getItem('theme') || 'system') === 'system') {
         skApplyTheme(skResolveTheme('system'));
       }
     });

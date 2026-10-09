@@ -232,10 +232,7 @@
 .hero-login:hover { color: #fff; }
 .hero-support { margin: 0 0 7px; color: #fff; font-weight: 600; font-size: 1rem; }
 .hero-note { margin: 0 0 22px; color: rgba(255,255,255,.75); font: 500 .76rem 'JetBrains Mono', monospace; }
-.hero-badge { display: inline-flex; align-items: center; gap: 10px; padding: 11px 17px; color: #fff; font-size: .78rem; font-weight: 600; border: 1px solid rgba(255,255,255,.28); border-radius: 999px; background: rgba(255,255,255,.13); box-shadow: 0 0 28px rgba(109,174,255,.2); backdrop-filter: blur(16px); animation: heroBadgeFloat 5s ease-in-out infinite, heroBadgeGlow 4s ease-in-out infinite; }
-.hero-badge-dot { width: 8px; height: 8px; flex: 0 0 8px; border-radius: 50%; background: #9dd4ff; box-shadow: 0 0 12px #9dd4ff; }
-@keyframes heroBadgeFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
-@keyframes heroBadgeGlow { 0%,100% { box-shadow: 0 0 24px rgba(109,174,255,.16); } 50% { box-shadow: 0 0 32px rgba(109,174,255,.3); } }
+.hero-login-line { margin: 0; color: rgba(255,255,255,.88); font-size: .92rem; }
 
 /* Four image cards pin in sequence and layer over the previous card while scrolling. */
 .pillars-section { padding: 100px 0 16vh; }
@@ -306,6 +303,6 @@
   .campus-stat { min-width: 162px; padding: 8px 13px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .hero-badge, .campus-stats-track { animation: none; }
+  .campus-stats-track { animation: none; }
   .campus-carousel { transform: none; }
 }

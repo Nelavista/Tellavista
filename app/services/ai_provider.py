@@ -153,8 +153,22 @@ class OpenRouterProvider(AIProvider):
 
             if response.status_code != 200:
                 status = response.status_code
+                request_id = response.headers.get('x-request-id') or response.headers.get('request-id')
+                error_code = None
+                error_message = None
+                try:
+                    provider_error = response.json().get('error') or {}
+                    if isinstance(provider_error, dict):
+                        error_code = provider_error.get('code')
+                        error_message = provider_error.get('message')
+                except (ValueError, AttributeError):
+                    pass
                 response.close()
-                logger.warning("Tutor provider returned HTTP %s", status)
+                logger.error(
+                    "Tutor provider returned HTTP %s (request_id=%s, code=%s): %s",
+                    status, request_id or 'unavailable', error_code or 'unavailable',
+                    str(error_message or 'no provider error details')[:300],
+                )
                 if status in retryable_statuses and attempt < 2:
                     time.sleep(0.5 * (attempt + 1))
                     continue
@@ -174,6 +188,21 @@ class OpenRouterProvider(AIProvider):
                         obj = json.loads(data)
                     except ValueError:
                         continue
+                    provider_error = obj.get('error')
+                    if provider_error:
+                        if isinstance(provider_error, dict):
+                            error_code = provider_error.get('code')
+                            error_message = provider_error.get('message')
+                        else:
+                            error_code, error_message = None, str(provider_error)
+                        logger.error(
+                            "Tutor provider sent an SSE error (code=%s): %s",
+                            error_code or 'unavailable',
+                            str(error_message or 'no provider error details')[:300],
+                        )
+                        if not got_any:
+                            yield fallback
+                        return
                     choices = obj.get('choices') or []
                     if not choices:
                         continue

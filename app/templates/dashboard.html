@@ -36,7 +36,7 @@
 
     .pwa-install-btn {
       display: none; align-items: center; gap: 6px;
-      background: var(--grad-main); color: var(--bg-deep);
+      background: var(--grad-main); color: #fff;
       border: none; font-size: var(--text-xs); font-weight: 700;
       padding: 8px 16px; border-radius: var(--r-pill); cursor: pointer;
       margin-top: var(--space-3);
@@ -491,7 +491,7 @@
       const m = data.material;
       container.innerHTML = `
         <a href="${m.link}" class="exam-item">
-          <div class="exam-date" style="background:var(--sk-accent);color:var(--bg-deep);"><i class="ri-book-open-line" style="font-size:1.3rem;"></i></div>
+          <div class="exam-date" style="background:var(--sk-accent);color:#fff;"><i class="ri-book-open-line" style="font-size:1.3rem;"></i></div>
           <div class="exam-info"><div class="exam-title">${m.title}</div><div class="course-sub">${m.course_code || m.department} · last opened ${m.viewed_ago}</div></div>
           <button class="sk-btn small">Resume →</button>
         </a>`;
@@ -538,7 +538,7 @@
     const icon = r.kind === 'revision' ? 'ri-error-warning-line' : 'ri-arrow-right-circle-line';
     return `
       <a href="${r.link}" class="exam-item">
-        <div class="exam-date" style="background:${r.kind === 'revision' ? 'var(--sk-danger)' : 'var(--sk-success)'};color:var(--bg-deep);"><i class="${icon}" style="font-size:1.2rem;"></i></div>
+        <div class="exam-date" style="background:${r.kind === 'revision' ? 'var(--sk-danger)' : 'var(--sk-success)'};color:#fff;"><i class="${icon}" style="font-size:1.2rem;"></i></div>
         <div class="exam-info"><div class="exam-title">${r.message}</div><div class="course-sub">${r.kind === 'revision' ? 'Recommended revision' : 'Suggested next topic'}</div></div>
         <button class="sk-btn small">Open →</button>
       </a>`;

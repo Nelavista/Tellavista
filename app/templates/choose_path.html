@@ -189,7 +189,7 @@
   </script>
   <header class="cp-topbar">
     <a href="/" class="brand-logo bg"><img src="{{ url_for('static', filename='images/nelavista-logo.png') }}" alt=""><span>Nelavista</span></a>
-    <a href="/logout" class="cp-logout">Log out</a>
+    <a href="/logout" class="cp-logout" data-confirm-logout>Log out</a>
   </header>
 
   <main class="cp-main">
@@ -247,5 +247,6 @@
 
     <p class="cp-footnote">Each experience is its own space — switch anytime from the sidebar.</p>
   </main>
+  {% include 'components/logout_confirm.html' %}
 </body>
 </html>

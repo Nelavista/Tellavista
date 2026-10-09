@@ -1,0 +1,10 @@
+<dialog class="logout-dialog" id="logoutConfirmDialog" aria-labelledby="logoutDialogTitle" aria-describedby="logoutDialogDescription">
+  <div class="logout-dialog-mark" aria-hidden="true"><i class="ri-logout-box-r-line"></i></div>
+  <h2 id="logoutDialogTitle">Sign out?</h2>
+  <p id="logoutDialogDescription">Are you sure you want to log out of Nelavista?</p>
+  <div class="logout-dialog-actions">
+    <button type="button" class="logout-dialog-cancel" data-logout-cancel>Stay signed in</button>
+    <button type="button" class="logout-dialog-confirm" data-logout-confirm>Log out</button>
+  </div>
+</dialog>
+<script src="{{ url_for('static', filename='js/logout-confirm.js') }}"></script>

@@ -6,14 +6,14 @@ they are for backward compatibility. This is the new primary surface: persistent
 threaded conversations, streamed responses, and live academic-context grounding.
 """
 import json
-import traceback
+import logging
 from datetime import datetime
 
 from flask import Blueprint, render_template, request, session, jsonify, Response, stream_with_context
 
 from app.extensions import db, limiter
 from app.models import User, Topic, Material, TutorConversation, TutorMessage, UserPreferences
-from app.utils.helpers import login_required, debug_print
+from app.utils.helpers import login_required
 from app.services.academic_context import resolve_academic_context, find_course
 from app.services.material_service import get_or_extract_material_text
 from app.services.tutor_service import (
@@ -22,6 +22,7 @@ from app.services.tutor_service import (
 )
 
 tutor_bp = Blueprint('tutor', __name__)
+logger = logging.getLogger(__name__)
 
 
 def _current_user():
@@ -267,8 +268,7 @@ def send_message(conversation_id):
             disconnected = True
             raise
         except Exception as e:
-            debug_print(f"[tutor] stream error: {e}")
-            traceback.print_exc()
+            logger.exception("Tutor route failed while streaming a response")
         finally:
             text = ''.join(chunks).strip()
             new_title = None
@@ -287,9 +287,9 @@ def send_message(conversation_id):
                             convo.title = generate_conversation_title(first_user_msg.content, course_ref)
                             db.session.commit()
                     new_title = convo.title
-                except Exception as e:
+                except Exception:
                     db.session.rollback()
-                    debug_print(f"[tutor] failed to persist assistant message: {e}")
+                    logger.exception("Tutor assistant response failed to persist")
             if not disconnected:
                 yield f"data: {json.dumps({'done': True, 'message_id': message_id, 'title': new_title})}\n\n"
 

@@ -70,7 +70,7 @@
     .tutor-history-head { padding: var(--space-4); border-bottom: 1px solid var(--sk-border); }
     .tutor-new-chat-btn {
       width: 100%; display: flex; align-items: center; gap: 8px; justify-content: center;
-      background: var(--grad-main); color: var(--on-accent); border: none; font-weight: 700;
+      background: var(--grad-main); color: #fff; border: none; font-weight: 700;
       font-size: var(--text-sm); padding: 11px 14px; border-radius: var(--r-sm); cursor: pointer;
     }
     .tutor-history-list { flex: 1; overflow-y: auto; padding: var(--space-2) 0 var(--space-4); }
@@ -157,7 +157,7 @@
     .tutor-msg-row.assistant { justify-content: flex-start; }
 
     .tutor-msg-user-bubble {
-      max-width: 78%; background: var(--grad-main); color: var(--on-accent);
+      max-width: 78%; background: var(--grad-main); color: #fff;
       padding: 12px 17px; border-radius: 18px 18px 4px 18px; font-size: 0.98rem; line-height: 1.55;
       white-space: pre-wrap; word-break: break-word;
     }
@@ -165,7 +165,7 @@
     .tutor-msg-assistant { width: 100%; }
     .tutor-msg-assistant-head { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
     .tutor-avatar {
-      width: 26px; height: 26px; border-radius: 8px; background: var(--grad-main); color: var(--on-accent);
+      width: 26px; height: 26px; border-radius: 8px; background: var(--grad-main); color: #fff;
       display: flex; align-items: center; justify-content: center; font-size: 0.85rem; flex-shrink: 0;
     }
     .tutor-avatar-name { font-size: 0.82rem; font-weight: 700; color: var(--sk-text-dim); }
@@ -231,7 +231,7 @@
     }
     .tutor-send-btn {
       flex-shrink: 0; width: 38px; height: 38px; border-radius: 50%; border: none; cursor: pointer;
-      background: var(--grad-main); color: var(--on-accent); display: flex; align-items: center; justify-content: center; font-size: 1.05rem;
+      background: var(--grad-main); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.05rem;
     }
     .tutor-send-btn:disabled { opacity: 0.4; cursor: not-allowed; }
     .tutor-send-btn.stop { background: var(--sk-danger); }
@@ -792,6 +792,7 @@ window.TUTOR_ACTIVE_MESSAGES = {{ active_messages | tojson }};
     fetch('/api/tutor/conversations/' + conversationId + '/messages', {
       method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body), signal: controller.signal
     }).then(function (resp) {
+      if (!resp.ok) throw new Error('Tutor request failed (HTTP ' + resp.status + ')');
       var reader = resp.body.getReader();
       var decoder = new TextDecoder();
       var buffer = '';

@@ -14,5 +14,6 @@
   <a href="/employer/discover" class="{{ 'active' if active_page == 'discover' else '' }}">Discover Talent</a>
   <a href="/skills/messages" class="{{ 'active' if active_page == 'messages' else '' }}">Messages</a>
   <div class="emp-spacer"></div>
-  <a href="/logout">Logout</a>
+  <a href="/logout" data-confirm-logout>Logout</a>
 </div>
+{% include 'components/logout_confirm.html' %}

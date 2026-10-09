@@ -66,7 +66,7 @@
       </div>
     </div>
     <div class="sidebar-footer">
-      <a href="/logout"><i class="ri-logout-box-line"></i>Logout</a>
+      <a href="/logout" data-confirm-logout><i class="ri-logout-box-line"></i>Logout</a>
     </div>
   </div>
 
@@ -85,8 +85,9 @@
         {% if nav_unread_notifications %}<span class="top-icon-dot"></span>{% endif %}
       </a>
       <button id="theme-toggle" onclick="skToggleTheme()" aria-label="Toggle theme"><i class="ri-moon-line"></i></button>
-      <a href="/logout" class="top-icon-btn sk-topbar-logout" aria-label="Logout"><i class="ri-logout-box-line"></i></a>
-    </div>
+      <a href="/logout" class="top-icon-btn sk-topbar-logout" aria-label="Logout" data-confirm-logout><i class="ri-logout-box-line"></i></a>
+</div>
+{% include 'components/logout_confirm.html' %}
 
     {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}

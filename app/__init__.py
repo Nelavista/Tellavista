@@ -21,7 +21,7 @@ from flask_migrate import Migrate
 from app.config import (DEBUG_MODE, SECRET_KEY, DATABASE_URL, MAX_CONTENT_LENGTH,
                      SESSION_COOKIE_SECURE, SESSION_COOKIE_SAMESITE, SESSION_COOKIE_HTTPONLY,
                      PERMANENT_SESSION_LIFETIME_DAYS, REDIS_URL, SUPPORT_EMAIL,
-                     GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET)
+                     GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, OPENROUTER_API_KEY)
 from app.extensions import db, socketio, mail, csrf, limiter, oauth
 from . import logging_config
 from app.logging_config import logger
@@ -62,6 +62,8 @@ from . import events
 from . import community_events
 
 def create_app():
+    if not OPENROUTER_API_KEY:
+        logger.error('OPENROUTER_API_KEY is not configured; AI tutor requests cannot reach the provider.')
     app = Flask(__name__)
     # Render terminates HTTPS at its edge and forwards to gunicorn over plain HTTP --
     # without this, request.scheme (and therefore url_for(..., _external=True), which

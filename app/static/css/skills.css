@@ -59,12 +59,8 @@
   --sk-radius: var(--r-md);
   --sk-radius-sm: var(--r-sm);
 
-  /* Text/icon color for content sitting ON TOP of a solid accent/gradient fill (buttons,
-     avatars, badges, step markers, chat bubbles). Deliberately decoupled from --bg-deep:
-     that token flips light in light mode for the page background, but the gradient/accent
-     fills themselves stay the same vivid cyan-blue-teal in both themes, so the text drawn
-     over them must stay dark in both themes too. */
-  --on-accent: #04120e;
+  /* White foreground for branded blue and colored action surfaces. */
+  --on-accent: #ffffff;
 
   /* Type scale — one ramp for every screen. Bricolage Grotesque (headings) / DM Sans
      (everything else) are already loaded above; this just stops each page from picking
@@ -358,7 +354,7 @@ table { max-width: 100%; }
 .sk-quiz-opt input { accent-color: var(--sk-accent); width: 18px; height: 18px; }
 
 /* ===== ASK NELAVISTA WIDGET ===== */
-.sk-ask-fab { position: fixed; bottom: 24px; right: 24px; background: var(--grad-main); color: var(--on-accent); border: none; border-radius: var(--r-pill); padding: 14px 22px; font-weight: 700; font-size: 0.9rem; display: flex; align-items: center; gap: 8px; cursor: pointer; box-shadow: var(--shadow-btn); z-index: 900; }
+.sk-ask-fab { position: fixed; bottom: 24px; right: 24px; background: var(--grad-main); color: #fff; border: none; border-radius: var(--r-pill); padding: 14px 22px; font-weight: 700; font-size: 0.9rem; display: flex; align-items: center; gap: 8px; cursor: pointer; box-shadow: var(--shadow-btn); z-index: 900; }
 @media (max-width: 1023px) { .sk-ask-fab { bottom: calc(72px + env(safe-area-inset-bottom)); z-index: 1004; } }
 .sk-ask-panel { position: fixed; bottom: 0; right: 0; width: 380px; max-width: 100vw; height: min(560px, 80vh); background: var(--sk-sidebar); border: 1px solid var(--sk-border); border-radius: 20px 20px 0 0; box-shadow: 0 -8px 40px rgba(0,0,0,0.5); z-index: 1100; display: none; flex-direction: column; }
 .sk-ask-panel.active { display: flex; }
@@ -368,14 +364,14 @@ table { max-width: 100%; }
 .sk-ask-close { background: none; border: none; color: var(--sk-text-dim); font-size: 1.3rem; cursor: pointer; }
 .sk-ask-messages { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
 .sk-ask-msg { max-width: 88%; padding: 11px 15px; border-radius: 14px; font-size: 0.92rem; line-height: 1.5; }
-.sk-ask-msg.user { align-self: flex-end; background: var(--sk-accent); color: var(--on-accent); border-bottom-right-radius: 4px; }
+.sk-ask-msg.user { align-self: flex-end; background: var(--sk-accent); color: #fff; border-bottom-right-radius: 4px; }
 .sk-ask-msg.ai { align-self: flex-start; background: var(--sk-card); border-bottom-left-radius: 4px; }
 .sk-ask-suggestions { padding: 0 16px 10px; display: flex; flex-wrap: wrap; gap: 6px; }
 .sk-ask-suggestion { background: var(--sk-card); border: 1px solid var(--sk-border); color: var(--sk-text-dim); font-size: 0.8rem; padding: 7px 13px; border-radius: var(--r-pill); cursor: pointer; }
 .sk-ask-suggestion:hover { border-color: var(--sk-accent); color: var(--sk-accent); }
 .sk-ask-input-row { padding: 12px; border-top: 1px solid var(--sk-border); display: flex; gap: 8px; }
 .sk-ask-input-row input { flex: 1; background: var(--sk-card); border: 1px solid var(--sk-border); border-radius: var(--r-pill); padding: 11px 16px; color: var(--sk-text); font-size: 0.92rem; outline: none; }
-.sk-ask-input-row button { background: var(--sk-accent); border: none; width: 40px; height: 40px; border-radius: 50%; color: var(--on-accent); cursor: pointer; flex-shrink: 0; }
+.sk-ask-input-row button { background: var(--sk-accent); border: none; width: 40px; height: 40px; border-radius: 50%; color: #fff; cursor: pointer; flex-shrink: 0; }
 
 /* ===== EMPTY STATES ===== */
 .sk-empty { text-align: center; padding: 56px 20px; background: var(--sk-card); border-radius: var(--sk-radius); color: var(--sk-text-dim); }
@@ -624,3 +620,30 @@ table { max-width: 100%; }
    one-off margin per page. */
 .ac-section { margin-bottom: var(--space-6); }
 .ac-section-head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-3); margin-bottom: var(--space-4); }
+
+/* Logout confirmation shared by learner, academia, and employer navigation. */
+.logout-dialog {
+  width: min(420px, calc(100vw - 32px));
+  margin: auto;
+  padding: 28px;
+  color: var(--sk-text, var(--text-primary, #172033));
+  background: var(--sk-surface, var(--bg-surface, #fff));
+  border: 1px solid var(--sk-border, var(--border-hard, #dbe2ef));
+  border-radius: 18px;
+  box-shadow: 0 24px 80px rgba(8, 20, 50, 0.28);
+}
+.logout-dialog::backdrop { background: rgba(8, 16, 36, 0.62); backdrop-filter: blur(3px); }
+.logout-dialog-mark { display: grid; place-items: center; width: 46px; height: 46px; margin-bottom: 18px; border-radius: 14px; color: #fff; background: var(--sk-accent, #1535a8); font-size: 1.25rem; }
+.logout-dialog h2 { margin: 0; color: inherit; font-size: 1.35rem; }
+.logout-dialog p { margin: 9px 0 0; color: var(--sk-text-dim, var(--text-secondary, #657089)); line-height: 1.55; }
+.logout-dialog-actions { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 10px; margin-top: 25px; }
+.logout-dialog-actions button { min-height: 44px; padding: 0 17px; border: 1px solid transparent; border-radius: 10px; font: inherit; font-weight: 700; cursor: pointer; }
+.logout-dialog-cancel { color: var(--sk-text, #172033); background: var(--sk-neutral-bg, #f1f4fa); border-color: var(--sk-border, #dbe2ef) !important; }
+.logout-dialog-confirm { color: #fff; background: var(--sk-accent, #1535a8); }
+.logout-dialog-actions button:hover { filter: brightness(0.94); }
+.logout-dialog-actions button:focus-visible { outline: 3px solid #5578e8; outline-offset: 3px; }
+@media (max-width: 420px) {
+  .logout-dialog { padding: 24px; }
+  .logout-dialog-actions { flex-direction: column-reverse; }
+  .logout-dialog-actions button { width: 100%; }
+}

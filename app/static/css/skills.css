@@ -179,7 +179,8 @@ table { max-width: 100%; }
 }
 .sidebar.active { left: 0; }
 .sidebar-header { padding: 22px 20px 16px; border-bottom: 1px solid var(--sk-border); }
-.sidebar-logo { display: inline-block; font-family: 'Bricolage Grotesque', sans-serif; font-size: 1.5rem; font-weight: 800; background: var(--grad-hero); -webkit-background-clip: text; background-clip: text; color: transparent; letter-spacing: -0.3px; text-decoration: none; }
+.sidebar-logo { display: inline-flex; align-items:center; gap:9px; font-family: 'Bricolage Grotesque', sans-serif; font-size: 1.35rem; font-weight: 800; background: var(--grad-hero); -webkit-background-clip: text; background-clip: text; color: transparent; letter-spacing: -0.3px; text-decoration: none; }
+.sidebar-logo img { width:34px; height:34px; object-fit:cover; border-radius:9px; }
 .sidebar-tagline { font-size: 0.74rem; color: var(--text-muted); margin-top: 4px; }
 .sidebar-nav { flex: 1; padding: 14px 0; overflow-y: auto; }
 .nav-group { margin-bottom: 18px; }

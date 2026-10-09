@@ -1,15 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <link rel="icon" type="image/x-icon" href="/static/icons/favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="/static/icons/nelavista-180x180.png">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Choose Your Path · Nelavista</title>
   <meta name="theme-color" content="#050810">
   <meta name="description" content="Choose how you want to grow with Nelavista — Academia or Tech & Skills. Switch anytime.">
-  <link rel="icon" type="image/png" sizes="32x32" href="/static/icons/nelavista-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/static/icons/nelavista-16x16.png">
-  <link rel="shortcut icon" href="/static/icons/favicon.ico">
-  <link rel="apple-touch-icon" sizes="180x180" href="/static/icons/nelavista-180x180.png">
 
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
@@ -190,7 +188,7 @@
   })();
   </script>
   <header class="cp-topbar">
-    <a href="/" class="brand-logo bg">Nela<span>vista</span></a>
+    <a href="/" class="brand-logo bg"><img src="{{ url_for('static', filename='images/nelavista-logo.png') }}" alt=""><span>Nelavista</span></a>
     <a href="/logout" class="cp-logout">Log out</a>
   </header>
 

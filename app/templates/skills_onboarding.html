@@ -1,14 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <link rel="icon" type="image/x-icon" href="/static/icons/favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="/static/icons/nelavista-180x180.png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Set Up Skills | Nelavista</title>
     <meta name="theme-color" content="#050810">
     <meta name="description" content="Tell Nelavista what you want to learn so Skills can focus on it.">
-    <link rel="icon" type="image/png" sizes="32x32" href="/static/icons/nelavista-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/static/icons/nelavista-16x16.png">
-    <link rel="shortcut icon" href="/static/icons/favicon.ico">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
     <style>
         * {
@@ -66,12 +65,16 @@
             margin: 0 auto 14px;
         }
         .setup-logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
             font-size: 1.1rem;
             font-weight: 800;
             letter-spacing: -0.03em;
             color: #ffffff;
             text-decoration: none;
         }
+        .setup-logo img { width: 30px; height: 30px; object-fit: cover; border-radius: 7px; }
         .setup-logo span { color: #14b8a6; }
         .setup-skip {
             background: none;
@@ -376,7 +379,7 @@
 <div class="profile-modal-overlay" id="skillsSetupModal">
 
     <div class="setup-topbar">
-        <a href="/" class="setup-logo">Nela<span>vista</span></a>
+        <a href="/" class="setup-logo"><img src="{{ url_for('static', filename='images/nelavista-logo.png') }}" alt="">Nelavista</a>
         <form method="POST" action="{{ url_for('skills.onboarding') }}">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <input type="hidden" name="skip" value="1">

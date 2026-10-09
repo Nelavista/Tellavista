@@ -90,6 +90,10 @@ body.auth-page .auth-legal {
 }
 
 .auth-page .logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
   font-family: 'Bricolage Grotesque', sans-serif;
   font-size: clamp(2.1rem, 5vw, 2.8rem);
   font-weight: 700;
@@ -100,6 +104,8 @@ body.auth-page .auth-legal {
   margin-bottom: 0.5rem;
   letter-spacing: -0.02em;
 }
+
+.auth-page .logo img { width: 48px; height: 48px; border-radius: 12px; object-fit: cover; -webkit-text-fill-color: initial; }
 
 body.auth-page .logo,
 body.light-theme.auth-page .logo {

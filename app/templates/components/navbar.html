@@ -16,12 +16,11 @@
   } catch (e) {}
 })();
 </script>
-<canvas id="nelavista-canvas"></canvas>
 <div id="overlay"></div>
 
 <aside id="side-menu">
   <div class="sidebar-header">
-    <span class="side-logo bg">Nela<span>vista</span></span>
+    <a class="side-logo bg" href="/" aria-label="Nelavista home"><img src="{{ url_for('static', filename='images/nelavista-logo.png') }}" alt=""> <span>Nelavista</span></a>
     <i class="ri-close-line close-icon" id="closeSidebar"></i>
   </div>
 
@@ -44,7 +43,7 @@
 <header id="top-bar">
   <div class="nav-inner">
     <div class="brand-lockup">
-      <a href="/" class="brand-logo bg" style="text-decoration:none;">Nela<span>vista</span></a>
+      <a href="/" class="brand-logo bg" style="text-decoration:none;" aria-label="Nelavista home"><img src="{{ url_for('static', filename='images/nelavista-logo.png') }}" alt=""><span>Nelavista</span></a>
     </div>
     <nav class="nav-links" aria-label="Primary">
       <a href="/">Home</a>

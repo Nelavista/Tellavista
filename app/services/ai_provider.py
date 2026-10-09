@@ -22,11 +22,15 @@ Design constraints honoured from the codebase:
 - API keys only ever read server-side from env (PRD §7).
 """
 import json
+import logging
+import time
 from abc import ABC, abstractmethod
 
 import requests
 
 from app.config import OPENROUTER_API_KEY
+
+logger = logging.getLogger(__name__)
 
 OPENROUTER_CHAT_URL = "https://openrouter.ai/api/v1/chat/completions"
 OPENROUTER_EMBEDDINGS_URL = "https://openrouter.ai/api/v1/embeddings"
@@ -125,43 +129,71 @@ class OpenRouterProvider(AIProvider):
             "max_tokens": max_tokens,
             "stream": True,
         }
-        try:
-            response = requests.post(
-                OPENROUTER_CHAT_URL, headers=self._headers("Nelavista AI Tutor"),
-                json=payload, stream=True, timeout=timeout,
-            )
-        except requests.exceptions.RequestException:
-            yield "I'm having trouble reaching the tutor right now — please try again in a moment."
-            return
-        if response.status_code != 200:
-            yield "I'm having trouble reaching the tutor right now — please try again in a moment."
-            return
-
-        # Force UTF-8 before decode_unicode -- see tutor_service's full explanation
-        # (OpenRouter streams declare no charset; the HTTP default garbles multi-byte).
-        response.encoding = 'utf-8'
+        fallback = "I'm having trouble reaching the tutor right now — please try again in a moment."
+        retryable_statuses = {408, 425, 429, 500, 502, 503, 504}
         got_any = False
-        try:
-            for raw_line in response.iter_lines(decode_unicode=True):
-                if not raw_line or not raw_line.startswith('data: '):
+        for attempt in range(3):
+            response = None
+            try:
+                response = requests.post(
+                    OPENROUTER_CHAT_URL, headers=self._headers("Nelavista AI Tutor"),
+                    json=payload, stream=True, timeout=timeout,
+                )
+            except AIProviderError as exc:
+                logger.error("Tutor provider is not configured: %s", exc)
+                yield fallback
+                return
+            except requests.exceptions.RequestException as exc:
+                logger.warning("Tutor provider request failed (attempt %s/3): %s", attempt + 1, exc)
+                if attempt < 2:
+                    time.sleep(0.5 * (attempt + 1))
                     continue
-                data = raw_line[len('data: '):].strip()
-                if data == '[DONE]':
-                    break
-                try:
-                    obj = json.loads(data)
-                except ValueError:
+                yield fallback
+                return
+
+            if response.status_code != 200:
+                status = response.status_code
+                response.close()
+                logger.warning("Tutor provider returned HTTP %s", status)
+                if status in retryable_statuses and attempt < 2:
+                    time.sleep(0.5 * (attempt + 1))
                     continue
-                choices = obj.get('choices') or []
-                if not choices:
+                yield fallback
+                return
+
+            # Force UTF-8 before decode_unicode -- OpenRouter streams declare no charset.
+            response.encoding = 'utf-8'
+            try:
+                for raw_line in response.iter_lines(decode_unicode=True):
+                    if not raw_line or not raw_line.startswith('data: '):
+                        continue
+                    data = raw_line[len('data: '):].strip()
+                    if data == '[DONE]':
+                        break
+                    try:
+                        obj = json.loads(data)
+                    except ValueError:
+                        continue
+                    choices = obj.get('choices') or []
+                    if not choices:
+                        continue
+                    delta = (choices[0].get('delta') or {}).get('content')
+                    if delta:
+                        got_any = True
+                        yield delta
+                break
+            except requests.exceptions.RequestException as exc:
+                logger.warning("Tutor stream interrupted (attempt %s/3): %s", attempt + 1, exc)
+                if not got_any and attempt < 2:
+                    time.sleep(0.5 * (attempt + 1))
                     continue
-                delta = (choices[0].get('delta') or {}).get('content')
-                if delta:
-                    got_any = True
-                    yield delta
-        finally:
-            response.close()
+                if not got_any:
+                    yield fallback
+                return
+            finally:
+                response.close()
         if not got_any:
+            logger.warning("Tutor provider stream completed without any response content")
             yield "I'm having trouble responding right now — please try again."
 
     def embed(self, texts, model, *, timeout=60, feature='embeddings', user_id=None):

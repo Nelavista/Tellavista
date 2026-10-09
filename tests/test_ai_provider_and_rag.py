@@ -62,6 +62,23 @@ def test_chat_without_key_is_an_error_not_a_crash():
             p2.chat([{'role': 'user', 'content': 'hi'}], model='m')
 
 
+def test_tutor_stream_retries_transient_provider_errors():
+    p = OpenRouterProvider(api_key='test-key')
+    unavailable = _resp(status=503)
+    available = _resp()
+    available.iter_lines.return_value = [
+        'data: {"choices":[{"delta":{"content":"Hello"}}]}',
+        'data: [DONE]',
+    ]
+    with patch('app.services.ai_provider.time.sleep'), patch(
+            'app.services.ai_provider.requests.post',
+            side_effect=[unavailable, available]) as post:
+        assert ''.join(p.stream_chat([{'role': 'user', 'content': 'hi'}], model='m')) == 'Hello'
+    assert post.call_count == 2
+    unavailable.close.assert_called_once()
+    available.close.assert_called_once()
+
+
 def test_embed_parses_openai_shape_and_orders_by_index():
     p = OpenRouterProvider(api_key='test-key')
     vec = [0.1, 0.2, 0.3]

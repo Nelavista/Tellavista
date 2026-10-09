@@ -215,9 +215,9 @@
 /* Image-led landing page sections. */
 .hero-section {
   isolation: isolate;
-  min-height: clamp(400px, 60svh, 700px);
+  min-height: 100svh;
   margin-top: 0;
-  padding: 0;
+  padding: calc(var(--nav-h, 84px) + 40px) 24px 64px;
   justify-content: flex-start;
   background: #071126;
 }
@@ -291,7 +291,7 @@
 .feature-card::before { display: none; }
 
 @media (max-width: 720px) {
-  .hero-section { min-height: clamp(360px, 54svh, 540px); padding: 0; }
+  .hero-section { min-height: 100svh; padding: calc(var(--nav-h, 84px) + 28px) 20px 48px; }
   .hero-background { object-position: 58% center; }
   .hero-section::before { background: linear-gradient(90deg, rgba(4,12,30,.82), rgba(4,12,30,.38)), linear-gradient(0deg, rgba(4,12,30,.6), transparent 70%); }
   .hero-headline { font-size: clamp(2.7rem, 12vw, 4.2rem); }

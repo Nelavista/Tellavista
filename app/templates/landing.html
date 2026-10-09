@@ -28,6 +28,16 @@
   <main>
     <section class="hero-section" id="home">
       <img class="hero-background" src="{{ url_for('static', filename='images/landing/hero-student.webp') }}" alt="Smiling university student using a laptop" fetchpriority="high" decoding="async">
+      <div class="container hero-container">
+        <h1 class="hero-headline reveal">Your university journey is bigger than your degree.</h1>
+        <p class="hero-sub reveal">Learn better. Build valuable skills. Discover opportunities.</p>
+        <p class="hero-support reveal">Make university work for your future.</p>
+        <div class="hero-actions reveal">
+          <a href="/signup" class="btn-primary">Get started free <i class="ri-arrow-right-line"></i></a>
+        </div>
+        <p class="hero-note reveal">Free for students &middot; No card required</p>
+        <p class="hero-login-line reveal">Already have an account? <a class="hero-login" href="/login">Log in</a></p>
+      </div>
     </section>
 
     <!-- ═══ CORE VALUE PROPOSITION (the four pillars) ═══ -->
@@ -284,6 +294,7 @@
     <section class="cta-section" id="cta">
       <div class="container">
         <div class="cta-card reveal">
+          <img class="cta-background" src="{{ url_for('static', filename='images/landing/hero-student.webp') }}" alt="Smiling university student using a laptop" loading="lazy" decoding="async">
           <div class="cta-glow"></div>
           <h2 class="cta-title bg">Your university journey is bigger than your degree.</h2>
           <p class="cta-desc">Learn better. Build valuable skills. Discover opportunities.<br>Make university work for your future.</p>

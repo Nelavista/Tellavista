@@ -104,32 +104,82 @@
   content: ''; position: absolute; left: 0; top: 0.55em; width: 6px; height: 1.5px; background: var(--text-muted);
 }
 
-/* ─── SKILLS MAJOR SECTION ─── */
-.skills-major-section { padding: 110px 0; background: var(--bg-surface); border-top: 1px solid var(--border-subtle); border-bottom: 1px solid var(--border-subtle); }
-.skill-cats { display: flex; flex-direction: column; gap: 44px; }
-.skill-cat-label {
-  font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em;
-  color: var(--accent-teal); margin-bottom: 18px;
+/* ─── SKILLS MAJOR SECTION (centered intro → glass tab bar → curved card stage → CTA) ───
+   The tab bar and the arc of cards are rendered by static/js/landing-skills.js from the
+   #skills-data config; JS only writes --cx/--cy/--crz/--cry/--cs/--co/--cz onto each card,
+   so every movement stays transform + opacity (GPU-friendly). */
+.skills-major-section { padding: 110px 0 118px; background: var(--bg-surface); border-top: 1px solid var(--border-subtle); border-bottom: 1px solid var(--border-subtle); }
+.skills-intro { max-width: 760px; margin: 0 auto 34px; text-align: center; }
+.skills-intro .section-desc { max-width: 640px; margin: 16px auto 0; }
+
+/* Glass pill bar: sized to its content, centred, scrolls sideways on small screens. */
+.skills-tabs-wrap { display: flex; justify-content: center; margin-bottom: 44px; }
+.skills-tablist {
+  position: relative; display: inline-flex; align-items: center; gap: 2px; max-width: 100%;
+  padding: 6px; overflow-x: auto; overflow-y: hidden; scrollbar-width: none; scroll-snap-type: x proximity;
+  border: 1px solid var(--border-hard); border-radius: 999px;
+  background: color-mix(in srgb, var(--bg-card) 64%, transparent);
+  -webkit-backdrop-filter: blur(16px) saturate(130%); backdrop-filter: blur(16px) saturate(130%);
+  box-shadow: 0 14px 34px rgba(4, 8, 18, .16), inset 0 1px 0 rgba(255, 255, 255, .08);
 }
-.skills-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
-.skill-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border-hard);
-  border-radius: var(--r-md);
-  padding: 18px;
-  transition: transform 0.35s var(--ease), border-color 0.35s ease;
+.skills-tablist::-webkit-scrollbar { display: none; }
+.skills-tab-pill {
+  position: absolute; top: 6px; left: 0; z-index: 0; height: calc(100% - 12px); width: 0;
+  border: 1px solid color-mix(in srgb, var(--text-primary) 18%, transparent); border-radius: 999px;
+  background: color-mix(in srgb, var(--text-primary) 12%, transparent);
+  box-shadow: 0 6px 18px rgba(4, 8, 18, .18);
+  transform: translate3d(0, 0, 0);
+  transition: transform 0.5s var(--ease), width 0.5s var(--ease);
+  will-change: transform, width; pointer-events: none;
 }
-.skill-card:hover { transform: translateY(-3px); border-color: color-mix(in srgb, var(--sc, var(--accent)) 45%, var(--border-hard)); }
-.skill-card-icon {
-  width: 38px; height: 38px; border-radius: var(--r-sm);
-  display: flex; align-items: center; justify-content: center;
-  background: color-mix(in srgb, var(--sc, var(--accent)) 16%, transparent);
-  color: var(--sc, var(--accent));
-  font-size: 1.05rem; margin-bottom: 14px;
+.skills-tab {
+  position: relative; z-index: 1; flex: 0 0 auto; scroll-snap-align: center;
+  display: inline-flex; align-items: baseline; gap: 7px; padding: 10px 16px;
+  border: 0; border-radius: 999px; background: none; cursor: pointer;
+  color: var(--text-secondary); font-size: 0.87rem; font-weight: 600; white-space: nowrap;
+  transition: color 0.3s ease;
 }
-.skill-card-name { font-size: 0.9rem; font-weight: 600; margin-bottom: 4px; line-height: 1.35; }
-.skill-card-topics { font-size: 0.7rem; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; }
-.skills-cta { text-align: center; margin-top: 52px; }
+.skills-tab[aria-selected="true"] { color: var(--text-primary); font-weight: 700; }
+.skills-tab:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.skills-tab-count { color: var(--text-muted); font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; font-weight: 500; }
+.skills-tab[aria-selected="true"] .skills-tab-count { color: var(--text-secondary); }
+
+/* Curved card stage: JS places every card on a convex arc through the custom props below. */
+.skills-stage { position: relative; height: clamp(460px, 38vw, 540px); max-width: 1080px; margin: 0 auto; perspective: 1500px; }
+.skills-card {
+  position: absolute; top: 50%; left: 50%;
+  display: flex; flex-direction: column; justify-content: space-between; gap: 22px;
+  width: clamp(240px, 23vw, 268px); height: 372px; padding: 26px 24px; overflow: hidden;
+  color: #fff; text-align: left; border: 1px solid rgba(255, 255, 255, .22); border-radius: 30px;
+  background-color: #10234d;
+  /* 1) scrim so the heading stays readable, 2) the tab's photo, 3) the category
+     gradient as fallback when no image is configured */
+  background-image: linear-gradient(160deg, rgba(6, 11, 24, .30) 0%, rgba(5, 9, 18, .58) 55%, rgba(4, 7, 15, .88) 100%), var(--card-photo, none), var(--card-bg, none);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .3), inset 0 -70px 90px rgba(4, 8, 18, .32), 0 26px 60px rgba(4, 8, 18, .3);
+  transform: translate3d(calc(-50% + var(--cx, 0px)), calc(-50% + var(--cy, 0px)), 0) rotate(var(--crz, 0deg)) rotateY(var(--cry, 0deg)) scale(var(--cs, 1));
+  opacity: var(--co, 1);
+  z-index: var(--cz, 1);
+  transition: transform 0.6s var(--ease), opacity 0.6s var(--ease);
+  transition-delay: var(--tdel, 0ms);
+  will-change: transform, opacity;
+}
+.skills-card.is-offscreen { pointer-events: none; }
+.skills-card-cat { color: rgba(255, 255, 255, .82); font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.14em; line-height: 1; text-transform: uppercase; }
+.skills-card-body { display: flex; flex-direction: column; }
+.skills-card-title { margin: 0 0 12px; color: #fff; font-family: 'Bricolage Grotesque', sans-serif; font-size: clamp(1.3rem, 1.9vw, 1.58rem); font-weight: 800; line-height: 1.14; letter-spacing: -0.015em; text-shadow: 0 2px 14px rgba(0, 0, 0, .3); overflow-wrap: anywhere; }
+.skills-card-topics { color: rgba(255, 255, 255, .84); font-size: 0.78rem; font-weight: 500; }
+.skills-cta { text-align: center; margin-top: 46px; }
+@media (max-width: 760px) {
+  .skills-major-section { padding: 84px 0 92px; }
+  .skills-tabs-wrap { justify-content: flex-start; margin-bottom: 34px; }
+  .skills-tablist { width: 100%; }
+  .skills-card { width: min(72vw, 252px); height: 356px; padding: 22px 20px; border-radius: 26px; }
+  .skills-card-title { font-size: 1.3rem; }
+  .skills-cta { margin-top: 34px; }
+}
 
 /* ─── JOURNEY ─── */
 .journey-section { padding: 100px 0; }
@@ -198,18 +248,16 @@
 /* ─── RESPONSIVE ─── */
 @media (min-width: 640px) {
   .pillars-grid { grid-template-columns: repeat(2, 1fr); }
-  .skills-grid { grid-template-columns: repeat(3, 1fr); }
   .opp-types { grid-template-columns: repeat(3, 1fr); }
 }
 @media (min-width: 900px) {
   .pillars-grid { grid-template-columns: repeat(4, 1fr); }
-  .skills-grid { grid-template-columns: repeat(4, 1fr); }
   .opp-layout { grid-template-columns: 1.1fr 1fr; }
   .campus-layout { grid-template-columns: 1fr 1fr; }
   .why-layout { grid-template-columns: 0.8fr 1.2fr; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .pillar-card, .skill-card { transition: none; animation: none; }
+  .pillar-card { transition: none; animation: none; }
 }
 
 /* Image-led landing page sections. */
@@ -546,4 +594,11 @@
 @media (prefers-reduced-motion: reduce) {
   .opp-card-arrival, .opportunities-stage.is-visible .opp-card-arrival { opacity: 1; transform: none; animation: none !important; }
   .opp-card-surface, .opportunities-stage.is-visible .opp-card-surface, .opp-card-icon { animation: none !important; }
+}
+
+/* Skills section: reduced motion swaps the card slide for a plain crossfade and freezes
+   the sliding tab pill. JS stops the auto-advance for the same reason. */
+@media (prefers-reduced-motion: reduce) {
+  .skills-card { transition: opacity 0.35s linear; }
+  .skills-tab-pill { transition: none; }
 }

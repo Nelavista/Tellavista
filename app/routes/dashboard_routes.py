@@ -10,6 +10,58 @@ from datetime import datetime
 # honest as skills are still being authored (see seed_data/career_skills/).
 LANDING_MIN_SKILL_TOPICS = 20
 
+# Fallback catalog for the landing page's skills section. The section is rendered from
+# the `skills_tabs` config built below, and it has to survive an unseeded database:
+# an empty catalog used to hide the whole section from the page (it was data-gated in
+# landing.html). These entries mirror the published tracks in seed_data/career_skills/
+# so the tab bar and card stage always have real content; live data always wins.
+LANDING_FALLBACK_SKILL_TABS = [
+    {'key': 'tech', 'label': 'Tech', 'cards': [
+        {'title': 'Web Development', 'topics': 33},
+        {'title': 'Artificial Intelligence & Machine Learning', 'topics': 30},
+        {'title': 'Generative AI & AI Engineering', 'topics': 30},
+        {'title': 'Software Engineering', 'topics': 30},
+        {'title': 'Data Analysis & Business Intelligence', 'topics': 30},
+        {'title': 'Data Engineering', 'topics': 30},
+        {'title': 'Mobile App Development', 'topics': 30},
+        {'title': 'Cloud Computing & DevOps', 'topics': 30},
+        {'title': 'Cybersecurity', 'topics': 30},
+    ]},
+    {'key': 'design', 'label': 'Design', 'cards': [
+        {'title': 'UI/UX & Product Design', 'topics': 30},
+    ]},
+    {'key': 'business', 'label': 'Business', 'cards': [
+        {'title': 'Digital Marketing & Growth', 'topics': 30},
+        {'title': 'Sales & Business Development', 'topics': 30},
+        {'title': 'Product Management', 'topics': 30},
+        {'title': 'Project & Operations Management', 'topics': 30},
+        {'title': 'FinTech & Financial Analysis', 'topics': 30},
+        {'title': 'Advanced Excel & Automation', 'topics': 30},
+    ]},
+    {'key': 'creative', 'label': 'Creative', 'cards': [
+        {'title': 'Content Creation & Copywriting', 'topics': 30},
+        {'title': 'Video Production & Motion Design', 'topics': 30},
+    ]},
+    {'key': 'career', 'label': 'Career', 'cards': [
+        {'title': 'Professional & Workplace Skills', 'topics': 30},
+    ]},
+    {'key': 'sustainability', 'label': 'Sustainability', 'cards': [
+        {'title': 'Renewable Energy & Sustainability', 'topics': 30},
+    ]},
+]
+
+# One background image per skills tab on the landing page (files live in
+# static/images/landing/); every card in a tab is tinted with that category's photo.
+# Keys are the tab slugs; both the live catalog and the fallback above use this map.
+LANDING_SKILL_TAB_IMAGES = {
+    'tech': 'tech.png',
+    'design': 'design.png',
+    'business': 'business.png',
+    'creative': 'creative.png',
+    'career': 'career.png',
+    'sustainability': 'sustainable.png',
+}
+
 
 def _landing_stats():
     """Live counts for the landing page's skills grid and university count, computed fresh
@@ -41,9 +93,30 @@ def _landing_stats():
 
     university_count = University.query.filter_by(active=True).count()
 
+    # Tab bar + card data for the landing page's skills section: one config the front
+    # end renders from (static/js/landing-skills.js), so no cards are hardcoded in the
+    # template. Falls back to the published copy above when nothing qualifies yet.
+    skills_tabs = [
+        {
+            'key': cat['slug'],
+            'label': cat['name'],
+            'cards': [{'title': skill['name'], 'topics': skill['topics']} for skill in cat['skills']],
+        }
+        for cat in categories
+    ]
+    if not skills_tabs:
+        skills_tabs = [
+            dict(tab, cards=[dict(card) for card in tab['cards']])
+            for tab in LANDING_FALLBACK_SKILL_TABS
+        ]
+        qualifying_skill_count = sum(len(tab['cards']) for tab in skills_tabs)
+    for tab in skills_tabs:
+        tab['image'] = LANDING_SKILL_TAB_IMAGES.get(tab['key'])
+
     return {
         'skill_categories': categories,
         'skill_count': qualifying_skill_count,
+        'skills_tabs': skills_tabs,
         'university_count': university_count,
     }
 

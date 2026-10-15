@@ -129,38 +129,27 @@
     </section>
 
     <!-- ═══ SKILLS (the major section) ═══ -->
-    {% if stats and stats.skill_categories %}
     <section class="skills-major-section" id="skills">
-      <div class="container">
-        <div class="section-head reveal">
+      <div class="container skills-container">
+        <div class="section-head skills-intro reveal">
           <span class="section-label">Skills</span>
           <h2 class="section-title bg">Don't just pass university. Build your future.</h2>
           <p class="section-desc">Learn practical skills alongside your degree, from AI and software development to design, data, business, and more. {{ stats.skill_count }} structured learning paths, each broken into real, sequential lessons.</p>
         </div>
 
-        <div class="skill-cats">
-          {% for cat in stats.skill_categories %}
-          <div class="skill-cat reveal">
-            <h4 class="skill-cat-label mono">{{ cat.name }}</h4>
-            <div class="skills-grid">
-              {% for skill in cat.skills %}
-              <div class="skill-card">
-                <div class="skill-card-icon" style="--sc:{{ skill.color }}"><i class="{{ skill.icon }}"></i></div>
-                <div class="skill-card-name">{{ skill.name }}</div>
-                <div class="skill-card-topics">{{ skill.topics }} structured topics</div>
-              </div>
-              {% endfor %}
-            </div>
-          </div>
-          {% endfor %}
+        <div class="skills-tabs-wrap reveal">
+          <div class="skills-tablist" role="tablist" aria-label="Skill categories" data-skills-tabs></div>
         </div>
 
+        <div class="skills-stage reveal" id="skills-panel" role="tabpanel" tabindex="0" data-skills-stage data-skills-static="{{ url_for('static', filename='') }}"></div>
+
         <div class="skills-cta reveal">
-          <a href="/signup" class="btn-primary">Explore skills <i class="ri-arrow-right-line"></i></a>
+          <a href="{{ url_for('auth.signup') }}" class="btn-primary">Explore skills <i class="ri-arrow-right-line" aria-hidden="true"></i></a>
         </div>
       </div>
+      <!-- One config drives the tab bar and every card -- nothing is hardcoded below. -->
+      <script type="application/json" id="skills-data">{{ (stats.get('skills_tabs', []) if stats else []) | tojson }}</script>
     </section>
-    {% endif %}
 
     <!-- ═══ JOURNEY ═══ -->
     <section class="journey-section">
@@ -359,5 +348,6 @@
 
   <script src="{{ url_for('static', filename='js/nav.js') }}"></script>
   <script src="{{ url_for('static', filename='js/landing-story.js') }}" defer></script>
+  <script src="{{ url_for('static', filename='js/landing-skills.js') }}" defer></script>
 </body>
 </html>

@@ -21,6 +21,7 @@ anytime.
 ## Feature set (current)
 
 **Academia**
+
 - Study materials library: department/level/university-scoped, full-text search
   (Postgres FTS + GIN, ILIKE fallback on SQLite), resume-position reading (PDF.js with
   page tracking), Cloudinary file storage with a local-`static` legacy path.
@@ -36,11 +37,13 @@ anytime.
 - Campus map, notifications, profile + profile-completion enforcement.
 
 **Skills**
+
 - Catalog, learning paths, lessons, quizzes, challenges, projects with file workspace,
   cohorts/class system with GPAs, verification, opportunities/gigs/talent discovery,
   employer profiles & messaging.
 
 **Platform**
+
 - Auth (password + Google OAuth), email verification (hashed tokens), password reset,
   admin moderation consoles (materials, videos, users, AI flags, academia taxonomy),
   PWA (manifest + offline page), health endpoint at `/health`.
@@ -97,6 +100,7 @@ whichever `DATABASE_URL` your `.env` points at — **know which database you're 
 before running any of these**, especially the seed scripts.
 
 **Admin/maintenance**
+
 - `python -m scripts.admin.make_admin <username> grant|revoke` — grant/revoke admin
   access; logs every change to `AdminAuditLog`.
 - `python -m scripts.audit.check_materials` — inspect the `Material` table.
@@ -116,6 +120,7 @@ before running any of these**, especially the seed scripts.
   validate career-skills data.
 
 **Seeding** (all idempotent — safe to re-run)
+
 - `scripts/seed/seed_academia.py` — university/faculty/department/course taxonomy from
   `data/Nelavista_Course_Codes.csv`.
 - `scripts/seed/seed_ccmas_core.py` — NUC CCMAS national core curriculum floor.
@@ -154,8 +159,7 @@ report as UNCONFIGURED rather than failing — expected without keys.
 
 ## Deployment
 
-`Procfile` documents the required start command: `gunicorn --worker-class eventlet -w 1
-wsgi:app`. The `--worker-class eventlet` flag is required for Flask-SocketIO (live
+`Procfile` documents the required start command: `gunicorn --worker-class eventlet -w 1 wsgi:app`. The `--worker-class eventlet` flag is required for Flask-SocketIO (live
 classes, community chat) to work at all — without it, WebSocket connections fail
 outright. `-w 1` (single worker) is deliberate: real-time room/participant state
 (`services/meeting_service.py`) lives in each worker's own process memory with no shared

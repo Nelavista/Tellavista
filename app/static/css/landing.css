@@ -417,6 +417,19 @@
 .idea-chip-payoff > span { color: rgba(255,255,255,.75); }
 @keyframes idea-marquee-left { to { transform: translateX(-50%); } }
 @keyframes idea-marquee-right { from { transform: translateX(-50%); } to { transform: translateX(0); } }
+/* Tablet: below ~1024px the copy column (min 270px) plus the gap squeezes the crossing
+   strips into ~370px, which clips the marquee and makes the whole section feel tight.
+   Stack it the way the phone layout already does, with a shorter, wider crossing. */
+@media (min-width: 761px) and (max-width: 1023px) {
+  .journey-section { padding: 92px 0; }
+  .idea-layout { grid-template-columns: minmax(0, 1fr); gap: 36px; }
+  .idea-copy .section-title { max-width: 620px; }
+  .idea-copy .section-desc { max-width: 620px; }
+  .idea-crossing { height: 300px; }
+  .idea-strip { left: -18%; width: 150%; }
+  .idea-sequence { gap: 10px; }
+  .idea-chip { padding: 9px 13px; font-size: .78rem; }
+}
 @media (max-width: 760px) {
   .journey-section { padding: 82px 0; }
   .idea-layout { grid-template-columns: minmax(0, 1fr); gap: 24px; }

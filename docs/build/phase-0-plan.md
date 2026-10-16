@@ -271,4 +271,31 @@ Two deliberate choices: **(a)** the auth core lands in Phase 0 with no student-f
 
 ---
 
-**Awaiting your approval before any Phase 0 code is written** (brief: "Start with PHASE 0 … PLAN STEP ONLY. Then stop and wait for my approval").
+## 12. Answers received (2026-10-16) — decisions now binding
+
+| # | Question | Answer |
+|---|---|---|
+| 1 | Phase 0 size | **Take the §3.3 trim**: PR 0.4's quality + ledger models move to M5/M6; every other PR stands. 0.4's notifications / push-token / outbox content folds into **0.6 (job system)**. |
+| 2 | Email provider | **Resend** — test mode in dev, Mailpit locally. |
+| 3 | Mobile cadence | **Lockstep** with web for the core journey screens. |
+| 4 | Payout rounding | **Largest-remainder**, leftover to the platform; the PRD's $10,000 example is the test case. |
+| 5 | Currency | Store the currency **on every project and ledger entry**; never hardcode one. Client-billing and payout currency confirmed before M6. |
+| 6 | Payout approval | Founder approves; a **second approver above a threshold set before M6**. |
+| 7 | Minimum age | **18** (pending legal review) — build the **hooks only** (consent kinds + age fields, no enforcement). |
+| 8 | Dev environment | Not confirmed as provisioned → **build against local Docker, mock the rest**, and hand over the exact Render/DNS/env-var list (manual steps in every PR). |
+| 9 | Apple enrolment / team size / CODEOWNERS | Unconfirmed → assume **not started**; team assumed 2–3 developers per ADR-0001; CODEOWNERS stays `@hiipraise` for all paths. |
+| 10 | Admin MFA | **TOTP authenticator app**. |
+| 11 | Task types + curriculum | Decided before M2; **must not block M0 or M1**. |
+| 12 | Everything else | Implement my recommended default and **flag each one in the PR description**. |
+
+**RUN MODE (given with the approval):** build 0.1 → 0.14 in the §3.2 dependency order, **one PR at a time** against `develop`; wait for CI to go green and for the founder to merge before starting the next; **no branch stacking**; no approval stops between PRs; stop only if CI cannot be fixed, a manual step blocks, or a build-prompt rule would be broken. Phase 0 gate report after 0.14, then the Phase 1 plan and a wait for approval. Gates remain mandatory after M3, M6 and M10.
+
+**Defaults adopted because of #8, #9 and #12** (flagged in the relevant PR):
+- dev infrastructure is treated as **not provisioned** — all Phase 0 work runs against local Docker + mocks, and every PR lists the console steps to do later.
+- **Apple Developer enrolment assumed not started**; team size assumed 2–3 developers (ADR-0001).
+- Postgres/Redis stay on Render (ADR-0002); admin MFA is **TOTP**; retention periods are defined at M10 with legal.
+- `packages/ui` stays, web/admin only, with tokens shared with mobile (recorded in `01-target-structure.md` when 0.11 lands).
+
+---
+
+**Approved 2026-10-16** — Phase 0 build starts at PR 0.1.

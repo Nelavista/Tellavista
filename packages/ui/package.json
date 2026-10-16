@@ -9,6 +9,11 @@
   "exports": { ".": "./src/index.ts" },
   "peerDependencies": { "react": ">=18" },
   "dependencies": { "@nelavista/config": "workspace:*" },
+  "devDependencies": {
+    "@types/react": "^18.3.12",
+    "react": "^18.3.1",
+    "typescript": "^5.6.3"
+  },
   "scripts": {
     "lint": "echo \"@nelavista/ui: nothing to lint\"",
     "typecheck": "echo \"@nelavista/ui: typechecked as part of the apps that import it\""

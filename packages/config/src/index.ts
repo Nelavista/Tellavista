@@ -16,6 +16,9 @@ export interface MobilePolicy {
   store_url: string;
 }
 
+export { FLAGS, isFlagEnabled } from './flags';
+export type { FlagEnv } from './flags';
+
 export interface VersionsFile {
   current: string;
   versions: ProductVersion[];

@@ -73,7 +73,9 @@ pytest_single.txt
 .turbo/
 node_modules/
 dist/
-build/
+# NOTE: do NOT ignore a bare `build/` — it would also exclude docs/build/ (the build prompts).
+/apps/*/build/
+/packages/*/build/
 coverage/
 *.tsbuildinfo
 .pnpm-store/

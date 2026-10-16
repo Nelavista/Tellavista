@@ -13,7 +13,9 @@ from sqlalchemy import select
 from app.db.base import Base
 from app.db.session import SessionLocal, engine
 from app.models.academia import Course, Department, Faculty, Material, University
+from app.models.admin import ROLE_STUDENT, Role
 from app.models.identity import User
+from app.seed.roles import seed_roles
 
 FAKE_DOMAIN = "example.test"
 
@@ -25,9 +27,13 @@ def run() -> dict[str, int]:
     Base.metadata.create_all(engine)
 
     created = {"universities": 0, "faculties": 0, "departments": 0, "courses": 0,
-               "students": 0, "materials": 0}
+               "students": 0, "materials": 0, "roles": 0}
 
     with SessionLocal() as db:
+        # Roles first: users.role_id references them.
+        created["roles"] = seed_roles(db)
+        student_role_id = db.scalar(select(Role.id).where(Role.code == ROLE_STUDENT))
+
         uni = db.scalar(select(University).where(University.name == "Lagos Test University"))
         if uni is None:
             uni = University(name="Lagos Test University", slug="lagos-test-university")
@@ -89,6 +95,7 @@ def run() -> dict[str, int]:
                     university=uni.name,
                     department=dept.name,
                     level="200",
+                    role_id=student_role_id,
                 ))
                 created["students"] += 1
 

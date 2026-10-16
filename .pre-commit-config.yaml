@@ -1,0 +1,32 @@
+# Install with: `pre-commit install` (or `make bootstrap`).
+# Run against everything once with: `pre-commit run --all-files`.
+repos:
+  # Secret scanning — must never be bypassed. See CONTRIBUTING.md.
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.21.2
+    hooks:
+      - id: gitleaks
+
+  # Python (V1 + apps/api)
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.7.4
+    hooks:
+      - id: ruff
+        args: [--fix]
+      - id: ruff-format
+
+  # Generic hygiene
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: check-added-large-files
+        args: [--maxkb=2048]        # LFS pointers are tiny; this blocks accidental raw binaries
+      - id: check-merge-conflict
+      - id: check-yaml
+      - id: check-json
+      - id: end-of-file-fixer
+        exclude: \.(pdf|pptx|ppt|docx|doc|mp4|mov|mkv|webm|jpe?g|png)$
+      - id: trailing-whitespace
+        exclude: \.(pdf|pptx|ppt|docx|doc|mp4|mov|mkv|webm|jpe?g|png)$
+      - id: mixed-line-ending
+        args: [--fix=lf]

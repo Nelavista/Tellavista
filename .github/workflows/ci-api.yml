@@ -1,0 +1,54 @@
+name: CI · V2 API
+
+on:
+  pull_request:
+    paths:
+      - 'apps/api/**'
+      - 'packages/config/**'
+      - 'pyproject.toml'
+      - 'tools/**'
+      - '.github/workflows/ci-api.yml'
+  push:
+    branches: [main, develop]
+    paths:
+      - 'apps/api/**'
+      - 'packages/config/**'
+      - 'pyproject.toml'
+      - 'tools/**'
+      - '.github/workflows/ci-api.yml'
+
+permissions:
+  contents: read
+
+env:
+  APP_ENV: local
+  # No database is contacted by these jobs; a placeholder URL satisfies fail-fast config.
+  DATABASE_URL: postgresql://ci:ci@localhost:5432/ci
+  SECRET_KEY: ci-only-secret-key
+  CORS_ORIGINS: http://localhost:5173
+
+jobs:
+  api:
+    name: Lint · typecheck · test · single head
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v3
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install
+        run: uv sync --all-packages || pip install -e apps/api
+      - name: Ruff
+        run: uv run ruff check apps/api || ruff check apps/api
+      - name: Tests
+        working-directory: apps/api
+        run: python -m pytest -q
+      - name: Single Alembic head (must be exactly one)
+        working-directory: apps/api
+        run: |
+          uv run alembic -c alembic.ini heads | tee /tmp/heads || alembic -c alembic.ini heads | tee /tmp/heads
+          count=$(grep -c . /tmp/heads || true)
+          echo "alembic heads: $count"
+          test "$count" -eq 1

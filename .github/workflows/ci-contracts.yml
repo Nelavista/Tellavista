@@ -1,0 +1,49 @@
+name: CI · API contract freshness
+
+# The typed client must match the API schema. When generation is adopted (M1+),
+# a stale client fails the build (ADR-0001).
+on:
+  pull_request:
+    paths:
+      - 'apps/api/**'
+      - 'packages/api-client/**'
+      - 'tools/gen_api_client.mjs'
+      - '.github/workflows/ci-contracts.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  api-client:
+    name: Client is not stale
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with: { version: 9 }
+      - uses: actions/setup-node@v4
+        with: { node-version: '20', cache: pnpm }
+      - uses: astral-sh/setup-uv@v3
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.11' }
+      - run: pnpm install --frozen-lockfile
+      - name: Export OpenAPI schema
+        env:
+          APP_ENV: local
+          DATABASE_URL: postgresql://ci:ci@localhost:5432/ci
+          SECRET_KEY: ci-only-secret-key
+        run: |
+          uv sync --all-packages || pip install -e apps/api
+          cd apps/api && python -c "import json; from app.main import app; open('../../openapi.json','w').write(json.dumps(app.openapi()))"
+      - name: Regenerate + diff
+        run: |
+          if [ -d packages/api-client/src/generated ]; then
+            node tools/gen_api_client.mjs --schema openapi.json
+            git diff --exit-code packages/api-client/src/generated || {
+              echo "::error::API client is stale. Run 'pnpm generate:api-client' and commit the result.";
+              exit 1;
+            }
+          else
+            echo "::notice::API client generation not adopted yet (no src/generated). Skipping."
+          fi

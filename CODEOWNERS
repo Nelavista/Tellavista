@@ -1,0 +1,35 @@
+# Nelavista — default reviewers per area. Replace @handles with real GitHub users/teams.
+# One owner per area keeps PRs small and conflicts rare (see CONTRIBUTING.md).
+
+# Fallback owner for anything unlisted
+*                                   @nelavista/core
+
+# V1 — live app. Extra care: no dependency upgrades, no behaviour changes.
+/app/                               @nelavista/v1-maintainer
+/migrations/                        @nelavista/v1-maintainer
+/scripts/                           @nelavista/v1-maintainer
+/tests/                             @nelavista/v1-maintainer
+/wsgi.py                            @nelavista/v1-maintainer
+/Procfile                           @nelavista/v1-maintainer
+/runtime.txt                        @nelavista/v1-maintainer
+/requirements.txt                   @nelavista/v1-maintainer
+/requirements-dev.txt               @nelavista/v1-maintainer
+/pytest.ini                         @nelavista/v1-maintainer
+
+# V2 apps
+/apps/api/                          @nelavista/backend
+/apps/web/                          @nelavista/web
+/apps/admin/                        @nelavista/web
+/apps/mobile/                       @nelavista/mobile
+
+# Shared packages
+/packages/config/                   @nelavista/backend
+/packages/api-client/               @nelavista/backend
+/packages/contracts/                @nelavista/backend
+/packages/design-tokens/            @nelavista/web
+
+# Tooling, CI and docs
+/tools/                             @nelavista/backend
+/.github/                           @nelavista/backend
+/docs/                              @nelavista/founder
+/docker-compose.yml                 @nelavista/backend

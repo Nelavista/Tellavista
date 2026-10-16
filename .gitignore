@@ -67,3 +67,44 @@ node_modules/
 backfill_logs/
 pytest_single.txt
 *.log
+
+# --- Monorepo / V2 (added in Phase 3 prep) ---
+# JS/TS workspace
+.turbo/
+node_modules/
+dist/
+build/
+coverage/
+*.tsbuildinfo
+.pnpm-store/
+
+# Expo / React Native (generated native projects; config lives in app.json/eas.json)
+.expo/
+.eas/
+apps/mobile/ios/
+apps/mobile/android/
+apps/mobile/web-build/
+
+# Python tooling (V2 api)
+.venv/
+.uv/
+.ruff_cache/
+.mypy_cache/
+.pytest_cache/
+
+# Test / e2e artifacts
+test-results/
+playwright-report/
+
+# Local env files at any depth (.env.example is NOT matched here)
+.env.local
+.env.*.local
+apps/*/.env
+apps/*/.env.local
+
+# Local secrets pulled from a provider, never committed
+*.p8
+*.p12
+*.keystore
+*.jks
+*.mobileprovision

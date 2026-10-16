@@ -1,0 +1,46 @@
+name: CI · Web + Admin
+
+on:
+  pull_request:
+    paths:
+      - 'apps/web/**'
+      - 'apps/admin/**'
+      - 'packages/**'
+      - 'package.json'
+      - 'pnpm-workspace.yaml'
+      - 'pnpm-lock.yaml'
+      - 'turbo.json'
+      - 'tsconfig.base.json'
+      - 'eslint.config.mjs'
+      - '.github/workflows/ci-js.yml'
+  push:
+    branches: [main, develop]
+    paths:
+      - 'apps/web/**'
+      - 'apps/admin/**'
+      - 'packages/**'
+
+permissions:
+  contents: read
+
+jobs:
+  web-admin:
+    name: Lint · typecheck · build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with: { version: 9 }
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: pnpm
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - name: Lint
+        run: pnpm --filter @nelavista/web --filter @nelavista/admin lint
+      - name: Typecheck
+        run: pnpm --filter @nelavista/web --filter @nelavista/admin typecheck
+      - name: Build
+        run: pnpm --filter @nelavista/web --filter @nelavista/admin build

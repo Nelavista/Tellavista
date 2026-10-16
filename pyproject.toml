@@ -1,0 +1,15 @@
+# uv workspace root. Python packages live under apps/* (V1 keeps its own
+# requirements.txt at the repo root and is intentionally NOT a member here).
+[tool.uv.workspace]
+members = ["apps/api"]
+
+[tool.uv]
+package = false
+
+[tool.ruff]
+line-length = 110
+target-version = "py311"
+exclude = ["app", "migrations", "scripts", "tests", "data", "seed_data"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]

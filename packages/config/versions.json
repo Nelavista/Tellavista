@@ -1,0 +1,34 @@
+{
+  "$comment": "The ONE file that declares product versions and mobile version policy. Adding a future version is a single edit here. See docs/architecture/03-versioning-and-domains.md and ADR-0010.",
+  "current": "v2",
+  "versions": [
+    {
+      "id": "v1",
+      "label": "V1 (legacy)",
+      "url": "https://v1.nelavista.com",
+      "status": "maintenance"
+    },
+    {
+      "id": "v2",
+      "label": "V2 (current)",
+      "url": "https://nelavista.com",
+      "status": "current"
+    }
+  ],
+  "api": {
+    "current_path_version": "v1",
+    "supported_path_versions": ["v1"]
+  },
+  "mobile": {
+    "ios": {
+      "min_supported": "1.0.0",
+      "latest": "1.0.0",
+      "store_url": "https://apps.apple.com/app/id0000000000"
+    },
+    "android": {
+      "min_supported": "1.0.0",
+      "latest": "1.0.0",
+      "store_url": "https://play.google.com/store/apps/details?id=com.nelavista.app"
+    }
+  }
+}

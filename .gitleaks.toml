@@ -1,0 +1,25 @@
+# gitleaks config. Extends the default ruleset and only allowlists known-safe,
+# non-secret content in this repo.
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Repo-specific false positives"
+paths = [
+  # Example files carry placeholders, never real values.
+  '''\.env\.example$''',
+  # Vendored / generated output.
+  '''node_modules/''',
+  '''\.venv/''',
+  '''dist/''',
+  '''\.turbo/''',
+  # Test fixtures that intentionally contain dummy tokens.
+  '''tests/''',
+]
+
+# Words that appear in docs and are not secrets.
+regexes = [
+  '''change-me-to-a-long-random-value''',
+  '''your-app-password''',
+  '''test-secret-key-for-pytest-only''',
+]

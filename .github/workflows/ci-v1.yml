@@ -1,0 +1,55 @@
+name: CI · V1 (live app)
+
+# Runs ONLY when V1 changes. A V2 change never triggers this, and vice versa.
+on:
+  pull_request:
+    paths:
+      - 'app/**'
+      - 'migrations/**'
+      - 'scripts/**'
+      - 'tests/**'
+      - 'wsgi.py'
+      - 'requirements.txt'
+      - 'requirements-dev.txt'
+      - 'pytest.ini'
+      - '.github/workflows/ci-v1.yml'
+  push:
+    branches: [main, develop, 'release/v1']
+    paths:
+      - 'app/**'
+      - 'migrations/**'
+      - 'scripts/**'
+      - 'tests/**'
+      - 'wsgi.py'
+      - 'requirements.txt'
+      - 'requirements-dev.txt'
+      - 'pytest.ini'
+
+permissions:
+  contents: read
+
+jobs:
+  v1-tests:
+    name: V1 tests + template links
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      # Throwaway DB; conftest sets SKIP_DB_INIT so no real database is touched.
+      DATABASE_URL: sqlite:///./ci-v1.db
+      SKIP_DB_INIT: '1'
+      FLASK_DEBUG: 'True'
+      SECRET_KEY: ci-only-secret-key
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+      - name: Install V1 deps
+        run: pip install -r requirements.txt -r requirements-dev.txt
+      - name: Template link check (fast, must be first)
+        run: python -m scripts.audit.check_template_links
+      - name: Test suite
+        # NOTE: the full suite is slow (audit §8.4). It is required here; if it becomes
+        # a bottleneck, split a fast subset onto PRs and keep the full run nightly.
+        run: pytest tests/ -q

@@ -1,0 +1,50 @@
+# Local development services only. Never used in DEV or PROD.
+#   make up    -> start     make down -> stop
+services:
+  db:
+    # pgvector-enabled Postgres, matching Render Postgres 13+ (audit §3).
+    image: pgvector/pgvector:pg16
+    container_name: nelavista-db
+    environment:
+      POSTGRES_USER: nelavista
+      POSTGRES_PASSWORD: nelavista
+      POSTGRES_DB: nelavista
+    ports:
+      - "5432:5432"
+    volumes:
+      - nelavista-db-data:/var/lib/postgresql/data
+      - ./tools/local/initdb:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U nelavista -d nelavista"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    container_name: nelavista-redis
+    command: ["redis-server", "--appendonly", "yes"]
+    ports:
+      - "6379:6379"
+    volumes:
+      - nelavista-redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  mailpit:
+    # Local mail catcher — replaces real email (SMTP 1025, web UI 8025).
+    image: axllent/mailpit:latest
+    container_name: nelavista-mailpit
+    ports:
+      - "1025:1025"   # SMTP
+      - "8025:8025"   # Web UI
+    environment:
+      MP_SMTP_AUTH_ACCEPT_ANY: 1
+      MP_SMTP_AUTH_ALLOW_INSECURE: 1
+
+volumes:
+  nelavista-db-data:
+  nelavista-redis-data:

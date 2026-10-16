@@ -13,6 +13,8 @@ PROD is live with real students. Nothing here is routine.
 ## Trigger
 Push to **`main`** or a version tag → `.github/workflows/deploy-prod.yml` → `environment: production` **requires manual approval** in GitHub.
 
+**PROD deploy approver: `@hiipraise`** (confirmed 2026-10-16). This is enforced by the GitHub **Environment `production` → Required reviewers** setting, which must list `@hiipraise` — that is a **manual GitHub setting**, not repo code. Only an approved reviewer can release a PROD deploy.
+
 ## Order of operations
 1. **Approve** the `production` environment gate.
 2. **Migrations (explicit, ordered):** `APP_ENV=prod` + the prod `DATABASE_URL`, `SKIP_DB_INIT=1`:

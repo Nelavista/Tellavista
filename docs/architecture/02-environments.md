@@ -23,6 +23,10 @@ One switch: **`APP_ENV` ∈ {`local`,`dev`,`prod`}**. Config is env-var-only, va
 
 > **dev/prod must share NOTHING secret-bearing.** The only shared thing is code.
 
+**PROD deploy approver: `@hiipraise`** (confirmed 2026-10-16) — the sole required reviewer on the GitHub `production` environment (manual GitHub setting; see `docs/runbooks/deploy-to-prod.md`).
+
+**Integration branch: `develop`** (created 2026-10-16 from `main`). Feature branches PR into `develop`, which auto-deploys to DEV; `develop` → `main` promotes to PROD with the approval above.
+
 ## Data rules
 - dev is seeded with the **same fake sample data as local** — **never** a copy of production.
 - **If production-like data is ever needed, it must be anonymised first** (names, emails, phone, OAuth subs, materials metadata scrubbed) and the anonymisation script committed. This rule is binding.

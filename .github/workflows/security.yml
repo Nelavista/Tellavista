@@ -1,0 +1,24 @@
+name: Security · secret scan
+
+on:
+  pull_request:
+  push:
+    branches: [main, develop]
+  schedule:
+    - cron: '0 3 * * *'   # nightly, full history
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  gitleaks:
+    name: gitleaks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }   # full history so history leaks are caught
+      - name: gitleaks
+        uses: gitleaks/gitleaks-action@v1.6.0
+        with:
+          config-path: .gitleaks.toml

@@ -1,5 +1,31 @@
-*.pdf filter=lfs diff=lfs merge=lfs -text
+# Git LFS — large binaries (course materials + media).
+# NOTE: existing *.mp4 / *.jpeg under app/static/media were committed BEFORE these
+# rules existed and are still ordinary blobs. New additions to these types are LFS.
+# To convert history, run `git lfs migrate` in a reviewed, approved operation only —
+# never as a drive-by change (see docs/runbooks/materials-to-cloudinary.md).
+*.pdf  filter=lfs diff=lfs merge=lfs -text
 *.pptx filter=lfs diff=lfs merge=lfs -text
-*.ppt filter=lfs diff=lfs merge=lfs -text
+*.ppt  filter=lfs diff=lfs merge=lfs -text
 *.docx filter=lfs diff=lfs merge=lfs -text
-*.doc filter=lfs diff=lfs merge=lfs -text
+*.doc  filter=lfs diff=lfs merge=lfs -text
+*.mp4  filter=lfs diff=lfs merge=lfs -text
+*.mov  filter=lfs diff=lfs merge=lfs -text
+*.mkv  filter=lfs diff=lfs merge=lfs -text
+*.webm filter=lfs diff=lfs merge=lfs -text
+*.jpeg filter=lfs diff=lfs merge=lfs -text
+*.jpg  filter=lfs diff=lfs merge=lfs -text
+*.png  filter=lfs diff=lfs merge=lfs -text
+
+# Normalise text files in the repo
+* text=auto eol=lf
+*.py   text eol=lf
+*.ts   text eol=lf
+*.tsx  text eol=lf
+*.json text eol=lf
+*.md   text eol=lf
+*.yml  text eol=lf
+*.yaml text eol=lf
+
+# Windows-only scripts keep CRLF
+*.bat  text eol=crlf
+*.cmd  text eol=crlf

@@ -1,0 +1,30 @@
+{
+  "name": "@nelavista/web",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Nelavista V2 student web app (React + Vite + TS, installable PWA).",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --port 5173",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview --port 5173",
+    "lint": "eslint src",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@nelavista/api-client": "workspace:*",
+    "@nelavista/config": "workspace:*",
+    "@nelavista/contracts": "workspace:*",
+    "@nelavista/design-tokens": "workspace:*",
+    "@nelavista/ui": "workspace:*",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.4",
+    "typescript": "^5.6.3",
+    "vite": "^5.4.11"
+  }
+}

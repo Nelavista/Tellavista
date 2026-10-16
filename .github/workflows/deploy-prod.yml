@@ -1,0 +1,65 @@
+name: Deploy · PROD (manual approval)
+
+# PROD deploys only from protected `main` or a version tag, after CI passes and a
+# human approves the `production` environment (configure required reviewers in
+# GitHub → Settings → Environments → production). Migrations are an explicit,
+# ordered step. See docs/runbooks/deploy-to-prod.md.
+on:
+  push:
+    branches: [main]
+    tags: ['v*.*.*']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-prod
+  cancel-in-progress: false
+
+jobs:
+  gate:
+    name: Release gate
+    runs-on: ubuntu-latest
+    environment: production      # <-- manual approval happens here
+    steps:
+      - run: echo "Approved for production -> ${{ github.ref }}"
+
+  migrate:
+    name: Run migrations (explicit step)
+    needs: gate
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      # Manual by design: run migrations from a reviewed revision, with a fresh
+      # backup and a tested restore beforehand (docs/runbooks/restore-from-backup.md).
+      - run: echo "::notice::Next step -> make db-upgrade against PROD with SKIP_DB_INIT=1, after confirming a fresh backup."
+
+  deploy-api:
+    name: Deploy API → prod
+    needs: migrate
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - run: |
+          if [ -z "${RENDER_PROD_API_DEPLOY_HOOK}" ]; then
+            echo "::warning::RENDER_PROD_API_DEPLOY_HOOK not set; skipping."
+            exit 0
+          fi
+          curl -fsS -X POST "${RENDER_PROD_API_DEPLOY_HOOK}" >/dev/null
+        env:
+          RENDER_PROD_API_DEPLOY_HOOK: ${{ secrets.RENDER_PROD_API_DEPLOY_HOOK }}
+
+  deploy-web-admin:
+    name: Deploy Web + Admin → prod
+    needs: deploy-api
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - run: |
+          for hook in "${RENDER_PROD_WEB_DEPLOY_HOOK}" "${RENDER_PROD_ADMIN_DEPLOY_HOOK}"; do
+            if [ -n "$hook" ]; then curl -fsS -X POST "$hook" >/dev/null; fi
+          done
+        env:
+          RENDER_PROD_WEB_DEPLOY_HOOK: ${{ secrets.RENDER_PROD_WEB_DEPLOY_HOOK }}
+          RENDER_PROD_ADMIN_DEPLOY_HOOK: ${{ secrets.RENDER_PROD_ADMIN_DEPLOY_HOOK }}

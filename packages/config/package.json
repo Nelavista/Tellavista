@@ -1,0 +1,18 @@
+{
+  "name": "@nelavista/config",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Single source of truth for product versions, mobile version policy and shared app constants.",
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./versions.json": "./versions.json"
+  },
+  "files": ["src", "versions.json"],
+  "scripts": {
+    "lint": "echo \"@nelavista/config: nothing to lint\"",
+    "typecheck": "echo \"@nelavista/config: typechecked as part of the apps that import it\""
+  }
+}

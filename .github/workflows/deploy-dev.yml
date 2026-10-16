@@ -1,0 +1,53 @@
+name: Deploy · DEV (auto)
+
+# Merging to `develop` auto-deploys to the DEV environment (ADR-0002).
+# Path filters mean a V1-only change never redeploys V2 and vice versa.
+on:
+  push:
+    branches: [develop]
+    paths:
+      - 'apps/api/**'
+      - 'apps/web/**'
+      - 'apps/admin/**'
+      - 'packages/**'
+      - '.github/workflows/deploy-dev.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-dev
+  cancel-in-progress: true
+
+jobs:
+  deploy-api:
+    name: Deploy API → dev
+    if: ${{ github.event_name == 'push' }}
+    runs-on: ubuntu-latest
+    environment: dev
+    steps:
+      - name: Trigger Render deploy (dev API)
+        # RENDER_DEV_API_DEPLOY_HOOK is a Deploy Hook URL stored in GitHub secrets.
+        # This is CONFIG ONLY — it runs when someone pushes to develop.
+        run: |
+          if [ -z "${RENDER_DEV_API_DEPLOY_HOOK}" ]; then
+            echo "::warning::RENDER_DEV_API_DEPLOY_HOOK not set; skipping API deploy."
+            exit 0
+          fi
+          curl -fsS -X POST "${RENDER_DEV_API_DEPLOY_HOOK}" >/dev/null
+        env:
+          RENDER_DEV_API_DEPLOY_HOOK: ${{ secrets.RENDER_DEV_API_DEPLOY_HOOK }}
+
+  deploy-web-admin:
+    name: Deploy Web + Admin → dev
+    runs-on: ubuntu-latest
+    environment: dev
+    steps:
+      - run: |
+          for hook in "${RENDER_DEV_WEB_DEPLOY_HOOK}" "${RENDER_DEV_ADMIN_DEPLOY_HOOK}"; do
+            if [ -n "$hook" ]; then curl -fsS -X POST "$hook" >/dev/null; fi
+          done
+          echo "Static sites rebuild on Render from the develop branch."
+        env:
+          RENDER_DEV_WEB_DEPLOY_HOOK: ${{ secrets.RENDER_DEV_WEB_DEPLOY_HOOK }}
+          RENDER_DEV_ADMIN_DEPLOY_HOOK: ${{ secrets.RENDER_DEV_ADMIN_DEPLOY_HOOK }}

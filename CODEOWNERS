@@ -1,0 +1,37 @@
+# Nelavista — default reviewers per area.
+# Replace @hiipraise on a path with another developer or team handle when needed.
+# Example: /apps/api/ @another-dev
+
+# Fallback owner for anything unlisted
+*                                   @hiipraise
+
+# V1 — live app
+/app/                               @hiipraise
+/migrations/                        @hiipraise
+/scripts/                           @hiipraise
+/tests/                             @hiipraise
+/wsgi.py                            @hiipraise
+/Procfile                           @hiipraise
+/runtime.txt                        @hiipraise
+/requirements.txt                   @hiipraise
+/requirements-dev.txt               @hiipraise
+/pytest.ini                         @hiipraise
+
+# V2 apps
+/apps/api/                          @hiipraise
+/apps/web/                          @hiipraise
+/apps/admin/                        @hiipraise
+/apps/mobile/                       @hiipraise
+
+# Shared packages
+/packages/config/                   @hiipraise
+/packages/api-client/               @hiipraise
+/packages/contracts/                @hiipraise
+/packages/design-tokens/            @hiipraise
+/packages/ui/                       @hiipraise
+
+# Tooling, CI and docs
+/tools/                             @hiipraise
+/.github/                           @hiipraise
+/docs/                              @hiipraise
+/docker-compose.yml                 @hiipraise

@@ -25,7 +25,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
-        with: { version: 9 }
+        # pnpm version comes from package.json "packageManager" (pnpm@9.12.3).
+        # Do NOT set `version` here — specifying both causes ERR_PNPM_BAD_PM_VERSION.
       - uses: actions/setup-node@v4
         with:
           node-version: '20'

@@ -42,7 +42,11 @@ def run() -> dict[str, int]:
             db.flush()
             created["faculties"] += 1
 
-        dept = db.scalar(select(Department).where(Department.faculty_id == fac.id, Department.name == "Computer Science"))
+        dept = db.scalar(
+            select(Department).where(
+                Department.faculty_id == fac.id, Department.name == "Computer Science"
+            )
+        )
         if dept is None:
             dept = Department(faculty_id=fac.id, name="Computer Science")
             db.add(dept)
@@ -55,7 +59,9 @@ def run() -> dict[str, int]:
         ]
         for code, title, level in courses:
             exists = db.scalar(
-                select(Course).where(Course.department_id == dept.id, Course.code == code, Course.level == level)
+                select(Course).where(
+                    Course.department_id == dept.id, Course.code == code, Course.level == level
+                )
             )
             if exists is None:
                 course = Course(department_id=dept.id, code=code, title=title, level=level)

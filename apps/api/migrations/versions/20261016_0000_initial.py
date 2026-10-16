@@ -57,7 +57,12 @@ def upgrade() -> None:
     op.create_table(
         "faculties",
         sa.Column("id", sa.Integer(), primary_key=True),
-        sa.Column("university_id", sa.Integer(), sa.ForeignKey("universities.id", ondelete="CASCADE"), nullable=False),
+        sa.Column(
+            "university_id",
+            sa.Integer(),
+            sa.ForeignKey("universities.id", ondelete="CASCADE"),
+            nullable=False,
+        ),
         sa.Column("name", sa.String(length=200), nullable=False),
         sa.Column("created_at", sa.DateTime(timezone=True), server_default=sa.func.now()),
         sa.Column("updated_at", sa.DateTime(timezone=True), server_default=sa.func.now()),
@@ -67,7 +72,12 @@ def upgrade() -> None:
     op.create_table(
         "departments",
         sa.Column("id", sa.Integer(), primary_key=True),
-        sa.Column("faculty_id", sa.Integer(), sa.ForeignKey("faculties.id", ondelete="CASCADE"), nullable=False),
+        sa.Column(
+            "faculty_id",
+            sa.Integer(),
+            sa.ForeignKey("faculties.id", ondelete="CASCADE"),
+            nullable=False,
+        ),
         sa.Column("name", sa.String(length=200), nullable=False),
         sa.Column("created_at", sa.DateTime(timezone=True), server_default=sa.func.now()),
         sa.Column("updated_at", sa.DateTime(timezone=True), server_default=sa.func.now()),
@@ -77,7 +87,12 @@ def upgrade() -> None:
     op.create_table(
         "courses",
         sa.Column("id", sa.Integer(), primary_key=True),
-        sa.Column("department_id", sa.Integer(), sa.ForeignKey("departments.id", ondelete="CASCADE"), nullable=False),
+        sa.Column(
+            "department_id",
+            sa.Integer(),
+            sa.ForeignKey("departments.id", ondelete="CASCADE"),
+            nullable=False,
+        ),
         sa.Column("code", sa.String(length=20), nullable=False),
         sa.Column("title", sa.String(length=255), nullable=False),
         sa.Column("level", sa.String(length=10), nullable=False),

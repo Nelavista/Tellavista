@@ -40,7 +40,11 @@ class VersioningMiddleware(BaseHTTPMiddleware):
                     "store_url": (settings.versions_file().get("mobile", {}).get(platform) or {})
                     .get("store_url", ""),
                 }
-                return JSONResponse(status_code=426, content=body, headers={"X-API-Version": settings.API_VERSION})
+                return JSONResponse(
+                    status_code=426,
+                    content=body,
+                    headers={"X-API-Version": settings.API_VERSION},
+                )
 
         response = await call_next(request)
         response.headers["X-API-Version"] = settings.API_VERSION

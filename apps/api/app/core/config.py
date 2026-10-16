@@ -11,7 +11,7 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Literal
 
-from pydantic import Field, field_validator, model_validator
+from pydantic import field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 AppEnv = Literal["local", "dev", "prod"]
@@ -73,7 +73,7 @@ class Settings(BaseSettings):
         return self.APP_ENV == "local"
 
     @model_validator(mode="after")
-    def _validate_for_env(self) -> "Settings":
+    def _validate_for_env(self) -> Settings:
         problems: list[str] = []
 
         # SECRET_KEY is mandatory outside local; refuse to boot with a guessable key.

@@ -44,7 +44,7 @@ class Course(Base, TimestampMixin):
     level: Mapped[str] = mapped_column(String(10), nullable=False)
     __table_args__ = (UniqueConstraint("department_id", "code", "level", name="uq_course_dept_level_code"),)
 
-    materials: Mapped[list["Material"]] = relationship(back_populates="course")
+    materials: Mapped[list[Material]] = relationship(back_populates="course")
 
 
 class Material(Base, TimestampMixin):

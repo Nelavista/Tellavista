@@ -35,8 +35,10 @@ jobs:
           DATABASE_URL: postgresql://ci:ci@localhost:5432/ci
           SECRET_KEY: ci-only-secret-key
         run: |
-          uv sync --all-packages || pip install -e apps/api
-          cd apps/api && python -c "import json; from app.main import app; open('../../openapi.json','w').write(json.dumps(app.openapi()))"
+          uv sync --all-packages
+          cd apps/api
+          # `uv run` uses the .venv uv created — never the system interpreter.
+          uv run python -c "import json; from app.main import app; open('../../openapi.json','w').write(json.dumps(app.openapi()))"
       - name: Regenerate + diff
         run: |
           if [ -d packages/api-client/src/generated ]; then

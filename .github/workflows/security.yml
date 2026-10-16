@@ -9,16 +9,33 @@ on:
 
 permissions:
   contents: read
-  pull-requests: read
+
+env:
+  # The gitleaks *action* is not usable here: v2+ requires a paid GITLEAKS_LICENSE for
+  # organisations, and the last license-free tag (v1.6.0) is a Docker action built on
+  # gitleaks v7.4.0 (2021) — older than the `[extend] useDefault` key `.gitleaks.toml`
+  # relies on. The MIT-licensed gitleaks CLI has no licence gate, so it is what we run.
+  GITLEAKS_VERSION: 8.30.1
+  # sha256 of the linux_x64 tarball, cross-checked against the release's
+  # gitleaks_8.30.1_checksums.txt. Bump both together when changing GITLEAKS_VERSION.
+  GITLEAKS_SHA256: 551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb
 
 jobs:
   gitleaks:
     name: gitleaks
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
         with: { fetch-depth: 0 }   # full history so history leaks are caught
-      - name: gitleaks
-        uses: gitleaks/gitleaks-action@v1.6.0
-        with:
-          config-path: .gitleaks.toml
+      - name: Install gitleaks (checksum-verified)
+        run: |
+          base="https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}"
+          curl -sSfL -o /tmp/gitleaks.tar.gz "${base}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz"
+          echo "${GITLEAKS_SHA256}  /tmp/gitleaks.tar.gz" | sha256sum -c -
+          sudo tar -xzf /tmp/gitleaks.tar.gz -C /usr/local/bin gitleaks
+          gitleaks version
+      # `git` (not the removed `detect`) scans the whole history of the checkout.
+      # Exits 1 on a finding, which fails the job.
+      - name: Scan full history
+        run: gitleaks git --config .gitleaks.toml --redact --verbose --exit-code 1 .

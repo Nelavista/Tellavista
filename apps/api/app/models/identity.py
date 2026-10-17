@@ -84,6 +84,8 @@ class UserProfile(Base, TimestampMixin):
     )
     display_name: Mapped[str | None] = mapped_column(String(150))
     avatar_url: Mapped[str | None] = mapped_column(String(1024))
+    # Used by matching only when an opportunity says location matters.
+    location: Mapped[str | None] = mapped_column(String(120))
     bio: Mapped[str | None] = mapped_column(String(500))
     locale: Mapped[str] = mapped_column(String(10), default="en", nullable=False)
     timezone: Mapped[str | None] = mapped_column(String(64))
@@ -211,6 +213,40 @@ class Consent(Base):
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), nullable=False, index=True
     )
+
+
+class UserLanguage(Base, TimestampMixin):
+    """A language a student can work in; matching reads these rows."""
+
+    __tablename__ = "user_languages"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    user_id: Mapped[int] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    language: Mapped[str] = mapped_column(String(60), nullable=False)
+    # "basic" | "conversational" | "fluent" | "native"
+    level: Mapped[str] = mapped_column(
+        String(20), default="fluent", server_default="fluent", nullable=False
+    )
+
+    __table_args__ = (
+        UniqueConstraint("user_id", "language", name="uq_user_language"),
+    )
+
+
+class UserAvailability(Base, TimestampMixin):
+    """How much work a student can take on, and when they can start."""
+
+    __tablename__ = "user_availability"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    user_id: Mapped[int] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"), nullable=False, unique=True
+    )
+    hours_per_week: Mapped[int | None] = mapped_column(Integer)
+    available_from: Mapped[date | None] = mapped_column(Date)
+    note: Mapped[str | None] = mapped_column(String(255))
 
 
 class IdempotencyKey(Base):

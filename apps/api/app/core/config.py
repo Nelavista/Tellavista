@@ -46,6 +46,9 @@ class Settings(BaseSettings):
 
     # --- Integrations (optional; unset = feature cleanly disabled) ---
     OPENROUTER_API_KEY: str = ""
+    OPENROUTER_MODEL: str = "openai/gpt-4o-mini"
+    # Expo push endpoint (https://exp.host/--/api/v2/push/send). Unset = in-app only.
+    PUSH_ENDPOINT: str = ""
     GOOGLE_CLIENT_ID: str = ""
     GOOGLE_CLIENT_SECRET: str = ""
     CLOUDINARY_URL: str = ""

@@ -24,10 +24,22 @@ from app.db.base import Base
 API_ROOT = Path(__file__).resolve().parents[1]
 POSTGRES_URL = "postgresql://ci:ci@localhost:5432/ci_offline"  # never connected to
 
+# Added by 20261016_1400 (PR 0.2a).
+ACADEMIA_TABLES = {
+    "academic_sessions",
+    "semesters",
+    "enrolments",
+    "topics",
+    "material_chunks",
+    "questions",
+    "question_attempts",
+}
 # Added by 20261016_1300 (PR 0.1b).
 CREDENTIAL_TABLES = {"refresh_tokens", "email_tokens", "consents", "idempotency_keys"}
 # Added by 20261016_1200 (PR 0.1a).
 IDENTITY_TABLES = {"roles", "user_profiles", "audit_logs"}
+# Skeleton tables from 20261016_0000: present at every revision.
+SKELETON_TABLES = {"users", "universities", "faculties", "departments", "courses", "materials"}
 
 
 def _alembic(*args: str, db_url: str) -> subprocess.CompletedProcess[str]:
@@ -59,28 +71,24 @@ def test_upgrade_downgrade_upgrade_round_trip(tmp_path: Path) -> None:
     up = _alembic("upgrade", "head", db_url=url)
     assert up.returncode == 0, up.stderr
     tables = set(inspect(engine).get_table_names())
-    assert IDENTITY_TABLES <= tables and CREDENTIAL_TABLES <= tables
+    assert ACADEMIA_TABLES <= tables and IDENTITY_TABLES <= tables and CREDENTIAL_TABLES <= tables
     assert "role_id" in {c["name"] for c in inspect(engine).get_columns("users")}
 
-    # One step back: only 0.1b's tables go, 0.1a's survive.
-    down_one = _alembic("downgrade", "-1", db_url=url)
-    assert down_one.returncode == 0, down_one.stderr
-    tables = set(inspect(engine).get_table_names())
-    assert CREDENTIAL_TABLES.isdisjoint(tables)
-    assert IDENTITY_TABLES <= tables
+    # Walk back one revision at a time. Each downgrade must remove exactly its own
+    # revision's tables and leave every earlier one in place (expand-only).
+    for removed in (ACADEMIA_TABLES, CREDENTIAL_TABLES, IDENTITY_TABLES):
+        down = _alembic("downgrade", "-1", db_url=url)
+        assert down.returncode == 0, down.stderr
+        tables = set(inspect(engine).get_table_names())
+        assert removed.isdisjoint(tables), f"downgrade left {removed & tables} behind"
+        assert SKELETON_TABLES <= tables
 
-    # Second step: back to the skeleton, which must remain intact (expand-only).
-    down_two = _alembic("downgrade", "-1", db_url=url)
-    assert down_two.returncode == 0, down_two.stderr
-    tables = set(inspect(engine).get_table_names())
-    assert IDENTITY_TABLES.isdisjoint(tables)
-    assert {"users", "universities", "courses", "materials"} <= tables
     assert "role_id" not in {c["name"] for c in inspect(engine).get_columns("users")}
 
     again = _alembic("upgrade", "head", db_url=url)
     assert again.returncode == 0, again.stderr
     tables = set(inspect(engine).get_table_names())
-    assert "audit_logs" in tables and CREDENTIAL_TABLES <= tables
+    assert ACADEMIA_TABLES <= tables and CREDENTIAL_TABLES <= tables
 
 
 def test_single_head() -> None:
@@ -112,6 +120,7 @@ def test_postgres_ddl_compiles(tmp_path: Path) -> None:
     ddl = proc.stdout.upper()
     assert "CREATE TABLE ROLES" in ddl
     assert "CREATE TABLE IDEMPOTENCY_KEYS" in ddl
+    assert "CREATE TABLE ENROLMENTS" in ddl
     assert "JSONB" in ddl, "JSON payload columns must be JSONB on Postgres"
     assert "SET NOT NULL" in ddl, "the timestamp tightening must reach Postgres"
 
@@ -122,5 +131,5 @@ def test_revision_chain_is_linked() -> None:
     assert proc.returncode == 0, proc.stderr
     assert all(
         revision in proc.stdout
-        for revision in ("20261016_1300", "20261016_1200", "20261016_0000")
+        for revision in ("20261016_1400", "20261016_1300", "20261016_1200", "20261016_0000")
     )

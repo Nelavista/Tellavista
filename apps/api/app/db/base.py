@@ -29,6 +29,8 @@ from app.models import (  # noqa: E402,F401  (noqa: isort)
     academia,
     admin,
     identity,
+    matching,
     skills,
     verification,
+    work,
 )

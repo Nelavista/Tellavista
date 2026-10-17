@@ -15,13 +15,12 @@ from datetime import UTC, datetime
 
 import pytest
 import sqlalchemy as sa
-from sqlalchemy import create_engine, event, inspect, select
+from sqlalchemy import inspect, select
 from sqlalchemy.dialects import postgresql, sqlite
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
-from app.db.base import Base
 from app.models.admin import ROLE_OPS_ADMIN, ROLE_STUDENT, SEED_ROLES, AuditLog, Role
 from app.models.identity import User, UserProfile
 from app.seed.roles import seed_roles
@@ -39,24 +38,8 @@ EXPECTED_TABLES = {
 }
 
 
-@pytest.fixture()
-def db() -> Session:
-    engine = create_engine("sqlite://")  # in-memory
-
-    # SQLite ignores foreign keys unless asked: without this, ON DELETE CASCADE /
-    # SET NULL look like they work and the tests prove nothing.
-    @event.listens_for(engine, "connect")
-    def _enable_foreign_keys(dbapi_connection, _record) -> None:  # noqa: ANN001
-        cursor = dbapi_connection.cursor()
-        cursor.execute("PRAGMA foreign_keys=ON")
-        cursor.close()
-
-    Base.metadata.create_all(engine)
-    with Session(engine) as session:
-        seed_roles(session)
-        yield session
-        session.rollback()
-
+# The `db` fixture lives in conftest.py: one FK-enabled schema setup shared with
+# the credential tests, so the two copies cannot drift apart.
 
 def _user(db: Session, **overrides) -> User:
     student = db.scalar(select(Role).where(Role.code == ROLE_STUDENT))

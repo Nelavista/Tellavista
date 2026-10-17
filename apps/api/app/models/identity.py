@@ -1,24 +1,25 @@
 """Identity: one student across Academia and Skills (PRD §14).
 
-Phase 0 builds this module in two steps. **PR 0.1a (this change)** adds the
-account itself: `users` gains a role and a soft-deletion timestamp, and
-`UserProfile` holds profile, preferences and the Choose Path flag. **PR 0.1b**
-adds the credential tables — single-use refresh-token families, email tokens,
-consent records and the idempotency-key store (ADR-0007, ADR-0009).
+Phase 0 built this module in two steps. **PR 0.1a** added the account itself:
+`users` gains a role and a soft-deletion timestamp, and `UserProfile` holds
+profile, preferences and the Choose Path flag. **PR 0.1b (this change)** adds
+the credential and reliability tables — single-use refresh-token families, email
+tokens, consent records and the idempotency-key store (ADR-0007, ADR-0009).
 
 `Role` and `AuditLog` live in :mod:`app.models.admin` (05-domain-map.md). The
 auth service, role enforcement and audit writes land in PR 0.8–0.10; nothing
-here is exposed to clients yet.
+here is exposed to clients yet. Every table below is a *shape*: the behaviour
+(rotation, reuse detection, replay) is PR 0.5 and 0.8.
 """
 from __future__ import annotations
 
 from datetime import date, datetime
 
-from sqlalchemy import Boolean, Date, DateTime, ForeignKey, Integer, String, UniqueConstraint
+from sqlalchemy import Boolean, Date, DateTime, ForeignKey, Integer, String, UniqueConstraint, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import Base, TimestampMixin
-from app.models.admin import Role
+from app.models.admin import JSONPayload, Role
 
 
 class User(Base, TimestampMixin):
@@ -99,3 +100,151 @@ class UserProfile(Base, TimestampMixin):
     profile_visibility: Mapped[str] = mapped_column(String(16), default="private", nullable=False)
 
     user: Mapped[User] = relationship(back_populates="profile")
+
+
+# --- Phase 0 PR 0.1b: credentials, consent and idempotency (ADR-0007, ADR-0009) ---
+#
+# Two rules hold across all four tables below:
+# 1. Only a **hash** of any bearer value is stored. A database dump must not be a
+#    set of usable sessions or password-reset links.
+# 2. The raw token/key is returned to the client exactly once, when it is minted.
+
+REFRESH_PLATFORMS: tuple[str, ...] = ("web", "ios", "android", "admin")
+EMAIL_TOKEN_PURPOSES: tuple[str, ...] = ("verify_email", "reset_password")
+CONSENT_KINDS: tuple[str, ...] = (
+    "terms_of_service",
+    "privacy_policy",
+    "contributor_terms",
+    "marketing",
+)
+
+# Why a refresh token stopped working. Recorded so a support question
+# ("why was I logged out?") has an answer without guessing.
+REVOKE_LOGOUT = "logout"
+REVOKE_REUSE_DETECTED = "reuse_detected"
+REVOKE_PASSWORD_RESET = "password_reset"
+REVOKE_ACCOUNT_DELETED = "account_deleted"
+REVOKE_ROTATED = "rotated"
+
+
+class RefreshToken(Base, TimestampMixin):
+    """One link in a rotating refresh-token family (ADR-0009).
+
+    A login mints a `family_id` and the first token. Every refresh marks the
+    presented token `used_at` and inserts its replacement in the same family, so
+    a token is **single-use by construction**. Presenting a token that already
+    has `used_at` is a replay: the service revokes the whole family
+    (`REVOKE_REUSE_DETECTED`), which is what makes a stolen token short-lived.
+
+    `platform` records which client the session belongs to, so "log out all my
+    phones" is a query rather than a guess.
+    """
+
+    __tablename__ = "refresh_tokens"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    user_id: Mapped[int] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    # Shared by every token in one login chain; a UUID, not a second table.
+    family_id: Mapped[str] = mapped_column(String(36), nullable=False, index=True)
+    token_hash: Mapped[str] = mapped_column(String(64), nullable=False)  # sha256 hex
+    platform: Mapped[str] = mapped_column(
+        String(10), default="web", server_default="web", nullable=False
+    )
+    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    used_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    revoked_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    revoked_reason: Mapped[str | None] = mapped_column(String(40))
+    # Rotation chain, kept for forensics: the replacement may itself be revoked.
+    replaced_by_id: Mapped[int | None] = mapped_column(
+        ForeignKey("refresh_tokens.id", ondelete="SET NULL")
+    )
+
+    __table_args__ = (UniqueConstraint("token_hash", name="uq_refresh_tokens_token_hash"),)
+
+
+class EmailToken(Base, TimestampMixin):
+    """Verification / password-reset token: hashed, expiring, single use.
+
+    Only one token per `(user, purpose)` is ever active; minting a new one
+    replaces the previous, so an old link stops working (the service enforces
+    this in PR 0.8 — the model makes the hash unique and keeps the intent clear).
+    """
+
+    __tablename__ = "email_tokens"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    user_id: Mapped[int] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    purpose: Mapped[str] = mapped_column(String(20), nullable=False)
+    token_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    used_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+    __table_args__ = (UniqueConstraint("token_hash", name="uq_email_tokens_token_hash"),)
+
+
+class Consent(Base):
+    """Append-only evidence of what a student agreed to, and when (PRD §13).
+
+    Consent is a record, not a flag: agreeing to new terms adds a row, it never
+    edits the old one, so "what did they accept in October?" is answerable.
+    There is no `updated_at` for the same reason `AuditLog` has none.
+
+    `user_id` is `SET NULL` on deletion: the evidence is retained after an account
+    is anonymised, but stops pointing at a person. Ages and terms are hooks only
+    — 18 remains a policy under legal review, not enforced here.
+    """
+
+    __tablename__ = "consents"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    user_id: Mapped[int | None] = mapped_column(
+        ForeignKey("users.id", ondelete="SET NULL"), index=True
+    )
+    kind: Mapped[str] = mapped_column(String(30), nullable=False)
+    document_version: Mapped[str] = mapped_column(String(20), nullable=False)
+    granted: Mapped[bool] = mapped_column(Boolean, nullable=False)
+    ip_hash: Mapped[str | None] = mapped_column(String(64))
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False, index=True
+    )
+
+
+class IdempotencyKey(Base):
+    """Replay guard for every write that must not happen twice (ADR-0007).
+
+    The client sends a UUIDv4 `Idempotency-Key`; the API stores the key with the
+    fingerprint of the request and, once it finishes, the response. A replay
+    returns the stored response instead of writing again — that is what makes
+    "no lost work, no lost payments" true on a dropped connection.
+
+    `completed_at IS NULL` means the first attempt is still in flight, so a
+    concurrent replay gets 409 rather than a second write. The same key with a
+    *different* body is a client bug and also a 409.
+
+    The payload is JSONB on Postgres. Rows are purged after `expires_at`
+    (24h by default, set by the service in PR 0.5).
+    """
+
+    __tablename__ = "idempotency_keys"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    key: Mapped[str] = mapped_column(String(64), nullable=False)
+    user_id: Mapped[int | None] = mapped_column(
+        ForeignKey("users.id", ondelete="SET NULL"), index=True
+    )
+    method: Mapped[str] = mapped_column(String(8), nullable=False)
+    path: Mapped[str] = mapped_column(String(255), nullable=False)
+    request_fingerprint: Mapped[str] = mapped_column(String(64), nullable=False)
+    response_status: Mapped[int | None] = mapped_column(Integer)
+    response_body: Mapped[dict | None] = mapped_column(JSONPayload)
+    completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False
+    )
+
+    __table_args__ = (UniqueConstraint("key", name="uq_idempotency_keys_key"),)

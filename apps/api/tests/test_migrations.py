@@ -24,6 +24,16 @@ from app.db.base import Base
 API_ROOT = Path(__file__).resolve().parents[1]
 POSTGRES_URL = "postgresql://ci:ci@localhost:5432/ci_offline"  # never connected to
 
+# Added by 20261016_1600 (PR 0.3a).
+VERIFICATION_TABLES = {
+    "verification_records",
+    "verification_events",
+    "assessments",
+    "assessment_tasks",
+    "assessment_attempts",
+    "practical_tasks",
+    "transcript_entries",
+}
 # Added by 20261016_1500 (PR 0.2b).
 SKILLS_TABLES = {
     "skill_categories",
@@ -81,13 +91,20 @@ def test_upgrade_downgrade_upgrade_round_trip(tmp_path: Path) -> None:
     up = _alembic("upgrade", "head", db_url=url)
     assert up.returncode == 0, up.stderr
     tables = set(inspect(engine).get_table_names())
-    assert SKILLS_TABLES <= tables and ACADEMIA_TABLES <= tables
-    assert IDENTITY_TABLES <= tables and CREDENTIAL_TABLES <= tables
+    assert VERIFICATION_TABLES <= tables and SKILLS_TABLES <= tables
+    assert ACADEMIA_TABLES <= tables and IDENTITY_TABLES <= tables
+    assert CREDENTIAL_TABLES <= tables
     assert "role_id" in {c["name"] for c in inspect(engine).get_columns("users")}
 
     # Walk back one revision at a time. Each downgrade must remove exactly its own
     # revision's tables and leave every earlier one in place (expand-only).
-    for removed in (SKILLS_TABLES, ACADEMIA_TABLES, CREDENTIAL_TABLES, IDENTITY_TABLES):
+    for removed in (
+        VERIFICATION_TABLES,
+        SKILLS_TABLES,
+        ACADEMIA_TABLES,
+        CREDENTIAL_TABLES,
+        IDENTITY_TABLES,
+    ):
         down = _alembic("downgrade", "-1", db_url=url)
         assert down.returncode == 0, down.stderr
         tables = set(inspect(engine).get_table_names())
@@ -99,7 +116,8 @@ def test_upgrade_downgrade_upgrade_round_trip(tmp_path: Path) -> None:
     again = _alembic("upgrade", "head", db_url=url)
     assert again.returncode == 0, again.stderr
     tables = set(inspect(engine).get_table_names())
-    assert SKILLS_TABLES <= tables and ACADEMIA_TABLES <= tables and CREDENTIAL_TABLES <= tables
+    assert VERIFICATION_TABLES <= tables and SKILLS_TABLES <= tables
+    assert ACADEMIA_TABLES <= tables and CREDENTIAL_TABLES <= tables
 
 
 def test_single_head() -> None:
@@ -133,6 +151,7 @@ def test_postgres_ddl_compiles(tmp_path: Path) -> None:
     assert "CREATE TABLE IDEMPOTENCY_KEYS" in ddl
     assert "CREATE TABLE ENROLMENTS" in ddl
     assert "CREATE TABLE TASK_TEMPLATES" in ddl
+    assert "CREATE TABLE VERIFICATION_EVENTS" in ddl
     assert "JSONB" in ddl, "JSON payload columns must be JSONB on Postgres"
     assert "SET NOT NULL" in ddl, "the timestamp tightening must reach Postgres"
 
@@ -144,6 +163,7 @@ def test_revision_chain_is_linked() -> None:
     assert all(
         revision in proc.stdout
         for revision in (
+            "20261016_1600",
             "20261016_1500",
             "20261016_1400",
             "20261016_1300",

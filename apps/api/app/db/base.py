@@ -25,4 +25,10 @@ class TimestampMixin:
 # Import model modules for metadata registration (side-effect imports).
 # `admin` must come before `identity`: identity's User/CreatedBy relationships
 # resolve the Role class by name from this registry.
-from app.models import academia, admin, identity, skills  # noqa: E402,F401  (noqa: isort)
+from app.models import (  # noqa: E402,F401  (noqa: isort)
+    academia,
+    admin,
+    identity,
+    skills,
+    verification,
+)

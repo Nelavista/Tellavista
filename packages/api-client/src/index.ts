@@ -24,6 +24,7 @@ export interface ApiError {
   status: number;
   code?: string;
   message: string;
+  request_id?: string;
 }
 
 /** Minimal fetch wrapper with auth + idempotency support (ADR-0007/0009). */
@@ -61,8 +62,17 @@ export function createApiClient(config: ApiClientConfig) {
       };
     }
     if (!res.ok) {
-      const body = await res.json().catch(() => ({}));
-      throw { status: res.status, message: body.message ?? res.statusText, code: body.code } as ApiError;
+      // Every failure is `{ error: { code, message, request_id } }`;
+      // read the envelope, not the top level, or every message is lost.
+      const body = (await res.json().catch(() => ({}))) as {
+        error?: { code?: string; message?: string; request_id?: string };
+      };
+      throw {
+        status: res.status,
+        code: body.error?.code ?? `http_${res.status}`,
+        message: body.error?.message ?? res.statusText,
+        request_id: body.error?.request_id,
+      } as ApiError;
     }
     return (res.status === 204 ? undefined : await res.json()) as T;
   }

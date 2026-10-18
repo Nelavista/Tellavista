@@ -44,8 +44,7 @@ export default defineConfig(({ mode }) => {
             {
               // Low-data friendly: show the last good response when the network
               // is slow or gone, and never cache anything that is not a GET.
-              urlPattern: ({ url, request }) =>
-                request.method === 'GET' && url.pathname.startsWith('/api/'),
+              urlPattern: ({ url, request }) => request.method === 'GET' && url.pathname.startsWith('/api/'),
               handler: 'NetworkFirst',
               options: {
                 cacheName: 'nv-api',

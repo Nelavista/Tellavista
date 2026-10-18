@@ -56,7 +56,12 @@ export function createApiClient(config: ApiClientConfig) {
     if (res.status === 426) {
       // Force-update required (ADR-0010): surface a typed error for the client to handle.
       const body = await res.json().catch(() => ({}));
-      throw { status: 426, code: 'upgrade_required', message: 'Please update the app', ...body } as ApiError & {
+      throw {
+        status: 426,
+        code: 'upgrade_required',
+        message: 'Please update the app',
+        ...body,
+      } as ApiError & {
         min_version?: string;
         store_url?: string;
       };

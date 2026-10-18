@@ -95,7 +95,9 @@ describe('http', () => {
       const auth = (init.headers as Record<string, string>).Authorization;
       if (url.endsWith('/auth/refresh')) return Promise.resolve(json(200, { access_token: 'fresh' }));
       return Promise.resolve(
-        auth === 'Bearer fresh' ? json(200, { ok: true }) : json(401, { error: { code: 'unauthorized', message: 'No' } }),
+        auth === 'Bearer fresh'
+          ? json(200, { ok: true })
+          : json(401, { error: { code: 'unauthorized', message: 'No' } }),
       );
     });
     setAccessToken('stale');
@@ -119,7 +121,9 @@ describe('http', () => {
         return Promise.resolve(json(200, { access_token: 'fresh' }));
       }
       return Promise.resolve(
-        auth === 'Bearer fresh' ? json(200, { ok: true }) : json(401, { error: { code: 'unauthorized', message: 'No' } }),
+        auth === 'Bearer fresh'
+          ? json(200, { ok: true })
+          : json(401, { error: { code: 'unauthorized', message: 'No' } }),
       );
     });
     setAccessToken('stale');

@@ -52,12 +52,7 @@ export function Signup(): JSX.Element {
       <h1 className="nv-h2">Create your account</h1>
       <p className="nv-muted">One account for learning, proof and work.</p>
       <form className="nv-stack" onSubmit={onSubmit} noValidate>
-        <Field
-          label="Name"
-          autoComplete="name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
+        <Field label="Name" autoComplete="name" value={name} onChange={(e) => setName(e.target.value)} />
         <Field
           label="Email"
           type="email"
@@ -84,11 +79,7 @@ export function Signup(): JSX.Element {
           hint="At least 10 characters."
         />
         <label className="nv-check">
-          <input
-            type="checkbox"
-            checked={accepted}
-            onChange={(e) => setAccepted(e.target.checked)}
-          />
+          <input type="checkbox" checked={accepted} onChange={(e) => setAccepted(e.target.checked)} />
           <span>I accept the terms and privacy policy.</span>
         </label>
         <ErrorNote message={error} />

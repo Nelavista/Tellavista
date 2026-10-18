@@ -132,4 +132,3 @@ export interface OnboardingState {
   enrolments: Enrolment[];
   next_step: 'choose_path' | 'enrol' | 'ready';
 }
-

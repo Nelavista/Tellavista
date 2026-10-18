@@ -47,18 +47,14 @@ export function Home(): JSX.Element {
       <h1 className="nv-h1">Welcome, {name}</h1>
 
       {me && !me.email_verified ? (
-        <p className="nv-banner">
-          Confirm your email so we can send you proof and payout notices.
-        </p>
+        <p className="nv-banner">Confirm your email so we can send you proof and payout notices.</p>
       ) : null}
 
       <ErrorNote message={error} />
 
       <section className="nv-card">
         <h2 className="nv-h2">Your path</h2>
-        <p className="nv-muted">
-          Switching never deletes your learning, proof or earnings.
-        </p>
+        <p className="nv-muted">Switching never deletes your learning, proof or earnings.</p>
         <Select
           label="Current path"
           value={profile?.preferred_path ?? 'both'}

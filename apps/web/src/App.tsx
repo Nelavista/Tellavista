@@ -16,6 +16,26 @@ const AcademiaDashboard = React.lazy(() =>
   import('./routes/AcademiaDashboard').then((m) => ({ default: m.AcademiaDashboard })),
 );
 const Campus = React.lazy(() => import('./routes/Campus').then((m) => ({ default: m.Campus })));
+const Skills = React.lazy(() => import('./routes/Skills').then((m) => ({ default: m.Skills })));
+const SkillDetail = React.lazy(() =>
+  import('./routes/SkillDetail').then((m) => ({ default: m.SkillDetail })),
+);
+const PathDetail = React.lazy(() => import('./routes/PathDetail').then((m) => ({ default: m.PathDetail })));
+const LessonReader = React.lazy(() =>
+  import('./routes/LessonReader').then((m) => ({ default: m.LessonReader })),
+);
+const Practice = React.lazy(() => import('./routes/Practice').then((m) => ({ default: m.Practice })));
+const MyLearning = React.lazy(() => import('./routes/MyLearning').then((m) => ({ default: m.MyLearning })));
+const Verification = React.lazy(() =>
+  import('./routes/Verification').then((m) => ({ default: m.Verification })),
+);
+const AssessmentSitting = React.lazy(() =>
+  import('./routes/AssessmentSitting').then((m) => ({ default: m.AssessmentSitting })),
+);
+const AttemptReview = React.lazy(() =>
+  import('./routes/AttemptReview').then((m) => ({ default: m.AttemptReview })),
+);
+const Transcript = React.lazy(() => import('./routes/Transcript').then((m) => ({ default: m.Transcript })));
 
 function Loading(): JSX.Element {
   return (
@@ -97,6 +117,87 @@ function RouteTable(): JSX.Element {
             element={
               <RequireAuth>
                 <Campus />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/verification"
+            element={
+              <RequireAuth>
+                <Verification />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/verification/assessments/:assessmentSlug"
+            element={
+              <RequireAuth>
+                <AssessmentSitting />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/verification/attempts/:attemptId"
+            element={
+              <RequireAuth>
+                <AttemptReview />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/transcript"
+            element={
+              <RequireAuth>
+                <Transcript />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/skills"
+            element={
+              <RequireAuth>
+                <Skills />
+              </RequireAuth>
+            }
+          />
+          {/* Static segments rank above the parameter, so this route wins. */}
+          <Route
+            path="/skills/my-learning"
+            element={
+              <RequireAuth>
+                <MyLearning />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/skills/paths/:pathSlug"
+            element={
+              <RequireAuth>
+                <PathDetail />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/skills/lessons/:lessonSlug"
+            element={
+              <RequireAuth>
+                <LessonReader />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/skills/practice/:templateId"
+            element={
+              <RequireAuth>
+                <Practice />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/skills/:skillSlug"
+            element={
+              <RequireAuth>
+                <SkillDetail />
               </RequireAuth>
             }
           />

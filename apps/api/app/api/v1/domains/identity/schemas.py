@@ -209,3 +209,29 @@ class OnboardingStateOut(BaseModel):
     has_enrolment: bool
     current_semester: SemesterOut | None = None
     academic: dict
+
+
+# --- campus ----------------------------------------------------------------
+
+
+class CampusUniversityOut(BaseModel):
+    id: int
+    name: str
+    slug: str
+
+
+class CampusItemOut(BaseModel):
+    """A campus fact or map point. Coordinates are decimal degrees or absent."""
+
+    id: int
+    kind: str
+    title: str
+    body: str | None = None
+    latitude: float | None = None
+    longitude: float | None = None
+
+
+class CampusOut(BaseModel):
+    university: CampusUniversityOut | None = None
+    info: list[CampusItemOut]
+    map: list[CampusItemOut]

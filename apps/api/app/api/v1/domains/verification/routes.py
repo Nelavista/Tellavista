@@ -7,6 +7,15 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_current_user, require_flag
+from app.api.v1.domains.verification.schemas import (
+    AssessmentListOut,
+    AttemptOut,
+    AttemptResultOut,
+    AttemptSubmitIn,
+    ReviewOut,
+    TranscriptOut,
+    VerificationOut,
+)
 from app.core import flags, observability
 from app.core.authz import require_permission
 from app.core.errors import ApiError
@@ -23,10 +32,6 @@ router = APIRouter(
 )
 
 
-class AttemptSubmitIn(BaseModel):
-    answers: dict = Field(default_factory=dict)
-
-
 class PracticalIn(BaseModel):
     payload: dict = Field(default_factory=dict)
     client_key: str | None = Field(default=None, max_length=64)
@@ -38,7 +43,7 @@ class PracticalReviewIn(BaseModel):
     notes: str | None = Field(default=None, max_length=2000)
 
 
-@router.get("")
+@router.get("", response_model=VerificationOut)
 def my_verification(
     user: User = Depends(get_current_user), db: Session = Depends(get_db)
 ) -> dict:
@@ -64,14 +69,14 @@ def my_verification(
     }
 
 
-@router.get("/transcript")
+@router.get("/transcript", response_model=TranscriptOut)
 def my_transcript(
     user: User = Depends(get_current_user), db: Session = Depends(get_db)
 ) -> dict:
     return transcript.get_transcript(db, user)
 
 
-@router.get("/assessments")
+@router.get("/assessments", response_model=AssessmentListOut)
 def list_assessments(
     skill_id: int | None = None,
     _user: User = Depends(get_current_user),
@@ -80,7 +85,7 @@ def list_assessments(
     return {"assessments": assessments.list_assessments(db, skill_id=skill_id)}
 
 
-@router.post("/assessments/{slug}/start")
+@router.post("/assessments/{slug}/start", response_model=AttemptOut)
 def start_assessment(
     slug: str,
     user: User = Depends(get_current_user),
@@ -91,7 +96,7 @@ def start_assessment(
     return payload
 
 
-@router.post("/attempts/{attempt_id}/submit")
+@router.post("/attempts/{attempt_id}/submit", response_model=AttemptResultOut)
 def submit_assessment(
     attempt_id: int,
     payload: AttemptSubmitIn,
@@ -109,7 +114,7 @@ def submit_assessment(
     return result
 
 
-@router.get("/attempts/{attempt_id}")
+@router.get("/attempts/{attempt_id}", response_model=ReviewOut)
 def review_assessment(
     attempt_id: int,
     user: User = Depends(get_current_user),

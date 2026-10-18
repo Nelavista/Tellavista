@@ -27,12 +27,24 @@ pnpm --filter @nelavista/web test
 | `/home`       | Greeting, path switch, courses, verify-email banner |
 | `/academia`   | Dashboard: the five questions and one next action  |
 | `/campus`     | University info and map points                     |
+| `/skills`     | Skill catalog                                      |
+| `/skills/:skillSlug` | One skill and its published paths           |
+| `/skills/paths/:pathSlug` | Ordered path with real progress       |
+| `/skills/lessons/:lessonSlug` | Lesson reader                       |
+| `/skills/practice/:templateId` | Practice task (never verification) |
+| `/skills/my-learning` | Paths the student has started              |
+| `/verification` | Badges and the assessments that earn them       |
+| `/verification/assessments/:assessmentSlug` | A sitting          |
+| `/verification/attempts/:attemptId` | Graded answers, after submission  |
+| `/transcript` | Learned / proved / delivered, with evidence        |
 
 Everything from `/onboarding` down requires a session; an anonymous visit redirects to
 `/login` and comes back afterwards.
 
 ## Tests
 
-`vitest run` in this package covers the request layer: CSRF on writes, the shared error
-envelope, single-flight refresh, and the `@nelavista/api-client` wrapper. It does not
-cover the screens — there is no browser-level harness yet.
+`vitest run` in this package covers the request layer (CSRF on writes, the shared error
+envelope, single-flight refresh, the `@nelavista/api-client` wrapper) and renders the
+journey screens in jsdom against a mocked `fetch`: the practice form posts the answer
+object the template schema asks for, a sitting posts answers keyed by task id, and a
+404 from a flagged-out router reads as "not switched on", not as an error.

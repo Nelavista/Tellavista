@@ -14,7 +14,8 @@
     "typecheck": "turbo run typecheck",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "generate:api-client": "pnpm --filter @nelavista/api-client generate"
+    "generate:api-client": "pnpm --filter @nelavista/api-client generate",
+    "check:web-budget": "node tools/check_web_budget.mjs"
   },
   "devDependencies": {
     "eslint": "^9.15.0",

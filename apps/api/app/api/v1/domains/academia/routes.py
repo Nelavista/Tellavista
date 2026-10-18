@@ -13,6 +13,7 @@ from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_current_user, require_flag
+from app.api.v1.domains.academia.schemas import DashboardOut
 from app.core import flags
 from app.db.session import get_db
 from app.models.identity import User
@@ -45,7 +46,7 @@ class AnswerIn(BaseModel):
     duration_ms: int | None = Field(default=None, ge=0)
 
 
-@router.get("/dashboard")
+@router.get("/dashboard", response_model=DashboardOut)
 def get_dashboard(
     user: User = Depends(get_current_user), db: Session = Depends(get_db)
 ) -> dict:

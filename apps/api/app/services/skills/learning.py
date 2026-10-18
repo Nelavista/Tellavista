@@ -161,6 +161,9 @@ def path_with_progress(db: Session, user: User, path: LearningPath) -> dict:
                 "kind": step.kind,
                 "title": step.title or (lesson.title if lesson else None),
                 "lesson_id": step.lesson_id,
+                # The reader route addresses lessons by slug, so a path can link
+                # straight into a step without a second lookup.
+                "lesson_slug": lesson.slug if lesson else None,
                 "task_template_id": step.task_template_id,
                 "completed": done,
                 "unlocked": previous_done,

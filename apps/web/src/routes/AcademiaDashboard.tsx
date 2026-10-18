@@ -5,12 +5,7 @@
  * invents a generic prompt: if a section has no data the answer text explains
  * what would put something there. The page only decides how to lay it out.
  */
-import type {
-  AcademiaDashboard as Dashboard,
-  NextAction,
-  PracticeItem,
-  TopicStat,
-} from '@nelavista/contracts';
+import type { DashboardOut, NextActionOut, PracticeItemOut, TopicStatOut } from '@nelavista/api-client';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 
@@ -19,18 +14,18 @@ import { ErrorNote, Skeleton } from '../ui';
 
 type LoadState = 'loading' | 'ready' | 'unavailable' | 'error';
 
-function whenLabel(value: string | null): string | null {
+function whenLabel(value: string | null | undefined): string | null {
   if (!value) return null;
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return null;
   return date.toLocaleDateString(undefined, { day: 'numeric', month: 'short' });
 }
 
-function accuracyLabel(value: number | null): string {
+function accuracyLabel(value: number | null | undefined): string {
   return value === null ? 'not attempted' : `${value}% correct`;
 }
 
-function ActionCard({ action }: { action: NextAction }): JSX.Element {
+function ActionCard({ action }: { action: NextActionOut }): JSX.Element {
   return (
     <section className="nv-action" aria-labelledby="nv-next-action">
       <p className="nv-label" id="nv-next-action">
@@ -42,7 +37,13 @@ function ActionCard({ action }: { action: NextAction }): JSX.Element {
   );
 }
 
-function TopicList({ items, empty }: { items: Array<PracticeItem | TopicStat>; empty: string }): JSX.Element {
+function TopicList({
+  items,
+  empty,
+}: {
+  items: Array<PracticeItemOut | TopicStatOut>;
+  empty: string;
+}): JSX.Element {
   if (items.length === 0) return <p className="nv-muted">{empty}</p>;
   return (
     <ul className="nv-list">
@@ -58,7 +59,7 @@ function TopicList({ items, empty }: { items: Array<PracticeItem | TopicStat>; e
 
 export function AcademiaDashboard(): JSX.Element {
   const [state, setState] = React.useState<LoadState>('loading');
-  const [data, setData] = React.useState<Dashboard | null>(null);
+  const [data, setData] = React.useState<DashboardOut | null>(null);
   const [error, setError] = React.useState<string | null>(null);
   const [attempt, setAttempt] = React.useState(0);
 
@@ -68,7 +69,7 @@ export function AcademiaDashboard(): JSX.Element {
     setError(null);
     void (async () => {
       try {
-        const dashboard = await http.get<Dashboard>('/academia/dashboard');
+        const dashboard = await http.get<DashboardOut>('/academia/dashboard');
         if (cancelled) return;
         setData(dashboard);
         setState('ready');

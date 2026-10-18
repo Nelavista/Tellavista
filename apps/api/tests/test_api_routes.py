@@ -19,10 +19,18 @@ from factories import (
     make_skill,
     make_template,
     make_user,
+    unique,
 )
 from fastapi.testclient import TestClient
 
 from app.core.security import create_access_token
+from app.models.skills import (
+    STATUS_PUBLISHED,
+    LearningPath,
+    LearningPathStep,
+    Lesson,
+)
+from app.models.verification import Assessment, AssessmentTask
 
 
 def _headers(user) -> dict:
@@ -140,7 +148,222 @@ def test_the_academia_dashboard_answers_its_five_questions(api) -> None:
     response = client.get("/v1/academia/dashboard", headers=_headers(student))
 
     assert response.status_code == 200
-    assert len(response.json()["questions"]) == 5
+    body = response.json()
+    # The response model is the contract: a new or renamed question fails here.
+    assert set(body["questions"]) == {
+        "what_am_i_studying",
+        "what_did_i_study_recently",
+        "what_should_i_practise",
+        "where_am_i_weak",
+        "what_should_i_do_next",
+    }
+    assert body["materials_by_course"] == {}
+    assert body["enrolment_count"] == 0
+    # With no data the dashboard still recommends a real next step.
+    assert body["questions"]["what_should_i_do_next"]["action"]["kind"] == "onboarding"
+
+
+def test_campus_serialises_its_contract(api) -> None:
+    client, db = api
+    student = make_user(db)
+
+    response = client.get("/v1/me/campus", headers=_headers(student))
+
+    assert response.status_code == 200
+    assert response.json() == {"university": None, "info": [], "map": []}
+
+
+def test_the_skills_journey_matches_its_response_models(api) -> None:
+    """One walk through Learn → Practise against the modelled shapes.
+
+    Every call here would fail with a 500 if a service returned a shape the
+    response model does not describe, so this is the drift check for the skills
+    contract as well as a journey test.
+    """
+    client, db = api
+    student = make_user(db)
+    skill = make_skill(db)
+    template = make_template(db, skill, config={"expected_answer": {"key": "positive"}})
+    path = LearningPath(
+        skill_id=skill.id, slug=unique("path"), title="Annotation basics", status=STATUS_PUBLISHED
+    )
+    db.add(path)
+    db.flush()
+    lesson = Lesson(
+        skill_id=skill.id,
+        slug=unique("lesson"),
+        title="What annotation is",
+        body_md="Annotation turns raw data into labels.",
+        estimated_minutes=10,
+        status=STATUS_PUBLISHED,
+    )
+    db.add(lesson)
+    db.flush()
+    db.add_all(
+        [
+            LearningPathStep(path_id=path.id, ordinal=1, kind="lesson", lesson_id=lesson.id),
+            LearningPathStep(
+                path_id=path.id, ordinal=2, kind="practice", task_template_id=template.id
+            ),
+        ]
+    )
+    db.flush()
+    headers = _headers(student)
+
+    catalog = client.get("/v1/skills", headers=headers)
+    assert catalog.status_code == 200
+    assert skill.slug in [row["slug"] for row in catalog.json()["skills"]]
+
+    detail = client.get(f"/v1/skills/{skill.slug}", headers=headers)
+    assert detail.status_code == 200
+    assert detail.json()["paths"][0]["slug"] == path.slug
+
+    journey = client.get(f"/v1/skills/paths/{path.slug}", headers=headers)
+    assert journey.status_code == 200
+    body = journey.json()
+    assert body["required_steps"] == 2
+    assert body["percent_complete"] == 0
+    assert [step["unlocked"] for step in body["steps"]] == [True, False]
+    assert body["next_step"]["kind"] == "lesson"
+
+    brief = client.get(f"/v1/skills/tasks/{template.id}", headers=headers)
+    assert brief.status_code == 200
+    assert brief.json()["template_id"] == template.id
+    # The expected answer is configuration and never reaches the student.
+    assert "expected_answer" not in brief.text
+
+    reader = client.get(f"/v1/skills/lessons/{lesson.slug}", headers=headers)
+    assert reader.status_code == 200
+    assert reader.json()["unlocked"] is True
+    assert reader.json()["body_md"] == "Annotation turns raw data into labels."
+
+    started = client.post(f"/v1/skills/lessons/{lesson.id}/start", headers=headers)
+    assert started.json() == {"lesson_id": lesson.id, "status": "in_progress"}
+
+    completed = client.post(f"/v1/skills/lessons/{lesson.id}/complete", headers=headers)
+    assert completed.status_code == 200
+    assert completed.json()["status"] == "completed"
+    # Completing a lesson is progress, never proof.
+    assert completed.json()["verified"] is False
+
+    halfway = client.get(f"/v1/skills/paths/{path.slug}", headers=headers)
+    assert halfway.json()["completed_steps"] == 1
+    assert halfway.json()["percent_complete"] == 50
+    # One lesson done unlocks the practice step behind it.
+    assert halfway.json()["steps"][1]["unlocked"] is True
+    assert halfway.json()["next_step"]["kind"] == "practice"
+
+    practice = client.post(
+        f"/v1/skills/tasks/{template.id}/practice",
+        json={"answer": {"key": "positive"}},
+        headers=headers,
+    )
+    assert practice.status_code == 200
+    assert practice.json()["is_correct"] is True
+    assert practice.json()["counts_as_verification"] is False
+
+    finished = client.get(f"/v1/skills/paths/{path.slug}", headers=headers)
+    assert finished.json()["percent_complete"] == 100
+    assert finished.json()["next_step"] is None
+
+    learning = client.get("/v1/skills/my-learning", headers=headers)
+    assert learning.status_code == 200
+    assert [row["slug"] for row in learning.json()["paths"]] == [path.slug]
+
+
+def test_the_verification_journey_matches_its_response_models(api) -> None:
+    """Sit an assessment end to end against the modelled shapes (B7).
+
+    The response models are the contract: a service that stops returning a field
+    or renames one fails here. The two product rules that matter are asserted in
+    words as well — the expected answer never reaches a sitting, and a pass writes
+    a `proved` line to the transcript.
+    """
+    client, db = api
+    student = make_user(db)
+    skill = make_skill(db)
+    template = make_template(db, skill)
+    assessment = Assessment(
+        skill_id=skill.id,
+        slug=unique("assessment"),
+        title="Annotation check",
+        status=STATUS_PUBLISHED,
+        pass_threshold=80,
+        max_attempts=3,
+        task_count=2,
+    )
+    db.add(assessment)
+    db.flush()
+    db.add_all(
+        [
+            AssessmentTask(
+                assessment_id=assessment.id,
+                ordinal=1,
+                template_id=template.id,
+                payload={"text": "I love it"},
+                expected_answer={"key": "positive"},
+            ),
+            AssessmentTask(
+                assessment_id=assessment.id,
+                ordinal=2,
+                template_id=template.id,
+                payload={"text": "I hate it"},
+                expected_answer={"key": "negative"},
+            ),
+        ]
+    )
+    db.flush()
+    headers = _headers(student)
+
+    status = client.get("/v1/verification", headers=headers)
+    assert status.status_code == 200
+    assert status.json() == {"skills": []}
+
+    catalog = client.get("/v1/verification/assessments", headers=headers)
+    assert catalog.status_code == 200
+    assert [row["slug"] for row in catalog.json()["assessments"]] == [assessment.slug]
+
+    started = client.post(
+        f"/v1/verification/assessments/{assessment.slug}/start", headers=headers
+    )
+    assert started.status_code == 200
+    sitting = started.json()
+    assert len(sitting["tasks"]) == 2
+    # The template's own schemas ride along so the client renders a real control.
+    assert sitting["tasks"][0]["answer_schema"]["required"] == ["label"]
+    assert "expected_answer" not in started.text
+
+    answers = {
+        str(task["task_id"]): {
+            "key": "positive" if task["payload"]["text"] == "I love it" else "negative"
+        }
+        for task in sitting["tasks"]
+    }
+    graded = client.post(
+        f"/v1/verification/attempts/{sitting['attempt_id']}/submit",
+        json={"answers": answers},
+        headers=headers,
+    )
+    assert graded.status_code == 200
+    result = graded.json()
+    assert result["score"] == 100
+    assert result["passed"] is True
+    assert result["verification_status"] == "verified"
+    assert all(task["correct"] for task in result["tasks"])
+
+    review = client.get(
+        f"/v1/verification/attempts/{sitting['attempt_id']}", headers=headers
+    )
+    assert review.status_code == 200
+    # Only now may the expected answers be shown.
+    assert review.json()["tasks"][0]["expected_answer"] == {"key": "positive"}
+
+    transcript = client.get("/v1/verification/transcript", headers=headers)
+    assert transcript.status_code == 200
+    body = transcript.json()
+    assert body["counts"]["proved"] == 1
+    assert body["proved"][0]["title"] == assessment.title
+    assert body["proved"][0]["evidence"]["type"] == "assessment_attempt"
 
 
 def test_an_onboarding_route_is_public(api) -> None:

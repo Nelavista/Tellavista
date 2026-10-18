@@ -69,7 +69,19 @@ def _assessment(db: Session, slug: str) -> Assessment:
     return assessment
 
 
-def _attempt_payload(attempt: AssessmentAttempt, tasks: list[AssessmentTask]) -> dict:
+def _attempt_payload(
+    attempt: AssessmentAttempt,
+    tasks: list[AssessmentTask],
+    templates: dict[int, TaskTemplate] | None = None,
+) -> dict:
+    """The sitting as the student sees it: inputs and schemas, never answers.
+
+    The template's own schemas travel with the task so the client can render the
+    same generated control it uses for practice, without a second round trip per
+    task. A task with no template still carries its `payload`; the client says
+    plainly that it cannot render it rather than guessing a form.
+    """
+    templates = templates or {}
     return {
         "attempt_id": attempt.id,
         "assessment_id": attempt.assessment_id,
@@ -82,6 +94,16 @@ def _attempt_payload(attempt: AssessmentAttempt, tasks: list[AssessmentTask]) ->
                 "payload": task.payload,
                 "points": task.points,
                 "template_id": task.template_id,
+                "input_schema": (
+                    templates[task.template_id].input_schema
+                    if task.template_id in templates
+                    else None
+                ),
+                "answer_schema": (
+                    templates[task.template_id].answer_schema
+                    if task.template_id in templates
+                    else None
+                ),
             }
             for task in tasks
         ],
@@ -111,7 +133,7 @@ def start_attempt(db: Session, user: User, slug: str) -> dict:
     if existing is not None:
         # Resume, do not redraw: the student may have lost connection mid-sitting.
         selected = [task for task in all_tasks if task.id in (existing.presented_task_ids or [])]
-        return _attempt_payload(existing, selected)
+        return _attempt_payload(existing, selected, _templates(db, selected))
 
     attempts = db.scalar(
         select(func.count(AssessmentAttempt.id)).where(
@@ -155,7 +177,7 @@ def start_attempt(db: Session, user: User, slug: str) -> dict:
             evidence_type=EVIDENCE_ASSESSMENT, evidence_id=attempt.id,
             reason="re-verification started",
         )
-    return _attempt_payload(attempt, selected)
+    return _attempt_payload(attempt, selected, _templates(db, selected))
 
 
 def _templates(db: Session, tasks: list[AssessmentTask]) -> dict[int, TaskTemplate]:

@@ -8,6 +8,7 @@ from sqlalchemy.orm import Session
 from app.api.deps import get_current_user
 from app.api.v1.domains.identity.schemas import (
     AvailabilityIn,
+    CampusOut,
     LanguagesIn,
     MessageOut,
     PathIn,
@@ -148,7 +149,7 @@ def set_availability(
     }
 
 
-@router.get("/campus")
+@router.get("/campus", response_model=CampusOut)
 def get_campus(
     user: User = Depends(get_current_user), db: Session = Depends(get_db)
 ) -> dict:

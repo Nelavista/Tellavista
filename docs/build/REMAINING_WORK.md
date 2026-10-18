@@ -1,6 +1,6 @@
 # V2 remaining work — live tracker
 
-Last updated: 2026-10-18 (A1/A2, B4/B5, first slice of B12 and the resend endpoint).
+Last updated: 2026-10-18 (B7: the verification journey, typed end to end).
 
 This is the single list of everything still to do for V2, in the order I intend to
 work through it. It exists so progress is visible while the work happens and so
@@ -28,13 +28,19 @@ or on an external decision.
   every PR. `openapi.json` is a gitignored build artifact. Generated types are
   re-exported from `@nelavista/api-client` (`MeOut`, `TokenOut`, `ProfileOut`,
   `Schemas`, `ApiPaths`); web uses them for `/auth/me` and the session token.
-- [x] **A2** Shared V2 response types are in `packages/contracts`: dashboard
-  (five questions, next action, topic stat), campus, plus the existing auth,
-  onboarding and enrolment types. `Me`/`AuthToken` were **removed** from
-  contracts because the generated schema now owns them.
-- [ ] **A3** Give the `dict`-returning journey routes (`/academia/dashboard`,
-  `/me/campus`, …) real `response_model`s, then move the hand-written contract
-  types onto the generated schema. Until then those shapes are hand-maintained.
+- [x] **A2** Shared V2 types live in `packages/contracts`: the money and status
+  unions, the page/cursor envelope, the error envelope and the onboarding and
+  enrolment shapes. `Me`/`AuthToken` were **removed** because the generated schema
+  owns them, and A3 removed the dashboard/campus copies for the same reason —
+  contracts now holds only what the API has no model for yet.
+- [x] **A3** The routes the student journey reads have real `response_model`s:
+  the Academia dashboard, `/me/campus` and all of `/v1/skills` (plus
+  `lesson_slug` on a path step, so a path can link into the reader). The
+  hand-written journey interfaces are **gone** from `packages/contracts`; web
+  imports `DashboardOut`, `CampusOut`, `PathOut`, … from the generated client.
+  The routes no client reads yet (materials, CBT, Ask, work, money, ops) still
+  return plain `dict`s; each gets its model when a typed client needs it, and
+  `schema.ts` says so. Verification got its models in B7.
 
 ## B. Web PWA (`apps/web`) — student journey
 
@@ -62,21 +68,39 @@ and dev", then the Phase 1 journey.
   "not switched on here" state when `FLAG_ACADEMIA_CONNECT` is off.
 - [x] **B5** Campus utility page at `/campus`: university-scoped info and map
   points, with map links built from coordinates (no map SDK in the bundle).
-- [ ] **B6** Skills overview, path, lesson reader, practice task and my-learning
-  (`/v1/skills/*`), including offline-safe answer saving once the offline store
-  exists (D1).
-- [ ] **B7** Verification: assessment sitting, result, transcript.
+- [x] **B6** Skills overview, skill detail, path with ordered steps and real
+  progress, lesson reader, practice task and my-learning, all against
+  `/v1/skills/*` and all typed from the generated schema. The practice form is
+  generated from the template's own schemas (`lib/practice.ts`), and an
+  unsupported task type says so instead of submitting a meaningless answer. The
+  lesson body is rendered by a small in-repo markdown subset (`lib/markdown.ts`)
+  with a `http(s)`/relative link allow-list — no markdown library in the bundle.
+  **Remaining:** offline-safe answer saving once the offline store exists (D1).
+- [x] **B7** Verification at `/verification`, `/verification/assessments/:slug`,
+  `/verification/attempts/:id` and `/transcript`, all typed from response models
+  added to the verification routes. The sitting resumes an open attempt (a lost
+  connection is not a lost try), renders the form from the template's own
+  schemas (the same generator as practice) and names the expiry. Unanswered tasks
+  score zero and the page says so; a task with no template says it cannot be
+  rendered instead of submitting noise. Expected answers appear only on the
+  review screen, whose route refuses to serve them before submission. The hub
+  states plainly that lessons and practice are not proof, and the transcript
+  groups learned/proved/delivered with the evidence id on every line. Covered by
+  an API end-to-end route test and three DOM tests.
+  **Remaining:** practical-task submission (brief + rubric + a real form) and a
+  re-verification prompt after a suspension.
 - [ ] **B8** Opportunities list/detail with "why you qualify or what's missing".
 - [ ] **B9** Work: assignments, submit (idempotency key per submission), rework.
 - [ ] **B10** Earnings screen with per-line explanations.
 - [ ] **B11** Settings: languages, availability, notifications, data export,
   in-app account deletion (store requirement).
-- [~] **B12** Performance budgets. Done: route-level code splitting (`Home`,
-  `Onboarding`, `Academia`, `Campus` are lazy; landing/login/signup stay eager),
-  skeleton states instead of spinners, and a first measurement — the production
-  build's entry is **58.1 KB gzipped JS** plus 1.2 KB CSS, with each lazy route
-  1.1–1.8 KB gzipped. Still owed: enforce the budget in CI and optimise the
-  icons/screenshots.
+- [~] **B12** Performance budgets. Done: route-level code splitting (every
+  signed-in screen is lazy; landing/sign-in/sign-up stay eager), skeleton states
+  instead of spinners, and **enforcement** — `tools/check_web_budget.mjs` reads
+  the built `index.html`, gzips what the first load actually pulls, and fails the
+  CI job over 150 KB JS / 20 KB CSS (`pnpm check:web-budget`). Current
+  measurement: **57.2 KB gzip JS + 1.3 KB CSS**, lazy routes 0.4–2.5 KB each.
+  Still owed: optimise the icons/screenshots (store assets, D4).
 
 ## C. Admin ops (`apps/admin`)
 

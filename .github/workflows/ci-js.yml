@@ -12,6 +12,7 @@ on:
       - 'turbo.json'
       - 'tsconfig.base.json'
       - 'eslint.config.mjs'
+      - 'tools/check_web_budget.mjs'
       - '.github/workflows/ci-js.yml'
   push:
     branches: [main, develop]
@@ -47,3 +48,7 @@ jobs:
         run: pnpm --filter @nelavista/web test
       - name: Build
         run: pnpm --filter @nelavista/web --filter @nelavista/admin build
+      - name: Web first-load budget
+        # B12: the budget is measured and enforced, and lazy route chunks are not
+        # counted against the first load.
+        run: pnpm check:web-budget

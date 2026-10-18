@@ -9,7 +9,43 @@
  * and fails when the committed client is stale (ADR-0001). Generated types are
  * re-exported from ./schema so app code never imports the generated path.
  */
-export type { ApiPaths, MeOut, ProfileOut, Schemas, TokenOut } from './schema';
+export type {
+  ApiPaths,
+  AssessmentListOut,
+  AssessmentOut,
+  AttemptOut,
+  AttemptResultOut,
+  AttemptResultTaskOut,
+  AttemptTaskOut,
+  CampusItemOut,
+  CampusOut,
+  DashboardOut,
+  EnrolmentOut,
+  LessonCompletedOut,
+  LessonOut,
+  MeOut,
+  MyLearningOut,
+  NextActionOut,
+  PathOut,
+  PathStepOut,
+  PracticeBriefOut,
+  PracticeItemOut,
+  PracticeResultOut,
+  ProfileOut,
+  RecentItemOut,
+  ReviewOut,
+  ReviewTaskOut,
+  Schemas,
+  SkillDetailOut,
+  SkillOut,
+  SkillsOut,
+  TokenOut,
+  TopicStatOut,
+  TranscriptEntryOut,
+  TranscriptOut,
+  VerificationOut,
+  VerificationSkillOut,
+} from './schema';
 
 export interface ApiClientConfig {
   /** API base URL, e.g. http://localhost:8000 or https://api.nelavista.com */

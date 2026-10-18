@@ -5,19 +5,19 @@
  * Some points have coordinates and some are just text, so the map list is built
  * from links rather than an embedded map SDK: no extra bundle, works offline.
  */
-import type { Campus as CampusData, CampusItem } from '@nelavista/contracts';
+import type { CampusItemOut, CampusOut } from '@nelavista/api-client';
 import * as React from 'react';
 
 import { ApiError, http } from '../lib/http';
 import { ErrorNote, Skeleton } from '../ui';
 
-function pointUrl(item: CampusItem): string | null {
+function pointUrl(item: CampusItemOut): string | null {
   if (item.latitude === null || item.longitude === null) return null;
   const { latitude: lat, longitude: lon } = item;
   return `https://www.openstreetmap.org/?mlat=${lat}&mlon=${lon}#map=18/${lat}/${lon}`;
 }
 
-function ItemList({ items, empty }: { items: CampusItem[]; empty: string }): JSX.Element {
+function ItemList({ items, empty }: { items: CampusItemOut[]; empty: string }): JSX.Element {
   if (items.length === 0) return <p className="nv-muted">{empty}</p>;
   return (
     <ul className="nv-list">
@@ -42,7 +42,7 @@ function ItemList({ items, empty }: { items: CampusItem[]; empty: string }): JSX
 
 export function Campus(): JSX.Element {
   const [state, setState] = React.useState<'loading' | 'ready' | 'error'>('loading');
-  const [data, setData] = React.useState<CampusData | null>(null);
+  const [data, setData] = React.useState<CampusOut | null>(null);
   const [error, setError] = React.useState<string | null>(null);
   const [attempt, setAttempt] = React.useState(0);
 
@@ -52,7 +52,7 @@ export function Campus(): JSX.Element {
     setError(null);
     void (async () => {
       try {
-        const campus = await http.get<CampusData>('/me/campus');
+        const campus = await http.get<CampusOut>('/me/campus');
         if (cancelled) return;
         setData(campus);
         setState('ready');

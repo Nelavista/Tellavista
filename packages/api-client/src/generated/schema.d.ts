@@ -2277,6 +2277,28 @@ export interface components {
             /** Course Id */
             course_id?: number | null;
         };
+        /** AssessmentListOut */
+        AssessmentListOut: {
+            /** Assessments */
+            assessments: components["schemas"]["AssessmentOut"][];
+        };
+        /** AssessmentOut */
+        AssessmentOut: {
+            /** Id */
+            id: number;
+            /** Slug */
+            slug: string;
+            /** Title */
+            title: string;
+            /** Skill Id */
+            skill_id: number;
+            /** Pass Threshold */
+            pass_threshold: number;
+            /** Max Attempts */
+            max_attempts: number;
+            /** Task Count */
+            task_count: number;
+        };
         /** AssignmentIn */
         AssignmentIn: {
             /** User Id */
@@ -2290,12 +2312,94 @@ export interface components {
             /** Due At */
             due_at?: string | null;
         };
+        /** AttemptOut */
+        AttemptOut: {
+            /** Attempt Id */
+            attempt_id: number;
+            /** Assessment Id */
+            assessment_id: number;
+            /**
+             * Started At
+             * Format: date-time
+             */
+            started_at: string;
+            /**
+             * Expires At
+             * Format: date-time
+             */
+            expires_at: string;
+            /** Tasks */
+            tasks: components["schemas"]["AttemptTaskOut"][];
+        };
+        /**
+         * AttemptResultOut
+         * @description The graded sitting. An expired attempt is a real result, not an error.
+         */
+        AttemptResultOut: {
+            /** Attempt Id */
+            attempt_id: number;
+            /** Score */
+            score: number;
+            /** Passed */
+            passed: boolean;
+            /** Expired */
+            expired: boolean;
+            /** Pass Threshold */
+            pass_threshold?: number | null;
+            /** Verification Status */
+            verification_status?: string | null;
+            /** Message */
+            message?: string | null;
+            /** Tasks */
+            tasks: components["schemas"]["AttemptResultTaskOut"][];
+        };
+        /** AttemptResultTaskOut */
+        AttemptResultTaskOut: {
+            /** Task Id */
+            task_id: number;
+            /** Ordinal */
+            ordinal: number;
+            /** Correct */
+            correct: boolean;
+            /** Points */
+            points: number;
+            /** Max Points */
+            max_points: number;
+            /** Feedback */
+            feedback?: string | null;
+        };
         /** AttemptSubmitIn */
         AttemptSubmitIn: {
             /** Answers */
             answers?: {
                 [key: string]: unknown;
             };
+        };
+        /**
+         * AttemptTaskOut
+         * @description What the student is shown. The expected answer is deliberately absent.
+         */
+        AttemptTaskOut: {
+            /** Task Id */
+            task_id: number;
+            /** Ordinal */
+            ordinal: number;
+            /** Payload */
+            payload: {
+                [key: string]: unknown;
+            };
+            /** Points */
+            points: number;
+            /** Template Id */
+            template_id?: number | null;
+            /** Input Schema */
+            input_schema?: {
+                [key: string]: unknown;
+            } | null;
+            /** Answer Schema */
+            answer_schema?: {
+                [key: string]: unknown;
+            } | null;
         };
         /** AvailabilityIn */
         AvailabilityIn: {
@@ -2337,6 +2441,41 @@ export interface components {
             /** Longitude Micro */
             longitude_micro?: number | null;
         };
+        /**
+         * CampusItemOut
+         * @description A campus fact or map point. Coordinates are decimal degrees or absent.
+         */
+        CampusItemOut: {
+            /** Id */
+            id: number;
+            /** Kind */
+            kind: string;
+            /** Title */
+            title: string;
+            /** Body */
+            body?: string | null;
+            /** Latitude */
+            latitude?: number | null;
+            /** Longitude */
+            longitude?: number | null;
+        };
+        /** CampusOut */
+        CampusOut: {
+            university?: components["schemas"]["CampusUniversityOut"] | null;
+            /** Info */
+            info: components["schemas"]["CampusItemOut"][];
+            /** Map */
+            map: components["schemas"]["CampusItemOut"][];
+        };
+        /** CampusUniversityOut */
+        CampusUniversityOut: {
+            /** Id */
+            id: number;
+            /** Name */
+            name: string;
+            /** Slug */
+            slug: string;
+        };
         /** CancelIn */
         CancelIn: {
             /** Reason */
@@ -2371,6 +2510,24 @@ export interface components {
             title: string;
             /** Level */
             level: string;
+        };
+        /** DashboardOut */
+        DashboardOut: {
+            questions: components["schemas"]["DashboardQuestionsOut"];
+            /** Materials By Course */
+            materials_by_course: {
+                [key: string]: number;
+            };
+            /** Enrolment Count */
+            enrolment_count: number;
+        };
+        /** DashboardQuestionsOut */
+        DashboardQuestionsOut: {
+            what_am_i_studying: components["schemas"]["StudyingQuestionOut"];
+            what_did_i_study_recently: components["schemas"]["RecentQuestionOut"];
+            what_should_i_practise: components["schemas"]["PractiseQuestionOut"];
+            where_am_i_weak: components["schemas"]["WeakQuestionOut"];
+            what_should_i_do_next: components["schemas"]["NextQuestionOut"];
         };
         /** EnrolIn */
         EnrolIn: {
@@ -2485,6 +2642,25 @@ export interface components {
             /** Languages */
             languages?: components["schemas"]["LanguageIn"][];
         };
+        /**
+         * LessonCompletedOut
+         * @description Completion is progress. `verified` is always false, and says so out loud.
+         */
+        LessonCompletedOut: {
+            /** Lesson Id */
+            lesson_id: number;
+            /** Status */
+            status: string;
+            /** Completed At */
+            completed_at?: string | null;
+            /**
+             * Verified
+             * @default false
+             */
+            verified: boolean;
+            /** Note */
+            note: string;
+        };
         /** LessonIn */
         LessonIn: {
             /** Skill Id */
@@ -2506,6 +2682,25 @@ export interface components {
              */
             status: string;
         };
+        /** LessonOut */
+        LessonOut: {
+            /** Id */
+            id: number;
+            /** Slug */
+            slug: string;
+            /** Title */
+            title: string;
+            /** Body Md */
+            body_md: string;
+            /** Estimated Minutes */
+            estimated_minutes?: number | null;
+            /** Skill Id */
+            skill_id: number;
+            /** Status */
+            status: string;
+            /** Unlocked */
+            unlocked: boolean;
+        };
         /** LessonPatchIn */
         LessonPatchIn: {
             /** Title */
@@ -2516,6 +2711,13 @@ export interface components {
             estimated_minutes?: number | null;
             /** Status */
             status?: string | null;
+        };
+        /** LessonStartedOut */
+        LessonStartedOut: {
+            /** Lesson Id */
+            lesson_id: number;
+            /** Status */
+            status: string;
         };
         /** LoginIn */
         LoginIn: {
@@ -2555,6 +2757,35 @@ export interface components {
         MessageOut: {
             /** Message */
             message: string;
+        };
+        /** MyLearningOut */
+        MyLearningOut: {
+            /** Paths */
+            paths: components["schemas"]["PathOut"][];
+        };
+        /**
+         * NextActionOut
+         * @description One action, with a destination the client can open and a readable reason.
+         */
+        NextActionOut: {
+            /** Kind */
+            kind: string;
+            /** Label */
+            label: string;
+            /** Reason */
+            reason: string;
+            /** Topic Id */
+            topic_id?: number | null;
+            /** Lesson Id */
+            lesson_id?: number | null;
+            /** Material Id */
+            material_id?: number | null;
+        };
+        /** NextQuestionOut */
+        NextQuestionOut: {
+            /** Answer */
+            answer?: string | null;
+            action: components["schemas"]["NextActionOut"];
         };
         /** NotificationReadIn */
         NotificationReadIn: {
@@ -2615,6 +2846,32 @@ export interface components {
             /** Reason */
             reason: string;
         };
+        /** PathOut */
+        PathOut: {
+            /** Id */
+            id: number;
+            /** Slug */
+            slug: string;
+            /** Title */
+            title: string;
+            /** Summary */
+            summary?: string | null;
+            /** Level */
+            level: string;
+            /** Estimated Hours */
+            estimated_hours?: number | null;
+            /** Skill Id */
+            skill_id: number;
+            /** Steps */
+            steps: components["schemas"]["PathStepOut"][];
+            /** Completed Steps */
+            completed_steps: number;
+            /** Required Steps */
+            required_steps: number;
+            /** Percent Complete */
+            percent_complete: number;
+            next_step?: components["schemas"]["PathStepOut"] | null;
+        };
         /** PathPatchIn */
         PathPatchIn: {
             /** Title */
@@ -2627,6 +2884,52 @@ export interface components {
             estimated_hours?: number | null;
             /** Status */
             status?: string | null;
+        };
+        /**
+         * PathStepOut
+         * @description One position in a path, with the student's own state on it.
+         *
+         *     `unlocked` is computed server-side from the steps before this one, so the UI
+         *     never has to re-derive path order (and cannot disagree with the API about it).
+         */
+        PathStepOut: {
+            /** Id */
+            id: number;
+            /** Ordinal */
+            ordinal: number;
+            /** Kind */
+            kind: string;
+            /** Title */
+            title?: string | null;
+            /** Lesson Id */
+            lesson_id?: number | null;
+            /** Lesson Slug */
+            lesson_slug?: string | null;
+            /** Task Template Id */
+            task_template_id?: number | null;
+            /** Completed */
+            completed: boolean;
+            /** Unlocked */
+            unlocked: boolean;
+            /** Progress Status */
+            progress_status?: string | null;
+            /** Estimated Minutes */
+            estimated_minutes?: number | null;
+        };
+        /** PathSummaryOut */
+        PathSummaryOut: {
+            /** Id */
+            id: number;
+            /** Slug */
+            slug: string;
+            /** Title */
+            title: string;
+            /** Summary */
+            summary?: string | null;
+            /** Level */
+            level: string;
+            /** Estimated Hours */
+            estimated_hours?: number | null;
         };
         /** PracticalIn */
         PracticalIn: {
@@ -2646,6 +2949,32 @@ export interface components {
             /** Notes */
             notes?: string | null;
         };
+        /**
+         * PracticeBriefOut
+         * @description What the student sees. The expected answer is never part of this shape.
+         */
+        PracticeBriefOut: {
+            /** Template Id */
+            template_id: number;
+            /** Slug */
+            slug: string;
+            /** Name */
+            name: string;
+            /** Instructions Md */
+            instructions_md: string;
+            /** Input Schema */
+            input_schema: {
+                [key: string]: unknown;
+            };
+            /** Answer Schema */
+            answer_schema: {
+                [key: string]: unknown;
+            };
+            /** Sample */
+            sample?: unknown | null;
+            /** Version */
+            version: number;
+        };
         /** PracticeIn */
         PracticeIn: {
             /** Answer */
@@ -2654,6 +2983,42 @@ export interface components {
             };
             /** Duration Ms */
             duration_ms?: number | null;
+        };
+        /** PracticeItemOut */
+        PracticeItemOut: {
+            /** Topic Id */
+            topic_id?: number | null;
+            /** Topic */
+            topic: string;
+            /** Accuracy */
+            accuracy?: number | null;
+        };
+        /** PracticeResultOut */
+        PracticeResultOut: {
+            /** Attempt Id */
+            attempt_id: number;
+            /** Is Correct */
+            is_correct: boolean;
+            /** Score */
+            score: number;
+            /** Feedback */
+            feedback: string;
+            /** Details */
+            details: {
+                [key: string]: unknown;
+            };
+            /**
+             * Counts As Verification
+             * @default false
+             */
+            counts_as_verification: boolean;
+        };
+        /** PractiseQuestionOut */
+        PractiseQuestionOut: {
+            /** Answer */
+            answer: string;
+            /** Items */
+            items: components["schemas"]["PracticeItemOut"][];
         };
         /** ProfileOut */
         ProfileOut: {
@@ -2735,6 +3100,22 @@ export interface components {
              */
             count: number;
         };
+        /** RecentItemOut */
+        RecentItemOut: {
+            /** Kind */
+            kind: string;
+            /** Title */
+            title: string;
+            /** When */
+            when?: string | null;
+        };
+        /** RecentQuestionOut */
+        RecentQuestionOut: {
+            /** Answer */
+            answer: string;
+            /** Items */
+            items: components["schemas"]["RecentItemOut"][];
+        };
         /** RefreshIn */
         RefreshIn: {
             /** Refresh Token */
@@ -2801,6 +3182,38 @@ export interface components {
             /** Reason */
             reason?: string | null;
         };
+        /** ReviewOut */
+        ReviewOut: {
+            /** Attempt Id */
+            attempt_id: number;
+            /** Score */
+            score?: number | null;
+            /** Passed */
+            passed?: boolean | null;
+            /** Submitted At */
+            submitted_at?: string | null;
+            /** Tasks */
+            tasks: components["schemas"]["ReviewTaskOut"][];
+        };
+        /** ReviewTaskOut */
+        ReviewTaskOut: {
+            /** Task Id */
+            task_id: number;
+            /** Ordinal */
+            ordinal: number;
+            /** Payload */
+            payload: {
+                [key: string]: unknown;
+            };
+            /** Answer */
+            answer?: unknown | null;
+            /** Expected Answer */
+            expected_answer?: unknown | null;
+            /** Correct */
+            correct: boolean;
+            /** Feedback */
+            feedback?: string | null;
+        };
         /** SemesterOut */
         SemesterOut: {
             /** Id */
@@ -2845,6 +3258,44 @@ export interface components {
              */
             platform: string;
         };
+        /** SkillDetailOut */
+        SkillDetailOut: {
+            /** Id */
+            id: number;
+            /** Slug */
+            slug: string;
+            /** Name */
+            name: string;
+            /** Description */
+            description?: string | null;
+            /** Paths */
+            paths: components["schemas"]["PathSummaryOut"][];
+        };
+        /**
+         * SkillOut
+         * @description One catalog row. `published_paths` is what the student can actually open.
+         */
+        SkillOut: {
+            /** Id */
+            id: number;
+            /** Slug */
+            slug: string;
+            /** Name */
+            name: string;
+            /** Description */
+            description?: string | null;
+            /** Category */
+            category?: string | null;
+            /** Category Slug */
+            category_slug?: string | null;
+            /** Published Paths */
+            published_paths: number;
+        };
+        /** SkillsOut */
+        SkillsOut: {
+            /** Skills */
+            skills: components["schemas"]["SkillOut"][];
+        };
         /** StandardIn */
         StandardIn: {
             /** Name */
@@ -2874,6 +3325,13 @@ export interface components {
             lesson_id?: number | null;
             /** Task Template Id */
             task_template_id?: number | null;
+        };
+        /** StudyingQuestionOut */
+        StudyingQuestionOut: {
+            /** Answer */
+            answer: string;
+            /** Courses */
+            courses: components["schemas"]["EnrolmentOut"][];
         };
         /** SubdivisionOut */
         SubdivisionOut: {
@@ -2983,6 +3441,76 @@ export interface components {
             /** Refresh Token */
             refresh_token?: string | null;
         };
+        /**
+         * TopicStatOut
+         * @description Accuracy over practice answers, with the strength/weakness verdict.
+         */
+        TopicStatOut: {
+            /** Topic Id */
+            topic_id?: number | null;
+            /** Topic */
+            topic: string;
+            /** Attempts */
+            attempts: number;
+            /** Correct */
+            correct: number;
+            /** Accuracy */
+            accuracy: number;
+            /** Strength */
+            strength: boolean;
+            /** Weakness */
+            weakness: boolean;
+        };
+        /** TranscriptCountsOut */
+        TranscriptCountsOut: {
+            /** Learned */
+            learned: number;
+            /** Proved */
+            proved: number;
+            /** Delivered */
+            delivered: number;
+        };
+        /** TranscriptEntryOut */
+        TranscriptEntryOut: {
+            /** Id */
+            id: number;
+            /** Kind */
+            kind: string;
+            /** Title */
+            title: string;
+            /** Skill */
+            skill?: string | null;
+            /** Skill Slug */
+            skill_slug?: string | null;
+            evidence: components["schemas"]["TranscriptEvidenceOut"];
+            /**
+             * Occurred At
+             * Format: date-time
+             */
+            occurred_at: string;
+        };
+        /**
+         * TranscriptEvidenceOut
+         * @description Every transcript line names the row it came from. There is no free text.
+         */
+        TranscriptEvidenceOut: {
+            /** Type */
+            type: string;
+            /** Id */
+            id: string;
+        };
+        /** TranscriptOut */
+        TranscriptOut: {
+            /** Entries */
+            entries: components["schemas"]["TranscriptEntryOut"][];
+            /** Learned */
+            learned: components["schemas"]["TranscriptEntryOut"][];
+            /** Proved */
+            proved: components["schemas"]["TranscriptEntryOut"][];
+            /** Delivered */
+            delivered: components["schemas"]["TranscriptEntryOut"][];
+            counts: components["schemas"]["TranscriptCountsOut"];
+        };
         /** UniversityOut */
         UniversityOut: {
             /** Id */
@@ -3005,6 +3533,31 @@ export interface components {
             /** Context */
             ctx?: Record<string, never>;
         };
+        /** VerificationOut */
+        VerificationOut: {
+            /** Skills */
+            skills: components["schemas"]["VerificationSkillOut"][];
+        };
+        /**
+         * VerificationSkillOut
+         * @description One skill's current badge state. `verified` is derived from `status`.
+         */
+        VerificationSkillOut: {
+            /** Skill Id */
+            skill_id: number;
+            /** Skill */
+            skill: string;
+            /** Slug */
+            slug: string;
+            /** Status */
+            status: string;
+            /** Verified At */
+            verified_at?: string | null;
+            /** Last Evaluated At */
+            last_evaluated_at?: string | null;
+            /** Verified */
+            verified: boolean;
+        };
         /** VerifyEmailIn */
         VerifyEmailIn: {
             /** Token */
@@ -3018,6 +3571,13 @@ export interface components {
             email?: string | null;
             /** Note */
             note?: string | null;
+        };
+        /** WeakQuestionOut */
+        WeakQuestionOut: {
+            /** Answer */
+            answer: string;
+            /** Items */
+            items: components["schemas"]["TopicStatOut"][];
         };
         /** PathIn */
         app__api__v1__domains__identity__schemas__PathIn: {
@@ -3726,9 +4286,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["CampusOut"];
                 };
             };
             /** @description Validation Error */
@@ -4164,9 +4722,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["SkillsOut"];
                 };
             };
             /** @description Validation Error */
@@ -4197,9 +4753,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["MyLearningOut"];
                 };
             };
             /** @description Validation Error */
@@ -4232,9 +4786,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["PathOut"];
                 };
             };
             /** @description Validation Error */
@@ -4267,9 +4819,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["LessonOut"];
                 };
             };
             /** @description Validation Error */
@@ -4302,9 +4852,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["LessonStartedOut"];
                 };
             };
             /** @description Validation Error */
@@ -4337,9 +4885,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["LessonCompletedOut"];
                 };
             };
             /** @description Validation Error */
@@ -4372,9 +4918,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["PracticeBriefOut"];
                 };
             };
             /** @description Validation Error */
@@ -4411,9 +4955,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["PracticeResultOut"];
                 };
             };
             /** @description Validation Error */
@@ -4446,9 +4988,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["SkillDetailOut"];
                 };
             };
             /** @description Validation Error */
@@ -4746,9 +5286,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["VerificationOut"];
                 };
             };
             /** @description Validation Error */
@@ -4779,9 +5317,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["TranscriptOut"];
                 };
             };
             /** @description Validation Error */
@@ -4814,9 +5350,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["AssessmentListOut"];
                 };
             };
             /** @description Validation Error */
@@ -4849,9 +5383,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["AttemptOut"];
                 };
             };
             /** @description Validation Error */
@@ -4888,9 +5420,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["AttemptResultOut"];
                 };
             };
             /** @description Validation Error */
@@ -4923,9 +5453,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["ReviewOut"];
                 };
             };
             /** @description Validation Error */
@@ -7133,9 +7661,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["DashboardOut"];
                 };
             };
             /** @description Validation Error */

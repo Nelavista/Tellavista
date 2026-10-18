@@ -263,6 +263,92 @@ a:hover {
   color: var(--nv-text-muted, #9fb0c6);
 }
 
+/* Real progress, not a decoration: the width is the API's own percent_complete. */
+.nv-meter {
+  width: 100%;
+  height: 8px;
+  border-radius: var(--nv-radius-pill, 999px);
+  background: var(--nv-surface, #0e1420);
+  border: 1px solid var(--nv-border, #1f2a3a);
+  overflow: hidden;
+}
+
+.nv-meter__fill {
+  display: block;
+  height: 100%;
+  background: var(--nv-accent, #00d1ff);
+}
+
+.nv-step {
+  border-left: 2px solid var(--nv-border, #1f2a3a);
+  padding-left: var(--nv-space-md, 12px);
+  display: flex;
+  flex-direction: column;
+  gap: var(--nv-space-xs, 4px);
+}
+
+.nv-step[data-done='true'] {
+  border-left-color: var(--nv-accent, #00d1ff);
+}
+
+.nv-step p {
+  margin: 0;
+}
+
+.nv-quote {
+  margin: 0;
+  padding-left: var(--nv-space-md, 12px);
+  border-left: 2px solid var(--nv-accent, #00d1ff);
+  color: var(--nv-text-muted, #9fb0c6);
+}
+
+.nv-code {
+  margin: 0;
+  padding: var(--nv-space-md, 12px);
+  border-radius: var(--nv-radius-sm, 8px);
+  background: var(--nv-bg, #050810);
+  border: 1px solid var(--nv-border, #1f2a3a);
+  overflow-x: auto;
+  font-size: var(--nv-text-sm, 13px);
+  white-space: pre-wrap;
+}
+
+.nv-code code {
+  font: inherit;
+}
+
+article .nv-h2 {
+  margin-top: var(--nv-space-md, 12px);
+}
+
+/* Verification state, said in one word. The colour never carries meaning alone:
+   the label next to it always spells the state out. */
+.nv-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: var(--nv-radius-pill, 999px);
+  border: 1px solid var(--nv-border, #1f2a3a);
+  font-size: var(--nv-text-sm, 13px);
+  color: var(--nv-text-muted, #9fb0c6);
+  white-space: nowrap;
+}
+
+.nv-badge[data-status='verified'] {
+  border-color: var(--nv-success, #22c55e);
+  color: var(--nv-success, #22c55e);
+}
+
+.nv-badge[data-status='at_risk'],
+.nv-badge[data-status='suspended'] {
+  border-color: var(--nv-warning, #f59e0b);
+  color: var(--nv-warning, #f59e0b);
+}
+
+.nv-badge[data-status='in_progress'] {
+  border-color: var(--nv-accent, #00d1ff);
+  color: var(--nv-accent, #00d1ff);
+}
+
 .nv-step[data-active='true'] {
   color: var(--nv-accent, #00d1ff);
 }

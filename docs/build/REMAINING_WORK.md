@@ -23,7 +23,7 @@ or on an external decision.
 ## A. Contracts and tooling
 
 - [x] **A1** Typed client generation adopted. `packages/api-client/src/generated/schema.d.ts`
-  (125 paths) is committed, `tools/gen_api_client.mjs` runs the CLI through Node
+  (126 paths) is committed, `tools/gen_api_client.mjs` runs the CLI through Node
   so it works on Windows too, and `ci-contracts.yml` now regenerates and diffs
   every PR. `openapi.json` is a gitignored build artifact. Generated types are
   re-exported from `@nelavista/api-client` (`MeOut`, `TokenOut`, `ProfileOut`,
@@ -139,13 +139,11 @@ and dev", then the Phase 1 journey.
   samples, gold tasks, assessment items) — needs your authoring decision (G4).
 - [x] **F8** `POST /auth/email/verify/resend` (authenticated, 3/5 min per account,
   invalidates the previous link) and a "send the link again" action on the web
-  home banner. Covered by two service tests.
-- [ ] **F8** `POST /auth/email/resend-verification` does not exist, so the web app
-  can only show the "confirm your email" banner and cannot re-send the link.
-  Needs the route, the mail template and a rate limit.
-- [ ] **F9** `apps/web` still has no route-level code splitting: the first load is
-  ~59 KB gzipped of JS today, but B12's ≤150 KB budget must be enforced in CI
-  before the surface grows.
+  home banner. Covered by two service tests and one route test.
+- [ ] **F9** The verification email body is still the relative path
+  `/auth/verify?token=…` rather than an absolute link to a screen, and the web app
+  has no verify-email landing route to consume it. The endpoint exists; the
+  template and that screen are owed (part of B1).
 
 ## G. Open questions for you
 

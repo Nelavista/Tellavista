@@ -43,5 +43,7 @@ jobs:
         run: pnpm --filter @nelavista/web --filter @nelavista/admin lint
       - name: Typecheck
         run: pnpm --filter @nelavista/web --filter @nelavista/admin typecheck
+      - name: Test
+        run: pnpm --filter @nelavista/web test
       - name: Build
         run: pnpm --filter @nelavista/web --filter @nelavista/admin build

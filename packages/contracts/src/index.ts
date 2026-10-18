@@ -52,23 +52,9 @@ export interface ApiErrorEnvelope {
 /** The three student paths (PRD §6). Switching never deletes prior work. */
 export type PreferredPath = 'academia' | 'skills' | 'both';
 
-/** Non-cookie clients (mobile) also receive the refresh token. */
-export interface AuthToken {
-  access_token: string;
-  token_type: string;
-  expires_at: string;
-  refresh_token?: string | null;
-}
-
-export interface Me {
-  id: number;
-  email: string;
-  username: string;
-  name: string | null;
-  email_verified: boolean;
-  role: string | null;
-  preferred_path: PreferredPath | string | null;
-}
+// `Me` and `AuthToken` deliberately do not live here any more: both come from
+// the API's own schema. Import `MeOut` and `TokenOut` from `@nelavista/api-client`
+// so those two can never drift from the server (A1).
 
 export interface Profile {
   display_name: string | null;
@@ -131,4 +117,87 @@ export interface OnboardingState {
   academic: Record<string, unknown>;
   enrolments: Enrolment[];
   next_step: 'choose_path' | 'enrol' | 'ready';
+}
+
+/**
+ * V2 journey responses that the API returns as plain dicts today.
+ *
+ * They are hand-written against the services' return shapes because those routes
+ * have no `response_model`, so the generated schema cannot describe them yet.
+ * Every field here is optional-tolerant where the API can legitimately omit it,
+ * and the UI must render an honest empty state rather than assume data.
+ */
+
+/** One topic's record from `topic_stats` (services/academia/cbt.py). */
+export interface TopicStat {
+  topic_id: number | null;
+  topic: string;
+  attempts: number;
+  correct: number;
+  /** Whole percent, 0–100. */
+  accuracy: number;
+  strength: boolean;
+  weakness: boolean;
+}
+
+export type RecentItemKind = 'lesson_completed' | 'lesson_in_progress';
+
+export interface RecentItem {
+  kind: RecentItemKind;
+  title: string;
+  /** ISO timestamp, or null if the row predates it. */
+  when: string | null;
+}
+
+/** A practice suggestion: a weak topic with an accuracy, or an unattempted one. */
+export interface PracticeItem {
+  topic_id: number | null;
+  topic: string;
+  accuracy: number | null;
+}
+
+export type NextActionKind = 'practise' | 'lesson' | 'material' | 'onboarding';
+
+/** Exactly one next action, always with a reason a student can read. */
+export interface NextAction {
+  kind: NextActionKind;
+  label: string;
+  reason: string;
+  topic_id?: number;
+  lesson_id?: number;
+  material_id?: number;
+}
+
+/** `/v1/academia/dashboard` — the five questions, each with a plain answer. */
+export interface AcademiaDashboard {
+  questions: {
+    what_am_i_studying: { answer: string; courses: Enrolment[] };
+    what_did_i_study_recently: { answer: string; items: RecentItem[] };
+    what_should_i_practise: { answer: string; items: PracticeItem[] };
+    where_am_i_weak: { answer: string; items: TopicStat[] };
+    what_should_i_do_next: { answer: string | null; action: NextAction };
+  };
+  /** Course id → materials the student can open, for their own courses only. */
+  materials_by_course: Record<string, number>;
+  enrolment_count: number;
+}
+
+export type CampusItemKind =
+  'building' | 'library' | 'hall' | 'department' | 'hostel' | 'food' | 'map' | string;
+
+export interface CampusItem {
+  id: number;
+  kind: CampusItemKind;
+  title: string;
+  body: string | null;
+  /** Decimal degrees, or null when the point has no coordinates. */
+  latitude: number | null;
+  longitude: number | null;
+}
+
+/** `/v1/me/campus` — scoped to the student's own university. */
+export interface Campus {
+  university: Pick<University, 'id' | 'name' | 'slug'> | null;
+  info: CampusItem[];
+  map: CampusItem[];
 }

@@ -24,6 +24,8 @@ export function Layout({ children }: { children: React.ReactNode }): JSX.Element
           {status === 'authenticated' ? (
             <>
               <Link to="/home">Home</Link>
+              <Link to="/academia">Academia</Link>
+              <Link to="/campus">Campus</Link>
               <button className="nv-button nv-button--ghost" type="button" onClick={onSignOut}>
                 Sign out
               </button>

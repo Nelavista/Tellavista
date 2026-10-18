@@ -5,7 +5,8 @@
  * then fetch /me. Anything else stays anonymous — no flash of a signed-in shell,
  * and a dead cookie cannot wedge the UI in a retry loop.
  */
-import type { AuthToken, Me, Profile } from '@nelavista/contracts';
+import type { MeOut, TokenOut } from '@nelavista/api-client';
+import type { Profile } from '@nelavista/contracts';
 import * as React from 'react';
 
 import { http, refreshSession, setAccessToken } from './http';
@@ -21,7 +22,7 @@ export interface SignupInput {
 
 interface SessionValue {
   status: SessionStatus;
-  me: Me | null;
+  me: MeOut | null;
   profile: Profile | null;
   signup: (input: SignupInput) => Promise<void>;
   login: (email: string, password: string) => Promise<void>;
@@ -33,11 +34,11 @@ const SessionContext = React.createContext<SessionValue | null>(null);
 
 export function SessionProvider({ children }: { children: React.ReactNode }): JSX.Element {
   const [status, setStatus] = React.useState<SessionStatus>('loading');
-  const [me, setMe] = React.useState<Me | null>(null);
+  const [me, setMe] = React.useState<MeOut | null>(null);
   const [profile, setProfile] = React.useState<Profile | null>(null);
 
   const load = React.useCallback(async (): Promise<void> => {
-    const [user, prof] = await Promise.all([http.get<Me>('/auth/me'), http.get<Profile>('/me')]);
+    const [user, prof] = await Promise.all([http.get<MeOut>('/auth/me'), http.get<Profile>('/me')]);
     setMe(user);
     setProfile(prof);
     setStatus('authenticated');
@@ -52,7 +53,7 @@ export function SessionProvider({ children }: { children: React.ReactNode }): JS
           if (!cancelled) setStatus('anonymous');
           return;
         }
-        const [user, prof] = await Promise.all([http.get<Me>('/auth/me'), http.get<Profile>('/me')]);
+        const [user, prof] = await Promise.all([http.get<MeOut>('/auth/me'), http.get<Profile>('/me')]);
         if (cancelled) return;
         setMe(user);
         setProfile(prof);
@@ -68,7 +69,7 @@ export function SessionProvider({ children }: { children: React.ReactNode }): JS
 
   const signup = React.useCallback(
     async (input: SignupInput): Promise<void> => {
-      const token = await http.post<AuthToken>('/auth/signup', {
+      const token = await http.post<TokenOut>('/auth/signup', {
         ...input,
         accept_terms: true,
         platform: 'web',
@@ -81,7 +82,11 @@ export function SessionProvider({ children }: { children: React.ReactNode }): JS
 
   const login = React.useCallback(
     async (email: string, password: string): Promise<void> => {
-      const token = await http.post<AuthToken>('/auth/login', { email, password, platform: 'web' });
+      const token = await http.post<TokenOut>('/auth/login', {
+        email,
+        password,
+        platform: 'web',
+      });
       setAccessToken(token.access_token);
       await load();
     },

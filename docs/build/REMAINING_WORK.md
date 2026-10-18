@@ -1,6 +1,6 @@
 # V2 remaining work — live tracker
 
-Last updated: 2026-10-18 (web client slice landed on `feat/v2-journey-services`).
+Last updated: 2026-10-18 (A1/A2, B4/B5, first slice of B12 and the resend endpoint).
 
 This is the single list of everything still to do for V2, in the order I intend to
 work through it. It exists so progress is visible while the work happens and so
@@ -16,24 +16,25 @@ or on an external decision.
   total)`, `department = round_half_up(20% of fee)`, `platform = fee − department`,
   `students = total − fee`; per-student allocation is largest remainder with ties
   by ascending user id. Leftover minor units land with the platform, never with
-  the student pool or the department. To be recorded in an ADR (E1).
+  the  student pool or the department. Recorded in ADR-0011 (E1).
 - **Mobile ships in lockstep with web** for the core journey screens (D-work
   follows B/C screen by screen).
 
 ## A. Contracts and tooling
 
-- [x] **A2 (partial)** Shared types for the auth session, profile, taxonomy and
-  onboarding now live in `packages/contracts` and are imported by web. The other
-  domains (dashboard answers, verification status, opportunity match, assignment,
-  earning line) still need the same treatment when their screens land.
-- [ ] **A1** Adopt typed client generation: add `openapi-typescript` to the
-  workspace, export `openapi.json` from `app.main`, run
-  `node tools/gen_api_client.mjs --schema openapi.json`, commit
-  `packages/api-client/src/generated/schema.d.ts`. This turns the
-  `ci-contracts.yml` skip-notice into a real freshness gate.
-- [ ] **A2** Publish shared V2 response types in `packages/contracts` (auth
-  session, enrolment, dashboard answers, verification status, opportunity match,
-  assignment, earning line) so web/admin/mobile cannot drift from the API.
+- [x] **A1** Typed client generation adopted. `packages/api-client/src/generated/schema.d.ts`
+  (125 paths) is committed, `tools/gen_api_client.mjs` runs the CLI through Node
+  so it works on Windows too, and `ci-contracts.yml` now regenerates and diffs
+  every PR. `openapi.json` is a gitignored build artifact. Generated types are
+  re-exported from `@nelavista/api-client` (`MeOut`, `TokenOut`, `ProfileOut`,
+  `Schemas`, `ApiPaths`); web uses them for `/auth/me` and the session token.
+- [x] **A2** Shared V2 response types are in `packages/contracts`: dashboard
+  (five questions, next action, topic stat), campus, plus the existing auth,
+  onboarding and enrolment types. `Me`/`AuthToken` were **removed** from
+  contracts because the generated schema now owns them.
+- [ ] **A3** Give the `dict`-returning journey routes (`/academia/dashboard`,
+  `/me/campus`, …) real `response_model`s, then move the hand-written contract
+  types onto the generated schema. Until then those shapes are hand-maintained.
 
 ## B. Web PWA (`apps/web`) — student journey
 
@@ -42,8 +43,9 @@ and dev", then the Phase 1 journey.
 
 - [x] **B1** Sign in / register screens against `/v1/auth/*`, with the session
   refreshed from the httpOnly cookie on boot, the access token kept in memory and
-  single-flight refresh on 401. **Remaining:** the verify-email screen (the API
-  has `/auth/email/verify` but no resend endpoint — see F8) and password reset.
+  single-flight refresh on 401. **Remaining:** the verify-email landing screen and
+  password reset. (Resend now exists server-side and is wired into the home
+  banner — F8.)
 - [x] **B2** Onboarding wizard: university → faculty → department → courses
   against `/v1/onboarding/*`, writing real enrolments and completing onboarding.
   **Remaining:** the level filter (the API takes `?level=`, the UI shows levels
@@ -55,9 +57,11 @@ and dev", then the Phase 1 journey.
   the route guards when the remaining screens land.
 - [x] **B-fix** The dev/preview proxy was forwarding `/api/v1/...` to the API
   unchanged (every call 404'd); both `apps/web` and `apps/admin` now strip `/api`.
-- [ ] **B4** Academia dashboard, answering the five questions from
-  `/v1/academia/dashboard`, with honest empty states.
-- [ ] **B5** Campus utility page (`/v1/me/campus`).
+- [x] **B4** Academia dashboard at `/academia`: the five questions, the single
+  next action with its reason, skeletons while loading, and an explicit
+  "not switched on here" state when `FLAG_ACADEMIA_CONNECT` is off.
+- [x] **B5** Campus utility page at `/campus`: university-scoped info and map
+  points, with map links built from coordinates (no map SDK in the bundle).
 - [ ] **B6** Skills overview, path, lesson reader, practice task and my-learning
   (`/v1/skills/*`), including offline-safe answer saving once the offline store
   exists (D1).
@@ -67,8 +71,12 @@ and dev", then the Phase 1 journey.
 - [ ] **B10** Earnings screen with per-line explanations.
 - [ ] **B11** Settings: languages, availability, notifications, data export,
   in-app account deletion (store requirement).
-- [ ] **B12** Performance budgets: ≤150 KB gzipped JS first load, route-level code
-  splitting, skeleton states (no spinners), image optimisation; checked in CI.
+- [~] **B12** Performance budgets. Done: route-level code splitting (`Home`,
+  `Onboarding`, `Academia`, `Campus` are lazy; landing/login/signup stay eager),
+  skeleton states instead of spinners, and a first measurement — the production
+  build's entry is **58.1 KB gzipped JS** plus 1.2 KB CSS, with each lazy route
+  1.1–1.8 KB gzipped. Still owed: enforce the budget in CI and optimise the
+  icons/screenshots.
 
 ## C. Admin ops (`apps/admin`)
 
@@ -101,8 +109,9 @@ and dev", then the Phase 1 journey.
 
 ## E. Docs
 
-- [ ] **E1** ADR: the approved money rounding rule (extends ADR-0008).
-- [ ] **E2** ADR or note: mobile ships in lockstep with web.
+- [x] **E1** ADR-0011 records the money rounding and largest-remainder rules;
+  `services/money/split.py` now cites it as approved.
+- [x] **E2** ADR-0012 records that mobile ships in lockstep with web.
 - [ ] **E3** `docs/build/phase-N-plan.md` for Phases 0–10, starting with the
   Phase 0 gap analysis, plus the build-prompt ↔ roadmap (M1–M7) mapping table and
   every flagged difference.
@@ -128,6 +137,9 @@ and dev", then the Phase 1 journey.
   representative data volumes.
 - [ ] **F7** Content: the AI Data Annotation curriculum itself (lessons, practice
   samples, gold tasks, assessment items) — needs your authoring decision (G4).
+- [x] **F8** `POST /auth/email/verify/resend` (authenticated, 3/5 min per account,
+  invalidates the previous link) and a "send the link again" action on the web
+  home banner. Covered by two service tests.
 - [ ] **F8** `POST /auth/email/resend-verification` does not exist, so the web app
   can only show the "confirm your email" banner and cannot re-send the link.
   Needs the route, the mail template and a rate limit.
@@ -153,5 +165,5 @@ and dev", then the Phase 1 journey.
 - [x] **H1** `apps/api/.venv` is gitignored (created only to run the suite here).
 - [ ] **H2** Decide whether to delete `apps/api/.venv` or keep it as the documented
   local interpreter.
-- [ ] **H3** `packages/api-client/src/generated` — confirm the generator's output
-  is committed once A1 lands so CI freshness passes on the first try.
+- [x] **H3** `packages/api-client/src/generated/schema.d.ts` is committed and the
+  freshness gate passes locally (regenerate → no diff).

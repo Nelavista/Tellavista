@@ -16,6 +16,21 @@ export function Home(): JSX.Element {
   const [state, setState] = React.useState<OnboardingState | null>(null);
   const [error, setError] = React.useState<string | null>(null);
   const [busy, setBusy] = React.useState(false);
+  const [verifyNote, setVerifyNote] = React.useState<string | null>(null);
+  const [resending, setResending] = React.useState(false);
+
+  async function resendVerification(): Promise<void> {
+    setResending(true);
+    setVerifyNote(null);
+    try {
+      const result = await http.post<{ message: string }>('/auth/email/verify/resend');
+      setVerifyNote(result.message);
+    } catch (err) {
+      setVerifyNote(err instanceof ApiError ? err.message : 'Could not send the email.');
+    } finally {
+      setResending(false);
+    }
+  }
 
   React.useEffect(() => {
     void (async () => {
@@ -47,7 +62,18 @@ export function Home(): JSX.Element {
       <h1 className="nv-h1">Welcome, {name}</h1>
 
       {me && !me.email_verified ? (
-        <p className="nv-banner">Confirm your email so we can send you proof and payout notices.</p>
+        <section className="nv-banner">
+          <p>Confirm your email so we can send you proof and payout notices.</p>
+          <button
+            className="nv-button nv-button--ghost"
+            type="button"
+            disabled={resending}
+            onClick={() => void resendVerification()}
+          >
+            {resending ? 'Sending…' : 'Send the link again'}
+          </button>
+          {verifyNote ? <p className="nv-muted">{verifyNote}</p> : null}
+        </section>
       ) : null}
 
       <ErrorNote message={error} />

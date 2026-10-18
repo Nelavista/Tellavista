@@ -127,6 +127,41 @@ def test_email_verification_token_is_single_use(db: Session, monkeypatch) -> Non
     assert excinfo.value.code == "invalid_token"
 
 
+def test_resend_verification_replaces_the_previous_link(db: Session, monkeypatch) -> None:
+    issued = iter(["raw-signup-token-1234567890", "raw-resend-token-1234567890"])
+
+    def next_token():
+        raw = next(issued)
+        return raw, hash_token(raw)
+
+    monkeypatch.setattr(auth, "new_email_token", next_token)
+
+    user, *_ = _signup(db)
+    auth.resend_verification(db, user=user)
+
+    # The first link stops working the moment a second one is sent.
+    with pytest.raises(ApiError) as excinfo:
+        auth.verify_email(db, raw_token="raw-signup-token-1234567890")
+    assert excinfo.value.code == "invalid_token"
+
+    assert auth.verify_email(db, raw_token="raw-resend-token-1234567890").email_verified is True
+    jobs = db.scalars(select(Job).where(Job.name == "send_email")).all()
+    assert len(jobs) == 2
+
+
+def test_resend_verification_refuses_a_verified_account(db: Session, monkeypatch) -> None:
+    fixed = "raw-verify-token-1234567890"
+    monkeypatch.setattr(auth, "new_email_token", lambda: (fixed, hash_token(fixed)))
+
+    user, *_ = _signup(db)
+    auth.verify_email(db, raw_token=fixed)
+
+    with pytest.raises(ApiError) as excinfo:
+        auth.resend_verification(db, user=user)
+    assert excinfo.value.status_code == 409
+    assert excinfo.value.code == "already_verified"
+
+
 def test_password_reset_changes_the_password_and_kills_sessions(db: Session, monkeypatch) -> None:
     fixed = "raw-reset-token-1234567890"
     user, _access, refresh, _expires = _signup(db)

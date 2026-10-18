@@ -189,3 +189,19 @@ def test_apply_to_managed_work_is_refused_over_http(api) -> None:
 def test_the_health_endpoint_stays_open(api) -> None:
     client, _db = api
     assert client.get("/v1/health").status_code == 200
+
+
+def test_resend_verification_needs_a_session_and_respects_verification_state(api) -> None:
+    client, db = api
+    unverified = make_user(db, email_verified=False)
+    verified = make_user(db)
+
+    assert client.post("/v1/auth/email/verify/resend").status_code == 401
+
+    sent = client.post("/v1/auth/email/verify/resend", headers=_headers(unverified))
+    assert sent.status_code == 200
+    assert "verification email" in sent.json()["message"].lower()
+
+    already = client.post("/v1/auth/email/verify/resend", headers=_headers(verified))
+    assert already.status_code == 409
+    assert already.json()["error"]["code"] == "already_verified"

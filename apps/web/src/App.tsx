@@ -3,11 +3,19 @@ import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 
 import { Layout } from './components/Layout';
 import { SessionProvider, useSession } from './lib/session';
-import { Home } from './routes/Home';
 import { Landing } from './routes/Landing';
 import { Login } from './routes/Login';
-import { Onboarding } from './routes/Onboarding';
 import { Signup } from './routes/Signup';
+
+// Signed-in screens are split out of the first load (B12). Landing, sign-in and
+// sign-up stay eager: they are the entry point and must paint without a second
+// round trip.
+const Home = React.lazy(() => import('./routes/Home').then((m) => ({ default: m.Home })));
+const Onboarding = React.lazy(() => import('./routes/Onboarding').then((m) => ({ default: m.Onboarding })));
+const AcademiaDashboard = React.lazy(() =>
+  import('./routes/AcademiaDashboard').then((m) => ({ default: m.AcademiaDashboard })),
+);
+const Campus = React.lazy(() => import('./routes/Campus').then((m) => ({ default: m.Campus })));
 
 function Loading(): JSX.Element {
   return (
@@ -41,42 +49,60 @@ function PublicOnly({ children }: { children: React.ReactNode }): JSX.Element {
 function RouteTable(): JSX.Element {
   return (
     <Layout>
-      <Routes>
-        <Route path="/" element={<Landing />} />
-        <Route
-          path="/signup"
-          element={
-            <PublicOnly>
-              <Signup />
-            </PublicOnly>
-          }
-        />
-        <Route
-          path="/login"
-          element={
-            <PublicOnly>
-              <Login />
-            </PublicOnly>
-          }
-        />
-        <Route
-          path="/onboarding"
-          element={
-            <RequireAuth>
-              <Onboarding />
-            </RequireAuth>
-          }
-        />
-        <Route
-          path="/home"
-          element={
-            <RequireAuth>
-              <Home />
-            </RequireAuth>
-          }
-        />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
+      <React.Suspense fallback={<Loading />}>
+        <Routes>
+          <Route path="/" element={<Landing />} />
+          <Route
+            path="/signup"
+            element={
+              <PublicOnly>
+                <Signup />
+              </PublicOnly>
+            }
+          />
+          <Route
+            path="/login"
+            element={
+              <PublicOnly>
+                <Login />
+              </PublicOnly>
+            }
+          />
+          <Route
+            path="/onboarding"
+            element={
+              <RequireAuth>
+                <Onboarding />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/home"
+            element={
+              <RequireAuth>
+                <Home />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/academia"
+            element={
+              <RequireAuth>
+                <AcademiaDashboard />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/campus"
+            element={
+              <RequireAuth>
+                <Campus />
+              </RequireAuth>
+            }
+          />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </React.Suspense>
     </Layout>
   );
 }

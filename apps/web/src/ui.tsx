@@ -53,6 +53,32 @@ export function Select({
   );
 }
 
+/**
+ * A skeleton block, never a spinner (B12): the page keeps its shape while data
+ * arrives, so nothing jumps and the screen reads as "loading", not "stuck".
+ */
+export function Skeleton({
+  lines = 1,
+  width = '100%',
+  height,
+}: {
+  lines?: number;
+  width?: string;
+  height?: string;
+}): JSX.Element {
+  return (
+    <div className="nv-skeleton-group" aria-hidden="true">
+      {Array.from({ length: lines }, (_, index) => (
+        <span
+          className="nv-skeleton"
+          key={index}
+          style={{ width: index === lines - 1 && lines > 1 ? '60%' : width, height }}
+        />
+      ))}
+    </div>
+  );
+}
+
 export function ErrorNote({ message }: { message: string | null }): JSX.Element | null {
   if (!message) return null;
   return (

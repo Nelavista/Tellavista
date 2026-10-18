@@ -16,7 +16,7 @@ import uuid
 from datetime import UTC, datetime
 from typing import Any
 
-from sqlalchemy import select
+from sqlalchemy import select, update
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
@@ -288,6 +288,27 @@ def logout(db: Session, *, raw_token: str) -> None:
 
 
 # --- email verification and password reset ----------------------------------
+
+
+def resend_verification(db: Session, *, user: User) -> None:
+    """Send a fresh verification link, invalidating any earlier one.
+
+    A resend means the previous email never arrived, so the old link must stop
+    working: two live links would let a stale mailbox confirm an address the
+    student no longer controls.
+    """
+    if user.email_verified:
+        raise ApiError(409, "already_verified", "Your email is already confirmed.")
+    db.execute(
+        update(EmailToken)
+        .where(
+            EmailToken.user_id == user.id,
+            EmailToken.purpose == "verify_email",
+            EmailToken.used_at.is_(None),
+        )
+        .values(used_at=datetime.now(UTC))
+    )
+    _send_verification(db, user)
 
 
 def verify_email(db: Session, *, raw_token: str) -> User:

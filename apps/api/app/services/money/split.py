@@ -4,7 +4,7 @@ The PRD's promise: from a project value of $10,000, students receive $9,000, the
 participating department $200 and Nelavista $800. The department share is taken
 **from the fee**, never from the student pool.
 
-Rounding rule (proposed, needs approval before real money):
+Rounding rule (approved — ADR-0011):
 
 1. fee   = round_half_up(total × 10%)   → (total × 10 + 50) // 100
 2. dept  = round_half_up(fee × 20%)     → (fee × 20 + 50) // 100

@@ -5,11 +5,11 @@
  * schema by `pnpm --filter @nelavista/api-client generate`). This file is the small,
  * hand-written wrapper the apps import, so generated churn never touches app code.
  *
- * Generation is not run yet because the API currently exposes only /health; once
- * domain routers land (M1+) the generator emits real operations. CI runs a
- * freshness check: if the schema changed and the client was not regenerated, the
- * build fails (ADR-0001).
+ * The schema is generated from the API and committed; CI re-runs the generator
+ * and fails when the committed client is stale (ADR-0001). Generated types are
+ * re-exported from ./schema so app code never imports the generated path.
  */
+export type { ApiPaths, MeOut, ProfileOut, Schemas, TokenOut } from './schema';
 
 export interface ApiClientConfig {
   /** API base URL, e.g. http://localhost:8000 or https://api.nelavista.com */

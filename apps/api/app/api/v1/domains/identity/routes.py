@@ -176,6 +176,18 @@ def verify_email(payload: VerifyEmailIn, db: Session = Depends(get_db)) -> MeOut
     )
 
 
+@router.post("/email/verify/resend", response_model=MessageOut)
+def resend_verification(
+    user: User = Depends(get_current_user), db: Session = Depends(get_db)
+) -> MessageOut:
+    """Authenticated on purpose: no address in the body, so no enumeration and
+    no way to mail someone who did not ask. Rate-limited per account."""
+    ratelimit.check(f"verify-resend:{user.id}", limit=3, window_seconds=300)
+    auth.resend_verification(db, user=user)
+    db.commit()
+    return MessageOut(message="Verification email sent. Check your inbox.")
+
+
 @router.post("/password/reset-request", response_model=MessageOut)
 def request_password_reset(
     payload: ResetRequestIn, request: Request, db: Session = Depends(get_db)

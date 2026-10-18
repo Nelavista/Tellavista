@@ -89,6 +89,62 @@ a:hover {
   align-items: center;
 }
 
+.nv-row--between {
+  justify-content: space-between;
+  flex-wrap: nowrap;
+}
+
+.nv-action {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nv-space-xs, 4px);
+  padding: var(--nv-space-lg, 16px);
+  border-radius: var(--nv-radius-lg, 20px);
+  border: 1px solid var(--nv-accent, #00d1ff);
+  background: var(--nv-surface, #0e1420);
+}
+
+.nv-action__label {
+  margin: 0;
+  font-size: var(--nv-text-lg, 18px);
+  font-weight: 600;
+}
+
+.nv-skeleton-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nv-space-sm, 8px);
+}
+
+.nv-skeleton {
+  display: block;
+  height: 1rem;
+  border-radius: var(--nv-radius-sm, 8px);
+  background: linear-gradient(
+    90deg,
+    var(--nv-surface, #0e1420) 0%,
+    var(--nv-border, #1f2a3a) 50%,
+    var(--nv-surface, #0e1420) 100%
+  );
+  background-size: 200% 100%;
+  animation: nv-shimmer 1.4s ease-in-out infinite;
+}
+
+@keyframes nv-shimmer {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nv-skeleton {
+    animation: none;
+  }
+}
+
 .nv-muted {
   color: var(--nv-text-muted, #9fb0c6);
   font-size: var(--nv-text-sm, 13px);
@@ -167,11 +223,19 @@ a:hover {
 }
 
 .nv-banner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nv-space-sm, 8px);
+  align-items: flex-start;
   border: 1px solid var(--nv-warning, #f59e0b);
   color: var(--nv-warning, #f59e0b);
   border-radius: var(--nv-radius-sm, 8px);
   padding: 10px 12px;
   font-size: var(--nv-text-sm, 13px);
+}
+
+.nv-banner p {
+  margin: 0;
 }
 
 .nv-list {

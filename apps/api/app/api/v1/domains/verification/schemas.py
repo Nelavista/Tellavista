@@ -146,6 +146,58 @@ class ReviewOut(BaseModel):
     tasks: list[ReviewTaskOut]
 
 
+# --- practical tasks (B7 remaining) -----------------------------------------
+
+
+class PracticalTaskOut(BaseModel):
+    """A real brief and its rubric. The rubric is shown, so the standard is public."""
+
+    id: int
+    slug: str
+    title: str
+    brief_md: str
+    skill_id: int
+    rubric: Any | None = None
+
+
+class PracticalTaskListOut(BaseModel):
+    tasks: list[PracticalTaskOut]
+
+
+class PracticalSubmissionOut(BaseModel):
+    id: int
+    status: str
+    submitted_at: datetime | None = None
+    message: str
+
+
+class PracticalQueueItemOut(BaseModel):
+    id: int
+    practical_task_id: int
+    user_id: int
+    status: str
+    submitted_at: datetime | None = None
+
+
+class PracticalQueueOut(BaseModel):
+    submissions: list[PracticalQueueItemOut]
+
+
+class PracticalReviewOut(BaseModel):
+    id: int
+    status: str
+    score: int | None = None
+    passed: bool | None = None
+
+
+class OverrideOut(BaseModel):
+    user_id: int
+    skill_id: int
+    status: str
+    event_id: int
+    reason: str | None = None
+
+
 __all__ = [
     "AssessmentListOut",
     "AssessmentOut",
@@ -154,6 +206,13 @@ __all__ = [
     "AttemptResultTaskOut",
     "AttemptSubmitIn",
     "AttemptTaskOut",
+    "OverrideOut",
+    "PracticalQueueItemOut",
+    "PracticalQueueOut",
+    "PracticalReviewOut",
+    "PracticalSubmissionOut",
+    "PracticalTaskListOut",
+    "PracticalTaskOut",
     "ReviewOut",
     "ReviewTaskOut",
     "TranscriptCountsOut",

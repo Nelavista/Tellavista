@@ -66,6 +66,8 @@ class MeOut(BaseModel):
     email_verified: bool
     role: str | None = None
     preferred_path: str | None = None
+    # The admin app blocks on this: a staff account is expected to enrol.
+    mfa_enabled: bool = False
 
 
 class VerifyEmailIn(BaseModel):
@@ -91,6 +93,38 @@ class GoogleIn(BaseModel):
         if value not in PLATFORMS:
             raise ValueError("Unknown platform.")
         return value
+
+
+# --- two-factor (F1, C8) -----------------------------------------------------
+
+
+class MfaSetupOut(BaseModel):
+    """A pending secret. It becomes the second factor only after confirmation."""
+
+    secret: str
+    otpauth_uri: str
+
+
+class MfaCodeIn(BaseModel):
+    code: str = Field(min_length=6, max_length=20)
+
+
+class MfaEnableOut(BaseModel):
+    enabled: bool = True
+    recovery_codes: list[str]
+
+
+class MfaVerifyIn(BaseModel):
+    """The second step of a login: password proved, code not yet."""
+
+    mfa_token: str = Field(min_length=10)
+    code: str = Field(min_length=6, max_length=20)
+
+
+class MfaStatusOut(BaseModel):
+    enabled: bool
+    is_staff: bool
+    remaining_recovery_codes: int
 
 
 class ConsentIn(BaseModel):
@@ -153,6 +187,62 @@ class AvailabilityIn(BaseModel):
     note: str | None = Field(default=None, max_length=255)
 
 
+class LanguageOut(BaseModel):
+    language: str
+    level: str
+
+
+class LanguagesOut(BaseModel):
+    languages: list[LanguageOut]
+
+
+class AvailabilityOut(BaseModel):
+    hours_per_week: int | None = None
+    available_from: date | None = None
+    note: str | None = None
+
+
+# --- notifications and devices (F4, D1) --------------------------------------
+
+
+class NotificationOut(BaseModel):
+    id: int
+    kind: str
+    title: str
+    body: str
+    data: dict | None = None
+    read_at: datetime | None = None
+    created_at: datetime
+
+
+class NotificationListOut(BaseModel):
+    notifications: list[NotificationOut]
+
+
+class NotificationReadIn(BaseModel):
+    ids: list[int] = Field(min_length=1, max_length=200)
+
+
+class NotificationReadOut(BaseModel):
+    updated: int
+
+
+class PushDeviceIn(BaseModel):
+    token: str = Field(min_length=8, max_length=255)
+    platform: str = Field(default="android", max_length=10)
+
+
+class PushDeviceOut(BaseModel):
+    id: int
+    token: str
+    platform: str
+    last_seen_at: datetime | None = None
+
+
+class PushDeviceListOut(BaseModel):
+    devices: list[PushDeviceOut]
+
+
 class EnrolIn(BaseModel):
     course_ids: list[int] = Field(min_length=1, max_length=30)
     session_id: int
@@ -209,6 +299,9 @@ class OnboardingStateOut(BaseModel):
     has_enrolment: bool
     current_semester: SemesterOut | None = None
     academic: dict
+    enrolments: list[EnrolmentOut] = []
+    # "enrol" | "choose_path" | "ready" — one value, so the wizard has one next step.
+    next_step: str = "enrol"
 
 
 # --- campus ----------------------------------------------------------------

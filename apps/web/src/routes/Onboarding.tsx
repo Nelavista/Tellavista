@@ -27,8 +27,18 @@ const PATHS: Array<{ value: string; label: string }> = [
   { value: 'both', label: 'Both — show me everything' },
 ];
 
+const LEVELS: Array<{ value: string; label: string }> = [
+  { value: '', label: 'All levels' },
+  { value: '100', label: '100 level' },
+  { value: '200', label: '200 level' },
+  { value: '300', label: '300 level' },
+  { value: '400', label: '400 level' },
+  { value: '500', label: '500 level' },
+  { value: '600', label: '600 level' },
+];
+
 export function Onboarding(): JSX.Element {
-  const { profile, reload } = useSession();
+  const { me, profile, reload } = useSession();
   const navigate = useNavigate();
 
   const [step, setStep] = React.useState<Step>('profile');
@@ -49,6 +59,12 @@ export function Onboarding(): JSX.Element {
   const [facultyId, setFacultyId] = React.useState('');
   const [departmentId, setDepartmentId] = React.useState('');
   const [pickedCourses, setPickedCourses] = React.useState<number[]>([]);
+  const [level, setLevel] = React.useState('');
+
+  // Waitlist: an uncovered university is a signal for ops, not a dead end.
+  const [waitlistName, setWaitlistName] = React.useState('');
+  const [waitlistNote, setWaitlistNote] = React.useState('');
+  const [waitlistNoteText, setWaitlistNoteText] = React.useState<string | null>(null);
 
   React.useEffect(() => {
     void (async () => {
@@ -102,10 +118,38 @@ export function Onboarding(): JSX.Element {
     setDepartments(id ? await http.get<Subdivision[]>(`/onboarding/faculties/${id}/departments`) : []);
   }
 
-  async function loadCourses(id: string): Promise<void> {
+  async function loadCourses(id: string, selectedLevel = level): Promise<void> {
     setDepartmentId(id);
     setPickedCourses([]);
-    setCourses(id ? await http.get<Course[]>(`/onboarding/departments/${id}/courses`) : []);
+    const query = selectedLevel ? `?level=${encodeURIComponent(selectedLevel)}` : '';
+    setCourses(id ? await http.get<Course[]>(`/onboarding/departments/${id}/courses${query}`) : []);
+  }
+
+  function changeLevel(next: string): void {
+    setLevel(next);
+    if (departmentId) void loadCourses(departmentId, next);
+  }
+
+  async function joinWaitlist(): Promise<void> {
+    if (waitlistName.trim().length < 2) {
+      setError('Enter your university name.');
+      return;
+    }
+    setBusy(true);
+    setError(null);
+    setWaitlistNoteText(null);
+    try {
+      const result = await http.post<{ message: string }>('/onboarding/waitlist', {
+        university_name: waitlistName.trim(),
+        email: me?.email,
+        note: waitlistNote.trim() || null,
+      });
+      setWaitlistNoteText(result.message);
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : 'Could not add you to the list.');
+    } finally {
+      setBusy(false);
+    }
   }
 
   function toggleCourse(id: number): void {
@@ -221,6 +265,14 @@ export function Onboarding(): JSX.Element {
             ]}
           />
 
+          <Select
+            label="Level"
+            value={level}
+            disabled={!departmentId}
+            onChange={(e) => changeLevel(e.target.value)}
+            options={LEVELS}
+          />
+
           {courses.length > 0 ? (
             <fieldset className="nv-field">
               <legend className="nv-label">Courses this semester</legend>
@@ -242,6 +294,34 @@ export function Onboarding(): JSX.Element {
               </ul>
             </fieldset>
           ) : null}
+
+          <details className="nv-card">
+            <summary>My university is not listed</summary>
+            <p className="nv-muted">
+              Tell us where you study. We add universities in batches; your account and any other
+              enrolment are unaffected.
+            </p>
+            <Field
+              label="University name"
+              maxLength={200}
+              value={waitlistName}
+              onChange={(event) => setWaitlistName(event.target.value)}
+            />
+            <Field
+              label="Anything we should know? (optional)"
+              maxLength={500}
+              value={waitlistNote}
+              onChange={(event) => setWaitlistNote(event.target.value)}
+            />
+            <Button type="button" variant="ghost" disabled={busy} onClick={() => void joinWaitlist()}>
+              {busy ? 'Sending…' : 'Join the waitlist'}
+            </Button>
+            {waitlistNoteText ? (
+              <p className="nv-banner" role="status">
+                {waitlistNoteText}
+              </p>
+            ) : null}
+          </details>
 
           <div className="nv-row">
             <Button type="button" variant="ghost" onClick={() => setStep('profile')}>

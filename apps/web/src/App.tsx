@@ -36,6 +36,27 @@ const AttemptReview = React.lazy(() =>
   import('./routes/AttemptReview').then((m) => ({ default: m.AttemptReview })),
 );
 const Transcript = React.lazy(() => import('./routes/Transcript').then((m) => ({ default: m.Transcript })));
+const PracticalTask = React.lazy(() =>
+  import('./routes/PracticalTask').then((m) => ({ default: m.PracticalTask })),
+);
+const Opportunities = React.lazy(() =>
+  import('./routes/Opportunities').then((m) => ({ default: m.Opportunities })),
+);
+const OpportunityDetail = React.lazy(() =>
+  import('./routes/OpportunityDetail').then((m) => ({ default: m.OpportunityDetail })),
+);
+const Work = React.lazy(() => import('./routes/Work').then((m) => ({ default: m.Work })));
+const AssignmentDetail = React.lazy(() =>
+  import('./routes/AssignmentDetail').then((m) => ({ default: m.AssignmentDetail })),
+);
+const Earnings = React.lazy(() => import('./routes/Earnings').then((m) => ({ default: m.Earnings })));
+const Settings = React.lazy(() => import('./routes/Settings').then((m) => ({ default: m.Settings })));
+const VerifyEmail = React.lazy(() =>
+  import('./routes/VerifyEmail').then((m) => ({ default: m.VerifyEmail })),
+);
+const ResetPassword = React.lazy(() =>
+  import('./routes/ResetPassword').then((m) => ({ default: m.ResetPassword })),
+);
 
 function Loading(): JSX.Element {
   return (
@@ -88,6 +109,8 @@ function RouteTable(): JSX.Element {
               </PublicOnly>
             }
           />
+          <Route path="/auth/verify" element={<VerifyEmail />} />
+          <Route path="/auth/reset" element={<ResetPassword />} />
           <Route
             path="/onboarding"
             element={
@@ -145,10 +168,66 @@ function RouteTable(): JSX.Element {
             }
           />
           <Route
+            path="/verification/practical/:taskSlug"
+            element={
+              <RequireAuth>
+                <PracticalTask />
+              </RequireAuth>
+            }
+          />
+          <Route
             path="/transcript"
             element={
               <RequireAuth>
                 <Transcript />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/opportunities"
+            element={
+              <RequireAuth>
+                <Opportunities />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/opportunities/:slug"
+            element={
+              <RequireAuth>
+                <OpportunityDetail />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/work"
+            element={
+              <RequireAuth>
+                <Work />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/work/assignments/:assignmentId"
+            element={
+              <RequireAuth>
+                <AssignmentDetail />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/earnings"
+            element={
+              <RequireAuth>
+                <Earnings />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/settings"
+            element={
+              <RequireAuth>
+                <Settings />
               </RequireAuth>
             }
           />

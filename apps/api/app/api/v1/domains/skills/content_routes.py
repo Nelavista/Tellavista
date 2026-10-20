@@ -7,12 +7,18 @@ safely and published when it is ready.
 """
 from __future__ import annotations
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 from pydantic import BaseModel, Field
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.api.deps import require_flag
+from app.api.v1.domains.skills.schemas import (
+    ContentLessonListOut,
+    ContentPathListOut,
+    ContentTemplateListOut,
+    ValidatorListOut,
+)
 from app.core import flags
 from app.core.authz import require_permission
 from app.core.errors import ApiError
@@ -114,6 +120,119 @@ def _skill(db: Session, skill_id: int) -> Skill:
     if skill is None:
         raise ApiError(404, "skill_not_found", "That skill does not exist.")
     return skill
+
+
+@router.get("/lessons", response_model=ContentLessonListOut)
+def list_lessons(
+    skill_id: int | None = None,
+    status: str | None = Query(default=None, max_length=16),
+    db: Session = Depends(get_db),
+) -> ContentLessonListOut:
+    """Drafts included: this is the screen ops edits, not the student reader."""
+    stmt = select(Lesson).order_by(Lesson.skill_id, Lesson.slug)
+    if skill_id is not None:
+        stmt = stmt.where(Lesson.skill_id == skill_id)
+    if status is not None:
+        stmt = stmt.where(Lesson.status == _status(status))
+    rows = db.scalars(stmt).all()
+    return ContentLessonListOut(
+        lessons=[
+            {
+                "id": row.id,
+                "skill_id": row.skill_id,
+                "slug": row.slug,
+                "title": row.title,
+                "body_md": row.body_md,
+                "estimated_minutes": row.estimated_minutes,
+                "status": row.status,
+            }
+            for row in rows
+        ]
+    )
+
+
+@router.get("/paths", response_model=ContentPathListOut)
+def list_paths(
+    skill_id: int | None = None,
+    status: str | None = Query(default=None, max_length=16),
+    db: Session = Depends(get_db),
+) -> ContentPathListOut:
+    stmt = select(LearningPath).order_by(LearningPath.skill_id, LearningPath.slug)
+    if skill_id is not None:
+        stmt = stmt.where(LearningPath.skill_id == skill_id)
+    if status is not None:
+        stmt = stmt.where(LearningPath.status == _status(status))
+    rows = db.scalars(stmt).all()
+    return ContentPathListOut(
+        paths=[
+            {
+                "id": row.id,
+                "skill_id": row.skill_id,
+                "slug": row.slug,
+                "title": row.title,
+                "summary": row.summary,
+                "level": row.level,
+                "estimated_hours": row.estimated_hours,
+                "status": row.status,
+                "steps": [
+                    {
+                        "id": step.id,
+                        "ordinal": step.ordinal,
+                        "kind": step.kind,
+                        "title": step.title,
+                        "lesson_id": step.lesson_id,
+                        "task_template_id": step.task_template_id,
+                    }
+                    for step in db.scalars(
+                        select(LearningPathStep)
+                        .where(LearningPathStep.path_id == row.id)
+                        .order_by(LearningPathStep.ordinal)
+                    ).all()
+                ],
+            }
+            for row in rows
+        ]
+    )
+
+
+@router.get("/tasks", response_model=ContentTemplateListOut)
+def list_templates(
+    skill_id: int | None = None,
+    status: str | None = Query(default=None, max_length=16),
+    db: Session = Depends(get_db),
+) -> ContentTemplateListOut:
+    stmt = select(TaskTemplate).order_by(TaskTemplate.skill_id, TaskTemplate.slug)
+    if skill_id is not None:
+        stmt = stmt.where(TaskTemplate.skill_id == skill_id)
+    if status is not None:
+        stmt = stmt.where(TaskTemplate.status == _status(status))
+    rows = db.scalars(stmt).all()
+    return ContentTemplateListOut(
+        templates=[
+            {
+                "id": row.id,
+                "skill_id": row.skill_id,
+                "slug": row.slug,
+                "name": row.name,
+                "instructions_md": row.instructions_md,
+                "input_schema": row.input_schema,
+                "answer_schema": row.answer_schema,
+                "validator": row.validator,
+                "config": row.config,
+                "status": row.status,
+                "version": row.version,
+            }
+            for row in rows
+        ]
+    )
+
+
+@router.get("/validators", response_model=ValidatorListOut)
+def list_validators() -> ValidatorListOut:
+    """The task engine's registered names, so a template cannot invent one."""
+    from app.services.skills.tasks import VALIDATORS
+
+    return ValidatorListOut(validators=sorted(VALIDATORS))
 
 
 @router.post("/lessons", status_code=201)

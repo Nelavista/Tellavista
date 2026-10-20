@@ -352,3 +352,22 @@ article .nv-h2 {
 .nv-step[data-active='true'] {
   color: var(--nv-accent, #00d1ff);
 }
+
+/* The journey has grown; the nav wraps instead of pushing links off-screen. */
+.nv-nav .nv-row {
+  justify-content: flex-end;
+}
+
+.nv-prose p {
+  margin: 0 0 0.75rem;
+}
+
+.nv-prose p:last-child {
+  margin-bottom: 0;
+}
+
+details.nv-card > summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+

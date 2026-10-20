@@ -6,7 +6,7 @@ is actually enrolled in (`Enrolment`), the course breakdown (`Topic`), the RAG
 chunks (`MaterialChunk`) and the CBT question bank (`Question`,
 `QuestionAttempt`).
 
-The free-string `users.university/department/level` columns stay for now; M1
+The free-string `users.university/department/level` columns stay for now; Phase 1
 backfills them from `Enrolment` and drops the strings in a later expand/contract
 step. Nothing here grants verification: an attempt is a record of what a student
 answered, never proof of skill.
@@ -91,7 +91,7 @@ class AcademicSession(Base, TimestampMixin):
     name: Mapped[str] = mapped_column(String(20), nullable=False, unique=True)
     starts_on: Mapped[date | None] = mapped_column(Date)
     ends_on: Mapped[date | None] = mapped_column(Date)
-    # Exactly one current session is a service-level rule (M1); the flag makes it
+    # Exactly one current session is a service-level rule (Phase 1); the flag makes it
     # cheap to query and lets ops fix a bad calendar without a data migration.
     is_current: Mapped[bool] = mapped_column(
         Boolean, default=False, server_default="false", nullable=False

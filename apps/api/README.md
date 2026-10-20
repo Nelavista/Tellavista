@@ -28,4 +28,7 @@ tests/      pytest
 - **Migrations:** expand/contract; never make a column NOT NULL in the same release that stops writing to it; `alembic heads` must print exactly one.
 
 ## Status
-Skeleton only — health + sample data. Domain modules are built in M1–M4 (`docs/architecture/06-roadmap.md`).
+Domain modules are implemented for Phases 1–8 (`docs/build/phase-1-10-plan.md`):
+identity/auth, onboarding, skills, verification, opportunities/matching, work and
+quality, money, talent, academia and ops. Phase 9/10 work is release and hardening
+(`docs/build/REMAINING_WORK.md` is the live list).

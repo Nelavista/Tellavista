@@ -2,20 +2,30 @@
 from __future__ import annotations
 
 from fastapi import APIRouter, Depends
-from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_current_user
 from app.api.v1.domains.identity.schemas import (
     AvailabilityIn,
+    AvailabilityOut,
     CampusOut,
     LanguagesIn,
+    LanguagesOut,
     MessageOut,
+    NotificationListOut,
+    NotificationReadIn,
+    NotificationReadOut,
     PathIn,
     ProfileOut,
     ProfileUpdateIn,
+    PushDeviceIn,
+    PushDeviceListOut,
+    PushDeviceOut,
 )
+from app.core.errors import ApiError
+from app.core.time import utcnow
 from app.db.session import get_db
+from app.models.engagement import PushDevice
 from app.models.identity import User
 from app.services import notifications
 from app.services.academia import campus
@@ -85,10 +95,10 @@ def choose_path(
     return _profile_out(user)
 
 
-@router.get("/languages")
+@router.get("/languages", response_model=LanguagesOut)
 def get_languages(
     user: User = Depends(get_current_user), db: Session = Depends(get_db)
-) -> dict:
+) -> LanguagesOut:
     from sqlalchemy import select
 
     from app.models.identity import UserLanguage
@@ -96,44 +106,48 @@ def get_languages(
     rows = db.scalars(
         select(UserLanguage).where(UserLanguage.user_id == user.id).order_by(UserLanguage.language)
     ).all()
-    return {"languages": [{"language": row.language, "level": row.level} for row in rows]}
+    return LanguagesOut(
+        languages=[{"language": row.language, "level": row.level} for row in rows]
+    )
 
 
-@router.put("/languages")
+@router.put("/languages", response_model=LanguagesOut)
 def set_languages(
     payload: LanguagesIn,
     user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
-) -> dict:
+) -> LanguagesOut:
     rows = profile_service.set_languages(
         db, user, [(item.language, item.level) for item in payload.languages]
     )
     db.commit()
-    return {"languages": [{"language": row.language, "level": row.level} for row in rows]}
+    return LanguagesOut(
+        languages=[{"language": row.language, "level": row.level} for row in rows]
+    )
 
 
-@router.get("/availability")
+@router.get("/availability", response_model=AvailabilityOut)
 def get_availability(
     user: User = Depends(get_current_user), db: Session = Depends(get_db)
-) -> dict:
+) -> AvailabilityOut:
     from sqlalchemy import select
 
     from app.models.identity import UserAvailability
 
     row = db.scalar(select(UserAvailability).where(UserAvailability.user_id == user.id))
-    return {
-        "hours_per_week": row.hours_per_week if row else None,
-        "available_from": row.available_from if row else None,
-        "note": row.note if row else None,
-    }
+    return AvailabilityOut(
+        hours_per_week=row.hours_per_week if row else None,
+        available_from=row.available_from if row else None,
+        note=row.note if row else None,
+    )
 
 
-@router.put("/availability")
+@router.put("/availability", response_model=AvailabilityOut)
 def set_availability(
     payload: AvailabilityIn,
     user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
-) -> dict:
+) -> AvailabilityOut:
     row = profile_service.set_availability(
         db,
         user,
@@ -142,11 +156,11 @@ def set_availability(
         note=payload.note,
     )
     db.commit()
-    return {
-        "hours_per_week": row.hours_per_week,
-        "available_from": row.available_from,
-        "note": row.note,
-    }
+    return AvailabilityOut(
+        hours_per_week=row.hours_per_week,
+        available_from=row.available_from,
+        note=row.note,
+    )
 
 
 @router.get("/campus", response_model=CampusOut)
@@ -164,29 +178,93 @@ def export_data(
     return profile_service.export_data(db, user)
 
 
-@router.get("/notifications")
+@router.get("/notifications", response_model=NotificationListOut)
 def get_notifications(
     unread_only: bool = False,
     user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
-) -> dict:
+) -> NotificationListOut:
     """In-app notifications. Push delivers the same rows; a failed push retries."""
-    return {"notifications": notifications.list_notifications(db, user, unread_only=unread_only)}
+    return NotificationListOut(
+        notifications=notifications.list_notifications(db, user, unread_only=unread_only)
+    )
 
 
-class NotificationReadIn(BaseModel):
-    ids: list[int] = Field(min_length=1, max_length=200)
-
-
-@router.post("/notifications/read")
+@router.post("/notifications/read", response_model=NotificationReadOut)
 def read_notifications(
     payload: NotificationReadIn,
     user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
-) -> dict:
+) -> NotificationReadOut:
     updated = notifications.mark_read(db, user, payload.ids)
     db.commit()
-    return {"updated": updated}
+    return NotificationReadOut(updated=updated)
+
+
+@router.get("/push-devices", response_model=PushDeviceListOut)
+def list_push_devices(
+    user: User = Depends(get_current_user), db: Session = Depends(get_db)
+) -> PushDeviceListOut:
+    from sqlalchemy import select
+
+    rows = db.scalars(
+        select(PushDevice)
+        .where(PushDevice.user_id == user.id, PushDevice.revoked_at.is_(None))
+        .order_by(PushDevice.id)
+    ).all()
+    return PushDeviceListOut(
+        devices=[
+            {
+                "id": row.id,
+                "token": row.token,
+                "platform": row.platform,
+                "last_seen_at": row.last_seen_at,
+            }
+            for row in rows
+        ]
+    )
+
+
+@router.post("/push-devices", response_model=PushDeviceOut, status_code=201)
+def register_push_device(
+    payload: PushDeviceIn,
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> PushDeviceOut:
+    """Register an install. A token that moved accounts is reassigned, never doubled."""
+    from sqlalchemy import select
+
+    if payload.platform not in {"ios", "android", "web"}:
+        raise ApiError(400, "invalid_platform", "Use ios, android or web.")
+    row = db.scalar(select(PushDevice).where(PushDevice.token == payload.token))
+    if row is None:
+        row = PushDevice(token=payload.token, platform=payload.platform, user_id=user.id)
+        db.add(row)
+    else:
+        # Another account signed in on this phone: delivery follows the newest
+        # owner, because the previous owner can no longer read this device.
+        row.user_id = user.id
+        row.platform = payload.platform
+        row.revoked_at = None
+    row.last_seen_at = utcnow()
+    db.commit()
+    return PushDeviceOut(
+        id=row.id, token=row.token, platform=row.platform, last_seen_at=row.last_seen_at
+    )
+
+
+@router.delete("/push-devices/{device_id}", response_model=MessageOut)
+def unregister_push_device(
+    device_id: int,
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> MessageOut:
+    row = db.get(PushDevice, device_id)
+    if row is None or row.user_id != user.id:
+        raise ApiError(404, "push_device_not_found", "That device is not registered.")
+    db.delete(row)
+    db.commit()
+    return MessageOut(message="This device will no longer receive notifications.")
 
 
 @router.post("/onboarding/complete", response_model=MessageOut)

@@ -6,7 +6,7 @@
  * what the student answered, what was expected and the validator's feedback, so a
  * retry is a learning step rather than a guess.
  */
-import type { ReviewOut } from '@nelavista/api-client';
+import type { AttemptReviewOut } from '@nelavista/api-client';
 import * as React from 'react';
 import { Link, useParams } from 'react-router-dom';
 
@@ -16,7 +16,7 @@ import { ErrorNote, Skeleton } from '../ui';
 
 export function AttemptReview(): JSX.Element {
   const { attemptId = '' } = useParams<{ attemptId: string }>();
-  const { resource, reload } = useApiResource<ReviewOut>(`/verification/attempts/${attemptId}`);
+  const { resource, reload } = useApiResource<AttemptReviewOut>(`/verification/attempts/${attemptId}`);
 
   if (resource.status === 'loading') {
     return (

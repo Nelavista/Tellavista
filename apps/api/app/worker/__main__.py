@@ -11,6 +11,7 @@ import time
 
 from app.db.session import SessionLocal
 from app.worker.runner import drain
+from app.worker.scheduler import enqueue_scheduled
 
 
 def main() -> None:
@@ -18,6 +19,7 @@ def main() -> None:
     logging.getLogger(__name__).info("worker started")
     while True:
         with SessionLocal() as db:
+            enqueue_scheduled(db)
             processed = drain(db, limit=20)
         if not processed:
             time.sleep(2)

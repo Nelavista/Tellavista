@@ -135,7 +135,84 @@ class PracticeResultOut(BaseModel):
     counts_as_verification: bool = False
 
 
+# --- content management (C7) ------------------------------------------------
+
+
+class ContentLessonOut(BaseModel):
+    """A lesson as ops sees it: drafts included, with the body editable."""
+
+    id: int
+    skill_id: int
+    slug: str
+    title: str
+    body_md: str
+    estimated_minutes: int | None = None
+    status: str
+
+
+class ContentLessonListOut(BaseModel):
+    lessons: list[ContentLessonOut]
+
+
+class ContentStepOut(BaseModel):
+    id: int
+    ordinal: int
+    kind: str
+    title: str | None = None
+    lesson_id: int | None = None
+    task_template_id: int | None = None
+
+
+class ContentPathOut(BaseModel):
+    id: int
+    skill_id: int
+    slug: str
+    title: str
+    summary: str | None = None
+    level: str
+    estimated_hours: int | None = None
+    status: str
+    steps: list[ContentStepOut] = []
+
+
+class ContentPathListOut(BaseModel):
+    paths: list[ContentPathOut]
+
+
+class ContentTemplateOut(BaseModel):
+    id: int
+    skill_id: int
+    slug: str
+    name: str
+    instructions_md: str
+    input_schema: dict[str, Any]
+    answer_schema: dict[str, Any]
+    validator: str
+    config: dict[str, Any] | None = None
+    status: str
+    version: int
+
+
+class ContentTemplateListOut(BaseModel):
+    templates: list[ContentTemplateOut]
+
+
+class ValidatorOut(BaseModel):
+    name: str
+
+
+class ValidatorListOut(BaseModel):
+    validators: list[str]
+
+
 __all__ = [
+    "ContentLessonListOut",
+    "ContentLessonOut",
+    "ContentPathListOut",
+    "ContentPathOut",
+    "ContentStepOut",
+    "ContentTemplateListOut",
+    "ContentTemplateOut",
     "LessonCompletedOut",
     "LessonOut",
     "LessonStartedOut",
@@ -148,4 +225,6 @@ __all__ = [
     "SkillDetailOut",
     "SkillOut",
     "SkillsOut",
+    "ValidatorListOut",
+    "ValidatorOut",
 ]

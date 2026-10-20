@@ -55,6 +55,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/auth/2fa/verify": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Verify Second Factor
+         * @description Finish a login that the password step could not complete alone.
+         */
+        post: operations["verify_second_factor_v1_auth_2fa_verify_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/auth/refresh": {
         parameters: {
             query?: never;
@@ -100,6 +120,77 @@ export interface paths {
         get: operations["me_v1_auth_me_get"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/auth/2fa": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Two Factor Status */
+        get: operations["two_factor_status_v1_auth_2fa_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/auth/2fa/setup": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Start Two Factor
+         * @description Mint a pending secret. Nothing changes for login until /2fa/enable.
+         */
+        post: operations["start_two_factor_v1_auth_2fa_setup_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/auth/2fa/enable": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Enable Two Factor */
+        post: operations["enable_two_factor_v1_auth_2fa_enable_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/auth/2fa/disable": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Disable Two Factor */
+        post: operations["disable_two_factor_v1_auth_2fa_disable_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -372,6 +463,44 @@ export interface paths {
         /** Read Notifications */
         post: operations["read_notifications_v1_me_notifications_read_post"];
         delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/me/push-devices": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Push Devices */
+        get: operations["list_push_devices_v1_me_push_devices_get"];
+        put?: never;
+        /**
+         * Register Push Device
+         * @description Register an install. A token that moved accounts is reassigned, never doubled.
+         */
+        post: operations["register_push_device_v1_me_push_devices_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/me/push-devices/{device_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Unregister Push Device */
+        delete: operations["unregister_push_device_v1_me_push_devices__device_id__delete"];
         options?: never;
         head?: never;
         patch?: never;
@@ -707,10 +836,70 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /**
+         * List Lessons
+         * @description Drafts included: this is the screen ops edits, not the student reader.
+         */
+        get: operations["list_lessons_v1_skills_content_lessons_get"];
         put?: never;
         /** Create Lesson */
         post: operations["create_lesson_v1_skills_content_lessons_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/skills/content/paths": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Paths */
+        get: operations["list_paths_v1_skills_content_paths_get"];
+        put?: never;
+        /** Create Path */
+        post: operations["create_path_v1_skills_content_paths_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/skills/content/tasks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Templates */
+        get: operations["list_templates_v1_skills_content_tasks_get"];
+        put?: never;
+        /** Create Template */
+        post: operations["create_template_v1_skills_content_tasks_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/skills/content/validators": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Validators
+         * @description The task engine's registered names, so a template cannot invent one.
+         */
+        get: operations["list_validators_v1_skills_content_validators_get"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -732,23 +921,6 @@ export interface paths {
         head?: never;
         /** Update Lesson */
         patch: operations["update_lesson_v1_skills_content_lessons__lesson_id__patch"];
-        trace?: never;
-    };
-    "/v1/skills/content/paths": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Create Path */
-        post: operations["create_path_v1_skills_content_paths_post"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
         trace?: never;
     };
     "/v1/skills/content/paths/{path_id}": {
@@ -779,23 +951,6 @@ export interface paths {
         put?: never;
         /** Add Step */
         post: operations["add_step_v1_skills_content_paths__path_id__steps_post"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/v1/skills/content/tasks": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Create Template */
-        post: operations["create_template_v1_skills_content_tasks_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1122,6 +1277,26 @@ export interface paths {
          * @description Only external opportunities accept an application; managed work is invited.
          */
         post: operations["apply_to_external_v1_opportunities__slug__apply_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/opportunities/admin/all": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List All Opportunities
+         * @description Every opportunity, drafts included: the ops list is not the student list.
+         */
+        get: operations["list_all_opportunities_v1_opportunities_admin_all_get"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -1464,7 +1639,11 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /**
+         * List Projects
+         * @description Every project, so ops screens can pick one without knowing a slug first.
+         */
+        get: operations["list_projects_v1_work_projects_get"];
         put?: never;
         /** Create Project */
         post: operations["create_project_v1_work_projects_post"];
@@ -2258,13 +2437,66 @@ export interface components {
             /** Duration Ms */
             duration_ms?: number | null;
         };
+        /** ApplicationListOut */
+        ApplicationListOut: {
+            /** Applications */
+            applications: components["schemas"]["ApplicationOut"][];
+        };
+        /** ApplicationOpportunityOut */
+        ApplicationOpportunityOut: {
+            /** Id */
+            id: number;
+            /** Slug */
+            slug: string;
+            /** Title */
+            title: string;
+            /** Type */
+            type: string;
+        };
+        /** ApplicationOut */
+        ApplicationOut: {
+            /** Id */
+            id: number;
+            /** Status */
+            status: string;
+            /** Note */
+            note?: string | null;
+            opportunity: components["schemas"]["ApplicationOpportunityOut"];
+        };
         /** ApplicationStatusIn */
         ApplicationStatusIn: {
             /** Status */
             status: string;
         };
+        /** ApplicationStatusOut */
+        ApplicationStatusOut: {
+            /** Id */
+            id: number;
+            /** Status */
+            status: string;
+        };
+        /** ApplicationSummaryOut */
+        ApplicationSummaryOut: {
+            /** Id */
+            id: number;
+            /** Status */
+            status: string;
+            /** User Id */
+            user_id: number;
+            /** Note */
+            note?: string | null;
+        };
         /** ApplyIn */
         ApplyIn: {
+            /** Note */
+            note?: string | null;
+        };
+        /** ApplyOut */
+        ApplyOut: {
+            /** Id */
+            id: number;
+            /** Status */
+            status: string;
             /** Note */
             note?: string | null;
         };
@@ -2299,6 +2531,29 @@ export interface components {
             /** Task Count */
             task_count: number;
         };
+        /** AssignOut */
+        AssignOut: {
+            /** Id */
+            id: number;
+            /** Status */
+            status: string;
+            /** Due At */
+            due_at?: string | null;
+        };
+        /** AssignmentDetailOut */
+        AssignmentDetailOut: {
+            /** Id */
+            id: number;
+            /** Title */
+            title: string;
+            /** Status */
+            status: string;
+            /** Due At */
+            due_at?: string | null;
+            project: components["schemas"]["ProjectRefOut"];
+            task?: components["schemas"]["AssignmentTaskOut"] | null;
+            last_submission?: components["schemas"]["LastSubmissionOut"] | null;
+        };
         /** AssignmentIn */
         AssignmentIn: {
             /** User Id */
@@ -2311,6 +2566,49 @@ export interface components {
             cohort_id?: number | null;
             /** Due At */
             due_at?: string | null;
+        };
+        /** AssignmentListOut */
+        AssignmentListOut: {
+            /** Assignments */
+            assignments: components["schemas"]["AssignmentOut"][];
+        };
+        /** AssignmentOut */
+        AssignmentOut: {
+            /** Id */
+            id: number;
+            /** Title */
+            title: string;
+            /** Status */
+            status: string;
+            /** Due At */
+            due_at?: string | null;
+            /** Template Id */
+            template_id?: number | null;
+            project: components["schemas"]["ProjectRefOut"];
+        };
+        /** AssignmentStateOut */
+        AssignmentStateOut: {
+            /** Id */
+            id: number;
+            /** Status */
+            status: string;
+        };
+        /** AssignmentTaskOut */
+        AssignmentTaskOut: {
+            /** Template Id */
+            template_id: number;
+            /** Name */
+            name: string;
+            /** Instructions Md */
+            instructions_md: string;
+            /** Input Schema */
+            input_schema: {
+                [key: string]: unknown;
+            };
+            /** Answer Schema */
+            answer_schema: {
+                [key: string]: unknown;
+            };
         };
         /** AttemptOut */
         AttemptOut: {
@@ -2401,8 +2699,50 @@ export interface components {
                 [key: string]: unknown;
             } | null;
         };
+        /** AuditLogListOut */
+        AuditLogListOut: {
+            /** Logs */
+            logs: components["schemas"]["AuditLogOut"][];
+        };
+        /** AuditLogOut */
+        AuditLogOut: {
+            /** Id */
+            id: number;
+            /** Actor User Id */
+            actor_user_id?: number | null;
+            /** Actor Role Code */
+            actor_role_code?: string | null;
+            /** Action */
+            action: string;
+            /** Target Type */
+            target_type?: string | null;
+            /** Target Id */
+            target_id?: string | null;
+            /** Reason */
+            reason?: string | null;
+            /** Context */
+            context?: {
+                [key: string]: unknown;
+            } | null;
+            /** Request Id */
+            request_id?: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+        };
         /** AvailabilityIn */
         AvailabilityIn: {
+            /** Hours Per Week */
+            hours_per_week?: number | null;
+            /** Available From */
+            available_from?: string | null;
+            /** Note */
+            note?: string | null;
+        };
+        /** AvailabilityOut */
+        AvailabilityOut: {
             /** Hours Per Week */
             hours_per_week?: number | null;
             /** Available From */
@@ -2419,6 +2759,30 @@ export interface components {
              * @default manual
              */
             provider: string;
+        };
+        /** BatchStateOut */
+        BatchStateOut: {
+            /** Id */
+            id: number;
+            /** Status */
+            status: string;
+            /** Currency */
+            currency?: string | null;
+            /** Total Minor */
+            total_minor?: number | null;
+            /** Approved By */
+            approved_by?: number | null;
+            /** Paid At */
+            paid_at?: string | null;
+        };
+        /** CampusCreatedOut */
+        CampusCreatedOut: {
+            /** Id */
+            id: number;
+            /** Kind */
+            kind: string;
+            /** Title */
+            title: string;
         };
         /** CampusIn */
         CampusIn: {
@@ -2481,12 +2845,134 @@ export interface components {
             /** Reason */
             reason: string;
         };
+        /** CandidateListOut */
+        CandidateListOut: {
+            opportunity: components["schemas"]["OpportunityRefOut"];
+            /** Candidates */
+            candidates: components["schemas"]["CandidateOut"][];
+            /** Eligible Count */
+            eligible_count: number;
+        };
+        /** CandidateNameOut */
+        CandidateNameOut: {
+            /** Id */
+            id: number;
+            /** Name */
+            name?: string | null;
+            /** Email */
+            email: string;
+        };
+        /**
+         * CandidateOut
+         * @description Ops view of one student: the verdict plus who it is about.
+         */
+        CandidateOut: {
+            /** Opportunity Id */
+            opportunity_id: number;
+            /** User Id */
+            user_id: number;
+            /** Eligible */
+            eligible: boolean;
+            /** Score */
+            score: number;
+            /**
+             * Blocked
+             * @default false
+             */
+            blocked: boolean;
+            /** Blocked Reason */
+            blocked_reason?: string | null;
+            /**
+             * Explanation
+             * @default []
+             */
+            explanation: components["schemas"]["MatchCheckOut"][];
+            /**
+             * Missing
+             * @default []
+             */
+            missing: components["schemas"]["MatchCheckOut"][];
+            /**
+             * Qualifies Because
+             * @default []
+             */
+            qualifies_because: string[];
+            /**
+             * Next Steps
+             * @default []
+             */
+            next_steps: components["schemas"]["NextStepOut"][];
+            /**
+             * Facts
+             * @default {}
+             */
+            facts: {
+                [key: string]: unknown;
+            };
+            student?: components["schemas"]["CandidateNameOut"] | null;
+            /** Computed At */
+            computed_at?: string | null;
+        };
+        /** ClosesViaOut */
+        ClosesViaOut: {
+            /** Learning Path Id */
+            learning_path_id?: number | null;
+            /** Assessment Id */
+            assessment_id?: number | null;
+        };
         /** CohortIn */
         CohortIn: {
             /** Name */
             name: string;
             /** Capacity */
             capacity?: number | null;
+        };
+        /** CohortMemberOut */
+        CohortMemberOut: {
+            /** Member Id */
+            member_id: number;
+            /** User Id */
+            user_id: number;
+            /** Name */
+            name?: string | null;
+            /** Email */
+            email: string;
+            /** Status */
+            status: string;
+            /** Joined At */
+            joined_at?: string | null;
+        };
+        /** CohortOut */
+        CohortOut: {
+            /** Id */
+            id: number;
+            /** Project Id */
+            project_id: number;
+            /** Name */
+            name: string;
+            /** Capacity */
+            capacity?: number | null;
+            /** Status */
+            status: string;
+            /** Seats Used */
+            seats_used: number;
+            /** Members */
+            members: components["schemas"]["CohortMemberOut"][];
+            /** Assignment Counts */
+            assignment_counts: {
+                [key: string]: number;
+            };
+        };
+        /** CohortWriteOut */
+        CohortWriteOut: {
+            /** Id */
+            id: number;
+            /** Name */
+            name: string;
+            /** Capacity */
+            capacity?: number | null;
+            /** Status */
+            status: string;
         };
         /** ConsentIn */
         ConsentIn: {
@@ -2500,6 +2986,123 @@ export interface components {
              */
             granted: boolean;
         };
+        /** ConsequenceOut */
+        ConsequenceOut: {
+            /** Kind */
+            kind: string;
+            /** Reason */
+            reason?: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+        };
+        /** ContentLessonListOut */
+        ContentLessonListOut: {
+            /** Lessons */
+            lessons: components["schemas"]["ContentLessonOut"][];
+        };
+        /**
+         * ContentLessonOut
+         * @description A lesson as ops sees it: drafts included, with the body editable.
+         */
+        ContentLessonOut: {
+            /** Id */
+            id: number;
+            /** Skill Id */
+            skill_id: number;
+            /** Slug */
+            slug: string;
+            /** Title */
+            title: string;
+            /** Body Md */
+            body_md: string;
+            /** Estimated Minutes */
+            estimated_minutes?: number | null;
+            /** Status */
+            status: string;
+        };
+        /** ContentPathListOut */
+        ContentPathListOut: {
+            /** Paths */
+            paths: components["schemas"]["ContentPathOut"][];
+        };
+        /** ContentPathOut */
+        ContentPathOut: {
+            /** Id */
+            id: number;
+            /** Skill Id */
+            skill_id: number;
+            /** Slug */
+            slug: string;
+            /** Title */
+            title: string;
+            /** Summary */
+            summary?: string | null;
+            /** Level */
+            level: string;
+            /** Estimated Hours */
+            estimated_hours?: number | null;
+            /** Status */
+            status: string;
+            /**
+             * Steps
+             * @default []
+             */
+            steps: components["schemas"]["ContentStepOut"][];
+        };
+        /** ContentStepOut */
+        ContentStepOut: {
+            /** Id */
+            id: number;
+            /** Ordinal */
+            ordinal: number;
+            /** Kind */
+            kind: string;
+            /** Title */
+            title?: string | null;
+            /** Lesson Id */
+            lesson_id?: number | null;
+            /** Task Template Id */
+            task_template_id?: number | null;
+        };
+        /** ContentTemplateListOut */
+        ContentTemplateListOut: {
+            /** Templates */
+            templates: components["schemas"]["ContentTemplateOut"][];
+        };
+        /** ContentTemplateOut */
+        ContentTemplateOut: {
+            /** Id */
+            id: number;
+            /** Skill Id */
+            skill_id: number;
+            /** Slug */
+            slug: string;
+            /** Name */
+            name: string;
+            /** Instructions Md */
+            instructions_md: string;
+            /** Input Schema */
+            input_schema: {
+                [key: string]: unknown;
+            };
+            /** Answer Schema */
+            answer_schema: {
+                [key: string]: unknown;
+            };
+            /** Validator */
+            validator: string;
+            /** Config */
+            config?: {
+                [key: string]: unknown;
+            } | null;
+            /** Status */
+            status: string;
+            /** Version */
+            version: number;
+        };
         /** CourseOut */
         CourseOut: {
             /** Id */
@@ -2510,6 +3113,13 @@ export interface components {
             title: string;
             /** Level */
             level: string;
+        };
+        /** CurrencyTotalOut */
+        CurrencyTotalOut: {
+            /** Currency */
+            currency: string;
+            /** Amount Minor */
+            amount_minor: number;
         };
         /** DashboardOut */
         DashboardOut: {
@@ -2528,6 +3138,53 @@ export interface components {
             what_should_i_practise: components["schemas"]["PractiseQuestionOut"];
             where_am_i_weak: components["schemas"]["WeakQuestionOut"];
             what_should_i_do_next: components["schemas"]["NextQuestionOut"];
+        };
+        /** DepartmentShareOut */
+        DepartmentShareOut: {
+            /** Department Id */
+            department_id?: number | null;
+            /** Amount Minor */
+            amount_minor: number;
+            /** Currency */
+            currency: string;
+            /** Status */
+            status: string;
+        };
+        /** EarningLineOut */
+        EarningLineOut: {
+            /** Id */
+            id: number;
+            project: components["schemas"]["EarningProjectOut"];
+            /** Submission Id */
+            submission_id?: number | null;
+            /** Amount Minor */
+            amount_minor: number;
+            /** Currency */
+            currency: string;
+            /** Rate Minor */
+            rate_minor?: number | null;
+            /** Task Count */
+            task_count?: number | null;
+            /** Status */
+            status: string;
+            /** Description */
+            description?: string | null;
+            /** Paid */
+            paid: boolean;
+        };
+        /** EarningProjectOut */
+        EarningProjectOut: {
+            /** Slug */
+            slug: string;
+            /** Title */
+            title: string;
+        };
+        /** EarningsOut */
+        EarningsOut: {
+            /** Totals */
+            totals: components["schemas"]["CurrencyTotalOut"][];
+            /** Lines */
+            lines: components["schemas"]["EarningLineOut"][];
         };
         /** EnrolIn */
         EnrolIn: {
@@ -2568,12 +3225,67 @@ export interface components {
             /** Reason */
             reason: string;
         };
+        /** FinancialsOut */
+        FinancialsOut: {
+            /** Project Id */
+            project_id: number;
+            /** Currency */
+            currency?: string | null;
+            funding?: components["schemas"]["SplitOut"] | null;
+            /** Student Pool Minor */
+            student_pool_minor: number;
+            /** Earnings By Status */
+            earnings_by_status: {
+                [key: string]: number;
+            };
+            /** Earning Total Minor */
+            earning_total_minor: number;
+            department_share?: components["schemas"]["DepartmentShareOut"] | null;
+            /** Work Status */
+            work_status?: string | null;
+            /** Quality Status */
+            quality_status?: string | null;
+            /** Payment Status */
+            payment_status: string;
+        };
         /** FundIn */
         FundIn: {
             /** Total Minor */
             total_minor: number;
             /** Currency */
             currency?: string | null;
+        };
+        /** FundOut */
+        FundOut: {
+            /** Transaction Id */
+            transaction_id: number;
+            /** Currency */
+            currency: string;
+            /** Total Minor */
+            total_minor: number;
+            /** Student Pool Minor */
+            student_pool_minor: number;
+            /** Platform Fee Minor */
+            platform_fee_minor: number;
+            /** Department Share Minor */
+            department_share_minor: number;
+        };
+        /** GapListOut */
+        GapListOut: {
+            /** Gaps */
+            gaps: components["schemas"]["GapOut"][];
+        };
+        /** GapOut */
+        GapOut: {
+            /** Requirement Id */
+            requirement_id: number;
+            /** Kind */
+            kind: string;
+            /** Detail */
+            detail: string;
+            /** Status */
+            status: string;
+            closes_via: components["schemas"]["ClosesViaOut"];
         };
         /** GoogleIn */
         GoogleIn: {
@@ -2622,10 +3334,110 @@ export interface components {
                 [key: string]: unknown;
             } | null;
         };
+        /** ImportListOut */
+        ImportListOut: {
+            /** Runs */
+            runs: components["schemas"]["ImportRunOut"][];
+        };
+        /** ImportReportOut */
+        ImportReportOut: {
+            /** Run Id */
+            run_id: number;
+            /** Mode */
+            mode: string;
+            /** Source */
+            source: string;
+            /** Checksums */
+            checksums: {
+                [key: string]: unknown;
+            };
+            /** Sections */
+            sections: {
+                [key: string]: components["schemas"]["ImportSectionOut"];
+            };
+            /** Balanced */
+            balanced: boolean;
+        };
+        /** ImportResultOut */
+        ImportResultOut: {
+            /** Run Id */
+            run_id: number;
+            /** Mode */
+            mode: string;
+            /** Status */
+            status: string;
+            /** Counts */
+            counts?: {
+                [key: string]: unknown;
+            } | null;
+            /** Errors */
+            errors?: unknown[] | null;
+            reconciliation: components["schemas"]["ImportReportOut"];
+        };
+        /** ImportRunOut */
+        ImportRunOut: {
+            /** Id */
+            id: number;
+            /** Source */
+            source: string;
+            /** Mode */
+            mode: string;
+            /** Status */
+            status: string;
+            /**
+             * Started At
+             * Format: date-time
+             */
+            started_at: string;
+            /** Finished At */
+            finished_at?: string | null;
+            /** Counts */
+            counts?: {
+                [key: string]: unknown;
+            } | null;
+            /** Errors */
+            errors?: unknown[] | null;
+        };
+        /** ImportSectionOut */
+        ImportSectionOut: {
+            /** Expected */
+            expected?: number | null;
+            /** Actual */
+            actual: number;
+            /** Skipped */
+            skipped: number;
+            /** Errors */
+            errors: number;
+            /** Matched */
+            matched: boolean;
+        };
         /** InviteIn */
         InviteIn: {
             /** User Ids */
             user_ids: number[];
+        };
+        /** InviteListOut */
+        InviteListOut: {
+            /** Members */
+            members: components["schemas"]["InviteOut"][];
+        };
+        /** InviteOut */
+        InviteOut: {
+            /** Id */
+            id: number;
+            /** User Id */
+            user_id: number;
+            /** Status */
+            status: string;
+        };
+        /** InviteResponseOut */
+        InviteResponseOut: {
+            /** Id */
+            id: number;
+            /** Status */
+            status: string;
+            /** Joined At */
+            joined_at?: string | null;
         };
         /** LanguageIn */
         LanguageIn: {
@@ -2637,10 +3449,79 @@ export interface components {
              */
             level: string;
         };
+        /** LanguageOut */
+        LanguageOut: {
+            /** Language */
+            language: string;
+            /** Level */
+            level: string;
+        };
         /** LanguagesIn */
         LanguagesIn: {
             /** Languages */
             languages?: components["schemas"]["LanguageIn"][];
+        };
+        /** LanguagesOut */
+        LanguagesOut: {
+            /** Languages */
+            languages: components["schemas"]["LanguageOut"][];
+        };
+        /** LastSubmissionOut */
+        LastSubmissionOut: {
+            /** Id */
+            id: number;
+            /** Status */
+            status: string;
+            /** Submitted At */
+            submitted_at?: string | null;
+        };
+        /** LedgerEntryOut */
+        LedgerEntryOut: {
+            /** Id */
+            id: number;
+            /** Account */
+            account: string;
+            /** Direction */
+            direction: string;
+            /** Amount Minor */
+            amount_minor: number;
+            /** Currency */
+            currency: string;
+            /** User Id */
+            user_id?: number | null;
+            /** Department Id */
+            department_id?: number | null;
+            /** Description */
+            description?: string | null;
+        };
+        /** LedgerOut */
+        LedgerOut: {
+            /** Project Id */
+            project_id: number;
+            /** Transactions */
+            transactions: components["schemas"]["LedgerTransactionOut"][];
+        };
+        /** LedgerTransactionOut */
+        LedgerTransactionOut: {
+            /** Id */
+            id: number;
+            /** Kind */
+            kind: string;
+            /** Currency */
+            currency: string;
+            /** Total Minor */
+            total_minor: number;
+            /** Description */
+            description?: string | null;
+            /** Reverses Transaction Id */
+            reverses_transaction_id?: number | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Entries */
+            entries: components["schemas"]["LedgerEntryOut"][];
         };
         /**
          * LessonCompletedOut
@@ -2731,6 +3612,82 @@ export interface components {
              */
             platform: string;
         };
+        /** MatchCheckOut */
+        MatchCheckOut: {
+            /** Requirement Id */
+            requirement_id: number;
+            /** Kind */
+            kind: string;
+            /** Description */
+            description: string;
+            /** Skill Id */
+            skill_id?: number | null;
+            /** Mandatory */
+            mandatory: boolean;
+            /** Met */
+            met: boolean;
+            /** Detail */
+            detail: string;
+            closes_via: components["schemas"]["ClosesViaOut"];
+        };
+        /** MatchListOut */
+        MatchListOut: {
+            /** Matches */
+            matches: components["schemas"]["MatchOut"][];
+            /** Eligible Count */
+            eligible_count: number;
+        };
+        /**
+         * MatchOut
+         * @description One student's verdict on one opportunity, with every requirement.
+         *
+         *     `blocked` is not a preference: a quality consequence stops matching and the
+         *     screen must say so instead of showing an empty list.
+         */
+        MatchOut: {
+            /** Opportunity Id */
+            opportunity_id: number;
+            /** User Id */
+            user_id: number;
+            /** Eligible */
+            eligible: boolean;
+            /** Score */
+            score: number;
+            /**
+             * Blocked
+             * @default false
+             */
+            blocked: boolean;
+            /** Blocked Reason */
+            blocked_reason?: string | null;
+            /**
+             * Explanation
+             * @default []
+             */
+            explanation: components["schemas"]["MatchCheckOut"][];
+            /**
+             * Missing
+             * @default []
+             */
+            missing: components["schemas"]["MatchCheckOut"][];
+            /**
+             * Qualifies Because
+             * @default []
+             */
+            qualifies_because: string[];
+            /**
+             * Next Steps
+             * @default []
+             */
+            next_steps: components["schemas"]["NextStepOut"][];
+            /**
+             * Facts
+             * @default {}
+             */
+            facts: {
+                [key: string]: unknown;
+            };
+        };
         /** MeOut */
         MeOut: {
             /** Id */
@@ -2747,16 +3704,80 @@ export interface components {
             role?: string | null;
             /** Preferred Path */
             preferred_path?: string | null;
+            /**
+             * Mfa Enabled
+             * @default false
+             */
+            mfa_enabled: boolean;
         };
         /** MessageIn */
         MessageIn: {
             /** Body */
             body: string;
         };
+        /** MessageListOut */
+        MessageListOut: {
+            /** Messages */
+            messages: components["schemas"]["WorkMessageOut"][];
+        };
         /** MessageOut */
         MessageOut: {
             /** Message */
             message: string;
+        };
+        /** MessageSentOut */
+        MessageSentOut: {
+            /** Id */
+            id: number;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+        };
+        /** MfaCodeIn */
+        MfaCodeIn: {
+            /** Code */
+            code: string;
+        };
+        /** MfaEnableOut */
+        MfaEnableOut: {
+            /**
+             * Enabled
+             * @default true
+             */
+            enabled: boolean;
+            /** Recovery Codes */
+            recovery_codes: string[];
+        };
+        /**
+         * MfaSetupOut
+         * @description A pending secret. It becomes the second factor only after confirmation.
+         */
+        MfaSetupOut: {
+            /** Secret */
+            secret: string;
+            /** Otpauth Uri */
+            otpauth_uri: string;
+        };
+        /** MfaStatusOut */
+        MfaStatusOut: {
+            /** Enabled */
+            enabled: boolean;
+            /** Is Staff */
+            is_staff: boolean;
+            /** Remaining Recovery Codes */
+            remaining_recovery_codes: number;
+        };
+        /**
+         * MfaVerifyIn
+         * @description The second step of a login: password proved, code not yet.
+         */
+        MfaVerifyIn: {
+            /** Mfa Token */
+            mfa_token: string;
+            /** Code */
+            code: string;
         };
         /** MyLearningOut */
         MyLearningOut: {
@@ -2787,10 +3808,107 @@ export interface components {
             answer?: string | null;
             action: components["schemas"]["NextActionOut"];
         };
+        /** NextStepOut */
+        NextStepOut: {
+            /** Requirement Id */
+            requirement_id: number;
+            /** Detail */
+            detail: string;
+            closes_via: components["schemas"]["ClosesViaOut"];
+        };
+        /** NotificationListOut */
+        NotificationListOut: {
+            /** Notifications */
+            notifications: components["schemas"]["NotificationOut"][];
+        };
+        /** NotificationOut */
+        NotificationOut: {
+            /** Id */
+            id: number;
+            /** Kind */
+            kind: string;
+            /** Title */
+            title: string;
+            /** Body */
+            body: string;
+            /** Data */
+            data?: {
+                [key: string]: unknown;
+            } | null;
+            /** Read At */
+            read_at?: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+        };
         /** NotificationReadIn */
         NotificationReadIn: {
             /** Ids */
             ids: number[];
+        };
+        /** NotificationReadOut */
+        NotificationReadOut: {
+            /** Updated */
+            updated: number;
+        };
+        /** OnboardingStateOut */
+        OnboardingStateOut: {
+            /** Profile Completed */
+            profile_completed: boolean;
+            /** Has Enrolment */
+            has_enrolment: boolean;
+            current_semester?: components["schemas"]["SemesterOut"] | null;
+            /** Academic */
+            academic: {
+                [key: string]: unknown;
+            };
+            /**
+             * Enrolments
+             * @default []
+             */
+            enrolments: components["schemas"]["EnrolmentOut"][];
+            /**
+             * Next Step
+             * @default enrol
+             */
+            next_step: string;
+        };
+        /** OpportunityAdminListOut */
+        OpportunityAdminListOut: {
+            /** Opportunities */
+            opportunities: components["schemas"]["OpportunityAdminRowOut"][];
+        };
+        /**
+         * OpportunityAdminRowOut
+         * @description One row for the ops list. Drafts and closed rows are included on purpose.
+         */
+        OpportunityAdminRowOut: {
+            /** Id */
+            id: number;
+            /** Slug */
+            slug: string;
+            /** Type */
+            type: string;
+            /** Title */
+            title: string;
+            /** Client Name */
+            client_name?: string | null;
+            /** Status */
+            status: string;
+            /** Headcount */
+            headcount?: number | null;
+            /** Currency */
+            currency?: string | null;
+            /** Rate Minor */
+            rate_minor?: number | null;
+        };
+        /** OpportunityApplicationsOut */
+        OpportunityApplicationsOut: {
+            opportunity: components["schemas"]["OpportunityRefOut"];
+            /** Applications */
+            applications: components["schemas"]["ApplicationSummaryOut"][];
         };
         /** OpportunityIn */
         OpportunityIn: {
@@ -2824,6 +3942,66 @@ export interface components {
             /** Requirements */
             requirements?: components["schemas"]["RequirementIn"][];
         };
+        /** OpportunityListOut */
+        OpportunityListOut: {
+            /** Opportunities */
+            opportunities: components["schemas"]["OpportunityOut"][];
+        };
+        /**
+         * OpportunityMatchOut
+         * @description The summary embedded in an opportunity card (a subset of MatchOut).
+         */
+        OpportunityMatchOut: {
+            /** Eligible */
+            eligible: boolean;
+            /** Score */
+            score: number;
+            /**
+             * Explanation
+             * @default []
+             */
+            explanation: components["schemas"]["MatchCheckOut"][];
+            /**
+             * Next Steps
+             * @default []
+             */
+            next_steps: components["schemas"]["NextStepOut"][];
+            /**
+             * Qualifies Because
+             * @default []
+             */
+            qualifies_because: string[];
+        };
+        /** OpportunityOut */
+        OpportunityOut: {
+            /** Id */
+            id: number;
+            /** Slug */
+            slug: string;
+            /** Type */
+            type: string;
+            /** Title */
+            title: string;
+            /** Description */
+            description: string;
+            /** Client Name */
+            client_name?: string | null;
+            /** Headcount */
+            headcount?: number | null;
+            /** Status */
+            status: string;
+            /** Currency */
+            currency?: string | null;
+            /** Rate Minor */
+            rate_minor?: number | null;
+            /** Starts On */
+            starts_on?: string | null;
+            /** Ends On */
+            ends_on?: string | null;
+            /** Requirements */
+            requirements: components["schemas"]["RequirementOut"][];
+            match: components["schemas"]["OpportunityMatchOut"];
+        };
         /** OpportunityPatchIn */
         OpportunityPatchIn: {
             /** Title */
@@ -2839,12 +4017,43 @@ export interface components {
             /** Requirements */
             requirements?: components["schemas"]["RequirementIn"][] | null;
         };
+        /** OpportunityRefOut */
+        OpportunityRefOut: {
+            /** Id */
+            id: number;
+            /** Slug */
+            slug: string;
+            /** Title */
+            title?: string | null;
+        };
+        /** OpportunityWriteOut */
+        OpportunityWriteOut: {
+            /** Id */
+            id: number;
+            /** Slug */
+            slug: string;
+            /** Status */
+            status: string;
+        };
         /** OverrideIn */
         OverrideIn: {
             /** To Status */
             to_status: string;
             /** Reason */
             reason: string;
+        };
+        /** OverrideOut */
+        OverrideOut: {
+            /** User Id */
+            user_id: number;
+            /** Skill Id */
+            skill_id: number;
+            /** Status */
+            status: string;
+            /** Event Id */
+            event_id: number;
+            /** Reason */
+            reason?: string | null;
         };
         /** PathOut */
         PathOut: {
@@ -2931,6 +4140,79 @@ export interface components {
             /** Estimated Hours */
             estimated_hours?: number | null;
         };
+        /** PayoutBatchDetailOut */
+        PayoutBatchDetailOut: {
+            /** Id */
+            id: number;
+            /** Project Id */
+            project_id: number;
+            /** Currency */
+            currency: string;
+            /** Total Minor */
+            total_minor: number;
+            /** Status */
+            status: string;
+            /** Provider */
+            provider: string;
+            /** Created By */
+            created_by?: number | null;
+            /** Approved By */
+            approved_by?: number | null;
+            /** Approved At */
+            approved_at?: string | null;
+            /** Paid At */
+            paid_at?: string | null;
+            /** Failure Reason */
+            failure_reason?: string | null;
+            /** Items */
+            items: components["schemas"]["PayoutItemOut"][];
+        };
+        /** PayoutBatchListOut */
+        PayoutBatchListOut: {
+            /** Batches */
+            batches: components["schemas"]["PayoutBatchOut"][];
+        };
+        /** PayoutBatchOut */
+        PayoutBatchOut: {
+            /** Id */
+            id: number;
+            /** Currency */
+            currency: string;
+            /** Total Minor */
+            total_minor: number;
+            /** Status */
+            status: string;
+            /** Provider */
+            provider?: string | null;
+            /** Paid At */
+            paid_at?: string | null;
+        };
+        /** PayoutItemOut */
+        PayoutItemOut: {
+            /** Id */
+            id: number;
+            /** User Id */
+            user_id: number;
+            /** Name */
+            name?: string | null;
+            /** Email */
+            email: string;
+            /** Amount Minor */
+            amount_minor: number;
+            /** Status */
+            status: string;
+            /** Provider Reference */
+            provider_reference?: string | null;
+        };
+        /** PayoutItemStateOut */
+        PayoutItemStateOut: {
+            /** Id */
+            id: number;
+            /** Status */
+            status: string;
+            /** Failure Reason */
+            failure_reason?: string | null;
+        };
         /** PracticalIn */
         PracticalIn: {
             /** Payload */
@@ -2940,6 +4222,24 @@ export interface components {
             /** Client Key */
             client_key?: string | null;
         };
+        /** PracticalQueueItemOut */
+        PracticalQueueItemOut: {
+            /** Id */
+            id: number;
+            /** Practical Task Id */
+            practical_task_id: number;
+            /** User Id */
+            user_id: number;
+            /** Status */
+            status: string;
+            /** Submitted At */
+            submitted_at?: string | null;
+        };
+        /** PracticalQueueOut */
+        PracticalQueueOut: {
+            /** Submissions */
+            submissions: components["schemas"]["PracticalQueueItemOut"][];
+        };
         /** PracticalReviewIn */
         PracticalReviewIn: {
             /** Score */
@@ -2948,6 +4248,51 @@ export interface components {
             passed: boolean;
             /** Notes */
             notes?: string | null;
+        };
+        /** PracticalReviewOut */
+        PracticalReviewOut: {
+            /** Id */
+            id: number;
+            /** Status */
+            status: string;
+            /** Score */
+            score?: number | null;
+            /** Passed */
+            passed?: boolean | null;
+        };
+        /** PracticalSubmissionOut */
+        PracticalSubmissionOut: {
+            /** Id */
+            id: number;
+            /** Status */
+            status: string;
+            /** Submitted At */
+            submitted_at?: string | null;
+            /** Message */
+            message: string;
+        };
+        /** PracticalTaskListOut */
+        PracticalTaskListOut: {
+            /** Tasks */
+            tasks: components["schemas"]["PracticalTaskOut"][];
+        };
+        /**
+         * PracticalTaskOut
+         * @description A real brief and its rubric. The rubric is shown, so the standard is public.
+         */
+        PracticalTaskOut: {
+            /** Id */
+            id: number;
+            /** Slug */
+            slug: string;
+            /** Title */
+            title: string;
+            /** Brief Md */
+            brief_md: string;
+            /** Skill Id */
+            skill_id: number;
+            /** Rubric */
+            rubric?: unknown | null;
         };
         /**
          * PracticeBriefOut
@@ -3088,6 +4433,116 @@ export interface components {
              */
             status: string;
         };
+        /** ProjectListOut */
+        ProjectListOut: {
+            /** Projects */
+            projects: components["schemas"]["ProjectSummaryOut"][];
+        };
+        /** ProjectOut */
+        ProjectOut: {
+            /** Id */
+            id: number;
+            /** Slug */
+            slug: string;
+            /** Title */
+            title: string;
+            /** Status */
+            status: string;
+            /** Starts On */
+            starts_on?: string | null;
+            /** Ends On */
+            ends_on?: string | null;
+            /** Cohorts */
+            cohorts: components["schemas"]["CohortOut"][];
+            /** Assignment Counts */
+            assignment_counts: {
+                [key: string]: number;
+            };
+        };
+        /** ProjectRefOut */
+        ProjectRefOut: {
+            /** Id */
+            id?: number | null;
+            /** Slug */
+            slug: string;
+            /** Title */
+            title: string;
+        };
+        /** ProjectSummaryOut */
+        ProjectSummaryOut: {
+            /** Id */
+            id: number;
+            /** Slug */
+            slug: string;
+            /** Title */
+            title: string;
+            /** Status */
+            status: string;
+            /** Starts On */
+            starts_on?: string | null;
+            /** Ends On */
+            ends_on?: string | null;
+        };
+        /** ProjectWriteOut */
+        ProjectWriteOut: {
+            /** Id */
+            id: number;
+            /** Slug */
+            slug: string;
+            /** Status */
+            status: string;
+        };
+        /** PushDeviceIn */
+        PushDeviceIn: {
+            /** Token */
+            token: string;
+            /**
+             * Platform
+             * @default android
+             */
+            platform: string;
+        };
+        /** PushDeviceListOut */
+        PushDeviceListOut: {
+            /** Devices */
+            devices: components["schemas"]["PushDeviceOut"][];
+        };
+        /** PushDeviceOut */
+        PushDeviceOut: {
+            /** Id */
+            id: number;
+            /** Token */
+            token: string;
+            /** Platform */
+            platform: string;
+            /** Last Seen At */
+            last_seen_at?: string | null;
+        };
+        /** QualityOut */
+        QualityOut: {
+            record?: components["schemas"]["QualityRecordOut"] | null;
+            /** Consequences */
+            consequences: components["schemas"]["ConsequenceOut"][];
+        };
+        /** QualityRecordOut */
+        QualityRecordOut: {
+            /** Reviews Count */
+            reviews_count: number;
+            /** Approvals */
+            approvals: number;
+            /** Reworks */
+            reworks: number;
+            /** Rejections */
+            rejections: number;
+            /** Average Score */
+            average_score?: number | null;
+            /** Gold Tasks */
+            gold_tasks: number;
+            /** Gold Correct */
+            gold_correct: number;
+            /** Poor Streak */
+            poor_streak: number;
+        };
         /** QuizIn */
         QuizIn: {
             /** Course Id */
@@ -3116,6 +4571,41 @@ export interface components {
             /** Items */
             items: components["schemas"]["RecentItemOut"][];
         };
+        /** ReconcileReportOut */
+        ReconcileReportOut: {
+            /** Project Id */
+            project_id: number;
+            /** Funded */
+            funded: boolean;
+            /** Balanced */
+            balanced: boolean;
+            /** Expected */
+            expected: {
+                [key: string]: unknown;
+            };
+            /** Actual */
+            actual: {
+                [key: string]: unknown;
+            };
+            /** Details */
+            details: {
+                [key: string]: unknown;
+            }[];
+        };
+        /** ReconcileRunOut */
+        ReconcileRunOut: {
+            /** Id */
+            id: number;
+            /**
+             * As Of
+             * Format: date
+             */
+            as_of: string;
+            /** Balanced */
+            balanced: boolean;
+            /** Project Id */
+            project_id?: number | null;
+        };
         /** RefreshIn */
         RefreshIn: {
             /** Refresh Token */
@@ -3127,6 +4617,49 @@ export interface components {
             member_id: number;
             /** Reason */
             reason: string;
+        };
+        /** RemoveOut */
+        RemoveOut: {
+            /** Id */
+            id: number;
+            /** Status */
+            status: string;
+        };
+        /** ReplacementListOut */
+        ReplacementListOut: {
+            /** Candidates */
+            candidates: components["schemas"]["ReplacementOut"][];
+        };
+        /**
+         * ReplacementOut
+         * @description A replacement suggestion: who, and the evidence behind the pick.
+         */
+        ReplacementOut: {
+            /** User Id */
+            user_id: number;
+            /** Name */
+            name?: string | null;
+            /** Email */
+            email?: string | null;
+            /** Score */
+            score: number;
+            /**
+             * Eligible
+             * @default true
+             */
+            eligible: boolean;
+            /**
+             * Qualifies Because
+             * @default []
+             */
+            qualifies_because: string[];
+            /**
+             * Next Steps
+             * @default []
+             */
+            next_steps: {
+                [key: string]: unknown;
+            }[];
         };
         /** RequirementIn */
         RequirementIn: {
@@ -3140,6 +4673,21 @@ export interface components {
              * Is Mandatory
              * @default true
              */
+            is_mandatory: boolean;
+            /** Description */
+            description?: string | null;
+        };
+        /** RequirementOut */
+        RequirementOut: {
+            /** Id */
+            id: number;
+            /** Kind */
+            kind: string;
+            /** Skill Id */
+            skill_id?: number | null;
+            /** Minimum Value */
+            minimum_value?: string | null;
+            /** Is Mandatory */
             is_mandatory: boolean;
             /** Description */
             description?: string | null;
@@ -3166,6 +4714,17 @@ export interface components {
             /** Reason */
             reason: string;
         };
+        /** ReverseOut */
+        ReverseOut: {
+            /** Id */
+            id: number;
+            /** Kind */
+            kind: string;
+            /** Reverses Transaction Id */
+            reverses_transaction_id?: number | null;
+            /** Total Minor */
+            total_minor: number;
+        };
         /** ReviewIn */
         ReviewIn: {
             /** Verdict */
@@ -3182,18 +4741,29 @@ export interface components {
             /** Reason */
             reason?: string | null;
         };
-        /** ReviewOut */
-        ReviewOut: {
-            /** Attempt Id */
-            attempt_id: number;
-            /** Score */
-            score?: number | null;
-            /** Passed */
-            passed?: boolean | null;
+        /** ReviewQueueItemOut */
+        ReviewQueueItemOut: {
+            /** Submission Id */
+            submission_id: number;
+            /** Assignment Id */
+            assignment_id: number;
+            /** Assignment Title */
+            assignment_title: string;
+            project: components["schemas"]["ProjectRefOut"];
+            student: components["schemas"]["StudentRefOut"];
+            /** Is Gold */
+            is_gold: boolean;
             /** Submitted At */
             submitted_at?: string | null;
-            /** Tasks */
-            tasks: components["schemas"]["ReviewTaskOut"][];
+            /** Payload */
+            payload: {
+                [key: string]: unknown;
+            };
+        };
+        /** ReviewQueueOut */
+        ReviewQueueOut: {
+            /** Queue */
+            queue: components["schemas"]["ReviewQueueItemOut"][];
         };
         /** ReviewTaskOut */
         ReviewTaskOut: {
@@ -3296,6 +4866,19 @@ export interface components {
             /** Skills */
             skills: components["schemas"]["SkillOut"][];
         };
+        /** SplitOut */
+        SplitOut: {
+            /** Total Minor */
+            total_minor: number;
+            /** Student Pool Minor */
+            student_pool_minor: number;
+            /** Platform Fee Minor */
+            platform_fee_minor: number;
+            /** Platform Retained Minor */
+            platform_retained_minor: number;
+            /** Department Share Minor */
+            department_share_minor: number;
+        };
         /** StandardIn */
         StandardIn: {
             /** Name */
@@ -3306,6 +4889,19 @@ export interface components {
             rubric?: unknown[] | null;
             /** Pass Threshold */
             pass_threshold?: number | null;
+            /** Rules */
+            rules?: {
+                [key: string]: unknown;
+            } | null;
+        };
+        /** StandardOut */
+        StandardOut: {
+            /** Id */
+            id: number;
+            /** Name */
+            name: string;
+            /** Pass Threshold */
+            pass_threshold: number;
             /** Rules */
             rules?: {
                 [key: string]: unknown;
@@ -3325,6 +4921,15 @@ export interface components {
             lesson_id?: number | null;
             /** Task Template Id */
             task_template_id?: number | null;
+        };
+        /** StudentRefOut */
+        StudentRefOut: {
+            /** Id */
+            id: number;
+            /** Name */
+            name?: string | null;
+            /** Email */
+            email: string;
         };
         /** StudyingQuestionOut */
         StudyingQuestionOut: {
@@ -3349,6 +4954,41 @@ export interface components {
             /** Client Key */
             client_key?: string | null;
         };
+        /** SubmissionListOut */
+        SubmissionListOut: {
+            /** Submissions */
+            submissions: components["schemas"]["SubmissionSummaryOut"][];
+        };
+        /** SubmissionResultOut */
+        SubmissionResultOut: {
+            /** Id */
+            id: number;
+            /** Status */
+            status: string;
+            /** Is Gold */
+            is_gold: boolean;
+            /** Submitted At */
+            submitted_at?: string | null;
+            /** Created */
+            created: boolean;
+            /** Message */
+            message: string;
+        };
+        /** SubmissionSummaryOut */
+        SubmissionSummaryOut: {
+            /** Submission Id */
+            submission_id: number;
+            /** Assignment Id */
+            assignment_id: number;
+            /** Assignment Title */
+            assignment_title: string;
+            /** Status */
+            status: string;
+            /** Is Gold */
+            is_gold: boolean;
+            /** Submitted At */
+            submitted_at?: string | null;
+        };
         /** SyncIn */
         SyncIn: {
             /** Items */
@@ -3364,6 +5004,28 @@ export interface components {
             };
             /** Client Key */
             client_key: string;
+        };
+        /** SyncOut */
+        SyncOut: {
+            /** Results */
+            results: components["schemas"]["SyncResultOut"][];
+            /** Applied */
+            applied: number;
+            /** Failed */
+            failed: number;
+        };
+        /** SyncResultOut */
+        SyncResultOut: {
+            /** Client Key */
+            client_key: string;
+            /** Status */
+            status: string;
+            /** Submission Id */
+            submission_id?: number | null;
+            /** Code */
+            code?: string | null;
+            /** Message */
+            message?: string | null;
         };
         /** TemplateIn */
         TemplateIn: {
@@ -3520,6 +5182,66 @@ export interface components {
             /** Slug */
             slug: string;
         };
+        /** UserDetailOut */
+        UserDetailOut: {
+            /** Id */
+            id: number;
+            /** Email */
+            email: string;
+            /** Username */
+            username: string;
+            /** Name */
+            name?: string | null;
+            /** Role */
+            role?: string | null;
+            /** Email Verified */
+            email_verified: boolean;
+            /** Google Linked */
+            google_linked: boolean;
+            /** Is Deleted */
+            is_deleted: boolean;
+            /** Deleted At */
+            deleted_at?: string | null;
+            profile: components["schemas"]["UserProfileOut"];
+        };
+        /** UserListOut */
+        UserListOut: {
+            /** Users */
+            users: components["schemas"]["UserSummaryOut"][];
+            /** Next Cursor */
+            next_cursor?: string | null;
+        };
+        /** UserProfileOut */
+        UserProfileOut: {
+            /** Display Name */
+            display_name?: string | null;
+            /** Preferred Path */
+            preferred_path?: string | null;
+            /** Onboarding Completed At */
+            onboarding_completed_at?: string | null;
+        };
+        /** UserSummaryOut */
+        UserSummaryOut: {
+            /** Id */
+            id: number;
+            /** Email */
+            email: string;
+            /** Username */
+            username: string;
+            /** Name */
+            name?: string | null;
+            /** Role */
+            role?: string | null;
+            /** Email Verified */
+            email_verified: boolean;
+            /** Google Linked */
+            google_linked: boolean;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+        };
         /** ValidationError */
         ValidationError: {
             /** Location */
@@ -3532,6 +5254,11 @@ export interface components {
             input?: unknown;
             /** Context */
             ctx?: Record<string, never>;
+        };
+        /** ValidatorListOut */
+        ValidatorListOut: {
+            /** Validators */
+            validators: string[];
         };
         /** VerificationOut */
         VerificationOut: {
@@ -3563,6 +5290,24 @@ export interface components {
             /** Token */
             token: string;
         };
+        /** WaitlistEntryOut */
+        WaitlistEntryOut: {
+            /** Id */
+            id: number;
+            /** User Id */
+            user_id?: number | null;
+            /** University Name */
+            university_name: string;
+            /** Email */
+            email?: string | null;
+            /** Note */
+            note?: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+        };
         /** WaitlistIn */
         WaitlistIn: {
             /** University Name */
@@ -3572,12 +5317,33 @@ export interface components {
             /** Note */
             note?: string | null;
         };
+        /** WaitlistOut */
+        WaitlistOut: {
+            /** Waitlist */
+            waitlist: components["schemas"]["WaitlistEntryOut"][];
+        };
         /** WeakQuestionOut */
         WeakQuestionOut: {
             /** Answer */
             answer: string;
             /** Items */
             items: components["schemas"]["TopicStatOut"][];
+        };
+        /** WorkMessageOut */
+        WorkMessageOut: {
+            /** Id */
+            id: number;
+            /** Body */
+            body: string;
+            /** Sender User Id */
+            sender_user_id?: number | null;
+            /** Read At */
+            read_at?: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
         };
         /** PathIn */
         app__api__v1__domains__identity__schemas__PathIn: {
@@ -3606,6 +5372,32 @@ export interface components {
              * @default draft
              */
             status: string;
+        };
+        /** ReviewOut */
+        app__api__v1__domains__verification__schemas__ReviewOut: {
+            /** Attempt Id */
+            attempt_id: number;
+            /** Score */
+            score?: number | null;
+            /** Passed */
+            passed?: boolean | null;
+            /** Submitted At */
+            submitted_at?: string | null;
+            /** Tasks */
+            tasks: components["schemas"]["ReviewTaskOut"][];
+        };
+        /** ReviewOut */
+        app__api__v1__domains__work__schemas__ReviewOut: {
+            /** Id */
+            id: number;
+            /** Submission Id */
+            submission_id: number;
+            /** Verdict */
+            verdict: string;
+            /** Score */
+            score?: number | null;
+            /** Gold Correct */
+            gold_correct?: boolean | null;
         };
     };
     responses: never;
@@ -3679,6 +5471,39 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": components["schemas"]["LoginIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TokenOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    verify_second_factor_v1_auth_2fa_verify_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MfaVerifyIn"];
             };
         };
         responses: {
@@ -3786,6 +5611,138 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["MeOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    two_factor_status_v1_auth_2fa_get: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MfaStatusOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    start_two_factor_v1_auth_2fa_setup_post: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MfaSetupOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    enable_two_factor_v1_auth_2fa_enable_post: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MfaCodeIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MfaEnableOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    disable_two_factor_v1_auth_2fa_disable_post: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MfaCodeIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageOut"];
                 };
             };
             /** @description Validation Error */
@@ -4146,9 +6103,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["LanguagesOut"];
                 };
             };
             /** @description Validation Error */
@@ -4183,9 +6138,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["LanguagesOut"];
                 };
             };
             /** @description Validation Error */
@@ -4216,9 +6169,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["AvailabilityOut"];
                 };
             };
             /** @description Validation Error */
@@ -4253,9 +6204,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["AvailabilityOut"];
                 };
             };
             /** @description Validation Error */
@@ -4352,9 +6301,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["NotificationListOut"];
                 };
             };
             /** @description Validation Error */
@@ -4389,9 +6336,106 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["NotificationReadOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_push_devices_v1_me_push_devices_get: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PushDeviceListOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    register_push_device_v1_me_push_devices_post: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PushDeviceIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PushDeviceOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    unregister_push_device_v1_me_push_devices__device_id__delete: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path: {
+                device_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageOut"];
                 };
             };
             /** @description Validation Error */
@@ -4654,9 +6698,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["OnboardingStateOut"];
                 };
             };
             /** @description Validation Error */
@@ -5002,6 +7044,40 @@ export interface operations {
             };
         };
     };
+    list_lessons_v1_skills_content_lessons_get: {
+        parameters: {
+            query?: {
+                skill_id?: number | null;
+                status?: string | null;
+            };
+            header?: {
+                authorization?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContentLessonListOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     create_lesson_v1_skills_content_lessons_post: {
         parameters: {
             query?: never;
@@ -5039,22 +7115,19 @@ export interface operations {
             };
         };
     };
-    update_lesson_v1_skills_content_lessons__lesson_id__patch: {
+    list_paths_v1_skills_content_paths_get: {
         parameters: {
-            query?: never;
+            query?: {
+                skill_id?: number | null;
+                status?: string | null;
+            };
             header?: {
                 authorization?: string | null;
             };
-            path: {
-                lesson_id: number;
-            };
+            path?: never;
             cookie?: never;
         };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["LessonPatchIn"];
-            };
-        };
+        requestBody?: never;
         responses: {
             /** @description Successful Response */
             200: {
@@ -5062,9 +7135,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["ContentPathListOut"];
                 };
             };
             /** @description Validation Error */
@@ -5095,6 +7166,147 @@ export interface operations {
         responses: {
             /** @description Successful Response */
             201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_templates_v1_skills_content_tasks_get: {
+        parameters: {
+            query?: {
+                skill_id?: number | null;
+                status?: string | null;
+            };
+            header?: {
+                authorization?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContentTemplateListOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_template_v1_skills_content_tasks_post: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TemplateIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_validators_v1_skills_content_validators_get: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidatorListOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_lesson_v1_skills_content_lessons__lesson_id__patch: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path: {
+                lesson_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LessonPatchIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -5168,43 +7380,6 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": components["schemas"]["StepIn"];
-            };
-        };
-        responses: {
-            /** @description Successful Response */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    create_template_v1_skills_content_tasks_post: {
-        parameters: {
-            query?: never;
-            header?: {
-                authorization?: string | null;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["TemplateIn"];
             };
         };
         responses: {
@@ -5453,7 +7628,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ReviewOut"];
+                    "application/json": components["schemas"]["app__api__v1__domains__verification__schemas__ReviewOut"];
                 };
             };
             /** @description Validation Error */
@@ -5486,9 +7661,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["PracticalTaskListOut"];
                 };
             };
             /** @description Validation Error */
@@ -5525,9 +7698,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["PracticalSubmissionOut"];
                 };
             };
             /** @description Validation Error */
@@ -5561,9 +7732,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["PracticalQueueOut"];
                 };
             };
             /** @description Validation Error */
@@ -5601,9 +7770,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["OverrideOut"];
                 };
             };
             /** @description Validation Error */
@@ -5640,9 +7807,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["PracticalReviewOut"];
                 };
             };
             /** @description Validation Error */
@@ -5675,9 +7840,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["OpportunityListOut"];
                 };
             };
             /** @description Validation Error */
@@ -5712,9 +7875,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["OpportunityWriteOut"];
                 };
             };
             /** @description Validation Error */
@@ -5745,9 +7906,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["MatchListOut"];
                 };
             };
             /** @description Validation Error */
@@ -5778,9 +7937,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["ApplicationListOut"];
                 };
             };
             /** @description Validation Error */
@@ -5813,9 +7970,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["OpportunityOut"];
                 };
             };
             /** @description Validation Error */
@@ -5852,9 +8007,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["OpportunityWriteOut"];
                 };
             };
             /** @description Validation Error */
@@ -5887,9 +8040,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["GapListOut"];
                 };
             };
             /** @description Validation Error */
@@ -5926,9 +8077,38 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["ApplyOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_all_opportunities_v1_opportunities_admin_all_get: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OpportunityAdminListOut"];
                 };
             };
             /** @description Validation Error */
@@ -5964,9 +8144,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["OpportunityApplicationsOut"];
                 };
             };
             /** @description Validation Error */
@@ -6003,9 +8181,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["ApplicationStatusOut"];
                 };
             };
             /** @description Validation Error */
@@ -6040,9 +8216,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["CandidateListOut"];
                 };
             };
             /** @description Validation Error */
@@ -6312,9 +8486,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["AssignmentListOut"];
                 };
             };
             /** @description Validation Error */
@@ -6347,9 +8519,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["AssignmentDetailOut"];
                 };
             };
             /** @description Validation Error */
@@ -6382,9 +8552,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["AssignmentStateOut"];
                 };
             };
             /** @description Validation Error */
@@ -6422,9 +8590,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["SubmissionResultOut"];
                 };
             };
             /** @description Validation Error */
@@ -6459,9 +8625,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["SyncOut"];
                 };
             };
             /** @description Validation Error */
@@ -6492,9 +8656,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["SubmissionListOut"];
                 };
             };
             /** @description Validation Error */
@@ -6525,9 +8687,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["QualityOut"];
                 };
             };
             /** @description Validation Error */
@@ -6560,9 +8720,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["MessageListOut"];
                 };
             };
             /** @description Validation Error */
@@ -6599,9 +8757,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["MessageSentOut"];
                 };
             };
             /** @description Validation Error */
@@ -6638,9 +8794,38 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["InviteResponseOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_projects_v1_work_projects_get: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProjectListOut"];
                 };
             };
             /** @description Validation Error */
@@ -6675,9 +8860,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["ProjectWriteOut"];
                 };
             };
             /** @description Validation Error */
@@ -6710,9 +8893,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["ProjectOut"];
                 };
             };
             /** @description Validation Error */
@@ -6749,9 +8930,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["CohortWriteOut"];
                 };
             };
             /** @description Validation Error */
@@ -6784,9 +8963,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["CohortOut"];
                 };
             };
             /** @description Validation Error */
@@ -6823,9 +9000,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["InviteListOut"];
                 };
             };
             /** @description Validation Error */
@@ -6862,9 +9037,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["RemoveOut"];
                 };
             };
             /** @description Validation Error */
@@ -6899,9 +9072,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["ReplacementListOut"];
                 };
             };
             /** @description Validation Error */
@@ -6938,9 +9109,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["AssignOut"];
                 };
             };
             /** @description Validation Error */
@@ -6973,9 +9142,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["ReviewQueueOut"];
                 };
             };
             /** @description Validation Error */
@@ -7012,9 +9179,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["app__api__v1__domains__work__schemas__ReviewOut"];
                 };
             };
             /** @description Validation Error */
@@ -7051,9 +9216,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["StandardOut"];
                 };
             };
             /** @description Validation Error */
@@ -7084,9 +9247,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["EarningsOut"];
                 };
             };
             /** @description Validation Error */
@@ -7119,9 +9280,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["FinancialsOut"];
                 };
             };
             /** @description Validation Error */
@@ -7158,9 +9317,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["FundOut"];
                 };
             };
             /** @description Validation Error */
@@ -7197,9 +9354,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["ReverseOut"];
                 };
             };
             /** @description Validation Error */
@@ -7234,9 +9389,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["LedgerOut"];
                 };
             };
             /** @description Validation Error */
@@ -7302,9 +9455,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["ReconcileReportOut"];
                 };
             };
             /** @description Validation Error */
@@ -7337,9 +9488,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["ReconcileRunOut"];
                 };
             };
             /** @description Validation Error */
@@ -7372,9 +9521,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["PayoutBatchListOut"];
                 };
             };
             /** @description Validation Error */
@@ -7412,9 +9559,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["BatchStateOut"];
                 };
             };
             /** @description Validation Error */
@@ -7447,9 +9592,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["PayoutBatchDetailOut"];
                 };
             };
             /** @description Validation Error */
@@ -7482,9 +9625,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["BatchStateOut"];
                 };
             };
             /** @description Validation Error */
@@ -7517,9 +9658,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["BatchStateOut"];
                 };
             };
             /** @description Validation Error */
@@ -7556,9 +9695,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["BatchStateOut"];
                 };
             };
             /** @description Validation Error */
@@ -7595,9 +9732,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["PayoutItemStateOut"];
                 };
             };
             /** @description Validation Error */
@@ -8050,9 +10185,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["ImportListOut"];
                 };
             };
             /** @description Validation Error */
@@ -8087,9 +10220,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["ImportResultOut"];
                 };
             };
             /** @description Validation Error */
@@ -8122,9 +10253,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["ImportReportOut"];
                 };
             };
             /** @description Validation Error */
@@ -8159,9 +10288,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["UserListOut"];
                 };
             };
             /** @description Validation Error */
@@ -8194,9 +10321,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["UserDetailOut"];
                 };
             };
             /** @description Validation Error */
@@ -8231,9 +10356,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["AuditLogListOut"];
                 };
             };
             /** @description Validation Error */
@@ -8266,9 +10389,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["WaitlistOut"];
                 };
             };
             /** @description Validation Error */
@@ -8303,9 +10424,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["CampusCreatedOut"];
                 };
             };
             /** @description Validation Error */

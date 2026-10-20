@@ -37,28 +37,59 @@ def send_email(payload: dict[str, Any]) -> None:
         smtp.send_message(message)
 
 
+def _device_tokens(user_id: Any) -> list[str]:
+    """Live tokens for one account, read in their own short session.
+
+    A revoked device is never sent to: after sign-out the phone may belong to
+    somebody else, and a push would leak the notification title.
+    """
+    if not user_id:
+        return []
+    from sqlalchemy import select
+
+    from app.db.session import SessionLocal
+    from app.models.engagement import PushDevice
+
+    with SessionLocal() as db:
+        return list(
+            db.scalars(
+                select(PushDevice.token).where(
+                    PushDevice.user_id == int(user_id),
+                    PushDevice.revoked_at.is_(None),
+                )
+            ).all()
+        )
+
+
 def send_push(payload: dict[str, Any]) -> None:
-    """Deliver a push through the configured endpoint, then mark it pushed.
+    """Deliver a push to every live device, then mark the notification pushed.
 
     With no `PUSH_ENDPOINT` configured this is in-app only: the notification row
-    is already visible, so nothing is lost. The transport is a single httpx call
-    so swapping it for Expo's API or a provider SDK later is local to this file.
+    is already visible, so nothing is lost. The transport is one httpx call per
+    token so swapping it for Expo's API or a provider SDK is local to this file.
     """
     settings = get_settings()
-    if settings.PUSH_ENDPOINT:
+    tokens = payload.get("device_tokens") or _device_tokens(payload.get("user_id"))
+    if settings.PUSH_ENDPOINT and tokens:
         import httpx
 
-        response = httpx.post(
-            settings.PUSH_ENDPOINT,
-            json={
-                "to": payload.get("user_id"),
-                "title": payload.get("title"),
-                "body": payload.get("body"),
-                "data": payload.get("data") or {},
-            },
-            timeout=10.0,
-        )
-        response.raise_for_status()
+        for token in tokens:
+            response = httpx.post(
+                settings.PUSH_ENDPOINT,
+                json={
+                    "to": token,
+                    "title": payload.get("title"),
+                    "body": payload.get("body"),
+                    "data": payload.get("data") or {},
+                },
+                timeout=10.0,
+            )
+            # A dead token must not fail the whole notification; the next
+            # registration replaces it.
+            if response.status_code >= 400:
+                logger.warning(
+                    "push rejected token=%s status=%s", token[-6:], response.status_code
+                )
     else:
         logger.info("push skipped (PUSH_ENDPOINT unset) notification=%s", payload.get("notification_id"))
 
@@ -80,8 +111,26 @@ def noop(payload: dict[str, Any]) -> None:
     logger.info("noop job payload=%s", payload)
 
 
+def reconcile_daily(payload: dict[str, Any]) -> None:
+    """Run the ledger reconciliation for every funded project (F3).
+
+    The job exists so the same check a human can trigger by hand also happens on
+    its own every day; a failure is a retry like any other job.
+    """
+    from app.db.session import SessionLocal
+    from app.services.money import reconcile
+
+    with SessionLocal() as db:
+        run = reconcile.run(db, actor=None, project=None)
+        db.commit()
+        logger.info(
+            "daily reconciliation run=%s balanced=%s", run.id, run.balanced
+        )
+
+
 HANDLERS: dict[str, Callable[[dict[str, Any]], None]] = {
     "send_email": send_email,
     "send_push": send_push,
+    "reconcile_daily": reconcile_daily,
     "noop": noop,
 }

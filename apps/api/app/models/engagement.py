@@ -12,7 +12,7 @@ from __future__ import annotations
 
 from datetime import datetime
 
-from sqlalchemy import DateTime, ForeignKey, Integer, String, Text
+from sqlalchemy import DateTime, ForeignKey, Integer, String, Text, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db.base import Base, TimestampMixin
@@ -51,6 +51,30 @@ class Notification(Base, TimestampMixin):
     data: Mapped[dict | None] = mapped_column(JSONPayload)
     read_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     pushed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+
+class PushDevice(Base, TimestampMixin):
+    """One native install that can receive push (D1/F4).
+
+    The token is the address; `platform` says which transport it belongs to.
+    A token can move between accounts on a shared phone, so the same token is
+    unique and is reassigned to the newest owner rather than duplicated.
+    """
+
+    __tablename__ = "push_devices"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    user_id: Mapped[int] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    token: Mapped[str] = mapped_column(String(255), nullable=False, unique=True)
+    platform: Mapped[str] = mapped_column(
+        String(10), default="android", server_default="android", nullable=False
+    )
+    last_seen_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    revoked_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+    __table_args__ = (UniqueConstraint("token", name="uq_push_devices_token"),)
 
 
 class Message(Base, TimestampMixin):

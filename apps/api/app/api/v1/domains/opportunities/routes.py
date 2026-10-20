@@ -16,12 +16,26 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_current_user, require_any_flag, require_flag
+from app.api.v1.domains.opportunities.schemas import (
+    ApplicationListOut,
+    ApplicationStatusOut,
+    ApplyOut,
+    CandidateListOut,
+    CandidateOut,
+    GapListOut,
+    MatchListOut,
+    OpportunityAdminListOut,
+    OpportunityApplicationsOut,
+    OpportunityListOut,
+    OpportunityOut,
+    OpportunityWriteOut,
+)
 from app.core import flags
 from app.core.authz import require_permission
 from app.core.errors import ApiError
 from app.db.session import get_db
 from app.models.identity import User
-from app.models.matching import OPPORTUNITY_TYPES
+from app.models.matching import OPPORTUNITY_TYPES, Opportunity
 from app.models.talent import OpportunityApplication
 from app.services.matching import engine, opportunities
 
@@ -80,61 +94,63 @@ def _requirements(items: list[RequirementIn]) -> list[dict]:
 # --- student -----------------------------------------------------------------
 
 
-@router.get("")
+@router.get("", response_model=OpportunityListOut)
 def list_opportunities(
     type: str | None = Query(default=None),
     user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
-) -> dict:
+) -> OpportunityListOut:
     """Open opportunities with this student's own verdict on each."""
     rows = opportunities.list_open(db, type=type)
-    return {"opportunities": [opportunities.detail_for_user(db, user, row) for row in rows]}
+    return OpportunityListOut(
+        opportunities=[opportunities.detail_for_user(db, user, row) for row in rows]
+    )
 
 
-@router.get("/matches")
+@router.get("/matches", response_model=MatchListOut)
 def my_matches(
     user: User = Depends(get_current_user), db: Session = Depends(get_db)
-) -> dict:
+) -> MatchListOut:
     """Eligible first, then by score; every row carries its reasons."""
     results = engine.list_matches(db, user)
     db.commit()
-    return {
-        "matches": results,
-        "eligible_count": sum(1 for item in results if item["eligible"]),
-    }
+    return MatchListOut(
+        matches=results,
+        eligible_count=sum(1 for item in results if item["eligible"]),
+    )
 
 
-@router.get("/applications")
+@router.get("/applications", response_model=ApplicationListOut)
 def my_applications(
     user: User = Depends(get_current_user), db: Session = Depends(get_db)
-) -> dict:
-    return {"applications": opportunities.my_applications(db, user)}
+) -> ApplicationListOut:
+    return ApplicationListOut(applications=opportunities.my_applications(db, user))
 
 
-@router.get("/{slug}")
+@router.get("/{slug}", response_model=OpportunityOut)
 def opportunity_detail(
     slug: str,
     user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
-) -> dict:
+) -> OpportunityOut:
     """Includes "why you qualify" or exactly what is missing, with the closing step."""
     row = opportunities.get_opportunity(db, slug)
     detail = opportunities.detail_for_user(db, user, row)
     db.commit()
-    return detail
+    return OpportunityOut(**detail)
 
 
-@router.get("/{slug}/gaps")
+@router.get("/{slug}/gaps", response_model=GapListOut)
 def opportunity_gaps(
     slug: str,
     user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
-) -> dict:
+) -> GapListOut:
     row = opportunities.get_opportunity(db, slug)
-    return {"gaps": engine.gaps_for_user(db, user.id, row.id)}
+    return GapListOut(gaps=engine.gaps_for_user(db, user.id, row.id))
 
 
-@router.post("/{slug}/apply", status_code=201)
+@router.post("/{slug}/apply", status_code=201, response_model=ApplyOut)
 def apply_to_external(
     slug: str,
     payload: ApplyIn,
@@ -144,11 +160,7 @@ def apply_to_external(
     """Only external opportunities accept an application; managed work is invited."""
     application = opportunities.apply_external(db, user, slug=slug, note=payload.note)
     db.commit()
-    return {
-        "id": application.id,
-        "status": application.status,
-        "note": application.note,
-    }
+    return ApplyOut(id=application.id, status=application.status, note=application.note)
 
 
 # --- ops ---------------------------------------------------------------------
@@ -163,7 +175,32 @@ OPS_GUARD = [
 ]
 
 
-@router.get("/{slug}/applications", dependencies=OPS_GUARD)
+@router.get("/admin/all", dependencies=OPS_GUARD, response_model=OpportunityAdminListOut)
+def list_all_opportunities(
+    _staff: User = Depends(require_permission("project.write")),
+    db: Session = Depends(get_db),
+) -> OpportunityAdminListOut:
+    """Every opportunity, drafts included: the ops list is not the student list."""
+    rows = db.scalars(select(Opportunity).order_by(Opportunity.id.desc())).all()
+    return OpportunityAdminListOut(
+        opportunities=[
+            {
+                "id": row.id,
+                "slug": row.slug,
+                "type": row.type,
+                "title": row.title,
+                "client_name": row.client_name,
+                "status": row.status,
+                "headcount": row.headcount,
+                "currency": row.currency,
+                "rate_minor": row.rate_minor,
+            }
+            for row in rows
+        ]
+    )
+
+
+@router.get("/{slug}/applications", dependencies=OPS_GUARD, response_model=OpportunityApplicationsOut)
 def list_applications(
     slug: str,
     status: str | None = Query(default=None),
@@ -181,9 +218,9 @@ def list_applications(
     if status is not None:
         stmt = stmt.where(OpportunityApplication.status == status)
     rows = db.scalars(stmt).all()
-    return {
-        "opportunity": {"id": opportunity.id, "slug": opportunity.slug},
-        "applications": [
+    return OpportunityApplicationsOut(
+        opportunity={"id": opportunity.id, "slug": opportunity.slug, "title": opportunity.title},
+        applications=[
             {
                 "id": application.id,
                 "status": application.status,
@@ -192,22 +229,26 @@ def list_applications(
             }
             for application in rows
         ],
-    }
+    )
 
 
-@router.post("/applications/{application_id}/status", dependencies=OPS_GUARD)
+@router.post(
+    "/applications/{application_id}/status",
+    dependencies=OPS_GUARD,
+    response_model=ApplicationStatusOut,
+)
 def set_application_status(
     application_id: int,
     payload: ApplicationStatusIn,
     actor: User = Depends(require_permission("project.write")),
     db: Session = Depends(get_db),
-) -> dict:
+) -> ApplicationStatusOut:
     application = opportunities.set_application_status(db, actor, application_id, payload.status)
     db.commit()
-    return {"id": application.id, "status": application.status}
+    return ApplicationStatusOut(id=application.id, status=application.status)
 
 
-@router.post("", status_code=201, dependencies=OPS_GUARD)
+@router.post("", status_code=201, dependencies=OPS_GUARD, response_model=OpportunityWriteOut)
 def create_opportunity(
     payload: OpportunityIn,
     actor: User = Depends(require_permission("project.write")),
@@ -233,10 +274,10 @@ def create_opportunity(
         requirements=_requirements(payload.requirements),
     )
     db.commit()
-    return {"id": row.id, "slug": row.slug, "status": row.status}
+    return OpportunityWriteOut(id=row.id, slug=row.slug, status=row.status)
 
 
-@router.patch("/{slug}", dependencies=OPS_GUARD)
+@router.patch("/{slug}", dependencies=OPS_GUARD, response_model=OpportunityWriteOut)
 def update_opportunity(
     slug: str,
     payload: OpportunityPatchIn,
@@ -258,25 +299,48 @@ def update_opportunity(
         ),
     )
     db.commit()
-    return {"id": row.id, "slug": row.slug, "status": row.status}
+    return OpportunityWriteOut(id=row.id, slug=row.slug, status=row.status)
 
 
-@router.get("/{slug}/candidates", dependencies=OPS_GUARD)
+@router.get("/{slug}/candidates", dependencies=OPS_GUARD, response_model=CandidateListOut)
 def match_candidates(
     slug: str,
     limit: int = Query(default=200, ge=1, le=500),
     _staff: User = Depends(require_permission("project.write")),
     db: Session = Depends(get_db),
-) -> dict:
+) -> CandidateListOut:
     """Who qualifies, and exactly why the rest do not."""
     row = opportunities.get_opportunity(db, slug)
     results = engine.match_candidates(db, row, limit=limit)
     db.commit()
-    return {
-        "opportunity": {"id": row.id, "slug": row.slug, "title": row.title},
-        "candidates": results,
-        "eligible_count": sum(1 for item in results if item["eligible"]),
+    # Attach the name once per candidate so the ops list is readable; the engine
+    # stays about eligibility, not presentation.
+    students = {
+        user.id: user
+        for user in db.scalars(
+            select(User).where(User.id.in_([item["user_id"] for item in results]))
+        ).all()
     }
+    candidates = [
+        CandidateOut(
+            **item,
+            student=(
+                {
+                    "id": students[item["user_id"]].id,
+                    "name": students[item["user_id"]].name,
+                    "email": students[item["user_id"]].email,
+                }
+                if item["user_id"] in students
+                else None
+            ),
+        )
+        for item in results
+    ]
+    return CandidateListOut(
+        opportunity={"id": row.id, "slug": row.slug, "title": row.title},
+        candidates=candidates,
+        eligible_count=sum(1 for item in results if item["eligible"]),
+    )
 
 
 __all__ = ["router"]

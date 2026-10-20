@@ -59,6 +59,16 @@ class User(Base, TimestampMixin):
     # is never hard-deleted because payments and audit rows must stay explainable.
     deleted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
 
+    # --- Two-factor (F1/C8) ---
+    # Base32 TOTP secret. It is stored only while 2FA is being enrolled or after
+    # it is enabled; a disabled account keeps it so re-enabling does not start
+    # from scratch. `totp_enabled_at` is the switch the login flow reads.
+    totp_secret: Mapped[str | None] = mapped_column(String(64))
+    totp_enabled_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    # SHA-256 hashes of the one-time recovery codes. The plaintext codes are
+    # returned exactly once, when 2FA is confirmed.
+    totp_recovery_hashes: Mapped[list | None] = mapped_column(JSONPayload)
+
     # Unidirectional: nothing needs `role.users` yet, and leaving it out keeps
     # this module free of a cycle with app.models.admin.
     role: Mapped[Role | None] = relationship()

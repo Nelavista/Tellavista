@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import secrets
 
+import jwt
 from fastapi import APIRouter, Depends, Request, Response
 from sqlalchemy.orm import Session
 
@@ -18,6 +19,11 @@ from app.api.v1.domains.identity.schemas import (
     LoginIn,
     MeOut,
     MessageOut,
+    MfaCodeIn,
+    MfaEnableOut,
+    MfaSetupOut,
+    MfaStatusOut,
+    MfaVerifyIn,
     RefreshIn,
     ResetPasswordIn,
     ResetRequestIn,
@@ -28,10 +34,11 @@ from app.api.v1.domains.identity.schemas import (
 from app.core import ratelimit
 from app.core.config import get_settings
 from app.core.errors import ApiError
-from app.core.security import REFRESH_TTL
+from app.core.security import REFRESH_TTL, create_mfa_token, decode_mfa_token
 from app.db.session import get_db
 from app.models.identity import User
-from app.services.identity import auth
+from app.services import audit
+from app.services.identity import auth, twofa
 
 router = APIRouter(prefix="/auth", tags=["identity"])
 
@@ -110,9 +117,49 @@ def login(
 ) -> TokenOut:
     ratelimit.check(f"login:{_client_ip(request)}", limit=10, window_seconds=60)
     user = auth.authenticate(db, email=payload.email, password=payload.password)
+    if twofa.requires_second_factor(user):
+        # No session yet. The challenge token is short-lived and usable only on
+        # /auth/2fa/verify; a password alone must never become a staff session.
+        raise ApiError(
+            403,
+            "mfa_required",
+            "Enter the code from your authenticator app to finish signing in.",
+            {"mfa_token": create_mfa_token(user.id, payload.platform)},
+        )
     access, refresh, expires = auth.issue_session(db, user, platform=payload.platform)
     db.commit()
     return _session_response(user, access, refresh, expires, payload.platform, response)
+
+
+@router.post("/2fa/verify", response_model=TokenOut)
+def verify_second_factor(
+    payload: MfaVerifyIn,
+    request: Request,
+    response: Response,
+    db: Session = Depends(get_db),
+) -> TokenOut:
+    """Finish a login that the password step could not complete alone."""
+    ratelimit.check(f"mfa:{_client_ip(request)}", limit=10, window_seconds=60)
+    try:
+        claims = decode_mfa_token(payload.mfa_token)
+        user_id = int(claims.get("sub", ""))
+    except (jwt.InvalidTokenError, TypeError, ValueError) as exc:
+        raise ApiError(
+            401, "invalid_mfa_token", "That sign-in attempt expired. Enter your password again."
+        ) from exc
+    user = db.get(User, user_id)
+    if user is None or user.is_deleted:
+        raise ApiError(401, "invalid_mfa_token", "That sign-in attempt is no longer valid.")
+    if not twofa.verify_login_code(db, user, payload.code):
+        raise ApiError(400, "invalid_two_factor_code", "That code is not valid. Try the next one.")
+
+    platform = str(claims.get("platform") or "web")
+    access, refresh, expires = auth.issue_session(db, user, platform=platform)
+    audit.record(
+        db, action="auth.mfa_verified", actor_user_id=user.id, target_type="user", target_id=user.id
+    )
+    db.commit()
+    return _session_response(user, access, refresh, expires, platform, response)
 
 
 @router.post("/refresh", response_model=TokenOut)
@@ -148,8 +195,7 @@ def logout(
     return MessageOut(message="Signed out.")
 
 
-@router.get("/me", response_model=MeOut)
-def me(user: User = Depends(get_current_user)) -> MeOut:
+def _me_out(user: User) -> MeOut:
     return MeOut(
         id=user.id,
         email=user.email,
@@ -158,22 +204,70 @@ def me(user: User = Depends(get_current_user)) -> MeOut:
         email_verified=user.email_verified,
         role=user.role.code if user.role else None,
         preferred_path=user.profile.preferred_path if user.profile else None,
+        mfa_enabled=twofa.is_enabled(user),
     )
+
+
+@router.get("/me", response_model=MeOut)
+def me(user: User = Depends(get_current_user)) -> MeOut:
+    return _me_out(user)
+
+
+# --- two-factor --------------------------------------------------------------
+
+
+@router.get("/2fa", response_model=MfaStatusOut)
+def two_factor_status(user: User = Depends(get_current_user)) -> MfaStatusOut:
+    return MfaStatusOut(
+        enabled=twofa.is_enabled(user),
+        is_staff=twofa.is_staff(user),
+        remaining_recovery_codes=twofa.remaining_recovery_codes(user),
+    )
+
+
+@router.post("/2fa/setup", response_model=MfaSetupOut)
+def start_two_factor(
+    user: User = Depends(get_current_user), db: Session = Depends(get_db)
+) -> MfaSetupOut:
+    """Mint a pending secret. Nothing changes for login until /2fa/enable."""
+    secret, uri = twofa.begin_enrollment(db, user)
+    db.commit()
+    return MfaSetupOut(secret=secret, otpauth_uri=uri)
+
+
+@router.post("/2fa/enable", response_model=MfaEnableOut)
+def enable_two_factor(
+    payload: MfaCodeIn,
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> MfaEnableOut:
+    codes = twofa.confirm_enrollment(db, user, payload.code)
+    audit.record(
+        db, action="auth.mfa_enabled", actor_user_id=user.id, target_type="user", target_id=user.id
+    )
+    db.commit()
+    return MfaEnableOut(recovery_codes=codes)
+
+
+@router.post("/2fa/disable", response_model=MessageOut)
+def disable_two_factor(
+    payload: MfaCodeIn,
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> MessageOut:
+    twofa.disable(db, user, payload.code)
+    audit.record(
+        db, action="auth.mfa_disabled", actor_user_id=user.id, target_type="user", target_id=user.id
+    )
+    db.commit()
+    return MessageOut(message="Two-factor authentication is off.")
 
 
 @router.post("/email/verify", response_model=MeOut)
 def verify_email(payload: VerifyEmailIn, db: Session = Depends(get_db)) -> MeOut:
     user = auth.verify_email(db, raw_token=payload.token)
     db.commit()
-    return MeOut(
-        id=user.id,
-        email=user.email,
-        username=user.username,
-        name=user.name,
-        email_verified=user.email_verified,
-        role=user.role.code if user.role else None,
-        preferred_path=user.profile.preferred_path if user.profile else None,
-    )
+    return _me_out(user)
 
 
 @router.post("/email/verify/resend", response_model=MessageOut)

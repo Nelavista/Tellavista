@@ -43,6 +43,9 @@ class Settings(BaseSettings):
     MAIL_PORT: int = 1025
     MAIL_USE_TLS: bool = False
     MAIL_FROM: str = "noreply@nelavista.local"
+    # Links in email must be absolute: a relative `/auth/verify` is meaningless
+    # in an inbox (F9). Each environment points at its own web origin.
+    WEB_BASE_URL: str = "http://localhost:5173"
 
     # --- Integrations (optional; unset = feature cleanly disabled) ---
     OPENROUTER_API_KEY: str = ""
@@ -88,6 +91,10 @@ class Settings(BaseSettings):
 
         if not self.DATABASE_URL:
             problems.append("DATABASE_URL is required (see .env.example).")
+
+        # An emailed link that is not absolute cannot be clicked.
+        if not self.WEB_BASE_URL.startswith(("http://", "https://")):
+            problems.append("WEB_BASE_URL must be an absolute http(s) URL.")
 
         # CORS must never be a wildcard in a deployed environment.
         if not self.is_local and "*" in self.cors_origins:

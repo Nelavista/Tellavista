@@ -20,14 +20,38 @@ from pydantic import BaseModel, Field
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.api.deps import get_current_user, require_flag
+from app.api.deps import get_current_user, rate_limit, require_flag
+from app.api.v1.domains.work.schemas import (
+    AssignmentDetailOut,
+    AssignmentListOut,
+    AssignmentStateOut,
+    AssignOut,
+    CohortOut,
+    CohortWriteOut,
+    InviteListOut,
+    InviteResponseOut,
+    MessageListOut,
+    MessageSentOut,
+    ProjectListOut,
+    ProjectOut,
+    ProjectWriteOut,
+    QualityOut,
+    RemoveOut,
+    ReplacementListOut,
+    ReviewOut,
+    ReviewQueueOut,
+    StandardOut,
+    SubmissionListOut,
+    SubmissionResultOut,
+    SyncOut,
+)
 from app.core import flags, observability
 from app.core.authz import require_permission
 from app.core.errors import ApiError
 from app.db.session import get_db
 from app.models.engagement import Message
 from app.models.identity import User
-from app.models.work import Assignment, Cohort
+from app.models.work import Assignment, Cohort, Project
 from app.services import notifications
 from app.services.matching import opportunities
 from app.services.work import cohorts, delivery
@@ -109,34 +133,36 @@ class StandardIn(BaseModel):
 # --- student -----------------------------------------------------------------
 
 
-@router.get("/assignments")
+@router.get("/assignments", response_model=AssignmentListOut)
 def my_assignments(
     user: User = Depends(get_current_user), db: Session = Depends(get_db)
-) -> dict:
-    return {"assignments": cohorts.my_assignments(db, user)}
+) -> AssignmentListOut:
+    return AssignmentListOut(assignments=cohorts.my_assignments(db, user))
 
 
-@router.get("/assignments/{assignment_id}")
+@router.get("/assignments/{assignment_id}", response_model=AssignmentDetailOut)
 def assignment_detail(
     assignment_id: int,
     user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
-) -> dict:
-    return delivery.assignment_detail(db, user, assignment_id)
+) -> AssignmentDetailOut:
+    return AssignmentDetailOut(**delivery.assignment_detail(db, user, assignment_id))
 
 
-@router.post("/assignments/{assignment_id}/start")
+@router.post("/assignments/{assignment_id}/start", response_model=AssignmentStateOut)
 def start_assignment(
     assignment_id: int,
     user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
-) -> dict:
+) -> AssignmentStateOut:
     row = delivery.start_assignment(db, user, assignment_id)
     db.commit()
-    return {"id": row.id, "status": row.status}
+    return AssignmentStateOut(id=row.id, status=row.status)
 
 
-@router.post("/assignments/{assignment_id}/submissions", status_code=201)
+@router.post(
+    "/assignments/{assignment_id}/submissions", status_code=201, response_model=SubmissionResultOut
+)
 def submit_work(
     assignment_id: int,
     payload: SubmissionIn,
@@ -159,52 +185,53 @@ def submit_work(
             observability.EVENTS["task_submitted"],
             {"assignment_id": assignment_id, "submission_id": row.id},
         )
-    return {
-        "id": row.id,
-        "status": row.status,
-        "is_gold": row.is_gold,
-        "submitted_at": row.submitted_at,
-        "created": created,
-        "message": "Submitted for review." if created else "This work was already submitted.",
-    }
+    return SubmissionResultOut(
+        id=row.id,
+        status=row.status,
+        is_gold=row.is_gold,
+        submitted_at=row.submitted_at,
+        created=created,
+        message="Submitted for review." if created else "This work was already submitted.",
+    )
 
 
-@router.post("/submissions/sync")
+@router.post("/submissions/sync", response_model=SyncOut)
 def sync_offline(
     payload: SyncIn,
     user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
-) -> dict:
+) -> SyncOut:
     """Apply a queued batch. One bad item never discards the rest."""
     results = delivery.sync_offline(db, user, [item.model_dump() for item in payload.items])
     db.commit()
-    return {
-        "results": results,
-        "applied": sum(1 for item in results if item.get("ok")),
-        "failed": sum(1 for item in results if not item.get("ok")),
-    }
+    return SyncOut(
+        results=results,
+        # The service reports saved/already_saved; only a rejection failed.
+        applied=sum(1 for item in results if item.get("status") != "rejected"),
+        failed=sum(1 for item in results if item.get("status") == "rejected"),
+    )
 
 
-@router.get("/submissions")
+@router.get("/submissions", response_model=SubmissionListOut)
 def my_submissions(
     user: User = Depends(get_current_user), db: Session = Depends(get_db)
-) -> dict:
-    return {"submissions": delivery.my_submissions(db, user)}
+) -> SubmissionListOut:
+    return SubmissionListOut(submissions=delivery.my_submissions(db, user))
 
 
-@router.get("/quality")
+@router.get("/quality", response_model=QualityOut)
 def my_quality(
     user: User = Depends(get_current_user), db: Session = Depends(get_db)
-) -> dict:
+) -> QualityOut:
     """The student's own quality record: what it is, and what produced it."""
-    return quality_service.my_quality(db, user)
+    return QualityOut(**quality_service.my_quality(db, user))
 
 
 class MessageIn(BaseModel):
     body: str = Field(min_length=1, max_length=4000)
 
 
-@router.get("/assignments/{assignment_id}/messages")
+@router.get("/assignments/{assignment_id}/messages", response_model=MessageListOut)
 def my_messages(
     assignment_id: int,
     user: User = Depends(get_current_user),
@@ -219,8 +246,8 @@ def my_messages(
         .where(Message.assignment_id == assignment.id, Message.recipient_user_id == user.id)
         .order_by(Message.id)
     ).all()
-    return {
-        "messages": [
+    return MessageListOut(
+        messages=[
             {
                 "id": row.id,
                 "body": row.body,
@@ -230,25 +257,31 @@ def my_messages(
             }
             for row in rows
         ]
-    }
+    )
 
 
-@router.post("/cohorts/{cohort_id}/respond")
+@router.post("/cohorts/{cohort_id}/respond", response_model=InviteResponseOut)
 def respond_invite(
     cohort_id: int,
     payload: RespondIn,
     user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
-) -> dict:
+) -> InviteResponseOut:
     member = cohorts.respond_invite(db, user, cohort_id, accept=payload.accept)
     db.commit()
-    return {"id": member.id, "status": member.status, "joined_at": member.joined_at}
+    return InviteResponseOut(
+        id=member.id, status=member.status, joined_at=member.joined_at
+    )
 
 
 # --- ops ---------------------------------------------------------------------
 
 
 ops = APIRouter(tags=["work"], dependencies=[Depends(require_permission("project.write"))])
+
+# Reviewing writes money-adjacent consequences (quality record, rework, earnings),
+# so a review endpoint is capped per reviewer (F5).
+REVIEW_GUARD = [Depends(rate_limit("review-write", limit=60, window_seconds=60))]
 
 
 def _cohort(db: Session, cohort_id: int) -> Cohort:
@@ -258,7 +291,7 @@ def _cohort(db: Session, cohort_id: int) -> Cohort:
     return row
 
 
-@ops.post("/projects", status_code=201)
+@ops.post("/projects", status_code=201, response_model=ProjectWriteOut)
 def create_project(
     payload: ProjectIn,
     actor: User = Depends(require_permission("project.write")),
@@ -276,20 +309,42 @@ def create_project(
         status=payload.status,
     )
     db.commit()
-    return {"id": project.id, "slug": project.slug, "status": project.status}
+    return ProjectWriteOut(id=project.id, slug=project.slug, status=project.status)
 
 
-@ops.get("/projects/{slug}")
+@ops.get("/projects", response_model=ProjectListOut)
+def list_projects(
+    _actor: User = Depends(require_permission("project.write")),
+    db: Session = Depends(get_db),
+) -> ProjectListOut:
+    """Every project, so ops screens can pick one without knowing a slug first."""
+    rows = db.scalars(select(Project).order_by(Project.id.desc())).all()
+    return ProjectListOut(
+        projects=[
+            {
+                "id": row.id,
+                "slug": row.slug,
+                "title": row.title,
+                "status": row.status,
+                "starts_on": row.starts_on,
+                "ends_on": row.ends_on,
+            }
+            for row in rows
+        ]
+    )
+
+
+@ops.get("/projects/{slug}", response_model=ProjectOut)
 def project_detail(
     slug: str,
     _actor: User = Depends(require_permission("project.write")),
     db: Session = Depends(get_db),
-) -> dict:
+) -> ProjectOut:
     project = cohorts.get_project(db, slug)
-    return cohorts.project_dashboard(db, project)
+    return ProjectOut(**cohorts.project_dashboard(db, project))
 
 
-@ops.post("/projects/{slug}/cohorts", status_code=201)
+@ops.post("/projects/{slug}/cohorts", status_code=201, response_model=CohortWriteOut)
 def create_cohort(
     slug: str,
     payload: CohortIn,
@@ -299,19 +354,21 @@ def create_cohort(
     project = cohorts.get_project(db, slug)
     row = cohorts.create_cohort(db, actor, project=project, name=payload.name, capacity=payload.capacity)
     db.commit()
-    return {"id": row.id, "name": row.name, "capacity": row.capacity, "status": row.status}
+    return CohortWriteOut(
+        id=row.id, name=row.name, capacity=row.capacity, status=row.status
+    )
 
 
-@ops.get("/cohorts/{cohort_id}")
+@ops.get("/cohorts/{cohort_id}", response_model=CohortOut)
 def cohort_detail(
     cohort_id: int,
     _actor: User = Depends(require_permission("project.write")),
     db: Session = Depends(get_db),
-) -> dict:
-    return cohorts.cohort_detail(db, _cohort(db, cohort_id))
+) -> CohortOut:
+    return CohortOut(**cohorts.cohort_detail(db, _cohort(db, cohort_id)))
 
 
-@ops.post("/cohorts/{cohort_id}/invites", status_code=201)
+@ops.post("/cohorts/{cohort_id}/invites", status_code=201, response_model=InviteListOut)
 def invite(
     cohort_id: int,
     payload: InviteIn,
@@ -320,15 +377,15 @@ def invite(
 ) -> dict:
     members = cohorts.invite(db, actor, cohort=_cohort(db, cohort_id), user_ids=payload.user_ids)
     db.commit()
-    return {
-        "members": [
+    return InviteListOut(
+        members=[
             {"id": member.id, "user_id": member.user_id, "status": member.status}
             for member in members
         ]
-    }
+    )
 
 
-@ops.post("/cohorts/{cohort_id}/remove")
+@ops.post("/cohorts/{cohort_id}/remove", response_model=RemoveOut)
 def remove_member(
     cohort_id: int,
     payload: RemoveIn,
@@ -337,22 +394,37 @@ def remove_member(
 ) -> dict:
     member = cohorts.remove_member(db, actor, member_id=payload.member_id, reason=payload.reason)
     db.commit()
-    return {"id": member.id, "status": member.status}
+    return RemoveOut(id=member.id, status=member.status)
 
 
-@ops.get("/cohorts/{cohort_id}/replacements")
+@ops.get("/cohorts/{cohort_id}/replacements", response_model=ReplacementListOut)
 def replacement_candidates(
     cohort_id: int,
     limit: int = Query(default=20, ge=1, le=100),
     _actor: User = Depends(require_permission("cohort.write")),
     db: Session = Depends(get_db),
-) -> dict:
-    return {
-        "candidates": cohorts.replacement_candidates(db, _cohort(db, cohort_id), limit=limit)
+) -> ReplacementListOut:
+    rows = cohorts.replacement_candidates(db, _cohort(db, cohort_id), limit=limit)
+    # Add the name once, so an ops screen does not show bare user ids.
+    users = {
+        row.id: row
+        for row in db.scalars(
+            select(User).where(User.id.in_([item["user_id"] for item in rows]))
+        ).all()
     }
+    return ReplacementListOut(
+        candidates=[
+            {
+                **item,
+                "name": users[item["user_id"]].name if item["user_id"] in users else None,
+                "email": users[item["user_id"]].email if item["user_id"] in users else None,
+            }
+            for item in rows
+        ]
+    )
 
 
-@ops.post("/projects/{slug}/assignments", status_code=201)
+@ops.post("/projects/{slug}/assignments", status_code=201, response_model=AssignOut)
 def assign_task(
     slug: str,
     payload: AssignmentIn,
@@ -371,10 +443,13 @@ def assign_task(
         due_at=payload.due_at,
     )
     db.commit()
-    return {"id": row.id, "status": row.status, "due_at": row.due_at}
+    return AssignOut(id=row.id, status=row.status, due_at=row.due_at)
 
 
-@ops.post("/assignments/{assignment_id}/messages", status_code=201)
+@ops.post(
+    "/assignments/{assignment_id}/messages", status_code=201, dependencies=REVIEW_GUARD,
+    response_model=MessageSentOut,
+)
 def send_message(
     assignment_id: int,
     payload: MessageIn,
@@ -392,19 +467,25 @@ def send_message(
         assignment_id=assignment.id,
     )
     db.commit()
-    return {"id": row.id, "created_at": row.created_at}
+    return MessageSentOut(id=row.id, created_at=row.created_at)
 
 
-@ops.get("/review-queue")
+@ops.get(
+    "/review-queue",
+    dependencies=[Depends(rate_limit("review-read", limit=120, window_seconds=60))],
+    response_model=ReviewQueueOut,
+)
 def review_queue(
     limit: int = Query(default=50, ge=1, le=200),
     _actor: User = Depends(require_permission("review.read")),
     db: Session = Depends(get_db),
-) -> dict:
-    return {"queue": quality_service.review_queue(db, limit=limit)}
+) -> ReviewQueueOut:
+    return ReviewQueueOut(queue=quality_service.review_queue(db, limit=limit))
 
 
-@ops.post("/submissions/{submission_id}/review")
+@ops.post(
+    "/submissions/{submission_id}/review", dependencies=REVIEW_GUARD, response_model=ReviewOut
+)
 def review_submission(
     submission_id: int,
     payload: ReviewIn,
@@ -422,16 +503,16 @@ def review_submission(
         reason=payload.reason,
     )
     db.commit()
-    return {
-        "id": review.id,
-        "submission_id": review.submission_id,
-        "verdict": review.verdict,
-        "score": review.score,
-        "gold_correct": review.gold_correct,
-    }
+    return ReviewOut(
+        id=review.id,
+        submission_id=review.submission_id,
+        verdict=review.verdict,
+        score=review.score,
+        gold_correct=review.gold_correct,
+    )
 
 
-@ops.put("/projects/{slug}/quality-standard")
+@ops.put("/projects/{slug}/quality-standard", response_model=StandardOut)
 def set_standard(
     slug: str,
     payload: StandardIn,
@@ -450,12 +531,12 @@ def set_standard(
         rules=payload.rules,
     )
     db.commit()
-    return {
-        "id": standard.id,
-        "name": standard.name,
-        "pass_threshold": standard.pass_threshold,
-        "rules": standard.rules,
-    }
+    return StandardOut(
+        id=standard.id,
+        name=standard.name,
+        pass_threshold=standard.pass_threshold,
+        rules=standard.rules,
+    )
 
 
 router.include_router(ops)

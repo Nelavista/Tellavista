@@ -1,0 +1,257 @@
+:root {
+  --nv-bg: #0b0e13;
+  --nv-surface: #131820;
+  --nv-border: #263041;
+  --nv-text: #e8edf5;
+  --nv-muted: #94a3b8;
+  --nv-accent: #7dd3fc;
+  --nv-danger: #f87171;
+  --nv-warn: #fbbf24;
+  --nv-ok: #4ade80;
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--nv-bg);
+  color: var(--nv-text);
+  font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-size: 14px;
+}
+
+a {
+  color: var(--nv-accent);
+}
+
+.nv-shell {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  min-height: 100vh;
+}
+
+.nv-side {
+  border-right: 1px solid var(--nv-border);
+  padding: 20px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  background: #0d1117;
+}
+
+.nv-brand {
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 12px;
+  color: var(--nv-muted);
+}
+
+.nv-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.nv-nav a {
+  color: var(--nv-text);
+  text-decoration: none;
+  padding: 8px 10px;
+  border-radius: 8px;
+}
+
+.nv-nav a:hover {
+  background: #1b2331;
+}
+
+.nv-nav a[data-active='true'] {
+  background: #1d2a3d;
+  color: var(--nv-accent);
+  font-weight: 600;
+}
+
+.nv-main {
+  padding: 28px;
+  max-width: 1180px;
+}
+
+.nv-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.nv-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.nv-row--between {
+  justify-content: space-between;
+}
+
+.nv-card {
+  background: var(--nv-surface);
+  border: 1px solid var(--nv-border);
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.nv-grid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+.nv-h1 {
+  font-size: 24px;
+  margin: 0;
+}
+
+.nv-h2 {
+  font-size: 16px;
+  margin: 0;
+}
+
+.nv-muted {
+  color: var(--nv-muted);
+}
+
+.nv-label {
+  display: block;
+  font-size: 12px;
+  color: var(--nv-muted);
+  margin-bottom: 4px;
+}
+
+.nv-input,
+.nv-select,
+.nv-textarea {
+  width: 100%;
+  background: #0b1018;
+  color: var(--nv-text);
+  border: 1px solid var(--nv-border);
+  border-radius: 8px;
+  padding: 8px 10px;
+  font: inherit;
+}
+
+.nv-textarea {
+  min-height: 90px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.nv-button {
+  background: var(--nv-accent);
+  color: #08111a;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.nv-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.nv-button--ghost {
+  background: transparent;
+  color: var(--nv-text);
+  border-color: var(--nv-border);
+}
+
+.nv-button--danger {
+  background: var(--nv-danger);
+  color: #1b0505;
+}
+
+.nv-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.nv-table th,
+.nv-table td {
+  text-align: left;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--nv-border);
+  vertical-align: top;
+}
+
+.nv-table th {
+  color: var(--nv-muted);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.nv-tag {
+  display: inline-block;
+  border: 1px solid var(--nv-border);
+  border-radius: 999px;
+  padding: 1px 8px;
+  font-size: 12px;
+}
+
+.nv-tag[data-tone='ok'] {
+  border-color: var(--nv-ok);
+  color: var(--nv-ok);
+}
+
+.nv-tag[data-tone='warn'] {
+  border-color: var(--nv-warn);
+  color: var(--nv-warn);
+}
+
+.nv-tag[data-tone='bad'] {
+  border-color: var(--nv-danger);
+  color: var(--nv-danger);
+}
+
+.nv-error {
+  color: var(--nv-danger);
+}
+
+.nv-code {
+  background: #0b1018;
+  border: 1px solid var(--nv-border);
+  border-radius: 8px;
+  padding: 10px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  word-break: break-all;
+}
+
+.nv-login {
+  max-width: 380px;
+  margin: 10vh auto;
+}
+
+.nv-check {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.nv-pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  margin: 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12px;
+}

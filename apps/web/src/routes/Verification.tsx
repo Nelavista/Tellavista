@@ -11,7 +11,7 @@
  * The transcript is linked from here because "what have I proved?" and "show me
  * the evidence" should not be two different products.
  */
-import type { AssessmentListOut, VerificationOut } from '@nelavista/api-client';
+import type { AssessmentListOut, PracticalTaskListOut, VerificationOut } from '@nelavista/api-client';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 
@@ -53,8 +53,13 @@ function statusCopy(status: string): { label: string; note: string } {
 export function Verification(): JSX.Element {
   const badges = useApiResource<VerificationOut>('/verification');
   const catalog = useApiResource<AssessmentListOut>('/verification/assessments');
+  const practical = useApiResource<PracticalTaskListOut>('/verification/practical');
 
-  if (badges.resource.status === 'loading' || catalog.resource.status === 'loading') {
+  if (
+    badges.resource.status === 'loading' ||
+    catalog.resource.status === 'loading' ||
+    practical.resource.status === 'loading'
+  ) {
     return (
       <div className="nv-stack" aria-busy="true" aria-label="Loading your verification">
         <Skeleton height="2rem" width="40%" />
@@ -101,6 +106,14 @@ export function Verification(): JSX.Element {
 
   const skills = badges.resource.data.skills;
   const assessments = catalog.resource.data.assessments;
+  const practicalTasks = practical.resource.status === 'ready' ? practical.resource.data.tasks : [];
+
+  // The way back from a suspension is a new assessment, so the prompt links
+  // straight at the sitting for that skill rather than at the hub again.
+  function reverifyLink(skillId: number): string | null {
+    const assessment = assessments.find((row) => row.skill_id === skillId);
+    return assessment ? `/verification/assessments/${assessment.slug}` : null;
+  }
 
   return (
     <div className="nv-stack">
@@ -134,6 +147,13 @@ export function Verification(): JSX.Element {
                     </span>
                   </div>
                   <p className="nv-muted">{copy.note}</p>
+                  {!skill.verified && reverifyLink(skill.skill_id) ? (
+                    <p>
+                      <Link className="nv-button" to={reverifyLink(skill.skill_id) ?? '/verification'}>
+                        {skill.status === 'suspended' ? 'Re-verify this skill' : 'Prove this skill'}
+                      </Link>
+                    </p>
+                  ) : null}
                 </li>
               );
             })}
@@ -160,6 +180,28 @@ export function Verification(): JSX.Element {
                   {assessment.pass_threshold}% · {assessment.max_attempts} attempt
                   {assessment.max_attempts === 1 ? '' : 's'}
                 </p>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+
+      <section className="nv-stack">
+        <h2 className="nv-h2">Practical tasks</h2>
+        <p className="nv-muted">
+          A practical task is real work judged against a published rubric. It is reviewed by a person, so
+          it takes longer than an assessment and is not graded instantly.
+        </p>
+        {practicalTasks.length === 0 ? (
+          <p className="nv-banner">No practical task is published yet for the skills you are learning.</p>
+        ) : (
+          <ul className="nv-list">
+            {practicalTasks.map((task) => (
+              <li className="nv-card" key={task.id}>
+                <h3 className="nv-h2">
+                  <Link to={`/verification/practical/${task.slug}`}>{task.title}</Link>
+                </h3>
+                <p className="nv-muted">Reviewed against a rubric · read the brief before you start</p>
               </li>
             ))}
           </ul>

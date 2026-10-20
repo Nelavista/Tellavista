@@ -10,7 +10,7 @@ import jwt
 from fastapi import Depends, Header
 from sqlalchemy.orm import Session
 
-from app.core import flags
+from app.core import flags, ratelimit
 from app.core.errors import ApiError
 from app.core.security import decode_access_token
 from app.db.session import get_db
@@ -46,6 +46,19 @@ def require_flag(name: str):
     def _guard() -> None:
         if not flags.is_enabled(name):
             raise ApiError(404, "not_found", "This feature is not available.")
+
+    return _guard
+
+
+def rate_limit(scope: str, *, limit: int, window_seconds: int = 60):
+    """Per-user fixed-window limit for expensive or abusable routes (F5).
+
+    Auth routes limit by IP in their handlers; a signed-in route knows the user,
+    so the counter follows the account even when the address changes.
+    """
+
+    def _guard(user: User = Depends(get_current_user)) -> None:
+        ratelimit.check(f"{scope}:{user.id}", limit=limit, window_seconds=window_seconds)
 
     return _guard
 

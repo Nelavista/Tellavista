@@ -6,12 +6,17 @@ from pydantic import BaseModel, Field
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.api.deps import get_current_user, require_flag
+from app.api.deps import get_current_user, rate_limit, require_flag
 from app.api.v1.domains.verification.schemas import (
     AssessmentListOut,
     AttemptOut,
     AttemptResultOut,
     AttemptSubmitIn,
+    OverrideOut,
+    PracticalQueueOut,
+    PracticalReviewOut,
+    PracticalSubmissionOut,
+    PracticalTaskListOut,
     ReviewOut,
     TranscriptOut,
     VerificationOut,
@@ -123,41 +128,41 @@ def review_assessment(
     return assessments.review_attempt(db, user, attempt_id)
 
 
-@router.get("/practical")
+@router.get("/practical", response_model=PracticalTaskListOut)
 def list_practical(
     skill_id: int | None = None,
     _user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
-) -> dict:
-    return {"tasks": assessments.list_practical_tasks(db, skill_id=skill_id)}
+) -> PracticalTaskListOut:
+    return PracticalTaskListOut(tasks=assessments.list_practical_tasks(db, skill_id=skill_id))
 
 
-@router.post("/practical/{slug}", status_code=201)
+@router.post("/practical/{slug}", status_code=201, response_model=PracticalSubmissionOut)
 def submit_practical(
     slug: str,
     payload: PracticalIn,
     user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
-) -> dict:
+) -> PracticalSubmissionOut:
     row = assessments.submit_practical(
         db, user, slug=slug, payload=payload.payload, client_key=payload.client_key
     )
     db.commit()
-    return {
-        "id": row.id,
-        "status": row.status,
-        "submitted_at": row.submitted_at,
-        "message": "Submitted for review.",
-    }
+    return PracticalSubmissionOut(
+        id=row.id,
+        status=row.status,
+        submitted_at=row.submitted_at,
+        message="Submitted for review.",
+    )
 
 
-@router.get("/practical/submissions")
+@router.get("/practical/submissions", response_model=PracticalQueueOut)
 def practical_queue(
     status: str = Query(default="submitted", max_length=16),
     limit: int = Query(default=50, ge=1, le=200),
     _staff: User = Depends(require_permission("review.read")),
     db: Session = Depends(get_db),
-) -> dict:
+) -> PracticalQueueOut:
     """The practical review queue; students never see other students' work."""
     rows = db.scalars(
         select(PracticalSubmission)
@@ -165,8 +170,8 @@ def practical_queue(
         .order_by(PracticalSubmission.id)
         .limit(limit)
     ).all()
-    return {
-        "submissions": [
+    return PracticalQueueOut(
+        submissions=[
             {
                 "id": row.id,
                 "practical_task_id": row.practical_task_id,
@@ -176,7 +181,7 @@ def practical_queue(
             }
             for row in rows
         ]
-    }
+    )
 
 
 class OverrideIn(BaseModel):
@@ -184,14 +189,18 @@ class OverrideIn(BaseModel):
     reason: str = Field(min_length=3, max_length=255)
 
 
-@router.post("/records/{user_id}/{skill_id}/override")
+@router.post(
+    "/records/{user_id}/{skill_id}/override",
+    dependencies=[Depends(rate_limit("verification-override", limit=30, window_seconds=60))],
+    response_model=OverrideOut,
+)
 def override_verification(
     user_id: int,
     skill_id: int,
     payload: OverrideIn,
     actor: User = Depends(require_permission("review.write")),
     db: Session = Depends(get_db),
-) -> dict:
+) -> OverrideOut:
     """A human override, always logged with its reason (PRD §5)."""
     student = db.get(User, user_id)
     if student is None or student.is_deleted:
@@ -201,22 +210,26 @@ def override_verification(
         db, record=record, to_status=payload.to_status, actor=actor, reason=payload.reason
     )
     db.commit()
-    return {
-        "user_id": user_id,
-        "skill_id": skill_id,
-        "status": record.status,
-        "event_id": event.id,
-        "reason": event.reason,
-    }
+    return OverrideOut(
+        user_id=user_id,
+        skill_id=skill_id,
+        status=record.status,
+        event_id=event.id,
+        reason=event.reason,
+    )
 
 
-@router.post("/practical/submissions/{submission_id}/review")
+@router.post(
+    "/practical/submissions/{submission_id}/review",
+    dependencies=[Depends(rate_limit("practical-review", limit=60, window_seconds=60))],
+    response_model=PracticalReviewOut,
+)
 def review_practical(
     submission_id: int,
     payload: PracticalReviewIn,
     reviewer: User = Depends(require_permission("review.write")),
     db: Session = Depends(get_db),
-) -> dict:
+) -> PracticalReviewOut:
     row = assessments.review_practical(
         db,
         reviewer,
@@ -226,12 +239,9 @@ def review_practical(
         notes=payload.notes,
     )
     db.commit()
-    return {
-        "id": row.id,
-        "status": row.status,
-        "score": row.score,
-        "passed": row.passed,
-    }
+    return PracticalReviewOut(
+        id=row.id, status=row.status, score=row.score, passed=row.passed
+    )
 
 
 __all__ = ["router", "state"]

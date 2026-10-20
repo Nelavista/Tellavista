@@ -153,6 +153,11 @@ def register(
     return user, access, refresh, expires
 
 
+def web_link(path: str) -> str:
+    """An absolute link into the web app. Relative paths cannot be clicked in mail."""
+    return f"{get_settings().WEB_BASE_URL.rstrip('/')}/{path.lstrip('/')}"
+
+
 def _send_verification(db: Session, user: User) -> None:
     raw, token_hash = new_email_token()
     db.add(
@@ -170,7 +175,7 @@ def _send_verification(db: Session, user: User) -> None:
         {
             "to": user.email,
             "subject": "Verify your Nelavista email",
-            "body": f"Verify your email: /auth/verify?token={raw}",
+            "body": f"Verify your email: {web_link(f'/auth/verify?token={raw}')}",
         },
     )
 
@@ -343,7 +348,7 @@ def request_password_reset(db: Session, *, email: str) -> None:
         {
             "to": user.email,
             "subject": "Reset your Nelavista password",
-            "body": f"Reset your password: /auth/reset?token={raw}",
+            "body": f"Reset your password: {web_link(f'/auth/reset?token={raw}')}",
         },
     )
 

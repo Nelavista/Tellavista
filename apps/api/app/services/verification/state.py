@@ -181,6 +181,16 @@ def apply_assessment(db: Session, record: VerificationRecord, attempt_id: int, p
 
 def apply_practical(db: Session, record: VerificationRecord, submission_id: int, passed: bool) -> None:
     if passed:
+        # Passing the practical is itself the engagement that starts verification:
+        # a student who never opened an assessment can still earn proof by doing
+        # the task. The state machine requires unverified → in_progress → verified,
+        # so record the submission as the start before recording the pass.
+        if record.status == UNVERIFIED:
+            transition(
+                db, record, to_status=IN_PROGRESS,
+                evidence_type=EVIDENCE_PRACTICAL_TASK, evidence_id=submission_id,
+                reason="practical task submitted",
+            )
         transition(
             db, record, to_status=VERIFIED,
             evidence_type=EVIDENCE_PRACTICAL_TASK, evidence_id=submission_id,

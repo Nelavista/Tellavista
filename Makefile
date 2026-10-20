@@ -62,6 +62,10 @@ test: ## Run V2 API tests
 test-v1: ## Run V1 tests (never run migrations/seed alongside this)
 	python -m pytest tests/
 
+load-test: ## Read-path p95 vs the 300 ms budget (F6; needs a running API + account)
+	python tools/load_read_paths.py --base-url $(or $(BASE_URL),http://localhost:8000) \
+		--email "$(EMAIL)" --password "$(PASSWORD)"
+
 db-upgrade: ## Apply V2 API migrations (names its target first)
 	uv run --package nelavista-api alembic -c apps/api/alembic.ini upgrade head
 
@@ -71,4 +75,4 @@ db-heads: ## Show V2 API migration heads (must be exactly one)
 api-client: ## Regenerate the typed API client
 	pnpm generate:api-client
 
-.PHONY: help bootstrap up down reset-db seed-local dev api-dev web-dev admin-dev mobile-start mobile-android lint typecheck format test test-v1 db-upgrade db-heads api-client
+.PHONY: help bootstrap up down reset-db seed-local dev api-dev web-dev admin-dev mobile-start mobile-android lint typecheck format test test-v1 load-test db-upgrade db-heads api-client

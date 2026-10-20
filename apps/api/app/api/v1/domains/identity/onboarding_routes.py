@@ -10,6 +10,7 @@ from app.api.v1.domains.identity.schemas import (
     EnrolIn,
     EnrolmentOut,
     MessageOut,
+    OnboardingStateOut,
     SemesterOut,
     SubdivisionOut,
     UniversityOut,
@@ -98,17 +99,17 @@ def enrol(
     return [EnrolmentOut(**row) for row in rows]
 
 
-@router.get("/state")
+@router.get("/state", response_model=OnboardingStateOut)
 def state(
     user: User = Depends(get_current_user), db: Session = Depends(get_db)
-) -> dict:
+) -> OnboardingStateOut:
     context = onboarding.academic_context(db, user)
     semester = onboarding.current_session(db)
     rows = onboarding.my_enrolments(db, user)
-    return {
-        "profile_completed": bool(user.profile and user.profile.display_name),
-        "has_enrolment": bool(rows),
-        "current_semester": (
+    return OnboardingStateOut(
+        profile_completed=bool(user.profile and user.profile.display_name),
+        has_enrolment=bool(rows),
+        current_semester=(
             {
                 "id": semester.id,
                 "name": semester.name,
@@ -118,14 +119,14 @@ def state(
             if semester
             else None
         ),
-        "academic": context,
-        "enrolments": rows,
-        "next_step": (
+        academic=context,
+        enrolments=rows,
+        next_step=(
             "choose_path"
             if rows and not (user.profile and user.profile.preferred_path)
             else ("enrol" if not rows else "ready")
         ),
-    }
+    )
 
 
 @router.post("/waitlist", response_model=MessageOut, status_code=201)

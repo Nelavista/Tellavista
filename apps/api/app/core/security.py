@@ -26,6 +26,9 @@ ACCESS_TTL = timedelta(minutes=15)
 REFRESH_TTL = timedelta(days=30)
 EMAIL_TOKEN_TTL = timedelta(hours=24)
 RESET_TOKEN_TTL = timedelta(hours=2)
+# A second-factor challenge is short: it exists only to carry "password was
+# correct" from the login call to the code call.
+MFA_TTL = timedelta(minutes=5)
 
 JWT_ALGORITHM = "HS256"
 JWT_ISSUER = "nelavista"
@@ -109,6 +112,38 @@ def decode_access_token(token: str) -> dict[str, Any]:
     )
     if payload.get("typ") != "access":
         raise jwt.InvalidTokenError("not an access token")
+    return payload
+
+
+def create_mfa_token(user_id: int, platform: str) -> str:
+    """A short-lived token that proves the password step only.
+
+    It is a JWT with its own `typ`, so it can never be used as an access token:
+    `decode_access_token` rejects it, and the MFA route rejects access tokens.
+    """
+    now = datetime.now(UTC)
+    payload: dict[str, Any] = {
+        "sub": str(user_id),
+        "platform": platform,
+        "iat": now,
+        "exp": now + MFA_TTL,
+        "iss": JWT_ISSUER,
+        "aud": JWT_AUDIENCE,
+        "typ": "mfa",
+    }
+    return jwt.encode(payload, get_settings().SECRET_KEY, algorithm=JWT_ALGORITHM)
+
+
+def decode_mfa_token(token: str) -> dict[str, Any]:
+    payload = jwt.decode(
+        token,
+        get_settings().SECRET_KEY,
+        algorithms=[JWT_ALGORITHM],
+        audience=JWT_AUDIENCE,
+        issuer=JWT_ISSUER,
+    )
+    if payload.get("typ") != "mfa":
+        raise jwt.InvalidTokenError("not an MFA token")
     return payload
 
 

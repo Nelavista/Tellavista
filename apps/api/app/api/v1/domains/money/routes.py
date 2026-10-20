@@ -15,7 +15,20 @@ from pydantic import BaseModel, Field
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.api.deps import get_current_user, require_flag
+from app.api.deps import get_current_user, rate_limit, require_flag
+from app.api.v1.domains.money.schemas import (
+    BatchStateOut,
+    EarningsOut,
+    FinancialsOut,
+    FundOut,
+    LedgerOut,
+    PayoutBatchDetailOut,
+    PayoutBatchListOut,
+    PayoutItemStateOut,
+    ReconcileReportOut,
+    ReconcileRunOut,
+    ReverseOut,
+)
 from app.core import flags
 from app.core.authz import require_permission
 from app.core.errors import ApiError
@@ -28,8 +41,16 @@ from app.services.work import cohorts
 router = APIRouter(
     prefix="/money",
     tags=["money"],
-    dependencies=[Depends(require_flag(flags.LEDGER))],
+    dependencies=[
+        Depends(require_flag(flags.LEDGER)),
+        # Money is read often and written rarely; the cap stops a compromised
+        # session from hammering balances or a payout endpoint in a loop.
+        Depends(rate_limit("money", limit=120, window_seconds=60)),
+    ],
 )
+
+# Writes that move or commit money get a tighter cap on top of the router's.
+MONEY_WRITE_GUARD = [Depends(rate_limit("money-write", limit=20, window_seconds=60))]
 
 
 class FundIn(BaseModel):
@@ -61,25 +82,27 @@ def _batch(db: Session, batch_id: int) -> PayoutBatch:
     return row
 
 
-@router.get("/earnings")
+@router.get("/earnings", response_model=EarningsOut)
 def my_earnings(
     user: User = Depends(get_current_user), db: Session = Depends(get_db)
-) -> dict:
+) -> EarningsOut:
     """Every line shows why: tasks approved, the rate used, and the status."""
-    return ledger.my_earnings(db, user)
+    return EarningsOut(**ledger.my_earnings(db, user))
 
 
-@router.get("/projects/{slug}/financials")
+@router.get("/projects/{slug}/financials", response_model=FinancialsOut)
 def project_financials(
     slug: str,
     _actor: User = Depends(require_permission("ledger.read")),
     db: Session = Depends(get_db),
-) -> dict:
+) -> FinancialsOut:
     project = cohorts.get_project(db, slug)
-    return ledger.project_financials(db, project)
+    return FinancialsOut(**ledger.project_financials(db, project))
 
 
-@router.post("/projects/{slug}/fund", status_code=201)
+@router.post(
+    "/projects/{slug}/fund", status_code=201, dependencies=MONEY_WRITE_GUARD, response_model=FundOut
+)
 def fund_project(
     slug: str,
     payload: FundIn,
@@ -92,17 +115,22 @@ def fund_project(
         db, actor, project=project, total_minor=payload.total_minor, currency=payload.currency
     )
     db.commit()
-    return {
-        "transaction_id": transaction.id,
-        "currency": transaction.currency,
-        "total_minor": transaction.total_minor,
-        "student_pool_minor": split.student_pool_minor,
-        "platform_fee_minor": split.platform_fee_minor,
-        "department_share_minor": split.department_share_minor,
-    }
+    return FundOut(
+        transaction_id=transaction.id,
+        currency=transaction.currency,
+        total_minor=transaction.total_minor,
+        student_pool_minor=split.student_pool_minor,
+        platform_fee_minor=split.platform_fee_minor,
+        department_share_minor=split.department_share_minor,
+    )
 
 
-@router.post("/transactions/{transaction_id}/reverse", status_code=201)
+@router.post(
+    "/transactions/{transaction_id}/reverse",
+    status_code=201,
+    dependencies=MONEY_WRITE_GUARD,
+    response_model=ReverseOut,
+)
 def reverse_transaction(
     transaction_id: int,
     payload: ReverseIn,
@@ -111,21 +139,21 @@ def reverse_transaction(
 ) -> dict:
     row = ledger.reverse_transaction(db, actor, transaction_id=transaction_id, reason=payload.reason)
     db.commit()
-    return {
-        "id": row.id,
-        "kind": row.kind,
-        "reverses_transaction_id": row.reverses_transaction_id,
-        "total_minor": row.total_minor,
-    }
+    return ReverseOut(
+        id=row.id,
+        kind=row.kind,
+        reverses_transaction_id=row.reverses_transaction_id,
+        total_minor=row.total_minor,
+    )
 
 
-@router.get("/projects/{slug}/ledger")
+@router.get("/projects/{slug}/ledger", response_model=LedgerOut)
 def ledger_explorer(
     slug: str,
     limit: int = Query(default=100, ge=1, le=500),
     _actor: User = Depends(require_permission("ledger.read")),
     db: Session = Depends(get_db),
-) -> dict:
+) -> LedgerOut:
     """The immutable rows behind every balance, newest first."""
     project = cohorts.get_project(db, slug)
     transactions = db.scalars(
@@ -154,9 +182,9 @@ def ledger_explorer(
                     "description": entry.description,
                 }
             )
-    return {
-        "project_id": project.id,
-        "transactions": [
+    return LedgerOut(
+        project_id=project.id,
+        transactions=[
             {
                 "id": row.id,
                 "kind": row.kind,
@@ -169,7 +197,7 @@ def ledger_explorer(
             }
             for row in transactions
         ],
-    }
+    )
 
 
 @router.get("/projects/{slug}/ledger/export")
@@ -198,17 +226,22 @@ def export_ledger(
     )
 
 
-@router.get("/projects/{slug}/reconciliation")
+@router.get("/projects/{slug}/reconciliation", response_model=ReconcileReportOut)
 def project_reconciliation(
     slug: str,
     _actor: User = Depends(require_permission("ledger.read")),
     db: Session = Depends(get_db),
-) -> dict:
+) -> ReconcileReportOut:
     project = cohorts.get_project(db, slug)
-    return reconcile.project_report(db, project)
+    return ReconcileReportOut(**reconcile.project_report(db, project))
 
 
-@router.post("/reconciliation/run", status_code=201)
+@router.post(
+    "/reconciliation/run",
+    status_code=201,
+    dependencies=MONEY_WRITE_GUARD,
+    response_model=ReconcileRunOut,
+)
 def run_reconciliation(
     project_slug: str | None = Query(default=None),
     actor: User = Depends(require_permission("ledger.read")),
@@ -217,15 +250,15 @@ def run_reconciliation(
     project = cohorts.get_project(db, project_slug) if project_slug else None
     run = reconcile.run(db, actor=actor, project=project)
     db.commit()
-    return {
-        "id": run.id,
-        "as_of": run.as_of,
-        "balanced": run.balanced,
-        "project_id": run.project_id,
-    }
+    return ReconcileRunOut(
+        id=run.id,
+        as_of=run.as_of,
+        balanced=run.balanced,
+        project_id=run.project_id,
+    )
 
 
-@router.get("/projects/{slug}/payout-batches")
+@router.get("/projects/{slug}/payout-batches", response_model=PayoutBatchListOut)
 def list_batches(
     slug: str,
     _actor: User = Depends(require_permission("ledger.read")),
@@ -237,8 +270,8 @@ def list_batches(
         .where(PayoutBatch.project_id == project.id)
         .order_by(PayoutBatch.id.desc())
     ).all()
-    return {
-        "batches": [
+    return PayoutBatchListOut(
+        batches=[
             {
                 "id": row.id,
                 "currency": row.currency,
@@ -249,10 +282,15 @@ def list_batches(
             }
             for row in rows
         ]
-    }
+    )
 
 
-@router.post("/projects/{slug}/payout-batches", status_code=201)
+@router.post(
+    "/projects/{slug}/payout-batches",
+    status_code=201,
+    dependencies=MONEY_WRITE_GUARD,
+    response_model=BatchStateOut,
+)
 def create_batch(
     slug: str,
     payload: BatchIn,
@@ -270,24 +308,28 @@ def create_batch(
         idempotency_key=idempotency_key,
     )
     db.commit()
-    return {
-        "id": batch.id,
-        "currency": batch.currency,
-        "total_minor": batch.total_minor,
-        "status": batch.status,
-    }
+    return BatchStateOut(
+        id=batch.id,
+        currency=batch.currency,
+        total_minor=batch.total_minor,
+        status=batch.status,
+    )
 
 
-@router.get("/payout-batches/{batch_id}")
+@router.get("/payout-batches/{batch_id}", response_model=PayoutBatchDetailOut)
 def batch_detail(
     batch_id: int,
     _actor: User = Depends(require_permission("ledger.read")),
     db: Session = Depends(get_db),
-) -> dict:
-    return payouts.batch_detail(db, _batch(db, batch_id))
+) -> PayoutBatchDetailOut:
+    return PayoutBatchDetailOut(**payouts.batch_detail(db, _batch(db, batch_id)))
 
 
-@router.post("/payout-batches/{batch_id}/approve")
+@router.post(
+    "/payout-batches/{batch_id}/approve",
+    dependencies=MONEY_WRITE_GUARD,
+    response_model=BatchStateOut,
+)
 def approve_batch(
     batch_id: int,
     actor: User = Depends(require_permission("payout.request")),
@@ -295,10 +337,14 @@ def approve_batch(
 ) -> dict:
     batch = payouts.approve_batch(db, actor, _batch(db, batch_id))
     db.commit()
-    return {"id": batch.id, "status": batch.status, "approved_by": batch.approved_by}
+    return BatchStateOut(
+        id=batch.id, status=batch.status, approved_by=batch.approved_by
+    )
 
 
-@router.post("/payout-batches/{batch_id}/pay")
+@router.post(
+    "/payout-batches/{batch_id}/pay", dependencies=MONEY_WRITE_GUARD, response_model=BatchStateOut
+)
 def pay_batch(
     batch_id: int,
     actor: User = Depends(require_permission("payout.request")),
@@ -306,10 +352,14 @@ def pay_batch(
 ) -> dict:
     batch = payouts.pay_batch(db, actor, _batch(db, batch_id))
     db.commit()
-    return {"id": batch.id, "status": batch.status, "paid_at": batch.paid_at}
+    return BatchStateOut(id=batch.id, status=batch.status, paid_at=batch.paid_at)
 
 
-@router.post("/payout-batches/{batch_id}/cancel")
+@router.post(
+    "/payout-batches/{batch_id}/cancel",
+    dependencies=MONEY_WRITE_GUARD,
+    response_model=BatchStateOut,
+)
 def cancel_batch(
     batch_id: int,
     payload: CancelIn,
@@ -318,10 +368,14 @@ def cancel_batch(
 ) -> dict:
     batch = payouts.cancel_batch(db, actor, _batch(db, batch_id), reason=payload.reason)
     db.commit()
-    return {"id": batch.id, "status": batch.status}
+    return BatchStateOut(id=batch.id, status=batch.status)
 
 
-@router.post("/payout-items/{item_id}/fail")
+@router.post(
+    "/payout-items/{item_id}/fail",
+    dependencies=MONEY_WRITE_GUARD,
+    response_model=PayoutItemStateOut,
+)
 def fail_item(
     item_id: int,
     payload: FailIn,
@@ -330,7 +384,9 @@ def fail_item(
 ) -> dict:
     item = payouts.fail_item(db, actor, item_id, reason=payload.reason)
     db.commit()
-    return {"id": item.id, "status": item.status, "failure_reason": item.failure_reason}
+    return PayoutItemStateOut(
+        id=item.id, status=item.status, failure_reason=item.failure_reason
+    )
 
 
 @router.get("/payout-batches/{batch_id}/export")

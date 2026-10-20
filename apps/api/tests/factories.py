@@ -125,6 +125,7 @@ def make_opportunity(
     currency: str | None = "USD",
     rate_minor: int | None = 1_000,
     department_id: int | None = None,
+    status: str = "open",
     **overrides,
 ) -> Opportunity:
     data = {
@@ -141,7 +142,7 @@ def make_opportunity(
         data["title"] = "External internship"
         data["client_name"] = "External employer"
     data.update(overrides)
-    return opportunities.create_opportunity(
+    opportunity = opportunities.create_opportunity(
         db,
         actor,
         type=type,
@@ -149,6 +150,12 @@ def make_opportunity(
         rate_minor=rate_minor,
         **data,
     )
+    # `create_opportunity` always starts a draft, which is right for the real
+    # workflow. A test fixture is usually standing in for a live listing, so the
+    # default is published; pass `status="draft"` to exercise the draft path.
+    opportunity.status = status
+    db.flush()
+    return opportunity
 
 
 def make_project(

@@ -28,8 +28,12 @@ export function Layout({ children }: { children: React.ReactNode }): JSX.Element
               <Link to="/skills">Skills</Link>
               <Link to="/skills/my-learning">My learning</Link>
               <Link to="/verification">Verification</Link>
+              <Link to="/opportunities">Opportunities</Link>
+              <Link to="/work">Work</Link>
+              <Link to="/earnings">Earnings</Link>
               <Link to="/transcript">Transcript</Link>
               <Link to="/campus">Campus</Link>
+              <Link to="/settings">Settings</Link>
               <button className="nv-button nv-button--ghost" type="button" onClick={onSignOut}>
                 Sign out
               </button>

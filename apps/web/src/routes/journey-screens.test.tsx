@@ -272,7 +272,7 @@ describe('Verify email landing', () => {
       return jsonResponse(404, { error: { code: 'not_found' } });
     });
 
-    const { root, container } = render(<VerifyEmail />, '/auth/verify?token=abc1234567890', {
+    const { root, container } = render(<VerifyEmail />, '/auth/verify?token=dummy-verification-token', {
       withSession: true,
     });
 
@@ -281,7 +281,7 @@ describe('Verify email landing', () => {
     const posts = calls(fetchMock).filter((call) => call.url.endsWith('/auth/email/verify'));
     expect(posts).toHaveLength(1);
     expect(posts[0]?.url).toBe('/api/v1/auth/email/verify');
-    expect(JSON.parse(String(posts[0]?.init.body))).toEqual({ token: 'abc1234567890' });
+    expect(JSON.parse(String(posts[0]?.init.body))).toEqual({ token: 'dummy-verification-token' });
 
     act(() => root.unmount());
   });

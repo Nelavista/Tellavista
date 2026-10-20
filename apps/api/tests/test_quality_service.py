@@ -19,15 +19,17 @@ from factories import (
     make_skill,
     make_template,
     make_user,
+    unique,
     verify,
 )
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.core.errors import ApiError
+from app.models.engagement import Notification
 from app.models.ledger import EarningLine
 from app.models.quality import QualityConsequence, QualityRecord, QualityStandard
-from app.models.verification import AT_RISK, VERIFIED
+from app.models.verification import AT_RISK, SUSPENDED, VERIFIED, Assessment
 from app.services.verification import state
 from app.services.work import quality
 
@@ -165,6 +167,43 @@ def test_a_poor_review_moves_a_verified_skill_at_risk(db: Session) -> None:
     )
     assert record is not None and record.average_score == 10
     assert state.status_for(db, student.id, skill.id) == AT_RISK
+
+
+def test_a_suspended_badge_prompts_the_student_with_the_way_back(db: Session) -> None:
+    _ops, reviewer, student, skill, project, assignment = _setup(db)
+    standard = quality.ensure_standard(db, project)
+    standard.pass_threshold = 80
+    assessment = Assessment(
+        skill_id=skill.id,
+        slug=unique("reverify"),
+        title="Annotation practical",
+        pass_threshold=80,
+        status="published",
+    )
+    db.add(assessment)
+    db.flush()
+
+    # First poor review: verified → at risk. Second: at risk → suspended.
+    for key in ("q-8a", "q-8b"):
+        submission = _submit(db, student, assignment, {"label": "positive"}, key)
+        quality.review_submission(
+            db, reviewer, submission_id=submission.id, verdict="rejected", score=10
+        )
+
+    assert state.status_for(db, student.id, skill.id) == SUSPENDED
+
+    rows = list(
+        db.scalars(
+            select(Notification)
+            .where(Notification.user_id == student.id, Notification.kind == "verification")
+            .order_by(Notification.id)
+        ).all()
+    )
+    # Both transitions are announced, and the prompt names the way back.
+    assert [row.data["verification_status"] for row in rows] == [AT_RISK, SUSPENDED]
+    assert rows[-1].data["skill_slug"] == skill.slug
+    assert rows[-1].data["assessment_slug"] == assessment.slug
+    assert "suspended" in rows[-1].body.lower()
 
 
 def test_quality_can_restore_an_at_risk_skill_but_cannot_verify_an_unproven_one(

@@ -17,12 +17,22 @@ import type { AttemptOut, AttemptResultOut, AttemptTaskOut } from '@nelavista/ap
 import * as React from 'react';
 import { Link, useParams } from 'react-router-dom';
 
+import { draftKey, useDraft } from '../lib/draft';
 import { ApiError, http } from '../lib/http';
-import { buildAnswer, practiceControl, type PracticeControl } from '../lib/practice';
+import { buildAnswer, isAnswerValue, practiceControl, type PracticeControl } from '../lib/practice';
 import { formatDateTime } from '../lib/format';
+import { useSessionOptional } from '../lib/session';
 import { ErrorNote, Skeleton } from '../ui';
 
 type Value = string | string[] | number | null;
+
+/** A saved answer map, as JSON gives it back: task ids are strings. */
+function isValueMap(value: unknown): boolean {
+  if (value === null || typeof value !== 'object' || Array.isArray(value)) return false;
+  return Object.values(value as Record<string, unknown>).every(
+    (item) => item === null || isAnswerValue(item),
+  );
+}
 
 type Sitting =
   | { status: 'starting' }
@@ -247,8 +257,17 @@ function Result({ result }: { result: AttemptResultOut }): JSX.Element {
 
 export function AssessmentSitting(): JSX.Element {
   const { assessmentSlug = '' } = useParams<{ assessmentSlug: string }>();
+  const session = useSessionOptional();
   const [sitting, setSitting] = React.useState<Sitting>({ status: 'starting' });
-  const [values, setValues] = React.useState<Record<number, Value>>({});
+  const attemptId = sitting.status === 'ready' ? sitting.attempt.attempt_id : null;
+  // A sitting is timed; losing typed answers to a reload is not acceptable. The
+  // key carries the attempt id, so a new sitting never inherits old answers.
+  const draft = useDraft<Record<string, Value>>(
+    draftKey('sitting', session?.me?.id ?? 'anonymous', attemptId ?? 'pending'),
+    {},
+    isValueMap,
+  );
+  const values = attemptId === null ? {} : draft.value;
   const [result, setResult] = React.useState<AttemptResultOut | null>(null);
   const [busy, setBusy] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
@@ -313,7 +332,7 @@ export function AssessmentSitting(): JSX.Element {
   const answers = attempt.tasks
     .map((task, index) => {
       const control = controls[index];
-      const value = values[task.task_id] ?? null;
+      const value = values[String(task.task_id)] ?? null;
       const answer = control ? buildAnswer(control, value) : null;
       return answer ? ([String(task.task_id), answer] as const) : null;
     })
@@ -331,6 +350,7 @@ export function AssessmentSitting(): JSX.Element {
         },
       );
       setResult(payload);
+      draft.clear();
     } catch (err) {
       setError(err instanceof ApiError ? err.message : 'Could not send your answers. Try again.');
     } finally {
@@ -369,8 +389,10 @@ export function AssessmentSitting(): JSX.Element {
                 <TaskPrompt payload={task.payload} />
                 <Choice
                   control={controls[index] ?? { kind: 'unsupported', reason: '' }}
-                  value={values[task.task_id] ?? null}
-                  onChange={(next) => setValues((current) => ({ ...current, [task.task_id]: next }))}
+                  value={values[String(task.task_id)] ?? null}
+                  onChange={(next) =>
+                    draft.setValue((current) => ({ ...current, [String(task.task_id)]: next }))
+                  }
                 />
               </li>
             ))}
@@ -389,6 +411,11 @@ export function AssessmentSitting(): JSX.Element {
               {answers.length} of {attempt.tasks.length} answered — unanswered tasks score zero.
             </span>
           </div>
+          {draft.savedAt ? (
+            <p className="nv-muted" aria-live="polite">
+              Answers saved on this device — reloading or losing the connection does not lose them.
+            </p>
+          ) : null}
         </>
       )}
     </div>

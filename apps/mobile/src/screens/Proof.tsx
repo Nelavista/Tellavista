@@ -22,10 +22,36 @@ export function Verification({
 }): JSX.Element {
   const badges = useApi<VerificationOut>('/verification');
   const catalog = useApi<AssessmentListOut>('/verification/assessments');
+  const assessments = catalog.remote.status === 'ready' ? catalog.remote.data.assessments : [];
 
   return (
     <Screen title="Verification" onBack={() => navigate({ name: 'home' })}>
       <Muted>Proof comes from a passed assessment or a reviewed practical task. Lessons are not proof.</Muted>
+
+      {badges.remote.status === 'ready'
+        ? badges.remote.data.skills
+            .filter((skill) => skill.status === 'suspended' || skill.status === 'at_risk')
+            .map((skill) => {
+              const assessment = assessments.find((row) => row.skill_id === skill.skill_id);
+              return (
+                <Card key={`reverify-${skill.skill_id}`}>
+                  <H2>{skill.status === 'suspended' ? 'Re-verification needed' : 'Badge at risk'}</H2>
+                  <Body>
+                    {skill.skill}: {skill.status_reason ?? 'Recent work quality lowered this badge.'}
+                  </Body>
+                  {assessment ? (
+                    <Button
+                      label={`Re-verify ${skill.skill}`}
+                      onPress={() => navigate({ name: 'assessment', slug: assessment.slug })}
+                    />
+                  ) : (
+                    <Muted>No assessment is published for this skill yet, so there is nothing to sit.</Muted>
+                  )}
+                </Card>
+              );
+            })
+        : null}
+
       {badges.remote.status === 'loading' ? <Loading /> : null}
       {badges.remote.status === 'error' ? <ErrorText message={badges.remote.message} /> : null}
       {badges.remote.status === 'ready'

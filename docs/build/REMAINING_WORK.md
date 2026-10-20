@@ -2,7 +2,8 @@
 
 Last updated: 2026-10-20 (Phases 0–10 delivered as code. B13/B14 now have typed
 contracts and web + mobile screens, F7 curriculum is seeded, G1–G5 are policy plus
-admin controls, and the whole suite was run green — see Verification below).
+admin controls, the B6 answer drafts and B7 re-verification prompt are closed, and
+the whole suite was run green — see Verification below).
 
 This is the single list of everything still to do for V2, in the order I intend to
 work through it. It exists so progress is visible while the work happens and so
@@ -19,14 +20,14 @@ was executed and its real result.
 
 | Check | Command | Result |
 |---|---|---|
-| API suite | `pytest -q --ignore=tests/test_migrations.py` | **299 passed** |
+| API suite | `pytest -q --ignore=tests/test_migrations.py` | **301 passed** |
 | Migrations (SQLite round trip, heads, model agreement) | `pytest -q tests/test_migrations.py` | **5 passed, 1 skipped** (Postgres case skips without `POSTGRES_TEST_URL`) |
-| Web DOM/unit | `npx vitest run` in `apps/web` | **38 passed** (7 files) |
+| Web DOM/unit | `npx vitest run` in `apps/web` | **48 passed** (8 files) |
 | Admin DOM | `npx vitest run` in `apps/admin` | **1 passed** |
 | Mobile core (queue, deep links, versions) | `npx vitest run` in `apps/mobile` | **11 passed** |
 | Typechecks | `tsc --noEmit` in web, admin, mobile | **0 errors** each |
-| Lint | `ruff check app tests` (api), `ruff check tools`, `eslint src` (web, admin) | **clean** |
-| First-load budget | `node tools/check_web_budget.mjs` after `vite build` | **58.6 KB JS + 1.4 KB CSS** of 150/20 KB |
+| Lint | `ruff check app tests` (api), `ruff check tools`, `eslint src` (web, admin, mobile) | **clean** (2 pre-existing mobile warnings) |
+| First-load budget | `node tools/check_web_budget.mjs` after `vite build` | **58.7 KB JS + 1.4 KB CSS** of 150/20 KB |
 | Typed client freshness | `node tools/gen_api_client.mjs --schema openapi.json` | regenerated after the B13/B14 models; the generated file is committed |
 | Load-test tool | offline: percentile/report maths, over-budget exit 1, unreachable API exit 2 | **works**; no live measurement yet (F6) |
 
@@ -97,11 +98,18 @@ stricter generated types.
 - [x] **B5** Campus utility page, map links from coordinates.
 - [x] **B6** Skills overview, detail, path, lesson reader, practice, my-learning,
   all typed. The practice form is generated from the template schemas; markdown is
-  an in-repo subset with a link allow-list.
-  **Remaining:** offline-safe answer saving (the mobile queue exists; web does not).
+  an in-repo subset with a link allow-list. Answers are written to a versioned
+  per-student draft in `localStorage` as they are typed and cleared only when the
+  API accepts them (`lib/draft.ts`, `useDraft`), so a reload, a closed tab or a
+  failed send never loses work — the web counterpart of the mobile queue.
 - [x] **B7** Verification hub, sitting, review and transcript, with resume, form
-  generation, expiry and zero-for-unanswered.
-  **Remaining:** a re-verification prompt after a suspension.
+  generation, expiry and zero-for-unanswered. A lowered badge is a prompt, not a
+  silent label change: `/verification` returns the latest event's reason and time,
+  the hub and the mobile Proof screen show what happened and link straight at the
+  re-sitting, and the quality review sends a verification notification carrying
+  the skill and assessment so Settings can link to it too. Answers typed during a
+  sitting are drafted by attempt id, so reloading a timed sitting does not lose
+  them.
 - [x] **B8** Opportunities list/detail with "why you qualify or what's missing".
 - [x] **B9** Work: assignments, idempotent submission, rework, messages.
 - [x] **B10** Earnings screen with per-line explanations.

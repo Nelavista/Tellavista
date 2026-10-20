@@ -19,9 +19,12 @@ import * as React from 'react';
 import { Link, useParams } from 'react-router-dom';
 
 import { TaskControl, TaskPrompt, buildAnswer, controlFor, type TaskValue } from '../components/TaskForm';
+import { clearDraft, draftKey, stableClientKey, useDraft } from '../lib/draft';
 import { ApiError, http } from '../lib/http';
 import { formatDateTime } from '../lib/format';
+import { isAnswerValue } from '../lib/practice';
 import { useApiResource } from '../lib/resource';
+import { useSessionOptional } from '../lib/session';
 import { ErrorNote, Skeleton } from '../ui';
 
 const STATUS_COPY: Record<string, string> = {
@@ -35,14 +38,20 @@ const STATUS_COPY: Record<string, string> = {
 
 export function AssignmentDetail(): JSX.Element {
   const { assignmentId = '' } = useParams<{ assignmentId: string }>();
+  const session = useSessionOptional();
+  const owner = session?.me?.id ?? 'anonymous';
   const { resource, reload } = useApiResource<AssignmentDetailOut>(`/work/assignments/${assignmentId}`);
   const messages = useApiResource<MessageListOut>(`/work/assignments/${assignmentId}/messages`);
-  const [value, setValue] = React.useState<TaskValue>(null);
+  // The answer is written as it is typed; the idempotency key is persisted too,
+  // so a reload after a lost response re-sends the same submission rather than
+  // creating a second one.
+  const draft = useDraft<TaskValue>(draftKey('work', owner, assignmentId), null, isAnswerValue);
+  const { value, setValue } = draft;
+  const keyStorage = draftKey('work-client-key', owner, assignmentId);
   const [busy, setBusy] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
   const [sent, setSent] = React.useState<SubmissionResultOut | null>(null);
-  // One key per mounted assignment: a retry after a timeout reuses it.
-  const clientKey = React.useRef(`web-${assignmentId}-${crypto.randomUUID()}`);
+  const [clientKey, setClientKey] = React.useState(() => stableClientKey(keyStorage));
 
   if (resource.status === 'loading') {
     return (
@@ -107,9 +116,14 @@ export function AssignmentDetail(): JSX.Element {
     try {
       const result = await http.post<SubmissionResultOut>(
         `/work/assignments/${assignment.id}/submissions`,
-        { payload: answer, client_key: clientKey.current },
+        { payload: answer, client_key: clientKey },
       );
       setSent(result);
+      // Accepted: the draft and its key have done their job. The next send from
+      // this screen is a new version, so it needs a fresh key.
+      draft.clear();
+      clearDraft(keyStorage);
+      setClientKey(stableClientKey(keyStorage));
       reload();
     } catch (err) {
       setError(err instanceof ApiError ? err.message : 'Could not send your work. Try again.');
@@ -196,6 +210,12 @@ export function AssignmentDetail(): JSX.Element {
             {answer ? 'Ready to send.' : 'Complete the form to send.'}
           </span>
         </div>
+      ) : null}
+
+      {draft.savedAt ? (
+        <p className="nv-muted" aria-live="polite">
+          Your answer is saved on this device — it is still here if the connection drops.
+        </p>
       ) : null}
 
       {assignment.last_submission ? (

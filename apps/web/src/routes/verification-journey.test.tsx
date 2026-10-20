@@ -111,6 +111,7 @@ describe('Assessment sitting', () => {
   beforeEach(() => {
     fetchMock = vi.fn();
     vi.stubGlobal('fetch', fetchMock);
+    localStorage.clear();
   });
 
   afterEach(() => {
@@ -206,6 +207,37 @@ describe('Assessment sitting', () => {
 
     act(() => root.unmount());
   });
+
+  it('keeps the answers typed in a sitting across a reload', async () => {
+    fetchMock.mockResolvedValueOnce(jsonResponse(200, sitting()));
+
+    const first = render(<AssessmentSitting />, '/verification/assessments/annotation');
+    await waitFor(() => expect(first.container.textContent).toContain('I love it'));
+
+    const positive = [...first.container.querySelectorAll('input[type="radio"]')].find(
+      (input) => (input as HTMLInputElement).value === 'positive',
+    ) as HTMLInputElement;
+    await act(async () => {
+      positive.click();
+    });
+    await waitFor(() => expect(first.container.textContent).toContain('saved on this device'));
+
+    act(() => first.root.unmount());
+    document.body.innerHTML = '';
+    // The server resumes the same sitting, so the same attempt id comes back.
+    fetchMock.mockResolvedValueOnce(jsonResponse(200, sitting()));
+
+    const second = render(<AssessmentSitting />, '/verification/assessments/annotation');
+    await waitFor(() => {
+      const restored = [...second.container.querySelectorAll('input[type="radio"]')].find(
+        (input) => (input as HTMLInputElement).value === 'positive',
+      ) as HTMLInputElement;
+      expect(restored.checked).toBe(true);
+    });
+    expect(second.container.textContent).toContain('1 of 2 answered');
+
+    act(() => second.root.unmount());
+  });
 });
 
 describe('Verification hub', () => {
@@ -214,6 +246,7 @@ describe('Verification hub', () => {
   beforeEach(() => {
     fetchMock = vi.fn();
     vi.stubGlobal('fetch', fetchMock);
+    localStorage.clear();
   });
 
   afterEach(() => {
@@ -260,6 +293,56 @@ describe('Verification hub', () => {
     expect(container.textContent).toContain('Lessons and practice are progress, not proof');
     expect(container.querySelector('a[href="/verification/assessments/annotation-check"]')).not.toBeNull();
     expect(container.querySelector('.nv-badge[data-status="unverified"]')).not.toBeNull();
+
+    act(() => root.unmount());
+  });
+
+  it('prompts a suspended badge with the reason and the way back', async () => {
+    fetchMock.mockResolvedValueOnce(
+      jsonResponse(200, {
+        skills: [
+          {
+            skill_id: 1,
+            skill: 'AI Data Annotation',
+            slug: 'ai-data-annotation',
+            status: 'suspended',
+            status_reason: 'quality remained low at 40',
+            status_changed_at: '2026-10-19T09:00:00Z',
+            verified_at: null,
+            last_evaluated_at: '2026-10-19T09:00:00Z',
+            verified: false,
+          },
+        ],
+      }),
+    );
+    fetchMock.mockResolvedValueOnce(
+      jsonResponse(200, {
+        assessments: [
+          {
+            id: 2,
+            slug: 'annotation-check',
+            title: 'Annotation check',
+            skill_id: 1,
+            pass_threshold: 80,
+            max_attempts: 3,
+            task_count: 5,
+          },
+        ],
+      }),
+    );
+    fetchMock.mockResolvedValueOnce(jsonResponse(200, { tasks: [] }));
+
+    const { root, container } = render(<Verification />, '/verification');
+
+    await waitFor(() => expect(container.textContent).toContain('Re-verification needed'));
+    // The prompt says what happened and why, not just the status word.
+    expect(container.textContent).toContain('quality remained low at 40');
+    expect(container.textContent).toContain('earnings are unaffected');
+    const link = container.querySelector('a[href="/verification/assessments/annotation-check"]');
+    expect(link).not.toBeNull();
+    expect(link?.textContent).toContain('Re-verify AI Data Annotation');
+    // The badge itself still reports the real state.
+    expect(container.querySelector('.nv-badge[data-status="suspended"]')).not.toBeNull();
 
     act(() => root.unmount());
   });

@@ -117,3 +117,12 @@ export function useSession(): SessionValue {
   if (!value) throw new Error('useSession must be used inside <SessionProvider>');
   return value;
 }
+
+/**
+ * The session when a provider is present, otherwise null. Screens that only need
+ * an identity for a storage key use this so they can still render in isolation
+ * (the route tests mount a single screen, not the whole app).
+ */
+export function useSessionOptional(): SessionValue | null {
+  return React.useContext(SessionContext);
+}

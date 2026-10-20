@@ -114,6 +114,18 @@ export function practiceControl(input: Schema, answer: Schema): PracticeControl 
 }
 
 /**
+ * Only the shapes the generated controls can produce are restored from a draft;
+ * anything else is ignored rather than rendered into a form.
+ */
+export function isAnswerValue(value: unknown): boolean {
+  return (
+    typeof value === 'string' ||
+    typeof value === 'number' ||
+    (Array.isArray(value) && value.every((item) => typeof item === 'string'))
+  );
+}
+
+/**
  * Turn a control value into the answer object, or `null` when nothing valid has
  * been given yet — the caller disables submit rather than sending an empty answer
  * the validator would score zero.

@@ -328,13 +328,27 @@ export function Settings(): JSX.Element {
         {notifications.resource.status === 'ready' && notifications.resource.data.notifications.length > 0 ? (
           <>
             <ul className="nv-list">
-              {notifications.resource.data.notifications.slice(0, 10).map((row) => (
-                <li key={row.id}>
-                  <strong>{row.title}</strong>
-                  <p className="nv-muted">{row.body}</p>
-                  {row.read_at === null ? <span className="nv-badge" data-status="unverified">Unread</span> : null}
-                </li>
-              ))}
+              {notifications.resource.data.notifications.slice(0, 10).map((row) => {
+                const assessmentSlug = row.data?.['assessment_slug'];
+                return (
+                  <li key={row.id}>
+                    <strong>{row.title}</strong>
+                    <p className="nv-muted">{row.body}</p>
+                    {typeof assessmentSlug === 'string' ? (
+                      <p>
+                        <Link className="nv-button nv-button--ghost" to={`/verification/assessments/${assessmentSlug}`}>
+                          Re-verify now
+                        </Link>
+                      </p>
+                    ) : null}
+                    {row.read_at === null ? (
+                      <span className="nv-badge" data-status="unverified">
+                        Unread
+                      </span>
+                    ) : null}
+                  </li>
+                );
+              })}
             </ul>
             <Button type="button" variant="ghost" onClick={() => void markNotificationsRead()}>
               Mark all read

@@ -85,9 +85,10 @@ gold-task migration that Phase 5 consumes. Content management in admin
 
 Exit criterion — *a student completes a path, practises with feedback, submits a
 project, including with the connection dropped*: web is covered by
-`skills-journey.test.tsx`; the offline half is covered on mobile by the queue
-tests in `mobile-core.test.ts` and `Work.tsx`, and on web it is **owed**
-(`REMAINING_WORK.md` B6 note: offline-safe answer saving).
+`skills-journey.test.tsx` and `journey-screens.test.tsx` (practice, assignment and
+sitting answers are drafted to `localStorage` and survive a reload or a failed
+send — `lib/draft.test.ts`); the offline half is covered on mobile by the queue
+tests in `mobile-core.test.ts` and `Work.tsx`.
 
 **Delivered since:** the AI Data Annotation curriculum itself (F7/G4) —
 `apps/api/app/seed/curriculum.py` now ships the lessons, practice samples, five
@@ -108,8 +109,11 @@ and the ops review/override with a mandatory reason.
 Exit criterion — *verification only by assessment*: `test_verification_flow.py`
 and `verification-journey.test.tsx`.
 
-**Owed:** a re-verification prompt after a suspension (the state exists and is
-surfaced; no dedicated call-to-action).
+**Re-verification prompt:** `/verification` now returns the latest event's reason
+and time per skill; the hub and the mobile Proof screen lead with what happened and
+a link to the re-sitting, and the quality review sends a verification notification
+that carries the skill and assessment slugs
+(`test_quality_service.py::test_a_suspended_badge_prompts_the_student_with_the_way_back`).
 
 ---
 
@@ -246,12 +250,10 @@ started; it is an operational milestone, not a coding one.
 
 | # | Item | Phase | Owner |
 |---|---|---|---|
-| 1 | Web offline-safe practice/lesson answers (B6 remainder) | 2 | code |
-| 2 | Re-verification prompt after suspension (B7 remainder) | 3 | code |
-| 3 | Store screenshots from a real build (D4; feature graphic is generated) | 9 | design + you |
-| 4 | Maestro smoke on a dev build | 9 | code + device |
-| 5 | Run and record the load test on DEV (F6 remainder) | 10 | you + code |
-| 6 | Security review; beta; pilot; go/no-go; cutover | 10 | you |
+| 1 | Store screenshots from a real build (D4; feature graphic is generated) | 9 | design + you |
+| 2 | Maestro smoke on a dev build | 9 | code + device |
+| 3 | Run and record the load test on DEV (F6 remainder) | 10 | you + code |
+| 4 | Security review; beta; pilot; go/no-go; cutover | 10 | you |
 
 Delivered since this list was written: B13, B14, the AI Data Annotation content
 (F7/G4) and the G1–G5 policy controls.

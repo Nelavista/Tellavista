@@ -16,6 +16,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { Practice } from './Practice';
 import { Skills } from './Skills';
+import { draftKey, readDraft } from '../lib/draft';
 
 type Call = { url: string; init: RequestInit };
 
@@ -67,12 +68,33 @@ function render(element: ReactElement, path = '/'): { root: Root; container: HTM
   return { root, container };
 }
 
+/** The brief both draft tests reuse; the shape is what /skills/tasks/:id returns. */
+function practiceBrief() {
+  return {
+    template_id: 9,
+    slug: 'sentiment',
+    name: 'Sentiment label',
+    instructions_md: 'Label the text positive or negative.',
+    input_schema: {
+      text: 'I loved it',
+      options: [
+        { key: 'positive', label: 'Positive' },
+        { key: 'negative', label: 'Negative' },
+      ],
+    },
+    answer_schema: { type: 'object', properties: { key: { type: 'string' } } },
+    sample: null,
+    version: 1,
+  };
+}
+
 describe('Practice screen', () => {
   let fetchMock: ReturnType<typeof vi.fn>;
 
   beforeEach(() => {
     fetchMock = vi.fn();
     vi.stubGlobal('fetch', fetchMock);
+    localStorage.clear();
   });
 
   afterEach(() => {
@@ -139,6 +161,51 @@ describe('Practice screen', () => {
     expect(container.textContent).toContain('not verification');
 
     act(() => root.unmount());
+  });
+
+  it('restores a typed answer after a reload and keeps it when the send fails', async () => {
+    fetchMock.mockResolvedValueOnce(jsonResponse(200, practiceBrief()));
+
+    const first = render(<Practice />, '/skills/practice/9');
+    await waitFor(() => expect(first.container.textContent).toContain('Sentiment label'));
+
+    const positive = [...first.container.querySelectorAll('input[type="radio"]')].find(
+      (input) => (input as HTMLInputElement).value === 'positive',
+    ) as HTMLInputElement;
+    await act(async () => {
+      positive.click();
+    });
+    await waitFor(() => expect(first.container.textContent).toContain('saved on this device'));
+
+    // A reload: same route, fresh component, draft read from storage.
+    act(() => first.root.unmount());
+    document.body.innerHTML = '';
+    fetchMock.mockResolvedValueOnce(jsonResponse(200, practiceBrief()));
+
+    const second = render(<Practice />, '/skills/practice/9');
+    await waitFor(() => {
+      const restored = [...second.container.querySelectorAll('input[type="radio"]')].find(
+        (input) => (input as HTMLInputElement).value === 'positive',
+      ) as HTMLInputElement;
+      expect(restored.checked).toBe(true);
+    });
+
+    // The send fails; the draft must survive so nothing typed is lost.
+    fetchMock.mockResolvedValueOnce(
+      jsonResponse(500, { error: { code: 'server_error', message: 'Could not save that.' } }),
+    );
+    const submit = [...second.container.querySelectorAll('button')].find((button) =>
+      button.textContent?.includes('Check my answer'),
+    );
+    await act(async () => {
+      submit?.click();
+    });
+    await waitFor(() => expect(second.container.textContent).toContain('Could not save that.'));
+
+    const kept = readDraft<string>(draftKey('practice', 'anonymous', 9));
+    expect(kept?.value).toBe('positive');
+
+    act(() => second.root.unmount());
   });
 
   it('declines a task type it cannot render instead of submitting', async () => {

@@ -11,9 +11,11 @@ import type { PracticeBriefOut, PracticeResultOut } from '@nelavista/api-client'
 import * as React from 'react';
 import { Link, useLocation, useParams } from 'react-router-dom';
 
+import { draftKey, useDraft } from '../lib/draft';
 import { ApiError, http } from '../lib/http';
-import { buildAnswer, practiceControl, type PracticeControl } from '../lib/practice';
+import { buildAnswer, isAnswerValue, practiceControl, type PracticeControl } from '../lib/practice';
 import { useApiResource } from '../lib/resource';
+import { useSessionOptional } from '../lib/session';
 import { ErrorNote, Skeleton } from '../ui';
 
 type Value = string | string[] | number | null;
@@ -157,8 +159,16 @@ function Control({
 export function Practice(): JSX.Element {
   const { templateId = '' } = useParams<{ templateId: string }>();
   const location = useLocation();
+  const session = useSessionOptional();
   const { resource, reload } = useApiResource<PracticeBriefOut>(`/skills/tasks/${templateId}`);
-  const [value, setValue] = React.useState<Value>(null);
+  // The draft is keyed by student as well as task: a shared device must never
+  // restore one student's answer into another's form.
+  const draft = useDraft<Value>(
+    draftKey('practice', session?.me?.id ?? 'anonymous', templateId),
+    null,
+    isAnswerValue,
+  );
+  const { value, setValue } = draft;
   const [result, setResult] = React.useState<PracticeResultOut | null>(null);
   const [busy, setBusy] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
@@ -182,6 +192,9 @@ export function Practice(): JSX.Element {
         answer,
       });
       setResult(payload);
+      // Only the server accepting the answer clears it. A failed send keeps the
+      // draft, which is the whole point of writing it as the student types.
+      draft.clear();
     } catch (err) {
       setError(err instanceof ApiError ? err.message : 'Could not send your answer. Try again.');
     } finally {
@@ -275,6 +288,11 @@ export function Practice(): JSX.Element {
             </button>
             {!answer ? <span className="nv-muted">Answer first to see how you did.</span> : null}
           </div>
+          {draft.savedAt ? (
+            <p className="nv-muted" aria-live="polite">
+              Answer saved on this device — it is still here if the connection drops.
+            </p>
+          ) : null}
         </>
       ) : null}
     </div>

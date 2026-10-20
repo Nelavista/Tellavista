@@ -5959,6 +5959,10 @@ export interface components {
         /**
          * VerificationSkillOut
          * @description One skill's current badge state. `verified` is derived from `status`.
+         *
+         *     `status_reason` and `status_changed_at` come from the latest verification
+         *     event, so a suspended or at-risk badge can say *why* and *when* instead of
+         *     only showing a label (B7 re-verification prompt).
          */
         VerificationSkillOut: {
             /** Skill Id */
@@ -5969,6 +5973,10 @@ export interface components {
             slug: string;
             /** Status */
             status: string;
+            /** Status Reason */
+            status_reason?: string | null;
+            /** Status Changed At */
+            status_changed_at?: string | null;
             /** Verified At */
             verified_at?: string | null;
             /** Last Evaluated At */

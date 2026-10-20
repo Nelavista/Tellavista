@@ -16,6 +16,7 @@ import * as React from 'react';
 import { Link } from 'react-router-dom';
 
 import { useApiResource } from '../lib/resource';
+import { formatDateTime } from '../lib/format';
 import { ErrorNote, Skeleton } from '../ui';
 
 const STATUS_COPY: Record<string, { label: string; note: string }> = {
@@ -115,6 +116,12 @@ export function Verification(): JSX.Element {
     return assessment ? `/verification/assessments/${assessment.slug}` : null;
   }
 
+  // A lowered badge is a prompt, not a quiet label change: say what happened,
+  // when, and the one action that restores it. Nothing else is restricted.
+  const lowered = skills.filter(
+    (skill) => skill.status === 'suspended' || skill.status === 'at_risk',
+  );
+
   return (
     <div className="nv-stack">
       <h1 className="nv-h1">Verification</h1>
@@ -125,6 +132,46 @@ export function Verification(): JSX.Element {
       <p className="nv-muted">
         <Link to="/transcript">See your skill transcript</Link>
       </p>
+
+      {lowered.length > 0 ? (
+        <section className="nv-banner" aria-live="polite">
+          <h2 className="nv-h2">
+            {lowered.some((skill) => skill.status === 'suspended')
+              ? 'Re-verification needed'
+              : 'Your badge is at risk'}
+          </h2>
+          <p>
+            Recent work quality lowered {lowered.length === 1 ? 'one badge' : `${lowered.length} badges`}.
+            Your courses, learning and earnings are unaffected — passing the assessment again restores the
+            badge.
+          </p>
+          <ul className="nv-list">
+            {lowered.map((skill) => {
+              const link = reverifyLink(skill.skill_id);
+              return (
+                <li key={skill.skill_id}>
+                  <strong>{skill.skill}</strong> — {statusCopy(skill.status).label}
+                  {skill.status_reason ? <span className="nv-muted"> · {skill.status_reason}</span> : null}
+                  {skill.status_changed_at ? (
+                    <span className="nv-muted"> · {formatDateTime(skill.status_changed_at)}</span>
+                  ) : null}
+                  {link ? (
+                    <div className="nv-row">
+                      <Link className="nv-button" to={link}>
+                        Re-verify {skill.skill}
+                      </Link>
+                    </div>
+                  ) : (
+                    <p className="nv-muted">
+                      No assessment is published for this skill yet, so there is nothing to sit today.
+                    </p>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+      ) : null}
 
       <section className="nv-stack">
         <h2 className="nv-h2">Your badges</h2>

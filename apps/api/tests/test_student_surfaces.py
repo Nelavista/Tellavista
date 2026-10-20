@@ -1,12 +1,22 @@
 """Student-facing surfaces: profile settings, opportunity discovery, invites (Phase 2/4)."""
 from __future__ import annotations
 
-from factories import make_opportunity, make_ops, make_project, make_user, unique
+from factories import (
+    make_opportunity,
+    make_ops,
+    make_project,
+    make_skill,
+    make_user,
+    unique,
+    verify,
+)
 from sqlalchemy import select
 
 from app.core.security import create_access_token
 from app.models.identity import User
+from app.models.verification import EVIDENCE_QUALITY_RECORD, SUSPENDED
 from app.models.work import Cohort
+from app.services.verification import state
 
 PREFIX = "/v1"
 
@@ -76,6 +86,33 @@ def test_deleting_an_account_anonymises_the_row(api) -> None:
     assert row.email == f"deleted-{student.id}@deleted.invalid"
     assert row.username == f"deleted-{student.id}"
     assert row.name is None
+
+
+def test_a_suspended_badge_explains_itself_on_the_verification_screen(api) -> None:
+    client, db = api
+    student = make_user(db)
+    skill = make_skill(db)
+    verify(db, student, skill)
+    record = state.ensure_record(db, student.id, skill.id)
+    state.transition(
+        db,
+        record,
+        to_status=SUSPENDED,
+        evidence_type=EVIDENCE_QUALITY_RECORD,
+        evidence_id=41,
+        reason="quality remained low at 40",
+    )
+    db.flush()
+
+    response = client.get(f"{PREFIX}/verification", headers=_headers(student))
+
+    assert response.status_code == 200, response.text
+    row = next(item for item in response.json()["skills"] if item["slug"] == skill.slug)
+    assert row["status"] == "suspended"
+    assert row["verified"] is False
+    # The prompt says why and when, not just "suspended".
+    assert row["status_reason"] == "quality remained low at 40"
+    assert row["status_changed_at"] is not None
 
 
 def test_external_opportunity_discovery_and_apply(api) -> None:

@@ -22,12 +22,19 @@ from pydantic import BaseModel, Field
 
 
 class VerificationSkillOut(BaseModel):
-    """One skill's current badge state. `verified` is derived from `status`."""
+    """One skill's current badge state. `verified` is derived from `status`.
+
+    `status_reason` and `status_changed_at` come from the latest verification
+    event, so a suspended or at-risk badge can say *why* and *when* instead of
+    only showing a label (B7 re-verification prompt).
+    """
 
     skill_id: int
     skill: str
     slug: str
     status: str
+    status_reason: str | None = None
+    status_changed_at: datetime | None = None
     verified_at: datetime | None = None
     last_evaluated_at: datetime | None = None
     verified: bool

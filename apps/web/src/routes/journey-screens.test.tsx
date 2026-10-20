@@ -155,6 +155,7 @@ describe('Assignment detail', () => {
   beforeEach(() => {
     fetchMock = vi.fn();
     vi.stubGlobal('fetch', fetchMock);
+    localStorage.clear();
   });
 
   afterEach(() => {
@@ -162,10 +163,17 @@ describe('Assignment detail', () => {
     document.body.innerHTML = '';
   });
 
-  it('posts the answer object and one client key, and repeats the key on retry', async () => {
+  it('keeps one client key across a failed send and a reload, so a retry is one submission', async () => {
+    let posts = 0;
     fetchMock.mockImplementation((url: string, init?: RequestInit) => {
       if (String(url).includes('/messages')) return Promise.resolve(jsonResponse(200, { messages: [] }));
       if (init?.method === 'POST') {
+        posts += 1;
+        if (posts === 1) {
+          return Promise.resolve(
+            jsonResponse(500, { error: { code: 'server_error', message: 'Could not save that.' } }),
+          );
+        }
         return Promise.resolve(
           jsonResponse(201, {
             id: 44,
@@ -180,35 +188,52 @@ describe('Assignment detail', () => {
       return Promise.resolve(jsonResponse(200, assignment));
     });
 
-    const { root, container } = render(<AssignmentDetail />, '/work/assignments/12');
+    const first = render(<AssignmentDetail />, '/work/assignments/12');
 
-    await waitFor(() => expect(container.textContent).toContain('Sentiment label'));
-    const positive = [...container.querySelectorAll('input[type="radio"]')].find(
-      (input) => (input as HTMLInputElement).value === 'positive',
-    ) as HTMLInputElement | undefined;
+    await waitFor(() => expect(first.container.textContent).toContain('Sentiment label'));
+    const choose = (container: HTMLElement): HTMLInputElement =>
+      [...container.querySelectorAll('input[type="radio"]')].find(
+        (input) => (input as HTMLInputElement).value === 'positive',
+      ) as HTMLInputElement;
+    const send = (container: HTMLElement): HTMLButtonElement | undefined =>
+      [...container.querySelectorAll('button')].find((button) =>
+        button.textContent?.includes('Send this work'),
+      );
 
     await act(async () => {
-      positive?.click();
+      choose(first.container).click();
     });
-
-    const send = [...container.querySelectorAll('button')].find((button) =>
-      button.textContent?.includes('Send this work'),
-    );
     await act(async () => {
-      send?.click();
+      send(first.container)?.click();
     });
+    await waitFor(() => expect(first.container.textContent).toContain('Could not save that.'));
+    const firstKey = (
+      JSON.parse(
+        String(calls(fetchMock).filter((call) => call.init.method === 'POST')[0]?.init.body),
+      ) as { client_key: string }
+    ).client_key;
+    expect(firstKey).toMatch(/^web-/);
+    expect(firstKey.length).toBeLessThanOrEqual(64);
 
-    await waitFor(() => expect(container.textContent).toContain('Submitted for review.'));
-    const posts = calls(fetchMock).filter((call) => call.init.method === 'POST');
-    expect(posts).toHaveLength(1);
-    const body = JSON.parse(String(posts[0]?.init.body)) as {
-      payload: unknown;
-      client_key: string;
-    };
-    expect(body.payload).toEqual({ key: 'positive' });
-    expect(body.client_key).toMatch(/^web-12-/);
+    // A reload after the failed send: the answer and the key both come back.
+    act(() => first.root.unmount());
+    document.body.innerHTML = '';
+    const second = render(<AssignmentDetail />, '/work/assignments/12');
+    await waitFor(() => expect(choose(second.container).checked).toBe(true));
 
-    act(() => root.unmount());
+    await act(async () => {
+      send(second.container)?.click();
+    });
+    await waitFor(() => expect(second.container.textContent).toContain('Submitted for review.'));
+
+    const bodies = calls(fetchMock)
+      .filter((call) => call.init.method === 'POST')
+      .map((call) => JSON.parse(String(call.init.body)) as { payload: unknown; client_key: string });
+    expect(bodies).toHaveLength(2);
+    expect(bodies[0]?.payload).toEqual({ key: 'positive' });
+    expect(bodies[1]?.client_key).toBe(firstKey);
+
+    act(() => second.root.unmount());
   });
 });
 

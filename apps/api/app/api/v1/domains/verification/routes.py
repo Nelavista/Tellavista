@@ -27,7 +27,12 @@ from app.core.errors import ApiError
 from app.db.session import get_db
 from app.models.identity import User
 from app.models.skills import Skill
-from app.models.verification import VERIFIED, PracticalSubmission, VerificationRecord
+from app.models.verification import (
+    VERIFIED,
+    PracticalSubmission,
+    VerificationEvent,
+    VerificationRecord,
+)
 from app.services.verification import assessments, state, transcript
 
 router = APIRouter(
@@ -58,6 +63,20 @@ def my_verification(
         .where(VerificationRecord.user_id == user.id)
         .order_by(Skill.name)
     ).all()
+
+    # One extra read rather than a query per skill: the newest event for each
+    # record is what explains its current status. `setdefault` keeps the first
+    # row seen per record, and the order is newest first.
+    latest: dict[int, VerificationEvent] = {}
+    record_ids = [record.id for record, _ in rows]
+    if record_ids:
+        for event in db.scalars(
+            select(VerificationEvent)
+            .where(VerificationEvent.record_id.in_(record_ids))
+            .order_by(VerificationEvent.id.desc())
+        ):
+            latest.setdefault(event.record_id, event)
+
     return {
         "skills": [
             {
@@ -65,6 +84,10 @@ def my_verification(
                 "skill": skill.name,
                 "slug": skill.slug,
                 "status": record.status,
+                "status_reason": latest[record.id].reason if record.id in latest else None,
+                "status_changed_at": (
+                    latest[record.id].created_at if record.id in latest else None
+                ),
                 "verified_at": record.verified_at,
                 "last_evaluated_at": record.last_evaluated_at,
                 "verified": record.status == VERIFIED,

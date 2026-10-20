@@ -37,8 +37,8 @@ from app.models.quality import (
     QualityReview,
     QualityStandard,
 )
-from app.models.skills import TaskTemplate
-from app.models.verification import TRANSCRIPT_DELIVERED
+from app.models.skills import Skill, TaskTemplate
+from app.models.verification import TRANSCRIPT_DELIVERED, Assessment
 from app.models.work import (
     ASSIGNMENT_APPROVED,
     ASSIGNMENT_REJECTED,
@@ -236,7 +236,7 @@ def review_submission(
         _apply_outcome(db, submission=submission, assignment=assignment, project=project, verdict=verdict)
         record = recompute_record(db, submission.user_id, project_id=project.id, standard=standard)
         overall = recompute_record(db, submission.user_id, project_id=None, standard=standard)
-        _apply_consequences(
+        fired = _apply_consequences(
             db,
             submission=submission,
             assignment=assignment,
@@ -244,7 +244,15 @@ def review_submission(
             standard=standard,
             record=record,
         )
-        _apply_verification_quality(db, assignment=assignment, project_record=record, standard=standard)
+        _apply_verification_quality(
+            db,
+            assignment=assignment,
+            project_record=record,
+            standard=standard,
+            # The re-verification consequence already told the student to act;
+            # a second notification for the same review would just be noise.
+            notify_change=CONSEQUENCE_REQUIRE_REVERIFICATION not in fired,
+        )
         _ = overall
     elif agrees_with is not None:
         audit.record(
@@ -409,9 +417,11 @@ def _apply_consequences(
     project: Project,
     standard: QualityStandard,
     record: QualityRecord,
-) -> None:
+) -> set[str]:
+    """Record any consequence the streak has earned. Returns the kinds fired."""
     rules = {**DEFAULT_RULES, **(standard.rules or {})}
     streak = record.poor_streak
+    fired: set[str] = set()
     thresholds = [
         (CONSEQUENCE_WARN, int(rules["warn_after"])),
         (CONSEQUENCE_RESTRICT_MATCHING, int(rules["restrict_matching_after"])),
@@ -440,6 +450,7 @@ def _apply_consequences(
         )
         db.add(consequence)
         db.flush()
+        fired.add(kind)
         audit.record(
             db,
             action="quality.consequence",
@@ -498,6 +509,7 @@ def _apply_consequences(
                 data={"project_slug": project.slug},
             )
     db.flush()
+    return fired
 
 
 def _apply_verification_quality(
@@ -506,13 +518,22 @@ def _apply_verification_quality(
     assignment: Assignment,
     project_record: QualityRecord,
     standard: QualityStandard,
-) -> None:
+    notify_change: bool = True,
+) -> str | None:
+    """Move the badge on real work quality and tell the student when it moves.
+
+    A badge that drops to `at_risk` or `suspended` is a prompt, not a silent
+    status: the notification names the skill and, when one exists, the assessment
+    that earns it back. The prompt is skipped only when the same review already
+    sent the re-verification consequence.
+    """
     if assignment.template_id is None:
-        return
+        return None
     template = db.get(TaskTemplate, assignment.template_id)
     if template is None:
-        return
+        return None
     record = state.ensure_record(db, project_record.user_id, template.skill_id)
+    before = record.status
     state.apply_quality(
         db,
         record,
@@ -520,6 +541,43 @@ def _apply_verification_quality(
         score=project_record.average_score,
         pass_threshold=standard.pass_threshold,
     )
+    if record.status == before or record.status not in {state.AT_RISK, state.SUSPENDED}:
+        return record.status
+
+    if notify_change:
+        skill = db.get(Skill, template.skill_id)
+        assessment = db.scalar(
+            select(Assessment)
+            .where(Assessment.skill_id == template.skill_id)
+            .order_by(Assessment.id)
+            .limit(1)
+        )
+        skill_name = skill.name if skill else "this skill"
+        if record.status == state.SUSPENDED:
+            title = "Re-verify this skill"
+            body = (
+                f"Your work quality suspended the {skill_name} badge. "
+                "Pass the assessment again to earn it back."
+            )
+        else:
+            title = "Your skill badge is at risk"
+            body = (
+                f"Recent work quality lowered the {skill_name} badge. "
+                "Pass the assessment again to restore it."
+            )
+        notify(
+            db,
+            user_id=project_record.user_id,
+            kind="verification",
+            title=title,
+            body=body,
+            data={
+                "skill_slug": skill.slug if skill else None,
+                "assessment_slug": assessment.slug if assessment else None,
+                "verification_status": record.status,
+            },
+        )
+    return record.status
 
 
 def review_queue(db: Session, *, limit: int = 50) -> list[dict]:

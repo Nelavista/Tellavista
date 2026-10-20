@@ -13,7 +13,19 @@ from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_current_user, require_flag
-from app.api.v1.domains.academia.schemas import DashboardOut
+from app.api.v1.domains.academia.schemas import (
+    AskAnswerOut,
+    AskSessionListOut,
+    AskSessionOut,
+    CbtAnswerOut,
+    CbtPracticeNextOut,
+    CbtQuizOut,
+    CbtResultsOut,
+    DashboardOut,
+    MaterialDetailOut,
+    MaterialListOut,
+    MaterialSearchOut,
+)
 from app.core import flags
 from app.db.session import get_db
 from app.models.identity import User
@@ -54,7 +66,7 @@ def get_dashboard(
     return dashboard.dashboard(db, user)
 
 
-@router.get("/materials")
+@router.get("/materials", response_model=MaterialListOut)
 def list_materials(
     course_id: int | None = None,
     user: User = Depends(get_current_user),
@@ -64,7 +76,7 @@ def list_materials(
     return {"materials": materials.my_materials(db, user, course_id=course_id)}
 
 
-@router.get("/materials/search")
+@router.get("/materials/search", response_model=MaterialSearchOut)
 def search_materials(
     q: str = Query(min_length=2, max_length=120),
     limit: int = Query(default=20, ge=1, le=50),
@@ -74,7 +86,7 @@ def search_materials(
     return {"query": q, "results": materials.search_materials(db, user, q, limit=limit)}
 
 
-@router.get("/materials/{material_id}")
+@router.get("/materials/{material_id}", response_model=MaterialDetailOut)
 def material_detail(
     material_id: int,
     user: User = Depends(get_current_user),
@@ -83,7 +95,7 @@ def material_detail(
     return materials.material_detail(db, user, material_id)
 
 
-@router.post("/ask")
+@router.post("/ask", response_model=AskAnswerOut)
 def ask(
     payload: AskIn,
     user: User = Depends(get_current_user),
@@ -101,14 +113,14 @@ def ask(
     return result
 
 
-@router.get("/ask/sessions")
+@router.get("/ask/sessions", response_model=AskSessionListOut)
 def ask_sessions(
     user: User = Depends(get_current_user), db: Session = Depends(get_db)
 ) -> dict:
     return {"sessions": ask_service.list_sessions(db, user)}
 
 
-@router.get("/ask/sessions/{session_id}")
+@router.get("/ask/sessions/{session_id}", response_model=AskSessionOut)
 def ask_session(
     session_id: int,
     user: User = Depends(get_current_user),
@@ -117,7 +129,7 @@ def ask_session(
     return ask_service.session_messages(db, user, session_id)
 
 
-@router.post("/cbt/quiz", status_code=201)
+@router.post("/cbt/quiz", status_code=201, response_model=CbtQuizOut)
 def start_quiz(
     payload: QuizIn,
     user: User = Depends(get_current_user),
@@ -130,7 +142,7 @@ def start_quiz(
     return quiz
 
 
-@router.post("/cbt/answer")
+@router.post("/cbt/answer", response_model=CbtAnswerOut)
 def save_answer(
     payload: AnswerIn,
     user: User = Depends(get_current_user),
@@ -149,7 +161,7 @@ def save_answer(
     return result
 
 
-@router.get("/cbt/results")
+@router.get("/cbt/results", response_model=CbtResultsOut)
 def cbt_results(
     course_id: int,
     user: User = Depends(get_current_user),
@@ -158,7 +170,7 @@ def cbt_results(
     return cbt.results(db, user, course_id=course_id)
 
 
-@router.get("/cbt/practice-next")
+@router.get("/cbt/practice-next", response_model=CbtPracticeNextOut)
 def practice_next(
     course_id: int,
     limit: int = Query(default=5, ge=1, le=20),

@@ -6,11 +6,10 @@
  * here rather than from the generated path so the generated layout can change
  * without touching app code.
  *
- * Routes that still return a bare `dict` (materials, CBT, Ask) have no
- * `response_model` yet, so the generated schema cannot describe them. The routes
- * the student journey reads — auth, profile, onboarding, campus, the Academia
- * dashboard, all of `/v1/skills` and the verification journey — are modelled, and
- * their shapes come from here (A3, B7).
+ * The routes the student journey reads — auth, profile, onboarding, campus, the
+ * Academia dashboard and its connected screens (B14), the skills journey, the
+ * verification journey and the talent profile (B13) — are modelled, and their
+ * shapes come from here (A3, B7, B13, B14).
  */
 import type { components, paths } from './generated/schema';
 
@@ -103,6 +102,60 @@ export type MessageListOut = Schemas['MessageListOut'];
 // --- Money (B10) ------------------------------------------------------------
 export type EarningsOut = Schemas['EarningsOut'];
 export type EarningLineOut = Schemas['EarningLineOut'];
+
+// --- Materials, Ask and CBT (B14) -------------------------------------------
+export type MaterialCourseOut = Schemas['MaterialCourseOut'];
+export type MaterialOut = Schemas['MaterialOut'];
+export type MaterialListOut = Schemas['MaterialListOut'];
+export type MaterialSearchResultOut = Schemas['MaterialSearchResultOut'];
+export type MaterialSearchOut = Schemas['MaterialSearchOut'];
+export type MaterialChunkOut = Schemas['MaterialChunkOut'];
+export type MaterialDetailOut = Schemas['MaterialDetailOut'];
+export type AskCitationOut = Schemas['AskCitationOut'];
+export type AskAnswerOut = Schemas['AskAnswerOut'];
+export type AskCourseRefOut = Schemas['AskCourseRefOut'];
+export type AskSessionSummaryOut = Schemas['AskSessionSummaryOut'];
+export type AskSessionListOut = Schemas['AskSessionListOut'];
+export type AskMessageOut = Schemas['AskMessageOut'];
+export type AskSessionOut = Schemas['AskSessionOut'];
+export type CbtCourseRefOut = Schemas['CbtCourseRefOut'];
+export type CbtQuestionOut = Schemas['CbtQuestionOut'];
+export type CbtQuizOut = Schemas['CbtQuizOut'];
+export type CbtAnswerOut = Schemas['CbtAnswerOut'];
+export type CbtRecentOut = Schemas['CbtRecentOut'];
+export type CbtRecommendationOut = Schemas['CbtRecommendationOut'];
+export type CbtResultsOut = Schemas['CbtResultsOut'];
+export type CbtPracticeQuestionOut = Schemas['CbtPracticeQuestionOut'];
+export type CbtPracticeNextOut = Schemas['CbtPracticeNextOut'];
+
+// --- Talent profile and shares (B13) ----------------------------------------
+export type TalentSkillOut = Schemas['TalentSkillOut'];
+export type TalentAccountOut = Schemas['TalentAccountOut'];
+export type TalentAcademicOut = Schemas['TalentAcademicOut'];
+export type TalentQualityOverallOut = Schemas['TalentQualityOverallOut'];
+export type TalentQualityProjectOut = Schemas['TalentQualityProjectOut'];
+export type TalentQualityOut = Schemas['TalentQualityOut'];
+export type TalentProjectRefOut = Schemas['TalentProjectRefOut'];
+export type TalentWorkEvidenceOut = Schemas['TalentWorkEvidenceOut'];
+export type TalentWorkHistoryOut = Schemas['TalentWorkHistoryOut'];
+export type TalentProjectSummaryOut = Schemas['TalentProjectSummaryOut'];
+export type TalentLanguageOut = Schemas['TalentLanguageOut'];
+export type TalentAvailabilityOut = Schemas['TalentAvailabilityOut'];
+export type TalentProfileOut = Schemas['TalentProfileOut'];
+export type TalentTranscriptOut = Schemas['TalentTranscriptOut'];
+export type ShareIn = Schemas['ShareIn'];
+export type ShareOut = Schemas['ShareOut'];
+export type ShareListOut = Schemas['ShareListOut'];
+export type ShareCreatedOut = Schemas['ShareCreatedOut'];
+export type ShareRevokedOut = Schemas['ShareRevokedOut'];
+
+// --- Platform policy (G1–G5) ------------------------------------------------
+export type PlatformConfigOut = Schemas['PlatformConfigOut'];
+export type PlatformSettingsOut = Schemas['PlatformSettingsOut'];
+export type PlatformSettingsIn = Schemas['PlatformSettingsIn'];
+export type EligibilityOut = Schemas['EligibilityOut'];
+export type ConsentOut = Schemas['ConsentOut'];
+export type ConsentListOut = Schemas['ConsentListOut'];
 
 // --- Settings (B11) ---------------------------------------------------------
 export type LanguagesOut = Schemas['LanguagesOut'];

@@ -29,6 +29,8 @@ POSTGRES_URL = "postgresql://ci:ci@localhost:5432/ci_offline"  # never connected
 # skips the execution test rather than failing on a database that is not there.
 POSTGRES_TEST_URL = os.environ.get("POSTGRES_TEST_URL")
 
+# Added by 20261020_1000 (G1–G5). One row of policy, created on first read.
+PLATFORM_TABLES = {"platform_settings"}
 # Added by 20261018_0900 (F1/C8, F4/D1). The columns are nullable and expand-only.
 TWO_FACTOR_COLUMNS = {"totp_secret", "totp_enabled_at", "totp_recovery_hashes"}
 PUSH_TABLES = {"push_devices"}
@@ -158,6 +160,7 @@ def test_upgrade_downgrade_upgrade_round_trip(tmp_path: Path) -> None:
     assert CREDENTIAL_TABLES <= tables and QUALITY_TABLES <= tables
     assert LEDGER_TABLES <= tables and ENGAGEMENT_OPS_TABLES <= tables
     assert TALENT_EXTENSION_TABLES <= tables and PUSH_TABLES <= tables
+    assert PLATFORM_TABLES <= tables
     user_columns = {c["name"] for c in inspect(engine).get_columns("users")}
     assert "role_id" in user_columns
     assert TWO_FACTOR_COLUMNS <= user_columns
@@ -167,6 +170,7 @@ def test_upgrade_downgrade_upgrade_round_trip(tmp_path: Path) -> None:
     # Walk back one revision at a time. Each downgrade must remove exactly its own
     # revision's tables and leave every earlier one in place (expand-only).
     for removed in (
+        PLATFORM_TABLES,
         PUSH_TABLES,
         GOLD_TASK_COLUMNS,
         TALENT_EXTENSION_TABLES,
@@ -245,6 +249,7 @@ def test_postgres_ddl_compiles(tmp_path: Path) -> None:
     assert "CREATE TABLE VERIFICATION_EVENTS" in ddl
     assert "CREATE TABLE SUBMISSIONS" in ddl
     assert "CREATE TABLE JOBS" in ddl
+    assert "CREATE TABLE PLATFORM_SETTINGS" in ddl
     assert "JSONB" in ddl, "JSON payload columns must be JSONB on Postgres"
     assert "SET NOT NULL" in ddl, "the timestamp tightening must reach Postgres"
 
@@ -271,6 +276,7 @@ def test_migrations_execute_on_postgres() -> None:
     tables = set(inspect(engine).get_table_names())
     assert JOBS_TABLES <= tables and MATCHING_WORK_TABLES <= tables
     assert LEDGER_TABLES <= tables and PUSH_TABLES <= tables
+    assert PLATFORM_TABLES <= tables
     user_columns = {c["name"] for c in inspect(engine).get_columns("users")}
     assert TWO_FACTOR_COLUMNS <= user_columns
 
@@ -291,6 +297,7 @@ def test_revision_chain_is_linked() -> None:
     assert all(
         revision in proc.stdout
         for revision in (
+            "20261020_1000",
             "20261018_0900",
             "20261016_1800",
             "20261016_1700",

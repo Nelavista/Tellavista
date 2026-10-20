@@ -102,6 +102,24 @@ function adaptiveForeground(size) {
 }
 
 /**
+ * Store feature graphic: landscape, the same mark on the brand background. A
+ * feature graphic is artwork, not a screenshot, so it can be generated; the real
+ * brand mark still replaces this placeholder before submission.
+ */
+function featureGraphic(width, height) {
+  const cx = (width - 1) / 2;
+  const cy = (height - 1) / 2;
+  const outer = Math.min(width, height) * 0.30;
+  const inner = Math.min(width, height) * 0.17;
+  return png(width, height, (x, y) => {
+    const d = Math.hypot(x - cx, y - cy);
+    if (d <= inner) return ACCENT;
+    if (d <= outer && d >= inner + Math.min(width, height) * 0.045) return ACCENT;
+    return BG;
+  });
+}
+
+/**
  * Splash: portrait, mark centred, background from the dark token. Expo scales
  * `contain`, so the mark sits inside the middle 40% on any device.
  */
@@ -123,6 +141,7 @@ const files = [
   ['icon.png', icon(1024)],
   ['adaptive-icon.png', adaptiveForeground(1024)],
   ['splash.png', splash(1284, 2778)],
+  ['feature-graphic.png', featureGraphic(1024, 500)],
   ['favicon.png', icon(48)],
 ];
 for (const [name, data] of files) {

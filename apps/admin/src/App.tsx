@@ -9,6 +9,7 @@ import { Imports } from './routes/Imports';
 import { Login } from './routes/Login';
 import { Money } from './routes/Money';
 import { Opportunities } from './routes/Opportunities';
+import { Platform } from './routes/Platform';
 import { Projects } from './routes/Projects';
 import { Review } from './routes/Review';
 import { Security } from './routes/Security';
@@ -23,6 +24,7 @@ function Screen({ route }: { route: string }): JSX.Element {
   if (route.startsWith('/review')) return <Review />;
   if (route.startsWith('/money')) return <Money />;
   if (route.startsWith('/content')) return <Content />;
+  if (route.startsWith('/platform')) return <Platform />;
   if (route.startsWith('/security')) return <Security />;
   return <Audit />;
 }

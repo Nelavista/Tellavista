@@ -32,6 +32,7 @@ export function Layout({ children }: { children: React.ReactNode }): JSX.Element
               <Link to="/work">Work</Link>
               <Link to="/earnings">Earnings</Link>
               <Link to="/transcript">Transcript</Link>
+              <Link to="/talent">Talent</Link>
               <Link to="/campus">Campus</Link>
               <Link to="/settings">Settings</Link>
               <button className="nv-button nv-button--ghost" type="button" onClick={onSignOut}>

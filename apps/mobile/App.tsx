@@ -7,6 +7,7 @@ import { UpgradeRequired, api, hydrateSession, refresh, setUpgradeHandler } from
 import { parseDeepLink, type Route } from './src/lib/deepLink';
 import { registerForPush } from './src/lib/notifications';
 import { flushQueue } from './src/lib/sync';
+import { AcademiaHome, AskScreen, CbtScreen, MaterialsScreen, MaterialScreen } from './src/screens/Academia';
 import { Auth } from './src/screens/Auth';
 import { Home } from './src/screens/Home';
 import { LessonScreen, PathScreen, PracticeScreen, SkillDetail, Skills } from './src/screens/Learning';
@@ -14,6 +15,7 @@ import { Earnings } from './src/screens/Money';
 import { Opportunities, OpportunityScreen } from './src/screens/Opportunities';
 import { AssessmentScreen, Transcript, Verification } from './src/screens/Proof';
 import { Notifications, Settings } from './src/screens/Settings';
+import { TalentScreen } from './src/screens/Talent';
 import { AssignmentScreen, Work } from './src/screens/Work';
 import { Button, Card, H2, Loading, Muted, Screen } from './src/ui';
 
@@ -88,6 +90,18 @@ function SignedIn({
       return <AssessmentScreen slug={route.slug} navigate={navigate} />;
     case 'transcript':
       return <Transcript navigate={navigate} />;
+    case 'academia':
+      return <AcademiaHome navigate={navigate} />;
+    case 'materials':
+      return <MaterialsScreen navigate={navigate} />;
+    case 'material':
+      return <MaterialScreen id={route.id} navigate={navigate} />;
+    case 'ask':
+      return <AskScreen navigate={navigate} />;
+    case 'cbt':
+      return <CbtScreen navigate={navigate} />;
+    case 'talent':
+      return <TalentScreen navigate={navigate} />;
     case 'opportunities':
       return <Opportunities navigate={navigate} />;
     case 'opportunity':

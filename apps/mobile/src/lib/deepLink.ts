@@ -17,6 +17,12 @@ export type Route =
   | { name: 'verification' }
   | { name: 'assessment'; slug: string }
   | { name: 'transcript' }
+  | { name: 'academia' }
+  | { name: 'materials' }
+  | { name: 'material'; id: number }
+  | { name: 'ask' }
+  | { name: 'cbt' }
+  | { name: 'talent' }
   | { name: 'opportunities' }
   | { name: 'opportunity'; slug: string }
   | { name: 'work' }
@@ -68,6 +74,16 @@ export function parseDeepLink(url: string): Route | null {
     return { name: 'verification' };
   }
   if (head === 'transcript') return { name: 'transcript' };
+  if (head === 'academia') {
+    if (second === 'materials') {
+      if (third && Number.isInteger(Number(third))) return { name: 'material', id: Number(third) };
+      return { name: 'materials' };
+    }
+    if (second === 'ask') return { name: 'ask' };
+    if (second === 'cbt') return { name: 'cbt' };
+    return { name: 'academia' };
+  }
+  if (head === 'talent') return { name: 'talent' };
   if (head === 'opportunities') {
     return second ? { name: 'opportunity', slug: second } : { name: 'opportunities' };
   }

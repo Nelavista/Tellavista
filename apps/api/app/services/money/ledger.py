@@ -164,9 +164,22 @@ def fund_project(
             "external_has_no_ledger",
             "External opportunities never create ledger entries.",
         )
-    project_currency = (currency or opportunity.currency or "").upper()
+    # G1: the fallback is the configured billing currency, not a hardcoded code.
+    # A project that names its own currency still wins, so existing contracts do
+    # not change meaning when ops switches the default.
+    from app.services.platform import settings as policy
+
+    configured = policy.get_platform_settings(db)
+    project_currency = (currency or opportunity.currency or configured.billing_currency).upper()
     if len(project_currency) != 3:
         raise ApiError(400, "invalid_currency", "This project has no currency.")
+    if project_currency not in {code.upper() for code in configured.allowed_currencies}:
+        raise ApiError(
+            400,
+            "unsupported_currency",
+            "That currency is not enabled for billing.",
+            {"allowed": list(configured.allowed_currencies)},
+        )
     split = split_project_value(total_minor)
 
     entries: list[dict[str, Any]] = [

@@ -358,6 +358,30 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/me/consents": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Consents
+         * @description Append-only: the history is returned so an old agreement stays visible.
+         */
+        get: operations["list_consents_v1_me_consents_get"];
+        put?: never;
+        /**
+         * Record Consent
+         * @description Agreeing to a document appends a row; it never edits the previous one.
+         */
+        post: operations["record_consent_v1_me_consents_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/me/languages": {
         parameters: {
             query?: never;
@@ -2293,6 +2317,64 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/platform/config": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Config
+         * @description Public: the current currency, ages, terms version and curriculum owner.
+         */
+        get: operations["config_v1_platform_config_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/platform/settings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Read Settings */
+        get: operations["read_settings_v1_platform_settings_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Write Settings */
+        patch: operations["write_settings_v1_platform_settings_patch"];
+        trace?: never;
+    };
+    "/v1/platform/me/eligibility": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * My Eligibility
+         * @description What is still missing before this student can accept paid work.
+         */
+        get: operations["my_eligibility_v1_platform_me_eligibility_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/ops/imports": {
         parameters: {
             query?: never;
@@ -2500,6 +2582,44 @@ export interface components {
             /** Note */
             note?: string | null;
         };
+        /** AskAnswerOut */
+        AskAnswerOut: {
+            /** Session Id */
+            session_id: number;
+            /** Answer */
+            answer: string;
+            /** Declined */
+            declined: boolean;
+            /** Citations */
+            citations: components["schemas"]["AskCitationOut"][];
+            /** Provider */
+            provider?: string | null;
+            /** Best Score */
+            best_score?: number | null;
+        };
+        /**
+         * AskCitationOut
+         * @description Every answer names the chunks it was built from, so it can be checked.
+         */
+        AskCitationOut: {
+            /** Chunk Id */
+            chunk_id: number;
+            /** Material Id */
+            material_id: number;
+            /** Material Title */
+            material_title: string;
+            /** Course Code */
+            course_code: string;
+            /** Score */
+            score: number;
+        };
+        /** AskCourseRefOut */
+        AskCourseRefOut: {
+            /** Id */
+            id: number;
+            /** Code */
+            code?: string | null;
+        };
         /** AskIn */
         AskIn: {
             /** Question */
@@ -2508,6 +2628,53 @@ export interface components {
             session_id?: number | null;
             /** Course Id */
             course_id?: number | null;
+        };
+        /** AskMessageOut */
+        AskMessageOut: {
+            /** Id */
+            id: number;
+            /** Role */
+            role: string;
+            /** Content */
+            content: string;
+            /** Citations */
+            citations: components["schemas"]["AskCitationOut"][];
+            /** Declined */
+            declined: boolean;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+        };
+        /** AskSessionListOut */
+        AskSessionListOut: {
+            /** Sessions */
+            sessions: components["schemas"]["AskSessionSummaryOut"][];
+        };
+        /** AskSessionOut */
+        AskSessionOut: {
+            /** Id */
+            id: number;
+            /** Title */
+            title?: string | null;
+            /** Course Id */
+            course_id?: number | null;
+            /** Messages */
+            messages: components["schemas"]["AskMessageOut"][];
+        };
+        /** AskSessionSummaryOut */
+        AskSessionSummaryOut: {
+            /** Id */
+            id: number;
+            /** Title */
+            title?: string | null;
+            course?: components["schemas"]["AskCourseRefOut"] | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
         };
         /** AssessmentListOut */
         AssessmentListOut: {
@@ -2913,6 +3080,111 @@ export interface components {
             /** Computed At */
             computed_at?: string | null;
         };
+        /** CbtAnswerOut */
+        CbtAnswerOut: {
+            /** Attempt Id */
+            attempt_id: number;
+            /** Question Id */
+            question_id: number;
+            /** Is Correct */
+            is_correct: boolean;
+            /** Correct Key */
+            correct_key?: string | null;
+            /** Explanation */
+            explanation?: string | null;
+        };
+        /** CbtCourseRefOut */
+        CbtCourseRefOut: {
+            /** Id */
+            id: number;
+            /** Code */
+            code?: string | null;
+        };
+        /** CbtPracticeNextOut */
+        CbtPracticeNextOut: {
+            /** Course Id */
+            course_id: number;
+            /** Focus Topics */
+            focus_topics: (number | null)[];
+            /** Questions */
+            questions: components["schemas"]["CbtPracticeQuestionOut"][];
+        };
+        /** CbtPracticeQuestionOut */
+        CbtPracticeQuestionOut: {
+            /** Id */
+            id: number;
+            /** Topic Id */
+            topic_id?: number | null;
+            /** Prompt */
+            prompt: string;
+            /** Options */
+            options: {
+                [key: string]: unknown;
+            }[];
+        };
+        /**
+         * CbtQuestionOut
+         * @description A practice question. `correct_key` is never part of this shape.
+         */
+        CbtQuestionOut: {
+            /** Id */
+            id: number;
+            /** Topic Id */
+            topic_id?: number | null;
+            /** Prompt */
+            prompt: string;
+            /** Options */
+            options: {
+                [key: string]: unknown;
+            }[];
+            /** Difficulty */
+            difficulty?: string | null;
+        };
+        /** CbtQuizOut */
+        CbtQuizOut: {
+            course: components["schemas"]["CbtCourseRefOut"];
+            /** Count */
+            count: number;
+            /** Questions */
+            questions: components["schemas"]["CbtQuestionOut"][];
+        };
+        /** CbtRecentOut */
+        CbtRecentOut: {
+            /** Attempt Id */
+            attempt_id: number;
+            /** Question Id */
+            question_id: number;
+            /** Is Correct */
+            is_correct: boolean;
+            /** Answered At */
+            answered_at?: string | null;
+        };
+        /** CbtRecommendationOut */
+        CbtRecommendationOut: {
+            /** Topic Id */
+            topic_id?: number | null;
+            /** Topic */
+            topic: string;
+            /** Accuracy */
+            accuracy: number;
+            /** Action */
+            action: string;
+        };
+        /** CbtResultsOut */
+        CbtResultsOut: {
+            /** Course Id */
+            course_id: number;
+            /** Topics */
+            topics: components["schemas"]["TopicStatOut"][];
+            /** Strengths */
+            strengths: components["schemas"]["TopicStatOut"][];
+            /** Weaknesses */
+            weaknesses: components["schemas"]["TopicStatOut"][];
+            /** Recommendations */
+            recommendations: components["schemas"]["CbtRecommendationOut"][];
+            /** Recent */
+            recent: components["schemas"]["CbtRecentOut"][];
+        };
         /** ClosesViaOut */
         ClosesViaOut: {
             /** Learning Path Id */
@@ -2985,6 +3257,27 @@ export interface components {
              * @default true
              */
             granted: boolean;
+        };
+        /** ConsentListOut */
+        ConsentListOut: {
+            /** Consents */
+            consents: components["schemas"]["ConsentOut"][];
+        };
+        /** ConsentOut */
+        ConsentOut: {
+            /** Id */
+            id: number;
+            /** Kind */
+            kind: string;
+            /** Document Version */
+            document_version: string;
+            /** Granted */
+            granted: boolean;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
         };
         /** ConsequenceOut */
         ConsequenceOut: {
@@ -3185,6 +3478,25 @@ export interface components {
             totals: components["schemas"]["CurrencyTotalOut"][];
             /** Lines */
             lines: components["schemas"]["EarningLineOut"][];
+        };
+        /** EligibilityOut */
+        EligibilityOut: {
+            /** Eligible */
+            eligible: boolean;
+            /** Blockers */
+            blockers: string[];
+            /** Reasons */
+            reasons: string[];
+            /** Age */
+            age?: number | null;
+            /** Min Student Age */
+            min_student_age: number;
+            /** Guardian Consent Below Age */
+            guardian_consent_below_age: number;
+            /** Contributor Terms Version */
+            contributor_terms_version: string;
+            /** Contributor Terms Body */
+            contributor_terms_body: string;
         };
         /** EnrolIn */
         EnrolIn: {
@@ -3687,6 +3999,75 @@ export interface components {
             facts: {
                 [key: string]: unknown;
             };
+        };
+        /** MaterialChunkOut */
+        MaterialChunkOut: {
+            /** Id */
+            id: number;
+            /** Ordinal */
+            ordinal: number;
+            /** Content */
+            content: string;
+        };
+        /**
+         * MaterialCourseOut
+         * @description The course a material belongs to. `title` is omitted in search results.
+         */
+        MaterialCourseOut: {
+            /** Id */
+            id?: number | null;
+            /** Code */
+            code?: string | null;
+            /** Title */
+            title?: string | null;
+        };
+        /** MaterialDetailOut */
+        MaterialDetailOut: {
+            /** Id */
+            id: number;
+            /** Title */
+            title: string;
+            /** File Url */
+            file_url?: string | null;
+            course?: components["schemas"]["MaterialCourseOut"] | null;
+            /** Chunks */
+            chunks: components["schemas"]["MaterialChunkOut"][];
+        };
+        /** MaterialListOut */
+        MaterialListOut: {
+            /** Materials */
+            materials: components["schemas"]["MaterialOut"][];
+        };
+        /** MaterialOut */
+        MaterialOut: {
+            /** Id */
+            id: number;
+            /** Title */
+            title: string;
+            /** File Url */
+            file_url?: string | null;
+            /** Source */
+            source?: string | null;
+            course?: components["schemas"]["MaterialCourseOut"] | null;
+        };
+        /** MaterialSearchOut */
+        MaterialSearchOut: {
+            /** Query */
+            query: string;
+            /** Results */
+            results: components["schemas"]["MaterialSearchResultOut"][];
+        };
+        /** MaterialSearchResultOut */
+        MaterialSearchResultOut: {
+            /** Material Id */
+            material_id: number;
+            /** Title */
+            title: string;
+            course?: components["schemas"]["MaterialCourseOut"] | null;
+            /** Snippet */
+            snippet: string;
+            /** Score */
+            score: number;
         };
         /** MeOut */
         MeOut: {
@@ -4212,6 +4593,116 @@ export interface components {
             status: string;
             /** Failure Reason */
             failure_reason?: string | null;
+        };
+        /**
+         * PlatformConfigOut
+         * @description What any signed-in client may read: currency and the rules it enforces.
+         */
+        PlatformConfigOut: {
+            /** Billing Currency */
+            billing_currency: string;
+            /** Payout Currency */
+            payout_currency: string;
+            /** Allowed Currencies */
+            allowed_currencies: string[];
+            /** Min Student Age */
+            min_student_age: number;
+            /** Guardian Consent Below Age */
+            guardian_consent_below_age: number;
+            /** Terms Version */
+            terms_version: string;
+            /** Contributor Terms Version */
+            contributor_terms_version: string;
+            /** Contributor Terms Body */
+            contributor_terms_body: string;
+            /** Curriculum Owner */
+            curriculum_owner: string;
+            /** Curriculum License */
+            curriculum_license: string;
+            /** Curriculum Authoring Model */
+            curriculum_authoring_model: string;
+            /** Target Launch Date */
+            target_launch_date?: string | null;
+            /** Updated At */
+            updated_at?: string | null;
+        };
+        /**
+         * PlatformSettingsIn
+         * @description A partial update. Validation lives in the service so every caller agrees.
+         */
+        PlatformSettingsIn: {
+            /** Billing Currency */
+            billing_currency?: string | null;
+            /** Payout Currency */
+            payout_currency?: string | null;
+            /** Allowed Currencies */
+            allowed_currencies?: string[] | null;
+            /** Payout Second Approver Threshold Minor */
+            payout_second_approver_threshold_minor?: number | null;
+            /** Payout Second Approver Always */
+            payout_second_approver_always?: boolean | null;
+            /** Payout Require Verified Email */
+            payout_require_verified_email?: boolean | null;
+            /** Min Student Age */
+            min_student_age?: number | null;
+            /** Guardian Consent Below Age */
+            guardian_consent_below_age?: number | null;
+            /** Terms Version */
+            terms_version?: string | null;
+            /** Contributor Terms Version */
+            contributor_terms_version?: string | null;
+            /** Contributor Terms Body */
+            contributor_terms_body?: string | null;
+            /** Curriculum Owner */
+            curriculum_owner?: string | null;
+            /** Curriculum License */
+            curriculum_license?: string | null;
+            /** Curriculum Authoring Model */
+            curriculum_authoring_model?: string | null;
+            /** Target Launch Date */
+            target_launch_date?: string | null;
+        };
+        /**
+         * PlatformSettingsOut
+         * @description The staff view: adds the payout approval and identity switches.
+         */
+        PlatformSettingsOut: {
+            /** Billing Currency */
+            billing_currency: string;
+            /** Payout Currency */
+            payout_currency: string;
+            /** Allowed Currencies */
+            allowed_currencies: string[];
+            /** Min Student Age */
+            min_student_age: number;
+            /** Guardian Consent Below Age */
+            guardian_consent_below_age: number;
+            /** Terms Version */
+            terms_version: string;
+            /** Contributor Terms Version */
+            contributor_terms_version: string;
+            /** Contributor Terms Body */
+            contributor_terms_body: string;
+            /** Curriculum Owner */
+            curriculum_owner: string;
+            /** Curriculum License */
+            curriculum_license: string;
+            /** Curriculum Authoring Model */
+            curriculum_authoring_model: string;
+            /** Target Launch Date */
+            target_launch_date?: string | null;
+            /** Updated At */
+            updated_at?: string | null;
+            /** Id */
+            id: number;
+            /** Payout Second Approver Threshold Minor */
+            payout_second_approver_threshold_minor: number;
+            /** Payout Second Approver Always */
+            payout_second_approver_always: boolean;
+            /** Payout Require Verified Email */
+            payout_require_verified_email: boolean;
+            /** Updated By */
+            updated_by?: number | null;
         };
         /** PracticalIn */
         PracticalIn: {
@@ -4795,6 +5286,22 @@ export interface components {
             /** Session Id */
             session_id: number;
         };
+        /** ShareCreatedOut */
+        ShareCreatedOut: {
+            /** Id */
+            id: number;
+            /** Label */
+            label?: string | null;
+            /** Scopes */
+            scopes: string[];
+            /**
+             * Expires At
+             * Format: date-time
+             */
+            expires_at: string;
+            /** Token */
+            token: string;
+        };
         /** ShareIn */
         ShareIn: {
             /** Label */
@@ -4806,6 +5313,36 @@ export interface components {
              * @default 30
              */
             ttl_days: number;
+        };
+        /** ShareListOut */
+        ShareListOut: {
+            /** Shares */
+            shares: components["schemas"]["ShareOut"][];
+        };
+        /** ShareOut */
+        ShareOut: {
+            /** Id */
+            id: number;
+            /** Label */
+            label?: string | null;
+            /** Scopes */
+            scopes: string[];
+            /**
+             * Expires At
+             * Format: date-time
+             */
+            expires_at: string;
+            /** Revoked At */
+            revoked_at?: string | null;
+            /** Active */
+            active: boolean;
+        };
+        /** ShareRevokedOut */
+        ShareRevokedOut: {
+            /** Id */
+            id: number;
+            /** Revoked At */
+            revoked_at?: string | null;
         };
         /** SignupIn */
         SignupIn: {
@@ -5026,6 +5563,160 @@ export interface components {
             code?: string | null;
             /** Message */
             message?: string | null;
+        };
+        /** TalentAcademicOut */
+        TalentAcademicOut: {
+            /** University */
+            university?: string | null;
+            /** Department */
+            department?: string | null;
+            /** Level */
+            level?: string | null;
+        };
+        /**
+         * TalentAccountOut
+         * @description Internal ops view only; never part of a public share.
+         */
+        TalentAccountOut: {
+            /** Id */
+            id: number;
+            /** Email */
+            email: string;
+        };
+        /** TalentAvailabilityOut */
+        TalentAvailabilityOut: {
+            /** Hours Per Week */
+            hours_per_week?: number | null;
+            /** Available From */
+            available_from?: string | null;
+            /** Languages */
+            languages: components["schemas"]["TalentLanguageOut"][];
+            /** Location */
+            location?: string | null;
+        };
+        /** TalentLanguageOut */
+        TalentLanguageOut: {
+            /** Language */
+            language: string;
+            /** Level */
+            level: string;
+        };
+        /**
+         * TalentProfileOut
+         * @description The evidence-only profile. Scoped sections are omitted, not blanked.
+         */
+        TalentProfileOut: {
+            /** Display Name */
+            display_name?: string | null;
+            /** Headline */
+            headline?: string | null;
+            /** Visibility */
+            visibility: string;
+            /** Verified Skills */
+            verified_skills: components["schemas"]["TalentSkillOut"][];
+            /** All Skills */
+            all_skills?: components["schemas"]["TalentSkillOut"][] | null;
+            /** Evidence Only */
+            evidence_only: boolean;
+            account?: components["schemas"]["TalentAccountOut"] | null;
+            transcript?: components["schemas"]["TranscriptOut"] | null;
+            academic?: components["schemas"]["TalentAcademicOut"] | null;
+            quality?: components["schemas"]["TalentQualityOut"] | null;
+            /** Work History */
+            work_history?: components["schemas"]["TalentWorkHistoryOut"][] | null;
+            /** Projects */
+            projects?: components["schemas"]["TalentProjectSummaryOut"][] | null;
+            availability?: components["schemas"]["TalentAvailabilityOut"] | null;
+        };
+        /** TalentProjectRefOut */
+        TalentProjectRefOut: {
+            /** Slug */
+            slug: string;
+            /** Title */
+            title: string;
+        };
+        /** TalentProjectSummaryOut */
+        TalentProjectSummaryOut: {
+            /** Project Id */
+            project_id: number;
+            /** Title */
+            title: string;
+            /** Slug */
+            slug: string;
+            /** Approved Tasks */
+            approved_tasks: number;
+        };
+        /** TalentQualityOut */
+        TalentQualityOut: {
+            overall?: components["schemas"]["TalentQualityOverallOut"] | null;
+            /** By Project */
+            by_project: components["schemas"]["TalentQualityProjectOut"][];
+        };
+        /** TalentQualityOverallOut */
+        TalentQualityOverallOut: {
+            /** Reviews Count */
+            reviews_count: number;
+            /** Approvals */
+            approvals: number;
+            /** Average Score */
+            average_score?: number | null;
+            /** Gold Tasks */
+            gold_tasks: number;
+            /** Gold Correct */
+            gold_correct: number;
+        };
+        /** TalentQualityProjectOut */
+        TalentQualityProjectOut: {
+            /** Project Id */
+            project_id?: number | null;
+            /** Reviews Count */
+            reviews_count: number;
+            /** Average Score */
+            average_score?: number | null;
+        };
+        /**
+         * TalentSkillOut
+         * @description One skill's evidence state. `current` means verified right now.
+         */
+        TalentSkillOut: {
+            /** Skill Id */
+            skill_id: number;
+            /** Skill */
+            skill?: string | null;
+            /** Slug */
+            slug?: string | null;
+            /** Status */
+            status: string;
+            /** Verified At */
+            verified_at?: string | null;
+            /** At Risk */
+            at_risk: boolean;
+            /** Current */
+            current: boolean;
+        };
+        /** TalentTranscriptOut */
+        TalentTranscriptOut: {
+            transcript: components["schemas"]["TranscriptOut"];
+            /** Verified Skills */
+            verified_skills: components["schemas"]["TalentSkillOut"][];
+        };
+        /** TalentWorkEvidenceOut */
+        TalentWorkEvidenceOut: {
+            /** Type */
+            type: string;
+            /** Id */
+            id: string;
+        };
+        /** TalentWorkHistoryOut */
+        TalentWorkHistoryOut: {
+            /** Submission Id */
+            submission_id: number;
+            /** Assignment */
+            assignment: string;
+            project: components["schemas"]["TalentProjectRefOut"];
+            /** Approved At */
+            approved_at?: string | null;
+            evidence: components["schemas"]["TalentWorkEvidenceOut"];
         };
         /** TemplateIn */
         TemplateIn: {
@@ -6073,6 +6764,72 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ProfileOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_consents_v1_me_consents_get: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConsentListOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    record_consent_v1_me_consents_post: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ConsentIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConsentOut"];
                 };
             };
             /** @description Validation Error */
@@ -8247,9 +9004,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["TalentProfileOut"];
                 };
             };
             /** @description Validation Error */
@@ -8280,9 +9035,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["TalentTranscriptOut"];
                 };
             };
             /** @description Validation Error */
@@ -8313,9 +9066,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["ShareListOut"];
                 };
             };
             /** @description Validation Error */
@@ -8350,9 +9101,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["ShareCreatedOut"];
                 };
             };
             /** @description Validation Error */
@@ -8385,9 +9134,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["ShareRevokedOut"];
                 };
             };
             /** @description Validation Error */
@@ -8418,9 +9165,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["TalentProfileOut"];
                 };
             };
             /** @description Validation Error */
@@ -8453,9 +9198,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["TalentProfileOut"];
                 };
             };
             /** @description Validation Error */
@@ -9829,9 +10572,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["MaterialListOut"];
                 };
             };
             /** @description Validation Error */
@@ -9865,9 +10606,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["MaterialSearchOut"];
                 };
             };
             /** @description Validation Error */
@@ -9900,9 +10639,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["MaterialDetailOut"];
                 };
             };
             /** @description Validation Error */
@@ -9937,9 +10674,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["AskAnswerOut"];
                 };
             };
             /** @description Validation Error */
@@ -9970,9 +10705,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["AskSessionListOut"];
                 };
             };
             /** @description Validation Error */
@@ -10005,9 +10738,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["AskSessionOut"];
                 };
             };
             /** @description Validation Error */
@@ -10042,9 +10773,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["CbtQuizOut"];
                 };
             };
             /** @description Validation Error */
@@ -10079,9 +10808,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["CbtAnswerOut"];
                 };
             };
             /** @description Validation Error */
@@ -10114,9 +10841,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["CbtResultsOut"];
                 };
             };
             /** @description Validation Error */
@@ -10150,9 +10875,124 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["CbtPracticeNextOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    config_v1_platform_config_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlatformConfigOut"];
+                };
+            };
+        };
+    };
+    read_settings_v1_platform_settings_get: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlatformSettingsOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    write_settings_v1_platform_settings_patch: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PlatformSettingsIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlatformSettingsOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    my_eligibility_v1_platform_me_eligibility_get: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EligibilityOut"];
                 };
             };
             /** @description Validation Error */

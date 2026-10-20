@@ -38,12 +38,53 @@ address (`support@nelavista.com`) must be monitored.
 | iPhone screenshots | 6.7" and 6.1" | **Owed — must come from a real build** |
 | iPad screenshots | — | Not required (`supportsTablet: false`) |
 | Android screenshots | phone + 7" tablet | **Owed — must come from a real build** |
-| Feature graphic | 1024×500 | **Owed** |
+| Feature graphic | 1024×500 | Generated placeholder (`apps/mobile/assets/feature-graphic.png`) |
 
 Screenshots of a mock-up are rejected under both stores' metadata rules; capture
 them from the release build with the seeded demo account (`.github` test account
-below). Suggested set, in journey order: home, a verified skill, an assessment,
-an opportunity with its match explanation, earnings with a paid line.
+below). The journey now includes the B13/B14 screens, so the set is: home, a
+verified skill, an assessment, study materials, Ask Nelavista with a cited
+answer, CBT results, the talent profile with a share link, an opportunity with its
+match explanation, and earnings with a paid line.
+
+## Screenshot and feature-graphic capture (release build)
+
+The one thing that cannot be produced from this repository is a screenshot of the
+real app. This is the exact capture pass for the first release build.
+
+### Capture checklist
+
+- [ ] Build a **release** binary, not Expo Go: `eas build --profile preview --platform ios`
+      and `--platform android` (or `npx expo run:ios --configuration Release`).
+- [ ] Sign in with the review account on a clean device or simulator. Confirm the
+      seeded course, one verified skill, one passed assessment and one paid line.
+- [ ] Capture in this order, so the story reads as a journey:
+      1. Home with the next step
+      2. Skills → a verified skill
+      3. Verification → a passed assessment with its score
+      4. Academia → Study materials
+      5. Ask Nelavista with a grounded answer and its citations
+      6. Practice (CBT) → results with strengths and weaknesses
+      7. Talent profile and one active share link
+      8. An opportunity with the "why you qualify" explanation
+      9. Earnings with a paid line
+- [ ] Use the device's own status bar (no overlay): a clean, current time and full
+      signal. Apple rejects screenshots with a stale or obviously mocked status bar.
+- [ ] Capture iPhone 6.7" and 6.1" (App Store requires the 6.7" set; the 6.1" set is
+      optional but recommended). iPad is not required (`supportsTablet: false`).
+- [ ] Capture Android phone and 7" tablet from the Play listing requirements.
+- [ ] Crop nothing that hides a real empty state. An empty state is acceptable; a
+      fake one is not.
+- [ ] Check every image for real student data, tokens, email addresses or links.
+      Only the review account may appear.
+- [ ] Replace `apps/mobile/assets/feature-graphic.png` with the final brand artwork
+      at 1024×500. Re-run `node tools/gen-mobile-assets.mjs` only to regenerate the
+      placeholder, never to overwrite final design files.
+- [ ] Upload the screenshots to App Store Connect and Play Console, then record the
+      build number and capture date in the release ticket.
+
+**Owed:** steps above are external because they need a signed release build and a
+device. Everything else in this document is code, copy or a generated asset.
 
 ## Listing copy (draft)
 
@@ -104,9 +145,11 @@ Declaration answers:
   where law requires and the app says so before deleting.
 - **Data export:** Yes, machine-readable JSON from Settings.
 
-**Blocked on you:** the retention periods in the privacy policy (G3 contributor
-terms, payout records) must be decided before these answers are final — an
-inaccurate data-safety form is a policy violation, not a formality.
+**Blocked on you:** the retention periods in the privacy policy (payout records and
+deleted-account financial history) must be decided before these answers are final.
+Contributor terms are decided (G3: version 2026-10-01, guardian consent below 18),
+but the retention wording is a legal decision, not a build decision — an inaccurate
+data-safety form is a policy violation, not a formality.
 
 ## In-app account deletion (store requirement)
 
@@ -128,19 +171,40 @@ for anything inside the app, Google Play Billing applies to digital goods.
 
 ## Age rating and consent
 
-- Intended audience: **18+** (work and payouts). Do not select a child category;
-  Play's Families policy would otherwise apply.
+The policy is now decided (G3), and it is enforced by the API, not only by copy:
+
+- Minimum age for paid work: **16** (`min_student_age`).
+- Under **18** requires guardian consent (`guardian_consent_below_age`); the
+  consent is recorded against the contributor terms version.
+- Contributor terms: **2026-10-01**, Nelavista Contributor Licence 1.0, curriculum
+  owned and authored in house.
+- Intended audience: **16+**. Do not select a child category; Play's Families
+  policy would otherwise apply. Answer the age-rating questionnaire honestly, and
+  let the store's own rules raise the displayed rating if the work/payment content
+  requires it.
 - Age gate: none in-app; accounts are created through the web sign-up where the
-  terms are accepted.
-- **Blocked on you (G3):** the minimum student age and consent wording. Until
-  that is decided, store listing and terms must say 18+.
+  terms and guardian consent are accepted. The API refuses a payout below the
+  configured age or without the required consent.
+- Keep the listing, the terms page and `platform_settings` in step: changing a
+  limit in the admin Platform screen changes the API rule immediately, so the
+  store copy must be updated in the same release.
+
+**Blocked on you:** the terms/privacy pages must be live and must state the same
+16+/guardian-consent rule. A store listing that says 18+ while the API accepts 16
+is a mismatch.
 
 ## Review notes for the reviewer
 
 ```
 Nelavista is a learning-and-work app for university students. The review account
 below is pre-seeded with a course, two verified skills, a completed assessment,
-one open opportunity and one paid earning line, so every screen has content.
+study material and practice questions, one open opportunity and one paid earning
+line, so every screen has content.
+
+Academia includes study materials, Ask Nelavista (answers are grounded in the
+student's own course material and decline when nothing supports an answer) and CBT
+practice. Practice is not verification. The talent profile is evidence-only; a
+company sees it only through a scoped, expiring link the student creates.
 
 Sign in: <review account email> / <password in App Store Connect, not in the repo>
 
@@ -181,5 +245,5 @@ review cycle.
 - [ ] Push permission denial leaves the app fully usable
 - [ ] Force-update policy (`packages/config/versions.json`) has the new minimum
 - [ ] Review account seeded, password stored in the consoles, 2FA off for it
-- [ ] Age rating 18+, no child category
+- [ ] Age rating 16+ (guardian consent below 18), no child category; API limits match the listing
 - [ ] No real student data in any screenshot or review note

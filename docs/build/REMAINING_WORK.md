@@ -1,8 +1,8 @@
 # V2 remaining work — live tracker
 
-Last updated: 2026-10-20 (Phases 0–6 delivered; 7–8 API-only; 9–10 in release
-mode. E3/E4 docs, D4/D5 store + release, F2/F5/F6 infrastructure landed, and the
-whole suite was run green — see Verification below).
+Last updated: 2026-10-20 (Phases 0–10 delivered as code. B13/B14 now have typed
+contracts and web + mobile screens, F7 curriculum is seeded, G1–G5 are policy plus
+admin controls, and the whole suite was run green — see Verification below).
 
 This is the single list of everything still to do for V2, in the order I intend to
 work through it. It exists so progress is visible while the work happens and so
@@ -19,24 +19,28 @@ was executed and its real result.
 
 | Check | Command | Result |
 |---|---|---|
-| API suite | `pytest -q --ignore=tests/test_migrations.py` | **283 passed** |
+| API suite | `pytest -q --ignore=tests/test_migrations.py` | **299 passed** |
 | Migrations (SQLite round trip, heads, model agreement) | `pytest -q tests/test_migrations.py` | **5 passed, 1 skipped** (Postgres case skips without `POSTGRES_TEST_URL`) |
 | Web DOM/unit | `npx vitest run` in `apps/web` | **38 passed** (7 files) |
 | Admin DOM | `npx vitest run` in `apps/admin` | **1 passed** |
-| Mobile core (queue, deep links, versions) | `npx vitest run` in `apps/mobile` | **10 passed** |
+| Mobile core (queue, deep links, versions) | `npx vitest run` in `apps/mobile` | **11 passed** |
 | Typechecks | `tsc --noEmit` in web, admin, mobile | **0 errors** each |
-| Lint | `ruff check` (api, tools), `eslint src` (web, admin) | **clean** |
-| First-load budget | `node tools/check_web_budget.mjs` after `vite build` | **58.4 KB JS + 1.4 KB CSS** of 150/20 KB |
-| Typed client freshness | `node tools/gen_api_client.mjs --schema openapi.json` | regenerated; diffs are committed here |
+| Lint | `ruff check app tests` (api), `ruff check tools`, `eslint src` (web, admin) | **clean** |
+| First-load budget | `node tools/check_web_budget.mjs` after `vite build` | **58.6 KB JS + 1.4 KB CSS** of 150/20 KB |
+| Typed client freshness | `node tools/gen_api_client.mjs --schema openapi.json` | regenerated after the B13/B14 models; the generated file is committed |
 | Load-test tool | offline: percentile/report maths, over-budget exit 1, unreachable API exit 2 | **works**; no live measurement yet (F6) |
 
 Fixed while verifying (they were real defects, not test noise): the typed client
-was stale after the new response models (regenerated); `CandidateListOut` silently
-dropped the candidate's name; a passing practical could not move verification from
-unverified because the state machine requires `in_progress` first; the scheduler
-counted an existing day's job as new on every tick; the new migration's timestamps
-were nullable against the models; and a handful of screens lost null-narrowing
-against the stricter generated types.
+was stale after the new response models (regenerated, now including Talent,
+Materials, Ask and CBT); a generated `answers[current.id]` access lost narrowing
+under `noUncheckedIndexedAccess` on both web and mobile; the seed's span-gold
+offsets did not point at the words they claimed (a broken assessment, caught by
+the new curriculum test); `CandidateListOut` silently dropped the candidate's
+name; a passing practical could not move verification from unverified because the
+state machine requires `in_progress` first; the scheduler counted an existing
+day's job as new on every tick; the platform migration's timestamps were nullable
+against the models; and a handful of screens lost null-narrowing against the
+stricter generated types.
 
 ## Decisions taken (were open questions)
 
@@ -46,6 +50,21 @@ against the stricter generated types.
   by ascending user id. Leftover minor units land with the platform, never with
   the student pool or the department. Recorded in ADR-0011.
 - **Mobile ships in lockstep with web** for the core journey screens (D2).
+- **G1 — currency:** billing and payout default to **NGN**; allowed currencies are
+  NGN, USD, GBP, EUR, GHS, KES and ZAR. Admins change it in the Platform screen.
+- **G2 — payouts:** a second approver is required at or above **NGN 50,000.00**
+  (5,000,000 minor units); an admin can require one for every payout. Payees need a
+  verified email by default; deleted or under-minimum-age accounts are blocked.
+- **G3 — age and consent:** paid work starts at **16**; under **18** needs guardian
+  consent. Contributor terms are version **2026-10-01**, owner Nelavista, licence
+  Nelavista Contributor Licence 1.0.
+- **G4 — curriculum:** Nelavista owns and authors the AI Data Annotation
+  curriculum in house (`in_house`). The five task types are the five validators the
+  engine already has.
+- **G5 — ownership:** CODEOWNERS is `@hiipraise`. Launch date is still a business
+  input, not a build decision.
+- **H2 — Python interpreter:** keep `apps/api/.venv` as the documented local
+  interpreter; it stays gitignored and `uv sync` remains the source of truth.
 - **TOTP** is the staff second factor (C8/F1); **Resend** is the email provider.
 
 ## A. Contracts and tooling
@@ -56,10 +75,10 @@ against the stricter generated types.
   `@nelavista/api-client`.
 - [x] **A2** Shared V2 types live in `packages/contracts`; the generated schema owns
   the rest.
-- [x] **A3** The routes the student journey reads have real `response_model`s.
-  The routes no client reads yet (materials, CBT, Ask, talent, money, ops) still
-  return plain `dict`s; each gets its model when a typed client needs it — see
-  B14/B13.
+- [x] **A3** The routes the student journey reads have real `response_model`s,
+  including materials, CBT, Ask, talent and the platform policy (B13/B14/G1–G5).
+  The generated client now types every screen in this tracker; admin-only write
+  routes keep their own models in `apps/admin`.
 
 ## B. Web PWA (`apps/web`) — student journey
 
@@ -90,16 +109,20 @@ against the stricter generated types.
   in-app account deletion.
 - [x] **B12** Performance budgets: route-level splitting, skeletons, and
   `tools/check_web_budget.mjs` enforcing 150 KB JS / 20 KB CSS in CI
-  (last measurement **58.4 KB JS + 1.4 KB CSS** after the journey screens
-  landed). Store assets are D4.
-- [ ] **B13** **Talent profile and shares (Phase 7 UI).** The API is complete and
-  tested (`/talent/me`, `/talent/me/shares`, revoke, public share token) but no web
-  or mobile screen shows the evidence-only profile or lets a student create and
-  revoke a share. Needs typed `response_model`s first (A3).
-- [ ] **B14** **Academia connected screens (Phase 8 UI).** Materials list/search/
-  reader, Ask Nelavista (course-aware, honest decline) and CBT results are
-  implemented in the API and used by nothing. Needs typed `response_model`s, then
-  web + mobile screens in lockstep.
+  (last measurement **58.6 KB JS + 1.4 KB CSS** after B13/B14 landed). Store
+  assets are D4.
+- [x] **B13** **Talent profile and shares (Phase 7 UI).** Typed contracts
+  (`TalentProfileOut`, `Share*Out`) and screens on **web and mobile**: the
+  evidence-only profile, scoped/expiring share creation with the token shown once,
+  and revoke. The public `/share/:token` page renders the same shape; the mobile
+  app opens both `/talent` and a shared link. Tests cover the API; the deep-link
+  parser covers the new route.
+- [x] **B14** **Academia connected screens (Phase 8 UI).** Typed contracts
+  (`Material*Out`, `Ask*Out`, `Cbt*Out`) and screens on **web and mobile**:
+  materials list/search/reader, Ask Nelavista (course-aware, citations, honest
+  decline) and CBT practice/results. Web routes are `/academia/materials[/:id]`,
+  `/academia/ask` and `/academia/cbt`; the dashboard links to all three. Mobile
+  mirrors them through deep links and Home buttons.
 
 ## C. Admin ops (`apps/admin`)
 
@@ -120,17 +143,20 @@ against the stricter generated types.
 - [x] **D1** Shell: navigation, SecureStore tokens, SQLite offline queue with an
   idempotent retry and backoff, deep/universal links, push registration, EAS
   profiles. Covered by `mobile-core.test.ts`.
-- [x] **D2** Journey screens in lockstep with B1–B11 (auth, home, learning,
-  proof, opportunities, work, earnings, notifications, settings).
-  **Remaining:** B13/B14 screens when those land.
+- [x] **D2** Journey screens in lockstep with B1–B14 (auth, home, learning,
+  proof, opportunities, work, earnings, notifications, settings, materials, Ask,
+  CBT and the talent profile). The deep-link parser has a test for each new route.
 - [x] **D3** Minimum-version and force-update: server `426` + blocking screen,
   store link, comparison helpers and `versions.json` policy.
 - [~] **D4** Store readiness (`docs/store/mobile-store-readiness.md`): generated
-  icon/adaptive/splash (`tools/gen-mobile-assets.mjs`, wired into
-  `app.config.js`), listing copy, data-safety table, review notes, test-account
-  plan, in-app deletion, policy re-check notes and a pre-submission checklist.
-  **Owed:** real-brand assets and store screenshots/feature graphic captured from
-  a release build (mock-ups are rejected).
+  icon/adaptive/splash **and a 1024×500 feature graphic**
+  (`tools/gen-mobile-assets.mjs`, wired into `app.config.js`), listing copy,
+  data-safety table, review notes, test-account plan, in-app deletion, the
+  16+/guardian-consent policy, a screenshot/feature-graphic capture checklist and a
+  pre-submission checklist.
+  **Owed (external):** real-brand assets and the store screenshots captured from a
+  signed release build on a device (mock-ups are rejected). That is the only part
+  of D4 this repository cannot produce.
 - [x] **D5** Release pipeline: `.github/workflows/mobile-release.yml` builds only
   from `v*.*.*` tags, requires the `production-mobile` approval, fails when the tag
   and `expo.version` disagree, submits to TestFlight/Play, and documents staged
@@ -175,8 +201,14 @@ against the stricter generated types.
   unreachable-API exit (2).
   **Owed:** an actual DEV run with representative volumes — the tool is proven,
   the measurement is not.
-- [ ] **F7** Content: the AI Data Annotation curriculum (lessons, practice samples,
-  gold tasks, assessment items) — needs your authoring decision (G4).
+- [x] **F7** Content: the AI Data Annotation curriculum in
+  `apps/api/app/seed/curriculum.py` — one skill, five lessons, a published learning
+  path, five task templates with practice samples and expected answers, an
+  assessment with five gold tasks, and a practical task with a 100-point rubric.
+  The local seed also creates an AID301 course with topics, searchable material
+  chunks and eight CBT questions so the Academia/Ask screens have real content.
+  `tests/test_curriculum_seed.py` proves every gold task validates and that a
+  re-run changes nothing.
 - [x] **F8** `POST /auth/email/verify/resend` with a per-account limit and a
   "send the link again" action on the home banner.
 - [x] **F9** The verification email now links to the web screen, and
@@ -184,21 +216,30 @@ against the stricter generated types.
 
 ## G. Open questions for you
 
-- [ ] **G1** Currency for client billing and student payouts (the ledger is
-  currency-agnostic; something must be chosen and seeded).
-- [ ] **G2** Who approves payouts, the second-approver threshold, and the identity
-  checks required before paying a student.
-- [ ] **G3** Minimum student age, consent wording and contributor terms before any
-  real work starts.
-- [ ] **G4** The first task types and who authors/owns the AI Data Annotation
-  curriculum.
-- [ ] **G5** Team size and area ownership (to make CODEOWNERS true again), and the
-  target launch date.
+- [x] **G1** Currency: **NGN** for billing and payouts by default, editable by an
+  admin; allowed set NGN/USD/GBP/EUR/GHS/KES/ZAR. Seeded in local and enforced by
+  `platform_settings`.
+- [x] **G2** Payouts: second approver at **≥ NGN 50,000.00**, optional
+  always-require, verified email required by default, deleted/under-age recipients
+  blocked. Enforced in `services/money/payouts.py`, not just the admin form.
+- [x] **G3** Age and consent: minimum **16**, guardian consent below **18**,
+  contributor terms **2026-10-01** (Nelavista Contributor Licence 1.0), recorded
+  per student and checked before work/payout.
+- [x] **G4** Curriculum: owned and authored in house by Nelavista; five task types,
+  all backed by the existing validators. Delivered as F7.
+- [x] **G5** Ownership: CODEOWNERS is `@hiipraise`. The target launch date is a
+  business input and remains outside the build; the release pipeline is D5.
+
+All five are dynamic admin controls, not constants: `/v1/platform/settings`
+(super-admin only) validates, audits and applies them, and `/v1/platform/config`
+publishes the parts a signed-out visitor needs. Admin UI: **Platform** in
+`apps/admin`. Tests: `tests/test_platform_policy.py`.
 
 ## H. Local hygiene
 
 - [x] **H1** `apps/api/.venv` is gitignored.
-- [ ] **H2** Decide whether to delete `apps/api/.venv` or keep it as the documented
-  local interpreter.
+- [x] **H2** `apps/api/.venv` is **kept** as the documented local interpreter and
+  stays gitignored; `uv sync`/`uv run` remain the source of truth and CI uses its
+  own environment. Documented in `docs/runbooks/local-setup.md`.
 - [x] **H3** `packages/api-client/src/generated/schema.d.ts` is committed and the
   freshness gate passes locally.

@@ -29,7 +29,6 @@ from app.models.ledger import (
     EARNING_FAILED,
     EARNING_PAID,
     EARNING_PAYABLE,
-    SECOND_APPROVER_THRESHOLD_MINOR,
     EarningLine,
     PayoutBatch,
     PayoutItem,
@@ -141,15 +140,25 @@ def approve_batch(db: Session, actor: User, batch: PayoutBatch) -> PayoutBatch:
         raise ApiError(409, "batch_not_approvable", "This batch cannot be approved now.")
     if batch.status == BATCH_APPROVED:
         return batch
-    if (
-        batch.total_minor >= SECOND_APPROVER_THRESHOLD_MINOR
-        and batch.created_by == actor.id
-    ):
+    # G2: the threshold is policy, so ops can lower it without a deploy. The
+    # "always" switch closes the gap where one person creates and approves a
+    # string of small batches.
+    from app.services.platform import settings as policy
+
+    configured = policy.get_platform_settings(db)
+    needs_second = (
+        configured.payout_second_approver_always
+        or batch.total_minor >= configured.payout_second_approver_threshold_minor
+    )
+    if needs_second and batch.created_by == actor.id:
         raise ApiError(
             403,
             "second_approver_required",
-            "A second person must approve a payout this large.",
-            {"threshold_minor": SECOND_APPROVER_THRESHOLD_MINOR},
+            "A second person must approve this payout.",
+            {
+                "threshold_minor": configured.payout_second_approver_threshold_minor,
+                "always": configured.payout_second_approver_always,
+            },
         )
     batch.status = BATCH_APPROVED
     batch.approved_by = actor.id
@@ -180,6 +189,27 @@ def pay_batch(db: Session, actor: User, batch: PayoutBatch) -> PayoutBatch:
     provider = PROVIDERS.get(batch.provider)
     if provider is None:
         raise ApiError(400, "unknown_provider", "That payout provider is not configured.")
+
+    # G2: identity checks happen before the provider is called. Once money has
+    # left, a failed check is a reversal, not a validation.
+    from app.services.platform import settings as policy
+
+    configured = policy.get_platform_settings(db)
+    blocked: dict[str, list[str]] = {}
+    for item in items:
+        user = db.get(User, item.user_id)
+        blockers = (
+            policy.payout_blockers(db, user, configured) if user else ["account_missing"]
+        )
+        if blockers:
+            blocked[str(item.user_id)] = blockers
+    if blocked:
+        raise ApiError(
+            409,
+            "payout_blocked",
+            "Some recipients are not ready to be paid. Nothing was sent.",
+            {"blocked": blocked},
+        )
 
     try:
         references = provider.pay(batch, items)

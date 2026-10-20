@@ -64,15 +64,30 @@ def create_opportunity(
         raise ApiError(400, "invalid_opportunity", "A slug and title are required.")
     if db.scalar(select(Opportunity.id).where(Opportunity.slug == slug)) is not None:
         raise ApiError(409, "opportunity_exists", "That opportunity slug is already used.")
+    if type == OPPORTUNITY_MANAGED:
+        # G1: an omitted currency means the configured billing currency. A
+        # project still records the currency it was priced in, so a later
+        # settings change never rewrites an existing contract.
+        from app.services.platform import settings as policy
+
+        configured = policy.get_platform_settings(db)
+        currency = (currency or configured.billing_currency).upper()
+        if currency not in {code.upper() for code in configured.allowed_currencies}:
+            raise ApiError(
+                400,
+                "unsupported_currency",
+                "That currency is not enabled for billing.",
+                {"allowed": list(configured.allowed_currencies)},
+            )
     if currency is not None and len(currency) != 3:
         raise ApiError(400, "invalid_currency", "Use a three-letter currency code.")
     if rate_minor is not None and rate_minor < 0:
         raise ApiError(400, "invalid_rate", "Rate cannot be negative.")
-    if type == OPPORTUNITY_MANAGED and (currency is None or rate_minor is None):
+    if type == OPPORTUNITY_MANAGED and rate_minor is None:
         raise ApiError(
             400,
             "managed_money_required",
-            "Managed work needs a currency and a per-task rate so earnings are explainable.",
+            "Managed work needs a per-task rate so earnings are explainable.",
         )
     if type == OPPORTUNITY_EXTERNAL and (currency or rate_minor):
         # External opportunities never carry fee logic; a rate here would invite it.

@@ -148,12 +148,17 @@ def build_profile(
     scopes: list[str] | None = None,
     internal: bool = False,
     via_share: bool = False,
+    owner: bool = False,
 ) -> dict:
     """Compose the profile from evidence.
 
     `via_share` is the consent exception: a live, scoped share token *is* the
     student's permission, so it works even while the general profile visibility is
     `private` (the student shared one link, not their whole profile).
+
+    `owner` is the other exception: a student can always see their own profile
+    while it is private — that is how they decide what to share. It deliberately
+    does not unlock the internal fields (`account`, `all_skills`).
     """
     chosen = set(scopes or SHARE_SCOPES)
     unknown = chosen - set(SHARE_SCOPES)
@@ -163,7 +168,7 @@ def build_profile(
     skills = _skills(db)
     profile = user.profile
     visibility = profile.profile_visibility if profile else "private"
-    if not internal and not via_share and visibility == "private":
+    if not internal and not owner and not via_share and visibility == "private":
         raise ApiError(403, "profile_private", "This student has not shared their profile.")
 
     body: dict = {

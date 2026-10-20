@@ -34,6 +34,7 @@ from app.models import (  # noqa: E402,F401  (noqa: isort)
     ledger,
     matching,
     ops,
+    platform,
     quality,
     skills,
     talent,

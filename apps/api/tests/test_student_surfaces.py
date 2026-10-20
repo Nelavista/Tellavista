@@ -157,6 +157,26 @@ def test_cohort_invite_accept_flow(api) -> None:
     kinds = [row["kind"] for row in notifications.json()["notifications"]]
     assert "invite" in kinds
 
+    # G3: paid work needs an age on record and the contributor terms accepted.
+    # This test proves the gate and then the flow it protects.
+    blocked = client.post(
+        f"{PREFIX}/work/cohorts/{cohort.id}/respond",
+        json={"accept": True},
+        headers=student_headers,
+    )
+    assert blocked.status_code == 403
+    assert "date_of_birth_missing" in blocked.json()["error"]["details"]["blockers"]
+
+    client.patch(
+        f"{PREFIX}/me", json={"date_of_birth": "2000-01-01"}, headers=student_headers
+    )
+    accepted_terms = client.post(
+        f"{PREFIX}/me/consents",
+        json={"kind": "contributor_terms", "document_version": "2026-10-01"},
+        headers=student_headers,
+    )
+    assert accepted_terms.status_code == 201, accepted_terms.text
+
     respond = client.post(
         f"{PREFIX}/work/cohorts/{cohort.id}/respond",
         json={"accept": True},

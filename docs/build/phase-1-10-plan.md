@@ -89,8 +89,9 @@ project, including with the connection dropped*: web is covered by
 tests in `mobile-core.test.ts` and `Work.tsx`, and on web it is **owed**
 (`REMAINING_WORK.md` B6 note: offline-safe answer saving).
 
-**Blocked on you:** the AI Data Annotation curriculum itself (F7/G4) — the engine
-runs on the sample content; the content is an authoring decision, not code.
+**Delivered since:** the AI Data Annotation curriculum itself (F7/G4) —
+`apps/api/app/seed/curriculum.py` now ships the lessons, practice samples, five
+gold tasks and assessment items, with a test that every gold answer validates.
 
 ---
 
@@ -245,17 +246,15 @@ started; it is an operational milestone, not a coding one.
 
 | # | Item | Phase | Owner |
 |---|---|---|---|
-| 1 | Talent profile + share UI on web and mobile (B13) | 7 | code |
-| 2 | Materials reader, Ask, CBT results on web and mobile (B14) | 8 | code |
-| 3 | Web offline-safe practice/lesson answers (B6 remainder) | 2 | code |
-| 4 | Email verification link → absolute URL (F9) | 1 | code |
-| 5 | Re-verification prompt after suspension (B7 remainder) | 3 | code |
-| 6 | Store screenshots/feature graphic from a real build (D4) | 9 | design + you |
-| 7 | Maestro smoke on a dev build | 9 | code + device |
-| 8 | Run and record the load test on DEV (F6 remainder) | 10 | you + code |
-| 9 | Security review; beta; pilot; go/no-go; cutover | 10 | you |
-| 10 | AI Data Annotation content (F7/G4) | 2 | you |
-| 11 | Currency, payout approver, age/consent, team ownership (G1–G5) | — | you |
+| 1 | Web offline-safe practice/lesson answers (B6 remainder) | 2 | code |
+| 2 | Re-verification prompt after suspension (B7 remainder) | 3 | code |
+| 3 | Store screenshots from a real build (D4; feature graphic is generated) | 9 | design + you |
+| 4 | Maestro smoke on a dev build | 9 | code + device |
+| 5 | Run and record the load test on DEV (F6 remainder) | 10 | you + code |
+| 6 | Security review; beta; pilot; go/no-go; cutover | 10 | you |
+
+Delivered since this list was written: B13, B14, the AI Data Annotation content
+(F7/G4) and the G1–G5 policy controls.
 
 The single source of truth for status is `REMAINING_WORK.md`; this document is
 the per-phase narrative behind it.

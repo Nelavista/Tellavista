@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from fastapi import APIRouter, Depends
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_current_user
@@ -22,14 +23,16 @@ from app.api.v1.domains.identity.schemas import (
     PushDeviceListOut,
     PushDeviceOut,
 )
+from app.api.v1.domains.platform.schemas import ConsentIn, ConsentListOut, ConsentOut
 from app.core.errors import ApiError
 from app.core.time import utcnow
 from app.db.session import get_db
 from app.models.engagement import PushDevice
-from app.models.identity import User
+from app.models.identity import Consent, User
 from app.services import notifications
 from app.services.academia import campus
 from app.services.identity import profile as profile_service
+from app.services.platform import settings as policy
 
 router = APIRouter(prefix="/me", tags=["identity"])
 
@@ -93,6 +96,56 @@ def choose_path(
     db.commit()
     db.refresh(user)
     return _profile_out(user)
+
+
+@router.get("/consents", response_model=ConsentListOut)
+def list_consents(
+    user: User = Depends(get_current_user), db: Session = Depends(get_db)
+) -> ConsentListOut:
+    """Append-only: the history is returned so an old agreement stays visible."""
+    rows = db.scalars(
+        select(Consent)
+        .where(Consent.user_id == user.id)
+        .order_by(Consent.id.desc())
+        .limit(100)
+    ).all()
+    return ConsentListOut(
+        consents=[
+            ConsentOut(
+                id=row.id,
+                kind=row.kind,
+                document_version=row.document_version,
+                granted=row.granted,
+                created_at=row.created_at,
+            )
+            for row in rows
+        ]
+    )
+
+
+@router.post("/consents", status_code=201, response_model=ConsentOut)
+def record_consent(
+    payload: ConsentIn,
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> ConsentOut:
+    """Agreeing to a document appends a row; it never edits the previous one."""
+    row = policy.record_consent(
+        db,
+        user,
+        kind=payload.kind,
+        document_version=payload.document_version,
+        granted=payload.granted,
+    )
+    db.commit()
+    db.refresh(row)
+    return ConsentOut(
+        id=row.id,
+        kind=row.kind,
+        document_version=row.document_version,
+        granted=row.granted,
+        created_at=row.created_at,
+    )
 
 
 @router.get("/languages", response_model=LanguagesOut)

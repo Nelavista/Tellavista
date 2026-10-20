@@ -16,6 +16,16 @@ const AcademiaDashboard = React.lazy(() =>
   import('./routes/AcademiaDashboard').then((m) => ({ default: m.AcademiaDashboard })),
 );
 const Campus = React.lazy(() => import('./routes/Campus').then((m) => ({ default: m.Campus })));
+const Materials = React.lazy(() =>
+  import('./routes/AcademiaMaterials').then((m) => ({ default: m.Materials })),
+);
+const MaterialReader = React.lazy(() =>
+  import('./routes/AcademiaMaterials').then((m) => ({ default: m.MaterialReader })),
+);
+const AskNelavista = React.lazy(() =>
+  import('./routes/AskNelavista').then((m) => ({ default: m.AskNelavista })),
+);
+const Cbt = React.lazy(() => import('./routes/Cbt').then((m) => ({ default: m.Cbt })));
 const Skills = React.lazy(() => import('./routes/Skills').then((m) => ({ default: m.Skills })));
 const SkillDetail = React.lazy(() =>
   import('./routes/SkillDetail').then((m) => ({ default: m.SkillDetail })),
@@ -51,6 +61,10 @@ const AssignmentDetail = React.lazy(() =>
 );
 const Earnings = React.lazy(() => import('./routes/Earnings').then((m) => ({ default: m.Earnings })));
 const Settings = React.lazy(() => import('./routes/Settings').then((m) => ({ default: m.Settings })));
+const Talent = React.lazy(() => import('./routes/Talent').then((m) => ({ default: m.Talent })));
+const SharedProfile = React.lazy(() =>
+  import('./routes/SharedProfile').then((m) => ({ default: m.SharedProfile })),
+);
 const VerifyEmail = React.lazy(() =>
   import('./routes/VerifyEmail').then((m) => ({ default: m.VerifyEmail })),
 );
@@ -132,6 +146,38 @@ function RouteTable(): JSX.Element {
             element={
               <RequireAuth>
                 <AcademiaDashboard />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/academia/materials"
+            element={
+              <RequireAuth>
+                <Materials />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/academia/materials/:materialId"
+            element={
+              <RequireAuth>
+                <MaterialReader />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/academia/ask"
+            element={
+              <RequireAuth>
+                <AskNelavista />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/academia/cbt"
+            element={
+              <RequireAuth>
+                <Cbt />
               </RequireAuth>
             }
           />
@@ -231,6 +277,16 @@ function RouteTable(): JSX.Element {
               </RequireAuth>
             }
           />
+          <Route
+            path="/talent"
+            element={
+              <RequireAuth>
+                <Talent />
+              </RequireAuth>
+            }
+          />
+          {/* Public by design: the token in the URL is the grant (B13). */}
+          <Route path="/share/:token" element={<SharedProfile />} />
           <Route
             path="/skills"
             element={

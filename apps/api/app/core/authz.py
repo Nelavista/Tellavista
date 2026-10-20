@@ -43,6 +43,9 @@ PERMISSION_BY_ROLE: dict[str, frozenset[str]] = {
             "payout.request",
             "import.run",
             "audit.read",
+            # Ops can read the policy it works under; only a super admin may
+            # change currency, payout thresholds or the terms in force.
+            "settings.read",
         }
     ),
     ROLE_SUPER_ADMIN: frozenset({"*"}),

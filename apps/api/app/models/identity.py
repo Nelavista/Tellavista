@@ -102,7 +102,8 @@ class UserProfile(Base, TimestampMixin):
 
     # Choose Path (PRD §2): 'academia' | 'skills'; null until the student chooses.
     preferred_path: Mapped[str | None] = mapped_column(String(16))
-    # Age hook only — 18 is the policy pending legal review, not enforced yet.
+    # Required before paid work is accepted. The minimum age and the age that
+    # needs guardian consent are settings (G3), not constants in this model.
     date_of_birth: Mapped[date | None] = mapped_column(Date)
     onboarding_completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
 
@@ -127,6 +128,7 @@ CONSENT_KINDS: tuple[str, ...] = (
     "terms_of_service",
     "privacy_policy",
     "contributor_terms",
+    "guardian_consent",
     "marketing",
 )
 
@@ -206,8 +208,9 @@ class Consent(Base):
     There is no `updated_at` for the same reason `AuditLog` has none.
 
     `user_id` is `SET NULL` on deletion: the evidence is retained after an account
-    is anonymised, but stops pointing at a person. Ages and terms are hooks only
-    — 18 remains a policy under legal review, not enforced here.
+    is anonymised, but stops pointing at a person. The age thresholds and which
+    terms version is current are read from `platform_settings` (G3), so a version
+    bump asks the student again instead of silently reusing the old row.
     """
 
     __tablename__ = "consents"

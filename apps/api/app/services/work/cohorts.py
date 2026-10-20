@@ -240,6 +240,12 @@ def respond_invite(db: Session, user: User, cohort_id: int, *, accept: bool) -> 
         if active >= cohort.capacity:
             raise ApiError(409, "cohort_full", "This cohort is already full.")
 
+    # G3: accepting an invitation is the moment paid work starts, so age and
+    # contributor terms are checked here rather than in the button that calls it.
+    from app.services.platform import settings as policy
+
+    policy.ensure_work_eligible(db, user)
+
     member.status = MEMBER_ACTIVE
     member.joined_at = utcnow()
     if cohort.status == COHORT_FORMING and cohort.capacity is not None:

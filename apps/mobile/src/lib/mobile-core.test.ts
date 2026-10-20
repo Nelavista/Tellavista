@@ -81,6 +81,18 @@ describe('deep links', () => {
     });
   });
 
+  it('opens the Academia and talent screens from a shared link', () => {
+    expect(parseDeepLink('nelavista://academia')).toEqual({ name: 'academia' });
+    expect(parseDeepLink('https://nelavista.com/academia/materials')).toEqual({ name: 'materials' });
+    expect(parseDeepLink('https://nelavista.com/academia/materials/42')).toEqual({
+      name: 'material',
+      id: 42,
+    });
+    expect(parseDeepLink('https://nelavista.com/academia/ask')).toEqual({ name: 'ask' });
+    expect(parseDeepLink('https://nelavista.com/academia/cbt')).toEqual({ name: 'cbt' });
+    expect(parseDeepLink('https://nelavista.com/talent')).toEqual({ name: 'talent' });
+  });
+
   it('refuses a foreign host or unknown path', () => {
     expect(parseDeepLink('https://evil.example/skills')).toBeNull();
     expect(parseDeepLink('https://nelavista.com/nope')).toBeNull();

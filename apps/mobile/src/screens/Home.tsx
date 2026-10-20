@@ -62,6 +62,13 @@ export function Home({ me, navigate }: { me: MeOut; navigate: (route: Route) => 
           <Button label="Transcript" onPress={() => navigate({ name: 'transcript' })} tone="ghost" />
         </Row>
         <Row>
+          <Button label="Academia" onPress={() => navigate({ name: 'academia' })} tone="ghost" />
+          <Button label="Materials" onPress={() => navigate({ name: 'materials' })} tone="ghost" />
+          <Button label="Ask" onPress={() => navigate({ name: 'ask' })} tone="ghost" />
+        </Row>
+        <Row>
+          <Button label="Practice" onPress={() => navigate({ name: 'cbt' })} tone="ghost" />
+          <Button label="Talent" onPress={() => navigate({ name: 'talent' })} tone="ghost" />
           <Button label="Notifications" onPress={() => navigate({ name: 'notifications' })} tone="ghost" />
           <Button label="Settings" onPress={() => navigate({ name: 'settings' })} tone="ghost" />
         </Row>

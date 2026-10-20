@@ -11,6 +11,7 @@ const LINKS: Array<{ path: string; label: string }> = [
   { path: '/review', label: 'Review queue' },
   { path: '/money', label: 'Money' },
   { path: '/content', label: 'Content' },
+  { path: '/platform', label: 'Platform settings' },
   { path: '/security', label: 'Security' },
 ];
 

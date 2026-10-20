@@ -14,6 +14,7 @@ from app.api.v1.domains.identity import routes as identity_routes
 from app.api.v1.domains.money import routes as money_routes
 from app.api.v1.domains.opportunities import routes as opportunity_routes
 from app.api.v1.domains.ops import routes as ops_routes
+from app.api.v1.domains.platform import routes as platform_routes
 from app.api.v1.domains.skills import content_routes as skills_content_routes
 from app.api.v1.domains.skills import routes as skills_routes
 from app.api.v1.domains.talent import routes as talent_routes
@@ -46,6 +47,10 @@ api_v1_router.include_router(money_routes.router)
 
 # Phase 8 — Academia connected.
 api_v1_router.include_router(academia_routes.router)
+
+# Platform policy (G1–G5): currency, payout thresholds, age rules, terms and
+# curriculum ownership. The public config endpoint is read by every client.
+api_v1_router.include_router(platform_routes.router)
 
 # Internal tools: imports, support lookup, audit trail.
 api_v1_router.include_router(ops_routes.router)

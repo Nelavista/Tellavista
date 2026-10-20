@@ -217,6 +217,25 @@ export function AcademiaDashboard(): JSX.Element {
         />
       </section>
 
+      <section className="nv-card">
+        <h2 className="nv-h2">Go deeper</h2>
+        <p className="nv-muted">
+          Search the material for your courses, ask a question grounded in it, or practise and see what to
+          work on next.
+        </p>
+        <p className="nv-row">
+          <Link className="nv-button nv-button--ghost" to="/academia/materials">
+            Study materials
+          </Link>
+          <Link className="nv-button nv-button--ghost" to="/academia/ask">
+            Ask Nelavista
+          </Link>
+          <Link className="nv-button nv-button--ghost" to="/academia/cbt">
+            Practice (CBT)
+          </Link>
+        </p>
+      </section>
+
       <button className="nv-button nv-button--ghost" type="button" onClick={() => setAttempt((n) => n + 1)}>
         Refresh
       </button>

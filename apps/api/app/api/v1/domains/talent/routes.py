@@ -1,18 +1,29 @@
-"""Talent profile endpoints (Phase 7).
+"""Talent profile endpoints (Phase 7 / B13).
 
 The profile is computed from evidence, so there is no "edit my profile" route for
 skills or history: a student can change their availability and the scopes they
 share, never the proof itself. Share links are the student's consent boundary:
 each one is scoped, expiring and revocable, and the token is only ever returned
 once, at creation.
+
+Every route now declares its response model (A3). The public share and the
+internal ops view use the same shape; only the scopes and `account` differ, so a
+screen written against one works for the other.
 """
 from __future__ import annotations
 
 from fastapi import APIRouter, Depends
-from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_current_user, require_flag
+from app.api.v1.domains.talent.schemas import (
+    ShareCreatedOut,
+    ShareIn,
+    ShareListOut,
+    ShareRevokedOut,
+    TalentProfileOut,
+    TalentTranscriptOut,
+)
 from app.core import flags
 from app.core.authz import require_permission
 from app.core.errors import ApiError
@@ -27,34 +38,30 @@ router = APIRouter(
 )
 
 
-class ShareIn(BaseModel):
-    label: str | None = Field(default=None, max_length=120)
-    scopes: list[str] | None = None
-    ttl_days: int = Field(default=talent.DEFAULT_TTL_DAYS, ge=1, le=talent.MAX_TTL_DAYS)
-
-
-@router.get("/me")
+@router.get("/me", response_model=TalentProfileOut)
 def my_profile(
     user: User = Depends(get_current_user), db: Session = Depends(get_db)
 ) -> dict:
-    return talent.build_profile(db, user)
+    # `owner=True`: a private profile is still visible to the person deciding
+    # what to share. It is the public share that stays blocked.
+    return talent.build_profile(db, user, owner=True)
 
 
-@router.get("/me/transcript")
+@router.get("/me/transcript", response_model=TalentTranscriptOut)
 def my_transcript(
     user: User = Depends(get_current_user), db: Session = Depends(get_db)
 ) -> dict:
     return talent.transcript_only(db, user)
 
 
-@router.get("/me/shares")
+@router.get("/me/shares", response_model=ShareListOut)
 def list_shares(
     user: User = Depends(get_current_user), db: Session = Depends(get_db)
 ) -> dict:
     return {"shares": talent.list_shares(db, user)}
 
 
-@router.post("/me/shares", status_code=201)
+@router.post("/me/shares", status_code=201, response_model=ShareCreatedOut)
 def create_share(
     payload: ShareIn,
     user: User = Depends(get_current_user),
@@ -74,7 +81,7 @@ def create_share(
     }
 
 
-@router.post("/me/shares/{share_id}/revoke")
+@router.post("/me/shares/{share_id}/revoke", response_model=ShareRevokedOut)
 def revoke_share(
     share_id: int,
     user: User = Depends(get_current_user),
@@ -85,7 +92,7 @@ def revoke_share(
     return {"id": share.id, "revoked_at": share.revoked_at}
 
 
-@router.get("/share/{token}")
+@router.get("/share/{token}", response_model=TalentProfileOut)
 def public_share(token: str, db: Session = Depends(get_db)) -> dict:
     """Public by design: the token is the grant, and it can be revoked or expire."""
     if len(token) < 20 or len(token) > 200:
@@ -93,7 +100,7 @@ def public_share(token: str, db: Session = Depends(get_db)) -> dict:
     return talent.view_share(db, token)
 
 
-@router.get("/students/{user_id}")
+@router.get("/students/{user_id}", response_model=TalentProfileOut)
 def student_profile(
     user_id: int,
     _staff: User = Depends(require_permission("talent.read")),

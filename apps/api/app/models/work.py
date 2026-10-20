@@ -13,7 +13,7 @@ from __future__ import annotations
 
 from datetime import date, datetime
 
-from sqlalchemy import Date, DateTime, ForeignKey, Integer, String, UniqueConstraint, func
+from sqlalchemy import Boolean, Date, DateTime, ForeignKey, Integer, String, UniqueConstraint, func
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db.base import Base, TimestampMixin
@@ -38,6 +38,7 @@ ASSIGNMENT_IN_PROGRESS = "in_progress"
 ASSIGNMENT_SUBMITTED = "submitted"
 ASSIGNMENT_APPROVED = "approved"
 ASSIGNMENT_REWORK = "rework"
+ASSIGNMENT_REJECTED = "rejected"
 
 SUBMISSION_SUBMITTED = "submitted"
 SUBMISSION_APPROVED = "approved"
@@ -150,3 +151,9 @@ class Submission(Base, TimestampMixin):
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )
     idempotency_key: Mapped[str | None] = mapped_column(String(64), unique=True)
+    # Gold tasks are mixed into live work so a reviewer's judgement can be checked
+    # against a known answer. `gold_expected` is never sent to the student.
+    is_gold: Mapped[bool] = mapped_column(
+        Boolean, default=False, server_default="false", nullable=False
+    )
+    gold_expected: Mapped[dict | None] = mapped_column(JSONPayload)

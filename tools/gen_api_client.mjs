@@ -7,15 +7,21 @@
  *   node tools/gen_api_client.mjs --schema <file> # use a saved openapi.json (CI)
  *
  * CI runs this and fails if the committed client differs (ADR-0001 freshness check).
- * Requires `openapi-typescript` (add to devDependencies when first used):
- *   pnpm add -D -w openapi-typescript
+ * Requires `openapi-typescript`, a root devDependency.
+ *
+ * The CLI is executed with the current Node binary rather than through a package
+ * manager: on Windows `pnpm` is a `.cmd` shim, which `execFileSync` cannot spawn
+ * (ENOENT). Running the resolved JS entry point works on every OS.
  */
 import { execFileSync } from 'node:child_process';
 import { mkdirSync, existsSync } from 'node:fs';
+import { createRequire } from 'node:module';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+const require = createRequire(import.meta.url);
+const cli = resolve(dirname(require.resolve('openapi-typescript/package.json')), 'bin/cli.js');
 const out = resolve(root, 'packages/api-client/src/generated/schema.d.ts');
 mkdirSync(dirname(out), { recursive: true });
 
@@ -33,9 +39,9 @@ if (schemaFlagIndex !== -1 && !existsSync(source)) {
 }
 
 try {
-  execFileSync('pnpm', ['exec', 'openapi-typescript', source, '-o', out], { stdio: 'inherit', cwd: root });
+  execFileSync(process.execPath, [cli, source, '-o', out], { stdio: 'inherit', cwd: root });
   console.log(`[gen_api_client] wrote ${out}`);
 } catch (err) {
-  console.error('[gen_api_client] generation failed. Is `openapi-typescript` installed?', err.message);
+  console.error(`[gen_api_client] generation failed: ${err.message}`);
   process.exit(1);
 }

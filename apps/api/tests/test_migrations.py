@@ -6,9 +6,10 @@ the real DDL in both directions (so a broken `downgrade` fails CI, not a
 production rollback) and then compares the resulting schema with
 `Base.metadata`, so migration and models cannot drift apart silently.
 
-Postgres *execution* arrives with the CI service container in PR 0.14; until
-then the Postgres dialect is checked by compiling the migration offline
-(`alembic upgrade head --sql`), which catches dialect-specific DDL errors.
+Postgres *execution* runs when `POSTGRES_TEST_URL` is set — the CI job starts a
+service container and exports it, so the suite applies the real DDL to Postgres
+and reverses it. Locally the Postgres dialect is still checked by compiling the
+migration offline (`alembic upgrade head --sql`).
 """
 from __future__ import annotations
 
@@ -17,13 +18,63 @@ import subprocess
 import sys
 from pathlib import Path
 
-from sqlalchemy import create_engine, inspect
+import pytest
+from sqlalchemy import create_engine, inspect, text
 
 from app.db.base import Base
 
 API_ROOT = Path(__file__).resolve().parents[1]
 POSTGRES_URL = "postgresql://ci:ci@localhost:5432/ci_offline"  # never connected to
+# Set by ci-api.yml's `migrations-postgres` job; unset locally, where the suite
+# skips the execution test rather than failing on a database that is not there.
+POSTGRES_TEST_URL = os.environ.get("POSTGRES_TEST_URL")
 
+# Added by 20261020_1000 (G1–G5). One row of policy, created on first read.
+PLATFORM_TABLES = {"platform_settings"}
+# Added by 20261018_0900 (F1/C8, F4/D1). The columns are nullable and expand-only.
+TWO_FACTOR_COLUMNS = {"totp_secret", "totp_enabled_at", "totp_recovery_hashes"}
+PUSH_TABLES = {"push_devices"}
+# Added by 20261017_1300 (gold tasks). No new tables: two columns on submissions.
+GOLD_TASK_COLUMNS = {"is_gold", "gold_expected"}
+# Added by 20261017_1200 (Phase 7/8 extensions).
+TALENT_EXTENSION_TABLES = {
+    "user_languages",
+    "user_availability",
+    "talent_shares",
+    "opportunity_applications",
+    "practice_attempts",
+    "practical_submissions",
+    "ask_sessions",
+    "ask_messages",
+}
+# Added by 20261017_1100 (engagement and ops).
+ENGAGEMENT_OPS_TABLES = {
+    "notifications",
+    "messages",
+    "import_runs",
+    "campus_info",
+    "university_waitlist",
+}
+# Added by 20261017_1000 (money).
+LEDGER_TABLES = {
+    "ledger_transactions",
+    "ledger_entries",
+    "earning_lines",
+    "department_shares",
+    "payout_batches",
+    "payout_items",
+    "exchange_rate_snapshots",
+    "reconciliation_runs",
+}
+# Added by 20261017_0900 (quality).
+QUALITY_TABLES = {
+    "quality_standards",
+    "quality_reviews",
+    "quality_records",
+    "quality_consequences",
+}
+# Added by 20261016_1800 (PR 0.6).
+JOBS_TABLES = {"jobs"}
 # Added by 20261016_1700 (PR 0.3b).
 MATCHING_WORK_TABLES = {
     "opportunities",
@@ -103,14 +154,30 @@ def test_upgrade_downgrade_upgrade_round_trip(tmp_path: Path) -> None:
     up = _alembic("upgrade", "head", db_url=url)
     assert up.returncode == 0, up.stderr
     tables = set(inspect(engine).get_table_names())
-    assert MATCHING_WORK_TABLES <= tables and VERIFICATION_TABLES <= tables
-    assert SKILLS_TABLES <= tables and ACADEMIA_TABLES <= tables
-    assert IDENTITY_TABLES <= tables and CREDENTIAL_TABLES <= tables
-    assert "role_id" in {c["name"] for c in inspect(engine).get_columns("users")}
+    assert JOBS_TABLES <= tables and MATCHING_WORK_TABLES <= tables
+    assert VERIFICATION_TABLES <= tables and SKILLS_TABLES <= tables
+    assert ACADEMIA_TABLES <= tables and IDENTITY_TABLES <= tables
+    assert CREDENTIAL_TABLES <= tables and QUALITY_TABLES <= tables
+    assert LEDGER_TABLES <= tables and ENGAGEMENT_OPS_TABLES <= tables
+    assert TALENT_EXTENSION_TABLES <= tables and PUSH_TABLES <= tables
+    assert PLATFORM_TABLES <= tables
+    user_columns = {c["name"] for c in inspect(engine).get_columns("users")}
+    assert "role_id" in user_columns
+    assert TWO_FACTOR_COLUMNS <= user_columns
+    submission_columns = {c["name"] for c in inspect(engine).get_columns("submissions")}
+    assert GOLD_TASK_COLUMNS <= submission_columns
 
     # Walk back one revision at a time. Each downgrade must remove exactly its own
     # revision's tables and leave every earlier one in place (expand-only).
     for removed in (
+        PLATFORM_TABLES,
+        PUSH_TABLES,
+        GOLD_TASK_COLUMNS,
+        TALENT_EXTENSION_TABLES,
+        ENGAGEMENT_OPS_TABLES,
+        LEDGER_TABLES,
+        QUALITY_TABLES,
+        JOBS_TABLES,
         MATCHING_WORK_TABLES,
         VERIFICATION_TABLES,
         SKILLS_TABLES,
@@ -121,15 +188,30 @@ def test_upgrade_downgrade_upgrade_round_trip(tmp_path: Path) -> None:
         down = _alembic("downgrade", "-1", db_url=url)
         assert down.returncode == 0, down.stderr
         tables = set(inspect(engine).get_table_names())
-        assert removed.isdisjoint(tables), f"downgrade left {removed & tables} behind"
+        if removed is PUSH_TABLES:
+            # 20261018_0900 also adds the 2FA columns; its downgrade removes both.
+            assert removed.isdisjoint(tables), f"downgrade left {removed & tables} behind"
+            assert TWO_FACTOR_COLUMNS.isdisjoint(
+                {c["name"] for c in inspect(engine).get_columns("users")}
+            )
+        elif removed is GOLD_TASK_COLUMNS:
+            # 1300 only adds columns; its downgrade removes those.
+            assert removed.isdisjoint(
+                {c["name"] for c in inspect(engine).get_columns("submissions")}
+            )
+        else:
+            assert removed.isdisjoint(tables), f"downgrade left {removed & tables} behind"
         assert SKELETON_TABLES <= tables
 
     assert "role_id" not in {c["name"] for c in inspect(engine).get_columns("users")}
+    assert TWO_FACTOR_COLUMNS.isdisjoint(
+        {c["name"] for c in inspect(engine).get_columns("users")}
+    )
 
     again = _alembic("upgrade", "head", db_url=url)
     assert again.returncode == 0, again.stderr
     tables = set(inspect(engine).get_table_names())
-    assert MATCHING_WORK_TABLES <= tables and VERIFICATION_TABLES <= tables
+    assert JOBS_TABLES <= tables and MATCHING_WORK_TABLES <= tables
     assert ACADEMIA_TABLES <= tables and CREDENTIAL_TABLES <= tables
 
 
@@ -166,8 +248,46 @@ def test_postgres_ddl_compiles(tmp_path: Path) -> None:
     assert "CREATE TABLE TASK_TEMPLATES" in ddl
     assert "CREATE TABLE VERIFICATION_EVENTS" in ddl
     assert "CREATE TABLE SUBMISSIONS" in ddl
+    assert "CREATE TABLE JOBS" in ddl
+    assert "CREATE TABLE PLATFORM_SETTINGS" in ddl
     assert "JSONB" in ddl, "JSON payload columns must be JSONB on Postgres"
     assert "SET NOT NULL" in ddl, "the timestamp tightening must reach Postgres"
+
+
+@pytest.mark.skipif(
+    not POSTGRES_TEST_URL, reason="POSTGRES_TEST_URL is unset; CI's service container sets it"
+)
+def test_migrations_execute_on_postgres() -> None:
+    """Apply the real DDL to Postgres, reverse it, and apply it again (F2).
+
+    SQLite's round trip cannot catch a Postgres-only failure — a bad JSONB
+    default, an index on an expression, a constraint name that is too long. This
+    runs the same migrations against the database production actually uses.
+    """
+    assert POSTGRES_TEST_URL is not None
+    engine = create_engine(POSTGRES_TEST_URL)
+    with engine.connect() as conn:
+        conn.execute(text("DROP SCHEMA public CASCADE"))
+        conn.execute(text("CREATE SCHEMA public"))
+        conn.commit()
+
+    up = _alembic("upgrade", "head", db_url=POSTGRES_TEST_URL)
+    assert up.returncode == 0, up.stderr
+    tables = set(inspect(engine).get_table_names())
+    assert JOBS_TABLES <= tables and MATCHING_WORK_TABLES <= tables
+    assert LEDGER_TABLES <= tables and PUSH_TABLES <= tables
+    assert PLATFORM_TABLES <= tables
+    user_columns = {c["name"] for c in inspect(engine).get_columns("users")}
+    assert TWO_FACTOR_COLUMNS <= user_columns
+
+    down = _alembic("downgrade", "base", db_url=POSTGRES_TEST_URL)
+    assert down.returncode == 0, down.stderr
+    remaining = set(inspect(engine).get_table_names()) - {"alembic_version"}
+    assert remaining == set(), f"downgrade to base left {remaining} behind"
+
+    again = _alembic("upgrade", "head", db_url=POSTGRES_TEST_URL)
+    assert again.returncode == 0, again.stderr
+    assert PUSH_TABLES <= set(inspect(engine).get_table_names())
 
 
 def test_revision_chain_is_linked() -> None:
@@ -177,6 +297,9 @@ def test_revision_chain_is_linked() -> None:
     assert all(
         revision in proc.stdout
         for revision in (
+            "20261020_1000",
+            "20261018_0900",
+            "20261016_1800",
             "20261016_1700",
             "20261016_1600",
             "20261016_1500",

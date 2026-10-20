@@ -33,6 +33,23 @@ Every integration has a safe local fallback or is cleanly disabled:
 
 `.env.local` is gitignored. Copy from the relevant `.env.example`.
 
+## Python interpreter (H2)
+
+`apps/api/.venv` is **kept** as the documented local interpreter and stays
+gitignored. It is a developer cache, not source: `uv sync` is still the way to
+create or refresh it, and CI creates its own environment with `uv run` rather than
+reusing a committed one.
+
+Use it explicitly when you want to run a command without `uv`:
+
+```bash
+apps/api/.venv/Scripts/python -m pytest        # Windows
+apps/api/.venv/bin/python -m pytest            # macOS / Linux
+```
+
+Do not commit it, do not copy it between machines, and delete it freely if it
+misbehaves — `make bootstrap` recreates it.
+
 ## Troubleshooting
 - **API exits with "Invalid configuration"** → that is the fail-fast contract. Read the message; a required variable is missing.
 - **Port clash** → the map above is fixed; stop whatever holds the port rather than moving these.

@@ -1,0 +1,134 @@
+name: Release · Mobile (tag)
+
+# D5: signed store builds come from a version tag, never from a branch head.
+# Native builds run on EAS (no Mac in the team); this workflow only decides who
+# may start one and when. See docs/runbooks/mobile-release.md.
+#
+# Required repository configuration:
+#   secret      EXPO_TOKEN             Expo access token (robot/CI user)
+#   environment production-mobile      required reviewers = manual approval
+on:
+  push:
+    tags: ['v*.*.*']
+  workflow_dispatch:
+    inputs:
+      profile:
+        description: EAS build profile
+        type: choice
+        options: [preview, production]
+        default: preview
+      submit:
+        description: Submit to TestFlight / Play after the build
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mobile-release
+  cancel-in-progress: false
+
+jobs:
+  gate:
+    name: Release gate
+    runs-on: ubuntu-latest
+    environment: production-mobile      # <-- manual approval happens here
+    outputs:
+      profile: ${{ steps.profile.outputs.profile }}
+    steps:
+      - name: Choose the profile
+        id: profile
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "profile=${{ inputs.profile }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "profile=production" >> "$GITHUB_OUTPUT"
+          fi
+      - run: |
+          echo "::notice::Approved mobile release from ${{ github.ref }} (profile: ${{ steps.profile.outputs.profile }})"
+
+  verify:
+    name: Typecheck and version match
+    needs: gate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Typecheck
+        run: pnpm --filter @nelavista/mobile typecheck
+      - name: Tag matches expo.version
+        # A tag that says v2.1.0 must not build a binary that says 1.0.0: the
+        # store would reject the upload and the force-update policy (which keys
+        # off appVersion) would silently disagree with the release.
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          tag="${GITHUB_REF_NAME#v}"
+          version=$(APP_VARIANT=production node -p "require('./apps/mobile/app.config.js').expo.version")
+          echo "tag=$tag expo.version=$version"
+          test "$tag" = "$version" || {
+            echo "::error::Tag $GITHUB_REF_NAME does not match expo.version $version in apps/mobile/app.config.js"
+            exit 1
+          }
+
+  build:
+    name: EAS build (iOS + Android)
+    needs: [gate, verify]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: pnpm
+      - uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+      - run: pnpm install --frozen-lockfile
+      - name: Build both platforms
+        # No `--no-wait`: the submit job runs next and `eas submit --latest`
+        # needs a *finished* build, not a queued one. EAS builds take a while;
+        # this job's timeout is the only thing that has to accommodate that.
+        working-directory: apps/mobile
+        timeout-minutes: 120
+        env:
+          APP_VARIANT: ${{ needs.gate.outputs.profile == 'production' && 'production' || 'preview' }}
+        run: |
+          eas build --platform all --profile "${{ needs.gate.outputs.profile }}" \
+            --non-interactive
+      - name: What happens next
+        run: |
+          echo "::notice::Builds finished on EAS. Promote them to TestFlight / Play internal testing, then stage the rollout by hand (docs/runbooks/mobile-release.md)."
+
+  submit:
+    name: Submit to the stores
+    needs: [gate, build]
+    if: ${{ needs.gate.outputs.profile == 'production' && (github.event_name != 'workflow_dispatch' || inputs.submit) }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: pnpm
+      - uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+      - run: pnpm install --frozen-lockfile
+      # Submission uses the newest finished production build. Staged rollout,
+      # phased release and the rollback path stay manual on purpose.
+      - name: eas submit (iOS)
+        working-directory: apps/mobile
+        run: eas submit --platform ios --latest --non-interactive
+      - name: eas submit (Android)
+        working-directory: apps/mobile
+        run: eas submit --platform android --latest --non-interactive

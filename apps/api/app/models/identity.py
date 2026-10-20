@@ -59,6 +59,16 @@ class User(Base, TimestampMixin):
     # is never hard-deleted because payments and audit rows must stay explainable.
     deleted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
 
+    # --- Two-factor (F1/C8) ---
+    # Base32 TOTP secret. It is stored only while 2FA is being enrolled or after
+    # it is enabled; a disabled account keeps it so re-enabling does not start
+    # from scratch. `totp_enabled_at` is the switch the login flow reads.
+    totp_secret: Mapped[str | None] = mapped_column(String(64))
+    totp_enabled_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    # SHA-256 hashes of the one-time recovery codes. The plaintext codes are
+    # returned exactly once, when 2FA is confirmed.
+    totp_recovery_hashes: Mapped[list | None] = mapped_column(JSONPayload)
+
     # Unidirectional: nothing needs `role.users` yet, and leaving it out keeps
     # this module free of a cycle with app.models.admin.
     role: Mapped[Role | None] = relationship()
@@ -84,13 +94,16 @@ class UserProfile(Base, TimestampMixin):
     )
     display_name: Mapped[str | None] = mapped_column(String(150))
     avatar_url: Mapped[str | None] = mapped_column(String(1024))
+    # Used by matching only when an opportunity says location matters.
+    location: Mapped[str | None] = mapped_column(String(120))
     bio: Mapped[str | None] = mapped_column(String(500))
     locale: Mapped[str] = mapped_column(String(10), default="en", nullable=False)
     timezone: Mapped[str | None] = mapped_column(String(64))
 
     # Choose Path (PRD §2): 'academia' | 'skills'; null until the student chooses.
     preferred_path: Mapped[str | None] = mapped_column(String(16))
-    # Age hook only — 18 is the policy pending legal review, not enforced yet.
+    # Required before paid work is accepted. The minimum age and the age that
+    # needs guardian consent are settings (G3), not constants in this model.
     date_of_birth: Mapped[date | None] = mapped_column(Date)
     onboarding_completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
 
@@ -115,6 +128,7 @@ CONSENT_KINDS: tuple[str, ...] = (
     "terms_of_service",
     "privacy_policy",
     "contributor_terms",
+    "guardian_consent",
     "marketing",
 )
 
@@ -194,8 +208,9 @@ class Consent(Base):
     There is no `updated_at` for the same reason `AuditLog` has none.
 
     `user_id` is `SET NULL` on deletion: the evidence is retained after an account
-    is anonymised, but stops pointing at a person. Ages and terms are hooks only
-    — 18 remains a policy under legal review, not enforced here.
+    is anonymised, but stops pointing at a person. The age thresholds and which
+    terms version is current are read from `platform_settings` (G3), so a version
+    bump asks the student again instead of silently reusing the old row.
     """
 
     __tablename__ = "consents"
@@ -211,6 +226,40 @@ class Consent(Base):
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), nullable=False, index=True
     )
+
+
+class UserLanguage(Base, TimestampMixin):
+    """A language a student can work in; matching reads these rows."""
+
+    __tablename__ = "user_languages"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    user_id: Mapped[int] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    language: Mapped[str] = mapped_column(String(60), nullable=False)
+    # "basic" | "conversational" | "fluent" | "native"
+    level: Mapped[str] = mapped_column(
+        String(20), default="fluent", server_default="fluent", nullable=False
+    )
+
+    __table_args__ = (
+        UniqueConstraint("user_id", "language", name="uq_user_language"),
+    )
+
+
+class UserAvailability(Base, TimestampMixin):
+    """How much work a student can take on, and when they can start."""
+
+    __tablename__ = "user_availability"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    user_id: Mapped[int] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"), nullable=False, unique=True
+    )
+    hours_per_week: Mapped[int | None] = mapped_column(Integer)
+    available_from: Mapped[date | None] = mapped_column(Date)
+    note: Mapped[str | None] = mapped_column(String(255))
 
 
 class IdempotencyKey(Base):

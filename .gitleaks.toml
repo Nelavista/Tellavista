@@ -15,6 +15,9 @@ paths = [
   '''\.turbo/''',
   # Test fixtures that intentionally contain dummy tokens.
   '''tests/''',
+  # Frontend route tests use fake tokens in URLs and request bodies
+  # (e.g. `/auth/verify?token=abc1234567890`); none is a credential.
+  '''apps/web/src/.*\.test\.tsx$''',
 ]
 
 # Words that appear in docs and are not secrets.

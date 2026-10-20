@@ -18,7 +18,16 @@ from __future__ import annotations
 
 from datetime import datetime
 
-from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, String, Text, UniqueConstraint
+from sqlalchemy import (
+    Boolean,
+    DateTime,
+    ForeignKey,
+    Integer,
+    String,
+    Text,
+    UniqueConstraint,
+    func,
+)
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db.base import Base, TimestampMixin
@@ -125,6 +134,11 @@ class LearningPathStep(Base, TimestampMixin):
     # SET NULL: a lesson can be rewritten or retired without breaking path order;
     # the step then shows as "coming soon" rather than disappearing.
     lesson_id: Mapped[int | None] = mapped_column(ForeignKey("lessons.id", ondelete="SET NULL"))
+    # A practice or project step points at the task template the student works on;
+    # an assessment step points at the assessment via `verification`.
+    task_template_id: Mapped[int | None] = mapped_column(
+        ForeignKey("task_templates.id", ondelete="SET NULL")
+    )
 
     __table_args__ = (
         UniqueConstraint("path_id", "ordinal", name="uq_path_step_ordinal"),
@@ -193,4 +207,30 @@ class LessonProgress(Base, TimestampMixin):
 
     __table_args__ = (
         UniqueConstraint("user_id", "lesson_id", name="uq_lesson_progress_user_lesson"),
+    )
+
+
+class PracticeAttempt(Base):
+    """One practice answer with instant feedback.
+
+    Practice is *not* evidence: `is_correct` here never reaches verification. It
+    exists so "what should I practise next?" has data and so the deterministic
+    validator has a place to write its verdict.
+    """
+
+    __tablename__ = "practice_attempts"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    user_id: Mapped[int] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    template_id: Mapped[int] = mapped_column(
+        ForeignKey("task_templates.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    answer: Mapped[dict] = mapped_column(JSONPayload, nullable=False)
+    is_correct: Mapped[bool | None] = mapped_column(Boolean)
+    feedback: Mapped[str | None] = mapped_column(Text)
+    duration_ms: Mapped[int | None] = mapped_column(Integer)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False, index=True
     )

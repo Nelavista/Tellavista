@@ -168,6 +168,10 @@ class AssessmentAttempt(Base):
     started_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )
+    # The randomised selection is frozen at start, so a replayed submit grades the
+    # same tasks rather than a fresh draw.
+    presented_task_ids: Mapped[list | None] = mapped_column(JSONPayload)
+    answers: Mapped[dict | None] = mapped_column(JSONPayload)
     submitted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     score: Mapped[int | None] = mapped_column(Integer)  # percentage, 0-100
     passed: Mapped[bool | None] = mapped_column(Boolean)
@@ -190,6 +194,32 @@ class PracticalTask(Base, TimestampMixin):
     rubric: Mapped[dict | None] = mapped_column(JSONPayload)
     status: Mapped[str] = mapped_column(
         String(16), default="draft", server_default="draft", nullable=False
+    )
+
+
+class PracticalSubmission(Base, TimestampMixin):
+    """A student's answer to a practical task, and the reviewer's rubric score."""
+
+    __tablename__ = "practical_submissions"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    practical_task_id: Mapped[int] = mapped_column(
+        ForeignKey("practical_tasks.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    user_id: Mapped[int] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    payload: Mapped[dict] = mapped_column(JSONPayload, nullable=False)
+    status: Mapped[str] = mapped_column(
+        String(16), default="submitted", server_default="submitted", nullable=False
+    )
+    score: Mapped[int | None] = mapped_column(Integer)  # percentage, 0-100
+    passed: Mapped[bool | None] = mapped_column(Boolean)
+    reviewed_by: Mapped[int | None] = mapped_column(ForeignKey("users.id", ondelete="SET NULL"))
+    review_notes: Mapped[str | None] = mapped_column(Text)
+    client_key: Mapped[str | None] = mapped_column(String(64), unique=True)
+    submitted_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False
     )
 
 

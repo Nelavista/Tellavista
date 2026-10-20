@@ -1,8 +1,13 @@
-"""V2 domain models. One module per domain, mirroring app/api/v1/domains later.
+"""V2 domain models. One module per domain, mirroring app/api/v1/domains.
 
-Built in Phase 0 (M0), module by module: `identity` + `admin` (PR 0.1), then
-academia/skills (0.2), verification/matching/work (0.3). Quality and ledger
-models wait for the milestones that use them (M5/M6) — see
-`docs/build/phase-0-plan.md` §3.3 for the approved trim, and
-`docs/architecture/05-domain-map.md` for the entity map.
+Phase 0 (M0) built `identity`, `admin`, `academia`, `skills`, `verification`,
+`matching`, `work` and `jobs`. The later phases add the tables they own:
+
+* `quality`  — the standard, reviews, rolling score and consequences (M5).
+* `ledger`   — append-only money, earnings, payouts, reconciliation (M6).
+* `talent`   — evidence-backed profile sharing and external applications (M7).
+* `ops`      — import receipts, campus utility, university waitlist (M1).
+* `engagement` — notifications and assignment-scoped messages (M5/M9).
+
+Nothing is exposed to a client until its router is mounted behind a feature flag.
 """

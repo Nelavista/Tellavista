@@ -1,7 +1,7 @@
 name: CI · API contract freshness
 
-# The typed client must match the API schema. When generation is adopted (M1+),
-# a stale client fails the build (ADR-0001).
+# The typed client must match the API schema. Generation is adopted (A1), so a
+# stale committed client fails the build (ADR-0001).
 on:
   pull_request:
     paths:
@@ -41,12 +41,8 @@ jobs:
           uv run python -c "import json; from app.main import app; open('../../openapi.json','w').write(json.dumps(app.openapi()))"
       - name: Regenerate + diff
         run: |
-          if [ -d packages/api-client/src/generated ]; then
-            node tools/gen_api_client.mjs --schema openapi.json
-            git diff --exit-code packages/api-client/src/generated || {
-              echo "::error::API client is stale. Run 'pnpm generate:api-client' and commit the result.";
-              exit 1;
-            }
-          else
-            echo "::notice::API client generation not adopted yet (no src/generated). Skipping."
-          fi
+          node tools/gen_api_client.mjs --schema openapi.json
+          git diff --exit-code packages/api-client/src/generated || {
+            echo "::error::API client is stale. Run 'pnpm generate:api-client' (after exporting openapi.json) and commit the result.";
+            exit 1;
+          }

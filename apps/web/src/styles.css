@@ -1,0 +1,373 @@
+/*
+ * Layout only. Colours/spacing come from @nelavista/design-tokens, applied to
+ * :root as CSS variables at boot (src/lib/theme.ts) so there is one source of
+ * truth for the palette across web, admin and mobile.
+ */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--nv-bg, #050810);
+  color: var(--nv-text, #f0f3f8);
+  font-family: var(--nv-font, system-ui, sans-serif);
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: var(--nv-accent, #00d1ff);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.nv-page {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.nv-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--nv-space-lg, 16px);
+  padding: var(--nv-space-lg, 16px) var(--nv-space-xl, 24px);
+  border-bottom: 1px solid var(--nv-border, #1f2a3a);
+}
+
+.nv-brand {
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--nv-text, #f0f3f8);
+}
+
+.nv-main {
+  flex: 1;
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: var(--nv-space-xl, 24px);
+}
+
+.nv-card {
+  background: var(--nv-surface, #0e1420);
+  border: 1px solid var(--nv-border, #1f2a3a);
+  border-radius: var(--nv-radius-lg, 20px);
+  padding: var(--nv-space-xl, 24px);
+  display: flex;
+  flex-direction: column;
+  gap: var(--nv-space-md, 12px);
+}
+
+.nv-card--narrow {
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+.nv-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nv-space-md, 12px);
+}
+
+.nv-row {
+  display: flex;
+  gap: var(--nv-space-sm, 8px);
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.nv-row--between {
+  justify-content: space-between;
+  flex-wrap: nowrap;
+}
+
+.nv-action {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nv-space-xs, 4px);
+  padding: var(--nv-space-lg, 16px);
+  border-radius: var(--nv-radius-lg, 20px);
+  border: 1px solid var(--nv-accent, #00d1ff);
+  background: var(--nv-surface, #0e1420);
+}
+
+.nv-action__label {
+  margin: 0;
+  font-size: var(--nv-text-lg, 18px);
+  font-weight: 600;
+}
+
+.nv-skeleton-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nv-space-sm, 8px);
+}
+
+.nv-skeleton {
+  display: block;
+  height: 1rem;
+  border-radius: var(--nv-radius-sm, 8px);
+  background: linear-gradient(
+    90deg,
+    var(--nv-surface, #0e1420) 0%,
+    var(--nv-border, #1f2a3a) 50%,
+    var(--nv-surface, #0e1420) 100%
+  );
+  background-size: 200% 100%;
+  animation: nv-shimmer 1.4s ease-in-out infinite;
+}
+
+@keyframes nv-shimmer {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nv-skeleton {
+    animation: none;
+  }
+}
+
+.nv-muted {
+  color: var(--nv-text-muted, #9fb0c6);
+  font-size: var(--nv-text-sm, 13px);
+}
+
+.nv-h1 {
+  font-size: var(--nv-text-xxl, 32px);
+  margin: 0 0 var(--nv-space-sm, 8px);
+  line-height: 1.15;
+}
+
+.nv-h2 {
+  font-size: var(--nv-text-lg, 18px);
+  margin: 0;
+}
+
+.nv-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nv-space-xs, 4px);
+}
+
+.nv-label {
+  font-size: var(--nv-text-sm, 13px);
+  color: var(--nv-text-muted, #9fb0c6);
+}
+
+.nv-input,
+.nv-select {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: var(--nv-radius-sm, 8px);
+  border: 1px solid var(--nv-border, #1f2a3a);
+  background: var(--nv-bg, #050810);
+  color: var(--nv-text, #f0f3f8);
+  font: inherit;
+}
+
+.nv-input:focus-visible,
+.nv-select:focus-visible,
+.nv-button:focus-visible {
+  outline: 2px solid var(--nv-accent, #00d1ff);
+  outline-offset: 2px;
+}
+
+.nv-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--nv-space-sm, 8px);
+  padding: 10px 16px;
+  border-radius: var(--nv-radius-pill, 999px);
+  border: 1px solid transparent;
+  background: var(--nv-accent, #00d1ff);
+  color: #041018;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.nv-button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.nv-button--ghost {
+  background: transparent;
+  border-color: var(--nv-border, #1f2a3a);
+  color: var(--nv-text, #f0f3f8);
+}
+
+.nv-error {
+  color: var(--nv-danger, #ef4444);
+  font-size: var(--nv-text-sm, 13px);
+  margin: 0;
+}
+
+.nv-banner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nv-space-sm, 8px);
+  align-items: flex-start;
+  border: 1px solid var(--nv-warning, #f59e0b);
+  color: var(--nv-warning, #f59e0b);
+  border-radius: var(--nv-radius-sm, 8px);
+  padding: 10px 12px;
+  font-size: var(--nv-text-sm, 13px);
+}
+
+.nv-banner p {
+  margin: 0;
+}
+
+.nv-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--nv-space-sm, 8px);
+}
+
+.nv-check {
+  display: flex;
+  gap: var(--nv-space-sm, 8px);
+  align-items: flex-start;
+  font-size: var(--nv-text-sm, 13px);
+  color: var(--nv-text-muted, #9fb0c6);
+}
+
+.nv-steps {
+  display: flex;
+  gap: var(--nv-space-sm, 8px);
+  margin-bottom: var(--nv-space-md, 12px);
+  font-size: var(--nv-text-sm, 13px);
+  color: var(--nv-text-muted, #9fb0c6);
+}
+
+/* Real progress, not a decoration: the width is the API's own percent_complete. */
+.nv-meter {
+  width: 100%;
+  height: 8px;
+  border-radius: var(--nv-radius-pill, 999px);
+  background: var(--nv-surface, #0e1420);
+  border: 1px solid var(--nv-border, #1f2a3a);
+  overflow: hidden;
+}
+
+.nv-meter__fill {
+  display: block;
+  height: 100%;
+  background: var(--nv-accent, #00d1ff);
+}
+
+.nv-step {
+  border-left: 2px solid var(--nv-border, #1f2a3a);
+  padding-left: var(--nv-space-md, 12px);
+  display: flex;
+  flex-direction: column;
+  gap: var(--nv-space-xs, 4px);
+}
+
+.nv-step[data-done='true'] {
+  border-left-color: var(--nv-accent, #00d1ff);
+}
+
+.nv-step p {
+  margin: 0;
+}
+
+.nv-quote {
+  margin: 0;
+  padding-left: var(--nv-space-md, 12px);
+  border-left: 2px solid var(--nv-accent, #00d1ff);
+  color: var(--nv-text-muted, #9fb0c6);
+}
+
+.nv-code {
+  margin: 0;
+  padding: var(--nv-space-md, 12px);
+  border-radius: var(--nv-radius-sm, 8px);
+  background: var(--nv-bg, #050810);
+  border: 1px solid var(--nv-border, #1f2a3a);
+  overflow-x: auto;
+  font-size: var(--nv-text-sm, 13px);
+  white-space: pre-wrap;
+}
+
+.nv-code code {
+  font: inherit;
+}
+
+article .nv-h2 {
+  margin-top: var(--nv-space-md, 12px);
+}
+
+/* Verification state, said in one word. The colour never carries meaning alone:
+   the label next to it always spells the state out. */
+.nv-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: var(--nv-radius-pill, 999px);
+  border: 1px solid var(--nv-border, #1f2a3a);
+  font-size: var(--nv-text-sm, 13px);
+  color: var(--nv-text-muted, #9fb0c6);
+  white-space: nowrap;
+}
+
+.nv-badge[data-status='verified'] {
+  border-color: var(--nv-success, #22c55e);
+  color: var(--nv-success, #22c55e);
+}
+
+.nv-badge[data-status='at_risk'],
+.nv-badge[data-status='suspended'] {
+  border-color: var(--nv-warning, #f59e0b);
+  color: var(--nv-warning, #f59e0b);
+}
+
+.nv-badge[data-status='in_progress'] {
+  border-color: var(--nv-accent, #00d1ff);
+  color: var(--nv-accent, #00d1ff);
+}
+
+.nv-step[data-active='true'] {
+  color: var(--nv-accent, #00d1ff);
+}
+
+/* The journey has grown; the nav wraps instead of pushing links off-screen. */
+.nv-nav .nv-row {
+  justify-content: flex-end;
+}
+
+.nv-prose p {
+  margin: 0 0 0.75rem;
+}
+
+.nv-prose p:last-child {
+  margin-bottom: 0;
+}
+
+details.nv-card > summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+

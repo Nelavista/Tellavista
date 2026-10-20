@@ -76,5 +76,27 @@ Offline + idempotency (ADR-0007) · observability (Sentry + PostHog per env) · 
 ## Milestone → ADR/plan references
 M0 = `docs/build/phase-0-plan.md`, ADR-0001/0002/0005/0008/0009/0010 · M1 = ADR-0005/0009 · M2 = `05-domain-map.md`, ADR-0007 · M3 = `05`, ADR-0009 · M4/M5 = `05`, PRD §6–8, ADR-0006/0007 · M6 = ADR-0008 · M7 = `05`, PRD §10–11 · M8 = ADR-0001/0007 · M9 = ADR-0001/0007/0010 · M10 = `03-versioning-and-domains.md`, `04-v1-to-v2-migration.md`.
 
-## Known stale references (fix with the M0 docs-sync PR)
-The renumbering invalidates four in-repo references to the old milestone numbers. They are comments only — no behaviour depends on them — and are listed here so they are not forgotten: `apps/api/README.md` ("M1–M4"), `apps/admin/README.md` ("built first for M5"), `apps/mobile/README.md` ("built in M7"), `apps/api/app/models/academia.py` ("M1").
+## Delivery status (2026-10-20)
+
+Phases 0–6 and the API half of 7–8 are implemented; 9 and 10 are release and
+hardening work. The live, item-by-item list is `docs/build/REMAINING_WORK.md`; the
+per-phase account of what is delivered and what is owed is
+`docs/build/phase-1-10-plan.md`.
+
+| Milestone | State |
+|---|---|
+| M0 | Delivered (auth core, conventions, jobs, flags, observability, admin shell with 2FA) |
+| M1 | Delivered (identity, V1 importer, onboarding, Choose Path, settings, campus) |
+| M2 | Delivered; offline answer saving on web still owed; curriculum content blocked on G4 |
+| M3 | Delivered; a re-verification call-to-action after suspension is owed |
+| M4 | Delivered (opportunities, explanations, cohorts, replacements, candidate lists) |
+| M5 | Delivered (delivery, quality, consequences, override, notifications) |
+| M6 | Delivered (ledger, split, payouts, reconciliation, earnings); first scheduled reconciliation run unobserved |
+| M7 | API delivered; **student Talent/share UI owed** |
+| M8 | Dashboard + campus delivered; **materials reader, Ask and CBT results screens owed** |
+| M9 | Build profiles, force-update, push, store assets and release workflow delivered; screenshots and a device smoke run owed |
+| M10 | Rate limits, Postgres migrations in CI and the load-test tool delivered; the DEV measurement, security review, beta, pilot and cutover remain |
+
+Known stale milestone references from the M0 renumbering are fixed: the API,
+admin and mobile READMEs and the `academia` model now describe the delivered state
+rather than the old M1–M7 numbering.

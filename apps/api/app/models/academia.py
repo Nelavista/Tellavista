@@ -6,7 +6,7 @@ is actually enrolled in (`Enrolment`), the course breakdown (`Topic`), the RAG
 chunks (`MaterialChunk`) and the CBT question bank (`Question`,
 `QuestionAttempt`).
 
-The free-string `users.university/department/level` columns stay for now; M1
+The free-string `users.university/department/level` columns stay for now; Phase 1
 backfills them from `Enrolment` and drops the strings in a later expand/contract
 step. Nothing here grants verification: an attempt is a record of what a student
 answered, never proof of skill.
@@ -91,7 +91,7 @@ class AcademicSession(Base, TimestampMixin):
     name: Mapped[str] = mapped_column(String(20), nullable=False, unique=True)
     starts_on: Mapped[date | None] = mapped_column(Date)
     ends_on: Mapped[date | None] = mapped_column(Date)
-    # Exactly one current session is a service-level rule (M1); the flag makes it
+    # Exactly one current session is a service-level rule (Phase 1); the flag makes it
     # cheap to query and lets ops fix a bad calendar without a data migration.
     is_current: Mapped[bool] = mapped_column(
         Boolean, default=False, server_default="false", nullable=False
@@ -231,6 +231,51 @@ class QuestionAttempt(Base):
     selected_key: Mapped[str | None] = mapped_column(String(8))
     is_correct: Mapped[bool | None] = mapped_column(Boolean)
     duration_ms: Mapped[int | None] = mapped_column(Integer)
+    # Client-generated key so an offline answer can be synced twice without
+    # creating two attempts (ADR-0007). Nullable for server-created rows.
+    client_key: Mapped[str | None] = mapped_column(String(64), unique=True)
     answered_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
+    )
+
+
+class AskSession(Base, TimestampMixin):
+    """One Ask Nelavista conversation, scoped to a course when the student chose one.
+
+    Keeping the session is what makes the assistant *course-aware* rather than a
+    generic chatbot: the retrieval step always filters by this student's
+    enrolments, and the citations stored with each answer say which material it
+    came from.
+    """
+
+    __tablename__ = "ask_sessions"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    user_id: Mapped[int] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    course_id: Mapped[int | None] = mapped_column(
+        ForeignKey("courses.id", ondelete="SET NULL"), index=True
+    )
+    title: Mapped[str | None] = mapped_column(String(160))
+
+
+class AskMessage(Base):
+    """A question or an answer. `declined` records an honest decline."""
+
+    __tablename__ = "ask_messages"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    session_id: Mapped[int] = mapped_column(
+        ForeignKey("ask_sessions.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    role: Mapped[str] = mapped_column(String(12), nullable=False)
+    content: Mapped[str] = mapped_column(Text, nullable=False)
+    # [{"material_id": 4, "chunk_id": 9, "title": "..."}]
+    citations: Mapped[list | None] = mapped_column(JSONPayload)
+    declined: Mapped[bool] = mapped_column(
+        Boolean, default=False, server_default="false", nullable=False
+    )
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False, index=True
     )

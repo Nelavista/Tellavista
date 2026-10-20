@@ -28,9 +28,16 @@ class TimestampMixin:
 from app.models import (  # noqa: E402,F401  (noqa: isort)
     academia,
     admin,
+    engagement,
     identity,
+    jobs,
+    ledger,
     matching,
+    ops,
+    platform,
+    quality,
     skills,
+    talent,
     verification,
     work,
 )

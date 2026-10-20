@@ -36,6 +36,21 @@ target-version = "py311"
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B"]
 
+# FastAPI's dependency declarations are calls in default arguments by design.
+# They are evaluated once by the framework, not per request, so B008's warning
+# does not apply to them.
+[tool.ruff.lint.flake8-bugbear]
+extend-immutable-calls = [
+  "fastapi.Depends",
+  "fastapi.Query",
+  "fastapi.Header",
+  "fastapi.Path",
+  "fastapi.Body",
+  "fastapi.Form",
+  "fastapi.File",
+  "app.core.authz.require_permission",
+]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 asyncio_mode = "auto"

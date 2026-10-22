@@ -6,7 +6,8 @@ Docker · Node 20+ (`.nvmrc`) · pnpm 9+ · Python 3.11 · [uv](https://docs.ast
 ## Steps
 
 **Windows:** use **`RUN-LOCALLY.md`** at the repo root. It has the PowerShell
-commands and `scripts\dev.ps1`, which opens the API, web and admin in three windows.
+commands and `scripts\dev.ps1`, which opens the API, worker, web and admin in four
+windows.
 
 **macOS/Linux:**
 
@@ -17,7 +18,8 @@ make up            # Postgres+pgvector, Redis, Mailpit
 make seed-local    # fake sample data (prod-guarded)
 make db-upgrade    # create the V2 schema
 make api-dev       # terminal 1: API :8000
-make dev           # terminal 2: web :5173 + admin :5174
+make worker-dev    # terminal 2: sends queued email
+make dev           # terminal 3: web :5173 + admin :5174
 ```
 
 Then: web at http://localhost:5173 · admin at http://localhost:5174 · API docs at http://localhost:8000/docs · Mailpit UI at http://localhost:8025.

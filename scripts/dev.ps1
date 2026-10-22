@@ -20,14 +20,19 @@ if (-not $NoInfra) {
 
 if (Test-Path $python) {
     $apiCommand = "& '$python' -m uvicorn app.main:app --reload --port 8000 --app-dir apps/api"
+    $workerCommand = "& '$python' -m app.worker"
 } elseif (Get-Command uv -ErrorAction SilentlyContinue) {
     $apiCommand = "uv run --package nelavista-api uvicorn app.main:app --reload --port 8000 --app-dir apps/api"
+    $workerCommand = "uv run --package nelavista-api python -m app.worker"
 } else {
     throw "No Python environment. Run: uv sync --all-packages (install uv first: https://docs.astral.sh/uv/)"
 }
 
 Start-Process powershell -WorkingDirectory $root -ArgumentList @(
     "-NoExit", "-Command", $apiCommand
+)
+Start-Process powershell -WorkingDirectory $root -ArgumentList @(
+    "-NoExit", "-Command", $workerCommand
 )
 Start-Process powershell -WorkingDirectory $root -ArgumentList @(
     "-NoExit", "-Command", "pnpm --filter @nelavista/web dev"

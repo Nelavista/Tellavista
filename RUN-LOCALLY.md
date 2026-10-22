@@ -1,7 +1,7 @@
 # Run V2 locally (Windows)
 
-This runs the V2 API, student web app, and admin app against local Postgres and
-Mailpit. It does not touch V1.
+This runs the V2 API, worker, student web app, and admin app against local
+Postgres, Redis and Mailpit. It does not touch V1.
 
 ## 1. Start the local services
 
@@ -39,7 +39,7 @@ two sample students. It never touches a real database.
 .\scripts\dev.ps1
 ```
 
-That opens three windows:
+That opens four windows (API, worker, web, admin):
 
 | Service | URL |
 |---|---|
@@ -47,6 +47,9 @@ That opens three windows:
 | Student web | http://localhost:5173 |
 | Admin | http://localhost:5174 |
 | Mailpit inbox | http://localhost:8025 |
+
+The worker has no URL; it sends queued email and runs scheduled jobs. Leave its
+window open, or verification and reset emails will sit in the queue.
 
 If Postgres/Redis/Mailpit are already running, use `.\scripts\dev.ps1 -NoInfra`.
 

@@ -102,8 +102,10 @@ def verify_legacy_werkzeug(password: str, stored: str | None) -> bool:
         _, n_raw, r_raw, p_raw = method.split(":")
         n, r, p = int(n_raw), int(r_raw), int(p_raw)
         # Werkzeug's defaults are 32768/8/1. Reject absurd parameters instead of
-        # letting a corrupt row allocate unbounded memory.
+        # letting a corrupt row allocate unbounded memory (~128*n*r*p bytes).
         if not (2 <= n <= 2**20 and 1 <= r <= 32 and 1 <= p <= 16):
+            return False
+        if 128 * n * r * p > 256 * 1024 * 1024:
             return False
         computed = hashlib.scrypt(
             password.encode(),

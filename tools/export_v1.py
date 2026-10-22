@@ -2,7 +2,7 @@
 
     $env:V1_DATABASE_URL = "<V1 external Postgres URL>"
     $env:PRODGUARD_ALLOW = "1"   # a remote database is treated as production
-    uv run --package nelavista-api python -m tools.export_v1 --out v1-export.json
+    apps/api/.venv/Scripts/python.exe -m tools.export_v1 --out v1-export.json
 
 This tool is **read-only**: it sets the transaction read-only before it queries
 anything. It never imports V1's Flask app and never writes to V1.
@@ -16,8 +16,10 @@ If a table is missing, that section is exported empty and the reason is listed i
 from __future__ import annotations
 
 import argparse
+import html
 import json
 import os
+import re
 import sys
 from datetime import UTC, datetime
 from pathlib import Path
@@ -75,6 +77,50 @@ def _absolute_v1_url(value: Any) -> str:
     if url.startswith("static/"):
         return f"{V1_PUBLIC_BASE}/{url}"
     return url
+
+
+def _html_to_markdown(value: Any) -> str:
+    """Convert the HTML V1 lessons store into the Markdown subset V2 renders.
+
+    V2 deliberately parses a small Markdown subset rather than rendering HTML
+    (no sanitiser in the bundle), so importing V1 HTML as-is would show raw tags.
+    This handles the tags V1's lesson editor actually writes; unknown tags are
+    stripped, never passed through.
+    """
+    text = str(value or "")
+    if "<" not in text:
+        return text.strip()
+
+    text = re.sub(r"<\s*pre[^>]*>\s*<\s*code[^>]*>", "\n```\n", text, flags=re.I)
+    text = re.sub(r"<\s*/\s*code\s*>\s*<\s*/\s*pre\s*>", "\n```\n", text, flags=re.I)
+    text = re.sub(r"<\s*br\s*/?>", "\n", text, flags=re.I)
+    for level in (1, 2, 3):
+        text = re.sub(
+            rf"<\s*h{level}[^>]*>", "\n" + "#" * level + " ", text, flags=re.I
+        )
+    text = re.sub(r"<\s*h[4-6][^>]*>", "\n### ", text, flags=re.I)
+    text = re.sub(r"<\s*/\s*h[1-6]\s*>", "\n", text, flags=re.I)
+    text = re.sub(r"<\s*li[^>]*>", "\n- ", text, flags=re.I)
+    text = re.sub(
+        r"<\s*/\s*(p|div|section|article|ul|ol|blockquote)\s*>", "\n", text, flags=re.I
+    )
+    text = re.sub(r"<\s*(strong|b)[^>]*>", "**", text, flags=re.I)
+    text = re.sub(r"<\s*/\s*(strong|b)\s*>", "**", text, flags=re.I)
+    text = re.sub(
+        r'<\s*a[^>]*href=["\']([^"\']+)["\'][^>]*>(.*?)</a\s*>',
+        r"[\2](\1)",
+        text,
+        flags=re.I | re.S,
+    )
+    text = re.sub(r"<\s*code[^>]*>", "`", text, flags=re.I)
+    text = re.sub(r"<\s*/\s*code\s*>", "`", text, flags=re.I)
+    text = re.sub(r"<\s*pre[^>]*>", "\n```\n", text, flags=re.I)
+    text = re.sub(r"<\s*/\s*pre\s*>", "\n```\n", text, flags=re.I)
+    text = re.sub(r"<[^>]+>", "", text)
+    text = html.unescape(text).replace("\xa0", " ")
+    text = re.sub(r"[ \t]+\n", "\n", text)
+    text = re.sub(r"\n{3,}", "\n\n", text)
+    return text.strip()
 
 
 def _on(value: Any) -> bool:
@@ -366,8 +412,10 @@ def _export_skills(
         courses_by_skill.setdefault(row.get("skill_id"), []).append(row)
 
     used_lesson_slugs: set[str] = set()
+    converted_html = 0
 
     def add_lessons(target: list[dict], course_ids: list[Any]) -> None:
+        nonlocal converted_html
         for course_id in course_ids:
             mods = sorted(modules_by_course.get(course_id, []), key=lambda r: r.get("order") or 0)
             for module in mods:
@@ -386,11 +434,14 @@ def _export_skills(
                         suffix += 1
                         candidate = f"{slug}-{suffix}"
                     used_lesson_slugs.add(candidate)
+                    raw_body = str(_get(lesson, "content", ""))
+                    if "<" in raw_body:
+                        converted_html += 1
                     target.append(
                         {
                             "slug": candidate,
                             "title": title,
-                            "body_md": _get(lesson, "content", ""),
+                            "body_md": _html_to_markdown(raw_body),
                         }
                     )
 
@@ -436,6 +487,10 @@ def _export_skills(
                     }
                 ],
             }
+        )
+    if converted_html:
+        warnings.append(
+            f"{converted_html} V1 lessons were HTML; converted to the Markdown subset V2 renders"
         )
     return export
 

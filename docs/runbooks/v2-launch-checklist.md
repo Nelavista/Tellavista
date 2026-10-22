@@ -213,6 +213,9 @@ content, but V1 accounts will not carry over.
 5. Choose **Apply** and run it once.
 
 The import is idempotent: running it again updates or skips, it does not duplicate.
+It brings across people, taxonomy, approved materials, CBT questions and skill
+lesson text. V1 enrolments, challenges and project submissions do not come across;
+students confirm their course during onboarding.
 Seeded PDFs that lived under V1's `/static/materials` are rewritten to
 `https://v1.nelavista.com/static/...`, so keep V1 running until those files are
 moved to Cloudinary.

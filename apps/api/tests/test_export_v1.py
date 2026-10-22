@@ -342,7 +342,7 @@ def _seed(engine) -> None:
             metadata.tables["lessons"].insert(),
             [
                 {"id": 30, "module_id": 20, "title": "First", "slug": "intro", "order": 1,
-                 "content": "First body", "is_published": True},
+                 "content": "<h2>First</h2><p>Hello <strong>world</strong></p>", "is_published": True},
                 {"id": 31, "module_id": 21, "title": "Second", "slug": "intro", "order": 1,
                  "content": "Second body", "is_published": True},
                 {"id": 32, "module_id": 21, "title": "Draft", "slug": "draft", "order": 2,
@@ -393,7 +393,8 @@ def test_export_matches_the_importer_shape(tmp_path) -> None:
     path_row = data["skills"][0]["paths"][0]
     assert path_row["title"] == "Annotation path"
     assert [lesson["slug"] for lesson in path_row["lessons"]] == ["intro", "intro-2"]
-    assert [lesson["body_md"] for lesson in path_row["lessons"]] == [
-        "First body",
-        "Second body",
-    ]
+    assert path_row["lessons"][0]["body_md"].startswith("## First")
+    assert "Hello **world**" in path_row["lessons"][0]["body_md"]
+    assert "<p>" not in path_row["lessons"][0]["body_md"]
+    assert path_row["lessons"][1]["body_md"] == "Second body"
+    assert any("converted to the Markdown" in warning for warning in data["meta"]["warnings"])

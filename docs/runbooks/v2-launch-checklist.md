@@ -220,7 +220,8 @@ The import is idempotent: running it again updates or skips, it does not duplica
 It brings across people, taxonomy, approved materials, CBT questions and skill
 lesson text. V1 enrolments, learning progress, challenges, project submissions and
 lesson videos/resources do not come across; students confirm their course during
-onboarding.
+onboarding. V1 accounts that only used Google have no password and can set one
+with **Forgot your password?** on the V2 login page.
 Seeded PDFs that lived under V1's `/static/materials` are rewritten to
 `https://v1.nelavista.com/static/...`, so keep V1 running until those files are
 moved to Cloudinary.

@@ -18,15 +18,15 @@ and come back here when it runs.
 
 ## The seven steps
 
-| # | Who | Step |
-|---|---|---|
+| # | Who      | Step                                                           |
+| - | -------- | -------------------------------------------------------------- |
 | 1 | Me + you | Merge `develop` into `main` (the code that Render deploys) |
-| 2 | You | Create the PROD services and data stores on Render |
-| 3 | You | Prepare the PROD database |
-| 4 | You | Create the two staff accounts |
-| 5 | You | Export V1, import it, seed the curriculum |
-| 6 | You | Check V2 on its `onrender.com` URLs |
-| 7 | You | Move `nelavista.com` to V2 |
+| 2 | You      | Create the PROD services and data stores on Render             |
+| 3 | You      | Prepare the PROD database                                      |
+| 4 | You      | Create the two staff accounts                                  |
+| 5 | You      | Export V1, import it, seed the curriculum                      |
+| 6 | You      | Check V2 on its `onrender.com` URLs                          |
+| 7 | You      | Move `nelavista.com` to V2                                   |
 
 Do them in this order. Steps 1 and 2 can happen on the same day; step 7 is the only
 one users will notice.
@@ -49,14 +49,14 @@ Use the **same region** for everything. Choose paid instances: Render's free web
 services spin down and free Postgres expires. No `render.yaml` is used; create
 everything in the dashboard.
 
-| Service | Render type | Branch | Build command | Start command |
-|---|---|---|---|---|
-| `nelavista-db` | Postgres | — | — | — |
-| `nelavista-redis` | Key Value | — | — | — |
-| `nelavista-api` | Web Service (Python) | `main` | `pip install uv && uv sync --frozen --no-dev --all-packages` | `uv run --no-sync --package nelavista-api uvicorn app.main:app --host 0.0.0.0 --port $PORT --app-dir apps/api` |
-| `nelavista-worker` | Background Worker (Python) | `main` | same as API | `cd apps/api && uv run --no-sync --package nelavista-api python -m app.worker` |
-| `nelavista-web` | Static Site | `main` | `corepack enable && pnpm install --frozen-lockfile && pnpm --filter @nelavista/web build` | — (publish `apps/web/dist`) |
-| `nelavista-admin` | Static Site | `main` | `corepack enable && pnpm install --frozen-lockfile && pnpm --filter @nelavista/admin build` | — (publish `apps/admin/dist`) |
+| Service              | Render type                | Branch   | Build command                                                                                 | Start command                                                                                                    |
+| -------------------- | -------------------------- | -------- | --------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `nelavista-db`     | Postgres                   | —       | —                                                                                            | —                                                                                                               |
+| `nelavista-redis`  | Key Value                  | —       | —                                                                                            | —                                                                                                               |
+| `nelavista-api`    | Web Service (Python)       | `main` | `pip install uv && uv sync --frozen --no-dev --all-packages`                                | `uv run --no-sync --package nelavista-api uvicorn app.main:app --host 0.0.0.0 --port $PORT --app-dir apps/api` |
+| `nelavista-worker` | Background Worker (Python) | `main` | same as API                                                                                   | `cd apps/api && uv run --no-sync --package nelavista-api python -m app.worker`                                 |
+| `nelavista-web`    | Static Site                | `main` | `corepack enable && pnpm install --frozen-lockfile && pnpm --filter @nelavista/web build`   | — (publish `apps/web/dist`)                                                                                   |
+| `nelavista-admin`  | Static Site                | `main` | `corepack enable && pnpm install --frozen-lockfile && pnpm --filter @nelavista/admin build` | — (publish `apps/admin/dist`)                                                                                 |
 
 That is four application services plus Postgres and Redis.
 
@@ -103,10 +103,10 @@ On the two static sites, set `NODE_VERSION=20` if Render does not read `.nvmrc` 
 **Static site rewrites** (both web and admin, in this order). Open the static
 site → **Settings** → **Redirects/Rewrites** → **Add Rule**:
 
-| Source | Destination | Action |
-|---|---|---|
+| Source     | Destination                              | Action            |
+| ---------- | ---------------------------------------- | ----------------- |
 | `/api/*` | `https://nelavista-api.onrender.com/*` | **Rewrite** |
-| `/*` | `/index.html` | **Rewrite** |
+| `/*`     | `/index.html`                          | **Rewrite** |
 
 The first rule is the proxy that keeps the login cookie on the same origin. Do not
 use a Redirect. Use the exact API host Render shows (it may have a suffix such as
@@ -117,14 +117,14 @@ frontends to a different API hostname.
 **Static site headers** (open the static site → **Settings** → **Headers** → **Add
 Header**, path `/*`):
 
-| Header | Value |
-|---|---|
-| `Strict-Transport-Security` | `max-age=31536000; includeSubDomains` |
-| `X-Frame-Options` | `DENY` |
-| `X-Content-Type-Options` | `nosniff` |
-| `Referrer-Policy` | `strict-origin-when-cross-origin` |
-| `Permissions-Policy` | `camera=(), microphone=(), geolocation=()` |
-| `Content-Security-Policy` | `default-src 'self'; img-src 'self' data: https:; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self'; font-src 'self' data:; manifest-src 'self'; worker-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'` |
+| Header                        | Value                                                                                                                                                                                                                                                    |
+| ----------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Strict-Transport-Security` | `max-age=31536000; includeSubDomains`                                                                                                                                                                                                                  |
+| `X-Frame-Options`           | `DENY`                                                                                                                                                                                                                                                 |
+| `X-Content-Type-Options`    | `nosniff`                                                                                                                                                                                                                                              |
+| `Referrer-Policy`           | `strict-origin-when-cross-origin`                                                                                                                                                                                                                      |
+| `Permissions-Policy`        | `camera=(), microphone=(), geolocation=()`                                                                                                                                                                                                             |
+| `Content-Security-Policy`   | `default-src 'self'; img-src 'self' data: https:; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self'; font-src 'self' data:; manifest-src 'self'; worker-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'` |
 
 Add `X-Robots-Tag: noindex` to **admin only**. Never add it to the student web app.
 
@@ -283,8 +283,10 @@ Use a private browser window. Do not use the apex yet.
 
 - [ ] No 5xx in the API or worker logs during the whole run.
 
-Email links point at `https://nelavista.com`, which is still V1 until step 7. Test
-the verification link **after** the domain move.
+Email links use `WEB_BASE_URL`. While verifying before cutover, set it to
+`https://nelavista-web.onrender.com` on both the API and worker, then redeploy.
+Otherwise verification and password-reset links open V1 at `nelavista.com` and
+return 404. Change it back to `https://nelavista.com` in step 7.
 
 ---
 
@@ -294,9 +296,11 @@ the verification link **after** the domain move.
 
 - [ ] Lower the Namecheap TTL on `@` and `www` to 5 minutes at least 24 hours ahead.
 - [ ] Re-run 5.1 and 5.2 if V1 has taken any signups or uploads since the last import.
+- [ ] Set `WEB_BASE_URL=https://nelavista.com` on both the V2 API and worker, then
+      redeploy them.
 - [ ] `https://v1.nelavista.com` still loads and you can log in. If Google login
-      fails, add `https://v1.nelavista.com/auth/google/callback` (or the redirect
-      URI V1 prints) in Google Cloud.
+  fails, add `https://v1.nelavista.com/auth/google/callback` (or the redirect
+  URI V1 prints) in Google Cloud.
 - [ ] Keep this page open. The rollback is at the bottom.
 
 ### The switch (10–15 minutes)
@@ -334,13 +338,13 @@ delete anything on the V1 side during the launch window.
 
 ## DNS summary (Namecheap)
 
-| Host | Type | Value | When |
-|---|---|---|---|
-| `@` | A | `216.24.57.1` | unchanged; Render switches which service owns it |
-| `www` | CNAME | V2 web host from Render | at cutover |
-| `api` | CNAME | V2 API host from Render | now |
-| `admin` | CNAME | V2 admin host from Render | now |
-| `v1` | CNAME | V1 host from Render | already done |
+| Host      | Type  | Value                     | When                                             |
+| --------- | ----- | ------------------------- | ------------------------------------------------ |
+| `@`     | A     | `216.24.57.1`           | unchanged; Render switches which service owns it |
+| `www`   | CNAME | V2 web host from Render   | at cutover                                       |
+| `api`   | CNAME | V2 API host from Render   | now                                              |
+| `admin` | CNAME | V2 admin host from Render | now                                              |
+| `v1`    | CNAME | V1 host from Render       | already done                                     |
 
 Only these records. Do not add `dev`, `api-dev` or `admin-dev`.
 
@@ -349,13 +353,13 @@ Only these records. Do not add `dev`, `api-dev` or `admin-dev`.
 ## After launch (first week)
 
 - [ ] Render Postgres backups are on; do one restore drill using
-      `docs/runbooks/restore-from-backup.md`.
+  `docs/runbooks/restore-from-backup.md`.
 - [ ] Add `nelavista.com` to Google Search Console and submit `/sitemap.xml`.
 - [ ] Check the API and worker logs once a day for 5xx or failed jobs.
 - [ ] Rotate the Sendhiiv key and Render/GitHub secrets if anyone else saw them.
 - [ ] Leave V1 at `v1.nelavista.com` and keep its rollback path for 30 days.
-      Keep it longer if imported PDFs still point at `v1.nelavista.com/static/...`.
-      Do not share the `v1` URL with students after cutover; it is for rollback only.
+  Keep it longer if imported PDFs still point at `v1.nelavista.com/static/...`.
+  Do not share the `v1` URL with students after cutover; it is for rollback only.
 
 ## Sign-off
 

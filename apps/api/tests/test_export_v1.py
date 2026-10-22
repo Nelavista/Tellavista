@@ -269,6 +269,18 @@ def _seed(engine) -> None:
                     "external_url": "https://example.test/code-only.pdf",
                     "is_approved": True,
                 },
+                {
+                    "id": 5,
+                    "title": "Static file",
+                    "course_id": 1,
+                    "course_code": None,
+                    "level": None,
+                    "department": None,
+                    "university": None,
+                    "file_url": "static/materials/legacy.pdf",
+                    "external_url": None,
+                    "is_approved": True,
+                },
             ],
         )
         conn.execute(
@@ -350,7 +362,7 @@ def test_export_matches_the_importer_shape(tmp_path) -> None:
     assert data["meta"]["counts"] == {
         "users": 1,
         "taxonomy": 1,
-        "materials": 3,
+        "materials": 4,
         "questions": 1,
         "skills": 1,
     }
@@ -364,8 +376,13 @@ def test_export_matches_the_importer_shape(tmp_path) -> None:
         "Stored file",
         "External file",
         "Code only",
+        "Static file",
     }
     assert data["materials"][1]["file_url"] == "https://example.test/file.pdf"
+    assert data["materials"][3]["file_url"] == (
+        "https://v1.nelavista.com/static/materials/legacy.pdf"
+    )
+    assert any("V1's /static files" in warning for warning in data["meta"]["warnings"])
     assert all(row["course_code"] == "CSC101" for row in data["materials"])
 
     question = data["questions"][0]

@@ -49,6 +49,10 @@ TABLES = (
 )
 
 _LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+# V1's seeded material PDFs live under app/static/materials and are not part of
+# V2's web build. Keep those links working by pointing them at the V1 host that
+# stays up after cutover, until the files are migrated (post-launch).
+V1_PUBLIC_BASE = "https://v1.nelavista.com"
 
 
 def _slug(value: str) -> str:
@@ -61,6 +65,16 @@ def _slug(value: str) -> str:
 def _get(row: dict, key: str, default: Any = None) -> Any:
     value = row.get(key, default)
     return default if value is None else value
+
+
+def _absolute_v1_url(value: Any) -> str:
+    """Turn a relative V1 /static path into a link that still works after cutover."""
+    url = str(value or "").strip()
+    if url.startswith("/static/"):
+        return f"{V1_PUBLIC_BASE}{url}"
+    if url.startswith("static/"):
+        return f"{V1_PUBLIC_BASE}/{url}"
+    return url
 
 
 def _on(value: Any) -> bool:
@@ -229,6 +243,7 @@ def _export_materials(
     warnings: list[str],
 ) -> list[dict]:
     rows: list[dict] = []
+    static_count = 0
     for row in materials:
         if _off(row.get("is_approved")):
             continue
@@ -236,7 +251,11 @@ def _export_materials(
         context = _context(
             row, courses, courses_by_code, departments, faculties, universities
         )
-        url = str(_get(row, "file_url", "") or _get(row, "external_url", "")).strip()
+        url = _absolute_v1_url(
+            _get(row, "file_url", "") or _get(row, "external_url", "")
+        )
+        if url.startswith(V1_PUBLIC_BASE):
+            static_count += 1
         if not title:
             warnings.append(f"material {row.get('id')} has no title; skipped")
             continue
@@ -252,6 +271,11 @@ def _export_materials(
                 "file_url": url,
                 **context,
             }
+        )
+    if static_count:
+        warnings.append(
+            f"{static_count} materials point at V1's /static files and were rewritten "
+            f"to {V1_PUBLIC_BASE}/static/...; keep V1 running until those files are migrated"
         )
     return rows
 

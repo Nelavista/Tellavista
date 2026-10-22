@@ -213,6 +213,9 @@ content, but V1 accounts will not carry over.
 5. Choose **Apply** and run it once.
 
 The import is idempotent: running it again updates or skips, it does not duplicate.
+Seeded PDFs that lived under V1's `/static/materials` are rewritten to
+`https://v1.nelavista.com/static/...`, so keep V1 running until those files are
+moved to Cloudinary.
 
 ### 5.3 Seed the curriculum
 
@@ -337,6 +340,7 @@ Only these records. Do not add `dev`, `api-dev` or `admin-dev`.
 - [ ] Check the API and worker logs once a day for 5xx or failed jobs.
 - [ ] Rotate the Sendhiiv key and Render/GitHub secrets if anyone else saw them.
 - [ ] Leave V1 at `v1.nelavista.com` and keep its rollback path for 30 days.
+      Keep it longer if imported PDFs still point at `v1.nelavista.com/static/...`.
 
 ## Sign-off
 

@@ -215,6 +215,8 @@ content, but V1 accounts will not carry over.
 3. Go to **Import runs** → choose `v1-export.json` → **Dry run**.
 4. Read the report. Each section should say `match` (or explain what it skipped).
 5. Choose **Apply** and run it once.
+6. After it succeeds, delete `v1-export.json` from your machine. It contains real
+   student data.
 
 The import is idempotent: running it again updates or skips, it does not duplicate.
 It brings across people, taxonomy, approved materials, CBT questions and skill
@@ -351,6 +353,7 @@ Only these records. Do not add `dev`, `api-dev` or `admin-dev`.
 - [ ] Rotate the Sendhiiv key and Render/GitHub secrets if anyone else saw them.
 - [ ] Leave V1 at `v1.nelavista.com` and keep its rollback path for 30 days.
       Keep it longer if imported PDFs still point at `v1.nelavista.com/static/...`.
+      Do not share the `v1` URL with students after cutover; it is for rollback only.
 
 ## Sign-off
 

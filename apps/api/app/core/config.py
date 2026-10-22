@@ -18,11 +18,15 @@ AppEnv = Literal["local", "dev", "prod"]
 
 # Repo-root/packages/config/versions.json — the single source of version truth.
 _VERSIONS_FILE = Path(__file__).resolve().parents[4] / "packages" / "config" / "versions.json"
+# apps/api/.env.local is the documented V2 local file. It is loaded last so it
+# wins over the V1 root .env that also lives in this repository.
+_API_DIR = Path(__file__).resolve().parents[2]
+_ENV_FILES = (".env", ".env.local", str(_API_DIR / ".env"), str(_API_DIR / ".env.local"))
 
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
-        env_file=(".env", ".env.local"),
+        env_file=_ENV_FILES,
         env_file_encoding="utf-8",
         extra="ignore",
         case_sensitive=True,
@@ -68,12 +72,7 @@ class Settings(BaseSettings):
     PUSH_ENDPOINT: str = ""
     GOOGLE_CLIENT_ID: str = ""
     GOOGLE_CLIENT_SECRET: str = ""
-    CLOUDINARY_URL: str = ""
-    SENTRY_DSN: str = ""
     POSTHOG_API_KEY: str = ""
-
-    # --- Storage ---
-    STORAGE_BACKEND: Literal["local", "cloudinary"] = "local"
 
     @field_validator("CORS_ORIGINS")
     @classmethod
@@ -113,10 +112,6 @@ class Settings(BaseSettings):
         # CORS must never be a wildcard in a deployed environment.
         if not self.is_local and "*" in self.cors_origins:
             problems.append("CORS_ORIGINS must not contain '*' outside local.")
-
-        # Cloudinary backend needs the URL.
-        if self.STORAGE_BACKEND == "cloudinary" and not self.CLOUDINARY_URL:
-            problems.append("STORAGE_BACKEND=cloudinary requires CLOUDINARY_URL.")
 
         if problems:
             raise RuntimeError(

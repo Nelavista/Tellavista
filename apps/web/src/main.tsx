@@ -19,8 +19,8 @@ createRoot(container).render(
   </React.StrictMode>,
 );
 
-// Installed builds keep working through flaky data (ADR-0007): the shell is
-// precached and API GETs fall back to the last good response.
+// Installed builds keep the shell available offline (ADR-0007). API data is
+// never cached, so authenticated responses cannot outlive a sign-out.
 if ('serviceWorker' in navigator && import.meta.env.PROD) {
   void import('virtual:pwa-register').then(({ registerSW }) => registerSW({ immediate: true }));
 }

@@ -26,19 +26,28 @@ A platform for African (Nigerian first) university students, taking a student fr
 
 ---
 
-## V2 quick start (new developers)
+## V2 quick start
+
+**Windows:** follow **`RUN-LOCALLY.md`** — it has copy-paste PowerShell and a
+`scripts\dev.ps1` that opens the API, web and admin in three windows.
+
+**macOS/Linux:**
 
 ```bash
 # prerequisites: Docker, Node 20+, pnpm 9+, Python 3.11, uv, make
 make bootstrap      # install deps + git hooks
 make up             # Postgres+pgvector, Redis, Mailpit via Docker Compose
 make seed-local     # safe fake sample data (never touches real data)
-make dev            # api :8000, web :5173, admin :5174
+make api-dev        # terminal 1: API  :8000
+make dev            # terminal 2: web :5173 + admin :5174
 ```
 
 Fixed port map: V1 `5000` · API `8000` · web `5173` · admin `5174` · Mailpit UI `8025` · Postgres `5432` · Redis `6379`.
 
-Full setup, and mobile setup (Android Emulator; iOS via cloud builds — the team has no Mac): **`docs/runbooks/local-setup.md`** and **`docs/runbooks/mobile-local-setup.md`**.
+Full setup: **`docs/runbooks/local-setup.md`**. Docs index: **`docs/README.md`**.
+Launch plan: **`docs/runbooks/v2-launch-checklist.md`**.
+
+The mobile app is post-launch work; ignore the mobile runbooks for this launch.
 
 ## V1 quick start (unchanged)
 

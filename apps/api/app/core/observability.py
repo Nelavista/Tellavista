@@ -1,16 +1,9 @@
-"""Error tracking and product analytics (Phase 0 PR 0.7).
-
-Both integrations are **optional at import**: an unset DSN disables the
-integration instead of crashing a boot, and local/CI never send anything.
+"""Product analytics (Phase 0 PR 0.7).
 
 PostHog is called over its HTTP capture endpoint with httpx rather than its SDK,
 so there is no extra dependency and no monkey-patching. Every event name lives in
 `EVENTS`, mirroring the journey stages the PRD cares about — dashboards built on
-ad-hoc strings rot within a week.
-
-Sentry's SDK is imported lazily; if it is not installed the app still runs and
-logs a warning once. Install `sentry-sdk[fastapi]` (and lock it) before enabling
-`SENTRY_DSN` in dev or prod.
+ad-hoc strings rot within a week. An unset key is a complete no-op.
 """
 from __future__ import annotations
 
@@ -33,34 +26,6 @@ EVENTS: dict[str, str] = {
     "approved": "student.work_approved",
     "paid": "student.paid",
 }
-
-_initialised = False
-
-
-def init_observability() -> None:
-    global _initialised
-    if _initialised:
-        return
-    _initialised = True
-    settings = get_settings()
-
-    if not settings.SENTRY_DSN:
-        logger.info("sentry disabled (SENTRY_DSN unset)")
-        return
-    try:
-        import sentry_sdk
-    except ImportError:
-        logger.warning("SENTRY_DSN is set but sentry-sdk is not installed; skipping")
-        return
-
-    sentry_sdk.init(
-        dsn=settings.SENTRY_DSN,
-        environment=settings.APP_ENV,
-        release=f"nelavista-api@{settings.API_VERSION}",
-        traces_sample_rate=0.1,
-        send_default_pii=False,  # student data stays out of error reports
-    )
-    logger.info("sentry initialised env=%s", settings.APP_ENV)
 
 
 def capture(distinct_id: str | int, event: str, properties: dict[str, Any] | None = None) -> None:

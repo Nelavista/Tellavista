@@ -11,7 +11,7 @@ bootstrap: ## Install JS + Python deps and git hooks (<15 min, web + API)
 	pnpm install
 	uv sync --all-packages || pip install -e apps/api
 	pre-commit install || echo "pre-commit not installed; run: pip install pre-commit"
-	@echo "Bootstrap done. Next: make up && make seed-local && make dev"
+	@echo "Bootstrap done. Next: make up && make seed-local; then make api-dev (one terminal) and make dev (another)."
 
 up: ## Start local services (Postgres+pgvector, Redis, Mailpit)
 	docker compose up -d
@@ -23,10 +23,10 @@ reset-db: ## DESTROY local DB volume and recreate (local only)
 	docker compose down -v && docker compose up -d db
 
 seed-local: ## Seed fake sample data (prod-guarded; never touches real data)
-	python -m tools.seed_local
+	uv run --package nelavista-api python -m tools.seed_local
 
 # ---------------------------------------------------------------- run
-dev: ## Run api + web + admin together (Turbo)
+dev: ## Run web + admin together (start the API with `make api-dev` first)
 	pnpm dev
 
 api-dev: ## Run the API only (http://localhost:8000)

@@ -37,6 +37,11 @@ def test_security_headers_present() -> None:
     assert "Content-Security-Policy" in r.headers
 
 
+def test_api_responses_are_never_cached() -> None:
+    r = client.get(f"{API}/health")
+    assert r.headers["Cache-Control"] == "no-store"
+
+
 def test_force_update_below_minimum() -> None:
     """A version below min_supported gets 426 with a machine-readable body."""
     r = client.get(f"{API}/health", headers={"X-App-Platform": "ios", "X-App-Version": "0.0.1"})

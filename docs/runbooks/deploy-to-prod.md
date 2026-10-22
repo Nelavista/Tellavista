@@ -23,7 +23,7 @@ Push to **`main`** or a version tag → `.github/workflows/deploy-prod.yml` → 
    ```
    Expand-only first; contract in a later release (ADR/`04-v1-to-v2-migration.md`).
 3. **Deploy API**, then **web/admin** (hooks).
-4. **Verify:** `/v1/health`, a login, one read, one write. Check Sentry + PostHog for errors.
+4. **Verify:** `/v1/health`, a login, one read, one write. Check PostHog (if configured) and the API logs for errors.
 5. **Announce** what changed.
 
 ## After

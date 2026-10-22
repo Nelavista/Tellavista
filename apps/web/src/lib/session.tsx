@@ -10,6 +10,7 @@ import type { Profile } from '@nelavista/contracts';
 import * as React from 'react';
 
 import { http, refreshSession, setAccessToken } from './http';
+import { clearApiCache } from './offline';
 
 export type SessionStatus = 'loading' | 'anonymous' | 'authenticated';
 
@@ -48,6 +49,9 @@ export function SessionProvider({ children }: { children: React.ReactNode }): JS
     let cancelled = false;
     void (async () => {
       try {
+        // Purge any API cache written by an older build before restoring a
+        // session, so a previous account's data cannot be read offline.
+        await clearApiCache();
         const restored = await refreshSession();
         if (!restored) {
           if (!cancelled) setStatus('anonymous');
@@ -75,6 +79,7 @@ export function SessionProvider({ children }: { children: React.ReactNode }): JS
         platform: 'web',
       });
       setAccessToken(token.access_token);
+      await clearApiCache();
       await load();
     },
     [load],
@@ -88,6 +93,7 @@ export function SessionProvider({ children }: { children: React.ReactNode }): JS
         platform: 'web',
       });
       setAccessToken(token.access_token);
+      await clearApiCache();
       await load();
     },
     [load],
@@ -97,6 +103,9 @@ export function SessionProvider({ children }: { children: React.ReactNode }): JS
     try {
       await http.post('/auth/logout');
     } finally {
+      // A different account may sign in on this device; no cached response may
+      // outlive the previous session.
+      await clearApiCache();
       setAccessToken(null);
       setMe(null);
       setProfile(null);

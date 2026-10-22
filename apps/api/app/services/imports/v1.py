@@ -122,9 +122,12 @@ def _import_users(db: Session, rows: list[dict], counts: SectionCounts) -> dict[
                 role_id=student_role_id,
             )
             # The V1 hash is copied as-is; the plaintext never leaves V1, and the
-            # auth service upgrades the hash on first V2 login (ADR-0005).
+            # auth service upgrades PBKDF2 or scrypt on first V2 login (ADR-0005).
             legacy_hash = row.get("password_hash") or ""
-            user.password_hash = legacy_hash if legacy_hash.startswith("pbkdf2:") else None
+            if legacy_hash.startswith(("pbkdf2:", "scrypt:")):
+                user.password_hash = legacy_hash
+            else:
+                user.password_hash = None
             db.add(user)
             db.flush()
             db.add(UserProfile(user_id=user.id, display_name=user.name or username))
@@ -133,8 +136,9 @@ def _import_users(db: Session, rows: list[dict], counts: SectionCounts) -> dict[
             # V2 is authoritative after creation: an import must not undo a profile
             # edit or reset a password a student changed in V2.
             changed = False
-            if not user.password_hash and (row.get("password_hash") or "").startswith("pbkdf2:"):
-                user.password_hash = row["password_hash"]
+            legacy_hash = row.get("password_hash") or ""
+            if not user.password_hash and legacy_hash.startswith(("pbkdf2:", "scrypt:")):
+                user.password_hash = legacy_hash
                 changed = True
             if user.email_verified is False and row.get("email_verified"):
                 user.email_verified = True

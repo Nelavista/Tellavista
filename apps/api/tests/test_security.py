@@ -17,6 +17,7 @@ from app.core.security import (
     is_argon2,
     new_refresh_token,
     verify_legacy_pbkdf2,
+    verify_legacy_werkzeug,
     verify_password,
 )
 
@@ -50,6 +51,21 @@ def test_v1_pbkdf2_hash_verifies_and_wrong_password_does_not() -> None:
     assert verify_legacy_pbkdf2("v1-password", stored) is True
     assert verify_legacy_pbkdf2("nope", stored) is False
     assert verify_legacy_pbkdf2("v1-password", None) is False
+    assert verify_legacy_werkzeug("v1-password", stored) is True
+
+
+def test_v1_werkzeug_scrypt_hash_verifies_and_wrong_password_does_not() -> None:
+    salt = "abc123"
+    n, r, p = 2**14, 8, 1
+    digest = hashlib.scrypt(
+        b"v1-password", salt=salt.encode(), n=n, r=r, p=p, maxmem=132 * n * r * p
+    ).hex()
+    stored = f"scrypt:{n}:{r}:{p}${salt}${digest}"
+
+    assert verify_legacy_werkzeug("v1-password", stored) is True
+    assert verify_legacy_werkzeug("nope", stored) is False
+    assert verify_legacy_werkzeug("v1-password", "scrypt:bad") is False
+    assert verify_legacy_werkzeug("v1-password", f"scrypt:999999999:8:1${salt}${digest}") is False
 
 
 def test_access_token_round_trip_and_tamper_detection() -> None:

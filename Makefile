@@ -11,7 +11,7 @@ bootstrap: ## Install JS + Python deps and git hooks (<15 min, web + API)
 	pnpm install
 	uv sync --all-packages || pip install -e apps/api
 	pre-commit install || echo "pre-commit not installed; run: pip install pre-commit"
-	@echo "Bootstrap done. Next: make up && make seed-local && make dev"
+	@echo "Bootstrap done. Next: make up && make seed-local; then make api-dev and make worker-dev (two terminals) and make dev (a third)."
 
 up: ## Start local services (Postgres+pgvector, Redis, Mailpit)
 	docker compose up -d
@@ -23,14 +23,17 @@ reset-db: ## DESTROY local DB volume and recreate (local only)
 	docker compose down -v && docker compose up -d db
 
 seed-local: ## Seed fake sample data (prod-guarded; never touches real data)
-	python -m tools.seed_local
+	uv run --package nelavista-api python -m tools.seed_local
 
 # ---------------------------------------------------------------- run
-dev: ## Run api + web + admin together (Turbo)
+dev: ## Run web + admin together (start the API with `make api-dev` first)
 	pnpm dev
 
 api-dev: ## Run the API only (http://localhost:8000)
 	uv run --package nelavista-api uvicorn app.main:app --reload --port 8000 --app-dir apps/api
+
+worker-dev: ## Run the background worker only (sends queued email)
+	uv run --package nelavista-api python -m app.worker
 
 web-dev: ## Run the web app only (http://localhost:5173)
 	pnpm --filter @nelavista/web dev
@@ -75,4 +78,4 @@ db-heads: ## Show V2 API migration heads (must be exactly one)
 api-client: ## Regenerate the typed API client
 	pnpm generate:api-client
 
-.PHONY: help bootstrap up down reset-db seed-local dev api-dev web-dev admin-dev mobile-start mobile-android lint typecheck format test test-v1 load-test db-upgrade db-heads api-client
+.PHONY: help bootstrap up down reset-db seed-local dev api-dev worker-dev web-dev admin-dev mobile-start mobile-android lint typecheck format test test-v1 load-test db-upgrade db-heads api-client

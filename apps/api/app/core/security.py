@@ -1,9 +1,9 @@
 """Password hashing, access tokens and opaque refresh tokens (ADR-0009).
 
 Three rules:
-* Passwords are **Argon2id**; a V1 PBKDF2 hash still verifies and is upgraded on
-  the first successful login (ADR-0005), without ever seeing a plaintext password
-  leave the request.
+* Passwords are **Argon2id**; a V1 PBKDF2 or Werkzeug scrypt hash still verifies
+  and is upgraded on the first successful login (ADR-0005), without ever seeing a
+  plaintext password leave the request.
 * Access tokens are short-lived JWTs (15 minutes) and carry only an id and role.
 * Refresh tokens are **opaque**, stored only as a SHA-256 hash, single-use, and
   belong to a rotating family. A replayed token revokes the whole family.
@@ -80,6 +80,42 @@ def verify_legacy_pbkdf2(password: str, stored: str | None) -> bool:
             "sha256", password.encode(), salt.encode(), int(iterations)
         ).hex()
         return hmac.compare_digest(computed, expected)
+    except (ValueError, TypeError):
+        return False
+
+
+def verify_legacy_werkzeug(password: str, stored: str | None) -> bool:
+    """Verify either V1 Werkzeug format: PBKDF2 or scrypt.
+
+    Flask 3 / Werkzeug 3 defaults to scrypt, so newer V1 accounts do not use
+    PBKDF2 at all. Both formats are parsed here rather than importing Werkzeug
+    (V2 never imports V1 code), and both are upgraded to Argon2id on first login.
+    """
+    if not stored:
+        return False
+    if stored.startswith("pbkdf2:"):
+        return verify_legacy_pbkdf2(password, stored)
+    if not stored.startswith("scrypt:"):
+        return False
+    try:
+        method, salt, expected = stored.split("$", 2)
+        _, n_raw, r_raw, p_raw = method.split(":")
+        n, r, p = int(n_raw), int(r_raw), int(p_raw)
+        # Werkzeug's defaults are 32768/8/1. Reject absurd parameters instead of
+        # letting a corrupt row allocate unbounded memory (~128*n*r*p bytes).
+        if not (2 <= n <= 2**20 and 1 <= r <= 32 and 1 <= p <= 16):
+            return False
+        if 128 * n * r * p > 256 * 1024 * 1024:
+            return False
+        computed = hashlib.scrypt(
+            password.encode(),
+            salt=salt.encode(),
+            n=n,
+            r=r,
+            p=p,
+            maxmem=132 * n * r * p,
+        )
+        return hmac.compare_digest(computed.hex(), expected)
     except (ValueError, TypeError):
         return False
 

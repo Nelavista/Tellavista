@@ -32,7 +32,7 @@ from app.core.security import (
     is_argon2,
     new_email_token,
     new_refresh_token,
-    verify_legacy_pbkdf2,
+    verify_legacy_werkzeug,
     verify_password,
 )
 from app.models.admin import ROLE_STUDENT, Role
@@ -189,8 +189,9 @@ def authenticate(db: Session, *, email: str, password: str) -> User:
     if is_argon2(user.password_hash):
         ok, needs_rehash = verify_password(password, user.password_hash)
     else:
-        # V1 account: verify its PBKDF2 hash, then upgrade to Argon2id silently.
-        ok = verify_legacy_pbkdf2(password, user.password_hash)
+        # V1 account: verify its Werkzeug hash (PBKDF2 or scrypt), then upgrade
+        # to Argon2id silently.
+        ok = verify_legacy_werkzeug(password, user.password_hash)
         needs_rehash = ok
 
     if not ok:

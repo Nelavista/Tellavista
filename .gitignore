@@ -107,6 +107,10 @@ apps/*/.env.local
 # OpenAPI export used to generate packages/api-client (regenerated in CI)
 openapi.json
 
+# V1 data exports contain real student data; never commit them
+v1-export.json
+*-v1-export.json
+
 # Local secrets pulled from a provider, never committed
 *.p8
 *.p12

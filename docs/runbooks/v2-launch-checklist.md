@@ -108,9 +108,10 @@ On the two static sites, set `NODE_VERSION=20` if Render does not read `.nvmrc` 
 | `/*` | `/index.html` | **Rewrite** |
 
 The first rule is the proxy that keeps the login cookie on the same origin. Do not
-use a Redirect. If Render's rewrite ever drops a POST body or `Set-Cookie`, tell me
-and we replace it with a tiny proxy service; do not switch the frontends to a
-different API hostname.
+use a Redirect. Use the exact API host Render shows (it may have a suffix such as
+`nelavista-api-a1b2.onrender.com`). If Render's rewrite ever drops a POST body or
+`Set-Cookie`, tell me and we replace it with a tiny proxy service; do not switch the
+frontends to a different API hostname.
 
 **Static site headers** (Settings → Headers, path `/*`):
 

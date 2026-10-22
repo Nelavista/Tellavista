@@ -16,7 +16,7 @@ A repeatable import job copies, **one direction only**:
 
 | V1 source | V2 target | Notes |
 |---|---|---|
-| `User` (username, email, password hash, `google_sub`, name, university/department/level, `email_verified`) | `identity.user` | Password hash carried **as-is** (werkzeug PBKDF2) and **rehashed to Argon2 on next successful login**. |
+| `User` (username, email, password hash, `google_sub`, name, university/department/level, `email_verified`) | `identity.user` | Password hash carried **as-is** (Werkzeug PBKDF2 or scrypt) and **rehashed to Argon2 on next successful login**. |
 | `University`, `Faculty`, `Department`, `Course`, `Topic` | `academia.*` | Taxonomy is the backbone of both paths. |
 | `Material` metadata (title, course/topic links, `file_url`) | `academia.material` | **Metadata only** — files stay where they are until the Cloudinary plan runs. |
 | `CbtQuestion` banks | `academia.question` | Course-code-keyed banks. |

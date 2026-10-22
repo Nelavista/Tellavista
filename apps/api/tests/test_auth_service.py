@@ -80,6 +80,27 @@ def test_login_upgrades_a_v1_pbkdf2_hash(db: Session) -> None:
     assert auth.authenticate(db, email=user.email, password="v1-password").id == user.id
 
 
+def test_login_upgrades_a_v1_scrypt_hash(db: Session) -> None:
+    salt = "abc123"
+    n, r, p = 2**14, 8, 1
+    digest = hashlib.scrypt(
+        b"v1-password", salt=salt.encode(), n=n, r=r, p=p, maxmem=132 * n * r * p
+    ).hex()
+    user = User(
+        email=f"v1-scrypt-{uuid.uuid4().hex[:8]}@example.test",
+        username=f"v1-scrypt-{uuid.uuid4().hex[:8]}",
+        password_hash=f"scrypt:{n}:{r}:{p}${salt}${digest}",
+        role_id=db.scalar(select(Role.id).where(Role.code == ROLE_STUDENT)),
+    )
+    db.add(user)
+    db.flush()
+
+    upgraded = auth.authenticate(db, email=user.email, password="v1-password")
+    assert upgraded.password_hash is not None
+    assert upgraded.password_hash.startswith("$argon2")
+    assert auth.authenticate(db, email=user.email, password="v1-password").id == user.id
+
+
 def test_unknown_email_and_wrong_password_are_indistinguishable(db: Session) -> None:
     user, *_ = _signup(db)
     with pytest.raises(ApiError) as wrong:

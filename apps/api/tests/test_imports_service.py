@@ -87,6 +87,28 @@ def test_an_apply_creates_the_account_without_a_plaintext_password(db: Session) 
     assert run.counts["users"]["errors"]
 
 
+def test_a_v1_scrypt_hash_is_imported_without_plaintext(db: Session) -> None:
+    stored = "scrypt:32768:8:1$salt$deadbeef"
+    run = importer.run_import(
+        db,
+        data={
+            "users": [
+                {
+                    "id": 9,
+                    "email": "scrypt@example.test",
+                    "username": "scrypt",
+                    "password_hash": stored,
+                }
+            ]
+        },
+        mode="apply",
+    )
+
+    user = db.scalars(select(User).where(User.email == "scrypt@example.test")).one()
+    assert user.password_hash == stored
+    assert run.counts["users"]["created"] == 1
+
+
 def test_the_same_export_applied_twice_does_not_duplicate(db: Session) -> None:
     importer.run_import(db, data=EXPORT, mode="apply")
     second = importer.run_import(db, data=EXPORT, mode="apply")

@@ -54,7 +54,7 @@ everything in the dashboard.
 | `nelavista-db` | Postgres | — | — | — |
 | `nelavista-redis` | Key Value | — | — | — |
 | `nelavista-api` | Web Service (Python) | `main` | `pip install uv && uv sync --frozen --no-dev --all-packages` | `uv run --no-sync --package nelavista-api uvicorn app.main:app --host 0.0.0.0 --port $PORT --app-dir apps/api` |
-| `nelavista-worker` | Background Worker (Python) | `main` | same as API | `uv run --no-sync --package nelavista-api python -m app.worker` |
+| `nelavista-worker` | Background Worker (Python) | `main` | same as API | `cd apps/api && uv run --no-sync --package nelavista-api python -m app.worker` |
 | `nelavista-web` | Static Site | `main` | `corepack enable && pnpm install --frozen-lockfile && pnpm --filter @nelavista/web build` | — (publish `apps/web/dist`) |
 | `nelavista-admin` | Static Site | `main` | `corepack enable && pnpm install --frozen-lockfile && pnpm --filter @nelavista/admin build` | — (publish `apps/admin/dist`) |
 
@@ -100,7 +100,8 @@ On the two static sites, set `NODE_VERSION=20` if Render does not read `.nvmrc` 
 
 **API health check path:** `/v1/health`.
 
-**Static site rewrites** (both web and admin, in this order):
+**Static site rewrites** (both web and admin, in this order). Open the static
+site → **Settings** → **Redirects/Rewrites** → **Add Rule**:
 
 | Source | Destination | Action |
 |---|---|---|
@@ -113,7 +114,8 @@ use a Redirect. Use the exact API host Render shows (it may have a suffix such a
 `Set-Cookie`, tell me and we replace it with a tiny proxy service; do not switch the
 frontends to a different API hostname.
 
-**Static site headers** (Settings → Headers, path `/*`):
+**Static site headers** (open the static site → **Settings** → **Headers** → **Add
+Header**, path `/*`):
 
 | Header | Value |
 |---|---|

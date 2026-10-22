@@ -7,7 +7,8 @@ param([switch]$NoInfra)
 
 $ErrorActionPreference = "Stop"
 $root = Split-Path -Parent $PSScriptRoot
-$python = Join-Path $root "apps\api\.venv\Scripts\python.exe"
+$apiDir = Join-Path $root "apps\api"
+$python = Join-Path $apiDir ".venv\Scripts\python.exe"
 
 if (-not $NoInfra) {
     Push-Location $root
@@ -31,7 +32,7 @@ if (Test-Path $python) {
 Start-Process powershell -WorkingDirectory $root -ArgumentList @(
     "-NoExit", "-Command", $apiCommand
 )
-Start-Process powershell -WorkingDirectory $root -ArgumentList @(
+Start-Process powershell -WorkingDirectory $apiDir -ArgumentList @(
     "-NoExit", "-Command", $workerCommand
 )
 Start-Process powershell -WorkingDirectory $root -ArgumentList @(

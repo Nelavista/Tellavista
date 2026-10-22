@@ -247,6 +247,10 @@ Run from the repo root on Windows. **Say the target database out loud before eac
 $env:APP_ENV = "dev"
 $env:DATABASE_URL = "<DEV Postgres EXTERNAL URL>"
 $env:SECRET_KEY = "<any non-empty value for the CLI>"
+# A Render database is not localhost, so the prod guard treats it as production.
+# This opt-in is required by seed_local and create_staff; check the printed target
+# before each run.
+$env:PRODGUARD_ALLOW = "1"
 
 # 1. Schema. Run B0 first: without it this resolves V1's migrations/ and fails
 #    (or worse, prints V1's head and looks fine).
@@ -262,10 +266,8 @@ Then create the two staff accounts. Sign them up as normal accounts in the web U
 never creates a password), then promote them:
 
 ```powershell
-# The guard prints the masked DB target and refuses a remote DB without the flag.
-# Read the printed target before adding --i-know-this-is-production. The flag is
-# required for any Render database, DEV included, because it is not localhost.
-$env:PRODGUARD_ALLOW = "1"   # or append --i-know-this-is-production to each command
+# PRODGUARD_ALLOW is already set above. The guard prints the masked DB target;
+# read it before the tool changes anything.
 apps\api\.venv\Scripts\python.exe -m tools.create_staff `
   --email you@nelavista.com --role super_admin
 apps\api\.venv\Scripts\python.exe -m tools.create_staff `

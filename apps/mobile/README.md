@@ -28,6 +28,9 @@ pnpm --filter @nelavista/mobile build:prod     # store build (tagged commits onl
 pnpm --filter @nelavista/mobile update         # OTA for JS-only changes
 ```
 
-## Not built yet
-Push (APNs/FCM), secure token storage, offline SQLite + retry queue, deep links —
-specified in ADR-0007/0009 and built in M7. Setup + constraints: `docs/runbooks/mobile-local-setup.md`.
+## In the shell
+Secure token storage, the SQLite offline queue with an idempotent retry, deep and
+universal links, push registration, per-environment build profiles and the 426
+force-update screen (ADR-0007/0009). Journey screens are in `src/screens/`.
+Release: `docs/runbooks/mobile-release.md`; store readiness:
+`docs/store/mobile-store-readiness.md`.

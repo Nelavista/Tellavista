@@ -18,11 +18,15 @@ AppEnv = Literal["local", "dev", "prod"]
 
 # Repo-root/packages/config/versions.json — the single source of version truth.
 _VERSIONS_FILE = Path(__file__).resolve().parents[4] / "packages" / "config" / "versions.json"
+# apps/api/.env.local is the documented V2 local file. It is loaded last so it
+# wins over the V1 root .env that also lives in this repository.
+_API_DIR = Path(__file__).resolve().parents[2]
+_ENV_FILES = (".env", ".env.local", str(_API_DIR / ".env"), str(_API_DIR / ".env.local"))
 
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
-        env_file=(".env", ".env.local"),
+        env_file=_ENV_FILES,
         env_file_encoding="utf-8",
         extra="ignore",
         case_sensitive=True,
@@ -39,21 +43,36 @@ class Settings(BaseSettings):
     REDIS_URL: str = ""
 
     # --- Mail ---
+    # `smtp` = Mailpit locally or any SMTP relay; `sendhiiv` = Sendhiiv's HTTP API.
+    EMAIL_PROVIDER: Literal["smtp", "sendhiiv"] = "smtp"
     MAIL_HOST: str = "localhost"
     MAIL_PORT: int = 1025
     MAIL_USE_TLS: bool = False
     MAIL_FROM: str = "noreply@nelavista.local"
+    # SMTP AUTH. Mailpit ignores both; a real relay requires them.
+    MAIL_USERNAME: str = ""
+    MAIL_PASSWORD: str = ""
+    # Non-production only: send every message to this one address instead of the
+    # real recipient. The original recipient is prefixed into the subject.
+    EMAIL_REDIRECT_TO: str = ""
+    # Sendhiiv (https://sendhiiv.com): HTTP API, no outbound SMTP port needed.
+    # `SENDHIIV_FROM` is optional; empty uses the shared sender until the domain
+    # is verified.
+    SENDHIIV_API_KEY: str = ""
+    SENDHIIV_API_URL: str = "https://api.sendhiiv.com/api/v1/messages"
+    SENDHIIV_FROM: str = ""
+    # Links in email must be absolute: a relative `/auth/verify` is meaningless
+    # in an inbox (F9). Each environment points at its own web origin.
+    WEB_BASE_URL: str = "http://localhost:5173"
 
     # --- Integrations (optional; unset = feature cleanly disabled) ---
     OPENROUTER_API_KEY: str = ""
+    OPENROUTER_MODEL: str = "openai/gpt-4o-mini"
+    # Expo push endpoint (https://exp.host/--/api/v2/push/send). Unset = in-app only.
+    PUSH_ENDPOINT: str = ""
     GOOGLE_CLIENT_ID: str = ""
     GOOGLE_CLIENT_SECRET: str = ""
-    CLOUDINARY_URL: str = ""
-    SENTRY_DSN: str = ""
     POSTHOG_API_KEY: str = ""
-
-    # --- Storage ---
-    STORAGE_BACKEND: Literal["local", "cloudinary"] = "local"
 
     @field_validator("CORS_ORIGINS")
     @classmethod
@@ -86,13 +105,13 @@ class Settings(BaseSettings):
         if not self.DATABASE_URL:
             problems.append("DATABASE_URL is required (see .env.example).")
 
+        # An emailed link that is not absolute cannot be clicked.
+        if not self.WEB_BASE_URL.startswith(("http://", "https://")):
+            problems.append("WEB_BASE_URL must be an absolute http(s) URL.")
+
         # CORS must never be a wildcard in a deployed environment.
         if not self.is_local and "*" in self.cors_origins:
             problems.append("CORS_ORIGINS must not contain '*' outside local.")
-
-        # Cloudinary backend needs the URL.
-        if self.STORAGE_BACKEND == "cloudinary" and not self.CLOUDINARY_URL:
-            problems.append("STORAGE_BACKEND=cloudinary requires CLOUDINARY_URL.")
 
         if problems:
             raise RuntimeError(

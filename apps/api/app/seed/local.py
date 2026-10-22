@@ -13,7 +13,12 @@ from sqlalchemy import select
 from app.db.base import Base
 from app.db.session import SessionLocal, engine
 from app.models.academia import Course, Department, Faculty, Material, University
+from app.models.admin import ROLE_STUDENT, Role
 from app.models.identity import User
+from app.models.platform import PlatformSettings
+from app.seed import curriculum
+from app.seed.roles import seed_roles
+from app.services.platform.settings import get_platform_settings
 
 FAKE_DOMAIN = "example.test"
 
@@ -25,9 +30,20 @@ def run() -> dict[str, int]:
     Base.metadata.create_all(engine)
 
     created = {"universities": 0, "faculties": 0, "departments": 0, "courses": 0,
-               "students": 0, "materials": 0}
+               "students": 0, "materials": 0, "roles": 0, "platform_settings": 0,
+               "skills": 0, "lessons": 0, "task_templates": 0, "learning_paths": 0,
+               "assessments": 0, "practical_tasks": 0, "topics": 0,
+               "curriculum_content": 0}
 
     with SessionLocal() as db:
+        # Roles first: users.role_id references them.
+        created["roles"] = seed_roles(db)
+        # G1–G5: materialise the policy row so a local database shows NGN and the
+        # documented guardrails instead of relying on a first-request default.
+        created["platform_settings"] = 0 if db.get(PlatformSettings, 1) else 1
+        get_platform_settings(db)
+        student_role_id = db.scalar(select(Role.id).where(Role.code == ROLE_STUDENT))
+
         uni = db.scalar(select(University).where(University.name == "Lagos Test University"))
         if uni is None:
             uni = University(name="Lagos Test University", slug="lagos-test-university")
@@ -77,6 +93,20 @@ def run() -> dict[str, int]:
                     ))
                     created["materials"] += 1
 
+        # F7: the AI Data Annotation curriculum, plus an AID301 course with
+        # topics, readable material chunks and CBT questions so the Academia,
+        # Ask and practice screens have real content in local/dev.
+        seeded = curriculum.run(db, dept.id)
+        created["skills"] += seeded["skills"]
+        created["lessons"] += seeded["lessons"]
+        created["task_templates"] += seeded["task_templates"]
+        created["learning_paths"] += seeded["learning_paths"]
+        created["assessments"] += seeded["assessments"]
+        created["practical_tasks"] += seeded["practical_tasks"]
+        created["topics"] += seeded["topics"]
+        created["curriculum_content"] += seeded["materials_and_questions"]
+        created["courses"] += seeded["courses"]
+
         for i in range(1, 3):
             email = f"student{i}@{FAKE_DOMAIN}"
             if db.scalar(select(User).where(User.email == email)) is None:
@@ -89,6 +119,7 @@ def run() -> dict[str, int]:
                     university=uni.name,
                     department=dept.name,
                     level="200",
+                    role_id=student_role_id,
                 ))
                 created["students"] += 1
 

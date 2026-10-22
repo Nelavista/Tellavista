@@ -63,3 +63,18 @@ jobs:
         env:
           RENDER_PROD_WEB_DEPLOY_HOOK: ${{ secrets.RENDER_PROD_WEB_DEPLOY_HOOK }}
           RENDER_PROD_ADMIN_DEPLOY_HOOK: ${{ secrets.RENDER_PROD_ADMIN_DEPLOY_HOOK }}
+
+  deploy-worker:
+    name: Deploy worker → prod
+    needs: deploy-api
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - run: |
+          if [ -z "${RENDER_PROD_WORKER_DEPLOY_HOOK}" ]; then
+            echo "::warning::RENDER_PROD_WORKER_DEPLOY_HOOK not set; skipping worker deploy."
+            exit 0
+          fi
+          curl -fsS -X POST "${RENDER_PROD_WORKER_DEPLOY_HOOK}" >/dev/null
+        env:
+          RENDER_PROD_WORKER_DEPLOY_HOOK: ${{ secrets.RENDER_PROD_WORKER_DEPLOY_HOOK }}

@@ -30,3 +30,6 @@ def is_enabled(name: str, default: bool = False) -> bool:
 SKILLS_JOURNEY = "skills_journey"
 MANAGED_WORKFORCE = "managed_workforce"
 LEDGER = "ledger"
+ACADEMIA_CONNECT = "academia_connect"
+TALENT_PROFILE = "talent_profile"
+EXTERNAL_OPPORTUNITIES = "external_opportunities"

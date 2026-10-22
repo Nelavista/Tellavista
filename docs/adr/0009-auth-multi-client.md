@@ -22,13 +22,13 @@ V1 auth is a **Flask server-side session cookie** holding `session['user']`; Goo
 - **CSRF:** web/admin keep a CSRF token for cookie-authenticated mutations. Native uses bearer tokens and needs no CSRF.
 - **Google native:** the app obtains an **ID token** via the platform Google SDK/PKCE; the **API verifies the ID token's signature, audience, issuer and expiry** and matches/link by `google_sub`. Never trust an unverified email claim (same rule as V1's OAuth callback).
 - **Logout:** revokes the refresh-token family server-side; client clears both tokens.
-- **Password hashing:** **Argon2id**. V1's PBKDF2 hashes are verified on first login and **rehashed** (ADR-0005).
+- **Password hashing:** **Argon2id**. V1's Werkzeug hashes (PBKDF2 or scrypt) are verified on first login and **rehashed** (ADR-0005).
 - **Rate limiting:** per-user (as V1 fixed) **and** per-IP on login/signup/reset.
 - **Email verification / reset:** same token model as V1 (only the hash stored, single active token, expiry), links built from configured base URL — **not** `request.host_url`, so the link is correct per environment (ADR-0002).
 - **Store requirements:** because both stores require **in-app account deletion** (Apple 5.1.1(v); Google Play Data-safety/account-deletion), account deletion is a **first-class endpoint** available in every client, mirroring V1's anonymise-and-deactivate behaviour.
 
 ### V1 account import fit
-V1 accounts import with their PBKDF2 hash and `google_sub`; the first successful login upgrades the hash. No forced password reset except for accounts with neither a usable hash nor `google_sub`.
+V1 accounts import with their Werkzeug hash (PBKDF2 or scrypt) and `google_sub`; the first successful login upgrades the hash. No forced password reset except for accounts with neither a usable hash nor `google_sub`.
 
 ## Options considered
 - **Keep session cookies for everything**: rejected — cannot serve native apps.

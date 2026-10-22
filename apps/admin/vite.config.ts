@@ -9,7 +9,15 @@ export default defineConfig(({ mode }) => {
     server: {
       port: 5174,
       strictPort: true,
-      proxy: { '/api': { target: apiTarget, changeOrigin: true } },
+      // The API serves /v1/..., the app calls /api/v1/...; strip the prefix so
+      // the proxy target matches the real route.
+      proxy: {
+        '/api': {
+          target: apiTarget,
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/api/, ''),
+        },
+      },
     },
     build: { outDir: 'dist', sourcemap: true },
   };

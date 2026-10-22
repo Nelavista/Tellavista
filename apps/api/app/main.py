@@ -11,6 +11,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from app import __version__
 from app.api.v1.router import api_v1_router
 from app.core.config import get_settings
+from app.core.errors import register_exception_handlers
+from app.core.request_id import RequestIdMiddleware
 from app.core.security_headers import SecurityHeadersMiddleware
 from app.core.versioning import VersioningMiddleware
 
@@ -34,6 +36,10 @@ app.add_middleware(
     allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allow_headers=["Authorization", "Content-Type", "Idempotency-Key", "X-App-Version", "X-App-Platform"],
 )
+# Request id last, so it is outermost among ours and exists inside error handlers.
+app.add_middleware(RequestIdMiddleware)
+
+register_exception_handlers(app)
 
 app.include_router(api_v1_router, prefix=f"/{settings.API_VERSION}")
 

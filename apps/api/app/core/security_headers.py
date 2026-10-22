@@ -17,6 +17,9 @@ _HEADERS = {
     "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
     "Content-Security-Policy": "default-src 'none'; frame-ancestors 'none'",
     "Cross-Origin-Resource-Policy": "same-site",
+    # Every API response may carry one student's data. Never let a browser,
+    # proxy or CDN store it and serve it to another account (B11).
+    "Cache-Control": "no-store",
 }
 
 

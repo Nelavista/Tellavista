@@ -11,10 +11,10 @@ from sqlalchemy.orm import Session
 REPO_ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(REPO_ROOT))
 
+from tools.create_staff import promote_user  # noqa: E402
+
 from app.models.admin import AuditLog, Role  # noqa: E402
 from app.models.identity import User  # noqa: E402
-
-from tools.create_staff import promote_user  # noqa: E402
 
 
 def _user(db: Session, email: str = "staff@example.test") -> User:

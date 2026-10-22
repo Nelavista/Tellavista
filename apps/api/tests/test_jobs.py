@@ -7,14 +7,15 @@ from __future__ import annotations
 from datetime import UTC, datetime, timedelta
 
 import pytest
+from sqlalchemy import select
+from sqlalchemy.orm import Session
+
 from app.core.time import as_utc
 from app.models.jobs import DONE, FAILED, PENDING, Job
 from app.services.jobs import enqueue
 from app.worker import tasks
 from app.worker.errors import PermanentJobError
 from app.worker.runner import drain, run_one
-from sqlalchemy import select
-from sqlalchemy.orm import Session
 
 
 def _boom(payload: dict) -> None:

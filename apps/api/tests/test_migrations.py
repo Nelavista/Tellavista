@@ -19,9 +19,10 @@ import sys
 from pathlib import Path
 
 import pytest
+from sqlalchemy import create_engine, inspect, text
+
 from app.db.base import Base
 from app.models.admin import SEED_ROLES
-from sqlalchemy import create_engine, inspect, text
 
 API_ROOT = Path(__file__).resolve().parents[1]
 POSTGRES_URL = "postgresql://ci:ci@localhost:5432/ci_offline"  # never connected to

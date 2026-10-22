@@ -22,6 +22,7 @@ import pytest
 from sqlalchemy import create_engine, inspect, text
 
 from app.db.base import Base
+from app.models.admin import SEED_ROLES
 
 API_ROOT = Path(__file__).resolve().parents[1]
 POSTGRES_URL = "postgresql://ci:ci@localhost:5432/ci_offline"  # never connected to
@@ -167,8 +168,19 @@ def test_upgrade_downgrade_upgrade_round_trip(tmp_path: Path) -> None:
     submission_columns = {c["name"] for c in inspect(engine).get_columns("submissions")}
     assert GOLD_TASK_COLUMNS <= submission_columns
 
+    # 20261022_1000 is data-only: every fresh database must have the six roles,
+    # not just the databases that ran the local seed.
+    with engine.connect() as conn:
+        seeded = {row[0] for row in conn.execute(text("SELECT code FROM roles"))}
+    assert seeded == {code for code, _name, _is_staff in SEED_ROLES}
+
     # Walk back one revision at a time. Each downgrade must remove exactly its own
     # revision's tables and leave every earlier one in place (expand-only).
+    # The seed revision is data-only, so unwind it first: it removes no tables.
+    seed_down = _alembic("downgrade", "-1", db_url=url)
+    assert seed_down.returncode == 0, seed_down.stderr
+    assert PLATFORM_TABLES <= set(inspect(engine).get_table_names())
+
     for removed in (
         PLATFORM_TABLES,
         PUSH_TABLES,
@@ -213,6 +225,9 @@ def test_upgrade_downgrade_upgrade_round_trip(tmp_path: Path) -> None:
     tables = set(inspect(engine).get_table_names())
     assert JOBS_TABLES <= tables and MATCHING_WORK_TABLES <= tables
     assert ACADEMIA_TABLES <= tables and CREDENTIAL_TABLES <= tables
+    with engine.connect() as conn:
+        seeded = {row[0] for row in conn.execute(text("SELECT code FROM roles"))}
+    assert seeded == {code for code, _name, _is_staff in SEED_ROLES}
 
 
 def test_single_head() -> None:
@@ -297,6 +312,7 @@ def test_revision_chain_is_linked() -> None:
     assert all(
         revision in proc.stdout
         for revision in (
+            "20261022_1000",
             "20261020_1000",
             "20261018_0900",
             "20261016_1800",

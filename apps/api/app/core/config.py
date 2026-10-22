@@ -39,10 +39,24 @@ class Settings(BaseSettings):
     REDIS_URL: str = ""
 
     # --- Mail ---
+    # `smtp` = Mailpit locally or any SMTP relay; `sendhiiv` = Sendhiiv's HTTP API.
+    EMAIL_PROVIDER: Literal["smtp", "sendhiiv"] = "smtp"
     MAIL_HOST: str = "localhost"
     MAIL_PORT: int = 1025
     MAIL_USE_TLS: bool = False
     MAIL_FROM: str = "noreply@nelavista.local"
+    # SMTP AUTH. Mailpit ignores both; a real relay requires them.
+    MAIL_USERNAME: str = ""
+    MAIL_PASSWORD: str = ""
+    # Non-production only: send every message to this one address instead of the
+    # real recipient. The original recipient is prefixed into the subject.
+    EMAIL_REDIRECT_TO: str = ""
+    # Sendhiiv (https://sendhiiv.com): HTTP API, no outbound SMTP port needed.
+    # `SENDHIIV_FROM` is optional; empty uses the shared sender until the domain
+    # is verified.
+    SENDHIIV_API_KEY: str = ""
+    SENDHIIV_API_URL: str = "https://api.sendhiiv.com/api/v1/messages"
+    SENDHIIV_FROM: str = ""
     # Links in email must be absolute: a relative `/auth/verify` is meaningless
     # in an inbox (F9). Each environment points at its own web origin.
     WEB_BASE_URL: str = "http://localhost:5173"

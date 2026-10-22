@@ -14,6 +14,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.models.jobs import DONE, FAILED, PENDING, RUNNING, Job
+from app.worker.errors import PermanentJobError
 from app.worker.tasks import HANDLERS
 
 logger = logging.getLogger(__name__)
@@ -50,8 +51,16 @@ def run_one(db: Session) -> bool:
     handler = HANDLERS.get(job.name)
     try:
         if handler is None:
-            raise LookupError(f"no handler registered for job {job.name!r}")
+            raise PermanentJobError(f"no handler registered for job {job.name!r}")
         handler(job.payload)
+    except PermanentJobError as exc:
+        # Bad payload, revoked key, plan limit: retrying wastes the window.
+        logger.error("job permanently failed id=%s name=%s: %s", job.id, job.name, exc)
+        job.last_error = f"{type(exc).__name__}: {exc}"[:2000]
+        job.status = FAILED
+        job.finished_at = now
+        db.commit()
+        return True
     except Exception as exc:  # noqa: BLE001 - any handler failure is a retry
         logger.exception("job failed id=%s name=%s attempt=%s", job.id, job.name, job.attempts)
         job.last_error = f"{type(exc).__name__}: {exc}"[:2000]

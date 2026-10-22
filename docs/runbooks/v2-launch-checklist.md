@@ -19,9 +19,10 @@
 
 ---
 
-## 0. The seven things that will bite us if we skip them
+## 0. The seven launch traps (B0–B3 are now fixed)
 
-These are not hypothetical. Each one is missing in the repo or the current hosting plan today.
+These are the gaps found while writing the checklist. B0–B3 are implemented; B4 and
+the Phase B hardening items are still open.
 
 1. **The web app calls `/api/v1/...` same-origin, but nothing proxies `/api` in a deployed
    environment.** The Vite dev server strips the `/api` prefix locally (`apps/web/vite.config.ts`);
@@ -32,13 +33,18 @@ These are not hypothetical. Each one is missing in the repo or the current hosti
 2. **A fresh database has no roles.** `roles` is populated only by the local seed and tests
    (`app/seed/roles.py`). After `alembic upgrade head` on a new Postgres, `roles` is empty, so a
    signup gets `role_id = NULL`, permission checks fail, and no one can be staff.
-   *Fix:* a data migration or a deploy step that runs `seed_roles` (Phase B1).
+   *Fixed:* migration `20261022_1000` inserts the six roles idempotently; a blank database is
+   correct immediately after `upgrade head`.
 3. **There is no first-admin path.** Nothing in the API or admin UI promotes a user. The first
    `super_admin` and a second approver have to be created deliberately.
-   *Fix:* a guarded `tools/create_staff.py` (Phase B2). Payouts at or above ₦50,000 need **two** approvers.
-4. **Email cannot authenticate.** `send_email` uses `smtplib` with no username/password
+   *Fixed:* `tools/create_staff.py` (Phase B2), prod-guarded and audited. Payouts at or above
+   ₦50,000 still need **two** approvers, so create both accounts.
+4. **Email cannot authenticate.** `send_email` used `smtplib` with no username/password
    (`app/worker/tasks.py`), and Render's free web services block outbound SMTP ports 25/465/587.
-   *Fix:* `MAIL_USERNAME`/`MAIL_PASSWORD` support (or an HTTP email API) on a paid instance (Phase B3).
+   *Fixed:* `EMAIL_PROVIDER=sendhiiv` uses Sendhiiv's HTTP API (no SMTP port; 202 = queued; only
+   HTTP 429 is retried, because a 5xx may already have queued the message). SMTP AUTH
+   (`MAIL_USERNAME`/`MAIL_PASSWORD`) exists as a fallback for a relay on a paid instance. In
+   non-production, `EMAIL_REDIRECT_TO` funnels every message to one inbox.
 5. **There is no production content path.** The only thing that loads the curriculum is
    `tools/seed_local.py`, which also creates fake students and a fake university. Never run it
    against PROD. The V1 importer (`/ops/imports`) is the intended path, but there is no V1 export
@@ -49,8 +55,8 @@ These are not hypothetical. Each one is missing in the repo or the current hosti
    balancer. Expect a short window where the apex has no service until it is on V2 (Phase E).
 7. **`alembic -c apps/api/alembic.ini` from the repo root used to resolve V1's `migrations/`**, not
    V2's. `heads` printed V1's head (`f1b2c3d4e5f6`) and `upgrade` died importing Flask — so the
-   command in the runbooks was both wrong and misleading. Fixed in this branch (B0). Before that
-   fix, the only safe form was `cd apps/api` first.
+   command in the runbooks was both wrong and misleading. Fixed in #14 (B0). Before that fix, the
+   only safe form was `cd apps/api` first.
 
 Two more, lower down but still before the public switch: **local disk storage is ephemeral**
 (`STORAGE_BACKEND=local`) and **the PWA caches authenticated API GETs without clearing them on
@@ -127,12 +133,14 @@ SECRET_KEY=<generate: python -c "import secrets; print(secrets.token_urlsafe(48)
 DATABASE_URL=<DEV Postgres INTERNAL URL>
 CORS_ORIGINS=https://<nelavista-web-dev>.onrender.com,https://<nelavista-admin-dev>.onrender.com
 WEB_BASE_URL=https://<nelavista-web-dev>.onrender.com
-MAIL_HOST=<provider host>
-MAIL_PORT=587
-MAIL_USE_TLS=true
 MAIL_FROM=no-reply@nelavista.com
-MAIL_USERNAME=<provider username>     # requires Phase B3 first
-MAIL_PASSWORD=<provider API key>      # requires Phase B3 first
+# Sendhiiv in DEV: it delivers for real. Set EMAIL_REDIRECT_TO to your own inbox
+# so preview mail cannot reach a real tester. LEAVE SENDHIIV_FROM empty until the
+# domain is verified (the shared sender is used instead).
+EMAIL_PROVIDER=sendhiiv
+SENDHIIV_API_KEY=sh_live_...
+SENDHIIV_FROM=
+EMAIL_REDIRECT_TO=you@example.com
 STORAGE_BACKEND=local                  # dev only; use cloudinary for prod
 OPENROUTER_API_KEY=
 OPENROUTER_MODEL=openai/gpt-4o-mini
@@ -244,34 +252,40 @@ $env:SECRET_KEY = "<any non-empty value for the CLI>"
 #    (or worse, prints V1's head and looks fine).
 apps\api\.venv\Scripts\python.exe -m alembic -c apps/api/alembic.ini upgrade head
 apps\api\.venv\Scripts\python.exe -m alembic -c apps/api/alembic.ini heads
-#    heads must print exactly one head: 20261020_1000 (head)
+#    heads must print exactly one head: 20261022_1000 (head)
 
 # 2. Dev sample data (roles, fake university, curriculum, two sample students)
 apps\api\.venv\Scripts\python.exe -m tools.seed_local
 ```
 
-Then create the two staff accounts. Until Phase B2 ships the tool, do it with SQL against the DEV
-database only (Render Postgres → Connect → PSQL, or `psql "<external URL>"`):
+Then create the two staff accounts. Sign them up as normal accounts in the web UI first (the tool
+never creates a password), then promote them:
 
-```sql
--- 1) Sign up two normal accounts first (web UI), e.g. you@nelavista.com and ops@nelavista.com.
--- 2) Promote them:
-update users set role_id = (select id from roles where code = 'super_admin')
- where email = 'you@nelavista.com';
-update users set role_id = (select id from roles where code = 'ops_admin')
- where email = 'ops@nelavista.com';
-update users set email_verified = true
- where email in ('you@nelavista.com', 'ops@nelavista.com');
+```powershell
+# The guard prints the masked DB target and refuses a remote DB without the flag.
+# Read the printed target before adding --i-know-this-is-production. The flag is
+# required for any Render database, DEV included, because it is not localhost.
+$env:PRODGUARD_ALLOW = "1"   # or append --i-know-this-is-production to each command
+apps\api\.venv\Scripts\python.exe -m tools.create_staff `
+  --email you@nelavista.com --role super_admin
+apps\api\.venv\Scripts\python.exe -m tools.create_staff `
+  --email ops@nelavista.com --role ops_admin
 ```
+
+The tool verifies the email, sets the role, and writes `audit_logs.action = 'staff.role_granted'`
+in the same transaction. Re-running it is safe: it reports `(already set)` and does not duplicate the
+audit row.
 
 Why two: the payout guardrail requires a **second approver at ≥ ₦50,000.00**, and the Platform
 settings route is super-admin only. A single staff account cannot approve its own payouts (by
 design) and leaves you locked out of one of the two roles.
 
 Dev email verification shortcut: signup works and login does **not** require a verified email, so
-you can test the whole student journey before SMTP is wired. The banner will keep asking to verify.
-If you need the verification link, either configure SMTP (Phase B3) or mark the account verified in
-SQL as above.
+you can test the whole student journey before email is wired. The banner will keep asking to verify.
+With `EMAIL_REDIRECT_TO` set in DEV, the verification link lands in that inbox (the subject names the
+real recipient), so you can still click it. To verify a test account without email, run a one-off
+`update users set email_verified = true where email = '...';` or promote it with
+`tools/create_staff.py`, which sets `email_verified = true`.
 
 ### A8 [YOU] Wire the deploy hooks (so `develop` deploys itself)
 
@@ -340,10 +354,10 @@ These are small, feature-flagged PRs. Each has a test. None changes V1.
 
 | # | Gap | Fix | Files |
 |---|---|---|---|
-| B0 | Root-level Alembic resolves V1's migrations (fixed here) | `script_location = %(here)s/migrations`, `prepend_sys_path = %(here)s`. Test: from the repo root, `heads` prints `20261020_1000 (head)` and `upgrade head` runs V2's migrations on a blank DB. | `apps/api/alembic.ini` |
-| B1 | Fresh DB has no roles | Add an idempotent data migration that inserts `SEED_ROLES` (or a guarded `tools/seed_roles.py` run in the deploy order). Test: upgrade a blank DB, assert six roles. | `apps/api/app/seed/roles.py`, new `migrations/versions/..._seed_roles.py` |
-| B2 | No first admin | `tools/create_staff.py --email ... --role super_admin` (prod-guarded, audited, idempotent). Prints the target DB first. | `tools/`, `app/services/audit.py` |
-| B3 | SMTP cannot authenticate | Add `MAIL_USERNAME`/`MAIL_PASSWORD`; call `smtp.login()` when set. Document in `.env.example`. Use port 587 + STARTTLS. Render free blocks SMTP; use a paid instance. | `app/core/config.py`, `app/worker/tasks.py` |
+| B0 | Root-level Alembic resolves V1's migrations (fixed in #14) | `script_location = %(here)s/migrations`, `prepend_sys_path = %(here)s`. Test: from the repo root, `heads` prints `20261022_1000 (head)` and `upgrade head` runs V2's migrations on a blank DB. | `apps/api/alembic.ini` |
+| B1 | Fresh DB has no roles — **done** | `migrations/versions/20261022_1000_seed_roles.py` inserts the six roles idempotently (SQLite + Postgres, offline-safe). Test: upgrade a blank DB and assert the six codes; downgrade is a no-op so reference data is never deleted. | `migrations/versions/20261022_1000_seed_roles.py`, `tests/test_migrations.py` |
+| B2 | No first admin — **done** | `tools/create_staff.py --email ... --role super_admin` / `--role ops_admin` (prod-guarded, audited, idempotent, email-verifying). It never creates a password: sign up first. | `tools/create_staff.py`, `tests/test_create_staff.py` |
+| B3 | SMTP cannot authenticate — **done** | `EMAIL_PROVIDER=sendhiiv` posts to Sendhiiv's HTTP API (`Authorization: Bearer`; 202 = queued). Retry policy follows the provider: only HTTP 429 rate limits are retried; 4xx and 5xx/transport failures are permanent (a 5xx may already be queued). `EMAIL_REDIRECT_TO` funnels non-prod mail to one inbox. SMTP AUTH (`MAIL_USERNAME`/`MAIL_PASSWORD`, port 587 + STARTTLS, 465 implicit TLS) is the fallback. | `app/core/config.py`, `app/worker/tasks.py`, `app/worker/errors.py`, `app/worker/runner.py`, `tests/test_email_transport.py` |
 | B4 | No prod content path | (a) `tools/export_v1.py` that reads V1 **read-only** and writes the importer's JSON shape; (b) `tools/seed_curriculum.py` that runs `app/seed/curriculum.py` for a named department **without** fake students. Both prod-guarded. | `tools/`, `app/seed/curriculum.py` |
 | B5 | Local disk storage is ephemeral | Production uses `STORAGE_BACKEND=cloudinary` + `CLOUDINARY_URL`; verify an upload survives a redeploy. | env only |
 | B6 | PWA caches authenticated API GETs and never clears on logout | Narrow `runtimeCaching` to catalog/course/material metadata only (exclude `/money/`, `/work/`, `/talent/`, `/me`, `/verification/`), and clear the `nv-api` cache on logout and on sign-in. Test: sign in A, load work, sign out, go offline, confirm A's work is not served. | `apps/web/vite.config.ts`, `apps/web/src/lib/session.tsx` |
@@ -424,12 +438,10 @@ SECRET_KEY=<a different, long random value from dev>
 DATABASE_URL=<PROD Postgres INTERNAL URL>
 CORS_ORIGINS=https://nelavista.com,https://www.nelavista.com,https://admin.nelavista.com
 WEB_BASE_URL=https://nelavista.com
-MAIL_HOST=<provider host>
-MAIL_PORT=587
-MAIL_USE_TLS=true
 MAIL_FROM=no-reply@nelavista.com
-MAIL_USERNAME=<provider username>
-MAIL_PASSWORD=<provider API key>
+EMAIL_PROVIDER=sendhiiv
+SENDHIIV_API_KEY=sh_live_...
+SENDHIIV_FROM=no-reply@nelavista.com
 STORAGE_BACKEND=cloudinary
 CLOUDINARY_URL=<prod folder/credentials>
 OPENROUTER_API_KEY=<prod key>

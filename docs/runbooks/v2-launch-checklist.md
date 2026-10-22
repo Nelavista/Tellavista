@@ -199,6 +199,10 @@ apps\api\.venv\Scripts\python.exe -m tools.export_v1 --out v1-export.json
 The exporter only reads V1. It prints counts for users, taxonomy, materials,
 questions and skills. Open the JSON and check those numbers look like your site.
 
+V1 keeps taking new signups and uploads until the domain moves. If you verify V2
+on Render before cutover day, run 5.1 and 5.2 again on cutover day so those late
+rows come across. The import is idempotent, so a second run is safe.
+
 If the V1 database is not on Render, use whatever Postgres URL V1 uses. If you
 cannot get any database URL, tell me before launch: we can launch V2 with fresh
 content, but V1 accounts will not carry over.
@@ -283,6 +287,7 @@ the verification link **after** the domain move.
 ### Before the window
 
 - [ ] Lower the Namecheap TTL on `@` and `www` to 5 minutes at least 24 hours ahead.
+- [ ] Re-run 5.1 and 5.2 if V1 has taken any signups or uploads since the last import.
 - [ ] `https://v1.nelavista.com` still loads and you can log in. If Google login
       fails, add `https://v1.nelavista.com/auth/google/callback` (or the redirect
       URI V1 prints) in Google Cloud.

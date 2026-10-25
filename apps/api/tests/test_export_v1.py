@@ -80,6 +80,7 @@ def _schema() -> MetaData:
         Column("title", String(200)),
         Column("course_id", Integer),
         Column("course_code", String(20)),
+        Column("course_type", String(20)),
         Column("level", String(50)),
         Column("department", String(150)),
         Column("university", String(150)),
@@ -226,6 +227,7 @@ def _seed(engine) -> None:
                     "title": "Stored file",
                     "course_id": 1,
                     "course_code": None,
+                    "course_type": None,
                     "level": None,
                     "department": None,
                     "university": None,
@@ -238,6 +240,7 @@ def _seed(engine) -> None:
                     "title": "External file",
                     "course_id": 1,
                     "course_code": None,
+                    "course_type": None,
                     "level": None,
                     "department": None,
                     "university": None,
@@ -250,6 +253,7 @@ def _seed(engine) -> None:
                     "title": "No link",
                     "course_id": 1,
                     "course_code": None,
+                    "course_type": None,
                     "level": None,
                     "department": None,
                     "university": None,
@@ -262,6 +266,7 @@ def _seed(engine) -> None:
                     "title": "Code only",
                     "course_id": None,
                     "course_code": "CSC101",
+                    "course_type": None,
                     "level": None,
                     "department": None,
                     "university": None,
@@ -274,11 +279,40 @@ def _seed(engine) -> None:
                     "title": "Static file",
                     "course_id": 1,
                     "course_code": None,
+                    "course_type": None,
                     "level": None,
                     "department": None,
                     "university": None,
                     "file_url": "static/materials/legacy.pdf",
                     "external_url": None,
+                    "is_approved": True,
+                },
+                {
+                    # V1's OpenStax seed parked the code in course_type only.
+                    "id": 6,
+                    "title": "OER chapter",
+                    "course_id": None,
+                    "course_code": None,
+                    "course_type": "csc 101",
+                    "level": None,
+                    "department": "General",
+                    "university": None,
+                    "file_url": None,
+                    "external_url": "https://openstax.test/chapter",
+                    "is_approved": True,
+                },
+                {
+                    # course_type is NOT a code here, so this one must still be skipped.
+                    "id": 7,
+                    "title": "Nothing to attach",
+                    "course_id": None,
+                    "course_code": None,
+                    "course_type": "CORE",
+                    "level": None,
+                    "department": "General",
+                    "university": None,
+                    "file_url": None,
+                    "external_url": "https://example.test/orphan.pdf",
                     "is_approved": True,
                 },
             ],
@@ -362,7 +396,7 @@ def test_export_matches_the_importer_shape(tmp_path) -> None:
     assert data["meta"]["counts"] == {
         "users": 1,
         "taxonomy": 1,
-        "materials": 4,
+        "materials": 5,
         "questions": 1,
         "skills": 1,
     }
@@ -377,6 +411,7 @@ def test_export_matches_the_importer_shape(tmp_path) -> None:
         "External file",
         "Code only",
         "Static file",
+        "OER chapter",
     }
     assert data["materials"][1]["file_url"] == "https://example.test/file.pdf"
     assert data["materials"][3]["file_url"] == (
@@ -384,6 +419,13 @@ def test_export_matches_the_importer_shape(tmp_path) -> None:
     )
     assert any("V1's /static files" in warning for warning in data["meta"]["warnings"])
     assert all(row["course_code"] == "CSC101" for row in data["materials"])
+
+    # A code parked in course_type is recovered (canonical casing from the course);
+    # a non-code course_type still leaves the material unplaceable.
+    oer = next(row for row in data["materials"] if row["title"] == "OER chapter")
+    assert oer["file_url"] == "https://openstax.test/chapter"
+    assert oer["department"] == "Computer Science"
+    assert any("material 7 has no course code" in w for w in data["meta"]["warnings"])
 
     question = data["questions"][0]
     assert question["correct_key"] == "B"

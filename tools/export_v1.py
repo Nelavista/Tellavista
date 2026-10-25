@@ -279,6 +279,22 @@ def _context(
     }
 
 
+# The OpenStax OER chapters were seeded with the course code in ``course_type``
+# and an empty ``course_code``. Recover it, but only when the value looks like a
+# course code, so the ``CORE`` value the other materials carry is never read as one.
+_COURSE_CODE_RE = re.compile(r"^[A-Z]{2,5}\d{3}$")
+
+
+def _with_course_code(row: dict) -> dict:
+    """Return ``row`` with a usable ``course_code``, falling back to ``course_type``."""
+    if str(_get(row, "course_code", "")).strip():
+        return row
+    candidate = re.sub(r"\s+", "", str(_get(row, "course_type", "")).strip().upper())
+    if not _COURSE_CODE_RE.match(candidate):
+        return row
+    return {**row, "course_code": candidate}
+
+
 def _export_materials(
     materials: list[dict],
     courses: dict[Any, dict],
@@ -295,7 +311,12 @@ def _export_materials(
             continue
         title = str(_get(row, "title", "")).strip()
         context = _context(
-            row, courses, courses_by_code, departments, faculties, universities
+            _with_course_code(row),
+            courses,
+            courses_by_code,
+            departments,
+            faculties,
+            universities,
         )
         url = _absolute_v1_url(
             _get(row, "file_url", "") or _get(row, "external_url", "")

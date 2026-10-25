@@ -33,7 +33,7 @@ api-dev: ## Run the API only (http://localhost:8000)
 	uv run --package nelavista-api uvicorn app.main:app --reload --port 8000 --app-dir apps/api
 
 worker-dev: ## Run the background worker only (sends queued email)
-	uv run --package nelavista-api python -m app.worker
+	cd apps/api && uv run --package nelavista-api python -m app.worker
 
 web-dev: ## Run the web app only (http://localhost:5173)
 	pnpm --filter @nelavista/web dev

@@ -306,7 +306,7 @@ return 404. Change it back to `https://nelavista.com` in step 7.
 - [ ] Lower the Namecheap TTL on `@` and `www` to 5 minutes at least 24 hours ahead.
 - [ ] Re-run 5.1 and 5.2 if V1 has taken any signups or uploads since the last import.
 - [ ] Set `WEB_BASE_URL=https://nelavista.com` on both the V2 API and worker, then
-      redeploy them.
+  redeploy them.
 - [ ] `https://v1.nelavista.com` still loads and you can log in. If Google login
   fails, add `https://v1.nelavista.com/auth/google/callback` (or the redirect
   URI V1 prints) in Google Cloud.

@@ -188,3 +188,41 @@ def test_imported_material_reuses_the_course_taxonomy(db: Session) -> None:
     material = db.scalars(select(Material)).one()
     assert material.file_url.endswith("notes.pdf")
     assert material.title == "CSC213 lecture notes"
+
+
+def test_long_v1_prose_is_clipped_instead_of_failing_the_import(db: Session) -> None:
+    """V1 keeps prose where V2 keeps a summary; the import must not 500 on length."""
+    prose = "UI/UX design is one of the most in-demand remote-friendly skills. " * 11
+    assert len(prose) > 700  # longer than learning_paths.summary (500)
+
+    export = {
+        **EXPORT,
+        "skills": [
+            {
+                "name": "UI/UX Design",
+                "slug": "ui-ux-design",
+                "category": "Design",
+                "description": prose,
+                "paths": [
+                    {
+                        "slug": "ui-ux-design-path",
+                        "title": "UI/UX Design Path",
+                        "summary": prose,
+                    }
+                ],
+            }
+        ],
+    }
+    importer.run_import(db, data=export, mode="apply")
+
+    from app.models.skills import LearningPath, Skill
+
+    path = db.scalars(
+        select(LearningPath).where(LearningPath.slug == "ui-ux-design-path")
+    ).one()
+    assert len(path.summary) <= 500
+    assert path.summary.endswith("…")
+    assert path.summary.startswith("UI/UX design is one of")
+
+    skill = db.scalars(select(Skill).where(Skill.slug == "ui-ux-design")).one()
+    assert len(skill.description) <= 1000

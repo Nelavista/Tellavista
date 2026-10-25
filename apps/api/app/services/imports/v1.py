@@ -116,9 +116,9 @@ def _import_users(db: Session, rows: list[dict], counts: SectionCounts) -> dict[
                 username=username,
                 name=(row.get("name") or "")[:150] or None,
                 email_verified=bool(row.get("email_verified", True)),
-                university=row.get("university"),
-                department=row.get("department"),
-                level=row.get("level"),
+                university=_clip(row.get("university"), 150),
+                department=_clip(row.get("department"), 150),
+                level=_clip(row.get("level"), 20),
                 role_id=student_role_id,
             )
             # The V1 hash is copied as-is; the plaintext never leaves V1, and the
@@ -275,7 +275,7 @@ def _import_materials(db: Session, rows: list[dict], counts: SectionCounts) -> d
             Material(
                 course_id=course.id,
                 title=title,
-                file_url=(row.get("file_url") or None),
+                file_url=_clip(row.get("file_url"), 1024),
                 source="v1_import",
             )
         )
@@ -350,7 +350,7 @@ def _import_skills(db: Session, rows: list[dict], counts: SectionCounts) -> dict
                 category_id=category.id,
                 slug=slug,
                 name=name,
-                description=(row.get("description") or None),
+                description=_clip(row.get("description"), 1000),
             )
             db.add(skill)
             db.flush()
@@ -374,7 +374,7 @@ def _import_path(db: Session, skill: Skill, row: dict, counts: SectionCounts) ->
             skill_id=skill.id,
             slug=path_slug,
             title=title,
-            summary=(row.get("summary") or None),
+            summary=_clip(row.get("summary"), 500),
             level=(row.get("level") or "beginner")[:20],
             status=STATUS_PUBLISHED,
         )
@@ -540,6 +540,26 @@ def _slug(value: str) -> str:
     while "--" in cleaned:
         cleaned = cleaned.replace("--", "-")
     return cleaned.strip("-") or "item"
+
+
+def _clip(value: Any, limit: int) -> str | None:
+    """Fit a V1 text field into the narrower V2 column.
+
+    V1 keeps prose where V2 keeps a summary: a skill description can run past 500
+    characters and becomes the fallback summary of its learning path, which would
+    make Postgres reject the whole import with ``StringDataRightTruncation``. Trim
+    at a word boundary instead of losing the run.
+    """
+    text = str(value).strip() if value is not None else ""
+    if not text:
+        return None
+    if len(text) <= limit:
+        return text
+    head = text[: limit - 1]
+    cut = head
+    if " " in head:
+        cut = head.rsplit(" ", 1)[0] or head
+    return f"{cut}…"
 
 
 # `Assessment` is imported so a future export section can create assessments

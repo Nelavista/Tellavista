@@ -106,7 +106,17 @@ function RouteTable(): JSX.Element {
     <Layout>
       <React.Suspense fallback={<Loading />}>
         <Routes>
-          <Route path="/" element={<Landing />} />
+          {/* The root is the public landing page. A restored session belongs on
+              /home; rendering Landing here put "Create your account" under a
+              signed-in nav. */}
+          <Route
+            path="/"
+            element={
+              <PublicOnly>
+                <Landing />
+              </PublicOnly>
+            }
+          />
           <Route
             path="/signup"
             element={

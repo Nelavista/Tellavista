@@ -20,9 +20,9 @@ pnpm --filter @nelavista/web test
 
 | Route         | Screen                                             |
 | ------------- | -------------------------------------------------- |
-| `/`           | Landing                                            |
-| `/signup`     | Create account                                     |
-| `/login`      | Sign in (returns to the attempted URL)             |
+| `/`           | Landing; a signed-in visitor continues to `/home`  |
+| `/signup`     | Create account (signed-in visitors go to `/home`)  |
+| `/login`      | Sign in (returns to the attempted URL; signed-in visitors go to `/home`) |
 | `/onboarding` | Profile → path → university → department → courses |
 | `/home`       | Greeting, path switch, courses, verify-email banner |
 | `/academia`   | Dashboard: the five questions and one next action  |

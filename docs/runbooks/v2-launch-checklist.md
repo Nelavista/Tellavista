@@ -188,11 +188,20 @@ platform policy.
 
 ### 5.1 Export V1 (read-only)
 
-In Render: open the **V1 Postgres** database → **Connections** → copy the
-**External Database URL**. Keep it in your terminal; do not paste it in chat.
+Open the **V1 project** in the Supabase dashboard → **Project Settings** →
+**Database** → **Connection pooling** → **Session mode** → **Connect**, and copy
+that URI. Keep it in your terminal; do not paste it in chat.
+
+Take the **session-mode pooler** URI, not the direct connection string. The direct
+host (`db.<project-ref>.supabase.co`) is IPv6-only, so on a machine or office
+network without IPv6 the export dies with `getaddrinfo failed` / `11001` before it
+reaches Postgres. The pooler is IPv4 and works everywhere. Its username is
+`postgres.<project-ref>` and its host is
+`aws-0-<region>.pooler.supabase.com:5432`; if `aws-0` reports "tenant or user not
+found", try `aws-1`. If you assemble the URI by hand, append `?sslmode=require`.
 
 ```powershell
-$env:V1_DATABASE_URL = "<V1 external Postgres URL>"
+$env:V1_DATABASE_URL = "<session-mode pooler URI>"
 $env:PRODGUARD_ALLOW = "1"
 
 apps\api\.venv\Scripts\python.exe -m tools.export_v1 --out v1-export.json

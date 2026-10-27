@@ -13,12 +13,24 @@ import type {
   AskSessionOut,
   OnboardingStateOut,
 } from '@nelavista/api-client';
+import {
+  Badge,
+  Banner,
+  Button,
+  EmptyState,
+  ErrorState,
+  Field,
+  PageHeader,
+  Panel,
+  Select,
+  Skeleton,
+} from '@nelavista/ui';
+import { ArrowRight, MessageSquare, Sparkles } from 'lucide-react';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 
 import { ApiError, http } from '../lib/http';
 import { useApiResource } from '../lib/resource';
-import { ErrorNote } from '../ui';
 
 export function AskNelavista(): JSX.Element {
   const state = useApiResource<OnboardingStateOut>('/onboarding/state');
@@ -102,129 +114,217 @@ export function AskNelavista(): JSX.Element {
   if (state.resource.status === 'off') {
     return (
       <div className="nv-stack">
-        <h1 className="nv-h1">Ask Nelavista</h1>
-        <p className="nv-banner">Academia is not switched on for this environment yet.</p>
+        <PageHeader eyebrow="Academia" title="Ask Nelavista" />
+        <Banner tone="info">
+          <p>Academia is not switched on for this environment yet.</p>
+        </Banner>
+        <p className="nv-muted">
+          <Link to="/home">Back to your home</Link>
+        </p>
+      </div>
+    );
+  }
+
+  if (state.resource.status === 'loading') {
+    return (
+      <div className="nv-stack" aria-busy="true" aria-label="Loading Ask Nelavista">
+        <Skeleton height="2rem" width="40%" />
+        <Skeleton lines={3} />
+      </div>
+    );
+  }
+
+  if (state.resource.status !== 'ready') {
+    return (
+      <div className="nv-stack">
+        <PageHeader eyebrow="Academia" title="Ask Nelavista" />
+        <ErrorState
+          body={state.resource.message}
+          action={
+            <Button size="sm" type="button" variant="secondary" onClick={state.reload}>
+              Try again
+            </Button>
+          }
+        />
       </div>
     );
   }
 
   return (
     <div className="nv-stack">
-      <h1 className="nv-h1">Ask Nelavista</h1>
-      <p className="nv-muted">
-        Answers come only from material in your enrolled courses. If it is not there, the answer says so
-        instead of guessing.
-      </p>
+      <PageHeader
+        eyebrow="Academia"
+        title="Ask Nelavista"
+        description="Answers come only from material in your enrolled courses. If it is not there, the answer says so instead of guessing."
+        actions={
+          <Button size="sm" type="button" variant="ghost" onClick={startNew}>
+            New conversation
+          </Button>
+        }
+      />
 
-      <section className="nv-card">
-        <div className="nv-row">
-          <div style={{ minWidth: 260 }}>
-            <label className="nv-label" htmlFor="ask-course">Course</label>
-            <select
-              className="nv-select"
-              id="ask-course"
+      <div className="nv-split">
+        <div className="nv-stack">
+          <Panel
+            title="Conversation"
+            actions={
+              sessionId ? <Badge tone="neutral">Session #{sessionId}</Badge> : <Badge tone="info">New</Badge>
+            }
+          >
+            {messages.length === 0 ? (
+              <EmptyState
+                body="Ask about a topic from one of your courses. The answer will name the material it came from."
+                icon={MessageSquare}
+                title="Nothing asked yet"
+              />
+            ) : (
+              <ul className="nv-list nv-list--ruled">
+                {messages.map((message) => (
+                  <li key={message.id}>
+                    <div className="nv-row nv-row--between">
+                      <Badge tone={message.role === 'user' ? 'neutral' : 'info'}>
+                        {message.role === 'user' ? 'You' : 'Nelavista'}
+                      </Badge>
+                      {message.declined ? (
+                        <Badge status="declined" tone="warning">
+                          Not in your material
+                        </Badge>
+                      ) : null}
+                    </div>
+                    <p style={{ whiteSpace: 'pre-line' }}>{message.content}</p>
+                    {message.citations.length > 0 ? (
+                      <div style={{ marginTop: 'var(--nv-space-sm)' }}>
+                        <p className="nv-label">Where this came from</p>
+                        <ul className="nv-list">
+                          {message.citations.map((citation) => (
+                            <li key={citation.chunk_id}>
+                              <Link to={`/academia/materials/${citation.material_id}`}>
+                                {citation.material_title}
+                              </Link>
+                              <span className="nv-muted"> · {citation.course_code}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ) : null}
+                  </li>
+                ))}
+              </ul>
+            )}
+
+            {error ? (
+              <Banner tone="danger">
+                <p>{error}</p>
+              </Banner>
+            ) : null}
+
+            <form
+              className="nv-row"
+              style={{ alignItems: 'flex-end', marginTop: 'var(--nv-space-lg)' }}
+              onSubmit={(event) => {
+                event.preventDefault();
+                void ask();
+              }}
+            >
+              <div style={{ flex: 1, minWidth: 240 }}>
+                <Field
+                  hint="At least 5 characters. Up to 1,000."
+                  id="ask-question"
+                  label="Your question"
+                  maxLength={1000}
+                  placeholder="e.g. Why does quicksort degrade on sorted input?"
+                  value={question}
+                  onChange={(event) => setQuestion(event.target.value)}
+                />
+              </div>
+              <Button disabled={busy} type="submit">
+                <Sparkles aria-hidden="true" size={15} />
+                {busy ? 'Thinking…' : 'Ask'}
+              </Button>
+            </form>
+          </Panel>
+        </div>
+
+        <div className="nv-stack">
+          <Panel title="Scope">
+            <Select
+              hint="Narrows the answer to one course."
+              label="Course"
+              options={[
+                { value: '', label: 'Any of my courses' },
+                ...courses.map((course) => ({
+                  value: String(course.course_id),
+                  label: `${course.code} — ${course.title}`,
+                })),
+              ]}
               value={courseId}
               onChange={(event) => setCourseId(event.target.value)}
-            >
-              <option value="">Any of my courses</option>
-              {courses.map((course) => (
-                <option key={course.course_id} value={course.course_id}>
-                  {course.code} — {course.title}
-                </option>
-              ))}
-            </select>
-          </div>
-          <button className="nv-button nv-button--ghost" type="button" onClick={startNew}>
-            New conversation
-          </button>
-        </div>
-        {courses.length === 0 ? (
-          <p className="nv-muted">
-            You are not enrolled in a course yet. <Link to="/onboarding">Finish setup</Link> first.
-          </p>
-        ) : null}
-      </section>
-
-      {sessions.resource.status === 'ready' && sessions.resource.data.sessions.length > 0 ? (
-        <section className="nv-card">
-          <h2 className="nv-h2">Recent conversations</h2>
-          <ul className="nv-list">
-            {sessions.resource.data.sessions.map((row) => (
-              <li key={row.id}>
-                <button
-                  className="nv-button nv-button--ghost"
-                  type="button"
-                  onClick={() => void openSession(row.id)}
-                >
-                  {row.title ?? `Conversation #${row.id}`}
-                </button>
-                {row.course ? <span className="nv-muted"> · {row.course.code}</span> : null}
-              </li>
-            ))}
-          </ul>
-        </section>
-      ) : null}
-
-      <section className="nv-card">
-        <h2 className="nv-h2">Conversation</h2>
-        {messages.length === 0 ? (
-          <p className="nv-muted">Ask about a topic from one of your courses.</p>
-        ) : (
-          <ul className="nv-list">
-            {messages.map((message) => (
-              <li className="nv-card" key={message.id}>
-                <p className="nv-muted">{message.role === 'user' ? 'You' : 'Nelavista'}</p>
-                <p style={{ whiteSpace: 'pre-line' }}>{message.content}</p>
-                {message.declined ? (
-                  <p className="nv-tag" data-tone="warn">not in your material</p>
-                ) : null}
-                {message.citations.length > 0 ? (
-                  <div>
-                    <p className="nv-muted">Where this came from</p>
-                    <ul className="nv-list">
-                      {message.citations.map((citation) => (
-                        <li key={citation.chunk_id}>
-                          <Link to={`/academia/materials/${citation.material_id}`}>
-                            {citation.material_title}
-                          </Link>
-                          <span className="nv-muted"> · {citation.course_code}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ) : null}
-              </li>
-            ))}
-          </ul>
-        )}
-        <ErrorNote message={error} />
-        <form
-          className="nv-row"
-          onSubmit={(event) => {
-            event.preventDefault();
-            void ask();
-          }}
-        >
-          <div style={{ flex: 1, minWidth: 240 }}>
-            <label className="nv-label" htmlFor="ask-question">Your question</label>
-            <input
-              className="nv-input"
-              id="ask-question"
-              maxLength={1000}
-              placeholder="e.g. Why does quicksort degrade on sorted input?"
-              value={question}
-              onChange={(event) => setQuestion(event.target.value)}
             />
-          </div>
-          <button className="nv-button" disabled={busy} type="submit">
-            {busy ? 'Thinking…' : 'Ask'}
-          </button>
-        </form>
-      </section>
+            {courses.length === 0 ? (
+              <Banner tone="warning">
+                <p>
+                  You are not enrolled in a course yet, so there is nothing to ground an answer in.{' '}
+                  <Link to="/onboarding">Finish setup</Link> first.
+                </p>
+              </Banner>
+            ) : (
+              <p className="nv-muted">
+                {courses.length} course{courses.length === 1 ? '' : 's'} available to search.
+              </p>
+            )}
+          </Panel>
 
-      <p className="nv-muted">
-        <Link to="/academia/materials">Open your materials</Link> · <Link to="/academia">Dashboard</Link>
-      </p>
+          <Panel
+            title="Recent conversations"
+            actions={
+              <Badge tone="neutral">
+                {sessions.resource.status === 'ready' ? sessions.resource.data.sessions.length : '—'}
+              </Badge>
+            }
+          >
+            {sessions.resource.status === 'loading' ? <Skeleton lines={3} /> : null}
+            {sessions.resource.status === 'error' ? (
+              <ErrorState
+                body={sessions.resource.message}
+                action={
+                  <Button size="sm" type="button" variant="secondary" onClick={sessions.reload}>
+                    Try again
+                  </Button>
+                }
+              />
+            ) : null}
+            {sessions.resource.status === 'ready' ? (
+              sessions.resource.data.sessions.length === 0 ? (
+                <EmptyState
+                  body="Your first question creates a conversation here so you can return to it."
+                  icon={MessageSquare}
+                  title="No conversations yet"
+                />
+              ) : (
+                <ul className="nv-list">
+                  {sessions.resource.data.sessions.map((row) => (
+                    <li key={row.id}>
+                      <button
+                        className="nv-button nv-button--ghost nv-button--sm"
+                        type="button"
+                        onClick={() => void openSession(row.id)}
+                      >
+                        {row.title ?? `Conversation #${row.id}`}
+                        <ArrowRight aria-hidden="true" size={14} />
+                      </button>
+                      {row.course ? <span className="nv-muted"> · {row.course.code}</span> : null}
+                    </li>
+                  ))}
+                </ul>
+              )
+            ) : null}
+          </Panel>
+
+          <p className="nv-muted">
+            <Link to="/academia/materials">Open your materials</Link> · <Link to="/academia">Dashboard</Link>
+          </p>
+        </div>
+      </div>
     </div>
   );
 }

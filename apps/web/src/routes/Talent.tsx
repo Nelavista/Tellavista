@@ -8,13 +8,30 @@
  * A share link is scoped, expiring and revocable, and its token is shown exactly
  * once. After that the screen can list the link but never reproduce it.
  */
-import type { PlatformConfigOut, ShareCreatedOut, ShareListOut, TalentProfileOut } from '@nelavista/api-client';
+import type {
+  PlatformConfigOut,
+  ShareCreatedOut,
+  ShareListOut,
+  TalentProfileOut,
+} from '@nelavista/api-client';
+import {
+  Badge,
+  Banner,
+  Button,
+  Checkbox,
+  EmptyState,
+  ErrorState,
+  Field,
+  PageHeader,
+  Panel,
+  Skeleton,
+} from '@nelavista/ui';
+import { ArrowRight, BadgeCheck, Link2, Share2 } from 'lucide-react';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 
 import { ApiError, http } from '../lib/http';
 import { useApiResource } from '../lib/resource';
-import { ErrorNote, Skeleton } from '../ui';
 
 const SCOPE_COPY: Record<string, string> = {
   academic: 'University, department and level',
@@ -84,10 +101,13 @@ export function Talent(): JSX.Element {
   if (profile.resource.status === 'off') {
     return (
       <div className="nv-stack">
-        <h1 className="nv-h1">Talent profile</h1>
-        <p className="nv-banner">
-          Sharing your profile is not switched on for this environment yet. Your proof and transcript are unaffected.
-        </p>
+        <PageHeader eyebrow="Prove" title="Talent profile" />
+        <Banner tone="info">
+          <p>
+            Sharing your profile is not switched on for this environment yet. Your proof and transcript are
+            unaffected.
+          </p>
+        </Banner>
       </div>
     );
   }
@@ -95,218 +115,315 @@ export function Talent(): JSX.Element {
   if (profile.resource.status !== 'ready') {
     return (
       <div className="nv-stack">
-        <h1 className="nv-h1">Talent profile</h1>
-        <ErrorNote message={profile.resource.message} />
-        <button className="nv-button" type="button" onClick={profile.reload}>
-          Try again
-        </button>
+        <PageHeader eyebrow="Prove" title="Talent profile" />
+        <ErrorState
+          body={profile.resource.message}
+          action={
+            <Button size="sm" type="button" variant="secondary" onClick={profile.reload}>
+              Try again
+            </Button>
+          }
+        />
       </div>
     );
   }
 
   const data = profile.resource.data;
+  const shareRows = shares.resource.status === 'ready' ? shares.resource.data.shares : [];
 
   return (
     <div className="nv-stack">
-      <div className="nv-row nv-row--between">
-        <h1 className="nv-h1">Talent profile</h1>
-        <span className="nv-tag">{data.visibility === 'private' ? 'private' : 'shared'}</span>
-      </div>
-      <p className="nv-muted">
-        This page is built from evidence only: verified skills, review history and delivered work. A
-        company sees only the scopes you grant in a link, and a link can be revoked at any time.
-      </p>
+      <PageHeader
+        eyebrow="Prove"
+        title="Talent profile"
+        description="Built from evidence only: verified skills, review history and delivered work. A company sees only the scopes you grant in a link, and a link can be revoked at any time."
+        actions={
+          <>
+            <Badge tone={data.visibility === 'private' ? 'neutral' : 'success'}>
+              {data.visibility === 'private' ? 'Private' : 'Shared'}
+            </Badge>
+            <Link className="nv-button nv-button--secondary nv-button--sm" to="/transcript">
+              <ArrowRight aria-hidden="true" size={15} />
+              Transcript
+            </Link>
+          </>
+        }
+      />
 
       {!data.display_name ? (
-        <p className="nv-banner">
-          Add a display name in <Link to="/settings">Settings</Link> so a shared profile has a name on it.
-        </p>
-      ) : null}
-
-      <section className="nv-card">
-        <h2 className="nv-h2">Verified skills</h2>
-        {data.verified_skills.length === 0 ? (
-          <p className="nv-muted">
-            No verified skill yet. <Link to="/verification">Take a verification</Link> when you are ready.
-          </p>
-        ) : (
-          <ul className="nv-list">
-            {data.verified_skills.map((skill) => (
-              <li key={skill.skill_id} className="nv-row nv-row--between">
-                <span>{skill.skill ?? `Skill #${skill.skill_id}`}</span>
-                <span className="nv-tag" data-tone={skill.at_risk ? 'warn' : 'ok'}>
-                  {skill.at_risk ? 'at risk' : 'verified'}
-                </span>
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
-
-      {data.academic ? (
-        <section className="nv-card">
-          <h2 className="nv-h2">Academic</h2>
+        <Banner tone="warning">
           <p>
-            {data.academic.university ?? 'University not set'} · {data.academic.department ?? 'Department not set'}
-            {data.academic.level ? ` · Level ${data.academic.level}` : ''}
+            Add a display name in <Link to="/settings">Settings</Link> so a shared profile has a name on it.
           </p>
-        </section>
+        </Banner>
       ) : null}
 
-      {data.quality?.overall ? (
-        <section className="nv-card">
-          <h2 className="nv-h2">Quality</h2>
-          <p>
-            {data.quality.overall.reviews_count} review
-            {data.quality.overall.reviews_count === 1 ? '' : 's'} · {data.quality.overall.approvals} approved
-            {data.quality.overall.average_score !== null ? ` · ${data.quality.overall.average_score}% average` : ''}
-          </p>
-          <p className="nv-muted">
-            Gold checks: {data.quality.overall.gold_correct} of {data.quality.overall.gold_tasks} correct.
-          </p>
-        </section>
-      ) : null}
+      <div className="nv-split">
+        <div className="nv-stack">
+          <Panel title="Verified skills" actions={<Badge tone="info">{data.verified_skills.length}</Badge>}>
+            {data.verified_skills.length === 0 ? (
+              <EmptyState
+                body="Take a verification when you are ready. A finished lesson is progress, not proof."
+                icon={BadgeCheck}
+                title="No verified skill yet"
+                action={
+                  <Link className="nv-button nv-button--secondary nv-button--sm" to="/verification">
+                    Take a verification
+                  </Link>
+                }
+              />
+            ) : (
+              <div className="nv-table-wrap">
+                <table className="nv-table">
+                  <thead>
+                    <tr>
+                      <th>Skill</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {data.verified_skills.map((skill) => (
+                      <tr key={skill.skill_id}>
+                        <td>{skill.skill ?? `Skill #${skill.skill_id}`}</td>
+                        <td>
+                          <Badge tone={skill.at_risk ? 'warning' : 'success'}>
+                            {skill.at_risk ? 'At risk' : 'Verified'}
+                          </Badge>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </Panel>
 
-      {data.work_history && data.work_history.length > 0 ? (
-        <section className="nv-card">
-          <h2 className="nv-h2">Delivered work</h2>
-          <ul className="nv-list">
-            {data.work_history.map((row) => (
-              <li key={row.submission_id}>
-                <strong>{row.assignment}</strong>
-                <span className="nv-muted"> · {row.project.title} · approved {when(row.approved_at)}</span>
-              </li>
-            ))}
-          </ul>
-        </section>
-      ) : null}
+          <Panel title="Academic">
+            {data.academic ? (
+              <ul className="nv-list">
+                <li className="nv-row nv-row--between">
+                  <span className="nv-muted">University</span>
+                  <span>{data.academic.university ?? 'Not set'}</span>
+                </li>
+                <li className="nv-row nv-row--between">
+                  <span className="nv-muted">Department</span>
+                  <span>{data.academic.department ?? 'Not set'}</span>
+                </li>
+                <li className="nv-row nv-row--between">
+                  <span className="nv-muted">Level</span>
+                  <span>{data.academic.level ?? 'Not set'}</span>
+                </li>
+              </ul>
+            ) : (
+              <EmptyState body="Academic details appear after onboarding." title="Not set" />
+            )}
+          </Panel>
 
-      {data.transcript ? (
-        <section className="nv-card">
-          <h2 className="nv-h2">Transcript</h2>
-          <p>
-            {data.transcript.counts.learned} learned · {data.transcript.counts.proved} proved ·{' '}
-            {data.transcript.counts.delivered} delivered
-          </p>
-          <p className="nv-muted">
-            <Link to="/transcript">Open the full transcript</Link>
-          </p>
-        </section>
-      ) : null}
+          <Panel title="Quality">
+            {data.quality?.overall ? (
+              <div className="nv-stack">
+                <div className="nv-grid">
+                  <div className="nv-stat">
+                    <p className="nv-stat__value">{data.quality.overall.reviews_count}</p>
+                    <p className="nv-stat__label">Reviews</p>
+                  </div>
+                  <div className="nv-stat">
+                    <p className="nv-stat__value">{data.quality.overall.approvals}</p>
+                    <p className="nv-stat__label">Approved</p>
+                  </div>
+                  <div className="nv-stat">
+                    <p className="nv-stat__value">
+                      {data.quality.overall.average_score !== null
+                        ? `${data.quality.overall.average_score}%`
+                        : '—'}
+                    </p>
+                    <p className="nv-stat__label">Average score</p>
+                  </div>
+                </div>
+                <p className="nv-muted">
+                  Gold checks: {data.quality.overall.gold_correct} of {data.quality.overall.gold_tasks}{' '}
+                  correct.
+                </p>
+              </div>
+            ) : (
+              <EmptyState body="Quality appears after reviewed work." title="No review history" />
+            )}
+          </Panel>
 
-      <section className="nv-card">
-        <h2 className="nv-h2">Share a link</h2>
-        <p className="nv-muted">
-          A link is the only way a company sees this profile. It expires automatically, and you can revoke it
-          early; the token is shown once and never again.
-        </p>
-        <div className="nv-grid">
-          <div>
-            <label className="nv-label" htmlFor="share-label">What is this link for?</label>
-            <input
-              className="nv-input"
-              id="share-label"
+          <Panel
+            title="Delivered work"
+            actions={<Badge tone="neutral">{data.work_history?.length ?? 0}</Badge>}
+          >
+            {data.work_history && data.work_history.length > 0 ? (
+              <div className="nv-table-wrap">
+                <table className="nv-table">
+                  <thead>
+                    <tr>
+                      <th>Assignment</th>
+                      <th>Project</th>
+                      <th>Approved</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {data.work_history.map((row) => (
+                      <tr key={row.submission_id}>
+                        <td>{row.assignment}</td>
+                        <td>{row.project.title}</td>
+                        <td>{when(row.approved_at)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            ) : (
+              <EmptyState body="Approved client work appears here." title="No delivered work yet" />
+            )}
+          </Panel>
+
+          <Panel title="Transcript">
+            {data.transcript ? (
+              <div className="nv-stack">
+                <p>
+                  {data.transcript.counts.learned} learned · {data.transcript.counts.proved} proved ·{' '}
+                  {data.transcript.counts.delivered} delivered
+                </p>
+                <div>
+                  <Link className="nv-button nv-button--ghost nv-button--sm" to="/transcript">
+                    Open the full transcript
+                    <ArrowRight aria-hidden="true" size={14} />
+                  </Link>
+                </div>
+              </div>
+            ) : (
+              <EmptyState
+                body="The transcript appears after your first recorded learning."
+                title="Nothing recorded yet"
+              />
+            )}
+          </Panel>
+        </div>
+
+        <div className="nv-stack">
+          <Panel title="Share a link" actions={<Share2 aria-hidden="true" size={16} />}>
+            <p className="nv-muted">
+              A link is the only way a company sees this profile. It expires automatically, and you can revoke
+              it early; the token is shown once and never again.
+            </p>
+            <Field
+              label="What is this link for?"
               maxLength={120}
               placeholder="e.g. Client interview, October"
               value={label}
               onChange={(event) => setLabel(event.target.value)}
             />
-          </div>
-          <div>
-            <label className="nv-label" htmlFor="share-days">Days until it expires</label>
-            <input
-              className="nv-input"
-              id="share-days"
-              type="number"
-              min={1}
+            <Field
+              label="Days until it expires"
               max={90}
+              min={1}
+              type="number"
               value={ttlDays}
               onChange={(event) => setTtlDays(event.target.value)}
             />
-          </div>
-        </div>
-        <fieldset className="nv-field">
-          <legend className="nv-label">What it includes</legend>
-          {Object.entries(SCOPE_COPY).map(([scope, copy]) => (
-            <label className="nv-check" key={scope}>
-              <input
-                type="checkbox"
-                checked={scopes.includes(scope)}
-                onChange={(event) =>
-                  setScopes((current) =>
-                    event.target.checked ? [...current, scope] : current.filter((value) => value !== scope),
-                  )
+            <fieldset className="nv-field">
+              <legend className="nv-label">What it includes</legend>
+              {Object.entries(SCOPE_COPY).map(([scope, copy]) => (
+                <Checkbox
+                  checked={scopes.includes(scope)}
+                  key={scope}
+                  label={copy}
+                  onChange={(event) =>
+                    setScopes((current) =>
+                      event.target.checked ? [...current, scope] : current.filter((value) => value !== scope),
+                    )
+                  }
+                />
+              ))}
+            </fieldset>
+            {error ? (
+              <Banner tone="danger">
+                <p>{error}</p>
+              </Banner>
+            ) : null}
+            <Button disabled={busy || scopes.length === 0} type="button" onClick={() => void createShare()}>
+              <Link2 aria-hidden="true" size={15} />
+              {busy ? 'Creating…' : 'Create link'}
+            </Button>
+
+            {created ? (
+              <Banner tone="success">
+                <p>
+                  <strong>Copy this link now.</strong> It cannot be shown again.
+                </p>
+                <p className="nv-code">
+                  <code>{`${window.location.origin}/share/${created.token}`}</code>
+                </p>
+                <p className="nv-meta">Expires {when(created.expires_at)}.</p>
+              </Banner>
+            ) : null}
+          </Panel>
+
+          <Panel title="Your links" actions={<Badge tone="neutral">{shareRows.length}</Badge>}>
+            {shares.resource.status === 'loading' ? <Skeleton lines={3} /> : null}
+            {shares.resource.status === 'error' ? (
+              <ErrorState
+                body={shares.resource.message}
+                action={
+                  <Button size="sm" type="button" variant="secondary" onClick={shares.reload}>
+                    Try again
+                  </Button>
                 }
               />
-              {copy}
-            </label>
-          ))}
-        </fieldset>
-        <ErrorNote message={error} />
-        <button
-          className="nv-button"
-          disabled={busy || scopes.length === 0}
-          type="button"
-          onClick={() => void createShare()}
-        >
-          Create link
-        </button>
+            ) : null}
+            {shares.resource.status === 'ready' ? (
+              shareRows.length === 0 ? (
+                <EmptyState body="Create a scoped link when you are ready to share." title="No link yet" />
+              ) : (
+                <ul className="nv-list">
+                  {shareRows.map((share) => (
+                    <li key={share.id}>
+                      <div className="nv-row nv-row--between">
+                        <div style={{ minWidth: 0 }}>
+                          <p className="nv-h4">{share.label ?? `Link #${share.id}`}</p>
+                          <p className="nv-meta">
+                            {share.scopes.join(', ')} · expires {when(share.expires_at)}
+                          </p>
+                        </div>
+                        {share.active ? (
+                          <Button
+                            size="sm"
+                            type="button"
+                            variant="ghost"
+                            onClick={() => void revoke(share.id)}
+                          >
+                            Revoke
+                          </Button>
+                        ) : (
+                          <Badge tone="neutral">{share.revoked_at ? 'Revoked' : 'Expired'}</Badge>
+                        )}
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              )
+            ) : null}
+          </Panel>
 
-        {created ? (
-          <div className="nv-banner">
-            <p>
-              <strong>Copy this link now.</strong> It cannot be shown again.
+          <Panel title="Working with Nelavista">
+            <p className="nv-muted">
+              Curriculum owner:{' '}
+              {config.resource.status === 'ready' ? config.resource.data.curriculum_owner : '—'} ·{' '}
+              {config.resource.status === 'ready' ? config.resource.data.curriculum_license : '—'}
             </p>
-            <p className="nv-code">{`${window.location.origin}/share/${created.token}`}</p>
-            <p className="nv-muted">Expires {when(created.expires_at)}.</p>
-          </div>
-        ) : null}
-      </section>
-
-      <section className="nv-card">
-        <h2 className="nv-h2">Your links</h2>
-        {shares.resource.status === 'ready' ? (
-          shares.resource.data.shares.length === 0 ? (
-            <p className="nv-muted">No link yet.</p>
-          ) : (
-            <ul className="nv-list">
-              {shares.resource.data.shares.map((share) => (
-                <li key={share.id} className="nv-row nv-row--between">
-                  <div>
-                    <strong>{share.label ?? `Link #${share.id}`}</strong>
-                    <div className="nv-muted">
-                      {share.scopes.join(', ')} · expires {when(share.expires_at)}
-                    </div>
-                  </div>
-                  {share.active ? (
-                    <button className="nv-button nv-button--ghost" type="button" onClick={() => void revoke(share.id)}>
-                      Revoke
-                    </button>
-                  ) : (
-                    <span className="nv-tag">{share.revoked_at ? 'revoked' : 'expired'}</span>
-                  )}
-                </li>
-              ))}
-            </ul>
-          )
-        ) : (
-          <p className="nv-muted">Loading links…</p>
-        )}
-      </section>
-
-      <section className="nv-card">
-        <h2 className="nv-h2">Working with Nelavista</h2>
-        <p className="nv-muted">
-          Curriculum owner: {config.resource.status === 'ready' ? config.resource.data.curriculum_owner : '—'} ·{' '}
-          {config.resource.status === 'ready' ? config.resource.data.curriculum_license : '—'}
-        </p>
-        <p className="nv-muted">
-          Paid work starts at {config.resource.status === 'ready' ? config.resource.data.min_student_age : 16};
-          under {config.resource.status === 'ready' ? config.resource.data.guardian_consent_below_age : 18} needs
-          guardian consent. Terms version{' '}
-          {config.resource.status === 'ready' ? config.resource.data.contributor_terms_version : '—'}.
-        </p>
-      </section>
+            <p className="nv-muted">
+              Paid work starts at{' '}
+              {config.resource.status === 'ready' ? config.resource.data.min_student_age : 16}; under{' '}
+              {config.resource.status === 'ready' ? config.resource.data.guardian_consent_below_age : 18}{' '}
+              needs guardian consent. Terms version{' '}
+              {config.resource.status === 'ready' ? config.resource.data.contributor_terms_version : '—'}.
+            </p>
+          </Panel>
+        </div>
+      </div>
     </div>
   );
 }

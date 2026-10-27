@@ -3,16 +3,17 @@
  *
  * Two states on one route, decided by whether the emailed token is present:
  *
- * * no token — ask for the address and always answer with the same sentence, so
+ * * no token - ask for the address and always answer with the same sentence, so
  *   the screen cannot be used to discover which emails have accounts;
- * * token — set a new password. A successful reset signs every device out, and
+ * * token - set a new password. A successful reset signs every device out, and
  *   the copy says so instead of letting the next refresh look like a bug.
  */
 import * as React from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 
+import { AuthLayout } from '../components/AuthLayout';
 import { ApiError, http } from '../lib/http';
-import { Button, ErrorNote, Field } from '../ui';
+import { Banner, Button, ErrorNote, Field } from '../ui';
 
 export function ResetPassword(): JSX.Element {
   const [params] = useSearchParams();
@@ -62,24 +63,25 @@ export function ResetPassword(): JSX.Element {
   }
 
   return (
-    <div className="nv-card nv-card--narrow nv-stack">
-      <h1 className="nv-h1">{token ? 'Choose a new password' : 'Reset your password'}</h1>
+    <AuthLayout
+      title={token ? 'Choose a new password' : 'Reset your password'}
+      description={
+        token
+          ? 'A new password signs you out on every device. Your learning, proof and earnings stay.'
+          : 'Enter the email on your account. If it has one, a single-use link arrives in a minute.'
+      }
+      footer={<Link to="/login">Back to sign in</Link>}
+    >
       <ErrorNote message={error} />
-
       {message ? (
         <>
-          <p className="nv-banner" role="status">
-            {message}
-          </p>
+          <Banner tone="success">{message}</Banner>
           <Link className="nv-button" to="/login">
             Go to sign in
           </Link>
         </>
       ) : token ? (
         <>
-          <p className="nv-muted">
-            A new password signs you out on every device. Your learning, proof and earnings stay.
-          </p>
           <Field
             autoComplete="new-password"
             label="New password"
@@ -97,21 +99,16 @@ export function ResetPassword(): JSX.Element {
             onChange={(event) => setConfirm(event.target.value)}
           />
           <Button
+            block
             disabled={busy || password.length < 10 || confirm.length < 10}
             type="button"
             onClick={() => void reset()}
           >
-            {busy ? 'Saving…' : 'Set the new password'}
+            {busy ? 'Saving' : 'Set the new password'}
           </Button>
-          <p className="nv-muted">
-            <Link to="/login">Back to sign in</Link>
-          </p>
         </>
       ) : (
         <>
-          <p className="nv-muted">
-            Enter the email on your account. If it has one, a single-use link arrives in a minute.
-          </p>
           <Field
             autoComplete="email"
             label="Email"
@@ -120,17 +117,15 @@ export function ResetPassword(): JSX.Element {
             onChange={(event) => setEmail(event.target.value)}
           />
           <Button
+            block
             disabled={busy || !email.includes('@')}
             type="button"
             onClick={() => void requestLink()}
           >
-            {busy ? 'Sending…' : 'Send the reset link'}
+            {busy ? 'Sending' : 'Send the reset link'}
           </Button>
-          <p className="nv-muted">
-            <Link to="/login">Back to sign in</Link>
-          </p>
         </>
       )}
-    </div>
+    </AuthLayout>
   );
 }

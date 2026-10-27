@@ -8,6 +8,8 @@
  * correct practice answer is never mistaken for proof.
  */
 import type { PracticeBriefOut, PracticeResultOut } from '@nelavista/api-client';
+import { Badge, Banner, Button, ErrorState, Field, PageHeader, Panel, Skeleton } from '@nelavista/ui';
+import { ArrowLeft, CheckCircle2, ChevronDown, ChevronUp, RotateCcw, XCircle } from 'lucide-react';
 import * as React from 'react';
 import { Link, useLocation, useParams } from 'react-router-dom';
 
@@ -16,7 +18,6 @@ import { ApiError, http } from '../lib/http';
 import { buildAnswer, isAnswerValue, practiceControl, type PracticeControl } from '../lib/practice';
 import { useApiResource } from '../lib/resource';
 import { useSessionOptional } from '../lib/session';
-import { ErrorNote, Skeleton } from '../ui';
 
 type Value = string | string[] | number | null;
 
@@ -45,36 +46,40 @@ function Ranking({
   }
 
   return (
-    <ol className="nv-list">
-      {value.map((item, index) => (
-        <li className="nv-row nv-row--between" key={item}>
-          <span>
-            {index + 1}. {item}
-          </span>
-          <span className="nv-row">
-            <button
-              className="nv-button nv-button--ghost"
-              type="button"
-              aria-label={`Move ${item} up`}
-              disabled={index === 0}
-              onClick={() => move(index, -1)}
-            >
-              ↑
-            </button>
-            <button
-              className="nv-button nv-button--ghost"
-              type="button"
-              aria-label={`Move ${item} down`}
-              disabled={index === value.length - 1}
-              onClick={() => move(index, 1)}
-            >
-              ↓
-            </button>
-          </span>
-        </li>
-      ))}
-      <li className="nv-muted">All {items.length} items must appear in your order.</li>
-    </ol>
+    <div className="nv-stack">
+      <ol className="nv-list nv-list--ruled">
+        {value.map((item, index) => (
+          <li className="nv-row nv-row--between" key={item}>
+            <span>
+              <span className="nv-muted nv-num">{index + 1}.</span> {item}
+            </span>
+            <span className="nv-row">
+              <Button
+                aria-label={`Move ${item} up`}
+                disabled={index === 0}
+                size="sm"
+                type="button"
+                variant="ghost"
+                onClick={() => move(index, -1)}
+              >
+                <ChevronUp aria-hidden="true" size={15} />
+              </Button>
+              <Button
+                aria-label={`Move ${item} down`}
+                disabled={index === value.length - 1}
+                size="sm"
+                type="button"
+                variant="ghost"
+                onClick={() => move(index, 1)}
+              >
+                <ChevronDown aria-hidden="true" size={15} />
+              </Button>
+            </span>
+          </li>
+        ))}
+      </ol>
+      <p className="nv-muted">All {items.length} items must appear in your order.</p>
+    </div>
   );
 }
 
@@ -88,7 +93,11 @@ function Control({
   onChange: (next: Value) => void;
 }): JSX.Element {
   if (control.kind === 'unsupported') {
-    return <p className="nv-banner">{control.reason}</p>;
+    return (
+      <Banner tone="warning">
+        <p>{control.reason}</p>
+      </Banner>
+    );
   }
 
   if (control.kind === 'choice') {
@@ -140,19 +149,15 @@ function Control({
   }
 
   return (
-    <div className="nv-field">
-      <label className="nv-label" htmlFor="nv-practice-number">
-        Answer (whole number)
-      </label>
-      <input
-        className="nv-input"
-        id="nv-practice-number"
-        inputMode="numeric"
-        type="number"
-        value={typeof value === 'number' ? value : ''}
-        onChange={(event) => onChange(event.target.value === '' ? null : Number(event.target.value))}
-      />
-    </div>
+    <Field
+      hint="Whole number only."
+      id="nv-practice-number"
+      inputMode="numeric"
+      label="Answer"
+      type="number"
+      value={typeof value === 'number' ? value : ''}
+      onChange={(event) => onChange(event.target.value === '' ? null : Number(event.target.value))}
+    />
   );
 }
 
@@ -215,16 +220,20 @@ export function Practice(): JSX.Element {
   if (resource.status !== 'ready') {
     return (
       <div className="nv-stack">
-        <h1 className="nv-h1">Practice</h1>
+        <PageHeader eyebrow="Skills" title="Practice" />
         {resource.status === 'off' ? (
-          <p className="nv-banner">The skills journey is not switched on for this environment yet.</p>
+          <Banner tone="info">
+            <p>The skills journey is not switched on for this environment yet.</p>
+          </Banner>
         ) : (
-          <>
-            <ErrorNote message={resource.message} />
-            <button className="nv-button" type="button" onClick={reload}>
-              Try again
-            </button>
-          </>
+          <ErrorState
+            body={resource.message}
+            action={
+              <Button size="sm" type="button" variant="secondary" onClick={reload}>
+                Try again
+              </Button>
+            }
+          />
         )}
         <p className="nv-muted">
           <Link to="/skills">All skills</Link>
@@ -238,54 +247,79 @@ export function Practice(): JSX.Element {
   return (
     <div className="nv-stack">
       <p className="nv-muted">
-        <Link to={backLink(location.state)}>Back to the path</Link>
+        <Link to={backLink(location.state)}>
+          <ArrowLeft aria-hidden="true" size={14} /> Back to the path
+        </Link>
       </p>
 
-      <h1 className="nv-h1">{brief.name}</h1>
-      <p className="nv-muted">Practice — this does not count as verification.</p>
+      <PageHeader
+        eyebrow="Practice"
+        title={brief.name}
+        description="Practice tells you how you did. It does not count as verification."
+        actions={<Badge tone="neutral">Not verification</Badge>}
+      />
 
       {brief.instructions_md ? <p>{brief.instructions_md}</p> : null}
 
       {typeof brief.sample === 'string' ? (
-        <section className="nv-card">
-          <h2 className="nv-h2">Sample input</h2>
+        <Panel title="Sample input">
           <pre className="nv-code">{brief.sample}</pre>
-        </section>
+        </Panel>
       ) : null}
 
-      <ErrorNote message={error} />
+      {error ? (
+        <Banner tone="danger">
+          <p>{error}</p>
+        </Banner>
+      ) : null}
 
       {result ? (
-        <section className="nv-card" aria-live="polite">
-          <h2 className="nv-h2">{result.is_correct ? 'Correct' : 'Not quite'}</h2>
-          <p>{result.feedback}</p>
-          <p className="nv-muted">Score: {result.score}/100 · not verification</p>
-          <div className="nv-row">
-            <button
-              className="nv-button nv-button--ghost"
-              type="button"
-              onClick={() => {
-                setResult(null);
-                setValue(null);
-              }}
+        <Panel
+          title={result.is_correct ? 'Correct' : 'Not quite'}
+          actions={
+            <Badge
+              status={result.is_correct ? 'verified' : 'at_risk'}
+              tone={result.is_correct ? 'success' : 'warning'}
             >
-              Try again
-            </button>
-            <Link to={backLink(location.state)}>Back to the path</Link>
+              {result.is_correct ? (
+                <>
+                  <CheckCircle2 aria-hidden="true" size={13} /> Correct
+                </>
+              ) : (
+                <>
+                  <XCircle aria-hidden="true" size={13} /> Not quite
+                </>
+              )}
+            </Badge>
+          }
+        >
+          <div className="nv-stack" aria-live="polite">
+            <p>{result.feedback}</p>
+            <p className="nv-muted">Score: {result.score}/100 · not verification</p>
+            <div className="nv-row">
+              <Button
+                size="sm"
+                type="button"
+                variant="ghost"
+                onClick={() => {
+                  setResult(null);
+                  setValue(null);
+                }}
+              >
+                <RotateCcw aria-hidden="true" size={14} />
+                Try again
+              </Button>
+              <Link to={backLink(location.state)}>Back to the path</Link>
+            </div>
           </div>
-        </section>
+        </Panel>
       ) : control ? (
-        <>
+        <Panel title="Your answer">
           <Control control={control} value={value} onChange={setValue} />
-          <div className="nv-row">
-            <button
-              className="nv-button"
-              disabled={busy || !answer}
-              type="button"
-              onClick={() => void submit()}
-            >
+          <div className="nv-row" style={{ marginTop: 'var(--nv-space-lg)' }}>
+            <Button disabled={busy || !answer} type="button" onClick={() => void submit()}>
               {busy ? 'Checking…' : 'Check my answer'}
-            </button>
+            </Button>
             {!answer ? <span className="nv-muted">Answer first to see how you did.</span> : null}
           </div>
           {draft.savedAt ? (
@@ -293,7 +327,7 @@ export function Practice(): JSX.Element {
               Answer saved on this device — it is still here if the connection drops.
             </p>
           ) : null}
-        </>
+        </Panel>
       ) : null}
     </div>
   );

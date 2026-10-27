@@ -6,17 +6,19 @@
  * listings. The API enforces the same rule; this screen just does not offer an
  * action that would fail.
  */
-import type { ApplyOut, OpportunityOut } from '@nelavista/api-client';
+import type { ApplyOut, EligibilityOut, OpportunityOut } from '@nelavista/api-client';
+import { Badge, Banner, Button, ErrorState, PageHeader, Panel, Skeleton, Textarea } from '@nelavista/ui';
+import { ArrowRight, Briefcase, ShieldCheck } from 'lucide-react';
 import * as React from 'react';
 import { Link, useParams } from 'react-router-dom';
 
 import { ApiError, http } from '../lib/http';
 import { useApiResource } from '../lib/resource';
-import { ErrorNote, Skeleton } from '../ui';
 
 export function OpportunityDetail(): JSX.Element {
   const { slug = '' } = useParams<{ slug: string }>();
   const { resource, reload } = useApiResource<OpportunityOut>(`/opportunities/${slug}`);
+  const eligibility = useApiResource<EligibilityOut>('/platform/me/eligibility');
   const [note, setNote] = React.useState('');
   const [busy, setBusy] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
@@ -35,9 +37,13 @@ export function OpportunityDetail(): JSX.Element {
   if (resource.status === 'off') {
     return (
       <div className="nv-stack">
-        <h1 className="nv-h1">Opportunity</h1>
-        <p className="nv-banner">Opportunities are not switched on for this environment yet.</p>
-        <Link to="/opportunities">All opportunities</Link>
+        <PageHeader eyebrow="Work" title="Opportunity" />
+        <Banner tone="info">
+          <p>Opportunities are not switched on for this environment yet.</p>
+        </Banner>
+        <p className="nv-muted">
+          <Link to="/opportunities">All opportunities</Link>
+        </p>
       </div>
     );
   }
@@ -45,11 +51,15 @@ export function OpportunityDetail(): JSX.Element {
   if (resource.status !== 'ready') {
     return (
       <div className="nv-stack">
-        <h1 className="nv-h1">Opportunity</h1>
-        <ErrorNote message={resource.message} />
-        <button className="nv-button" type="button" onClick={reload}>
-          Try again
-        </button>
+        <PageHeader eyebrow="Work" title="Opportunity" />
+        <ErrorState
+          body={resource.message}
+          action={
+            <Button size="sm" type="button" variant="secondary" onClick={reload}>
+              Try again
+            </Button>
+          }
+        />
         <p className="nv-muted">
           <Link to="/opportunities">All opportunities</Link>
         </p>
@@ -58,6 +68,7 @@ export function OpportunityDetail(): JSX.Element {
   }
 
   const opportunity = resource.data;
+  const eligibilityBlocked = eligibility.resource.status === 'ready' && !eligibility.resource.data.eligible;
 
   async function apply(): Promise<void> {
     setBusy(true);
@@ -76,44 +87,57 @@ export function OpportunityDetail(): JSX.Element {
 
   return (
     <div className="nv-stack">
-      <p className="nv-muted">
-        <Link to="/opportunities">All opportunities</Link>
-      </p>
-      <div className="nv-row nv-row--between">
-        <h1 className="nv-h1">{opportunity.title}</h1>
-        <span className="nv-badge" data-status={opportunity.match.eligible ? 'verified' : 'at_risk'}>
-          {opportunity.match.eligible ? 'You qualify' : 'Not yet'}
-        </span>
-      </div>
-      <p className="nv-muted">
-        {opportunity.type === 'managed' ? 'Managed by Nelavista' : 'External listing'}
-        {opportunity.client_name ? ` · ${opportunity.client_name}` : ''}
-        {opportunity.headcount ? ` · ${opportunity.headcount} place(s)` : ''}
-      </p>
+      <PageHeader
+        eyebrow={opportunity.type === 'managed' ? 'Managed work' : 'External listing'}
+        title={opportunity.title}
+        description={[
+          opportunity.client_name,
+          opportunity.headcount ? `${opportunity.headcount} place(s)` : null,
+          opportunity.currency && opportunity.rate_minor != null
+            ? `${opportunity.currency} ${(opportunity.rate_minor / 100).toFixed(2)} per approved task`
+            : 'Rate shared on the brief',
+        ]
+          .filter(Boolean)
+          .join(' · ')}
+        actions={
+          <Badge
+            status={opportunity.match.eligible ? 'verified' : 'at_risk'}
+            tone={opportunity.match.eligible ? 'success' : 'warning'}
+          >
+            {opportunity.match.eligible ? 'You qualify' : 'Not yet'}
+          </Badge>
+        }
+      />
+
       {opportunity.description ? <p>{opportunity.description}</p> : null}
 
-      <section className="nv-card">
-        <h2 className="nv-h2">What this needs</h2>
+      <Panel title="What this needs">
         {opportunity.requirements.length === 0 ? (
           <p className="nv-muted">This brief has no formal requirements.</p>
         ) : (
-          <ul className="nv-list">
+          <ul className="nv-list nv-list--ruled">
             {opportunity.match.explanation.map((check) => (
-              <li className="nv-row nv-row--between" key={check.requirement_id}>
-                <span>
-                  <span className="nv-badge" data-status={check.met ? 'verified' : 'at_risk'}>
-                    {check.met ? 'Met' : check.mandatory ? 'Missing' : 'Optional'}
-                  </span>{' '}
-                  {check.description}
-                  <span className="nv-muted"> · {check.detail}</span>
-                </span>
+              <li key={check.requirement_id}>
+                <div className="nv-row nv-row--between" style={{ alignItems: 'flex-start' }}>
+                  <div>
+                    <Badge
+                      status={check.met ? 'verified' : 'at_risk'}
+                      tone={check.met ? 'success' : check.mandatory ? 'danger' : 'warning'}
+                    >
+                      {check.met ? 'Met' : check.mandatory ? 'Missing' : 'Optional'}
+                    </Badge>{' '}
+                    <span>{check.description}</span>
+                    <span className="nv-muted"> · {check.detail}</span>
+                  </div>
+                </div>
               </li>
             ))}
           </ul>
         )}
+
         {opportunity.match.next_steps.length > 0 ? (
-          <>
-            <h3 className="nv-h2">How to close the gap</h3>
+          <div style={{ marginTop: 'var(--nv-space-xl)' }}>
+            <h3 className="nv-h3">How to close the gap</h3>
             <ul className="nv-list">
               {opportunity.match.next_steps.map((step) => (
                 <li key={step.requirement_id}>
@@ -132,52 +156,112 @@ export function OpportunityDetail(): JSX.Element {
                 </li>
               ))}
             </ul>
-          </>
+          </div>
         ) : null}
-      </section>
+      </Panel>
 
-      <ErrorNote message={error} />
+      <Panel title="Before you apply" actions={<ShieldCheck aria-hidden="true" size={16} />}>
+        {eligibility.resource.status === 'loading' ? <Skeleton lines={2} /> : null}
+        {eligibility.resource.status === 'off' ? (
+          <Banner tone="info">
+            <p>Eligibility checks are not switched on for this environment yet.</p>
+          </Banner>
+        ) : null}
+        {eligibility.resource.status === 'error' ? (
+          <Banner
+            tone="warning"
+            actions={
+              <Button size="sm" type="button" variant="secondary" onClick={eligibility.reload}>
+                Try again
+              </Button>
+            }
+          >
+            <p>{eligibility.resource.message}</p>
+          </Banner>
+        ) : null}
+        {eligibility.resource.status === 'ready' ? (
+          <div className="nv-stack">
+            <div className="nv-row nv-row--between">
+              <p>
+                {eligibility.resource.data.eligible
+                  ? 'You meet the platform rules for paid work.'
+                  : 'The platform still has a blocker before you can accept paid work.'}
+              </p>
+              <Badge tone={eligibility.resource.data.eligible ? 'success' : 'warning'}>
+                {eligibility.resource.data.eligible ? 'Eligible' : 'Blocked'}
+              </Badge>
+            </div>
+            {eligibility.resource.data.blockers.length > 0 ? (
+              <ul className="nv-list">
+                {eligibility.resource.data.blockers.map((blocker) => (
+                  <li key={blocker}>{blocker}</li>
+                ))}
+              </ul>
+            ) : null}
+            {eligibility.resource.data.reasons.length > 0 ? (
+              <p className="nv-muted">Why: {eligibility.resource.data.reasons.join(' · ')}</p>
+            ) : null}
+            <p className="nv-meta">
+              Contributor terms {eligibility.resource.data.contributor_terms_version}
+              {eligibility.resource.data.age !== null ? ` · age ${eligibility.resource.data.age}` : ''}
+            </p>
+          </div>
+        ) : null}
+      </Panel>
+
+      {error ? (
+        <Banner tone="danger">
+          <p>{error}</p>
+        </Banner>
+      ) : null}
 
       {applied ? (
-        <section className="nv-card" aria-live="polite">
-          <h2 className="nv-h2">Application sent</h2>
+        <Banner tone="success">
+          <h2 className="nv-h3">Application sent</h2>
           <p>
-            Status: <strong>{applied.status.replace(/_/g, ' ')}</strong>. We will contact you here if
-            the client shortlists you.
+            Status: <strong>{applied.status.replace(/_/g, ' ')}</strong>. We will contact you here if the
+            client shortlists you.
           </p>
-        </section>
+          <p className="nv-muted">
+            <Link to="/opportunities/applications">See all your applications</Link>
+          </p>
+        </Banner>
       ) : opportunity.type === 'external' ? (
-        <section className="nv-card">
-          <h2 className="nv-h2">Apply</h2>
+        <Panel title="Apply" actions={<Briefcase aria-hidden="true" size={16} />}>
           <p className="nv-muted">
             One short note helps the client see how your proof fits. You can apply once.
           </p>
-          <div className="nv-field">
-            <label className="nv-label" htmlFor="nv-apply-note">
-              Note (optional)
-            </label>
-            <textarea
-              className="nv-input"
-              id="nv-apply-note"
-              maxLength={1000}
-              rows={4}
-              value={note}
-              onChange={(event) => setNote(event.target.value)}
-            />
+          <Textarea
+            hint="Optional. Up to 1,000 characters."
+            id="nv-apply-note"
+            label="Note"
+            maxLength={1000}
+            rows={4}
+            value={note}
+            onChange={(event) => setNote(event.target.value)}
+          />
+          <div style={{ marginTop: 'var(--nv-space-lg)' }}>
+            <Button disabled={busy || eligibilityBlocked} type="button" onClick={() => void apply()}>
+              {busy ? 'Sending…' : 'Apply'}
+              <ArrowRight aria-hidden="true" size={15} />
+            </Button>
+            {eligibilityBlocked ? (
+              <p className="nv-muted">Resolve the platform blocker above before applying.</p>
+            ) : null}
           </div>
-          <button className="nv-button" disabled={busy} type="button" onClick={() => void apply()}>
-            {busy ? 'Sending…' : 'Apply'}
-          </button>
-        </section>
+        </Panel>
       ) : (
-        <p className="nv-banner">
-          Managed work is invitation-only. Matching runs against your verified skills; there is nothing
-          to apply for here.
-        </p>
+        <Banner tone="info">
+          <p>
+            Managed work is invitation-only. Matching runs against your verified skills; there is nothing to
+            apply for here.
+          </p>
+        </Banner>
       )}
 
       <p className="nv-muted">
-        <Link to="/verification">Prove a skill</Link> · <Link to="/work">Your work</Link>
+        <Link to="/verification">Prove a skill</Link> · <Link to="/work">Your work</Link> ·{' '}
+        <Link to="/opportunities">All opportunities</Link>
       </p>
     </div>
   );

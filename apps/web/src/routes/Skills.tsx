@@ -8,11 +8,12 @@
  * before tapping it.
  */
 import type { SkillsOut } from '@nelavista/api-client';
+import { Badge, Banner, Button, EmptyState, ErrorState, PageHeader, Panel, Skeleton } from '@nelavista/ui';
+import { ArrowRight, BookOpen, Sparkles } from 'lucide-react';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 
 import { useApiResource } from '../lib/resource';
-import { ErrorNote, Skeleton } from '../ui';
 
 export function Skills(): JSX.Element {
   const { resource, reload } = useApiResource<SkillsOut>('/skills');
@@ -29,11 +30,13 @@ export function Skills(): JSX.Element {
   if (resource.status === 'off') {
     return (
       <div className="nv-stack">
-        <h1 className="nv-h1">Skills</h1>
-        <p className="nv-banner">
-          The skills journey is not switched on for this environment yet. Your account and courses are
-          unaffected.
-        </p>
+        <PageHeader eyebrow="Prove" title="Skills" />
+        <Banner tone="info">
+          <p>
+            The skills journey is not switched on for this environment yet. Your account and courses are
+            unaffected.
+          </p>
+        </Banner>
         <p className="nv-muted">
           <Link to="/home">Back to your home</Link>
         </p>
@@ -44,11 +47,15 @@ export function Skills(): JSX.Element {
   if (resource.status !== 'ready') {
     return (
       <div className="nv-stack">
-        <h1 className="nv-h1">Skills</h1>
-        <ErrorNote message={resource.message} />
-        <button className="nv-button" type="button" onClick={reload}>
-          Try again
-        </button>
+        <PageHeader eyebrow="Prove" title="Skills" />
+        <ErrorState
+          body={resource.message}
+          action={
+            <Button size="sm" type="button" variant="secondary" onClick={reload}>
+              Try again
+            </Button>
+          }
+        />
       </div>
     );
   }
@@ -57,38 +64,59 @@ export function Skills(): JSX.Element {
 
   return (
     <div className="nv-stack">
-      <h1 className="nv-h1">Skills</h1>
-      <p className="nv-muted">
-        Learn it, practise it, then prove it. A finished lesson is progress — never proof.
-      </p>
+      <PageHeader
+        eyebrow="Prove"
+        title="Skills"
+        description="Learn it, practise it, then prove it. A finished lesson is progress — never proof."
+        actions={
+          <Link className="nv-button nv-button--secondary nv-button--sm" to="/skills/my-learning">
+            <BookOpen aria-hidden="true" size={15} />
+            Continue learning
+          </Link>
+        }
+      />
 
-      <p className="nv-muted">
-        <Link to="/skills/my-learning">Continue where you left off</Link>
-      </p>
-
-      {skills.length === 0 ? (
-        <p className="nv-banner">
-          No skills are published yet. This is content, not an app update, so it appears here as soon as it is
-          published.
-        </p>
-      ) : (
-        <ul className="nv-list">
-          {skills.map((skill) => (
-            <li className="nv-card" key={skill.id}>
-              <h2 className="nv-h2">
-                <Link to={`/skills/${skill.slug}`}>{skill.name}</Link>
-              </h2>
-              {skill.category ? <p className="nv-muted">{skill.category}</p> : null}
-              {skill.description ? <p>{skill.description}</p> : null}
-              <p className="nv-muted">
-                {skill.published_paths === 0
-                  ? 'No published path yet.'
-                  : `${skill.published_paths} path${skill.published_paths === 1 ? '' : 's'} available`}
-              </p>
-            </li>
-          ))}
-        </ul>
-      )}
+      <Panel title="Published skills" actions={<Badge tone="info">{skills.length}</Badge>}>
+        {skills.length === 0 ? (
+          <EmptyState
+            body="No skills are published yet. This is content, not an app update, so it appears here as soon as it is published."
+            icon={Sparkles}
+            title="No skills yet"
+            action={
+              <Link className="nv-button nv-button--secondary nv-button--sm" to="/home">
+                Back to your home
+              </Link>
+            }
+          />
+        ) : (
+          <ul className="nv-list nv-list--ruled">
+            {skills.map((skill) => (
+              <li key={skill.id}>
+                <div className="nv-row nv-row--between" style={{ alignItems: 'flex-start' }}>
+                  <div style={{ minWidth: 0 }}>
+                    <Link className="nv-h3" to={`/skills/${skill.slug}`}>
+                      {skill.name}
+                    </Link>
+                    {skill.category ? <p className="nv-meta">{skill.category}</p> : null}
+                  </div>
+                  <Badge tone={skill.published_paths > 0 ? 'success' : 'neutral'}>
+                    {skill.published_paths === 0
+                      ? 'No published path'
+                      : `${skill.published_paths} path${skill.published_paths === 1 ? '' : 's'} available`}
+                  </Badge>
+                </div>
+                {skill.description ? <p className="nv-muted">{skill.description}</p> : null}
+                <div style={{ marginTop: 'var(--nv-space-sm)' }}>
+                  <Link className="nv-button nv-button--ghost nv-button--sm" to={`/skills/${skill.slug}`}>
+                    Open skill
+                    <ArrowRight aria-hidden="true" size={14} />
+                  </Link>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+      </Panel>
     </div>
   );
 }

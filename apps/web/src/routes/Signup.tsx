@@ -1,9 +1,10 @@
 import * as React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
+import { AuthLayout } from '../components/AuthLayout';
 import { ApiError } from '../lib/http';
 import { useSession } from '../lib/session';
-import { Button, ErrorNote, Field } from '../ui';
+import { Button, Checkbox, ErrorNote, Field } from '../ui';
 
 const USERNAME_RE = /^[A-Za-z0-9_.-]+$/;
 
@@ -21,7 +22,7 @@ export function Signup(): JSX.Element {
   function validate(): string | null {
     if (!email.includes('@')) return 'Enter a valid email address.';
     if (username.length < 3 || username.length > 40 || !USERNAME_RE.test(username)) {
-      return 'Usernames are 3–40 characters: letters, numbers, dot, dash or underscore.';
+      return 'Usernames are 3-40 characters: letters, numbers, dot, dash or underscore.';
     }
     if (password.length < 10) return 'Use at least 10 characters for your password.';
     if (!accepted) return 'Please accept the terms to continue.';
@@ -48,48 +49,57 @@ export function Signup(): JSX.Element {
   }
 
   return (
-    <div className="nv-card nv-card--narrow">
-      <h1 className="nv-h2">Create your account</h1>
-      <p className="nv-muted">One account for learning, proof and work.</p>
+    <AuthLayout
+      title="Create your account"
+      description="One account for your courses, skills, evidence, work and earnings."
+      footer={
+        <>
+          Already have an account? <Link to="/login">Sign in</Link>
+        </>
+      }
+    >
       <form className="nv-stack" onSubmit={onSubmit} noValidate>
-        <Field label="Name" autoComplete="name" value={name} onChange={(e) => setName(e.target.value)} />
+        <Field autoComplete="name" label="Name" value={name} onChange={(e) => setName(e.target.value)} />
         <Field
+          autoComplete="email"
           label="Email"
           type="email"
-          autoComplete="email"
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
         <Field
-          label="Username"
           autoComplete="username"
+          hint="Letters, numbers, dot, dash or underscore."
+          label="Username"
           required
           value={username}
           onChange={(e) => setUsername(e.target.value)}
-          hint="Letters, numbers, dot, dash or underscore."
         />
         <Field
+          autoComplete="new-password"
+          hint="At least 10 characters."
           label="Password"
           type="password"
-          autoComplete="new-password"
           required
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          hint="At least 10 characters."
         />
-        <label className="nv-check">
-          <input type="checkbox" checked={accepted} onChange={(e) => setAccepted(e.target.checked)} />
-          <span>I accept the terms and privacy policy.</span>
-        </label>
+        <Checkbox
+          checked={accepted}
+          onChange={(e) => setAccepted(e.target.checked)}
+          label={
+            <>
+              I accept the <Link to="/legal/terms">terms</Link> and{' '}
+              <Link to="/legal/privacy">privacy notice</Link>.
+            </>
+          }
+        />
         <ErrorNote message={error} />
-        <Button type="submit" disabled={busy}>
-          {busy ? 'Creating…' : 'Create account'}
+        <Button block disabled={busy} type="submit">
+          {busy ? 'Creating your account' : 'Create account'}
         </Button>
       </form>
-      <p className="nv-muted">
-        Already have an account? <Link to="/login">Sign in</Link>
-      </p>
-    </div>
+    </AuthLayout>
   );
 }

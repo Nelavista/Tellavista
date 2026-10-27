@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Status | **Proposed. Do not build routes until approved.** |
+| Status | **Approved 2026-10-27. Build in progress.** |
 | Gate | Gate 1 — route map |
 | Date | 2026-10-27 |
 | Scope | Public, auth, student app, admin and utility routes for the V2 web launch |
@@ -151,8 +151,10 @@ route.
 | `/work/assignments/:assignmentId` | Assignment detail | Complete the brief | **Submit work** | `GET /work/assignments/{id}`, `/messages`, `POST /start`, `/submissions` | Skeleton, missing, error, feature-off |
 | `/earnings` | Earnings | Understand money owed and paid | **Available balance** | `GET /money/earnings` | Skeleton, empty, error, feature-off |
 
-Cohort invites are shown on `/work` (and `/home` when pending) using
-`POST /work/cohorts/{id}/respond`; no separate route is needed.
+Cohort invites belong on `/work` (and `/home` when pending) using
+`POST /work/cohorts/{id}/respond`. **API dependency:** there is no student
+invite-list endpoint yet, so the app cannot discover the cohort id. Do not fake
+an invite; add the list endpoint first.
 
 ### 4.6 Account and public share
 
@@ -363,7 +365,7 @@ Build order after Gate 2 approval:
 
 ## 11. Gate 1 decisions requested
 
-Approve or change:
+Approved 2026-10-27:
 
 1. **Public route set:** Home, Features, How it works, About, Contact, FAQ,
    Privacy, Terms, Contributor terms. Pricing and For employers deferred.
@@ -376,10 +378,14 @@ Approve or change:
 5. **Utility behaviour:** real 404s, error boundary, offline state, no silent
    redirects for dead V1 products.
 6. **Redirects:** the table in §7.
-7. **Deferred features:** pricing, employer self-service, newsletter, platform
-   announcement. Confirm whether any should move into the first build.
-8. **API dependencies:** accept that CBT history, course/topic and password
-   change need backend work before those screens can ship.
+7. **Deferred features:** pricing, employer self-service, newsletter and the
+   platform announcement banner are post-launch. Do not build them now.
+8. **API dependencies:** CBT history, course/topic and password change need
+   backend work. Build the UI behind explicit dependency states; do not fake the
+   data.
+9. **Parity decision:** course/topic and CBT history are in scope. Student
+   material upload/analysis is deferred; the replacement is curated materials,
+   Ask, CBT and the transcript evidence trail.
 
-Once approved, the next gate is the design direction. Do not write UI code before
-both gates are approved.
+Gate 2 (design direction) was approved on the same date. The first build change
+is the token and primitive foundation, not a page.

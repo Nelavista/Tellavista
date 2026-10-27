@@ -6,11 +6,12 @@
  * what would put something there. The page only decides how to lay it out.
  */
 import type { DashboardOut, NextActionOut, PracticeItemOut, TopicStatOut } from '@nelavista/api-client';
+import { Badge, Banner, Button, EmptyState, ErrorState, PageHeader, Panel, Skeleton } from '@nelavista/ui';
+import { ArrowRight, BookOpen, ClipboardCheck, GraduationCap, Sparkles } from 'lucide-react';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 
 import { ApiError, http } from '../lib/http';
-import { ErrorNote, Skeleton } from '../ui';
 
 type LoadState = 'loading' | 'ready' | 'unavailable' | 'error';
 
@@ -25,7 +26,14 @@ function accuracyLabel(value: number | null | undefined): string {
   return value === null ? 'not attempted' : `${value}% correct`;
 }
 
-function ActionCard({ action }: { action: NextActionOut }): JSX.Element {
+function actionHref(action: NextActionOut): string {
+  if (action.material_id) return `/academia/materials/${action.material_id}`;
+  if (action.lesson_id) return '/skills/my-learning';
+  if (action.topic_id) return '/academia/cbt';
+  return '/academia';
+}
+
+function ActionBlock({ action }: { action: NextActionOut }): JSX.Element {
   return (
     <section className="nv-action" aria-labelledby="nv-next-action">
       <p className="nv-label" id="nv-next-action">
@@ -33,6 +41,15 @@ function ActionCard({ action }: { action: NextActionOut }): JSX.Element {
       </p>
       <p className="nv-action__label">{action.label}</p>
       <p className="nv-muted">{action.reason}</p>
+      <div className="nv-row">
+        <Link className="nv-button" to={actionHref(action)}>
+          Start this
+          <ArrowRight aria-hidden="true" size={15} />
+        </Link>
+        <Link className="nv-button nv-button--ghost" to="/academia/cbt">
+          Practise instead
+        </Link>
+      </div>
     </section>
   );
 }
@@ -44,13 +61,13 @@ function TopicList({
   items: Array<PracticeItemOut | TopicStatOut>;
   empty: string;
 }): JSX.Element {
-  if (items.length === 0) return <p className="nv-muted">{empty}</p>;
+  if (items.length === 0) return <EmptyState body={empty} icon={Sparkles} title="Nothing to rank yet" />;
   return (
-    <ul className="nv-list">
+    <ul className="nv-list nv-list--ruled">
       {items.map((item) => (
         <li className="nv-row nv-row--between" key={`${item.topic_id ?? 'general'}-${item.topic}`}>
           <span>{item.topic}</span>
-          <span className="nv-muted">{accuracyLabel(item.accuracy)}</span>
+          <span className="nv-mono">{accuracyLabel(item.accuracy)}</span>
         </li>
       ))}
     </ul>
@@ -105,10 +122,13 @@ export function AcademiaDashboard(): JSX.Element {
   if (state === 'unavailable') {
     return (
       <div className="nv-stack">
-        <h1 className="nv-h1">Academia dashboard</h1>
-        <p className="nv-banner">
-          Academia is not switched on for this environment yet. Your account, courses and path are unaffected.
-        </p>
+        <PageHeader eyebrow="Academia" title="Academia dashboard" />
+        <Banner tone="info">
+          <p>
+            Academia is not switched on for this environment yet. Your account, courses and path are
+            unaffected.
+          </p>
+        </Banner>
         <p className="nv-muted">
           <Link to="/home">Back to your home</Link>
         </p>
@@ -119,126 +139,176 @@ export function AcademiaDashboard(): JSX.Element {
   if (state === 'error') {
     return (
       <div className="nv-stack">
-        <h1 className="nv-h1">Academia dashboard</h1>
-        <ErrorNote message={error} />
-        <button className="nv-button" type="button" onClick={() => setAttempt((n) => n + 1)}>
-          Try again
-        </button>
+        <PageHeader eyebrow="Academia" title="Academia dashboard" />
+        <ErrorState
+          body={error ?? undefined}
+          action={
+            <Button size="sm" type="button" variant="secondary" onClick={() => setAttempt((n) => n + 1)}>
+              Try again
+            </Button>
+          }
+        />
       </div>
     );
   }
 
-  if (!data) return <p className="nv-muted">Nothing to show yet.</p>;
+  if (!data) {
+    return (
+      <div className="nv-stack">
+        <PageHeader eyebrow="Academia" title="Academia dashboard" />
+        <EmptyState
+          body="The dashboard returned no questions. Refresh to try again."
+          icon={GraduationCap}
+          title="Nothing to show yet"
+        />
+      </div>
+    );
+  }
 
   const questions = data.questions;
+  const courses = questions.what_am_i_studying.courses;
 
   return (
     <div className="nv-stack">
-      <h1 className="nv-h1">Academia dashboard</h1>
+      <PageHeader
+        eyebrow="Academia"
+        title="Academia dashboard"
+        description="What you are studying, what you studied recently, what to practise, and where you are weak."
+        actions={
+          <>
+            <Link className="nv-button nv-button--secondary nv-button--sm" to="/academia/materials">
+              <BookOpen aria-hidden="true" size={15} />
+              Materials
+            </Link>
+            <Link className="nv-button nv-button--ghost nv-button--sm" to="/academia/ask">
+              <Sparkles aria-hidden="true" size={15} />
+              Ask
+            </Link>
+          </>
+        }
+      />
 
-      <ActionCard action={questions.what_should_i_do_next.action} />
+      <ActionBlock action={questions.what_should_i_do_next.action} />
 
-      <section className="nv-card" aria-labelledby="nv-q-studying">
-        <h2 className="nv-h2" id="nv-q-studying">
-          What am I studying?
-        </h2>
+      <Panel title="What am I studying?" actions={<Badge tone="info">{data.enrolment_count} courses</Badge>}>
         <p>{questions.what_am_i_studying.answer}</p>
-        {questions.what_am_i_studying.courses.length > 0 ? (
-          <ul className="nv-list">
-            {questions.what_am_i_studying.courses.map((course) => (
-              <li key={course.enrolment_id}>
-                <strong>{course.code}</strong> — {course.title}
-                <div className="nv-muted">
-                  {course.department} · {course.faculty} · {course.university}
-                </div>
-                {data.materials_by_course[String(course.course_id)] ? (
-                  <div className="nv-muted">
-                    {data.materials_by_course[String(course.course_id)]} material(s) available
-                  </div>
-                ) : null}
-              </li>
-            ))}
-          </ul>
+        {courses.length === 0 ? (
+          <EmptyState
+            body="Your courses decide which materials, practice and CBT papers are available."
+            icon={BookOpen}
+            title="No courses yet"
+            action={
+              <Link className="nv-button nv-button--secondary nv-button--sm" to="/onboarding">
+                Add your courses
+              </Link>
+            }
+          />
         ) : (
-          <p className="nv-muted">
-            <Link to="/onboarding">Add your courses</Link>
-          </p>
+          <div className="nv-table-wrap">
+            <table className="nv-table">
+              <thead>
+                <tr>
+                  <th>Code</th>
+                  <th>Course</th>
+                  <th>Department</th>
+                  <th>Materials</th>
+                </tr>
+              </thead>
+              <tbody>
+                {courses.map((course) => (
+                  <tr key={course.enrolment_id}>
+                    <td className="nv-mono">{course.code}</td>
+                    <td>{course.title}</td>
+                    <td>
+                      {course.department}
+                      <div className="nv-muted">{course.faculty}</div>
+                    </td>
+                    <td className="nv-num">{data.materials_by_course[String(course.course_id)] ?? 0}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
-      </section>
+      </Panel>
 
-      <section className="nv-card" aria-labelledby="nv-q-recent">
-        <h2 className="nv-h2" id="nv-q-recent">
-          What did I study recently?
-        </h2>
-        <p>{questions.what_did_i_study_recently.answer}</p>
-        {questions.what_did_i_study_recently.items.length > 0 ? (
-          <ul className="nv-list">
-            {questions.what_did_i_study_recently.items.map((item) => {
-              const label = whenLabel(item.when);
-              return (
-                <li className="nv-row nv-row--between" key={`${item.kind}-${item.title}`}>
-                  <span>
-                    {item.title}
-                    <span className="nv-muted">
-                      {item.kind === 'lesson_completed' ? ' · completed' : ' · in progress'}
+      <div className="nv-split">
+        <Panel title="What did I study recently?">
+          <p>{questions.what_did_i_study_recently.answer}</p>
+          {questions.what_did_i_study_recently.items.length === 0 ? (
+            <EmptyState
+              body="Open a lesson or a material and it will appear here."
+              icon={BookOpen}
+              title="Nothing recent"
+              action={
+                <Link className="nv-button nv-button--secondary nv-button--sm" to="/academia/materials">
+                  Open materials
+                </Link>
+              }
+            />
+          ) : (
+            <ul className="nv-list">
+              {questions.what_did_i_study_recently.items.map((item) => {
+                const label = whenLabel(item.when);
+                return (
+                  <li className="nv-row nv-row--between" key={`${item.kind}-${item.title}`}>
+                    <span>
+                      {item.title}
+                      <span className="nv-muted">
+                        {item.kind === 'lesson_completed' ? ' · completed' : ' · in progress'}
+                      </span>
                     </span>
-                  </span>
-                  {label && item.when ? (
-                    <time className="nv-muted" dateTime={item.when}>
-                      {label}
-                    </time>
-                  ) : null}
-                </li>
-              );
-            })}
-          </ul>
-        ) : null}
-      </section>
+                    {label && item.when ? (
+                      <time className="nv-meta" dateTime={item.when}>
+                        {label}
+                      </time>
+                    ) : null}
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+        </Panel>
 
-      <section className="nv-card" aria-labelledby="nv-q-practise">
-        <h2 className="nv-h2" id="nv-q-practise">
-          What should I practise?
-        </h2>
-        <p>{questions.what_should_i_practise.answer}</p>
-        <TopicList
-          items={questions.what_should_i_practise.items}
-          empty="Nothing to practise yet — your courses do not have practice questions loaded."
-        />
-      </section>
+        <Panel title="What should I practise?">
+          <p>{questions.what_should_i_practise.answer}</p>
+          <TopicList
+            empty="Nothing to practise yet — your courses do not have practice questions loaded."
+            items={questions.what_should_i_practise.items}
+          />
+        </Panel>
+      </div>
 
-      <section className="nv-card" aria-labelledby="nv-q-weak">
-        <h2 className="nv-h2" id="nv-q-weak">
-          Where am I weak?
-        </h2>
+      <Panel title="Where am I weak?">
         <p>{questions.where_am_i_weak.answer}</p>
         <TopicList
-          items={questions.where_am_i_weak.items}
           empty="No weak topics right now. This fills in as you answer practice questions."
+          items={questions.where_am_i_weak.items}
         />
-      </section>
+      </Panel>
 
-      <section className="nv-card">
-        <h2 className="nv-h2">Go deeper</h2>
-        <p className="nv-muted">
-          Search the material for your courses, ask a question grounded in it, or practise and see what to
-          work on next.
-        </p>
-        <p className="nv-row">
+      <Panel title="Go deeper">
+        <div className="nv-row">
           <Link className="nv-button nv-button--ghost" to="/academia/materials">
+            <BookOpen aria-hidden="true" size={15} />
             Study materials
           </Link>
           <Link className="nv-button nv-button--ghost" to="/academia/ask">
+            <Sparkles aria-hidden="true" size={15} />
             Ask Nelavista
           </Link>
           <Link className="nv-button nv-button--ghost" to="/academia/cbt">
+            <ClipboardCheck aria-hidden="true" size={15} />
             Practice (CBT)
           </Link>
-        </p>
-      </section>
+        </div>
+      </Panel>
 
-      <button className="nv-button nv-button--ghost" type="button" onClick={() => setAttempt((n) => n + 1)}>
-        Refresh
-      </button>
+      <div className="nv-row nv-row--end">
+        <Button size="sm" type="button" variant="ghost" onClick={() => setAttempt((n) => n + 1)}>
+          Refresh
+        </Button>
+      </div>
     </div>
   );
 }

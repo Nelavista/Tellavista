@@ -12,12 +12,13 @@
  * the evidence" should not be two different products.
  */
 import type { AssessmentListOut, PracticalTaskListOut, VerificationOut } from '@nelavista/api-client';
+import { Badge, Banner, Button, EmptyState, ErrorState, PageHeader, Panel, Skeleton } from '@nelavista/ui';
+import { ArrowRight, BadgeCheck, ClipboardCheck, FileCheck2 } from 'lucide-react';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 
-import { useApiResource } from '../lib/resource';
 import { formatDateTime } from '../lib/format';
-import { ErrorNote, Skeleton } from '../ui';
+import { useApiResource } from '../lib/resource';
 
 const STATUS_COPY: Record<string, { label: string; note: string }> = {
   verified: {
@@ -51,6 +52,14 @@ function statusCopy(status: string): { label: string; note: string } {
   );
 }
 
+function statusTone(status: string): 'neutral' | 'success' | 'info' | 'warning' | 'danger' {
+  if (status === 'verified') return 'success';
+  if (status === 'in_progress') return 'info';
+  if (status === 'at_risk') return 'warning';
+  if (status === 'suspended') return 'danger';
+  return 'neutral';
+}
+
 export function Verification(): JSX.Element {
   const badges = useApiResource<VerificationOut>('/verification');
   const catalog = useApiResource<AssessmentListOut>('/verification/assessments');
@@ -73,11 +82,13 @@ export function Verification(): JSX.Element {
   if (badges.resource.status === 'off' || catalog.resource.status === 'off') {
     return (
       <div className="nv-stack">
-        <h1 className="nv-h1">Verification</h1>
-        <p className="nv-banner">
-          Verification is not switched on for this environment yet. Your account, courses and learning are
-          unaffected.
-        </p>
+        <PageHeader eyebrow="Prove" title="Verification" />
+        <Banner tone="info">
+          <p>
+            Verification is not switched on for this environment yet. Your account, courses and learning are
+            unaffected.
+          </p>
+        </Banner>
         <p className="nv-muted">
           <Link to="/home">Back to your home</Link>
         </p>
@@ -89,18 +100,23 @@ export function Verification(): JSX.Element {
     const failed = badges.resource.status !== 'ready' ? badges.resource : catalog.resource;
     return (
       <div className="nv-stack">
-        <h1 className="nv-h1">Verification</h1>
-        <ErrorNote message={'message' in failed ? failed.message : null} />
-        <button
-          className="nv-button"
-          type="button"
-          onClick={() => {
-            badges.reload();
-            catalog.reload();
-          }}
-        >
-          Try again
-        </button>
+        <PageHeader eyebrow="Prove" title="Verification" />
+        <ErrorState
+          body={'message' in failed ? failed.message : undefined}
+          action={
+            <Button
+              size="sm"
+              type="button"
+              variant="secondary"
+              onClick={() => {
+                badges.reload();
+                catalog.reload();
+              }}
+            >
+              Try again
+            </Button>
+          }
+        />
       </div>
     );
   }
@@ -118,24 +134,25 @@ export function Verification(): JSX.Element {
 
   // A lowered badge is a prompt, not a quiet label change: say what happened,
   // when, and the one action that restores it. Nothing else is restricted.
-  const lowered = skills.filter(
-    (skill) => skill.status === 'suspended' || skill.status === 'at_risk',
-  );
+  const lowered = skills.filter((skill) => skill.status === 'suspended' || skill.status === 'at_risk');
 
   return (
     <div className="nv-stack">
-      <h1 className="nv-h1">Verification</h1>
-      <p className="nv-muted">
-        Proof comes from passing an assessment with known answers. Watching a lesson or pressing complete is
-        never verification.
-      </p>
-      <p className="nv-muted">
-        <Link to="/transcript">See your skill transcript</Link>
-      </p>
+      <PageHeader
+        eyebrow="Prove"
+        title="Verification"
+        description="Proof comes from passing an assessment with known answers. Watching a lesson or pressing complete is never verification."
+        actions={
+          <Link className="nv-button nv-button--secondary nv-button--sm" to="/transcript">
+            <FileCheck2 aria-hidden="true" size={15} />
+            Skill transcript
+          </Link>
+        }
+      />
 
       {lowered.length > 0 ? (
-        <section className="nv-banner" aria-live="polite">
-          <h2 className="nv-h2">
+        <Banner tone="warning">
+          <h2 className="nv-h3">
             {lowered.some((skill) => skill.status === 'suspended')
               ? 'Re-verification needed'
               : 'Your badge is at risk'}
@@ -157,7 +174,7 @@ export function Verification(): JSX.Element {
                   ) : null}
                   {link ? (
                     <div className="nv-row">
-                      <Link className="nv-button" to={link}>
+                      <Link className="nv-button nv-button--secondary nv-button--sm" to={link}>
                         Re-verify {skill.skill}
                       </Link>
                     </div>
@@ -170,90 +187,147 @@ export function Verification(): JSX.Element {
               );
             })}
           </ul>
-        </section>
+        </Banner>
       ) : null}
 
-      <section className="nv-stack">
-        <h2 className="nv-h2">Your badges</h2>
+      <Panel title="Your badges" actions={<Badge tone="info">{skills.length}</Badge>}>
         {skills.length === 0 ? (
-          <p className="nv-banner">
-            No skill has a badge yet. Start an assessment below — the first sitting also opens the badge.
-          </p>
+          <EmptyState
+            body="Start an assessment below — the first sitting also opens the badge."
+            icon={BadgeCheck}
+            title="No skill has a badge yet"
+            action={
+              assessments.length > 0 ? (
+                <Link
+                  className="nv-button nv-button--secondary nv-button--sm"
+                  to={`/verification/assessments/${assessments[0]?.slug ?? ''}`}
+                >
+                  Start the first assessment
+                </Link>
+              ) : undefined
+            }
+          />
         ) : (
-          <ul className="nv-list">
-            {skills.map((skill) => {
-              const copy = statusCopy(skill.status);
-              return (
-                <li className="nv-card" key={skill.skill_id}>
-                  <div className="nv-row nv-row--between">
-                    <h3 className="nv-h2">
-                      <Link to={`/skills/${skill.slug}`}>{skill.skill}</Link>
-                    </h3>
-                    <span className="nv-badge" data-status={skill.status}>
-                      {copy.label}
-                    </span>
-                  </div>
-                  <p className="nv-muted">{copy.note}</p>
-                  {!skill.verified && reverifyLink(skill.skill_id) ? (
-                    <p>
-                      <Link className="nv-button" to={reverifyLink(skill.skill_id) ?? '/verification'}>
-                        {skill.status === 'suspended' ? 'Re-verify this skill' : 'Prove this skill'}
-                      </Link>
-                    </p>
-                  ) : null}
-                </li>
-              );
-            })}
-          </ul>
+          <div className="nv-table-wrap">
+            <table className="nv-table">
+              <thead>
+                <tr>
+                  <th>Skill</th>
+                  <th>Status</th>
+                  <th>What it means</th>
+                  <th />
+                </tr>
+              </thead>
+              <tbody>
+                {skills.map((skill) => {
+                  const copy = statusCopy(skill.status);
+                  const link = reverifyLink(skill.skill_id);
+                  return (
+                    <tr key={skill.skill_id}>
+                      <td>
+                        <Link to={`/skills/${skill.slug}`}>{skill.skill}</Link>
+                      </td>
+                      <td>
+                        <Badge status={skill.status} tone={statusTone(skill.status)}>
+                          {copy.label}
+                        </Badge>
+                      </td>
+                      <td className="nv-muted">{copy.note}</td>
+                      <td>
+                        {!skill.verified && link ? (
+                          <Link className="nv-button nv-button--ghost nv-button--sm" to={link}>
+                            {skill.status === 'suspended' ? 'Re-verify' : 'Prove'}
+                            <ArrowRight aria-hidden="true" size={14} />
+                          </Link>
+                        ) : null}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
         )}
-      </section>
+      </Panel>
 
-      <section className="nv-stack">
-        <h2 className="nv-h2">Assessments you can sit</h2>
+      <Panel title="Assessments you can sit" actions={<Badge tone="neutral">{assessments.length}</Badge>}>
         {assessments.length === 0 ? (
-          <p className="nv-banner">
-            No assessment is published yet. This is content, not an app update — it appears here as soon as
-            one is published.
-          </p>
+          <EmptyState
+            body="This is content, not an app update — it appears here as soon as one is published."
+            icon={ClipboardCheck}
+            title="No assessment is published yet"
+          />
         ) : (
-          <ul className="nv-list">
-            {assessments.map((assessment) => (
-              <li className="nv-card" key={assessment.id}>
-                <h3 className="nv-h2">
-                  <Link to={`/verification/assessments/${assessment.slug}`}>{assessment.title}</Link>
-                </h3>
-                <p className="nv-muted">
-                  {assessment.task_count} task{assessment.task_count === 1 ? '' : 's'} · pass at{' '}
-                  {assessment.pass_threshold}% · {assessment.max_attempts} attempt
-                  {assessment.max_attempts === 1 ? '' : 's'}
-                </p>
-              </li>
-            ))}
-          </ul>
+          <div className="nv-table-wrap">
+            <table className="nv-table">
+              <thead>
+                <tr>
+                  <th>Assessment</th>
+                  <th>Tasks</th>
+                  <th>Pass mark</th>
+                  <th>Attempts</th>
+                  <th />
+                </tr>
+              </thead>
+              <tbody>
+                {assessments.map((assessment) => (
+                  <tr key={assessment.id}>
+                    <td>
+                      <Link to={`/verification/assessments/${assessment.slug}`}>{assessment.title}</Link>
+                    </td>
+                    <td className="nv-num">{assessment.task_count}</td>
+                    <td className="nv-num">{assessment.pass_threshold}%</td>
+                    <td className="nv-num">{assessment.max_attempts}</td>
+                    <td>
+                      <Link
+                        className="nv-button nv-button--ghost nv-button--sm"
+                        to={`/verification/assessments/${assessment.slug}`}
+                      >
+                        Sit
+                        <ArrowRight aria-hidden="true" size={14} />
+                      </Link>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
-      </section>
+      </Panel>
 
-      <section className="nv-stack">
-        <h2 className="nv-h2">Practical tasks</h2>
+      <Panel title="Practical tasks" actions={<Badge tone="neutral">{practicalTasks.length}</Badge>}>
         <p className="nv-muted">
-          A practical task is real work judged against a published rubric. It is reviewed by a person, so
-          it takes longer than an assessment and is not graded instantly.
+          A practical task is real work judged against a published rubric. It is reviewed by a person, so it
+          takes longer than an assessment and is not graded instantly.
         </p>
         {practicalTasks.length === 0 ? (
-          <p className="nv-banner">No practical task is published yet for the skills you are learning.</p>
+          <EmptyState
+            body="No practical task is published yet for the skills you are learning."
+            icon={ClipboardCheck}
+            title="Nothing to sit yet"
+          />
         ) : (
-          <ul className="nv-list">
+          <ul className="nv-list nv-list--ruled">
             {practicalTasks.map((task) => (
-              <li className="nv-card" key={task.id}>
-                <h3 className="nv-h2">
-                  <Link to={`/verification/practical/${task.slug}`}>{task.title}</Link>
-                </h3>
+              <li key={task.id}>
+                <div className="nv-row nv-row--between">
+                  <Link className="nv-h4" to={`/verification/practical/${task.slug}`}>
+                    {task.title}
+                  </Link>
+                  <Link
+                    className="nv-button nv-button--ghost nv-button--sm"
+                    to={`/verification/practical/${task.slug}`}
+                  >
+                    Read the brief
+                    <ArrowRight aria-hidden="true" size={14} />
+                  </Link>
+                </div>
                 <p className="nv-muted">Reviewed against a rubric · read the brief before you start</p>
               </li>
             ))}
           </ul>
         )}
-      </section>
+      </Panel>
     </div>
   );
 }

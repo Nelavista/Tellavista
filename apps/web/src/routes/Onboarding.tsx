@@ -12,12 +12,13 @@ import type {
   Subdivision,
   University,
 } from '@nelavista/contracts';
+import { Banner, Button, Checkbox, Field, PageHeader, Panel, Select } from '@nelavista/ui';
+import { ArrowLeft, ArrowRight, GraduationCap } from 'lucide-react';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { ApiError, http } from '../lib/http';
 import { useSession } from '../lib/session';
-import { Button, ErrorNote, Field, Select } from '../ui';
 
 type Step = 'profile' | 'academic';
 
@@ -184,8 +185,18 @@ export function Onboarding(): JSX.Element {
 
   return (
     <div className="nv-stack">
+      <PageHeader
+        eyebrow="Setup"
+        title={step === 'profile' ? 'Set up your account' : 'Where do you study?'}
+        description={
+          step === 'profile'
+            ? 'Two steps: who you are and how you want to learn, then your university and courses.'
+            : 'Your courses decide which materials, practice and CBT papers are available.'
+        }
+      />
+
       <div className="nv-steps" aria-label="Onboarding progress">
-        <span className="nv-step" data-active={step === 'profile'}>
+        <span className="nv-step" data-active={step === 'profile'} data-done={step === 'academic'}>
           1. You
         </span>
         <span aria-hidden>·</span>
@@ -194,148 +205,158 @@ export function Onboarding(): JSX.Element {
         </span>
       </div>
 
-      <ErrorNote message={error} />
+      {error ? (
+        <Banner tone="danger">
+          <p>{error}</p>
+        </Banner>
+      ) : null}
 
       {step === 'profile' ? (
-        <section className="nv-card">
-          <h1 className="nv-h2">Let&apos;s set up your account</h1>
-          <Field
-            label="What should we call you?"
-            value={displayName}
-            onChange={(e) => setDisplayName(e.target.value)}
-            maxLength={150}
-          />
-          <Select
-            label="Which path do you want first?"
-            value={path}
-            onChange={(e) => setPath(e.target.value)}
-            options={PATHS}
-          />
-          <p className="nv-muted">
-            You can switch later. {state?.has_enrolment ? 'Your courses are already saved.' : ''}
-          </p>
-          <Button
-            type="button"
-            disabled={busy || displayName.trim().length === 0}
-            onClick={() => void saveProfile()}
-          >
-            {busy ? 'Saving…' : 'Continue'}
-          </Button>
-        </section>
-      ) : (
-        <section className="nv-card">
-          <h1 className="nv-h2">Where do you study?</h1>
-          {semester ? (
+        <Panel title="You">
+          <div className="nv-stack">
+            <Field
+              hint="This appears on a shared profile."
+              label="What should we call you?"
+              maxLength={150}
+              value={displayName}
+              onChange={(event) => setDisplayName(event.target.value)}
+            />
+            <Select
+              label="Which path do you want first?"
+              options={PATHS}
+              value={path}
+              onChange={(event) => setPath(event.target.value)}
+            />
             <p className="nv-muted">
-              {semester.name} ({semester.ordinal}) is the current semester.
+              You can switch later. {state?.has_enrolment ? 'Your courses are already saved.' : ''}
             </p>
-          ) : (
-            <p className="nv-banner">
-              No semester is open right now, so enrolment is paused. Your account still works.
-            </p>
-          )}
+            <div>
+              <Button
+                disabled={busy || displayName.trim().length === 0}
+                type="button"
+                onClick={() => void saveProfile()}
+              >
+                {busy ? 'Saving…' : 'Continue'}
+                <ArrowRight aria-hidden="true" size={15} />
+              </Button>
+            </div>
+          </div>
+        </Panel>
+      ) : (
+        <Panel title="Your studies" actions={<GraduationCap aria-hidden="true" size={16} />}>
+          <div className="nv-stack">
+            {semester ? (
+              <p className="nv-muted">
+                {semester.name} ({semester.ordinal}) is the current semester.
+              </p>
+            ) : (
+              <Banner tone="warning">
+                <p>No semester is open right now, so enrolment is paused. Your account still works.</p>
+              </Banner>
+            )}
 
-          <Select
-            label="University"
-            value={universityId}
-            onChange={(e) => void loadFaculties(e.target.value)}
-            options={[
-              { value: '', label: 'Select…' },
-              ...universities.map((u) => ({ value: String(u.id), label: u.name })),
-            ]}
-          />
-          <Select
-            label="Faculty"
-            value={facultyId}
-            disabled={!faculties.length}
-            onChange={(e) => void loadDepartments(e.target.value)}
-            options={[
-              { value: '', label: faculties.length ? 'Select…' : 'Pick a university first' },
-              ...faculties.map((f) => ({ value: String(f.id), label: f.name })),
-            ]}
-          />
-          <Select
-            label="Department"
-            value={departmentId}
-            disabled={!departments.length}
-            onChange={(e) => void loadCourses(e.target.value)}
-            options={[
-              { value: '', label: departments.length ? 'Select…' : 'Pick a faculty first' },
-              ...departments.map((d) => ({ value: String(d.id), label: d.name })),
-            ]}
-          />
+            <Select
+              label="University"
+              options={[
+                { value: '', label: 'Select…' },
+                ...universities.map((u) => ({ value: String(u.id), label: u.name })),
+              ]}
+              value={universityId}
+              onChange={(event) => void loadFaculties(event.target.value)}
+            />
+            <Select
+              disabled={!faculties.length}
+              label="Faculty"
+              options={[
+                { value: '', label: faculties.length ? 'Select…' : 'Pick a university first' },
+                ...faculties.map((f) => ({ value: String(f.id), label: f.name })),
+              ]}
+              value={facultyId}
+              onChange={(event) => void loadDepartments(event.target.value)}
+            />
+            <Select
+              disabled={!departments.length}
+              label="Department"
+              options={[
+                { value: '', label: departments.length ? 'Select…' : 'Pick a faculty first' },
+                ...departments.map((d) => ({ value: String(d.id), label: d.name })),
+              ]}
+              value={departmentId}
+              onChange={(event) => void loadCourses(event.target.value)}
+            />
+            <Select
+              disabled={!departmentId}
+              label="Level"
+              options={LEVELS}
+              value={level}
+              onChange={(event) => changeLevel(event.target.value)}
+            />
 
-          <Select
-            label="Level"
-            value={level}
-            disabled={!departmentId}
-            onChange={(e) => changeLevel(e.target.value)}
-            options={LEVELS}
-          />
-
-          {courses.length > 0 ? (
-            <fieldset className="nv-field">
-              <legend className="nv-label">Courses this semester</legend>
-              <ul className="nv-list">
-                {courses.map((course) => (
-                  <li key={course.id}>
-                    <label className="nv-check">
-                      <input
-                        type="checkbox"
+            {courses.length > 0 ? (
+              <fieldset className="nv-field">
+                <legend className="nv-label">Courses this semester</legend>
+                <ul className="nv-list">
+                  {courses.map((course) => (
+                    <li key={course.id}>
+                      <Checkbox
                         checked={pickedCourses.includes(course.id)}
+                        label={`${course.code} — ${course.title} (${course.level})`}
                         onChange={() => toggleCourse(course.id)}
                       />
-                      <span>
-                        {course.code} — {course.title} ({course.level})
-                      </span>
-                    </label>
-                  </li>
-                ))}
-              </ul>
-            </fieldset>
-          ) : null}
-
-          <details className="nv-card">
-            <summary>My university is not listed</summary>
-            <p className="nv-muted">
-              Tell us where you study. We add universities in batches; your account and any other
-              enrolment are unaffected.
-            </p>
-            <Field
-              label="University name"
-              maxLength={200}
-              value={waitlistName}
-              onChange={(event) => setWaitlistName(event.target.value)}
-            />
-            <Field
-              label="Anything we should know? (optional)"
-              maxLength={500}
-              value={waitlistNote}
-              onChange={(event) => setWaitlistNote(event.target.value)}
-            />
-            <Button type="button" variant="ghost" disabled={busy} onClick={() => void joinWaitlist()}>
-              {busy ? 'Sending…' : 'Join the waitlist'}
-            </Button>
-            {waitlistNoteText ? (
-              <p className="nv-banner" role="status">
-                {waitlistNoteText}
-              </p>
+                    </li>
+                  ))}
+                </ul>
+              </fieldset>
             ) : null}
-          </details>
 
-          <div className="nv-row">
-            <Button type="button" variant="ghost" onClick={() => setStep('profile')}>
-              Back
-            </Button>
-            <Button
-              type="button"
-              disabled={busy || !semester || pickedCourses.length === 0}
-              onClick={() => void enrol()}
-            >
-              {busy ? 'Saving…' : 'Finish setup'}
-            </Button>
+            <details className="nv-card nv-card--flat">
+              <summary>My university is not listed</summary>
+              <div className="nv-stack" style={{ marginTop: 'var(--nv-space-md)' }}>
+                <p className="nv-muted">
+                  Tell us where you study. We add universities in batches; your account and any other
+                  enrolment are unaffected.
+                </p>
+                <Field
+                  label="University name"
+                  maxLength={200}
+                  value={waitlistName}
+                  onChange={(event) => setWaitlistName(event.target.value)}
+                />
+                <Field
+                  label="Anything we should know? (optional)"
+                  maxLength={500}
+                  value={waitlistNote}
+                  onChange={(event) => setWaitlistNote(event.target.value)}
+                />
+                <div>
+                  <Button disabled={busy} type="button" variant="ghost" onClick={() => void joinWaitlist()}>
+                    {busy ? 'Sending…' : 'Join the waitlist'}
+                  </Button>
+                </div>
+                {waitlistNoteText ? (
+                  <Banner tone="success">
+                    <p>{waitlistNoteText}</p>
+                  </Banner>
+                ) : null}
+              </div>
+            </details>
+
+            <div className="nv-row nv-row--between">
+              <Button type="button" variant="ghost" onClick={() => setStep('profile')}>
+                <ArrowLeft aria-hidden="true" size={15} />
+                Back
+              </Button>
+              <Button
+                disabled={busy || !semester || pickedCourses.length === 0}
+                type="button"
+                onClick={() => void enrol()}
+              >
+                {busy ? 'Saving…' : 'Finish setup'}
+                <ArrowRight aria-hidden="true" size={15} />
+              </Button>
+            </div>
           </div>
-        </section>
+        </Panel>
       )}
     </div>
   );

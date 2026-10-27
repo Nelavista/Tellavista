@@ -2,20 +2,19 @@
  * The screen an emailed verification link opens (F9/B1).
  *
  * The token is single-use and arrives in the query string; posting it here is
- * the only thing this page does. It works signed out — the link may open on a
- * different device — and says which account state it found, never a raw error.
+ * the only thing this page does. It works signed out - the link may open on a
+ * different device - and says which account state it found, never a raw error.
  */
 import * as React from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 
+import { AuthLayout } from '../components/AuthLayout';
 import { ApiError, http } from '../lib/http';
 import { useSession } from '../lib/session';
-import { ErrorNote, Skeleton } from '../ui';
+import { Banner, ErrorNote, Skeleton } from '../ui';
 
 type State =
-  | { status: 'checking' }
-  | { status: 'done'; email: string }
-  | { status: 'failed'; message: string };
+  { status: 'checking' } | { status: 'done'; email: string } | { status: 'failed'; message: string };
 
 export function VerifyEmail(): JSX.Element {
   const [params] = useSearchParams();
@@ -51,21 +50,34 @@ export function VerifyEmail(): JSX.Element {
 
   if (state.status === 'checking') {
     return (
-      <div className="nv-card nv-card--narrow" aria-busy="true" aria-label="Confirming your email">
-        <Skeleton height="2rem" width="60%" />
-        <Skeleton lines={2} />
-      </div>
+      <AuthLayout title="Confirming your email" description="This takes a moment. Do not close the tab.">
+        <div aria-busy="true" aria-label="Confirming your email">
+          <Skeleton height="2rem" width="60%" />
+          <Skeleton lines={2} />
+        </div>
+      </AuthLayout>
     );
   }
 
   return (
-    <div className="nv-card nv-card--narrow nv-stack">
-      <h1 className="nv-h1">{state.status === 'done' ? 'Email confirmed' : 'This link did not work'}</h1>
+    <AuthLayout
+      title={state.status === 'done' ? 'Email confirmed' : 'This link did not work'}
+      description={
+        state.status === 'done'
+          ? 'Proof, work and payout notices can reach you now.'
+          : 'Verification links expire and work once.'
+      }
+      footer={
+        <Link to={sessionStatus === 'authenticated' ? '/home' : '/login'}>
+          {sessionStatus === 'authenticated' ? 'Back to your home' : 'Back to sign in'}
+        </Link>
+      }
+    >
       {state.status === 'done' ? (
         <>
-          <p>
-            <strong>{state.email}</strong> is confirmed. Proof, work and payout notices can reach you.
-          </p>
+          <Banner tone="success">
+            <strong>{state.email}</strong> is confirmed.
+          </Banner>
           <Link className="nv-button" to={sessionStatus === 'authenticated' ? '/home' : '/login'}>
             {sessionStatus === 'authenticated' ? 'Go to your home' : 'Sign in'}
           </Link>
@@ -74,14 +86,16 @@ export function VerifyEmail(): JSX.Element {
         <>
           <ErrorNote message={state.message} />
           <p className="nv-muted">
-            Verification links expire and work once. Sign in and use &ldquo;Send the link again&rdquo; on
-            your home screen for a fresh one.
+            Sign in and use &ldquo;Send the link again&rdquo; on your home screen for a fresh one.
           </p>
-          <Link to={sessionStatus === 'authenticated' ? '/home' : '/login'}>
+          <Link
+            className="nv-button nv-button--secondary"
+            to={sessionStatus === 'authenticated' ? '/home' : '/login'}
+          >
             {sessionStatus === 'authenticated' ? 'Back to your home' : 'Sign in'}
           </Link>
         </>
       )}
-    </div>
+    </AuthLayout>
   );
 }

@@ -1,19 +1,89 @@
+import { Avatar } from '@nelavista/ui';
+import {
+  Briefcase,
+  Building2,
+  ClipboardCheck,
+  FileText,
+  FolderKanban,
+  LayoutDashboard,
+  ListChecks,
+  LogOut,
+  ScrollText,
+  Settings2,
+  ShieldCheck,
+  Upload,
+  UserPlus,
+  Users,
+  Wallet,
+  type LucideIcon,
+} from 'lucide-react';
 import * as React from 'react';
 
 import { useSession } from '../lib/session';
 
-const LINKS: Array<{ path: string; label: string }> = [
-  { path: '/audit', label: 'Audit trail' },
-  { path: '/imports', label: 'Import runs' },
-  { path: '/users', label: 'Users' },
-  { path: '/opportunities', label: 'Opportunities' },
-  { path: '/work', label: 'Projects & cohorts' },
-  { path: '/review', label: 'Review queue' },
-  { path: '/money', label: 'Money' },
-  { path: '/content', label: 'Content' },
-  { path: '/platform', label: 'Platform settings' },
-  { path: '/security', label: 'Security' },
+interface NavItem {
+  path: string;
+  label: string;
+  icon: LucideIcon;
+}
+
+const GROUPS: Array<{ label: string; items: NavItem[] }> = [
+  {
+    label: 'Overview',
+    items: [{ path: '/overview', label: 'Operations', icon: LayoutDashboard }],
+  },
+  {
+    label: 'Trust',
+    items: [
+      { path: '/audit', label: 'Audit trail', icon: ScrollText },
+      { path: '/users', label: 'Users', icon: Users },
+      { path: '/waitlist', label: 'Waitlist', icon: UserPlus },
+    ],
+  },
+  {
+    label: 'Delivery',
+    items: [
+      { path: '/opportunities', label: 'Opportunities', icon: Briefcase },
+      { path: '/work', label: 'Projects & cohorts', icon: FolderKanban },
+      { path: '/review', label: 'Review queue', icon: ClipboardCheck },
+      { path: '/money', label: 'Money', icon: Wallet },
+    ],
+  },
+  {
+    label: 'Content',
+    items: [
+      { path: '/content', label: 'Content', icon: FileText },
+      { path: '/campus', label: 'Campus', icon: Building2 },
+      { path: '/platform', label: 'Platform settings', icon: Settings2 },
+      { path: '/security', label: 'Security', icon: ShieldCheck },
+    ],
+  },
+  {
+    label: 'Data',
+    items: [{ path: '/imports', label: 'Import runs', icon: Upload }],
+  },
 ];
+
+const TITLES: Array<[string, string]> = [
+  ['/overview', 'Operations'],
+  ['/audit', 'Audit trail'],
+  ['/users', 'Users'],
+  ['/waitlist', 'Waitlist'],
+  ['/opportunities', 'Opportunities'],
+  ['/work', 'Projects & cohorts'],
+  ['/review', 'Review queue'],
+  ['/money', 'Money'],
+  ['/content', 'Content'],
+  ['/campus', 'Campus'],
+  ['/platform', 'Platform settings'],
+  ['/security', 'Security'],
+  ['/imports', 'Import runs'],
+];
+
+function titleFor(route: string): string {
+  const match = TITLES.find(([prefix]) => route === prefix || route.startsWith(`${prefix}/`));
+  return match?.[1] ?? 'Not found';
+}
 
 export function Shell({
   route,
@@ -25,6 +95,17 @@ export function Shell({
   children: React.ReactNode;
 }): JSX.Element {
   const { me, logout } = useSession();
+  const mainRef = React.useRef<HTMLElement | null>(null);
+  const firstRoute = React.useRef(true);
+
+  React.useEffect(() => {
+    document.title = `${titleFor(route)} · Nelavista ops`;
+    if (firstRoute.current) {
+      firstRoute.current = false;
+      return;
+    }
+    mainRef.current?.focus();
+  }, [route]);
 
   async function signOut(): Promise<void> {
     await logout();
@@ -33,33 +114,95 @@ export function Shell({
 
   return (
     <div className="nv-shell">
-      <aside className="nv-side">
-        <div>
-          <div className="nv-brand">Nelavista ops</div>
-          <p className="nv-muted" style={{ margin: '6px 0 0' }}>
-            {me?.name ?? me?.username} · {me?.role ?? 'no role'}
-          </p>
+      <a className="nv-skip-link" href="#main">
+        Skip to content
+      </a>
+      <aside className="nv-sidebar" aria-label="Admin sections">
+        <div className="nv-sidebar__brand">
+          <span className="nv-sidebar__brand-mark" aria-hidden="true">
+            NV
+          </span>
+          <span>Nelavista ops</span>
         </div>
-        <nav className="nv-nav" aria-label="Admin sections">
-          {LINKS.map((link) => (
-            <a
-              data-active={route === link.path || route.startsWith(`${link.path}/`)}
-              href={`#${link.path}`}
-              key={link.path}
-              onClick={(event) => {
-                event.preventDefault();
-                go(link.path);
-              }}
-            >
-              {link.label}
-            </a>
+
+        <nav className="nv-sidebar__nav">
+          {GROUPS.map((group) => (
+            <React.Fragment key={group.label}>
+              <p className="nv-sidebar__group">{group.label}</p>
+              {group.items.map((item) => {
+                const Icon = item.icon;
+                const active = route === item.path || route.startsWith(`${item.path}/`);
+                return (
+                  <a
+                    aria-current={active ? 'page' : undefined}
+                    className="nv-sidebar__link"
+                    href={`#${item.path}`}
+                    key={item.path}
+                    onClick={(event) => {
+                      event.preventDefault();
+                      go(item.path);
+                    }}
+                  >
+                    <Icon aria-hidden="true" size={16} strokeWidth={1.7} />
+                    <span>{item.label}</span>
+                  </a>
+                );
+              })}
+            </React.Fragment>
           ))}
         </nav>
-        <button className="nv-button nv-button--ghost" type="button" onClick={() => void signOut()}>
-          Sign out
-        </button>
+
+        <div className="nv-sidebar__footer">
+          <div className="nv-row" style={{ marginBottom: 'var(--nv-space-md)' }}>
+            <Avatar name={me?.name ?? me?.username ?? 'Ops'} />
+            <div style={{ minWidth: 0 }}>
+              <p
+                className="nv-h4"
+                style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
+              >
+                {me?.name ?? me?.username}
+              </p>
+              <p className="nv-meta">{me?.role ?? 'no role'}</p>
+            </div>
+          </div>
+          <button
+            className="nv-button nv-button--ghost nv-button--block nv-button--sm"
+            type="button"
+            onClick={() => void signOut()}
+          >
+            <LogOut aria-hidden="true" size={15} />
+            Sign out
+          </button>
+        </div>
       </aside>
-      <main className="nv-main">{children}</main>
+
+      <div className="nv-shell__main">
+        <header className="nv-topbar">
+          <div className="nv-topbar__left">
+            <span className="nv-meta">Operations</span>
+            <span aria-hidden="true" className="nv-subtle">
+              /
+            </span>
+            <span className="nv-topbar__title">{titleFor(route)}</span>
+          </div>
+          <div className="nv-topbar__actions">
+            <a
+              className="nv-button nv-button--ghost nv-button--sm"
+              href="#/audit"
+              onClick={(event) => {
+                event.preventDefault();
+                go('/audit');
+              }}
+            >
+              <ListChecks aria-hidden="true" size={15} />
+              Audit
+            </a>
+          </div>
+        </header>
+        <main className="nv-main" id="main" ref={mainRef} tabIndex={-1}>
+          {children}
+        </main>
+      </div>
     </div>
   );
 }

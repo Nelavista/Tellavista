@@ -6,10 +6,12 @@
  * from links rather than an embedded map SDK: no extra bundle, works offline.
  */
 import type { CampusItemOut, CampusOut } from '@nelavista/api-client';
+import { Badge, Banner, Button, EmptyState, ErrorState, PageHeader, Panel, Skeleton } from '@nelavista/ui';
+import { MapPin, Navigation } from 'lucide-react';
 import * as React from 'react';
+import { Link } from 'react-router-dom';
 
 import { ApiError, http } from '../lib/http';
-import { ErrorNote, Skeleton } from '../ui';
 
 function pointUrl(item: CampusItemOut): string | null {
   if (item.latitude === null || item.longitude === null) return null;
@@ -18,21 +20,33 @@ function pointUrl(item: CampusItemOut): string | null {
 }
 
 function ItemList({ items, empty }: { items: CampusItemOut[]; empty: string }): JSX.Element {
-  if (items.length === 0) return <p className="nv-muted">{empty}</p>;
+  if (items.length === 0) {
+    return <EmptyState body={empty} icon={MapPin} title="Nothing published yet" />;
+  }
   return (
-    <ul className="nv-list">
+    <ul className="nv-list nv-list--ruled">
       {items.map((item) => {
         const href = pointUrl(item);
         return (
           <li key={item.id}>
-            <strong>{item.title}</strong>
-            <span className="nv-muted"> · {item.kind}</span>
-            {item.body ? <div className="nv-muted">{item.body}</div> : null}
-            {href ? (
-              <a className="nv-muted" href={href} target="_blank" rel="noreferrer noopener">
-                Open on the map
-              </a>
-            ) : null}
+            <div className="nv-row nv-row--between" style={{ alignItems: 'flex-start' }}>
+              <div style={{ minWidth: 0 }}>
+                <p className="nv-h4">{item.title}</p>
+                <Badge tone="neutral">{item.kind}</Badge>
+                {item.body ? <p className="nv-muted">{item.body}</p> : null}
+              </div>
+              {href ? (
+                <a
+                  className="nv-button nv-button--ghost nv-button--sm"
+                  href={href}
+                  rel="noreferrer noopener"
+                  target="_blank"
+                >
+                  <Navigation aria-hidden="true" size={14} />
+                  Open on the map
+                </a>
+              ) : null}
+            </div>
           </li>
         );
       })}
@@ -80,44 +94,58 @@ export function Campus(): JSX.Element {
   if (state === 'error') {
     return (
       <div className="nv-stack">
-        <h1 className="nv-h1">Campus</h1>
-        <ErrorNote message={error} />
-        <button className="nv-button" type="button" onClick={() => setAttempt((n) => n + 1)}>
-          Try again
-        </button>
+        <PageHeader eyebrow="Campus" title="Campus" />
+        <ErrorState
+          body={error ?? undefined}
+          action={
+            <Button size="sm" type="button" variant="secondary" onClick={() => setAttempt((n) => n + 1)}>
+              Try again
+            </Button>
+          }
+        />
       </div>
     );
   }
 
   return (
     <div className="nv-stack">
-      <h1 className="nv-h1">Campus</h1>
+      <PageHeader
+        eyebrow="Campus"
+        title="Campus"
+        description={
+          data?.university
+            ? `Information and map points for ${data.university.name}.`
+            : 'Information and map points for your university.'
+        }
+        actions={data?.university ? <Badge tone="info">{data.university.name}</Badge> : null}
+      />
 
       {!data?.university ? (
-        <p className="nv-banner">
-          We do not know your university yet, so there is nothing to show here. Add it in onboarding and this
-          page fills in.
-        </p>
+        <Banner
+          tone="warning"
+          actions={
+            <Link className="nv-button nv-button--secondary nv-button--sm" to="/onboarding">
+              Add your university
+            </Link>
+          }
+        >
+          <p>
+            We do not know your university yet, so there is nothing to show here. Add it in onboarding and
+            this page fills in.
+          </p>
+        </Banner>
       ) : (
         <>
-          <p className="nv-muted">{data.university.name}</p>
-
-          <section className="nv-card" aria-labelledby="nv-campus-info">
-            <h2 className="nv-h2" id="nv-campus-info">
-              Need to know
-            </h2>
+          <Panel title="Need to know">
             <ItemList
               items={data.info}
               empty="Nothing published for your university yet. This is data, so it can be added without an app update."
             />
-          </section>
+          </Panel>
 
-          <section className="nv-card" aria-labelledby="nv-campus-map">
-            <h2 className="nv-h2" id="nv-campus-map">
-              Find your way
-            </h2>
+          <Panel title="Find your way">
             <ItemList items={data.map} empty="No map points for your university yet." />
-          </section>
+          </Panel>
         </>
       )}
     </div>

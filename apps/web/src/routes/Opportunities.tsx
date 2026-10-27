@@ -1,16 +1,17 @@
 /**
  * Opportunities (B8).
  *
- * Every card answers the only two questions that matter: can I do this, and if
+ * Every row answers the only two questions that matter: can I do this, and if
  * not, what exactly is missing? The verdict comes from the API's matching engine
  * and is never recomputed here, so the list and the detail cannot disagree.
  */
 import type { OpportunityListOut } from '@nelavista/api-client';
+import { Badge, Banner, Button, EmptyState, ErrorState, PageHeader, Panel, Skeleton } from '@nelavista/ui';
+import { ArrowRight, Briefcase } from 'lucide-react';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 
 import { useApiResource } from '../lib/resource';
-import { ErrorNote, Skeleton } from '../ui';
 
 function rateLabel(currency: string | null | undefined, rateMinor: number | null | undefined): string {
   if (!currency || rateMinor == null) return 'Rate shared on the brief';
@@ -37,11 +38,13 @@ export function Opportunities(): JSX.Element {
   if (resource.status === 'off') {
     return (
       <div className="nv-stack">
-        <h1 className="nv-h1">Opportunities</h1>
-        <p className="nv-banner">
-          Opportunities are not switched on for this environment yet. Your learning and proof are
-          unaffected.
-        </p>
+        <PageHeader eyebrow="Work" title="Opportunities" />
+        <Banner tone="info">
+          <p>
+            Opportunities are not switched on for this environment yet. Your learning and proof are
+            unaffected.
+          </p>
+        </Banner>
       </div>
     );
   }
@@ -49,11 +52,15 @@ export function Opportunities(): JSX.Element {
   if (resource.status !== 'ready') {
     return (
       <div className="nv-stack">
-        <h1 className="nv-h1">Opportunities</h1>
-        <ErrorNote message={resource.message} />
-        <button className="nv-button" type="button" onClick={reload}>
-          Try again
-        </button>
+        <PageHeader eyebrow="Work" title="Opportunities" />
+        <ErrorState
+          body={resource.message}
+          action={
+            <Button size="sm" type="button" variant="secondary" onClick={reload}>
+              Try again
+            </Button>
+          }
+        />
       </div>
     );
   }
@@ -63,51 +70,89 @@ export function Opportunities(): JSX.Element {
 
   return (
     <div className="nv-stack">
-      <h1 className="nv-h1">Opportunities</h1>
-      <p className="nv-muted">
-        {rows.length === 0
-          ? 'No opportunity is open right now. New work appears here when it is published.'
-          : `${eligible} of ${rows.length} open ${rows.length === 1 ? 'role fits' : 'roles fit'} what you have proved so far.`}
-      </p>
+      <PageHeader
+        eyebrow="Work"
+        title="Opportunities"
+        description={
+          rows.length === 0
+            ? 'No opportunity is open right now. New work appears here when it is published.'
+            : `${eligible} of ${rows.length} open ${rows.length === 1 ? 'role fits' : 'roles fit'} what you have proved so far.`
+        }
+        actions={
+          <>
+            <Link className="nv-button nv-button--secondary nv-button--sm" to="/work">
+              My work
+            </Link>
+            <Link className="nv-button nv-button--ghost nv-button--sm" to="/earnings">
+              Earnings
+            </Link>
+          </>
+        }
+      />
 
-      {rows.length > 0 ? (
-        <ul className="nv-list">
-          {rows.map((row) => (
-            <li className="nv-card" key={row.id}>
-              <div className="nv-row nv-row--between">
-                <h2 className="nv-h2">
-                  <Link to={`/opportunities/${row.slug}`}>{row.title}</Link>
-                </h2>
-                <span className="nv-badge" data-status={row.match.eligible ? 'verified' : 'at_risk'}>
-                  {row.match.eligible ? 'You qualify' : 'Not yet'}
-                </span>
-              </div>
-              <p className="nv-muted">
-                {row.type === 'managed' ? 'Managed by Nelavista' : 'External listing'}
-                {row.client_name ? ` · ${row.client_name}` : ''} · {rateLabel(row.currency, row.rate_minor)}
-              </p>
-              {row.description ? <p>{row.description}</p> : null}
-              {row.match.qualifies_because.length > 0 && row.match.eligible ? (
-                <p className="nv-muted">Because: {row.match.qualifies_because.join(' · ')}</p>
-              ) : null}
-              {!row.match.eligible && row.match.next_steps.length > 0 ? (
-                <div>
-                  <p className="nv-muted">To qualify:</p>
-                  <ul className="nv-list">
-                    {row.match.next_steps.map((step) => (
-                      <li key={step.requirement_id}>{step.detail}</li>
-                    ))}
-                  </ul>
+      <Panel title="Open roles" actions={<Badge tone="info">{rows.length}</Badge>}>
+        {rows.length === 0 ? (
+          <EmptyState
+            body="Matching uses your verified skills. New work appears here when it is published."
+            icon={Briefcase}
+            title="Nothing open right now"
+            action={
+              <Link className="nv-button nv-button--secondary nv-button--sm" to="/verification">
+                Check your proof
+              </Link>
+            }
+          />
+        ) : (
+          <ul className="nv-list nv-list--ruled">
+            {rows.map((row) => (
+              <li key={row.id}>
+                <div className="nv-row nv-row--between" style={{ alignItems: 'flex-start' }}>
+                  <div style={{ minWidth: 0 }}>
+                    <Link className="nv-h3" to={`/opportunities/${row.slug}`}>
+                      {row.title}
+                    </Link>
+                    <p className="nv-meta">
+                      {row.type === 'managed' ? 'Managed by Nelavista' : 'External listing'}
+                      {row.client_name ? ` · ${row.client_name}` : ''} ·{' '}
+                      {rateLabel(row.currency, row.rate_minor)}
+                    </p>
+                  </div>
+                  <Badge tone={row.match.eligible ? 'success' : 'warning'}>
+                    {row.match.eligible ? 'You qualify' : 'Not yet'}
+                  </Badge>
                 </div>
-              ) : null}
-            </li>
-          ))}
-        </ul>
-      ) : null}
 
-      <p className="nv-muted">
-        <Link to="/work">Your work</Link> · <Link to="/earnings">Your earnings</Link>
-      </p>
+                {row.description ? <p className="nv-muted">{row.description}</p> : null}
+
+                {row.match.qualifies_because.length > 0 && row.match.eligible ? (
+                  <p className="nv-muted">Because: {row.match.qualifies_because.join(' · ')}</p>
+                ) : null}
+
+                {!row.match.eligible && row.match.next_steps.length > 0 ? (
+                  <div style={{ marginTop: 'var(--nv-space-sm)' }}>
+                    <p className="nv-label">To qualify:</p>
+                    <ul className="nv-list">
+                      {row.match.next_steps.map((step) => (
+                        <li key={step.requirement_id}>{step.detail}</li>
+                      ))}
+                    </ul>
+                  </div>
+                ) : null}
+
+                <div style={{ marginTop: 'var(--nv-space-sm)' }}>
+                  <Link
+                    className="nv-button nv-button--ghost nv-button--sm"
+                    to={`/opportunities/${row.slug}`}
+                  >
+                    Read the brief
+                    <ArrowRight aria-hidden="true" size={14} />
+                  </Link>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+      </Panel>
     </div>
   );
 }

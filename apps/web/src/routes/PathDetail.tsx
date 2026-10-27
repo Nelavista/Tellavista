@@ -10,11 +10,12 @@
  * labelled as such instead of being rendered as a dead link.
  */
 import type { PathOut, PathStepOut } from '@nelavista/api-client';
+import { Badge, Banner, Button, EmptyState, ErrorState, PageHeader, Panel, Skeleton } from '@nelavista/ui';
+import { ArrowRight, Lock, Route } from 'lucide-react';
 import * as React from 'react';
 import { Link, useParams } from 'react-router-dom';
 
 import { useApiResource } from '../lib/resource';
-import { ErrorNote, Skeleton } from '../ui';
 
 const KIND_LABELS: Record<string, string> = {
   lesson: 'Lesson',
@@ -25,19 +26,33 @@ const KIND_LABELS: Record<string, string> = {
 
 function stepDestination(step: PathStepOut, from: string): JSX.Element {
   if (!step.unlocked) {
-    return <span className="nv-muted">Locked — finish the step before it.</span>;
+    return (
+      <span className="nv-muted">
+        <Lock aria-hidden="true" size={13} /> Locked — finish the step before it.
+      </span>
+    );
   }
   if (step.kind === 'lesson' && step.lesson_slug) {
     return (
-      <Link to={`/skills/lessons/${step.lesson_slug}`} state={{ from }}>
+      <Link
+        className="nv-button nv-button--secondary nv-button--sm"
+        state={{ from }}
+        to={`/skills/lessons/${step.lesson_slug}`}
+      >
         Open lesson
+        <ArrowRight aria-hidden="true" size={14} />
       </Link>
     );
   }
   if (step.kind === 'practice' && step.task_template_id) {
     return (
-      <Link to={`/skills/practice/${step.task_template_id}`} state={{ from }}>
+      <Link
+        className="nv-button nv-button--secondary nv-button--sm"
+        state={{ from }}
+        to={`/skills/practice/${step.task_template_id}`}
+      >
         Practise
+        <ArrowRight aria-hidden="true" size={14} />
       </Link>
     );
   }
@@ -62,16 +77,20 @@ export function PathDetail(): JSX.Element {
   if (resource.status !== 'ready') {
     return (
       <div className="nv-stack">
-        <h1 className="nv-h1">Learning path</h1>
+        <PageHeader eyebrow="Skills" title="Learning path" />
         {resource.status === 'off' ? (
-          <p className="nv-banner">The skills journey is not switched on for this environment yet.</p>
+          <Banner tone="info">
+            <p>The skills journey is not switched on for this environment yet.</p>
+          </Banner>
         ) : (
-          <>
-            <ErrorNote message={resource.message} />
-            <button className="nv-button" type="button" onClick={reload}>
-              Try again
-            </button>
-          </>
+          <ErrorState
+            body={resource.message}
+            action={
+              <Button size="sm" type="button" variant="secondary" onClick={reload}>
+                Try again
+              </Button>
+            }
+          />
         )}
         <p className="nv-muted">
           <Link to="/skills">All skills</Link>
@@ -85,21 +104,27 @@ export function PathDetail(): JSX.Element {
 
   return (
     <div className="nv-stack">
+      <PageHeader
+        eyebrow="Learning path"
+        title={path.title}
+        description={`${path.level}${
+          path.estimated_hours ? ` · about ${path.estimated_hours} hour(s)` : ''
+        } · ${path.completed_steps} of ${path.required_steps} steps done`}
+        actions={
+          <Badge tone={path.percent_complete === 100 ? 'success' : 'info'}>{path.percent_complete}%</Badge>
+        }
+      />
+
       <p className="nv-muted">
         <Link to="/skills">All skills</Link>
       </p>
 
-      <h1 className="nv-h1">{path.title}</h1>
-      <p className="nv-muted">
-        {path.level}
-        {path.estimated_hours ? ` · about ${path.estimated_hours} hour(s)` : ''} · {path.completed_steps} of{' '}
-        {path.required_steps} steps done
-      </p>
       {path.summary ? <p>{path.summary}</p> : null}
 
       <div
         className="nv-meter"
         role="progressbar"
+        aria-label={`${path.title} progress`}
         aria-valuenow={path.percent_complete}
         aria-valuemin={0}
         aria-valuemax={100}
@@ -108,37 +133,53 @@ export function PathDetail(): JSX.Element {
       </div>
 
       {next ? (
-        <section className="nv-action" aria-labelledby="nv-next-step">
-          <p className="nv-label" id="nv-next-step">
-            Next step
-          </p>
-          <p className="nv-action__label">{next.title ?? KIND_LABELS[next.kind] ?? next.kind}</p>
+        <Panel title="Next step">
+          <p className="nv-h3">{next.title ?? KIND_LABELS[next.kind] ?? next.kind}</p>
           {stepDestination(next, from)}
-        </section>
+        </Panel>
       ) : (
-        <p className="nv-banner">
-          Every step in this path is done. Completing a path is progress — verification comes from an
-          assessment, not from finishing lessons.
-        </p>
+        <Banner tone="success">
+          <p>
+            Every step in this path is done. Completing a path is progress — verification comes from an
+            assessment, not from finishing lessons.
+          </p>
+        </Banner>
       )}
 
-      <ol className="nv-list">
-        {path.steps.map((step) => (
-          <li className="nv-step" data-done={step.completed} key={step.id}>
-            <div className="nv-row nv-row--between">
-              <strong>
-                {step.ordinal}. {step.title ?? KIND_LABELS[step.kind] ?? step.kind}
-              </strong>
-              <span className="nv-muted">
-                {KIND_LABELS[step.kind] ?? step.kind}
-                {step.completed ? ' · done' : ''}
-              </span>
-            </div>
-            {step.estimated_minutes ? <p className="nv-muted">{step.estimated_minutes} min</p> : null}
-            <p>{stepDestination(step, from)}</p>
-          </li>
-        ))}
-      </ol>
+      <Panel title="Steps" actions={<Badge tone="neutral">{path.steps.length} total</Badge>}>
+        {path.steps.length === 0 ? (
+          <EmptyState
+            body="This path has no steps yet. It will appear here when the author publishes them."
+            icon={Route}
+            title="No steps published"
+          />
+        ) : (
+          <ol className="nv-list nv-list--ruled">
+            {path.steps.map((step) => (
+              <li key={step.id}>
+                <div className="nv-row nv-row--between" style={{ alignItems: 'flex-start' }}>
+                  <div style={{ minWidth: 0 }}>
+                    <p className="nv-h4">
+                      {step.ordinal}. {step.title ?? KIND_LABELS[step.kind] ?? step.kind}
+                    </p>
+                    <p className="nv-muted">
+                      {KIND_LABELS[step.kind] ?? step.kind}
+                      {step.estimated_minutes ? ` · ${step.estimated_minutes} min` : ''}
+                    </p>
+                  </div>
+                  <Badge
+                    status={step.completed ? 'completed' : step.unlocked ? 'open' : 'locked'}
+                    tone={step.completed ? 'success' : step.unlocked ? 'info' : 'neutral'}
+                  >
+                    {step.completed ? 'Done' : step.unlocked ? 'Open' : 'Locked'}
+                  </Badge>
+                </div>
+                <p>{stepDestination(step, from)}</p>
+              </li>
+            ))}
+          </ol>
+        )}
+      </Panel>
     </div>
   );
 }

@@ -35,6 +35,10 @@ export type RecentItemOut = Schemas['RecentItemOut'];
 // --- Campus (`/v1/me/campus`) ----------------------------------------------
 export type CampusOut = Schemas['CampusOut'];
 export type CampusItemOut = Schemas['CampusItemOut'];
+/** A university as the onboarding directory returns it. */
+export type UniversityOut = Schemas['UniversityOut'];
+/** The receipt from publishing a campus item (`/v1/ops/campus`). */
+export type CampusCreatedOut = Schemas['CampusCreatedOut'];
 
 // --- Skills journey (`/v1/skills/*`) ---------------------------------------
 export type SkillOut = Schemas['SkillOut'];

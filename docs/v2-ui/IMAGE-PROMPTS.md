@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Status | **Proposed. Assets are not created yet.** |
+| Status | **Approved with the design direction. Assets are not created yet.** |
 | Date | 2026-10-27 |
 | Applies to | `apps/web/public/images/`, `apps/web/public/og/` |
 | Rule | Use real photography where it carries content. Do not generate people, testimonials or fake product data. |

@@ -1,27 +1,33 @@
 /**
- * Settings (B11).
+ * Settings (B11) and its subroutes.
  *
- * Everything the app stores about a student is visible and editable here:
- * profile, languages, availability, notification choices — plus the two store
- * requirements, a machine-readable export and in-app deletion.
- *
- * Deletion is not a button that silently does nothing: it anonymises the account
- * and revokes every session, and the screen says what survives (money and audit
- * evidence, because a payout must stay explainable).
+ * One page per job: profile and matching signals, security, notification
+ * choices, and the data controls. The API calls are the existing ones; the
+ * split is a route decision, not a second source of truth.
  */
-import type {
-  AvailabilityOut,
-  LanguagesOut,
-  NotificationListOut,
-  ProfileOut,
-} from '@nelavista/api-client';
+import type { AvailabilityOut, LanguagesOut, NotificationListOut, ProfileOut } from '@nelavista/api-client';
 import * as React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 
+import { formatDateTime } from '../lib/format';
 import { ApiError, http } from '../lib/http';
-import { useSession } from '../lib/session';
 import { useApiResource } from '../lib/resource';
-import { Button, ErrorNote, Field, Select, Skeleton } from '../ui';
+import { useSession } from '../lib/session';
+import {
+  Badge,
+  Banner,
+  Button,
+  Checkbox,
+  EmptyState,
+  ErrorNote,
+  ErrorState,
+  Field,
+  PageHeader,
+  Panel,
+  Select,
+  Skeleton,
+  Textarea,
+} from '../ui';
 
 const LEVELS = [
   { value: 'basic', label: 'Basic' },
@@ -31,23 +37,60 @@ const LEVELS = [
 ];
 
 const VISIBILITY = [
-  { value: 'private', label: 'Private — nobody sees my profile' },
-  { value: 'link', label: 'Link only — someone with the link can see it' },
-  { value: 'public', label: 'Public — discoverable by companies' },
+  { value: 'private', label: 'Private - nobody sees my profile' },
+  { value: 'link', label: 'Link only - someone with the link can see it' },
+  { value: 'public', label: 'Public - discoverable by companies' },
+];
+
+const NAV = [
+  { to: '/settings', label: 'Profile' },
+  { to: '/settings/security', label: 'Security' },
+  { to: '/settings/notifications', label: 'Notifications' },
+  { to: '/settings/data', label: 'Your data' },
 ];
 
 type Language = { language: string; level: string };
 
+function sectionTitle(section: string): { title: string; description: string } {
+  switch (section) {
+    case 'security':
+      return {
+        title: 'Security',
+        description:
+          'The account, the sign-in and the recovery path. Password changes are a backend dependency.',
+      };
+    case 'notifications':
+      return {
+        title: 'Notifications',
+        description: 'Choose which channels can reach you, and review what has already arrived.',
+      };
+    case 'data':
+      return {
+        title: 'Your data',
+        description: 'Export what V2 holds, or delete the account and understand exactly what survives.',
+      };
+    default:
+      return {
+        title: 'Profile',
+        description: 'The context that makes matching and your Talent profile useful.',
+      };
+  }
+}
+
 export function Settings(): JSX.Element {
   const { me, profile: sessionProfile, reload, logout } = useSession();
   const navigate = useNavigate();
+  const location = useLocation();
+  const section = location.pathname.split('/')[2] ?? 'profile';
+  const heading = sectionTitle(section);
+
   const languages = useApiResource<LanguagesOut>('/me/languages');
   const availability = useApiResource<AvailabilityOut>('/me/availability');
   const notifications = useApiResource<NotificationListOut>('/me/notifications');
 
   const [displayName, setDisplayName] = React.useState(sessionProfile?.display_name ?? '');
   const [bio, setBio] = React.useState(sessionProfile?.bio ?? '');
-  const [location, setLocation] = React.useState(sessionProfile?.location ?? '');
+  const [locationValue, setLocationValue] = React.useState(sessionProfile?.location ?? '');
   const [timezone, setTimezone] = React.useState(sessionProfile?.timezone ?? '');
   const [visibility, setVisibility] = React.useState(sessionProfile?.profile_visibility ?? 'private');
   const [notifyEmail, setNotifyEmail] = React.useState(sessionProfile?.notify_email ?? true);
@@ -86,11 +129,12 @@ export function Settings(): JSX.Element {
 
   async function saveProfile(): Promise<void> {
     setBusy(true);
+    setError(null);
     try {
       await http.patch<ProfileOut>('/me', {
         display_name: displayName.trim(),
         bio: bio.trim(),
-        location: location.trim(),
+        location: locationValue.trim(),
         timezone: timezone.trim(),
         profile_visibility: visibility,
         notify_email: notifyEmail,
@@ -107,6 +151,7 @@ export function Settings(): JSX.Element {
 
   async function saveLanguages(next: Language[]): Promise<void> {
     setBusy(true);
+    setError(null);
     try {
       const result = await http.put<LanguagesOut>('/me/languages', { languages: next });
       setRows(result.languages);
@@ -133,6 +178,7 @@ export function Settings(): JSX.Element {
 
   async function saveAvailability(): Promise<void> {
     setBusy(true);
+    setError(null);
     try {
       await http.put<AvailabilityOut>('/me/availability', {
         hours_per_week: hours === '' ? null : Number(hours),
@@ -148,20 +194,27 @@ export function Settings(): JSX.Element {
   }
 
   async function markNotificationsRead(): Promise<void> {
-    const unread = notifications.resource.status === 'ready'
-      ? notifications.resource.data.notifications.filter((row) => row.read_at === null)
-      : [];
+    const unread =
+      notifications.resource.status === 'ready'
+        ? notifications.resource.data.notifications.filter((row) => row.read_at === null)
+        : [];
     if (unread.length === 0) return;
+    setBusy(true);
+    setError(null);
     try {
       await http.post('/me/notifications/read', { ids: unread.map((row) => row.id) });
       notifications.reload();
       flash('Notifications marked read.');
     } catch (err) {
       setError(err instanceof ApiError ? err.message : 'Could not update notifications.');
+    } finally {
+      setBusy(false);
     }
   }
 
   async function exportData(): Promise<void> {
+    setBusy(true);
+    setError(null);
     try {
       const data = await http.get<Record<string, unknown>>('/me/export');
       const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
@@ -174,6 +227,8 @@ export function Settings(): JSX.Element {
       flash('Your export was downloaded.');
     } catch (err) {
       setError(err instanceof ApiError ? err.message : 'Could not build your export.');
+    } finally {
+      setBusy(false);
     }
   }
 
@@ -207,192 +262,458 @@ export function Settings(): JSX.Element {
     );
   }
 
-  return (
-    <div className="nv-stack">
-      <h1 className="nv-h1">Settings</h1>
-      <ErrorNote message={error} />
-      {saved ? (
-        <p className="nv-banner" role="status">
-          {saved}
-        </p>
-      ) : null}
+  const resourceError =
+    languages.resource.status === 'error'
+      ? languages.resource.message
+      : availability.resource.status === 'error'
+        ? availability.resource.message
+        : notifications.resource.status === 'error'
+          ? notifications.resource.message
+          : null;
 
-      <section className="nv-card nv-stack">
-        <h2 className="nv-h2">Profile</h2>
-        <p className="nv-muted">Signed in as {me?.email}{me?.email_verified ? ' (confirmed)' : ' (not confirmed)'}</p>
-        <Field label="Display name" maxLength={150} value={displayName} onChange={(e) => setDisplayName(e.target.value)} />
-        <div className="nv-field">
-          <label className="nv-label" htmlFor="nv-bio">
-            Short bio
-          </label>
-          <textarea
-            className="nv-input"
-            id="nv-bio"
+  return (
+    <div className="nv-stack nv-stack--loose">
+      <PageHeader eyebrow="Account" title={heading.title} description={heading.description} />
+      <nav className="nv-settings-nav" aria-label="Settings sections">
+        {NAV.map((item) => (
+          <NavLink key={item.to} to={item.to} end={item.to === '/settings'}>
+            {item.label}
+          </NavLink>
+        ))}
+      </nav>
+
+      <ErrorNote message={error} />
+      {resourceError ? <Banner tone="danger">{resourceError}</Banner> : null}
+      {saved ? <Banner tone="success">{saved}</Banner> : null}
+
+      {section === 'security' ? (
+        <SecuritySection />
+      ) : section === 'notifications' ? (
+        <NotificationsSection
+          notifyEmail={notifyEmail}
+          notifyPush={notifyPush}
+          setNotifyEmail={setNotifyEmail}
+          setNotifyPush={setNotifyPush}
+          busy={busy}
+          onSave={() => void saveProfile()}
+          notifications={notifications.resource}
+          onMarkRead={() => void markNotificationsRead()}
+        />
+      ) : section === 'data' ? (
+        <DataSection
+          busy={busy}
+          confirmDelete={confirmDelete}
+          setConfirmDelete={setConfirmDelete}
+          onExport={() => void exportData()}
+          onDelete={() => void deleteAccount()}
+        />
+      ) : (
+        <ProfileSection
+          meEmail={me?.email ?? ''}
+          meVerified={Boolean(me?.email_verified)}
+          displayName={displayName}
+          setDisplayName={setDisplayName}
+          bio={bio}
+          setBio={setBio}
+          location={locationValue}
+          setLocation={setLocationValue}
+          timezone={timezone}
+          setTimezone={setTimezone}
+          visibility={visibility}
+          setVisibility={setVisibility}
+          busy={busy}
+          onSaveProfile={() => void saveProfile()}
+          rows={rows}
+          newLanguage={newLanguage}
+          setNewLanguage={setNewLanguage}
+          newLevel={newLevel}
+          setNewLevel={setNewLevel}
+          onAddLanguage={addLanguage}
+          onRemoveLanguage={(language) =>
+            void saveLanguages(rows.filter((item) => item.language !== language))
+          }
+          hours={hours}
+          setHours={setHours}
+          availableFrom={availableFrom}
+          setAvailableFrom={setAvailableFrom}
+          availabilityNote={availabilityNote}
+          setAvailabilityNote={setAvailabilityNote}
+          onSaveAvailability={() => void saveAvailability()}
+        />
+      )}
+    </div>
+  );
+}
+
+function ProfileSection(props: {
+  meEmail: string;
+  meVerified: boolean;
+  displayName: string;
+  setDisplayName: (value: string) => void;
+  bio: string;
+  setBio: (value: string) => void;
+  location: string;
+  setLocation: (value: string) => void;
+  timezone: string;
+  setTimezone: (value: string) => void;
+  visibility: string;
+  setVisibility: (value: string) => void;
+  busy: boolean;
+  onSaveProfile: () => void;
+  rows: Language[];
+  newLanguage: string;
+  setNewLanguage: (value: string) => void;
+  newLevel: string;
+  setNewLevel: (value: string) => void;
+  onAddLanguage: () => void;
+  onRemoveLanguage: (language: string) => void;
+  hours: string;
+  setHours: (value: string) => void;
+  availableFrom: string;
+  setAvailableFrom: (value: string) => void;
+  availabilityNote: string;
+  setAvailabilityNote: (value: string) => void;
+  onSaveAvailability: () => void;
+}): JSX.Element {
+  return (
+    <div className="nv-stack nv-stack--loose">
+      <Panel
+        title="Profile"
+        actions={
+          <span className="nv-meta">
+            {props.meEmail} {props.meVerified ? '· confirmed' : '· not confirmed'}
+          </span>
+        }
+      >
+        <div className="nv-stack">
+          <Field
+            label="Display name"
+            maxLength={150}
+            value={props.displayName}
+            onChange={(event) => props.setDisplayName(event.target.value)}
+          />
+          <Textarea
+            label="Short bio"
             maxLength={500}
             rows={3}
-            value={bio}
-            onChange={(event) => setBio(event.target.value)}
+            value={props.bio}
+            onChange={(event) => props.setBio(event.target.value)}
           />
-        </div>
-        <Field label="Location" maxLength={120} value={location} onChange={(e) => setLocation(e.target.value)} />
-        <Field
-          hint="e.g. Africa/Lagos. Used to show deadlines in your time."
-          label="Time zone"
-          maxLength={64}
-          value={timezone}
-          onChange={(e) => setTimezone(e.target.value)}
-        />
-        <Select
-          label="Who can see your Talent profile"
-          value={visibility}
-          onChange={(e) => setVisibility(e.target.value)}
-          options={VISIBILITY}
-        />
-        <label className="nv-check">
-          <input type="checkbox" checked={notifyEmail} onChange={(e) => setNotifyEmail(e.target.checked)} />
-          Email me about review, payouts and deadlines
-        </label>
-        <label className="nv-check">
-          <input type="checkbox" checked={notifyPush} onChange={(e) => setNotifyPush(e.target.checked)} />
-          Send push notifications to my devices
-        </label>
-        <Button type="button" disabled={busy || !displayName.trim()} onClick={() => void saveProfile()}>
-          {busy ? 'Saving…' : 'Save profile'}
-        </Button>
-      </section>
-
-      <section className="nv-card nv-stack">
-        <h2 className="nv-h2">Languages you can work in</h2>
-        <p className="nv-muted">Matching uses these when an opportunity names a language.</p>
-        {rows.length === 0 ? <p className="nv-muted">No language added yet.</p> : null}
-        <ul className="nv-list">
-          {rows.map((row) => (
-            <li className="nv-row nv-row--between" key={row.language}>
-              <span>
-                {row.language} <span className="nv-muted">· {row.level}</span>
-              </span>
-              <button
-                className="nv-button nv-button--ghost"
-                type="button"
-                onClick={() => void saveLanguages(rows.filter((item) => item.language !== row.language))}
-              >
-                Remove
-              </button>
-            </li>
-          ))}
-        </ul>
-        <div className="nv-row">
           <Field
-            label="Add a language"
-            maxLength={60}
-            value={newLanguage}
-            onChange={(event) => setNewLanguage(event.target.value)}
+            label="Location"
+            maxLength={120}
+            value={props.location}
+            onChange={(event) => props.setLocation(event.target.value)}
           />
-          <Select label="Level" value={newLevel} onChange={(e) => setNewLevel(e.target.value)} options={LEVELS} />
-          <Button type="button" variant="ghost" disabled={busy || !newLanguage.trim()} onClick={addLanguage}>
-            Add
-          </Button>
+          <Field
+            hint="e.g. Africa/Lagos. Used to show deadlines in your time."
+            label="Time zone"
+            maxLength={64}
+            value={props.timezone}
+            onChange={(event) => props.setTimezone(event.target.value)}
+          />
+          <Select
+            label="Who can see your Talent profile"
+            value={props.visibility}
+            onChange={(event) => props.setVisibility(event.target.value)}
+            options={VISIBILITY}
+          />
+          <div className="nv-row nv-row--end">
+            <Button
+              type="button"
+              disabled={props.busy || !props.displayName.trim()}
+              onClick={props.onSaveProfile}
+            >
+              {props.busy ? 'Saving' : 'Save profile'}
+            </Button>
+          </div>
         </div>
-      </section>
+      </Panel>
 
-      <section className="nv-card nv-stack">
-        <h2 className="nv-h2">Availability</h2>
-        <p className="nv-muted">Stated availability is a matching signal, not a contract.</p>
-        <Field
-          label="Hours per week"
-          max={168}
-          min={0}
-          type="number"
-          value={hours}
-          onChange={(event) => setHours(event.target.value)}
-        />
-        <Field
-          label="Available from"
-          type="date"
-          value={availableFrom}
-          onChange={(event) => setAvailableFrom(event.target.value)}
-        />
-        <Field
-          label="Note (optional)"
-          maxLength={255}
-          value={availabilityNote}
-          onChange={(event) => setAvailabilityNote(event.target.value)}
-        />
-        <Button type="button" disabled={busy} onClick={() => void saveAvailability()}>
-          {busy ? 'Saving…' : 'Save availability'}
-        </Button>
-      </section>
-
-      <section className="nv-card nv-stack">
-        <h2 className="nv-h2">Notifications</h2>
-        {notifications.resource.status === 'ready' && notifications.resource.data.notifications.length > 0 ? (
-          <>
+      <Panel title="Languages you can work in">
+        <div className="nv-stack">
+          <p className="nv-muted">Matching uses these when an opportunity names a language.</p>
+          {props.rows.length === 0 ? (
+            <EmptyState title="No language added yet" body="Add the languages you can actually work in." />
+          ) : (
             <ul className="nv-list">
-              {notifications.resource.data.notifications.slice(0, 10).map((row) => {
-                const assessmentSlug = row.data?.['assessment_slug'];
-                return (
-                  <li key={row.id}>
-                    <strong>{row.title}</strong>
-                    <p className="nv-muted">{row.body}</p>
-                    {typeof assessmentSlug === 'string' ? (
-                      <p>
-                        <Link className="nv-button nv-button--ghost" to={`/verification/assessments/${assessmentSlug}`}>
-                          Re-verify now
-                        </Link>
-                      </p>
-                    ) : null}
-                    {row.read_at === null ? (
-                      <span className="nv-badge" data-status="unverified">
-                        Unread
-                      </span>
-                    ) : null}
-                  </li>
-                );
-              })}
+              {props.rows.map((row) => (
+                <li className="nv-row nv-row--between" key={row.language}>
+                  <span>
+                    {row.language} <span className="nv-muted">· {row.level}</span>
+                  </span>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => props.onRemoveLanguage(row.language)}
+                  >
+                    Remove
+                  </Button>
+                </li>
+              ))}
             </ul>
-            <Button type="button" variant="ghost" onClick={() => void markNotificationsRead()}>
+          )}
+          <div className="nv-row" style={{ alignItems: 'flex-end' }}>
+            <div style={{ flex: '1 1 14rem' }}>
+              <Field
+                label="Add a language"
+                maxLength={60}
+                value={props.newLanguage}
+                onChange={(event) => props.setNewLanguage(event.target.value)}
+              />
+            </div>
+            <div style={{ flex: '0 1 12rem' }}>
+              <Select
+                label="Level"
+                value={props.newLevel}
+                onChange={(event) => props.setNewLevel(event.target.value)}
+                options={LEVELS}
+              />
+            </div>
+            <Button
+              type="button"
+              variant="secondary"
+              disabled={props.busy || !props.newLanguage.trim()}
+              onClick={props.onAddLanguage}
+            >
+              Add
+            </Button>
+          </div>
+        </div>
+      </Panel>
+
+      <Panel title="Availability">
+        <div className="nv-stack">
+          <p className="nv-muted">Stated availability is a matching signal, not a contract.</p>
+          <div className="nv-grid--2">
+            <Field
+              label="Hours per week"
+              max={168}
+              min={0}
+              type="number"
+              value={props.hours}
+              onChange={(event) => props.setHours(event.target.value)}
+            />
+            <Field
+              label="Available from"
+              type="date"
+              value={props.availableFrom}
+              onChange={(event) => props.setAvailableFrom(event.target.value)}
+            />
+          </div>
+          <Field
+            label="Note (optional)"
+            maxLength={255}
+            value={props.availabilityNote}
+            onChange={(event) => props.setAvailabilityNote(event.target.value)}
+          />
+          <div className="nv-row nv-row--end">
+            <Button type="button" disabled={props.busy} onClick={props.onSaveAvailability}>
+              {props.busy ? 'Saving' : 'Save availability'}
+            </Button>
+          </div>
+        </div>
+      </Panel>
+    </div>
+  );
+}
+
+function SecuritySection(): JSX.Element {
+  const { me } = useSession();
+  return (
+    <div className="nv-stack nv-stack--loose">
+      <Panel title="Account">
+        <dl className="nv-stack nv-stack--tight">
+          <div className="nv-row nv-row--between">
+            <dt className="nv-muted">Email</dt>
+            <dd>{me?.email}</dd>
+          </div>
+          <div className="nv-row nv-row--between">
+            <dt className="nv-muted">Email status</dt>
+            <dd>
+              <Badge tone={me?.email_verified ? 'success' : 'warning'}>
+                {me?.email_verified ? 'Confirmed' : 'Not confirmed'}
+              </Badge>
+            </dd>
+          </div>
+          <div className="nv-row nv-row--between">
+            <dt className="nv-muted">Two-factor authentication</dt>
+            <dd>
+              <Badge tone={me?.mfa_enabled ? 'success' : 'neutral'}>
+                {me?.mfa_enabled ? 'Enabled' : 'Not enabled'}
+              </Badge>
+            </dd>
+          </div>
+        </dl>
+      </Panel>
+
+      <Panel title="Password">
+        <Banner tone="warning">
+          <strong>Backend dependency.</strong> V2 does not expose a signed-in change-password endpoint yet. Do
+          not show a form that cannot work. The route exists so the gap is visible, not so it can be faked.
+        </Banner>
+        <p className="nv-muted" style={{ marginTop: 'var(--nv-space-md)' }}>
+          If you are signed out, use <Link to="/auth/reset">the reset flow</Link>. It revokes sessions after a
+          successful reset.
+        </p>
+      </Panel>
+
+      <Panel title="Sessions">
+        <p className="nv-muted">
+          Signing out on this device revokes the refresh cookie. A list of other sessions is not exposed by
+          the current API, so this screen does not invent one.
+        </p>
+      </Panel>
+    </div>
+  );
+}
+
+function NotificationsSection({
+  notifyEmail,
+  notifyPush,
+  setNotifyEmail,
+  setNotifyPush,
+  busy,
+  onSave,
+  notifications,
+  onMarkRead,
+}: {
+  notifyEmail: boolean;
+  notifyPush: boolean;
+  setNotifyEmail: (value: boolean) => void;
+  setNotifyPush: (value: boolean) => void;
+  busy: boolean;
+  onSave: () => void;
+  notifications: ReturnType<typeof useApiResource<NotificationListOut>>['resource'];
+  onMarkRead: () => void;
+}): JSX.Element {
+  const unread =
+    notifications.status === 'ready'
+      ? notifications.data.notifications.filter((row) => row.read_at === null)
+      : [];
+
+  return (
+    <div className="nv-stack nv-stack--loose">
+      <Panel title="Channels">
+        <div className="nv-stack">
+          <Checkbox
+            checked={notifyEmail}
+            onChange={(event) => setNotifyEmail(event.target.checked)}
+            label="Email me about review, payouts and deadlines"
+          />
+          <Checkbox
+            checked={notifyPush}
+            onChange={(event) => setNotifyPush(event.target.checked)}
+            label="Send push notifications to my devices"
+          />
+          <div className="nv-row nv-row--between">
+            <Link className="nv-link-arrow" to="/notifications">
+              Open the full inbox
+            </Link>
+            <Button type="button" disabled={busy} onClick={onSave}>
+              {busy ? 'Saving' : 'Save choices'}
+            </Button>
+          </div>
+        </div>
+      </Panel>
+
+      <Panel
+        title="Recent notifications"
+        actions={
+          unread.length > 0 ? (
+            <Button type="button" variant="secondary" size="sm" disabled={busy} onClick={onMarkRead}>
               Mark all read
             </Button>
-          </>
+          ) : null
+        }
+      >
+        {notifications.status === 'loading' ? (
+          <Skeleton lines={3} />
+        ) : notifications.status === 'off' ? (
+          <EmptyState
+            title="Notifications are not switched on here"
+            body="This environment has the feature off."
+          />
+        ) : notifications.status === 'missing' || notifications.status === 'error' ? (
+          <ErrorState title="Notifications did not load" body={notifications.message} />
+        ) : notifications.data.notifications.length === 0 ? (
+          <EmptyState title="Nothing yet" body="Review results, rework requests and payouts appear here." />
         ) : (
-          <p className="nv-muted">Nothing yet. Review results, rework requests and payouts appear here.</p>
+          <ul className="nv-list">
+            {notifications.data.notifications.slice(0, 8).map((row) => (
+              <li key={row.id} className="nv-stack nv-stack--tight">
+                <div className="nv-row nv-row--between">
+                  <strong>{row.title}</strong>
+                  <span className="nv-meta">{formatDateTime(row.created_at)}</span>
+                </div>
+                <p className="nv-muted">{row.body}</p>
+                {row.read_at === null ? <Badge tone="info">Unread</Badge> : null}
+              </li>
+            ))}
+          </ul>
         )}
-      </section>
+      </Panel>
+    </div>
+  );
+}
 
-      <section className="nv-card nv-stack">
-        <h2 className="nv-h2">Your data</h2>
-        <p className="nv-muted">
-          Download everything V2 holds about you as JSON. Money and audit evidence is included because it
-          explains your earnings; other students&apos; details never are.
-        </p>
-        <Button type="button" variant="ghost" onClick={() => void exportData()}>
-          Download my data
-        </Button>
-      </section>
+function DataSection({
+  busy,
+  confirmDelete,
+  setConfirmDelete,
+  onExport,
+  onDelete,
+}: {
+  busy: boolean;
+  confirmDelete: string;
+  setConfirmDelete: (value: string) => void;
+  onExport: () => void;
+  onDelete: () => void;
+}): JSX.Element {
+  return (
+    <div className="nv-stack nv-stack--loose">
+      <Panel title="Export">
+        <div className="nv-stack">
+          <p className="nv-muted">
+            Download everything V2 holds about you as JSON. Money and audit evidence is included because it
+            explains your earnings; other students&apos; details never are.
+          </p>
+          <div className="nv-row">
+            <Button type="button" variant="secondary" disabled={busy} onClick={onExport}>
+              {busy ? 'Building export' : 'Download my data'}
+            </Button>
+          </div>
+        </div>
+      </Panel>
 
-      <section className="nv-card nv-stack">
-        <h2 className="nv-h2">Delete your account</h2>
-        <p>
-          This anonymises your account and signs out every device. Learning, proof and earnings stop
-          being visible to you; the money and audit records needed to explain a payout remain, without
-          your name or email.
-        </p>
-        <Field
-          label="Type DELETE to confirm"
-          value={confirmDelete}
-          onChange={(event) => setConfirmDelete(event.target.value)}
-        />
-        <Button
-          type="button"
-          disabled={busy || confirmDelete !== 'DELETE'}
-          onClick={() => void deleteAccount()}
-        >
-          Delete my account
-        </Button>
-        <p className="nv-muted">
-          <Link to="/home">Back to your home</Link>
-        </p>
-      </section>
+      <Panel title="Delete your account">
+        <div className="nv-stack">
+          <p className="nv-muted">
+            This anonymises your account and signs out every device. Learning, proof and earnings stop being
+            visible to you; the money and audit records needed to explain a payout remain, without your name
+            or email.
+          </p>
+          <Field
+            label="Type DELETE to confirm"
+            value={confirmDelete}
+            onChange={(event) => setConfirmDelete(event.target.value)}
+          />
+          <div className="nv-row">
+            <Button
+              type="button"
+              variant="danger"
+              disabled={busy || confirmDelete !== 'DELETE'}
+              onClick={onDelete}
+            >
+              Delete my account
+            </Button>
+            <Link className="nv-button nv-button--ghost" to="/home">
+              Back to your home
+            </Link>
+          </div>
+        </div>
+      </Panel>
     </div>
   );
 }

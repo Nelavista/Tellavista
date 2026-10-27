@@ -15,6 +15,8 @@ import type {
   MessageListOut,
   SubmissionResultOut,
 } from '@nelavista/api-client';
+import { Badge, Banner, Button, EmptyState, ErrorState, PageHeader, Panel, Skeleton } from '@nelavista/ui';
+import { MessageSquare, Send } from 'lucide-react';
 import * as React from 'react';
 import { Link, useParams } from 'react-router-dom';
 
@@ -25,7 +27,6 @@ import { formatDateTime } from '../lib/format';
 import { isAnswerValue } from '../lib/practice';
 import { useApiResource } from '../lib/resource';
 import { useSessionOptional } from '../lib/session';
-import { ErrorNote, Skeleton } from '../ui';
 
 const STATUS_COPY: Record<string, string> = {
   assigned: 'Ready to start',
@@ -35,6 +36,14 @@ const STATUS_COPY: Record<string, string> = {
   rework: 'Rework needed',
   rejected: 'Not accepted',
 };
+
+function statusTone(status: string): 'neutral' | 'success' | 'info' | 'warning' | 'danger' {
+  if (status === 'approved') return 'success';
+  if (status === 'submitted' || status === 'in_progress') return 'info';
+  if (status === 'rework') return 'warning';
+  if (status === 'rejected') return 'danger';
+  return 'neutral';
+}
 
 export function AssignmentDetail(): JSX.Element {
   const { assignmentId = '' } = useParams<{ assignmentId: string }>();
@@ -66,9 +75,13 @@ export function AssignmentDetail(): JSX.Element {
   if (resource.status === 'off') {
     return (
       <div className="nv-stack">
-        <h1 className="nv-h1">Assignment</h1>
-        <p className="nv-banner">Work is not switched on for this environment yet.</p>
-        <Link to="/work">Back to your work</Link>
+        <PageHeader eyebrow="Work" title="Assignment" />
+        <Banner tone="info">
+          <p>Work is not switched on for this environment yet.</p>
+        </Banner>
+        <p className="nv-muted">
+          <Link to="/work">Back to your work</Link>
+        </p>
       </div>
     );
   }
@@ -76,11 +89,15 @@ export function AssignmentDetail(): JSX.Element {
   if (resource.status !== 'ready') {
     return (
       <div className="nv-stack">
-        <h1 className="nv-h1">Assignment</h1>
-        <ErrorNote message={resource.message} />
-        <button className="nv-button" type="button" onClick={reload}>
-          Try again
-        </button>
+        <PageHeader eyebrow="Work" title="Assignment" />
+        <ErrorState
+          body={resource.message}
+          action={
+            <Button size="sm" type="button" variant="secondary" onClick={reload}>
+              Try again
+            </Button>
+          }
+        />
         <p className="nv-muted">
           <Link to="/work">Back to your work</Link>
         </p>
@@ -114,10 +131,10 @@ export function AssignmentDetail(): JSX.Element {
     setBusy(true);
     setError(null);
     try {
-      const result = await http.post<SubmissionResultOut>(
-        `/work/assignments/${assignment.id}/submissions`,
-        { payload: answer, client_key: clientKey },
-      );
+      const result = await http.post<SubmissionResultOut>(`/work/assignments/${assignment.id}/submissions`, {
+        payload: answer,
+        client_key: clientKey,
+      });
       setSent(result);
       // Accepted: the draft and its key have done their job. The next send from
       // this screen is a new version, so it needs a fresh key.
@@ -134,81 +151,91 @@ export function AssignmentDetail(): JSX.Element {
 
   return (
     <div className="nv-stack">
+      <PageHeader
+        eyebrow="Work"
+        title={assignment.title}
+        description={`${assignment.project.title}${
+          assignment.due_at ? ` · due ${formatDateTime(assignment.due_at)}` : ' · no deadline set'
+        }`}
+        actions={
+          <Badge status={assignment.status} tone={statusTone(assignment.status)}>
+            {STATUS_COPY[assignment.status] ?? assignment.status.replace(/_/g, ' ')}
+          </Badge>
+        }
+      />
+
       <p className="nv-muted">
         <Link to="/work">Your work</Link>
       </p>
-      <div className="nv-row nv-row--between">
-        <h1 className="nv-h1">{assignment.title}</h1>
-        <span className="nv-badge" data-status={assignment.status === 'approved' ? 'verified' : 'unverified'}>
-          {STATUS_COPY[assignment.status] ?? assignment.status.replace(/_/g, ' ')}
-        </span>
-      </div>
-      <p className="nv-muted">
-        {assignment.project.title}
-        {assignment.due_at ? ` · due ${formatDateTime(assignment.due_at)}` : ' · no deadline set'}
-      </p>
 
-      <ErrorNote message={error} />
+      {error ? (
+        <Banner tone="danger">
+          <p>{error}</p>
+        </Banner>
+      ) : null}
 
       {assignment.status === 'assigned' ? (
-        <section className="nv-card">
+        <Banner
+          tone="info"
+          actions={
+            <Button disabled={busy} size="sm" type="button" variant="secondary" onClick={() => void start()}>
+              {busy ? 'Starting…' : 'Start this assignment'}
+            </Button>
+          }
+        >
           <p>Start when you are ready. Starting does not use up a try.</p>
-          <button className="nv-button" disabled={busy} type="button" onClick={() => void start()}>
-            {busy ? 'Starting…' : 'Start this assignment'}
-          </button>
-        </section>
+        </Banner>
       ) : null}
 
       {assignment.status === 'rework' ? (
-        <p className="nv-banner">
-          This work needs rework. The reviewer&apos;s reason is below; sending a new version is expected,
-          not penalised.
-        </p>
+        <Banner tone="warning">
+          <p>
+            This work needs rework. The reviewer&apos;s reason is below; sending a new version is expected,
+            not penalised.
+          </p>
+        </Banner>
       ) : null}
 
       {assignment.task ? (
-        <section className="nv-card nv-stack">
-          <h2 className="nv-h2">{assignment.task.name}</h2>
-          <div className="nv-prose">
-            {assignment.task.instructions_md
-              .split(/\n{2,}/)
-              .filter((block) => block.trim().length > 0)
-              .map((block, index) => (
-                <p key={index}>{block.trim()}</p>
-              ))}
+        <Panel title={assignment.task.name}>
+          <div className="nv-stack">
+            <div className="nv-prose">
+              {assignment.task.instructions_md
+                .split(/\n{2,}/)
+                .filter((block) => block.trim().length > 0)
+                .map((block, index) => (
+                  <p key={index}>{block.trim()}</p>
+                ))}
+            </div>
+            {assignment.task.input_schema && Object.keys(assignment.task.input_schema).length > 0 ? (
+              <TaskPrompt payload={assignment.task.input_schema as Record<string, unknown>} />
+            ) : null}
+            <TaskControl control={control} value={value} onChange={setValue} />
           </div>
-          {assignment.task.input_schema && Object.keys(assignment.task.input_schema).length > 0 ? (
-            <TaskPrompt payload={assignment.task.input_schema as Record<string, unknown>} />
-          ) : null}
-          <TaskControl control={control} value={value} onChange={setValue} />
-        </section>
+        </Panel>
       ) : (
-        <p className="nv-banner">{control.kind === 'unsupported' ? control.reason : null}</p>
+        <Banner tone="warning">
+          <p>{control.kind === 'unsupported' ? control.reason : null}</p>
+        </Banner>
       )}
 
       {sent ? (
-        <section className="nv-card" aria-live="polite">
-          <h2 className="nv-h2">Sent</h2>
+        <Banner tone="success">
+          <h2 className="nv-h3">Sent</h2>
           <p>{sent.message}</p>
           <p className="nv-muted">
             Status: {sent.status.replace(/_/g, ' ')}
-            {sent.submitted_at ? ` · ${formatDateTime(sent.submitted_at)}` : ''}. You will be told here
-            when it is reviewed.
+            {sent.submitted_at ? ` · ${formatDateTime(sent.submitted_at)}` : ''}. You will be told here when
+            it is reviewed.
           </p>
-        </section>
+        </Banner>
       ) : assignment.status !== 'approved' && assignment.status !== 'rejected' ? (
-        <div className="nv-row">
-          <button
-            className="nv-button"
-            disabled={busy || !assignment.task || !answer}
-            type="button"
-            onClick={() => void submit()}
-          >
+        <div className="nv-row nv-row--between">
+          <span className="nv-muted">{answer ? 'Ready to send.' : 'Complete the form to send.'}</span>
+          <Button disabled={busy || !assignment.task || !answer} type="button" onClick={() => void submit()}>
+            <Send aria-hidden="true" size={15} />
             {busy ? 'Sending…' : assignment.last_submission ? 'Send a new version' : 'Send this work'}
-          </button>
-          <span className="nv-muted">
-            {answer ? 'Ready to send.' : 'Complete the form to send.'}
-          </span>
+          </Button>
         </div>
       ) : null}
 
@@ -225,19 +252,37 @@ export function AssignmentDetail(): JSX.Element {
         </p>
       ) : null}
 
-      {messages.resource.status === 'ready' && messages.resource.data.messages.length > 0 ? (
-        <section className="nv-card">
-          <h2 className="nv-h2">Messages about this work</h2>
-          <ul className="nv-list">
-            {messages.resource.data.messages.map((message) => (
-              <li key={message.id}>
-                <p>{message.body}</p>
-                <p className="nv-muted">{formatDateTime(message.created_at)}</p>
-              </li>
-            ))}
-          </ul>
-        </section>
-      ) : null}
+      <Panel title="Messages about this work" actions={<MessageSquare aria-hidden="true" size={16} />}>
+        {messages.resource.status === 'loading' ? <Skeleton lines={3} /> : null}
+        {messages.resource.status === 'error' ? (
+          <ErrorState
+            body={messages.resource.message}
+            action={
+              <Button size="sm" type="button" variant="secondary" onClick={messages.reload}>
+                Try again
+              </Button>
+            }
+          />
+        ) : null}
+        {messages.resource.status === 'ready' ? (
+          messages.resource.data.messages.length === 0 ? (
+            <EmptyState
+              body="A reviewer's question or rework reason will appear here, in place with the work."
+              icon={MessageSquare}
+              title="No messages yet"
+            />
+          ) : (
+            <ul className="nv-list nv-list--ruled">
+              {messages.resource.data.messages.map((message) => (
+                <li key={message.id}>
+                  <p>{message.body}</p>
+                  <p className="nv-meta">{formatDateTime(message.created_at)}</p>
+                </li>
+              ))}
+            </ul>
+          )
+        ) : null}
+      </Panel>
     </div>
   );
 }

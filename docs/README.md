@@ -4,12 +4,15 @@ For the V2 web launch, read these first:
 
 1. **`RUN-LOCALLY.md`** (repo root) - run V2 on Windows in about 15 minutes.
 2. **`docs/v2-ui/AUDIT.md`** - what V2 actually has, what is missing, and what is stale.
-3. **`docs/v2-ui/ROUTE-MAP.md`** - the proposed public, auth, student, admin and utility routes.
-4. **`docs/v2-ui/DESIGN-DIRECTION.md`** - the proposed visual system and component direction.
+3. **`docs/v2-ui/ROUTE-MAP.md`** - the approved public, auth, student, admin and utility routes.
+4. **`docs/v2-ui/DESIGN-DIRECTION.md`** - the approved Ink + Paper visual system and component direction.
 5. **`docs/runbooks/v2-launch-checklist.md`** - the deployment and cutover plan.
 6. **`docs/runbooks/domain-switch.md`** - the domain move and rollback in detail.
 
 ## V2 UI work
+
+Gate 1 (route map) and Gate 2 (design direction) were approved on 2026-10-27.
+Newsletter and the platform announcement banner are deferred post-launch.
 
 - **`docs/v2-ui/AUDIT.md`** - current-state audit, launch blockers, docs audit.
 - **`docs/v2-ui/PARITY.md`** - V1 to V2 capability mapping, including deliberate drops.

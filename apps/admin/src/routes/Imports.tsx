@@ -5,11 +5,19 @@
  * database, so the one-way rule stays structural. Dry-run is the default action
  * and the report is shown before an apply is possible.
  */
-import type {
-  ImportListOut,
-  ImportReportOut,
-  ImportResultOut,
-} from '@nelavista/api-client';
+import type { ImportListOut, ImportReportOut, ImportResultOut } from '@nelavista/api-client';
+import {
+  Badge,
+  Banner,
+  Button,
+  EmptyState,
+  ErrorState,
+  PageHeader,
+  Panel,
+  Skeleton,
+  Textarea,
+} from '@nelavista/ui';
+import { FileJson, Upload } from 'lucide-react';
 import * as React from 'react';
 
 import { ApiError, http } from '../lib/http';
@@ -61,148 +69,184 @@ export function Imports(): JSX.Element {
 
   return (
     <div className="nv-stack">
-      <h1 className="nv-h1">Import runs</h1>
-      <p className="nv-muted">
-        Dry-run first. An apply writes rows and keeps this report as its receipt; nothing here reads the
-        V1 database.
-      </p>
+      <PageHeader
+        eyebrow="Data"
+        title="Import runs"
+        description="Dry-run first. An apply writes rows and keeps this report as its receipt; nothing here reads the V1 database."
+        actions={
+          <Badge tone="info">
+            <FileJson aria-hidden="true" size={13} /> JSON export
+          </Badge>
+        }
+      />
 
-      <section className="nv-card">
-        <h2 className="nv-h2">Paste the V1 export</h2>
-        <div>
-          <label className="nv-label" htmlFor="import-file">
-            Or choose the JSON file
-          </label>
-          <input
-            accept="application/json,.json"
-            id="import-file"
-            type="file"
-            onChange={(event) => {
-              const file = event.target.files?.[0];
-              if (!file) return;
-              void file.text().then(setData);
-            }}
+      <Panel title="Paste the V1 export" actions={<Upload aria-hidden="true" size={16} />}>
+        <div className="nv-stack">
+          <div>
+            <label className="nv-label" htmlFor="import-file">
+              Or choose the JSON file
+            </label>
+            <input
+              accept="application/json,.json"
+              id="import-file"
+              type="file"
+              onChange={(event) => {
+                const file = event.target.files?.[0];
+                if (!file) return;
+                void file.text().then(setData);
+              }}
+            />
+          </div>
+          <Textarea
+            hint="Paste the whole export. Nothing is sent until you run it."
+            id="import-data"
+            label="Export JSON"
+            placeholder='{"users": [...], "courses": [...]}'
+            rows={10}
+            value={data}
+            onChange={(event) => setData(event.target.value)}
           />
+          <div className="nv-row">
+            <label className="nv-check">
+              <input
+                checked={mode === 'dry_run'}
+                name="import-mode"
+                type="radio"
+                onChange={() => setMode('dry_run')}
+              />
+              Dry run (read-only)
+            </label>
+            <label className="nv-check">
+              <input
+                checked={mode === 'apply'}
+                name="import-mode"
+                type="radio"
+                onChange={() => setMode('apply')}
+              />
+              Apply
+            </label>
+          </div>
+          {mode === 'apply' ? (
+            <Banner tone="warning">
+              <p>
+                Apply writes to the database. Check the dry-run report first; this cannot be undone from here.
+              </p>
+            </Banner>
+          ) : null}
+          {error ? (
+            <Banner tone="danger">
+              <p>{error}</p>
+            </Banner>
+          ) : null}
+          <div>
+            <Button disabled={busy || !data.trim()} type="button" onClick={() => void run()}>
+              {busy ? 'Running…' : mode === 'apply' ? 'Apply this import' : 'Run the dry run'}
+            </Button>
+          </div>
         </div>
-        <textarea
-          className="nv-textarea"
-          placeholder='{"users": [...], "courses": [...]}'
-          rows={10}
-          value={data}
-          onChange={(event) => setData(event.target.value)}
-        />
-        <div className="nv-row">
-          <label className="nv-check">
-            <input
-              checked={mode === 'dry_run'}
-              name="import-mode"
-              type="radio"
-              onChange={() => setMode('dry_run')}
-            />
-            Dry run (read-only)
-          </label>
-          <label className="nv-check">
-            <input
-              checked={mode === 'apply'}
-              name="import-mode"
-              type="radio"
-              onChange={() => setMode('apply')}
-            />
-            Apply
-          </label>
-        </div>
-        {mode === 'apply' ? (
-          <p className="nv-error">
-            Apply writes to the database. Check the dry-run report first; this cannot be undone from here.
-          </p>
-        ) : null}
-        {error ? <p className="nv-error">{error}</p> : null}
-        <button className="nv-button" disabled={busy || !data.trim()} type="button" onClick={() => void run()}>
-          {busy ? 'Running…' : mode === 'apply' ? 'Apply this import' : 'Run the dry run'}
-        </button>
-      </section>
+      </Panel>
 
       {report ? (
-        <section className="nv-card">
-          <div className="nv-row nv-row--between">
-            <h2 className="nv-h2">Run {report.run_id}</h2>
-            <span className="nv-tag" data-tone={report.balanced ? 'ok' : 'bad'}>
+        <Panel
+          title={`Run ${report.run_id}`}
+          actions={
+            <Badge
+              status={report.balanced ? 'balanced' : 'mismatch'}
+              tone={report.balanced ? 'success' : 'danger'}
+            >
               {report.balanced ? 'Balanced' : 'Mismatch'}
-            </span>
-          </div>
-          <table className="nv-table">
-            <thead>
-              <tr>
-                <th>Section</th>
-                <th>V1 expected</th>
-                <th>V2 actual</th>
-                <th>Skipped</th>
-                <th>Errors</th>
-                <th>Match</th>
-              </tr>
-            </thead>
-            <tbody>
-              {Object.entries(report.sections).map(([section, row]) => (
-                <tr key={section}>
-                  <td>{section}</td>
-                  <td>{row.expected ?? '—'}</td>
-                  <td>{row.actual}</td>
-                  <td>{row.skipped}</td>
-                  <td>{row.errors}</td>
-                  <td>
-                    <span className="nv-tag" data-tone={row.matched ? 'ok' : 'bad'}>
-                      {row.matched ? 'match' : 'differs'}
-                    </span>
-                  </td>
+            </Badge>
+          }
+        >
+          <div className="nv-table-wrap">
+            <table className="nv-table">
+              <thead>
+                <tr>
+                  <th>Section</th>
+                  <th>V1 expected</th>
+                  <th>V2 actual</th>
+                  <th>Skipped</th>
+                  <th>Errors</th>
+                  <th>Match</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </section>
+              </thead>
+              <tbody>
+                {Object.entries(report.sections).map(([section, row]) => (
+                  <tr key={section}>
+                    <td>{section}</td>
+                    <td>{row.expected ?? '—'}</td>
+                    <td>{row.actual}</td>
+                    <td>{row.skipped}</td>
+                    <td>{row.errors}</td>
+                    <td>
+                      <Badge
+                        status={row.matched ? 'match' : 'differs'}
+                        tone={row.matched ? 'success' : 'danger'}
+                      >
+                        {row.matched ? 'Match' : 'Differs'}
+                      </Badge>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </Panel>
       ) : null}
 
-      <section className="nv-card">
-        <h2 className="nv-h2">History</h2>
-        {runs.resource.status === 'loading' ? <p className="nv-muted">Loading…</p> : null}
-        {runs.resource.status === 'error' ? <p className="nv-error">{runs.resource.message}</p> : null}
-        {runs.resource.status === 'ready' ? (
-          <table className="nv-table">
-            <thead>
-              <tr>
-                <th>Run</th>
-                <th>Mode</th>
-                <th>Status</th>
-                <th>Started</th>
-                <th>Finished</th>
-                <th />
-              </tr>
-            </thead>
-            <tbody>
-              {runs.resource.data.runs.map((row) => (
-                <tr key={row.id}>
-                  <td>{row.id}</td>
-                  <td>{row.mode}</td>
-                  <td>{row.status}</td>
-                  <td>{when(row.started_at)}</td>
-                  <td>{when(row.finished_at)}</td>
-                  <td>
-                    <button className="nv-button nv-button--ghost" type="button" onClick={() => void inspect(row.id)}>
-                      Report
-                    </button>
-                  </td>
-                </tr>
-              ))}
-              {runs.resource.data.runs.length === 0 ? (
-                <tr>
-                  <td colSpan={6} className="nv-muted">
-                    No import has run yet.
-                  </td>
-                </tr>
-              ) : null}
-            </tbody>
-          </table>
+      <Panel title="History">
+        {runs.resource.status === 'loading' ? <Skeleton lines={4} /> : null}
+        {runs.resource.status === 'error' ? (
+          <ErrorState
+            body={runs.resource.message}
+            action={
+              <Button size="sm" type="button" variant="secondary" onClick={runs.reload}>
+                Try again
+              </Button>
+            }
+          />
         ) : null}
-      </section>
+        {runs.resource.status === 'ready' ? (
+          runs.resource.data.runs.length === 0 ? (
+            <EmptyState
+              body="No import has run yet. Paste an export above and start with a dry run."
+              icon={FileJson}
+              title="No runs"
+            />
+          ) : (
+            <div className="nv-table-wrap">
+              <table className="nv-table">
+                <thead>
+                  <tr>
+                    <th>Run</th>
+                    <th>Mode</th>
+                    <th>Status</th>
+                    <th>Started</th>
+                    <th>Finished</th>
+                    <th />
+                  </tr>
+                </thead>
+                <tbody>
+                  {runs.resource.data.runs.map((row) => (
+                    <tr key={row.id}>
+                      <td>{row.id}</td>
+                      <td>{row.mode}</td>
+                      <td>{row.status}</td>
+                      <td>{when(row.started_at)}</td>
+                      <td>{when(row.finished_at)}</td>
+                      <td>
+                        <Button size="sm" type="button" variant="ghost" onClick={() => void inspect(row.id)}>
+                          Report
+                        </Button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )
+        ) : null}
+      </Panel>
     </div>
   );
 }

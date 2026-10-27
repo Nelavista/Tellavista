@@ -8,13 +8,14 @@
  * completion button is.
  */
 import type { LessonCompletedOut, LessonOut } from '@nelavista/api-client';
+import { Badge, Banner, Button, ErrorState, PageHeader, Panel, Skeleton } from '@nelavista/ui';
+import { ArrowLeft, CheckCircle2, Clock, Lock } from 'lucide-react';
 import * as React from 'react';
 import { Link, useLocation, useParams } from 'react-router-dom';
 
 import { ApiError, http } from '../lib/http';
 import { parseLessonBody, type Block, type Inline } from '../lib/markdown';
 import { useApiResource } from '../lib/resource';
-import { ErrorNote, Skeleton } from '../ui';
 
 function InlineRuns({ runs }: { runs: Inline[] }): JSX.Element {
   return (
@@ -134,16 +135,20 @@ export function LessonReader(): JSX.Element {
   if (resource.status !== 'ready') {
     return (
       <div className="nv-stack">
-        <h1 className="nv-h1">Lesson</h1>
+        <PageHeader eyebrow="Skills" title="Lesson" />
         {resource.status === 'off' ? (
-          <p className="nv-banner">The skills journey is not switched on for this environment yet.</p>
+          <Banner tone="info">
+            <p>The skills journey is not switched on for this environment yet.</p>
+          </Banner>
         ) : (
-          <>
-            <ErrorNote message={resource.message} />
-            <button className="nv-button" type="button" onClick={reload}>
-              Try again
-            </button>
-          </>
+          <ErrorState
+            body={resource.message}
+            action={
+              <Button size="sm" type="button" variant="secondary" onClick={reload}>
+                Try again
+              </Button>
+            }
+          />
         )}
         <p className="nv-muted">
           <Link to="/skills">All skills</Link>
@@ -157,61 +162,89 @@ export function LessonReader(): JSX.Element {
   return (
     <div className="nv-stack">
       <p className="nv-muted">
-        <Link to={back}>Back to the path</Link>
+        <Link to={back}>
+          <ArrowLeft aria-hidden="true" size={14} /> Back to the path
+        </Link>
       </p>
 
-      <h1 className="nv-h1">{lesson?.title}</h1>
-      {lesson?.estimated_minutes ? (
-        <p className="nv-muted">About {lesson.estimated_minutes} minutes</p>
-      ) : null}
+      <PageHeader
+        eyebrow="Lesson"
+        title={lesson?.title ?? 'Lesson'}
+        description={lesson?.estimated_minutes ? `About ${lesson.estimated_minutes} minutes` : undefined}
+        actions={
+          <Badge
+            status={currentStatus}
+            tone={
+              completion
+                ? 'success'
+                : currentStatus === 'in_progress'
+                  ? 'info'
+                  : lesson?.unlocked
+                    ? 'neutral'
+                    : 'warning'
+            }
+          >
+            {completion
+              ? 'Complete'
+              : currentStatus === 'in_progress'
+                ? 'In progress'
+                : lesson?.unlocked
+                  ? 'Not started'
+                  : 'Locked'}
+          </Badge>
+        }
+      />
 
-      {error ? <ErrorNote message={error} /> : null}
+      {error ? (
+        <Banner tone="danger">
+          <p>{error}</p>
+        </Banner>
+      ) : null}
 
       {!lesson?.unlocked ? (
-        <p className="nv-banner">
-          This lesson is locked: finish the step before it in the path. You can still read it.
-        </p>
+        <Banner tone="warning">
+          <p>
+            <Lock aria-hidden="true" size={14} /> This lesson is locked: finish the step before it in the
+            path. You can still read it.
+          </p>
+        </Banner>
       ) : null}
 
-      <article className="nv-stack">
+      <article className="nv-reading">
         <Body blocks={parseLessonBody(lesson?.body_md ?? '')} />
       </article>
 
       {completion ? (
-        <section className="nv-card">
-          <h2 className="nv-h2">Lesson complete</h2>
+        <Panel title="Lesson complete" actions={<CheckCircle2 aria-hidden="true" size={16} />}>
           <p className="nv-muted">{completion.note}</p>
           <p>
             <Link to="/skills/my-learning">See your progress</Link>
           </p>
-        </section>
+        </Panel>
       ) : lesson?.unlocked ? (
-        <div className="nv-row">
-          {currentStatus === 'not_started' ? (
-            <button
-              className="nv-button"
-              disabled={busy}
-              type="button"
-              onClick={() => lesson && void act('start', lesson.id)}
-            >
-              {busy ? 'Starting…' : 'Start this lesson'}
-            </button>
-          ) : (
-            <button
-              className="nv-button"
-              disabled={busy}
-              type="button"
-              onClick={() => lesson && void act('complete', lesson.id)}
-            >
-              {busy ? 'Saving…' : 'Mark as complete'}
-            </button>
-          )}
-          <span className="nv-muted">
-            {currentStatus === 'in_progress' && !completion
-              ? 'Finish it when you are ready — finishing is progress, not proof.'
-              : 'A finished lesson counts as learning, never as verification.'}
-          </span>
-        </div>
+        <Panel title="Finish this lesson">
+          <div className="nv-row" style={{ alignItems: 'center' }}>
+            {currentStatus === 'not_started' ? (
+              <Button disabled={busy} type="button" onClick={() => lesson && void act('start', lesson.id)}>
+                {busy ? 'Starting…' : 'Start this lesson'}
+              </Button>
+            ) : (
+              <Button disabled={busy} type="button" onClick={() => lesson && void act('complete', lesson.id)}>
+                {busy ? 'Saving…' : 'Mark as complete'}
+              </Button>
+            )}
+            <span className="nv-muted">
+              {currentStatus === 'in_progress' && !completion ? (
+                <>
+                  <Clock aria-hidden="true" size={13} /> Finish it when you are ready — finishing is progress,
+                  not proof.
+                </>
+              ) : (
+                'A finished lesson counts as learning, never as verification.'
+              )}
+            </span>
+          </div>
+        </Panel>
       ) : null}
     </div>
   );

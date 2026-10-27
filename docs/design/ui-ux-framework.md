@@ -8,16 +8,18 @@
 | Last updated | 2026-10-27 |
 | Companion documents | `docs/adr/0001-v2-stack.md`, `docs/architecture/01-target-structure.md`, `CONTRIBUTING.md`, `RUN-LOCALLY.md` |
 
-> **Gate 2 pending.** `docs/v2-ui/DESIGN-DIRECTION.md` proposes a different
-> surface/theme model (Ink + Paper) and a larger public-page scope. Until that
-> direction is approved, this guide remains the current guard. After approval,
-> update the conflicting sections here in the same change.
+> **Gate 2 approved 2026-10-27.** The Ink + Paper model in
+> `docs/v2-ui/DESIGN-DIRECTION.md` is the current visual direction. This guide is
+> the engineering guard for that direction; the route contract lives in
+> `docs/v2-ui/ROUTE-MAP.md`. Where this file and those two disagree, the approved
+> direction and route map win, and this file is corrected in the same change.
 >
 > This is the working guide for anyone changing a V2 screen. It is the project-specific version of the master UI/UX framework. The order of authority is:
 >
 > 1. The live brand tokens in `packages/design-tokens/src/index.ts`.
-> 2. This document.
-> 3. The generic framework, where this document is silent.
+> 2. `docs/v2-ui/DESIGN-DIRECTION.md` and `docs/v2-ui/ROUTE-MAP.md`.
+> 3. This document.
+> 4. The generic framework, where this document is silent.
 >
 > If a rule here is wrong for the product, change this file in the same pull request that changes the UI. Do not leave the guide and the code disagreeing.
 
@@ -59,83 +61,78 @@ This section fills the project brief that the generic framework leaves blank. Tr
 | Language | TypeScript 5.6, `strict` and `noUncheckedIndexedAccess` | Mobile uses TypeScript 5.3 with Expo's base config. |
 | Routing | React Router 6.28 in web; a small in-repo hash router in admin | Do not add React Router to admin without a concrete need. |
 | Styling | Plain CSS plus CSS custom properties from `@nelavista/design-tokens` | Tailwind and CSS-in-JS are deliberately not in use yet. |
-| Tokens | `packages/design-tokens/src/index.ts`; web bridge in `apps/web/src/lib/theme.ts` | Admin currently has its own hard-coded palette and must adopt the bridge. |
-| Shared React primitives | `packages/ui` currently exports only `VersionSwitcher`; web has a local `apps/web/src/ui.tsx` | Migrate reusable primitives to `packages/ui`; do not copy them between apps. |
+| Tokens | `packages/design-tokens/src/index.ts`; shared bridge in `packages/ui/src/theme.ts` | Both apps apply the same Ink/Paper tokens and import the shared CSS. |
+| Shared React primitives | `packages/ui` exports the shared primitives, theme bridge, shared CSS and fonts; `apps/web/src/ui.tsx` is a re-export alias | Add a primitive to `packages/ui`; do not copy it between apps. |
 | Tests | Vitest 2.1 + jsdom + React DOM | No Testing Library, axe, or Playwright yet. Add them when a component test needs them. |
 | Mobile | Expo 52, React Native 0.76.5, Expo SQLite, secure store, notifications | Shares tokens, not web components. |
 
 ### 1.3 Brand and tokens
 
-The current palette is the brand starting point, seeded from V1. It is authoritative until a brand owner replaces it.
+The approved palette is **Ink + Paper**: one token system with two designed
+surfaces, not two brands. `docs/v2-ui/DESIGN-DIRECTION.md` holds the full values
+and contrast checks; `packages/design-tokens/src/index.ts` is the only source the
+code reads.
 
-| Token | Value | Role |
+| Surface | Used for | Default |
 |---|---|---|
-| `colors.bg` | `#050810` | App background |
-| `colors.surface` | `#0e1420` | Panels, cards, raised surfaces |
-| `colors.border` | `#1f2a3a` | Hairlines and subtle dividers |
-| `colors.text` | `#f0f3f8` | Primary text |
-| `colors.textMuted` | `#9fb0c6` | Secondary text, labels, metadata |
-| `colors.accent` | `#00d1ff` | Primary interaction and focus |
-| `colors.accentStrong` | `#007bff` | Pressed or high-emphasis accent |
-| `colors.success` | `#22c55e` | Success only |
-| `colors.warning` | `#f59e0b` | Warning only |
-| `colors.danger` | `#ef4444` | Error and destructive actions only |
+| **Paper** | Public marketing, legal, long-form reading, printable transcript | Public pages |
+| **Ink** | Student app, admin, auth side panels, dense data | Signed-in app and admin |
 
-**Brand override.** V2 is intentionally a dark, near-black product with a cyan accent. This overrides the generic framework's ban on near-black backgrounds with saturated accents as a default. The parts of that rule that still apply are: one accent, no glow, no decorative gradient, no second accent, and no more than about 10% of the visible surface carrying the accent.
-
-**Current gaps to close before large UI work:**
-
-- There is no neutral ramp beyond the five surface/text values, no `info` semantic color, no `borderStrong`, no `focusRing`, and no `accentContrast` text token.
-- Spacing stops at 32px. Larger layout spacing must be added as tokens, not written as raw values.
-- There is no elevation, motion, z-index, breakpoint, or content-width token.
-- Admin hard-codes a different palette (`#0b0e13`, `#131820`, `#7dd3fc`, `#4ade80`, and so on) and does not call `applyTheme`. This is the largest visual inconsistency in V2.
-- Web CSS still carries fallback hex values inside `var()` and raw `10px`, `12px`, and `2px` values. Those are temporary, not a second token system.
-- `--nv-text-xl` is defined in the token object but not published by the web bridge. `--nv-muted`, `--nv-ok`, and `--nv-warn` exist only in admin.
+| Role group | Ink example | Paper example | Use |
+|---|---|---|---|
+| `bg` | `#0B0D0C` | `#F7F3E8` | Page background |
+| `surface` / `surfaceRaised` / `surfaceSunken` | `#111411` / `#171B17` / `#080A09` | `#EFE9DB` / `#E4DCCB` / `#FBF8F0` | Panels, menus, wells |
+| `border` / `borderStrong` | `#2E362E` / `#465246` | `#CFC5B2` / `#9D927E` | Hairlines and control boundaries |
+| `text` / `textMuted` / `textSubtle` | `#F1EEE4` / `#A9B0A4` / `#737D72` | `#171712` / `#5E6258` / `#7E8277` | Body, secondary, metadata |
+| `accent` / `accentStrong` / `accentContrast` | `#F06A3A` / `#D94E1F` / `#160B06` | `#B33A12` / `#8F2D0D` / `#FFF8F0` | Action, active nav, focus |
+| `success` / `warning` / `danger` / `info` | `#3DD68C` / `#F5B942` / `#FF5D5D` / `#6FB7FF` | `#1F7A4D` / `#8A5A00` / `#B42318` / `#1D5F9E` | Status only |
 
 **Rules for extending tokens:**
 
 1. Add the token in `packages/design-tokens`, not in a component.
-2. Publish it through the web/admin bridge so every app receives it.
-3. Verify contrast against the surfaces it will be used on.
+2. Publish it through the shared bridge (`packages/ui/src/theme.ts` and the CSS
+   variable layer) so every app receives it.
+3. Verify contrast against the surfaces it will be used on in **both** themes.
 4. Remove the hard-coded value it replaces in the same pull request.
-5. Do not add a third palette. If admin needs a lighter accent for dense tables, add `accentSubtle` or `accentText` as a named token; do not fork the palette.
+5. Do not add a third palette. If a dense admin table needs a quieter accent, add
+   a named role; do not fork the palette.
 
-**Minimum token set to add before the first redesign:**
-
-| Group | Add |
-|---|---|
-| Colour | `surfaceRaised`, `surfaceSunken`, `borderStrong`, `textSubtle`, `focusRing`, `info`, `accentContrast` |
-| Spacing | `3xl` 40, `4xl` 48, `5xl` 64, `6xl` 80, `7xl` 96 |
-| Type | Publish the existing `xl` size; add line-height tokens and a tabular-numerals utility. Revise the whole scale to a 1.2-1.25 ratio in one token change rather than adding near-duplicate sizes. |
-| Shape | `xs` 4; elevation levels 1 and 2 (neutral, no more than 12% opacity) |
-| Motion | duration `instant` 90, `fast` 140, `base` 200, `slow` 280; `easeOut` and `easeIn` |
-| Layering | `nav`, `dropdown`, `overlay`, `dialog`, `toast` |
-| Layout | `reading` 680, `app` 1120, `admin` 1360, `auth` 420, `touchMin` 44 |
-| Breakpoints | `sm` 375, `md` 768, `lg` 1024, `xl` 1280, `2xl` 1440; export as JS constants because media queries cannot read CSS variables |
-
-Colour values for the new roles must be derived from the existing palette and contrast-checked against `bg` and `surface`. Do not change the existing brand values in the same pull request as a feature.
+**Theme rules:** no pure black or pure white; no auto-inversion; the accent is
+re-mixed per surface so contrast holds; images are not tinted per theme. Public
+pages respect `prefers-color-scheme` on a first visit; the signed-in app defaults
+to Ink; the toggle persists.
 
 ### 1.4 Typography
 
-The current token is a system font stack: `system-ui, -apple-system, Segoe UI, Roboto, sans-serif`, with sizes 13, 15, 18, 24, and 32.
+Three self-hosted, subset families ship with the shared UI package:
 
-Treat the current system stack as a deliberate zero-download choice for a low-bandwidth PWA, not an unexamined default. Keep it until a brand face is supplied. Do not silently replace it with Inter, Roboto, or Arial.
+| Role | Family | Use |
+|---|---|---|
+| Display / editorial | **Instrument Serif** (400, italic) | Public headings and one emphasized phrase; never whole paragraphs |
+| UI / body | **Instrument Sans** (400-700) | App UI, forms, public body, dense tables |
+| Data / metadata | **IBM Plex Mono** (400-600) | Course codes, dates, rates, stamps, ledger values, keyboard hints |
 
-If a brand face is added later:
+All three are open-source and self-hosted under
+`packages/ui/src/fonts`; do not load them from a third-party CDN. Subset Latin,
+use `font-display: swap`, preload only the display regular and the UI regular,
+and keep the metric-compatible fallbacks declared in the token layer.
 
-- Use **Instrument Sans** for UI and reading, because it is compact, legible at small sizes, and has a humanist tone that does not look like a generic SaaS template.
-- Use **JetBrains Mono** for code, identifiers, and ledger-like values.
-- Self-host and subset both, use `font-display: swap`, and provide a metric-matched fallback.
-- Record the decision in `packages/design-tokens` and in this file.
+This is deliberately different from V1's Bricolage Grotesque / DM Sans /
+JetBrains Mono trio. Do not carry those families into V2, and do not replace the
+approved faces with Inter, Roboto, or Arial as an unexamined default.
 
-The existing 13/15/18/24/32 scale is a known deviation from the 1.2-1.25 ratio. Do not add more arbitrary sizes. If the scale is revised, do it as a token change with a visual review, not inside a feature.
+The type scale is a 1.25 ratio published as tokens. Do not add arbitrary sizes
+inside a feature; revise the scale as one token change with a visual review.
 
 ### 1.5 Shape and elevation
 
-- Radius: `sm` 8, `md` 12, `lg` 20, `pill` 999.
-- Use 8 for controls and inputs, 12 for panels and tables, 20 only for large surfaces or the main action panel.
-- Unify admin and web radii. Admin currently uses 8 and 12 while web uses 8 and 20 for the same kinds of objects.
-- No shadows by default. If elevation is needed, use at most two neutral levels at no more than 12% opacity. Prefer borders and surface contrast.
+- Radius: `stamp` 2, `control` 4, `panel` 8, `dialog` 12, `pill` 999.
+- Use 4 for buttons and inputs, 8 for panels, tables and drawers, 12 for dialogs.
+  Pill is only for a filter or chip that is genuinely toggleable.
+- The sharper radii are intentional: a 4px control and an 8px panel read as a
+  working tool. Do not round every surface.
+- No shadows by default. Dialogs and drawers may use one neutral shadow at
+  10-12% opacity plus a scrim. Prefer borders and surface contrast.
 - No glassmorphism, backdrop blur, glow, or colored shadow.
 
 ### 1.6 Users and context
@@ -154,39 +151,22 @@ The existing 13/15/18/24/32 scale is a known deviation from the 1.2-1.25 ratio. 
 
 ### 1.7 Screen inventory and anchors
 
-Every screen gets one anchor. This table is the default; if a screen needs a different anchor, write the reason in the pull request.
+The route contract is `docs/v2-ui/ROUTE-MAP.md`. Do not add a screen outside it
+without updating that file first. The families are:
 
-| Surface | Screen | Job | Anchor |
-|---|---|---|---|
-| Web | `/` landing | Explain the promise and start signup | "Create your account" |
-| Web | `/signup`, `/login`, `/auth/*` | Complete authentication | The next form action |
-| Web | `/onboarding` | Collect the minimum profile and course data | The next incomplete step |
-| Web | `/home` | Show what to do next | The next action, not a welcome heading |
-| Web | `/academia` | Answer "what am I studying and what should I do next?" | "One thing to do next" |
-| Web | `/academia/materials`, `/academia/materials/:id` | Find and read course material | Continue reading / open material |
-| Web | `/academia/ask` | Ask a question about study material | The question field and answer |
-| Web | `/academia/cbt` | Practise under exam conditions | Start or resume a paper |
-| Web | `/skills`, `/skills/:slug`, `/skills/paths/:slug` | Choose and progress through a skill path | Continue the current path |
-| Web | `/skills/lessons/:id` | Complete a lesson | The lesson content and "Complete lesson" |
-| Web | `/skills/practice` | Do a practice task | The task and submit action |
-| Web | `/skills/my-learning` | See progress across learning | The most useful next step |
-| Web | `/verification` | Understand proof status and what is missing | Current status and next assessment |
-| Web | `/verification/assessments/:slug` | Sit an assessment | The current question and timer |
-| Web | `/verification/attempts/:id` | Understand a result | The result and next action |
-| Web | `/opportunities` | Find work that fits | The best match with rate and fit |
-| Web | `/opportunities/:id` | Decide whether to apply | Apply / save action |
-| Web | `/work`, `/work/:id` | Do and submit assigned work | The active assignment and deadline |
-| Web | `/earnings` | Understand money owed and paid | Available balance, with period and comparison |
-| Web | `/transcript` | See verified academic record | The verified record |
-| Web | `/talent`, `/talent/:id` | Share proof with an employer | The proof summary and share action |
-| Web | `/settings` | Change account preferences safely | "Save changes" |
-| Web | `/campus` | Campus-specific content | The relevant campus item |
-| Admin | `#/review` | Clear the quality queue | Oldest pending review / queue count |
-| Admin | `#/money` | Resolve payout and ledger exceptions | The exception or outstanding total |
-| Admin | `#/users` | Find and act on an account | Search result / selected user |
-| Admin | `#/audit` | Investigate a change | The most recent critical event |
-| Admin | `#/security` | Manage 2FA and security events | Current risk or required action |
-| Admin | `#/content`, `#/imports`, `#/platform`, `#/opportunities`, `#/work` | Operate the platform | The table or queue that needs action |
+| Surface | Routes | Job |
+|---|---|---|
+| Public | `/`, `/features`, `/how-it-works`, `/about`, `/contact`, `/faq`, `/legal/privacy`, `/legal/terms`, `/legal/contributor-terms`, `/offline`, `*` | Explain the promise, answer objections, give a real 404 and offline state |
+| Auth | `/signup`, `/login`, `/auth/verify`, `/auth/reset` | Complete authentication with a visible next step |
+| Student app | `/home`, `/onboarding`, `/academia`, `/academia/materials`, `/academia/materials/:materialId`, `/academia/ask`, `/academia/cbt`, `/academia/cbt/history`, `/academia/courses/:courseCode`, `/campus` | Learn and practise |
+| Student app | `/skills`, `/skills/:skillSlug`, `/skills/paths/:pathSlug`, `/skills/lessons/:lessonSlug`, `/skills/practice/:templateId`, `/skills/my-learning`, `/verification`, `/verification/assessments/:assessmentSlug`, `/verification/attempts/:attemptId`, `/verification/practical/:taskSlug`, `/transcript` | Build and prove |
+| Student app | `/opportunities`, `/opportunities/:slug`, `/opportunities/applications`, `/work`, `/work/assignments/:assignmentId`, `/earnings`, `/talent` | Find, deliver and earn |
+| Utility | `/notifications`, `/settings`, `/settings/security`, `/settings/notifications`, `/settings/data`, `/share/:token` | Keep the account safe and share proof |
+| Admin | `#/overview`, `#/audit`, `#/imports`, `#/users`, `#/waitlist`, `#/opportunities`, `#/work`, `#/review`, `#/money`, `#/content`, `#/campus`, `#/platform`, `#/security` | Operate and configure |
+
+Every screen gets one anchor. If a screen needs a different anchor, write the
+reason in the pull request. Marketing pages are separate routes, never one long
+page of `#section` anchors.
 
 ### 1.8 Real data shapes
 
@@ -223,11 +203,16 @@ Done means:
 ### 1.11 Out of scope
 
 - V1 UI changes, V1 templates, or V1 CSS.
-- A marketing-site redesign beyond the V2 landing page.
 - Mobile launch work; the mobile app is post-launch.
-- A light theme. V2 is dark-first until a brand owner defines a light palette; do not auto-invert.
+- A second design language for admin or a third surface theme. Ink and Paper are
+  the only themes; do not auto-invert or invent a third palette.
 - A Tailwind, CSS-in-JS, or component-kit migration as part of a feature.
 - New backend endpoints, auth flows, or payment behavior invented by the UI.
+- The newsletter and the platform announcement banner until they are approved
+  with a backend and owner.
+- Student material upload and PDF analysis. The replacement is curated materials,
+  Ask, CBT and the transcript evidence trail; do not ship an upload affordance
+  that cannot complete.
 
 ---
 
@@ -260,8 +245,8 @@ This section is the generic framework's Section 1, tightened for Nelavista. Trea
   - Admin data surfaces: 1280-1440px.
   - Auth forms: 400-440px.
   - Mobile: full width with 16px gutters.
-- The current web `.nv-main` max-width of 720px is a reading width. Do not use it for every dashboard; add a content-width token or a page-level width class.
-- Admin uses a 220px sidebar; keep the content area fluid and let tables use the available width.
+- Content widths are tokens: reading 680px, student app 1120px, admin 1360px, auth 420px. Do not use the reading width for every dashboard.
+- Admin uses a 248px grouped sidebar; keep the content area fluid and let tables use the available width.
 
 ### 2.2 Cards, metrics, and dashboards
 
@@ -280,7 +265,7 @@ This section is the generic framework's Section 1, tightened for Nelavista. Trea
 - Every metric shows its value, unit, period, and a comparison (change, benchmark, or trend). One primary metric per view is larger than the rest.
 - Prefer dense, scannable structures: tables with sticky headers, ranked lists, inline sparklines, key-value rows, and timelines.
 - Information hierarchy has at least three clearly different levels of emphasis on every screen, built from size, weight, color, and position together.
-- The current `nv-card` is used for sections, lists, and single records. Audit each use: keep it for a record or an action panel; replace it with a heading, a ruled list, or a table for a group of content.
+- Audit every `nv-card`: keep it for a record or an action panel; replace it with a heading, a ruled list, or a table for a group of content.
 
 ### 2.3 Color, gradients, and effects
 
@@ -297,7 +282,7 @@ This section is the generic framework's Section 1, tightened for Nelavista. Trea
 
 - A gradient is allowed only when it encodes data (a sequential scale in a chart or heatmap) or protects legibility (a scrim over a photograph).
 - The skeleton shimmer is a functional loading indicator, not decoration. Keep it, but respect `prefers-reduced-motion`.
-- V2's dark background and cyan accent are brand values and override the generic near-black/saturated-accent ban. Keep the accent under about 10% of the visible surface and use it for interaction or importance only.
+- The signal orange is a brand value. Keep it under about 10% of the visible surface and use it for interaction or importance only. It is re-mixed per theme so contrast holds; it is never a background wash.
 
 **Required**
 
@@ -321,14 +306,13 @@ This section is the generic framework's Section 1, tightened for Nelavista. Trea
 
 **Required**
 
-- A type scale with a ratio between 1.2 and 1.25, defined as tokens. The current 13/15/18/24/32 scale is a known deviation; do not add more sizes until it is revised as a token change.
-- Base size 15px for applications, 16-18px for reading content.
+- A type scale with a ratio of 1.25, defined as tokens. Do not add a size inside a feature; revise the scale as one token change with a visual review.
+- Base size 15px for applications, 16px for reading content, 14px for dense admin tables.
 - Line height 1.1-1.2 for headings, 1.5-1.6 for body.
 - Body text targets 7:1 contrast. Secondary text, placeholders, and disabled-but-readable text meet 4.5:1.
 - Tabular numerals (`font-variant-numeric: tabular-nums`) for every aligned figure, price, count, and table column.
 - A distinct, legible monospace for code, identifiers, and ledger-like values.
-- Sentence case. Specific, plain copy.
-- Admin table headers currently use uppercase and letter-spacing. Change them to sentence case; the uppercase treatment is exactly the banned eyebrow pattern.
+- Sentence case. Specific, plain copy. Mono metadata labels may be uppercase at 11-12px with 0.08em tracking; they are a data label, not a decorative eyebrow above every heading.
 
 ### 2.5 Decoration
 
@@ -430,11 +414,11 @@ Every motion must answer a question: what changed, where did it come from, or wh
 | Accessible primitives | Native HTML first; local primitives in `packages/ui`; Radix UI only when a widget needs full APG behavior | Native elements are the most reliable and cheapest; Radix is unstyled and well-tested when a dialog, menu, or combobox needs it | Native/local now; Radix not installed |
 | Styling | CSS custom properties plus plain CSS | One token bridge already exists; no second styling system while the UI is being stabilised | In use |
 | Styled kits | None | A kit's default theme would fight the brand and add bundle weight | Do not add without an ADR |
-| Motion | CSS transitions; Motion only for orchestration that CSS cannot express | CSS is sufficient for press, hover, reveal, and reduced motion | CSS now; Motion not installed |
+| Motion | CSS transitions; Motion for route-level and orchestration that CSS cannot express | CSS is sufficient for press, hover, reveal and reduced motion; Motion is used behind `prefers-reduced-motion` | CSS + Motion installed |
 | Forms | Controlled React inputs; React Hook Form + Zod only when a form outgrows the current pattern | The existing forms are small; add a form library when validation and field arrays justify it | Controlled now |
 | Tables | Semantic `<table>`; TanStack Table + Virtual only for large admin grids (roughly >100 rows) | Most tables are small; a table library is not worth the first-load cost until it is | Semantic now |
 | Charts | Hand-built SVG + D3 scales for sparklines and small marks; Recharts lazy-loaded for standard dashboards | Keeps the first load small and the marks controllable | SVG now |
-| Icons | Lucide if an icon set is needed | One consistent set, tree-shakeable, good accessibility defaults | Not installed |
+| Icons | Lucide | One consistent set, tree-shakeable, good accessibility defaults, no emoji | Installed |
 | Dates | Native `Intl`; `date-fns` only if date arithmetic becomes complex | `Intl` covers formatting and relative time | `Intl` now |
 | Server state | Existing `useApiResource` / `http`; TanStack Query only if caching and invalidation become the bottleneck | Avoid a second data layer before it is needed | Existing hooks |
 | Client state | Local state and context; no Redux | The app is route-oriented and small | Existing context |
@@ -498,13 +482,16 @@ Dependencies point downward only:
 | Path | What belongs there | What does not |
 |---|---|---|
 | `packages/design-tokens` | Primitive and semantic tokens; a CSS-variable bridge; no React | Components, app-specific colours |
-| `packages/ui` | Cross-app React primitives and patterns that are genuinely shared by web and admin | Data fetching, route logic, mobile-only components |
-| `apps/web/src/ui.tsx` | Temporary local primitives while the shared set is built | New copies of components that already exist in `packages/ui` |
+| `packages/ui` | Cross-app React primitives, theme bridge, shared CSS and self-hosted fonts | Data fetching, route logic, mobile-only components |
+| `apps/web/src/ui.tsx` | Re-export aliases so screens keep importing `../ui` | A second implementation or new local primitives |
 | `apps/web/src/routes` | Page composition, feature hooks, route-level states | Reusable design-system primitives |
 | `apps/admin/src/components` | Admin shell and admin-only patterns | A second palette or a second button system |
 | `apps/mobile/src` | React Native screens, native patterns, offline queue | Web DOM components |
 
-`packages/ui` currently exports only `VersionSwitcher`. Do not pretend it is a design system yet. Build it incrementally, one real shared component at a time, and delete the local duplicate when the shared one lands.
+`packages/ui` is the shared design system for web and admin: tokens are consumed
+through the theme bridge, primitives live in `components.tsx`, and shared CSS is
+imported from `styles.css`. Add a component there when both apps need it; keep
+admin-only composition in `apps/admin`. Do not fork a primitive into an app.
 
 ### 4.4 Data and state
 
@@ -548,13 +535,16 @@ V2 targets WCAG 2.2 AA.
 
 ### 5.2 Current accessibility gaps to fix
 
-- Web has no skip link and the top navigation has no active state.
-- Admin route changes use a hash router; move focus to the new screen heading and update `document.title` on route change.
-- Admin table headers are uppercase and small; raise the size and use sentence case.
-- The web and admin palettes diverge; contrast must be verified on the actual admin palette once it adopts tokens.
-- There is no automated axe check in CI. Add it when component tests are introduced.
-- Focus styles exist for inputs, selects, and buttons in web, but not for links or admin nav items. Add a shared `:focus-visible` rule.
-- `VersionSwitcher` uses inline styles; replace them with tokens when it is touched.
+- Admin and student shells now set `document.title` and move focus to `main` on
+  route change. Verify the focus move does not fight a form-level error focus.
+- There is no automated axe check in CI. Add it when component-level tests land.
+- Verify focus on every new link and shell nav item at 200% zoom and in
+  forced-colors mode; the shared `:focus-visible` rule exists but each screen must
+  be checked.
+- `VersionSwitcher` still uses inline styles; replace them with tokens when it is
+  touched.
+- The new public pages and the admin overview need a keyboard and reduced-motion
+  pass before launch.
 
 ### 5.3 Keyboard map
 
@@ -578,7 +568,9 @@ V2 targets WCAG 2.2 AA.
 - Set width and height (or aspect ratio) on every image and media element. Lazy-load everything below the fold. Prioritize exactly one above-the-fold image.
 - Split code by route. Lazy-load heavy components. Virtualize lists and tables beyond about 100 rows.
 - Avoid layout thrashing. Memoize only after measuring.
-- Self-host and subset fonts, with `font-display: swap` and a metric-matched fallback. The current system stack costs nothing; keep that advantage until a brand face is justified.
+- Self-host and subset fonts, with `font-display: swap` and metric-matched
+  fallbacks. The three approved families are subset and shipped from
+  `packages/ui/src/fonts`; do not add a fourth or load them from a CDN.
 - State the bundle impact of every dependency you add.
 - Keep the PWA shell offline-capable. Do not cache API responses; they can contain one student's work, earnings, or identity.
 - Test on a throttled connection, not only on localhost.
@@ -627,7 +619,9 @@ Capture screenshots at:
 - 320px wide for the worst-case mobile check
 - 200% text zoom for the overflow check
 
-V2 is dark-first, so dark is the required theme. Check forced-colors mode separately. If a light theme is added later, capture both.
+Check both themes where the surface supports them: Ink for the app and admin,
+Paper for public, legal and reading. The toggle must persist, and the public
+first visit respects `prefers-color-scheme`. Check forced-colors mode separately.
 
 ### 7.4 Definition of done
 
@@ -649,8 +643,12 @@ V2 is dark-first, so dark is the required theme. Check forced-colors mode separa
 ### 8.1 Student web
 
 - Design at 375px first, then widen. The primary action sits in the thumb zone.
-- The current top navigation has twelve links plus the version switcher and a sign-out button. Replace it with five primary destinations (Home, Learn, Verify, Work, Earn) and a "More" menu for the rest. Keep the version switcher out of the primary task path.
-- Use a persistent bottom bar on mobile only if it does not cover content; otherwise use a compact top bar and a "More" sheet.
+- The signed-in app uses a grouped left rail on desktop and a compact top bar
+  with a mobile sheet below 768px. The groups follow the journey, not a flat list
+  of twelve links: Home, Learn, Prove, Work, Account. Keep the version switcher
+  out of the primary task path.
+- Use a persistent bottom bar on mobile only if it does not cover content;
+  otherwise use the compact top bar and the sheet.
 - Reading screens: 65-character measure, 18px body, 1.6 line height, progress, previous/next, and a clear completion action.
 - Practice and assessment screens: one question at a time, timer visible but not alarming, save on every answer, resume after a drop, confirm before submitting.
 - Work screens: deadline, brief, rubric, submit, and review status in that order. Do not bury the deadline.
@@ -660,7 +658,8 @@ V2 is dark-first, so dark is the required theme. Check forced-colors mode separa
 
 ### 8.2 Admin
 
-- Desktop-first, 1280px and wider. The 220px sidebar is the navigation; the content area uses the remaining width.
+- Desktop-first, 1280px and wider. The 248px grouped sidebar is the navigation;
+  the content area uses the remaining width and tops out at 1360px.
 - Use tables, not card grids, for queues and records. Sticky headers on any table taller than the viewport.
 - Filters, sort, search, and selected tab live in the hash route so a link reproduces the view.
 - Provide density modes: compact 32px, default 40px, comfortable 48px. Default to 40px.
@@ -669,6 +668,10 @@ V2 is dark-first, so dark is the required theme. Check forced-colors mode separa
 - Money screens show the ledger reason, not just the amount. A payout exception must show what is wrong and what the reviewer can do.
 - Review screens show the submission exactly as the student sent it, the rubric, the automatic result, and the override reason field. An override requires a reason.
 - Status tags pair color with text. Do not rely on a colored dot alone.
+- The overview is a live read of existing queues, not invented metrics. If one
+  read fails, the rest of the screen still renders and the failed row says so.
+- Campus can publish but cannot list yet. Say that plainly and show the write
+  receipt; do not fake a published list.
 - Admin route changes move focus to the new `h1` and update the title.
 
 ### 8.3 Mobile (post-launch)
@@ -691,33 +694,36 @@ V2 is dark-first, so dark is the required theme. Check forced-colors mode separa
 
 ## 9. Current state and gaps
 
-This is the honest starting point. Fix these in the order that unblocks the most work.
+The design system, public pages, auth, app shell, student utility screens and
+admin shell are built. This is the remaining work, in the order that unblocks the
+most.
 
-| Area | Current state | Gap | Action |
-|---|---|---|---|
-| Tokens | 10 colours, 6 spacing stops, 4 radii, 5 type sizes | No neutral ramp, info, focus, border-strong, elevation, motion, z-index, breakpoints, content widths | Extend `packages/design-tokens` first |
-| Admin palette | Hard-coded `#0b0e13`, `#131820`, `#7dd3fc`, `#4ade80`, `#fbbf24` | Does not use the shared tokens; diverges from web | Adopt the token bridge; add named admin roles if needed |
-| Web primitives | Local `apps/web/src/ui.tsx` with Button, Field, Select, Skeleton, ErrorNote | Not shared; limited variants; no dialog, tabs, table, toast, or empty-state pattern | Move reusable primitives to `packages/ui` one at a time |
-| Cards | `nv-card` used for sections, lists, and single records | Card-inside-card and identical card stacks; weak hierarchy | Reserve cards for records/actions; use headings, ruled rows, tables |
-| Layout | Web `.nv-main` max-width 720px | App dashboards are too narrow; admin uses 1180px with no shared width token | Add content-width tokens; use 960-1200 for student apps, 1280-1440 for admin |
-| Navigation | Web top bar has 12 links plus version switcher and sign out; no active state | Overcrowded, no orientation, weak mobile ergonomics | Five primary destinations plus "More"; active shape/weight |
-| Typography | System stack; 13/15/18/24/32 | No brand face; scale has sub-1.2 gaps; admin uses uppercase table headers | Keep system stack deliberately; revise scale as a token change; sentence-case headers |
-| Colour | Near-black and cyan; `--nv-border` is very subtle | No `borderStrong`, `focusRing`, `info`; admin accent differs | Add roles; verify 3:1 for control borders |
-| Motion | Skeleton shimmer only | No duration/easing tokens; no reduced-motion coverage beyond skeleton | Add motion tokens; test reduced motion on every animation |
-| States | Many routes have loading/error/empty; feature-off is handled in places | Not every screen; partial/offline/stale are inconsistent | Audit each route against the state checklist |
-| Tests | Vitest route tests; no Testing Library or axe | No component-level keyboard or a11y tests | Add Testing Library + axe with the first shared component |
-| Admin a11y | Hash routes, uppercase headers, no skip link | Focus and title do not follow route changes; table headers are hard to scan | Add focus management, skip link, sentence-case headers |
-| Inline styles | `VersionSwitcher`, admin shell spacing | Bypasses tokens | Replace when touched |
-| Light theme | None; admin sets `color-scheme: dark` | Dark-only | Out of scope until brand defines a light palette |
-| Fonts | System stack | No brand font | Deliberate zero-download choice; revisit with brand |
+| Area | Current state | Remaining |
+|---|---|---|
+| Tokens | Ink + Paper palettes, type, spacing, radius, motion, z-index, breakpoints and layout widths live in `packages/design-tokens` and are published through the shared bridge | Keep the values and the guide in sync; verify contrast in both themes |
+| Primitives | Buttons, fields, textarea, select, checkbox, cards, panels, page headers, badges, stamps, banners, empty/error states, skeletons, spinner, avatar, theme toggle in `packages/ui` | Add a dialog/menu only when a real screen needs one |
+| Public pages | Landing, Features, How it works, About, Contact, FAQ, Privacy, Terms, Contributor terms, NotFound, Offline | Replace draft legal copy after counsel review; add the image assets named in `docs/v2-ui/IMAGE-PROMPTS.md` |
+| Auth | Login, Signup, Verify email, Reset password use the shared auth layout | Confirm the signed-in change-password endpoint before wiring it |
+| Student app | App shell, Home, Academia, Materials, Ask, CBT, CBT history, Course, Skills, My learning, Verification, Transcript, Opportunities, Applications, Work, Earnings, Talent, Campus, Notifications, Settings subroutes | Add the missing course/topic detail and CBT review endpoints; wire change-password when it exists |
+| Admin | Grouped shell, Overview, Audit, Waitlist, Campus, Imports, Users, Opportunities, Projects, Review, Money, Content, Platform, Security, 404 | Move the remaining admin screens (Opportunities, Projects, Review, Money, Content, Platform) to the shared primitives; add campus read and the missing admin actions |
+| States | New screens implement loading, empty, error and success; feature-off is a distinct state | Audit the older admin screens against the state checklist; add partial/stale/offline where they can occur |
+| Themes | Ink and Paper are both designed; the toggle persists; public first visit respects `prefers-color-scheme` | Verify every screen in both themes, forced colors and 200% zoom |
+| Typography | Instrument Sans, Instrument Serif and IBM Plex Mono are self-hosted and subset | Keep the fallback metrics and preloads correct |
+| Motion | Shared durations/easing and Motion route transitions; reduced-motion rules exist | Test every animation with `prefers-reduced-motion` |
+| Tests | Web route tests, the public-route suite and the admin sign-in test pass | Add theme persistence and admin unknown-hash tests; add Testing Library and axe with the first component test |
+| Accessibility | Skip links, landmarks, shared focus styles, labelled forms, route-change focus and document titles in both shells | Sentence-case table headers and a full keyboard/zoom pass |
 
-### 9.1 First five UI tasks
+### 9.1 Next UI tasks
 
-1. **Token foundation.** Add the missing semantic roles, spacing stops, content widths, motion, z-index, and focus tokens. Publish them through the web bridge and a new admin bridge.
-2. **Admin token adoption.** Delete the hard-coded admin palette, import the shared tokens, and verify contrast. This removes the largest visual inconsistency.
-3. **Shared primitives.** Move Button, Field, Select, ErrorNote, Skeleton, and a new EmptyState/PageHeader/StatusBadge into `packages/ui`. Keep the API small.
-4. **App shell and navigation.** Replace the twelve-link top bar with five primary destinations and a "More" menu. Add active states, a skip link, and route focus management.
-5. **Reference journey.** Redesign `/home` and `/academia` as the reference for the new system: one anchor, real data, all states, mobile-first, and no card stacks. Use that work to prove the tokens and primitives before touching every screen.
+1. **Finish admin.** Move the remaining admin screens (Opportunities, Projects,
+   Review, Money, Content, Platform) to the shared primitives and keep
+   Overview/Waitlist/Campus honest about missing reads.
+2. **Responsive and accessibility QA.** 320px, 375px, 768px, 1280px, 200% zoom,
+   keyboard-only, forced colors and reduced motion across both themes.
+3. **Tests.** Theme persistence, the admin unknown-hash 404 and the remaining
+   state transitions.
+4. **Assets and content.** Create the images named in `docs/v2-ui/IMAGE-PROMPTS.md`
+   and collect the missing business copy under “Needs my input”; do not invent it.
 
 ---
 

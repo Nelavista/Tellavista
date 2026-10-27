@@ -14,6 +14,16 @@
  * unrenderable task is first should still be able to finish the rest.
  */
 import type { AttemptOut, AttemptResultOut, AttemptTaskOut } from '@nelavista/api-client';
+import { Badge, Banner, Button, EmptyState, ErrorState, PageHeader, Panel, Skeleton } from '@nelavista/ui';
+import {
+  ArrowRight,
+  CheckCircle2,
+  ChevronDown,
+  ChevronUp,
+  ClipboardList,
+  Clock,
+  XCircle,
+} from 'lucide-react';
 import * as React from 'react';
 import { Link, useParams } from 'react-router-dom';
 
@@ -22,7 +32,6 @@ import { ApiError, http } from '../lib/http';
 import { buildAnswer, isAnswerValue, practiceControl, type PracticeControl } from '../lib/practice';
 import { formatDateTime } from '../lib/format';
 import { useSessionOptional } from '../lib/session';
-import { ErrorNote, Skeleton } from '../ui';
 
 type Value = string | string[] | number | null;
 
@@ -92,7 +101,13 @@ function Choice({
   onChange: (next: Value) => void;
 }): JSX.Element {
   const groupName = React.useId();
-  if (control.kind === 'unsupported') return <p className="nv-banner">{control.reason}</p>;
+  if (control.kind === 'unsupported') {
+    return (
+      <Banner tone="warning">
+        <p>{control.reason}</p>
+      </Banner>
+    );
+  }
 
   if (control.kind === 'choice') {
     const name = groupName;
@@ -141,18 +156,19 @@ function Choice({
   if (control.kind === 'ranking') {
     const order = Array.isArray(value) && value.length > 0 ? value : control.items;
     return (
-      <ol className="nv-list">
+      <ol className="nv-list nv-list--ruled">
         {order.map((item, index) => (
           <li className="nv-row nv-row--between" key={item}>
             <span>
-              {index + 1}. {item}
+              <span className="nv-muted nv-num">{index + 1}.</span> {item}
             </span>
             <span className="nv-row">
-              <button
+              <Button
                 aria-label={`Move ${item} up`}
-                className="nv-button nv-button--ghost"
                 disabled={index === 0}
+                size="sm"
                 type="button"
+                variant="ghost"
                 onClick={() => {
                   const next = [...order];
                   const [moved] = next.splice(index, 1);
@@ -161,13 +177,14 @@ function Choice({
                   onChange(next);
                 }}
               >
-                ↑
-              </button>
-              <button
+                <ChevronUp aria-hidden="true" size={15} />
+              </Button>
+              <Button
                 aria-label={`Move ${item} down`}
-                className="nv-button nv-button--ghost"
                 disabled={index === order.length - 1}
+                size="sm"
                 type="button"
+                variant="ghost"
                 onClick={() => {
                   const next = [...order];
                   const [moved] = next.splice(index, 1);
@@ -176,8 +193,8 @@ function Choice({
                   onChange(next);
                 }}
               >
-                ↓
-              </button>
+                <ChevronDown aria-hidden="true" size={15} />
+              </Button>
             </span>
           </li>
         ))}
@@ -204,54 +221,79 @@ function Choice({
 
 function Result({ result }: { result: AttemptResultOut }): JSX.Element {
   return (
-    <section className="nv-card" aria-live="polite">
-      <h2 className="nv-h2">
-        {result.expired ? 'This attempt expired' : result.passed ? 'Proved' : 'Not passed yet'}
-      </h2>
-      <p>
-        Score: {result.score}
-        {result.pass_threshold !== null && result.pass_threshold !== undefined
-          ? ` · pass mark ${result.pass_threshold}%`
-          : ''}
-      </p>
-      {result.expired ? (
-        <p className="nv-muted">
-          {result.message ??
-            'The sitting ran out of time and was graded as zero. Start a new one when you are ready.'}
+    <Panel
+      title={result.expired ? 'This attempt expired' : result.passed ? 'Proved' : 'Not passed yet'}
+      actions={
+        <Badge
+          status={result.passed ? 'verified' : 'at_risk'}
+          tone={result.expired ? 'warning' : result.passed ? 'success' : 'danger'}
+        >
+          {result.expired ? 'Expired' : result.passed ? 'Passed' : 'Not passed'}
+        </Badge>
+      }
+    >
+      <div className="nv-stack" aria-live="polite">
+        <p>
+          Score: {result.score}
+          {result.pass_threshold !== null && result.pass_threshold !== undefined
+            ? ` · pass mark ${result.pass_threshold}%`
+            : ''}
         </p>
-      ) : result.passed ? (
-        <p className="nv-muted">
-          Your badge is {result.verification_status ?? 'updated'} and a proved line was written to your
-          transcript.
-        </p>
-      ) : (
-        <p className="nv-muted">
-          A failed sitting never removes a badge you already hold, but it does use one of your attempts.
-          Review the answers below before trying again.
-        </p>
-      )}
+        {result.expired ? (
+          <p className="nv-muted">
+            {result.message ??
+              'The sitting ran out of time and was graded as zero. Start a new one when you are ready.'}
+          </p>
+        ) : result.passed ? (
+          <p className="nv-muted">
+            Your badge is {result.verification_status ?? 'updated'} and a proved line was written to your
+            transcript.
+          </p>
+        ) : (
+          <p className="nv-muted">
+            A failed sitting never removes a badge you already hold, but it does use one of your attempts.
+            Review the answers below before trying again.
+          </p>
+        )}
 
-      {result.tasks.length > 0 ? (
-        <ul className="nv-list">
-          {result.tasks.map((task) => (
-            <li key={task.task_id}>
-              <span className="nv-badge" data-status={task.correct ? 'verified' : 'at_risk'}>
-                {task.correct ? 'Correct' : 'Incorrect'}
-              </span>{' '}
-              {task.points}/{task.max_points}
-              {task.feedback ? <span className="nv-muted"> · {task.feedback}</span> : null}
-            </li>
-          ))}
-        </ul>
-      ) : null}
+        {result.tasks.length > 0 ? (
+          <ul className="nv-list nv-list--ruled">
+            {result.tasks.map((task) => (
+              <li key={task.task_id}>
+                <div className="nv-row nv-row--between">
+                  <Badge
+                    status={task.correct ? 'verified' : 'at_risk'}
+                    tone={task.correct ? 'success' : 'danger'}
+                  >
+                    {task.correct ? (
+                      <>
+                        <CheckCircle2 aria-hidden="true" size={13} /> Correct
+                      </>
+                    ) : (
+                      <>
+                        <XCircle aria-hidden="true" size={13} /> Incorrect
+                      </>
+                    )}
+                  </Badge>
+                  <span className="nv-num">
+                    {task.points}/{task.max_points}
+                  </span>
+                </div>
+                {task.feedback ? <p className="nv-muted">{task.feedback}</p> : null}
+              </li>
+            ))}
+          </ul>
+        ) : null}
 
-      <div className="nv-row">
-        <Link className="nv-button" to={`/verification/attempts/${result.attempt_id}`}>
-          Review the answers
-        </Link>
-        <Link to="/verification">Back to verification</Link>
+        <div className="nv-row">
+          <Link className="nv-button" to={`/verification/attempts/${result.attempt_id}`}>
+            Review the answers
+            <ArrowRight aria-hidden="true" size={15} />
+          </Link>
+          <Link to="/verification">Back to verification</Link>
+        </div>
       </div>
-    </section>
+    </Panel>
   );
 }
 
@@ -306,8 +348,10 @@ export function AssessmentSitting(): JSX.Element {
   if (sitting.status === 'off') {
     return (
       <div className="nv-stack">
-        <h1 className="nv-h1">Assessment</h1>
-        <p className="nv-banner">Verification is not switched on for this environment yet.</p>
+        <PageHeader eyebrow="Verification" title="Assessment" />
+        <Banner tone="info">
+          <p>Verification is not switched on for this environment yet.</p>
+        </Banner>
         <p className="nv-muted">
           <Link to="/home">Back to your home</Link>
         </p>
@@ -318,8 +362,8 @@ export function AssessmentSitting(): JSX.Element {
   if (sitting.status === 'error') {
     return (
       <div className="nv-stack">
-        <h1 className="nv-h1">Assessment</h1>
-        <ErrorNote message={sitting.message} />
+        <PageHeader eyebrow="Verification" title="Assessment" />
+        <ErrorState body={sitting.message} />
         <p className="nv-muted">
           <Link to="/verification">Back to verification</Link>
         </p>
@@ -363,59 +407,78 @@ export function AssessmentSitting(): JSX.Element {
       <p className="nv-muted">
         <Link to="/verification">Verification</Link>
       </p>
-      <h1 className="nv-h1">Assessment</h1>
 
       {result ? (
         <Result result={result} />
       ) : (
         <>
-          <p className="nv-muted">
-            {attempt.tasks.length} task{attempt.tasks.length === 1 ? '' : 's'} · expires{' '}
-            {formatDateTime(attempt.expires_at) || 'in 24 hours'}. Leaving this page does not lose the
-            sitting: it resumes exactly these tasks.
-          </p>
+          <PageHeader
+            eyebrow="Assessment"
+            title="Assessment"
+            description={`${attempt.tasks.length} task${
+              attempt.tasks.length === 1 ? '' : 's'
+            } · expires ${formatDateTime(attempt.expires_at) || 'in 24 hours'}. Leaving this page does not lose the sitting: it resumes exactly these tasks.`}
+            actions={
+              <Badge tone="info">
+                <Clock aria-hidden="true" size={13} /> Timed
+              </Badge>
+            }
+          />
 
-          <ErrorNote message={error} />
-
-          <ol className="nv-list">
-            {attempt.tasks.map((task, index) => (
-              <li className="nv-card" key={task.task_id}>
-                <h2 className="nv-h2">
-                  Task {task.ordinal}{' '}
-                  <span className="nv-muted">
-                    · {task.points} point{task.points === 1 ? '' : 's'}
-                  </span>
-                </h2>
-                <TaskPrompt payload={task.payload} />
-                <Choice
-                  control={controls[index] ?? { kind: 'unsupported', reason: '' }}
-                  value={values[String(task.task_id)] ?? null}
-                  onChange={(next) =>
-                    draft.setValue((current) => ({ ...current, [String(task.task_id)]: next }))
-                  }
-                />
-              </li>
-            ))}
-          </ol>
-
-          <div className="nv-row">
-            <button
-              className="nv-button"
-              disabled={busy || answers.length === 0}
-              type="button"
-              onClick={() => void submit()}
-            >
-              {busy ? 'Submitting…' : 'Submit this sitting'}
-            </button>
-            <span className="nv-muted">
-              {answers.length} of {attempt.tasks.length} answered — unanswered tasks score zero.
-            </span>
-          </div>
-          {draft.savedAt ? (
-            <p className="nv-muted" aria-live="polite">
-              Answers saved on this device — reloading or losing the connection does not lose them.
-            </p>
+          {error ? (
+            <Banner tone="danger">
+              <p>{error}</p>
+            </Banner>
           ) : null}
+
+          {attempt.tasks.length === 0 ? (
+            <EmptyState
+              body="This assessment has no tasks. If that looks wrong, go back and contact support."
+              icon={ClipboardList}
+              title="No tasks in this sitting"
+            />
+          ) : (
+            <div className="nv-stack">
+              {attempt.tasks.map((task, index) => (
+                <Panel
+                  key={task.task_id}
+                  title={`Task ${task.ordinal}`}
+                  actions={
+                    <Badge tone="neutral">
+                      {task.points} point{task.points === 1 ? '' : 's'}
+                    </Badge>
+                  }
+                >
+                  <div className="nv-stack">
+                    <TaskPrompt payload={task.payload} />
+                    <Choice
+                      control={controls[index] ?? { kind: 'unsupported', reason: '' }}
+                      value={values[String(task.task_id)] ?? null}
+                      onChange={(next) =>
+                        draft.setValue((current) => ({ ...current, [String(task.task_id)]: next }))
+                      }
+                    />
+                  </div>
+                </Panel>
+              ))}
+            </div>
+          )}
+
+          <Panel title="Submit">
+            <div className="nv-row nv-row--between">
+              <span className="nv-muted">
+                {answers.length} of {attempt.tasks.length} answered — unanswered tasks score zero.
+              </span>
+              <Button disabled={busy || answers.length === 0} type="button" onClick={() => void submit()}>
+                {busy ? 'Submitting…' : 'Submit this sitting'}
+              </Button>
+            </div>
+            {draft.savedAt ? (
+              <p className="nv-muted" aria-live="polite">
+                Answers saved on this device — reloading or losing the connection does not lose them.
+              </p>
+            ) : null}
+          </Panel>
         </>
       )}
     </div>

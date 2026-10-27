@@ -2,6 +2,7 @@ import type { TokenOut } from '@nelavista/api-client';
 import * as React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 
+import { AuthLayout } from '../components/AuthLayout';
 import { ApiError, http, setAccessToken } from '../lib/http';
 import { useSession } from '../lib/session';
 import { Button, ErrorNote, Field } from '../ui';
@@ -63,39 +64,45 @@ export function Login(): JSX.Element {
   }
 
   return (
-    <div className="nv-card nv-card--narrow">
-      <h1 className="nv-h2">{challenge ? 'Enter your code' : 'Sign in'}</h1>
+    <AuthLayout
+      title={challenge ? 'Enter your code' : 'Sign in'}
+      description={
+        challenge
+          ? 'Your account has two-factor authentication. Enter the six-digit code from your authenticator app, or one of your recovery codes.'
+          : 'Pick up your record where you left it.'
+      }
+      footer={
+        <>
+          New here? <Link to="/signup">Create an account</Link>
+        </>
+      }
+    >
       <form className="nv-stack" onSubmit={onSubmit} noValidate>
         {challenge ? (
-          <>
-            <p className="nv-muted">
-              Your account has two-factor authentication. Enter the six-digit code from your
-              authenticator app, or one of your recovery codes.
-            </p>
-            <Field
-              autoComplete="one-time-code"
-              autoFocus
-              label="Code"
-              maxLength={20}
-              required
-              value={code}
-              onChange={(e) => setCode(e.target.value)}
-            />
-          </>
+          <Field
+            autoComplete="one-time-code"
+            autoFocus
+            label="Code"
+            maxLength={20}
+            required
+            value={code}
+            onChange={(e) => setCode(e.target.value)}
+          />
         ) : (
           <>
             <Field
+              autoComplete="email"
+              autoFocus
               label="Email"
               type="email"
-              autoComplete="email"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
             <Field
+              autoComplete="current-password"
               label="Password"
               type="password"
-              autoComplete="current-password"
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -103,16 +110,26 @@ export function Login(): JSX.Element {
           </>
         )}
         <ErrorNote message={error} />
-        <Button type="submit" disabled={busy || (challenge !== null && code.trim().length < 6)}>
-          {busy ? 'Signing in…' : challenge ? 'Verify and sign in' : 'Sign in'}
+        <Button block disabled={busy || (challenge !== null && code.trim().length < 6)} type="submit">
+          {busy ? 'Signing in' : challenge ? 'Verify and sign in' : 'Sign in'}
         </Button>
+        <div className="nv-row nv-row--between">
+          <Link to="/auth/reset">Forgot your password?</Link>
+          {challenge ? (
+            <button
+              className="nv-button nv-button--ghost nv-button--sm"
+              type="button"
+              onClick={() => {
+                setChallenge(null);
+                setCode('');
+                setError(null);
+              }}
+            >
+              Use a password
+            </button>
+          ) : null}
+        </div>
       </form>
-      <p className="nv-muted">
-        <Link to="/auth/reset">Forgot your password?</Link>
-      </p>
-      <p className="nv-muted">
-        New here? <Link to="/signup">Create an account</Link>
-      </p>
-    </div>
+    </AuthLayout>
   );
 }

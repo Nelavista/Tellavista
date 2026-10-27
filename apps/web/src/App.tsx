@@ -1,15 +1,17 @@
 import * as React from 'react';
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 
-import { Layout } from './components/Layout';
+import { AppShell } from './components/AppShell';
+import { ErrorBoundary } from './components/ErrorBoundary';
+import { PublicLayout } from './components/PublicLayout';
 import { SessionProvider, useSession } from './lib/session';
+import { ThemeProvider } from './lib/theme-context';
 import { Landing } from './routes/Landing';
 import { Login } from './routes/Login';
 import { Signup } from './routes/Signup';
+import { NotFound } from './routes/NotFound';
+import { Offline } from './routes/Offline';
 
-// Signed-in screens are split out of the first load (B12). Landing, sign-in and
-// sign-up stay eager: they are the entry point and must paint without a second
-// round trip.
 const Home = React.lazy(() => import('./routes/Home').then((m) => ({ default: m.Home })));
 const Onboarding = React.lazy(() => import('./routes/Onboarding').then((m) => ({ default: m.Onboarding })));
 const AcademiaDashboard = React.lazy(() =>
@@ -72,12 +74,33 @@ const ResetPassword = React.lazy(() =>
   import('./routes/ResetPassword').then((m) => ({ default: m.ResetPassword })),
 );
 
+const Features = React.lazy(() => import('./routes/Features').then((m) => ({ default: m.Features })));
+const HowItWorks = React.lazy(() => import('./routes/HowItWorks').then((m) => ({ default: m.HowItWorks })));
+const About = React.lazy(() => import('./routes/About').then((m) => ({ default: m.About })));
+const Contact = React.lazy(() => import('./routes/Contact').then((m) => ({ default: m.Contact })));
+const Faq = React.lazy(() => import('./routes/Faq').then((m) => ({ default: m.Faq })));
+const Privacy = React.lazy(() => import('./routes/Legal').then((m) => ({ default: m.Privacy })));
+const Terms = React.lazy(() => import('./routes/Legal').then((m) => ({ default: m.Terms })));
+const ContributorTerms = React.lazy(() =>
+  import('./routes/Legal').then((m) => ({ default: m.ContributorTerms })),
+);
+const Notifications = React.lazy(() =>
+  import('./routes/Notifications').then((m) => ({ default: m.Notifications })),
+);
+const Applications = React.lazy(() =>
+  import('./routes/Applications').then((m) => ({ default: m.Applications })),
+);
+const CbtHistory = React.lazy(() => import('./routes/CbtHistory').then((m) => ({ default: m.CbtHistory })));
+const Course = React.lazy(() => import('./routes/Course').then((m) => ({ default: m.Course })));
+
 function Loading(): JSX.Element {
   return (
-    <div className="nv-card nv-card--narrow">
-      <p className="nv-muted" role="status">
-        Loading…
-      </p>
+    <div className="nv-container nv-section" aria-busy="true">
+      <div className="nv-skeleton-group">
+        <span className="nv-skeleton" style={{ width: '38%', height: '2.5rem' }} />
+        <span className="nv-skeleton" style={{ width: '70%' }} />
+        <span className="nv-skeleton" style={{ width: '55%' }} />
+      </div>
     </div>
   );
 }
@@ -101,262 +124,419 @@ function PublicOnly({ children }: { children: React.ReactNode }): JSX.Element {
   return <>{children}</>;
 }
 
+function Protected({ children }: { children: React.ReactNode }): JSX.Element {
+  return (
+    <RequireAuth>
+      <AppShell>{children}</AppShell>
+    </RequireAuth>
+  );
+}
+
+function Public({ children }: { children: React.ReactNode }): JSX.Element {
+  return <PublicLayout>{children}</PublicLayout>;
+}
+
+function NotFoundRoute(): JSX.Element {
+  const { status } = useSession();
+  return status === 'authenticated' ? (
+    <AppShell>
+      <NotFound />
+    </AppShell>
+  ) : (
+    <PublicLayout>
+      <NotFound />
+    </PublicLayout>
+  );
+}
+
 function RouteTable(): JSX.Element {
   return (
-    <Layout>
-      <React.Suspense fallback={<Loading />}>
-        <Routes>
-          {/* The root is the public landing page. A restored session belongs on
-              /home; rendering Landing here put "Create your account" under a
-              signed-in nav. */}
-          <Route
-            path="/"
-            element={
-              <PublicOnly>
+    <React.Suspense fallback={<Loading />}>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <PublicOnly>
+              <PublicLayout>
                 <Landing />
-              </PublicOnly>
-            }
-          />
-          <Route
-            path="/signup"
-            element={
-              <PublicOnly>
-                <Signup />
-              </PublicOnly>
-            }
-          />
-          <Route
-            path="/login"
-            element={
-              <PublicOnly>
-                <Login />
-              </PublicOnly>
-            }
-          />
-          <Route path="/auth/verify" element={<VerifyEmail />} />
-          <Route path="/auth/reset" element={<ResetPassword />} />
-          <Route
-            path="/onboarding"
-            element={
-              <RequireAuth>
-                <Onboarding />
-              </RequireAuth>
-            }
-          />
-          <Route
-            path="/home"
-            element={
-              <RequireAuth>
-                <Home />
-              </RequireAuth>
-            }
-          />
-          <Route
-            path="/academia"
-            element={
-              <RequireAuth>
-                <AcademiaDashboard />
-              </RequireAuth>
-            }
-          />
-          <Route
-            path="/academia/materials"
-            element={
-              <RequireAuth>
-                <Materials />
-              </RequireAuth>
-            }
-          />
-          <Route
-            path="/academia/materials/:materialId"
-            element={
-              <RequireAuth>
-                <MaterialReader />
-              </RequireAuth>
-            }
-          />
-          <Route
-            path="/academia/ask"
-            element={
-              <RequireAuth>
-                <AskNelavista />
-              </RequireAuth>
-            }
-          />
-          <Route
-            path="/academia/cbt"
-            element={
-              <RequireAuth>
-                <Cbt />
-              </RequireAuth>
-            }
-          />
-          <Route
-            path="/campus"
-            element={
-              <RequireAuth>
-                <Campus />
-              </RequireAuth>
-            }
-          />
-          <Route
-            path="/verification"
-            element={
-              <RequireAuth>
-                <Verification />
-              </RequireAuth>
-            }
-          />
-          <Route
-            path="/verification/assessments/:assessmentSlug"
-            element={
-              <RequireAuth>
-                <AssessmentSitting />
-              </RequireAuth>
-            }
-          />
-          <Route
-            path="/verification/attempts/:attemptId"
-            element={
-              <RequireAuth>
-                <AttemptReview />
-              </RequireAuth>
-            }
-          />
-          <Route
-            path="/verification/practical/:taskSlug"
-            element={
-              <RequireAuth>
-                <PracticalTask />
-              </RequireAuth>
-            }
-          />
-          <Route
-            path="/transcript"
-            element={
-              <RequireAuth>
-                <Transcript />
-              </RequireAuth>
-            }
-          />
-          <Route
-            path="/opportunities"
-            element={
-              <RequireAuth>
-                <Opportunities />
-              </RequireAuth>
-            }
-          />
-          <Route
-            path="/opportunities/:slug"
-            element={
-              <RequireAuth>
-                <OpportunityDetail />
-              </RequireAuth>
-            }
-          />
-          <Route
-            path="/work"
-            element={
-              <RequireAuth>
-                <Work />
-              </RequireAuth>
-            }
-          />
-          <Route
-            path="/work/assignments/:assignmentId"
-            element={
-              <RequireAuth>
-                <AssignmentDetail />
-              </RequireAuth>
-            }
-          />
-          <Route
-            path="/earnings"
-            element={
-              <RequireAuth>
-                <Earnings />
-              </RequireAuth>
-            }
-          />
-          <Route
-            path="/settings"
-            element={
-              <RequireAuth>
-                <Settings />
-              </RequireAuth>
-            }
-          />
-          <Route
-            path="/talent"
-            element={
-              <RequireAuth>
-                <Talent />
-              </RequireAuth>
-            }
-          />
-          {/* Public by design: the token in the URL is the grant (B13). */}
-          <Route path="/share/:token" element={<SharedProfile />} />
-          <Route
-            path="/skills"
-            element={
-              <RequireAuth>
-                <Skills />
-              </RequireAuth>
-            }
-          />
-          {/* Static segments rank above the parameter, so this route wins. */}
-          <Route
-            path="/skills/my-learning"
-            element={
-              <RequireAuth>
-                <MyLearning />
-              </RequireAuth>
-            }
-          />
-          <Route
-            path="/skills/paths/:pathSlug"
-            element={
-              <RequireAuth>
-                <PathDetail />
-              </RequireAuth>
-            }
-          />
-          <Route
-            path="/skills/lessons/:lessonSlug"
-            element={
-              <RequireAuth>
-                <LessonReader />
-              </RequireAuth>
-            }
-          />
-          <Route
-            path="/skills/practice/:templateId"
-            element={
-              <RequireAuth>
-                <Practice />
-              </RequireAuth>
-            }
-          />
-          <Route
-            path="/skills/:skillSlug"
-            element={
-              <RequireAuth>
-                <SkillDetail />
-              </RequireAuth>
-            }
-          />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </React.Suspense>
-    </Layout>
+              </PublicLayout>
+            </PublicOnly>
+          }
+        />
+        <Route
+          path="/features"
+          element={
+            <Public>
+              <Features />
+            </Public>
+          }
+        />
+        <Route
+          path="/how-it-works"
+          element={
+            <Public>
+              <HowItWorks />
+            </Public>
+          }
+        />
+        <Route
+          path="/about"
+          element={
+            <Public>
+              <About />
+            </Public>
+          }
+        />
+        <Route
+          path="/contact"
+          element={
+            <Public>
+              <Contact />
+            </Public>
+          }
+        />
+        <Route
+          path="/faq"
+          element={
+            <Public>
+              <Faq />
+            </Public>
+          }
+        />
+        <Route
+          path="/legal/privacy"
+          element={
+            <Public>
+              <Privacy />
+            </Public>
+          }
+        />
+        <Route
+          path="/legal/terms"
+          element={
+            <Public>
+              <Terms />
+            </Public>
+          }
+        />
+        <Route
+          path="/legal/contributor-terms"
+          element={
+            <Public>
+              <ContributorTerms />
+            </Public>
+          }
+        />
+        <Route
+          path="/offline"
+          element={
+            <Public>
+              <Offline />
+            </Public>
+          }
+        />
+
+        <Route
+          path="/signup"
+          element={
+            <PublicOnly>
+              <Signup />
+            </PublicOnly>
+          }
+        />
+        <Route
+          path="/login"
+          element={
+            <PublicOnly>
+              <Login />
+            </PublicOnly>
+          }
+        />
+        <Route path="/auth/verify" element={<VerifyEmail />} />
+        <Route path="/auth/reset" element={<ResetPassword />} />
+
+        <Route
+          path="/onboarding"
+          element={
+            <RequireAuth>
+              <Onboarding />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/home"
+          element={
+            <Protected>
+              <Home />
+            </Protected>
+          }
+        />
+        <Route
+          path="/academia"
+          element={
+            <Protected>
+              <AcademiaDashboard />
+            </Protected>
+          }
+        />
+        <Route
+          path="/academia/materials"
+          element={
+            <Protected>
+              <Materials />
+            </Protected>
+          }
+        />
+        <Route
+          path="/academia/materials/:materialId"
+          element={
+            <Protected>
+              <MaterialReader />
+            </Protected>
+          }
+        />
+        <Route
+          path="/academia/ask"
+          element={
+            <Protected>
+              <AskNelavista />
+            </Protected>
+          }
+        />
+        <Route
+          path="/academia/cbt"
+          element={
+            <Protected>
+              <Cbt />
+            </Protected>
+          }
+        />
+        <Route
+          path="/academia/cbt/history"
+          element={
+            <Protected>
+              <CbtHistory />
+            </Protected>
+          }
+        />
+        <Route
+          path="/academia/courses/:courseCode"
+          element={
+            <Protected>
+              <Course />
+            </Protected>
+          }
+        />
+        <Route
+          path="/campus"
+          element={
+            <Protected>
+              <Campus />
+            </Protected>
+          }
+        />
+        <Route
+          path="/verification"
+          element={
+            <Protected>
+              <Verification />
+            </Protected>
+          }
+        />
+        <Route
+          path="/verification/assessments/:assessmentSlug"
+          element={
+            <Protected>
+              <AssessmentSitting />
+            </Protected>
+          }
+        />
+        <Route
+          path="/verification/attempts/:attemptId"
+          element={
+            <Protected>
+              <AttemptReview />
+            </Protected>
+          }
+        />
+        <Route
+          path="/verification/practical/:taskSlug"
+          element={
+            <Protected>
+              <PracticalTask />
+            </Protected>
+          }
+        />
+        <Route
+          path="/transcript"
+          element={
+            <Protected>
+              <Transcript />
+            </Protected>
+          }
+        />
+        <Route
+          path="/opportunities"
+          element={
+            <Protected>
+              <Opportunities />
+            </Protected>
+          }
+        />
+        <Route
+          path="/opportunities/applications"
+          element={
+            <Protected>
+              <Applications />
+            </Protected>
+          }
+        />
+        <Route
+          path="/opportunities/:slug"
+          element={
+            <Protected>
+              <OpportunityDetail />
+            </Protected>
+          }
+        />
+        <Route
+          path="/work"
+          element={
+            <Protected>
+              <Work />
+            </Protected>
+          }
+        />
+        <Route
+          path="/work/assignments/:assignmentId"
+          element={
+            <Protected>
+              <AssignmentDetail />
+            </Protected>
+          }
+        />
+        <Route
+          path="/earnings"
+          element={
+            <Protected>
+              <Earnings />
+            </Protected>
+          }
+        />
+        <Route
+          path="/notifications"
+          element={
+            <Protected>
+              <Notifications />
+            </Protected>
+          }
+        />
+        <Route
+          path="/settings"
+          element={
+            <Protected>
+              <Settings />
+            </Protected>
+          }
+        />
+        <Route
+          path="/settings/security"
+          element={
+            <Protected>
+              <Settings />
+            </Protected>
+          }
+        />
+        <Route
+          path="/settings/notifications"
+          element={
+            <Protected>
+              <Settings />
+            </Protected>
+          }
+        />
+        <Route
+          path="/settings/data"
+          element={
+            <Protected>
+              <Settings />
+            </Protected>
+          }
+        />
+        <Route
+          path="/talent"
+          element={
+            <Protected>
+              <Talent />
+            </Protected>
+          }
+        />
+        <Route
+          path="/skills"
+          element={
+            <Protected>
+              <Skills />
+            </Protected>
+          }
+        />
+        <Route
+          path="/skills/my-learning"
+          element={
+            <Protected>
+              <MyLearning />
+            </Protected>
+          }
+        />
+        <Route
+          path="/skills/paths/:pathSlug"
+          element={
+            <Protected>
+              <PathDetail />
+            </Protected>
+          }
+        />
+        <Route
+          path="/skills/lessons/:lessonSlug"
+          element={
+            <Protected>
+              <LessonReader />
+            </Protected>
+          }
+        />
+        <Route
+          path="/skills/practice/:templateId"
+          element={
+            <Protected>
+              <Practice />
+            </Protected>
+          }
+        />
+        <Route
+          path="/skills/:skillSlug"
+          element={
+            <Protected>
+              <SkillDetail />
+            </Protected>
+          }
+        />
+
+        {/* Public by design: the token in the URL is the grant (B13). */}
+        <Route path="/share/:token" element={<SharedProfile />} />
+
+        <Route path="*" element={<NotFoundRoute />} />
+      </Routes>
+    </React.Suspense>
   );
 }
 
 export function App(): JSX.Element {
   return (
-    <SessionProvider>
-      <RouteTable />
-    </SessionProvider>
+    <ErrorBoundary>
+      <ThemeProvider>
+        <SessionProvider>
+          <RouteTable />
+        </SessionProvider>
+      </ThemeProvider>
+    </ErrorBoundary>
   );
 }

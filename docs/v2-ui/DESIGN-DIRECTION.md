@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Status | **Proposed. Do not build UI from this until approved.** |
+| Status | **Approved 2026-10-27. Build in progress.** |
 | Gate | Gate 2 — design direction |
 | Date | 2026-10-27 |
 | Applies to | `apps/web`, `apps/admin`, `packages/design-tokens`, `packages/ui` |
@@ -550,7 +550,7 @@ Approve or change these decisions before any UI code is written:
 7. **Imagery:** real photography + real product artifacts; no generated people or
    fake metrics.
 8. **Scope:** public pages and missing app/admin screens are in scope; newsletter
-   and the platform announcement banner remain separate decisions (see
-   `AUDIT.md`).
+   and the platform announcement banner are deferred post-launch (see `AUDIT.md`).
 
-Once approved, the first PR is the token and primitive foundation, not a page.
+Approved 2026-10-27. The first change is the token and primitive foundation, not
+a page.

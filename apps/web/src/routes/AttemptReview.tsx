@@ -7,12 +7,13 @@
  * retry is a learning step rather than a guess.
  */
 import type { AttemptReviewOut } from '@nelavista/api-client';
+import { Badge, Banner, Button, EmptyState, ErrorState, PageHeader, Panel, Skeleton } from '@nelavista/ui';
+import { ArrowRight, CheckCircle2, ClipboardList, XCircle } from 'lucide-react';
 import * as React from 'react';
 import { Link, useParams } from 'react-router-dom';
 
 import { formatAnswer, formatDateTime } from '../lib/format';
 import { useApiResource } from '../lib/resource';
-import { ErrorNote, Skeleton } from '../ui';
 
 export function AttemptReview(): JSX.Element {
   const { attemptId = '' } = useParams<{ attemptId: string }>();
@@ -31,8 +32,10 @@ export function AttemptReview(): JSX.Element {
   if (resource.status === 'off') {
     return (
       <div className="nv-stack">
-        <h1 className="nv-h1">Attempt</h1>
-        <p className="nv-banner">Verification is not switched on for this environment yet.</p>
+        <PageHeader eyebrow="Verification" title="Attempt" />
+        <Banner tone="info">
+          <p>Verification is not switched on for this environment yet.</p>
+        </Banner>
         <p className="nv-muted">
           <Link to="/home">Back to your home</Link>
         </p>
@@ -43,11 +46,15 @@ export function AttemptReview(): JSX.Element {
   if (resource.status !== 'ready') {
     return (
       <div className="nv-stack">
-        <h1 className="nv-h1">Attempt</h1>
-        <ErrorNote message={resource.message} />
-        <button className="nv-button" type="button" onClick={reload}>
-          Try again
-        </button>
+        <PageHeader eyebrow="Verification" title="Attempt" />
+        <ErrorState
+          body={resource.message}
+          action={
+            <Button size="sm" type="button" variant="secondary" onClick={reload}>
+              Try again
+            </Button>
+          }
+        />
         <p className="nv-muted">
           <Link to="/verification">Back to verification</Link>
         </p>
@@ -59,55 +66,91 @@ export function AttemptReview(): JSX.Element {
 
   return (
     <div className="nv-stack">
+      <PageHeader
+        eyebrow="Verification"
+        title="Your answers"
+        description={`Score: ${review.score ?? 0}%${
+          review.submitted_at ? ` · submitted ${formatDateTime(review.submitted_at)}` : ''
+        }`}
+        actions={
+          <Badge status={review.passed ? 'verified' : 'at_risk'} tone={review.passed ? 'success' : 'warning'}>
+            {review.passed ? 'Passed' : 'Not passed'}
+          </Badge>
+        }
+      />
+
       <p className="nv-muted">
         <Link to="/verification">Verification</Link>
       </p>
-      <h1 className="nv-h1">Your answers</h1>
-      <p>
-        Score: {review.score ?? 0}% ·{' '}
-        <span className="nv-badge" data-status={review.passed ? 'verified' : 'at_risk'}>
-          {review.passed ? 'Passed' : 'Not passed'}
-        </span>
-        {review.submitted_at ? (
-          <span className="nv-muted"> · submitted {formatDateTime(review.submitted_at)}</span>
-        ) : null}
-      </p>
 
-      <ol className="nv-list">
-        {review.tasks.map((task) => (
-          <li className="nv-card" key={task.task_id}>
-            <h2 className="nv-h2">
-              Task {task.ordinal}{' '}
-              <span className="nv-badge" data-status={task.correct ? 'verified' : 'at_risk'}>
-                {task.correct ? 'Correct' : 'Incorrect'}
-              </span>
-            </h2>
-            {Object.entries(task.payload ?? {})
-              .filter(([, value]) => typeof value === 'string' || typeof value === 'number')
-              .map(([key, value]) => (
-                <p key={key}>
-                  <span className="nv-muted">{key.replace(/_/g, ' ')}: </span>
-                  {String(value)}
-                </p>
-              ))}
-            <p>
-              <span className="nv-muted">Your answer: </span>
-              {formatAnswer(task.answer)}
-            </p>
-            {!task.correct ? (
-              <p>
-                <span className="nv-muted">Expected: </span>
-                {formatAnswer(task.expected_answer)}
-              </p>
-            ) : null}
-            {task.feedback ? <p className="nv-muted">{task.feedback}</p> : null}
-          </li>
-        ))}
-      </ol>
+      <Panel
+        title="Tasks"
+        actions={
+          <Badge tone="neutral">
+            {review.tasks.length} task{review.tasks.length === 1 ? '' : 's'}
+          </Badge>
+        }
+      >
+        {review.tasks.length === 0 ? (
+          <EmptyState
+            body="This attempt has no recorded tasks. If that looks wrong, contact support."
+            icon={ClipboardList}
+            title="Nothing to review"
+          />
+        ) : (
+          <ol className="nv-list nv-list--ruled">
+            {review.tasks.map((task) => (
+              <li key={task.task_id}>
+                <div className="nv-row nv-row--between" style={{ alignItems: 'flex-start' }}>
+                  <h2 className="nv-h3">Task {task.ordinal}</h2>
+                  <Badge
+                    status={task.correct ? 'verified' : 'at_risk'}
+                    tone={task.correct ? 'success' : 'danger'}
+                  >
+                    {task.correct ? (
+                      <>
+                        <CheckCircle2 aria-hidden="true" size={13} /> Correct
+                      </>
+                    ) : (
+                      <>
+                        <XCircle aria-hidden="true" size={13} /> Incorrect
+                      </>
+                    )}
+                  </Badge>
+                </div>
+
+                {Object.entries(task.payload ?? {})
+                  .filter(([, value]) => typeof value === 'string' || typeof value === 'number')
+                  .map(([key, value]) => (
+                    <p key={key}>
+                      <span className="nv-muted">{key.replace(/_/g, ' ')}: </span>
+                      {String(value)}
+                    </p>
+                  ))}
+
+                <div className="nv-stack" style={{ gap: 'var(--nv-space-xs)' }}>
+                  <p>
+                    <span className="nv-muted">Your answer: </span>
+                    {formatAnswer(task.answer)}
+                  </p>
+                  {!task.correct ? (
+                    <p>
+                      <span className="nv-muted">Expected: </span>
+                      {formatAnswer(task.expected_answer)}
+                    </p>
+                  ) : null}
+                  {task.feedback ? <p className="nv-muted">{task.feedback}</p> : null}
+                </div>
+              </li>
+            ))}
+          </ol>
+        )}
+      </Panel>
 
       <div className="nv-row">
         <Link className="nv-button" to="/verification">
           Sit an assessment
+          <ArrowRight aria-hidden="true" size={15} />
         </Link>
         <Link to="/transcript">See your transcript</Link>
       </div>

@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Status | **Proposed. Gate 1 is not approved yet.** |
+| Status | **Approved 2026-10-27.** Course/topic and CBT history are in scope; material upload/analysis is deferred with a stated replacement. |
 | Date | 2026-10-27 |
 | Method | V2 code and API contracts are the source of truth. V1 is read-only reference. |
 | Legend | **Stronger** = V2 does more or does it better. **Parity** = capability exists in both. **Gap** = V2 needs work to match. **Dropped** = V2 intentionally removes it; a reason is required. **New** = not in V1. **Decide** = product decision needed. |
@@ -155,11 +155,11 @@ the blocker, not the login form.
 |---|---|---|---|
 | Job-board list + one-click apply | Opportunities with eligibility explanation | **Stronger** | Keep; add application status |
 | No skill-gap explanation | “Why you qualify / what is missing” | **Stronger** | Keep; make it prominent |
-| No application tracking | `GET /opportunities/applications` unused | **Gap** | Add `/opportunities/applications` |
-| No matches view | `GET /opportunities/matches` unused | **Gap** | Add a matches section or route |
-| No eligibility view | `GET /platform/me/eligibility` unused | **Gap** | Add eligibility/readiness |
+| No application tracking | `/opportunities/applications` | **Stronger** | Built |
+| No matches view | Match verdict, reason and next steps on every row | **Stronger** | Built into the list and detail |
+| No eligibility view | Platform eligibility panel on opportunity detail | **Stronger** | Built; keep the terms/age blockers visible |
 | Work not a V1 student concept | Assignments, submissions, quality | **New/stronger** | Keep |
-| Cohort invite response absent | API exists, no UI | **Gap** | Add accept/decline |
+| Cohort invite response absent | `POST /work/cohorts/{id}/respond` exists; no student invite-list endpoint | **Blocked** | Add the list endpoint, then accept/decline on `/work`; do not fake an invite id |
 | Earnings status-only, no gateway | Ledger, payout batches, second approver | **Stronger** | Keep; add payout status detail |
 | No quality record | Quality score with counts | **New/stronger** | Keep |
 | No transcript for work | Work history in Talent | **New/stronger** | Keep |
@@ -198,21 +198,22 @@ Those are the screens to add or restore before calling V2 “not less than V1.�
 | Skill editor | Content | **Parity/stronger** | Keep; add preview/versioning |
 | Classes/cohorts | Projects & cohorts | **Replaced** | Keep managed cohorts |
 | Tracks | Content | **Parity** | Keep |
-| Opportunities + applications | Opportunities | **Parity/stronger** | Add application status action |
+| Opportunities + applications | Opportunities | **Parity/stronger** | Add the application status action |
 | Competitions | External opportunities | **Replaced** | Use opportunities |
-| Campus map admin | None | **Gap** | Add `#/campus` |
+| Campus map admin | `#/campus` publishes items | **Stronger, write-only** | Read endpoint is a launch dependency; do not fake a published list |
 | No audit UI | Audit | **Stronger** | Keep |
-| No waitlist screen | API exists | **Gap** | Add `#/waitlist` |
+| No waitlist screen | `#/waitlist` | **Stronger** | Built |
 | No payout item failure action | API exists | **Gap** | Add action in Money |
 | No platform policy | Platform | **Stronger** | Keep |
 | No security/2FA | Security + forced 2FA | **Stronger** | Keep |
 
 ### Admin parity verdict
 
-V2 admin is stronger than V1 in audit, money, quality, platform policy and
-security. It is weaker in content/material ops, campus, waitlist, application
-status and payout-item failure. Add the four missing actions and a real overview;
-do not rebuild V1's dead moderation tools.
+V2 admin is stronger than V1 in audit, money, quality, platform policy,
+security, overview, waitlist and campus publishing. It is weaker in
+content/material ops, the application status action, payout-item failure and the
+missing campus read. Add those actions; do not rebuild V1's dead moderation
+tools.
 
 ---
 

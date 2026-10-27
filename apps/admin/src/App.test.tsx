@@ -110,4 +110,45 @@ describe('Admin sign in', () => {
     // The password response carried no access token, so the shell never appeared.
     expect(container.textContent).not.toContain('Audit trail');
   });
+
+  it('renders a real 404 for an unknown hash instead of falling back to Audit', async () => {
+    window.location.hash = '#/not-a-screen';
+    fetchMock.mockImplementation((url: string) => {
+      if (String(url).endsWith('/auth/refresh')) {
+        return Promise.resolve(
+          jsonResponse(200, {
+            access_token: 'access',
+            token_type: 'bearer',
+            expires_at: '2026-10-18T12:00:00Z',
+          }),
+        );
+      }
+      if (String(url).endsWith('/auth/me')) {
+        return Promise.resolve(
+          jsonResponse(200, {
+            id: 1,
+            email: 'ops@example.test',
+            role: 'super_admin',
+            name: 'Ops Person',
+            username: 'ops',
+          }),
+        );
+      }
+      if (String(url).endsWith('/auth/2fa')) {
+        return Promise.resolve(jsonResponse(200, { enabled: true, enrolled: true }));
+      }
+      return Promise.resolve(jsonResponse(404, {}));
+    });
+
+    const container = document.createElement('div');
+    document.body.appendChild(container);
+    root = createRoot(container);
+    await act(async () => {
+      root?.render(<App />);
+    });
+
+    await waitFor(() => expect(container.textContent).toContain('That screen does not exist'));
+    expect(container.textContent).toContain('/not-a-screen');
+    expect(document.title).toBe('Not found · Nelavista ops');
+  });
 });

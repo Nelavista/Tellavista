@@ -3,11 +3,12 @@
  * every link here opens.
  */
 import type { SkillDetailOut } from '@nelavista/api-client';
+import { Badge, Banner, Button, EmptyState, ErrorState, PageHeader, Panel, Skeleton } from '@nelavista/ui';
+import { BookOpen, Clock } from 'lucide-react';
 import * as React from 'react';
 import { Link, useParams } from 'react-router-dom';
 
 import { useApiResource } from '../lib/resource';
-import { ErrorNote, Skeleton } from '../ui';
 
 export function SkillDetail(): JSX.Element {
   const { skillSlug = '' } = useParams<{ skillSlug: string }>();
@@ -25,16 +26,20 @@ export function SkillDetail(): JSX.Element {
   if (resource.status !== 'ready') {
     return (
       <div className="nv-stack">
-        <h1 className="nv-h1">Skill</h1>
+        <PageHeader eyebrow="Skills" title="Skill" />
         {resource.status === 'off' ? (
-          <p className="nv-banner">The skills journey is not switched on for this environment yet.</p>
+          <Banner tone="info">
+            <p>The skills journey is not switched on for this environment yet.</p>
+          </Banner>
         ) : (
-          <>
-            <ErrorNote message={resource.message} />
-            <button className="nv-button" type="button" onClick={reload}>
-              Try again
-            </button>
-          </>
+          <ErrorState
+            body={resource.message}
+            action={
+              <Button size="sm" type="button" variant="secondary" onClick={reload}>
+                Try again
+              </Button>
+            }
+          />
         )}
         <p className="nv-muted">
           <Link to="/skills">All skills</Link>
@@ -47,32 +52,61 @@ export function SkillDetail(): JSX.Element {
 
   return (
     <div className="nv-stack">
+      <PageHeader
+        eyebrow="Skill"
+        title={skill.name}
+        description={skill.description ?? undefined}
+        actions={
+          <Badge tone="neutral">
+            {skill.paths.length} path{skill.paths.length === 1 ? '' : 's'}
+          </Badge>
+        }
+      />
+
       <p className="nv-muted">
         <Link to="/skills">All skills</Link>
       </p>
-      <h1 className="nv-h1">{skill.name}</h1>
-      {skill.description ? <p>{skill.description}</p> : null}
 
-      {skill.paths.length === 0 ? (
-        <p className="nv-banner">
-          This skill has no published learning path yet. Nothing to do here until one is published.
-        </p>
-      ) : (
-        <ul className="nv-list">
-          {skill.paths.map((path) => (
-            <li className="nv-card" key={path.id}>
-              <h2 className="nv-h2">
-                <Link to={`/skills/paths/${path.slug}`}>{path.title}</Link>
-              </h2>
-              <p className="nv-muted">
-                {path.level}
-                {path.estimated_hours ? ` · about ${path.estimated_hours} hour(s)` : ''}
-              </p>
-              {path.summary ? <p>{path.summary}</p> : null}
-            </li>
-          ))}
-        </ul>
-      )}
+      <Panel title="Learning paths">
+        {skill.paths.length === 0 ? (
+          <EmptyState
+            body="This skill has no published learning path yet. Nothing to do here until one is published."
+            icon={BookOpen}
+            title="No published path"
+          />
+        ) : (
+          <ul className="nv-list nv-list--ruled">
+            {skill.paths.map((path) => (
+              <li key={path.id}>
+                <div className="nv-row nv-row--between" style={{ alignItems: 'flex-start' }}>
+                  <div style={{ minWidth: 0 }}>
+                    <h2 className="nv-h3">
+                      <Link to={`/skills/paths/${path.slug}`}>{path.title}</Link>
+                    </h2>
+                    <p className="nv-muted">
+                      {path.level}
+                      {path.estimated_hours ? (
+                        <span>
+                          {' '}
+                          · <Clock aria-hidden="true" size={12} /> about {path.estimated_hours} hour
+                          {path.estimated_hours === 1 ? '' : 's'}
+                        </span>
+                      ) : null}
+                    </p>
+                    {path.summary ? <p>{path.summary}</p> : null}
+                  </div>
+                  <Link
+                    className="nv-button nv-button--secondary nv-button--sm"
+                    to={`/skills/paths/${path.slug}`}
+                  >
+                    Open path
+                  </Link>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+      </Panel>
     </div>
   );
 }

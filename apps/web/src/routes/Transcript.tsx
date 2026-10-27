@@ -7,12 +7,13 @@
  * transcript that a student cannot point at is a claim, not a record.
  */
 import type { TranscriptEntryOut, TranscriptOut } from '@nelavista/api-client';
+import { Badge, Banner, Button, EmptyState, ErrorState, PageHeader, Panel, Skeleton } from '@nelavista/ui';
+import { FileCheck2 } from 'lucide-react';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 
 import { formatDateTime } from '../lib/format';
 import { useApiResource } from '../lib/resource';
-import { ErrorNote, Skeleton } from '../ui';
 
 const SECTIONS: Array<{ kind: 'learned' | 'proved' | 'delivered'; title: string; note: string }> = [
   { kind: 'learned', title: 'Learned', note: 'Lessons you finished. Progress — not proof.' },
@@ -20,23 +21,22 @@ const SECTIONS: Array<{ kind: 'learned' | 'proved' | 'delivered'; title: string;
   { kind: 'delivered', title: 'Delivered', note: 'Real work approved for a client, with its evidence.' },
 ];
 
-function Entry({ entry }: { entry: TranscriptEntryOut }): JSX.Element {
+function EntryRow({ entry }: { entry: TranscriptEntryOut }): JSX.Element {
   return (
-    <li className="nv-card">
-      <div className="nv-row nv-row--between">
-        <h3 className="nv-h2">{entry.title}</h3>
-        <span className="nv-muted">{formatDateTime(entry.occurred_at)}</span>
-      </div>
-      <p className="nv-muted">
+    <tr>
+      <td>
+        <p>{entry.title}</p>
         {entry.skill && entry.skill_slug ? (
-          <>
-            <Link to={`/skills/${entry.skill_slug}`}>{entry.skill}</Link>
-            {' · '}
-          </>
+          <Link className="nv-meta" to={`/skills/${entry.skill_slug}`}>
+            {entry.skill}
+          </Link>
         ) : null}
-        evidence: {entry.evidence.type} #{entry.evidence.id}
-      </p>
-    </li>
+      </td>
+      <td className="nv-mono">
+        {entry.evidence.type} #{entry.evidence.id}
+      </td>
+      <td>{formatDateTime(entry.occurred_at)}</td>
+    </tr>
   );
 }
 
@@ -56,8 +56,10 @@ export function Transcript(): JSX.Element {
   if (resource.status === 'off') {
     return (
       <div className="nv-stack">
-        <h1 className="nv-h1">Skill transcript</h1>
-        <p className="nv-banner">Verification is not switched on for this environment yet.</p>
+        <PageHeader eyebrow="Prove" title="Skill transcript" />
+        <Banner tone="info">
+          <p>Verification is not switched on for this environment yet.</p>
+        </Banner>
         <p className="nv-muted">
           <Link to="/home">Back to your home</Link>
         </p>
@@ -68,11 +70,15 @@ export function Transcript(): JSX.Element {
   if (resource.status !== 'ready') {
     return (
       <div className="nv-stack">
-        <h1 className="nv-h1">Skill transcript</h1>
-        <ErrorNote message={resource.message} />
-        <button className="nv-button" type="button" onClick={reload}>
-          Try again
-        </button>
+        <PageHeader eyebrow="Prove" title="Skill transcript" />
+        <ErrorState
+          body={resource.message}
+          action={
+            <Button size="sm" type="button" variant="secondary" onClick={reload}>
+              Try again
+            </Button>
+          }
+        />
       </div>
     );
   }
@@ -82,37 +88,63 @@ export function Transcript(): JSX.Element {
 
   return (
     <div className="nv-stack">
-      <p className="nv-muted">
-        <Link to="/verification">Verification</Link>
-      </p>
-      <h1 className="nv-h1">Skill transcript</h1>
-      <p className="nv-muted">
-        Every line is backed by a record you can open. Nothing here can be typed in by hand.
-      </p>
+      <PageHeader
+        eyebrow="Prove"
+        title="Skill transcript"
+        description="Every line is backed by a record you can open. Nothing here can be typed in by hand."
+        actions={
+          <Link className="nv-button nv-button--secondary nv-button--sm" to="/verification">
+            Verification
+          </Link>
+        }
+      />
 
       {total === 0 ? (
-        <p className="nv-banner">
-          Nothing recorded yet. Finish a lesson or pass an assessment and it appears here with its evidence.
-        </p>
+        <EmptyState
+          body="Finish a lesson or pass an assessment and it appears here with its evidence."
+          icon={FileCheck2}
+          title="Nothing recorded yet"
+          action={
+            <Link className="nv-button nv-button--secondary nv-button--sm" to="/verification">
+              Start an assessment
+            </Link>
+          }
+        />
       ) : (
         SECTIONS.map((section) => {
           const entries = transcript[section.kind];
           return (
-            <section className="nv-stack" key={section.kind}>
-              <h2 className="nv-h2">
-                {section.title} <span className="nv-muted">({transcript.counts[section.kind]})</span>
-              </h2>
+            <Panel
+              key={section.kind}
+              title={section.title}
+              actions={
+                <Badge tone={section.kind === 'proved' ? 'success' : 'neutral'}>
+                  {transcript.counts[section.kind]}
+                </Badge>
+              }
+            >
               <p className="nv-muted">{section.note}</p>
               {entries.length === 0 ? (
-                <p className="nv-muted">Nothing in this group yet.</p>
+                <EmptyState body="Nothing in this group yet." icon={FileCheck2} title="Empty" />
               ) : (
-                <ul className="nv-list">
-                  {entries.map((entry) => (
-                    <Entry entry={entry} key={entry.id} />
-                  ))}
-                </ul>
+                <div className="nv-table-wrap">
+                  <table className="nv-table">
+                    <thead>
+                      <tr>
+                        <th>Record</th>
+                        <th>Evidence</th>
+                        <th>When</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {entries.map((entry) => (
+                        <EntryRow entry={entry} key={entry.id} />
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               )}
-            </section>
+            </Panel>
           );
         })
       )}

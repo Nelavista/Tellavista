@@ -1,17 +1,47 @@
-# V2 UI/UX audit — Phase 0
+# V2 UI/UX audit — Phase 0 baseline
 
 | Field | Value |
 |---|---|
-| Status | **Complete. Gate 1 is not approved yet.** |
+| Status | **Phase 0 baseline. Gates 1 and 2 approved 2026-10-27. Build in progress; see §1.1.** |
 | Date | 2026-10-27 |
 | Scope | Current V2 web, admin, design tokens and UI-facing API contracts; V1 used only as a reference |
 | Not in scope | V1 code changes, backend changes, deployment changes, mobile launch |
 | Companion documents | `docs/v2-ui/PARITY.md`, `docs/v2-ui/ROUTE-MAP.md`, `docs/v2-ui/DESIGN-DIRECTION.md`, `docs/design/ui-ux-framework.md` |
 
-> This is the factual audit. It records what exists, what is broken or missing,
-> what V1 actually does, and which documents are stale. The parity decisions are
-> in `PARITY.md`; the proposed screens are in `ROUTE-MAP.md`; the visual direction
-> is in `DESIGN-DIRECTION.md`.
+> This is the Phase 0 baseline. It records what existed before the redesign, what
+> was broken or missing, what V1 actually does, and which documents were stale.
+> The parity decisions are in `PARITY.md`; the route contract is in `ROUTE-MAP.md`;
+> the visual direction is in `DESIGN-DIRECTION.md`.
+
+## 1.1 Post-build status (2026-10-27)
+
+The redesign has landed in code. This section replaces the baseline where they
+disagree; the rest of the document remains useful as the starting-point record.
+
+- **Design system:** Ink and Paper palettes, the shared theme bridge, primitives,
+  shared CSS and three self-hosted font families are in `packages/ui`. Web and
+  admin both consume them.
+- **Public surface:** Landing, Features, How it works, About, Contact, FAQ,
+  Privacy, Terms, Contributor terms, a real 404 and an offline screen exist as
+  separate routes. Legal copy is an explicit draft pending counsel.
+- **Auth:** Login, Signup, Verify email and Reset password use the shared auth
+  layout. Signup links to the draft legal pages.
+- **Student app:** The grouped app shell, mobile navigation, theme toggle,
+  notifications, applications, CBT history, course detail and split settings
+  routes exist. Home, Academia, Materials, Ask, CBT, Skills, My learning, Lesson,
+  Practice, Verification, Assessment sitting, Attempt review, Practical task,
+  Transcript, Opportunities, Applications, Work, Earnings, Talent, Campus,
+  Notifications, Settings and Onboarding use the shared primitives and explicit
+  states.
+- **Admin:** The grouped shell, Overview, Waitlist, Campus, Audit, Imports, Users,
+  Opportunities, Projects, Review, Money, Content, Platform, Security and a real
+  404 exist. Overview reads live queues; Campus is write-only because the read
+  endpoint is missing.
+- **Still open:** The older admin screens (Opportunities, Projects, Review,
+  Money, Content, Platform) still carry legacy markup. Course/topic detail, CBT
+  review, the student cohort-invite list, admin campus read and the signed-in
+  change-password endpoint are API dependencies. Images named in
+  `IMAGE-PROMPTS.md` are not created yet.
 
 ---
 
@@ -369,6 +399,10 @@ The full mapping is in `PARITY.md`.
 ## 9. Requested features: platform banner and newsletter
 
 Both were checked against V1 and V2 code.
+
+**Approved decision (2026-10-27): defer both.** They are not launch blockers and
+are not part of the first UI build. The notes below are kept for the later
+workstream.
 
 ### 9.1 Platform info banner
 

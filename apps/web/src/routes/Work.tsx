@@ -6,17 +6,14 @@
  * where it is? The quality record shows the counts that produced it, because a
  * score with no explanation is not actionable.
  */
-import type {
-  AssignmentListOut,
-  QualityOut,
-  SubmissionListOut,
-} from '@nelavista/api-client';
+import type { AssignmentListOut, QualityOut, SubmissionListOut } from '@nelavista/api-client';
+import { Badge, Banner, Button, EmptyState, ErrorState, PageHeader, Panel, Skeleton } from '@nelavista/ui';
+import { ClipboardCheck, FileCheck2, Gauge } from 'lucide-react';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 
 import { formatDateTime } from '../lib/format';
 import { useApiResource } from '../lib/resource';
-import { ErrorNote, Skeleton } from '../ui';
 
 const STATUS_COPY: Record<string, string> = {
   assigned: 'Ready to start',
@@ -26,6 +23,14 @@ const STATUS_COPY: Record<string, string> = {
   rework: 'Rework needed',
   rejected: 'Not accepted',
 };
+
+function statusTone(status: string): 'neutral' | 'success' | 'info' | 'warning' | 'danger' {
+  if (status === 'approved') return 'success';
+  if (status === 'submitted' || status === 'in_progress') return 'info';
+  if (status === 'rework') return 'warning';
+  if (status === 'rejected') return 'danger';
+  return 'neutral';
+}
 
 export function Work(): JSX.Element {
   const assignments = useApiResource<AssignmentListOut>('/work/assignments');
@@ -50,10 +55,10 @@ export function Work(): JSX.Element {
   if (assignments.resource.status === 'off') {
     return (
       <div className="nv-stack">
-        <h1 className="nv-h1">Work</h1>
-        <p className="nv-banner">
-          Work is not switched on for this environment yet. Your learning and proof are unaffected.
-        </p>
+        <PageHeader eyebrow="Work" title="My work" />
+        <Banner tone="info">
+          <p>Work is not switched on for this environment yet. Your learning and proof are unaffected.</p>
+        </Banner>
       </div>
     );
   }
@@ -68,19 +73,24 @@ export function Work(): JSX.Element {
     );
     return (
       <div className="nv-stack">
-        <h1 className="nv-h1">Work</h1>
-        <ErrorNote message={failed && 'message' in failed ? failed.message : null} />
-        <button
-          className="nv-button"
-          type="button"
-          onClick={() => {
-            assignments.reload();
-            submissions.reload();
-            quality.reload();
-          }}
-        >
-          Try again
-        </button>
+        <PageHeader eyebrow="Work" title="My work" />
+        <ErrorState
+          body={failed && 'message' in failed ? failed.message : undefined}
+          action={
+            <Button
+              size="sm"
+              type="button"
+              variant="secondary"
+              onClick={() => {
+                assignments.reload();
+                submissions.reload();
+                quality.reload();
+              }}
+            >
+              Try again
+            </Button>
+          }
+        />
       </div>
     );
   }
@@ -94,105 +104,147 @@ export function Work(): JSX.Element {
 
   return (
     <div className="nv-stack">
-      <h1 className="nv-h1">Work</h1>
-      <p className="nv-muted">
-        {open.length === 0
-          ? 'Nothing needs you right now. Accepted work is paid as it is approved.'
-          : `${open.length} piece${open.length === 1 ? '' : 's'} of work still need${open.length === 1 ? 's' : ''} you.`}
-      </p>
+      <PageHeader
+        eyebrow="Work"
+        title="My work"
+        description={
+          open.length === 0
+            ? 'Nothing needs you right now. Accepted work is paid as it is approved.'
+            : `${open.length} piece${open.length === 1 ? '' : 's'} of work still need${open.length === 1 ? 's' : ''} you.`
+        }
+        actions={
+          <>
+            <Link className="nv-button nv-button--secondary nv-button--sm" to="/opportunities">
+              Find more work
+            </Link>
+            <Link className="nv-button nv-button--ghost nv-button--sm" to="/earnings">
+              Earnings
+            </Link>
+          </>
+        }
+      />
 
-      <section className="nv-stack">
-        <h2 className="nv-h2">Assignments</h2>
+      <Panel title="Assignments" actions={<Badge tone="info">{rows.length}</Badge>}>
         {rows.length === 0 ? (
-          <p className="nv-banner">
-            No assignment yet. Managed work starts with an invitation, and matching uses your verified
-            skills.
-          </p>
+          <EmptyState
+            body="Managed work starts with an invitation, and matching uses your verified skills."
+            icon={ClipboardCheck}
+            title="No assignment yet"
+            action={
+              <Link className="nv-button nv-button--secondary nv-button--sm" to="/opportunities">
+                Browse opportunities
+              </Link>
+            }
+          />
         ) : (
-          <ul className="nv-list">
-            {rows.map((row) => (
-              <li className="nv-card" key={row.id}>
-                <div className="nv-row nv-row--between">
-                  <h3 className="nv-h2">
-                    <Link to={`/work/assignments/${row.id}`}>{row.title}</Link>
-                  </h3>
-                  <span className="nv-badge" data-status={row.status === 'approved' ? 'verified' : 'unverified'}>
-                    {STATUS_COPY[row.status] ?? row.status.replace(/_/g, ' ')}
-                  </span>
-                </div>
-                <p className="nv-muted">
-                  {row.project.title}
-                  {row.due_at ? ` · due ${formatDateTime(row.due_at)}` : ' · no deadline set'}
-                </p>
-              </li>
-            ))}
-          </ul>
+          <div className="nv-table-wrap">
+            <table className="nv-table">
+              <thead>
+                <tr>
+                  <th>Assignment</th>
+                  <th>Project</th>
+                  <th>Due</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {rows.map((row) => (
+                  <tr key={row.id}>
+                    <td>
+                      <Link to={`/work/assignments/${row.id}`}>{row.title}</Link>
+                    </td>
+                    <td>{row.project.title}</td>
+                    <td>{row.due_at ? formatDateTime(row.due_at) : 'No deadline set'}</td>
+                    <td>
+                      <Badge tone={statusTone(row.status)}>
+                        {STATUS_COPY[row.status] ?? row.status.replace(/_/g, ' ')}
+                      </Badge>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
-      </section>
+      </Panel>
 
-      <section className="nv-stack">
-        <h2 className="nv-h2">What you sent</h2>
+      <Panel
+        title="What you sent"
+        actions={<Badge tone="neutral">{submissions.resource.data.submissions.length}</Badge>}
+      >
         {submissions.resource.data.submissions.length === 0 ? (
-          <p className="nv-muted">No submission yet.</p>
+          <EmptyState
+            body="Submit an assignment and its status will appear here with the time it was sent."
+            icon={FileCheck2}
+            title="No submission yet"
+          />
         ) : (
           <ul className="nv-list">
             {submissions.resource.data.submissions.map((row) => (
               <li key={row.submission_id}>
-                <Link to={`/work/assignments/${row.assignment_id}`}>{row.assignment_title}</Link>{' '}
-                <span className="nv-muted">
-                  · {row.status.replace(/_/g, ' ')} · {formatDateTime(row.submitted_at) || 'just now'}
-                </span>
+                <div className="nv-row nv-row--between">
+                  <Link to={`/work/assignments/${row.assignment_id}`}>{row.assignment_title}</Link>
+                  <Badge tone={statusTone(row.status)}>{row.status.replace(/_/g, ' ')}</Badge>
+                </div>
+                <p className="nv-meta">{formatDateTime(row.submitted_at) || 'just now'}</p>
               </li>
             ))}
           </ul>
         )}
-      </section>
+      </Panel>
 
-      <section className="nv-card">
-        <h2 className="nv-h2">Your quality record</h2>
+      <Panel title="Your quality record">
         {record == null ? (
-          <p className="nv-muted">
-            No reviewed work yet. Quality is built from real submissions — a missing record is not a bad
-            one.
-          </p>
+          <EmptyState
+            body="Quality is built from real submissions — a missing record is not a bad one."
+            icon={Gauge}
+            title="No reviewed work yet"
+          />
         ) : (
-          <>
-            <p>
-              {record.reviews_count} review
-              {record.reviews_count === 1 ? '' : 's'} ·{' '}
-              {record.approvals} approved ·{' '}
-              {record.reworks} rework ·{' '}
-              {record.rejections} rejected
-            </p>
+          <div className="nv-stack">
+            <div className="nv-grid">
+              <div className="nv-stat">
+                <p className="nv-stat__value">{record.reviews_count}</p>
+                <p className="nv-stat__label">Reviews</p>
+              </div>
+              <div className="nv-stat">
+                <p className="nv-stat__value">{record.approvals}</p>
+                <p className="nv-stat__label">Approved</p>
+              </div>
+              <div className="nv-stat">
+                <p className="nv-stat__value">{record.reworks}</p>
+                <p className="nv-stat__label">Rework</p>
+              </div>
+              <div className="nv-stat">
+                <p className="nv-stat__value">{record.rejections}</p>
+                <p className="nv-stat__label">Rejected</p>
+              </div>
+            </div>
             {record.average_score !== null ? (
               <p className="nv-muted">Average score: {record.average_score}%</p>
             ) : null}
             {record.gold_tasks > 0 ? (
               <p className="nv-muted">
-                Gold checks: {record.gold_correct} of {record.gold_tasks} correct. A gold task is normal
-                work with a known answer, used to keep review honest.
+                Gold checks: {record.gold_correct} of {record.gold_tasks} correct. A gold task is normal work
+                with a known answer, used to keep review honest.
               </p>
             ) : null}
-          </>
+            {consequences.length > 0 ? (
+              <div>
+                <h3 className="nv-h4">What it changed</h3>
+                <ul className="nv-list">
+                  {consequences.map((row, index) => (
+                    <li key={`${row.kind}-${index}`}>
+                      <strong>{row.kind.replace(/_/g, ' ')}</strong>
+                      {row.reason ? <span className="nv-muted"> · {row.reason}</span> : null}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
+          </div>
         )}
-        {consequences.length > 0 ? (
-          <>
-            <h3 className="nv-h2">What it changed</h3>
-            <ul className="nv-list">
-              {consequences.map((row, index) => (
-                <li key={`${row.kind}-${index}`}>
-                  <strong>{row.kind.replace(/_/g, ' ')}</strong>
-                  {row.reason ? <span className="nv-muted"> · {row.reason}</span> : null}
-                </li>
-              ))}
-            </ul>
-          </>
-        ) : null}
-      </section>
-
-      <p className="nv-muted">
-        <Link to="/earnings">See your earnings</Link> · <Link to="/opportunities">Find more work</Link>
-      </p>
+      </Panel>
     </div>
   );
 }

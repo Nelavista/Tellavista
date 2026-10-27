@@ -8,6 +8,7 @@ For the V2 web launch, read these three and ignore the rest:
 
 ## Reference (only when a step sends you there)
 
+- **`docs/design/ui-ux-framework.md`** — how V2 screens are designed and built. Read this before UI/UX work.
 - **`docs/runbooks/rollback.md`** — put V1 back if the cutover goes wrong.
 - **`docs/runbooks/restore-from-backup.md`** — Render Postgres restore drill.
 - **`docs/runbooks/rotate-secrets.md`** — key rotation.

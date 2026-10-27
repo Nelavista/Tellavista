@@ -21,9 +21,20 @@ def test_dev_requires_secret_key() -> None:
         Settings(_env_file=None, APP_ENV="dev", DATABASE_URL="postgresql://u:p@host/db", SECRET_KEY="")
 
 
-def test_database_url_is_required() -> None:
+def test_local_without_database_url_uses_sqlite() -> None:
+    s = Settings(_env_file=None, APP_ENV="local", DATABASE_URL="", SECRET_KEY="x")
+    assert s.DATABASE_URL.startswith("sqlite:///")
+    assert s.DATABASE_URL.endswith("v2-local.db")
+
+
+def test_dev_requires_database_url() -> None:
     with pytest.raises(RuntimeError, match="DATABASE_URL"):
-        Settings(_env_file=None, APP_ENV="local", DATABASE_URL="", SECRET_KEY="x")
+        Settings(_env_file=None, APP_ENV="dev", DATABASE_URL="", SECRET_KEY="x")
+
+
+def test_prod_requires_database_url() -> None:
+    with pytest.raises(RuntimeError, match="DATABASE_URL"):
+        Settings(_env_file=None, APP_ENV="prod", DATABASE_URL="", SECRET_KEY="x")
 
 
 def test_wildcard_cors_rejected_outside_local() -> None:

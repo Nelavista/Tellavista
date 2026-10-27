@@ -31,6 +31,11 @@ A platform for African (Nigerian first) university students, taking a student fr
 **Windows:** follow **`RUN-LOCALLY.md`** — it has copy-paste PowerShell and a
 `scripts\dev.ps1` that opens the API, web and admin in three windows.
 
+**No Docker:** `powershell -ExecutionPolicy Bypass -File .\scripts\dev-local.ps1`
+runs V2 on SQLite with no `.env` file. Log in as `student1@example.test` /
+`localdevpass123`; the admin app uses `admin@example.test` / `localdevpass123`
+and asks you to enrol 2FA on first login.
+
 **macOS/Linux:**
 
 ```bash

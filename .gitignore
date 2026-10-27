@@ -33,6 +33,9 @@ session_data/
 *.sqlite
 *.sqlite3
 
+# Zero-config local V2 database (scripts/dev-local.ps1)
+apps/api/.local/
+
 # Database backups -- full production data (incl. student PII), never committed
 backups/
 *.dump

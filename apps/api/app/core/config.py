@@ -18,10 +18,10 @@ AppEnv = Literal["local", "dev", "prod"]
 
 # Repo-root/packages/config/versions.json — the single source of version truth.
 _VERSIONS_FILE = Path(__file__).resolve().parents[4] / "packages" / "config" / "versions.json"
-# apps/api/.env.local is the documented V2 local file. It is loaded last so it
-# wins over the V1 root .env that also lives in this repository.
+# V2 reads its own env files only. The V1 app has a separate root .env; loading
+# that here would let V1's DATABASE_URL/SECRET_KEY leak into V2 (ADR-0002).
 _API_DIR = Path(__file__).resolve().parents[2]
-_ENV_FILES = (".env", ".env.local", str(_API_DIR / ".env"), str(_API_DIR / ".env.local"))
+_ENV_FILES = (str(_API_DIR / ".env"), str(_API_DIR / ".env.local"))
 
 
 class Settings(BaseSettings):
@@ -43,8 +43,9 @@ class Settings(BaseSettings):
     REDIS_URL: str = ""
 
     # --- Mail ---
-    # `smtp` = Mailpit locally or any SMTP relay; `sendhiiv` = Sendhiiv's HTTP API.
-    EMAIL_PROVIDER: Literal["smtp", "sendhiiv"] = "smtp"
+    # `smtp` = Mailpit locally or any SMTP relay; `sendhiiv` = Sendhiiv's HTTP API;
+    # `console` = print the message in the worker log (no Docker/Mailpit needed).
+    EMAIL_PROVIDER: Literal["smtp", "sendhiiv", "console"] = "smtp"
     MAIL_HOST: str = "localhost"
     MAIL_PORT: int = 1025
     MAIL_USE_TLS: bool = False
@@ -99,11 +100,23 @@ class Settings(BaseSettings):
         if not self.is_local and not self.SECRET_KEY:
             problems.append("SECRET_KEY is required when APP_ENV is 'dev' or 'prod'.")
         if self.is_local and not self.SECRET_KEY:
-            # Local convenience default; never acceptable in dev/prod.
-            object.__setattr__(self, "SECRET_KEY", "local-dev-only-secret-change-me")
+            # Local convenience default; never acceptable in dev/prod. 32+ bytes
+            # keeps PyJWT from warning about a short HMAC key.
+            object.__setattr__(
+                self, "SECRET_KEY", "local-dev-only-secret-change-me-please-32bytes"
+            )
 
         if not self.DATABASE_URL:
-            problems.append("DATABASE_URL is required (see .env.example).")
+            if self.is_local:
+                # Zero-config local mode: SQLite instead of Docker Postgres. The
+                # local runner (scripts/dev-local.ps1) uses the same path.
+                local_dir = _API_DIR / ".local"
+                local_dir.mkdir(parents=True, exist_ok=True)
+                object.__setattr__(
+                    self, "DATABASE_URL", f"sqlite:///{local_dir.as_posix()}/v2-local.db"
+                )
+            else:
+                problems.append("DATABASE_URL is required (see .env.example).")
 
         # An emailed link that is not absolute cannot be clicked.
         if not self.WEB_BASE_URL.startswith(("http://", "https://")):

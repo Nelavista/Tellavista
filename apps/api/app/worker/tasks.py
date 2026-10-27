@@ -10,7 +10,9 @@ first thing that must not be lost. Two transports share the same handler:
 
 * `EMAIL_PROVIDER=smtp` — Mailpit locally, or any SMTP relay with AUTH;
 * `EMAIL_PROVIDER=sendhiiv` — Sendhiiv's HTTP API. No outbound SMTP port, which
-  matters on Render's free tier (SMTP 25/465/587 is blocked).
+  matters on Render's free tier (SMTP 25/465/587 is blocked);
+* `EMAIL_PROVIDER=console` — print the message in the worker log. This is the
+  no-Docker local default used by `scripts/dev-local.ps1`.
 
 Sendhiiv's delivery contract is narrow: only HTTP 429 (rate limit) is safe to
 retry, because it is rejected before anything is queued. A 5xx or a timeout may
@@ -124,6 +126,10 @@ def send_email(payload: dict[str, Any]) -> None:
         # still a useful test log. Never applies in production.
         subject = f"[DEV -> {to}] {subject}"
         to = settings.EMAIL_REDIRECT_TO
+
+    if settings.EMAIL_PROVIDER == "console":
+        logger.info("email (console)\nto: %s\nsubject: %s\n\n%s", to, subject, body)
+        return
 
     if settings.EMAIL_PROVIDER == "sendhiiv":
         if not settings.SENDHIIV_API_KEY:

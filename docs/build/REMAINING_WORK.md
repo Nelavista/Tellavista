@@ -1,33 +1,39 @@
-# V2 remaining work — live tracker
+# V2 remaining work - build tracker
 
-Last updated: 2026-10-20 (Phases 0–10 delivered as code. B13/B14 now have typed
-contracts and web + mobile screens, F7 curriculum is seeded, G1–G5 are policy plus
+> **Build history, not the UI readiness list.** This tracker records the
+> implementation work through 2026-10-27. For the current public/auth/app/admin
+> screen gaps and the launch blockers, use `docs/v2-ui/AUDIT.md` and
+> `docs/v2-ui/ROUTE-MAP.md`.
+
+Last updated: 2026-10-27 (Phases 0-10 delivered as code. B13/B14 now have typed
+contracts and web + mobile screens, F7 curriculum is seeded, G1-G5 are policy plus
 admin controls, the B6 answer drafts and B7 re-verification prompt are closed, and
-the whole suite was run green — see Verification below).
+the API suite was run green - see Verification below. UI readiness is tracked
+separately in `docs/v2-ui/AUDIT.md`).
 
-This is the single list of everything still to do for V2, in the order I intend to
-work through it. It exists so progress is visible while the work happens and so
-nothing on it gets forgotten. The build prompt's rules still apply: V1 untouched,
-no production data, small changes behind feature flags, tests with the code.
+This is the build list still to do for V2, in the order it was worked through. It
+exists so progress is visible and nothing gets forgotten. UI readiness and the
+missing public/app/admin screens are tracked separately in
+`docs/v2-ui/AUDIT.md`. The build prompt's rules still apply: V1 untouched, no
+production data, small changes behind feature flags, tests with the code.
 
 Status legend: `[ ]` to do · `[~]` in progress · `[x]` done · `[!]` blocked on you
 or on an external decision.
 
-## Verification (2026-10-20)
+## Verification (2026-10-27)
 
 Run after the last code change, not before it. Every line below is a command that
 was executed and its real result.
 
 | Check | Command | Result |
 |---|---|---|
-| API suite | `pytest -q --ignore=tests/test_migrations.py` | **301 passed** |
-| Migrations (SQLite round trip, heads, model agreement) | `pytest -q tests/test_migrations.py` | **5 passed, 1 skipped** (Postgres case skips without `POSTGRES_TEST_URL`) |
-| Web DOM/unit | `npx vitest run` in `apps/web` | **48 passed** (8 files) |
+| API suite (including migrations) | `pytest -q` in `apps/api` | **332 passed, 1 skipped** (333 collected; 10m 42s) |
+| Web DOM/unit | `npx vitest run` in `apps/web` | **53 passed** (10 files) |
 | Admin DOM | `npx vitest run` in `apps/admin` | **1 passed** |
-| Mobile core (queue, deep links, versions) | `npx vitest run` in `apps/mobile` | **11 passed** |
-| Typechecks | `tsc --noEmit` in web, admin, mobile | **0 errors** each |
-| Lint | `ruff check app tests` (api), `ruff check tools`, `eslint src` (web, admin, mobile) | **clean** (2 pre-existing mobile warnings) |
-| First-load budget | `node tools/check_web_budget.mjs` after `vite build` | **58.7 KB JS + 1.4 KB CSS** of 150/20 KB |
+| Mobile core (queue, deep links, versions) | `npx vitest run` in `apps/mobile` | **11 passed** (last recorded; not re-run in this audit) |
+| Typechecks | `tsc --noEmit` in web, admin, mobile | **0 errors** each (last recorded; re-run before UI work) |
+| Lint | `ruff check app tests` (api), `ruff check tools`, `eslint src` (web, admin, mobile) | **clean** (last recorded; 2 pre-existing mobile warnings) |
+| First-load budget | `node tools/check_web_budget.mjs` after `vite build` | **58.7 KB JS + 1.4 KB CSS** of 150/20 KB (last recorded) |
 | Typed client freshness | `node tools/gen_api_client.mjs --schema openapi.json` | regenerated after the B13/B14 models; the generated file is committed |
 | Load-test tool | offline: percentile/report maths, over-budget exit 1, unreachable API exit 2 | **works**; no live measurement yet (F6) |
 

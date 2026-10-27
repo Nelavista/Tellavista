@@ -8,6 +8,11 @@
 | Last updated | 2026-10-27 |
 | Companion documents | `docs/adr/0001-v2-stack.md`, `docs/architecture/01-target-structure.md`, `CONTRIBUTING.md`, `RUN-LOCALLY.md` |
 
+> **Gate 2 pending.** `docs/v2-ui/DESIGN-DIRECTION.md` proposes a different
+> surface/theme model (Ink + Paper) and a larger public-page scope. Until that
+> direction is approved, this guide remains the current guard. After approval,
+> update the conflicting sections here in the same change.
+>
 > This is the working guide for anyone changing a V2 screen. It is the project-specific version of the master UI/UX framework. The order of authority is:
 >
 > 1. The live brand tokens in `packages/design-tokens/src/index.ts`.

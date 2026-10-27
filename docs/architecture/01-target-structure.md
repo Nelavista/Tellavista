@@ -35,7 +35,7 @@ nelavista/                              (repo root = Render Root Directory until
 │   ├── architecture/   audit + these plan docs
 │   ├── runbooks/       operational how-tos
 │   ├── product/        the V2 PRD
-│   └── MIGRATION_MAP.md  SECRETS_ROTATION.md  TEMPLATE_CLASSIFICATION.md
+│   └── v2-ui/  SECRETS_ROTATION.md
 │
 ├── .github/workflows/  CI/CD (path-filtered)
 ├── docker-compose.yml  local Postgres+pgvector, Redis, Mailpit

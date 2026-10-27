@@ -71,31 +71,37 @@ Load and soak tests against the scale target; a security review (object-level au
 More skill paths (M2's task engine should make these configuration) · automated matching at scale · **company self-service** (requirements/assignments/quality/payouts are modelled for it, PRD §9) · escrow, taxes, currency and payout rails (PRD §12).
 
 ## Cross-cutting (built with, not after)
-Offline + idempotency (ADR-0007) · observability (Sentry + PostHog per env) · feature flags · accessibility and low-data budgets · the money harness and property-based tests (ADR-0008) · the object-permission harness (ADR-0009).
+Offline + idempotency (ADR-0007) · analytics and error tracking (not yet wired; add before launch) · feature flags · accessibility and low-data budgets · the money harness and property-based tests (ADR-0008) · the object-permission harness (ADR-0009).
 
 ## Milestone → ADR/plan references
 M0 = `docs/build/phase-0-plan.md`, ADR-0001/0002/0005/0008/0009/0010 · M1 = ADR-0005/0009 · M2 = `05-domain-map.md`, ADR-0007 · M3 = `05`, ADR-0009 · M4/M5 = `05`, PRD §6–8, ADR-0006/0007 · M6 = ADR-0008 · M7 = `05`, PRD §10–11 · M8 = ADR-0001/0007 · M9 = ADR-0001/0007/0010 · M10 = `03-versioning-and-domains.md`, `04-v1-to-v2-migration.md`.
 
-## Delivery status (2026-10-20)
+## Delivery status (2026-10-27)
 
-Phases 0–6 and the API half of 7–8 are implemented; 9 and 10 are release and
-hardening work. The live, item-by-item list is `docs/build/REMAINING_WORK.md`; the
-per-phase account of what is delivered and what is owed is
-`docs/build/phase-1-10-plan.md`.
+Phases 0-8 are implemented on the API and student web; Phases 9 and 10 are
+release and hardening work. The build tracker is `docs/build/REMAINING_WORK.md`;
+the per-phase account is `docs/build/phase-1-10-plan.md`. UI readiness, public
+surface gaps and the missing screens are in `docs/v2-ui/AUDIT.md` and
+`docs/v2-ui/ROUTE-MAP.md`.
 
 | Milestone | State |
 |---|---|
-| M0 | Delivered (auth core, conventions, jobs, flags, observability, admin shell with 2FA) |
+| M0 | Delivered (auth core, conventions, jobs, flags, admin shell with 2FA). Analytics/error tracking is **not** wired. |
 | M1 | Delivered (identity, V1 importer, onboarding, Choose Path, settings, campus) |
-| M2 | Delivered; offline answer saving on web still owed; curriculum content blocked on G4 |
-| M3 | Delivered; a re-verification call-to-action after suspension is owed |
+| M2 | Delivered; offline submission sync is not wired on web; curriculum content still depends on G4 |
+| M3 | Delivered; a re-verification call-to-action after suspension is still owed |
 | M4 | Delivered (opportunities, explanations, cohorts, replacements, candidate lists) |
 | M5 | Delivered (delivery, quality, consequences, override, notifications) |
 | M6 | Delivered (ledger, split, payouts, reconciliation, earnings); first scheduled reconciliation run unobserved |
-| M7 | API delivered; **student Talent/share UI owed** |
-| M8 | Dashboard + campus delivered; **materials reader, Ask and CBT results screens owed** |
+| M7 | Delivered (Talent profile and scoped share links on web) |
+| M8 | Delivered (dashboard, materials reader, Ask, CBT results) |
 | M9 | Build profiles, force-update, push, store assets and release workflow delivered; screenshots and a device smoke run owed |
 | M10 | Rate limits, Postgres migrations in CI and the load-test tool delivered; the DEV measurement, security review, beta, pilot and cutover remain |
+
+The UI is not launch-ready even though the phases are delivered: the public site,
+legal/consent UX, notification centre, password change, 404/error boundary and
+several admin actions are still missing. See `docs/v2-ui/AUDIT.md` for the
+verified list.
 
 Known stale milestone references from the M0 renumbering are fixed: the API,
 admin and mobile READMEs and the `academia` model now describe the delivered state

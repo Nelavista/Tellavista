@@ -15,14 +15,18 @@ A platform for African (Nigerian first) university students, taking a student fr
 
 ## Planning & decisions (read these first)
 
-- **`docs/architecture/00-audit.md`** — what V1 actually is (verified against code, *not* this README's history).
+- **`docs/v2-ui/AUDIT.md`** - what V2 actually has, what is missing, and what is stale.
+- **`docs/v2-ui/ROUTE-MAP.md`** - the proposed public, auth, student, admin and utility routes.
+- **`docs/v2-ui/DESIGN-DIRECTION.md`** - the proposed visual system and component direction.
+- **`docs/v2-ui/PARITY.md`** - V1 to V2 capability mapping, including deliberate drops.
+- **`docs/design/ui-ux-framework.md`** - the project UI/UX guard.
 - **`docs/adr/`** — the accepted decisions (stack, environments, domains, auth, ledger, API versioning…).
 - **`docs/architecture/01-target-structure.md` … `07-risk-register.md`** — the target layout, environments, migration plan, domain map, roadmap, risks.
 - **`docs/product/Nelavista_V2_PRD.pdf`** — the product requirements.
 - **`docs/runbooks/`** — how to set up locally, deploy, roll back, rotate secrets.
 - **`docs/SECRETS_ROTATION.md`** — credentials that must be rotated.
 
-> This README was rewritten (2026-10) to match the code. The previous version described a UI and structure that no longer matched the implementation; the audit lists every discrepancy.
+> This README was rewritten (2026-10) to match the code. The V1 code audit is kept as historical context in `docs/architecture/00-audit.md`; it is not V2 status.
 
 ---
 

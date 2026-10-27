@@ -258,5 +258,6 @@ started; it is an operational milestone, not a coding one.
 Delivered since this list was written: B13, B14, the AI Data Annotation content
 (F7/G4) and the G1–G5 policy controls.
 
-The single source of truth for status is `REMAINING_WORK.md`; this document is
-the per-phase narrative behind it.
+The build status is tracked in `REMAINING_WORK.md`; UI readiness and the missing
+public/app/admin screens are tracked in `docs/v2-ui/AUDIT.md`. This document is
+the per-phase narrative behind the build tracker.

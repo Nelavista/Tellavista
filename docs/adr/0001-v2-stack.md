@@ -35,7 +35,7 @@
 ### Why not the alternatives
 - **Flutter** is a fine cross-platform choice with cloud builds, but it shares *no* code with the TS web app, so a 2–3 person team pays for two languages and two skill sets. Expo lets the team reuse TS types, validation and API-client logic across web/mobile/admin.
 - **Fully native** is two codebases and two release trains — impossible in 1–3 months for this team, and cannot build iOS without a Mac.
-- **Keeping Flask and expanding V1** was already rejected in `MIGRATION_MAP.md` for the *V2* surface: V1's session-cookie auth and page-JSON `/api/*` cannot serve native apps, and the money flow needs a transactional domain model that V1 does not have. V1 stays live and untouched; V2 is a new app behind the same domain (ADR-0004).
+- **Keeping Flask and expanding V1** was already rejected in the historical V1 migration analysis for the *V2* surface: V1's session-cookie auth and page-JSON `/api/*` cannot serve native apps, and the money flow needs a transactional domain model that V1 does not have. V1 stays live and untouched; V2 is a new app behind the same domain (ADR-0004).
 - **Next.js** is heavier and pulls a Node server into the runtime; Vite + prerender keeps the moving parts down.
 
 ## Consequences / trade-offs

@@ -1,4 +1,7 @@
-# Nelavista V1 — Phase 0 Audit
+# Nelavista V1 - Phase 0 Audit
+
+> **Historical V1 context, not V2 status.** For current V2 UI work use
+> `docs/v2-ui/AUDIT.md`, `docs/v2-ui/PARITY.md` and `docs/v2-ui/ROUTE-MAP.md`.
 
 **Status:** read-only audit. **No files were changed to produce this** (verified with `git status --porcelain` — clean). No scripts were run against any database. No dependencies were upgraded.
 **Date:** 2026-10-16
@@ -19,7 +22,7 @@
 | `migrations/` | dir | Alembic env + 50 revisions under `versions/`. **Single head: `f1b2c3d4e5f6`.** | Keep with the V1 app. |
 | `scripts/` | dir | `admin/`, `audit/`, `maintenance/`, `seed/`. **Nothing in `app/` imports them.** | Keep with V1; each needs a prod-guard later. |
 | `tests/` | dir | 49 test modules + `conftest.py` (isolated throwaway SQLite app). | Keep with V1. |
-| `docs/` | dir | `MIGRATION_MAP.md`, `SECRETS_ROTATION.md`, `TEMPLATE_CLASSIFICATION.md`, `product/Nelavista_V2_PRD.pdf`. | Becomes `docs/` at monorepo root; product docs → `docs/product/`; new audits → `docs/architecture/`. |
+| `docs/` | dir | `SECRETS_ROTATION.md`, `product/Nelavista_V2_PRD.pdf`, and the current V2 docs. | Becomes `docs/` at monorepo root; product docs → `docs/product/`; new audits → `docs/architecture/`; V2 UI work → `docs/v2-ui/`. |
 | `data/` | dir | 371 tracked files: 369 files in `cbt_question_banks/` (JSON/markdown question banks), `Nelavista_Course_Codes.csv`, and a file literally named `cbt questions` (953 KB UTF-8 text, **a file, not a directory**). These are *seed inputs* read by `scripts/seed/*`. | Move to `data/seed-inputs/`; rename `cbt questions` → `cbt_questions.txt`; keep tracked (seeders + CBT bank read them). |
 | `seed_data/` | dir | `career_skills/` — 20 Python modules that *are* seed payload (career-skill definitions), sitting outside `scripts/seed/`. | Fold into `scripts/seed/data/career_skills/` (it is seed payload, not runtime data). |
 | `uploads/` | dir | Empty, gitignored, created at boot by `create_app` (`app.config['UPLOAD_FOLDER']`). Runtime artifact. | Keep; document as ephemeral; object storage in V2. |
@@ -139,7 +142,7 @@ Active & strategically valuable: `ai_provider.py` (the abstraction), `rag_servic
 - **Which DB each setup points at:** whatever `DATABASE_URL` resolves to — a single value per machine/host. Unset → `sqlite:///tellavista.db`. Tests are the only thing that forces its own DB (`conftest.py` sets `SKIP_DB_INIT=1` and binds a temp SQLite).
 - **Shared prod assets today:** with no staging, there is exactly one set of everything. **[assumption, to confirm]** prod's Google OAuth client, Cloudinary account, mail sender, Sentry project and PostHog project are the only ones — and a developer's local `.env` may point some of these at the *same* accounts as prod. This is the core risk the DEV environment removes.
 - **Scripts that could damage prod (no guard exists):** every `scripts/seed/*` (idempotent but write to `DATABASE_URL`), `scripts/maintenance/*` (notably `cleanup_unembeddable_materials.py`, which **defaults to making changes**, and `migrate_static_materials_to_cloudinary.py`, which mutates rows + Cloudinary), `scripts/admin/make_admin.py`, and `scripts/audit/audit_broken_material_links.py --apply`. **Only `scripts/audit/check_template_links.py` sets `SKIP_DB_INIT`.** Every other script imports the app, so importing triggers `init_database()` (create_all/stamp + `ALTER TABLE` attempts) against the configured DB before the script does anything.
-- **The hardcoded `test`/`test123` account** is created whenever `DEBUG_MODE` is on and `init_database` runs without `SKIP_DB_INIT` — i.e. a `pytest` run before the conftest fix, or any debug boot against a shared DB. `MIGRATION_MAP.md` records this as having opened a real prod connection once. **Action for Phase 3: check prod for a `test` user.**
+- **The hardcoded `test`/`test123` account** is created whenever `DEBUG_MODE` is on and `init_database` runs without `SKIP_DB_INIT` — i.e. a `pytest` run before the conftest fix, or any debug boot against a shared DB. The historical migration analysis records this as having opened a real prod connection once. **Action for Phase 3: check prod for a `test` user.**
 
 ---
 
@@ -179,7 +182,7 @@ Active & strategically valuable: `ai_provider.py` (the abstraction), `rag_servic
 3. **Repo-size framing ("≈1.2 GB of course-content files tracked in git")** — imprecise. Those files are **Git LFS** objects (180 files); `app/static/media` (**146 MB** of `.mp4`/`.jpeg`) is **not** LFS-covered and is ordinary history. History-purge planning must handle both.
 4. **"Repository structure" block omits** `data/`, `seed_data/`, `uploads/`, `extracted_images/`, `instance/`, `google76268f26b118dad1.html`, `.env.example`, and `docs/product/`.
 5. **DOCS stub lists `docs/` as three files**; there is now also `docs/product/`.
-6. **Counts are stale** (in `MIGRATION_MAP.md`, which the README points to): 68 models → **76**; 45 migrations → **50**; 36 test suites → **49 modules**; ~289 routes → **302**; `frontend/` is described as deleted (correct). LOC is now **20,309** in `app/`.
+6. **Counts are stale** (in the removed historical migration analysis): 68 models → **76**; 45 migrations → **50**; 36 test suites → **49 modules**; ~289 routes → **302**; `frontend/` is described as deleted (correct). LOC is now **20,309** in `app/`.
 7. **Two spaces framing understates V1.** The README's product framing says "two spaces," but the code ships a full **Community** (14 routes), **live video meetings** (14, Agora), **employer** (4) and **reels** (2). The V2 PRD drops/redefines several of these — V1's real surface is larger than documented.
 8. **`test`/`test123` default user** is created on debug boot — not mentioned in the README's security story; a real prod-hygiene item.
 9. **Cloudinary is configured inside two route modules** (not central config) — the README's "config.py is the authoritative list" is fine for *names* but the wiring is scattered.
@@ -244,7 +247,7 @@ Active & strategically valuable: `ai_provider.py` (the abstraction), `rag_servic
 
 1. **"Community — no Community product"** (V2) is fine, but **V1 already ships Community, live meetings, employer and reels**. The brief's "two spaces" framing matches the README, not the code. Any plan must place these explicitly (freeze/re-flag/retire), not assume they don't exist.
 2. **`APP_ENV` does not exist**; the closest is `ENVIRONMENT`/`FLASK_DEBUG`. Introducing `APP_ENV` is net-new (and `ENVIRONMENT`/`IS_PRODUCTION` are barely used — only the Sentry label).
-3. **"pgvector RAG"** is present and working (not a gap) — the brief is right; `MIGRATION_MAP.md`'s older "no RAG" row is now stale.
+3. **"pgvector RAG"** is present and working (not a gap) — the brief is right; the historical migration analysis's older "no RAG" row is now stale.
 4. **"1.2 GB tracked in git"** — it's LFS (see §8.2), which changes the untrack/purge plan materially.
 5. **Search Console file is not actually served** — the brief assumes it functions.
 6. **The `.env` incident's commits are not in this repo's history** — the brief/`SECRETS_ROTATION.md` assume they are. Rotation still stands; the history-purge premise needs re-verification before any destructive action.

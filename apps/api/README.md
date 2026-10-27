@@ -31,4 +31,5 @@ tests/      pytest
 Domain modules are implemented for Phases 1–8 (`docs/build/phase-1-10-plan.md`):
 identity/auth, onboarding, skills, verification, opportunities/matching, work and
 quality, money, talent, academia and ops. Phase 9/10 work is release and hardening
-(`docs/build/REMAINING_WORK.md` is the live list).
+(`docs/build/REMAINING_WORK.md` is the build tracker; UI readiness is in
+`docs/v2-ui/AUDIT.md`).

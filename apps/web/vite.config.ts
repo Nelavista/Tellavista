@@ -12,7 +12,15 @@ export default defineConfig(({ mode }) => {
       react(),
       VitePWA({
         registerType: 'autoUpdate',
-        includeAssets: ['icons/icon-192.png', 'icons/icon-512.png', 'icons/maskable-512.png'],
+        includeAssets: [
+          'favicon.ico',
+          'apple-touch-icon.png',
+          'brand/nelavista-mark.png',
+          'media/nelavista-loader.webp',
+          'icons/icon-192.png',
+          'icons/icon-512.png',
+          'icons/maskable-512.png',
+        ],
         manifest: {
           name: 'Nelavista',
           short_name: 'Nelavista',
@@ -20,9 +28,10 @@ export default defineConfig(({ mode }) => {
           start_url: '/',
           scope: '/',
           display: 'standalone',
-          background_color: '#050810',
-          theme_color: '#050810',
+          background_color: '#1535A8',
+          theme_color: '#1535A8',
           orientation: 'portrait',
+          categories: ['education', 'productivity'],
           icons: [
             { src: '/icons/icon-192.png', sizes: '192x192', type: 'image/png' },
             { src: '/icons/icon-512.png', sizes: '512x512', type: 'image/png' },

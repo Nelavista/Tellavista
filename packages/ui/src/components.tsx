@@ -391,14 +391,62 @@ export function ErrorNote({ message }: { message: string | null }): JSX.Element 
   );
 }
 
+export function BrandMark({ size = 28, className }: { size?: number; className?: string }): JSX.Element {
+  return (
+    <img
+      alt=""
+      className={cx('nv-brand-mark', className)}
+      decoding="async"
+      height={size}
+      src="/brand/nelavista-mark.png"
+      width={size}
+    />
+  );
+}
+
 export function Logo({ to = '/', compact = false }: { to?: string; compact?: boolean }): JSX.Element {
   return (
     <a className="nv-public__brand" href={to} aria-label="Nelavista home">
-      <span className="nv-public__brand-mark" aria-hidden="true">
-        NV
-      </span>
+      <BrandMark />
       {compact ? null : <span>Nelavista</span>}
     </a>
+  );
+}
+
+/**
+ * The page-level loading mark. The animated WebP is the primary asset; the
+ * still mark replaces it when the visitor asks for reduced motion or the
+ * animation cannot be loaded.
+ */
+export function BrandLoader({
+  label = 'Loading Nelavista',
+  full = false,
+}: {
+  label?: string;
+  full?: boolean;
+}): JSX.Element {
+  const [failed, setFailed] = React.useState(false);
+  return (
+    <div aria-label={label} className={cx('nv-brand-loader', full && 'nv-brand-loader--full')} role="status">
+      <span className="nv-brand-loader__stage">
+        {failed ? null : (
+          <img
+            alt=""
+            className="nv-brand-loader__anim"
+            decoding="async"
+            height={96}
+            onError={() => setFailed(true)}
+            src="/media/nelavista-loader.webp"
+            width={96}
+          />
+        )}
+        <BrandMark
+          className={cx('nv-brand-loader__still', failed && 'nv-brand-loader__still--visible')}
+          size={56}
+        />
+      </span>
+      <span className="nv-brand-loader__label">{label}</span>
+    </div>
   );
 }
 
@@ -406,13 +454,13 @@ export function ThemeToggle({
   theme,
   onToggle,
 }: {
-  theme: 'ink' | 'paper';
+  theme: 'light' | 'dark';
   onToggle: () => void;
 }): JSX.Element {
-  const next = theme === 'ink' ? 'paper' : 'ink';
+  const next = theme === 'light' ? 'dark' : 'light';
   return (
     <IconButton label={`Switch to ${next} theme`} onClick={onToggle} title={`Switch to ${next} theme`}>
-      {theme === 'ink' ? <Sun aria-hidden="true" size={17} /> : <Moon aria-hidden="true" size={17} />}
+      {theme === 'dark' ? <Sun aria-hidden="true" size={17} /> : <Moon aria-hidden="true" size={17} />}
     </IconButton>
   );
 }

@@ -59,6 +59,10 @@ node_modules/
 # Large stray downloads / installers (should never be committed)
 *.exe
 
+# Incoming image drops are working files. Final derivatives live in apps/*/public.
+/assets/incoming/*
+!/assets/incoming/README.md
+
 # Loose scratch/course-material PDFs accidentally dropped at repo root.
 # app/static/materials/ content and data/cbt questions stay tracked on purpose:
 # the seed scripts and CBT bank reads depend on them.

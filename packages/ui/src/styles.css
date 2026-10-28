@@ -2,7 +2,7 @@
  * Nelavista shared surface.
  *
  * One stylesheet for web and admin. The JS bridge publishes the active theme as
- * --nv-* variables; the values below are the Ink fallback for the first paint.
+ * --nv-* variables; the values below are the dark fallback for the first paint.
  */
 
 @font-face {
@@ -46,24 +46,24 @@
 }
 
 :root {
-  --nv-bg: #101114;
-  --nv-surface: #17191d;
-  --nv-surface-raised: #1e2126;
-  --nv-surface-sunken: #0b0c0e;
-  --nv-border: #2a2e35;
-  --nv-border-strong: #41464f;
-  --nv-text: #e8e6e0;
-  --nv-text-muted: #a8a49a;
-  --nv-text-subtle: #76736b;
-  --nv-accent: #ff5a1f;
-  --nv-accent-strong: #ff7a45;
-  --nv-accent-subtle: #3a1c11;
-  --nv-accent-contrast: #101114;
-  --nv-success: #3dd68c;
-  --nv-warning: #ffc24b;
-  --nv-danger: #ff6b5e;
+  --nv-bg: #050810;
+  --nv-surface: #0a0f1a;
+  --nv-surface-raised: #0f1825;
+  --nv-surface-sunken: #03060d;
+  --nv-border: #1c2a3a;
+  --nv-border-strong: #2b4055;
+  --nv-text: #eef2f7;
+  --nv-text-muted: #8fa8c8;
+  --nv-text-subtle: #6b84a3;
+  --nv-accent: #6e8bff;
+  --nv-accent-strong: #8fa8ff;
+  --nv-accent-subtle: #101d3d;
+  --nv-accent-contrast: #050810;
+  --nv-success: #2dd4bf;
+  --nv-warning: #f5b942;
+  --nv-danger: #ff6b6b;
   --nv-info: #7cc7ff;
-  --nv-focus-ring: #ff8a5c;
+  --nv-focus-ring: #8fa8ff;
   --nv-font: 'Instrument Sans', 'Segoe UI', system-ui, -apple-system, sans-serif;
   --nv-font-serif: 'Instrument Serif', 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
   --nv-font-mono: 'IBM Plex Mono', 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
@@ -1005,6 +1005,69 @@ pre {
 }
 
 /* ---------------------------------------------------------------------------
+ * Brand mark and page-level loader
+ * ------------------------------------------------------------------------- */
+
+.nv-brand-mark {
+  display: inline-block;
+  flex: none;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: var(--nv-radius-xs);
+  object-fit: cover;
+  vertical-align: middle;
+}
+
+.nv-brand-loader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--nv-space-lg);
+  padding: var(--nv-space-3xl);
+  text-align: center;
+}
+
+.nv-brand-loader--full {
+  min-height: 100dvh;
+}
+
+.nv-brand-loader__stage {
+  display: grid;
+  width: 8rem;
+  height: 8rem;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  border-radius: var(--nv-radius-lg);
+  background: #1535a8;
+}
+
+.nv-brand-loader__anim {
+  width: 6rem;
+  height: 6rem;
+  object-fit: contain;
+}
+
+.nv-brand-loader__still {
+  display: none;
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: var(--nv-radius-sm);
+}
+
+.nv-brand-loader__still--visible {
+  display: block;
+}
+
+.nv-brand-loader__label {
+  color: var(--nv-text-muted);
+  font-family: var(--nv-font-mono);
+  font-size: var(--nv-text-xs);
+  letter-spacing: var(--nv-tracking-wider);
+  text-transform: uppercase;
+}
+
+/* ---------------------------------------------------------------------------
  * Loading, empty and error states
  * ------------------------------------------------------------------------- */
 
@@ -1160,21 +1223,6 @@ pre {
   font-size: 1.5rem;
   line-height: 1;
   text-decoration: none;
-}
-
-.nv-sidebar__brand-mark {
-  display: inline-flex;
-  width: 1.75rem;
-  height: 1.75rem;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid var(--nv-accent);
-  border-radius: var(--nv-radius-xs);
-  color: var(--nv-accent);
-  font-family: var(--nv-font-mono);
-  font-size: 0.7rem;
-  font-weight: 600;
-  letter-spacing: -0.04em;
 }
 
 .nv-sidebar__nav {
@@ -1353,20 +1401,6 @@ pre {
   font-size: 1.55rem;
   line-height: 1;
   text-decoration: none;
-}
-
-.nv-public__brand-mark {
-  display: inline-flex;
-  width: 1.8rem;
-  height: 1.8rem;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid var(--nv-accent);
-  border-radius: var(--nv-radius-xs);
-  color: var(--nv-accent);
-  font-family: var(--nv-font-mono);
-  font-size: 0.68rem;
-  font-weight: 600;
 }
 
 .nv-public__nav {
@@ -1998,5 +2032,13 @@ pre {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+
+  .nv-brand-loader__anim {
+    display: none;
+  }
+
+  .nv-brand-loader__still {
+    display: block;
   }
 }

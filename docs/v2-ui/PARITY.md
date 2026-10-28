@@ -3,7 +3,7 @@
 | Field | Value |
 |---|---|
 | Status | **Approved 2026-10-27.** Course/topic and CBT history are in scope; material upload/analysis is deferred with a stated replacement. |
-| Date | 2026-10-27 |
+| Date | 2026-10-27; post-build status and palette correction 2026-10-28 |
 | Method | V2 code and API contracts are the source of truth. V1 is read-only reference. |
 | Legend | **Stronger** = V2 does more or does it better. **Parity** = capability exists in both. **Gap** = V2 needs work to match. **Dropped** = V2 intentionally removes it; a reason is required. **New** = not in V1. **Decide** = product decision needed. |
 | Companion documents | `docs/v2-ui/AUDIT.md`, `docs/v2-ui/ROUTE-MAP.md`, `docs/v2-ui/DESIGN-DIRECTION.md` |
@@ -29,7 +29,7 @@
 | Employer | No self-service | **Dropped by design** at launch; managed work instead |
 | Admin | Real ops tools | **Stronger** in audit/money/quality; **gaps** in waitlist, campus, applications, payout items, content/material ops |
 | Utility | No 404/error boundary | **Gap** |
-| Theme | Dark only | **Gap** vs V1 theme toggle; propose Ink + Paper |
+| Theme | Light/dark with brand blue and white | **Parity** | Implemented; verify both surfaces |
 | Public legal/contact | None | **Major gap** |
 
 **Bottom line:** V2's product spine is stronger than V1's in the areas V2 chose to
@@ -57,7 +57,7 @@ weaker. The redesign must close those gaps before it can claim “not less than 
 | No blog | None | **Not required** | Do not add |
 | Employer signup/dashboard/discover | None | **Dropped by design** | V2 runs managed work through ops; no employer self-service at launch |
 | Footer social links (placeholder `example.com`) | None | **Gap** | Use real links or omit; never ship placeholders |
-| Theme toggle | Dark only | **Gap** | Add Ink + Paper, or state a stronger replacement |
+| Theme toggle | Light/dark implemented | **Parity** | Keep both themes verified |
 | PWA manifest, no offline | Real PWA shell | **Stronger** | Keep; fix install/update UX |
 | No V1 robots/sitemap/OG | Basic robots/sitemap, title only | **Partial** | Add per-page meta, OG, canonical and full sitemap |
 
@@ -102,7 +102,7 @@ the blocker, not the login form.
 | Academia onboarding wizard | `/onboarding` wizard | **Parity** | Redesign as a clear stepper; keep waitlist |
 | Skills onboarding modal | No separate Skills onboarding | **Gap/decide** | Add a first-run Skills preference step, or fold into `/onboarding` |
 | Profile + LASU curriculum browser | Settings profile + academic context | **Partial** | Keep academic context; decide whether to restore a curriculum reference |
-| Settings (AI prefs, study prefs, notifications, theme, export, delete, password) | Settings (profile, languages, availability, notifications, export, delete) | **Partial** | Add password, consent history, push devices, theme; keep export/delete |
+| Settings (AI prefs, study prefs, notifications, theme, export, delete, password) | Settings (profile, languages, availability, notifications, export, delete) | **Partial** | Add password, consent history and push devices; theme is in the shell |
 | Separate Academia and Skills notifications | One notification list in Settings | **Gap** | Add `/notifications` with filters and deep links |
 | No global command/search | None | **New opportunity** | Add app search/command menu if budget allows |
 
@@ -222,7 +222,7 @@ tools.
 | V1 | V2 | Verdict | Action |
 |---|---|---|---|
 | 404/500/503 pages | Catch-all redirects home; no error boundary | **Gap** | Add 404, error boundary, offline and maintenance states |
-| Theme toggle | Dark only | **Gap** | Add Ink + Paper |
+| Theme toggle | Light/dark implemented | **Parity** | Verify both themes |
 | PWA manifest but no offline | Real PWA shell | **Stronger** | Keep; add update/install UX |
 | No robots/sitemap | Basic robots/sitemap | **Partial** | Expand for public pages |
 | No OG/canonical | Title only | **Gap** | Add per-page meta |
@@ -263,7 +263,6 @@ replacement is real and the product does not pretend the old feature exists.
 | AI answer flags / AI quality loop | Does Ask need a flag/review queue? |
 | Admin material/video moderation | Does V2 need ops ingestion/moderation for materials? |
 | LASU curriculum browser | Is academic context enough, or is the curriculum reference needed? |
-| Theme toggle | Add Ink + Paper, or choose Ink only with a clear reason? |
 
 ---
 
@@ -302,7 +301,7 @@ replacement is real and the product does not pretend the old feature exists.
 23. Skills search/filter
 24. Material upload/analysis decision
 25. 404, error boundary, offline state
-26. Ink + Paper theme
+26. Light/dark theme using brand blue and white (implemented)
 
 ### Admin
 
@@ -343,7 +342,7 @@ replacement is real and the product does not pretend the old feature exists.
 V2 has a **stronger core** than V1: evidence-based verification, managed work,
 quality, ledger, scoped talent shares and a real admin audit trail. It has a
 **weaker perimeter**: no public site, no legal/consent UX, no notification centre,
-no password change, no 404, no theme, and several API capabilities with no screen.
+no password change, and several API capabilities with no screen.
 
 The redesign should not try to reproduce V1. It should keep V2's stronger core,
 close the perimeter gaps, and explicitly retire V1's dead or unsafe surfaces.

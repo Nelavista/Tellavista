@@ -1,4 +1,4 @@
-import { Avatar } from '@nelavista/ui';
+import { Avatar, BrandMark } from '@nelavista/ui';
 import {
   Briefcase,
   Building2,
@@ -119,9 +119,7 @@ export function Shell({
       </a>
       <aside className="nv-sidebar" aria-label="Admin sections">
         <div className="nv-sidebar__brand">
-          <span className="nv-sidebar__brand-mark" aria-hidden="true">
-            NV
-          </span>
+          <BrandMark />
           <span>Nelavista ops</span>
         </div>
 

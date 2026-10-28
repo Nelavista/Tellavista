@@ -1,3 +1,4 @@
+import { BrandLoader } from '@nelavista/ui';
 import * as React from 'react';
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 
@@ -94,15 +95,7 @@ const CbtHistory = React.lazy(() => import('./routes/CbtHistory').then((m) => ({
 const Course = React.lazy(() => import('./routes/Course').then((m) => ({ default: m.Course })));
 
 function Loading(): JSX.Element {
-  return (
-    <div className="nv-container nv-section" aria-busy="true">
-      <div className="nv-skeleton-group">
-        <span className="nv-skeleton" style={{ width: '38%', height: '2.5rem' }} />
-        <span className="nv-skeleton" style={{ width: '70%' }} />
-        <span className="nv-skeleton" style={{ width: '55%' }} />
-      </div>
-    </div>
-  );
+  return <BrandLoader full label="Opening your workspace" />;
 }
 
 /** Guards the signed-in area; keeps the attempted URL so login can return to it. */

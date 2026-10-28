@@ -4,13 +4,13 @@
 |---|---|
 | Status | **Approved 2026-10-27. Build in progress.** |
 | Gate | Gate 2 — design direction |
-| Date | 2026-10-27 |
+| Date | 2026-10-27; palette corrected to brand blue/white 2026-10-28 |
 | Applies to | `apps/web`, `apps/admin`, `packages/design-tokens`, `packages/ui` |
 | Does not apply to | V1 at the repository root, API contracts, deployment |
 | Companion documents | `docs/v2-ui/AUDIT.md`, `docs/v2-ui/PARITY.md`, `docs/v2-ui/ROUTE-MAP.md`, `docs/v2-ui/IMAGE-PROMPTS.md`, `docs/design/ui-ux-framework.md` |
 
-> This document proposes the visual and interaction direction for the whole V2
-> surface: public pages, auth, student app and admin. It is not a component
+> This document records the approved visual and interaction direction for the
+> whole V2 surface: public pages, auth, student app and admin. It is not a component
 > inventory for its own sake. The question it answers is: **what should Nelavista
 > look and feel like so it is unmistakably stronger than V1 without copying it?**
 
@@ -35,7 +35,7 @@ delivered, what they were paid. The interface should feel like that record.
 
 That gives us a visual signature that is specific to Nelavista and cannot be
 swapped into any SaaS template: **ruled lines, margin notes, stamped statuses,
-tabular numbers, asymmetric editorial layouts, and one signal colour used like a
+tabular numbers, asymmetric editorial layouts, and one brand blue used like a
 marker, not a decoration.**
 
 ### What this replaces
@@ -45,7 +45,7 @@ marker, not a decoration.**
 | Long single landing page with `#section` anchors | Separate routed public pages, each with one job |
 | Glassy cards, gradients, floating hero mockups | Flat surfaces, hairline rules, real product artifacts |
 | Identical feature-card grids | Rows, ledgers and editorial sections with different shapes |
-| Cyan glow and decorative motion | One warm signal colour, motion only to explain change |
+| Cyan glow and decorative motion | One brand blue used like a marker, motion only to explain change |
 | Marketing copy with unverified counts | Claims only where the product or the business can evidence them |
 | A desktop nav wrapped onto mobile | A real app shell: rail on desktop, bottom bar on mobile |
 | Admin as a second, darker skin | Admin as the same system at a denser rhythm |
@@ -65,33 +65,31 @@ marker, not a decoration.**
 
 ## 2. Surface and theme model
 
-### Recommendation: two surfaces, one system — Ink and Paper
+### Recommendation: one brand, two surfaces — light and dark
 
 | Surface | Used for | Default |
 |---|---|---|
-| **Paper** | Public marketing, legal, long-form reading, printable transcript | Public pages |
-| **Ink** | Student app, admin, auth side panels, dense data | Signed-in app and admin |
+| **Light** | Public marketing, legal, long-form reading, printable transcript | Public pages |
+| **Dark** | Student app, admin, auth side panels, dense data | Signed-in app and admin |
 
 This is one token system with two surface themes, not two brands. The same type,
 spacing, rules, stamps and components are used on both. The user can switch
-between Ink and Paper from the header, and the choice is remembered. On a first
-visit, the public site respects `prefers-color-scheme`; the signed-in app defaults
-to Ink because that is the working environment.
+between light and dark from the header, and the choice is remembered. The brand
+palette is fixed: **Nelavista blue `#1535A8`** and **white `#FFFFFF`**. The dark
+surface uses a lighter blue for text and focus so contrast holds on navy; the
+brand blue remains the primary fill and the logo colour.
 
-**Why include Paper at all?**
+**Why keep both surfaces?**
 
 - V1 has a light/dark toggle. Dropping it would make V2 feel like less, not more.
-- Long legal and course material is easier to read on Paper.
-- It gives the public site an editorial voice that a dark SaaS landing page cannot
-  have, without creating a second design language.
+- Long legal and course material is easier to read on white.
+- It gives the public site a clean editorial surface without creating a second
+  design language.
 - It makes the printed transcript and shared proof page feel like a document.
 
-**If you prefer a single theme**, choose **Ink only**. The rest of this direction
-still applies; Paper is the recommended extension, not a dependency for the app.
+**Theme rules**
 
-### Theme rules
-
-- No pure black (`#000`) and no pure white (`#fff`).
+- No pure black (`#000`). The dark background is deep navy `#050810`, not black.
 - No auto-inversion. Each theme is designed, not generated.
 - The accent is re-mixed for each surface so contrast holds; it is not the same hex
   pasted onto both.
@@ -105,49 +103,49 @@ still applies; Paper is the recommended extension, not a dependency for the app.
 
 ### 3.1 Brand and semantic palette
 
-The existing cyan is replaced by a warm **signal orange**. Cyan is kept only as
-the `info` semantic, never as the brand action colour. This immediately separates
-V2 from V1's cyan-on-navy look and from the default blue/purple AI aesthetic.
+The brand colour is Nelavista blue `#1535A8`; white `#FFFFFF` is the primary
+light surface and the logo knockout. The V1 cyan is not carried forward as a brand
+colour. It remains only as the `info` semantic, never as the action colour.
 
-**Ink theme**
+**Dark theme**
 
 | Token | Value | Use |
 |---|---|---|
-| `bg` | `#0B0D0C` | Page background |
-| `surface` | `#111411` | Panels, tables, inputs |
-| `surfaceRaised` | `#171B17` | Menus, drawers, hover rows |
-| `surfaceSunken` | `#080A09` | Wells, code, table headers |
-| `border` | `#2E362E` | Hairlines |
-| `borderStrong` | `#465246` | Selected/active borders |
-| `text` | `#F1EEE4` | Primary text (bone, not white) |
-| `textMuted` | `#A9B0A4` | Secondary text |
-| `textSubtle` | `#737D72` | Metadata, placeholders |
-| `accent` | `#F06A3A` | Primary action, active nav, focus |
-| `accentStrong` | `#D94E1F` | Pressed/hover |
-| `accentContrast` | `#160B06` | Text on accent |
-| `success` | `#3DD68C` | Verified, paid, approved |
+| `bg` | `#050810` | Page background |
+| `surface` | `#0A0F1A` | Panels, tables, inputs |
+| `surfaceRaised` | `#0F1825` | Menus, drawers, hover rows |
+| `surfaceSunken` | `#03060D` | Wells, code, table headers |
+| `border` | `#1C2A3A` | Hairlines |
+| `borderStrong` | `#2B4055` | Selected/active borders |
+| `text` | `#EEF2F7` | Primary text |
+| `textMuted` | `#8FA8C8` | Secondary text |
+| `textSubtle` | `#6B84A3` | Metadata, placeholders |
+| `accent` | `#6E8BFF` | Primary action, active nav, focus |
+| `accentStrong` | `#8FA8FF` | Pressed/hover |
+| `accentContrast` | `#050810` | Text on accent |
+| `success` | `#2DD4BF` | Verified, paid, approved |
 | `warning` | `#F5B942` | At risk, needs attention |
-| `danger` | `#FF5D5D` | Error, destructive, rejected |
-| `info` | `#6FB7FF` | Neutral information, links in prose |
+| `danger` | `#FF6B6B` | Error, destructive, rejected |
+| `info` | `#7CC7FF` | Neutral information, links in prose |
 
-**Paper theme**
+**Light theme**
 
 | Token | Value | Use |
 |---|---|---|
-| `bg` | `#F7F3E8` | Page background |
-| `surface` | `#EFE9DB` | Panels, table headers |
-| `surfaceRaised` | `#E4DCCB` | Menus, hover rows |
-| `surfaceSunken` | `#FBF8F0` | Wells, code, inputs |
-| `border` | `#CFC5B2` | Hairlines |
-| `borderStrong` | `#9D927E` | Selected/active borders |
-| `text` | `#171712` | Primary text |
-| `textMuted` | `#5E6258` | Secondary text |
-| `textSubtle` | `#7E8277` | Metadata, placeholders |
-| `accent` | `#B33A12` | Primary action, active nav, focus |
-| `accentStrong` | `#8F2D0D` | Pressed/hover |
-| `accentContrast` | `#FFF8F0` | Text on accent |
-| `success` | `#1F7A4D` | Verified, paid, approved |
-| `warning` | `#8A5A00` | At risk, needs attention |
+| `bg` | `#FFFFFF` | Page background |
+| `surface` | `#F7F9FC` | Panels, table headers |
+| `surfaceRaised` | `#EEF2F7` | Menus, hover rows |
+| `surfaceSunken` | `#FBFCFE` | Wells, code, inputs |
+| `border` | `#DCE3EC` | Hairlines |
+| `borderStrong` | `#B9C6D8` | Selected/active borders |
+| `text` | `#0B1A2F` | Primary text |
+| `textMuted` | `#3F5470` | Secondary text |
+| `textSubtle` | `#6B7F99` | Metadata, placeholders |
+| `accent` | `#1535A8` | Primary action, active nav, focus |
+| `accentStrong` | `#0F2A86` | Pressed/hover |
+| `accentContrast` | `#FFFFFF` | Text on accent |
+| `success` | `#13805F` | Verified, paid, approved |
+| `warning` | `#9A6400` | At risk, needs attention |
 | `danger` | `#B42318` | Error, destructive, rejected |
 | `info` | `#1D5F9E` | Neutral information, links in prose |
 
@@ -155,14 +153,14 @@ Contrast checks for the primary pairs (computed, not guessed):
 
 | Pair | Ratio |
 |---|---|
-| Ink text / Ink bg | 16.8:1 |
-| Ink muted / Ink bg | 8.76:1 |
-| Ink accent / Ink bg | 6.34:1 |
-| Ink accentContrast / Ink accent | 6.3:1 |
-| Paper text / Paper bg | 16.22:1 |
-| Paper muted / Paper bg | 5.63:1 |
-| Paper accent / Paper bg | 5.36:1 |
-| Paper accentContrast / Paper accent | 5.65:1 |
+| Dark text / Dark bg | 17.81:1 |
+| Dark muted / Dark bg | 8.20:1 |
+| Dark accent / Dark bg | 6.48:1 |
+| Dark accentContrast / Dark accent | 6.48:1 |
+| Light text / Light bg | 17.46:1 |
+| Light muted / Light bg | 7.74:1 |
+| Light accent / Light bg | 9.97:1 |
+| Light accentContrast / Light accent | 9.97:1 |
 
 `textSubtle` is metadata only; it is not used for body copy. Warning and danger are
 never used as the only signal: every status has a word and, where useful, an icon.
@@ -282,7 +280,7 @@ A 4px control and an 8px panel read as a working tool. Do not round every surfac
 - Sections are separated by hairlines and margin labels, not by cards.
 - One dominant anchor per page. On the landing page it is **Create your account**.
 - Public header: logo, Platform, How it works, About, Log in, Get started. Sticky,
-  solid Paper, 1px bottom rule. No translucent blur.
+  solid white, 1px bottom rule. No translucent blur.
 - Public footer: sitemap, legal, contact, social. No giant decorative wordmark.
 
 ### 6.2 Student app
@@ -505,7 +503,7 @@ invented numbers.
 | A top nav that wraps on mobile | A real responsive shell with a mobile bottom bar |
 | Student app is a collection of pages with inconsistent headers | One app shell, one page-header pattern, one table/list language |
 | Admin is a separate dark skin | Same tokens, same primitives, denser rhythm |
-| Theme toggle with a light/dark inversion | Ink and Paper are both designed; the choice persists |
+| Theme toggle with a light/dark inversion | Light and dark are both designed; the choice persists |
 | Hard-coded “2,500+ students” and “20 paths” | Only verified, current numbers; otherwise no number |
 | Legal text that describes V1 features V2 dropped | Legal and consent copy rewritten for the V2 product |
 | No 404, no error boundary, no notification centre | Utility screens and a dedicated notifications route |
@@ -515,7 +513,7 @@ invented numbers.
 
 ## 13. Implementation order after approval
 
-1. **Tokens and theme bridge** — Ink/Paper, type, spacing, radius, motion,
+1. **Tokens and theme bridge** — light/dark, type, spacing, radius, motion,
    breakpoints, focus ring. Remove admin's duplicate palette.
 2. **Primitives in `packages/ui`** — button, field, select, checkbox, stamp,
    banner, table, empty/error/skeleton, dialog, drawer, toast.
@@ -536,21 +534,24 @@ primitive twice.
 
 ---
 
-## 14. Approval requested
+## 14. Approval recorded
 
-Approve or change these decisions before any UI code is written:
+These decisions were approved on 2026-10-27 and corrected on 2026-10-28 to keep
+the platform on the V1 brand palette:
 
 1. **Concept:** The Working Record (prospectus + work order + transcript +
    receipt).
-2. **Theme model:** Ink + Paper (recommended), or Ink only.
-3. **Accent:** warm signal orange, replacing cyan as the brand action colour.
+2. **Theme model:** light + dark, using the Nelavista blue and white brand palette.
+3. **Accent:** Nelavista blue `#1535A8`; white surfaces; no orange brand accent.
 4. **Type:** Instrument Serif + Instrument Sans + IBM Plex Mono.
 5. **Density:** public editorial, app compact, admin dense.
 6. **Motion:** Motion for route/disclosure/drawer only; CSS for micro-interactions.
-7. **Imagery:** real photography + real product artifacts; no generated people or
-   fake metrics.
+7. **Imagery:** editorial blue/white block-print illustrations for mood, real
+   photography where the content is documentary, and real product artifacts. Never
+   generated evidence, testimonials or metrics.
 8. **Scope:** public pages and missing app/admin screens are in scope; newsletter
    and the platform announcement banner are deferred post-launch (see `AUDIT.md`).
 
-Approved 2026-10-27. The first change is the token and primitive foundation, not
-a page.
+The first change was the token and primitive foundation, not a page. The palette
+is Nelavista blue `#1535A8` and white `#FFFFFF`; the dark surface uses a readable
+blue tint for text and focus, not a second brand colour.

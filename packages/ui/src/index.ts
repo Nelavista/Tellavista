@@ -4,6 +4,8 @@ export {
   Avatar,
   Badge,
   Banner,
+  BrandLoader,
+  BrandMark,
   Button,
   Card,
   Checkbox,

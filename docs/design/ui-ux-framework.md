@@ -5,10 +5,10 @@
 | Status | Active for V2 UI/UX work |
 | Applies to | `apps/web`, `apps/admin`, `apps/mobile` (post-launch), `packages/ui`, `packages/design-tokens` |
 | Does not apply to | V1 at the repository root, API contracts, infrastructure, or deployment |
-| Last updated | 2026-10-27 |
+| Last updated | 2026-10-28 |
 | Companion documents | `docs/adr/0001-v2-stack.md`, `docs/architecture/01-target-structure.md`, `CONTRIBUTING.md`, `RUN-LOCALLY.md` |
 
-> **Gate 2 approved 2026-10-27.** The Ink + Paper model in
+> **Gate 2 approved 2026-10-27.** The light/dark model in
 > `docs/v2-ui/DESIGN-DIRECTION.md` is the current visual direction. This guide is
 > the engineering guard for that direction; the route contract lives in
 > `docs/v2-ui/ROUTE-MAP.md`. Where this file and those two disagree, the approved
@@ -61,31 +61,31 @@ This section fills the project brief that the generic framework leaves blank. Tr
 | Language | TypeScript 5.6, `strict` and `noUncheckedIndexedAccess` | Mobile uses TypeScript 5.3 with Expo's base config. |
 | Routing | React Router 6.28 in web; a small in-repo hash router in admin | Do not add React Router to admin without a concrete need. |
 | Styling | Plain CSS plus CSS custom properties from `@nelavista/design-tokens` | Tailwind and CSS-in-JS are deliberately not in use yet. |
-| Tokens | `packages/design-tokens/src/index.ts`; shared bridge in `packages/ui/src/theme.ts` | Both apps apply the same Ink/Paper tokens and import the shared CSS. |
+| Tokens | `packages/design-tokens/src/index.ts`; shared bridge in `packages/ui/src/theme.ts` | Both apps apply the same light/dark tokens and import the shared CSS. |
 | Shared React primitives | `packages/ui` exports the shared primitives, theme bridge, shared CSS and fonts; `apps/web/src/ui.tsx` is a re-export alias | Add a primitive to `packages/ui`; do not copy it between apps. |
 | Tests | Vitest 2.1 + jsdom + React DOM | No Testing Library, axe, or Playwright yet. Add them when a component test needs them. |
 | Mobile | Expo 52, React Native 0.76.5, Expo SQLite, secure store, notifications | Shares tokens, not web components. |
 
 ### 1.3 Brand and tokens
 
-The approved palette is **Ink + Paper**: one token system with two designed
-surfaces, not two brands. `docs/v2-ui/DESIGN-DIRECTION.md` holds the full values
-and contrast checks; `packages/design-tokens/src/index.ts` is the only source the
-code reads.
+The approved palette is **Nelavista blue and white**: one token system with two
+designed surfaces, not two brands. `docs/v2-ui/DESIGN-DIRECTION.md` holds the full
+values and contrast checks; `packages/design-tokens/src/index.ts` is the only
+source the code reads.
 
 | Surface | Used for | Default |
 |---|---|---|
-| **Paper** | Public marketing, legal, long-form reading, printable transcript | Public pages |
-| **Ink** | Student app, admin, auth side panels, dense data | Signed-in app and admin |
+| **Light** | Public marketing, legal, long-form reading, printable transcript | Public pages |
+| **Dark** | Student app, admin, auth side panels, dense data | Signed-in app and admin |
 
-| Role group | Ink example | Paper example | Use |
+| Role group | Dark example | Light example | Use |
 |---|---|---|---|
-| `bg` | `#0B0D0C` | `#F7F3E8` | Page background |
-| `surface` / `surfaceRaised` / `surfaceSunken` | `#111411` / `#171B17` / `#080A09` | `#EFE9DB` / `#E4DCCB` / `#FBF8F0` | Panels, menus, wells |
-| `border` / `borderStrong` | `#2E362E` / `#465246` | `#CFC5B2` / `#9D927E` | Hairlines and control boundaries |
-| `text` / `textMuted` / `textSubtle` | `#F1EEE4` / `#A9B0A4` / `#737D72` | `#171712` / `#5E6258` / `#7E8277` | Body, secondary, metadata |
-| `accent` / `accentStrong` / `accentContrast` | `#F06A3A` / `#D94E1F` / `#160B06` | `#B33A12` / `#8F2D0D` / `#FFF8F0` | Action, active nav, focus |
-| `success` / `warning` / `danger` / `info` | `#3DD68C` / `#F5B942` / `#FF5D5D` / `#6FB7FF` | `#1F7A4D` / `#8A5A00` / `#B42318` / `#1D5F9E` | Status only |
+| `bg` | `#050810` | `#FFFFFF` | Page background |
+| `surface` / `surfaceRaised` / `surfaceSunken` | `#0A0F1A` / `#0F1825` / `#03060D` | `#F7F9FC` / `#EEF2F7` / `#FBFCFE` | Panels, menus, wells |
+| `border` / `borderStrong` | `#1C2A3A` / `#2B4055` | `#DCE3EC` / `#B9C6D8` | Hairlines and control boundaries |
+| `text` / `textMuted` / `textSubtle` | `#EEF2F7` / `#8FA8C8` / `#6B84A3` | `#0B1A2F` / `#3F5470` / `#6B7F99` | Body, secondary, metadata |
+| `accent` / `accentStrong` / `accentContrast` | `#6E8BFF` / `#8FA8FF` / `#050810` | `#1535A8` / `#0F2A86` / `#FFFFFF` | Action, active nav, focus |
+| `success` / `warning` / `danger` / `info` | `#2DD4BF` / `#F5B942` / `#FF6B6B` / `#7CC7FF` | `#13805F` / `#9A6400` / `#B42318` / `#1D5F9E` | Status only |
 
 **Rules for extending tokens:**
 
@@ -97,10 +97,9 @@ code reads.
 5. Do not add a third palette. If a dense admin table needs a quieter accent, add
    a named role; do not fork the palette.
 
-**Theme rules:** no pure black or pure white; no auto-inversion; the accent is
-re-mixed per surface so contrast holds; images are not tinted per theme. Public
-pages respect `prefers-color-scheme` on a first visit; the signed-in app defaults
-to Ink; the toggle persists.
+**Theme rules:** no pure black; no auto-inversion; the accent is re-mixed per
+surface so contrast holds; images are not tinted per theme. Public pages use the
+light surface by default; the signed-in app defaults to dark; the toggle persists.
 
 ### 1.4 Typography
 
@@ -204,7 +203,7 @@ Done means:
 
 - V1 UI changes, V1 templates, or V1 CSS.
 - Mobile launch work; the mobile app is post-launch.
-- A second design language for admin or a third surface theme. Ink and Paper are
+- A second design language for admin or a third surface theme. Light and dark are
   the only themes; do not auto-invert or invent a third palette.
 - A Tailwind, CSS-in-JS, or component-kit migration as part of a feature.
 - New backend endpoints, auth flows, or payment behavior invented by the UI.
@@ -282,7 +281,7 @@ This section is the generic framework's Section 1, tightened for Nelavista. Trea
 
 - A gradient is allowed only when it encodes data (a sequential scale in a chart or heatmap) or protects legibility (a scrim over a photograph).
 - The skeleton shimmer is a functional loading indicator, not decoration. Keep it, but respect `prefers-reduced-motion`.
-- The signal orange is a brand value. Keep it under about 10% of the visible surface and use it for interaction or importance only. It is re-mixed per theme so contrast holds; it is never a background wash.
+- Nelavista blue is the brand value. Keep it under about 10% of the visible surface and use it for interaction or importance only. It is re-mixed per theme so contrast holds; it is never a background wash.
 
 **Required**
 
@@ -619,9 +618,10 @@ Capture screenshots at:
 - 320px wide for the worst-case mobile check
 - 200% text zoom for the overflow check
 
-Check both themes where the surface supports them: Ink for the app and admin,
-Paper for public, legal and reading. The toggle must persist, and the public
-first visit respects `prefers-color-scheme`. Check forced-colors mode separately.
+Check both themes where the surface supports them: dark for the app and admin,
+light for public, legal and reading. Public routes default to light and signed-in
+routes default to dark; a stored choice wins and persists. Check forced-colors
+mode separately.
 
 ### 7.4 Definition of done
 
@@ -700,14 +700,14 @@ most.
 
 | Area | Current state | Remaining |
 |---|---|---|
-| Tokens | Ink + Paper palettes, type, spacing, radius, motion, z-index, breakpoints and layout widths live in `packages/design-tokens` and are published through the shared bridge | Keep the values and the guide in sync; verify contrast in both themes |
+| Tokens | Light/dark palettes, type, spacing, radius, motion, z-index, breakpoints and layout widths live in `packages/design-tokens` and are published through the shared bridge | Keep the values and the guide in sync; verify contrast in both themes |
 | Primitives | Buttons, fields, textarea, select, checkbox, cards, panels, page headers, badges, stamps, banners, empty/error states, skeletons, spinner, avatar, theme toggle in `packages/ui` | Add a dialog/menu only when a real screen needs one |
 | Public pages | Landing, Features, How it works, About, Contact, FAQ, Privacy, Terms, Contributor terms, NotFound, Offline | Replace draft legal copy after counsel review; add the image assets named in `docs/v2-ui/IMAGE-PROMPTS.md` |
 | Auth | Login, Signup, Verify email, Reset password use the shared auth layout | Confirm the signed-in change-password endpoint before wiring it |
 | Student app | App shell, Home, Academia, Materials, Ask, CBT, CBT history, Course, Skills, My learning, Verification, Transcript, Opportunities, Applications, Work, Earnings, Talent, Campus, Notifications, Settings subroutes | Add the missing course/topic detail and CBT review endpoints; wire change-password when it exists |
 | Admin | Grouped shell, Overview, Audit, Waitlist, Campus, Imports, Users, Opportunities, Projects, Review, Money, Content, Platform, Security, 404 | Move the remaining admin screens (Opportunities, Projects, Review, Money, Content, Platform) to the shared primitives; add campus read and the missing admin actions |
 | States | New screens implement loading, empty, error and success; feature-off is a distinct state | Audit the older admin screens against the state checklist; add partial/stale/offline where they can occur |
-| Themes | Ink and Paper are both designed; the toggle persists; public first visit respects `prefers-color-scheme` | Verify every screen in both themes, forced colors and 200% zoom |
+| Themes | Light and dark are both designed; public routes default to light, signed-in routes to dark; the toggle persists | Verify every screen in both themes, forced colors and 200% zoom |
 | Typography | Instrument Sans, Instrument Serif and IBM Plex Mono are self-hosted and subset | Keep the fallback metrics and preloads correct |
 | Motion | Shared durations/easing and Motion route transitions; reduced-motion rules exist | Test every animation with `prefers-reduced-motion` |
 | Tests | Web route tests, the public-route suite and the admin sign-in test pass | Add theme persistence and admin unknown-hash tests; add Testing Library and axe with the first component test |

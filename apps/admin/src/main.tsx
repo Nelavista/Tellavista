@@ -5,7 +5,7 @@ import { createRoot } from 'react-dom/client';
 import { App } from './App';
 import './styles.css';
 
-applyTheme('ink');
+applyTheme('dark');
 document.body.classList.add('nv-admin');
 
 const container = document.getElementById('root');

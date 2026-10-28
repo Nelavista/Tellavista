@@ -1,4 +1,4 @@
-import { ThemeToggle } from '@nelavista/ui';
+import { BrandMark, ThemeToggle } from '@nelavista/ui';
 import * as React from 'react';
 import { Link, NavLink } from 'react-router-dom';
 
@@ -25,9 +25,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }): JSX.E
       <header className="nv-public__header">
         <div className="nv-public__header-inner">
           <Link className="nv-public__brand" to="/" aria-label="Nelavista home">
-            <span className="nv-public__brand-mark" aria-hidden="true">
-              NV
-            </span>
+            <BrandMark />
             <span>Nelavista</span>
           </Link>
 
@@ -76,9 +74,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }): JSX.E
           <div className="nv-footer-grid">
             <div className="nv-footer-col">
               <Link className="nv-public__brand" to="/" aria-label="Nelavista home">
-                <span className="nv-public__brand-mark" aria-hidden="true">
-                  NV
-                </span>
+                <BrandMark />
                 <span>Nelavista</span>
               </Link>
               <p style={{ maxWidth: '34ch', marginTop: 'var(--nv-space-sm)' }}>

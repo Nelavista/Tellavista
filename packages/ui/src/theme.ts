@@ -1,10 +1,10 @@
 import {
   breakpoints,
+  dark,
   fonts,
-  ink,
   layout,
+  light,
   motion,
-  paper,
   radius,
   spacing,
   typography,
@@ -27,6 +27,7 @@ const PUBLIC_PREFIXES = [
   '/signup',
   '/auth',
   '/share',
+  '/offline',
 ];
 
 export function isPublicPath(pathname: string): boolean {
@@ -35,7 +36,7 @@ export function isPublicPath(pathname: string): boolean {
 }
 
 export function isThemeName(value: string | null): value is ThemeName {
-  return value === 'ink' || value === 'paper';
+  return value === 'light' || value === 'dark';
 }
 
 export function getStoredTheme(): ThemeName | null {
@@ -56,7 +57,7 @@ export function setStoredTheme(theme: ThemeName): void {
 }
 
 export function resolveTheme(pathname: string): ThemeName {
-  return getStoredTheme() ?? (isPublicPath(pathname) ? 'paper' : 'ink');
+  return getStoredTheme() ?? (isPublicPath(pathname) ? 'light' : 'dark');
 }
 
 /**
@@ -65,7 +66,7 @@ export function resolveTheme(pathname: string): ThemeName {
  */
 export function applyTheme(theme: ThemeName): void {
   const root = document.documentElement;
-  const t = theme === 'paper' ? paper : ink;
+  const t = theme === 'light' ? light : dark;
   const vars: Record<string, string> = {
     '--nv-bg': t.bg,
     '--nv-surface': t.surface,
@@ -157,7 +158,7 @@ export function applyInitialTheme(pathname: string): ThemeName {
 }
 
 export function toggleTheme(theme: ThemeName): ThemeName {
-  const next: ThemeName = theme === 'ink' ? 'paper' : 'ink';
+  const next: ThemeName = theme === 'light' ? 'dark' : 'light';
   setStoredTheme(next);
   applyTheme(next);
   return next;

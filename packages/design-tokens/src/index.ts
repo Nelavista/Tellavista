@@ -2,8 +2,8 @@
  * Nelavista design tokens.
  *
  * One system, two surfaces:
- * - Ink: the signed-in app, admin and dense operational screens.
- * - Paper: public, legal, reading and the shared proof page.
+ * - Dark: the signed-in app, admin and dense operational screens.
+ * - Light: public, legal, reading and the shared proof page.
  *
  * The tokens are deliberately plain values, not a component library. CSS reads
  * them through the web/admin bridge; React Native reads the same source.
@@ -74,57 +74,57 @@ export const radius = {
   pill: 999,
 } as const;
 
-export const ink = {
-  name: 'ink',
+export const dark = {
+  name: 'dark',
   colorScheme: 'dark',
-  bg: '#101114',
-  surface: '#17191D',
-  surfaceRaised: '#1E2126',
-  surfaceSunken: '#0B0C0E',
-  border: '#2A2E35',
-  borderStrong: '#41464F',
-  text: '#E8E6E0',
-  textMuted: '#A8A49A',
-  textSubtle: '#76736B',
-  accent: '#FF5A1F',
-  accentStrong: '#FF7A45',
-  accentSubtle: '#3A1C11',
-  accentContrast: '#101114',
-  success: '#3DD68C',
-  warning: '#FFC24B',
-  danger: '#FF6B5E',
+  bg: '#050810',
+  surface: '#0A0F1A',
+  surfaceRaised: '#0F1825',
+  surfaceSunken: '#03060D',
+  border: '#1C2A3A',
+  borderStrong: '#2B4055',
+  text: '#EEF2F7',
+  textMuted: '#8FA8C8',
+  textSubtle: '#6B84A3',
+  accent: '#6E8BFF',
+  accentStrong: '#8FA8FF',
+  accentSubtle: '#101D3D',
+  accentContrast: '#050810',
+  success: '#2DD4BF',
+  warning: '#F5B942',
+  danger: '#FF6B6B',
   info: '#7CC7FF',
-  focusRing: '#FF8A5C',
+  focusRing: '#8FA8FF',
 } as const;
 
-export const paper = {
-  name: 'paper',
+export const light = {
+  name: 'light',
   colorScheme: 'light',
-  bg: '#FBF8F0',
-  surface: '#FFFDF8',
-  surfaceRaised: '#F2EDE2',
-  surfaceSunken: '#F4EFE4',
-  border: '#D8D0C2',
-  borderStrong: '#B9AF9E',
-  text: '#191A1D',
-  textMuted: '#5F5B53',
-  textSubtle: '#8A8478',
-  accent: '#D9480F',
-  accentStrong: '#B93A08',
-  accentSubtle: '#FBE3D6',
-  accentContrast: '#FFFDF8',
-  success: '#1F7A4D',
+  bg: '#FFFFFF',
+  surface: '#F7F9FC',
+  surfaceRaised: '#EEF2F7',
+  surfaceSunken: '#FBFCFE',
+  border: '#DCE3EC',
+  borderStrong: '#B9C6D8',
+  text: '#0B1A2F',
+  textMuted: '#3F5470',
+  textSubtle: '#6B7F99',
+  accent: '#1535A8',
+  accentStrong: '#0F2A86',
+  accentSubtle: '#E8EDFF',
+  accentContrast: '#FFFFFF',
+  success: '#13805F',
   warning: '#9A6400',
   danger: '#B42318',
-  info: '#1D5F8A',
-  focusRing: '#D9480F',
+  info: '#1D5F9E',
+  focusRing: '#1535A8',
 } as const;
 
-export const themes = { ink, paper } as const;
+export const themes = { light, dark } as const;
 export type ThemeName = keyof typeof themes;
 
 /** Backwards-compatible default. The web bridge publishes the active theme. */
-export const colors = ink;
+export const colors = dark;
 
 export const elevation = {
   none: 'none',

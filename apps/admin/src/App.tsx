@@ -1,3 +1,4 @@
+import { BrandLoader } from '@nelavista/ui';
 import * as React from 'react';
 
 import { Shell } from './components/Shell';
@@ -42,11 +43,7 @@ function Body(): JSX.Element {
   const [route, go] = useHashRoute();
 
   if (status === 'loading') {
-    return (
-      <p className="nv-muted" style={{ padding: 24 }}>
-        Checking your session…
-      </p>
-    );
+    return <BrandLoader full label="Checking your session" />;
   }
 
   if (status === 'anonymous') return <Login />;

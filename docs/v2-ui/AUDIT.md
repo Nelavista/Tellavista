@@ -3,7 +3,7 @@
 | Field | Value |
 |---|---|
 | Status | **Phase 0 baseline. Gates 1 and 2 approved 2026-10-27. Build in progress; see §1.1.** |
-| Date | 2026-10-27 |
+| Date | 2026-10-27; post-build and palette correction 2026-10-28 |
 | Scope | Current V2 web, admin, design tokens and UI-facing API contracts; V1 used only as a reference |
 | Not in scope | V1 code changes, backend changes, deployment changes, mobile launch |
 | Companion documents | `docs/v2-ui/PARITY.md`, `docs/v2-ui/ROUTE-MAP.md`, `docs/v2-ui/DESIGN-DIRECTION.md`, `docs/design/ui-ux-framework.md` |
@@ -18,9 +18,13 @@
 The redesign has landed in code. This section replaces the baseline where they
 disagree; the rest of the document remains useful as the starting-point record.
 
-- **Design system:** Ink and Paper palettes, the shared theme bridge, primitives,
-  shared CSS and three self-hosted font families are in `packages/ui`. Web and
-  admin both consume them.
+- **Design system:** Light/dark palettes built on Nelavista blue `#1535A8` and
+  white `#FFFFFF`, the shared theme bridge, primitives, shared CSS and three
+  self-hosted font families are in `packages/ui`. Web and admin both consume them.
+- **Brand assets:** The V1 logo and favicon are copied into both V2 apps. The
+  uploaded WebP is the boot and route loader, with a still-mark and
+  reduced-motion fallback. The MP4 is a 1920x1080 brand video with a blue
+  background, not a transparent loader, and is not used in the UI yet.
 - **Public surface:** Landing, Features, How it works, About, Contact, FAQ,
   Privacy, Terms, Contributor terms, a real 404 and an offline screen exist as
   separate routes. Legal copy is an explicit draft pending counsel.
@@ -40,8 +44,10 @@ disagree; the rest of the document remains useful as the starting-point record.
 - **Still open:** The older admin screens (Opportunities, Projects, Review,
   Money, Content, Platform) still carry legacy markup. Course/topic detail, CBT
   review, the student cohort-invite list, admin campus read and the signed-in
-  change-password endpoint are API dependencies. Images named in
-  `IMAGE-PROMPTS.md` are not created yet.
+  change-password endpoint are API dependencies. Consent history, push-device
+  registration and the matches view still have no UI. `Logo`, `ArrowLink` and
+  `Spinner` are unused exports; the old `Layout.tsx` has been removed. Images
+  named in `IMAGE-PROMPTS.md` are not created yet.
 
 ---
 
@@ -156,7 +162,7 @@ The exact route list is in `ROUTE-MAP.md` and `apps/web/src/App.tsx:104-353`.
 | Newsletter | No form, endpoint, consent, unsubscribe or admin list. |
 | Platform announcement | No global banner; `nv-banner` is an inline notice, not a platform announcement. |
 | Employer page | V2 has no employer self-service; do not publish an employer product page until the business decides. |
-| Theme | V2 is dark-only. V1 has a theme toggle. |
+| Theme | V2 now has light/dark surfaces on brand blue and white. V1 has a theme toggle. |
 
 ### 3.3 Public-surface verdict
 
@@ -507,7 +513,7 @@ Neither belongs in the first design-system PR. They come after the core screens.
 | Document | State | Action |
 |---|---|---|
 | `docs/README.md` | Current but incomplete; lists historical docs as “read first” in places | Update index; add `docs/v2-ui/`; separate current from historical |
-| `docs/design/ui-ux-framework.md` | Current guard, but says “no light theme” and “marketing redesign out of scope” | Update after Gate 2 approval; do not keep it contradicting the approved direction |
+| `docs/design/ui-ux-framework.md` | Current guard, corrected after Gate 2 approval to the light/dark brand blue and white direction | Keep it in sync with the approved tokens and routes |
 | `docs/architecture/06-roadmap.md` | Delivery table is stale: says M7 Talent UI and M8 materials/Ask/CBT are owed, but they are delivered | Update delivery status and remove dead Sentry/PostHog claim |
 | `docs/build/REMAINING_WORK.md` | Updated 2026-10-27; now a build tracker, not the UI readiness list | Keep; UI gaps live in `docs/v2-ui/AUDIT.md` |
 | `docs/MIGRATION_MAP.md` | Superseded: records the rejected “keep Flask” decision and stale counts | **Delete**; keep the decision in ADR-0001 and git history |

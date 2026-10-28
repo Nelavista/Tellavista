@@ -1,3 +1,4 @@
+import { BrandMark } from '@nelavista/ui';
 import * as React from 'react';
 
 import { ApiError } from '../lib/http';
@@ -39,6 +40,10 @@ export function Login(): JSX.Element {
 
   return (
     <div className="nv-card nv-login">
+      <div className="nv-row" style={{ marginBottom: 'var(--nv-space-lg)' }}>
+        <BrandMark size={36} />
+        <span className="nv-meta">Nelavista ops</span>
+      </div>
       <h1 className="nv-h1">Ops sign in</h1>
       <p className="nv-muted">
         Staff account only. Every action here is written to the audit trail with your account.

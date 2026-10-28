@@ -1,4 +1,4 @@
-import { Avatar, ThemeToggle } from '@nelavista/ui';
+import { Avatar, BrandMark, ThemeToggle } from '@nelavista/ui';
 import {
   BadgeCheck,
   Bell,
@@ -171,9 +171,7 @@ export function AppShell({ children }: { children: React.ReactNode }): JSX.Eleme
 
       <aside className="nv-sidebar" aria-label="Primary">
         <Link className="nv-sidebar__brand" to="/home" aria-label="Nelavista home">
-          <span className="nv-sidebar__brand-mark" aria-hidden="true">
-            NV
-          </span>
+          <BrandMark />
           <span>Nelavista</span>
         </Link>
 
@@ -222,9 +220,7 @@ export function AppShell({ children }: { children: React.ReactNode }): JSX.Eleme
       <div className="nv-shell__main">
         <div className="nv-mobile-bar">
           <Link className="nv-sidebar__brand" to="/home" aria-label="Nelavista home">
-            <span className="nv-sidebar__brand-mark" aria-hidden="true">
-              NV
-            </span>
+            <BrandMark />
             <span>Nelavista</span>
           </Link>
           <div className="nv-row" style={{ gap: 'var(--nv-space-xs)' }}>

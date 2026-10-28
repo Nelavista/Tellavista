@@ -245,11 +245,11 @@ longer part of Nelavista. A silent redirect hides the change.
 
 Logo · Features · How it works · About · Log in · **Get started**
 
-- Sticky, solid Paper, 1px bottom rule.
+- Sticky, solid white, 1px bottom rule.
 - No translucent blur.
 - Mobile: logo, Get started, menu button; menu is a full-height panel with the
   same links plus legal/contact.
-- Theme control: Ink/Paper.
+- Theme control: Light/Dark.
 
 ### Public footer
 
@@ -293,7 +293,7 @@ Mobile:
 
 ### Auth shell
 
-- Split 5/7: form on Paper, “what happens next” panel on Ink.
+- Split 5/7: form on white, “what happens next” panel on navy.
 - Mobile: form first, panel collapses to a short note.
 - Minimal header: logo and “Back to home”.
 

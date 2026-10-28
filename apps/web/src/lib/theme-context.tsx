@@ -24,10 +24,10 @@ export function ThemeProvider({ children }: { children: React.ReactNode }): JSX.
   const [theme, setThemeState] = React.useState<ThemeName>(() => applyInitialTheme(window.location.pathname));
 
   React.useEffect(() => {
-    // A saved choice always wins. Without one, public pages read on Paper and the
-    // signed-in app stays on Ink, so the surface matches the job.
+    // A saved choice always wins. Without one, public pages read on the light
+    // surface and the signed-in app stays dark, so the surface matches the job.
     if (getStoredTheme()) return;
-    const next: ThemeName = isPublicPath(location.pathname) ? 'paper' : 'ink';
+    const next: ThemeName = isPublicPath(location.pathname) ? 'light' : 'dark';
     if (next !== theme) {
       applyTheme(next);
       setThemeState(next);
@@ -42,7 +42,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }): JSX.
 
   const toggle = React.useCallback(() => {
     setThemeState((current: ThemeName) => {
-      const next: ThemeName = current === 'ink' ? 'paper' : 'ink';
+      const next: ThemeName = current === 'light' ? 'dark' : 'light';
       setStoredTheme(next);
       applyTheme(next);
       return next;
@@ -53,7 +53,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }): JSX.
 }
 
 const FALLBACK: ThemeContextValue = {
-  theme: typeof window === 'undefined' ? 'paper' : resolveTheme(window.location.pathname),
+  theme: typeof window === 'undefined' ? 'light' : resolveTheme(window.location.pathname),
   setTheme: () => undefined,
   toggle: () => undefined,
 };

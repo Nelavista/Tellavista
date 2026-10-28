@@ -1,4 +1,4 @@
-import { ThemeToggle } from '@nelavista/ui';
+import { BrandMark, ThemeToggle } from '@nelavista/ui';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 
@@ -26,9 +26,7 @@ export function AuthLayout({
         <div className="nv-auth__form">
           <div className="nv-row nv-row--between">
             <Link className="nv-auth__brand" to="/" aria-label="Nelavista home">
-              <span className="nv-public__brand-mark" aria-hidden="true">
-                NV
-              </span>
+              <BrandMark />
               <span>Nelavista</span>
             </Link>
             <ThemeToggle theme={theme} onToggle={toggle} />

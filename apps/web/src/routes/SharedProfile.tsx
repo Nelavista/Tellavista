@@ -11,6 +11,7 @@ import { BadgeCheck, Briefcase, CalendarClock, GraduationCap, Link2Off } from 'l
 import * as React from 'react';
 import { useParams } from 'react-router-dom';
 
+import { usePageMeta } from '../lib/page-meta';
 import { useApiResource } from '../lib/resource';
 
 function when(value: string | null | undefined): string {
@@ -20,6 +21,7 @@ function when(value: string | null | undefined): string {
 }
 
 export function SharedProfile(): JSX.Element {
+  usePageMeta();
   const { token = '' } = useParams();
   const { resource, reload } = useApiResource<TalentProfileOut>(`/talent/share/${token}`);
 

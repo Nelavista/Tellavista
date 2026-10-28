@@ -2,7 +2,7 @@
 
 | Field              | Value                                                                                                                                   |
 | ------------------ | --------------------------------------------------------------------------------------------------------------------------------------- |
-| Status             | **Art direction approved 2026-10-27; palette corrected to brand blue/white 2026-10-28. Assets are not created yet.**                |
+| Status             | **Art direction approved 2026-10-27; palette corrected to brand blue/white 2026-10-28. Assets are not created yet.**              |
 | Date               | 2026-10-28                                                                                                                              |
 | Source drops       | `assets/incoming/`                                                                                                                    |
 | Public derivatives | `apps/web/public/images/`, `apps/web/public/og/`                                                                                    |
@@ -30,7 +30,7 @@
    P2 can follow.
 
 Check each image before saving: no text, letters, numbers, logos or currency
-symbols anywhere; only the navy, blue, white and rare brick-red palette; people
+symbols anywhere; only the navy, blue and white palette; people
 shown with dignity; one clear subject; nothing from the avoid list. The subject
 must stay inside the centre safe area so a 4:3 or 16:9 crop does not cut it.
 
@@ -42,7 +42,7 @@ Do not generate a social card with baked-in text.
 ## Style block (paste first)
 
 ```
-Editorial block-print illustration, like a two-colour screenprint or linocut: flat shapes, confident outlines, a slight offset between colour layers, and paper grain visible only inside the artwork. Palette strictly: deep navy (#050810) for linework and dark shapes, brand blue (#1535A8) for one or two key accents, white (#FFFFFF) as the background, and a small touch of brick red (#B42318) only when needed. Everyday Nigerian setting shown with dignity and warmth: campuses, shared desks, hostels, buses, markets, small offices, students, traders and families. People have simplified features and natural everyday clothing, with no stereotypes or caricature. Calm, confident mood. One clear focal subject, generous empty space, and the subject kept inside the centre safe area. Solid white background with no border or frame.
+Editorial block-print illustration, like a limited-colour screenprint or linocut: flat shapes, confident outlines, a slight offset between colour layers, and paper grain visible only inside the artwork. Palette strictly: deep navy (#050810) for linework and dark shapes, brand blue (#1535A8) for one or two key accents, and white (#FFFFFF) as the background. Everyday Nigerian setting shown with dignity and warmth: campuses, shared desks, hostels, buses, markets, small offices, students, traders and families. People have simplified features and natural everyday clothing, with no stereotypes or caricature. Calm, confident mood. One clear focal subject, generous empty space, and the subject kept inside the centre safe area. Solid white background with no border or frame.
 Absolutely none of: text, letters, numbers, logos, currency symbols, coins, readable banknotes, rockets, upward arrows, trading charts, glowing phones, robots, brains, circuit patterns, handshakes, lightbulbs, padlock-and-shield icons, graduation caps, trophies, stock-photo smiles at camera, gradients, 3D rendering, isometric style, neon, glass effects, background grids, dot patterns, or decorative patterns.
 ```
 

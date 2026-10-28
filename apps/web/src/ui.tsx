@@ -19,7 +19,6 @@ export {
   Panel,
   Select,
   Skeleton,
-  Spinner,
   Stamp,
   Textarea,
   ThemeToggle,

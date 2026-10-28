@@ -2,6 +2,7 @@ import { BrandMark, ThemeToggle } from '@nelavista/ui';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 
+import { usePageMeta } from '../lib/page-meta';
 import { useTheme } from '../lib/theme-context';
 
 export function AuthLayout({
@@ -15,6 +16,7 @@ export function AuthLayout({
   children: React.ReactNode;
   footer?: React.ReactNode;
 }): JSX.Element {
+  usePageMeta();
   const { theme, toggle } = useTheme();
 
   return (

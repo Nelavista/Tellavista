@@ -13,6 +13,7 @@ import type {
   ProjectOut,
   ReplacementListOut,
 } from '@nelavista/api-client';
+import { Badge, Banner, EmptyState, ErrorNote, ErrorState, PageHeader, Panel, Skeleton } from '@nelavista/ui';
 import * as React from 'react';
 
 import { ApiError, http } from '../lib/http';
@@ -176,241 +177,382 @@ export function Projects(): JSX.Element {
   }
 
   return (
-    <div className="nv-stack">
-      <h1 className="nv-h1">Projects &amp; cohorts</h1>
-      <p className="nv-muted">
-        Invitations are how managed work starts. A replacement must already qualify; the list shows only
-        students the engine considers eligible.
-      </p>
+    <div className="nv-stack nv-stack--loose">
+      <PageHeader
+        eyebrow="Work"
+        title="Projects & cohorts"
+        description="Invitations are how managed work starts. A replacement must already qualify; the list shows only students the engine considers eligible."
+      />
 
-      <section className="nv-card">
-        <h2 className="nv-h2">New project</h2>
+      <Panel title="New project">
         <div className="nv-grid">
           <div>
-            <label className="nv-label" htmlFor="proj-opportunity">Opportunity slug</label>
-            <input className="nv-input" id="proj-opportunity" value={opportunitySlug} onChange={(e) => setOpportunitySlug(e.target.value)} />
+            <label className="nv-label" htmlFor="proj-opportunity">
+              Opportunity slug
+            </label>
+            <input
+              className="nv-input"
+              id="proj-opportunity"
+              value={opportunitySlug}
+              onChange={(e) => setOpportunitySlug(e.target.value)}
+            />
           </div>
           <div>
-            <label className="nv-label" htmlFor="proj-slug">Project slug</label>
-            <input className="nv-input" id="proj-slug" value={newProjectSlug} onChange={(e) => setNewProjectSlug(e.target.value)} />
+            <label className="nv-label" htmlFor="proj-slug">
+              Project slug
+            </label>
+            <input
+              className="nv-input"
+              id="proj-slug"
+              value={newProjectSlug}
+              onChange={(e) => setNewProjectSlug(e.target.value)}
+            />
           </div>
           <div>
-            <label className="nv-label" htmlFor="proj-title">Title</label>
-            <input className="nv-input" id="proj-title" value={newProjectTitle} onChange={(e) => setNewProjectTitle(e.target.value)} />
+            <label className="nv-label" htmlFor="proj-title">
+              Title
+            </label>
+            <input
+              className="nv-input"
+              id="proj-title"
+              value={newProjectTitle}
+              onChange={(e) => setNewProjectTitle(e.target.value)}
+            />
           </div>
         </div>
-        <button className="nv-button" disabled={busy || !opportunitySlug.trim()} type="button" onClick={() => void createProject()}>
+        <button
+          className="nv-button"
+          disabled={busy || !opportunitySlug.trim()}
+          type="button"
+          onClick={() => void createProject()}
+        >
           Create project
         </button>
-      </section>
+      </Panel>
 
-      {error ? <p className="nv-error">{error}</p> : null}
-      {note ? <p className="nv-muted">{note}</p> : null}
+      <ErrorNote message={error} />
+      {note ? <Banner tone="success">{note}</Banner> : null}
 
-      <section className="nv-card">
-        <h2 className="nv-h2">Projects</h2>
-        {list.resource.status === 'loading' ? <p className="nv-muted">Loading…</p> : null}
-        {list.resource.status === 'error' ? <p className="nv-error">{list.resource.message}</p> : null}
-        {list.resource.status === 'ready' ? (
-          <table className="nv-table">
-            <thead>
-              <tr>
-                <th>Project</th>
-                <th>Status</th>
-                <th>Starts</th>
-                <th />
-              </tr>
-            </thead>
-            <tbody>
-              {list.resource.data.projects.map((row) => (
-                <tr key={row.id}>
-                  <td>
-                    <strong>{row.title}</strong>
-                    <div className="nv-muted">{row.slug}</div>
-                  </td>
-                  <td>{row.status}</td>
-                  <td>{row.starts_on ?? '—'}</td>
-                  <td>
-                    <button className="nv-button nv-button--ghost" type="button" onClick={() => void openProject(row.slug)}>
-                      Open
-                    </button>
-                  </td>
-                </tr>
-              ))}
-              {list.resource.data.projects.length === 0 ? (
-                <tr>
-                  <td colSpan={4} className="nv-muted">No project yet.</td>
-                </tr>
-              ) : null}
-            </tbody>
-          </table>
+      <Panel title="Projects">
+        {list.resource.status === 'loading' ? <Skeleton lines={4} /> : null}
+        {list.resource.status === 'error' ? (
+          <ErrorState title="Projects did not load" body={list.resource.message} />
         ) : null}
-      </section>
+        {list.resource.status === 'ready' && list.resource.data.projects.length === 0 ? (
+          <EmptyState title="No project yet" body="Create one above from a published opportunity." />
+        ) : null}
+        {list.resource.status === 'ready' && list.resource.data.projects.length > 0 ? (
+          <div className="nv-table-wrap">
+            <table className="nv-table">
+              <thead>
+                <tr>
+                  <th scope="col">Project</th>
+                  <th scope="col">Status</th>
+                  <th scope="col">Starts</th>
+                  <th scope="col">
+                    <span className="nv-sr-only">Actions</span>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {list.resource.data.projects.map((row) => (
+                  <tr key={row.id}>
+                    <td>
+                      <strong>{row.title}</strong>
+                      <div className="nv-muted">{row.slug}</div>
+                    </td>
+                    <td>
+                      <Badge tone={row.status === 'active' ? 'success' : 'neutral'}>{row.status}</Badge>
+                    </td>
+                    <td>{row.starts_on ?? '—'}</td>
+                    <td>
+                      <button
+                        className="nv-button nv-button--ghost"
+                        type="button"
+                        onClick={() => void openProject(row.slug)}
+                      >
+                        Open
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : null}
+      </Panel>
 
       {project ? (
-        <section className="nv-card">
-          <h2 className="nv-h2">{project.title}</h2>
+        <Panel title={project.title}>
           <p className="nv-muted">
-            {project.slug} · {project.status} · {Object.entries(project.assignment_counts).map(([key, value]) => `${key}: ${value}`).join(' · ') || 'no assignments'}
+            {project.slug} · {project.status} ·{' '}
+            {Object.entries(project.assignment_counts)
+              .map(([key, value]) => `${key}: ${value}`)
+              .join(' · ') || 'no assignments'}
           </p>
 
           <div className="nv-row">
             <div>
-              <label className="nv-label" htmlFor="cohort-name">Cohort name</label>
-              <input className="nv-input" id="cohort-name" value={cohortName} onChange={(e) => setCohortName(e.target.value)} />
+              <label className="nv-label" htmlFor="cohort-name">
+                Cohort name
+              </label>
+              <input
+                className="nv-input"
+                id="cohort-name"
+                value={cohortName}
+                onChange={(e) => setCohortName(e.target.value)}
+              />
             </div>
             <div>
-              <label className="nv-label" htmlFor="cohort-capacity">Capacity</label>
-              <input className="nv-input" id="cohort-capacity" type="number" value={cohortCapacity} onChange={(e) => setCohortCapacity(e.target.value)} />
+              <label className="nv-label" htmlFor="cohort-capacity">
+                Capacity
+              </label>
+              <input
+                className="nv-input"
+                id="cohort-capacity"
+                type="number"
+                value={cohortCapacity}
+                onChange={(e) => setCohortCapacity(e.target.value)}
+              />
             </div>
-            <button className="nv-button" disabled={busy || cohortName.trim().length < 2} type="button" onClick={() => void createCohort()}>
+            <button
+              className="nv-button"
+              disabled={busy || cohortName.trim().length < 2}
+              type="button"
+              onClick={() => void createCohort()}
+            >
               Create cohort
             </button>
           </div>
 
-          <table className="nv-table">
-            <thead>
-              <tr>
-                <th>Cohort</th>
-                <th>Seats</th>
-                <th>Status</th>
-                <th />
-              </tr>
-            </thead>
-            <tbody>
-              {project.cohorts.map((row) => (
-                <tr key={row.id}>
-                  <td>{row.name}</td>
-                  <td>{row.seats_used}{row.capacity ? ` / ${row.capacity}` : ''}</td>
-                  <td>{row.status}</td>
-                  <td>
-                    <button className="nv-button nv-button--ghost" type="button" onClick={() => void openCohort(row.id)}>
-                      Members
-                    </button>
-                  </td>
-                </tr>
-              ))}
-              {project.cohorts.length === 0 ? (
-                <tr>
-                  <td colSpan={4} className="nv-muted">No cohort yet.</td>
-                </tr>
-              ) : null}
-            </tbody>
-          </table>
+          {project.cohorts.length === 0 ? (
+            <EmptyState
+              title="No cohort yet"
+              body="Create the first cohort above, then invite students by user id."
+            />
+          ) : (
+            <div className="nv-table-wrap">
+              <table className="nv-table">
+                <thead>
+                  <tr>
+                    <th scope="col">Cohort</th>
+                    <th scope="col">Seats</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">
+                      <span className="nv-sr-only">Actions</span>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {project.cohorts.map((row) => (
+                    <tr key={row.id}>
+                      <td>{row.name}</td>
+                      <td>
+                        {row.seats_used}
+                        {row.capacity ? ` / ${row.capacity}` : ''}
+                      </td>
+                      <td>{row.status}</td>
+                      <td>
+                        <button
+                          className="nv-button nv-button--ghost"
+                          type="button"
+                          onClick={() => void openCohort(row.id)}
+                        >
+                          Members
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
 
           <h3 className="nv-h2">Assign a task</h3>
           <div className="nv-grid">
             <div>
-              <label className="nv-label" htmlFor="assign-user">Student user id</label>
-              <input className="nv-input" id="assign-user" value={assignUser} onChange={(e) => setAssignUser(e.target.value)} />
+              <label className="nv-label" htmlFor="assign-user">
+                Student user id
+              </label>
+              <input
+                className="nv-input"
+                id="assign-user"
+                value={assignUser}
+                onChange={(e) => setAssignUser(e.target.value)}
+              />
             </div>
             <div>
-              <label className="nv-label" htmlFor="assign-title">Title</label>
-              <input className="nv-input" id="assign-title" value={assignTitle} onChange={(e) => setAssignTitle(e.target.value)} />
+              <label className="nv-label" htmlFor="assign-title">
+                Title
+              </label>
+              <input
+                className="nv-input"
+                id="assign-title"
+                value={assignTitle}
+                onChange={(e) => setAssignTitle(e.target.value)}
+              />
             </div>
             <div>
-              <label className="nv-label" htmlFor="assign-template">Template id (optional)</label>
-              <input className="nv-input" id="assign-template" value={assignTemplate} onChange={(e) => setAssignTemplate(e.target.value)} />
+              <label className="nv-label" htmlFor="assign-template">
+                Template id (optional)
+              </label>
+              <input
+                className="nv-input"
+                id="assign-template"
+                value={assignTemplate}
+                onChange={(e) => setAssignTemplate(e.target.value)}
+              />
             </div>
             <div>
-              <label className="nv-label" htmlFor="assign-due">Due at (optional)</label>
-              <input className="nv-input" id="assign-due" type="datetime-local" value={assignDue} onChange={(e) => setAssignDue(e.target.value)} />
+              <label className="nv-label" htmlFor="assign-due">
+                Due at (optional)
+              </label>
+              <input
+                className="nv-input"
+                id="assign-due"
+                type="datetime-local"
+                value={assignDue}
+                onChange={(e) => setAssignDue(e.target.value)}
+              />
             </div>
           </div>
-          <button className="nv-button" disabled={busy || !assignUser || assignTitle.trim().length < 2} type="button" onClick={() => void assign()}>
+          <button
+            className="nv-button"
+            disabled={busy || !assignUser || assignTitle.trim().length < 2}
+            type="button"
+            onClick={() => void assign()}
+          >
             Assign
           </button>
-        </section>
+        </Panel>
       ) : null}
 
       {cohort ? (
-        <section className="nv-card">
-          <h2 className="nv-h2">{cohort.name} members</h2>
-          <table className="nv-table">
-            <thead>
-              <tr>
-                <th>Member</th>
-                <th>Student</th>
-                <th>Status</th>
-                <th>Joined</th>
-              </tr>
-            </thead>
-            <tbody>
-              {cohort.members.map((row) => (
-                <tr key={row.member_id}>
-                  <td>#{row.member_id}</td>
-                  <td>
-                    {row.name ?? `#${row.user_id}`}
-                    <div className="nv-muted">{row.email}</div>
-                  </td>
-                  <td>{row.status}</td>
-                  <td>{when(row.joined_at)}</td>
-                </tr>
-              ))}
-              {cohort.members.length === 0 ? (
-                <tr>
-                  <td colSpan={4} className="nv-muted">Nobody invited yet.</td>
-                </tr>
-              ) : null}
-            </tbody>
-          </table>
+        <Panel title={`${cohort.name} members`}>
+          {cohort.members.length === 0 ? (
+            <EmptyState
+              title="Nobody invited yet"
+              body="Invite a student by user id below. The invitation is the start of managed work."
+            />
+          ) : (
+            <div className="nv-table-wrap">
+              <table className="nv-table">
+                <thead>
+                  <tr>
+                    <th scope="col">Member</th>
+                    <th scope="col">Student</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Joined</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {cohort.members.map((row) => (
+                    <tr key={row.member_id}>
+                      <td>#{row.member_id}</td>
+                      <td>
+                        {row.name ?? `#${row.user_id}`}
+                        <div className="nv-muted">{row.email}</div>
+                      </td>
+                      <td>{row.status}</td>
+                      <td>{when(row.joined_at)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
 
           <div className="nv-row">
             <div style={{ minWidth: 240 }}>
-              <label className="nv-label" htmlFor="invite-ids">Invite user ids (comma separated)</label>
-              <input className="nv-input" id="invite-ids" value={inviteIds} onChange={(e) => setInviteIds(e.target.value)} />
+              <label className="nv-label" htmlFor="invite-ids">
+                Invite user ids (comma separated)
+              </label>
+              <input
+                className="nv-input"
+                id="invite-ids"
+                value={inviteIds}
+                onChange={(e) => setInviteIds(e.target.value)}
+              />
             </div>
-            <button className="nv-button" disabled={busy || !inviteIds.trim()} type="button" onClick={() => void invite()}>
+            <button
+              className="nv-button"
+              disabled={busy || !inviteIds.trim()}
+              type="button"
+              onClick={() => void invite()}
+            >
               Send invitations
             </button>
           </div>
 
           <div className="nv-row">
             <div>
-              <label className="nv-label" htmlFor="remove-id">Remove member id</label>
-              <input className="nv-input" id="remove-id" value={removeId} onChange={(e) => setRemoveId(e.target.value)} />
+              <label className="nv-label" htmlFor="remove-id">
+                Remove member id
+              </label>
+              <input
+                className="nv-input"
+                id="remove-id"
+                value={removeId}
+                onChange={(e) => setRemoveId(e.target.value)}
+              />
             </div>
             <div style={{ minWidth: 260 }}>
-              <label className="nv-label" htmlFor="remove-reason">Reason (required, audited)</label>
-              <input className="nv-input" id="remove-reason" value={removeReason} onChange={(e) => setRemoveReason(e.target.value)} />
+              <label className="nv-label" htmlFor="remove-reason">
+                Reason (required, audited)
+              </label>
+              <input
+                className="nv-input"
+                id="remove-reason"
+                value={removeReason}
+                onChange={(e) => setRemoveReason(e.target.value)}
+              />
             </div>
-            <button className="nv-button nv-button--danger" disabled={busy || !removeId || removeReason.trim().length < 3} type="button" onClick={() => void remove()}>
+            <button
+              className="nv-button nv-button--danger"
+              disabled={busy || !removeId || removeReason.trim().length < 3}
+              type="button"
+              onClick={() => void remove()}
+            >
               Remove
             </button>
           </div>
 
           <h3 className="nv-h2">Replacement candidates</h3>
           {replacements ? (
-            <table className="nv-table">
-              <thead>
-                <tr>
-                  <th>Student</th>
-                  <th>Score</th>
-                  <th>Because</th>
-                </tr>
-              </thead>
-              <tbody>
-                {replacements.candidates.map((row) => (
-                  <tr key={row.user_id}>
-                    <td>
-                      {row.name ?? `#${row.user_id}`}
-                      <div className="nv-muted">{row.email ?? ''}</div>
-                    </td>
-                    <td>{row.score}</td>
-                    <td>{row.qualifies_because.join(' · ') || '—'}</td>
-                  </tr>
-                ))}
-                {replacements.candidates.length === 0 ? (
-                  <tr>
-                    <td colSpan={3} className="nv-muted">No eligible replacement right now.</td>
-                  </tr>
-                ) : null}
-              </tbody>
-            </table>
+            replacements.candidates.length === 0 ? (
+              <EmptyState
+                title="No eligible replacement right now"
+                body="The engine only lists students who already meet the brief."
+              />
+            ) : (
+              <div className="nv-table-wrap">
+                <table className="nv-table">
+                  <thead>
+                    <tr>
+                      <th scope="col">Student</th>
+                      <th scope="col">Score</th>
+                      <th scope="col">Because</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {replacements.candidates.map((row) => (
+                      <tr key={row.user_id}>
+                        <td>
+                          {row.name ?? `#${row.user_id}`}
+                          <div className="nv-muted">{row.email ?? ''}</div>
+                        </td>
+                        <td>{row.score}</td>
+                        <td>{row.qualifies_because.join(' · ') || '—'}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )
           ) : (
-            <p className="nv-muted">Loading…</p>
+            <Skeleton lines={3} />
           )}
-        </section>
+        </Panel>
       ) : null}
     </div>
   );

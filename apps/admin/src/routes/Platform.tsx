@@ -10,6 +10,7 @@
  * visible, but the save button explains why it will be refused.
  */
 import type { PlatformSettingsOut } from '@nelavista/api-client';
+import { Banner, ErrorNote, ErrorState, PageHeader, Panel, Skeleton } from '@nelavista/ui';
 import * as React from 'react';
 
 import { ApiError, http } from '../lib/http';
@@ -119,32 +120,33 @@ export function Platform(): JSX.Element {
   }
 
   return (
-    <div className="nv-stack">
-      <h1 className="nv-h1">Platform settings</h1>
-      <p className="nv-muted">
-        Currency, payout approval, age rules, contributor terms and curriculum ownership. Changes apply
-        immediately and are audited with their before and after values.
-      </p>
+    <div className="nv-stack nv-stack--loose">
+      <PageHeader
+        eyebrow="Platform"
+        title="Platform settings"
+        description="Currency, payout approval, age rules, contributor terms and curriculum ownership. Changes apply immediately and are audited with their before and after values."
+      />
 
-      {error ? <p className="nv-error">{error}</p> : null}
-      {note ? <p className="nv-muted">{note}</p> : null}
+      <ErrorNote message={error} />
+      {note ? <Banner tone="success">{note}</Banner> : null}
 
       {resource.resource.status === 'error' ? (
-        <p className="nv-error">{resource.resource.message}</p>
+        <ErrorState title="Platform settings did not load" body={resource.resource.message} />
       ) : null}
 
       {form ? (
         <>
-          <section className="nv-card">
-            <h2 className="nv-h2">Money (G1)</h2>
+          <Panel title="Money (G1)">
             <p className="nv-muted">
-              The ledger is currency-agnostic and stores integer minor units. The billing currency is
-              used when a project does not name one; the payout currency is the default reported to
-              students. A currency must be in the allowed list before it can be selected.
+              The ledger is currency-agnostic and stores integer minor units. The billing currency is used
+              when a project does not name one; the payout currency is the default reported to students. A
+              currency must be in the allowed list before it can be selected.
             </p>
             <div className="nv-grid">
               <div>
-                <label className="nv-label" htmlFor="billing-currency">Billing currency</label>
+                <label className="nv-label" htmlFor="billing-currency">
+                  Billing currency
+                </label>
                 <input
                   className="nv-input"
                   id="billing-currency"
@@ -154,7 +156,9 @@ export function Platform(): JSX.Element {
                 />
               </div>
               <div>
-                <label className="nv-label" htmlFor="payout-currency">Payout currency</label>
+                <label className="nv-label" htmlFor="payout-currency">
+                  Payout currency
+                </label>
                 <input
                   className="nv-input"
                   id="payout-currency"
@@ -175,10 +179,9 @@ export function Platform(): JSX.Element {
                 />
               </div>
             </div>
-          </section>
+          </Panel>
 
-          <section className="nv-card">
-            <h2 className="nv-h2">Payout approvals and identity (G2)</h2>
+          <Panel title="Payout approvals and identity (G2)">
             <div className="nv-grid">
               <div>
                 <label className="nv-label" htmlFor="threshold">
@@ -212,16 +215,17 @@ export function Platform(): JSX.Element {
               </label>
             </div>
             <p className="nv-muted">
-              The threshold is stored in minor units. A batch at or above it cannot be approved by the
-              person who created it, and payment is blocked before the provider is called.
+              The threshold is stored in minor units. A batch at or above it cannot be approved by the person
+              who created it, and payment is blocked before the provider is called.
             </p>
-          </section>
+          </Panel>
 
-          <section className="nv-card">
-            <h2 className="nv-h2">Ages and terms (G3)</h2>
+          <Panel title="Ages and terms (G3)">
             <div className="nv-grid">
               <div>
-                <label className="nv-label" htmlFor="min-age">Minimum age for paid work</label>
+                <label className="nv-label" htmlFor="min-age">
+                  Minimum age for paid work
+                </label>
                 <input
                   className="nv-input"
                   id="min-age"
@@ -233,7 +237,9 @@ export function Platform(): JSX.Element {
                 />
               </div>
               <div>
-                <label className="nv-label" htmlFor="guardian-age">Guardian consent below</label>
+                <label className="nv-label" htmlFor="guardian-age">
+                  Guardian consent below
+                </label>
                 <input
                   className="nv-input"
                   id="guardian-age"
@@ -245,7 +251,9 @@ export function Platform(): JSX.Element {
                 />
               </div>
               <div>
-                <label className="nv-label" htmlFor="contributor-version">Contributor terms version</label>
+                <label className="nv-label" htmlFor="contributor-version">
+                  Contributor terms version
+                </label>
                 <input
                   className="nv-input"
                   id="contributor-version"
@@ -255,7 +263,9 @@ export function Platform(): JSX.Element {
                 />
               </div>
               <div>
-                <label className="nv-label" htmlFor="terms-version">General terms version</label>
+                <label className="nv-label" htmlFor="terms-version">
+                  General terms version
+                </label>
                 <input
                   className="nv-input"
                   id="terms-version"
@@ -265,7 +275,9 @@ export function Platform(): JSX.Element {
                 />
               </div>
             </div>
-            <label className="nv-label" htmlFor="contributor-body">Contributor terms (shown to students)</label>
+            <label className="nv-label" htmlFor="contributor-body">
+              Contributor terms (shown to students)
+            </label>
             <textarea
               className="nv-input"
               id="contributor-body"
@@ -274,16 +286,17 @@ export function Platform(): JSX.Element {
               onChange={(e) => update('contributor_terms_body', e.target.value)}
             />
             <p className="nv-muted">
-              Changing the version asks every student to accept again. Previous agreements stay in the
-              consent history; they are never edited or deleted.
+              Changing the version asks every student to accept again. Previous agreements stay in the consent
+              history; they are never edited or deleted.
             </p>
-          </section>
+          </Panel>
 
-          <section className="nv-card">
-            <h2 className="nv-h2">Curriculum ownership (G4) and launch (G5)</h2>
+          <Panel title="Curriculum ownership (G4) and launch (G5)">
             <div className="nv-grid">
               <div>
-                <label className="nv-label" htmlFor="curriculum-owner">Owner</label>
+                <label className="nv-label" htmlFor="curriculum-owner">
+                  Owner
+                </label>
                 <input
                   className="nv-input"
                   id="curriculum-owner"
@@ -292,7 +305,9 @@ export function Platform(): JSX.Element {
                 />
               </div>
               <div>
-                <label className="nv-label" htmlFor="curriculum-license">Licence</label>
+                <label className="nv-label" htmlFor="curriculum-license">
+                  Licence
+                </label>
                 <input
                   className="nv-input"
                   id="curriculum-license"
@@ -301,7 +316,9 @@ export function Platform(): JSX.Element {
                 />
               </div>
               <div>
-                <label className="nv-label" htmlFor="curriculum-model">Authoring model</label>
+                <label className="nv-label" htmlFor="curriculum-model">
+                  Authoring model
+                </label>
                 <select
                   className="nv-select"
                   id="curriculum-model"
@@ -309,12 +326,16 @@ export function Platform(): JSX.Element {
                   onChange={(e) => update('curriculum_authoring_model', e.target.value)}
                 >
                   {AUTHORING_MODELS.map((option) => (
-                    <option key={option.value} value={option.value}>{option.label}</option>
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
                   ))}
                 </select>
               </div>
               <div>
-                <label className="nv-label" htmlFor="launch-date">Target launch date</label>
+                <label className="nv-label" htmlFor="launch-date">
+                  Target launch date
+                </label>
                 <input
                   className="nv-input"
                   id="launch-date"
@@ -328,7 +349,7 @@ export function Platform(): JSX.Element {
               The owner and licence are shown with published curriculum. The authoring model records how
               content is sourced, so a later audit can tell in-house material from contributed material.
             </p>
-          </section>
+          </Panel>
 
           <div className="nv-row">
             <button
@@ -345,10 +366,13 @@ export function Platform(): JSX.Element {
                 : 'Only a super admin can change these settings.'}
             </span>
           </div>
-          <p className="nv-muted">Last updated {when(resource.resource.status === 'ready' ? resource.resource.data.updated_at : null)}.</p>
+          <p className="nv-muted">
+            Last updated{' '}
+            {when(resource.resource.status === 'ready' ? resource.resource.data.updated_at : null)}.
+          </p>
         </>
-      ) : (
-        <p className="nv-muted">Loading settings…</p>
+      ) : resource.resource.status === 'error' ? null : (
+        <Skeleton lines={8} />
       )}
     </div>
   );

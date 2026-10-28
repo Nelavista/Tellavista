@@ -13,6 +13,7 @@ import type {
   ReviewQueueOut,
   StandardOut,
 } from '@nelavista/api-client';
+import { Badge, Banner, EmptyState, ErrorNote, ErrorState, PageHeader, Panel, Skeleton } from '@nelavista/ui';
 import * as React from 'react';
 
 import { ApiError, http } from '../lib/http';
@@ -49,9 +50,10 @@ export function Review(): JSX.Element {
   const [overrideReason, setOverrideReason] = React.useState('');
   const [overrideResult, setOverrideResult] = React.useState<OverrideOut | null>(null);
 
-  const current = queue.resource.status === 'ready'
-    ? queue.resource.data.queue.find((row) => row.submission_id === selected) ?? null
-    : null;
+  const current =
+    queue.resource.status === 'ready'
+      ? (queue.resource.data.queue.find((row) => row.submission_id === selected) ?? null)
+      : null;
 
   async function submitReview(): Promise<void> {
     if (selected === null) return;
@@ -136,64 +138,70 @@ export function Review(): JSX.Element {
   }
 
   return (
-    <div className="nv-stack">
-      <h1 className="nv-h1">Review</h1>
-      <p className="nv-muted">
-        Gold tasks are mixed into live work to check the reviewer, not the student. An override needs a
-        reason; it is stored with your account.
-      </p>
+    <div className="nv-stack nv-stack--loose">
+      <PageHeader
+        eyebrow="Quality"
+        title="Review"
+        description="Gold tasks are mixed into live work to check the reviewer, not the student. An override needs a reason; it is stored with your account."
+      />
 
-      {error ? <p className="nv-error">{error}</p> : null}
-      {note ? <p className="nv-muted">{note}</p> : null}
+      <ErrorNote message={error} />
+      {note ? <Banner tone="success">{note}</Banner> : null}
 
-      <section className="nv-card">
-        <h2 className="nv-h2">Work queue</h2>
-        {queue.resource.status === 'loading' ? <p className="nv-muted">Loading…</p> : null}
-        {queue.resource.status === 'error' ? <p className="nv-error">{queue.resource.message}</p> : null}
-        {queue.resource.status === 'ready' ? (
-          <table className="nv-table">
-            <thead>
-              <tr>
-                <th>Submission</th>
-                <th>Student</th>
-                <th>Project</th>
-                <th>Submitted</th>
-                <th />
-              </tr>
-            </thead>
-            <tbody>
-              {queue.resource.data.queue.map((row) => (
-                <tr key={row.submission_id}>
-                  <td>
-                    #{row.submission_id} · {row.assignment_title}
-                    {row.is_gold ? <span className="nv-tag" data-tone="warn">gold</span> : null}
-                  </td>
-                  <td>
-                    {row.student.name ?? `#${row.student.id}`}
-                    <div className="nv-muted">{row.student.email}</div>
-                  </td>
-                  <td>{row.project.title}</td>
-                  <td>{when(row.submitted_at)}</td>
-                  <td>
-                    <button className="nv-button nv-button--ghost" type="button" onClick={() => setSelected(row.submission_id)}>
-                      Review
-                    </button>
-                  </td>
-                </tr>
-              ))}
-              {queue.resource.data.queue.length === 0 ? (
-                <tr>
-                  <td colSpan={5} className="nv-muted">The queue is empty.</td>
-                </tr>
-              ) : null}
-            </tbody>
-          </table>
+      <Panel title="Work queue">
+        {queue.resource.status === 'loading' ? <Skeleton lines={4} /> : null}
+        {queue.resource.status === 'error' ? (
+          <ErrorState title="Review queue did not load" body={queue.resource.message} />
         ) : null}
-      </section>
+        {queue.resource.status === 'ready' && queue.resource.data.queue.length === 0 ? (
+          <EmptyState title="The queue is empty" body="New submissions appear here as students send them." />
+        ) : null}
+        {queue.resource.status === 'ready' && queue.resource.data.queue.length > 0 ? (
+          <div className="nv-table-wrap">
+            <table className="nv-table">
+              <thead>
+                <tr>
+                  <th scope="col">Submission</th>
+                  <th scope="col">Student</th>
+                  <th scope="col">Project</th>
+                  <th scope="col">Submitted</th>
+                  <th scope="col">
+                    <span className="nv-sr-only">Actions</span>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {queue.resource.data.queue.map((row) => (
+                  <tr key={row.submission_id}>
+                    <td>
+                      #{row.submission_id} · {row.assignment_title}
+                      {row.is_gold ? <Badge tone="warning">gold</Badge> : null}
+                    </td>
+                    <td>
+                      {row.student.name ?? `#${row.student.id}`}
+                      <div className="nv-muted">{row.student.email}</div>
+                    </td>
+                    <td>{row.project.title}</td>
+                    <td>{when(row.submitted_at)}</td>
+                    <td>
+                      <button
+                        className="nv-button nv-button--ghost"
+                        type="button"
+                        onClick={() => setSelected(row.submission_id)}
+                      >
+                        Review
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : null}
+      </Panel>
 
       {current ? (
-        <section className="nv-card">
-          <h2 className="nv-h2">Submission #{current.submission_id}</h2>
+        <Panel title={`Submission #${current.submission_id}`}>
           <p className="nv-muted">
             {current.assignment_title} · {current.student.name ?? current.student.email}
           </p>
@@ -201,21 +209,45 @@ export function Review(): JSX.Element {
 
           <div className="nv-grid">
             <div>
-              <label className="nv-label" htmlFor="review-verdict">Verdict</label>
-              <select className="nv-select" id="review-verdict" value={verdict} onChange={(e) => setVerdict(e.target.value)}>
+              <label className="nv-label" htmlFor="review-verdict">
+                Verdict
+              </label>
+              <select
+                className="nv-select"
+                id="review-verdict"
+                value={verdict}
+                onChange={(e) => setVerdict(e.target.value)}
+              >
                 {VERDICTS.map((option) => (
-                  <option key={option} value={option}>{option}</option>
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
                 ))}
               </select>
             </div>
             <div>
-              <label className="nv-label" htmlFor="review-score">Score (0–100)</label>
-              <input className="nv-input" id="review-score" type="number" value={score} onChange={(e) => setScore(e.target.value)} />
+              <label className="nv-label" htmlFor="review-score">
+                Score (0–100)
+              </label>
+              <input
+                className="nv-input"
+                id="review-score"
+                type="number"
+                value={score}
+                onChange={(e) => setScore(e.target.value)}
+              />
             </div>
           </div>
           <div>
-            <label className="nv-label" htmlFor="review-notes">Notes to the student</label>
-            <textarea className="nv-textarea" id="review-notes" value={notes} onChange={(e) => setNotes(e.target.value)} />
+            <label className="nv-label" htmlFor="review-notes">
+              Notes to the student
+            </label>
+            <textarea
+              className="nv-textarea"
+              id="review-notes"
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+            />
           </div>
           <label className="nv-check">
             <input type="checkbox" checked={isOverride} onChange={(e) => setIsOverride(e.target.checked)} />
@@ -223,138 +255,235 @@ export function Review(): JSX.Element {
           </label>
           {isOverride ? (
             <div>
-              <label className="nv-label" htmlFor="review-reason">Override reason (required)</label>
-              <input className="nv-input" id="review-reason" value={reason} onChange={(e) => setReason(e.target.value)} />
+              <label className="nv-label" htmlFor="review-reason">
+                Override reason (required)
+              </label>
+              <input
+                className="nv-input"
+                id="review-reason"
+                value={reason}
+                onChange={(e) => setReason(e.target.value)}
+              />
             </div>
           ) : null}
           <div className="nv-row">
-            <button className="nv-button" disabled={busy || (isOverride && reason.trim().length < 3)} type="button" onClick={() => void submitReview()}>
+            <button
+              className="nv-button"
+              disabled={busy || (isOverride && reason.trim().length < 3)}
+              type="button"
+              onClick={() => void submitReview()}
+            >
               {busy ? 'Saving…' : 'Record review'}
             </button>
             <button className="nv-button nv-button--ghost" type="button" onClick={() => setSelected(null)}>
               Cancel
             </button>
           </div>
-        </section>
+        </Panel>
       ) : null}
 
       {reviewed ? (
-        <p className="nv-muted">
+        <Banner tone="info">
           Last review: submission {reviewed.submission_id} · {reviewed.verdict} · score{' '}
           {reviewed.score ?? '—'}
           {reviewed.gold_correct === null ? '' : ` · gold ${reviewed.gold_correct ? 'correct' : 'incorrect'}`}
-        </p>
+        </Banner>
       ) : null}
 
-      <section className="nv-card">
-        <h2 className="nv-h2">Practical submissions</h2>
-        {practical.resource.status === 'loading' ? <p className="nv-muted">Loading…</p> : null}
-        {practical.resource.status === 'error' ? <p className="nv-muted">{practical.resource.message}</p> : null}
-        {practical.resource.status === 'ready' ? (
-          <table className="nv-table">
-            <thead>
-              <tr>
-                <th>Submission</th>
-                <th>Task</th>
-                <th>Student</th>
-                <th>Submitted</th>
-                <th />
-              </tr>
-            </thead>
-            <tbody>
-              {practical.resource.data.submissions.map((row) => (
-                <tr key={row.id}>
-                  <td>#{row.id}</td>
-                  <td>#{row.practical_task_id}</td>
-                  <td>#{row.user_id}</td>
-                  <td>{when(row.submitted_at)}</td>
-                  <td>
-                    <div className="nv-row">
-                      <button className="nv-button" type="button" disabled={busy} onClick={() => void reviewPractical(row.id, true)}>
-                        Pass
-                      </button>
-                      <button className="nv-button nv-button--danger" type="button" disabled={busy} onClick={() => void reviewPractical(row.id, false)}>
-                        Fail
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-              {practical.resource.data.submissions.length === 0 ? (
-                <tr>
-                  <td colSpan={5} className="nv-muted">No practical submission waiting.</td>
-                </tr>
-              ) : null}
-            </tbody>
-          </table>
+      <Panel title="Practical submissions">
+        {practical.resource.status === 'loading' ? <Skeleton lines={4} /> : null}
+        {practical.resource.status === 'error' ? (
+          <ErrorState title="Practical submissions did not load" body={practical.resource.message} />
         ) : null}
-      </section>
+        {practical.resource.status === 'ready' && practical.resource.data.submissions.length === 0 ? (
+          <EmptyState
+            title="No practical submission waiting"
+            body="Submitted practical tasks appear here for a pass or fail decision."
+          />
+        ) : null}
+        {practical.resource.status === 'ready' && practical.resource.data.submissions.length > 0 ? (
+          <div className="nv-table-wrap">
+            <table className="nv-table">
+              <thead>
+                <tr>
+                  <th scope="col">Submission</th>
+                  <th scope="col">Task</th>
+                  <th scope="col">Student</th>
+                  <th scope="col">Submitted</th>
+                  <th scope="col">
+                    <span className="nv-sr-only">Actions</span>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {practical.resource.data.submissions.map((row) => (
+                  <tr key={row.id}>
+                    <td>#{row.id}</td>
+                    <td>#{row.practical_task_id}</td>
+                    <td>#{row.user_id}</td>
+                    <td>{when(row.submitted_at)}</td>
+                    <td>
+                      <div className="nv-row">
+                        <button
+                          className="nv-button"
+                          type="button"
+                          disabled={busy}
+                          onClick={() => void reviewPractical(row.id, true)}
+                        >
+                          Pass
+                        </button>
+                        <button
+                          className="nv-button nv-button--danger"
+                          type="button"
+                          disabled={busy}
+                          onClick={() => void reviewPractical(row.id, false)}
+                        >
+                          Fail
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : null}
+      </Panel>
 
-      <section className="nv-card">
-        <h2 className="nv-h2">Quality standard</h2>
+      <Panel title="Quality standard">
         <div className="nv-grid">
           <div>
-            <label className="nv-label" htmlFor="standard-project">Project slug</label>
-            <input className="nv-input" id="standard-project" value={projectSlug} onChange={(e) => setProjectSlug(e.target.value)} />
+            <label className="nv-label" htmlFor="standard-project">
+              Project slug
+            </label>
+            <input
+              className="nv-input"
+              id="standard-project"
+              value={projectSlug}
+              onChange={(e) => setProjectSlug(e.target.value)}
+            />
           </div>
           <div>
-            <label className="nv-label" htmlFor="standard-name">Name</label>
-            <input className="nv-input" id="standard-name" value={standardName} onChange={(e) => setStandardName(e.target.value)} />
+            <label className="nv-label" htmlFor="standard-name">
+              Name
+            </label>
+            <input
+              className="nv-input"
+              id="standard-name"
+              value={standardName}
+              onChange={(e) => setStandardName(e.target.value)}
+            />
           </div>
           <div>
-            <label className="nv-label" htmlFor="standard-threshold">Pass threshold</label>
-            <input className="nv-input" id="standard-threshold" type="number" value={threshold} onChange={(e) => setThreshold(e.target.value)} />
+            <label className="nv-label" htmlFor="standard-threshold">
+              Pass threshold
+            </label>
+            <input
+              className="nv-input"
+              id="standard-threshold"
+              type="number"
+              value={threshold}
+              onChange={(e) => setThreshold(e.target.value)}
+            />
           </div>
         </div>
         <div>
-          <label className="nv-label" htmlFor="standard-instructions">Instructions (markdown)</label>
-          <textarea className="nv-textarea" id="standard-instructions" value={instructions} onChange={(e) => setInstructions(e.target.value)} />
+          <label className="nv-label" htmlFor="standard-instructions">
+            Instructions (markdown)
+          </label>
+          <textarea
+            className="nv-textarea"
+            id="standard-instructions"
+            value={instructions}
+            onChange={(e) => setInstructions(e.target.value)}
+          />
         </div>
         <div>
-          <label className="nv-label" htmlFor="standard-rules">Rules (JSON)</label>
-          <textarea className="nv-textarea" id="standard-rules" value={rules} onChange={(e) => setRules(e.target.value)} />
+          <label className="nv-label" htmlFor="standard-rules">
+            Rules (JSON)
+          </label>
+          <textarea
+            className="nv-textarea"
+            id="standard-rules"
+            value={rules}
+            onChange={(e) => setRules(e.target.value)}
+          />
         </div>
         {standard ? (
           <p className="nv-muted">
             Saved: {standard.name} · pass at {standard.pass_threshold}%
           </p>
         ) : null}
-        <button className="nv-button" disabled={busy || !projectSlug.trim()} type="button" onClick={() => void saveStandard()}>
+        <button
+          className="nv-button"
+          disabled={busy || !projectSlug.trim()}
+          type="button"
+          onClick={() => void saveStandard()}
+        >
           Save standard
         </button>
-      </section>
+      </Panel>
 
-      <section className="nv-card">
-        <h2 className="nv-h2">Verification override</h2>
+      <Panel title="Verification override">
         <p className="nv-muted">
-          Use only with evidence in hand. The student sees the new status; the transcript keeps the
-          history.
+          Use only with evidence in hand. The student sees the new status; the transcript keeps the history.
         </p>
         <div className="nv-grid">
           <div>
-            <label className="nv-label" htmlFor="override-user">Student user id</label>
-            <input className="nv-input" id="override-user" value={overrideUser} onChange={(e) => setOverrideUser(e.target.value)} />
+            <label className="nv-label" htmlFor="override-user">
+              Student user id
+            </label>
+            <input
+              className="nv-input"
+              id="override-user"
+              value={overrideUser}
+              onChange={(e) => setOverrideUser(e.target.value)}
+            />
           </div>
           <div>
-            <label className="nv-label" htmlFor="override-skill">Skill id</label>
-            <input className="nv-input" id="override-skill" value={overrideSkill} onChange={(e) => setOverrideSkill(e.target.value)} />
+            <label className="nv-label" htmlFor="override-skill">
+              Skill id
+            </label>
+            <input
+              className="nv-input"
+              id="override-skill"
+              value={overrideSkill}
+              onChange={(e) => setOverrideSkill(e.target.value)}
+            />
           </div>
           <div>
-            <label className="nv-label" htmlFor="override-status">New status</label>
-            <select className="nv-select" id="override-status" value={overrideStatus} onChange={(e) => setOverrideStatus(e.target.value)}>
+            <label className="nv-label" htmlFor="override-status">
+              New status
+            </label>
+            <select
+              className="nv-select"
+              id="override-status"
+              value={overrideStatus}
+              onChange={(e) => setOverrideStatus(e.target.value)}
+            >
               {['verified', 'at_risk', 'suspended', 'unverified'].map((option) => (
-                <option key={option} value={option}>{option}</option>
+                <option key={option} value={option}>
+                  {option}
+                </option>
               ))}
             </select>
           </div>
         </div>
         <div>
-          <label className="nv-label" htmlFor="override-reason">Reason (required)</label>
-          <input className="nv-input" id="override-reason" value={overrideReason} onChange={(e) => setOverrideReason(e.target.value)} />
+          <label className="nv-label" htmlFor="override-reason">
+            Reason (required)
+          </label>
+          <input
+            className="nv-input"
+            id="override-reason"
+            value={overrideReason}
+            onChange={(e) => setOverrideReason(e.target.value)}
+          />
         </div>
         {overrideResult ? (
           <p className="nv-muted">
-            User {overrideResult.user_id} · skill {overrideResult.skill_id} is now {overrideResult.status} (event #{overrideResult.event_id}).
+            User {overrideResult.user_id} · skill {overrideResult.skill_id} is now {overrideResult.status}{' '}
+            (event #{overrideResult.event_id}).
           </p>
         ) : null}
         <button
@@ -365,7 +494,7 @@ export function Review(): JSX.Element {
         >
           Override verification
         </button>
-      </section>
+      </Panel>
     </div>
   );
 }

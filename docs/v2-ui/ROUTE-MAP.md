@@ -2,16 +2,36 @@
 
 | Field | Value |
 |---|---|
-| Status | **Approved 2026-10-27. Build in progress.** |
+| Status | **Implemented 2026-10-28. See §1.1 for post-build state and remaining API dependencies.** |
 | Gate | Gate 1 — route map |
-| Date | 2026-10-27 |
+| Date | 2026-10-27; post-build status 2026-10-28 |
 | Scope | Public, auth, student app, admin and utility routes for the V2 web launch |
-| Companion documents | `docs/v2-ui/AUDIT.md`, `docs/v2-ui/PARITY.md`, `docs/v2-ui/DESIGN-DIRECTION.md` |
+| Companion documents | `docs/v2-ui/AUDIT.md`, `docs/v2-ui/PARITY.md`, `docs/v2-ui/DESIGN-DIRECTION.md`, `docs/v2-ui/IMAGE-PROMPTS.md` |
 
 > V2 uses separate routed pages. It does not repeat V1's one long landing page
 > with `#section` anchors. Every route has one job and one dominant anchor. The
 > route map is the contract between the design and the API; if a screen has no
 > API, it is marked as a dependency, not invented.
+
+## 1.1 Post-build status (2026-10-28)
+
+Every route below that has a real API or static content is implemented. The
+exceptions are explicit dependency states, not fake screens:
+
+- **Built:** all public/auth routes, the student shell and routes, the split
+  settings routes, notifications, applications, CBT history, course route,
+  campus, transcript, talent share, admin shell, Overview, Waitlist, Campus,
+  Audit, Imports, Users, Opportunities, Projects, Review, Money, Content,
+  Platform, Security, public 404, admin 404, error boundary and offline.
+- **API dependency:** full course/topic detail; CBT attempt-review detail; the
+  student cohort-invite list; admin campus read; signed-in password change.
+- **Deferred:** Google SSO, offline submission sync, newsletter and platform
+  announcement banner.
+- **Write-only by design:** admin Campus publishes through `POST /ops/campus` and
+  shows session-local receipts; it does not pretend to read a published list.
+- **Route metadata:** public and auth routes set title, description, canonical,
+  robots and social metadata; signed-in shells set the document title and move
+  focus to `main` on route change.
 
 ---
 
@@ -73,8 +93,8 @@
 | `/onboarding` | Onboarding | Collect university, faculty, department, level, courses; waitlist if missing | **Next incomplete step** | Guarded. Keep the waitlist path. |
 | `/settings` | Settings — profile and work | Edit identity, bio, location, timezone, visibility, languages, availability | **Save changes** | Guarded. |
 | `/settings/security` | Settings — security | Change password, view 2FA, sessions/devices | **Save security changes** | New. Password change needs an API dependency. |
-| `/settings/notifications` | Settings — notifications | Email/push preferences, device registration, notification list link | **Save notification settings** | New. Uses `/me/push-devices`; link to `/notifications`. |
-| `/settings/data` | Settings — data and consent | Export, consent history, delete account | **Download my data / Delete account** | New. Uses `/me/export`, `/me/consents`, `/auth/consent`, `DELETE /auth/account`. |
+| `/settings/notifications` | Settings - notifications | Email preference, honest push availability, registered device list/removal, notification list link | **Save notification settings** | New. Uses `/me/push-devices`; link to `/notifications`. The web app does not register a browser device. |
+| `/settings/data` | Settings - data and consent | Export, consent history, delete account | **Download my data / Delete account** | New. Uses `/me/export`, `/me/consents`, `DELETE /auth/account`; `POST /auth/consent` is a re-consent dependency, not wired. |
 
 Why split Settings: the current one-page Settings mixes profile, work preferences,
 notifications, data and deletion. Splitting gives each task one anchor, keeps deep
@@ -103,8 +123,8 @@ recent notifications. Not a grid of welcome cards.
 | `/academia/materials/:materialId` | Material reader | Read and continue | **Continue reading** | `GET /academia/materials/{id}` | Skeleton, missing, error, feature-off |
 | `/academia/ask` | Ask Nelavista | Ask a course-aware question | **The question field** | `GET /academia/ask/sessions`, `POST /academia/ask` | Skeleton, empty, error, feature-off |
 | `/academia/cbt` | CBT practice | Practise under exam conditions | **Start / resume a paper** | `POST /academia/cbt/quiz`, `/answer`, `GET /results` | Skeleton, empty, error, feature-off |
-| `/academia/cbt/history` | CBT history | Review past practice | **Most recent attempt** | **API dependency**: no history endpoint yet | Skeleton, empty, error |
-| `/academia/courses/:courseCode` | Course hub | See one course's topics, materials and practice | **Next topic** | **API dependency**: no course/topic endpoint yet | Skeleton, missing, error |
+| `/academia/cbt/history` | CBT history | Review past practice | **Most recent attempt** | **Built** as an explicit dependency state; attempt-review detail still needs an API endpoint | Skeleton, empty, error |
+| `/academia/courses/:courseCode` | Course hub | See one course's topics, materials and practice | **Next topic** | **Built** with `/onboarding/state` and `/academia/materials?course_id=`; full topic detail still needs an API endpoint | Skeleton, missing, error |
 | `/campus` | Campus | Find campus information | **Relevant campus item** | `GET /me/campus` | Skeleton, empty, error |
 
 **Launch vs later:** `/academia/cbt/history` and `/academia/courses/:courseCode`
@@ -163,7 +183,7 @@ an invite; add the list endpoint first.
 | `/settings` | Profile/work settings | Edit how I work | **Save changes** | See §3 |
 | `/settings/security` | Security | Protect my account | **Save security changes** | New |
 | `/settings/notifications` | Notifications settings | Choose how I am contacted | **Save notification settings** | New |
-| `/settings/data` | Data/consent | Control my data | **Download / delete** | New |
+| `/settings/data` | Data/consent | Control my data | **Download / delete** | Built; re-consent still needs UI |
 | `/share/:token` | Shared profile | Show scoped proof | **What this proves** | Public; no app chrome |
 
 ---
@@ -184,7 +204,7 @@ Keep the hash router. Group the rail by **Operate** and **Configure**.
 | `#/review` | Review queue | Clear the quality queue | **Oldest pending review** | `GET /work/review-queue`, `/verification/practical/submissions`; reviews, quality standard, override | Skeleton, empty, error |
 | `#/money` | Money | Resolve payout and ledger exceptions | **Exception / outstanding total** | Financials, ledger, payout batches, reconciliation; `POST /money/payout-items/{id}/fail` | Skeleton, empty, error |
 | `#/content` | Content | Author and publish skills content | **Draft / published item** | `GET /skills`, `/skills/content/*`; create/update | Skeleton, empty, error, validation |
-| `#/campus` | Campus | Publish campus locations | **Campus / location** | `POST /ops/campus` (read source may need an ops endpoint) | Skeleton, empty, error |
+| `#/campus` | Campus | Publish campus locations | **Campus / location** | `POST /ops/campus`; no ops read endpoint, so the screen is write-only with session-local receipts | Skeleton, empty, error, write receipt |
 | `#/platform` | Platform settings | Set currency, payout, age, terms, curriculum | **Save settings** | `GET/PATCH /platform/settings` | Skeleton, error, saved |
 | `#/security` | Security | Manage staff 2FA and security events | **Current risk / required action** | `POST /auth/2fa/disable`, security events | Loading, error, note |
 | `#/announcements` | Announcements | Publish a platform notice | **Publish / end** | **Only if approved**; needs backend | Skeleton, empty, error |
@@ -193,9 +213,10 @@ Keep the hash router. Group the rail by **Operate** and **Configure**.
 **Admin 404:** unknown hash renders a NotFound screen with a link to
 `#/overview`, not Audit.
 
-**Admin overview:** if a new aggregate endpoint is too much for launch, use
-`#/audit` as the default and add a small “attention” strip built from existing
-list endpoints. Do not build fake metrics.
+**Admin overview (built):** `#/overview` is the default. It composes the review
+queue, practical submissions, waitlist, imports, projects and recent audit
+events from existing list endpoints, with per-row loading/error/retry. Do not
+build fake metrics or a silent fallback to Audit.
 
 ---
 
@@ -310,23 +331,28 @@ Mobile:
 | Eligibility panel | `GET /platform/me/eligibility` |
 | Cohort invite response | `POST /work/cohorts/{id}/respond` |
 | `/settings/notifications` | `GET/POST/DELETE /me/push-devices` |
-| `/settings/data` | `GET/POST /me/consents`, `POST /auth/consent` |
+| `/settings/data` | `GET /me/consents`; `POST /auth/consent` is a re-consent dependency |
 | Admin `#/waitlist` | `GET /ops/waitlist` |
 | Admin `#/campus` | `POST /ops/campus` (read endpoint may need adding) |
 | Admin application status | `POST /opportunities/applications/{id}/status` |
 | Admin payout-item failure | `POST /money/payout-items/{id}/fail` |
 
+All of these screens/actions are built except cohort invite response, which is
+blocked on the missing student invite-list endpoint. The admin campus screen is
+write-only because no ops read endpoint exists.
+
 ### New API needed
 
-| Screen | Missing API |
-|---|---|
-| `/settings/security` | Change password endpoint; sessions/devices list if shown |
-| `/academia/cbt/history` | CBT attempt history endpoint |
-| `/academia/courses/:courseCode` | Course/topic detail endpoint |
-| Admin `#/overview` | Optional aggregate endpoint; otherwise compose from existing lists |
-| `#/announcements` | Announcement model, public read, admin CRUD, audit |
-| `#/newsletter` | Subscriber model, consent, double opt-in, unsubscribe, export, email provider |
-| `/pricing` | No pricing model; do not build |
+| Screen | Missing API | Status |
+|---|---|---|
+| `/settings/security` | Change password endpoint; sessions/devices list if shown | API dependency |
+| `/academia/cbt/history` | CBT attempt history endpoint | Route built with explicit dependency state; detail endpoint missing |
+| `/academia/courses/:courseCode` | Course/topic detail endpoint | Route built from onboarding/materials; full topic detail missing |
+| Admin `#/overview` | Optional aggregate endpoint; otherwise compose from existing lists | Built by composing existing lists |
+| Admin `#/campus` | Ops campus read endpoint | Write-only; read missing |
+| `#/announcements` | Announcement model, public read, admin CRUD, audit | Deferred |
+| `#/newsletter` | Subscriber model, consent, double opt-in, unsubscribe, export, email provider | Deferred |
+| `/pricing` | No pricing model; do not build | Deferred |
 
 ### No UI without API
 
@@ -336,6 +362,9 @@ needed before the API, use an explicit “not available yet” state, not fake d
 ---
 
 ## 10. Screen count and build order
+
+This is the Gate 1 plan. The build has completed it except for the API dependencies
+and deferred items in §1.1.
 
 | Surface | Routes in this map | Build order |
 |---|---|---|

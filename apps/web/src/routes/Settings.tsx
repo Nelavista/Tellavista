@@ -5,7 +5,14 @@
  * choices, and the data controls. The API calls are the existing ones; the
  * split is a route decision, not a second source of truth.
  */
-import type { AvailabilityOut, LanguagesOut, NotificationListOut, ProfileOut } from '@nelavista/api-client';
+import type {
+  AvailabilityOut,
+  ConsentListOut,
+  LanguagesOut,
+  NotificationListOut,
+  ProfileOut,
+  PushDeviceListOut,
+} from '@nelavista/api-client';
 import * as React from 'react';
 import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 
@@ -87,6 +94,8 @@ export function Settings(): JSX.Element {
   const languages = useApiResource<LanguagesOut>('/me/languages');
   const availability = useApiResource<AvailabilityOut>('/me/availability');
   const notifications = useApiResource<NotificationListOut>('/me/notifications');
+  const consents = useApiResource<ConsentListOut>('/me/consents');
+  const pushDevices = useApiResource<PushDeviceListOut>('/me/push-devices');
 
   const [displayName, setDisplayName] = React.useState(sessionProfile?.display_name ?? '');
   const [bio, setBio] = React.useState(sessionProfile?.bio ?? '');
@@ -94,7 +103,7 @@ export function Settings(): JSX.Element {
   const [timezone, setTimezone] = React.useState(sessionProfile?.timezone ?? '');
   const [visibility, setVisibility] = React.useState(sessionProfile?.profile_visibility ?? 'private');
   const [notifyEmail, setNotifyEmail] = React.useState(sessionProfile?.notify_email ?? true);
-  const [notifyPush, setNotifyPush] = React.useState(sessionProfile?.notify_push ?? true);
+  const notifyPush = sessionProfile?.notify_push ?? true;
 
   const [rows, setRows] = React.useState<Language[]>([]);
   const [newLanguage, setNewLanguage] = React.useState('');
@@ -188,6 +197,20 @@ export function Settings(): JSX.Element {
       flash('Availability saved.');
     } catch (err) {
       setError(err instanceof ApiError ? err.message : 'Could not save your availability.');
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function removePushDevice(deviceId: number): Promise<void> {
+    setBusy(true);
+    setError(null);
+    try {
+      await http.del(`/me/push-devices/${deviceId}`);
+      pushDevices.reload();
+      flash('Device removed.');
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : 'Could not remove that device.');
     } finally {
       setBusy(false);
     }
@@ -291,12 +314,12 @@ export function Settings(): JSX.Element {
       ) : section === 'notifications' ? (
         <NotificationsSection
           notifyEmail={notifyEmail}
-          notifyPush={notifyPush}
           setNotifyEmail={setNotifyEmail}
-          setNotifyPush={setNotifyPush}
           busy={busy}
           onSave={() => void saveProfile()}
           notifications={notifications.resource}
+          devices={pushDevices.resource}
+          onRemoveDevice={(deviceId) => void removePushDevice(deviceId)}
           onMarkRead={() => void markNotificationsRead()}
         />
       ) : section === 'data' ? (
@@ -306,6 +329,7 @@ export function Settings(): JSX.Element {
           setConfirmDelete={setConfirmDelete}
           onExport={() => void exportData()}
           onDelete={() => void deleteAccount()}
+          consents={consents.resource}
         />
       ) : (
         <ProfileSection
@@ -571,21 +595,21 @@ function SecuritySection(): JSX.Element {
 
 function NotificationsSection({
   notifyEmail,
-  notifyPush,
   setNotifyEmail,
-  setNotifyPush,
   busy,
   onSave,
   notifications,
+  devices,
+  onRemoveDevice,
   onMarkRead,
 }: {
   notifyEmail: boolean;
-  notifyPush: boolean;
   setNotifyEmail: (value: boolean) => void;
-  setNotifyPush: (value: boolean) => void;
   busy: boolean;
   onSave: () => void;
   notifications: ReturnType<typeof useApiResource<NotificationListOut>>['resource'];
+  devices: ReturnType<typeof useApiResource<PushDeviceListOut>>['resource'];
+  onRemoveDevice: (deviceId: number) => void;
   onMarkRead: () => void;
 }): JSX.Element {
   const unread =
@@ -602,11 +626,11 @@ function NotificationsSection({
             onChange={(event) => setNotifyEmail(event.target.checked)}
             label="Email me about review, payouts and deadlines"
           />
-          <Checkbox
-            checked={notifyPush}
-            onChange={(event) => setNotifyPush(event.target.checked)}
-            label="Send push notifications to my devices"
-          />
+          <Banner tone="info">
+            <strong>Push is not available in this build.</strong> This browser cannot register a device, so
+            email is the only active channel. A device registered by the mobile app appears below and can be
+            removed here.
+          </Banner>
           <div className="nv-row nv-row--between">
             <Link className="nv-link-arrow" to="/notifications">
               Open the full inbox
@@ -617,6 +641,8 @@ function NotificationsSection({
           </div>
         </div>
       </Panel>
+
+      <PushDevicesPanel devices={devices} busy={busy} onRemove={onRemoveDevice} />
 
       <Panel
         title="Recent notifications"
@@ -658,18 +684,84 @@ function NotificationsSection({
   );
 }
 
+function PushDevicesPanel({
+  devices,
+  busy,
+  onRemove,
+}: {
+  devices: ReturnType<typeof useApiResource<PushDeviceListOut>>['resource'];
+  busy: boolean;
+  onRemove: (deviceId: number) => void;
+}): JSX.Element {
+  const count = devices.status === 'ready' ? devices.data.devices.length : null;
+
+  return (
+    <Panel
+      title="Push devices"
+      actions={
+        count === null ? null : <Badge tone={count === 0 ? 'neutral' : 'info'}>{count} registered</Badge>
+      }
+    >
+      <p className="nv-muted">
+        A registered device is a specific install, not a preference. Removing one stops push to that install;
+        it does not change your email choice.
+      </p>
+      {devices.status === 'loading' ? (
+        <Skeleton lines={2} />
+      ) : devices.status === 'off' ? (
+        <EmptyState
+          title="Push devices are not switched on here"
+          body="This environment has the feature off."
+        />
+      ) : devices.status === 'missing' || devices.status === 'error' ? (
+        <ErrorState title="Devices did not load" body={devices.message} />
+      ) : devices.data.devices.length === 0 ? (
+        <EmptyState
+          title="No devices registered"
+          body="The mobile app registers a device when push is enabled there. This browser does not."
+        />
+      ) : (
+        <ul className="nv-list nv-list--ruled">
+          {devices.data.devices.map((device) => (
+            <li key={device.id} className="nv-row nv-row--between">
+              <div className="nv-stack nv-stack--tight">
+                <strong>{device.platform}</strong>
+                <span className="nv-meta">
+                  Ending {device.token.slice(-6)} ·{' '}
+                  {device.last_seen_at ? `last seen ${formatDateTime(device.last_seen_at)}` : 'never seen'}
+                </span>
+              </div>
+              <Button
+                type="button"
+                variant="secondary"
+                size="sm"
+                disabled={busy}
+                onClick={() => onRemove(device.id)}
+              >
+                Remove
+              </Button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </Panel>
+  );
+}
+
 function DataSection({
   busy,
   confirmDelete,
   setConfirmDelete,
   onExport,
   onDelete,
+  consents,
 }: {
   busy: boolean;
   confirmDelete: string;
   setConfirmDelete: (value: string) => void;
   onExport: () => void;
   onDelete: () => void;
+  consents: ReturnType<typeof useApiResource<ConsentListOut>>['resource'];
 }): JSX.Element {
   return (
     <div className="nv-stack nv-stack--loose">
@@ -685,6 +777,56 @@ function DataSection({
             </Button>
           </div>
         </div>
+      </Panel>
+
+      <Panel title="Consent history">
+        <p className="nv-muted">
+          Each agreement is recorded with the document version and the time you accepted it. The history is
+          append-only; a later change adds a row instead of rewriting the past.
+        </p>
+        {consents.status === 'loading' ? (
+          <Skeleton lines={3} />
+        ) : consents.status === 'off' ? (
+          <EmptyState
+            title="Consent history is not switched on here"
+            body="This environment has the feature off."
+          />
+        ) : consents.status === 'missing' || consents.status === 'error' ? (
+          <ErrorState title="Consent history did not load" body={consents.message} />
+        ) : consents.data.consents.length === 0 ? (
+          <EmptyState
+            title="No consent recorded yet"
+            body="Accepting the terms or a contributor agreement will add the first entry."
+          />
+        ) : (
+          <div className="nv-table-wrap">
+            <table className="nv-table">
+              <caption className="nv-sr-only">Consent history</caption>
+              <thead>
+                <tr>
+                  <th scope="col">Agreement</th>
+                  <th scope="col">Version</th>
+                  <th scope="col">State</th>
+                  <th scope="col">Recorded</th>
+                </tr>
+              </thead>
+              <tbody>
+                {consents.data.consents.map((row) => (
+                  <tr key={row.id}>
+                    <td>{row.kind}</td>
+                    <td className="nv-mono">{row.document_version}</td>
+                    <td>
+                      <Badge tone={row.granted ? 'success' : 'warning'}>
+                        {row.granted ? 'Granted' : 'Withdrawn'}
+                      </Badge>
+                    </td>
+                    <td>{formatDateTime(row.created_at)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </Panel>
 
       <Panel title="Delete your account">

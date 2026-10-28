@@ -1,6 +1,5 @@
 export { VersionSwitcher } from './VersionSwitcher';
 export {
-  ArrowLink,
   Avatar,
   Badge,
   Banner,
@@ -14,12 +13,10 @@ export {
   ErrorState,
   Field,
   IconButton,
-  Logo,
   PageHeader,
   Panel,
   Select,
   Skeleton,
-  Spinner,
   Stamp,
   Textarea,
   ThemeToggle,

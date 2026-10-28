@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Status | **Approved 2026-10-27. Build in progress.** |
+| Status | **Approved 2026-10-27; implemented 2026-10-28.** Palette is Nelavista blue/white. Manual light/dark visual pass still recommended. |
 | Gate | Gate 2 — design direction |
 | Date | 2026-10-27; palette corrected to brand blue/white 2026-10-28 |
 | Applies to | `apps/web`, `apps/admin`, `packages/design-tokens`, `packages/ui` |

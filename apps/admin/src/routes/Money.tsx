@@ -17,6 +17,7 @@ import type {
   ReconcileRunOut,
   ReverseOut,
 } from '@nelavista/api-client';
+import { Badge, Banner, EmptyState, ErrorNote, ErrorState, PageHeader, Panel, Skeleton } from '@nelavista/ui';
 import * as React from 'react';
 
 import { ApiError, download, http } from '../lib/http';
@@ -39,6 +40,7 @@ export function Money(): JSX.Element {
   const [batchIds, setBatchIds] = React.useState('');
   const [batchDetail, setBatchDetail] = React.useState<PayoutBatchDetailOut | null>(null);
   const [cancelReason, setCancelReason] = React.useState('');
+  const [failReason, setFailReason] = React.useState('');
   const [busy, setBusy] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
   const [note, setNote] = React.useState<string | null>(null);
@@ -133,6 +135,23 @@ export function Money(): JSX.Element {
     }
   }
 
+  async function failPayoutItem(itemId: number): Promise<void> {
+    if (!batchDetail) return;
+    setBusy(true);
+    setError(null);
+    try {
+      await http.post(`/money/payout-items/${itemId}/fail`, { reason: failReason.trim() });
+      setNote(`Payout item #${itemId} marked failed; the reason is in the audit trail.`);
+      setFailReason('');
+      await openBatch(batchDetail.id);
+      refresh();
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : 'Could not fail that payout item.');
+    } finally {
+      setBusy(false);
+    }
+  }
+
   async function runReconciliation(): Promise<void> {
     setBusy(true);
     setError(null);
@@ -148,21 +167,32 @@ export function Money(): JSX.Element {
   }
 
   return (
-    <div className="nv-stack">
-      <h1 className="nv-h1">Money</h1>
-      <p className="nv-muted">
-        Amounts are integers in minor units. Funding splits once, at funding time; every later movement is
-        a new transaction.
-      </p>
+    <div className="nv-stack nv-stack--loose">
+      <PageHeader
+        eyebrow="Money"
+        title="Money"
+        description="Amounts are integers in minor units. Funding splits once, at funding time; every later movement is a new transaction."
+      />
 
-      {error ? <p className="nv-error">{error}</p> : null}
-      {note ? <p className="nv-muted">{note}</p> : null}
+      <ErrorNote message={error} />
+      {note ? <Banner tone="success">{note}</Banner> : null}
 
-      <section className="nv-card">
-        <h2 className="nv-h2">Project</h2>
-        {projects.resource.status === 'ready' ? (
+      <Panel title="Project">
+        {projects.resource.status === 'loading' ? <Skeleton lines={2} /> : null}
+        {projects.resource.status === 'error' ? (
+          <ErrorState title="Projects did not load" body={projects.resource.message} />
+        ) : null}
+        {projects.resource.status === 'ready' && projects.resource.data.projects.length === 0 ? (
+          <EmptyState title="No project yet" body="Create a project before funding work or paying a batch." />
+        ) : null}
+        {projects.resource.status === 'ready' && projects.resource.data.projects.length > 0 ? (
           <div className="nv-row">
-            <select className="nv-select" value={slug} onChange={(event) => setSlug(event.target.value)} style={{ maxWidth: 320 }}>
+            <select
+              className="nv-select"
+              value={slug}
+              onChange={(event) => setSlug(event.target.value)}
+              style={{ maxWidth: 320 }}
+            >
               <option value="">Select a project…</option>
               {projects.resource.data.projects.map((row) => (
                 <option key={row.id} value={row.slug}>
@@ -180,142 +210,233 @@ export function Money(): JSX.Element {
               </button>
             ) : null}
           </div>
-        ) : (
-          <p className="nv-muted">Loading projects…</p>
-        )}
-      </section>
+        ) : null}
+      </Panel>
 
       {slug ? (
         <>
-          <section className="nv-card">
-            <h2 className="nv-h2">Financials</h2>
+          <Panel title="Financials">
             {financials.resource.status === 'ready' ? (
               <Financials data={financials.resource.data} />
             ) : financials.resource.status === 'error' ? (
-              <p className="nv-error">{financials.resource.message}</p>
+              <ErrorState title="Financials did not load" body={financials.resource.message} />
             ) : (
-              <p className="nv-muted">Loading…</p>
+              <Skeleton lines={3} />
             )}
 
             <div className="nv-row">
               <div>
-                <label className="nv-label" htmlFor="fund-amount">Fund this project (major units)</label>
-                <input className="nv-input" id="fund-amount" type="number" value={fundAmount} onChange={(e) => setFundAmount(e.target.value)} />
+                <label className="nv-label" htmlFor="fund-amount">
+                  Fund this project (major units)
+                </label>
+                <input
+                  className="nv-input"
+                  id="fund-amount"
+                  type="number"
+                  value={fundAmount}
+                  onChange={(e) => setFundAmount(e.target.value)}
+                />
               </div>
-              <button className="nv-button" disabled={busy || !fundAmount} type="button" onClick={() => void fund()}>
+              <button
+                className="nv-button"
+                disabled={busy || !fundAmount}
+                type="button"
+                onClick={() => void fund()}
+              >
                 Fund
               </button>
             </div>
 
             <div className="nv-row">
               <div>
-                <label className="nv-label" htmlFor="reverse-id">Reverse transaction id</label>
-                <input className="nv-input" id="reverse-id" value={reverseId} onChange={(e) => setReverseId(e.target.value)} />
+                <label className="nv-label" htmlFor="reverse-id">
+                  Reverse transaction id
+                </label>
+                <input
+                  className="nv-input"
+                  id="reverse-id"
+                  value={reverseId}
+                  onChange={(e) => setReverseId(e.target.value)}
+                />
               </div>
               <div style={{ minWidth: 260 }}>
-                <label className="nv-label" htmlFor="reverse-reason">Reason (required)</label>
-                <input className="nv-input" id="reverse-reason" value={reverseReason} onChange={(e) => setReverseReason(e.target.value)} />
+                <label className="nv-label" htmlFor="reverse-reason">
+                  Reason (required)
+                </label>
+                <input
+                  className="nv-input"
+                  id="reverse-reason"
+                  value={reverseReason}
+                  onChange={(e) => setReverseReason(e.target.value)}
+                />
               </div>
-              <button className="nv-button nv-button--danger" disabled={busy || !reverseId || reverseReason.trim().length < 3} type="button" onClick={() => void reverse()}>
+              <button
+                className="nv-button nv-button--danger"
+                disabled={busy || !reverseId || reverseReason.trim().length < 3}
+                type="button"
+                onClick={() => void reverse()}
+              >
                 Post reversal
               </button>
             </div>
-          </section>
+          </Panel>
 
-          <section className="nv-card">
-            <h2 className="nv-h2">Reconciliation</h2>
-            <button className="nv-button" disabled={busy} type="button" onClick={() => void runReconciliation()}>
+          <Panel title="Reconciliation">
+            <button
+              className="nv-button"
+              disabled={busy}
+              type="button"
+              onClick={() => void runReconciliation()}
+            >
               Run now
             </button>
             {reconciliation.resource.status === 'ready' ? (
               <div>
-                <span className="nv-tag" data-tone={reconciliation.resource.data.balanced ? 'ok' : 'bad'}>
+                <Badge tone={reconciliation.resource.data.balanced ? 'success' : 'danger'}>
                   {reconciliation.resource.data.balanced ? 'balanced' : 'does not balance'}
-                </span>
-                <pre className="nv-pre nv-muted">{JSON.stringify(reconciliation.resource.data.details, null, 2)}</pre>
+                </Badge>
+                <pre className="nv-pre nv-muted">
+                  {JSON.stringify(reconciliation.resource.data.details, null, 2)}
+                </pre>
               </div>
-            ) : null}
-          </section>
+            ) : reconciliation.resource.status === 'error' ? (
+              <ErrorState title="Reconciliation did not load" body={reconciliation.resource.message} />
+            ) : (
+              <Skeleton lines={3} />
+            )}
+          </Panel>
 
-          <section className="nv-card">
-            <h2 className="nv-h2">Payout batches</h2>
+          <Panel title="Payout batches">
             <div className="nv-row">
               <div style={{ minWidth: 320 }}>
-                <label className="nv-label" htmlFor="batch-lines">Earning line ids (comma separated; empty = all payable)</label>
-                <input className="nv-input" id="batch-lines" value={batchIds} onChange={(e) => setBatchIds(e.target.value)} />
+                <label className="nv-label" htmlFor="batch-lines">
+                  Earning line ids (comma separated; empty = all payable)
+                </label>
+                <input
+                  className="nv-input"
+                  id="batch-lines"
+                  value={batchIds}
+                  onChange={(e) => setBatchIds(e.target.value)}
+                />
               </div>
               <button className="nv-button" disabled={busy} type="button" onClick={() => void createBatch()}>
                 Create batch
               </button>
               <div style={{ minWidth: 220 }}>
-                <label className="nv-label" htmlFor="cancel-reason">Cancel reason</label>
-                <input className="nv-input" id="cancel-reason" value={cancelReason} onChange={(e) => setCancelReason(e.target.value)} />
+                <label className="nv-label" htmlFor="cancel-reason">
+                  Cancel reason
+                </label>
+                <input
+                  className="nv-input"
+                  id="cancel-reason"
+                  value={cancelReason}
+                  onChange={(e) => setCancelReason(e.target.value)}
+                />
               </div>
             </div>
 
-            {batches.resource.status === 'ready' ? (
-              <table className="nv-table">
-                <thead>
-                  <tr>
-                    <th>Batch</th>
-                    <th>Total</th>
-                    <th>Status</th>
-                    <th>Paid</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {batches.resource.data.batches.map((row) => (
-                    <tr key={row.id}>
-                      <td>#{row.id} · {row.provider ?? 'manual'}</td>
-                      <td>{money(row.total_minor, row.currency)}</td>
-                      <td>
-                        <span className="nv-tag" data-tone={row.status === 'paid' ? 'ok' : row.status === 'failed' ? 'bad' : 'warn'}>
-                          {row.status}
-                        </span>
-                      </td>
-                      <td>{when(row.paid_at)}</td>
-                      <td>
-                        <div className="nv-row">
-                          <button className="nv-button nv-button--ghost" type="button" onClick={() => void openBatch(row.id)}>
-                            Detail
-                          </button>
-                          {row.status === 'draft' || row.status === 'created' ? (
-                            <button className="nv-button" type="button" disabled={busy} onClick={() => void moveBatch(row.id, 'approve')}>
-                              Approve
-                            </button>
-                          ) : null}
-                          {row.status === 'approved' ? (
-                            <button className="nv-button" type="button" disabled={busy} onClick={() => void moveBatch(row.id, 'pay')}>
-                              Pay
-                            </button>
-                          ) : null}
-                          {row.status !== 'paid' && row.status !== 'cancelled' ? (
-                            <button className="nv-button nv-button--danger" type="button" disabled={busy} onClick={() => void moveBatch(row.id, 'cancel')}>
-                              Cancel
-                            </button>
-                          ) : null}
-                          <button
-                            className="nv-button nv-button--ghost"
-                            type="button"
-                            onClick={() => void download(`/money/payout-batches/${row.id}/export`, `payout-batch-${row.id}.csv`)}
-                          >
-                            CSV
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                  {batches.resource.data.batches.length === 0 ? (
+            {batches.resource.status === 'loading' ? <Skeleton lines={4} /> : null}
+            {batches.resource.status === 'error' ? (
+              <ErrorState title="Payout batches did not load" body={batches.resource.message} />
+            ) : null}
+            {batches.resource.status === 'ready' && batches.resource.data.batches.length === 0 ? (
+              <EmptyState
+                title="No batch yet"
+                body="Create a batch from the payable lines above. It starts as a draft."
+              />
+            ) : null}
+            {batches.resource.status === 'ready' && batches.resource.data.batches.length > 0 ? (
+              <div className="nv-table-wrap">
+                <table className="nv-table">
+                  <thead>
                     <tr>
-                      <td colSpan={5} className="nv-muted">No batch yet.</td>
+                      <th scope="col">Batch</th>
+                      <th scope="col">Total</th>
+                      <th scope="col">Status</th>
+                      <th scope="col">Paid</th>
+                      <th scope="col">Actions</th>
                     </tr>
-                  ) : null}
-                </tbody>
-              </table>
-            ) : (
-              <p className="nv-muted">Loading batches…</p>
-            )}
+                  </thead>
+                  <tbody>
+                    {batches.resource.data.batches.map((row) => (
+                      <tr key={row.id}>
+                        <td>
+                          #{row.id} · {row.provider ?? 'manual'}
+                        </td>
+                        <td>{money(row.total_minor, row.currency)}</td>
+                        <td>
+                          <Badge
+                            tone={
+                              row.status === 'paid'
+                                ? 'success'
+                                : row.status === 'failed'
+                                  ? 'danger'
+                                  : 'warning'
+                            }
+                          >
+                            {row.status}
+                          </Badge>
+                        </td>
+                        <td>{when(row.paid_at)}</td>
+                        <td>
+                          <div className="nv-row">
+                            <button
+                              className="nv-button nv-button--ghost"
+                              type="button"
+                              onClick={() => void openBatch(row.id)}
+                            >
+                              Detail
+                            </button>
+                            {row.status === 'draft' || row.status === 'created' ? (
+                              <button
+                                className="nv-button"
+                                type="button"
+                                disabled={busy}
+                                onClick={() => void moveBatch(row.id, 'approve')}
+                              >
+                                Approve
+                              </button>
+                            ) : null}
+                            {row.status === 'approved' ? (
+                              <button
+                                className="nv-button"
+                                type="button"
+                                disabled={busy}
+                                onClick={() => void moveBatch(row.id, 'pay')}
+                              >
+                                Pay
+                              </button>
+                            ) : null}
+                            {row.status !== 'paid' && row.status !== 'cancelled' ? (
+                              <button
+                                className="nv-button nv-button--danger"
+                                type="button"
+                                disabled={busy}
+                                onClick={() => void moveBatch(row.id, 'cancel')}
+                              >
+                                Cancel
+                              </button>
+                            ) : null}
+                            <button
+                              className="nv-button nv-button--ghost"
+                              type="button"
+                              onClick={() =>
+                                void download(
+                                  `/money/payout-batches/${row.id}/export`,
+                                  `payout-batch-${row.id}.csv`,
+                                )
+                              }
+                            >
+                              CSV
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            ) : null}
 
             {batchDetail ? (
               <div>
@@ -324,76 +445,123 @@ export function Money(): JSX.Element {
                   {money(batchDetail.total_minor, batchDetail.currency)} · {batchDetail.status} · created by{' '}
                   {batchDetail.created_by ?? '—'} · approved by {batchDetail.approved_by ?? '—'}
                 </p>
-                <table className="nv-table">
-                  <thead>
-                    <tr>
-                      <th>Student</th>
-                      <th>Amount</th>
-                      <th>Status</th>
-                      <th>Reference</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {batchDetail.items.map((item) => (
-                      <tr key={item.id}>
-                        <td>
-                          {item.name ?? `#${item.user_id}`}
-                          <div className="nv-muted">{item.email}</div>
-                        </td>
-                        <td>{money(item.amount_minor, batchDetail.currency)}</td>
-                        <td>{item.status}</td>
-                        <td>{item.provider_reference ?? '—'}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            ) : null}
-          </section>
-
-          <section className="nv-card">
-            <h2 className="nv-h2">Ledger</h2>
-            {ledger.resource.status === 'ready' ? (
-              ledger.resource.data.transactions.map((transaction) => (
-                <div key={transaction.id}>
-                  <p>
-                    #{transaction.id} · {transaction.kind} · {money(transaction.total_minor, transaction.currency)}{' '}
-                    <span className="nv-muted">{when(transaction.created_at)}</span>
-                    {transaction.reverses_transaction_id ? (
-                      <span className="nv-tag" data-tone="warn">reversal of #{transaction.reverses_transaction_id}</span>
-                    ) : null}
-                  </p>
+                <div>
+                  <label className="nv-label" htmlFor="fail-reason">
+                    Failure reason (required to mark one item failed)
+                  </label>
+                  <input
+                    className="nv-input"
+                    id="fail-reason"
+                    value={failReason}
+                    onChange={(event) => setFailReason(event.target.value)}
+                  />
+                </div>
+                <div className="nv-table-wrap">
                   <table className="nv-table">
                     <thead>
                       <tr>
-                        <th>Account</th>
-                        <th>Direction</th>
-                        <th>Amount</th>
-                        <th>User</th>
-                        <th>Department</th>
+                        <th scope="col">Student</th>
+                        <th scope="col">Amount</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Reference</th>
+                        <th scope="col">
+                          <span className="nv-sr-only">Actions</span>
+                        </th>
                       </tr>
                     </thead>
                     <tbody>
-                      {transaction.entries.map((entry) => (
-                        <tr key={entry.id}>
-                          <td>{entry.account}</td>
-                          <td>{entry.direction}</td>
-                          <td>{money(entry.amount_minor, entry.currency)}</td>
-                          <td>{entry.user_id ?? '—'}</td>
-                          <td>{entry.department_id ?? '—'}</td>
+                      {batchDetail.items.map((item) => (
+                        <tr key={item.id}>
+                          <td>
+                            {item.name ?? `#${item.user_id}`}
+                            <div className="nv-muted">{item.email}</div>
+                          </td>
+                          <td>{money(item.amount_minor, batchDetail.currency)}</td>
+                          <td>
+                            <Badge
+                              tone={
+                                item.status === 'paid'
+                                  ? 'success'
+                                  : item.status === 'failed'
+                                    ? 'danger'
+                                    : 'warning'
+                              }
+                            >
+                              {item.status}
+                            </Badge>
+                          </td>
+                          <td>{item.provider_reference ?? '—'}</td>
+                          <td>
+                            {item.status !== 'paid' && item.status !== 'failed' ? (
+                              <button
+                                className="nv-button nv-button--danger"
+                                disabled={busy || failReason.trim().length < 3}
+                                type="button"
+                                onClick={() => void failPayoutItem(item.id)}
+                              >
+                                Mark failed
+                              </button>
+                            ) : null}
+                          </td>
                         </tr>
                       ))}
                     </tbody>
                   </table>
                 </div>
-              ))
-            ) : (
-              <p className="nv-muted">Loading ledger…</p>
-            )}
-            {ledger.resource.status === 'ready' && ledger.resource.data.transactions.length === 0 ? (
-              <p className="nv-muted">Nothing has moved yet.</p>
+              </div>
             ) : null}
-          </section>
+          </Panel>
+
+          <Panel title="Ledger">
+            {ledger.resource.status === 'loading' ? <Skeleton lines={4} /> : null}
+            {ledger.resource.status === 'error' ? (
+              <ErrorState title="Ledger did not load" body={ledger.resource.message} />
+            ) : null}
+            {ledger.resource.status === 'ready' && ledger.resource.data.transactions.length === 0 ? (
+              <EmptyState
+                title="Nothing has moved yet"
+                body="Funding a project posts the first ledger transaction."
+              />
+            ) : null}
+            {ledger.resource.status === 'ready' && ledger.resource.data.transactions.length > 0
+              ? ledger.resource.data.transactions.map((transaction) => (
+                  <div key={transaction.id}>
+                    <p>
+                      #{transaction.id} · {transaction.kind} ·{' '}
+                      {money(transaction.total_minor, transaction.currency)}{' '}
+                      <span className="nv-muted">{when(transaction.created_at)}</span>
+                      {transaction.reverses_transaction_id ? (
+                        <Badge tone="warning">reversal of #{transaction.reverses_transaction_id}</Badge>
+                      ) : null}
+                    </p>
+                    <div className="nv-table-wrap">
+                      <table className="nv-table">
+                        <thead>
+                          <tr>
+                            <th scope="col">Account</th>
+                            <th scope="col">Direction</th>
+                            <th scope="col">Amount</th>
+                            <th scope="col">User</th>
+                            <th scope="col">Department</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {transaction.entries.map((entry) => (
+                            <tr key={entry.id}>
+                              <td>{entry.account}</td>
+                              <td>{entry.direction}</td>
+                              <td>{money(entry.amount_minor, entry.currency)}</td>
+                              <td>{entry.user_id ?? '—'}</td>
+                              <td>{entry.department_id ?? '—'}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                ))
+              : null}
+          </Panel>
         </>
       ) : null}
     </div>

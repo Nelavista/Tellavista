@@ -2,18 +2,20 @@
 
 | Field | Value |
 |---|---|
-| Status | **Phase 0 baseline. Gates 1 and 2 approved 2026-10-27. Build in progress; see §1.1.** |
+| Status | **Post-build 2026-10-28. Gates 1 and 2 approved 2026-10-27. Core UI build complete; remaining items are API/content dependencies and launch verification.** |
 | Date | 2026-10-27; post-build and palette correction 2026-10-28 |
 | Scope | Current V2 web, admin, design tokens and UI-facing API contracts; V1 used only as a reference |
 | Not in scope | V1 code changes, backend changes, deployment changes, mobile launch |
-| Companion documents | `docs/v2-ui/PARITY.md`, `docs/v2-ui/ROUTE-MAP.md`, `docs/v2-ui/DESIGN-DIRECTION.md`, `docs/design/ui-ux-framework.md` |
+| Companion documents | `docs/v2-ui/PARITY.md`, `docs/v2-ui/ROUTE-MAP.md`, `docs/v2-ui/DESIGN-DIRECTION.md`, `docs/v2-ui/IMAGE-PROMPTS.md`, `docs/design/ui-ux-framework.md` |
 
 > This is the Phase 0 baseline. It records what existed before the redesign, what
 > was broken or missing, what V1 actually does, and which documents were stale.
 > The parity decisions are in `PARITY.md`; the route contract is in `ROUTE-MAP.md`;
-> the visual direction is in `DESIGN-DIRECTION.md`.
+> the visual direction is in `DESIGN-DIRECTION.md`. Read §1.1 first: it is the
+> current state, and it overrides the baseline tables below where they disagree.
+> Sections 2–14 are intentionally kept as the starting-point record.
 
-## 1.1 Post-build status (2026-10-27)
+## 1.1 Post-build status (2026-10-28)
 
 The redesign has landed in code. This section replaces the baseline where they
 disagree; the rest of the document remains useful as the starting-point record.
@@ -27,27 +29,45 @@ disagree; the rest of the document remains useful as the starting-point record.
   background, not a transparent loader, and is not used in the UI yet.
 - **Public surface:** Landing, Features, How it works, About, Contact, FAQ,
   Privacy, Terms, Contributor terms, a real 404 and an offline screen exist as
-  separate routes. Legal copy is an explicit draft pending counsel.
+  separate routes. Legal copy is an explicit draft pending counsel. Every public
+  page now sets a title, description, canonical, robots and OG/Twitter metadata;
+  `sitemap.xml` and `robots.txt` cover the public pages and disallow private app
+  routes.
 - **Auth:** Login, Signup, Verify email and Reset password use the shared auth
-  layout. Signup links to the draft legal pages.
+  layout and set page metadata. Signup links to the draft legal pages.
 - **Student app:** The grouped app shell, mobile navigation, theme toggle,
   notifications, applications, CBT history, course detail and split settings
   routes exist. Home, Academia, Materials, Ask, CBT, Skills, My learning, Lesson,
   Practice, Verification, Assessment sitting, Attempt review, Practical task,
   Transcript, Opportunities, Applications, Work, Earnings, Talent, Campus,
   Notifications, Settings and Onboarding use the shared primitives and explicit
-  states.
+  states. Eligibility blockers are shown on opportunity detail before apply.
+- **Settings:** Profile, security, notifications and data are separate routes.
+  Consent history is read from `/me/consents` and rendered as an append-only
+  table. Push devices are read from `/me/push-devices` and can be removed; the
+  web app does not claim to register a browser device. The old push checkbox that
+  promised delivery without a device is gone.
 - **Admin:** The grouped shell, Overview, Waitlist, Campus, Audit, Imports, Users,
   Opportunities, Projects, Review, Money, Content, Platform, Security and a real
-  404 exist. Overview reads live queues; Campus is write-only because the read
-  endpoint is missing.
-- **Still open:** The older admin screens (Opportunities, Projects, Review,
-  Money, Content, Platform) still carry legacy markup. Course/topic detail, CBT
-  review, the student cohort-invite list, admin campus read and the signed-in
-  change-password endpoint are API dependencies. Consent history, push-device
-  registration and the matches view still have no UI. `Logo`, `ArrowLink` and
-  `Spinner` are unused exports; the old `Layout.tsx` has been removed. Images
-  named in `IMAGE-PROMPTS.md` are not created yet.
+  404 exist. All admin screens now use the shared page header, panel, skeleton,
+  error and empty primitives. Overview reads live queues; Campus is write-only
+  because the read endpoint is missing. Application status and payout-item
+  failure actions are exposed in Opportunities and Money.
+- **Still open (API dependencies):** Course/topic detail beyond the current course
+  route, CBT history/review detail, the student cohort-invite list, an admin
+  campus read endpoint and a signed-in change-password endpoint. The admin Campus
+  screen remains write-only with an explicit banner and session-local receipts.
+- **Still open (business/content):** pricing, counsel-reviewed legal copy, real
+  social links, real metrics/testimonials, photography, employer positioning and
+  the material upload/analysis replacement copy. Images named in
+  `IMAGE-PROMPTS.md` are not created yet. The MP4 brand video needs a placement
+  decision.
+- **Still open (verification):** Admin 2FA enrolment and the full
+  `dev-local.ps1` flow are not verified end-to-end; the V2 domain switch is
+  pending; legal pages remain drafts and block launch.
+- **Removed as unused:** `Logo`, `ArrowLink` and `Spinner` exports, the unused
+  spinner CSS, and `apps/web/src/components/Layout.tsx`.
+
 
 ---
 
@@ -198,10 +218,10 @@ The student app has the core journey:
 |---|---|---|
 | No dedicated notifications route | Notifications appear only as a 10-item list inside Settings (`Settings.tsx:311-358`) | Students cannot triage notifications; deep links are buried. |
 | No change-password flow | No `change-password` endpoint or UI; only reset-by-email (`identity/routes.py`) | A signed-in student cannot rotate a password. |
-| No consent history or re-consent UI | `GET/POST /me/consents` and `POST /auth/consent` exist but are unused | A terms-version change cannot be accepted in-product; legal evidence is incomplete. |
-| No push-device registration | Settings toggles `notify_push` but never calls `/me/push-devices` | The toggle claims push is on when no device exists. |
+| No re-consent UI | Consent history is now built from `GET /me/consents`; `POST /auth/consent` is still unused | A terms-version change cannot be accepted in-product; legal evidence is incomplete. |
+| No browser push-device registration | Settings lists/removes `/me/push-devices`; the web app still cannot register a browser device | Push requires the mobile app; the copy is now honest. |
 | No cohort invite response | `POST /work/cohorts/{id}/respond` exists; no web UI | Admin can invite; the student cannot accept or decline. |
-| No “my applications” | `GET /opportunities/applications` exists; no screen | Students cannot see what they applied to or its status. |
+| "My applications" | Built at `/opportunities/applications` | Students can see what they applied to and its status. |
 | No “matches” view | `GET /opportunities/matches` exists; list shows verdicts only | Matching work is under-exposed. |
 | No eligibility view | `GET /platform/me/eligibility` exists; no screen | Students discover age/consent blockers inside an opportunity, too late. |
 | No CBT history | V2 shows current results only; V1 had history and attempt review | Students cannot revisit past practice or see improvement. |
@@ -235,64 +255,71 @@ Admin is genuinely operational: audit search, V1 import, user lookup, opportunit
 creation and candidates, projects/cohorts, review queue, ledger and payout
 batches, content authoring, platform policy and 2FA.
 
-### 5.2 Admin gaps
+### 5.2 Admin gaps (current)
 
 | Gap | Evidence | Impact |
 |---|---|---|
-| No waitlist screen | `GET /ops/waitlist` exists | Ops cannot see or act on students waiting for an uncovered university. |
-| No campus publishing screen | `POST /ops/campus` exists | Campus content cannot be managed from the admin app. |
-| Applications are read-only | `POST /opportunities/applications/{id}/status` exists; UI has no action | Ops cannot move an application through its lifecycle. |
-| Payout items are read-only | `POST /money/payout-items/{id}/fail` exists; UI has no action | A failed payout item cannot be resolved in the tool. |
-| No admin 404 | Unknown hash renders Audit | A typo silently shows the wrong screen. |
-| No skeletons | All loading is plain text | Dense tables flash and jump. |
+| No campus read endpoint | `POST /ops/campus` exists; no ops list/read route | Campus remains write-only with session-local receipts; ops cannot audit published content in-app. |
+| No student cohort-invite list | `POST /work/cohorts/{id}/invites` and `/respond` exist; no list endpoint | Admin can invite, but the student cannot see or answer an invite in-product. |
+| Applications are now actionable | `POST /opportunities/applications/{id}/status` is exposed in Opportunities | Resolved; statuses are interested, applied, shortlisted, withdrawn and rejected. |
+| Payout items are now actionable | `POST /money/payout-items/{id}/fail` is exposed in Money | Resolved; a reason is required and audited. |
+| No admin 404 | Unknown hash renders a real `AdminNotFound` | Resolved. |
+| No skeletons | Shared `Skeleton`, `EmptyState`, `ErrorState` and `Panel` are used across admin | Resolved. |
 | No bulk actions | Review, money and content are one-row at a time | Ops work does not scale. |
-| No global error boundary | Same as web | A render error blanks the admin app. |
+| No aggregate overview endpoint | Overview composes live queues; one failed read does not hide the rest | Acceptable for now; a purpose-built aggregate API is a later optimisation. |
 | No newsletter/announcement admin | No feature exists | Only relevant if those features are approved. |
 
 ### 5.3 Admin verdict
 
-Admin is the strongest part of V2 functionally and the weakest part visually. It
-has the right screens for the current API, but it needs the same design system as
-the student app, at a denser rhythm, plus the four missing operational actions.
+Admin is the strongest part of V2 functionally and now shares the student app's
+design system at a denser rhythm. The remaining work is API-backed: a campus read
+endpoint, a student cohort-invite list, and a purpose-built aggregate overview.
+Bulk actions and richer application lifecycle states are useful next steps, not
+launch blockers.
 
 ---
 
 ## 6. API capabilities with no UI, and UI with no API
 
-### 6.1 API-only (highest impact)
+### 6.1 API-only (current)
 
 | Endpoint | Missing UI |
 |---|---|
-| `POST /auth/consent`, `GET/POST /me/consents` | Re-consent and consent history |
-| `GET/POST/DELETE /me/push-devices` | Device registration and removal |
-| `POST /work/cohorts/{id}/respond` | Accept/decline a cohort invite |
-| `GET /opportunities/applications` | My applications |
-| `GET /opportunities/matches` | Matches |
-| `GET /platform/me/eligibility` | Eligibility/readiness |
-| `GET /ops/waitlist` | Admin waitlist |
-| `POST /ops/campus` | Admin campus publishing |
-| `POST /opportunities/applications/{id}/status` | Admin application status |
-| `POST /money/payout-items/{id}/fail` | Admin payout-item failure |
+| `POST /work/cohorts/{id}/respond` | Accept/decline a cohort invite; no list endpoint exists to find the invite first |
+| `GET /opportunities/matches` | Matches view; opportunity list shows verdicts only |
+| `GET /platform/me/eligibility` | Standalone eligibility/readiness view; blockers are shown on opportunity detail |
+| `GET /academia/cbt/practice-next` | Adaptive practice (deferred) |
 | `POST /auth/google` | Google sign-in button (deferred) |
 | `POST /work/submissions/sync` | Offline submission queue (deferred) |
-| `GET /academia/cbt/practice-next` | Adaptive practice (deferred) |
 | `GET /talent/me/transcript` | Duplicate of `/verification/transcript` |
+
+Resolved by the build: consent history (`GET /me/consents`), push-device list and
+removal (`GET/DELETE /me/push-devices`), my applications
+(`GET /opportunities/applications`), admin waitlist (`GET /ops/waitlist`), admin
+campus publishing (`POST /ops/campus`), application status
+(`POST /opportunities/applications/{id}/status`) and payout-item failure
+(`POST /money/payout-items/{id}/fail`).
 
 ### 6.2 UI without a real API
 
-No screen calls a missing endpoint. Two UI claims are not backed:
+No screen calls a missing endpoint. The two former false claims are resolved:
 
-- **Signup terms acceptance** sends `accept_terms: true` but links to no document
-  and records no consent version (`Signup.tsx:81-84`, `session.tsx:78`).
-- **Push preference** toggles a profile flag but registers no device
-  (`Settings.tsx:255-258`).
+- **Signup terms acceptance** links to the draft legal pages and sends
+  `accept_terms`; the backend records `terms_of_service` at `TERMS_VERSION`.
+  Consent history shows the recorded row. What is not built is re-consent when
+  the terms version changes; `POST /auth/consent` exists but has no UI.
+- **Push preference** is no longer a toggle that promises delivery. The web app
+  says it cannot register a browser device and lists/removes devices registered
+  elsewhere.
+
 
 ### 6.3 API-only verdict
 
-V2 is ahead of its UI in identity consent, notifications, matching, eligibility,
-cohorts and ops. These are not speculative endpoints; they are built and tested.
-The redesign should expose the ones that complete the student and ops journeys,
-not invent new backend work first.
+The high-impact identity, notification, application and admin money edges are now
+reachable. The remaining API-only items are either blocked on a missing list
+endpoint (cohort invites), intentionally deferred (Google, offline sync, adaptive
+practice) or a nice-to-have view (matches, standalone eligibility). Do not invent
+the missing reads.
 
 ---
 
@@ -336,13 +363,17 @@ Gaps:
 - Admin errors often lack `role="alert"`.
 - No axe or keyboard test suite.
 
-### 7.4 Performance and SEO
+### 7.4 Performance and SEO (current)
 
-- First-load budget exists and passes (58.7 KB JS / 1.4 KB CSS in the last
-  recorded build).
-- No analytics, Sentry or other telemetry.
-- No per-route meta; SPA has one static title.
-- Sitemap is minimal; public marketing/legal pages would need to be added.
+- First-load budget exists and passes; re-run `pnpm check:web-budget` before
+  release.
+- No analytics, Sentry or other telemetry. This remains an operational gap, not a
+  UI gap.
+- Public routes now set title, description, canonical, robots and OG/Twitter
+  metadata in `apps/web/src/lib/page-meta.ts`; the boot HTML carries the landing
+  defaults.
+- `sitemap.xml` covers the public marketing and legal routes; `robots.txt`
+  disallows auth, private app routes and share tokens.
 
 ### 7.5 Design-system verdict
 
@@ -469,33 +500,38 @@ Neither belongs in the first design-system PR. They come after the core screens.
 
 ## 10. Launch blockers and missing screens
 
-### 10.1 Launch blockers (must fix before a public launch)
+### 10.1 Launch blockers (current)
 
-1. **Legal pages and signup links.** No `/privacy`, `/terms`, no contributor
-   terms page; signup accepts terms that do not exist.
-2. **Consent capture/re-consent.** `POST /auth/consent` and `/me/consents` exist
-   but are unused; a terms version change cannot be recorded.
-3. **Password change.** No signed-in password rotation.
-4. **404 and error boundary.** Unknown routes redirect home; a render error
-   blanks the app.
-5. **Notification centre.** Notifications are buried in Settings; no unread
-   triage.
-6. **Push device registration or an honest toggle.** The current toggle is a
-   false promise.
-7. **Cohort invite response.** Managed work is one-sided without it.
-8. **Admin waitlist and campus.** API exists; ops has no screen.
-9. **Application status and payout-item failure.** API exists; ops cannot act.
-10. **Public support path.** No contact page; V1's support email is the only
-    path and it is not in V2.
+1. **Legal review.** The privacy, terms and contributor-terms pages exist as
+   explicit drafts. Counsel must review them against V2's actual data flows before
+   launch.
+2. **Re-consent.** Signup records `terms_of_service` at `TERMS_VERSION` and
+   consent history is visible. When the version changes, there is no UI to ask an
+   existing student to accept again; `POST /auth/consent` is unused.
+3. **Password change.** No signed-in password rotation endpoint; reset-by-email is
+   the only path.
+4. **Cohort invite response.** Managed work is one-sided without a student-facing
+   invite list and response UI.
+5. **Admin campus read.** Publishing is write-only; ops cannot audit the published
+   list in-app.
+6. **Business content.** Pricing (if any), support response expectations, real
+   social links and proof metrics are not supplied. Do not invent them.
+7. **Photography and image assets.** The prompt manifest is ready; the files are
+   not.
+8. **Admin 2FA and local flow verification.** Login works, but first-login
+   enrolment and `dev-local.ps1` need an end-to-end pass.
+9. **Domain switch and deployment.** V2 is not yet on the production domain.
 
 ### 10.2 Strongly recommended for parity/quality
 
-- About, Features, How it works, FAQ, Contact.
-- CBT history and course/topic pages, or an explicit decision to replace them.
-- Student material upload/analysis, or an explicit decision to drop it.
-- “My applications” and “Matches.”
-- Eligibility/readiness.
+- Course/topic detail beyond the current course route, and CBT history/review
+  detail, or an explicit decision that the current screens are the replacement.
+- Student material upload/analysis, or publish the replacement copy that explains
+  curated materials + Ask + CBT + the transcript evidence trail.
+- “My matches” and a standalone eligibility/readiness view.
 - Analytics and error tracking (not UI, but needed to run a launch).
+- Bulk actions in review, money and content.
+- A purpose-built admin overview endpoint.
 
 ### 10.3 Deliberately not in the first UI build
 
@@ -505,6 +541,7 @@ Neither belongs in the first design-system PR. They come after the core screens.
 - Platform banner without an announcement backend.
 - Google SSO until the button and consent flow are designed.
 - Offline submission sync until the client queue is wired.
+
 
 ---
 
@@ -540,8 +577,9 @@ These cannot be invented by the UI:
 2. **Legal copy.** Privacy and terms must be reviewed for V2's actual data flows
    (payments, verification, managed work, no community). V1 text is not safe to
    copy unchanged.
-3. **Support contact.** Real support email, response expectation and any social
-   links. V1's `support@localhost` and `example.com` links are not usable.
+3. **Support contact.** `support@nelavista.com` is used; response expectation and
+   real social links are still needed. V1's `support@localhost` and `example.com`
+   links are not usable.
 4. **Real proof.** Any student count, university count, testimonial or partner
    logo must be current and verifiable. V1's “2,500+” is hardcoded and should not
    be carried forward.
@@ -553,14 +591,26 @@ These cannot be invented by the UI:
    admin screen.
 8. **Platform banner decision.** Include a small announcement feature now, or
    defer until there is a real announcement to show.
-9. **Course/topic and CBT history.** Restore V1's course hub/history, or accept
-   the V2 dashboard + results as the replacement.
-10. **Student uploads/analysis.** Restore V1's PDF→notes→test, or state that V2's
-    curated materials + Ask + CBT is the deliberate replacement.
+9. **Course/topic and CBT history API detail.** Course and CBT history screens
+   exist; the missing piece is the API detail for full topic content and CBT
+   attempt review. Provide the endpoints or confirm the current screens are the
+   replacement.
+10. **Student uploads/analysis.** Restore V1's PDF→notes→test, or approve the
+    replacement copy: curated materials + Ask + CBT + the transcript evidence
+    trail.
+11. **Brand video placement.** The uploaded MP4 is 1920x1080 with a blue
+    background, not a transparent loader. Decide whether it appears on the public
+    site, in onboarding, or nowhere.
+12. **Image production.** Approve the prompt manifest and supply or commission the
+    P1 images; do not launch with generic stock or invented campus/founder
+    photography.
+
 
 ---
 
-## 13. Verification at audit time
+## 13. Verification
+
+### 13.1 At audit time (Phase 0 baseline)
 
 | Check | Result |
 |---|---|
@@ -572,22 +622,45 @@ These cannot be invented by the UI:
 | Admin 2FA | Login works; first-login enrolment is required and still needs a full end-to-end pass |
 | V1 reference | Read-only; no V1 files changed |
 
-The audit did not change code. The only changes are documentation and the
-deletions listed in §11 once confirmed.
+### 13.2 Post-build verification (2026-10-28)
+
+| Check | Result |
+|---|---|
+| Web typecheck | Passed |
+| Admin typecheck | Passed |
+| Web tests | 57 passed (11 files) |
+| Admin tests | 2 passed (1 file) |
+| Web/admin lint | Passed |
+| Web/admin production build | Passed |
+| First-load budget | Passed: 116.0 KB gzip JS of 150 KB; 7.0 KB gzip CSS of 20 KB |
+| Prettier / `git diff --check` | Passed |
+| Brand assets | V1 logo/favicon copied, V2 icons generated, boot loader present in both apps |
+| Theme | Light and dark tokens verified in code; manual visual pass still recommended |
+| API dependencies | Not exercised end-to-end; see §10.1 |
+| V1 reference | Read-only; no V1 files changed |
+
+The Phase 0 audit itself did not change code; the post-build rows record the
+redesign that followed. The checks above were run on 2026-10-28 against the
+working tree, not against a deployed environment.
+
 
 ---
 
 ## 14. Bottom line
 
-V2 is **functionally broad and visually unfinished**. The public surface is a
-stub, the design system is a seed, and several built API capabilities are not
-reachable. The highest-value sequence is:
+V2 is now functionally broad and visually coherent on Nelavista blue and white.
+The public surface, auth, student journey, admin tools, brand assets, metadata and
+the high-impact consent/push/application/payout edges are built. The remaining
+work is mostly not UI invention:
 
-1. Approve the route map and design direction.
-2. Build tokens and primitives once.
-3. Build the public surface and auth.
-4. Build the app shell and the missing student screens.
-5. Build the missing admin actions.
-6. Add utility screens, legal/consent, notifications and password change.
-7. Treat the platform banner and newsletter as separate, explicitly approved
-   features, not as parity items.
+1. Legal review and consent-version wiring.
+2. A signed-in password-change endpoint.
+3. Course/topic and CBT history detail endpoints, or an explicit replacement
+   decision.
+4. A student cohort-invite list endpoint and an admin campus read endpoint.
+5. Real business content, photography and the approved image set.
+6. End-to-end admin 2FA, local setup, production build and domain verification.
+7. Analytics/error tracking before launch.
+
+Do not invent the missing reads, business copy or imagery. Ship the working
+record that exists, then close the API and content dependencies.

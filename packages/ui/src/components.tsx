@@ -1,13 +1,4 @@
-import {
-  ArrowRight,
-  CircleAlert,
-  Inbox,
-  LoaderCircle,
-  Moon,
-  Sun,
-  TriangleAlert,
-  type LucideIcon,
-} from 'lucide-react';
+import { CircleAlert, Inbox, Moon, Sun, TriangleAlert, type LucideIcon } from 'lucide-react';
 import * as React from 'react';
 
 type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger';
@@ -373,14 +364,6 @@ export function Skeleton({
   );
 }
 
-export function Spinner({ label = 'Loading' }: { label?: string }): JSX.Element {
-  return (
-    <span className="nv-row" role="status" aria-label={label}>
-      <LoaderCircle className="nv-spin" aria-hidden="true" size={18} />
-    </span>
-  );
-}
-
 export function ErrorNote({ message }: { message: string | null }): JSX.Element | null {
   if (!message) return null;
   return (
@@ -401,15 +384,6 @@ export function BrandMark({ size = 28, className }: { size?: number; className?:
       src="/brand/nelavista-mark.png"
       width={size}
     />
-  );
-}
-
-export function Logo({ to = '/', compact = false }: { to?: string; compact?: boolean }): JSX.Element {
-  return (
-    <a className="nv-public__brand" href={to} aria-label="Nelavista home">
-      <BrandMark />
-      {compact ? null : <span>Nelavista</span>}
-    </a>
   );
 }
 
@@ -476,22 +450,5 @@ export function Avatar({ name }: { name: string }): JSX.Element {
     <span className="nv-avatar" aria-hidden="true">
       {initials || 'N'}
     </span>
-  );
-}
-
-export function ArrowLink({
-  to,
-  children,
-  className,
-}: {
-  to: string;
-  children: React.ReactNode;
-  className?: string;
-}): JSX.Element {
-  return (
-    <a className={cx('nv-link-arrow', className)} href={to}>
-      {children}
-      <ArrowRight aria-hidden="true" size={16} />
-    </a>
   );
 }

@@ -79,11 +79,16 @@ describe('public routes', () => {
     vi.unstubAllGlobals();
   });
 
-  it('renders the features page', async () => {
+  it('renders the features page with public metadata', async () => {
     const { container } = render('/features');
     await waitFor(() => {
       expect(container.textContent).toContain('CBT practice');
+      expect(document.title).toBe('Features | Nelavista');
     });
+    expect(document.head.querySelector('link[rel="canonical"]')?.getAttribute('href')).toBe(
+      'https://nelavista.com/features',
+    );
+    expect(document.head.querySelector('meta[name="robots"]')?.getAttribute('content')).toBe('index, follow');
   });
 
   it('renders the FAQ page', async () => {
@@ -100,10 +105,14 @@ describe('public routes', () => {
     });
   });
 
-  it('renders a real 404 for an unknown public path', async () => {
+  it('renders a real 404 for an unknown public path and marks it noindex', async () => {
     const { container } = render('/this-page-does-not-exist');
     await waitFor(() => {
       expect(container.textContent).toContain('That page is not part of the record.');
+      expect(document.title).toBe('Page not found | Nelavista');
     });
+    expect(document.head.querySelector('meta[name="robots"]')?.getAttribute('content')).toBe(
+      'noindex, nofollow',
+    );
   });
 });

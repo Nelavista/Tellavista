@@ -2,6 +2,7 @@ import { BrandMark, ThemeToggle } from '@nelavista/ui';
 import * as React from 'react';
 import { Link, NavLink } from 'react-router-dom';
 
+import { usePageMeta } from '../lib/page-meta';
 import { useSession } from '../lib/session';
 import { useTheme } from '../lib/theme-context';
 
@@ -13,6 +14,7 @@ const NAV = [
 ];
 
 export function PublicLayout({ children }: { children: React.ReactNode }): JSX.Element {
+  usePageMeta();
   const { status } = useSession();
   const { theme, toggle } = useTheme();
   const signedIn = status === 'authenticated';

@@ -653,13 +653,14 @@ The public surface, auth, student journey, admin tools, brand assets, metadata a
 the high-impact consent/push/application/payout edges are built. The remaining
 work is mostly not UI invention:
 
-1. Legal review and consent-version wiring.
+1. Legal review and a re-consent UI when the terms version changes.
 2. A signed-in password-change endpoint.
-3. Course/topic and CBT history detail endpoints, or an explicit replacement
-   decision.
+3. Course/topic and CBT attempt-review detail endpoints; the CBT history route
+   already exists as an explicit dependency state.
 4. A student cohort-invite list endpoint and an admin campus read endpoint.
 5. Real business content, photography and the approved image set.
-6. End-to-end admin 2FA, local setup, production build and domain verification.
+6. End-to-end admin 2FA, the full local setup, a manual light/dark visual pass and
+   the domain switch.
 7. Analytics/error tracking before launch.
 
 Do not invent the missing reads, business copy or imagery. Ship the working

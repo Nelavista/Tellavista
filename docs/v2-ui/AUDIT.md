@@ -600,7 +600,9 @@ These cannot be invented by the UI:
     trail.
 11. **Brand video placement.** The uploaded MP4 is 1920x1080 with a blue
     background, not a transparent loader. Decide whether it appears on the public
-    site, in onboarding, or nowhere.
+    site, in onboarding, or nowhere. If it must be a transparent loader, supply a
+    short looping WebM/VP9 with alpha (or HEVC with alpha for Safari) at 1:1,
+    ideally under 500 KB; the current opaque 16:9 file is not that asset.
 12. **Image production.** Approve the prompt manifest and supply or commission the
     P1 images; do not launch with generic stock or invented campus/founder
     photography.

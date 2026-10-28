@@ -327,5 +327,7 @@ name, a university, an earnings figure or a testimonial into an image prompt.
 - The final OG card wording and any real metric that is safe to publish.
 - Whether the `maintenance` state will be enabled at launch.
 - Whether the `animation3_color_exchange.mp4` brand video should appear anywhere
-  beyond the loader. It is a 1920 by 1080, eight-second video with a blue
+  in the UI. It is a 1920 by 1080, eight-second video with a blue
   background, so it is not a transparent loader. The WebP loader is the loader.
+  If a transparent loader is wanted, supply a short looping WebM/VP9 with alpha
+  (or HEVC with alpha for Safari) at 1:1, ideally under 500 KB.

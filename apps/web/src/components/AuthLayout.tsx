@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 
 import { usePageMeta } from '../lib/page-meta';
 import { useTheme } from '../lib/theme-context';
+import { EditorialImage } from './EditorialImage';
 
 export function AuthLayout({
   title,
@@ -52,6 +53,11 @@ export function AuthLayout({
             One account for your courses, verified skills, paid work and the evidence an employer can actually
             check.
           </p>
+          <EditorialImage
+            alt="A person arranging printed records into a folder on a desk."
+            className="nv-auth__figure"
+            name="auth-record"
+          />
         </div>
         <div className="nv-auth__meta">
           <span>Academia + Skills</span>

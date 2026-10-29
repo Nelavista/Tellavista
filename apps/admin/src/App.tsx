@@ -43,7 +43,7 @@ function Body(): JSX.Element {
   const [route, go] = useHashRoute();
 
   if (status === 'loading') {
-    return <BrandLoader full label="Checking your session" />;
+    return <BrandLoader full label="Loading Nelavista Admin" />;
   }
 
   if (status === 'anonymous') return <Login />;

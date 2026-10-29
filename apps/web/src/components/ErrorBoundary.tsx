@@ -1,6 +1,8 @@
 import { TriangleAlert } from 'lucide-react';
 import * as React from 'react';
 
+import { EditorialImage } from './EditorialImage';
+
 interface State {
   error: Error | null;
 }
@@ -21,24 +23,34 @@ export class ErrorBoundary extends React.Component<{ children: React.ReactNode }
   override render(): React.ReactNode {
     if (!this.state.error) return this.props.children;
     return (
-      <main className="nv-container nv-404" id="main">
-        <TriangleAlert aria-hidden="true" size={24} />
-        <p className="nv-404__code">Something broke</p>
-        <h1 className="nv-h1">This screen did not finish loading.</h1>
-        <p className="nv-lede">
-          Your account and saved work are safe. Reload the page. If it keeps happening, send the reference
-          below to support.
-        </p>
-        <pre className="nv-code" aria-label="Error reference">
-          <code>{this.state.error.message || 'Unknown UI error'}</code>
-        </pre>
-        <div className="nv-row">
-          <button className="nv-button" type="button" onClick={() => window.location.reload()}>
-            Reload the page
-          </button>
-          <a className="nv-button nv-button--secondary" href="/">
-            Go to the home page
-          </a>
+      <main className="nv-container nv-section" id="main">
+        <div className="nv-state-layout">
+          <div className="nv-state-layout__copy">
+            <TriangleAlert aria-hidden="true" size={24} />
+            <p className="nv-404__code">Something broke</p>
+            <h1 className="nv-h1">This screen did not finish loading.</h1>
+            <p className="nv-lede">
+              Your account and saved work are safe. Reload the page. If it keeps happening, send the
+              reference below to support.
+            </p>
+            <pre className="nv-code" aria-label="Error reference">
+              <code>{this.state.error.message || 'Unknown UI error'}</code>
+            </pre>
+            <div className="nv-row">
+              <button className="nv-button" type="button" onClick={() => window.location.reload()}>
+                Reload the page
+              </button>
+              <a className="nv-button nv-button--secondary" href="/">
+                Go to the home page
+              </a>
+            </div>
+          </div>
+          <EditorialImage
+            alt="A toppled stack of blank papers on a desk with a hand reaching to tidy it."
+            height={1024}
+            name="error-boundary"
+            width={1024}
+          />
         </div>
       </main>
     );

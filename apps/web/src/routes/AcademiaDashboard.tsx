@@ -273,7 +273,7 @@ export function AcademiaDashboard(): JSX.Element {
         <Panel title="What should I practise?">
           <p>{questions.what_should_i_practise.answer}</p>
           <TopicList
-            empty="Nothing to practise yet — your courses do not have practice questions loaded."
+            empty="Nothing to practise yet. Your courses do not have practice questions loaded."
             items={questions.what_should_i_practise.items}
           />
         </Panel>

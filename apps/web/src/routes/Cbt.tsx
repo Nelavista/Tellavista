@@ -155,7 +155,7 @@ export function Cbt(): JSX.Element {
                 { value: '', label: 'Select a course…' },
                 ...courses.map((course) => ({
                   value: String(course.course_id),
-                  label: `${course.code} — ${course.title}`,
+                  label: `${course.code}: ${course.title}`,
                 })),
               ]}
               value={courseId}
@@ -307,7 +307,7 @@ export function Cbt(): JSX.Element {
               <ul className="nv-list">
                 {results.recommendations.map((row) => (
                   <li key={`${row.topic_id ?? 'general'}-${row.topic}`}>
-                    {row.topic} · {row.accuracy}% — {row.action === 'practise' ? 'practise more' : row.action}
+                    {row.topic} · {row.accuracy}%: {row.action === 'practise' ? 'practise more' : row.action}
                   </li>
                 ))}
               </ul>

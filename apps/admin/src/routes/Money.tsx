@@ -443,7 +443,7 @@ export function Money(): JSX.Element {
                 <h3 className="nv-h2">Batch #{batchDetail.id}</h3>
                 <p className="nv-muted">
                   {money(batchDetail.total_minor, batchDetail.currency)} · {batchDetail.status} · created by{' '}
-                  {batchDetail.created_by ?? '—'} · approved by {batchDetail.approved_by ?? '—'}
+                  {batchDetail.created_by ?? 'Not set'} · approved by {batchDetail.approved_by ?? 'Not set'}
                 </p>
                 <div>
                   <label className="nv-label" htmlFor="fail-reason">
@@ -490,7 +490,7 @@ export function Money(): JSX.Element {
                               {item.status}
                             </Badge>
                           </td>
-                          <td>{item.provider_reference ?? '—'}</td>
+                          <td>{item.provider_reference ?? 'Not set'}</td>
                           <td>
                             {item.status !== 'paid' && item.status !== 'failed' ? (
                               <button
@@ -551,8 +551,8 @@ export function Money(): JSX.Element {
                               <td>{entry.account}</td>
                               <td>{entry.direction}</td>
                               <td>{money(entry.amount_minor, entry.currency)}</td>
-                              <td>{entry.user_id ?? '—'}</td>
-                              <td>{entry.department_id ?? '—'}</td>
+                              <td>{entry.user_id ?? 'Not set'}</td>
+                              <td>{entry.department_id ?? 'Not set'}</td>
                             </tr>
                           ))}
                         </tbody>
@@ -589,7 +589,7 @@ function Financials({ data }: { data: FinancialsOut }): JSX.Element {
       </p>
       {data.department_share ? (
         <p className="nv-muted">
-          Department {data.department_share.department_id ?? '—'} ·{' '}
+          Department {data.department_share.department_id ?? 'Not set'} ·{' '}
           {money(data.department_share.amount_minor, data.department_share.currency)} ·{' '}
           {data.department_share.status}
         </p>

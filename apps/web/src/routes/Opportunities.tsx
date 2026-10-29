@@ -11,6 +11,7 @@ import { ArrowRight, Briefcase } from 'lucide-react';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 
+import { EMPTY_IMAGES } from '../lib/empty-images';
 import { useApiResource } from '../lib/resource';
 
 function rateLabel(currency: string | null | undefined, rateMinor: number | null | undefined): string {
@@ -95,6 +96,7 @@ export function Opportunities(): JSX.Element {
           <EmptyState
             body="Matching uses your verified skills. New work appears here when it is published."
             icon={Briefcase}
+            image={EMPTY_IMAGES.opportunities}
             title="Nothing open right now"
             action={
               <Link className="nv-button nv-button--secondary nv-button--sm" to="/verification">

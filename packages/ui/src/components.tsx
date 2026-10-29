@@ -307,18 +307,34 @@ export function EmptyState({
   body,
   action,
   icon: Icon = Inbox,
+  image,
 }: {
   title: React.ReactNode;
   body?: React.ReactNode;
   action?: React.ReactNode;
   icon?: LucideIcon;
+  image?: { src: string; alt: string; width?: number; height?: number };
 }): JSX.Element {
   return (
-    <div className="nv-empty">
-      <Icon aria-hidden="true" size={20} strokeWidth={1.6} />
-      <p className="nv-empty__title">{title}</p>
-      {body ? <p className="nv-empty__body">{body}</p> : null}
-      {action ? <div className="nv-row">{action}</div> : null}
+    <div className={cx('nv-empty', image && 'nv-empty--media')}>
+      {image ? (
+        <img
+          alt={image.alt}
+          className="nv-empty__media"
+          decoding="async"
+          height={image.height ?? 800}
+          loading="lazy"
+          src={image.src}
+          width={image.width ?? 800}
+        />
+      ) : (
+        <Icon aria-hidden="true" size={20} strokeWidth={1.6} />
+      )}
+      <div className="nv-empty__copy">
+        <p className="nv-empty__title">{title}</p>
+        {body ? <p className="nv-empty__body">{body}</p> : null}
+        {action ? <div className="nv-row">{action}</div> : null}
+      </div>
     </div>
   );
 }
@@ -393,7 +409,7 @@ export function BrandMark({ size = 28, className }: { size?: number; className?:
  * animation cannot be loaded.
  */
 export function BrandLoader({
-  label = 'Loading Nelavista',
+  label = 'Loading',
   full = false,
 }: {
   label?: string;
@@ -402,24 +418,21 @@ export function BrandLoader({
   const [failed, setFailed] = React.useState(false);
   return (
     <div aria-label={label} className={cx('nv-brand-loader', full && 'nv-brand-loader--full')} role="status">
-      <span className="nv-brand-loader__stage">
-        {failed ? null : (
-          <img
-            alt=""
-            className="nv-brand-loader__anim"
-            decoding="async"
-            height={96}
-            onError={() => setFailed(true)}
-            src="/media/nelavista-loader.webp"
-            width={96}
-          />
-        )}
-        <BrandMark
-          className={cx('nv-brand-loader__still', failed && 'nv-brand-loader__still--visible')}
-          size={56}
+      {failed ? null : (
+        <img
+          alt=""
+          className="nv-brand-loader__anim"
+          decoding="async"
+          height={96}
+          onError={() => setFailed(true)}
+          src="/media/nelavista-loader.webp"
+          width={96}
         />
-      </span>
-      <span className="nv-brand-loader__label">{label}</span>
+      )}
+      <BrandMark
+        className={cx('nv-brand-loader__still', failed && 'nv-brand-loader__still--visible')}
+        size={56}
+      />
     </div>
   );
 }

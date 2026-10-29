@@ -12,6 +12,7 @@ import { ClipboardCheck, FileCheck2, Gauge } from 'lucide-react';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 
+import { EMPTY_IMAGES } from '../lib/empty-images';
 import { formatDateTime } from '../lib/format';
 import { useApiResource } from '../lib/resource';
 
@@ -129,6 +130,7 @@ export function Work(): JSX.Element {
           <EmptyState
             body="Managed work starts with an invitation, and matching uses your verified skills."
             icon={ClipboardCheck}
+            image={EMPTY_IMAGES.work}
             title="No assignment yet"
             action={
               <Link className="nv-button nv-button--secondary nv-button--sm" to="/opportunities">
@@ -196,7 +198,7 @@ export function Work(): JSX.Element {
       <Panel title="Your quality record">
         {record == null ? (
           <EmptyState
-            body="Quality is built from real submissions — a missing record is not a bad one."
+            body="Quality is built from real submissions. A missing record is not a bad one."
             icon={Gauge}
             title="No reviewed work yet"
           />

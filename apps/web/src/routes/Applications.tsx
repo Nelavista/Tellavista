@@ -2,6 +2,7 @@ import type { ApplicationListOut } from '@nelavista/api-client';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 
+import { EMPTY_IMAGES } from '../lib/empty-images';
 import { useApiResource } from '../lib/resource';
 import { Badge, Button, EmptyState, ErrorState, PageHeader, Skeleton } from '../ui';
 
@@ -53,6 +54,7 @@ export function Applications(): JSX.Element {
         <EmptyState
           title="You have not applied yet"
           body="Open an opportunity, read the eligibility reason and apply when the work fits. Your applications will be listed here."
+          image={EMPTY_IMAGES.applications}
           action={
             <Link className="nv-button" to="/opportunities">
               Browse opportunities

@@ -2,6 +2,7 @@ import type { OnboardingStateOut } from '@nelavista/api-client';
 import * as React from 'react';
 import { Link, useParams } from 'react-router-dom';
 
+import { EMPTY_IMAGES } from '../lib/empty-images';
 import { useApiResource } from '../lib/resource';
 import { Badge, Button, EmptyState, ErrorState, PageHeader, Skeleton } from '../ui';
 
@@ -48,6 +49,7 @@ export function Course(): JSX.Element {
       <EmptyState
         title={`No enrolment for ${courseCode || 'that course'}`}
         body="The course is either not in your current enrolment or the code is wrong. Open Academia to see the courses on your record."
+        image={EMPTY_IMAGES.course}
         action={
           <Link className="nv-button" to="/academia">
             Back to Academia
@@ -180,6 +182,7 @@ function CourseMaterials({ courseId, courseCode }: { courseId: number; courseCod
           <EmptyState
             title="No material for this course yet"
             body="When a note, textbook or past question is attached to the course, it appears here."
+            image={EMPTY_IMAGES.course}
           />
         </div>
       ) : (

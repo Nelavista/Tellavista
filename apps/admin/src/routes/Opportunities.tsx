@@ -1,7 +1,7 @@
 /**
  * Opportunities (C4).
  *
- * Create and edit a brief, publish it, and see who qualifies — with the same
+ * Create and edit a brief, publish it, and see who qualifies  -  with the same
  * explanation the student sees. Requirements are edited as JSON because they are
  * a list of typed rules, not a fixed form; a broken shape is rejected by the API
  * and shown here as an error instead of being half-saved.
@@ -291,7 +291,7 @@ export function Opportunities(): JSX.Element {
                       </Badge>
                     </td>
                     <td>{money(row.rate_minor, row.currency)}</td>
-                    <td>{row.headcount ?? '—'}</td>
+                    <td>{row.headcount ?? 'Not set'}</td>
                     <td>
                       <div className="nv-row">
                         <button
@@ -430,7 +430,7 @@ export function Opportunities(): JSX.Element {
                               )}
                             </select>
                           </td>
-                          <td>{row.note ?? '—'}</td>
+                          <td>{row.note ?? 'Not set'}</td>
                         </tr>
                       ))}
                     </tbody>

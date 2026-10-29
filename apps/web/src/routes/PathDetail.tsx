@@ -28,7 +28,7 @@ function stepDestination(step: PathStepOut, from: string): JSX.Element {
   if (!step.unlocked) {
     return (
       <span className="nv-muted">
-        <Lock aria-hidden="true" size={13} /> Locked — finish the step before it.
+        <Lock aria-hidden="true" size={13} /> Locked: finish the step before it.
       </span>
     );
   }
@@ -140,7 +140,7 @@ export function PathDetail(): JSX.Element {
       ) : (
         <Banner tone="success">
           <p>
-            Every step in this path is done. Completing a path is progress — verification comes from an
+            Every step in this path is done. Completing a path is progress. Verification comes from an
             assessment, not from finishing lessons.
           </p>
         </Banner>

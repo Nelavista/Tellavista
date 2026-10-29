@@ -44,9 +44,9 @@ const LEVELS = [
 ];
 
 const VISIBILITY = [
-  { value: 'private', label: 'Private - nobody sees my profile' },
-  { value: 'link', label: 'Link only - someone with the link can see it' },
-  { value: 'public', label: 'Public - discoverable by companies' },
+  { value: 'private', label: 'Private: nobody sees my profile' },
+  { value: 'link', label: 'Link only: someone with the link can see it' },
+  { value: 'public', label: 'Public: discoverable by companies' },
 ];
 
 const NAV = [
@@ -64,7 +64,7 @@ function sectionTitle(section: string): { title: string; description: string } {
       return {
         title: 'Security',
         description:
-          'The account, the sign-in and the recovery path. Password changes are a backend dependency.',
+          'The account, the sign-in and the recovery path. In-place password changes remain a backend dependency.',
       };
     case 'notifications':
       return {
@@ -545,6 +545,27 @@ function ProfileSection(props: {
 
 function SecuritySection(): JSX.Element {
   const { me } = useSession();
+  const [resetBusy, setResetBusy] = React.useState(false);
+  const [resetMessage, setResetMessage] = React.useState<string | null>(null);
+  const [resetError, setResetError] = React.useState<string | null>(null);
+
+  async function sendResetLink(): Promise<void> {
+    if (!me?.email) return;
+    setResetBusy(true);
+    setResetError(null);
+    setResetMessage(null);
+    try {
+      const result = await http.post<{ message: string }>('/auth/password/reset-request', {
+        email: me.email,
+      });
+      setResetMessage(result.message);
+    } catch (err) {
+      setResetError(err instanceof ApiError ? err.message : 'Could not send the reset link.');
+    } finally {
+      setResetBusy(false);
+    }
+  }
+
   return (
     <div className="nv-stack nv-stack--loose">
       <Panel title="Account">
@@ -574,13 +595,28 @@ function SecuritySection(): JSX.Element {
 
       <Panel title="Password">
         <Banner tone="warning">
-          <strong>Backend dependency.</strong> V2 does not expose a signed-in change-password endpoint yet. Do
-          not show a form that cannot work. The route exists so the gap is visible, not so it can be faked.
+          <strong>Backend dependency.</strong> V2 does not expose an in-place change-password endpoint yet.
+          This screen does not fake one. You can still request the existing single-use reset link.
         </Banner>
         <p className="nv-muted" style={{ marginTop: 'var(--nv-space-md)' }}>
-          If you are signed out, use <Link to="/auth/reset">the reset flow</Link>. It revokes sessions after a
-          successful reset.
+          The link goes to <strong>{me?.email}</strong> and revokes sessions after a successful reset. If you
+          are signed out, use <Link to="/auth/reset">the reset flow</Link>.
         </p>
+        <div className="nv-row" style={{ marginTop: 'var(--nv-space-md)' }}>
+          <Button disabled={resetBusy || !me?.email} onClick={() => void sendResetLink()} type="button" variant="secondary">
+            {resetBusy ? 'Sending' : 'Send password reset link'}
+          </Button>
+        </div>
+        {resetMessage ? (
+          <Banner tone="success">
+            <p>{resetMessage}</p>
+          </Banner>
+        ) : null}
+        {resetError ? (
+          <Banner tone="danger">
+            <p>{resetError}</p>
+          </Banner>
+        ) : null}
       </Panel>
 
       <Panel title="Sessions">

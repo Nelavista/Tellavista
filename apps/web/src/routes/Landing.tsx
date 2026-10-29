@@ -11,6 +11,9 @@ import {
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 
+import { EditorialImage } from '../components/EditorialImage';
+import { Reveal } from '../components/Reveal';
+
 const PROOF = [
   {
     number: '01',
@@ -46,7 +49,7 @@ export function Landing(): JSX.Element {
     <>
       <section className="nv-container nv-home-hero">
         <div className="nv-hero" style={{ padding: 0 }}>
-          <div className="nv-hero__copy">
+          <Reveal className="nv-hero__copy">
             <p className="nv-eyebrow">The working record</p>
             <h1 className="nv-display">
               Learn it.
@@ -82,9 +85,15 @@ export function Landing(): JSX.Element {
                 <span>Ledger, not a mystery balance</span>
               </div>
             </div>
-          </div>
+          </Reveal>
 
-          <div className="nv-hero__media">
+          <Reveal className="nv-hero__media" delay={0.08}>
+            <EditorialImage
+              alt="A student at a shared desk reading a long printed record beside a closed notebook."
+              className="nv-hero__figure"
+              name="hero-main"
+              priority
+            />
             <div className="nv-card nv-card--flat" style={{ padding: 0 }}>
               <div className="nv-panel__head">
                 <span className="nv-meta">Illustrative record</span>
@@ -120,139 +129,151 @@ export function Landing(): JSX.Element {
               </div>
             </div>
             <div className="nv-hero__caption">
-              <span>Not a stock photo. The product is the artifact.</span>
+              <span>Editorial illustration, not a real student or campus.</span>
               <span>V2</span>
             </div>
-          </div>
+          </Reveal>
         </div>
       </section>
 
       <section className="nv-container nv-section nv-section--tight">
-        <div className="nv-section-head">
-          <div>
-            <p className="nv-eyebrow">The problem</p>
-            <h2>Your CV says you can. Your record should show it.</h2>
-          </div>
-          <p>
-            A certificate is easy to claim and hard to check. A group chat is not a work history. Nelavista
-            keeps the learning, the evidence and the paid work together, so the next person does not have to
-            take your word for it.
-          </p>
-        </div>
-        <div className="nv-problem-list">
-          <div className="nv-problem">
-            <span className="nv-problem__number">01</span>
-            <h3>Learning is scattered</h3>
+        <Reveal>
+          <div className="nv-section-head">
+            <div>
+              <p className="nv-eyebrow">The problem</p>
+              <h2>Your CV says you can. Your record should show it.</h2>
+            </div>
             <p>
-              Notes in one app, past questions in another, a video link in a group chat. Nothing connects the
-              topic to the proof.
+              A certificate is easy to claim and hard to check. A group chat is not a work history. Nelavista
+              keeps the learning, the evidence and the paid work together, so the next person does not have to
+              take your word for it.
             </p>
           </div>
-          <div className="nv-problem">
-            <span className="nv-problem__number">02</span>
-            <h3>Proof is self-reported</h3>
-            <p>
-              “I know Excel” is a sentence. A task, a score and an evidence link are a record someone can
-              inspect.
-            </p>
+        </Reveal>
+        <Reveal delay={0.06}>
+          <div className="nv-problem-list">
+            <div className="nv-problem">
+              <span className="nv-problem__number">01</span>
+              <h3>Learning is scattered</h3>
+              <p>
+                Notes in one app, past questions in another, a video link in a group chat. Nothing connects
+                the topic to the proof.
+              </p>
+            </div>
+            <div className="nv-problem">
+              <span className="nv-problem__number">02</span>
+              <h3>Proof is self-reported</h3>
+              <p>
+                “I know Excel” is a sentence. A task, a score and an evidence link are a record someone can
+                inspect.
+              </p>
+            </div>
+            <div className="nv-problem">
+              <span className="nv-problem__number">03</span>
+              <h3>Work is hard to trust</h3>
+              <p>
+                Who is paying, for what, by when, and what happens if the work fails? Those answers should be
+                visible before you start.
+              </p>
+            </div>
           </div>
-          <div className="nv-problem">
-            <span className="nv-problem__number">03</span>
-            <h3>Work is hard to trust</h3>
-            <p>
-              Who is paying, for what, by when, and what happens if the work fails? Those answers should be
-              visible before you start.
-            </p>
-          </div>
-        </div>
+        </Reveal>
       </section>
 
       <section className="nv-container nv-section">
-        <div className="nv-section-head">
-          <div>
-            <p className="nv-eyebrow">One chain</p>
-            <h2>From a topic to a receipt.</h2>
-          </div>
-          <p>
-            Each step leaves a mark in the same record. Nothing is a dead end and nothing has to be
-            re-entered.
-          </p>
-        </div>
-        <div className="nv-proof-chain">
-          {PROOF.map((step) => (
-            <div className="nv-proof-step" key={step.number}>
-              <span className="nv-proof-step__number">{step.number}</span>
-              <h3>{step.title}</h3>
-              <p>{step.body}</p>
+        <Reveal>
+          <div className="nv-section-head">
+            <div>
+              <p className="nv-eyebrow">One chain</p>
+              <h2>From a topic to a receipt.</h2>
             </div>
-          ))}
-        </div>
+            <p>
+              Each step leaves a mark in the same record. Nothing is a dead end and nothing has to be
+              re-entered.
+            </p>
+          </div>
+        </Reveal>
+        <Reveal delay={0.06}>
+          <div className="nv-proof-chain">
+            {PROOF.map((step) => (
+              <div className="nv-proof-step" key={step.number}>
+                <span className="nv-proof-step__number">{step.number}</span>
+                <h3>{step.title}</h3>
+                <p>{step.body}</p>
+              </div>
+            ))}
+          </div>
+        </Reveal>
       </section>
 
       <section className="nv-container nv-section nv-section--tight">
-        <div className="nv-grid--2">
-          <div className="nv-stack">
-            <p className="nv-eyebrow">Two ways in</p>
-            <h2 className="nv-h1">Start with your course or your skill.</h2>
-            <p className="nv-lede">
-              You do not have to choose a permanent identity. Switch path when your semester changes. Your
-              learning, proof and earnings stay.
-            </p>
-            <div className="nv-home-next">
-              <div className="nv-home-next__item">
-                <BookOpen aria-hidden="true" size={18} />
-                <h2>Academia</h2>
-                <p>Courses, materials, CBT practice and academic evidence.</p>
-              </div>
-              <div className="nv-home-next__item">
-                <Sparkles aria-hidden="true" size={18} />
-                <h2>Skills</h2>
-                <p>Short lessons, practice and a verifiable skill record.</p>
+        <Reveal>
+          <div className="nv-grid--2">
+            <div className="nv-stack">
+              <p className="nv-eyebrow">Two ways in</p>
+              <h2 className="nv-h1">Start with your course or your skill.</h2>
+              <p className="nv-lede">
+                You do not have to choose a permanent identity. Switch path when your semester changes. Your
+                learning, proof and earnings stay.
+              </p>
+              <div className="nv-home-next">
+                <div className="nv-home-next__item">
+                  <BookOpen aria-hidden="true" size={18} />
+                  <h2>Academia</h2>
+                  <p>Courses, materials, CBT practice and academic evidence.</p>
+                </div>
+                <div className="nv-home-next__item">
+                  <Sparkles aria-hidden="true" size={18} />
+                  <h2>Skills</h2>
+                  <p>Short lessons, practice and a verifiable skill record.</p>
+                </div>
               </div>
             </div>
+            <div className="nv-card">
+              <p className="nv-eyebrow">What stays with you</p>
+              <ul className="nv-list" style={{ marginTop: 'var(--nv-space-lg)' }}>
+                <li className="nv-row">
+                  <ShieldCheck aria-hidden="true" size={18} />
+                  <span>Verification status and evidence, not a badge you can buy.</span>
+                </li>
+                <li className="nv-row">
+                  <Briefcase aria-hidden="true" size={18} />
+                  <span>Applications, work orders and quality decisions.</span>
+                </li>
+                <li className="nv-row">
+                  <Wallet aria-hidden="true" size={18} />
+                  <span>Earnings line items and payout receipts.</span>
+                </li>
+                <li className="nv-row">
+                  <FileText aria-hidden="true" size={18} />
+                  <span>A transcript you can share with a scoped link.</span>
+                </li>
+              </ul>
+            </div>
           </div>
-          <div className="nv-card">
-            <p className="nv-eyebrow">What stays with you</p>
-            <ul className="nv-list" style={{ marginTop: 'var(--nv-space-lg)' }}>
-              <li className="nv-row">
-                <ShieldCheck aria-hidden="true" size={18} />
-                <span>Verification status and evidence, not a badge you can buy.</span>
-              </li>
-              <li className="nv-row">
-                <Briefcase aria-hidden="true" size={18} />
-                <span>Applications, work orders and quality decisions.</span>
-              </li>
-              <li className="nv-row">
-                <Wallet aria-hidden="true" size={18} />
-                <span>Earnings line items and payout receipts.</span>
-              </li>
-              <li className="nv-row">
-                <FileText aria-hidden="true" size={18} />
-                <span>A transcript you can share with a scoped link.</span>
-              </li>
-            </ul>
-          </div>
-        </div>
+        </Reveal>
       </section>
 
       <section className="nv-container nv-section">
-        <div className="nv-cta-band">
-          <h2>Your next step should be obvious.</h2>
-          <div className="nv-stack nv-stack--tight">
-            <p className="nv-muted" style={{ maxWidth: '40ch' }}>
-              Create an account, choose your path, and start with the work in front of you.
-            </p>
-            <div className="nv-row">
-              <Link className="nv-button" to="/signup">
-                Create your account
-                <ArrowRight aria-hidden="true" size={16} />
-              </Link>
-              <Link className="nv-button nv-button--ghost" to="/login">
-                I already have one
-              </Link>
+        <Reveal>
+          <div className="nv-cta-band">
+            <h2>Your next step should be obvious.</h2>
+            <div className="nv-stack nv-stack--tight">
+              <p className="nv-muted" style={{ maxWidth: '40ch' }}>
+                Create an account, choose your path, and start with the work in front of you.
+              </p>
+              <div className="nv-row">
+                <Link className="nv-button" to="/signup">
+                  Create your account
+                  <ArrowRight aria-hidden="true" size={16} />
+                </Link>
+                <Link className="nv-button nv-button--ghost" to="/login">
+                  I already have one
+                </Link>
+              </div>
             </div>
           </div>
-        </div>
+        </Reveal>
       </section>
     </>
   );

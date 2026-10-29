@@ -3,7 +3,7 @@
  *
  * The API owns the task type: `input_schema` is what is shown, `answer_schema`
  * is what is submitted. `lib/practice.ts` turns those two into one control, and
- * this component renders it. A task type that cannot be rendered says so — it
+ * this component renders it. A task type that cannot be rendered says so - it
  * never submits a made-up answer.
  */
 import * as React from 'react';

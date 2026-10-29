@@ -226,9 +226,9 @@ pre {
   font-size: 0.92em;
 }
 
-/* ---------------------------------------------------------------------------
+/*
  * Layout
- * ------------------------------------------------------------------------- */
+  */
 
 .nv-container {
   width: min(100% - 2 * var(--nv-space-xl), var(--nv-app));
@@ -339,9 +339,9 @@ pre {
   margin: var(--nv-space-lg) 0;
 }
 
-/* ---------------------------------------------------------------------------
+/*
  * Type
- * ------------------------------------------------------------------------- */
+  */
 
 .nv-display {
   font-family: var(--nv-font-serif);
@@ -421,13 +421,6 @@ pre {
   text-transform: uppercase;
 }
 
-.nv-eyebrow::before {
-  content: '';
-  width: 1.5rem;
-  height: 1px;
-  background: var(--nv-accent);
-}
-
 .nv-mono {
   font-family: var(--nv-font-mono);
   font-variant-numeric: tabular-nums;
@@ -482,9 +475,9 @@ pre {
   margin: 0.35rem 0;
 }
 
-/* ---------------------------------------------------------------------------
+/*
  * Buttons
- * ------------------------------------------------------------------------- */
+  */
 
 .nv-button {
   display: inline-flex;
@@ -593,9 +586,9 @@ pre {
   border-color: transparent;
 }
 
-/* ---------------------------------------------------------------------------
+/*
  * Forms
- * ------------------------------------------------------------------------- */
+  */
 
 .nv-field {
   display: flex;
@@ -704,9 +697,9 @@ pre {
   padding-left: 2.2rem;
 }
 
-/* ---------------------------------------------------------------------------
+/*
  * Surfaces
- * ------------------------------------------------------------------------- */
+  */
 
 .nv-card,
 .nv-panel {
@@ -789,9 +782,9 @@ pre {
   margin: var(--nv-space-xs) 0 0;
 }
 
-/* ---------------------------------------------------------------------------
+/*
  * Lists and tables
- * ------------------------------------------------------------------------- */
+  */
 
 .nv-list {
   display: flex;
@@ -872,9 +865,9 @@ pre {
   padding: var(--nv-space-sm) var(--nv-space-md);
 }
 
-/* ---------------------------------------------------------------------------
+/*
  * Status
- * ------------------------------------------------------------------------- */
+  */
 
 .nv-badge,
 .nv-tag,
@@ -952,9 +945,9 @@ pre {
   letter-spacing: 0.02em;
 }
 
-/* ---------------------------------------------------------------------------
+/*
  * Banners and alerts
- * ------------------------------------------------------------------------- */
+  */
 
 .nv-banner,
 .nv-alert {
@@ -1004,9 +997,9 @@ pre {
   padding: var(--nv-space-md) var(--nv-space-lg);
 }
 
-/* ---------------------------------------------------------------------------
+/*
  * Brand mark and page-level loader
- * ------------------------------------------------------------------------- */
+  */
 
 .nv-brand-mark {
   display: inline-block;
@@ -1020,7 +1013,6 @@ pre {
 
 .nv-brand-loader {
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: var(--nv-space-lg);
@@ -1029,17 +1021,12 @@ pre {
 }
 
 .nv-brand-loader--full {
+  position: fixed;
+  inset: 0;
+  z-index: var(--nv-z-toast);
   min-height: 100dvh;
-}
-
-.nv-brand-loader__stage {
-  display: grid;
-  width: 8rem;
-  height: 8rem;
-  place-items: center;
-  border: 1px solid rgba(255, 255, 255, 0.24);
-  border-radius: var(--nv-radius-lg);
-  background: #1535a8;
+  background: rgb(0 0 0 / 38%);
+  backdrop-filter: blur(2px);
 }
 
 .nv-brand-loader__anim {
@@ -1059,17 +1046,9 @@ pre {
   display: block;
 }
 
-.nv-brand-loader__label {
-  color: var(--nv-text-muted);
-  font-family: var(--nv-font-mono);
-  font-size: var(--nv-text-xs);
-  letter-spacing: var(--nv-tracking-wider);
-  text-transform: uppercase;
-}
-
-/* ---------------------------------------------------------------------------
+/*
  * Loading, empty and error states
- * ------------------------------------------------------------------------- */
+  */
 
 .nv-skeleton-group {
   display: flex;
@@ -1110,6 +1089,27 @@ pre {
   color: var(--nv-text-muted);
 }
 
+.nv-empty--media {
+  display: grid;
+  grid-template-columns: 10rem minmax(0, 1fr);
+  align-items: center;
+  gap: var(--nv-space-xl);
+}
+
+.nv-empty__copy {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nv-space-sm);
+}
+
+.nv-empty__media {
+  width: 100%;
+  aspect-ratio: 1;
+  border: 1px solid var(--nv-border);
+  border-radius: var(--nv-radius-sm);
+  object-fit: cover;
+}
+
 .nv-empty__title,
 .nv-error-state__title {
   color: var(--nv-text);
@@ -1122,9 +1122,9 @@ pre {
   font-size: var(--nv-text-sm);
 }
 
-/* ---------------------------------------------------------------------------
+/*
  * Progress and steps
- * ------------------------------------------------------------------------- */
+  */
 
 .nv-meter {
   height: 6px;
@@ -1181,9 +1181,9 @@ pre {
   font-size: var(--nv-text-sm);
 }
 
-/* ---------------------------------------------------------------------------
+/*
  * App shell
- * ------------------------------------------------------------------------- */
+  */
 
 .nv-shell {
   display: grid;
@@ -1356,9 +1356,9 @@ pre {
   display: none;
 }
 
-/* ---------------------------------------------------------------------------
+/*
  * Public shell
- * ------------------------------------------------------------------------- */
+  */
 
 .nv-public {
   min-height: 100dvh;
@@ -1469,9 +1469,9 @@ pre {
   font-size: var(--nv-text-xs);
 }
 
-/* ---------------------------------------------------------------------------
+/*
  * Public content blocks
- * ------------------------------------------------------------------------- */
+  */
 
 .nv-hero {
   display: grid;
@@ -1590,9 +1590,9 @@ pre {
   line-height: 1.05;
 }
 
-/* ---------------------------------------------------------------------------
+/*
  * Auth
- * ------------------------------------------------------------------------- */
+  */
 
 .nv-auth {
   display: grid;
@@ -1652,9 +1652,9 @@ pre {
   text-decoration: none;
 }
 
-/* ---------------------------------------------------------------------------
+/*
  * Admin
- * ------------------------------------------------------------------------- */
+  */
 
 .nv-admin .nv-content {
   width: min(100% - 2 * var(--nv-space-xl), var(--nv-admin));
@@ -1678,9 +1678,9 @@ pre {
   letter-spacing: 0;
 }
 
-/* ---------------------------------------------------------------------------
+/*
  * Utilities and motion
- * ------------------------------------------------------------------------- */
+  */
 
 .nv-sr-only {
   position: absolute;
@@ -1870,9 +1870,9 @@ pre {
   font-size: var(--nv-text-sm);
 }
 
-/* ---------------------------------------------------------------------------
+/*
  * Responsive
- * ------------------------------------------------------------------------- */
+  */
 
 @media (max-width: 1080px) {
   .nv-shell {
@@ -1996,6 +1996,14 @@ pre {
 
   .nv-footer-grid {
     grid-template-columns: 1fr;
+  }
+
+  .nv-empty--media {
+    grid-template-columns: 1fr;
+  }
+
+  .nv-empty__media {
+    max-width: 12rem;
   }
 
   .nv-card {

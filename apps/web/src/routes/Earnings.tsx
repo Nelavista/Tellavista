@@ -12,6 +12,7 @@ import { Receipt, Wallet } from 'lucide-react';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 
+import { EMPTY_IMAGES } from '../lib/empty-images';
 import { useApiResource } from '../lib/resource';
 
 function money(amountMinor: number, currency: string): string {
@@ -103,6 +104,7 @@ export function Earnings(): JSX.Element {
           <EmptyState
             body="An approved task creates a line here with the rate and reason it was paid at."
             icon={Wallet}
+            image={EMPTY_IMAGES.earnings}
             title="No earnings yet"
             action={
               <Link className="nv-button nv-button--secondary nv-button--sm" to="/opportunities">
@@ -150,10 +152,10 @@ export function Earnings(): JSX.Element {
                     <td className="nv-num">
                       {line.rate_minor !== null && line.rate_minor !== undefined
                         ? money(line.rate_minor, line.currency)
-                        : '—'}
+                        : 'Not set'}
                     </td>
                     <td className="nv-num">
-                      {line.task_count !== null && line.task_count !== undefined ? line.task_count : '—'}
+                      {line.task_count !== null && line.task_count !== undefined ? line.task_count : 'Not set'}
                     </td>
                     <td>
                       <Badge tone={statusTone(line.status)}>
@@ -161,7 +163,7 @@ export function Earnings(): JSX.Element {
                       </Badge>
                     </td>
                     <td>
-                      {line.description ?? '—'}
+                      {line.description ?? 'Not set'}
                       {line.status === 'pending' ? (
                         <div className="nv-muted">
                           Becomes payable when the review is approved. Rework does not remove it.

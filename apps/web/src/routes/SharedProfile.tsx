@@ -15,9 +15,9 @@ import { usePageMeta } from '../lib/page-meta';
 import { useApiResource } from '../lib/resource';
 
 function when(value: string | null | undefined): string {
-  if (!value) return '—';
+  if (!value) return 'Not set';
   const date = new Date(value);
-  return Number.isNaN(date.getTime()) ? '—' : date.toLocaleDateString();
+  return Number.isNaN(date.getTime()) ? 'Not set' : date.toLocaleDateString();
 }
 
 export function SharedProfile(): JSX.Element {

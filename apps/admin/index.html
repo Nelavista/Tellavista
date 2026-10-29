@@ -10,27 +10,14 @@
     <title>Nelavista Admin</title>
     <style>
       #boot-loader {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
         display: flex;
-        min-height: 100vh;
         align-items: center;
         justify-content: center;
-        flex-direction: column;
-        gap: 16px;
-        background: #1535a8;
-        color: #ffffff;
-        font-family: 'IBM Plex Mono', Consolas, monospace;
-        font-size: 12px;
-        letter-spacing: 0.14em;
-        text-transform: uppercase;
-      }
-      #boot-loader .stage {
-        display: grid;
-        width: 128px;
-        height: 128px;
-        place-items: center;
-        border: 1px solid rgba(255, 255, 255, 0.24);
-        border-radius: 12px;
-        background: rgba(255, 255, 255, 0.06);
+        background: rgb(0 0 0 / 38%);
+        backdrop-filter: blur(2px);
       }
       #boot-loader img {
         width: 96px;
@@ -56,11 +43,8 @@
   <body>
     <div id="root">
       <div id="boot-loader" role="status" aria-label="Loading Nelavista Admin">
-        <span class="stage">
-          <img alt="" class="anim" height="96" src="/media/nelavista-loader.webp" width="96" />
-          <img alt="" class="still" height="56" src="/brand/nelavista-mark.png" width="56" />
-        </span>
-        <span>Loading Nelavista Admin</span>
+        <img alt="" class="anim" height="96" src="/media/nelavista-loader.webp" width="96" />
+        <img alt="" class="still" height="56" src="/brand/nelavista-mark.png" width="56" />
       </div>
     </div>
     <noscript>Nelavista Admin needs JavaScript enabled.</noscript>

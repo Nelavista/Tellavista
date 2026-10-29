@@ -206,9 +206,9 @@ export function Waitlist(): JSX.Element {
                     <tr key={row.id}>
                       <td>{when(row.created_at)}</td>
                       <td>{row.university_name}</td>
-                      <td>{row.email ?? '—'}</td>
-                      <td className="nv-num">{row.user_id ?? '—'}</td>
-                      <td>{row.note ?? '—'}</td>
+                      <td>{row.email ?? 'Not set'}</td>
+                      <td className="nv-num">{row.user_id ?? 'Not set'}</td>
+                      <td>{row.note ?? 'Not set'}</td>
                     </tr>
                   ))}
                 </tbody>

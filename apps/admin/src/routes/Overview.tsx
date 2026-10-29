@@ -94,7 +94,7 @@ function AttentionItem({
           )}
           {!loading && !error ? (
             <p className="nv-meta">
-              {stampLabel}: {stamp ? when(stamp) : '—'}
+              {stampLabel}: {stamp ? when(stamp) : 'Not set'}
             </p>
           ) : null}
         </div>

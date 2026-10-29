@@ -3,7 +3,7 @@
  *
  * The API returns only paths with real `LessonProgress` rows, so an empty page
  * means "you have not started anything", not "we could not find your work". Each
- * path shows its own progress and its own next step — this page never guesses
+ * path shows its own progress and its own next step - this page never guesses
  * what the student should do.
  */
 import type { MyLearningOut } from '@nelavista/api-client';
@@ -12,6 +12,7 @@ import { BookOpen, Play } from 'lucide-react';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 
+import { EMPTY_IMAGES } from '../lib/empty-images';
 import { useApiResource } from '../lib/resource';
 
 export function MyLearning(): JSX.Element {
@@ -84,6 +85,7 @@ export function MyLearning(): JSX.Element {
           <EmptyState
             body="Pick a skill and open its first lesson. Progress appears here as soon as you start."
             icon={BookOpen}
+            image={EMPTY_IMAGES.learning}
             title="Nothing started yet"
           />
         ) : (

@@ -12,11 +12,12 @@ import { FileCheck2 } from 'lucide-react';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 
+import { EMPTY_IMAGES } from '../lib/empty-images';
 import { formatDateTime } from '../lib/format';
 import { useApiResource } from '../lib/resource';
 
 const SECTIONS: Array<{ kind: 'learned' | 'proved' | 'delivered'; title: string; note: string }> = [
-  { kind: 'learned', title: 'Learned', note: 'Lessons you finished. Progress — not proof.' },
+  { kind: 'learned', title: 'Learned', note: 'Lessons you finished. Progress, not proof.' },
   { kind: 'proved', title: 'Proved', note: 'Assessments and practical work you passed.' },
   { kind: 'delivered', title: 'Delivered', note: 'Real work approved for a client, with its evidence.' },
 ];
@@ -103,6 +104,7 @@ export function Transcript(): JSX.Element {
         <EmptyState
           body="Finish a lesson or pass an assessment and it appears here with its evidence."
           icon={FileCheck2}
+          image={EMPTY_IMAGES.transcript}
           title="Nothing recorded yet"
           action={
             <Link className="nv-button nv-button--secondary nv-button--sm" to="/verification">

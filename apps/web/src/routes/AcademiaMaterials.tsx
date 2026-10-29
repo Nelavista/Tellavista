@@ -21,6 +21,7 @@ import { ArrowRight, BookOpen, ExternalLink, Search } from 'lucide-react';
 import * as React from 'react';
 import { Link, useParams } from 'react-router-dom';
 
+import { EMPTY_IMAGES } from '../lib/empty-images';
 import { ApiError, http } from '../lib/http';
 import { useApiResource } from '../lib/resource';
 
@@ -178,6 +179,7 @@ export function Materials(): JSX.Element {
           <EmptyState
             body="No material yet for your courses. Ask Nelavista can only answer from material that exists."
             icon={BookOpen}
+            image={EMPTY_IMAGES.materials}
             title="No material yet"
             action={
               <Link className="nv-button nv-button--secondary nv-button--sm" to="/academia">

@@ -11,6 +11,7 @@ import { MapPin, Navigation } from 'lucide-react';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 
+import { EMPTY_IMAGES } from '../lib/empty-images';
 import { ApiError, http } from '../lib/http';
 
 function pointUrl(item: CampusItemOut): string | null {
@@ -21,7 +22,14 @@ function pointUrl(item: CampusItemOut): string | null {
 
 function ItemList({ items, empty }: { items: CampusItemOut[]; empty: string }): JSX.Element {
   if (items.length === 0) {
-    return <EmptyState body={empty} icon={MapPin} title="Nothing published yet" />;
+    return (
+      <EmptyState
+        body={empty}
+        icon={MapPin}
+        image={EMPTY_IMAGES.campus}
+        title="Nothing published yet"
+      />
+    );
   }
   return (
     <ul className="nv-list nv-list--ruled">

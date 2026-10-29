@@ -42,9 +42,9 @@ const SCOPE_COPY: Record<string, string> = {
 };
 
 function when(value: string | null | undefined): string {
-  if (!value) return '—';
+  if (!value) return 'Not set';
   const date = new Date(value);
-  return Number.isNaN(date.getTime()) ? '—' : date.toLocaleDateString();
+  return Number.isNaN(date.getTime()) ? 'Not set' : date.toLocaleDateString();
 }
 
 export function Talent(): JSX.Element {
@@ -235,7 +235,7 @@ export function Talent(): JSX.Element {
                     <p className="nv-stat__value">
                       {data.quality.overall.average_score !== null
                         ? `${data.quality.overall.average_score}%`
-                        : '—'}
+                        : 'Not set'}
                     </p>
                     <p className="nv-stat__label">Average score</p>
                   </div>
@@ -411,15 +411,15 @@ export function Talent(): JSX.Element {
           <Panel title="Working with Nelavista">
             <p className="nv-muted">
               Curriculum owner:{' '}
-              {config.resource.status === 'ready' ? config.resource.data.curriculum_owner : '—'} ·{' '}
-              {config.resource.status === 'ready' ? config.resource.data.curriculum_license : '—'}
+              {config.resource.status === 'ready' ? config.resource.data.curriculum_owner : 'Not set'} ·{' '}
+              {config.resource.status === 'ready' ? config.resource.data.curriculum_license : 'Not set'}
             </p>
             <p className="nv-muted">
               Paid work starts at{' '}
               {config.resource.status === 'ready' ? config.resource.data.min_student_age : 16}; under{' '}
               {config.resource.status === 'ready' ? config.resource.data.guardian_consent_below_age : 18}{' '}
               needs guardian consent. Terms version{' '}
-              {config.resource.status === 'ready' ? config.resource.data.contributor_terms_version : '—'}.
+              {config.resource.status === 'ready' ? config.resource.data.contributor_terms_version : 'Not set'}.
             </p>
           </Panel>
         </div>

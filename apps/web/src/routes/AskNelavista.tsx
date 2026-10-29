@@ -254,7 +254,7 @@ export function AskNelavista(): JSX.Element {
                 { value: '', label: 'Any of my courses' },
                 ...courses.map((course) => ({
                   value: String(course.course_id),
-                  label: `${course.code} — ${course.title}`,
+                  label: `${course.code}: ${course.title}`,
                 })),
               ]}
               value={courseId}
@@ -278,7 +278,7 @@ export function AskNelavista(): JSX.Element {
             title="Recent conversations"
             actions={
               <Badge tone="neutral">
-                {sessions.resource.status === 'ready' ? sessions.resource.data.sessions.length : '—'}
+                {sessions.resource.status === 'ready' ? sessions.resource.data.sessions.length : 'Not set'}
               </Badge>
             }
           >

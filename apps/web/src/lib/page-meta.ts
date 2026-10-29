@@ -9,7 +9,7 @@ import * as React from 'react';
 import { useLocation } from 'react-router-dom';
 
 const SITE = 'https://nelavista.com';
-const SOCIAL_IMAGE = `${SITE}/brand/nelavista-mark.png`;
+const SOCIAL_IMAGE = `${SITE}/og/og-main.jpg`;
 
 interface PageMeta {
   title: string;
@@ -33,6 +33,11 @@ const PAGES: Record<string, PageMeta> = {
     description:
       'From your first course to a verified skill and a paid brief: the path through Nelavista, step by step.',
   },
+  '/pricing': {
+    title: 'Pricing',
+    description:
+      'Students learn for free at launch. Employers pay for scoped, managed work. University partnerships are quoted after a pilot scoping call.',
+  },
   '/about': {
     title: 'About',
     description:
@@ -50,15 +55,15 @@ const PAGES: Record<string, PageMeta> = {
   },
   '/legal/privacy': {
     title: 'Privacy',
-    description: 'How Nelavista collects, uses and protects personal data. A draft pending legal review.',
+    description: 'How Nelavista collects, uses and protects personal data.',
   },
   '/legal/terms': {
     title: 'Terms',
-    description: 'The draft terms for using Nelavista. Pending legal review.',
+    description: 'The terms for using Nelavista, including eligibility, accounts, acceptable use and payments.',
   },
   '/legal/contributor-terms': {
     title: 'Contributor terms',
-    description: 'The draft terms for students who contribute work through Nelavista. Pending legal review.',
+    description: 'The terms for students who contribute work through Nelavista.',
   },
   '/offline': {
     title: 'Offline',
@@ -147,11 +152,14 @@ export function usePageMeta(): void {
     upsertMeta('property', 'og:description', page.description);
     upsertMeta('property', 'og:url', isShare ? SITE : canonical);
     upsertMeta('property', 'og:image', SOCIAL_IMAGE);
-    upsertMeta('property', 'og:image:alt', 'Nelavista');
+    upsertMeta('property', 'og:image:width', '1200');
+    upsertMeta('property', 'og:image:height', '630');
+    upsertMeta('property', 'og:image:alt', 'Nelavista working record illustration');
 
-    upsertMeta('name', 'twitter:card', 'summary');
+    upsertMeta('name', 'twitter:card', 'summary_large_image');
     upsertMeta('name', 'twitter:title', fullTitle);
     upsertMeta('name', 'twitter:description', page.description);
     upsertMeta('name', 'twitter:image', SOCIAL_IMAGE);
+    upsertMeta('name', 'twitter:image:alt', 'Nelavista working record illustration');
   }, [pathname]);
 }

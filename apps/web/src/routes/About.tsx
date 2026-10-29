@@ -2,6 +2,9 @@ import { Check, ShieldCheck, Smartphone, Wallet } from 'lucide-react';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 
+import { EditorialImage } from '../components/EditorialImage';
+import { Reveal } from '../components/Reveal';
+
 const PRINCIPLES = [
   {
     icon: ShieldCheck,
@@ -24,83 +27,97 @@ export function About(): JSX.Element {
   return (
     <>
       <section className="nv-container nv-section">
-        <div className="nv-grid--2">
-          <div className="nv-stack">
-            <p className="nv-eyebrow">About</p>
-            <h1 className="nv-display" style={{ fontSize: 'clamp(2.6rem, 6vw, 4.8rem)' }}>
-              A record that travels with you.
-            </h1>
-            <p className="nv-lede">
-              Nelavista is a platform for African university students, Nigeria first. It takes the work you
-              already do in a course or a skill and turns it into evidence you can use to get paid work.
-            </p>
-            <p className="nv-muted" style={{ maxWidth: '58ch' }}>
-              The product is deliberately one journey: Enrol, Learn, Build, Verify, Match, Work, Quality
-              check, Earn. The screen should always make the next step obvious, and the record should always
-              say what happened.
-            </p>
+        <Reveal>
+          <div className="nv-grid--2">
+            <div className="nv-stack">
+              <p className="nv-eyebrow">About</p>
+              <h1 className="nv-display" style={{ fontSize: 'clamp(2.6rem, 6vw, 4.8rem)' }}>
+                A record that travels with you.
+              </h1>
+              <p className="nv-lede">
+                Nelavista is a platform for African university students, Nigeria first. It takes the work you
+                already do in a course or a skill and turns it into evidence you can use to get paid work.
+              </p>
+              <p className="nv-muted" style={{ maxWidth: '58ch' }}>
+                The product is deliberately one journey: Enrol, Learn, Build, Verify, Match, Work, Quality
+                check, Earn. The screen should always make the next step obvious, and the record should always
+                say what happened.
+              </p>
+            </div>
+            <div className="nv-stack">
+              <EditorialImage
+                alt="A quiet desk with a stack of printed records, a lamp and a plant."
+                name="about-record"
+              />
+              <div className="nv-card nv-stack">
+                <p className="nv-eyebrow">What we are not</p>
+                <ul className="nv-list">
+                  <li className="nv-row">
+                    <Check aria-hidden="true" size={16} />
+                    <span>Not a certificate mill. Verification is work, not a checkout.</span>
+                  </li>
+                  <li className="nv-row">
+                    <Check aria-hidden="true" size={16} />
+                    <span>Not a job board with no quality gate.</span>
+                  </li>
+                  <li className="nv-row">
+                    <Check aria-hidden="true" size={16} />
+                    <span>Not a social feed. The record is the point.</span>
+                  </li>
+                  <li className="nv-row">
+                    <Check aria-hidden="true" size={16} />
+                    <span>Not a promise of employment. A clearer path to the work you can do.</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
           </div>
-          <div className="nv-card nv-stack">
-            <p className="nv-eyebrow">What we are not</p>
-            <ul className="nv-list">
-              <li className="nv-row">
-                <Check aria-hidden="true" size={16} />
-                <span>Not a certificate mill. Verification is work, not a checkout.</span>
-              </li>
-              <li className="nv-row">
-                <Check aria-hidden="true" size={16} />
-                <span>Not a job board with no quality gate.</span>
-              </li>
-              <li className="nv-row">
-                <Check aria-hidden="true" size={16} />
-                <span>Not a social feed. The record is the point.</span>
-              </li>
-              <li className="nv-row">
-                <Check aria-hidden="true" size={16} />
-                <span>Not a promise of employment. A clearer path to the work you can do.</span>
-              </li>
-            </ul>
-          </div>
-        </div>
+        </Reveal>
       </section>
 
       <section className="nv-container nv-section nv-section--tight">
-        <div className="nv-section-head">
-          <div>
-            <p className="nv-eyebrow">Principles</p>
-            <h2>What the product refuses to fake.</h2>
+        <Reveal>
+          <div className="nv-section-head">
+            <div>
+              <p className="nv-eyebrow">Principles</p>
+              <h2>What the product refuses to fake.</h2>
+            </div>
+            <p>
+              These are product rules, not marketing lines. If a screen cannot show the evidence, it should
+              not show the badge.
+            </p>
           </div>
-          <p>
-            These are product rules, not marketing lines. If a screen cannot show the evidence, it should not
-            show the badge.
-          </p>
-        </div>
-        <div className="nv-feature-grid" style={{ gridTemplateColumns: 'repeat(3, minmax(0, 1fr))' }}>
-          {PRINCIPLES.map((principle) => {
-            const Icon = principle.icon;
-            return (
-              <article className="nv-feature" key={principle.title}>
-                <Icon aria-hidden="true" size={20} strokeWidth={1.6} />
-                <h3>{principle.title}</h3>
-                <p>{principle.body}</p>
-              </article>
-            );
-          })}
-        </div>
+        </Reveal>
+        <Reveal delay={0.06}>
+          <div className="nv-feature-grid" style={{ gridTemplateColumns: 'repeat(3, minmax(0, 1fr))' }}>
+            {PRINCIPLES.map((principle) => {
+              const Icon = principle.icon;
+              return (
+                <article className="nv-feature" key={principle.title}>
+                  <Icon aria-hidden="true" size={20} strokeWidth={1.6} />
+                  <h3>{principle.title}</h3>
+                  <p>{principle.body}</p>
+                </article>
+              );
+            })}
+          </div>
+        </Reveal>
       </section>
 
       <section className="nv-container nv-section">
-        <div className="nv-cta-band">
-          <h2>Bring the work. Leave with a record.</h2>
-          <div className="nv-row">
-            <Link className="nv-button" to="/signup">
-              Create your account
-            </Link>
-            <Link className="nv-button nv-button--secondary" to="/contact">
-              Contact us
-            </Link>
+        <Reveal>
+          <div className="nv-cta-band">
+            <h2>Bring the work. Leave with a record.</h2>
+            <div className="nv-row">
+              <Link className="nv-button" to="/signup">
+                Create your account
+              </Link>
+              <Link className="nv-button nv-button--secondary" to="/contact">
+                Contact us
+              </Link>
+            </div>
           </div>
-        </div>
+        </Reveal>
       </section>
     </>
   );

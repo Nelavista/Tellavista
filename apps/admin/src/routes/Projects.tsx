@@ -264,7 +264,7 @@ export function Projects(): JSX.Element {
                     <td>
                       <Badge tone={row.status === 'active' ? 'success' : 'neutral'}>{row.status}</Badge>
                     </td>
-                    <td>{row.starts_on ?? '—'}</td>
+                    <td>{row.starts_on ?? 'Not set'}</td>
                     <td>
                       <button
                         className="nv-button nv-button--ghost"
@@ -542,7 +542,7 @@ export function Projects(): JSX.Element {
                           <div className="nv-muted">{row.email ?? ''}</div>
                         </td>
                         <td>{row.score}</td>
-                        <td>{row.qualifies_because.join(' · ') || '—'}</td>
+                        <td>{row.qualifies_because.join(' · ') || 'Not set'}</td>
                       </tr>
                     ))}
                   </tbody>

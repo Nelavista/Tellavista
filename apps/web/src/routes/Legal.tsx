@@ -12,9 +12,9 @@ const NAV: Array<{ kind: LegalKind; to: string; label: string }> = [
 function DraftNotice(): JSX.Element {
   return (
     <div className="nv-legal__note" role="note">
-      <strong>Draft for legal review.</strong> This route exists so the consent link in sign-up has a
-      destination. It is not the final agreement and it is not legal advice. Replace this page with
-      counsel-reviewed copy before public launch.
+      <strong>Draft for legal review.</strong> This page records the product facts so qualified counsel can
+      review them. It is not the final agreement and it is not legal advice. Replace it with signed-off copy
+      before public launch.
     </div>
   );
 }

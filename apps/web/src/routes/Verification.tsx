@@ -4,7 +4,7 @@
  * Two things live here and they answer different questions:
  *
  * * the badge list says what is proved *now* for each skill, in the student's
- *   words — a finished lesson never appears as proof;
+ *   words - a finished lesson never appears as proof;
  * * the assessment list is the only route to a badge, so every unproved skill
  *   points at a real sitting rather than at more reading.
  *
@@ -27,7 +27,7 @@ const STATUS_COPY: Record<string, { label: string; note: string }> = {
   },
   in_progress: {
     label: 'In progress',
-    note: 'A sitting is open. Finish it to be graded — an unfinished attempt is not proof.',
+    note: 'A sitting is open. Finish it to be graded. An unfinished attempt is not proof.',
   },
   at_risk: {
     label: 'At risk',
@@ -159,7 +159,7 @@ export function Verification(): JSX.Element {
           </h2>
           <p>
             Recent work quality lowered {lowered.length === 1 ? 'one badge' : `${lowered.length} badges`}.
-            Your courses, learning and earnings are unaffected — passing the assessment again restores the
+            Your courses, learning and earnings are unaffected. Passing the assessment again restores the
             badge.
           </p>
           <ul className="nv-list">
@@ -167,7 +167,7 @@ export function Verification(): JSX.Element {
               const link = reverifyLink(skill.skill_id);
               return (
                 <li key={skill.skill_id}>
-                  <strong>{skill.skill}</strong> — {statusCopy(skill.status).label}
+                  <strong>{skill.skill}</strong>: {statusCopy(skill.status).label}
                   {skill.status_reason ? <span className="nv-muted"> · {skill.status_reason}</span> : null}
                   {skill.status_changed_at ? (
                     <span className="nv-muted"> · {formatDateTime(skill.status_changed_at)}</span>
@@ -193,7 +193,7 @@ export function Verification(): JSX.Element {
       <Panel title="Your badges" actions={<Badge tone="info">{skills.length}</Badge>}>
         {skills.length === 0 ? (
           <EmptyState
-            body="Start an assessment below — the first sitting also opens the badge."
+            body="Start an assessment below. The first sitting also opens the badge."
             icon={BadgeCheck}
             title="No skill has a badge yet"
             action={
@@ -253,7 +253,7 @@ export function Verification(): JSX.Element {
       <Panel title="Assessments you can sit" actions={<Badge tone="neutral">{assessments.length}</Badge>}>
         {assessments.length === 0 ? (
           <EmptyState
-            body="This is content, not an app update — it appears here as soon as one is published."
+            body="This is content, not an app update. It appears here as soon as one is published."
             icon={ClipboardCheck}
             title="No assessment is published yet"
           />

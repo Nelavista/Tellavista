@@ -62,7 +62,8 @@ exceptions are explicit dependency states, not fake screens:
 | `/` | Home | Explain the promise and start signup | **Create your account** | Hero, proof chain, four-step journey, three capability rows, proof/verification section, FAQ preview, final CTA | Static; optional public platform config | Static; no API blocking | Public |
 | `/features` | Features | Show what the product actually does | **Create your account** | Academia, Skills, Verification, Opportunities, Work, Earnings, Talent — as rows with real product artifacts | Static | Static | Public |
 | `/how-it-works` | How it works | Explain Learn → Prove → Work → Earn | **Create your account** | Four-step chain, eligibility/verification explanation, payout explanation, what Nelavista does not claim | Static | Static | Public |
-| `/about` | About | Explain why Nelavista exists | **Create your account** | Mission, founder note, operating principles, real team/campus imagery or none | Static | Static | Public |
+| `/pricing` | Pricing | Explain the commercial model without inventing amounts | **Create your account / Talk to us** | Student launch position, employer scoped quote, university pilot agreement, what a quote covers, what is not charged | Static | Static | Public |
+| `/about` | About | Explain why Nelavista exists | **Create your account** | Mission, operating principles, editorial working-record illustration, what the product refuses to fake | Static | Static | Public |
 | `/contact` | Contact | Give a real support path | **Email support** | Support email, response expectation, topics (account, verification, payouts, employers), FAQ link | Static | Static | Public |
 | `/faq` | FAQ | Answer the obvious objections | **Create your account** | Is it free? How verification works, how payouts work, data/privacy, eligibility, what happens if a university is missing | Static | Static | Public |
 | `/legal/privacy` | Privacy | Explain data collection and rights | **Contact support** | Plain-language privacy policy, effective date, data list, retention, deletion, third parties, contact | Static | Static | Public |
@@ -368,7 +369,7 @@ and deferred items in §1.1.
 
 | Surface | Routes in this map | Build order |
 |---|---|---|
-| Public | 14 | After tokens/primitives |
+| Public | 15 | After tokens/primitives |
 | Auth/account | 5 | After public shell |
 | Student app | 28 | After auth |
 | Admin | 14 | After student app or in parallel once primitives exist |
@@ -381,7 +382,7 @@ Build order after Gate 2 approval:
 
 1. Tokens, theme bridge, primitives.
 2. Public shell, header/footer, Home.
-3. Features, How it works, About, Contact, FAQ, Legal.
+3. Features, How it works, Pricing, About, Contact, FAQ, Legal.
 4. Auth and onboarding.
 5. Student shell, Home, Notifications.
 6. Academia and Skills.
@@ -396,8 +397,9 @@ Build order after Gate 2 approval:
 
 Approved 2026-10-27:
 
-1. **Public route set:** Home, Features, How it works, About, Contact, FAQ,
-   Privacy, Terms, Contributor terms. Pricing and For employers deferred.
+1. **Public route set:** Home, Features, How it works, Pricing, About, Contact,
+   FAQ, Privacy, Terms, Contributor terms. Employer pricing is handled by the
+   scoped-quote path on `/pricing` and `/contact`; no separate employer route.
 2. **Auth/account split:** `/settings`, `/settings/security`,
    `/settings/notifications`, `/settings/data`.
 3. **New student routes:** `/notifications`, `/opportunities/applications`,

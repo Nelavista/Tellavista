@@ -5,6 +5,7 @@ import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { AppShell } from './components/AppShell';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { PublicLayout } from './components/PublicLayout';
+import { ScrollToTop } from './components/ScrollToTop';
 import { SessionProvider, useSession } from './lib/session';
 import { ThemeProvider } from './lib/theme-context';
 import { Landing } from './routes/Landing';
@@ -77,6 +78,7 @@ const ResetPassword = React.lazy(() =>
 
 const Features = React.lazy(() => import('./routes/Features').then((m) => ({ default: m.Features })));
 const HowItWorks = React.lazy(() => import('./routes/HowItWorks').then((m) => ({ default: m.HowItWorks })));
+const Pricing = React.lazy(() => import('./routes/Pricing').then((m) => ({ default: m.Pricing })));
 const About = React.lazy(() => import('./routes/About').then((m) => ({ default: m.About })));
 const Contact = React.lazy(() => import('./routes/Contact').then((m) => ({ default: m.Contact })));
 const Faq = React.lazy(() => import('./routes/Faq').then((m) => ({ default: m.Faq })));
@@ -95,7 +97,7 @@ const CbtHistory = React.lazy(() => import('./routes/CbtHistory').then((m) => ({
 const Course = React.lazy(() => import('./routes/Course').then((m) => ({ default: m.Course })));
 
 function Loading(): JSX.Element {
-  return <BrandLoader full label="Opening your workspace" />;
+  return <BrandLoader full label="Loading Nelavista" />;
 }
 
 /** Guards the signed-in area; keeps the attempted URL so login can return to it. */
@@ -169,6 +171,14 @@ function RouteTable(): JSX.Element {
           element={
             <Public>
               <HowItWorks />
+            </Public>
+          }
+        />
+        <Route
+          path="/pricing"
+          element={
+            <Public>
+              <Pricing />
             </Public>
           }
         />
@@ -527,6 +537,7 @@ export function App(): JSX.Element {
     <ErrorBoundary>
       <ThemeProvider>
         <SessionProvider>
+          <ScrollToTop />
           <RouteTable />
         </SessionProvider>
       </ThemeProvider>

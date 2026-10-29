@@ -13,6 +13,7 @@ import { ArrowRight, BookOpen, Sparkles } from 'lucide-react';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 
+import { EMPTY_IMAGES } from '../lib/empty-images';
 import { useApiResource } from '../lib/resource';
 
 export function Skills(): JSX.Element {
@@ -67,7 +68,7 @@ export function Skills(): JSX.Element {
       <PageHeader
         eyebrow="Prove"
         title="Skills"
-        description="Learn it, practise it, then prove it. A finished lesson is progress — never proof."
+        description="Learn it, practise it, then prove it. A finished lesson is progress, never proof."
         actions={
           <Link className="nv-button nv-button--secondary nv-button--sm" to="/skills/my-learning">
             <BookOpen aria-hidden="true" size={15} />
@@ -81,6 +82,7 @@ export function Skills(): JSX.Element {
           <EmptyState
             body="No skills are published yet. This is content, not an app update, so it appears here as soon as it is published."
             icon={Sparkles}
+            image={EMPTY_IMAGES.skills}
             title="No skills yet"
             action={
               <Link className="nv-button nv-button--secondary nv-button--sm" to="/home">

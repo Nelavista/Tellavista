@@ -324,7 +324,7 @@ export function Practice(): JSX.Element {
           </div>
           {draft.savedAt ? (
             <p className="nv-muted" aria-live="polite">
-              Answer saved on this device — it is still here if the connection drops.
+              Answer saved on this device. It is still here if the connection drops.
             </p>
           ) : null}
         </Panel>

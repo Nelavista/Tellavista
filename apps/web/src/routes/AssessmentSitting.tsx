@@ -4,7 +4,7 @@
  * The rules the API enforces are visible on the screen instead of being hidden:
  *
  * * starting is a POST, and the API resumes an open sitting rather than drawing a
- *   new (easier) set — so a lost connection is not a lost attempt;
+ *   new (easier) set - so a lost connection is not a lost attempt;
  * * the expected answer is never sent while the attempt is open, so this screen
  *   cannot grade locally even if it wanted to;
  * * the form is generated from the template's own schemas, exactly like practice.
@@ -467,7 +467,7 @@ export function AssessmentSitting(): JSX.Element {
           <Panel title="Submit">
             <div className="nv-row nv-row--between">
               <span className="nv-muted">
-                {answers.length} of {attempt.tasks.length} answered — unanswered tasks score zero.
+                {answers.length} of {attempt.tasks.length} answered. Unanswered tasks score zero.
               </span>
               <Button disabled={busy || answers.length === 0} type="button" onClick={() => void submit()}>
                 {busy ? 'Submitting…' : 'Submit this sitting'}
@@ -475,7 +475,7 @@ export function AssessmentSitting(): JSX.Element {
             </div>
             {draft.savedAt ? (
               <p className="nv-muted" aria-live="polite">
-                Answers saved on this device — reloading or losing the connection does not lose them.
+                Answers saved on this device. Reloading or losing the connection does not lose them.
               </p>
             ) : null}
           </Panel>

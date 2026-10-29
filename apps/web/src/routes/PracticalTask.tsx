@@ -3,8 +3,8 @@
  *
  * Unlike an assessment, there is no hidden answer: the brief and the rubric are
  * public, because the standard should be known before the work starts. The form
- * asks for what a reviewer can actually judge — a written account and a link to
- * the deliverable — and the client key makes a retry safe.
+ * asks for what a reviewer can actually judge - a written account and a link to
+ * the deliverable - and the client key makes a retry safe.
  */
 import type { PracticalSubmissionOut, PracticalTaskListOut, PracticalTaskOut } from '@nelavista/api-client';
 import {

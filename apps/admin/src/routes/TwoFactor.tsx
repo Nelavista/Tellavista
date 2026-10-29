@@ -13,7 +13,7 @@ import { ApiError, http } from '../lib/http';
 import { useSession } from '../lib/session';
 
 export function TwoFactor(): JSX.Element {
-  const { reload, logout } = useSession();
+  const { logout } = useSession();
   const [setup, setSetup] = React.useState<MfaSetupOut | null>(null);
   const [code, setCode] = React.useState('');
   const [codes, setCodes] = React.useState<string[] | null>(null);
@@ -37,8 +37,9 @@ export function TwoFactor(): JSX.Element {
     setError(null);
     try {
       const result = await http.post<MfaEnableOut>('/auth/2fa/enable', { code: code.trim() });
+      // Keep this screen mounted until the operator has seen the one-time
+      // recovery codes. Reloading the session here would unmount it first.
       setCodes(result.recovery_codes);
-      await reload();
     } catch (err) {
       setError(err instanceof ApiError ? err.message : 'That code did not work.');
     } finally {

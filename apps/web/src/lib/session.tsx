@@ -2,7 +2,7 @@
  * Session state for the whole app. One provider, one bootstrap.
  *
  * On load we try a single refresh (the httpOnly cookie may still be valid) and
- * then fetch /me. Anything else stays anonymous — no flash of a signed-in shell,
+ * then fetch /me. Anything else stays anonymous - no flash of a signed-in shell,
  * and a dead cookie cannot wedge the UI in a retry loop.
  */
 import type { MeOut, TokenOut } from '@nelavista/api-client';

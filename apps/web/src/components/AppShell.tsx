@@ -21,6 +21,7 @@ import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 
 import { useSession } from '../lib/session';
 import { useTheme } from '../lib/theme-context';
+import { ConsentGate } from './ConsentGate';
 
 interface NavItem {
   to: string;
@@ -146,6 +147,7 @@ export function AppShell({ children }: { children: React.ReactNode }): JSX.Eleme
 
   React.useEffect(() => {
     document.title = `${titleFor(location.pathname)} · Nelavista`;
+    window.scrollTo(0, 0);
     if (firstRoute.current) {
       firstRoute.current = false;
       return;
@@ -267,6 +269,7 @@ export function AppShell({ children }: { children: React.ReactNode }): JSX.Eleme
 
         <main className="nv-content" id="main" ref={mainRef} tabIndex={-1}>
           <div className="nv-content__inner">
+            <ConsentGate />
             <PageTransition>{children}</PageTransition>
           </div>
         </main>

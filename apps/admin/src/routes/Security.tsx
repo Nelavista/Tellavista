@@ -2,7 +2,7 @@
  * Staff security (C8).
  *
  * 2FA is enrolled before the shell loads. This screen is where it is turned off
- * deliberately — with a current code — and where the remaining recovery codes are
+ * deliberately  -  with a current code  -  and where the remaining recovery codes are
  * counted. Turning it off is audited like any other security change.
  */
 import { Badge, Banner, Button, Field, PageHeader, Panel } from '@nelavista/ui';

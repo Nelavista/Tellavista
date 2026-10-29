@@ -5,8 +5,8 @@
  * practice and assessments. Submitting carries a client key, so pressing the
  * button twice after a dropped connection stores one submission, not two.
  *
- * Gold work is not disclosed while it is in flight — the API does not send the
- * marker — and reviewer messages are shown in place, because a rework request
+ * Gold work is not disclosed while it is in flight - the API does not send the
+ * marker - and reviewer messages are shown in place, because a rework request
  * without the reason is just a closed door.
  */
 import type {
@@ -241,7 +241,7 @@ export function AssignmentDetail(): JSX.Element {
 
       {draft.savedAt ? (
         <p className="nv-muted" aria-live="polite">
-          Your answer is saved on this device — it is still here if the connection drops.
+          Your answer is saved on this device. It is still here if the connection drops.
         </p>
       ) : null}
 

@@ -3,7 +3,7 @@
  *
  * Two honesty rules are enforced by the API and shown by this page, not softened:
  * a lesson can only be completed when the step before it is done, and completing
- * it is progress — the completion response says `verified: false`, and the page
+ * it is progress - the completion response says `verified: false`, and the page
  * repeats that in the student's own words. Reading is never blocked; only the
  * completion button is.
  */
@@ -236,7 +236,7 @@ export function LessonReader(): JSX.Element {
             <span className="nv-muted">
               {currentStatus === 'in_progress' && !completion ? (
                 <>
-                  <Clock aria-hidden="true" size={13} /> Finish it when you are ready — finishing is progress,
+                  <Clock aria-hidden="true" size={13} /> Finish it when you are ready. Finishing is progress,
                   not proof.
                 </>
               ) : (

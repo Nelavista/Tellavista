@@ -2,7 +2,7 @@
  * Quality review (C5).
  *
  * A reviewer sees the submission exactly as the student sent it, records a
- * verdict, and — when overriding the automatic result — must give a reason. The
+ * verdict, and  -  when overriding the automatic result  -  must give a reason. The
  * same page holds the verification override, which is always logged.
  */
 import type {
@@ -285,7 +285,7 @@ export function Review(): JSX.Element {
       {reviewed ? (
         <Banner tone="info">
           Last review: submission {reviewed.submission_id} · {reviewed.verdict} · score{' '}
-          {reviewed.score ?? '—'}
+          {reviewed.score ?? 'Not set'}
           {reviewed.gold_correct === null ? '' : ` · gold ${reviewed.gold_correct ? 'correct' : 'incorrect'}`}
         </Banner>
       ) : null}

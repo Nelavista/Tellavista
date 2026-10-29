@@ -105,16 +105,16 @@ export function Audit(): JSX.Element {
                       </td>
                       <td>{row.action}</td>
                       <td>
-                        {row.target_type ?? '—'}
+                        {row.target_type ?? 'Not set'}
                         <div className="nv-muted">{row.target_id ?? ''}</div>
                       </td>
                       <td>
-                        {row.reason ?? '—'}
+                        {row.reason ?? 'Not set'}
                         {row.context ? (
                           <pre className="nv-pre nv-muted">{JSON.stringify(row.context)}</pre>
                         ) : null}
                       </td>
-                      <td className="nv-muted">{row.request_id ?? '—'}</td>
+                      <td className="nv-muted">{row.request_id ?? 'Not set'}</td>
                     </tr>
                   ))}
                 </tbody>

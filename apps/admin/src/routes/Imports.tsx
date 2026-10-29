@@ -174,7 +174,7 @@ export function Imports(): JSX.Element {
                 {Object.entries(report.sections).map(([section, row]) => (
                   <tr key={section}>
                     <td>{section}</td>
-                    <td>{row.expected ?? '—'}</td>
+                    <td>{row.expected ?? 'Not set'}</td>
                     <td>{row.actual}</td>
                     <td>{row.skipped}</td>
                     <td>{row.errors}</td>

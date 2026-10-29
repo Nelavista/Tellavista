@@ -100,6 +100,7 @@ export function Shell({
 
   React.useEffect(() => {
     document.title = `${titleFor(route)} · Nelavista ops`;
+    window.scrollTo(0, 0);
     if (firstRoute.current) {
       firstRoute.current = false;
       return;

@@ -1,6 +1,7 @@
 import type { NotificationListOut } from '@nelavista/api-client';
 import * as React from 'react';
 
+import { EMPTY_IMAGES } from '../lib/empty-images';
 import { formatDateTime } from '../lib/format';
 import { ApiError, http } from '../lib/http';
 import { useApiResource } from '../lib/resource';
@@ -76,6 +77,7 @@ export function Notifications(): JSX.Element {
         <EmptyState
           title="No notifications yet"
           body="When a review, deadline or payout changes, it will appear here. There is nothing to clear."
+          image={EMPTY_IMAGES.notifications}
         />
       ) : (
         <div className="nv-panel">

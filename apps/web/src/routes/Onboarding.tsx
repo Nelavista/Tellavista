@@ -23,9 +23,9 @@ import { useSession } from '../lib/session';
 type Step = 'profile' | 'academic';
 
 const PATHS: Array<{ value: string; label: string }> = [
-  { value: 'academia', label: 'Academia — my courses and academic work' },
-  { value: 'skills', label: 'Skills — short lessons and paid tasks' },
-  { value: 'both', label: 'Both — show me everything' },
+  { value: 'academia', label: 'Academia: my courses and academic work' },
+  { value: 'skills', label: 'Skills: short lessons and paid tasks' },
+  { value: 'both', label: 'Both: show me everything' },
 ];
 
 const LEVELS: Array<{ value: string; label: string }> = [
@@ -300,7 +300,7 @@ export function Onboarding(): JSX.Element {
                     <li key={course.id}>
                       <Checkbox
                         checked={pickedCourses.includes(course.id)}
-                        label={`${course.code} — ${course.title} (${course.level})`}
+                        label={`${course.code}: ${course.title} (${course.level})`}
                         onChange={() => toggleCourse(course.id)}
                       />
                     </li>

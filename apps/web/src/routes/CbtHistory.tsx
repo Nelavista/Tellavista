@@ -2,6 +2,7 @@ import { ClipboardCheck, History } from 'lucide-react';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 
+import { EMPTY_IMAGES } from '../lib/empty-images';
 import { Banner, EmptyState, PageHeader } from '../ui';
 
 export function CbtHistory(): JSX.Element {
@@ -69,6 +70,7 @@ export function CbtHistory(): JSX.Element {
       <EmptyState
         title="No attempt history is available"
         body="This is a dependency state, not an empty student record. The API change is listed in the V2 UI parity map."
+        image={EMPTY_IMAGES.cbt}
         action={
           <Link className="nv-button nv-button--secondary" to="/academia">
             Back to Academia

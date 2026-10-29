@@ -116,7 +116,7 @@ export function Users(): JSX.Element {
                         </div>
                       </td>
                       <td>{row.email}</td>
-                      <td>{row.role ?? '—'}</td>
+                      <td>{row.role ?? 'Not set'}</td>
                       <td>{row.email_verified ? 'yes' : 'no'}</td>
                       <td>{when(row.created_at)}</td>
                       <td>
@@ -172,7 +172,7 @@ export function Users(): JSX.Element {
             </div>
             <div>
               <dt>Display name</dt>
-              <dd>{detail.profile.display_name ?? '—'}</dd>
+              <dd>{detail.profile.display_name ?? 'Not set'}</dd>
             </div>
             <div>
               <dt>Preferred path</dt>

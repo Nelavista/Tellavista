@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/x-icon" href="/static/icons/favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="/static/icons/nelavista-180x180.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
+  <title>Nelavista Impact | Students, AI Training &amp; University Community</title>
+  <meta name="description" content="Nelavista has reached 2,500+ African university students and trained 500+ in AI. See our track record across learning programs, technology events, and the Nelavista student platform.">
+  <link rel="canonical" href="{{ url_for('pages.impact', _external=True) }}">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Nelavista">
+  <meta property="og:title" content="Nelavista Impact | Students, AI Training &amp; University Community">
+  <meta property="og:description" content="2,500+ African university students reached and 500+ trained in AI. Nelavista's track record.">
+  <meta property="og:url" content="{{ url_for('pages.impact', _external=True) }}">
+  <meta property="og:image" content="{{ url_for('static', filename='icons/nelavista-512x512.png', _external=True) }}">
+  <meta name="twitter:card" content="summary">
+  <meta name="theme-color" content="#050810">
+  <link rel="manifest" href="/manifest.json">
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/impact.css') }}">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
+</head>
+<body>
+  {% include 'components/navbar.html' %}
+
+
+  <main>
+    <!-- ═══ HERO ═══ -->
+    <section class="impact-hero" aria-labelledby="impact-title">
+      <div class="container">
+        <span class="section-label reveal">Impact</span>
+        <h1 class="impact-title bg reveal" id="impact-title">We've been building with African university students from the beginning.</h1>
+        <p class="impact-lede reveal">Nelavista was built from direct experience with African university students. We've trained students, hosted technology and AI leaders, built university communities, and developed a platform around what students actually need.</p>
+      </div>
+    </section>
+
+    <!-- ═══ OUR REACH ═══ -->
+    <section class="impact-reach" aria-labelledby="impact-reach-title">
+      <div class="container">
+        <h2 class="impact-kicker mono" id="impact-reach-title">Our reach</h2>
+        <div class="impact-metrics reveal">
+          <div class="impact-metric">
+            <strong class="bg">2,500+</strong>
+            <span>Students reached</span>
+            <p>African university students reached through the Nelavista platform and our activities.</p>
+          </div>
+          <div class="impact-metric">
+            <strong class="bg">500+</strong>
+            <span>Students trained in AI</span>
+            <p>Students who have gone through Nelavista's AI training.</p>
+          </div>
+          {% if stats and stats.university_count %}
+          <div class="impact-metric">
+            <strong class="bg">{{ stats.university_count }}</strong>
+            <span>{{ 'University' if stats.university_count == 1 else 'Universities' }} on the platform</span>
+            <p>Nigerian universities live on Nelavista today, with more being added.</p>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ WHAT WE'VE BUILT ═══ -->
+    <section class="impact-built" aria-labelledby="impact-built-title">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="section-label">What we've built</span>
+          <h2 class="section-title bg" id="impact-built-title">A platform shaped by what students actually need.</h2>
+          <p class="section-desc">Nelavista is live and in use. These are the parts of it students rely on today.</p>
+        </div>
+        <ol class="impact-built-list">
+          <li class="impact-built-item reveal">
+            <span class="impact-built-num mono">01</span>
+            <h3>Academics</h3>
+            <p>Ask Nelavista, our academic assistant, alongside CBT practice with exam-style questions, organised study materials, and tools that make notes and PDFs easier to understand.</p>
+          </li>
+          <li class="impact-built-item reveal">
+            <span class="impact-built-num mono">02</span>
+            <h3>Skills</h3>
+            <p>{% if stats and stats.skill_count %}{{ stats.skill_count }} structured{% else %}Structured{% endif %} learning paths, from AI and software development to design, data, and business, each broken into real, sequential lessons.</p>
+          </li>
+          <li class="impact-built-item reveal">
+            <span class="impact-built-num mono">03</span>
+            <h3>Opportunities</h3>
+            <p>Internships, freelance work, competitions, scholarships, events, fellowships, and entrepreneurship, in the same place students learn.</p>
+          </li>
+          <li class="impact-built-item reveal">
+            <span class="impact-built-num mono">04</span>
+            <h3>Campus</h3>
+            <p>Campus maps and university-specific information, so lecture locations and facilities sit next to everything else a student uses.</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="cta-section" id="cta">
+      <div class="container">
+        <div class="cta-card reveal">
+          <img class="cta-background" src="{{ url_for('static', filename='images/landing/hero-student.webp') }}" alt="" loading="lazy" decoding="async">
+          <div class="cta-glow"></div>
+          <h2 class="cta-title bg">We're still building. But we're not starting from zero.</h2>
+          <p class="cta-desc">Join us as we build the infrastructure for African university students to learn, develop practical skills, and discover opportunities.</p>
+          <a href="/" class="cta-btn">Explore Nelavista <i class="ri-arrow-right-line"></i></a>
+          <p class="cta-login">New here? <a href="/signup">Create a free account</a></p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  {% include 'components/footer.html' %}
+
+
+  <script src="{{ url_for('static', filename='js/nav.js') }}"></script>
+</body>
+</html>

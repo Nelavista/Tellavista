@@ -1,0 +1,38 @@
+/* /impact: the track-record page. Builds on main.css tokens and landing.css section
+   patterns (.section-head, .section-label, .cta-card); only page-specific layout lives here. */
+
+/* Hero: text-led on purpose. Photos belong to the evidence sections, not to decoration. */
+.impact-hero { padding: clamp(148px, 20vh, 196px) 0 56px; background: var(--bg-deep); }
+.impact-title { max-width: 900px; margin: 0 0 24px; color: var(--text-primary); font-size: clamp(2.4rem, 6vw, 4.6rem); font-weight: 800; line-height: 1.04; text-wrap: balance; }
+.impact-lede { max-width: 640px; margin: 0; color: var(--text-secondary); font-size: clamp(1.02rem, 1.6vw, 1.15rem); line-height: 1.75; }
+
+/* Our reach: a plain ledger of figures, ruled rather than carded. */
+.impact-reach { padding: 32px 0 104px; background: var(--bg-deep); }
+.impact-kicker { margin: 0 0 18px; color: var(--text-muted); font-size: .72rem; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; }
+.impact-metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); border-top: 1px solid var(--border-hard); }
+.impact-metric { display: flex; flex-direction: column; gap: 8px; padding: 28px 28px 8px 0; }
+.impact-metric + .impact-metric { padding-left: 28px; border-left: 1px solid var(--border-hard); }
+.impact-metric strong { color: var(--brand-logo-color); font-size: clamp(2.6rem, 5vw, 3.8rem); font-weight: 800; line-height: 1; }
+.impact-metric span { color: var(--text-primary); font-size: .98rem; font-weight: 600; }
+.impact-metric p { max-width: 300px; margin: 0; color: var(--text-secondary); font-size: .88rem; line-height: 1.6; }
+
+/* What we've built */
+.impact-built { padding: 104px 0; background: var(--bg-surface); border-top: 1px solid var(--border-subtle); border-bottom: 1px solid var(--border-subtle); }
+.impact-built-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 clamp(32px, 5vw, 72px); margin: 0; padding: 0; list-style: none; }
+.impact-built-item { padding: 26px 0 30px; border-top: 1px solid var(--border-hard); }
+.impact-built-num { display: block; margin-bottom: 12px; color: var(--accent); font-size: .72rem; font-weight: 500; letter-spacing: .1em; }
+body:not(.light-theme) .impact-built-num { color: #5578e8; }
+.impact-built-item h3 { margin: 0 0 10px; font-family: 'Bricolage Grotesque', sans-serif; font-size: 1.25rem; font-weight: 700; letter-spacing: -.01em; }
+.impact-built-item p { max-width: 520px; margin: 0; color: var(--text-secondary); font-size: .93rem; line-height: 1.7; }
+
+.impact-built + .cta-section { padding-top: 104px; }
+
+@media (max-width: 760px) {
+  .impact-reach { padding-bottom: 80px; }
+  .impact-metrics { grid-template-columns: minmax(0, 1fr); }
+  .impact-metric { padding: 24px 0; }
+  .impact-metric + .impact-metric { padding-left: 0; border-left: 0; border-top: 1px solid var(--border-hard); }
+  .impact-built { padding: 80px 0; }
+  .impact-built-list { grid-template-columns: minmax(0, 1fr); }
+  .impact-built + .cta-section { padding-top: 80px; }
+}

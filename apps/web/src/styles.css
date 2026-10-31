@@ -307,7 +307,7 @@ body {
 }
 
 .nv-legal__note {
-  border-left: 2px solid var(--nv-warning);
+  border-top: 2px solid var(--nv-warning);
   background: var(--nv-surface);
   margin: var(--nv-space-xl) 0;
   padding: var(--nv-space-lg);
@@ -524,6 +524,7 @@ body {
 
 .nv-social-links {
   display: flex;
+  align-items: center;
   gap: var(--nv-space-sm);
   margin-top: var(--nv-space-lg);
 }
@@ -538,11 +539,27 @@ body {
   border-radius: var(--nv-radius-pill);
   color: var(--nv-text-muted);
   text-decoration: none;
+  transform: translateY(var(--nv-social-wave, 0));
+  transition:
+    transform var(--nv-duration-fast) var(--nv-ease-out),
+    border-color var(--nv-duration-fast) var(--nv-ease-out),
+    color var(--nv-duration-fast) var(--nv-ease-out);
 }
 
-.nv-social-link:hover {
+.nv-social-link[data-network='facebook'],
+.nv-social-link[data-network='telegram'] {
+  --nv-social-wave: -0.4rem;
+}
+
+.nv-social-link[data-network='whatsapp'] {
+  --nv-social-wave: 0.4rem;
+}
+
+.nv-social-link:hover,
+.nv-social-link:focus-visible {
   border-color: var(--nv-accent);
   color: var(--nv-text);
+  transform: translateY(calc(var(--nv-social-wave, 0rem) - 0.2rem));
 }
 
 .nv-price-card {

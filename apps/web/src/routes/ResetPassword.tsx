@@ -13,7 +13,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 
 import { AuthLayout } from '../components/AuthLayout';
 import { ApiError, http } from '../lib/http';
-import { Banner, Button, ErrorNote, Field } from '../ui';
+import { Banner, Button, ErrorNote, Field, PasswordField } from '../ui';
 
 export function ResetPassword(): JSX.Element {
   const [params] = useSearchParams();
@@ -82,19 +82,17 @@ export function ResetPassword(): JSX.Element {
         </>
       ) : token ? (
         <>
-          <Field
+          <PasswordField
             autoComplete="new-password"
             label="New password"
             minLength={10}
-            type="password"
             value={password}
             onChange={(event) => setPassword(event.target.value)}
           />
-          <Field
+          <PasswordField
             autoComplete="new-password"
             label="Type it again"
             minLength={10}
-            type="password"
             value={confirm}
             onChange={(event) => setConfirm(event.target.value)}
           />

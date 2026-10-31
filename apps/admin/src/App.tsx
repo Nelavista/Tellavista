@@ -1,4 +1,4 @@
-import { BrandLoader } from '@nelavista/ui';
+import { BrandLoader, ConfirmDialog } from '@nelavista/ui';
 import * as React from 'react';
 
 import { Shell } from './components/Shell';
@@ -79,10 +79,35 @@ function Body(): JSX.Element {
 
 function SignOut(): JSX.Element {
   const { logout } = useSession();
+  const [confirmOpen, setConfirmOpen] = React.useState(false);
+  const [busy, setBusy] = React.useState(false);
+
+  async function signOut(): Promise<void> {
+    setBusy(true);
+    try {
+      await logout();
+      setConfirmOpen(false);
+    } finally {
+      setBusy(false);
+    }
+  }
+
   return (
-    <button className="nv-button nv-button--ghost" type="button" onClick={() => void logout()}>
-      Sign out
-    </button>
+    <>
+      <button className="nv-button nv-button--ghost" type="button" onClick={() => setConfirmOpen(true)}>
+        Sign out
+      </button>
+      <ConfirmDialog
+        body={<p>This staff-only screen will close. You will need your password to sign in again.</p>}
+        busy={busy}
+        busyLabel="Signing out"
+        confirmLabel="Sign out"
+        onCancel={() => setConfirmOpen(false)}
+        onConfirm={() => void signOut()}
+        open={confirmOpen}
+        title="Are you sure you want to sign out?"
+      />
+    </>
   );
 }
 

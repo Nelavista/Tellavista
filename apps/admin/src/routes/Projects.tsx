@@ -13,7 +13,17 @@ import type {
   ProjectOut,
   ReplacementListOut,
 } from '@nelavista/api-client';
-import { Badge, Banner, EmptyState, ErrorNote, ErrorState, PageHeader, Panel, Skeleton } from '@nelavista/ui';
+import {
+  Badge,
+  Banner,
+  ConfirmDialog,
+  EmptyState,
+  ErrorNote,
+  ErrorState,
+  PageHeader,
+  Panel,
+  Skeleton,
+} from '@nelavista/ui';
 import * as React from 'react';
 
 import { ApiError, http } from '../lib/http';
@@ -36,6 +46,7 @@ export function Projects(): JSX.Element {
   const [inviteIds, setInviteIds] = React.useState('');
   const [removeId, setRemoveId] = React.useState('');
   const [removeReason, setRemoveReason] = React.useState('');
+  const [confirmRemove, setConfirmRemove] = React.useState(false);
   const [assignUser, setAssignUser] = React.useState('');
   const [assignTitle, setAssignTitle] = React.useState('');
   const [assignTemplate, setAssignTemplate] = React.useState('');
@@ -511,7 +522,7 @@ export function Projects(): JSX.Element {
               className="nv-button nv-button--danger"
               disabled={busy || !removeId || removeReason.trim().length < 3}
               type="button"
-              onClick={() => void remove()}
+              onClick={() => setConfirmRemove(true)}
             >
               Remove
             </button>
@@ -554,6 +565,22 @@ export function Projects(): JSX.Element {
           )}
         </Panel>
       ) : null}
+
+      <ConfirmDialog
+        body={
+          <p>
+            Member #{removeId || 'unknown'} leaves the cohort. Completed work and its earnings stay on the
+            record; the reason is written to the audit trail.
+          </p>
+        }
+        busy={busy}
+        confirmLabel="Remove member"
+        onCancel={() => setConfirmRemove(false)}
+        tone="danger"
+        onConfirm={() => void remove().finally(() => setConfirmRemove(false))}
+        open={confirmRemove}
+        title="Remove this cohort member?"
+      />
     </div>
   );
 }

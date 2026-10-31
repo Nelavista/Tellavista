@@ -25,6 +25,7 @@ import {
   Banner,
   Button,
   Checkbox,
+  ConfirmDialog,
   EmptyState,
   ErrorNote,
   ErrorState,
@@ -117,6 +118,8 @@ export function Settings(): JSX.Element {
   const [error, setError] = React.useState<string | null>(null);
   const [saved, setSaved] = React.useState<string | null>(null);
   const [confirmDelete, setConfirmDelete] = React.useState('');
+  const [pendingDeviceId, setPendingDeviceId] = React.useState<number | null>(null);
+  const [pendingLanguage, setPendingLanguage] = React.useState<string | null>(null);
 
   React.useEffect(() => {
     if (languages.resource.status === 'ready') setRows(languages.resource.data.languages);
@@ -319,7 +322,7 @@ export function Settings(): JSX.Element {
           onSave={() => void saveProfile()}
           notifications={notifications.resource}
           devices={pushDevices.resource}
-          onRemoveDevice={(deviceId) => void removePushDevice(deviceId)}
+          onRemoveDevice={(deviceId) => setPendingDeviceId(deviceId)}
           onMarkRead={() => void markNotificationsRead()}
         />
       ) : section === 'data' ? (
@@ -353,9 +356,7 @@ export function Settings(): JSX.Element {
           newLevel={newLevel}
           setNewLevel={setNewLevel}
           onAddLanguage={addLanguage}
-          onRemoveLanguage={(language) =>
-            void saveLanguages(rows.filter((item) => item.language !== language))
-          }
+          onRemoveLanguage={(language) => setPendingLanguage(language)}
           hours={hours}
           setHours={setHours}
           availableFrom={availableFrom}
@@ -365,6 +366,45 @@ export function Settings(): JSX.Element {
           onSaveAvailability={() => void saveAvailability()}
         />
       )}
+
+      <ConfirmDialog
+        body={
+          <p>
+            Push notifications stop for that install. Your email preference and account record are not
+            changed.
+          </p>
+        }
+        busy={busy}
+        confirmLabel="Remove device"
+        onCancel={() => setPendingDeviceId(null)}
+        tone="danger"
+        onConfirm={() => {
+          if (pendingDeviceId !== null) {
+            void removePushDevice(pendingDeviceId).finally(() => setPendingDeviceId(null));
+          }
+        }}
+        open={pendingDeviceId !== null}
+        title="Remove this device?"
+      />
+
+      <ConfirmDialog
+        body={
+          <p>Matching will no longer treat {pendingLanguage ?? 'this language'} as one you can work in.</p>
+        }
+        busy={busy}
+        confirmLabel="Remove language"
+        onCancel={() => setPendingLanguage(null)}
+        tone="danger"
+        onConfirm={() => {
+          if (pendingLanguage) {
+            void saveLanguages(rows.filter((item) => item.language !== pendingLanguage)).finally(() =>
+              setPendingLanguage(null),
+            );
+          }
+        }}
+        open={pendingLanguage !== null}
+        title="Remove this language?"
+      />
     </div>
   );
 }
@@ -603,7 +643,12 @@ function SecuritySection(): JSX.Element {
           are signed out, use <Link to="/auth/reset">the reset flow</Link>.
         </p>
         <div className="nv-row" style={{ marginTop: 'var(--nv-space-md)' }}>
-          <Button disabled={resetBusy || !me?.email} onClick={() => void sendResetLink()} type="button" variant="secondary">
+          <Button
+            disabled={resetBusy || !me?.email}
+            onClick={() => void sendResetLink()}
+            type="button"
+            variant="secondary"
+          >
             {resetBusy ? 'Sending' : 'Send password reset link'}
           </Button>
         </div>

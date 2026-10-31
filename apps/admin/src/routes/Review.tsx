@@ -13,7 +13,17 @@ import type {
   ReviewQueueOut,
   StandardOut,
 } from '@nelavista/api-client';
-import { Badge, Banner, EmptyState, ErrorNote, ErrorState, PageHeader, Panel, Skeleton } from '@nelavista/ui';
+import {
+  Badge,
+  Banner,
+  ConfirmDialog,
+  EmptyState,
+  ErrorNote,
+  ErrorState,
+  PageHeader,
+  Panel,
+  Skeleton,
+} from '@nelavista/ui';
 import * as React from 'react';
 
 import { ApiError, http } from '../lib/http';
@@ -31,6 +41,7 @@ export function Review(): JSX.Element {
   const [isOverride, setIsOverride] = React.useState(false);
   const [reason, setReason] = React.useState('');
   const [busy, setBusy] = React.useState(false);
+  const [pendingFailId, setPendingFailId] = React.useState<number | null>(null);
   const [error, setError] = React.useState<string | null>(null);
   const [note, setNote] = React.useState<string | null>(null);
   const [reviewed, setReviewed] = React.useState<ReviewOut | null>(null);
@@ -336,7 +347,7 @@ export function Review(): JSX.Element {
                           className="nv-button nv-button--danger"
                           type="button"
                           disabled={busy}
-                          onClick={() => void reviewPractical(row.id, false)}
+                          onClick={() => setPendingFailId(row.id)}
                         >
                           Fail
                         </button>
@@ -495,6 +506,26 @@ export function Review(): JSX.Element {
           Override verification
         </button>
       </Panel>
+
+      <ConfirmDialog
+        body={
+          <p>
+            The student sees a failed practical result. The decision and its evidence remain in the audit
+            trail and cannot be quietly undone here.
+          </p>
+        }
+        busy={busy}
+        confirmLabel="Fail submission"
+        onCancel={() => setPendingFailId(null)}
+        tone="danger"
+        onConfirm={() => {
+          if (pendingFailId !== null) {
+            void reviewPractical(pendingFailId, false).finally(() => setPendingFailId(null));
+          }
+        }}
+        open={pendingFailId !== null}
+        title="Fail this practical submission?"
+      />
     </div>
   );
 }

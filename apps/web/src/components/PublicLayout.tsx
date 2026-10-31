@@ -44,7 +44,6 @@ export function PublicLayout({ children }: { children: React.ReactNode }): JSX.E
         <div className="nv-public__header-inner">
           <Link className="nv-public__brand" to="/" aria-label="Nelavista home">
             <BrandMark />
-            <span>Nelavista</span>
           </Link>
 
           <nav className="nv-public__nav" aria-label="Public">
@@ -95,11 +94,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }): JSX.E
         <div className="nv-public__footer-inner">
           <div className="nv-footer-grid">
             <div className="nv-footer-col">
-              <Link className="nv-public__brand" to="/" aria-label="Nelavista home">
-                <BrandMark />
-                <span>Nelavista</span>
-              </Link>
-              <p style={{ maxWidth: '34ch', marginTop: 'var(--nv-space-sm)' }}>
+              <p style={{ maxWidth: '34ch' }}>
                 A working record for Nigerian university students: learn it, prove it, get paid for it.
               </p>
               <SocialLinks />

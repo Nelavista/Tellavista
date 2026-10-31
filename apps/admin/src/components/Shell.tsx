@@ -1,4 +1,4 @@
-import { Avatar, BrandMark } from '@nelavista/ui';
+import { Avatar, BrandMark, ConfirmDialog } from '@nelavista/ui';
 import {
   Briefcase,
   Building2,
@@ -95,6 +95,8 @@ export function Shell({
   children: React.ReactNode;
 }): JSX.Element {
   const { me, logout } = useSession();
+  const [busy, setBusy] = React.useState(false);
+  const [confirmSignOut, setConfirmSignOut] = React.useState(false);
   const mainRef = React.useRef<HTMLElement | null>(null);
   const firstRoute = React.useRef(true);
 
@@ -109,8 +111,14 @@ export function Shell({
   }, [route]);
 
   async function signOut(): Promise<void> {
-    await logout();
-    go('/login');
+    setBusy(true);
+    try {
+      await logout();
+      setConfirmSignOut(false);
+      go('/login');
+    } finally {
+      setBusy(false);
+    }
   }
 
   return (
@@ -121,7 +129,6 @@ export function Shell({
       <aside className="nv-sidebar" aria-label="Admin sections">
         <div className="nv-sidebar__brand">
           <BrandMark />
-          <span>Nelavista ops</span>
         </div>
 
         <nav className="nv-sidebar__nav">
@@ -166,8 +173,9 @@ export function Shell({
           </div>
           <button
             className="nv-button nv-button--ghost nv-button--block nv-button--sm"
+            disabled={busy}
             type="button"
-            onClick={() => void signOut()}
+            onClick={() => setConfirmSignOut(true)}
           >
             <LogOut aria-hidden="true" size={15} />
             Sign out
@@ -202,6 +210,22 @@ export function Shell({
           {children}
         </main>
       </div>
+
+      <ConfirmDialog
+        body={
+          <p>
+            You will need your password and authenticator code to reopen the ops workspace. No audit record is
+            changed by signing out.
+          </p>
+        }
+        busy={busy}
+        busyLabel="Signing out"
+        confirmLabel="Sign out"
+        onCancel={() => setConfirmSignOut(false)}
+        onConfirm={() => void signOut()}
+        open={confirmSignOut}
+        title="Are you sure you want to sign out?"
+      />
     </div>
   );
 }

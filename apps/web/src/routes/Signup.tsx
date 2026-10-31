@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { AuthLayout } from '../components/AuthLayout';
 import { ApiError } from '../lib/http';
 import { useSession } from '../lib/session';
-import { Button, Checkbox, ErrorNote, Field } from '../ui';
+import { Button, Checkbox, ErrorNote, Field, PasswordField } from '../ui';
 
 const USERNAME_RE = /^[A-Za-z0-9_.-]+$/;
 
@@ -76,11 +76,10 @@ export function Signup(): JSX.Element {
           value={username}
           onChange={(e) => setUsername(e.target.value)}
         />
-        <Field
+        <PasswordField
           autoComplete="new-password"
           hint="At least 10 characters."
           label="Password"
-          type="password"
           required
           value={password}
           onChange={(e) => setPassword(e.target.value)}

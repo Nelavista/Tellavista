@@ -326,8 +326,8 @@ name, a university, an earnings figure or a testimonial into an image prompt.
 - Licensed campus photography, if the About page should show a real campus.
 - The final OG card wording and any real metric that is safe to publish.
 - Whether the `maintenance` state will be enabled at launch.
-- Whether the `animation3_color_exchange.mp4` brand video should appear anywhere
-  in the UI. It is a 1920 by 1080, eight-second video with a blue
-  background, so it is not a transparent loader. The WebP loader is the loader.
-  If a transparent loader is wanted, supply a short looping WebM/VP9 with alpha
-  (or HEVC with alpha for Safari) at 1:1, ideally under 500 KB.
+- The `animation3_color_exchange.mp4` brand video now runs before the public
+  footer. It is a 1920 by 1080, eight-second video with a blue background, not a
+  transparent loader. The WebP remains the loader. If a transparent loader is
+  wanted later, supply a short looping WebM/VP9 with alpha (or HEVC with alpha
+  for Safari) at 1:1, ideally under 500 KB.

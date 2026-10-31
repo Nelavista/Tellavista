@@ -1,4 +1,4 @@
-import { CircleAlert, Inbox, Moon, Sun, TriangleAlert, type LucideIcon } from 'lucide-react';
+import { CircleAlert, Eye, EyeOff, Inbox, Moon, Sun, TriangleAlert, type LucideIcon } from 'lucide-react';
 import * as React from 'react';
 
 type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger';
@@ -46,16 +46,93 @@ export function IconButton({
   );
 }
 
+export function ConfirmDialog({
+  open,
+  title,
+  body,
+  confirmLabel = 'Confirm',
+  cancelLabel = 'Cancel',
+  busy = false,
+  busyLabel = 'Working',
+  tone = 'primary',
+  onConfirm,
+  onCancel,
+}: {
+  open: boolean;
+  title: string;
+  body: React.ReactNode;
+  confirmLabel?: string;
+  cancelLabel?: string;
+  busy?: boolean;
+  busyLabel?: string;
+  tone?: ButtonVariant;
+  onConfirm: () => void;
+  onCancel: () => void;
+}): JSX.Element {
+  const titleId = React.useId();
+  const bodyId = React.useId();
+  const dialogRef = React.useRef<HTMLDialogElement | null>(null);
+
+  React.useEffect(() => {
+    const dialog = dialogRef.current;
+    if (!dialog) return;
+    if (open && !dialog.open) dialog.showModal();
+    if (!open && dialog.open) dialog.close();
+  }, [open]);
+
+  React.useEffect(() => {
+    const dialog = dialogRef.current;
+    if (!dialog) return;
+    const handleCancel = (event: Event) => {
+      event.preventDefault();
+      if (!busy) onCancel();
+    };
+    dialog.addEventListener('cancel', handleCancel);
+    return () => dialog.removeEventListener('cancel', handleCancel);
+  }, [busy, onCancel]);
+
+  return (
+    <dialog
+      aria-describedby={bodyId}
+      aria-labelledby={titleId}
+      className="nv-dialog"
+      onClick={(event) => {
+        if (event.target === dialogRef.current && !busy) onCancel();
+      }}
+      ref={dialogRef}
+    >
+      <div className="nv-dialog__panel">
+        <h2 className="nv-dialog__title" id={titleId}>
+          {title}
+        </h2>
+        <div className="nv-dialog__body" id={bodyId}>
+          {body}
+        </div>
+        <div className="nv-dialog__actions">
+          <Button disabled={busy} onClick={onCancel} type="button" variant="secondary">
+            {cancelLabel}
+          </Button>
+          <Button disabled={busy} onClick={onConfirm} type="button" variant={tone}>
+            {busy ? busyLabel : confirmLabel}
+          </Button>
+        </div>
+      </div>
+    </dialog>
+  );
+}
+
 export function Field({
   label,
   hint,
   error,
   id,
+  endAdornment,
   ...props
 }: React.InputHTMLAttributes<HTMLInputElement> & {
   label: string;
   hint?: string;
   error?: string | null;
+  endAdornment?: React.ReactNode;
 }): JSX.Element {
   const generated = React.useId();
   const fieldId = id ?? generated;
@@ -66,13 +143,16 @@ export function Field({
       <label className="nv-label" htmlFor={fieldId}>
         {label}
       </label>
-      <input
-        id={fieldId}
-        className="nv-input"
-        aria-describedby={cx(hintId, errorId) || undefined}
-        aria-invalid={error ? true : undefined}
-        {...props}
-      />
+      <div className="nv-field__control">
+        <input
+          id={fieldId}
+          className="nv-input"
+          aria-describedby={cx(hintId, errorId) || undefined}
+          aria-invalid={error ? true : undefined}
+          {...props}
+        />
+        {endAdornment}
+      </div>
       {hint ? (
         <span className="nv-field__hint" id={hintId}>
           {hint}
@@ -84,6 +164,39 @@ export function Field({
         </span>
       ) : null}
     </div>
+  );
+}
+
+export function PasswordField({
+  label,
+  hint,
+  error,
+  ...props
+}: Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type'> & {
+  label: string;
+  hint?: string;
+  error?: string | null;
+}): JSX.Element {
+  const [visible, setVisible] = React.useState(false);
+  return (
+    <Field
+      {...props}
+      endAdornment={
+        <button
+          aria-label={visible ? 'Hide password' : 'Show password'}
+          className="nv-field__reveal"
+          onClick={() => setVisible((current) => !current)}
+          title={visible ? 'Hide password' : 'Show password'}
+          type="button"
+        >
+          {visible ? <EyeOff aria-hidden="true" size={17} /> : <Eye aria-hidden="true" size={17} />}
+        </button>
+      }
+      error={error}
+      hint={hint}
+      label={label}
+      type={visible ? 'text' : 'password'}
+    />
   );
 }
 
@@ -423,15 +536,15 @@ export function BrandLoader({
           alt=""
           className="nv-brand-loader__anim"
           decoding="async"
-          height={96}
+          height={144}
           onError={() => setFailed(true)}
           src="/media/nelavista-loader.webp"
-          width={96}
+          width={144}
         />
       )}
       <BrandMark
         className={cx('nv-brand-loader__still', failed && 'nv-brand-loader__still--visible')}
-        size={56}
+        size={84}
       />
     </div>
   );

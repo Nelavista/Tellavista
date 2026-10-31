@@ -19,25 +19,29 @@ export function SocialLinks({ label = 'Share Nelavista' }: { label?: string }): 
       label: 'Share on Facebook',
       href: `https://www.facebook.com/sharer/sharer.php?u=${encoded}`,
       Icon: FacebookLogoIcon,
+      network: 'facebook',
     },
     {
       label: 'Share on WhatsApp',
       href: `https://wa.me/?text=${text}%20${encoded}`,
       Icon: WhatsappLogoIcon,
+      network: 'whatsapp',
     },
     {
       label: 'Share on Telegram',
       href: `https://t.me/share/url?url=${encoded}&text=${text}`,
       Icon: TelegramLogoIcon,
+      network: 'telegram',
     },
   ];
 
   return (
     <div className="nv-social-links" aria-label={label}>
-      {links.map(({ label: itemLabel, href, Icon }) => (
+      {links.map(({ label: itemLabel, href, Icon, network }) => (
         <a
           aria-label={itemLabel}
           className="nv-social-link"
+          data-network={network}
           href={href}
           key={itemLabel}
           rel="noreferrer noopener"

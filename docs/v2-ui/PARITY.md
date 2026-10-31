@@ -39,19 +39,23 @@
 **Bottom line:** V2 now covers the V1 journey and exceeds it in verification,
 managed work, money controls and admin audit. The remaining gaps are not missing
 screens: they are API detail (course/topic, CBT review, cohort invites, campus
-read, password change), legal review, and real business content/imagery.
+read, in-place password change), legal review, and real business content/imagery.
 
 ### 1.1 What is still limited
 
-- **API dependencies:** signed-in password change; full course/topic detail;
-  CBT history/review detail; student cohort-invite list; admin campus read.
-- **Content:** pricing, counsel-reviewed legal copy, real social links, real
+- **API dependencies:** in-place signed-in password change; full course/topic
+  detail; CBT history/review detail; student cohort-invite list; admin campus read.
+- **Content:** counsel-reviewed legal copy, real social profile URLs, real
   metrics/testimonials, photography, employer positioning, and the material
-  upload/analysis replacement copy.
-- **Verification:** admin 2FA enrolment and `dev-local.ps1` end-to-end; the V2
-  domain switch; a manual light/dark visual pass.
-- **Images:** the manifest is ready; the files are not.
-- **Brand video:** the MP4 is not a transparent loader; placement is undecided.
+  upload/analysis replacement copy. Pricing is published as commercial positions,
+  not invented amounts.
+- **Verification:** admin 2FA enrolment recovery-code handoff is fixed; a full
+  browser end-to-end check and the V2 domain switch remain. The local seed lock
+  was traced to duplicate API/worker processes, not seed logic.
+- **Images:** the editorial set is integrated with WebP derivatives; real
+  photography is still pending.
+- **Brand video:** the MP4 now runs full-width before the public footer with a
+  reduced-motion still fallback.
 
 ---
 
@@ -65,7 +69,7 @@ read, password change), legal review, and real business content/imagery.
 | `/about` one-paragraph stub | `/about` with mission, principles and honest scope | **Parity/stronger** | Add real team/campus imagery only when supplied |
 | No contact page; footer mailto | `/contact` with `support@nelavista.com` and topics | **Stronger** | Add response expectation when supplied |
 | No FAQ | `/faq` with eligibility, verification, payouts, privacy | **Stronger** | Keep |
-| No pricing page; “free for students” only | No pricing model; no `/pricing` | **Decide** | Do not build until the business defines a price |
+| No pricing page; “free for students” only | `/pricing` with launch, scoped-quote and pilot positions; no invented amounts | **Stronger** | Replace positions with approved amounts when supplied |
 | `/privacy-policy` | `/legal/privacy` draft for V2 data flows | **Parity/partial** | Counsel review required |
 | `/terms-of-service` | `/legal/terms` draft for V2 | **Parity/partial** | Counsel review required |
 | Contributor terms only in platform settings | `/legal/contributor-terms` public draft | **Parity/stronger** | Counsel review required |
@@ -73,7 +77,7 @@ read, password change), legal review, and real business content/imagery.
 | No public announcement banner | None | **New** | Deferred; not parity |
 | No blog | None | **Not required** | Do not add |
 | Employer signup/dashboard/discover | None | **Dropped by design** | Managed work through ops; employer self-service later |
-| Footer social links (placeholder `example.com`) | No placeholder links; real support email only | **Parity/stronger** | Add real social links only when supplied |
+| Footer social links (placeholder `example.com`) | Facebook, WhatsApp and Telegram share intents in a wave layout; no invented profile URLs | **Parity/stronger** | Add real profile URLs only when supplied |
 | Theme toggle | Light/dark on brand blue/white | **Parity** | Manual visual pass recommended |
 | PWA manifest, no offline | Real PWA shell and offline route | **Stronger** | Keep; add update/install UX |
 | No V1 robots/sitemap/OG | Per-page title/description/canonical/OG; expanded sitemap | **Stronger** | Keep route and meta maps in sync |
@@ -97,16 +101,16 @@ blocker is counsel review of the legal drafts, not missing screens.
 | Email verification result + resend | `/auth/verify` + resend | **Parity** | Redesign; handle expired/invalid states |
 | Forgot password | `/auth/reset` request state | **Parity** | Redesign; keep anti-enumeration copy |
 | Reset password | `/auth/reset` token state | **Parity** | Redesign; keep single-use token behavior |
-| Signup accepted terms with no links | Links to the legal drafts; signup records `terms_of_service` at `TERMS_VERSION`; consent history is visible | **Parity/partial** | Add re-consent UI for a version change |
-| No change-password in V1? | V1 has `/account/change-password` | **Gap** | Add the signed-in password-change API, then the form |
+| Signup accepted terms with no links | Links to the legal drafts; signup records `terms_of_service` at `TERMS_VERSION`; consent history and re-consent gate are visible | **Parity/stronger** | Keep versions in sync with `/platform/config` |
+| No change-password in V1? | V1 has `/account/change-password` | **Partial** | Settings can send the existing single-use reset link; in-place change is still an API dependency |
 | Auth pages prevent zoom (`maximum-scale=1.0`) | V2 viewport allows zoom | **Stronger** | Keep |
 
 ### Auth parity verdict (post-build)
 
 V2 auth is functionally close to V1 and stronger on 2FA. Login, signup, verify
-and reset are redesigned, and signup links to the legal drafts. The remaining
-blockers are re-consent when the terms version changes and a signed-in
-password-change endpoint, not the login form.
+and reset are redesigned, password fields have a show/hide control, and signup
+links to the legal drafts. Re-consent is handled by `ConsentGate`. The remaining
+blocker is the in-place signed-in password-change endpoint, not the login form.
 
 ---
 
@@ -302,12 +306,15 @@ replacement is real and the product does not pretend the old feature exists.
 - Admin: Overview, Waitlist, Campus, Audit, Imports, Users, Opportunities,
   Projects, Review, Money, Content, Platform, Security, admin 404, application
   status action and payout-item failure action.
-- Brand: V1 logo/favicon copied into V2, generated PWA/apple icons, WebP boot
-  loader and still-mark fallback.
+- Brand: V1 logo/favicon copied into V2, generated PWA/apple icons, larger WebP
+  boot loader and still-mark fallback, circular nav mark, brand film before the
+  footer.
+- UX guards: confirmation dialog for sign out, device/language removal, share
+  revocation and destructive admin actions; password reveal controls.
 
 ### Still blocked or deferred
 
-- Signed-in password change (API dependency).
+- In-place signed-in password change (API dependency; reset-link request works).
 - Full course/topic detail (API dependency).
 - CBT attempt-review detail (API dependency).
 - Student cohort-invite list (API dependency).

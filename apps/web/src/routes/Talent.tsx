@@ -19,6 +19,7 @@ import {
   Banner,
   Button,
   Checkbox,
+  ConfirmDialog,
   EmptyState,
   ErrorState,
   Field,
@@ -57,6 +58,7 @@ export function Talent(): JSX.Element {
   const [scopes, setScopes] = React.useState<string[]>(Object.keys(SCOPE_COPY));
   const [created, setCreated] = React.useState<ShareCreatedOut | null>(null);
   const [busy, setBusy] = React.useState(false);
+  const [pendingShareId, setPendingShareId] = React.useState<number | null>(null);
   const [error, setError] = React.useState<string | null>(null);
 
   async function createShare(): Promise<void> {
@@ -79,12 +81,15 @@ export function Talent(): JSX.Element {
   }
 
   async function revoke(shareId: number): Promise<void> {
+    setBusy(true);
     setError(null);
     try {
       await http.post(`/talent/me/shares/${shareId}/revoke`, {});
       shares.reload();
     } catch (err) {
       setError(err instanceof ApiError ? err.message : 'Could not revoke that link.');
+    } finally {
+      setBusy(false);
     }
   }
 
@@ -393,7 +398,7 @@ export function Talent(): JSX.Element {
                             size="sm"
                             type="button"
                             variant="ghost"
-                            onClick={() => void revoke(share.id)}
+                            onClick={() => setPendingShareId(share.id)}
                           >
                             Revoke
                           </Button>
@@ -419,11 +424,34 @@ export function Talent(): JSX.Element {
               {config.resource.status === 'ready' ? config.resource.data.min_student_age : 16}; under{' '}
               {config.resource.status === 'ready' ? config.resource.data.guardian_consent_below_age : 18}{' '}
               needs guardian consent. Terms version{' '}
-              {config.resource.status === 'ready' ? config.resource.data.contributor_terms_version : 'Not set'}.
+              {config.resource.status === 'ready'
+                ? config.resource.data.contributor_terms_version
+                : 'Not set'}
+              .
             </p>
           </Panel>
         </div>
       </div>
+
+      <ConfirmDialog
+        body={
+          <p>
+            The company that holds this link will lose access immediately. You can create another link, but
+            this one cannot be restored.
+          </p>
+        }
+        busy={busy}
+        confirmLabel="Revoke link"
+        onCancel={() => setPendingShareId(null)}
+        tone="danger"
+        onConfirm={() => {
+          if (pendingShareId !== null) {
+            void revoke(pendingShareId).finally(() => setPendingShareId(null));
+          }
+        }}
+        open={pendingShareId !== null}
+        title="Revoke this share link?"
+      />
     </div>
   );
 }

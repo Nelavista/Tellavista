@@ -7,6 +7,7 @@
  * that does not present a code.
  */
 import type { MfaEnableOut, MfaSetupOut } from '@nelavista/api-client';
+import { ConfirmDialog } from '@nelavista/ui';
 import * as React from 'react';
 
 import { ApiError, http } from '../lib/http';
@@ -18,6 +19,7 @@ export function TwoFactor(): JSX.Element {
   const [code, setCode] = React.useState('');
   const [codes, setCodes] = React.useState<string[] | null>(null);
   const [busy, setBusy] = React.useState(false);
+  const [signOutOpen, setSignOutOpen] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
 
   async function begin(): Promise<void> {
@@ -52,8 +54,8 @@ export function TwoFactor(): JSX.Element {
       <div className="nv-card nv-login">
         <h1 className="nv-h1">Save your recovery codes</h1>
         <p>
-          These are shown once. Each works once if you lose your phone. Store them somewhere other than
-          the phone.
+          These are shown once. Each works once if you lose your phone. Store them somewhere other than the
+          phone.
         </p>
         <div className="nv-code">
           {codes.map((row) => (
@@ -74,8 +76,8 @@ export function TwoFactor(): JSX.Element {
     <div className="nv-card nv-login">
       <h1 className="nv-h1">Two-factor is required</h1>
       <p className="nv-muted">
-        Staff accounts must enrol an authenticator before using the ops tools. This is a Phase 0
-        security requirement, not a preference.
+        Staff accounts must enrol an authenticator before using the ops tools. This is a Phase 0 security
+        requirement, not a preference.
       </p>
       {error ? (
         <p className="nv-error" role="alert">
@@ -120,9 +122,17 @@ export function TwoFactor(): JSX.Element {
         </>
       )}
 
-      <button className="nv-button nv-button--ghost" type="button" onClick={() => void logout()}>
+      <button className="nv-button nv-button--ghost" type="button" onClick={() => setSignOutOpen(true)}>
         Sign out
       </button>
+      <ConfirmDialog
+        body={<p>Two-factor enrolment is not finished. You will need to sign in and start again.</p>}
+        confirmLabel="Sign out"
+        onCancel={() => setSignOutOpen(false)}
+        onConfirm={() => void logout()}
+        open={signOutOpen}
+        title="Are you sure you want to sign out?"
+      />
     </div>
   );
 }

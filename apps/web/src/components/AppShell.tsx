@@ -1,4 +1,4 @@
-import { Avatar, BrandMark, ThemeToggle } from '@nelavista/ui';
+import { Avatar, BrandMark, ConfirmDialog, ThemeToggle } from '@nelavista/ui';
 import {
   BadgeCheck,
   Bell,
@@ -139,6 +139,7 @@ export function AppShell({ children }: { children: React.ReactNode }): JSX.Eleme
   const location = useLocation();
   const navigate = useNavigate();
   const [busy, setBusy] = React.useState(false);
+  const [confirmSignOut, setConfirmSignOut] = React.useState(false);
   const mainRef = React.useRef<HTMLElement | null>(null);
   const firstRoute = React.useRef(true);
 
@@ -159,6 +160,7 @@ export function AppShell({ children }: { children: React.ReactNode }): JSX.Eleme
     setBusy(true);
     try {
       await logout();
+      setConfirmSignOut(false);
       navigate('/', { replace: true });
     } finally {
       setBusy(false);
@@ -174,7 +176,6 @@ export function AppShell({ children }: { children: React.ReactNode }): JSX.Eleme
       <aside className="nv-sidebar" aria-label="Primary">
         <Link className="nv-sidebar__brand" to="/home" aria-label="Nelavista home">
           <BrandMark />
-          <span>Nelavista</span>
         </Link>
 
         <nav className="nv-sidebar__nav">
@@ -211,10 +212,10 @@ export function AppShell({ children }: { children: React.ReactNode }): JSX.Eleme
             className="nv-button nv-button--ghost nv-button--block nv-button--sm"
             type="button"
             disabled={busy}
-            onClick={() => void onSignOut()}
+            onClick={() => setConfirmSignOut(true)}
           >
             <LogOut aria-hidden="true" size={15} />
-            {busy ? 'Signing out' : 'Sign out'}
+            Sign out
           </button>
         </div>
       </aside>
@@ -223,7 +224,6 @@ export function AppShell({ children }: { children: React.ReactNode }): JSX.Eleme
         <div className="nv-mobile-bar">
           <Link className="nv-sidebar__brand" to="/home" aria-label="Nelavista home">
             <BrandMark />
-            <span>Nelavista</span>
           </Link>
           <div className="nv-row" style={{ gap: 'var(--nv-space-xs)' }}>
             <ThemeToggle theme={theme} onToggle={toggle} />
@@ -274,6 +274,22 @@ export function AppShell({ children }: { children: React.ReactNode }): JSX.Eleme
           </div>
         </main>
       </div>
+
+      <ConfirmDialog
+        body={
+          <p>
+            You will need your password, and your authenticator code if 2FA is on, to open this workspace
+            again. Nothing in your record changes.
+          </p>
+        }
+        busy={busy}
+        busyLabel="Signing out"
+        confirmLabel="Sign out"
+        onCancel={() => setConfirmSignOut(false)}
+        onConfirm={() => void onSignOut()}
+        open={confirmSignOut}
+        title="Are you sure you want to sign out?"
+      />
     </div>
   );
 }

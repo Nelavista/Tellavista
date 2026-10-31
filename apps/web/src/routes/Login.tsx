@@ -5,7 +5,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { AuthLayout } from '../components/AuthLayout';
 import { ApiError, http, setAccessToken } from '../lib/http';
 import { useSession } from '../lib/session';
-import { Button, ErrorNote, Field } from '../ui';
+import { Button, ErrorNote, Field, PasswordField } from '../ui';
 
 interface RedirectState {
   from?: string;
@@ -99,10 +99,9 @@ export function Login(): JSX.Element {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
-            <Field
+            <PasswordField
               autoComplete="current-password"
               label="Password"
-              type="password"
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}

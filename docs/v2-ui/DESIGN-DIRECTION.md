@@ -279,9 +279,16 @@ A 4px control and an 8px panel read as a working tool. Do not round every surfac
   then a horizontal journey strip.
 - Sections are separated by hairlines and margin labels, not by cards.
 - One dominant anchor per page. On the landing page it is **Create your account**.
-- Public header: logo, Platform, How it works, About, Log in, Get started. Sticky,
-  solid white, 1px bottom rule. No translucent blur.
-- Public footer: sitemap, legal, contact, social. No giant decorative wordmark.
+- Public header: circular logo only, then Features, How it works, Pricing, About,
+  FAQ, Log in, Get started. Sticky, 1px bottom rule.
+- Public footer: sitemap, legal, contact, share links. The tagline stands alone;
+  no logo or wordmark sits above it. Social links use a staggered wave: Facebook
+  and Telegram sit higher, WhatsApp lower.
+- Destructive actions (sign out, device/language removal, share revocation, admin
+  payout/review/cohort/2FA changes) use the shared confirmation dialog and say
+  what changes and what survives.
+- Password inputs use the shared show/hide control; the label changes between
+  Show password and Hide password.
 
 ### 6.2 Student app
 

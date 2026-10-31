@@ -1,4 +1,4 @@
-import { BrandMark } from '@nelavista/ui';
+import { BrandMark, Field, PasswordField } from '@nelavista/ui';
 import * as React from 'react';
 
 import { ApiError } from '../lib/http';
@@ -50,48 +50,32 @@ export function Login(): JSX.Element {
       </p>
       <form className="nv-stack" onSubmit={submit}>
         {challenge ? (
-          <div>
-            <label className="nv-label" htmlFor="mfa-code">
-              Authenticator code
-            </label>
-            <input
-              autoComplete="one-time-code"
-              autoFocus
-              className="nv-input"
-              id="mfa-code"
-              maxLength={20}
-              value={code}
-              onChange={(event) => setCode(event.target.value)}
-            />
-          </div>
+          <Field
+            autoComplete="one-time-code"
+            autoFocus
+            id="mfa-code"
+            label="Authenticator code"
+            maxLength={20}
+            value={code}
+            onChange={(event) => setCode(event.target.value)}
+          />
         ) : (
           <>
-            <div>
-              <label className="nv-label" htmlFor="admin-email">
-                Email
-              </label>
-              <input
-                autoComplete="email"
-                className="nv-input"
-                id="admin-email"
-                type="email"
-                value={email}
-                onChange={(event) => setEmail(event.target.value)}
-              />
-            </div>
-            <div>
-              <label className="nv-label" htmlFor="admin-password">
-                Password
-              </label>
-              <input
-                autoComplete="current-password"
-                className="nv-input"
-                id="admin-password"
-                type="password"
-                value={password}
-                onChange={(event) => setPassword(event.target.value)}
-              />
-            </div>
+            <Field
+              autoComplete="email"
+              id="admin-email"
+              label="Email"
+              type="email"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+            />
+            <PasswordField
+              autoComplete="current-password"
+              id="admin-password"
+              label="Password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+            />
           </>
         )}
         {error ? (

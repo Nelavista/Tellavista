@@ -24,9 +24,10 @@ disagree; the rest of the document remains useful as the starting-point record.
   white `#FFFFFF`, the shared theme bridge, primitives, shared CSS and three
   self-hosted font families are in `packages/ui`. Web and admin both consume them.
 - **Brand assets:** The V1 logo and favicon are copied into both V2 apps. The
-  uploaded WebP is the boot and route loader, with a still-mark and
-  reduced-motion fallback. The MP4 is a 1920x1080 brand video with a blue
-  background, not a transparent loader, and is not used in the UI yet.
+  uploaded WebP is the larger boot and route loader, with a still-mark and
+  reduced-motion fallback. The MP4 is a 1920x1080 brand video, not a transparent
+  loader; it runs full-width before the public footer with a reduced-motion
+  still. The header and app rail use the circular mark only.
 - **Public surface:** Landing, Features, How it works, About, Contact, FAQ,
   Privacy, Terms, Contributor terms, a real 404 and an offline screen exist as
   separate routes. Legal copy is an explicit draft pending counsel. Every public
@@ -34,7 +35,9 @@ disagree; the rest of the document remains useful as the starting-point record.
   `sitemap.xml` and `robots.txt` cover the public pages and disallow private app
   routes.
 - **Auth:** Login, Signup, Verify email and Reset password use the shared auth
-  layout and set page metadata. Signup links to the draft legal pages.
+  layout and set page metadata. Password fields have a show/hide control, and
+  signup links to the draft legal pages. `ConsentGate` handles a terms or privacy
+  version change after sign-in.
 - **Student app:** The grouped app shell, mobile navigation, theme toggle,
   notifications, applications, CBT history, course detail and split settings
   routes exist. Home, Academia, Materials, Ask, CBT, Skills, My learning, Lesson,
@@ -57,14 +60,16 @@ disagree; the rest of the document remains useful as the starting-point record.
   route, CBT history/review detail, the student cohort-invite list, an admin
   campus read endpoint and a signed-in change-password endpoint. The admin Campus
   screen remains write-only with an explicit banner and session-local receipts.
-- **Still open (business/content):** pricing, counsel-reviewed legal copy, real
-  social links, real metrics/testimonials, photography, employer positioning and
-  the material upload/analysis replacement copy. Images named in
-  `IMAGE-PROMPTS.md` are not created yet. The MP4 brand video needs a placement
-  decision.
-- **Still open (verification):** Admin 2FA enrolment and the full
-  `dev-local.ps1` flow are not verified end-to-end; the V2 domain switch is
-  pending; legal pages remain drafts and block launch.
+- **Still open (business/content):** approved pricing amounts, counsel-reviewed
+  legal copy, real social profile URLs, real metrics/testimonials, photography,
+  employer positioning and the material upload/analysis replacement copy. The
+  editorial images are integrated as optimized WebP derivatives; real photography
+  is still pending. Share intents stand in for unavailable profile URLs.
+- **Still open (verification):** Admin 2FA enrolment is code-complete and the
+  recovery-code handoff is fixed, but the full browser path is not verified
+  end-to-end. The local seed lock came from duplicate API/worker processes and was
+  cleared by stopping them; `dev-local.ps1` still needs one clean run. The V2
+  domain switch is pending; legal pages remain drafts and block launch.
 - **Removed as unused:** `Logo`, `ArrowLink` and `Spinner` exports, the unused
   spinner CSS, and `apps/web/src/components/Layout.tsx`.
 
@@ -598,14 +603,12 @@ These cannot be invented by the UI:
 10. **Student uploads/analysis.** Restore V1's PDF→notes→test, or approve the
     replacement copy: curated materials + Ask + CBT + the transcript evidence
     trail.
-11. **Brand video placement.** The uploaded MP4 is 1920x1080 with a blue
-    background, not a transparent loader. Decide whether it appears on the public
-    site, in onboarding, or nowhere. If it must be a transparent loader, supply a
-    short looping WebM/VP9 with alpha (or HEVC with alpha for Safari) at 1:1,
-    ideally under 500 KB; the current opaque 16:9 file is not that asset.
-12. **Image production.** Approve the prompt manifest and supply or commission the
-    P1 images; do not launch with generic stock or invented campus/founder
-    photography.
+11. **Brand video placement.** Resolved. The 1920x1080 MP4 runs full-width before
+    the public footer with a reduced-motion still. It stays an opaque brand film,
+    not a transparent loader.
+12. **Image production.** Editorial WebP derivatives are integrated. Commission
+    real photography before launch; do not launch with generic stock or invented
+    campus/founder photography.
 
 
 ---

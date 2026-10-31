@@ -17,7 +17,17 @@ import type {
   ReconcileRunOut,
   ReverseOut,
 } from '@nelavista/api-client';
-import { Badge, Banner, EmptyState, ErrorNote, ErrorState, PageHeader, Panel, Skeleton } from '@nelavista/ui';
+import {
+  Badge,
+  Banner,
+  ConfirmDialog,
+  EmptyState,
+  ErrorNote,
+  ErrorState,
+  PageHeader,
+  Panel,
+  Skeleton,
+} from '@nelavista/ui';
 import * as React from 'react';
 
 import { ApiError, download, http } from '../lib/http';
@@ -41,6 +51,7 @@ export function Money(): JSX.Element {
   const [batchDetail, setBatchDetail] = React.useState<PayoutBatchDetailOut | null>(null);
   const [cancelReason, setCancelReason] = React.useState('');
   const [failReason, setFailReason] = React.useState('');
+  const [pendingFailItemId, setPendingFailItemId] = React.useState<number | null>(null);
   const [busy, setBusy] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
   const [note, setNote] = React.useState<string | null>(null);
@@ -497,7 +508,7 @@ export function Money(): JSX.Element {
                                 className="nv-button nv-button--danger"
                                 disabled={busy || failReason.trim().length < 3}
                                 type="button"
-                                onClick={() => void failPayoutItem(item.id)}
+                                onClick={() => setPendingFailItemId(item.id)}
                               >
                                 Mark failed
                               </button>
@@ -564,6 +575,27 @@ export function Money(): JSX.Element {
           </Panel>
         </>
       ) : null}
+
+      <ConfirmDialog
+        body={
+          <p>
+            Payout item #{pendingFailItemId ?? 'unknown'} will be closed as failed and the reason will be
+            written to the audit trail. This does not reverse money already moved.
+          </p>
+        }
+        busy={busy}
+        busyLabel="Marking failed"
+        confirmLabel="Mark failed"
+        onCancel={() => setPendingFailItemId(null)}
+        tone="danger"
+        onConfirm={() => {
+          if (pendingFailItemId !== null) {
+            void failPayoutItem(pendingFailItemId).finally(() => setPendingFailItemId(null));
+          }
+        }}
+        open={pendingFailItemId !== null}
+        title="Mark this payout item failed?"
+      />
     </div>
   );
 }

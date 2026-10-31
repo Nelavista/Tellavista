@@ -5,7 +5,7 @@
  * deliberately  -  with a current code  -  and where the remaining recovery codes are
  * counted. Turning it off is audited like any other security change.
  */
-import { Badge, Banner, Button, Field, PageHeader, Panel } from '@nelavista/ui';
+import { Badge, Banner, Button, ConfirmDialog, Field, PageHeader, Panel } from '@nelavista/ui';
 import { ShieldCheck } from 'lucide-react';
 import * as React from 'react';
 
@@ -16,6 +16,7 @@ export function Security(): JSX.Element {
   const { me, mfa, reload } = useSession();
   const [code, setCode] = React.useState('');
   const [busy, setBusy] = React.useState(false);
+  const [confirmDisable, setConfirmDisable] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
   const [note, setNote] = React.useState<string | null>(null);
 
@@ -88,13 +89,30 @@ export function Security(): JSX.Element {
               disabled={busy || code.trim().length < 6}
               type="button"
               variant="danger"
-              onClick={() => void disable()}
+              onClick={() => setConfirmDisable(true)}
             >
-              {busy ? 'Turning off…' : 'Turn off two-factor'}
+              Turn off two-factor
             </Button>
           </div>
         </div>
       </Panel>
+
+      <ConfirmDialog
+        body={
+          <p>
+            The account will fall back to a password only until you enrol a new authenticator. This change is
+            written to the audit trail.
+          </p>
+        }
+        busy={busy}
+        busyLabel="Turning off"
+        confirmLabel="Turn off two-factor"
+        onCancel={() => setConfirmDisable(false)}
+        tone="danger"
+        onConfirm={() => void disable().finally(() => setConfirmDisable(false))}
+        open={confirmDisable}
+        title="Turn off two-factor authentication?"
+      />
     </div>
   );
 }

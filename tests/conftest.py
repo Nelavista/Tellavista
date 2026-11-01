@@ -18,11 +18,37 @@ both: `database.py` and `app/__init__.py` already honour that variable for exact
 (migration scripts use it too). Do not remove it, and keep it above the app imports.
 """
 import os
+import sqlite3
 import sys
 import tempfile
 import pytest
+from sqlalchemy import event
+from sqlalchemy.engine import Engine
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+
+@event.listens_for(Engine, 'connect')
+def _fast_throwaway_sqlite(dbapi_connection, _record):
+    """Skip SQLite's disk syncs and journal files for the suite's throwaway databases.
+
+    Every test gets a fresh temp-file DB, and db.create_all()/drop_all() issue ~130 DDL
+    statements, each its own transaction. With SQLite's defaults each one fsyncs and
+    creates/deletes a -journal file, which on Windows (antivirus scanning every new file)
+    cost ~40s of setup and ~25s of teardown per test -- over 98% of the suite's runtime.
+    Measured on the full schema: 37.6s create_all -> 0.07s with these two pragmas.
+
+    Safe because these files are deleted after each test and never need to survive a
+    crash. Rollback and locking behave the same (the journal just lives in memory), and
+    each test still gets its own database, so isolation is unchanged. Applies to every
+    SQLite engine in the test process -- conftest's, test_route_smoke.py's and the
+    migration tests' -- but never to Postgres or to production, which don't load this file.
+    """
+    if isinstance(dbapi_connection, sqlite3.Connection):
+        cur = dbapi_connection.cursor()
+        cur.execute('PRAGMA synchronous=OFF')
+        cur.execute('PRAGMA journal_mode=MEMORY')
+        cur.close()
 
 os.environ.setdefault('SECRET_KEY', 'test-secret-key-for-pytest-only')
 os.environ.setdefault('FLASK_DEBUG', 'True')

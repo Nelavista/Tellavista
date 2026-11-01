@@ -11,6 +11,7 @@ Two audiences, one module, because the work and its review must agree:
 Every submission carries a client-generated idempotency key, accepted either in
 the `Idempotency-Key` header or the body, so an offline retry stores one row.
 """
+
 from __future__ import annotations
 
 from datetime import date, datetime
@@ -26,6 +27,7 @@ from app.api.v1.domains.work.schemas import (
     AssignmentListOut,
     AssignmentStateOut,
     AssignOut,
+    CohortInviteListOut,
     CohortOut,
     CohortWriteOut,
     InviteListOut,
@@ -140,6 +142,11 @@ def my_assignments(
     return AssignmentListOut(assignments=cohorts.my_assignments(db, user))
 
 
+@router.get("/invites", response_model=CohortInviteListOut)
+def my_invites(user: User = Depends(get_current_user), db: Session = Depends(get_db)) -> CohortInviteListOut:
+    return CohortInviteListOut(invites=cohorts.my_invites(db, user))
+
+
 @router.get("/assignments/{assignment_id}", response_model=AssignmentDetailOut)
 def assignment_detail(
     assignment_id: int,
@@ -160,9 +167,7 @@ def start_assignment(
     return AssignmentStateOut(id=row.id, status=row.status)
 
 
-@router.post(
-    "/assignments/{assignment_id}/submissions", status_code=201, response_model=SubmissionResultOut
-)
+@router.post("/assignments/{assignment_id}/submissions", status_code=201, response_model=SubmissionResultOut)
 def submit_work(
     assignment_id: int,
     payload: SubmissionIn,
@@ -220,9 +225,7 @@ def my_submissions(
 
 
 @router.get("/quality", response_model=QualityOut)
-def my_quality(
-    user: User = Depends(get_current_user), db: Session = Depends(get_db)
-) -> QualityOut:
+def my_quality(user: User = Depends(get_current_user), db: Session = Depends(get_db)) -> QualityOut:
     """The student's own quality record: what it is, and what produced it."""
     return QualityOut(**quality_service.my_quality(db, user))
 
@@ -269,9 +272,7 @@ def respond_invite(
 ) -> InviteResponseOut:
     member = cohorts.respond_invite(db, user, cohort_id, accept=payload.accept)
     db.commit()
-    return InviteResponseOut(
-        id=member.id, status=member.status, joined_at=member.joined_at
-    )
+    return InviteResponseOut(id=member.id, status=member.status, joined_at=member.joined_at)
 
 
 # --- ops ---------------------------------------------------------------------
@@ -354,9 +355,7 @@ def create_cohort(
     project = cohorts.get_project(db, slug)
     row = cohorts.create_cohort(db, actor, project=project, name=payload.name, capacity=payload.capacity)
     db.commit()
-    return CohortWriteOut(
-        id=row.id, name=row.name, capacity=row.capacity, status=row.status
-    )
+    return CohortWriteOut(id=row.id, name=row.name, capacity=row.capacity, status=row.status)
 
 
 @ops.get("/cohorts/{cohort_id}", response_model=CohortOut)
@@ -378,10 +377,7 @@ def invite(
     members = cohorts.invite(db, actor, cohort=_cohort(db, cohort_id), user_ids=payload.user_ids)
     db.commit()
     return InviteListOut(
-        members=[
-            {"id": member.id, "user_id": member.user_id, "status": member.status}
-            for member in members
-        ]
+        members=[{"id": member.id, "user_id": member.user_id, "status": member.status} for member in members]
     )
 
 
@@ -408,9 +404,7 @@ def replacement_candidates(
     # Add the name once, so an ops screen does not show bare user ids.
     users = {
         row.id: row
-        for row in db.scalars(
-            select(User).where(User.id.in_([item["user_id"] for item in rows]))
-        ).all()
+        for row in db.scalars(select(User).where(User.id.in_([item["user_id"] for item in rows]))).all()
     }
     return ReplacementListOut(
         candidates=[
@@ -447,7 +441,9 @@ def assign_task(
 
 
 @ops.post(
-    "/assignments/{assignment_id}/messages", status_code=201, dependencies=REVIEW_GUARD,
+    "/assignments/{assignment_id}/messages",
+    status_code=201,
+    dependencies=REVIEW_GUARD,
     response_model=MessageSentOut,
 )
 def send_message(
@@ -483,9 +479,7 @@ def review_queue(
     return ReviewQueueOut(queue=quality_service.review_queue(db, limit=limit))
 
 
-@ops.post(
-    "/submissions/{submission_id}/review", dependencies=REVIEW_GUARD, response_model=ReviewOut
-)
+@ops.post("/submissions/{submission_id}/review", dependencies=REVIEW_GUARD, response_model=ReviewOut)
 def review_submission(
     submission_id: int,
     payload: ReviewIn,

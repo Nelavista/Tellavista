@@ -12,12 +12,13 @@ import type {
   NotificationListOut,
   ProfileOut,
   PushDeviceListOut,
+  TokenOut,
 } from '@nelavista/api-client';
 import * as React from 'react';
 import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 
 import { formatDateTime } from '../lib/format';
-import { ApiError, http } from '../lib/http';
+import { ApiError, http, setAccessToken } from '../lib/http';
 import { useApiResource } from '../lib/resource';
 import { useSession } from '../lib/session';
 import {
@@ -32,6 +33,7 @@ import {
   Field,
   PageHeader,
   Panel,
+  PasswordField,
   Select,
   Skeleton,
   Textarea,
@@ -65,7 +67,7 @@ function sectionTitle(section: string): { title: string; description: string } {
       return {
         title: 'Security',
         description:
-          'The account, the sign-in and the recovery path. In-place password changes remain a backend dependency.',
+          'The account, the password and the recovery path. Change the password here without leaving the app.',
       };
     case 'notifications':
       return {
@@ -585,9 +587,46 @@ function ProfileSection(props: {
 
 function SecuritySection(): JSX.Element {
   const { me } = useSession();
+  const [currentPassword, setCurrentPassword] = React.useState('');
+  const [newPassword, setNewPassword] = React.useState('');
+  const [confirmPassword, setConfirmPassword] = React.useState('');
+  const [changeBusy, setChangeBusy] = React.useState(false);
+  const [changeMessage, setChangeMessage] = React.useState<string | null>(null);
+  const [changeError, setChangeError] = React.useState<string | null>(null);
   const [resetBusy, setResetBusy] = React.useState(false);
   const [resetMessage, setResetMessage] = React.useState<string | null>(null);
   const [resetError, setResetError] = React.useState<string | null>(null);
+
+  async function changePassword(event: React.FormEvent<HTMLFormElement>): Promise<void> {
+    event.preventDefault();
+    setChangeError(null);
+    setChangeMessage(null);
+    if (newPassword.length < 10) {
+      setChangeError('Use at least 10 characters for the new password.');
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      setChangeError('The new password and confirmation do not match.');
+      return;
+    }
+    setChangeBusy(true);
+    try {
+      const session = await http.post<TokenOut>('/auth/password/change', {
+        current_password: currentPassword,
+        new_password: newPassword,
+        platform: 'web',
+      });
+      setAccessToken(session.access_token);
+      setCurrentPassword('');
+      setNewPassword('');
+      setConfirmPassword('');
+      setChangeMessage('Password changed. Other devices were signed out; this session stays signed in.');
+    } catch (err) {
+      setChangeError(err instanceof ApiError ? err.message : 'Could not change your password.');
+    } finally {
+      setChangeBusy(false);
+    }
+  }
 
   async function sendResetLink(): Promise<void> {
     if (!me?.email) return;
@@ -633,14 +672,64 @@ function SecuritySection(): JSX.Element {
         </dl>
       </Panel>
 
-      <Panel title="Password">
-        <Banner tone="warning">
-          <strong>Backend dependency.</strong> V2 does not expose an in-place change-password endpoint yet.
-          This screen does not fake one. You can still request the existing single-use reset link.
-        </Banner>
-        <p className="nv-muted" style={{ marginTop: 'var(--nv-space-md)' }}>
-          The link goes to <strong>{me?.email}</strong> and revokes sessions after a successful reset. If you
-          are signed out, use <Link to="/auth/reset">the reset flow</Link>.
+      <Panel title="Change password">
+        <form className="nv-stack" onSubmit={(event) => void changePassword(event)}>
+          <p className="nv-muted">
+            Changing the password signs out every other device and keeps this one signed in. Use at least 10
+            characters.
+          </p>
+          <PasswordField
+            autoComplete="current-password"
+            label="Current password"
+            maxLength={200}
+            required
+            value={currentPassword}
+            onChange={(event) => setCurrentPassword(event.target.value)}
+          />
+          <div className="nv-grid--2">
+            <PasswordField
+              autoComplete="new-password"
+              hint="At least 10 characters."
+              label="New password"
+              maxLength={200}
+              required
+              value={newPassword}
+              onChange={(event) => setNewPassword(event.target.value)}
+            />
+            <PasswordField
+              autoComplete="new-password"
+              label="Confirm new password"
+              maxLength={200}
+              required
+              value={confirmPassword}
+              onChange={(event) => setConfirmPassword(event.target.value)}
+            />
+          </div>
+          {changeError ? (
+            <Banner tone="danger">
+              <p>{changeError}</p>
+            </Banner>
+          ) : null}
+          {changeMessage ? (
+            <Banner tone="success">
+              <p>{changeMessage}</p>
+            </Banner>
+          ) : null}
+          <div className="nv-row nv-row--end">
+            <Button
+              disabled={changeBusy || !currentPassword || newPassword.length < 10 || !confirmPassword}
+              type="submit"
+            >
+              {changeBusy ? 'Changing' : 'Change password'}
+            </Button>
+          </div>
+        </form>
+      </Panel>
+
+      <Panel title="Forgot the current password?">
+        <p className="nv-muted">
+          Send a single-use reset link to <strong>{me?.email}</strong>. A successful reset revokes sessions.
+          If you are signed out, use <Link to="/auth/reset">the reset flow</Link>.
         </p>
         <div className="nv-row" style={{ marginTop: 'var(--nv-space-md)' }}>
           <Button
@@ -666,8 +755,8 @@ function SecuritySection(): JSX.Element {
 
       <Panel title="Sessions">
         <p className="nv-muted">
-          Signing out on this device revokes the refresh cookie. A list of other sessions is not exposed by
-          the current API, so this screen does not invent one.
+          Signing out revokes the refresh cookie for this device. Changing the password revokes every other
+          refresh token at the same time.
         </p>
       </Panel>
     </div>

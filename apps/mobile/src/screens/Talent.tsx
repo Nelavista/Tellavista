@@ -29,9 +29,9 @@ const SCOPE_COPY: Record<string, string> = {
 };
 
 function when(value: string | null | undefined): string {
-  if (!value) return '—';
+  if (!value) return 'Not set';
   const date = new Date(value);
-  return Number.isNaN(date.getTime()) ? '—' : date.toLocaleDateString();
+  return Number.isNaN(date.getTime()) ? 'Not set' : date.toLocaleDateString();
 }
 
 export function TalentScreen({ navigate }: { navigate: (route: Route) => void }): JSX.Element {
@@ -244,14 +244,14 @@ export function TalentScreen({ navigate }: { navigate: (route: Route) => void })
       <Card>
         <H2>Working with Nelavista</H2>
         <Muted>
-          Curriculum owner: {config.remote.status === 'ready' ? config.remote.data.curriculum_owner : '—'} ·{' '}
-          {config.remote.status === 'ready' ? config.remote.data.curriculum_license : '—'}
+          Curriculum owner: {config.remote.status === 'ready' ? config.remote.data.curriculum_owner : 'Not set'} ·{' '}
+          {config.remote.status === 'ready' ? config.remote.data.curriculum_license : 'Not set'}
         </Muted>
         <Muted>
           Paid work starts at {config.remote.status === 'ready' ? config.remote.data.min_student_age : 16}; under{' '}
           {config.remote.status === 'ready' ? config.remote.data.guardian_consent_below_age : 18} needs guardian
           consent. Terms version{' '}
-          {config.remote.status === 'ready' ? config.remote.data.contributor_terms_version : '—'}.
+          {config.remote.status === 'ready' ? config.remote.data.contributor_terms_version : 'Not set'}.
         </Muted>
       </Card>
 

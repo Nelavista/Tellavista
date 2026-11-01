@@ -4,6 +4,7 @@ Web and admin authenticate with **cookies** (httpOnly refresh + CSRF pair);
 native clients authenticate with **bearer tokens** (refresh in secure storage).
 The same service serves both, so the rules cannot drift between platforms.
 """
+
 from __future__ import annotations
 
 import secrets
@@ -14,6 +15,7 @@ from sqlalchemy.orm import Session
 
 from app.api.deps import get_current_user
 from app.api.v1.domains.identity.schemas import (
+    ChangePasswordIn,
     ConsentIn,
     GoogleIn,
     LoginIn,
@@ -112,9 +114,7 @@ def signup(
 
 
 @router.post("/login", response_model=TokenOut)
-def login(
-    payload: LoginIn, request: Request, response: Response, db: Session = Depends(get_db)
-) -> TokenOut:
+def login(payload: LoginIn, request: Request, response: Response, db: Session = Depends(get_db)) -> TokenOut:
     ratelimit.check(f"login:{_client_ip(request)}", limit=10, window_seconds=60)
     user = auth.authenticate(db, email=payload.email, password=payload.password)
     if twofa.requires_second_factor(user):
@@ -155,9 +155,7 @@ def verify_second_factor(
 
     platform = str(claims.get("platform") or "web")
     access, refresh, expires = auth.issue_session(db, user, platform=platform)
-    audit.record(
-        db, action="auth.mfa_verified", actor_user_id=user.id, target_type="user", target_id=user.id
-    )
+    audit.record(db, action="auth.mfa_verified", actor_user_id=user.id, target_type="user", target_id=user.id)
     db.commit()
     return _session_response(user, access, refresh, expires, platform, response)
 
@@ -226,9 +224,7 @@ def two_factor_status(user: User = Depends(get_current_user)) -> MfaStatusOut:
 
 
 @router.post("/2fa/setup", response_model=MfaSetupOut)
-def start_two_factor(
-    user: User = Depends(get_current_user), db: Session = Depends(get_db)
-) -> MfaSetupOut:
+def start_two_factor(user: User = Depends(get_current_user), db: Session = Depends(get_db)) -> MfaSetupOut:
     """Mint a pending secret. Nothing changes for login until /2fa/enable."""
     secret, uri = twofa.begin_enrollment(db, user)
     db.commit()
@@ -242,9 +238,7 @@ def enable_two_factor(
     db: Session = Depends(get_db),
 ) -> MfaEnableOut:
     codes = twofa.confirm_enrollment(db, user, payload.code)
-    audit.record(
-        db, action="auth.mfa_enabled", actor_user_id=user.id, target_type="user", target_id=user.id
-    )
+    audit.record(db, action="auth.mfa_enabled", actor_user_id=user.id, target_type="user", target_id=user.id)
     db.commit()
     return MfaEnableOut(recovery_codes=codes)
 
@@ -256,9 +250,7 @@ def disable_two_factor(
     db: Session = Depends(get_db),
 ) -> MessageOut:
     twofa.disable(db, user, payload.code)
-    audit.record(
-        db, action="auth.mfa_disabled", actor_user_id=user.id, target_type="user", target_id=user.id
-    )
+    audit.record(db, action="auth.mfa_disabled", actor_user_id=user.id, target_type="user", target_id=user.id)
     db.commit()
     return MessageOut(message="Two-factor authentication is off.")
 
@@ -271,9 +263,7 @@ def verify_email(payload: VerifyEmailIn, db: Session = Depends(get_db)) -> MeOut
 
 
 @router.post("/email/verify/resend", response_model=MessageOut)
-def resend_verification(
-    user: User = Depends(get_current_user), db: Session = Depends(get_db)
-) -> MessageOut:
+def resend_verification(user: User = Depends(get_current_user), db: Session = Depends(get_db)) -> MessageOut:
     """Authenticated on purpose: no address in the body, so no enumeration and
     no way to mail someone who did not ask. Rate-limited per account."""
     ratelimit.check(f"verify-resend:{user.id}", limit=3, window_seconds=300)
@@ -293,6 +283,25 @@ def request_password_reset(
     return MessageOut(message="If that email has an account, a reset link is on its way.")
 
 
+@router.post("/password/change", response_model=TokenOut)
+def change_password(
+    payload: ChangePasswordIn,
+    response: Response,
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> TokenOut:
+    """Change a password in place. Other sessions are revoked, this one renewed."""
+    access, refresh, expires = auth.change_password(
+        db,
+        user,
+        current_password=payload.current_password,
+        new_password=payload.new_password,
+        platform=payload.platform,
+    )
+    db.commit()
+    return _session_response(user, access, refresh, expires, payload.platform, response)
+
+
 @router.post("/password/reset", response_model=MessageOut)
 def reset_password(payload: ResetPasswordIn, db: Session = Depends(get_db)) -> MessageOut:
     auth.reset_password(db, raw_token=payload.token, new_password=payload.password)
@@ -301,9 +310,7 @@ def reset_password(payload: ResetPasswordIn, db: Session = Depends(get_db)) -> M
 
 
 @router.post("/google", response_model=TokenOut)
-def google(
-    payload: GoogleIn, response: Response, db: Session = Depends(get_db)
-) -> TokenOut:
+def google(payload: GoogleIn, response: Response, db: Session = Depends(get_db)) -> TokenOut:
     user, access, refresh, expires = auth.login_with_google(
         db, id_token=payload.id_token, platform=payload.platform
     )

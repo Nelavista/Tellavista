@@ -217,7 +217,9 @@ export function AcademiaDashboard(): JSX.Element {
               <tbody>
                 {courses.map((course) => (
                   <tr key={course.enrolment_id}>
-                    <td className="nv-mono">{course.code}</td>
+                    <td className="nv-mono">
+                      <Link to={`/academia/courses/${course.code}`}>{course.code}</Link>
+                    </td>
                     <td>{course.title}</td>
                     <td>
                       {course.department}

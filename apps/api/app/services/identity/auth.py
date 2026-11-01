@@ -10,6 +10,7 @@ the rules are testable without HTTP. The security-critical parts:
 * account deletion anonymises and deactivates, never hard-deletes, because money
   and audit rows must stay explainable.
 """
+
 from __future__ import annotations
 
 import uuid
@@ -41,6 +42,7 @@ from app.models.identity import (
     EMAIL_TOKEN_PURPOSES,
     REVOKE_ACCOUNT_DELETED,
     REVOKE_LOGOUT,
+    REVOKE_PASSWORD_CHANGED,
     REVOKE_PASSWORD_RESET,
     REVOKE_REUSE_DETECTED,
     REVOKE_ROTATED,
@@ -52,9 +54,7 @@ from app.models.identity import (
 )
 from app.services import audit
 from app.services.jobs import enqueue
-
-TERMS_VERSION = "1.0"
-
+from app.services.platform import settings as platform_settings
 
 # --- helpers -----------------------------------------------------------------
 
@@ -136,19 +136,22 @@ def register(
 
     db.add(UserProfile(user_id=user.id, display_name=name or username))
     if accept_terms:
-        db.add(
-            Consent(
-                user_id=user.id,
-                kind="terms_of_service",
-                document_version=TERMS_VERSION,
-                granted=True,
+        # The signup checkbox covers both documents. Record the version the
+        # platform currently publishes so the re-consent gate does not ask for
+        # the same acceptance immediately after account creation.
+        document_version = platform_settings.get_platform_settings(db).terms_version
+        for kind in ("terms_of_service", "privacy_policy"):
+            db.add(
+                Consent(
+                    user_id=user.id,
+                    kind=kind,
+                    document_version=document_version,
+                    granted=True,
+                )
             )
-        )
 
     _send_verification(db, user)
-    audit.record(
-        db, action="account.created", actor_user_id=user.id, target_type="user", target_id=user.id
-    )
+    audit.record(db, action="account.created", actor_user_id=user.id, target_type="user", target_id=user.id)
     access, refresh, expires = issue_session(db, user, platform=platform)
     return user, access, refresh, expires
 
@@ -180,27 +183,35 @@ def _send_verification(db: Session, user: User) -> None:
     )
 
 
+def _password_matches(user: User, password: str) -> tuple[bool, bool]:
+    """Return (matches, needs_rehash). A missing hash never matches."""
+    if not user.password_hash:
+        return False, False
+    if is_argon2(user.password_hash):
+        return verify_password(password, user.password_hash)
+    # V1 account: verify its Werkzeug hash (PBKDF2 or scrypt), then upgrade
+    # to Argon2id silently.
+    ok = verify_legacy_werkzeug(password, user.password_hash)
+    return ok, ok
+
+
 def authenticate(db: Session, *, email: str, password: str) -> User:
     user = db.scalar(select(User).where(User.email == normalise_email(email)))
     # One message for unknown user and wrong password: no account enumeration.
     if user is None or user.is_deleted:
         raise ApiError(401, "invalid_credentials", "Email or password is incorrect.")
 
-    if is_argon2(user.password_hash):
-        ok, needs_rehash = verify_password(password, user.password_hash)
-    else:
-        # V1 account: verify its Werkzeug hash (PBKDF2 or scrypt), then upgrade
-        # to Argon2id silently.
-        ok = verify_legacy_werkzeug(password, user.password_hash)
-        needs_rehash = ok
-
+    ok, needs_rehash = _password_matches(user, password)
     if not ok:
         raise ApiError(401, "invalid_credentials", "Email or password is incorrect.")
 
     if needs_rehash:
         user.password_hash = _hash_password(password)
         audit.record(
-            db, action="password.rehashed", actor_user_id=user.id, target_type="user",
+            db,
+            action="password.rehashed",
+            actor_user_id=user.id,
+            target_type="user",
             target_id=user.id,
         )
 
@@ -209,9 +220,41 @@ def authenticate(db: Session, *, email: str, password: str) -> User:
     return user
 
 
-def issue_session(
-    db: Session, user: User, *, platform: str = "web"
+def change_password(
+    db: Session,
+    user: User,
+    *,
+    current_password: str,
+    new_password: str,
+    platform: str = "web",
 ) -> tuple[str, str, datetime]:
+    """Change a password while signed in, then replace the current session.
+
+    Every existing refresh token is revoked, including the one used for this
+    request, and a fresh family is issued. Other devices are signed out; this
+    device keeps working because the route writes the replacement cookie.
+    """
+    ok, _needs_rehash = _password_matches(user, current_password)
+    if not ok:
+        raise ApiError(401, "invalid_password", "Your current password is incorrect.")
+    if current_password == new_password:
+        raise ApiError(400, "password_unchanged", "Choose a password you have not just used.")
+
+    user.password_hash = _hash_password(new_password)
+    revoke_all(db, user.id, REVOKE_PASSWORD_CHANGED)
+    access, refresh, expires = issue_session(db, user, platform=platform)
+    audit.record(
+        db,
+        action="password.changed",
+        actor_user_id=user.id,
+        target_type="user",
+        target_id=user.id,
+    )
+    db.flush()
+    return access, refresh, expires
+
+
+def issue_session(db: Session, user: User, *, platform: str = "web") -> tuple[str, str, datetime]:
     family_id = str(uuid.uuid4())
     expires_at = datetime.now(UTC) + REFRESH_TTL
     raw, _row = _new_refresh_row(
@@ -269,9 +312,7 @@ def rotate(db: Session, *, raw_token: str) -> tuple[str, str, datetime]:
 
 def _revoke_family(db: Session, family_id: str, reason: str) -> None:
     for token in db.scalars(
-        select(RefreshToken).where(
-            RefreshToken.family_id == family_id, RefreshToken.revoked_at.is_(None)
-        )
+        select(RefreshToken).where(RefreshToken.family_id == family_id, RefreshToken.revoked_at.is_(None))
     ):
         _revoke(db, token, reason)
     db.flush()
@@ -279,9 +320,7 @@ def _revoke_family(db: Session, family_id: str, reason: str) -> None:
 
 def revoke_all(db: Session, user_id: int, reason: str) -> None:
     for token in db.scalars(
-        select(RefreshToken).where(
-            RefreshToken.user_id == user_id, RefreshToken.revoked_at.is_(None)
-        )
+        select(RefreshToken).where(RefreshToken.user_id == user_id, RefreshToken.revoked_at.is_(None))
     ):
         _revoke(db, token, reason)
     db.flush()
@@ -413,9 +452,7 @@ def login_with_google(
             db.add(user)
             db.flush()
             db.add(UserProfile(user_id=user.id, display_name=claims.get("name") or user.username))
-            audit.record(
-                db, action="account.created_google", target_type="user", target_id=user.id
-            )
+            audit.record(db, action="account.created_google", target_type="user", target_id=user.id)
         else:
             user.google_sub = sub
             user.email_verified = True
@@ -489,14 +526,10 @@ def delete_account(db: Session, *, user: User, reason: str | None = None) -> Non
 # --- consent -----------------------------------------------------------------
 
 
-def record_consent(
-    db: Session, *, user: User, kind: str, document_version: str, granted: bool
-) -> Consent:
+def record_consent(db: Session, *, user: User, kind: str, document_version: str, granted: bool) -> Consent:
     if kind not in CONSENT_KINDS:
         raise ApiError(400, "unknown_consent", "Unknown consent kind.")
-    consent = Consent(
-        user_id=user.id, kind=kind, document_version=document_version, granted=granted
-    )
+    consent = Consent(user_id=user.id, kind=kind, document_version=document_version, granted=granted)
     db.add(consent)
     db.flush()
     return consent

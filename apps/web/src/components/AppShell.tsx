@@ -17,7 +17,7 @@ import {
 } from 'lucide-react';
 import { MotionConfig, motion } from 'motion/react';
 import * as React from 'react';
-import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 import { useSession } from '../lib/session';
 import { useTheme } from '../lib/theme-context';
@@ -27,6 +27,8 @@ interface NavItem {
   to: string;
   label: string;
   icon: LucideIcon;
+  /** Extra routes that belong to this item but are not rendered as its own link. */
+  activeFor?: string[];
 }
 
 const GROUPS: Array<{ label: string; items: NavItem[] }> = [
@@ -75,10 +77,27 @@ const MOBILE: NavItem[] = [
   { to: '/home', label: 'Home', icon: LayoutDashboard },
   { to: '/academia', label: 'Academia', icon: GraduationCap },
   { to: '/skills', label: 'Skills', icon: Sparkles },
-  { to: '/opportunities', label: 'Work', icon: Briefcase },
+  { activeFor: ['/work'], to: '/opportunities', label: 'Work', icon: Briefcase },
   { to: '/earnings', label: 'Earnings', icon: Wallet },
   { to: '/settings', label: 'Settings', icon: Settings },
 ];
+
+const SIDEBAR_ITEMS = GROUPS.flatMap((group) => group.items);
+
+function activeDestination(pathname: string, items: NavItem[]): string | null {
+  let destination: string | null = null;
+  let longest = -1;
+  for (const item of items) {
+    for (const prefix of [item.to, ...(item.activeFor ?? [])]) {
+      if (pathname !== prefix && !pathname.startsWith(`${prefix}/`)) continue;
+      if (prefix.length > longest) {
+        destination = item.to;
+        longest = prefix.length;
+      }
+    }
+  }
+  return destination;
+}
 
 const TITLES: Array<[string, string]> = [
   ['/home', 'Overview'],
@@ -87,6 +106,7 @@ const TITLES: Array<[string, string]> = [
   ['/academia/cbt/history', 'CBT history'],
   ['/academia/cbt', 'CBT practice'],
   ['/academia/courses', 'Course'],
+  ['/academia/topics', 'Topic'],
   ['/academia', 'Academia'],
   ['/campus', 'Campus'],
   ['/skills/my-learning', 'My learning'],
@@ -145,6 +165,8 @@ export function AppShell({ children }: { children: React.ReactNode }): JSX.Eleme
 
   const name = profile?.display_name ?? me?.name ?? me?.username ?? 'Student';
   const role = me?.role === 'super_admin' ? 'Admin' : me?.role === 'employer' ? 'Employer' : 'Student';
+  const activeSidebarTo = activeDestination(location.pathname, SIDEBAR_ITEMS);
+  const activeMobileTo = activeDestination(location.pathname, MOBILE);
 
   React.useEffect(() => {
     document.title = `${titleFor(location.pathname)} · Nelavista`;
@@ -185,10 +207,15 @@ export function AppShell({ children }: { children: React.ReactNode }): JSX.Eleme
               {group.items.map((item) => {
                 const Icon = item.icon;
                 return (
-                  <NavLink className="nv-sidebar__link" key={item.to} to={item.to}>
+                  <Link
+                    aria-current={activeSidebarTo === item.to ? 'page' : undefined}
+                    className="nv-sidebar__link"
+                    key={item.to}
+                    to={item.to}
+                  >
                     <Icon aria-hidden="true" size={16} strokeWidth={1.7} />
                     <span>{item.label}</span>
-                  </NavLink>
+                  </Link>
                 );
               })}
             </React.Fragment>
@@ -259,10 +286,10 @@ export function AppShell({ children }: { children: React.ReactNode }): JSX.Eleme
           {MOBILE.map((item) => {
             const Icon = item.icon;
             return (
-              <NavLink key={item.to} to={item.to}>
+              <Link aria-current={activeMobileTo === item.to ? 'page' : undefined} key={item.to} to={item.to}>
                 <Icon aria-hidden="true" size={14} strokeWidth={1.7} />
                 {item.label}
-              </NavLink>
+              </Link>
             );
           })}
         </nav>

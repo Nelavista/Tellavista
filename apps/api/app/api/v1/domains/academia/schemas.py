@@ -4,6 +4,7 @@ The five questions are a fixed shape: each carries a plain-language `answer` and
 the rows behind it. Modelling it means the dashboard the web app reads is the
 dashboard the API validates, instead of two hand-kept copies.
 """
+
 from __future__ import annotations
 
 from datetime import datetime
@@ -139,6 +140,68 @@ class MaterialDetailOut(BaseModel):
     chunks: list[MaterialChunkOut]
 
 
+# --- Course and topic detail ------------------------------------------------
+
+
+class CoursePracticeOut(BaseModel):
+    attempts: int
+    correct: int
+    accuracy: int
+
+
+class CourseTopicOut(BaseModel):
+    id: int
+    title: str
+    ordinal: int
+    summary: str | None = None
+    question_count: int
+    attempts: int
+    correct: int
+    accuracy: int | None = None
+    strength: bool = False
+    weakness: bool = False
+
+
+class CourseDetailOut(BaseModel):
+    id: int
+    code: str
+    title: str
+    level: str
+    department: str
+    faculty: str
+    university: str
+    enrolment_id: int
+    session_id: int
+    session_name: str | None = None
+    semester_id: int | None = None
+    semester_name: str | None = None
+    status: str
+    topics: list[CourseTopicOut]
+    materials: list[MaterialOut]
+    practice: CoursePracticeOut
+
+
+class TopicCourseRefOut(BaseModel):
+    id: int
+    code: str
+    title: str
+
+
+class TopicDetailOut(BaseModel):
+    id: int
+    title: str
+    ordinal: int
+    summary: str | None = None
+    course: TopicCourseRefOut
+    question_count: int
+    attempts: int
+    correct: int
+    accuracy: int | None = None
+    strength: bool = False
+    weakness: bool = False
+    materials: list[MaterialOut]
+
+
 # --- Ask Nelavista (B14) ----------------------------------------------------
 
 
@@ -249,6 +312,29 @@ class CbtResultsOut(BaseModel):
     recent: list[CbtRecentOut]
 
 
+class CbtHistoryItemOut(BaseModel):
+    attempt_id: int
+    course_id: int
+    course_code: str | None = None
+    topic_id: int | None = None
+    topic: str | None = None
+    question_id: int
+    prompt: str
+    selected_key: str | None = None
+    correct_key: str | None = None
+    is_correct: bool | None = None
+    explanation: str | None = None
+    duration_ms: int | None = None
+    answered_at: datetime | None = None
+
+
+class CbtHistoryOut(BaseModel):
+    items: list[CbtHistoryItemOut]
+    attempts: int
+    correct: int
+    accuracy: int
+
+
 class CbtPracticeQuestionOut(BaseModel):
     id: int
     topic_id: int | None = None
@@ -272,6 +358,8 @@ __all__ = [
     "AskSessionSummaryOut",
     "CbtAnswerOut",
     "CbtCourseRefOut",
+    "CbtHistoryItemOut",
+    "CbtHistoryOut",
     "CbtPracticeNextOut",
     "CbtPracticeQuestionOut",
     "CbtQuestionOut",
@@ -279,6 +367,9 @@ __all__ = [
     "CbtRecentOut",
     "CbtRecommendationOut",
     "CbtResultsOut",
+    "CourseDetailOut",
+    "CoursePracticeOut",
+    "CourseTopicOut",
     "DashboardOut",
     "DashboardQuestionsOut",
     "NextActionOut",
@@ -295,6 +386,8 @@ __all__ = [
     "RecentItemOut",
     "RecentQuestionOut",
     "StudyingQuestionOut",
+    "TopicCourseRefOut",
+    "TopicDetailOut",
     "TopicStatOut",
     "WeakQuestionOut",
 ]

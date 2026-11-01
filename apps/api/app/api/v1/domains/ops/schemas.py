@@ -4,6 +4,7 @@ The import report is the receipt: expected versus actual per section, with the
 checksums V2 saw. The admin app renders it without interpreting counts, so a
 mismatch is visible rather than a green tick with a caveat.
 """
+
 from __future__ import annotations
 
 from datetime import datetime
@@ -124,9 +125,28 @@ class CampusCreatedOut(BaseModel):
     title: str
 
 
+class CampusAdminItemOut(BaseModel):
+    id: int
+    university_id: int
+    university_name: str
+    kind: str
+    title: str
+    body: str
+    latitude: float | None = None
+    longitude: float | None = None
+    is_published: bool
+    created_at: datetime
+
+
+class CampusAdminListOut(BaseModel):
+    items: list[CampusAdminItemOut]
+
+
 __all__ = [
     "AuditLogListOut",
     "AuditLogOut",
+    "CampusAdminItemOut",
+    "CampusAdminListOut",
     "CampusCreatedOut",
     "ImportListOut",
     "ImportReportOut",

@@ -7,6 +7,7 @@ eligible — the ops screen shows the same explanation the student sees.
 Removal is a status change with a reason, never a delete: a replacement decision
 has to be explainable, and the removed student's completed work still counts.
 """
+
 from __future__ import annotations
 
 from datetime import date, datetime
@@ -159,9 +160,7 @@ def invite(
         if user is None or user.is_deleted:
             raise ApiError(404, "student_not_found", f"Student {user_id} does not exist.")
         existing = db.scalar(
-            select(CohortMember).where(
-                CohortMember.cohort_id == cohort.id, CohortMember.user_id == user.id
-            )
+            select(CohortMember).where(CohortMember.cohort_id == cohort.id, CohortMember.user_id == user.id)
         )
         if existing is not None:
             if existing.status == MEMBER_REMOVED:
@@ -193,9 +192,7 @@ def invite(
         db.flush()
         from app.core import observability
 
-        observability.capture(
-            user.id, observability.EVENTS["matched"], {"opportunity_id": opportunity.id}
-        )
+        observability.capture(user.id, observability.EVENTS["matched"], {"opportunity_id": opportunity.id})
         notify(
             db,
             user_id=user.id,
@@ -209,11 +206,36 @@ def invite(
     return created
 
 
+def my_invites(db: Session, user: User) -> list[dict]:
+    """Pending cohort invitations, with the project a student is being asked to join."""
+    rows = db.execute(
+        select(CohortMember, Cohort, Project)
+        .join(Cohort, Cohort.id == CohortMember.cohort_id)
+        .join(Project, Project.id == Cohort.project_id)
+        .where(
+            CohortMember.user_id == user.id,
+            CohortMember.status == MEMBER_INVITED,
+        )
+        .order_by(CohortMember.id.desc())
+    ).all()
+    return [
+        {
+            "cohort_id": cohort.id,
+            "member_id": member.id,
+            "project_slug": project.slug,
+            "project_title": project.title,
+            "cohort_name": cohort.name,
+            "capacity": cohort.capacity,
+            "status": member.status,
+            "invited_at": member.created_at,
+        }
+        for member, cohort, project in rows
+    ]
+
+
 def respond_invite(db: Session, user: User, cohort_id: int, *, accept: bool) -> CohortMember:
     member = db.scalar(
-        select(CohortMember).where(
-            CohortMember.cohort_id == cohort_id, CohortMember.user_id == user.id
-        )
+        select(CohortMember).where(CohortMember.cohort_id == cohort_id, CohortMember.user_id == user.id)
     )
     if member is None:
         raise ApiError(404, "invite_not_found", "You were not invited to this cohort.")
@@ -311,9 +333,7 @@ def replacement_candidates(db: Session, cohort: Cohort, *, limit: int = 20) -> l
         return []
     member_ids = {
         row
-        for row in db.scalars(
-            select(CohortMember.user_id).where(CohortMember.cohort_id == cohort.id)
-        ).all()
+        for row in db.scalars(select(CohortMember.user_id).where(CohortMember.cohort_id == cohort.id)).all()
     }
     result = []
     for candidate in engine.match_candidates(db, opportunity):

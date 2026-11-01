@@ -95,6 +95,7 @@ const Applications = React.lazy(() =>
 );
 const CbtHistory = React.lazy(() => import('./routes/CbtHistory').then((m) => ({ default: m.CbtHistory })));
 const Course = React.lazy(() => import('./routes/Course').then((m) => ({ default: m.Course })));
+const Topic = React.lazy(() => import('./routes/Topic').then((m) => ({ default: m.Topic })));
 
 function Loading(): JSX.Element {
   return <BrandLoader full label="Loading Nelavista" />;
@@ -327,6 +328,14 @@ function RouteTable(): JSX.Element {
           element={
             <Protected>
               <Course />
+            </Protected>
+          }
+        />
+        <Route
+          path="/academia/topics/:topicId"
+          element={
+            <Protected>
+              <Topic />
             </Protected>
           }
         />

@@ -1,12 +1,11 @@
 /**
- * Campus publisher.
+ * Campus publisher and read surface.
  *
- * The API can publish a campus fact or map point but has no ops read for the
- * published set yet. This screen is honest about that: it publishes, shows the
- * write receipt, and keeps a session list of what this browser just created.
- * It never presents that list as the live campus.
+ * Ops publish a university fact or map point and then read the live campus set,
+ * including unpublished rows. The list is the API's record, not a browser
+ * session receipt, so a reload never hides what was published.
  */
-import type { CampusCreatedOut, UniversityOut } from '@nelavista/api-client';
+import type { CampusAdminListOut, CampusCreatedOut, UniversityOut } from '@nelavista/api-client';
 import {
   Badge,
   Banner,
@@ -40,14 +39,6 @@ const KINDS = [
 
 const MAP_KINDS = new Set(['building', 'library', 'hall', 'department', 'hostel', 'food', 'map']);
 
-interface Receipt {
-  id: number;
-  kind: string;
-  title: string;
-  university: string;
-  at: string;
-}
-
 function coordinate(raw: string, limit: number): number | null | 'invalid' {
   const trimmed = raw.trim();
   if (!trimmed) return null;
@@ -56,8 +47,16 @@ function coordinate(raw: string, limit: number): number | null | 'invalid' {
   return value;
 }
 
+function coordinateLabel(latitude: number | null | undefined, longitude: number | null | undefined): string {
+  if (latitude === null || latitude === undefined || longitude === null || longitude === undefined) {
+    return 'No map point';
+  }
+  return `${latitude.toFixed(5)}, ${longitude.toFixed(5)}`;
+}
+
 export function Campus(): JSX.Element {
   const universities = useResource<UniversityOut[]>('/onboarding/universities');
+  const campus = useResource<CampusAdminListOut>('/ops/campus');
 
   const [universityId, setUniversityId] = React.useState('');
   const [kind, setKind] = React.useState('info');
@@ -65,10 +64,10 @@ export function Campus(): JSX.Element {
   const [body, setBody] = React.useState('');
   const [latitude, setLatitude] = React.useState('');
   const [longitude, setLongitude] = React.useState('');
+  const [filterUniversity, setFilterUniversity] = React.useState('all');
   const [busy, setBusy] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
   const [note, setNote] = React.useState<string | null>(null);
-  const [receipts, setReceipts] = React.useState<Receipt[]>([]);
 
   const options = React.useMemo(() => {
     const rows =
@@ -81,10 +80,31 @@ export function Campus(): JSX.Element {
     ];
   }, [universities.resource]);
 
+  const filterOptions = React.useMemo(() => {
+    const rows = universities.resource.status === 'ready' ? universities.resource.data : [];
+    const campusRows = campus.resource.status === 'ready' ? campus.resource.data.items : [];
+    const names = new Map<number, string>();
+    for (const row of rows) names.set(row.id, row.name);
+    for (const row of campusRows) names.set(row.university_id, row.university_name);
+    return [
+      { value: 'all', label: 'All universities' },
+      ...[...names.entries()]
+        .sort((a, b) => a[1].localeCompare(b[1]))
+        .map(([id, name]) => ({ value: String(id), label: name })),
+    ];
+  }, [universities.resource, campus.resource]);
+
   const selected =
     universities.resource.status === 'ready'
       ? (universities.resource.data.find((row) => String(row.id) === universityId) ?? null)
       : null;
+
+  const items =
+    campus.resource.status === 'ready'
+      ? campus.resource.data.items.filter(
+          (row) => filterUniversity === 'all' || String(row.university_id) === filterUniversity,
+        )
+      : [];
 
   async function publish(event: React.FormEvent<HTMLFormElement>): Promise<void> {
     event.preventDefault();
@@ -126,21 +146,12 @@ export function Campus(): JSX.Element {
         longitude_micro: lng === null ? null : Math.round(lng * 1_000_000),
       });
       const universityName = selected?.name ?? `University #${universityId}`;
-      setReceipts((current) => [
-        {
-          id: created.id,
-          kind: created.kind,
-          title: created.title,
-          university: universityName,
-          at: new Date().toISOString(),
-        },
-        ...current,
-      ]);
-      setNote(`Published “${created.title}” for ${universityName}. Campus item #${created.id}.`);
+      setNote(`Published ${created.title} for ${universityName}. Campus item #${created.id}.`);
       setTitle('');
       setBody('');
       setLatitude('');
       setLongitude('');
+      campus.reload();
     } catch (err) {
       setError(err instanceof ApiError ? err.message : 'That item could not be published.');
     } finally {
@@ -153,16 +164,13 @@ export function Campus(): JSX.Element {
       <PageHeader
         eyebrow="Configure"
         title="Campus"
-        description="Publish university information and map points. Students see published items on their campus screen."
-        actions={<Badge tone="neutral">Write only</Badge>}
+        description="Publish university information and map points, then read the live set students can see."
+        actions={
+          <Badge tone={campus.resource.status === 'ready' ? 'success' : 'neutral'}>
+            {campus.resource.status === 'ready' ? 'Live read' : 'Reading'}
+          </Badge>
+        }
       />
-
-      <Banner tone="warning" actions={null}>
-        <p>
-          Ops can publish campus items but cannot read the published set yet. The list below is this browser
-          session&rsquo;s receipts, not the live campus. A read endpoint is a launch dependency.
-        </p>
-      </Banner>
 
       <Panel title="Publish an item" actions={<Plus aria-hidden="true" size={16} />}>
         {universities.resource.status === 'loading' ? <Skeleton lines={4} /> : null}
@@ -214,7 +222,7 @@ export function Campus(): JSX.Element {
             <Textarea
               hint="What a student needs to know. Plain text; no markup is rendered."
               label="Body"
-              placeholder="Opening hours, entrance, who to ask…"
+              placeholder="Opening hours, entrance, who to ask..."
               rows={4}
               value={body}
               onChange={(event) => setBody(event.target.value)}
@@ -256,50 +264,92 @@ export function Campus(): JSX.Element {
               </p>
               <Button disabled={busy || !universityId} type="submit">
                 <MapPin aria-hidden="true" size={15} />
-                {busy ? 'Publishing…' : 'Publish item'}
+                {busy ? 'Publishing...' : 'Publish item'}
               </Button>
             </div>
           </form>
         ) : null}
       </Panel>
 
-      <Panel title="Published in this session">
-        {receipts.length === 0 ? (
-          <EmptyState
-            body="Nothing has been published from this browser since the page loaded. Successful writes will appear here with their receipt."
-            icon={MapPin}
-            title="No receipts yet"
+      <Panel title="Campus record" actions={<Badge tone="neutral">{items.length}</Badge>}>
+        {filterOptions.length > 2 ? (
+          <div className="nv-row" style={{ marginBottom: 'var(--nv-space-md)', maxWidth: '20rem' }}>
+            <Select
+              label="Filter by university"
+              options={filterOptions}
+              value={filterUniversity}
+              onChange={(event) => setFilterUniversity(event.target.value)}
+            />
+          </div>
+        ) : null}
+        {campus.resource.status === 'loading' ? <Skeleton lines={5} /> : null}
+        {campus.resource.status === 'error' ? (
+          <ErrorState
+            body={campus.resource.message}
+            action={
+              <Button size="sm" type="button" variant="secondary" onClick={campus.reload}>
+                Try again
+              </Button>
+            }
           />
-        ) : (
+        ) : null}
+        {campus.resource.status === 'ready' && campus.resource.data.items.length === 0 ? (
+          <EmptyState
+            body="Publish the first item above. It will appear here with its publication state."
+            icon={MapPin}
+            title="No campus items yet"
+          />
+        ) : null}
+        {campus.resource.status === 'ready' && campus.resource.data.items.length > 0 && items.length === 0 ? (
+          <EmptyState
+            body="No item belongs to that university. Choose another filter to see the rest of the set."
+            title="Nothing in this filter"
+            action={
+              <Button onClick={() => setFilterUniversity('all')} size="sm" type="button" variant="secondary">
+                Show all universities
+              </Button>
+            }
+          />
+        ) : null}
+        {campus.resource.status === 'ready' && items.length > 0 ? (
           <div className="nv-table-wrap">
             <table className="nv-table">
-              <caption>
-                Session receipts only. Reloading the page clears this list; the published items remain in the
-                database.
-              </caption>
+              <caption>The live campus set. Unpublished rows are visible to ops only.</caption>
               <thead>
                 <tr>
-                  <th>Published</th>
+                  <th>Created</th>
                   <th>University</th>
                   <th>Kind</th>
                   <th>Title</th>
-                  <th>Id</th>
+                  <th>Map point</th>
+                  <th>State</th>
                 </tr>
               </thead>
               <tbody>
-                {receipts.map((row) => (
-                  <tr key={`${row.id}-${row.at}`}>
-                    <td>{when(row.at)}</td>
-                    <td>{row.university}</td>
-                    <td>{row.kind}</td>
-                    <td>{row.title}</td>
-                    <td className="nv-num">#{row.id}</td>
+                {items.map((row) => (
+                  <tr key={row.id}>
+                    <td>
+                      <span>{when(row.created_at)}</span>
+                      <p className="nv-meta nv-mono">#{row.id}</p>
+                    </td>
+                    <td>{row.university_name}</td>
+                    <td className="nv-mono">{row.kind}</td>
+                    <td>
+                      <strong>{row.title}</strong>
+                      {row.body ? <p className="nv-meta">{row.body}</p> : null}
+                    </td>
+                    <td className="nv-mono">{coordinateLabel(row.latitude, row.longitude)}</td>
+                    <td>
+                      <Badge tone={row.is_published ? 'success' : 'warning'}>
+                        {row.is_published ? 'Published' : 'Hidden'}
+                      </Badge>
+                    </td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
-        )}
+        ) : null}
       </Panel>
     </div>
   );

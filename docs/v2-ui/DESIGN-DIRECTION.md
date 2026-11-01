@@ -460,8 +460,8 @@ invented numbers.
 - Empty states explain how the data appears and what to do next.
 - Error states say what happened, what was preserved, and the next step. A
   feature-flag 404 says “not switched on here”, not “something went wrong”.
-- Legal and consent copy must be reviewed by counsel. Do not ship V1 legal text
-  unchanged; V2 no longer has community groups or employer self-service.
+- Legal and consent copy describes the V2 product only. Do not restore V1 legal
+  text unchanged; V2 no longer has community groups or employer self-service.
 
 ---
 

@@ -5,6 +5,7 @@ must see exactly what the student sent, and the student must never see the gold
 answer. `AssignmentTaskOut` therefore carries the template schemas but no
 expected answer — the same rule as a verification sitting.
 """
+
 from __future__ import annotations
 
 from datetime import date, datetime
@@ -135,6 +136,21 @@ class InviteResponseOut(BaseModel):
     id: int
     status: str
     joined_at: datetime | None = None
+
+
+class CohortInviteOut(BaseModel):
+    cohort_id: int
+    member_id: int
+    project_slug: str
+    project_title: str
+    cohort_name: str
+    capacity: int | None = None
+    status: str
+    invited_at: datetime | None = None
+
+
+class CohortInviteListOut(BaseModel):
+    invites: list[CohortInviteOut]
 
 
 class ProjectWriteOut(BaseModel):
@@ -280,6 +296,8 @@ __all__ = [
     "AssignmentStateOut",
     "AssignmentTaskOut",
     "CohortMemberOut",
+    "CohortInviteListOut",
+    "CohortInviteOut",
     "CohortOut",
     "CohortWriteOut",
     "ConsequenceOut",

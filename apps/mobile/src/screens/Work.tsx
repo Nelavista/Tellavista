@@ -85,7 +85,7 @@ export function AssignmentScreen({
       } else if (report.saved > 0) {
         setNote('Submitted. It will be reviewed; you can leave this screen.');
       } else {
-        setNote('Already submitted — this retry did not create a duplicate.');
+        setNote('Already submitted. This retry did not create a duplicate.');
       }
       detail.reload();
     } catch (err) {

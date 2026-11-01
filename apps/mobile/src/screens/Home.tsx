@@ -29,7 +29,7 @@ export function Home({ me, navigate }: { me: MeOut; navigate: (route: Route) => 
           {state.remote.data.has_enrolment ? (
             state.remote.data.enrolments.map((row) => (
               <Body key={row.enrolment_id}>
-                {row.code} — {row.title}
+                {row.code}: {row.title}
               </Body>
             ))
           ) : (

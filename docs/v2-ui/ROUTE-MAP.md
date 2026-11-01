@@ -2,9 +2,9 @@
 
 | Field | Value |
 |---|---|
-| Status | **Implemented 2026-10-28. See §1.1 for post-build state and remaining API dependencies.** |
+| Status | **Implemented 2026-11-01. See §1.1 for post-build state.** |
 | Gate | Gate 1 — route map |
-| Date | 2026-10-27; post-build status 2026-10-28 |
+| Date | 2026-10-27; post-build status 2026-11-01 |
 | Scope | Public, auth, student app, admin and utility routes for the V2 web launch |
 | Companion documents | `docs/v2-ui/AUDIT.md`, `docs/v2-ui/PARITY.md`, `docs/v2-ui/DESIGN-DIRECTION.md`, `docs/v2-ui/IMAGE-PROMPTS.md` |
 
@@ -13,22 +13,25 @@
 > route map is the contract between the design and the API; if a screen has no
 > API, it is marked as a dependency, not invented.
 
-## 1.1 Post-build status (2026-10-28)
+## 1.1 Post-build status (2026-11-01)
 
-Every route below that has a real API or static content is implemented. The
-exceptions are explicit dependency states, not fake screens:
+Every route below has a real API or real static content. The former dependency
+states are closed:
 
 - **Built:** all public/auth routes, the student shell and routes, the split
-  settings routes, notifications, applications, CBT history, course route,
-  campus, transcript, talent share, admin shell, Overview, Waitlist, Campus,
-  Audit, Imports, Users, Opportunities, Projects, Review, Money, Content,
+  settings routes, notifications, applications, CBT history, course and topic
+  detail, campus, transcript, talent share, admin shell, Overview, Waitlist,
+  Campus, Audit, Imports, Users, Opportunities, Projects, Review, Money, Content,
   Platform, Security, public 404, admin 404, error boundary and offline.
-- **API dependency:** full course/topic detail; CBT attempt-review detail; the
-  student cohort-invite list; admin campus read; signed-in password change.
+- **Closed API gaps:** course/topic detail (`GET /academia/courses/{id}`,
+  `GET /academia/topics/{id}`), CBT attempt history with reviewed answers
+  (`GET /academia/cbt/history`), the student cohort-invite list
+  (`GET /work/invites`), admin campus read (`GET /ops/campus`) and signed-in
+  password change (`POST /auth/password/change`).
 - **Deferred:** Google SSO, offline submission sync, newsletter and platform
   announcement banner.
-- **Write-only by design:** admin Campus publishes through `POST /ops/campus` and
-  shows session-local receipts; it does not pretend to read a published list.
+- **Admin Campus:** publishes through `POST /ops/campus` and reads the live set
+  back through `GET /ops/campus`, including hidden rows with their state shown.
 - **Route metadata:** public and auth routes set title, description, canonical,
   robots and social metadata; signed-in shells set the document title and move
   focus to `main` on route change.
@@ -93,7 +96,7 @@ exceptions are explicit dependency states, not fake screens:
 |---|---|---|---|---|
 | `/onboarding` | Onboarding | Collect university, faculty, department, level, courses; waitlist if missing | **Next incomplete step** | Guarded. Keep the waitlist path. |
 | `/settings` | Settings — profile and work | Edit identity, bio, location, timezone, visibility, languages, availability | **Save changes** | Guarded. |
-| `/settings/security` | Settings — security | Change password, view 2FA, sessions/devices | **Save security changes** | New. Password change needs an API dependency. |
+| `/settings/security` | Settings — security | Change password, view 2FA, sessions/devices | **Change password** | Uses `POST /auth/password/change`; the response replaces the current access token and revokes other sessions. |
 | `/settings/notifications` | Settings - notifications | Email preference, honest push availability, registered device list/removal, notification list link | **Save notification settings** | New. Uses `/me/push-devices`; link to `/notifications`. The web app does not register a browser device. |
 | `/settings/data` | Settings - data and consent | Export, consent history, delete account | **Download my data / Delete account** | New. Uses `/me/export`, `/me/consents`, `DELETE /auth/account`; `POST /auth/consent` is a re-consent dependency, not wired. |
 
@@ -124,13 +127,14 @@ recent notifications. Not a grid of welcome cards.
 | `/academia/materials/:materialId` | Material reader | Read and continue | **Continue reading** | `GET /academia/materials/{id}` | Skeleton, missing, error, feature-off |
 | `/academia/ask` | Ask Nelavista | Ask a course-aware question | **The question field** | `GET /academia/ask/sessions`, `POST /academia/ask` | Skeleton, empty, error, feature-off |
 | `/academia/cbt` | CBT practice | Practise under exam conditions | **Start / resume a paper** | `POST /academia/cbt/quiz`, `/answer`, `GET /results` | Skeleton, empty, error, feature-off |
-| `/academia/cbt/history` | CBT history | Review past practice | **Most recent attempt** | **Built** as an explicit dependency state; attempt-review detail still needs an API endpoint | Skeleton, empty, error |
-| `/academia/courses/:courseCode` | Course hub | See one course's topics, materials and practice | **Next topic** | **Built** with `/onboarding/state` and `/academia/materials?course_id=`; full topic detail still needs an API endpoint | Skeleton, missing, error |
+| `/academia/cbt/history` | CBT history | Review past practice | **Most recent attempt** | `GET /academia/cbt/history`; filter by course and open the answer, key and explanation | Skeleton, empty, filtered-empty, error, feature-off |
+| `/academia/courses/:courseCode` | Course hub | See one course's topics, materials and practice | **Next topic** | `GET /onboarding/state` for the code-to-id map, then `GET /academia/courses/{id}` | Skeleton, missing, error, feature-off |
+| `/academia/topics/:topicId` | Topic detail | Understand one topic and its practice record | **Practise this course** | `GET /academia/topics/{id}` | Skeleton, missing, error, feature-off |
 | `/campus` | Campus | Find campus information | **Relevant campus item** | `GET /me/campus` | Skeleton, empty, error |
 
-**Launch vs later:** `/academia/cbt/history` and `/academia/courses/:courseCode`
-are parity gaps but need API work. Mark them **post-Gate-1 API dependencies**; do
-not fake them from the dashboard payload.
+The course route links its topic rows to the topic detail route. Both endpoints
+scope the read to the signed-in student's active enrolment; an unenrolled course
+is refused by the API, not shown as an empty list.
 
 ### 4.3 Skills
 
@@ -168,14 +172,13 @@ route.
 | `/opportunities` | Opportunities | Find work that fits | **Best match with rate and fit** | `GET /opportunities` | Skeleton, empty, error, feature-off |
 | `/opportunities/applications` | My applications | Track what I applied to | **Latest application status** | `GET /opportunities/applications` | Skeleton, empty, error |
 | `/opportunities/:slug` | Opportunity detail | Decide whether to apply | **Apply / save** | `GET /opportunities/{slug}`, `POST /{slug}/apply` | Skeleton, missing, error, applied, not eligible |
-| `/work` | Work | Do and submit assigned work | **Active assignment / deadline** | `GET /work/assignments`, `/submissions`, `/quality` | Skeleton, empty, error, feature-off |
+| `/work` | Work | Do and submit assigned work | **Active invitation / assignment / deadline** | `GET /work/invites`, `/work/assignments`, `/submissions`, `/quality` | Skeleton, empty, error, feature-off, invitation success/error |
 | `/work/assignments/:assignmentId` | Assignment detail | Complete the brief | **Submit work** | `GET /work/assignments/{id}`, `/messages`, `POST /start`, `/submissions` | Skeleton, missing, error, feature-off |
 | `/earnings` | Earnings | Understand money owed and paid | **Available balance** | `GET /money/earnings` | Skeleton, empty, error, feature-off |
 
-Cohort invites belong on `/work` (and `/home` when pending) using
-`POST /work/cohorts/{id}/respond`. **API dependency:** there is no student
-invite-list endpoint yet, so the app cannot discover the cohort id. Do not fake
-an invite; add the list endpoint first.
+Cohort invites belong on `/work`. The page reads `GET /work/invites` and answers
+with `POST /work/cohorts/{id}/respond`. Declining is confirmed in a dialog;
+accepting re-reads assignments, because the new work is created by the API.
 
 ### 4.6 Account and public share
 
@@ -184,7 +187,7 @@ an invite; add the list endpoint first.
 | `/settings` | Profile/work settings | Edit how I work | **Save changes** | See §3 |
 | `/settings/security` | Security | Protect my account | **Save security changes** | New |
 | `/settings/notifications` | Notifications settings | Choose how I am contacted | **Save notification settings** | New |
-| `/settings/data` | Data/consent | Control my data | **Download / delete** | Built; re-consent still needs UI |
+| `/settings/data` | Data/consent | Control my data | **Download / delete** | Built; consent history is read-only, re-consent is handled by `ConsentGate` after a version change |
 | `/share/:token` | Shared profile | Show scoped proof | **What this proves** | Public; no app chrome |
 
 ---
@@ -205,7 +208,7 @@ Keep the hash router. Group the rail by **Operate** and **Configure**.
 | `#/review` | Review queue | Clear the quality queue | **Oldest pending review** | `GET /work/review-queue`, `/verification/practical/submissions`; reviews, quality standard, override | Skeleton, empty, error |
 | `#/money` | Money | Resolve payout and ledger exceptions | **Exception / outstanding total** | Financials, ledger, payout batches, reconciliation; `POST /money/payout-items/{id}/fail` | Skeleton, empty, error |
 | `#/content` | Content | Author and publish skills content | **Draft / published item** | `GET /skills`, `/skills/content/*`; create/update | Skeleton, empty, error, validation |
-| `#/campus` | Campus | Publish campus locations | **Campus / location** | `POST /ops/campus`; no ops read endpoint, so the screen is write-only with session-local receipts | Skeleton, empty, error, write receipt |
+| `#/campus` | Campus | Publish and audit campus locations | **Publish / live campus record** | `GET /ops/campus`, `POST /ops/campus`; the read includes hidden rows and publication state | Skeleton, empty, filtered-empty, error, publish success/error |
 | `#/platform` | Platform settings | Set currency, payout, age, terms, curriculum | **Save settings** | `GET/PATCH /platform/settings` | Skeleton, error, saved |
 | `#/security` | Security | Manage staff 2FA and security events | **Current risk / required action** | `POST /auth/2fa/disable`, security events | Loading, error, note |
 | `#/announcements` | Announcements | Publish a platform notice | **Publish / end** | **Only if approved**; needs backend | Skeleton, empty, error |
@@ -321,39 +324,35 @@ Mobile:
 
 ---
 
-## 9. API dependencies
+## 9. API reads and actions
 
-### Existing API, new screen
+### Built reads and actions
 
 | Screen | Endpoint |
 |---|---|
 | `/notifications` | `GET /me/notifications`, `POST /me/notifications/read` |
 | `/opportunities/applications` | `GET /opportunities/applications` |
 | Eligibility panel | `GET /platform/me/eligibility` |
-| Cohort invite response | `POST /work/cohorts/{id}/respond` |
+| `/work` invitations | `GET /work/invites`, `POST /work/cohorts/{id}/respond` |
 | `/settings/notifications` | `GET/POST/DELETE /me/push-devices` |
-| `/settings/data` | `GET /me/consents`; `POST /auth/consent` is a re-consent dependency |
+| `/settings/security` | `POST /auth/password/change`, `POST /auth/password/reset-request` |
+| `/settings/data` | `GET /me/consents`; `ConsentGate` handles re-consent |
+| `/academia/cbt/history` | `GET /academia/cbt/history?course_id=&limit=` |
+| `/academia/courses/:courseCode` | `/onboarding/state`, `GET /academia/courses/{id}` |
+| `/academia/topics/:topicId` | `GET /academia/topics/{id}` |
 | Admin `#/waitlist` | `GET /ops/waitlist` |
-| Admin `#/campus` | `POST /ops/campus` (read endpoint may need adding) |
+| Admin `#/campus` | `GET /ops/campus`, `POST /ops/campus` |
 | Admin application status | `POST /opportunities/applications/{id}/status` |
 | Admin payout-item failure | `POST /money/payout-items/{id}/fail` |
 
-All of these screens/actions are built except cohort invite response, which is
-blocked on the missing student invite-list endpoint. The admin campus screen is
-write-only because no ops read endpoint exists.
-
-### New API needed
+### Deliberately deferred
 
 | Screen | Missing API | Status |
 |---|---|---|
-| `/settings/security` | Change password endpoint; sessions/devices list if shown | API dependency |
-| `/academia/cbt/history` | CBT attempt history endpoint | Route built with explicit dependency state; detail endpoint missing |
-| `/academia/courses/:courseCode` | Course/topic detail endpoint | Route built from onboarding/materials; full topic detail missing |
 | Admin `#/overview` | Optional aggregate endpoint; otherwise compose from existing lists | Built by composing existing lists |
-| Admin `#/campus` | Ops campus read endpoint | Write-only; read missing |
 | `#/announcements` | Announcement model, public read, admin CRUD, audit | Deferred |
 | `#/newsletter` | Subscriber model, consent, double opt-in, unsubscribe, export, email provider | Deferred |
-| `/pricing` | No pricing model; do not build | Deferred |
+| `/pricing` | No approved pricing model; do not build | Deferred |
 
 ### No UI without API
 
@@ -364,8 +363,8 @@ needed before the API, use an explicit “not available yet” state, not fake d
 
 ## 10. Screen count and build order
 
-This is the Gate 1 plan. The build has completed it except for the API dependencies
-and deferred items in §1.1.
+This is the Gate 1 plan. The build has completed it except for the deferred items
+in §1.1.
 
 | Surface | Routes in this map | Build order |
 |---|---|---|
@@ -403,7 +402,8 @@ Approved 2026-10-27:
 2. **Auth/account split:** `/settings`, `/settings/security`,
    `/settings/notifications`, `/settings/data`.
 3. **New student routes:** `/notifications`, `/opportunities/applications`,
-   `/academia/cbt/history`, `/academia/courses/:courseCode`.
+   `/academia/cbt/history`, `/academia/courses/:courseCode`,
+   `/academia/topics/:topicId`.
 4. **New admin routes:** `#/overview`, `#/waitlist`, `#/campus`; application
    status and payout-item failure as actions, not new routes.
 5. **Utility behaviour:** real 404s, error boundary, offline state, no silent
@@ -411,9 +411,9 @@ Approved 2026-10-27:
 6. **Redirects:** the table in §7.
 7. **Deferred features:** pricing, employer self-service, newsletter and the
    platform announcement banner are post-launch. Do not build them now.
-8. **API dependencies:** CBT history, course/topic and password change need
-   backend work. Build the UI behind explicit dependency states; do not fake the
-   data.
+8. **API closure:** CBT history, course/topic detail, cohort invitations, admin
+   campus read and password change are implemented and wired; the UI no longer
+   uses dependency placeholders for them.
 9. **Parity decision:** course/topic and CBT history are in scope. Student
    material upload/analysis is deferred; the replacement is curated materials,
    Ask, CBT and the transcript evidence trail.

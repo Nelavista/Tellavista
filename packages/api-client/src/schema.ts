@@ -39,6 +39,8 @@ export type CampusItemOut = Schemas['CampusItemOut'];
 export type UniversityOut = Schemas['UniversityOut'];
 /** The receipt from publishing a campus item (`/v1/ops/campus`). */
 export type CampusCreatedOut = Schemas['CampusCreatedOut'];
+export type CampusAdminItemOut = Schemas['CampusAdminItemOut'];
+export type CampusAdminListOut = Schemas['CampusAdminListOut'];
 
 // --- Skills journey (`/v1/skills/*`) ---------------------------------------
 export type SkillOut = Schemas['SkillOut'];
@@ -115,6 +117,11 @@ export type MaterialSearchResultOut = Schemas['MaterialSearchResultOut'];
 export type MaterialSearchOut = Schemas['MaterialSearchOut'];
 export type MaterialChunkOut = Schemas['MaterialChunkOut'];
 export type MaterialDetailOut = Schemas['MaterialDetailOut'];
+export type CourseDetailOut = Schemas['CourseDetailOut'];
+export type CoursePracticeOut = Schemas['CoursePracticeOut'];
+export type CourseTopicOut = Schemas['CourseTopicOut'];
+export type TopicCourseRefOut = Schemas['TopicCourseRefOut'];
+export type TopicDetailOut = Schemas['TopicDetailOut'];
 export type AskCitationOut = Schemas['AskCitationOut'];
 export type AskAnswerOut = Schemas['AskAnswerOut'];
 export type AskCourseRefOut = Schemas['AskCourseRefOut'];
@@ -131,6 +138,8 @@ export type CbtRecommendationOut = Schemas['CbtRecommendationOut'];
 export type CbtResultsOut = Schemas['CbtResultsOut'];
 export type CbtPracticeQuestionOut = Schemas['CbtPracticeQuestionOut'];
 export type CbtPracticeNextOut = Schemas['CbtPracticeNextOut'];
+export type CbtHistoryItemOut = Schemas['CbtHistoryItemOut'];
+export type CbtHistoryOut = Schemas['CbtHistoryOut'];
 
 // --- Talent profile and shares (B13) ----------------------------------------
 export type TalentSkillOut = Schemas['TalentSkillOut'];
@@ -192,6 +201,8 @@ export type ProjectListOut = Schemas['ProjectListOut'];
 export type ProjectSummaryOut = Schemas['ProjectSummaryOut'];
 export type CohortOut = Schemas['CohortOut'];
 export type CohortWriteOut = Schemas['CohortWriteOut'];
+export type CohortInviteOut = Schemas['CohortInviteOut'];
+export type CohortInviteListOut = Schemas['CohortInviteListOut'];
 export type InviteListOut = Schemas['InviteListOut'];
 export type ReplacementListOut = Schemas['ReplacementListOut'];
 export type AssignOut = Schemas['AssignOut'];

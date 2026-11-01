@@ -6,7 +6,7 @@ import { useApi } from '../lib/useApi';
 import { Badge, Body, Card, ErrorText, H2, Loading, Muted, Screen } from '../ui';
 
 function amount(minor: number | null | undefined, currency: string | null | undefined): string {
-  if (minor == null) return '—';
+  if (minor == null) return 'Not set';
   if (!currency) return String(minor);
   try {
     return new Intl.NumberFormat(undefined, { style: 'currency', currency }).format(minor / 100);

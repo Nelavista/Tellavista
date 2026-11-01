@@ -64,6 +64,21 @@ const GROUPS: Array<{ label: string; items: NavItem[] }> = [
   },
 ];
 
+const NAV_ITEMS = GROUPS.flatMap((group) => group.items);
+
+function activeDestination(route: string): string | null {
+  let destination: string | null = null;
+  let longest = -1;
+  for (const item of NAV_ITEMS) {
+    if (route !== item.path && !route.startsWith(`${item.path}/`)) continue;
+    if (item.path.length > longest) {
+      destination = item.path;
+      longest = item.path.length;
+    }
+  }
+  return destination;
+}
+
 const TITLES: Array<[string, string]> = [
   ['/overview', 'Operations'],
   ['/audit', 'Audit trail'],
@@ -99,6 +114,7 @@ export function Shell({
   const [confirmSignOut, setConfirmSignOut] = React.useState(false);
   const mainRef = React.useRef<HTMLElement | null>(null);
   const firstRoute = React.useRef(true);
+  const activeTo = activeDestination(route);
 
   React.useEffect(() => {
     document.title = `${titleFor(route)} · Nelavista ops`;
@@ -137,10 +153,9 @@ export function Shell({
               <p className="nv-sidebar__group">{group.label}</p>
               {group.items.map((item) => {
                 const Icon = item.icon;
-                const active = route === item.path || route.startsWith(`${item.path}/`);
                 return (
                   <a
-                    aria-current={active ? 'page' : undefined}
+                    aria-current={activeTo === item.path ? 'page' : undefined}
                     className="nv-sidebar__link"
                     href={`#${item.path}`}
                     key={item.path}

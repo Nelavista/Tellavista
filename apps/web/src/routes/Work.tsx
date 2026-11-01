@@ -6,14 +6,31 @@
  * where it is? The quality record shows the counts that produced it, because a
  * score with no explanation is not actionable.
  */
-import type { AssignmentListOut, QualityOut, SubmissionListOut } from '@nelavista/api-client';
-import { Badge, Banner, Button, EmptyState, ErrorState, PageHeader, Panel, Skeleton } from '@nelavista/ui';
-import { ClipboardCheck, FileCheck2, Gauge } from 'lucide-react';
+import type {
+  AssignmentListOut,
+  CohortInviteListOut,
+  CohortInviteOut,
+  QualityOut,
+  SubmissionListOut,
+} from '@nelavista/api-client';
+import {
+  Badge,
+  Banner,
+  Button,
+  ConfirmDialog,
+  EmptyState,
+  ErrorState,
+  PageHeader,
+  Panel,
+  Skeleton,
+} from '@nelavista/ui';
+import { ClipboardCheck, FileCheck2, Gauge, Mail } from 'lucide-react';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 
 import { EMPTY_IMAGES } from '../lib/empty-images';
 import { formatDateTime } from '../lib/format';
+import { ApiError, http } from '../lib/http';
 import { useApiResource } from '../lib/resource';
 
 const STATUS_COPY: Record<string, string> = {
@@ -37,11 +54,37 @@ export function Work(): JSX.Element {
   const assignments = useApiResource<AssignmentListOut>('/work/assignments');
   const submissions = useApiResource<SubmissionListOut>('/work/submissions');
   const quality = useApiResource<QualityOut>('/work/quality');
+  const invites = useApiResource<CohortInviteListOut>('/work/invites');
+  const [pendingDecline, setPendingDecline] = React.useState<CohortInviteOut | null>(null);
+  const [inviteBusy, setInviteBusy] = React.useState(false);
+  const [inviteError, setInviteError] = React.useState<string | null>(null);
+  const [inviteNote, setInviteNote] = React.useState<string | null>(null);
+
+  async function respondToInvite(invite: CohortInviteOut, accept: boolean): Promise<void> {
+    setInviteBusy(true);
+    setInviteError(null);
+    setInviteNote(null);
+    try {
+      await http.post(`/work/cohorts/${invite.cohort_id}/respond`, { accept });
+      invites.reload();
+      if (accept) assignments.reload();
+      setInviteNote(
+        accept
+          ? `You joined ${invite.project_title}. The work now appears in your assignments.`
+          : `You declined ${invite.project_title}. No work was assigned.`,
+      );
+    } catch (err) {
+      setInviteError(err instanceof ApiError ? err.message : 'Could not answer that invitation.');
+    } finally {
+      setInviteBusy(false);
+    }
+  }
 
   if (
     assignments.resource.status === 'loading' ||
     submissions.resource.status === 'loading' ||
-    quality.resource.status === 'loading'
+    quality.resource.status === 'loading' ||
+    invites.resource.status === 'loading'
   ) {
     return (
       <div className="nv-stack" aria-busy="true" aria-label="Loading your work">
@@ -67,9 +110,10 @@ export function Work(): JSX.Element {
   if (
     assignments.resource.status !== 'ready' ||
     submissions.resource.status !== 'ready' ||
-    quality.resource.status !== 'ready'
+    quality.resource.status !== 'ready' ||
+    invites.resource.status !== 'ready'
   ) {
-    const failed = [assignments.resource, submissions.resource, quality.resource].find(
+    const failed = [assignments.resource, submissions.resource, quality.resource, invites.resource].find(
       (resource) => resource.status !== 'ready',
     );
     return (
@@ -86,6 +130,7 @@ export function Work(): JSX.Element {
                 assignments.reload();
                 submissions.reload();
                 quality.reload();
+                invites.reload();
               }}
             >
               Try again
@@ -124,6 +169,73 @@ export function Work(): JSX.Element {
           </>
         }
       />
+
+      <Panel
+        title="Invitations"
+        actions={
+          <Badge tone={invites.resource.data.invites.length > 0 ? 'warning' : 'neutral'}>
+            {invites.resource.data.invites.length}
+          </Badge>
+        }
+      >
+        {inviteError ? (
+          <Banner tone="danger">
+            <p>{inviteError}</p>
+          </Banner>
+        ) : null}
+        {inviteNote ? (
+          <Banner tone="success">
+            <p>{inviteNote}</p>
+          </Banner>
+        ) : null}
+        {invites.resource.data.invites.length === 0 ? (
+          <EmptyState
+            body="A managed project starts with an invitation. When one arrives, it appears here before it becomes an assignment."
+            icon={Mail}
+            title="No pending invitation"
+          />
+        ) : (
+          <ul className="nv-list nv-list--ruled">
+            {invites.resource.data.invites.map((invite) => (
+              <li className="nv-stack nv-stack--tight" key={invite.member_id}>
+                <div className="nv-row nv-row--between">
+                  <div>
+                    <strong>{invite.project_title}</strong>
+                    <p className="nv-meta">
+                      {invite.cohort_name}
+                      {invite.capacity === null ? '' : ` · ${invite.capacity} seats`}
+                    </p>
+                  </div>
+                  <Badge tone="warning">Invited</Badge>
+                </div>
+                <p className="nv-muted">
+                  The project is managed work. Accepting checks age, contributor terms and available seats
+                  before anything is assigned.
+                </p>
+                <div className="nv-row">
+                  <Button
+                    disabled={inviteBusy}
+                    onClick={() => void respondToInvite(invite, true)}
+                    size="sm"
+                    type="button"
+                  >
+                    {inviteBusy ? 'Answering' : 'Accept invitation'}
+                  </Button>
+                  <Button
+                    disabled={inviteBusy}
+                    onClick={() => setPendingDecline(invite)}
+                    size="sm"
+                    type="button"
+                    variant="secondary"
+                  >
+                    Decline
+                  </Button>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+      </Panel>
 
       <Panel title="Assignments" actions={<Badge tone="info">{rows.length}</Badge>}>
         {rows.length === 0 ? (
@@ -247,6 +359,26 @@ export function Work(): JSX.Element {
           </div>
         )}
       </Panel>
+
+      <ConfirmDialog
+        body={
+          <p>
+            Declining removes the invitation from this list. The project will not be assigned to you, and
+            accepting it later requires a new invitation.
+          </p>
+        }
+        busy={inviteBusy}
+        confirmLabel="Decline invitation"
+        onCancel={() => setPendingDecline(null)}
+        onConfirm={() => {
+          if (pendingDecline) {
+            void respondToInvite(pendingDecline, false).finally(() => setPendingDecline(null));
+          }
+        }}
+        open={pendingDecline !== null}
+        title={pendingDecline ? `Decline ${pendingDecline.project_title}?` : 'Decline this invitation?'}
+        tone="danger"
+      />
     </div>
   );
 }

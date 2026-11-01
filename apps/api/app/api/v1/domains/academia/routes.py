@@ -6,6 +6,7 @@ answer rather than a spinner. Nothing here reads another student's rows: every
 service call is scoped by the authenticated user, and an unenrolled course is a
 403 rather than an empty list.
 """
+
 from __future__ import annotations
 
 from fastapi import APIRouter, Depends, Query
@@ -18,19 +19,22 @@ from app.api.v1.domains.academia.schemas import (
     AskSessionListOut,
     AskSessionOut,
     CbtAnswerOut,
+    CbtHistoryOut,
     CbtPracticeNextOut,
     CbtQuizOut,
     CbtResultsOut,
+    CourseDetailOut,
     DashboardOut,
     MaterialDetailOut,
     MaterialListOut,
     MaterialSearchOut,
+    TopicDetailOut,
 )
 from app.core import flags
 from app.db.session import get_db
 from app.models.identity import User
 from app.services.academia import ask as ask_service
-from app.services.academia import cbt, dashboard, materials
+from app.services.academia import cbt, courses, dashboard, materials
 
 router = APIRouter(
     prefix="/academia",
@@ -59,11 +63,29 @@ class AnswerIn(BaseModel):
 
 
 @router.get("/dashboard", response_model=DashboardOut)
-def get_dashboard(
-    user: User = Depends(get_current_user), db: Session = Depends(get_db)
-) -> dict:
+def get_dashboard(user: User = Depends(get_current_user), db: Session = Depends(get_db)) -> dict:
     """The existing dashboard, answering its five questions and nothing else."""
     return dashboard.dashboard(db, user)
+
+
+@router.get("/courses/{course_id}", response_model=CourseDetailOut)
+def course_detail(
+    course_id: int,
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> dict:
+    """The enrolled course, its topics, materials and the student's practice record."""
+    return courses.course_detail(db, user, course_id)
+
+
+@router.get("/topics/{topic_id}", response_model=TopicDetailOut)
+def topic_detail(
+    topic_id: int,
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> dict:
+    """One topic within an enrolled course. Another course's topic is a 403."""
+    return courses.topic_detail(db, user, topic_id)
 
 
 @router.get("/materials", response_model=MaterialListOut)
@@ -114,9 +136,7 @@ def ask(
 
 
 @router.get("/ask/sessions", response_model=AskSessionListOut)
-def ask_sessions(
-    user: User = Depends(get_current_user), db: Session = Depends(get_db)
-) -> dict:
+def ask_sessions(user: User = Depends(get_current_user), db: Session = Depends(get_db)) -> dict:
     return {"sessions": ask_service.list_sessions(db, user)}
 
 
@@ -159,6 +179,17 @@ def save_answer(
     )
     db.commit()
     return result
+
+
+@router.get("/cbt/history", response_model=CbtHistoryOut)
+def cbt_history(
+    course_id: int | None = None,
+    limit: int = Query(default=100, ge=1, le=300),
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> dict:
+    """The student's own answered questions, newest first."""
+    return courses.my_cbt_history(db, user, course_id=course_id, limit=limit)
 
 
 @router.get("/cbt/results", response_model=CbtResultsOut)

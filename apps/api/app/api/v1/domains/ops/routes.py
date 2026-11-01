@@ -8,6 +8,7 @@ The import endpoint takes the V1 export as JSON in the request body. Nothing her
 reads V1's database: the export is produced elsewhere and handed in, which keeps
 the one-way rule (`V1 → V2`, never the reverse) structural.
 """
+
 from __future__ import annotations
 
 from fastapi import APIRouter, Depends, Query
@@ -17,6 +18,8 @@ from sqlalchemy.orm import Session
 
 from app.api.v1.domains.ops.schemas import (
     AuditLogListOut,
+    CampusAdminItemOut,
+    CampusAdminListOut,
     CampusCreatedOut,
     ImportListOut,
     ImportReportOut,
@@ -221,9 +224,7 @@ def waitlist(
     _actor: User = Depends(require_permission("talent.read")),
     db: Session = Depends(get_db),
 ) -> dict:
-    rows = db.scalars(
-        select(UniversityWaitlist).order_by(UniversityWaitlist.id.desc()).limit(limit)
-    ).all()
+    rows = db.scalars(select(UniversityWaitlist).order_by(UniversityWaitlist.id.desc()).limit(limit)).all()
     return WaitlistOut(
         waitlist=[
             {
@@ -235,6 +236,46 @@ def waitlist(
                 "created_at": row.created_at,
             }
             for row in rows
+        ]
+    )
+
+
+@router.get("/campus", response_model=CampusAdminListOut)
+def list_campus_info(
+    university_id: int | None = None,
+    limit: int = Query(default=200, ge=1, le=500),
+    _actor: User = Depends(require_permission("project.write")),
+    db: Session = Depends(get_db),
+) -> CampusAdminListOut:
+    """The published campus set, including unpublished rows ops may have hidden.
+
+    Reads are deliberately unfiltered by publication state: an operator must be
+    able to see why a student cannot see an item before changing it.
+    """
+    stmt = (
+        select(CampusInfo, University)
+        .join(University, University.id == CampusInfo.university_id)
+        .order_by(CampusInfo.id.desc())
+        .limit(limit)
+    )
+    if university_id is not None:
+        stmt = stmt.where(CampusInfo.university_id == university_id)
+    rows = db.execute(stmt).all()
+    return CampusAdminListOut(
+        items=[
+            CampusAdminItemOut(
+                id=row.id,
+                university_id=university.id,
+                university_name=university.name,
+                kind=row.kind,
+                title=row.title,
+                body=row.body,
+                latitude=(row.latitude_micro / 1_000_000 if row.latitude_micro is not None else None),
+                longitude=(row.longitude_micro / 1_000_000 if row.longitude_micro is not None else None),
+                is_published=row.is_published,
+                created_at=row.created_at,
+            )
+            for row, university in rows
         ]
     )
 

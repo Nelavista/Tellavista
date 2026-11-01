@@ -2,8 +2,8 @@
 
 | Field | Value |
 |---|---|
-| Status | **Post-build 2026-10-28. Gates 1 and 2 approved 2026-10-27. Core UI build complete; remaining items are API/content dependencies and launch verification.** |
-| Date | 2026-10-27; post-build and palette correction 2026-10-28 |
+| Status | **Post-build 2026-11-01. Gates 1 and 2 approved 2026-10-27. Core UI and API-detail build complete; remaining items are business content and launch verification.** |
+| Date | 2026-10-27; post-build, palette correction and API closure 2026-11-01 |
 | Scope | Current V2 web, admin, design tokens and UI-facing API contracts; V1 used only as a reference |
 | Not in scope | V1 code changes, backend changes, deployment changes, mobile launch |
 | Companion documents | `docs/v2-ui/PARITY.md`, `docs/v2-ui/ROUTE-MAP.md`, `docs/v2-ui/DESIGN-DIRECTION.md`, `docs/v2-ui/IMAGE-PROMPTS.md`, `docs/design/ui-ux-framework.md` |
@@ -15,7 +15,7 @@
 > current state, and it overrides the baseline tables below where they disagree.
 > Sections 2–14 are intentionally kept as the starting-point record.
 
-## 1.1 Post-build status (2026-10-28)
+## 1.1 Post-build status (2026-11-01)
 
 The redesign has landed in code. This section replaces the baseline where they
 disagree; the rest of the document remains useful as the starting-point record.
@@ -30,14 +30,15 @@ disagree; the rest of the document remains useful as the starting-point record.
   still. The header and app rail use the circular mark only.
 - **Public surface:** Landing, Features, How it works, About, Contact, FAQ,
   Privacy, Terms, Contributor terms, a real 404 and an offline screen exist as
-  separate routes. Legal copy is an explicit draft pending counsel. Every public
-  page now sets a title, description, canonical, robots and OG/Twitter metadata;
+  separate routes. Legal copy is final product copy with the current terms
+  version. Every public page now sets a title, description, canonical, robots and
+  OG/Twitter metadata;
   `sitemap.xml` and `robots.txt` cover the public pages and disallow private app
   routes.
 - **Auth:** Login, Signup, Verify email and Reset password use the shared auth
   layout and set page metadata. Password fields have a show/hide control, and
-  signup links to the draft legal pages. `ConsentGate` handles a terms or privacy
-  version change after sign-in.
+  signup links to the legal pages and records the current terms version.
+  `ConsentGate` handles a terms or privacy version change after sign-in.
 - **Student app:** The grouped app shell, mobile navigation, theme toggle,
   notifications, applications, CBT history, course detail and split settings
   routes exist. Home, Academia, Materials, Ask, CBT, Skills, My learning, Lesson,
@@ -53,23 +54,24 @@ disagree; the rest of the document remains useful as the starting-point record.
 - **Admin:** The grouped shell, Overview, Waitlist, Campus, Audit, Imports, Users,
   Opportunities, Projects, Review, Money, Content, Platform, Security and a real
   404 exist. All admin screens now use the shared page header, panel, skeleton,
-  error and empty primitives. Overview reads live queues; Campus is write-only
-  because the read endpoint is missing. Application status and payout-item
+  error and empty primitives. Overview reads live queues; Campus publishes and
+  reads the live set, including hidden rows. Application status and payout-item
   failure actions are exposed in Opportunities and Money.
-- **Still open (API dependencies):** Course/topic detail beyond the current course
-  route, CBT history/review detail, the student cohort-invite list, an admin
-  campus read endpoint and a signed-in change-password endpoint. The admin Campus
-  screen remains write-only with an explicit banner and session-local receipts.
-- **Still open (business/content):** approved pricing amounts, counsel-reviewed
-  legal copy, real social profile URLs, real metrics/testimonials, photography,
-  employer positioning and the material upload/analysis replacement copy. The
-  editorial images are integrated as optimized WebP derivatives; real photography
-  is still pending. Share intents stand in for unavailable profile URLs.
+- **Closed API dependencies:** Full course and topic detail, CBT history with
+  answer review, the student cohort-invite list, admin campus read and signed-in
+  password change are implemented and wired. In-place password change revokes
+  other refresh tokens and renews the current session. Signup records both terms
+  and privacy consent at the platform terms version.
+- **Still open (business/content):** approved pricing amounts, real social profile
+  URLs, real metrics/testimonials, photography, employer positioning and the
+  material upload/analysis replacement copy. The editorial images are integrated
+  as optimized WebP derivatives; real photography is still pending. Share intents
+  stand in for unavailable profile URLs.
 - **Still open (verification):** Admin 2FA enrolment is code-complete and the
   recovery-code handoff is fixed, but the full browser path is not verified
   end-to-end. The local seed lock came from duplicate API/worker processes and was
   cleared by stopping them; `dev-local.ps1` still needs one clean run. The V2
-  domain switch is pending; legal pages remain drafts and block launch.
+  domain switch is a deployment-level step and remains pending.
 - **Removed as unused:** `Logo`, `ArrowLink` and `Spinner` exports, the unused
   spinner CSS, and `apps/web/src/components/Layout.tsx`.
 
@@ -264,8 +266,8 @@ batches, content authoring, platform policy and 2FA.
 
 | Gap | Evidence | Impact |
 |---|---|---|
-| No campus read endpoint | `POST /ops/campus` exists; no ops list/read route | Campus remains write-only with session-local receipts; ops cannot audit published content in-app. |
-| No student cohort-invite list | `POST /work/cohorts/{id}/invites` and `/respond` exist; no list endpoint | Admin can invite, but the student cannot see or answer an invite in-product. |
+| Campus read is built | `GET /ops/campus` returns published and hidden rows with university names and coordinates | Resolved; the admin table is the live set, not a session receipt. |
+| Student invitations are built | `/work` reads `GET /work/invites` and responds through `POST /work/cohorts/{id}/respond` | Resolved; declining is confirmed, accepting re-reads assignments. |
 | Applications are now actionable | `POST /opportunities/applications/{id}/status` is exposed in Opportunities | Resolved; statuses are interested, applied, shortlisted, withdrawn and rejected. |
 | Payout items are now actionable | `POST /money/payout-items/{id}/fail` is exposed in Money | Resolved; a reason is required and audited. |
 | No admin 404 | Unknown hash renders a real `AdminNotFound` | Resolved. |
@@ -277,10 +279,9 @@ batches, content authoring, platform policy and 2FA.
 ### 5.3 Admin verdict
 
 Admin is the strongest part of V2 functionally and now shares the student app's
-design system at a denser rhythm. The remaining work is API-backed: a campus read
-endpoint, a student cohort-invite list, and a purpose-built aggregate overview.
-Bulk actions and richer application lifecycle states are useful next steps, not
-launch blockers.
+design system at a denser rhythm. The former campus-read and invite-list gaps are
+closed. Bulk actions, a purpose-built aggregate overview and richer application
+lifecycle states are useful next steps, not launch blockers.
 
 ---
 
@@ -290,7 +291,6 @@ launch blockers.
 
 | Endpoint | Missing UI |
 |---|---|
-| `POST /work/cohorts/{id}/respond` | Accept/decline a cohort invite; no list endpoint exists to find the invite first |
 | `GET /opportunities/matches` | Matches view; opportunity list shows verdicts only |
 | `GET /platform/me/eligibility` | Standalone eligibility/readiness view; blockers are shown on opportunity detail |
 | `GET /academia/cbt/practice-next` | Adaptive practice (deferred) |
@@ -300,19 +300,20 @@ launch blockers.
 
 Resolved by the build: consent history (`GET /me/consents`), push-device list and
 removal (`GET/DELETE /me/push-devices`), my applications
-(`GET /opportunities/applications`), admin waitlist (`GET /ops/waitlist`), admin
-campus publishing (`POST /ops/campus`), application status
-(`POST /opportunities/applications/{id}/status`) and payout-item failure
-(`POST /money/payout-items/{id}/fail`).
+(`GET /opportunities/applications`), cohort invitations (`GET /work/invites`,
+`POST /work/cohorts/{id}/respond`), admin waitlist (`GET /ops/waitlist`), campus
+read and publishing (`GET/POST /ops/campus`), course/topic detail, CBT history,
+password change, application status (`POST /opportunities/applications/{id}/status`)
+and payout-item failure (`POST /money/payout-items/{id}/fail`).
 
 ### 6.2 UI without a real API
 
 No screen calls a missing endpoint. The two former false claims are resolved:
 
-- **Signup terms acceptance** links to the draft legal pages and sends
-  `accept_terms`; the backend records `terms_of_service` at `TERMS_VERSION`.
-  Consent history shows the recorded row. What is not built is re-consent when
-  the terms version changes; `POST /auth/consent` exists but has no UI.
+- **Signup terms acceptance** links to the legal pages and sends `accept_terms`;
+  the backend records `terms_of_service` and `privacy_policy` at
+  `TERMS_VERSION`. Consent history shows the recorded rows. `ConsentGate` asks an
+  existing signed-in student to accept again when the platform version changes.
 - **Push preference** is no longer a toggle that promises delivery. The web app
   says it cannot register a browser device and lists/removes devices registered
   elsewhere.
@@ -321,10 +322,9 @@ No screen calls a missing endpoint. The two former false claims are resolved:
 ### 6.3 API-only verdict
 
 The high-impact identity, notification, application and admin money edges are now
-reachable. The remaining API-only items are either blocked on a missing list
-endpoint (cohort invites), intentionally deferred (Google, offline sync, adaptive
-practice) or a nice-to-have view (matches, standalone eligibility). Do not invent
-the missing reads.
+reachable. The remaining API-only items are intentionally deferred (Google SSO,
+offline sync, adaptive practice) or a nice-to-have view (matches, standalone
+eligibility). Do not invent the deferred reads or business data.
 
 ---
 
@@ -507,30 +507,24 @@ Neither belongs in the first design-system PR. They come after the core screens.
 
 ### 10.1 Launch blockers (current)
 
-1. **Legal review.** The privacy, terms and contributor-terms pages exist as
-   explicit drafts. Counsel must review them against V2's actual data flows before
-   launch.
-2. **Re-consent.** Signup records `terms_of_service` at `TERMS_VERSION` and
-   consent history is visible. When the version changes, there is no UI to ask an
-   existing student to accept again; `POST /auth/consent` is unused.
-3. **Password change.** No signed-in password rotation endpoint; reset-by-email is
-   the only path.
-4. **Cohort invite response.** Managed work is one-sided without a student-facing
-   invite list and response UI.
-5. **Admin campus read.** Publishing is write-only; ops cannot audit the published
-   list in-app.
-6. **Business content.** Pricing (if any), support response expectations, real
+1. **Re-consent:** resolved by `ConsentGate`, which reads `/platform/config` and
+   records both terms and privacy consent at the current version.
+2. **Password change:** resolved by `POST /auth/password/change`; the current
+   device receives a fresh session and other refresh tokens are revoked.
+3. **Cohort invitations:** resolved by `GET /work/invites` and the response flow
+   on `/work`.
+4. **Admin campus read:** resolved by `GET /ops/campus`; hidden rows and their
+   publication state remain visible to ops.
+5. **Business content.** Approved pricing, support response expectations, real
    social links and proof metrics are not supplied. Do not invent them.
-7. **Photography and image assets.** The prompt manifest is ready; the files are
-   not.
-8. **Admin 2FA and local flow verification.** Login works, but first-login
+6. **Photography and image assets.** The editorial WebP set is integrated; real
+   photography is opted out and not supplied.
+7. **Admin 2FA and local flow verification.** Login works, but first-login
    enrolment and `dev-local.ps1` need an end-to-end pass.
-9. **Domain switch and deployment.** V2 is not yet on the production domain.
+8. **Domain switch and deployment.** V2 is not yet on the production domain.
 
 ### 10.2 Strongly recommended for parity/quality
 
-- Course/topic detail beyond the current course route, and CBT history/review
-  detail, or an explicit decision that the current screens are the replacement.
 - Student material upload/analysis, or publish the replacement copy that explains
   curated materials + Ask + CBT + the transcript evidence trail.
 - “My matches” and a standalone eligibility/readiness view.
@@ -635,17 +629,18 @@ These cannot be invented by the UI:
 | Admin typecheck | Passed |
 | Web tests | 57 passed (11 files) |
 | Admin tests | 2 passed (1 file) |
+| API tests | 337 passed, 1 skipped |
 | Web/admin lint | Passed |
 | Web/admin production build | Passed |
-| First-load budget | Passed: 116.0 KB gzip JS of 150 KB; 7.0 KB gzip CSS of 20 KB |
+| First-load budget | Passed: 122.6 KB gzip JS of 150 KB; 7.6 KB gzip CSS of 20 KB |
 | Prettier / `git diff --check` | Passed |
 | Brand assets | V1 logo/favicon copied, V2 icons generated, boot loader present in both apps |
 | Theme | Light and dark tokens verified in code; manual visual pass still recommended |
-| API dependencies | Not exercised end-to-end; see §10.1 |
+| API closure | New routes covered by API tests; no live deployment run |
 | V1 reference | Read-only; no V1 files changed |
 
 The Phase 0 audit itself did not change code; the post-build rows record the
-redesign that followed. The checks above were run on 2026-10-28 against the
+redesign that followed. The checks above were last run on 2026-11-01 against the
 working tree, not against a deployed environment.
 
 
@@ -656,17 +651,14 @@ working tree, not against a deployed environment.
 V2 is now functionally broad and visually coherent on Nelavista blue and white.
 The public surface, auth, student journey, admin tools, brand assets, metadata and
 the high-impact consent/push/application/payout edges are built. The remaining
-work is mostly not UI invention:
+work is not UI invention:
 
-1. Legal review and a re-consent UI when the terms version changes.
-2. A signed-in password-change endpoint.
-3. Course/topic and CBT attempt-review detail endpoints; the CBT history route
-   already exists as an explicit dependency state.
-4. A student cohort-invite list endpoint and an admin campus read endpoint.
-5. Real business content, photography and the approved image set.
-6. End-to-end admin 2FA, the full local setup, a manual light/dark visual pass and
-   the domain switch.
-7. Analytics/error tracking before launch.
+1. Approved pricing and real business content, including social profile URLs,
+   metrics and employer positioning.
+2. The editorial image set is integrated; real photography was opted out.
+3. End-to-end admin 2FA, one clean local setup run and a manual light/dark visual
+   pass.
+4. Analytics/error tracking before launch and the deployment-level domain switch.
 
-Do not invent the missing reads, business copy or imagery. Ship the working
-record that exists, then close the API and content dependencies.
+Do not invent the missing business copy or imagery. Ship the working record that
+exists and finish the manual launch checks.

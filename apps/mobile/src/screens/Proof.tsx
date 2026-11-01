@@ -202,7 +202,7 @@ export function AssessmentScreen({
             onPress={() => void submit()}
           />
           <Muted>
-            {Object.keys(answers).length} of {attempt.tasks.length} answered — unanswered tasks score zero.
+            {Object.keys(answers).length} of {attempt.tasks.length} answered. Unanswered tasks score zero.
           </Muted>
         </>
       ) : null}

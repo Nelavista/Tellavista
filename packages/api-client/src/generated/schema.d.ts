@@ -252,6 +252,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/auth/password/change": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Change Password
+         * @description Change a password in place. Other sessions are revoked, this one renewed.
+         */
+        post: operations["change_password_v1_auth_password_change_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/auth/password/reset": {
         parameters: {
             query?: never;
@@ -1507,6 +1527,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/work/invites": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** My Invites */
+        get: operations["my_invites_v1_work_invites_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/work/assignments/{assignment_id}": {
         parameters: {
             query?: never;
@@ -2138,6 +2175,46 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/academia/courses/{course_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Course Detail
+         * @description The enrolled course, its topics, materials and the student's practice record.
+         */
+        get: operations["course_detail_v1_academia_courses__course_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/academia/topics/{topic_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Topic Detail
+         * @description One topic within an enrolled course. Another course's topic is a 403.
+         */
+        get: operations["topic_detail_v1_academia_topics__topic_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/academia/materials": {
         parameters: {
             query?: never;
@@ -2277,6 +2354,26 @@ export interface paths {
          * @description Save one answer immediately: a dropped connection never loses it.
          */
         post: operations["save_answer_v1_academia_cbt_answer_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/academia/cbt/history": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Cbt History
+         * @description The student's own answered questions, newest first.
+         */
+        get: operations["cbt_history_v1_academia_cbt_history_get"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -2494,7 +2591,14 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /**
+         * List Campus Info
+         * @description The published campus set, including unpublished rows ops may have hidden.
+         *
+         *     Reads are deliberately unfiltered by publication state: an operator must be
+         *     able to see why a student cannot see an item before changing it.
+         */
+        get: operations["list_campus_info_v1_ops_campus_get"];
         put?: never;
         /** Create Campus Info */
         post: operations["create_campus_info_v1_ops_campus_post"];
@@ -2942,6 +3046,37 @@ export interface components {
             /** Paid At */
             paid_at?: string | null;
         };
+        /** CampusAdminItemOut */
+        CampusAdminItemOut: {
+            /** Id */
+            id: number;
+            /** University Id */
+            university_id: number;
+            /** University Name */
+            university_name: string;
+            /** Kind */
+            kind: string;
+            /** Title */
+            title: string;
+            /** Body */
+            body: string;
+            /** Latitude */
+            latitude?: number | null;
+            /** Longitude */
+            longitude?: number | null;
+            /** Is Published */
+            is_published: boolean;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+        };
+        /** CampusAdminListOut */
+        CampusAdminListOut: {
+            /** Items */
+            items: components["schemas"]["CampusAdminItemOut"][];
+        };
         /** CampusCreatedOut */
         CampusCreatedOut: {
             /** Id */
@@ -3100,6 +3235,46 @@ export interface components {
             /** Code */
             code?: string | null;
         };
+        /** CbtHistoryItemOut */
+        CbtHistoryItemOut: {
+            /** Attempt Id */
+            attempt_id: number;
+            /** Course Id */
+            course_id: number;
+            /** Course Code */
+            course_code?: string | null;
+            /** Topic Id */
+            topic_id?: number | null;
+            /** Topic */
+            topic?: string | null;
+            /** Question Id */
+            question_id: number;
+            /** Prompt */
+            prompt: string;
+            /** Selected Key */
+            selected_key?: string | null;
+            /** Correct Key */
+            correct_key?: string | null;
+            /** Is Correct */
+            is_correct?: boolean | null;
+            /** Explanation */
+            explanation?: string | null;
+            /** Duration Ms */
+            duration_ms?: number | null;
+            /** Answered At */
+            answered_at?: string | null;
+        };
+        /** CbtHistoryOut */
+        CbtHistoryOut: {
+            /** Items */
+            items: components["schemas"]["CbtHistoryItemOut"][];
+            /** Attempts */
+            attempts: number;
+            /** Correct */
+            correct: number;
+            /** Accuracy */
+            accuracy: number;
+        };
         /** CbtPracticeNextOut */
         CbtPracticeNextOut: {
             /** Course Id */
@@ -3185,6 +3360,18 @@ export interface components {
             /** Recent */
             recent: components["schemas"]["CbtRecentOut"][];
         };
+        /** ChangePasswordIn */
+        ChangePasswordIn: {
+            /** Current Password */
+            current_password: string;
+            /** New Password */
+            new_password: string;
+            /**
+             * Platform
+             * @default web
+             */
+            platform: string;
+        };
         /** ClosesViaOut */
         ClosesViaOut: {
             /** Learning Path Id */
@@ -3198,6 +3385,30 @@ export interface components {
             name: string;
             /** Capacity */
             capacity?: number | null;
+        };
+        /** CohortInviteListOut */
+        CohortInviteListOut: {
+            /** Invites */
+            invites: components["schemas"]["CohortInviteOut"][];
+        };
+        /** CohortInviteOut */
+        CohortInviteOut: {
+            /** Cohort Id */
+            cohort_id: number;
+            /** Member Id */
+            member_id: number;
+            /** Project Slug */
+            project_slug: string;
+            /** Project Title */
+            project_title: string;
+            /** Cohort Name */
+            cohort_name: string;
+            /** Capacity */
+            capacity?: number | null;
+            /** Status */
+            status: string;
+            /** Invited At */
+            invited_at?: string | null;
         };
         /** CohortMemberOut */
         CohortMemberOut: {
@@ -3396,6 +3607,40 @@ export interface components {
             /** Version */
             version: number;
         };
+        /** CourseDetailOut */
+        CourseDetailOut: {
+            /** Id */
+            id: number;
+            /** Code */
+            code: string;
+            /** Title */
+            title: string;
+            /** Level */
+            level: string;
+            /** Department */
+            department: string;
+            /** Faculty */
+            faculty: string;
+            /** University */
+            university: string;
+            /** Enrolment Id */
+            enrolment_id: number;
+            /** Session Id */
+            session_id: number;
+            /** Session Name */
+            session_name?: string | null;
+            /** Semester Id */
+            semester_id?: number | null;
+            /** Semester Name */
+            semester_name?: string | null;
+            /** Status */
+            status: string;
+            /** Topics */
+            topics: components["schemas"]["CourseTopicOut"][];
+            /** Materials */
+            materials: components["schemas"]["MaterialOut"][];
+            practice: components["schemas"]["CoursePracticeOut"];
+        };
         /** CourseOut */
         CourseOut: {
             /** Id */
@@ -3406,6 +3651,44 @@ export interface components {
             title: string;
             /** Level */
             level: string;
+        };
+        /** CoursePracticeOut */
+        CoursePracticeOut: {
+            /** Attempts */
+            attempts: number;
+            /** Correct */
+            correct: number;
+            /** Accuracy */
+            accuracy: number;
+        };
+        /** CourseTopicOut */
+        CourseTopicOut: {
+            /** Id */
+            id: number;
+            /** Title */
+            title: string;
+            /** Ordinal */
+            ordinal: number;
+            /** Summary */
+            summary?: string | null;
+            /** Question Count */
+            question_count: number;
+            /** Attempts */
+            attempts: number;
+            /** Correct */
+            correct: number;
+            /** Accuracy */
+            accuracy?: number | null;
+            /**
+             * Strength
+             * @default false
+             */
+            strength: boolean;
+            /**
+             * Weakness
+             * @default false
+             */
+            weakness: boolean;
         };
         /** CurrencyTotalOut */
         CurrencyTotalOut: {
@@ -5794,6 +6077,47 @@ export interface components {
             /** Refresh Token */
             refresh_token?: string | null;
         };
+        /** TopicCourseRefOut */
+        TopicCourseRefOut: {
+            /** Id */
+            id: number;
+            /** Code */
+            code: string;
+            /** Title */
+            title: string;
+        };
+        /** TopicDetailOut */
+        TopicDetailOut: {
+            /** Id */
+            id: number;
+            /** Title */
+            title: string;
+            /** Ordinal */
+            ordinal: number;
+            /** Summary */
+            summary?: string | null;
+            course: components["schemas"]["TopicCourseRefOut"];
+            /** Question Count */
+            question_count: number;
+            /** Attempts */
+            attempts: number;
+            /** Correct */
+            correct: number;
+            /** Accuracy */
+            accuracy?: number | null;
+            /**
+             * Strength
+             * @default false
+             */
+            strength: boolean;
+            /**
+             * Weakness
+             * @default false
+             */
+            weakness: boolean;
+            /** Materials */
+            materials: components["schemas"]["MaterialOut"][];
+        };
         /**
          * TopicStatOut
          * @description Accuracy over practice answers, with the strength/weakness verdict.
@@ -6539,6 +6863,41 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["MessageOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    change_password_v1_auth_password_change_post: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ChangePasswordIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TokenOut"];
                 };
             };
             /** @description Validation Error */
@@ -9251,6 +9610,37 @@ export interface operations {
             };
         };
     };
+    my_invites_v1_work_invites_get: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CohortInviteListOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     assignment_detail_v1_work_assignments__assignment_id__get: {
         parameters: {
             query?: never;
@@ -10561,6 +10951,72 @@ export interface operations {
             };
         };
     };
+    course_detail_v1_academia_courses__course_id__get: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path: {
+                course_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CourseDetailOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    topic_detail_v1_academia_topics__topic_id__get: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path: {
+                topic_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TopicDetailOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     list_materials_v1_academia_materials_get: {
         parameters: {
             query?: {
@@ -10817,6 +11273,40 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["CbtAnswerOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    cbt_history_v1_academia_cbt_history_get: {
+        parameters: {
+            query?: {
+                course_id?: number | null;
+                limit?: number;
+            };
+            header?: {
+                authorization?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CbtHistoryOut"];
                 };
             };
             /** @description Validation Error */
@@ -11238,6 +11728,40 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["WaitlistOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_campus_info_v1_ops_campus_get: {
+        parameters: {
+            query?: {
+                university_id?: number | null;
+                limit?: number;
+            };
+            header?: {
+                authorization?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CampusAdminListOut"];
                 };
             };
             /** @description Validation Error */

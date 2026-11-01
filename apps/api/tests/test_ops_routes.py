@@ -5,24 +5,33 @@ both halves of its contract: the staff action succeeds and is auditable, and a
 student is refused. Content also proves the student-facing rule — a draft is
 invisible until it is published.
 """
+
 from __future__ import annotations
 
-from factories import make_opportunity, make_ops, make_project, make_reviewer, make_skill, make_user
+from factories import (
+    make_opportunity,
+    make_ops,
+    make_project,
+    make_reviewer,
+    make_skill,
+    make_user,
+    unique,
+)
 from sqlalchemy import select
 
 from app.core.security import create_access_token
+from app.models.academia import University
 from app.models.admin import AuditLog
 from app.models.identity import User
 from app.models.matching import Opportunity
+from app.models.ops import CampusInfo
 from app.services.money import ledger
 from app.services.skills import learning
 
 
 def _headers(user) -> dict:
     return {
-        "Authorization": (
-            f"Bearer {create_access_token(user.id, user.role.code if user.role else None)}"
-        )
+        "Authorization": (f"Bearer {create_access_token(user.id, user.role.code if user.role else None)}")
     }
 
 
@@ -52,9 +61,7 @@ def test_content_is_invisible_until_it_is_published(api) -> None:
         headers=_headers(ops),
     )
     assert published.json()["status"] == "published"
-    assert [row["slug"] for row in learning.get_skill(db, skill.slug)["paths"]] == [
-        "annotation-draft"
-    ]
+    assert [row["slug"] for row in learning.get_skill(db, skill.slug)["paths"]] == ["annotation-draft"]
 
 
 def test_content_management_is_staff_only(api) -> None:
@@ -156,9 +163,7 @@ def test_the_ledger_export_is_a_csv(api) -> None:
     project = make_project(db, ops, make_opportunity(db, ops))
     ledger.fund_project(db, ops, project=project, total_minor=100_000)
 
-    response = client.get(
-        f"/v1/money/projects/{project.slug}/ledger/export", headers=_headers(ops)
-    )
+    response = client.get(f"/v1/money/projects/{project.slug}/ledger/export", headers=_headers(ops))
 
     assert response.status_code == 200
     assert response.headers["content-type"].startswith("text/csv")
@@ -195,9 +200,7 @@ def test_a_dry_run_import_over_http_creates_no_account(api) -> None:
 def test_imports_require_the_import_permission(api) -> None:
     client, db = api
     student = make_user(db)
-    response = client.post(
-        "/v1/ops/imports", json={"mode": "dry_run", "data": {}}, headers=_headers(student)
-    )
+    response = client.post("/v1/ops/imports", json={"mode": "dry_run", "data": {}}, headers=_headers(student))
     assert response.status_code == 403
 
 
@@ -249,3 +252,41 @@ def test_the_opportunity_ops_routes_stay_shut_for_students(api) -> None:
     )
     assert response.status_code == 403
     assert db.scalars(select(Opportunity)).all() == []
+
+
+def test_campus_read_returns_the_live_set_including_hidden_rows(api) -> None:
+    client, db = api
+    ops = make_ops(db)
+    student = make_user(db)
+    university = University(name=unique("Campus University"), slug=unique("campus-university"))
+    db.add(university)
+    db.flush()
+    published = CampusInfo(
+        university_id=university.id,
+        kind="library",
+        title="Main library",
+        body="Open until 10pm.",
+        latitude_micro=6_524_400,
+        longitude_micro=3_379_200,
+        is_published=True,
+    )
+    hidden = CampusInfo(
+        university_id=university.id,
+        kind="info",
+        title="Draft notice",
+        body="Not visible to students yet.",
+        is_published=False,
+    )
+    db.add_all([published, hidden])
+    db.flush()
+
+    response = client.get("/v1/ops/campus", headers=_headers(ops))
+
+    assert response.status_code == 200, response.text
+    items = response.json()["items"]
+    assert {row["title"] for row in items} == {"Main library", "Draft notice"}
+    assert next(row for row in items if row["title"] == "Main library")["latitude"] == 6.5244
+    assert next(row for row in items if row["title"] == "Draft notice")["is_published"] is False
+
+    refused = client.get("/v1/ops/campus", headers=_headers(student))
+    assert refused.status_code == 403

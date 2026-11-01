@@ -5,6 +5,7 @@ empty. Study materials and CBT are enrolled-course scoped (another course is a
 403, not an empty list), Ask Nelavista declines honestly when it has no grounding,
 and a CBT answer saved twice with one client key is stored once.
 """
+
 from __future__ import annotations
 
 import pytest
@@ -25,7 +26,7 @@ from app.models.academia import (
     Topic,
     University,
 )
-from app.services.academia import ask, cbt, dashboard, materials
+from app.services.academia import ask, cbt, courses, dashboard, materials
 
 
 def _course(db: Session, *, code: str = "CSC213"):
@@ -55,9 +56,7 @@ def _enrol(db: Session, user, course: Course):
         session = AcademicSession(name=unique("2026"), is_current=True)
         db.add(session)
         db.flush()
-    enrolment = Enrolment(
-        user_id=user.id, course_id=course.id, session_id=session.id, status="active"
-    )
+    enrolment = Enrolment(user_id=user.id, course_id=course.id, session_id=session.id, status="active")
     db.add(enrolment)
     db.flush()
     return enrolment
@@ -230,12 +229,8 @@ def test_an_answer_saved_twice_is_stored_once(db: Session) -> None:
     _enrol(db, student, course)
     question = _question(db, course, None)
 
-    first = cbt.save_answer(
-        db, student, question_id=question.id, selected_key="A", client_key="cbt-1"
-    )
-    second = cbt.save_answer(
-        db, student, question_id=question.id, selected_key="A", client_key="cbt-1"
-    )
+    first = cbt.save_answer(db, student, question_id=question.id, selected_key="A", client_key="cbt-1")
+    second = cbt.save_answer(db, student, question_id=question.id, selected_key="A", client_key="cbt-1")
 
     assert first["attempt_id"] == second["attempt_id"]
     stats = cbt.topic_stats(db, student)
@@ -261,3 +256,59 @@ def test_a_quiz_with_no_questions_says_so(db: Session) -> None:
     with pytest.raises(ApiError) as excinfo:
         cbt.start_quiz(db, student, course_id=course.id)
     assert excinfo.value.code == "no_questions"
+
+
+def test_course_and_topic_detail_use_the_students_own_record(db: Session) -> None:
+    student = make_user(db)
+    _u, _d, course = _course(db)
+    _enrol(db, student, course)
+    topic = Topic(course_id=course.id, title="Trees", ordinal=1, summary="Balanced search trees")
+    db.add(topic)
+    db.flush()
+    question = _question(db, course, topic, key="A")
+    material = Material(course_id=course.id, title="Tree notes", source="Lecture")
+    db.add(material)
+    db.flush()
+    cbt.save_answer(db, student, question_id=question.id, selected_key="A")
+
+    detail = courses.course_detail(db, student, course.id)
+    assert detail["code"] == course.code
+    assert detail["topics"][0]["title"] == "Trees"
+    assert detail["topics"][0]["attempts"] == 1
+    assert detail["topics"][0]["accuracy"] == 100
+    assert detail["practice"] == {"attempts": 1, "correct": 1, "accuracy": 100}
+    assert [row["id"] for row in detail["materials"]] == [material.id]
+
+    topic_payload = courses.topic_detail(db, student, topic.id)
+    assert topic_payload["course"]["code"] == course.code
+    assert topic_payload["summary"] == "Balanced search trees"
+    assert topic_payload["strength"] is True
+
+    outsider = make_user(db)
+    with pytest.raises(ApiError) as excinfo:
+        courses.course_detail(db, outsider, course.id)
+    assert excinfo.value.code == "not_enrolled"
+
+
+def test_cbt_history_returns_the_students_own_answers_only(db: Session) -> None:
+    student = make_user(db)
+    _u, _d, course = _course(db)
+    _enrol(db, student, course)
+    topic = Topic(course_id=course.id, title="Trees", ordinal=1)
+    db.add(topic)
+    db.flush()
+    question = _question(db, course, topic, key="A")
+    attempt = cbt.save_answer(db, student, question_id=question.id, selected_key="B")
+
+    history = courses.my_cbt_history(db, student)
+    assert history["attempts"] == 1 and history["correct"] == 0
+    assert history["items"][0]["attempt_id"] == attempt["attempt_id"]
+    assert history["items"][0]["selected_key"] == "B"
+    assert history["items"][0]["correct_key"] == "A"
+    assert history["items"][0]["explanation"]
+
+    outsider = make_user(db)
+    assert courses.my_cbt_history(db, outsider)["items"] == []
+    with pytest.raises(ApiError) as excinfo:
+        courses.my_cbt_history(db, outsider, course_id=course.id)
+    assert excinfo.value.code == "not_enrolled"

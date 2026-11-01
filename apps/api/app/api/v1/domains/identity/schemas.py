@@ -1,4 +1,5 @@
 """Identity contracts (the shapes the typed client is generated from)."""
+
 from __future__ import annotations
 
 from datetime import date, datetime
@@ -76,6 +77,19 @@ class VerifyEmailIn(BaseModel):
 
 class ResetRequestIn(BaseModel):
     email: str = Field(min_length=3, max_length=255)
+
+
+class ChangePasswordIn(BaseModel):
+    current_password: str = Field(min_length=1, max_length=200)
+    new_password: str = Field(min_length=10, max_length=200)
+    platform: str = "web"
+
+    @field_validator("platform")
+    @classmethod
+    def _known_platform(cls, value: str) -> str:
+        if value not in PLATFORMS:
+            raise ValueError("Unknown platform.")
+        return value
 
 
 class ResetPasswordIn(BaseModel):

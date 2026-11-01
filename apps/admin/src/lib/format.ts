@@ -1,9 +1,6 @@
 /** Formatting shared by the ops screens. Amounts are minor units, always. */
-export function money(
-  amountMinor: number | null | undefined,
-  currency: string | null | undefined,
-): string {
-  if (amountMinor === null || amountMinor === undefined) return '—';
+export function money(amountMinor: number | null | undefined, currency: string | null | undefined): string {
+  if (amountMinor === null || amountMinor === undefined) return 'Not set';
   if (!currency) return String(amountMinor);
   try {
     return new Intl.NumberFormat(undefined, { style: 'currency', currency }).format(amountMinor / 100);
@@ -13,13 +10,13 @@ export function money(
 }
 
 export function when(value: string | null | undefined): string {
-  if (!value) return '—';
+  if (!value) return 'Not set';
   const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return '—';
+  if (Number.isNaN(date.getTime())) return 'Not set';
   return date.toLocaleString();
 }
 
 export function shortDate(value: string | null | undefined): string {
-  if (!value) return '—';
+  if (!value) return 'Not set';
   return value.slice(0, 10);
 }

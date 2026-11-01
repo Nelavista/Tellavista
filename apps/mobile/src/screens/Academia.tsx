@@ -513,7 +513,7 @@ export function CbtScreen({ navigate }: { navigate: (route: Route) => void }): J
               <H2>What to practise next</H2>
               {results.recommendations.map((row) => (
                 <Muted key={`${row.topic_id ?? 'general'}-${row.topic}`}>
-                  {row.topic} · {row.accuracy}% — {row.action === 'practise' ? 'practise more' : row.action}
+                  {row.topic} · {row.accuracy}% · {row.action === 'practise' ? 'practise more' : row.action}
                 </Muted>
               ))}
             </>

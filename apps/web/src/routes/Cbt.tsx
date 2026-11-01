@@ -20,13 +20,16 @@ import {
 } from '@nelavista/ui';
 import { ArrowRight, ClipboardCheck } from 'lucide-react';
 import * as React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 
 import { ApiError, http } from '../lib/http';
 import { useApiResource } from '../lib/resource';
 
 export function Cbt(): JSX.Element {
   const state = useApiResource<OnboardingStateOut>('/onboarding/state');
+  const [searchParams] = useSearchParams();
+  const presetCourse = searchParams.get('course');
+  const presetApplied = React.useRef<string | null>(null);
   const [courseId, setCourseId] = React.useState('');
   const [quiz, setQuiz] = React.useState<CbtQuizOut | null>(null);
   const [index, setIndex] = React.useState(0);
@@ -39,6 +42,16 @@ export function Cbt(): JSX.Element {
   const courses = state.resource.status === 'ready' ? state.resource.data.enrolments : [];
   const current = quiz?.questions[index] ?? null;
   const answered = current ? answers[current.id] : undefined;
+
+  React.useEffect(() => {
+    if (!presetCourse || state.resource.status !== 'ready') return;
+    if (presetApplied.current === presetCourse) return;
+    presetApplied.current = presetCourse;
+    const match = state.resource.data.enrolments.find(
+      (row) => row.code.toLowerCase() === presetCourse.toLowerCase(),
+    );
+    if (match) setCourseId(String(match.course_id));
+  }, [presetCourse, state.resource]);
 
   async function start(): Promise<void> {
     if (!courseId) return;

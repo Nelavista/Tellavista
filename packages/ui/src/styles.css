@@ -1041,7 +1041,6 @@ pre {
   justify-content: space-between;
   gap: var(--nv-space-md);
   border: 1px solid var(--nv-border);
-  border-top: 2px solid var(--nv-accent);
   border-radius: var(--nv-radius-sm);
   background: var(--nv-surface);
   padding: var(--nv-space-md) var(--nv-space-lg);
@@ -1056,23 +1055,21 @@ pre {
 
 .nv-banner--success,
 .nv-alert--success {
-  border-top-color: var(--nv-success);
+  border-color: color-mix(in srgb, var(--nv-success) 45%, var(--nv-border));
 }
 
 .nv-banner--warning,
 .nv-alert--warning {
-  border-top-color: var(--nv-warning);
+  border-color: color-mix(in srgb, var(--nv-warning) 45%, var(--nv-border));
 }
 
 .nv-banner--danger,
-.nv-alert--danger,
-.nv-error {
-  border-top-color: var(--nv-danger);
+.nv-alert--danger {
+  border-color: color-mix(in srgb, var(--nv-danger) 45%, var(--nv-border));
 }
 
 .nv-error {
-  border: 1px solid var(--nv-border);
-  border-top: 2px solid var(--nv-danger);
+  border: 1px solid color-mix(in srgb, var(--nv-danger) 45%, var(--nv-border));
   border-radius: var(--nv-radius-sm);
   background: var(--nv-surface);
   color: var(--nv-danger);
@@ -1939,7 +1936,6 @@ pre {
 .nv-next-action,
 .nv-next-step {
   border: 1px solid var(--nv-border);
-  border-top: 2px solid var(--nv-accent);
   border-radius: var(--nv-radius-sm);
   background: var(--nv-surface);
   padding: var(--nv-space-lg);

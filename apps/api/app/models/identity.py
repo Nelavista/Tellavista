@@ -11,6 +11,7 @@ auth service, role enforcement and audit writes land in PR 0.8–0.10; nothing
 here is exposed to clients yet. Every table below is a *shape*: the behaviour
 (rotation, reuse detection, replay) is PR 0.5 and 0.8.
 """
+
 from __future__ import annotations
 
 from datetime import date, datetime
@@ -52,9 +53,7 @@ class User(Base, TimestampMixin):
     # One role per account (student, reviewer, ops_admin, super_admin, plus the
     # reserved department_rep/company rows). Roles are data, not code, so a future
     # role is a seed row. Nullable so skeleton/local accounts stay valid.
-    role_id: Mapped[int | None] = mapped_column(
-        ForeignKey("roles.id", ondelete="SET NULL"), index=True
-    )
+    role_id: Mapped[int | None] = mapped_column(ForeignKey("roles.id", ondelete="SET NULL"), index=True)
     # Set when deletion anonymises and deactivates the account (ADR-0009); the row
     # is never hard-deleted because payments and audit rows must stay explainable.
     deleted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
@@ -137,6 +136,7 @@ CONSENT_KINDS: tuple[str, ...] = (
 REVOKE_LOGOUT = "logout"
 REVOKE_REUSE_DETECTED = "reuse_detected"
 REVOKE_PASSWORD_RESET = "password_reset"
+REVOKE_PASSWORD_CHANGED = "password_changed"
 REVOKE_ACCOUNT_DELETED = "account_deleted"
 REVOKE_ROTATED = "rotated"
 
@@ -163,17 +163,13 @@ class RefreshToken(Base, TimestampMixin):
     # Shared by every token in one login chain; a UUID, not a second table.
     family_id: Mapped[str] = mapped_column(String(36), nullable=False, index=True)
     token_hash: Mapped[str] = mapped_column(String(64), nullable=False)  # sha256 hex
-    platform: Mapped[str] = mapped_column(
-        String(10), default="web", server_default="web", nullable=False
-    )
+    platform: Mapped[str] = mapped_column(String(10), default="web", server_default="web", nullable=False)
     expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
     used_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     revoked_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     revoked_reason: Mapped[str | None] = mapped_column(String(40))
     # Rotation chain, kept for forensics: the replacement may itself be revoked.
-    replaced_by_id: Mapped[int | None] = mapped_column(
-        ForeignKey("refresh_tokens.id", ondelete="SET NULL")
-    )
+    replaced_by_id: Mapped[int | None] = mapped_column(ForeignKey("refresh_tokens.id", ondelete="SET NULL"))
 
     __table_args__ = (UniqueConstraint("token_hash", name="uq_refresh_tokens_token_hash"),)
 
@@ -216,9 +212,7 @@ class Consent(Base):
     __tablename__ = "consents"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    user_id: Mapped[int | None] = mapped_column(
-        ForeignKey("users.id", ondelete="SET NULL"), index=True
-    )
+    user_id: Mapped[int | None] = mapped_column(ForeignKey("users.id", ondelete="SET NULL"), index=True)
     kind: Mapped[str] = mapped_column(String(30), nullable=False)
     document_version: Mapped[str] = mapped_column(String(20), nullable=False)
     granted: Mapped[bool] = mapped_column(Boolean, nullable=False)
@@ -239,13 +233,9 @@ class UserLanguage(Base, TimestampMixin):
     )
     language: Mapped[str] = mapped_column(String(60), nullable=False)
     # "basic" | "conversational" | "fluent" | "native"
-    level: Mapped[str] = mapped_column(
-        String(20), default="fluent", server_default="fluent", nullable=False
-    )
+    level: Mapped[str] = mapped_column(String(20), default="fluent", server_default="fluent", nullable=False)
 
-    __table_args__ = (
-        UniqueConstraint("user_id", "language", name="uq_user_language"),
-    )
+    __table_args__ = (UniqueConstraint("user_id", "language", name="uq_user_language"),)
 
 
 class UserAvailability(Base, TimestampMixin):
@@ -282,9 +272,7 @@ class IdempotencyKey(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     key: Mapped[str] = mapped_column(String(64), nullable=False)
-    user_id: Mapped[int | None] = mapped_column(
-        ForeignKey("users.id", ondelete="SET NULL"), index=True
-    )
+    user_id: Mapped[int | None] = mapped_column(ForeignKey("users.id", ondelete="SET NULL"), index=True)
     method: Mapped[str] = mapped_column(String(8), nullable=False)
     path: Mapped[str] = mapped_column(String(255), nullable=False)
     request_fingerprint: Mapped[str] = mapped_column(String(64), nullable=False)

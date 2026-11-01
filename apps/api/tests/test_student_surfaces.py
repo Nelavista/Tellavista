@@ -1,4 +1,5 @@
 """Student-facing surfaces: profile settings, opportunity discovery, invites (Phase 2/4)."""
+
 from __future__ import annotations
 
 from factories import (
@@ -22,9 +23,7 @@ PREFIX = "/v1"
 
 
 def _headers(user) -> dict:
-    return {
-        "Authorization": f"Bearer {create_access_token(user.id, user.role.code if user.role else None)}"
-    }
+    return {"Authorization": f"Bearer {create_access_token(user.id, user.role.code if user.role else None)}"}
 
 
 def test_profile_languages_and_availability_round_trip(api) -> None:
@@ -49,9 +48,7 @@ def test_profile_languages_and_availability_round_trip(api) -> None:
     assert got_langs.status_code == 200
     assert len(got_langs.json()["languages"]) == 2
 
-    put_avail = client.put(
-        f"{PREFIX}/me/availability", json={"hours_per_week": 12}, headers=headers
-    )
+    put_avail = client.put(f"{PREFIX}/me/availability", json={"hours_per_week": 12}, headers=headers)
     assert put_avail.status_code == 200, put_avail.text
     assert put_avail.json()["hours_per_week"] == 12
 
@@ -161,9 +158,7 @@ def test_managed_opportunity_is_invitation_only(api) -> None:
     managed = make_opportunity(db, ops)
     student = make_user(db)
 
-    response = client.post(
-        f"{PREFIX}/opportunities/{managed.slug}/apply", json={}, headers=_headers(student)
-    )
+    response = client.post(f"{PREFIX}/opportunities/{managed.slug}/apply", json={}, headers=_headers(student))
 
     assert response.status_code == 400
     assert response.json()["error"]["code"] == "managed_work_is_invitation_only"
@@ -189,6 +184,11 @@ def test_cohort_invite_accept_flow(api) -> None:
     assert invite.status_code == 201, invite.text
     assert invite.json()["members"][0]["status"] == "invited"
 
+    pending = client.get(f"{PREFIX}/work/invites", headers=student_headers)
+    assert pending.status_code == 200, pending.text
+    assert pending.json()["invites"][0]["project_title"] == project.title
+    assert pending.json()["invites"][0]["cohort_name"] == cohort.name
+
     notifications = client.get(f"{PREFIX}/me/notifications", headers=student_headers)
     assert notifications.status_code == 200
     kinds = [row["kind"] for row in notifications.json()["notifications"]]
@@ -204,9 +204,7 @@ def test_cohort_invite_accept_flow(api) -> None:
     assert blocked.status_code == 403
     assert "date_of_birth_missing" in blocked.json()["error"]["details"]["blockers"]
 
-    client.patch(
-        f"{PREFIX}/me", json={"date_of_birth": "2000-01-01"}, headers=student_headers
-    )
+    client.patch(f"{PREFIX}/me", json={"date_of_birth": "2000-01-01"}, headers=student_headers)
     accepted_terms = client.post(
         f"{PREFIX}/me/consents",
         json={"kind": "contributor_terms", "document_version": "2026-10-01"},
@@ -221,6 +219,10 @@ def test_cohort_invite_accept_flow(api) -> None:
     )
     assert respond.status_code == 200, respond.text
     assert respond.json()["status"] == "active"
+
+    after = client.get(f"{PREFIX}/work/invites", headers=student_headers)
+    assert after.status_code == 200
+    assert after.json()["invites"] == []
 
     detail = client.get(f"{PREFIX}/work/cohorts/{cohort.id}", headers=ops_headers)
     assert detail.status_code == 200, detail.text

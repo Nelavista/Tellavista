@@ -5,6 +5,7 @@ the tests that decide whether the security boundary holds: single-use refresh
 tokens with reuse detection, V1 hash upgrade, one-use email tokens, and deletion
 that anonymises without erasing the audit trail.
 """
+
 from __future__ import annotations
 
 import hashlib
@@ -83,9 +84,7 @@ def test_login_upgrades_a_v1_pbkdf2_hash(db: Session) -> None:
 def test_login_upgrades_a_v1_scrypt_hash(db: Session) -> None:
     salt = "abc123"
     n, r, p = 2**14, 8, 1
-    digest = hashlib.scrypt(
-        b"v1-password", salt=salt.encode(), n=n, r=r, p=p, maxmem=132 * n * r * p
-    ).hex()
+    digest = hashlib.scrypt(b"v1-password", salt=salt.encode(), n=n, r=r, p=p, maxmem=132 * n * r * p).hex()
     user = User(
         email=f"v1-scrypt-{uuid.uuid4().hex[:8]}@example.test",
         username=f"v1-scrypt-{uuid.uuid4().hex[:8]}",
@@ -125,9 +124,7 @@ def test_refresh_rotation_keeps_the_family_and_reuse_revokes_it(db: Session) -> 
         auth.rotate(db, raw_token=refresh)
     assert excinfo.value.code == "refresh_token_reused"
 
-    family = db.scalars(
-        select(RefreshToken).where(RefreshToken.family_id == first.family_id)
-    ).all()
+    family = db.scalars(select(RefreshToken).where(RefreshToken.family_id == first.family_id)).all()
     assert len(family) == 2
     assert all(token.revoked_at is not None for token in family)
 
@@ -181,6 +178,49 @@ def test_resend_verification_refuses_a_verified_account(db: Session, monkeypatch
         auth.resend_verification(db, user=user)
     assert excinfo.value.status_code == 409
     assert excinfo.value.code == "already_verified"
+
+
+def test_change_password_revokes_other_sessions_and_keeps_one_new_session(
+    db: Session,
+) -> None:
+    user, _access, refresh, _expires = _signup(db)
+
+    with pytest.raises(ApiError) as wrong:
+        auth.change_password(
+            db,
+            user,
+            current_password="not the password",
+            new_password="another strong password",
+        )
+    assert wrong.value.code == "invalid_password"
+
+    access, new_refresh, _expires = auth.change_password(
+        db,
+        user,
+        current_password=PASSWORD,
+        new_password="another strong password",
+    )
+
+    old = db.scalar(select(RefreshToken).where(RefreshToken.token_hash == hash_token(refresh)))
+    assert old is not None and old.revoked_at is not None
+    assert access and new_refresh
+    assert auth.authenticate(db, email=user.email, password="another strong password").id == user.id
+    with pytest.raises(ApiError):
+        auth.authenticate(db, email=user.email, password=PASSWORD)
+
+
+def test_change_password_refuses_the_current_password_again(db: Session) -> None:
+    user, *_ = _signup(db)
+
+    with pytest.raises(ApiError) as excinfo:
+        auth.change_password(
+            db,
+            user,
+            current_password=PASSWORD,
+            new_password=PASSWORD,
+        )
+
+    assert excinfo.value.code == "password_unchanged"
 
 
 def test_password_reset_changes_the_password_and_kills_sessions(db: Session, monkeypatch) -> None:

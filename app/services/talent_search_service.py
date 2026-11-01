@@ -101,6 +101,10 @@ def search_talent(q='', skill_id=None, language='', level='', status='', practic
 def language_options():
     """Languages that actually appear on opted-in profiles or language skills."""
     from app.services.language_profile_service import language_label
-    keys = {row[0] for row in db.session.query(StudentLanguage.language).distinct().all()}
+    keys = {
+        row[0] for row in db.session.query(StudentLanguage.language)
+        .join(StudentPrivacySettings, StudentPrivacySettings.student_id == StudentLanguage.student_id)
+        .filter(StudentPrivacySettings.profile_visibility.in_(['employers', 'public'])).distinct().all()
+    }
     keys |= {row[0] for row in db.session.query(Skill.language).filter(Skill.language.isnot(None)).distinct().all()}
     return sorted(((k, language_label(k)) for k in keys), key=lambda kv: kv[1])

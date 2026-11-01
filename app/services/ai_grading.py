@@ -52,6 +52,9 @@ MAX_SUBMISSION_CHARS = 8000
 GRADING_TEMPERATURE = 0.15
 
 
+_DELIMITER_RE = re.compile(r'<\s*/?\s*student_content\s*>', re.IGNORECASE)
+
+
 def wrap_untrusted(label, text):
     """Wraps one block of untrusted (student-authored or fetched) text in the
     <student_content> delimiters UNTRUSTED_CONTENT_INSTRUCTION refers to, for
@@ -60,6 +63,9 @@ def wrap_untrusted(label, text):
     multiple blocks stays human-readable -- the model's actual trust boundary is the
     tag, not the label text."""
     text = text if (text and str(text).strip()) else '(none provided)'
+    # A student who types the delimiter themselves must not be able to close the block
+    # early and put text outside it, where the model would read it as trusted.
+    text = _DELIMITER_RE.sub(lambda m: m.group(0).replace('<', '&lt;'), str(text))
     return f'{label}:\n<student_content>\n{text}\n</student_content>'
 
 

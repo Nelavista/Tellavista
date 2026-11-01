@@ -903,8 +903,10 @@ def get_skill_verification_record(student_id, skill):
                 best_review = score
 
     practice_done = sum(1 for c in practice if c.id in submitted_ids)
-    practice_required = bool(assessments) and any(c.task_spec_json for c in practice)
-    practice_ok = not practice_required or practice_done == len(practice)
+    # Same rule as _assessments_passed_by_skill() and the assessment gate: only the scored
+    # practice tasks are required, so this record and the Verified badge never disagree.
+    scored_practice = [c for c in practice if c.task_spec_json] if assessments else []
+    practice_ok = all(c.id in submitted_ids for c in scored_practice)
 
     # The best-scoring assessment attempt's measured breakdown (word accuracy, label
     # accuracy, ...) -- only ever taken from a real scored submission, never synthesised.

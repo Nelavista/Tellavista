@@ -1,3 +1,4 @@
+import json
 import os
 import time
 import cloudinary
@@ -298,8 +299,11 @@ def catalog():
     published_meta = Skill.query.filter_by(is_published=True).with_entities(Skill.language, Skill.tags_json).all()
     language_options = sorted({lang for lang, _ in published_meta if lang}, key=lambda k: language_label(k))
     tag_options = set()
-    for skill_row in Skill.query.filter_by(is_published=True).filter(Skill.tags_json.isnot(None)).all():
-        tag_options.update(skill_row.tags)
+    for _, tags_json in published_meta:
+        try:
+            tag_options.update(json.loads(tags_json) if tags_json else [])
+        except (ValueError, TypeError):
+            pass
 
     # Each card needs real numbers, not filler text — projects available, students
     # actually learning it right now, and open paid opportunities in this skill. Was 4
@@ -1570,6 +1574,8 @@ def language_profile():
             db.session.commit()
         except IntegrityError:
             db.session.rollback()  # double-submit race on (student_id, language)
+            flash(f'{language_label(key)} was just being saved from another tab. Check it below and save again if needed.')
+            return redirect(url_for('skills.language_profile'))
         flash(f'{language_label(key)} saved to your language profile.')
         return redirect(url_for('skills.language_profile'))
 

@@ -2,6 +2,7 @@
 seeding into the existing tables, catalog filters and the hub, a full
 learn -> practise -> assessment -> project -> verified flow, the Skill Transcript, and the
 self-reported-vs-verified language profile."""
+import io
 import json
 
 import pytest
@@ -58,6 +59,7 @@ def _correct_form(spec):
     elif spec['kind'] == 'recording':
         for p in spec['prompts']:
             form[f"rec-{p['id']}-metrics"] = json.dumps({'duration': 5, 'clip_pct': 0, 'rms_db': -24, 'silence_pct': 30})
+            form[f"rec-{p['id']}-audio"] = (io.BytesIO(b'' * 20000), f"{p['id']}.webm", 'audio/webm')
         for f in spec.get('metadata_fields', []):
             form[f"meta-{f['name']}"] = (f.get('options') or ['Lagos'])[0]
     if spec.get('report'):
@@ -67,7 +69,7 @@ def _correct_form(spec):
 
 def _wrong_form(spec):
     form = _correct_form(spec)
-    return {k: ('zzz' if not k.startswith('rec-') else '{"duration": 0.1}') for k in form}
+    return {k: ('zzz' if not k.startswith('rec-') else '{"duration": 0.1}') for k in form if not k.endswith('-audio')}
 
 
 def test_seed_populates_existing_tables_and_is_idempotent(seeded_full):

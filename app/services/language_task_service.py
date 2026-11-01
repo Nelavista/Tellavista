@@ -35,6 +35,7 @@ kind == 'recording':
     metadata_fields: optional [{name, label, type, options?}] (e.g. dialect, environment)
 """
 import json
+import math
 import re
 import unicodedata
 
@@ -250,8 +251,10 @@ def _score_translation(spec, form, reveal):
         refs = _as_list(it.get('references'))
         similarity = max((chrf(answer, r) for r in refs), default=0.0) if answer else 0.0
         terms = _as_list(it.get('key_terms'))
-        answer_norm = ' '.join(normalize_tokens(answer))
-        terms_found = [t for t in terms if ' '.join(normalize_tokens(t)) in answer_norm]
+        # Whole-word match: padding with spaces stops "ọmọ" counting inside "ọmọde".
+        answer_norm = f" {' '.join(normalize_tokens(answer))} "
+        terms_found = [t for t in terms if normalize_tokens(t)
+                       and f" {' '.join(normalize_tokens(t))} " in answer_norm]
         if terms:
             item_score = 0.8 * similarity + 20 * len(terms_found) / len(terms)
         else:
@@ -357,6 +360,36 @@ def _score_labeling(spec, form, reveal):
     return score, items, summary, '\n'.join(lines)
 
 
+# Compressed speech from MediaRecorder (Opus/AAC) runs well above 1 KB per second, so a
+# file smaller than this cannot hold the reported length of audio.
+MIN_AUDIO_BYTES_PER_SECOND = 1000
+
+
+def _file_size(file):
+    stream = getattr(file, 'stream', file)
+    try:
+        pos = stream.tell()
+        stream.seek(0, 2)
+        size = stream.tell()
+        stream.seek(pos)
+        return size
+    except (AttributeError, OSError, ValueError):
+        return getattr(file, 'content_length', 0) or 0
+
+
+def _audio_file_check(audio, duration):
+    if not audio:
+        return False, 'No audio file received'
+    mimetype = (getattr(audio, 'mimetype', '') or '').lower()
+    if not mimetype.startswith(('audio/', 'video/webm')):
+        return False, 'The upload is not an audio recording'
+    size = _file_size(audio)
+    needed = max(MIN_AUDIO_BYTES_PER_SECOND, int(MIN_AUDIO_BYTES_PER_SECOND * duration))
+    if size < needed:
+        return False, f'The audio file is too small for a {duration:.1f}s recording'
+    return True, f'{size // 1024} KB recording attached'
+
+
 def _check_recording(metrics, req):
     checks = []
 
@@ -390,14 +423,23 @@ def _score_recording(spec, form, files, uploader):
         pid = p['id']
         try:
             metrics = json.loads(form.get(f'rec-{pid}-metrics') or '{}')
-            metrics = {k: float(v) for k, v in metrics.items() if isinstance(v, (int, float))}
         except (ValueError, TypeError):
             metrics = {}
+        if not isinstance(metrics, dict):
+            metrics = {}
+        metrics = {k: float(v) for k, v in metrics.items()
+                   if isinstance(v, (int, float)) and not isinstance(v, bool) and math.isfinite(v)}
+        audio = files.get(f'rec-{pid}-audio') if files else None
         checks = _check_recording(metrics, req)
+        if metrics.get('duration') is not None:
+            # The levels above are measured in the student's browser, so on their own they
+            # can be typed in by hand. A take only counts with the recording itself attached,
+            # and that file has to be big enough to hold the length the browser reported.
+            audio_ok, detail = _audio_file_check(audio, metrics['duration'])
+            checks.insert(0, {'name': 'Audio received', 'ok': audio_ok, 'detail': detail})
         ok = bool(checks) and all(c['ok'] for c in checks)
         passed += ok
         audio_url = None
-        audio = files.get(f'rec-{pid}-audio') if files else None
         if audio and uploader:
             audio_url = uploader(audio)
         items.append({'id': pid, 'prompt': p['text'], 'checks': checks, 'passed': ok, 'audio_url': audio_url,

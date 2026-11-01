@@ -197,6 +197,21 @@ def test_practice_is_required_for_verification(seeded):
         assert is_skill_verified(u.id, skill_id)
 
 
+def test_transcript_record_and_badge_agree_with_a_free_text_practice_challenge(seeded):
+    """Regression: an unscored (free-text) practice challenge on an assessed skill is not
+    required by the badge, so the transcript record must not require it either."""
+    from app.services.skills_service import get_skill_verification_record
+    with seeded.app_context():
+        u = User(username='agree', email='agree@example.com')
+        db.session.add(u)
+        skill = Skill.query.filter_by(slug='yoruba-transcription').one()
+        db.session.add(Challenge(skill_id=skill.id, slug='reflection', title='Reflection', is_published=True))
+        db.session.commit()
+        _verified(u.id, 'yoruba-transcription')
+        record = get_skill_verification_record(u.id, skill)
+        assert is_skill_verified(u.id, skill.id) and record['verified']
+
+
 # ---------------------------------------------------------------- B/C. talent discovery + privacy
 
 @pytest.fixture
@@ -364,3 +379,13 @@ def test_discover_keeps_the_existing_min_rating_filter(seeded, talent_pool, clie
     assert 'name="min_rating"' in page and 'Verified_Ada' in page
     filtered = client.get('/employer/discover?min_rating=1').data.decode()
     assert 'Verified_Ada' not in filtered and 'No matching students' in filtered
+
+
+def test_discover_language_options_ignore_students_who_did_not_opt_in(seeded, make_user):
+    from app.services.talent_search_service import language_options
+    with seeded.app_context():
+        private = make_user('private_lang')
+        _language(private.id, 'ewe')
+        assert 'ewe' not in dict(language_options())
+        _opt_in(private.id)
+        assert 'ewe' in dict(language_options())

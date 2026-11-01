@@ -1,9 +1,17 @@
 """Deterministic scoring for structured practical tasks (services/language_task_service.py).
 These scores gate ALL skill assessments and verification, so they must be stable,
 diacritic-aware, and never reveal assessment answers."""
+import io
+
+from werkzeug.datastructures import FileStorage
+
 from app.services.language_task_service import (
     normalize_tokens, word_error_rate, chrf, parse_timestamp, score_submission, validate_task_spec, has_any_answer,
 )
+
+
+def _audio(seconds=3, mimetype='audio/webm'):
+    return FileStorage(io.BytesIO(b'' * int(4000 * seconds)), filename='p1.webm', content_type=mimetype)
 
 
 def test_tone_marks_count_as_errors_but_are_reported_separately():
@@ -80,16 +88,16 @@ def test_recording_checks_and_metadata():
             'requirements': {'min_seconds': 1, 'max_seconds': 10, 'max_clip_pct': 0.5, 'min_rms_db': -40, 'max_silence_pct': 70},
             'metadata_fields': [{'name': 'dialect'}]}
     good = '{"duration": 3, "clip_pct": 0, "rms_db": -25, "silence_pct": 30}'
-    assert score_submission(spec, {'rec-p1-metrics': good, 'meta-dialect': 'Ijebu'})['score'] == 100
-    assert score_submission(spec, {'rec-p1-metrics': good})['score'] == 90  # missing metadata
+    assert score_submission(spec, {'rec-p1-metrics': good, 'meta-dialect': 'Ijebu'}, files={'rec-p1-audio': _audio()})['score'] == 100
+    assert score_submission(spec, {'rec-p1-metrics': good}, files={'rec-p1-audio': _audio()})['score'] == 90  # missing metadata
     clipped = '{"duration": 3, "clip_pct": 4, "rms_db": -10, "silence_pct": 30}'
-    assert score_submission(spec, {'rec-p1-metrics': clipped, 'meta-dialect': 'x'})['score'] == 0
+    assert score_submission(spec, {'rec-p1-metrics': clipped, 'meta-dialect': 'x'}, files={'rec-p1-audio': _audio()})['score'] == 0
     assert score_submission(spec, {'meta-dialect': 'x'})['score'] == 0  # nothing recorded
 
 
 def test_uploader_is_called_for_recordings():
     spec = {'kind': 'recording', 'prompts': [{'id': 'p1', 'text': 'hi'}], 'requirements': {}}
-    result = score_submission(spec, {'rec-p1-metrics': '{"duration": 2}'}, files={'rec-p1-audio': object()},
+    result = score_submission(spec, {'rec-p1-metrics': '{"duration": 2}'}, files={'rec-p1-audio': _audio(2)},
                               uploader=lambda f: 'https://example.com/a.webm')
     assert result['items'][0]['audio_url'] == 'https://example.com/a.webm'
 
@@ -167,3 +175,28 @@ def test_assessment_breakdown_never_exposes_single_item_dimensions():
     assert hidden == {'Category': 67, 'Severity': 100}           # 'Intent' (1 judgement) withheld
     shown = score_submission(spec, form, reveal=True)['summary']['by_field']
     assert shown['Intent'] == 0                                   # practice may show it
+
+
+def test_recording_metrics_alone_never_pass():
+    """Regression: the levels are browser-reported, so typed-in metrics with no recording
+    (or a file too small to hold the claimed length) must not score."""
+    spec = {'kind': 'recording', 'prompts': [{'id': 'p1', 'text': 'hi'}], 'requirements': {'min_seconds': 1, 'max_seconds': 10}}
+    forged = '{"duration": 5, "clip_pct": 0, "rms_db": -20, "silence_pct": 0}'
+    assert score_submission(spec, {'rec-p1-metrics': forged})['score'] == 0
+    tiny = FileStorage(io.BytesIO(b'x' * 200), filename='p1.webm', content_type='audio/webm')
+    assert score_submission(spec, {'rec-p1-metrics': forged}, files={'rec-p1-audio': tiny})['score'] == 0
+    assert score_submission(spec, {'rec-p1-metrics': forged}, files={'rec-p1-audio': _audio(5, 'text/plain')})['score'] == 0
+    result = score_submission(spec, {'rec-p1-metrics': forged}, files={'rec-p1-audio': _audio(5)})
+    assert result['score'] == 100 and result['items'][0]['checks'][0]['name'] == 'Audio received'
+
+
+def test_recording_metrics_of_the_wrong_shape_do_not_crash():
+    spec = {'kind': 'recording', 'prompts': [{'id': 'p1', 'text': 'hi'}], 'requirements': {}}
+    for raw in ('[1, 2]', '5', '"x"', 'null', '{"duration": true}', '{"duration": NaN}'):
+        assert score_submission(spec, {'rec-p1-metrics': raw})['score'] == 0, raw
+
+
+def test_key_terms_match_whole_words_only():
+    spec = {'kind': 'translation', 'items': [{'id': 't1', 'source': 'x', 'references': ['ọmọ náà'], 'key_terms': ['ọmọ']}]}
+    assert score_submission(spec, {'item-t1-translation': 'ọmọde'})['items'][0]['key_terms_found'] == 0
+    assert score_submission(spec, {'item-t1-translation': 'Ọmọ náà'})['items'][0]['key_terms_found'] == 1

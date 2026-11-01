@@ -53,6 +53,36 @@
       {% endif %}
     </div>
 
+    {% if language_profile %}
+    <div class="sk-section-title">Languages</div>
+    <div class="sk-panel" style="padding:12px 16px;">
+      {% for lp in language_profile %}
+      <div class="gpa-breakdown-row" style="align-items:flex-start;">
+        <div>
+          <div class="gpa-component-label" style="color:var(--sk-text); font-weight:600;">{{ lp.label }}{% if lp.row.dialect %} · {{ lp.row.dialect }}{% endif %}</div>
+          <div class="gpa-component-weight">Self-reported: {{ lp.proficiency_label }}{% if lp.claimed %} · {{ lp.claimed|join(', ')|lower }}{% endif %}</div>
+        </div>
+        <div style="text-align:right;">
+          {% for s in lp.verified_skills %}<span class="lang-cap verified"><i class="ri-checkbox-circle-fill"></i> {{ s.name }}</span> {% else %}<span class="lang-cap">No verified skill yet</span>{% endfor %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if academic_background %}
+    <div class="sk-section-title">Academic background</div>
+    <div class="sk-card-desc">{{ academic_background }} <span class="lang-cap">self-reported</span></div>
+    {% endif %}
+
+    {% if evidence_records %}
+    <div class="sk-section-title">Skill evidence</div>
+    <p class="sk-card-desc" style="margin-top:-10px;">From the Skill Transcript: scored assessments and quality-reviewed practice projects, not self-reported.</p>
+    {% for rec in evidence_records %}
+    <div class="sk-panel tr-class-card" style="margin-bottom:12px;">{% include 'components/skill_evidence.html' %}</div>
+    {% endfor %}
+    {% endif %}
+
     {% if stats.verified_skills %}
     <div class="sk-section-title">Verified Skills</div>
     <div style="display:flex; gap:8px; flex-wrap:wrap;">
@@ -74,8 +104,8 @@
         </div>
         <div style="margin-top:10px; display:flex; flex-direction:column; gap:6px;">
           {% for e in row.evidence[:3] %}
-          <a href="/skills/projects/{{ e.project_id }}" class="sk-view-link" style="display:flex; justify-content:space-between; gap:8px;">
-            <span>✓ {{ e.title }}</span><span>{{ e.score }}/100</span>
+          <a href="/skills/projects/{{ e.project_id }}" class="sk-view-link" style="display:flex; justify-content:space-between; gap:8px; white-space:normal;">
+            <span style="min-width:0; overflow-wrap:anywhere;">✓ {{ e.title }}</span><span style="flex-shrink:0;">{{ e.score }}/100</span>
           </a>
           {% endfor %}
         </div>

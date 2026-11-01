@@ -437,11 +437,13 @@
                     <div class="dept-quick-select" id="skillQuickSelect">
                         {% for cat in categories %}
                           {% for skill in cat.skills %}
-                            {% if skill.is_published %}
+                            {# The ~90 African-language skills are reached through their hub; onboarding offers
+                               only their single entry point, so a first-time student isn't faced with 100 chips. #}
+                            {% if skill.is_published and (cat.program != 'all' or skill.slug == 'african-language-data-beginner') %}
                             <button type="button" class="fd-chip" data-skill-id="{{ skill.id }}" onclick="selectSkill(this)">
                                 <span class="fd-emoji"><i class="{{ skill.icon or 'ri-puzzle-line' }}"></i></span>
                                 {{ skill.name }}
-                                <span class="fd-curriculum-tag">{{ cat.name }}</span>
+                                <span class="fd-curriculum-tag">{{ 'African Language AI' if cat.program == 'all' else cat.name }}</span>
                             </button>
                             {% endif %}
                           {% endfor %}

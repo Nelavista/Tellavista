@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>My Languages · Nelavista Skills</title>
+  <meta name="theme-color" content="#050810">
+  <link rel="icon" type="image/png" sizes="32x32" href="/static/icons/nelavista-32x32.png">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/skills.css') }}">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
+</head>
+<body>
+{% include 'components/skills_sidebar.html' %}
+
+  <div class="sk-view" style="max-width:820px;">
+    <span class="sk-eyebrow">Language profile</span>
+    <h1 class="sk-h1">My Languages</h1>
+    <p class="sk-sub">Tell us which languages you work in and what you can do in each. This is <strong>self-reported</strong> — a capability only shows as <span class="lang-cap verified"><i class="ri-checkbox-circle-fill"></i> Verified</span> once you've verified a matching skill (for example, Yoruba Transcription) through its assessment and reviewed project.</p>
+
+    {% if profile %}
+    <div class="sk-section-title">Your languages</div>
+    {% for lp in profile %}
+    {% set r = lp.row %}
+    <div class="sk-panel" style="margin-bottom:12px;">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap;">
+        <div>
+          <div class="sk-card-title" style="margin:0;">{{ lp.label }}{% if r.dialect %} <span class="sk-card-desc" style="display:inline; margin:0;">· {{ r.dialect }}</span>{% endif %}</div>
+          <div class="sk-card-desc" style="margin:2px 0 8px;">{{ lp.proficiency_label }} (self-reported)</div>
+          <div class="sk-card-desc" style="margin:0 0 4px;"><strong>You say you can:</strong> {{ lp.claimed|join(', ') if lp.claimed else 'nothing selected yet' }} <span class="lang-cap">self-reported</span></div>
+          {% if lp.verified_skills %}
+          <div class="sk-card-desc" style="margin:4px 0 0;"><strong>Verified by Nelavista:</strong>
+            {% for s in lp.verified_skills %}<a class="lang-cap verified" href="/skills/{{ s.slug }}" style="text-decoration:none;"><i class="ri-checkbox-circle-fill"></i> {{ s.name }}</a> {% endfor %}
+          </div>
+          {% else %}
+          <div class="sk-card-desc" style="margin:4px 0 0;"><strong>Verified by Nelavista:</strong> no {{ lp.label }} skill verified yet — <a class="sk-view-link" href="/skills/african-languages?language={{ r.language }}">find {{ lp.label }} skills to verify →</a></div>
+          {% endif %}
+        </div>
+        <form method="POST" action="/skills/languages/{{ r.id }}/delete" onsubmit="return confirm('Remove this language from your language profile?');">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button type="submit" class="sk-btn secondary small" aria-label="Remove {{ lp.label }}"><i class="ri-delete-bin-line"></i> Remove</button>
+        </form>
+      </div>
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    <div class="sk-section-title">{{ 'Add or update a language' if profile else 'Add your first language' }}</div>
+    <form method="POST" class="sk-panel">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <div class="lt-row two">
+        <div class="sk-field">
+          <label class="sk-label" for="lang-select">Language</label>
+          <select class="sk-select" id="lang-select" name="language" required onchange="document.getElementById('lang-other-wrap').hidden = this.value !== 'other'">
+            <option value="">Choose a language…</option>
+            {% for key, label in languages.items() %}<option value="{{ key }}">{{ label }}</option>{% endfor %}
+            <option value="other">Other…</option>
+          </select>
+        </div>
+        <div class="sk-field" id="lang-other-wrap" hidden>
+          <label class="sk-label" for="lang-other">Language name</label>
+          <input class="sk-input" id="lang-other" name="other_language" maxlength="40" placeholder="e.g. Isoko">
+        </div>
+        <div class="sk-field">
+          <label class="sk-label" for="lang-dialect">Dialect (optional)</label>
+          <input class="sk-input" id="lang-dialect" name="dialect" maxlength="80" placeholder="e.g. Ijebu, Owerri, Kano">
+        </div>
+        <div class="sk-field">
+          <label class="sk-label" for="lang-prof">Proficiency</label>
+          <select class="sk-select" id="lang-prof" name="proficiency">
+            {% for key, label in proficiency_labels.items() %}<option value="{{ key }}" {{ 'selected' if key == 'conversational' else '' }}>{{ label }}</option>{% endfor %}
+          </select>
+        </div>
+      </div>
+      <div class="sk-field">
+        <span class="sk-label">I can…</span>
+        <div class="lt-choices">
+          {% for attr, label in capabilities %}
+          <label class="lt-choice"><input type="checkbox" name="{{ attr }}" value="1"><span>{{ label }}</span></label>
+          {% endfor %}
+        </div>
+      </div>
+      <button type="submit" class="sk-btn">Save language</button>
+      <div class="sk-card-desc" style="margin-top:8px;">Saving a language you've already added updates it.</div>
+    </form>
+
+    <div class="sk-section-title">Relevant academic background</div>
+    <form method="POST" class="sk-panel">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <input type="hidden" name="action" value="background">
+      <div class="sk-field">
+        <label class="sk-label" for="lang-bg">Study or experience that relates to language work (optional)</label>
+        <textarea class="sk-textarea" id="lang-bg" name="language_background" rows="3" maxlength="1000" placeholder="e.g. 300L Linguistics & African Languages, LASU — courses in phonology and Yoruba syntax.">{{ user.language_background or '' }}</textarea>
+      </div>
+      {% if user.department %}<div class="sk-card-desc" style="margin:-4px 0 12px;">From your Academia profile: {{ user.department }}{% if user.level %}, {{ user.level }} level{% endif %}{% if user.university %}, {{ user.university }}{% endif %}.</div>{% endif %}
+      <button type="submit" class="sk-btn secondary">Save background</button>
+    </form>
+  </div>
+
+{% include 'components/skills_footer.html' %}
+{% include 'components/skills_ask_widget.html' %}
+</body>
+</html>

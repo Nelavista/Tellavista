@@ -1,0 +1,38 @@
+<!-- Evidence rows for one skill (services/skills_service.get_skill_verification_record),
+     shared by the Skill Transcript and the Talent Profile so both say exactly the same
+     thing. Expects `rec` and `language_label`. Measured scores come only from the
+     student's best real assessment attempt; nothing is shown if there is none. -->
+{% set best = rec.best_assessment_result %}
+<div class="tr-class-head">
+  <div>
+    <div class="tr-class-title"><a href="/skills/{{ rec.skill.slug }}" style="color:inherit; text-decoration:none;">{{ rec.skill.name }}</a></div>
+    <div class="tr-class-sub">{% if rec.is_language_data_skill %}African Language AI{% if rec.skill.slug != 'african-language-data-beginner' %} · {{ rec.skill.category.name }}{% endif %}{% else %}{{ rec.skill.category.name if rec.skill.category else 'Skill' }}{% endif %}{% if rec.skill.language %} · {{ language_label(rec.skill.language) }}{% endif %} · {{ rec.level|title }}</div>
+  </div>
+  {% if rec.verified %}<span class="sk-badge completed"><i class="ri-checkbox-circle-fill"></i> Verified</span>{% else %}<span class="sk-badge">Not verified yet</span>{% endif %}
+</div>
+{% if rec.verified and rec.skill.tagline %}<div class="sk-card-desc" style="margin:-4px 0 8px;"><strong>Can:</strong> {{ rec.skill.tagline }}</div>{% endif %}
+<div class="gpa-breakdown-row"><div class="gpa-component-label">Learning completed</div><div class="gpa-component-score">{{ 'Yes' if rec.learning_done else rec.learning_pct ~ '%' }}</div></div>
+{% if rec.practice_total %}<div class="gpa-breakdown-row"><div class="gpa-component-label">Practice tasks</div><div class="gpa-component-score">{{ rec.practice_done }} / {{ rec.practice_total }} attempted</div></div>{% endif %}
+{% if rec.assessment_status != 'none' %}
+<div class="gpa-breakdown-row"><div class="gpa-component-label">Assessment</div><div class="gpa-component-score">
+  {{ {'passed': 'Passed', 'not_passed': 'Not passed yet', 'not_started': 'Not taken'}[rec.assessment_status] }}{% if best %} · best {{ best.score }}%{% endif %}
+</div></div>
+{% if best %}
+{% set sm = best.summary %}
+<div class="gpa-breakdown-row"><div class="gpa-component-label">Measured in the assessment</div><div class="gpa-component-score" style="font-weight:600; font-size:0.8rem;">
+  {% if best.kind == 'transcription' %}
+    Word accuracy {{ sm.word_accuracy }}%{% if sm.speaker_accuracy is defined %} · Speakers {{ sm.speaker_accuracy }}%{% endif %}{% if sm.timestamp_accuracy is defined %} · Timestamps {{ sm.timestamp_accuracy }}%{% endif %}{% if sm.tag_compliance is defined %} · Formatting {{ sm.tag_compliance }}%{% endif %}
+  {% elif best.kind == 'translation' %}
+    Reference similarity {{ sm.mean_similarity }}%{% if sm.terminology is defined %} · Terminology {{ sm.terminology }}%{% endif %}
+  {% elif best.kind == 'labeling' %}
+    {% if sm.by_field %}{% for label, pct in sm.by_field.items() %}{{ label }} {{ pct }}%{% if not loop.last %} · {% endif %}{% endfor %}{% else %}Label accuracy {{ (100 * sm.correct / sm.total)|round|int if sm.total else 0 }}%{% endif %}{% if sm.consistency is defined %} · Consistency {{ sm.consistency }}%{% endif %}
+  {% elif best.kind == 'recording' %}
+    {{ sm.passed }} of {{ sm.total }} recordings met the quality requirements
+  {% endif %}
+</div></div>
+{% endif %}
+{% endif %}
+{% if rec.has_project_templates or rec.project_status != 'not_started' %}
+<div class="gpa-breakdown-row"><div class="gpa-component-label">Practical task{% if rec.is_language_data_skill %} (practice project){% endif %}</div><div class="gpa-component-score">{{ {'reviewed': 'Completed', 'completed': 'Completed', 'in_progress': 'In progress', 'not_started': 'Not started'}[rec.project_status] }}</div></div>
+<div class="gpa-breakdown-row"><div class="gpa-component-label">Quality review</div><div class="gpa-component-score">{{ 'Passed' if rec.quality_review_passed else ('Below ' ~ rec.review_min_score ~ '%' if rec.best_review_score is not none else 'Pending') }}{% if rec.best_review_score is not none %} · {{ rec.best_review_score }}%{% endif %}</div></div>
+{% endif %}

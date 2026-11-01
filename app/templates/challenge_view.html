@@ -31,30 +31,59 @@
 {% include 'components/skills_sidebar.html' %}
 
   <div class="sk-view cw-container">
-    <div class="cw-breadcrumb"><a href="/skills/{{ skill.slug }}">{{ skill.name }}</a> / Practice / {{ challenge.title }}</div>
+    <div class="cw-breadcrumb"><a href="/skills/{{ skill.slug }}">{{ skill.name }}</a> / {{ 'Assessment' if challenge.is_assessment else 'Practice' }} / {{ challenge.title }}</div>
     <h1 class="sk-h1" style="font-size:1.6rem;">{{ challenge.title }}</h1>
     <div style="display:flex; gap:6px; margin:10px 0 18px; flex-wrap:wrap;">
       <span class="sk-badge {{ challenge.difficulty }}">{{ challenge.difficulty }}</span>
-      <span class="sk-badge">{{ challenge.challenge_type }}</span>
+      {% if not challenge.is_assessment %}<span class="sk-badge">{{ challenge.challenge_type }}</span>{% endif %}
+      {% if challenge.is_assessment %}<span class="sk-badge" style="background:rgba(59,130,246,0.12); color:var(--sk-accent);"><i class="ri-medal-line"></i> Assessment</span>{% endif %}
+      {% if language_name %}<span class="sk-badge"><i class="ri-translate-2"></i> {{ language_name }}</span>{% endif %}
       <span class="sk-badge">⏱ ~{{ challenge.estimated_minutes }} min</span>
     </div>
     {% if challenge.description %}<p class="sk-sub" style="margin-bottom:20px;">{{ challenge.description }}</p>{% endif %}
 
+    {% if not spec or (challenge.instructions and challenge.instructions != challenge.description) %}
     <div class="sk-panel">
       <div class="sk-section-title" style="margin-top:0;">Instructions</div>
       <div class="cw-instructions">{{ challenge.instructions or 'No detailed instructions yet — do your best with the description above.' }}</div>
     </div>
+    {% endif %}
+
+    {% if spec and locked_reasons %}
+    <div class="sk-panel" style="margin-top:20px; border-left:3px solid var(--sk-warn);">
+      <strong><i class="ri-lock-line"></i> This assessment opens after you finish:</strong>
+      <ul class="lt-guidelines" style="margin-top:8px;">{% for r in locked_reasons %}<li>{{ r }}</li>{% endfor %}</ul>
+      <a href="/skills/{{ skill.slug }}" class="sk-btn secondary small" style="margin-top:12px;">Back to the learning path</a>
+    </div>
+    {% elif spec %}
+    <div class="sk-section-title">{{ 'Your Assessment' if challenge.is_assessment else 'Your Task' }}</div>
+    {% include 'components/language_task.html' %}
+    {% endif %}
 
     {% if submissions %}
-    <div class="sk-section-title">Your Submissions</div>
+    <div class="sk-section-title">{{ 'Your Attempts' if spec else 'Your Submissions' }}</div>
     {% for s in submissions %}
     <div class="cw-submission">
       <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;">
         <span class="sk-badge {{ s.status }}">{{ s.status|title }}</span>
         <span class="sk-card-desc" style="margin:0;">{{ s.created_at.strftime('%b %d, %Y · %I:%M %p') }}</span>
       </div>
+      {% if s.result %}
+      <details style="margin-top:8px;"><summary class="sk-card-desc" style="cursor:pointer; margin:0;">What you submitted</summary><div class="cw-submission-content">{{ s.content }}</div></details>
+      {% set r = s.result %}
+      {% include 'components/language_task_result.html' %}
+      {% if s.feedback and (s.feedback.strengths or s.feedback.improvements) %}
+      <div class="cw-feedback">
+        <div class="cw-feedback-label">Coach notes (AI — doesn't change your score)</div>
+        {% if s.feedback.strengths %}<ul>{% for item in s.feedback.strengths %}<li>{{ item }}</li>{% endfor %}</ul>{% endif %}
+        {% if s.feedback.improvements %}<ul>{% for item in s.feedback.improvements %}<li>{{ item }}</li>{% endfor %}</ul>{% endif %}
+      </div>
+      {% endif %}
+      {% else %}
       <div class="cw-submission-content">{{ s.content }}</div>
-      {% if s.feedback %}
+      {% endif %}
+      {% if s.result %}
+      {% elif s.feedback %}
       <div class="cw-feedback">
         <div class="cw-feedback-score">
           <span class="num" style="color:{{ 'var(--sk-success)' if s.feedback.score >= 70 else ('var(--sk-warn)' if s.feedback.score >= 40 else 'var(--sk-danger)') }};">{{ s.feedback.score }}%</span>
@@ -92,6 +121,7 @@
     {% endfor %}
     {% endif %}
 
+    {% if not spec %}
     <div class="sk-section-title">{{ 'Submit Another Attempt' if submissions else 'Submit Your Solution' }}</div>
     <form method="POST" class="sk-panel">
       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
@@ -101,6 +131,7 @@
       </div>
       <button type="submit" class="sk-btn full">Submit</button>
     </form>
+    {% endif %}
   </div>
 
 {% include 'components/skills_footer.html' %}

@@ -12,7 +12,7 @@ from app.models import (
     Lesson, Quiz, Challenge, ChallengeSubmission, ProjectTemplate, StudentProject,
     StudentSkill, StudentLessonProgress, StudentQuizAttempt, StudentOnboarding,
     CareerTrack, Assignment, AssignmentSubmission, StudentPrivacySettings,
-    CohortEnrollment, ProjectFile, ProjectMessage,
+    CohortEnrollment, ProjectFile, ProjectMessage, StudentLanguage,
 )
 from app.extensions import db, limiter
 from sqlalchemy.exc import IntegrityError
@@ -33,7 +33,13 @@ from app.services.gpa_service import compute_skill_gpa, recompute_and_cache_gpa,
 from app.services.skills_service import (
     get_pipeline_states_bulk, opportunity_match_pct, profile_completeness,
     get_continue_learning_card, compute_payout_breakdown, get_talent_stats,
-    get_skill_scores, get_projects_empty_state_cta,
+    get_skill_scores, get_projects_empty_state_cta, get_skill_verification_record,
+    best_challenge_score, assessment_pass_score, assessment_prerequisites_unmet, project_prerequisites_unmet,
+)
+from app.services.language_task_service import score_submission, has_any_answer
+from app.services.language_profile_service import (
+    LANGUAGES, PROFICIENCY_LABELS, CAPABILITIES, language_label, normalize_language_key,
+    get_language_profile, recommended_language_skills,
 )
 from app.services.ai_service import (
     evaluate_project_submission, generate_project_brief, project_mentor_reply,
@@ -261,6 +267,12 @@ def home():
 def catalog():
     category_slug = request.args.get('category', '').strip()
     search = request.args.get('q', '').strip()
+    filters = {
+        'language': request.args.get('language', '').strip(),
+        'level': request.args.get('level', '').strip(),
+        'tag': ''.join(c for c in request.args.get('tag', '').strip().lower() if c.isalnum() or c == '-'),
+        'program': request.args.get('program', '').strip(),
+    }
     categories = SkillCategory.query.filter_by(is_active=True).order_by(SkillCategory.order).all()
 
     query = Skill.query.filter_by(is_published=True)
@@ -270,8 +282,24 @@ def catalog():
         if active_category:
             query = query.filter_by(category_id=active_category.id)
     if search:
-        query = query.filter(Skill.name.ilike(f'%{search}%'))
+        query = query.filter(db.or_(Skill.name.ilike(f'%{search}%'), Skill.tagline.ilike(f'%{search}%')))
+    if filters['language']:
+        query = query.filter(Skill.language == filters['language'])
+    if filters['level'] in ('beginner', 'intermediate', 'advanced'):
+        query = query.filter(Skill.level == filters['level'])
+    if filters['tag']:
+        query = query.filter(Skill.tags_json.ilike(f'%"{filters["tag"]}"%'))
+    if filters['program']:
+        query = query.join(SkillCategory, Skill.category_id == SkillCategory.id).filter(SkillCategory.program == filters['program'])
     skills = query.order_by(Skill.order).all()
+
+    # Filter dropdown options come from what's actually published, so a filter can never
+    # offer a language or tag that returns nothing.
+    published_meta = Skill.query.filter_by(is_published=True).with_entities(Skill.language, Skill.tags_json).all()
+    language_options = sorted({lang for lang, _ in published_meta if lang}, key=lambda k: language_label(k))
+    tag_options = set()
+    for skill_row in Skill.query.filter_by(is_published=True).filter(Skill.tags_json.isnot(None)).all():
+        tag_options.update(skill_row.tags)
 
     # Each card needs real numbers, not filler text — projects available, students
     # actually learning it right now, and open paid opportunities in this skill. Was 4
@@ -318,7 +346,71 @@ def catalog():
         })
 
     return render_template('skills_catalog.html', categories=categories, rows=rows,
-                            active_category=active_category, search=search, active_page='learn')
+                            active_category=active_category, search=search, active_page='learn',
+                            filters=filters, language_options=[(k, language_label(k)) for k in language_options],
+                            tag_options=sorted(tag_options), language_label=language_label)
+
+
+# ===== AFRICAN LANGUAGES LAB (ALL) HUB =====
+@skills_bp.route('/skills/african-languages')
+@login_required
+def all_hub():
+    """Entry point for the African-language and AI-language-data skills: the ALL
+    categories (SkillCategory.program == 'all') with their skills, the multi-skill tracks
+    built from them, and the student's language profile. Same Skill/LearningPath/Challenge/
+    ProjectTemplate content as the rest of the catalog -- this page is only a focused view."""
+    user = _current_user()
+    language = request.args.get('language', '').strip()
+    level = request.args.get('level', '').strip()
+    categories = SkillCategory.query.filter_by(is_active=True, program='all').order_by(SkillCategory.order).all()
+    category_ids = [c.id for c in categories]
+
+    query = Skill.query.filter(Skill.is_published.is_(True), Skill.category_id.in_(category_ids)) if category_ids else None
+    skills = []
+    if query is not None:
+        if language:
+            query = query.filter(Skill.language == language)
+        if level in ('beginner', 'intermediate', 'advanced'):
+            query = query.filter(Skill.level == level)
+        skills = query.order_by(Skill.order).all()
+
+    progress = {s.skill_id: s for s in StudentSkill.query.filter_by(student_id=user.id).all()}
+    pipeline = get_pipeline_states_bulk(user.id, list(progress.keys()))
+    verified_ids = {sid for sid, (steps, _) in pipeline.items() if steps[3]['state'] == 'done'}
+
+    by_category = []
+    for cat in categories:
+        cat_skills = [s for s in skills if s.category_id == cat.id]
+        if cat_skills:
+            by_category.append({'category': cat, 'skills': cat_skills})
+
+    all_skill_ids = {s.id for s in Skill.query.filter(Skill.category_id.in_(category_ids)).all()} if category_ids else set()
+    tracks = []
+    for t in CareerTrack.query.filter_by(is_published=True).order_by(CareerTrack.order).all():
+        step_skill_ids = [st.skill_id for st in t.steps.all()]
+        if step_skill_ids and all(sid in all_skill_ids for sid in step_skill_ids):
+            tracks.append({'track': t, 'pct': get_track_progress_pct(user.id, t), 'steps': t.steps.all()})
+
+    languages_in_use = sorted(
+        {s.language for s in Skill.query.filter(Skill.category_id.in_(category_ids), Skill.language.isnot(None)).all()}
+        if category_ids else set(), key=lambda k: language_label(k))
+
+    # First-cohort entry point: the beginner path, with the student's real step states.
+    beginner = Skill.query.filter_by(slug='african-language-data-beginner', is_published=True).first()
+    beginner_steps = get_path_step_states(user.id, beginner.path) if beginner and beginner.path else []
+    beginner_record = get_skill_verification_record(user.id, beginner) if beginner else None
+    by_category = [g for g in by_category if not beginner or g['skills'] != [beginner]]
+
+    return render_template(
+        'skills_all_hub.html', by_category=by_category, categories=categories, tracks=tracks,
+        beginner=beginner, beginner_steps=beginner_steps, beginner_record=beginner_record,
+        progress=progress, verified_ids=verified_ids, language_label=language_label,
+        language_options=[(k, language_label(k)) for k in languages_in_use],
+        filters={'language': language, 'level': level}, total_skills=len(skills),
+        language_profile=get_language_profile(user.id),
+        recommended=recommended_language_skills(user.id),
+        active_page='african_languages', ask_context='the African language and AI data skills hub',
+    )
 
 
 # ===== UNIFIED SEARCH (skills, courses, lessons, challenges, projects) =====
@@ -424,6 +516,8 @@ def skill_detail(slug):
         challenge_done_ids=challenge_done_ids, student_project_template_ids=student_project_template_ids,
         ask_context=f'the {skill.name} skill page', onboarding_match=onboarding_match,
         experience_labels=EXPERIENCE_LABELS,
+        verification=get_skill_verification_record(user.id, skill),
+        language_name=language_label(skill.language),
     )
 
 
@@ -754,6 +848,19 @@ def challenge_view(skill_slug, challenge_slug):
     skill = Skill.query.filter_by(slug=skill_slug, is_published=True).first_or_404()
     challenge = Challenge.query.filter_by(skill_id=skill.id, slug=challenge_slug, is_published=True).first_or_404()
     user = _current_user()
+    spec = challenge.task_spec
+    locked_reasons = assessment_prerequisites_unmet(user.id, skill) if challenge.is_assessment else []
+
+    if request.method == 'POST' and locked_reasons:
+        # Enforced here, not only shown as a locked path step: an assessment can't be
+        # attempted (or brute-forced) before the learning and practice behind it.
+        if request.headers.get('X-Requested-With') == 'fetch':
+            return jsonify({'success': False, 'error': 'Finish the earlier steps first.', 'unmet': locked_reasons}), 403
+        flash('This assessment opens after you finish: ' + '; '.join(locked_reasons) + '.')
+        return redirect(url_for('skills.challenge_view', skill_slug=skill_slug, challenge_slug=challenge_slug))
+
+    if request.method == 'POST' and spec:
+        return _submit_structured_task(user, skill, challenge, spec)
 
     if request.method == 'POST':
         content = request.form.get('content', '').strip()
@@ -783,8 +890,75 @@ def challenge_view(skill_slug, challenge_slug):
         .order_by(ChallengeSubmission.created_at.desc()).all()
     )
     return render_template('challenge_view.html', skill=skill, challenge=challenge, submissions=submissions,
+                            spec=spec, best_score=best_challenge_score(user.id, challenge.id) if spec else None,
+                            locked_reasons=locked_reasons,
+                            pass_score=assessment_pass_score(challenge) if challenge.is_assessment else None,
+                            language_name=language_label(skill.language),
                             ask_context=f'the challenge "{challenge.title}"',
-                            ask_suggestions=['Give me a hint', 'Review my approach', 'What am I missing?'])
+                            ask_suggestions=(['Give me a hint', 'Explain the guidelines', 'What am I missing?'] if spec
+                                            else ['Give me a hint', 'Review my approach', 'What am I missing?']))
+
+
+def _upload_task_audio(file):
+    """Stores one recording from a speech-data task. Best-effort: with Cloudinary not
+    configured (local dev) or on any upload failure the attempt is still scored from the
+    browser-measured levels -- it just has no stored audio link."""
+    if not os.environ.get('CLOUDINARY_CLOUD_NAME'):
+        return None
+    if not (file.mimetype or '').startswith(('audio/', 'video/webm')):
+        return None
+    try:
+        result = cloudinary.uploader.upload(file, resource_type='video', folder='nelavista/speech_tasks')
+        return result.get('secure_url')
+    except Exception as e:
+        logger.warning(f'Speech task audio upload failed: {e}')
+        return None
+
+
+def _submit_structured_task(user, skill, challenge, spec):
+    """Scores a structured practical task (transcription / translation / labeling /
+    recording) deterministically and stores it as a ChallengeSubmission with .score --
+    the number assessments and skill verification read. Assessments don't reveal expected
+    answers in the stored result, so a retake can't be answered from the last attempt."""
+    back = url_for('skills.challenge_view', skill_slug=skill.slug, challenge_slug=challenge.slug)
+    wants_json = request.headers.get('X-Requested-With') == 'fetch'
+    if not has_any_answer(spec, request.form):
+        if wants_json:
+            return jsonify({'success': False, 'error': 'Complete the task before submitting.'}), 400
+        flash('Complete the task before submitting.')
+        return redirect(back)
+
+    result = score_submission(spec, request.form, files=request.files, uploader=_upload_task_audio,
+                              reveal=not challenge.is_assessment)
+    content = result.pop('content')
+    submission = ChallengeSubmission(challenge_id=challenge.id, student_id=user.id, content=content,
+                                     status='reviewed', score=result['score'])
+    submission.result = result
+    db.session.add(submission)
+    db.session.commit()
+    touch_skill_activity(user.id, skill.id)
+
+    if spec.get('ai_feedback'):
+        # Written coaching on top of the deterministic score -- best-effort, never changes it.
+        try:
+            guidelines = '\n'.join(f'- {g}' for g in spec.get('guidelines') or [])
+            submission.feedback = generate_challenge_feedback(
+                challenge.title, f"{challenge.instructions or ''}\n\nGuidelines:\n{guidelines}", content)
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
+
+    if challenge.is_assessment:
+        pass_mark = assessment_pass_score(challenge)
+        if result['score'] >= pass_mark:
+            flash(f"Assessment passed: {result['score']}% (pass mark {pass_mark}%).")
+        else:
+            flash(f"Scored {result['score']}% — the pass mark is {pass_mark}%. Review the guidelines and try again.")
+    else:
+        flash(f"Submitted — you scored {result['score']}%. See the breakdown below.")
+    if wants_json:
+        return jsonify({'success': True, 'score': result['score'], 'redirect': back})
+    return redirect(back)
 
 
 # ===== PROJECTS =====
@@ -806,6 +980,11 @@ def start_project(template_id):
     existing = StudentProject.query.filter_by(student_id=user.id, project_template_id=template.id).first()
     if existing:
         return redirect(url_for('skills.project_detail', project_id=existing.id))
+
+    unmet = project_prerequisites_unmet(user.id, template.skill) if template.skill else []
+    if unmet:
+        flash('This practice project opens after you finish: ' + '; '.join(unmet) + '.')
+        return redirect(url_for('skills.skill_detail', slug=template.skill.slug))
 
     project = StudentProject(
         student_id=user.id, project_template_id=template.id,
@@ -1096,8 +1275,19 @@ def skill_transcript():
 
     privacy = StudentPrivacySettings.query.filter_by(student_id=user.id).first()
 
+    # Per-skill verification records for every skill the student has started (daily class
+    # or not) -- the evidence trail behind each "Verified" badge.
+    skill_records = [
+        get_skill_verification_record(user.id, ss.skill)
+        for ss in StudentSkill.query.filter_by(student_id=user.id).order_by(StudentSkill.last_activity_at.desc()).all()
+        if ss.skill
+    ]
+    skill_records.sort(key=lambda r: (not r['verified'], -r['learning_pct']))
+
     return render_template(
         'skills_transcript.html', rows=rows, overall_gpa=overall_gpa, privacy=privacy,
+        skill_records=skill_records, language_profile=get_language_profile(user.id),
+        language_label=language_label,
         active_page='transcript', ask_context='your Nelavista Skill Transcript',
     )
 
@@ -1276,6 +1466,26 @@ def my_learning():
     return render_template('skills_my_learning.html', rows=rows, active_page='my_learning')
 
 
+def _talent_evidence(profile_user, is_own, privacy):
+    """Evidence-bearing skill records (verified, or with a scored assessment attempt) and
+    the self-reported academic background for a Talent Profile. Hidden from other viewers
+    when the student turned off "show Skill Transcript" in their privacy settings."""
+    if not is_own and privacy and not privacy.show_skill_transcript:
+        return [], None
+    records = [
+        get_skill_verification_record(profile_user.id, ss.skill)
+        for ss in StudentSkill.query.filter_by(student_id=profile_user.id).all() if ss.skill and ss.skill.is_published
+    ]
+    records = [r for r in records if r['verified'] or r['best_assessment_result']]
+    records.sort(key=lambda r: (not r['verified'], r['skill'].name))
+    parts = [p for p in (profile_user.department, f'{profile_user.level} level' if profile_user.level else None,
+                         profile_user.university) if p]
+    background = ', '.join(parts)
+    if profile_user.language_background:
+        background = f"{background} — {profile_user.language_background}" if background else profile_user.language_background
+    return records, background or None
+
+
 # ===== TALENT PROFILE =====
 @skills_bp.route('/skills/talent')
 @login_required
@@ -1288,8 +1498,11 @@ def talent_profile():
     projects = StudentProject.query.filter_by(student_id=user.id, is_public=True).order_by(StudentProject.updated_at.desc()).all()
     privacy = StudentPrivacySettings.query.filter_by(student_id=user.id).first()
     skill_scores = get_skill_scores(user.id, public_only=True)
+    evidence_records, academic_background = _talent_evidence(user, True, privacy)
     return render_template('skills_talent.html', profile_user=user, stats=stats, projects=projects,
-                            skill_scores=skill_scores, privacy=privacy, is_own_profile=True, active_page='talent')
+                            skill_scores=skill_scores, privacy=privacy, is_own_profile=True, active_page='talent',
+                            language_profile=get_language_profile(user.id), evidence_records=evidence_records,
+                            academic_background=academic_background, language_label=language_label)
 
 
 @skills_bp.route('/skills/talent/<username>')
@@ -1315,8 +1528,65 @@ def talent_public(username):
         if show_projects else []
     )
     skill_scores = get_skill_scores(profile_user.id, public_only=not is_own) if show_projects else []
+    evidence_records, academic_background = _talent_evidence(profile_user, is_own, privacy)
     return render_template('skills_talent.html', profile_user=profile_user, stats=stats, projects=projects,
-                            skill_scores=skill_scores, privacy=privacy, is_own_profile=is_own, active_page='talent')
+                            skill_scores=skill_scores, privacy=privacy, is_own_profile=is_own, active_page='talent',
+                            language_profile=get_language_profile(profile_user.id), evidence_records=evidence_records,
+                            academic_background=academic_background, language_label=language_label)
+
+
+# ===== LANGUAGE PROFILE (self-reported languages; verification comes from skills) =====
+@skills_bp.route('/skills/languages', methods=['GET', 'POST'])
+@login_required
+def language_profile():
+    user = _current_user()
+    if request.method == 'POST':
+        if request.form.get('action') == 'background':
+            user.language_background = (request.form.get('language_background') or '').strip()[:1000] or None
+            db.session.commit()
+            flash('Background saved.')
+            return redirect(url_for('skills.language_profile'))
+
+        raw = request.form.get('language', '').strip()
+        if raw == 'other':
+            raw = request.form.get('other_language', '').strip()
+        key = normalize_language_key(raw)
+        if not key:
+            flash('Choose a language first.')
+            return redirect(url_for('skills.language_profile'))
+        proficiency = request.form.get('proficiency', 'conversational')
+        if proficiency not in PROFICIENCY_LABELS:
+            proficiency = 'conversational'
+
+        row = StudentLanguage.query.filter_by(student_id=user.id, language=key).first()
+        if not row:
+            row = StudentLanguage(student_id=user.id, language=key)
+            db.session.add(row)
+        row.dialect = (request.form.get('dialect') or '').strip()[:80] or None
+        row.proficiency = proficiency
+        for attr, _ in CAPABILITIES:
+            setattr(row, attr, bool(request.form.get(attr)))
+        try:
+            db.session.commit()
+        except IntegrityError:
+            db.session.rollback()  # double-submit race on (student_id, language)
+        flash(f'{language_label(key)} saved to your language profile.')
+        return redirect(url_for('skills.language_profile'))
+
+    return render_template('skills_languages.html', user=user, profile=get_language_profile(user.id),
+                            languages=LANGUAGES, proficiency_labels=PROFICIENCY_LABELS, capabilities=CAPABILITIES,
+                            active_page='languages', ask_context='your language profile')
+
+
+@skills_bp.route('/skills/languages/<int:language_id>/delete', methods=['POST'])
+@login_required
+def delete_language(language_id):
+    user = _current_user()
+    row = StudentLanguage.query.filter_by(id=language_id, student_id=user.id).first_or_404()
+    db.session.delete(row)
+    db.session.commit()
+    flash(f'{language_label(row.language)} removed from your language profile.')
+    return redirect(url_for('skills.language_profile'))
 
 
 # ===== CHALLENGES & COMPETITIONS =====
@@ -1519,6 +1789,10 @@ def request_project_review(project_id):
         submission_details += f"\nWorkspace: {project.files.count()} code file(s) written in-browser"
     elif project.workspace_type == 'writer':
         submission_details += f"\nWorkspace: {len(project.doc_content or '')} characters of document content written in-browser"
+        if project.doc_content:
+            # The document IS the deliverable for transcription/translation/QA projects --
+            # a character count alone gives the reviewer nothing to judge.
+            submission_details += f"\n\n--- Document written in the workspace ---\n{project.doc_content[:8000]}"
     elif project.workspace_type == 'designer':
         submission_details += f"\nWorkspace: {len(project.design_assets)} design asset(s) uploaded, notes: {project.design_notes or '(none)'}"
     elif project.workspace_type == 'data':

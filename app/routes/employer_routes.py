@@ -1,9 +1,10 @@
 from datetime import datetime
 from functools import wraps
 from flask import Blueprint, render_template, redirect, url_for, session, flash, request
-from app.models import User, EmployerProfile, StudentPrivacySettings, StudentSkill, Skill
+from app.models import User, EmployerProfile, StudentPrivacySettings, Skill
 from app.extensions import db
-from app.services.skills_service import get_talent_stats, is_skill_verified
+from app.services.talent_search_service import search_talent, language_options, STATUS_FILTERS
+from app.services.language_profile_service import language_label
 
 employer_bp = Blueprint('employer', __name__)
 
@@ -84,53 +85,55 @@ def dashboard():
     return render_template('employer_dashboard.html', profile=profile, discoverable_count=discoverable_count, active_page='dashboard')
 
 
+def talent_viewer_required(f):
+    """Employer accounts, plus Nelavista admins (who run the talent pipeline before any
+    partner organisation has an employer account). Students never pass."""
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        if 'user' not in session:
+            return redirect(url_for('auth.login', next=request.url))
+        user = User.query.filter_by(username=session['user']['username']).first()
+        if not user or not (user.is_employer or user.is_admin):
+            flash('That page is only available to employer accounts.')
+            return redirect(url_for('dashboard.choose_path'))
+        return f(*args, **kwargs)
+    return decorated
+
+
 @employer_bp.route('/employer/discover')
-@employer_required
+@talent_viewer_required
 def discover():
     """Students are discoverable only if they've opted in (profile_visibility in
     'employers'/'public') — an empty result here is the correct, safe default for a class
     with nobody opted in yet, not a bug. Filters and results are built from the same
-    get_talent_stats() a student's own Talent Profile uses — an employer sees exactly
-    what the student's profile shows, never a separate, richer view."""
-    skill_id = request.args.get('skill_id', type=int)
-    min_rating = request.args.get('min_rating', type=float)
-    verified_only = request.args.get('verified_only') == '1'
-    q = request.args.get('q', '').strip()
-
-    query = (
-        db.session.query(StudentPrivacySettings, User)
-        .join(User, StudentPrivacySettings.student_id == User.id)
-        .filter(StudentPrivacySettings.profile_visibility.in_(['employers', 'public']))
-    )
-    if q:
-        like = f'%{q}%'
-        query = query.filter(db.or_(User.name.ilike(like), User.username.ilike(like), User.university.ilike(like)))
-    rows = query.order_by(User.name).all()
-
-    results = []
-    for privacy, student in rows:
-        if skill_id:
-            has_progress = StudentSkill.query.filter_by(student_id=student.id, skill_id=skill_id).first() is not None
-            if not has_progress:
-                continue
-            if verified_only and not is_skill_verified(student.id, skill_id):
-                continue
-        stats = get_talent_stats(student)
-        if verified_only and not skill_id and not stats['verified_skills']:
-            continue
-        if min_rating and (not stats['avg_rating'] or stats['avg_rating'] < min_rating):
-            continue
-        results.append({'student': student, 'privacy': privacy, 'stats': stats})
-
+    records a student's own Skill Transcript and Talent Profile use (see
+    services/talent_search_service.py) — an employer sees exactly what the student's
+    profile shows, never a separate, richer view."""
+    level = request.args.get('level', '').strip()
+    status = request.args.get('status', '').strip()
+    filters = {
+        'q': request.args.get('q', '').strip(),
+        'skill_id': request.args.get('skill_id', type=int),
+        'language': request.args.get('language', '').strip(),
+        'level': level if level in ('beginner', 'intermediate', 'advanced') else '',
+        'status': status if status in STATUS_FILTERS else '',
+        'practical_done': request.args.get('practical_done') == '1',
+        'background': request.args.get('background', '').strip(),
+        'min_rating': request.args.get('min_rating', type=float),
+        'verified_only': request.args.get('verified_only') == '1',
+    }
+    results = search_talent(**filters)
     skills = Skill.query.filter_by(is_published=True).order_by(Skill.name).all()
     return render_template(
-        'employer_discover.html', results=results, skills=skills,
-        skill_id=skill_id, min_rating=min_rating, verified_only=verified_only, q=q, active_page='discover',
+        'employer_discover.html', results=results, skills=skills, filters=filters,
+        language_options=language_options(), status_options=STATUS_FILTERS, language_label=language_label,
+        skill_id=filters['skill_id'], min_rating=filters['min_rating'], verified_only=filters['verified_only'],
+        q=filters['q'], active_page='discover',
     )
 
 
 @employer_bp.route('/employer/students/<int:student_id>')
-@employer_required
+@talent_viewer_required
 def student_view(student_id):
     """An employer's view of a student is the exact same Talent Profile the student sees
     of themselves — one page, one source of truth, not a separate employer-only template

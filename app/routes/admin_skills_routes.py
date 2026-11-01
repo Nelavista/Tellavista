@@ -13,6 +13,7 @@ from app.extensions import db
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy import func
 from app.services.skills_service import ONBOARDING_SKIPPED
+from app.services.language_task_service import validate_task_spec
 from app.services.notification_service import notify
 from app.services.youtube_service import search_youtube_videos, build_lesson_video_query
 from app.services.ai_service import generate_lesson_content_from_video as generate_ai_lesson_content
@@ -278,6 +279,11 @@ def update_skill(skill_id):
         skill.order = int(data['order'] or 0)
     if 'is_published' in data:
         skill.is_published = bool(data['is_published'])
+    if 'language' in data:
+        skill.language = (data['language'] or '').strip().lower() or None
+    if 'tags' in data:
+        tags = data['tags'] if isinstance(data['tags'], list) else []
+        skill.tags = [str(t).strip().lower()[:30] for t in tags if str(t).strip()][:12]
     db.session.commit()
     return jsonify({'success': True, 'skill': skill.to_dict()})
 
@@ -802,6 +808,21 @@ def update_challenge(challenge_id):
         challenge.order = int(data['order'] or 0)
     if 'is_published' in data:
         challenge.is_published = bool(data['is_published'])
+    if 'task_spec' in data:
+        # A structured, auto-scored task (see services/language_task_service.py) -- e.g.
+        # attaching an audio_url to a transcription task. Validated before it's stored so
+        # a malformed spec never reaches a student.
+        if data['task_spec'] is None:
+            challenge.task_spec = None
+        else:
+            errors = validate_task_spec(data['task_spec'])
+            if errors:
+                return _bad_request('Invalid task_spec: ' + '; '.join(errors[:5]))
+            challenge.task_spec = data['task_spec']
+    if 'is_assessment' in data:
+        challenge.is_assessment = bool(data['is_assessment'])
+    if 'pass_score' in data:
+        challenge.pass_score = max(0, min(100, int(data['pass_score']))) if data['pass_score'] is not None else None
     db.session.commit()
     return jsonify({'success': True, 'challenge': challenge.to_dict()})
 

@@ -29,11 +29,17 @@
     <div class="skd-hero">
       <div class="skd-hero-icon" style="background:{{ skill.color }}22; color:{{ skill.color }};"><i class="{{ skill.icon or 'ri-puzzle-line' }}"></i></div>
       <div style="flex:1; min-width:220px;">
+        {% if skill.category and skill.category.program == 'all' %}
+        <span class="sk-eyebrow"><a href="/skills/african-languages" style="color:inherit; text-decoration:none;">African Language AI</a>{% if skill.slug == 'african-language-data-beginner' %} · Start here{% else %} · {{ skill.category.name }}{% endif %}</span>
+        {% else %}
         <span class="sk-eyebrow">{{ skill.category.name if skill.category else 'Skills' }}</span>
+        {% endif %}
         <h1 class="sk-h1" style="margin-bottom:6px;">{{ skill.name }}</h1>
         <p class="sk-sub" style="margin-bottom:14px;">{{ skill.tagline or skill.description or '' }}</p>
         <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
           <span class="sk-badge {{ skill.level }}">{{ skill.level }}</span>
+          {% if language_name %}<span class="sk-badge"><i class="ri-translate-2"></i> {{ language_name }}</span>{% endif %}
+          {% if verification.verified %}<span class="sk-badge completed"><i class="ri-checkbox-circle-fill"></i> Verified</span>{% endif %}
           {% if skill.estimated_hours %}<span class="sk-badge"><i class="ri-time-line"></i> ~{{ skill.estimated_hours }}h</span>{% endif %}
           {% if student_skill %}<span class="sk-badge {{ student_skill.status }}">{{ student_skill.progress_pct }}% complete</span>{% endif %}
         </div>
@@ -58,6 +64,42 @@
     {% if skill.description %}
     <p class="sk-sub" style="margin-top:18px; max-width:720px;">{{ skill.description }}</p>
     {% endif %}
+
+    {% set v = verification %}
+    <div class="sk-panel" style="margin-top:18px; max-width:720px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;">
+        <div class="sk-card-title" style="margin:0;"><i class="ri-shield-check-line"></i> How you prove this skill</div>
+        {% if v.verified %}<span class="sk-badge completed"><i class="ri-checkbox-circle-fill"></i> Verified · {{ v.level|title }}</span>{% else %}<span class="sk-badge">Not verified yet</span>{% endif %}
+      </div>
+      <div class="dv2-verify-row">
+        <div class="dv2-verify-check {{ 'done' if v.learning_done else 'pending' }}">{% if v.learning_done %}<i class="ri-check-line"></i>{% endif %}</div>
+        <span>Complete the lessons <span class="sk-card-desc" style="display:inline; margin:0;">· {{ v.learning_pct }}%</span></span>
+      </div>
+      {% if v.practice_total %}
+      <div class="dv2-verify-row">
+        <div class="dv2-verify-check {{ 'done' if v.practice_done == v.practice_total else 'pending' }}">{% if v.practice_done == v.practice_total %}<i class="ri-check-line"></i>{% endif %}</div>
+        <span>Attempt the practice tasks <span class="sk-card-desc" style="display:inline; margin:0;">· {{ v.practice_done }} of {{ v.practice_total }} attempted</span></span>
+      </div>
+      {% endif %}
+      {% for a in v.assessments %}
+      <div class="dv2-verify-row">
+        <div class="dv2-verify-check {{ 'done' if a.status == 'passed' else 'pending' }}">{% if a.status == 'passed' %}<i class="ri-check-line"></i>{% endif %}</div>
+        <span>Pass the assessment <span class="sk-card-desc" style="display:inline; margin:0;">· pass mark {{ a.pass_score }}%{% if a.best_score is not none %}, your best {{ a.best_score }}%{% endif %}</span>
+          — <a class="sk-view-link" href="/skills/{{ skill.slug }}/challenge/{{ a.challenge.slug }}">{{ 'Review' if a.status == 'passed' else ('Retake' if a.best_score is not none else 'Start') }}</a></span>
+      </div>
+      {% endfor %}
+      {% if v.has_project_templates %}
+      <div class="dv2-verify-row">
+        <div class="dv2-verify-check {{ 'done' if v.project_status in ('completed', 'reviewed') else 'pending' }}">{% if v.project_status in ('completed', 'reviewed') %}<i class="ri-check-line"></i>{% endif %}</div>
+        <span>Complete the practical task (practice project) <span class="sk-card-desc" style="display:inline; margin:0;">· {{ v.project_status|replace('_', ' ') }}</span></span>
+      </div>
+      <div class="dv2-verify-row">
+        <div class="dv2-verify-check {{ 'done' if v.quality_review_passed else 'pending' }}">{% if v.quality_review_passed %}<i class="ri-check-line"></i>{% endif %}</div>
+        <span>Pass quality review <span class="sk-card-desc" style="display:inline; margin:0;">· "Request Review" on your project, {{ v.review_min_score }}%+{% if v.best_review_score is not none %}, best {{ v.best_review_score }}%{% endif %}</span></span>
+      </div>
+      {% endif %}
+      <div class="sk-card-desc" style="margin:10px 0 0;">Verified skills appear on your <a class="sk-view-link" href="/skills/transcript">Skill Transcript</a> and Talent Profile. Verification is Nelavista's own review of your submitted work — it isn't a job offer or a third-party certification.</div>
+    </div>
 
     <div class="skd-tabs">
       <button class="skd-tab active" data-tab="path" onclick="skdShowTab('path')">Learning Path</button>
@@ -112,7 +154,7 @@
           <div class="sk-card-desc">{{ c.description or '' }}</div>
           <div style="display:flex; gap:6px; flex-wrap:wrap;">
             <span class="sk-badge {{ c.difficulty }}">{{ c.difficulty }}</span>
-            <span class="sk-badge">{{ c.challenge_type }}</span>
+            {% if c.is_assessment %}<span class="sk-badge" style="background:rgba(59,130,246,0.12); color:var(--sk-accent);"><i class="ri-medal-line"></i> Assessment</span>{% else %}<span class="sk-badge">{{ c.challenge_type }}</span>{% endif %}
             {% if c.id in challenge_done_ids %}<span class="sk-badge completed"><i class="ri-check-line"></i> Submitted</span>{% endif %}
           </div>
         </a>
@@ -129,7 +171,7 @@
         {% for p in project_templates %}
         <div class="sk-card" style="cursor:default;">
           <div class="sk-card-title">{{ p.title }}</div>
-          <div class="sk-card-desc">{{ p.description or '' }}</div>
+          <div class="sk-card-desc" style="white-space:pre-line;">{{ p.description or '' }}</div>
           {% if p.difficulty or p.estimated_hours %}
           <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px;">
             {% if p.difficulty %}<span class="sk-badge {{ p.difficulty }}">{{ p.difficulty|title }}</span>{% endif %}
@@ -143,6 +185,8 @@
           {% endif %}
           {% if p.id in student_project_template_ids %}
             <a href="/skills/projects" class="sk-btn small secondary">View my project</a>
+          {% elif verification.assessment_status not in ('passed', 'none') %}
+            <span class="sk-card-desc" style="margin:0;"><i class="ri-lock-line"></i> Opens after you pass the assessment.</span>
           {% else %}
             <form method="POST" action="/skills/projects/start/{{ p.id }}">
               <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">

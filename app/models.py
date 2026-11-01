@@ -70,6 +70,9 @@ class User(db.Model):
     bio = db.Column(db.Text, nullable=True)
     portfolio_url = db.Column(db.String(300), nullable=True)
     profile_photo_url = db.Column(db.String(500), nullable=True)
+    # Language-data profile (see StudentLanguage below): the student's own description of
+    # relevant academic background, e.g. "300L Linguistics, LASU". Self-reported only.
+    language_background = db.Column(db.Text, nullable=True)
     # Self-service account deletion (Settings > Danger Zone) anonymizes + deactivates this
     # row rather than deleting it outright -- dozens of tables across Academia and Skills
     # hold a user_id FK back to this row (CBTAttempt, TutorConversation, StudentProject,
@@ -579,6 +582,9 @@ class SkillCategory(db.Model):
     order = db.Column(db.Integer, default=0)
     is_active = db.Column(db.Boolean, default=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    # Groups categories into a programme hub, e.g. 'all' for the African Languages Lab
+    # skill categories (Transcription, Translation, ...). NULL for the general catalog.
+    program = db.Column(db.String(30), nullable=True, index=True)
 
     skills = db.relationship('Skill', backref='category', lazy='dynamic', order_by='Skill.order')
 
@@ -586,6 +592,7 @@ class SkillCategory(db.Model):
         return {
             'id': self.id, 'name': self.name, 'slug': self.slug, 'icon': self.icon,
             'description': self.description, 'order': self.order, 'is_active': self.is_active,
+            'program': self.program,
         }
 
 
@@ -607,11 +614,27 @@ class Skill(db.Model):
     is_published = db.Column(db.Boolean, default=False)
     order = db.Column(db.Integer, default=0)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    # Working language for language-specific skills (e.g. 'yoruba' for Yoruba Transcription),
+    # a key of services/language_profile_service.py's LANGUAGES. NULL = not language-specific.
+    language = db.Column(db.String(40), nullable=True, index=True)
+    # JSON list of filter tags, e.g. ["transcription", "ai"] -- powers catalog filtering.
+    tags_json = db.Column(db.Text, nullable=True)
 
     path = db.relationship('LearningPath', backref='skill', uselist=False, cascade='all, delete-orphan')
     courses = db.relationship('SkillCourse', backref='skill', lazy='dynamic', order_by='SkillCourse.order', cascade='all, delete-orphan')
     challenges = db.relationship('Challenge', backref='skill', lazy='dynamic', order_by='Challenge.order', cascade='all, delete-orphan')
     project_templates = db.relationship('ProjectTemplate', backref='skill', lazy='dynamic', order_by='ProjectTemplate.order', cascade='all, delete-orphan')
+
+    @property
+    def tags(self):
+        try:
+            return json.loads(self.tags_json) if self.tags_json else []
+        except (ValueError, TypeError):
+            return []
+
+    @tags.setter
+    def tags(self, value):
+        self.tags_json = json.dumps(value or [])
 
     def to_dict(self):
         return {
@@ -619,6 +642,7 @@ class Skill(db.Model):
             'tagline': self.tagline, 'description': self.description, 'level': self.level,
             'icon': self.icon, 'color': self.color, 'estimated_hours': self.estimated_hours,
             'is_published': self.is_published, 'order': self.order,
+            'language': self.language, 'tags': self.tags,
         }
 
 
@@ -840,8 +864,27 @@ class Challenge(db.Model):
     is_published = db.Column(db.Boolean, default=False)
     order = db.Column(db.Integer, default=0)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    # Optional structured, auto-scored practical task (transcription / translation /
+    # labeling / recording -- see services/language_task_service.py for the schema). NULL
+    # keeps the original free-text + AI-feedback challenge behaviour.
+    task_spec_json = db.Column(db.Text, nullable=True)
+    # An assessment is a scored task that must be PASSED (best score >= pass_score), not
+    # merely attempted, to complete its path step and to verify the skill.
+    is_assessment = db.Column(db.Boolean, nullable=False, default=False, server_default=db.false())
+    pass_score = db.Column(db.Integer, nullable=True)
 
     __table_args__ = (db.UniqueConstraint('skill_id', 'slug', name='uq_challenge_slug'),)
+
+    @property
+    def task_spec(self):
+        try:
+            return json.loads(self.task_spec_json) if self.task_spec_json else None
+        except (ValueError, TypeError):
+            return None
+
+    @task_spec.setter
+    def task_spec(self, value):
+        self.task_spec_json = json.dumps(value) if value is not None else None
 
     def to_dict(self):
         return {
@@ -849,6 +892,8 @@ class Challenge(db.Model):
             'description': self.description, 'challenge_type': self.challenge_type,
             'difficulty': self.difficulty, 'instructions': self.instructions,
             'estimated_minutes': self.estimated_minutes, 'is_published': self.is_published, 'order': self.order,
+            'is_assessment': self.is_assessment, 'pass_score': self.pass_score,
+            'has_task': self.task_spec_json is not None,
         }
 
 
@@ -868,6 +913,10 @@ class ChallengeSubmission(db.Model):
     status = db.Column(db.String(20), default='submitted')  # submitted | reviewed
     feedback_json = db.Column(db.Text)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    # Deterministic score (0-100) and per-item breakdown for a structured task
+    # (Challenge.task_spec). NULL for free-text challenges, whose only score is the AI's.
+    score = db.Column(db.Integer, nullable=True)
+    result_json = db.Column(db.Text, nullable=True)
 
     challenge = db.relationship('Challenge', backref='submissions')
     student = db.relationship('User', backref='challenge_submissions')
@@ -885,10 +934,21 @@ class ChallengeSubmission(db.Model):
     def feedback(self, value):
         self.feedback_json = json.dumps(value) if value is not None else None
 
+    @property
+    def result(self):
+        try:
+            return json.loads(self.result_json) if self.result_json else None
+        except (ValueError, TypeError):
+            return None
+
+    @result.setter
+    def result(self, value):
+        self.result_json = json.dumps(value) if value is not None else None
+
     def to_dict(self):
         return {
             'id': self.id, 'challenge_id': self.challenge_id, 'status': self.status,
-            'feedback': self.feedback,
+            'feedback': self.feedback, 'score': self.score, 'result': self.result,
             'created_at': self.created_at.isoformat() if self.created_at else None,
         }
 
@@ -1312,6 +1372,39 @@ class StudentSkill(db.Model):
             'skill_id': self.skill_id, 'skill_name': self.skill.name if self.skill else None,
             'status': self.status, 'progress_pct': self.progress_pct,
             'last_activity_at': self.last_activity_at.isoformat() if self.last_activity_at else None,
+        }
+
+
+class StudentLanguage(db.Model):
+    """One language on a student's language-data profile, with what they say they can do
+    in it. Everything here is SELF-REPORTED -- nothing on this row is ever treated as
+    verified. Verification is derived at read time from verified language-specific Skills
+    (Skill.language), see services/language_profile_service.py."""
+    __tablename__ = 'student_languages'
+
+    id = db.Column(db.Integer, primary_key=True)
+    student_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False, index=True)
+    language = db.Column(db.String(40), nullable=False)    # LANGUAGES key, or a custom lowercase name
+    dialect = db.Column(db.String(80), nullable=True)      # e.g. "Ijebu", "Owerri", "Kano"
+    proficiency = db.Column(db.String(20), nullable=False, default='conversational')  # basic | conversational | fluent | native
+    can_speak = db.Column(db.Boolean, default=False)
+    can_read = db.Column(db.Boolean, default=False)
+    can_write = db.Column(db.Boolean, default=False)
+    can_transcribe = db.Column(db.Boolean, default=False)
+    can_translate = db.Column(db.Boolean, default=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    student = db.relationship('User', backref=db.backref('languages', lazy='dynamic'))
+
+    __table_args__ = (db.UniqueConstraint('student_id', 'language', name='uq_student_language'),)
+
+    def to_dict(self):
+        return {
+            'id': self.id, 'language': self.language, 'dialect': self.dialect,
+            'proficiency': self.proficiency, 'can_speak': self.can_speak, 'can_read': self.can_read,
+            'can_write': self.can_write, 'can_transcribe': self.can_transcribe,
+            'can_translate': self.can_translate,
         }
 
 

@@ -30,7 +30,7 @@
   <div class="sk-view">
     <span class="sk-eyebrow">Your Evidence</span>
     <h1 class="sk-h1">Skill Transcript</h1>
-    <p class="sk-sub">Everything you've earned across your 30-Day Skill Classes — Skill GPA, tests, assignments, and cohort rank, all computed transparently from your actual graded work.</p>
+    <p class="sk-sub">Everything you've earned — verified skills with the evidence behind them, plus your 30-Day Skill Classes' Skill GPA, tests, assignments, and cohort rank, all computed transparently from your actual graded work.</p>
 
     <div class="gpa-hero" style="margin:20px 0 6px;">
       <span class="gpa-hero-value">{{ overall_gpa if overall_gpa is not none else '—' }}</span>
@@ -44,6 +44,31 @@
       </div>
     </div>
 
+    <div class="sk-section-title">Skill Records</div>
+    <p class="sk-card-desc" style="margin:-6px 0 14px;">Every skill you've started, with the evidence behind it. A skill is <strong>Verified</strong> only when every step is done: lessons completed, practice tasks attempted, the assessment passed, and the practical task (project) passed quality review. Completing lessons alone never verifies a skill.</p>
+    {% if not skill_records %}
+    <div class="sk-empty"><div class="sk-empty-icon"><i class="ri-shield-check-line"></i></div><div style="font-weight:600;">No skill records yet</div><div style="font-size:0.85rem;">Start a skill from <a class="sk-view-link" href="/skills/catalog">Learn</a> or <a class="sk-view-link" href="/skills/african-languages">African Languages</a>.</div></div>
+    {% endif %}
+    {% for rec in skill_records %}
+    <div class="sk-panel tr-class-card">
+      {% include 'components/skill_evidence.html' %}
+    </div>
+    {% endfor %}
+
+    {% if language_profile %}
+    <div class="sk-section-title">Languages</div>
+    <div class="sk-panel" style="margin-bottom:16px;">
+      {% for lp in language_profile %}
+      <div class="gpa-breakdown-row">
+        <div><div class="gpa-component-label">{{ lp.label }}{% if lp.row.dialect %} · {{ lp.row.dialect }}{% endif %}</div><div class="gpa-component-weight">{{ lp.proficiency_label }} · self-reported</div></div>
+        <div class="gpa-component-score" style="text-align:right;">{% if lp.verified_capabilities %}<span class="lang-cap verified"><i class="ri-checkbox-circle-fill"></i> {{ lp.verified_capabilities|join(', ') }}</span>{% else %}<span class="lang-cap">Not verified</span>{% endif %}</div>
+      </div>
+      {% endfor %}
+      <a href="/skills/languages" class="sk-view-link" style="display:inline-block; margin-top:10px;">Edit languages →</a>
+    </div>
+    {% endif %}
+
+    <div class="sk-section-title">30-Day Skill Classes</div>
     {% if not rows %}
     <div class="sk-empty"><div class="sk-empty-icon"><i class="ri-award-line"></i></div><div style="font-weight:600;">No classes yet</div><div style="font-size:0.85rem;">Join a 30-Day Skill Class to start building your transcript.</div></div>
     {% endif %}

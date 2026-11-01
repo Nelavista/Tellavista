@@ -647,3 +647,50 @@ table { max-width: 100%; }
   .logout-dialog-actions { flex-direction: column-reverse; }
   .logout-dialog-actions button { width: 100%; }
 }
+
+/* ===== LANGUAGE-DATA TASKS & ALL HUB =====
+   Structured practical tasks (transcription / translation / labeling / recording, see
+   components/language_task.html) and the African Languages hub. Built only from the
+   tokens above so light/dark mode keep working. */
+.lt-guidelines { margin: 0; padding-left: 18px; font-size: 0.88rem; line-height: 1.7; color: var(--sk-text); }
+.lt-item { background: var(--bg-elevated); border: 1px solid var(--sk-border); border-radius: var(--sk-radius-sm); padding: 14px; margin-bottom: 12px; }
+.lt-item-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 0.75rem; font-weight: 700; color: var(--sk-text-dim); text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 8px; }
+.lt-source { font-size: 0.98rem; line-height: 1.6; color: var(--sk-text); margin-bottom: 10px; white-space: pre-wrap; }
+.lt-context { font-size: 0.8rem; color: var(--sk-text-dim); background: var(--sk-neutral-bg); border-radius: var(--sk-radius-sm); padding: 8px 10px; margin-bottom: 10px; white-space: pre-wrap; font-family: ui-monospace, Menlo, Consolas, monospace; }
+.lt-row { display: grid; grid-template-columns: 1fr; gap: 10px; }
+@media (min-width: 640px) { .lt-row.two { grid-template-columns: 1fr 1fr; } .lt-row.three { grid-template-columns: 1fr 1fr 1fr; } }
+.lt-choices { display: flex; flex-wrap: wrap; gap: 8px; }
+.lt-choice { position: relative; }
+.lt-choice input { position: absolute; opacity: 0; inset: 0; }
+.lt-choice span { display: inline-block; padding: 8px 12px; border: 1px solid var(--sk-border); border-radius: var(--r-pill); font-size: 0.84rem; cursor: pointer; background: var(--sk-card); }
+.lt-choice input:checked + span { border-color: var(--sk-accent); color: var(--sk-accent); background: rgba(59,130,246,0.1); font-weight: 600; }
+.lt-choice input:focus-visible + span { outline: 2px solid var(--sk-accent); outline-offset: 2px; }
+.lt-result-ok { color: var(--sk-success); }
+.lt-result-bad { color: var(--sk-danger); }
+.lt-result-line { font-size: 0.84rem; line-height: 1.6; margin-top: 4px; }
+.lt-score-big { font-size: 1.8rem; font-weight: 800; }
+.lt-rec-btn { display: inline-flex; align-items: center; gap: 6px; }
+.lt-rec-btn.recording { background: var(--sk-danger); }
+.lt-audio { width: 100%; margin-top: 8px; }
+.all-hero { background: var(--bg-elevated); border: 1px solid var(--sk-border); border-radius: 20px; padding: 24px; margin-bottom: 20px; }
+.all-steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(125px, 1fr)); gap: 8px; margin-top: 16px; }
+@media (max-width: 640px) { .all-hero { padding: 18px; } }
+.all-step { background: var(--sk-card); border: 1px solid var(--sk-border); border-radius: var(--sk-radius-sm); padding: 12px; font-size: 0.82rem; color: var(--sk-text-dim); line-height: 1.5; }
+.all-step strong { display: block; color: var(--sk-text); font-size: 0.88rem; margin-bottom: 2px; }
+.all-skill-row { display: flex; gap: 6px; flex-wrap: wrap; }
+.all-filter { display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end; margin: 16px 0 4px; }
+.all-filter .sk-field { margin-bottom: 0; min-width: 150px; flex: 1; }
+.lang-cap { display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; font-size: 0.74rem; padding: 3px 10px; border-radius: var(--r-pill); background: var(--sk-neutral-bg); color: var(--sk-text-dim); }
+.lang-cap.verified { background: var(--sk-success-bg); color: var(--sk-success); font-weight: 600; }
+/* Label/value rows used by the Skill Transcript (GPA breakdown + skill records). */
+.gpa-breakdown-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 9px 0; border-bottom: 1px solid var(--sk-border); font-size: 0.86rem; }
+.gpa-breakdown-row:last-of-type { border-bottom: none; }
+.gpa-component-label { color: var(--sk-text-dim); }
+.gpa-component-weight { font-size: 0.72rem; color: var(--text-muted); }
+.gpa-component-score { font-weight: 700; color: var(--sk-text); text-align: right; }
+/* Skill-record header, shared by the Skill Transcript and the Talent Profile's evidence
+   cards (components/skill_evidence.html) -- previously only defined inline on the
+   transcript page, so the Talent Profile rendered these headers unstyled. */
+.tr-class-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 14px; flex-wrap: wrap; margin-bottom: 12px; }
+.tr-class-title { font-weight: 700; font-size: 1rem; }
+.tr-class-sub { font-size: 0.8rem; color: var(--sk-text-dim); margin-top: 2px; }

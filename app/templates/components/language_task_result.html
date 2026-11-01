@@ -1,0 +1,76 @@
+<!-- Breakdown of one scored structured-task attempt (ChallengeSubmission.result). Expects
+     `r` (the result dict) and `pass_score` (None for practice tasks). Expected answers
+     only appear when the scorer stored them, i.e. never for assessments. -->
+{% set sm = r.summary or {} %}
+<div class="cw-feedback">
+  <div class="cw-feedback-score">
+    <span class="lt-score-big" style="color:{{ 'var(--sk-success)' if r.score >= (pass_score or 70) else ('var(--sk-warn)' if r.score >= 40 else 'var(--sk-danger)') }};">{{ r.score }}%</span>
+    <span class="sk-card-desc" style="margin:0;">
+      {% if pass_score is not none %}{{ 'Passed' if r.score >= pass_score else 'Not passed' }} · pass mark {{ pass_score }}%{% else %}Automatic score{% endif %}
+    </span>
+  </div>
+
+  {% if r.kind == 'transcription' %}
+    <div class="lt-result-line">Word accuracy: <strong>{{ sm.word_accuracy }}%</strong> (word error rate {{ sm.word_error_rate }})</div>
+    {% if sm.word_accuracy_no_diacritics != sm.word_accuracy %}
+    <div class="lt-result-line">Ignoring tone marks / diacritics: {{ sm.word_accuracy_no_diacritics }}% — the gap is diacritic errors.</div>
+    {% endif %}
+    {% if sm.speaker_accuracy is defined %}<div class="lt-result-line">Speaker labels: {{ sm.speaker_accuracy }}%</div>{% endif %}
+    {% if sm.timestamp_accuracy is defined %}<div class="lt-result-line">Timestamps within tolerance: {{ sm.timestamp_accuracy }}%</div>{% endif %}
+    {% if sm.tag_compliance is defined %}<div class="lt-result-line">Formatting (tags exactly as the guideline requires): {{ sm.tag_compliance }}%</div>{% endif %}
+    {% if pass_score is none %}
+    {% for it in r['items'] %}
+    <div class="lt-item" style="margin-top:10px;">
+      <div class="lt-item-head"><span>Segment {{ loop.index }}</span><span>{{ it.accuracy }}%</span></div>
+      <div class="lt-result-line">You: {{ it.answer or '(blank)' }}</div>
+      {% if it.reference %}<div class="lt-result-line lt-result-ok">Reference: {{ it.reference }}</div>{% endif %}
+      {% if it.speaker_correct is defined %}<div class="lt-result-line {{ 'lt-result-ok' if it.speaker_correct else 'lt-result-bad' }}">Speaker {{ 'correct' if it.speaker_correct else 'incorrect' }}{% if it.expected_speaker %} — expected {{ it.expected_speaker }}{% endif %}</div>{% endif %}
+      {% if it.timestamp_correct is defined %}<div class="lt-result-line {{ 'lt-result-ok' if it.timestamp_correct else 'lt-result-bad' }}">Timestamp {{ 'OK' if it.timestamp_correct else 'off' }}{% if it.expected_start is defined %} — expected {{ it.expected_start }}s{% endif %}</div>{% endif %}
+    </div>
+    {% endfor %}
+    {% else %}<div class="lt-result-line sk-card-desc" style="margin:6px 0 0;">Per-item results aren't shown for assessments, so a retake reflects what you know.</div>{% endif %}
+
+  {% elif r.kind == 'translation' %}
+    <div class="lt-result-line">Similarity to reference translations (chrF): <strong>{{ sm.mean_similarity }}%</strong>{% if sm.terminology is defined %} · Key terminology used: <strong>{{ sm.terminology }}%</strong>{% endif %}</div>
+    <div class="lt-result-line sk-card-desc" style="margin:2px 0 0;">An automatic comparison, not a judgement of meaning — valid alternative wordings can score lower. Meaning is checked in the reviewed project.</div>
+    {% if pass_score is none %}
+    {% for it in r['items'] %}
+    <div class="lt-item" style="margin-top:10px;">
+      <div class="lt-item-head"><span>Sentence {{ loop.index }}</span><span>{{ it.score }}%</span></div>
+      <div class="lt-result-line">You: {{ it.answer or '(blank)' }}</div>
+      {% if it.key_terms_total %}<div class="lt-result-line">Key terms used: {{ it.key_terms_found }}/{{ it.key_terms_total }}{% if it.key_terms %} ({{ it.key_terms|join(', ') }}){% endif %}</div>{% endif %}
+      {% for ref in it.references or [] %}<div class="lt-result-line lt-result-ok">Reference: {{ ref }}</div>{% endfor %}
+    </div>
+    {% endfor %}
+    {% else %}<div class="lt-result-line sk-card-desc" style="margin:6px 0 0;">Per-item results aren't shown for assessments, so a retake reflects what you know.</div>{% endif %}
+
+  {% elif r.kind == 'labeling' %}
+    <div class="lt-result-line">{{ sm.correct }} of {{ sm.total }} judgements match the gold labels.</div>
+    {% if sm.by_field %}<div class="lt-result-line">{% for label, pct in sm.by_field.items() %}{{ label }}: <strong>{{ pct }}%</strong>{% if not loop.last %} · {% endif %}{% endfor %}</div>{% endif %}
+    {% if sm.consistency is defined %}<div class="lt-result-line">Consistency on a repeated item: <strong>{{ sm.consistency }}%</strong></div>{% endif %}
+    {% if sm.report %}<div class="lt-result-line {{ 'lt-result-ok' if sm.report.ok else 'lt-result-bad' }}">Written explanation: {{ sm.report.words }} words{% if not sm.report.ok %} (needs {{ sm.report.min_words }}){% endif %}</div>{% endif %}
+    {% if pass_score is none %}
+    {% for it in r['items'] %}
+    <div class="lt-item" style="margin-top:10px;">
+      <div class="lt-item-head"><span>Item {{ loop.index }}</span></div>
+      {% for f in it.fields %}
+      <div class="lt-result-line {{ '' if f.correct is not defined else ('lt-result-ok' if f.correct else 'lt-result-bad') }}">
+        {% if f.correct is defined %}<i class="{{ 'ri-check-line' if f.correct else 'ri-close-line' }}"></i>{% endif %}
+        {{ f.label }}: {{ f.answer or '(blank)' }}{% if f.expected and not f.correct %} — expected {{ f.expected|join(' / ') }}{% endif %}
+      </div>
+      {% endfor %}
+    </div>
+    {% endfor %}
+    {% else %}<div class="lt-result-line sk-card-desc" style="margin:6px 0 0;">Per-item results aren't shown for assessments, so a retake reflects what you know.</div>{% endif %}
+
+  {% elif r.kind == 'recording' %}
+    <div class="lt-result-line">{{ sm.passed }} of {{ sm.total }} recordings meet the requirements. {{ sm.note }}</div>
+    {% for it in r['items'] %}
+    <div class="lt-item" style="margin-top:10px;">
+      <div class="lt-item-head"><span>{{ it.prompt }}</span><span class="{{ 'lt-result-ok' if it.passed else 'lt-result-bad' }}">{{ 'Meets requirements' if it.passed else 'Re-record' }}</span></div>
+      {% for c in it.checks %}<div class="lt-result-line {{ 'lt-result-ok' if c.ok else 'lt-result-bad' }}"><i class="{{ 'ri-check-line' if c.ok else 'ri-close-line' }}"></i> {{ c.name }} — {{ c.detail }}</div>{% endfor %}
+      {% if it.audio_url %}<audio class="lt-audio" controls preload="none" src="{{ it.audio_url }}"></audio>{% endif %}
+    </div>
+    {% endfor %}
+  {% endif %}
+</div>

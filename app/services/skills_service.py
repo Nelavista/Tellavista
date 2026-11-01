@@ -49,6 +49,13 @@ _ONBOARDING_KEYWORDS = {
     'copywriting': 'content-creation', 'writing': 'content-creation', 'youtube': 'content-creation',
     'cv': 'cv-interview-prep', 'resume': 'cv-interview-prep', 'interview': 'cv-interview-prep',
     'linkedin': 'cv-interview-prep', 'career': 'cv-interview-prep',
+    # African Languages Lab skills: general interest -> the beginner path; specific
+    # names (e.g. "Yoruba Transcription") already match by skill name above.
+    'african language': 'african-language-data-beginner', 'language data': 'african-language-data-beginner',
+    'transcription': 'african-language-data-beginner', 'transcribe': 'african-language-data-beginner',
+    'annotation': 'african-language-data-beginner', 'data labeling': 'african-language-data-beginner',
+    'data labelling': 'african-language-data-beginner', 'yoruba': 'yoruba-transcription', 'igbo': 'igbo-transcription',
+    'hausa': 'hausa-transcription', 'pidgin': 'nigerian-pidgin-transcription', 'linguistics': 'phonetics',
 }
 
 
@@ -105,12 +112,76 @@ def is_step_complete(student_id, step):
         completed, total, _ = get_course_progress(student_id, step.course)
         return total > 0 and completed == total
     if step.step_type == 'challenge' and step.challenge_id:
+        if step.challenge and step.challenge.is_assessment:
+            return has_passed_assessment(student_id, step.challenge)
         return ChallengeSubmission.query.filter_by(student_id=student_id, challenge_id=step.challenge_id).first() is not None
     if step.step_type == 'project' and step.project_template_id:
         return StudentProject.query.filter_by(
             student_id=student_id, project_template_id=step.project_template_id, status='completed'
         ).first() is not None
     return False
+
+
+def assessment_pass_score(challenge):
+    from app.services.language_task_service import DEFAULT_PASS_SCORE
+    return challenge.pass_score if challenge.pass_score is not None else DEFAULT_PASS_SCORE
+
+
+def best_challenge_score(student_id, challenge_id):
+    return db.session.query(db.func.max(ChallengeSubmission.score)).filter(
+        ChallengeSubmission.student_id == student_id, ChallengeSubmission.challenge_id == challenge_id,
+    ).scalar()
+
+
+def has_passed_assessment(student_id, challenge):
+    """An assessment counts only once a deterministic score (ChallengeSubmission.score,
+    see services/language_task_service.py) reaches its pass mark -- an attempt alone, or a
+    free-text submission with only AI feedback, never does."""
+    best = best_challenge_score(student_id, challenge.id)
+    return best is not None and best >= assessment_pass_score(challenge)
+
+
+def _published_assessments(skill_ids):
+    if not skill_ids:
+        return []
+    return Challenge.query.filter(
+        Challenge.skill_id.in_(skill_ids), Challenge.is_assessment.is_(True), Challenge.is_published.is_(True),
+    ).all()
+
+
+def _assessments_passed_by_skill(student_id, skill_ids):
+    """{skill_id: bool} -- True when the skill's formal requirements are met, or the skill
+    has no assessment (every pre-existing skill). For a skill WITH an assessment (the ALL
+    language-data skills): every published assessment passed AND every published scored
+    practice task attempted at least once -- Learn -> Practice -> Assessment, in full."""
+    assessments = _published_assessments(skill_ids)
+    best = dict(
+        db.session.query(ChallengeSubmission.challenge_id, db.func.max(ChallengeSubmission.score))
+        .filter(ChallengeSubmission.student_id == student_id,
+                ChallengeSubmission.challenge_id.in_([a.id for a in assessments]))
+        .group_by(ChallengeSubmission.challenge_id).all()
+    ) if assessments else {}
+    result = {sid: True for sid in skill_ids}
+    for a in assessments:
+        score = best.get(a.id)
+        if score is None or score < assessment_pass_score(a):
+            result[a.skill_id] = False
+    gated_skill_ids = {a.skill_id for a in assessments}
+    if gated_skill_ids:
+        practice = Challenge.query.filter(
+            Challenge.skill_id.in_(gated_skill_ids), Challenge.is_published.is_(True),
+            Challenge.is_assessment.is_(False), Challenge.task_spec_json.isnot(None),
+        ).all()
+        attempted = {
+            row[0] for row in db.session.query(ChallengeSubmission.challenge_id).filter(
+                ChallengeSubmission.student_id == student_id,
+                ChallengeSubmission.challenge_id.in_([c.id for c in practice]),
+            ).distinct().all()
+        } if practice else set()
+        for c in practice:
+            if c.id not in attempted:
+                result[c.skill_id] = False
+    return result
 
 
 def get_path_step_states(student_id, path):
@@ -407,6 +478,10 @@ def is_skill_verified(student_id, skill_id):
     student_skill = StudentSkill.query.filter_by(student_id=student_id, skill_id=skill_id).first()
     if not student_skill or student_skill.status != 'completed':
         return False
+    # Skills with a formal assessment (the ALL language-data skills) additionally need it
+    # passed; for every skill without one this is a no-op.
+    if not _assessments_passed_by_skill(student_id, [skill_id])[skill_id]:
+        return False
     projects = StudentProject.query.join(ProjectTemplate, StudentProject.project_template_id == ProjectTemplate.id) \
         .filter(ProjectTemplate.skill_id == skill_id, StudentProject.student_id == student_id).all()
     return any(_project_counts_as_verified(p) for p in projects)
@@ -492,13 +567,15 @@ def get_pipeline_states_bulk(student_id, skill_ids):
         ).with_entities(Opportunity.skill_id).all()
     }
 
+    assessments_ok = _assessments_passed_by_skill(student_id, skill_ids)
+
     results = {}
     for skill_id in skill_ids:
         done_map = {
             'learn': skill_id in learned_ids,
             'practice': skill_id in practiced_ids,
             'build': bool(projects_by_skill.get(skill_id)),
-            'verify': skill_id in learned_ids and any(
+            'verify': skill_id in learned_ids and assessments_ok[skill_id] and any(
                 _project_counts_as_verified(p) for p in projects_by_skill.get(skill_id, [])
             ),
             'earn': skill_id in earned_ids,
@@ -562,9 +639,17 @@ def get_continue_learning_card(student_id, student_skill):
     lesson to take, real remaining time (summed from actual lesson durations, not a
     guess), and how many of the skill's project templates the student has started."""
     skill = student_skill.skill
-    course = skill.courses.filter_by(is_published=True).order_by(SkillCourse.order).first()
-    if not course:
+    published = skill.courses.filter_by(is_published=True).order_by(SkillCourse.order).all()
+    if not published:
         return None
+    # A skill can sequence several courses (e.g. the ALL beginner path's 7 short courses):
+    # continue in the first one that still has unfinished lessons.
+    course = published[0]
+    for candidate in published:
+        done, total, _ = get_course_progress(student_id, candidate)
+        if done < total:
+            course = candidate
+            break
 
     modules = course.modules.order_by(CourseModule.order).all()
     all_lessons = []
@@ -759,3 +844,120 @@ def get_talent_stats(user):
         'total_earned': total_earned,
         'headline_skill': headline_skill,
     }
+
+
+def get_skill_verification_record(student_id, skill):
+    """The evidence behind one skill, as shown on the skill page's "How you prove it"
+    checklist and on the Skill Transcript: learning, practical tasks, assessment, project,
+    quality review, and the resulting verified status. Every value is derived from the
+    student's own rows -- the same ones is_skill_verified() reads -- never stored."""
+    student_skill = StudentSkill.query.filter_by(student_id=student_id, skill_id=skill.id).first()
+    learning_pct = student_skill.progress_pct if student_skill else 0
+    learning_done = bool(student_skill and student_skill.status == 'completed')
+
+    challenges = skill.challenges.filter_by(is_published=True).all()
+    practice = [c for c in challenges if not c.is_assessment]
+    assessments = [c for c in challenges if c.is_assessment]
+    submitted_ids = {
+        row.challenge_id for row in ChallengeSubmission.query.filter(
+            ChallengeSubmission.student_id == student_id,
+            ChallengeSubmission.challenge_id.in_([c.id for c in challenges]),
+        ).all()
+    } if challenges else set()
+
+    assessment_rows = []
+    for a in assessments:
+        best = best_challenge_score(student_id, a.id)
+        pass_score = assessment_pass_score(a)
+        status = 'not_started' if best is None else ('passed' if best >= pass_score else 'not_passed')
+        assessment_rows.append({'challenge': a, 'best_score': best, 'pass_score': pass_score, 'status': status})
+    if not assessments:
+        assessment_status = 'none'
+    elif all(r['status'] == 'passed' for r in assessment_rows):
+        assessment_status = 'passed'
+    elif any(r['status'] != 'not_started' for r in assessment_rows):
+        assessment_status = 'not_passed'
+    else:
+        assessment_status = 'not_started'
+
+    projects = StudentProject.query.join(ProjectTemplate, StudentProject.project_template_id == ProjectTemplate.id) \
+        .filter(ProjectTemplate.skill_id == skill.id, StudentProject.student_id == student_id).all()
+    project_reviewed = any(_project_counts_as_verified(p) for p in projects)
+    if project_reviewed:
+        project_status = 'reviewed'
+    elif any(p.status == 'completed' for p in projects):
+        project_status = 'completed'  # finished, but not yet reviewed at the bar
+    elif projects:
+        project_status = 'in_progress'
+    else:
+        project_status = 'not_started'
+
+    best_review = None
+    for p in projects:
+        for score in ((p.ai_feedback or {}).get('score'), p.ai_overall_score):
+            try:
+                score = int(score) if score is not None else None
+            except (TypeError, ValueError):
+                score = None
+            if score is not None and (best_review is None or score > best_review):
+                best_review = score
+
+    practice_done = sum(1 for c in practice if c.id in submitted_ids)
+    practice_required = bool(assessments) and any(c.task_spec_json for c in practice)
+    practice_ok = not practice_required or practice_done == len(practice)
+
+    # The best-scoring assessment attempt's measured breakdown (word accuracy, label
+    # accuracy, ...) -- only ever taken from a real scored submission, never synthesised.
+    best_result = None
+    if assessments:
+        best_sub = ChallengeSubmission.query.filter(
+            ChallengeSubmission.student_id == student_id,
+            ChallengeSubmission.challenge_id.in_([a.id for a in assessments]),
+            ChallengeSubmission.score.isnot(None),
+        ).order_by(ChallengeSubmission.score.desc(), ChallengeSubmission.created_at.desc()).first()
+        if best_sub and best_sub.result:
+            best_result = {'score': best_sub.score, 'kind': best_sub.result.get('kind'),
+                           'summary': best_sub.result.get('summary') or {}}
+
+    verified = learning_done and practice_ok and assessment_status in ('passed', 'none') and project_reviewed
+    return {
+        'skill': skill, 'level': skill.level, 'learning_pct': learning_pct, 'learning_done': learning_done,
+        'practice_total': len(practice), 'practice_done': practice_done, 'practice_ok': practice_ok,
+        'best_assessment_result': best_result,
+        'is_language_data_skill': bool(skill.category and skill.category.program == 'all'),
+        'assessments': assessment_rows, 'assessment_status': assessment_status,
+        'has_project_templates': ProjectTemplate.query.filter_by(skill_id=skill.id, is_published=True).first() is not None,
+        'project_status': project_status, 'best_review_score': best_review,
+        'quality_review_passed': project_reviewed, 'review_min_score': PROJECT_VERIFICATION_MIN_SCORE,
+        'verified': verified, 'started': student_skill is not None,
+    }
+
+
+def assessment_prerequisites_unmet(student_id, skill):
+    """What a student must still do before a skill's formal assessment opens: every
+    published lesson completed and every scored practice task attempted. Empty list =
+    open. Only applies to skills with an assessment (ALL skills); enforced server-side
+    in the challenge route, not just shown as a "locked" step."""
+    unmet = []
+    student_skill = StudentSkill.query.filter_by(student_id=student_id, skill_id=skill.id).first()
+    if not student_skill or student_skill.status != 'completed':
+        unmet.append('Complete all the lessons')
+    practice = skill.challenges.filter(Challenge.is_published.is_(True), Challenge.is_assessment.is_(False),
+                                       Challenge.task_spec_json.isnot(None)).all()
+    attempted = {
+        row[0] for row in db.session.query(ChallengeSubmission.challenge_id).filter(
+            ChallengeSubmission.student_id == student_id,
+            ChallengeSubmission.challenge_id.in_([c.id for c in practice]),
+        ).distinct().all()
+    } if practice else set()
+    for c in practice:
+        if c.id not in attempted:
+            unmet.append(f'Attempt the practice task "{c.title}"')
+    return unmet
+
+
+def project_prerequisites_unmet(student_id, skill):
+    """A skill with a formal assessment opens its practical project only once every
+    published assessment is passed (Assessment -> Practical task). Empty list = open."""
+    assessments = _published_assessments([skill.id])
+    return [f'Pass the assessment "{a.title}"' for a in assessments if not has_passed_assessment(student_id, a)]

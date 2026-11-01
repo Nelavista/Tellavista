@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>African Languages · Nelavista Skills</title>
+  <meta name="theme-color" content="#050810">
+  <meta name="description" content="Learn transcription, translation, annotation, speech data, AI evaluation, linguistics and QA skills for African-language data work — and prove them.">
+  <link rel="icon" type="image/png" sizes="32x32" href="/static/icons/nelavista-32x32.png">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/skills.css') }}">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
+</head>
+<body>
+{% include 'components/skills_sidebar.html' %}
+
+  <div class="sk-view">
+    <div class="all-hero">
+      <span class="sk-eyebrow">African-language AI skills · Nelavista practice and verification</span>
+      <h1 class="sk-h1">Learn African Language AI Skills</h1>
+      <p class="sk-sub" style="margin-bottom:0;">Transcription, translation, speech data, annotation, AI evaluation and quality assurance — the work behind African-language AI. Every skill ends in a scored assessment and a reviewed practice project, so what reaches your Skill Transcript is evidence, not a claim. These paths prepare you for language-data work with organisations such as African Languages Lab; finishing one doesn't guarantee a project or a job.</p>
+      <div class="all-steps">
+        <div class="all-step"><strong>1 · Learn</strong>Short lessons with a quick check each.</div>
+        <div class="all-step"><strong>2 · Practise</strong>Real tasks, scored automatically.</div>
+        <div class="all-step"><strong>3 · Assessment</strong>Pass the scored test for the skill.</div>
+        <div class="all-step"><strong>4 · Practical task</strong>A practice project like real work.</div>
+        <div class="all-step"><strong>5 · Quality review</strong>Your project is reviewed and scored.</div>
+        <div class="all-step"><strong>6 · Verified</strong>Recorded on your Skill Transcript.</div>
+      </div>
+    </div>
+
+    {% if beginner %}
+    {% set br = beginner_record %}
+    <div class="sk-panel" style="margin-bottom:16px; border-left:3px solid var(--sk-accent);" id="start-here">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap;">
+        <div style="flex:1; min-width:220px;">
+          <span class="sk-eyebrow">New to language data? Start here</span>
+          <div class="sk-card-title" style="font-size:1.1rem; margin:4px 0;">{{ beginner.name }}</div>
+          <div class="sk-card-desc" style="margin:0;">{{ beginner.tagline }} About {{ beginner.estimated_hours }} hours.</div>
+        </div>
+        {% if br.verified %}<span class="sk-badge completed"><i class="ri-checkbox-circle-fill"></i> Verified</span>
+        {% elif br.started %}<span class="sk-badge">{{ br.learning_pct }}% of lessons done</span>{% endif %}
+      </div>
+      <ol style="margin:14px 0 0; padding-left:20px; font-size:0.88rem; line-height:1.8;">
+        {% for item in beginner_steps %}
+        <li style="color:{{ 'var(--sk-success)' if item.state == 'completed' else ('var(--sk-text)' if item.state == 'current' else 'var(--sk-text-dim)') }};">
+          {{ item.step.title.split('. ', 1)[-1] }}{% if item.state == 'completed' %} <i class="ri-check-line"></i>{% elif item.state == 'current' %} <strong>← you are here</strong>{% endif %}
+        </li>
+        {% endfor %}
+      </ol>
+      <a href="/skills/{{ beginner.slug }}" class="sk-btn" style="margin-top:14px;">{{ 'Review the beginner path' if br.verified else ('Continue the beginner path' if br.started else 'Start the beginner path') }}</a>
+    </div>
+
+    <div class="sk-section-title">Then choose a direction</div>
+    <div class="all-steps" style="margin:0 0 8px;">
+      {% for slug, label, blurb in [('transcription', 'Transcription', 'Speech → accurate text'), ('translation', 'Translation', 'Between African languages and English'), ('language-annotation', 'Annotation', 'Label text and speech'), ('speech-voice-data', 'Speech Data', 'Record and check voice data'), ('ai-data-work', 'AI Evaluation', 'Judge and rank AI output'), ('quality-assurance', 'QA', "Review others' work")] %}
+      <a href="#cat-{{ slug }}" class="all-step" style="text-decoration:none;"><strong>{{ label }}</strong>{{ blurb }}</a>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="sk-panel" style="margin-bottom:8px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;">
+        <div>
+          <div class="sk-card-title" style="margin:0;"><i class="ri-chat-voice-line"></i> Your languages</div>
+          {% if language_profile %}
+          <div class="all-skill-row" style="margin-top:8px;">
+            {% for lp in language_profile %}
+            <span class="lang-cap {{ 'verified' if lp.verified_capabilities else '' }}">{{ lp.label }} · {{ lp.proficiency_label }}{% if lp.verified_capabilities %} · <i class="ri-checkbox-circle-fill"></i> {{ lp.verified_capabilities|join(', ') }}{% endif %}</span>
+            {% endfor %}
+          </div>
+          {% else %}
+          <div class="sk-card-desc" style="margin:4px 0 0;">Add the languages you speak, read, write, transcribe or translate — we'll point you to the matching skills.</div>
+          {% endif %}
+        </div>
+        <a href="/skills/languages" class="sk-btn secondary small">{{ 'Edit languages' if language_profile else 'Add your languages' }}</a>
+      </div>
+    </div>
+
+    {% if recommended %}
+    <div class="sk-section-title">For your languages</div>
+    <div class="sk-grid">
+      {% for skill in recommended %}{% include 'components/all_skill_card.html' %}{% endfor %}
+    </div>
+    {% endif %}
+
+    {% if tracks %}
+    <div class="sk-section-title">Step-by-step tracks</div>
+    <div class="sk-grid">
+      {% for row in tracks %}
+      <a href="/skills/tracks/{{ row.track.slug }}" class="sk-card">
+        <div class="sk-icon-circle" style="background:{{ row.track.color }}22; color:{{ row.track.color }};"><i class="{{ row.track.icon or 'ri-route-line' }}"></i></div>
+        <div class="sk-card-title">{{ row.track.title }}</div>
+        <div class="sk-card-desc">{{ row.track.tagline or '' }}</div>
+        <div class="sk-card-desc" style="margin:0;">{% for st in row.steps %}{{ st.skill.name }}{% if not loop.last %} → {% endif %}{% endfor %}</div>
+        <div class="sk-progress-row"><div class="sk-progress-track"><div class="sk-progress-fill" style="width:{{ row.pct }}%;"></div></div><span class="sk-progress-pct">{{ row.pct }}%</span></div>
+      </a>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <form method="GET" action="/skills/african-languages" class="all-filter">
+      <div class="sk-field">
+        <label class="sk-label" for="h-language">Language</label>
+        <select class="sk-select" id="h-language" name="language" onchange="this.form.submit()">
+          <option value="">All languages</option>
+          {% for key, label in language_options %}<option value="{{ key }}" {{ 'selected' if filters.language == key else '' }}>{{ label }}</option>{% endfor %}
+        </select>
+      </div>
+      <div class="sk-field">
+        <label class="sk-label" for="h-level">Level</label>
+        <select class="sk-select" id="h-level" name="level" onchange="this.form.submit()">
+          <option value="">All levels</option>
+          {% for lv in ['beginner', 'intermediate', 'advanced'] %}<option value="{{ lv }}" {{ 'selected' if filters.level == lv else '' }}>{{ lv|title }}</option>{% endfor %}
+        </select>
+      </div>
+      <noscript><button class="sk-btn small" type="submit">Filter</button></noscript>
+      {% if filters.language or filters.level %}<a class="sk-btn secondary small" href="/skills/african-languages">Clear</a>{% endif %}
+    </form>
+
+    {% if categories %}
+    <div class="sk-category-rail">
+      {% for cat in categories %}<a href="#cat-{{ cat.slug }}" class="sk-category-chip">{% if cat.icon %}<i class="{{ cat.icon }}"></i>{% endif %} {{ cat.name }}</a>{% endfor %}
+    </div>
+    {% endif %}
+
+    {% if not by_category %}
+    <div class="sk-empty">
+      <div class="sk-empty-icon"><i class="ri-translate-2"></i></div>
+      <div style="font-weight:600; margin-bottom:6px;">No skills match</div>
+      <div style="font-size:0.85rem;">{% if filters.language or filters.level %}Try a different language or level.{% else %}These skills haven't been published yet.{% endif %}</div>
+    </div>
+    {% endif %}
+
+    {% for group in by_category %}
+    <div class="sk-section-title" id="cat-{{ group.category.slug }}">{% if group.category.icon %}<i class="{{ group.category.icon }}"></i>{% endif %} {{ group.category.name }}</div>
+    {% if group.category.description %}<p class="sk-card-desc" style="margin:-6px 0 14px; max-width:720px;">{{ group.category.description }}</p>{% endif %}
+    <div class="sk-grid">
+      {% for skill in group.skills %}{% include 'components/all_skill_card.html' %}{% endfor %}
+    </div>
+    {% endfor %}
+  </div>
+
+{% include 'components/skills_footer.html' %}
+{% include 'components/skills_ask_widget.html' %}
+</body>
+</html>

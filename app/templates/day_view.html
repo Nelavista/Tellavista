@@ -131,9 +131,13 @@
         {% for q in quiz_questions %}
         <div class="sk-quiz-q">
           <div class="sk-quiz-q-text">{{ loop.index }}. {{ q.question }}</div>
+          {# The question index must be captured before the options loop: inside it,
+             loop.index0 is the OPTION index, which gave every option its own radio group
+             and made submitQuiz() see every question as unanswered. #}
+          {% set qi = loop.index0 %}
           {% for opt in q.options %}
           <label class="sk-quiz-opt">
-            <input type="radio" name="q{{ loop.index0 }}" value="{{ loop.index0 }}">
+            <input type="radio" name="q{{ qi }}" value="{{ loop.index0 }}">
             <span>{{ opt }}</span>
           </label>
           {% endfor %}

@@ -1,0 +1,19 @@
+<!-- One skill card on the African Languages hub. Expects `skill`, `progress`
+     ({skill_id: StudentSkill}), `verified_ids`, `language_label`. -->
+{% set sp = progress.get(skill.id) %}
+<a href="/skills/{{ skill.slug }}" class="sk-card dv2-skill-card">
+  <div class="sk-icon-circle" style="background:{{ skill.color }}22; color:{{ skill.color }};"><i class="{{ skill.icon or 'ri-translate-2' }}"></i></div>
+  <div class="sk-card-title">{{ skill.name }}</div>
+  <div class="sk-card-desc">{{ skill.tagline or '' }}</div>
+  <div class="all-skill-row">
+    <span class="sk-badge">{{ skill.level|title }}</span>
+    {% if skill.language %}<span class="sk-badge"><i class="ri-translate-2"></i> {{ language_label(skill.language) }}</span>{% endif %}
+    {% if skill.estimated_hours %}<span class="sk-badge">~{{ skill.estimated_hours }}h</span>{% endif %}
+    {% if skill.id in verified_ids %}<span class="sk-badge completed"><i class="ri-checkbox-circle-fill"></i> Verified</span>{% endif %}
+  </div>
+  {% if sp %}
+  <div class="sk-progress-row"><div class="sk-progress-track"><div class="sk-progress-fill" style="width:{{ sp.progress_pct }}%;"></div></div><span class="sk-progress-pct">{{ sp.progress_pct }}%</span></div>
+  {% else %}
+  <div class="sk-card-desc" style="margin:0;"><i class="ri-medal-line"></i> Assessment + reviewed project</div>
+  {% endif %}
+</a>

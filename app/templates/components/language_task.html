@@ -1,0 +1,257 @@
+<!-- Structured, auto-scored practical task (Challenge.task_spec) — transcription,
+     translation, labeling (annotation / evaluation / QA) or speech recording. Scored by
+     services/language_task_service.py; field names here must match its form keys:
+     seg-<id>-text|speaker|start, item-<id>-translation, item-<id>-<field>, report,
+     rec-<id>-metrics + rec-<id>-audio, meta-<field>.
+     Expects: spec, challenge, pass_score, best_score. -->
+{% set kind = spec.kind %}
+
+{% if spec.brief or spec.guidelines %}
+<div class="sk-panel" style="margin-bottom:16px;">
+  {% if spec.brief %}<p class="cw-instructions" style="margin:0 0 {{ '12px' if spec.guidelines else '0' }};">{{ spec.brief }}</p>{% endif %}
+  {% if spec.guidelines %}
+  <div class="cw-feedback-label">Guidelines to follow</div>
+  <ul class="lt-guidelines">{% for g in spec.guidelines %}<li>{{ g }}</li>{% endfor %}</ul>
+  {% endif %}
+</div>
+{% endif %}
+
+{% if spec.simulation %}
+<div class="sk-card-desc" style="margin:-4px 0 14px;"><span class="sk-badge"><i class="ri-flask-line"></i> Simulation</span> Practice data prepared by Nelavista — not client or African Languages Lab project data.</div>
+{% endif %}
+
+{% if kind == 'transcription' %}
+<div class="sk-panel" style="margin-bottom:16px;">
+  {% if spec.audio_url %}
+  <div class="cw-feedback-label">Audio</div>
+  <audio class="lt-audio" controls preload="none" src="{{ spec.audio_url }}"></audio>
+  {% else %}
+  <div class="sk-card-desc" style="margin:0;"><i class="ri-information-line"></i> No audio is attached to this task yet, so it runs as <strong>machine-transcript correction</strong>: each box is pre-filled with raw speech-recognition output. Correct it to match the guidelines — spelling, tone marks and diacritics, tags and speaker labels.</div>
+  {% endif %}
+</div>
+{% endif %}
+
+{% if pass_score is not none %}
+<div class="sk-panel" style="margin-bottom:16px; border-left:3px solid var(--sk-accent);">
+  <strong><i class="ri-medal-line"></i> Assessment · pass mark {{ pass_score }}%</strong>
+  <div class="sk-card-desc" style="margin:6px 0 0;">
+    {% if best_score is not none %}Your best score so far: <strong>{{ best_score }}%</strong>{% if best_score >= pass_score %} — passed.{% else %} — not passed yet.{% endif %}{% else %}Not attempted yet.{% endif %}
+    Expected answers aren't shown after an assessment attempt, so a retake reflects what you actually know.
+  </div>
+</div>
+{% endif %}
+
+<form method="POST" id="lt-form" enctype="multipart/form-data" data-kind="{{ kind }}">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+  {% if kind == 'transcription' %}
+    {% for seg in spec.segments %}
+    <div class="lt-item">
+      <div class="lt-item-head"><span>Segment {{ loop.index }}</span>{% if spec.mode %}<span>{{ spec.mode }} transcription</span>{% endif %}</div>
+      {% if seg.context %}<div class="lt-context">{{ seg.context }}</div>{% endif %}
+      {% if seg.speaker or seg.start is defined %}
+      <div class="lt-row two" style="margin-bottom:10px;">
+        {% if seg.speaker %}
+        <div class="sk-field" style="margin:0;">
+          <label class="sk-label" for="seg-{{ seg.id }}-speaker">Speaker</label>
+          <select class="sk-select" id="seg-{{ seg.id }}-speaker" name="seg-{{ seg.id }}-speaker">
+            <option value="">Choose…</option>
+            {% for sp in spec.speakers or [] %}<option value="{{ sp }}">{{ sp }}</option>{% endfor %}
+          </select>
+        </div>
+        {% endif %}
+        {% if seg.start is defined %}
+        <div class="sk-field" style="margin:0;">
+          <label class="sk-label" for="seg-{{ seg.id }}-start">Start time (seconds or m:ss.s)</label>
+          <input class="sk-input" id="seg-{{ seg.id }}-start" name="seg-{{ seg.id }}-start" inputmode="decimal" placeholder="e.g. 3.2">
+        </div>
+        {% endif %}
+      </div>
+      {% endif %}
+      <label class="sk-label" for="seg-{{ seg.id }}-text">Transcript</label>
+      <textarea class="sk-textarea" id="seg-{{ seg.id }}-text" name="seg-{{ seg.id }}-text" rows="3" lang="{{ spec.lang_code or '' }}">{{ seg.draft or '' }}</textarea>
+    </div>
+    {% endfor %}
+
+  {% elif kind == 'translation' %}
+    {% for it in spec['items'] %}
+    <div class="lt-item">
+      <div class="lt-item-head"><span>Sentence {{ loop.index }}</span><span>{{ it.direction or (spec.source_lang ~ ' → ' ~ spec.target_lang) }}</span></div>
+      <div class="lt-source">{{ it.source }}</div>
+      {% if it.context %}<div class="lt-context">{{ it.context }}</div>{% endif %}
+      <label class="sk-label" for="item-{{ it.id }}-translation">Your translation</label>
+      <textarea class="sk-textarea" id="item-{{ it.id }}-translation" name="item-{{ it.id }}-translation" rows="2"></textarea>
+    </div>
+    {% endfor %}
+
+  {% elif kind == 'labeling' %}
+    {% for it in spec['items'] %}
+    <div class="lt-item">
+      <div class="lt-item-head"><span>Item {{ loop.index }}</span></div>
+      {% if it.text %}<div class="lt-source">{{ it.text }}</div>{% endif %}
+      {% if it.context %}<div class="lt-context">{{ it.context }}</div>{% endif %}
+      {% for f in it.fields %}
+      <div class="sk-field" style="margin-bottom:10px;">
+        <label class="sk-label">{{ f.label or f.name }}</label>
+        {% if (f.type or 'choice') == 'choice' %}
+        <div class="lt-choices" role="radiogroup">
+          {% for opt in f.options %}
+          <label class="lt-choice"><input type="radio" name="item-{{ it.id }}-{{ f.name }}" value="{{ opt }}"><span>{{ opt }}</span></label>
+          {% endfor %}
+        </div>
+        {% else %}
+        <input class="sk-input" name="item-{{ it.id }}-{{ f.name }}" {% if f.type == 'number' %}inputmode="decimal"{% endif %} placeholder="{{ f.placeholder or '' }}">
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+    {% endfor %}
+
+  {% elif kind == 'recording' %}
+    {% for p in spec.prompts %}
+    <div class="lt-item" data-prompt="{{ p.id }}">
+      <div class="lt-item-head"><span>Prompt {{ loop.index }}</span></div>
+      <div class="lt-source">{{ p.text }}</div>
+      <button type="button" class="sk-btn small lt-rec-btn" data-rec="{{ p.id }}"><i class="ri-mic-line"></i> <span>Record</span></button>
+      <span class="sk-card-desc lt-rec-status" data-status="{{ p.id }}" style="margin-left:8px;"></span>
+      <audio class="lt-audio" data-preview="{{ p.id }}" controls hidden></audio>
+      <input type="hidden" name="rec-{{ p.id }}-metrics" value="{}">
+    </div>
+    {% endfor %}
+    {% if spec.requirements %}
+    <div class="sk-card-desc" style="margin-bottom:12px;">
+      Each recording must be {{ spec.requirements.min_seconds }}–{{ spec.requirements.max_seconds }} seconds, not clipped, loud enough (≥ {{ spec.requirements.min_rms_db }} dBFS) and not mostly silence. Levels are measured in your browser.
+    </div>
+    {% endif %}
+    {% for f in spec.metadata_fields or [] %}
+    <div class="sk-field">
+      <label class="sk-label" for="meta-{{ f.name }}">{{ f.label or f.name }}</label>
+      {% if f.options %}
+      <select class="sk-select" id="meta-{{ f.name }}" name="meta-{{ f.name }}">
+        <option value="">Choose…</option>
+        {% for opt in f.options %}<option value="{{ opt }}">{{ opt }}</option>{% endfor %}
+      </select>
+      {% else %}
+      <input class="sk-input" id="meta-{{ f.name }}" name="meta-{{ f.name }}">
+      {% endif %}
+    </div>
+    {% endfor %}
+  {% endif %}
+
+  {% if spec.report %}
+  <div class="sk-field">
+    <label class="sk-label" for="lt-report">{{ spec.report.label or 'Explain your decisions' }} <span class="sk-card-desc" style="display:inline; margin:0;">(at least {{ spec.report.min_words or 15 }} words)</span></label>
+    <textarea class="sk-textarea" id="lt-report" name="report" rows="4"></textarea>
+  </div>
+  {% endif %}
+
+  <button type="submit" class="sk-btn full" id="lt-submit">{{ 'Submit assessment' if pass_score is not none else 'Submit for scoring' }}</button>
+  <div class="sk-card-desc" id="lt-error" style="margin-top:8px; color:var(--sk-danger);" hidden></div>
+</form>
+
+{% if kind == 'recording' %}
+<script>
+(function () {
+  const form = document.getElementById('lt-form');
+  const blobs = {};
+  let active = null;
+
+  // Measures what an audio QA reviewer checks first: length, clipping, level, silence.
+  async function measure(blob) {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const buf = await ctx.decodeAudioData(await blob.arrayBuffer());
+    const data = buf.getChannelData(0);
+    let peak = 0, clipped = 0, sumSq = 0;
+    for (let i = 0; i < data.length; i++) {
+      const v = Math.abs(data[i]);
+      if (v > peak) peak = v;
+      if (v >= 0.99) clipped++;
+      sumSq += data[i] * data[i];
+    }
+    const frame = Math.max(1, Math.floor(buf.sampleRate * 0.02));
+    let frames = 0, silent = 0;
+    for (let i = 0; i < data.length; i += frame) {
+      let s = 0;
+      const end = Math.min(data.length, i + frame);
+      for (let j = i; j < end; j++) s += data[j] * data[j];
+      const rms = Math.sqrt(s / (end - i));
+      frames++;
+      if (rms < 0.003) silent++;  // about -50 dBFS
+    }
+    ctx.close();
+    const rmsAll = Math.sqrt(sumSq / Math.max(1, data.length));
+    return {
+      duration: buf.duration, peak: peak, sample_rate: buf.sampleRate,
+      clip_pct: 100 * clipped / Math.max(1, data.length),
+      rms_db: rmsAll > 0 ? 20 * Math.log10(rmsAll) : -120,
+      silence_pct: 100 * silent / Math.max(1, frames),
+    };
+  }
+
+  document.querySelectorAll('[data-rec]').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const id = btn.dataset.rec;
+      const status = document.querySelector(`[data-status="${id}"]`);
+      if (active && active.id === id) { active.recorder.stop(); return; }
+      if (active) return;
+      if (!navigator.mediaDevices || !window.MediaRecorder) {
+        status.textContent = 'Recording isn\'t supported in this browser.';
+        return;
+      }
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        const recorder = new MediaRecorder(stream);
+        const chunks = [];
+        recorder.ondataavailable = e => chunks.push(e.data);
+        recorder.onstop = async () => {
+          stream.getTracks().forEach(t => t.stop());
+          btn.classList.remove('recording');
+          btn.querySelector('span').textContent = 'Re-record';
+          active = null;
+          const blob = new Blob(chunks, { type: recorder.mimeType || 'audio/webm' });
+          blobs[id] = blob;
+          const preview = document.querySelector(`[data-preview="${id}"]`);
+          preview.src = URL.createObjectURL(blob);
+          preview.hidden = false;
+          try {
+            const m = await measure(blob);
+            form.querySelector(`[name="rec-${id}-metrics"]`).value = JSON.stringify(m);
+            status.textContent = `${m.duration.toFixed(1)}s · level ${m.rms_db.toFixed(0)} dBFS · ${m.silence_pct.toFixed(0)}% silence`;
+          } catch (err) {
+            status.textContent = 'Recorded, but levels couldn\'t be measured in this browser.';
+          }
+        };
+        recorder.start();
+        active = { id, recorder };
+        btn.classList.add('recording');
+        btn.querySelector('span').textContent = 'Stop';
+        status.textContent = 'Recording…';
+      } catch (err) {
+        status.textContent = 'Microphone access was blocked.';
+      }
+    });
+  });
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const fd = new FormData(form);
+    Object.entries(blobs).forEach(([id, blob]) => fd.append(`rec-${id}-audio`, blob, `${id}.webm`));
+    const err = document.getElementById('lt-error');
+    const submit = document.getElementById('lt-submit');
+    submit.disabled = true;
+    err.hidden = true;
+    try {
+      const res = await fetch(window.location.pathname, { method: 'POST', body: fd, headers: { 'X-Requested-With': 'fetch' } });
+      const data = await res.json();
+      if (data.redirect) { window.location = data.redirect; return; }
+      err.textContent = data.error || 'Submission failed.';
+      err.hidden = false;
+    } catch (ex) {
+      err.textContent = 'Submission failed — check your connection and try again.';
+      err.hidden = false;
+    }
+    submit.disabled = false;
+  });
+})();
+</script>
+{% endif %}

@@ -19,13 +19,44 @@
     <h1 class="sk-h1">Learn something that can change what you can do.</h1>
     <p class="sk-sub">Browse by category, or search for something specific. Every skill here comes with a real learning path, real projects, and real opportunities behind it.</p>
 
-    <div style="margin-top:24px;">
-      <form class="sk-search-wrap" method="GET" action="/skills/catalog">
-        {% if active_category %}<input type="hidden" name="category" value="{{ active_category.slug }}">{% endif %}
+    <form method="GET" action="/skills/catalog" id="catalog-filters" style="margin-top:24px;">
+      {% if active_category %}<input type="hidden" name="category" value="{{ active_category.slug }}">{% endif %}
+      <div class="sk-search-wrap">
         <span class="sk-search-icon"><i class="ri-search-line"></i></span>
-        <input type="text" name="q" value="{{ search }}" placeholder="Search skills — e.g. Python, UI/UX, Copywriting...">
-      </form>
-    </div>
+        <input type="text" name="q" value="{{ search }}" placeholder="Search skills — e.g. Python, Yoruba transcription, Copywriting...">
+      </div>
+      <div class="all-filter">
+        <div class="sk-field">
+          <label class="sk-label" for="f-level">Level</label>
+          <select class="sk-select" id="f-level" name="level" onchange="this.form.submit()">
+            <option value="">Any level</option>
+            {% for lv in ['beginner', 'intermediate', 'advanced'] %}<option value="{{ lv }}" {{ 'selected' if filters.level == lv else '' }}>{{ lv|title }}</option>{% endfor %}
+          </select>
+        </div>
+        {% if language_options %}
+        <div class="sk-field">
+          <label class="sk-label" for="f-language">Language</label>
+          <select class="sk-select" id="f-language" name="language" onchange="this.form.submit()">
+            <option value="">Any language</option>
+            {% for key, label in language_options %}<option value="{{ key }}" {{ 'selected' if filters.language == key else '' }}>{{ label }}</option>{% endfor %}
+          </select>
+        </div>
+        {% endif %}
+        {% if tag_options %}
+        <div class="sk-field">
+          <label class="sk-label" for="f-tag">Focus</label>
+          <select class="sk-select" id="f-tag" name="tag" onchange="this.form.submit()">
+            <option value="">Any focus</option>
+            {% for t in tag_options %}<option value="{{ t }}" {{ 'selected' if filters.tag == t else '' }}>{{ t|replace('-', ' ')|title }}</option>{% endfor %}
+          </select>
+        </div>
+        {% endif %}
+        {% if filters.program %}<input type="hidden" name="program" value="{{ filters.program }}">{% endif %}
+        {% if filters.level or filters.language or filters.tag or filters.program %}
+        <a class="sk-btn secondary small" href="/skills/catalog{{ '?category=' + active_category.slug if active_category else '' }}">Clear filters</a>
+        {% endif %}
+      </div>
+    </form>
 
     <div class="sk-category-rail">
       <a href="/skills/catalog{{ '?q=' + search if search else '' }}" class="sk-category-chip {{ 'active' if not active_category else '' }}">All Skills</a>
@@ -53,6 +84,7 @@
         {% if row.has_content %}
         <div style="display:flex; gap:6px; flex-wrap:wrap;">
           <span class="sk-badge">{{ skill.level|title }}</span>
+          {% if skill.language %}<span class="sk-badge"><i class="ri-translate-2"></i> {{ language_label(skill.language) }}</span>{% endif %}
           {% if skill.estimated_hours %}<span class="sk-badge">~{{ skill.estimated_hours }}h</span>{% endif %}
         </div>
         <div class="dv2-skill-meta">

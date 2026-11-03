@@ -39,57 +39,59 @@ export function Login(): JSX.Element {
   }
 
   return (
-    <div className="nv-card nv-login">
-      <div className="nv-row" style={{ marginBottom: 'var(--nv-space-lg)' }}>
-        <BrandMark size={36} />
-        <span className="nv-meta">Nelavista ops</span>
-      </div>
-      <h1 className="nv-h1">Ops sign in</h1>
-      <p className="nv-muted">
-        Staff account only. Every action here is written to the audit trail with your account.
-      </p>
-      <form className="nv-stack" onSubmit={submit}>
-        {challenge ? (
-          <Field
-            autoComplete="one-time-code"
-            autoFocus
-            id="mfa-code"
-            label="Authenticator code"
-            maxLength={20}
-            value={code}
-            onChange={(event) => setCode(event.target.value)}
-          />
-        ) : (
-          <>
+    <div className="nv-login">
+      <div className="nv-card nv-login__card">
+        <div className="nv-row" style={{ marginBottom: 'var(--nv-space-lg)' }}>
+          <BrandMark size={36} />
+          <span className="nv-meta">Nelavista ops</span>
+        </div>
+        <h1 className="nv-h1">Ops sign in</h1>
+        <p className="nv-muted">
+          Staff account only. Every action here is written to the audit trail with your account.
+        </p>
+        <form className="nv-stack" onSubmit={submit}>
+          {challenge ? (
             <Field
-              autoComplete="email"
-              id="admin-email"
-              label="Email"
-              type="email"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
+              autoComplete="one-time-code"
+              autoFocus
+              id="mfa-code"
+              label="Authenticator code"
+              maxLength={20}
+              value={code}
+              onChange={(event) => setCode(event.target.value)}
             />
-            <PasswordField
-              autoComplete="current-password"
-              id="admin-password"
-              label="Password"
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
-            />
-          </>
-        )}
-        {error ? (
-          <p className="nv-error" role="alert">
-            {error}
-          </p>
-        ) : null}
-        <button className="nv-button" disabled={busy} type="submit">
-          {busy ? 'Signing in…' : challenge ? 'Verify and sign in' : 'Sign in'}
-        </button>
-      </form>
-      <p className="nv-muted">
-        Not staff? This app is not for student accounts. Use the student web app instead.
-      </p>
+          ) : (
+            <>
+              <Field
+                autoComplete="email"
+                id="admin-email"
+                label="Email"
+                type="email"
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+              />
+              <PasswordField
+                autoComplete="current-password"
+                id="admin-password"
+                label="Password"
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
+              />
+            </>
+          )}
+          {error ? (
+            <p className="nv-error" role="alert">
+              {error}
+            </p>
+          ) : null}
+          <button className="nv-button" disabled={busy} type="submit">
+            {busy ? 'Signing in…' : challenge ? 'Verify and sign in' : 'Sign in'}
+          </button>
+        </form>
+        <p className="nv-muted">
+          Not staff? This app is not for student accounts. Use the student web app instead.
+        </p>
+      </div>
     </div>
   );
 }

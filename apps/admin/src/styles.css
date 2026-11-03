@@ -17,15 +17,30 @@
 }
 
 .nv-login {
-  display: flex;
+  display: grid;
   min-height: 100dvh;
-  align-items: center;
-  justify-content: center;
+  place-items: center;
+  background:
+    radial-gradient(circle at 50% 0%, color-mix(in srgb, var(--nv-accent) 10%, transparent), transparent 34rem),
+    var(--nv-bg);
   padding: var(--nv-space-xl);
 }
 
-.nv-login .nv-card {
+.nv-login__card {
+  display: flex;
   width: min(100%, 420px);
+  flex-direction: column;
+  gap: var(--nv-space-lg);
+  border-color: color-mix(in srgb, var(--nv-border-strong) 70%, var(--nv-border));
+  box-shadow: 0 1.5rem 4rem color-mix(in srgb, #000 32%, transparent);
+}
+
+.nv-login__card .nv-h1 {
+  margin-bottom: calc(var(--nv-space-sm) * -1);
+}
+
+.nv-login__card .nv-button {
+  width: 100%;
 }
 
 .nv-pre {

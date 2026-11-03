@@ -51,7 +51,7 @@ export function TwoFactor(): JSX.Element {
 
   if (codes) {
     return (
-      <div className="nv-card nv-login">
+      <div className="nv-card nv-login__card">
         <h1 className="nv-h1">Save your recovery codes</h1>
         <p>
           These are shown once. Each works once if you lose your phone. Store them somewhere other than the
@@ -73,7 +73,7 @@ export function TwoFactor(): JSX.Element {
   }
 
   return (
-    <div className="nv-card nv-login">
+    <div className="nv-card nv-login__card">
       <h1 className="nv-h1">Two-factor is required</h1>
       <p className="nv-muted">
         Staff accounts must enrol an authenticator before using the ops tools. This is a Phase 0 security

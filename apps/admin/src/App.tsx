@@ -50,13 +50,15 @@ function Body(): JSX.Element {
 
   if (me && me.role === 'student') {
     return (
-      <div className="nv-card nv-login">
-        <h1 className="nv-h1">Staff only</h1>
-        <p>
-          This account is a student account. The ops tools are not available to it; use the student web app
-          instead.
-        </p>
-        <SignOut />
+      <div className="nv-login">
+        <div className="nv-card nv-login__card">
+          <h1 className="nv-h1">Staff only</h1>
+          <p>
+            This account is a student account. The ops tools are not available to it; use the student web app
+            instead.
+          </p>
+          <SignOut />
+        </div>
       </div>
     );
   }

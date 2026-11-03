@@ -333,10 +333,10 @@ export function Onboarding(): JSX.Element {
 
   if (initialLoading) {
     return (
-      <div className="nv-stack" aria-busy="true" aria-label="Loading setup">
+      <div className="nv-onboarding-page nv-stack" aria-busy="true" aria-label="Loading setup">
         <PageHeader eyebrow="Setup" title="Set up your workspace" />
         <div className="nv-onboarding">
-          <div className="nv-stack">
+          <div className="nv-onboarding-page nv-stack">
             <Panel title="You and your path">
               <Skeleton lines={3} height="2.5rem" />
               <Skeleton lines={4} />
@@ -357,7 +357,7 @@ export function Onboarding(): JSX.Element {
 
   if (loadError && !state) {
     return (
-      <div className="nv-stack">
+      <div className="nv-onboarding-page nv-stack">
         <PageHeader eyebrow="Setup" title="Set up your workspace" />
         <ErrorState
           body={loadError}

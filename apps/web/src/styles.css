@@ -684,14 +684,28 @@ body {
  */
 .nv-onboarding {
   display: grid;
-  grid-template-columns: minmax(0, 1.4fr) minmax(17rem, 0.6fr);
-  gap: var(--nv-space-xl);
+  grid-template-columns: minmax(0, 1.45fr) minmax(19rem, 0.55fr);
+  gap: var(--nv-space-xxl);
   align-items: start;
+}
+
+.nv-onboarding-page {
+  width: min(100% - 2 * var(--nv-space-xl), 1240px);
+  margin-inline: auto;
+  padding: var(--nv-space-4xl) 0 var(--nv-space-6xl);
+}
+
+.nv-onboarding-page > .nv-onboarding-progress {
+  margin-top: var(--nv-space-sm);
+}
+
+.nv-onboarding-page > .nv-onboarding {
+  margin-top: var(--nv-space-md);
 }
 
 .nv-onboarding__rail {
   position: sticky;
-  top: calc(var(--nv-space-xl) + 1rem);
+  top: calc(var(--nv-space-xl) + 2rem);
   display: grid;
   gap: var(--nv-space-lg);
 }
@@ -975,6 +989,11 @@ body {
 }
 
 @media (max-width: 760px) {
+  .nv-onboarding-page {
+    width: calc(100% - 2 * var(--nv-space-lg));
+    padding-top: var(--nv-space-xxl);
+  }
+
   .nv-onboarding-progress,
   .nv-onboarding__selects,
   .nv-path-picker__grid,

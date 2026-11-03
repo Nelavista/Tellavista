@@ -5,33 +5,36 @@
  * the page supports that one action: confirm the email, finish the path, add
  * courses, or open the dashboard. No invented metrics.
  */
-import type { OnboardingState, Profile } from '@nelavista/contracts';
+import type { OnboardingState, PreferredPath, Profile } from '@nelavista/contracts';
+import { Badge, Banner, Button, EmptyState, ErrorState, PageHeader, Panel, Skeleton } from '@nelavista/ui';
 import {
-  Badge,
-  Banner,
-  Button,
-  EmptyState,
-  ErrorState,
-  PageHeader,
-  Panel,
-  Select,
-  Skeleton,
-} from '@nelavista/ui';
-import { ArrowRight, BookOpen, GraduationCap, MailCheck } from 'lucide-react';
+  ArrowRight,
+  BookOpen,
+  Briefcase,
+  Check,
+  GraduationCap,
+  MailCheck,
+  MapPin,
+  Sparkles,
+  type LucideIcon,
+} from 'lucide-react';
 import * as React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { ApiError, http } from '../lib/http';
+import { PATH_OPTIONS, isPreferredPath, pathDestination, pathNeedsStudies, pathOption } from '../lib/paths';
 import { useSession } from '../lib/session';
 
-const PATHS: Array<{ value: string; label: string }> = [
-  { value: 'academia', label: 'Academia' },
-  { value: 'skills', label: 'Skills' },
-  { value: 'both', label: 'Both' },
-];
+const PATH_ICONS: Record<PreferredPath, LucideIcon> = {
+  academia: GraduationCap,
+  skills: Sparkles,
+  opportunities: Briefcase,
+  campus: MapPin,
+};
 
 export function Home(): JSX.Element {
   const { me, profile, reload } = useSession();
+  const navigate = useNavigate();
   const [state, setState] = React.useState<OnboardingState | null>(null);
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState<string | null>(null);
@@ -76,20 +79,37 @@ export function Home(): JSX.Element {
     }
   }
 
-  async function switchPath(next: string): Promise<void> {
+  async function switchPath(next: PreferredPath): Promise<void> {
     setBusy(true);
     setError(null);
     try {
       await http.post<Profile>('/me/path', { path: next });
       await reload();
+      const academicUniversity =
+        typeof state?.academic?.university === 'string' ? state.academic.university : null;
+      const needsSetup =
+        next === 'campus' ? !academicUniversity : pathNeedsStudies(next) && !(state?.has_enrolment ?? false);
+      navigate(needsSetup ? '/onboarding?step=studies' : pathDestination(next));
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : 'Could not switch path.');
+      setError(err instanceof ApiError ? err.message : 'Could not switch space.');
     } finally {
       setBusy(false);
     }
   }
 
   const next = state?.next_step ?? null;
+  const currentPath = isPreferredPath(profile?.preferred_path) ? profile.preferred_path : null;
+  const currentOption = pathOption(currentPath);
+  const CurrentIcon = currentOption ? PATH_ICONS[currentOption.value] : null;
+  const currentDestination = pathDestination(currentPath);
+  const currentSecondary =
+    currentPath === 'academia'
+      ? { to: '/academia/materials', label: 'Materials' }
+      : currentPath === 'skills'
+        ? { to: '/skills/my-learning', label: 'My learning' }
+        : currentPath === 'opportunities'
+          ? { to: '/opportunities/applications', label: 'My applications' }
+          : null;
 
   return (
     <div className="nv-stack">
@@ -98,6 +118,44 @@ export function Home(): JSX.Element {
         title="What to do next"
         description={`You are signed in as ${name}. The next step is the one thing this page is for; the rest is context.`}
       />
+
+      <Panel
+        title="Your space"
+        actions={currentOption ? <Badge tone="info">{currentOption.label}</Badge> : <Badge>Not chosen</Badge>}
+      >
+        <div className="nv-space-switcher">
+          {PATH_OPTIONS.map((option) => {
+            const Icon = PATH_ICONS[option.value];
+            const selected = currentPath === option.value;
+            return (
+              <button
+                className="nv-space-option"
+                data-selected={selected}
+                disabled={busy || loading}
+                key={option.value}
+                type="button"
+                onClick={() => void switchPath(option.value)}
+              >
+                <span className="nv-space-option__icon" aria-hidden="true">
+                  <Icon size={17} strokeWidth={1.7} />
+                </span>
+                <span className="nv-space-option__copy">
+                  <strong>{option.label}</strong>
+                  <span>{option.summary}</span>
+                </span>
+                {selected ? (
+                  <Check aria-hidden="true" size={15} strokeWidth={2.2} />
+                ) : (
+                  <ArrowRight aria-hidden="true" size={15} />
+                )}
+              </button>
+            );
+          })}
+        </div>
+        <p className="nv-meta">
+          Each space opens its own dashboard. Switching never deletes courses, proof or earnings.
+        </p>
+      </Panel>
 
       {me && !me.email_verified ? (
         <Banner
@@ -147,19 +205,12 @@ export function Home(): JSX.Element {
           {next === 'choose_path' ? (
             <div className="nv-stack">
               <div>
-                <p className="nv-h2">Choose how you want to learn</p>
+                <p className="nv-h2">Choose your space</p>
                 <p className="nv-muted">
-                  Academia follows your university courses. Skills follows published paths. You can switch
-                  later without losing learning, proof or earnings.
+                  Pick one of the four spaces above. You can switch later without losing learning, proof or
+                  earnings.
                 </p>
               </div>
-              <Select
-                disabled={busy}
-                label="Current path"
-                options={PATHS}
-                value={profile?.preferred_path ?? 'both'}
-                onChange={(event) => void switchPath(event.target.value)}
-              />
             </div>
           ) : null}
 
@@ -184,21 +235,23 @@ export function Home(): JSX.Element {
           {next === 'ready' ? (
             <div className="nv-stack">
               <div>
-                <p className="nv-h2">Open your Academia dashboard</p>
+                <p className="nv-h2">Open your {currentOption?.label ?? 'dashboard'}</p>
                 <p className="nv-muted">
-                  See what you are studying, what you studied recently, what to practise, and where you are
-                  weak.
+                  {currentOption?.detail ??
+                    'Your space is ready. Open it from the switcher above whenever you want.'}
                 </p>
               </div>
               <div className="nv-row">
-                <Link className="nv-button" to="/academia">
-                  <GraduationCap aria-hidden="true" size={15} />
-                  Open the dashboard
+                <Link className="nv-button" to={currentDestination}>
+                  {CurrentIcon ? <CurrentIcon aria-hidden="true" size={15} /> : null}
+                  Open {currentOption?.label ?? 'dashboard'}
                   <ArrowRight aria-hidden="true" size={15} />
                 </Link>
-                <Link className="nv-button nv-button--ghost" to="/skills">
-                  Browse skills
-                </Link>
+                {currentSecondary ? (
+                  <Link className="nv-button nv-button--ghost" to={currentSecondary.to}>
+                    {currentSecondary.label}
+                  </Link>
+                ) : null}
               </div>
             </div>
           ) : null}

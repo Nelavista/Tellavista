@@ -49,8 +49,12 @@ export interface ApiErrorEnvelope {
   };
 }
 
-/** The three student paths (PRD §6). Switching never deletes prior work. */
-export type PreferredPath = 'academia' | 'skills' | 'both';
+/**
+ * The four student spaces. Each has its own dashboard destination; switching
+ * never deletes prior work. "Both" was removed when Opportunity and Campus
+ * became first-class spaces.
+ */
+export type PreferredPath = 'academia' | 'skills' | 'opportunities' | 'campus';
 
 // `Me` and `AuthToken` deliberately do not live here any more: both come from
 // the API's own schema. Import `MeOut` and `TokenOut` from `@nelavista/api-client`

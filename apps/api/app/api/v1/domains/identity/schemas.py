@@ -269,6 +269,10 @@ class WaitlistIn(BaseModel):
     note: str | None = Field(default=None, max_length=500)
 
 
+class UniversityChoiceIn(BaseModel):
+    university_id: int
+
+
 class UniversityOut(BaseModel):
     id: int
     name: str

@@ -1,9 +1,11 @@
 import type { TokenOut } from '@nelavista/api-client';
+import type { Profile } from '@nelavista/contracts';
 import * as React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 import { AuthLayout } from '../components/AuthLayout';
 import { ApiError, http, setAccessToken } from '../lib/http';
+import { pathDestination } from '../lib/paths';
 import { useSession } from '../lib/session';
 import { Button, ErrorNote, Field, PasswordField } from '../ui';
 
@@ -29,9 +31,20 @@ export function Login(): JSX.Element {
   const [error, setError] = React.useState<string | null>(null);
   const [busy, setBusy] = React.useState(false);
 
-  function goNext(): void {
+  async function goNext(): Promise<void> {
     const from = (location.state as RedirectState | null)?.from;
-    navigate(from && from.startsWith('/') ? from : '/home', { replace: true });
+    if (from && from.startsWith('/')) {
+      navigate(from, { replace: true });
+      return;
+    }
+    // A returning student lands in the space they chose, not in a generic hub.
+    // If the profile read fails, Home is still a safe landing page.
+    try {
+      const current = await http.get<Profile>('/me');
+      navigate(pathDestination(current.preferred_path), { replace: true });
+    } catch {
+      navigate('/home', { replace: true });
+    }
   }
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>): Promise<void> {
@@ -43,11 +56,11 @@ export function Login(): JSX.Element {
         const token = await http.post<TokenOut>('/auth/2fa/verify', { mfa_token: challenge, code });
         setAccessToken(token.access_token);
         await reload();
-        goNext();
+        await goNext();
         return;
       }
       await login(email.trim().toLowerCase(), password);
-      goNext();
+      await goNext();
     } catch (err) {
       if (err instanceof ApiError && err.code === 'mfa_required') {
         const details = err.details as { mfa_token?: string } | undefined;

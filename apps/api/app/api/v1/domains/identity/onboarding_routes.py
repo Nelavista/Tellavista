@@ -13,6 +13,7 @@ from app.api.v1.domains.identity.schemas import (
     OnboardingStateOut,
     SemesterOut,
     SubdivisionOut,
+    UniversityChoiceIn,
     UniversityOut,
     WaitlistIn,
 )
@@ -20,6 +21,7 @@ from app.core import observability
 from app.db.session import get_db
 from app.models.identity import User
 from app.services.identity import onboarding
+from app.services.identity.profile import PATHS, STUDY_PATHS
 
 router = APIRouter(prefix="/onboarding", tags=["identity"])
 
@@ -78,6 +80,22 @@ def semesters(session_id: int, db: Session = Depends(get_db)) -> list[SemesterOu
     ]
 
 
+@router.put("/university", response_model=MessageOut)
+def choose_university(
+    payload: UniversityChoiceIn,
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> MessageOut:
+    """Set the university a Campus-first student reads.
+
+    This is deliberately separate from enrolment: Campus needs the university,
+    not a course list, and an enrolled student can still update it later.
+    """
+    university = onboarding.set_university(db, user, payload.university_id)
+    db.commit()
+    return MessageOut(message=f"Your campus is set to {university.name}.")
+
+
 @router.post("/enrol", response_model=list[EnrolmentOut], status_code=201)
 def enrol(
     payload: EnrolIn,
@@ -106,6 +124,18 @@ def state(
     context = onboarding.academic_context(db, user)
     semester = onboarding.current_session(db)
     rows = onboarding.my_enrolments(db, user)
+    preferred_path = user.profile.preferred_path if user.profile else None
+    # Skills and Opportunities do not need a university or a course enrolment.
+    # Academia needs courses; Campus needs only the university it reads.
+    has_space_context = bool(rows) or (
+        preferred_path == "campus" and bool(user.university)
+    )
+    if preferred_path not in PATHS:
+        next_step = "choose_path"
+    elif preferred_path in STUDY_PATHS and not has_space_context:
+        next_step = "enrol"
+    else:
+        next_step = "ready"
     return OnboardingStateOut(
         profile_completed=bool(user.profile and user.profile.display_name),
         has_enrolment=bool(rows),
@@ -121,11 +151,7 @@ def state(
         ),
         academic=context,
         enrolments=rows,
-        next_step=(
-            "choose_path"
-            if rows and not (user.profile and user.profile.preferred_path)
-            else ("enrol" if not rows else "ready")
-        ),
+        next_step=next_step,
     )
 
 

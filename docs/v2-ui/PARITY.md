@@ -120,10 +120,10 @@ to the legal pages and records both consents. Re-consent is handled by
 
 | V1 | V2 | Verdict | Action |
 |---|---|---|---|
-| Landing redirects signed-in users to saved path | `/` redirects signed-in users to `/home` | **Parity** | Keep |
-| `/choose-path` two-product fork | Home path switch (`academia`/`skills`/`both`) | **Parity/stronger** | Make it a first-class choice, not a select buried in Home |
-| Academia onboarding wizard | `/onboarding` wizard | **Parity** | Redesign as a clear stepper; keep waitlist |
-| Skills onboarding modal | No separate Skills onboarding | **Gap/decide** | Add a first-run Skills preference step, or fold into `/onboarding` |
+| Landing redirects signed-in users to saved path | `/` redirects signed-in users to `/home`; a returning login opens the saved space | **Parity/stronger** | Keep the Home switcher visible for deliberate changes |
+| `/choose-path` two-product fork | Four-space picker in onboarding and Home: `academia`, `skills`, `opportunities`, `campus` | **Stronger** | Each space has its own dashboard destination |
+| Academia onboarding wizard | `/onboarding` two-step flow that collects only what the chosen space reads | **Parity/stronger** | Academia uses university/faculty/department/courses; Campus uses the university only; Skills and Opportunities finish at the choice |
+| Skills onboarding modal | Folded into the four-space `/onboarding` choice | **Replaced** | No separate first-run modal |
 | Profile + LASU curriculum browser | Settings profile + academic context | **Partial** | Keep academic context; decide whether to restore a curriculum reference |
 | Settings (AI prefs, study prefs, notifications, theme, export, delete, password) | Split Settings: profile, security, notifications, data; consent history and push devices; theme in the shell | **Parity/stronger** | In-place password change is built |
 | Separate Academia and Skills notifications | `/notifications` plus a recent list in Settings | **Parity/stronger** | Built |
@@ -143,7 +143,7 @@ to the legal pages and records both consents. Re-consent is handled by
 | CBT practice with timer and server grading | CBT quiz/answer/results | **Parity/stronger** | Keep integrity; add question palette |
 | CBT history + attempt review + AI explain | `/academia/cbt/history` shows each attempt, the selected and correct key, and the explanation; results exist | **Parity/stronger** | Keep answer review scoped to the signed-in student |
 | Analyze Materials: PDF → notes → test | None | **Dropped/decide** | Deferred with replacement: curated materials + Ask + CBT + transcript evidence trail |
-| Campus map + locations | Campus read-only page | **Partial** | Add map/location detail if data exists; otherwise keep a clear utility |
+| Campus map + locations | Campus dashboard and read-only map links | **Parity** | A Campus-first student sets the university without a course enrolment; map detail stays data-driven |
 | Notifications | `/notifications` and recent list in Settings | **Parity/stronger** | Built |
 
 ### 4.3 Skills
@@ -197,10 +197,12 @@ to the legal pages and records both consents. Re-consent is handled by
 ### 4.6 Student app verdict (post-build)
 
 V2 is stronger in verification, matching, managed work, quality, ledger and
-talent privacy. The notification centre, applications, invitations, eligibility
-blockers, consent history, push-device list/removal, CBT review, course and topic
-detail, password change and split settings are built. Skills search and uploads
-remain later-scope items, not missing primary screens.
+talent privacy. The four spaces are a first-class product choice, with a
+dashboard destination for each. The notification centre, applications,
+invitations, eligibility blockers, consent history, push-device
+list/removal, CBT review, course and topic detail, password change and split
+settings are built. Skills search and uploads remain later-scope items, not
+missing primary screens.
 
 ---
 
@@ -234,10 +236,10 @@ remain later-scope items, not missing primary screens.
 ### Admin parity verdict (post-build)
 
 V2 admin is stronger than V1 in audit, money, quality, platform policy, security,
-overview, waitlist and campus publishing. Application status and payout-item
-failure are now exposed. The remaining gaps are the missing campus read endpoint,
-bulk actions, a purpose-built aggregate overview, and a material/content-ops
-decision. Do not rebuild V1's dead moderation tools.
+overview, waitlist and campus publishing, including live campus reads. Application
+status and payout-item failure are now exposed. The remaining gaps are bulk
+actions, a purpose-built aggregate overview, and a material/content-ops decision.
+Do not rebuild V1's dead moderation tools.
 
 ---
 

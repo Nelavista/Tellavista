@@ -79,6 +79,27 @@ def list_semesters(db: Session, session_id: int) -> list[Semester]:
     )
 
 
+def set_university(db: Session, user: User, university_id: int) -> University:
+    """Store the campus a student reads without enrolling them in courses.
+
+    Campus is a top-level space of its own. A student who chooses it still needs
+    the university name that `GET /me/campus` reads, but not a course enrolment:
+    mixing the two would make the Campus dashboard depend on academic setup it
+    does not use.
+    """
+    university = db.scalar(
+        select(University).where(University.id == university_id, University.active.is_(True))
+    )
+    if university is None:
+        raise ApiError(404, "university_not_found", "That university is not in the catalogue.")
+    if user.university != university.name:
+        user.department = None
+        user.level = None
+    user.university = university.name
+    db.flush()
+    return university
+
+
 def enrol(
     db: Session,
     user: User,

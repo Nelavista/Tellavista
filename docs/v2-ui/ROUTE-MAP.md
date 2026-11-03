@@ -94,7 +94,7 @@ states are closed:
 
 | Route | Screen | Job | Anchor | Notes |
 |---|---|---|---|---|
-| `/onboarding` | Onboarding | Collect university, faculty, department, level, courses; waitlist if missing | **Next incomplete step** | Guarded. Keep the waitlist path. |
+| `/onboarding` | Onboarding | Choose one of four spaces, then collect only the context that space reads; waitlist if missing | **The next incomplete step** | Guarded. Academia uses university, faculty, department, level and courses. Campus uses the university only through `PUT /onboarding/university`. Skills and Opportunities finish at the path choice. |
 | `/settings` | Settings — profile and work | Edit identity, bio, location, timezone, visibility, languages, availability | **Save changes** | Guarded. |
 | `/settings/security` | Settings — security | Change password, view 2FA, sessions/devices | **Change password** | Uses `POST /auth/password/change`; the response replaces the current access token and revokes other sessions. |
 | `/settings/notifications` | Settings - notifications | Email preference, honest push availability, registered device list/removal, notification list link | **Save notification settings** | New. Uses `/me/push-devices`; link to `/notifications`. The web app does not register a browser device. |
@@ -115,8 +115,10 @@ links stable and makes security/data easy to find.
 | `/home` | Home | Answer “what should I do next?” | **The next action** | `GET /onboarding/state`, `GET /me`, notifications summary | Skeleton, empty, error, feature-off |
 | `/notifications` | Notifications | Triage everything that changed | **Unread items** | `GET /me/notifications`, `POST /me/notifications/read` | Skeleton, empty, error, success |
 
-Home composition: next action, due/this week table, proof status, earnings strip,
-recent notifications. Not a grid of welcome cards.
+Home composition: space switcher, next action, due/this week table, proof status,
+earnings strip, recent notifications. The four spaces are Academia, Skills,
+Opportunities and Campus. A returning login opens the saved space; Home keeps the
+switcher available. Not a grid of welcome cards.
 
 ### 4.2 Academia
 
@@ -130,7 +132,7 @@ recent notifications. Not a grid of welcome cards.
 | `/academia/cbt/history` | CBT history | Review past practice | **Most recent attempt** | `GET /academia/cbt/history`; filter by course and open the answer, key and explanation | Skeleton, empty, filtered-empty, error, feature-off |
 | `/academia/courses/:courseCode` | Course hub | See one course's topics, materials and practice | **Next topic** | `GET /onboarding/state` for the code-to-id map, then `GET /academia/courses/{id}` | Skeleton, missing, error, feature-off |
 | `/academia/topics/:topicId` | Topic detail | Understand one topic and its practice record | **Practise this course** | `GET /academia/topics/{id}` | Skeleton, missing, error, feature-off |
-| `/campus` | Campus | Find campus information | **Relevant campus item** | `GET /me/campus` | Skeleton, empty, error |
+| `/campus` | Campus dashboard | Read university information and map points | **Relevant campus item** | `GET /me/campus` | Skeleton, empty, error. A Campus-first student can set the university without enrolling in courses. |
 
 The course route links its topic rows to the topic detail route. Both endpoints
 scope the read to the signed-in student's active enrolment; an unenrolled course
@@ -340,6 +342,8 @@ Mobile:
 | `/academia/cbt/history` | `GET /academia/cbt/history?course_id=&limit=` |
 | `/academia/courses/:courseCode` | `/onboarding/state`, `GET /academia/courses/{id}` |
 | `/academia/topics/:topicId` | `GET /academia/topics/{id}` |
+| `/onboarding` path step | `POST /me/path` with `academia`, `skills`, `opportunities` or `campus` |
+| `/onboarding` campus step | `PUT /onboarding/university`, then `POST /me/onboarding/complete` |
 | Admin `#/waitlist` | `GET /ops/waitlist` |
 | Admin `#/campus` | `GET /ops/campus`, `POST /ops/campus` |
 | Admin application status | `POST /opportunities/applications/{id}/status` |

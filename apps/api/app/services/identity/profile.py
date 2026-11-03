@@ -30,7 +30,9 @@ from app.models.verification import (
     VerificationRecord,
 )
 
-PATHS: tuple[str, ...] = ("academia", "skills")
+PATHS: tuple[str, ...] = ("academia", "skills", "opportunities", "campus")
+# These paths need an academic context before their dashboard has anything to read.
+STUDY_PATHS: tuple[str, ...] = ("academia", "campus")
 VISIBILITIES: tuple[str, ...] = ("private", "link", "public")
 LANGUAGE_LEVELS: tuple[str, ...] = ("basic", "conversational", "fluent", "native")
 
@@ -97,7 +99,11 @@ def update_profile(
 def choose_path(db: Session, user: User, path: str) -> UserProfile:
     """Set or switch the student's path. Switching never deletes anything."""
     if path not in PATHS:
-        raise ApiError(400, "invalid_path", "Choose academia or skills.")
+        raise ApiError(
+            400,
+            "invalid_path",
+            "Choose academia, skills, opportunities or campus.",
+        )
     profile = get_or_create_profile(db, user)
     profile.preferred_path = path
     db.flush()

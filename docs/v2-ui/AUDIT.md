@@ -45,7 +45,10 @@ disagree; the rest of the document remains useful as the starting-point record.
   Practice, Verification, Assessment sitting, Attempt review, Practical task,
   Transcript, Opportunities, Applications, Work, Earnings, Talent, Campus,
   Notifications, Settings and Onboarding use the shared primitives and explicit
-  states. Eligibility blockers are shown on opportunity detail before apply.
+  states. Onboarding and Home share one four-space model: Academia, Skills,
+  Opportunities and Campus. Each opens its own dashboard, and Onboarding asks for
+  only the context that space reads. Eligibility blockers are shown on opportunity
+  detail before apply.
 - **Settings:** Profile, security, notifications and data are separate routes.
   Consent history is read from `/me/consents` and rendered as an append-only
   table. Push devices are read from `/me/push-devices` and can be removed; the
@@ -58,7 +61,8 @@ disagree; the rest of the document remains useful as the starting-point record.
   reads the live set, including hidden rows. Application status and payout-item
   failure actions are exposed in Opportunities and Money.
 - **Closed API dependencies:** Full course and topic detail, CBT history with
-  answer review, the student cohort-invite list, admin campus read and signed-in
+  answer review, the student cohort-invite list, admin campus read, the
+  campus-only university choice (`PUT /onboarding/university`) and signed-in
   password change are implemented and wired. In-place password change revokes
   other refresh tokens and renews the current session. Signup records both terms
   and privacy consent at the platform terms version.
@@ -621,7 +625,7 @@ These cannot be invented by the UI:
 | Admin 2FA | Login works; first-login enrolment is required and still needs a full end-to-end pass |
 | V1 reference | Read-only; no V1 files changed |
 
-### 13.2 Post-build verification (2026-10-28)
+### 13.2 Post-build verification (2026-11-03)
 
 | Check | Result |
 |---|---|
@@ -629,10 +633,10 @@ These cannot be invented by the UI:
 | Admin typecheck | Passed |
 | Web tests | 57 passed (11 files) |
 | Admin tests | 2 passed (1 file) |
-| API tests | 337 passed, 1 skipped |
+| API tests | 340 passed, 1 skipped |
 | Web/admin lint | Passed |
 | Web/admin production build | Passed |
-| First-load budget | Passed: 122.6 KB gzip JS of 150 KB; 7.6 KB gzip CSS of 20 KB |
+| First-load budget | Passed: 123.1 KB gzip JS of 150 KB; 8.3 KB gzip CSS of 20 KB |
 | Prettier / `git diff --check` | Passed |
 | Brand assets | V1 logo/favicon copied, V2 icons generated, boot loader present in both apps |
 | Theme | Light and dark tokens verified in code; manual visual pass still recommended |

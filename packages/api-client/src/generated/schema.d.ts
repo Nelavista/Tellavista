@@ -669,6 +669,29 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/onboarding/university": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Choose University
+         * @description Set the university a Campus-first student reads.
+         *
+         *     This is deliberately separate from enrolment: Campus needs the university,
+         *     not a course list, and an enrolled student can still update it later.
+         */
+        put: operations["choose_university_v1_onboarding_university_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/onboarding/enrol": {
         parameters: {
             query?: never;
@@ -6188,6 +6211,11 @@ export interface components {
             delivered: components["schemas"]["TranscriptEntryOut"][];
             counts: components["schemas"]["TranscriptCountsOut"];
         };
+        /** UniversityChoiceIn */
+        UniversityChoiceIn: {
+            /** University Id */
+            university_id: number;
+        };
         /** UniversityOut */
         UniversityOut: {
             /** Id */
@@ -7757,6 +7785,41 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["SemesterOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    choose_university_v1_onboarding_university_put: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UniversityChoiceIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageOut"];
                 };
             };
             /** @description Validation Error */

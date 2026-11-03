@@ -2,6 +2,7 @@ import { FacebookLogoIcon } from '@phosphor-icons/react/dist/csr/FacebookLogo';
 import { TelegramLogoIcon } from '@phosphor-icons/react/dist/csr/TelegramLogo';
 import { WhatsappLogoIcon } from '@phosphor-icons/react/dist/csr/WhatsappLogo';
 import * as React from 'react';
+import { useLocation } from 'react-router-dom';
 
 const SHARE_TEXT = 'Nelavista: learn it, prove it, get paid for it.';
 const GLIDE_MS = 550;
@@ -35,28 +36,28 @@ const STEPS: Array<{ slot: Slot; color: string; hold: number }> = [
 
 const NETWORKS = [
   {
-    label: 'Facebook',
+    label: 'Share on Facebook',
     href: (encoded: string) => `https://www.facebook.com/sharer/sharer.php?u=${encoded}`,
     Icon: FacebookLogoIcon,
     slot: 'fb' as const,
   },
   {
-    label: 'WhatsApp',
+    label: 'Share on WhatsApp',
     href: (encoded: string, text: string) => `https://wa.me/?text=${text}%20${encoded}`,
     Icon: WhatsappLogoIcon,
     slot: 'wa' as const,
   },
   {
-    label: 'Telegram',
+    label: 'Share on Telegram',
     href: (encoded: string, text: string) => `https://t.me/share/url?url=${encoded}&text=${text}`,
     Icon: TelegramLogoIcon,
     slot: 'tg' as const,
   },
 ];
 
-function shareUrl(): string {
+function shareUrl(pathname: string): string {
   if (typeof window === 'undefined') return 'https://nelavista.com/';
-  return window.location.href;
+  return `${window.location.origin}${pathname}`;
 }
 
 function position(slot: Slot): string {
@@ -69,10 +70,14 @@ function nextStep(step: Step): Step {
 }
 
 export function SocialLinks({ label = 'Share Nelavista' }: { label?: string }): JSX.Element {
-  const url = React.useMemo(shareUrl, []);
+  const { pathname } = useLocation();
+  const url = shareUrl(pathname);
   const encoded = encodeURIComponent(url);
   const text = encodeURIComponent(SHARE_TEXT);
   const rootRef = React.useRef<HTMLDivElement | null>(null);
+  const timeoutRef = React.useRef<number | null>(null);
+  const resetFrameRef = React.useRef<number | null>(null);
+  const revealFrameRef = React.useRef<number | null>(null);
   const [step, setStep] = React.useState<Step>(0);
   const [paused, setPaused] = React.useState(false);
   const [hidden, setHidden] = React.useState(false);
@@ -90,9 +95,29 @@ export function SocialLinks({ label = 'Share Nelavista' }: { label?: string }): 
   }, []);
 
   React.useEffect(() => {
-    const onVisibilityChange = () => setHidden(document.hidden);
+    const onVisibilityChange = () => {
+      setHidden(document.hidden);
+      setPaused(false);
+      setHoverSlot(null);
+    };
+    const onWindowBlur = () => {
+      setPaused(false);
+      setHoverSlot(null);
+    };
     document.addEventListener('visibilitychange', onVisibilityChange);
-    return () => document.removeEventListener('visibilitychange', onVisibilityChange);
+    window.addEventListener('blur', onWindowBlur);
+    return () => {
+      document.removeEventListener('visibilitychange', onVisibilityChange);
+      window.removeEventListener('blur', onWindowBlur);
+    };
+  }, []);
+
+  React.useEffect(() => {
+    return () => {
+      if (timeoutRef.current !== null) window.clearTimeout(timeoutRef.current);
+      if (resetFrameRef.current !== null) window.cancelAnimationFrame(resetFrameRef.current);
+      if (revealFrameRef.current !== null) window.cancelAnimationFrame(revealFrameRef.current);
+    };
   }, []);
 
   React.useEffect(() => {
@@ -107,24 +132,34 @@ export function SocialLinks({ label = 'Share Nelavista' }: { label?: string }): 
     if (reducedMotion || paused || hidden || !inView) return undefined;
 
     if (step === 4) {
-      const timer = window.setTimeout(() => {
+      timeoutRef.current = window.setTimeout(() => {
         setResetting(true);
-        window.requestAnimationFrame(() => {
-          setStep(0);
-          setResetting(false);
+        setStep(0);
+        resetFrameRef.current = window.requestAnimationFrame(() => {
+          revealFrameRef.current = window.requestAnimationFrame(() => {
+            setResetting(false);
+          });
         });
       }, FADE_OUT_MS + PAUSE_MS);
-      return () => window.clearTimeout(timer);
+      return () => {
+        if (timeoutRef.current !== null) window.clearTimeout(timeoutRef.current);
+        if (resetFrameRef.current !== null) window.cancelAnimationFrame(resetFrameRef.current);
+        if (revealFrameRef.current !== null) window.cancelAnimationFrame(revealFrameRef.current);
+      };
     }
 
-    const timer = window.setTimeout(() => setStep(nextStep(step)), STEPS[step]?.hold ?? DWELL_MS);
-    return () => window.clearTimeout(timer);
+    timeoutRef.current = window.setTimeout(() => setStep(nextStep(step)), STEPS[step]?.hold ?? DWELL_MS);
+    return () => {
+      if (timeoutRef.current !== null) window.clearTimeout(timeoutRef.current);
+    };
   }, [hidden, inView, paused, reducedMotion, step]);
 
   const animatedStep = (step === 4 ? STEPS[3] : STEPS[step])!;
   const activeSlot = hoverSlot ?? animatedStep.slot;
-  const highlightVisible = !reducedMotion && step !== 4;
-  const logoVisible = !reducedMotion && (step === 3 || step === 4);
+  const highlightVisible = reducedMotion
+    ? hoverSlot !== null
+    : hoverSlot !== null || (!resetting && step !== 4);
+  const logoVisible = !reducedMotion && step === 3;
   const highlightColor = hoverSlot
     ? hoverSlot === 'fb'
       ? BRAND.fb
@@ -144,6 +179,7 @@ export function SocialLinks({ label = 'Share Nelavista' }: { label?: string }): 
     <div
       ref={rootRef}
       className="nv-social-links"
+      role="group"
       aria-label={label}
       style={rootStyle}
       onBlur={(event) => {
@@ -152,11 +188,11 @@ export function SocialLinks({ label = 'Share Nelavista' }: { label?: string }): 
           setPaused(false);
         }
       }}
-      onFocus={() => setPaused(true)}
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => {
-        setHoverSlot(null);
-        setPaused(false);
+      onPointerLeave={(event) => {
+        if (event.pointerType === 'mouse') {
+          setHoverSlot(null);
+          setPaused(false);
+        }
       }}
     >
       <span
@@ -176,12 +212,25 @@ export function SocialLinks({ label = 'Share Nelavista' }: { label?: string }): 
           rel="noopener noreferrer"
           style={{ transform: position(slot) }}
           target="_blank"
-          title={itemLabel}
           onFocus={() => {
-            setHoverSlot(slot);
-            setPaused(true);
+            const target = document.activeElement;
+            if (target instanceof HTMLElement && target.matches(':focus-visible')) {
+              setHoverSlot(slot);
+              setPaused(true);
+            }
           }}
-          onMouseEnter={() => setHoverSlot(slot)}
+          onBlur={(event) => {
+            if (!event.currentTarget.contains(event.relatedTarget)) setHoverSlot(null);
+          }}
+          onPointerEnter={(event) => {
+            if (event.pointerType === 'mouse') {
+              setHoverSlot(slot);
+              setPaused(true);
+            }
+          }}
+          onPointerLeave={(event) => {
+            if (event.pointerType === 'mouse') setHoverSlot(null);
+          }}
         >
           <Icon aria-hidden="true" size={18} weight="fill" />
         </a>

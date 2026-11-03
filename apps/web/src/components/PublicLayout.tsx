@@ -18,6 +18,22 @@ const NAV = [
   { to: '/faq', label: 'FAQ' },
 ];
 
+function useScrolled(threshold: number): boolean {
+  const [scrolled, setScrolled] = React.useState(false);
+
+  React.useEffect(() => {
+    const update = () => {
+      const next = window.scrollY > threshold;
+      setScrolled((current) => (current === next ? current : next));
+    };
+    update();
+    window.addEventListener('scroll', update, { passive: true });
+    return () => window.removeEventListener('scroll', update);
+  }, [threshold]);
+
+  return scrolled;
+}
+
 export function PublicLayout({ children }: { children: React.ReactNode }): JSX.Element {
   usePageMeta();
   const location = useLocation();
@@ -26,6 +42,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }): JSX.E
   const signedIn = status === 'authenticated';
   const mainRef = React.useRef<HTMLElement | null>(null);
   const firstRoute = React.useRef(true);
+  const scrolled = useScrolled(24);
 
   React.useEffect(() => {
     if (firstRoute.current) {
@@ -40,7 +57,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }): JSX.E
       <a className="nv-skip-link" href="#main">
         Skip to content
       </a>
-      <header className="nv-public__header">
+      <header className="nv-public__header" data-scrolled={scrolled}>
         <div className="nv-public__header-inner">
           <Link className="nv-public__brand" to="/" aria-label="Nelavista home">
             <BrandMark />

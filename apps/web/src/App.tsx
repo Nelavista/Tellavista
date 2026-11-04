@@ -80,6 +80,7 @@ const Features = React.lazy(() => import('./routes/Features').then((m) => ({ def
 const HowItWorks = React.lazy(() => import('./routes/HowItWorks').then((m) => ({ default: m.HowItWorks })));
 const Pricing = React.lazy(() => import('./routes/Pricing').then((m) => ({ default: m.Pricing })));
 const About = React.lazy(() => import('./routes/About').then((m) => ({ default: m.About })));
+const Impact = React.lazy(() => import('./routes/Impact').then((m) => ({ default: m.Impact })));
 const Contact = React.lazy(() => import('./routes/Contact').then((m) => ({ default: m.Contact })));
 const Faq = React.lazy(() => import('./routes/Faq').then((m) => ({ default: m.Faq })));
 const Privacy = React.lazy(() => import('./routes/Legal').then((m) => ({ default: m.Privacy })));
@@ -188,6 +189,14 @@ function RouteTable(): JSX.Element {
           element={
             <Public>
               <About />
+            </Public>
+          }
+        />
+        <Route
+          path="/impact"
+          element={
+            <Public>
+              <Impact />
             </Public>
           }
         />

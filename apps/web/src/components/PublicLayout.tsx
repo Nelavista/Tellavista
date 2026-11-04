@@ -15,6 +15,7 @@ const NAV = [
   { to: '/how-it-works', label: 'How it works' },
   { to: '/pricing', label: 'Pricing' },
   { to: '/about', label: 'About' },
+  { to: '/impact', label: 'Impact' },
   { to: '/faq', label: 'FAQ' },
 ];
 
@@ -122,6 +123,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }): JSX.E
               <Link to="/how-it-works">How it works</Link>
               <Link to="/pricing">Pricing</Link>
               <Link to="/about">About</Link>
+              <Link to="/impact">Impact</Link>
             </div>
             <div className="nv-footer-col">
               <h2>Students</h2>

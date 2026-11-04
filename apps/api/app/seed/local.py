@@ -16,7 +16,7 @@ from app.models.academia import Course, Department, Faculty, Material, Universit
 from app.models.admin import ROLE_STUDENT, Role
 from app.models.identity import User
 from app.models.platform import PlatformSettings
-from app.seed import curriculum
+from app.seed import all_language, curriculum
 from app.seed.roles import seed_roles
 from app.services.platform.settings import get_platform_settings
 
@@ -105,6 +105,14 @@ def run() -> dict[str, int]:
         created["practical_tasks"] += seeded["practical_tasks"]
         created["topics"] += seeded["topics"]
         created["curriculum_content"] += seeded["materials_and_questions"]
+        all_seeded = all_language.run(db)
+        created["all_categories"] = all_seeded["categories"]
+        created["all_skills"] = all_seeded["skills"]
+        created["all_lessons"] = all_seeded["lessons"]
+        created["all_task_templates"] = all_seeded["task_templates"]
+        created["all_learning_paths"] = all_seeded["learning_paths"]
+        created["all_assessments"] = all_seeded["assessments"]
+        created["all_tracks"] = all_seeded["tracks"]
         created["courses"] += seeded["courses"]
 
         for i in range(1, 3):

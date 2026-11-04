@@ -59,6 +59,9 @@ class SkillCategory(Base, TimestampMixin):
     name: Mapped[str] = mapped_column(String(120), nullable=False)
     description: Mapped[str | None] = mapped_column(String(500))
     ordinal: Mapped[int] = mapped_column(Integer, default=0, server_default="0", nullable=False)
+    program: Mapped[str] = mapped_column(
+        String(40), default="core", server_default="core", nullable=False, index=True
+    )
 
 
 class Skill(Base, TimestampMixin):
@@ -74,6 +77,8 @@ class Skill(Base, TimestampMixin):
     slug: Mapped[str] = mapped_column(String(80), nullable=False, unique=True, index=True)
     name: Mapped[str] = mapped_column(String(120), nullable=False)
     description: Mapped[str | None] = mapped_column(String(1000))
+    language: Mapped[str | None] = mapped_column(String(60), index=True)
+    tags: Mapped[list | None] = mapped_column(JSONPayload)
     is_active: Mapped[bool] = mapped_column(
         Boolean, default=True, server_default="true", nullable=False
     )
@@ -179,6 +184,45 @@ class TaskTemplate(Base, TimestampMixin):
     version: Mapped[int] = mapped_column(Integer, default=1, server_default="1", nullable=False)
     status: Mapped[str] = mapped_column(
         String(16), default=STATUS_DRAFT, server_default=STATUS_DRAFT, nullable=False
+    )
+
+
+class CareerTrack(Base, TimestampMixin):
+    """An ordered, multi-skill route such as an African language specialist."""
+
+    __tablename__ = "career_tracks"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    slug: Mapped[str] = mapped_column(String(100), nullable=False, unique=True, index=True)
+    title: Mapped[str] = mapped_column(String(200), nullable=False)
+    tagline: Mapped[str | None] = mapped_column(String(500))
+    icon: Mapped[str | None] = mapped_column(String(80))
+    color: Mapped[str | None] = mapped_column(String(20))
+    program: Mapped[str] = mapped_column(
+        String(40), default="core", server_default="core", nullable=False, index=True
+    )
+    status: Mapped[str] = mapped_column(
+        String(16), default=STATUS_PUBLISHED, server_default=STATUS_PUBLISHED, nullable=False
+    )
+
+
+class CareerTrackStep(Base, TimestampMixin):
+    """One skill in a career track, in the order students should follow it."""
+
+    __tablename__ = "career_track_steps"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    track_id: Mapped[int] = mapped_column(
+        ForeignKey("career_tracks.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    skill_id: Mapped[int] = mapped_column(
+        ForeignKey("skills.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    ordinal: Mapped[int] = mapped_column(Integer, nullable=False)
+
+    __table_args__ = (
+        UniqueConstraint("track_id", "ordinal", name="uq_career_track_step_ordinal"),
+        UniqueConstraint("track_id", "skill_id", name="uq_career_track_step_skill"),
     )
 
 

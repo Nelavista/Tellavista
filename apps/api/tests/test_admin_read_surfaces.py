@@ -85,6 +85,7 @@ def test_content_lists_show_drafts_and_the_validator_catalog(api) -> None:
     validators = client.get("/v1/skills/content/validators", headers=_headers(ops))
     assert validators.status_code == 200
     assert validators.json()["validators"] == [
+        "all_language_task",
         "exact_key",
         "label_set",
         "numeric_tolerance",

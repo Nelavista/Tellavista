@@ -43,6 +43,11 @@ const PAGES: Record<string, PageMeta> = {
     description:
       'Why Nelavista exists, who it is for, and the standards behind a working record for African university students.',
   },
+  '/impact': {
+    title: 'Impact',
+    description:
+      'What Nelavista can currently stand behind: connected learning, evidence-based verification and clearer paid work.',
+  },
   '/contact': {
     title: 'Contact',
     description:

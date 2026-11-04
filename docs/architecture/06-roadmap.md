@@ -117,7 +117,7 @@ is still delivered; this is a new product decision, not a retroactive failure.
 
 | V1 addition | V2 state | Where it belongs |
 |---|---|---|
-| African Languages Lab: 9 categories, 94 skills, 10 tracks, language-specific lessons/tasks/assessments | Missing | Extends M2 (content) and M3 (verification) |
+| African Languages Lab: 9 categories, 94 skills, 10 tracks, language-specific lessons/tasks/assessments | Seeded in V2; hub, profile and richer scoring remain | Extends M2 (content) and M3 (verification) |
 | Language profile, `Skill.language`/tags, programme grouping | Missing | Extends M1/M2 identity and skills data |
 | Structured scored tasks (transcription, translation, labeling, recording) and assessment gate | Missing; V2 has task templates and verification assessments but not these task kinds/scores | Extends M2/M3 |
 | Per-skill transcript/talent evidence, academic background and languages | Partial; V2 has the transcript/talent surfaces but not the fields | Extends M3/M7 |

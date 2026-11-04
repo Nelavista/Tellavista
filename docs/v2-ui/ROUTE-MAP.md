@@ -38,13 +38,14 @@ states are closed:
 
 ### 1.2 V1 routes added after this map (2026-11-04)
 
-V1 `main` added these routes. They are **not in V2 yet** and are not approved V2
-scope until the product decision in `PARITY.md` §1.2 is taken:
+V1 `main` added these routes. The qualitative `/impact` route is now in V2; the
+language routes remain outside V2 scope until the product decision in
+`PARITY.md` §1.2 is taken:
 
 | V1 route | V1 screen / job | V2 state | Notes |
 |---|---|---|---|
-| `/impact` | Public track-record page; reach metrics, what has been built, CTA | **Missing** | Add only after the 2,500+/500+ figures are verified. It is a public static page, so it does not need an API. Also add the landing band and footer link. |
-| `/skills/african-languages` | African Languages Lab hub; 9 categories, 94 skills, language/level filters, tracks, language profile summary | **Missing** | Requires the ALL content and language fields first. It is a focused view of the existing skill catalog, not a second catalog. |
+| `/impact` | Public impact page; current product outcomes and verified metrics when available | **Implemented qualitatively** | No reach figures, testimonials or partner claims are published until verified against a current source and approved. |
+| `/skills/african-languages` | African Languages Lab hub; 9 categories, 94 skills, language/level filters, tracks, language profile summary | **Missing** | The ALL catalogue is seeded in V2; add the focused hub and filters over the existing skill catalog. |
 | `/skills/languages` | Own language profile; add/update self-reported language, dialect, proficiency and capabilities; academic background | **Missing** | Requires `StudentLanguage`-equivalent data and a verified-by-skill derivation. |
 | `/skills/languages/:id/delete` | POST action to remove a language from the profile | **Missing** | Action on the same route family; confirm before delete. |
 | Existing `/skills/:skillSlug` challenge route | Structured, auto-scored transcription/translation/labeling/recording tasks; assessment gate and pass mark | **Partial** | V2's existing practice/verification routes can host the UI, but the task spec, deterministic scoring and assessment gate are not implemented. |
@@ -84,6 +85,7 @@ routes out rather than shipping links to empty screens.
 | `/how-it-works` | How it works | Explain Learn → Prove → Work → Earn | **Create your account** | Four-step chain, eligibility/verification explanation, payout explanation, what Nelavista does not claim | Static | Static | Public |
 | `/pricing` | Pricing | Explain the commercial model without inventing amounts | **Create your account / Talk to us** | Student launch position, employer scoped quote, university pilot agreement, what a quote covers, what is not charged | Static | Static | Public |
 | `/about` | About | Explain why Nelavista exists | **Create your account** | Mission, operating principles, editorial working-record illustration, what the product refuses to fake | Static | Static | Public |
+| `/impact` | Impact | Explain current product outcomes without unsupported claims | **See how it works** | Qualitative outcomes, evidence standards and a clear statement that numeric claims require verification | Static | Static | Public |
 | `/contact` | Contact | Give a real support path | **Email support** | Support email, response expectation, topics (account, verification, payouts, employers), FAQ link | Static | Static | Public |
 | `/faq` | FAQ | Answer the obvious objections | **Create your account** | Is it free? How verification works, how payouts work, data/privacy, eligibility, what happens if a university is missing | Static | Static | Public |
 | `/legal/privacy` | Privacy | Explain data collection and rights | **Contact support** | Plain-language privacy policy, effective date, data list, retention, deletion, third parties, contact | Static | Static | Public |
@@ -99,7 +101,6 @@ routes out rather than shipping links to empty screens.
 
 | Route | Why not now |
 |---|---|
-| `/impact` | V1 added it on 2026-11-01, but its 2,500+/500+ figures are not verified for V2. Add only when the business confirms them; otherwise use the honest `/about` working-record copy. |
 | `/for-employers` | V2 has no employer self-service. Use `/contact` with an employer topic until the product exists. |
 | `/blog` | No content plan or authoring system. |
 | `/newsletter` | No consent/unsubscribe backend. See `AUDIT.md` §9. |
@@ -402,9 +403,9 @@ in §1.1.
 | Admin | 14 | After student app or in parallel once primitives exist |
 | Utility | 4 states + redirects | With the shells |
 
-Total: **~61 routes**, of which 18 are new or split from existing screens. This is
+Total: **~62 routes**, of which 19 are new or split from existing screens. This is
 a full product surface, not a landing-page refresh. The count does **not** include
-the 2026-11-04 V1 delta (`/impact`, `/skills/african-languages`,
+the remaining 2026-11-04 V1 language delta (`/skills/african-languages`,
 `/skills/languages` and the language delete action); add those only if the product
 decision in `PARITY.md` §1.2 approves them.
 

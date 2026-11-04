@@ -270,17 +270,16 @@ not regressions in the V2 code that already exists, but V2 is no longer a
 superset of V1. They are also recorded in `docs/v2-ui/PARITY.md` §1.2 and
 `docs/v2-ui/AUDIT.md` §1.1.
 
-- [ ] **I1 — ALL curriculum decision and port.** V1 added 9 African Languages Lab
+- [~] **I1 — ALL curriculum decision and port.** V1 added 9 African Languages Lab
   categories, 94 skills (including `african-language-data-beginner`), 10
-  multi-skill tracks, lessons, practice tasks, assessments and projects
-  (`seed_data/all_skills/`, `scripts/seed/seed_all_skills.py`). Decide port vs
-  drop, then port the content through a V2 seed. Do not run the V1 seeder against
-  V2 tables.
-- [ ] **I2 — V2 schema for language data.** If ALL is ported, add the equivalent of
-  V1's `SkillCategory.program`, `Skill.language`/`tags_json`,
-  `Challenge.task_spec_json`/`is_assessment`/`pass_score`,
-  `ChallengeSubmission.score`/`result_json`, `StudentLanguage` and
-  `User.language_background`. Use V2's expand/contract migration rules.
+  multi-skill tracks, lessons, practice tasks, assessments and projects.
+  V2 now seeds the 9 categories, 94 skills, lessons, practice tasks, assessments
+  and 10 ordered tracks through `app.seed.all_language`. The language profile,
+  dedicated hub/filter UI and project-template parity remain.
+- [~] **I2 — V2 schema for language data.** V2 now has the ALL programme,
+  skill language/tags and career-track tables. The language profile,
+  per-submission result model and remaining V1 task metadata still need an
+  expand/contract migration if those capabilities are ported.
 - [ ] **I3 — Structured scoring and assessment gate.** Port the deterministic task
   kinds (transcription WER, translation chrF, labeling accuracy/repeat
   consistency, recording requirements) into V2's task/assessment model, and

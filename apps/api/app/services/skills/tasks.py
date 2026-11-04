@@ -179,6 +179,58 @@ def validate_span_overlap(answer: dict, expected: dict, config: dict) -> Validat
     )
 
 
+def validate_all_language_task(answer: dict, expected: dict, config: dict) -> ValidationResult:
+    """Validate the canonical response envelope used by ALL task content.
+
+    The seed keeps the source task specification in the template input and stores
+    the answer key server-side. This validator deliberately accepts no partial
+    or missing response rows: language-data work must be complete before it can
+    be reviewed.
+    """
+    given = answer.get("responses")
+    wanted = expected.get("responses")
+    if not isinstance(given, dict) or not isinstance(wanted, dict):
+        return ValidationResult(False, 0, "Submit a response for every task item.")
+    if set(given) != set(wanted):
+        return ValidationResult(False, 0, "Submit a response for every task item.")
+
+    kind = str(config.get("task_kind", ""))
+    if kind in {"labeling", "transcription"}:
+        correct = given == wanted
+    elif kind == "translation":
+        correct = all(
+            isinstance(given[item_id], str) and given[item_id].strip() == str(value).strip()
+            for item_id, value in wanted.items()
+        )
+    elif kind == "recording":
+        requirements = config.get("requirements") or {}
+        correct = True
+        for value in given.values():
+            if not isinstance(value, dict):
+                correct = False
+                break
+            duration = float(value.get("duration_seconds", 0))
+            clip_pct = float(value.get("clip_pct", 100))
+            rms_db = float(value.get("rms_db", -100))
+            silence_pct = float(value.get("silence_pct", 100))
+            max_seconds = float(requirements.get("max_seconds", 10**9))
+            if not (
+                float(requirements.get("min_seconds", 0)) <= duration <= max_seconds
+                and clip_pct <= float(requirements.get("max_clip_pct", 100))
+                and rms_db >= float(requirements.get("min_rms_db", -100))
+                and silence_pct <= float(requirements.get("max_silence_pct", 100))
+            ):
+                correct = False
+                break
+    else:
+        raise ApiError(500, "validator_config_invalid", "This task type is not configured.")
+    return ValidationResult(
+        is_correct=correct,
+        score=100 if correct else 0,
+        feedback="Correct." if correct else "Review the task guidelines and try again.",
+    )
+
+
 Validator = Callable[[dict, dict, dict], ValidationResult]
 
 VALIDATORS: dict[str, Validator] = {
@@ -187,6 +239,7 @@ VALIDATORS: dict[str, Validator] = {
     "ranking": validate_ranking,
     "numeric_tolerance": validate_numeric_tolerance,
     "span_overlap": validate_span_overlap,
+    "all_language_task": validate_all_language_task,
 }
 
 

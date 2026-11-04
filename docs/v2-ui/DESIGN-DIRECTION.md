@@ -2,9 +2,9 @@
 
 | Field | Value |
 |---|---|
-| Status | **Approved 2026-10-27; implemented 2026-10-28.** Palette is Nelavista blue/white. Manual light/dark visual pass still recommended. |
+| Status | **Approved 2026-10-27; implemented 2026-10-28.** Palette is Nelavista blue/white. Manual light/dark visual pass still recommended. V1 delta noted 2026-11-04; no V2 visual change yet. |
 | Gate | Gate 2 — design direction |
-| Date | 2026-10-27; palette corrected to brand blue/white 2026-10-28 |
+| Date | 2026-10-27; palette corrected to brand blue/white 2026-10-28; V1 delta 2026-11-04 |
 | Applies to | `apps/web`, `apps/admin`, `packages/design-tokens`, `packages/ui` |
 | Does not apply to | V1 at the repository root, API contracts, deployment |
 | Companion documents | `docs/v2-ui/AUDIT.md`, `docs/v2-ui/PARITY.md`, `docs/v2-ui/ROUTE-MAP.md`, `docs/v2-ui/IMAGE-PROMPTS.md`, `docs/design/ui-ux-framework.md` |
@@ -562,3 +562,28 @@ the platform on the V1 brand palette:
 The first change was the token and primitive foundation, not a page. The palette
 is Nelavista blue `#1535A8` and white `#FFFFFF`; the dark surface uses a readable
 blue tint for text and focus, not a second brand colour.
+
+---
+
+## 15. Post-build V1 delta (2026-11-04)
+
+V1 `main` gained the African Languages Lab, a language profile, structured scored
+language tasks, `/impact`, the FUTA taxonomy and AI-prompt hardening after this
+direction was approved. V2 has none of it yet. This section records the visual
+consequence **if** the product approves porting it (`PARITY.md` 1.2,
+`REMAINING_WORK.md` I1-I8). It does not reopen the approved direction.
+
+| V1 addition | Visual rule in V2 |
+|---|---|
+| ALL hub `/skills/african-languages` | Use the existing `/skills` catalogue grammar: filter bar, ruled skill rows, mono language/level labels, one primary action. Do not invent a second catalogue skin, flag wallpaper, pattern overlay or “language” colour. |
+| Language profile `/skills/languages` | Treat it as a **record**, not a profile card grid: key-value rows for language, dialect, proficiency and capabilities, with self-reported vs verified separated by a stamp. Deletion uses the shared confirmation dialog. |
+| Structured scored tasks | Reuse the practice/assessment pattern: one task at a time, visible but calm timer, save on every answer, deterministic score as a stamp with a pass mark. No “AI magic” iconography; no animated score reveal. |
+| Assessment gate | Show the gate as a checklist with the exact missing item and a link, not a locked blur. A blocked assessment must say what is still required. |
+| Transcript/talent evidence | Extend the transcript document grammar: per-skill evidence rows, dates, source and verification stamp. Languages and academic background are rows, not badges. Keep the privacy toggle authoritative. |
+| `/impact` | Same public editorial grammar as `/about`, with the working-record honesty rule: every number needs a period, source and owner verification. If 2,500+/500+ cannot be defended, do not ship the page. |
+| FUTA taxonomy | No student-facing visual change. Admin imports show provenance (`futa_official`) and source in the run report, not a new colour or icon. |
+| AI grading hardening | No visual change. It is a prompt-boundary fix; keep it out of the design layer. |
+
+**Rule:** do not design or ship any of these screens before the data model and
+route decision exist. The approved palette, type, shape, motion and content voice
+apply unchanged.

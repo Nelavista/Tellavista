@@ -2,8 +2,8 @@
 
 | Field              | Value                                                                                                                                   |
 | ------------------ | --------------------------------------------------------------------------------------------------------------------------------------- |
-| Status             | **Art direction approved 2026-10-27; palette corrected to brand blue/white 2026-10-28. Assets are not created yet.**              |
-| Date               | 2026-10-28                                                                                                                              |
+| Status             | **Art direction approved 2026-10-27; palette corrected to brand blue/white 2026-10-28. P1 and P2 assets generated and integrated as WebP/public derivatives by 2026-11-01. Real photography is still pending.** |
+| Date               | 2026-10-28; integration status verified 2026-11-04                                                                                    |
 | Source drops       | `assets/incoming/`                                                                                                                    |
 | Public derivatives | `apps/web/public/images/`, `apps/web/public/og/`                                                                                    |
 | Rule               | These are editorial illustrations, not evidence. Never use one as a student testimonial, a real campus, a founder portrait or a metric. |
@@ -276,6 +276,12 @@ A single long paper record with ruled lines but no writing, centred on a wide wh
 ---
 
 ## After generating
+
+> **Status 2026-11-04:** the P1 and P2 sets are generated and integrated. The
+> public derivatives exist in `apps/web/public/images/*.webp` and
+> `apps/web/public/og/og-main.jpg` / `og-proof.jpg`. The source PNGs were kept
+> for regeneration. Use this section when an asset is replaced; do not re-export
+> the whole set for an unrelated change.
 
 1. Put every PNG in `assets/incoming/`, named exactly as in the list.
 2. Check the image at 100%: no text, letters, numbers, logos, currency symbols or

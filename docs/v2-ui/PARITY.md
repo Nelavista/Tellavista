@@ -2,8 +2,8 @@
 
 | Field | Value |
 |---|---|
-| Status | **Implemented 2026-11-01.** Course/topic, CBT history, cohort invites, admin campus read and in-place password change are in scope and wired; material upload/analysis is deferred with a stated replacement. Remaining gaps are business content and launch verification. |
-| Date | 2026-10-27; post-build, palette correction and API closure 2026-11-01 |
+| Status | **Implemented 2026-11-01; V1 delta audited 2026-11-04.** The original parity scope is wired. V1 `main` has since added the African Languages Lab skills, the Impact page and the FUTA taxonomy seed; those are **new V1 capabilities that are not in V2 yet**, so the parity claim is reopened for that delta. |
+| Date | 2026-10-27; post-build, palette correction and API closure 2026-11-01; V1 delta 2026-11-04 |
 | Method | V2 code and API contracts are the source of truth. V1 is read-only reference. |
 | Legend | **Stronger** = V2 does more or does it better. **Parity** = capability exists in both. **Gap** = V2 needs work to match. **Dropped** = V2 intentionally removes it; a reason is required. **New** = not in V1. **Decide** = product decision needed. |
 | Companion documents | `docs/v2-ui/AUDIT.md`, `docs/v2-ui/ROUTE-MAP.md`, `docs/v2-ui/DESIGN-DIRECTION.md`, `docs/v2-ui/IMAGE-PROMPTS.md` |
@@ -23,23 +23,27 @@
 
 | Area | V2 state (post-build) | Verdict |
 |---|---|---|
-| Public marketing | Separate routed pages: Landing, Features, How it works, About, Contact, FAQ, 404, Offline; per-page metadata and sitemap | **Parity/stronger**; business content still pending |
+| Public marketing | Separate routed pages: Landing, Features, How it works, About, Contact, FAQ, 404, Offline; per-page metadata and sitemap | **Parity/stronger** for the original set; **gap** for V1's new `/impact` page and landing track-record band |
 | Auth | Login, signup, verify, reset; shared auth layout; legal links; signup records terms and privacy at the current version | **Parity**; `ConsentGate` handles re-consent after a version change |
-| Student journey | Home, Academia, Materials, Ask, CBT, Skills, My learning, Lesson, Practice, Verification, Assessment, Attempt review, Practical task, Transcript, Opportunities, Applications, Work, Earnings, Talent, Campus, Notifications, Settings, Onboarding | **Parity/stronger**; course/topic detail, CBT review, cohort invites and password change are wired |
-| Skills | Verification/evidence journey and practice | **Stronger** in verification/evidence; search and project workspaces remain later work |
+| Student journey | Home, Academia, Materials, Ask, CBT, Skills, My learning, Lesson, Practice, Verification, Assessment, Attempt review, Practical task, Transcript, Opportunities, Applications, Work, Earnings, Talent, Campus, Notifications, Settings, Onboarding | **Parity/stronger** for the original set; **gap** for V1's new ALL hub and language profile |
+| Skills | Verification/evidence journey and practice | **Stronger** in verification/evidence; search and project workspaces remain later work. **Gap** for V1's African Languages Lab content, language profile and structured scored tasks |
 | Academia | Dashboard, materials, Ask, CBT, course and topic detail, CBT history | **Parity/stronger**; uploads/analysis deferred |
 | Opportunities/work/money | Managed model, eligibility blockers, applications, invitations, ledger, payout batches | **Stronger** than V1's status-only marketplace |
-| Talent/transcript | Evidence-only, scoped revocable shares, consent history | **Stronger** privacy; **parity** on proof |
-| Employer | No self-service | **Dropped by design** at launch; managed work instead |
+| Talent/transcript | Evidence-only, scoped revocable shares, consent history | **Stronger** privacy; **parity** on the original proof surface. **Gap** for V1's per-skill evidence trail, academic background and language profile on the talent view |
+| Employer | No self-service | **Dropped by design** at launch; managed work instead. V1's new language/level/status/background talent filters are only needed in V2 if the ALL track is ported |
 | Admin | Overview, Waitlist, Campus, Audit, Imports, Users, Opportunities, Projects, Review, Money, Content, Platform, Security, 404 | **Stronger** in audit/money/quality; bulk actions remain later work |
 | Utility | Real 404, error boundary, offline screen, route focus/title | **Parity/stronger** |
 | Theme | Light/dark with Nelavista blue and white | **Parity**; both surfaces implemented, manual visual pass recommended |
 | Public legal/contact | Privacy, terms and contributor terms in final product copy; real support email | **Parity**; legal copy is not a draft |
 
-**Bottom line:** V2 covers the V1 journey and exceeds it in verification, managed
-work, money controls and admin audit. The remaining gaps are not missing screens
-or API routes: they are real business content, approved pricing, social profile
-URLs, photography and the manual launch checks.
+**Bottom line:** V2 covers the original V1 journey and exceeds it in verification,
+managed work, money controls and admin audit. It does **not** yet cover the V1
+additions landed on `main` between 2026-10-30 and 2026-11-04: the African Languages
+Lab (ALL) skills, the language profile and structured scored tasks, the Impact page,
+and the FUTA official taxonomy seed. Those are recorded in §1.2 and tracked as I1–I8
+in `docs/build/REMAINING_WORK.md`. The other remaining gaps are real business
+content, approved pricing, social profile URLs, photography and the manual launch
+checks.
 
 ### 1.1 What is still limited
 
@@ -56,6 +60,36 @@ URLs, photography and the manual launch checks.
   photography is still pending.
 - **Brand video:** the MP4 now runs full-width before the public footer with a
   reduced-motion still fallback.
+- **V1 delta (2026-11-04):** the V1 additions listed in §1.2 are not in V2. They are
+  not a reason to reopen the closed UI work, but they are a real regression risk if
+  `develop` is merged to `main` at launch without porting them or explicitly
+  deciding to drop them.
+
+### 1.2 V1 additions after the parity review (2026-11-04)
+
+The V1 `main` branch received new work after the 2026-11-01 parity close. The
+source of truth for the delta is the V1 code on `main`, not this table:
+
+| V1 addition | What V1 now has | V2 state | Verdict | Action |
+|---|---|---|---|---|
+| African Languages Lab (ALL) content | 9 ALL categories (`SkillCategory.program = 'all'`), 94 published skills (including the `african-language-data-beginner` entry path), 10 multi-skill career tracks, lessons, practice tasks, assessments and projects | No ALL content; V2 has one general AI Data Annotation curriculum | **Gap** | Decide whether V2 launches without the newest V1 catalogue. Recommended: port the curriculum through a V2 seed, not by running the V1 seeder against V2 tables. |
+| Language profile | `/skills/languages`: self-reported languages, dialect, proficiency, `can_speak/read/write/transcribe/translate`; `user.language_background`; verified capabilities derived from verified language-specific skills | None in the V2 identity or skills model | **Gap** | Add `StudentLanguage`/profile fields to V2 identity or skills, with the same self-reported vs verified separation. |
+| Structured scored tasks | `Challenge.task_spec_json` for transcription, translation, labeling and recording; deterministic scoring (WER, chrF, label accuracy, recording requirements, repeat consistency); `ChallengeSubmission.score`/`result_json` | V2 has `TaskTemplate` validators and first-class verification assessments, but no structured language-task spec or deterministic WER/chrF scoring | **Gap/decide** | Map the four task kinds to V2 `TaskTemplate`/assessment models; keep expected answers out of student responses. |
+| Assessment gate | A skill with an assessment is verified only after every lesson is complete, every scored practice task is attempted and the assessment reaches its pass mark; assessment prerequisites are enforced server-side | V2 verification is already assessment/practical-evidence based, but has no equivalent per-skill scored-practice gate | **Partial** | Reuse V2's evidence model; add the per-skill scored-practice prerequisite only if ALL is ported. |
+| ALL hub and catalogue filters | `/skills/african-languages` hub with language/level filters, recommended skills and track progress; catalogue filters for language, level, tag and programme | `/skills` catalogue only; no language/tag/programme filters, no hub, no tracks | **Gap** | Add the hub and the filters only after the data model exists. |
+| Transcript and talent evidence | Per-skill verification records on the transcript; evidence records, academic background and languages on the Talent profile; evidence visibility still respects the `show_skill_transcript` privacy toggle | V2 transcript/talent exist, but not the per-skill evidence trail, academic background or languages | **Partial** | Extend the V2 transcript/talent reads; keep the privacy toggle authoritative. |
+| Employer talent search filters | Language, level, verification/assessment status, practical-done and academic-background filters on `/employer/discover` (employers and admins) | V2 has no employer self-service; no language filters in the admin candidate list | **Gap/decision** | Only needed if V2 keeps a talent-search surface for ALL. Admin candidate filtering is the minimum if ALL is ported. |
+| Impact page | Public `/impact` with reach numbers, "what we've built", CTA; landing track-record band and footer link | No `/impact`, no band, no footer link | **Gap** | Add `/impact` only after the 2,500+/500+ figures are verified. Do not copy unverified social proof into V2. |
+| FUTA official taxonomy | Verified FUTA schools/departments and 35 Surveying & GeoInformatics courses, with provenance (`Course.source = 'futa_official'`) and a cleanup script for unlisted departments | V2 local seed has one fake university; V2 importer can carry taxonomy names but `Course` has no `semester`/`source` columns, so that provenance is lost | **Gap** | Decide whether FUTA is imported from V1 or seeded natively; if imported, add the missing V2 course fields first. |
+| AI grading hardening | `wrap_untrusted` escapes student-supplied `<student_content>` delimiters, so a submission cannot close the untrusted block early | V2's Ask prompt still interpolates the raw question and retrieved text into one prompt; V2 assessment grading is deterministic | **Gap (hardening)** | Apply the same untrusted-content boundary to V2's Ask/practice AI prompts before launch. |
+| Test-suite speed | Test-only SQLite pragmas (`synchronous=OFF`, `journal_mode=MEMORY`) shorten V1 suite setup | V2 has its own test fixtures; no user-facing change | **No action** | Keep the optimisation in V1; do not copy test pragmas into production configuration. |
+
+**V1 delta verdict:** the original V2 parity claim still holds for the features it
+audited, but V2 is no longer a superset of V1. The ALL work is the largest gap:
+it is a content product plus schema plus assessment behaviour, and it crosses
+skills, verification, transcript, talent and mobile. Impact and FUTA are smaller
+but still visible to users or operators. Treat all three as launch decisions, not
+as documentation-only omissions.
 
 ---
 
@@ -73,6 +107,7 @@ URLs, photography and the manual launch checks.
 | `/privacy-policy` | `/legal/privacy` final product copy for V2 data flows | **Parity** | Keep the version in sync with `/platform/config` |
 | `/terms-of-service` | `/legal/terms` final product copy for V2 | **Parity** | Keep the version in sync with `/platform/config` |
 | Contributor terms only in platform settings | `/legal/contributor-terms` public final copy | **Parity/stronger** | Keep quality, payment and licence terms aligned with the API |
+| `/impact` track-record page (new 2026-11-01) with 2,500+ students reached, 500+ trained in AI, live university/skill counts; landing band and footer link | None | **Gap** | Add `/impact` only after the fixed figures are verified; otherwise keep the honest “working record” copy on `/about` and do not imply the numbers |
 | No newsletter | None | **New** | Deferred; needs consent/unsubscribe |
 | No public announcement banner | None | **New** | Deferred; not parity |
 | No blog | None | **Not required** | Do not add |
@@ -84,10 +119,12 @@ URLs, photography and the manual launch checks.
 
 ### Public parity verdict (post-build)
 
-V1's public site is a polished landing page plus thin About/legal pages. V2 now
-has the separate marketing routes, the three legal documents, a real 404 and an
-offline screen, plus per-page metadata and a fuller sitemap. The remaining public
-work is approved pricing and real business content, not missing screens.
+V1's public site is a polished landing page plus thin About/legal pages, and now
+an Impact page with fixed reach figures. V2 has the separate marketing routes,
+the three legal documents, a real 404 and an offline screen, plus per-page
+metadata and a fuller sitemap. The Impact page is the one new public route V2
+does not have; add it only after the figures are verified. The remaining public
+work is otherwise approved pricing and real business content.
 
 ---
 
@@ -151,9 +188,13 @@ to the legal pages and records both consents. Re-consent is handled by
 | V1 | V2 | Verdict | Action |
 |---|---|---|---|
 | Skills home with pipeline, stats, continue learning, earnings | Skills catalog + My Learning + Home | **Partial** | Add a “next step” anchor to Skills; avoid stat-card clutter |
-| Catalog with categories | Skills catalog | **Parity** | Add search/filter and time/difficulty metadata if available |
-| Skills search | None | **Gap** | Add search/filter to `/skills` |
-| Learning paths/tracks | Paths | **Parity** | Keep ordered steps; show progress |
+| Catalog with categories | Skills catalog | **Parity** | Add search/filter and time/difficulty metadata if available; V1 now also filters by language, level, tag and programme |
+| Skills search | None | **Gap** | Add search/filter to `/skills`; the V1 delta makes language/tag filters part of the target if ALL is ported |
+| African Languages Lab hub (new 2026-10-30) | None | **Gap** | Port the 9 ALL categories, 94 skills and 10 tracks through a V2 seed, then add `/skills/african-languages` with language/level filters |
+| Language profile (new 2026-10-30) | None; Settings has a languages field, but no self-reported capability profile and no verified-by-skill derivation | **Gap** | Add `StudentLanguage`-equivalent data and `/skills/languages`; keep self-reported and verified visibly separate |
+| Structured scored tasks and assessment gate (new 2026-10-30) | V2 TaskTemplate validators + verification assessments; no transcription/translation/labeling/recording task spec, WER/chrF scoring or per-skill scored-practice gate | **Gap/decide** | Map the four task kinds into V2's task/assessment model; never reveal expected answers on an assessment |
+| Per-skill evidence on transcript/talent (new 2026-10-30) | Transcript groups and talent shares exist; no per-skill evidence record, academic background or language profile | **Partial** | Extend the existing reads; keep `show_skill_transcript` authoritative |
+| Learning paths/tracks | Paths | **Parity** for single-skill paths; **gap** for V1's multi-skill career tracks | Keep ordered steps; decide whether V2 needs multi-skill tracks or maps them to paths |
 | Skill detail | Skill detail | **Parity** | Keep |
 | Course view | Path/lesson routes | **Partial** | Add course/module grouping if the API supports it |
 | Lesson with multiple explanations, quiz, complete | Lesson reader + complete | **Parity** | Keep; make completion honest (not verification) |
@@ -202,7 +243,9 @@ dashboard destination for each. The notification centre, applications,
 invitations, eligibility blockers, consent history, push-device
 list/removal, CBT review, course and topic detail, password change and split
 settings are built. Skills search and uploads remain later-scope items, not
-missing primary screens.
+missing primary screens. The V1 delta adds one missing product area rather than a
+missing screen: ALL content, the language profile and structured language tasks
+are absent from V2 and must be ported or explicitly dropped.
 
 ---
 
@@ -290,6 +333,9 @@ replacement is real and the product does not pretend the old feature exists.
 | Admin material/video moderation | Does V2 need ops ingestion/moderation for materials? |
 | LASU curriculum browser | Is academic context enough, or is the curriculum reference needed? |
 | Employer self-service | Later product; managed work is the launch replacement. |
+| African Languages Lab | Port the 94-skill curriculum and its assessment model into V2, or launch V2 without V1's newest catalogue? |
+| Impact page metrics | Are the 2,500+ students reached and 500+ trained in AI current and approved for public use? |
+| FUTA taxonomy | Import the verified FUTA taxonomy from V1, or seed it natively in V2? If imported, add V2 `Course` semester/source fields first. |
 
 ---
 
@@ -317,6 +363,9 @@ replacement is real and the product does not pretend the old feature exists.
 
 ### Still blocked or deferred
 
+- **V1 delta (2026-11-04):** ALL curriculum, language profile, structured scored
+  tasks, the ALL hub, transcript/talent evidence, talent language filters, the
+  Impact page and the FUTA taxonomy seed. See §1.2 and `REMAINING_WORK.md` §I.
 - Approved pricing amounts and real business content.
 - Skills search/filter (later scope).
 - Material upload/analysis (deferred with replacement copy).
@@ -335,7 +384,9 @@ replacement is real and the product does not pretend the old feature exists.
 
 ## 9. What not to carry from V1
 
-- Hardcoded “2,500+” students or any unverified social proof.
+- Hardcoded “2,500+” students or any unverified social proof. V1 now repeats
+  those figures on `/impact`; do not copy them into V2 until the business owner
+  confirms they are current and defensible.
 - The hardcoded LASU map/count mismatch.
 - Placeholder social links (`example.com`) or `support@localhost`.
 - The retired community/live/reels front doors or their admin consoles.
@@ -357,7 +408,11 @@ is now built: public routes, final legal pages, notification centre, application
 consent history, push-device control, course/topic detail, CBT review, cohort
 invitations and utility screens exist.
 
-What remains is not a missing primary screen or API route. It is real business
-content and a small set of later-scope items (skills search, uploads, Google SSO,
-offline sync, analytics), plus the manual launch checks. The redesign should keep
-V2's stronger core and explicitly retire V1's dead or unsafe surfaces.
+What remains is not a missing primary screen or API route for the original parity
+scope. It is real business content and a small set of later-scope items (skills
+search, uploads, Google SSO, offline sync, analytics), plus the manual launch
+checks. The exception is the 2026-11-04 V1 delta: ALL, the language profile,
+structured scored tasks, the Impact page and the FUTA taxonomy are real new
+product scope. V2 must port them or explicitly drop them before claiming parity
+again. The redesign should keep V2's stronger core and explicitly retire V1's
+dead or unsafe surfaces.

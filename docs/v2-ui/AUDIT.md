@@ -2,8 +2,8 @@
 
 | Field | Value |
 |---|---|
-| Status | **Post-build 2026-11-01. Gates 1 and 2 approved 2026-10-27. Core UI and API-detail build complete; remaining items are business content and launch verification.** |
-| Date | 2026-10-27; post-build, palette correction and API closure 2026-11-01 |
+| Status | **Post-build 2026-11-01; V1 delta audited 2026-11-04. Gates 1 and 2 approved 2026-10-27. Core UI and API-detail build complete; remaining items are business content, launch verification, and the new V1 features that are not in V2 yet.** |
+| Date | 2026-10-27; post-build, palette correction and API closure 2026-11-01; V1 delta 2026-11-04 |
 | Scope | Current V2 web, admin, design tokens and UI-facing API contracts; V1 used only as a reference |
 | Not in scope | V1 code changes, backend changes, deployment changes, mobile launch |
 | Companion documents | `docs/v2-ui/PARITY.md`, `docs/v2-ui/ROUTE-MAP.md`, `docs/v2-ui/DESIGN-DIRECTION.md`, `docs/v2-ui/IMAGE-PROMPTS.md`, `docs/design/ui-ux-framework.md` |
@@ -76,216 +76,206 @@ disagree; the rest of the document remains useful as the starting-point record.
   end-to-end. The local seed lock came from duplicate API/worker processes and was
   cleared by stopping them; `dev-local.ps1` still needs one clean run. The V2
   domain switch is a deployment-level step and remains pending.
+- **V1 delta (2026-11-04):** V1 `main` added the African Languages Lab (94 skills,
+  9 categories, 10 tracks), the language profile, structured scored language tasks
+  with an assessment gate, per-skill transcript/talent evidence, language filters
+  for talent search, a public `/impact` page and a verified FUTA taxonomy seed.
+  None of these are in V2. They are not cosmetic parity gaps: ALL is a content
+  product plus schema plus assessment behaviour, and the Impact page carries
+  unverified public metrics. See `PARITY.md` §1.2 and `REMAINING_WORK.md` §I.
 - **Removed as unused:** `Logo`, `ArrowLink` and `Spinner` exports, the unused
   spinner CSS, and `apps/web/src/components/Layout.tsx`.
 
 
 ---
 
-## 1. Executive summary
+## 1. Executive summary (current, 2026-11-04)
 
-V2 is a broad, working student journey with a real API, a real admin tool and an
-honest state model. It is **not** a finished public product or a finished visual
-system.
+V2 is a broad, working product with a real public surface, a real student journey,
+a real admin tool and a real API. The original Gate 1 UI scope is built.
 
 The short version:
 
 - **The product spine is real.** Auth, onboarding, academia, skills, verification,
-  opportunities, work, money, talent, campus and admin all have API routes and
-  most have web screens.
-- **The public surface is a stub.** The landing page is 36 lines. There is no
-  Features, How it works, About, Contact, FAQ, Pricing or Legal route. Signup asks
-  the student to accept terms that do not exist in V2.
-- **The UI is a functional wireframe, not a design.** One top nav with 14 links,
-  a 720px content column, local primitives, no icons, no motion, no responsive
-  app shell, no page-level meta, no 404, no error boundary.
-- **Admin is a second design system.** It hard-codes a different palette and
-  different sizes instead of consuming `@nelavista/design-tokens`.
-- **Several API capabilities have no UI.** The most serious are consent history,
-  push-device registration, cohort invite response, admin waitlist/campus,
-  application status and payout-item failure.
-- **Two requested features are new, not parity.** There is no platform
-  announcement banner and no newsletter/subscription feature in V1 or V2. The
-  banner is a small, useful ops feature; the newsletter is a separate marketing
-  system with consent, unsubscribe and data-protection work. Neither is required
-  for V2 parity or the core launch.
+  opportunities, work, money, talent, campus and admin all have API routes and web
+  screens.
+- **The public surface is built.** Landing, Features, How it works, Pricing, About,
+  Contact, FAQ, Privacy, Terms, Contributor terms, a real 404 and an offline screen
+  exist as separate routes, with per-page metadata, a sitemap and robots rules.
+- **The design system is built.** Light/dark palettes on Nelavista blue and white,
+  shared tokens, primitives, shared CSS and three self-hosted fonts live in
+  `packages/ui`; web and admin both consume them.
+- **Admin shares the design system.** Overview, Waitlist, Campus, Audit, Imports,
+  Users, Opportunities, Projects, Review, Money, Content, Platform, Security and a
+  real 404 use the shared primitives at a denser rhythm.
+- **API/UI edges are closed.** Course/topic detail, CBT history with review, cohort
+  invitations, admin campus read, application status, payout-item failure, consent
+  history and signed-in password change are implemented and wired.
+- **The V1 delta is missing.** V1 `main` added the African Languages Lab, language
+  profile, structured scored tasks, per-skill evidence, talent filters, `/impact`,
+  the FUTA taxonomy and AI prompt hardening after this audit. V2 has none of them.
+  This is the one real parity regression; it is tracked in §1.1, `PARITY.md` §1.2
+  and `REMAINING_WORK.md` §I.
 
-**Verdict:** V2 has the hard product work; it does not yet have the public face,
-the design system, the missing screens or the operational edges that make it feel
-finished. The redesign should start with tokens and primitives, not with the
-landing page.
+**Verdict:** the UI build is complete for the Gate 1 route set. V2 is not
+launch-ready because of unapproved business content (pricing amounts, proof
+metrics, photography, social links), the admin 2FA end-to-end check, the DEV load
+measurement, the domain switch and the V1 delta decision. It is not a wireframe or
+a stub.
 
 ---
 
-## 2. What V2 is today
+## 2. Current stack and route surface
 
 ### 2.1 Stack
 
 | Area | Current state |
 |---|---|
-| Student web | React 18.3 + Vite 5.4 + TypeScript, React Router 6.28, plain CSS + CSS variables, PWA via `vite-plugin-pwa` |
-| Admin | React 18.3 + Vite 5.4 + TypeScript, in-repo hash router, its own CSS palette |
+| Student web | React 18.3 + Vite 5.4 + TypeScript, React Router 6.28, plain CSS + shared CSS variables, PWA via `vite-plugin-pwa` |
+| Admin | React 18.3 + Vite 5.4 + TypeScript, in-repo hash router, shared `@nelavista/design-tokens` and `@nelavista/ui` |
 | API | FastAPI modular monolith under `/api/v1`, 13 mounted domain routers |
-| Tokens | `packages/design-tokens/src/index.ts`; web publishes them at boot, admin does not |
-| Shared UI | `packages/ui` exports only `VersionSwitcher`; web has local primitives in `apps/web/src/ui.tsx` |
-| Tests | Vitest + jsdom; no Testing Library, axe, Playwright or visual regression |
+| Tokens | `packages/design-tokens/src/index.ts`; published through the shared theme bridge and consumed by both apps |
+| Shared UI | `packages/ui` exports the shared primitives, theme bridge, shared CSS and fonts; `apps/web/src/ui.tsx` is a re-export alias |
+| Tests | Vitest + jsdom + React DOM; no Testing Library, axe, Playwright or visual regression yet |
+| Mobile | Expo 52 / React Native 0.76.5; post-launch, shares tokens not web components |
 
 ### 2.2 Route surface
 
 | Surface | Routes | Notes |
 |---|---|---|
-| Public | `/`, `/login`, `/signup`, `/auth/verify`, `/auth/reset`, `/share/:token` | Landing is the only marketing page; share is public by token |
-| Signed-in web | 26 routes | Home, onboarding, academia, skills, verification, opportunities, work, money, talent, transcript, campus, settings |
-| Admin | 10 hash sections | Audit, imports, users, opportunities, work, review, money, content, platform, security |
-| Catch-all | `*` | Redirects to `/`; no 404 screen |
-| Admin fallback | any unknown hash | Renders Audit; no admin 404 |
+| Public and auth | 15 | Landing, Features, How it works, Pricing, About, Contact, FAQ, three legal pages, share, login, signup, verify, reset |
+| Signed-in web | 28 | Home, onboarding, academia, skills, verification, opportunities, work, earnings, talent, transcript, campus, notifications, settings |
+| Admin | 14 hash sections | Overview, audit, imports, users, waitlist, opportunities, projects, review, money, content, campus, platform, security, 404 |
+| Catch-all | `*` | Real public 404 |
+| Admin fallback | any unknown hash | Real admin 404 |
 
-The exact route list is in `ROUTE-MAP.md` and `apps/web/src/App.tsx:104-353`.
+The exact route list is `ROUTE-MAP.md`; the built status is §1.1.
 
 ### 2.3 What is genuinely strong
 
-- **State honesty.** Most screens distinguish loading, empty, error and
-  feature-off. `useApiResource` maps a 404 `not_found` to “not switched on here”
-  (`apps/web/src/lib/resource.ts:18-63`).
+- **State honesty.** Screens distinguish loading, empty, error, partial and
+  feature-off where those states occur. `useApiResource` maps a 404 `not_found` to
+  “not switched on here”.
 - **Security and money are not cosmetic.** Verification is evidence-backed, the
   ledger is append-only, payouts need a second approver, and staff need TOTP.
-- **Admin is real.** Audit, imports, users, review, money, content, platform and
-  security are working tools, not mockups.
-- **PWA basics exist.** Manifest, icons, offline shell, robots, sitemap and a
+- **Admin is real.** Audit, imports, users, review, money, content, platform,
+  security and the live campus set are working tools, not mockups.
+- **PWA basics are real.** Manifest, icons, offline shell, robots, sitemap and a
   Google verification file are present. API responses are deliberately not cached.
 - **The API is broad.** Identity, academia, skills, verification, opportunities,
-  talent, work, money, platform and ops are mounted. Several endpoints are ahead
-  of the UI.
+  talent, work, money, platform and ops are mounted.
 
 ---
 
-## 3. Public surface
+## 3. Public surface (current)
 
 ### 3.1 What exists
 
-| Item | Evidence | State |
-|---|---|---|
-| Landing | `apps/web/src/routes/Landing.tsx:4-36` | Headline, two-path card, signup/login CTAs. No features, proof, FAQ, footer or SEO. |
-| Signup | `apps/web/src/routes/Signup.tsx` | Name, email, username, password, terms checkbox. Terms checkbox has no links. |
-| Login | `apps/web/src/routes/Login.tsx` | Password login and staff 2FA challenge. |
-| Verify email | `apps/web/src/routes/VerifyEmail.tsx` | Token consumption, resend path. |
-| Reset password | `apps/web/src/routes/ResetPassword.tsx` | One route with request and set-password states. |
-| Shared profile | `apps/web/src/routes/SharedProfile.tsx` | Public by token, scoped and revocable. |
-| PWA | `apps/web/vite.config.ts:13-45`, `main.tsx:24-26` | Installable shell; API responses not cached. |
-| Robots/sitemap | `apps/web/public/robots.txt`, `sitemap.xml` | Sitemap has only `/`, `/signup`, `/login`; `/share/` is disallowed. |
-| Meta | `apps/web/index.html:4-8` | Title only. No description, canonical, OG or Twitter card. |
-
-### 3.2 What is missing
-
-| Missing | Why it matters |
+| Item | Current state |
 |---|---|
-| `/features` | The landing page is the only explanation of the product. |
-| `/how-it-works` | The journey is the product's differentiator; it has no page. |
-| `/about` | V1 has one; V2 has none. |
-| `/contact` | No support path on the public site. |
-| `/faq` | No answer to the obvious objections (free? verified? paid? data?). |
-| `/pricing` | No pricing model exists in V2. Do not invent one. V1 only says “free for students”; V2 has no public price. |
-| `/legal/privacy`, `/legal/terms` | Signup requires acceptance but links nowhere. This is a launch blocker. |
-| `/legal/contributor-terms` | The platform has contributor terms in `platform_settings`; students cannot read them before work. |
-| Public 404 | Unknown paths redirect to `/`, which hides broken links. |
-| Public SEO | No per-page title/description, OG, canonical or JSON-LD. |
-| Analytics | No analytics or error tracking in either app. |
-| Newsletter | No form, endpoint, consent, unsubscribe or admin list. |
-| Platform announcement | No global banner; `nv-banner` is an inline notice, not a platform announcement. |
-| Employer page | V2 has no employer self-service; do not publish an employer product page until the business decides. |
-| Theme | V2 now has light/dark surfaces on brand blue and white. V1 has a theme toggle. |
+| Landing | Routed landing with the working-record argument, proof chain and separate route links |
+| Features / How it works | Built as separate pages with real product capabilities |
+| Pricing | Built with commercial positions; no invented amounts |
+| About / Contact / FAQ | Built with mission, a real support path and objection answers |
+| Legal | Privacy, Terms and Contributor terms are final product copy at the current terms version |
+| Shared profile | Public by token, scoped and revocable |
+| Metadata | Every public page sets title, description, canonical, robots and OG/Twitter; sitemap and robots cover public pages and disallow private routes |
+| Images | Editorial WebP set integrated; real photography is still pending |
+| 404 / offline | Real screens, not redirects |
+| Theme | Light/dark on brand blue and white |
+
+### 3.2 What remains
+
+| Item | Why it matters |
+|---|---|
+| `/impact` | V1 added it on 2026-11-01 with fixed 2,500+/500+ figures. Add only when the business verifies them; otherwise keep the honest `/about` working record. |
+| Approved pricing amounts | `/pricing` ships commercial positions, not amounts. Replace them when the business approves figures. |
+| Real photography | Editorial illustrations are integrated. Real founder/team/campus photos need consent and a licence. |
+| Real proof | Student counts, university counts, testimonials and partner logos must be current and verifiable. Do not copy V1's hardcoded “2,500+”. |
+| Real social URLs | Share intents stand in for profile links that do not exist. |
+| Analytics and error tracking | Not wired. Operational gap, not a UI gap. |
 
 ### 3.3 Public-surface verdict
 
-V2's public surface is **not launch-ready**. It is a product demo behind a login,
-with no legal pages, no support path, no explanation of how it works and no
-crawlable marketing content. This is the largest gap between “the app works” and
-“a student can find, trust and join it.”
+The public surface is built, crawlable and honest. It is not launch-ready because
+business content and analytics are missing, not because routes or legal pages are
+missing. The one public route V2 does not have is `/impact`, and it stays out
+until its metrics are defensible.
 
 ---
 
-## 4. Signed-in surface
+## 4. Student surface (current)
 
 ### 4.1 What exists
 
-The student app has the core journey:
+The student app has the full Gate 1 journey:
 
-- **Home / onboarding** — path choice, course state, verification banner.
+- **Home / onboarding** — one four-space model (Academia, Skills, Opportunities,
+  Campus), next-action home, explicit eligibility blockers.
 - **Academia** — dashboard, materials list/search/reader, Ask Nelavista, CBT
-  practice and results, campus.
+  practice, CBT history with answer review, course and topic detail, campus.
 - **Skills** — catalog, skill detail, path, lesson, practice, my learning.
 - **Verification** — hub, assessment sitting, attempt review, practical task,
   transcript.
-- **Opportunities** — list with per-student verdict, detail and apply.
-- **Work** — assignments, submissions, quality, assignment detail and messages.
-- **Money** — earnings.
-- **Talent** — evidence profile, share links, revoke.
-- **Settings** — profile, languages, availability, notification list, export,
-  delete account.
+- **Opportunities** — list with per-student verdict, detail, apply and my
+  applications.
+- **Work** — assignments, submissions, quality, assignment detail, messages and
+  cohort invitations with accept/decline.
+- **Money** — earnings ledger.
+- **Talent** — evidence profile, scoped share links and revoke.
+- **Settings** — profile, security, notifications, data, consent history, push
+  devices, export and delete account as separate routes.
+- **Notifications** — a dedicated route, not a list buried in Settings.
 
-### 4.2 Missing or weak signed-in screens
+### 4.2 Remaining gaps
 
-| Gap | Evidence | Impact |
+| Gap | Current state | Impact |
 |---|---|---|
-| No dedicated notifications route | Notifications appear only as a 10-item list inside Settings (`Settings.tsx:311-358`) | Students cannot triage notifications; deep links are buried. |
-| No change-password flow | No `change-password` endpoint or UI; only reset-by-email (`identity/routes.py`) | A signed-in student cannot rotate a password. |
-| No re-consent UI | Consent history is now built from `GET /me/consents`; `POST /auth/consent` is still unused | A terms-version change cannot be accepted in-product; legal evidence is incomplete. |
-| No browser push-device registration | Settings lists/removes `/me/push-devices`; the web app still cannot register a browser device | Push requires the mobile app; the copy is now honest. |
-| No cohort invite response | `POST /work/cohorts/{id}/respond` exists; no web UI | Admin can invite; the student cannot accept or decline. |
-| "My applications" | Built at `/opportunities/applications` | Students can see what they applied to and its status. |
-| No “matches” view | `GET /opportunities/matches` exists; list shows verdicts only | Matching work is under-exposed. |
-| No eligibility view | `GET /platform/me/eligibility` exists; no screen | Students discover age/consent blockers inside an opportunity, too late. |
-| No CBT history | V2 shows current results only; V1 had history and attempt review | Students cannot revisit past practice or see improvement. |
-| No course/topic pages | V2 has dashboard + materials; V1 had course and topic detail | Students lose the single-course hub and topic-level learning. |
-| No student material upload/analysis | V1 had uploads, my-uploads and PDF→notes→test; V2 has curated materials only | A real V1 capability is dropped; decide whether to restore or explicitly replace. |
-| No standalone search across courses/skills | Materials search exists; skills list has no search/filter | Finding a course or skill depends on browsing. |
-| No page-level loading/error consistency | Home uses plain “Loading…”; Campus and Academia hand-roll state | The app feels uneven and can mislabel a flag-off as an error. |
-| No global error boundary | Only `React.Suspense` | A render error blanks the app. |
-| No 404 | Catch-all redirects to `/` | Broken links look like the home page. |
+| No “matches” view | `GET /opportunities/matches` is unused; the list shows verdicts | Matching work is under-exposed; nice-to-have |
+| No standalone eligibility view | `GET /platform/me/eligibility` is unused; blockers appear on opportunity detail | Deferred; the detail screen covers the task |
+| No adaptive practice UI | `GET /academia/cbt/practice-next` exists | Deferred |
+| No web offline submission queue | `POST /work/submissions/sync` exists | Deferred; mobile is the offline path at launch |
+| No browser push registration | Settings lists/removes devices; the web app cannot register a browser device | Intentional; push is a mobile capability at launch |
+| Student material upload/analysis | Curated materials + Ask + CBT + transcript are the replacement | Product decision: approve the replacement copy and remove the upload expectation |
+| No skills search/filter | Catalog browsing only | Later scope |
+| V1 ALL and language work | Not in V2 | See §I; the largest parity gap |
 
-### 4.3 Signed-in verdict
+### 4.3 Student-surface verdict
 
-The journey is present, but it is a collection of screens rather than a designed
-product. The biggest student-facing gaps are notifications, password change,
-consent, push devices, cohort invites, applications and CBT history. The biggest
-experience gap is the lack of a real app shell, page headers and table/list
-language.
+The core student journey is built and state-honest. The remaining items are
+deferred features or the V1 delta, not missing primary screens.
 
 ---
 
-## 5. Admin surface
+## 5. Admin surface (current)
 
 ### 5.1 What exists
 
-`apps/admin/src/App.tsx` and `Shell.tsx` expose:
+The admin app exposes 14 hash sections: Overview, Audit, Imports, Users, Waitlist,
+Opportunities, Projects, Review, Money, Content, Campus, Platform, Security and a
+real 404. Login and forced 2FA are in place.
 
-`#/audit`, `#/imports`, `#/users`, `#/opportunities`, `#/work`, `#/review`,
-`#/money`, `#/content`, `#/platform`, `#/security`, plus login and forced 2FA.
+All admin screens use the shared page header, panel, skeleton, error and empty
+primitives. Overview reads live queues and keeps rendering when one read fails.
+Campus publishes through `POST /ops/campus` and reads the live set, including
+hidden rows, through `GET /ops/campus`. Application status and payout-item failure
+actions are exposed in Opportunities and Money.
 
-Admin is genuinely operational: audit search, V1 import, user lookup, opportunity
-creation and candidates, projects/cohorts, review queue, ledger and payout
-batches, content authoring, platform policy and 2FA.
+### 5.2 Remaining gaps
 
-### 5.2 Admin gaps (current)
-
-| Gap | Evidence | Impact |
+| Gap | Current state | Impact |
 |---|---|---|
-| Campus read is built | `GET /ops/campus` returns published and hidden rows with university names and coordinates | Resolved; the admin table is the live set, not a session receipt. |
-| Student invitations are built | `/work` reads `GET /work/invites` and responds through `POST /work/cohorts/{id}/respond` | Resolved; declining is confirmed, accepting re-reads assignments. |
-| Applications are now actionable | `POST /opportunities/applications/{id}/status` is exposed in Opportunities | Resolved; statuses are interested, applied, shortlisted, withdrawn and rejected. |
-| Payout items are now actionable | `POST /money/payout-items/{id}/fail` is exposed in Money | Resolved; a reason is required and audited. |
-| No admin 404 | Unknown hash renders a real `AdminNotFound` | Resolved. |
-| No skeletons | Shared `Skeleton`, `EmptyState`, `ErrorState` and `Panel` are used across admin | Resolved. |
-| No bulk actions | Review, money and content are one-row at a time | Ops work does not scale. |
-| No aggregate overview endpoint | Overview composes live queues; one failed read does not hide the rest | Acceptable for now; a purpose-built aggregate API is a later optimisation. |
-| No newsletter/announcement admin | No feature exists | Only relevant if those features are approved. |
+| No bulk actions | Review, money and content are one row at a time | Useful improvement, not a launch blocker |
+| No aggregate overview endpoint | Overview composes live queues | Optional optimisation |
+| Richer application lifecycle | Statuses exist; deeper states can follow | Improvement |
+| No newsletter/announcement admin | No feature exists | Only relevant if those features are approved |
+| Admin 2FA browser verification | Code-complete; recovery-code handoff fixed | Needs one full end-to-end pass before launch |
 
 ### 5.3 Admin verdict
 
 Admin is the strongest part of V2 functionally and now shares the student app's
-design system at a denser rhythm. The former campus-read and invite-list gaps are
-closed. Bulk actions, a purpose-built aggregate overview and richer application
-lifecycle states are useful next steps, not launch blockers.
+design system at a denser rhythm. Bulk actions, an aggregate overview and richer
+application states are useful next steps, not launch blockers.
 
 ---
 
@@ -322,75 +312,62 @@ No screen calls a missing endpoint. The two former false claims are resolved:
   says it cannot register a browser device and lists/removes devices registered
   elsewhere.
 
-
 ### 6.3 API-only verdict
 
-The high-impact identity, notification, application and admin money edges are now
+The high-impact identity, notification, application and admin money edges are
 reachable. The remaining API-only items are intentionally deferred (Google SSO,
 offline sync, adaptive practice) or a nice-to-have view (matches, standalone
 eligibility). Do not invent the deferred reads or business data.
 
 ---
 
-## 7. Design-system audit
+## 7. Design-system audit (current)
 
 ### 7.1 Tokens
 
-Current tokens (`packages/design-tokens/src/index.ts:6-26`):
-
-- 10 colours, 6 spacing values, 4 radii, one system font stack and 5 sizes.
-- Missing: semantic surfaces, strong border, subtle text, focus ring, info,
-  accent contrast, elevation, motion, z-index, breakpoints, line-height, layout
-  widths and touch minimum.
-- `typography.sizes.xl` is defined but not published by `apps/web/src/lib/theme.ts`.
-- Web CSS still carries fallback hex values and raw spacing.
-- Admin declares a different palette (`apps/admin/src/styles.css:1-12`) and never
-  imports the tokens.
+- Light/dark palettes, semantic surfaces, strong borders, subtle text, focus ring,
+  info, accent contrast, elevation, motion, z-index, breakpoints, line-height,
+  layout widths and touch minimum are published from
+  `packages/design-tokens/src/index.ts`.
+- Both apps consume the same tokens through the shared theme bridge.
+- Admin no longer carries a separate palette; a second brand colour is banned.
 
 ### 7.2 Primitives
 
-- Web has `Button`, `Field`, `Select`, `Skeleton`, `ErrorNote` in
-  `apps/web/src/ui.tsx`.
-- Admin has no shared primitive module; screens repeat raw `.nv-*` markup.
-- `packages/ui` has only `VersionSwitcher`.
-- There is no icon library, no toast, no dialog, no drawer, no table, no tabs, no
-  tooltip, no command menu, no form validation summary.
-- No shared stylesheet; `.nv-*` classes are duplicated across web and admin with
-  different values.
+- `packages/ui` exports buttons, fields, textarea, select, checkbox, cards, panels,
+  page headers, badges, stamps, banners, empty/error states, skeletons, spinner,
+  avatar, theme toggle and shared CSS/fonts.
+- `apps/web/src/ui.tsx` is a re-export alias; admin imports the same primitives.
+- Add a dialog, menu or table primitive only when a real screen needs it; do not
+  fork a primitive into an app.
 
 ### 7.3 Accessibility
 
-Strengths: `aria-busy` on loading regions, `role="alert"` on web errors,
-`aria-label` on admin nav.
+Strengths: skip links, landmarks, shared focus styles, labelled forms,
+route-change focus and document titles in both shells, `aria-current` on active
+navigation, reduced-motion handling, and status colours paired with text.
 
 Gaps:
 
-- No skip link.
-- No `aria-current` on active nav.
-- No route-change focus management.
-- No reduced-motion handling.
-- Admin errors often lack `role="alert"`.
-- No axe or keyboard test suite.
+- No automated axe check in CI. Add it with the first component-level test.
+- A full keyboard, 200% zoom and forced-colors pass is still manual work.
+- Older screens may still have sentence-case table headers; fix them when touched.
 
-### 7.4 Performance and SEO (current)
+### 7.4 Performance and SEO
 
-- First-load budget exists and passes; re-run `pnpm check:web-budget` before
-  release.
-- No analytics, Sentry or other telemetry. This remains an operational gap, not a
-  UI gap.
-- Public routes now set title, description, canonical, robots and OG/Twitter
-  metadata in `apps/web/src/lib/page-meta.ts`; the boot HTML carries the landing
-  defaults.
+- First-load budget exists and passes: 123.1 KB gzip JS of 150 KB and 8.3 KB gzip
+  CSS of 20 KB. Re-run `pnpm check:web-budget` before release.
+- Public routes set title, description, canonical, robots and OG/Twitter metadata
+  in `apps/web/src/lib/page-meta.ts`; the boot HTML carries the landing defaults.
 - `sitemap.xml` covers the public marketing and legal routes; `robots.txt`
   disallows auth, private app routes and share tokens.
+- No analytics or error tracking. This is an operational gap, not a UI gap.
 
 ### 7.5 Design-system verdict
 
-The tokens are a starting point, not a system. The redesign needs a token
-foundation first, then shared primitives, then screens. Building pages on the
-current primitives would repeat the same local-CSS drift.
-
----
+The design system is built and shared, not a starting point. The remaining work is
+keeping the guide, tokens and screens in sync and running the manual accessibility
+pass. Do not introduce a second palette or a second component language.
 
 ## 8. V1 reference: what is real and what is not
 
@@ -398,9 +375,10 @@ V1 is a real product, but its public face and its signed-in surface are uneven.
 
 ### 8.1 V1 public
 
-- Landing is polished, but **“2,500+” students is hardcoded** and not derived from
-  the database (`app/templates/landing.html:273,278`;
-  `app/routes/dashboard_routes.py:69-70`). The local DB has one user.
+- Landing is polished, but **“2,500+” students is still fixed copy**, not derived
+  from the database. V1 now repeats the same 2,500+/500+ figures on `/impact`
+  (added 2026-11-01) alongside live university/skill counts. V2 must not copy
+  those figures until the business confirms they are current and defensible.
 - The campus section shows a hardcoded LASU map while the dynamic count can say
   “0 universities” (`landing.html:260,267,285`).
 - About claims “live study sessions,” but the live-meeting route is retired.
@@ -409,7 +387,8 @@ V1 is a real product, but its public face and its signed-in surface are uneven.
 - PWA is a manifest and install prompt, but the service worker is actively
   unregistered. It is not offline-capable.
 - There is no pricing page, standalone features page, how-it-works page, contact
-  page, FAQ, newsletter, announcement banner or blog.
+  page, FAQ, newsletter, announcement banner or blog. There **is** now an
+  `/impact` page and a landing track-record band (2026-11-01); V2 has neither.
 - Legal pages exist, but they are not lawyer-reviewed and describe V1 features
   (community, employer self-service) that V2 drops.
 
@@ -428,6 +407,16 @@ V1 capabilities worth preserving conceptually:
 - Employer discoverability (V2 defers self-service).
 - Theme toggle.
 - Admin content moderation and AI answer flags (V2 has different admin tools).
+- **African Languages Lab (2026-10-30):** 94 language-data skills across 9
+  categories, 10 multi-skill tracks, a self-reported language profile that is
+  verified only by skills, structured transcription/translation/labeling/recording
+  tasks with deterministic scores, and an assessment gate before verification.
+- **Impact page (2026-11-01):** a public track-record page and landing band. The
+  page is a good shape for V2, but its fixed figures need verification first.
+- **FUTA taxonomy seed (2026-11-01):** verified schools, departments and 35
+  Surveying & GeoInformatics courses, with `Course.source` provenance and a cleanup
+  script. V2's importer drops the semester/source fields because its `Course`
+  model does not have them.
 
 V1 capabilities V2 intentionally drops or replaces:
 
@@ -526,6 +515,11 @@ Neither belongs in the first design-system PR. They come after the core screens.
 7. **Admin 2FA and local flow verification.** Login works, but first-login
    enrolment and `dev-local.ps1` need an end-to-end pass.
 8. **Domain switch and deployment.** V2 is not yet on the production domain.
+9. **V1 delta not in V2 (2026-11-04).** The ALL curriculum, language profile,
+   structured scored tasks, transcript/talent evidence, talent language filters
+   and `/impact` are on V1 `main` but absent from V2. If V2 launches from
+   `develop` as-is, it regresses V1's newest product surface. Decide port vs drop
+   before the merge in `docs/runbooks/v2-launch-checklist.md` step 1.
 
 ### 10.2 Strongly recommended for parity/quality
 
@@ -538,7 +532,7 @@ Neither belongs in the first design-system PR. They come after the core screens.
 
 ### 10.3 Deliberately not in the first UI build
 
-- Pricing page without a pricing model.
+- Approved pricing amounts; `/pricing` ships commercial positions, not amounts.
 - Employer self-service page without an employer product.
 - Newsletter without consent/unsubscribe.
 - Platform banner without an announcement backend.
@@ -552,19 +546,29 @@ Neither belongs in the first design-system PR. They come after the core screens.
 
 | Document | State | Action |
 |---|---|---|
-| `docs/README.md` | Current but incomplete; lists historical docs as “read first” in places | Update index; add `docs/v2-ui/`; separate current from historical |
-| `docs/design/ui-ux-framework.md` | Current guard, corrected after Gate 2 approval to the light/dark brand blue and white direction | Keep it in sync with the approved tokens and routes |
-| `docs/architecture/06-roadmap.md` | Delivery table is stale: says M7 Talent UI and M8 materials/Ask/CBT are owed, but they are delivered | Update delivery status and remove dead Sentry/PostHog claim |
-| `docs/build/REMAINING_WORK.md` | Updated 2026-10-27; now a build tracker, not the UI readiness list | Keep; UI gaps live in `docs/v2-ui/AUDIT.md` |
-| `docs/MIGRATION_MAP.md` | Superseded: records the rejected “keep Flask” decision and stale counts | **Delete**; keep the decision in ADR-0001 and git history |
-| `docs/TEMPLATE_CLASSIFICATION.md` | Historical V1 template cleanup; only referenced by MIGRATION_MAP | **Delete** with MIGRATION_MAP |
-| `docs/build/nelavista-01-organise-codebase-prompt.md` | Completed prompt; no longer needed | **Delete** |
-| `docs/build/phase-0-plan.md` | Completed plan; useful history but not current | Keep as historical, or delete if the team does not need the audit trail |
-| `docs/build/phase-1-10-plan.md` | Per-phase delivery record; current enough | Keep, update references if REMAINING_WORK is retired |
-| `docs/architecture/00-audit.md` | Historical V1 audit; still useful context but not V2 UI status | Keep but mark historical; remove from “read first” |
+| `docs/README.md` | Updated 2026-11-04 with the post-build V1 delta pointer | Keep the index and the delta note current |
+| `docs/v2-ui/AUDIT.md` | Current 2026-11-04 | This file; update on every state change |
+| `docs/v2-ui/PARITY.md` | Updated 2026-11-04 with §1.2, the V1 delta table | Keep the delta rows current on every V1 feature release |
+| `docs/v2-ui/ROUTE-MAP.md` | Updated 2026-11-04 with §1.2, the V1 routes not yet in V2 | Add routes only after the product decision |
+| `docs/v2-ui/DESIGN-DIRECTION.md` | Approved 2026-10-27, implemented 2026-10-28, V1-delta visual rules added 2026-11-04 | Keep the delta section tied to the approved direction; no new palette |
+| `docs/v2-ui/IMAGE-PROMPTS.md` | Status corrected 2026-11-04: P1/P2 assets are generated and integrated as WebP/JPG derivatives; real photography still pending | Keep the prompts for regeneration; do not re-export the whole set for an unrelated change |
+| `docs/design/ui-ux-framework.md` | Current guard, updated 2026-11-04 with the V1 delta row and the ALL/language route note | Keep it in sync with the approved tokens and routes |
+| `docs/architecture/06-roadmap.md` | Updated 2026-11-04: delivery status records Phases 0-8 delivered and adds the V1 delta | Keep the status table and the V1 delta table in sync with `REMAINING_WORK.md` |
+| `docs/architecture/07-risk-register.md` | Updated 2026-11-04 with R15, V2 shipping smaller than live V1 | Keep R15 until the delta is ported or dropped |
+| `docs/architecture/04-v1-to-v2-migration.md` | Updated 2026-11-04 with the V1 additions table, sequencing rule and migration head | Keep the schema/import implications aligned with `PARITY.md` |
+| `docs/architecture/05-domain-map.md` | Updated 2026-11-04 with the V1 additions and their target placement | Keep entity ownership and V2 target fields current |
+| `docs/architecture/01-target-structure.md` | Updated 2026-11-04 with `seed_data/all_skills/` and `futa_official_structure.md` | Keep V1-only file placement described as V1-only |
+| `docs/architecture/00-audit.md` | Historical V1 audit, marked historical 2026-11-04; not V2 UI status | Keep as context; do not use for V2 readiness |
+| `docs/build/REMAINING_WORK.md` | Updated 2026-11-04 with the V1 delta (§I) and the known unused/partial V2 edges (§J); still a build tracker, not the UI readiness list | Keep; UI gaps live in `docs/v2-ui/AUDIT.md` |
+| `docs/build/phase-1-10-plan.md` | Updated 2026-11-04: Phases 7 and 8 delivered, with the post-build delta section | Keep the per-phase narrative aligned with the tracker |
+| `docs/build/nelavista-02-v2-build-prompt.md` | Historical work order; a 2026-11-04 note corrects the “V1 frozen” assumption | Keep as build history; do not execute its V1-reuse assumptions blindly |
+| `docs/build/phase-0-plan.md` | Completed plan; useful history but not current | Keep as historical |
+| `docs/runbooks/v2-launch-checklist.md` | Deployment plan updated 2026-11-04 with the V1-delta merge gate | Do not treat it as proof the UI is ready |
 | `docs/runbooks/local-setup.md` | Updated with no-Docker path | Keep |
-| `docs/runbooks/v2-launch-checklist.md` | Deployment plan, not UI readiness | Keep; do not treat as proof the UI is ready |
 | `docs/SECRETS_ROTATION.md` | Current operational checklist | Keep |
+| `docs/MIGRATION_MAP.md` | Removed; recorded the rejected “keep Flask” path and stale counts | Decision lives in ADR-0001 and git history |
+| `docs/TEMPLATE_CLASSIFICATION.md` | Removed with `MIGRATION_MAP.md` | Historical V1 template cleanup; git history |
+| `docs/build/nelavista-01-organise-codebase-prompt.md` | Removed; completed prompt | Git history |
 
 **Deletion rule:** delete only after confirming no current instruction depends on
 the file. Historical context stays in git history.
@@ -575,11 +579,13 @@ the file. Historical context stays in git history.
 
 These cannot be invented by the UI:
 
-1. **Pricing model.** Is V2 free for students? Is there an employer/ops price? If
-   there is no public price, do not build `/pricing`.
-2. **Legal copy.** Privacy and terms must be reviewed for V2's actual data flows
-   (payments, verification, managed work, no community). V1 text is not safe to
-   copy unchanged.
+1. **Approved pricing amounts.** Is V2 free for students? Is there an employer/ops
+   price? `/pricing` ships commercial positions, not amounts; replace them when the
+   business approves figures.
+2. **Legal copy approval.** Privacy, terms and contributor terms are final product
+   copy for V2's actual data flows (payments, verification, managed work, no
+   community). Confirm counsel approval and keep the version aligned with
+   `/platform/config`; V1 text is not safe to copy back.
 3. **Support contact.** `support@nelavista.com` is used; response expectation and
    real social links are still needed. V1's `support@localhost` and `example.com`
    links are not usable.
@@ -594,10 +600,9 @@ These cannot be invented by the UI:
    admin screen.
 8. **Platform banner decision.** Include a small announcement feature now, or
    defer until there is a real announcement to show.
-9. **Course/topic and CBT history API detail.** Course and CBT history screens
-   exist; the missing piece is the API detail for full topic content and CBT
-   attempt review. Provide the endpoints or confirm the current screens are the
-   replacement.
+9. **Course/topic and CBT history API detail.** Resolved: full course/topic detail
+   (`GET /academia/courses/{id}`, `/topics/{id}`) and CBT history with answer review
+   are built and used by the screens.
 10. **Student uploads/analysis.** Restore V1's PDF→notes→test, or approve the
     replacement copy: curated materials + Ask + CBT + the transcript evidence
     trail.
@@ -607,6 +612,15 @@ These cannot be invented by the UI:
 12. **Image production.** Editorial WebP derivatives are integrated. Commission
     real photography before launch; do not launch with generic stock or invented
     campus/founder photography.
+13. **African Languages Lab.** Port the 94-skill ALL curriculum, language profile
+    and structured scored tasks into V2, or launch V2 without V1's newest skills
+    catalogue? This is the largest post-build product decision.
+14. **Impact metrics.** Are “2,500+ students reached” and “500+ trained in AI”
+    current, verifiable and approved for public use? If yes, add `/impact` and the
+    landing band; if no, keep the honest `/about` working-record copy.
+15. **FUTA taxonomy.** Import the verified FUTA taxonomy from V1, or seed it
+    natively in V2? If imported, V2's `Course` model needs `semester` and `source`
+    first, because the importer currently drops both.
 
 
 ---
@@ -644,8 +658,20 @@ These cannot be invented by the UI:
 | V1 reference | Read-only; no V1 files changed |
 
 The Phase 0 audit itself did not change code; the post-build rows record the
-redesign that followed. The checks above were last run on 2026-11-01 against the
-working tree, not against a deployed environment.
+redesign that followed. The checks in 13.2 were last recorded on 2026-11-03
+against the working tree, not against a deployed environment.
+
+### 13.3 V1 delta verification (2026-11-04)
+
+| Check | Result |
+|---|---|
+| V1 `main` pull | Fast-forwarded to `afd61b6`; 12 commits, including ALL, Impact and FUTA |
+| V2 search for the delta | No `African Languages`, `StudentLanguage`, `language_profile`, `impact` or `FUTA` implementation in `apps/` |
+| V2 test suite | Not re-run for this documentation audit; the last recorded run is §13.2 |
+| V1 files changed by this audit | None; V1 is read-only reference |
+
+This audit only updated documentation. It did not port code, run migrations or
+change V1.
 
 
 ---
@@ -657,12 +683,15 @@ The public surface, auth, student journey, admin tools, brand assets, metadata a
 the high-impact consent/push/application/payout edges are built. The remaining
 work is not UI invention:
 
-1. Approved pricing and real business content, including social profile URLs,
+1. **The V1 delta:** ALL, the language profile, structured scored tasks,
+   transcript/talent evidence, talent language filters and `/impact` are not in
+   V2. Port them or explicitly drop them before the launch merge.
+2. Approved pricing and real business content, including social profile URLs,
    metrics and employer positioning.
-2. The editorial image set is integrated; real photography was opted out.
-3. End-to-end admin 2FA, one clean local setup run and a manual light/dark visual
+3. The editorial image set is integrated; real photography was opted out.
+4. End-to-end admin 2FA, one clean local setup run and a manual light/dark visual
    pass.
-4. Analytics/error tracking before launch and the deployment-level domain switch.
+5. Analytics/error tracking before launch and the deployment-level domain switch.
 
 Do not invent the missing business copy or imagery. Ship the working record that
 exists and finish the manual launch checks.

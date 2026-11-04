@@ -18,6 +18,7 @@ Likelihood × impact. Owners are roles, not names. Every row links to its mitiga
 | R12 | **`test`/`test123` account in prod** (historical pytest bug) | M | M | Verify and remove; never run debug boot against prod; conftest fix retained. | backend |
 | R13 | **Hardcoded domains / debug endpoints in prod** | M | L | V2 derives everything from config; gate `/api/debug-*`; V1 unchanged. | backend |
 | R14 | **Scope creep vs 1–3 month window** | M | M | Follow build-first strictly; feature flags for anything unfinished (Phase 3). | founder |
+| R15 | **V2 ships smaller than live V1** (after 2026-11-01, V1 `main` gained the African Languages Lab, language profile, structured scored tasks, `/impact` and the FUTA taxonomy; V2 has none) | M | H | Take the port/drop decision in `docs/v2-ui/PARITY.md` 1.2 before merging `develop` to `main`; do not claim full V1 parity. Port schema and seed before routes. | founder + backend |
 
 ## Standing rules
 - Never force-push; never rewrite history without explicit approval.

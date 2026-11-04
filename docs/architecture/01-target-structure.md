@@ -7,7 +7,7 @@
 ```
 nelavista/                              (repo root = Render Root Directory until launch)
 ├── app/  migrations/  scripts/  tests/   ← V1 (LIVE). Untouched. Becomes apps/v1/ at launch.
-├── data/  seed_data/                    ← V1 seed inputs (see "Root clutter" below)
+├── data/  seed_data/                    ← V1 seed inputs (incl. career_skills/ and all_skills/; see "Root clutter" below)
 ├── instance/ uploads/ extracted_images/  ← V1 local runtime artifacts (gitignored)
 ├── google76268f26b118dad1.html           ← Search Console file (ADR-0004)
 ├── wsgi.py  Procfile  runtime.txt        ← V1 entry point / deploy config
@@ -82,6 +82,8 @@ nelavista/                              (repo root = Render Root Directory until
 |---|---|
 | `data/` (369 CBT bank files, CSV, `cbt questions` **file** misnamed as a dir) | Keep tracked. **Rename** `cbt questions` → `cbt_questions.txt` **only when** the seed scripts that read it are updated in the same PR (deferred — see note). |
 | `seed_data/career_skills/` | Fold into `scripts/seed/data/career_skills/` (it is seed payload). |
+| `seed_data/all_skills/` (added 2026-10-30) | African Languages Lab curriculum payload read by `scripts/seed/seed_all_skills.py`. Keep with V1 until the ALL content is ported to V2; do not move it into `apps/api` or run the V1 seeder against V2 tables. |
+| `docs/drive_import/futa_official_structure.md` (added 2026-11-01) | Source notes for the verified FUTA taxonomy. Keep as provenance; the V2 equivalent belongs in the V2 seed/import docs. |
 | `uploads/`, `extracted_images/`, `instance/` | Keep, gitignored, documented as ephemeral runtime artifacts. |
 | `google76268f26b118dad1.html` | Keep at root; **add a route/static mapping so it is actually served** (currently not). |
 | `.env` (on disk) | Local only, gitignored. |

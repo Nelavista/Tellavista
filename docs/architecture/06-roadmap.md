@@ -76,33 +76,56 @@ Offline + idempotency (ADR-0007) · analytics and error tracking (not yet wired;
 ## Milestone → ADR/plan references
 M0 = `docs/build/phase-0-plan.md`, ADR-0001/0002/0005/0008/0009/0010 · M1 = ADR-0005/0009 · M2 = `05-domain-map.md`, ADR-0007 · M3 = `05`, ADR-0009 · M4/M5 = `05`, PRD §6–8, ADR-0006/0007 · M6 = ADR-0008 · M7 = `05`, PRD §10–11 · M8 = ADR-0001/0007 · M9 = ADR-0001/0007/0010 · M10 = `03-versioning-and-domains.md`, `04-v1-to-v2-migration.md`.
 
-## Delivery status (2026-10-27)
+## Delivery status (2026-11-04)
 
 Phases 0-8 are implemented on the API and student web; Phases 9 and 10 are
 release and hardening work. The build tracker is `docs/build/REMAINING_WORK.md`;
 the per-phase account is `docs/build/phase-1-10-plan.md`. UI readiness, public
 surface gaps and the missing screens are in `docs/v2-ui/AUDIT.md` and
-`docs/v2-ui/ROUTE-MAP.md`.
+`docs/v2-ui/ROUTE-MAP.md`. The V1 `main` branch added a post-build feature delta
+on 2026-10-30 to 2026-11-04; it is tracked separately below and in
+`REMAINING_WORK.md` §I.
 
 | Milestone | State |
 |---|---|
 | M0 | Delivered (auth core, conventions, jobs, flags, admin shell with 2FA). Analytics/error tracking is **not** wired. |
 | M1 | Delivered (identity, V1 importer, onboarding, Choose Path, settings, campus) |
-| M2 | Delivered; offline submission sync is not wired on web; curriculum content still depends on G4 |
-| M3 | Delivered; a re-verification call-to-action after suspension is still owed |
+| M2 | Delivered; web offline submission sync is deferred; the AI Data Annotation curriculum is seeded |
+| M3 | Delivered, including the re-verification prompt after suspension |
 | M4 | Delivered (opportunities, explanations, cohorts, replacements, candidate lists) |
 | M5 | Delivered (delivery, quality, consequences, override, notifications) |
 | M6 | Delivered (ledger, split, payouts, reconciliation, earnings); first scheduled reconciliation run unobserved |
-| M7 | Delivered (Talent profile and scoped share links on web) |
-| M8 | Delivered (dashboard, materials reader, Ask, CBT results) |
+| M7 | Delivered (Talent profile and scoped share links on web and mobile) |
+| M8 | Delivered (dashboard, materials, Ask, CBT, CBT history, course/topic detail) |
 | M9 | Build profiles, force-update, push, store assets and release workflow delivered; screenshots and a device smoke run owed |
 | M10 | Rate limits, Postgres migrations in CI and the load-test tool delivered; the DEV measurement, security review, beta, pilot and cutover remain |
 
-The UI is not launch-ready even though the phases are delivered: the public site,
-legal/consent UX, notification centre, password change, 404/error boundary and
-several admin actions are still missing. See `docs/v2-ui/AUDIT.md` for the
-verified list.
+The UI build is complete for the Gate 1 route set. The public pages, legal/consent
+UX, notification centre, password change, 404/error boundary and the missing admin
+actions are built. Launch is still blocked on business content, photography,
+admin 2FA verification, the DEV load measurement, the domain switch and the V1
+delta below. See `docs/v2-ui/AUDIT.md` §10 for the verified list.
 
 Known stale milestone references from the M0 renumbering are fixed: the API,
 admin and mobile READMEs and the `academia` model now describe the delivered state
 rather than the old M1–M7 numbering.
+
+## V1 delta after the V2 build (2026-11-04)
+
+V1 `main` added scope after the milestones were closed. The original M0-M10 work
+is still delivered; this is a new product decision, not a retroactive failure.
+
+| V1 addition | V2 state | Where it belongs |
+|---|---|---|
+| African Languages Lab: 9 categories, 94 skills, 10 tracks, language-specific lessons/tasks/assessments | Missing | Extends M2 (content) and M3 (verification) |
+| Language profile, `Skill.language`/tags, programme grouping | Missing | Extends M1/M2 identity and skills data |
+| Structured scored tasks (transcription, translation, labeling, recording) and assessment gate | Missing; V2 has task templates and verification assessments but not these task kinds/scores | Extends M2/M3 |
+| Per-skill transcript/talent evidence, academic background and languages | Partial; V2 has the transcript/talent surfaces but not the fields | Extends M3/M7 |
+| Talent language/level/status/background filters | Missing; V2 has no employer self-service | M4 admin candidate surface if ported |
+| Public `/impact` page and landing track-record band | Missing | Public surface, after M10 content approval |
+| FUTA verified taxonomy and course provenance | Missing; V2 local seed has one fake university, and its `Course` model lacks semester/source | M1 taxonomy/import |
+| AI untrusted-content delimiter hardening | Missing in V2 Ask prompts | M10 security hardening |
+
+The implementation list is **I1-I8** in `docs/build/REMAINING_WORK.md`; the
+capability mapping is `docs/v2-ui/PARITY.md` §1.2. Do not merge `develop` to
+`main` for launch until each row is ported or explicitly dropped.

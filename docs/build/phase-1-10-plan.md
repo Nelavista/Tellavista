@@ -30,8 +30,8 @@ Status legend: **Delivered** · **Delivered, partial** · **Owed** · **Blocked 
 | 4 Opportunities + matching + cohorts | M4 | opportunities, detail, application | `/opportunities/*`, `/work/cohorts/*` | projects, cohorts, candidates | `tests/test_student_surfaces.py`, `tests/test_admin_read_surfaces.py` |
 | 5 Work delivery + quality | M5 | assignments, submission, rework, messages | `/work/*` | review queue, quality, override | `tests/test_work_delivery.py`, `tests/test_quality_service.py`, mobile `mobile-core.test.ts` |
 | 6 Money | M6 | earnings | `/money/*` | funding, payouts, ledger, exports | `tests/test_money_split.py`, `tests/test_money_ledger.py`, `tests/test_money_payouts.py`, ADR-0008/0011 |
-| 7 Talent + external opportunities | M7 | **owed** (no screen) | `/talent/*`, opportunity `type` | admin opportunity list | `tests/test_talent_service.py` — see §Phase 7 |
-| 8 Academia connected | M8 | dashboard, campus; **materials/Ask/CBT owed** | `/academia/*` | — | `tests/test_academia_services.py` |
+| 7 Talent + external opportunities | M7 | Talent profile, scoped shares, shared-profile page | `/talent/*`, opportunity `type` | admin opportunity list | `tests/test_talent_service.py`, `talent-journey.test.tsx` |
+| 8 Academia connected | M8 | dashboard, materials, Ask, CBT, CBT history, course/topic detail | `/academia/*` | — | `tests/test_academia_services.py`, `academia-journey.test.tsx` |
 | 9 Mobile release | M9 | all journey screens | — | — | `docs/store/mobile-store-readiness.md`, `mobile-release.yml` |
 | 10 Hardening + launch | M10 | — | rate limits, load test | security headers, audit | `docs/runbooks/load-test.md`, `tools/load_read_paths.py` |
 
@@ -172,18 +172,20 @@ nothing observes the first production run yet. That is a launch-checklist item.
 
 ## Phase 7 — Talent profile and external opportunities
 
-**Delivered (API).** Evidence-only Talent profile (`/talent/me`) that refuses
-unverified claims by construction, transcript reuse, student-owned shares with
+**Delivered.** Evidence-only Talent profile (`/talent/me`) that refuses unverified
+claims by construction, transcript reuse, student-owned shares with
 expiry/revocation and a public share token, ops view of a student profile,
 external opportunity type with the same explanation contract and no fee logic.
-
-**Owed (student UI).** There is no web or mobile screen for the Talent profile or
-for creating/revoking a share; the API and typed shapes exist and are tested.
-Tracked as **B13** in `REMAINING_WORK.md`.
+Web and mobile screens now create, copy and revoke shares, and the public
+`/share/:token` page renders the same evidence shape (B13).
 
 Exit criterion — *the profile shows only evidence-backed items; an external
-opportunity is matched and explained without touching the ledger*: the API half
-is proven; the student-visible half is not.
+opportunity is matched and explained without touching the ledger*: proven by
+`tests/test_talent_service.py` and the talent/share journey tests.
+
+**Post-build V1 delta:** V1 now also shows per-skill evidence records, academic
+background and self-reported languages on the Talent profile. V2 has the evidence
+model but not those fields; see `REMAINING_WORK.md` §I.
 
 ---
 
@@ -191,15 +193,17 @@ is proven; the student-visible half is not.
 
 **Delivered.** Dashboard answering the five questions with one next action and
 its reason, flag-gated "not switched on here" state, Campus utility, materials
-list/search/index (reusing V1 metadata), course-aware Ask Nelavista with the
-honest-decline rule and session history, CBT quiz/answer/results/practice-next.
+list/search/reader (reusing V1 metadata), course-aware Ask Nelavista with the
+honest-decline rule and session history, CBT quiz/answer/results/practice-next,
+CBT history with answer review, course and topic detail, and the student
+cohort/application edges that share the academic context.
 
-**Owed (student UI).** Web and mobile show the dashboard and campus only. There
-is no materials reader, Ask screen or CBT results screen; the endpoints exist and
-return plain dicts (not yet `response_model`s — A3 notes this). Tracked as **B14**.
+**Closed after the first narrative.** B14 delivered the web and mobile materials,
+Ask, CBT and CBT-history screens; the typed contracts were added at the same time
+(A3). The old "no reader / no Ask / no CBT results" line is no longer true.
 
 Exit criterion — *each of the five dashboard questions has a data-backed answer*:
-`tests/test_academia_services.py` and `AcademiaDashboard.tsx`.
+`tests/test_academia_services.py` and the academia journey tests.
 
 ---
 
@@ -246,6 +250,28 @@ started; it is an operational milestone, not a coding one.
 
 ---
 
+## Post-build V1 delta (2026-11-04)
+
+V1 `main` added a product delta after Phases 1–10 were closed. It is **not** a
+defect in those phases, but it is new scope that the phase plan did not include:
+
+| V1 addition | What it means for the phase plan |
+|---|---|
+| African Languages Lab (9 categories, 94 skills, 10 tracks) | A content extension of Phase 2/3; needs a V2 seed and task/assessment support |
+| Language profile and language/tag fields | Identity + skills data that neither Phase 1 nor Phase 2 modelled |
+| Structured scored tasks and assessment gate | A new task family alongside V2's `TaskTemplate`/verification assessments |
+| Per-skill transcript/talent evidence | Extends Phase 3 and Phase 7 reads |
+| Talent language/level/status filters | Only relevant if V2 builds a talent-search surface; Phase 4 has the admin candidate list |
+| `/impact` public page | A Phase 0/public-surface addition after Gate 2; needs verified metrics |
+| FUTA official taxonomy | Phase 1 taxonomy content; V2's `Course` model must carry semester/source before import |
+
+Porting this delta is tracked as **I1–I8** in `REMAINING_WORK.md`, with the same
+decision record in `docs/v2-ui/PARITY.md` §1.2. It is not a reason to reopen the
+completed phase exit criteria; it is a new, explicit decision before the launch
+merge.
+
+---
+
 ## What is genuinely left, in one list
 
 | # | Item | Phase | Owner |
@@ -254,6 +280,8 @@ started; it is an operational milestone, not a coding one.
 | 2 | Maestro smoke on a dev build | 9 | code + device |
 | 3 | Run and record the load test on DEV (F6 remainder) | 10 | you + code |
 | 4 | Security review; beta; pilot; go/no-go; cutover | 10 | you |
+| 5 | V1 delta decision: port ALL/language profile/structured tasks/impact/FUTA, or explicitly drop them | post-build | you + code |
+| 6 | If ported, web + mobile + admin implementation and tests for §I | post-build | code |
 
 Delivered since this list was written: B13, B14, the AI Data Annotation content
 (F7/G4) and the G1–G5 policy controls.

@@ -2,9 +2,9 @@
 
 | Field | Value |
 |---|---|
-| Status | **Implemented 2026-11-01. See §1.1 for post-build state.** |
+| Status | **Implemented 2026-11-01; V1 delta audited 2026-11-04. See §1.1 for post-build state and §1.2 for routes V1 added after the map.** |
 | Gate | Gate 1 — route map |
-| Date | 2026-10-27; post-build status 2026-11-01 |
+| Date | 2026-10-27; post-build status 2026-11-01; V1 delta 2026-11-04 |
 | Scope | Public, auth, student app, admin and utility routes for the V2 web launch |
 | Companion documents | `docs/v2-ui/AUDIT.md`, `docs/v2-ui/PARITY.md`, `docs/v2-ui/DESIGN-DIRECTION.md`, `docs/v2-ui/IMAGE-PROMPTS.md` |
 
@@ -35,6 +35,23 @@ states are closed:
 - **Route metadata:** public and auth routes set title, description, canonical,
   robots and social metadata; signed-in shells set the document title and move
   focus to `main` on route change.
+
+### 1.2 V1 routes added after this map (2026-11-04)
+
+V1 `main` added these routes. They are **not in V2 yet** and are not approved V2
+scope until the product decision in `PARITY.md` §1.2 is taken:
+
+| V1 route | V1 screen / job | V2 state | Notes |
+|---|---|---|---|
+| `/impact` | Public track-record page; reach metrics, what has been built, CTA | **Missing** | Add only after the 2,500+/500+ figures are verified. It is a public static page, so it does not need an API. Also add the landing band and footer link. |
+| `/skills/african-languages` | African Languages Lab hub; 9 categories, 94 skills, language/level filters, tracks, language profile summary | **Missing** | Requires the ALL content and language fields first. It is a focused view of the existing skill catalog, not a second catalog. |
+| `/skills/languages` | Own language profile; add/update self-reported language, dialect, proficiency and capabilities; academic background | **Missing** | Requires `StudentLanguage`-equivalent data and a verified-by-skill derivation. |
+| `/skills/languages/:id/delete` | POST action to remove a language from the profile | **Missing** | Action on the same route family; confirm before delete. |
+| Existing `/skills/:skillSlug` challenge route | Structured, auto-scored transcription/translation/labeling/recording tasks; assessment gate and pass mark | **Partial** | V2's existing practice/verification routes can host the UI, but the task spec, deterministic scoring and assessment gate are not implemented. |
+
+Do not add these rows to the “built” table until the code exists. If the product
+decides to launch V2 without ALL, record that decision in `PARITY.md` and keep the
+routes out rather than shipping links to empty screens.
 
 ---
 
@@ -82,7 +99,7 @@ states are closed:
 
 | Route | Why not now |
 |---|---|
-| `/pricing` | No pricing model exists. Do not invent one. Add when the business defines student/employer pricing. |
+| `/impact` | V1 added it on 2026-11-01, but its 2,500+/500+ figures are not verified for V2. Add only when the business confirms them; otherwise use the honest `/about` working-record copy. |
 | `/for-employers` | V2 has no employer self-service. Use `/contact` with an employer topic until the product exists. |
 | `/blog` | No content plan or authoring system. |
 | `/newsletter` | No consent/unsubscribe backend. See `AUDIT.md` §9. |
@@ -151,6 +168,13 @@ is refused by the API, not shown as an empty list.
 
 Add search/filter inside `/skills`; no separate `/skills/search` route unless the
 API adds server-side search.
+
+**V1 delta (not built):** V1 added `/skills/african-languages` and
+`/skills/languages` (plus the delete action) on 2026-11-04. If ALL is ported, add
+them to the student route set; the ALL hub should reuse `/skills/:skillSlug`,
+`/skills/paths/:pathSlug` and the practice route rather than creating parallel
+lesson or task screens. The multi-skill career tracks need a route decision
+(`/skills/tracks/:slug`) before the hub can link to them.
 
 ### 4.4 Verification and proof
 
@@ -356,7 +380,7 @@ Mobile:
 | Admin `#/overview` | Optional aggregate endpoint; otherwise compose from existing lists | Built by composing existing lists |
 | `#/announcements` | Announcement model, public read, admin CRUD, audit | Deferred |
 | `#/newsletter` | Subscriber model, consent, double opt-in, unsubscribe, export, email provider | Deferred |
-| `/pricing` | No approved pricing model; do not build | Deferred |
+| `/pricing` | No approved pricing amounts | Built as commercial positions; replace with approved amounts when supplied |
 
 ### No UI without API
 
@@ -379,7 +403,10 @@ in §1.1.
 | Utility | 4 states + redirects | With the shells |
 
 Total: **~61 routes**, of which 18 are new or split from existing screens. This is
-a full product surface, not a landing-page refresh.
+a full product surface, not a landing-page refresh. The count does **not** include
+the 2026-11-04 V1 delta (`/impact`, `/skills/african-languages`,
+`/skills/languages` and the language delete action); add those only if the product
+decision in `PARITY.md` §1.2 approves them.
 
 Build order after Gate 2 approval:
 
@@ -421,6 +448,10 @@ Approved 2026-10-27:
 9. **Parity decision:** course/topic and CBT history are in scope. Student
    material upload/analysis is deferred; the replacement is curated materials,
    Ask, CBT and the transcript evidence trail.
+10. **Post-map V1 delta (2026-11-04):** `/impact`, the ALL hub, the language
+    profile and structured scored tasks are new V1 scope. They are not added to
+    the V2 route contract until the product decision is taken; if approved, add
+    them here first and then build them.
 
 Gate 2 (design direction) was approved on the same date. The first build change
 is the token and primitive foundation, not a page.

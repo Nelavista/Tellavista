@@ -2,6 +2,13 @@
 
 Use this AFTER Prompt 1 (organise the codebase) has finished Phase 3. Paste everything inside the code block into your coding agent. Keep the PRD at `docs/product/Nelavista_V2_PRD.pdf`.
 
+> **Historical work order (2026-11-04 note):** this prompt records the original
+> build intent. V1 `main` later received the African Languages Lab, language
+> profile, structured scored tasks, `/impact` and the FUTA taxonomy, so the
+> "V1 stays frozen" line below is no longer literally true. Do not edit the V1
+> tree from this work order. For current status and the port/drop decision, use
+> `docs/v2-ui/PARITY.md` 1.2 and `docs/build/REMAINING_WORK.md` I1-I8.
+
 ---
 
 ```

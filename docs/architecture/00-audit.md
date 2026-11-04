@@ -2,6 +2,12 @@
 
 > **Historical V1 context, not V2 status.** For current V2 UI work use
 > `docs/v2-ui/AUDIT.md`, `docs/v2-ui/PARITY.md` and `docs/v2-ui/ROUTE-MAP.md`.
+>
+> **V1 changed after this audit.** The counts, migration head (`f1b2c3d4e5f6`) and
+> module notes below are as of 2026-10-16. V1 `main` has since added the African
+> Languages Lab migration `d7a3c5e81f42`, the Impact page and the FUTA taxonomy
+> seed. See `04-v1-to-v2-migration.md` §"V1 additions after this plan" and
+> `docs/build/REMAINING_WORK.md` §I for the current delta.
 
 **Status:** read-only audit. **No files were changed to produce this** (verified with `git status --porcelain` — clean). No scripts were run against any database. No dependencies were upgraded.
 **Date:** 2026-10-16

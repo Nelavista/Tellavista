@@ -14,6 +14,13 @@ For the V2 web launch, read these first:
 Gate 1 (route map) and Gate 2 (design direction) were approved on 2026-10-27.
 Newsletter and the platform announcement banner are deferred post-launch.
 
+**Post-build V1 delta (2026-11-04):** V1 `main` added the African Languages Lab,
+language profile, structured scored tasks, `/impact` and the FUTA taxonomy after
+the V2 parity review. V2 does not have them. The decision and status live in
+`docs/v2-ui/PARITY.md` 1.2 and `docs/build/REMAINING_WORK.md` I1-I8. Do not claim
+full V1 parity, and do not merge `develop` to `main` at launch, until each item is
+ported or explicitly dropped.
+
 - **`docs/v2-ui/AUDIT.md`** - current-state audit, launch blockers, docs audit.
 - **`docs/v2-ui/PARITY.md`** - V1 to V2 capability mapping, including deliberate drops.
 - **`docs/v2-ui/ROUTE-MAP.md`** - Gate 1 route contract.

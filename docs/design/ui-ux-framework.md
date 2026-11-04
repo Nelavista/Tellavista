@@ -5,7 +5,7 @@
 | Status | Active for V2 UI/UX work |
 | Applies to | `apps/web`, `apps/admin`, `apps/mobile` (post-launch), `packages/ui`, `packages/design-tokens` |
 | Does not apply to | V1 at the repository root, API contracts, infrastructure, or deployment |
-| Last updated | 2026-10-28 |
+| Last updated | 2026-11-04 |
 | Companion documents | `docs/adr/0001-v2-stack.md`, `docs/architecture/01-target-structure.md`, `CONTRIBUTING.md`, `RUN-LOCALLY.md` |
 
 > **Gate 2 approved 2026-10-27.** The light/dark model in
@@ -32,7 +32,7 @@
 - **One screen, one job, one dominant anchor.** If everything is emphasized, nothing is.
 - **Data first.** Start with the real API shape, the worst-case value, and every state. Do not start with a card component.
 - **Build for the worst case:** long names, empty values, failed requests, partial data, offline, zero earnings, seven-figure earnings, a 320px screen, and 200% zoom.
-- **No V1 changes.** V1 is live at `nelavista.com` and is frozen for features. This guide covers V2 only.
+- **No V1 changes from V2 work.** V1 is live at `nelavista.com` and this guide covers V2 only. V1 `main` did receive new features after the V2 parity review (ALL, language profile, `/impact`, FUTA); see `docs/v2-ui/PARITY.md` 1.2 before assuming V2 is a superset.
 - **No new dependency without a reason.** State the bundle cost, the accessibility record, and the category it replaces. One library per category.
 - **Done means verified:** lint, typecheck, tests, production build, first-load budget, keyboard path, and screenshots at 375, 768, and 1280 pixels.
 
@@ -155,13 +155,22 @@ without updating that file first. The families are:
 
 | Surface | Routes | Job |
 |---|---|---|
-| Public | `/`, `/features`, `/how-it-works`, `/about`, `/contact`, `/faq`, `/legal/privacy`, `/legal/terms`, `/legal/contributor-terms`, `/offline`, `*` | Explain the promise, answer objections, give a real 404 and offline state |
+| Public | `/`, `/features`, `/how-it-works`, `/pricing`, `/about`, `/contact`, `/faq`, `/legal/privacy`, `/legal/terms`, `/legal/contributor-terms`, `/offline`, `*` | Explain the promise, answer objections, give a real 404 and offline state. `/impact` is V1 delta scope pending verified metrics. |
 | Auth | `/signup`, `/login`, `/auth/verify`, `/auth/reset` | Complete authentication with a visible next step |
-| Student app | `/home`, `/onboarding`, `/academia`, `/academia/materials`, `/academia/materials/:materialId`, `/academia/ask`, `/academia/cbt`, `/academia/cbt/history`, `/academia/courses/:courseCode`, `/campus` | Learn and practise |
+| Student app | `/home`, `/onboarding`, `/academia`, `/academia/materials`, `/academia/materials/:materialId`, `/academia/ask`, `/academia/cbt`, `/academia/cbt/history`, `/academia/courses/:courseCode`, `/academia/topics/:topicId`, `/campus` | Learn and practise |
 | Student app | `/skills`, `/skills/:skillSlug`, `/skills/paths/:pathSlug`, `/skills/lessons/:lessonSlug`, `/skills/practice/:templateId`, `/skills/my-learning`, `/verification`, `/verification/assessments/:assessmentSlug`, `/verification/attempts/:attemptId`, `/verification/practical/:taskSlug`, `/transcript` | Build and prove |
 | Student app | `/opportunities`, `/opportunities/:slug`, `/opportunities/applications`, `/work`, `/work/assignments/:assignmentId`, `/earnings`, `/talent` | Find, deliver and earn |
 | Utility | `/notifications`, `/settings`, `/settings/security`, `/settings/notifications`, `/settings/data`, `/share/:token` | Keep the account safe and share proof |
 | Admin | `#/overview`, `#/audit`, `#/imports`, `#/users`, `#/waitlist`, `#/opportunities`, `#/work`, `#/review`, `#/money`, `#/content`, `#/campus`, `#/platform`, `#/security` | Operate and configure |
+
+V1 added `/skills/african-languages` (African Languages Lab hub),
+`/skills/languages` (own language profile) and a language-delete action after
+this inventory was written. They are **not** V2 routes yet; if the product
+approves porting ALL, add them to `docs/v2-ui/ROUTE-MAP.md` first. Do not show a
+link or navigation item for a route that does not exist, and do not make a
+second skill catalogue: the ALL hub is a filtered view of `/skills`, and its
+skill, path and practice screens reuse `/skills/:skillSlug`,
+`/skills/paths/:pathSlug` and `/skills/practice/:templateId`.
 
 Every screen gets one anchor. If a screen needs a different anchor, write the
 reason in the pull request. Marketing pages are separate routes, never one long
@@ -702,28 +711,34 @@ most.
 |---|---|---|
 | Tokens | Light/dark palettes, type, spacing, radius, motion, z-index, breakpoints and layout widths live in `packages/design-tokens` and are published through the shared bridge | Keep the values and the guide in sync; verify contrast in both themes |
 | Primitives | Buttons, fields, textarea, select, checkbox, cards, panels, page headers, badges, stamps, banners, empty/error states, skeletons, spinner, avatar, theme toggle in `packages/ui` | Add a dialog/menu only when a real screen needs one |
-| Public pages | Landing, Features, How it works, About, Contact, FAQ, Privacy, Terms, Contributor terms, NotFound, Offline | Replace draft legal copy after counsel review; add the image assets named in `docs/v2-ui/IMAGE-PROMPTS.md` |
-| Auth | Login, Signup, Verify email, Reset password use the shared auth layout | Confirm the signed-in change-password endpoint before wiring it |
-| Student app | App shell, Home, Academia, Materials, Ask, CBT, CBT history, Course, Skills, My learning, Verification, Transcript, Opportunities, Applications, Work, Earnings, Talent, Campus, Notifications, Settings subroutes | Add the missing course/topic detail and CBT review endpoints; wire change-password when it exists |
-| Admin | Grouped shell, Overview, Audit, Waitlist, Campus, Imports, Users, Opportunities, Projects, Review, Money, Content, Platform, Security, 404 | Move the remaining admin screens (Opportunities, Projects, Review, Money, Content, Platform) to the shared primitives; add campus read and the missing admin actions |
+| Public pages | Landing, Features, How it works, About, Contact, FAQ, Pricing, Privacy, Terms, Contributor terms, NotFound, Offline; the editorial image set is integrated and legal copy is final product copy | Keep legal copy aligned with `/platform/config` and counsel review; replace illustrations with real photography only when licensed and consented; add `/impact` only after the 2,500+/500+ figures are verified |
+| Auth | Login, Signup, Verify email, Reset password use the shared auth layout; in-place signed-in change password is wired and revokes other refresh tokens | Keep the legal/consent version in sync; no endpoint gap remains |
+| Student app | App shell, Home, Academia, Materials, Ask, CBT, CBT history, Course, Topic, Skills, My learning, Verification, Transcript, Opportunities, Applications, Work, Earnings, Talent, Campus, Notifications, Settings subroutes | Keep the older screens on the current primitives and state checklist; no missing student API route remains for the Gate 1 scope |
+| V1 delta (2026-11-04) | Not in V2: African Languages Lab hub, language profile, structured scored language tasks, per-skill assessment gate, transcript/talent evidence trail, `/impact` | Product decision first (`PARITY.md` 1.2 and `REMAINING_WORK.md` I). If approved, add routes to `ROUTE-MAP.md`, then the schema, seed and screens. Do not design these screens around content that does not exist |
+| Admin | Grouped shell, Overview, Audit, Waitlist, Campus, Imports, Users, Opportunities, Projects, Review, Money, Content, Platform, Security and a real 404; all use the shared primitives, and Campus has a live read | Add bulk actions, a purpose-built aggregate overview endpoint and richer application lifecycle states; these are improvements, not launch blockers |
 | States | New screens implement loading, empty, error and success; feature-off is a distinct state | Audit the older admin screens against the state checklist; add partial/stale/offline where they can occur |
 | Themes | Light and dark are both designed; public routes default to light, signed-in routes to dark; the toggle persists | Verify every screen in both themes, forced colors and 200% zoom |
 | Typography | Instrument Sans, Instrument Serif and IBM Plex Mono are self-hosted and subset | Keep the fallback metrics and preloads correct |
 | Motion | Shared durations/easing and Motion route transitions; reduced-motion rules exist | Test every animation with `prefers-reduced-motion` |
-| Tests | Web route tests, the public-route suite and the admin sign-in test pass | Add theme persistence and admin unknown-hash tests; add Testing Library and axe with the first component test |
+| Tests | Web route/suite tests, the public-route suite and the admin sign-in plus unknown-hash 404 tests pass | Add a theme-persistence test; add Testing Library and axe with the first component test |
 | Accessibility | Skip links, landmarks, shared focus styles, labelled forms, route-change focus and document titles in both shells | Sentence-case table headers and a full keyboard/zoom pass |
 
 ### 9.1 Next UI tasks
 
-1. **Finish admin.** Move the remaining admin screens (Opportunities, Projects,
-   Review, Money, Content, Platform) to the shared primitives and keep
-   Overview/Waitlist/Campus honest about missing reads.
+1. **Admin follow-ups.** Bulk actions in review/money/content, a purpose-built
+   aggregate overview endpoint, and richer application lifecycle states. The
+   screens already use the shared primitives and Campus has a live read.
 2. **Responsive and accessibility QA.** 320px, 375px, 768px, 1280px, 200% zoom,
    keyboard-only, forced colors and reduced motion across both themes.
-3. **Tests.** Theme persistence, the admin unknown-hash 404 and the remaining
-   state transitions.
-4. **Assets and content.** Create the images named in `docs/v2-ui/IMAGE-PROMPTS.md`
-   and collect the missing business copy under “Needs my input”; do not invent it.
+3. **Tests.** Theme persistence and the remaining state transitions.
+4. **Content.** The editorial image set is integrated; replace it only with
+   licensed, consented photography. Collect the missing business copy under
+   “Needs my input” and do not invent it.
+5. **Decide the V1 delta before launch.** The African Languages Lab, language
+   profile, structured scored tasks, `/impact` and the FUTA taxonomy are new V1
+   scope that V2 does not have. Take the decision in `PARITY.md` 1.2: port them
+   (schema and seed first, then the routes in `ROUTE-MAP.md`) or record that V2
+   launches without them. Do not merge `develop` to `main` while that is open.
 
 ---
 
@@ -825,3 +840,4 @@ Run this before delivery. A single fail blocks the change.
 ## 12. Change log
 
 - **2026-10-27:** Created from the master UI/UX framework and filled with the V2 project brief, current tokens, stack reality, screen anchors, gaps, and verification commands.
+- **2026-11-04:** Added the post-build V1 delta: `/impact` in the public inventory, the ALL hub and language-profile scope in the student inventory, the V1 delta row and launch decision in Section 9, and the port/drop decision task. No V2 screen was built by this change.

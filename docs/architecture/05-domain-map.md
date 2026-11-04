@@ -41,6 +41,21 @@
 | **Admin / AuditLog / FeatureFlag** | Internal ops, traceability | `User.is_admin`, `AdminAuditLog` | Reuse; add roles + flags. |
 | Community, live classes, reels, employer profiles | **Not in V2** (PRD §2, §14) | `Group*`, `Room`, `Video`, `EmployerProfile` | **Drop from V2**; V1 keeps them until V1 is retired. |
 
+## V1 additions after this map (2026-11-04)
+
+V1 `main` added language-data and public-surface entities. They are not in the V2
+schema yet; this is the target placement when they are ported.
+
+| V1 addition | Entity / field | Target module | Note |
+|---|---|---|---|
+| Language profile | `StudentLanguage` (`student_id`, `language`, `dialect`, `proficiency`, `can_speak/read/write/transcribe/translate`) and `User.language_background` | identity + skills | Self-reported claims only; verified capabilities are derived from verified language-specific skills. |
+| Programme grouping | `SkillCategory.program` (`'all'`) | skills | Groups the ALL categories into a hub without a second catalogue. |
+| Language/tag metadata | `Skill.language`, `Skill.tags_json` | skills | Drives language/tag filters and recommendations. |
+| Structured tasks | `Challenge.task_spec_json`, `is_assessment`, `pass_score`; `ChallengeSubmission.score`, `result_json` | skills + verification | V2 should map these to `TaskTemplate`/verification records rather than copy V1 tables. |
+| ALL content | 9 categories, 94 skills, 10 tracks, beginner path | skills | Seed/content, not a new product module. |
+| Course provenance | `Course.semester`, `course_type`, `description`, `source` (e.g. `'futa_official'`) | academia | V2's `Course` currently lacks all four; the V1 importer drops them. |
+| Impact page | Static public route and landing band | public surface | No entity; requires verified metrics. |
+
 ## Key relationships
 
 ```

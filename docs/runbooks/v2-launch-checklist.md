@@ -41,6 +41,13 @@ of truth at that point.
 
 Do not create a release tag or change V1.
 
+**Do not merge while the V1 delta is undecided.** V1 `main` received the African
+Languages Lab, language profile, structured scored tasks, `/impact` and the FUTA
+taxonomy after the V2 parity review. V2 has none of them. Before this merge,
+either port them (`docs/v2-ui/PARITY.md` 1.2, `docs/build/REMAINING_WORK.md` I1-I8)
+or record that V2 launches without them. Merging `develop` blindly would ship a V2
+that is smaller than the live V1 without that being a written product decision.
+
 ---
 
 ## 2. Create the PROD services and data stores on Render

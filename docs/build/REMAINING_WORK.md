@@ -5,11 +5,14 @@
 > screen gaps and the launch blockers, use `docs/v2-ui/AUDIT.md` and
 > `docs/v2-ui/ROUTE-MAP.md`.
 
-Last updated: 2026-10-27 (Phases 0-10 delivered as code. B13/B14 now have typed
+Last updated: 2026-11-04 (Phases 0-10 delivered as code. B13/B14 now have typed
 contracts and web + mobile screens, F7 curriculum is seeded, G1-G5 are policy plus
 admin controls, the B6 answer drafts and B7 re-verification prompt are closed, and
 the API suite was run green - see Verification below. UI readiness is tracked
-separately in `docs/v2-ui/AUDIT.md`).
+separately in `docs/v2-ui/AUDIT.md`. **New on 2026-11-04:** V1 `main` added a
+post-build feature delta - the African Languages Lab, the language profile,
+structured scored tasks, the Impact page and the FUTA taxonomy seed. None of it is
+in V2; it is tracked as §I below and in `docs/v2-ui/PARITY.md` §1.2).
 
 This is the build list still to do for V2, in the order it was worked through. It
 exists so progress is visible and nothing gets forgotten. UI readiness and the
@@ -20,16 +23,18 @@ production data, small changes behind feature flags, tests with the code.
 Status legend: `[ ]` to do · `[~]` in progress · `[x]` done · `[!]` blocked on you
 or on an external decision.
 
-## Verification (2026-10-27)
+## Verification (last code run 2026-11-03; docs-only V1 delta audit 2026-11-04)
 
 Run after the last code change, not before it. Every line below is a command that
-was executed and its real result.
+was executed and its real result. The 2026-11-04 V1 delta audit changed
+documentation only and did not re-run the suite; these are the last recorded
+results from `docs/v2-ui/AUDIT.md` §13.2.
 
 | Check | Command | Result |
 |---|---|---|
-| API suite (including migrations) | `pytest -q` in `apps/api` | **332 passed, 1 skipped** (333 collected; 10m 42s) |
-| Web DOM/unit | `npx vitest run` in `apps/web` | **53 passed** (10 files) |
-| Admin DOM | `npx vitest run` in `apps/admin` | **1 passed** |
+| API suite (including migrations) | `pytest -q` in `apps/api` | **340 passed, 1 skipped** (last recorded 2026-11-03) |
+| Web DOM/unit | `npx vitest run` in `apps/web` | **57 passed** (11 files; last recorded 2026-11-03) |
+| Admin DOM | `npx vitest run` in `apps/admin` | **2 passed** (last recorded 2026-11-03) |
 | Mobile core (queue, deep links, versions) | `npx vitest run` in `apps/mobile` | **11 passed** (last recorded; not re-run in this audit) |
 | Typechecks | `tsc --noEmit` in web, admin, mobile | **0 errors** each (last recorded; re-run before UI work) |
 | Lint | `ruff check app tests` (api), `ruff check tools`, `eslint src` (web, admin, mobile) | **clean** (last recorded; 2 pre-existing mobile warnings) |
@@ -257,3 +262,74 @@ publishes the parts a signed-out visitor needs. Admin UI: **Platform** in
   own environment. Documented in `docs/runbooks/local-setup.md`.
 - [x] **H3** `packages/api-client/src/generated/schema.d.ts` is committed and the
   freshness gate passes locally.
+
+## I. V1 delta after the V2 build (2026-11-04)
+
+V1 `main` moved while V2 was being closed out. These items are **new V1 scope**,
+not regressions in the V2 code that already exists, but V2 is no longer a
+superset of V1. They are also recorded in `docs/v2-ui/PARITY.md` §1.2 and
+`docs/v2-ui/AUDIT.md` §1.1.
+
+- [ ] **I1 — ALL curriculum decision and port.** V1 added 9 African Languages Lab
+  categories, 94 skills (including `african-language-data-beginner`), 10
+  multi-skill tracks, lessons, practice tasks, assessments and projects
+  (`seed_data/all_skills/`, `scripts/seed/seed_all_skills.py`). Decide port vs
+  drop, then port the content through a V2 seed. Do not run the V1 seeder against
+  V2 tables.
+- [ ] **I2 — V2 schema for language data.** If ALL is ported, add the equivalent of
+  V1's `SkillCategory.program`, `Skill.language`/`tags_json`,
+  `Challenge.task_spec_json`/`is_assessment`/`pass_score`,
+  `ChallengeSubmission.score`/`result_json`, `StudentLanguage` and
+  `User.language_background`. Use V2's expand/contract migration rules.
+- [ ] **I3 — Structured scoring and assessment gate.** Port the deterministic task
+  kinds (transcription WER, translation chrF, labeling accuracy/repeat
+  consistency, recording requirements) into V2's task/assessment model, and
+  enforce the per-skill scored-practice prerequisite. Expected answers must never
+  be returned to the student.
+- [ ] **I4 — Web screens.** Add `/skills/african-languages` and
+  `/skills/languages` (plus the delete action), language/tag/programme filters on
+  `/skills`, and per-skill evidence/academic background/languages on
+  `/transcript` and `/talent`. Add the `/impact` page and landing band only after
+  the metrics are approved.
+- [ ] **I5 — Mobile lockstep.** Mirror the new ALL hub, language profile and
+  structured task screens through deep links and Home actions (D2/ADR-0012). Add
+  a parser test for each new route.
+- [ ] **I6 — Admin and talent search.** Add language/level/status/practical/background
+  filters to the admin candidate/talent surface if ALL is ported. V2 has no
+  employer self-service; do not rebuild V1's employer discover page by accident.
+- [ ] **I7 — FUTA taxonomy and course provenance.** Import the verified FUTA
+  taxonomy or seed it natively. V2's `Course` model currently has no `semester`,
+  `course_type`, `description` or `source`, and `services/imports/v1.py` drops the
+  V1 values. Add the fields and importer support before relying on the seed.
+- [ ] **I8 — AI prompt hardening.** Apply V1's untrusted-content delimiter
+  escaping to V2's Ask/practice AI prompts. V2's `OpenRouterProvider` currently
+  interpolates the raw question and retrieved text into one prompt, and V2
+  assessment grading is deterministic, so the risk is concentrated in Ask and any
+  future AI feedback path.
+
+**Not carried across:** the V1 test-only SQLite speed pragmas
+(`synchronous=OFF`, `journal_mode=MEMORY`) belong in V1's `tests/conftest.py`, not
+in V2 application or production configuration.
+
+**Definition of done for §I:** either the delta is ported and tested on web,
+admin, mobile and API, or `PARITY.md` records an explicit product decision to drop
+it. Do not merge `develop` to `main` for launch while this section is undecided.
+
+## J. Known unused or partially wired V2 edges (2026-11-04)
+
+These are current V2 gaps that are **not** V1-delta items. They are recorded so a
+future change does not treat an unused endpoint as delivered UI, or a deferred
+read as an outage. Full context is in `docs/v2-ui/AUDIT.md` §6.1.
+
+| Edge | Current state | Decision |
+|---|---|---|
+| `GET /opportunities/matches` | No separate matches view; the opportunity list shows verdicts | Nice-to-have; do not add a second list without a product reason |
+| `GET /platform/me/eligibility` | No standalone readiness view; blockers appear on opportunity detail | Deferred |
+| `GET /academia/cbt/practice-next` | No adaptive practice UI | Deferred |
+| `POST /auth/google` | No Google sign-in button | Deferred; normal auth is complete |
+| `POST /work/submissions/sync` | No web offline submission queue | Deferred; API exists for a future client |
+| Browser push registration | Settings lists and removes registered devices; the web app cannot register a browser device | Intentional; push is a mobile capability at launch |
+| `GET /talent/me/transcript` | Duplicate of the transcript read used by `/verification/transcript` | Leave unused; do not build a second transcript screen |
+
+Do not invent UI for these to make a checklist look complete. Close an edge by
+building the product decision behind it, or leave it documented as unused.

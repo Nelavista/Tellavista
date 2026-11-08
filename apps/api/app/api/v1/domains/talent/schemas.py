@@ -99,6 +99,22 @@ class TalentAvailabilityOut(BaseModel):
     location: str | None = None
 
 
+class TalentDirectoryItemOut(BaseModel):
+    id: int
+    display_name: str | None = None
+    visibility: str
+    university: str | None = None
+    department: str | None = None
+    level: str | None = None
+    background: str | None = None
+    location: str | None = None
+    languages: list[TalentLanguageOut]
+
+
+class TalentDirectoryOut(BaseModel):
+    students: list[TalentDirectoryItemOut]
+
+
 class TalentProfileOut(BaseModel):
     """The evidence-only profile. Scoped sections are omitted, not blanked."""
 
@@ -164,6 +180,8 @@ __all__ = [
     "TalentAcademicOut",
     "TalentAccountOut",
     "TalentAvailabilityOut",
+    "TalentDirectoryItemOut",
+    "TalentDirectoryOut",
     "TalentLanguageOut",
     "TalentProfileOut",
     "TalentProjectRefOut",

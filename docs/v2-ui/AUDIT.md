@@ -37,8 +37,10 @@ The current launch position is:
   payout-item failure and signed-in password change are implemented.
 - **Not launch-ready:** business content is not fully approved; admin 2FA and the
   local startup path need a clean browser verification; deployment/domain
-  cutover is pending; analytics and error tracking are not wired; the remaining
-  V1 language-profile, hub/filter and evidence gaps below are not yet in V2.
+  cutover is pending; analytics and error tracking are not wired. The V2 API now
+  supports the approved talent-directory language, level, visibility-status and
+  background filters at `/v1/talent/directory`; employer self-service UI remains
+  intentionally out of launch scope.
 
 ## 1. Current stack
 

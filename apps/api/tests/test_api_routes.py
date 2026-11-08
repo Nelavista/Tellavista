@@ -89,6 +89,27 @@ def test_a_student_cannot_read_project_financials(api) -> None:
     assert response.json()["error"]["code"] == "forbidden"
 
 
+def test_talent_directory_is_staff_only_and_supports_filters(api) -> None:
+    client, db = api
+    staff = make_ops(db)
+    student = make_user(db, name="Ada", university="Lagos State University", level="300")
+    from factories import make_profile
+
+    make_profile(db, student, profile_visibility="public", bio="Speech data researcher")
+    db.add(UserLanguage(user_id=student.id, language="Yoruba", level="fluent"))
+    db.flush()
+
+    forbidden = client.get("/v1/talent/directory", headers=_headers(student))
+    assert forbidden.status_code == 403
+
+    response = client.get(
+        "/v1/talent/directory?language=yoruba&language_level=fluent&background=speech",
+        headers=_headers(staff),
+    )
+    assert response.status_code == 200
+    assert response.json()["students"][0]["id"] == student.id
+
+
 def test_a_student_cannot_read_the_audit_trail(api) -> None:
     client, db = api
     student = make_user(db)

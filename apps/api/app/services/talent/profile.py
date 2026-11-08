@@ -17,13 +17,13 @@ from __future__ import annotations
 import secrets
 from datetime import timedelta
 
-from sqlalchemy import func, select
+from sqlalchemy import func, or_, select
 from sqlalchemy.orm import Session
 
 from app.core.errors import ApiError
 from app.core.security import hash_token
 from app.core.time import as_utc, utcnow
-from app.models.identity import User, UserAvailability, UserLanguage
+from app.models.identity import User, UserAvailability, UserLanguage, UserProfile
 from app.models.quality import QualityRecord
 from app.models.skills import Skill
 from app.models.talent import TalentShare
@@ -51,6 +51,86 @@ SHARE_SCOPES: tuple[str, ...] = (
     "work_history",
     "availability",
 )
+DIRECTORY_STATUSES: tuple[str, ...] = ("employers", "public")
+
+
+def directory(
+    db: Session,
+    *,
+    language: str | None = None,
+    language_level: str | None = None,
+    level: str | None = None,
+    status: str | None = None,
+    background: str | None = None,
+) -> list[dict]:
+    """Return discoverable students matching recruiter-facing profile filters."""
+    visibility = status or None
+    if visibility not in (None, *DIRECTORY_STATUSES):
+        raise ApiError(400, "invalid_talent_status", "Unknown talent visibility status.")
+
+    query = (
+        select(User, UserProfile)
+        .join(UserProfile, UserProfile.user_id == User.id)
+        .where(User.is_deleted.is_(False))
+    )
+    query = query.where(
+        UserProfile.profile_visibility == visibility
+        if visibility
+        else UserProfile.profile_visibility.in_(DIRECTORY_STATUSES)
+    )
+    if level:
+        query = query.where(User.level.ilike(level.strip()))
+    if background:
+        like = f"%{background.strip()}%"
+        query = query.where(
+            or_(
+                User.university.ilike(like),
+                User.department.ilike(like),
+                UserProfile.bio.ilike(like),
+                UserProfile.location.ilike(like),
+            )
+        )
+    if language:
+        language_query = select(UserLanguage.user_id).where(
+            UserLanguage.user_id == User.id,
+            UserLanguage.language.ilike(language.strip()),
+        )
+        if language_level:
+            language_query = language_query.where(UserLanguage.level.ilike(language_level.strip()))
+        query = query.where(language_query.exists())
+    elif language_level:
+        query = query.where(
+            select(UserLanguage.user_id)
+            .where(UserLanguage.user_id == User.id, UserLanguage.level.ilike(language_level.strip()))
+            .exists()
+        )
+
+    rows = db.execute(query.order_by(User.name, User.id)).all()
+    user_ids = [user.id for user, _profile in rows]
+    languages = db.scalars(
+        select(UserLanguage)
+        .where(UserLanguage.user_id.in_(user_ids))
+        .order_by(UserLanguage.language)
+    ).all() if user_ids else []
+    languages_by_user: dict[int, list[dict]] = {}
+    for item in languages:
+        languages_by_user.setdefault(item.user_id, []).append(
+            {"language": item.language, "level": item.level}
+        )
+    return [
+        {
+            "id": user.id,
+            "display_name": profile.display_name or user.name,
+            "visibility": profile.profile_visibility,
+            "university": user.university,
+            "department": user.department,
+            "level": user.level,
+            "background": profile.bio,
+            "location": profile.location,
+            "languages": languages_by_user.get(user.id, []),
+        }
+        for user, profile in rows
+    ]
 
 
 def _skills(db: Session) -> dict[int, Skill]:

@@ -25,6 +25,7 @@ from sqlalchemy.orm import Session
 from app.core.errors import ApiError
 from app.core.time import utcnow
 from app.models.talent import TalentShare
+from app.models.identity import UserLanguage
 from app.services.talent import profile as talent
 from app.services.work import delivery
 
@@ -157,3 +158,33 @@ def test_transcript_only_never_includes_quality(db: Session) -> None:
 
     assert set(payload) == {"transcript", "verified_skills"}
     assert payload["verified_skills"][0]["status"] == "verified"
+
+
+def test_directory_filters_language_level_status_and_background(db: Session) -> None:
+    visible = make_user(db, name="Visible Student", university="Lagos State University", level="300")
+    make_profile(
+        db, visible, profile_visibility="public", bio="NLP and speech data researcher", location="Lagos"
+    )
+    db.add(UserLanguage(user_id=visible.id, language="Yoruba", level="fluent"))
+
+    hidden = make_user(db, name="Hidden Student", university="Lagos State University", level="300")
+    make_profile(db, hidden, profile_visibility="private", bio="NLP and speech data researcher")
+    db.add(UserLanguage(user_id=hidden.id, language="Yoruba", level="fluent"))
+    db.flush()
+
+    rows = talent.directory(
+        db,
+        language="yoruba",
+        language_level="fluent",
+        level="300",
+        status="public",
+        background="speech",
+    )
+
+    assert [row["id"] for row in rows] == [visible.id]
+
+
+def test_directory_rejects_private_status(db: Session) -> None:
+    with pytest.raises(ApiError) as excinfo:
+        talent.directory(db, status="private")
+    assert excinfo.value.code == "invalid_talent_status"

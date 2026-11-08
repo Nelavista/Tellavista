@@ -5,14 +5,16 @@
 > screen gaps and the launch blockers, use `docs/v2-ui/AUDIT.md` and
 > `docs/v2-ui/ROUTE-MAP.md`.
 
-Last updated: 2026-11-04 (Phases 0-10 delivered as code. B13/B14 now have typed
+Last updated: 2026-11-08 (Phases 0-10 delivered as code. B13/B14 now have typed
 contracts and web + mobile screens, F7 curriculum is seeded, G1-G5 are policy plus
 admin controls, the B6 answer drafts and B7 re-verification prompt are closed, and
 the API suite was run green - see Verification below. UI readiness is tracked
 separately in `docs/v2-ui/AUDIT.md`. **New on 2026-11-04:** V1 `main` added a
-post-build feature delta - the African Languages Lab, the language profile,
+  post-build feature delta - the African Languages Lab, the language profile,
 structured scored tasks, the Impact page and the FUTA taxonomy seed. None of it is
-in V2; it is tracked as §I below and in `docs/v2-ui/PARITY.md` §1.2).
+  in V2; it is tracked as §I below and in `docs/v2-ui/PARITY.md` §1.2). The
+  talent-directory filter API was added on 2026-11-08; no employer UI is planned
+  while self-service employer discovery remains dropped by design.
 
 This is the build list still to do for V2, in the order it was worked through. It
 exists so progress is visible and nothing gets forgotten. UI readiness and the

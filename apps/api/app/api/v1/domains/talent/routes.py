@@ -21,6 +21,7 @@ from app.api.v1.domains.talent.schemas import (
     ShareIn,
     ShareListOut,
     ShareRevokedOut,
+    TalentDirectoryOut,
     TalentProfileOut,
     TalentTranscriptOut,
 )
@@ -36,6 +37,28 @@ router = APIRouter(
     tags=["talent"],
     dependencies=[Depends(require_flag(flags.TALENT_PROFILE))],
 )
+
+
+@router.get("/directory", response_model=TalentDirectoryOut)
+def talent_directory(
+    language: str | None = None,
+    language_level: str | None = None,
+    level: str | None = None,
+    status: str | None = None,
+    background: str | None = None,
+    _staff: User = Depends(require_permission("talent.read")),
+    db: Session = Depends(get_db),
+) -> dict:
+    return {
+        "students": talent.directory(
+            db,
+            language=language,
+            language_level=language_level,
+            level=level,
+            status=status,
+            background=background,
+        )
+    }
 
 
 @router.get("/me", response_model=TalentProfileOut)

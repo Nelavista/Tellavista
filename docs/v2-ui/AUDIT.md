@@ -40,7 +40,9 @@ The current launch position is:
   cutover is pending; analytics and error tracking are not wired. The V2 API now
   supports the approved talent-directory language, level, visibility-status and
   background filters at `/v1/talent/directory`; employer self-service UI remains
-  intentionally out of launch scope.
+  intentionally out of launch scope. FUTA's verified taxonomy seed and Course
+  provenance fields/importer are now implemented; unverified department course
+  lists remain intentionally absent.
 
 ## 1. Current stack
 

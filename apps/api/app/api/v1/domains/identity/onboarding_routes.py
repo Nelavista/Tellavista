@@ -57,7 +57,16 @@ def courses(
     db: Session = Depends(get_db),
 ) -> list[CourseOut]:
     return [
-        CourseOut(id=row.id, code=row.code, title=row.title, level=row.level)
+        CourseOut(
+            id=row.id,
+            code=row.code,
+            title=row.title,
+            level=row.level,
+            semester=row.semester,
+            course_type=row.course_type,
+            description=row.description,
+            source=row.source,
+        )
         for row in onboarding.list_courses(db, department_id, level=level)
     ]
 

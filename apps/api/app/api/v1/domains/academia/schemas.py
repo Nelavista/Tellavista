@@ -167,6 +167,10 @@ class CourseDetailOut(BaseModel):
     code: str
     title: str
     level: str
+    semester: str | None = None
+    course_type: str | None = None
+    description: str | None = None
+    source: str | None = None
     department: str
     faculty: str
     university: str

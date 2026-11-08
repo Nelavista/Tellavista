@@ -63,6 +63,10 @@ class Course(Base, TimestampMixin):
     code: Mapped[str] = mapped_column(String(20), nullable=False)
     title: Mapped[str] = mapped_column(String(255), nullable=False)
     level: Mapped[str] = mapped_column(String(10), nullable=False)
+    semester: Mapped[str | None] = mapped_column(String(20))
+    course_type: Mapped[str | None] = mapped_column(String(20))
+    description: Mapped[str | None] = mapped_column(Text)
+    source: Mapped[str | None] = mapped_column(String(30))
     __table_args__ = (UniqueConstraint("department_id", "code", "level", name="uq_course_dept_level_code"),)
 
     materials: Mapped[list[Material]] = relationship(back_populates="course")

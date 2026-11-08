@@ -16,7 +16,7 @@ from app.models.academia import Course, Department, Faculty, Material, Universit
 from app.models.admin import ROLE_STUDENT, Role
 from app.models.identity import User
 from app.models.platform import PlatformSettings
-from app.seed import all_language, curriculum
+from app.seed import all_language, curriculum, futa
 from app.seed.roles import seed_roles
 from app.services.platform.settings import get_platform_settings
 
@@ -114,6 +114,11 @@ def run() -> dict[str, int]:
         created["all_assessments"] = all_seeded["assessments"]
         created["all_tracks"] = all_seeded["tracks"]
         created["courses"] += seeded["courses"]
+        futa_seeded = futa.seed(db)
+        created["futa_universities"] = futa_seeded["universities"]
+        created["futa_faculties"] = futa_seeded["faculties"]
+        created["futa_departments"] = futa_seeded["departments"]
+        created["futa_courses"] = futa_seeded["courses"]
 
         for i in range(1, 3):
             email = f"student{i}@{FAKE_DOMAIN}"

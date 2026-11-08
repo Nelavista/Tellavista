@@ -223,6 +223,10 @@ def _export_taxonomy(
                             "code": code,
                             "title": title,
                             "level": str(_get(course, "level", "")).strip(),
+                            "semester": _get(course, "semester", None),
+                            "course_type": _get(course, "course_type", None),
+                            "description": _get(course, "description", None),
+                            "source": _get(course, "source", None),
                         }
                     )
                 dept_rows.append({"name": dept_name, "courses": course_rows})

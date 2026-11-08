@@ -289,6 +289,10 @@ class CourseOut(BaseModel):
     code: str
     title: str
     level: str
+    semester: str | None = None
+    course_type: str | None = None
+    description: str | None = None
+    source: str | None = None
 
 
 class SemesterOut(BaseModel):
@@ -304,6 +308,10 @@ class EnrolmentOut(BaseModel):
     code: str
     title: str
     level: str
+    semester: str | None = None
+    course_type: str | None = None
+    description: str | None = None
+    source: str | None = None
     session_id: int
     semester_id: int | None
     status: str

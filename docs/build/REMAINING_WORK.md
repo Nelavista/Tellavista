@@ -11,8 +11,9 @@ admin controls, the B6 answer drafts and B7 re-verification prompt are closed, a
 the API suite was run green - see Verification below. UI readiness is tracked
 separately in `docs/v2-ui/AUDIT.md`. **New on 2026-11-04:** V1 `main` added a
   post-build feature delta - the African Languages Lab, the language profile,
-structured scored tasks, the Impact page and the FUTA taxonomy seed. None of it is
-  in V2; it is tracked as §I below and in `docs/v2-ui/PARITY.md` §1.2). The
+  structured scored tasks and the Impact page. FUTA taxonomy, Course provenance
+  fields and importer support were added on 2026-11-08; the remaining delta is
+  tracked as §I below and in `docs/v2-ui/PARITY.md` §1.2). The
   talent-directory filter API was added on 2026-11-08; no employer UI is planned
   while self-service employer discovery remains dropped by design.
 
@@ -298,10 +299,12 @@ superset of V1. They are also recorded in `docs/v2-ui/PARITY.md` §1.2 and
 - [ ] **I6 — Admin and talent search.** Add language/level/status/practical/background
   filters to the admin candidate/talent surface if ALL is ported. V2 has no
   employer self-service; do not rebuild V1's employer discover page by accident.
-- [ ] **I7 — FUTA taxonomy and course provenance.** Import the verified FUTA
-  taxonomy or seed it natively. V2's `Course` model currently has no `semester`,
-  `course_type`, `description` or `source`, and `services/imports/v1.py` drops the
-  V1 values. Add the fields and importer support before relying on the seed.
+- [x] **I7 — FUTA taxonomy and course provenance.** V2 now seeds the verified FUTA
+  school/department structure and the 35 published Surveying & GeoInformatics
+  course rows with `source="futa_official"`. `Course` now carries `semester`,
+  `course_type`, `description` and `source`; the V1 export/import bridge preserves
+  and updates those values. The remaining FUTA work is limited to sourcing and
+  verifying additional department course lists before adding them.
 - [ ] **I8 — AI prompt hardening.** Apply V1's untrusted-content delimiter
   escaping to V2's Ask/practice AI prompts. V2's `OpenRouterProvider` currently
   interpolates the raw question and retrieved text into one prompt, and V2

@@ -1424,6 +1424,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/talent/directory": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Talent Directory */
+        get: operations["talent_directory_v1_talent_directory_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/talent/me": {
         parameters: {
             query?: never;
@@ -3640,6 +3657,14 @@ export interface components {
             title: string;
             /** Level */
             level: string;
+            /** Semester */
+            semester?: string | null;
+            /** Course Type */
+            course_type?: string | null;
+            /** Description */
+            description?: string | null;
+            /** Source */
+            source?: string | null;
             /** Department */
             department: string;
             /** Faculty */
@@ -3674,6 +3699,14 @@ export interface components {
             title: string;
             /** Level */
             level: string;
+            /** Semester */
+            semester?: string | null;
+            /** Course Type */
+            course_type?: string | null;
+            /** Description */
+            description?: string | null;
+            /** Source */
+            source?: string | null;
         };
         /** CoursePracticeOut */
         CoursePracticeOut: {
@@ -3825,6 +3858,14 @@ export interface components {
             title: string;
             /** Level */
             level: string;
+            /** Semester */
+            semester?: string | null;
+            /** Course Type */
+            course_type?: string | null;
+            /** Description */
+            description?: string | null;
+            /** Source */
+            source?: string | null;
             /** Session Id */
             session_id: number;
             /** Semester Id */
@@ -5899,6 +5940,32 @@ export interface components {
             languages: components["schemas"]["TalentLanguageOut"][];
             /** Location */
             location?: string | null;
+        };
+        /** TalentDirectoryItemOut */
+        TalentDirectoryItemOut: {
+            /** Id */
+            id: number;
+            /** Display Name */
+            display_name?: string | null;
+            /** Visibility */
+            visibility: string;
+            /** University */
+            university?: string | null;
+            /** Department */
+            department?: string | null;
+            /** Level */
+            level?: string | null;
+            /** Background */
+            background?: string | null;
+            /** Location */
+            location?: string | null;
+            /** Languages */
+            languages: components["schemas"]["TalentLanguageOut"][];
+        };
+        /** TalentDirectoryOut */
+        TalentDirectoryOut: {
+            /** Students */
+            students: components["schemas"]["TalentDirectoryItemOut"][];
         };
         /** TalentLanguageOut */
         TalentLanguageOut: {
@@ -9404,6 +9471,43 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["CandidateListOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    talent_directory_v1_talent_directory_get: {
+        parameters: {
+            query?: {
+                language?: string | null;
+                language_level?: string | null;
+                level?: string | null;
+                status?: string | null;
+                background?: string | null;
+            };
+            header?: {
+                authorization?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TalentDirectoryOut"];
                 };
             };
             /** @description Validation Error */

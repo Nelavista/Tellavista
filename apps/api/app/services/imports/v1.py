@@ -225,9 +225,22 @@ def _upsert_course(db: Session, department_id: int, row: dict) -> bool:
             Course.department_id == department_id, Course.code == code, Course.level == level
         )
     )
+    metadata = {
+        "semester": _clip(row.get("semester"), 20),
+        "course_type": _clip(row.get("course_type"), 20),
+        "description": _clip(row.get("description"), 5000),
+        "source": _clip(row.get("source"), 30),
+    }
     if exists is not None:
+        changed = False
+        for field, value in metadata.items():
+            if value is not None and getattr(exists, field) != value:
+                setattr(exists, field, value)
+                changed = True
+        if changed:
+            db.flush()
         return False
-    db.add(Course(department_id=department_id, code=code, title=title, level=level))
+    db.add(Course(department_id=department_id, code=code, title=title, level=level, **metadata))
     db.flush()
     return True
 

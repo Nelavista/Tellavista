@@ -13,7 +13,15 @@ import { ArrowLeft, CheckCircle2, ChevronDown, ChevronUp, RotateCcw, XCircle } f
 import * as React from 'react';
 import { Link, useLocation, useParams } from 'react-router-dom';
 
+import { LanguageTaskForm } from '../components/LanguageTaskForm';
 import { draftKey, useDraft } from '../lib/draft';
+import {
+  buildLanguageAnswer,
+  emptyResponses,
+  hasEnoughToSubmit,
+  languageTaskSpec,
+  type LanguageResponses,
+} from '../lib/language-task';
 import { ApiError, http } from '../lib/http';
 import { buildAnswer, isAnswerValue, practiceControl, type PracticeControl } from '../lib/practice';
 import { useApiResource } from '../lib/resource';
@@ -177,16 +185,32 @@ export function Practice(): JSX.Element {
   const [result, setResult] = React.useState<PracticeResultOut | null>(null);
   const [busy, setBusy] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
+  const [languageResponses, setLanguageResponses] = React.useState<LanguageResponses>({});
 
-  const control = React.useMemo(
-    () =>
-      resource.status === 'ready'
-        ? practiceControl(resource.data.input_schema, resource.data.answer_schema)
-        : null,
+  const languageSpec = React.useMemo(
+    () => (resource.status === 'ready' ? languageTaskSpec(resource.data.input_schema) : null),
     [resource],
   );
 
-  const answer = control ? buildAnswer(control, value) : null;
+  React.useEffect(() => {
+    if (languageSpec) setLanguageResponses(emptyResponses(languageSpec));
+  }, [languageSpec]);
+
+  const control = React.useMemo(
+    () =>
+      !languageSpec && resource.status === 'ready'
+        ? practiceControl(resource.data.input_schema, resource.data.answer_schema)
+        : null,
+    [resource, languageSpec],
+  );
+
+  const answer = languageSpec
+    ? hasEnoughToSubmit(languageSpec, languageResponses)
+      ? buildLanguageAnswer(languageSpec, languageResponses)
+      : null
+    : control
+      ? buildAnswer(control, value)
+      : null;
 
   async function submit(): Promise<void> {
     if (!answer) return;
@@ -304,6 +328,7 @@ export function Practice(): JSX.Element {
                 onClick={() => {
                   setResult(null);
                   setValue(null);
+                  if (languageSpec) setLanguageResponses(emptyResponses(languageSpec));
                 }}
               >
                 <RotateCcw aria-hidden="true" size={14} />
@@ -311,6 +336,22 @@ export function Practice(): JSX.Element {
               </Button>
               <Link to={backLink(location.state)}>Back to the path</Link>
             </div>
+          </div>
+        </Panel>
+      ) : languageSpec ? (
+        <Panel title="Your answer">
+          <LanguageTaskForm
+            spec={languageSpec}
+            responses={languageResponses}
+            onChange={setLanguageResponses}
+          />
+          <div className="nv-row" style={{ marginTop: 'var(--nv-space-lg)' }}>
+            <Button disabled={busy || !answer} type="button" onClick={() => void submit()}>
+              {busy ? 'Scoring…' : 'Submit for scoring'}
+            </Button>
+            {!answer ? (
+              <span className="nv-muted">Answer every item before submitting.</span>
+            ) : null}
           </div>
         </Panel>
       ) : control ? (

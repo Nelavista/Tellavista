@@ -118,7 +118,12 @@ def complete_onboarding(db: Session, user: User) -> UserProfile:
 
 
 def set_languages(db: Session, user: User, languages: list[tuple[str, str]]) -> list[UserLanguage]:
-    """Replace the student's languages. Duplicates are rejected, not silently merged."""
+    """Replace the student's languages. Duplicates are rejected, not silently merged.
+
+    The simple Settings editor sends only name and level. Capability flags and
+    dialect already on a matching row are carried over so editing that list does
+    not quietly erase the richer language profile.
+    """
     seen: set[str] = set()
     cleaned: list[tuple[str, str]] = []
     for language, level in languages:
@@ -133,11 +138,29 @@ def set_languages(db: Session, user: User, languages: list[tuple[str, str]]) -> 
         seen.add(key)
         cleaned.append((name[:60], level))
 
-    for row in db.scalars(select(UserLanguage).where(UserLanguage.user_id == user.id)):
+    existing = {
+        row.language.strip().lower(): row
+        for row in db.scalars(select(UserLanguage).where(UserLanguage.user_id == user.id))
+    }
+    for row in list(existing.values()):
         db.delete(row)
     db.flush()
 
-    rows = [UserLanguage(user_id=user.id, language=name, level=level) for name, level in cleaned]
+    rows = [
+        UserLanguage(
+            user_id=user.id,
+            language=name,
+            level=level,
+            dialect=existing[key].dialect if key in existing else None,
+            can_speak=existing[key].can_speak if key in existing else False,
+            can_read=existing[key].can_read if key in existing else False,
+            can_write=existing[key].can_write if key in existing else False,
+            can_transcribe=existing[key].can_transcribe if key in existing else False,
+            can_translate=existing[key].can_translate if key in existing else False,
+        )
+        for name, level in cleaned
+        for key in [name.lower()]
+    ]
     db.add_all(rows)
     db.flush()
     return rows

@@ -281,19 +281,26 @@ superset of V1. They are also recorded in `docs/v2-ui/PARITY.md` §1.2 and
   and 10 ordered tracks through `app.seed.all_language`. The language profile,
   dedicated hub/filter UI and project-template parity remain.
 - [~] **I2 — V2 schema for language data.** V2 now has the ALL programme,
-  skill language/tags and career-track tables. The language profile,
-  per-submission result model and remaining V1 task metadata still need an
-  expand/contract migration if those capabilities are ported.
-- [ ] **I3 — Structured scoring and assessment gate.** Port the deterministic task
-  kinds (transcription WER, translation chrF, labeling accuracy/repeat
-  consistency, recording requirements) into V2's task/assessment model, and
-  enforce the per-skill scored-practice prerequisite. Expected answers must never
-  be returned to the student.
-- [ ] **I4 — Web screens.** Add `/skills/african-languages` and
-  `/skills/languages` (plus the delete action), language/tag/programme filters on
-  `/skills`, and per-skill evidence/academic background/languages on
-  `/transcript` and `/talent`. Add the `/impact` page and landing band only after
-  the metrics are approved.
+  skill language/tags and career-track tables, `user_languages.dialect` plus the
+  five self-reported capability flags, and persisted `practice_attempts.score` /
+  `result` (migration `20261108_1200`). Verified capabilities are still derived
+  at read time, never stored. Remaining V1 task metadata can be added when a
+  concrete screen needs it.
+- [~] **I3 — Structured scoring and assessment gate.** Deterministic scoring is
+  ported in `app/services/skills/language_tasks.py`: transcription word/character
+  accuracy and WER, translation chrF plus key terms, labeling field accuracy and
+  repeat consistency, and recording technical requirements. Practice returns and
+  stores the 0-100 score; assessments grade each ALL task against its own spec and
+  award its points at the configured pass score (70 by default). Expected answers
+  stay server-side and are stripped from practice briefs and sitting payloads.
+  **Still open:** the per-skill scored-practice prerequisite before an assessment
+  may be started.
+- [~] **I4 — Web screens.** `/skills/languages` now edits the self-reported
+  profile and shows verified capabilities separately, and the practice screen
+  renders all four structured task kinds. `/impact` and the landing band are live
+  with honest copy: no unverified reach numbers. **Still open:**
+  `/skills/african-languages` hub, language/tag/programme filters on `/skills`, and
+  per-skill evidence/academic background/languages on `/transcript` and `/talent`.
 - [ ] **I5 — Mobile lockstep.** Mirror the new ALL hub, language profile and
   structured task screens through deep links and Home actions (D2/ADR-0012). Add
   a parser test for each new route.

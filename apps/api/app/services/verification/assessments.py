@@ -36,6 +36,7 @@ from app.models.verification import (
     PracticalTask,
 )
 from app.services import audit
+from app.services.skills.language_tasks import public_task_spec
 from app.services.skills.tasks import validate
 from app.services.verification import state
 from app.services.verification.transcript import add_entry
@@ -69,6 +70,19 @@ def _assessment(db: Session, slug: str) -> Assessment:
     return assessment
 
 
+def _public_payload(payload: dict | None) -> dict | None:
+    if not isinstance(payload, dict) or not isinstance(payload.get("task_spec"), dict):
+        return payload
+    return {**payload, "task_spec": public_task_spec(payload["task_spec"])}
+
+
+def _public_input_schema(template: TaskTemplate) -> dict:
+    schema = template.input_schema
+    if not isinstance(schema, dict) or not isinstance(schema.get("task_spec"), dict):
+        return schema
+    return {**schema, "task_spec": public_task_spec(schema["task_spec"])}
+
+
 def _attempt_payload(
     attempt: AssessmentAttempt,
     tasks: list[AssessmentTask],
@@ -91,11 +105,13 @@ def _attempt_payload(
             {
                 "task_id": task.id,
                 "ordinal": task.ordinal,
-                "payload": task.payload,
+                # Gold answers never leave the server before submission: a task
+                # spec in `payload` is stripped of references and expected values.
+                "payload": _public_payload(task.payload),
                 "points": task.points,
                 "template_id": task.template_id,
                 "input_schema": (
-                    templates[task.template_id].input_schema
+                    _public_input_schema(templates[task.template_id])
                     if task.template_id in templates
                     else None
                 ),
@@ -187,6 +203,20 @@ def _templates(db: Session, tasks: list[AssessmentTask]) -> dict[int, TaskTempla
     return {row.id: row for row in db.scalars(select(TaskTemplate).where(TaskTemplate.id.in_(ids)))}
 
 
+def _task_config(template: TaskTemplate | None, task: AssessmentTask) -> dict:
+    """The config a validator needs for this assessment task.
+
+    A sitting may reuse a practice template while carrying its own task spec in
+    `payload`; the spec on the task always wins, so a different gold task is not
+    scored against the practice sample.
+    """
+    config = dict(template.config or {}) if template else {}
+    payload = task.payload if isinstance(task.payload, dict) else {}
+    if isinstance(payload.get("task_spec"), dict):
+        config["task_spec"] = payload["task_spec"]
+    return config
+
+
 def _grade(
     tasks: list[AssessmentTask],
     answers: dict,
@@ -202,11 +232,12 @@ def _grade(
         if not isinstance(answer, dict):
             answer = {}
         template = templates.get(task.template_id) if task.template_id else None
+        task_config = _task_config(template, task)
         result = validate(
             template.validator if template else "exact_key",
             answer,
             task.expected_answer,
-            template.config if template else {},
+            task_config,
         )
         points = task.points if result.is_correct else 0
         earned += points
@@ -324,7 +355,7 @@ def review_attempt(db: Session, user: User, attempt_id: int) -> dict:
             template.validator if template else "exact_key",
             answer if isinstance(answer, dict) else {},
             task.expected_answer,
-            template.config if template else {},
+            _task_config(template, task),
         )
         payload.append(
             {

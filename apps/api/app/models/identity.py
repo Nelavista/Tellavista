@@ -223,7 +223,13 @@ class Consent(Base):
 
 
 class UserLanguage(Base, TimestampMixin):
-    """A language a student can work in; matching reads these rows."""
+    """A language a student can work in; matching reads these rows.
+
+    The capability flags are **self-reported**. What a student has actually
+    proven is never stored here: it is derived from verified language-specific
+    skills at read time, so selecting a language cannot verify it and the two
+    can never drift out of sync.
+    """
 
     __tablename__ = "user_languages"
 
@@ -234,6 +240,22 @@ class UserLanguage(Base, TimestampMixin):
     language: Mapped[str] = mapped_column(String(60), nullable=False)
     # "basic" | "conversational" | "fluent" | "native"
     level: Mapped[str] = mapped_column(String(20), default="fluent", server_default="fluent", nullable=False)
+    dialect: Mapped[str | None] = mapped_column(String(60))
+    can_speak: Mapped[bool] = mapped_column(
+        Boolean, default=False, server_default="false", nullable=False
+    )
+    can_read: Mapped[bool] = mapped_column(
+        Boolean, default=False, server_default="false", nullable=False
+    )
+    can_write: Mapped[bool] = mapped_column(
+        Boolean, default=False, server_default="false", nullable=False
+    )
+    can_transcribe: Mapped[bool] = mapped_column(
+        Boolean, default=False, server_default="false", nullable=False
+    )
+    can_translate: Mapped[bool] = mapped_column(
+        Boolean, default=False, server_default="false", nullable=False
+    )
 
     __table_args__ = (UniqueConstraint("user_id", "language", name="uq_user_language"),)
 

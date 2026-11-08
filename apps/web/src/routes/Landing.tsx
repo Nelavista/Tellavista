@@ -254,6 +254,35 @@ export function Landing(): JSX.Element {
         </Reveal>
       </section>
 
+      <section className="nv-container nv-section nv-section--tight">
+        <Reveal>
+          <div className="nv-card nv-stack" style={{ padding: 'var(--nv-space-xl)' }}>
+            <div className="nv-row nv-row--between" style={{ alignItems: 'flex-start' }}>
+              <div className="nv-stack nv-stack--tight">
+                <p className="nv-eyebrow">Impact</p>
+                <h2 className="nv-h1">A record we can stand behind.</h2>
+              </div>
+              <BadgeCheck aria-hidden="true" size={28} strokeWidth={1.4} />
+            </div>
+            <p className="nv-lede" style={{ maxWidth: '62ch' }}>
+              We publish what the product can prove: learning connected to evidence, evidence connected
+              to work, and work connected to a readable payout. Reach figures appear only when they are
+              verified against a current source.
+            </p>
+            <div className="nv-row nv-row--between" style={{ alignItems: 'flex-end' }}>
+              <p className="nv-muted" style={{ maxWidth: '44ch' }}>
+                No invented metrics, no borrowed testimonials. If a number is not defensible today, it is
+                not on the page.
+              </p>
+              <Link className="nv-link-arrow" to="/impact">
+                Read the impact page
+                <ArrowRight aria-hidden="true" size={15} />
+              </Link>
+            </div>
+          </div>
+        </Reveal>
+      </section>
+
       <section className="nv-container nv-section">
         <Reveal>
           <div className="nv-cta-band">

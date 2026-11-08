@@ -31,6 +31,9 @@ const AskNelavista = React.lazy(() =>
 );
 const Cbt = React.lazy(() => import('./routes/Cbt').then((m) => ({ default: m.Cbt })));
 const Skills = React.lazy(() => import('./routes/Skills').then((m) => ({ default: m.Skills })));
+const LanguageProfile = React.lazy(() =>
+  import('./routes/LanguageProfile').then((m) => ({ default: m.LanguageProfile })),
+);
 const SkillDetail = React.lazy(() =>
   import('./routes/SkillDetail').then((m) => ({ default: m.SkillDetail })),
 );
@@ -497,6 +500,14 @@ function RouteTable(): JSX.Element {
           element={
             <Protected>
               <Skills />
+            </Protected>
+          }
+        />
+        <Route
+          path="/skills/languages"
+          element={
+            <Protected>
+              <LanguageProfile />
             </Protected>
           }
         />

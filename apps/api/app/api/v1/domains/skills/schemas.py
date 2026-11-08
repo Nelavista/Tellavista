@@ -11,7 +11,7 @@ from __future__ import annotations
 from datetime import datetime
 from typing import Any
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class SkillOut(BaseModel):
@@ -124,6 +124,61 @@ class PracticeBriefOut(BaseModel):
     answer_schema: dict[str, Any]
     sample: Any | None = None
     version: int
+
+
+class LanguageCapabilityOut(BaseModel):
+    key: str
+    label: str
+
+
+class LanguageOptionOut(BaseModel):
+    key: str
+    label: str
+
+
+class VerifiedSkillOut(BaseModel):
+    id: int
+    slug: str
+    name: str
+
+
+class LanguageProfileOut(BaseModel):
+    """One language, with self-reported and verified capabilities kept apart.
+
+    `self_reported` is what the student ticked on their own profile.
+    `verified` is derived from verified language-specific skills and can never be
+    set by a profile edit.
+    """
+
+    language: str
+    label: str | None = None
+    dialect: str | None = None
+    proficiency: str
+    proficiency_label: str
+    self_reported: list[str]
+    verified: list[str]
+    verified_skills: list[VerifiedSkillOut]
+
+
+class LanguageProfileListOut(BaseModel):
+    languages: list[LanguageProfileOut]
+    capabilities: list[LanguageCapabilityOut]
+    catalog: list[LanguageOptionOut]
+
+
+class LanguageProfileIn(BaseModel):
+    language: str = Field(min_length=1, max_length=60)
+    level: str = Field(default="fluent", max_length=20)
+    dialect: str | None = Field(default=None, max_length=60)
+    can_speak: bool = False
+    can_read: bool = False
+    can_write: bool = False
+    can_transcribe: bool = False
+    can_translate: bool = False
+
+
+class LanguageProfileInList(BaseModel):
+    languages: list[LanguageProfileIn] = Field(default_factory=list, max_length=20)
 
 
 class PracticeResultOut(BaseModel):

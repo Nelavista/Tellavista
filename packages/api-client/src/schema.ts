@@ -170,6 +170,13 @@ export type EligibilityOut = Schemas['EligibilityOut'];
 export type ConsentOut = Schemas['ConsentOut'];
 export type ConsentListOut = Schemas['ConsentListOut'];
 
+// --- Language profile (ALL) --------------------------------------------------
+export type LanguageCapabilityOut = Schemas['LanguageCapabilityOut'];
+export type LanguageOptionOut = Schemas['LanguageOptionOut'];
+export type LanguageProfileOut = Schemas['LanguageProfileOut'];
+export type LanguageProfileListOut = Schemas['LanguageProfileListOut'];
+export type VerifiedSkillOut = Schemas['VerifiedSkillOut'];
+
 // --- Settings (B11) ---------------------------------------------------------
 export type LanguagesOut = Schemas['LanguagesOut'];
 export type AvailabilityOut = Schemas['AvailabilityOut'];

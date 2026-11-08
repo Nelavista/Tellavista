@@ -179,21 +179,10 @@ def validate_span_overlap(answer: dict, expected: dict, config: dict) -> Validat
     )
 
 
-def validate_all_language_task(answer: dict, expected: dict, config: dict) -> ValidationResult:
-    """Validate the canonical response envelope used by ALL task content.
-
-    The seed keeps the source task specification in the template input and stores
-    the answer key server-side. This validator deliberately accepts no partial
-    or missing response rows: language-data work must be complete before it can
-    be reviewed.
-    """
-    given = answer.get("responses")
-    wanted = expected.get("responses")
-    if not isinstance(given, dict) or not isinstance(wanted, dict):
-        return ValidationResult(False, 0, "Submit a response for every task item.")
+def _legacy_all_language_task(given: dict, wanted: dict, config: dict) -> ValidationResult:
+    """Old exact-answer behaviour for rows seeded before `task_spec` was stored."""
     if set(given) != set(wanted):
         return ValidationResult(False, 0, "Submit a response for every task item.")
-
     kind = str(config.get("task_kind", ""))
     if kind in {"labeling", "transcription"}:
         correct = given == wanted
@@ -228,6 +217,45 @@ def validate_all_language_task(answer: dict, expected: dict, config: dict) -> Va
         is_correct=correct,
         score=100 if correct else 0,
         feedback="Correct." if correct else "Review the task guidelines and try again.",
+    )
+
+
+def validate_all_language_task(answer: dict, expected: dict, config: dict) -> ValidationResult:
+    """Deterministic scoring for the four African Languages Lab task kinds.
+
+    Scoring is done from the task spec kept in `config["task_spec"]` (transcription
+    WER, translation chrF, labeling field accuracy and repeat consistency, and
+    recording technical requirements). The expected answer is still the gold copy
+    for the assessment gate; this function returns a partial score plus a pass
+    verdict, never a boolean-only mark.
+    """
+    from app.services.skills.language_tasks import TaskSpecError, score_task
+
+    given = answer.get("responses")
+    if not isinstance(given, dict):
+        return ValidationResult(False, 0, "Submit a response for every task item.")
+
+    spec = config.get("task_spec")
+    if not isinstance(spec, dict):
+        wanted = expected.get("responses")
+        if not isinstance(wanted, dict):
+            return ValidationResult(False, 0, "Submit a response for every task item.")
+        return _legacy_all_language_task(given, wanted, config)
+
+    try:
+        result = score_task(
+            spec,
+            given,
+            pass_score=int(config.get("pass_score", 70)),
+            reveal=True,
+        )
+    except TaskSpecError as error:
+        raise ApiError(500, "validator_config_invalid", "This task type is not configured.") from error
+    return ValidationResult(
+        is_correct=result.is_correct,
+        score=result.score,
+        feedback=result.feedback,
+        details=result.summary,
     )
 
 
@@ -274,6 +302,16 @@ def _published_template(db: Session, template_id: int) -> TaskTemplate:
     return template
 
 
+def _public_input_schema(template: TaskTemplate) -> dict:
+    """Strip gold answers out of the ALL task spec before it leaves the API."""
+    from app.services.skills.language_tasks import public_task_spec
+
+    schema = template.input_schema
+    if not isinstance(schema, dict) or not isinstance(schema.get("task_spec"), dict):
+        return schema
+    return {**schema, "task_spec": public_task_spec(schema["task_spec"])}
+
+
 def practice_brief(db: Session, template_id: int) -> dict:
     """What the student sees: input and instructions, never the expected answer."""
     template = _published_template(db, template_id)
@@ -283,7 +321,7 @@ def practice_brief(db: Session, template_id: int) -> dict:
         "slug": template.slug,
         "name": template.name,
         "instructions_md": template.instructions_md,
-        "input_schema": template.input_schema,
+        "input_schema": _public_input_schema(template),
         "answer_schema": template.answer_schema,
         "sample": config.get("sample"),
         "version": template.version,
@@ -314,6 +352,8 @@ def submit_practice(
         template_id=template.id,
         answer=answer,
         is_correct=result.is_correct,
+        score=result.score,
+        result={"summary": result.details, "feedback": result.feedback},
         feedback=result.feedback,
         duration_ms=duration_ms,
     )

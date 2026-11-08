@@ -30,13 +30,21 @@ PROGRAM = "all"
 VALIDATOR = "all_language_task"
 
 
+def _gold_value(expected: Any) -> Any:
+    """One accepted answer for a gold row when the spec lists alternatives."""
+    if isinstance(expected, list):
+        return expected[0] if expected else ""
+    return expected
+
+
 def _expected_answer(spec: dict[str, Any]) -> dict[str, Any]:
     kind = spec["kind"]
     if kind == "labeling":
         responses: dict[str, dict[str, Any]] = {}
         for item in spec.get("items", []):
             responses[item["id"]] = {
-                field["name"]: field["expected"] for field in item.get("fields", [])
+                field["name"]: _gold_value(field.get("expected"))
+                for field in item.get("fields", [])
             }
         return {"responses": responses}
     if kind == "transcription":
@@ -45,6 +53,14 @@ def _expected_answer(spec: dict[str, Any]) -> dict[str, Any]:
         return {"responses": {item["id"]: item["references"][0] for item in spec.get("items", [])}}
     if kind == "recording":
         requirements = spec.get("requirements", {})
+        metadata = {
+            field["name"]: (
+                (field.get("options") or ["sample"])[0]
+                if field.get("options")
+                else "sample"
+            )
+            for field in spec.get("metadata_fields", [])
+        }
         return {
             "responses": {
                 item["id"]: {
@@ -55,6 +71,7 @@ def _expected_answer(spec: dict[str, Any]) -> dict[str, Any]:
                 }
                 for item in spec.get("prompts", [])
             }
+            | ({"metadata": metadata} if metadata else {})
         }
     raise ValueError(f"Unsupported ALL task kind: {kind}")
 
@@ -146,6 +163,7 @@ def _content(
             validator=VALIDATOR,
             config={
                 "task_kind": task_spec["kind"],
+                "task_spec": task_spec,
                 "expected_answer": expected,
                 "requirements": task_spec.get("requirements", {}),
             },
@@ -163,6 +181,7 @@ def _content(
         template.validator = VALIDATOR
         template.config = {
             "task_kind": task_spec["kind"],
+            "task_spec": task_spec,
             "expected_answer": expected,
             "requirements": task_spec.get("requirements", {}),
         }

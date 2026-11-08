@@ -9,7 +9,7 @@
  */
 import type { SkillsOut } from '@nelavista/api-client';
 import { Badge, Banner, Button, EmptyState, ErrorState, PageHeader, Panel, Skeleton } from '@nelavista/ui';
-import { ArrowRight, BookOpen, Sparkles } from 'lucide-react';
+import { ArrowRight, BookOpen, Languages, Sparkles } from 'lucide-react';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 
@@ -70,10 +70,16 @@ export function Skills(): JSX.Element {
         title="Skills"
         description="Learn it, practise it, then prove it. A finished lesson is progress, never proof."
         actions={
-          <Link className="nv-button nv-button--secondary nv-button--sm" to="/skills/my-learning">
-            <BookOpen aria-hidden="true" size={15} />
-            Continue learning
-          </Link>
+          <div className="nv-row">
+            <Link className="nv-button nv-button--ghost nv-button--sm" to="/skills/languages">
+              <Languages aria-hidden="true" size={15} />
+              Language profile
+            </Link>
+            <Link className="nv-button nv-button--secondary nv-button--sm" to="/skills/my-learning">
+              <BookOpen aria-hidden="true" size={15} />
+              Continue learning
+            </Link>
+          </div>
         }
       />
 

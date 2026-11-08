@@ -13,7 +13,15 @@ from app.models.skills import (
 from app.models.verification import Assessment, AssessmentTask
 from app.seed import all_language
 from app.seed.all_skills import CATEGORIES, SKILLS, TRACKS
-from app.services.skills.tasks import validate
+from app.services.skills.tasks import practice_brief, validate
+
+
+def _has_key(value, key: str) -> bool:
+    if isinstance(value, dict):
+        return key in value or any(_has_key(item, key) for item in value.values())
+    if isinstance(value, list):
+        return any(_has_key(item, key) for item in value)
+    return False
 
 
 def test_all_catalogue_has_the_complete_v2_shape(db) -> None:
@@ -46,6 +54,11 @@ def test_all_catalogue_has_the_complete_v2_shape(db) -> None:
         assert template is not None
         assert template.status == "published"
         assert template.validator == all_language.VALIDATOR
+        brief = practice_brief(db, template.id)
+        for secret_key in ("expected", "reference", "references", "speaker", "start"):
+            assert not _has_key(
+                brief["input_schema"], secret_key
+            ), f"{skill.slug} leaked {secret_key} in the practice brief"
         assessment = db.scalar(
             select(Assessment).where(Assessment.slug == f"{skill.slug}-assessment")
         )
@@ -54,11 +67,17 @@ def test_all_catalogue_has_the_complete_v2_shape(db) -> None:
             select(AssessmentTask).where(AssessmentTask.assessment_id == assessment.id)
         )
         assert task is not None
+        # The assessment may use a different gold task than the practice sample;
+        # its own payload spec is what that answer must be scored against.
+        config = dict(template.config)
+        payload = task.payload if isinstance(task.payload, dict) else {}
+        if isinstance(payload.get("task_spec"), dict):
+            config["task_spec"] = payload["task_spec"]
         result = validate(
             template.validator,
             task.expected_answer,
             task.expected_answer,
-            template.config,
+            config,
         )
         assert result.is_correct
 

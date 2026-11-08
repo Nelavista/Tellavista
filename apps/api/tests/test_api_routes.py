@@ -30,6 +30,7 @@ from app.models.skills import (
     LearningPathStep,
     Lesson,
 )
+from app.models.identity import UserLanguage
 from app.models.verification import Assessment, AssessmentTask
 
 

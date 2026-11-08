@@ -743,6 +743,24 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/skills/languages": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Profile */
+        get: operations["get_profile_v1_skills_languages_get"];
+        /** Set Profile */
+        put: operations["set_profile_v1_skills_languages_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/skills": {
         parameters: {
             query?: never;
@@ -4098,6 +4116,13 @@ export interface components {
             /** Joined At */
             joined_at?: string | null;
         };
+        /** LanguageCapabilityOut */
+        LanguageCapabilityOut: {
+            /** Key */
+            key: string;
+            /** Label */
+            label: string;
+        };
         /** LanguageIn */
         LanguageIn: {
             /** Language */
@@ -4108,12 +4133,96 @@ export interface components {
              */
             level: string;
         };
+        /** LanguageOptionOut */
+        LanguageOptionOut: {
+            /** Key */
+            key: string;
+            /** Label */
+            label: string;
+        };
         /** LanguageOut */
         LanguageOut: {
             /** Language */
             language: string;
             /** Level */
             level: string;
+        };
+        /** LanguageProfileIn */
+        LanguageProfileIn: {
+            /** Language */
+            language: string;
+            /**
+             * Level
+             * @default fluent
+             */
+            level: string;
+            /** Dialect */
+            dialect?: string | null;
+            /**
+             * Can Speak
+             * @default false
+             */
+            can_speak: boolean;
+            /**
+             * Can Read
+             * @default false
+             */
+            can_read: boolean;
+            /**
+             * Can Write
+             * @default false
+             */
+            can_write: boolean;
+            /**
+             * Can Transcribe
+             * @default false
+             */
+            can_transcribe: boolean;
+            /**
+             * Can Translate
+             * @default false
+             */
+            can_translate: boolean;
+        };
+        /** LanguageProfileInList */
+        LanguageProfileInList: {
+            /** Languages */
+            languages?: components["schemas"]["LanguageProfileIn"][];
+        };
+        /** LanguageProfileListOut */
+        LanguageProfileListOut: {
+            /** Languages */
+            languages: components["schemas"]["LanguageProfileOut"][];
+            /** Capabilities */
+            capabilities: components["schemas"]["LanguageCapabilityOut"][];
+            /** Catalog */
+            catalog: components["schemas"]["LanguageOptionOut"][];
+        };
+        /**
+         * LanguageProfileOut
+         * @description One language, with self-reported and verified capabilities kept apart.
+         *
+         *     `self_reported` is what the student ticked on their own profile.
+         *     `verified` is derived from verified language-specific skills and can never be
+         *     set by a profile edit.
+         */
+        LanguageProfileOut: {
+            /** Language */
+            language: string;
+            /** Label */
+            label?: string | null;
+            /** Dialect */
+            dialect?: string | null;
+            /** Proficiency */
+            proficiency: string;
+            /** Proficiency Label */
+            proficiency_label: string;
+            /** Self Reported */
+            self_reported: string[];
+            /** Verified */
+            verified: string[];
+            /** Verified Skills */
+            verified_skills: components["schemas"]["VerifiedSkillOut"][];
         };
         /** LanguagesIn */
         LanguagesIn: {
@@ -6403,6 +6512,15 @@ export interface components {
             /** Verified */
             verified: boolean;
         };
+        /** VerifiedSkillOut */
+        VerifiedSkillOut: {
+            /** Id */
+            id: number;
+            /** Slug */
+            slug: string;
+            /** Name */
+            name: string;
+        };
         /** VerifyEmailIn */
         VerifyEmailIn: {
             /** Token */
@@ -7988,6 +8106,72 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["MessageOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_profile_v1_skills_languages_get: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LanguageProfileListOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    set_profile_v1_skills_languages_put: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LanguageProfileInList"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LanguageProfileListOut"];
                 };
             };
             /** @description Validation Error */

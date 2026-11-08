@@ -176,7 +176,31 @@ def test_upgrade_downgrade_upgrade_round_trip(tmp_path: Path) -> None:
 
     # Walk back one revision at a time. Each downgrade must remove exactly its own
     # revision's tables and leave every earlier one in place (expand-only).
-    # The seed revision is data-only, so unwind it first: it removes no tables.
+    # Migrations newer than 20261022_1000 are column-only or add the ALL catalogue;
+    # unwind them before the seed revision so this walk stays correct as new
+    # expand-only revisions are added above it.
+    profile_columns = {
+        "dialect",
+        "can_speak",
+        "can_read",
+        "can_write",
+        "can_transcribe",
+        "can_translate",
+    }
+    seed_revision = "20261022_1000"
+    for _ in range(20):
+        with engine.connect() as conn:
+            current = conn.execute(text("SELECT version_num FROM alembic_version")).scalar_one()
+        if current == seed_revision:
+            break
+        newer_down = _alembic("downgrade", "-1", db_url=url)
+        assert newer_down.returncode == 0, newer_down.stderr
+    else:
+        raise AssertionError("could not unwind newer revisions down to the seed revision")
+    assert profile_columns.isdisjoint(
+        {column["name"] for column in inspect(engine).get_columns("user_languages")}
+    )
+    # The seed revision is data-only, so unwind it next: it removes no tables.
     seed_down = _alembic("downgrade", "-1", db_url=url)
     assert seed_down.returncode == 0, seed_down.stderr
     assert PLATFORM_TABLES <= set(inspect(engine).get_table_names())

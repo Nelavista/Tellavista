@@ -273,6 +273,10 @@ class PracticeAttempt(Base):
     )
     answer: Mapped[dict] = mapped_column(JSONPayload, nullable=False)
     is_correct: Mapped[bool | None] = mapped_column(Boolean)
+    # Deterministic 0-100 score and the score breakdown (never the answer key).
+    # Stored so "how did I do on this task" does not depend on re-scoring a row.
+    score: Mapped[int | None] = mapped_column(Integer)
+    result: Mapped[dict | None] = mapped_column(JSONPayload)
     feedback: Mapped[str | None] = mapped_column(Text)
     duration_ms: Mapped[int | None] = mapped_column(Integer)
     created_at: Mapped[datetime] = mapped_column(

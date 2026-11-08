@@ -16,6 +16,7 @@ from app.api.v1.domains.opportunities import routes as opportunity_routes
 from app.api.v1.domains.ops import routes as ops_routes
 from app.api.v1.domains.platform import routes as platform_routes
 from app.api.v1.domains.skills import content_routes as skills_content_routes
+from app.api.v1.domains.skills import language_routes as skills_language_routes
 from app.api.v1.domains.skills import routes as skills_routes
 from app.api.v1.domains.talent import routes as talent_routes
 from app.api.v1.domains.verification import routes as verification_routes
@@ -30,7 +31,9 @@ api_v1_router.include_router(identity_routes.router)
 api_v1_router.include_router(profile_routes.router)
 api_v1_router.include_router(onboarding_routes.router)
 
-# Phase 2/3 — learning, practice and proof.
+# Phase 2/3 — learning, practice and proof. The language profile mounts before
+# the catalog so `/skills/languages` is not captured by `/skills/{skill_slug}`.
+api_v1_router.include_router(skills_language_routes.router)
 api_v1_router.include_router(skills_routes.router)
 api_v1_router.include_router(skills_content_routes.router)
 api_v1_router.include_router(verification_routes.router)

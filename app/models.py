@@ -54,7 +54,8 @@ class User(db.Model):
     email_verify_token_hash = db.Column(db.String(64), nullable=True, index=True)
     email_verify_token_expiry = db.Column(db.DateTime, nullable=True)
     is_admin = db.Column(db.Boolean, nullable=False, default=False)
-    # Which top-level experience the user starts in: 'academia' or 'tech_skills'.
+    # Which student space the user starts in: 'academia', 'skills', 'opportunities'
+    # or 'campus' (see dashboard_routes.VALID_PATHS).
     # NULL means "never chosen" — legacy accounts default to Academia at login time
     # (see routes/auth_routes.py) rather than being forced through path selection.
     preferred_path = db.Column(db.String(20), nullable=True)

@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Choose Your Path · Nelavista</title>
   <meta name="theme-color" content="#050810">
-  <meta name="description" content="Choose how you want to grow with Nelavista — Academia or Tech & Skills. Switch anytime.">
+  <meta name="description" content="Choose how you want to grow with Nelavista — Academia, Skills, Opportunities or Campus. Switch anytime.">
 
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
@@ -16,6 +16,11 @@
   <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
 
   <style>
+    /* Additional space accents; dark first, then the light-theme values so the
+       Opportunities and Campus CTAs keep enough contrast on a pale card. */
+    :root { --cp-amber: #fbbf24; --cp-violet: #a78bfa; }
+    body.light-theme { --cp-amber: #b45309; --cp-violet: #6d28d9; }
+
     body {
       min-height: 100vh;
       display: flex;
@@ -71,8 +76,8 @@
 
     /* ----- PATH CARDS ----- */
     .cp-grid {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
-      max-width: 940px; width: 100%; margin-top: 48px;
+      display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px;
+      max-width: 1000px; width: 100%; margin-top: 48px;
     }
     .cp-form { display: contents; }
 
@@ -87,6 +92,8 @@
     }
     .path-card:nth-of-type(1), .cp-grid > .cp-form:nth-child(1) .path-card { animation-delay: 0.4s; }
     .cp-grid > .cp-form:nth-child(2) .path-card { animation-delay: 0.5s; }
+    .cp-grid > .cp-form:nth-child(3) .path-card { animation-delay: 0.6s; }
+    .cp-grid > .cp-form:nth-child(4) .path-card { animation-delay: 0.7s; }
 
     .path-card::before {
       content: ''; position: absolute; inset: 0; z-index: 0; opacity: 0;
@@ -96,12 +103,20 @@
     .path-tech::before {
       background: radial-gradient(520px circle at 30% 0%, rgba(45,212,191,0.12), transparent 65%);
     }
+    .path-opportunities::before {
+      background: radial-gradient(520px circle at 30% 0%, rgba(245,158,11,0.13), transparent 65%);
+    }
+    .path-campus::before {
+      background: radial-gradient(520px circle at 30% 0%, rgba(167,139,250,0.14), transparent 65%);
+    }
     .path-card:hover::before, .path-card:focus-visible::before { opacity: 1; }
     .path-card:hover, .path-card:focus-visible {
       border-color: rgba(56,189,248,0.4); transform: translateY(-6px);
       box-shadow: var(--shadow-card-hover);
     }
     .path-tech:hover, .path-tech:focus-visible { border-color: rgba(45,212,191,0.45); }
+    .path-opportunities:hover, .path-opportunities:focus-visible { border-color: rgba(245,158,11,0.45); }
+    .path-campus:hover, .path-campus:focus-visible { border-color: rgba(167,139,250,0.45); }
     .path-card:active { transform: translateY(-2px); }
 
     .path-icon {
@@ -111,6 +126,8 @@
       margin-bottom: 26px; position: relative; z-index: 1; transition: transform 0.5s var(--ease-spring);
     }
     .path-tech .path-icon { background: rgba(45,212,191,0.12); border-color: rgba(45,212,191,0.3); color: var(--accent-teal); }
+    .path-opportunities .path-icon { background: rgba(245,158,11,0.12); border-color: rgba(245,158,11,0.3); color: var(--cp-amber); }
+    .path-campus .path-icon { background: rgba(167,139,250,0.13); border-color: rgba(167,139,250,0.32); color: var(--cp-violet); }
     .path-card:hover .path-icon { transform: scale(1.06) rotate(-4deg); }
 
     .path-title { display: block; font-size: 1.7rem; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 8px; position: relative; z-index: 1; }
@@ -120,6 +137,8 @@
     .path-features li { display: flex; align-items: center; gap: 10px; font-size: 0.9rem; color: var(--text-secondary); padding: 7px 0; }
     .path-features li i { color: var(--accent); font-size: 1rem; flex-shrink: 0; }
     .path-tech .path-features li i { color: var(--accent-teal); }
+    .path-opportunities .path-features li i { color: var(--cp-amber); }
+    .path-campus .path-features li i { color: var(--cp-violet); }
 
     .path-cta {
       margin-top: auto; display: inline-flex; align-items: center; gap: 8px;
@@ -127,6 +146,8 @@
       position: relative; z-index: 1; transition: gap 0.3s var(--ease-spring);
     }
     .path-tech .path-cta { color: var(--accent-teal); }
+    .path-opportunities .path-cta { color: var(--cp-amber); }
+    .path-campus .path-cta { color: var(--cp-violet); }
     .path-card:hover .path-cta, .path-card:focus-visible .path-cta { gap: 13px; }
 
     .cp-footnote {
@@ -161,6 +182,8 @@
         background: var(--grad-main); color: #fff !important; margin-top: auto; font-size: 0.82rem;
       }
       .path-tech .path-cta { background: var(--grad-teal); }
+      .path-opportunities .path-cta { background: linear-gradient(135deg, #f59e0b 0%, #b45309 100%); }
+      .path-campus .path-cta { background: linear-gradient(135deg, #a78bfa 0%, #6d28d9 100%); }
       .path-card:hover .path-cta, .path-card:focus-visible .path-cta { gap: 8px; }
     }
 
@@ -241,6 +264,40 @@
             <li><i class="ri-check-line" aria-hidden="true"></i>AI-Assisted Learning</li>
           </ul>
           <span class="path-cta">Explore Skills <i class="ri-arrow-right-line" aria-hidden="true"></i></span>
+        </button>
+      </form>
+
+      <form method="POST" action="{{ url_for('dashboard.choose_path') }}" class="cp-form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <input type="hidden" name="path" value="opportunities">
+        <button type="submit" class="path-card path-opportunities" aria-label="See Opportunities — matched work, gigs, and applications you can act on">
+          <span class="path-icon" aria-hidden="true"><i class="ri-briefcase-line"></i></span>
+          <span class="path-title bg">Opportunities</span>
+          <span class="path-desc">Find work that fits what you've proved.</span>
+          <ul class="path-features">
+            <li><i class="ri-check-line" aria-hidden="true"></i>Matched Opportunities</li>
+            <li><i class="ri-check-line" aria-hidden="true"></i>Apply With Your Proof</li>
+            <li><i class="ri-check-line" aria-hidden="true"></i>Gigs &amp; Projects</li>
+            <li><i class="ri-check-line" aria-hidden="true"></i>Track Your Applications</li>
+          </ul>
+          <span class="path-cta">See Opportunities <i class="ri-arrow-right-line" aria-hidden="true"></i></span>
+        </button>
+      </form>
+
+      <form method="POST" action="{{ url_for('dashboard.choose_path') }}" class="cp-form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <input type="hidden" name="path" value="campus">
+        <button type="submit" class="path-card path-campus" aria-label="Open Campus — your university's map, buildings, and key locations">
+          <span class="path-icon" aria-hidden="true"><i class="ri-map-pin-line"></i></span>
+          <span class="path-title bg">Campus</span>
+          <span class="path-desc">Your university, mapped and easy to navigate.</span>
+          <ul class="path-features">
+            <li><i class="ri-check-line" aria-hidden="true"></i>Interactive Campus Map</li>
+            <li><i class="ri-check-line" aria-hidden="true"></i>Lecture Halls &amp; Facilities</li>
+            <li><i class="ri-check-line" aria-hidden="true"></i>Key Locations</li>
+            <li><i class="ri-check-line" aria-hidden="true"></i>Always Tied To Your School</li>
+          </ul>
+          <span class="path-cta">Open Campus <i class="ri-arrow-right-line" aria-hidden="true"></i></span>
         </button>
       </form>
     </div>

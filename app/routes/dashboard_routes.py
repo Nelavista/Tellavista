@@ -122,9 +122,14 @@ def _landing_stats():
 
 dashboard_bp = Blueprint('dashboard', __name__)
 
-# The two top-level experiences a user's single Nelavista account can enter. Kept as a
-# module constant so choose_path() and the redirects in auth_routes.py can't drift apart.
-VALID_PATHS = {'academia': 'dashboard.dashboard', 'skills': 'skills.home'}
+# The four spaces a user's single Nelavista account can enter. Kept as a module constant
+# so choose_path() and the redirects in auth_routes.py can't drift apart.
+VALID_PATHS = {
+    'academia': 'dashboard.dashboard',
+    'skills': 'skills.home',
+    'opportunities': 'skills.opportunities',
+    'campus': 'campus_map.campus_map_page',
+}
 
 # NOTE: study-session/exam/user-courses tracking used to be duplicated here (session-backed,
 # ephemeral) and in routes/materials_routes.py (DB-backed, persistent). The two silently
@@ -154,11 +159,11 @@ def post_auth_redirect(user):
 def landing():
     user_data = session.get('user')
     if user_data:
-        # Academia and Skills are two separate destinations, not one merged dashboard.
+        # The four spaces are separate destinations, not one merged dashboard.
         # First-ever entry (no preferred_path set yet) forks through the Choose Your Path
         # picker so the student makes a deliberate choice; every entry after that goes
         # straight to whichever space they're in — the picker no longer stands between a
-        # returning user and their own dashboard. The sidebar wordmark in both shells still
+        # returning user and their own space. The sidebar wordmark in the shells still
         # links back to /choose-path, which remains how someone switches spaces on purpose.
         preferred_path = user_data.get('preferred_path')
         if preferred_path in VALID_PATHS:
@@ -173,7 +178,8 @@ def landing():
 @dashboard_bp.route('/choose-path', methods=['GET', 'POST'])
 @login_required
 def choose_path():
-    """'Choose Your Path' screen — the deliberate fork between Academia and Skills. Shown
+    """'Choose Your Path' screen — the deliberate fork between the four student spaces:
+    Academia, Skills, Opportunities and Campus. Shown
     on every login/signup/Google sign-in (post_auth_redirect() above, unconditionally,
     for a non-employer account) and on landing() ('/') only for a session with no saved
     preferred_path yet -- a still-active session revisiting '/' goes straight to its
@@ -185,7 +191,7 @@ def choose_path():
         flash('User not found. Please log in again.')
         return redirect(url_for('auth.login'))
     if user.is_employer:
-        # Employers have no Academia/Skills fork to choose between — straight to their
+        # Employers have no student-space fork to choose between — straight to their
         # own dashboard, same as auth.login already does for them.
         return redirect(url_for('employer.dashboard'))
 

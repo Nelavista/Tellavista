@@ -12,7 +12,8 @@ the API suite was run green - see Verification below. UI readiness is tracked
 separately in `docs/v2-ui/AUDIT.md`. **New on 2026-11-04:** V1 `main` added a
   post-build feature delta - the African Languages Lab, the language profile,
   structured scored tasks and the Impact page. FUTA taxonomy, Course provenance
-  fields and importer support were added on 2026-11-08; the remaining delta is
+  fields and importer support were added on 2026-11-08; AI prompt-boundary
+  hardening was added on 2026-11-08; the remaining delta is
   tracked as §I below and in `docs/v2-ui/PARITY.md` §1.2). The
   talent-directory filter API was added on 2026-11-08; no employer UI is planned
   while self-service employer discovery remains dropped by design.
@@ -305,11 +306,12 @@ superset of V1. They are also recorded in `docs/v2-ui/PARITY.md` §1.2 and
   `course_type`, `description` and `source`; the V1 export/import bridge preserves
   and updates those values. The remaining FUTA work is limited to sourcing and
   verifying additional department course lists before adding them.
-- [ ] **I8 — AI prompt hardening.** Apply V1's untrusted-content delimiter
-  escaping to V2's Ask/practice AI prompts. V2's `OpenRouterProvider` currently
-  interpolates the raw question and retrieved text into one prompt, and V2
-  assessment grading is deterministic, so the risk is concentrated in Ask and any
-  future AI feedback path.
+- [x] **I8 — AI prompt hardening.** V2 Ask now escapes material and student-question
+  markup inside explicit untrusted-content boundaries and sends a separate system
+  instruction that forbids following embedded instructions. V2 practice remains
+  deterministic and has no AI prompt path, so student answers are validated by the
+  task engine rather than sent to a model. Any future AI feedback path must reuse
+  the same boundary helper.
 
 **Not carried across:** the V1 test-only SQLite speed pragmas
 (`synchronous=OFF`, `journal_mode=MEMORY`) belong in V1's `tests/conftest.py`, not

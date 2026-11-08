@@ -42,7 +42,8 @@ The current launch position is:
   background filters at `/v1/talent/directory`; employer self-service UI remains
   intentionally out of launch scope. FUTA's verified taxonomy seed and Course
   provenance fields/importer are now implemented; unverified department course
-  lists remain intentionally absent.
+  lists remain intentionally absent. Ask prompt-boundary hardening is complete;
+  practice and assessment grading remain deterministic with no AI prompt path.
 
 ## 1. Current stack
 

@@ -21,6 +21,7 @@ import { formatDateTime } from '../lib/format';
 import { ApiError, http, setAccessToken } from '../lib/http';
 import { useApiResource } from '../lib/resource';
 import { useSession } from '../lib/session';
+import { useTheme } from '../lib/theme-context';
 import {
   Badge,
   Banner,
@@ -89,6 +90,7 @@ function sectionTitle(section: string): { title: string; description: string } {
 
 export function Settings(): JSX.Element {
   const { me, profile: sessionProfile, reload, logout } = useSession();
+  const { theme, setTheme } = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
   const section = location.pathname.split('/')[2] ?? 'profile';
@@ -340,6 +342,8 @@ export function Settings(): JSX.Element {
         <ProfileSection
           meEmail={me?.email ?? ''}
           meVerified={Boolean(me?.email_verified)}
+          theme={theme}
+          setTheme={setTheme}
           displayName={displayName}
           setDisplayName={setDisplayName}
           bio={bio}
@@ -414,6 +418,8 @@ export function Settings(): JSX.Element {
 function ProfileSection(props: {
   meEmail: string;
   meVerified: boolean;
+  theme: 'light' | 'dark';
+  setTheme: (theme: 'light' | 'dark') => void;
   displayName: string;
   setDisplayName: (value: string) => void;
   bio: string;
@@ -579,6 +585,30 @@ function ProfileSection(props: {
               {props.busy ? 'Saving' : 'Save availability'}
             </Button>
           </div>
+        </div>
+      </Panel>
+
+      <Panel title="Appearance">
+        <p className="nv-muted">
+          The signed-in app opens in dark by default. A saved choice applies on this device across every page.
+        </p>
+        <div className="nv-row" role="group" aria-label="Theme">
+          <Button
+            aria-pressed={props.theme === 'light'}
+            type="button"
+            variant={props.theme === 'light' ? 'primary' : 'secondary'}
+            onClick={() => props.setTheme('light')}
+          >
+            Light
+          </Button>
+          <Button
+            aria-pressed={props.theme === 'dark'}
+            type="button"
+            variant={props.theme === 'dark' ? 'primary' : 'secondary'}
+            onClick={() => props.setTheme('dark')}
+          >
+            Dark
+          </Button>
         </div>
       </Panel>
     </div>

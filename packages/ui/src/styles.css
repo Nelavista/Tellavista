@@ -810,6 +810,28 @@ pre {
   background: var(--nv-surface-raised);
 }
 
+/*
+ * An inverted panel is a deliberate counterweight: one per screen, used for
+ * the thing the user keeps or the action that matters now. It inverts the
+ * page's tonal relationship instead of adding another border.
+ */
+.nv-panel--inverted {
+  border-color: var(--nv-text);
+  background: var(--nv-text);
+  color: var(--nv-bg);
+}
+
+.nv-panel--inverted .nv-h3,
+.nv-panel--inverted .nv-h2,
+.nv-panel--inverted strong {
+  color: var(--nv-bg);
+}
+
+.nv-panel--inverted .nv-meta,
+.nv-panel--inverted .nv-muted {
+  color: color-mix(in srgb, var(--nv-bg) 72%, transparent);
+}
+
 .nv-panel__head {
   display: flex;
   flex-wrap: wrap;
@@ -1975,48 +1997,74 @@ pre {
     display: none;
   }
 
+  /* One header on mobile: the breadcrumb top bar is redundant. */
   .nv-topbar {
-    padding: 0 var(--nv-space-lg);
+    display: none;
   }
 
   .nv-mobile-bar {
+    position: sticky;
+    top: 0;
+    z-index: var(--nv-z-nav);
     display: flex;
     min-height: 56px;
     align-items: center;
     justify-content: space-between;
     gap: var(--nv-space-md);
     border-bottom: 1px solid var(--nv-border);
-    background: var(--nv-surface-sunken);
+    background: color-mix(in srgb, var(--nv-bg) 94%, transparent);
     padding: 0 var(--nv-space-lg);
+    backdrop-filter: blur(8px);
   }
 
+  /* A stable five-destination bottom bar, not a scrolling chip row. */
   .nv-mobile-nav {
-    display: flex;
-    overflow-x: auto;
-    gap: var(--nv-space-xs);
-    border-bottom: 1px solid var(--nv-border);
-    background: var(--nv-bg);
-    padding: var(--nv-space-sm) var(--nv-space-lg);
-    scrollbar-width: none;
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: var(--nv-z-nav);
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 2px;
+    border-top: 1px solid var(--nv-border);
+    background: color-mix(in srgb, var(--nv-bg) 96%, transparent);
+    padding: var(--nv-space-xs) var(--nv-space-sm) calc(var(--nv-space-xs) + env(safe-area-inset-bottom));
+    backdrop-filter: blur(8px);
   }
 
-  .nv-mobile-nav::-webkit-scrollbar {
-    display: none;
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .nv-mobile-bar,
+    .nv-mobile-nav {
+      background: var(--nv-bg);
+    }
   }
 
   .nv-mobile-nav a {
-    flex: 0 0 auto;
-    border: 1px solid var(--nv-border);
-    border-radius: var(--nv-radius-pill);
+    display: flex;
+    min-height: 48px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    border-radius: var(--nv-radius-md);
     color: var(--nv-text-muted);
-    padding: 0.35rem 0.7rem;
-    font-size: var(--nv-text-xs);
+    font-size: 0.6875rem;
+    line-height: 1.2;
     text-decoration: none;
   }
 
   .nv-mobile-nav a[aria-current='page'] {
-    border-color: var(--nv-accent);
+    background: var(--nv-accent-subtle);
     color: var(--nv-text);
+  }
+
+  .nv-mobile-nav a[aria-current='page'] svg {
+    color: var(--nv-accent);
+  }
+
+  .nv-content {
+    padding-bottom: calc(var(--nv-space-6xl) + 4.5rem + env(safe-area-inset-bottom));
   }
 
   .nv-hero,

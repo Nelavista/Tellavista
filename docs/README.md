@@ -27,6 +27,8 @@ ported or explicitly dropped.
 - **`docs/v2-ui/DESIGN-DIRECTION.md`** - Gate 2 visual direction.
 - **`docs/v2-ui/IMAGE-PROMPTS.md`** - image manifest, exact filenames and art direction.
 - **`docs/design/ui-ux-framework.md`** - the project UI/UX guard. Read it before changing a screen. It is updated after Gate 2 approval where it conflicts with the approved direction.
+- **`docs/design/UI-REFERENCE.md`** - the reusable design reference for AI agents (hierarchy, composition, type, shape, motion, accessibility, anti-patterns). Read it before designing or restyling a surface.
+- **`docs/design/AUDIT-AND-PLAN.md`** - the current audit of the public site, dashboard and mobile shell, with the redesign plan and wireframes.
 
 ## Reference (only when a step sends you there)
 

@@ -79,7 +79,6 @@ const MOBILE: NavItem[] = [
   { to: '/skills', label: 'Skills', icon: Sparkles },
   { activeFor: ['/work'], to: '/opportunities', label: 'Work', icon: Briefcase },
   { to: '/earnings', label: 'Earnings', icon: Wallet },
-  { to: '/settings', label: 'Settings', icon: Settings },
 ];
 
 const SIDEBAR_ITEMS = GROUPS.flatMap((group) => group.items);
@@ -253,7 +252,6 @@ export function AppShell({ children }: { children: React.ReactNode }): JSX.Eleme
             <BrandMark />
           </Link>
           <div className="nv-row" style={{ gap: 'var(--nv-space-xs)' }}>
-            <ThemeToggle theme={theme} onToggle={toggle} />
             <Link className="nv-icon-button" to="/notifications" aria-label="Notifications">
               <Bell aria-hidden="true" size={17} />
             </Link>

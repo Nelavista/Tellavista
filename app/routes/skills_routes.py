@@ -32,8 +32,8 @@ from app.services.daily_class_service import (
 )
 from app.services.gpa_service import compute_skill_gpa, recompute_and_cache_gpa, get_cohort_rank
 from app.services.skills_service import (
-    get_pipeline_states_bulk, opportunity_match_pct, profile_completeness,
-    get_continue_learning_card, compute_payout_breakdown, get_talent_stats,
+    get_pipeline_states_bulk, profile_completeness,
+    get_continue_learning_card, get_talent_stats,
     get_skill_scores, get_projects_empty_state_cta, get_skill_verification_record,
     best_challenge_score, assessment_pass_score, assessment_prerequisites_unmet, project_prerequisites_unmet,
 )
@@ -50,7 +50,7 @@ from app.services.link_fetch_service import fetch_page_text, fetch_github_summar
 from app.services.notification_service import notify, mark_all_read
 from app.services.messaging_service import get_or_create_thread, send_message, mark_thread_read
 from app.models import (
-    Opportunity, OpportunityApplication, ProjectMilestone, Competition,
+    Opportunity, ProjectMilestone, Competition,
     CompetitionEntry, Notification, MessageThread, Message,
 )
 
@@ -226,27 +226,12 @@ def home():
     # Projects: the student's own StudentProject rows across every skill.
     my_projects = StudentProject.query.filter_by(student_id=user.id).order_by(StudentProject.updated_at.desc()).limit(3).all()
 
-    # Opportunities matched to skills the student has actually started, best match first.
-    opportunities = []
-    if started_skill_ids:
-        opps = Opportunity.query.filter(
-            Opportunity.is_published.is_(True), Opportunity.skill_id.in_(started_skill_ids)
-        ).order_by(Opportunity.order).limit(6).all()
-        for o in opps:
-            opportunities.append({'opportunity': o, 'match_pct': opportunity_match_pct(user.id, o.skill_id)})
-        opportunities.sort(key=lambda x: -x['match_pct'])
-
-    my_applications = OpportunityApplication.query.filter_by(student_id=user.id).all()
-    earnings = {
-        'total_paid': sum(a.payout_amount or 0 for a in my_applications if a.status == 'paid'),
-        'pending': sum((a.opportunity.payment_amount or 0) for a in my_applications if a.status in ('applied', 'accepted')),
-        'completed_count': sum(1 for a in my_applications if a.status == 'paid'),
-        'active_count': sum(1 for a in my_applications if a.status in ('applied', 'accepted', 'completed')),
-    }
-
+    # Work and money deliberately do not appear here: Opportunities is its own space
+    # (routes/opportunities_routes.py) with its own shell. Skills shows what you are
+    # learning and proving, never the earning surface -- see the module comment at the
+    # top of this file.
     profile = profile_completeness(user)
     talent_stats = get_talent_stats(user)
-    available_opportunities = len(opportunities) if opportunities else Opportunity.query.filter_by(is_published=True).count()
 
     hour = datetime.utcnow().hour
     greeting = 'Good morning' if hour < 12 else ('Good afternoon' if hour < 17 else 'Good evening')
@@ -256,9 +241,8 @@ def home():
         active_page='home', ask_context='the Nelavista Skills dashboard', greeting=greeting,
         onboarding=onboarding, overall_pct=overall_pct, continue_card=continue_card,
         verify_focus=verify_focus, catalog_skills=catalog_skills, my_projects=my_projects,
-        opportunities=opportunities, earnings=earnings, profile=profile,
-        spotlight_skill=spotlight_skill, unmatched_interest=unmatched_interest,
-        talent_stats=talent_stats, available_opportunities=available_opportunities,
+        profile=profile, spotlight_skill=spotlight_skill,
+        unmatched_interest=unmatched_interest, talent_stats=talent_stats,
     )
 
 
@@ -1296,109 +1280,32 @@ def skill_transcript():
     )
 
 
-# ===== OPPORTUNITIES (the "Earn" phase) =====
+# ===== LEGACY SKILLS URLS FOR THE OPPORTUNITIES SPACE =====
+# Opportunities, gigs and earnings are their own space now (routes/opportunities_routes.py).
+# These paths shipped to students and are linked from older pages and emails, so they stay
+# as permanent redirects instead of 404s. Applied work POSTs keep their method (308).
 @skills_bp.route('/skills/opportunities')
 @login_required
 def opportunities():
-    user = _current_user()
-    # progress_by_skill replaces a call to opportunity_match_pct() per opportunity below
-    # -- that function's whole body is this same StudentSkill lookup, run again for every
-    # row even though every row's answer was already sitting in one query's results.
-    progress_by_skill = {s.skill_id: s.progress_pct for s in StudentSkill.query.filter_by(student_id=user.id).all()}
-    all_opps = Opportunity.query.filter_by(is_published=True).order_by(Opportunity.order).all()
-    my_applications = {a.opportunity_id: a for a in OpportunityApplication.query.filter_by(student_id=user.id).all()}
-
-    rows = []
-    for o in all_opps:
-        rows.append({
-            'opportunity': o,
-            'match_pct': progress_by_skill.get(o.skill_id, 0),
-            'application': my_applications.get(o.id),
-        })
-    rows.sort(key=lambda r: -r['match_pct'])
-    return render_template('skills_opportunities.html', rows=rows, active_page='opportunities')
+    return redirect(url_for('opportunities.index'), code=301)
 
 
 @skills_bp.route('/skills/opportunities/<int:opportunity_id>/apply', methods=['POST'])
 @login_required
 def apply_opportunity(opportunity_id):
-    opportunity = Opportunity.query.filter_by(id=opportunity_id, is_published=True).first_or_404()
-    user = _current_user()
-    existing = OpportunityApplication.query.filter_by(opportunity_id=opportunity.id, student_id=user.id).first()
-    if not existing:
-        db.session.add(OpportunityApplication(opportunity_id=opportunity.id, student_id=user.id))
-        try:
-            db.session.commit()
-            flash(f'Applied to "{opportunity.title}"!')
-        except IntegrityError:
-            # OpportunityApplication already has a DB-level unique constraint on
-            # (opportunity_id, student_id) -- data can't actually duplicate -- but the
-            # check-then-act above has no isolation of its own, so a double-click/retry
-            # race previously hit an unhandled IntegrityError -> 500 instead of the same
-            # "you're in" outcome the winner of the race gets.
-            db.session.rollback()
-            flash(f'You already applied to "{opportunity.title}".')
-    else:
-        flash(f'You already applied to "{opportunity.title}".')
-    return redirect(request.referrer or url_for('skills.opportunities'))
+    return redirect(url_for('opportunities.apply', opportunity_id=opportunity_id), code=308)
 
 
 @skills_bp.route('/skills/gigs')
 @login_required
 def gigs():
-    """The full open marketplace — every published gig, filterable, not just the ones
-    matched to skills the student has already started. Opportunities (the dashboard/
-    personalized feed) is 'best matches'; Gigs is 'browse everything', same distinction
-    Upwork/Fiverr draw between a matched feed and open browse."""
-    user = _current_user()
-    skill_id = request.args.get('skill_id', type=int)
-    location = request.args.get('location', '').strip()
-    min_pay = request.args.get('min_pay', type=int)
-
-    query = Opportunity.query.filter_by(is_published=True)
-    if skill_id:
-        query = query.filter_by(skill_id=skill_id)
-    if location:
-        query = query.filter(Opportunity.location.ilike(f'%{location}%'))
-    if min_pay:
-        query = query.filter(Opportunity.payment_amount >= min_pay)
-    all_opps = query.order_by(Opportunity.created_at.desc()).all()
-
-    # Same batching as opportunities() above -- one query for every skill's progress
-    # instead of one opportunity_match_pct() call (itself a query) per gig on the page.
-    progress_by_skill = {s.skill_id: s.progress_pct for s in StudentSkill.query.filter_by(student_id=user.id).all()}
-    my_applications = {a.opportunity_id: a for a in OpportunityApplication.query.filter_by(student_id=user.id).all()}
-    rows = [{
-        'opportunity': o, 'application': my_applications.get(o.id),
-        'match_pct': progress_by_skill.get(o.skill_id, 0),
-    } for o in all_opps]
-
-    skills = Skill.query.filter_by(is_published=True).order_by(Skill.name).all()
-    return render_template('skills_gigs.html', rows=rows, skills=skills, active_page='gigs',
-                            skill_id=skill_id, location=location, min_pay=min_pay)
+    return redirect(url_for('opportunities.gigs'), code=301)
 
 
 @skills_bp.route('/skills/earnings')
 @login_required
 def earnings():
-    user = _current_user()
-    # joinedload: a.opportunity below is otherwise a separate lazy-loaded query per
-    # application (OpportunityApplication.opportunity has no lazy= override, so it
-    # defaults to lazy='select') -- one JOIN here instead of N queries for N applications.
-    applications = (
-        OpportunityApplication.query.filter_by(student_id=user.id)
-        .options(db.joinedload(OpportunityApplication.opportunity))
-        .order_by(OpportunityApplication.applied_at.desc()).all()
-    )
-    for a in applications:
-        a.breakdown = compute_payout_breakdown(a.payout_amount if a.status == 'paid' else a.opportunity.payment_amount)
-    summary = {
-        'total_paid': sum(a.payout_amount or 0 for a in applications if a.status == 'paid'),
-        'pending': sum((a.opportunity.payment_amount or 0) for a in applications if a.status in ('applied', 'accepted')),
-        'completed_count': sum(1 for a in applications if a.status == 'paid'),
-        'active_count': sum(1 for a in applications if a.status in ('applied', 'accepted', 'completed')),
-    }
-    return render_template('skills_earnings.html', applications=applications, summary=summary, active_page='earnings')
+    return redirect(url_for('opportunities.earnings'), code=301)
 
 
 # ===== PROFILE (photo/bio/portfolio for the "Profile strength" checklist) =====

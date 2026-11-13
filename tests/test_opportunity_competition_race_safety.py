@@ -29,7 +29,7 @@ def test_apply_opportunity_race_does_not_crash(app, client, make_user, login_as)
         opp_id = opp.id
 
     login_as(client, user)
-    res1 = client.post(f'/skills/opportunities/{opp_id}/apply', follow_redirects=True)
+    res1 = client.post(f'/opportunities/{opp_id}/apply', follow_redirects=True)
     assert res1.status_code == 200
 
     # Simulate the race directly at the DB layer (the app-level `existing` check would
@@ -43,7 +43,7 @@ def test_apply_opportunity_race_does_not_crash(app, client, make_user, login_as)
         count = OpportunityApplication.query.filter_by(opportunity_id=opp_id, student_id=user.id).count()
         assert count == 1
 
-    res2 = client.post(f'/skills/opportunities/{opp_id}/apply', follow_redirects=True)
+    res2 = client.post(f'/opportunities/{opp_id}/apply', follow_redirects=True)
     assert res2.status_code == 200  # not a 500 -- the existing-application branch handles it
 
 

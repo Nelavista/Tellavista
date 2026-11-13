@@ -1,5 +1,5 @@
-"""Regression tests for the P2 performance fix: opportunities()/gigs() (routes/
-skills_routes.py) called opportunity_match_pct() -- itself a StudentSkill query -- once
+"""Regression tests for the P2 performance fix: index()/gigs() (routes/
+opportunities_routes.py) called opportunity_match_pct() -- itself a StudentSkill query -- once
 per opportunity on the page, even though both routes already fetched every one of the
 student's StudentSkill rows a line earlier just to check skill-id membership. earnings()
 accessed a.opportunity per application, a separate lazy-loaded query each time with no
@@ -30,7 +30,7 @@ def test_opportunities_page_shows_correct_match_pct(app, client, make_user, logi
         db.session.commit()
 
     login_as(client, user)
-    res = client.get('/skills/opportunities')
+    res = client.get('/opportunities')
     assert res.status_code == 200
     assert '65% match' in res.get_data(as_text=True)
 
@@ -43,7 +43,7 @@ def test_gigs_page_shows_correct_match_pct(app, client, make_user, login_as):
         db.session.commit()
 
     login_as(client, user)
-    res = client.get('/skills/gigs')
+    res = client.get('/opportunities/gigs')
     assert res.status_code == 200
     assert '40% match' in res.get_data(as_text=True)
 
@@ -63,7 +63,7 @@ def test_unstarted_skill_has_no_match_badge(app, client, make_user, login_as):
         db.session.commit()
 
     login_as(client, user)
-    res = client.get('/skills/opportunities')
+    res = client.get('/opportunities')
     assert res.status_code == 200
     # match_pct=0 is falsy in the template's {% if row.match_pct %} -- no badge at all,
     # not a "0% match" badge, and definitely not another student's leftover progress.
@@ -88,6 +88,6 @@ def test_earnings_totals_correct_with_eager_loaded_opportunity(app, client, make
         db.session.commit()
 
     login_as(client, user)
-    res = client.get('/skills/earnings')
+    res = client.get('/opportunities/earnings')
     assert res.status_code == 200
     assert '45,000' in res.get_data(as_text=True)

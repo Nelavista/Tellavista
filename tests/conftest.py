@@ -91,6 +91,7 @@ def app():
     from app.routes.auth_routes import auth_bp
     from app.routes.cbt_routes import cbt_bp
     from app.routes.skills_routes import skills_bp
+    from app.routes.opportunities_routes import opportunities_bp
     from app.routes.materials_routes import materials_bp
     from app.routes.live_meeting_routes import live_bp
     from app.routes.dashboard_routes import dashboard_bp
@@ -103,7 +104,7 @@ def app():
     from app.routes.onboarding_routes import onboarding_bp
     from app.routes.campus_map_routes import campus_map_bp
 
-    for bp in (auth_bp, cbt_bp, skills_bp, materials_bp, live_bp, dashboard_bp, admin_skills_bp, admin_bp,
+    for bp in (auth_bp, cbt_bp, skills_bp, opportunities_bp, materials_bp, live_bp, dashboard_bp, admin_skills_bp, admin_bp,
                academia_bp, admin_academia_bp, ai_bp, tutor_bp, onboarding_bp, campus_map_bp):
         flask_app.register_blueprint(bp, url_prefix='/')
 

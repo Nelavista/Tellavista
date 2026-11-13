@@ -2,8 +2,10 @@
      design: the only way back to the rest of Nelavista is the wordmark, which returns to
      the Choose Your Path picker — Skills doesn't mix Academia links into its own IA.
      Include right after <body>, pass active_page: 'home'|'learn'|'my_learning'|'projects'|
-     'opportunities'|'gigs'|'talent'|'challenges'|'profile'|'earnings'|'messages'|
-     'notifications'|'tracks'|'transcript'|'settings'|'african_languages'|'languages'. -->
+     'talent'|'challenges'|'profile'|'messages'|'notifications'|'tracks'|'transcript'|
+     'settings'|'african_languages'|'languages'.
+     Opportunities, gigs and earnings are a different space and are deliberately absent
+     here -- see components/opportunities_sidebar.html. -->
 <script>
 // Applies the saved theme before the page paints -- see the matching comment in
 // components/academia_sidebar.html for why. Same shell, same fix.
@@ -32,8 +34,6 @@
           <a href="/skills/african-languages" class="{{ 'active-link' if active_page == 'african_languages' else '' }}"><i class="ri-translate-2"></i>African Language AI</a>
           <a href="/skills/my-learning" class="{{ 'active-link' if active_page == 'my_learning' else '' }}"><i class="ri-book-open-line"></i>My Learning</a>
           <a href="/skills/projects" class="{{ 'active-link' if active_page == 'projects' else '' }}"><i class="ri-hammer-line"></i>Projects</a>
-          <a href="/skills/opportunities" class="{{ 'active-link' if active_page == 'opportunities' else '' }}"><i class="ri-briefcase-line"></i>Opportunities</a>
-          <a href="/skills/gigs" class="{{ 'active-link' if active_page == 'gigs' else '' }}"><i class="ri-store-line"></i>Gigs</a>
           <a href="/skills/talent" class="{{ 'active-link' if active_page == 'talent' else '' }}"><i class="ri-user-star-line"></i>Talent</a>
           <a href="/skills/challenges" class="{{ 'active-link' if active_page == 'challenges' else '' }}"><i class="ri-trophy-line"></i>Challenges</a>
         </div>
@@ -42,7 +42,6 @@
           <div class="nav-label">Account</div>
           <a href="/skills/profile" class="{{ 'active-link' if active_page == 'profile' else '' }}"><i class="ri-user-line"></i>Profile</a>
           <a href="/skills/languages" class="{{ 'active-link' if active_page == 'languages' else '' }}"><i class="ri-chat-voice-line"></i>My Languages</a>
-          <a href="/skills/earnings" class="{{ 'active-link' if active_page == 'earnings' else '' }}"><i class="ri-wallet-3-line"></i>Earnings</a>
           <a href="/skills/messages" class="{{ 'active-link' if active_page == 'messages' else '' }}">
             <i class="ri-message-3-line"></i>Messages
             {% if nav_unread_messages %}<span class="nav-badge">{{ nav_unread_messages }}</span>{% endif %}

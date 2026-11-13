@@ -1,0 +1,57 @@
+<!-- Nelavista Opportunities — its own navigation and product identity, separate from the
+     Skills space. No learn/catalog/project links here: work and money only. The wordmark
+     returns to the Choose Your Path picker so the four spaces stay switchable without
+     leaking one space's IA into another.
+     Include right after <body>, pass active_page: 'home'|'gigs'|'earnings'. -->
+<script>
+// Applies the saved theme before the page paints -- same shell, same fix as
+// components/skills_sidebar.html and components/academia_sidebar.html.
+(function () {
+  try {
+    var pref = localStorage.getItem('theme') || 'dark';
+    var light = pref === 'system'
+      ? (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches)
+      : pref === 'light';
+    if (light) document.body.classList.add('light-mode', 'light-theme');
+  } catch (e) {}
+})();
+</script>
+<div class="app-wrapper">
+  <div class="sidebar" id="side-menu">
+    <div>
+      <div class="sidebar-header">
+        <a href="/choose-path" class="sidebar-logo"><img src="{{ url_for('static', filename='images/nelavista-logo.png') }}" alt="">Nelavista</a>
+        <div class="sidebar-tagline">Find work. Do it well. Get paid.</div>
+      </div>
+      <div class="sidebar-nav">
+        <div class="nav-group">
+          <div class="nav-label">Opportunities</div>
+          <a href="{{ url_for('opportunities.index') }}" class="{{ 'active-link' if active_page == 'home' else '' }}"><i class="ri-briefcase-line"></i>Matched work</a>
+          <a href="{{ url_for('opportunities.gigs') }}" class="{{ 'active-link' if active_page == 'gigs' else '' }}"><i class="ri-store-line"></i>Open gigs</a>
+          <a href="{{ url_for('opportunities.earnings') }}" class="{{ 'active-link' if active_page == 'earnings' else '' }}"><i class="ri-wallet-3-line"></i>Earnings</a>
+        </div>
+      </div>
+    </div>
+    <div class="sidebar-footer">
+      <a href="/logout" data-confirm-logout><i class="ri-logout-box-line"></i>Logout</a>
+    </div>
+  </div>
+
+  <div id="overlay" class="overlay" onclick="skCloseMenu()"></div>
+
+  <div class="main-content">
+    <div class="top-bar">
+      <button id="menu-toggle" onclick="skToggleMenu()" aria-label="Open menu"><i class="ri-menu-line"></i></button>
+      <div class="dv2-topbar-spacer"></div>
+      <button id="theme-toggle" onclick="skToggleTheme()" aria-label="Toggle theme"><i class="ri-moon-line"></i></button>
+      <a href="/logout" class="top-icon-btn sk-topbar-logout" aria-label="Logout" data-confirm-logout><i class="ri-logout-box-line"></i></a>
+</div>
+{% include 'components/logout_confirm.html' %}
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+      <div class="sk-flashes">
+        {% for category, m in messages %}<div class="sk-flash {{ category }}">{{ m }}</div>{% endfor %}
+      </div>
+      {% endif %}
+    {% endwith %}

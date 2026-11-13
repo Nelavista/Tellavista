@@ -1,0 +1,12 @@
+  </div><!-- /.main-content -->
+
+  <!-- Mobile bottom nav: the three destinations that matter in the Opportunities space.
+       Nothing from Skills or Academia appears here — this is the space's own IA. -->
+  <nav class="mobile-tabbar">
+    <a href="{{ url_for('opportunities.index') }}" class="{{ 'active' if active_page == 'home' else '' }}"><i class="ri-briefcase-line"></i><span>Matched</span></a>
+    <a href="{{ url_for('opportunities.gigs') }}" class="{{ 'active' if active_page == 'gigs' else '' }}"><i class="ri-store-line"></i><span>Gigs</span></a>
+    <a href="{{ url_for('opportunities.earnings') }}" class="{{ 'active' if active_page == 'earnings' else '' }}"><i class="ri-wallet-3-line"></i><span>Earnings</span></a>
+  </nav>
+</div><!-- /.app-wrapper -->
+
+<script src="{{ url_for('static', filename='js/shell.js') }}"></script>

@@ -56,6 +56,9 @@ from app.routes.campus_map_routes import campus_map_bp
 # redirect blueprint (routes/tech_routes.py) was fully dead -- never imported/registered,
 # nothing routed there -- and has been deleted (Level 1 cleanup pass).
 from app.routes.skills_routes import skills_bp
+# Opportunities is a separate space from Skills, not a sub-page of it -- its own
+# blueprint, shell and URLs (see routes/opportunities_routes.py).
+from app.routes.opportunities_routes import opportunities_bp
 from app.routes.admin_skills_routes import admin_skills_bp
 from app.routes.employer_routes import employer_bp
 
@@ -307,6 +310,7 @@ def create_app():
     app.register_blueprint(onboarding_bp, url_prefix='/')
     app.register_blueprint(campus_map_bp, url_prefix='/')
     app.register_blueprint(skills_bp, url_prefix='/')
+    app.register_blueprint(opportunities_bp, url_prefix='/')
     app.register_blueprint(admin_skills_bp, url_prefix='/')
     app.register_blueprint(employer_bp, url_prefix='/')
 

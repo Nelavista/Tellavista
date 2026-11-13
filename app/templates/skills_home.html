@@ -227,41 +227,10 @@
     </div>
     {% endif %}
 
-    {% if opportunities %}
-    <div class="sk-section-title">
-      Opportunities matching your skills
-      <a href="/skills/opportunities" class="sk-view-link">View all →</a>
-    </div>
-    <p class="sk-card-desc" style="margin-top:-10px;">Because you've been building these skills, here's what you can do with them.</p>
-    <div class="sk-grid">
-      {% for row in opportunities %}
-      <div class="sk-card dv2-opp-card">
-        <div class="dv2-opp-top">
-          <div class="sk-card-title" style="margin-bottom:0;">{{ row.opportunity.title }}</div>
-          <span class="dv2-opp-match">{{ row.match_pct }}% match</span>
-        </div>
-        <div class="dv2-opp-meta">{{ row.opportunity.location }} · {{ row.opportunity.skill.name }}{% if row.opportunity.due_date %} · Due {{ row.opportunity.due_date.strftime('%b') }} {{ row.opportunity.due_date.day }}{% endif %}</div>
-        <div class="dv2-opp-price">₦{{ '{:,}'.format(row.opportunity.payment_amount) }}</div>
-        <a href="/skills/opportunities" class="sk-btn small" style="align-self:flex-start;">View</a>
-      </div>
-      {% endfor %}
-    </div>
-    {% endif %}
-
+    {# Work and earnings live in the Opportunities space, not here -- see
+       routes/opportunities_routes.py. Skills shows learning, projects and proof only. #}
     <div class="sk-section-title" style="margin-top: var(--space-7); font-size:1rem; color:var(--sk-text-dim);">Your account</div>
     <div class="hm-grid-2">
-      <div class="sk-panel">
-        <div class="sk-card-desc" style="text-transform:uppercase; font-size:0.72rem; letter-spacing:0.06em; font-weight:700;">Your earnings</div>
-        <div class="dv2-earnings-hero">₦{{ '{:,}'.format(earnings.total_paid) }}</div>
-        <div class="sk-card-desc">{{ 'Your first gig starts here.' if earnings.completed_count == 0 else (earnings.completed_count|string ~ ' gig' ~ ('s' if earnings.completed_count != 1 else '') ~ ' completed.') }}</div>
-        <div class="dv2-earnings-stats">
-          <div><div class="dv2-earnings-stat-label">Completed</div><div class="dv2-earnings-stat-value">{{ earnings.completed_count }}</div></div>
-          <div><div class="dv2-earnings-stat-label">Pending</div><div class="dv2-earnings-stat-value">₦{{ '{:,}'.format(earnings.pending) }}</div></div>
-          <div><div class="dv2-earnings-stat-label">Active</div><div class="dv2-earnings-stat-value">{{ earnings.active_count }}</div></div>
-        </div>
-        <a href="/skills/earnings" class="sk-btn secondary small" style="margin-top: var(--space-4);">View Earnings</a>
-      </div>
-
       <div class="sk-panel">
         <div class="dv2-profile-ring-row">
           <div class="dv2-ring-wrap" style="width:64px; height:64px;">

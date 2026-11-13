@@ -1562,7 +1562,7 @@ def update_opportunity_application(application_id):
     if status in status_messages:
         notify(application.student_id, 'application_update', f'"{application.opportunity.title}" {status_messages[status]}',
                (f'₦{application.payout_amount:,} paid' if status == 'paid' else None),
-               url_for('skills.earnings'))
+               url_for('opportunities.earnings'))
 
     return jsonify({'success': True, 'application': application.to_dict()})
 

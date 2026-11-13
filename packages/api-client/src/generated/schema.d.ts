@@ -778,6 +778,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/skills/career-tracks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Career Tracks */
+        get: operations["career_tracks_v1_skills_career_tracks_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/skills/my-learning": {
         parameters: {
             query?: never;
@@ -3272,6 +3289,48 @@ export interface components {
             student?: components["schemas"]["CandidateNameOut"] | null;
             /** Computed At */
             computed_at?: string | null;
+        };
+        /** CareerTrackListOut */
+        CareerTrackListOut: {
+            /** Tracks */
+            tracks: components["schemas"]["CareerTrackOut"][];
+        };
+        /**
+         * CareerTrackOut
+         * @description A multi-skill route. It points at skills; it never replaces a path.
+         */
+        CareerTrackOut: {
+            /** Id */
+            id: number;
+            /** Slug */
+            slug: string;
+            /** Title */
+            title: string;
+            /** Tagline */
+            tagline?: string | null;
+            /** Icon */
+            icon?: string | null;
+            /** Color */
+            color?: string | null;
+            /** Program */
+            program: string;
+            /** Skills */
+            skills?: components["schemas"]["CareerTrackSkillOut"][];
+        };
+        /** CareerTrackSkillOut */
+        CareerTrackSkillOut: {
+            /** Id */
+            id: number;
+            /** Slug */
+            slug: string;
+            /** Name */
+            name: string;
+            /** Category Slug */
+            category_slug?: string | null;
+            /** Language */
+            language?: string | null;
+            /** Language Label */
+            language_label?: string | null;
         };
         /** CbtAnswerOut */
         CbtAnswerOut: {
@@ -5837,6 +5896,9 @@ export interface components {
         /**
          * SkillOut
          * @description One catalog row. `published_paths` is what the student can actually open.
+         *
+         *     `program` comes from the category; `levels` are the levels of this skill's
+         *     published paths, so a filter can never invent a level the content lacks.
          */
         SkillOut: {
             /** Id */
@@ -5851,6 +5913,19 @@ export interface components {
             category?: string | null;
             /** Category Slug */
             category_slug?: string | null;
+            /**
+             * Program
+             * @default core
+             */
+            program: string;
+            /** Language */
+            language?: string | null;
+            /** Language Label */
+            language_label?: string | null;
+            /** Tags */
+            tags?: string[];
+            /** Levels */
+            levels?: string[];
             /** Published Paths */
             published_paths: number;
         };
@@ -6156,6 +6231,20 @@ export interface components {
             /** Average Score */
             average_score?: number | null;
         };
+        /** TalentSkillEvidenceOut */
+        TalentSkillEvidenceOut: {
+            /** Type */
+            type: string;
+            /** Id */
+            id: string;
+            /** Reason */
+            reason?: string | null;
+            /**
+             * Occurred At
+             * Format: date-time
+             */
+            occurred_at: string;
+        };
         /**
          * TalentSkillOut
          * @description One skill's evidence state. `current` means verified right now.
@@ -6175,6 +6264,8 @@ export interface components {
             at_risk: boolean;
             /** Current */
             current: boolean;
+            /** Evidence */
+            evidence?: components["schemas"]["TalentSkillEvidenceOut"][];
         };
         /** TalentTranscriptOut */
         TalentTranscriptOut: {
@@ -8187,7 +8278,14 @@ export interface operations {
     };
     list_skills_v1_skills_get: {
         parameters: {
-            query?: never;
+            query?: {
+                q?: string | null;
+                program?: string | null;
+                category?: string | null;
+                language?: string | null;
+                tag?: string | null;
+                level?: string | null;
+            };
             header?: {
                 authorization?: string | null;
             };
@@ -8203,6 +8301,41 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["SkillsOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    career_tracks_v1_skills_career_tracks_get: {
+        parameters: {
+            query?: {
+                program?: string | null;
+                q?: string | null;
+                language?: string | null;
+            };
+            header?: {
+                authorization?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CareerTrackListOut"];
                 };
             };
             /** @description Validation Error */

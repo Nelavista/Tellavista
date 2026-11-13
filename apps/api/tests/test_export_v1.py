@@ -404,7 +404,17 @@ def test_export_matches_the_importer_shape(tmp_path) -> None:
     assert data["users"][0]["password_hash"].startswith("pbkdf2:")
 
     course = data["taxonomy"][0]["faculties"][0]["departments"][0]["courses"][0]
-    assert course == {"code": "CSC101", "title": "Intro", "level": "100"}
+    # I7 added the V1 course provenance fields; a course without them exports
+    # them as null rather than dropping the keys, so the importer sees one shape.
+    assert course == {
+        "code": "CSC101",
+        "title": "Intro",
+        "level": "100",
+        "semester": None,
+        "course_type": None,
+        "description": None,
+        "source": None,
+    }
 
     assert {row["title"] for row in data["materials"]} == {
         "Stored file",

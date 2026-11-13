@@ -10,6 +10,8 @@
 export type Route =
   | { name: 'home' }
   | { name: 'skills' }
+  | { name: 'lab' }
+  | { name: 'languages' }
   | { name: 'skill'; slug: string }
   | { name: 'path'; slug: string }
   | { name: 'lesson'; slug: string }
@@ -61,6 +63,10 @@ export function parseDeepLink(url: string): Route | null {
     return { name: 'practice', id: Number(second) };
   }
   if (head === 'skills') {
+    // Literal routes must come before the skill-slug fallback, or `languages`
+    // would open as a skill called "languages".
+    if (second === 'languages') return { name: 'languages' };
+    if (second === 'african-languages') return { name: 'lab' };
     if (second === 'paths' && third) return { name: 'path', slug: third };
     if (second === 'lessons' && third) return { name: 'lesson', slug: third };
     if (second === 'tasks' && third && Number.isInteger(Number(third))) {

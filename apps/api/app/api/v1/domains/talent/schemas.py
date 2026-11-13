@@ -18,6 +18,13 @@ from app.api.v1.domains.verification.schemas import TranscriptOut
 from app.services.talent.profile import DEFAULT_TTL_DAYS, MAX_TTL_DAYS
 
 
+class TalentSkillEvidenceOut(BaseModel):
+    type: str
+    id: str
+    reason: str | None = None
+    occurred_at: datetime
+
+
 class TalentSkillOut(BaseModel):
     """One skill's evidence state. `current` means verified right now."""
 
@@ -28,6 +35,7 @@ class TalentSkillOut(BaseModel):
     verified_at: datetime | None = None
     at_risk: bool
     current: bool
+    evidence: list[TalentSkillEvidenceOut] = Field(default_factory=list)
 
 
 class TalentAccountOut(BaseModel):
@@ -190,6 +198,7 @@ __all__ = [
     "TalentQualityOverallOut",
     "TalentQualityProjectOut",
     "TalentSkillOut",
+    "TalentSkillEvidenceOut",
     "TalentTranscriptOut",
     "TalentWorkEvidenceOut",
     "TalentWorkHistoryOut",

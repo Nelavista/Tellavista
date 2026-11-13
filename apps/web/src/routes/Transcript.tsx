@@ -87,6 +87,42 @@ export function Transcript(): JSX.Element {
   const transcript = resource.data;
   const total = transcript.entries.length;
 
+  // One row per skill, so a student or a reviewer can see which skill each piece
+  // of evidence belongs to without reading three separate tables.
+  const bySkill = new Map<
+    string,
+    {
+      slug: string;
+      name: string;
+      learned: number;
+      proved: number;
+      delivered: number;
+      latest: TranscriptEntryOut | null;
+    }
+  >();
+  for (const entry of transcript.entries) {
+    if (!entry.skill_slug) continue;
+    const row = bySkill.get(entry.skill_slug) ?? {
+      slug: entry.skill_slug,
+      name: entry.skill ?? entry.skill_slug,
+      learned: 0,
+      proved: 0,
+      delivered: 0,
+      latest: null,
+    };
+    if (entry.kind === 'learned' || entry.kind === 'proved' || entry.kind === 'delivered') {
+      row[entry.kind] += 1;
+    }
+    if (
+      row.latest === null ||
+      new Date(entry.occurred_at).getTime() > new Date(row.latest.occurred_at).getTime()
+    ) {
+      row.latest = entry;
+    }
+    bySkill.set(entry.skill_slug, row);
+  }
+  const skillRows = [...bySkill.values()].sort((a, b) => b.proved - a.proved || a.name.localeCompare(b.name));
+
   return (
     <div className="nv-stack">
       <PageHeader
@@ -99,6 +135,55 @@ export function Transcript(): JSX.Element {
           </Link>
         }
       />
+
+      {total > 0 && skillRows.length > 0 ? (
+        <Panel
+          title="By skill"
+          actions={<Badge tone="info">{skillRows.length}</Badge>}
+        >
+          <p className="nv-muted">
+            Every line below names the record behind it. A skill is only “proved” from a passed
+            assessment or reviewed practical task.
+          </p>
+          <div className="nv-table-wrap">
+            <table className="nv-table">
+              <thead>
+                <tr>
+                  <th>Skill</th>
+                  <th>Learned</th>
+                  <th>Proved</th>
+                  <th>Delivered</th>
+                  <th>Latest evidence</th>
+                </tr>
+              </thead>
+              <tbody>
+                {skillRows.map((row) => (
+                  <tr key={row.slug}>
+                    <td>
+                      <Link to={`/skills/${row.slug}`}>{row.name}</Link>
+                    </td>
+                    <td>{row.learned}</td>
+                    <td>{row.proved}</td>
+                    <td>{row.delivered}</td>
+                    <td className="nv-meta">
+                      {row.latest ? (
+                        <>
+                          <span className="nv-mono">
+                            {row.latest.evidence.type} #{row.latest.evidence.id}
+                          </span>{' '}
+                          · {formatDateTime(row.latest.occurred_at)}
+                        </>
+                      ) : (
+                        '—'
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </Panel>
+      ) : null}
 
       {total === 0 ? (
         <EmptyState

@@ -93,6 +93,17 @@ describe('deep links', () => {
     expect(parseDeepLink('https://nelavista.com/talent')).toEqual({ name: 'talent' });
   });
 
+  it('opens the African Languages Lab and language profile as their own screens', () => {
+    expect(parseDeepLink('nelavista://skills/african-languages')).toEqual({ name: 'lab' });
+    expect(parseDeepLink('https://nelavista.com/skills/african-languages')).toEqual({ name: 'lab' });
+    expect(parseDeepLink('https://nelavista.com/skills/languages')).toEqual({ name: 'languages' });
+    // The literal routes must not be read as a skill slug.
+    expect(parseDeepLink('https://nelavista.com/skills/yoruba-transcription')).toEqual({
+      name: 'skill',
+      slug: 'yoruba-transcription',
+    });
+  });
+
   it('refuses a foreign host or unknown path', () => {
     expect(parseDeepLink('https://evil.example/skills')).toBeNull();
     expect(parseDeepLink('https://nelavista.com/nope')).toBeNull();
@@ -107,6 +118,46 @@ describe('task controls', () => {
     );
     expect(answerFor(control, 'positive')).toEqual({ key: 'positive' });
     expect(answerFor(control, null)).toBeNull();
+  });
+
+  it('builds a structured ALL answer from the published spec', () => {
+    const transcription = controlFor(
+      {
+        task_spec: {
+          kind: 'transcription',
+          segments: [
+            { id: 's1', context: 'A greeting.', speaker_required: true, start_required: true },
+          ],
+        },
+      },
+      { type: 'object', properties: { responses: { type: 'object' } } },
+    );
+    expect(transcription.kind).toBe('responses');
+    expect(
+      answerFor(transcription, ['Ẹ káàárọ̀', 'Speaker 1', '0:04']),
+    ).toEqual({ responses: { s1: { text: 'Ẹ káàárọ̀', speaker: 'Speaker 1', start: '0:04' } } });
+
+    const labeling = controlFor(
+      {
+        task_spec: {
+          kind: 'labeling',
+          items: [{ id: 'i1', text: 'Ọkọ̀ náà ti dé.', fields: [{ name: 'intent', label: 'Intent' }] }],
+        },
+      },
+      { type: 'object', properties: { responses: { type: 'object' } } },
+    );
+    expect(answerFor(labeling, ['statement'])).toEqual({
+      responses: { i1: { intent: 'statement' } },
+    });
+  });
+
+  it('says recording is web-only instead of sending an empty answer', () => {
+    const recording = controlFor(
+      { task_spec: { kind: 'recording', prompts: [{ id: 'p1' }] } },
+      { type: 'object', properties: { responses: { type: 'object' } } },
+    );
+    expect(recording.kind).toBe('unsupported');
+    expect(answerFor(recording, ['x'])).toBeNull();
   });
 
   it('refuses a task it cannot render instead of sending noise', () => {

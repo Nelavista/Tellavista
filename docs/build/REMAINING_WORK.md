@@ -5,7 +5,7 @@
 > screen gaps and the launch blockers, use `docs/v2-ui/AUDIT.md` and
 > `docs/v2-ui/ROUTE-MAP.md`.
 
-Last updated: 2026-11-08 (Phases 0-10 delivered as code. B13/B14 now have typed
+Last updated: 2026-11-08 (V1 delta I1-I8 ported; Phases 0-10 delivered as code. B13/B14 now have typed
 contracts and web + mobile screens, F7 curriculum is seeded, G1-G5 are policy plus
 admin controls, the B6 answer drafts and B7 re-verification prompt are closed, and
 the API suite was run green - see Verification below. UI readiness is tracked
@@ -27,21 +27,19 @@ production data, small changes behind feature flags, tests with the code.
 Status legend: `[ ]` to do · `[~]` in progress · `[x]` done · `[!]` blocked on you
 or on an external decision.
 
-## Verification (last code run 2026-11-03; docs-only V1 delta audit 2026-11-04)
+## Verification (last full code run 2026-11-08)
 
 Run after the last code change, not before it. Every line below is a command that
-was executed and its real result. The 2026-11-04 V1 delta audit changed
-documentation only and did not re-run the suite; these are the last recorded
-results from `docs/v2-ui/AUDIT.md` §13.2.
+was executed and its real result.
 
 | Check | Command | Result |
 |---|---|---|
-| API suite (including migrations) | `pytest -q` in `apps/api` | **340 passed, 1 skipped** (last recorded 2026-11-03) |
-| Web DOM/unit | `npx vitest run` in `apps/web` | **57 passed** (11 files; last recorded 2026-11-03) |
-| Admin DOM | `npx vitest run` in `apps/admin` | **2 passed** (last recorded 2026-11-03) |
-| Mobile core (queue, deep links, versions) | `npx vitest run` in `apps/mobile` | **11 passed** (last recorded; not re-run in this audit) |
-| Typechecks | `tsc --noEmit` in web, admin, mobile | **0 errors** each (last recorded; re-run before UI work) |
-| Lint | `ruff check app tests` (api), `ruff check tools`, `eslint src` (web, admin, mobile) | **clean** (last recorded; 2 pre-existing mobile warnings) |
+| API suite (including migrations) | `pytest -q` in `apps/api` | **366 passed, 1 skipped, 1 failed** on 2026-11-08 — the failure (`test_export_v1`) was a stale expectation for the I7 course fields; the test was updated and `tests/test_export_v1.py` then passed. New coverage: `tests/test_skills_catalog.py` (4 passed) |
+| Web DOM/unit | `npx vitest run` in `apps/web` | **65 passed** (12 files, 2026-11-08) |
+| Admin DOM | `npx vitest run` in `apps/admin` | **2 passed** (2026-11-08) |
+| Mobile core (queue, deep links, versions, structured answers) | `npx vitest run` in `apps/mobile` | **14 passed** (2026-11-08) |
+| Typechecks | `tsc --noEmit` in web, admin, mobile | **0 errors** each (2026-11-08) |
+| Lint | `ruff check` on the changed API files, `eslint` on the changed web/admin/mobile files | **clean**; `ruff check app tests` still reports pre-existing style findings in the imported `app/seed/all_skills/*` data files, which are not reformatted here |
 | First-load budget | `node tools/check_web_budget.mjs` after `vite build` | **58.7 KB JS + 1.4 KB CSS** of 150/20 KB (last recorded) |
 | Typed client freshness | `node tools/gen_api_client.mjs --schema openapi.json` | regenerated after the B13/B14 models; the generated file is committed |
 | Load-test tool | offline: percentile/report maths, over-budget exit 1, unreachable API exit 2 | **works**; no live measurement yet (F6) |
@@ -57,6 +55,12 @@ state machine requires `in_progress` first; the scheduler counted an existing
 day's job as new on every tick; the platform migration's timestamps were nullable
 against the models; and a handful of screens lost null-narrowing against the
 stricter generated types.
+
+On 2026-11-08 the web suite's five public-route failures were real defects, not
+test noise: `SocialLinks` called `window.matchMedia` unguarded (jsdom and some
+embedded browsers omit it) and the Impact route test had been nested inside the
+FAQ test so it never ran. Both are fixed, and the stale `test_export_v1` course
+expectation was updated for the I7 provenance fields.
 
 ## Decisions taken (were open questions)
 
@@ -277,36 +281,45 @@ superset of V1. They are also recorded in `docs/v2-ui/PARITY.md` §1.2 and
 - [~] **I1 — ALL curriculum decision and port.** V1 added 9 African Languages Lab
   categories, 94 skills (including `african-language-data-beginner`), 10
   multi-skill tracks, lessons, practice tasks, assessments and projects.
-  V2 now seeds the 9 categories, 94 skills, lessons, practice tasks, assessments
-  and 10 ordered tracks through `app.seed.all_language`. The language profile,
-  dedicated hub/filter UI and project-template parity remain.
+  V2 seeds the 9 categories, 94 skills, lessons, practice tasks, assessments and
+  10 ordered tracks through `app.seed.all_language`, and the `/skills/african-languages`
+  hub plus `/skills/career-tracks` read them. V1's project templates remain
+  future content work, not a screen gap.
 - [~] **I2 — V2 schema for language data.** V2 now has the ALL programme,
   skill language/tags and career-track tables, `user_languages.dialect` plus the
   five self-reported capability flags, and persisted `practice_attempts.score` /
   `result` (migration `20261108_1200`). Verified capabilities are still derived
   at read time, never stored. Remaining V1 task metadata can be added when a
   concrete screen needs it.
-- [~] **I3 — Structured scoring and assessment gate.** Deterministic scoring is
+- [x] **I3 — Structured scoring and assessment gate.** Deterministic scoring is
   ported in `app/services/skills/language_tasks.py`: transcription word/character
   accuracy and WER, translation chrF plus key terms, labeling field accuracy and
   repeat consistency, and recording technical requirements. Practice returns and
   stores the 0-100 score; assessments grade each ALL task against its own spec and
   award its points at the configured pass score (70 by default). Expected answers
   stay server-side and are stripped from practice briefs and sitting payloads.
-  **Still open:** the per-skill scored-practice prerequisite before an assessment
-  may be started.
-- [~] **I4 — Web screens.** `/skills/languages` now edits the self-reported
-  profile and shows verified capabilities separately, and the practice screen
-  renders all four structured task kinds. `/impact` and the landing band are live
-  with honest copy: no unverified reach numbers. **Still open:**
-  `/skills/african-languages` hub, language/tag/programme filters on `/skills`, and
-  per-skill evidence/academic background/languages on `/transcript` and `/talent`.
-- [ ] **I5 — Mobile lockstep.** Mirror the new ALL hub, language profile and
-  structured task screens through deep links and Home actions (D2/ADR-0012). Add
-  a parser test for each new route.
-- [ ] **I6 — Admin and talent search.** Add language/level/status/practical/background
-  filters to the admin candidate/talent surface if ALL is ported. V2 has no
-  employer self-service; do not rebuild V1's employer discover page by accident.
+  Structured assessments now require one scored practice attempt for every
+  published structured practice task for that skill before a sitting can start.
+- [x] **I4 — Web screens.** `/skills/languages` edits the self-reported profile and
+  shows verified capabilities separately; the practice screen renders all four
+  structured task kinds. `/skills/african-languages` lists the tracks and skills
+  with server-side search/language/level filters, `/skills` filters by search,
+  programme, language and level, and the API filters on the same fields so web
+  and mobile cannot disagree. The transcript has a "By skill" table with the
+  latest evidence row, and Talent shows per-skill evidence plus languages and
+  academic context. `/impact` and the landing band are live with honest copy: no
+  unverified reach numbers.
+- [x] **I5 — Mobile lockstep.** `nelavista://skills/african-languages` and
+  `.../skills/languages` resolve to their own screens (tested, including that a
+  real skill slug still opens as a skill), Home links to both, the language
+  profile edits the self-reported flags and shows the verified column, and the
+  practice/assessment control builds the structured `responses` answer from the
+  published spec. Recording says plainly that it needs the web app instead of
+  submitting an empty answer.
+- [x] **I6 — Admin and talent search.** New admin **Talent directory** screen over
+  `GET /v1/talent/directory` with language, language level, academic level,
+  visibility and background filters. Verification/practical-done filters stay out
+  of scope while employer self-service is dropped by design.
 - [x] **I7 — FUTA taxonomy and course provenance.** V2 now seeds the verified FUTA
   school/department structure and the 35 published Surveying & GeoInformatics
   course rows with `source="futa_official"`. `Course` now carries `semester`,

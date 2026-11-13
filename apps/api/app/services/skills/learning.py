@@ -20,6 +20,8 @@ from app.models.skills import (
     COMPLETED,
     IN_PROGRESS,
     STATUS_PUBLISHED,
+    CareerTrack,
+    CareerTrackStep,
     LearningPath,
     LearningPathStep,
     Lesson,
@@ -28,9 +30,38 @@ from app.models.skills import (
     Skill,
     SkillCategory,
 )
+from app.services.skills.language_profile import language_label
 
 
-def list_skills(db: Session) -> list[dict]:
+def _levels_by_skill(db: Session) -> dict[int, list[str]]:
+    """Published path levels per skill. A skill is only "advanced" if a path is."""
+    levels: dict[int, set[str]] = {}
+    rows = db.execute(
+        select(LearningPath.skill_id, LearningPath.level)
+        .where(LearningPath.status == STATUS_PUBLISHED)
+        .distinct()
+    ).all()
+    for skill_id, level in rows:
+        levels.setdefault(skill_id, set()).add(level)
+    return {skill_id: sorted(values) for skill_id, values in levels.items()}
+
+
+def list_skills(
+    db: Session,
+    *,
+    q: str | None = None,
+    program: str | None = None,
+    category: str | None = None,
+    language: str | None = None,
+    tag: str | None = None,
+    level: str | None = None,
+) -> list[dict]:
+    """The catalog, filtered server-side so web and mobile cannot disagree.
+
+    A skill's programme comes from its category (`core` when it has none), and its
+    levels come from published learning paths — the catalog never claims a level
+    the content does not have.
+    """
     categories = {row.id: row for row in db.scalars(select(SkillCategory)).all()}
     skills = db.scalars(select(Skill).where(Skill.is_active.is_(True)).order_by(Skill.name)).all()
     path_counts = dict(
@@ -40,18 +71,120 @@ def list_skills(db: Session) -> list[dict]:
             .group_by(LearningPath.skill_id)
         ).all()
     )
+    levels_by_skill = _levels_by_skill(db)
+    needle = (q or "").strip().lower()
+    language_key = (language or "").strip().lower()
+    tag_key = (tag or "").strip().lower()
+    category_key = (category or "").strip().lower()
+    program_key = (program or "").strip().lower()
+    level_key = (level or "").strip().lower()
+
     result: list[dict] = []
     for skill in skills:
-        category = categories.get(skill.category_id)
+        category_row = categories.get(skill.category_id)
+        program_slug = category_row.program if category_row else "core"
+        levels = levels_by_skill.get(skill.id, [])
+        tags = [str(item) for item in (skill.tags or [])]
+        if program_key and program_slug.lower() != program_key:
+            continue
+        if category_key and (category_row.slug if category_row else "") != category_key:
+            continue
+        if language_key and (skill.language or "").lower() != language_key:
+            continue
+        if tag_key and tag_key not in {item.lower() for item in tags}:
+            continue
+        if level_key and level_key not in levels:
+            continue
+        if needle:
+            haystack = " ".join(
+                [skill.name, skill.description or "", skill.language or "", *tags]
+            ).lower()
+            if needle not in haystack:
+                continue
         result.append(
             {
                 "id": skill.id,
                 "slug": skill.slug,
                 "name": skill.name,
                 "description": skill.description,
-                "category": category.name if category else None,
-                "category_slug": category.slug if category else None,
+                "category": category_row.name if category_row else None,
+                "category_slug": category_row.slug if category_row else None,
+                "program": program_slug,
+                "language": skill.language,
+                "language_label": language_label(skill.language),
+                "tags": tags,
+                "levels": levels,
                 "published_paths": path_counts.get(skill.id, 0),
+            }
+        )
+    return result
+
+
+def list_career_tracks(
+    db: Session, *, program: str | None = None, q: str | None = None, language: str | None = None
+) -> list[dict]:
+    """Multi-skill tracks with their ordered skills.
+
+    A track is a route through skills the student is still free to take one at a
+    time; it never replaces a learning path and never verifies anything.
+    """
+    query = select(CareerTrack).where(CareerTrack.status == STATUS_PUBLISHED)
+    if program:
+        query = query.where(CareerTrack.program == program.strip().lower())
+    tracks = db.scalars(query.order_by(CareerTrack.title)).all()
+    if not tracks:
+        return []
+    track_ids = [track.id for track in tracks]
+    rows = db.execute(
+        select(
+            CareerTrackStep.track_id,
+            CareerTrackStep.ordinal,
+            Skill,
+            SkillCategory.slug,
+        )
+        .join(Skill, Skill.id == CareerTrackStep.skill_id)
+        .outerjoin(SkillCategory, SkillCategory.id == Skill.category_id)
+        .where(CareerTrackStep.track_id.in_(track_ids))
+        .order_by(CareerTrackStep.track_id, CareerTrackStep.ordinal)
+    ).all()
+    skills_by_track: dict[int, list[dict]] = {}
+    for track_id, _ordinal, skill, category_slug in rows:
+        skills_by_track.setdefault(track_id, []).append(
+            {
+                "id": skill.id,
+                "slug": skill.slug,
+                "name": skill.name,
+                "category_slug": category_slug,
+                "language": skill.language,
+                "language_label": language_label(skill.language),
+            }
+        )
+
+    needle = (q or "").strip().lower()
+    language_key = (language or "").strip().lower()
+    result: list[dict] = []
+    for track in tracks:
+        skills = skills_by_track.get(track.id, [])
+        if language_key and not any(
+            (item["language"] or "").lower() == language_key for item in skills
+        ):
+            continue
+        if needle:
+            haystack = " ".join(
+                [track.title, track.tagline or "", *(item["name"] for item in skills)]
+            ).lower()
+            if needle not in haystack:
+                continue
+        result.append(
+            {
+                "id": track.id,
+                "slug": track.slug,
+                "title": track.title,
+                "tagline": track.tagline,
+                "icon": track.icon,
+                "color": track.color,
+                "program": track.program,
+                "skills": skills,
             }
         )
     return result

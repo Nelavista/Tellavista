@@ -2,8 +2,8 @@
 
 | Field | Value |
 |---|---|
-| Status | **Implemented 2026-11-01; V1 delta audited 2026-11-04; ALL catalogue ported 2026-11-04.** The original parity scope is wired. The V2 seed now contains the ALL catalogue and tracks; the language profile, hub/filter UI, richer task scoring and FUTA taxonomy remain open. |
-| Date | 2026-10-27; post-build, palette correction and API closure 2026-11-01; V1 delta 2026-11-04 |
+| Status | **Implemented 2026-11-01; V1 delta audited 2026-11-04; V1 delta ported 2026-11-08.** The original parity scope is wired and the V1 additions (ALL content, language profile, structured scored tasks and gate, hub and catalogue filters, evidence rows, talent directory filters, Impact, FUTA, prompt hardening, mobile lockstep) are in place. |
+| Date | 2026-10-27; post-build, palette correction and API closure 2026-11-01; V1 delta 2026-11-04; V1 delta port 2026-11-08 |
 | Method | V2 code and API contracts are the source of truth. V1 is read-only reference. |
 | Legend | **Stronger** = V2 does more or does it better. **Parity** = capability exists in both. **Gap** = V2 needs work to match. **Dropped** = V2 intentionally removes it; a reason is required. **New** = not in V1. **Decide** = product decision needed. |
 | Companion documents | `docs/v2-ui/AUDIT.md`, `docs/v2-ui/ROUTE-MAP.md`, `docs/v2-ui/DESIGN-DIRECTION.md`, `docs/v2-ui/IMAGE-PROMPTS.md` |
@@ -25,12 +25,12 @@
 |---|---|---|
 | Public marketing | Separate routed pages: Landing, Features, How it works, About, Impact, Contact, FAQ, 404, Offline; per-page metadata and sitemap | **Parity/stronger** for the original set; the Impact page and landing band are built with honest copy and no unverified figures |
 | Auth | Login, signup, verify, reset; shared auth layout; legal links; signup records terms and privacy at the current version | **Parity**; `ConsentGate` handles re-consent after a version change |
-| Student journey | Home, Academia, Materials, Ask, CBT, Skills, Language profile, My learning, Lesson, Practice, Verification, Assessment, Attempt review, Practical task, Transcript, Opportunities, Applications, Work, Earnings, Talent, Campus, Notifications, Settings, Onboarding | **Parity/stronger** for the original set; the language profile is built, the ALL hub remains open |
-| Skills | Verification/evidence journey, practice and the language profile | **Stronger** in verification/evidence; the ALL catalogue is seeded, structured tasks score deterministically and `/skills/languages` separates claims from proof. **Gap** for the ALL hub and catalogue filters |
+| Student journey | Home, Academia, Materials, Ask, CBT, Skills, African Languages Lab, Language profile, My learning, Lesson, Practice, Verification, Assessment, Attempt review, Practical task, Transcript, Opportunities, Applications, Work, Earnings, Talent, Campus, Notifications, Settings, Onboarding | **Parity/stronger** for the whole set, hub and language profile included |
+| Skills | Verification/evidence journey, practice, the language profile and the ALL hub with server-side filters | **Stronger** in verification/evidence; the ALL catalogue is seeded and filtered by the API, structured tasks score deterministically and `/skills/languages` separates claims from proof |
 | Academia | Dashboard, materials, Ask, CBT, course and topic detail, CBT history | **Parity/stronger**; uploads/analysis deferred |
 | Opportunities/work/money | Managed model, eligibility blockers, applications, invitations, ledger, payout batches | **Stronger** than V1's status-only marketplace |
-| Talent/transcript | Evidence-only, scoped revocable shares, consent history | **Stronger** privacy; **parity** on the original proof surface. **Gap** for V1's per-skill evidence trail, academic background and language profile on the talent view |
-| Employer | No self-service | **Dropped by design** at launch; managed work instead. The V2 API now has the permission-gated `/v1/talent/directory` contract for language, language level, academic level, visibility status and background filtering; no employer UI is planned unless this surface is later approved |
+| Talent/transcript | Evidence-only, scoped revocable shares, consent history, per-skill evidence, academic context and languages | **Stronger** privacy and a complete evidence trail on both the transcript and the talent view |
+| Employer | No self-service | **Dropped by design** at launch; managed work instead. The permission-gated `/v1/talent/directory` contract (language, language level, academic level, visibility status, background) is now used by the admin **Talent directory** screen; no employer self-service is planned |
 | Admin | Overview, Waitlist, Campus, Audit, Imports, Users, Opportunities, Projects, Review, Money, Content, Platform, Security, 404 | **Stronger** in audit/money/quality; bulk actions remain later work |
 | Utility | Real 404, error boundary, offline screen, route focus/title | **Parity/stronger** |
 | Theme | Light/dark with Nelavista blue and white | **Parity**; both surfaces implemented, manual visual pass recommended |
@@ -40,11 +40,11 @@
 managed work, money controls and admin audit. Of the V1 additions landed between
 2026-10-30 and 2026-11-04, the ALL catalogue, the language profile, structured
 deterministic scoring, the Impact page + landing band and the FUTA taxonomy are now
-in V2. The remaining ALL gaps are the dedicated hub/catalogue filters, the mobile
-lockstep and the per-skill scored-practice prerequisite; they are recorded in §1.2
-and tracked as I1–I8 in `docs/build/REMAINING_WORK.md`. The other remaining gaps are
-real business content, approved pricing, social profile URLs, photography and the
-manual launch checks.
+in V2. The dedicated hub/catalogue filters, the per-skill scored-practice
+prerequisite, the transcript/talent evidence rows, the talent directory filters
+and the mobile lockstep are ported too (§1.2, `docs/build/REMAINING_WORK.md` §I).
+What remains is real business content, approved pricing, social profile URLs,
+photography and the manual launch checks.
 
 ### 1.1 What is still limited
 
@@ -61,10 +61,9 @@ manual launch checks.
   photography is still pending.
 - **Brand video:** the MP4 now runs full-width before the public footer with a
   reduced-motion still fallback.
-- **V1 delta (2026-11-04):** the V1 additions listed in §1.2 are not in V2. They are
-  not a reason to reopen the closed UI work, but they are a real regression risk if
-  `develop` is merged to `main` at launch without porting them or explicitly
-  deciding to drop them.
+- **V1 delta (2026-11-04):** ported on 2026-11-08 (§1.2). The only parts still
+  owed are external: real assets and the device/store checks, not application
+  scope.
 
 ### 1.2 V1 additions after the parity review (2026-11-04)
 
@@ -73,24 +72,24 @@ source of truth for the delta is the V1 code on `main`, not this table:
 
 | V1 addition | What V1 now has | V2 state | Verdict | Action |
 |---|---|---|---|---|
-| African Languages Lab (ALL) content | 9 ALL categories (`SkillCategory.program = 'all'`), 94 published skills (including the `african-language-data-beginner` entry path), 10 multi-skill career tracks, lessons, practice tasks and assessments | V2 seed now contains the catalogue, tracks and learning content; V2 does not yet have the language profile, ALL hub/filter UI or V1 project-template parity | **Partial** | Keep the V2 seed idempotent and add the remaining profile, hub/filter and project/task UX before claiming full parity. |
+| African Languages Lab (ALL) content | 9 ALL categories (`SkillCategory.program = 'all'`), 94 published skills (including the `african-language-data-beginner` entry path), 10 multi-skill career tracks, lessons, practice tasks and assessments | V2 seeds the catalogue, tracks and learning content, exposes the tracks through `/skills/career-tracks` and the hub, and keeps the seed idempotent | **Parity** | Track progress and V1's project-template detail remain future content work |
 | Language profile | `/skills/languages`: self-reported languages, dialect, proficiency, `can_speak/read/write/transcribe/translate`; `user.language_background`; verified capabilities derived from verified language-specific skills | V2 `user_languages` carries dialect + the five self-reported flags; `/skills/languages` edits them and shows capabilities derived from verified language-specific skills as a separate, read-only column. No `language_background` free-text field. | **Parity** | Keep the derivation at read time so a profile edit can never verify anything. A free-text background field can be added if the talent read needs it. |
-| Structured scored tasks | `Challenge.task_spec_json` for transcription, translation, labeling and recording; deterministic scoring (WER, chrF, label accuracy, recording requirements, repeat consistency); `ChallengeSubmission.score`/`result_json` | V2 task specs live in `TaskTemplate.input_schema` / `config.task_spec`; `app/services/skills/language_tasks.py` scores WER, chrF, label accuracy, repeat consistency and recording requirements; practice stores `score`/`result`; assessments score each gold task against its own spec and award points at the configured pass score (70 by default). Expected answers stay server-side and are stripped from practice briefs and sitting payloads. | **Parity** | Keep scoring deterministic. The per-skill scored-practice prerequisite before an assessment is still open. |
-| Assessment gate | A skill with an assessment is verified only after every lesson is complete, every scored practice task is attempted and the assessment reaches its pass mark; assessment prerequisites are enforced server-side | V2 verification is already assessment/practical-evidence based, but has no equivalent per-skill scored-practice gate | **Partial** | Reuse V2's evidence model; add the per-skill scored-practice prerequisite only if ALL is ported. |
-| ALL hub and catalogue filters | `/skills/african-languages` hub with language/level filters, recommended skills and track progress; catalogue filters for language, level, tag and programme | `/skills` catalogue only; no language/tag/programme filters, no hub, no tracks | **Gap** | Add the hub and the filters only after the data model exists. |
-| Transcript and talent evidence | Per-skill verification records on the transcript; evidence records, academic background and languages on the Talent profile; evidence visibility still respects the `show_skill_transcript` privacy toggle | V2 transcript/talent exist, but not the per-skill evidence trail, academic background or languages | **Partial** | Extend the V2 transcript/talent reads; keep the privacy toggle authoritative. |
-| Employer talent search filters | Language, level, verification/assessment status, practical-done and academic-background filters on `/employer/discover` (employers and admins) | V2 API provides `/v1/talent/directory` with language, language level, academic level, visibility status and background filters; verification/practical status filters and UI remain out of scope with employer self-service dropped | **Partial/decision** | Keep the API contract available for a future approved talent-search surface; add UI and evidence-status filters only if that product decision changes |
+| Structured scored tasks | `Challenge.task_spec_json` for transcription, translation, labeling and recording; deterministic scoring (WER, chrF, label accuracy, recording requirements, repeat consistency); `ChallengeSubmission.score`/`result_json` | V2 task specs live in `TaskTemplate.input_schema` / `config.task_spec`; `app/services/skills/language_tasks.py` scores WER, chrF, label accuracy, repeat consistency and recording requirements; practice stores `score`/`result`; assessments score each gold task against its own spec and award points at the configured pass score (70 by default). Expected answers stay server-side and are stripped from practice briefs and sitting payloads; the structured assessment gate requires one scored practice attempt per published structured practice task. | **Parity** | Keep scoring deterministic and the practice gate server-side |
+| Assessment gate | A skill with an assessment is verified only after every lesson is complete, every scored practice task is attempted and the assessment reaches its pass mark; assessment prerequisites are enforced server-side | Structured V2 assessments require one scored practice attempt for every published structured practice task for the skill before a sitting starts; pass/fail remains deterministic and evidence-backed | **Parity** for structured tasks | Keep the gate server-side; the per-skill prerequisite is not applied to legacy non-structured templates |
+| ALL hub and catalogue filters | `/skills/african-languages` hub with language/level filters, recommended skills and track progress; catalogue filters for language, level, tag and programme | `/skills/african-languages` lists tracks and skills with search/language/level filters; `/skills` filters by search, programme, language and level locally; the API filters by `q`, `program`, `category`, `language`, `tag` and `level`, and `/skills/career-tracks` returns each track's ordered skills | **Parity** (track progress is not stored) | Keep track progress out until a product decision says a track is a learning path |
+| Transcript and talent evidence | Per-skill verification records on the transcript; evidence records, academic background and languages on the Talent profile; evidence visibility still respects the `show_skill_transcript` privacy toggle | V2 transcript records scored practice and assessment evidence and now renders a "By skill" table with the latest evidence row; Talent shows per-skill evidence rows plus languages and academic context, all still scoped by the share's `academic`/`availability`/`transcript` grants | **Parity** | Keep share scopes authoritative |
+| Employer talent search filters | Language, level, verification/assessment status, practical-done and academic-background filters on `/employer/discover` (employers and admins) | `/v1/talent/directory` filters by language, language level, academic level, visibility status and background, and the admin **Talent directory** screen uses it. Verification and practical-done filters stay out of scope while employer self-service is dropped | **Parity** for the approved surface | Keep employer self-service dropped; add evidence-status filters only if that decision changes |
 | Impact page | Public `/impact` with reach numbers, "what we've built", CTA; landing track-record band and footer link | `/impact` and the landing band are live with the same outcomes story, but deliberately publish no reach figures until they are verified. Footer link present. | **Parity/stronger (honest)** | Add the 2,500+/500+ numbers only when the business confirms they are current and defensible. |
 | FUTA official taxonomy | Verified FUTA schools/departments and 35 Surveying & GeoInformatics courses, with provenance (`Course.source = 'futa_official'`) and a cleanup script for unlisted departments | V2 now seeds the verified structure and SVG rows, adds `semester`, `course_type`, `description` and `source`, and preserves them through V1 export/import | **Partial** | Add further department course lists only after their official FUTA pages are verified; do not infer unlisted courses |
 | AI grading hardening | `wrap_untrusted` escapes student-supplied `<student_content>` delimiters, so a submission cannot close the untrusted block early | V2 Ask escapes retrieved material and the student question inside `<student_content>` boundaries with a separate system instruction; V2 practice and assessment grading are deterministic and have no AI prompt path | **Parity** | Reuse the boundary helper for any future AI feedback path; do not introduce model calls into deterministic practice validation |
 | Test-suite speed | Test-only SQLite pragmas (`synchronous=OFF`, `journal_mode=MEMORY`) shorten V1 suite setup | V2 has its own test fixtures; no user-facing change | **No action** | Keep the optimisation in V1; do not copy test pragmas into production configuration. |
 
-**V1 delta verdict:** the original V2 parity claim still holds for the features it
-audited, but V2 is no longer a superset of V1. The ALL work is the largest gap:
-it is a content product plus schema plus assessment behaviour, and it crosses
-skills, verification, transcript, talent and mobile. Impact and FUTA are smaller
-but still visible to users or operators. Treat all three as launch decisions, not
-as documentation-only omissions.
+**V1 delta verdict (2026-11-08):** the delta is ported. ALL content, the language
+profile, structured scoring and the assessment gate, the hub and catalogue
+filters, the evidence rows and the admin talent filters are in V2 on web, mobile
+and API; Impact, FUTA and the prompt hardening were already in place. The only
+open items are the external ones (real assets, store screenshots, device smoke
+run) and track progress, which needs a product decision rather than code.
 
 ---
 
@@ -190,11 +189,11 @@ to the legal pages and records both consents. Re-consent is handled by
 |---|---|---|---|
 | Skills home with pipeline, stats, continue learning, earnings | Skills catalog + My Learning + Home | **Partial** | Add a “next step” anchor to Skills; avoid stat-card clutter |
 | Catalog with categories | Skills catalog | **Parity** | Add search/filter and time/difficulty metadata if available; V1 now also filters by language, level, tag and programme |
-| Skills search | None | **Gap** | Add search/filter to `/skills`; the V1 delta makes language/tag filters part of the target if ALL is ported |
-| African Languages Lab hub (new 2026-10-30) | V2 catalogue seed exists; no dedicated hub | **Gap** | Add `/skills/african-languages` with language/level filters over the seeded ALL programme |
+| Skills search | Search, programme, language and level filters on `/skills`; the API also filters by `q`, `program`, `category`, `language`, `tag` and `level` | **Parity** | Keep the filter options pinned to what the API returns |
+| African Languages Lab hub (new 2026-10-30) | `/skills/african-languages` lists the ALL tracks and skills with server-side search/language/level filters | **Parity** | Keep tracks a suggested order, never a replacement for a learning path |
 | Language profile (new 2026-10-30) | `user_languages` self-reported flags and `/skills/languages`; verified capabilities derived from verified language-specific skills | **Parity** | Keep verified capabilities read-only and derived at read time |
 | Structured scored tasks and assessment gate (new 2026-10-30) | Four task kinds, deterministic WER/chrF/label/recording scoring, stored practice scores, assessments scored against each gold task's own spec | **Parity** for scoring; **gap** for the per-skill scored-practice prerequisite | Keep expected answers server-side; add the practice gate only if ALL requires it |
-| Per-skill evidence on transcript/talent (new 2026-10-30) | Transcript groups and talent shares exist; no per-skill evidence record, academic background or language profile | **Partial** | Extend the existing reads; keep `show_skill_transcript` authoritative |
+| Per-skill evidence on transcript/talent (new 2026-10-30) | Transcript gains a "By skill" table (learned/proved/delivered counts plus the latest evidence row); Talent shows per-skill evidence rows, languages and academic context | **Parity** | Keep `show_skill_transcript` authoritative and evidence rows unmutable |
 | Learning paths/tracks | Paths | **Parity** for single-skill paths; **gap** for V1's multi-skill career tracks | Keep ordered steps; decide whether V2 needs multi-skill tracks or maps them to paths |
 | Skill detail | Skill detail | **Parity** | Keep |
 | Course view | Path/lesson routes | **Partial** | Add course/module grouping if the API supports it |
@@ -243,10 +242,10 @@ talent privacy. The four spaces are a first-class product choice, with a
 dashboard destination for each. The notification centre, applications,
 invitations, eligibility blockers, consent history, push-device
 list/removal, CBT review, course and topic detail, password change and split
-settings are built. Skills search and uploads remain later-scope items, not
-missing primary screens. The V1 delta adds one missing product area rather than a
-missing screen: ALL content, the language profile and structured language tasks
-are absent from V2 and must be ported or explicitly dropped.
+settings are built. Uploads remain a later-scope item, not a missing primary
+screen. The V1 delta (ALL content, language profile, structured scored tasks, the
+hub, evidence rows and the talent filters) is now ported; only the external
+owed items listed below stay open.
 
 ---
 
@@ -364,11 +363,11 @@ replacement is real and the product does not pretend the old feature exists.
 
 ### Still blocked or deferred
 
-- **V1 delta (2026-11-04):** ALL curriculum, language profile, structured scored
-  tasks, the ALL hub, transcript/talent evidence, talent language filters, the
-  Impact page and the FUTA taxonomy seed. See §1.2 and `REMAINING_WORK.md` §I.
+- **V1 delta (2026-11-04):** ported on 2026-11-08 — ALL curriculum, language
+  profile, structured scored tasks and gate, the ALL hub and catalogue filters,
+  transcript/talent evidence rows, talent directory filters and the Impact page.
+  See §1.2 and `REMAINING_WORK.md` §I.
 - Approved pricing amounts and real business content.
-- Skills search/filter (later scope).
 - Material upload/analysis (deferred with replacement copy).
 - Google SSO (deferred).
 - Offline submission sync (deferred).
@@ -412,8 +411,7 @@ invitations and utility screens exist.
 What remains is not a missing primary screen or API route for the original parity
 scope. It is real business content and a small set of later-scope items (skills
 search, uploads, Google SSO, offline sync, analytics), plus the manual launch
-checks. The exception is the 2026-11-04 V1 delta: ALL, the language profile,
-structured scored tasks, the Impact page and the FUTA taxonomy are real new
-product scope. V2 must port them or explicitly drop them before claiming parity
-again. The redesign should keep V2's stronger core and explicitly retire V1's
+checks. The 2026-11-04 V1 delta is ported: ALL, the language profile, structured scored
+tasks, the hub and filters, the evidence rows, the Impact page and the FUTA
+taxonomy. The redesign should keep V2's stronger core and explicitly retire V1's
 dead or unsafe surfaces.

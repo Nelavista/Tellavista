@@ -65,6 +65,32 @@ export function TaskControl({
     );
   }
 
+  if (control.kind === 'responses') {
+    const texts = Array.isArray(value) ? value : [];
+    return (
+      <View>
+        {control.rows.map((row, index) => (
+          <View key={`${row.item}-${row.field ?? 'text'}`} style={{ marginBottom: 10 }}>
+            <Text style={styles.label}>{row.label}</Text>
+            {row.hint ? <Muted>{row.hint}</Muted> : null}
+            <TextInput
+              multiline={row.multiline}
+              onChangeText={(text) => {
+                const next = [...texts];
+                while (next.length < control.rows.length) next.push('');
+                next[index] = text;
+                onChange(next);
+              }}
+              placeholderTextColor="#9fb0c6"
+              style={[styles.input, row.multiline ? { minHeight: 72, textAlignVertical: 'top' } : null]}
+              value={texts[index] ?? ''}
+            />
+          </View>
+        ))}
+      </View>
+    );
+  }
+
   if (control.kind === 'ranking') {
     const order = Array.isArray(value) && value.length > 0 ? value : control.items;
     const move = (index: number, offset: number): void => {

@@ -44,6 +44,9 @@ The current launch position is:
   provenance fields/importer are now implemented; unverified department course
   lists remain intentionally absent. Ask prompt-boundary hardening is complete;
   practice and assessment grading remain deterministic with no AI prompt path.
+  Structured assessments enforce the per-skill scored-practice prerequisite, and
+  Talent API responses now carry append-only verification evidence plus scoped
+  academic and language context; presentation work remains a separate UI task.
 
 ## 1. Current stack
 

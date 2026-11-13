@@ -96,15 +96,15 @@ describe('public routes', () => {
     await waitFor(() => {
       expect(container.textContent).toContain('Who is Nelavista for?');
     });
+  });
 
-    it('renders the impact page without unverified numeric claims', async () => {
-      const { container } = render('/impact');
-      await waitFor(() => {
-        expect(container.textContent).toContain('Make the work easier to trust.');
-        expect(document.title).toBe('Impact | Nelavista');
-      });
-      expect(container.textContent).toContain('publishes no reach figures');
+  it('renders the impact page without unverified numeric claims', async () => {
+    const { container } = render('/impact');
+    await waitFor(() => {
+      expect(container.textContent).toContain('Make the work easier to trust.');
+      expect(document.title).toBe('Impact | Nelavista');
     });
+    expect(container.textContent).toContain('publishes no reach figures');
   });
 
   it('renders the offline page', async () => {

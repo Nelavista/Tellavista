@@ -359,4 +359,16 @@ def submit_practice(
     )
     db.add(attempt)
     db.flush()
+    from app.models.verification import TRANSCRIPT_LEARNED
+    from app.services.verification.transcript import add_entry
+
+    add_entry(
+        db,
+        user_id=user.id,
+        kind=TRANSCRIPT_LEARNED,
+        title=template.name,
+        evidence_type="practice_attempt",
+        evidence_id=attempt.id,
+        skill_id=template.skill_id,
+    )
     return attempt, result

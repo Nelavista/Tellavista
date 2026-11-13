@@ -30,6 +30,7 @@ from app.models.talent import TalentShare
 from app.models.verification import (
     AT_RISK,
     VERIFIED,
+    VerificationEvent,
     VerificationRecord,
 )
 from app.models.work import (
@@ -143,6 +144,19 @@ def _verification(db: Session, user_id: int, skills: dict[int, Skill]) -> list[d
         .where(VerificationRecord.user_id == user_id)
         .order_by(VerificationRecord.id)
     ).all()
+    record_ids = [row.id for row in rows]
+    events = (
+        db.scalars(
+            select(VerificationEvent)
+            .where(VerificationEvent.record_id.in_(record_ids))
+            .order_by(VerificationEvent.created_at, VerificationEvent.id)
+        ).all()
+        if record_ids
+        else []
+    )
+    events_by_record: dict[int, list[VerificationEvent]] = {}
+    for event in events:
+        events_by_record.setdefault(event.record_id, []).append(event)
     return [
         {
             "skill_id": row.skill_id,
@@ -152,6 +166,15 @@ def _verification(db: Session, user_id: int, skills: dict[int, Skill]) -> list[d
             "verified_at": row.verified_at,
             "at_risk": row.status == AT_RISK,
             "current": row.status == VERIFIED,
+            "evidence": [
+                {
+                    "type": event.evidence_type,
+                    "id": event.evidence_id,
+                    "reason": event.reason,
+                    "occurred_at": event.created_at,
+                }
+                for event in events_by_record.get(row.id, [])
+            ],
         }
         for row in rows
     ]

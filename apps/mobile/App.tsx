@@ -10,6 +10,7 @@ import { flushQueue } from './src/lib/sync';
 import { AcademiaHome, AskScreen, CbtScreen, MaterialsScreen, MaterialScreen } from './src/screens/Academia';
 import { Auth } from './src/screens/Auth';
 import { Home } from './src/screens/Home';
+import { Lab, LanguageProfile } from './src/screens/Lab';
 import { LessonScreen, PathScreen, PracticeScreen, SkillDetail, Skills } from './src/screens/Learning';
 import { Earnings } from './src/screens/Money';
 import { Opportunities, OpportunityScreen } from './src/screens/Opportunities';
@@ -76,6 +77,10 @@ function SignedIn({
   switch (route.name) {
     case 'skills':
       return <Skills navigate={navigate} />;
+    case 'lab':
+      return <Lab navigate={navigate} />;
+    case 'languages':
+      return <LanguageProfile navigate={navigate} />;
     case 'skill':
       return <SkillDetail slug={route.slug} navigate={navigate} />;
     case 'path':

@@ -46,6 +46,10 @@ export type CampusAdminListOut = Schemas['CampusAdminListOut'];
 export type SkillOut = Schemas['SkillOut'];
 export type SkillsOut = Schemas['SkillsOut'];
 export type SkillDetailOut = Schemas['SkillDetailOut'];
+/** A multi-skill track (the African Languages Lab hub, I1/I4). */
+export type CareerTrackOut = Schemas['CareerTrackOut'];
+export type CareerTrackSkillOut = Schemas['CareerTrackSkillOut'];
+export type CareerTrackListOut = Schemas['CareerTrackListOut'];
 export type PathOut = Schemas['PathOut'];
 export type PathStepOut = Schemas['PathStepOut'];
 export type MyLearningOut = Schemas['MyLearningOut'];
@@ -155,6 +159,9 @@ export type TalentProjectSummaryOut = Schemas['TalentProjectSummaryOut'];
 export type TalentLanguageOut = Schemas['TalentLanguageOut'];
 export type TalentAvailabilityOut = Schemas['TalentAvailabilityOut'];
 export type TalentProfileOut = Schemas['TalentProfileOut'];
+/** Ops talent directory row (I6): visibility, academic context and languages. */
+export type TalentDirectoryOut = Schemas['TalentDirectoryOut'];
+export type TalentDirectoryItemOut = Schemas['TalentDirectoryItemOut'];
 export type TalentTranscriptOut = Schemas['TalentTranscriptOut'];
 export type ShareIn = Schemas['ShareIn'];
 export type ShareOut = Schemas['ShareOut'];

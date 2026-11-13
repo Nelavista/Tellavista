@@ -9,6 +9,7 @@ import {
   ListChecks,
   LogOut,
   ScrollText,
+  SearchCheck,
   Settings2,
   ShieldCheck,
   Upload,
@@ -38,6 +39,7 @@ const GROUPS: Array<{ label: string; items: NavItem[] }> = [
       { path: '/audit', label: 'Audit trail', icon: ScrollText },
       { path: '/users', label: 'Users', icon: Users },
       { path: '/waitlist', label: 'Waitlist', icon: UserPlus },
+      { path: '/talent', label: 'Talent directory', icon: SearchCheck },
     ],
   },
   {
@@ -84,6 +86,7 @@ const TITLES: Array<[string, string]> = [
   ['/audit', 'Audit trail'],
   ['/users', 'Users'],
   ['/waitlist', 'Waitlist'],
+  ['/talent', 'Talent directory'],
   ['/opportunities', 'Opportunities'],
   ['/work', 'Projects & cohorts'],
   ['/review', 'Review queue'],

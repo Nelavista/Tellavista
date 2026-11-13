@@ -17,6 +17,7 @@ import { Platform } from './routes/Platform';
 import { Projects } from './routes/Projects';
 import { Review } from './routes/Review';
 import { Security } from './routes/Security';
+import { TalentDirectory } from './routes/TalentDirectory';
 import { TwoFactor } from './routes/TwoFactor';
 import { Users } from './routes/Users';
 import { Waitlist } from './routes/Waitlist';
@@ -26,6 +27,7 @@ function Screen({ route }: { route: string }): JSX.Element {
   if (route.startsWith('/imports')) return <Imports />;
   if (route.startsWith('/users')) return <Users />;
   if (route.startsWith('/waitlist')) return <Waitlist />;
+  if (route.startsWith('/talent')) return <TalentDirectory />;
   if (route.startsWith('/opportunities')) return <Opportunities />;
   if (route.startsWith('/work')) return <Projects />;
   if (route.startsWith('/review')) return <Review />;

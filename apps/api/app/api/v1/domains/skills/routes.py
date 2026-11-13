@@ -1,12 +1,13 @@
 """Skills endpoints: catalog, learning, practice (Phase 2)."""
 from __future__ import annotations
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_current_user, require_flag
 from app.api.v1.domains.skills.schemas import (
+    CareerTrackListOut,
     LessonCompletedOut,
     LessonOut,
     LessonStartedOut,
@@ -36,9 +37,39 @@ class PracticeIn(BaseModel):
 
 @router.get("", response_model=SkillsOut)
 def list_skills(
-    _user: User = Depends(get_current_user), db: Session = Depends(get_db)
+    q: str | None = Query(default=None, max_length=120),
+    program: str | None = Query(default=None, max_length=40),
+    category: str | None = Query(default=None, max_length=80),
+    language: str | None = Query(default=None, max_length=60),
+    tag: str | None = Query(default=None, max_length=60),
+    level: str | None = Query(default=None, max_length=20),
+    _user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
 ) -> dict:
-    return {"skills": learning.list_skills(db)}
+    return {
+        "skills": learning.list_skills(
+            db,
+            q=q,
+            program=program,
+            category=category,
+            language=language,
+            tag=tag,
+            level=level,
+        )
+    }
+
+
+@router.get("/career-tracks", response_model=CareerTrackListOut)
+def career_tracks(
+    program: str | None = Query(default=None, max_length=40),
+    q: str | None = Query(default=None, max_length=120),
+    language: str | None = Query(default=None, max_length=60),
+    _user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> dict:
+    return {
+        "tracks": learning.list_career_tracks(db, program=program, q=q, language=language)
+    }
 
 
 @router.get("/my-learning", response_model=MyLearningOut)

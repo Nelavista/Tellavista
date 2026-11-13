@@ -34,6 +34,9 @@ const Skills = React.lazy(() => import('./routes/Skills').then((m) => ({ default
 const LanguageProfile = React.lazy(() =>
   import('./routes/LanguageProfile').then((m) => ({ default: m.LanguageProfile })),
 );
+const AfricanLanguages = React.lazy(() =>
+  import('./routes/AfricanLanguages').then((m) => ({ default: m.AfricanLanguages })),
+);
 const SkillDetail = React.lazy(() =>
   import('./routes/SkillDetail').then((m) => ({ default: m.SkillDetail })),
 );
@@ -508,6 +511,14 @@ function RouteTable(): JSX.Element {
           element={
             <Protected>
               <LanguageProfile />
+            </Protected>
+          }
+        />
+        <Route
+          path="/skills/african-languages"
+          element={
+            <Protected>
+              <AfricanLanguages />
             </Protected>
           }
         />

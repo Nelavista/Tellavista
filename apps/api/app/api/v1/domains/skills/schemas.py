@@ -15,7 +15,11 @@ from pydantic import BaseModel, Field
 
 
 class SkillOut(BaseModel):
-    """One catalog row. `published_paths` is what the student can actually open."""
+    """One catalog row. `published_paths` is what the student can actually open.
+
+    `program` comes from the category; `levels` are the levels of this skill's
+    published paths, so a filter can never invent a level the content lacks.
+    """
 
     id: int
     slug: str
@@ -23,11 +27,42 @@ class SkillOut(BaseModel):
     description: str | None = None
     category: str | None = None
     category_slug: str | None = None
+    program: str = "core"
+    language: str | None = None
+    language_label: str | None = None
+    tags: list[str] = Field(default_factory=list)
+    levels: list[str] = Field(default_factory=list)
     published_paths: int
 
 
 class SkillsOut(BaseModel):
     skills: list[SkillOut]
+
+
+class CareerTrackSkillOut(BaseModel):
+    id: int
+    slug: str
+    name: str
+    category_slug: str | None = None
+    language: str | None = None
+    language_label: str | None = None
+
+
+class CareerTrackOut(BaseModel):
+    """A multi-skill route. It points at skills; it never replaces a path."""
+
+    id: int
+    slug: str
+    title: str
+    tagline: str | None = None
+    icon: str | None = None
+    color: str | None = None
+    program: str
+    skills: list[CareerTrackSkillOut] = Field(default_factory=list)
+
+
+class CareerTrackListOut(BaseModel):
+    tracks: list[CareerTrackOut]
 
 
 class PathSummaryOut(BaseModel):
@@ -261,6 +296,9 @@ class ValidatorListOut(BaseModel):
 
 
 __all__ = [
+    "CareerTrackListOut",
+    "CareerTrackOut",
+    "CareerTrackSkillOut",
     "ContentLessonListOut",
     "ContentLessonOut",
     "ContentPathListOut",

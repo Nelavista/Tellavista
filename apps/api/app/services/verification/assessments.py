@@ -23,7 +23,7 @@ from sqlalchemy.orm import Session
 from app.core.errors import ApiError
 from app.core.time import as_utc, utcnow
 from app.models.identity import User
-from app.models.skills import Skill, TaskTemplate
+from app.models.skills import PracticeAttempt, Skill, TaskTemplate
 from app.models.verification import (
     EVIDENCE_ASSESSMENT,
     EVIDENCE_PRACTICAL_TASK,
@@ -68,6 +68,41 @@ def _assessment(db: Session, slug: str) -> Assessment:
     if assessment is None or assessment.status != "published":
         raise ApiError(404, "assessment_not_found", "That assessment is not available.")
     return assessment
+
+
+def _practice_prerequisite(db: Session, user: User, skill_id: int) -> dict[str, list[int]]:
+    """Return missing structured practice tasks before an assessment can start."""
+    templates = db.scalars(
+        select(TaskTemplate).where(
+            TaskTemplate.skill_id == skill_id,
+            TaskTemplate.status == "published",
+        )
+    ).all()
+    required = [
+        template.id
+        for template in templates
+        if template.validator == "all_language_task"
+        or isinstance((template.config or {}).get("task_spec"), dict)
+    ]
+    if not required:
+        return {"required": [], "completed": [], "missing": []}
+
+    completed = set(
+        db.scalars(
+            select(PracticeAttempt.template_id)
+            .where(
+                PracticeAttempt.user_id == user.id,
+                PracticeAttempt.template_id.in_(required),
+                PracticeAttempt.score.is_not(None),
+            )
+        ).all()
+    )
+    missing = [template_id for template_id in required if template_id not in completed]
+    return {
+        "required": required,
+        "completed": [template_id for template_id in required if template_id in completed],
+        "missing": missing,
+    }
 
 
 def _public_payload(payload: dict | None) -> dict | None:
@@ -150,6 +185,15 @@ def start_attempt(db: Session, user: User, slug: str) -> dict:
         # Resume, do not redraw: the student may have lost connection mid-sitting.
         selected = [task for task in all_tasks if task.id in (existing.presented_task_ids or [])]
         return _attempt_payload(existing, selected, _templates(db, selected))
+
+    practice = _practice_prerequisite(db, user, assessment.skill_id)
+    if practice["missing"]:
+        raise ApiError(
+            409,
+            "practice_prerequisite_incomplete",
+            "Complete every structured practice task for this skill before starting its assessment.",
+            practice,
+        )
 
     attempts = db.scalar(
         select(func.count(AssessmentAttempt.id)).where(

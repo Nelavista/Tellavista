@@ -14,6 +14,7 @@ import { createRoot, type Root } from 'react-dom/client';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import { AfricanLanguages } from './AfricanLanguages';
 import { Practice } from './Practice';
 import { Skills } from './Skills';
 import { draftKey, readDraft } from '../lib/draft';
@@ -58,6 +59,7 @@ function render(element: ReactElement, path = '/'): { root: Root; container: HTM
     <MemoryRouter initialEntries={[path]}>
       <Routes>
         <Route path="/skills/practice/:templateId" element={element} />
+        <Route path="/skills/african-languages" element={element} />
         <Route path="/skills" element={element} />
       </Routes>
     </MemoryRouter>
@@ -278,6 +280,129 @@ describe('Skills screen', () => {
 
     await waitFor(() => expect(container.textContent).toContain('AI Data Annotation'));
     expect(container.textContent).toContain('1 path available');
+
+    act(() => root.unmount());
+  });
+
+  it('filters the catalog by search without another request', async () => {
+    fetchMock.mockResolvedValue(
+      jsonResponse(200, {
+        skills: [
+          {
+            id: 1,
+            slug: 'yoruba-transcription',
+            name: 'Yoruba Transcription',
+            description: 'Transcribe Yoruba speech.',
+            category: 'Transcription',
+            category_slug: 'transcription',
+            program: 'all',
+            language: 'yoruba',
+            language_label: 'Yoruba',
+            tags: ['speech'],
+            levels: ['beginner'],
+            published_paths: 1,
+          },
+          {
+            id: 2,
+            slug: 'ai-data-annotation',
+            name: 'AI Data Annotation',
+            description: 'Label data well.',
+            category: 'AI & Data',
+            category_slug: 'ai-data',
+            program: 'core',
+            language: null,
+            language_label: null,
+            tags: [],
+            levels: ['beginner'],
+            published_paths: 1,
+          },
+        ],
+      }),
+    );
+
+    const { root, container } = render(<Skills />, '/skills');
+    await waitFor(() => expect(container.textContent).toContain('Yoruba Transcription'));
+    expect(calls(fetchMock)).toHaveLength(1);
+
+    const search = container.querySelector('#skills-search') as HTMLInputElement;
+    expect(search).toBeDefined();
+    await act(async () => {
+      const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')?.set;
+      setter?.call(search, 'yoruba');
+      search.dispatchEvent(new Event('input', { bubbles: true }));
+    });
+
+    await waitFor(() => {
+      expect(container.textContent).not.toContain('AI Data Annotation');
+      expect(container.textContent).toContain('1 of 2 skills match');
+    });
+    // Filtering is local: the catalog is already in memory.
+    expect(calls(fetchMock)).toHaveLength(1);
+
+    act(() => root.unmount());
+  });
+
+  it('renders the African Languages Lab from the API filters', async () => {
+    fetchMock.mockImplementation((url: string) => {
+      if (String(url).includes('/career-tracks')) {
+        return Promise.resolve(
+          jsonResponse(200, {
+            tracks: [
+              {
+                id: 4,
+                slug: 'all-yoruba-language-data-specialist',
+                title: 'Yoruba Language Data Specialist',
+                tagline: 'Transcribe and translate Yoruba data.',
+                icon: null,
+                color: null,
+                program: 'all',
+                skills: [
+                  {
+                    id: 1,
+                    slug: 'yoruba-transcription',
+                    name: 'Yoruba Transcription',
+                    category_slug: 'transcription',
+                    language: 'yoruba',
+                    language_label: 'Yoruba',
+                  },
+                ],
+              },
+            ],
+          }),
+        );
+      }
+      return Promise.resolve(
+        jsonResponse(200, {
+          skills: [
+            {
+              id: 1,
+              slug: 'yoruba-transcription',
+              name: 'Yoruba Transcription',
+              description: 'Transcribe Yoruba speech.',
+              category: 'Transcription',
+              category_slug: 'transcription',
+              program: 'all',
+              language: 'yoruba',
+              language_label: 'Yoruba',
+              tags: ['speech'],
+              levels: ['beginner'],
+              published_paths: 1,
+            },
+          ],
+        }),
+      );
+    });
+
+    const { root, container } = render(<AfricanLanguages />, '/skills/african-languages');
+
+    await waitFor(() => {
+      expect(container.textContent).toContain('Yoruba Language Data Specialist');
+      expect(container.textContent).toContain('Yoruba Transcription');
+    });
+
+    const urls = calls(fetchMock).map((call) => call.url);
+    expect(urls).toContain('/api/v1/skills?program=all');
+    expect(urls).toContain('/api/v1/skills/career-tracks?program=all');
 
     act(() => root.unmount());
   });

@@ -87,6 +87,9 @@ export function SocialLinks({ label = 'Share Nelavista' }: { label?: string }): 
   const [resetting, setResetting] = React.useState(false);
 
   React.useEffect(() => {
+    // Older embedded browsers and test environments can omit matchMedia; the
+    // default is motion on, so a missing query is not an error.
+    if (typeof window.matchMedia !== 'function') return undefined;
     const media = window.matchMedia('(prefers-reduced-motion: reduce)');
     const update = () => setReducedMotion(media.matches);
     update();

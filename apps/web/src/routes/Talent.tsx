@@ -184,16 +184,42 @@ export function Talent(): JSX.Element {
                     <tr>
                       <th>Skill</th>
                       <th>Status</th>
+                      <th>Evidence</th>
                     </tr>
                   </thead>
                   <tbody>
                     {data.verified_skills.map((skill) => (
                       <tr key={skill.skill_id}>
-                        <td>{skill.skill ?? `Skill #${skill.skill_id}`}</td>
+                        <td>
+                          {skill.slug ? (
+                            <Link to={`/skills/${skill.slug}`}>
+                              {skill.skill ?? `Skill #${skill.skill_id}`}
+                            </Link>
+                          ) : (
+                            (skill.skill ?? `Skill #${skill.skill_id}`)
+                          )}
+                        </td>
                         <td>
                           <Badge tone={skill.at_risk ? 'warning' : 'success'}>
                             {skill.at_risk ? 'At risk' : 'Verified'}
                           </Badge>
+                        </td>
+                        <td>
+                          {(skill.evidence ?? []).length === 0 ? (
+                            <span className="nv-muted">No evidence row</span>
+                          ) : (
+                            <ul className="nv-list">
+                              {(skill.evidence ?? []).map((item) => (
+                                <li className="nv-meta" key={`${item.type}-${item.id}`}>
+                                  <span className="nv-mono">
+                                    {item.type} #{item.id}
+                                  </span>{' '}
+                                  · {when(item.occurred_at)}
+                                  {item.reason ? ` · ${item.reason}` : ''}
+                                </li>
+                              ))}
+                            </ul>
+                          )}
                         </td>
                       </tr>
                     ))}
@@ -201,6 +227,47 @@ export function Talent(): JSX.Element {
                 </table>
               </div>
             )}
+          </Panel>
+
+          <Panel
+            title="Languages"
+            actions={
+              <Link className="nv-button nv-button--ghost nv-button--sm" to="/skills/languages">
+                Language profile
+                <ArrowRight aria-hidden="true" size={14} />
+              </Link>
+            }
+          >
+            {data.availability?.languages && data.availability.languages.length > 0 ? (
+              <ul className="nv-list">
+                {data.availability.languages.map((row) => (
+                  <li className="nv-row nv-row--between" key={`${row.language}-${row.level}`}>
+                    <span>{row.language}</span>
+                    <Badge tone="neutral">{row.level}</Badge>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <EmptyState
+                body="Add the languages you can work in on your language profile. A language you claim is shown as a claim, never as proof."
+                title="No language on your profile"
+                action={
+                  <Link className="nv-button nv-button--secondary nv-button--sm" to="/skills/languages">
+                    Add a language
+                  </Link>
+                }
+              />
+            )}
+            {data.availability?.hours_per_week != null || data.availability?.available_from ? (
+              <p className="nv-muted">
+                {data.availability?.hours_per_week != null
+                  ? `${data.availability.hours_per_week} hours a week`
+                  : 'Hours not set'}
+                {data.availability?.available_from
+                  ? ` · available from ${when(data.availability.available_from)}`
+                  : ''}
+              </p>
+            ) : null}
           </Panel>
 
           <Panel title="Academic">

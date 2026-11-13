@@ -30,6 +30,19 @@
           <a href="{{ url_for('opportunities.gigs') }}" class="{{ 'active-link' if active_page == 'gigs' else '' }}"><i class="ri-store-line"></i>Open gigs</a>
           <a href="{{ url_for('opportunities.earnings') }}" class="{{ 'active-link' if active_page == 'earnings' else '' }}"><i class="ri-wallet-3-line"></i>Earnings</a>
         </div>
+
+        <!-- The one deliberate cross-space link. Message threads are started from a
+             Talent Profile's Hire button and live in the Skills space; without this a
+             student told "your application was accepted" (that notification deep-links
+             to Earnings above) has no way to reply from here. Everything else stays
+             behind the wordmark's Choose Your Path switcher. -->
+        <div class="nav-group">
+          <div class="nav-label">Hiring</div>
+          <a href="{{ url_for('skills.messages') }}" class="{{ 'active-link' if active_page == 'messages' else '' }}">
+            <i class="ri-message-3-line"></i>Messages
+            {% if nav_unread_messages %}<span class="nav-badge">{{ nav_unread_messages }}</span>{% endif %}
+          </a>
+        </div>
       </div>
     </div>
     <div class="sidebar-footer">

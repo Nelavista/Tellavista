@@ -9,6 +9,18 @@ URLs; the old Skills URLs redirect here so existing links keep working.
 
 Content boundary: this space lists work (opportunities, gigs) and money (earnings).
 It never shows the Skills catalog, learning paths, projects or the skill dashboard.
+
+Two rules keep that boundary from being "fixed" back into a leak later:
+
+1. Competitions and challenges stay in Skills even though Competition.prize_amount is
+   money. They are the Showcase step of the Skills journey (Learn -> Practice -> Build ->
+   Verify -> Showcase), a prize for demonstrating a skill, not paid work for a client.
+   Only the Get Discovered -> Earn end of that journey lives here.
+2. Message threads are the single deliberate cross-space link, from this space's
+   sidebar back to skills.messages. Hiring starts on a Talent Profile (a Skills page),
+   and an application-status notification points here, so a student accepting work
+   needs one click to reply. Do not add a second such link; everything else goes
+   through the /choose-path switcher.
 """
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash
 from app.utils.helpers import login_required

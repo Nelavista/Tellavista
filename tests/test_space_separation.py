@@ -65,6 +65,9 @@ def test_opportunities_page_uses_its_own_shell(app, client, login_as, make_user)
 
     assert 'Space-only gig' in body
     assert '/opportunities/gigs' in body
+    # Messages is the one deliberate cross-space link (hiring threads live in Skills),
+    # see opportunities_routes.py's module docstring.
+    assert '/skills/messages' in body
     # Nothing from the Skills IA (Learn / My Learning / Projects / Talent) or Academia.
     assert '/skills/catalog' not in body
     assert '/skills/my-learning' not in body

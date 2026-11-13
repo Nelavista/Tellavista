@@ -41,6 +41,11 @@ class Settings(BaseSettings):
     # --- Database / cache ---
     DATABASE_URL: str = ""
     REDIS_URL: str = ""
+    # Apply pending Alembic revisions when the API/worker boots. Render's
+    # pre-deploy command is paid, so this is the free equivalent: a deploy either
+    # migrates or fails, and concurrent boots are serialised by a DB lock. Set
+    # AUTO_MIGRATE=0 once migrations are run explicitly by the platform.
+    AUTO_MIGRATE: bool = True
 
     # --- Mail ---
     # `smtp` = Mailpit locally or any SMTP relay; `sendhiiv` = Sendhiiv's HTTP API;

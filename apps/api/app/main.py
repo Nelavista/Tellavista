@@ -5,6 +5,9 @@ settings and must exist in packages/config/versions.json.
 """
 from __future__ import annotations
 
+from collections.abc import AsyncIterator
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -15,8 +18,26 @@ from app.core.errors import register_exception_handlers
 from app.core.request_id import RequestIdMiddleware
 from app.core.security_headers import SecurityHeadersMiddleware
 from app.core.versioning import VersioningMiddleware
+from app.db.schema_guard import check_schema, upgrade_database
+from app.db.session import engine
 
 settings = get_settings()  # raises RuntimeError on invalid config
+
+
+@asynccontextmanager
+async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
+    """Migrate, then refuse to serve code the database does not support.
+
+    Render's pre-deploy command is paid, so the API applies pending migrations
+    itself (serialised by a Postgres advisory lock) and then verifies the result.
+    A skipped or failed migration fails the boot, so the deploy fails and Render
+    keeps the previous version instead of serving 500s. See
+    ``app/db/schema_guard.py``.
+    """
+    upgrade_database(engine)
+    check_schema(engine)
+    yield
+
 
 app = FastAPI(
     title="Nelavista API",
@@ -24,6 +45,7 @@ app = FastAPI(
     docs_url=None if settings.is_prod else "/docs",
     redoc_url=None if settings.is_prod else "/redoc",
     openapi_url=None if settings.is_prod else "/openapi.json",
+    lifespan=lifespan,
 )
 
 # Middleware order: last added is outermost.

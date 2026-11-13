@@ -67,6 +67,19 @@ everything in the dashboard.
 
 That is four application services plus Postgres and Redis.
 
+Migrations run automatically when the API and worker boot (`AUTO_MIGRATE`, on by
+default). Concurrent boots take a Postgres advisory lock, so only one process runs
+DDL and the rest find the schema current. This is the free equivalent of Render's
+paid **Pre-Deploy Command** — no dashboard setting is required.
+
+To keep migrations explicit instead, set `AUTO_MIGRATE=0` on both services and run
+them from your terminal (section 3) before triggering the deploy.
+
+If migrations are skipped or fail, the API refuses to boot when the database is
+behind the code (`apps/api/app/db/schema_guard.py`) — the deploy fails and Render
+keeps the previous version, instead of shipping 500s like `column courses.semester
+does not exist`. See `docs/runbooks/deploy-to-prod.md`.
+
 Generate the API secret once, in your terminal:
 
 ```powershell
@@ -159,7 +172,7 @@ apps\api\.venv\Scripts\python.exe -m alembic -c apps/api/alembic.ini upgrade hea
 apps\api\.venv\Scripts\python.exe -m alembic -c apps/api/alembic.ini heads
 ```
 
-`heads` must print exactly one head: `20261022_1000 (head)`. If it prints more than
+`heads` must print exactly one head: `20261108_1300 (head)`. If it prints more than
 one, stop and tell me.
 
 Do **not** run `tools.seed_local` against this database. It creates fake students.

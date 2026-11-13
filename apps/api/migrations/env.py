@@ -11,7 +11,7 @@ from app.db.base import Base  # imports all models for autogenerate
 
 config = context.config
 
-if config.config_file_name is not None:
+if config.config_file_name is not None and not config.attributes.get("skip_logging_config"):
     fileConfig(config.config_file_name)
 
 # Inject the real URL from settings.
@@ -33,6 +33,15 @@ def run_migrations_offline() -> None:
 
 
 def run_migrations_online() -> None:
+    # Programmatic callers (`app/db/schema_guard.py`) hand us a live connection so
+    # migrations run on the engine the app actually uses, not a re-parsed URL.
+    connection = config.attributes.get("connection")
+    if connection is not None:
+        context.configure(connection=connection, target_metadata=target_metadata, compare_type=True)
+        with context.begin_transaction():
+            context.run_migrations()
+        return
+
     connectable = engine_from_config(
         config.get_section(config.config_ini_section, {}),
         prefix="sqlalchemy.",

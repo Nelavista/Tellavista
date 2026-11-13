@@ -9,13 +9,19 @@ from __future__ import annotations
 import logging
 import time
 
-from app.db.session import SessionLocal
+from app.db.schema_guard import check_schema, upgrade_database
+from app.db.session import SessionLocal, engine
 from app.worker.runner import drain
 from app.worker.scheduler import enqueue_scheduled
 
 
 def main() -> None:
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s %(message)s")
+    # Same migration + guard as the API: a worker running ahead of the schema
+    # would fail jobs in the background where nobody sees the 500. The advisory
+    # lock means it waits instead of racing the web service.
+    upgrade_database(engine)
+    check_schema(engine)
     logging.getLogger(__name__).info("worker started")
     while True:
         with SessionLocal() as db:

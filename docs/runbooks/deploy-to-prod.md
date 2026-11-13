@@ -22,6 +22,13 @@ Push to **`main`** or a version tag → `.github/workflows/deploy-prod.yml` → 
    alembic -c apps/api/alembic.ini upgrade head
    ```
    Expand-only first; contract in a later release (ADR/`04-v1-to-v2-migration.md`).
+   The API and worker also apply pending revisions at boot (`AUTO_MIGRATE`, default
+   on) — the free equivalent of Render's paid pre-deploy command, serialised by a
+   Postgres advisory lock. Set `AUTO_MIGRATE=0` to keep migrations explicit-only.
+   Either way the API refuses to start when the database is still behind the code
+   (`apps/api/app/db/schema_guard.py`), so a skipped migration fails the deploy and
+   Render keeps the previous version instead of serving 500s on every query that
+   touches a new column.
 3. **Deploy API**, then **web/admin** (hooks).
 4. **Verify:** `/v1/health`, a login, one read, one write. Check PostHog (if configured) and the API logs for errors.
 5. **Announce** what changed.

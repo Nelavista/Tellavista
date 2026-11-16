@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/x-icon" href="/static/icons/favicon.ico">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin · {{ opp.title or 'New opportunity' }} · Nelavista</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
+  {% include 'components/admin_opp_styles.html' %}
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+</head>
+<body>
+{% include 'components/admin_nav.html' %}
+<div class="container">
+  <a href="{{ url_for('admin_skills.admin_student_opportunities') }}" style="color:#8b949e;text-decoration:none;font-size:0.85rem;">← All opportunities</a>
+  {% with messages = get_flashed_messages() %}{% for m in messages %}<div class="flash" style="margin-top:10px;">{{ m }}</div>{% endfor %}{% endwith %}
+  <h1>{{ opp.title if opp.id else 'New opportunity' }}</h1>
+  {% if opp.id %}
+  <p class="subtitle">{{ opp.organization }} ·
+    {% if status %}<span class="badge {{ {'open': 'green', 'soon': 'orange', 'closed': 'red', 'upcoming': 'blue'}[status.tone] }}">{{ status.label }}</span>{% endif %}
+    {% if opp.is_published %}<span class="badge green">Published</span>{% else %}<span class="badge">Unpublished</span>{% endif %}
+    {% if opp.verification_status == 'verified' %}<span class="badge green">Verified {{ opp.verified_at.strftime('%Y-%m-%d') if opp.verified_at }}{% if opp.verified_by %} by {{ opp.verified_by.username }}{% endif %}</span>{% else %}<span class="badge orange">{{ opp.verification_status|title }}</span>{% endif %}
+    {% if needs_recheck and opp.is_verified %}<span class="badge orange">Re-check due (last {{ opp.last_checked_at.strftime('%Y-%m-%d') if opp.last_checked_at else 'never' }})</span>{% endif %}
+    · <a href="{{ url_for('opportunities.discover_detail', slug=opp.slug) }}" target="_blank">Preview student page</a>
+  </p>
+  {% else %}
+  <p class="subtitle">Copy every detail from the <b>official</b> page. Never guess a URL or a deadline. It saves as an unverified draft; verify and publish from the next screen.</p>
+  {% endif %}
+
+  {% if errors %}<div class="errors"><b>Not saved:</b><ul>{% for e in errors %}<li>{{ e }}</li>{% endfor %}</ul></div>{% endif %}
+
+  <div class="layout">
+    <form method="POST" class="main" action="{{ url_for('admin_skills.admin_student_opportunity_edit', opportunity_id=opp.id) if opp.id else url_for('admin_skills.admin_student_opportunity_new') }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+      <div class="panel">
+        <h2>Basics</h2>
+        <div class="grid2">
+          <div class="field"><label>Title *</label><input type="text" name="title" value="{{ opp.title or '' }}" maxlength="200" required></div>
+          <div class="field"><label>Organisation / provider *</label><input type="text" name="organization" value="{{ opp.organization or '' }}" maxlength="150" required></div>
+        </div>
+        <div class="field"><label>Card summary</label><input type="text" name="summary" value="{{ opp.summary or '' }}" maxlength="300"><div class="hint">One or two lines on the card. What it is and why it matters.</div></div>
+        <div class="grid2">
+          <div class="field"><label>Main category *</label>
+            <select name="category">{% for k, label, _ in categories %}<option value="{{ k }}"{{ ' selected' if opp.category == k }}>{{ label }}</option>{% endfor %}</select></div>
+          <div class="field"><label>"Eligible" line on the card</label><input type="text" name="eligible_summary" value="{{ opp.eligible_summary or '' }}" maxlength="150" placeholder="e.g. Nigerian undergraduates, 200–400 level"></div>
+        </div>
+        <div class="field"><span class="lbl">Also list under</span>
+          <div class="checks">{% for k, label, _ in categories %}<label><input type="checkbox" name="categories" value="{{ k }}"{{ ' checked' if k in opp.categories and k != opp.category }}>{{ label }}</label>{% endfor %}</div></div>
+      </div>
+
+      <div class="panel">
+        <h2>Content</h2>
+        <div class="field"><label>Overview</label><textarea name="description" rows="5">{{ opp.description or '' }}</textarea></div>
+        <div class="field"><label>Who can apply (eligibility)</label><textarea name="eligibility" rows="4">{{ opp.eligibility or '' }}</textarea></div>
+        <div class="field"><label>What students get</label><textarea name="benefits" rows="3">{{ opp.benefits or '' }}</textarea></div>
+        <div class="field"><label>Requirements (documents / information)</label><textarea name="requirements" rows="3">{{ opp.requirements or '' }}</textarea></div>
+        <div class="field"><label>Application steps</label><textarea name="application_steps" rows="4" placeholder="One step per line">{{ opp.application_steps or '' }}</textarea><div class="hint">One step per line, shown as a numbered list.</div></div>
+      </div>
+
+      <div class="panel">
+        <h2>Who it's for</h2>
+        <div class="field"><span class="lbl">Disciplines</span>
+          <div class="checks">{% for k, label in disciplines %}<label><input type="checkbox" name="disciplines" value="{{ k }}"{{ ' checked' if k in opp.disciplines }}>{{ label }}</label>{% endfor %}</div>
+          <div class="hint">Tick "All disciplines" for programmes open to everyone. Leaving it empty also means everyone.</div></div>
+        <div class="field"><span class="lbl">University levels</span>
+          <div class="checks">{% for k, label in levels %}<label><input type="checkbox" name="levels" value="{{ k }}"{{ ' checked' if k in opp.levels }}>{{ label }}</label>{% endfor %}</div>
+          <div class="hint">Leave empty if any level can apply.</div></div>
+        <div class="grid2">
+          <div class="field"><label>Location / eligibility scope</label>
+            <select name="location_scope">{% for k, label in location_scopes %}<option value="{{ k }}"{{ ' selected' if opp.location_scope == k }}>{{ label }}</option>{% endfor %}</select></div>
+          <div class="field"><label>Location detail</label><input type="text" name="location" value="{{ opp.location or '' }}" maxlength="150" placeholder="e.g. Lagos · Students of LASU"></div>
+          <div class="field"><label>Format</label>
+            <select name="delivery_format"><option value="">Not stated</option>{% for k, label in formats %}<option value="{{ k }}"{{ ' selected' if opp.delivery_format == k }}>{{ label }}</option>{% endfor %}</select></div>
+          <div class="field"><label>Search tags</label><input type="text" name="tags" value="{{ opp.tags|join(', ') }}" placeholder="AI, data, fintech, LASU"><div class="hint">Comma-separated. Used by search and "For You" (e.g. AI, data, software, finance).</div></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>Dates</h2>
+        <div class="grid2">
+          <div class="field"><label>Opening date</label><input type="date" name="opens_at" value="{{ opp.opens_at.isoformat() if opp.opens_at else '' }}"><div class="hint">Leave empty if it's already open.</div></div>
+          <div class="field"><label>Deadline</label><input type="date" name="deadline" value="{{ opp.deadline.isoformat() if opp.deadline else '' }}"><div class="hint">The last day to apply. It stays open through that day (WAT).</div></div>
+        </div>
+        <label class="toggle"><input type="checkbox" name="is_rolling" value="1"{{ ' checked' if opp.is_rolling }}> No closing date published (the official page gives none, or applications are rolling)</label>
+        <div class="field"><label>Deadline note</label><input type="text" name="deadline_note" value="{{ opp.deadline_note or '' }}" maxlength="200" placeholder="e.g. 11:59 pm WAT"></div>
+      </div>
+
+      <div class="panel">
+        <h2>Application &amp; source</h2>
+        <div class="field"><label>Official application URL</label><input type="url" name="application_url" value="{{ opp.application_url or '' }}" placeholder="https://..."><div class="hint">Copied from the organisation's own page. Never a guessed link.</div></div>
+        <div class="grid2">
+          <div class="field"><label>Official website</label><input type="url" name="official_website" value="{{ opp.official_website or '' }}" placeholder="https://..."></div>
+          <div class="field"><label>Source URL (where you verified it)</label><input type="url" name="source_url" value="{{ opp.source_url or '' }}" placeholder="https://..."></div>
+        </div>
+        <div class="grid2">
+          <div class="field"><label>Application mode</label>
+            <select name="application_mode">{% for m in modes %}<option value="{{ m }}"{{ ' selected' if opp.application_mode == m }}>{{ mode_labels[m] }}</option>{% endfor %}</select>
+            <div class="hint">"Apply through Nelavista" is only for signed partners, and no partner workflow exists yet.</div></div>
+          <div class="field"><label>Embed URL (embedded form only)</label><input type="url" name="embed_url" value="{{ opp.embed_url or '' }}" placeholder="e.g. a Google Form ...viewform?embedded=true"><div class="hint">Only when the organisation provides an embeddable form.</div></div>
+        </div>
+        <label class="toggle"><input type="checkbox" name="allows_in_app_view" value="1"{{ ' checked' if opp.allows_in_app_view }}{{ ' disabled' if not opp.framing_checked_at }}> Show the official page in-app (inside a Nelavista frame)</label>
+        <div class="hint" style="color:#6e7681;font-size:0.74rem;">{% if opp.framing_checked_at %}Framing check passed {{ opp.framing_checked_at.strftime('%Y-%m-%d') }}.{% else %}Run "Check in-app view" first (right panel, after saving). Otherwise Apply opens the official site over Nelavista.{% endif %}</div>
+        <label class="toggle" style="margin-top:12px;"><input type="checkbox" name="is_partner" value="1"{{ ' checked' if opp.is_partner }}> Signed partner of Nelavista</label>
+        <div class="field"><label>Partner note (agreement reference / contact)</label><input type="text" name="partner_note" value="{{ opp.partner_note or '' }}" maxlength="300"><div class="hint">Required if partner is ticked. Never tick it for an organisation that hasn't actually partnered with us.</div></div>
+        <div class="field"><label>Verification notes (admins only)</label><textarea name="verification_notes" rows="3" placeholder="What you checked, where, and when">{{ opp.verification_notes or '' }}</textarea></div>
+        <label class="toggle"><input type="checkbox" name="featured" value="1"{{ ' checked' if opp.featured }}> Featured</label>
+        {% if opp.id %}<label class="toggle"><input type="checkbox" name="regenerate_slug" value="1"> Regenerate the URL slug from the title (breaks shared links)</label>{% endif %}
+      </div>
+
+      <button type="submit" class="btn"><i class="ri-save-line"></i>{{ 'Save changes' if opp.id else 'Save draft' }}</button>
+    </form>
+
+    {% if opp.id %}
+    <aside class="side">
+      <div class="panel">
+        <h2>Publish</h2>
+        {% if publish_problems %}<ul class="problems">{% for p in publish_problems %}<li>{{ p }}</li>{% endfor %}</ul>{% endif %}
+        {% macro act(name, label, cls='secondary', confirm=None) %}
+        <form method="POST" action="{{ url_for('admin_skills.admin_student_opportunity_action', opportunity_id=opp.id) }}"{% if confirm %} onsubmit="return confirm('{{ confirm }}')"{% endif %}>
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><input type="hidden" name="action" value="{{ name }}">
+          <button class="btn small {{ cls }}" type="submit">{{ label }}</button>
+        </form>
+        {% endmacro %}
+        <div class="actions" style="margin-top:10px;">
+          {% if opp.is_published %}{{ act('unpublish', 'Unpublish') }}{% else %}{{ act('publish', 'Publish', 'blue' if not publish_problems else 'secondary') }}{% endif %}
+          {% if opp.verification_status != 'verified' %}{{ act('verify', 'Mark verified', '', 'Did you check this against the official source just now?') }}{% else %}{{ act('mark_checked', 'Record re-check', '', 'Did you re-check the official page just now?') }}{{ act('unverify', 'Unverify') }}{% endif %}
+          {% if opp.verification_status != 'rejected' %}{{ act('reject', 'Reject') }}{% endif %}
+        </div>
+      </div>
+      <div class="panel">
+        <h2>Status</h2>
+        <div class="actions">
+          {% if opp.manually_closed %}{{ act('reopen', 'Reopen') }}{% else %}{{ act('close', 'Mark closed') }}{% endif %}
+          {% if opp.featured %}{{ act('unfeature', 'Unfeature') }}{% else %}{{ act('feature', 'Feature') }}{% endif %}
+          {% if opp.is_archived %}{{ act('unarchive', 'Restore') }}{% else %}{{ act('archive', 'Archive') }}{% endif %}
+        </div>
+        <form method="POST" action="{{ url_for('admin_skills.admin_student_opportunity_check_framing', opportunity_id=opp.id) }}" style="margin-top:10px;">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button class="btn small secondary" type="submit"{{ ' disabled' if not opp.application_url }}><i class="ri-window-line"></i>Check in-app view</button>
+        </form>
+        <form method="POST" action="{{ url_for('admin_skills.admin_student_opportunity_delete', opportunity_id=opp.id) }}" style="margin-top:10px;" onsubmit="return confirm('Delete permanently? This cannot be undone.')">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button class="btn small danger" type="submit"><i class="ri-delete-bin-line"></i>Delete</button>
+        </form>
+      </div>
+      <div class="panel">
+        <h2>Analytics</h2>
+        <table>
+          <tr><td>Views</td><td><b>{{ stats.get('view', 0) }}</b> <span class="muted">({{ stats.get('unique_viewers', 0) }} unique)</span></td></tr>
+          <tr><td>Saved (now)</td><td><b>{{ stats.get('saved_now', 0) }}</b></td></tr>
+          <tr><td>Application clicks</td><td><b>{{ stats.get('apply_click', 0) }}</b></td></tr>
+          <tr><td>Reported applying (now)</td><td><b>{{ stats.get('applied_now', 0) }}</b></td></tr>
+          <tr><td>Shares</td><td><b>{{ stats.get('share', 0) }}</b></td></tr>
+        </table>
+      </div>
+      <div class="panel">
+        <h2>Reports ({{ reports|selectattr('resolved', 'equalto', False)|list|length }} open)</h2>
+        {% for r in reports %}
+        <div style="border-top:1px solid #21262d;padding:8px 0;font-size:0.82rem;{{ 'opacity:0.55;' if r.resolved }}">
+          <b>{{ r.reason.replace('_', ' ')|title }}</b> <span class="muted">· {{ r.created_at.strftime('%Y-%m-%d') }}{% if r.user %} · {{ r.user.username }}{% endif %}</span>
+          {% if r.details %}<div style="margin-top:3px;">{{ r.details }}</div>{% endif %}
+          {% if not r.resolved %}
+          <form method="POST" action="{{ url_for('admin_skills.admin_student_opportunity_resolve_report', report_id=r.id) }}" style="margin-top:5px;">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="btn small secondary" type="submit">Resolve</button>
+          </form>
+          {% endif %}
+        </div>
+        {% else %}<p class="muted">No reports.</p>{% endfor %}
+      </div>
+    </aside>
+    {% endif %}
+  </div>
+</div>
+</body>
+</html>

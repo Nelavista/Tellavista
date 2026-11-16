@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/x-icon" href="/static/icons/favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="/static/icons/nelavista-180x180.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Scholarships &amp; Programmes · Nelavista Opportunities</title>
+  <meta name="theme-color" content="#050810">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/skills.css') }}">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
+</head>
+<body>
+{% include 'components/opportunities_sidebar.html' %}
+
+  <div class="sk-view opp-view">
+    <div class="opp-hero">
+      <div>
+        <span class="sk-eyebrow">For university students</span>
+        <h1 class="sk-h1">Scholarships &amp; programmes</h1>
+        <p class="sk-sub">Scholarships, fellowships, competitions and programmes you can apply for right now. Every listing is checked against its official source.</p>
+      </div>
+      <a href="{{ url_for('opportunities.discover_mine') }}" class="sk-btn secondary small opp-mine-link"><i class="ri-bookmark-3-line"></i>My Opportunities</a>
+    </div>
+
+    <form class="opp-search" method="GET" action="{{ url_for('opportunities.discover') }}" role="search">
+      <div class="opp-search-box">
+        <i class="ri-search-line"></i>
+        <input type="search" name="q" value="{{ feed.filters.q }}" placeholder="Search: finance, hackathon, AI, scholarship, LASU..." aria-label="Search opportunities" enterkeyhint="search">
+      </div>
+      {% if feed.filters.category %}<input type="hidden" name="category" value="{{ feed.filters.category }}">{% endif %}
+      <details class="opp-filters"{% if feed.filters.discipline or feed.filters.level or feed.filters.location or feed.filters.deadline %} open{% endif %}>
+        <summary><i class="ri-equalizer-line"></i>Filters</summary>
+        <div class="opp-filter-grid">
+          <label><span class="sk-label">Discipline</span>
+            <select name="discipline" class="sk-select">
+              <option value="">Any discipline</option>
+              {% for k, label in disciplines if k != 'all' %}<option value="{{ k }}"{{ ' selected' if feed.filters.discipline == k }}>{{ label }}</option>{% endfor %}
+            </select>
+          </label>
+          <label><span class="sk-label">University level</span>
+            <select name="level" class="sk-select">
+              <option value="">Any level</option>
+              {% for k, label in levels %}<option value="{{ k }}"{{ ' selected' if feed.filters.level == k }}>{{ label }}</option>{% endfor %}
+            </select>
+          </label>
+          <label><span class="sk-label">Location / eligibility</span>
+            <select name="location" class="sk-select">
+              <option value="">Anywhere</option>
+              {% for k, label in location_scopes %}<option value="{{ k }}"{{ ' selected' if feed.filters.location == k }}>{{ label }}</option>{% endfor %}
+            </select>
+          </label>
+          <label><span class="sk-label">Deadline</span>
+            <select name="deadline" class="sk-select">
+              <option value="">Any deadline</option>
+              {% for k, label in deadline_filters %}<option value="{{ k }}"{{ ' selected' if feed.filters.deadline == k }}>{{ label }}</option>{% endfor %}
+            </select>
+          </label>
+          <label><span class="sk-label">Sort by</span>
+            <select name="sort" class="sk-select">
+              <option value="relevance"{{ ' selected' if feed.sort == 'relevance' }}>Best for me</option>
+              <option value="deadline"{{ ' selected' if feed.sort == 'deadline' }}>Deadline (soonest)</option>
+              <option value="newest"{{ ' selected' if feed.sort == 'newest' }}>Newest</option>
+            </select>
+          </label>
+        </div>
+        <div class="opp-filter-actions">
+          <button type="submit" class="sk-btn small">Apply filters</button>
+          {% if feed.filtering %}<a href="{{ url_for('opportunities.discover') }}" class="sk-btn ghost small">Clear all</a>{% endif %}
+        </div>
+      </details>
+    </form>
+
+    <nav class="opp-chips" aria-label="Categories">
+      <a href="{{ filter_url(category=None) }}" class="sk-category-chip{{ ' active' if not feed.filters.category }}">All</a>
+      {% for k, label, icon in chip_categories %}
+      <a href="{{ filter_url(category=k) }}" class="sk-category-chip{{ ' active' if feed.filters.category == k }}"><i class="{{ icon }}"></i> {{ label }}</a>
+      {% endfor %}
+    </nav>
+
+    {% if feed.total_active == 0 %}
+      <div class="sk-empty opp-empty">
+        <div class="sk-empty-icon"><i class="ri-compass-discover-line"></i></div>
+        <div style="font-weight:700;">No open opportunities right now</div>
+        <div style="font-size:0.92rem;">We only list programmes we've verified as open. New ones appear here as soon as they're checked.</div>
+        {% if feed.upcoming %}<div style="font-size:0.92rem;margin-top:6px;">{{ feed.upcoming|length }} opening soon: see below.</div>{% endif %}
+      </div>
+
+    {% elif feed.filtering %}
+      <div class="sk-section-title opp-section-title">
+        <span>{{ feed.results|length }} result{{ '' if feed.results|length == 1 else 's' }}{% if feed.filters.q %} for “{{ feed.filters.q }}”{% endif %}</span>
+        <a href="{{ url_for('opportunities.discover') }}" class="sk-view-link">Clear</a>
+      </div>
+      {% if feed.results %}
+      <div class="opp-grid">
+        {% for o in feed.results %}{% with st = state.get(o.id, {}), from_section = 'search' %}{% include 'components/opportunity_card.html' %}{% endwith %}{% endfor %}
+      </div>
+      {% else %}
+      <div class="sk-empty opp-empty">
+        <div class="sk-empty-icon"><i class="ri-search-eye-line"></i></div>
+        <div style="font-weight:700;">Nothing matches that yet</div>
+        <div style="font-size:0.92rem;">Try a broader word ("scholarship", "tech", "finance") or clear a filter.</div>
+      </div>
+      {% endif %}
+
+    {% else %}
+      {% macro rail(title, icon, items, section, note=None) %}
+        {% if items %}
+        <section class="opp-section" aria-label="{{ title }}">
+          <div class="sk-section-title opp-section-title"><span><span class="opp-section-icon">{{ icon }}</span>{{ title }}</span></div>
+          {% if note %}<p class="opp-section-note">{{ note }}</p>{% endif %}
+          <div class="opp-rail">
+            {% for o in items %}{% with st = state.get(o.id, {}), from_section = section %}{% include 'components/opportunity_card.html' %}{% endwith %}{% endfor %}
+          </div>
+        </section>
+        {% endif %}
+      {% endmacro %}
+
+      {{ rail('Closing Soon', '🔥', feed.closing_soon, 'closing', 'Deadlines in the next 7 days.') }}
+      {{ rail('Featured Opportunities', '⭐', feed.featured, 'featured') }}
+      {{ rail('For You', '🎯', feed.for_you, 'for_you',
+              ('Based on your ' ~ ((ui.discipline_labels.get(feed.profile.discipline) ~ ' ') if feed.profile.discipline else '') ~ 'profile' ~ ((', ' ~ ui.level_labels.get(feed.profile.level)) if feed.profile.level else '') ~ ', plus programmes open to every discipline.')) }}
+      {{ rail('New Opportunities', '🆕', feed.new, 'new') }}
+
+      <section class="opp-section" aria-label="All opportunities">
+        <div class="sk-section-title opp-section-title">
+          <span>All Opportunities <span class="opp-count">{{ feed.results|length }}</span></span>
+          <a href="{{ filter_url(sort='deadline') }}" class="sk-view-link">By deadline</a>
+        </div>
+        <div class="opp-grid">
+          {% for o in feed.results %}{% with st = state.get(o.id, {}), from_section = 'all' %}{% include 'components/opportunity_card.html' %}{% endwith %}{% endfor %}
+        </div>
+      </section>
+    {% endif %}
+
+    {% if feed.upcoming and not feed.filtering %}
+    <section class="opp-section" aria-label="Opening soon">
+      <div class="sk-section-title opp-section-title"><span><span class="opp-section-icon">🗓️</span>Opening Soon</span></div>
+      <div class="opp-list">
+        {% for o in feed.upcoming %}
+        <a class="opp-list-row" href="{{ url_for('opportunities.discover_detail', slug=o.slug) }}">
+          <span class="opp-status upcoming"><span class="opp-dot"></span>{{ ui.status(o).label }}</span>
+          <span class="opp-list-title">{{ o.title }}</span>
+          <span class="opp-list-org">{{ o.organization }}</span>
+        </a>
+        {% endfor %}
+      </div>
+    </section>
+    {% endif %}
+
+    <div class="opp-footer-note">
+      <a href="{{ url_for('opportunities.discover_archive') }}" class="sk-view-link"><i class="ri-history-line"></i> Closed opportunities</a>
+      <p>Nelavista lists programmes from their official sources and isn't affiliated with these organisations unless a listing says so. You always apply on the organisation's official application. Never pay anyone to "secure" a place; report any listing that asks you to.</p>
+    </div>
+  </div>
+
+  <div class="opp-toast" id="opp-toast" role="status" aria-live="polite"></div>
+
+{% include 'components/opportunities_footer.html' %}
+<script src="{{ url_for('static', filename='js/opportunities.js') }}"></script>
+</body>
+</html>

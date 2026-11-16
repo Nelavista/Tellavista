@@ -1595,3 +1595,8 @@ def rate_opportunity_application(application_id):
     notify(application.student_id, 'application_update', f'You were rated {stars}★ for "{application.opportunity.title}"',
            rating.comment, url_for('skills.talent_profile'))
     return jsonify({'success': True, 'rating': rating.to_dict()})
+
+
+# Student-opportunity admin pages register on admin_skills_bp. Imported last so the
+# blueprint exists.
+from app.routes import admin_opportunities_routes  # noqa: E402,F401

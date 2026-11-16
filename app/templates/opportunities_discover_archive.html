@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/x-icon" href="/static/icons/favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="/static/icons/nelavista-180x180.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Closed Opportunities · Nelavista</title>
+  <meta name="theme-color" content="#050810">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/skills.css') }}">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
+</head>
+<body>
+{% include 'components/opportunities_sidebar.html' %}
+
+  <div class="sk-view opp-view">
+    <a href="{{ url_for('opportunities.discover') }}" class="opp-back"><i class="ri-arrow-left-line"></i> Scholarships &amp; programmes</a>
+    <h1 class="sk-h1">Closed opportunities</h1>
+    <p class="sk-sub">Past programmes, kept for reference. Many run every year, so save one to watch for the next round.</p>
+
+    {% if closed %}
+    <div class="opp-list" style="margin-top:20px;">
+      {% for o in closed %}
+      <a class="opp-list-row" href="{{ url_for('opportunities.discover_detail', slug=o.slug) }}">
+        <span class="opp-status closed"><span class="opp-dot"></span>Closed</span>
+        <span class="opp-list-title">{{ o.title }}</span>
+        <span class="opp-list-org">{{ o.organization }}</span>
+        <span class="opp-list-meta">{{ ui.category_singular.get(o.category, 'Opportunity') }}{% if o.deadline %} · closed {{ o.deadline.strftime('%b') }} {{ o.deadline.day }}, {{ o.deadline.year }}{% endif %}{% if state.get(o.id, {}).get('applied_at') %} · you applied{% endif %}</span>
+      </a>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="sk-empty opp-empty"><div class="sk-empty-icon"><i class="ri-history-line"></i></div><div style="font-weight:700;">No closed opportunities yet</div></div>
+    {% endif %}
+  </div>
+
+{% include 'components/opportunities_footer.html' %}
+</body>
+</html>

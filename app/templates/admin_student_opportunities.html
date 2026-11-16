@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/x-icon" href="/static/icons/favicon.ico">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin · Opportunities · Nelavista</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
+  {% include 'components/admin_opp_styles.html' %}
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+</head>
+<body>
+{% include 'components/admin_nav.html' %}
+<div class="container">
+  {% with messages = get_flashed_messages() %}{% for m in messages %}<div class="flash">{{ m }}</div>{% endfor %}{% endwith %}
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap;">
+    <div>
+      <h1><i class="ri-compass-discover-line"></i> Student Opportunities</h1>
+      <p class="subtitle">Scholarships, fellowships, competitions, internships and programmes. Students only see listings that are <b>verified</b> against an official source, <b>published</b>, and still open. Closed ones leave the feed automatically on their deadline (WAT). Paid gigs are under <a href="/admin/skills/opportunities">Gigs</a>.</p>
+    </div>
+    <a href="{{ url_for('admin_skills.admin_student_opportunity_new') }}" class="btn"><i class="ri-add-line"></i>New opportunity</a>
+  </div>
+
+  <div class="stat-row">
+    <div class="stat"><b>{{ '{:,}'.format(totals.get('view', 0)) }}</b><span>views (30 days)</span></div>
+    <div class="stat"><b>{{ '{:,}'.format(totals.get('save', 0)) }}</b><span>saves (30 days)</span></div>
+    <div class="stat"><b>{{ '{:,}'.format(totals.get('apply_click', 0)) }}</b><span>application clicks (30 days)</span></div>
+    <div class="stat"><b>{{ '{:,}'.format(totals.get('applied', 0)) }}</b><span>students reported applying (30 days)</span></div>
+    <div class="stat"><b>{{ '{:,}'.format(totals.get('share', 0)) }}</b><span>shares (30 days)</span></div>
+  </div>
+
+  <div class="tabs">
+    {% for key, label in [('all', 'All'), ('live', 'Live'), ('drafts', 'Drafts / unverified'), ('recheck', 'Needs re-check'), ('reported', 'Reported'), ('closed', 'Closed'), ('archived', 'Archived')] %}
+    <a href="{{ url_for('admin_skills.admin_student_opportunities', view=key) }}" class="{{ 'active' if view == key }}">{{ label }} ({{ counts[key] }})</a>
+    {% endfor %}
+  </div>
+  <form method="GET" class="field" style="max-width:360px;">
+    <input type="hidden" name="view" value="{{ view }}">
+    <input type="search" name="q" value="{{ q }}" placeholder="Search title or organisation">
+  </form>
+
+  <div class="panel table-wrap">
+    {% if rows %}
+    <table>
+      <thead><tr><th>Opportunity</th><th>Status</th><th>Deadline</th><th>Views</th><th>Saves</th><th>Apply clicks</th><th>Applied</th><th></th></tr></thead>
+      <tbody>
+      {% for r in rows %}{% set o = r.o %}{% set s = stats.get(o.id, {}) %}
+      <tr>
+        <td>
+          <a href="{{ url_for('admin_skills.admin_student_opportunity_edit', opportunity_id=o.id) }}" style="font-weight:700;color:#e6edf3;text-decoration:none;">{{ o.title }}</a>
+          <div class="muted">{{ o.organization }} · {{ labels.get(o.category, o.category) }}</div>
+          <div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:4px;">
+            {% if o.is_published %}<span class="badge green">Published</span>{% else %}<span class="badge">Unpublished</span>{% endif %}
+            {% if o.verification_status == 'verified' %}<span class="badge green"><i class="ri-shield-check-line"></i>Verified</span>{% elif o.verification_status == 'rejected' %}<span class="badge red">Rejected</span>{% else %}<span class="badge orange">Unverified</span>{% endif %}
+            {% if o.featured %}<span class="badge blue">Featured</span>{% endif %}
+            {% if r.recheck %}<span class="badge orange">Re-check due</span>{% endif %}
+            {% if r.reports %}<span class="badge red">{{ r.reports }} report{{ 's' if r.reports != 1 }}</span>{% endif %}
+          </div>
+        </td>
+        <td><span class="badge {{ {'open': 'green', 'soon': 'orange', 'closed': 'red', 'upcoming': 'blue'}[r.status.tone] }}">{{ r.status.label }}</span></td>
+        <td class="muted">{{ o.deadline.isoformat() if o.deadline else ('None published' if o.is_rolling else '—') }}</td>
+        <td>{{ s.get('view', 0) }}<div class="muted">{{ s.get('unique_viewers', 0) }} unique</div></td>
+        <td>{{ s.get('saved_now', 0) }}</td>
+        <td>{{ s.get('apply_click', 0) }}</td>
+        <td>{{ s.get('applied_now', 0) }}</td>
+        <td><a class="btn secondary small" href="{{ url_for('admin_skills.admin_student_opportunity_edit', opportunity_id=o.id) }}">Edit</a></td>
+      </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <p class="muted" style="padding:16px;text-align:center;">Nothing here yet.</p>
+    {% endif %}
+  </div>
+  <p class="muted">"Applied" counts are students' own confirmations, not submissions verified by the organisation.</p>
+</div>
+</body>
+</html>

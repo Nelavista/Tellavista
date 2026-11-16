@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/x-icon" href="/static/icons/favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="/static/icons/nelavista-180x180.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>My Opportunities · Nelavista</title>
+  <meta name="theme-color" content="#050810">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/skills.css') }}">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
+</head>
+<body>
+{% include 'components/opportunities_sidebar.html' %}
+
+  <div class="sk-view opp-view">
+    <a href="{{ url_for('opportunities.discover') }}" class="opp-back"><i class="ri-arrow-left-line"></i> Scholarships &amp; programmes</a>
+    <h1 class="sk-h1">My Opportunities</h1>
+    <p class="sk-sub">What you've saved, what you've applied to, and what's closing.</p>
+
+    {% set tabs = [('saved', 'Saved', data.saved|length), ('applied', 'Applied', data.applied|length),
+                   ('closing', 'Closing Soon', data.closing|length), ('recommended', 'Recommended', data.recommended|length)] %}
+    <nav class="opp-tabs" aria-label="My opportunities">
+      {% for key, label, n in tabs %}
+      <a href="{{ url_for('opportunities.discover_mine', tab=key) }}" class="opp-tab{{ ' active' if tab == key }}"{% if tab == key %} aria-current="page"{% endif %}>{{ label }}<span class="opp-tab-count">{{ n }}</span></a>
+      {% endfor %}
+    </nav>
+
+    {% if tab == 'applied' %}
+      {% if data.applied %}
+      <div class="opp-list">
+        {% for a in data.applied %}{% set o = a.opportunity %}{% set s = ui.status(o) %}
+        <a class="opp-list-row applied" href="{{ url_for('opportunities.discover_detail', slug=o.slug) }}">
+          <span class="opp-list-title">{{ o.title }}</span>
+          <span class="opp-list-org">{{ o.organization }}</span>
+          <span class="opp-pill applied"><i class="ri-check-line"></i>Applied</span>
+          <span class="opp-list-meta">Applied {{ a.applied_at.strftime('%b') }} {{ a.applied_at.day }}, {{ a.applied_at.year }} · {{ s.label }}</span>
+        </a>
+        {% endfor %}
+      </div>
+      <p class="opp-muted" style="margin-top:14px;">These are the programmes you marked as applied. Outcomes come from each organisation directly, so watch your email.</p>
+      {% else %}
+      <div class="sk-empty opp-empty"><div class="sk-empty-icon"><i class="ri-send-plane-line"></i></div>
+        <div style="font-weight:700;">No applications yet</div>
+        <div style="font-size:0.92rem;">After you apply, tap <strong>I Applied</strong> on the opportunity to keep track of it here.</div>
+        <a href="{{ url_for('opportunities.discover') }}" class="sk-btn small" style="margin-top:10px;">Find opportunities</a></div>
+      {% endif %}
+
+    {% else %}
+      {% set items = data.saved if tab == 'saved' else (data.closing if tab == 'closing' else data.recommended) %}
+      {% if items %}
+      <div class="opp-grid">
+        {% for o in items %}{% with st = state.get(o.id, {}), from_section = 'mine_' ~ tab %}{% include 'components/opportunity_card.html' %}{% endwith %}{% endfor %}
+      </div>
+      {% else %}
+      <div class="sk-empty opp-empty"><div class="sk-empty-icon"><i class="{{ 'ri-heart-line' if tab == 'saved' else ('ri-timer-line' if tab == 'closing' else 'ri-compass-discover-line') }}"></i></div>
+        {% if tab == 'saved' %}<div style="font-weight:700;">Nothing saved yet</div><div style="font-size:0.92rem;">Tap ♡ on any opportunity to keep it here.</div>
+        {% elif tab == 'closing' %}<div style="font-weight:700;">Nothing you saved closes this week</div><div style="font-size:0.92rem;">Saved opportunities that close in the next 7 days show up here.</div>
+        {% else %}<div style="font-weight:700;">No recommendations yet</div><div style="font-size:0.92rem;">Add your department and level to your profile for better matches.</div>{% endif %}
+        <a href="{{ url_for('opportunities.discover') }}" class="sk-btn small" style="margin-top:10px;">Browse opportunities</a></div>
+      {% endif %}
+    {% endif %}
+  </div>
+
+  <div class="opp-toast" id="opp-toast" role="status" aria-live="polite"></div>
+
+{% include 'components/opportunities_footer.html' %}
+<script src="{{ url_for('static', filename='js/opportunities.js') }}"></script>
+</body>
+</html>

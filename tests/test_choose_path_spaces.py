@@ -13,7 +13,7 @@ from app.models import User
 SPACES = [
     ('academia', '/dashboard'),
     ('skills', '/skills'),
-    ('opportunities', '/opportunities'),
+    ('opportunities', '/opportunities/discover'),
     ('campus', '/campus-map'),
 ]
 

@@ -353,3 +353,16 @@ def test_discover_lives_in_the_opportunities_space(app, client, make_user, login
         for leak in ('/skills/catalog', '/skills/my-learning', '/skills/projects', '/skills/talent', '/dashboard'):
             assert leak not in body, (path, leak)
     assert '/opportunities/discover' in client.get('/opportunities').get_data(as_text=True)
+
+
+def test_space_nav_order_is_discover_gigs_matched(app, client, make_user, login_as):
+    """Product order for the Opportunities space: Discover first, then gigs, then
+    matched work, in both the sidebar and the mobile tab bar."""
+    user = make_user('opp_nav_order')
+    login_as(client, user)
+    body = client.get('/opportunities/discover').get_data(as_text=True)
+    sidebar, tabbar = body.split('class="mobile-tabbar"', 1)
+    for section in (sidebar.split('class="sidebar-nav"', 1)[1], tabbar):
+        positions = [section.index(f'href="{href}"')
+                     for href in ('/opportunities/discover', '/opportunities/gigs', '/opportunities')]
+        assert positions == sorted(positions), positions

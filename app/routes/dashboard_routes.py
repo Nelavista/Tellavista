@@ -127,7 +127,7 @@ dashboard_bp = Blueprint('dashboard', __name__)
 VALID_PATHS = {
     'academia': 'dashboard.dashboard',
     'skills': 'skills.home',
-    'opportunities': 'opportunities.index',
+    'opportunities': 'opportunities.discover',  # Discover is the space's front door
     'campus': 'campus_map.campus_map_page',
 }
 

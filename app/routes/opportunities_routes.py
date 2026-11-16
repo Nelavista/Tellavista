@@ -152,3 +152,8 @@ def earnings():
         'active_count': sum(1 for a in applications if a.status in ('applied', 'accepted', 'completed')),
     }
     return render_template('opportunities_earnings.html', applications=applications, summary=summary, active_page='earnings')
+
+
+# Discover (scholarships, fellowships, external competitions...) registers on
+# opportunities_bp. Imported last so the blueprint and _current_user exist.
+from app.routes import opportunities_discover_routes  # noqa: E402,F401

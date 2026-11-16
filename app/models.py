@@ -2964,3 +2964,179 @@ class AdminAuditLog(db.Model):
 
     target_user = db.relationship('User', foreign_keys=[target_user_id])
     actor_user = db.relationship('User', foreign_keys=[actor_user_id])
+
+
+# ============================================================
+# ===== STUDENT OPPORTUNITIES: scholarships, fellowships, competitions, internships... =====
+# Deliberately separate from Opportunity above. That model is the paid-gig ledger (skill
+# match, payout state machine, earnings). These are third-party programmes a student
+# applies to on the organisation's own site, so nothing here moves money and nothing
+# claims Nelavista knows the outcome of an application.
+#
+# Trust rules this schema exists to enforce (see services/student_opportunity_service.py):
+# - Every row records where it came from (source_url) and the official application route
+#   (application_url). Neither is ever guessed; an admin pastes them from the official page.
+# - A row only reaches students when it is published AND verification_status='verified'.
+#   Publishing is refused server-side otherwise.
+# - Open / closing soon / closed / upcoming is always computed from dates, never typed,
+#   so an expired programme can't keep showing as open.
+# - application_mode NELAVISTA_APPLICATION is refused unless is_partner is set; there is
+#   no partner workflow yet, so even then the official URL is what students use.
+# ============================================================
+
+class StudentOpportunity(db.Model):
+    __tablename__ = 'student_opportunities'
+
+    id = db.Column(db.Integer, primary_key=True)
+    slug = db.Column(db.String(160), unique=True, nullable=False, index=True)
+    title = db.Column(db.String(200), nullable=False)
+    organization = db.Column(db.String(150), nullable=False)
+    summary = db.Column(db.String(300), nullable=True)        # one-line card description
+    description = db.Column(db.Text, nullable=True)           # overview
+    eligibility = db.Column(db.Text, nullable=True)           # who can apply
+    benefits = db.Column(db.Text, nullable=True)              # what students get
+    requirements = db.Column(db.Text, nullable=True)          # documents / information needed
+    application_steps = db.Column(db.Text, nullable=True)     # one step per line
+    eligible_summary = db.Column(db.String(150), nullable=True)  # short "Eligible:" line on the card
+
+    category = db.Column(db.String(40), nullable=False, default='other', index=True)
+    categories_json = db.Column(db.Text, nullable=True)       # extra categories (list of keys)
+    disciplines_json = db.Column(db.Text, nullable=True)      # discipline keys; ['all'] = every discipline
+    levels_json = db.Column(db.Text, nullable=True)           # level keys; empty = every level
+    tags_json = db.Column(db.Text, nullable=True)             # free search keywords (AI, LASU, finance...)
+    location_scope = db.Column(db.String(20), nullable=False, default='nigeria')  # nigeria|africa|global|local
+    location = db.Column(db.String(150), nullable=True)       # e.g. "Lagos", "Students of LASU"
+    delivery_format = db.Column(db.String(20), nullable=True) # online|in_person|hybrid
+
+    opens_at = db.Column(db.Date, nullable=True)
+    deadline = db.Column(db.Date, nullable=True)
+    is_rolling = db.Column(db.Boolean, nullable=False, default=False)
+    deadline_note = db.Column(db.String(200), nullable=True)  # e.g. "11:59 pm WAT"
+    manually_closed = db.Column(db.Boolean, nullable=False, default=False)
+
+    application_mode = db.Column(db.String(30), nullable=False, default='EXTERNAL_WEBVIEW')
+    application_url = db.Column(db.String(500), nullable=True)
+    embed_url = db.Column(db.String(500), nullable=True)      # EMBEDDED_FORM only
+    allows_in_app_view = db.Column(db.Boolean, nullable=False, default=False)  # admin-enabled after a framing check
+    framing_checked_at = db.Column(db.DateTime, nullable=True)
+    official_website = db.Column(db.String(500), nullable=True)
+    source_url = db.Column(db.String(500), nullable=True)
+    is_partner = db.Column(db.Boolean, nullable=False, default=False)  # a real, signed partnership only
+    partner_note = db.Column(db.String(300), nullable=True)
+
+    verification_status = db.Column(db.String(20), nullable=False, default='unverified')  # unverified|verified|rejected
+    verified_at = db.Column(db.DateTime, nullable=True)
+    verified_by_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
+    last_checked_at = db.Column(db.DateTime, nullable=True)
+    verification_notes = db.Column(db.Text, nullable=True)    # admin-only
+
+    is_published = db.Column(db.Boolean, nullable=False, default=False, index=True)
+    featured = db.Column(db.Boolean, nullable=False, default=False)
+    is_archived = db.Column(db.Boolean, nullable=False, default=False)
+    created_by_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    published_at = db.Column(db.DateTime, nullable=True)
+
+    verified_by = db.relationship('User', foreign_keys=[verified_by_id])
+    created_by = db.relationship('User', foreign_keys=[created_by_id])
+
+    @staticmethod
+    def _load_list(raw):
+        if not raw:
+            return []
+        try:
+            value = json.loads(raw)
+        except (TypeError, ValueError):
+            return []
+        return [str(v) for v in value if str(v).strip()] if isinstance(value, list) else []
+
+    @property
+    def categories(self):
+        extra = self._load_list(self.categories_json)
+        return [self.category] + [c for c in extra if c != self.category]
+
+    @property
+    def disciplines(self):
+        return self._load_list(self.disciplines_json)
+
+    @property
+    def levels(self):
+        return self._load_list(self.levels_json)
+
+    @property
+    def tags(self):
+        return self._load_list(self.tags_json)
+
+    @property
+    def steps_list(self):
+        return [s.strip() for s in (self.application_steps or '').splitlines() if s.strip()]
+
+    @property
+    def is_verified(self):
+        return self.verification_status == 'verified'
+
+
+class StudentOpportunitySave(db.Model):
+    __tablename__ = 'student_opportunity_saves'
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False, index=True)
+    opportunity_id = db.Column(db.Integer, db.ForeignKey('student_opportunities.id'), nullable=False, index=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    opportunity = db.relationship('StudentOpportunity', backref=db.backref('saves', lazy='dynamic', cascade='all, delete-orphan'))
+
+    __table_args__ = (db.UniqueConstraint('user_id', 'opportunity_id', name='uq_student_opp_save'),)
+
+
+class StudentOpportunityApplication(db.Model):
+    """A student's own record that they applied. For EXTERNAL_WEBVIEW / EMBEDDED_FORM it
+    is self-reported (source='self_reported') and is never shown as confirmed by the
+    organisation. source='partner' is reserved for a future partner integration that
+    actually reports status back; nothing writes it today."""
+    __tablename__ = 'student_opportunity_applications'
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False, index=True)
+    opportunity_id = db.Column(db.Integer, db.ForeignKey('student_opportunities.id'), nullable=False, index=True)
+    source = db.Column(db.String(20), nullable=False, default='self_reported')
+    status = db.Column(db.String(20), nullable=False, default='applied')
+    applied_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    opportunity = db.relationship('StudentOpportunity', backref=db.backref('applications', lazy='dynamic', cascade='all, delete-orphan'))
+
+    __table_args__ = (db.UniqueConstraint('user_id', 'opportunity_id', name='uq_student_opp_application'),)
+
+
+class StudentOpportunityEvent(db.Model):
+    """Append-only analytics: view | save | unsave | apply_click | applied | unapplied |
+    share | report. Counts for partner conversations are derived from here."""
+    __tablename__ = 'student_opportunity_events'
+
+    id = db.Column(db.Integer, primary_key=True)
+    opportunity_id = db.Column(db.Integer, db.ForeignKey('student_opportunities.id'), nullable=False, index=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True, index=True)
+    event_type = db.Column(db.String(20), nullable=False, index=True)
+    channel = db.Column(db.String(30), nullable=True)  # e.g. share target, feed section
+    created_at = db.Column(db.DateTime, default=datetime.utcnow, index=True)
+
+    opportunity = db.relationship('StudentOpportunity', backref=db.backref('events', lazy='dynamic', cascade='all, delete-orphan'))
+
+
+class StudentOpportunityReport(db.Model):
+    """A student flagging a listing (expired, broken link, scam, wrong details)."""
+    __tablename__ = 'student_opportunity_reports'
+
+    id = db.Column(db.Integer, primary_key=True)
+    opportunity_id = db.Column(db.Integer, db.ForeignKey('student_opportunities.id'), nullable=False, index=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
+    reason = db.Column(db.String(30), nullable=False)
+    details = db.Column(db.Text, nullable=True)
+    resolved = db.Column(db.Boolean, nullable=False, default=False)
+    resolved_at = db.Column(db.DateTime, nullable=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    opportunity = db.relationship('StudentOpportunity', backref=db.backref('reports', lazy='dynamic', cascade='all, delete-orphan'))
+    user = db.relationship('User')

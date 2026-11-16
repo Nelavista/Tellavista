@@ -1,0 +1,43 @@
+{# One opportunity card. Needs: o (StudentOpportunity), st (user_state dict for o or {}),
+   ui (helpers from routes/student_opportunities_routes.py::_ui). Optional: from_section. #}
+{% set status = ui.status(o) %}
+{% set detail_url = url_for('opportunities.discover_detail', slug=o.slug) ~ ('?from=' ~ from_section if from_section else '') %}
+<article class="opp-card" data-opp-id="{{ o.id }}">
+  <div class="opp-card-top">
+    <div class="opp-org-mark" aria-hidden="true"><i class="{{ ui.category_icons.get(o.category, 'ri-star-line') }}"></i></div>
+    <div class="opp-card-head">
+      <a class="opp-card-title" href="{{ detail_url }}">{{ o.title }}</a>
+      <div class="opp-card-org">{{ o.organization }}{% if o.is_verified %} <span class="opp-verified" title="Checked against the official source{% if o.last_checked_at %} on {{ o.last_checked_at.strftime('%b %d, %Y') }}{% endif %}"><i class="ri-checkbox-circle-fill"></i>Verified</span>{% endif %}</div>
+    </div>
+    <button type="button" class="opp-icon-btn opp-save{{ ' saved' if st.get('saved') }}" data-opp-save="{{ o.id }}"
+            aria-pressed="{{ 'true' if st.get('saved') else 'false' }}" aria-label="{{ 'Unsave' if st.get('saved') else 'Save' }} {{ o.title }}">
+      <i class="{{ 'ri-heart-fill' if st.get('saved') else 'ri-heart-line' }}"></i>
+    </button>
+  </div>
+
+  <div class="opp-status-row">
+    <span class="opp-status {{ status.tone }}"><span class="opp-dot"></span>{{ status.label }}</span>
+    {% if o.featured %}<span class="opp-pill featured"><i class="ri-star-fill"></i>Featured</span>{% endif %}
+    {% if st.get('applied_at') %}<span class="opp-pill applied"><i class="ri-check-line"></i>Applied</span>{% endif %}
+  </div>
+
+  <dl class="opp-facts">
+    <div><dt>Type</dt><dd>{{ ui.category_singular.get(o.category, 'Opportunity') }}</dd></div>
+    <div><dt>Eligible</dt><dd>{{ o.eligible_summary or 'University students' }}</dd></div>
+    {% if o.disciplines %}
+    <div><dt>Fields</dt><dd>{% if 'all' in o.disciplines %}All disciplines{% else %}{% for d in o.disciplines[:4] %}{{ ui.discipline_labels.get(d, d) }}{{ ' · ' if not loop.last }}{% endfor %}{% if o.disciplines|length > 4 %} +{{ o.disciplines|length - 4 }}{% endif %}{% endif %}</dd></div>
+    {% endif %}
+    <div><dt>Deadline</dt><dd>{{ ui.deadline(o) }}</dd></div>
+  </dl>
+
+  {% if o.summary %}<p class="opp-card-desc">{{ o.summary }}</p>{% endif %}
+
+  <div class="opp-card-actions">
+    <a href="{{ detail_url }}" class="sk-btn small">View Opportunity</a>
+    <button type="button" class="opp-icon-btn" data-opp-share="{{ o.id }}" data-share-title="{{ o.title }}"
+            data-share-org="{{ o.organization }}" data-share-deadline="{{ ui.deadline(o) }}"
+            data-share-url="{{ url_for('opportunities.discover_detail', slug=o.slug, _external=True) }}" aria-label="Share {{ o.title }}">
+      <i class="ri-share-forward-line"></i>
+    </button>
+  </div>
+</article>

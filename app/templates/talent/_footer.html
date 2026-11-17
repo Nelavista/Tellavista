@@ -1,45 +1,47 @@
-{% set contact_email = support_email or 'support@nelavista.com' %}
-<footer class="tn-footer">
-  <div class="tn-wrap">
-    <div class="tn-footer-grid">
-      <div class="tn-footer-brand">
-        <a class="tn-brand" href="{{ url_for('talent.home') }}">
+<footer class="tx-footer">
+  <div class="tx-wrap">
+    <div class="tx-footer-grid">
+      <div class="tx-footer-brand">
+        <a class="tx-brand tx-brand-light" href="{{ url_for('talent.home') }}">
           <img src="{{ url_for('static', filename='icons/nelavista-96x96.png') }}" alt="" width="28" height="28" loading="lazy">
-          <span class="tn-brand-name">Nelavista</span><span class="tn-brand-sub">Talent</span>
+          <span class="tx-brand-name">Nelavista</span><span class="tx-brand-sub">Talent</span>
         </a>
-        <p>Trained, assessed African talent for remote teams, outsourcing and project work. Part of Nelavista, where people learn, practise and prove their skills.</p>
+        <p>Vetted, assessed and work-ready professionals across Africa, for remote teams, outsourcing and project-based work.</p>
+        <div class="tx-footer-contact">
+          <a href="{{ whatsapp_url }}" target="_blank" rel="noopener"><i class="ri-whatsapp-line" aria-hidden="true"></i>{{ tn.WHATSAPP_DISPLAY }}</a>
+          <a href="mailto:{{ tn.CONTACT_EMAIL }}?subject=Nelavista%20Talent"><i class="ri-mail-line" aria-hidden="true"></i>{{ tn.CONTACT_EMAIL }}</a>
+        </div>
       </div>
-      <div class="tn-footer-col">
+      <div class="tx-footer-col">
         <h2>For employers</h2>
         <ul>
           <li><a href="{{ url_for('talent.request_talent') }}">Request Talent</a></li>
-          <li><a href="{{ url_for('talent.home') }}#how">How it works</a></li>
-          <li><a href="{{ url_for('talent.home') }}#categories">Talent categories</a></li>
-          <li><a href="{{ url_for('talent.home') }}#standard">Our verification standard</a></li>
+          <li><a href="{{ url_for('talent.home') }}#talent">Explore Talent</a></li>
+          <li><a href="{{ url_for('talent.home') }}#how">How It Works</a></li>
+          <li><a href="{{ url_for('talent.home') }}#categories">Talent Categories</a></li>
         </ul>
       </div>
-      <div class="tn-footer-col">
+      <div class="tx-footer-col">
         <h2>For talent</h2>
         <ul>
-          <li><a href="{{ url_for('talent.join') }}">Join the Talent Network</a></li>
-          <li><a href="/skills/talent">Build your profile</a></li>
+          <li><a href="{{ url_for('talent.join') }}">Join the Network</a></li>
+          <li><a href="/skills/talent">Build Your Profile</a></li>
           <li><a href="/opportunities">Opportunities</a></li>
         </ul>
       </div>
-      <div class="tn-footer-col">
-        <h2>Nelavista</h2>
+      <div class="tx-footer-col">
+        <h2>Company</h2>
         <ul>
-          <li><a href="/about">About</a></li>
-          <li><a href="/impact">Track record</a></li>
-          <li><a href="mailto:{{ contact_email }}?subject=Nelavista%20Talent">Contact</a></li>
+          <li><a href="{{ url_for('talent.home') }}#about">About</a></li>
+          <li><a href="mailto:{{ tn.CONTACT_EMAIL }}?subject=Nelavista%20Talent">Contact</a></li>
           <li><a href="/privacy-policy">Privacy</a></li>
           <li><a href="/terms-of-service">Terms</a></li>
         </ul>
       </div>
     </div>
-    <div class="tn-footer-base">
-      <span>&copy; {{ now_year }} Nelavista</span>
-      <a href="mailto:{{ contact_email }}?subject=Nelavista%20Talent">{{ contact_email }}</a>
+    <div class="tx-footer-base">
+      <span>&copy; {{ now_year }} Nelavista. Nelavista Talent is part of Nelavista.</span>
+      <span>Photography: {% for c in tn.PHOTO_CREDITS %}{{ c }}{{ ', ' if not loop.last }}{% endfor %} via <a href="https://unsplash.com" rel="noopener" target="_blank">Unsplash</a></span>
     </div>
   </div>
 </footer>

@@ -1,13 +1,13 @@
 """Nelavista Talent: the employer-facing talent network.
 
 /talent                       homepage (employers first, with a path for talent)
-/talent/profile/<slug>        a talent profile (sample profiles today, labelled and noindex)
+/talent/profile/<slug>        a talent profile (labelled previews today, noindex)
 /talent/request               "Request Talent" qualification form (no account needed)
 /talent/request/received      confirmation after a request
 /talent/join                  the talent-side entry point
 /admin/talent-requests        admin: work incoming requests
 
-All copy-level claims (figures, verification status, samples) come from
+All copy-level claims (metrics, vetting status, previews, photography) come from
 services/talent_network.py. Read its docstring before changing what the pages claim.
 """
 import re
@@ -29,25 +29,29 @@ FIELD_LIMITS = {
 }
 
 
-def _live_stats():
-    # Same live counts as the main landing page, so the two can't disagree. A failure here
-    # must never take the sales page down: the verified figures still render.
+def _assessment_tracks():
+    """Published skills that have at least one published assessment, counted live. A
+    failure here must never take the sales page down: the band simply hides."""
     try:
-        from app.routes.dashboard_routes import _landing_stats
-        return _landing_stats()
+        from app.models import Challenge, Skill
+        return (db.session.query(db.func.count(db.distinct(Challenge.skill_id)))
+                .join(Skill, Skill.id == Challenge.skill_id)
+                .filter(Challenge.is_assessment.is_(True), Challenge.is_published.is_(True),
+                        Skill.is_published.is_(True)).scalar()) or 0
     except Exception:
         db.session.rollback()
-        return {}
+        return 0
 
 
 def _base_context():
-    return {'tn': tn, 'categories': tn.CATEGORIES, 'now_year': datetime.utcnow().year}
+    return {'tn': tn, 'categories': tn.CATEGORIES, 'now_year': datetime.utcnow().year,
+            'whatsapp_url': tn.whatsapp_url()}
 
 
 @talent_bp.route('/talent')
 def home():
     return render_template(
-        'talent/home.html', figures=tn.build_figures(_live_stats()),
+        'talent/home.html', metrics=tn.build_metrics(_assessment_tracks()),
         talent=tn.featured_talent(), **_base_context(),
     )
 
@@ -75,7 +79,7 @@ def _clean(form):
         value = (form.get(key) or '').strip()
         data[key] = value if value in dict(options) else ''
     ref = (form.get('profile_ref') or '').strip()
-    data['profile_ref'] = ref if ref in tn.SAMPLE_BY_SLUG else ''
+    data['profile_ref'] = ref if ref in tn.PREVIEW_BY_SLUG else ''
     return data
 
 

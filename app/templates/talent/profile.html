@@ -1,152 +1,145 @@
 {% extends 'talent/base.html' %}
-{% from 'talent/_macros.html' import talent_card, avatar, availability %}
-{% block title %}{{ p.name }}, {{ p.role }}{% if p.is_sample %} (sample profile){% endif %} | Nelavista Talent{% endblock %}
-{% block description %}{{ p.role }} in {{ p.location }}. {{ p.summary }}{% endblock %}
-{% block robots %}{% if p.is_sample %}<meta name="robots" content="noindex, follow">{% endif %}{% endblock %}
-{% block body_class %}tn-page-profile{% endblock %}
+{% from 'talent/_macros.html' import profile_card, role_mark, availability, badge_list, vetted_seal %}
+{% block title %}{{ p.role }}, {{ p.country }}{% if p.is_preview %} (profile preview){% endif %} | Nelavista Talent{% endblock %}
+{% block description %}{{ p.role }} based in {{ p.country }}. {{ p.summary }}{% endblock %}
+{% block robots %}{% if p.is_preview %}<meta name="robots" content="noindex, follow">{% endif %}{% endblock %}
+{% block body_class %}tx-page-profile{% endblock %}
 
 {% block content %}
-{% set checks_done = tn.verified_count(p) %}
-<div class="tn-wrap">
-  <nav class="tn-crumbs" aria-label="Breadcrumb">
-    <a href="{{ url_for('talent.home') }}">Talent</a><span aria-hidden="true">/</span>
+<div class="tx-wrap">
+  <nav class="tx-crumbs" aria-label="Breadcrumb">
+    <a href="{{ url_for('talent.home') }}#talent">Talent</a><span aria-hidden="true">/</span>
     {% if category %}<a href="{{ url_for('talent.home') }}#categories">{{ category.name }}</a><span aria-hidden="true">/</span>{% endif %}
-    <span aria-current="page">{{ p.name }}</span>
+    <span aria-current="page">{{ p.role }}</span>
   </nav>
 
-  {% if p.is_sample %}
-  <p class="tn-sample-banner" role="note"><i class="ri-information-line" aria-hidden="true"></i>Sample profile. This person is not a real candidate; the page shows what a Nelavista Talent profile contains.</p>
+  {% if p.is_preview %}
+  <p class="tx-preview-banner" role="note"><i class="ri-eye-line" aria-hidden="true"></i>Profile preview. This illustrates the format of a Nelavista Talent profile; it is not a live candidate.</p>
   {% endif %}
 
-  <div class="tn-profile">
+  <div class="tx-profile">
     <article>
-      <header class="tn-profile-head">
-        {{ avatar(p, 'lg') }}
+      <header class="tx-profile-head">
+        {{ role_mark(p, tn, 'xl') }}
         <div>
-          <h1>{{ p.name }}</h1>
-          <p class="tn-profile-role">{{ p.role }}</p>
-          <ul class="tn-profile-meta">
-            <li><i class="ri-map-pin-line" aria-hidden="true"></i>{{ p.location }}</li>
+          <h1>{{ p.role }}</h1>
+          <ul class="tx-profile-meta">
+            <li><i class="ri-map-pin-line" aria-hidden="true"></i>{{ p.country }}</li>
             <li><i class="ri-time-line" aria-hidden="true"></i>{{ p.timezone }}</li>
-            <li><i class="ri-bar-chart-line" aria-hidden="true"></i>{{ p.level }}</li>
+            <li><i class="ri-briefcase-line" aria-hidden="true"></i>{{ p.level }} · {{ p.years }}</li>
           </ul>
-          <div class="tn-profile-badges">
+          <div class="tx-profile-flags">
+            {% if tn.is_vetted(p) %}{{ vetted_seal() }}{% endif %}
             {{ availability(p) }}
-            {% if p.checks.skills == 'verified' %}<span class="tn-badge tn-badge-assessed"><i class="ri-checkbox-circle-fill" aria-hidden="true"></i>Assessed by Nelavista</span>{% endif %}
           </div>
         </div>
       </header>
 
-      <section class="tn-psec" aria-labelledby="sum-h">
-        <h2 id="sum-h">Summary</h2>
+      <section class="tx-psec" aria-labelledby="sum-h">
+        <h2 id="sum-h">Professional summary</h2>
         <p>{{ p.summary }}</p>
       </section>
 
-      <section class="tn-psec" aria-labelledby="ev-h">
-        <h2 id="ev-h">Verification <span class="tn-checks" style="margin-left:8px">{{ checks_done }}/{{ p.checks|length }} complete</span></h2>
-        <ul class="tn-evidence">
-          {% for k, v in p.checks.items() %}
-          <li class="tn-ev is-{{ v }}">
-            <i class="{{ 'ri-checkbox-circle-fill' if v == 'verified' else 'ri-time-line' if v == 'pending' else 'ri-checkbox-blank-circle-line' }}" aria-hidden="true"></i>
-            <div><strong>{{ tn.CHECK_LABELS[k] }}</strong><span>{{ tn.CHECK_STATE_LABELS[v] }}</span></div>
+      <section class="tx-psec" aria-labelledby="ver-h">
+        <h2 id="ver-h">Profile verification</h2>
+        <ul class="tx-evidence">
+          {% for layer in tn.VETTING_LAYERS %}
+          {% set state = p.checks.get(layer.key) if layer.status == 'live' else 'rolling' %}
+          <li class="tx-ev is-{{ state or 'pending' }}">
+            <i class="{{ 'ri-checkbox-circle-fill' if state == 'verified' else 'ri-time-line' if state == 'pending' or not state else 'ri-checkbox-blank-circle-line' }}" aria-hidden="true"></i>
+            <div>
+              <strong>{{ layer.badge if state == 'verified' else layer.name }}</strong>
+              <span>{% if state == 'verified' %}Verified{% elif state == 'rolling' %}Rolling out across the network{% else %}In progress{% endif %}</span>
+            </div>
           </li>
           {% endfor %}
         </ul>
-        <p class="tn-psec-note">Checks follow the <a href="{{ url_for('talent.home') }}#standard">Nelavista Talent standard</a>. A check is marked verified only when it has been done.</p>
+        <p class="tx-psec-note">Checks follow the <a href="{{ url_for('talent.home') }}#vetted">Nelavista standard</a>. A badge appears only once a check has been passed.</p>
       </section>
 
-      <section class="tn-psec" aria-labelledby="sk-h">
+      <section class="tx-psec" aria-labelledby="sk-h">
         <h2 id="sk-h">Skills</h2>
-        <ul class="tn-chips tn-skill-chips">{% for s in p.skills %}<li>{{ s }}</li>{% endfor %}</ul>
+        <ul class="tx-chips">{% for s in p.skills %}<li>{{ s }}</li>{% endfor %}</ul>
       </section>
 
-      <section class="tn-psec" aria-labelledby="as-h">
-        <h2 id="as-h">Assessments</h2>
-        {% if p.assessments %}
-        <div class="tn-assess">
+      <section class="tx-psec" aria-labelledby="as-h">
+        <h2 id="as-h">Assessment results</h2>
+        <div class="tx-assess">
           {% for a in p.assessments %}
-          <div class="tn-score">
-            <div class="tn-score-top"><span>{{ a.name }}</span><span><b>{{ a.score }}</b><small> / 100 · pass {{ a.pass }}</small></span></div>
-            <div class="tn-score-bar" aria-hidden="true"><span style="width: {{ a.score }}%"></span><i style="left: {{ a.pass }}%"></i></div>
+          <div class="tx-score">
+            <div class="tx-score-top"><span>{{ a.name }}</span><span><b>{{ a.score }}</b><small> / 100 · pass {{ a.pass }}</small></span></div>
+            <div class="tx-score-bar" aria-hidden="true"><span style="width: {{ a.score }}%"></span><i style="left: {{ a.pass }}%"></i></div>
           </div>
           {% endfor %}
         </div>
-        {% else %}
-        <p class="tn-empty-line">No assessments completed yet.</p>
-        {% endif %}
       </section>
 
-      <section class="tn-psec" aria-labelledby="pr-h">
-        <h2 id="pr-h">Projects &amp; reviewed work</h2>
-        {% if p.projects %}
-        <div class="tn-items">
+      <section class="tx-psec" aria-labelledby="pr-h">
+        <h2 id="pr-h">Portfolio &amp; projects</h2>
+        <div class="tx-items">
           {% for pr in p.projects %}
-          <div class="tn-item">
-            <div class="tn-item-top"><h3>{{ pr.title }}</h3><span class="tn-item-status{{ ' is-review' if pr.status != 'Reviewed' }}">{{ pr.status }}</span></div>
+          <div class="tx-item">
+            <div class="tx-item-top"><h3>{{ pr.title }}</h3><span class="tx-item-status{{ ' is-review' if pr.status != 'Reviewed' }}">{{ pr.status }}</span></div>
             <p>{{ pr.text }}</p>
           </div>
           {% endfor %}
         </div>
-        {% else %}
-        <p class="tn-empty-line">No projects added yet.</p>
-        {% endif %}
       </section>
 
-      <section class="tn-psec" aria-labelledby="ex-h">
+      <section class="tx-psec" aria-labelledby="ex-h">
         <h2 id="ex-h">Experience</h2>
-        {% if p.experience %}
-        <div class="tn-items">
+        <div class="tx-items">
           {% for e in p.experience %}
-          <div class="tn-item"><div class="tn-item-top"><h3>{{ e.title }}</h3><span class="tn-hint">{{ e.period }}</span></div><p>{{ e.org }}</p></div>
+          <div class="tx-item"><div class="tx-item-top"><h3>{{ e.title }}</h3><span class="tx-hint">{{ e.period }}</span></div><p>{{ e.org }}</p></div>
           {% endfor %}
         </div>
-        {% else %}
-        <p class="tn-empty-line">No prior work experience listed. Assessments and reviewed projects above show current ability.</p>
-        {% endif %}
       </section>
 
-      <section class="tn-psec" aria-labelledby="lg-h">
-        <h2 id="lg-h">Languages &amp; availability</h2>
-        <dl class="tn-facts">
+      <section class="tx-psec" aria-labelledby="pref-h">
+        <h2 id="pref-h">Languages &amp; work preferences</h2>
+        <dl class="tx-facts">
           {% for lang, level in p.languages %}<div><dt>{{ lang }}</dt><dd>{{ level }}</dd></div>{% endfor %}
-          <div><dt>Availability</dt><dd>{{ p.availability_text }}</dd></div>
+          <div><dt>Engagement</dt><dd>{{ p.work_types | join(', ') }}</dd></div>
           <div><dt>Hours</dt><dd>{{ p.hours }}</dd></div>
-          <div><dt>Engagement</dt><dd>{{ p.engagements | join(', ') }}</dd></div>
-          <div><dt>Portfolio</dt><dd>{{ 'Reviewed work attached' if p.portfolio else 'Not added yet' }}</dd></div>
+          <div><dt>Preferences</dt><dd>{{ p.preferences | join(' · ') }}</dd></div>
+          <div><dt>Time zone</dt><dd>{{ p.timezone }}</dd></div>
         </dl>
       </section>
     </article>
 
-    <aside class="tn-aside" aria-label="Request an introduction">
-      <div class="tn-aside-card">
-        <h2>Interested in {{ p.name.split(' ')[0] }}?</h2>
-        <p>Tell us about the work. We'll check fit and availability, then arrange an introduction.</p>
-        <a class="tn-btn tn-btn-primary" href="{{ url_for('talent.request_talent', profile=p.slug) }}">Request introduction</a>
-        <a class="tn-btn tn-btn-ghost" href="{{ url_for('talent.request_talent', category=p.category) }}">Find similar talent</a>
-        <ul class="tn-aside-avail">
+    <aside class="tx-aside" aria-label="Request an introduction">
+      <div class="tx-aside-card">
+        <h2>Need a {{ p.role | lower }}?</h2>
+        <p>Tell us about the work. We'll confirm fit and availability, then arrange an introduction.</p>
+        <a class="tx-btn tx-btn-primary" href="{{ url_for('talent.request_talent', profile=p.slug) }}">Request Introduction</a>
+        <a class="tx-btn tx-btn-ghost" href="{{ url_for('talent.request_talent', category=p.category) }}">Find similar talent</a>
+        <ul class="tx-aside-list">
           <li><span>Availability</span><span>{{ p.availability_text }}</span></li>
+          <li><span>Location</span><span>{{ p.country }}</span></li>
           <li><span>Time zone</span><span>{{ p.timezone }}</span></li>
           <li><span>Hours</span><span>{{ p.hours }}</span></li>
         </ul>
       </div>
-      <div class="tn-aside-card">
-        <div class="tn-complete-top"><span>Profile completeness</span><b>{{ p.completeness }}%</b></div>
-        <div class="tn-complete-bar" role="progressbar" aria-valuenow="{{ p.completeness }}" aria-valuemin="0" aria-valuemax="100" aria-label="Profile completeness"><span style="width: {{ p.completeness }}%"></span></div>
+      <div class="tx-aside-card">
+        <div class="tx-complete-row"><span>Profile completion</span><b>{{ p.completeness }}%</b></div>
+        <div class="tx-complete-big" role="progressbar" aria-valuenow="{{ p.completeness }}" aria-valuemin="0" aria-valuemax="100" aria-label="Profile completion"><span style="width: {{ p.completeness }}%"></span></div>
+        <div style="margin-top: 18px">{{ badge_list(p, tn) }}</div>
       </div>
     </aside>
   </div>
 </div>
 
 {% if related %}
-<section class="tn-related" aria-labelledby="rel-h">
-  <div class="tn-wrap">
-    <h2 id="rel-h">More {{ 'sample ' if p.is_sample }}profiles</h2>
-    <div class="tn-card-grid">{% for r in related %}{{ talent_card(r, tn) }}{% endfor %}</div>
+<section class="tx-related" aria-labelledby="rel-h">
+  <div class="tx-wrap">
+    <h2 id="rel-h">More profile previews</h2>
+    <div class="tx-card-grid">{% for r in related %}{{ profile_card(r, tn) }}{% endfor %}</div>
   </div>
 </section>
 {% endif %}
 
-<div class="tn-profile-mobile-cta">
-  <a class="tn-btn tn-btn-primary" href="{{ url_for('talent.request_talent', profile=p.slug) }}">Request introduction</a>
+<div class="tx-profile-mobile-cta">
+  <a class="tx-btn tx-btn-primary" href="{{ url_for('talent.request_talent', profile=p.slug) }}">Request Introduction</a>
+  <a class="tx-btn tx-btn-ghost tx-btn-wa" href="{{ whatsapp_url }}" target="_blank" rel="noopener" aria-label="WhatsApp"><i class="ri-whatsapp-line"></i></a>
 </div>
 {% endblock %}

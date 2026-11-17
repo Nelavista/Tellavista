@@ -1,43 +1,43 @@
 {# One opportunity card. Needs: o (StudentOpportunity), st (user_state dict for o or {}),
-   ui (helpers from routes/student_opportunities_routes.py::_ui). Optional: from_section. #}
+   ui (helpers from routes/opportunities_discover_routes.py::_ui). Optional: from_section.
+   The whole card is one link (the title's ::after covers it); Save sits above that layer.
+   Everything a student needs to decide whether to open it: what it is, who runs it,
+   who can apply, and when it closes. No per-card "Verified"/"Featured" badges: every
+   listed programme is verified (the page says so once), and featured only affects order. #}
 {% set status = ui.status(o) %}
 {% set detail_url = url_for('opportunities.discover_detail', slug=o.slug) ~ ('?from=' ~ from_section if from_section else '') %}
-<article class="opp-card" data-opp-id="{{ o.id }}">
+<article class="opp-card{{ ' is-closed' if status.key == 'closed' }}" data-opp-id="{{ o.id }}">
   <div class="opp-card-top">
-    <div class="opp-org-mark" aria-hidden="true"><i class="{{ ui.category_icons.get(o.category, 'ri-star-line') }}"></i></div>
+    <span class="opp-mono" aria-hidden="true">{{ ui.initials(o.organization) }}</span>
     <div class="opp-card-head">
-      <a class="opp-card-title" href="{{ detail_url }}">{{ o.title }}</a>
-      <div class="opp-card-org">{{ o.organization }}{% if o.is_verified %} <span class="opp-verified" title="Checked against the official source{% if o.last_checked_at %} on {{ o.last_checked_at.strftime('%b %d, %Y') }}{% endif %}"><i class="ri-checkbox-circle-fill"></i>Verified</span>{% endif %}</div>
+      <p class="opp-card-kicker">{{ ui.category_singular.get(o.category, 'Opportunity') }}{% if ui.is_new(o) and status.key in ('open', 'closing_soon') %}<span class="opp-new">New</span>{% endif %}</p>
+      <h3 class="opp-card-title"><a class="opp-card-link" href="{{ detail_url }}">{{ o.title }}</a></h3>
+      <p class="opp-card-org">{{ o.organization }}</p>
     </div>
-    <button type="button" class="opp-icon-btn opp-save{{ ' saved' if st.get('saved') }}" data-opp-save="{{ o.id }}"
-            aria-pressed="{{ 'true' if st.get('saved') else 'false' }}" aria-label="{{ 'Unsave' if st.get('saved') else 'Save' }} {{ o.title }}">
-      <i class="{{ 'ri-heart-fill' if st.get('saved') else 'ri-heart-line' }}"></i>
+    <button type="button" class="opp-save-btn opp-save{{ ' saved' if st.get('saved') }}" data-opp-save="{{ o.id }}"
+            aria-pressed="{{ 'true' if st.get('saved') else 'false' }}" aria-label="Save {{ o.title }}" title="{{ 'Saved' if st.get('saved') else 'Save' }}">
+      <i class="{{ 'ri-bookmark-fill' if st.get('saved') else 'ri-bookmark-line' }}" aria-hidden="true"></i>
     </button>
   </div>
 
-  <div class="opp-status-row">
-    <span class="opp-status {{ status.tone }}"><span class="opp-dot"></span>{{ status.label }}</span>
-    {% if o.featured %}<span class="opp-pill featured"><i class="ri-star-fill"></i>Featured</span>{% endif %}
-    {% if st.get('applied_at') %}<span class="opp-pill applied"><i class="ri-check-line"></i>Applied</span>{% endif %}
-  </div>
-
-  <dl class="opp-facts">
-    <div><dt>Type</dt><dd>{{ ui.category_singular.get(o.category, 'Opportunity') }}</dd></div>
-    <div><dt>Eligible</dt><dd>{{ o.eligible_summary or 'University students' }}</dd></div>
-    {% if o.disciplines %}
-    <div><dt>Fields</dt><dd>{% if 'all' in o.disciplines %}All disciplines{% else %}{% for d in o.disciplines[:4] %}{{ ui.discipline_labels.get(d, d) }}{{ ' · ' if not loop.last }}{% endfor %}{% if o.disciplines|length > 4 %} +{{ o.disciplines|length - 4 }}{% endif %}{% endif %}</dd></div>
-    {% endif %}
-    <div><dt>Deadline</dt><dd>{{ ui.deadline(o) }}</dd></div>
-  </dl>
+  <p class="opp-card-eligible"><span class="opp-k">Who</span>{{ o.eligible_summary or 'University students' }}{% if o.disciplines %}{% if 'all' in o.disciplines %} · Any course{% else %} · {% for d in o.disciplines[:3] %}{{ ui.discipline_labels.get(d, d) }}{{ ', ' if not loop.last }}{% endfor %}{% if o.disciplines|length > 3 %} +{{ o.disciplines|length - 3 }}{% endif %}{% endif %}{% endif %}</p>
 
   {% if o.summary %}<p class="opp-card-desc">{{ o.summary }}</p>{% endif %}
 
-  <div class="opp-card-actions">
-    <a href="{{ detail_url }}" class="sk-btn small">View Opportunity</a>
-    <button type="button" class="opp-icon-btn" data-opp-share="{{ o.id }}" data-share-title="{{ o.title }}"
-            data-share-org="{{ o.organization }}" data-share-deadline="{{ ui.deadline(o) }}"
-            data-share-url="{{ url_for('opportunities.discover_detail', slug=o.slug, _external=True) }}" aria-label="Share {{ o.title }}">
-      <i class="ri-share-forward-line"></i>
-    </button>
+  <div class="opp-card-foot">
+    {% if status.key == 'closing_soon' %}
+      <span class="opp-when soon">{{ status.label }}<span class="opp-when-date"> · {{ ui.short_date(o.deadline) }}</span></span>
+    {% elif status.key == 'upcoming' %}
+      <span class="opp-when upcoming">{{ status.label }}</span>
+    {% elif status.key == 'closed' %}
+      <span class="opp-when closed">Closed{% if o.deadline %}<span class="opp-when-date"> · {{ ui.short_date(o.deadline) }}</span>{% endif %}</span>
+    {% elif o.deadline %}
+      <span class="opp-when">Closes {{ ui.short_date(o.deadline) }}</span>
+    {% elif o.is_rolling %}
+      <span class="opp-when">No closing date</span>
+    {% else %}
+      <span class="opp-when muted">Deadline not stated</span>
+    {% endif %}
+    {% if st.get('applied_at') %}<span class="opp-applied-tag"><i class="ri-check-line" aria-hidden="true"></i>Applied</span>{% endif %}
   </div>
 </article>

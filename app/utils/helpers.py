@@ -115,3 +115,17 @@ def is_academic_book(title, topic, department):
     if any(bad in title_lower for bad in fiction_keywords):
         return False
     return any(good in title_lower for good in academic_keywords)
+
+_INITIALS_SKIP = {'the', 'of', 'and', 'for', 'in', 'at', '&', 'a', 'an'}
+
+
+def org_initials(name):
+    """'Example Federal Institute of...' -> 'EF'. The text fallback shown where an
+    organisation logo would go, since most listings have no logo we're allowed to use."""
+    words = [w for w in ''.join(c if c.isalnum() or c.isspace() else ' ' for c in (name or '')).split()
+             if w.lower() not in _INITIALS_SKIP]
+    if not words:
+        return '?'
+    if len(words) == 1:
+        return words[0][:2].upper()
+    return (words[0][0] + words[1][0]).upper()

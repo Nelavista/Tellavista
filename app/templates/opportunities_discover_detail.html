@@ -18,56 +18,94 @@
 {% include 'components/opportunities_sidebar.html' %}
 
   <div class="sk-view opp-view opp-detail" data-opp-id="{{ opp.id }}" data-opp-slug="{{ opp.slug }}">
-    <a href="{{ url_for('opportunities.discover') }}" class="opp-back"><i class="ri-arrow-left-line"></i> Scholarships &amp; programmes</a>
+    <a href="{{ url_for('opportunities.discover') }}" class="opp-back"><i class="ri-arrow-left-line" aria-hidden="true"></i> Scholarships &amp; programmes</a>
 
     {% if not opp.is_published or not opp.is_verified or opp.is_archived %}
-    <div class="opp-admin-banner"><i class="ri-eye-off-line"></i> Admin preview. Students can't see this listing
+    <div class="opp-admin-banner"><i class="ri-eye-off-line" aria-hidden="true"></i> Admin preview. Students can't see this listing
       ({% if opp.is_archived %}archived{% elif not opp.is_verified %}not verified{% else %}not published{% endif %}).
       <a href="{{ url_for('admin_skills.admin_student_opportunity_edit', opportunity_id=opp.id) }}">Edit</a></div>
     {% endif %}
 
     <header class="opp-detail-head">
-      <div class="opp-org-mark lg" aria-hidden="true"><i class="{{ ui.category_icons.get(opp.category, 'ri-star-line') }}"></i></div>
-      <div>
-        <div class="opp-detail-type">{{ ui.category_singular.get(opp.category, 'Opportunity') }}</div>
-        <h1 class="sk-h1 opp-detail-title">{{ opp.title }}</h1>
-        <div class="opp-detail-org">
-          {% if opp.official_website %}<a href="{{ opp.official_website }}" target="_blank" rel="noopener noreferrer">{{ opp.organization }} <i class="ri-external-link-line"></i></a>{% else %}{{ opp.organization }}{% endif %}
-        </div>
+      <span class="opp-mono lg" aria-hidden="true">{{ ui.initials(opp.organization) }}</span>
+      <div class="opp-detail-headtext">
+        <p class="opp-card-kicker">{{ ui.category_singular.get(opp.category, 'Opportunity') }}{% if opp.is_partner %}<span class="opp-new">Nelavista partner</span>{% endif %}</p>
+        <h1 class="opp-detail-title">{{ opp.title }}</h1>
+        <p class="opp-detail-org">
+          {% if opp.official_website %}<a href="{{ opp.official_website }}" target="_blank" rel="noopener noreferrer">{{ opp.organization }}<span class="sr-only"> (opens in a new tab)</span></a>{% else %}{{ opp.organization }}{% endif %}
+        </p>
       </div>
     </header>
 
-    <div class="opp-status-row lg">
-      <span class="opp-status {{ status.tone }} lg"><span class="opp-dot"></span>{{ status.label|upper if status.key == 'open' else status.label }}</span>
-      {% if opp.is_verified %}
-      <span class="opp-verified lg" title="Checked against {{ opp.source_url }}"><i class="ri-shield-check-fill"></i>Verified by Nelavista{% if opp.last_checked_at %} · checked {{ opp.last_checked_at.strftime('%b') }} {{ opp.last_checked_at.day }}{% endif %}</span>
-      {% endif %}
-      {% if opp.is_partner %}<span class="opp-pill partner"><i class="ri-hand-heart-line"></i>Nelavista partner</span>{% endif %}
-      {% if opp.featured %}<span class="opp-pill featured"><i class="ri-star-fill"></i>Featured</span>{% endif %}
-    </div>
-
     <div class="opp-detail-layout">
-      <div class="opp-detail-main">
-        <div class="opp-keyfacts">
-          <div><span class="opp-kf-label">Deadline</span><span class="opp-kf-value">{{ ui.deadline(opp) }}</span>{% if opp.deadline_note %}<span class="opp-kf-sub">{{ opp.deadline_note }}</span>{% endif %}</div>
-          {% if opp.opens_at %}<div><span class="opp-kf-label">Opens</span><span class="opp-kf-value">{{ opp.opens_at.strftime('%B') }} {{ opp.opens_at.day }}, {{ opp.opens_at.year }}</span></div>{% endif %}
-          <div><span class="opp-kf-label">Eligible</span><span class="opp-kf-value">{{ opp.eligible_summary or 'University students' }}</span></div>
-          <div><span class="opp-kf-label">Where</span><span class="opp-kf-value">{{ opp.location or ui.location_labels.get(opp.location_scope, '') }}{% if opp.delivery_format %} · {{ {'online': 'Online', 'in_person': 'In person', 'hybrid': 'Hybrid'}[opp.delivery_format] }}{% endif %}</span></div>
-          {% if opp.disciplines %}<div><span class="opp-kf-label">Fields</span><span class="opp-kf-value">{% if 'all' in opp.disciplines %}All disciplines{% else %}{% for d in opp.disciplines %}{{ ui.discipline_labels.get(d, d) }}{{ ' · ' if not loop.last }}{% endfor %}{% endif %}</span></div>{% endif %}
-          {% if opp.levels %}<div><span class="opp-kf-label">Levels</span><span class="opp-kf-value">{% for lv in opp.levels %}{{ ui.level_labels.get(lv, lv) }}{{ ' · ' if not loop.last }}{% endfor %}</span></div>{% endif %}
+      <aside class="opp-apply-card" aria-label="Apply">
+        <div class="opp-apply-deadline">
+          <span class="opp-apply-label">{{ 'Opens' if status.key == 'upcoming' else 'Deadline' }}</span>
+          <span class="opp-apply-date">{% if status.key == 'upcoming' %}{{ opp.opens_at.strftime('%B') }} {{ opp.opens_at.day }}, {{ opp.opens_at.year }}{% else %}{{ ui.deadline(opp) }}{% endif %}</span>
+          {% if status.key != 'open' %}<span class="opp-when {{ status.tone }}">{{ status.label }}</span>
+          {% elif status.days_left is not none %}<span class="opp-when">{{ status.days_left }} days left</span>{% endif %}
         </div>
+
+        {% if status.key in ('open', 'closing_soon') %}
+          {% if mode == 'EMBEDDED_FORM' %}
+            <a href="#apply-form" class="sk-btn full opp-apply-btn">Apply now</a>
+          {% elif opp.application_url %}
+            {% if opp.allows_in_app_view %}
+            <a href="{{ url_for('opportunities.discover_apply', slug=opp.slug) }}" class="sk-btn full opp-apply-btn" data-opp-apply>Apply now</a>
+            {% else %}
+            <a href="{{ url_for('opportunities.discover_apply', slug=opp.slug, go=1) }}" target="_blank" rel="noopener" class="sk-btn full opp-apply-btn" data-opp-apply>Apply now <i class="ri-arrow-right-up-line" aria-hidden="true"></i><span class="sr-only"> (opens {{ opp.organization }}'s site in a new tab)</span></a>
+            {% endif %}
+          {% endif %}
+          <p class="opp-apply-hint">You apply on {{ opp.organization }}'s own application. Come back and mark it when you're done.</p>
+        {% elif status.key == 'upcoming' %}
+          <button class="sk-btn full opp-apply-btn" disabled>Not open yet</button>
+          <p class="opp-apply-hint">Save it and it stays in My opportunities until it opens.</p>
+        {% else %}
+          <button class="sk-btn full opp-apply-btn" disabled>Applications closed</button>
+        {% endif %}
+
+        <div class="opp-apply-row">
+          <div class="opp-applied-box{{ ' is-applied' if state.applied_at }}" data-opp-applied-box>
+            <div class="opp-applied-yes">
+              <i class="ri-check-line" aria-hidden="true"></i>
+              <span data-opp-applied-label>{% if state.applied_at %}Applied {{ state.applied_at.strftime('%b') }} {{ state.applied_at.day }}{% else %}Applied{% endif %}</span>
+              <button type="button" class="opp-link-btn" data-opp-applied="0">Undo</button>
+            </div>
+            <div class="opp-applied-no">
+              <button type="button" class="sk-btn secondary small" data-opp-applied="1" title="Only you see this. Nelavista can't see whether {{ opp.organization }} received your application.">I applied</button>
+            </div>
+          </div>
+          <button type="button" class="sk-btn ghost small opp-save{{ ' saved' if state.saved }}" data-opp-save="{{ opp.id }}" aria-pressed="{{ 'true' if state.saved else 'false' }}">
+            <i class="{{ 'ri-bookmark-fill' if state.saved else 'ri-bookmark-line' }}" aria-hidden="true"></i><span data-save-label>{{ 'Saved' if state.saved else 'Save' }}</span>
+          </button>
+          <button type="button" class="sk-btn ghost small opp-share-btn" data-opp-share="{{ opp.id }}" data-share-title="{{ opp.title }}"
+                  data-share-org="{{ opp.organization }}" data-share-deadline="{{ ui.deadline(opp) }}" data-share-url="{{ share_url }}" aria-label="Share">
+            <i class="ri-share-forward-line" aria-hidden="true"></i><span>Share</span>
+          </button>
+        </div>
+      </aside>
+
+      <div class="opp-detail-main">
+        <dl class="opp-keyfacts">
+          <div><dt>Who can apply</dt><dd>{{ opp.eligible_summary or 'University students' }}</dd></div>
+          {% if opp.disciplines %}<div><dt>Courses</dt><dd>{% if 'all' in opp.disciplines %}Any course{% else %}{% for d in opp.disciplines %}{{ ui.discipline_labels.get(d, d) }}{{ ', ' if not loop.last }}{% endfor %}{% endif %}</dd></div>{% endif %}
+          {% if opp.levels %}<div><dt>Levels</dt><dd>{% for lv in opp.levels %}{{ ui.level_labels.get(lv, lv) }}{{ ', ' if not loop.last }}{% endfor %}</dd></div>{% endif %}
+          {% set where = opp.location or ui.location_labels.get(opp.location_scope, '') %}
+          {% if where or opp.delivery_format %}<div><dt>Where</dt><dd>{{ where }}{% if opp.delivery_format %}{{ ' · ' if where }}{{ {'online': 'Online', 'in_person': 'In person', 'hybrid': 'Hybrid'}[opp.delivery_format] }}{% endif %}</dd></div>{% endif %}
+          {% if opp.deadline_note %}<div><dt>Deadline note</dt><dd>{{ opp.deadline_note }}</dd></div>{% endif %}
+        </dl>
 
         {% if opp.description %}
         <section class="opp-block"><h2>Overview</h2><div class="opp-prose">{{ opp.description }}</div></section>
         {% endif %}
         {% if opp.eligibility %}
-        <section class="opp-block"><h2>Who can apply</h2><div class="opp-prose">{{ opp.eligibility }}</div></section>
+        <section class="opp-block"><h2>Eligibility</h2><div class="opp-prose">{{ opp.eligibility }}</div></section>
         {% endif %}
         {% if opp.benefits %}
         <section class="opp-block"><h2>What you get</h2><div class="opp-prose">{{ opp.benefits }}</div></section>
         {% endif %}
         {% if opp.requirements %}
-        <section class="opp-block"><h2>Requirements</h2><div class="opp-prose">{{ opp.requirements }}</div></section>
+        <section class="opp-block"><h2>What you'll need</h2><div class="opp-prose">{{ opp.requirements }}</div></section>
         {% endif %}
         {% if opp.steps_list %}
         <section class="opp-block"><h2>How to apply</h2>
@@ -79,72 +117,25 @@
         <section class="opp-block" id="apply-form"><h2>Application form</h2>
           <p class="opp-muted">This is {{ opp.organization }}'s own form, embedded here. Your answers go straight to them.</p>
           <div class="opp-embed"><iframe src="{{ opp.embed_url }}" title="{{ opp.organization }} application form" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe></div>
-          {% if opp.application_url %}<p class="opp-muted"><a href="{{ opp.application_url }}" target="_blank" rel="noopener">Form not loading? Open it on {{ opp.organization }}'s site <i class="ri-external-link-line"></i></a></p>{% endif %}
+          {% if opp.application_url %}<p class="opp-muted"><a href="{{ opp.application_url }}" target="_blank" rel="noopener">Form not loading? Open it on {{ opp.organization }}'s site</a></p>{% endif %}
         </section>
         {% endif %}
 
         <section class="opp-block opp-source">
           <h2>Source</h2>
           <p class="opp-muted">
-            {% if opp.is_verified %}Nelavista checked this listing against the official source{% if opp.verified_at %} on {{ opp.verified_at.strftime('%B') }} {{ opp.verified_at.day }}, {{ opp.verified_at.year }}{% endif %}{% if opp.last_checked_at and opp.verified_at and opp.last_checked_at.date() != opp.verified_at.date() %}, last re-checked {{ opp.last_checked_at.strftime('%b') }} {{ opp.last_checked_at.day }}{% endif %}.{% endif %}
-            {% if opp.source_url %}<a href="{{ opp.source_url }}" target="_blank" rel="noopener noreferrer">View the official announcement <i class="ri-external-link-line"></i></a>{% endif %}
+            {% if opp.is_verified %}Verified by Nelavista against the official source{% if opp.verified_at %} on {{ opp.verified_at.strftime('%B') }} {{ opp.verified_at.day }}, {{ opp.verified_at.year }}{% endif %}{% if opp.last_checked_at and opp.verified_at and opp.last_checked_at.date() != opp.verified_at.date() %}, last re-checked {{ opp.last_checked_at.strftime('%b') }} {{ opp.last_checked_at.day }}{% endif %}.{% endif %}
+            {% if opp.source_url %}<a href="{{ opp.source_url }}" target="_blank" rel="noopener noreferrer">Official announcement</a>{% endif %}
           </p>
-          {% if not opp.is_partner %}<p class="opp-muted">Nelavista isn't affiliated with {{ opp.organization }}. Selection decisions are theirs alone. Always confirm details on the official page.</p>{% endif %}
-          <button type="button" class="opp-link-btn" data-opp-report-open><i class="ri-flag-line"></i> Report this opportunity</button>
+          {% if not opp.is_partner %}<p class="opp-muted">Nelavista isn't affiliated with {{ opp.organization }}, and selection decisions are theirs alone. Confirm the details on the official page before you apply.</p>{% endif %}
+          <button type="button" class="opp-link-btn" data-opp-report-open>Report a problem with this listing</button>
         </section>
       </div>
-
-      <aside class="opp-apply-card" aria-label="Apply">
-        <div class="opp-apply-deadline">
-          <span class="opp-status {{ status.tone }}"><span class="opp-dot"></span>{{ status.label }}</span>
-          <span class="opp-apply-date">{{ ui.deadline(opp) }}</span>
-        </div>
-
-        {% if status.key in ('open', 'closing_soon') %}
-          {% if mode == 'EMBEDDED_FORM' %}
-            <a href="#apply-form" class="sk-btn full opp-apply-btn">APPLY NOW</a>
-          {% elif opp.application_url %}
-            {% if opp.allows_in_app_view %}
-            <a href="{{ url_for('opportunities.discover_apply', slug=opp.slug) }}" class="sk-btn full opp-apply-btn" data-opp-apply>APPLY NOW</a>
-            {% else %}
-            <a href="{{ url_for('opportunities.discover_apply', slug=opp.slug, go=1) }}" target="_blank" rel="noopener" class="sk-btn full opp-apply-btn" data-opp-apply>APPLY NOW <i class="ri-external-link-line"></i></a>
-            {% endif %}
-          {% endif %}
-          <p class="opp-apply-hint">You'll apply on {{ opp.organization }}'s official application. Come back here when you're done.</p>
-        {% elif status.key == 'upcoming' %}
-          <button class="sk-btn full" disabled>Opens {{ opp.opens_at.strftime('%b') }} {{ opp.opens_at.day }}</button>
-          <p class="opp-apply-hint">Save it and we'll keep it in My Opportunities for when it opens.</p>
-        {% else %}
-          <button class="sk-btn full" disabled>Applications closed</button>
-        {% endif %}
-
-        <div class="opp-applied-box{{ ' is-applied' if state.applied_at }}" data-opp-applied-box>
-          <div class="opp-applied-yes">
-            <i class="ri-checkbox-circle-fill"></i>
-            <div><strong>Applied</strong><span data-opp-applied-label>{% if state.applied_at %}Applied {{ state.applied_at.strftime('%b') }} {{ state.applied_at.day }}, {{ state.applied_at.year }}{% endif %}</span></div>
-            <button type="button" class="opp-link-btn" data-opp-applied="0">Undo</button>
-          </div>
-          <div class="opp-applied-no">
-            <button type="button" class="sk-btn secondary full" data-opp-applied="1"><i class="ri-check-line"></i> I Applied</button>
-            <span class="opp-apply-hint">Only you see this. It's your own record; Nelavista can't see whether {{ opp.organization }} received your application.</span>
-          </div>
-        </div>
-
-        <div class="opp-apply-actions">
-          <button type="button" class="sk-btn ghost small opp-save{{ ' saved' if state.saved }}" data-opp-save="{{ opp.id }}" aria-pressed="{{ 'true' if state.saved else 'false' }}">
-            <i class="{{ 'ri-heart-fill' if state.saved else 'ri-heart-line' }}"></i><span data-save-label>{{ 'Saved' if state.saved else 'Save' }}</span>
-          </button>
-          <button type="button" class="sk-btn ghost small" data-opp-share="{{ opp.id }}" data-share-title="{{ opp.title }}"
-                  data-share-org="{{ opp.organization }}" data-share-deadline="{{ ui.deadline(opp) }}" data-share-url="{{ share_url }}">
-            <i class="ri-share-forward-line"></i>Share
-          </button>
-        </div>
-      </aside>
     </div>
 
     {% if related %}
-    <section class="opp-section" aria-label="Similar opportunities">
-      <div class="sk-section-title opp-section-title"><span>You might also like</span></div>
+    <section class="opp-section" aria-labelledby="sec-related">
+      <div class="opp-section-head"><h2 id="sec-related">Similar opportunities</h2></div>
       <div class="opp-grid">
         {% for o in related %}{% with st = related_state.get(o.id, {}), from_section = 'related' %}{% include 'components/opportunity_card.html' %}{% endwith %}{% endfor %}
       </div>
@@ -155,10 +146,10 @@
   <!-- Shown when the student comes back from the official application. -->
   <div class="opp-sheet" id="opp-return-sheet" hidden role="dialog" aria-modal="true" aria-labelledby="opp-return-title">
     <div class="opp-sheet-card">
-      <h3 id="opp-return-title">Welcome back! Did you finish applying?</h3>
-      <p class="opp-muted">Mark it so it shows under My Opportunities → Applied.</p>
+      <h3 id="opp-return-title">Did you finish applying?</h3>
+      <p class="opp-muted">Mark it and it moves to My opportunities → Applied, so you can keep track.</p>
       <div class="opp-sheet-actions">
-        <button type="button" class="sk-btn" data-opp-applied="1" data-close-sheet><i class="ri-check-line"></i> Yes, I applied</button>
+        <button type="button" class="sk-btn" data-opp-applied="1" data-close-sheet>Yes, I applied</button>
         <button type="button" class="sk-btn ghost" data-close-sheet>Not yet</button>
       </div>
     </div>
@@ -167,14 +158,14 @@
   <div class="opp-sheet" id="opp-report-sheet" hidden role="dialog" aria-modal="true" aria-labelledby="opp-report-title">
     <form class="opp-sheet-card" method="POST" action="{{ url_for('opportunities.discover_report', opportunity_id=opp.id) }}" data-opp-report-form>
       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-      <h3 id="opp-report-title">Report this opportunity</h3>
-      <div class="opp-radio-list">
+      <h3 id="opp-report-title">Report a problem</h3>
+      <fieldset class="opp-radio-list"><legend class="sr-only">What's wrong?</legend>
         {% for k, label in report_reasons %}
         <label class="opp-radio"><input type="radio" name="reason" value="{{ k }}"{{ ' checked' if loop.first }}> {{ label }}</label>
         {% endfor %}
-      </div>
+      </fieldset>
       <label class="sk-label" for="opp-report-details">Details (optional)</label>
-      <textarea id="opp-report-details" name="details" class="sk-textarea" rows="3" maxlength="1000" placeholder="What's wrong?"></textarea>
+      <textarea id="opp-report-details" name="details" class="sk-textarea" rows="3" maxlength="1000"></textarea>
       <div class="opp-sheet-actions">
         <button type="submit" class="sk-btn">Send report</button>
         <button type="button" class="sk-btn ghost" data-close-sheet>Cancel</button>

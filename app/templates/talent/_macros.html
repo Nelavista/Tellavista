@@ -1,0 +1,44 @@
+{% macro avatar(p, size='md') -%}
+  {%- if p.photo %}
+  <img class="tn-avatar tn-avatar-{{ size }}" src="{{ p.photo }}" alt="" loading="lazy" decoding="async">
+  {%- else %}
+  <span class="tn-avatar tn-avatar-{{ size }} tn-tone-{{ p.tone or 'blue' }}" aria-hidden="true">{{ p.initials }}</span>
+  {%- endif %}
+{%- endmacro %}
+
+{% macro availability(p) -%}
+  <span class="tn-avail tn-avail-{{ p.availability }}"><span class="tn-dot" aria-hidden="true"></span>{{ p.availability_text }}</span>
+{%- endmacro %}
+
+{% macro talent_card(p, tn) -%}
+  {% set checks = tn.verified_count(p) %}
+  <article class="tn-card" data-category="{{ p.category }}">
+    <div class="tn-card-top">
+      {{ avatar(p) }}
+      {{ availability(p) }}
+    </div>
+    <h3 class="tn-card-name"><a href="{{ url_for('talent.profile', slug=p.slug) }}" class="tn-stretch">{{ p.name }}</a></h3>
+    <p class="tn-card-role">{{ p.role }}</p>
+    <p class="tn-card-meta"><i class="ri-map-pin-line" aria-hidden="true"></i>{{ p.location }}<span aria-hidden="true">·</span>{{ p.level }}</p>
+    <ul class="tn-chips" aria-label="Key skills">
+      {% for s in p.skills[:3] %}<li>{{ s }}</li>{% endfor %}
+      {% if p.skills|length > 3 %}<li class="tn-chip-more">+{{ p.skills|length - 3 }}</li>{% endif %}
+    </ul>
+    <div class="tn-card-evidence">
+      {% if p.checks.skills == 'verified' %}<span class="tn-badge tn-badge-assessed"><i class="ri-checkbox-circle-fill" aria-hidden="true"></i>Assessed</span>{% endif %}
+      <span class="tn-checks" title="{{ checks }} of {{ p.checks|length }} verification checks complete">
+        <span class="tn-checks-bar" aria-hidden="true">{% for k, v in p.checks.items() %}<span class="is-{{ v }}"></span>{% endfor %}</span>
+        {{ checks }}/{{ p.checks|length }} checks
+      </span>
+      {% if p.portfolio %}<span class="tn-card-portfolio" title="Has reviewed portfolio work"><i class="ri-folder-open-line" aria-hidden="true"></i><span class="tn-sr">Portfolio</span></span>{% endif %}
+    </div>
+    <div class="tn-card-foot">
+      <span>{{ p.hours }}</span>
+      <span class="tn-card-cta" aria-hidden="true">View profile <i class="ri-arrow-right-line"></i></span>
+    </div>
+  </article>
+{%- endmacro %}
+
+{% macro status_pill(status, tn) -%}
+  <span class="tn-status tn-status-{{ status }}">{{ tn.STATUS_LABELS[status] }}</span>
+{%- endmacro %}

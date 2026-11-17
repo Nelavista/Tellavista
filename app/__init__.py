@@ -61,6 +61,7 @@ from app.routes.skills_routes import skills_bp
 from app.routes.opportunities_routes import opportunities_bp
 from app.routes.admin_skills_routes import admin_skills_bp
 from app.routes.employer_routes import employer_bp
+from app.routes.talent_routes import talent_bp
 
 # Import socketio events to register handlers
 from . import events
@@ -313,6 +314,7 @@ def create_app():
     app.register_blueprint(opportunities_bp, url_prefix='/')
     app.register_blueprint(admin_skills_bp, url_prefix='/')
     app.register_blueprint(employer_bp, url_prefix='/')
+    app.register_blueprint(talent_bp, url_prefix='/')
 
     # External gig providers: `flask gigs-sync` / `flask gigs-seed-providers`, plus the
     # opt-in in-process scheduler (GIG_SYNC_ENABLED=1). See services/gigs/sync.py.

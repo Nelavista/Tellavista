@@ -1,0 +1,367 @@
+{% extends 'talent/base.html' %}
+{% from 'talent/_macros.html' import talent_card, avatar, availability, status_pill %}
+{% block canonical %}{{ url_for('talent.home', _external=True) }}{% endblock %}
+{% block head_extra %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Organization","name":"Nelavista Talent","url":"{{ url_for('talent.home', _external=True) }}","logo":"{{ url_for('static', filename='icons/nelavista-512x512.png', _external=True) }}","parentOrganization":{"@type":"Organization","name":"Nelavista","url":"{{ request.host_url }}"},"description":"Trained and assessed African talent for remote work, outsourcing and project-based teams."}
+</script>
+{% endblock %}
+
+{% block content %}
+{% set shortlist = [tn.SAMPLE_BY_SLUG['sample-adebayo-o'], tn.SAMPLE_BY_SLUG['sample-wanjiru-k'], tn.SAMPLE_BY_SLUG['sample-amara-n']] %}
+
+{# ── 1. Hero ───────────────────────────────────────────────────────────── #}
+<section class="tn-hero" aria-labelledby="hero-title" data-tn-hero>
+  <div class="tn-wrap tn-hero-grid">
+    <div class="tn-hero-copy">
+      <p class="tn-eyebrow">Nelavista Talent</p>
+      <h1 id="hero-title">Hire skilled African talent, without the hiring headache.</h1>
+      <p class="tn-lede">Trained, assessed and work-ready people for remote teams, outsourcing and project-based work. Tell us what you need. We find the people and show you the evidence.</p>
+      <div class="tn-cta-row">
+        <a class="tn-btn tn-btn-primary tn-btn-lg" href="{{ url_for('talent.request_talent') }}">Request Talent <i class="ri-arrow-right-line" aria-hidden="true"></i></a>
+        <a class="tn-btn tn-btn-ghost tn-btn-lg" href="#talent">Explore Talent</a>
+      </div>
+      <ul class="tn-hero-points">
+        <li><i class="ri-check-line" aria-hidden="true"></i>A short, curated shortlist, not a pile of applications</li>
+        <li><i class="ri-check-line" aria-hidden="true"></i>Assessment results and reviewed work on every profile</li>
+        <li><i class="ri-check-line" aria-hidden="true"></i>No account needed to send a request</li>
+      </ul>
+    </div>
+
+    <figure class="tn-shortlist" aria-label="Example of a Nelavista shortlist, using sample profiles">
+      <div class="tn-shortlist-head">
+        <span class="tn-shortlist-label">Brief</span>
+        <p class="tn-shortlist-title">Customer support team</p>
+        <ul class="tn-shortlist-meta">
+          <li>3 people</li><li>Contract</li><li>Start in 2 weeks</li><li>WAT overlap</li>
+        </ul>
+      </div>
+      <div class="tn-shortlist-sub"><span>Shortlist</span><span>Ranked by fit</span></div>
+      <ol class="tn-shortlist-list">
+        {% for p in shortlist %}
+        {% set top = p.assessments[0] if p.assessments else none %}
+        <li>
+          {{ avatar(p, 'sm') }}
+          <div class="tn-sl-who">
+            <strong>{{ p.name }}</strong>
+            <span>{{ p.role }} · {{ p.location.split(', ')[-1] }}</span>
+          </div>
+          <div class="tn-sl-evidence">
+            {% if top %}<span class="tn-sl-score"><b>{{ top.score }}</b>/100</span>{% endif %}
+            <span class="tn-checks-bar" aria-label="{{ tn.verified_count(p) }} of 4 checks">{% for k, v in p.checks.items() %}<span class="is-{{ v }}"></span>{% endfor %}</span>
+          </div>
+        </li>
+        {% endfor %}
+      </ol>
+      <figcaption class="tn-shortlist-foot"><i class="ri-information-line" aria-hidden="true"></i>Illustration with sample profiles</figcaption>
+    </figure>
+  </div>
+</section>
+
+{# ── 2. Figures ────────────────────────────────────────────────────────── #}
+<section class="tn-figures" aria-label="Nelavista in numbers">
+  <div class="tn-wrap">
+    <dl class="tn-figures-grid">
+      {% for f in figures %}
+      <div class="tn-figure">
+        <dt>{{ f.label }}</dt>
+        <dd>{{ f.value }}</dd>
+      </div>
+      {% endfor %}
+    </dl>
+    <p class="tn-figures-note">Verified or counted live from our platform. We will publish talent-assessed and placement figures once they are counted, not before.</p>
+  </div>
+</section>
+
+{# ── 3. Talent discovery ───────────────────────────────────────────────── #}
+<section class="tn-section" id="talent" aria-labelledby="talent-title">
+  <div class="tn-wrap">
+    <div class="tn-head tn-head-split">
+      <div>
+        <p class="tn-eyebrow">The network</p>
+        <h2 id="talent-title">See the person behind the CV.</h2>
+      </div>
+      <p class="tn-head-text">Every Nelavista Talent profile shows what someone has proven: the assessments they passed, the work that was reviewed, and when they can start.</p>
+    </div>
+
+    <div class="tn-notice" role="note">
+      <i class="ri-information-line" aria-hidden="true"></i>
+      <p><strong>These are sample profiles.</strong> They show the format of a Nelavista Talent profile and are not real candidates. Request talent and we will share real, consented profiles matched to your brief.</p>
+    </div>
+
+    {% set present = talent | map(attribute='category') | unique | list %}
+    <div class="tn-filter" role="toolbar" aria-label="Filter profiles by category" data-tn-filter>
+      <button type="button" class="is-active" aria-pressed="true" data-filter="all">All</button>
+      {% for c in categories if c.slug in present %}
+      <button type="button" aria-pressed="false" data-filter="{{ c.slug }}">{{ c.name }}</button>
+      {% endfor %}
+    </div>
+
+    <div class="tn-card-grid" data-tn-grid>
+      {% for p in talent %}{{ talent_card(p, tn) }}{% endfor %}
+    </div>
+    <p class="tn-grid-empty" hidden data-tn-empty>No sample profiles in this category yet. <a href="{{ url_for('talent.request_talent') }}">Request talent</a> and we will search the network for you.</p>
+  </div>
+</section>
+
+{# ── 4. Categories ─────────────────────────────────────────────────────── #}
+<section class="tn-section tn-section-alt" id="categories" aria-labelledby="cat-title">
+  <div class="tn-wrap">
+    <div class="tn-head tn-head-split">
+      <div>
+        <p class="tn-eyebrow">Skills</p>
+        <h2 id="cat-title">The work our network is built for.</h2>
+      </div>
+      <p class="tn-head-text">We focus on roles where we can train and assess properly, and add categories as the network grows. Need something else? Ask. If we can't fill it, we'll tell you.</p>
+    </div>
+    <ul class="tn-cats">
+      {% for c in categories %}
+      <li class="tn-cat">
+        <a href="{{ url_for('talent.request_talent', category=c.slug) }}">
+          <i class="{{ c.icon }} tn-cat-icon" aria-hidden="true"></i>
+          <h3>{{ c.name }}</h3>
+          <p>{{ c.desc }}</p>
+          <span class="tn-cat-roles">{{ c.roles | join(' · ') }}</span>
+          <span class="tn-cat-go">Request <i class="ri-arrow-right-line" aria-hidden="true"></i></span>
+        </a>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+
+{# ── 5. The Nelavista difference ───────────────────────────────────────── #}
+<section class="tn-section tn-dark" id="difference" aria-labelledby="diff-title">
+  <div class="tn-wrap">
+    <div class="tn-diff-head">
+      <p class="tn-eyebrow">The Nelavista difference</p>
+      <h2 id="diff-title">We don't just collect CVs. We develop talent.</h2>
+      <p>Most recruitment platforms gather people who already exist. Nelavista trains people, tests what they learn on practical tasks, and records the result. By the time you see a profile, there is evidence behind it.</p>
+    </div>
+    <ol class="tn-pipeline">
+      {% for s in tn.PIPELINE %}
+      <li class="tn-pipe-step">
+        <span class="tn-pipe-n">{{ '%02d' % loop.index }}</span>
+        <h3>{{ s.step }}</h3>
+        <p>{{ s.text }}</p>
+      </li>
+      {% endfor %}
+    </ol>
+    <p class="tn-diff-foot">Learning, assessment and opportunity already run on the same Nelavista platform. Talent is where they meet your work.</p>
+  </div>
+</section>
+
+{# ── 6. Verification standard ──────────────────────────────────────────── #}
+<section class="tn-section" id="standard" aria-labelledby="std-title">
+  <div class="tn-wrap">
+    <div class="tn-head tn-head-split">
+      <div>
+        <p class="tn-eyebrow">The standard</p>
+        <h2 id="std-title">&ldquo;Vetted&rdquo; should mean something.</h2>
+      </div>
+      <p class="tn-head-text">Here is what a person has to show before we introduce them to you. Each profile says which checks are complete and which are still pending. We are open about which parts of the standard are live today.</p>
+    </div>
+    <div class="tn-standard" role="table" aria-label="Nelavista Talent verification standard">
+      <div class="tn-std-row tn-std-headrow" role="row">
+        <span role="columnheader">Check</span><span role="columnheader">The question</span><span role="columnheader">How we answer it</span><span role="columnheader">Status</span>
+      </div>
+      {% for v in tn.VERIFICATION_STANDARD %}
+      <div class="tn-std-row" role="row">
+        <span class="tn-std-name" role="cell"><i class="{{ v.icon }}" aria-hidden="true"></i>{{ v.name }}</span>
+        <span class="tn-std-q" role="cell">{{ v.question }}</span>
+        <span class="tn-std-text" role="cell">{{ v.text }}</span>
+        <span class="tn-std-status" role="cell">{{ status_pill(v.status, tn) }}</span>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{# ── 7. For employers / how it works ───────────────────────────────────── #}
+<section class="tn-section tn-section-alt" id="employers" aria-labelledby="emp-title">
+  <span id="how" class="tn-anchor" aria-hidden="true"></span>
+  <div class="tn-wrap tn-emp">
+    <div class="tn-emp-intro">
+      <p class="tn-eyebrow">For employers</p>
+      <h2 id="emp-title">Tell us what you need. We'll help you find the right talent.</h2>
+      <p>No job ads to write, no applications to sort. You describe the work; our team does the searching and checking.</p>
+      <div class="tn-cta-row">
+        <a class="tn-btn tn-btn-primary" href="{{ url_for('talent.request_talent') }}">Request Talent</a>
+        <a class="tn-btn tn-btn-ghost" href="mailto:{{ support_email or 'support@nelavista.com' }}?subject=Nelavista%20Talent%3A%20talk%20to%20the%20team">Talk to our team</a>
+      </div>
+      {% if tn.EDITORIAL_PHOTO %}
+      <figure class="tn-emp-photo">
+        <img src="{{ url_for('static', filename=tn.EDITORIAL_PHOTO.src) }}" alt="{{ tn.EDITORIAL_PHOTO.alt }}" loading="lazy" decoding="async">
+        {% if tn.EDITORIAL_PHOTO.credit %}<figcaption>{{ tn.EDITORIAL_PHOTO.credit }}</figcaption>{% endif %}
+      </figure>
+      {% endif %}
+    </div>
+    <ol class="tn-steps">
+      {% for s in tn.EMPLOYER_STEPS %}
+      <li class="tn-step">
+        <span class="tn-step-n">{{ s.n }}</span>
+        <div>
+          <h3>{{ s.title }}</h3>
+          <p>{{ s.text }}</p>
+        </div>
+      </li>
+      {% endfor %}
+    </ol>
+  </div>
+
+  <div class="tn-wrap">
+    <h3 class="tn-subhead">What organisations bring us</h3>
+    <ul class="tn-uses">
+      {% for u in tn.USE_CASES %}
+      <li class="tn-use">
+        <i class="{{ u.icon }}" aria-hidden="true"></i>
+        <h4>{{ u.title }}</h4>
+        <p>{{ u.text }}</p>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+
+{# ── 8. Employer trust: signals ────────────────────────────────────────── #}
+<section class="tn-section" id="signals" aria-labelledby="sig-title">
+  {% set ex = tn.SAMPLE_BY_SLUG['sample-kwame-a'] %}
+  <div class="tn-wrap tn-signals">
+    <div class="tn-signals-copy">
+      <p class="tn-eyebrow">Why employers trust a shortlist</p>
+      <h2 id="sig-title">Less noise. Better signals.</h2>
+      <p>You shouldn't have to read two hundred weak applications to find three good people. A Nelavista shortlist is short on purpose, and every profile on it carries what you need to decide.</p>
+      <ul class="tn-signal-list">
+        {% for s in tn.EMPLOYER_SIGNALS %}
+        <li><i class="ri-check-line" aria-hidden="true"></i><div><strong>{{ s.name }}</strong><span>{{ s.text }}</span></div></li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <figure class="tn-excerpt" aria-label="Example evidence summary from a sample profile">
+      <div class="tn-excerpt-head">
+        {{ avatar(ex) }}
+        <div>
+          <strong>{{ ex.name }}</strong>
+          <span>{{ ex.role }}</span>
+        </div>
+        {{ availability(ex) }}
+      </div>
+      <div class="tn-excerpt-block">
+        <h3>Verification</h3>
+        <ul class="tn-check-list">
+          {% for k, v in ex.checks.items() %}
+          <li class="is-{{ v }}"><i class="{{ 'ri-checkbox-circle-fill' if v == 'verified' else 'ri-time-line' if v == 'pending' else 'ri-checkbox-blank-circle-line' }}" aria-hidden="true"></i>{{ tn.CHECK_LABELS[k] }}<span>{{ tn.CHECK_STATE_LABELS[v] }}</span></li>
+          {% endfor %}
+        </ul>
+      </div>
+      <div class="tn-excerpt-block">
+        <h3>Assessments</h3>
+        {% for a in ex.assessments %}
+        <div class="tn-score">
+          <div class="tn-score-top"><span>{{ a.name }}</span><b>{{ a.score }}</b></div>
+          <div class="tn-score-bar" aria-hidden="true"><span style="width: {{ a.score }}%"></span><i style="left: {{ a.pass }}%"></i></div>
+        </div>
+        {% endfor %}
+        <p class="tn-score-key"><i aria-hidden="true"></i>Pass mark {{ ex.assessments[0].pass }}</p>
+      </div>
+      <div class="tn-excerpt-block tn-excerpt-facts">
+        <div><span>Time zone</span><b>{{ ex.timezone }}</b></div>
+        <div><span>Hours</span><b>{{ ex.hours }}</b></div>
+        <div><span>Engagement</span><b>{{ ex.engagements | join(', ') }}</b></div>
+      </div>
+      <figcaption>Sample profile excerpt</figcaption>
+    </figure>
+  </div>
+</section>
+
+{# ── 9. Talent side ────────────────────────────────────────────────────── #}
+<section class="tn-section tn-section-wash" id="join" aria-labelledby="join-title">
+  <div class="tn-wrap">
+    <div class="tn-head tn-head-split">
+      <div>
+        <p class="tn-eyebrow">For talent</p>
+        <h2 id="join-title">Build a profile that proves what you can do.</h2>
+      </div>
+      <div class="tn-head-text">
+        <p>Nelavista Talent is a professional network, not a job board. Build skills, pass assessments, add reviewed work, and become discoverable by organisations looking for exactly that.</p>
+        <a class="tn-btn tn-btn-primary" href="{{ url_for('talent.join') }}">Join the Talent Network</a>
+      </div>
+    </div>
+    <ol class="tn-journey">
+      {% for j in tn.TALENT_JOURNEY %}
+      <li><span class="tn-journey-n">{{ loop.index }}</span><h3>{{ j.title }}</h3><p>{{ j.text }}</p></li>
+      {% endfor %}
+    </ol>
+    <p class="tn-journey-note"><i class="ri-shield-check-line" aria-hidden="true"></i>We don't promise jobs. We help you build credibility organisations can check, and introduce you when your evidence matches a real need.</p>
+  </div>
+</section>
+
+{# ── 10. Stories ───────────────────────────────────────────────────────── #}
+<section class="tn-section" id="stories" aria-labelledby="stories-title">
+  <div class="tn-wrap">
+    {% if tn.STORIES %}
+    <div class="tn-head">
+      <p class="tn-eyebrow">Stories</p>
+      <h2 id="stories-title">From learning to real work.</h2>
+    </div>
+    <div class="tn-stories">
+      {% for s in tn.STORIES %}
+      <article class="tn-story">
+        <p class="tn-story-kind">{{ 'Talent story' if s.kind == 'talent' else 'Employer case study' }}</p>
+        <h3>{{ s.title }}</h3>
+        <dl>{% for label, text in s.steps %}<div><dt>{{ label }}</dt><dd>{{ text }}</dd></div>{% endfor %}</dl>
+      </article>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="tn-proof">
+      <div class="tn-proof-copy">
+        <p class="tn-eyebrow">Stories</p>
+        <h2 id="stories-title">From learning to real work.</h2>
+        <p>We publish a story only when the work is done and everyone in it agrees to be named. The first ones are being documented now. Each will show the whole path, so you can judge it yourself.</p>
+      </div>
+      <div class="tn-proof-formats">
+        <div class="tn-proof-format">
+          <h3>Talent stories</h3>
+          <ol><li>Before</li><li>Skills developed</li><li>Assessment</li><li>Project</li><li>Outcome</li></ol>
+        </div>
+        <div class="tn-proof-format">
+          <h3>Employer case studies</h3>
+          <ol><li>Business need</li><li>Talent supplied</li><li>Work completed</li><li>Result</li></ol>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+    {% if tn.CLIENT_LOGOS %}
+    <div class="tn-logos">
+      <p>Organisations working with Nelavista Talent</p>
+      <ul>
+        {% for l in tn.CLIENT_LOGOS %}
+        <li><a href="{{ l.url }}" rel="noopener" target="_blank"><img src="{{ url_for('static', filename=l.logo) }}" alt="{{ l.name }}" loading="lazy"></a></li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+{# ── 11. Final CTA ─────────────────────────────────────────────────────── #}
+<section class="tn-final" aria-labelledby="final-title">
+  <div class="tn-wrap tn-final-inner">
+    <h2 id="final-title">Have work that needs capable people?</h2>
+    <p>Tell us what you're looking for. We'll help you find the right talent.</p>
+    <div class="tn-cta-row">
+      <a class="tn-btn tn-btn-white tn-btn-lg" href="{{ url_for('talent.request_talent') }}">Request Talent <i class="ri-arrow-right-line" aria-hidden="true"></i></a>
+      <a class="tn-btn tn-btn-outline-light tn-btn-lg" href="{{ url_for('talent.join') }}">Join as Talent</a>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block mobile_cta %}
+<div class="tn-mobile-bar" data-tn-mobile-bar aria-hidden="true">
+  <a class="tn-btn tn-btn-primary" href="{{ url_for('talent.request_talent') }}" tabindex="-1">Request Talent</a>
+</div>
+{% endblock %}

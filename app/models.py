@@ -3354,3 +3354,35 @@ class GigEvent(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow, index=True)
 
     gig = db.relationship('Gig', backref=db.backref('events', lazy='dynamic', cascade='all, delete-orphan'))
+
+
+class TalentRequest(db.Model):
+    """An organisation's request for talent from /talent/request. Nelavista's team works
+    these by hand (curated matching), so this is a lead record with a status, not a
+    self-service job post. No account is needed to submit one."""
+    __tablename__ = 'talent_requests'
+
+    id = db.Column(db.Integer, primary_key=True)
+    contact_name = db.Column(db.String(120), nullable=False)
+    company_name = db.Column(db.String(150), nullable=False)
+    work_email = db.Column(db.String(200), nullable=False, index=True)
+    job_title = db.Column(db.String(120), nullable=True)
+    company_website = db.Column(db.String(300), nullable=True)
+    country = db.Column(db.String(80), nullable=True)
+
+    need_summary = db.Column(db.String(500), nullable=False)
+    category = db.Column(db.String(60), nullable=True)       # services/talent_network.CATEGORIES slug
+    headcount = db.Column(db.String(20), nullable=True)
+    skills = db.Column(db.String(500), nullable=True)
+    engagement_type = db.Column(db.String(30), nullable=False)
+    start_window = db.Column(db.String(30), nullable=True)
+    budget_range = db.Column(db.String(30), nullable=True)   # monthly, per person, USD
+    timezone = db.Column(db.String(30), nullable=True)
+    details = db.Column(db.Text, nullable=True)
+    profile_ref = db.Column(db.String(120), nullable=True)   # profile the request started from, if any
+
+    status = db.Column(db.String(30), nullable=False, default='new', index=True)
+    admin_notes = db.Column(db.Text, nullable=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)  # set if submitted while logged in
+    created_at = db.Column(db.DateTime, default=datetime.utcnow, index=True)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)

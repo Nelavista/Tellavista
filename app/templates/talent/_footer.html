@@ -1,0 +1,45 @@
+{% set contact_email = support_email or 'support@nelavista.com' %}
+<footer class="tn-footer">
+  <div class="tn-wrap">
+    <div class="tn-footer-grid">
+      <div class="tn-footer-brand">
+        <a class="tn-brand" href="{{ url_for('talent.home') }}">
+          <img src="{{ url_for('static', filename='icons/nelavista-96x96.png') }}" alt="" width="28" height="28" loading="lazy">
+          <span class="tn-brand-name">Nelavista</span><span class="tn-brand-sub">Talent</span>
+        </a>
+        <p>Trained, assessed African talent for remote teams, outsourcing and project work. Part of Nelavista, where people learn, practise and prove their skills.</p>
+      </div>
+      <div class="tn-footer-col">
+        <h2>For employers</h2>
+        <ul>
+          <li><a href="{{ url_for('talent.request_talent') }}">Request Talent</a></li>
+          <li><a href="{{ url_for('talent.home') }}#how">How it works</a></li>
+          <li><a href="{{ url_for('talent.home') }}#categories">Talent categories</a></li>
+          <li><a href="{{ url_for('talent.home') }}#standard">Our verification standard</a></li>
+        </ul>
+      </div>
+      <div class="tn-footer-col">
+        <h2>For talent</h2>
+        <ul>
+          <li><a href="{{ url_for('talent.join') }}">Join the Talent Network</a></li>
+          <li><a href="/skills/talent">Build your profile</a></li>
+          <li><a href="/opportunities">Opportunities</a></li>
+        </ul>
+      </div>
+      <div class="tn-footer-col">
+        <h2>Nelavista</h2>
+        <ul>
+          <li><a href="/about">About</a></li>
+          <li><a href="/impact">Track record</a></li>
+          <li><a href="mailto:{{ contact_email }}?subject=Nelavista%20Talent">Contact</a></li>
+          <li><a href="/privacy-policy">Privacy</a></li>
+          <li><a href="/terms-of-service">Terms</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="tn-footer-base">
+      <span>&copy; {{ now_year }} Nelavista</span>
+      <a href="mailto:{{ contact_email }}?subject=Nelavista%20Talent">{{ contact_email }}</a>
+    </div>
+  </div>
+</footer>

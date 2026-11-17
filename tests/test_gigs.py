@@ -383,7 +383,8 @@ def test_hub_filters(app, client, make_user, login_as):
     assert 'React Developer' in client.get('/opportunities/gigs?q=react').get_data(as_text=True)
 
 
-def test_hub_still_lists_nelavista_gigs(app, client, make_user, login_as):
+def test_nelavista_gigs_live_off_the_hub(app, client, make_user, login_as):
+    """Ledger gigs aren't on the Gigs hub; they keep their own list (and Matched work)."""
     user = make_user('gig_nv')
     with app.app_context():
         cat = SkillCategory(name='Tech', slug='gig-nv-cat')
@@ -396,8 +397,9 @@ def test_hub_still_lists_nelavista_gigs(app, client, make_user, login_as):
         db.session.commit()
     login_as(client, user)
     body = client.get('/opportunities/gigs').get_data(as_text=True)
-    assert 'Ledger gig' in body and 'Apply on Nelavista' in body
+    assert 'Ledger gig' not in body and 'Nelavista gigs' not in body
     assert 'Ledger gig' in client.get('/opportunities/gigs/nelavista').get_data(as_text=True)
+    assert 'Ledger gig' in client.get('/opportunities').get_data(as_text=True)
 
 
 def test_recommended_uses_tracked_skills_only(app, client, make_user, login_as):

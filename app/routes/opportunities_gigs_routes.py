@@ -3,12 +3,11 @@
 Registered on opportunities_bp (imported at the bottom of routes/opportunities_routes.py),
 so these pages use the Opportunities shell and its stale-session guard.
 
-The hub shows two kinds of gig side by side:
-- Gig rows (services/gigs/): external gigs synced from providers whose terms allow it,
-  plus gigs Nelavista admins add. Students apply on the official listing; "I applied"
-  is their own record.
-- Opportunity rows (the existing ledger): Nelavista's own gigs, applied to here and
-  paid through Earnings. Their full list moved to /opportunities/gigs/nelavista.
+The hub lists Gig rows (services/gigs/): external gigs synced from providers whose terms
+allow it, plus gigs Nelavista admins add. Students apply on the official listing; "I
+applied" is their own record. Nelavista's own ledger gigs (Opportunity, apply here, paid
+through Earnings) are not on this page; they live under Matched work and
+/opportunities/gigs/nelavista.
 
 Everything students see comes from Nelavista's database. No page calls a provider.
 """
@@ -18,7 +17,7 @@ from flask import render_template, request, jsonify, redirect, url_for, flash, a
 from sqlalchemy.exc import SQLAlchemyError
 
 from app.extensions import db, limiter
-from app.models import Gig, Opportunity, OpportunityApplication, StudentSkill
+from app.models import Gig
 from app.routes.opportunities_routes import opportunities_bp, _current_user
 from app.utils.helpers import login_required
 from app.services.gigs import core
@@ -28,16 +27,6 @@ logger = logging.getLogger('nelavista.gigs')
 
 def _wants_json():
     return request.is_json or 'application/json' in (request.headers.get('Accept') or '')
-
-
-def _nelavista_gig_rows(user, limit=6):
-    """The ledger's published gigs for the hub's "Apply on Nelavista" rail."""
-    progress = {s.skill_id: s.progress_pct for s in StudentSkill.query.filter_by(student_id=user.id).all()}
-    apps = {a.opportunity_id: a for a in OpportunityApplication.query.filter_by(student_id=user.id).all()}
-    opps = Opportunity.query.filter_by(is_published=True).order_by(Opportunity.created_at.desc()).limit(50).all()
-    rows = [{'opportunity': o, 'application': apps.get(o.id), 'match_pct': progress.get(o.skill_id, 0)} for o in opps]
-    rows.sort(key=lambda r: -r['match_pct'])
-    return rows[:limit], len(opps)
 
 
 def _get_visible(gig_id, user):
@@ -51,7 +40,6 @@ def _get_visible(gig_id, user):
 @login_required
 def gigs():
     user = _current_user()
-    nv_rows, nv_total = _nelavista_gig_rows(user)
     try:
         feed = core.build_feed(user, request.args)
         shown = {g.id for key in ('results', 'unknown', 'open_gigs', 'new', 'closing_soon', 'recommended') for g in feed[key]}
@@ -77,7 +65,7 @@ def gigs():
         'opportunities_gigs_hub.html', feed=feed, state=state, ui=core.ui_helpers(), active_page='gigs',
         filter_url=filter_url, categories=core.CATEGORIES, location_types=core.LOCATION_TYPES,
         deadline_filters=core.DEADLINE_FILTERS, posted_filters=core.POSTED_FILTERS, sorts=core.SORTS,
-        nv_rows=nv_rows, nv_total=nv_total, unavailable=unavailable,
+        unavailable=unavailable,
     )
 
 

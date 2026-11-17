@@ -43,7 +43,7 @@ def test_gigs_page_shows_correct_match_pct(app, client, make_user, login_as):
         db.session.commit()
 
     login_as(client, user)
-    res = client.get('/opportunities/gigs')
+    res = client.get('/opportunities/gigs/nelavista')
     assert res.status_code == 200
     assert '40% match' in res.get_data(as_text=True)
 

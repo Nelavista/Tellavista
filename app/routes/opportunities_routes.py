@@ -100,8 +100,8 @@ def apply(opportunity_id):
 @login_required
 def nelavista_gigs():
     """Nelavista's own gigs (the Opportunity ledger: apply here, paid through Earnings).
-    /opportunities/gigs is now the Gigs hub (routes/opportunities_gigs_routes.py), which
-    shows these alongside external gigs and links here for the full filterable list.
+    /opportunities/gigs is now the Gigs hub (routes/opportunities_gigs_routes.py) for
+    external and admin-added gigs; these ledger gigs are listed here and in Matched work.
 
     The full open marketplace — every published gig, filterable, not just the ones
     matched to skills the student has already started. Opportunities (the personalized

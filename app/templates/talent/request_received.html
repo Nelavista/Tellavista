@@ -3,20 +3,20 @@
 {% block robots %}<meta name="robots" content="noindex">{% endblock %}
 
 {% block content %}
-<div class="tn-wrap">
-  <div class="tn-done">
-    <span class="tn-done-icon" aria-hidden="true"><i class="ri-check-line"></i></span>
+<div class="tx-wrap">
+  <div class="tx-done">
+    <span class="tx-done-icon" aria-hidden="true"><i class="ri-check-line"></i></span>
     <h1>Thanks{% if first_name %}, {{ first_name }}{% endif %}. We have your request.</h1>
-    <p>A person on our team will read it and reply by email. Here is what happens from here.</p>
+    <p>Our team will review your brief and reply by email. For anything urgent, <a href="{{ whatsapp_url }}" target="_blank" rel="noopener">message us on WhatsApp</a>.</p>
     <ol>
       <li><span>01</span>We review your brief and check it against our network.</li>
       <li><span>02</span>We get in touch to confirm skills, workload and terms.</li>
       <li><span>03</span>We share a shortlist with assessments, reviewed work and availability.</li>
       <li><span>04</span>You interview the people you like and decide.</li>
     </ol>
-    <div class="tn-cta-row">
-      <a class="tn-btn tn-btn-primary" href="{{ url_for('talent.home') }}#standard">See how we verify talent</a>
-      <a class="tn-btn tn-btn-ghost" href="{{ url_for('talent.home') }}">Back to Nelavista Talent</a>
+    <div class="tx-cta-row">
+      <a class="tx-btn tx-btn-primary" href="{{ url_for('talent.home') }}#vetted">See how we vet talent</a>
+      <a class="tx-btn tx-btn-ghost" href="{{ url_for('talent.home') }}">Back to Nelavista Talent</a>
     </div>
   </div>
 </div>

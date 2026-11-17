@@ -1,172 +1,222 @@
 """Content and data for Nelavista Talent (/talent).
 
-Everything the Talent pages say about scale, process or people comes from this module, so
-the honesty rules live in one place:
+Every claim the Talent pages make lives here, so the honesty rules live in one place.
+Strong positioning is fine; invented evidence is not.
 
-- FIGURES: only verified numbers, or numbers counted live from the database. A figure set
-  to None is not rendered at all. Never put an estimate here.
-- VERIFICATION_STANDARD: each step says whether it is live on Nelavista today ('live') or
-  part of the standard we are building towards ('in_development'). The page shows that
-  status to visitors. Change it only when the step actually ships.
-- SAMPLE_PROFILES: illustrative profiles that show employers what a Nelavista Talent profile
-  contains. They are NOT real people. Every surface that renders them labels them as
-  samples, and their profile pages are noindex. Replace them with real, opted-in talent
-  (StudentPrivacySettings.profile_visibility == 'public') once the network has consented
-  profiles to show; see `featured_talent()`.
-- CLIENT_LOGOS / STORIES: empty until an organisation or person agrees to be named. The
-  sections that use them render nothing (logos) or an honest "being documented" state
-  (stories) while they are empty. Never add placeholders that look real.
+- METRICS: only real numbers. A metric whose value is None is not rendered, and the
+  metrics band only appears once at least three real metrics exist.
+- VETTING_LAYERS: each layer is 'live' (the product does it today) or 'rolling_out'.
+  Only live layers become badges on profiles. Flip a layer to 'live' when it ships.
+- PREVIEW_PROFILES: illustrative profiles that show the format of a Nelavista Talent
+  profile. They are anonymous on purpose (role, not a person's name; no photo) and every
+  surface labels them as previews; their pages are noindex. Real, consented profiles
+  replace them through `featured_talent()`.
+- CLIENT_LOGOS / TESTIMONIALS / CASE_STUDIES: empty until an organisation or person
+  agrees to be named. Their sections render nothing while empty.
+- PHOTOS: licensed stock photography (Unsplash License), served from Unsplash's CDN at
+  responsive sizes. They depict professionals at work and are never attached to a
+  profile, so no photographed person is presented as a candidate.
 """
 from __future__ import annotations
 
-# ── Figures ──────────────────────────────────────────────────────────────────────────────
-# 'value' None = hidden. Live figures are filled in by the route from _landing_stats().
-VERIFIED_FIGURES = [
-    {'key': 'reached', 'value': '2,500+', 'label': 'Students and emerging professionals reached',
-     'note': 'Across the Nelavista platform and programmes'},
-    {'key': 'trained_ai', 'value': '500+', 'label': 'People trained in applied AI',
-     'note': 'Through Nelavista AI training'},
-    # Set these once the numbers are counted, e.g. {'value': '120', ...}. Until then they
-    # stay hidden rather than showing an "X+" placeholder to the public.
-    {'key': 'assessed', 'value': None, 'label': 'Talent assessed', 'note': ''},
-    {'key': 'introductions', 'value': None, 'label': 'Employer introductions made', 'note': ''},
+from urllib.parse import quote
+
+# ── Contact ──────────────────────────────────────────────────────────────────────────────
+CONTACT_EMAIL = 'support@nelavista.com'
+WHATSAPP_NUMBER = '2347087896654'          # international format, digits only
+WHATSAPP_DISPLAY = '+234 708 789 6654'
+
+
+def whatsapp_url(text: str = 'Hello Nelavista Talent, I would like to discuss hiring talent.') -> str:
+    return f'https://wa.me/{WHATSAPP_NUMBER}?text={quote(text)}'
+
+
+# ── Photography ──────────────────────────────────────────────────────────────────────────
+_UNSPLASH = 'https://images.unsplash.com/'
+PHOTOS = {
+    'hero': {'id': 'photo-1635766828498-49dec8c0cc56', 'pos': '50% 40%',
+             'alt': 'Two colleagues reviewing a design together on a laptop in an office',
+             'credit': 'cutinamoment', 'url': 'https://unsplash.com/photos/k5Rltk9X1-U'},
+    'engineers': {'id': 'photo-1528901166007-3784c7dd3653', 'pos': '50% 50%',
+                  'alt': 'Software developers working through code together at a tech hub in Nairobi',
+                  'credit': 'Disruptxn', 'url': 'https://unsplash.com/photos/kwzWjTnDPLk'},
+    'meeting': {'id': 'photo-1739298061707-cefee19941b7', 'pos': '50% 50%',
+                'alt': 'A team meeting around a conference table',
+                'credit': 'ninthgrid', 'url': 'https://unsplash.com/photos/AekHsx1SxXQ'},
+    'professional': {'id': 'photo-1638802126124-1b7598461d5c', 'pos': '50% 30%',
+                     'alt': 'A professional reviewing work on a tablet in a modern office',
+                     'credit': 'cutinamoment', 'url': 'https://unsplash.com/photos/AszfTJfly_U'},
+    'at_work': {'id': 'photo-1635768229592-8c2532d33cb7', 'pos': '60% 40%',
+                'alt': 'A professional working on a laptop at his desk',
+                'credit': 'cutinamoment', 'url': 'https://unsplash.com/photos/u1QJm4o7cXk'},
+    'data': {'id': 'photo-1532522953890-ccc87dfeb0b7', 'pos': '40% 50%',
+             'alt': 'Analysing charts on a laptop',
+             'credit': 'Disruptxn', 'url': 'https://unsplash.com/photos/xcUVwwdsWis'},
+}
+PHOTO_WIDTHS = (480, 768, 1080, 1440, 1920)
+
+
+def photo_src(key: str, w: int = 1080, h: int | None = None) -> str:
+    p = PHOTOS[key]
+    crop = f'&h={h}&fit=crop&crop=faces,center' if h else ''
+    return f'{_UNSPLASH}{p["id"]}?auto=format&q=70&w={w}{crop}'
+
+
+def photo_srcset(key: str, ratio: float | None = None, widths=PHOTO_WIDTHS) -> str:
+    """ratio = height / width; None keeps the original aspect."""
+    return ', '.join(f'{photo_src(key, w, round(w * ratio) if ratio else None)} {w}w' for w in widths)
+
+
+PHOTO_CREDITS = sorted({p['credit'] for p in PHOTOS.values()})
+
+
+# ── Positioning ──────────────────────────────────────────────────────────────────────────
+PRINCIPLES = [
+    {'name': 'Vetted talent', 'icon': 'ri-shield-check-line', 'text': 'Screened against a clear standard before they reach you.'},
+    {'name': 'Verified profiles', 'icon': 'ri-profile-line', 'text': 'Reviewed by our team against the evidence behind them.'},
+    {'name': 'Skills assessed', 'icon': 'ri-medal-line', 'text': 'Role-based assessments, scored against a pass mark.'},
+    {'name': 'Curated matching', 'icon': 'ri-team-line', 'text': 'A short list of people who fit your brief, picked by people.'},
+    {'name': 'Remote ready', 'icon': 'ri-global-line', 'text': 'Professionals set up to work with distributed teams.'},
 ]
 
+# status: 'live' = done by the product today; 'rolling_out' = part of the standard, shipping.
+VETTING_LAYERS = [
+    {'key': 'identity', 'name': 'Identity', 'lead': 'Know who you’re working with.',
+     'text': 'Identity checks before a professional is introduced to an employer.',
+     'icon': 'ri-fingerprint-line', 'status': 'rolling_out', 'badge': 'Identity verified'},
+    {'key': 'skills', 'name': 'Skills', 'lead': 'Assess what the role actually needs.',
+     'text': 'Role-based assessments with a fixed pass mark. Results are recorded, never self-reported.',
+     'icon': 'ri-medal-line', 'status': 'live', 'badge': 'Skills assessed'},
+    {'key': 'practical', 'name': 'Practical evidence', 'lead': 'Look past the CV.',
+     'text': 'Real tasks and projects, reviewed against a quality bar before a skill counts.',
+     'icon': 'ri-hammer-line', 'status': 'live', 'badge': 'Work reviewed'},
+    {'key': 'readiness', 'name': 'Professional readiness', 'lead': 'Ready to work with your team.',
+     'text': 'Communication and work-readiness review for client-facing and remote roles.',
+     'icon': 'ri-chat-check-line', 'status': 'rolling_out', 'badge': 'Readiness reviewed'},
+    {'key': 'profile', 'name': 'Profile quality', 'lead': 'Signals you can act on.',
+     'text': 'A structured profile reviewed by our team, built on evidence rather than claims.',
+     'icon': 'ri-profile-line', 'status': 'live', 'badge': 'Profile verified'},
+]
+LAYER_BY_KEY = {layer['key']: layer for layer in VETTING_LAYERS}
+LIVE_BADGES = [layer for layer in VETTING_LAYERS if layer['status'] == 'live']
+STATUS_LABELS = {'live': 'Live', 'rolling_out': 'Rolling out'}
 
-def build_figures(stats: dict | None) -> list[dict]:
-    """Verified figures plus the live counts that already appear on the main landing page."""
-    figures = [f for f in VERIFIED_FIGURES if f['value']]
-    stats = stats or {}
-    if stats.get('skill_count'):
-        figures.append({'key': 'skills', 'value': str(stats['skill_count']),
-                        'label': 'Structured skill tracks with assessments',
-                        'note': 'Counted live from the Nelavista Skills catalogue'})
-    if stats.get('university_count'):
-        n = stats['university_count']
-        figures.append({'key': 'universities', 'value': str(n),
-                        'label': 'University live on Nelavista' if n == 1 else 'Universities live on Nelavista',
-                        'note': 'Where our learners study'})
-    return figures
-
-
-# ── Categories ───────────────────────────────────────────────────────────────────────────
-# Add a category by appending a dict. 'slug' is used by the directory filter and the
-# request form; keep it stable once published.
 CATEGORIES = [
-    {'slug': 'customer-support', 'name': 'Customer Support', 'icon': 'ri-customer-service-2-line',
-     'desc': 'Chat, email and phone support, ticket handling, CRM upkeep.',
-     'roles': ['Support agent', 'Chat support', 'CRM administrator']},
-    {'slug': 'data-operations', 'name': 'Data & Operations', 'icon': 'ri-database-2-line',
-     'desc': 'Data entry and cleaning, processing, reporting, back-office operations.',
-     'roles': ['Data entry', 'Operations assistant', 'Reporting analyst']},
-    {'slug': 'virtual-assistance', 'name': 'Virtual Assistance', 'icon': 'ri-calendar-check-line',
-     'desc': 'Inbox and calendar management, admin, scheduling, documentation.',
-     'roles': ['Executive assistant', 'Admin support', 'Scheduler']},
-    {'slug': 'marketing', 'name': 'Marketing', 'icon': 'ri-advertisement-line',
-     'desc': 'Social media, content writing, campaign support, community management.',
-     'roles': ['Social media manager', 'Content writer', 'Community manager']},
-    {'slug': 'design-creative', 'name': 'Design & Creative', 'icon': 'ri-pen-nib-line',
-     'desc': 'Graphic design, UI/UX, video editing, presentation design.',
-     'roles': ['Graphic designer', 'UI/UX designer', 'Video editor']},
     {'slug': 'technology', 'name': 'Technology', 'icon': 'ri-code-s-slash-line',
-     'desc': 'Web and software development, QA testing, data analysis.',
-     'roles': ['Web developer', 'QA tester', 'Data analyst']},
+     'desc': 'Software development, web, QA and data.',
+     'roles': ['Software developer', 'Web developer', 'QA tester', 'Data analyst'], 'photo': 'engineers'},
+    {'slug': 'customer-experience', 'name': 'Customer Experience', 'icon': 'ri-customer-service-2-line',
+     'desc': 'Customer support, chat support and CRM.',
+     'roles': ['Support specialist', 'Chat agent', 'CRM administrator']},
+    {'slug': 'operations', 'name': 'Operations', 'icon': 'ri-settings-4-line',
+     'desc': 'Data operations, administration and research support.',
+     'roles': ['Data operations', 'Operations associate', 'Admin specialist']},
+    {'slug': 'marketing', 'name': 'Marketing', 'icon': 'ri-advertisement-line',
+     'desc': 'Digital marketing, social media and content.',
+     'roles': ['Digital marketer', 'Social media manager', 'Content writer']},
+    {'slug': 'design', 'name': 'Design', 'icon': 'ri-pen-nib-line',
+     'desc': 'Graphic design, UI/UX and creative.',
+     'roles': ['UI/UX designer', 'Graphic designer', 'Motion designer']},
     {'slug': 'finance-business', 'name': 'Finance & Business', 'icon': 'ri-line-chart-line',
-     'desc': 'Bookkeeping support, financial analysis, business research.',
-     'roles': ['Bookkeeping assistant', 'Financial analyst', 'Business analyst']},
+     'desc': 'Accounting support, analysis and business research.',
+     'roles': ['Bookkeeper', 'Financial analyst', 'Business analyst']},
+    {'slug': 'virtual-assistance', 'name': 'Virtual Assistance', 'icon': 'ri-calendar-check-line',
+     'desc': 'Administrative and executive support.',
+     'roles': ['Executive assistant', 'Virtual assistant', 'Project coordinator']},
     {'slug': 'research', 'name': 'Research', 'icon': 'ri-search-eye-line',
-     'desc': 'Market research, data collection, literature reviews, AI data work.',
-     'roles': ['Research assistant', 'Data collector', 'Annotator']},
+     'desc': 'Market research, data collection and analysis.',
+     'roles': ['Research analyst', 'Data collector', 'AI data specialist']},
 ]
 CATEGORY_BY_SLUG = {c['slug']: c for c in CATEGORIES}
 
-
-# ── Pipeline and verification ────────────────────────────────────────────────────────────
-PIPELINE = [
-    {'step': 'Learn', 'text': 'Structured skill tracks, built lesson by lesson.'},
-    {'step': 'Practise', 'text': 'Practical tasks that mirror real work, not quizzes.'},
-    {'step': 'Assess', 'text': 'Scored assessments with a fixed pass mark.'},
-    {'step': 'Get discovered', 'text': 'An evidence-based profile, visible only with consent.'},
-    {'step': 'Work', 'text': 'Introductions to organisations with a real need.'},
-]
-
-VERIFICATION_STANDARD = [
-    {'key': 'identity', 'name': 'Identity', 'icon': 'ri-shield-user-line', 'status': 'in_development',
-     'question': 'Is this person who they say they are?',
-     'text': 'Verified email and account history today. Government ID checks before any introduction are being added to the standard.'},
-    {'key': 'skills', 'name': 'Skills', 'icon': 'ri-medal-line', 'status': 'live',
-     'question': 'Can they do what they claim?',
-     'text': 'Scored assessments for each skill track, with a fixed pass mark. Scores are recorded, not self-reported.'},
-    {'key': 'practical', 'name': 'Practical work', 'icon': 'ri-hammer-line', 'status': 'live',
-     'question': 'Have they done the work, not just studied it?',
-     'text': 'Practical tasks and projects reviewed against a quality bar before a skill counts as verified.'},
-    {'key': 'communication', 'name': 'Communication', 'icon': 'ri-chat-check-line', 'status': 'in_development',
-     'question': 'Can they work with your team?',
-     'text': 'Written and spoken communication review for client-facing roles. Being added to the standard.'},
-    {'key': 'profile', 'name': 'Evidence profile', 'icon': 'ri-profile-line', 'status': 'live',
-     'question': 'Can you see the proof?',
-     'text': 'One profile showing assessments passed, work reviewed and skills verified. Talent decide who can see it.'},
-]
-STATUS_LABELS = {'live': 'Live on Nelavista', 'in_development': 'Being added'}
-
-
 EMPLOYER_STEPS = [
-    {'n': '01', 'title': 'Tell us what you need', 'text': 'Role, skills, workload, timeline and how you want to engage. A few minutes, no account needed.'},
-    {'n': '02', 'title': 'We look for suitable people', 'text': 'Our team searches the network against your brief and checks the evidence behind each candidate.'},
-    {'n': '03', 'title': 'Review a short shortlist', 'text': 'A handful of relevant profiles with assessments, reviewed work and availability. Not a stack of CVs.'},
-    {'n': '04', 'title': 'Engage the right people', 'text': 'Interview, then hire, contract or outsource on terms agreed with you.'},
+    {'n': '01', 'title': 'Tell us what you’re hiring for.', 'text': 'Role, skills, workload, timeline and how you want to engage. A few minutes, no account needed.'},
+    {'n': '02', 'title': 'We identify relevant talent.', 'text': 'Our team searches the network against your brief and checks the evidence behind every candidate.'},
+    {'n': '03', 'title': 'Review a curated shortlist.', 'text': 'A focused set of profiles with assessment results, reviewed work and availability.'},
+    {'n': '04', 'title': 'Engage the professionals who fit.', 'text': 'Interview, then hire, contract or outsource on terms that suit your organisation.'},
 ]
 
 USE_CASES = [
-    {'title': 'Build a remote team', 'text': 'Start with two or three people and grow the team as the work proves out.', 'icon': 'ri-team-line'},
-    {'title': 'Handle operational overflow', 'text': 'Extra hands for seasonal peaks, backlogs and one-off clean-ups.', 'icon': 'ri-stack-line'},
-    {'title': 'Outsource a function', 'text': 'Hand over a defined function such as support, data or admin to a managed group.', 'icon': 'ri-git-branch-line'},
-    {'title': 'Staff a project', 'text': 'People for a fixed scope and timeline, from research sprints to design work.', 'icon': 'ri-flag-2-line'},
-    {'title': 'Scale customer support', 'text': 'Assessed support staff for chat, email and phone, across time zones.', 'icon': 'ri-customer-service-line'},
-    {'title': 'Add digital skills', 'text': 'Design, data, development and marketing skills your team is missing.', 'icon': 'ri-cpu-line'},
+    {'title': 'Build remote teams', 'text': 'Assemble a dependable remote team and grow it as the work grows.', 'icon': 'ri-team-line'},
+    {'title': 'Scale operations', 'text': 'Add trained people to operational work without slowing down.', 'icon': 'ri-stack-line'},
+    {'title': 'Outsource business functions', 'text': 'Hand over support, data or admin to a managed group.', 'icon': 'ri-git-branch-line'},
+    {'title': 'Find project-based talent', 'text': 'Specialists for a defined scope and timeline.', 'icon': 'ri-flag-2-line'},
+    {'title': 'Strengthen customer support', 'text': 'Assessed support professionals for chat, email and phone.', 'icon': 'ri-customer-service-line'},
+    {'title': 'Access specialist skills', 'text': 'Design, data, development and marketing expertise on demand.', 'icon': 'ri-cpu-line'},
+    {'title': 'Handle temporary workload', 'text': 'Cover peaks, backlogs and seasonal demand.', 'icon': 'ri-time-line'},
+    {'title': 'Add flexible capacity', 'text': 'Part-time and contract talent that flexes with your plans.', 'icon': 'ri-equalizer-line'},
 ]
 
+# What an employer sees beyond a CV. 'status' mirrors the vetting layer that backs it.
 EMPLOYER_SIGNALS = [
-    {'name': 'Verification status', 'text': 'Which checks a person has passed, and which are still pending.'},
-    {'name': 'Assessment results', 'text': 'Scores against a fixed pass mark, per skill.'},
-    {'name': 'Reviewed work', 'text': 'Projects and practical tasks, with the reviewer’s verdict.'},
-    {'name': 'Availability & time zone', 'text': 'Hours per week, start date, location and working-hours overlap.'},
-    {'name': 'Skill match', 'text': 'How their verified skills line up with your brief.'},
-    {'name': 'A person to talk to', 'text': 'Someone on our team handles your request, start to finish.'},
+    {'name': 'Relevant skills', 'text': 'Skills mapped to your role, not a keyword list.', 'status': 'live'},
+    {'name': 'Assessment results', 'text': 'Scores against a fixed pass mark, per skill.', 'status': 'live'},
+    {'name': 'Portfolio evidence', 'text': 'Projects and practical work, with the reviewer’s verdict.', 'status': 'live'},
+    {'name': 'Experience', 'text': 'Roles, responsibilities and the work delivered.', 'status': 'live'},
+    {'name': 'Availability', 'text': 'Hours, start date, time zone and preferred engagement.', 'status': 'live'},
+    {'name': 'Professional profile', 'text': 'A structured profile reviewed by our team.', 'status': 'live'},
+    {'name': 'Verified identity', 'text': 'Identity checks before introduction.', 'status': 'rolling_out'},
+]
+
+ECOSYSTEM = [
+    {'name': 'Skills', 'text': 'Structured skill tracks across technical and business roles.'},
+    {'name': 'Assessment', 'text': 'Role-based tests with recorded, comparable results.'},
+    {'name': 'Evidence', 'text': 'Practical work reviewed against a quality bar.'},
+    {'name': 'Professional profiles', 'text': 'One profile that shows what someone can actually do.'},
+    {'name': 'Opportunity', 'text': 'Introductions to organisations with real work.'},
 ]
 
 TALENT_JOURNEY = [
-    {'title': 'Create your profile', 'text': 'Your background, the work you want and when you are available.'},
-    {'title': 'Build skills', 'text': 'Structured tracks in support, data, design, development and more.'},
-    {'title': 'Pass assessments', 'text': 'Scored tests with a fixed pass mark. Your result goes on your profile.'},
-    {'title': 'Add real projects', 'text': 'Practical work reviewed against a quality bar.'},
-    {'title': 'Become discoverable', 'text': 'Choose to make your profile visible to organisations.'},
-    {'title': 'Receive opportunities', 'text': 'When your evidence matches a brief, we introduce you.'},
+    {'title': 'Build skills', 'text': 'Structured tracks in the skills employers hire for.'},
+    {'title': 'Demonstrate ability', 'text': 'Practical tasks that mirror real work.'},
+    {'title': 'Get assessed', 'text': 'Scored, role-based assessments.'},
+    {'title': 'Build your profile', 'text': 'Evidence, not just claims.'},
+    {'title': 'Get discovered', 'text': 'Visible to organisations, on your terms.'},
+    {'title': 'Work', 'text': 'Introductions when your evidence fits a brief.'},
 ]
 
-# Employer / partner logos. Add only with written permission to name the organisation:
-# {'name': 'Company', 'logo': 'images/talent/logos/company.svg', 'url': 'https://...'}
+AFRICA_POINTS = [
+    {'title': 'Capability', 'text': 'Professionals with skills that have been tested, not just listed.'},
+    {'title': 'Access', 'text': 'A curated route to talent across the continent, with a team that knows the network.'},
+    {'title': 'Working hours that overlap', 'text': 'West, Central and East African time zones sit within a few hours of Europe and the Middle East.'},
+]
+
+ABOUT = ('Nelavista Talent is part of Nelavista. It connects organisations with skilled professionals '
+         'through a talent ecosystem built around learning, skills, assessment and opportunity.')
+
+# ── Proof (real only) ────────────────────────────────────────────────────────────────────
+# Add only with written permission:
+# CLIENT_LOGOS: {'name', 'logo' (static path), 'url'}
+# TESTIMONIALS: {'quote', 'name', 'role', 'company'}
+# CASE_STUDIES: {'title', 'need', 'talent', 'work', 'result'}
 CLIENT_LOGOS: list[dict] = []
+TESTIMONIALS: list[dict] = []
+CASE_STUDIES: list[dict] = []
 
-# Published stories. Add only with the consent of everyone named, and only real outcomes.
-# kind 'talent': before / skills / assessment / project / outcome
-# kind 'employer': need / talent / work / result
-STORIES: list[dict] = []
+# ── Metrics (real only) ──────────────────────────────────────────────────────────────────
+# Fill these with counted numbers. None = hidden.
+METRICS = [
+    {'key': 'talent', 'label': 'Professionals in the network', 'value': None},
+    {'key': 'assessed', 'label': 'Professionals assessed', 'value': None},
+    {'key': 'companies', 'label': 'Companies served', 'value': None},
+    {'key': 'engagements', 'label': 'Successful engagements', 'value': None},
+    {'key': 'countries', 'label': 'Countries represented', 'value': None},
+]
+METRICS_MIN_TO_SHOW = 3
 
-# Optional editorial photograph for the employer section. Use only licensed photography of
-# real professionals (not AI-generated), e.g. {'src': 'images/talent/team.webp', 'alt': '...',
-# 'credit': 'Photographer / Source'}. None hides the image and the layout adapts.
-EDITORIAL_PHOTO: dict | None = None
+
+def build_metrics(assessment_tracks: int | None = None) -> list[dict]:
+    metrics = [m for m in METRICS if m['value']]
+    metrics.append({'key': 'categories', 'label': 'Talent categories', 'value': str(len(CATEGORIES))})
+    if assessment_tracks:
+        metrics.append({'key': 'tracks', 'label': 'Role-based assessment tracks', 'value': str(assessment_tracks)})
+    return metrics if len(metrics) >= METRICS_MIN_TO_SHOW else []
 
 
 # ── Request form options ─────────────────────────────────────────────────────────────────
 ENGAGEMENT_TYPES = [
-    ('full_time', 'Full-time hire'),
-    ('part_time', 'Part-time'),
-    ('contract', 'Fixed-term contract'),
-    ('project', 'Project-based'),
-    ('outsourced', 'Outsourced team or function'),
-    ('unsure', 'Not sure yet'),
+    ('full_time', 'Full-time hire'), ('part_time', 'Part-time'), ('contract', 'Fixed-term contract'),
+    ('project', 'Project-based'), ('outsourced', 'Outsourced team or function'), ('unsure', 'Not sure yet'),
 ]
 HEADCOUNTS = [('1', '1 person'), ('2-5', '2–5 people'), ('6-15', '6–15 people'), ('16+', '16 or more')]
 START_WINDOWS = [
@@ -189,150 +239,161 @@ def label_for(options, value):
     return dict(options).get(value, value or '')
 
 
-# ── Sample profiles ──────────────────────────────────────────────────────────────────────
-# Illustrative only. Data shape matches what a real profile will carry, so the templates
-# need no change when real talent replaces these.
-# checks: identity | skills | practical | communication -> 'verified' | 'pending' | 'not_started'
-SAMPLE_PROFILES = [
+# ── Preview profiles ─────────────────────────────────────────────────────────────────────
+# Anonymous by design: they show the profile format, not people. `checks` keys are
+# VETTING_LAYERS keys -> 'verified' | 'pending'. Only live layers are shown as badges.
+LEVELS = ['Entry', 'Mid-level', 'Senior']
+WORK_TYPES = ['Full-time', 'Part-time', 'Contract', 'Project-based']
+
+PREVIEW_PROFILES = [
     {
-        'slug': 'sample-adebayo-o', 'name': 'Adebayo O.', 'initials': 'AO', 'tone': 'blue',
-        'role': 'Customer Support Specialist', 'category': 'customer-support',
-        'location': 'Lagos, Nigeria', 'timezone': 'WAT (UTC+1)',
-        'availability': 'available', 'availability_text': 'Available now', 'hours': '40 hrs / week',
-        'engagements': ['Full-time', 'Contract'], 'level': 'Mid-level',
-        'skills': ['Customer Support', 'Zendesk', 'Written Communication', 'Data Entry'],
-        'languages': [('English', 'Fluent'), ('Yoruba', 'Native')],
-        'summary': 'Handles high-volume chat and email support with a steady tone. Strongest on ticket triage, clear written replies and keeping CRM records clean.',
-        'checks': {'identity': 'verified', 'skills': 'verified', 'practical': 'verified', 'communication': 'pending'},
-        'assessments': [
-            {'name': 'Customer Support Fundamentals', 'score': 86, 'pass': 70},
-            {'name': 'Written Communication', 'score': 81, 'pass': 70},
-        ],
-        'projects': [
-            {'title': 'Support macro library', 'text': 'Rewrote 30 reply templates for a simulated e-commerce helpdesk; reviewed for tone and accuracy.', 'status': 'Reviewed'},
-            {'title': 'Ticket triage exercise', 'text': 'Categorised and prioritised 120 sample tickets against an SLA policy.', 'status': 'Reviewed'},
-        ],
-        'experience': [
-            {'title': 'Support volunteer', 'org': 'University student union', 'period': '2024 – 2025'},
-        ],
-        'portfolio': True, 'completeness': 90,
+        'slug': 'preview-customer-support-specialist', 'role': 'Customer Support Specialist',
+        'category': 'customer-experience', 'country': 'Nigeria', 'timezone': 'WAT · UTC+1',
+        'level': 'Mid-level', 'years': '3 years', 'availability': 'available', 'availability_text': 'Available now',
+        'hours': '40 hrs / week', 'work_types': ['Full-time', 'Contract'],
+        'skills': ['Customer Support', 'Zendesk', 'CRM', 'Operations', 'Written Communication'],
+        'languages': [('English', 'Professional'), ('Yoruba', 'Native')],
+        'summary': 'Handles high-volume chat and email support with a calm, clear tone. Strongest on ticket triage, accurate written replies and keeping CRM records clean.',
+        'checks': {'skills': 'verified', 'practical': 'verified', 'profile': 'verified'},
+        'assessments': [{'name': 'Customer Support Fundamentals', 'score': 86, 'pass': 70},
+                        {'name': 'Written Communication', 'score': 81, 'pass': 70}],
+        'projects': [{'title': 'Support macro library', 'text': 'Rewrote 30 reply templates for an e-commerce helpdesk, reviewed for tone and accuracy.', 'status': 'Reviewed'},
+                     {'title': 'Ticket triage exercise', 'text': 'Categorised and prioritised 120 tickets against an SLA policy.', 'status': 'Reviewed'}],
+        'experience': [{'title': 'Customer support associate', 'org': 'E-commerce retailer', 'period': '2 years'},
+                       {'title': 'Front desk & client service', 'org': 'Professional services firm', 'period': '1 year'}],
+        'portfolio': 2, 'completeness': 92,
+        'preferences': ['Remote', 'Customer-facing roles', 'Overlap with UK/EU hours'],
     },
     {
-        'slug': 'sample-amara-n', 'name': 'Amara N.', 'initials': 'AN', 'tone': 'green',
-        'role': 'Data Operations Assistant', 'category': 'data-operations',
-        'location': 'Enugu, Nigeria', 'timezone': 'WAT (UTC+1)',
-        'availability': 'available', 'availability_text': 'Available in 2 weeks', 'hours': '30 hrs / week',
-        'engagements': ['Part-time', 'Project-based'], 'level': 'Entry-level',
-        'skills': ['Data Entry', 'Excel', 'Google Sheets', 'Data Cleaning'],
-        'languages': [('English', 'Fluent'), ('Igbo', 'Native')],
-        'summary': 'Accurate, methodical data work. Comfortable cleaning messy spreadsheets, building simple lookups and documenting each step.',
-        'checks': {'identity': 'verified', 'skills': 'verified', 'practical': 'pending', 'communication': 'not_started'},
-        'assessments': [{'name': 'Spreadsheet Skills', 'score': 92, 'pass': 70}],
-        'projects': [
-            {'title': 'Inventory clean-up', 'text': 'De-duplicated and standardised a 4,000-row product sheet.', 'status': 'In review'},
-        ],
-        'experience': [],
-        'portfolio': True, 'completeness': 75,
+        'slug': 'preview-frontend-developer', 'role': 'Front-end Developer',
+        'category': 'technology', 'country': 'Ghana', 'timezone': 'GMT · UTC+0',
+        'level': 'Mid-level', 'years': '4 years', 'availability': 'limited', 'availability_text': 'From next month',
+        'hours': '30 hrs / week', 'work_types': ['Contract', 'Project-based'],
+        'skills': ['React', 'TypeScript', 'HTML & CSS', 'Accessibility', 'Git'],
+        'languages': [('English', 'Professional'), ('Twi', 'Native')],
+        'summary': 'Builds fast, accessible interfaces from design files. Comfortable owning a feature end to end and writing clear pull requests.',
+        'checks': {'skills': 'verified', 'practical': 'verified', 'profile': 'verified'},
+        'assessments': [{'name': 'Front-end Engineering', 'score': 84, 'pass': 70},
+                        {'name': 'JavaScript & TypeScript', 'score': 79, 'pass': 70}],
+        'projects': [{'title': 'Booking flow rebuild', 'text': 'Rebuilt a multi-step booking flow in React with form validation and tests.', 'status': 'Reviewed'}],
+        'experience': [{'title': 'Front-end developer', 'org': 'Fintech product team', 'period': '2 years'},
+                       {'title': 'Freelance web developer', 'org': 'Independent', 'period': '2 years'}],
+        'portfolio': 3, 'completeness': 95,
+        'preferences': ['Remote', 'Product teams', 'Async-friendly'],
     },
     {
-        'slug': 'sample-kwame-a', 'name': 'Kwame A.', 'initials': 'KA', 'tone': 'amber',
-        'role': 'Junior Web Developer', 'category': 'technology',
-        'location': 'Accra, Ghana', 'timezone': 'GMT (UTC+0)',
-        'availability': 'limited', 'availability_text': 'Part-time only', 'hours': '20 hrs / week',
-        'engagements': ['Contract', 'Project-based'], 'level': 'Entry-level',
-        'skills': ['HTML & CSS', 'JavaScript', 'React', 'Git'],
-        'languages': [('English', 'Fluent'), ('Twi', 'Native')],
-        'summary': 'Builds clean, responsive front ends. Most comfortable turning a design into working pages and fixing layout bugs across devices.',
-        'checks': {'identity': 'verified', 'skills': 'verified', 'practical': 'verified', 'communication': 'verified'},
-        'assessments': [
-            {'name': 'Front-end Foundations', 'score': 78, 'pass': 70},
-            {'name': 'JavaScript Essentials', 'score': 74, 'pass': 70},
-        ],
-        'projects': [
-            {'title': 'Booking page rebuild', 'text': 'Rebuilt a salon booking page from a Figma file; tested on three screen sizes.', 'status': 'Reviewed'},
-        ],
-        'experience': [
-            {'title': 'Freelance web projects', 'org': 'Independent', 'period': '2025 – present'},
-        ],
-        'portfolio': True, 'completeness': 95,
+        'slug': 'preview-data-operations-analyst', 'role': 'Data Operations Analyst',
+        'category': 'operations', 'country': 'Kenya', 'timezone': 'EAT · UTC+3',
+        'level': 'Mid-level', 'years': '3 years', 'availability': 'available', 'availability_text': 'Available now',
+        'hours': '40 hrs / week', 'work_types': ['Full-time', 'Contract'],
+        'skills': ['Excel', 'Google Sheets', 'SQL', 'Data Cleaning', 'Reporting'],
+        'languages': [('English', 'Professional'), ('Swahili', 'Native')],
+        'summary': 'Turns messy operational data into clean, reliable reports. Methodical, documents every step, and flags anomalies early.',
+        'checks': {'skills': 'verified', 'practical': 'verified', 'profile': 'pending'},
+        'assessments': [{'name': 'Spreadsheet & Data Operations', 'score': 91, 'pass': 70}],
+        'projects': [{'title': 'Inventory reconciliation', 'text': 'De-duplicated and reconciled a 4,000-row product dataset against supplier records.', 'status': 'Reviewed'}],
+        'experience': [{'title': 'Operations analyst', 'org': 'Logistics company', 'period': '3 years'}],
+        'portfolio': 2, 'completeness': 84,
+        'preferences': ['Remote or hybrid', 'Operations teams'],
     },
     {
-        'slug': 'sample-wanjiru-k', 'name': 'Wanjiru K.', 'initials': 'WK', 'tone': 'violet',
-        'role': 'Virtual Assistant', 'category': 'virtual-assistance',
-        'location': 'Nairobi, Kenya', 'timezone': 'EAT (UTC+3)',
-        'availability': 'available', 'availability_text': 'Available now', 'hours': '40 hrs / week',
-        'engagements': ['Full-time', 'Part-time'], 'level': 'Mid-level',
-        'skills': ['Calendar Management', 'Google Workspace', 'Notion', 'Inbox Management'],
-        'languages': [('English', 'Fluent'), ('Swahili', 'Native')],
-        'summary': 'Keeps busy calendars and inboxes under control. Organised, quick to respond and careful with confidential information.',
-        'checks': {'identity': 'verified', 'skills': 'verified', 'practical': 'verified', 'communication': 'pending'},
-        'assessments': [{'name': 'Admin & Productivity Tools', 'score': 88, 'pass': 70}],
-        'projects': [
-            {'title': 'Executive week plan', 'text': 'Planned a week of meetings across three time zones from a messy request thread.', 'status': 'Reviewed'},
-        ],
-        'experience': [
-            {'title': 'Office administrator', 'org': 'Small accounting practice', 'period': '2023 – 2025'},
-        ],
-        'portfolio': False, 'completeness': 85,
+        'slug': 'preview-product-designer', 'role': 'Product Designer (UI/UX)',
+        'category': 'design', 'country': 'Nigeria', 'timezone': 'WAT · UTC+1',
+        'level': 'Senior', 'years': '6 years', 'availability': 'available', 'availability_text': 'Available now',
+        'hours': '25 hrs / week', 'work_types': ['Contract', 'Project-based'],
+        'skills': ['Figma', 'UX Research', 'Design Systems', 'Prototyping'],
+        'languages': [('English', 'Professional')],
+        'summary': 'Designs clear, restrained products and the systems behind them. Works from research, shows options early and documents decisions.',
+        'checks': {'skills': 'verified', 'practical': 'verified', 'profile': 'verified'},
+        'assessments': [{'name': 'Product Design Principles', 'score': 88, 'pass': 70}],
+        'projects': [{'title': 'Clinic appointment app', 'text': 'Research, flows and a small component library for a patient booking app.', 'status': 'Reviewed'},
+                     {'title': 'Design system audit', 'text': 'Consolidated 60 inconsistent components into 18 documented ones.', 'status': 'Reviewed'}],
+        'experience': [{'title': 'Senior product designer', 'org': 'SaaS company', 'period': '3 years'},
+                       {'title': 'UI designer', 'org': 'Digital agency', 'period': '3 years'}],
+        'portfolio': 5, 'completeness': 97,
+        'preferences': ['Remote', 'Product teams', 'Design systems work'],
     },
     {
-        'slug': 'sample-tobi-f', 'name': 'Tobi F.', 'initials': 'TF', 'tone': 'rose',
-        'role': 'Graphic & UI Designer', 'category': 'design-creative',
-        'location': 'Ibadan, Nigeria', 'timezone': 'WAT (UTC+1)',
-        'availability': 'available', 'availability_text': 'Available now', 'hours': '25 hrs / week',
-        'engagements': ['Project-based', 'Contract'], 'level': 'Mid-level',
-        'skills': ['Figma', 'Brand Design', 'UI Design', 'Presentation Design'],
-        'languages': [('English', 'Fluent')],
-        'summary': 'Designs clear, restrained interfaces and brand material. Works from a brief, shows options early and documents decisions.',
-        'checks': {'identity': 'pending', 'skills': 'verified', 'practical': 'verified', 'communication': 'not_started'},
-        'assessments': [{'name': 'UI Design Principles', 'score': 83, 'pass': 70}],
-        'projects': [
-            {'title': 'Clinic appointment app', 'text': 'Designed five core screens and a small component set in Figma.', 'status': 'Reviewed'},
-            {'title': 'Pitch deck redesign', 'text': 'Restructured and redesigned a 14-slide investor deck.', 'status': 'Reviewed'},
-        ],
-        'experience': [],
-        'portfolio': True, 'completeness': 80,
+        'slug': 'preview-digital-marketing-specialist', 'role': 'Digital Marketing Specialist',
+        'category': 'marketing', 'country': 'South Africa', 'timezone': 'SAST · UTC+2',
+        'level': 'Mid-level', 'years': '4 years', 'availability': 'available', 'availability_text': 'Available in 2 weeks',
+        'hours': '40 hrs / week', 'work_types': ['Full-time', 'Part-time'],
+        'skills': ['Paid Social', 'Google Ads', 'Content Strategy', 'Analytics'],
+        'languages': [('English', 'Professional'), ('isiZulu', 'Native')],
+        'summary': 'Plans and runs paid and organic campaigns with a close eye on numbers. Writes sharp copy and reports results plainly.',
+        'checks': {'skills': 'verified', 'practical': 'pending', 'profile': 'verified'},
+        'assessments': [{'name': 'Digital Marketing', 'score': 82, 'pass': 70}],
+        'projects': [{'title': 'Campaign teardown', 'text': 'Audited a paid social account and rebuilt the targeting and creative plan.', 'status': 'In review'}],
+        'experience': [{'title': 'Marketing executive', 'org': 'Consumer brand', 'period': '4 years'}],
+        'portfolio': 2, 'completeness': 86,
+        'preferences': ['Remote', 'Growth teams'],
     },
     {
-        'slug': 'sample-fatima-b', 'name': 'Fatima B.', 'initials': 'FB', 'tone': 'teal',
-        'role': 'Research Assistant', 'category': 'research',
-        'location': 'Abuja, Nigeria', 'timezone': 'WAT (UTC+1)',
-        'availability': 'limited', 'availability_text': 'From next month', 'hours': '20 hrs / week',
-        'engagements': ['Project-based', 'Part-time'], 'level': 'Entry-level',
+        'slug': 'preview-executive-assistant', 'role': 'Executive Assistant',
+        'category': 'virtual-assistance', 'country': 'Kenya', 'timezone': 'EAT · UTC+3',
+        'level': 'Senior', 'years': '7 years', 'availability': 'available', 'availability_text': 'Available now',
+        'hours': '40 hrs / week', 'work_types': ['Full-time', 'Part-time'],
+        'skills': ['Calendar Management', 'Google Workspace', 'Notion', 'Travel Planning'],
+        'languages': [('English', 'Professional'), ('Swahili', 'Native')],
+        'summary': 'Keeps busy executives organised across time zones. Discreet, quick to respond and careful with confidential information.',
+        'checks': {'skills': 'verified', 'practical': 'verified', 'profile': 'verified'},
+        'assessments': [{'name': 'Executive Support & Tools', 'score': 90, 'pass': 70}],
+        'projects': [{'title': 'Executive week plan', 'text': 'Planned a week of meetings across three time zones from an unstructured request thread.', 'status': 'Reviewed'}],
+        'experience': [{'title': 'Executive assistant', 'org': 'Regional consultancy', 'period': '5 years'},
+                       {'title': 'Office administrator', 'org': 'Accounting practice', 'period': '2 years'}],
+        'portfolio': 1, 'completeness': 90,
+        'preferences': ['Remote', 'Executive support'],
+    },
+    {
+        'slug': 'preview-financial-analyst', 'role': 'Financial Analyst',
+        'category': 'finance-business', 'country': 'Nigeria', 'timezone': 'WAT · UTC+1',
+        'level': 'Mid-level', 'years': '4 years', 'availability': 'limited', 'availability_text': 'Part-time only',
+        'hours': '20 hrs / week', 'work_types': ['Part-time', 'Project-based'],
+        'skills': ['Financial Modelling', 'Excel', 'Bookkeeping', 'Reporting'],
+        'languages': [('English', 'Professional'), ('Igbo', 'Native')],
+        'summary': 'Builds clean financial models and monthly reporting packs. Comfortable with bookkeeping support and variance analysis.',
+        'checks': {'skills': 'verified', 'practical': 'verified', 'profile': 'verified'},
+        'assessments': [{'name': 'Financial Analysis', 'score': 83, 'pass': 70}],
+        'projects': [{'title': 'Three-statement model', 'text': 'Built a linked three-statement model for a small retail business.', 'status': 'Reviewed'}],
+        'experience': [{'title': 'Finance associate', 'org': 'Advisory firm', 'period': '4 years'}],
+        'portfolio': 2, 'completeness': 88,
+        'preferences': ['Remote', 'Project work'],
+    },
+    {
+        'slug': 'preview-research-analyst', 'role': 'Research Analyst',
+        'category': 'research', 'country': 'Rwanda', 'timezone': 'CAT · UTC+2',
+        'level': 'Entry', 'years': '2 years', 'availability': 'available', 'availability_text': 'Available now',
+        'hours': '30 hrs / week', 'work_types': ['Contract', 'Project-based'],
         'skills': ['Desk Research', 'Survey Design', 'Data Collection', 'Report Writing'],
-        'languages': [('English', 'Fluent'), ('Hausa', 'Native')],
-        'summary': 'Thorough desk researcher who writes concise summaries with sources. Has run small surveys and cleaned the results.',
-        'checks': {'identity': 'verified', 'skills': 'pending', 'practical': 'verified', 'communication': 'verified'},
-        'assessments': [],
-        'projects': [
-            {'title': 'Market scan: solar retail', 'text': 'Compiled a sourced overview of 20 solar retailers in two states.', 'status': 'Reviewed'},
-        ],
-        'experience': [
-            {'title': 'Field enumerator', 'org': 'Household survey project', 'period': '2024'},
-        ],
-        'portfolio': True, 'completeness': 70,
+        'languages': [('English', 'Professional'), ('French', 'Professional'), ('Kinyarwanda', 'Native')],
+        'summary': 'Thorough researcher who writes concise, sourced summaries. Has designed and run surveys and cleaned the results.',
+        'checks': {'skills': 'verified', 'practical': 'verified', 'profile': 'pending'},
+        'assessments': [{'name': 'Research Methods', 'score': 80, 'pass': 70}],
+        'projects': [{'title': 'Market scan: solar retail', 'text': 'Compiled a sourced overview of 20 solar retailers across two markets.', 'status': 'Reviewed'}],
+        'experience': [{'title': 'Research assistant', 'org': 'Policy research group', 'period': '2 years'}],
+        'portfolio': 2, 'completeness': 80,
+        'preferences': ['Remote', 'Research projects', 'French-speaking markets'],
     },
 ]
-SAMPLE_BY_SLUG = {p['slug']: p for p in SAMPLE_PROFILES}
-
-CHECK_LABELS = {
-    'identity': 'Identity', 'skills': 'Skills assessed',
-    'practical': 'Practical work reviewed', 'communication': 'Communication reviewed',
-}
-CHECK_STATE_LABELS = {'verified': 'Verified', 'pending': 'In progress', 'not_started': 'Not yet'}
+PREVIEW_BY_SLUG = {p['slug']: p for p in PREVIEW_PROFILES}
+COUNTRIES = sorted({p['country'] for p in PREVIEW_PROFILES})
 
 
-def verified_count(profile: dict) -> int:
-    return sum(1 for v in profile['checks'].values() if v == 'verified')
+def badges(profile: dict) -> list[dict]:
+    """Verified badges for a profile: only layers that are live and verified for them."""
+    return [layer for layer in LIVE_BADGES if profile['checks'].get(layer['key']) == 'verified']
+
+
+def is_vetted(profile: dict) -> bool:
+    return all(profile['checks'].get(layer['key']) == 'verified' for layer in LIVE_BADGES)
 
 
 def featured_talent() -> list[dict]:
-    """Profiles for the public directory. Today: the labelled samples. When real talent
-    have opted in to public visibility, build their cards here from
-    services/talent_search_service and set 'is_sample': False on them."""
-    return [dict(p, is_sample=True) for p in SAMPLE_PROFILES]
+    """Profiles for the public directory. Today: labelled previews. When real professionals
+    have consented to a public profile, build their cards here and set is_preview False."""
+    return [dict(p, is_preview=True) for p in PREVIEW_PROFILES]
 
 
 def get_profile(slug: str) -> dict | None:
-    p = SAMPLE_BY_SLUG.get(slug)
-    return dict(p, is_sample=True) if p else None
+    p = PREVIEW_BY_SLUG.get(slug)
+    return dict(p, is_preview=True) if p else None

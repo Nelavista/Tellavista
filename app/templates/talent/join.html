@@ -1,78 +1,87 @@
 {% extends 'talent/base.html' %}
+{% from 'talent/_macros.html' import picture %}
 {% block title %}Join the Talent Network | Nelavista Talent{% endblock %}
-{% block description %}Build a profile that proves what you can do. Learn, pass assessments, add reviewed work and become discoverable by organisations looking for your skills.{% endblock %}
+{% block description %}Build a professional profile that shows what you can do. Get assessed, add reviewed work and become discoverable by organisations looking for relevant skills.{% endblock %}
 {% block canonical %}{{ url_for('talent.join', _external=True) }}{% endblock %}
+{% block og_image %}{{ tn.photo_src('at_work', 1200, 630) }}{% endblock %}
 
 {% block content %}
-<section class="tn-join-hero" aria-labelledby="join-h">
-  <div class="tn-wrap">
-    <p class="tn-eyebrow">For talent</p>
-    <h1 id="join-h">Build a profile that proves what you can do.</h1>
-    <p class="tn-lede">Skills are better when you can prove them. On Nelavista you learn, pass assessments and add reviewed work, so organisations see evidence instead of claims.</p>
-    <div class="tn-cta-row">
+<section class="tx-join-hero" aria-labelledby="join-h">
+  <div class="tx-hero-copy">
+    <p class="tx-eyebrow">For professionals</p>
+    <h1 id="join-h">Ready to be discovered?</h1>
+    <p class="tx-lede">Build a professional profile that shows what you can do. Get assessed, add reviewed work, and become discoverable by organisations looking for relevant skills.</p>
+    <div class="tx-cta-row">
       {% if logged_in %}
-      <a class="tn-btn tn-btn-primary tn-btn-lg" href="/skills/talent">Open your talent profile <i class="ri-arrow-right-line" aria-hidden="true"></i></a>
-      <a class="tn-btn tn-btn-ghost tn-btn-lg" href="/skills">Browse skill tracks</a>
+      <a class="tx-btn tx-btn-primary tx-btn-lg" href="/skills/talent">Open your talent profile <i class="ri-arrow-right-line" aria-hidden="true"></i></a>
+      <a class="tx-btn tx-btn-ghost tx-btn-lg" href="/skills">Browse skill tracks</a>
       {% else %}
-      <a class="tn-btn tn-btn-primary tn-btn-lg" href="/signup">Create your free account <i class="ri-arrow-right-line" aria-hidden="true"></i></a>
-      <a class="tn-btn tn-btn-ghost tn-btn-lg" href="/login">I already have an account</a>
+      <a class="tx-btn tx-btn-primary tx-btn-lg" href="/signup">Join the Talent Network <i class="ri-arrow-right-line" aria-hidden="true"></i></a>
+      <a class="tx-btn tx-btn-ghost tx-btn-lg" href="/login">Sign in</a>
       {% endif %}
     </div>
   </div>
+  <figure class="tx-hero-media">
+    {{ picture(tn, 'at_work', '(max-width: 900px) 100vw, 45vw', 1.1, eager=true) }}
+  </figure>
 </section>
 
-<section class="tn-section" aria-labelledby="how-h">
-  <div class="tn-wrap">
-    <div class="tn-head">
-      <p class="tn-eyebrow">How it works</p>
-      <h2 id="how-h">From skills to being discovered.</h2>
+<section class="tx-section" aria-labelledby="how-h">
+  <div class="tx-wrap">
+    <div class="tx-head tx-head-split">
+      <div>
+        <p class="tx-eyebrow">How it works</p>
+        <h2 id="how-h">Skills are stronger when you can prove them.</h2>
+      </div>
+      <p class="tx-head-text">Your profile grows with every skill you build, every assessment you pass and every piece of work that gets reviewed. That evidence is what organisations see.</p>
     </div>
-    <ol class="tn-journey">
+    <ol class="tx-join-steps">
       {% for j in tn.TALENT_JOURNEY %}
-      <li><span class="tn-journey-n">{{ loop.index }}</span><h3>{{ j.title }}</h3><p>{{ j.text }}</p></li>
+      <li><span class="tx-step-n">{{ '%02d' % loop.index }}</span><h3>{{ j.title }}</h3><p>{{ j.text }}</p></li>
       {% endfor %}
     </ol>
   </div>
 </section>
 
-<section class="tn-section tn-section-alt" aria-labelledby="promise-h">
-  <div class="tn-wrap">
-    <div class="tn-head tn-head-split">
+<section class="tx-section tx-section-warm" aria-labelledby="std-h">
+  <div class="tx-wrap">
+    <div class="tx-head tx-head-split">
       <div>
-        <p class="tn-eyebrow">Straight talk</p>
-        <h2 id="promise-h">What we do, and what we don't.</h2>
+        <p class="tx-eyebrow">Your profile</p>
+        <h2 id="std-h">What a strong Nelavista Talent profile shows.</h2>
       </div>
-      <p class="tn-head-text">Nelavista Talent is a professional network, not a job board. Organisations come to us with real work, and we introduce people whose evidence fits.</p>
+      <p class="tx-head-text">Professionals who meet the standard earn the Vetted Talent mark, the clearest signal an employer sees.</p>
     </div>
-    <div class="tn-promise">
-      <div class="is-do">
-        <h3><i class="ri-checkbox-circle-line" aria-hidden="true"></i>We will</h3>
+    <div class="tx-promise">
+      <div>
+        <h3><i class="ri-checkbox-circle-line" aria-hidden="true"></i>Evidence employers look for</h3>
         <ul>
-          <li>Help you build skills through structured tracks</li>
-          <li>Record your assessment results and reviewed work</li>
-          <li>Show organisations your profile only if you choose to</li>
-          <li>Introduce you when your evidence matches a real brief</li>
+          <li>Assessment results for the skills you list</li>
+          <li>Practical work, reviewed against a quality bar</li>
+          <li>Experience, languages and work preferences</li>
+          <li>Availability, hours and time zone</li>
         </ul>
       </div>
-      <div class="is-dont">
-        <h3><i class="ri-close-circle-line" aria-hidden="true"></i>We won't</h3>
+      <div>
+        <h3><i class="ri-shield-check-line" aria-hidden="true"></i>You stay in control</h3>
         <ul>
-          <li>Promise you a job for signing up</li>
-          <li>Mark a check as passed before you have passed it</li>
-          <li>Share your profile without your consent</li>
+          <li>You decide whether organisations can see your profile</li>
+          <li>Badges appear only for checks you have passed</li>
+          <li>We introduce you when your evidence matches a real brief</li>
+          <li>No promises of employment, just credible visibility</li>
         </ul>
       </div>
     </div>
   </div>
 </section>
 
-<section class="tn-final" aria-labelledby="jf-h">
-  <div class="tn-wrap tn-final-inner">
-    <h2 id="jf-h">Start building your evidence.</h2>
-    <p>Your profile grows with every skill you learn and every piece of work that gets reviewed.</p>
-    <div class="tn-cta-row">
-      <a class="tn-btn tn-btn-white tn-btn-lg" href="{{ '/skills/talent' if logged_in else '/signup' }}">Join the Talent Network</a>
-      <a class="tn-btn tn-btn-outline-light tn-btn-lg" href="{{ url_for('talent.home') }}#standard">See the standard</a>
+<section class="tx-final" aria-labelledby="jf-h">
+  <div class="tx-wrap tx-final-inner">
+    <h2 id="jf-h">Build a profile that shows what you can do.</h2>
+    <p>Become discoverable by organisations looking for relevant skills.</p>
+    <div class="tx-cta-row">
+      <a class="tx-btn tx-btn-white tx-btn-lg" href="{{ '/skills/talent' if logged_in else '/signup' }}">Join the Talent Network</a>
+      <a class="tx-btn tx-btn-outline-light tx-btn-lg" href="{{ url_for('talent.home') }}#vetted">See the standard</a>
     </div>
   </div>
 </section>

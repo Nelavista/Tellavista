@@ -1,39 +1,40 @@
 {% set nav_links = [
-  ('/talent#talent', 'Talent', 'Browse sample profiles'),
-  ('/talent#employers', 'For Employers', 'How we work with organisations'),
-  ('/talent#how', 'How It Works', 'From brief to shortlist'),
-  ('/talent#categories', 'Skills', 'Categories we cover'),
-  ('/impact', 'About', 'Nelavista’s track record'),
+  ('/talent#talent', 'Talent', 'Explore profile previews'),
+  ('/talent#employers', 'For Employers', 'Hire through a curated shortlist'),
+  ('/talent#how', 'How It Works', 'From brief to engagement'),
+  ('/talent#categories', 'Categories', 'The skills we cover'),
+  ('/talent#about', 'About', 'Nelavista Talent'),
 ] %}
-<header class="tn-header" data-tn-header>
-  <div class="tn-wrap tn-nav">
-    <a class="tn-brand" href="{{ url_for('talent.home') }}" aria-label="Nelavista Talent home">
+<header class="tx-header" data-tn-header>
+  <div class="tx-wrap tx-nav">
+    <a class="tx-brand" href="{{ url_for('talent.home') }}" aria-label="Nelavista Talent home">
       <img src="{{ url_for('static', filename='icons/nelavista-96x96.png') }}" alt="" width="28" height="28">
-      <span class="tn-brand-name">Nelavista</span><span class="tn-brand-sub">Talent</span>
+      <span class="tx-brand-name">Nelavista</span><span class="tx-brand-sub">Talent</span>
     </a>
-    <nav class="tn-nav-links" aria-label="Primary">
+    <nav class="tx-nav-links" aria-label="Primary">
       {% for href, label, _ in nav_links %}<a href="{{ href }}">{{ label }}</a>{% endfor %}
     </nav>
-    <div class="tn-nav-actions">
-      <a class="tn-nav-join" href="{{ url_for('talent.join') }}">Join as Talent</a>
-      <a class="tn-btn tn-btn-primary tn-btn-sm" href="{{ url_for('talent.request_talent') }}">Request Talent</a>
+    <div class="tx-nav-actions">
+      <a class="tx-nav-join" href="{{ url_for('talent.join') }}">Join as Talent</a>
+      <a class="tx-btn tx-btn-primary tx-btn-sm" href="{{ url_for('talent.request_talent') }}">Request Talent</a>
     </div>
-    <button class="tn-menu-btn" type="button" aria-expanded="false" aria-controls="tn-mobile-menu" data-tn-menu>
-      <span class="tn-sr">Menu</span>
-      <span class="tn-menu-icon" aria-hidden="true"><span></span><span></span></span>
+    <button class="tx-menu-btn" type="button" aria-expanded="false" aria-controls="tx-mobile-menu" data-tn-menu>
+      <span class="tx-sr">Menu</span>
+      <span class="tx-menu-icon" aria-hidden="true"><span></span><span></span></span>
     </button>
   </div>
-  <div class="tn-mobile" id="tn-mobile-menu" hidden data-tn-mobile>
+  <div class="tx-mobile" id="tx-mobile-menu" hidden data-tn-mobile>
     <nav aria-label="Mobile">
       <ul>
         {% for href, label, hint in nav_links %}
-        <li><a href="{{ href }}"><span>{{ label }}</span><small>{{ hint }}</small><i class="ri-arrow-right-up-line" aria-hidden="true"></i></a></li>
+        <li><a href="{{ href }}"><span>{{ label }}</span><small>{{ hint }}</small><i class="ri-arrow-right-line" aria-hidden="true"></i></a></li>
         {% endfor %}
       </ul>
     </nav>
-    <div class="tn-mobile-cta">
-      <a class="tn-btn tn-btn-primary tn-btn-lg" href="{{ url_for('talent.request_talent') }}">Request Talent</a>
-      <a class="tn-btn tn-btn-ghost tn-btn-lg" href="{{ url_for('talent.join') }}">Join as Talent</a>
+    <div class="tx-mobile-cta">
+      <a class="tx-btn tx-btn-primary tx-btn-lg" href="{{ url_for('talent.request_talent') }}">Request Talent</a>
+      <a class="tx-btn tx-btn-ghost tx-btn-lg" href="{{ url_for('talent.join') }}">Join as Talent</a>
+      <a class="tx-mobile-wa" href="{{ whatsapp_url }}" target="_blank" rel="noopener"><i class="ri-whatsapp-line" aria-hidden="true"></i>Talk to our team on WhatsApp</a>
     </div>
   </div>
 </header>

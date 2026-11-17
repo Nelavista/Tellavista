@@ -1,6 +1,6 @@
-"""Nelavista Talent (/talent): public pages render, the honesty rules hold (no unverified
-figures, samples always labelled and noindex), the Request Talent form validates and
-stores leads, and the admin queue is admin-only."""
+"""Nelavista Talent (/talent): public pages render, the honesty rules hold (no invented
+metrics, anonymous labelled previews, badges only for live checks, no student framing),
+the Request Talent form validates and stores leads, and the admin queue is admin-only."""
 import pytest
 
 from app.extensions import db, limiter
@@ -27,37 +27,45 @@ def tclient(talent_app):
 VALID = {
     'contact_name': 'Ada Okafor', 'company_name': 'Example Ltd', 'work_email': 'Ada@Example.com',
     'need_summary': 'Two chat support agents for evening cover.', 'engagement_type': 'contract',
-    'category': 'customer-support', 'headcount': '2-5', 'budget_range': 'discuss',
+    'category': 'customer-experience', 'headcount': '2-5', 'budget_range': 'discuss',
 }
 
 
 # ---------------------------------------------------------------- content rules
 
-def test_hidden_figures_never_render():
-    figures = tn.build_figures({'skill_count': 12, 'university_count': 1})
-    keys = [f['key'] for f in figures]
-    assert 'assessed' not in keys and 'introductions' not in keys   # value None = hidden
-    assert all(f['value'] for f in figures)
-    assert keys[:2] == ['reached', 'trained_ai']
-    assert 'University live on Nelavista' in [f['label'] for f in figures]
+def test_metrics_hidden_until_enough_real_numbers(monkeypatch):
+    assert all(m['value'] is None for m in tn.METRICS)       # nothing invented ships
+    assert tn.build_metrics(None) == [] and tn.build_metrics(12) == []
+    monkeypatch.setattr(tn, 'METRICS', [{'key': 'talent', 'label': 'Professionals', 'value': '120'}])
+    keys = [m['key'] for m in tn.build_metrics(12)]
+    assert keys == ['talent', 'categories', 'tracks']
 
 
-def test_live_figures_skipped_when_zero():
-    keys = [f['key'] for f in tn.build_figures({'skill_count': 0, 'university_count': 0})]
-    assert 'skills' not in keys and 'universities' not in keys
-
-
-def test_every_public_profile_is_marked_sample():
-    assert tn.featured_talent() and all(p['is_sample'] for p in tn.featured_talent())
-    for p in tn.SAMPLE_PROFILES:
-        assert p['slug'].startswith('sample-')
+def test_previews_are_anonymous_and_labelled():
+    talent = tn.featured_talent()
+    assert talent and all(p['is_preview'] for p in talent)
+    for p in tn.PREVIEW_PROFILES:
+        assert p['slug'].startswith('preview-')
+        assert 'name' not in p and 'photo' not in p            # no invented people
         assert p['category'] in tn.CATEGORY_BY_SLUG
-        assert set(p['checks']) == set(tn.CHECK_LABELS)
 
 
-def test_no_logos_or_stories_shipped_without_consent():
-    # These must only ever be filled with real, permitted material.
-    assert tn.CLIENT_LOGOS == [] and tn.STORIES == []
+def test_badges_only_for_live_verified_layers():
+    live = {layer['key'] for layer in tn.VETTING_LAYERS if layer['status'] == 'live'}
+    for p in tn.PREVIEW_PROFILES:
+        assert {b['key'] for b in tn.badges(p)} <= live
+    fake = {'checks': {'identity': 'verified', 'skills': 'verified', 'practical': 'pending', 'profile': 'verified'}}
+    keys = [b['key'] for b in tn.badges(fake)]
+    assert 'identity' not in keys                              # rolling out: never a badge
+    assert keys == ['skills', 'profile'] and not tn.is_vetted(fake)
+
+
+def test_no_unconsented_proof_ships():
+    assert tn.CLIENT_LOGOS == [] and tn.TESTIMONIALS == [] and tn.CASE_STUDIES == []
+
+
+def test_whatsapp_link():
+    assert tn.whatsapp_url().startswith('https://wa.me/2347087896654?text=')
 
 
 # ---------------------------------------------------------------- pages
@@ -67,21 +75,29 @@ def test_home_renders_core_sections(tclient):
     assert r.status_code == 200
     html = r.get_data(as_text=True)
     assert '<title>Nelavista Talent | Hire Skilled African Talent</title>' in html
-    assert 'Hire skilled African talent, without the hiring headache.' in html
-    assert 'These are sample profiles.' in html
-    for anchor in ('id="talent"', 'id="categories"', 'id="standard"', 'id="employers"', 'id="how"', 'id="join"'):
+    assert 'Hire skilled African talent for the work that matters.' in html
+    assert 'Not every profile makes the network.' in html
+    assert 'Illustrative previews, not live candidates' in html
+    for anchor in ('id="talent"', 'id="categories"', 'id="vetted"', 'id="employers"', 'id="how"', 'id="join"', 'id="about"'):
         assert anchor in html
-    assert '2,500+' in html and '500+' in html
-    assert 'Talent assessed' not in html     # unverified figure stays hidden
-    assert 'Being added' in html and 'Live on Nelavista' in html
+    assert 'wa.me/2347087896654' in html
+    assert 'images.unsplash.com' in html and 'srcset=' in html
+    assert 'Rolling out' in html
 
 
-def test_profile_sample_is_noindex_and_labelled(tclient):
-    r = tclient.get('/talent/profile/sample-adebayo-o')
+def test_home_has_no_student_framing(tclient):
+    html = tclient.get('/talent').get_data(as_text=True).lower()
+    for word in ('student', 'universit', 'campus', '2,500'):
+        assert word not in html
+
+
+def test_profile_preview_is_noindex_and_labelled(tclient):
+    r = tclient.get('/talent/profile/preview-frontend-developer')
     assert r.status_code == 200
     html = r.get_data(as_text=True)
-    assert 'noindex' in html and 'Sample profile.' in html
-    assert '/talent/request?profile=sample-adebayo-o' in html
+    assert 'noindex' in html and 'Profile preview.' in html
+    assert '/talent/request?profile=preview-frontend-developer' in html
+    assert 'Rolling out across the network' in html            # identity shown honestly
 
 
 def test_unknown_profile_404(tclient):
@@ -96,27 +112,27 @@ def test_join_and_request_pages_render(tclient):
 
 
 def test_request_prefills_category_from_profile(tclient):
-    html = tclient.get('/talent/request?profile=sample-kwame-a').get_data(as_text=True)
-    assert 'About Kwame A. (sample profile)' in html
-    assert 'value="technology" selected' in html
+    html = tclient.get('/talent/request?profile=preview-product-designer').get_data(as_text=True)
+    assert 'Product Designer (UI/UX), Nigeria' in html
+    assert 'value="design" selected' in html
 
 
 def test_logged_in_incomplete_profile_is_not_bounced(tclient, make_user, login_as):
-    user = make_user('halfdone', complete_profile=False)
-    login_as(tclient, user)
+    login_as(tclient, make_user('halfdone', complete_profile=False))
     assert tclient.get('/talent').status_code == 200
 
 
 # ---------------------------------------------------------------- request form
 
 def test_valid_request_is_stored(tclient, talent_app):
-    r = tclient.post('/talent/request', data=dict(VALID, profile_ref='sample-adebayo-o'))
+    r = tclient.post('/talent/request', data=dict(VALID, profile_ref='preview-frontend-developer'))
     assert r.status_code == 302 and r.headers['Location'].endswith('/talent/request/received')
     with talent_app.app_context():
         row = TalentRequest.query.one()
         assert row.work_email == 'ada@example.com'
         assert row.status == 'new' and row.engagement_type == 'contract'
-        assert row.profile_ref == 'sample-adebayo-o'
+        assert row.category == 'customer-experience'
+        assert row.profile_ref == 'preview-frontend-developer'
         assert row.timezone is None   # blank optional fields stored as NULL
     assert 'Thanks, Ada.' in tclient.get('/talent/request/received').get_data(as_text=True)
 
@@ -143,15 +159,14 @@ def test_honeypot_drops_bots_silently(tclient, talent_app):
 
 def test_admin_queue_is_admin_only(tclient, make_user, login_as):
     login_as(tclient, make_user('plainstudent'))
-    r = tclient.get('/admin/talent-requests')
-    assert r.status_code in (302, 403)
+    assert tclient.get('/admin/talent-requests').status_code in (302, 403)
 
 
 def test_admin_can_list_and_update(tclient, talent_app, make_user, login_as):
     tclient.post('/talent/request', data=VALID)
     login_as(tclient, make_user('boss', is_admin=True))
     html = tclient.get('/admin/talent-requests').get_data(as_text=True)
-    assert 'Example Ltd' in html and 'Two chat support agents' in html
+    assert 'Example Ltd' in html and 'Customer Experience' in html
     with talent_app.app_context():
         rid = TalentRequest.query.one().id
     r = tclient.post(f'/admin/talent-requests/{rid}', data={'status': 'contacted', 'admin_notes': 'Called.'})

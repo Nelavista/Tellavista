@@ -1,44 +1,60 @@
-{% macro avatar(p, size='md') -%}
-  {%- if p.photo %}
-  <img class="tn-avatar tn-avatar-{{ size }}" src="{{ p.photo }}" alt="" loading="lazy" decoding="async">
-  {%- else %}
-  <span class="tn-avatar tn-avatar-{{ size }} tn-tone-{{ p.tone or 'blue' }}" aria-hidden="true">{{ p.initials }}</span>
-  {%- endif %}
+{# Shared Talent components. Profiles here are previews: anonymous, no photos. #}
+
+{% macro role_mark(p, tn, size='md') -%}
+  {%- set cat = tn.CATEGORY_BY_SLUG.get(p.category) -%}
+  <span class="tx-mark tx-mark-{{ size }} tx-tone-{{ p.category }}" aria-hidden="true"><i class="{{ cat.icon if cat else 'ri-user-line' }}"></i></span>
 {%- endmacro %}
 
 {% macro availability(p) -%}
-  <span class="tn-avail tn-avail-{{ p.availability }}"><span class="tn-dot" aria-hidden="true"></span>{{ p.availability_text }}</span>
+  <span class="tx-avail tx-avail-{{ p.availability }}"><span class="tx-dot" aria-hidden="true"></span>{{ p.availability_text }}</span>
 {%- endmacro %}
 
-{% macro talent_card(p, tn) -%}
-  {% set checks = tn.verified_count(p) %}
-  <article class="tn-card" data-category="{{ p.category }}">
-    <div class="tn-card-top">
-      {{ avatar(p) }}
-      {{ availability(p) }}
+{% macro badge_list(p, tn, compact=false) -%}
+  <ul class="tx-badges{{ ' is-compact' if compact }}" aria-label="Verified">
+    {% for b in tn.badges(p) %}<li><i class="ri-checkbox-circle-fill" aria-hidden="true"></i>{{ b.badge }}</li>{% endfor %}
+  </ul>
+{%- endmacro %}
+
+{% macro vetted_seal(label='Vetted Talent') -%}
+  <span class="tx-seal"><svg viewBox="0 0 20 20" aria-hidden="true" width="16" height="16"><path d="M10 1.5l2.1 1.5 2.6-.1.8 2.5 2.1 1.5-.8 2.5.8 2.5-2.1 1.5-.8 2.5-2.6-.1L10 18.5l-2.1-1.5-2.6.1-.8-2.5-2.1-1.5.8-2.5-.8-2.5 2.1-1.5.8-2.5 2.6.1z" fill="currentColor"/><path d="M6.6 10.2l2.2 2.2 4.6-4.7" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>{{ label }}</span>
+{%- endmacro %}
+
+{% macro profile_card(p, tn) -%}
+  <article class="tx-card" data-category="{{ p.category }}" data-country="{{ p.country }}" data-level="{{ p.level }}"
+           data-availability="{{ p.availability }}" data-work="{{ p.work_types | join('|') }}"
+           data-skills="{{ (p.skills + [p.role]) | join('|') | lower }}" data-vetted="{{ '1' if tn.is_vetted(p) else '0' }}">
+    <div class="tx-card-top">
+      {{ role_mark(p, tn) }}
+      <div class="tx-card-flags">
+        {% if tn.is_vetted(p) %}{{ vetted_seal('Vetted') }}{% endif %}
+      </div>
     </div>
-    <h3 class="tn-card-name"><a href="{{ url_for('talent.profile', slug=p.slug) }}" class="tn-stretch">{{ p.name }}</a></h3>
-    <p class="tn-card-role">{{ p.role }}</p>
-    <p class="tn-card-meta"><i class="ri-map-pin-line" aria-hidden="true"></i>{{ p.location }}<span aria-hidden="true">·</span>{{ p.level }}</p>
-    <ul class="tn-chips" aria-label="Key skills">
-      {% for s in p.skills[:3] %}<li>{{ s }}</li>{% endfor %}
-      {% if p.skills|length > 3 %}<li class="tn-chip-more">+{{ p.skills|length - 3 }}</li>{% endif %}
+    <h3 class="tx-card-title"><a class="tx-stretch" href="{{ url_for('talent.profile', slug=p.slug) }}">{{ p.role }}</a></h3>
+    <p class="tx-card-meta">{{ p.country }}<span aria-hidden="true">·</span>{{ p.level }}<span aria-hidden="true">·</span>{{ p.years }}</p>
+    {{ availability(p) }}
+    <ul class="tx-chips" aria-label="Key skills">
+      {% for s in p.skills[:4] %}<li>{{ s }}</li>{% endfor %}
     </ul>
-    <div class="tn-card-evidence">
-      {% if p.checks.skills == 'verified' %}<span class="tn-badge tn-badge-assessed"><i class="ri-checkbox-circle-fill" aria-hidden="true"></i>Assessed</span>{% endif %}
-      <span class="tn-checks" title="{{ checks }} of {{ p.checks|length }} verification checks complete">
-        <span class="tn-checks-bar" aria-hidden="true">{% for k, v in p.checks.items() %}<span class="is-{{ v }}"></span>{% endfor %}</span>
-        {{ checks }}/{{ p.checks|length }} checks
+    {{ badge_list(p, tn, compact=true) }}
+    <div class="tx-card-foot">
+      <span class="tx-complete" title="Profile completion">
+        <span class="tx-complete-bar" aria-hidden="true"><span style="width: {{ p.completeness }}%"></span></span>
+        {{ p.completeness }}%<span class="tx-sr"> profile complete</span>
       </span>
-      {% if p.portfolio %}<span class="tn-card-portfolio" title="Has reviewed portfolio work"><i class="ri-folder-open-line" aria-hidden="true"></i><span class="tn-sr">Portfolio</span></span>{% endif %}
+      <span class="tx-card-portfolio"><i class="ri-folder-open-line" aria-hidden="true"></i>{{ p.portfolio }} in portfolio</span>
     </div>
-    <div class="tn-card-foot">
-      <span>{{ p.hours }}</span>
-      <span class="tn-card-cta" aria-hidden="true">View profile <i class="ri-arrow-right-line"></i></span>
-    </div>
+    <span class="tx-card-cta" aria-hidden="true">View profile <i class="ri-arrow-right-line"></i></span>
   </article>
 {%- endmacro %}
 
-{% macro status_pill(status, tn) -%}
-  <span class="tn-status tn-status-{{ status }}">{{ tn.STATUS_LABELS[status] }}</span>
+{% macro status_tag(status, tn) -%}
+  <span class="tx-status tx-status-{{ status }}">{{ tn.STATUS_LABELS[status] }}</span>
+{%- endmacro %}
+
+{% macro picture(tn, key, sizes, ratio=none, eager=false, cls='') -%}
+  {%- set ph = tn.PHOTOS[key] -%}
+  <img class="{{ cls }}" src="{{ tn.photo_src(key, 1080, (1080 * ratio)|round|int if ratio else none) }}"
+       srcset="{{ tn.photo_srcset(key, ratio) }}" sizes="{{ sizes }}" alt="{{ ph.alt }}"
+       style="object-position: {{ ph.pos }}" decoding="async"
+       {% if eager %}fetchpriority="high"{% else %}loading="lazy"{% endif %}>
 {%- endmacro %}

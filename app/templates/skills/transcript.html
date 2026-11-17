@@ -1,0 +1,186 @@
+{% from 'skills/_macros.html' import plural, empty, progress %}
+{# Same labels as components/skill_evidence.html (the Talent profile), so an employer
+   reading either sees the evidence described in exactly the same words. #}
+{% macro ev(done, label, value, sub=none) -%}
+<div class="lx-ev {{ 'done' if done }}"><span class="lx-check-dot" aria-hidden="true"><i class="ri-check-line"></i></span><span>{{ label }}: <strong style="font-weight:600;">{{ value }}</strong>{% if sub %}<span class="lx-check-sub">{{ sub }}</span>{% endif %}</span></div>
+{%- endmacro %}
+{% macro evidence(rec) -%}
+{% set best = rec.best_assessment_result %}
+<div class="lx-evidence">
+  {{ ev(rec.learning_done, 'Learning completed', 'Yes' if rec.learning_done else rec.learning_pct ~ '%') }}
+  {% if rec.practice_total %}{{ ev(rec.practice_done == rec.practice_total, 'Practice tasks', rec.practice_done ~ ' / ' ~ rec.practice_total ~ ' attempted') }}{% endif %}
+  {% if rec.assessment_status != 'none' %}
+    {% set measured %}{% if best %}{% set sm = best.summary %}{% if best.kind == 'transcription' %}Word accuracy {{ sm.word_accuracy }}%{% if sm.speaker_accuracy is defined %} · Speakers {{ sm.speaker_accuracy }}%{% endif %}{% if sm.timestamp_accuracy is defined %} · Timestamps {{ sm.timestamp_accuracy }}%{% endif %}{% if sm.tag_compliance is defined %} · Formatting {{ sm.tag_compliance }}%{% endif %}{% elif best.kind == 'translation' %}Reference similarity {{ sm.mean_similarity }}%{% if sm.terminology is defined %} · Terminology {{ sm.terminology }}%{% endif %}{% elif best.kind == 'labeling' %}{% if sm.by_field %}{% for label, pct in sm.by_field.items() %}{{ label }} {{ pct }}%{% if not loop.last %} · {% endif %}{% endfor %}{% else %}Label accuracy {{ (100 * sm.correct / sm.total)|round|int if sm.total else 0 }}%{% endif %}{% if sm.consistency is defined %} · Consistency {{ sm.consistency }}%{% endif %}{% elif best.kind == 'recording' %}{{ sm.passed }} of {{ sm.total }} recordings met the quality requirements{% endif %}{% endif %}{% endset %}
+    {{ ev(rec.assessment_status == 'passed', 'Assessment', {'passed': 'Passed', 'not_passed': 'Not passed yet', 'not_started': 'Not taken'}[rec.assessment_status] ~ ((' · best ' ~ best.score ~ '%') if best else ''), measured|trim or none) }}
+  {% endif %}
+  {% if rec.has_project_templates or rec.project_status != 'not_started' %}
+    {{ ev(rec.project_status in ('completed', 'reviewed'), 'Practical task' ~ (' (practice project)' if rec.is_language_data_skill else ''), {'reviewed': 'Completed', 'completed': 'Completed', 'in_progress': 'In progress', 'not_started': 'Not started'}[rec.project_status]) }}
+    {{ ev(rec.quality_review_passed, 'Quality review', ('Passed' if rec.quality_review_passed else ('Below ' ~ rec.review_min_score ~ '%' if rec.best_review_score is not none else 'Pending')) ~ ((' · ' ~ rec.best_review_score ~ '%') if rec.best_review_score is not none else '')) }}
+  {% endif %}
+</div>
+{%- endmacro %}
+{% macro skill_sub(rec) -%}{{ rec.skill.category.name if rec.skill.category else 'Skill' }}{% if rec.skill.language %} · {{ language_label(rec.skill.language) }}{% endif %} · {{ rec.level|title }}{%- endmacro %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {% include 'components/lx_head.html' %}
+  <title>Skill Transcript · Nelavista Skills</title>
+</head>
+<body class="lx">
+{% include 'components/skills_sidebar.html' %}
+
+<div class="lx-page narrow">
+  <header class="lx-page-head lx-noprint">
+    <h1 class="lx-title">Skill Transcript</h1>
+    <p class="lx-lede">A record of what you've learned and the work that proves it. Everything here comes from your completed lessons, scored assessments and reviewed projects.</p>
+    <div class="lx-actions" style="margin-top:18px;">
+      <button type="button" class="lx-btn lx-btn-secondary lx-btn-sm" onclick="window.print()"><i class="ri-printer-line" aria-hidden="true"></i>Print or save as PDF</button>
+      <a href="/skills/settings" class="lx-btn lx-btn-ghost lx-btn-sm">Visibility: {{ (privacy.profile_visibility if privacy else 'private')|replace('_', ' ')|capitalize }}</a>
+    </div>
+  </header>
+
+  {% if not skill_records and not rows %}
+    {{ empty('ri-file-list-3-line', 'Nothing on your transcript yet', 'Skills appear here as soon as you start one. Verified skills, passed assessments and finished projects are added as you earn them.', '/skills', 'Explore skills') }}
+  {% else %}
+  <article class="lx-doc" aria-label="Skill Transcript">
+    <header class="lx-doc-head">
+      <div>
+        <div class="lx-doc-name">{{ student.name or student.username }}</div>
+        <div class="lx-doc-sub">Nelavista Skill Transcript · {{ generated_on.strftime('%d %B %Y') }}</div>
+      </div>
+      <div class="lx-doc-stats">
+        <div><b>{{ verified|length }}</b><span>Verified {{ 'skill' if verified|length == 1 else 'skills' }}</span></div>
+        <div><b>{{ completed_projects|length }}</b><span>{{ 'Project' if completed_projects|length == 1 else 'Projects' }} completed</span></div>
+        <div><b>{{ passed_assessments|length }}</b><span>{{ 'Assessment' if passed_assessments|length == 1 else 'Assessments' }} passed</span></div>
+      </div>
+    </header>
+
+    <section class="lx-doc-sec" aria-labelledby="t-verified">
+      <h2 class="lx-doc-sec-title" id="t-verified">Verified skills</h2>
+      {% if verified %}
+        {% for rec in verified %}
+        <div class="lx-rec">
+          <div class="lx-rec-head">
+            <div>
+              <div class="lx-rec-title"><a href="/skills/{{ rec.skill.slug }}">{{ rec.skill.name }}</a></div>
+              <div class="lx-rec-sub">{{ skill_sub(rec) }}</div>
+            </div>
+            <span class="lx-badge-verified"><i class="ri-checkbox-circle-fill" aria-hidden="true"></i>Verified</span>
+          </div>
+          {% if rec.skill.tagline %}<p class="lx-hint" style="margin-top:8px;">{{ rec.skill.tagline }}</p>{% endif %}
+          {{ evidence(rec) }}
+        </div>
+        {% endfor %}
+      {% else %}
+        <p class="lx-hint">No verified skills yet. A skill is verified when its lessons are complete, any assessment is passed, and a project passes review.</p>
+      {% endif %}
+    </section>
+
+    {% if completed_projects %}
+    <section class="lx-doc-sec" aria-labelledby="t-projects">
+      <h2 class="lx-doc-sec-title" id="t-projects">Completed projects</h2>
+      <table class="lx-table">
+        <thead><tr><th scope="col">Project</th><th scope="col">Review</th></tr></thead>
+        <tbody>
+          {% for p in completed_projects %}
+          {% set sk = project_skill(p) %}
+          {% set score = project_score(p) %}
+          <tr>
+            <td><a href="/skills/projects/{{ p.id }}" style="text-decoration:none; font-weight:600;">{{ p.title }}</a>
+              <div class="lx-hint">{{ sk.name if sk else 'Independent project' }}{% if p.live_url %} · <a class="lx-link" style="font-size:inherit;" href="{{ p.live_url }}" target="_blank" rel="noopener">Live</a>{% endif %}{% if p.repo_url %} · <a class="lx-link" style="font-size:inherit;" href="{{ p.repo_url }}" target="_blank" rel="noopener">Code</a>{% endif %}</div></td>
+            <td class="lx-num">{{ (score ~ '/100') if score is not none else '—' }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </section>
+    {% endif %}
+
+    {% if passed_assessments %}
+    <section class="lx-doc-sec" aria-labelledby="t-assess">
+      <h2 class="lx-doc-sec-title" id="t-assess">Assessments passed</h2>
+      <table class="lx-table">
+        <thead><tr><th scope="col">Assessment</th><th scope="col">Best score</th></tr></thead>
+        <tbody>
+          {% for a in passed_assessments %}
+          <tr><td>{{ a.challenge.title }}<div class="lx-hint">{{ a.skill.name }} · pass mark {{ a.pass_score }}% · Passed</div></td><td class="lx-num">{{ a.best_score }}%</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </section>
+    {% endif %}
+
+    {% if rows %}
+    <section class="lx-doc-sec" aria-labelledby="t-classes">
+      <h2 class="lx-doc-sec-title" id="t-classes">30-day classes</h2>
+      {% for row in rows %}
+      <div class="lx-rec">
+        <div class="lx-rec-head">
+          <div>
+            <div class="lx-rec-title"><a href="{{ course_url(row.skill, row.course) }}">{{ row.course.title }}</a></div>
+            <div class="lx-rec-sub">{{ row.skill.name }} · {{ row.pct }}% complete</div>
+          </div>
+          <div style="text-align:right;">
+            <div class="lx-num" style="font-size:1.2rem;">{{ row.gpa_data.gpa if row.gpa_data.gpa is not none else '—' }}</div>
+            <div class="lx-hint">{{ ('Skill GPA · ' ~ row.gpa_data.grade_letter) if row.gpa_data.grade_letter else 'Skill GPA' }}</div>
+          </div>
+        </div>
+        {% if row.gpa_data.breakdown %}
+        <details class="lx-gpa-break">
+          <summary>How this was calculated</summary>
+          <dl>
+            {% for comp in row.gpa_data.breakdown %}<div><dt>{{ comp.label }} ({{ comp.weight_pct }}% of grade)</dt><dd class="lx-num" style="margin:0;">{{ comp.score_pct }}%</dd></div>{% endfor %}
+            <div><dt>Overall</dt><dd class="lx-num" style="margin:0;">{{ row.gpa_data.percentage }}% → {{ row.gpa_data.grade_letter }}</dd></div>
+          </dl>
+        </details>
+        {% elif not row.gpa_data.configured %}
+        <p class="lx-hint" style="margin-top:8px;">Grading isn't set up for this class yet.</p>
+        {% endif %}
+      </div>
+      {% endfor %}
+      {% if overall_gpa is not none and rows|length > 1 %}<p class="lx-hint" style="margin-top:16px;">Average Skill GPA across classes: <strong class="lx-num" style="color:var(--lx-ink);">{{ overall_gpa }}</strong></p>{% endif %}
+    </section>
+    {% endif %}
+
+    {% if in_progress %}
+    <section class="lx-doc-sec" aria-labelledby="t-progress">
+      <h2 class="lx-doc-sec-title" id="t-progress">In progress</h2>
+      {% for rec in in_progress %}
+      <div class="lx-rec">
+        <div class="lx-rec-head">
+          <div>
+            <div class="lx-rec-title"><a href="/skills/{{ rec.skill.slug }}">{{ rec.skill.name }}</a></div>
+            <div class="lx-rec-sub">{{ skill_sub(rec) }}</div>
+          </div>
+          <span class="lx-badge-plain">Not verified yet</span>
+        </div>
+        {{ evidence(rec) }}
+      </div>
+      {% endfor %}
+    </section>
+    {% endif %}
+
+    {% if language_profile %}
+    <section class="lx-doc-sec" aria-labelledby="t-lang">
+      <h2 class="lx-doc-sec-title" id="t-lang">Languages</h2>
+      <table class="lx-table">
+        <tbody>
+          {% for lp in language_profile %}
+          <tr><td>{{ lp.label }}{% if lp.row.dialect %} · {{ lp.row.dialect }}{% endif %}<div class="lx-hint">{{ lp.proficiency_label }}, self-reported</div></td>
+            <td>{% if lp.verified_capabilities %}<span class="lx-badge-verified"><i class="ri-checkbox-circle-fill" aria-hidden="true"></i>{{ lp.verified_capabilities|join(', ') }}</span>{% else %}<span class="lx-hint">Not verified</span>{% endif %}</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </section>
+    {% endif %}
+
+    <footer class="lx-doc-sec">
+      <p class="lx-hint" style="line-height:1.6;">Verification is Nelavista's own review of submitted work: lessons completed, any assessment passed with a scored attempt, and a project that passed review. It is not a job offer or an external certification. Skills that are only partly complete are listed as in progress.</p>
+    </footer>
+  </article>
+  {% endif %}
+</div>
+
+{% include 'components/skills_footer.html' %}
+</body>
+</html>

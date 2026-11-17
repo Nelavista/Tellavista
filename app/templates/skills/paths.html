@@ -1,0 +1,43 @@
+{% from 'skills/_macros.html' import progress, plural, empty %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {% include 'components/lx_head.html' %}
+  <title>Learning Paths · Nelavista Skills</title>
+  <meta name="description" content="Structured paths that take you through several skills in order, from beginner to capable.">
+</head>
+<body class="lx">
+{% include 'components/skills_sidebar.html' %}
+
+<div class="lx-page narrow">
+  <header class="lx-page-head">
+    <h1 class="lx-title">Learning Paths</h1>
+    <p class="lx-lede">A path puts several skills in order for a specific goal. Finish each skill and the next one opens.</p>
+  </header>
+
+  {% if not tracks_data %}
+    {{ empty('ri-route-line', 'No paths published yet', 'You can still learn any single skill on its own.', '/skills', 'Explore skills') }}
+  {% else %}
+  <div class="lx-items">
+    {% for d in tracks_data %}
+    {% set t = d.track %}
+    <a href="/skills/tracks/{{ t.slug }}" class="lx-item">
+      <div class="lx-item-main">
+        <div class="lx-item-kind">{{ plural(d.steps|length, 'skill') }}{% if d.started %} · {{ d.done }} done{% endif %}</div>
+        <h2 class="lx-item-title">{{ t.title }}</h2>
+        {% if t.tagline %}<p class="lx-item-desc">{{ t.tagline }}</p>{% endif %}
+        <p class="lx-hint" style="margin-top:10px; line-height:1.6;">
+          {% for st in d.steps %}{% if st.step.skill %}<span style="{{ 'color:var(--lx-green);' if st.state == 'completed' else ('color:var(--lx-ink);font-weight:600;' if d.started and st.state == 'current' else '') }}">{{ st.step.skill.name }}</span>{% if not loop.last %} <span aria-hidden="true">→</span> {% endif %}{% endif %}{% endfor %}
+        </p>
+        {% if d.started %}<div style="max-width:320px; margin-top:12px;">{{ progress(d.pct, t.title ~ ' progress') }}</div>{% endif %}
+      </div>
+      <div class="lx-item-end"><i class="ri-arrow-right-s-line lx-muted" aria-hidden="true" style="font-size:1.25rem;"></i></div>
+    </a>
+    {% endfor %}
+  </div>
+  {% endif %}
+</div>
+
+{% include 'components/skills_footer.html' %}
+</body>
+</html>

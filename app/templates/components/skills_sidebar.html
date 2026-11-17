@@ -1,93 +1,92 @@
-<!-- Nelavista Skills — its own navigation, its own product identity. No Academia here by
-     design: the only way back to the rest of Nelavista is the wordmark, which returns to
-     the Choose Your Path picker — Skills doesn't mix Academia links into its own IA.
-     Include right after <body>, pass active_page: 'home'|'learn'|'my_learning'|'projects'|
-     'talent'|'challenges'|'profile'|'messages'|'notifications'|'tracks'|'transcript'|
-     'settings'|'african_languages'|'languages'.
-     Opportunities, gigs and earnings are a different space and are deliberately absent
-     here -- see components/opportunities_sidebar.html. -->
+{#- Nelavista Skills shell (opening half; close with components/skills_footer.html).
+    Include right after <body>. The Skill space has exactly five destinations:
+    Learn -> My Learning -> Projects -> Learning Paths -> Skill Transcript.
+    Everything else (messages, notifications, talent, languages, settings, earning) lives
+    elsewhere in Nelavista and is deliberately not in this navigation.
+
+    Context:
+      active_page  'learn' | 'my_learning' | 'projects' | 'tracks' | 'transcript'
+      focus        optional dict for lesson pages: {back_url, back_label, title, pct}
+                   -- hides the app nav so the course itself is the navigation. -#}
 <script>
-// Applies the saved theme before the page paints -- see the matching comment in
-// components/academia_sidebar.html for why. Same shell, same fix.
 (function () {
+  var b = document.body; b.classList.add('lx');
   try {
-    var pref = localStorage.getItem('theme') || 'dark';
+    var pref = localStorage.getItem('theme') || 'system';
     var light = pref === 'system'
       ? (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches)
       : pref === 'light';
-    if (light) document.body.classList.add('light-mode', 'light-theme');
+    if (light) b.classList.add('light-mode', 'light-theme');
   } catch (e) {}
 })();
 </script>
-<div class="app-wrapper">
-  <div class="sidebar" id="side-menu">
-    <div>
-      <div class="sidebar-header">
-        <a href="/choose-path" class="sidebar-logo"><img src="{{ url_for('static', filename='images/nelavista-logo.png') }}" alt="">Nelavista</a>
-        <div class="sidebar-tagline">Learn it. Build it. Prove it. Get paid.</div>
-      </div>
-      <div class="sidebar-nav">
-        <div class="nav-group">
-          <div class="nav-label">Skills</div>
-          <a href="/skills" class="{{ 'active-link' if active_page == 'home' else '' }}"><i class="ri-compass-3-line"></i>Overview</a>
-          <a href="/skills/catalog" class="{{ 'active-link' if active_page == 'learn' else '' }}"><i class="ri-book-3-line"></i>Learn</a>
-          <a href="/skills/african-languages" class="{{ 'active-link' if active_page == 'african_languages' else '' }}"><i class="ri-translate-2"></i>African Language AI</a>
-          <a href="/skills/my-learning" class="{{ 'active-link' if active_page == 'my_learning' else '' }}"><i class="ri-book-open-line"></i>My Learning</a>
-          <a href="/skills/projects" class="{{ 'active-link' if active_page == 'projects' else '' }}"><i class="ri-hammer-line"></i>Projects</a>
-          <a href="/skills/talent" class="{{ 'active-link' if active_page == 'talent' else '' }}"><i class="ri-user-star-line"></i>Talent</a>
-          <a href="/skills/challenges" class="{{ 'active-link' if active_page == 'challenges' else '' }}"><i class="ri-trophy-line"></i>Challenges</a>
-        </div>
-
-        <div class="nav-group">
-          <div class="nav-label">Account</div>
-          <a href="/skills/profile" class="{{ 'active-link' if active_page == 'profile' else '' }}"><i class="ri-user-line"></i>Profile</a>
-          <a href="/skills/languages" class="{{ 'active-link' if active_page == 'languages' else '' }}"><i class="ri-chat-voice-line"></i>My Languages</a>
-          <a href="/skills/messages" class="{{ 'active-link' if active_page == 'messages' else '' }}">
-            <i class="ri-message-3-line"></i>Messages
-            {% if nav_unread_messages %}<span class="nav-badge">{{ nav_unread_messages }}</span>{% endif %}
-          </a>
-          <a href="/skills/notifications" class="{{ 'active-link' if active_page == 'notifications' else '' }}">
-            <i class="ri-notification-3-line"></i>Notifications
-            {% if nav_unread_notifications %}<span class="nav-badge">{{ nav_unread_notifications }}</span>{% endif %}
-          </a>
-        </div>
-
-        <div class="nav-group">
-          <div class="nav-label">More</div>
-          <a href="/skills/tracks" class="{{ 'active-link' if active_page == 'tracks' else '' }}"><i class="ri-route-line"></i>Learning Paths</a>
-          <a href="/skills/transcript" class="{{ 'active-link' if active_page == 'transcript' else '' }}"><i class="ri-award-line"></i>Skill Transcript</a>
-          <a href="/skills/settings" class="{{ 'active-link' if active_page == 'settings' else '' }}"><i class="ri-shield-check-line"></i>Privacy</a>
-        </div>
-      </div>
+{%- set _ap = 'learn' if active_page in ('learn', 'home') else active_page -%}
+{%- set _nav = [
+  ('learn', '/skills', 'ri-compass-3-line', 'Learn', 'Learn'),
+  ('my_learning', '/skills/my-learning', 'ri-book-open-line', 'My Learning', 'My learning'),
+  ('projects', '/skills/projects', 'ri-hammer-line', 'Projects', 'Projects'),
+  ('tracks', '/skills/tracks', 'ri-route-line', 'Learning Paths', 'Paths'),
+  ('transcript', '/skills/transcript', 'ri-file-list-3-line', 'Skill Transcript', 'Transcript'),
+] -%}
+<a class="lx-skip" href="#lx-main">Skip to content</a>
+<div class="lx-shell {{ 'is-focus' if focus else 'has-side' }}">
+  {% if not focus %}
+  <aside class="lx-side" aria-label="Skills">
+    <a href="/skills" class="lx-brand">
+      <img src="{{ url_for('static', filename='images/nelavista-logo.png') }}" alt="" width="26" height="26">
+      <span class="lx-brand-name">Nelavista</span><span class="lx-brand-space">Skills</span>
+    </a>
+    <nav class="lx-nav" aria-label="Primary">
+      {% for key, href, icon, label, _short in _nav %}
+      <a href="{{ href }}" {% if _ap == key %}aria-current="page"{% endif %}><i class="{{ icon }}" aria-hidden="true"></i>{{ label }}</a>
+      {% endfor %}
+    </nav>
+    <div class="lx-side-foot">
+      <a href="/choose-path"><i class="ri-arrow-left-line" aria-hidden="true"></i>All of Nelavista</a>
+      <a href="/logout" data-confirm-logout><i class="ri-logout-box-r-line" aria-hidden="true"></i>Log out</a>
     </div>
-    <div class="sidebar-footer">
-      <a href="/logout" data-confirm-logout><i class="ri-logout-box-line"></i>Logout</a>
+  </aside>
+  {% endif %}
+
+  <header class="lx-top">
+    {% if focus %}
+      <a href="{{ focus.back_url }}" class="lx-iconbtn" aria-label="Back to {{ focus.back_label }}"><i class="ri-arrow-left-line"></i></a>
+      <div class="lx-focus-top-title">
+        <a href="{{ focus.back_url }}">{{ focus.back_label }}</a>
+        {% if focus.title %}<span>{{ focus.title }}</span>{% endif %}
+      </div>
+      <button id="theme-toggle" class="lx-iconbtn" onclick="skToggleTheme()" aria-label="Switch light or dark theme"><i class="ri-moon-line"></i></button>
+      <a href="/skills" class="lx-iconbtn" aria-label="Close and return to Learn"><i class="ri-close-line"></i></a>
+      {% if focus.pct is not none %}<div class="lx-topbar-progress" aria-hidden="true"><span style="width:{{ focus.pct }}%"></span></div>{% endif %}
+    {% else %}
+      <a href="/skills" class="lx-brand">
+        <img src="{{ url_for('static', filename='images/nelavista-logo.png') }}" alt="" width="26" height="26">
+        <span class="lx-brand-name">Nelavista</span><span class="lx-brand-space">Skills</span>
+      </a>
+      {% if _ap != 'learn' %}
+      <form action="/skills" method="GET" class="lx-top-search" role="search">
+        <i class="ri-search-line" aria-hidden="true"></i>
+        <label for="lx-top-q" class="lx-sr">Search skills</label>
+        <input id="lx-top-q" type="search" name="q" placeholder="Search skills" autocomplete="off" >
+        <kbd aria-hidden="true">/</kbd>
+      </form>
+      {% endif %}
+      <div class="lx-top-spacer"></div>
+      {% if _ap != 'learn' %}<a href="/skills#lx-q" class="lx-iconbtn lx-top-hide-desk" aria-label="Search skills"><i class="ri-search-line"></i></a>{% endif %}
+      <button id="theme-toggle" class="lx-iconbtn" onclick="skToggleTheme()" aria-label="Switch light or dark theme"><i class="ri-moon-line"></i></button>
+      <a href="/choose-path" class="lx-iconbtn lx-top-hide-desk" aria-label="All of Nelavista"><i class="ri-apps-2-line"></i></a>
+      <a href="/logout" class="lx-iconbtn lx-top-hide-desk" aria-label="Log out" data-confirm-logout><i class="ri-logout-box-r-line"></i></a>
+    {% endif %}
+  </header>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+  <div class="lx-main lx-flashes-wrap" style="padding-bottom:0;">
+    <div class="lx-flashes" role="status">
+      {% for category, m in messages %}<div class="lx-flash {{ category }}"><i class="{{ 'ri-error-warning-line' if category in ('error', 'danger') else 'ri-information-line' }}" aria-hidden="true"></i><span>{{ m }}</span></div>{% endfor %}
     </div>
   </div>
+  {% endif %}
+  {% endwith %}
 
-  <div id="overlay" class="overlay" onclick="skCloseMenu()"></div>
-
-  <div class="main-content">
-    <div class="top-bar">
-      <button id="menu-toggle" onclick="skToggleMenu()" aria-label="Open menu"><i class="ri-menu-line"></i></button>
-      <form action="/skills/search" method="GET" class="sk-topsearch">
-        <i class="ri-search-line"></i>
-        <input type="text" name="q" placeholder="Search skills, projects, gigs...">
-      </form>
-      <div class="dv2-topbar-spacer"></div>
-      <a href="/skills/notifications" class="top-icon-btn" aria-label="Notifications">
-        <i class="ri-notification-3-line"></i>
-        {% if nav_unread_notifications %}<span class="top-icon-dot"></span>{% endif %}
-      </a>
-      <button id="theme-toggle" onclick="skToggleTheme()" aria-label="Toggle theme"><i class="ri-moon-line"></i></button>
-      <a href="/logout" class="top-icon-btn sk-topbar-logout" aria-label="Logout" data-confirm-logout><i class="ri-logout-box-line"></i></a>
-</div>
-{% include 'components/logout_confirm.html' %}
-
-    {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-      <div class="sk-flashes">
-        {% for category, m in messages %}<div class="sk-flash {{ category }}">{{ m }}</div>{% endfor %}
-      </div>
-      {% endif %}
-    {% endwith %}
+  <main id="lx-main" class="lx-main" tabindex="-1">

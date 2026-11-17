@@ -43,9 +43,8 @@ def test_catalog_counts_are_correct_after_batching(app, client, make_user, login
     assert res.status_code == 200
     body = res.get_data(as_text=True)
 
-    # Each label is tied to its value in the template
-    # (<span class="...meta-label">Label</span><span>N</span>), so match both together
-    # rather than a bare number that could coincidentally match a different field.
-    assert 'Projects</span><span>2</span>' in body  # 2 published, the draft excluded
-    assert 'Learning it</span><span>2</span>' in body
-    assert 'Gigs open</span><span>1</span>' in body  # 1 published, the other excluded
+    # The card's meta line renders "<span>N projects</span>": 2 published, the draft
+    # excluded. Learn is skill-focused, so learner counts and gig counts are not shown.
+    assert '<span>2 projects</span>' in body
+    assert 'Learning it' not in body
+    assert 'Gigs open' not in body

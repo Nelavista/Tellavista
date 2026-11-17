@@ -1,4 +1,3 @@
-import json
 import os
 import time
 import cloudinary
@@ -11,7 +10,7 @@ from app.logging_config import logger
 from app.models import (
     User, SkillCategory, Skill, SkillCourse, CourseModule,
     Lesson, Quiz, Challenge, ChallengeSubmission, ProjectTemplate, StudentProject,
-    StudentSkill, StudentLessonProgress, StudentQuizAttempt, StudentOnboarding,
+    StudentSkill, StudentQuizAttempt, StudentOnboarding,
     CareerTrack, Assignment, AssignmentSubmission, StudentPrivacySettings,
     CohortEnrollment, ProjectFile, ProjectMessage, StudentLanguage,
 )
@@ -19,7 +18,7 @@ from app.extensions import db, limiter
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy import func
 from app.services.skills_service import (
-    get_dashboard_data, get_path_step_states, get_course_progress, mark_lesson_complete,
+    get_path_step_states, mark_lesson_complete,
     touch_skill_activity, match_skill_from_text, ONBOARDING_SKIPPED,
     get_track_step_states, get_track_progress_pct, student_has_track_activity,
     can_access_lesson,
@@ -33,7 +32,7 @@ from app.services.daily_class_service import (
 from app.services.gpa_service import compute_skill_gpa, recompute_and_cache_gpa, get_cohort_rank
 from app.services.skills_service import (
     get_pipeline_states_bulk, profile_completeness,
-    get_continue_learning_card, get_talent_stats,
+    get_talent_stats,
     get_skill_scores, get_projects_empty_state_cta, get_skill_verification_record,
     best_challenge_score, assessment_pass_score, assessment_prerequisites_unmet, project_prerequisites_unmet,
 )
@@ -50,9 +49,10 @@ from app.services.link_fetch_service import fetch_page_text, fetch_github_summar
 from app.services.notification_service import notify, mark_all_read
 from app.services.messaging_service import get_or_create_thread, send_message, mark_thread_read
 from app.models import (
-    Opportunity, ProjectMilestone, Competition,
+    ProjectMilestone, Competition,
     CompetitionEntry, Notification, MessageThread, Message,
 )
+from app.services import skills_learning_view as lv
 
 EXPERIENCE_LABELS = {
     'new': "I'm completely new to this",
@@ -168,175 +168,175 @@ def onboarding():
                             existing=existing, experience_labels=EXPERIENCE_LABELS, goal_labels=GOAL_LABELS)
 
 
-# ===== SKILLS DASHBOARD (Learn -> Practice -> Build -> Verify -> Earn) =====
-@skills_bp.route('/skills')
-@login_required
-def home():
+# ===== LEARN (skill discovery) =====
+# /skills opens straight onto skill discovery: what do you want to learn? There is no
+# dashboard in front of it and no forced survey -- /skills/onboarding still exists for
+# anyone linked to it, but nobody has to pass through it to reach a lesson.
+@skills_bp.app_template_global('lesson_url')
+def _tpl_lesson_url(skill, course, lesson):
+    return lv.lesson_url(skill, course, lesson)
+
+
+@skills_bp.app_template_global('course_url')
+def _tpl_course_url(skill, course):
+    return lv.course_url(skill, course)
+
+
+LEVELS = ('beginner', 'intermediate', 'advanced')
+
+
+def _matches(q, skill):
+    hay = ' '.join([
+        skill.name or '', skill.tagline or '', skill.description or '',
+        skill.category.name if skill.category else '', ' '.join(skill.tags),
+    ]).lower()
+    return all(tok in hay for tok in q.lower().split())
+
+
+def _learn():
     user = _current_user()
-    onboarding = StudentOnboarding.query.filter_by(student_id=user.id).first()
-    if not onboarding:
-        return redirect(url_for('skills.onboarding'))
-    data = get_dashboard_data(user.id)
+    q = request.args.get('q', '').strip()[:100]
+    category_slug = request.args.get('category', '').strip()
+    level = request.args.get('level', '').strip()
+    language = request.args.get('language', '').strip()
+    tag = ''.join(c for c in request.args.get('tag', '').strip().lower() if c.isalnum() or c == '-')
+    program = request.args.get('program', '').strip()
+    if level not in LEVELS:
+        level = ''
+
     categories = SkillCategory.query.filter_by(is_active=True).order_by(SkillCategory.order).all()
-    first_name = user.name.strip().split()[0] if user and user.name else session['user'].get('username', 'Student')
+    general_cats = [c for c in categories if not c.program]
+    lang_cats = [c for c in categories if c.program == 'all']
+    active_category = next((c for c in categories if c.slug == category_slug), None)
+    if active_category and active_category.program == 'all':
+        program = 'all'
 
-    all_progress = data['in_progress_skills'] + data['completed_skills']
-    overall_pct = round(sum(s.progress_pct for s in all_progress) / len(all_progress)) if all_progress else 0
+    all_skills = Skill.query.filter_by(is_published=True).order_by(Skill.order).all()
+    cards = lv.build_cards(all_skills, user.id)
+    # Skills with real lessons first; ones still in preparation keep their order after them.
+    cards.sort(key=lambda c: not c['has_content'])
 
-    continue_card = None
-    if data['in_progress_skills']:
-        continue_card = get_continue_learning_card(user.id, data['in_progress_skills'][0])
+    def keep(card):
+        s = card['skill']
+        if active_category and s.category_id != active_category.id:
+            return False
+        if program and (not s.category or s.category.program != program):
+            return False
+        if level and s.level != level:
+            return False
+        if language and s.language != language:
+            return False
+        if tag and tag not in [t.lower() for t in s.tags]:
+            return False
+        if q and not _matches(q, s):
+            return False
+        return True
 
-    # One batched lookup for every started skill instead of get_pipeline_state()'s 5-6
-    # queries repeated per skill -- a student with 8 started skills previously cost
-    # 40-50 queries just for this section (see services/skills_service.py's
-    # get_pipeline_states_bulk docstring).
-    pipeline_states = get_pipeline_states_bulk(user.id, [s.skill_id for s in all_progress])
-    verify_items = []
-    for student_skill in all_progress:
-        steps, current_phase = pipeline_states[student_skill.skill_id]
-        verify_items.append({
-            'skill': student_skill.skill,
-            'course_done': steps[0]['state'] == 'done',
-            'project_done': steps[2]['state'] == 'done',
-            'assessment_done': steps[3]['state'] == 'done',
-            'verified': steps[3]['state'] == 'done',
-        })
-    verify_focus = verify_items[0] if verify_items else None
-    started_skill_ids = [s.skill_id for s in all_progress]
+    shown = [c for c in cards if keep(c)]
+    counts = {}
+    for c in cards:
+        counts[c['skill'].category_id] = counts.get(c['skill'].category_id, 0) + 1
+    lang_cat_ids = {c.id for c in lang_cats}
+    lang_total = sum(n for cid, n in counts.items() if cid in lang_cat_ids)
 
-    # Skill catalog with level/duration, matching the dashboard's "What do you want to
-    # build?" section — separate from the fuller /skills/catalog browse page. Personalized
-    # with the onboarding survey: what the student said they want to learn goes first,
-    # for as long as they haven't actually started it — once they do, it becomes their
-    # continue_card instead and this spotlight naturally stops appearing.
-    catalog_skills = Skill.query.filter_by(is_published=True).order_by(Skill.order).limit(6).all()
-    spotlight_skill = None
-    unmatched_interest = None
-    if onboarding.interested_skill_id and onboarding.interested_skill_id not in started_skill_ids:
-        spotlight_skill = onboarding.interested_skill
-    elif onboarding.interest_text and onboarding.interest_text != ONBOARDING_SKIPPED:
-        unmatched_interest = onboarding.interest_text
-    if spotlight_skill and spotlight_skill.is_published:
-        catalog_skills = [spotlight_skill] + [s for s in catalog_skills if s.id != spotlight_skill.id]
-        catalog_skills = catalog_skills[:6]
+    if q:
+        mode = 'search'
+    elif active_category or program or language or tag:
+        mode = 'filtered'
     else:
-        spotlight_skill = None
+        mode = 'browse'
 
-    # Projects: the student's own StudentProject rows across every skill.
-    my_projects = StudentProject.query.filter_by(student_id=user.id).order_by(StudentProject.updated_at.desc()).limit(3).all()
+    sections = []
+    if mode == 'browse':
+        for cat in general_cats:
+            cat_cards = [c for c in shown if c['skill'].category_id == cat.id]
+            if cat_cards:
+                sections.append({'category': cat, 'cards': cat_cards})
+    elif mode == 'filtered':
+        if active_category:
+            group_cats = [active_category]
+        elif program == 'all':
+            group_cats = lang_cats
+        else:
+            group_cats = categories
+        for cat in group_cats:
+            cat_cards = [c for c in shown if c['skill'].category_id == cat.id]
+            if cat_cards:
+                sections.append({'category': cat, 'cards': cat_cards})
 
-    # Work and money deliberately do not appear here: Opportunities is its own space
-    # (routes/opportunities_routes.py) with its own shell. Skills shows what you are
-    # learning and proving, never the earning surface -- see the module comment at the
-    # top of this file.
-    profile = profile_completeness(user)
-    talent_stats = get_talent_stats(user)
+    beginner_card = next((c for c in cards if c['skill'].slug == 'african-language-data-beginner'), None)
 
-    hour = datetime.utcnow().hour
-    greeting = 'Good morning' if hour < 12 else ('Good afternoon' if hour < 17 else 'Good evening')
+    # Lessons and project briefs that match the search, so "flexbox" finds the lesson
+    # even though no skill is called that.
+    lesson_hits, project_hits = [], []
+    if q:
+        like = f'%{q}%'
+        lesson_hits = (
+            Lesson.query.join(CourseModule, Lesson.module_id == CourseModule.id)
+            .join(SkillCourse, CourseModule.course_id == SkillCourse.id)
+            .join(Skill, SkillCourse.skill_id == Skill.id)
+            .filter(Lesson.is_published.is_(True), SkillCourse.is_published.is_(True),
+                    Skill.is_published.is_(True), Lesson.title.ilike(like))
+            .limit(8).all()
+        )
+        project_hits = (
+            ProjectTemplate.query.filter(ProjectTemplate.is_published.is_(True), ProjectTemplate.title.ilike(like))
+            .join(Skill, ProjectTemplate.skill_id == Skill.id).filter(Skill.is_published.is_(True))
+            .limit(6).all()
+        )
+
+    # The one thing worth putting above discovery: the lesson the student was in the
+    # middle of. Nothing else from a dashboard.
+    resume = None
+    latest = (
+        StudentSkill.query.filter_by(student_id=user.id, status='in_progress')
+        .order_by(StudentSkill.last_activity_at.desc()).first()
+    )
+    if latest and latest.skill and latest.skill.is_published:
+        point = lv.resume_point(lv.skill_outlines(user.id, latest.skill))
+        if point:
+            resume = {'skill': latest.skill, 'pct': latest.progress_pct, **point}
+
+    lang_skill_langs = sorted(
+        {c['skill'].language for c in cards if c['skill'].language and c['skill'].category_id in lang_cat_ids},
+        key=lambda k: language_label(k),
+    )
+    suggestions = [c['skill'] for c in cards if c['has_content'] and c['skill'].category_id not in lang_cat_ids][:4]
 
     return render_template(
-        'skills_home.html', first_name=first_name, data=data, categories=categories,
-        active_page='home', ask_context='the Nelavista Skills dashboard', greeting=greeting,
-        onboarding=onboarding, overall_pct=overall_pct, continue_card=continue_card,
-        verify_focus=verify_focus, catalog_skills=catalog_skills, my_projects=my_projects,
-        profile=profile, spotlight_skill=spotlight_skill,
-        unmatched_interest=unmatched_interest, talent_stats=talent_stats,
+        'skills/learn.html', active_page='learn', mode=mode, q=q, search=q,
+        cards=cards, shown=shown, sections=sections, general_cats=general_cats, lang_cats=lang_cats,
+        counts=counts, lang_total=lang_total, active_category=active_category, program=program,
+        filters={'level': level, 'language': language, 'tag': tag},
+        language_options=[(k, language_label(k)) for k in lang_skill_langs],
+        beginner_card=beginner_card, lesson_hits=lesson_hits, project_hits=project_hits,
+        resume=resume, suggestions=suggestions,
     )
 
 
-# ===== CATALOG (discovery) =====
+@skills_bp.route('/skills')
+@login_required
+def home():
+    return _learn()
+
+
+@skills_bp.route('/skills/search-index.json')
+@login_required
+def search_index():
+    """Every published skill as compact JSON for Learn's instant search. Fetched on the
+    first keystroke, not embedded in the page, so browsing stays light."""
+    user = _current_user()
+    skills = Skill.query.filter_by(is_published=True).order_by(Skill.order).all()
+    resp = jsonify([lv.card_json(c) for c in lv.build_cards(skills, user.id)])
+    resp.headers['Cache-Control'] = 'private, max-age=60'
+    return resp
+
+
 @skills_bp.route('/skills/catalog')
 @login_required
 def catalog():
-    category_slug = request.args.get('category', '').strip()
-    search = request.args.get('q', '').strip()
-    filters = {
-        'language': request.args.get('language', '').strip(),
-        'level': request.args.get('level', '').strip(),
-        'tag': ''.join(c for c in request.args.get('tag', '').strip().lower() if c.isalnum() or c == '-'),
-        'program': request.args.get('program', '').strip(),
-    }
-    categories = SkillCategory.query.filter_by(is_active=True).order_by(SkillCategory.order).all()
-
-    query = Skill.query.filter_by(is_published=True)
-    active_category = None
-    if category_slug:
-        active_category = SkillCategory.query.filter_by(slug=category_slug).first()
-        if active_category:
-            query = query.filter_by(category_id=active_category.id)
-    if search:
-        query = query.filter(db.or_(Skill.name.ilike(f'%{search}%'), Skill.tagline.ilike(f'%{search}%')))
-    if filters['language']:
-        query = query.filter(Skill.language == filters['language'])
-    if filters['level'] in ('beginner', 'intermediate', 'advanced'):
-        query = query.filter(Skill.level == filters['level'])
-    if filters['tag']:
-        query = query.filter(Skill.tags_json.ilike(f'%"{filters["tag"]}"%'))
-    if filters['program']:
-        query = query.join(SkillCategory, Skill.category_id == SkillCategory.id).filter(SkillCategory.program == filters['program'])
-    skills = query.order_by(Skill.order).all()
-
-    # Filter dropdown options come from what's actually published, so a filter can never
-    # offer a language or tag that returns nothing.
-    published_meta = Skill.query.filter_by(is_published=True).with_entities(Skill.language, Skill.tags_json).all()
-    language_options = sorted({lang for lang, _ in published_meta if lang}, key=lambda k: language_label(k))
-    tag_options = set()
-    for _, tags_json in published_meta:
-        try:
-            tag_options.update(json.loads(tags_json) if tags_json else [])
-        except (ValueError, TypeError):
-            pass
-
-    # Each card needs real numbers, not filler text — projects available, students
-    # actually learning it right now, and open paid opportunities in this skill. Was 4
-    # separate .count() queries PER skill card (a published catalog of 50 skills = 200
-    # queries on one page load); now one grouped-count query per number, covering every
-    # skill on the page at once, regardless of how many there are.
-    skill_ids = [s.id for s in skills]
-    projects_counts = dict(
-        db.session.query(ProjectTemplate.skill_id, func.count(ProjectTemplate.id))
-        .filter(ProjectTemplate.skill_id.in_(skill_ids), ProjectTemplate.is_published.is_(True))
-        .group_by(ProjectTemplate.skill_id).all()
-    ) if skill_ids else {}
-    students_counts = dict(
-        db.session.query(StudentSkill.skill_id, func.count(StudentSkill.id))
-        .filter(StudentSkill.skill_id.in_(skill_ids))
-        .group_by(StudentSkill.skill_id).all()
-    ) if skill_ids else {}
-    opportunities_counts = dict(
-        db.session.query(Opportunity.skill_id, func.count(Opportunity.id))
-        .filter(Opportunity.skill_id.in_(skill_ids), Opportunity.is_published.is_(True))
-        .group_by(Opportunity.skill_id).all()
-    ) if skill_ids else {}
-    has_content_ids = {
-        row[0] for row in
-        db.session.query(SkillCourse.skill_id)
-        .filter(SkillCourse.skill_id.in_(skill_ids), SkillCourse.is_published.is_(True))
-        .distinct().all()
-    } if skill_ids else set()
-
-    rows = []
-    for skill in skills:
-        rows.append({
-            'skill': skill,
-            'projects_count': projects_counts.get(skill.id, 0),
-            'students_count': students_counts.get(skill.id, 0),
-            'opportunities_count': opportunities_counts.get(skill.id, 0),
-            # A published Skill with zero published courses has no actual learning
-            # content behind it yet (see seed_skills.py's own comment: some skills are
-            # published early "so the catalog shows real breadth from day one"). The
-            # catalog card must say so honestly ("Coming Soon") instead of looking
-            # identical to a fully-built path — same "no fake empty exam" principle as
-            # CBT.html.
-            'has_content': skill.id in has_content_ids,
-        })
-
-    return render_template('skills_catalog.html', categories=categories, rows=rows,
-                            active_category=active_category, search=search, active_page='learn',
-                            filters=filters, language_options=[(k, language_label(k)) for k in language_options],
-                            tag_options=sorted(tag_options), language_label=language_label)
+    # Same page as /skills; kept so existing links and filtered URLs keep working.
+    return _learn()
 
 
 # ===== AFRICAN LANGUAGES LAB (ALL) HUB =====
@@ -401,49 +401,14 @@ def all_hub():
     )
 
 
-# ===== UNIFIED SEARCH (skills, courses, lessons, challenges, projects) =====
+# ===== SEARCH =====
+# Search is part of Learn now (skills first, then matching lessons and projects). The old
+# URL stays working for bookmarks and the top-bar form on older pages.
 @skills_bp.route('/skills/search')
 @login_required
 def search():
     q = request.args.get('q', '').strip()
-    results = {'skills': [], 'courses': [], 'lessons': [], 'challenges': [], 'projects': []}
-
-    if q:
-        like = f'%{q}%'
-        results['skills'] = Skill.query.filter(
-            Skill.is_published.is_(True),
-            db.or_(Skill.name.ilike(like), Skill.tagline.ilike(like), Skill.description.ilike(like)),
-        ).order_by(Skill.order).limit(10).all()
-
-        results['courses'] = (
-            SkillCourse.query.filter(SkillCourse.is_published.is_(True), SkillCourse.title.ilike(like))
-            .join(Skill, SkillCourse.skill_id == Skill.id).filter(Skill.is_published.is_(True))
-            .limit(10).all()
-        )
-
-        results['lessons'] = (
-            Lesson.query.join(CourseModule, Lesson.module_id == CourseModule.id)
-            .join(SkillCourse, CourseModule.course_id == SkillCourse.id)
-            .join(Skill, SkillCourse.skill_id == Skill.id)
-            .filter(Lesson.is_published.is_(True), SkillCourse.is_published.is_(True),
-                    Skill.is_published.is_(True), Lesson.title.ilike(like))
-            .limit(10).all()
-        )
-
-        results['challenges'] = (
-            Challenge.query.filter(Challenge.is_published.is_(True), Challenge.title.ilike(like))
-            .join(Skill, Challenge.skill_id == Skill.id).filter(Skill.is_published.is_(True))
-            .limit(10).all()
-        )
-
-        results['projects'] = (
-            ProjectTemplate.query.filter(ProjectTemplate.is_published.is_(True), ProjectTemplate.title.ilike(like))
-            .join(Skill, ProjectTemplate.skill_id == Skill.id).filter(Skill.is_published.is_(True))
-            .limit(10).all()
-        )
-
-    total = sum(len(v) for v in results.values())
-    return render_template('skills_search.html', q=q, results=results, total=total)
+    return redirect(url_for('skills.home', q=q) if q else url_for('skills.home'))
 
 
 # ===== CAREER TRACKS (multi-skill paths, e.g. "AI Engineer") =====
@@ -452,12 +417,18 @@ def search():
 def tracks():
     user = _current_user()
     all_tracks = CareerTrack.query.filter_by(is_published=True).order_by(CareerTrack.order).all()
-    tracks_data = [{
-        'track': t,
-        'pct': get_track_progress_pct(user.id, t),
-        'started': student_has_track_activity(user.id, t),
-    } for t in all_tracks]
-    return render_template('skills_tracks.html', tracks_data=tracks_data, active_page='tracks')
+    tracks_data = []
+    for t in all_tracks:
+        steps = get_track_step_states(user.id, t)
+        tracks_data.append({
+            'track': t, 'steps': steps, 'pct': get_track_progress_pct(user.id, t),
+            'started': student_has_track_activity(user.id, t),
+            'done': sum(1 for st in steps if st['state'] == 'completed'),
+            'current': next((st['step'] for st in steps if st['state'] == 'current'), None),
+        })
+    # Paths the student has started first, then the rest in their published order.
+    tracks_data.sort(key=lambda d: not d['started'])
+    return render_template('skills/paths.html', tracks_data=tracks_data, active_page='tracks')
 
 
 @skills_bp.route('/skills/tracks/<slug>')
@@ -466,50 +437,138 @@ def track_detail(slug):
     track = CareerTrack.query.filter_by(slug=slug, is_published=True).first_or_404()
     user = _current_user()
     step_states = get_track_step_states(user.id, track)
-    return render_template('skills_track_detail.html', track=track, step_states=step_states,
-                            pct=get_track_progress_pct(user.id, track),
-                            ask_context=f'the {track.title} career track')
+    skills = [st['step'].skill for st in step_states if st['step'].skill]
+    cards = {c['skill'].id: c for c in lv.build_cards(skills, user.id)}
+    total_hours = sum((cards[s.id]['hours'] or 0) for s in skills if s.id in cards)
+    return render_template('skills/path.html', track=track, step_states=step_states, cards=cards,
+                            pct=get_track_progress_pct(user.id, track), total_hours=total_hours,
+                            active_page='tracks')
 
 
-# ===== SKILL DETAIL (learning path + practice + projects for this skill) =====
+# ===== SKILL PAGE (what you'll learn, the path, practice, projects) =====
+def _path_view(user_id, skill, outlines):
+    """The skill's learning path as rendered on the skill page: each step with its
+    completed/current/locked state (skills_service.get_path_step_states), plus the course
+    outline for course steps. A skill without an authored LearningPath still gets one
+    step per published course. Published project briefs that the authored path doesn't
+    mention (e.g. a 30-day class's final project) are added at the end, so every path
+    finishes with something built -- shown as 'open', never as locked, because starting
+    them isn't gated."""
+    by_course = {o['course'].id: o for o in outlines}
+    rows = []
+    if skill.path and skill.path.steps.count():
+        for item in get_path_step_states(user_id, skill.path):
+            step = item['step']
+            rows.append({
+                'step': step, 'state': item['state'], 'kind': lv.step_kind(step),
+                'title': lv.clean_step_title(step.title), 'description': step.description,
+                'outline': by_course.get(step.course_id) if step.step_type == 'course' else None,
+                'template': step.project_template if step.step_type == 'project' else None,
+            })
+    else:
+        found = False
+        for o in outlines:
+            done = o['total'] and o['done'] == o['total']
+            state = 'completed' if done else ('current' if not found else 'locked')
+            found = found or not done
+            rows.append({'step': None, 'state': state, 'kind': 'Course', 'title': o['course'].title,
+                         'description': o['course'].description, 'outline': o, 'template': None})
+
+    on_path = {r['template'].id for r in rows if r['template'] is not None}
+    extra = [t for t in skill.project_templates.filter_by(is_published=True).order_by(ProjectTemplate.order).all()
+             if t.id not in on_path]
+    if extra:
+        completed_ids = {
+            p.project_template_id for p in StudentProject.query.filter(
+                StudentProject.student_id == user_id, StudentProject.status == 'completed',
+                StudentProject.project_template_id.in_([t.id for t in extra]),
+            ).all()
+        }
+        for t in extra:
+            all_done = all(r['state'] == 'completed' for r in rows)
+            state = 'completed' if t.id in completed_ids else ('current' if all_done and not any(r['state'] == 'current' for r in rows) else 'open')
+            rows.append({'step': None, 'state': state, 'kind': 'Final project' if t.is_final_project else 'Project',
+                         'title': t.title, 'description': None, 'outline': None, 'template': t})
+    return rows
+
+
+def _after_course(user_id, skill, course):
+    """What comes after finishing a course: the next step on the skill's path (practice,
+    assessment, project or another course), else the skill page itself."""
+    outlines = lv.skill_outlines(user_id, skill)
+    rows = _path_view(user_id, skill, outlines)
+    idx = next((i for i, r in enumerate(rows) if r['outline'] and r['outline']['course'].id == course.id), None)
+    nxt = rows[idx + 1] if idx is not None and idx + 1 < len(rows) else None
+    if not nxt:
+        return {'kind': skill.name, 'title': 'Back to the skill', 'url': url_for('skills.skill_detail', slug=skill.slug),
+                'text': 'You have reached the end of this course. See what is left on the path.'}
+    step = nxt['step']
+    if nxt['outline']:
+        url = lv.course_url(skill, nxt['outline']['course'])
+    elif step is not None and step.step_type == 'challenge' and step.challenge:
+        url = url_for('skills.challenge_view', skill_slug=skill.slug, challenge_slug=step.challenge.slug)
+    else:
+        url = url_for('skills.skill_detail', slug=skill.slug) + '#projects'
+    return {'kind': 'Next: ' + nxt['kind'], 'title': nxt['title'], 'url': url, 'text': nxt['description'] or ''}
+
+
 @skills_bp.route('/skills/<slug>')
 @login_required
 def skill_detail(slug):
     skill = Skill.query.filter_by(slug=slug, is_published=True).first_or_404()
     user = _current_user()
 
-    step_states = get_path_step_states(user.id, skill.path)
     student_skill = StudentSkill.query.filter_by(student_id=user.id, skill_id=skill.id).first()
+    outlines = lv.skill_outlines(user.id, skill)
+    path = _path_view(user.id, skill, outlines)
+    resume = lv.resume_point(outlines)
+
     challenges = skill.challenges.filter_by(is_published=True).order_by(Challenge.order).all()
-    project_templates = skill.project_templates.filter_by(is_published=True).order_by(ProjectTemplate.order).all()
-
-    challenge_ids = [c.id for c in challenges]
-    challenge_done_ids = set()
-    if challenge_ids:
-        done = ChallengeSubmission.query.filter(
-            ChallengeSubmission.student_id == user.id, ChallengeSubmission.challenge_id.in_(challenge_ids)
+    templates = skill.project_templates.filter_by(is_published=True).order_by(ProjectTemplate.order).all()
+    done_challenge_ids = lv.challenge_done_ids(user.id, [c.id for c in challenges])
+    my_projects = {
+        p.project_template_id: p for p in StudentProject.query.filter(
+            StudentProject.student_id == user.id,
+            StudentProject.project_template_id.in_([t.id for t in templates]),
         ).all()
-        challenge_done_ids = {d.challenge_id for d in done}
+    } if templates else {}
 
-    student_project_template_ids = {
-        p.project_template_id for p in StudentProject.query.filter_by(student_id=user.id).all() if p.project_template_id
-    }
+    on_path_challenges = {r['step'].challenge_id for r in path if r['step'] is not None and r['step'].challenge_id}
+    extra_challenges = [c for c in challenges if c.id not in on_path_challenges]
 
-    onboarding = StudentOnboarding.query.filter_by(student_id=user.id).first()
-    onboarding_match = onboarding if (onboarding and onboarding.interested_skill_id == skill.id) else None
+    verification = get_skill_verification_record(user.id, skill)
+    projects_locked = verification['assessment_status'] not in ('passed', 'none')
+
+    total_lessons = sum(o['total'] for o in outlines)
+    done_lessons = sum(o['done'] for o in outlines)
+    minutes = sum(o['minutes'] for o in outlines)
+    hours = lv.skill_hours(skill, {'minutes': minutes})
+
+    # After the lessons, the primary action follows the path: the current practice,
+    # assessment or project step.
+    current = next((r for r in path if r['state'] == 'current'), None)
+    next_step = None
+    if not resume and current and not current['outline'] and current['step'] is not None:
+        step = current['step']
+        if step.step_type == 'challenge' and step.challenge:
+            next_step = {'label': 'Start ' + current['kind'].lower(), 'title': current['title'],
+                         'url': url_for('skills.challenge_view', skill_slug=skill.slug, challenge_slug=step.challenge.slug)}
+        elif step.step_type == 'project':
+            next_step = {'label': 'Go to the project', 'title': current['title'], 'url': '#projects'}
+    elif not resume and current and current['template'] is not None:
+        next_step = {'label': 'Go to the project', 'title': current['title'], 'url': '#projects'}
 
     return render_template(
-        'skill_detail.html', skill=skill, step_states=step_states, student_skill=student_skill,
-        challenges=challenges, project_templates=project_templates,
-        challenge_done_ids=challenge_done_ids, student_project_template_ids=student_project_template_ids,
-        ask_context=f'the {skill.name} skill page', onboarding_match=onboarding_match,
-        experience_labels=EXPERIENCE_LABELS,
-        verification=get_skill_verification_record(user.id, skill),
-        language_name=language_label(skill.language),
+        'skills/skill.html', skill=skill, student_skill=student_skill, outlines=outlines, path=path,
+        resume=resume, next_step=next_step, extra_challenges=extra_challenges, templates=templates,
+        done_challenge_ids=done_challenge_ids, my_projects=my_projects, projects_locked=projects_locked,
+        verification=verification, total_lessons=total_lessons, done_lessons=done_lessons, hours=hours,
+        outcomes=lv.learning_outcomes(outlines), demonstrated=lv.demonstrated_skills(templates),
+        language_name=language_label(skill.language), active_page='learn',
     )
 
 
-# ===== COURSE VIEW (module/lesson list + progress) =====
+# ===== COURSE SYLLABUS =====
 @skills_bp.route('/skills/<skill_slug>/learn/<course_slug>')
 @login_required
 def course_view(skill_slug, course_slug):
@@ -518,32 +577,32 @@ def course_view(skill_slug, course_slug):
     if course.is_daily_class:
         return redirect(url_for('skills.class_overview', skill_slug=skill_slug, course_slug=course_slug))
     user = _current_user()
-
-    modules = course.modules.order_by(CourseModule.order).all()
-    completed_ids = {
-        p.lesson_id for p in StudentLessonProgress.query
-        .join(Lesson, StudentLessonProgress.lesson_id == Lesson.id)
-        .join(CourseModule, Lesson.module_id == CourseModule.id)
-        .filter(CourseModule.course_id == course.id, StudentLessonProgress.student_id == user.id).all()
-    }
-    completed, total, pct = get_course_progress(user.id, course)
-
-    next_lesson = None
-    for m in modules:
-        for l in m.lessons.filter_by(is_published=True).order_by(Lesson.order).all():
-            if l.id not in completed_ids:
-                next_lesson = l
-                break
-        if next_lesson:
-            break
-
-    return render_template('course_view.html', skill=skill, course=course, modules=modules,
-                            completed_ids=completed_ids,
-                            progress={'completed': completed, 'total': total, 'pct': pct},
-                            next_lesson=next_lesson, ask_context=f'the {course.title} course')
+    outline = lv.course_outline(user.id, course)
+    return render_template(
+        'skills/course.html', skill=skill, course=course, outline=outline,
+        after=_after_course(user.id, skill, course) if outline['total'] and outline['done'] == outline['total'] else None,
+        active_page='learn',
+    )
 
 
-# ===== LESSON VIEW =====
+# ===== LESSON =====
+def _lesson_videos(skill, lesson):
+    if lesson.videos is None:
+        # Fetched once and cached on the lesson (shared by every student) -- safe to call
+        # unconditionally even with no key configured. A None result (quota/network
+        # failure) is deliberately NOT cached so the next visit retries.
+        result = search_youtube_videos(build_lesson_video_query(skill.name, lesson.title))
+        if result is not None:
+            lesson.videos = result
+            db.session.commit()
+    # An admin-set video_url always wins the primary slot; auto-fetched videos fill it only
+    # when there isn't one, and the rest become "other explanations".
+    fetched = lesson.videos or []
+    if lesson.video_url:
+        return None, fetched
+    return (fetched[0], fetched[1:]) if fetched else (None, [])
+
+
 @skills_bp.route('/skills/<skill_slug>/learn/<course_slug>/<lesson_slug>')
 @login_required
 def lesson_view(skill_slug, course_slug, lesson_slug):
@@ -558,29 +617,13 @@ def lesson_view(skill_slug, course_slug, lesson_slug):
         return redirect(url_for('skills.day_view', skill_slug=skill_slug, course_slug=course_slug, day_number=lesson.day_number))
     user = _current_user()
 
-    if lesson.videos is None:
-        # Fetched once and cached on the lesson (shared by every student, not per-student
-        # like Geeg's AI-generated courses) -- safe to call unconditionally even with no
-        # key configured. A None result (quota/network failure) is deliberately NOT
-        # cached, so the next student to open this lesson gets a fresh attempt instead
-        # of a permanently-stuck "no video" from one bad moment.
-        result = search_youtube_videos(build_lesson_video_query(skill.name, lesson.title))
-        if result is not None:
-            lesson.videos = result
-            db.session.commit()
-
-    all_lessons = []
-    for m in course.modules.order_by(CourseModule.order).all():
-        all_lessons.extend(m.lessons.filter_by(is_published=True).order_by(Lesson.order).all())
-    completed_ids = {
-        p.lesson_id for p in StudentLessonProgress.query.filter(
-            StudentLessonProgress.student_id == user.id,
-            StudentLessonProgress.lesson_id.in_([l.id for l in all_lessons]),
-        ).all()
-    }
+    primary_video, more_videos = _lesson_videos(skill, lesson)
+    outline = lv.course_outline(user.id, course)
+    all_lessons = outline['lessons']
     idx = next((i for i, l in enumerate(all_lessons) if l.id == lesson.id), 0)
     prev_lesson = all_lessons[idx - 1] if idx > 0 else None
     next_lesson = all_lessons[idx + 1] if idx < len(all_lessons) - 1 else None
+    is_completed = any(r['lesson'].id == lesson.id and r['state'] == 'done' for m in outline['modules'] for r in m['rows'])
 
     quiz_attempt = None
     if lesson.quiz:
@@ -588,29 +631,24 @@ def lesson_view(skill_slug, course_slug, lesson_slug):
             StudentQuizAttempt.query.filter_by(student_id=user.id, quiz_id=lesson.quiz.id)
             .order_by(StudentQuizAttempt.completed_at.desc()).first()
         )
-
-    # An admin-set video_url always wins the primary player slot; auto-fetched videos fill
-    # it only when there isn't one, and the rest become the "more videos" strip either way.
-    fetched = lesson.videos or []
-    if lesson.video_url:
-        primary_video, more_videos = None, fetched
-    else:
-        primary_video, more_videos = (fetched[0], fetched[1:]) if fetched else (None, [])
-
-    # Never hand the template the raw ORM questions (each one carries correct_index/
-    # explanation) -- Quiz.to_dict(include_answers=False) is the model's own sanitized
-    # view, built for exactly this. The template must only learn the right answer from
-    # /skills/quiz/<id>/submit's response, after grading, not from the page's initial HTML.
+    # Never hand the template the raw ORM questions (each carries correct_index/
+    # explanation) -- the answer key only reaches the client from submit_quiz, after grading.
     quiz_questions = lesson.quiz.to_dict(include_answers=False)['questions'] if lesson.quiz else []
 
     return render_template(
-        'lesson_view.html', skill=skill, course=course, lesson=lesson,
-        is_completed=lesson.id in completed_ids, prev_lesson=prev_lesson, next_lesson=next_lesson,
+        'skills/lesson.html', skill=skill, course=course, lesson=lesson, outline=outline,
+        position=idx + 1, is_completed=is_completed, is_day=False,
+        prev_url=lv.lesson_url(skill, course, prev_lesson) if prev_lesson else None,
+        prev_label=prev_lesson.title if prev_lesson else None,
+        next_url=lv.lesson_url(skill, course, next_lesson) if next_lesson else None,
+        next_label=next_lesson.title if next_lesson else None, next_locked=False,
+        after=_after_course(user.id, skill, course) if not next_lesson else None,
         quiz_attempt=quiz_attempt, quiz_questions=quiz_questions,
-        lessons_done=len(completed_ids), lessons_total=len(all_lessons),
         primary_video=primary_video, more_videos=more_videos,
+        focus={'back_url': lv.course_url(skill, course), 'back_label': course.title,
+               'title': skill.name, 'pct': outline['pct']},
         ask_context=f'the lesson "{lesson.title}" in {course.title}',
-        ask_suggestions=['Explain this simply', 'Why does this matter?', 'Give me a practice example', 'Test me on this lesson'],
+        ask_suggestions=['Explain this simply', 'Give me a practice example', 'Test me on this lesson'],
     )
 
 
@@ -683,10 +721,7 @@ def class_overview(skill_slug, course_slug):
     ).first_or_404()
     user = _current_user()
     enrollment = get_or_create_enrollment(user.id, course)
-
-    states, weeks, all_lessons = get_day_states(course, enrollment)
-    pct = get_class_progress_pct(course, enrollment)
-    rank, cohort_total = get_cohort_rank(enrollment)
+    outline = lv.course_outline(user.id, course)
     gpa_data = compute_skill_gpa(enrollment)
 
     final_template = ProjectTemplate.query.filter_by(
@@ -698,14 +733,11 @@ def class_overview(skill_slug, course_slug):
             student_id=user.id, project_template_id=final_template.id
         ).first()
 
-    current_day_num = min(enrollment.current_day, all_lessons[-1].day_number) if all_lessons else 1
-
     return render_template(
-        'class_overview.html', skill=skill, course=course, enrollment=enrollment,
-        weeks=weeks, states=states, pct=pct, rank=rank, cohort_total=cohort_total,
+        'skills/course.html', skill=skill, course=course, outline=outline, enrollment=enrollment,
         gpa_data=gpa_data, final_template=final_template, final_project=final_project,
-        current_day_num=current_day_num, total_days_count=len(all_lessons),
-        ask_context=f'the {course.title} 30-day class',
+        after=_after_course(user.id, skill, course) if outline['total'] and outline['done'] == outline['total'] else None,
+        active_page='learn',
     )
 
 
@@ -725,19 +757,10 @@ def day_view(skill_slug, course_slug, day_number):
     states, weeks, all_lessons = get_day_states(course, enrollment)
 
     if states.get(day_number) == 'locked':
-        flash(f"Day {day_number} isn't unlocked yet — finish Day {enrollment.current_day} first.")
+        flash(f"Day {day_number} isn't open yet. Finish Day {enrollment.current_day} first.")
         return redirect(url_for('skills.class_overview', skill_slug=skill_slug, course_slug=course_slug))
 
-    if lesson.videos is None:
-        result = search_youtube_videos(build_lesson_video_query(skill.name, lesson.title))
-        if result is not None:
-            lesson.videos = result
-            db.session.commit()
-    fetched = lesson.videos or []
-    if lesson.video_url:
-        primary_video, more_videos = None, fetched
-    else:
-        primary_video, more_videos = (fetched[0], fetched[1:]) if fetched else (None, [])
+    primary_video, more_videos = _lesson_videos(skill, lesson)
 
     quiz_attempt = None
     if lesson.quiz:
@@ -760,22 +783,30 @@ def day_view(skill_slug, course_slug, day_number):
     prev_day = day_numbers[idx - 1] if idx > 0 else None
     next_day = day_numbers[idx + 1] if idx < len(day_numbers) - 1 else None
     next_day_locked = next_day is not None and states.get(next_day) == 'locked'
-
     is_completed = states.get(day_number) == 'completed'
 
-    # Same sanitized-view rule as lesson_view() above -- the answer key must only ever
-    # reach the client via /skills/quiz/<id>/submit's response, after grading.
+    # Same sanitized-view rule as lesson_view() -- the answer key only ever reaches the
+    # client via /skills/quiz/<id>/submit's response, after grading.
     quiz_questions = lesson.quiz.to_dict(include_answers=False)['questions'] if lesson.quiz else []
+    outline = lv.course_outline(user.id, course)
+
+    def day_url(n):
+        return url_for('skills.day_view', skill_slug=skill.slug, course_slug=course.slug, day_number=n)
 
     return render_template(
-        'day_view.html', skill=skill, course=course, lesson=lesson, day_number=day_number,
-        is_completed=is_completed, primary_video=primary_video, more_videos=more_videos,
+        'skills/lesson.html', skill=skill, course=course, lesson=lesson, outline=outline,
+        position=idx + 1, is_completed=is_completed, is_day=True, day_number=day_number,
+        prev_url=day_url(prev_day) if prev_day else None, prev_label=f'Day {prev_day}' if prev_day else None,
+        next_url=day_url(next_day) if next_day else None, next_label=f'Day {next_day}' if next_day else None,
+        next_locked=next_day_locked,
+        after=_after_course(user.id, skill, course) if not next_day else None,
         quiz_attempt=quiz_attempt, quiz_questions=quiz_questions,
         assignment_submission=assignment_submission, due_at=due_at,
-        prev_day=prev_day, next_day=next_day, next_day_locked=next_day_locked,
-        total_days=len(day_numbers),
+        primary_video=primary_video, more_videos=more_videos,
+        focus={'back_url': lv.course_url(skill, course), 'back_label': course.title,
+               'title': skill.name, 'pct': outline['pct']},
         ask_context=f'Day {day_number} of {course.title}: "{lesson.title}"',
-        ask_suggestions=['Explain this simply', 'Give me a real-world example', 'Test me on this', 'What should I focus on?'],
+        ask_suggestions=['Explain this simply', 'Give me a real-world example', 'Test me on this'],
     )
 
 
@@ -955,8 +986,30 @@ def _submit_structured_task(user, skill, challenge, spec):
 def projects():
     user = _current_user()
     my_projects = StudentProject.query.filter_by(student_id=user.id).order_by(StudentProject.updated_at.desc()).all()
+    active = [p for p in my_projects if p.status != 'completed']
+    completed = [p for p in my_projects if p.status == 'completed']
+
+    # Briefs from the skills this student is learning that they haven't started yet --
+    # the projects that turn what they're studying into proof.
+    learning = StudentSkill.query.filter_by(student_id=user.id).order_by(StudentSkill.last_activity_at.desc()).all()
+    started_template_ids = {p.project_template_id for p in my_projects if p.project_template_id}
+    available = []
+    for ss in learning:
+        if not ss.skill or not ss.skill.is_published:
+            continue
+        templates = ss.skill.project_templates.filter_by(is_published=True).order_by(ProjectTemplate.order).all()
+        templates = [t for t in templates if t.id not in started_template_ids]
+        if not templates:
+            continue
+        locked = bool(project_prerequisites_unmet(user.id, ss.skill))
+        available.extend({'template': t, 'skill': ss.skill, 'locked': locked} for t in templates)
+        if len(available) >= 6:
+            break
+
     empty_state_cta = get_projects_empty_state_cta(user.id) if not my_projects else None
-    return render_template('projects.html', projects=my_projects, empty_state_cta=empty_state_cta, active_page='projects')
+    return render_template('skills/projects.html', active=active, completed=completed, available=available[:6],
+                           empty_state_cta=empty_state_cta, project_skill=lv.project_skill,
+                           project_score=lv.project_score, active_page='projects')
 
 
 @skills_bp.route('/skills/projects/start/<int:template_id>', methods=['POST'])
@@ -1094,7 +1147,7 @@ def project_detail(project_id):
         rubric_preview = project.template.rubric
 
     return render_template(
-        'project_detail.html', project=project, active_page='projects',
+        'project_detail.html', project=project, active_page='projects', skill=skill,
         why_it_matters=why_it_matters, rubric_preview=rubric_preview,
         review_dimensions=PROJECT_REVIEW_DIMENSIONS, review_dimension_labels=PROJECT_REVIEW_DIMENSION_LABELS,
         ask_context=f'the project "{project.title}"',
@@ -1272,11 +1325,21 @@ def skill_transcript():
     ]
     skill_records.sort(key=lambda r: (not r['verified'], -r['learning_pct']))
 
+    completed_projects = (
+        StudentProject.query.filter_by(student_id=user.id, status='completed')
+        .order_by(StudentProject.updated_at.desc()).all()
+    )
+    passed_assessments = [
+        {'skill': rec['skill'], **a} for rec in skill_records for a in rec['assessments'] if a['status'] == 'passed'
+    ]
     return render_template(
-        'skills_transcript.html', rows=rows, overall_gpa=overall_gpa, privacy=privacy,
-        skill_records=skill_records, language_profile=get_language_profile(user.id),
-        language_label=language_label,
-        active_page='transcript', ask_context='your Nelavista Skill Transcript',
+        'skills/transcript.html', rows=rows, overall_gpa=overall_gpa, privacy=privacy, student=user,
+        skill_records=skill_records, verified=[r for r in skill_records if r['verified']],
+        in_progress=[r for r in skill_records if not r['verified']],
+        completed_projects=completed_projects, passed_assessments=passed_assessments,
+        project_skill=lv.project_skill, project_score=lv.project_score,
+        language_profile=get_language_profile(user.id), language_label=language_label,
+        generated_on=datetime.utcnow(), active_page='transcript',
     )
 
 
@@ -1365,16 +1428,37 @@ def privacy_settings():
 @login_required
 def my_learning():
     user = _current_user()
-    data = get_dashboard_data(user.id)
-    all_progress = data['in_progress_skills'] + data['completed_skills']
-    pipeline_states = get_pipeline_states_bulk(user.id, [s.skill_id for s in all_progress])
+    in_progress = [
+        s for s in StudentSkill.query.filter_by(student_id=user.id, status='in_progress')
+        .order_by(StudentSkill.last_activity_at.desc()).all() if s.skill and s.skill.is_published
+    ]
+    completed = [
+        s for s in StudentSkill.query.filter_by(student_id=user.id, status='completed')
+        .order_by(StudentSkill.last_activity_at.desc()).all() if s.skill
+    ]
+    pipeline = get_pipeline_states_bulk(user.id, [s.skill_id for s in in_progress + completed])
+
     rows = []
-    for student_skill in all_progress:
-        card = get_continue_learning_card(user.id, student_skill) if student_skill.status == 'in_progress' else None
-        steps, current_phase = pipeline_states[student_skill.skill_id]
-        rows.append({'student_skill': student_skill, 'skill': student_skill.skill, 'card': card,
-                     'pipeline_steps': steps, 'current_phase': current_phase})
-    return render_template('skills_my_learning.html', rows=rows, active_page='my_learning')
+    for ss in in_progress:
+        outlines = lv.skill_outlines(user.id, ss.skill)
+        rows.append({
+            'student_skill': ss, 'skill': ss.skill, 'resume': lv.resume_point(outlines),
+            'done': sum(o['done'] for o in outlines), 'total': sum(o['total'] for o in outlines),
+            'phases': lv.phase_row(pipeline[ss.skill_id][0]),
+        })
+    finished = [{
+        'student_skill': ss, 'skill': ss.skill,
+        'verified': pipeline[ss.skill_id][0][3]['state'] == 'done',
+        'phases': lv.phase_row(pipeline[ss.skill_id][0]),
+    } for ss in completed]
+
+    active_projects = (
+        StudentProject.query.filter_by(student_id=user.id).filter(StudentProject.status != 'completed')
+        .order_by(StudentProject.updated_at.desc()).limit(4).all()
+    )
+    return render_template('skills/my_learning.html', current=rows[0] if rows else None, others=rows[1:],
+                           finished=finished, active_projects=active_projects,
+                           project_skill=lv.project_skill, active_page='my_learning')
 
 
 def _talent_evidence(profile_user, is_own, privacy):

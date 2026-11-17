@@ -1,0 +1,101 @@
+{# Shared pieces for the Skills learning screens. Every number shown comes from the
+   database (lesson counts, durations, progress); nothing is filler. #}
+
+{% macro progress(pct, label=none, done=false) -%}
+<div class="lx-progress">
+  <div class="lx-bar{{ ' is-done' if done or pct >= 100 }}" role="progressbar" aria-valuenow="{{ pct }}" aria-valuemin="0" aria-valuemax="100" aria-label="{{ label or 'Progress' }}"><span style="width:{{ pct }}%"></span></div>
+  <span class="lx-pct">{{ pct }}%</span>
+</div>
+{%- endmacro %}
+
+{% macro plural(n, one, many=none) -%}{{ n }} {{ one if n == 1 else (many or one ~ 's') }}{%- endmacro %}
+
+{% macro skill_meta(card) -%}
+<div class="lx-meta">
+  {% if card.skill.level %}<span class="lx-level">{{ card.skill.level|title }}</span>{% endif %}
+  {% if card.lessons %}<span>{{ plural(card.lessons, 'lesson') }}</span>{% endif %}
+  {% if card.hours %}<span>{{ card.hours }} h</span>{% endif %}
+  {% if card.projects %}<span>{{ plural(card.projects, 'project') }}</span>{% endif %}
+</div>
+{%- endmacro %}
+
+{% macro glyph(skill) -%}
+<span class="lx-glyph" aria-hidden="true" style="color:{{ skill.color or 'inherit' }}"><i class="{{ skill.icon or 'ri-book-3-line' }}"></i></span>
+{%- endmacro %}
+
+{% macro skill_card(card) -%}
+{% set s = card.skill %}
+<a href="/skills/{{ s.slug }}" class="lx-card{{ ' is-soon' if not card.has_content }}">
+  <div class="lx-card-top">
+    {{ glyph(s) }}
+    <h3 class="lx-card-title">{{ s.name }}</h3>
+  </div>
+  {% if s.tagline %}<p class="lx-card-desc">{{ s.tagline }}</p>{% endif %}
+  <div class="lx-card-foot">
+    {% if card.completed %}
+      <span class="lx-flag ok"><i class="ri-checkbox-circle-fill" aria-hidden="true"></i>Completed</span>
+    {% elif card.progress is not none %}
+      {{ skill_meta(card) }}
+      {{ progress(card.progress, 'Your progress in ' ~ s.name) }}
+    {% elif not card.has_content %}
+      <div class="lx-meta"><span class="lx-flag">Lessons in preparation</span>{% if card.projects %}<span>{{ plural(card.projects, 'project') }}</span>{% endif %}</div>
+    {% else %}
+      {{ skill_meta(card) }}
+    {% endif %}
+  </div>
+</a>
+{%- endmacro %}
+
+{% macro empty(icon, title, text, href=none, cta=none, secondary_href=none, secondary_cta=none) -%}
+<div class="lx-empty">
+  <div class="lx-empty-icon" aria-hidden="true"><i class="{{ icon }}"></i></div>
+  <h2>{{ title }}</h2>
+  {% if text %}<p>{{ text }}</p>{% endif %}
+  {% if href %}
+  <div class="lx-actions">
+    <a href="{{ href }}" class="lx-btn lx-btn-primary">{{ cta }}</a>
+    {% if secondary_href %}<a href="{{ secondary_href }}" class="lx-btn lx-btn-secondary">{{ secondary_cta }}</a>{% endif %}
+  </div>
+  {% endif %}
+</div>
+{%- endmacro %}
+
+{% macro tick(state) -%}
+<span class="lx-tick {{ 'done' if state == 'done' else ('current' if state == 'current' else ('locked' if state == 'locked' else '')) }}" aria-hidden="true">{% if state == 'done' %}<i class="ri-check-line"></i>{% elif state == 'locked' %}<i class="ri-lock-line"></i>{% endif %}</span>
+{%- endmacro %}
+
+{% macro state_label(state) -%}{{ {'done': 'Completed', 'current': 'Up next', 'locked': 'Locked', 'open': 'Not started'}[state] }}{%- endmacro %}
+
+{# Modules -> lessons for one course outline (services/skills_learning_view.course_outline). #}
+{% macro syllabus(skill, outline, current_id=none) -%}
+<div class="lx-syl">
+  {% for m in outline.modules %}
+  <div class="lx-syl-mod">{{ m.title }}</div>
+  {% for row in m.rows %}
+  {% set l = row.lesson %}
+  {% if row.state == 'locked' %}
+  <div class="lx-syl-row is-locked">
+    {{ tick('locked') }}
+    <span class="t">{% if l.day_number and outline.course.is_daily_class %}Day {{ l.day_number }} · {% endif %}{{ l.title }}</span>
+    <span class="d">{{ l.duration_minutes }} min</span>
+    <span class="lx-sr">Locked</span>
+  </div>
+  {% else %}
+  <a class="lx-syl-row{{ ' is-current' if (current_id and l.id == current_id) or (not current_id and row.state == 'current') }}" href="{{ lesson_url(skill, outline.course, l) }}">
+    {{ tick(row.state) }}
+    <span class="t">{% if l.day_number and outline.course.is_daily_class %}Day {{ l.day_number }} · {% endif %}{{ l.title }}</span>
+    <span class="d">{{ l.duration_minutes }} min</span>
+    <span class="lx-sr">{{ state_label(row.state) }}</span>
+  </a>
+  {% endif %}
+  {% endfor %}
+  {% endfor %}
+</div>
+{%- endmacro %}
+
+{% macro project_status(p) -%}
+{% if p.verification_status == 'requested' %}<span class="lx-status is-review">In review</span>
+{% elif p.status == 'completed' %}<span class="lx-status is-done">Completed</span>
+{% elif p.status == 'submitted' %}<span class="lx-status is-review">Submitted</span>
+{% else %}<span class="lx-status is-progress">In progress</span>{% endif %}
+{%- endmacro %}

@@ -1,0 +1,109 @@
+{% from 'skills/_macros.html' import progress, plural, syllabus %}
+{% set daily = course.is_daily_class %}
+{% set o = outline %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {% include 'components/lx_head.html' %}
+  <title>{{ course.title }} · {{ skill.name }} · Nelavista Skills</title>
+  <meta name="description" content="{{ course.description or course.title }}">
+</head>
+<body class="lx">
+{% include 'components/skills_sidebar.html' %}
+
+<div class="lx-page narrow">
+  <header class="lx-page-head">
+    <nav class="lx-crumbs" aria-label="Breadcrumb">
+      <a href="/skills">Learn</a><i class="ri-arrow-right-s-line" aria-hidden="true"></i>
+      <a href="/skills/{{ skill.slug }}">{{ skill.name }}</a>
+    </nav>
+    <h1 class="lx-title">{{ course.title }}</h1>
+    {% if course.description %}<p class="lx-lede">{{ course.description }}</p>{% endif %}
+    <div class="lx-meta" style="margin-top:14px;">
+      {% if daily %}<span class="lx-level">{{ course.duration_days or o.total }}-day class</span>{% elif course.level %}<span class="lx-level">{{ course.level|title }}</span>{% endif %}
+      <span>{{ plural(o.total, 'day' if daily else 'lesson') }}</span>
+      {% if o.minutes %}<span>About {{ (o.minutes / 60)|round|int if o.minutes >= 90 else o.minutes }} {{ 'hours' if o.minutes >= 90 else 'min' }}</span>{% endif %}
+    </div>
+  </header>
+
+  {% if o.total %}
+  <section class="lx-current" aria-label="Your progress">
+    {% if o.next_lesson %}
+      <div class="lx-continue-label">{{ 'Start here' if not o.done else 'Up next' }}</div>
+      <h2 class="lx-current-title">{% if daily %}Day {{ o.next_lesson.day_number }}: {% endif %}{{ o.next_lesson.title }}</h2>
+      <p class="lx-current-where">{{ o.done }} of {{ plural(o.total, 'day' if daily else 'lesson') }} completed{% if o.next_lesson.duration_minutes %} · this one takes about {{ o.next_lesson.duration_minutes }} min{% endif %}</p>
+      {{ progress(o.pct, course.title ~ ' progress') }}
+      <div class="lx-actions stack-sm">
+        <a href="{{ lesson_url(skill, course, o.next_lesson) }}" class="lx-btn lx-btn-primary lx-btn-lg">{{ 'Start' if not o.done else 'Continue' }} <i class="ri-arrow-right-line" aria-hidden="true"></i></a>
+      </div>
+    {% elif o.done == o.total %}
+      <div class="lx-continue-label" style="color:var(--lx-green);">Completed</div>
+      <h2 class="lx-current-title">You finished every {{ 'day' if daily else 'lesson' }}.</h2>
+      {{ progress(100, course.title ~ ' progress', true) }}
+      {% if after %}
+      <div class="lx-next" style="margin-top:20px; background:var(--lx-surface);">
+        <div class="lx-next-kind">{{ after.kind }}</div>
+        <div class="lx-next-title">{{ after.title }}</div>
+        {% if after.text %}<p>{{ after.text }}</p>{% endif %}
+        <div class="lx-actions"><a href="{{ after.url }}" class="lx-btn lx-btn-primary">Continue <i class="ri-arrow-right-line" aria-hidden="true"></i></a></div>
+      </div>
+      {% endif %}
+    {% else %}
+      <div class="lx-continue-label">Waiting for the next day</div>
+      <h2 class="lx-current-title">Day {{ enrollment.current_day if enrollment else 1 }} opens once you finish the day before it.</h2>
+      {{ progress(o.pct, course.title ~ ' progress') }}
+    {% endif %}
+
+    {% if daily and gpa_data and gpa_data.gpa is not none %}
+    <p class="lx-hint" style="margin-top:18px;">Skill GPA so far: <strong style="color:var(--lx-ink);">{{ gpa_data.gpa }}</strong>{% if gpa_data.grade_letter %} ({{ gpa_data.grade_letter }}){% endif %}, from your graded tests and assignments. <a class="lx-link" style="font-size:inherit;" href="/skills/transcript">How it's calculated</a></p>
+    {% endif %}
+  </section>
+  {% endif %}
+
+  {% if final_template %}
+  <section class="lx-section" aria-labelledby="h-final">
+    <div class="lx-section-head"><h2 class="lx-h2" id="h-final">Final project</h2></div>
+    <div class="lx-item">
+      <div class="lx-item-main">
+        <div class="lx-item-kind">Graded against {{ plural(final_template.rubric|length, 'criterion', 'criteria') if final_template.rubric else 'a rubric' }}</div>
+        <h3 class="lx-item-title">{{ final_template.title }}</h3>
+        {% if final_template.description %}<p class="lx-item-desc">{{ final_template.description|truncate(260) }}</p>{% endif %}
+        <div class="lx-meta">
+          {% if final_project and final_project.ai_overall_score is not none %}<span>Evaluated: {{ final_project.ai_overall_score }}/100</span>
+          {% elif final_project and final_project.status == 'submitted' %}<span>Submitted, evaluation pending</span>
+          {% elif final_project %}<span>In progress</span>
+          {% else %}<span>You can start it at any point in the class</span>{% endif %}
+          {% if final_template.estimated_hours %}<span>About {{ final_template.estimated_hours }} h</span>{% endif %}
+        </div>
+      </div>
+      <div class="lx-item-end">
+        {% if final_project %}
+        <a href="/skills/projects/{{ final_project.id }}" class="lx-btn lx-btn-secondary lx-btn-sm">Open project</a>
+        {% else %}
+        <form method="POST" action="/skills/projects/start/{{ final_template.id }}">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button type="submit" class="lx-btn lx-btn-secondary lx-btn-sm lx-btn-block">Start final project</button>
+        </form>
+        {% endif %}
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
+  <section class="lx-section" aria-labelledby="h-syl">
+    <div class="lx-section-head">
+      <h2 class="lx-h2" id="h-syl">{{ 'Schedule' if daily else 'Lessons' }}</h2>
+      {% if o.total %}<span class="lx-section-note">{{ o.done }}/{{ o.total }} done</span>{% endif %}
+    </div>
+    {% if o.total %}
+      {% if daily %}<p class="lx-section-note" style="margin:-4px 0 4px;">One lesson a day. Each day opens when you finish the one before it.</p>{% endif %}
+      {{ syllabus(skill, o) }}
+    {% else %}
+      <div class="lx-empty"><div class="lx-empty-icon" aria-hidden="true"><i class="ri-book-open-line"></i></div><h2>No lessons published yet</h2><p>This course is still being written. Its lessons will appear here.</p></div>
+    {% endif %}
+  </section>
+</div>
+
+{% include 'components/skills_footer.html' %}
+</body>
+</html>

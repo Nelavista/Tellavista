@@ -174,3 +174,39 @@ def test_admin_can_list_and_update(tclient, talent_app, make_user, login_as):
     with talent_app.app_context():
         row = db.session.get(TalentRequest, rid)
         assert row.status == 'contacted' and row.admin_notes == 'Called.'
+
+
+# ---------------------------------------------------------------- email alert
+
+def test_new_request_emails_hello(tclient, talent_app):
+    from app.extensions import mail
+    with mail.record_messages() as outbox:
+        r = tclient.post('/talent/request', data=dict(VALID, details='<b>Evenings</b> only'))
+    assert r.status_code == 302
+    assert len(outbox) == 1
+    msg = outbox[0]
+    assert msg.recipients == ['hello@nelavista.com']
+    assert msg.reply_to == 'ada@example.com'                  # replying answers the employer
+    assert msg.subject == 'New talent request: Example Ltd (Customer Experience)'
+    assert 'Two chat support agents for evening cover.' in msg.body
+    assert '/admin/talent-requests' in msg.body
+    assert '&lt;b&gt;Evenings&lt;/b&gt;' in msg.html and '<b>Evenings</b>' not in msg.html  # user input escaped
+
+
+def test_email_failure_never_loses_the_request(tclient, talent_app, monkeypatch):
+    from app.extensions import mail
+
+    def boom(_msg):
+        raise OSError('SMTP down')
+    monkeypatch.setattr(mail, 'send', boom)
+    r = tclient.post('/talent/request', data=VALID)
+    assert r.status_code == 302 and r.headers['Location'].endswith('/talent/request/received')
+    with talent_app.app_context():
+        assert TalentRequest.query.count() == 1
+
+
+def test_honeypot_sends_no_email(tclient):
+    from app.extensions import mail
+    with mail.record_messages() as outbox:
+        tclient.post('/talent/request', data=dict(VALID, company_fax='x'))
+    assert outbox == []

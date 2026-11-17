@@ -1,0 +1,119 @@
+{% from 'skills/_macros.html' import progress, plural, empty, project_status %}
+{% macro phases(items) -%}
+<div class="lx-phases" aria-label="Learn, practise, build, demonstrate">
+  {% for p in items %}<span class="{{ p.state }}">{% if p.state == 'done' %}<i class="ri-check-line" aria-hidden="true"></i>{% endif %}{{ p.label }}{% if p.state == 'now' %}<span class="lx-sr"> (current stage)</span>{% endif %}</span>{% endfor %}
+</div>
+{%- endmacro %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {% include 'components/lx_head.html' %}
+  <title>My Learning · Nelavista Skills</title>
+</head>
+<body class="lx">
+{% include 'components/skills_sidebar.html' %}
+
+<div class="lx-page narrow">
+  <header class="lx-page-head">
+    <h1 class="lx-title">My Learning</h1>
+  </header>
+
+  {% if not current and not finished %}
+    {{ empty('ri-book-open-line', 'No learning yet', 'Choose a skill to start building practical knowledge.', '/skills', 'Explore skills') }}
+  {% endif %}
+
+  {% if current %}
+  {% set c = current %}
+  <section class="lx-current" aria-labelledby="h-current">
+    <a class="lx-current-skill" href="/skills/{{ c.skill.slug }}">{{ c.skill.name }}</a>
+    {% if c.resume %}
+      <h2 class="lx-current-title" id="h-current">{% if c.resume.lesson.day_number and c.resume.course.is_daily_class %}Day {{ c.resume.lesson.day_number }}: {% endif %}{{ c.resume.lesson.title }}</h2>
+      <p class="lx-current-where">{{ c.resume.course.title }}{% if c.resume.lesson.duration_minutes %} · {{ c.resume.lesson.duration_minutes }} min{% endif %}</p>
+    {% else %}
+      <h2 class="lx-current-title" id="h-current">Lessons complete</h2>
+      <p class="lx-current-where">Practice and projects are next on this skill's path.</p>
+    {% endif %}
+    {{ progress(c.student_skill.progress_pct, 'Progress in ' ~ c.skill.name) }}
+    <p class="lx-hint" style="margin-top:6px;">{{ c.done }} of {{ plural(c.total, 'lesson') }} completed</p>
+    {{ phases(c.phases) }}
+    <div class="lx-actions stack-sm">
+      {% if c.resume %}
+      <a href="{{ lesson_url(c.skill, c.resume.course, c.resume.lesson) }}" class="lx-btn lx-btn-primary lx-btn-lg">Continue learning <i class="ri-arrow-right-line" aria-hidden="true"></i></a>
+      {% else %}
+      <a href="/skills/{{ c.skill.slug }}#path" class="lx-btn lx-btn-primary lx-btn-lg">See what's next <i class="ri-arrow-right-line" aria-hidden="true"></i></a>
+      {% endif %}
+      <a href="/skills/{{ c.skill.slug }}#path" class="lx-btn lx-btn-ghost lx-btn-lg">View the path</a>
+    </div>
+  </section>
+  {% endif %}
+
+  {% if others %}
+  <section class="lx-section" aria-labelledby="h-also">
+    <div class="lx-section-head"><h2 class="lx-h2" id="h-also">Also learning</h2></div>
+    <div class="lx-items">
+      {% for r in others %}
+      <div class="lx-item">
+        <div class="lx-item-main">
+          <h3 class="lx-item-title"><a href="/skills/{{ r.skill.slug }}" style="text-decoration:none;">{{ r.skill.name }}</a></h3>
+          <p class="lx-item-desc">{% if r.resume %}Next: {% if r.resume.lesson.day_number and r.resume.course.is_daily_class %}Day {{ r.resume.lesson.day_number }} · {% endif %}{{ r.resume.lesson.title }}{% else %}Lessons complete. Practice and projects are next.{% endif %}</p>
+          {{ progress(r.student_skill.progress_pct, 'Progress in ' ~ r.skill.name) }}
+        </div>
+        <div class="lx-item-end">
+          {% if r.resume %}
+          <a href="{{ lesson_url(r.skill, r.resume.course, r.resume.lesson) }}" class="lx-btn lx-btn-secondary lx-btn-sm">Continue</a>
+          {% else %}
+          <a href="/skills/{{ r.skill.slug }}#path" class="lx-btn lx-btn-secondary lx-btn-sm">Open</a>
+          {% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if active_projects %}
+  <section class="lx-section" aria-labelledby="h-proj">
+    <div class="lx-section-head">
+      <h2 class="lx-h2" id="h-proj">Projects in progress</h2>
+      <a href="/skills/projects" class="lx-link">All projects</a>
+    </div>
+    <div class="lx-rows">
+      {% for p in active_projects %}
+      {% set sk = project_skill(p) %}
+      <a class="lx-row" href="/skills/projects/{{ p.id }}">
+        <div class="lx-row-main">
+          <div class="lx-row-title">{{ p.title }}</div>
+          <div class="lx-row-sub">{{ sk.name if sk else 'Your own project' }}{% if p.progress_pct %} · {{ p.progress_pct }}% done{% endif %}</div>
+        </div>
+        <div class="lx-row-end">{{ project_status(p) }}<i class="ri-arrow-right-s-line" aria-hidden="true"></i></div>
+      </a>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if finished %}
+  <section class="lx-section" aria-labelledby="h-done">
+    <div class="lx-section-head"><h2 class="lx-h2" id="h-done">Completed</h2></div>
+    <div class="lx-rows">
+      {% for r in finished %}
+      <a class="lx-row" href="/skills/{{ r.skill.slug }}">
+        <div class="lx-row-main">
+          <div class="lx-row-title">{{ r.skill.name }}</div>
+          <div class="lx-row-sub">{% if r.verified %}Lessons, project and review complete{% else %}Lessons complete · {{ (r.phases|selectattr('state', 'equalto', 'now')|first).label if r.phases|selectattr('state', 'equalto', 'now')|list else 'Demonstrate' }} is next{% endif %}</div>
+        </div>
+        <div class="lx-row-end">{% if r.verified %}<span class="lx-badge-verified"><i class="ri-checkbox-circle-fill" aria-hidden="true"></i>Verified</span>{% endif %}<i class="ri-arrow-right-s-line" aria-hidden="true"></i></div>
+      </a>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if current or finished %}
+  <p class="lx-hint" style="margin-top:40px;">Looking for something new? <a href="/skills" class="lx-link" style="font-size:inherit;">Explore skills</a></p>
+  {% endif %}
+</div>
+
+{% include 'components/skills_footer.html' %}
+</body>
+</html>

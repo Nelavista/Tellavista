@@ -1,0 +1,302 @@
+{% from 'skills/_macros.html' import tick, plural, syllabus %}
+{% set o = outline %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {% include 'components/lx_head.html' %}
+  <title>{{ lesson.title }} · {{ course.title }}</title>
+</head>
+<body class="lx has-lessonbar">
+{% include 'components/skills_sidebar.html' %}
+
+{% macro outline_list() -%}
+  {% for m in outline.modules %}
+  <div class="lx-outline-mod">{{ m.title }}</div>
+  {% for row in m.rows %}
+    {% set l = row.lesson %}
+    {% if row.state == 'locked' %}
+    <div class="is-locked">{{ tick('locked') }}<span>{% if is_day %}Day {{ l.day_number }} · {% endif %}{{ l.title }}<span class="lx-sr"> (locked)</span></span></div>
+    {% else %}
+    <a href="{{ lesson_url(skill, course, l) }}" {% if l.id == lesson.id %}aria-current="page"{% endif %} data-lesson-id="{{ l.id }}">{{ tick(row.state if l.id != lesson.id or row.state == 'done' else 'current') }}<span>{% if is_day %}Day {{ l.day_number }} · {% endif %}{{ l.title }}</span></a>
+    {% endif %}
+  {% endfor %}
+  {% endfor %}
+{%- endmacro %}
+
+<div class="lx-lesson">
+  <nav class="lx-outline" aria-label="Course outline">
+    <div class="lx-outline-head">{{ o.done }}/{{ o.total }} {{ 'days' if is_day else 'lessons' }} done</div>
+    {{ outline_list() }}
+  </nav>
+
+  <article class="lx-read" aria-labelledby="lesson-title">
+    <div class="lx-read-kicker">
+      {% if is_day %}Day {{ day_number }} of {{ o.total }}{% else %}Lesson {{ position }} of {{ o.total }}{% endif %}{% if lesson.module and not is_day %} · {{ lesson.module.title }}{% elif is_day and lesson.week_title %} · {{ lesson.week_title }}{% endif %}
+    </div>
+    <h1 class="lx-read-title" id="lesson-title">{{ lesson.title }}</h1>
+    <div class="lx-read-meta lx-meta">
+      {% if lesson.duration_minutes %}<span>{{ lesson.duration_minutes }} min</span>{% endif %}
+      {% if lesson.quiz and quiz_questions %}<span>{{ plural(quiz_questions|length, 'question') }} at the end</span>{% endif %}
+      {% if lesson.assignment %}<span>Includes an assignment</span>{% endif %}
+      <span id="lesson-state" class="{{ 'lx-flag ok' if is_completed }}" {% if not is_completed %}hidden{% endif %}><i class="ri-check-line" aria-hidden="true"></i> Completed</span>
+    </div>
+
+    {% if lesson.learning_objective %}
+    <div class="lx-objective"><strong>By the end of this {{ 'day' if is_day else 'lesson' }}</strong>{{ lesson.learning_objective|replace('By the end of this class, you will be able to ', 'You will be able to ') }}</div>
+    {% endif %}
+
+    {% if lesson.video_url %}
+    <div class="lx-video"><iframe src="{{ lesson.video_url }}" title="{{ lesson.title }}" allowfullscreen loading="lazy"></iframe></div>
+    {% elif primary_video %}
+    <div class="lx-video"><iframe src="https://www.youtube.com/embed/{{ primary_video.video_id }}" title="{{ primary_video.title }}" allow="encrypted-media" allowfullscreen loading="lazy"></iframe></div>
+    <p class="lx-video-credit">Companion video: {{ primary_video.title }} · {{ primary_video.channel }}</p>
+    {% endif %}
+
+    {% if lesson.content %}
+    <div class="lx-prose">{{ lesson.content|safe }}</div>
+    {% else %}
+    <div class="lx-note" style="margin-top:28px;">The written part of this lesson hasn't been published yet.</div>
+    {% endif %}
+
+    {% if more_videos %}
+    <details class="lx-disclose" style="margin-top:36px;">
+      <summary><i class="ri-arrow-right-s-line" aria-hidden="true"></i>Other explanations of this topic ({{ more_videos|length }})</summary>
+      <div class="lx-vids">
+        {% for v in more_videos %}
+        <button type="button" class="lx-vid" data-video-id="{{ v.video_id }}" data-title="{{ v.title }}">
+          <div class="lx-vid-thumb"><img src="{{ v.thumbnail }}" alt="" loading="lazy"><i class="ri-play-fill" aria-hidden="true"></i></div>
+          <div class="lx-vid-title">{{ v.title }}</div>
+          <div class="lx-vid-ch">{{ v.channel }}</div>
+        </button>
+        {% endfor %}
+      </div>
+    </details>
+    {% endif %}
+
+    {% if lesson.resources %}
+    <section class="lx-block" aria-labelledby="h-res">
+      <div class="lx-block-head"><div><div class="lx-block-kind">Resources</div><h2 class="lx-block-title" id="h-res">Go further</h2></div></div>
+      {% for r in lesson.resources %}
+      <a href="{{ r.url }}" target="_blank" rel="noopener" class="lx-resource"><i class="ri-external-link-line" aria-hidden="true"></i><span>{{ r.label or r.url }}</span></a>
+      {% endfor %}
+    </section>
+    {% endif %}
+
+    {% if is_day and lesson.assignment %}
+    {% set sub = assignment_submission %}
+    <section class="lx-block" id="assignment" aria-labelledby="h-assign">
+      <div class="lx-block-head">
+        <div><div class="lx-block-kind">Practise</div><h2 class="lx-block-title" id="h-assign">{{ lesson.assignment.title }}</h2></div>
+        {% if sub %}
+          {% set st = sub.review_status if sub.review_status and sub.review_status != 'pending' else sub.status %}
+          <span class="lx-status {{ 'is-done' if st == 'passed' else ('is-review' if st in ('needs_improvement', 'late') else 'is-progress') }}">{{ st|replace('_', ' ')|capitalize }}</span>
+        {% endif %}
+      </div>
+      <div class="lx-note"><div class="lx-pre">{{ lesson.assignment.instructions or 'Do the task described in today’s lesson and submit your work below.' }}</div>
+        {% if due_at %}<p class="lx-hint" style="margin-top:12px;">Due {{ due_at.strftime('%d %b %Y, %H:%M') }}</p>{% endif %}
+      </div>
+      {% if sub %}
+      <div class="lx-note">
+        <strong>Your last submission</strong> · {{ sub.submitted_at.strftime('%d %b %Y') }}
+        {% if sub.feedback %}
+          <p style="margin-top:8px;">Score: <strong>{{ sub.score }}%</strong>. {{ sub.feedback.explanation or '' }}</p>
+          {% if sub.feedback.improvements %}<p style="margin-top:6px;"><strong>To improve:</strong> {{ sub.feedback.improvements|join(' ') }}</p>{% endif %}
+        {% else %}
+          <p style="margin-top:8px;">No feedback was generated for this attempt. Your submission still counts.</p>
+        {% endif %}
+      </div>
+      {% endif %}
+      <form method="POST" action="/skills/assignment/{{ lesson.assignment.id }}/submit" style="margin-top:14px;">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div class="lx-field">
+          <label class="lx-label" for="assign-content">{{ 'Submit again' if sub else 'Your work' }}</label>
+          <textarea class="lx-textarea" id="assign-content" name="content" rows="8" placeholder="Paste your code or answer, describe your approach, or link to your file." required></textarea>
+        </div>
+        <button type="submit" class="lx-btn lx-btn-secondary">{{ 'Resubmit' if sub else 'Submit assignment' }}</button>
+      </form>
+    </section>
+    {% endif %}
+
+    {% if lesson.quiz and quiz_questions %}
+    <section class="lx-block" id="quiz" aria-labelledby="h-quiz">
+      <div class="lx-block-head">
+        <div><div class="lx-block-kind">Check your understanding</div><h2 class="lx-block-title" id="h-quiz">{{ lesson.quiz.title or 'Quick check' }}</h2></div>
+        {% if quiz_attempt %}<span class="lx-section-note">Last score {{ quiz_attempt.score }}%</span>{% endif %}
+      </div>
+      <form id="quizForm" novalidate>
+        {% for q in quiz_questions %}
+        {# Capture the question index before the options loop: inside it, loop.index0 is the option index. #}
+        {% set qi = loop.index0 %}
+        <fieldset class="lx-q" style="border:0; margin:0; padding:0;">
+          <legend class="lx-q-text">{{ loop.index }}. {{ q.question }}</legend>
+          {% for opt in q.options %}
+          <label class="lx-opt"><input type="radio" name="q{{ qi }}" value="{{ loop.index0 }}"><span>{{ opt }}</span></label>
+          {% endfor %}
+          <div class="lx-q-expl"></div>
+        </fieldset>
+        {% endfor %}
+        <p class="lx-q-error" id="quizError" role="alert">Answer every question before you submit.</p>
+        <div class="lx-actions" style="margin-top:20px;">
+          <button type="submit" class="lx-btn lx-btn-secondary" id="quizSubmitBtn">Check answers</button>
+        </div>
+        <div class="lx-result" id="quizResult" role="status"></div>
+      </form>
+    </section>
+    {% endif %}
+
+    {% if after %}
+    <section class="lx-next" aria-label="What comes next">
+      <div class="lx-next-kind">{{ after.kind }}</div>
+      <div class="lx-next-title">{{ after.title }}</div>
+      <p>{{ after.text or ('This is the last ' ~ ('day' if is_day else 'lesson') ~ ' of ' ~ course.title ~ '.') }}</p>
+      <div class="lx-actions"><a href="{{ after.url }}" class="lx-btn lx-btn-secondary">Go to the next step <i class="ri-arrow-right-line" aria-hidden="true"></i></a></div>
+    </section>
+    {% endif %}
+  </article>
+</div>
+
+<dialog class="lx-outline-dialog" id="outlineDialog" aria-labelledby="outlineTitle">
+  <div class="lx-outline-dialog-head">
+    <h2 id="outlineTitle" class="lx-h3">{{ course.title }}</h2>
+    <button type="button" class="lx-iconbtn" data-close aria-label="Close"><i class="ri-close-line"></i></button>
+  </div>
+  <nav class="lx-outline lx-outline-in-dialog" aria-label="Course outline">{{ outline_list() }}</nav>
+</dialog>
+
+<div class="lx-lessonbar">
+  <div class="lx-lessonbar-in">
+    {% if prev_url %}
+    <a href="{{ prev_url }}" class="lx-btn lx-btn-ghost lx-nav-btn" aria-label="Previous: {{ prev_label }}"><i class="ri-arrow-left-line" aria-hidden="true"></i><span>{{ prev_label }}</span></a>
+    {% else %}
+    <button type="button" class="lx-btn lx-btn-ghost lx-nav-btn" disabled aria-label="No previous {{ 'day' if is_day else 'lesson' }}"><i class="ri-arrow-left-line" aria-hidden="true"></i></button>
+    {% endif %}
+    <button type="button" class="lx-btn lx-btn-ghost lx-nav-btn lx-contents-btn" id="outlineOpen" aria-haspopup="dialog" aria-label="All {{ 'days' if is_day else 'lessons' }}"><i class="ri-list-check" aria-hidden="true"></i></button>
+    <div class="lx-grow">
+      <button type="button" id="completeBtn" data-lesson-id="{{ lesson.id }}" class="lx-btn {{ 'lx-btn-done' if is_completed else 'lx-btn-secondary' }}" {{ 'disabled' if is_completed }}>
+        {% if is_completed %}<i class="ri-check-line" aria-hidden="true"></i> Completed{% else %}Mark as complete{% endif %}
+      </button>
+    </div>
+    {% if next_url %}
+      {% if next_locked %}
+      <a href="{{ next_url }}" id="nextBtn" class="lx-btn lx-btn-secondary lx-nav-btn" aria-disabled="true" tabindex="-1" data-locked="1" aria-label="Next: {{ next_label }} (opens when you complete this day)"><span>{{ next_label }}</span><i class="ri-lock-line" aria-hidden="true"></i></a>
+      {% else %}
+      <a href="{{ next_url }}" id="nextBtn" class="lx-btn {{ 'lx-btn-primary' if is_completed else 'lx-btn-secondary' }} lx-nav-btn" aria-label="Next: {{ next_label }}"><span>{{ next_label }}</span><i class="ri-arrow-right-line" aria-hidden="true"></i></a>
+      {% endif %}
+    {% elif after %}
+      <a href="{{ after.url }}" id="nextBtn" class="lx-btn {{ 'lx-btn-primary' if is_completed else 'lx-btn-secondary' }} lx-nav-btn" aria-label="Next step: {{ after.title }}"><span>Next step</span><i class="ri-arrow-right-line" aria-hidden="true"></i></a>
+    {% endif %}
+  </div>
+</div>
+
+{% include 'components/skills_footer.html' %}
+{% include 'components/skills_ask_widget.html' %}
+
+<script>
+(function () {
+  var completeBtn = document.getElementById('completeBtn');
+  var nextBtn = document.getElementById('nextBtn');
+  var state = document.getElementById('lesson-state');
+  var total = {{ o.total }}, done = {{ o.done }};
+
+  function markDoneUI() {
+    completeBtn.disabled = true;
+    completeBtn.className = 'lx-btn lx-btn-done';
+    completeBtn.innerHTML = '<i class="ri-check-line" aria-hidden="true"></i> Completed';
+    if (state) { state.hidden = false; state.className = 'lx-flag ok'; }
+    document.querySelectorAll('[data-lesson-id="' + completeBtn.dataset.lessonId + '"] .lx-tick').forEach(function (t) {
+      t.className = 'lx-tick done'; t.innerHTML = '<i class="ri-check-line"></i>';
+    });
+    var bar = document.querySelector('.lx-topbar-progress > span');
+    if (bar && total) bar.style.width = Math.min(100, Math.round((done + 1) / total * 100)) + '%';
+    if (nextBtn) {
+      if (nextBtn.dataset.locked) {
+        nextBtn.removeAttribute('aria-disabled'); nextBtn.removeAttribute('tabindex'); delete nextBtn.dataset.locked;
+        var ic = nextBtn.querySelector('i'); if (ic) ic.className = 'ri-arrow-right-line';
+        nextBtn.setAttribute('aria-label', nextBtn.getAttribute('aria-label').replace(/ \(opens.*\)$/, ''));
+      }
+      nextBtn.className = nextBtn.className.replace('lx-btn-secondary', 'lx-btn-primary');
+      nextBtn.focus({ preventScroll: true });
+    }
+  }
+
+  if (nextBtn) nextBtn.addEventListener('click', function (e) { if (nextBtn.dataset.locked) e.preventDefault(); });
+
+  completeBtn.addEventListener('click', async function () {
+    var label = completeBtn.innerHTML;
+    completeBtn.disabled = true; completeBtn.textContent = 'Saving…';
+    try {
+      var res = await fetch('/skills/lesson/' + completeBtn.dataset.lessonId + '/complete', { method: 'POST' });
+      var data = await res.json();
+      if (!res.ok || !data.success) throw new Error(data.error || 'failed');
+      markDoneUI();
+    } catch (e) {
+      completeBtn.disabled = false; completeBtn.innerHTML = label;
+      completeBtn.setAttribute('title', "Couldn't save. Check your connection and try again.");
+    }
+  });
+
+  // Companion videos load only when chosen.
+  document.querySelectorAll('.lx-vid').forEach(function (card) {
+    card.addEventListener('click', function () {
+      var wrap = card.querySelector('.lx-vid-thumb');
+      var f = document.createElement('iframe');
+      f.src = 'https://www.youtube.com/embed/' + encodeURIComponent(card.dataset.videoId) + '?autoplay=1';
+      f.title = card.dataset.title; f.allow = 'autoplay; encrypted-media'; f.allowFullscreen = true;
+      wrap.replaceChildren(f);
+    }, { once: true });
+  });
+
+  // Outline sheet for screens without the side outline.
+  var dlg = document.getElementById('outlineDialog');
+  document.getElementById('outlineOpen').addEventListener('click', function () {
+    dlg.showModal();
+    var cur = dlg.querySelector('[aria-current="page"]'); if (cur) cur.scrollIntoView({ block: 'center' });
+  });
+  dlg.querySelector('[data-close]').addEventListener('click', function () { dlg.close(); });
+  dlg.addEventListener('click', function (e) { if (e.target === dlg) dlg.close(); });
+
+  var form = document.getElementById('quizForm');
+  if (form) form.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    var qs = form.querySelectorAll('.lx-q'), answers = [], ok = true;
+    qs.forEach(function (q, i) {
+      var c = q.querySelector('input[name="q' + i + '"]:checked');
+      if (!c) { ok = false; return; }
+      answers.push(parseInt(c.value, 10));
+    });
+    var err = document.getElementById('quizError');
+    err.classList.toggle('is-shown', !ok);
+    if (!ok) return;
+    var btn = document.getElementById('quizSubmitBtn');
+    btn.disabled = true; btn.textContent = 'Checking…';
+    try {
+      var res = await fetch('/skills/quiz/{{ lesson.quiz.id if lesson.quiz else 0 }}/submit', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ answers: answers })
+      });
+      var data = await res.json();
+      if (!res.ok || !data.success) throw new Error(data.error || 'failed');
+      qs.forEach(function (q, i) {
+        var r = data.results && data.results[i]; if (!r) return;
+        q.querySelectorAll('.lx-opt').forEach(function (opt, oi) {
+          if (oi === r.correct_index) opt.classList.add('correct');
+          else if (oi === answers[i]) opt.classList.add('incorrect');
+          opt.querySelector('input').disabled = true;
+        });
+        if (r.explanation) { var x = q.querySelector('.lx-q-expl'); x.textContent = r.explanation; x.classList.add('is-shown'); }
+      });
+      var out = document.getElementById('quizResult');
+      out.innerHTML = '';
+      var s = document.createElement('strong'); s.textContent = data.score + '%';
+      out.appendChild(s); out.appendChild(document.createTextNode(' · ' + data.correct + ' of ' + data.total + ' correct. This ' + ({{ 'true' if is_day else 'false' }} ? 'day' : 'lesson') + ' is now marked complete.'));
+      out.classList.add('is-shown');
+      btn.textContent = 'Checked';
+      if (!completeBtn.disabled) markDoneUI();
+    } catch (e2) {
+      btn.disabled = false; btn.textContent = 'Check answers';
+      err.textContent = "Couldn't check your answers. Try again."; err.classList.add('is-shown');
+    }
+  });
+})();
+</script>
+</body>
+</html>

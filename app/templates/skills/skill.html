@@ -1,0 +1,304 @@
+{% from 'skills/_macros.html' import progress, plural, syllabus, project_status, empty %}
+{% set v = verification %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {% include 'components/lx_head.html' %}
+  <title>{{ skill.name }} · Nelavista Skills</title>
+  <meta name="description" content="{{ skill.tagline or skill.name }}">
+</head>
+<body class="lx">
+{% include 'components/skills_sidebar.html' %}
+
+<div class="lx-page">
+  <header class="lx-hero">
+    <div>
+      <nav class="lx-crumbs" aria-label="Breadcrumb">
+        <a href="/skills">Learn</a><i class="ri-arrow-right-s-line" aria-hidden="true"></i>
+        {% if skill.category %}<a href="/skills?category={{ skill.category.slug }}">{{ skill.category.name }}</a>{% endif %}
+      </nav>
+      <h1 class="lx-title" style="margin-top:14px;">{{ skill.name }}</h1>
+      {% if skill.tagline %}<p class="lx-lede">{{ skill.tagline }}</p>{% endif %}
+      <div class="lx-meta">
+        {% if skill.level %}<span class="lx-level">{{ skill.level|title }}</span>{% endif %}
+        {% if total_lessons %}<span>{{ plural(total_lessons, 'lesson') }}</span>{% endif %}
+        {% if hours %}<span>About {{ hours }} hours</span>{% endif %}
+        {% if templates %}<span>{{ plural(templates|length, 'project') }}</span>{% endif %}
+        {% if language_name %}<span>{{ language_name }}</span>{% endif %}
+      </div>
+
+      <div class="lx-actions stack-sm">
+        {% if resume %}
+          <a href="{{ lesson_url(skill, resume.course, resume.lesson) }}" class="lx-btn lx-btn-primary lx-btn-lg">
+            {{ 'Start learning' if resume.is_start else 'Continue learning' }} <i class="ri-arrow-right-line" aria-hidden="true"></i>
+          </a>
+        {% elif next_step %}
+          <a href="{{ next_step.url }}" class="lx-btn lx-btn-primary lx-btn-lg">{{ next_step.label }} <i class="ri-arrow-right-line" aria-hidden="true"></i></a>
+        {% endif %}
+        {% if path %}<a href="#path" class="lx-btn lx-btn-secondary lx-btn-lg">See the full path</a>{% endif %}
+      </div>
+      {% if resume %}
+        <p class="lx-hint" style="margin-top:12px;">{{ 'First lesson' if resume.is_start else 'Next' }}: {% if resume.lesson.day_number and resume.course.is_daily_class %}Day {{ resume.lesson.day_number }} · {% endif %}{{ resume.lesson.title }}</p>
+      {% elif next_step %}
+        <p class="lx-hint" style="margin-top:12px;">Lessons done. Next on the path: {{ next_step.title }}</p>
+      {% elif not total_lessons %}
+        <p class="lx-hint" style="margin-top:14px;">Lessons for this skill are still being written.{% if templates %} You can already start a project below.{% endif %}</p>
+      {% endif %}
+
+      {% if student_skill and total_lessons %}
+      <div class="lx-hero-progress">
+        {{ progress(student_skill.progress_pct, 'Your progress in ' ~ skill.name) }}
+        <p class="lx-hint">{{ done_lessons }} of {{ plural(total_lessons, 'lesson') }} completed{% if v.verified %} · Verified{% endif %}</p>
+      </div>
+      {% endif %}
+    </div>
+  </header>
+
+  <div class="lx-detail">
+    <div>
+      {% if outcomes %}
+      <section class="lx-section" aria-labelledby="h-learn">
+        <div class="lx-section-head"><h2 class="lx-h2" id="h-learn">What you'll learn</h2></div>
+        <ul class="lx-plain lx-learn-list">
+          {% for o in outcomes %}<li><i class="ri-check-line" aria-hidden="true"></i><span>{{ o }}</span></li>{% endfor %}
+        </ul>
+        {% if demonstrated %}
+        <div style="margin-top:22px;">
+          <div class="lx-section-note" style="margin-bottom:10px;">Skills your projects put into practice</div>
+          <div class="lx-tags">{% for t in demonstrated %}<span class="lx-tag">{{ t }}</span>{% endfor %}</div>
+        </div>
+        {% endif %}
+      </section>
+      {% endif %}
+
+      {% if skill.description %}
+      <section class="lx-section" aria-labelledby="h-about">
+        <div class="lx-section-head"><h2 class="lx-h2" id="h-about">About this skill</h2></div>
+        <div class="lx-prose-sm">{% for para in skill.description.split('\n') if para.strip() %}<p>{{ para }}</p>{% endfor %}</div>
+      </section>
+      {% endif %}
+
+      <section class="lx-section" id="path" aria-labelledby="h-path" style="scroll-margin-top:80px;">
+        <div class="lx-section-head">
+          <h2 class="lx-h2" id="h-path">Learning path</h2>
+          {% if path %}<span class="lx-section-note">{{ plural(path|length, 'step') }}</span>{% endif %}
+        </div>
+        {% if not path %}
+          {{ empty('ri-route-line', 'This path is still being built', 'Lessons, practice and projects for ' ~ skill.name ~ ' will appear here as they are published.') }}
+        {% else %}
+        <p class="lx-section-note" style="margin:-4px 0 20px;">Learn the material, practise it, build something real, then show what you can do. Each step opens when the one before it is done.</p>
+        <ol class="lx-path">
+          {% for r in path %}
+          {% set step = r.step %}
+          <li class="lx-step is-{{ r.state }}">
+            <div class="lx-node">{% if r.state == 'completed' %}<i class="ri-check-line" aria-hidden="true"></i><span class="lx-sr">Completed</span>{% else %}{{ loop.index }}{% endif %}</div>
+            <div class="lx-step-body">
+              <div class="lx-step-kind">{{ r.kind }}{% if r.state == 'current' %} · You are here{% endif %}</div>
+              <h3 class="lx-step-title">{{ r.title }}</h3>
+              {% if r.description %}<p class="lx-step-desc">{{ r.description }}</p>{% endif %}
+
+              {% if r.outline %}
+                {% set o = r.outline %}
+                <div class="lx-step-meta lx-meta">
+                  <span>{{ plural(o.total, 'day' if o.course.is_daily_class else 'lesson') }}</span>
+                  {% if o.minutes %}<span>About {{ (o.minutes / 60)|round|int if o.minutes >= 90 else o.minutes }} {{ 'hours' if o.minutes >= 90 else 'min' }}</span>{% endif %}
+                  {% if o.done %}<span>{{ o.done }} done</span>{% endif %}
+                </div>
+                {% if o.done and o.done < o.total %}<div style="max-width:320px; margin-top:10px;">{{ progress(o.pct, o.course.title ~ ' progress') }}</div>{% endif %}
+                {% if o.total %}
+                <details class="lx-disclose">
+                  <summary><i class="ri-arrow-right-s-line" aria-hidden="true"></i>{{ 'Show the days' if o.course.is_daily_class else 'Show the lessons' }}</summary>
+                  {{ syllabus(skill, o) }}
+                </details>
+                {% endif %}
+                {% if r.state != 'locked' and o.total %}
+                <div class="lx-step-act">
+                  {% if o.next_lesson %}
+                    <a href="{{ lesson_url(skill, o.course, o.next_lesson) }}" class="lx-btn {{ 'lx-btn-primary' if r.state == 'current' else 'lx-btn-secondary' }} lx-btn-sm">{{ 'Continue' if o.done else 'Start' }}</a>
+                  {% endif %}
+                  <a href="{{ course_url(skill, o.course) }}" class="lx-link">{{ 'Review course' if r.state == 'completed' else 'Course overview' }}</a>
+                </div>
+                {% endif %}
+              {% elif step and step.step_type == 'challenge' and step.challenge %}
+                <div class="lx-step-meta lx-meta">
+                  {% if step.challenge.estimated_minutes %}<span>About {{ step.challenge.estimated_minutes }} min</span>{% endif %}
+                  {% if step.challenge.is_assessment and step.challenge.pass_score %}<span>Pass mark {{ step.challenge.pass_score }}%</span>{% endif %}
+                </div>
+                {% if r.state != 'locked' %}
+                <div class="lx-step-act">
+                  <a href="/skills/{{ skill.slug }}/challenge/{{ step.challenge.slug }}" class="lx-btn {{ 'lx-btn-primary' if r.state == 'current' else 'lx-btn-secondary' }} lx-btn-sm">
+                    {% if r.state == 'completed' %}Review your work{% elif step.challenge.id in done_challenge_ids %}Try again{% else %}Start {{ r.kind|lower }}{% endif %}
+                  </a>
+                </div>
+                {% endif %}
+              {% elif r.template %}
+                {% set tpl = r.template %}
+                {% set mine = my_projects.get(tpl.id) %}
+                <div class="lx-step-meta lx-meta">
+                  {% if tpl.difficulty %}<span>{{ tpl.difficulty|title }}</span>{% endif %}
+                  {% if tpl.estimated_hours %}<span>About {{ tpl.estimated_hours }} h</span>{% endif %}
+                  {% if mine %}<span>{{ project_status(mine) }}</span>{% endif %}
+                </div>
+                {% if r.state != 'locked' %}
+                <div class="lx-step-act">
+                  {% if mine %}<a href="/skills/projects/{{ mine.id }}" class="lx-btn {{ 'lx-btn-primary' if r.state == 'current' else 'lx-btn-secondary' }} lx-btn-sm">Open your project</a>
+                  {% else %}<a href="#projects" class="lx-btn {{ 'lx-btn-primary' if r.state == 'current' else 'lx-btn-secondary' }} lx-btn-sm">See the brief</a>{% endif %}
+                  {% if r.state == 'open' %}<span class="lx-hint">You can start this at any time.</span>{% endif %}
+                </div>
+                {% endif %}
+              {% endif %}
+
+              {% if r.state == 'locked' %}
+              <p class="lx-step-lock"><i class="ri-lock-line" aria-hidden="true"></i>Opens after the step before it</p>
+              {% endif %}
+            </div>
+          </li>
+          {% endfor %}
+        </ol>
+        {% endif %}
+      </section>
+
+      {% if extra_challenges %}
+      <section class="lx-section" id="practice" aria-labelledby="h-practice">
+        <div class="lx-section-head"><h2 class="lx-h2" id="h-practice">More practice</h2></div>
+        <div class="lx-items">
+          {% for c in extra_challenges %}
+          <a href="/skills/{{ skill.slug }}/challenge/{{ c.slug }}" class="lx-item">
+            <div class="lx-item-main">
+              <div class="lx-item-kind">{{ 'Assessment' if c.is_assessment else 'Practice' }}</div>
+              <h3 class="lx-item-title">{{ c.title }}</h3>
+              {% if c.description %}<p class="lx-item-desc">{{ c.description }}</p>{% endif %}
+              <div class="lx-meta">
+                {% if c.difficulty %}<span class="lx-level">{{ c.difficulty|title }}</span>{% endif %}
+                {% if c.estimated_minutes %}<span>About {{ c.estimated_minutes }} min</span>{% endif %}
+              </div>
+            </div>
+            <div class="lx-item-end">{% if c.id in done_challenge_ids %}<span class="lx-status is-done">Submitted</span>{% else %}<i class="ri-arrow-right-s-line lx-muted" aria-hidden="true" style="font-size:1.2rem;"></i>{% endif %}</div>
+          </a>
+          {% endfor %}
+        </div>
+      </section>
+      {% endif %}
+
+      <section class="lx-section" id="projects" aria-labelledby="h-projects" style="scroll-margin-top:80px;">
+        <div class="lx-section-head"><h2 class="lx-h2" id="h-projects">Projects</h2></div>
+        <p class="lx-section-note" style="margin:-4px 0 16px;">A project is how you show you can do the work, not just describe it. Finished projects go on your Skill Transcript.</p>
+        {% if templates %}
+        <div class="lx-items">
+          {% for t in templates %}
+          {% set mine = my_projects.get(t.id) %}
+          <div class="lx-item">
+            <div class="lx-item-main">
+              <div class="lx-item-kind">{{ 'Final project' if t.is_final_project else 'Project' }}</div>
+              <h3 class="lx-item-title">{{ t.title }}</h3>
+              {% if t.description %}<p class="lx-item-desc" style="white-space:pre-line;">{{ t.description|truncate(320) }}</p>{% endif %}
+              <div class="lx-meta">
+                {% if t.difficulty %}<span class="lx-level">{{ t.difficulty|title }}</span>{% endif %}
+                {% if t.estimated_hours %}<span>About {{ t.estimated_hours }} h</span>{% endif %}
+                {% if t.rubric %}<span>Graded against {{ plural(t.rubric|length, 'criterion', 'criteria') }}</span>{% endif %}
+              </div>
+              {% if t.skills_demonstrated %}<div class="lx-tags" style="margin-top:12px;">{% for s in t.skills_demonstrated %}<span class="lx-tag">{{ s }}</span>{% endfor %}</div>{% endif %}
+            </div>
+            <div class="lx-item-end">
+              {% if mine %}
+                {{ project_status(mine) }}
+                <a href="/skills/projects/{{ mine.id }}" class="lx-btn lx-btn-secondary lx-btn-sm">Open project</a>
+              {% elif projects_locked %}
+                <span class="lx-step-lock" style="margin:0;"><i class="ri-lock-line" aria-hidden="true"></i>Opens after the assessment</span>
+              {% else %}
+                <form method="POST" action="/skills/projects/start/{{ t.id }}">
+                  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                  <button type="submit" class="lx-btn lx-btn-primary lx-btn-sm lx-btn-block">Start project</button>
+                </form>
+              {% endif %}
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        {% else %}
+          <div class="lx-note">No project briefs for {{ skill.name }} yet. You can propose your own below.</div>
+        {% endif %}
+
+        <details class="lx-disclose" style="margin-top:20px;" {{ 'open' if not templates }}>
+          <summary><i class="ri-arrow-right-s-line" aria-hidden="true"></i>Build your own project instead</summary>
+          <div class="lx-panel" style="margin-top:14px;">
+            <form method="POST" action="/skills/{{ skill.slug }}/projects/custom">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <div class="lx-field">
+                <label class="lx-label" for="cp-title">Project title</label>
+                <input class="lx-input" id="cp-title" name="title" maxlength="150" placeholder="e.g. A booking page for my hair salon" required>
+              </div>
+              <div class="lx-field">
+                <label class="lx-label" for="cp-desc">What are you building?</label>
+                <textarea class="lx-textarea" id="cp-desc" name="description" rows="3" placeholder="Who it's for, what it does, and what you'll hand in."></textarea>
+              </div>
+              <div class="lx-field">
+                <label class="lx-label" for="cp-ws">Workspace</label>
+                <select class="lx-select" id="cp-ws" name="workspace_type">
+                  <option value="">None, I'll add links to my work</option>
+                  <option value="developer">Code editor</option>
+                  <option value="writer">Document editor</option>
+                  <option value="designer">Design board</option>
+                  <option value="data">Data notebook</option>
+                </select>
+              </div>
+              <button type="submit" class="lx-btn lx-btn-secondary">Start this project</button>
+            </form>
+            <hr class="lx-rule" style="margin:22px 0;">
+            <form method="POST" action="/skills/{{ skill.slug }}/projects/generate">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <div class="lx-field">
+                <label class="lx-label" for="gp-idea">Only have a rough idea?</label>
+                <textarea class="lx-textarea" id="gp-idea" name="idea" rows="2" placeholder="e.g. a budgeting app for students" required></textarea>
+                <span class="lx-hint">We'll draft a brief with goals, features and deliverables. The draft is AI-written, so check it before you start.</span>
+              </div>
+              <button type="submit" class="lx-btn lx-btn-ghost" style="padding-left:0;">Draft a brief from my idea <i class="ri-arrow-right-line" aria-hidden="true"></i></button>
+            </form>
+          </div>
+        </details>
+      </section>
+    </div>
+
+    <aside class="lx-aside" aria-label="About this skill">
+      <div class="lx-panel">
+        <h2 class="lx-panel-title">How you prove this skill</h2>
+        <div class="lx-checks">
+          <div class="lx-check {{ 'done' if v.learning_done }}"><span class="lx-check-dot" aria-hidden="true"><i class="ri-check-line"></i></span>
+            <span>Complete the lessons<span class="lx-check-sub">{{ v.learning_pct }}% done</span></span></div>
+          {% if v.practice_total %}
+          <div class="lx-check {{ 'done' if v.practice_done == v.practice_total }}"><span class="lx-check-dot" aria-hidden="true"><i class="ri-check-line"></i></span>
+            <span>Attempt the practice tasks<span class="lx-check-sub">{{ v.practice_done }} of {{ v.practice_total }} attempted</span></span></div>
+          {% endif %}
+          {% for a in v.assessments %}
+          <div class="lx-check {{ 'done' if a.status == 'passed' }}"><span class="lx-check-dot" aria-hidden="true"><i class="ri-check-line"></i></span>
+            <span>Pass the assessment<span class="lx-check-sub">Pass mark {{ a.pass_score }}%{% if a.best_score is not none %} · your best {{ a.best_score }}%{% endif %} · <a href="/skills/{{ skill.slug }}/challenge/{{ a.challenge.slug }}">{{ 'Review' if a.status == 'passed' else ('Retake' if a.best_score is not none else 'Open') }}</a></span></span></div>
+          {% endfor %}
+          {% if v.has_project_templates %}
+          <div class="lx-check {{ 'done' if v.project_status in ('completed', 'reviewed') }}"><span class="lx-check-dot" aria-hidden="true"><i class="ri-check-line"></i></span>
+            <span>Complete a project<span class="lx-check-sub">{{ {'reviewed': 'Completed', 'completed': 'Completed', 'in_progress': 'In progress', 'not_started': 'Not started'}[v.project_status] }}</span></span></div>
+          <div class="lx-check {{ 'done' if v.quality_review_passed }}"><span class="lx-check-dot" aria-hidden="true"><i class="ri-check-line"></i></span>
+            <span>Pass the project review<span class="lx-check-sub">{{ v.review_min_score }}% or higher{% if v.best_review_score is not none %} · your best {{ v.best_review_score }}%{% endif %}</span></span></div>
+          {% endif %}
+        </div>
+        <p class="lx-hint" style="margin-top:16px; line-height:1.5;">
+          {% if v.verified %}<strong style="color:var(--lx-green);">Verified.</strong> {% endif %}Verified skills appear on your <a href="/skills/transcript" class="lx-link" style="font-size:inherit;">Skill Transcript</a>. Verification is Nelavista's own review of your work, not a job offer or an external certificate.
+        </p>
+      </div>
+
+      <div class="lx-panel">
+        <dl class="lx-facts" style="margin:0;">
+          {% if skill.category %}<div><dt>Category</dt><dd>{{ skill.category.name }}</dd></div>{% endif %}
+          {% if skill.level %}<div><dt>Level</dt><dd>{{ skill.level|title }}</dd></div>{% endif %}
+          {% if total_lessons %}<div><dt>Lessons</dt><dd>{{ total_lessons }}</dd></div>{% endif %}
+          {% if hours %}<div><dt>Time</dt><dd>About {{ hours }} h</dd></div>{% endif %}
+          <div><dt>Projects</dt><dd>{{ templates|length or 'None yet' }}</dd></div>
+          {% if language_name %}<div><dt>Language</dt><dd>{{ language_name }}</dd></div>{% endif %}
+        </dl>
+      </div>
+    </aside>
+  </div>
+</div>
+
+{% include 'components/skills_footer.html' %}
+</body>
+</html>

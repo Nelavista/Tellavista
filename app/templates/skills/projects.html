@@ -1,0 +1,97 @@
+{% from 'skills/_macros.html' import progress, plural, empty, project_status %}
+{% macro project_item(p) -%}
+{% set sk = project_skill(p) %}
+{% set score = project_score(p) %}
+<a href="/skills/projects/{{ p.id }}" class="lx-item">
+  <div class="lx-item-main">
+    <div class="lx-item-kind">{{ sk.name if sk else 'Your own project' }}</div>
+    <h3 class="lx-item-title">{{ p.title }}</h3>
+    <div class="lx-meta">
+      {% set lvl = (p.template.difficulty if p.template else p.difficulty) %}
+      {% if lvl %}<span class="lx-level">{{ lvl|title }}</span>{% endif %}
+      {% if p.template and p.template.is_final_project %}<span>Final project</span>{% endif %}
+      {% if score is not none %}<span>Review score {{ score }}/100</span>{% endif %}
+      <span>Updated {{ p.updated_at.strftime('%d %b %Y') if p.updated_at else '' }}</span>
+    </div>
+    {% if p.status != 'completed' %}<div style="max-width:320px; margin-top:12px;">{{ progress(p.progress_pct or 0, p.title ~ ' progress') }}</div>{% endif %}
+  </div>
+  <div class="lx-item-end">{{ project_status(p) }}</div>
+</a>
+{%- endmacro %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {% include 'components/lx_head.html' %}
+  <title>Projects · Nelavista Skills</title>
+</head>
+<body class="lx">
+{% include 'components/skills_sidebar.html' %}
+
+<div class="lx-page narrow">
+  <header class="lx-page-head">
+    <h1 class="lx-title">Projects</h1>
+    <p class="lx-lede">Projects are where you use a skill for real. Each one is tied to the skill it proves, and finished work goes on your Skill Transcript.</p>
+  </header>
+
+  {% if not active and not completed %}
+    {% if empty_state_cta and empty_state_cta.reason == 'completed' %}
+      {{ empty('ri-hammer-line', 'Put ' ~ empty_state_cta.skill.name ~ ' to work', 'You finished the lessons. A project shows you can actually do it.', '/skills/' ~ empty_state_cta.skill.slug ~ '#projects', 'See the project briefs') }}
+    {% elif empty_state_cta and empty_state_cta.reason == 'experienced' %}
+      {{ empty('ri-hammer-line', 'Start with a project', 'You said you already know ' ~ empty_state_cta.skill.name ~ ', so skip ahead and build something.', '/skills/' ~ empty_state_cta.skill.slug ~ '#projects', 'See the project briefs') }}
+    {% elif not available %}
+      {{ empty('ri-hammer-line', 'No projects yet', 'Every skill ends in a project. Pick a skill, learn the basics, then build.', '/skills', 'Explore skills') }}
+    {% endif %}
+  {% endif %}
+
+  {% if active %}
+  <section class="lx-section" aria-labelledby="h-active">
+    <div class="lx-section-head"><h2 class="lx-h2" id="h-active">In progress</h2><span class="lx-section-note">{{ active|length }}</span></div>
+    <div class="lx-items">{% for p in active %}{{ project_item(p) }}{% endfor %}</div>
+  </section>
+  {% endif %}
+
+  {% if available %}
+  <section class="lx-section" aria-labelledby="h-avail">
+    <div class="lx-section-head"><h2 class="lx-h2" id="h-avail">Ready to start</h2></div>
+    <p class="lx-section-note" style="margin:-4px 0 14px;">Briefs from the skills you're learning.</p>
+    <div class="lx-items">
+      {% for a in available %}
+      {% set t = a.template %}
+      <div class="lx-item">
+        <div class="lx-item-main">
+          <div class="lx-item-kind">{{ a.skill.name }}</div>
+          <h3 class="lx-item-title">{{ t.title }}</h3>
+          {% if t.description %}<p class="lx-item-desc">{{ t.description|truncate(180) }}</p>{% endif %}
+          <div class="lx-meta">
+            {% if t.difficulty %}<span class="lx-level">{{ t.difficulty|title }}</span>{% endif %}
+            {% if t.estimated_hours %}<span>About {{ t.estimated_hours }} h</span>{% endif %}
+            {% if t.is_final_project %}<span>Final project</span>{% endif %}
+          </div>
+        </div>
+        <div class="lx-item-end">
+          {% if a.locked %}
+            <span class="lx-step-lock" style="margin:0;"><i class="ri-lock-line" aria-hidden="true"></i>Opens after the assessment</span>
+          {% else %}
+          <form method="POST" action="/skills/projects/start/{{ t.id }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button type="submit" class="lx-btn lx-btn-secondary lx-btn-sm lx-btn-block">Start project</button>
+          </form>
+          {% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if completed %}
+  <section class="lx-section" aria-labelledby="h-done">
+    <div class="lx-section-head"><h2 class="lx-h2" id="h-done">Completed</h2><span class="lx-section-note">{{ completed|length }}</span></div>
+    <div class="lx-items">{% for p in completed %}{{ project_item(p) }}{% endfor %}</div>
+  </section>
+  {% endif %}
+</div>
+
+{% include 'components/skills_footer.html' %}
+</body>
+</html>

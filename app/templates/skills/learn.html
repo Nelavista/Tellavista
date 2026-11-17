@@ -1,0 +1,306 @@
+{% from 'skills/_macros.html' import skill_card, progress, plural, empty %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {% include 'components/lx_head.html' %}
+  <title>{% if q %}“{{ q }}” · {% elif active_category %}{{ active_category.name }} · {% endif %}Learn · Nelavista Skills</title>
+  <meta name="description" content="Choose a practical skill and learn it step by step: lessons, practice and projects.">
+  <link rel="canonical" href="/skills">
+</head>
+<body class="lx">
+{% include 'components/skills_sidebar.html' %}
+
+<div class="lx-page">
+  <header class="lx-page-head">
+    <h1 class="lx-title">What do you want to learn?</h1>
+    <p class="lx-lede">Practical skills, taught step by step. Each skill takes you through lessons, practice and projects, so you finish with work you can show.</p>
+
+    <form class="lx-search{{ ' has-value' if q }}" action="/skills" method="GET" role="search" id="lx-search">
+      <i class="ri-search-line" aria-hidden="true"></i>
+      <label for="lx-q" class="lx-sr">Search skills</label>
+      <input id="lx-q" type="search" name="q" value="{{ q }}" placeholder="Search for a skill" autocomplete="off" enterkeyhint="search" spellcheck="false">
+      <button type="button" class="lx-search-clear" id="lx-q-clear" aria-label="Clear search"><i class="ri-close-line"></i></button>
+    </form>
+    {% if suggestions and not q %}
+    <div class="lx-suggest" id="lx-suggest">
+      <span>Try</span>
+      {% for s in suggestions %}<a href="/skills/{{ s.slug }}">{{ s.name }}</a>{% endfor %}
+    </div>
+    {% endif %}
+  </header>
+
+  <div id="lx-browse">
+  {% if resume and mode == 'browse' %}
+  <section class="lx-continue" aria-label="Continue learning">
+    <div style="min-width:0;">
+      <div class="lx-continue-label">Continue where you left off</div>
+      <div class="lx-continue-skill">{{ resume.skill.name }}</div>
+      <div class="lx-continue-next">{% if resume.lesson.day_number and resume.course.is_daily_class %}Day {{ resume.lesson.day_number }} · {% endif %}{{ resume.lesson.title }}</div>
+      {{ progress(resume.pct, 'Progress in ' ~ resume.skill.name) }}
+    </div>
+    <a href="{{ lesson_url(resume.skill, resume.course, resume.lesson) }}" class="lx-btn lx-btn-primary">Continue learning <i class="ri-arrow-right-line" aria-hidden="true"></i></a>
+  </section>
+  {% endif %}
+
+  {% if mode != 'search' %}
+  <div class="lx-filters">
+    <nav class="lx-tabs" aria-label="Skill categories">
+      {% set lvl = ('&level=' ~ filters.level) if filters.level else '' %}
+      <a class="lx-tab" href="/skills{{ ('?level=' ~ filters.level) if filters.level else '' }}" {% if mode == 'browse' %}aria-current="true"{% endif %}>All</a>
+      {% for cat in general_cats if counts.get(cat.id) %}
+      <a class="lx-tab" href="/skills?category={{ cat.slug }}{{ lvl }}" {% if active_category and active_category.id == cat.id %}aria-current="true"{% endif %}>{{ cat.name }} <span class="n">{{ counts.get(cat.id) }}</span></a>
+      {% endfor %}
+      {% if lang_total %}
+      <a class="lx-tab" href="/skills?program=all{{ lvl }}" {% if program == 'all' %}aria-current="true"{% endif %}>Language data <span class="n">{{ lang_total }}</span></a>
+      {% endif %}
+    </nav>
+    <form class="lx-filter-more" method="GET" action="/skills" id="lx-filter-form">
+      {% if active_category %}<input type="hidden" name="category" value="{{ active_category.slug }}">{% elif program %}<input type="hidden" name="program" value="{{ program }}">{% endif %}
+      {% if filters.tag %}<input type="hidden" name="tag" value="{{ filters.tag }}">{% endif %}
+      {% if program == 'all' and language_options %}
+      <label for="lx-lang" class="lx-sr">Language</label>
+      <select id="lx-lang" name="language" class="lx-select" data-autosubmit>
+        <option value="">All languages</option>
+        {% for key, label in language_options %}<option value="{{ key }}" {{ 'selected' if filters.language == key }}>{{ label }}</option>{% endfor %}
+      </select>
+      {% endif %}
+      <label for="lx-level" class="lx-sr">Level</label>
+      <select id="lx-level" name="level" class="lx-select" data-autosubmit>
+        <option value="">All levels</option>
+        {% for l in ('beginner', 'intermediate', 'advanced') %}<option value="{{ l }}" {{ 'selected' if filters.level == l }}>{{ l|title }}</option>{% endfor %}
+      </select>
+      <noscript><button type="submit" class="lx-btn lx-btn-secondary lx-btn-sm">Apply</button></noscript>
+    </form>
+  </div>
+  {% endif %}
+
+  {% if mode == 'browse' %}
+    {% for sec in sections %}
+    <section class="lx-cat" aria-labelledby="cat-{{ sec.category.slug }}">
+      <div class="lx-cat-head">
+        <h2 class="lx-h2" id="cat-{{ sec.category.slug }}">{{ sec.category.name }}</h2>
+        <span class="n">{{ sec.cards|length }}</span>
+      </div>
+      {% if sec.category.description %}<p class="lx-cat-desc">{{ sec.category.description }}</p>{% endif %}
+      <div class="lx-grid">{% for card in sec.cards %}{{ skill_card(card) }}{% endfor %}</div>
+    </section>
+    {% endfor %}
+
+    {% if lang_total and not filters.level %}
+    <section class="lx-cat" aria-labelledby="cat-language-data">
+      <div class="lx-cat-head">
+        <h2 class="lx-h2" id="cat-language-data">African language data</h2>
+        <span class="n">{{ lang_total }}</span>
+      </div>
+      {% set langs = language_options|map(attribute=1)|list %}
+      <p class="lx-cat-desc">Transcription, translation, annotation and quality review{% if langs %} in {{ langs[:-1]|join(', ') }}{{ ' and ' if langs|length > 1 }}{{ langs[-1] }}{% endif %}: the work behind speech and language AI.</p>
+      {% if beginner_card %}
+      <div class="lx-grid" style="margin-bottom:12px;">{{ skill_card(beginner_card) }}</div>
+      {% endif %}
+      <div class="lx-rows">
+        {% for cat in lang_cats if counts.get(cat.id) %}
+        <a class="lx-row" href="/skills?category={{ cat.slug }}">
+          <div class="lx-row-main">
+            <div class="lx-row-title">{{ cat.name }}</div>
+            {% if cat.description %}<div class="lx-row-sub">{{ cat.description }}</div>{% endif %}
+          </div>
+          <div class="lx-row-end"><span>{{ plural(counts.get(cat.id), 'skill') }}</span><i class="ri-arrow-right-s-line" aria-hidden="true"></i></div>
+        </a>
+        {% endfor %}
+      </div>
+    </section>
+    {% endif %}
+
+    {% if not sections and not (lang_total and not filters.level) %}
+      {{ empty('ri-compass-3-line', 'No skills at this level yet', 'Try another level, or browse every skill.', '/skills', 'Show all skills') }}
+    {% endif %}
+
+  {% elif mode == 'filtered' %}
+    {% if active_category and active_category.description %}<p class="lx-cat-desc" style="margin:18px 0 0;">{{ active_category.description }}</p>{% endif %}
+    {% for sec in sections %}
+    <section class="lx-cat" aria-labelledby="cat-{{ sec.category.slug }}">
+      {% if sections|length > 1 %}
+      <div class="lx-cat-head">
+        <h2 class="lx-h2" id="cat-{{ sec.category.slug }}">{{ sec.category.name }}</h2>
+        <span class="n">{{ sec.cards|length }}</span>
+      </div>
+      {% else %}
+      <h2 class="lx-sr" id="cat-{{ sec.category.slug }}">{{ sec.category.name }}</h2>
+      {% endif %}
+      <div class="lx-grid">{% for card in sec.cards %}{{ skill_card(card) }}{% endfor %}</div>
+    </section>
+    {% else %}
+      <div style="margin-top:24px;">{{ empty('ri-filter-off-line', 'Nothing matches these filters', 'Clear a filter to see more skills.', '/skills' ~ (('?category=' ~ active_category.slug) if active_category else ('?program=' ~ program if program else '')), 'Clear filters') }}</div>
+    {% endfor %}
+
+  {% else %}{# search #}
+    <section class="lx-section" style="margin-top:28px;" aria-labelledby="res-skills">
+      <div class="lx-section-head">
+        <h2 class="lx-h2" id="res-skills">{% if shown %}{{ plural(shown|length, 'skill') }} for “{{ q }}”{% else %}Skills{% endif %}</h2>
+        <a class="lx-link" href="/skills">Browse all skills</a>
+      </div>
+      {% if shown %}
+      <div class="lx-grid">{% for card in shown %}{{ skill_card(card) }}{% endfor %}</div>
+      {% elif not lesson_hits and not project_hits %}
+      {{ empty('ri-search-line', 'No skills match “' ~ q ~ '”', 'Try a broader word, like “design” or “data”, or browse every skill.', '/skills', 'Browse all skills') }}
+      {% else %}
+      <p class="lx-section-note">No skill is called that, but these lessons and projects mention it.</p>
+      {% endif %}
+    </section>
+
+    {% if lesson_hits %}
+    <section class="lx-section" aria-labelledby="res-lessons">
+      <div class="lx-section-head"><h2 class="lx-h2" id="res-lessons">Lessons</h2></div>
+      <div class="lx-rows">
+        {% for l in lesson_hits %}
+        {% set c = l.module.course %}
+        <a class="lx-row" href="{{ lesson_url(c.skill, c, l) }}">
+          <div class="lx-row-main">
+            <div class="lx-row-title">{{ l.title }}</div>
+            <div class="lx-row-sub">{{ c.skill.name }} · {{ c.title }}</div>
+          </div>
+          <div class="lx-row-end"><span>{{ l.duration_minutes }} min</span><i class="ri-arrow-right-s-line" aria-hidden="true"></i></div>
+        </a>
+        {% endfor %}
+      </div>
+    </section>
+    {% endif %}
+
+    {% if project_hits %}
+    <section class="lx-section" aria-labelledby="res-projects">
+      <div class="lx-section-head"><h2 class="lx-h2" id="res-projects">Projects</h2></div>
+      <div class="lx-rows">
+        {% for p in project_hits %}
+        <a class="lx-row" href="/skills/{{ p.skill.slug }}#projects">
+          <div class="lx-row-main">
+            <div class="lx-row-title">{{ p.title }}</div>
+            <div class="lx-row-sub">{{ p.skill.name }}{% if p.difficulty %} · {{ p.difficulty|title }}{% endif %}</div>
+          </div>
+          <div class="lx-row-end">{% if p.estimated_hours %}<span>{{ p.estimated_hours }} h</span>{% endif %}<i class="ri-arrow-right-s-line" aria-hidden="true"></i></div>
+        </a>
+        {% endfor %}
+      </div>
+    </section>
+    {% endif %}
+  {% endif %}
+  </div>
+
+  <section id="lx-live" class="lx-section" style="margin-top:28px;" hidden aria-live="polite">
+    <div class="lx-section-head">
+      <h2 class="lx-h2" id="lx-live-title"></h2>
+      <a class="lx-link" id="lx-live-deep" href="#">Search lessons and projects too <i class="ri-arrow-right-line" aria-hidden="true"></i></a>
+    </div>
+    <div class="lx-grid" id="lx-live-grid"></div>
+    <div class="lx-empty lx-noresults" id="lx-live-empty">
+      <div class="lx-empty-icon" aria-hidden="true"><i class="ri-search-line"></i></div>
+      <h2 id="lx-live-empty-title">No skills match</h2>
+      <p>Try a broader word, like “design” or “data”, or search lessons and projects for it.</p>
+    </div>
+  </section>
+</div>
+
+{% include 'components/skills_footer.html' %}
+
+<script>
+(function () {
+  var form = document.getElementById('lx-search');
+  var input = document.getElementById('lx-q');
+  var clear = document.getElementById('lx-q-clear');
+  var browse = document.getElementById('lx-browse');
+  var suggest = document.getElementById('lx-suggest');
+  var live = document.getElementById('lx-live');
+  var grid = document.getElementById('lx-live-grid');
+  var title = document.getElementById('lx-live-title');
+  var deep = document.getElementById('lx-live-deep');
+  var none = document.getElementById('lx-live-empty');
+  var noneTitle = document.getElementById('lx-live-empty-title');
+  var initial = input.value;
+  var index = null, loading = null;
+  function loadIndex() {
+    if (index || loading) return loading;
+    loading = fetch('/skills/search-index.json', { credentials: 'same-origin' })
+      .then(function (r) { return r.ok ? r.json() : []; })
+      .catch(function () { return []; })
+      .then(function (rows) {
+        rows.forEach(function (s) { s._h = [s.n, s.t, s.c, s.k].join(' ').toLowerCase(); });
+        index = rows; return rows;
+      });
+    return loading;
+  }
+  input.addEventListener('focus', loadIndex, { once: true });
+
+  document.querySelectorAll('[data-autosubmit]').forEach(function (el) {
+    el.addEventListener('change', function () { el.form.submit(); });
+  });
+
+  function el(tag, cls, text) {
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text != null) n.textContent = text;
+    return n;
+  }
+  function card(s) {
+    var a = el('a', 'lx-card' + (s.ok ? '' : ' is-soon'));
+    a.href = '/skills/' + encodeURIComponent(s.s);
+    var top = el('div', 'lx-card-top');
+    var g = el('span', 'lx-glyph'); g.setAttribute('aria-hidden', 'true');
+    if (s.co) g.style.color = s.co;
+    g.appendChild(el('i', s.i));
+    top.appendChild(g); top.appendChild(el('h3', 'lx-card-title', s.n));
+    a.appendChild(top);
+    if (s.t) a.appendChild(el('p', 'lx-card-desc', s.t));
+    var foot = el('div', 'lx-card-foot');
+    if (s.d) {
+      var f = el('span', 'lx-flag ok'); f.appendChild(el('i', 'ri-checkbox-circle-fill')); f.appendChild(document.createTextNode('Completed'));
+      foot.appendChild(f);
+    } else if (!s.ok) {
+      var mm = el('div', 'lx-meta'); mm.appendChild(el('span', 'lx-flag', 'Lessons in preparation'));
+      if (s.p) mm.appendChild(el('span', null, s.p + (s.p === 1 ? ' project' : ' projects')));
+      foot.appendChild(mm);
+    } else {
+      var m = el('div', 'lx-meta');
+      if (s.l) m.appendChild(el('span', 'lx-level', s.l));
+      if (s.ls) m.appendChild(el('span', null, s.ls + (s.ls === 1 ? ' lesson' : ' lessons')));
+      if (s.h) m.appendChild(el('span', null, s.h + ' h'));
+      if (s.p) m.appendChild(el('span', null, s.p + (s.p === 1 ? ' project' : ' projects')));
+      foot.appendChild(m);
+      if (s.pr != null) {
+        var pr = el('div', 'lx-progress'), bar = el('div', 'lx-bar'), fill = el('span');
+        fill.style.width = s.pr + '%'; bar.appendChild(fill); pr.appendChild(bar); pr.appendChild(el('span', 'lx-pct', s.pr + '%'));
+        foot.appendChild(pr);
+      }
+    }
+    a.appendChild(foot);
+    return a;
+  }
+  function run() {
+    var q = input.value.trim();
+    form.classList.toggle('has-value', !!input.value);
+    if (!q || q === initial.trim()) {
+      live.hidden = true; browse.hidden = false; if (suggest) suggest.hidden = !!q;
+      return;
+    }
+    if (!index) { loadIndex().then(run); return; }
+    if (!index.length) { live.hidden = true; browse.hidden = false; return; }  // offline: Enter still searches
+    var toks = q.toLowerCase().split(/\s+/);
+    var hits = index.filter(function (s) { return toks.every(function (t) { return s._h.indexOf(t) !== -1; }); });
+    hits.sort(function (a, b) { return (b.ok - a.ok) || (b.n.toLowerCase().indexOf(toks[0]) === 0) - (a.n.toLowerCase().indexOf(toks[0]) === 0); });
+    grid.replaceChildren.apply(grid, hits.slice(0, 60).map(card));
+    title.textContent = hits.length ? hits.length + (hits.length === 1 ? ' skill' : ' skills') + ' for “' + q + '”' : 'Skills';
+    noneTitle.textContent = 'No skills match “' + q + '”';
+    none.classList.toggle('is-shown', !hits.length);
+    deep.href = '/skills?q=' + encodeURIComponent(q);
+    browse.hidden = true; live.hidden = false; if (suggest) suggest.hidden = true;
+  }
+  var t;
+  input.addEventListener('input', function () { clearTimeout(t); t = setTimeout(run, 60); });
+  input.addEventListener('keydown', function (e) { if (e.key === 'Escape') { input.value = ''; initial = ''; run(); } });
+  clear.addEventListener('click', function () {
+    if (initial) { window.location.href = '/skills'; return; }
+    input.value = ''; run(); input.focus();
+  });
+  if (location.hash === '#lx-q') { input.focus(); }
+})();
+</script>
+</body>
+</html>

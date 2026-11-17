@@ -1,15 +1,26 @@
-  </div><!-- /.main-content -->
+  </main>
 
-  <!-- Mobile bottom nav: the 5 destinations that answer the five-second test. Everything
-       else is one tap away via the hamburger drawer — this isn't the whole IA squeezed
-       onto a phone, just the essentials. -->
-  <nav class="mobile-tabbar">
-    <a href="/skills" class="{{ 'active' if active_page == 'home' else '' }}"><i class="ri-compass-3-line"></i><span>Overview</span></a>
-    <a href="/skills/catalog" class="{{ 'active' if active_page == 'learn' else '' }}"><i class="ri-book-3-line"></i><span>Learn</span></a>
-    <a href="/skills/projects" class="{{ 'active' if active_page == 'projects' else '' }}"><i class="ri-hammer-line"></i><span>Projects</span></a>
-    <a href="/skills/tracks" class="{{ 'active' if active_page == 'tracks' else '' }}"><i class="ri-route-line"></i><span>Paths</span></a>
-    <a href="/skills/talent" class="{{ 'active' if active_page == 'talent' else '' }}"><i class="ri-user-star-line"></i><span>Talent</span></a>
+  {% if not focus %}
+  {%- set _ap = 'learn' if active_page in ('learn', 'home') else active_page -%}
+  <nav class="lx-tabbar" aria-label="Primary">
+    <a href="/skills" {% if _ap == 'learn' %}aria-current="page"{% endif %}><i class="ri-compass-3-line" aria-hidden="true"></i><span>Learn</span></a>
+    <a href="/skills/my-learning" {% if _ap == 'my_learning' %}aria-current="page"{% endif %}><i class="ri-book-open-line" aria-hidden="true"></i><span>My learning</span></a>
+    <a href="/skills/projects" {% if _ap == 'projects' %}aria-current="page"{% endif %}><i class="ri-hammer-line" aria-hidden="true"></i><span>Projects</span></a>
+    <a href="/skills/tracks" {% if _ap == 'tracks' %}aria-current="page"{% endif %}><i class="ri-route-line" aria-hidden="true"></i><span>Paths</span></a>
+    <a href="/skills/transcript" {% if _ap == 'transcript' %}aria-current="page"{% endif %}><i class="ri-file-list-3-line" aria-hidden="true"></i><span>Transcript</span></a>
   </nav>
-</div><!-- /.app-wrapper -->
+  {% endif %}
+</div><!-- /.lx-shell -->
 
+{% include 'components/logout_confirm.html' %}
 <script src="{{ url_for('static', filename='js/shell.js') }}"></script>
+<script>
+// "/" jumps to skill search, like most search-first products. Ignored while typing.
+document.addEventListener('keydown', function (e) {
+  if (e.key !== '/' || e.metaKey || e.ctrlKey || e.altKey) return;
+  var t = e.target, tag = t && t.tagName;
+  if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || (t && t.isContentEditable)) return;
+  var box = document.getElementById('lx-q') || document.getElementById('lx-top-q');
+  if (box && box.offsetParent !== null) { e.preventDefault(); box.focus(); }
+});
+</script>

@@ -1,0 +1,18 @@
+{# Shared <head> assets for Skills pages built on css/learn.css. Pages that also need the
+   older component styles (project workspaces, language tasks) set lx_legacy = true. #}
+  <link rel="icon" type="image/x-icon" href="/static/icons/favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="/static/icons/nelavista-180x180.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#0c0e13">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  {% if lx_legacy %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/skills.css') }}">
+  {% else %}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css">
+  {% endif %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/learn.css') }}">
+  <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>

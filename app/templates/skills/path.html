@@ -1,0 +1,71 @@
+{% from 'skills/_macros.html' import progress, plural, skill_meta %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {% include 'components/lx_head.html' %}
+  <title>{{ track.title }} · Learning Paths · Nelavista Skills</title>
+  <meta name="description" content="{{ track.tagline or track.title }}">
+</head>
+<body class="lx">
+{% include 'components/skills_sidebar.html' %}
+
+{% set current = (step_states|selectattr('state', 'equalto', 'current')|first) if step_states|selectattr('state', 'equalto', 'current')|list else none %}
+<div class="lx-page narrow">
+  <header class="lx-page-head">
+    <nav class="lx-crumbs" aria-label="Breadcrumb"><a href="/skills/tracks">Learning Paths</a></nav>
+    <h1 class="lx-title" style="margin-top:14px;">{{ track.title }}</h1>
+    {% if track.tagline %}<p class="lx-lede">{{ track.tagline }}</p>{% endif %}
+    <div class="lx-meta" style="margin-top:14px;">
+      <span>{{ plural(step_states|length, 'skill') }}</span>
+      {% if total_hours %}<span>About {{ total_hours }} hours in total</span>{% endif %}
+    </div>
+    {% if current and current.step.skill %}
+    <div class="lx-actions" style="margin-top:22px;">
+      <a href="/skills/{{ current.step.skill.slug }}" class="lx-btn lx-btn-primary lx-btn-lg">{{ 'Continue with' if pct else 'Start with' }} {{ current.step.skill.name }} <i class="ri-arrow-right-line" aria-hidden="true"></i></a>
+    </div>
+    {% endif %}
+    {% if pct %}<div style="max-width:420px; margin-top:22px;">{{ progress(pct, track.title ~ ' progress') }}</div>{% endif %}
+  </header>
+
+  {% if track.description %}
+  <section class="lx-section" aria-labelledby="h-about">
+    <div class="lx-section-head"><h2 class="lx-h2" id="h-about">About this path</h2></div>
+    <div class="lx-prose-sm">{% for para in track.description.split('\n') if para.strip() %}<p>{{ para }}</p>{% endfor %}</div>
+  </section>
+  {% endif %}
+
+  <section class="lx-section" aria-labelledby="h-steps">
+    <div class="lx-section-head"><h2 class="lx-h2" id="h-steps">The skills, in order</h2></div>
+    {% if not step_states %}
+      <div class="lx-note">This path doesn't have any skills yet.</div>
+    {% else %}
+    <ol class="lx-path">
+      {% for item in step_states %}
+      {% set step = item.step %}
+      {% set card = cards.get(step.skill_id) %}
+      <li class="lx-step is-{{ item.state }}">
+        <div class="lx-node">{% if item.state == 'completed' %}<i class="ri-check-line" aria-hidden="true"></i><span class="lx-sr">Completed</span>{% else %}{{ loop.index }}{% endif %}</div>
+        <div class="lx-step-body">
+          <div class="lx-step-kind">Skill {{ loop.index }}{% if item.state == 'current' and pct %} · You are here{% endif %}</div>
+          <h3 class="lx-step-title">{{ step.skill.name if step.skill else 'Skill unavailable' }}</h3>
+          {% if step.note %}<p class="lx-step-desc">{{ step.note }}</p>{% elif step.skill and step.skill.tagline %}<p class="lx-step-desc">{{ step.skill.tagline }}</p>{% endif %}
+          {% if card %}<div class="lx-step-meta">{{ skill_meta(card) }}</div>
+            {% if card.progress is not none and not card.completed %}<div style="max-width:320px; margin-top:10px;">{{ progress(card.progress, step.skill.name ~ ' progress') }}</div>{% endif %}
+          {% endif %}
+          {% if step.skill and step.skill.is_published %}
+          <div class="lx-step-act">
+            <a href="/skills/{{ step.skill.slug }}" class="lx-btn {{ 'lx-btn-primary' if item.state == 'current' else 'lx-btn-secondary' }} lx-btn-sm">{{ 'Review' if item.state == 'completed' else ('Continue' if card and card.progress is not none else 'Open skill') }}</a>
+            {% if item.state == 'locked' %}<span class="lx-hint">Recommended after the skill before it</span>{% endif %}
+          </div>
+          {% endif %}
+        </div>
+      </li>
+      {% endfor %}
+    </ol>
+    {% endif %}
+  </section>
+</div>
+
+{% include 'components/skills_footer.html' %}
+</body>
+</html>

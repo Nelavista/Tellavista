@@ -186,6 +186,12 @@ def is_active(opp, today=None):
     return compute_status(opp, today)['key'] in ('open', 'closing_soon')
 
 
+def is_new(opp, now=None):
+    """Published within the last NEW_WITHIN_DAYS. Shown as a quiet "New" on the card."""
+    now = now or datetime.utcnow()
+    return (opp.published_at or opp.created_at or datetime.min) >= now - timedelta(days=NEW_WITHIN_DAYS)
+
+
 def needs_recheck(opp, now=None):
     now = now or datetime.utcnow()
     if not opp.last_checked_at:

@@ -11,6 +11,7 @@ from html.parser import HTMLParser
 from urllib.parse import urlparse, urlunparse
 
 from app.extensions import db
+from app.utils.helpers import org_initials
 from app.models import Gig, GigProvider, GigSave, GigApplication, GigEvent, StudentSkill, Skill
 from app.utils.validation import safe_external_url
 
@@ -444,8 +445,20 @@ def ui_helpers():
         'status': compute_status, 'pay': format_pay, 'location': location_label, 'ago': time_ago,
         'source': source_name, 'handler': application_handler, 'category_labels': CATEGORY_LABELS,
         'category_icons': CATEGORY_ICONS, 'work_types': WORK_TYPE_LABELS, 'nigeria': open_to_nigeria,
-        'fresh': is_fresh,
+        'fresh': is_fresh, 'is_new': is_new, 'initials': org_initials, 'short_date': short_date,
     }
+
+
+def is_new(gig, now=None):
+    now = now or datetime.utcnow()
+    return _posted_key(gig) >= now - timedelta(days=NEW_WITHIN_DAYS)
+
+
+def short_date(d, now=None):
+    """'Dec 2', or 'Jan 9, 2027' outside the current year (WAT)."""
+    today = today_wat(now or datetime.utcnow())
+    s = f"{d.strftime('%b')} {d.day}"
+    return s if d.year == today.year else f'{s}, {d.year}'
 
 
 # ---------------------------------------------------------------- visibility

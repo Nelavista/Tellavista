@@ -360,7 +360,7 @@ def test_hub_shows_open_gigs_and_hides_unknown_closed_unpublished(app, client, m
         db.session.commit()
     login_as(client, user)
     body = client.get('/opportunities/gigs').get_data(as_text=True)
-    assert 'React Developer' in body and '₦100k–₦150k' in body and 'Source: Prov' in body
+    assert 'React Developer' in body and '₦100k–₦150k' in body and 'via Prov' in body
     assert '1</strong> open gig' in body
     assert 'Closed Gig' not in body and 'Draft Gig' not in body
     open_part, unknown_part = body.split('Availability unknown <span', 1)
@@ -407,7 +407,7 @@ def test_recommended_uses_tracked_skills_only(app, client, make_user, login_as):
     _setup(app)
     login_as(client, user)
     body = client.get('/opportunities/gigs').get_data(as_text=True)
-    assert 'skill match' not in body and 'Recommended For You' not in body
+    assert 'skill match' not in body and 'Recommended for you' not in body
     with app.app_context():
         cat = SkillCategory(name='Tech', slug='gig-rec-cat')
         db.session.add(cat)
@@ -418,7 +418,7 @@ def test_recommended_uses_tracked_skills_only(app, client, make_user, login_as):
         db.session.add(StudentSkill(student_id=user.id, skill_id=skill.id, progress_pct=30))
         db.session.commit()
     body = client.get('/opportunities/gigs').get_data(as_text=True)
-    assert '33% skill match' in body and 'Recommended For You' in body
+    assert '33% skill match' in body and 'Recommended for you' in body
 
 
 def test_detail_view_logged_once_and_source_shown(app, client, make_user, login_as):
@@ -427,7 +427,7 @@ def test_detail_view_logged_once_and_source_shown(app, client, make_user, login_
     login_as(client, user)
     body = client.get(f'/opportunities/gigs/{slug}').get_data(as_text=True)
     assert 'Currently accepting applications' in body and 'Application handled by Prov' in body
-    assert 'This is not a Nelavista gig' in body and 'APPLY NOW' in body
+    assert 'This is not a Nelavista gig' in body and 'Apply on Prov' in body
     client.get(f'/opportunities/gigs/{slug}')
     with app.app_context():
         assert GigEvent.query.filter_by(gig_id=gid, event_type='gig_viewed').count() == 1

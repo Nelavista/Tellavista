@@ -52,7 +52,8 @@
     btn.classList.toggle('saved', saved);
     btn.setAttribute('aria-pressed', saved ? 'true' : 'false');
     var icon = btn.querySelector('i');
-    if (icon) icon.className = saved ? 'ri-heart-fill' : 'ri-heart-line';
+    if (icon) icon.className = saved ? 'ri-bookmark-fill' : 'ri-bookmark-line';
+    if (btn.hasAttribute('title')) btn.setAttribute('title', saved ? 'Saved' : 'Save');
     var label = btn.querySelector('[data-save-label]');
     if (label) label.textContent = saved ? 'Saved' : 'Save';
   }
@@ -71,8 +72,8 @@
         if (label && res.applied_label && !box.classList.contains('compact')) label.textContent = res.applied_label;
       });
       clearPending();
-      toast(res.applied ? 'Added to My Opportunities → Applied. Good luck!' : 'Removed from your applications.');
-    }).catch(function () { toast('Could not update. Check your connection and try again.'); });
+      toast(res.applied ? 'Marked as applied' : 'Removed from your applications');
+    }).catch(function () { toast("Couldn't update. Check your connection and try again."); });
   }
 
   // ---- share
@@ -109,6 +110,11 @@
   }
 
   document.addEventListener('click', function (e) {
+    // Filters panel: close when tapping outside it.
+    document.querySelectorAll('details.opp-filters[open]').forEach(function (d) {
+      if (!d.contains(e.target)) d.open = false;
+    });
+
     var saveBtn = e.target.closest('[data-opp-save]');
     if (saveBtn) {
       e.preventDefault();
@@ -116,10 +122,10 @@
       var id = saveBtn.getAttribute('data-opp-save');
       document.querySelectorAll('[data-opp-save="' + id + '"]').forEach(function (b) { setSaveUi(b, want); });
       post(baseFor(saveBtn) + id + '/save', { saved: want }).then(function () {
-        toast(want ? 'Saved to My Opportunities' : 'Removed from saved');
+        toast(want ? 'Saved to My opportunities' : 'Removed from saved');
       }).catch(function () {
         document.querySelectorAll('[data-opp-save="' + id + '"]').forEach(function (b) { setSaveUi(b, !want); });
-        toast('Could not save. Check your connection.');
+        toast("Couldn't save. Check your connection and try again.");
       });
       return;
     }
@@ -155,8 +161,21 @@
     var applyLink = e.target.closest('[data-opp-apply]');
     if (applyLink && pageSlug) {
       setPending(pageSlug);
+      // Brief pressed state so a slow-opening tab doesn't look like a dead tap.
+      if (!applyLink.classList.contains('is-opening')) {
+        var original = applyLink.innerHTML;
+        applyLink.classList.add('is-opening');
+        applyLink.setAttribute('aria-busy', 'true');
+        applyLink.textContent = 'Opening…';
+        setTimeout(function () {
+          applyLink.classList.remove('is-opening');
+          applyLink.removeAttribute('aria-busy');
+          applyLink.innerHTML = original;
+        }, 1800);
+      }
       return; // let the link open normally
     }
+
 
     var appliedBtn = e.target.closest('[data-opp-applied]');
     if (appliedBtn) {
@@ -178,7 +197,12 @@
   });
 
   document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape') document.querySelectorAll('.opp-sheet').forEach(function (s) { s.hidden = true; });
+    if (e.key !== 'Escape') return;
+    document.querySelectorAll('.opp-sheet').forEach(function (s) { s.hidden = true; });
+    document.querySelectorAll('details.opp-filters[open]').forEach(function (d) {
+      d.open = false;
+      var sum = d.querySelector('summary'); if (sum) sum.focus();
+    });
   });
 
   // ---- "Welcome back, did you apply?" when returning from the official site

@@ -5,7 +5,7 @@
   <link rel="apple-touch-icon" sizes="180x180" href="/static/icons/nelavista-180x180.png">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>My Opportunities · Nelavista</title>
+  <title>My opportunities · Nelavista</title>
   <meta name="theme-color" content="#050810">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/skills.css') }}">
   <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -15,73 +15,83 @@
 {% include 'components/opportunities_sidebar.html' %}
 
   <div class="sk-view opp-view">
-    <a href="{{ url_for('opportunities.discover') }}" class="opp-back"><i class="ri-arrow-left-line"></i> Scholarships &amp; programmes</a>
-    <h1 class="sk-h1">My Opportunities</h1>
-    <p class="sk-sub">The programmes and gigs you've saved, what you've applied to, and what's closing.</p>
+    <header class="opp-head">
+      <div>
+        <h1 class="opp-h1">My opportunities</h1>
+        <p class="opp-lede">Programmes and gigs you've saved or applied to, and anything you saved that closes this week.</p>
+      </div>
+    </header>
 
     {% set tabs = [('saved', 'Saved', data.saved|length + gigs.saved|length), ('applied', 'Applied', data.applied|length + gigs.applied|length),
-                   ('closing', 'Closing Soon', data.closing|length), ('recommended', 'Recommended', data.recommended|length)] %}
+                   ('closing', 'Closing soon', data.closing|length), ('recommended', 'Suggested', data.recommended|length)] %}
     <nav class="opp-tabs" aria-label="My opportunities">
       {% for key, label, n in tabs %}
-      <a href="{{ url_for('opportunities.discover_mine', tab=key) }}" class="opp-tab{{ ' active' if tab == key }}"{% if tab == key %} aria-current="page"{% endif %}>{{ label }}<span class="opp-tab-count">{{ n }}</span></a>
+      <a href="{{ url_for('opportunities.discover_mine', tab=key) }}" class="opp-tab{{ ' active' if tab == key }}"{% if tab == key %} aria-current="page"{% endif %}>{{ label }}{% if n %}<span class="opp-tab-count">{{ n }}</span>{% endif %}</a>
       {% endfor %}
     </nav>
 
-    {% if tab == 'applied' and gigs.applied %}
-      <div class="sk-section-title opp-section-title"><span>Gigs</span></div>
-      <div class="opp-list">
-        {% for a in gigs.applied %}{% set g = a.gig %}{% set s = gig_ui.status(g) %}
-        <a class="opp-list-row applied" href="{{ url_for('opportunities.gig_detail', slug=g.slug) }}">
-          <span class="opp-list-title">{{ g.title }}</span>
-          <span class="opp-list-org">{{ g.organization }} · {{ gig_ui.pay(g, compact=True) }}</span>
-          <span class="opp-pill applied"><i class="ri-check-line"></i>Applied</span>
-          <span class="opp-list-meta">Applied {{ a.applied_at.strftime('%b') }} {{ a.applied_at.day }}, {{ a.applied_at.year }} · {{ s.label }} · via {{ gig_ui.handler(g) }}</span>
-        </a>
-        {% endfor %}
-      </div>
-      <p class="opp-muted" style="margin-top:10px;">Marked by you. Replies come from the gig's provider or employer directly.</p>
-      {% if data.applied %}<div class="sk-section-title opp-section-title"><span>Programmes</span></div>{% endif %}
-    {% endif %}
-    {% if tab == 'saved' and gigs.saved %}
-      <div class="sk-section-title opp-section-title"><span>Gigs</span></div>
-      <div class="opp-grid">
-        {% for g in gigs.saved %}{% with st = gig_state.get(g.id, {}), match = None, from_section = 'mine_saved', ui = gig_ui %}{% include 'components/gig_card.html' %}{% endwith %}{% endfor %}
-      </div>
-      {% if data.saved %}<div class="sk-section-title opp-section-title"><span>Programmes</span></div>{% endif %}
-    {% endif %}
-
     {% if tab == 'applied' %}
+      {% if gigs.applied %}
+      <section class="opp-section" aria-labelledby="sec-applied-gigs">
+        <div class="opp-section-head"><h2 id="sec-applied-gigs">Gigs</h2><p>Replies come from the gig's provider or employer directly.</p></div>
+        <ul class="opp-rows">
+          {% for a in gigs.applied %}{% set g = a.gig %}{% set s = gig_ui.status(g) %}
+          <li><a class="opp-row" href="{{ url_for('opportunities.gig_detail', slug=g.slug) }}">
+            <span class="opp-row-when done">Applied {{ a.applied_at.strftime('%b') }} {{ a.applied_at.day }}</span>
+            <span class="opp-row-main"><span class="opp-row-title">{{ g.title }}</span><span class="opp-row-sub">{{ g.organization }} · via {{ gig_ui.handler(g) }}</span></span>
+            <span class="opp-row-end"><strong>{{ gig_ui.pay(g, compact=True) }}</strong><span class="opp-row-status">{{ s.label }}</span></span>
+          </a></li>
+          {% endfor %}
+        </ul>
+      </section>
+      {% endif %}
       {% if data.applied %}
-      <div class="opp-list">
-        {% for a in data.applied %}{% set o = a.opportunity %}{% set s = ui.status(o) %}
-        <a class="opp-list-row applied" href="{{ url_for('opportunities.discover_detail', slug=o.slug) }}">
-          <span class="opp-list-title">{{ o.title }}</span>
-          <span class="opp-list-org">{{ o.organization }}</span>
-          <span class="opp-pill applied"><i class="ri-check-line"></i>Applied</span>
-          <span class="opp-list-meta">Applied {{ a.applied_at.strftime('%b') }} {{ a.applied_at.day }}, {{ a.applied_at.year }} · {{ s.label }}</span>
-        </a>
-        {% endfor %}
+      <section class="opp-section" aria-labelledby="sec-applied-progs">
+        <div class="opp-section-head"><h2 id="sec-applied-progs">Programmes</h2><p>Results come from each organisation directly, so keep an eye on your email.</p></div>
+        <ul class="opp-rows">
+          {% for a in data.applied %}{% set o = a.opportunity %}{% set s = ui.status(o) %}
+          <li><a class="opp-row" href="{{ url_for('opportunities.discover_detail', slug=o.slug) }}">
+            <span class="opp-row-when done">Applied {{ a.applied_at.strftime('%b') }} {{ a.applied_at.day }}</span>
+            <span class="opp-row-main"><span class="opp-row-title">{{ o.title }}</span><span class="opp-row-sub">{{ o.organization }}</span></span>
+            <span class="opp-row-end"><span class="opp-row-status">{{ s.label }}</span></span>
+          </a></li>
+          {% endfor %}
+        </ul>
+      </section>
+      {% endif %}
+      {% if not data.applied and not gigs.applied %}
+      <div class="opp-empty">
+        <h2>No applications yet</h2>
+        <p>After you apply for something, tap <strong>I applied</strong> on its page and it's tracked here. Only you can see this list.</p>
+        <a href="{{ url_for('opportunities.discover') }}" class="opp-text-btn">Browse open programmes</a>
       </div>
-      <p class="opp-muted" style="margin-top:14px;">These are the programmes you marked as applied. Outcomes come from each organisation directly, so watch your email.</p>
-      {% elif not gigs.applied %}
-      <div class="sk-empty opp-empty"><div class="sk-empty-icon"><i class="ri-send-plane-line"></i></div>
-        <div style="font-weight:700;">No applications yet</div>
-        <div style="font-size:0.92rem;">After you apply, tap <strong>I Applied</strong> on the opportunity to keep track of it here.</div>
-        <a href="{{ url_for('opportunities.discover') }}" class="sk-btn small" style="margin-top:10px;">Find opportunities</a></div>
       {% endif %}
 
     {% else %}
+      {% if tab == 'saved' and gigs.saved %}
+      <section class="opp-section" aria-labelledby="sec-saved-gigs">
+        <div class="opp-section-head"><h2 id="sec-saved-gigs">Gigs</h2></div>
+        <div class="opp-grid">
+          {% for g in gigs.saved %}{% with st = gig_state.get(g.id, {}), match = None, from_section = 'mine_saved', ui = gig_ui %}{% include 'components/gig_card.html' %}{% endwith %}{% endfor %}
+        </div>
+      </section>
+      {% endif %}
       {% set items = data.saved if tab == 'saved' else (data.closing if tab == 'closing' else data.recommended) %}
       {% if items %}
-      <div class="opp-grid">
-        {% for o in items %}{% with st = state.get(o.id, {}), from_section = 'mine_' ~ tab %}{% include 'components/opportunity_card.html' %}{% endwith %}{% endfor %}
-      </div>
+      <section class="opp-section" aria-label="Programmes">
+        {% if tab == 'saved' and gigs.saved %}<div class="opp-section-head"><h2>Programmes</h2></div>{% endif %}
+        {% if tab == 'recommended' %}<div class="opp-section-head"><p>Open programmes that match the course and level on your profile.</p></div>{% endif %}
+        <div class="opp-grid">
+          {% for o in items %}{% with st = state.get(o.id, {}), from_section = 'mine_' ~ tab %}{% include 'components/opportunity_card.html' %}{% endwith %}{% endfor %}
+        </div>
+      </section>
       {% elif not (tab == 'saved' and gigs.saved) %}
-      <div class="sk-empty opp-empty"><div class="sk-empty-icon"><i class="{{ 'ri-heart-line' if tab == 'saved' else ('ri-timer-line' if tab == 'closing' else 'ri-compass-discover-line') }}"></i></div>
-        {% if tab == 'saved' %}<div style="font-weight:700;">Nothing saved yet</div><div style="font-size:0.92rem;">Tap ♡ on any opportunity to keep it here.</div>
-        {% elif tab == 'closing' %}<div style="font-weight:700;">Nothing you saved closes this week</div><div style="font-size:0.92rem;">Saved opportunities that close in the next 7 days show up here.</div>
-        {% else %}<div style="font-weight:700;">No recommendations yet</div><div style="font-size:0.92rem;">Add your department and level to your profile for better matches.</div>{% endif %}
-        <a href="{{ url_for('opportunities.discover') }}" class="sk-btn small" style="margin-top:10px;">Browse opportunities</a></div>
+      <div class="opp-empty">
+        {% if tab == 'saved' %}<h2>Nothing saved yet</h2><p>Tap <i class="ri-bookmark-line" aria-label="the bookmark"></i> on any programme or gig to keep it here.</p>
+        {% elif tab == 'closing' %}<h2>Nothing you saved closes this week</h2><p>Saved programmes with a deadline in the next 7 days show up here.</p>
+        {% else %}<h2>No suggestions yet</h2><p>Add your department and level to your profile and we'll suggest programmes that fit.</p>{% endif %}
+        <a href="{{ url_for('opportunities.discover') }}" class="opp-text-btn">Browse open programmes</a>
+      </div>
       {% endif %}
     {% endif %}
   </div>

@@ -21,7 +21,7 @@ from flask import render_template, request, jsonify, redirect, url_for, flash, a
 from app.extensions import db, limiter
 from app.models import StudentOpportunity
 from app.routes.opportunities_routes import opportunities_bp, _current_user
-from app.utils.helpers import login_required
+from app.utils.helpers import login_required, org_initials
 from app.services import student_opportunity_service as svc
 from app.services.gigs import core as gig_core
 from sqlalchemy.exc import SQLAlchemyError
@@ -43,6 +43,9 @@ def _ui():
         'level_labels': svc.LEVEL_LABELS,
         'location_labels': svc.LOCATION_SCOPE_LABELS,
         'mode': svc.effective_application_mode,
+        'short_date': svc._fmt_date,
+        'is_new': svc.is_new,
+        'initials': org_initials,
     }
 
 

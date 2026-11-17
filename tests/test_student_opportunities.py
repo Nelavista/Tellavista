@@ -125,7 +125,7 @@ def test_detail_404_for_unverified_and_view_logged_once(app, client, make_user, 
     res = client.get(f'/opportunities/discover/{slug}')
     html = res.get_data(as_text=True)
     assert res.status_code == 200
-    assert 'APPLY NOW' in html and 'Verified by Nelavista' in html
+    assert 'Apply now' in html and 'Verified by Nelavista' in html
     client.get(f'/opportunities/discover/{slug}')
     with app.app_context():
         assert StudentOpportunityEvent.query.filter_by(opportunity_id=oid, event_type='view').count() == 1

@@ -3140,3 +3140,217 @@ class StudentOpportunityReport(db.Model):
 
     opportunity = db.relationship('StudentOpportunity', backref=db.backref('reports', lazy='dynamic', cascade='all, delete-orphan'))
     user = db.relationship('User')
+
+
+
+# ===================================================================== GIGS
+# Paid work and projects in the Opportunities space. They come from external providers
+# (official APIs/feeds whose terms permit redistribution), from an admin, or later from
+# a direct partner. All three use the same Gig row. services/gigs/ holds the rules.
+#
+# Don't confuse this with Opportunity above. That is Nelavista's own paid-gig ledger
+# (apply in Nelavista, payouts, earnings), and it stays exactly as it is.
+
+class GigProvider(db.Model):
+    """One source of gigs: an API/feed adapter, or the built-in 'manual' source.
+
+    Secrets never live in this table. `credentials_env` names an environment variable
+    that holds the key, so the database and the admin UI only ever see the name."""
+    __tablename__ = 'gig_providers'
+
+    id = db.Column(db.Integer, primary_key=True)
+    slug = db.Column(db.String(60), unique=True, nullable=False, index=True)
+    name = db.Column(db.String(120), nullable=False)
+    kind = db.Column(db.String(20), nullable=False, default='api')        # api | feed | manual | partner
+    adapter = db.Column(db.String(40), nullable=False, default='manual')   # key in services/gigs/adapters.ADAPTERS
+    api_base_url = db.Column(db.String(500), nullable=True)
+    auth_method = db.Column(db.String(20), nullable=False, default='none')  # none | api_key_header | bearer | query_param
+    auth_param = db.Column(db.String(60), nullable=True)                   # header / query-param name for the key
+    credentials_env = db.Column(db.String(80), nullable=True)              # env var NAME holding the key
+    config_json = db.Column(db.Text, nullable=True)                        # adapter options (field map, filters...)
+    website_url = db.Column(db.String(500), nullable=True)
+    terms_url = db.Column(db.String(500), nullable=True)
+    # Why Nelavista may show this provider's listings (a summary of the terms) and the
+    # attribution they require. A provider can't be enabled until an admin confirms it.
+    redistribution_basis = db.Column(db.Text, nullable=True)
+    redistribution_confirmed = db.Column(db.Boolean, nullable=False, default=False)
+    attribution_text = db.Column(db.String(200), nullable=True)
+    enabled = db.Column(db.Boolean, nullable=False, default=False)
+    auto_publish = db.Column(db.Boolean, nullable=False, default=False)    # imported gigs go live without review
+    sync_frequency_minutes = db.Column(db.Integer, nullable=False, default=360)
+    stale_after_hours = db.Column(db.Integer, nullable=False, default=72)  # unconfirmed this long -> "Availability unknown"
+
+    last_sync_at = db.Column(db.DateTime, nullable=True)
+    last_success_at = db.Column(db.DateTime, nullable=True)
+    last_status = db.Column(db.String(20), nullable=True)                  # success | partial | failed
+    last_error = db.Column(db.Text, nullable=True)
+    consecutive_failures = db.Column(db.Integer, nullable=False, default=0)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    @property
+    def config(self):
+        try:
+            value = json.loads(self.config_json or '{}')
+        except (TypeError, ValueError):
+            return {}
+        return value if isinstance(value, dict) else {}
+
+
+class GigSyncRun(db.Model):
+    """One synchronisation attempt for one provider: counts, and any error."""
+    __tablename__ = 'gig_sync_runs'
+
+    id = db.Column(db.Integer, primary_key=True)
+    provider_id = db.Column(db.Integer, db.ForeignKey('gig_providers.id'), nullable=False, index=True)
+    started_at = db.Column(db.DateTime, default=datetime.utcnow, index=True)
+    finished_at = db.Column(db.DateTime, nullable=True)
+    status = db.Column(db.String(20), nullable=False, default='running')    # running | success | partial | failed
+    triggered_by = db.Column(db.String(60), nullable=True)                 # schedule | cli | admin:<username>
+    fetched = db.Column(db.Integer, nullable=False, default=0)
+    created = db.Column(db.Integer, nullable=False, default=0)
+    updated = db.Column(db.Integer, nullable=False, default=0)
+    closed = db.Column(db.Integer, nullable=False, default=0)
+    skipped = db.Column(db.Integer, nullable=False, default=0)
+    duplicates = db.Column(db.Integer, nullable=False, default=0)
+    errors = db.Column(db.Integer, nullable=False, default=0)
+    error = db.Column(db.Text, nullable=True)
+    notes = db.Column(db.Text, nullable=True)
+
+    provider = db.relationship('GigProvider', backref=db.backref('sync_runs', lazy='dynamic', cascade='all, delete-orphan'))
+
+
+class Gig(db.Model):
+    """A normalised gig. External, manual and (future) partner gigs share this table, and
+    `origin` says which. Availability is derived (services/gigs/core.compute_status). It
+    is never trusted from one old import."""
+    __tablename__ = 'gigs'
+
+    id = db.Column(db.Integer, primary_key=True)
+    slug = db.Column(db.String(180), unique=True, nullable=False, index=True)
+    provider_id = db.Column(db.Integer, db.ForeignKey('gig_providers.id'), nullable=False, index=True)
+    source_gig_id = db.Column(db.String(120), nullable=True)
+    origin = db.Column(db.String(20), nullable=False, default='external')  # external | manual | partner
+
+    title = db.Column(db.String(200), nullable=False)
+    organization = db.Column(db.String(150), nullable=False)
+    organization_logo_url = db.Column(db.String(500), nullable=True)
+    summary = db.Column(db.String(300), nullable=True)
+    description = db.Column(db.Text, nullable=True)        # plain text (provider HTML is stripped)
+    requirements = db.Column(db.Text, nullable=True)
+    eligibility = db.Column(db.Text, nullable=True)        # who can apply
+    category = db.Column(db.String(40), nullable=False, default='other', index=True)
+    skills_json = db.Column(db.Text, nullable=True)
+
+    pay_min = db.Column(db.Integer, nullable=True)         # whole units of `currency`
+    pay_max = db.Column(db.Integer, nullable=True)
+    currency = db.Column(db.String(10), nullable=True)
+    pay_type = db.Column(db.String(20), nullable=False, default='not_stated')  # fixed|hourly|daily|weekly|monthly|yearly|per_task|not_stated
+    pay_text = db.Column(db.String(120), nullable=True)    # the provider's own wording when it isn't structured
+    work_type = db.Column(db.String(20), nullable=True)    # project|part_time|full_time|contract|freelance|internship
+    location_type = db.Column(db.String(20), nullable=False, default='remote')  # remote | onsite | hybrid
+    location = db.Column(db.String(200), nullable=True)    # e.g. "Worldwide", "Lagos", "EMEA"
+
+    application_url = db.Column(db.String(500), nullable=True)
+    source_url = db.Column(db.String(500), nullable=True)  # the provider's canonical listing page
+    application_mode = db.Column(db.String(30), nullable=False, default='EXTERNAL')  # EXTERNAL | NELAVISTA (partners, future)
+    allows_in_app_view = db.Column(db.Boolean, nullable=False, default=False)
+    external_reference = db.Column(db.String(200), nullable=True)
+
+    posted_at = db.Column(db.DateTime, nullable=True)
+    deadline = db.Column(db.Date, nullable=True)
+    source_status = db.Column(db.String(20), nullable=False, default='UNKNOWN')  # what the source last said: OPEN | CLOSED | UNKNOWN
+    status_override = db.Column(db.String(20), nullable=True)  # admin: OPEN | CLOSED | UNKNOWN
+    last_verified_at = db.Column(db.DateTime, nullable=True)   # last time a source or an admin confirmed it was open
+    last_synced_at = db.Column(db.DateTime, nullable=True)
+    last_seen_at = db.Column(db.DateTime, nullable=True)       # last time the provider's feed contained it
+    closed_at = db.Column(db.DateTime, nullable=True)
+
+    dedupe_key = db.Column(db.String(64), nullable=True, index=True)
+    duplicate_of_id = db.Column(db.Integer, db.ForeignKey('gigs.id'), nullable=True, index=True)
+    locked_fields_json = db.Column(db.Text, nullable=True)     # fields an admin edited; sync won't overwrite them
+    raw_json = db.Column(db.Text, nullable=True)               # last provider payload (trimmed), for debugging
+
+    is_published = db.Column(db.Boolean, nullable=False, default=False, index=True)
+    featured = db.Column(db.Boolean, nullable=False, default=False)
+    is_archived = db.Column(db.Boolean, nullable=False, default=False)
+    removed_reason = db.Column(db.String(200), nullable=True)
+    verified_by_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
+    created_by_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
+    published_at = db.Column(db.DateTime, nullable=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow, index=True)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    provider = db.relationship('GigProvider', backref=db.backref('gigs', lazy='dynamic'))
+    duplicate_of = db.relationship('Gig', remote_side=[id])
+    verified_by = db.relationship('User', foreign_keys=[verified_by_id])
+    created_by = db.relationship('User', foreign_keys=[created_by_id])
+
+    __table_args__ = (db.UniqueConstraint('provider_id', 'source_gig_id', name='uq_gig_provider_source'),)
+
+    @staticmethod
+    def _load_list(raw):
+        if not raw:
+            return []
+        try:
+            value = json.loads(raw)
+        except (TypeError, ValueError):
+            return []
+        return [str(v) for v in value if str(v).strip()] if isinstance(value, list) else []
+
+    @property
+    def skills(self):
+        return self._load_list(self.skills_json)
+
+    @property
+    def locked_fields(self):
+        return set(self._load_list(self.locked_fields_json))
+
+    @property
+    def is_external(self):
+        return self.origin == 'external'
+
+
+class GigSave(db.Model):
+    __tablename__ = 'gig_saves'
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False, index=True)
+    gig_id = db.Column(db.Integer, db.ForeignKey('gigs.id'), nullable=False, index=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    gig = db.relationship('Gig', backref=db.backref('saves', lazy='dynamic', cascade='all, delete-orphan'))
+
+    __table_args__ = (db.UniqueConstraint('user_id', 'gig_id', name='uq_gig_save'),)
+
+
+class GigApplication(db.Model):
+    """The student's own "I applied" record. source='self_reported' for every external
+    gig, because Nelavista can't see whether the provider received it. 'partner' is
+    reserved for a future integration that reports status back. Nothing writes it today."""
+    __tablename__ = 'gig_applications'
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False, index=True)
+    gig_id = db.Column(db.Integer, db.ForeignKey('gigs.id'), nullable=False, index=True)
+    source = db.Column(db.String(20), nullable=False, default='self_reported')
+    applied_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    gig = db.relationship('Gig', backref=db.backref('applications', lazy='dynamic', cascade='all, delete-orphan'))
+
+    __table_args__ = (db.UniqueConstraint('user_id', 'gig_id', name='uq_gig_application'),)
+
+
+class GigEvent(db.Model):
+    """Append-only analytics: gig_viewed | gig_saved | gig_unsaved | apply_clicked |
+    application_marked | application_unmarked | gig_shared."""
+    __tablename__ = 'gig_events'
+
+    id = db.Column(db.Integer, primary_key=True)
+    gig_id = db.Column(db.Integer, db.ForeignKey('gigs.id'), nullable=False, index=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True, index=True)
+    event_type = db.Column(db.String(30), nullable=False, index=True)
+    channel = db.Column(db.String(30), nullable=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow, index=True)
+
+    gig = db.relationship('Gig', backref=db.backref('events', lazy='dynamic', cascade='all, delete-orphan'))

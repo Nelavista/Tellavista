@@ -15,11 +15,12 @@
 {% include 'components/opportunities_sidebar.html' %}
 
   <div class="sk-view">
-    <span class="sk-eyebrow">Gigs</span>
-    <h1 class="sk-h1">The full marketplace.</h1>
-    <p class="sk-sub">Every open gig on Nelavista, not just the ones matched to you. Filter to find what fits.</p>
+    <a href="{{ url_for('opportunities.gigs') }}" class="opp-back"><i class="ri-arrow-left-line"></i> All gigs</a>
+    <span class="sk-eyebrow">Nelavista gigs</span>
+    <h1 class="sk-h1">Apply right here.</h1>
+    <p class="sk-sub">Gigs run through Nelavista: you apply here, and payment shows in Earnings. Filter to find what fits.</p>
 
-    <form method="GET" action="{{ url_for('opportunities.gigs') }}" class="gig-filter-row" style="margin-top:20px;">
+    <form method="GET" action="{{ url_for('opportunities.nelavista_gigs') }}" class="gig-filter-row" style="margin-top:20px;">
       <select name="skill_id" class="sk-select" onchange="this.form.submit()">
         <option value="">Any skill</option>
         {% for s in skills %}<option value="{{ s.id }}" {{ 'selected' if skill_id == s.id else '' }}>{{ s.name }}</option>{% endfor %}

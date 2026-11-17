@@ -1,0 +1,49 @@
+{# One gig card. Needs: g (Gig), st (user_state entry or {}), ui (core.ui_helpers()),
+   optional: match (skill_match result or None), from_section. #}
+{% set status = ui.status(g) %}
+{% set detail_url = url_for('opportunities.gig_detail', slug=g.slug) ~ ('?from=' ~ from_section if from_section else '') %}
+<article class="opp-card gig-card" data-opp-id="{{ g.id }}" data-opp-base="/opportunities/gigs/">
+  <div class="opp-card-top">
+    <div class="opp-org-mark" aria-hidden="true"><i class="{{ ui.category_icons.get(g.category, 'ri-briefcase-4-line') }}"></i></div>
+    <div class="opp-card-head">
+      <a class="opp-card-title" href="{{ detail_url }}">{{ g.title }}</a>
+      <div class="opp-card-org">{{ g.organization }}</div>
+    </div>
+    <button type="button" class="opp-icon-btn opp-save{{ ' saved' if st.get('saved') }}" data-opp-save="{{ g.id }}"
+            aria-pressed="{{ 'true' if st.get('saved') else 'false' }}" aria-label="{{ 'Unsave' if st.get('saved') else 'Save' }} {{ g.title }}">
+      <i class="{{ 'ri-heart-fill' if st.get('saved') else 'ri-heart-line' }}"></i>
+    </button>
+  </div>
+
+  <div class="opp-status-row">
+    <span class="opp-status {{ status.tone }}"><span class="opp-dot"></span>{{ status.label }}</span>
+    {% if match %}<span class="gig-match" title="Matches your Nelavista skills: {{ match.matched|join(', ') }}">{{ match.pct }}% skill match</span>{% endif %}
+    {% if g.featured %}<span class="opp-pill featured"><i class="ri-star-fill"></i>Featured</span>{% endif %}
+    {% if st.get('applied_at') %}<span class="opp-pill applied"><i class="ri-check-line"></i>Applied</span>{% endif %}
+  </div>
+
+  <ul class="gig-facts">
+    <li class="gig-pay"><i class="ri-money-dollar-circle-line" aria-hidden="true"></i>{{ ui.pay(g, compact=True) }}</li>
+    <li><i class="ri-earth-line" aria-hidden="true"></i>{{ ui.location(g) }}</li>
+    {% if g.work_type %}<li><i class="ri-time-line" aria-hidden="true"></i>{{ ui.work_types.get(g.work_type, g.work_type) }}</li>{% endif %}
+  </ul>
+
+  {% if g.skills %}
+  <div class="gig-skills" aria-label="Skills">{% for s in g.skills[:5] %}<span>{{ s }}</span>{% endfor %}{% if g.skills|length > 5 %}<span>+{{ g.skills|length - 5 }}</span>{% endif %}</div>
+  {% endif %}
+
+  <div class="gig-meta">
+    {% if g.posted_at %}Posted {{ ui.ago(g.posted_at) }}{% else %}Added {{ ui.ago(g.created_at) }}{% endif %}
+    {% if g.last_verified_at %} · Verified {{ ui.ago(g.last_verified_at) }}{% endif %}
+    · Source: {{ ui.source(g) }}
+  </div>
+
+  <div class="opp-card-actions">
+    <a href="{{ detail_url }}" class="sk-btn small">View Gig</a>
+    <button type="button" class="opp-icon-btn" data-opp-share="{{ g.id }}" data-share-title="{{ g.title }}"
+            data-share-org="{{ g.organization }}" data-share-label="Pay" data-share-deadline="{{ ui.pay(g, compact=True) }}"
+            data-share-url="{{ url_for('opportunities.gig_detail', slug=g.slug, _external=True) }}" aria-label="Share {{ g.title }}">
+      <i class="ri-share-forward-line"></i>
+    </button>
+  </div>
+</article>

@@ -1,0 +1,164 @@
+{% extends 'talent/base.html' %}
+{% from 'talent/_macros.html' import avatar %}
+{% block title %}Request Talent | Nelavista Talent{% endblock %}
+{% block description %}Tell Nelavista what you need: role, skills, team size and timeline. We search our network of trained, assessed African talent and come back with a shortlist.{% endblock %}
+{% block canonical %}{{ url_for('talent.request_talent', _external=True) }}{% endblock %}
+
+{% macro field_error(name) -%}
+  {% if errors.get(name) %}<span class="tn-field-error" id="{{ name }}-err">{{ errors[name] }}</span>{% endif %}
+{%- endmacro %}
+{% macro aria(name) -%}{% if errors.get(name) %} aria-invalid="true" aria-describedby="{{ name }}-err"{% endif %}{%- endmacro %}
+
+{% block content %}
+<div class="tn-wrap">
+  <div class="tn-req">
+    <div>
+      <header class="tn-req-head">
+        <p class="tn-eyebrow">Request Talent</p>
+        <h1>Tell us what you need. We'll find the right people.</h1>
+        <p>Takes about five minutes. A person on our team reads every request. We'll come back to discuss the brief before sharing any profiles.</p>
+      </header>
+
+      {% if ref_profile %}
+      <div class="tn-ref">
+        {{ avatar(ref_profile, 'sm') }}
+        <div><strong>About {{ ref_profile.name }}{% if ref_profile.is_sample %} (sample profile){% endif %}</strong><span>{{ ref_profile.role }} · {{ ref_profile.location }}. {% if ref_profile.is_sample %}We'll match you with real people like this.{% endif %}</span></div>
+      </div>
+      {% endif %}
+
+      <form class="tn-form" method="post" action="{{ url_for('talent.request_talent') }}" novalidate>
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <input type="hidden" name="profile_ref" value="{{ data.get('profile_ref', '') }}">
+        <div class="tn-hp" aria-hidden="true"><label>Company fax <input type="text" name="company_fax" tabindex="-1" autocomplete="off"></label></div>
+
+        {% if errors %}
+        <div class="tn-errors" role="alert" tabindex="-1" id="form-errors">Please check the {{ errors|length }} highlighted field{{ 's' if errors|length > 1 }} below.</div>
+        {% endif %}
+
+        <fieldset class="tn-fs">
+          <legend><span>01</span>About you</legend>
+          <div class="tn-fields">
+            <div class="tn-field{{ ' has-error' if errors.contact_name }}">
+              <label for="contact_name">Your name</label>
+              <input class="tn-input" id="contact_name" name="contact_name" autocomplete="name" required value="{{ data.get('contact_name', '') }}"{{ aria('contact_name') }}>
+              {{ field_error('contact_name') }}
+            </div>
+            <div class="tn-field">
+              <label for="job_title">Job title <small>(optional)</small></label>
+              <input class="tn-input" id="job_title" name="job_title" autocomplete="organization-title" value="{{ data.get('job_title', '') }}">
+            </div>
+            <div class="tn-field{{ ' has-error' if errors.company_name }}">
+              <label for="company_name">Company or organisation</label>
+              <input class="tn-input" id="company_name" name="company_name" autocomplete="organization" required value="{{ data.get('company_name', '') }}"{{ aria('company_name') }}>
+              {{ field_error('company_name') }}
+            </div>
+            <div class="tn-field{{ ' has-error' if errors.work_email }}">
+              <label for="work_email">Work email</label>
+              <input class="tn-input" id="work_email" name="work_email" type="email" autocomplete="email" inputmode="email" required value="{{ data.get('work_email', '') }}"{{ aria('work_email') }}>
+              {{ field_error('work_email') }}
+            </div>
+            <div class="tn-field">
+              <label for="company_website">Company website <small>(optional)</small></label>
+              <input class="tn-input" id="company_website" name="company_website" type="url" inputmode="url" placeholder="https://" value="{{ data.get('company_website', '') }}">
+            </div>
+            <div class="tn-field">
+              <label for="country">Country <small>(optional)</small></label>
+              <input class="tn-input" id="country" name="country" autocomplete="country-name" value="{{ data.get('country', '') }}">
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset class="tn-fs">
+          <legend><span>02</span>The work</legend>
+          <div class="tn-fields">
+            <div class="tn-field tn-field-full{{ ' has-error' if errors.need_summary }}">
+              <label for="need_summary">What do you need help with?</label>
+              <textarea class="tn-textarea" id="need_summary" name="need_summary" rows="3" maxlength="500" required placeholder="e.g. Two chat support agents to cover evenings for our online store."{{ aria('need_summary') }}>{{ data.get('need_summary', '') }}</textarea>
+              {{ field_error('need_summary') }}
+            </div>
+            <div class="tn-field">
+              <label for="category">Talent category</label>
+              <select class="tn-select" id="category" name="category">
+                <option value="">Choose a category</option>
+                {% for c in categories %}<option value="{{ c.slug }}"{{ ' selected' if data.get('category') == c.slug }}>{{ c.name }}</option>{% endfor %}
+                <option value="other"{{ ' selected' if data.get('category') == 'other' }}>Something else</option>
+              </select>
+            </div>
+            <div class="tn-field">
+              <label for="headcount">Number of people</label>
+              <select class="tn-select" id="headcount" name="headcount">
+                <option value="">Choose</option>
+                {% for v, l in headcounts %}<option value="{{ v }}"{{ ' selected' if data.get('headcount') == v }}>{{ l }}</option>{% endfor %}
+              </select>
+            </div>
+            <div class="tn-field tn-field-full">
+              <label for="skills">Skills required <small>(optional)</small></label>
+              <input class="tn-input" id="skills" name="skills" placeholder="e.g. Zendesk, written English, data entry" value="{{ data.get('skills', '') }}">
+              <span class="tn-hint">Separate skills with commas.</span>
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset class="tn-fs">
+          <legend><span>03</span>Engagement</legend>
+          <div class="tn-fields">
+            <div class="tn-field tn-field-full{{ ' has-error' if errors.engagement_type }}" role="radiogroup" aria-labelledby="eng-label"{% if errors.engagement_type %} aria-describedby="engagement_type-err"{% endif %}>
+              <span class="tn-label" id="eng-label">Engagement type</span>
+              <div class="tn-options">
+                {% for v, l in engagement_types %}
+                <label class="tn-option"><input type="radio" name="engagement_type" value="{{ v }}"{{ ' checked' if data.get('engagement_type') == v }}><span>{{ l }}</span></label>
+                {% endfor %}
+              </div>
+              {{ field_error('engagement_type') }}
+            </div>
+            <div class="tn-field">
+              <label for="start_window">Start date</label>
+              <select class="tn-select" id="start_window" name="start_window">
+                <option value="">Choose</option>
+                {% for v, l in start_windows %}<option value="{{ v }}"{{ ' selected' if data.get('start_window') == v }}>{{ l }}</option>{% endfor %}
+              </select>
+            </div>
+            <div class="tn-field">
+              <label for="budget_range">Budget per person, monthly (USD)</label>
+              <select class="tn-select" id="budget_range" name="budget_range">
+                <option value="">Choose</option>
+                {% for v, l in budget_ranges %}<option value="{{ v }}"{{ ' selected' if data.get('budget_range') == v }}>{{ l }}</option>{% endfor %}
+              </select>
+            </div>
+            <div class="tn-field">
+              <label for="timezone">Working-hours overlap</label>
+              <select class="tn-select" id="timezone" name="timezone">
+                <option value="">Choose</option>
+                {% for v, l in timezones %}<option value="{{ v }}"{{ ' selected' if data.get('timezone') == v }}>{{ l }}</option>{% endfor %}
+              </select>
+            </div>
+            <div class="tn-field tn-field-full">
+              <label for="details">Anything else? <small>(optional)</small></label>
+              <textarea class="tn-textarea" id="details" name="details" rows="4" maxlength="4000" placeholder="Tools you use, working hours, languages, how you'll measure success.">{{ data.get('details', '') }}</textarea>
+            </div>
+          </div>
+        </fieldset>
+
+        <div class="tn-submit">
+          <button class="tn-btn tn-btn-primary tn-btn-lg" type="submit">Submit request <i class="ri-arrow-right-line" aria-hidden="true"></i></button>
+          <p>We use these details only to respond to your request. See our <a href="/privacy-policy">privacy policy</a>.</p>
+        </div>
+      </form>
+    </div>
+
+    <aside class="tn-req-aside" aria-label="What happens next">
+      <div class="tn-next">
+        <h2>What happens next</h2>
+        <ol>
+          <li><span>01</span><div><b>We read your brief</b>A person on our team reviews it and gets in touch by email.</div></li>
+          <li><span>02</span><div><b>We agree the details</b>A short call or email exchange to confirm skills, workload and terms.</div></li>
+          <li><span>03</span><div><b>You get a shortlist</b>Profiles with assessments, reviewed work and availability.</div></li>
+          <li><span>04</span><div><b>You decide</b>Interview who you like. No obligation until you agree terms.</div></li>
+        </ol>
+        <p class="tn-next-contact">Prefer to talk first? <a href="mailto:{{ support_email or 'support@nelavista.com' }}?subject=Nelavista%20Talent">{{ support_email or 'support@nelavista.com' }}</a></p>
+      </div>
+      <p class="tn-next-honest">If our network can't fill your request well, we'll say so rather than send you weak candidates.</p>
+    </aside>
+  </div>
+</div>
+{% endblock %}

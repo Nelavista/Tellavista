@@ -80,7 +80,9 @@ def enforce_profile_completion():
     # hook), even though the route itself was correct -- theme/AI Tutor/notification
     # prefs have the same no-academic-fields-required argument, so the whole blueprint is
     # exempted rather than picking apart which of its routes "need" a finished profile.
-    exempt_prefixes = ('skills.', 'admin_skills.', 'employer.', 'cbt.', 'settings.')
+    # talent.* is the public, employer-facing Nelavista Talent site (/talent): a logged-in
+    # student with an unfinished profile must still be able to open it and send a request.
+    exempt_prefixes = ('skills.', 'admin_skills.', 'employer.', 'cbt.', 'settings.', 'talent.')
 
     if request.endpoint in exempt_endpoints:
         return None

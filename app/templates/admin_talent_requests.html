@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/x-icon" href="/static/icons/favicon.ico">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex">
+  <title>Admin · Talent requests · Nelavista</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
+  {% include 'components/admin_opp_styles.html' %}
+  <style>
+    .tr-card { background:#161b22; border:1px solid #21262d; border-radius:10px; padding:18px; margin-bottom:14px; }
+    .tr-top { display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+    .tr-top h3 { margin:0; font-size:1.02rem; }
+    .tr-meta { color:#8b949e; font-size:.85rem; margin-top:4px; }
+    .tr-need { margin:12px 0; font-size:.95rem; }
+    .tr-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:8px 16px; font-size:.85rem; }
+    .tr-grid span { color:#8b949e; display:block; font-size:.75rem; }
+    .tr-details { white-space:pre-wrap; background:#0d1117; border:1px solid #21262d; border-radius:8px; padding:10px; font-size:.85rem; margin-top:12px; }
+    .tr-form { display:flex; gap:8px; flex-wrap:wrap; align-items:flex-start; margin-top:14px; }
+    .tr-form textarea { flex:1; min-width:220px; min-height:38px; }
+    .tr-tabs { display:flex; gap:6px; flex-wrap:wrap; margin:16px 0; }
+    .tr-tabs a { padding:6px 12px; border:1px solid #30363d; border-radius:999px; color:#c9d1d9; text-decoration:none; font-size:.85rem; }
+    .tr-tabs a.on { background:#1f6feb; border-color:#1f6feb; color:#fff; }
+  </style>
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+</head>
+<body>
+{% include 'components/admin_nav.html' %}
+<div class="container">
+  {% with messages = get_flashed_messages() %}{% for m in messages %}<div class="flash">{{ m }}</div>{% endfor %}{% endwith %}
+  <h1><i class="ri-user-search-line"></i> Talent requests</h1>
+  <p class="subtitle">Requests from organisations via <a href="{{ url_for('talent.request_talent') }}">/talent/request</a>. Each one needs a person to reply by email, confirm the brief, then build a shortlist from consenting, opted-in talent (<a href="/employer/discover">Discover</a>).</p>
+
+  <nav class="tr-tabs">
+    <a href="{{ url_for('talent.admin_requests') }}" class="{{ 'on' if not status }}">All ({{ counts.values()|sum }})</a>
+    {% for v, l in tn.REQUEST_STATUSES %}
+    <a href="{{ url_for('talent.admin_requests', status=v) }}" class="{{ 'on' if status == v }}">{{ l }} ({{ counts.get(v, 0) }})</a>
+    {% endfor %}
+  </nav>
+
+  {% for r in rows %}
+  <div class="tr-card">
+    <div class="tr-top">
+      <div>
+        <h3>{{ r.company_name }} · {{ r.contact_name }}{% if r.job_title %}, {{ r.job_title }}{% endif %}</h3>
+        <div class="tr-meta"><a href="mailto:{{ r.work_email }}">{{ r.work_email }}</a>{% if r.company_website %} · {{ r.company_website }}{% endif %}{% if r.country %} · {{ r.country }}{% endif %} · {{ r.created_at.strftime('%d %b %Y, %H:%M') if r.created_at }} UTC</div>
+      </div>
+      <strong>{{ tn.label_for(tn.REQUEST_STATUSES, r.status) }}</strong>
+    </div>
+    <p class="tr-need">{{ r.need_summary }}</p>
+    <div class="tr-grid">
+      <div><span>Category</span>{{ tn.CATEGORY_BY_SLUG[r.category].name if r.category in tn.CATEGORY_BY_SLUG else (r.category or '—') }}</div>
+      <div><span>People</span>{{ tn.label_for(tn.HEADCOUNTS, r.headcount) or '—' }}</div>
+      <div><span>Engagement</span>{{ tn.label_for(tn.ENGAGEMENT_TYPES, r.engagement_type) }}</div>
+      <div><span>Start</span>{{ tn.label_for(tn.START_WINDOWS, r.start_window) or '—' }}</div>
+      <div><span>Budget / person / month</span>{{ tn.label_for(tn.BUDGET_RANGES, r.budget_range) or '—' }}</div>
+      <div><span>Overlap</span>{{ tn.label_for(tn.TIMEZONES, r.timezone) or '—' }}</div>
+      <div><span>Skills</span>{{ r.skills or '—' }}</div>
+      {% if r.profile_ref %}<div><span>Started from profile</span>{{ r.profile_ref }}</div>{% endif %}
+    </div>
+    {% if r.details %}<div class="tr-details">{{ r.details }}</div>{% endif %}
+    <form class="tr-form" method="post" action="{{ url_for('talent.admin_request_update', request_id=r.id, status=status) }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <select name="status">
+        {% for v, l in tn.REQUEST_STATUSES %}<option value="{{ v }}"{{ ' selected' if r.status == v }}>{{ l }}</option>{% endfor %}
+      </select>
+      <textarea name="admin_notes" placeholder="Internal notes">{{ r.admin_notes or '' }}</textarea>
+      <button class="btn" type="submit">Save</button>
+    </form>
+  </div>
+  {% else %}
+  <div class="panel">No requests{% if status %} with this status{% endif %} yet.</div>
+  {% endfor %}
+</div>
+</body>
+</html>

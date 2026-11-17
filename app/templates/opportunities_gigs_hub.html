@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/x-icon" href="/static/icons/favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="/static/icons/nelavista-180x180.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Gigs · Nelavista Opportunities</title>
+  <meta name="theme-color" content="#050810">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/skills.css') }}">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
+</head>
+<body>
+{% include 'components/opportunities_sidebar.html' %}
+
+  <div class="sk-view opp-view">
+    <nav class="opp-chips gig-space-tabs" aria-label="Opportunity types">
+      <a href="{{ url_for('opportunities.discover') }}" class="sk-category-chip">All</a>
+      <a href="{{ url_for('opportunities.gigs') }}" class="sk-category-chip active" aria-current="page"><i class="ri-briefcase-4-line"></i> Gigs</a>
+      <a href="{{ url_for('opportunities.discover', category='scholarship') }}" class="sk-category-chip"><i class="ri-graduation-cap-line"></i> Scholarships</a>
+      <a href="{{ url_for('opportunities.discover', category='competition') }}" class="sk-category-chip"><i class="ri-trophy-line"></i> Competitions</a>
+      <a href="{{ url_for('opportunities.discover', category='fellowship') }}" class="sk-category-chip"><i class="ri-team-line"></i> Fellowships</a>
+      <a href="{{ url_for('opportunities.discover', category='internship') }}" class="sk-category-chip"><i class="ri-briefcase-line"></i> Internships</a>
+      <a href="{{ url_for('opportunities.discover', category='hackathon') }}" class="sk-category-chip"><i class="ri-code-box-line"></i> Hackathons</a>
+      <a href="{{ url_for('opportunities.discover', category='bootcamp') }}" class="sk-category-chip"><i class="ri-rocket-line"></i> Bootcamps</a>
+      <a href="{{ url_for('opportunities.discover', category='other') }}" class="sk-category-chip"><i class="ri-star-line"></i> Other</a>
+    </nav>
+
+    <div class="opp-hero">
+      <div>
+        <span class="sk-eyebrow">Paid work &amp; projects</span>
+        <h1 class="sk-h1">Gigs</h1>
+        <p class="sk-sub">Find paid work and projects matched to your skills. Open gigs are the ones a source or the Nelavista team has confirmed are still accepting applications.</p>
+      </div>
+      <a href="{{ url_for('opportunities.discover_mine') }}" class="sk-btn secondary small opp-mine-link"><i class="ri-bookmark-3-line"></i>My Opportunities</a>
+    </div>
+
+    <div class="gig-count-banner" role="status">🔥 <strong>{{ feed.total_open }}</strong> open gig{{ '' if feed.total_open == 1 else 's' }}</div>
+
+    <form class="opp-search" method="GET" action="{{ url_for('opportunities.gigs') }}" role="search">
+      <div class="opp-search-box">
+        <i class="ri-search-line"></i>
+        <input type="search" name="q" value="{{ feed.filters.q }}" placeholder="Search: React, data entry, writing, social media..." aria-label="Search gigs" enterkeyhint="search">
+      </div>
+      {% if feed.filters.category %}<input type="hidden" name="category" value="{{ feed.filters.category }}">{% endif %}
+      <details class="opp-filters"{% if feed.filters.location_type or feed.filters.skill or feed.filters.min_pay or feed.filters.deadline or feed.filters.posted or feed.filters.nigeria or feed.filters.pay_stated %} open{% endif %}>
+        <summary><i class="ri-equalizer-line"></i>Filters</summary>
+        <div class="opp-filter-grid">
+          <label><span class="sk-label">Work setting</span>
+            <select name="location_type" class="sk-select">
+              <option value="">Any</option>
+              {% for k, label in location_types %}<option value="{{ k }}"{{ ' selected' if feed.filters.location_type == k }}>{{ label }}</option>{% endfor %}
+            </select>
+          </label>
+          <label><span class="sk-label">Skill</span>
+            <input type="text" name="skill" class="sk-input" value="{{ feed.filters.skill }}" placeholder="e.g. Figma">
+          </label>
+          <label><span class="sk-label">Minimum pay (₦)</span>
+            <input type="number" name="min_pay" class="sk-input" min="0" step="1000" value="{{ feed.filters.min_pay or '' }}" placeholder="e.g. 50000">
+          </label>
+          <label><span class="sk-label">Deadline</span>
+            <select name="deadline" class="sk-select">
+              <option value="">Any deadline</option>
+              {% for k, label in deadline_filters %}<option value="{{ k }}"{{ ' selected' if feed.filters.deadline == k }}>{{ label }}</option>{% endfor %}
+            </select>
+          </label>
+          <label><span class="sk-label">Posted</span>
+            <select name="posted" class="sk-select">
+              <option value="">Any time</option>
+              {% for k, label in posted_filters %}<option value="{{ k }}"{{ ' selected' if feed.filters.posted == k }}>{{ label }}</option>{% endfor %}
+            </select>
+          </label>
+          <label><span class="sk-label">Sort by</span>
+            <select name="sort" class="sk-select">
+              {% for k, label in sorts %}<option value="{{ k }}"{{ ' selected' if feed.sort == k }}>{{ label }}</option>{% endfor %}
+            </select>
+          </label>
+          <label class="gig-check"><input type="checkbox" name="nigeria" value="1"{{ ' checked' if feed.filters.nigeria }}> Open to students in Nigeria</label>
+          <label class="gig-check"><input type="checkbox" name="pay_stated" value="1"{{ ' checked' if feed.filters.pay_stated }}> Pay is stated</label>
+        </div>
+        {% if feed.filters.min_pay %}<p class="opp-muted" style="margin:8px 0 0;font-size:0.8rem;">Minimum pay compares naira amounts only, so gigs paid in other currencies are left out while it is set.</p>{% endif %}
+        <div class="opp-filter-actions">
+          <button type="submit" class="sk-btn small">Apply filters</button>
+          {% if feed.filtering %}<a href="{{ url_for('opportunities.gigs') }}" class="sk-btn ghost small">Clear all</a>{% endif %}
+        </div>
+      </details>
+    </form>
+
+    <nav class="opp-chips" aria-label="Gig categories">
+      <a href="{{ filter_url(category=None) }}" class="sk-category-chip{{ ' active' if not feed.filters.category }}">All</a>
+      {% for k, label, icon in categories %}
+      <a href="{{ filter_url(category=k) }}" class="sk-category-chip{{ ' active' if feed.filters.category == k }}"><i class="{{ icon }}"></i> {{ label }}</a>
+      {% endfor %}
+    </nav>
+
+    {% macro rail(title, icon, items, section, note=None) %}
+      {% if items %}
+      <section class="opp-section" aria-label="{{ title }}">
+        <div class="sk-section-title opp-section-title"><span><span class="opp-section-icon">{{ icon }}</span>{{ title }}</span></div>
+        {% if note %}<p class="opp-section-note">{{ note }}</p>{% endif %}
+        <div class="opp-rail">
+          {% for g in items %}{% with st = state.get(g.id, {}), match = feed.matches.get(g.id), from_section = section %}{% include 'components/gig_card.html' %}{% endwith %}{% endfor %}
+        </div>
+      </section>
+      {% endif %}
+    {% endmacro %}
+
+    {% if unavailable %}
+      <div class="sk-empty opp-empty"><div class="sk-empty-icon"><i class="ri-tools-line"></i></div>
+        <div style="font-weight:700;">Gigs are being set up</div>
+        <div style="font-size:0.92rem;">Check back soon. Nelavista gigs below are still open for applications.</div></div>
+
+    {% elif feed.filtering %}
+      <div class="sk-section-title opp-section-title">
+        <span>{{ feed.results|length }} open gig{{ '' if feed.results|length == 1 else 's' }}{% if feed.filters.q %} for “{{ feed.filters.q }}”{% endif %}</span>
+        <a href="{{ url_for('opportunities.gigs') }}" class="sk-view-link">Clear</a>
+      </div>
+      {% if feed.results %}
+      <div class="opp-grid">
+        {% for g in feed.results %}{% with st = state.get(g.id, {}), match = feed.matches.get(g.id), from_section = 'search' %}{% include 'components/gig_card.html' %}{% endwith %}{% endfor %}
+      </div>
+      {% else %}
+      <div class="sk-empty opp-empty"><div class="sk-empty-icon"><i class="ri-search-eye-line"></i></div>
+        <div style="font-weight:700;">No open gigs match that</div>
+        <div style="font-size:0.92rem;">Try a broader word ("design", "writing", "data") or clear a filter.</div></div>
+      {% endif %}
+
+    {% elif feed.total_open == 0 %}
+      <div class="sk-empty opp-empty"><div class="sk-empty-icon"><i class="ri-briefcase-4-line"></i></div>
+        <div style="font-weight:700;">No open gigs right now</div>
+        <div style="font-size:0.92rem;">Gigs only show as open while their source confirms they're accepting applications. New ones appear here as soon as they're synced or added.</div></div>
+
+    {% else %}
+      {{ rail('Open Gigs', '🔥', feed.open_gigs, 'open', 'Currently accepting applications.') }}
+      {{ rail('Recommended For You', '🎯', feed.recommended, 'for_you', 'Based on the skills you are building on Nelavista. Everything else is still below.') }}
+      {{ rail('New Gigs', '🆕', feed.new, 'new', 'Added in the last 7 days.') }}
+      {{ rail('Closing Soon', '⏰', feed.closing_soon, 'closing', 'Deadlines in the next 3 days.') }}
+    {% endif %}
+
+    {% if nv_rows %}
+    <section class="opp-section" aria-label="Nelavista gigs">
+      <div class="sk-section-title opp-section-title">
+        <span><span class="opp-section-icon">💼</span>Nelavista gigs</span>
+        <a href="{{ url_for('opportunities.nelavista_gigs') }}" class="sk-view-link">See all {{ nv_total }}</a>
+      </div>
+      <p class="opp-section-note">Run through Nelavista: apply here, and payment shows in Earnings.</p>
+      <div class="opp-rail">
+        {% for row in nv_rows %}{% set o = row.opportunity %}
+        <article class="opp-card">
+          <div class="opp-card-top">
+            <div class="opp-org-mark" aria-hidden="true"><i class="ri-briefcase-line"></i></div>
+            <div class="opp-card-head"><span class="opp-card-title">{{ o.title }}</span>
+              <div class="opp-card-org">Nelavista · {{ o.skill.name if o.skill else '' }}</div></div>
+          </div>
+          {% if row.match_pct %}<div class="opp-status-row"><span class="dv2-opp-match">{{ row.match_pct }}% match</span></div>{% endif %}
+          <ul class="gig-facts">
+            <li class="gig-pay"><i class="ri-money-dollar-circle-line" aria-hidden="true"></i>₦{{ '{:,}'.format(o.payment_amount) }}</li>
+            <li><i class="ri-earth-line" aria-hidden="true"></i>{{ o.location or 'Remote' }}</li>
+            {% if o.due_date %}<li><i class="ri-calendar-line" aria-hidden="true"></i>Due {{ o.due_date.strftime('%b') }} {{ o.due_date.day }}</li>{% endif %}
+          </ul>
+          {% if o.description %}<p class="opp-card-desc">{{ o.description }}</p>{% endif %}
+          <div class="opp-card-actions">
+            {% if row.application %}
+            <span class="sk-badge {{ row.application.status }}">{{ row.application.status|title }}</span>
+            {% else %}
+            <form method="POST" action="{{ url_for('opportunities.apply', opportunity_id=o.id) }}" style="flex:1;display:flex;">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <button type="submit" class="sk-btn small" style="flex:1;">Apply on Nelavista</button>
+            </form>
+            {% endif %}
+          </div>
+        </article>
+        {% endfor %}
+      </div>
+    </section>
+    {% endif %}
+
+    {% if not feed.filtering and feed.results %}
+    <section class="opp-section" aria-label="All gigs">
+      <div class="sk-section-title opp-section-title">
+        <span>All Gigs <span class="opp-count">{{ feed.results|length }}</span></span>
+        <a href="{{ filter_url(sort='newest') }}" class="sk-view-link">Newest first</a>
+      </div>
+      <div class="opp-grid">
+        {% for g in feed.results %}{% with st = state.get(g.id, {}), match = feed.matches.get(g.id), from_section = 'all' %}{% include 'components/gig_card.html' %}{% endwith %}{% endfor %}
+      </div>
+    </section>
+    {% endif %}
+
+    {% if feed.unknown %}
+    <details class="opp-section gig-unknown">
+      <summary class="sk-section-title opp-section-title"><span><span class="opp-section-icon">⚪</span>Availability unknown <span class="opp-count">{{ feed.unknown|length }}</span></span></summary>
+      <p class="opp-section-note">Nobody has confirmed these are still open recently. They may have closed. Check the official listing before you spend time on an application.</p>
+      <div class="opp-list">
+        {% for g in feed.unknown %}
+        <a class="opp-list-row" href="{{ url_for('opportunities.gig_detail', slug=g.slug) }}?from=unknown">
+          <span class="opp-status unknown"><span class="opp-dot"></span>Availability unknown</span>
+          <span class="opp-list-title">{{ g.title }}</span>
+          <span class="opp-list-org">{{ g.organization }} · {{ ui.pay(g, compact=True) }}</span>
+          <span class="opp-list-meta">Last confirmed {{ ui.ago(g.last_verified_at) or 'never' }} · Source: {{ ui.source(g) }}</span>
+        </a>
+        {% endfor %}
+      </div>
+    </details>
+    {% endif %}
+
+    <div class="opp-footer-note">
+      <p>Gigs from other sites show their source on every listing, and the application goes to that source, not to Nelavista. Nelavista doesn't charge students for gigs and isn't the employer. Never pay anyone to get a gig. A real employer won't ask you for a fee.</p>
+    </div>
+  </div>
+
+  <div class="opp-toast" id="opp-toast" role="status" aria-live="polite"></div>
+
+{% include 'components/opportunities_footer.html' %}
+<script src="{{ url_for('static', filename='js/opportunities.js') }}"></script>
+</body>
+</html>

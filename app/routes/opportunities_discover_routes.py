@@ -23,6 +23,8 @@ from app.models import StudentOpportunity
 from app.routes.opportunities_routes import opportunities_bp, _current_user
 from app.utils.helpers import login_required
 from app.services import student_opportunity_service as svc
+from app.services.gigs import core as gig_core
+from sqlalchemy.exc import SQLAlchemyError
 
 
 def _wants_json():
@@ -82,8 +84,16 @@ def discover_mine():
     data = svc.my_opportunities(user)
     tab = request.args.get('tab') if request.args.get('tab') in ('saved', 'applied', 'closing', 'recommended') else 'saved'
     ids = {o.id for o in data['saved'] + data['closing'] + data['recommended']} | {a.opportunity_id for a in data['applied']}
+    # Saved and applied gigs sit alongside programmes here (same "My Opportunities").
+    try:
+        gigs = gig_core.my_gigs(user)
+        gig_state = gig_core.user_state(user, {g.id for g in gigs['saved']} | {a.gig_id for a in gigs['applied']})
+    except SQLAlchemyError:
+        db.session.rollback()
+        gigs, gig_state = {'saved': [], 'applied': []}, {}
     return render_template('opportunities_discover_mine.html', data=data, tab=tab, state=svc.user_state(user, ids),
-                           ui=_ui(), active_page='discover_mine')
+                           ui=_ui(), gigs=gigs, gig_state=gig_state, gig_ui=gig_core.ui_helpers(),
+                           active_page='discover_mine')
 
 
 @opportunities_bp.route('/opportunities/discover/archive')

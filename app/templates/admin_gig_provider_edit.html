@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/x-icon" href="/static/icons/favicon.ico">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin · {{ provider.name or 'New provider' }} · Nelavista</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
+  {% include 'components/admin_opp_styles.html' %}
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+</head>
+<body>
+{% include 'components/admin_nav.html' %}
+<div class="container" style="max-width:820px;">
+  <a href="{{ url_for('admin_skills.admin_gig_providers') }}" style="color:#8b949e;text-decoration:none;font-size:0.85rem;">← Providers</a>
+  {% with messages = get_flashed_messages() %}{% for m in messages %}<div class="flash" style="margin-top:10px;">{{ m }}</div>{% endfor %}{% endwith %}
+  <h1>{{ provider.name if provider.id else 'Add a gig provider' }}</h1>
+  {% if errors %}<div class="errors"><b>Not saved:</b><ul>{% for e in errors %}<li>{{ e }}</li>{% endfor %}</ul></div>{% endif %}
+  {% set is_manual = provider.adapter == 'manual' %}
+  <form method="POST" action="{{ url_for('admin_skills.admin_gig_provider_edit', provider_id=provider.id) if provider.id else url_for('admin_skills.admin_gig_provider_edit') }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <div class="panel">
+      <h2>Provider</h2>
+      <div class="grid2">
+        <div class="field"><label>Name *</label><input type="text" name="name" value="{{ provider.name or '' }}" maxlength="120" required></div>
+        <div class="field"><label>Slug</label><input type="text" name="slug" value="{{ provider.slug or '' }}" maxlength="60"{{ ' disabled' if provider.id }}></div>
+        {% if not is_manual %}
+        <div class="field"><label>Adapter *</label>
+          <select name="adapter">{% for key, cls in adapters.items() if key != 'manual' %}<option value="{{ key }}"{{ ' selected' if provider.adapter == key }}>{{ cls.label }}</option>{% endfor %}</select>
+          <div class="hint">{% for key, cls in adapters.items() if key != 'manual' %}<b>{{ cls.label }}:</b> {{ cls.description }} (min {{ cls.min_interval_minutes }} min between syncs)<br>{% endfor %}</div></div>
+        <div class="field"><label>Kind</label>
+          <select name="kind">{% for k in ['api', 'feed', 'partner'] %}<option value="{{ k }}"{{ ' selected' if provider.kind == k }}>{{ k|title }}</option>{% endfor %}</select></div>
+        {% endif %}
+      </div>
+      {% if not is_manual %}
+      <div class="field"><label>API / feed URL</label><input type="url" name="api_base_url" value="{{ provider.api_base_url or '' }}"></div>
+      {% endif %}
+      <div class="grid2">
+        <div class="field"><label>Website</label><input type="url" name="website_url" value="{{ provider.website_url or '' }}"></div>
+        <div class="field"><label>Terms / API documentation URL{{ ' *' if not is_manual }}</label><input type="url" name="terms_url" value="{{ provider.terms_url or '' }}"></div>
+      </div>
+    </div>
+
+    {% if not is_manual %}
+    <div class="panel">
+      <h2>Authentication</h2>
+      <div class="grid2">
+        <div class="field"><label>Method</label>
+          <select name="auth_method">{% for k, label in [('none', 'None (public)'), ('api_key_header', 'API key header'), ('bearer', 'Bearer token'), ('query_param', 'Query parameter')] %}<option value="{{ k }}"{{ ' selected' if provider.auth_method == k }}>{{ label }}</option>{% endfor %}</select></div>
+        <div class="field"><label>Header / parameter name</label><input type="text" name="auth_param" value="{{ provider.auth_param or '' }}" placeholder="X-API-Key"></div>
+      </div>
+      <div class="field"><label>Environment variable holding the key</label><input type="text" name="credentials_env" value="{{ provider.credentials_env or '' }}" placeholder="GIG_PROVIDER_ACME_KEY">
+        <div class="hint">The variable's NAME only. Set the key itself in the server environment (Render → Environment). Keys are never stored in the database or shown here.</div></div>
+    </div>
+
+    <div class="panel">
+      <h2>Sync</h2>
+      <div class="grid2">
+        <div class="field"><label>Sync every (minutes)</label><input type="number" name="sync_frequency_minutes" min="0" value="{{ provider.sync_frequency_minutes }}"></div>
+        <div class="field"><label>Stale after (hours)</label><input type="number" name="stale_after_hours" min="1" value="{{ provider.stale_after_hours }}">
+          <div class="hint">Gigs not re-confirmed within this window show as "Availability unknown" and leave Open Gigs.</div></div>
+      </div>
+      <div class="field"><label>Adapter config (JSON)</label><textarea name="config_json" rows="6" style="font-family:monospace;">{{ provider.config_json or '' }}</textarea>
+        <div class="hint">Jobicy: {"count": 100, "nigeria_eligible_only": true, "job_types": ["contract","freelance","part-time"]}. Generic JSON: items_path, fields, status_map, defaults, absence_means_closed (see services/gigs/adapters.py).</div></div>
+      <label class="toggle"><input type="checkbox" name="auto_publish" value="1"{{ ' checked' if provider.auto_publish }}> Auto-publish new gigs from this provider (otherwise they wait in Unpublished for review)</label>
+    </div>
+    {% endif %}
+
+    <div class="panel">
+      <h2>Redistribution &amp; attribution</h2>
+      <div class="field"><label>Attribution students see{{ ' *' if not is_manual }}</label><input type="text" name="attribution_text" value="{{ provider.attribution_text or '' }}" maxlength="200" placeholder="e.g. Jobicy"><div class="hint">Shown as "Source: …" and "Application handled by …" on every gig.</div></div>
+      <div class="field"><label>Terms basis{{ ' *' if not is_manual }}</label><textarea name="redistribution_basis" rows="5" placeholder="What the provider's terms say about showing their listings elsewhere, and any conditions (credit, link-back, polling limits).">{{ provider.redistribution_basis or '' }}</textarea></div>
+      <label class="toggle"><input type="checkbox" name="redistribution_confirmed" value="1"{{ ' checked' if provider.redistribution_confirmed }}> I have read this provider's current terms, and they permit Nelavista to show these listings with the attribution above</label>
+      <label class="toggle"><input type="checkbox" name="enabled" value="1"{{ ' checked' if provider.enabled }}> Enabled (sync it and show its published gigs to students)</label>
+      <div class="hint">Disabling a provider hides all of its gigs from students immediately. Nothing is deleted.</div>
+    </div>
+    <button type="submit" class="btn"><i class="ri-save-line"></i>Save</button>
+  </form>
+</div>
+</body>
+</html>

@@ -74,6 +74,7 @@
 
     <nav class="opp-chips" aria-label="Categories">
       <a href="{{ filter_url(category=None) }}" class="sk-category-chip{{ ' active' if not feed.filters.category }}">All</a>
+      <a href="{{ url_for('opportunities.gigs') }}" class="sk-category-chip"><i class="ri-briefcase-4-line"></i> Gigs</a>
       {% for k, label, icon in chip_categories %}
       <a href="{{ filter_url(category=k) }}" class="sk-category-chip{{ ' active' if feed.filters.category == k }}"><i class="{{ icon }}"></i> {{ label }}</a>
       {% endfor %}

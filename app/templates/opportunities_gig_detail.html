@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/x-icon" href="/static/icons/favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="/static/icons/nelavista-180x180.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>{{ gig.title }} · {{ gig.organization }} · Nelavista Gigs</title>
+  <meta name="description" content="{{ gig.summary or (gig.title ~ ' at ' ~ gig.organization) }}">
+  <meta property="og:title" content="{{ gig.title }} · {{ gig.organization }}">
+  <meta property="og:description" content="{{ ui.pay(gig) }} · {{ ui.location(gig) }}">
+  <meta name="theme-color" content="#050810">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/skills.css') }}">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
+</head>
+<body>
+{% include 'components/opportunities_sidebar.html' %}
+{% set handler = ui.handler(gig) %}
+{% set source = ui.source(gig) %}
+
+  <div class="sk-view opp-view opp-detail" data-opp-id="{{ gig.id }}" data-opp-slug="{{ gig.slug }}" data-opp-base="/opportunities/gigs/">
+    <a href="{{ url_for('opportunities.gigs') }}" class="opp-back"><i class="ri-arrow-left-line"></i> Gigs</a>
+
+    {% if not gig.is_published or gig.is_archived or gig.duplicate_of_id or not gig.provider.enabled %}
+    <div class="opp-admin-banner"><i class="ri-eye-off-line"></i> Admin preview. Students can't see this gig
+      ({% if gig.is_archived %}archived{% elif gig.duplicate_of_id %}duplicate{% elif not gig.provider.enabled %}provider disabled{% else %}not published{% endif %}).
+      <a href="{{ url_for('admin_skills.admin_gig_edit', gig_id=gig.id) }}">Edit</a></div>
+    {% endif %}
+
+    <header class="opp-detail-head">
+      <div class="opp-org-mark lg" aria-hidden="true"><i class="{{ ui.category_icons.get(gig.category, 'ri-briefcase-4-line') }}"></i></div>
+      <div>
+        <div class="opp-detail-type">{{ ui.category_labels.get(gig.category, 'Gig') }} gig</div>
+        <h1 class="sk-h1 opp-detail-title">{{ gig.title }}</h1>
+        <div class="opp-detail-org">{{ gig.organization }}{% if gig.is_external %} <span class="gig-via">via {{ source }}</span>{% endif %}</div>
+      </div>
+    </header>
+
+    <div class="opp-status-row lg">
+      <span class="opp-status {{ status.tone }} lg"><span class="opp-dot"></span>{{ status.label }}</span>
+      {% if match %}<span class="gig-match lg" title="Matches your Nelavista skills: {{ match.matched|join(', ') }}">{{ match.pct }}% skill match</span>{% endif %}
+      {% if gig.featured %}<span class="opp-pill featured"><i class="ri-star-fill"></i>Featured</span>{% endif %}
+    </div>
+    <p class="gig-availability">
+      {% if status.accepting %}{{ status.emoji }} Currently accepting applications.{% elif status.key == 'UNKNOWN' %}⚪ We can't confirm this gig is still open. Check the official listing before you apply.{% elif status.key == 'EXPIRED' %}🔴 The deadline has passed.{% else %}🔴 No longer accepting applications.{% endif %}
+      {% if gig.last_verified_at %}Last verified {{ ui.ago(gig.last_verified_at) }}{% if gig.is_external %} by {{ source }}'s feed{% endif %}.{% endif %}
+    </p>
+
+    <div class="opp-detail-layout">
+      <div class="opp-detail-main">
+        <div class="opp-keyfacts">
+          <div><span class="opp-kf-label">Pay</span><span class="opp-kf-value">{{ ui.pay(gig) }}</span>{% if gig.pay_text and (gig.pay_min or gig.pay_max) %}<span class="opp-kf-sub">{{ gig.pay_text }}</span>{% endif %}</div>
+          <div><span class="opp-kf-label">Work type</span><span class="opp-kf-value">{{ ui.work_types.get(gig.work_type, 'Not stated') if gig.work_type else 'Not stated' }}</span></div>
+          <div><span class="opp-kf-label">Where</span><span class="opp-kf-value">{{ ui.location(gig) }}</span>
+            {% set ng = ui.nigeria(gig) %}{% if ng is true %}<span class="opp-kf-sub">Open to Nigeria-based applicants</span>{% elif ng is false %}<span class="opp-kf-sub">May not accept applicants in Nigeria</span>{% endif %}</div>
+          <div><span class="opp-kf-label">Deadline</span><span class="opp-kf-value">{% if gig.deadline %}{{ gig.deadline.strftime('%B') }} {{ gig.deadline.day }}, {{ gig.deadline.year }}{% else %}Not stated{% endif %}</span></div>
+          <div><span class="opp-kf-label">Posted</span><span class="opp-kf-value">{{ ui.ago(gig.posted_at or gig.created_at) }}</span></div>
+          <div><span class="opp-kf-label">Source</span><span class="opp-kf-value">{{ source }}</span></div>
+        </div>
+
+        {% if gig.skills %}
+        <section class="opp-block"><h2>Skills</h2>
+          <div class="gig-skills lg">{% for s in gig.skills %}<span class="{{ 'hit' if match and s in match.matched }}">{{ s }}</span>{% endfor %}</div>
+        </section>
+        {% endif %}
+        {% if gig.description %}
+        <section class="opp-block"><h2>About the gig</h2><div class="opp-prose">{{ gig.description }}</div></section>
+        {% endif %}
+        {% if gig.requirements %}
+        <section class="opp-block"><h2>Requirements</h2><div class="opp-prose">{{ gig.requirements }}</div></section>
+        {% endif %}
+        <section class="opp-block"><h2>Who can apply</h2>
+          <div class="opp-prose">{{ gig.eligibility or ('Location: ' ~ ui.location(gig) ~ '. Check the official listing for full requirements.') }}</div>
+        </section>
+
+        <section class="opp-block opp-source">
+          <h2>Source</h2>
+          {% if gig.is_external %}
+          <p class="opp-muted">Source: <strong>{{ source }}</strong>. Application handled by {{ source }}{% if handler != gig.organization %} for {{ gig.organization }}{% endif %}.
+            {% if gig.source_url %}<a href="{{ gig.source_url }}" target="_blank" rel="noopener noreferrer">View the original listing on {{ source }} <i class="ri-external-link-line"></i></a>{% endif %}</p>
+          <p class="opp-muted">This is not a Nelavista gig. Nelavista shows it from {{ source }}'s official feed{% if gig.last_synced_at %}, last synced {{ ui.ago(gig.last_synced_at) }}{% endif %}. Hiring decisions are {{ gig.organization }}'s alone.</p>
+          {% else %}
+          <p class="opp-muted">Added by the Nelavista team{% if gig.last_verified_at %} and checked {{ ui.ago(gig.last_verified_at) }}{% endif %}. Application handled by {{ gig.organization }}.
+            {% if gig.source_url %}<a href="{{ gig.source_url }}" target="_blank" rel="noopener noreferrer">Official listing <i class="ri-external-link-line"></i></a>{% endif %}</p>
+          {% endif %}
+          <p class="opp-muted">Never pay a fee to get a gig. If this listing asks you for money, don't proceed.</p>
+        </section>
+      </div>
+
+      <aside class="opp-apply-card" aria-label="Apply">
+        <div class="opp-apply-deadline">
+          <span class="opp-status {{ status.tone }}"><span class="opp-dot"></span>{{ status.label }}</span>
+          <span class="opp-apply-date">{{ ui.pay(gig, compact=True) }}</span>
+        </div>
+
+        {% if gig.application_url and status.key not in ('CLOSED', 'EXPIRED') %}
+          {% if gig.allows_in_app_view %}
+          <a href="{{ url_for('opportunities.gig_apply', slug=gig.slug) }}" class="sk-btn full opp-apply-btn" data-opp-apply>APPLY NOW</a>
+          {% else %}
+          <a href="{{ url_for('opportunities.gig_apply', slug=gig.slug, go=1) }}" target="_blank" rel="noopener" class="sk-btn full opp-apply-btn" data-opp-apply>APPLY NOW <i class="ri-external-link-line"></i></a>
+          {% endif %}
+          <p class="opp-apply-hint">You'll apply on {{ handler }}'s official {{ 'listing' if gig.is_external else 'application' }}{% if gig.is_external and handler != gig.organization %} for {{ gig.organization }}{% endif %}. Nelavista doesn't see or change your application. Come back here when you're done.</p>
+          {% if status.key == 'UNKNOWN' %}<p class="opp-apply-hint gig-warn">Availability unknown: this gig may have closed.</p>{% endif %}
+        {% else %}
+          <button class="sk-btn full" disabled>Applications closed</button>
+        {% endif %}
+
+        <div class="opp-applied-box{{ ' is-applied' if state.applied_at }}" data-opp-applied-box>
+          <div class="opp-applied-yes">
+            <i class="ri-checkbox-circle-fill"></i>
+            <div><strong>Applied</strong><span data-opp-applied-label>{% if state.applied_at %}Applied {{ state.applied_at.strftime('%b') }} {{ state.applied_at.day }}, {{ state.applied_at.year }}{% endif %}</span></div>
+            <button type="button" class="opp-link-btn" data-opp-applied="0">Undo</button>
+          </div>
+          <div class="opp-applied-no">
+            <button type="button" class="sk-btn secondary full" data-opp-applied="1"><i class="ri-check-line"></i> I Applied</button>
+            <span class="opp-apply-hint">Your own record, shown in My Opportunities → Applied. Nelavista can't see whether {{ handler }} received your application.</span>
+          </div>
+        </div>
+
+        <div class="opp-apply-actions">
+          <button type="button" class="sk-btn ghost small opp-save{{ ' saved' if state.saved }}" data-opp-save="{{ gig.id }}" aria-pressed="{{ 'true' if state.saved else 'false' }}">
+            <i class="{{ 'ri-heart-fill' if state.saved else 'ri-heart-line' }}"></i><span data-save-label>{{ 'Saved' if state.saved else 'Save' }}</span>
+          </button>
+          <button type="button" class="sk-btn ghost small" data-opp-share="{{ gig.id }}" data-share-title="{{ gig.title }}"
+                  data-share-org="{{ gig.organization }}" data-share-label="Pay" data-share-deadline="{{ ui.pay(gig, compact=True) }}" data-share-url="{{ share_url }}">
+            <i class="ri-share-forward-line"></i>Share
+          </button>
+        </div>
+      </aside>
+    </div>
+
+    {% if related %}
+    <section class="opp-section" aria-label="Similar gigs">
+      <div class="sk-section-title opp-section-title"><span>Similar gigs</span></div>
+      <div class="opp-grid">
+        {% for g in related %}{% with st = related_state.get(g.id, {}), match = None, from_section = 'related' %}{% include 'components/gig_card.html' %}{% endwith %}{% endfor %}
+      </div>
+    </section>
+    {% endif %}
+  </div>
+
+  <div class="opp-sheet" id="opp-return-sheet" hidden role="dialog" aria-modal="true" aria-labelledby="opp-return-title">
+    <div class="opp-sheet-card">
+      <h3 id="opp-return-title">Welcome back! Did you finish applying?</h3>
+      <p class="opp-muted">Mark it so it shows under My Opportunities → Applied.</p>
+      <div class="opp-sheet-actions">
+        <button type="button" class="sk-btn" data-opp-applied="1" data-close-sheet><i class="ri-check-line"></i> Yes, I applied</button>
+        <button type="button" class="sk-btn ghost" data-close-sheet>Not yet</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="opp-toast" id="opp-toast" role="status" aria-live="polite"></div>
+
+{% include 'components/opportunities_footer.html' %}
+<script src="{{ url_for('static', filename='js/opportunities.js') }}"></script>
+</body>
+</html>

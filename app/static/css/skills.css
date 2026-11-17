@@ -901,3 +901,26 @@ body.light-mode {
 .opp-applied-box.compact .opp-applied-yes { padding: 8px 12px; font-weight: 700; font-size: 0.85rem; }
 .opp-applied-box.compact .opp-applied-yes > i { font-size: 1.1rem; }
 @media (max-width: 560px) { .opp-frame-open span, .opp-applied-box.compact .opp-applied-no span { display: none; } .opp-frame-open, .opp-applied-box.compact .sk-btn { padding: 8px 12px; } }
+
+/* ===== Gigs (opportunities_gigs_hub.html, opportunities_gig_detail.html, components/gig_card.html) ===== */
+.opp-status.unknown { color: var(--sk-text-dim); background: var(--sk-neutral-bg); }
+.gig-count-banner { margin: 16px 0 0; font-size: 1rem; }
+.gig-count-banner strong { font-size: 1.15rem; }
+.gig-space-tabs { margin-bottom: 10px; }
+.gig-match { display: inline-flex; align-items: center; font-size: 0.74rem; font-weight: 700; padding: 4px 9px; border-radius: var(--r-pill); color: var(--opp-upcoming); background: var(--opp-upcoming-bg); }
+.gig-match.lg { font-size: 0.82rem; padding: 6px 12px; }
+.gig-facts { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 0.88rem; }
+.gig-facts li { display: inline-flex; align-items: center; gap: 5px; color: var(--sk-text); }
+.gig-facts li i { color: var(--sk-text-dim); }
+.gig-facts .gig-pay { font-weight: 800; }
+.gig-skills { display: flex; flex-wrap: wrap; gap: 6px; }
+.gig-skills span { font-size: 0.75rem; font-weight: 600; padding: 3px 9px; border-radius: var(--r-pill); border: 1px solid var(--sk-border); color: var(--sk-text-dim); }
+.gig-skills.lg span { font-size: 0.85rem; padding: 5px 12px; }
+.gig-skills span.hit { color: var(--opp-open); border-color: var(--opp-open); background: var(--opp-open-bg); }
+.gig-meta { font-size: 0.76rem; color: var(--sk-text-dim); line-height: 1.5; }
+.gig-via { font-weight: 500; font-size: 0.85rem; }
+.gig-availability { color: var(--sk-text-dim); font-size: 0.9rem; margin: 6px 0 0; line-height: 1.5; }
+.gig-warn { color: var(--opp-soon); font-weight: 600; }
+.gig-check { display: flex; align-items: center; gap: 8px; font-size: 0.88rem; font-weight: 600; }
+.gig-unknown > summary { list-style: none; cursor: pointer; }
+.gig-unknown > summary::-webkit-details-marker { display: none; }

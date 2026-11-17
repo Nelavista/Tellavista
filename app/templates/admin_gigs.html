@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/x-icon" href="/static/icons/favicon.ico">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin · Gigs · Nelavista</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
+  {% include 'components/admin_opp_styles.html' %}
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+</head>
+<body>
+{% include 'components/admin_nav.html' %}
+<div class="container">
+  {% with messages = get_flashed_messages() %}{% for m in messages %}<div class="flash">{{ m }}</div>{% endfor %}{% endwith %}
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap;">
+    <div>
+      <h1><i class="ri-briefcase-4-line"></i> Gigs</h1>
+      <p class="subtitle">External gigs synced from providers whose terms allow it, plus gigs you add by hand. Students only see <b>published</b> gigs from <b>enabled</b> providers, and only gigs confirmed open recently count as open. The rest show as "Availability unknown". Nelavista's own paid gigs are under <a href="/admin/skills/opportunities">Nelavista gigs</a>.</p>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <a href="{{ url_for('admin_skills.admin_gig_providers') }}" class="btn secondary"><i class="ri-plug-line"></i>Providers &amp; sync</a>
+      <a href="{{ url_for('admin_skills.admin_gig_new') }}" class="btn"><i class="ri-add-line"></i>Add a gig</a>
+    </div>
+  </div>
+
+  <div class="panel" style="font-size:0.92rem;">
+    <b>Last {{ metrics.days }} days:</b> {{ '{:,}'.format(metrics.students_viewing) }} student{{ '' if metrics.students_viewing == 1 else 's' }} viewed gigs and
+    {{ '{:,}'.format(metrics.students_clicking_apply) }} clicked Apply. {{ '{:,}'.format(metrics.students_applying) }} marked themselves as applied.
+  </div>
+  <div class="stat-row">
+    <div class="stat"><b>{{ metrics.total_active }}</b><span>active (open) gigs</span></div>
+    <div class="stat"><b>{{ metrics.new_this_week }}</b><span>new this week</span></div>
+    <div class="stat"><b>{{ '{:,}'.format(metrics.views) }}</b><span>gig views</span></div>
+    <div class="stat"><b>{{ '{:,}'.format(metrics.apply_clicks) }}</b><span>apply clicks</span></div>
+    <div class="stat"><b>{{ '{:,}'.format(metrics.marked_applied) }}</b><span>"I applied" marks</span></div>
+    <div class="stat"><b>{{ '{:,}'.format(metrics.saves) }}</b><span>saves</span></div>
+    <div class="stat"><b>{{ '{:,}'.format(metrics.shares) }}</b><span>shares</span></div>
+  </div>
+  {% if metrics.top_skills or metrics.top_categories %}
+  <div class="panel" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;">
+    <div><h2>Most demanded skills</h2><p class="muted">From views (×1) and apply clicks (×3).</p>
+      {% for s, n in metrics.top_skills %}<span class="badge blue" style="margin:2px;">{{ s }} · {{ n }}</span>{% else %}<p class="muted">No data yet.</p>{% endfor %}</div>
+    <div><h2>Most popular categories</h2>
+      {% for c, n in metrics.top_categories %}<span class="badge green" style="margin:2px;">{{ c }} · {{ n }}</span>{% else %}<p class="muted">No data yet.</p>{% endfor %}</div>
+  </div>
+  {% endif %}
+
+  {% if errors %}
+  <div class="panel" style="border-color:rgba(248,81,73,0.4);">
+    <h2><i class="ri-error-warning-line"></i> Recent sync problems</h2>
+    {% for r in errors %}<div class="muted" style="margin-bottom:4px;"><b style="color:#f85149;">{{ r.provider.name }}</b> · {{ r.started_at.strftime('%b %d %H:%M') }} UTC · {{ r.status }} · {{ r.error or r.notes or (r.errors ~ ' item errors') }}</div>{% endfor %}
+    <a href="{{ url_for('admin_skills.admin_gig_providers') }}">See providers</a>
+  </div>
+  {% endif %}
+
+  <div class="tabs">
+    {% for key, label in [('all', 'All'), ('live', 'Live & open'), ('unknown', 'Availability unknown'), ('drafts', 'Unpublished'), ('closed', 'Closed / expired'), ('duplicates', 'Duplicates'), ('archived', 'Archived')] %}
+    <a href="{{ url_for('admin_skills.admin_gigs', view=key, provider=provider_id, q=q or None) }}" class="{{ 'active' if view == key }}">{{ label }} ({{ counts[key] }})</a>
+    {% endfor %}
+  </div>
+  <form method="GET" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;">
+    <input type="hidden" name="view" value="{{ view }}">
+    <input type="search" name="q" value="{{ q }}" placeholder="Search title, organisation, source ID" style="flex:1;min-width:220px;padding:9px 12px;border-radius:8px;border:1px solid #30363d;background:#0d1117;color:#e6edf3;">
+    <select name="provider" style="padding:9px 12px;border-radius:8px;border:1px solid #30363d;background:#0d1117;color:#e6edf3;">
+      <option value="">All providers</option>
+      {% for p in providers %}<option value="{{ p.id }}"{{ ' selected' if provider_id == p.id }}>{{ p.name }}</option>{% endfor %}
+    </select>
+    <button class="btn secondary" type="submit">Filter</button>
+  </form>
+
+  <div class="panel table-wrap">
+    {% if rows %}
+    <table>
+      <thead><tr><th>Gig</th><th>Status</th><th>Pay</th><th>Views</th><th>Apply clicks</th><th>Applied</th><th></th></tr></thead>
+      <tbody>
+      {% for r in rows %}{% set g = r.g %}{% set s = stats.get(g.id, {}) %}
+      <tr>
+        <td>
+          <a href="{{ url_for('admin_skills.admin_gig_edit', gig_id=g.id) }}" style="font-weight:700;color:#e6edf3;text-decoration:none;">{{ g.title }}</a>
+          <div class="muted">{{ g.organization }} · {{ labels.get(g.category, g.category) }} · {{ g.provider.name }}{% if g.source_gig_id %} #{{ g.source_gig_id }}{% endif %}</div>
+          <div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:4px;">
+            {% if g.is_published %}<span class="badge green">Published</span>{% else %}<span class="badge">Unpublished</span>{% endif %}
+            {% if g.featured %}<span class="badge blue">Featured</span>{% endif %}
+            {% if g.duplicate_of_id %}<span class="badge orange">Duplicate of #{{ g.duplicate_of_id }}</span>{% endif %}
+            {% if g.status_override %}<span class="badge orange">Override: {{ g.status_override }}</span>{% endif %}
+            {% if not g.provider.enabled %}<span class="badge red">Provider disabled</span>{% endif %}
+          </div>
+        </td>
+        <td><span class="badge {{ {'open': 'green', 'soon': 'orange', 'closed': 'red', 'unknown': ''}[r.status.tone] }}">{{ r.status.label }}</span>
+          <div class="muted">verified {{ g.last_verified_at.strftime('%b %d %H:%M') if g.last_verified_at else 'never' }}</div></td>
+        <td class="muted">{{ ui.pay(g, compact=True) }}</td>
+        <td>{{ s.get('gig_viewed', 0) }}<div class="muted">{{ s.get('unique_viewers', 0) }} unique</div></td>
+        <td>{{ s.get('apply_clicked', 0) }}</td>
+        <td>{{ s.get('applied_now', 0) }}</td>
+        <td><a class="btn secondary small" href="{{ url_for('admin_skills.admin_gig_edit', gig_id=g.id) }}">Edit</a></td>
+      </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <p class="muted" style="padding:16px;text-align:center;">No gigs here yet. Enable a provider or add a gig by hand.</p>
+    {% endif %}
+  </div>
+  <p class="muted">"Applied" counts are students' own confirmations. No provider has confirmed them.</p>
+</div>
+</body>
+</html>

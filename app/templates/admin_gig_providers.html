@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/x-icon" href="/static/icons/favicon.ico">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin · Gig providers · Nelavista</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
+  {% include 'components/admin_opp_styles.html' %}
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+</head>
+<body>
+{% include 'components/admin_nav.html' %}
+<div class="container">
+  <a href="{{ url_for('admin_skills.admin_gigs') }}" style="color:#8b949e;text-decoration:none;font-size:0.85rem;">← Gigs</a>
+  {% with messages = get_flashed_messages() %}{% for m in messages %}<div class="flash" style="margin-top:10px;">{{ m }}</div>{% endfor %}{% endwith %}
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap;">
+    <div>
+      <h1><i class="ri-plug-line"></i> Gig providers</h1>
+      <p class="subtitle">Only official APIs, official feeds and partner feeds, and only when their terms permit showing listings in Nelavista. Record that basis before enabling. Never add a site's listings by copying its pages. A failed sync never deletes gigs; unconfirmed gigs fall back to "Availability unknown" after the stale threshold.</p>
+    </div>
+    <a href="{{ url_for('admin_skills.admin_gig_provider_edit') }}" class="btn"><i class="ri-add-line"></i>Add provider</a>
+  </div>
+
+  <div class="panel table-wrap">
+    <table>
+      <thead><tr><th>Provider</th><th>API / feed</th><th>Status</th><th>Last sync</th><th>Active gigs</th><th>Sync errors</th><th></th></tr></thead>
+      <tbody>
+      {% for p in providers %}
+      <tr>
+        <td><b>{{ p.name }}</b><div class="muted">{{ p.slug }} · {{ adapters[p.adapter].label if p.adapter in adapters else p.adapter }}</div>
+          {% if p.terms_url %}<div class="muted"><a href="{{ p.terms_url }}" target="_blank" rel="noopener">Terms</a></div>{% endif %}</td>
+        <td class="muted" style="max-width:220px;overflow-wrap:anywhere;">{{ p.api_base_url or ('—' if p.adapter == 'manual' else 'adapter default') }}
+          {% if p.adapter != 'manual' %}<div>every {{ p.sync_frequency_minutes }} min · stale after {{ p.stale_after_hours }} h{% if p.auto_publish %} · auto-publish{% endif %}</div>{% endif %}</td>
+        <td>
+          {% if p.enabled %}<span class="badge green">Enabled</span>{% else %}<span class="badge">Disabled</span>{% endif %}
+          {% if p.adapter != 'manual' %}{% if p.redistribution_confirmed %}<span class="badge green">Terms confirmed</span>{% else %}<span class="badge orange">Terms not confirmed</span>{% endif %}{% endif %}
+          {% if problems[p.id] and not p.enabled and p.adapter != 'manual' %}<div class="muted" style="margin-top:4px;">{{ problems[p.id]|join(' ') }}</div>{% endif %}
+        </td>
+        <td class="muted">{% if p.adapter == 'manual' %}—{% else %}{{ ui.ago(p.last_sync_at) or 'never' }}{% if p.last_status %} · <span class="badge {{ {'success': 'green', 'partial': 'orange', 'failed': 'red'}.get(p.last_status, '') }}">{{ p.last_status }}</span>{% endif %}
+          {% if p.last_success_at and p.last_status == 'failed' %}<div>last success {{ ui.ago(p.last_success_at) }}</div>{% endif %}
+          {% if due[p.id] %}<div>due now</div>{% endif %}{% endif %}</td>
+        <td><b>{{ active.get(p.id, 0) }}</b><div class="muted">{{ totals.get(p.id, 0) }} total</div></td>
+        <td class="muted" style="max-width:240px;">{% if p.consecutive_failures %}<span class="badge red">{{ p.consecutive_failures }} failure{{ 's' if p.consecutive_failures != 1 }} in a row</span>{% endif %}
+          {% if p.last_error %}<div style="color:#f85149;overflow-wrap:anywhere;">{{ p.last_error }}</div>{% elif not p.consecutive_failures %}—{% endif %}</td>
+        <td style="white-space:nowrap;">
+          <a class="btn secondary small" href="{{ url_for('admin_skills.admin_gig_provider_edit', provider_id=p.id) }}">Edit</a>
+          {% if p.enabled and p.adapter != 'manual' %}
+          <form method="POST" action="{{ url_for('admin_skills.admin_gig_provider_sync', provider_id=p.id) }}" style="display:inline;">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="btn small blue" type="submit"><i class="ri-refresh-line"></i>Sync now</button>
+          </form>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="panel table-wrap">
+    <h2>Recent sync runs</h2>
+    {% if runs %}
+    <table>
+      <thead><tr><th>When (UTC)</th><th>Provider</th><th>Result</th><th>Fetched</th><th>New</th><th>Updated</th><th>Closed</th><th>Skipped</th><th>Dupes</th><th>Errors</th><th>By</th></tr></thead>
+      <tbody>
+      {% for r in runs %}
+      <tr>
+        <td class="muted">{{ r.started_at.strftime('%b %d %H:%M') }}</td>
+        <td>{{ r.provider.name }}</td>
+        <td><span class="badge {{ {'success': 'green', 'partial': 'orange', 'failed': 'red'}.get(r.status, '') }}">{{ r.status }}</span>
+          {% if r.error %}<div class="muted" style="color:#f85149;max-width:260px;overflow-wrap:anywhere;">{{ r.error }}</div>{% endif %}
+          {% if r.notes %}<div class="muted" style="max-width:260px;">{{ r.notes }}</div>{% endif %}</td>
+        <td>{{ r.fetched }}</td><td>{{ r.created }}</td><td>{{ r.updated }}</td><td>{{ r.closed }}</td><td>{{ r.skipped }}</td><td>{{ r.duplicates }}</td><td>{{ r.errors }}</td>
+        <td class="muted">{{ r.triggered_by }}</td>
+      </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    {% else %}<p class="muted">No syncs yet.</p>{% endif %}
+  </div>
+  <p class="muted">Automatic sync runs when the server has <code>GIG_SYNC_ENABLED=1</code>, or from a cron job: <code>flask --app wsgi gigs-sync</code>.</p>
+</div>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/x-icon" href="/static/icons/favicon.ico">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Apply · {{ gig.title }} · Nelavista</title>
+  <meta name="theme-color" content="#050810">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/skills.css') }}">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
+  <script>
+    (function () { try { var p = localStorage.getItem('theme') || 'dark';
+      if (p === 'light' || (p === 'system' && matchMedia('(prefers-color-scheme: light)').matches)) document.documentElement.classList.add('opp-light'); } catch (e) {} })();
+  </script>
+</head>
+<body class="opp-frame-body">
+  {# The official listing, unmodified, inside a Nelavista frame. Only when an admin
+     enabled in-app view; "Open in browser" is always there because many sites refuse
+     to load in a frame. #}
+  {% set handler = ui.handler(gig) %}
+  <div class="opp-frame-bar opp-detail" data-opp-id="{{ gig.id }}" data-opp-slug="{{ gig.slug }}" data-opp-base="/opportunities/gigs/">
+    <a href="{{ url_for('opportunities.gig_detail', slug=gig.slug) }}" class="opp-frame-back" aria-label="Back to Nelavista"><i class="ri-arrow-left-line"></i></a>
+    <div class="opp-frame-title">
+      <strong>{{ handler }}: official {{ 'listing' if gig.is_external else 'application' }}</strong>
+      <span>{{ gig.application_url.split('/')[2] if '//' in gig.application_url else gig.application_url }} · not run by Nelavista</span>
+    </div>
+    <a href="{{ gig.application_url }}" target="_blank" rel="noopener" class="sk-btn ghost small opp-frame-open"><i class="ri-external-link-line"></i><span>Open in browser</span></a>
+    <div class="opp-applied-box compact{{ ' is-applied' if state.applied_at }}" data-opp-applied-box>
+      <div class="opp-applied-yes"><i class="ri-checkbox-circle-fill"></i><span data-opp-applied-label>Applied</span></div>
+      <div class="opp-applied-no"><button type="button" class="sk-btn small" data-opp-applied="1"><i class="ri-check-line"></i><span>I Applied</span></button></div>
+    </div>
+  </div>
+  <iframe class="opp-frame" src="{{ gig.application_url }}" title="{{ handler }} official listing" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+  <div class="opp-toast" id="opp-toast" role="status" aria-live="polite"></div>
+  <script src="{{ url_for('static', filename='js/opportunities.js') }}"></script>
+</body>
+</html>

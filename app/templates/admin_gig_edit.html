@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/x-icon" href="/static/icons/favicon.ico">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin · {{ gig.title or 'New gig' }} · Nelavista</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
+  {% include 'components/admin_opp_styles.html' %}
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+</head>
+<body>
+{% include 'components/admin_nav.html' %}
+<div class="container">
+  <a href="{{ url_for('admin_skills.admin_gigs') }}" style="color:#8b949e;text-decoration:none;font-size:0.85rem;">← All gigs</a>
+  {% with messages = get_flashed_messages() %}{% for m in messages %}<div class="flash" style="margin-top:10px;">{{ m }}</div>{% endfor %}{% endwith %}
+  <h1>{{ gig.title if gig.id else 'Add a gig' }}</h1>
+  {% if gig.id %}
+  <p class="subtitle">{{ gig.organization }} · {{ gig.provider.name }}{% if gig.source_gig_id %} #{{ gig.source_gig_id }}{% endif %} · {{ gig.origin|title }} ·
+    {% if status %}<span class="badge {{ {'open': 'green', 'soon': 'orange', 'closed': 'red', 'unknown': ''}[status.tone] }}">{{ status.label }}</span>{% endif %}
+    {% if gig.is_published %}<span class="badge green">Published</span>{% else %}<span class="badge">Unpublished</span>{% endif %}
+    {% if gig.duplicate_of_id %}<span class="badge orange">Duplicate of <a href="{{ url_for('admin_skills.admin_gig_edit', gig_id=gig.duplicate_of_id) }}">#{{ gig.duplicate_of_id }}</a></span>{% endif %}
+    · <a href="{{ url_for('opportunities.gig_detail', slug=gig.slug) }}" target="_blank">Preview student page</a>
+  </p>
+  <p class="muted" style="margin-bottom:14px;">Source says <b>{{ gig.source_status }}</b>{% if gig.status_override %} · admin override <b>{{ gig.status_override }}</b>{% endif %} ·
+    last verified {{ ui.ago(gig.last_verified_at) or 'never' }}{% if gig.verified_by %} (by {{ gig.verified_by.username }}){% endif %} ·
+    last synced {{ ui.ago(gig.last_synced_at) or 'never' }} · last seen in feed {{ ui.ago(gig.last_seen_at) or 'never' }}{% if gig.removed_reason %} · removed: {{ gig.removed_reason }}{% endif %}</p>
+  {% if gig.is_external and gig.locked_fields %}<p class="muted">Locked against sync (you edited them): {{ gig.locked_fields|sort|join(', ') }}</p>{% endif %}
+  {% else %}
+  <p class="subtitle">For a legitimate gig you've checked directly (a company that contacted Nelavista, an official posting). Copy details from the official source; never guess a URL or a pay figure. It saves as an unpublished draft.</p>
+  {% endif %}
+
+  {% if errors %}<div class="errors"><b>Not saved:</b><ul>{% for e in errors %}<li>{{ e }}</li>{% endfor %}</ul></div>{% endif %}
+
+  <div class="layout">
+    <form method="POST" class="main" action="{{ url_for('admin_skills.admin_gig_edit', gig_id=gig.id) if gig.id else url_for('admin_skills.admin_gig_new') }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <div class="panel">
+        <h2>Basics</h2>
+        <div class="grid2">
+          <div class="field"><label>Title *</label><input type="text" name="title" value="{{ gig.title or '' }}" maxlength="200" required></div>
+          <div class="field"><label>Organisation / client *</label><input type="text" name="organization" value="{{ gig.organization or '' }}" maxlength="150" required></div>
+        </div>
+        <div class="field"><label>Card summary</label><input type="text" name="summary" value="{{ gig.summary or '' }}" maxlength="300"></div>
+        <div class="grid2">
+          <div class="field"><label>Category *</label>
+            <select name="category">{% for k, label, _ in categories %}<option value="{{ k }}"{{ ' selected' if gig.category == k }}>{{ label }}</option>{% endfor %}</select></div>
+          <div class="field"><label>Skills</label><input type="text" name="skills" value="{{ gig.skills|join(', ') }}" placeholder="React, JavaScript, Git"><div class="hint">Comma-separated. Used for the skill match.</div></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>Pay &amp; work</h2>
+        <div class="grid2">
+          <div class="field"><label>Minimum pay</label><input type="number" name="pay_min" min="0" value="{{ gig.pay_min or '' }}"></div>
+          <div class="field"><label>Maximum pay</label><input type="number" name="pay_max" min="0" value="{{ gig.pay_max or '' }}"></div>
+          <div class="field"><label>Currency</label><input type="text" name="currency" value="{{ gig.currency or 'NGN' }}" maxlength="3"></div>
+          <div class="field"><label>Pay basis</label>
+            <select name="pay_type">{% for k, label in pay_types %}<option value="{{ k }}"{{ ' selected' if gig.pay_type == k }}>{{ label }}</option>{% endfor %}</select></div>
+        </div>
+        <div class="field"><label>Pay wording (if no clear figures)</label><input type="text" name="pay_text" value="{{ gig.pay_text or '' }}" maxlength="120" placeholder="e.g. Paid per article, rate on request"></div>
+        <div class="grid2">
+          <div class="field"><label>Work type</label>
+            <select name="work_type"><option value="">Not stated</option>{% for k, label in work_types %}<option value="{{ k }}"{{ ' selected' if gig.work_type == k }}>{{ label }}</option>{% endfor %}</select></div>
+          <div class="field"><label>Setting</label>
+            <select name="location_type">{% for k, label in location_types %}<option value="{{ k }}"{{ ' selected' if gig.location_type == k }}>{{ label }}</option>{% endfor %}</select></div>
+          <div class="field"><label>Location / eligible regions</label><input type="text" name="location" value="{{ gig.location or '' }}" maxlength="200" placeholder="e.g. Worldwide, Lagos, Africa"></div>
+          <div class="field"><label>Deadline</label><input type="date" name="deadline" value="{{ gig.deadline.isoformat() if gig.deadline else '' }}"></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>Content</h2>
+        <div class="field"><label>Description</label><textarea name="description" rows="7">{{ gig.description or '' }}</textarea></div>
+        <div class="field"><label>Requirements</label><textarea name="requirements" rows="4">{{ gig.requirements or '' }}</textarea></div>
+        <div class="field"><label>Who can apply</label><textarea name="eligibility" rows="3">{{ gig.eligibility or '' }}</textarea></div>
+      </div>
+
+      <div class="panel">
+        <h2>Application &amp; source</h2>
+        <div class="field"><label>Official application URL *</label><input type="url" name="application_url" value="{{ gig.application_url or '' }}"></div>
+        <div class="field"><label>Source / listing URL</label><input type="url" name="source_url" value="{{ gig.source_url or '' }}"><div class="hint">Where you verified it. Required for external gigs (attribution).</div></div>
+        <div class="field"><label>Reference (contact / agreement)</label><input type="text" name="external_reference" value="{{ gig.external_reference or '' }}" maxlength="200" placeholder="e.g. Email from hr@company.com, 2026-11-17"></div>
+        <div class="field"><label>Logo URL</label><input type="url" name="organization_logo_url" value="{{ gig.organization_logo_url or '' }}"></div>
+        <label class="toggle"><input type="checkbox" name="allows_in_app_view" value="1"{{ ' checked' if gig.allows_in_app_view }}> Show the official page in-app (run "Check in-app view" first)</label>
+        <label class="toggle"><input type="checkbox" name="featured" value="1"{{ ' checked' if gig.featured }}> Featured</label>
+        {% if not gig.id %}<label class="toggle"><input type="checkbox" name="verified_now" value="1"> I checked the official source just now and it is accepting applications</label>{% endif %}
+        {% if gig.is_external and gig.locked_fields %}<label class="toggle"><input type="checkbox" name="unlock_fields" value="1"> Unlock all fields (let the next sync overwrite them)</label>{% endif %}
+      </div>
+      <button type="submit" class="btn"><i class="ri-save-line"></i>{{ 'Save changes' if gig.id else 'Save draft' }}</button>
+    </form>
+
+    {% if gig.id %}
+    <aside class="side">
+      {% macro act(name, label, cls='secondary', confirm=None, value=None) %}
+      <form method="POST" action="{{ url_for('admin_skills.admin_gig_action', gig_id=gig.id) }}"{% if confirm %} onsubmit="return confirm('{{ confirm }}')"{% endif %}>
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><input type="hidden" name="action" value="{{ name }}">
+        {% if value is not none %}<input type="hidden" name="value" value="{{ value }}">{% endif %}
+        <button class="btn small {{ cls }}" type="submit">{{ label }}</button>
+      </form>
+      {% endmacro %}
+      <div class="panel">
+        <h2>Publish</h2>
+        {% if publish_problems %}<ul class="problems">{% for p in publish_problems %}<li>{{ p }}</li>{% endfor %}</ul>{% endif %}
+        <div class="actions" style="margin-top:10px;">
+          {% if gig.is_published %}{{ act('unpublish', 'Unpublish') }}{% else %}{{ act('publish', 'Publish', 'blue' if not publish_problems else 'secondary') }}{% endif %}
+          {{ act('verify', 'Verify open now', '', 'Did you check the official listing just now and it is accepting applications?') }}
+          {% if gig.featured %}{{ act('unfeature', 'Unfeature') }}{% else %}{{ act('feature', 'Feature') }}{% endif %}
+          {% if gig.duplicate_of_id %}{{ act('not_duplicate', 'Not a duplicate') }}{% endif %}
+        </div>
+      </div>
+      <div class="panel">
+        <h2>Override status</h2>
+        <p class="muted" style="margin-bottom:8px;">Overrides beat the source. "Open" also records a manual verification now. A passed deadline always wins.</p>
+        <div class="actions">
+          {{ act('override', 'Force open', '', 'Mark this gig open? Only if you just confirmed it is accepting applications.', 'OPEN') }}
+          {{ act('override', 'Force closed', 'danger', None, 'CLOSED') }}
+          {{ act('override', 'Mark unknown', '', None, 'UNKNOWN') }}
+          {% if gig.status_override %}{{ act('override', 'Clear override', '', None, 'clear') }}{% endif %}
+        </div>
+      </div>
+      <div class="panel">
+        <h2>Remove</h2>
+        <div class="actions">
+          {% if gig.is_archived %}{{ act('unarchive', 'Restore') }}{% else %}{{ act('archive', 'Archive') }}{% endif %}
+        </div>
+        <form method="POST" action="{{ url_for('admin_skills.admin_gig_check_framing', gig_id=gig.id) }}" style="margin-top:10px;">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button class="btn small secondary" type="submit"{{ ' disabled' if not gig.application_url }}><i class="ri-window-line"></i>Check in-app view</button>
+        </form>
+        <form method="POST" action="{{ url_for('admin_skills.admin_gig_delete', gig_id=gig.id) }}" style="margin-top:10px;" onsubmit="return confirm('Remove this gig from students?')">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <div class="field"><input type="text" name="reason" placeholder="Reason (e.g. scam, fee requested, spam)" maxlength="200"></div>
+          <button class="btn small danger" type="submit"><i class="ri-delete-bin-line"></i>Remove bad gig</button>
+          <div class="hint">External or saved/applied gigs are archived (so a sync won't re-import them); others are deleted.</div>
+        </form>
+      </div>
+      <div class="panel">
+        <h2>Analytics</h2>
+        <table>
+          <tr><td>Views</td><td><b>{{ stats.get('gig_viewed', 0) }}</b> <span class="muted">({{ stats.get('unique_viewers', 0) }} unique)</span></td></tr>
+          <tr><td>Saved (now)</td><td><b>{{ stats.get('saved_now', 0) }}</b></td></tr>
+          <tr><td>Apply clicks</td><td><b>{{ stats.get('apply_clicked', 0) }}</b></td></tr>
+          <tr><td>Marked applied (now)</td><td><b>{{ stats.get('applied_now', 0) }}</b></td></tr>
+          <tr><td>Shares</td><td><b>{{ stats.get('gig_shared', 0) }}</b></td></tr>
+        </table>
+      </div>
+      {% if raw_pretty %}
+      <details class="panel"><summary style="cursor:pointer;font-weight:700;">Last provider payload</summary>
+        <pre style="white-space:pre-wrap;font-size:0.72rem;color:#8b949e;margin-top:8px;max-height:360px;overflow:auto;">{{ raw_pretty }}</pre></details>
+      {% endif %}
+    </aside>
+    {% endif %}
+  </div>
+</div>
+</body>
+</html>

@@ -7,6 +7,13 @@
   var page = document.querySelector('.opp-detail[data-opp-id]');
   var pageOppId = page ? page.getAttribute('data-opp-id') : null;
   var pageSlug = page ? page.getAttribute('data-opp-slug') : null;
+  // Discover listings and gigs share this script; each page/card says which API it uses.
+  var DEFAULT_BASE = '/opportunities/discover/';
+  var pageBase = (page && page.getAttribute('data-opp-base')) || DEFAULT_BASE;
+  function baseFor(el) {
+    var holder = el && el.closest('[data-opp-base]');
+    return (holder && holder.getAttribute('data-opp-base')) || pageBase;
+  }
   var PENDING_KEY = 'nv_opp_apply_pending';
   var PENDING_MAX_MS = 3 * 60 * 60 * 1000;
 
@@ -57,7 +64,7 @@
   }
   function setApplied(applied) {
     if (!pageOppId) return;
-    post('/opportunities/discover/' + pageOppId + '/applied', { applied: applied }).then(function (res) {
+    post(pageBase + pageOppId + '/applied', { applied: applied }).then(function (res) {
       document.querySelectorAll('[data-opp-applied-box]').forEach(function (box) {
         box.classList.toggle('is-applied', !!res.applied);
         var label = box.querySelector('[data-opp-applied-label]');
@@ -71,9 +78,10 @@
   // ---- share
   function shareText(btn) {
     var t = btn.getAttribute('data-share-title'), o = btn.getAttribute('data-share-org'), d = btn.getAttribute('data-share-deadline');
-    return t + ' (' + o + ')' + (d ? '. Deadline: ' + d : '') + '. Found on Nelavista:';
+    var label = btn.getAttribute('data-share-label') || 'Deadline';
+    return t + ' (' + o + ')' + (d ? '. ' + label + ': ' + d : '') + '. Found on Nelavista:';
   }
-  function logShare(id, channel) { post('/opportunities/discover/' + id + '/share', { channel: channel }).catch(function () {}); }
+  function logShare(id, channel, base) { post((base || pageBase) + id + '/share', { channel: channel }).catch(function () {}); }
   function openShareSheet(btn) {
     var id = btn.getAttribute('data-opp-share'), url = btn.getAttribute('data-share-url'), text = shareText(btn);
     var full = text + ' ' + url;
@@ -96,7 +104,7 @@
     sheet.querySelector('[data-ch="whatsapp"]').href = 'https://wa.me/?text=' + enc(full);
     sheet.querySelector('[data-ch="telegram"]').href = 'https://t.me/share/url?url=' + enc(url) + '&text=' + enc(text);
     sheet.querySelector('[data-ch="x"]').href = 'https://twitter.com/intent/tweet?text=' + enc(text) + '&url=' + enc(url);
-    sheet._oppId = id; sheet._full = full; sheet._url = url;
+    sheet._oppId = id; sheet._full = full; sheet._url = url; sheet._base = baseFor(btn);
     sheet.hidden = false;
   }
 
@@ -107,7 +115,7 @@
       var want = !saveBtn.classList.contains('saved');
       var id = saveBtn.getAttribute('data-opp-save');
       document.querySelectorAll('[data-opp-save="' + id + '"]').forEach(function (b) { setSaveUi(b, want); });
-      post('/opportunities/discover/' + id + '/save', { saved: want }).then(function () {
+      post(baseFor(saveBtn) + id + '/save', { saved: want }).then(function () {
         toast(want ? 'Saved to My Opportunities' : 'Removed from saved');
       }).catch(function () {
         document.querySelectorAll('[data-opp-save="' + id + '"]').forEach(function (b) { setSaveUi(b, !want); });
@@ -122,7 +130,7 @@
       var sid = shareBtn.getAttribute('data-opp-share');
       if (navigator.share) {
         navigator.share({ title: shareBtn.getAttribute('data-share-title'), text: shareText(shareBtn), url: shareBtn.getAttribute('data-share-url') })
-          .then(function () { logShare(sid, 'native'); }).catch(function () {});
+          .then(function () { logShare(sid, 'native', baseFor(shareBtn)); }).catch(function () {});
       } else {
         openShareSheet(shareBtn);
       }
@@ -133,7 +141,7 @@
     if (ch) {
       var sheet = document.getElementById('opp-share-sheet');
       var channel = ch.getAttribute('data-ch');
-      logShare(sheet._oppId, channel);
+      logShare(sheet._oppId, channel, sheet._base);
       if (channel === 'copy') {
         e.preventDefault();
         var done = function () { toast('Link copied'); };

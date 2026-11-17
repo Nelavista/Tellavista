@@ -1600,3 +1600,4 @@ def rate_opportunity_application(application_id):
 # Student-opportunity admin pages register on admin_skills_bp. Imported last so the
 # blueprint exists.
 from app.routes import admin_opportunities_routes  # noqa: E402,F401
+from app.routes import admin_gigs_routes  # noqa: E402,F401

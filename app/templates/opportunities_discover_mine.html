@@ -17,15 +17,38 @@
   <div class="sk-view opp-view">
     <a href="{{ url_for('opportunities.discover') }}" class="opp-back"><i class="ri-arrow-left-line"></i> Scholarships &amp; programmes</a>
     <h1 class="sk-h1">My Opportunities</h1>
-    <p class="sk-sub">What you've saved, what you've applied to, and what's closing.</p>
+    <p class="sk-sub">The programmes and gigs you've saved, what you've applied to, and what's closing.</p>
 
-    {% set tabs = [('saved', 'Saved', data.saved|length), ('applied', 'Applied', data.applied|length),
+    {% set tabs = [('saved', 'Saved', data.saved|length + gigs.saved|length), ('applied', 'Applied', data.applied|length + gigs.applied|length),
                    ('closing', 'Closing Soon', data.closing|length), ('recommended', 'Recommended', data.recommended|length)] %}
     <nav class="opp-tabs" aria-label="My opportunities">
       {% for key, label, n in tabs %}
       <a href="{{ url_for('opportunities.discover_mine', tab=key) }}" class="opp-tab{{ ' active' if tab == key }}"{% if tab == key %} aria-current="page"{% endif %}>{{ label }}<span class="opp-tab-count">{{ n }}</span></a>
       {% endfor %}
     </nav>
+
+    {% if tab == 'applied' and gigs.applied %}
+      <div class="sk-section-title opp-section-title"><span>Gigs</span></div>
+      <div class="opp-list">
+        {% for a in gigs.applied %}{% set g = a.gig %}{% set s = gig_ui.status(g) %}
+        <a class="opp-list-row applied" href="{{ url_for('opportunities.gig_detail', slug=g.slug) }}">
+          <span class="opp-list-title">{{ g.title }}</span>
+          <span class="opp-list-org">{{ g.organization }} · {{ gig_ui.pay(g, compact=True) }}</span>
+          <span class="opp-pill applied"><i class="ri-check-line"></i>Applied</span>
+          <span class="opp-list-meta">Applied {{ a.applied_at.strftime('%b') }} {{ a.applied_at.day }}, {{ a.applied_at.year }} · {{ s.label }} · via {{ gig_ui.handler(g) }}</span>
+        </a>
+        {% endfor %}
+      </div>
+      <p class="opp-muted" style="margin-top:10px;">Marked by you. Replies come from the gig's provider or employer directly.</p>
+      {% if data.applied %}<div class="sk-section-title opp-section-title"><span>Programmes</span></div>{% endif %}
+    {% endif %}
+    {% if tab == 'saved' and gigs.saved %}
+      <div class="sk-section-title opp-section-title"><span>Gigs</span></div>
+      <div class="opp-grid">
+        {% for g in gigs.saved %}{% with st = gig_state.get(g.id, {}), match = None, from_section = 'mine_saved', ui = gig_ui %}{% include 'components/gig_card.html' %}{% endwith %}{% endfor %}
+      </div>
+      {% if data.saved %}<div class="sk-section-title opp-section-title"><span>Programmes</span></div>{% endif %}
+    {% endif %}
 
     {% if tab == 'applied' %}
       {% if data.applied %}
@@ -40,7 +63,7 @@
         {% endfor %}
       </div>
       <p class="opp-muted" style="margin-top:14px;">These are the programmes you marked as applied. Outcomes come from each organisation directly, so watch your email.</p>
-      {% else %}
+      {% elif not gigs.applied %}
       <div class="sk-empty opp-empty"><div class="sk-empty-icon"><i class="ri-send-plane-line"></i></div>
         <div style="font-weight:700;">No applications yet</div>
         <div style="font-size:0.92rem;">After you apply, tap <strong>I Applied</strong> on the opportunity to keep track of it here.</div>
@@ -53,7 +76,7 @@
       <div class="opp-grid">
         {% for o in items %}{% with st = state.get(o.id, {}), from_section = 'mine_' ~ tab %}{% include 'components/opportunity_card.html' %}{% endwith %}{% endfor %}
       </div>
-      {% else %}
+      {% elif not (tab == 'saved' and gigs.saved) %}
       <div class="sk-empty opp-empty"><div class="sk-empty-icon"><i class="{{ 'ri-heart-line' if tab == 'saved' else ('ri-timer-line' if tab == 'closing' else 'ri-compass-discover-line') }}"></i></div>
         {% if tab == 'saved' %}<div style="font-weight:700;">Nothing saved yet</div><div style="font-size:0.92rem;">Tap ♡ on any opportunity to keep it here.</div>
         {% elif tab == 'closing' %}<div style="font-weight:700;">Nothing you saved closes this week</div><div style="font-size:0.92rem;">Saved opportunities that close in the next 7 days show up here.</div>

@@ -96,10 +96,14 @@ def apply(opportunity_id):
     return redirect(request.referrer or url_for('opportunities.index'))
 
 
-@opportunities_bp.route('/opportunities/gigs')
+@opportunities_bp.route('/opportunities/gigs/nelavista')
 @login_required
-def gigs():
-    """The full open marketplace — every published gig, filterable, not just the ones
+def nelavista_gigs():
+    """Nelavista's own gigs (the Opportunity ledger: apply here, paid through Earnings).
+    /opportunities/gigs is now the Gigs hub (routes/opportunities_gigs_routes.py), which
+    shows these alongside external gigs and links here for the full filterable list.
+
+    The full open marketplace — every published gig, filterable, not just the ones
     matched to skills the student has already started. Opportunities (the personalized
     feed) is 'best matches'; Gigs is 'browse everything', same distinction Upwork/Fiverr
     draw between a matched feed and open browse."""
@@ -157,3 +161,4 @@ def earnings():
 # Discover (scholarships, fellowships, external competitions...) registers on
 # opportunities_bp. Imported last so the blueprint and _current_user exist.
 from app.routes import opportunities_discover_routes  # noqa: E402,F401
+from app.routes import opportunities_gigs_routes  # noqa: E402,F401

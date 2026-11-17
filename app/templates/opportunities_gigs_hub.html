@@ -109,7 +109,7 @@
     {% if unavailable %}
       <div class="sk-empty opp-empty"><div class="sk-empty-icon"><i class="ri-tools-line"></i></div>
         <div style="font-weight:700;">Gigs are being set up</div>
-        <div style="font-size:0.92rem;">Check back soon. Nelavista gigs below are still open for applications.</div></div>
+        <div style="font-size:0.92rem;">Check back soon.</div></div>
 
     {% elif feed.filtering %}
       <div class="sk-section-title opp-section-title">
@@ -136,44 +136,6 @@
       {{ rail('Recommended For You', '🎯', feed.recommended, 'for_you', 'Based on the skills you are building on Nelavista. Everything else is still below.') }}
       {{ rail('New Gigs', '🆕', feed.new, 'new', 'Added in the last 7 days.') }}
       {{ rail('Closing Soon', '⏰', feed.closing_soon, 'closing', 'Deadlines in the next 3 days.') }}
-    {% endif %}
-
-    {% if nv_rows %}
-    <section class="opp-section" aria-label="Nelavista gigs">
-      <div class="sk-section-title opp-section-title">
-        <span><span class="opp-section-icon">💼</span>Nelavista gigs</span>
-        <a href="{{ url_for('opportunities.nelavista_gigs') }}" class="sk-view-link">See all {{ nv_total }}</a>
-      </div>
-      <p class="opp-section-note">Run through Nelavista: apply here, and payment shows in Earnings.</p>
-      <div class="opp-rail">
-        {% for row in nv_rows %}{% set o = row.opportunity %}
-        <article class="opp-card">
-          <div class="opp-card-top">
-            <div class="opp-org-mark" aria-hidden="true"><i class="ri-briefcase-line"></i></div>
-            <div class="opp-card-head"><span class="opp-card-title">{{ o.title }}</span>
-              <div class="opp-card-org">Nelavista · {{ o.skill.name if o.skill else '' }}</div></div>
-          </div>
-          {% if row.match_pct %}<div class="opp-status-row"><span class="dv2-opp-match">{{ row.match_pct }}% match</span></div>{% endif %}
-          <ul class="gig-facts">
-            <li class="gig-pay"><i class="ri-money-dollar-circle-line" aria-hidden="true"></i>₦{{ '{:,}'.format(o.payment_amount) }}</li>
-            <li><i class="ri-earth-line" aria-hidden="true"></i>{{ o.location or 'Remote' }}</li>
-            {% if o.due_date %}<li><i class="ri-calendar-line" aria-hidden="true"></i>Due {{ o.due_date.strftime('%b') }} {{ o.due_date.day }}</li>{% endif %}
-          </ul>
-          {% if o.description %}<p class="opp-card-desc">{{ o.description }}</p>{% endif %}
-          <div class="opp-card-actions">
-            {% if row.application %}
-            <span class="sk-badge {{ row.application.status }}">{{ row.application.status|title }}</span>
-            {% else %}
-            <form method="POST" action="{{ url_for('opportunities.apply', opportunity_id=o.id) }}" style="flex:1;display:flex;">
-              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-              <button type="submit" class="sk-btn small" style="flex:1;">Apply on Nelavista</button>
-            </form>
-            {% endif %}
-          </div>
-        </article>
-        {% endfor %}
-      </div>
-    </section>
     {% endif %}
 
     {% if not feed.filtering and feed.results %}

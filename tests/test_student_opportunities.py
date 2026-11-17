@@ -220,7 +220,7 @@ def test_gig_apply_endpoint_still_works_and_gigs_page_intact(app, client, make_u
         db.session.commit()
         gig_id = gig.id
     login_as(client, user)
-    assert 'Paid design gig' in client.get('/opportunities/gigs').get_data(as_text=True)
+    assert 'Paid design gig' in client.get('/opportunities/gigs/nelavista').get_data(as_text=True)
     client.post(f'/opportunities/{gig_id}/apply')
     with app.app_context():
         assert OpportunityApplication.query.filter_by(opportunity_id=gig_id, student_id=user.id).count() == 1

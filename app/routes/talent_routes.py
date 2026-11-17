@@ -121,6 +121,9 @@ def request_talent():
                             user_id=user.id if user else None)
         db.session.add(row)
         db.session.commit()
+        # Saved first, then announced: an email failure is logged, never lost or shown.
+        from app.services.talent_notify import send_request_alert
+        send_request_alert(row)
         session['talent_request_name'] = data['contact_name'].split(' ')[0]
         return redirect(url_for('talent.request_received'))
 

@@ -17,6 +17,7 @@ Usage:
 """
 from app import app, db
 from app.models import University, Campus, CampusLocation
+from app.services.campus_maps import category_from_name, DEFAULT_CATEGORY
 
 # (id, name, lat, lng) -- verbatim from templates/campus-map.html's `locations` array.
 LASU_LOCATIONS = [
@@ -76,28 +77,9 @@ LASU_LOCATIONS = [
 
 
 def _category_for(name):
-    """Mirrors templates/campus-map.html's own getCategoryFromLocation() exactly, so a
-    migrated row's marker color/grouping on the map doesn't change."""
-    n = name.lower()
-    if 'arcade' in n or 'commercial' in n:
-        return 'commercial'
-    if 'mosque' in n:
-        return 'religious'
-    if 'bank' in n:
-        return 'bank'
-    if 'sport' in n or 'court' in n:
-        return 'sports'
-    if 'ict' in n or 'cbt' in n or 'computer' in n:
-        return 'ict'
-    if 'medical' in n or 'health' in n:
-        return 'healthcare'
-    if 'faculty' in n or 'school' in n:
-        return 'faculty'
-    if 'library' in n or 'lab' in n:
-        return 'department'
-    if 'lecture' in n or 'hall' in n or 'auditorium' in n:
-        return 'lecture'
-    return 'general'
+    """Same name rules the map uses to display a place (services/campus_maps.py), so a
+    fresh seed stores the category students will actually see."""
+    return category_from_name(name) or DEFAULT_CATEGORY
 
 
 def seed_campus_map():

@@ -1,0 +1,7 @@
+{#- Shared <head> for the Campus space. Built on the Nelavista design tokens in
+    css/learn.css (DM Sans / Bricolage, lx-* colours, light + dark) with Campus's own
+    layout in css/campus.css. -#}
+{% set lx_legacy = false %}
+{% include 'components/lx_head.html' %}
+  <link rel="manifest" href="/manifest.json">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/campus.css') }}">

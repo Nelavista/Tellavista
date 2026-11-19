@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {% include 'campus_map/_head.html' %}
+  <title>{{ university.short_name or university.name }} Campus Map · Nelavista</title>
+  <meta name="description" content="Interactive campus map of {{ university.name }}: find faculties, lecture halls, libraries and student places.">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+</head>
+<body class="lx cm cm-mapview">
+{% include 'campus_map/_theme.html' %}
+
+<header class="cm-maphead">
+  <a class="cm-back" href="{{ url_for('campus_map.campus_map_page') }}">
+    <i class="ri-arrow-left-line" aria-hidden="true"></i><span class="cm-back-text">Change university</span>
+    <span class="lx-sr">Change university</span>
+  </a>
+  <div class="cm-maphead-title">
+    <span class="cm-logo sm" data-len="{{ university.monogram|length }}" aria-hidden="true">{% if university.logo_url %}<img src="{{ university.logo_url }}" alt="">{% else %}{{ university.monogram }}{% endif %}</span>
+    <div class="cm-maphead-text">
+      <h1 class="cm-maphead-name">{{ university.name }}</h1>
+      <p class="cm-maphead-sub">Campus Map{% if data.campus %} · {{ data.campus.name }}{% endif %}</p>
+    </div>
+  </div>
+  {% if data.campuses|length > 1 %}
+  <label class="lx-sr" for="cm-campus">Campus</label>
+  <select class="lx-select cm-campus-select" id="cm-campus">
+    {% for c in data.campuses %}
+    <option value="{{ c.id }}" {{ 'selected' if data.campus and c.id == data.campus.id }}>{{ c.name }}</option>
+    {% endfor %}
+  </select>
+  {% endif %}
+</header>
+
+<div class="cm-stage{{ ' is-empty' if not data.has_data }}{{ ' no-center' if not data.map.center }}" id="cm-stage">
+  <div id="cm-map" class="cm-map" role="application" aria-label="Campus map of {{ university.name }}"></div>
+
+  {% if data.map.center %}
+  <div class="cm-fabs">
+    <button type="button" class="cm-fab" id="cm-locate" aria-label="Show my location" title="Show my location"><i class="ri-focus-3-line" aria-hidden="true"></i></button>
+    <button type="button" class="cm-fab" id="cm-layer" aria-label="Switch to map view" title="Map or satellite"><i class="ri-map-2-line" aria-hidden="true"></i></button>
+    <button type="button" class="cm-fab" id="cm-fit" aria-label="Show whole campus" title="Show whole campus"><i class="ri-fullscreen-exit-line" aria-hidden="true"></i></button>
+  </div>
+  {% endif %}
+
+  <section class="cm-panel" id="cm-panel" data-state="peek" aria-label="Campus places">
+    {% if data.has_data %}
+    <button type="button" class="cm-handle" id="cm-handle" aria-label="Show list of places" aria-expanded="false"><span></span></button>
+
+    <div class="cm-panel-top" id="cm-panel-top">
+      <div class="cm-search" id="cm-search-box">
+        <i class="ri-search-line" aria-hidden="true"></i>
+        <label class="lx-sr" for="cm-search">Search places on campus</label>
+        <input type="search" id="cm-search" placeholder="Search buildings and places" autocomplete="off" enterkeyhint="search" spellcheck="false">
+        <button type="button" class="cm-search-clear" id="cm-search-clear" aria-label="Clear search"><i class="ri-close-line"></i></button>
+      </div>
+      <div class="cm-chips" id="cm-chips" role="toolbar" aria-label="Filter by category"></div>
+    </div>
+
+    <div class="cm-panel-body" id="cm-panel-body">
+      <div id="cm-list-view">
+        <div class="cm-list-head">
+          <span id="cm-list-count"></span>
+          <span id="cm-near" class="cm-near" hidden></span>
+        </div>
+        <ul class="cm-places" id="cm-list"></ul>
+        <div class="cm-noresults sm" id="cm-list-empty" hidden>
+          <p><strong id="cm-list-empty-title">No places match.</strong></p>
+          <p class="lx-muted" id="cm-list-empty-hint"></p>
+          <button type="button" class="lx-btn lx-btn-secondary lx-btn-sm" id="cm-list-reset">Show all places</button>
+        </div>
+      </div>
+
+      <article class="cm-detail" id="cm-detail" hidden aria-live="polite">
+        <div class="cm-detail-bar">
+          <button type="button" class="lx-btn lx-btn-ghost lx-btn-sm cm-detail-back" id="cm-detail-back"><i class="ri-arrow-left-line" aria-hidden="true"></i>All places</button>
+          <button type="button" class="lx-iconbtn" id="cm-detail-close" aria-label="Close"><i class="ri-close-line"></i></button>
+        </div>
+        <figure class="cm-detail-media" id="cm-detail-media" hidden><img id="cm-detail-img" alt=""></figure>
+        <div class="cm-detail-kicker" id="cm-detail-kicker"></div>
+        <h2 class="cm-detail-name" id="cm-detail-name"></h2>
+        <p class="cm-detail-where"><i class="ri-map-pin-line" aria-hidden="true"></i><span id="cm-detail-where"></span></p>
+        <p class="cm-detail-desc" id="cm-detail-desc" hidden></p>
+        <div class="cm-route" id="cm-route" hidden>
+          <i class="ri-walk-line" aria-hidden="true"></i>
+          <span id="cm-route-text"></span>
+          <button type="button" class="lx-btn lx-btn-ghost lx-btn-sm" id="cm-route-end">End</button>
+        </div>
+        <div class="cm-detail-actions">
+          <button type="button" class="lx-btn lx-btn-primary" id="cm-directions"><i class="ri-direction-line" aria-hidden="true"></i>Directions</button>
+          <button type="button" class="lx-btn lx-btn-secondary" id="cm-save" aria-pressed="false"><i class="ri-bookmark-line" aria-hidden="true"></i><span>Save</span></button>
+          <button type="button" class="lx-btn lx-btn-secondary cm-icon-only" id="cm-share" aria-label="Share this place"><i class="ri-share-forward-line" aria-hidden="true"></i></button>
+        </div>
+        <a class="cm-ext" id="cm-gmaps" target="_blank" rel="noopener noreferrer">Open in Google Maps<i class="ri-external-link-line" aria-hidden="true"></i></a>
+      </article>
+    </div>
+    {% else %}
+    <div class="cm-empty">
+      <span class="cm-empty-icon" aria-hidden="true"><i class="ri-map-2-line"></i></span>
+      <h2>{{ university.short_name or university.name }} isn't mapped yet</h2>
+      <p>We add a campus once its buildings and places have been checked on the ground, so the map is one you can rely on.</p>
+      <div class="lx-actions stack-sm">
+        <a class="lx-btn lx-btn-primary" href="{{ url_for('campus_map.campus_map_page') }}"><i class="ri-arrow-left-line" aria-hidden="true"></i>Choose another university</a>
+      </div>
+    </div>
+    {% endif %}
+  </section>
+</div>
+
+<div class="cm-toast" id="cm-toast" role="status" aria-live="polite" hidden></div>
+
+<script id="cm-data" type="application/json">{{ data|tojson }}</script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="{{ url_for('static', filename='js/campus-map.js') }}"></script>
+</body>
+</html>

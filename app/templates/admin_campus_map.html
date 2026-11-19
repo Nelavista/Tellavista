@@ -37,7 +37,7 @@
 {% include 'components/admin_nav.html' %}
     <div class="container">
         <h1>🗺️ Campus Map</h1>
-        <div class="hint">Every university gets a Main Campus automatically. Add real, sourced pins below -- coordinates are never guessed.</div>
+        <div class="hint">Every university gets a Main Campus automatically. Add real, sourced pins below -- coordinates are never guessed. A place's map appears to students at <a style="color:#58a6ff" href="/campus-map">/campus-map</a> as soon as it has one pin.</div>
 
         {% if not universities %}
         <div class="empty">
@@ -48,7 +48,7 @@
 
         {% for uni in universities %}
         <div class="uni-card">
-            <div class="uni-title">{{ uni.name }}</div>
+            <div class="uni-title">{{ uni.name }} <a style="color:#58a6ff;font-size:.8rem;font-weight:500" href="/campus-map/{{ uni.slug }}">View map</a></div>
             {% if uni.short_name %}<div class="uni-short">{{ uni.short_name }}</div>{% endif %}
 
             {% for campus in uni.campuses %}
@@ -60,27 +60,17 @@
                 </div>
                 {% for loc in campus.locations %}
                 <div class="loc-row" data-loc-id="{{ loc.id }}">
-                    <span class="loc-name">{{ loc.name }}<span class="loc-meta">{{ loc.category or 'uncategorized' }} · {{ loc.latitude }}, {{ loc.longitude }}</span></span>
+                    <span class="loc-name">{{ loc.name }}<span class="loc-meta">{{ category_index[resolve_category(loc.category, loc.name)].label }}{% if not loc.category %} (from name){% endif %} · {{ loc.latitude }}, {{ loc.longitude }}</span></span>
                     <button class="del-btn" onclick="deleteLocation({{ loc.id }})">Delete</button>
                 </div>
                 {% endfor %}
                 <form class="add-form" onsubmit="return addLocation(event, {{ campus.id }})">
                     <input type="text" name="name" placeholder="Location name" required>
                     <select name="category">
-                        <option value="">Category</option>
-                        <option value="faculty">Faculty</option>
-                        <option value="department">Department/Lab</option>
-                        <option value="lecture">Lecture Hall</option>
-                        <option value="administrative">Administrative</option>
-                        <option value="healthcare">Healthcare</option>
-                        <option value="religious">Religious</option>
-                        <option value="ict">ICT</option>
-                        <option value="bank">Bank</option>
-                        <option value="sports">Sports</option>
-                        <option value="commercial">Commercial</option>
-                        <option value="utility">Utility</option>
-                        <option value="general">General</option>
+                        <option value="">Category (from name)</option>
+                        {% for c in categories %}<option value="{{ c.key }}">{{ c.label }}</option>{% endfor %}
                     </select>
+                    <input type="text" name="description" placeholder="Short description (optional)" style="flex:1 1 220px;">
                     <input type="number" step="any" name="latitude" placeholder="Latitude" required>
                     <input type="number" step="any" name="longitude" placeholder="Longitude" required>
                     <button type="submit">+ Add Location</button>

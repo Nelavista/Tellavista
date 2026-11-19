@@ -7,6 +7,7 @@
  */
 import type {
   BatchStateOut,
+  BulkResultOut,
   FinancialsOut,
   FundOut,
   LedgerOut,
@@ -30,6 +31,7 @@ import {
 } from '@nelavista/ui';
 import * as React from 'react';
 
+import { bulkNote, toggleId } from '../lib/bulk';
 import { ApiError, download, http } from '../lib/http';
 import { useResource } from '../lib/resource';
 import { money, when } from '../lib/format';
@@ -132,6 +134,31 @@ export function Money(): JSX.Element {
       refresh();
     } catch (err) {
       setError(err instanceof ApiError ? err.message : `Could not ${action} that batch.`);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  // Bulk approve/cancel is the end-of-day sweep. Pay stays single: each payment
+  // needs its own provider reference, and the API refuses a bulk pay.
+  const [bulkIds, setBulkIds] = React.useState<number[]>([]);
+  const [bulkReason, setBulkReason] = React.useState('');
+
+  async function bulkBatch(action: 'approve' | 'cancel'): Promise<void> {
+    if (bulkIds.length === 0) return;
+    setBusy(true);
+    setError(null);
+    try {
+      const result = await http.post<BulkResultOut>('/money/payout-batches/bulk', {
+        batch_ids: bulkIds,
+        action,
+        reason: action === 'cancel' ? bulkReason.trim() : null,
+      });
+      setNote(bulkNote(result, action === 'approve' ? 'approved' : 'cancelled'));
+      setBulkIds([]);
+      batches.reload();
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : `Could not ${action} those batches.`);
     } finally {
       setBusy(false);
     }
@@ -357,10 +384,51 @@ export function Money(): JSX.Element {
               />
             ) : null}
             {batches.resource.status === 'ready' && batches.resource.data.batches.length > 0 ? (
+              <>
+              {bulkIds.length > 0 ? (
+                <div className="nv-bulk-bar">
+                  <span>
+                    {bulkIds.length} batch{bulkIds.length === 1 ? '' : 'es'} selected
+                  </span>
+                  <button
+                    className="nv-button nv-button--sm"
+                    disabled={busy}
+                    type="button"
+                    onClick={() => void bulkBatch('approve')}
+                  >
+                    Approve selected
+                  </button>
+                  <input
+                    aria-label="Reason for cancelling the selected batches"
+                    className="nv-input"
+                    placeholder="Reason (needed to cancel)"
+                    value={bulkReason}
+                    onChange={(event) => setBulkReason(event.target.value)}
+                  />
+                  <button
+                    className="nv-button nv-button--danger nv-button--sm"
+                    disabled={busy || bulkReason.trim().length < 3}
+                    type="button"
+                    onClick={() => void bulkBatch('cancel')}
+                  >
+                    Cancel selected
+                  </button>
+                  <button
+                    className="nv-button nv-button--ghost nv-button--sm"
+                    type="button"
+                    onClick={() => setBulkIds([])}
+                  >
+                    Clear
+                  </button>
+                </div>
+              ) : null}
               <div className="nv-table-wrap">
                 <table className="nv-table">
                   <thead>
                     <tr>
+                      <th scope="col">
+                        <span className="nv-sr-only">Select</span>
+                      </th>
                       <th scope="col">Batch</th>
                       <th scope="col">Total</th>
                       <th scope="col">Status</th>
@@ -371,6 +439,14 @@ export function Money(): JSX.Element {
                   <tbody>
                     {batches.resource.data.batches.map((row) => (
                       <tr key={row.id}>
+                        <td>
+                          <input
+                            aria-label={`Select batch ${row.id}`}
+                            checked={bulkIds.includes(row.id)}
+                            type="checkbox"
+                            onChange={() => setBulkIds((current) => toggleId(current, row.id))}
+                          />
+                        </td>
                         <td>
                           #{row.id} · {row.provider ?? 'manual'}
                         </td>
@@ -447,6 +523,7 @@ export function Money(): JSX.Element {
                   </tbody>
                 </table>
               </div>
+              </>
             ) : null}
 
             {batchDetail ? (

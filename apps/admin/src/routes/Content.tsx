@@ -7,6 +7,7 @@
  * graded keeps pointing at the definition it was graded against.
  */
 import type {
+  BulkResultOut,
   ContentLessonListOut,
   ContentPathListOut,
   ContentTemplateListOut,
@@ -17,6 +18,7 @@ import type {
 import { Badge, Banner, EmptyState, ErrorNote, ErrorState, PageHeader, Panel, Skeleton } from '@nelavista/ui';
 import * as React from 'react';
 
+import { bulkNote, toggleId } from '../lib/bulk';
 import { ApiError, http } from '../lib/http';
 import { useResource } from '../lib/resource';
 
@@ -39,6 +41,9 @@ export function Content(): JSX.Element {
   );
   const validators = useResource<ValidatorListOut>('/skills/content/validators');
 
+  // Bulk selection: a lesson set is authored together and published together, so
+  // one action applies to every ticked row. The report comes back per id.
+  const [selectedLessons, setSelectedLessons] = React.useState<number[]>([]);
   const [lessonSlug, setLessonSlug] = React.useState('');
   const [lessonTitle, setLessonTitle] = React.useState('');
   const [lessonBody, setLessonBody] = React.useState('');
@@ -91,6 +96,29 @@ export function Content(): JSX.Element {
       lessons.reload();
     } catch (err) {
       setError(err instanceof ApiError ? err.message : 'Could not change the lesson status.');
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  function toggleLesson(id: number): void {
+    setSelectedLessons((current) => toggleId(current, id));
+  }
+
+  async function bulkLessonStatus(status: string): Promise<void> {
+    if (selectedLessons.length === 0) return;
+    setBusy(true);
+    setError(null);
+    try {
+      const result = await http.post<BulkResultOut>('/skills/content/lessons/bulk', {
+        ids: selectedLessons,
+        status,
+      });
+      setNote(bulkNote(result, status));
+      setSelectedLessons([]);
+      lessons.reload();
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : 'Could not change those lessons.');
     } finally {
       setBusy(false);
     }
@@ -286,10 +314,52 @@ export function Content(): JSX.Element {
           />
         ) : null}
         {lessons.resource.status === 'ready' && lessons.resource.data.lessons.length > 0 ? (
+          <>
+          {selectedLessons.length > 0 ? (
+            <div className="nv-bulk-bar">
+              <span>
+                {selectedLessons.length} lesson{selectedLessons.length === 1 ? '' : 's'} selected
+              </span>
+              <button
+                className="nv-button nv-button--sm"
+                disabled={busy}
+                type="button"
+                onClick={() => void bulkLessonStatus('published')}
+              >
+                Publish selected
+              </button>
+              <button
+                className="nv-button nv-button--ghost nv-button--sm"
+                disabled={busy}
+                type="button"
+                onClick={() => void bulkLessonStatus('draft')}
+              >
+                Unpublish
+              </button>
+              <button
+                className="nv-button nv-button--ghost nv-button--sm"
+                disabled={busy}
+                type="button"
+                onClick={() => void bulkLessonStatus('archived')}
+              >
+                Archive
+              </button>
+              <button
+                className="nv-button nv-button--ghost nv-button--sm"
+                type="button"
+                onClick={() => setSelectedLessons([])}
+              >
+                Clear
+              </button>
+            </div>
+          ) : null}
           <div className="nv-table-wrap">
             <table className="nv-table">
               <thead>
                 <tr>
+                  <th scope="col">
+                    <span className="nv-sr-only">Select</span>
+                  </th>
                   <th scope="col">Lesson</th>
                   <th scope="col">Status</th>
                   <th scope="col">
@@ -300,6 +370,14 @@ export function Content(): JSX.Element {
               <tbody>
                 {lessons.resource.data.lessons.map((row) => (
                   <tr key={row.id}>
+                    <td>
+                      <input
+                        aria-label={`Select ${row.title}`}
+                        checked={selectedLessons.includes(row.id)}
+                        type="checkbox"
+                        onChange={() => toggleLesson(row.id)}
+                      />
+                    </td>
                     <td>
                       {row.title}
                       <div className="nv-muted">
@@ -345,6 +423,7 @@ export function Content(): JSX.Element {
               </tbody>
             </table>
           </div>
+          </>
         ) : null}
       </Panel>
 

@@ -36,7 +36,7 @@ from app.core.errors import ApiError
 from app.db.session import get_db
 from app.models.identity import User
 from app.models.matching import OPPORTUNITY_TYPES, Opportunity
-from app.models.talent import OpportunityApplication
+from app.models.talent import APPLICATION_TRANSITIONS, OpportunityApplication
 from app.services.matching import engine, opportunities
 
 router = APIRouter(
@@ -245,7 +245,11 @@ def set_application_status(
 ) -> ApplicationStatusOut:
     application = opportunities.set_application_status(db, actor, application_id, payload.status)
     db.commit()
-    return ApplicationStatusOut(id=application.id, status=application.status)
+    return ApplicationStatusOut(
+        id=application.id,
+        status=application.status,
+        allowed_next=list(APPLICATION_TRANSITIONS.get(application.status, ())),
+    )
 
 
 @router.post("", status_code=201, dependencies=OPS_GUARD, response_model=OpportunityWriteOut)

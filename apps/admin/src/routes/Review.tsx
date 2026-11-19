@@ -6,6 +6,7 @@
  * same page holds the verification override, which is always logged.
  */
 import type {
+  BulkResultOut,
   OverrideOut,
   PracticalQueueOut,
   PracticalReviewOut,
@@ -26,6 +27,7 @@ import {
 } from '@nelavista/ui';
 import * as React from 'react';
 
+import { bulkNote, toggleId } from '../lib/bulk';
 import { ApiError, http } from '../lib/http';
 import { useResource } from '../lib/resource';
 import { when } from '../lib/format';
@@ -35,6 +37,10 @@ const VERDICTS = ['approved', 'rework', 'rejected'];
 export function Review(): JSX.Element {
   const queue = useResource<ReviewQueueOut>('/work/review-queue');
   const [selected, setSelected] = React.useState<number | null>(null);
+  // Bulk review: one verdict for a page of submissions. The per-record rules still
+  // apply on the server, and anything refused comes back named in the report.
+  const [bulkIds, setBulkIds] = React.useState<number[]>([]);
+  const [bulkVerdict, setBulkVerdict] = React.useState('approved');
   const [verdict, setVerdict] = React.useState('approved');
   const [score, setScore] = React.useState('90');
   const [notes, setNotes] = React.useState('');
@@ -111,6 +117,28 @@ export function Review(): JSX.Element {
     }
   }
 
+  async function bulkReview(): Promise<void> {
+    if (bulkIds.length === 0) return;
+    setBusy(true);
+    setError(null);
+    setNote(null);
+    try {
+      const result = await http.post<BulkResultOut>('/work/review-queue/bulk', {
+        submission_ids: bulkIds,
+        verdict: bulkVerdict,
+        score: score === '' ? null : Number(score),
+        notes: notes.trim() || null,
+      });
+      setNote(bulkNote(result, `reviewed as ${bulkVerdict}`));
+      setBulkIds([]);
+      queue.reload();
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : 'Could not record those reviews.');
+    } finally {
+      setBusy(false);
+    }
+  }
+
   async function saveStandard(): Promise<void> {
     setBusy(true);
     setError(null);
@@ -168,10 +196,48 @@ export function Review(): JSX.Element {
           <EmptyState title="The queue is empty" body="New submissions appear here as students send them." />
         ) : null}
         {queue.resource.status === 'ready' && queue.resource.data.queue.length > 0 ? (
+          <>
+          {bulkIds.length > 0 ? (
+            <div className="nv-bulk-bar">
+              <span>
+                {bulkIds.length} submission{bulkIds.length === 1 ? '' : 's'} selected
+              </span>
+              <select
+                aria-label="Verdict for the selected submissions"
+                className="nv-select"
+                value={bulkVerdict}
+                onChange={(event) => setBulkVerdict(event.target.value)}
+              >
+                {VERDICTS.map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
+              <button
+                className="nv-button nv-button--sm"
+                disabled={busy}
+                type="button"
+                onClick={() => void bulkReview()}
+              >
+                Apply to selected
+              </button>
+              <button
+                className="nv-button nv-button--ghost nv-button--sm"
+                type="button"
+                onClick={() => setBulkIds([])}
+              >
+                Clear
+              </button>
+            </div>
+          ) : null}
           <div className="nv-table-wrap">
             <table className="nv-table">
               <thead>
                 <tr>
+                  <th scope="col">
+                    <span className="nv-sr-only">Select</span>
+                  </th>
                   <th scope="col">Submission</th>
                   <th scope="col">Student</th>
                   <th scope="col">Project</th>
@@ -184,6 +250,14 @@ export function Review(): JSX.Element {
               <tbody>
                 {queue.resource.data.queue.map((row) => (
                   <tr key={row.submission_id}>
+                    <td>
+                      <input
+                        aria-label={`Select submission ${row.submission_id}`}
+                        checked={bulkIds.includes(row.submission_id)}
+                        type="checkbox"
+                        onChange={() => setBulkIds((current) => toggleId(current, row.submission_id))}
+                      />
+                    </td>
                     <td>
                       #{row.submission_id} · {row.assignment_title}
                       {row.is_gold ? <Badge tone="warning">gold</Badge> : null}
@@ -208,6 +282,7 @@ export function Review(): JSX.Element {
               </tbody>
             </table>
           </div>
+          </>
         ) : null}
       </Panel>
 

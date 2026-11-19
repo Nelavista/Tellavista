@@ -87,6 +87,67 @@ expectation was updated for the I7 provenance fields.
   interpreter; it stays gitignored and `uv sync` remains the source of truth.
 - **TOTP** is the staff second factor (C8/F1); **Resend** is the email provider.
 
+## H. Gaps closed after the first build (2026-11-13)
+
+Five gaps found in a review of the delivered build, and where each one landed.
+
+- [x] **H4 — First-login 2FA browser flow, end to end.** The pieces existed (C8/F1),
+  but the first-login path was never exercised as one sequence. `tests/test_two_factor_and_delivery.py`
+  now walks login -> `/me` -> `/2fa` -> `/2fa/setup` -> `/2fa/enable` -> next login
+  challenged -> code -> session, plus the recovery-code path and its single use.
+  `apps/admin/src/first-login-2fa.test.tsx` walks the same flow through the real shell
+  (password, enrolment gate, setup, confirm, recovery codes) and the returning-user
+  challenge, and asserts no ops screen renders before the factor exists.
+- [x] **H5 — Bulk actions.** Review, money and content all edited one record per
+  request. Now: `POST /v1/work/review-queue/bulk`, `POST /v1/verification/practical/submissions/bulk-review`,
+  `POST /v1/money/payout-batches/bulk` (approve/cancel; **pay stays single** on purpose),
+  and `POST /v1/skills/content/{lessons,paths,tasks}/bulk`. Every one answers the same
+  `BulkResultOut` (`requested`, `applied`, `unchanged`, `failed[]` with per-id `code`),
+  because a bulk call that hides a refusal is worse than no bulk call. A student is
+  refused, duplicate ids are collapsed, and one bad id never aborts the batch.
+  `app/api/v1/bulk.py` is the shared helper; admin Review, Money and Content have
+  selection bars that show the per-id failures. Tests: `tests/test_bulk_actions.py`.
+- [x] **H6 — Aggregate overview endpoint.** The ops overview screen made six list
+  requests and derived its own numbers, so the counts and the audit trail could
+  disagree. `GET /v1/ops/overview` returns every queue with its count and timestamp
+  from the same query, plus recent audit rows and live projects; `Overview.tsx` reads
+  it once. Tests: `tests/test_admin_overview.py`.
+- [x] **H7 — Deeper application lifecycle.** `opportunity_applications` moved from
+  five loosely-related statuses to a real lifecycle (interested -> applied ->
+  shortlisted -> offered -> accepted -> in_progress -> submitted -> completed, with
+  rejected/withdrawn/expired) with an explicit transition table
+  (`APPLICATION_TRANSITIONS`) enforced in `services/matching/opportunities.py`.
+  Skipped steps are refused (409 with the allowed moves), `decided_at` is stamped on
+  decisions, re-sending the current status is a no-op, and the ops response carries
+  `allowed_next` so the UI cannot offer a refused move. Tests:
+  `tests/test_application_lifecycle.py`.
+- [x] **H8 — Newsletter and platform announcements.** New `announcements` and
+  `newsletter_subscribers` tables (migration `20261113_1000`), a service
+  (`services/comms/announcements.py`) and three surfaces: `POST /v1/newsletter/subscribe`
+  (public, IP-limited, answer identical for new and existing addresses),
+  `GET /v1/announcements` (audience-filtered in the service), and the `/v1/ops`
+  administration behind `comms.read`/`comms.write`. Publishing is idempotent: one
+  email job per (announcement, subscriber) key, so a second publish sends nothing.
+  An unsubscribe deactivates the row instead of deleting it, so an import cannot
+  re-subscribe someone who opted out. Admin screen: **Announcements**.
+  Student surfaces: `AnnouncementBanner` renders published notices above the
+  workspace web screen (`GET /v1/announcements`, dismissible per id and remembered
+  across reloads, and silent when the read fails because a notice is news, not a
+  dependency); the mobile Home screen shows the same notices as feed cards; and
+  `NewsletterSignup` in the public footer posts to `/v1/newsletter/subscribe` with
+  the same neutral confirmation for every address.
+- [x] **H9 — Leaving the newsletter.** A public opt-in with no way out is not a
+  consent flow, so every newsletter email now ends with an unsubscribe link and
+  `/newsletter/unsubscribe` (web) confirms it. The link carries an opaque
+  per-subscriber token (migration `20261119_1200`, backfilled for addresses that
+  existed before the column), never the address: an address in a URL can be
+  guessed, and one reader must not be able to opt out another. The token is the
+  whole authorisation, so no API response ever returns it. Opening the page does
+  not unsubscribe -- mail clients prefetch links -- and the POST is idempotent, so
+  a second click is not an error the reader has to interpret.
+  Tests: `tests/test_comms.py`, `tests/test_migrations.py`,
+  `apps/web/src/comms-surfaces.test.tsx`.
+
 ## A. Contracts and tooling
 
 - [x] **A1** Typed client generation adopted. `packages/api-client/src/generated/schema.d.ts`

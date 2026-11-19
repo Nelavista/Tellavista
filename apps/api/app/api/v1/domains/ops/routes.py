@@ -24,6 +24,9 @@ from app.api.v1.domains.ops.schemas import (
     ImportListOut,
     ImportReportOut,
     ImportResultOut,
+    OverviewOut,
+    OverviewProjectOut,
+    OverviewQueueOut,
     UserDetailOut,
     UserListOut,
     WaitlistOut,
@@ -36,10 +39,28 @@ from app.models.academia import University
 from app.models.admin import AuditLog
 from app.models.identity import User
 from app.models.ops import IMPORT_APPLY, IMPORT_DRY_RUN, CampusInfo, ImportRun, UniversityWaitlist
+from app.models.verification import PracticalSubmission
+from app.models.work import PROJECT_ACTIVE, Project
 from app.services.academia import campus as campus_service
 from app.services.imports import v1 as importer
+from app.services.work import quality as quality_service
 
 router = APIRouter(prefix="/ops", tags=["ops"])
+
+
+def _audit_payload(row: AuditLog) -> dict:
+    return {
+        "id": row.id,
+        "actor_user_id": row.actor_user_id,
+        "actor_role_code": row.actor_role_code,
+        "action": row.action,
+        "target_type": row.target_type,
+        "target_id": row.target_id,
+        "reason": row.reason,
+        "context": row.context,
+        "request_id": row.request_id,
+        "created_at": row.created_at,
+    }
 
 
 class ImportIn(BaseModel):
@@ -184,6 +205,137 @@ def user_detail(
     )
 
 
+@router.get("/overview", response_model=OverviewOut)
+def overview(
+    _actor: User = Depends(require_permission("audit.read")),
+    db: Session = Depends(get_db),
+) -> OverviewOut:
+    """Everything the operations overview shows, in one read.
+
+    The screen used to make six list requests and derive its numbers itself. That
+    was wrong in two ways: six round trips, and six different moments in time, so
+    a queue could show a count its own oldest-timestamp row contradicted. Here a
+    count and its stamp come from the same query, in the same transaction, and the
+    audit rows below are read after them.
+
+    Each queue is a real list length, not an estimate -- the same rule the screen
+    documents. `totals` carries the few numbers that are cheap aggregate counts.
+    """
+    from datetime import UTC, datetime
+
+    review_rows = quality_service.review_queue(db, limit=200)
+    review_stamps = [row.get("submitted_at") for row in review_rows]
+
+    practical_rows = db.execute(
+        select(PracticalSubmission.id, PracticalSubmission.submitted_at)
+        .where(PracticalSubmission.status == "submitted")
+        .order_by(PracticalSubmission.id)
+        .limit(200)
+    ).all()
+
+    waitlist_rows = db.execute(
+        select(UniversityWaitlist.id, UniversityWaitlist.created_at)
+        .order_by(UniversityWaitlist.id.desc())
+        .limit(500)
+    ).all()
+
+    import_rows = db.execute(
+        select(ImportRun.id, ImportRun.mode, ImportRun.status, ImportRun.started_at)
+        .order_by(ImportRun.id.desc())
+        .limit(200)
+    ).all()
+
+    project_rows = db.scalars(
+        select(Project).where(Project.status == PROJECT_ACTIVE).order_by(Project.id.desc())
+    ).all()
+
+    audit_rows = db.scalars(select(AuditLog).order_by(AuditLog.id.desc()).limit(8)).all()
+
+    def _stamp(values, *, newest: bool = False):
+        """The one timestamp the row shows: earliest pending item, or the latest
+        thing that arrived (waitlist, imports), always from the same rows as the
+        count above it."""
+        usable = [value for value in values if value is not None]
+        if not usable:
+            return None
+        return max(usable) if newest else min(usable)
+
+    latest_import = import_rows[0] if import_rows else None
+    queues = [
+        OverviewQueueOut(
+            key="work_review",
+            label="Work review queue",
+            detail="Student submissions waiting for a quality decision.",
+            href="#/review",
+            count=len(review_rows),
+            stamp=_stamp(review_stamps),
+            stamp_label="Oldest",
+        ),
+        OverviewQueueOut(
+            key="practical_review",
+            label="Practical verification",
+            detail="Practical tasks waiting for a reviewer.",
+            href="#/review",
+            count=len(practical_rows),
+            stamp=_stamp([row.submitted_at for row in practical_rows]),
+            stamp_label="Oldest",
+        ),
+        OverviewQueueOut(
+            key="waitlist",
+            label="University waitlist",
+            detail="Requests for universities that are not covered yet.",
+            href="#/waitlist",
+            count=len(waitlist_rows),
+            stamp=_stamp([row.created_at for row in waitlist_rows], newest=True),
+            stamp_label="Newest",
+        ),
+        OverviewQueueOut(
+            key="imports",
+            label="Import runs",
+            detail=(
+                f"Last run #{latest_import.id} · {latest_import.mode} · {latest_import.status}"
+                if latest_import is not None
+                else "Dry-run and apply receipts for V1 data."
+            ),
+            href="#/imports",
+            count=len(import_rows),
+            stamp=latest_import.started_at if latest_import is not None else None,
+            stamp_label="Last run",
+            last_run=(
+                {
+                    "id": latest_import.id,
+                    "mode": latest_import.mode,
+                    "status": latest_import.status,
+                    "started_at": latest_import.started_at,
+                }
+                if latest_import is not None
+                else None
+            ),
+        ),
+    ]
+
+    return OverviewOut(
+        generated_at=datetime.now(UTC),
+        queues=queues,
+        recent_audit=[_audit_payload(row) for row in audit_rows],
+        live_projects=[
+            OverviewProjectOut(
+                id=row.id,
+                slug=row.slug,
+                title=row.title,
+                status=row.status,
+                starts_on=row.starts_on,
+                ends_on=row.ends_on,
+            )
+            for row in project_rows
+        ],
+        totals={
+            "live_projects": len(project_rows),
+            "queues_with_items": sum(1 for row in queues if row.count > 0),
+        },
+    )
+
+
 @router.get("/audit-logs", response_model=AuditLogListOut)
 def audit_logs(
     action: str | None = Query(default=None, max_length=80),
@@ -199,23 +351,7 @@ def audit_logs(
     if target_type:
         stmt = stmt.where(AuditLog.target_type == target_type)
     rows = db.scalars(stmt).all()
-    return AuditLogListOut(
-        logs=[
-            {
-                "id": row.id,
-                "actor_user_id": row.actor_user_id,
-                "actor_role_code": row.actor_role_code,
-                "action": row.action,
-                "target_type": row.target_type,
-                "target_id": row.target_id,
-                "reason": row.reason,
-                "context": row.context,
-                "request_id": row.request_id,
-                "created_at": row.created_at,
-            }
-            for row in rows
-        ]
-    )
+    return AuditLogListOut(logs=[_audit_payload(row) for row in rows])
 
 
 @router.get("/waitlist", response_model=WaitlistOut)

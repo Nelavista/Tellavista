@@ -70,6 +70,11 @@ const PAGES: Record<string, PageMeta> = {
     title: 'Contributor terms',
     description: 'The terms for students who contribute work through Nelavista.',
   },
+  '/newsletter/unsubscribe': {
+    title: 'Unsubscribe',
+    description: 'Stop the Nelavista monthly newsletter. Your account and learning record are unaffected.',
+    noindex: true,
+  },
   '/offline': {
     title: 'Offline',
     description: 'Nelavista is offline. Reconnect to continue where you stopped.',

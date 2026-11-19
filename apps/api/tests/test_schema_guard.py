@@ -46,8 +46,15 @@ def test_auto_migration_can_be_disabled() -> None:
 
 
 def test_database_behind_the_code_fails_fast() -> None:
-    """The production incident: code expects 1300, database is still at an earlier head."""
-    with pytest.raises(SchemaOutOfDate, match="20261108_1300"):
+    """The production incident: the database is at an earlier head than the build.
+
+    The expected revision is read from the repository rather than hardcoded, so
+    every new migration does not need this assertion edited as well -- the point
+    is that the message names the head this build needs.
+    """
+    head = head_revision()
+    assert head is not None
+    with pytest.raises(SchemaOutOfDate, match=head):
         check_schema(_engine("20261022_1000"), settings=PROD)
 
 

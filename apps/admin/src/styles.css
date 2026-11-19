@@ -77,3 +77,24 @@
     padding-top: var(--nv-space-lg);
   }
 }
+
+/* Bulk action bar: appears only while rows are selected, directly above the
+   table it acts on, so the selection and the action cannot drift apart. */
+.nv-admin .nv-bulk-bar {
+  align-items: center;
+  background: var(--nv-surface-raised, rgba(255, 255, 255, 0.04));
+  border: 1px solid var(--nv-border-strong);
+  border-radius: var(--nv-radius-sm, 8px);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--nv-space-sm);
+  margin-bottom: var(--nv-space-sm);
+  padding: var(--nv-space-sm) var(--nv-space-md);
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.nv-admin .nv-bulk-bar span {
+  font-weight: 600;
+}

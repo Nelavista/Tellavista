@@ -1824,3 +1824,30 @@ body {
     grid-template-columns: 1fr;
   }
 }
+
+/*
+ * Newsletter opt-in in the public footer.
+ *
+ * The column is narrow, so the input and the button share a row and wrap only
+ * when the column cannot hold both; the label stays visible above the field
+ * rather than being replaced by a placeholder, so the control is still labelled
+ * for a screen reader and after the value is typed.
+ */
+.nv-newsletter {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--nv-space-sm);
+  margin-top: var(--nv-space-sm);
+  max-width: 34rem;
+}
+
+.nv-newsletter .nv-field {
+  flex: 1 1 14rem;
+  min-width: 0;
+}
+
+.nv-newsletter .nv-button {
+  flex: 0 0 auto;
+}
+

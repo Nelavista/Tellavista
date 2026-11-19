@@ -22,6 +22,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_current_user, rate_limit, require_flag
+from app.api.v1.bulk import BulkResultOut, apply_bulk
 from app.api.v1.domains.work.schemas import (
     AssignmentDetailOut,
     AssignmentListOut,
@@ -504,6 +505,43 @@ def review_submission(
         score=review.score,
         gold_correct=review.gold_correct,
     )
+
+
+class BulkReviewIn(BaseModel):
+    """One verdict for many submissions.
+
+    The per-record rules still apply (gold checks, the second-reviewer rule, the
+    no-override-without-a-reason rule) -- a bulk call is a loop over the same
+    service, not a shortcut around it. Anything refused comes back with its own
+    code and message and the rest of the batch still happens.
+    """
+
+    submission_ids: list[int] = Field(min_length=1, max_length=200)
+    verdict: str = Field(min_length=3, max_length=16)
+    score: int | None = Field(default=None, ge=0, le=100)
+    notes: str | None = None
+
+
+@ops.post("/review-queue/bulk", dependencies=REVIEW_GUARD, response_model=BulkResultOut)
+def bulk_review_submissions(
+    payload: BulkReviewIn,
+    reviewer: User = Depends(require_permission("review.write")),
+    db: Session = Depends(get_db),
+) -> BulkResultOut:
+    def apply(submission_id: int) -> str:
+        quality_service.review_submission(
+            db,
+            reviewer,
+            submission_id=submission_id,
+            verdict=payload.verdict,
+            score=payload.score,
+            notes=payload.notes,
+        )
+        return "applied"
+
+    result = apply_bulk(payload.submission_ids, apply)
+    db.commit()
+    return result
 
 
 @ops.put("/projects/{slug}/quality-standard", response_model=StandardOut)

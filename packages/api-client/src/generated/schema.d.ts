@@ -1008,6 +1008,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/skills/content/tasks/bulk": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Bulk Template Status */
+        post: operations["bulk_template_status_v1_skills_content_tasks_bulk_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/skills/content/lessons/{lesson_id}": {
         parameters: {
             query?: never;
@@ -1023,6 +1040,40 @@ export interface paths {
         head?: never;
         /** Update Lesson */
         patch: operations["update_lesson_v1_skills_content_lessons__lesson_id__patch"];
+        trace?: never;
+    };
+    "/v1/skills/content/lessons/bulk": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Bulk Lesson Status */
+        post: operations["bulk_lesson_status_v1_skills_content_lessons_bulk_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/skills/content/paths/bulk": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Bulk Path Status */
+        post: operations["bulk_path_status_v1_skills_content_paths_bulk_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/v1/skills/content/paths/{path_id}": {
@@ -1263,6 +1314,23 @@ export interface paths {
         put?: never;
         /** Review Practical */
         post: operations["review_practical_v1_verification_practical_submissions__submission_id__review_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/verification/practical/submissions/bulk-review": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Bulk Review Practical */
+        post: operations["bulk_review_practical_v1_verification_practical_submissions_bulk_review_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1942,6 +2010,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/work/review-queue/bulk": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Bulk Review Submissions */
+        post: operations["bulk_review_submissions_v1_work_review_queue_bulk_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/work/projects/{slug}/quality-standard": {
         parameters: {
             query?: never;
@@ -2153,6 +2238,23 @@ export interface paths {
         put?: never;
         /** Approve Batch */
         post: operations["approve_batch_v1_money_payout_batches__batch_id__approve_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/money/payout-batches/bulk": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Bulk Batch Action */
+        post: operations["bulk_batch_action_v1_money_payout_batches_bulk_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -2622,6 +2724,35 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/ops/overview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Overview
+         * @description Everything the operations overview shows, in one read.
+         *
+         *     The screen used to make six list requests and derive its numbers itself. That
+         *     was wrong in two ways: six round trips, and six different moments in time, so
+         *     a queue could show a count its own oldest-timestamp row contradicted. Here a
+         *     count and its stamp come from the same query, in the same transaction, and the
+         *     audit rows below are read after them.
+         *
+         *     Each queue is a real list length, not an estimate -- the same rule the screen
+         *     documents. `totals` carries the few numbers that are cheap aggregate counts.
+         */
+        get: operations["overview_v1_ops_overview_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/ops/audit-logs": {
         parameters: {
             query?: never;
@@ -2683,10 +2814,254 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/newsletter/subscribe": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Subscribe To Newsletter
+         * @description Anyone can subscribe; the answer never says whether the address was new,
+         *     so the endpoint cannot be used to test whether someone is on the list.
+         *
+         *     Limited by IP inside the handler rather than with the per-user `rate_limit`
+         *     dependency: there is no signed-in user here to key the counter on, which is
+         *     exactly the case the auth routes already handle this way.
+         */
+        post: operations["subscribe_to_newsletter_v1_newsletter_subscribe_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/newsletter/unsubscribe": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Unsubscribe From Newsletter
+         * @description Leave the list from the link in the email.
+         *
+         *     The token is the whole authorisation, which is why it is never returned by a
+         *     list endpoint: holding it means the reader received that issue. The answer is
+         *     the same on a second click -- an unsubscribe that errors on repeat is how a
+         *     reader ends up believing they are still subscribed.
+         */
+        post: operations["unsubscribe_from_newsletter_v1_newsletter_unsubscribe_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/announcements": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Read Announcements */
+        get: operations["read_announcements_v1_announcements_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/ops/announcements": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Announcements
+         * @description Drafts and archives included: this is the screen ops works on.
+         */
+        get: operations["list_announcements_v1_ops_announcements_get"];
+        put?: never;
+        /** Create Announcement */
+        post: operations["create_announcement_v1_ops_announcements_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/ops/announcements/{announcement_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Update Announcement */
+        patch: operations["update_announcement_v1_ops_announcements__announcement_id__patch"];
+        trace?: never;
+    };
+    "/v1/ops/announcements/{announcement_id}/publish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Publish Announcement */
+        post: operations["publish_announcement_v1_ops_announcements__announcement_id__publish_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/ops/announcements/{announcement_id}/archive": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Archive Announcement */
+        post: operations["archive_announcement_v1_ops_announcements__announcement_id__archive_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/ops/newsletter/subscribers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Subscribers */
+        get: operations["list_subscribers_v1_ops_newsletter_subscribers_get"];
+        put?: never;
+        /**
+         * Add Subscriber
+         * @description Adding an address ops collected elsewhere is the same opt-in path as the
+         *     public form, so the consent rules cannot diverge between the two.
+         */
+        post: operations["add_subscriber_v1_ops_newsletter_subscribers_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/ops/newsletter/subscribers/{subscriber_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Unsubscribe Subscriber
+         * @description Deactivates rather than deletes: a removed row could be re-added by the
+         *     next import, which would re-subscribe someone who opted out.
+         */
+        delete: operations["unsubscribe_subscriber_v1_ops_newsletter_subscribers__subscriber_id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** AnnouncementIn */
+        AnnouncementIn: {
+            /** Title */
+            title: string;
+            /**
+             * Body
+             * @default
+             */
+            body: string;
+            /**
+             * Audience
+             * @default all
+             */
+            audience: string;
+            /**
+             * Channel
+             * @default platform
+             */
+            channel: string;
+        };
+        /** AnnouncementListOut */
+        AnnouncementListOut: {
+            /** Announcements */
+            announcements: components["schemas"]["AnnouncementOut"][];
+        };
+        /** AnnouncementOut */
+        AnnouncementOut: {
+            /** Id */
+            id: number;
+            /** Title */
+            title: string;
+            /** Body */
+            body: string;
+            /** Audience */
+            audience: string;
+            /** Channel */
+            channel: string;
+            /** Status */
+            status: string;
+            /** Published At */
+            published_at?: string | null;
+            /** Archived At */
+            archived_at?: string | null;
+            /** Email Sent At */
+            email_sent_at?: string | null;
+            /**
+             * Email Recipient Count
+             * @default 0
+             */
+            email_recipient_count: number;
+        };
+        /** AnnouncementPatchIn */
+        AnnouncementPatchIn: {
+            /** Title */
+            title?: string | null;
+            /** Body */
+            body?: string | null;
+            /** Audience */
+            audience?: string | null;
+            /** Channel */
+            channel?: string | null;
+        };
         /** AnswerIn */
         AnswerIn: {
             /** Question Id */
@@ -2735,6 +3110,8 @@ export interface components {
             id: number;
             /** Status */
             status: string;
+            /** Allowed Next */
+            allowed_next?: string[];
         };
         /** ApplicationSummaryOut */
         ApplicationSummaryOut: {
@@ -3120,6 +3497,97 @@ export interface components {
             approved_by?: number | null;
             /** Paid At */
             paid_at?: string | null;
+        };
+        /**
+         * BulkBatchIn
+         * @description Approve or cancel many batches at once -- the end-of-day sweep.
+         *
+         *     Paying is deliberately not in the list. Approval moves no money (the payment
+         *     step still has to happen per batch, with its own reference), while a bulk pay
+         *     would need one provider reference per item and turn one typo into an
+         *     irreversible transfer set. Cancelling needs a reason for the same reason a
+         *     single cancel does: it is read months later in the ledger.
+         */
+        BulkBatchIn: {
+            /** Batch Ids */
+            batch_ids: number[];
+            /** Action */
+            action: string;
+            /** Reason */
+            reason?: string | null;
+        };
+        /**
+         * BulkContentStatusIn
+         * @description Publish, archive or draft a whole set at once.
+         *
+         *     This is the one bulk action content actually needs: a lesson set is authored
+         *     together and published together, and doing it one PATCH at a time is how a
+         *     half-published path ships. Type is the endpoint (lessons or paths), not a
+         *     field, so a lesson id can never be applied to a path by mistake.
+         */
+        BulkContentStatusIn: {
+            /** Ids */
+            ids: number[];
+            /** Status */
+            status: string;
+        };
+        /** BulkFailureOut */
+        BulkFailureOut: {
+            /** Id */
+            id: number;
+            /** Code */
+            code: string;
+            /** Message */
+            message: string;
+        };
+        /**
+         * BulkPracticalReviewIn
+         * @description Score a page of practical submissions with one rubric read.
+         *
+         *     A practical reviewer works through a queue comparing answers against the same
+         *     rubric, so the score and verdict are usually the same for a block. Each row
+         *     still goes through `assessments.review_practical`, which is what writes the
+         *     verification event: a refusal is reported per id and the others still apply.
+         */
+        BulkPracticalReviewIn: {
+            /** Submission Ids */
+            submission_ids: number[];
+            /** Score */
+            score: number;
+            /** Passed */
+            passed: boolean;
+            /** Notes */
+            notes?: string | null;
+        };
+        /** BulkResultOut */
+        BulkResultOut: {
+            /** Requested */
+            requested: number;
+            /** Applied */
+            applied: number;
+            /** Unchanged */
+            unchanged: number;
+            /** Failed */
+            failed?: components["schemas"]["BulkFailureOut"][];
+        };
+        /**
+         * BulkReviewIn
+         * @description One verdict for many submissions.
+         *
+         *     The per-record rules still apply (gold checks, the second-reviewer rule, the
+         *     no-override-without-a-reason rule) -- a bulk call is a loop over the same
+         *     service, not a shortcut around it. Anything refused comes back with its own
+         *     code and message and the rest of the batch still happens.
+         */
+        BulkReviewIn: {
+            /** Submission Ids */
+            submission_ids: number[];
+            /** Verdict */
+            verdict: string;
+            /** Score */
+            score?: number | null;
+            /** Notes */
+            notes?: string | null;
         };
         /** CampusAdminItemOut */
         CampusAdminItemOut: {
@@ -4680,6 +5148,37 @@ export interface components {
             /** Paths */
             paths: components["schemas"]["PathOut"][];
         };
+        /** NewsletterSubscribeOut */
+        NewsletterSubscribeOut: {
+            /** Subscribed */
+            subscribed: boolean;
+            /** Email */
+            email: string;
+        };
+        /** NewsletterSubscriberListOut */
+        NewsletterSubscriberListOut: {
+            /** Subscribers */
+            subscribers: components["schemas"]["NewsletterSubscriberOut"][];
+            /** Active Count */
+            active_count: number;
+            /** Total Count */
+            total_count: number;
+        };
+        /** NewsletterSubscriberOut */
+        NewsletterSubscriberOut: {
+            /** Id */
+            id: number;
+            /** Email */
+            email: string;
+            /** Source */
+            source: string;
+            /** Is Active */
+            is_active: boolean;
+            /** Created At */
+            created_at?: string | null;
+            /** Unsubscribed At */
+            unsubscribed_at?: string | null;
+        };
         /**
          * NextActionOut
          * @description One action, with a destination the client can open and a readable reason.
@@ -4950,6 +5449,71 @@ export interface components {
             event_id: number;
             /** Reason */
             reason?: string | null;
+        };
+        /** OverviewOut */
+        OverviewOut: {
+            /**
+             * Generated At
+             * Format: date-time
+             */
+            generated_at: string;
+            /** Queues */
+            queues: components["schemas"]["OverviewQueueOut"][];
+            /** Recent Audit */
+            recent_audit: components["schemas"]["AuditLogOut"][];
+            /** Live Projects */
+            live_projects: components["schemas"]["OverviewProjectOut"][];
+            /** Totals */
+            totals: {
+                [key: string]: unknown;
+            };
+        };
+        /** OverviewProjectOut */
+        OverviewProjectOut: {
+            /** Id */
+            id: number;
+            /** Slug */
+            slug: string;
+            /** Title */
+            title: string;
+            /** Status */
+            status: string;
+            /** Starts On */
+            starts_on?: string | null;
+            /** Ends On */
+            ends_on?: string | null;
+        };
+        /**
+         * OverviewQueueOut
+         * @description One row of the operations overview.
+         *
+         *     The overview used to be six separate list reads in the browser, which meant
+         *     six round trips and six different moments in time: the counts could disagree
+         *     with each other and with the audit trail below them. One row here is one
+         *     count, its oldest (or newest) item and where to go to work on it.
+         */
+        OverviewQueueOut: {
+            /** Key */
+            key: string;
+            /** Label */
+            label: string;
+            /** Detail */
+            detail: string;
+            /** Href */
+            href: string;
+            /** Count */
+            count: number;
+            /** Stamp */
+            stamp?: string | null;
+            /**
+             * Stamp Label
+             * @default Oldest
+             */
+            stamp_label: string;
+            /** Last Run */
+            last_run?: {
+                [key: string]: unknown;
+            } | null;
         };
         /** PathOut */
         PathOut: {
@@ -6057,6 +6621,26 @@ export interface components {
             /** Submitted At */
             submitted_at?: string | null;
         };
+        /** SubscribeIn */
+        SubscribeIn: {
+            /** Email */
+            email: string;
+            /**
+             * Source
+             * @default public
+             */
+            source: string;
+        };
+        /** SubscriberIn */
+        SubscriberIn: {
+            /** Email */
+            email: string;
+            /**
+             * Source
+             * @default manual
+             */
+            source: string;
+        };
         /** SyncIn */
         SyncIn: {
             /** Items */
@@ -6491,6 +7075,11 @@ export interface components {
             name: string;
             /** Slug */
             slug: string;
+        };
+        /** UnsubscribeIn */
+        UnsubscribeIn: {
+            /** Token */
+            token: string;
         };
         /** UserDetailOut */
         UserDetailOut: {
@@ -8859,6 +9448,41 @@ export interface operations {
             };
         };
     };
+    bulk_template_status_v1_skills_content_tasks_bulk_post: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BulkContentStatusIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BulkResultOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     update_lesson_v1_skills_content_lessons__lesson_id__patch: {
         parameters: {
             query?: never;
@@ -8885,6 +9509,76 @@ export interface operations {
                     "application/json": {
                         [key: string]: unknown;
                     };
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    bulk_lesson_status_v1_skills_content_lessons_bulk_post: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BulkContentStatusIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BulkResultOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    bulk_path_status_v1_skills_content_paths_bulk_post: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BulkContentStatusIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BulkResultOut"];
                 };
             };
             /** @description Validation Error */
@@ -9379,6 +10073,41 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["PracticalReviewOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    bulk_review_practical_v1_verification_practical_submissions_bulk_review_post: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BulkPracticalReviewIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BulkResultOut"];
                 };
             };
             /** @description Validation Error */
@@ -10818,6 +11547,41 @@ export interface operations {
             };
         };
     };
+    bulk_review_submissions_v1_work_review_queue_bulk_post: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BulkReviewIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BulkResultOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     set_standard_v1_work_projects__slug__quality_standard_put: {
         parameters: {
             query?: never;
@@ -11251,6 +12015,41 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["BatchStateOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    bulk_batch_action_v1_money_payout_batches_bulk_post: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BulkBatchIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BulkResultOut"];
                 };
             };
             /** @description Validation Error */
@@ -12157,6 +12956,37 @@ export interface operations {
             };
         };
     };
+    overview_v1_ops_overview_get: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OverviewOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     audit_logs_v1_ops_audit_logs_get: {
         parameters: {
             query?: {
@@ -12281,6 +13111,379 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["CampusCreatedOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    subscribe_to_newsletter_v1_newsletter_subscribe_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SubscribeIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NewsletterSubscribeOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    unsubscribe_from_newsletter_v1_newsletter_unsubscribe_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UnsubscribeIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NewsletterSubscribeOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    read_announcements_v1_announcements_get: {
+        parameters: {
+            query?: {
+                limit?: number;
+            };
+            header?: {
+                authorization?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AnnouncementListOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_announcements_v1_ops_announcements_get: {
+        parameters: {
+            query?: {
+                status?: string | null;
+                limit?: number;
+            };
+            header?: {
+                authorization?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AnnouncementListOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_announcement_v1_ops_announcements_post: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AnnouncementIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AnnouncementOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_announcement_v1_ops_announcements__announcement_id__patch: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path: {
+                announcement_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AnnouncementPatchIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AnnouncementOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    publish_announcement_v1_ops_announcements__announcement_id__publish_post: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path: {
+                announcement_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AnnouncementOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    archive_announcement_v1_ops_announcements__announcement_id__archive_post: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path: {
+                announcement_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AnnouncementOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_subscribers_v1_ops_newsletter_subscribers_get: {
+        parameters: {
+            query?: {
+                active_only?: boolean;
+                limit?: number;
+            };
+            header?: {
+                authorization?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NewsletterSubscriberListOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    add_subscriber_v1_ops_newsletter_subscribers_post: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SubscriberIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NewsletterSubscriberOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    unsubscribe_subscriber_v1_ops_newsletter_subscribers__subscriber_id__delete: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path: {
+                subscriber_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NewsletterSubscriberOut"];
                 };
             };
             /** @description Validation Error */

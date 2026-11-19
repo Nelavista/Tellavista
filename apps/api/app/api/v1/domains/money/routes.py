@@ -16,6 +16,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_current_user, rate_limit, require_flag
+from app.api.v1.bulk import BulkResultOut, apply_bulk
 from app.api.v1.domains.money.schemas import (
     BatchStateOut,
     EarningsOut,
@@ -34,7 +35,13 @@ from app.core.authz import require_permission
 from app.core.errors import ApiError
 from app.db.session import get_db
 from app.models.identity import User
-from app.models.ledger import LedgerEntry, LedgerTransaction, PayoutBatch
+from app.models.ledger import (
+    BATCH_APPROVED,
+    BATCH_CANCELLED,
+    LedgerEntry,
+    LedgerTransaction,
+    PayoutBatch,
+)
 from app.services.money import ledger, payouts, reconcile
 from app.services.work import cohorts
 
@@ -340,6 +347,56 @@ def approve_batch(
     return BatchStateOut(
         id=batch.id, status=batch.status, approved_by=batch.approved_by
     )
+
+
+class BulkBatchIn(BaseModel):
+    """Approve or cancel many batches at once -- the end-of-day sweep.
+
+    Paying is deliberately not in the list. Approval moves no money (the payment
+    step still has to happen per batch, with its own reference), while a bulk pay
+    would need one provider reference per item and turn one typo into an
+    irreversible transfer set. Cancelling needs a reason for the same reason a
+    single cancel does: it is read months later in the ledger.
+    """
+
+    batch_ids: list[int] = Field(min_length=1, max_length=100)
+    action: str = Field(min_length=3, max_length=7)  # approve | cancel
+    reason: str | None = Field(default=None, max_length=255)
+
+
+@router.post("/payout-batches/bulk", dependencies=MONEY_WRITE_GUARD, response_model=BulkResultOut)
+def bulk_batch_action(
+    payload: BulkBatchIn,
+    actor: User = Depends(require_permission("payout.request")),
+    db: Session = Depends(get_db),
+) -> BulkResultOut:
+    if payload.action == "approve":
+
+        def apply(batch_id: int) -> str:
+            batch = _batch(db, batch_id)
+            if batch.status == BATCH_APPROVED:
+                return "unchanged"
+            payouts.approve_batch(db, actor, batch)
+            return "applied"
+
+    elif payload.action == "cancel":
+        reason = (payload.reason or "").strip()
+        if len(reason) < 3:
+            raise ApiError(400, "reason_required", "Cancelling a batch needs a reason.")
+
+        def apply(batch_id: int) -> str:
+            batch = _batch(db, batch_id)
+            if batch.status == BATCH_CANCELLED:
+                return "unchanged"
+            payouts.cancel_batch(db, actor, batch, reason=reason)
+            return "applied"
+
+    else:
+        raise ApiError(400, "invalid_bulk_action", "Use approve or cancel.")
+
+    result = apply_bulk(payload.batch_ids, apply)
+    db.commit()
+    return result
 
 
 @router.post(

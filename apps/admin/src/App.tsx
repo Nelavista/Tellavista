@@ -5,6 +5,7 @@ import { Shell } from './components/Shell';
 import { useHashRoute } from './lib/route';
 import { SessionProvider, useSession } from './lib/session';
 import { AdminNotFound } from './routes/AdminNotFound';
+import { Announcements } from './routes/Announcements';
 import { Audit } from './routes/Audit';
 import { Campus } from './routes/Campus';
 import { Content } from './routes/Content';
@@ -31,6 +32,7 @@ function Screen({ route }: { route: string }): JSX.Element {
   if (route.startsWith('/opportunities')) return <Opportunities />;
   if (route.startsWith('/work')) return <Projects />;
   if (route.startsWith('/review')) return <Review />;
+  if (route.startsWith('/announcements')) return <Announcements />;
   if (route.startsWith('/money')) return <Money />;
   if (route.startsWith('/content')) return <Content />;
   if (route.startsWith('/campus')) return <Campus />;

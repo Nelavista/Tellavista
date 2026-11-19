@@ -17,6 +17,7 @@ from app.api.v1.domains.ops import routes as ops_routes
 from app.api.v1.domains.platform import routes as platform_routes
 from app.api.v1.domains.skills import content_routes as skills_content_routes
 from app.api.v1.domains.skills import language_routes as skills_language_routes
+from app.api.v1.domains.comms import routes as comms_routes
 from app.api.v1.domains.skills import routes as skills_routes
 from app.api.v1.domains.talent import routes as talent_routes
 from app.api.v1.domains.verification import routes as verification_routes
@@ -55,5 +56,9 @@ api_v1_router.include_router(academia_routes.router)
 # curriculum ownership. The public config endpoint is read by every client.
 api_v1_router.include_router(platform_routes.router)
 
-# Internal tools: imports, support lookup, audit trail.
+# Internal tools: imports, support lookup, audit trail, the overview aggregate.
 api_v1_router.include_router(ops_routes.router)
+
+# Communications: /announcements (in-product read), /newsletter/subscribe and the
+# /ops announcements + newsletter administration behind comms.read/write.
+api_v1_router.include_router(comms_routes.public_router)

@@ -254,6 +254,41 @@ def test_upgrade_downgrade_upgrade_round_trip(tmp_path: Path) -> None:
     assert seeded == {code for code, _name, _is_staff in SEED_ROLES}
 
 
+def test_existing_subscribers_get_an_unsubscribe_token(tmp_path: Path) -> None:
+    """People already on the list when the column arrives must be able to leave
+    from the next issue, so the migration backfills them rather than leaving null.
+
+    Without this, every address collected before the release would receive mail
+    with no unsubscribe link at all.
+    """
+    url = _sqlite_url(tmp_path)
+    engine = create_engine(url)
+
+    before = _alembic("upgrade", "20261113_1000", db_url=url)
+    assert before.returncode == 0, before.stderr
+    with engine.begin() as conn:
+        for address in ("first@example.test", "second@example.test"):
+            conn.execute(
+                text(
+                    "INSERT INTO newsletter_subscribers (email, source, is_active, created_at) "
+                    f"VALUES ('{address}', 'import', 1, CURRENT_TIMESTAMP)"
+                )
+            )
+
+    up = _alembic("upgrade", "head", db_url=url)
+    assert up.returncode == 0, up.stderr
+
+    with engine.connect() as conn:
+        tokens = [
+            row[0]
+            for row in conn.execute(text("SELECT unsubscribe_token FROM newsletter_subscribers"))
+        ]
+    assert len(tokens) == 2
+    assert all(token and len(token) >= 20 for token in tokens)
+    # One per address, unique: two subscribers must not share a way out.
+    assert len(set(tokens)) == 2
+
+
 def test_single_head() -> None:
     proc = _alembic("heads", db_url=POSTGRES_URL)
     assert proc.returncode == 0, proc.stderr

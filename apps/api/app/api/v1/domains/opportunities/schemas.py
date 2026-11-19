@@ -9,7 +9,7 @@ from __future__ import annotations
 from datetime import date, datetime
 from typing import Any
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class ClosesViaOut(BaseModel):
@@ -156,6 +156,9 @@ class OpportunityApplicationsOut(BaseModel):
 class ApplicationStatusOut(BaseModel):
     id: int
     status: str
+    # What this application may move to next; the ops UI renders exactly these, so
+    # a reviewer is never offered a transition the API will refuse.
+    allowed_next: list[str] = Field(default_factory=list)
 
 
 class OpportunityWriteOut(BaseModel):

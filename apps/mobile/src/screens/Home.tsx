@@ -1,10 +1,35 @@
-import type { MeOut, OnboardingStateOut } from '@nelavista/api-client';
+import type { AnnouncementListOut, MeOut, OnboardingStateOut } from '@nelavista/api-client';
 import * as React from 'react';
 import { Text, View } from 'react-native';
 
 import type { Route } from '../lib/deepLink';
 import { useApi } from '../lib/useApi';
 import { Body, Button, Card, ErrorText, H2, Loading, Muted, Row, Screen, styles } from '../ui';
+
+/**
+ * Published platform notices, in the home feed.
+ *
+ * Not a dismissible overlay: on the phone the feed already scrolls, so a notice is
+ * simply the first card and the shell is never blocked by a read that failed.
+ */
+function Announcements(): JSX.Element | null {
+  const latest = useApi<AnnouncementListOut>('/announcements?limit=2');
+  if (latest.remote.status !== 'ready') return null;
+  const rows = latest.remote.data.announcements;
+  if (rows.length === 0) return null;
+
+  return (
+    <Card>
+      <H2>Notices</H2>
+      {rows.map((row) => (
+        <View key={row.id}>
+          <Body>{row.title}</Body>
+          {row.body ? <Muted>{row.body}</Muted> : null}
+        </View>
+      ))}
+    </Card>
+  );
+}
 
 export function Home({ me, navigate }: { me: MeOut; navigate: (route: Route) => void }): JSX.Element {
   const state = useApi<OnboardingStateOut>('/onboarding/state');
@@ -20,6 +45,8 @@ export function Home({ me, navigate }: { me: MeOut; navigate: (route: Route) => 
           </Muted>
         </Card>
       )}
+
+      <Announcements />
 
       {state.remote.status === 'loading' ? <Loading /> : null}
       {state.remote.status === 'error' ? <ErrorText message={state.remote.message} /> : null}

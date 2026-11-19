@@ -21,6 +21,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 import { useSession } from '../lib/session';
 import { useTheme } from '../lib/theme-context';
+import { AnnouncementBanner } from './AnnouncementBanner';
 import { ConsentGate } from './ConsentGate';
 
 interface NavItem {
@@ -295,6 +296,7 @@ export function AppShell({ children }: { children: React.ReactNode }): JSX.Eleme
         <main className="nv-content" id="main" ref={mainRef} tabIndex={-1}>
           <div className="nv-content__inner">
             <ConsentGate />
+            <AnnouncementBanner />
             <PageTransition>{children}</PageTransition>
           </div>
         </main>

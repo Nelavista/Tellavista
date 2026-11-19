@@ -12,7 +12,8 @@ from pydantic import BaseModel, Field
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.api.deps import require_flag
+from app.api.deps import rate_limit, require_flag
+from app.api.v1.bulk import BulkIdsIn, BulkResultOut, apply_bulk
 from app.api.v1.domains.skills.schemas import (
     ContentLessonListOut,
     ContentPathListOut,
@@ -42,6 +43,11 @@ router = APIRouter(
         Depends(require_permission("project.write")),
     ],
 )
+
+
+# A bulk publish edits up to 200 records in one call, so it gets its own cap on
+# top of the router's per-request permission check.
+BULK_GUARD = [Depends(rate_limit("content-bulk", limit=20, window_seconds=60))]
 
 
 class LessonIn(BaseModel):
@@ -257,6 +263,28 @@ def create_lesson(
     return {"id": lesson.id, "slug": lesson.slug, "status": lesson.status}
 
 
+@router.post("/tasks/bulk", dependencies=BULK_GUARD, response_model=BulkResultOut)
+def bulk_template_status(
+    payload: BulkContentStatusIn,
+    _actor: User = Depends(require_permission("project.write")),
+    db: Session = Depends(get_db),
+) -> BulkResultOut:
+    target = _status(payload.status)
+
+    def apply(template_id: int) -> str:
+        template = db.get(TaskTemplate, template_id)
+        if template is None:
+            raise ApiError(404, "template_not_found", f"Template {template_id} does not exist.")
+        if template.status == target:
+            return "unchanged"
+        template.status = target
+        return "applied"
+
+    result = apply_bulk(payload.ids, apply)
+    db.commit()
+    return result
+
+
 @router.patch("/lessons/{lesson_id}")
 def update_lesson(
     lesson_id: int,
@@ -277,6 +305,62 @@ def update_lesson(
         lesson.status = _status(payload.status)
     db.commit()
     return {"id": lesson.id, "slug": lesson.slug, "status": lesson.status}
+
+
+class BulkContentStatusIn(BulkIdsIn):
+    """Publish, archive or draft a whole set at once.
+
+    This is the one bulk action content actually needs: a lesson set is authored
+    together and published together, and doing it one PATCH at a time is how a
+    half-published path ships. Type is the endpoint (lessons or paths), not a
+    field, so a lesson id can never be applied to a path by mistake.
+    """
+
+    status: str = Field(min_length=4, max_length=16)
+
+
+@router.post("/lessons/bulk", dependencies=BULK_GUARD, response_model=BulkResultOut)
+def bulk_lesson_status(
+    payload: BulkContentStatusIn,
+    _actor: User = Depends(require_permission("project.write")),
+    db: Session = Depends(get_db),
+) -> BulkResultOut:
+    target = _status(payload.status)
+
+    def apply(lesson_id: int) -> str:
+        lesson = db.get(Lesson, lesson_id)
+        if lesson is None:
+            raise ApiError(404, "lesson_not_found", f"Lesson {lesson_id} does not exist.")
+        if lesson.status == target:
+            return "unchanged"
+        lesson.status = target
+        return "applied"
+
+    result = apply_bulk(payload.ids, apply)
+    db.commit()
+    return result
+
+
+@router.post("/paths/bulk", dependencies=BULK_GUARD, response_model=BulkResultOut)
+def bulk_path_status(
+    payload: BulkContentStatusIn,
+    _actor: User = Depends(require_permission("project.write")),
+    db: Session = Depends(get_db),
+) -> BulkResultOut:
+    target = _status(payload.status)
+
+    def apply(path_id: int) -> str:
+        path = db.get(LearningPath, path_id)
+        if path is None:
+            raise ApiError(404, "path_not_found", f"Path {path_id} does not exist.")
+        if path.status == target:
+            return "unchanged"
+        path.status = target
+        return "applied"
+
+    result = apply_bulk(payload.ids, apply)
+    db.commit()
+    return result
 
 
 @router.post("/paths", status_code=201)

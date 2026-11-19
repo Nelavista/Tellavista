@@ -10,6 +10,8 @@
  * re-exported from ./schema so app code never imports the generated path.
  */
 export type {
+  AnnouncementListOut,
+  AnnouncementOut,
   ApiPaths,
   ApplicationListOut,
   ApplicationOut,
@@ -38,6 +40,8 @@ export type {
   AuditLogOut,
   AvailabilityOut,
   BatchStateOut,
+  BulkFailureOut,
+  BulkResultOut,
   CampusAdminItemOut,
   CampusAdminListOut,
   CampusCreatedOut,
@@ -110,6 +114,9 @@ export type {
   MfaEnableOut,
   MfaSetupOut,
   MfaStatusOut,
+  NewsletterSubscribeOut,
+  NewsletterSubscriberListOut,
+  NewsletterSubscriberOut,
   NextStepOut,
   NotificationListOut,
   NotificationOut,
@@ -121,6 +128,9 @@ export type {
   OpportunityMatchOut,
   OpportunityOut,
   OverrideOut,
+  OverviewOut,
+  OverviewProjectOut,
+  OverviewQueueOut,
   PayoutBatchDetailOut,
   PayoutBatchListOut,
   PayoutItemStateOut,

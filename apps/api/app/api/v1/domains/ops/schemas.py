@@ -7,7 +7,7 @@ mismatch is visible rather than a green tick with a caveat.
 
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import date, datetime
 from typing import Any
 
 from pydantic import BaseModel
@@ -136,6 +136,43 @@ class CampusAdminItemOut(BaseModel):
     longitude: float | None = None
     is_published: bool
     created_at: datetime
+
+
+class OverviewQueueOut(BaseModel):
+    """One row of the operations overview.
+
+    The overview used to be six separate list reads in the browser, which meant
+    six round trips and six different moments in time: the counts could disagree
+    with each other and with the audit trail below them. One row here is one
+    count, its oldest (or newest) item and where to go to work on it.
+    """
+
+    key: str
+    label: str
+    detail: str
+    href: str
+    count: int
+    stamp: datetime | None = None
+    stamp_label: str = "Oldest"
+    # Set only for rows that have a last-run concept (imports).
+    last_run: dict | None = None
+
+
+class OverviewProjectOut(BaseModel):
+    id: int
+    slug: str
+    title: str
+    status: str
+    starts_on: date | None = None
+    ends_on: date | None = None
+
+
+class OverviewOut(BaseModel):
+    generated_at: datetime
+    queues: list[OverviewQueueOut]
+    recent_audit: list[AuditLogOut]
+    live_projects: list[OverviewProjectOut]
+    totals: dict
 
 
 class CampusAdminListOut(BaseModel):

@@ -6,7 +6,7 @@ even by accident.
 """
 from __future__ import annotations
 
-from datetime import date
+from datetime import UTC, date, datetime
 
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -23,7 +23,11 @@ from app.models.matching import (
 )
 from app.models.talent import (
     APPLICATION_APPLIED,
+    APPLICATION_DECIDED_STATUSES,
+    APPLICATION_STATUSES,
+    APPLICATION_TRANSITIONS,
     OpportunityApplication,
+    can_transition,
 )
 from app.services import audit
 from app.services.matching import engine
@@ -292,14 +296,35 @@ def apply_external(
 def set_application_status(
     db: Session, actor: User, application_id: int, status: str
 ) -> OpportunityApplication:
-    from app.models.talent import APPLICATION_STATUSES
+    """Move one application along its lifecycle.
 
+    The lifecycle is deliberately not "any status to any status": the states after
+    an offer gate real work and, downstream, real money, so a skipped step (say
+    applied -> completed) is refused rather than silently trusted. Re-sending the
+    current status is a no-op, so a retry or a double-click is harmless.
+    """
     if status not in APPLICATION_STATUSES:
         raise ApiError(400, "invalid_application_status", "Unknown application status.")
     application = db.get(OpportunityApplication, application_id)
     if application is None:
         raise ApiError(404, "application_not_found", "That application does not exist.")
+    previous = application.status
+    if previous == status:
+        return application
+    if not can_transition(previous, status):
+        raise ApiError(
+            409,
+            "invalid_application_transition",
+            f"An application cannot move from {previous} to {status}.",
+            {
+                "current": previous,
+                "requested": status,
+                "allowed": list(APPLICATION_TRANSITIONS.get(previous, ())),
+            },
+        )
     application.status = status
+    if status in APPLICATION_DECIDED_STATUSES:
+        application.decided_at = datetime.now(UTC)
     db.flush()
     audit.record(
         db,
@@ -308,7 +333,7 @@ def set_application_status(
         actor_role_code=actor.role.code if actor.role else None,
         target_type="opportunity_application",
         target_id=application.id,
-        context={"status": status},
+        context={"from": previous, "status": status},
     )
     return application
 

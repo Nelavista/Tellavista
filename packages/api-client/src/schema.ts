@@ -243,3 +243,20 @@ export type OnboardingStateOut = Schemas['OnboardingStateOut'];
 export type TranscriptCountsOut = Schemas['TranscriptCountsOut'];
 export type OverrideOut = Schemas['OverrideOut'];
 export type StandardOut = Schemas['StandardOut'];
+
+// --- ops overview, bulk actions, communications -----------------------------
+// One aggregate read replaces the six the operations overview used to make, so
+// every count and its timestamp come from the same query.
+export type OverviewOut = Schemas['OverviewOut'];
+export type OverviewQueueOut = Schemas['OverviewQueueOut'];
+export type OverviewProjectOut = Schemas['OverviewProjectOut'];
+// Every bulk endpoint answers the same shape: requested / applied / unchanged /
+// failed[], so a partial batch is visible instead of looking fully applied.
+export type BulkResultOut = Schemas['BulkResultOut'];
+export type BulkFailureOut = Schemas['BulkFailureOut'];
+// Announcements and the newsletter list.
+export type AnnouncementOut = Schemas['AnnouncementOut'];
+export type AnnouncementListOut = Schemas['AnnouncementListOut'];
+export type NewsletterSubscriberOut = Schemas['NewsletterSubscriberOut'];
+export type NewsletterSubscriberListOut = Schemas['NewsletterSubscriberListOut'];
+export type NewsletterSubscribeOut = Schemas['NewsletterSubscribeOut'];

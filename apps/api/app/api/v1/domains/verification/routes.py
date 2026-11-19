@@ -7,6 +7,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_current_user, rate_limit, require_flag
+from app.api.v1.bulk import BulkResultOut, apply_bulk
 from app.api.v1.domains.verification.schemas import (
     AssessmentListOut,
     AttemptOut,
@@ -265,6 +266,47 @@ def review_practical(
     return PracticalReviewOut(
         id=row.id, status=row.status, score=row.score, passed=row.passed
     )
+
+
+class BulkPracticalReviewIn(BaseModel):
+    """Score a page of practical submissions with one rubric read.
+
+    A practical reviewer works through a queue comparing answers against the same
+    rubric, so the score and verdict are usually the same for a block. Each row
+    still goes through `assessments.review_practical`, which is what writes the
+    verification event: a refusal is reported per id and the others still apply.
+    """
+
+    submission_ids: list[int] = Field(min_length=1, max_length=200)
+    score: int = Field(ge=0, le=100)
+    passed: bool
+    notes: str | None = None
+
+
+@router.post(
+    "/practical/submissions/bulk-review",
+    dependencies=[Depends(rate_limit("practical-review", limit=20, window_seconds=60))],
+    response_model=BulkResultOut,
+)
+def bulk_review_practical(
+    payload: BulkPracticalReviewIn,
+    reviewer: User = Depends(require_permission("review.write")),
+    db: Session = Depends(get_db),
+) -> BulkResultOut:
+    def apply(submission_id: int) -> str:
+        assessments.review_practical(
+            db,
+            reviewer,
+            submission_id=submission_id,
+            score=payload.score,
+            passed=payload.passed,
+            notes=payload.notes,
+        )
+        return "applied"
+
+    result = apply_bulk(payload.submission_ids, apply)
+    db.commit()
+    return result
 
 
 __all__ = ["router", "state"]

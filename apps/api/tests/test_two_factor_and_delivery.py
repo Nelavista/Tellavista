@@ -103,6 +103,119 @@ def test_a_staff_login_with_two_factor_is_not_a_session(api) -> None:
     assert ok.json()["access_token"]
 
 
+def test_the_complete_first_login_enrolment_flow(api) -> None:
+    """The browser flow, end to end, at the API boundary.
+
+    A brand-new staff account has no second factor. The first sign-in therefore
+    succeeds with a password alone -- the admin shell is what refuses to render
+    anything until enrolment finishes -- and the flow the shell then drives is:
+
+        login -> /me (mfa_enabled false) -> /2fa -> /2fa/setup -> /2fa/enable
+
+    After enrolment the same account must not get a session from a password
+    again: the next login is a challenge and only asking for the code finishes
+    it. This is the sequence that used to be covered in pieces (service-level
+    enrolment, one challenge) but never as one first-login path.
+    """
+    client, db = api
+    staff = make_ops(db, password_hash=auth.hash_password("first-login-pass"))
+    db.commit()
+
+    # 1. First sign-in: allowed, because there is no factor to present yet.
+    first = client.post(
+        "/v1/auth/login",
+        json={"email": staff.email, "password": "first-login-pass", "platform": "admin"},
+    )
+    assert first.status_code == 200, first.text
+    access = first.json()["access_token"]
+    headers = {"Authorization": f"Bearer {access}"}
+
+    # 2. The shell's own gate checks these two reads before rendering anything.
+    me = client.get("/v1/auth/me", headers=headers)
+    assert me.status_code == 200
+    assert me.json()["mfa_enabled"] is False
+
+    status = client.get("/v1/auth/2fa", headers=headers)
+    assert status.status_code == 200
+    assert status.json()["enabled"] is False
+    assert status.json()["is_staff"] is True
+
+    # 3. Setup mints a pending secret; it does not change login until enabled.
+    setup = client.post("/v1/auth/2fa/setup", headers=headers)
+    assert setup.status_code == 200
+    secret = setup.json()["secret"]
+    assert setup.json()["otpauth_uri"].startswith("otpauth://totp/")
+    assert twofa.is_enabled(db.get(User, staff.id)) is False
+
+    # 4. The code from the authenticator confirms it, and recovery codes come back once.
+    enabled = client.post(
+        "/v1/auth/2fa/enable",
+        json={"code": twofa.code_at(secret)},
+        headers=headers,
+    )
+    assert enabled.status_code == 200, enabled.text
+    assert enabled.json()["enabled"] is True
+    codes = enabled.json()["recovery_codes"]
+    assert len(codes) == twofa.RECOVERY_CODE_COUNT
+
+    # 5. The session that enrolled the factor keeps working: finishing setup must
+    #    not sign the operator out of the screen they are standing on.
+    assert client.get("/v1/auth/me", headers=headers).json()["mfa_enabled"] is True
+
+    # 6. From now on a password alone is not a session.
+    second = client.post(
+        "/v1/auth/login",
+        json={"email": staff.email, "password": "first-login-pass", "platform": "admin"},
+    )
+    assert second.status_code == 403
+    assert second.json()["error"]["code"] == "mfa_required"
+
+    # 7. The challenge plus a current code finishes the sign-in.
+    challenge = second.json()["error"]["details"]["mfa_token"]
+    verified = client.post(
+        "/v1/auth/2fa/verify",
+        json={"mfa_token": challenge, "code": twofa.code_at(secret)},
+    )
+    assert verified.status_code == 200
+    assert verified.json()["access_token"]
+
+
+def test_a_recovery_code_also_finishes_a_first_login(api) -> None:
+    """The lost-phone path, through the same login endpoint: a recovery code is a
+    second factor and must produce a session rather than a 403."""
+    client, db = api
+    staff = make_ops(db, password_hash=auth.hash_password("recovery-pass"))
+    secret, _uri = twofa.begin_enrollment(db, staff)
+    codes = twofa.confirm_enrollment(db, staff, twofa.code_at(secret))
+    db.commit()
+
+    first = client.post(
+        "/v1/auth/login",
+        json={"email": staff.email, "password": "recovery-pass", "platform": "admin"},
+    )
+    challenge = first.json()["error"]["details"]["mfa_token"]
+
+    ok = client.post(
+        "/v1/auth/2fa/verify", json={"mfa_token": challenge, "code": codes[0]}
+    )
+    assert ok.status_code == 200
+    assert ok.json()["access_token"]
+
+    # It is single-use, so the same code cannot finish a second sign-in.
+    again = client.post(
+        "/v1/auth/login",
+        json={"email": staff.email, "password": "recovery-pass", "platform": "admin"},
+    )
+    reused = client.post(
+        "/v1/auth/2fa/verify",
+        json={"mfa_token": again.json()["error"]["details"]["mfa_token"], "code": codes[0]},
+    )
+    # 400, not 401: the challenge is valid, the code is not -- and either way no
+    # session is issued.
+    assert reused.status_code == 400
+    assert "access_token" not in reused.json()
+
+
 def test_an_access_token_cannot_be_used_as_an_mfa_challenge(api) -> None:
     client, db = api
     user = make_user(db)

@@ -8,6 +8,7 @@ import {
   LayoutDashboard,
   ListChecks,
   LogOut,
+  Megaphone,
   ScrollText,
   SearchCheck,
   Settings2,
@@ -55,6 +56,7 @@ const GROUPS: Array<{ label: string; items: NavItem[] }> = [
     label: 'Content',
     items: [
       { path: '/content', label: 'Content', icon: FileText },
+      { path: '/announcements', label: 'Announcements', icon: Megaphone },
       { path: '/campus', label: 'Campus', icon: Building2 },
       { path: '/platform', label: 'Platform settings', icon: Settings2 },
       { path: '/security', label: 'Security', icon: ShieldCheck },

@@ -7,6 +7,7 @@ import { usePageMeta } from '../lib/page-meta';
 import { useSession } from '../lib/session';
 import { useTheme } from '../lib/theme-context';
 import { BrandFilm } from './BrandFilm';
+import { NewsletterSignup } from './NewsletterSignup';
 import { PageTransition } from './Reveal';
 import { SocialLinks } from './SocialLinks';
 
@@ -115,6 +116,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }): JSX.E
               <p style={{ maxWidth: '34ch' }}>
                 A working record for Nigerian university students: learn it, prove it, get paid for it.
               </p>
+              <NewsletterSignup />
               <SocialLinks />
             </div>
             <div className="nv-footer-col">

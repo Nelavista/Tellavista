@@ -1,0 +1,150 @@
+{%- macro logo(u, size='') -%}
+<span class="cm-logo{{ ' ' ~ size if size }}" data-len="{{ u.monogram|length }}" aria-hidden="true">
+  {%- if u.logo_url %}<img src="{{ u.logo_url }}" alt="" loading="lazy">{% else %}{{ u.monogram }}{% endif -%}
+</span>
+{%- endmacro -%}
+
+{%- macro uni_row(u, featured=false) -%}
+<li class="cm-uni{{ ' is-featured' if featured }}{{ ' is-soon' if not u.has_map }}"
+    data-slug="{{ u.slug }}"
+    data-search="{{ (u.name ~ ' ' ~ (u.short_name or '') ~ ' ' ~ (u.location or ''))|lower }}">
+  <a class="cm-uni-link" href="{{ url_for('campus_map.university_map', key=u.slug) }}">
+    {{ logo(u) }}
+    <span class="cm-uni-main">
+      <span class="cm-uni-name">{{ u.name }}{% if u.short_name %} <span class="cm-uni-short">{{ u.short_name }}</span>{% endif %}</span>
+      <span class="cm-uni-meta">
+        {%- if u.location %}<span><i class="ri-map-pin-line" aria-hidden="true"></i>{{ u.location }}</span>{% endif -%}
+        {%- if u.has_map %}<span class="cm-ready">{{ u.place_count }} place{{ '' if u.place_count == 1 else 's' }} mapped</span>
+        {%- else %}<span class="cm-soon">Map coming soon</span>{% endif -%}
+      </span>
+    </span>
+    <span class="cm-uni-cta">{{ 'View map' if u.has_map else 'Preview' }}<i class="ri-arrow-right-line" aria-hidden="true"></i></span>
+  </a>
+</li>
+{%- endmacro -%}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {% include 'campus_map/_head.html' %}
+  <title>Campus Map · Choose your university · Nelavista</title>
+  <meta name="description" content="Choose your university to open its campus map: faculties, lecture halls, libraries, hostels and the places students need.">
+</head>
+<body class="lx cm">
+{% include 'campus_map/_theme.html' %}
+<a class="lx-skip" href="#lx-main">Skip to content</a>
+
+<header class="lx-top cm-top">
+  <a href="{{ url_for('campus_map.campus_map_page') }}" class="lx-brand">
+    <img src="{{ url_for('static', filename='images/nelavista-logo.png') }}" alt="" width="26" height="26">
+    <span class="lx-brand-name">Nelavista</span><span class="lx-brand-space">Campus</span>
+  </a>
+  <span class="lx-top-spacer"></span>
+  {# Campus is its own space; switching space is the only cross-space link here. #}
+  <a class="lx-btn lx-btn-ghost lx-btn-sm" href="/choose-path"><i class="ri-apps-2-line" aria-hidden="true"></i>Switch space</a>
+</header>
+
+<main class="cm-choose" id="lx-main">
+  <header class="cm-choose-head">
+    <h1 class="lx-title">Choose your university</h1>
+    <p class="lx-lede">Open a campus map to find faculties, lecture halls, libraries and the other places you need.</p>
+
+    <form class="lx-search" role="search" id="cm-uni-search" action="{{ url_for('campus_map.campus_map_page') }}" method="GET">
+      <i class="ri-search-line" aria-hidden="true"></i>
+      <label for="cm-q" class="lx-sr">Search universities</label>
+      <input id="cm-q" type="search" name="q" value="{{ request.args.get('q', '') }}" placeholder="Search for your university"
+             autocomplete="off" enterkeyhint="search" spellcheck="false">
+      <button type="button" class="lx-search-clear" id="cm-q-clear" aria-label="Clear search"><i class="ri-close-line"></i></button>
+    </form>
+  </header>
+
+  <div id="cm-quick">
+    {% if own_university %}
+    <section class="cm-section" aria-labelledby="cm-own-h">
+      <h2 class="cm-section-title" id="cm-own-h">Your university</h2>
+      <ul class="cm-unis cm-unis-one">{{ uni_row(own_university, featured=true) }}</ul>
+    </section>
+    {% endif %}
+
+    <section class="cm-section" id="cm-recent" aria-labelledby="cm-recent-h" hidden>
+      <h2 class="cm-section-title" id="cm-recent-h">Recently viewed</h2>
+      <ul class="cm-unis" id="cm-recent-list"></ul>
+    </section>
+  </div>
+
+  <section class="cm-section" aria-labelledby="cm-all-h">
+    <div class="cm-section-row">
+      <h2 class="cm-section-title" id="cm-all-h">All universities</h2>
+      <span class="cm-section-note" id="cm-count">{{ universities|length }} universities · {{ mapped_count }} mapped</span>
+    </div>
+    {% if universities %}
+    <ul class="cm-unis" id="cm-unis">
+      {% for u in universities %}{{ uni_row(u) }}{% endfor %}
+    </ul>
+    <div class="cm-noresults" id="cm-noresults" hidden>
+      <i class="ri-search-line" aria-hidden="true"></i>
+      <p><strong>No university matches “<span id="cm-noresults-q"></span>”.</strong></p>
+      <p class="lx-muted">Try the short name, like LASU or UNILAG, or the town.</p>
+    </div>
+    {% else %}
+    <div class="cm-noresults">
+      <i class="ri-building-line" aria-hidden="true"></i>
+      <p><strong>No universities yet.</strong></p>
+    </div>
+    {% endif %}
+  </section>
+</main>
+
+<script>
+(function () {
+  var list = document.getElementById('cm-unis');
+  if (!list) return;
+  var input = document.getElementById('cm-q');
+  var form = document.getElementById('cm-uni-search');
+  var clear = document.getElementById('cm-q-clear');
+  var quick = document.getElementById('cm-quick');
+  var none = document.getElementById('cm-noresults');
+  var noneQ = document.getElementById('cm-noresults-q');
+  var count = document.getElementById('cm-count');
+  var countText = count.textContent;
+  var rows = Array.prototype.slice.call(list.children);
+
+  // Recently viewed: slugs only, written by the map page. Rows are cloned from the full
+  // list so a university that is no longer active simply drops out.
+  try {
+    var recent = JSON.parse(localStorage.getItem('nv_campus_recent') || '[]');
+    var own = document.querySelector('.cm-uni.is-featured');
+    var ownSlug = own ? own.getAttribute('data-slug') : null;
+    var recentList = document.getElementById('cm-recent-list');
+    recent.filter(function (s) { return s !== ownSlug; }).slice(0, 3).forEach(function (slug) {
+      var row = list.querySelector('.cm-uni[data-slug="' + CSS.escape(slug) + '"]');
+      if (row) recentList.appendChild(row.cloneNode(true));
+    });
+    if (recentList.children.length) document.getElementById('cm-recent').hidden = false;
+  } catch (e) {}
+
+  function apply() {
+    var q = input.value.trim().toLowerCase();
+    form.classList.toggle('has-value', !!q);
+    quick.hidden = !!q;
+    var shown = 0;
+    rows.forEach(function (li) {
+      var hit = !q || li.getAttribute('data-search').indexOf(q) !== -1;
+      li.hidden = !hit;
+      if (hit) shown++;
+    });
+    none.hidden = shown > 0;
+    noneQ.textContent = input.value.trim();
+    count.textContent = q ? (shown + ' of ' + rows.length) : countText;
+  }
+  input.addEventListener('input', apply);
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var first = rows.filter(function (li) { return !li.hidden; })[0];
+    if (first && input.value.trim()) window.location.href = first.querySelector('a').href;
+  });
+  clear.addEventListener('click', function () { input.value = ''; apply(); input.focus(); });
+  apply();
+})();
+</script>
+</body>
+</html>

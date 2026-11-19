@@ -1,21 +1,23 @@
-"""University-aware campus map: University -> Campus -> CampusLocation.
+"""Campus Map space: Map -> choose a university -> that university's campus map.
 
-Replaces the old single-tenant /campus-map (templates/static_pages_routes.py used to
-render templates/campus-map.html with a hardcoded, LASU-only JS `locations` array baked
-into the template). The page now fetches its data from /api/campus-map, which is always
-scoped to the logged-in student's own university/campus -- never a client-supplied id --
-so a frontend dropdown can't be used to pull another school's data (there isn't really
-anything sensitive in a campus map, but the whole point of this feature is that it
-follows the student automatically, not that it's browsable by id).
+  /campus-map                   university picker (the Campus space's front door)
+  /campus-map/<slug>            one university's interactive map (?campus=<id>, ?place=<id>)
+  /api/campus-map/<slug>        the same map data as JSON
+  /api/campus-map               the logged-in student's own university (kept for older clients)
+
+Content (universities, campuses, places) is in the database and edited at
+/admin/campus-map. Categories and per-university map defaults live in
+services/campus_maps.py, so adding another school's map needs no code change here.
 
 Admin CRUD below follows the exact pattern already used by routes/admin_academia_routes.py
 (form-encoded POST, JSON response, @login_required + @admin_required, duplicate/validation
 checks) so this doesn't introduce a second convention for the same kind of task.
 """
-from flask import Blueprint, render_template, request, session, jsonify
+from flask import Blueprint, render_template, request, session, jsonify, redirect, url_for, abort
 from app.utils.helpers import login_required, admin_required
 from app.models import User, University, Campus, CampusLocation
 from app.extensions import db
+from app.services import campus_maps
 
 campus_map_bp = Blueprint('campus_map', __name__)
 
@@ -28,21 +30,52 @@ def _current_user():
 @campus_map_bp.route('/campus-map')
 @login_required
 def campus_map_page():
+    """University picker. The student's own university is offered first, but they can
+    open any school's map."""
     user = _current_user()
-    university = user.university_ref if user else None
+    universities = campus_maps.list_universities()
+    own = None
+    if user and user.university_id:
+        own = next((u for u in universities if u['id'] == user.university_id), None)
     return render_template(
-        'campus-map.html',
-        university_name=(university.name if university else 'Your Campus'),
-        university_slug=((university and university.slug) or 'campus'),
+        'campus_map/choose.html',
+        universities=universities,
+        own_university=own,
+        mapped_count=sum(1 for u in universities if u['has_map']),
     )
+
+
+def _university_or_404(key):
+    university = campus_maps.find_university(key)
+    if not university:
+        abort(404)
+    return university
+
+
+@campus_map_bp.route('/campus-map/<key>')
+@login_required
+def university_map(key):
+    university = _university_or_404(key)
+    if key != university.slug:
+        # /campus-map/lasu -> /campus-map/lagos-state-university, keeping ?campus/?place
+        return redirect(url_for('campus_map.university_map', key=university.slug, **request.args), code=302)
+    payload = campus_maps.build_map_payload(university, request.args.get('campus', type=int))
+    return render_template('campus_map/map.html', data=payload, university=payload['university'])
+
+
+@campus_map_bp.route('/api/campus-map/<key>')
+@login_required
+def api_university_map(key):
+    university = _university_or_404(key)
+    payload = campus_maps.build_map_payload(university, request.args.get('campus', type=int))
+    return jsonify(dict(payload, success=True))
 
 
 @campus_map_bp.route('/api/campus-map')
 @login_required
 def api_campus_map():
-    """Server-derived from the logged-in user's own university/campus -- see module
-    docstring. Returns an explicit empty-state flag when no location data exists yet for
-    that school, so the frontend can show a clean message instead of a blank map."""
+    """The logged-in student's own university/campus. Kept with its original response
+    shape for any older client; the map page itself uses /api/campus-map/<slug>."""
     user = _current_user()
     if not user or not user.university_id:
         return jsonify({
@@ -72,7 +105,9 @@ def api_campus_map():
 @admin_required
 def admin_campus_map_home():
     universities = University.query.order_by(University.name).all()
-    return render_template('admin_campus_map.html', universities=universities, active_page='campus_map')
+    return render_template('admin_campus_map.html', universities=universities, active_page='campus_map',
+                           categories=campus_maps.CATEGORIES, resolve_category=campus_maps.resolve_category,
+                           category_index=campus_maps.CATEGORY_INDEX)
 
 
 @campus_map_bp.route('/admin/campus-map/locations/new', methods=['POST'])

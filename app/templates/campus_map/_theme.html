@@ -1,0 +1,12 @@
+<script>
+(function () {
+  var b = document.body; b.classList.add('lx');
+  try {
+    var pref = localStorage.getItem('theme') || 'system';
+    var light = pref === 'system'
+      ? (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches)
+      : pref === 'light';
+    if (light) b.classList.add('light-mode', 'light-theme');
+  } catch (e) {}
+})();
+</script>

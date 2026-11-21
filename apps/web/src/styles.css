@@ -48,6 +48,11 @@ body {
   align-items: center;
   gap: var(--nv-space-sm);
   pointer-events: none;
+  /* Reset the shared sticky-header chrome: only the floating pill should paint. */
+  background: transparent;
+  border-bottom: 0;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 
 .nv-public__header-inner {
@@ -59,9 +64,6 @@ body {
   border: 1px solid color-mix(in srgb, var(--nv-text) 12%, transparent);
   border-radius: var(--nv-radius-pill);
   background: color-mix(in srgb, var(--nv-surface) 60%, transparent);
-  box-shadow:
-    inset 0 1px 0 color-mix(in srgb, #fff 14%, transparent),
-    0 10px 30px -12px color-mix(in srgb, #000 45%, transparent);
   backdrop-filter: blur(16px) saturate(160%);
   -webkit-backdrop-filter: blur(16px) saturate(160%);
   animation: nv-public-header-in 400ms var(--nv-ease-out) both;
@@ -69,9 +71,6 @@ body {
 
 .nv-public__header[data-scrolled='true'] .nv-public__header-inner {
   background: color-mix(in srgb, var(--nv-surface) 70%, transparent);
-  box-shadow:
-    inset 0 1px 0 color-mix(in srgb, #fff 14%, transparent),
-    0 14px 34px -10px color-mix(in srgb, #000 52%, transparent);
 }
 
 .nv-public__brand {
@@ -122,9 +121,6 @@ body {
   border: 1px solid color-mix(in srgb, var(--nv-text) 12%, transparent);
   border-radius: var(--nv-radius-pill);
   background: color-mix(in srgb, var(--nv-surface) 60%, transparent);
-  box-shadow:
-    inset 0 1px 0 color-mix(in srgb, #fff 14%, transparent),
-    0 10px 30px -12px color-mix(in srgb, #000 45%, transparent);
   backdrop-filter: blur(16px) saturate(160%);
   -webkit-backdrop-filter: blur(16px) saturate(160%);
 }

@@ -216,8 +216,9 @@ Done means:
   the only themes; do not auto-invert or invent a third palette.
 - A Tailwind, CSS-in-JS, or component-kit migration as part of a feature.
 - New backend endpoints, auth flows, or payment behavior invented by the UI.
-- The newsletter and the platform announcement banner until they are approved
-  with a backend and owner.
+- Changes to the newsletter and announcement surfaces beyond the built scope
+  (footer opt-in, token unsubscribe, dismissible banner, `#/announcements`); a
+  separate issue builder and double opt-in are not approved yet.
 - Student material upload and PDF analysis. The replacement is curated materials,
   Ask, CBT and the transcript evidence trail; do not ship an upload affordance
   that cannot complete.

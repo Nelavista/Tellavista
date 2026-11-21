@@ -2,8 +2,8 @@
 
 | Field | Value |
 |---|---|
-| Status | **Implemented 2026-11-01; V1 delta audited 2026-11-04; V1 delta ported 2026-11-08.** The original parity scope is wired and the V1 additions (ALL content, language profile, structured scored tasks and gate, hub and catalogue filters, evidence rows, talent directory filters, Impact, FUTA, prompt hardening, mobile lockstep) are in place. |
-| Date | 2026-10-27; post-build, palette correction and API closure 2026-11-01; V1 delta 2026-11-04; V1 delta port 2026-11-08 |
+| Status | **Implemented 2026-11-01; V1 delta audited 2026-11-04; V1 delta ported 2026-11-08; admin operations and comms closed 2026-11-19.** The original parity scope is wired and the V1 additions (ALL content, language profile, structured scored tasks and gate, hub and catalogue filters, evidence rows, talent directory filters, Impact, FUTA, prompt hardening, mobile lockstep) are in place. |
+| Date | 2026-10-27; post-build, palette correction and API closure 2026-11-01; V1 delta 2026-11-04; V1 delta port 2026-11-08; admin bulk actions, aggregate overview, application lifecycle, announcements and newsletter 2026-11-19 |
 | Method | V2 code and API contracts are the source of truth. V1 is read-only reference. |
 | Legend | **Stronger** = V2 does more or does it better. **Parity** = capability exists in both. **Gap** = V2 needs work to match. **Dropped** = V2 intentionally removes it; a reason is required. **New** = not in V1. **Decide** = product decision needed. |
 | Companion documents | `docs/v2-ui/AUDIT.md`, `docs/v2-ui/ROUTE-MAP.md`, `docs/v2-ui/DESIGN-DIRECTION.md`, `docs/v2-ui/IMAGE-PROMPTS.md` |
@@ -31,7 +31,7 @@
 | Opportunities/work/money | Managed model, eligibility blockers, applications, invitations, ledger, payout batches | **Stronger** than V1's status-only marketplace |
 | Talent/transcript | Evidence-only, scoped revocable shares, consent history, per-skill evidence, academic context and languages | **Stronger** privacy and a complete evidence trail on both the transcript and the talent view |
 | Employer | No self-service | **Dropped by design** at launch; managed work instead. The permission-gated `/v1/talent/directory` contract (language, language level, academic level, visibility status, background) is now used by the admin **Talent directory** screen; no employer self-service is planned |
-| Admin | Overview, Waitlist, Campus, Audit, Imports, Users, Opportunities, Projects, Review, Money, Content, Platform, Security, 404 | **Stronger** in audit/money/quality; bulk actions remain later work |
+| Admin | Overview, Waitlist, Campus, Audit, Imports, Users, Opportunities, Projects, Review, Money, Content, Announcements (with newsletter subscribers), Platform, Security, 404 | **Stronger** in audit/money/quality; bulk actions, the aggregate overview, the application lifecycle and comms administration are built |
 | Utility | Real 404, error boundary, offline screen, route focus/title | **Parity/stronger** |
 | Theme | Light/dark with Nelavista blue and white | **Parity**; both surfaces implemented, manual visual pass recommended |
 | Public legal/contact | Privacy, terms and contributor terms in final product copy; real support email | **Parity**; legal copy is not a draft |
@@ -54,9 +54,10 @@ photography and the manual launch checks.
 - **Content:** real social profile URLs, real metrics/testimonials, photography,
   employer positioning, and the material upload/analysis replacement copy. Pricing
   is published as commercial positions, not invented amounts.
-- **Verification:** admin 2FA enrolment recovery-code handoff is fixed; a full
-  browser end-to-end check and the V2 domain switch remain. The local seed lock
-  was traced to duplicate API/worker processes, not seed logic.
+- **Verification:** admin 2FA enrolment recovery-code handoff is fixed and the
+  whole first-login sequence is now covered in the API and admin tests; one manual
+  browser pass and the V2 domain switch remain. The local seed lock was traced to
+  duplicate API/worker processes, not seed logic.
 - **Images:** the editorial set is integrated with WebP derivatives; real
   photography is still pending.
 - **Brand video:** the MP4 now runs full-width before the public footer with a
@@ -107,9 +108,9 @@ run) and track progress, which needs a product decision rather than code.
 | `/privacy-policy` | `/legal/privacy` final product copy for V2 data flows | **Parity** | Keep the version in sync with `/platform/config` |
 | `/terms-of-service` | `/legal/terms` final product copy for V2 | **Parity** | Keep the version in sync with `/platform/config` |
 | Contributor terms only in platform settings | `/legal/contributor-terms` public final copy | **Parity/stronger** | Keep quality, payment and licence terms aligned with the API |
-| `/impact` track-record page (new 2026-11-01) with 2,500+ students reached, 500+ trained in AI, live university/skill counts; landing band and footer link | None | **Gap** | Add `/impact` only after the fixed figures are verified; otherwise keep the honest “working record” copy on `/about` and do not imply the numbers |
-| No newsletter | None | **New** | Deferred; needs consent/unsubscribe |
-| No public announcement banner | None | **New** | Deferred; not parity |
+| `/impact` track-record page (new 2026-11-01) with 2,500+ students reached, 500+ trained in AI, live university/skill counts; landing band and footer link | `/impact` and the landing band with the same outcomes story; no reach figures published | **Parity/stronger (honest)** | Add the 2,500+/500+ numbers only when the business confirms they are current and defensible |
+| No newsletter | Footer opt-in, neutral confirmation, token-based unsubscribe at `/newsletter/unsubscribe` and an admin subscriber list | **New (built)** | Double opt-in is still open; a submitted address is subscribed immediately |
+| No public announcement banner | Audience-filtered notices above the workspace shell, dismissible per id, and on the mobile Home feed | **New (built)** | Keep the banner silent when the read fails: a notice is news, not a dependency |
 | No blog | None | **Not required** | Do not add |
 | Employer signup/dashboard/discover | None | **Dropped by design** | Managed work through ops; employer self-service later |
 | Footer social links (placeholder `example.com`) | Facebook, WhatsApp and Telegram share intents in a wave layout; no invented profile URLs | **Parity/stronger** | Add real profile URLs only when supplied |
@@ -253,7 +254,7 @@ owed items listed below stay open.
 
 | V1 admin | V2 admin (post-build) | Verdict | Action |
 |---|---|---|---|
-| Dashboard with counts and newest users | Overview is the default; it composes live queues with per-row states | **Parity/stronger** | Keep; a purpose-built aggregate API is optional |
+| Dashboard with counts and newest users | Overview is the default and reads one aggregate endpoint, so each count and its timestamp come from the same query | **Parity/stronger** | Keep counts and stamps on the same read |
 | Users + activity | Users | **Parity/stronger** | Keep; add activity detail if needed |
 | Materials moderation, approve/reject/reindex | No material moderation; imports only | **Gap/decide** | V2 materials are curated; add ops ingestion/moderation if needed |
 | Videos moderation | None | **Dropped** | V2 has no video product |
@@ -275,14 +276,18 @@ owed items listed below stay open.
 | No payout item failure action | Money exposes the fail action with a required reason | **Parity/stronger** | Built |
 | No platform policy | Platform | **Stronger** | Keep |
 | No security/2FA | Security + forced 2FA | **Stronger** | Keep |
+| No bulk actions | Review, Money and Content act on a selection; the API answers per id with applied/unchanged/failed and never hides a refusal | **Stronger** | Keep pay single-record; bulk approves and cancels only |
+| Any-to-any application status | An explicit transition table with `allowed_next` in the response, `decided_at` stamped on decisions, and terminal states that cannot reopen | **Stronger** | Keep completed, rejected, withdrawn and expired terminal |
+| No announcements or newsletter | Compose/publish/archive notices and the subscriber list on one admin screen, audit row per write, idempotent sends per announcement and subscriber | **New** | Keep the unsubscribe token out of every response |
 
 ### Admin parity verdict (post-build)
 
 V2 admin is stronger than V1 in audit, money, quality, platform policy, security,
 overview, waitlist and campus publishing, including live campus reads. Application
-status and payout-item failure are now exposed. The remaining gaps are bulk
-actions, a purpose-built aggregate overview, and a material/content-ops decision.
-Do not rebuild V1's dead moderation tools.
+status, payout-item failure, bulk actions, the aggregate overview, the
+application lifecycle and comms administration are now exposed. The remaining
+gaps are the material/content-ops decision and the manual 2FA browser pass. Do
+not rebuild V1's dead moderation tools.
 
 ---
 
@@ -352,9 +357,13 @@ replacement is real and the product does not pretend the old feature exists.
   blockers on opportunity detail, honest push-device list/removal, consent
   history, CBT review, course and topic detail, in-place password change, split
   settings, 404/offline, light/dark brand theme.
-- Admin: Overview, Waitlist, Campus, Audit, Imports, Users, Opportunities,
-  Projects, Review, Money, Content, Platform, Security, admin 404, application
-  status action and payout-item failure action.
+- Admin: Overview (one aggregate read), Waitlist, Campus, Audit, Imports, Users,
+  Opportunities, Projects, Review, Money, Content, Announcements, Platform,
+  Security, admin 404, application status action, payout-item failure action and
+  bulk actions on review, money and content.
+- Comms: announcement compose/publish/archive with audience filtering, the
+  newsletter subscriber list, a footer opt-in, the in-app banner, the mobile feed
+  card and `/newsletter/unsubscribe`.
 - Brand: V1 logo/favicon copied into V2, generated PWA/apple icons, larger WebP
   boot loader and still-mark fallback, circular nav mark, brand film before the
   footer.
@@ -371,14 +380,15 @@ replacement is real and the product does not pretend the old feature exists.
 - Material upload/analysis (deferred with replacement copy).
 - Google SSO (deferred).
 - Offline submission sync (deferred).
-- Newsletter and platform announcement banner (post-launch, not parity).
+- Double opt-in confirmation for new newsletter subscribers.
 - Analytics/error tracking (before launch).
 - Real business content, photography and the approved image set.
 
-### New, not parity
+### New, not parity (built 2026-11-19)
 
-- Platform announcement banner (backend + admin + public).
-- Newsletter subscription (backend + consent + admin + public).
+- Platform announcement banner (backend + admin + public) — built.
+- Newsletter subscription (backend + consent + admin + public) — built; double
+  opt-in and an issue builder remain open.
 
 ---
 
@@ -409,9 +419,9 @@ consent history, push-device control, course/topic detail, CBT review, cohort
 invitations and utility screens exist.
 
 What remains is not a missing primary screen or API route for the original parity
-scope. It is real business content and a small set of later-scope items (skills
-search, uploads, Google SSO, offline sync, analytics), plus the manual launch
-checks. The 2026-11-04 V1 delta is ported: ALL, the language profile, structured scored
-tasks, the hub and filters, the evidence rows, the Impact page and the FUTA
-taxonomy. The redesign should keep V2's stronger core and explicitly retire V1's
+scope. It is real business content and a small set of later-scope items (material
+uploads, Google SSO, offline sync, analytics, newsletter double opt-in and issue
+composition), plus the manual launch checks. The 2026-11-04 V1 delta is ported:
+ALL, the language profile, structured scored tasks, the hub and filters, the
+evidence rows, the Impact page and the FUTA taxonomy. The redesign should keep V2's stronger core and explicitly retire V1's
 dead or unsafe surfaces.

@@ -2,9 +2,9 @@
 
 | Field | Value |
 |---|---|
-| Status | **Implemented 2026-11-01; V1 delta audited 2026-11-04. See §1.1 for post-build state and §1.2 for routes V1 added after the map.** |
+| Status | **Implemented 2026-11-01; V1 delta audited 2026-11-04; comms and bulk routes added 2026-11-19. See §1.1 for post-build state and §1.2 for routes V1 added after the map.** |
 | Gate | Gate 1 — route map |
-| Date | 2026-10-27; post-build status 2026-11-01; V1 delta 2026-11-04 |
+| Date | 2026-10-27; post-build status 2026-11-01; V1 delta 2026-11-04; comms and bulk routes 2026-11-19 |
 | Scope | Public, auth, student app, admin and utility routes for the V2 web launch |
 | Companion documents | `docs/v2-ui/AUDIT.md`, `docs/v2-ui/PARITY.md`, `docs/v2-ui/DESIGN-DIRECTION.md`, `docs/v2-ui/IMAGE-PROMPTS.md` |
 
@@ -13,7 +13,7 @@
 > route map is the contract between the design and the API; if a screen has no
 > API, it is marked as a dependency, not invented.
 
-## 1.1 Post-build status (2026-11-01)
+## 1.1 Post-build status (2026-11-01, updated 2026-11-19)
 
 Every route below has a real API or real static content. The former dependency
 states are closed:
@@ -22,14 +22,20 @@ states are closed:
   settings routes, notifications, applications, CBT history, course and topic
   detail, campus, transcript, talent share, admin shell, Overview, Waitlist,
   Campus, Audit, Imports, Users, Opportunities, Projects, Review, Money, Content,
-  Platform, Security, public 404, admin 404, error boundary and offline.
+  Announcements, Platform, Security, public 404, admin 404, error boundary and
+  offline.
+- **Comms and bulk routes (2026-11-19):** `/newsletter/unsubscribe` plus the
+  footer opt-in, the in-app announcement banner, `#/announcements` (which also
+  holds the newsletter subscriber list), `GET /ops/overview`, and bulk actions on
+  `#/review`, `#/money` and `#/content`. There is no standalone `/newsletter`
+  marketing route and no `#/newsletter` hash route.
 - **Closed API gaps:** course/topic detail (`GET /academia/courses/{id}`,
   `GET /academia/topics/{id}`), CBT attempt history with reviewed answers
   (`GET /academia/cbt/history`), the student cohort-invite list
   (`GET /work/invites`), admin campus read (`GET /ops/campus`) and signed-in
   password change (`POST /auth/password/change`).
-- **Deferred:** Google SSO, offline submission sync, newsletter and platform
-  announcement banner.
+- **Deferred:** Google SSO, offline submission sync, a newsletter issue builder
+  and double opt-in.
 - **Admin Campus:** publishes through `POST /ops/campus` and reads the live set
   back through `GET /ops/campus`, including hidden rows with their state shown.
 - **Route metadata:** public and auth routes set title, description, canonical,
@@ -38,21 +44,19 @@ states are closed:
 
 ### 1.2 V1 routes added after this map (2026-11-04)
 
-V1 `main` added these routes. The qualitative `/impact` route is now in V2; the
-language routes remain outside V2 scope until the product decision in
-`PARITY.md` §1.2 is taken:
+V1 `main` added these routes. All of them are now in V2, after the port recorded
+in `PARITY.md` §1.2:
 
 | V1 route | V1 screen / job | V2 state | Notes |
 |---|---|---|---|
 | `/impact` | Public impact page; current product outcomes and verified metrics when available | **Implemented qualitatively** | No reach figures, testimonials or partner claims are published until verified against a current source and approved. |
-| `/skills/african-languages` | African Languages Lab hub; 9 categories, 94 skills, language/level filters, tracks, language profile summary | **Missing** | The ALL catalogue is seeded in V2; add the focused hub and filters over the existing skill catalog. |
-| `/skills/languages` | Own language profile; add/update self-reported language, dialect, proficiency and capabilities; academic background | **Missing** | Requires `StudentLanguage`-equivalent data and a verified-by-skill derivation. |
-| `/skills/languages/:id/delete` | POST action to remove a language from the profile | **Missing** | Action on the same route family; confirm before delete. |
-| Existing `/skills/:skillSlug` challenge route | Structured, auto-scored transcription/translation/labeling/recording tasks; assessment gate and pass mark | **Partial** | V2's existing practice/verification routes can host the UI, but the task spec, deterministic scoring and assessment gate are not implemented. |
+| `/skills/african-languages` | African Languages Lab hub; 9 categories, 94 skills, language/level filters, tracks, language profile summary | **Implemented** | Lists the ALL tracks from `GET /skills/career-tracks` with search, language and level filters. |
+| `/skills/languages` | Own language profile; add/update self-reported language, dialect, proficiency and capabilities; academic background | **Implemented** | Uses `user_languages`; verified capabilities are derived read-only from verified language-specific skills. |
+| `/skills/languages/:id/delete` | POST action to remove a language from the profile | **Implemented** | Confirmed before delete; on the same route family as the profile. |
+| Existing `/skills/:skillSlug` challenge route | Structured, auto-scored transcription/translation/labeling/recording tasks; assessment gate and pass mark | **Implemented** | Practice and assessment routes host the task specs, deterministic scoring and the scored-practice gate. |
 
-Do not add these rows to the “built” table until the code exists. If the product
-decides to launch V2 without ALL, record that decision in `PARITY.md` and keep the
-routes out rather than shipping links to empty screens.
+All five rows are built. Track progress is the one part held back: no progress is
+stored, so a track is an ordered suggestion rather than a learning path.
 
 ---
 
@@ -103,7 +107,7 @@ routes out rather than shipping links to empty screens.
 |---|---|
 | `/for-employers` | V2 has no employer self-service. Use `/contact` with an employer topic until the product exists. |
 | `/blog` | No content plan or authoring system. |
-| `/newsletter` | No consent/unsubscribe backend. See `AUDIT.md` §9. |
+| `/newsletter` | The footer opt-in and `/newsletter/unsubscribe` cover consent and leaving; a standalone newsletter marketing page has no content plan. See `AUDIT.md` §8. |
 | `/status` | No status-page integration. Use the platform banner for operational notices if approved. |
 
 ---
@@ -138,6 +142,11 @@ earnings strip, recent notifications. The four spaces are Academia, Skills,
 Opportunities and Campus. A returning login opens the saved space; Home keeps the
 switcher available. Not a grid of welcome cards.
 
+Published notices (`GET /announcements`) render as a dismissible banner above the
+workspace content, remembered per announcement id, and as feed cards on the mobile
+Home screen. The banner read is non-blocking: a failed notice read renders nothing,
+because a notice is news, not a dependency.
+
 ### 4.2 Academia
 
 | Route | Screen | Job | Anchor | Data | States |
@@ -167,15 +176,15 @@ is refused by the API, not shown as an empty list.
 | `/skills/lessons/:lessonSlug` | Lesson reader | Complete a lesson | **Complete lesson** | `GET /skills/lessons/{slug}`, `POST /start`, `/complete` | Skeleton, missing, error, feature-off |
 | `/skills/practice/:templateId` | Practice | Do a practice task | **Submit practice** | `GET /skills/tasks/{id}`, `POST /practice` | Skeleton, empty, error, feature-off |
 
-Add search/filter inside `/skills`; no separate `/skills/search` route unless the
-API adds server-side search.
+Search and the programme/language/level filters live inside `/skills`; there is no
+separate `/skills/search` route.
 
-**V1 delta (not built):** V1 added `/skills/african-languages` and
-`/skills/languages` (plus the delete action) on 2026-11-04. If ALL is ported, add
-them to the student route set; the ALL hub should reuse `/skills/:skillSlug`,
-`/skills/paths/:pathSlug` and the practice route rather than creating parallel
-lesson or task screens. The multi-skill career tracks need a route decision
-(`/skills/tracks/:slug`) before the hub can link to them.
+**V1 delta (built):** `/skills/african-languages` and `/skills/languages` (with
+the delete action) are implemented and reuse `/skills/:skillSlug`,
+`/skills/paths/:pathSlug` and the practice route rather than parallel screens.
+`/skills` filters by search, programme, language and level, and the hub lists the
+ALL tracks through `GET /skills/career-tracks`. Track progress has no route
+because no progress is stored.
 
 ### 4.4 Verification and proof
 
@@ -225,29 +234,33 @@ Keep the hash router. Group the rail by **Operate** and **Configure**.
 
 | Hash | Screen | Job | Anchor | Data | States |
 |---|---|---|---|---|---|
-| `#/overview` | Overview | See what needs attention now | **Oldest queue / exception** | Existing admin lists; may need a small aggregate API | Skeleton, empty, error |
+| `#/overview` | Overview | See what needs attention now | **Oldest queue / exception** | `GET /ops/overview` (queues with count and stamp, live projects, recent audit rows) | Skeleton, empty, error |
 | `#/audit` | Audit trail | Investigate a change | **Most recent critical event** | `GET /ops/audit-logs` | Skeleton, empty, error |
 | `#/imports` | Import runs | Bring V1 data across safely | **Dry-run / apply** | `GET/POST /ops/imports`, `GET /ops/imports/{id}` | Loading, empty, error, report |
 | `#/users` | Users | Find and act on an account | **Search result / selected user** | `GET /ops/users?q`, `/ops/users/{id}` | Skeleton, empty, error |
 | `#/waitlist` | Waitlist | See demand for uncovered universities | **Waitlist entry** | `GET /ops/waitlist` | Skeleton, empty, error |
 | `#/opportunities` | Opportunities | Create and run opportunities | **Opportunity / applications** | `GET /opportunities/admin/all`, `/{slug}/candidates`, `/{slug}/applications`, `POST /opportunities`, `PATCH /{slug}`, `POST /applications/{id}/status` | Skeleton, empty, error |
 | `#/work` | Projects & cohorts | Run managed projects | **Project / cohort** | `GET /work/projects`, `/{slug}`, `/cohorts/{id}`, `/replacements`; create/assign/invite/remove | Skeleton, empty, error |
-| `#/review` | Review queue | Clear the quality queue | **Oldest pending review** | `GET /work/review-queue`, `/verification/practical/submissions`; reviews, quality standard, override | Skeleton, empty, error |
-| `#/money` | Money | Resolve payout and ledger exceptions | **Exception / outstanding total** | Financials, ledger, payout batches, reconciliation; `POST /money/payout-items/{id}/fail` | Skeleton, empty, error |
-| `#/content` | Content | Author and publish skills content | **Draft / published item** | `GET /skills`, `/skills/content/*`; create/update | Skeleton, empty, error, validation |
+| `#/review` | Review queue | Clear the quality queue | **Oldest pending review** | `GET /work/review-queue`, `/verification/practical/submissions`; reviews, quality standard, override; `POST /work/review-queue/bulk`, `POST /verification/practical/submissions/bulk-review` | Skeleton, empty, error, per-id bulk failures |
+| `#/money` | Money | Resolve payout and ledger exceptions | **Exception / outstanding total** | Financials, ledger, payout batches, reconciliation; `POST /money/payout-items/{id}/fail`; `POST /money/payout-batches/bulk` (approve/cancel; **pay stays single**) | Skeleton, empty, error, per-id bulk failures |
+| `#/content` | Content | Author and publish skills content | **Draft / published item** | `GET /skills`, `/skills/content/*`; create/update; `/lessons/bulk`, `/paths/bulk`, `/tasks/bulk` | Skeleton, empty, error, validation, per-id bulk failures |
 | `#/campus` | Campus | Publish and audit campus locations | **Publish / live campus record** | `GET /ops/campus`, `POST /ops/campus`; the read includes hidden rows and publication state | Skeleton, empty, filtered-empty, error, publish success/error |
 | `#/platform` | Platform settings | Set currency, payout, age, terms, curriculum | **Save settings** | `GET/PATCH /platform/settings` | Skeleton, error, saved |
 | `#/security` | Security | Manage staff 2FA and security events | **Current risk / required action** | `POST /auth/2fa/disable`, security events | Loading, error, note |
-| `#/announcements` | Announcements | Publish a platform notice | **Publish / end** | **Only if approved**; needs backend | Skeleton, empty, error |
-| `#/newsletter` | Newsletter | Manage subscribers | **Subscriber list** | **Only if approved**; needs backend | Skeleton, empty, error |
+| `#/announcements` | Announcements | Publish a platform notice and see the list | **Publish / archive** | `GET/POST /ops/announcements`, `PATCH /{id}`, `POST /{id}/publish`, `POST /{id}/archive`; subscriber list and counts from `GET /ops/newsletter/subscribers`, plus `POST` and `DELETE` on the same path | Skeleton, empty, error, publish/archive confirmation |
 
 **Admin 404:** unknown hash renders a NotFound screen with a link to
 `#/overview`, not Audit.
 
-**Admin overview (built):** `#/overview` is the default. It composes the review
-queue, practical submissions, waitlist, imports, projects and recent audit
-events from existing list endpoints, with per-row loading/error/retry. Do not
-build fake metrics or a silent fallback to Audit.
+**Admin overview (built):** `#/overview` is the default and reads
+`GET /ops/overview` once. Each queue carries its count and the one timestamp the
+row shows, taken from the same query, plus live projects and recent audit rows.
+Knowingly absent: a fallback to Audit, invented metrics, and any number the API
+did not compute.
+
+**Bulk actions:** `#/review`, `#/money` and `#/content` select rows and act once,
+answering `requested`, `applied`, `unchanged` and a per-id failure list. Paying a
+payout batch stays single-record on purpose; bulk approves and cancels only.
 
 ---
 
@@ -260,7 +273,7 @@ build fake metrics or a silent fallback to Audit.
 | Render error | React error boundary | Shows “Something broke”, a support link, and a reload action; logs the error |
 | Offline | PWA shell / `Offline` component | Explains that the shell is available but API data is not cached; retry |
 | Feature off | Existing `useApiResource` `off` state | “Not switched on here” with a link back; not a 404 |
-| Maintenance | Platform banner (if approved) | A dismissible notice; does not replace the app shell |
+| Maintenance | Announcement banner | `GET /announcements` notices render as a dismissible banner; it does not replace the app shell and renders nothing when the read fails |
 | Session expired | Auth guard / HTTP layer | Return to `/login` with the attempted path |
 | Empty | Per-screen empty state | Keeps the page structure and gives one next action |
 | Error | Per-screen error state | Says what happened, what was preserved, and the next step |
@@ -338,8 +351,7 @@ Mobile:
 - 220px left rail:
   - **Operate:** Overview, Audit, Imports, Users, Waitlist, Opportunities, Work,
     Review, Money
-  - **Configure:** Content, Campus, Platform, Security
-  - Announcements/Newsletter only if approved.
+  - **Configure:** Content, Campus, Announcements, Platform, Security
 - 56px top bar: environment badge, command search, user menu.
 - Dense tables; detail drawer; audit footer.
 
@@ -371,16 +383,21 @@ Mobile:
 | `/onboarding` campus step | `PUT /onboarding/university`, then `POST /me/onboarding/complete` |
 | Admin `#/waitlist` | `GET /ops/waitlist` |
 | Admin `#/campus` | `GET /ops/campus`, `POST /ops/campus` |
-| Admin application status | `POST /opportunities/applications/{id}/status` |
+| Admin application status | `POST /opportunities/applications/{id}/status` (refuses a skipped step and returns `allowed_next`) |
 | Admin payout-item failure | `POST /money/payout-items/{id}/fail` |
+| Admin `#/overview` | `GET /ops/overview` |
+| Admin bulk actions | `POST /work/review-queue/bulk`, `POST /verification/practical/submissions/bulk-review`, `POST /money/payout-batches/bulk`, `POST /skills/content/{lessons,paths,tasks}/bulk` |
+| Admin `#/announcements` | `GET/POST /ops/announcements`, `/publish`, `/archive`; `GET/POST/DELETE /ops/newsletter/subscribers` |
+| Workspace banner | `GET /announcements`, audience-filtered server-side |
+| Public footer opt-in | `POST /newsletter/subscribe` |
+| `/newsletter/unsubscribe` | `POST /newsletter/unsubscribe` with the per-subscriber token from the email |
 
 ### Deliberately deferred
 
 | Screen | Missing API | Status |
 |---|---|---|
-| Admin `#/overview` | Optional aggregate endpoint; otherwise compose from existing lists | Built by composing existing lists |
-| `#/announcements` | Announcement model, public read, admin CRUD, audit | Deferred |
-| `#/newsletter` | Subscriber model, consent, double opt-in, unsubscribe, export, email provider | Deferred |
+| Newsletter double opt-in | Confirmation token before an address is active | Deferred; a submitted address is subscribed immediately |
+| Newsletter issue builder | Compose and schedule an issue independently of an announcement | Deferred; publishing an emailed announcement is the current path to the list |
 | `/pricing` | No approved pricing amounts | Built as commercial positions; replace with approved amounts when supplied |
 
 ### No UI without API
@@ -393,7 +410,8 @@ needed before the API, use an explicit “not available yet” state, not fake d
 ## 10. Screen count and build order
 
 This is the Gate 1 plan. The build has completed it except for the deferred items
-in §1.1.
+in §1.1; `#/newsletter` was never built as a separate route because the subscriber
+list lives on `#/announcements`.
 
 | Surface | Routes in this map | Build order |
 |---|---|---|
@@ -420,7 +438,7 @@ Build order after Gate 2 approval:
 7. Verification, Opportunities, Work, Earnings.
 8. Talent, Transcript, Settings subroutes, Campus.
 9. Admin shell, Overview, existing screens, missing actions.
-10. Utility screens, 404, error boundary, offline, announcement if approved.
+10. Utility screens, 404, error boundary, offline, announcement banner.
 
 ---
 
@@ -443,6 +461,9 @@ Approved 2026-10-27:
 6. **Redirects:** the table in §7.
 7. **Deferred features:** pricing, employer self-service, newsletter and the
    platform announcement banner are post-launch. Do not build them now.
+   *(Superseded 2026-11-19: the newsletter opt-in and unsubscribe, the
+   announcement banner and the admin announcement screen are built; see §1.1. The
+   pricing and employer decisions stand.)*
 8. **API closure:** CBT history, course/topic detail, cohort invitations, admin
    campus read and password change are implemented and wired; the UI no longer
    uses dependency placeholders for them.

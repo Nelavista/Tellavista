@@ -556,8 +556,11 @@ the platform on the V1 brand palette:
 7. **Imagery:** editorial blue/white block-print illustrations for mood, real
    photography where the content is documentary, and real product artifacts. Never
    generated evidence, testimonials or metrics.
-8. **Scope:** public pages and missing app/admin screens are in scope; newsletter
-   and the platform announcement banner are deferred post-launch (see `AUDIT.md`).
+8. **Scope:** public pages and missing app/admin screens are in scope. Newsletter
+   and the platform announcement banner were deferred post-launch and are now
+   built (see `AUDIT.md` §3, §8): the footer opt-in, the dismissible workspace
+   banner and `#/announcements` use existing public and admin grammar, with no new
+   visual system.
 
 The first change was the token and primitive foundation, not a page. The palette
 is Nelavista blue `#1535A8` and white `#FFFFFF`; the dark surface uses a readable
@@ -569,9 +572,10 @@ blue tint for text and focus, not a second brand colour.
 
 V1 `main` gained the African Languages Lab, a language profile, structured scored
 language tasks, `/impact`, the FUTA taxonomy and AI-prompt hardening after this
-direction was approved. V2 has none of it yet. This section records the visual
-consequence **if** the product approves porting it (`PARITY.md` 1.2,
-`REMAINING_WORK.md` I1-I8). It does not reopen the approved direction.
+direction was approved. All of it is now ported (`PARITY.md` §1.2,
+`REMAINING_WORK.md` §I), using the rules below rather than a new visual layer. The
+section is kept as the design record for those screens. It does not reopen the
+approved direction.
 
 | V1 addition | Visual rule in V2 |
 |---|---|
@@ -584,6 +588,5 @@ consequence **if** the product approves porting it (`PARITY.md` 1.2,
 | FUTA taxonomy | No student-facing visual change. Admin imports show provenance (`futa_official`) and source in the run report, not a new colour or icon. |
 | AI grading hardening | No visual change. It is a prompt-boundary fix; keep it out of the design layer. |
 
-**Rule:** do not design or ship any of these screens before the data model and
-route decision exist. The approved palette, type, shape, motion and content voice
-apply unchanged.
+**Rule:** each screen was designed only once its data model and route existed.
+The approved palette, type, shape, motion and content voice apply unchanged.

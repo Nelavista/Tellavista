@@ -64,10 +64,15 @@ function skApplySidebarState() {
 
   sidebar.setAttribute('aria-hidden', open ? 'false' : 'true');
   if (toggle) {
+    // On desktop the rail has its own close button; keep the top-bar control as a
+    // hamburger so two × buttons never appear side by side.
+    const label = desktop
+      ? (open ? 'Collapse sidebar' : 'Open sidebar')
+      : (open ? 'Close menu' : 'Open menu');
     toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
-    toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    toggle.setAttribute('aria-label', label);
     const icon = toggle.querySelector('i');
-    if (icon) icon.className = open ? 'ri-close-line' : 'ri-menu-line';
+    if (icon) icon.className = (open && !desktop) ? 'ri-close-line' : 'ri-menu-line';
   }
 }
 function skToggleMenu() {

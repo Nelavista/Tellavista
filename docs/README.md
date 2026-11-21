@@ -14,6 +14,7 @@ For the V2 web launch, read these three and ignore the rest:
 - **`docs/architecture/02-environments.md`** — env vars and environments.
 - **`docs/architecture/03-versioning-and-domains.md`** — why V1 lives on `v1`.
 - **`docs/adr/`** — the decisions behind the architecture.
+- **`docs/partnerships.md`** — TEF and Naijalancers: what goes live, and the publish checklist.
 
 ## Not part of this launch
 

@@ -340,9 +340,12 @@ def test_provider_problems_require_terms_basis(app):
         problems = ' '.join(sync.provider_problems(p))
         assert 'terms' in problems.lower() and 'basis' in problems.lower()
         created = sync.ensure_default_providers()
-        assert set(created) == {'manual', 'jobicy'}
+        assert set(created) == {'manual', 'jobicy', 'naijalancers'}
         jobicy = GigProvider.query.filter_by(slug='jobicy').one()
         assert not jobicy.enabled and not jobicy.redistribution_confirmed
+        naijalancers = GigProvider.query.filter_by(slug='naijalancers').one()
+        assert naijalancers.enabled and naijalancers.kind == 'partner' and naijalancers.adapter == 'manual'
+        assert naijalancers.attribution_text == 'Naijalancers'
 
 
 # ---------------------------------------------------------------- student routes

@@ -29,6 +29,13 @@
     if (light) document.body.classList.add('light-mode', 'light-theme');
   } catch (e) {}
 })();
+// Same before-paint trick for the sidebar: a user who collapsed the rail on desktop
+// shouldn't see it flash open and then slide away on every navigation.
+(function () {
+  try {
+    if (localStorage.getItem('sidebar') === 'collapsed') document.body.classList.add('sidebar-collapsed');
+  } catch (e) {}
+})();
 </script>
 <div class="app-wrapper">
   <div class="sidebar" id="side-menu">
@@ -36,6 +43,7 @@
       <div class="sidebar-header">
         <a href="/choose-path" class="sidebar-logo"><img src="{{ url_for('static', filename='images/nelavista-logo.png') }}" alt="">Nelavista</a>
         <div class="sidebar-tagline">Learn it. Practice it. Track it.</div>
+        <button type="button" class="sidebar-close" onclick="skCloseMenu()" aria-label="Close menu"><i class="ri-close-line" aria-hidden="true"></i></button>
       </div>
       <div class="sidebar-nav">
         <div class="nav-group">
@@ -73,7 +81,7 @@
 
   <div class="main-content">
     <div class="top-bar">
-      <button id="menu-toggle" onclick="skToggleMenu()" aria-label="Open menu"><i class="ri-menu-line"></i></button>
+      <button id="menu-toggle" onclick="skToggleMenu()" aria-label="Open menu" aria-controls="side-menu" aria-expanded="false"><i class="ri-menu-line"></i></button>
       <form action="/search" method="GET" class="sk-topsearch">
         <i class="ri-search-line"></i>
         <input type="text" name="q" placeholder="Search courses, materials..." aria-label="Search courses and materials">

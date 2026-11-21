@@ -239,6 +239,13 @@ def evaluate(db: Session, user: User, opportunity: Opportunity) -> dict:
     return {
         "opportunity_id": opportunity.id,
         "user_id": user.id,
+        "slug": opportunity.slug,
+        "title": opportunity.title,
+        "type": opportunity.type,
+        "client_name": opportunity.client_name,
+        "currency": opportunity.currency,
+        "rate_minor": opportunity.rate_minor,
+        "headcount": opportunity.headcount,
         "eligible": eligible,
         "score": score,
         "blocked": facts["restricted"],

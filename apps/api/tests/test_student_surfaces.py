@@ -152,6 +152,34 @@ def test_external_opportunity_discovery_and_apply(api) -> None:
     assert len(mine.json()["applications"]) == 1
 
 
+def test_a_match_names_the_opportunity_it_is_about(api) -> None:
+    """A match row carries the work it describes, not just an id and a score.
+
+    The engine had the row in hand; returning only `opportunity_id` forced a
+    second request per entry, and the response model has to declare the fields or
+    FastAPI would drop them silently.
+    """
+    client, db = api
+    ops = make_ops(db)
+    opportunity = make_opportunity(db, ops, slug=unique("matched"))
+    student = make_user(db)
+
+    response = client.get(f"{PREFIX}/opportunities/matches", headers=_headers(student))
+
+    assert response.status_code == 200, response.text
+    body = response.json()
+    row = next(item for item in body["matches"] if item["opportunity_id"] == opportunity.id)
+    assert row["slug"] == opportunity.slug
+    assert row["title"] == opportunity.title
+    assert row["type"] == "managed"
+    assert row["client_name"] == opportunity.client_name
+    assert row["currency"] == "USD"
+    assert row["rate_minor"] == opportunity.rate_minor
+    assert row["headcount"] == opportunity.headcount
+    assert row["eligible"] is True
+    assert body["eligible_count"] >= 1
+
+
 def test_managed_opportunity_is_invitation_only(api) -> None:
     client, db = api
     ops = make_ops(db)

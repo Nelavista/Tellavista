@@ -48,10 +48,21 @@ class MatchOut(BaseModel):
 
     `blocked` is not a preference: a quality consequence stops matching and the
     screen must say so instead of showing an empty list.
+
+    The opportunity's own fields are repeated here so a match is readable on its
+    own: the engine already has the row in hand, and without them a client would
+    have to fetch every opportunity again just to say what a match is.
     """
 
     opportunity_id: int
     user_id: int
+    slug: str
+    title: str
+    type: str
+    client_name: str | None = None
+    currency: str | None = None
+    rate_minor: int | None = None
+    headcount: int | None = None
     eligible: bool
     score: int
     blocked: bool = False

@@ -4938,12 +4938,30 @@ export interface components {
          *
          *     `blocked` is not a preference: a quality consequence stops matching and the
          *     screen must say so instead of showing an empty list.
+         *
+         *     The opportunity's own fields are repeated here so a match is readable on its
+         *     own: the engine already has the row in hand, and without them a client would
+         *     have to fetch every opportunity again just to say what a match is.
          */
         MatchOut: {
             /** Opportunity Id */
             opportunity_id: number;
             /** User Id */
             user_id: number;
+            /** Slug */
+            slug: string;
+            /** Title */
+            title: string;
+            /** Type */
+            type: string;
+            /** Client Name */
+            client_name?: string | null;
+            /** Currency */
+            currency?: string | null;
+            /** Rate Minor */
+            rate_minor?: number | null;
+            /** Headcount */
+            headcount?: number | null;
             /** Eligible */
             eligible: boolean;
             /** Score */

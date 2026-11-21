@@ -15,6 +15,13 @@
     if (light) document.body.classList.add('light-mode', 'light-theme');
   } catch (e) {}
 })();
+// Collapse choice is applied before paint, same as the theme above, so the rail never
+// flashes open for someone who closed it on a previous page.
+(function () {
+  try {
+    if (localStorage.getItem('sidebar') === 'collapsed') document.body.classList.add('sidebar-collapsed');
+  } catch (e) {}
+})();
 </script>
 <div class="app-wrapper">
   <div class="sidebar" id="side-menu">
@@ -22,6 +29,7 @@
       <div class="sidebar-header">
         <a href="/choose-path" class="sidebar-logo"><img src="{{ url_for('static', filename='images/nelavista-logo.png') }}" alt="">Nelavista</a>
         <div class="sidebar-tagline">Find work. Do it well. Get paid.</div>
+        <button type="button" class="sidebar-close" onclick="skCloseMenu()" aria-label="Close menu"><i class="ri-close-line" aria-hidden="true"></i></button>
       </div>
       <div class="sidebar-nav">
         <div class="nav-group">
@@ -60,7 +68,7 @@
 
   <div class="main-content">
     <div class="top-bar">
-      <button id="menu-toggle" onclick="skToggleMenu()" aria-label="Open menu"><i class="ri-menu-line"></i></button>
+      <button id="menu-toggle" onclick="skToggleMenu()" aria-label="Open menu" aria-controls="side-menu" aria-expanded="false"><i class="ri-menu-line"></i></button>
       <div class="dv2-topbar-spacer"></div>
       <button id="theme-toggle" onclick="skToggleTheme()" aria-label="Toggle theme"><i class="ri-moon-line"></i></button>
       <a href="/logout" class="top-icon-btn sk-topbar-logout" aria-label="Logout" data-confirm-logout><i class="ri-logout-box-line"></i></a>

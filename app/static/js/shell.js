@@ -35,16 +35,76 @@ function skApplyTheme(effective) {
   }
 })();
 
+// Desktop (>=1024px) uses a persistent rail that can be collapsed; mobile uses an
+// off-canvas drawer with an overlay. Same markup and same toggle on every path, so the
+// two behaviours live here instead of in each sidebar template.
+function skSidebarIsDesktop() {
+  return !window.matchMedia || window.matchMedia('(min-width: 1024px)').matches;
+}
+function skApplySidebarState() {
+  const sidebar = document.getElementById('side-menu');
+  const overlay = document.getElementById('overlay');
+  if (!sidebar) return;
+  const desktop = skSidebarIsDesktop();
+  const toggle = document.getElementById('menu-toggle');
+  let open;
+
+  if (desktop) {
+    // The rail's state is body.sidebar-collapsed (see skills.css); clear any drawer state
+    // left over from a mobile-sized viewport so the two models never fight.
+    sidebar.classList.remove('active');
+    if (overlay) overlay.classList.remove('active');
+    document.body.style.overflow = '';
+    open = !document.body.classList.contains('sidebar-collapsed');
+  } else {
+    open = sidebar.classList.contains('active');
+    if (overlay) overlay.classList.toggle('active', open);
+    document.body.style.overflow = open ? 'hidden' : '';
+  }
+
+  sidebar.setAttribute('aria-hidden', open ? 'false' : 'true');
+  if (toggle) {
+    toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    const icon = toggle.querySelector('i');
+    if (icon) icon.className = open ? 'ri-close-line' : 'ri-menu-line';
+  }
+}
 function skToggleMenu() {
-  document.getElementById('side-menu').classList.toggle('active');
-  document.getElementById('overlay').classList.toggle('active');
-  document.body.style.overflow = document.getElementById('side-menu').classList.contains('active') ? 'hidden' : '';
+  const sidebar = document.getElementById('side-menu');
+  if (!sidebar) return;
+  if (skSidebarIsDesktop()) {
+    const collapsed = document.body.classList.toggle('sidebar-collapsed');
+    try { localStorage.setItem('sidebar', collapsed ? 'collapsed' : 'open'); } catch (e) {}
+  } else {
+    sidebar.classList.toggle('active');
+  }
+  skApplySidebarState();
 }
 function skCloseMenu() {
-  document.getElementById('side-menu').classList.remove('active');
-  document.getElementById('overlay').classList.remove('active');
-  document.body.style.overflow = '';
+  const sidebar = document.getElementById('side-menu');
+  if (!sidebar) return;
+  if (skSidebarIsDesktop()) {
+    document.body.classList.add('sidebar-collapsed');
+    try { localStorage.setItem('sidebar', 'collapsed'); } catch (e) {}
+  } else {
+    sidebar.classList.remove('active');
+  }
+  skApplySidebarState();
 }
+function skInitSidebar() {
+  try {
+    if (localStorage.getItem('sidebar') === 'collapsed') {
+      document.body.classList.add('sidebar-collapsed');
+    }
+  } catch (e) {}
+  skApplySidebarState();
+}
+skInitSidebar();
+window.addEventListener('resize', skApplySidebarState);
+document.addEventListener('keydown', function (e) {
+  if (e.key === 'Escape') skCloseMenu();
+});
 function skToggleTheme() {
   const isLight = document.body.classList.toggle('light-mode');
   const next = isLight ? 'light' : 'dark';

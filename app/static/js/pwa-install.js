@@ -18,6 +18,8 @@
     
     installBanner = document.createElement('div');
     installBanner.className = 'nelavista-install-banner';
+    installBanner.setAttribute('role', 'dialog');
+    installBanner.setAttribute('aria-label', 'Install Nelavista');
     installBanner.innerHTML = `
       <div class="content">
         <div class="icon">
@@ -32,8 +34,8 @@
         </div>
       </div>
       <div class="actions">
-        <button class="download-btn" id="installBtn">Install</button>
-        <button class="close-btn" id="closeBanner">×</button>
+        <button type="button" class="download-btn" id="installBtn">Install</button>
+        <button type="button" class="close-btn" id="closeBanner" aria-label="Dismiss install prompt">×</button>
       </div>
     `;
     

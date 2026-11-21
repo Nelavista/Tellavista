@@ -38,3 +38,17 @@ def test_landing_band_links_to_impact_with_same_figures(pages_client):
     assert 'href="/impact"' in html
     assert 'data-target="2500"' in html
     assert 'data-target="500"' in html
+
+
+def test_footer_shares_the_page_instead_of_placeholder_profiles(pages_client):
+    html = pages_client.get('/').get_data(as_text=True)
+
+    assert 'aria-label="Share Nelavista"' in html
+    assert 'aria-label="Share Nelavista on Facebook"' in html
+    assert 'aria-label="Share Nelavista on WhatsApp"' in html
+    assert 'aria-label="Share Nelavista on Telegram"' in html
+    assert 'https://www.facebook.com/sharer/sharer.php?u=' in html
+    assert 'https://wa.me/?text=' in html
+    assert 'https://t.me/share/url?url=' in html
+    assert 'example.com/nelavista-' not in html
+    assert 'footer-social-tiktok' not in html

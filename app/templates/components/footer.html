@@ -43,11 +43,12 @@
         </div>
       </div>
     </div>
-    <nav class="footer-social" aria-label="Nelavista social media">
-      <a class="footer-social-link footer-social-facebook" href="{{ config['SOCIAL_FACEBOOK_URL'] }}" aria-label="Nelavista on Facebook" target="_blank" rel="noopener noreferrer"><img src="{{ url_for('static', filename='images/social/facebook.svg') }}" alt=""></a>
-      <a class="footer-social-link footer-social-whatsapp" href="{{ config['SOCIAL_WHATSAPP_URL'] }}" aria-label="Nelavista on WhatsApp" target="_blank" rel="noopener noreferrer"><img src="{{ url_for('static', filename='images/social/whatsapp.svg') }}" alt=""></a>
-      <a class="footer-social-link footer-social-tiktok" href="{{ config['SOCIAL_TIKTOK_URL'] }}" aria-label="Nelavista on TikTok" target="_blank" rel="noopener noreferrer"><img src="{{ url_for('static', filename='images/social/tiktok.svg') }}" alt=""></a>
-      <a class="footer-social-link footer-social-telegram" href="{{ config['SOCIAL_TELEGRAM_URL'] }}" aria-label="Nelavista on Telegram" target="_blank" rel="noopener noreferrer"><img src="{{ url_for('static', filename='images/social/telegram.svg') }}" alt=""></a>
+    {% set share_url = request.url %}
+    {% set share_text = 'Nelavista: learn it, prove it, get paid for it.' %}
+    <nav class="footer-social" aria-label="Share Nelavista">
+      <a class="footer-social-link footer-social-facebook" href="https://www.facebook.com/sharer/sharer.php?u={{ share_url|urlencode }}" aria-label="Share Nelavista on Facebook" title="Share Nelavista on Facebook" target="_blank" rel="noopener noreferrer"><img src="{{ url_for('static', filename='images/social/facebook.svg') }}" alt=""></a>
+      <a class="footer-social-link footer-social-whatsapp" href="https://wa.me/?text={{ (share_text ~ ' ' ~ share_url)|urlencode }}" aria-label="Share Nelavista on WhatsApp" title="Share Nelavista on WhatsApp" target="_blank" rel="noopener noreferrer"><img src="{{ url_for('static', filename='images/social/whatsapp.svg') }}" alt=""></a>
+      <a class="footer-social-link footer-social-telegram" href="https://t.me/share/url?url={{ share_url|urlencode }}&amp;text={{ share_text|urlencode }}" aria-label="Share Nelavista on Telegram" title="Share Nelavista on Telegram" target="_blank" rel="noopener noreferrer"><img src="{{ url_for('static', filename='images/social/telegram.svg') }}" alt=""></a>
     </nav>
   </div>
   <div class="footer-wordmark-wrap" aria-hidden="true">

@@ -124,6 +124,8 @@ def create_app():
     app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME') or None
     app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD') or None
     app.config['MAIL_DEFAULT_SENDER'] = os.environ.get('MAIL_DEFAULT_SENDER', 'noreply@nelavista.com')
+    # New /talent/request submissions are emailed here (see services/talent_notify.py).
+    app.config['TALENT_REQUEST_NOTIFY_EMAIL'] = os.environ.get('TALENT_REQUEST_NOTIFY_EMAIL') or 'hello@nelavista.com'
     if not (app.config['MAIL_USERNAME'] and app.config['MAIL_PASSWORD']):
         logger.warning(
             'MAIL_USERNAME and/or MAIL_PASSWORD are not set -- password-reset and '

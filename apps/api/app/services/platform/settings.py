@@ -22,6 +22,7 @@ from typing import Any
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from app.core.config import get_settings
 from app.core.errors import ApiError
 from app.core.time import utcnow
 from app.models.identity import CONSENT_KINDS, Consent, User
@@ -294,6 +295,9 @@ def public_config(row: PlatformSettings) -> dict[str, Any]:
         "curriculum_authoring_model": row.curriculum_authoring_model,
         "target_launch_date": row.target_launch_date,
         "updated_at": row.updated_at,
+        # Public by design: a browser needs it to subscribe, and it authorises
+        # nothing on its own. Empty means this environment does not offer web push.
+        "push_public_key": get_settings().VAPID_PUBLIC_KEY or None,
     }
 
 

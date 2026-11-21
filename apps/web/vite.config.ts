@@ -50,6 +50,10 @@ export default defineConfig(({ mode }) => {
           navigateFallback: '/index.html',
           navigateFallbackDenylist: [/^\/api\//],
           cleanupOutdatedCaches: true,
+          // Web Push handlers live in a plain file rather than importManifest
+          // mode: the same worker must serve the app shell, and one extra script
+          // is cheaper than losing the generated precache list.
+          importScripts: ['push-sw.js'],
         },
       }),
     ],

@@ -5722,6 +5722,8 @@ export interface components {
             target_launch_date?: string | null;
             /** Updated At */
             updated_at?: string | null;
+            /** Push Public Key */
+            push_public_key?: string | null;
         };
         /**
          * PlatformSettingsIn
@@ -5790,6 +5792,8 @@ export interface components {
             target_launch_date?: string | null;
             /** Updated At */
             updated_at?: string | null;
+            /** Push Public Key */
+            push_public_key?: string | null;
             /** Id */
             id: number;
             /** Payout Second Approver Threshold Minor */
@@ -6089,6 +6093,7 @@ export interface components {
              * @default android
              */
             platform: string;
+            subscription?: components["schemas"]["PushSubscriptionIn"] | null;
         };
         /** PushDeviceListOut */
         PushDeviceListOut: {
@@ -6105,6 +6110,18 @@ export interface components {
             platform: string;
             /** Last Seen At */
             last_seen_at?: string | null;
+        };
+        /**
+         * PushSubscriptionIn
+         * @description The browser half of a Web Push subscription (`PushSubscription.toJSON()`).
+         */
+        PushSubscriptionIn: {
+            /** Endpoint */
+            endpoint: string;
+            /** P256Dh */
+            p256dh: string;
+            /** Auth */
+            auth: string;
         };
         /** QualityOut */
         QualityOut: {

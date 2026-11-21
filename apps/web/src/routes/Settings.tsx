@@ -11,6 +11,7 @@ import type {
   LanguagesOut,
   NotificationListOut,
   ProfileOut,
+  PlatformConfigOut,
   PushDeviceListOut,
   TokenOut,
 } from '@nelavista/api-client';
@@ -19,6 +20,7 @@ import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 
 import { formatDateTime } from '../lib/format';
 import { ApiError, http, setAccessToken } from '../lib/http';
+import { disablePush, enablePush, readPushStatus, type PushStatus } from '../lib/push';
 import { useApiResource } from '../lib/resource';
 import { useSession } from '../lib/session';
 import { useTheme } from '../lib/theme-context';
@@ -106,6 +108,7 @@ export function Settings(): JSX.Element {
   const [bio, setBio] = React.useState(sessionProfile?.bio ?? '');
   const [locationValue, setLocationValue] = React.useState(sessionProfile?.location ?? '');
   const [timezone, setTimezone] = React.useState(sessionProfile?.timezone ?? '');
+  const [dateOfBirth, setDateOfBirth] = React.useState(sessionProfile?.date_of_birth ?? '');
   const [visibility, setVisibility] = React.useState(sessionProfile?.profile_visibility ?? 'private');
   const [notifyEmail, setNotifyEmail] = React.useState(sessionProfile?.notify_email ?? true);
   const notifyPush = sessionProfile?.notify_push ?? true;
@@ -152,6 +155,8 @@ export function Settings(): JSX.Element {
         bio: bio.trim(),
         location: locationValue.trim(),
         timezone: timezone.trim(),
+        // Empty means "not given": the API keeps null and no age rule is applied.
+        date_of_birth: dateOfBirth || null,
         profile_visibility: visibility,
         notify_email: notifyEmail,
         notify_push: notifyPush,
@@ -352,6 +357,8 @@ export function Settings(): JSX.Element {
           setLocation={setLocationValue}
           timezone={timezone}
           setTimezone={setTimezone}
+          dateOfBirth={dateOfBirth}
+          setDateOfBirth={setDateOfBirth}
           visibility={visibility}
           setVisibility={setVisibility}
           busy={busy}
@@ -428,6 +435,8 @@ function ProfileSection(props: {
   setLocation: (value: string) => void;
   timezone: string;
   setTimezone: (value: string) => void;
+  dateOfBirth: string;
+  setDateOfBirth: (value: string) => void;
   visibility: string;
   setVisibility: (value: string) => void;
   busy: boolean;
@@ -483,6 +492,13 @@ function ProfileSection(props: {
             maxLength={64}
             value={props.timezone}
             onChange={(event) => props.setTimezone(event.target.value)}
+          />
+          <Field
+            hint="Only used for the paid-work age rules. Never shown on your public profile."
+            label="Date of birth"
+            type="date"
+            value={props.dateOfBirth}
+            onChange={(event) => props.setDateOfBirth(event.target.value)}
           />
           <Select
             label="Who can see your Talent profile"
@@ -826,11 +842,7 @@ function NotificationsSection({
             onChange={(event) => setNotifyEmail(event.target.checked)}
             label="Email me about review, payouts and deadlines"
           />
-          <Banner tone="info">
-            <strong>Push is not available in this build.</strong> This browser cannot register a device, so
-            email is the only active channel. A device registered by the mobile app appears below and can be
-            removed here.
-          </Banner>
+          <BrowserPushPanel />
           <div className="nv-row nv-row--between">
             <Link className="nv-link-arrow" to="/notifications">
               Open the full inbox
@@ -881,6 +893,129 @@ function NotificationsSection({
         )}
       </Panel>
     </div>
+  );
+}
+
+/**
+ * Browser push, on the page where the email choice lives.
+ *
+ * Every state is explained rather than hidden: a student who sees no button is
+ * owed the reason (no service worker, no VAPID key here, blocklisted permission),
+ * and a blocklisted permission can only be undone in browser settings.
+ */
+function BrowserPushPanel(): JSX.Element {
+  const config = useApiResource<PlatformConfigOut>('/platform/config');
+  const [status, setStatus] = React.useState<PushStatus | null>(null);
+  const [busy, setBusy] = React.useState(false);
+  const [note, setNote] = React.useState<string | null>(null);
+  const [error, setError] = React.useState<string | null>(null);
+
+  React.useEffect(() => {
+    void readPushStatus()
+      .then(setStatus)
+      .catch(() => setStatus({ supported: false, ready: false, permission: 'unsupported', endpoint: null }));
+  }, []);
+
+  const publicKey = config.resource.status === 'ready' ? config.resource.data.push_public_key : null;
+
+  async function refresh(): Promise<void> {
+    setStatus(await readPushStatus());
+  }
+
+  async function turnOn(): Promise<void> {
+    if (!publicKey) return;
+    setBusy(true);
+    setError(null);
+    setNote(null);
+    try {
+      await enablePush(publicKey);
+      await refresh();
+      setNote('This browser will now receive push notifications.');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Could not register this browser.');
+      await refresh().catch(() => undefined);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function turnOff(): Promise<void> {
+    setBusy(true);
+    setError(null);
+    setNote(null);
+    try {
+      await disablePush();
+      await refresh();
+      setNote('This browser will no longer receive push notifications.');
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : 'Could not remove this browser.');
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <Panel
+      title="Push on this browser"
+      actions={status?.endpoint ? <Badge tone="success">On</Badge> : <Badge tone="neutral">Off</Badge>}
+    >
+      <div className="nv-stack">
+        {status === null ? (
+          <Skeleton lines={2} />
+        ) : !status.supported ? (
+          <Banner tone="info">
+            This browser cannot receive push notifications. Email is the working channel here; the mobile app
+            registers a device on its own.
+          </Banner>
+        ) : !status.ready ? (
+          <Banner tone="info">
+            Push becomes available once this build has its service worker registered. Reload the app, or
+            install it, and this panel will offer the switch.
+          </Banner>
+        ) : !publicKey ? (
+          <Banner tone="info">
+            Web push is not configured for this environment, so this browser cannot be registered. Email still
+            works.
+          </Banner>
+        ) : status.permission === 'denied' ? (
+          <Banner tone="warning">
+            Notifications are blocked for this site. Allow them in your browser settings, then reload this
+            page.
+          </Banner>
+        ) : status.endpoint ? (
+          <div className="nv-row nv-row--between">
+            <p className="nv-muted">
+              This browser is registered. Notifications appear here even when the app is closed.
+            </p>
+            <Button
+              disabled={busy}
+              onClick={() => void turnOff()}
+              size="sm"
+              type="button"
+              variant="secondary"
+            >
+              {busy ? 'Removing' : 'Turn off'}
+            </Button>
+          </div>
+        ) : (
+          <div className="nv-row nv-row--between">
+            <p className="nv-muted">
+              Register this browser as a device. The browser will ask for permission; nothing is registered
+              unless you allow it.
+            </p>
+            <Button disabled={busy} onClick={() => void turnOn()} size="sm" type="button">
+              {busy ? 'Registering' : 'Turn on push'}
+            </Button>
+          </div>
+        )}
+        {note ? <p role="status">{note}</p> : null}
+        {error ? (
+          <p className="nv-error" role="alert">
+            {error}
+          </p>
+        ) : null}
+      </div>
+    </Panel>
   );
 }
 

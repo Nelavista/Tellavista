@@ -34,6 +34,7 @@ from typing import Any
 import httpx
 
 from app.core.config import get_settings
+from app.core.time import utcnow
 from app.worker.errors import PermanentJobError
 
 logger = logging.getLogger(__name__)
@@ -164,12 +165,52 @@ def _device_tokens(user_id: Any) -> list[str]:
         )
 
 
+def _web_subscriptions(user_id: Any) -> list[tuple[int, dict[str, Any]]]:
+    """Live browser subscriptions for a user, as (device id, subscription)."""
+    if not user_id:
+        return []
+    from sqlalchemy import select
+
+    from app.db.session import SessionLocal
+    from app.models.engagement import PushDevice
+
+    with SessionLocal() as db:
+        rows = db.execute(
+            select(PushDevice.id, PushDevice.subscription).where(
+                PushDevice.user_id == int(user_id),
+                PushDevice.revoked_at.is_(None),
+                PushDevice.platform == "web",
+                PushDevice.subscription.is_not(None),
+            )
+        ).all()
+        return [(row[0], row[1]) for row in rows if isinstance(row[1], dict)]
+
+
+def _revoke_push_device(device_id: int, reason: str) -> None:
+    """Stop trying a dead endpoint. The browser registers again when it can."""
+    from app.db.session import SessionLocal
+    from app.models.engagement import PushDevice
+
+    with SessionLocal() as db:
+        row = db.get(PushDevice, device_id)
+        if row is not None and row.revoked_at is None:
+            row.revoked_at = utcnow()
+            db.commit()
+    logger.info("push revoked device=%s reason=%s", device_id, reason)
+
+
 def send_push(payload: dict[str, Any]) -> None:
     """Deliver a push to every live device, then mark the notification pushed.
 
-    With no `PUSH_ENDPOINT` configured this is in-app only: the notification row
-    is already visible, so nothing is lost. The transport is one httpx call per
-    token so swapping it for Expo's API or a provider SDK is local to this file.
+    Two transports, chosen by the row rather than by the caller:
+
+    * native installs carry a provider token and go to `PUSH_ENDPOINT` (Expo);
+    * browser installs carry a Web Push subscription and are signed with the
+      VAPID key pair via `pywebpush`.
+
+    With neither configured this is in-app only: the notification row is already
+    visible, so nothing is lost. Neither branch fails the whole notification, so
+    one dead device cannot silence the others.
     """
     settings = get_settings()
     tokens = payload.get("device_tokens") or _device_tokens(payload.get("user_id"))
@@ -193,8 +234,10 @@ def send_push(payload: dict[str, Any]) -> None:
                 logger.warning(
                     "push rejected token=%s status=%s", token[-6:], response.status_code
                 )
-    else:
+    elif not settings.PUSH_ENDPOINT:
         logger.info("push skipped (PUSH_ENDPOINT unset) notification=%s", payload.get("notification_id"))
+
+    _send_web_push(payload, settings)
 
     from app.db.session import SessionLocal
     from app.models.engagement import Notification
@@ -208,6 +251,58 @@ def send_push(payload: dict[str, Any]) -> None:
 
                 row.pushed_at = datetime.now(UTC)
                 db.commit()
+
+
+def _send_web_push(payload: dict[str, Any], settings: Any) -> None:
+    """Sign and deliver to each browser subscription, if VAPID is configured."""
+    if not settings.VAPID_PRIVATE_KEY:
+        return
+    targets = _web_subscriptions(payload.get("user_id"))
+    if not targets:
+        return
+
+    import json
+
+    try:
+        from pywebpush import WebPushException, webpush
+    except ImportError:  # pragma: no cover - dependency is declared
+        logger.warning("web push skipped (pywebpush not installed)")
+        return
+
+    body = json.dumps(
+        {
+            "title": payload.get("title"),
+            "body": payload.get("body"),
+            "data": payload.get("data") or {},
+            "notification_id": payload.get("notification_id"),
+        },
+        default=str,
+    )
+    for device_id, subscription in targets:
+        try:
+            webpush(
+                subscription_info={
+                    "endpoint": subscription.get("endpoint"),
+                    "keys": {
+                        "p256dh": subscription.get("p256dh"),
+                        "auth": subscription.get("auth"),
+                    },
+                },
+                data=body,
+                vapid_private_key=settings.VAPID_PRIVATE_KEY,
+                vapid_claims={"sub": settings.VAPID_SUBJECT},
+                timeout=10,
+            )
+        except WebPushException as exc:
+            status = getattr(getattr(exc, "response", None), "status_code", None)
+            # 404/410 mean the browser threw the subscription away. Revoking is
+            # the only correct answer: retrying that endpoint can never succeed.
+            if status in {404, 410}:
+                _revoke_push_device(device_id, f"web_push_{status}")
+            else:
+                logger.warning("web push failed device=%s status=%s", device_id, status)
+        except Exception:  # noqa: BLE001 - one bad subscription must not stop the rest
+            logger.exception("web push failed device=%s", device_id)
 
 
 def noop(payload: dict[str, Any]) -> None:

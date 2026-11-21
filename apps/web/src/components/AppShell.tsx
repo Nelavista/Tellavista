@@ -11,7 +11,9 @@ import {
   LogOut,
   MapPin,
   Settings,
+  ShieldCheck,
   Sparkles,
+  Target,
   Wallet,
   type LucideIcon,
 } from 'lucide-react';
@@ -61,6 +63,8 @@ const GROUPS: Array<{ label: string; items: NavItem[] }> = [
     label: 'Work',
     items: [
       { to: '/opportunities', label: 'Opportunities', icon: Briefcase },
+      { to: '/opportunities/matches', label: 'Matches', icon: Target },
+      { to: '/eligibility', label: 'Eligibility', icon: ShieldCheck },
       { to: '/work', label: 'My work', icon: ClipboardCheck },
       { to: '/earnings', label: 'Earnings', icon: Wallet },
     ],
@@ -120,6 +124,8 @@ const TITLES: Array<[string, string]> = [
   ['/verification', 'Verification'],
   ['/transcript', 'Transcript'],
   ['/opportunities/applications', 'My applications'],
+  ['/opportunities/matches', 'Matches'],
+  ['/eligibility', 'Eligibility'],
   ['/opportunities', 'Opportunities'],
   ['/work', 'My work'],
   ['/earnings', 'Earnings'],

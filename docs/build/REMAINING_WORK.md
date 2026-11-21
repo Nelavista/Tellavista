@@ -410,12 +410,12 @@ read as an outage. Full context is in `docs/v2-ui/AUDIT.md` §6.1.
 
 | Edge | Current state | Decision |
 |---|---|---|
-| `GET /opportunities/matches` | No separate matches view; the opportunity list shows verdicts | Nice-to-have; do not add a second list without a product reason |
-| `GET /platform/me/eligibility` | No standalone readiness view; blockers appear on opportunity detail | Deferred |
-| `GET /academia/cbt/practice-next` | No adaptive practice UI | Deferred |
+| `GET /opportunities/matches` | `/opportunities/matches` renders the ranked list | Delivered |
+| `GET /platform/me/eligibility` | `/eligibility` renders the verdict and each blocker's fix | Delivered |
+| `GET /academia/cbt/practice-next` | Adaptive practice panel in `/academia/cbt` | Delivered |
 | `POST /auth/google` | No Google sign-in button | Deferred; normal auth is complete |
 | `POST /work/submissions/sync` | No web offline submission queue | Deferred; API exists for a future client |
-| Browser push registration | Settings lists and removes registered devices; the web app cannot register a browser device | Intentional; push is a mobile capability at launch |
+| Browser push registration | Settings registers, lists and removes browser devices through `push-sw.js`; delivery is signed with VAPID and needs both keys configured | Delivered; a native provider endpoint (`PUSH_ENDPOINT`) is still required for mobile |
 | `GET /talent/me/transcript` | Duplicate of the transcript read used by `/verification/transcript` | Leave unused; do not build a second transcript screen |
 
 Do not invent UI for these to make a checklist look complete. Close an edge by

@@ -241,9 +241,21 @@ class NotificationReadOut(BaseModel):
     updated: int
 
 
+class PushSubscriptionIn(BaseModel):
+    """The browser half of a Web Push subscription (`PushSubscription.toJSON()`)."""
+
+    endpoint: str = Field(min_length=10, max_length=512)
+    p256dh: str = Field(min_length=8, max_length=255)
+    auth: str = Field(min_length=8, max_length=255)
+
+
 class PushDeviceIn(BaseModel):
-    token: str = Field(min_length=8, max_length=255)
+    # Native: the provider token. Web: the subscription endpoint, which doubles
+    # as the address and is why the ceiling is a URL's rather than a token's.
+    token: str = Field(min_length=8, max_length=512)
     platform: str = Field(default="android", max_length=10)
+    # Required for web; the delivery job cannot encrypt without the keys.
+    subscription: PushSubscriptionIn | None = None
 
 
 class PushDeviceOut(BaseModel):

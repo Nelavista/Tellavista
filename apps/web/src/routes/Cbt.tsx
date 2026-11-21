@@ -6,7 +6,13 @@
  * dashboard's strengths and weaknesses, so it names the topic and the next action
  * rather than only a score.
  */
-import type { CbtAnswerOut, CbtQuizOut, CbtResultsOut, OnboardingStateOut } from '@nelavista/api-client';
+import type {
+  CbtAnswerOut,
+  CbtPracticeNextOut,
+  CbtQuizOut,
+  CbtResultsOut,
+  OnboardingStateOut,
+} from '@nelavista/api-client';
 import {
   Badge,
   Banner,
@@ -39,9 +45,16 @@ export function Cbt(): JSX.Element {
   const [busy, setBusy] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
 
+  const [practice, setPractice] = React.useState<CbtPracticeNextOut | null>(null);
+  const [practiceIndex, setPracticeIndex] = React.useState(0);
+  const [practiceAnswers, setPracticeAnswers] = React.useState<Record<number, CbtAnswerOut>>({});
+  const [practiceSelected, setPracticeSelected] = React.useState<string | null>(null);
+
   const courses = state.resource.status === 'ready' ? state.resource.data.enrolments : [];
   const current = quiz?.questions[index] ?? null;
   const answered = current ? answers[current.id] : undefined;
+  const practiceCurrent = practice?.questions[practiceIndex] ?? null;
+  const practiceAnswered = practiceCurrent ? practiceAnswers[practiceCurrent.id] : undefined;
 
   React.useEffect(() => {
     if (!presetCourse || state.resource.status !== 'ready') return;
@@ -82,6 +95,49 @@ export function Cbt(): JSX.Element {
       });
       setAnswers((rows) => ({ ...rows, [current.id]: answer }));
       setSelected(null);
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : 'Could not save that answer.');
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  /**
+   * Adaptive practice: the API picks questions from the topics where accuracy is
+   * lowest, so the student does not have to read a results table and guess. The
+   * copy says "weak topics" only when the API actually named some.
+   */
+  async function loadWeakPractice(): Promise<void> {
+    if (!courseId) return;
+    setBusy(true);
+    setError(null);
+    try {
+      const next = await http.get<CbtPracticeNextOut>(
+        `/academia/cbt/practice-next?course_id=${courseId}&limit=5`,
+      );
+      setPractice(next);
+      setPracticeIndex(0);
+      setPracticeAnswers({});
+      setPracticeSelected(null);
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : 'Could not load adaptive practice.');
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function checkPracticeAnswer(): Promise<void> {
+    if (!practiceCurrent || !practiceSelected) return;
+    setBusy(true);
+    setError(null);
+    try {
+      const answer = await http.post<CbtAnswerOut>('/academia/cbt/answer', {
+        question_id: practiceCurrent.id,
+        selected_key: practiceSelected,
+        client_key: `cbt-adaptive-${practiceCurrent.id}-${Date.now()}`,
+      });
+      setPracticeAnswers((rows) => ({ ...rows, [practiceCurrent.id]: answer }));
+      setPracticeSelected(null);
     } catch (err) {
       setError(err instanceof ApiError ? err.message : 'Could not save that answer.');
     } finally {
@@ -176,6 +232,7 @@ export function Cbt(): JSX.Element {
                 setCourseId(event.target.value);
                 setQuiz(null);
                 setResults(null);
+                setPractice(null);
               }}
             />
           </div>
@@ -209,6 +266,114 @@ export function Cbt(): JSX.Element {
             <p>{error}</p>
           </Banner>
         ) : null}
+      </Panel>
+
+      <Panel
+        title="Practise what is weak"
+        actions={
+          practice ? (
+            <Badge tone={practice.focus_topics.length > 0 ? 'warning' : 'neutral'}>
+              {practice.focus_topics.length > 0
+                ? `${practice.focus_topics.length} weak ${practice.focus_topics.length === 1 ? 'topic' : 'topics'}`
+                : 'Whole course'}
+            </Badge>
+          ) : null
+        }
+      >
+        <div className="nv-stack">
+          <p className="nv-muted">
+            Adaptive practice asks the API for questions from the topics where your accuracy is lowest. It is
+            still practice: nothing here counts towards verification.
+          </p>
+          <div>
+            <Button
+              disabled={busy || !courseId}
+              type="button"
+              variant="secondary"
+              onClick={() => void loadWeakPractice()}
+            >
+              {practice ? 'Draw a new set' : 'Draw 5 questions'}
+            </Button>
+          </div>
+
+          {practice && practice.questions.length === 0 ? (
+            <EmptyState
+              body="This course has no active questions yet. Try a paper or read the material first."
+              icon={ClipboardCheck}
+              title="No questions to draw from"
+            />
+          ) : null}
+
+          {practiceCurrent ? (
+            <div className="nv-stack" aria-live="polite">
+              <p className="nv-meta">
+                Question {practiceIndex + 1} of {practice?.questions.length ?? 0}
+              </p>
+              <h3 className="nv-h3">{practiceCurrent.prompt}</h3>
+              {practiceAnswered ? (
+                <div className="nv-stack">
+                  <Banner tone={practiceAnswered.is_correct ? 'success' : 'warning'}>
+                    <p>
+                      <strong>{practiceAnswered.is_correct ? 'Correct' : 'Not yet'}</strong>
+                      {practiceAnswered.correct_key ? (
+                        <span className="nv-muted"> · correct option {practiceAnswered.correct_key}</span>
+                      ) : null}
+                    </p>
+                    {practiceAnswered.explanation ? <p>{practiceAnswered.explanation}</p> : null}
+                  </Banner>
+                  <div>
+                    <Button
+                      type="button"
+                      onClick={() => {
+                        if (practice && practiceIndex + 1 < practice.questions.length) {
+                          setPracticeIndex(practiceIndex + 1);
+                        } else {
+                          setPractice(null);
+                        }
+                      }}
+                    >
+                      {practice && practiceIndex + 1 < practice.questions.length
+                        ? 'Next question'
+                        : 'Done for now'}
+                      <ArrowRight aria-hidden="true" size={15} />
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <div className="nv-stack">
+                  <ul className="nv-list">
+                    {practiceCurrent.options.map((option) => {
+                      const key = String(option.key ?? '');
+                      return (
+                        <li key={key}>
+                          <label className="nv-check">
+                            <input
+                              checked={practiceSelected === key}
+                              name="cbt-adaptive-option"
+                              type="radio"
+                              value={key}
+                              onChange={() => setPracticeSelected(key)}
+                            />
+                            {String(option.text ?? option.label ?? key)}
+                          </label>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                  <div>
+                    <Button
+                      disabled={busy || !practiceSelected}
+                      type="button"
+                      onClick={() => void checkPracticeAnswer()}
+                    >
+                      {busy ? 'Saving…' : 'Check answer'}
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </div>
+          ) : null}
+        </div>
       </Panel>
 
       {quiz && current ? (

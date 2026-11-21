@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Status | **Current as of 2026-11-21.** The original V2 UI build is implemented and the post-build admin and comms gaps are closed (first-login 2FA coverage, bulk actions, aggregate ops overview, application lifecycle, announcements and newsletter). Launch remains blocked by business decisions, one manual browser pass and the single open V1 item in §6. |
+| Status | **Current as of 2026-11-21.** The original V2 UI build is implemented and the post-build admin and comms gaps are closed (first-login 2FA coverage, bulk actions, aggregate ops overview, application lifecycle, announcements and newsletter). The last four student-surface gaps are closed too: matches, eligibility, adaptive CBT practice and browser push all have web routes and tests. Launch remains blocked by business decisions, one manual browser pass and the single open V1 item in §6. |
 | Scope | V2 web, admin, design system and UI-facing API contracts |
 | Source of truth | Current code in `apps/`, `packages/` and the V2 API contracts |
 | Companion documents | `docs/v2-ui/PARITY.md`, `docs/v2-ui/ROUTE-MAP.md`, `docs/v2-ui/DESIGN-DIRECTION.md`, `docs/v2-ui/IMAGE-PROMPTS.md`, `docs/build/REMAINING_WORK.md` |
@@ -121,22 +121,29 @@ business content and operational instrumentation must be resolved before launch.
 - Opportunity qualification blockers, applications, work assignments,
   submissions, quality review and cohort invitations.
 - Earnings ledger, talent evidence profile, scoped share links and revocation.
+- A standalone matches list (`/opportunities/matches`) that shows the API's rank,
+  verdict, reasons, next steps and blocks without recomputing any of them.
+- A standalone eligibility view (`/eligibility`) that maps each blocker code to the
+  action that clears it, records contributor-terms consent against the published
+  version, and explains the age rules.
+- Adaptive CBT practice inside `/academia/cbt`: the UI draws weak-topic questions
+  from `GET /academia/cbt/practice-next` and answers them through the same
+  `POST /academia/cbt/answer` the paper uses.
+- A date-of-birth field in Settings → Profile, so the age blocker the eligibility
+  view reports can actually be cleared.
 - Separate profile, security, notifications and data settings routes.
-- Consent history, push-device removal, export and account deletion controls.
+- Consent history, browser and mobile push-device registration, device removal,
+  export and account deletion controls.
 - Published notices render above the workspace shell, dismissible per id and
   remembered across reloads; the mobile Home feed shows the same notices.
 
 ### Current gaps
 
-- No standalone matches view; opportunity verdicts remain on the existing list,
-  which now names each matched opportunity (slug, title, type, client, currency,
-  rate and headcount) instead of returning an id alone.
 - Newsletter membership is per address: there is no signed-in subscribe or leave
   control in Settings, and leaving means using the link in the last email.
-- No standalone eligibility view; blockers remain on opportunity detail.
-- Adaptive CBT practice is API-only.
 - Web offline submission sync is API-only; mobile is the supported offline path.
-- Browser push registration is not implemented.
+- Web Push needs `VAPID_PUBLIC_KEY`/`VAPID_PRIVATE_KEY` set in an environment before
+  Settings offers the switch; unset is reported as "not configured", not as off.
 - Material upload/analysis is replaced by curated materials, Ask, CBT and
   transcript evidence; the replacement copy still needs product approval.
 - Career-track progress is not stored: a track is a suggested order, not a

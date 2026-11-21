@@ -289,15 +289,34 @@ def register_push_device(
 
     if payload.platform not in {"ios", "android", "web"}:
         raise ApiError(400, "invalid_platform", "Use ios, android or web.")
+    # A browser subscription is only useful with its encryption keys, and the
+    # endpoint must be the same address we store as the token. Rejecting here is
+    # better than storing a row the delivery job can never use.
+    if payload.platform == "web":
+        if payload.subscription is None:
+            raise ApiError(400, "subscription_required", "A web install must send its subscription.")
+        if payload.subscription.endpoint != payload.token:
+            raise ApiError(
+                400, "subscription_mismatch", "The subscription endpoint must match the token."
+            )
+    subscription = payload.subscription.model_dump() if payload.subscription else None
     row = db.scalar(select(PushDevice).where(PushDevice.token == payload.token))
     if row is None:
-        row = PushDevice(token=payload.token, platform=payload.platform, user_id=user.id)
+        row = PushDevice(
+            token=payload.token,
+            platform=payload.platform,
+            subscription=subscription,
+            user_id=user.id,
+        )
         db.add(row)
     else:
         # Another account signed in on this phone: delivery follows the newest
         # owner, because the previous owner can no longer read this device.
         row.user_id = user.id
         row.platform = payload.platform
+        # Browsers rotate keys on re-subscribe; keep the newest ones or delivery
+        # silently fails encryption forever.
+        row.subscription = subscription
         row.revoked_at = None
     row.last_seen_at = utcnow()
     db.commit()

@@ -221,8 +221,8 @@ to the legal pages and records both consents. Re-consent is handled by
 | Job-board list + one-click apply | Opportunities with eligibility explanation | **Stronger** | Keep; application tracking and status are built |
 | No skill-gap explanation | “Why you qualify / what is missing” | **Stronger** | Keep; make it prominent |
 | No application tracking | `/opportunities/applications` | **Stronger** | Built |
-| No matches view | Match verdict, reason and next steps on every row | **Stronger** | Built into the list and detail |
-| No eligibility view | Platform eligibility panel on opportunity detail | **Stronger** | Built; keep the terms/age blockers visible |
+| No matches view | `/opportunities/matches` ranks every match with its verdict, reasons, next steps and blocks | **Stronger** | Built on the list, the detail and its own route |
+| No eligibility view | `/eligibility` plus the same panel on opportunity detail | **Stronger** | Built; each blocker names the action that clears it |
 | Work not a V1 student concept | Assignments, submissions, quality | **New/stronger** | Keep |
 | Cohort invite response absent | `/work` reads `GET /work/invites` and answers through `POST /work/cohorts/{id}/respond` | **Parity/stronger** | Decline is confirmed; accept re-reads assignments |
 | Earnings status-only, no gateway | Ledger, payout batches, second approver | **Stronger** | Keep; add payout status detail |

@@ -267,6 +267,152 @@ def test_registering_a_push_token_moves_it_to_the_new_owner(api) -> None:
     assert db.scalar(select(PushDevice.user_id).where(PushDevice.token == token)) == second.id
 
 
+def test_a_web_device_keeps_the_subscription_needed_to_deliver(api) -> None:
+    client, db = api
+    user = make_user(db)
+    endpoint = f"https://push.example.test/{unique('sub')}"
+    headers = {"Authorization": f"Bearer {create_access_token(user.id, None)}"}
+
+    created = client.post(
+        "/v1/me/push-devices",
+        headers=headers,
+        json={
+            "token": endpoint,
+            "platform": "web",
+            "subscription": {"endpoint": endpoint, "p256dh": "p256dh-key", "auth": "auth-key"},
+        },
+    )
+    assert created.status_code == 201
+    row = db.scalar(select(PushDevice).where(PushDevice.token == endpoint))
+    assert row is not None
+    assert row.subscription == {"endpoint": endpoint, "p256dh": "p256dh-key", "auth": "auth-key"}
+
+    # Re-subscribing with rotated keys must replace them: keeping the old ones
+    # means every later delivery fails to encrypt.
+    again = client.post(
+        "/v1/me/push-devices",
+        headers=headers,
+        json={
+            "token": endpoint,
+            "platform": "web",
+            "subscription": {
+                "endpoint": endpoint,
+                "p256dh": "rotated-p256dh",
+                "auth": "rotated-auth",
+            },
+        },
+    )
+    assert again.status_code == 201
+    assert again.json()["id"] == created.json()["id"]
+    db.refresh(row)
+    assert row.subscription["p256dh"] == "rotated-p256dh"
+
+
+def test_a_web_device_without_a_matching_subscription_is_rejected(api) -> None:
+    client, db = api
+    user = make_user(db)
+    headers = {"Authorization": f"Bearer {create_access_token(user.id, None)}"}
+    endpoint = f"https://push.example.test/{unique('sub')}"
+
+    missing = client.post(
+        "/v1/me/push-devices", headers=headers, json={"token": endpoint, "platform": "web"}
+    )
+    assert missing.status_code == 400
+    assert missing.json()["error"]["code"] == "subscription_required"
+
+    mismatch = client.post(
+        "/v1/me/push-devices",
+        headers=headers,
+        json={
+            "token": endpoint,
+            "platform": "web",
+            "subscription": {
+                "endpoint": "https://push.example.test/somewhere-else",
+                "p256dh": "p256dh-key",
+                "auth": "auth-key",
+            },
+        },
+    )
+    assert mismatch.status_code == 400
+    assert mismatch.json()["error"]["code"] == "subscription_mismatch"
+
+
+def test_web_push_signs_each_browser_and_revokes_a_gone_endpoint(monkeypatch) -> None:
+    import json
+
+    import pywebpush
+
+    from app.core.config import get_settings
+    from app.worker import tasks
+
+    settings = get_settings()
+    monkeypatch.setattr(settings, "VAPID_PRIVATE_KEY", "test-private-key")
+    monkeypatch.setattr(settings, "VAPID_SUBJECT", "mailto:test@example.test")
+
+    subscriptions = [
+        (1, {"endpoint": "https://push.example.test/live", "p256dh": "k1", "auth": "a1"}),
+        (2, {"endpoint": "https://push.example.test/gone", "p256dh": "k2", "auth": "a2"}),
+    ]
+    monkeypatch.setattr(tasks, "_web_subscriptions", lambda user_id: subscriptions)
+
+    sent: list[dict] = []
+
+    class GoneResponse:
+        status_code = 410
+
+    def fake_webpush(**kwargs) -> None:
+        sent.append(kwargs)
+        if kwargs["subscription_info"]["endpoint"].endswith("/gone"):
+            raise pywebpush.WebPushException("subscription is gone", response=GoneResponse())
+
+    monkeypatch.setattr(pywebpush, "webpush", fake_webpush)
+    revoked: list[tuple[int, str]] = []
+    monkeypatch.setattr(
+        tasks, "_revoke_push_device", lambda device_id, reason: revoked.append((device_id, reason))
+    )
+
+    tasks._send_web_push(
+        {"user_id": 7, "notification_id": 3, "title": "New work", "body": "A task needs you"},
+        settings,
+    )
+
+    assert [row["subscription_info"]["endpoint"] for row in sent] == [
+        "https://push.example.test/live",
+        "https://push.example.test/gone",
+    ]
+    assert sent[0]["subscription_info"]["keys"] == {"p256dh": "k1", "auth": "a1"}
+    assert sent[0]["vapid_claims"] == {"sub": "mailto:test@example.test"}
+    payload = json.loads(sent[0]["data"])
+    assert payload["title"] == "New work"
+    assert payload["notification_id"] == 3
+    # Only the dead endpoint is revoked; the live one keeps receiving.
+    assert revoked == [(2, "web_push_410")]
+
+
+def test_web_push_is_skipped_without_vapid_keys(monkeypatch) -> None:
+    from app.core.config import get_settings
+    from app.worker import tasks
+
+    settings = get_settings()
+    monkeypatch.setattr(settings, "VAPID_PRIVATE_KEY", "")
+    # If it tried to read devices or deliver, this would raise.
+    monkeypatch.setattr(
+        tasks, "_web_subscriptions", lambda user_id: pytest.fail("must not look up devices")
+    )
+    tasks._send_web_push({"user_id": 7, "title": "x", "body": "y"}, settings)
+
+
+def test_the_public_config_carries_the_web_push_key_only(monkeypatch, db) -> None:
+    from app.core.config import get_settings
+    from app.services.platform import settings as policy
+
+    monkeypatch.setattr(get_settings(), "VAPID_PUBLIC_KEY", "public-test-key")
+    row = policy.get_platform_settings(db)
+    body = policy.public_config(row)
+    assert body["push_public_key"] == "public-test-key"
+    assert "private" not in " ".join(str(value) for value in body.values()).lower()
+
+
 def test_the_scheduler_enqueues_one_reconciliation_per_day(db) -> None:
     day = datetime(2026, 10, 18, tzinfo=UTC).date()
     assert enqueue_scheduled(db, today=day) == 1

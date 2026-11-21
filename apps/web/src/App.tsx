@@ -65,6 +65,10 @@ const Opportunities = React.lazy(() =>
 const OpportunityDetail = React.lazy(() =>
   import('./routes/OpportunityDetail').then((m) => ({ default: m.OpportunityDetail })),
 );
+const Matches = React.lazy(() => import('./routes/Matches').then((m) => ({ default: m.Matches })));
+const Eligibility = React.lazy(() =>
+  import('./routes/Eligibility').then((m) => ({ default: m.Eligibility })),
+);
 const Work = React.lazy(() => import('./routes/Work').then((m) => ({ default: m.Work })));
 const AssignmentDetail = React.lazy(() =>
   import('./routes/AssignmentDetail').then((m) => ({ default: m.AssignmentDetail })),
@@ -426,6 +430,22 @@ function RouteTable(): JSX.Element {
           element={
             <Protected>
               <Applications />
+            </Protected>
+          }
+        />
+        <Route
+          path="/opportunities/matches"
+          element={
+            <Protected>
+              <Matches />
+            </Protected>
+          }
+        />
+        <Route
+          path="/eligibility"
+          element={
+            <Protected>
+              <Eligibility />
             </Protected>
           }
         />

@@ -22,6 +22,9 @@ class PlatformConfigOut(BaseModel):
     curriculum_authoring_model: str
     target_launch_date: date | None = None
     updated_at: datetime | None = None
+    # Web Push public key, or null when this environment does not deliver to
+    # browsers. The private key is never in a response.
+    push_public_key: str | None = None
 
 
 class PlatformSettingsOut(PlatformConfigOut):

@@ -76,6 +76,13 @@ class Settings(BaseSettings):
     OPENROUTER_MODEL: str = "openai/gpt-4o-mini"
     # Expo push endpoint (https://exp.host/--/api/v2/push/send). Unset = in-app only.
     PUSH_ENDPOINT: str = ""
+    # Web Push (browser). The public key is handed to the browser by
+    # /platform/config; the private key signs the delivery. Both unset = web push
+    # is offered nowhere, which is honest rather than a button that cannot work.
+    VAPID_PUBLIC_KEY: str = ""
+    VAPID_PRIVATE_KEY: str = ""
+    # A contact for the push service: a mailto: or https: URL.
+    VAPID_SUBJECT: str = "mailto:support@nelavista.com"
     GOOGLE_CLIENT_ID: str = ""
     GOOGLE_CLIENT_SECRET: str = ""
     POSTHOG_API_KEY: str = ""
@@ -126,6 +133,13 @@ class Settings(BaseSettings):
         # An emailed link that is not absolute cannot be clicked.
         if not self.WEB_BASE_URL.startswith(("http://", "https://")):
             problems.append("WEB_BASE_URL must be an absolute http(s) URL.")
+
+        # Web Push needs the pair or neither: a public key alone lets browsers
+        # subscribe to a service nothing can deliver to.
+        if bool(self.VAPID_PUBLIC_KEY) != bool(self.VAPID_PRIVATE_KEY):
+            problems.append("VAPID_PUBLIC_KEY and VAPID_PRIVATE_KEY must be set together.")
+        if self.VAPID_PRIVATE_KEY and not self.VAPID_SUBJECT.startswith(("mailto:", "https://")):
+            problems.append("VAPID_SUBJECT must be a mailto: address or an https URL.")
 
         # CORS must never be a wildcard in a deployed environment.
         if not self.is_local and "*" in self.cors_origins:

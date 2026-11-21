@@ -119,7 +119,7 @@ stored, so a track is an ordered suggestion rather than a learning path.
 | `/onboarding` | Onboarding | Choose one of four spaces, then collect only the context that space reads; waitlist if missing | **The next incomplete step** | Guarded. Academia uses university, faculty, department, level and courses. Campus uses the university only through `PUT /onboarding/university`. Skills and Opportunities finish at the path choice. |
 | `/settings` | Settings — profile and work | Edit identity, bio, location, timezone, visibility, languages, availability | **Save changes** | Guarded. |
 | `/settings/security` | Settings — security | Change password, view 2FA, sessions/devices | **Change password** | Uses `POST /auth/password/change`; the response replaces the current access token and revokes other sessions. |
-| `/settings/notifications` | Settings - notifications | Email preference, honest push availability, registered device list/removal, notification list link | **Save notification settings** | New. Uses `/me/push-devices`; link to `/notifications`. The web app does not register a browser device. |
+| `/settings/notifications` | Settings - notifications | Email preference, browser push on/off, registered device list/removal, notification list link | **Save notification settings** | Uses `/me/push-devices`, `GET /platform/config` for the push key and the `push-sw.js` service worker. The switch only appears when this build has a worker and a VAPID key. |
 | `/settings/data` | Settings - data and consent | Export, consent history, delete account | **Download my data / Delete account** | New. Uses `/me/export`, `/me/consents`, `DELETE /auth/account`; `POST /auth/consent` is a re-consent dependency, not wired. |
 
 Why split Settings: the current one-page Settings mixes profile, work preferences,
@@ -197,17 +197,21 @@ because no progress is stored.
 | `/transcript` | Transcript | See the verified record | **The verified record** | `GET /verification/transcript` | Skeleton, empty, error, feature-off |
 | `/talent` | Talent | Share proof with an employer | **Share proof** | `GET /talent/me`, `/me/shares`, `POST /me/shares`, revoke | Skeleton, empty, error, feature-off |
 
-Eligibility is shown as a readiness panel on `/verification` and
-`/opportunities` using `GET /platform/me/eligibility`; it does not need a separate
-route.
+Eligibility has its own route (`/eligibility`) as well as the readiness panel on
+`/verification` and `/opportunities`, all reading `GET /platform/me/eligibility`.
+The standalone page exists so a blocked student has one address to return to; it
+maps each blocker code to the action that clears it and records contributor-terms
+acceptance through `POST /auth/consent`.
 
 ### 4.5 Opportunities, work and money
 
 | Route | Screen | Job | Anchor | Data | States |
 |---|---|---|---|---|---|
 | `/opportunities` | Opportunities | Find work that fits | **Best match with rate and fit** | `GET /opportunities` | Skeleton, empty, error, feature-off |
+| `/opportunities/matches` | Matches | See what fits best and why | **Best fit / the block to clear** | `GET /opportunities/matches` | Skeleton, empty, error, feature-off |
 | `/opportunities/applications` | My applications | Track what I applied to | **Latest application status** | `GET /opportunities/applications` | Skeleton, empty, error |
 | `/opportunities/:slug` | Opportunity detail | Decide whether to apply | **Apply / save** | `GET /opportunities/{slug}`, `POST /{slug}/apply` | Skeleton, missing, error, applied, not eligible |
+| `/eligibility` | Eligibility | Know whether paid work is open and what is missing | **The blocker to clear** | `GET /platform/me/eligibility`, `GET /platform/config`, `POST /auth/consent` | Skeleton, eligible, blocked, error, feature-off |
 | `/work` | Work | Do and submit assigned work | **Active invitation / assignment / deadline** | `GET /work/invites`, `/work/assignments`, `/submissions`, `/quality` | Skeleton, empty, error, feature-off, invitation success/error |
 | `/work/assignments/:assignmentId` | Assignment detail | Complete the brief | **Submit work** | `GET /work/assignments/{id}`, `/messages`, `POST /start`, `/submissions` | Skeleton, missing, error, feature-off |
 | `/earnings` | Earnings | Understand money owed and paid | **Available balance** | `GET /money/earnings` | Skeleton, empty, error, feature-off |
@@ -371,7 +375,9 @@ Mobile:
 |---|---|
 | `/notifications` | `GET /me/notifications`, `POST /me/notifications/read` |
 | `/opportunities/applications` | `GET /opportunities/applications` |
-| Eligibility panel | `GET /platform/me/eligibility` |
+| `/opportunities/matches` | `GET /opportunities/matches` |
+| Eligibility panel and `/eligibility` | `GET /platform/me/eligibility`, `GET /platform/config`, `POST /auth/consent` |
+| `/academia/cbt` adaptive practice | `GET /academia/cbt/practice-next`, `POST /academia/cbt/answer` |
 | `/work` invitations | `GET /work/invites`, `POST /work/cohorts/{id}/respond` |
 | `/settings/notifications` | `GET/POST/DELETE /me/push-devices` |
 | `/settings/security` | `POST /auth/password/change`, `POST /auth/password/reset-request` |

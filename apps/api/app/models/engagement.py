@@ -11,6 +11,7 @@ clarification, payment).
 from __future__ import annotations
 
 from datetime import datetime
+from typing import Any
 
 from sqlalchemy import DateTime, ForeignKey, Integer, String, Text, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column
@@ -54,11 +55,15 @@ class Notification(Base, TimestampMixin):
 
 
 class PushDevice(Base, TimestampMixin):
-    """One native install that can receive push (D1/F4).
+    """One install that can receive push (D1/F4).
 
     The token is the address; `platform` says which transport it belongs to.
     A token can move between accounts on a shared phone, so the same token is
     unique and is reassigned to the newest owner rather than duplicated.
+
+    A browser install has no provider token: its address is the service-worker
+    subscription endpoint, and the encryption keys needed to deliver to it live
+    in `subscription`. Native installs leave `subscription` empty.
     """
 
     __tablename__ = "push_devices"
@@ -67,10 +72,12 @@ class PushDevice(Base, TimestampMixin):
     user_id: Mapped[int] = mapped_column(
         ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True
     )
-    token: Mapped[str] = mapped_column(String(255), nullable=False, unique=True)
+    token: Mapped[str] = mapped_column(String(512), nullable=False, unique=True)
     platform: Mapped[str] = mapped_column(
         String(10), default="android", server_default="android", nullable=False
     )
+    # Web Push subscription: {endpoint, p256dh, auth}. Null for ios/android.
+    subscription: Mapped[dict[str, Any] | None] = mapped_column(JSONPayload, nullable=True)
     last_seen_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     revoked_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
 

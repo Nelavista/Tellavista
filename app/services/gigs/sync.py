@@ -46,9 +46,17 @@ JOBICY_BASIS = (
 )
 
 
+NAIJALANCERS_BASIS = (
+    "Naijalancers is a Nelavista partner. Gigs are added by Nelavista admins only after checking the listing "
+    "with Naijalancers, and every gig keeps its Naijalancers attribution and official listing URL. No page is "
+    "scraped; there is no sync until Naijalancers provides an official API or feed."
+)
+
+
 def ensure_default_providers():
-    """Creates the built-in providers if missing. 'manual' is Nelavista itself (enabled).
-    'jobicy' is created DISABLED: an admin must read the terms, confirm, then enable."""
+    """Creates the built-in providers if missing. 'manual' (Nelavista) and 'naijalancers'
+    are enabled manual sources. 'jobicy' is created DISABLED: an admin must read the
+    terms, confirm, then enable."""
     created = []
     if not GigProvider.query.filter_by(slug='manual').first():
         db.session.add(GigProvider(
@@ -67,6 +75,14 @@ def ensure_default_providers():
             config_json=json.dumps({'count': 100, 'nigeria_eligible_only': True}),
         ))
         created.append('jobicy')
+    if not GigProvider.query.filter_by(slug='naijalancers').first():
+        db.session.add(GigProvider(
+            slug='naijalancers', name='Naijalancers', kind='partner', adapter='manual', enabled=True,
+            redistribution_confirmed=True, attribution_text='Naijalancers',
+            redistribution_basis=NAIJALANCERS_BASIS,
+            sync_frequency_minutes=0, stale_after_hours=core.MANUAL_RECHECK_DAYS * 24,
+        ))
+        created.append('naijalancers')
     if created:
         db.session.commit()
     return created

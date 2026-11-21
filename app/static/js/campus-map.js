@@ -5,8 +5,11 @@
  *
  * Kept from the original LASU map: Leaflet + OpenStreetMap / Esri imagery, live location
  * tracking (watchPosition), road-following routes via OSRM (Leaflet Routing Machine,
- * now loaded only when a student asks for directions), nearest-place distance, and
- * per-university saved view. Dropped: draggable markers (a calibration tool that let
+ * now loaded only when a student asks for directions) and nearest-place distance.
+ * Campus-plan universities (map.kind == 'plan', e.g. University of Abuja) use the plan
+ * image as the base layer in L.CRS.Simple, with tappable building outlines; GPS features
+ * are off there because the plan has no real coordinates.
+ * Dropped: draggable markers (a calibration tool that let
  * students move buildings on their own screen); place positions are edited by admins.
  */
 (function () {
@@ -22,7 +25,6 @@
 
   var KEY = {
     saved: 'nv_campus_saved_' + SLUG,
-    view: 'nv_campus_view_' + SLUG + '_' + (DATA.campus ? DATA.campus.id : 0),
     layer: 'nv_campus_layer',
     recent: 'nv_campus_recent',
   };
@@ -61,9 +63,28 @@
   if (!DATA.map.center) return;   // no coordinates for this campus yet: the empty state says so
 
   // ── Map + base layers ──────────────────────────────────────────────────────────
-  var map = L.map('cm-map', { zoomControl: false, maxZoom: 20, minZoom: 5, tap: true });
+  // Two kinds of campus: 'geo' (real coordinates on satellite / OpenStreetMap tiles) and
+  // 'plan' (a straightened official campus plan drawn in its own pixel frame with
+  // L.CRS.Simple; no GPS, so no location or road directions).
+  var PLAN = DATA.map.kind === 'plan';
+  var Z = PLAN ? { focus: 0.5, label: 0.25, fitMax: 1, max: 2.5 } : { focus: 18, label: 18, fitMax: 18, max: 20 };
+  var map;
+  if (PLAN) {
+    var planBounds = L.latLngBounds(DATA.map.plan.bounds);
+    map = L.map('cm-map', {
+      crs: L.CRS.Simple, zoomControl: false, minZoom: -3, maxZoom: Z.max, zoomSnap: 0.25, zoomDelta: 0.5,
+      wheelPxPerZoomLevel: 120, maxBounds: planBounds.pad(0.25), maxBoundsViscosity: 0.9, tap: true,
+    });
+    map.attributionControl.setPrefix(false);
+    L.imageOverlay(DATA.map.plan.image, planBounds, {
+      className: 'cm-plan-img', attribution: DATA.map.plan.credit || 'Campus plan', alt: 'Campus plan of ' + DATA.university.name,
+    }).addTo(map);
+    $('cm-map').classList.add('cm-is-plan');
+  } else {
+    map = L.map('cm-map', { zoomControl: false, maxZoom: Z.max, minZoom: 5, tap: true });
+  }
   L.control.zoom({ position: 'topright' }).addTo(map);
-  var layers = {
+  var layers = PLAN ? null : {
     satellite: L.layerGroup([
       L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
         maxNativeZoom: 19, maxZoom: 20, attribution: 'Imagery © Esri, Maxar, Earthstar Geographics',
@@ -74,15 +95,16 @@
     }),
   };
   var layerName = store(KEY.layer) === 'street' ? 'street' : 'satellite';
-  layers[layerName].addTo(map);
+  if (layers) layers[layerName].addTo(map);
   var layerBtn = $('cm-layer');
   function syncLayerBtn() {
+    if (!layers) return;
     var toStreet = layerName === 'satellite';
     layerBtn.innerHTML = '<i class="' + (toStreet ? 'ri-map-2-line' : 'ri-earth-line') + '" aria-hidden="true"></i>';
     layerBtn.setAttribute('aria-label', toStreet ? 'Switch to map view' : 'Switch to satellite view');
     document.body.classList.toggle('cm-on-satellite', layerName === 'satellite');
   }
-  layerBtn.addEventListener('click', function () {
+  if (layers) layerBtn.addEventListener('click', function () {
     map.removeLayer(layers[layerName]);
     layerName = layerName === 'satellite' ? 'street' : 'satellite';
     layers[layerName].addTo(map);
@@ -95,14 +117,14 @@
     L.polygon(DATA.map.boundary, { color: '#7d9bff', weight: 2, fill: false, dashArray: '6 6', interactive: false }).addTo(map);
   }
 
-  var campusBounds = DATA.map.bounds ? L.latLngBounds(DATA.map.bounds).pad(0.08) : null;
+  var campusBounds = DATA.map.bounds ? L.latLngBounds(DATA.map.bounds).pad(PLAN ? 0.02 : 0.08) : null;
   function fitCampus(animate) {
     if (campusBounds) map.fitBounds(campusBounds, fitOptions(animate));
     else map.setView(DATA.map.center, DATA.map.zoom || 16, { animate: !!animate });
   }
   function panelHeight() { var el = $('cm-panel'); return (!el || isDesktop()) ? 0 : el.getBoundingClientRect().height; }
   function fitOptions(animate) {
-    var pad = { animate: !!animate, maxZoom: 18 };
+    var pad = { animate: !!animate, maxZoom: Z.fitMax };
     if (isDesktop()) { pad.paddingTopLeft = [24, 24]; pad.paddingBottomRight = [24, 24]; }
     else { pad.paddingTopLeft = [16, 16]; pad.paddingBottomRight = [16, panelHeight() + 16]; }
     return pad;
@@ -111,12 +133,8 @@
 
   var labelsOn = false;
   map.on('zoomend', function () {
-    var on = map.getZoom() >= 18;
+    var on = map.getZoom() >= Z.label;
     if (on !== labelsOn) { labelsOn = on; $('cm-map').classList.toggle('cm-labels-on', on); }
-  });
-  map.on('moveend', function () {
-    var c = map.getCenter();
-    store(KEY.view, { c: [c.lat, c.lng], z: map.getZoom() });
   });
 
   if (!PLACES.length) {   // campus coordinates but no places yet
@@ -141,6 +159,28 @@
     m.on('click', function () { openPlace(p.id, { pan: false }); });
     markers[p.id] = m;
   });
+
+  // Building outlines (plan campuses): the whole block is tappable, and the open place
+  // is highlighted on the plan.
+  var footprints = {};
+  function footprintStyle(p, active) {
+    return active
+      ? { color: '#3a5fe0', weight: 3, opacity: 1, fillColor: '#3a5fe0', fillOpacity: 0.16 }
+      : { color: catOf(p).color, weight: 1.5, opacity: 0.55, fillColor: catOf(p).color, fillOpacity: 0.06 };
+  }
+  PLACES.forEach(function (p) {
+    if (!p.footprint) return;
+    var r = L.rectangle(p.footprint, footprintStyle(p, false));
+    r.on('click', function () { openPlace(p.id, { pan: false }); });
+    footprints[p.id] = r;
+  });
+  function showOnMap(p, show) {
+    [markers[p.id], footprints[p.id]].forEach(function (l) {
+      if (!l) return;
+      if (show && !map.hasLayer(l)) l.addTo(map);
+      else if (!show && map.hasLayer(l)) map.removeLayer(l);
+    });
+  }
 
   // ── Panel (bottom sheet on phones, side panel on desktop) ────────────────────────
   var panel = $('cm-panel');
@@ -207,7 +247,8 @@
     if (activeCat === 'saved' && !saved.has(p.id)) return false;
     if (activeCat !== 'all' && activeCat !== 'saved' && p.category !== activeCat) return false;
     if (!query) return true;
-    var hay = (p.name + ' ' + catOf(p).label + ' ' + catOf(p).singular + ' ' + (p.description || '')).toLowerCase();
+    var hay = (p.name + ' ' + catOf(p).label + ' ' + catOf(p).singular + ' ' + (p.description || '') + ' ' +
+      (p.aliases || []).join(' ')).toLowerCase();
     return query.split(/\s+/).every(function (w) { return hay.indexOf(w) !== -1; });
   }
 
@@ -216,12 +257,7 @@
     visible = PLACES.filter(matches);
     if (userLatLng) visible.sort(function (a, b) { return dist(a) - dist(b); });
     var ids = new Set(visible.map(function (p) { return p.id; }));
-    PLACES.forEach(function (p) {
-      var m = markers[p.id];
-      var show = ids.has(p.id) || p.id === selectedId;
-      if (show && !map.hasLayer(m)) m.addTo(map);
-      else if (!show && map.hasLayer(m)) map.removeLayer(m);
-    });
+    PLACES.forEach(function (p) { showOnMap(p, ids.has(p.id) || p.id === selectedId); });
     renderList();
     if (fit && visible.length && (activeCat !== 'all' || query)) {
       var b = L.latLngBounds(visible.map(function (p) { return [p.lat, p.lng]; }));
@@ -291,7 +327,7 @@
   }
 
   function focusOn(p) {
-    var z = Math.max(map.getZoom(), 18);
+    var z = Math.max(map.getZoom(), Z.focus);
     var ll = L.latLng(p.lat, p.lng);
     if (isDesktop()) { map.setView(ll, z, { animate: true }); return; }
     // Keep the pin above the bottom sheet, not hidden behind it.
@@ -302,25 +338,22 @@
   function openPlace(id, opts) {
     var p = BY_ID[id];
     if (!p) return;
-    if (selectedId && markers[selectedId]) markers[selectedId].setIcon(pinIcon(BY_ID[selectedId], false));
+    if (selectedId && BY_ID[selectedId]) setActive(BY_ID[selectedId], false);
     selectedId = id;
-    var m = markers[id];
-    if (!map.hasLayer(m)) m.addTo(map);
-    m.setIcon(pinIcon(p, true));
-    m.setZIndexOffset(1000);
+    showOnMap(p, true);
+    setActive(p, true);
 
     var c = catOf(p);
     $('cm-detail-kicker').innerHTML = '<span class="cm-chip-dot" style="--c:' + c.color + '" aria-hidden="true"></span>' + esc(c.singular);
     $('cm-detail-name').textContent = p.name;
-    var where = (DATA.university.short_name || DATA.university.name) + ' ' + (p.campus || '');
-    if (userLatLng) where += ' · ' + fmtDist(dist(p)) + ' from you';
-    $('cm-detail-where').textContent = where.trim();
+    $('cm-detail-where').textContent = whereText(p);
     var desc = $('cm-detail-desc');
     desc.hidden = !p.description; desc.textContent = p.description || '';
+    $('cm-detail-verify').hidden = !p.verify;
     var media = $('cm-detail-media');
     if (p.image) { $('cm-detail-img').src = p.image; $('cm-detail-img').alt = p.name; media.hidden = false; }
     else media.hidden = true;
-    $('cm-gmaps').href = 'https://www.google.com/maps/dir/?api=1&travelmode=walking&destination=' + p.lat + ',' + p.lng;
+    if (!PLAN) $('cm-gmaps').href = 'https://www.google.com/maps/dir/?api=1&travelmode=walking&destination=' + p.lat + ',' + p.lng;
     syncSave();
     $('cm-route').hidden = !(route && route.id === id);
     if (route && route.id !== id) clearRoute();
@@ -334,11 +367,33 @@
     else if (!isDesktop()) setTimeout(function () { focusOn(p); }, 0);
   }
 
-  function closePlace(keepSheet) {
-    if (selectedId && markers[selectedId]) {
-      markers[selectedId].setIcon(pinIcon(BY_ID[selectedId], false));
-      markers[selectedId].setZIndexOffset(0);
+  function setActive(p, on) {
+    markers[p.id].setIcon(pinIcon(p, on));
+    markers[p.id].setZIndexOffset(on ? 1000 : 0);
+    if (footprints[p.id]) {
+      footprints[p.id].setStyle(footprintStyle(p, on));
+      if (on) footprints[p.id].bringToFront();
     }
+  }
+  function whereText(p) {
+    var w = DATA.university.name + (p.campus ? ' · ' + p.campus : '');
+    if (userLatLng) w += ' · ' + fmtDist(dist(p)) + ' from you';
+    return w;
+  }
+
+  // Plan campuses: "View location" shows the place on the plan with the sheet tucked away.
+  $('cm-view').addEventListener('click', function () {
+    var p = BY_ID[selectedId]; if (!p) return;
+    if (!isDesktop()) setSheet('peek');
+    var z = Math.max(map.getZoom(), Z.focus + 0.5);
+    setTimeout(function () {
+      if (footprints[p.id]) map.fitBounds(footprints[p.id].getBounds().pad(1.2), fitOptions(true));
+      else map.setView([p.lat, p.lng], z, { animate: true });
+    }, 0);
+  });
+
+  function closePlace(keepSheet) {
+    if (selectedId && BY_ID[selectedId]) setActive(BY_ID[selectedId], false);
     selectedId = null;
     $('cm-detail').hidden = true;
     $('cm-list-view').hidden = false;
@@ -412,7 +467,7 @@
       }
       showNearest();
       applyFilters(false);
-      if (selectedId) $('cm-detail-where').textContent = (DATA.university.short_name || DATA.university.name) + ' ' + (BY_ID[selectedId].campus || '') + ' · ' + fmtDist(dist(BY_ID[selectedId])) + ' from you';
+      if (selectedId) $('cm-detail-where').textContent = whereText(BY_ID[selectedId]);
       if (route) updateRouteStart();
       if (onFix) { var f = onFix; onFix = null; f(onCampus); }
     }, function (err) {
@@ -530,14 +585,17 @@
   applyFilters(false);
   var startId = new URL(window.location.href).searchParams.get('place');
   if (startId && BY_ID[startId]) {
-    map.setView([BY_ID[startId].lat, BY_ID[startId].lng], 18, { animate: false });
+    map.setView([BY_ID[startId].lat, BY_ID[startId].lng], Z.focus, { animate: false });
     openPlace(startId, { pan: true });
   } else {
+    // Always open on the whole campus, never on wherever the last visit ended.
     if (startId) setUrlPlace(null);
-    var v = store(KEY.view);
-    if (v && v.c && campusBounds && campusBounds.pad(1).contains(v.c)) map.setView(v.c, v.z, { animate: false });
-    else fitCampus(false);
     setSheet(isDesktop() ? 'list' : 'peek');
+    fitCampus(false);
+  }
+  if (PLAN) {
+    // Let students zoom out a little past the whole plan, but not to a speck.
+    map.setMinZoom(map.getBoundsZoom(campusBounds) - 1);
   }
   window.matchMedia('(min-width: 900px)').addEventListener('change', function (e) {
     if (e.matches && panel.getAttribute('data-state') === 'peek') setSheet('list');

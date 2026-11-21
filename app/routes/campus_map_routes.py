@@ -107,7 +107,8 @@ def admin_campus_map_home():
     universities = University.query.order_by(University.name).all()
     return render_template('admin_campus_map.html', universities=universities, active_page='campus_map',
                            categories=campus_maps.CATEGORIES, resolve_category=campus_maps.resolve_category,
-                           category_index=campus_maps.CATEGORY_INDEX)
+                           category_index=campus_maps.CATEGORY_INDEX,
+                           plan_files={u.id: u.slug + '.json' for u in universities if campus_maps.load_dataset(u)})
 
 
 @campus_map_bp.route('/admin/campus-map/locations/new', methods=['POST'])

@@ -50,6 +50,7 @@
         <div class="uni-card">
             <div class="uni-title">{{ uni.name }} <a style="color:#58a6ff;font-size:.8rem;font-weight:500" href="/campus-map/{{ uni.slug }}">View map</a></div>
             {% if uni.short_name %}<div class="uni-short">{{ uni.short_name }}</div>{% endif %}
+            {% if plan_files.get(uni.id) %}<div class="hint" style="margin-bottom:8px">Mapped from a campus plan: its places come from <code>data/campus_maps/{{ plan_files[uni.id] }}</code>, not from the pins below.</div>{% endif %}
 
             {% for campus in uni.campuses %}
             <div class="campus-block">

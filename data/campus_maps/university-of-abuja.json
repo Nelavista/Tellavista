@@ -1,0 +1,56 @@
+{
+  "university": "University of Abuja",
+  "source": {
+    "kind": "campus_plan",
+    "description": "Scanned University of Abuja campus plan supplied to the Nelavista team on 2026-11-21. Rotated 90 degrees anticlockwise so the main road and Central Admin are at the top and the labels read normally. Positions and outlines are measured from that scan in its own pixel frame; nothing is geolocated.",
+    "frame": {"width": 858, "height": 1170},
+    "not_on_source": [
+      "Faculty of Medicine",
+      "Faculty of Pharmaceutical Sciences",
+      "Faculty of Allied Health Sciences (the plan says only 'Faculty Health Science')",
+      "A separate Faculty of ICT (the plan shows an 'ICT Centre', marked 5)"
+    ],
+    "illegible_on_source": [
+      "White labels on the dark buildings either side of and below the Garden (six blocks)",
+      "Small gatehouse-style building by the top-left road junction",
+      "Unlabelled rectangular buildings at the ends of the top-right and bottom-left access roads"
+    ]
+  },
+  "campuses": [
+    {
+      "name": "Main Campus",
+      "plan": {
+        "image": "images/campus_maps/university-of-abuja-main-campus.webp",
+        "credit": "University of Abuja campus plan (scan)"
+      },
+      "places": [
+        {"id": "central-admin", "name": "Central Admin", "category": "admin", "x": 335, "y": 315, "footprint": [[300, 268], [372, 362]], "description": "Central administration, inside the circle at the end of the main road."},
+        {"id": "faculty-of-science", "name": "Faculty of Science", "category": "faculty", "x": 244, "y": 352, "footprint": [[212, 284], [274, 422]], "description": "Marked 1 on the campus plan."},
+        {"id": "faculty-of-agriculture", "name": "Faculty of Agriculture", "category": "faculty", "x": 109, "y": 333, "footprint": [[70, 280], [148, 387]]},
+        {"id": "faculty-of-management-sciences", "name": "Faculty of Management Sciences", "category": "faculty", "x": 565, "y": 342, "footprint": [[526, 288], [603, 393]], "description": "Marked 7 on the campus plan, where it is labelled 'Faculty of Mgt Science'.", "aliases": ["Mgt Science", "Management Science"]},
+        {"id": "faculty-of-social-sciences", "name": "Faculty of Social Sciences", "category": "faculty", "x": 682, "y": 344, "footprint": [[645, 290], [721, 397]], "aliases": ["Social Science"]},
+        {"id": "faculty-of-environmental-sciences", "name": "Faculty of Environmental Sciences", "category": "faculty", "x": 225, "y": 593, "footprint": [[188, 540], [263, 645]], "description": "Labelled 'Faculty of Env. Science' on the campus plan.", "aliases": ["Env. Science", "Environmental Science"]},
+        {"id": "faculty-of-veterinary-medicine", "name": "Faculty of Veterinary Medicine", "category": "faculty", "x": 106, "y": 645, "footprint": [[68, 596], [145, 703]], "description": "Labelled 'Faculty of Vet Medicine' on the campus plan.", "aliases": ["Vet Medicine"]},
+        {"id": "faculty-of-health-sciences", "name": "Faculty of Health Sciences", "category": "faculty", "x": 104, "y": 826, "footprint": [[65, 770], [143, 882]], "description": "Labelled 'Faculty Health Science' on the campus plan.", "aliases": ["Health Science", "Allied Health"]},
+        {"id": "faculty-of-engineering", "name": "Faculty of Engineering", "category": "faculty", "x": 222, "y": 822, "footprint": [[184, 772], [261, 881]], "description": "Marked 6 on the campus plan."},
+        {"id": "faculty-of-education", "name": "Faculty of Education", "category": "faculty", "x": 674, "y": 660, "footprint": [[636, 606], [712, 714]]},
+        {"id": "faculty-of-law", "name": "Faculty of Law", "category": "faculty", "x": 567, "y": 805, "footprint": [[529, 753], [606, 858]]},
+        {"id": "faculty-of-arts", "name": "Faculty of Arts", "category": "faculty", "x": 674, "y": 872, "footprint": [[651, 840], [698, 913]]},
+        {"id": "ict-centre", "name": "ICT Centre", "category": "ict", "x": 338, "y": 482, "footprint": [[322, 450], [355, 512]], "description": "Marked 5 on the campus plan."},
+        {"id": "pg-school", "name": "PG School", "category": "admin", "x": 351, "y": 550, "footprint": [[337, 527], [365, 575]], "description": "Postgraduate School. Marked 2 on the campus plan.", "aliases": ["Postgraduate School", "School of Postgraduate Studies"]},
+        {"id": "siwes-office", "name": "SIWES Office", "category": "admin", "x": 318, "y": 550, "footprint": [[304, 527], [332, 573]]},
+        {"id": "audio-visual-centre", "name": "Audio Visual Centre", "category": "department", "x": 393, "y": 555, "footprint": [[383, 538], [404, 573]], "verify": true},
+        {"id": "school-of-remedial-studies", "name": "School of Remedial Studies", "category": "department", "x": 434, "y": 600, "footprint": [[421, 578], [448, 622]], "verify": true},
+        {"id": "centre-for-distance-learning", "name": "Centre for Distance Learning and Continuing Education", "category": "department", "x": 453, "y": 486, "footprint": [[427, 450], [481, 522]], "description": "The label reads 'Centre for Distance … Education'; the middle words are hard to read on the scan.", "verify": true, "aliases": ["CDLCE", "Distance Learning"]},
+        {"id": "building-by-central-admin", "name": "Building beside Central Admin (name to be confirmed)", "category": "landmark", "x": 394, "y": 484, "footprint": [[371, 450], [418, 518]], "description": "Large dark building just below the Central Admin circle. Its label cannot be read on the scan.", "verify": true},
+        {"id": "garden", "name": "Garden", "category": "student_centre", "x": 397, "y": 630, "footprint": [[383, 580], [411, 690]], "description": "Central garden in the middle of the academic core."},
+        {"id": "park", "name": "Park", "category": "student_centre", "x": 455, "y": 700, "footprint": [[420, 645], [492, 762]], "description": "Open area with three oval features beside the Garden. The label reads 'Park/…'; the second word is hard to read on the scan.", "verify": true},
+        {"id": "car-park-west", "name": "Car Park", "category": "parking", "x": 180, "y": 497, "footprint": [[165, 480], [196, 512]], "description": "Beside the Faculty of Environmental Sciences block."},
+        {"id": "car-park-social-sciences", "name": "Car Park (Social Sciences side)", "category": "parking", "x": 688, "y": 480, "footprint": [[674, 460], [703, 500]], "description": "Hatched block between the Faculty of Social Sciences and Faculty of Education blocks.", "verify": true},
+        {"id": "car-park-law", "name": "Car Park (Law side)", "category": "parking", "x": 590, "y": 715, "footprint": [[576, 690], [604, 745]], "description": "Hatched block just above the Faculty of Law block.", "verify": true},
+        {"id": "female-hostel", "name": "Female Hostel", "category": "hostel", "x": 360, "y": 1050, "footprint": [[332, 995], [392, 1102]], "description": "South of the academic core, reached by the road from the bottom of the campus."},
+        {"id": "main-road", "name": "Main road to Central Admin", "category": "gate", "x": 396, "y": 160, "description": "Dual carriageway that leads into the Central Admin circle, as drawn on the campus plan.", "aliases": ["Main entrance", "Entrance"]}
+      ]
+    }
+  ]
+}

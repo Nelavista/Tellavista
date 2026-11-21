@@ -159,3 +159,94 @@ def test_every_category_has_display_fields():
     for c in campus_maps.CATEGORIES:
         assert c['label'] and c['singular'] and c['icon'].startswith('ri-')
         assert re.fullmatch(r'#[0-9a-f]{6}', c['color'])
+
+
+# ── Campus-plan universities (University of Abuja) ─────────────────────────────────
+import os  # noqa: E402
+
+ABUJA_FILE = os.path.join(campus_maps.DATASET_DIR, 'university-of-abuja.json')
+
+
+@pytest.fixture
+def abuja(app):
+    with app.app_context():
+        uni = University(name='University of Abuja', short_name='UNIABUJA')
+        db.session.add(uni)
+        db.session.flush()
+        db.session.add(Campus(university_id=uni.id, name='Main Campus', is_main=True))
+        db.session.commit()
+        return uni.slug
+
+
+def test_abuja_dataset_is_internally_consistent():
+    with open(ABUJA_FILE, encoding='utf-8') as fh:
+        data = json.load(fh)
+    frame = data['source']['frame']
+    campus = data['campuses'][0]
+    image = os.path.join(os.path.dirname(__file__), '..', 'app', 'static', campus['plan']['image'])
+    assert os.path.isfile(image)
+    ids = [p['id'] for p in campus['places']]
+    assert len(ids) == len(set(ids))
+    for p in campus['places']:
+        assert 0 <= p['x'] <= frame['width'] and 0 <= p['y'] <= frame['height'], p['id']
+        assert campus_maps.resolve_category(p['category'], p['name']) == p['category'], p['id']
+        if 'footprint' in p:
+            (x0, y0), (x1, y1) = p['footprint']
+            assert x0 < x1 and y0 < y1
+            assert x0 <= p['x'] <= x1 and y0 <= p['y'] <= y1, p['id']
+    names = {p['name'] for p in campus['places']}
+    # Faculties that are not on the source plan must not be invented.
+    for missing in ('Faculty of Medicine', 'Faculty of Pharmaceutical Sciences'):
+        assert missing not in names
+
+
+def test_abuja_appears_in_picker_as_mapped(client, login_as, make_user, abuja):
+    login_as(client, make_user('ua_pick'))
+    body = client.get('/campus-map').get_data(as_text=True)
+    assert 'University of Abuja' in body
+    assert 'Gwagwalada, FCT Abuja' in body
+    with open(ABUJA_FILE, encoding='utf-8') as fh:
+        n = len(json.load(fh)['campuses'][0]['places'])
+    assert f'{n} places mapped' in body
+
+
+def test_abuja_map_is_a_plan_map(client, login_as, make_user, abuja):
+    login_as(client, make_user('ua_map'))
+    res = client.get('/campus-map/uniabuja')
+    assert res.status_code == 302 and res.headers['Location'].endswith('/campus-map/university-of-abuja')
+    body = client.get('/campus-map/university-of-abuja').get_data(as_text=True)
+    assert 'University of Abuja' in body and 'Change university' in body
+    assert 'View location' in body and 'official campus plan' in body
+    data = _payload(body)
+    assert data['has_data'] is True
+    assert data['map']['kind'] == 'plan'
+    assert data['map']['plan']['image'] == '/images/campus_maps/university-of-abuja-main-campus.webp'
+    assert data['map']['bounds'] == [[0, 0], [1170, 858]]    # opens on the whole plan
+    places = {p['id']: p for p in data['places']}
+    sci = places['faculty-of-science']
+    assert sci['category'] == 'faculty' and sci['campus'] == 'Main Campus'
+    assert sci['lat'] == 1170 - 352 and sci['lng'] == 244   # plan y flipped for CRS.Simple
+    (s, w), (n, e) = sci['footprint']
+    assert s < sci['lat'] < n and w < sci['lng'] < e
+    assert places['central-admin']['category'] == 'admin'
+    assert places['female-hostel']['category'] == 'hostel'
+    assert places['park']['verify'] is True and places['faculty-of-law']['verify'] is False
+    keys = [c['key'] for c in data['categories']]
+    assert 'faculty' in keys and 'hostel' in keys and 'health' not in keys
+
+
+def test_plan_campus_without_db_row_still_opens(app, client, login_as, make_user):
+    with app.app_context():
+        db.session.add(University(name='University of Abuja', short_name='UNIABUJA'))
+        db.session.commit()
+    login_as(client, make_user('ua_nocampus'))
+    data = client.get('/api/campus-map/university-of-abuja').get_json()
+    assert data['map']['kind'] == 'plan'
+    assert data['campus'] == {'id': None, 'name': 'Main Campus'}
+    assert len(data['places']) > 20
+
+
+def test_lasu_stays_a_geo_map(client, login_as, make_user, campus_data):
+    login_as(client, make_user('ua_lasu'))
+    data = client.get(f'/api/campus-map/{campus_data["lasu_slug"]}').get_json()
+    assert data['map']['kind'] == 'geo' and data['map']['plan'] is None

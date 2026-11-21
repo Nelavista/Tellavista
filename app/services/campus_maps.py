@@ -1,6 +1,6 @@
 """Campus Map: the multi-university map system behind /campus-map.
 
-Two layers, kept separate on purpose:
+Three layers, kept separate on purpose:
 
 1. Content lives in the database (models.py): University -> Campus -> CampusLocation.
    Admins add and edit campuses and places at /admin/campus-map. Adding a university's
@@ -11,15 +11,27 @@ Two layers, kept separate on purpose:
    boundary). A university with no profile still works. The map centres on its campus
    coordinates and fits its places.
 
+3. Campus plans: a campus with no verified coordinates can be mapped from its official
+   plan instead. data/campus_maps/<university-slug>.json names the plan image (straightened)
+   and lists places in the plan's own pixel frame (x right, y down). The map page then
+   draws the plan as the base layer instead of satellite tiles (campus-map.js,
+   map.kind == 'plan'), and GPS directions are switched off because the plan has no
+   coordinates. For a campus listed in such a file, the file is the source of its places.
+   University of Abuja is the first.
+
 To add a university's map:
   - make sure its University row exists (seed_academia.py or /admin/academia),
-  - give its Campus row real latitude/longitude and add places at /admin/campus-map,
+  - either give its Campus row real latitude/longitude and add places at
+    /admin/campus-map, or add a campus-plan file under data/campus_maps/,
   - optionally add a MAP_PROFILES entry below for its town, zoom and boundary.
 
 Nothing here invents data. Boundaries stay None until a verified outline exists, and a
 place's description is only shown when one was actually written for it.
 """
+import json
+import os
 import re
+from functools import lru_cache
 
 from sqlalchemy import func
 
@@ -46,6 +58,7 @@ CATEGORIES = [
     {'key': 'bank', 'label': 'Banks & ATMs', 'singular': 'Bank or ATM', 'icon': 'ri-bank-line', 'color': '#0c7a4b'},
     {'key': 'religious', 'label': 'Worship', 'singular': 'Place of worship', 'icon': 'ri-hand-heart-line', 'color': '#3c4a5e'},
     {'key': 'sports', 'label': 'Sports', 'singular': 'Sports facility', 'icon': 'ri-football-line', 'color': '#2e7d32'},
+    {'key': 'parking', 'label': 'Parking', 'singular': 'Car park', 'icon': 'ri-parking-box-line', 'color': '#3b5b8c'},
     {'key': 'gate', 'label': 'Gates & entrances', 'singular': 'Gate or entrance', 'icon': 'ri-door-open-line', 'color': '#5b616e'},
     {'key': 'landmark', 'label': 'Other places', 'singular': 'Campus place', 'icon': 'ri-map-pin-2-line', 'color': '#4a5160'},
 ]
@@ -73,6 +86,7 @@ _REFINABLE = {None, '', 'general', 'department', 'lecture', 'commercial', 'utili
 # "Collaboration" and "school of" beats "library" for "School of Library ... Science".
 _NAME_RULES = [
     ('gate', r'\bgate\b|\bentrance\b'),
+    ('parking', r'car ?park|\bparking\b'),
     ('hostel', r'\bhostel|hall of residence|\blodge\b'),
     ('religious', r'mosque|chapel|church|\bcathedral\b'),
     ('bank', r'\bbank\b|\batm\b'),
@@ -157,6 +171,44 @@ def monogram(university):
     return ''.join(w[0] for w in words[:4]).upper()
 
 
+DATASET_DIR = os.path.normpath(os.path.join(os.path.dirname(__file__), '..', '..', 'data', 'campus_maps'))
+
+
+@lru_cache(maxsize=64)
+def _read_dataset(path, mtime):
+    with open(path, encoding='utf-8') as fh:
+        return json.load(fh)
+
+
+def load_dataset(university):
+    """This university's campus-plan file (data/campus_maps/<slug>.json), or None."""
+    if not university.slug:
+        return None
+    path = os.path.join(DATASET_DIR, university.slug + '.json')
+    if not os.path.isfile(path):
+        return None
+    data = _read_dataset(path, os.path.getmtime(path))
+    if data.get('university') and data['university'] != university.name:
+        return None   # the file names a different school than the one holding this slug
+    return data
+
+
+def _dataset_campus(dataset, campus_name):
+    if not dataset:
+        return None
+    return next((c for c in dataset.get('campuses') or [] if c.get('name') == campus_name), None)
+
+
+def _db_counts_by_campus_name(university):
+    rows = (
+        db.session.query(Campus.name, func.count(CampusLocation.id))
+        .join(CampusLocation, CampusLocation.campus_id == Campus.id)
+        .filter(Campus.university_id == university.id, CampusLocation.is_active.is_(True))
+        .group_by(Campus.name).all()
+    )
+    return dict(rows)
+
+
 def _image_url(path):
     if not path:
         return None
@@ -177,8 +229,9 @@ def _location_counts():
     return {uid: n for uid, n in rows}
 
 
-def university_card(university, place_count=0):
+def university_card(university, place_count=0, kind='geo'):
     return {
+        'map_kind': kind,
         'id': university.id,
         'slug': university.slug,
         'name': university.name,
@@ -195,7 +248,16 @@ def list_universities():
     """Every active university for the picker: mapped ones first, then A-Z."""
     counts = _location_counts()
     unis = University.query.filter(University.active.is_(True)).order_by(University.name).all()
-    cards = [university_card(u, counts.get(u.id, 0)) for u in unis]
+    cards = []
+    for u in unis:
+        dataset = load_dataset(u)
+        n = counts.get(u.id, 0)
+        if dataset:
+            # A plan campus's places come from its file, not from DB rows for that campus.
+            plan_names = {c.get('name') for c in dataset.get('campuses') or []}
+            n = sum(len(c.get('places') or []) for c in dataset.get('campuses') or [])
+            n += sum(cnt for name, cnt in _db_counts_by_campus_name(u).items() if name not in plan_names)
+        cards.append(university_card(u, n, kind=('plan' if dataset else 'geo')))
     cards.sort(key=lambda c: (not c['has_map'], c['name'].lower()))
     return cards
 
@@ -231,19 +293,62 @@ def place_dict(loc, campus):
     }
 
 
+def plan_place_dict(raw, campus_name, height):
+    """A place from a campus-plan file. Plan pixels (x right, y down) become Leaflet
+    CRS.Simple coordinates, where lat grows upward, so y is flipped."""
+    fp = raw.get('footprint')
+    return {
+        'id': str(raw['id']),
+        'name': raw['name'],
+        'category': resolve_category(raw.get('category'), raw.get('name')),
+        'description': (raw.get('description') or '').strip() or None,
+        'lat': height - raw['y'],
+        'lng': raw['x'],
+        'footprint': ([[height - fp[1][1], fp[0][0]], [height - fp[0][1], fp[1][0]]] if fp else None),
+        'aliases': raw.get('aliases') or [],
+        'verify': bool(raw.get('verify')),
+        'image': _image_url(raw.get('image')),
+        'campus': campus_name,
+    }
+
+
 def build_map_payload(university, campus_id=None):
     """Everything the map page needs for one university and one of its campuses."""
+    dataset = load_dataset(university)
     campuses = _campuses(university)
+    campus_list = [{'id': c.id, 'name': c.name, 'is_main': c.is_main} for c in campuses]
+    if dataset:
+        # A plan campus with no DB row still appears (id None: it is the only way to open it).
+        known = {c['name'] for c in campus_list}
+        for dc in dataset.get('campuses') or []:
+            if dc.get('name') not in known:
+                campus_list.append({'id': None, 'name': dc['name'], 'is_main': not campus_list})
     campus = None
     if campus_id:
-        campus = next((c for c in campuses if c.id == campus_id), None)
-    if campus is None and campuses:
-        campus = campuses[0]
+        campus = next((c for c in campus_list if c['id'] == campus_id), None)
+    if campus is None and campus_list:
+        campus = campus_list[0]
+
+    plan_campus = _dataset_campus(dataset, campus['name']) if campus else None
+    db_campus = next((c for c in campuses if campus and c.id == campus['id']), None)
 
     places = []
-    if campus:
-        rows = campus.locations.filter_by(is_active=True).order_by(CampusLocation.name).all()
-        places = [place_dict(loc, campus) for loc in rows]
+    plan = None
+    if plan_campus:
+        frame = (dataset.get('source') or {}).get('frame') or {}
+        width, height = frame['width'], frame['height']
+        places = sorted(
+            (plan_place_dict(p, campus['name'], height) for p in plan_campus.get('places') or []),
+            key=lambda p: p['name'].lower(),
+        )
+        plan = {
+            'image': _image_url(plan_campus['plan']['image']),
+            'credit': plan_campus['plan'].get('credit'),
+            'bounds': [[0, 0], [height, width]],
+        }
+    elif db_campus:
+        rows = db_campus.locations.filter_by(is_active=True).order_by(CampusLocation.name).all()
+        places = [place_dict(loc, db_campus) for loc in rows]
 
     counts = {}
     for p in places:
@@ -251,15 +356,18 @@ def build_map_payload(university, campus_id=None):
     categories = [dict(c, count=counts[c['key']]) for c in CATEGORIES if c['key'] in counts]
 
     profile = _profile(university)
-    campus_profile = (profile.get('campuses') or {}).get(campus.name, {}) if campus else {}
+    campus_profile = (profile.get('campuses') or {}).get(campus['name'], {}) if campus else {}
     bounds = None
     if places:
         lats = [p['lat'] for p in places]
         lngs = [p['lng'] for p in places]
         bounds = [[min(lats), min(lngs)], [max(lats), max(lngs)]]
     center = None
-    if campus and campus.latitude is not None and campus.longitude is not None:
-        center = [campus.latitude, campus.longitude]
+    if plan:
+        bounds = plan['bounds']   # open on the whole plan, not just the pins
+        center = [bounds[1][0] / 2, bounds[1][1] / 2]
+    elif db_campus and db_campus.latitude is not None and db_campus.longitude is not None:
+        center = [db_campus.latitude, db_campus.longitude]
     elif bounds:
         center = [(bounds[0][0] + bounds[1][0]) / 2, (bounds[0][1] + bounds[1][1]) / 2]
 
@@ -269,15 +377,19 @@ def build_map_payload(university, campus_id=None):
                 CampusLocation.is_active.is_(True))
         .group_by(CampusLocation.campus_id).all()
     )
+    for c in campus_list:
+        dc = _dataset_campus(dataset, c['name'])
+        c['place_count'] = len(dc.get('places') or []) if dc else campus_counts.get(c['id'], 0)
+        c['kind'] = 'plan' if dc else 'geo'
 
     return {
-        'university': university_card(university, sum(campus_counts.values())),
-        'campuses': [
-            {'id': c.id, 'name': c.name, 'is_main': c.is_main, 'place_count': campus_counts.get(c.id, 0)}
-            for c in campuses
-        ],
-        'campus': ({'id': campus.id, 'name': campus.name} if campus else None),
+        'university': university_card(
+            university, sum(c['place_count'] for c in campus_list), kind=('plan' if dataset else 'geo')),
+        'campuses': campus_list,
+        'campus': ({'id': campus['id'], 'name': campus['name']} if campus else None),
         'map': {
+            'kind': 'plan' if plan else 'geo',
+            'plan': plan,
             'center': center,
             'zoom': profile.get('zoom', DEFAULT_ZOOM),
             'bounds': bounds,

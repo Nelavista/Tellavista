@@ -11,18 +11,16 @@ Three layers, kept separate on purpose:
    boundary). A university with no profile still works. The map centres on its campus
    coordinates and fits its places.
 
-3. Campus plans: a campus with no verified coordinates can be mapped from its official
-   plan instead. data/campus_maps/<university-slug>.json names the plan image (straightened)
-   and lists places in the plan's own pixel frame (x right, y down). The map page then
-   draws the plan as the base layer instead of satellite tiles (campus-map.js,
-   map.kind == 'plan'), and GPS directions are switched off because the plan has no
-   coordinates. For a campus listed in such a file, the file is the source of its places.
-   University of Abuja is the first.
+3. Dataset files: data/campus_maps/<university-slug>.json can hold a campus's centre,
+   zoom, default base layer and places (each with real lat/lng). Every university gets
+   the same live Leaflet/OpenStreetMap map; only the dataset differs. For a campus listed
+   in a file, the file is the source of its places. University of Abuja is the first;
+   its file records where each position came from and how to correct it.
 
 To add a university's map:
   - make sure its University row exists (seed_academia.py or /admin/academia),
   - either give its Campus row real latitude/longitude and add places at
-    /admin/campus-map, or add a campus-plan file under data/campus_maps/,
+    /admin/campus-map, or add a dataset file under data/campus_maps/,
   - optionally add a MAP_PROFILES entry below for its town, zoom and boundary.
 
 Nothing here invents data. Boundaries stay None until a verified outline exists, and a
@@ -141,7 +139,7 @@ MAP_PROFILES = {
     'University of Lagos': {'location': 'Akoka, Lagos'},
     'University of Ibadan': {'location': 'Ibadan, Oyo'},
     'Federal University Dutsin-Ma': {'location': 'Dutsin-Ma, Katsina'},
-    'University of Abuja': {'location': 'Gwagwalada, FCT Abuja'},
+    'University of Abuja': {'location': 'Airport Road, Abuja (FCT)'},
     'University of Ilorin': {'location': 'Ilorin, Kwara'},
     'Kwara State University': {'location': 'Malete, Kwara'},
     'University of Port Harcourt': {'location': 'Choba, Rivers'},
@@ -181,7 +179,7 @@ def _read_dataset(path, mtime):
 
 
 def load_dataset(university):
-    """This university's campus-plan file (data/campus_maps/<slug>.json), or None."""
+    """This university's campus dataset file (data/campus_maps/<slug>.json), or None."""
     if not university.slug:
         return None
     path = os.path.join(DATASET_DIR, university.slug + '.json')
@@ -229,9 +227,8 @@ def _location_counts():
     return {uid: n for uid, n in rows}
 
 
-def university_card(university, place_count=0, kind='geo'):
+def university_card(university, place_count=0):
     return {
-        'map_kind': kind,
         'id': university.id,
         'slug': university.slug,
         'name': university.name,
@@ -253,11 +250,11 @@ def list_universities():
         dataset = load_dataset(u)
         n = counts.get(u.id, 0)
         if dataset:
-            # A plan campus's places come from its file, not from DB rows for that campus.
-            plan_names = {c.get('name') for c in dataset.get('campuses') or []}
+            # A dataset campus's places come from its file, not from DB rows for that campus.
+            file_names = {c.get('name') for c in dataset.get('campuses') or []}
             n = sum(len(c.get('places') or []) for c in dataset.get('campuses') or [])
-            n += sum(cnt for name, cnt in _db_counts_by_campus_name(u).items() if name not in plan_names)
-        cards.append(university_card(u, n, kind=('plan' if dataset else 'geo')))
+            n += sum(cnt for name, cnt in _db_counts_by_campus_name(u).items() if name not in file_names)
+        cards.append(university_card(u, n))
     cards.sort(key=lambda c: (not c['has_map'], c['name'].lower()))
     return cards
 
@@ -288,25 +285,33 @@ def place_dict(loc, campus):
         'description': (loc.description or '').strip() or None,
         'lat': loc.latitude,
         'lng': loc.longitude,
+        'label_tier': label_tier(key),
         'image': _image_url(loc.image_path),
         'campus': campus.name,
     }
 
 
-def plan_place_dict(raw, campus_name, height):
-    """A place from a campus-plan file. Plan pixels (x right, y down) become Leaflet
-    CRS.Simple coordinates, where lat grows upward, so y is flipped."""
-    fp = raw.get('footprint')
+def label_tier(category):
+    """1 = labelled from the opening zoom (faculties and hostels; a dataset can also
+    promote a key landmark such as the central administration with "label_tier": 1);
+    2 = labelled once the student zooms in. Keeps the whole-campus view readable."""
+    return 1 if category in ('faculty', 'hostel') else 2
+
+
+def dataset_place_dict(raw, campus_name):
+    """A place from a campus dataset file (real lat/lng, like a DB CampusLocation)."""
+    key = resolve_category(raw.get('category'), raw.get('name'))
     return {
         'id': str(raw['id']),
         'name': raw['name'],
-        'category': resolve_category(raw.get('category'), raw.get('name')),
+        'category': key,
         'description': (raw.get('description') or '').strip() or None,
-        'lat': height - raw['y'],
-        'lng': raw['x'],
-        'footprint': ([[height - fp[1][1], fp[0][0]], [height - fp[0][1], fp[1][0]]] if fp else None),
+        'lat': raw['lat'],
+        'lng': raw['lng'],
+        'outline': raw.get('outline'),
         'aliases': raw.get('aliases') or [],
         'verify': bool(raw.get('verify')),
+        'label_tier': raw.get('label_tier') or label_tier(key),
         'image': _image_url(raw.get('image')),
         'campus': campus_name,
     }
@@ -318,7 +323,7 @@ def build_map_payload(university, campus_id=None):
     campuses = _campuses(university)
     campus_list = [{'id': c.id, 'name': c.name, 'is_main': c.is_main} for c in campuses]
     if dataset:
-        # A plan campus with no DB row still appears (id None: it is the only way to open it).
+        # A dataset campus with no DB row still appears (id None: it is opened by default).
         known = {c['name'] for c in campus_list}
         for dc in dataset.get('campuses') or []:
             if dc.get('name') not in known:
@@ -329,23 +334,15 @@ def build_map_payload(university, campus_id=None):
     if campus is None and campus_list:
         campus = campus_list[0]
 
-    plan_campus = _dataset_campus(dataset, campus['name']) if campus else None
+    file_campus = _dataset_campus(dataset, campus['name']) if campus else None
     db_campus = next((c for c in campuses if campus and c.id == campus['id']), None)
 
     places = []
-    plan = None
-    if plan_campus:
-        frame = (dataset.get('source') or {}).get('frame') or {}
-        width, height = frame['width'], frame['height']
+    if file_campus:
         places = sorted(
-            (plan_place_dict(p, campus['name'], height) for p in plan_campus.get('places') or []),
+            (dataset_place_dict(p, campus['name']) for p in file_campus.get('places') or []),
             key=lambda p: p['name'].lower(),
         )
-        plan = {
-            'image': _image_url(plan_campus['plan']['image']),
-            'credit': plan_campus['plan'].get('credit'),
-            'bounds': [[0, 0], [height, width]],
-        }
     elif db_campus:
         rows = db_campus.locations.filter_by(is_active=True).order_by(CampusLocation.name).all()
         places = [place_dict(loc, db_campus) for loc in rows]
@@ -363,9 +360,8 @@ def build_map_payload(university, campus_id=None):
         lngs = [p['lng'] for p in places]
         bounds = [[min(lats), min(lngs)], [max(lats), max(lngs)]]
     center = None
-    if plan:
-        bounds = plan['bounds']   # open on the whole plan, not just the pins
-        center = [bounds[1][0] / 2, bounds[1][1] / 2]
+    if file_campus and file_campus.get('center'):
+        center = list(file_campus['center'])
     elif db_campus and db_campus.latitude is not None and db_campus.longitude is not None:
         center = [db_campus.latitude, db_campus.longitude]
     elif bounds:
@@ -380,18 +376,15 @@ def build_map_payload(university, campus_id=None):
     for c in campus_list:
         dc = _dataset_campus(dataset, c['name'])
         c['place_count'] = len(dc.get('places') or []) if dc else campus_counts.get(c['id'], 0)
-        c['kind'] = 'plan' if dc else 'geo'
 
     return {
-        'university': university_card(
-            university, sum(c['place_count'] for c in campus_list), kind=('plan' if dataset else 'geo')),
+        'university': university_card(university, sum(c['place_count'] for c in campus_list)),
         'campuses': campus_list,
         'campus': ({'id': campus['id'], 'name': campus['name']} if campus else None),
         'map': {
-            'kind': 'plan' if plan else 'geo',
-            'plan': plan,
             'center': center,
-            'zoom': profile.get('zoom', DEFAULT_ZOOM),
+            'zoom': (file_campus or {}).get('zoom') or profile.get('zoom', DEFAULT_ZOOM),
+            'default_layer': (file_campus or {}).get('default_layer') or profile.get('default_layer', 'satellite'),
             'bounds': bounds,
             'boundary': campus_profile.get('boundary'),
         },
